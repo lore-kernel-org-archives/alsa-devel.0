@@ -1,135 +1,144 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v2] ASoC: stm32: sai: simplify dai driver initialisation
-Date: Tue, 23 Apr 2019 17:58:08 +0200
-Message-ID: <1556035088-11228-1-git-send-email-arnaud.pouliquen@st.com>
+From: syzbot <syzbot+e28a58bb80f4c67a2b89@syzkaller.appspotmail.com>
+Subject: KASAN: slab-out-of-bounds Read in linear_transfer (2)
+Date: Tue, 23 Apr 2019 09:25:05 -0700
+Message-ID: <0000000000000f7c8105873507b5@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam
- Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>
-Cc: arnaud.pouliquen@st.com, Olivier Moysan <olivier.moysan@st.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Suppress the useless dynamic allocation of the dai driver structure.
+Hello,
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+syzbot found the following crash on:
+
+HEAD commit:    bcb67f0f Add linux-next specific files for 20190412
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=134b9867200000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=35c479ecf64ba753
+dashboard link: https://syzkaller.appspot.com/bug?extid=e28a58bb80f4c67a2b89
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+e28a58bb80f4c67a2b89@syzkaller.appspotmail.com
+
+RBP: 000000000073bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f1779cb06d4
+R13: 00000000004c5a84 R14: 00000000004d9f20 R15: 0000000000000004
+==================================================================
+BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:359 [inline]
+BUG: KASAN: slab-out-of-bounds in do_convert sound/core/oss/linear.c:48  
+[inline]
+BUG: KASAN: slab-out-of-bounds in convert sound/core/oss/linear.c:81  
+[inline]
+BUG: KASAN: slab-out-of-bounds in linear_transfer  
+sound/core/oss/linear.c:110 [inline]
+BUG: KASAN: slab-out-of-bounds in linear_transfer+0x6de/0x970  
+sound/core/oss/linear.c:88
+Read of size 1 at addr ffff88809feae2c0 by task syz-executor.4/32294
+
+CPU: 0 PID: 32294 Comm: syz-executor.4 Not tainted 5.1.0-rc4-next-20190412  
+#24
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  print_address_description.cold+0x7c/0x20d mm/kasan/report.c:187
+  kasan_report.cold+0x1b/0x40 mm/kasan/report.c:317
+  check_memory_region_inline mm/kasan/generic.c:185 [inline]
+  check_memory_region+0x123/0x190 mm/kasan/generic.c:191
+  memcpy+0x24/0x50 mm/kasan/common.c:132
+  memcpy include/linux/string.h:359 [inline]
+  do_convert sound/core/oss/linear.c:48 [inline]
+  convert sound/core/oss/linear.c:81 [inline]
+  linear_transfer sound/core/oss/linear.c:110 [inline]
+  linear_transfer+0x6de/0x970 sound/core/oss/linear.c:88
+  snd_pcm_plug_read_transfer+0x1a1/0x2f0 sound/core/oss/pcm_plugin.c:651
+  snd_pcm_oss_read2+0x1f0/0x3f0 sound/core/oss/pcm_oss.c:1475
+  snd_pcm_oss_read1 sound/core/oss/pcm_oss.c:1532 [inline]
+  snd_pcm_oss_read+0x53a/0x6a0 sound/core/oss/pcm_oss.c:2752
+  __vfs_read+0x8d/0x110 fs/read_write.c:416
+  vfs_read+0x194/0x3e0 fs/read_write.c:452
+  ksys_read+0x14f/0x2d0 fs/read_write.c:579
+  __do_sys_read fs/read_write.c:589 [inline]
+  __se_sys_read fs/read_write.c:587 [inline]
+  __x64_sys_read+0x73/0xb0 fs/read_write.c:587
+  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x458c29
+Code: ad b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f1779cafc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 00007f1779cafc90 RCX: 0000000000458c29
+RDX: 0000000000001000 RSI: 0000000020004180 RDI: 0000000000000003
+RBP: 000000000073bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f1779cb06d4
+R13: 00000000004c5a84 R14: 00000000004d9f20 R15: 0000000000000004
+
+Allocated by task 32294:
+  save_stack+0x45/0xd0 mm/kasan/common.c:75
+  set_track mm/kasan/common.c:87 [inline]
+  __kasan_kmalloc mm/kasan/common.c:497 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:470
+  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:511
+  __do_kmalloc_node mm/slab.c:3686 [inline]
+  __kmalloc_node+0x4e/0x70 mm/slab.c:3693
+  kmalloc_node include/linux/slab.h:590 [inline]
+  kvmalloc_node+0x68/0x100 mm/util.c:430
+  kvmalloc include/linux/mm.h:637 [inline]
+  kvzalloc include/linux/mm.h:645 [inline]
+  snd_pcm_plugin_alloc+0x585/0x770 sound/core/oss/pcm_plugin.c:70
+  snd_pcm_plug_alloc+0x148/0x330 sound/core/oss/pcm_plugin.c:129
+  snd_pcm_oss_change_params_locked+0x2110/0x3750  
+sound/core/oss/pcm_oss.c:1039
+  snd_pcm_oss_change_params+0x7b/0xd0 sound/core/oss/pcm_oss.c:1102
+  snd_pcm_oss_get_active_substream+0x136/0x190 sound/core/oss/pcm_oss.c:1119
+  snd_pcm_oss_get_rate sound/core/oss/pcm_oss.c:1769 [inline]
+  snd_pcm_oss_set_rate sound/core/oss/pcm_oss.c:1761 [inline]
+  snd_pcm_oss_ioctl+0x8f7/0x3430 sound/core/oss/pcm_oss.c:2608
+  vfs_ioctl fs/ioctl.c:46 [inline]
+  file_ioctl fs/ioctl.c:509 [inline]
+  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
+  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+  __do_sys_ioctl fs/ioctl.c:720 [inline]
+  __se_sys_ioctl fs/ioctl.c:718 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 0:
+(stack is not available)
+
+The buggy address belongs to the object at ffff88809feae0c0
+  which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 0 bytes to the right of
+  512-byte region [ffff88809feae0c0, ffff88809feae2c0)
+The buggy address belongs to the page:
+page:ffffea00027fab80 count:1 mapcount:0 mapping:ffff88812c3f0940 index:0x0
+flags: 0x1fffc0000000200(slab)
+raw: 01fffc0000000200 ffffea00025e4188 ffffea00026f3588 ffff88812c3f0940
+raw: 0000000000000000 ffff88809feae0c0 0000000100000006 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff88809feae180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff88809feae200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ffff88809feae280: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+                                            ^
+  ffff88809feae300: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
+  ffff88809feae380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-V1 to V2:
-- add "sai" in commit title to identify the driver
-- add reviewed-by
-
- sound/soc/stm/stm32_sai_sub.c | 43 +++++++++----------------------------------
- 1 file changed, 9 insertions(+), 34 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 77aa38183955..2a74ce7c9440 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -110,7 +110,7 @@ struct stm32_sai_sub_data {
- 	struct regmap *regmap;
- 	const struct regmap_config *regmap_config;
- 	struct snd_dmaengine_dai_dma_data dma_params;
--	struct snd_soc_dai_driver *cpu_dai_drv;
-+	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct snd_soc_dai *cpu_dai;
- 	struct snd_pcm_substream *substream;
- 	struct stm32_sai_data *pdata;
-@@ -1234,8 +1234,7 @@ static const struct snd_pcm_hardware stm32_sai_pcm_hw = {
- 	.periods_max = 8,
- };
- 
--static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
--{
-+static struct snd_soc_dai_driver stm32_sai_playback_dai = {
- 		.probe = stm32_sai_dai_probe,
- 		.pcm_new = stm32_sai_pcm_new,
- 		.id = 1, /* avoid call to fmt_single_name() */
-@@ -1252,11 +1251,9 @@ static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
- 				SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &stm32_sai_pcm_dai_ops,
--	}
- };
- 
--static struct snd_soc_dai_driver stm32_sai_capture_dai[] = {
--{
-+static struct snd_soc_dai_driver stm32_sai_capture_dai = {
- 		.probe = stm32_sai_dai_probe,
- 		.id = 1, /* avoid call to fmt_single_name() */
- 		.capture = {
-@@ -1272,7 +1269,6 @@ static struct snd_soc_dai_driver stm32_sai_capture_dai[] = {
- 				SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &stm32_sai_pcm_dai_ops,
--	}
- };
- 
- static const struct snd_dmaengine_pcm_config stm32_sai_pcm_config = {
-@@ -1441,29 +1437,6 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 	return 0;
- }
- 
--static int stm32_sai_sub_dais_init(struct platform_device *pdev,
--				   struct stm32_sai_sub_data *sai)
--{
--	sai->cpu_dai_drv = devm_kzalloc(&pdev->dev,
--					sizeof(struct snd_soc_dai_driver),
--					GFP_KERNEL);
--	if (!sai->cpu_dai_drv)
--		return -ENOMEM;
--
--	if (STM_SAI_IS_PLAYBACK(sai)) {
--		memcpy(sai->cpu_dai_drv, &stm32_sai_playback_dai,
--		       sizeof(stm32_sai_playback_dai));
--		sai->cpu_dai_drv->playback.stream_name = sai->cpu_dai_drv->name;
--	} else {
--		memcpy(sai->cpu_dai_drv, &stm32_sai_capture_dai,
--		       sizeof(stm32_sai_capture_dai));
--		sai->cpu_dai_drv->capture.stream_name = sai->cpu_dai_drv->name;
--	}
--	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
--
--	return 0;
--}
--
- static int stm32_sai_sub_probe(struct platform_device *pdev)
- {
- 	struct stm32_sai_sub_data *sai;
-@@ -1495,9 +1468,11 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	ret = stm32_sai_sub_dais_init(pdev, sai);
--	if (ret)
--		return ret;
-+	if (STM_SAI_IS_PLAYBACK(sai))
-+		sai->cpu_dai_drv = stm32_sai_playback_dai;
-+	else
-+		sai->cpu_dai_drv = stm32_sai_capture_dai;
-+	sai->cpu_dai_drv.name = dev_name(&pdev->dev);
- 
- 	ret = devm_request_irq(&pdev->dev, sai->pdata->irq, stm32_sai_isr,
- 			       IRQF_SHARED, dev_name(&pdev->dev), sai);
-@@ -1507,7 +1482,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_component,
--					      sai->cpu_dai_drv, 1);
-+					      &sai->cpu_dai_drv, 1);
- 	if (ret)
- 		return ret;
- 
--- 
-2.7.4
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
