@@ -1,13 +1,13 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3.18 020/104] SoC: imx-sgtl5000: add missing put_device()
-Date: Wed, 24 Apr 2019 19:08:37 +0200
-Message-ID: <20190424170853.070320830@linuxfoundation.org>
-References: <20190424170839.996641496@linuxfoundation.org>
+Subject: [PATCH 4.4 037/168] SoC: imx-sgtl5000: add missing put_device()
+Date: Wed, 24 Apr 2019 19:08:01 +0200
+Message-ID: <20190424170925.954182980@linuxfoundation.org>
+References: <20190424170923.452349382@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190424170839.996641496@linuxfoundation.org>
+In-Reply-To: <20190424170923.452349382@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Wen Yang <yellowriver2010@hotmail.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, Sasha Levin <sashal@kernel.org>
@@ -50,7 +50,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 1cb22dd034eb..110f3cf361af 100644
+index b99e0b5e00e9..8e525f7ac08d 100644
 --- a/sound/soc/fsl/imx-sgtl5000.c
 +++ b/sound/soc/fsl/imx-sgtl5000.c
 @@ -115,6 +115,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
