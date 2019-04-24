@@ -1,48 +1,105 @@
-From: Fabien Dessenne <fabien.dessenne@st.com>
-Subject: [PATCH] ASoC: stm32: i2s: return the get_irq error
-Date: Wed, 24 Apr 2019 17:28:44 +0200
-Message-ID: <1556119724-9873-1-git-send-email-fabien.dessenne@st.com>
+From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
+Subject: R:  loopback snd_pcm_writei
+Date: Wed, 24 Apr 2019 15:50:54 +0000
+Message-ID: <AM5P192MB01805F248D33804715004A58C53C0@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+References: <AM5P192MB0180EB66182156CF2353C0FFC5550@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+ <e1b9d718-c997-d162-ff49-74f74b407878@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Fabien Dessenne <fabien.dessenne@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-eopbgr80054.outbound.protection.outlook.com [40.107.8.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F79DF89618
+ for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2019 17:50:56 +0200 (CEST)
+In-Reply-To: <e1b9d718-c997-d162-ff49-74f74b407878@perex.cz>
+Content-Language: it-IT
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-During probe, return the "get_irq" error value instead of -ENOENT. This
-allows the driver to be deferred probed if needed.
-
-Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
----
- sound/soc/stm/stm32_i2s.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 9526342..97d5e99 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -838,8 +838,9 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
- 	/* Get irqs */
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
--		return -ENOENT;
-+		if (irq != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-+		return irq;
- 	}
- 
- 	ret = devm_request_irq(&pdev->dev, irq, stm32_i2s_isr, IRQF_ONESHOT,
--- 
-2.7.4
+SGkgSmFyb3NsYXYsDQpUaGFuayB5b3UgZm9yIHRoZSBmaXguIEkgdHJpZWQgaXQgYW5kIEkgZG9u
+J3QgaGF2ZSAwLXdyaXR0ZW4tZnJhbWVzIGFueW1vcmUuDQpUbyBiZSBzdXJlIHRoYXQgdGhlIGZp
+eCB3b3JrcyBmaW5lLCBJIGNvbXBhcmVkIHRoZSBtdWx0aSBzY2VuYXJpbyAoZm9yd2FyZCtsb29w
+YmFjaykgd2l0aCB0aGUgZm9yd2FyZC1vbmx5IHNjZW5hcmlvLg0KSXQgd29ya3MgZmluZSBpbiBi
+b3RoIGNhc2VzLCBidXQgc29tZXRpbWVzIGluIHRoZSBtdWx0aSBzY2VuYXJpbyBJIGhhdmUgdW5k
+ZXJydW5zLg0KQ291bGQgaXQgZGVwZW5kIGZyb20gdGhlIGZpeD8gT3IgdGhlIHVzYWdlIG9mIG11
+bHRpIGl0c2VsZiBjYW4gYnJpbmcgdG8gdW5kZXJydW5zPw0KDQotLS0tLU1lc3NhZ2dpbyBvcmln
+aW5hbGUtLS0tLQ0KRGE6IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+IA0KSW52aWF0
+bzogbWFydGVkw6wgOSBhcHJpbGUgMjAxOSAxMDozNw0KQTogR2l1bGlhbm8gWmFubmV0dGkgLSBB
+UlQgUy5wLkEuIDxnaXVsaWFuby56YW5uZXR0aUBhcnRncm91cC1zcGEuY29tPjsgYWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnDQpPZ2dldHRvOiBSZTogW2Fsc2EtZGV2ZWxdIGxvb3BiYWNrIHNu
+ZF9wY21fd3JpdGVpDQoNCkRuZSAwMS4gMDQuIDE5IHYgMTU6NTEgR2l1bGlhbm8gWmFubmV0dGkg
+LSBBUlQgUy5wLkEuIG5hcHNhbChhKToNCj4gSGksDQo+IA0KPiBJIGhhdmUgdGhlIGNvbmZpZ3Vy
+YXRpb24gaW4gdGhlIGFzb3VuZC5jb25mIGFib3ZlLg0KPiANCj4gbXlfcGx1ZyAtIC0gPiBteV9y
+b3V0ZSAtIC0gPiBteV9tdWx0aSAtIC0gPiBzbGF2ZTAgKGZvcndhcmQpDQo+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAtID4gc2xhdmUxIChsb29wYmFjaykNCj4gDQo+
+IEkgb3BlbiB0aGUgcGx1ZyBteV9wbHVnIGluIHRoZSBibG9jayBtb2RlOg0KPiANCj4gICAgIHdy
+aXR0ZW5GcmFtZXMgPSBzbmRfcGNtX3dyaXRlaShoYW5kbGUsIGJ1ZmZlclRvV3JpdGUsIGJ1ZmZl
+clRvV3JpdGVTaXplKTsNCj4gDQo+IFRoZSBpc3N1ZSBJIHNlZSBpcyB0aGF0IHRoZXJlIGFyZSBz
+ZXZlcmFsICJ3cml0ZXMiIHdpdGggMCB3cml0dGVuIGZyYW1lcy4gSXQgc2VlbXMgbGlrZSB0aGUg
+c25kX3BjbV93cml0ZWkgZG9lcyBub3QgaG9sZCB1bnRpbCBkYXRhIHdpbGwgYmUgd3JpdHRlbi4g
+SW4gZ2VuZXJhbCwgMCB3cml0dGVuIGZyYW1lcyBzb3VuZHMgd2VpcmQgdG8gbWUsIGJlY2F1c2Ug
+c25kX3BjbV93cml0ZWkgc2hvdWxkIGJsb2NrIGl0c2VsZiBpZiBubyBzcGFjZSBpcyBhdmFpbGFi
+bGUgaW4gdGhlIGNpcmN1bGFyIGJ1ZmZlciByaWdodD8NCj4gDQo+IEkgaGF2ZSB0cmllZCB0byBm
+aXggdGhlIGZvbGxvd2luZyBtZXRob2QgaW4gcGNtX211bHRpLmMsIGFzIEphcm9zbGF2IEt5c2Vs
+YSBzdWdnZXN0cy4NCj4gDQo+IC1zdGF0aWMgaW50IHNuZF9wY21fbXVsdGlfbWF5X3dhaXRfZm9y
+X2F2YWlsX21pbihzbmRfcGNtX3QgKnBjbSwgc25kX3BjbV91ZnJhbWVzX3QgYXZhaWwgQVRUUklC
+VVRFX1VOVVNFRCkNCj4gK3N0YXRpYyBpbnQgc25kX3BjbV9tdWx0aV9tYXlfd2FpdF9mb3JfYXZh
+aWxfbWluKHNuZF9wY21fdCAqcGNtLCBzbmRfcGNtX3VmcmFtZXNfdCBhdmFpbCkNCj4gew0KPiAg
+ICAgICAgIHNuZF9wY21fbXVsdGlfdCAqbXVsdGkgPSBwY20tPnByaXZhdGVfZGF0YTsNCj4gLSAg
+ICAgICBzbmRfcGNtX3QgKnNsYXZlID0gbXVsdGktPnNsYXZlc1ttdWx0aS0+bWFzdGVyX3NsYXZl
+XS5wY207DQo+IC0gICAgICAgcmV0dXJuIHNuZF9wY21fbWF5X3dhaXRfZm9yX2F2YWlsX21pbihz
+bGF2ZSwgc25kX3BjbV9tbWFwX2F2YWlsKHNsYXZlKSk7DQo+ICsgICAgICAgdW5zaWduZWQgaW50
+IGk7DQo+ICsgICAgICAgZm9yIChpID0gMDsgaSA8IG11bHRpLT5zbGF2ZXNfY291bnQ7ICsraSkg
+ew0KPiArICAgICAgICAgICAgICAgaWYgKHNuZF9wY21fbWF5X3dhaXRfZm9yX2F2YWlsX21pbiht
+dWx0aS0+c2xhdmVzW2ldLnBjbSwgYXZhaWwpKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBy
+ZXR1cm4gMTsNCj4gKyAgICAgICB9DQo+ICsgICAgICAgcmV0dXJuIDA7DQo+IH0NCj4gDQo+IEJ1
+dCB1bmZvcnR1bmF0ZWx5IHRoZSBpc3N1ZSBoYXMgbm90IGJlZW4gcmVzb2x2ZWQuDQoNCkhpLA0K
+DQogIEkgZGlkIHNvbWUgZGVidWdnaW5nIChpdCdzIHByZXR0eSByZXByb2R1Y2libGUpIGFuZCB0
+aGUgcmVhbCBmaXhlcyBhcmUgaGVyZToNCg0KaHR0cHM6Ly9ldXIwMS5zYWZlbGlua3MucHJvdGVj
+dGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGZ2l0LmFsc2EtcHJvamVjdC5vcmcl
+MkYlM0ZwJTNEYWxzYS1saWIuZ2l0JTNCYSUzRGNvbW1pdCUzQmglM0Q0Njk0YTY2NDNkYzA5YzVl
+NDE5NjlkMzNlZDk4ZjQyMjc4YTAyZDQwJmFtcDtkYXRhPTAyJTdDMDElN0NnaXVsaWFuby56YW5u
+ZXR0aSU0MGFydGdyb3VwLXNwYS5jb20lN0NhOTVkZDEzOWVkNDI0MTI4ODVlYzA4ZDZiY2M2ODRj
+ZSU3QzUzYzU1ZWZjZGFmZDQ3MDk5Y2U4Zjc2Mjk5Mjc3NDk3JTdDMCU3QzElN0M2MzY5MDM5NTgx
+NTk0NzcxNjImYW1wO3NkYXRhPVI5VDJrd3J5M3lSQkpDQTQ0MHZtR0hGZjZzVE5lcWJsVzY3cENZ
+bncxSXMlM0QmYW1wO3Jlc2VydmVkPTANCmh0dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rp
+b24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpdC5hbHNhLXByb2plY3Qub3JnJTJG
+JTNGcCUzRGFsc2EtbGliLmdpdCUzQmElM0Rjb21taXQlM0JoJTNEYzdmYzNmZGJlMjNlNjM3NTdi
+MGUyYzg4YzBkN2MwMjljNjYwOTIzYiZhbXA7ZGF0YT0wMiU3QzAxJTdDZ2l1bGlhbm8uemFubmV0
+dGklNDBhcnRncm91cC1zcGEuY29tJTdDYTk1ZGQxMzllZDQyNDEyODg1ZWMwOGQ2YmNjNjg0Y2Ul
+N0M1M2M1NWVmY2RhZmQ0NzA5OWNlOGY3NjI5OTI3NzQ5NyU3QzAlN0MxJTdDNjM2OTAzOTU4MTU5
+NDc3MTYyJmFtcDtzZGF0YT1RMDZXbGh1VjBYMkUwd3JtVGVZZVViOVIxYTMlMkZWTGt6QzBLMWRQ
+WVlxUzAlM0QmYW1wO3Jlc2VydmVkPTANCmh0dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rp
+b24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpdC5hbHNhLXByb2plY3Qub3JnJTJG
+JTNGcCUzRGFsc2EtbGliLmdpdCUzQmElM0Rjb21taXQlM0JoJTNEMzY5ZGYzMjI1NzcwMzRlYTg3
+Mjk3OGQ2NDcwZWRiYWRmMzBkODFhOSZhbXA7ZGF0YT0wMiU3QzAxJTdDZ2l1bGlhbm8uemFubmV0
+dGklNDBhcnRncm91cC1zcGEuY29tJTdDYTk1ZGQxMzllZDQyNDEyODg1ZWMwOGQ2YmNjNjg0Y2Ul
+N0M1M2M1NWVmY2RhZmQ0NzA5OWNlOGY3NjI5OTI3NzQ5NyU3QzAlN0MxJTdDNjM2OTAzOTU4MTU5
+NDc3MTYyJmFtcDtzZGF0YT1UeUFmZ2ZZb0ZJWE54bHdIMkNuQlE4Y1VmdG9IZzZhYkNBeHF0cWd3
+ZkpVJTNEJmFtcDtyZXNlcnZlZD0wDQpodHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9u
+Lm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkZnaXQuYWxzYS1wcm9qZWN0Lm9yZyUyRiUz
+RnAlM0RhbHNhLWxpYi5naXQlM0JhJTNEY29tbWl0JTNCaCUzRDBiZmFkNDIwZWZlYTMyOGE1MDM2
+MWJiM2VkMTE0ODdhY2Y2OWRhMjUmYW1wO2RhdGE9MDIlN0MwMSU3Q2dpdWxpYW5vLnphbm5ldHRp
+JTQwYXJ0Z3JvdXAtc3BhLmNvbSU3Q2E5NWRkMTM5ZWQ0MjQxMjg4NWVjMDhkNmJjYzY4NGNlJTdD
+NTNjNTVlZmNkYWZkNDcwOTljZThmNzYyOTkyNzc0OTclN0MwJTdDMSU3QzYzNjkwMzk1ODE1OTQ3
+NzE2MiZhbXA7c2RhdGE9d2ZnbzdOJTJGNk5zdHRzem9FNmZMVEolMkI0YllUTW9VQkxFcHM5MXFv
+NGVJa0UlM0QmYW1wO3Jlc2VydmVkPTANCg0KICBKdXN0IGdldCB0aGUgbGF0ZXN0IGFsc2EtbGli
+IGFuZCBpdCBzaG91bGQgd29yayBjb3JyZWN0bHkgbm93LiBMZXQgbWUga25vdyB0aGUgcmVzdWx0
+Lg0KDQoJCQkJCVRoYW5rcy4NCgkJCQkJCUphcm9zbGF2DQoNCi0tIA0KSmFyb3NsYXYgS3lzZWxh
+IDxwZXJleEBwZXJleC5jej4NCkxpbnV4IFNvdW5kIE1haW50YWluZXI7IEFMU0EgUHJvamVjdDsg
+UmVkIEhhdCwgSW5jLg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
