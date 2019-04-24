@@ -1,56 +1,43 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Handle the error from
-	snd_usb_mixer_apply_create_quirk()
-Date: Wed, 24 Apr 2019 13:01:55 +0200
-Message-ID: <20190424110155.24931-1-tiwai@suse.de>
+From: Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: fix cast warning
+Date: Wed, 24 Apr 2019 13:41:14 +0200
+Message-ID: <20190424114114.27073-1-anders.roxell@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEEA1F8065B
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2019 13:01:57 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 18EA0AD94
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2019 11:01:57 +0000 (UTC)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The error from snd_usb_mixer_apply_create_quirk() is ignored in the
-current usb-audio driver code, which will continue the probing even
-after the error.  Let's take it more serious.
+When building bytcht_es8316 the following warning shows up:
 
-Fixes: 7b1eda223deb ("ALSA: usb-mixer: factor out quirks")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+../sound/soc/intel/boards/bytcht_es8316.c: In function ‘snd_byt_cht_es8316_mc_probe’:
+../sound/soc/intel/boards/bytcht_es8316.c:508:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+   quirk = (int)dmi_id->driver_data;
+           ^
+
+Rework to use uintptr_t instead of int.
+
+Fixes: a8d218f4fe81 ("ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- sound/usb/mixer.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 73d7dff425c1..c095d9751924 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -3490,7 +3490,9 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 	if (err < 0)
- 		goto _error;
- 
--	snd_usb_mixer_apply_create_quirk(mixer);
-+	err = snd_usb_mixer_apply_create_quirk(mixer);
-+	if (err < 0)
-+		goto _error;
- 
- 	err = snd_device_new(chip->card, SNDRV_DEV_CODEC, mixer, &dev_ops);
- 	if (err < 0)
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 38975827e276..68136ba1519e 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -505,7 +505,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	/* Check for BYTCR or other platform and setup quirks */
+ 	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
+ 	if (dmi_id) {
+-		quirk = (int)dmi_id->driver_data;
++		quirk = (uintptr_t)dmi_id->driver_data;
+ 	} else if (x86_match_cpu(baytrail_cpu_ids) &&
+ 	    mach->mach_params.acpi_ipc_irq_index == 0) {
+ 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
 -- 
-2.16.4
+2.20.1
