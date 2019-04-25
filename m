@@ -1,142 +1,81 @@
-From: Fletcher Woodruff <fletcherw@chromium.org>
-Subject: [PATCH v3 3/3] ASoC: rt5677: fall back to DT prop names on error
-Date: Thu, 25 Apr 2019 09:31:05 -0600
-Message-ID: <20190425153105.118799-2-fletcherw@chromium.org>
-References: <20190415194557.9182-2-fletcherw@chromium.org>
- <20190425153105.118799-1-fletcherw@chromium.org>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: Re: [PATCH 00/30] Update cros_ec_commands.h
+Date: Thu, 25 Apr 2019 18:11:47 +0200
+Message-ID: <0fad0c23-7939-606e-86e1-748dd1115b82@collabora.com>
+References: <20190424232918.243308-1-gwendal@chromium.org>
+ <20190425081232.GA14758@dell>
+ <aa1c0ab7-6491-69a8-936c-26460b78d6c2@collabora.com>
+ <CAPUE2ussoqWAP-1Hpa2mGq-23NuTh=Ai3dssiZYYiqLBDTCJwQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190425153105.118799-1-fletcherw@chromium.org>
+In-Reply-To: <CAPUE2ussoqWAP-1Hpa2mGq-23NuTh=Ai3dssiZYYiqLBDTCJwQ@mail.gmail.com>
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Fletcher Woodruff <fletcherw@chromium.org>, Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Gwendal Grignou <gwendal@chromium.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, linux-kernel <linux-kernel@vger.kernel.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The rt5677 driver uses ACPI-style property names to read from the
-device API. However, these do not match the property names in _DSD
-used on the Chromebook Pixel 2015, which are closer to the Device Tree
-style.  Unify the two functions for reading from the device API so that
-they try ACPI-style names first and fall back to the DT names on error.
+Hi,
 
-With this patch, plugging and unplugging the headphone jack switches
-between headphones and speakers automatically.
+cc'ing some ASOC reviewers.
 
-Signed-off-by: Fletcher Woodruff <fletcherw@chromium.org>
----
- sound/soc/codecs/rt5677.c | 74 +++++++++++++++++++--------------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+On 25/4/19 18:00, Gwendal Grignou wrote:
+> On Thu, Apr 25, 2019 at 4:19 AM Enric Balletbo i Serra
+> <enric.balletbo@collabora.com> wrote:
+>>
+>> Hi Gwendal, Lee
+>>
+>> On 25/4/19 10:12, Lee Jones wrote:
+>>> On Wed, 24 Apr 2019, Gwendal Grignou wrote:
+>>>
+>>>> The interface between CrosEC embedded controller and the host,
+>>>> described by cros_ec_commands.h, as diverged from what the embedded
+>>>> controller really support.
+>>>>
+>>>> The source of thruth is at
+>>>> https://chromium.googlesource.com/chromiumos/platform/ec/+/master/include/ec_commands.h
+>>>>
+>>>> That include file is converted to remove ACPI and Embedded only code.
+>>>>
+>>>> From now on, cros_ec_commands.h will be automatically generated from
+>>>> the file above, do not modify directly.
+>>>>
+>>>> Fell free to squash the commits below.
+>>>
+>>> This is going to need a bunch of Chromium reviews (and testing
+>>> ideally) before I can take this set.
+>>>
+>>
+>> I tested this patchset in different ways. With the full series applied I checked
+>> that didn't break any cros-ec driver on Kevin, Samus and Veyron devices. I also
+>> checked via userspace tool that I don't see any problem sending commands and
+>> finally I checked that applying one-by-one the patches didn't break the build on
+>> x86 and arm64, there is though, a problem,
+>>
+>> [PATCH 24/30] mfd: cros_ec: Update I2S API
+>>
+>> introduces a build problem because removes a struct that is currently used by
+>> the cros_ec_codec driver. I think that at the same time we should update that
+>> driver with the new struct name.
+> Sorry, I did not structure this patchset right. The i2s patch is available at
+> https://patchwork.kernel.org/patch/10877645/
+> 
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 6bff0df53c6c6b..38e99580f09acd 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4998,48 +4998,50 @@ static const struct acpi_device_id rt5677_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, rt5677_acpi_match);
- 
--static void rt5677_read_acpi_properties(struct rt5677_priv *rt5677,
-+static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
- 		struct device *dev)
- {
- 	u32 val;
- 
--	if (!device_property_read_u32(dev, "DCLK", &val))
--		rt5677->pdata.dmic2_clk_pin = val;
-+	rt5677->pdata.in1_diff =
-+		device_property_read_bool(dev, "IN1") ||
-+		device_property_read_bool(dev, "realtek,in1-differential");
- 
--	rt5677->pdata.in1_diff = device_property_read_bool(dev, "IN1");
--	rt5677->pdata.in2_diff = device_property_read_bool(dev, "IN2");
--	rt5677->pdata.lout1_diff = device_property_read_bool(dev, "OUT1");
--	rt5677->pdata.lout2_diff = device_property_read_bool(dev, "OUT2");
--	rt5677->pdata.lout3_diff = device_property_read_bool(dev, "OUT3");
-+	rt5677->pdata.in2_diff =
-+		device_property_read_bool(dev, "IN2") ||
-+		device_property_read_bool(dev, "realtek,in2-differential");
- 
--	device_property_read_u32(dev, "JD1", &rt5677->pdata.jd1_gpio);
--	device_property_read_u32(dev, "JD2", &rt5677->pdata.jd2_gpio);
--	device_property_read_u32(dev, "JD3", &rt5677->pdata.jd3_gpio);
--}
-+	rt5677->pdata.lout1_diff =
-+		device_property_read_bool(dev, "OUT1") ||
-+		device_property_read_bool(dev, "realtek,lout1-differential");
- 
--static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
--		struct device *dev)
--{
--	rt5677->pdata.in1_diff = device_property_read_bool(dev,
--			"realtek,in1-differential");
--	rt5677->pdata.in2_diff = device_property_read_bool(dev,
--			"realtek,in2-differential");
--	rt5677->pdata.lout1_diff = device_property_read_bool(dev,
--			"realtek,lout1-differential");
--	rt5677->pdata.lout2_diff = device_property_read_bool(dev,
--			"realtek,lout2-differential");
--	rt5677->pdata.lout3_diff = device_property_read_bool(dev,
--			"realtek,lout3-differential");
-+	rt5677->pdata.lout2_diff =
-+		device_property_read_bool(dev, "OUT2") ||
-+		device_property_read_bool(dev, "realtek,lout2-differential");
-+
-+	rt5677->pdata.lout3_diff =
-+		device_property_read_bool(dev, "OUT3") ||
-+		device_property_read_bool(dev, "realtek,lout3-differential");
- 
- 	device_property_read_u8_array(dev, "realtek,gpio-config",
--			rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
--
--	device_property_read_u32(dev, "realtek,jd1-gpio",
--			&rt5677->pdata.jd1_gpio);
--	device_property_read_u32(dev, "realtek,jd2-gpio",
--			&rt5677->pdata.jd2_gpio);
--	device_property_read_u32(dev, "realtek,jd3-gpio",
--			&rt5677->pdata.jd3_gpio);
-+				      rt5677->pdata.gpio_config,
-+				      RT5677_GPIO_NUM);
-+
-+	if (!device_property_read_u32(dev, "DCLK", &val) ||
-+	    !device_property_read_u32(dev, "realtek,dmic2_clk_pin", &val))
-+		rt5677->pdata.dmic2_clk_pin = val;
-+
-+	if (!device_property_read_u32(dev, "JD1", &val) ||
-+	    !device_property_read_u32(dev, "realtek,jd1-gpio", &val))
-+		rt5677->pdata.jd1_gpio = val;
-+
-+	if (!device_property_read_u32(dev, "JD2", &val) ||
-+	    !device_property_read_u32(dev, "realtek,jd2-gpio", &val))
-+		rt5677->pdata.jd2_gpio = val;
-+
-+	if (!device_property_read_u32(dev, "JD3", &val) ||
-+	    !device_property_read_u32(dev, "realtek,jd3-gpio", &val))
-+		rt5677->pdata.jd3_gpio = val;
- }
- 
- struct rt5677_irq_desc {
-@@ -5284,20 +5286,18 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 		match_id = of_match_device(rt5677_of_match, &i2c->dev);
- 		if (match_id)
- 			rt5677->type = (enum rt5677_type)match_id->data;
--
--		rt5677_read_device_properties(rt5677, &i2c->dev);
- 	} else if (ACPI_HANDLE(&i2c->dev)) {
- 		const struct acpi_device_id *acpi_id;
- 
- 		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
- 		if (acpi_id)
- 			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
--
--		rt5677_read_acpi_properties(rt5677, &i2c->dev);
- 	} else {
- 		return -EINVAL;
- 	}
- 
-+	rt5677_read_device_properties(rt5677, &i2c->dev);
-+
- 	/* pow-ldo2 and reset are optional. The codec pins may be statically
- 	 * connected on the board without gpios. If the gpio device property
- 	 * isn't specified, devm_gpiod_get_optional returns NULL.
--- 
-2.21.0.392.gf8f6787159e-goog
+I think would be better squash both patches, otherwise things like bisection
+would be a pain. The patch then touches two subsystems but won't break
+compilation, and is pretty simple, so I think should not be a problem go through
+i.e. the mfd tree.
+
+> Gwendal.
+>>
+>> Once this is fixed,
+>>
+>> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>
+>> for the full series.
+>>
+>> Thanks,
+>>  Enric
+>>
