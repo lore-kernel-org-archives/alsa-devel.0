@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: fix compilation
-	warning" to the asoc tree
-Date: Thu, 25 Apr 2019 20:26:18 +0100 (BST)
-Message-ID: <20190425192623.38523441D3B@finisterre.ee.mobilebroadband>
-References: <20190419201218.19821-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: fsl_sai: Add support for runtime pm" to
+	the asoc tree
+Date: Thu, 25 Apr 2019 20:26:26 +0100 (BST)
+Message-ID: <20190425192626.9A677441D3B@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B918EF89765
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:24 +0200 (CEST)
-In-Reply-To: <20190419201218.19821-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90B97F89723
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:32 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Paul Cercueil <paul@crapouillou.net>, hdegoede@redhat.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.de
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: fix compilation warning
+   ASoC: fsl_sai: Add support for runtime pm
 
 has been applied to the asoc tree at
 
@@ -55,57 +53,95 @@ to this mail.
 Thanks,
 Mark
 
->From 1fb1e93a1dc7c9673917a8081e144f48bde46495 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 19 Apr 2019 15:12:16 -0500
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: fix compilation warning
+>From 812ad463e0894d78e93ab8017e0edbe69038c55c Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Sun, 21 Apr 2019 19:39:09 +0000
+Subject: [PATCH] ASoC: fsl_sai: Add support for runtime pm
 
-Remove warning below, align with other machine drivers.
+Basically the same actions as for system PM, so make use
+of pm_runtime_force_suspend/pm_runtime_force_resume.
 
-bytcht_es8316.c:508:11: warning: cast from pointer to integer of
-different size [-Wpointer-to-int-cast]
-
-   quirk = (int)dmi_id->driver_data;
-           ^
-Fixes: a8d218f4fe811 ('ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 38975827e276..e8c585ffd04d 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -61,7 +61,7 @@ enum {
- #define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
- #define BYT_CHT_ES8316_JD_INVERTED		BIT(18)
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 7549b74e464e..26c27dc0781f 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -9,6 +9,7 @@
+ #include <linux/dmaengine.h>
+ #include <linux/module.h>
+ #include <linux/of_address.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
+@@ -901,6 +902,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
  
--static int quirk;
-+static unsigned long quirk;
+ 	platform_set_drvdata(pdev, sai);
  
- static int quirk_override = -1;
- module_param_named(quirk, quirk_override, int, 0444);
-@@ -505,7 +505,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	/* Check for BYTCR or other platform and setup quirks */
- 	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
- 	if (dmi_id) {
--		quirk = (int)dmi_id->driver_data;
-+		quirk = (unsigned long)dmi_id->driver_data;
- 	} else if (x86_match_cpu(baytrail_cpu_ids) &&
- 	    mach->mach_params.acpi_ipc_irq_index == 0) {
- 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
-@@ -517,7 +517,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 			BYT_CHT_ES8316_MONO_SPEAKER;
- 	}
- 	if (quirk_override != -1) {
--		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n", quirk,
-+		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n",
-+			 (unsigned int)quirk,
- 			 quirk_override);
- 		quirk = quirk_override;
- 	}
++	pm_runtime_enable(&pdev->dev);
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
+ 			&fsl_sai_dai, 1);
+ 	if (ret)
+@@ -912,6 +915,11 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ }
+ 
++static int fsl_sai_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++}
++
+ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,vf610-sai", },
+ 	{ .compatible = "fsl,imx6sx-sai", },
+@@ -920,8 +928,8 @@ static const struct of_device_id fsl_sai_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, fsl_sai_ids);
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int fsl_sai_suspend(struct device *dev)
++#ifdef CONFIG_PM
++static int fsl_sai_runtime_suspend(struct device *dev)
+ {
+ 	struct fsl_sai *sai = dev_get_drvdata(dev);
+ 
+@@ -931,7 +939,7 @@ static int fsl_sai_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int fsl_sai_resume(struct device *dev)
++static int fsl_sai_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_sai *sai = dev_get_drvdata(dev);
+ 
+@@ -943,14 +951,18 @@ static int fsl_sai_resume(struct device *dev)
+ 	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
+ 	return regcache_sync(sai->regmap);
+ }
+-#endif /* CONFIG_PM_SLEEP */
++#endif /* CONFIG_PM */
+ 
+ static const struct dev_pm_ops fsl_sai_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(fsl_sai_suspend, fsl_sai_resume)
++	SET_RUNTIME_PM_OPS(fsl_sai_runtime_suspend,
++			   fsl_sai_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static struct platform_driver fsl_sai_driver = {
+ 	.probe = fsl_sai_probe,
++	.remove = fsl_sai_remove,
+ 	.driver = {
+ 		.name = "fsl-sai",
+ 		.pm = &fsl_sai_pm_ops,
 -- 
 2.20.1
