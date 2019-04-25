@@ -1,18 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: simple-card: Add pin-switches property" to the asoc tree
+Subject: Applied "ASoC: fsl_sai: Update is_slave_mode with correct value" to
+ the asoc tree
 Date: Thu, 25 Apr 2019 20:26:27 +0100 (BST)
-Message-ID: <20190425192627.AC94C441D3D@finisterre.ee.mobilebroadband>
-References: <20190420104553.5071-1-paul@crapouillou.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190420104553.5071-1-paul@crapouillou.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, od@zcrc.me, Rob Herring <robh+dt@kernel.org>
+Message-ID: <20190425192627.28178441D3C@finisterre.ee.mobilebroadband>
+References: <20190421193853.10188-2-daniel.baluta@nxp.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20190421193853.10188-2-daniel.baluta@nxp.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, "S.j. Wang" <shengjiu.wang@nxp.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, perex@perex.cz, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: doc: simple-card: Add pin-switches property
+   ASoC: fsl_sai: Update is_slave_mode with correct value
 
 has been applied to the asoc tree at
 
@@ -37,32 +47,46 @@ to this mail.
 Thanks,
 Mark
 
->From 6b903f9bdd98093a2c1ea79df07e86decfda3b04 Mon Sep 17 00:00:00 2001
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Sat, 20 Apr 2019 12:45:51 +0200
-Subject: [PATCH] ASoC: doc: simple-card: Add pin-switches property
+>From ddb351145a967ee791a0fb0156852ec2fcb746ba Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Sun, 21 Apr 2019 19:39:08 +0000
+Subject: [PATCH] ASoC: fsl_sai: Update is_slave_mode with correct value
 
-The simple-audio-card,pin-switches property can contain the list of
-widget names for which pin switches must be created.
+is_slave_mode defaults to false because sai structure
+that contains it is kzalloc'ed.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Anyhow, if we decide to set the following configuration
+SAI slave -> SAI master, is_slave_mode will remain set on true
+although SAI being master it should be set to false.
+
+Fix this by updating is_slave_mode for each call of
+fsl_sai_set_dai_fmt.
+
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/simple-card.txt | 2 ++
+ sound/soc/fsl/fsl_sai.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 4629c8f8a6b6..79954cd6e37b 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -24,6 +24,8 @@ Optional properties:
- 					  a microphone is attached.
- - simple-audio-card,aux-devs		: List of phandles pointing to auxiliary devices, such
- 					  as amplifiers, to be added to the sound card.
-+- simple-audio-card,pin-switches	: List of strings containing the widget names for
-+					  which pin switches must be created.
- 
- Optional subnodes:
- 
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index db9e0872f73d..7549b74e464e 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -268,12 +268,14 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
+ 		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
++		sai->is_slave_mode = false;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		sai->is_slave_mode = true;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+ 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
++		sai->is_slave_mode = false;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+ 		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
 -- 
 2.20.1
