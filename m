@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: rt5682: initialize mutex before
-	using" to the asoc tree
-Date: Thu, 25 Apr 2019 20:24:34 +0100 (BST)
-Message-ID: <20190425192434.C3746441D3E@finisterre.ee.mobilebroadband>
-References: <20190419205349.23200-1-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: align quirk
+	override handling" to the asoc tree
+Date: Thu, 25 Apr 2019 20:26:11 +0100 (BST)
+Message-ID: <20190425192612.00F48441D3B@finisterre.ee.mobilebroadband>
+References: <20190419201218.19821-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0F72F89737
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:24:47 +0200 (CEST)
-In-Reply-To: <20190419205349.23200-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 781F8F8065B
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:13 +0200 (CEST)
+In-Reply-To: <20190419201218.19821-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Xun Zhang <xun2.zhang@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard liao <yung-chuan.liao@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, hdegoede@redhat.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: rt5682: initialize mutex before using
+   ASoC: Intel: bytcr_rt5651: align quirk override handling
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,41 +55,45 @@ to this mail.
 Thanks,
 Mark
 
->From c46ab1510de1d3dd9871ae36fbec0da3e0d2d6c5 Mon Sep 17 00:00:00 2001
-From: Xun Zhang <xun2.zhang@intel.com>
-Date: Fri, 19 Apr 2019 15:53:49 -0500
-Subject: [PATCH] ASoC: codecs: rt5682: initialize mutex before using
+>From fb45befa7ea07399372266f09e562b26db5693c9 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 19 Apr 2019 15:12:18 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: align quirk override handling
 
-In rt5682 codec driver, a mutex called "calibrate_mutex" is used
-in rt5682_calibrate() before initialization, which causes warning
-in lock debug. Move the initialization before the usage of mutex.
+As discussed on alsa-devel, a zero value is useful to get rid of all
+quirks. Set default to -1 and align types as done in other machine
+drivers.
 
-Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 86a7fa31c294..505fb3d7b1c5 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2588,6 +2588,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 21c6675abd19..ca657c3e5726 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -102,8 +102,8 @@ static const struct acpi_gpio_mapping *byt_rt5651_gpios;
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
+ 					BYT_RT5651_IN2_MAP;
  
- 	rt5682_reset(rt5682->regmap);
+-static unsigned int quirk_override;
+-module_param_named(quirk, quirk_override, uint, 0444);
++static int quirk_override = -1;
++module_param_named(quirk, quirk_override, int, 0444);
+ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
  
-+	mutex_init(&rt5682->calibrate_mutex);
- 	rt5682_calibrate(rt5682);
+ static void log_quirks(struct device *dev)
+@@ -987,7 +987,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	/* check quirks before creating card */
+ 	dmi_check_system(byt_rt5651_quirk_table);
  
- 	ret = regmap_multi_reg_write(rt5682->regmap, patch_list,
-@@ -2654,7 +2655,6 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 	INIT_DELAYED_WORK(&rt5682->jd_check_work,
- 				rt5682_jd_check_handler);
- 
--	mutex_init(&rt5682->calibrate_mutex);
- 
- 	if (i2c->irq) {
- 		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
+-	if (quirk_override) {
++	if (quirk_override != -1) {
+ 		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
+ 			 (unsigned int)byt_rt5651_quirk, quirk_override);
+ 		byt_rt5651_quirk = quirk_override;
 -- 
 2.20.1
