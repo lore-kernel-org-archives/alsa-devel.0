@@ -1,52 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/30] Update cros_ec_commands.h
-Date: Thu, 25 Apr 2019 18:40:36 +0100
-Message-ID: <20190425174036.GB22575@sirena.org.uk>
-References: <20190424232918.243308-1-gwendal@chromium.org>
- <20190425081232.GA14758@dell>
- <aa1c0ab7-6491-69a8-936c-26460b78d6c2@collabora.com>
- <CAPUE2ussoqWAP-1Hpa2mGq-23NuTh=Ai3dssiZYYiqLBDTCJwQ@mail.gmail.com>
- <0fad0c23-7939-606e-86e1-748dd1115b82@collabora.com>
- <CAPUE2uu7npyi0jgHPLCD-3DWkiKuhRidBgyiVK6O1TesHLqkEg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: simple-card-utils: add
+ asoc_simple_card_of_parse_pin_switches()
+Date: Thu, 25 Apr 2019 19:49:41 +0100
+Message-ID: <20190425184941.GH23183@sirena.org.uk>
+References: <20190420104553.5071-1-paul@crapouillou.net>
+ <20190420104553.5071-2-paul@crapouillou.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p4qYPpj5QlsIQJ0K"
+        protocol="application/pgp-signature"; boundary="uAgJxtfIS94j9H4T"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAPUE2uu7npyi0jgHPLCD-3DWkiKuhRidBgyiVK6O1TesHLqkEg@mail.gmail.com>
+In-Reply-To: <20190420104553.5071-2-paul@crapouillou.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>, Lee Jones <lee.jones@linaro.org>, Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, linux-kernel <linux-kernel@vger.kernel.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, od@zcrc.me
 List-Id: alsa-devel@alsa-project.org
 
 
---p4qYPpj5QlsIQJ0K
+--uAgJxtfIS94j9H4T
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2019 at 09:38:09AM -0700, Gwendal Grignou wrote:
+On Sat, Apr 20, 2019 at 12:45:52PM +0200, Paul Cercueil wrote:
+> This function is a helper that permits to create pin switch controls for
+> a list of widgets whose names are listed in the PREFIX "pin-switches"
+> devicetree property.
 
-> I squashed both patches in [PATCH v2 24/30] mfd: cros_ec: Update I2S API
+This doesn't apply against current code, please check and resend.
 
-I think I just deleted that patch unread since it was a single patch
-=66rom the middle of a patch series with no context and a subject line
-that made it look misdirected...  please ensure that you send at least a
-cover letter to people so they have context for individual patches.
-
---p4qYPpj5QlsIQJ0K
+--uAgJxtfIS94j9H4T
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzB8RMACgkQJNaLcl1U
-h9Dwpwf/e1ueU0pX2M67i6vB+8g41dJzJUrNnzGeg2qCew30UUEZYbidwJefYVTV
-nHd4fYSj7K2sZsEJvsk4sNngfXhGTfdy2x4wK1W/GbFT+tB4JtMwr7AAuhXYS0GZ
-L9iqbuegETbeDQwMYJ9Xl+hEt0mD/pL5OCQD4FvZDdlv7PP1R4oFtai3wZseaaIB
-+a0eyx42vObhJ35CMKQkJcDk+j+8NFUh7eVjHC20IKdGFLoFsgZWBSp05UIfGG3V
-o/OBIp3doJHDREnn3SPQZB8ZlNZhuxzLnS3LpV9lBVoGhP8Txnq6kSzMj+w68RV1
-N9CaGPZzpMdgX2Ewn1ckkR8jOVcfpA==
-=nqIp
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzCAUQACgkQJNaLcl1U
+h9DiJgf+Lw9YawQDyW9xcOtpzvnRSd2TkTYKSlXJ08xv7bGfnLyd9G4xCALeDAfj
+C+XGV3koinjACyfqnENByqcTFj8aUtft36DW/keK6FjA4PY/cM7tts6yK16mzgO6
+Ju7uJgtu3yhaK3jzpnIaTbmKHwrnG7jd/3ZchS2aIeSITVGIs8d+Bbg2gPYdEEfR
+2OS1HzeHzCICuSPT+bSDBWGYhcLNm1TdaHuAgxO0lsLCDMnNuAL8JDc/m+fcy8V7
+j8g4Xacw6d2BFxhSh0xWzmwBI2h8yMWXtwGxoRXh5ur8bOwszbvDzM1qu34r38oa
+KoYqqvaISW0G3kNJQ8rLIAPW9MXa5Q==
+=o0p1
 -----END PGP SIGNATURE-----
 
---p4qYPpj5QlsIQJ0K--
+--uAgJxtfIS94j9H4T--
