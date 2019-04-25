@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: align quirk
+Subject: Applied "ASoC: Intel: bytcr_rt5640: align quirk
 	override handling" to the asoc tree
-Date: Thu, 25 Apr 2019 20:26:11 +0100 (BST)
-Message-ID: <20190425192612.00F48441D3B@finisterre.ee.mobilebroadband>
-References: <20190419201218.19821-4-pierre-louis.bossart@linux.intel.com>
+Date: Thu, 25 Apr 2019 20:26:15 +0100 (BST)
+Message-ID: <20190425192615.29E88441D3B@finisterre.ee.mobilebroadband>
+References: <20190419201218.19821-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 781F8F8065B
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:13 +0200 (CEST)
-In-Reply-To: <20190419201218.19821-4-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7F63F80C41
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:16 +0200 (CEST)
+In-Reply-To: <20190419201218.19821-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: align quirk override handling
+   ASoC: Intel: bytcr_rt5640: align quirk override handling
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From fb45befa7ea07399372266f09e562b26db5693c9 Mon Sep 17 00:00:00 2001
+>From 2fb2a19af17ac6da3c9b5c6ea4c51b7353290587 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 19 Apr 2019 15:12:18 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: align quirk override handling
+Date: Fri, 19 Apr 2019 15:12:17 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: align quirk override handling
 
 As discussed on alsa-devel, a zero value is useful to get rid of all
 quirks. Set default to -1 and align types as done in other machine
@@ -68,17 +68,17 @@ Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 6 +++---
+ sound/soc/intel/boards/bytcr_rt5640.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 21c6675abd19..ca657c3e5726 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -102,8 +102,8 @@ static const struct acpi_gpio_mapping *byt_rt5651_gpios;
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
- 					BYT_RT5651_IN2_MAP;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index f9175cf6747e..dc22df9a99fb 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -98,8 +98,8 @@ struct byt_rt5640_private {
+ static bool is_bytcr;
  
+ static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
 -static unsigned int quirk_override;
 -module_param_named(quirk, quirk_override, uint, 0444);
 +static int quirk_override = -1;
@@ -86,14 +86,14 @@ index 21c6675abd19..ca657c3e5726 100644
  MODULE_PARM_DESC(quirk, "Board-specific quirk override");
  
  static void log_quirks(struct device *dev)
-@@ -987,7 +987,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5651_quirk_table);
- 
+@@ -1254,7 +1254,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	dmi_id = dmi_first_match(byt_rt5640_quirk_table);
+ 	if (dmi_id)
+ 		byt_rt5640_quirk = (unsigned long)dmi_id->driver_data;
 -	if (quirk_override) {
 +	if (quirk_override != -1) {
  		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
- 			 (unsigned int)byt_rt5651_quirk, quirk_override);
- 		byt_rt5651_quirk = quirk_override;
+ 			 (unsigned int)byt_rt5640_quirk, quirk_override);
+ 		byt_rt5640_quirk = quirk_override;
 -- 
 2.20.1
