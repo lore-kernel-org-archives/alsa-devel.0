@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: align quirk
-	override handling" to the asoc tree
-Date: Thu, 25 Apr 2019 20:26:15 +0100 (BST)
-Message-ID: <20190425192615.29E88441D3B@finisterre.ee.mobilebroadband>
-References: <20190419201218.19821-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcht_es8316: fix compilation
+	warning" to the asoc tree
+Date: Thu, 25 Apr 2019 20:26:18 +0100 (BST)
+Message-ID: <20190425192623.38523441D3B@finisterre.ee.mobilebroadband>
+References: <20190419201218.19821-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7F63F80C41
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:16 +0200 (CEST)
-In-Reply-To: <20190419201218.19821-3-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B918EF89765
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:24 +0200 (CEST)
+In-Reply-To: <20190419201218.19821-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, hdegoede@redhat.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Paul Cercueil <paul@crapouillou.net>, hdegoede@redhat.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: align quirk override handling
+   ASoC: Intel: bytcht_es8316: fix compilation warning
 
 has been applied to the asoc tree at
 
@@ -55,45 +55,57 @@ to this mail.
 Thanks,
 Mark
 
->From 2fb2a19af17ac6da3c9b5c6ea4c51b7353290587 Mon Sep 17 00:00:00 2001
+>From 1fb1e93a1dc7c9673917a8081e144f48bde46495 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 19 Apr 2019 15:12:17 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: align quirk override handling
+Date: Fri, 19 Apr 2019 15:12:16 -0500
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: fix compilation warning
 
-As discussed on alsa-devel, a zero value is useful to get rid of all
-quirks. Set default to -1 and align types as done in other machine
-drivers.
+Remove warning below, align with other machine drivers.
 
+bytcht_es8316.c:508:11: warning: cast from pointer to integer of
+different size [-Wpointer-to-int-cast]
+
+   quirk = (int)dmi_id->driver_data;
+           ^
+Fixes: a8d218f4fe811 ('ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index f9175cf6747e..dc22df9a99fb 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -98,8 +98,8 @@ struct byt_rt5640_private {
- static bool is_bytcr;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 38975827e276..e8c585ffd04d 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -61,7 +61,7 @@ enum {
+ #define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
+ #define BYT_CHT_ES8316_JD_INVERTED		BIT(18)
  
- static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
--static unsigned int quirk_override;
--module_param_named(quirk, quirk_override, uint, 0444);
-+static int quirk_override = -1;
-+module_param_named(quirk, quirk_override, int, 0444);
- MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+-static int quirk;
++static unsigned long quirk;
  
- static void log_quirks(struct device *dev)
-@@ -1254,7 +1254,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	dmi_id = dmi_first_match(byt_rt5640_quirk_table);
- 	if (dmi_id)
- 		byt_rt5640_quirk = (unsigned long)dmi_id->driver_data;
--	if (quirk_override) {
-+	if (quirk_override != -1) {
- 		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
- 			 (unsigned int)byt_rt5640_quirk, quirk_override);
- 		byt_rt5640_quirk = quirk_override;
+ static int quirk_override = -1;
+ module_param_named(quirk, quirk_override, int, 0444);
+@@ -505,7 +505,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	/* Check for BYTCR or other platform and setup quirks */
+ 	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
+ 	if (dmi_id) {
+-		quirk = (int)dmi_id->driver_data;
++		quirk = (unsigned long)dmi_id->driver_data;
+ 	} else if (x86_match_cpu(baytrail_cpu_ids) &&
+ 	    mach->mach_params.acpi_ipc_irq_index == 0) {
+ 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
+@@ -517,7 +517,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 			BYT_CHT_ES8316_MONO_SPEAKER;
+ 	}
+ 	if (quirk_override != -1) {
+-		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n", quirk,
++		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n",
++			 (unsigned int)quirk,
+ 			 quirk_override);
+ 		quirk = quirk_override;
+ 	}
 -- 
 2.20.1
