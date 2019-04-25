@@ -1,32 +1,56 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: bytcht_es8316: fix cast warning
-Date: Wed, 24 Apr 2019 16:13:34 -0700
-Message-ID: <13969360-f863-e93e-9d48-d27c0034795a@linux.intel.com>
-References: <20190424114114.27073-1-anders.roxell@linaro.org>
+From: Logesh Kolandavel <logesh.kolandavel@timesys.com>
+Subject: [PATCH] ASoC: da7213: fix DAI_CLK_EN register bit overwrite
+Date: Thu, 25 Apr 2019 11:12:49 +0530
+Message-ID: <20190425054249.5675-1-logesh.kolandavel@timesys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190424114114.27073-1-anders.roxell@linaro.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Anders Roxell <anders.roxell@linaro.org>, liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: support.opensource@diasemi.com
+Cc: Adam.Thomson.Opensource@diasemi.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, logesh.kolandavel@timesys.com
 List-Id: alsa-devel@alsa-project.org
 
-On 4/24/19 6:41 AM, Anders Roxell wrote:
-> When building bytcht_es8316 the following warning shows up:
-> 
-> ../sound/soc/intel/boards/bytcht_es8316.c: In function ‘snd_byt_cht_es8316_mc_probe’:
-> ../sound/soc/intel/boards/bytcht_es8316.c:508:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->     quirk = (int)dmi_id->driver_data;
->             ^
-> 
-> Rework to use uintptr_t instead of int.
-> 
-> Fixes: a8d218f4fe81 ("ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II")
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+From: Logesh <logesh.kolandavel@timesys.com>
 
-I submitted an alternate fix last Friday to alsa-devel, along with 2 
-additional patches to handle the quirk_override in the same way between 
-machine drivers.
+If the da7213 codec is configured as Master with the DAPM power down
+delay time set, 'snd_soc_component_write' function overwrites the
+DAI_CLK_EN bit of DAI_CLK_MODE register which leads to audio play
+only once until it re-initialize after codec power up.
+
+Signed-off-by: Logesh <logesh.kolandavel@timesys.com>
+---
+ sound/soc/codecs/da7213.c | 4 +++-
+ sound/soc/codecs/da7213.h | 2 ++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 92d006a5283e..306e01684bda 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1305,7 +1305,9 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* By default only 64 BCLK per WCLK is supported */
+ 	dai_clk_mode |= DA7213_DAI_BCLKS_PER_WCLK_64;
+ 
+-	snd_soc_component_write(component, DA7213_DAI_CLK_MODE, dai_clk_mode);
++	snd_soc_component_update_bits(component, DA7213_DAI_CLK_MODE,
++			    DA7213_DAI_CLK_POL_MASK | DA7213_DAI_WCLK_POL_MASK,
++			    dai_clk_mode);
+ 	snd_soc_component_update_bits(component, DA7213_DAI_CTRL, DA7213_DAI_FORMAT_MASK,
+ 			    dai_ctrl);
+ 	snd_soc_component_write(component, DA7213_DAI_OFFSET, dai_offset);
+diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
+index 5a78dba1dcb5..9d31efc3cfe5 100644
+--- a/sound/soc/codecs/da7213.h
++++ b/sound/soc/codecs/da7213.h
+@@ -181,7 +181,9 @@
+ #define DA7213_DAI_BCLKS_PER_WCLK_256				(0x3 << 0)
+ #define DA7213_DAI_BCLKS_PER_WCLK_MASK				(0x3 << 0)
+ #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
++#define DA7213_DAI_CLK_POL_MASK					(0x1 << 2)
+ #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
++#define DA7213_DAI_WCLK_POL_MASK				(0x1 << 3)
+ #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
+ 
+ /* DA7213_DAI_CTRL = 0x29 */
+-- 
+2.21.0
