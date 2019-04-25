@@ -1,33 +1,40 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: return the get_irq error" to the asoc tree
-Date: Thu, 25 Apr 2019 20:24:35 +0100 (BST)
-Message-ID: <20190425192435.5730D441D3B@finisterre.ee.mobilebroadband>
-References: <1556119724-9873-1-git-send-email-fabien.dessenne@st.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: align quirk
+	override handling" to the asoc tree
+Date: Thu, 25 Apr 2019 20:24:00 +0100 (BST)
+Message-ID: <20190425192400.83A9B441D3B@finisterre.ee.mobilebroadband>
+References: <20190419201218.19821-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1556119724-9873-1-git-send-email-fabien.dessenne@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Fabien Dessenne <fabien.dessenne@st.com>
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Alexandre@sirena.org.uk, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E01C7F80C41
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:24:05 +0200 (CEST)
+In-Reply-To: <20190419201218.19821-4-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, hdegoede@redhat.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: return the get_irq error
+   ASoC: Intel: bytcr_rt5651: align quirk override handling
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -48,35 +55,45 @@ to this mail.
 Thanks,
 Mark
 
->From 0bbf4084e0cfbbbff8673f3b9867778d5d4b1d6f Mon Sep 17 00:00:00 2001
-From: Fabien Dessenne <fabien.dessenne@st.com>
-Date: Wed, 24 Apr 2019 17:28:44 +0200
-Subject: [PATCH] ASoC: stm32: i2s: return the get_irq error
+>From fb45befa7ea07399372266f09e562b26db5693c9 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 19 Apr 2019 15:12:18 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: align quirk override handling
 
-During probe, return the "get_irq" error value instead of -ENOENT. This
-allows the driver to be deferred probed if needed.
+As discussed on alsa-devel, a zero value is useful to get rid of all
+quirks. Set default to -1 and align types as done in other machine
+drivers.
 
-Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 8968458eec62..e707d28cb203 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -845,8 +845,9 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
- 	/* Get irqs */
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
--		return -ENOENT;
-+		if (irq != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-+		return irq;
- 	}
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 21c6675abd19..ca657c3e5726 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -102,8 +102,8 @@ static const struct acpi_gpio_mapping *byt_rt5651_gpios;
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
+ 					BYT_RT5651_IN2_MAP;
  
- 	ret = devm_request_irq(&pdev->dev, irq, stm32_i2s_isr, IRQF_ONESHOT,
+-static unsigned int quirk_override;
+-module_param_named(quirk, quirk_override, uint, 0444);
++static int quirk_override = -1;
++module_param_named(quirk, quirk_override, int, 0444);
+ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+ 
+ static void log_quirks(struct device *dev)
+@@ -987,7 +987,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	/* check quirks before creating card */
+ 	dmi_check_system(byt_rt5651_quirk_table);
+ 
+-	if (quirk_override) {
++	if (quirk_override != -1) {
+ 		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
+ 			 (unsigned int)byt_rt5651_quirk, quirk_override);
+ 		byt_rt5651_quirk = quirk_override;
 -- 
 2.20.1
