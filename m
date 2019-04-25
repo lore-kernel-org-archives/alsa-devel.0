@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: rt5682: initialize mutex before
-	using" to the asoc tree
-Date: Thu, 25 Apr 2019 20:26:29 +0100 (BST)
-Message-ID: <20190425192629.430E5441D41@finisterre.ee.mobilebroadband>
-References: <20190419205349.23200-1-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "spi: AD ASoC: declare missing of table" to
+	the spi tree
+Date: Thu, 25 Apr 2019 20:26:37 +0100 (BST)
+Message-ID: <20190425192637.B0C56441D3B@finisterre.ee.mobilebroadband>
+References: <1555960353-8836-1-git-send-email-dagmcr@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 499A9F89769
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:36 +0200 (CEST)
-In-Reply-To: <20190419205349.23200-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A51F6F8976F
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:26:44 +0200 (CEST)
+In-Reply-To: <1555960353-8836-1-git-send-email-dagmcr@gmail.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Xun Zhang <xun2.zhang@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.com, lgirdwood@gmail.com, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, dagmcr@gmail.com, Javier Martinez Canillas <javier@dowhile0.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: rt5682: initialize mutex before using
+   spi: AD ASoC: declare missing of table
 
-has been applied to the asoc tree at
+has been applied to the spi tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,41 +54,70 @@ to this mail.
 Thanks,
 Mark
 
->From c46ab1510de1d3dd9871ae36fbec0da3e0d2d6c5 Mon Sep 17 00:00:00 2001
-From: Xun Zhang <xun2.zhang@intel.com>
-Date: Fri, 19 Apr 2019 15:53:49 -0500
-Subject: [PATCH] ASoC: codecs: rt5682: initialize mutex before using
+>From 89847da2e1dde3d1d077a23a2b6ebb8060778066 Mon Sep 17 00:00:00 2001
+From: Daniel Gomez <dagmcr@gmail.com>
+Date: Mon, 22 Apr 2019 21:12:33 +0200
+Subject: [PATCH] spi: AD ASoC: declare missing of table
 
-In rt5682 codec driver, a mutex called "calibrate_mutex" is used
-in rt5682_calibrate() before initialization, which causes warning
-in lock debug. Move the initialization before the usage of mutex.
+Add missing <of_device_id> table for SPI driver relying on SPI
+device match since compatible is in a DT binding or in a DTS.
 
-Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Before this patch:
+modinfo sound/soc/codecs/snd-soc-adau1977-spi.ko | grep alias
+alias:          spi:adau1979
+alias:          spi:adau1978
+alias:          spi:adau1977
+
+After this patch:
+modinfo sound/soc/codecs/snd-soc-adau1977-spi.ko | grep alias
+alias:          of:N*T*Cadi,adau1979C*
+alias:          of:N*T*Cadi,adau1979
+alias:          of:N*T*Cadi,adau1978C*
+alias:          of:N*T*Cadi,adau1978
+alias:          of:N*T*Cadi,adau1977C*
+alias:          of:N*T*Cadi,adau1977
+alias:          spi:adau1979
+alias:          spi:adau1978
+alias:          spi:adau1977
+
+Reported-by: Javier Martinez Canillas <javier@dowhile0.org>
+Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/adau1977-spi.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 86a7fa31c294..505fb3d7b1c5 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2588,6 +2588,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+diff --git a/sound/soc/codecs/adau1977-spi.c b/sound/soc/codecs/adau1977-spi.c
+index 84ffbde9583f..2baf61567b59 100644
+--- a/sound/soc/codecs/adau1977-spi.c
++++ b/sound/soc/codecs/adau1977-spi.c
+@@ -10,6 +10,8 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/spi/spi.h>
+ #include <sound/soc.h>
  
- 	rt5682_reset(rt5682->regmap);
+@@ -54,9 +56,18 @@ static const struct spi_device_id adau1977_spi_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, adau1977_spi_ids);
  
-+	mutex_init(&rt5682->calibrate_mutex);
- 	rt5682_calibrate(rt5682);
- 
- 	ret = regmap_multi_reg_write(rt5682->regmap, patch_list,
-@@ -2654,7 +2655,6 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 	INIT_DELAYED_WORK(&rt5682->jd_check_work,
- 				rt5682_jd_check_handler);
- 
--	mutex_init(&rt5682->calibrate_mutex);
- 
- 	if (i2c->irq) {
- 		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
++static const struct of_device_id adau1977_spi_of_match[] = {
++        { .compatible = "adi,adau1977" },
++        { .compatible = "adi,adau1978" },
++        { .compatible = "adi,adau1979" },
++        { },
++};
++MODULE_DEVICE_TABLE(of, adau1977_spi_of_match);
++
+ static struct spi_driver adau1977_spi_driver = {
+ 	.driver = {
+ 		.name = "adau1977",
++		.of_match_table = of_match_ptr(adau1977_spi_of_match),
+ 	},
+ 	.probe = adau1977_spi_probe,
+ 	.id_table = adau1977_spi_ids,
 -- 
 2.20.1
