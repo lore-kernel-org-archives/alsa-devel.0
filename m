@@ -1,46 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: simple-card-utils: add
- asoc_simple_card_of_parse_pin_switches()
-Date: Thu, 25 Apr 2019 19:49:41 +0100
-Message-ID: <20190425184941.GH23183@sirena.org.uk>
-References: <20190420104553.5071-1-paul@crapouillou.net>
- <20190420104553.5071-2-paul@crapouillou.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uAgJxtfIS94j9H4T"
+Subject: Applied "dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer support" to the asoc tree
+Date: Thu, 25 Apr 2019 20:24:34 +0100 (BST)
+Message-ID: <20190425192434.368FD441D3C@finisterre.ee.mobilebroadband>
+References: <fd223d1dcf5be1f83863e881fa3db931b5c84601.1555917711.git.baolin.wang@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190420104553.5071-2-paul@crapouillou.net>
+In-Reply-To: <fd223d1dcf5be1f83863e881fa3db931b5c84601.1555917711.git.baolin.wang@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, od@zcrc.me
+Cc: alsa-devel@alsa-project.org, baolin.wang@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, mark.rutland@arm.com, orsonzhai@gmail.com, perex@perex.cz, robh+dt@kernel.org, tiwai@suse.com, zhang.lyra@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---uAgJxtfIS94j9H4T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer support
 
-On Sat, Apr 20, 2019 at 12:45:52PM +0200, Paul Cercueil wrote:
-> This function is a helper that permits to create pin switch controls for
-> a list of widgets whose names are listed in the PREFIX "pin-switches"
-> devicetree property.
+has been applied to the asoc tree at
 
-This doesn't apply against current code, please check and resend.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
---uAgJxtfIS94j9H4T
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzCAUQACgkQJNaLcl1U
-h9DiJgf+Lw9YawQDyW9xcOtpzvnRSd2TkTYKSlXJ08xv7bGfnLyd9G4xCALeDAfj
-C+XGV3koinjACyfqnENByqcTFj8aUtft36DW/keK6FjA4PY/cM7tts6yK16mzgO6
-Ju7uJgtu3yhaK3jzpnIaTbmKHwrnG7jd/3ZchS2aIeSITVGIs8d+Bbg2gPYdEEfR
-2OS1HzeHzCICuSPT+bSDBWGYhcLNm1TdaHuAgxO0lsLCDMnNuAL8JDc/m+fcy8V7
-j8g4Xacw6d2BFxhSh0xWzmwBI2h8yMWXtwGxoRXh5ur8bOwszbvDzM1qu34r38oa
-KoYqqvaISW0G3kNJQ8rLIAPW9MXa5Q==
-=o0p1
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---uAgJxtfIS94j9H4T--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c634d3ffc6b2c3b15ea79ffe0a761ce08b4da71a Mon Sep 17 00:00:00 2001
+From: Baolin Wang <baolin.wang@linaro.org>
+Date: Tue, 23 Apr 2019 10:26:21 +0800
+Subject: [PATCH] dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer
+ support
+
+On Spreadtrum platform, the audio subsystem will use the multi-channel
+data transfer controller to transfer sound stream between audio subsystem
+and other AP/CP subsystem.
+
+It can support 10 DAC channel and 10 ADC channel, and each channel has
+512 bytes depth data fifo. Moreover each channel can be used DMA mode
+or interrupt mode to transfer data.
+
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/sprd-mcdt.txt   | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/sprd-mcdt.txt b/Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+new file mode 100644
+index 000000000000..274ba0acbfd6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+@@ -0,0 +1,19 @@
++Spreadtrum Multi-Channel Data Transfer Binding
++
++The Multi-channel data transfer controller is used for sound stream
++transmission between audio subsystem and other AP/CP subsystem. It
++supports 10 DAC channel and 10 ADC channel, and each channel can be
++configured with DMA mode or interrupt mode.
++
++Required properties:
++- compatible: Should be "sprd,sc9860-mcdt".
++- reg: Should contain registers address and length.
++- interrupts: Should contain one interrupt shared by all channel.
++
++Example:
++
++mcdt@41490000 {
++	compatible = "sprd,sc9860-mcdt";
++	reg = <0 0x41490000 0 0x170>;
++	interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
++};
+-- 
+2.20.1
