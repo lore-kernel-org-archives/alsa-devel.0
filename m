@@ -1,40 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: fix compilation
-	warning" to the asoc tree
-Date: Thu, 25 Apr 2019 20:24:07 +0100 (BST)
-Message-ID: <20190425192412.B971C441D3B@finisterre.ee.mobilebroadband>
-References: <20190419201218.19821-2-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90B34F89715
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 21:24:16 +0200 (CEST)
-In-Reply-To: <20190419201218.19821-2-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Paul Cercueil <paul@crapouillou.net>, hdegoede@redhat.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.de
+Subject: Applied "ASoC: stm32: i2s: return the get_irq error" to the asoc tree
+Date: Thu, 25 Apr 2019 20:26:29 +0100 (BST)
+Message-ID: <20190425192629.C58A7441D56@finisterre.ee.mobilebroadband>
+References: <1556119724-9873-1-git-send-email-fabien.dessenne@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1556119724-9873-1-git-send-email-fabien.dessenne@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabien Dessenne <fabien.dessenne@st.com>
+Cc: Alexandre@sirena.org.uk, alsa-devel@alsa-project.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Olivier Moysan <olivier.moysan@st.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: fix compilation warning
+   ASoC: stm32: i2s: return the get_irq error
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,57 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 1fb1e93a1dc7c9673917a8081e144f48bde46495 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 19 Apr 2019 15:12:16 -0500
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: fix compilation warning
+>From 0bbf4084e0cfbbbff8673f3b9867778d5d4b1d6f Mon Sep 17 00:00:00 2001
+From: Fabien Dessenne <fabien.dessenne@st.com>
+Date: Wed, 24 Apr 2019 17:28:44 +0200
+Subject: [PATCH] ASoC: stm32: i2s: return the get_irq error
 
-Remove warning below, align with other machine drivers.
+During probe, return the "get_irq" error value instead of -ENOENT. This
+allows the driver to be deferred probed if needed.
 
-bytcht_es8316.c:508:11: warning: cast from pointer to integer of
-different size [-Wpointer-to-int-cast]
-
-   quirk = (int)dmi_id->driver_data;
-           ^
-Fixes: a8d218f4fe811 ('ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Fabien Dessenne <fabien.dessenne@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 38975827e276..e8c585ffd04d 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -61,7 +61,7 @@ enum {
- #define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
- #define BYT_CHT_ES8316_JD_INVERTED		BIT(18)
- 
--static int quirk;
-+static unsigned long quirk;
- 
- static int quirk_override = -1;
- module_param_named(quirk, quirk_override, int, 0444);
-@@ -505,7 +505,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	/* Check for BYTCR or other platform and setup quirks */
- 	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
- 	if (dmi_id) {
--		quirk = (int)dmi_id->driver_data;
-+		quirk = (unsigned long)dmi_id->driver_data;
- 	} else if (x86_match_cpu(baytrail_cpu_ids) &&
- 	    mach->mach_params.acpi_ipc_irq_index == 0) {
- 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
-@@ -517,7 +517,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 			BYT_CHT_ES8316_MONO_SPEAKER;
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 8968458eec62..e707d28cb203 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -845,8 +845,9 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+ 	/* Get irqs */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
+-		return -ENOENT;
++		if (irq != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
++		return irq;
  	}
- 	if (quirk_override != -1) {
--		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n", quirk,
-+		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n",
-+			 (unsigned int)quirk,
- 			 quirk_override);
- 		quirk = quirk_override;
- 	}
+ 
+ 	ret = devm_request_irq(&pdev->dev, irq, stm32_i2s_isr, IRQF_ONESHOT,
 -- 
 2.20.1
