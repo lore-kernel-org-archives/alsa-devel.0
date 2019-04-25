@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer support" to the asoc tree
-Date: Thu, 25 Apr 2019 20:24:34 +0100 (BST)
-Message-ID: <20190425192434.368FD441D3C@finisterre.ee.mobilebroadband>
-References: <fd223d1dcf5be1f83863e881fa3db931b5c84601.1555917711.git.baolin.wang@linaro.org>
+Subject: Applied "ASoC: doc: simple-card: Add pin-switches property" to the asoc tree
+Date: Thu, 25 Apr 2019 20:24:33 +0100 (BST)
+Message-ID: <20190425192433.19363441D3D@finisterre.ee.mobilebroadband>
+References: <20190420104553.5071-1-paul@crapouillou.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <fd223d1dcf5be1f83863e881fa3db931b5c84601.1555917711.git.baolin.wang@linaro.org>
+In-Reply-To: <20190420104553.5071-1-paul@crapouillou.net>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, baolin.wang@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, mark.rutland@arm.com, orsonzhai@gmail.com, perex@perex.cz, robh+dt@kernel.org, tiwai@suse.com, zhang.lyra@gmail.com
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, od@zcrc.me, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer support
+   ASoC: doc: simple-card: Add pin-switches property
 
 has been applied to the asoc tree at
 
@@ -36,51 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From c634d3ffc6b2c3b15ea79ffe0a761ce08b4da71a Mon Sep 17 00:00:00 2001
-From: Baolin Wang <baolin.wang@linaro.org>
-Date: Tue, 23 Apr 2019 10:26:21 +0800
-Subject: [PATCH] dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer
- support
+>From 6b903f9bdd98093a2c1ea79df07e86decfda3b04 Mon Sep 17 00:00:00 2001
+From: Paul Cercueil <paul@crapouillou.net>
+Date: Sat, 20 Apr 2019 12:45:51 +0200
+Subject: [PATCH] ASoC: doc: simple-card: Add pin-switches property
 
-On Spreadtrum platform, the audio subsystem will use the multi-channel
-data transfer controller to transfer sound stream between audio subsystem
-and other AP/CP subsystem.
+The simple-audio-card,pin-switches property can contain the list of
+widget names for which pin switches must be created.
 
-It can support 10 DAC channel and 10 ADC channel, and each channel has
-512 bytes depth data fifo. Moreover each channel can be used DMA mode
-or interrupt mode to transfer data.
-
-Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/sprd-mcdt.txt   | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+ Documentation/devicetree/bindings/sound/simple-card.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/sprd-mcdt.txt b/Documentation/devicetree/bindings/sound/sprd-mcdt.txt
-new file mode 100644
-index 000000000000..274ba0acbfd6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sprd-mcdt.txt
-@@ -0,0 +1,19 @@
-+Spreadtrum Multi-Channel Data Transfer Binding
-+
-+The Multi-channel data transfer controller is used for sound stream
-+transmission between audio subsystem and other AP/CP subsystem. It
-+supports 10 DAC channel and 10 ADC channel, and each channel can be
-+configured with DMA mode or interrupt mode.
-+
-+Required properties:
-+- compatible: Should be "sprd,sc9860-mcdt".
-+- reg: Should contain registers address and length.
-+- interrupts: Should contain one interrupt shared by all channel.
-+
-+Example:
-+
-+mcdt@41490000 {
-+	compatible = "sprd,sc9860-mcdt";
-+	reg = <0 0x41490000 0 0x170>;
-+	interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
-+};
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index 4629c8f8a6b6..79954cd6e37b 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -24,6 +24,8 @@ Optional properties:
+ 					  a microphone is attached.
+ - simple-audio-card,aux-devs		: List of phandles pointing to auxiliary devices, such
+ 					  as amplifiers, to be added to the sound card.
++- simple-audio-card,pin-switches	: List of strings containing the widget names for
++					  which pin switches must be created.
+ 
+ Optional subnodes:
+ 
 -- 
 2.20.1
