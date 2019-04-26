@@ -1,33 +1,39 @@
-From: Fuqian Huang <huangfq.daxian@gmail.com>
-Subject: [PATCH v3] sound: isa: gus: fix misuse of %x
-Date: Fri, 26 Apr 2019 11:16:24 +0800
-Message-ID: <20190426031625.30420-1-huangfq.daxian@gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: fsl_sai: Add missing return 0 in remove()
+Date: Thu, 25 Apr 2019 20:20:50 -0700
+Message-ID: <1556248850-3748-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Fuqian Huang <huangfq.daxian@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org
+Cc: timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.com, sfr@canb.auug.org.au
 List-Id: alsa-devel@alsa-project.org
 
-Pointers should be printed with %p or %px rather than
-cast to long type and printed with %lx.
-Drop the address printing.
+Build warning being reported:
+    sound/soc/fsl/fsl_sai.c: In function 'fsl_sai_remove':
+    sound/soc/fsl/fsl_sai.c:921:1: warning: no return statement in
+    function returning non-void [-Wreturn-type]
 
-Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+So this patch just adds a "return 0" to fix it.
+
+Fixes: 812ad463e089 ("ASoC: fsl_sai: Add support for runtime pm")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/isa/gus/gus_mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
-index 4ac76f46dd76..d708ae1525e4 100644
---- a/sound/isa/gus/gus_mem.c
-+++ b/sound/isa/gus/gus_mem.c
-@@ -306,7 +306,7 @@ static void snd_gf1_mem_info_read(struct snd_info_entry *entry,
- 	used = 0;
- 	for (block = alloc->first, i = 0; block; block = block->next, i++) {
- 		used += block->size;
--		snd_iprintf(buffer, "Block %i at 0x%lx onboard 0x%x size %i (0x%x):\n", i, (long) block, block->ptr, block->size, block->size);
-+		snd_iprintf(buffer, "Block %i onboard 0x%x size %i (0x%x):\n", i, block->ptr, block->size, block->size);
- 		if (block->share ||
- 		    block->share_id[0] || block->share_id[1] ||
- 		    block->share_id[2] || block->share_id[3])
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 26c27dc..8593269 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -918,6 +918,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ static int fsl_sai_remove(struct platform_device *pdev)
+ {
+ 	pm_runtime_disable(&pdev->dev);
++
++	return 0;
+ }
+ 
+ static const struct of_device_id fsl_sai_ids[] = {
 -- 
-2.11.0
+2.7.4
