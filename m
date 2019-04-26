@@ -1,47 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V3] ASoC: fsl_esai: Add pm runtime function
-Date: Fri, 26 Apr 2019 10:57:06 +0100
-Message-ID: <20190426095706.GB14916@sirena.org.uk>
-References: <0320f04ac785a6046a6f9baec591d36a4a6189ec.1555899304.git.shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 2/3 v2] ASoC: fsl_sai: Add support for runtime pm
+Date: Fri, 26 Apr 2019 11:00:25 +0100
+Message-ID: <20190426100025.GD14916@sirena.org.uk>
+References: <20190421193853.10188-1-daniel.baluta@nxp.com>
+ <20190421193853.10188-3-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
+        protocol="application/pgp-signature"; boundary="3Pql8miugIZX0722"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <0320f04ac785a6046a6f9baec591d36a4a6189ec.1555899304.git.shengjiu.wang@nxp.com>
+In-Reply-To: <20190421193853.10188-3-daniel.baluta@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---ftEhullJWpWg/VHq
+--3Pql8miugIZX0722
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2019 at 02:31:55AM +0000, S.j. Wang wrote:
-> Add pm runtime support and move clock handling there.
-> Close the clocks at suspend to reduce the power consumption.
->=20
-> fsl_esai_suspend is replaced by pm_runtime_force_suspend.
-> fsl_esai_resume is replaced by pm_runtime_force_resume.
+On Sun, Apr 21, 2019 at 07:39:09PM +0000, Daniel Baluta wrote:
+> Basically the same actions as for system PM, so make use
+> of pm_runtime_force_suspend/pm_runtime_force_resume.
 
 This doesn't apply against current code, please check and resend.
 
---ftEhullJWpWg/VHq
+--3Pql8miugIZX0722
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzC1fEACgkQJNaLcl1U
-h9D8ugf/a57E7R0SaMmoq+3MoDHMiNdRtpJl6HAus9MmbdIFUbWvldlAob3AD6He
-JMm76QgN0Af2NsTmLRhGAmLhrZQ2Bp+Wo/MP0lgSOrs2CdAFzseekjzOllajPGzX
-1gL8JWRIYZ9fkRU6i87AaMJDctynIkGCaEhRqUbulbj0QD/0l8CJ1PfNfyugcFN8
-WGEdEgD8DQ/ynwk6DUOkWC2HPiRWCB20kzZQH0b2mF6qTQL0YvAtfDot6XZQgWRV
-veIRjLGv9koPdiNOOLVjN/QGD4x+op/M4w7e8SaHERWl0Yp9aUBeFUTrhFhhCWc9
-qqFth3rvLMMRv/FZFgr2GMYhtAU92A==
-=dqQx
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzC1rgACgkQJNaLcl1U
+h9AExAf7BpbUDjxFUvENyjvPWZ5XP867EfiNhim76zTqqHzpoH6NdAdYYpKqzPpl
+QsTiG7FvS4/Z//RJen1ItB6wD1jGOBubB85+TgfpNdn5YaLdLDw97EzUuAli+4vD
+gpmQ0oDJS1TUnSMjPD8CyHIFA5nJWvkshNRR27ljTjPDAeZuCEbSSa/LH7iQMiZQ
+LSe8wuCFsmXZqjPiTvx8f/iLDFbNE+LUx/rDOJOBMi5xUEjNkCFqYSAPDVX6MR8G
+ymOod7dDfcHydFiV7oZsYXADShq3m43D9q758l/5dpZcj40PRcL2S8AtJkMPpsw8
+Qsu6uF/CA1cXAdH2++ECFdvG3BU10A==
+=Pwh6
 -----END PGP SIGNATURE-----
 
---ftEhullJWpWg/VHq--
+--3Pql8miugIZX0722--
