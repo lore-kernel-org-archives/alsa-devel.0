@@ -1,45 +1,90 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Will we ever see a low latency/high performance
- PCM api for usb, firewire, avb ?
-Date: Fri, 26 Apr 2019 14:22:47 +0200
-Message-ID: <fa3a4950-a0ba-c3fd-5ec7-923a59ee9a78@ladisch.de>
-References: <trinity-467bdb56-fbf5-484d-a3a7-6fb0f9b14eab-1556225642297@3c-app-gmx-bs08>
- <e287f788-82f9-d9e2-0380-d8f66d2b422b@perex.cz>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH] ASoC: da7219: Use clk_round_rate to handle enabled bclk/wclk
+ case
+Date: Fri, 26 Apr 2019 13:59:24 +0100
+Message-ID: <20190426125925.04F3F3FB4A@swsrvapps-01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [IPv6:2a01:4f8:212:88::2])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 160B0F8961C
- for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2019 14:22:48 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 99251558355F
- for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2019 14:22:47 +0200 (CEST)
-In-Reply-To: <e287f788-82f9-d9e2-0380-d8f66d2b422b@perex.cz>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: Akshu Agrawal <Akshu.Agrawal@amd.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> Any idea to improve the transfer method? The problem with the serial buses is
-> that you have to queue usually more samples to avoid underruns.
+For some platforms where DA7219 is the DAI clock master, BCLK/WCLK
+will be set and enabled prior to the codec's hw_params() function
+being called. It is possible the platform requires a different
+BCLK/WCLK configuration than would be chosen by hw_params(), for
+example S16_LE format needed with a 64-bit frame to satisfy certain
+devices using the clocks.
 
-When the ALSA buffer is not mmapped, it is possible to treat the contents of the
-packet buffers as the ring buffer, i.e., to write the sample data directly into
-the packets, ideally even after they have been queued.
+To handle those kinds of scenarios, the use of clk_round_rate() is
+now employed as part of hw_params(). If BCLK/WCLk are already
+enabled then this function will just return the currently set
+rates, so the subsequent calls to clk_set_rate() will succeed and
+nothing changes with regards to clocking. In addition the specific
+recalc_rate() implementations needed updating to always give back
+a real value, as those functions are called as part of the clk
+init code and a real value is needed for the clk_round_rate() calls
+to work as expected.
 
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
+ sound/soc/codecs/da7219.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5f5fa34..72268f5 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1593,6 +1593,13 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	sr = params_rate(params);
+ 	if (da7219->master && wclk) {
++		/*
++		 * Rounding the rate here avoids failure trying to set a new
++		 * rate on an already enabled wclk. In that instance this will
++		 * just set the same rate as is currently in use, and so should
++		 * continue without problem.
++		 */
++		sr = clk_round_rate(wclk, sr);
+ 		ret = clk_set_rate(wclk, sr);
+ 		if (ret) {
+ 			dev_err(component->dev,
+@@ -1621,6 +1628,14 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+ 
+ 		if (bclk) {
+ 			bclk_rate = frame_size * sr;
++			/*
++			 * Rounding the rate here avoids failure trying to set a
++			 * new rate on an already enabled bclk. In that
++			 * instance this will just set the same rate as is
++			 * currently in use, and so should continue without
++			 * problem.
++			 */
++			bclk_rate = clk_round_rate(bclk, bclk_rate);
+ 			ret = clk_set_rate(bclk, bclk_rate);
+ 			if (ret) {
+ 				dev_err(component->dev,
+@@ -1927,9 +1942,6 @@ static unsigned long da7219_wclk_recalc_rate(struct clk_hw *hw,
+ 	struct snd_soc_component *component = da7219->component;
+ 	u8 fs = snd_soc_component_read32(component, DA7219_SR);
+ 
+-	if (!da7219->master)
+-		return 0;
+-
+ 	switch (fs & DA7219_SR_MASK) {
+ 	case DA7219_SR_8000:
+ 		return 8000;
+@@ -2016,9 +2028,6 @@ static unsigned long da7219_bclk_recalc_rate(struct clk_hw *hw,
+ 	u8 bclks_per_wclk = snd_soc_component_read32(component,
+ 						     DA7219_DAI_CLK_MODE);
+ 
+-	if (!da7219->master)
+-		return 0;
+-
+ 	switch (bclks_per_wclk & DA7219_DAI_BCLKS_PER_WCLK_MASK) {
+ 	case DA7219_DAI_BCLKS_PER_WCLK_32:
+ 		return parent_rate * 32;
+-- 
+1.9.1
