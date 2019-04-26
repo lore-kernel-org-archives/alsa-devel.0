@@ -1,90 +1,77 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH] ASoC: da7219: Use clk_round_rate to handle enabled bclk/wclk
- case
-Date: Fri, 26 Apr 2019 13:59:24 +0100
-Message-ID: <20190426125925.04F3F3FB4A@swsrvapps-01.diasemi.com>
+Subject: RE: [PATCH] ASoC: da7213: fix DAI_CLK_EN register bit overwrite
+Date: Fri, 26 Apr 2019 13:09:46 +0000
+Message-ID: <AM5PR1001MB0994D9131132C60AB4DAB7F3803E0@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+References: <20190425054249.5675-1-logesh.kolandavel@timesys.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190425054249.5675-1-logesh.kolandavel@timesys.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: Akshu Agrawal <Akshu.Agrawal@amd.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+To: Logesh Kolandavel <logesh.kolandavel@timesys.com>, Support Opensource <Support.Opensource@diasemi.com>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-For some platforms where DA7219 is the DAI clock master, BCLK/WCLK
-will be set and enabled prior to the codec's hw_params() function
-being called. It is possible the platform requires a different
-BCLK/WCLK configuration than would be chosen by hw_params(), for
-example S16_LE format needed with a 64-bit frame to satisfy certain
-devices using the clocks.
+On 25 April 2019 06:43, Logesh Kolandavel wrote:
 
-To handle those kinds of scenarios, the use of clk_round_rate() is
-now employed as part of hw_params(). If BCLK/WCLk are already
-enabled then this function will just return the currently set
-rates, so the subsequent calls to clk_set_rate() will succeed and
-nothing changes with regards to clocking. In addition the specific
-recalc_rate() implementations needed updating to always give back
-a real value, as those functions are called as part of the clk
-init code and a real value is needed for the clk_round_rate() calls
-to work as expected.
+> From: Logesh <logesh.kolandavel@timesys.com>
+>=20
+> If the da7213 codec is configured as Master with the DAPM power down
+> delay time set, 'snd_soc_component_write' function overwrites the
+> DAI_CLK_EN bit of DAI_CLK_MODE register which leads to audio play
+> only once until it re-initialize after codec power up.
+>=20
+> Signed-off-by: Logesh <logesh.kolandavel@timesys.com>
+> ---
+>  sound/soc/codecs/da7213.c | 4 +++-
+>  sound/soc/codecs/da7213.h | 2 ++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+> index 92d006a5283e..306e01684bda 100644
+> --- a/sound/soc/codecs/da7213.c
+> +++ b/sound/soc/codecs/da7213.c
+> @@ -1305,7 +1305,9 @@ static int da7213_set_dai_fmt(struct snd_soc_dai
+> *codec_dai, unsigned int fmt)
+>  	/* By default only 64 BCLK per WCLK is supported */
+>  	dai_clk_mode |=3D DA7213_DAI_BCLKS_PER_WCLK_64;
+>=20
+> -	snd_soc_component_write(component, DA7213_DAI_CLK_MODE,
+> dai_clk_mode);
+> +	snd_soc_component_update_bits(component,
+> DA7213_DAI_CLK_MODE,
+> +			    DA7213_DAI_CLK_POL_MASK |
+> DA7213_DAI_WCLK_POL_MASK,
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
- sound/soc/codecs/da7219.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+We'll also need to add the mask DA7213_DAI_BCLKS_PER_WCLK_MASK' here as wel=
+l as
+we're setting 'DA7213_DAI_BCLKS_PER_WCLK_64' for this register just prior t=
+o
+this call. Didn't spot that in earlier conversations.
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 5f5fa34..72268f5 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1593,6 +1593,13 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
- 
- 	sr = params_rate(params);
- 	if (da7219->master && wclk) {
-+		/*
-+		 * Rounding the rate here avoids failure trying to set a new
-+		 * rate on an already enabled wclk. In that instance this will
-+		 * just set the same rate as is currently in use, and so should
-+		 * continue without problem.
-+		 */
-+		sr = clk_round_rate(wclk, sr);
- 		ret = clk_set_rate(wclk, sr);
- 		if (ret) {
- 			dev_err(component->dev,
-@@ -1621,6 +1628,14 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
- 
- 		if (bclk) {
- 			bclk_rate = frame_size * sr;
-+			/*
-+			 * Rounding the rate here avoids failure trying to set a
-+			 * new rate on an already enabled bclk. In that
-+			 * instance this will just set the same rate as is
-+			 * currently in use, and so should continue without
-+			 * problem.
-+			 */
-+			bclk_rate = clk_round_rate(bclk, bclk_rate);
- 			ret = clk_set_rate(bclk, bclk_rate);
- 			if (ret) {
- 				dev_err(component->dev,
-@@ -1927,9 +1942,6 @@ static unsigned long da7219_wclk_recalc_rate(struct clk_hw *hw,
- 	struct snd_soc_component *component = da7219->component;
- 	u8 fs = snd_soc_component_read32(component, DA7219_SR);
- 
--	if (!da7219->master)
--		return 0;
--
- 	switch (fs & DA7219_SR_MASK) {
- 	case DA7219_SR_8000:
- 		return 8000;
-@@ -2016,9 +2028,6 @@ static unsigned long da7219_bclk_recalc_rate(struct clk_hw *hw,
- 	u8 bclks_per_wclk = snd_soc_component_read32(component,
- 						     DA7219_DAI_CLK_MODE);
- 
--	if (!da7219->master)
--		return 0;
--
- 	switch (bclks_per_wclk & DA7219_DAI_BCLKS_PER_WCLK_MASK) {
- 	case DA7219_DAI_BCLKS_PER_WCLK_32:
- 		return parent_rate * 32;
--- 
-1.9.1
+> +			    dai_clk_mode);
+>  	snd_soc_component_update_bits(component, DA7213_DAI_CTRL,
+> DA7213_DAI_FORMAT_MASK,
+>  			    dai_ctrl);
+>  	snd_soc_component_write(component, DA7213_DAI_OFFSET,
+> dai_offset);
+> diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
+> index 5a78dba1dcb5..9d31efc3cfe5 100644
+> --- a/sound/soc/codecs/da7213.h
+> +++ b/sound/soc/codecs/da7213.h
+> @@ -181,7 +181,9 @@
+>  #define DA7213_DAI_BCLKS_PER_WCLK_256				(0x3 << 0)
+>  #define DA7213_DAI_BCLKS_PER_WCLK_MASK
+> 	(0x3 << 0)
+>  #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
+> +#define DA7213_DAI_CLK_POL_MASK
+> 	(0x1 << 2)
+>  #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
+> +#define DA7213_DAI_WCLK_POL_MASK				(0x1 << 3)
+>  #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
+>=20
+>  /* DA7213_DAI_CTRL =3D 0x29 */
+> --
+> 2.21.0
