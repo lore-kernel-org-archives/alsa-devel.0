@@ -1,30 +1,52 @@
-From: "Ralf Beck" <musical_snake@gmx.de>
-Subject: Will we ever see a low latency/high performance PCM
- api for usb, firewire, avb ?
-Date: Thu, 25 Apr 2019 22:54:02 +0200
-Message-ID: <trinity-467bdb56-fbf5-484d-a3a7-6fb0f9b14eab-1556225642297@3c-app-gmx-bs08>
+From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH] ASoC: mediatek: btcvsd fix irq mask
+Date: Fri, 26 Apr 2019 10:09:43 +0800
+Message-ID: <1556244583-18084-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D712F8961C
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2019 22:54:03 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: tina.tsai-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, stephen.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Subject says it all.
+disable = 1
+enable = 0
+prevent AP wake up, when not AP BTSCO scenario
 
-During the Dec/Jan period i did some USB patches for the Motu AVB series and a trivial alsa driver to connect my Motu via AVB for a single i/o stream. So i discovered how totally unsuitable the mmapped ringbuffer model of alsa is for the above types of interfaces. Is there any intention to change this ?
-I've read that this has already been discussed during miniconf 2017 (USB) and 2018 (AVB). Any results?
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+---
+ sound/soc/mediatek/common/mtk-btcvsd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
+index 6784e35..b918f79 100644
+--- a/sound/soc/mediatek/common/mtk-btcvsd.c
++++ b/sound/soc/mediatek/common/mtk-btcvsd.c
+@@ -194,13 +194,13 @@ struct mtk_btcvsd_snd_time_buffer_info {
+ static void mtk_btcvsd_snd_irq_enable(struct mtk_btcvsd_snd *bt)
+ {
+ 	regmap_update_bits(bt->infra, bt->infra_misc_offset,
+-			   bt->conn_bt_cvsd_mask, bt->conn_bt_cvsd_mask);
++			   bt->conn_bt_cvsd_mask, 0);
+ }
+ 
+ static void mtk_btcvsd_snd_irq_disable(struct mtk_btcvsd_snd *bt)
+ {
+ 	regmap_update_bits(bt->infra, bt->infra_misc_offset,
+-			   bt->conn_bt_cvsd_mask, 0);
++			   bt->conn_bt_cvsd_mask, bt->conn_bt_cvsd_mask);
+ }
+ 
+ static void mtk_btcvsd_snd_set_state(struct mtk_btcvsd_snd *bt,
+-- 
+1.9.1
