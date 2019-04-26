@@ -1,55 +1,50 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_sai: Add missing return 0 in remove()
-Date: Fri, 26 Apr 2019 08:19:14 +0300
-Message-ID: <CAEnQRZCV7mnBmUFiC2pVz4ndo6a0L1eF8pAuiOO5OBTayXt=SA@mail.gmail.com>
-References: <1556248850-3748-1-git-send-email-nicoleotsuka@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Will we ever see a low latency/high performance
+ PCM api for usb, firewire, avb ?
+Date: Fri, 26 Apr 2019 08:37:24 +0200
+Message-ID: <e287f788-82f9-d9e2-0380-d8f66d2b422b@perex.cz>
+References: <trinity-467bdb56-fbf5-484d-a3a7-6fb0f9b14eab-1556225642297@3c-app-gmx-bs08>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1556248850-3748-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, sfr@canb.auug.org.au, Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Fabio Estevam <festevam@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADAE9F80C41
+ for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2019 08:37:27 +0200 (CEST)
+In-Reply-To: <trinity-467bdb56-fbf5-484d-a3a7-6fb0f9b14eab-1556225642297@3c-app-gmx-bs08>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Ralf Beck <musical_snake@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 26, 2019 at 6:22 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> Build warning being reported:
->     sound/soc/fsl/fsl_sai.c: In function 'fsl_sai_remove':
->     sound/soc/fsl/fsl_sai.c:921:1: warning: no return statement in
->     function returning non-void [-Wreturn-type]
->
-> So this patch just adds a "return 0" to fix it.
->
-> Fixes: 812ad463e089 ("ASoC: fsl_sai: Add support for runtime pm")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Dne 25. 04. 19 v 22:54 Ralf Beck napsal(a):
+> Subject says it all.
+> 
+> During the Dec/Jan period i did some USB patches for the Motu AVB series and a trivial alsa driver to connect my Motu via AVB for a single i/o stream. So i discovered how totally unsuitable the mmapped ringbuffer model of alsa is for the above types of interfaces. Is there any intention to change this ?
+> I've read that this has already been discussed during miniconf 2017 (USB) and 2018 (AVB). Any results?
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Any idea to improve the transfer method? The problem with the serial buses is
+that you have to queue usually more samples to avoid underruns. The system
+scheduling comes to play, too (no direct DMA transfers from the audio buffer
+without further main CPU intervention).
 
-Thanks Nicolin!
+Also, you can write only read/write driver without mmap support (ALSA API
+supports this mode). But I don't think that it will help much. If you have
+problem to find good ring buffer size / period size settings, it's usually
+because of the hardware limitation or the system scheduler settings.
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 26c27dc..8593269 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -918,6 +918,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
->  static int fsl_sai_remove(struct platform_device *pdev)
->  {
->         pm_runtime_disable(&pdev->dev);
-> +
-> +       return 0;
->  }
->
->  static const struct of_device_id fsl_sai_ids[] = {
-> --
-> 2.7.4
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
