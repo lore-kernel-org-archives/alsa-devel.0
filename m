@@ -1,81 +1,71 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v7 5/6] dt-bindings: display: sii902x: Add HDMI audio
- bindings
-Date: Fri, 26 Apr 2019 08:34:58 -0500
-Message-ID: <CAL_JsqJmtbGJw_Mbv3n+jN9Ce0S+B_jKZbsaL7H6ObhOYZhuyg@mail.gmail.com>
-References: <cover.1556284767.git.jsarha@ti.com>
- <5314a5fa9b7d488de77e31842644a92cfed329f3.1556284767.git.jsarha@ti.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Will we ever see a low latency/high performance
+ PCM api for usb, firewire, avb ?
+Date: Fri, 26 Apr 2019 15:35:29 +0200
+Message-ID: <654e7253-b677-0805-8fcb-3f82783cfa77@perex.cz>
+References: <trinity-467bdb56-fbf5-484d-a3a7-6fb0f9b14eab-1556225642297@3c-app-gmx-bs08>
+ <e287f788-82f9-d9e2-0380-d8f66d2b422b@perex.cz>
+ <fa3a4950-a0ba-c3fd-5ec7-923a59ee9a78@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <5314a5fa9b7d488de77e31842644a92cfed329f3.1556284767.git.jsarha@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Songjun Wu <Songjun.Wu@atmel.com>, Archit Taneja <architt@codeaurora.org>, dri-devel <dri-devel@lists.freedesktop.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Bo Shen <voice.shen@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10D67F80C41
+ for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2019 15:35:33 +0200 (CEST)
+In-Reply-To: <fa3a4950-a0ba-c3fd-5ec7-923a59ee9a78@ladisch.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Ralf Beck <musical_snake@gmx.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBcHIgMjYsIDIwMTkgYXQgODoyMyBBTSBKeXJpIFNhcmhhIDxqc2FyaGFAdGkuY29t
-PiB3cm90ZToKPgo+IFRoZSBzaWk5MDJ4IGNoaXAgZmFtaWx5IHN1cHBvcnRzIGFsc28gSERNSSBh
-dWRpby4gQWRkIGJpbmRpbmcgZm9yCj4gZGVzY3JpYmluZyB0aGUgbmVjZXNzYXJ5IGkycyBhbmQg
-bWNsayB3aXJpbmcgZm9yIGl0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogSnlyaSBTYXJoYSA8anNhcmhh
-QHRpLmNvbT4KPiAtLS0KPiAgLi4uL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL3NpaTkwMngudHh0
-ICAgICAgIHwgNDEgKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNDEgaW5z
-ZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+IGluZGV4IGM0YzE4NTVjYTY1
-NC4uYjUxNjhhMGUzYTJiIDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+IEBAIC05LDYg
-KzksNDEgQEAgT3B0aW9uYWwgcHJvcGVydGllczoKPiAgICAgICAgICAgYWJvdXQgaG90cGx1ZyBl
-dmVudHMuCj4gICAgICAgICAtIHJlc2V0LWdwaW9zOiBPRiBkZXZpY2UtdHJlZSBncGlvIHNwZWNp
-ZmljYXRpb24gZm9yIFJTVF9OIHBpbi4KPgo+ICsgICAgICAgSERNSSBhdWRpbyBwcm9wZXJ0aWVz
-Ogo+ICsgICAgICAgLSAjc291bmQtZGFpLWNlbGxzOiA8MD4gb3IgPDE+LiA8MD4gaWYgb25seSBp
-MnMgb3Igc3BkaWYgcGluCj4gKyAgICAgICAgICBpcyB3aXJlZCwgPDE+IGlmIHRoZSBib3RoIGFy
-ZSB3aXJlZC4gSERNSSBhdWRpbyBpcwo+ICsgICAgICAgICAgY29uZmlndXJlZCBvbmx5IGlmIHRo
-aXMgcHJvcGVydHkgaXMgZm91bmQuCj4gKyAgICAgICAtIHNpbCxpMnMtZGF0YS1sYW5lczogQXJy
-YXkgb2YgdXAgdG8gNCBpbnRlZ2VycyB3aXRoIHZhbHVlcyBvZiAwLTMKPiArICAgICAgICAgIEVh
-Y2ggaW50ZWdlciBpbmRpY2F0ZXMgd2hpY2ggaTJzIHBpbiBpcyBjb25uZWN0ZWQgdG8gd2hpY2gK
-PiArICAgICAgICAgIGF1ZGlvIGZpZm8uIFRoZSBmaXJzdCBpbnRlZ2VyIHNlbGVjdHMgaTJzIGF1
-ZGlvIHBpbiBmb3IgdGhlCj4gKyAgICAgICAgICBmaXJzdCBhdWRpbyBmaWZvIzAgKEhETUkgY2hh
-bm5lbHMgMSYyKSwgc2Vjb25kIGZvciBmaWZvIzEKPiArICAgICAgICAgIChIRE1JIGNoYW5uZWxz
-IDMmNCksIGFuZCBzbyBvbi4gVGhlcmUgaXMgNCBmaWZvcyBhbmQgNCBpMnMKPiArICAgICAgICAg
-IHBpbnMgKFNEMCAtIFNEMykuIEFueSBpMnMgcGluIGNhbiBiZSBjb25uZWN0ZWQgdG8gYW55IGZp
-Zm8sCj4gKyAgICAgICAgICBidXQgdGhlcmUgY2FuIGJlIG5vIGdhcHMuIEUuZy4gYW4gaTJzIHBp
-biBtdXN0IGJlIG1hcHBlZCB0bwo+ICsgICAgICAgICAgZmlmbyMwIGFuZCBmaWZvIzEgYmVmb3Jl
-IG1hcHBpbmcgYSBjaGFubmVsIHRvIGZpZm8jMi4gRGVmYXVsdAo+ICsgICAgICAgICAgdmFsdWUg
-aXMgPDA+LCBkZXNjcmliaW5nIFNEMCBwaW4gYmVpZ2luZyByb3V0ZWQgdG8gaGRtaSBhdWRpbwo+
-ICsgICAgICAgICAgZmlmbyAjMC4KPiArICAgICAgIC0gY2xvY2tzOiBwaGFuZGxlIGFuZCBjbG9j
-ayBzcGVjaWZpZXIgZm9yIGVhY2ggY2xvY2sgbGlzdGVkIGluCj4gKyAgICAgICAgICAgdGhlIGNs
-b2NrLW5hbWVzIHByb3BlcnR5Cj4gKyAgICAgICAtIGNsb2NrLW5hbWVzOiAibWNsayIKPiArICAg
-ICAgICAgIERlc2NyaWJlcyBTSUk5MDJ4IE1DTEsgaW5wdXQuIE1DTEsgaXMgdXNlZCB0byBwcm9k
-dWNlCj4gKyAgICAgICAgICBIRE1JIGF1ZGlvIENUUyB2YWx1ZXMuIFRoaXMgcHJvcGVydHkgaXMg
-cmVxdWlyZWQgaWYKPiArICAgICAgICAgICIjc291bmQtZGFpLWNlbGxzIi1wcm9wZXJ0eSBpcyBw
-cmVzZW50LiBUaGlzIHByb3BlcnR5IGZvbGxvd3MKPiArICAgICAgICAgIERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9jbG9jay9jbG9jay1iaW5kaW5ncy50eHQKPiArICAgICAgICAg
-IGNvbnN1bWVyIGJpbmRpbmcuCj4gKwo+ICsgICAgICAgSWYgSERNSSBhdWRpbyBpcyBjb25maWd1
-cmVkIHRoZSBzaWk5MDJ4IGRldmljZSBiZWNvbWVzIGFuIEkyUwo+ICsgICAgICAgYW5kL29yIHNw
-ZGlmIGF1ZGlvIGNvZGVjIGNvbXBvbmVudCAoZS5nIGEgZGlnaXRhbCBhdWRpbyBzaW5rKSwKPiAr
-ICAgICAgIHRoYXQgY2FuIGJlIHVzZWQgaW4gY29uZmlndXJpbmcgYSBmdWxsIGF1ZGlvIGRldmlj
-ZXMgd2l0aAo+ICsgICAgICAgc2ltcGxlLWNhcmQgb3IgYXVkaW8tZ3JhcGgtY2FyZCBiaW5kaW5n
-LiBTZWUgdGhlaXIgYmluZGluZwo+ICsgICAgICAgZG9jdW1lbnRzIG9uIGhvdyB0byBkZXNjcmli
-ZSB0aGUgd2F5IHRoZSBzaWk5MDJ4IGRldmljZSBpcwo+ICsgICAgICAgY29ubmVjdGVkIHRvIHRo
-ZSByZXN0IG9mIHRoZSBhdWRpbyBzeXN0ZW06Cj4gKyAgICAgICBEb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWNhcmQudHh0Cj4gKyAgICAgICBEb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvYXVkaW8tZ3JhcGgtY2FyZC50eHQKPiArICAg
-ICAgIE5vdGU6IEluIGNhc2Ugb2YgdGhlIGF1ZGlvLWdyYXBoLWNhcmQgYmluZGluZyB0aGUgdXNl
-ZCBwb3J0Cj4gKyAgICAgICBpbmRleCBzaG91bGQgYmUgMyBvciBoaWdoZXIgdG8gYXZvaWQgY29u
-ZmxpY3Qgd2l0aCB2aWRlbyBwb3J0cwoKRHJvcCB0aGUgJ29yIGhpZ2hlcicuIFRoZSBwb3J0IG51
-bWJlciBzaG91bGQgYmUga25vd24gYW5kIGZpeGVkLgoKV2l0aCB0aGF0LAoKUmV2aWV3ZWQtYnk6
-IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2RyaS1kZXZlbA==
+Dne 26. 04. 19 v 14:22 Clemens Ladisch napsal(a):
+> Jaroslav Kysela wrote:
+>> Any idea to improve the transfer method? The problem with the serial buses is
+>> that you have to queue usually more samples to avoid underruns.
+> 
+> When the ALSA buffer is not mmapped, it is possible to treat the contents of the
+> packet buffers as the ring buffer, i.e., to write the sample data directly into
+> the packets, ideally even after they have been queued.
+
+1) It is possible to force the synchronization of pointers through ioctl even
+in the mmap mode:
+
+
+https://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_hw.c;h=91370a88c0fdece71c8aef96e83837858a583c9b;hb=HEAD#l1757
+
+In this mode, the driver will know when appl_ptr is updated. I don't see
+difference between mmap mode and r/w mode here.
+
+2) The driver can disable the mmap mode and the r/w data transfer operations
+can be replaced with own callback.
+
+
+I just don't think that the mmap transfer mode is the culprit of the problems.
+The problem is that the PCI cards off-loads the DMA transfers completely
+without the extra framing required for those serial hardware interfaces which
+are handled in the audio driver and the other kernel stacks (USB etc.).
+
+Anyway, the driver must queue the data timely, so it might be also possible to
+use fine grained timer to check the data availability (appl_ptr moves) from
+the application ahead (like in the interrupt each 1/2 or 1/4 period time). But
+as I wrote, it's not a problem to track the appl_ptr moves using the special
+ioctl, too.
+
+
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
