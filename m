@@ -1,77 +1,50 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH] ASoC: da7213: fix DAI_CLK_EN register bit overwrite
-Date: Fri, 26 Apr 2019 13:09:46 +0000
-Message-ID: <AM5PR1001MB0994D9131132C60AB4DAB7F3803E0@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
-References: <20190425054249.5675-1-logesh.kolandavel@timesys.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v7 0/6] drm/bridge: sii902x: HDMI-audio support and some fixes
+Date: Fri, 26 Apr 2019 16:23:09 +0300
+Message-ID: <cover.1556284767.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190425054249.5675-1-logesh.kolandavel@timesys.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Logesh Kolandavel <logesh.kolandavel@timesys.com>, Support Opensource <Support.Opensource@diasemi.com>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: fabrizio.castro@bp.renesas.com, architt@codeaurora.org, Songjun.Wu@atmel.com, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, voice.shen@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 25 April 2019 06:43, Logesh Kolandavel wrote:
-
-> From: Logesh <logesh.kolandavel@timesys.com>
->=20
-> If the da7213 codec is configured as Master with the DAPM power down
-> delay time set, 'snd_soc_component_write' function overwrites the
-> DAI_CLK_EN bit of DAI_CLK_MODE register which leads to audio play
-> only once until it re-initialize after codec power up.
->=20
-> Signed-off-by: Logesh <logesh.kolandavel@timesys.com>
-> ---
->  sound/soc/codecs/da7213.c | 4 +++-
->  sound/soc/codecs/da7213.h | 2 ++
->  2 files changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-> index 92d006a5283e..306e01684bda 100644
-> --- a/sound/soc/codecs/da7213.c
-> +++ b/sound/soc/codecs/da7213.c
-> @@ -1305,7 +1305,9 @@ static int da7213_set_dai_fmt(struct snd_soc_dai
-> *codec_dai, unsigned int fmt)
->  	/* By default only 64 BCLK per WCLK is supported */
->  	dai_clk_mode |=3D DA7213_DAI_BCLKS_PER_WCLK_64;
->=20
-> -	snd_soc_component_write(component, DA7213_DAI_CLK_MODE,
-> dai_clk_mode);
-> +	snd_soc_component_update_bits(component,
-> DA7213_DAI_CLK_MODE,
-> +			    DA7213_DAI_CLK_POL_MASK |
-> DA7213_DAI_WCLK_POL_MASK,
-
-We'll also need to add the mask DA7213_DAI_BCLKS_PER_WCLK_MASK' here as wel=
-l as
-we're setting 'DA7213_DAI_BCLKS_PER_WCLK_64' for this register just prior t=
-o
-this call. Didn't spot that in earlier conversations.
-
-> +			    dai_clk_mode);
->  	snd_soc_component_update_bits(component, DA7213_DAI_CTRL,
-> DA7213_DAI_FORMAT_MASK,
->  			    dai_ctrl);
->  	snd_soc_component_write(component, DA7213_DAI_OFFSET,
-> dai_offset);
-> diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-> index 5a78dba1dcb5..9d31efc3cfe5 100644
-> --- a/sound/soc/codecs/da7213.h
-> +++ b/sound/soc/codecs/da7213.h
-> @@ -181,7 +181,9 @@
->  #define DA7213_DAI_BCLKS_PER_WCLK_256				(0x3 << 0)
->  #define DA7213_DAI_BCLKS_PER_WCLK_MASK
-> 	(0x3 << 0)
->  #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
-> +#define DA7213_DAI_CLK_POL_MASK
-> 	(0x1 << 2)
->  #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
-> +#define DA7213_DAI_WCLK_POL_MASK				(0x1 << 3)
->  #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
->=20
->  /* DA7213_DAI_CTRL =3D 0x29 */
-> --
-> 2.21.0
+VGhlIGFscmVhZHkgcmV2aWV3ZWQgcGF0Y2hlcyBhcmUgaW4gZnJvbnQuIE5vdCByZXZpZXdlZCBz
+dGlsbCBwYXRjaGVzIDUtNi4gCgpDaGFuZ2VzIHNpbmNlIHY2OgotICJkdC1iaW5kaW5nczogZGlz
+cGxheTogc2lpOTAyeDogQWRkIEhETUkgYXVkaW8gYmluZGluZ3MiCiAtIFJlcGxhY2UgcmVmZXJl
+bmNlcyB0byBBU29DIChhIExpbnV4IHRlcm0pIHdpdGggbW9yZSBnZW5lcmljIHRlcm1zCiAtIEFk
+ZCAic2lsLCItcHJlZml4IHRvICJpMnMtZGF0YS1sYW5lcyItcHJvcGVydHkgaW4gdGhlIGV4YW1w
+bGUgbm9kZQotICJkcm0vYnJpZGdlOiBzaWk5MDJ4OiBJbXBsZW1lbnQgSERNSSBhdWRpbyBzdXBw
+b3J0IgogLSBEbyBub3QgdXNlIHVuc2lnbmVkIGluIHNpaTkwMnhfc2VsZWN0X21jbGtfZGl2KCkn
+cyAiZGlzdGFuY2UiIGNhbGN1bGF0aW9ucwogICB0byBhdm9pZCBiYWQgdHlwZSBwcm9tb3Rpb25z
+IHRvIHVuc2lnbmVkIGNhdXNpbmcgdW5leHBlY3RlZCByZXN1bHRzCiAtIEFsd2F5cyByZXR1cm4g
+dGhlIGNsb2NrIGRpdmlzb3IgYnkgc2lpOTAyeF9zZWxlY3RfbWNsa19kaXYoKQogLSBEaXNhYmxl
+IHJlZ21hcCBsb2NraW5nIHNpbmNlIHRoZSBkcml2ZXIgc3BlY2lmaWMgbG9ja2luZyBzaG91bGQg
+YmUgZW5vdWdoCiAtIEFkZCBtaXNzaW5nIG11dGV4IGxvY2tpbmcgdG8gdGhlIHJlZ2lzdGVyIGFj
+Y2VzcyBpbiB0aGUgaXJxIGhhbmRsZXIKClRoZSBwcmV2aW91cyByb3VuZDoKaHR0cHM6Ly9wYXRj
+aHdvcmsua2VybmVsLm9yZy9jb3Zlci8xMDg4MTE2OS8KCkp5cmkgU2FyaGEgKDUpOgogIGRybS9i
+cmlkZ2U6IHNpaTkwMng6IFNldCBvdXRwdXQgbW9kZSB0byBIRE1JIG9yIERWSSBhY2NvcmRpbmcg
+dG8gRURJRAogIGRybS9icmlkZ2U6IHNpaTkwMng6IHBpeGVsIGNsb2NrIHVuaXQgaXMgMTBrSHog
+aW5zdGVhZCBvZiAxa0h6CiAgZHQtYmluZGluZ3M6IGRpc3BsYXk6IHNpaTkwMng6IFJlbW92ZSB0
+cmFpbGluZyB3aGl0ZSBzcGFjZQogIGR0LWJpbmRpbmdzOiBkaXNwbGF5OiBzaWk5MDJ4OiBBZGQg
+SERNSSBhdWRpbyBiaW5kaW5ncwogIGRybS9icmlkZ2U6IHNpaTkwMng6IEltcGxlbWVudCBIRE1J
+IGF1ZGlvIHN1cHBvcnQKClRvbWkgVmFsa2VpbmVuICgxKToKICBkcm0vYnJpZGdlOiBzaWk5MDJ4
+OiBhZGQgaW5wdXRfYnVzX2ZsYWdzCgogLi4uL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL3NpaTkw
+MngudHh0ICAgICAgIHwgIDQzICstCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL3NpaTkwMnguYyAg
+ICAgICAgICAgICAgfCA0ODggKysrKysrKysrKysrKysrKystCiAyIGZpbGVzIGNoYW5nZWQsIDUy
+MyBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQoKLS0gClRleGFzIEluc3RydW1lbnRzIEZp
+bmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLiBZLXR1bm51cy9CdXNp
+bmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0RvbWljaWxlOiBIZWxzaW5raQoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxp
+bmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
