@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: Add support for HDAudio
-	codecs" to the asoc tree
-Date: Sat, 27 Apr 2019 18:52:42 +0100 (BST)
-Message-ID: <20190427175242.57FD1441D56@finisterre.ee.mobilebroadband>
-References: <20190412160904.30418-14-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: add SKL+ platform DAIs" to
+	the asoc tree
+Date: Sat, 27 Apr 2019 18:52:41 +0100 (BST)
+Message-ID: <20190427175241.BE6E7441D41@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-15-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160904.30418-14-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160904.30418-15-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,13 +18,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: Add support for HDAudio codecs
+   ASoC: SOF: Intel: add SKL+ platform DAIs
 
 has been applied to the asoc tree at
 
@@ -49,28 +49,29 @@ to this mail.
 Thanks,
 Mark
 
->From 5507b8103e2653b4f5fc2e4c339d7eacde00da2d Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:08:56 -0500
-Subject: [PATCH] ASoC: SOF: Intel: Add support for HDAudio codecs
+>From fdd961e37e47f2d450638f3a653cdb96911969ea Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:08:57 -0500
+Subject: [PATCH] ASoC: SOF: Intel: add SKL+ platform DAIs
 
-Add probe, init and cleanup routines for HDaudio.
+Add declarations for DAIs and utilities for link DMA management
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-codec.c | 171 ++++++++++++++++++++++++++++++++
- 1 file changed, 171 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-codec.c
+ sound/soc/sof/intel/hda-dai.c | 351 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 351 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-dai.c
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
 new file mode 100644
-index 000000000000..b8b37f082309
+index 000000000000..830328af19c5
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -0,0 +1,171 @@
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -0,0 +1,351 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -81,166 +82,346 @@ index 000000000000..b8b37f082309
 +// Authors: Keyon Jie <yang.jie@linux.intel.com>
 +//
 +
-+#include <linux/module.h>
++#include <sound/pcm_params.h>
 +#include <sound/hdaudio_ext.h>
-+#include <sound/hda_codec.h>
-+#include <sound/hda_i915.h>
-+#include <sound/sof.h>
-+#include "../ops.h"
++#include "../sof-priv.h"
 +#include "hda.h"
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#include "../../codecs/hdac_hda.h"
-+#endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#define IDISP_VID_INTEL	0x80860000
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
 +
-+/* load the legacy HDA codec driver */
-+#ifdef MODULE
-+static void hda_codec_load_module(struct hda_codec *codec)
++struct hda_pipe_params {
++	u8 host_dma_id;
++	u8 link_dma_id;
++	u32 ch;
++	u32 s_freq;
++	u32 s_fmt;
++	u8 linktype;
++	snd_pcm_format_t format;
++	int link_index;
++	int stream;
++	unsigned int host_bps;
++	unsigned int link_bps;
++};
++
++/*
++ * Unlike GP dma, there is a set of stream registers in hda controller
++ * to control the link dma channels. Each register controls one link
++ * dma channel and the relation is fixed. To make sure FW uses correct
++ * link dma channels, host allocates stream registers and sends the
++ * corresponding link dma channels to FW to allocate link dma channel
++ *
++ * FIXME: this API is abused in the sense that tx_num and rx_num are
++ * passed as arguments, not returned. We need to find a better way to
++ * retrieve the stream tag allocated for the link DMA
++ */
++static int hda_link_dma_get_channels(struct snd_soc_dai *dai,
++				     unsigned int *tx_num,
++				     unsigned int *tx_slot,
++				     unsigned int *rx_num,
++				     unsigned int *rx_slot)
 +{
-+	char alias[MODULE_NAME_LEN];
-+	const char *module = alias;
++	struct hdac_bus *bus;
++	struct hdac_ext_stream *stream;
++	struct snd_pcm_substream substream;
++	struct snd_sof_dev *sdev =
++		snd_soc_component_get_drvdata(dai->component);
 +
-+	snd_hdac_codec_modalias(&codec->core, alias, sizeof(alias));
-+	dev_dbg(&codec->core.dev, "loading codec module: %s\n", module);
-+	request_module(module);
-+}
-+#else
-+static void hda_codec_load_module(struct hda_codec *codec) {}
-+#endif
++	bus = sof_to_bus(sdev);
 +
-+#endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
++	memset(&substream, 0, sizeof(substream));
++	if (*tx_num == 1) {
++		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++		stream = snd_hdac_ext_stream_assign(bus, &substream,
++						    HDAC_EXT_STREAM_TYPE_LINK);
++		if (!stream) {
++			dev_err(bus->dev, "error: failed to find a free hda ext stream for playback");
++			return -EBUSY;
++		}
 +
-+/* probe individual codec */
-+static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
-+{
-+	struct hda_bus *hbus = sof_to_hbus(sdev);
-+	struct hdac_device *hdev;
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+	struct hdac_hda_priv *hda_priv;
-+#endif
-+	u32 hda_cmd = (address << 28) | (AC_NODE_ROOT << 20) |
-+		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
-+	u32 resp = -1;
-+	int ret;
++		snd_soc_dai_set_dma_data(dai, &substream, stream);
++		*tx_slot = hdac_stream(stream)->stream_tag - 1;
 +
-+	mutex_lock(&hbus->core.cmd_mutex);
-+	snd_hdac_bus_send_cmd(&hbus->core, hda_cmd);
-+	snd_hdac_bus_get_response(&hbus->core, address, &resp);
-+	mutex_unlock(&hbus->core.cmd_mutex);
-+	if (resp == -1)
-+		return -EIO;
-+	dev_dbg(sdev->dev, "HDA codec #%d probed OK: response: %x\n",
-+		address, resp);
++		dev_dbg(bus->dev, "link dma channel %d for playback", *tx_slot);
++	}
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
-+	hda_priv = kzalloc(sizeof(*hda_priv), GFP_KERNEL);
-+	if (!hda_priv)
-+		return -ENOMEM;
++	if (*rx_num == 1) {
++		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++		stream = snd_hdac_ext_stream_assign(bus, &substream,
++						    HDAC_EXT_STREAM_TYPE_LINK);
++		if (!stream) {
++			dev_err(bus->dev, "error: failed to find a free hda ext stream for capture");
++			return -EBUSY;
++		}
 +
-+	hda_priv->codec.bus = hbus;
-+	hdev = &hda_priv->codec.core;
++		snd_soc_dai_set_dma_data(dai, &substream, stream);
++		*rx_slot = hdac_stream(stream)->stream_tag - 1;
 +
-+	ret = snd_hdac_ext_bus_device_init(&hbus->core, address, hdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* use legacy bus only for HDA codecs, idisp uses ext bus */
-+	if ((resp & 0xFFFF0000) != IDISP_VID_INTEL) {
-+		hdev->type = HDA_DEV_LEGACY;
-+		hda_codec_load_module(&hda_priv->codec);
++		dev_dbg(bus->dev, "link dma channel %d for capture", *rx_slot);
 +	}
 +
 +	return 0;
-+#else
-+	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
-+	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	if (!hdev)
-+		return -ENOMEM;
-+
-+	ret = snd_hdac_ext_bus_device_init(&hbus->core, address, hdev);
-+
-+	return ret;
-+#endif
 +}
 +
-+/* Codec initialization */
-+int hda_codec_probe_bus(struct snd_sof_dev *sdev)
++static int hda_link_dma_params(struct hdac_ext_stream *stream,
++			       struct hda_pipe_params *params)
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	int i, ret;
++	struct hdac_stream *hstream = &stream->hstream;
++	unsigned char stream_tag = hstream->stream_tag;
++	struct hdac_bus *bus = hstream->bus;
++	struct hdac_ext_link *link;
++	unsigned int format_val;
 +
-+	/* probe codecs in avail slots */
-+	for (i = 0; i < HDA_MAX_CODECS; i++) {
++	snd_hdac_ext_stream_decouple(bus, stream, true);
++	snd_hdac_ext_link_stream_reset(stream);
 +
-+		if (!(bus->codec_mask & (1 << i)))
-+			continue;
++	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
++						 params->format,
++						 params->link_bps, 0);
 +
-+		ret = hda_codec_probe(sdev, i);
++	dev_dbg(bus->dev, "format_val=%d, rate=%d, ch=%d, format=%d\n",
++		format_val, params->s_freq, params->ch, params->format);
++
++	snd_hdac_ext_link_stream_setup(stream, format_val);
++
++	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		list_for_each_entry(link, &bus->hlink_list, list) {
++			if (link->index == params->link_index)
++				snd_hdac_ext_link_set_stream_id(link,
++								stream_tag);
++		}
++	}
++
++	stream->link_prepared = 1;
++
++	return 0;
++}
++
++static int hda_link_hw_params(struct snd_pcm_substream *substream,
++			      struct snd_pcm_hw_params *params,
++			      struct snd_soc_dai *dai)
++{
++	struct hdac_stream *hstream = substream->runtime->private_data;
++	struct hdac_bus *bus = hstream->bus;
++	struct hdac_ext_stream *link_dev;
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct hda_pipe_params p_params = {0};
++	struct hdac_ext_link *link;
++	int stream_tag;
++
++	link_dev = snd_soc_dai_get_dma_data(dai, substream);
++
++	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
++	if (!link)
++		return -EINVAL;
++
++	stream_tag = hdac_stream(link_dev)->stream_tag;
++
++	/* set the stream tag in the codec dai dma params  */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
++	else
++		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
++
++	p_params.s_fmt = snd_pcm_format_width(params_format(params));
++	p_params.ch = params_channels(params);
++	p_params.s_freq = params_rate(params);
++	p_params.stream = substream->stream;
++	p_params.link_dma_id = stream_tag - 1;
++	p_params.link_index = link->index;
++	p_params.format = params_format(params);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		p_params.link_bps = codec_dai->driver->playback.sig_bits;
++	else
++		p_params.link_bps = codec_dai->driver->capture.sig_bits;
++
++	return hda_link_dma_params(link_dev, &p_params);
++}
++
++static int hda_link_pcm_prepare(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_sof_dev *sdev =
++		snd_soc_component_get_drvdata(dai->component);
++	struct snd_sof_pcm *spcm;
++	int stream = substream->stream;
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
++		return -EINVAL;
++
++	/* setup hw_params again only if resuming from system suspend */
++	if (!spcm->hw_params_upon_resume[stream])
++		return 0;
++
++	dev_dbg(sdev->dev, "hda: prepare stream %d dir %d\n",
++		spcm->pcm.pcm_id, substream->stream);
++
++	return hda_link_hw_params(substream, &rtd->dpcm[stream].hw_params,
++				  dai);
++}
++
++static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
++				int cmd, struct snd_soc_dai *dai)
++{
++	struct hdac_ext_stream *link_dev =
++				snd_soc_dai_get_dma_data(dai, substream);
++	int ret;
++
++	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* set up hw_params */
++		ret = hda_link_pcm_prepare(substream, dai);
 +		if (ret < 0) {
-+			dev_err(bus->dev, "error: codec #%d probe error, ret: %d\n",
-+				i, ret);
++			dev_err(dai->dev,
++				"error: setting up hw_params during resume\n");
 +			return ret;
++		}
++
++		/* fallthrough */
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		snd_hdac_ext_link_stream_start(link_dev);
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		snd_hdac_ext_link_stream_clear(link_dev);
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++/*
++ * FIXME: This API is also abused since it's used for two purposes.
++ * when the substream argument is NULL this function is used for cleanups
++ * that aren't necessarily required, and called explicitly by handling
++ * ASoC core structures, which is not recommended.
++ * This part will be reworked in follow-up patches.
++ */
++static int hda_link_hw_free(struct snd_pcm_substream *substream,
++			    struct snd_soc_dai *dai)
++{
++	const char *name;
++	unsigned int stream_tag;
++	struct hdac_bus *bus;
++	struct hdac_ext_link *link;
++	struct hdac_stream *hstream;
++	struct hdac_ext_stream *stream;
++	struct snd_soc_pcm_runtime *rtd;
++	struct hdac_ext_stream *link_dev;
++	struct snd_pcm_substream pcm_substream;
++
++	memset(&pcm_substream, 0, sizeof(pcm_substream));
++	if (substream) {
++		hstream = substream->runtime->private_data;
++		bus = hstream->bus;
++		rtd = snd_pcm_substream_chip(substream);
++		link_dev = snd_soc_dai_get_dma_data(dai, substream);
++		snd_hdac_ext_stream_decouple(bus, link_dev, false);
++		name = rtd->codec_dai->component->name;
++		link = snd_hdac_ext_bus_get_link(bus, name);
++		if (!link)
++			return -EINVAL;
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			stream_tag = hdac_stream(link_dev)->stream_tag;
++			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++		}
++
++		link_dev->link_prepared = 0;
++	} else {
++		/* release all hda streams when dai link is unloaded */
++		pcm_substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
++		if (stream) {
++			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
++			snd_hdac_ext_stream_release(stream,
++						    HDAC_EXT_STREAM_TYPE_LINK);
++		}
++
++		pcm_substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
++		if (stream) {
++			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
++			snd_hdac_ext_stream_release(stream,
++						    HDAC_EXT_STREAM_TYPE_LINK);
 +		}
 +	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(hda_codec_probe_bus);
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)
++static const struct snd_soc_dai_ops hda_link_dai_ops = {
++	.hw_params = hda_link_hw_params,
++	.hw_free = hda_link_hw_free,
++	.trigger = hda_link_pcm_trigger,
++	.prepare = hda_link_pcm_prepare,
++	.get_channel_map = hda_link_dma_get_channels,
++};
++#endif
 +
-+void hda_codec_i915_get(struct snd_sof_dev *sdev)
++/*
++ * common dai driver for skl+ platforms.
++ * some products who use this DAI array only physically have a subset of
++ * the DAIs, but no harm is done here by adding the whole set.
++ */
++struct snd_soc_dai_driver skl_dai[] = {
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+
-+	dev_dbg(bus->dev, "Turning i915 HDAC power on\n");
-+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
-+}
-+EXPORT_SYMBOL(hda_codec_i915_get);
-+
-+void hda_codec_i915_put(struct snd_sof_dev *sdev)
++	.name = "SSP0 Pin",
++},
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+
-+	dev_dbg(bus->dev, "Turning i915 HDAC power off\n");
-+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
-+}
-+EXPORT_SYMBOL(hda_codec_i915_put);
-+
-+int hda_codec_i915_init(struct snd_sof_dev *sdev)
++	.name = "SSP1 Pin",
++},
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	int ret;
-+
-+	/* i915 exposes a HDA codec for HDMI audio */
-+	ret = snd_hdac_i915_init(bus);
-+	if (ret < 0)
-+		return ret;
-+
-+	hda_codec_i915_get(sdev);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(hda_codec_i915_init);
-+
-+int hda_codec_i915_exit(struct snd_sof_dev *sdev)
++	.name = "SSP2 Pin",
++},
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	int ret;
-+
-+	hda_codec_i915_put(sdev);
-+
-+	ret = snd_hdac_i915_exit(bus);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(hda_codec_i915_exit);
-+
-+#endif /* CONFIG_SND_SOC_HDAC_HDMI */
-+
-+MODULE_LICENSE("Dual BSD/GPL");
++	.name = "SSP3 Pin",
++},
++{
++	.name = "SSP4 Pin",
++},
++{
++	.name = "SSP5 Pin",
++},
++{
++	.name = "DMIC01 Pin",
++},
++{
++	.name = "DMIC16k Pin",
++},
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++{
++	.name = "iDisp1 Pin",
++	.ops = &hda_link_dai_ops,
++},
++{
++	.name = "iDisp2 Pin",
++	.ops = &hda_link_dai_ops,
++},
++{
++	.name = "iDisp3 Pin",
++	.ops = &hda_link_dai_ops,
++},
++{
++	.name = "Analog CPU DAI",
++	.ops = &hda_link_dai_ops,
++},
++{
++	.name = "Digital CPU DAI",
++	.ops = &hda_link_dai_ops,
++},
++{
++	.name = "Alt Analog CPU DAI",
++	.ops = &hda_link_dai_ops,
++},
++#endif
++};
 -- 
 2.20.1
