@@ -1,56 +1,148 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da7219: Use clk_round_rate to handle enabled
- bclk/wclk case
-Date: Sun, 28 Apr 2019 02:19:55 +0900
-Message-ID: <20190427171955.GH14916@sirena.org.uk>
-References: <20190426125925.04F3F3FB4A@swsrvapps-01.diasemi.com>
+Subject: Applied "ASoC: Intel: select relevant machine drivers
+	for SOF" to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:38 +0100 (BST)
+Message-ID: <20190427175238.C9F56441D3B@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-22-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r5lq+205vWdkqwtk"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190426125925.04F3F3FB4A@swsrvapps-01.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Akshu Agrawal <Akshu.Agrawal@amd.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20190412160904.30418-22-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---r5lq+205vWdkqwtk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: Intel: select relevant machine drivers for SOF
 
-On Fri, Apr 26, 2019 at 01:59:24PM +0100, Adam Thomson wrote:
+has been applied to the asoc tree at
 
-> +		/*
-> +		 * Rounding the rate here avoids failure trying to set a new
-> +		 * rate on an already enabled wclk. In that instance this will
-> +		 * just set the same rate as is currently in use, and so should
-> +		 * continue without problem.
-> +		 */
-> +		sr = clk_round_rate(wclk, sr);
->  		ret = clk_set_rate(wclk, sr);
->  		if (ret) {
->  			dev_err(component->dev,
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
-Don't we need to validate that the rounded rate is actually viable for
-the parameters we're trying to set here?  If there's missing constraints
-causing something to try to do something unsupportable then we should
-return an error rather than silently accept.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---r5lq+205vWdkqwtk
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzEjzoACgkQJNaLcl1U
-h9ALMQf+PNlF6FLSTdYpAXPOqsdtjPPZj8JtUbmOAWcn9I/uWpH1kt8CRbciXAzW
-GkU6ykRQUDErfkyZzMEE//9l+OZ//LHMAJjq53SRUIMj21RCMc81bH4d5OGD5zms
-2N+cAZUBqUN6xOPfQdaGTWpFoXgIjZ13lDiNnM0Jw5RkV+3CVWMPNJlnOWX8jdog
-S1gdGvRGyZn0wZ8iqsTISJ+phqtlFxgsNLM5DXPs5o/4RdjhHRW1u+L4BtOz1f8H
-Mso/GrYbrgPSvn/9vah4vbkkHrwAbuy68dejwyEQtAFU80BZj0sG3K4TrjBiivn5
-Rlm43XIswMUKG8rx1G6jxRVYWs2y6A==
-=65do
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---r5lq+205vWdkqwtk--
+Thanks,
+Mark
+
+>From 10b02b53a99865f2005497c3933342c1f7946cd6 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:09:04 -0500
+Subject: [PATCH] ASoC: Intel: select relevant machine drivers for SOF
+
+SOF can only support specific machine drivers, handle dependencies
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/Kconfig | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 12d6b73e9531..bf6d7a11f94a 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -1,6 +1,6 @@
+ menuconfig SND_SOC_INTEL_MACH
+ 	bool "Intel Machine drivers"
+-	depends on SND_SOC_INTEL_SST_TOPLEVEL
++	depends on SND_SOC_INTEL_SST_TOPLEVEL || SND_SOC_SOF_INTEL_TOPLEVEL
+ 	help
+          Intel ASoC Machine Drivers. If you have a Intel machine that
+          has an audio controller with a DSP and I2S or DMIC port, then
+@@ -24,6 +24,10 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 	  Say Y or m if you have such a device.
+ 	  If unsure select "N".
+ 
++endif ## SND_SOC_INTEL_HASWELL
++
++if SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
++
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "Broadwell with RT5677 codec"
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
+@@ -43,7 +47,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	  Ultrabook platforms.
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+-endif ## SND_SOC_INTEL_HASWELL
++endif ## SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
+ 
+ if SND_SOC_INTEL_BAYTRAIL
+ 
+@@ -68,7 +72,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 
+ endif ## SND_SOC_INTEL_BAYTRAIL
+ 
+-if SND_SST_ATOM_HIFI2_PLATFORM
++if SND_SST_ATOM_HIFI2_PLATFORM || SND_SOC_SOF_BAYTRAIL
+ 
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	tristate "Baytrail and Baytrail-CR with RT5640 codec"
+@@ -158,6 +162,10 @@ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+ 
++endif ## SND_SST_ATOM_HIFI2_PLATFORM || SND_SOC_SOF_BAYTRAIL
++
++if SND_SST_ATOM_HIFI2_PLATFORM
++
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+@@ -314,7 +322,7 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
+ 
+ endif ## SND_SOC_INTEL_KBL
+ 
+-if SND_SOC_INTEL_GLK
++if SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
+ 
+ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
+@@ -330,9 +338,9 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	   Say Y if you have such a device.
+ 	   If unsure select "N".
+ 
+-endif ## SND_SOC_INTEL_GLK
++endif ## SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
+ 
+-if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
++if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
+ 
+ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+ 	tristate "SKL/KBL/BXT/APL with HDA Codecs"
+@@ -344,6 +352,6 @@ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+           Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+ 
+-endif ## SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
++endif ## SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
+ 
+ endif ## SND_SOC_INTEL_MACH
+-- 
+2.20.1
