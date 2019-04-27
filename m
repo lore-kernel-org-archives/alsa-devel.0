@@ -1,73 +1,41 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: avoid Oops if DMA setup fails
-Date: Fri, 26 Apr 2019 16:03:47 -0500
-Message-ID: <0b030b85-00c8-2e35-3064-bb764aaff0f6@linux.intel.com>
-References: <20190426164740.211139-1-zwisler@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20190426164740.211139-1-zwisler@google.com>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Ross Zwisler <zwisler@chromium.org>, linux-kernel@vger.kernel.org
-Cc: Ross Zwisler <zwisler@google.com>, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+From: Wenwen Wang <wang6495@umn.edu>
+Subject: [PATCH] ALSA: usb-audio: Fix a memory leak bug
+Date: Sat, 27 Apr 2019 01:06:46 -0500
+Message-ID: <1556345208-1210-1-git-send-email-wang6495@umn.edu>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wenwen Wang <wang6495@umn.edu>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, Ruslan Bilovol <ruslan.bilovol@gmail.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/26/19 11:47 AM, Ross Zwisler wrote:
-> Currently in sst_dsp_new() if we get an error return from sst_dma_new()
-> we just print an error message and then still complete the function
-> successfully.  This means that we are trying to run without sst->dma
-> properly set up, which will result in NULL pointer dereference when
-> sst->dma is later used.  This was happening for me in
-> sst_dsp_dma_get_channel():
-> 
->          struct sst_dma *dma = dsp->dma;
-> 	...
->          dma->ch = dma_request_channel(mask, dma_chan_filter, dsp);
-> 
-> This resulted in:
-> 
->     BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
->     IP: sst_dsp_dma_get_channel+0x4f/0x125 [snd_soc_sst_firmware]
-> 
-> Fix this by adding proper error handling for the case where we fail to
-> set up DMA.
-> 
-> Signed-off-by: Ross Zwisler <zwisler@google.com>
-> Cc: stable@vger.kernel.org
-> ---
->   sound/soc/intel/common/sst-firmware.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-> index 1e067504b6043..9be3a793a55e3 100644
-> --- a/sound/soc/intel/common/sst-firmware.c
-> +++ b/sound/soc/intel/common/sst-firmware.c
-> @@ -1251,11 +1251,15 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
->   		goto irq_err;
->   
->   	err = sst_dma_new(sst);
-> -	if (err)
-> +	if (err)  {
->   		dev_warn(dev, "sst_dma_new failed %d\n", err);
-> +		goto dma_err;
-> +	}
+In parse_audio_selector_unit(), the string array 'namelist' is allocated
+through kmalloc_array(), and each string pointer in this array, i.e.,
+'namelist[]', is allocated through kmalloc() in the following for loop.
+Then, a control instance 'kctl' is created by invoking snd_ctl_new1(). If
+an error occurs during the creation process, the string array 'namelist',
+including all string pointers in the array 'namelist[]', should be freed,
+before the error code ENOMEM is returned. However, the current code does
+not free 'namelist[]', resulting in memory leaks.
 
-Thanks for the patch.
-The fix looks correct, but does it make sense to keep a dev_warn() here? 
-Should it be changed to dev_err() instead since as you mentioned it's 
-fatal to keep going.
-Also you may want to mention in the commit message that this should only 
-impact Broadwell and maybe the legacy Baytrail driver. IIRC we don't use 
-the DMAs in other cases.
+To fix the above issue, free all string pointers 'namelist[]' in a loop.
 
->   
->   	return sst;
->   
-> +dma_err:
-> +	free_irq(sst->irq, sst);
->   irq_err:
->   	if (sst->ops->free)
->   		sst->ops->free(sst);
-> 
+Signed-off-by: Wenwen Wang <wang6495@umn.edu>
+---
+ sound/usb/mixer.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 73d7dff..53dccbf 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2675,6 +2675,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 	kctl = snd_ctl_new1(&mixer_selectunit_ctl, cval);
+ 	if (! kctl) {
+ 		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
++		for (i = 0; i < desc->bNrInPins; i++)
++			kfree(namelist[i]);
+ 		kfree(namelist);
+ 		kfree(cval);
+ 		return -ENOMEM;
+-- 
+2.7.4
