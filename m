@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add utils" to the asoc tree
-Date: Sat, 27 Apr 2019 18:52:56 +0100 (BST)
-Message-ID: <20190427175256.518F0441D3B@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-15-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add PM support" to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:58 +0100 (BST)
+Message-ID: <20190427175258.0F411441D57@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-12-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-15-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-12-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,13 +17,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add utils
+   ASoC: SOF: Add PM support
 
 has been applied to the asoc tree at
 
@@ -48,30 +47,41 @@ to this mail.
 Thanks,
 Mark
 
->From 3bafac46065eb7ea6f3e3fcbdb8b70b66f6c71b4 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:19 -0500
-Subject: [PATCH] ASoC: SOF: Add utils
+>From 8920153c6461da69e49014a35275dc80cbf6ba14 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:05:16 -0500
+Subject: [PATCH] ASoC: SOF: Add PM support
 
-Helpers to set-up back-ends, create platform devices and common
-IO/block read/write operations
+Add support for saving and restoring DSP context in D3 to host DDR.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+The suspend callback includes: suspend all pcm's stream that are running,
+send CTX_SAVE ipc, drop all ipc's, release trace dma and then
+power off the DSP.
+
+And the resume callback performs the following steps: load FW, run FW,
+re-initialize trace, restore pipeline, restore the kcontrol values
+and finally send the ctx restore ipc to the dsp.
+
+The streams that are suspended are resumed by the ALSA resume trigger.
+If the streams are paused during system suspend, they are marked
+explicitly so they can be restored during PAUSE_RELEASE.
+
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/utils.c | 112 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
- create mode 100644 sound/soc/sof/utils.c
+ sound/soc/sof/pm.c | 385 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 385 insertions(+)
+ create mode 100644 sound/soc/sof/pm.c
 
-diff --git a/sound/soc/sof/utils.c b/sound/soc/sof/utils.c
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
 new file mode 100644
-index 000000000000..2ac4c3da0320
+index 000000000000..fc599e1b6f65
 --- /dev/null
-+++ b/sound/soc/sof/utils.c
-@@ -0,0 +1,112 @@
++++ b/sound/soc/sof/pm.c
+@@ -0,0 +1,385 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -79,110 +89,383 @@ index 000000000000..2ac4c3da0320
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Author: Keyon Jie <yang.jie@linux.intel.com>
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/platform_device.h>
-+#include <sound/soc.h>
-+#include <sound/sof.h>
++#include "ops.h"
 +#include "sof-priv.h"
 +
-+/*
-+ * Register IO
-+ *
-+ * The sof_io_xyz() wrappers are typically referenced in snd_sof_dsp_ops
-+ * structures and cannot be inlined.
-+ */
-+
-+void sof_io_write(struct snd_sof_dev *sdev, void __iomem *addr, u32 value)
++static int sof_restore_kcontrols(struct snd_sof_dev *sdev)
 +{
-+	writel(value, addr);
++	struct snd_sof_control *scontrol;
++	int ipc_cmd, ctrl_type;
++	int ret = 0;
++
++	/* restore kcontrol values */
++	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
++		/* reset readback offset for scontrol after resuming */
++		scontrol->readback_offset = 0;
++
++		/* notify DSP of kcontrol values */
++		switch (scontrol->cmd) {
++		case SOF_CTRL_CMD_VOLUME:
++		case SOF_CTRL_CMD_ENUM:
++		case SOF_CTRL_CMD_SWITCH:
++			ipc_cmd = SOF_IPC_COMP_SET_VALUE;
++			ctrl_type = SOF_CTRL_TYPE_VALUE_CHAN_SET;
++			ret = snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
++							    ipc_cmd, ctrl_type,
++							    scontrol->cmd,
++							    true);
++			break;
++		case SOF_CTRL_CMD_BINARY:
++			ipc_cmd = SOF_IPC_COMP_SET_DATA;
++			ctrl_type = SOF_CTRL_TYPE_DATA_SET;
++			ret = snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
++							    ipc_cmd, ctrl_type,
++							    scontrol->cmd,
++							    true);
++			break;
++
++		default:
++			break;
++		}
++
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed kcontrol value set for widget: %d\n",
++				scontrol->comp_id);
++
++			return ret;
++		}
++	}
++
++	return 0;
 +}
-+EXPORT_SYMBOL(sof_io_write);
 +
-+u32 sof_io_read(struct snd_sof_dev *sdev, void __iomem *addr)
++static int sof_restore_pipelines(struct snd_sof_dev *sdev)
 +{
-+	return readl(addr);
++	struct snd_sof_widget *swidget;
++	struct snd_sof_route *sroute;
++	struct sof_ipc_pipe_new *pipeline;
++	struct snd_sof_dai *dai;
++	struct sof_ipc_comp_dai *comp_dai;
++	struct sof_ipc_cmd_hdr *hdr;
++	int ret;
++
++	/* restore pipeline components */
++	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
++		struct sof_ipc_comp_reply r;
++
++		/* skip if there is no private data */
++		if (!swidget->private)
++			continue;
++
++		switch (swidget->id) {
++		case snd_soc_dapm_dai_in:
++		case snd_soc_dapm_dai_out:
++			dai = swidget->private;
++			comp_dai = &dai->comp_dai;
++			ret = sof_ipc_tx_message(sdev->ipc,
++						 comp_dai->comp.hdr.cmd,
++						 comp_dai, sizeof(*comp_dai),
++						 &r, sizeof(r));
++			break;
++		case snd_soc_dapm_scheduler:
++
++			/*
++			 * During suspend, all DSP cores are powered off.
++			 * Therefore upon resume, create the pipeline comp
++			 * and power up the core that the pipeline is
++			 * scheduled on.
++			 */
++			pipeline = swidget->private;
++			ret = sof_load_pipeline_ipc(sdev, pipeline, &r);
++			break;
++		default:
++			hdr = swidget->private;
++			ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd,
++						 swidget->private, hdr->size,
++						 &r, sizeof(r));
++			break;
++		}
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to load widget type %d with ID: %d\n",
++				swidget->widget->id, swidget->comp_id);
++
++			return ret;
++		}
++	}
++
++	/* restore pipeline connections */
++	list_for_each_entry_reverse(sroute, &sdev->route_list, list) {
++		struct sof_ipc_pipe_comp_connect *connect;
++		struct sof_ipc_reply reply;
++
++		/* skip if there's no private data */
++		if (!sroute->private)
++			continue;
++
++		connect = sroute->private;
++
++		/* send ipc */
++		ret = sof_ipc_tx_message(sdev->ipc,
++					 connect->hdr.cmd,
++					 connect, sizeof(*connect),
++					 &reply, sizeof(reply));
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to load route sink %s control %s source %s\n",
++				sroute->route->sink,
++				sroute->route->control ? sroute->route->control
++					: "none",
++				sroute->route->source);
++
++			return ret;
++		}
++	}
++
++	/* restore dai links */
++	list_for_each_entry_reverse(dai, &sdev->dai_list, list) {
++		struct sof_ipc_reply reply;
++		struct sof_ipc_dai_config *config = dai->dai_config;
++
++		if (!config) {
++			dev_err(sdev->dev, "error: no config for DAI %s\n",
++				dai->name);
++			continue;
++		}
++
++		ret = sof_ipc_tx_message(sdev->ipc,
++					 config->hdr.cmd, config,
++					 config->hdr.size,
++					 &reply, sizeof(reply));
++
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to set dai config for %s\n",
++				dai->name);
++
++			return ret;
++		}
++	}
++
++	/* complete pipeline */
++	list_for_each_entry(swidget, &sdev->widget_list, list) {
++		switch (swidget->id) {
++		case snd_soc_dapm_scheduler:
++			swidget->complete =
++				snd_sof_complete_pipeline(sdev, swidget);
++			break;
++		default:
++			break;
++		}
++	}
++
++	/* restore pipeline kcontrols */
++	ret = sof_restore_kcontrols(sdev);
++	if (ret < 0)
++		dev_err(sdev->dev,
++			"error: restoring kcontrols after resume\n");
++
++	return ret;
 +}
-+EXPORT_SYMBOL(sof_io_read);
 +
-+void sof_io_write64(struct snd_sof_dev *sdev, void __iomem *addr, u64 value)
++static int sof_send_pm_ipc(struct snd_sof_dev *sdev, int cmd)
 +{
-+	writeq(value, addr);
++	struct sof_ipc_pm_ctx pm_ctx;
++	struct sof_ipc_reply reply;
++
++	memset(&pm_ctx, 0, sizeof(pm_ctx));
++
++	/* configure ctx save ipc message */
++	pm_ctx.hdr.size = sizeof(pm_ctx);
++	pm_ctx.hdr.cmd = SOF_IPC_GLB_PM_MSG | cmd;
++
++	/* send ctx save ipc to dsp */
++	return sof_ipc_tx_message(sdev->ipc, pm_ctx.hdr.cmd, &pm_ctx,
++				 sizeof(pm_ctx), &reply, sizeof(reply));
 +}
-+EXPORT_SYMBOL(sof_io_write64);
 +
-+u64 sof_io_read64(struct snd_sof_dev *sdev, void __iomem *addr)
++static void sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
 +{
-+	return readq(addr);
-+}
-+EXPORT_SYMBOL(sof_io_read64);
++	struct snd_pcm_substream *substream;
++	struct snd_sof_pcm *spcm;
++	snd_pcm_state_t state;
++	int dir;
 +
-+/*
-+ * IPC Mailbox IO
-+ */
++	/*
++	 * SOF requires hw_params to be set-up internally upon resume.
++	 * So, set the flag to indicate this for those streams that
++	 * have been suspended.
++	 */
++	list_for_each_entry(spcm, &sdev->pcm_list, list) {
++		for (dir = 0; dir <= SNDRV_PCM_STREAM_CAPTURE; dir++) {
++			substream = spcm->stream[dir].substream;
++			if (!substream || !substream->runtime)
++				continue;
 +
-+void sof_mailbox_write(struct snd_sof_dev *sdev, u32 offset,
-+		       void *message, size_t bytes)
-+{
-+	void __iomem *dest = sdev->bar[sdev->mailbox_bar] + offset;
-+
-+	memcpy_toio(dest, message, bytes);
-+}
-+EXPORT_SYMBOL(sof_mailbox_write);
-+
-+void sof_mailbox_read(struct snd_sof_dev *sdev, u32 offset,
-+		      void *message, size_t bytes)
-+{
-+	void __iomem *src = sdev->bar[sdev->mailbox_bar] + offset;
-+
-+	memcpy_fromio(message, src, bytes);
-+}
-+EXPORT_SYMBOL(sof_mailbox_read);
-+
-+/*
-+ * Memory copy.
-+ */
-+
-+void sof_block_write(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *src,
-+		     size_t size)
-+{
-+	void __iomem *dest = sdev->bar[bar] + offset;
-+	const u8 *src_byte = src;
-+	u32 affected_mask;
-+	u32 tmp;
-+	int m, n;
-+
-+	m = size / 4;
-+	n = size % 4;
-+
-+	/* __iowrite32_copy use 32bit size values so divide by 4 */
-+	__iowrite32_copy(dest, src, m);
-+
-+	if (n) {
-+		affected_mask = (1 << (8 * n)) - 1;
-+
-+		/* first read the 32bit data of dest, then change affected
-+		 * bytes, and write back to dest. For unaffected bytes, it
-+		 * should not be changed
-+		 */
-+		tmp = ioread32(dest + m * 4);
-+		tmp &= ~affected_mask;
-+
-+		tmp |= *(u32 *)(src_byte + m * 4) & affected_mask;
-+		iowrite32(tmp, dest + m * 4);
++			state = substream->runtime->status->state;
++			if (state == SNDRV_PCM_STATE_SUSPENDED)
++				spcm->hw_params_upon_resume[dir] = 1;
++		}
 +	}
 +}
-+EXPORT_SYMBOL(sof_block_write);
 +
-+void sof_block_read(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *dest,
-+		    size_t size)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
++static void sof_cache_debugfs(struct snd_sof_dev *sdev)
 +{
-+	void __iomem *src = sdev->bar[bar] + offset;
++	struct snd_sof_dfsentry *dfse;
 +
-+	memcpy_fromio(dest, src, size);
++	list_for_each_entry(dfse, &sdev->dfsentry_list, list) {
++
++		/* nothing to do if debugfs buffer is not IO mem */
++		if (dfse->type == SOF_DFSENTRY_TYPE_BUF)
++			continue;
++
++		/* cache memory that is only accessible in D0 */
++		if (dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY)
++			memcpy_fromio(dfse->cache_buf, dfse->io_mem,
++				      dfse->size);
++	}
 +}
-+EXPORT_SYMBOL(sof_block_read);
++#endif
++
++static int sof_resume(struct device *dev, bool runtime_resume)
++{
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	int ret;
++
++	/* do nothing if dsp resume callbacks are not set */
++	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
++		return 0;
++
++	/*
++	 * if the runtime_resume flag is set, call the runtime_resume routine
++	 * or else call the system resume routine
++	 */
++	if (runtime_resume)
++		ret = snd_sof_dsp_runtime_resume(sdev);
++	else
++		ret = snd_sof_dsp_resume(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to power up DSP after resume\n");
++		return ret;
++	}
++
++	/* load the firmware */
++	ret = snd_sof_load_firmware(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to load DSP firmware after resume %d\n",
++			ret);
++		return ret;
++	}
++
++	/* boot the firmware */
++	ret = snd_sof_run_firmware(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to boot DSP firmware after resume %d\n",
++			ret);
++		return ret;
++	}
++
++	/* resume DMA trace, only need send ipc */
++	ret = snd_sof_init_trace_ipc(sdev);
++	if (ret < 0) {
++		/* non fatal */
++		dev_warn(sdev->dev,
++			 "warning: failed to init trace after resume %d\n",
++			 ret);
++	}
++
++	/* restore pipelines */
++	ret = sof_restore_pipelines(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to restore pipeline after resume %d\n",
++			ret);
++		return ret;
++	}
++
++	/* notify DSP of system resume */
++	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_RESTORE);
++	if (ret < 0)
++		dev_err(sdev->dev,
++			"error: ctx_restore ipc error during resume %d\n",
++			ret);
++
++	return ret;
++}
++
++static int sof_suspend(struct device *dev, bool runtime_suspend)
++{
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	int ret;
++
++	/* do nothing if dsp suspend callback is not set */
++	if (!sof_ops(sdev)->suspend)
++		return 0;
++
++	/* release trace */
++	snd_sof_release_trace(sdev);
++
++	/* set restore_stream for all streams during system suspend */
++	if (!runtime_suspend)
++		sof_set_hw_params_upon_resume(sdev);
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
++	/* cache debugfs contents during runtime suspend */
++	if (runtime_suspend)
++		sof_cache_debugfs(sdev);
++#endif
++	/* notify DSP of upcoming power down */
++	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: ctx_save ipc error during suspend %d\n",
++			ret);
++		return ret;
++	}
++
++	/* power down all DSP cores */
++	if (runtime_suspend)
++		ret = snd_sof_dsp_runtime_suspend(sdev, 0);
++	else
++		ret = snd_sof_dsp_suspend(sdev, 0);
++	if (ret < 0)
++		dev_err(sdev->dev,
++			"error: failed to power down DSP during suspend %d\n",
++			ret);
++
++	return ret;
++}
++
++int snd_sof_runtime_suspend(struct device *dev)
++{
++	return sof_suspend(dev, true);
++}
++EXPORT_SYMBOL(snd_sof_runtime_suspend);
++
++int snd_sof_runtime_resume(struct device *dev)
++{
++	return sof_resume(dev, true);
++}
++EXPORT_SYMBOL(snd_sof_runtime_resume);
++
++int snd_sof_resume(struct device *dev)
++{
++	return sof_resume(dev, false);
++}
++EXPORT_SYMBOL(snd_sof_resume);
++
++int snd_sof_suspend(struct device *dev)
++{
++	return sof_suspend(dev, false);
++}
++EXPORT_SYMBOL(snd_sof_suspend);
 -- 
 2.20.1
