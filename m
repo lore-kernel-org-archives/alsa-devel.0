@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add Sound Open Firmware KControl
-	support" to the asoc tree
-Date: Sat, 27 Apr 2019 18:53:03 +0100 (BST)
-Message-ID: <20190427175303.BBB51441D3D@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add PCM operations support" to the
+	asoc tree
+Date: Sat, 27 Apr 2019 18:53:01 +0100 (BST)
+Message-ID: <20190427175301.EDA93441D3C@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-6-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-6-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,7 +23,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add Sound Open Firmware KControl support
+   ASoC: SOF: Add PCM operations support
 
 has been applied to the asoc tree at
 
@@ -48,41 +48,34 @@ to this mail.
 Thanks,
 Mark
 
->From c3078f5397046755ddcd0447d202124c398469c5 Mon Sep 17 00:00:00 2001
+>From 868bd00f495514630a52161052d2fe155af599fe Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:07 -0500
-Subject: [PATCH] ASoC: SOF: Add Sound Open Firmware KControl support
+Date: Fri, 12 Apr 2019 11:05:10 -0500
+Subject: [PATCH] ASoC: SOF: Add PCM operations support
 
-SOF exposes regular ALSA Kcontrols that are defined by topology. This
-patch converts the Kcontrol IO to DSP IPC.
+Add support for exposing PCMs to userspace. PCMs are defined by topology
+and the operations in this patch map to SOF IPC calls.
 
-The current implementation is aligned with previous Intel solutions,
-but is not optimal and can be improved:
-a) for every get/put the host wakes up the DSP and generates an
-IPC. The kernel should cache the values and generate an IPC only when
-strictly necessary.
-b) the firmware can be implemented to only instantiate the pipelines
-and related control-related parts that are needed at a given time, and
-power-gate the relevant SRAM blocks.
-
-The development tasks for these two improvements has started, once
-validated they will be provided in an update.
+The .get_module_upon_open field is set to allow for module load/unload
+tests. There is no risk of the sof-pci/acpi-dev module being removed
+while the platform components are in use. This may need to be
+revisited when DT platforms are supported.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/control.c | 552 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 552 insertions(+)
- create mode 100644 sound/soc/sof/control.c
+ sound/soc/sof/pcm.c | 719 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 719 insertions(+)
+ create mode 100644 sound/soc/sof/pcm.c
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
 new file mode 100644
-index 000000000000..11762c4580f1
+index 000000000000..be4984c4da4e
 --- /dev/null
-+++ b/sound/soc/sof/control.c
-@@ -0,0 +1,552 @@
++++ b/sound/soc/sof/pcm.c
+@@ -0,0 +1,719 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -92,548 +85,715 @@ index 000000000000..11762c4580f1
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
-+
-+/* Mixer Controls */
++// PCM Layer, interface between ALSA and IPC.
++//
 +
 +#include <linux/pm_runtime.h>
++#include <sound/pcm_params.h>
++#include <sound/sof.h>
 +#include "sof-priv.h"
++#include "ops.h"
 +
-+static inline u32 mixer_to_ipc(unsigned int value, u32 *volume_map, int size)
++#define DRV_NAME	"sof-audio-component"
++
++/* Create DMA buffer page table for DSP */
++static int create_page_table(struct snd_pcm_substream *substream,
++			     unsigned char *dma_area, size_t size)
 +{
-+	if (value >= size)
-+		return volume_map[size - 1];
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	struct snd_dma_buffer *dmab = snd_pcm_get_dma_buf(substream);
++	int stream = substream->stream;
 +
-+	return volume_map[value];
-+}
-+
-+static inline u32 ipc_to_mixer(u32 value, u32 *volume_map, int size)
-+{
-+	int i;
-+
-+	for (i = 0; i < size; i++) {
-+		if (volume_map[i] >= value)
-+			return i;
-+	}
-+
-+	return i - 1;
-+}
-+
-+int snd_sof_volume_get(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *sm =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = sm->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int err, ret;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: volume get failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* get all the mixer data from DSP */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_GET_VALUE,
-+				      SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				      SOF_CTRL_CMD_VOLUME,
-+				      false);
-+
-+	/* read back each channel */
-+	for (i = 0; i < channels; i++)
-+		ucontrol->value.integer.value[i] =
-+			ipc_to_mixer(cdata->chanv[i].value,
-+				     scontrol->volume_table, sm->max + 1);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: volume get failed to idle %d\n",
-+				    err);
-+	return 0;
-+}
-+
-+int snd_sof_volume_put(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *sm =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = sm->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int ret, err;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: volume put failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* update each channel */
-+	for (i = 0; i < channels; i++) {
-+		cdata->chanv[i].value =
-+			mixer_to_ipc(ucontrol->value.integer.value[i],
-+				     scontrol->volume_table, sm->max + 1);
-+		cdata->chanv[i].channel = i;
-+	}
-+
-+	/* notify DSP of mixer updates */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_SET_VALUE,
-+				      SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				      SOF_CTRL_CMD_VOLUME,
-+				      true);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: volume put failed to idle %d\n",
-+				    err);
-+	return 0;
-+}
-+
-+int snd_sof_switch_get(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *sm =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = sm->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int err, ret;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: switch get failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* get all the mixer data from DSP */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_GET_VALUE,
-+				      SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				      SOF_CTRL_CMD_SWITCH,
-+				      false);
-+
-+	/* read back each channel */
-+	for (i = 0; i < channels; i++)
-+		ucontrol->value.integer.value[i] = cdata->chanv[i].value;
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: switch get failed to idle %d\n",
-+				    err);
-+	return 0;
-+}
-+
-+int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *sm =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = sm->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int ret, err;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: switch put failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* update each channel */
-+	for (i = 0; i < channels; i++) {
-+		cdata->chanv[i].value = ucontrol->value.integer.value[i];
-+		cdata->chanv[i].channel = i;
-+	}
-+
-+	/* notify DSP of mixer updates */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_SET_VALUE,
-+				      SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				      SOF_CTRL_CMD_SWITCH,
-+				      true);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: switch put failed to idle %d\n",
-+				    err);
-+	return 0;
-+}
-+
-+int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
-+		     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_enum *se =
-+		(struct soc_enum *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = se->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int err, ret;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: enum get failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* get all the enum data from DSP */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_GET_VALUE,
-+				      SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				      SOF_CTRL_CMD_ENUM,
-+				      false);
-+
-+	/* read back each channel */
-+	for (i = 0; i < channels; i++)
-+		ucontrol->value.enumerated.item[i] = cdata->chanv[i].value;
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: enum get failed to idle %d\n",
-+				    err);
-+	return 0;
-+}
-+
-+int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
-+		     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_enum *se =
-+		(struct soc_enum *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = se->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int ret, err;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: enum put failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* update each channel */
-+	for (i = 0; i < channels; i++) {
-+		cdata->chanv[i].value = ucontrol->value.enumerated.item[i];
-+		cdata->chanv[i].channel = i;
-+	}
-+
-+	/* notify DSP of enum updates */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_SET_VALUE,
-+				      SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				      SOF_CTRL_CMD_ENUM,
-+				      true);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: enum put failed to idle %d\n",
-+				    err);
-+	return 0;
-+}
-+
-+int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_bytes_ext *be =
-+		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = be->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct sof_abi_hdr *data = cdata->data;
-+	size_t size;
-+	int ret, err;
-+
-+	if (be->max > sizeof(ucontrol->value.bytes.data)) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: data max %d exceeds ucontrol data array size\n",
-+				    be->max);
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
 +		return -EINVAL;
-+	}
 +
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes get failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
++	return snd_sof_create_page_table(sdev, dmab,
++		spcm->stream[stream].page_table.area, size);
++}
 +
-+	/* get all the binary data from DSP */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_GET_DATA,
-+				      SOF_CTRL_TYPE_DATA_GET,
-+				      scontrol->cmd,
-+				      false);
++static int sof_pcm_dsp_params(struct snd_sof_pcm *spcm, struct snd_pcm_substream *substream,
++			      const struct sof_ipc_pcm_params_reply *reply)
++{
++	struct snd_sof_dev *sdev = spcm->sdev;
++	/* validate offset */
++	int ret = snd_sof_ipc_pcm_params(sdev, substream, reply);
 +
-+	size = data->size + sizeof(*data);
-+	if (size > be->max) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: DSP sent %zu bytes max is %d\n",
-+				    size, be->max);
-+		ret = -EINVAL;
-+		goto out;
-+	}
++	if (ret < 0)
++		dev_err(sdev->dev, "error: got wrong reply for PCM %d\n",
++			spcm->pcm.pcm_id);
 +
-+	/* copy back to kcontrol */
-+	memcpy(ucontrol->value.bytes.data, data, size);
-+
-+out:
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes get failed to idle %d\n",
-+				    err);
 +	return ret;
 +}
 +
-+int snd_sof_bytes_put(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
++/* this may get called several times by oss emulation */
++static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
 +{
-+	struct soc_bytes_ext *be =
-+		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = be->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct sof_abi_hdr *data = cdata->data;
-+	int ret, err;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	struct sof_ipc_pcm_params pcm;
++	struct sof_ipc_pcm_params_reply ipc_params_reply;
++	int ret;
 +
-+	if (be->max > sizeof(ucontrol->value.bytes.data)) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: data max %d exceeds ucontrol data array size\n",
-+				    be->max);
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
 +		return -EINVAL;
-+	}
 +
-+	if (data->size > be->max) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: size too big %d bytes max is %d\n",
-+				    data->size, be->max);
-+		return -EINVAL;
-+	}
++	dev_dbg(sdev->dev, "pcm: hw params stream %d dir %d\n",
++		spcm->pcm.pcm_id, substream->stream);
 +
-+	ret = pm_runtime_get_sync(sdev->dev);
++	memset(&pcm, 0, sizeof(pcm));
++
++	/* allocate audio buffer pages */
++	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
 +	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes put failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
++		dev_err(sdev->dev, "error: could not allocate %d bytes for PCM %d\n",
++			params_buffer_bytes(params), spcm->pcm.pcm_id);
++		return ret;
++	}
++	if (ret) {
++		/*
++		 * ret == 1 means the buffer is changed
++		 * create compressed page table for audio firmware
++		 * ret == 0 means the buffer is not changed
++		 * so no need to regenerate the page table
++		 */
++		ret = create_page_table(substream, runtime->dma_area,
++					runtime->dma_bytes);
++		if (ret < 0)
++			return ret;
++	}
++
++	/* number of pages should be rounded up */
++	pcm.params.buffer.pages = PFN_UP(runtime->dma_bytes);
++
++	/* set IPC PCM parameters */
++	pcm.hdr.size = sizeof(pcm);
++	pcm.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_PARAMS;
++	pcm.comp_id = spcm->stream[substream->stream].comp_id;
++	pcm.params.hdr.size = sizeof(pcm.params);
++	pcm.params.buffer.phy_addr =
++		spcm->stream[substream->stream].page_table.addr;
++	pcm.params.buffer.size = runtime->dma_bytes;
++	pcm.params.direction = substream->stream;
++	pcm.params.sample_valid_bytes = params_width(params) >> 3;
++	pcm.params.buffer_fmt = SOF_IPC_BUFFER_INTERLEAVED;
++	pcm.params.rate = params_rate(params);
++	pcm.params.channels = params_channels(params);
++	pcm.params.host_period_bytes = params_period_bytes(params);
++
++	/* container size */
++	ret = snd_pcm_format_physical_width(params_format(params));
++	if (ret < 0)
++		return ret;
++	pcm.params.sample_container_bytes = ret >> 3;
++
++	/* format */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_S16_LE;
++		break;
++	case SNDRV_PCM_FORMAT_S24:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_S24_4LE;
++		break;
++	case SNDRV_PCM_FORMAT_S32:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_S32_LE;
++		break;
++	case SNDRV_PCM_FORMAT_FLOAT:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_FLOAT;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* firmware already configured host stream */
++	ret = snd_sof_pcm_platform_hw_params(sdev,
++					     substream,
++					     params,
++					     &pcm.params);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: platform hw params failed\n");
 +		return ret;
 +	}
 +
-+	/* copy from kcontrol */
-+	memcpy(data, ucontrol->value.bytes.data, data->size);
++	dev_dbg(sdev->dev, "stream_tag %d", pcm.params.stream_tag);
 +
-+	/* notify DSP of byte control updates */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_SET_DATA,
-+				      SOF_CTRL_TYPE_DATA_SET,
-+				      scontrol->cmd,
-+				      true);
++	/* send IPC to the DSP */
++	ret = sof_ipc_tx_message(sdev->ipc, pcm.hdr.cmd, &pcm, sizeof(pcm),
++				 &ipc_params_reply, sizeof(ipc_params_reply));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: hw params ipc failed for stream %d\n",
++			pcm.params.stream_tag);
++		return ret;
++	}
 +
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes put failed to idle %d\n",
-+				    err);
++	ret = sof_pcm_dsp_params(spcm, substream, &ipc_params_reply);
++	if (ret < 0)
++		return ret;
++
++	/* save pcm hw_params */
++	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
++
 +	return ret;
 +}
 +
-+int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
-+			  const unsigned int __user *binary_data,
-+			  unsigned int size)
++static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct soc_bytes_ext *be =
-+		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = be->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct snd_ctl_tlv header;
-+	const struct snd_ctl_tlv __user *tlvd =
-+		(const struct snd_ctl_tlv __user *)binary_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	struct sof_ipc_stream stream;
++	struct sof_ipc_reply reply;
++	int ret;
++
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
++		return -EINVAL;
++
++	dev_dbg(sdev->dev, "pcm: free stream %d dir %d\n", spcm->pcm.pcm_id,
++		substream->stream);
++
++	stream.hdr.size = sizeof(stream);
++	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
++	stream.comp_id = spcm->stream[substream->stream].comp_id;
++
++	/* send IPC to the DSP */
++	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
++				 sizeof(stream), &reply, sizeof(reply));
++
++	snd_pcm_lib_free_pages(substream);
++	return ret;
++}
++
++static int sof_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	int ret;
++
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
++		return -EINVAL;
++
++	/*
++	 * check if hw_params needs to be set-up again.
++	 * This is only needed when resuming from system sleep.
++	 */
++	if (!spcm->hw_params_upon_resume[substream->stream])
++		return 0;
++
++	dev_dbg(sdev->dev, "pcm: prepare stream %d dir %d\n", spcm->pcm.pcm_id,
++		substream->stream);
++
++	/* set hw_params */
++	ret = sof_pcm_hw_params(substream, &spcm->params[substream->stream]);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: set pcm hw_params after resume\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++/*
++ * FE dai link trigger actions are always executed in non-atomic context because
++ * they involve IPC's.
++ */
++static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	struct sof_ipc_stream stream;
++	struct sof_ipc_reply reply;
++	int ret;
++
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
++		return -EINVAL;
++
++	dev_dbg(sdev->dev, "pcm: trigger stream %d dir %d cmd %d\n",
++		spcm->pcm.pcm_id, substream->stream, cmd);
++
++	stream.hdr.size = sizeof(stream);
++	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG;
++	stream.comp_id = spcm->stream[substream->stream].comp_id;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_PAUSE;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_RELEASE;
++		break;
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* set up hw_params */
++		ret = sof_pcm_prepare(substream);
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to set up hw_params upon resume\n");
++			return ret;
++		}
++
++		/* fallthrough */
++	case SNDRV_PCM_TRIGGER_START:
++		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_START;
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_STOP;
++		break;
++	default:
++		dev_err(sdev->dev, "error: unhandled trigger cmd %d\n", cmd);
++		return -EINVAL;
++	}
++
++	snd_sof_pcm_platform_trigger(sdev, substream, cmd);
++
++	/* send IPC to the DSP */
++	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
++				 sizeof(stream), &reply, sizeof(reply));
++
++	if (ret < 0 || cmd != SNDRV_PCM_TRIGGER_SUSPEND)
++		return ret;
++
++	/*
++	 * The hw_free op is usually called when the pcm stream is closed.
++	 * Since the stream is not closed during suspend, the DSP needs to be
++	 * notified explicitly to free pcm to prevent errors upon resume.
++	 */
++	stream.hdr.size = sizeof(stream);
++	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
++	stream.comp_id = spcm->stream[substream->stream].comp_id;
++
++	/* send IPC to the DSP */
++	return sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
++				  sizeof(stream), &reply, sizeof(reply));
++}
++
++static snd_pcm_uframes_t sof_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	snd_pcm_uframes_t host, dai;
++
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	/* use dsp ops pointer callback directly if set */
++	if (sof_ops(sdev)->pcm_pointer)
++		return sof_ops(sdev)->pcm_pointer(sdev, substream);
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
++		return -EINVAL;
++
++	/* read position from DSP */
++	host = bytes_to_frames(substream->runtime,
++			       spcm->stream[substream->stream].posn.host_posn);
++	dai = bytes_to_frames(substream->runtime,
++			      spcm->stream[substream->stream].posn.dai_posn);
++
++	dev_dbg(sdev->dev, "PCM: stream %d dir %d DMA position %lu DAI position %lu\n",
++		spcm->pcm.pcm_id, substream->stream, host, dai);
++
++	return host;
++}
++
++static int sof_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	struct snd_soc_tplg_stream_caps *caps;
 +	int ret;
 +	int err;
 +
-+	/*
-+	 * The beginning of bytes data contains a header from where
-+	 * the length (as bytes) is needed to know the correct copy
-+	 * length of data from tlvd->tlv.
-+	 */
-+	if (copy_from_user(&header, tlvd, sizeof(const struct snd_ctl_tlv)))
-+		return -EFAULT;
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
 +
-+	/* be->max is coming from topology */
-+	if (header.length > be->max) {
-+		dev_err_ratelimited(sdev->dev, "error: Bytes data size %d exceeds max %d.\n",
-+				    header.length, be->max);
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
 +		return -EINVAL;
-+	}
 +
-+	/* Check that header id matches the command */
-+	if (header.numid != scontrol->cmd) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: incorrect numid %d\n",
-+				    header.numid);
-+		return -EINVAL;
-+	}
++	dev_dbg(sdev->dev, "pcm: open stream %d dir %d\n", spcm->pcm.pcm_id,
++		substream->stream);
 +
-+	if (copy_from_user(cdata->data, tlvd->tlv, header.length))
-+		return -EFAULT;
++	/* clear hw_params_upon_resume flag */
++	spcm->hw_params_upon_resume[substream->stream] = 0;
 +
-+	if (cdata->data->magic != SOF_ABI_MAGIC) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: Wrong ABI magic 0x%08x.\n",
-+				    cdata->data->magic);
-+		return -EINVAL;
-+	}
-+
-+	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, cdata->data->abi)) {
-+		dev_err_ratelimited(sdev->dev, "error: Incompatible ABI version 0x%08x.\n",
-+				    cdata->data->abi);
-+		return -EINVAL;
-+	}
-+
-+	if (cdata->data->size + sizeof(const struct sof_abi_hdr) > be->max) {
-+		dev_err_ratelimited(sdev->dev, "error: Mismatch in ABI data size (truncated?).\n");
-+		return -EINVAL;
-+	}
++	caps = &spcm->pcm.caps[substream->stream];
 +
 +	ret = pm_runtime_get_sync(sdev->dev);
 +	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes_ext put failed to resume %d\n",
-+				    ret);
++		dev_err(sdev->dev, "error: pcm open failed to resume %d\n",
++			ret);
 +		pm_runtime_put_noidle(sdev->dev);
 +		return ret;
 +	}
 +
-+	/* notify DSP of byte control updates */
-+	snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+				      SOF_IPC_COMP_SET_DATA,
-+				      SOF_CTRL_TYPE_DATA_SET,
-+				      scontrol->cmd,
-+				      true);
++	/* set any runtime constraints based on topology */
++	snd_pcm_hw_constraint_step(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++				   le32_to_cpu(caps->period_size_min));
++	snd_pcm_hw_constraint_step(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
++				   le32_to_cpu(caps->period_size_min));
 +
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes_ext put failed to idle %d\n",
-+				    err);
++	/* set runtime config */
++	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
++			  SNDRV_PCM_INFO_MMAP_VALID |
++			  SNDRV_PCM_INFO_INTERLEAVED |
++			  SNDRV_PCM_INFO_PAUSE |
++			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
++	runtime->hw.formats = le64_to_cpu(caps->formats);
++	runtime->hw.period_bytes_min = le32_to_cpu(caps->period_size_min);
++	runtime->hw.period_bytes_max = le32_to_cpu(caps->period_size_max);
++	runtime->hw.periods_min = le32_to_cpu(caps->periods_min);
++	runtime->hw.periods_max = le32_to_cpu(caps->periods_max);
++
++	/*
++	 * caps->buffer_size_min is not used since the
++	 * snd_pcm_hardware structure only defines buffer_bytes_max
++	 */
++	runtime->hw.buffer_bytes_max = le32_to_cpu(caps->buffer_size_max);
++
++	dev_dbg(sdev->dev, "period min %zd max %zd bytes\n",
++		runtime->hw.period_bytes_min,
++		runtime->hw.period_bytes_max);
++	dev_dbg(sdev->dev, "period count %d max %d\n",
++		runtime->hw.periods_min,
++		runtime->hw.periods_max);
++	dev_dbg(sdev->dev, "buffer max %zd bytes\n",
++		runtime->hw.buffer_bytes_max);
++
++	/* set wait time - TODO: come from topology */
++	substream->wait_time = 500;
++
++	spcm->stream[substream->stream].posn.host_posn = 0;
++	spcm->stream[substream->stream].posn.dai_posn = 0;
++	spcm->stream[substream->stream].substream = substream;
++
++	ret = snd_sof_pcm_platform_open(sdev, substream);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: pcm open failed %d\n",
++			ret);
++
++		pm_runtime_mark_last_busy(sdev->dev);
++
++		err = pm_runtime_put_autosuspend(sdev->dev);
++		if (err < 0)
++			dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
++				err);
++	}
 +
 +	return ret;
 +}
 +
-+int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
-+			  unsigned int __user *binary_data,
-+			  unsigned int size)
++static int sof_pcm_close(struct snd_pcm_substream *substream)
 +{
-+	struct soc_bytes_ext *be =
-+		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = be->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct snd_ctl_tlv header;
-+	struct snd_ctl_tlv __user *tlvd =
-+		(struct snd_ctl_tlv __user *)binary_data;
-+	int data_size;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
 +	int err;
++
++	/* nothing to do for BE */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm)
++		return -EINVAL;
++
++	dev_dbg(sdev->dev, "pcm: close stream %d dir %d\n", spcm->pcm.pcm_id,
++		substream->stream);
++
++	err = snd_sof_pcm_platform_close(sdev, substream);
++	if (err < 0) {
++		dev_err(sdev->dev, "error: pcm close failed %d\n",
++			err);
++		/*
++		 * keep going, no point in preventing the close
++		 * from happening
++		 */
++	}
++
++	pm_runtime_mark_last_busy(sdev->dev);
++
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
++			err);
++
++	return 0;
++}
++
++static struct snd_pcm_ops sof_pcm_ops = {
++	.open		= sof_pcm_open,
++	.close		= sof_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= sof_pcm_hw_params,
++	.prepare	= sof_pcm_prepare,
++	.hw_free	= sof_pcm_hw_free,
++	.trigger	= sof_pcm_trigger,
++	.pointer	= sof_pcm_pointer,
++	.page		= snd_pcm_sgbuf_ops_page,
++};
++
++/*
++ * Pre-allocate playback/capture audio buffer pages.
++ * no need to explicitly release memory preallocated by sof_pcm_new in pcm_free
++ * snd_pcm_lib_preallocate_free_for_all() is called by the core.
++ */
++static int sof_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pcm *spcm;
++	struct snd_pcm *pcm = rtd->pcm;
++	struct snd_soc_tplg_stream_caps *caps;
++	int stream = SNDRV_PCM_STREAM_PLAYBACK;
++
++	/* find SOF PCM for this RTD */
++	spcm = snd_sof_find_spcm_dai(sdev, rtd);
++	if (!spcm) {
++		dev_warn(sdev->dev, "warn: can't find PCM with DAI ID %d\n",
++			 rtd->dai_link->id);
++		return 0;
++	}
++
++	dev_dbg(sdev->dev, "creating new PCM %s\n", spcm->pcm.pcm_name);
++
++	/* do we need to pre-allocate playback audio buffer pages */
++	if (!spcm->pcm.playback)
++		goto capture;
++
++	caps = &spcm->pcm.caps[stream];
++
++	/* pre-allocate playback audio buffer pages */
++	dev_dbg(sdev->dev, "spcm: allocate %s playback DMA buffer size 0x%x max 0x%x\n",
++		caps->name, caps->buffer_size_min, caps->buffer_size_max);
++
++	snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
++				      SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
++				      le32_to_cpu(caps->buffer_size_min),
++				      le32_to_cpu(caps->buffer_size_max));
++capture:
++	stream = SNDRV_PCM_STREAM_CAPTURE;
++
++	/* do we need to pre-allocate capture audio buffer pages */
++	if (!spcm->pcm.capture)
++		return 0;
++
++	caps = &spcm->pcm.caps[stream];
++
++	/* pre-allocate capture audio buffer pages */
++	dev_dbg(sdev->dev, "spcm: allocate %s capture DMA buffer size 0x%x max 0x%x\n",
++		caps->name, caps->buffer_size_min, caps->buffer_size_max);
++
++	snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
++				      SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
++				      le32_to_cpu(caps->buffer_size_min),
++				      le32_to_cpu(caps->buffer_size_max));
++
++	return 0;
++}
++
++/* fixup the BE DAI link to match any values from topology */
++static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
++				  struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_dai *dai =
++		snd_sof_find_dai(sdev, (char *)rtd->dai_link->name);
++
++	/* no topology exists for this BE, try a common configuration */
++	if (!dai) {
++		dev_warn(sdev->dev, "warning: no topology found for BE DAI %s config\n",
++			 rtd->dai_link->name);
++
++		/*  set 48k, stereo, 16bits by default */
++		rate->min = 48000;
++		rate->max = 48000;
++
++		channels->min = 2;
++		channels->max = 2;
++
++		snd_mask_none(fmt);
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
++
++		return 0;
++	}
++
++	/* read format from topology */
++	snd_mask_none(fmt);
++
++	switch (dai->comp_dai.config.frame_fmt) {
++	case SOF_IPC_FRAME_S16_LE:
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
++		break;
++	case SOF_IPC_FRAME_S24_4LE:
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
++		break;
++	case SOF_IPC_FRAME_S32_LE:
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S32_LE);
++		break;
++	default:
++		dev_err(sdev->dev, "error: No available DAI format!\n");
++		return -EINVAL;
++	}
++
++	/* read rate and channels from topology */
++	switch (dai->dai_config->type) {
++	case SOF_DAI_INTEL_SSP:
++		rate->min = dai->dai_config->ssp.fsync_rate;
++		rate->max = dai->dai_config->ssp.fsync_rate;
++		channels->min = dai->dai_config->ssp.tdm_slots;
++		channels->max = dai->dai_config->ssp.tdm_slots;
++
++		dev_dbg(sdev->dev,
++			"rate_min: %d rate_max: %d\n", rate->min, rate->max);
++		dev_dbg(sdev->dev,
++			"channels_min: %d channels_max: %d\n",
++			channels->min, channels->max);
++
++		break;
++	case SOF_DAI_INTEL_DMIC:
++		/* DMIC only supports 16 or 32 bit formats */
++		if (dai->comp_dai.config.frame_fmt == SOF_IPC_FRAME_S24_4LE) {
++			dev_err(sdev->dev,
++				"error: invalid fmt %d for DAI type %d\n",
++				dai->comp_dai.config.frame_fmt,
++				dai->dai_config->type);
++		}
++		break;
++	case SOF_DAI_INTEL_HDA:
++		/* do nothing for HDA dai_link */
++		break;
++	default:
++		dev_err(sdev->dev, "error: invalid DAI type %d\n",
++			dai->dai_config->type);
++		break;
++	}
++
++	return 0;
++}
++
++static int sof_pcm_probe(struct snd_soc_component *component)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct snd_sof_pdata *plat_data = sdev->pdata;
++	const char *tplg_filename;
 +	int ret;
 +
-+	ret = pm_runtime_get_sync(sdev->dev);
++	/* load the default topology */
++	sdev->component = component;
++
++	tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
++				       "%s/%s",
++				       plat_data->tplg_filename_prefix,
++				       plat_data->tplg_filename);
++	if (!tplg_filename)
++		return -ENOMEM;
++
++	ret = snd_sof_load_topology(sdev, tplg_filename);
 +	if (ret < 0) {
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes_ext get failed to resume %d\n",
-+				    ret);
-+		pm_runtime_put_noidle(sdev->dev);
++		dev_err(sdev->dev, "error: failed to load DSP topology %d\n",
++			ret);
 +		return ret;
 +	}
 +
 +	/*
-+	 * Decrement the limit by ext bytes header size to
-+	 * ensure the user space buffer is not exceeded.
++	 * Some platforms in SOF, ex: BYT, may not have their platform PM
++	 * callbacks set. Increment the usage count so as to
++	 * prevent the device from entering runtime suspend.
 +	 */
-+	size -= sizeof(const struct snd_ctl_tlv);
++	if (!sof_ops(sdev)->runtime_suspend || !sof_ops(sdev)->runtime_resume)
++		pm_runtime_get_noresume(sdev->dev);
 +
-+	/* set the ABI header values */
-+	cdata->data->magic = SOF_ABI_MAGIC;
-+	cdata->data->abi = SOF_ABI_VERSION;
-+
-+	/* get all the component data from DSP */
-+	ret = snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+					    SOF_IPC_COMP_GET_DATA,
-+					    SOF_CTRL_TYPE_DATA_GET,
-+					    scontrol->cmd,
-+					    false);
-+
-+	/* Prevent read of other kernel data or possibly corrupt response */
-+	data_size = cdata->data->size + sizeof(const struct sof_abi_hdr);
-+
-+	/* check data size doesn't exceed max coming from topology */
-+	if (data_size > be->max) {
-+		dev_err_ratelimited(sdev->dev, "error: user data size %d exceeds max size %d.\n",
-+				    data_size, be->max);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	header.numid = scontrol->cmd;
-+	header.length = data_size;
-+	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv))) {
-+		ret = -EFAULT;
-+		goto out;
-+	}
-+
-+	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
-+		ret = -EFAULT;
-+
-+out:
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: bytes_ext get failed to idle %d\n",
-+				    err);
 +	return ret;
++}
++
++static void sof_pcm_remove(struct snd_soc_component *component)
++{
++	/* remove topology */
++	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++}
++
++void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
++{
++	struct snd_soc_component_driver *pd = &sdev->plat_drv;
++	struct snd_sof_pdata *plat_data = sdev->pdata;
++	const char *drv_name;
++
++	drv_name = plat_data->machine->drv_name;
++
++	pd->name = "sof-audio-component";
++	pd->probe = sof_pcm_probe;
++	pd->remove = sof_pcm_remove;
++	pd->ops	= &sof_pcm_ops;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
++	pd->compr_ops = &sof_compressed_ops;
++#endif
++	pd->pcm_new = sof_pcm_new;
++	pd->ignore_machine = drv_name;
++	pd->be_hw_params_fixup = sof_pcm_dai_link_fixup;
++	pd->be_pcm_base = SOF_BE_PCM_BASE;
++	pd->use_dai_pcm_id = true;
++	pd->topology_name_prefix = "sof";
++
++	 /* increment module refcount when a pcm is opened */
++	pd->module_get_upon_open = 1;
 +}
 -- 
 2.20.1
