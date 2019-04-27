@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add Build support for SOF core and
-	Intel drivers" to the asoc tree
-Date: Sat, 27 Apr 2019 18:52:39 +0100 (BST)
-Message-ID: <20190427175240.09A11441D3D@finisterre.ee.mobilebroadband>
-References: <20190412160904.30418-20-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: Add Intel specific HDA
+	firmware loader" to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:45 +0100 (BST)
+Message-ID: <20190427175245.3485B441D3E@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160904.30418-20-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160904.30418-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,12 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add Build support for SOF core and Intel drivers
+   ASoC: SOF: Intel: Add Intel specific HDA firmware loader
 
 has been applied to the asoc tree at
 
@@ -48,485 +48,399 @@ to this mail.
 Thanks,
 Mark
 
->From 7e978fa37df7f771a5d02934ff828a0ee36bcf11 Mon Sep 17 00:00:00 2001
+>From d16046ffa6de040bf580a64d5f4d0aa18258a854 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:09:02 -0500
-Subject: [PATCH] ASoC: SOF: Add Build support for SOF core and Intel drivers
+Date: Fri, 12 Apr 2019 11:08:51 -0500
+Subject: [PATCH] ASoC: SOF: Intel: Add Intel specific HDA firmware loader
 
-Build SOF core and Intel-specific drivers.
+Add support for loading DSP firmware on Intel HDA based platforms.
 
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/Kconfig            |   1 +
- sound/soc/Makefile           |   1 +
- sound/soc/sof/Kconfig        | 141 +++++++++++++++++++++
- sound/soc/sof/Makefile       |  18 +++
- sound/soc/sof/intel/Kconfig  | 230 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/Makefile |  19 +++
- 6 files changed, 410 insertions(+)
- create mode 100644 sound/soc/sof/Kconfig
- create mode 100644 sound/soc/sof/Makefile
- create mode 100644 sound/soc/sof/intel/Kconfig
- create mode 100644 sound/soc/sof/intel/Makefile
+ sound/soc/sof/intel/hda-loader.c | 371 +++++++++++++++++++++++++++++++
+ 1 file changed, 371 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-loader.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index aa35940f5c50..297be0ca3dbc 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -63,6 +63,7 @@ source "sound/soc/rockchip/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
-+source "sound/soc/sof/Kconfig"
- source "sound/soc/spear/Kconfig"
- source "sound/soc/sprd/Kconfig"
- source "sound/soc/sti/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 974fb9821e17..d90ce8a32887 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_SND_SOC)	+= rockchip/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
-+obj-$(CONFIG_SND_SOC)	+= sof/
- obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= sprd/
- obj-$(CONFIG_SND_SOC)	+= sti/
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
 new file mode 100644
-index 000000000000..eaa380092c3b
+index 000000000000..6a44bc349e44
 --- /dev/null
-+++ b/sound/soc/sof/Kconfig
-@@ -0,0 +1,141 @@
-+config SND_SOC_SOF_TOPLEVEL
-+	bool "Sound Open Firmware Support"
-+	help
-+	  This adds support for Sound Open Firmware (SOF). SOF is a free and
-+	  generic open source audio DSP firmware for multiple devices.
-+	  Say Y if you have such a device that is supported by SOF.
-+	  If unsure select "N".
-+
-+if SND_SOC_SOF_TOPLEVEL
-+
-+config SND_SOC_SOF_PCI
-+	tristate "SOF PCI enumeration support"
-+	depends on PCI
-+	select SND_SOC_SOF
-+	select SND_SOC_ACPI if ACPI
-+	select SND_SOC_SOF_OPTIONS
-+	select SND_SOC_SOF_INTEL_PCI if SND_SOC_SOF_INTEL_TOPLEVEL
-+	help
-+	  This adds support for PCI enumeration. This option is
-+	  required to enable Intel Skylake+ devices
-+	  Say Y if you need this option
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_ACPI
-+	tristate "SOF ACPI enumeration support"
-+	depends on ACPI || COMPILE_TEST
-+	select SND_SOC_SOF
-+	select SND_SOC_ACPI if ACPI
-+	select SND_SOC_SOF_OPTIONS
-+	select SND_SOC_SOF_INTEL_ACPI if SND_SOC_SOF_INTEL_TOPLEVEL
-+	select IOSF_MBI if X86
-+	help
-+	  This adds support for ACPI enumeration. This option is required
-+	  to enable Intel Haswell/Broadwell/Baytrail/Cherrytrail devices
-+	  Say Y if you need this option
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_OPTIONS
-+	tristate
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+if SND_SOC_SOF_OPTIONS
-+
-+config SND_SOC_SOF_NOCODEC
-+	tristate "SOF nocodec mode Support"
-+	help
-+	  This adds support for a dummy/nocodec machine driver fallback
-+	  option if no known codec is detected. This is typically only
-+	  enabled for developers or devices where the sound card is
-+	  controlled externally
-+	  Say Y if you need this nocodec fallback option
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG
-+	bool "SOF debugging features"
-+	help
-+	  This option can be used to enable or disable individual SOF firmware
-+	  and driver debugging options.
-+	  Say Y if you are debugging SOF FW or drivers.
-+	  If unsure select "N".
-+
-+if SND_SOC_SOF_DEBUG
-+
-+config SND_SOC_SOF_FORCE_NOCODEC_MODE
-+	bool "SOF force nocodec Mode"
-+	depends on SND_SOC_SOF_NOCODEC
-+	help
-+	  This forces SOF to use dummy/nocodec as machine driver, even
-+	  though there is a codec detected on the real platform. This is
-+	  typically only enabled for developers for debug purposes, before
-+	  codec/machine driver is ready, or to exclude the impact of those
-+	  drivers
-+	  Say Y if you need this force nocodec mode option
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_XRUN_STOP
-+	bool "SOF stop on XRUN"
-+	help
-+	  This option forces PCMs to stop on any XRUN event. This is useful to
-+	  preserve any trace data ond pipeline status prior to the XRUN.
-+	  Say Y if you are debugging SOF FW pipeline XRUNs.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_VERBOSE_IPC
-+	bool "SOF verbose IPC logs"
-+	help
-+	  This option enables more verbose IPC logs, with command types in
-+	  human-readable form instead of just 32-bit hex dumps. This is useful
-+	  if you are trying to debug IPC with the DSP firmware.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION
-+	bool "SOF force to use IPC for position update on SKL+"
-+	help
-+	  This option force to handle stream position update IPCs and run pcm
-+	  elapse to inform ALSA about that, on platforms (e.g. Intel SKL+) that
-+	  with other approach (e.g. HDAC DPIB/posbuf) to elapse PCM.
-+	  On platforms (e.g. Intel SKL-) where position update IPC is the only
-+	  one choice, this setting won't impact anything.
-+	  if you are trying to debug pointer update with position IPCs or where
-+	  DPIB/posbuf is not ready, select "Y".
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE
-+	bool "SOF enable debugfs caching"
-+	help
-+	  This option enables caching of debugfs
-+	  memory -> DSP resource (memory, register, etc)
-+	  before the audio DSP is suspended. This will increase the suspend
-+	  latency and therefore should be used for debug purposes only.
-+	  Say Y if you want to enable caching the memory windows.
-+	  If unsure, select "N".
-+
-+endif ## SND_SOC_SOF_DEBUG
-+
-+endif ## SND_SOC_SOF_OPTIONS
-+
-+config SND_SOC_SOF
-+	tristate
-+	select SND_SOC_TOPOLOGY
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+	  The selection is made at the top level and does not exactly follow
-+	  module dependencies but since the module or built-in type is decided
-+	  at the top level it doesn't matter.
-+
-+config SND_SOC_SOF_PROBE_WORK_QUEUE
-+	bool
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+	  When selected, the probe is handled in two steps, for example to
-+	  avoid lockdeps if request_module is used in the probe.
-+
-+source "sound/soc/sof/intel/Kconfig"
-+source "sound/soc/sof/xtensa/Kconfig"
-+
-+endif
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-new file mode 100644
-index 000000000000..8f14c9d2950b
---- /dev/null
-+++ b/sound/soc/sof/Makefile
-@@ -0,0 +1,18 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+
-+snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
-+		control.o trace.o utils.o
-+
-+snd-sof-pci-objs := sof-pci-dev.o
-+snd-sof-acpi-objs := sof-acpi-dev.o
-+snd-sof-nocodec-objs := nocodec.o
-+
-+obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
-+obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
-+
-+
-+obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
-+obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
-+
-+obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
-+obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-new file mode 100644
-index 000000000000..32ee0fabab92
---- /dev/null
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -0,0 +1,230 @@
-+config SND_SOC_SOF_INTEL_TOPLEVEL
-+	bool "SOF support for Intel audio DSPs"
-+	depends on X86 || COMPILE_TEST
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+if SND_SOC_SOF_INTEL_TOPLEVEL
-+
-+config SND_SOC_SOF_INTEL_ACPI
-+	tristate
-+	select SND_SOC_SOF_BAYTRAIL  if SND_SOC_SOF_BAYTRAIL_SUPPORT
-+	select SND_SOC_SOF_BROADWELL if SND_SOC_SOF_BROADWELL_SUPPORT
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_INTEL_PCI
-+	tristate
-+	select SND_SOC_SOF_MERRIFIELD  if SND_SOC_SOF_MERRIFIELD_SUPPORT
-+	select SND_SOC_SOF_APOLLOLAKE  if SND_SOC_SOF_APOLLOLAKE_SUPPORT
-+	select SND_SOC_SOF_GEMINILAKE  if SND_SOC_SOF_GEMINILAKE_SUPPORT
-+	select SND_SOC_SOF_CANNONLAKE  if SND_SOC_SOF_CANNONLAKE_SUPPORT
-+	select SND_SOC_SOF_COFFEELAKE  if SND_SOC_SOF_COFFEELAKE_SUPPORT
-+	select SND_SOC_SOF_ICELAKE     if SND_SOC_SOF_ICELAKE_SUPPORT
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_INTEL_HIFI_EP_IPC
-+	tristate
-+	help
-+          This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_INTEL_ATOM_HIFI_EP
-+	tristate
-+	select SND_SOC_INTEL_COMMON
-+	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_INTEL_COMMON
-+	tristate
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	select SND_SOC_SOF_XTENSA
-+	select SND_SOC_INTEL_MACH
-+	select SND_SOC_ACPI if ACPI
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+if SND_SOC_SOF_INTEL_ACPI
-+
-+config SND_SOC_SOF_BAYTRAIL_SUPPORT
-+	bool "SOF support for Baytrail, Braswell and Cherrytrail"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Baytrail, Braswell or Cherrytrail processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_BAYTRAIL
-+	tristate
-+	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_BROADWELL_SUPPORT
-+	bool "SOF support for Broadwell"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Broadwell processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_BROADWELL
-+	tristate
-+	select SND_SOC_SOF_INTEL_COMMON
-+	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+endif ## SND_SOC_SOF_INTEL_ACPI
-+
-+if SND_SOC_SOF_INTEL_PCI
-+
-+config SND_SOC_SOF_MERRIFIELD_SUPPORT
-+	bool "SOF support for Tangier/Merrifield"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Tangier/Merrifield processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_MERRIFIELD
-+	tristate
-+	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_APOLLOLAKE_SUPPORT
-+	bool "SOF support for Apollolake"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Apollolake processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_APOLLOLAKE
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_GEMINILAKE_SUPPORT
-+	bool "SOF support for GeminiLake"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Geminilake processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_GEMINILAKE
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_CANNONLAKE_SUPPORT
-+	bool "SOF support for Cannonlake"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Cannonlake processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_CANNONLAKE
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_COFFEELAKE_SUPPORT
-+	bool "SOF support for CoffeeLake"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Coffeelake processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_COFFEELAKE
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_ICELAKE_SUPPORT
-+	bool "SOF support for Icelake"
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Icelake processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_ICELAKE
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_HDA_COMMON
-+	tristate
-+	select SND_SOC_SOF_INTEL_COMMON
-+	select SND_SOC_SOF_HDA_LINK_BASELINE
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+if SND_SOC_SOF_HDA_COMMON
-+
-+config SND_SOC_SOF_HDA_LINK
-+	bool "SOF support for HDA Links(HDA/HDMI)"
-+	depends on SND_SOC_SOF_NOCODEC=n
-+	select SND_SOC_SOF_PROBE_WORK_QUEUE
-+	help
-+	  This adds support for HDA links(HDA/HDMI) with Sound Open Firmware
-+		  for Intel(R) platforms.
-+	  Say Y if you want to enable HDA links with SOF.
-+	  If unsure select "N".
-+
-+config SND_SOC_SOF_HDA_AUDIO_CODEC
-+	bool "SOF support for HDAudio codecs"
-+	depends on SND_SOC_SOF_HDA_LINK
-+	help
-+	  This adds support for HDAudio codecs with Sound Open Firmware
-+		  for Intel(R) platforms.
-+	  Say Y if you want to enable HDAudio codecs with SOF.
-+	  If unsure select "N".
-+
-+endif ## SND_SOC_SOF_HDA_COMMON
-+
-+config SND_SOC_SOF_HDA_LINK_BASELINE
-+	tristate
-+	select SND_SOC_SOF_HDA if SND_SOC_SOF_HDA_LINK
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+config SND_SOC_SOF_HDA
-+	tristate
-+	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
-+	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
-+
-+endif ## SND_SOC_SOF_INTEL_PCI
-+
-+endif ## SND_SOC_SOF_INTEL_TOPLEVEL
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-new file mode 100644
-index 000000000000..b8f58e006e29
---- /dev/null
-+++ b/sound/soc/sof/intel/Makefile
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+
-+snd-sof-intel-byt-objs := byt.o
-+snd-sof-intel-bdw-objs := bdw.o
-+
-+snd-sof-intel-ipc-objs := intel-ipc.o
-+
-+snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
-+				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
-+				 hda-dai.o hda-bus.o \
-+				 apl.o cnl.o
-+
-+snd-sof-intel-hda-objs := hda-codec.o
-+
-+obj-$(CONFIG_SND_SOC_SOF_INTEL_ATOM_HIFI_EP) += snd-sof-intel-byt.o
-+obj-$(CONFIG_SND_SOC_SOF_BROADWELL) += snd-sof-intel-bdw.o
-+obj-$(CONFIG_SND_SOC_SOF_INTEL_HIFI_EP_IPC) += snd-sof-intel-ipc.o
-+obj-$(CONFIG_SND_SOC_SOF_HDA_COMMON) += snd-sof-intel-hda-common.o
-+obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -0,0 +1,371 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//	    Rander Wang <rander.wang@intel.com>
++//          Keyon Jie <yang.jie@linux.intel.com>
++//
++
++/*
++ * Hardware interface for HDA DSP code loader
++ */
++
++#include <linux/firmware.h>
++#include <sound/hdaudio_ext.h>
++#include <sound/sof.h>
++#include "../ops.h"
++#include "hda.h"
++
++#define HDA_FW_BOOT_ATTEMPTS	3
++
++static int cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
++			     unsigned int size, struct snd_dma_buffer *dmab,
++			     int direction)
++{
++	struct hdac_ext_stream *dsp_stream;
++	struct hdac_stream *hstream;
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	int ret;
++
++	if (direction != SNDRV_PCM_STREAM_PLAYBACK) {
++		dev_err(sdev->dev, "error: code loading DMA is playback only\n");
++		return -EINVAL;
++	}
++
++	dsp_stream = hda_dsp_stream_get(sdev, direction);
++
++	if (!dsp_stream) {
++		dev_err(sdev->dev, "error: no stream available\n");
++		return -ENODEV;
++	}
++	hstream = &dsp_stream->hstream;
++
++	/* allocate DMA buffer */
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, &pci->dev, size, dmab);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: memory alloc failed: %x\n", ret);
++		goto error;
++	}
++
++	hstream->period_bytes = 0;/* initialize period_bytes */
++	hstream->format_val = format;
++	hstream->bufsize = size;
++
++	ret = hda_dsp_stream_hw_params(sdev, dsp_stream, dmab, NULL);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: hdac prepare failed: %x\n", ret);
++		goto error;
++	}
++
++	hda_dsp_stream_spib_config(sdev, dsp_stream, HDA_DSP_SPIB_ENABLE, size);
++
++	return hstream->stream_tag;
++
++error:
++	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
++	snd_dma_free_pages(dmab);
++	return ret;
++}
++
++/*
++ * first boot sequence has some extra steps. core 0 waits for power
++ * status on core 1, so power up core 1 also momentarily, keep it in
++ * reset/stall and then turn it off
++ */
++static int cl_dsp_init(struct snd_sof_dev *sdev, const void *fwdata,
++		       u32 fwsize, int stream_tag)
++{
++	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
++	const struct sof_intel_dsp_desc *chip = hda->desc;
++	unsigned int status;
++	int ret;
++
++	/* step 1: power up corex */
++	ret = hda_dsp_core_power_up(sdev, chip->cores_mask);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: dsp core 0/1 power up failed\n");
++		goto err;
++	}
++
++	/* step 2: purge FW request */
++	snd_sof_dsp_write(sdev, HDA_DSP_BAR, chip->ipc_req,
++			  chip->ipc_req_mask | (HDA_DSP_IPC_PURGE_FW |
++			  ((stream_tag - 1) << 9)));
++
++	/* step 3: unset core 0 reset state & unstall/run core 0 */
++	ret = hda_dsp_core_run(sdev, HDA_DSP_CORE_MASK(0));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: dsp core start failed %d\n", ret);
++		ret = -EIO;
++		goto err;
++	}
++
++	/* step 4: wait for IPC DONE bit from ROM */
++	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
++					    chip->ipc_ack, status,
++					    ((status & chip->ipc_ack_mask)
++						    == chip->ipc_ack_mask),
++					    HDA_DSP_REG_POLL_INTERVAL_US,
++					    HDA_DSP_INIT_TIMEOUT_US);
++
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: waiting for HIPCIE done\n");
++		goto err;
++	}
++
++	/* step 5: power down corex */
++	ret = hda_dsp_core_power_down(sdev,
++				  chip->cores_mask & ~(HDA_DSP_CORE_MASK(0)));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: dsp core x power down failed\n");
++		goto err;
++	}
++
++	/* step 6: enable IPC interrupts */
++	hda_dsp_ipc_int_enable(sdev);
++
++	/* step 7: wait for ROM init */
++	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
++					HDA_DSP_SRAM_REG_ROM_STATUS, status,
++					((status & HDA_DSP_ROM_STS_MASK)
++						== HDA_DSP_ROM_INIT),
++					HDA_DSP_REG_POLL_INTERVAL_US,
++					chip->rom_init_timeout *
++					USEC_PER_MSEC);
++	if (!ret)
++		return 0;
++
++err:
++	hda_dsp_dump(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
++	hda_dsp_core_reset_power_down(sdev, chip->cores_mask);
++
++	return ret;
++}
++
++static int cl_trigger(struct snd_sof_dev *sdev,
++		      struct hdac_ext_stream *stream, int cmd)
++{
++	struct hdac_stream *hstream = &stream->hstream;
++	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
++
++	/* code loader is special case that reuses stream ops */
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		wait_event_timeout(sdev->waitq, !sdev->code_loading,
++				   HDA_DSP_CL_TRIGGER_TIMEOUT);
++
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
++					1 << hstream->index,
++					1 << hstream->index);
++
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++					sd_offset,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK);
++
++		hstream->running = true;
++		return 0;
++	default:
++		return hda_dsp_stream_trigger(sdev, stream, cmd);
++	}
++}
++
++static struct hdac_ext_stream *get_stream_with_tag(struct snd_sof_dev *sdev,
++						   int tag)
++{
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct hdac_stream *s;
++
++	/* get stream with tag */
++	list_for_each_entry(s, &bus->stream_list, list) {
++		if (s->direction == SNDRV_PCM_STREAM_PLAYBACK &&
++		    s->stream_tag == tag) {
++			return stream_to_hdac_ext_stream(s);
++		}
++	}
++
++	return NULL;
++}
++
++static int cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
++		      struct hdac_ext_stream *stream)
++{
++	struct hdac_stream *hstream = &stream->hstream;
++	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
++	int ret;
++
++	ret = hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE, 0);
++
++	hda_dsp_stream_put(sdev, SNDRV_PCM_STREAM_PLAYBACK,
++			   hstream->stream_tag);
++	hstream->running = 0;
++	hstream->substream = NULL;
++
++	/* reset BDL address */
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPL, 0);
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPU, 0);
++
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, sd_offset, 0);
++	snd_dma_free_pages(dmab);
++	dmab->area = NULL;
++	hstream->bufsize = 0;
++	hstream->format_val = 0;
++
++	return ret;
++}
++
++static int cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *stream)
++{
++	unsigned int reg;
++	int ret, status;
++
++	ret = cl_trigger(sdev, stream, SNDRV_PCM_TRIGGER_START);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: DMA trigger start failed\n");
++		return ret;
++	}
++
++	status = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
++					HDA_DSP_SRAM_REG_ROM_STATUS, reg,
++					((reg & HDA_DSP_ROM_STS_MASK)
++						== HDA_DSP_ROM_FW_ENTERED),
++					HDA_DSP_REG_POLL_INTERVAL_US,
++					HDA_DSP_BASEFW_TIMEOUT_US);
++
++	ret = cl_trigger(sdev, stream, SNDRV_PCM_TRIGGER_STOP);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: DMA trigger stop failed\n");
++		return ret;
++	}
++
++	return status;
++}
++
++int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_pdata *plat_data = sdev->pdata;
++	const struct sof_dev_desc *desc = plat_data->desc;
++	const struct sof_intel_dsp_desc *chip_info;
++	struct hdac_ext_stream *stream;
++	struct firmware stripped_firmware;
++	int ret, ret1, tag, i;
++
++	chip_info = desc->chip_info;
++
++	stripped_firmware.data = plat_data->fw->data;
++	stripped_firmware.size = plat_data->fw->size;
++
++	/* init for booting wait */
++	init_waitqueue_head(&sdev->boot_wait);
++	sdev->boot_complete = false;
++
++	/* prepare DMA for code loader stream */
++	tag = cl_stream_prepare(sdev, 0x40, stripped_firmware.size,
++				&sdev->dmab, SNDRV_PCM_STREAM_PLAYBACK);
++
++	if (tag < 0) {
++		dev_err(sdev->dev, "error: dma prepare for fw loading err: %x\n",
++			tag);
++		return tag;
++	}
++
++	/* get stream with tag */
++	stream = get_stream_with_tag(sdev, tag);
++	if (!stream) {
++		dev_err(sdev->dev,
++			"error: could not get stream with stream tag %d\n",
++			tag);
++		ret = -ENODEV;
++		goto err;
++	}
++
++	memcpy(sdev->dmab.area, stripped_firmware.data,
++	       stripped_firmware.size);
++
++	/* try ROM init a few times before giving up */
++	for (i = 0; i < HDA_FW_BOOT_ATTEMPTS; i++) {
++		ret = cl_dsp_init(sdev, stripped_firmware.data,
++				  stripped_firmware.size, tag);
++
++		/* don't retry anymore if successful */
++		if (!ret)
++			break;
++
++		dev_err(sdev->dev, "error: Error code=0x%x: FW status=0x%x\n",
++			snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 HDA_DSP_SRAM_REG_ROM_ERROR),
++			snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 HDA_DSP_SRAM_REG_ROM_STATUS));
++		dev_err(sdev->dev, "error: iteration %d of Core En/ROM load failed: %d\n",
++			i, ret);
++	}
++
++	if (i == HDA_FW_BOOT_ATTEMPTS) {
++		dev_err(sdev->dev, "error: dsp init failed after %d attempts with err: %d\n",
++			i, ret);
++		goto cleanup;
++	}
++
++	/*
++	 * at this point DSP ROM has been initialized and
++	 * should be ready for code loading and firmware boot
++	 */
++	ret = cl_copy_fw(sdev, stream);
++	if (!ret)
++		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
++	else
++		dev_err(sdev->dev, "error: load fw failed ret: %d\n", ret);
++
++cleanup:
++	/*
++	 * Perform codeloader stream cleanup.
++	 * This should be done even if firmware loading fails.
++	 */
++	ret1 = cl_cleanup(sdev, &sdev->dmab, stream);
++	if (ret1 < 0) {
++		dev_err(sdev->dev, "error: Code loader DSP cleanup failed\n");
++
++		/* set return value to indicate cleanup failure */
++		ret = ret1;
++	}
++
++	/*
++	 * return master core id if both fw copy
++	 * and stream clean up are successful
++	 */
++	if (!ret)
++		return chip_info->init_core_mask;
++
++	/* dump dsp registers and disable DSP upon error */
++err:
++	hda_dsp_dump(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
++
++	/* disable DSP */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR,
++				SOF_HDA_REG_PP_PPCTL,
++				SOF_HDA_PPCTL_GPROCEN, 0);
++	return ret;
++}
++
++/* pre fw run operations */
++int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev)
++{
++	/* disable clock gating and power gating */
++	return hda_dsp_ctrl_clock_power_gating(sdev, false);
++}
++
++/* post fw run operations */
++int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
++{
++	/* re-enable clock gating and power gating */
++	return hda_dsp_ctrl_clock_power_gating(sdev, true);
++}
 -- 
 2.20.1
