@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Kconfig: expose common option
-	between SST and SOF drivers" to the asoc tree
-Date: Sat, 27 Apr 2019 18:52:40 +0100 (BST)
-Message-ID: <20190427175240.9270D441D3E@finisterre.ee.mobilebroadband>
-References: <20190412160904.30418-19-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: Add hda-bus support and
+	initialization" to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:44 +0100 (BST)
+Message-ID: <20190427175244.14F34441D3C@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-11-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160904.30418-19-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160904.30418-11-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,13 +18,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Kconfig: expose common option between SST and SOF drivers
+   ASoC: SOF: Intel: Add hda-bus support and initialization
 
 has been applied to the asoc tree at
 
@@ -49,44 +49,137 @@ to this mail.
 Thanks,
 Mark
 
->From e6b140e918e93ec76265007b86092a6a3068ca1d Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:09:01 -0500
-Subject: [PATCH] ASoC: Intel: Kconfig: expose common option between SST and
- SOF drivers
+>From 78ad1f07a49a56fa3714ee36573133a39e32593d Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:08:53 -0500
+Subject: [PATCH] ASoC: SOF: Intel: Add hda-bus support and initialization
 
-Both drivers rely on the same module, expose it for both configurations
+Use hdac_io_ops and configure all required spin_locks/mutex to use
+hdac_hda_ext library. Keep the code conditional so that the HDA link
+and audio codec support can be removed.
 
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-bus.c | 108 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-bus.c
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index bd9fd2035c55..fc1396adde71 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -196,13 +196,18 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 
- endif ## SND_SOC_INTEL_SKYLAKE_FAMILY
- 
-+endif ## SND_SOC_INTEL_SST_TOPLEVEL
+diff --git a/sound/soc/sof/intel/hda-bus.c b/sound/soc/sof/intel/hda-bus.c
+new file mode 100644
+index 000000000000..62cc9921bb55
+--- /dev/null
++++ b/sound/soc/sof/intel/hda-bus.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Authors: Keyon Jie <yang.jie@linux.intel.com>
 +
-+if SND_SOC_INTEL_SST_TOPLEVEL || SND_SOC_SOF_INTEL_TOPLEVEL
++#include <linux/io.h>
++#include <sound/hdaudio.h>
++#include "../sof-priv.h"
++#include "hda.h"
 +
- config SND_SOC_ACPI_INTEL_MATCH
- 	tristate
- 	select SND_SOC_ACPI if ACPI
- 	# this option controls the compilation of ACPI matching tables and
- 	# helpers and is not meant to be selected by the user.
- 
--endif ## SND_SOC_INTEL_SST_TOPLEVEL
-+endif ## SND_SOC_INTEL_SST_TOPLEVEL || SND_SOC_SOF_INTEL_TOPLEVEL
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
 +
- 
- # ASoC codec drivers
- source "sound/soc/intel/boards/Kconfig"
++static const struct hdac_bus_ops bus_ops = {
++	.command = snd_hdac_bus_send_cmd,
++	.get_response = snd_hdac_bus_get_response,
++};
++
++#endif
++
++static void sof_hda_writel(u32 value, u32 __iomem *addr)
++{
++	writel(value, addr);
++}
++
++static u32 sof_hda_readl(u32 __iomem *addr)
++{
++	return readl(addr);
++}
++
++static void sof_hda_writew(u16 value, u16 __iomem *addr)
++{
++	writew(value, addr);
++}
++
++static u16 sof_hda_readw(u16 __iomem *addr)
++{
++	return readw(addr);
++}
++
++static void sof_hda_writeb(u8 value, u8 __iomem *addr)
++{
++	writeb(value, addr);
++}
++
++static u8 sof_hda_readb(u8 __iomem *addr)
++{
++	return readb(addr);
++}
++
++static int sof_hda_dma_alloc_pages(struct hdac_bus *bus, int type,
++				   size_t size, struct snd_dma_buffer *buf)
++{
++	return snd_dma_alloc_pages(type, bus->dev, size, buf);
++}
++
++static void sof_hda_dma_free_pages(struct hdac_bus *bus,
++				   struct snd_dma_buffer *buf)
++{
++	snd_dma_free_pages(buf);
++}
++
++static const struct hdac_io_ops io_ops = {
++	.reg_writel = sof_hda_writel,
++	.reg_readl = sof_hda_readl,
++	.reg_writew = sof_hda_writew,
++	.reg_readw = sof_hda_readw,
++	.reg_writeb = sof_hda_writeb,
++	.reg_readb = sof_hda_readb,
++	.dma_alloc_pages = sof_hda_dma_alloc_pages,
++	.dma_free_pages = sof_hda_dma_free_pages,
++};
++
++/*
++ * This can be used for both with/without hda link support.
++ */
++void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev,
++		      const struct hdac_ext_bus_ops *ext_ops)
++{
++	static int idx;
++
++	memset(bus, 0, sizeof(*bus));
++	bus->dev = dev;
++
++	bus->io_ops = &io_ops;
++	INIT_LIST_HEAD(&bus->stream_list);
++
++	bus->irq = -1;
++	bus->ext_ops = ext_ops;
++	bus->idx = idx++;
++
++	spin_lock_init(&bus->reg_lock);
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	INIT_LIST_HEAD(&bus->codec_list);
++	INIT_LIST_HEAD(&bus->hlink_list);
++
++	mutex_init(&bus->cmd_mutex);
++	mutex_init(&bus->lock);
++	bus->ops = &bus_ops;
++	INIT_WORK(&bus->unsol_work, snd_hdac_bus_process_unsol_events);
++	bus->cmd_dma_state = true;
++#endif
++
++}
 -- 
 2.20.1
