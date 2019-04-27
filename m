@@ -1,13 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add userspace ABI support" to the
-	asoc tree
-Date: Sat, 27 Apr 2019 18:52:58 +0100 (BST)
-Message-ID: <20190427175258.A5EC6441D3E@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-11-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add DSP HW abstraction operations"
+	to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:59 +0100 (BST)
+Message-ID: <20190427175259.ECD49441D58@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0133486462825915395=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-11-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,12 +21,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============0133486462825915395==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: SOF: Add userspace ABI support
+   ASoC: SOF: Add DSP HW abstraction operations
 
 has been applied to the asoc tree at
 
@@ -50,816 +48,599 @@ to this mail.
 Thanks,
 Mark
 
->From 4483151e765b5a7ffb823fe9bb11128101410427 Mon Sep 17 00:00:00 2001
+>From d1d95fcb63e3b83245ad06484b6905ab6c21afc3 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:15 -0500
-Subject: [PATCH] ASoC: SOF: Add userspace ABI support
+Date: Fri, 12 Apr 2019 11:05:13 -0500
+Subject: [PATCH] ASoC: SOF: Add DSP HW abstraction operations
 
-Add userspace ABI for audio userspace application IO outside of regular
-ALSA PCM and kcontrols. This is intended to be used to format
-coefficients and data for custom processing components.
+Add operation pointers that can be called by core to control a wide
+variety of DSP targets. The DSP HW drivers will fill in these
+operations.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/sof/abi.h      |  62 ++++++++++
- include/uapi/sound/sof/eq.h       | 172 +++++++++++++++++++++++++++
- include/uapi/sound/sof/fw.h       |  78 +++++++++++++
- include/uapi/sound/sof/header.h   |  27 +++++
- include/uapi/sound/sof/manifest.h | 188 ++++++++++++++++++++++++++++++
- include/uapi/sound/sof/tokens.h   | 107 +++++++++++++++++
- include/uapi/sound/sof/tone.h     |  21 ++++
- include/uapi/sound/sof/trace.h    |  66 +++++++++++
- 8 files changed, 721 insertions(+)
- create mode 100644 include/uapi/sound/sof/abi.h
- create mode 100644 include/uapi/sound/sof/eq.h
- create mode 100644 include/uapi/sound/sof/fw.h
- create mode 100644 include/uapi/sound/sof/header.h
- create mode 100644 include/uapi/sound/sof/manifest.h
- create mode 100644 include/uapi/sound/sof/tokens.h
- create mode 100644 include/uapi/sound/sof/tone.h
- create mode 100644 include/uapi/sound/sof/trace.h
+ sound/soc/sof/ops.c | 163 ++++++++++++++++++
+ sound/soc/sof/ops.h | 399 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 562 insertions(+)
+ create mode 100644 sound/soc/sof/ops.c
+ create mode 100644 sound/soc/sof/ops.h
 
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
 new file mode 100644
-index 000000000000..37e0a90dc9e6
+index 000000000000..80f907740b82
 --- /dev/null
-+++ b/include/uapi/sound/sof/abi.h
-@@ -0,0 +1,62 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++++ b/sound/soc/sof/ops.c
+@@ -0,0 +1,163 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++#include <linux/pci.h>
++#include "ops.h"
++
++static
++bool snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
++				      u32 mask, u32 value)
++{
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	unsigned int old, new;
++	u32 ret;
++
++	pci_read_config_dword(pci, offset, &ret);
++	old = ret;
++	dev_dbg(sdev->dev, "Debug PCIR: %8.8x at  %8.8x\n", old & mask, offset);
++
++	new = (old & ~mask) | (value & mask);
++
++	if (old == new)
++		return false;
++
++	pci_write_config_dword(pci, offset, new);
++	dev_dbg(sdev->dev, "Debug PCIW: %8.8x at  %8.8x\n", value,
++		offset);
++
++	return true;
++}
++
++bool snd_sof_pci_update_bits(struct snd_sof_dev *sdev, u32 offset,
++			     u32 mask, u32 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_pci_update_bits_unlocked(sdev, offset, mask, value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_pci_update_bits);
++
++bool snd_sof_dsp_update_bits_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				      u32 offset, u32 mask, u32 value)
++{
++	unsigned int old, new;
++	u32 ret;
++
++	ret = snd_sof_dsp_read(sdev, bar, offset);
++
++	old = ret;
++	new = (old & ~mask) | (value & mask);
++
++	if (old == new)
++		return false;
++
++	snd_sof_dsp_write(sdev, bar, offset, new);
++
++	return true;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_unlocked);
++
++bool snd_sof_dsp_update_bits64_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					u32 offset, u64 mask, u64 value)
++{
++	u64 old, new;
++
++	old = snd_sof_dsp_read64(sdev, bar, offset);
++
++	new = (old & ~mask) | (value & mask);
++
++	if (old == new)
++		return false;
++
++	snd_sof_dsp_write64(sdev, bar, offset, new);
++
++	return true;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits64_unlocked);
++
++/* This is for registers bits with attribute RWC */
++bool snd_sof_dsp_update_bits(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			     u32 mask, u32 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_dsp_update_bits_unlocked(sdev, bar, offset, mask,
++						  value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits);
++
++bool snd_sof_dsp_update_bits64(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			       u64 mask, u64 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_dsp_update_bits64_unlocked(sdev, bar, offset, mask,
++						    value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits64);
++
++static
++void snd_sof_dsp_update_bits_forced_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					     u32 offset, u32 mask, u32 value)
++{
++	unsigned int old, new;
++	u32 ret;
++
++	ret = snd_sof_dsp_read(sdev, bar, offset);
++
++	old = ret;
++	new = (old & ~mask) | (value & mask);
++
++	snd_sof_dsp_write(sdev, bar, offset, new);
++}
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
++				    u32 offset, u32 mask, u32 value)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	snd_sof_dsp_update_bits_forced_unlocked(sdev, bar, offset, mask, value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced);
++
++void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
++{
++	dev_err(sdev->dev, "error : DSP panic!\n");
++
++	/*
++	 * check if DSP is not ready and did not set the dsp_oops_offset.
++	 * if the dsp_oops_offset is not set, set it from the panic message.
++	 * Also add a check to memory window setting with panic message.
++	 */
++	if (!sdev->dsp_oops_offset)
++		sdev->dsp_oops_offset = offset;
++	else
++		dev_dbg(sdev->dev, "panic: dsp_oops_offset %zu offset %d\n",
++			sdev->dsp_oops_offset, offset);
++
++	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
++	snd_sof_trace_notify_for_error(sdev);
++}
++EXPORT_SYMBOL(snd_sof_dsp_panic);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+new file mode 100644
+index 000000000000..2a5d4c63f160
+--- /dev/null
++++ b/sound/soc/sof/ops.h
+@@ -0,0 +1,399 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
 +/*
 + * This file is provided under a dual BSD/GPLv2 license.  When using or
 + * redistributing this file, you may do so under either license.
 + *
 + * Copyright(c) 2018 Intel Corporation. All rights reserved.
++ *
++ * Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 + */
++
++#ifndef __SOUND_SOC_SOF_IO_H
++#define __SOUND_SOC_SOF_IO_H
++
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <sound/pcm.h>
++#include "sof-priv.h"
++
++#define sof_ops(sdev) \
++	((sdev)->pdata->desc->ops)
++
++/* Mandatory operations are verified during probing */
++
++/* init */
++static inline int snd_sof_probe(struct snd_sof_dev *sdev)
++{
++	return sof_ops(sdev)->probe(sdev);
++}
++
++static inline int snd_sof_remove(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->remove)
++		return sof_ops(sdev)->remove(sdev);
++
++	return 0;
++}
++
++/* control */
++
++/*
++ * snd_sof_dsp_run returns the core mask of the cores that are available
++ * after successful fw boot
++ */
++static inline int snd_sof_dsp_run(struct snd_sof_dev *sdev)
++{
++	return sof_ops(sdev)->run(sdev);
++}
++
++static inline int snd_sof_dsp_stall(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->stall)
++		return sof_ops(sdev)->stall(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_reset(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->reset)
++		return sof_ops(sdev)->reset(sdev);
++
++	return 0;
++}
++
++/* dsp core power up/power down */
++static inline int snd_sof_dsp_core_power_up(struct snd_sof_dev *sdev,
++					    unsigned int core_mask)
++{
++	if (sof_ops(sdev)->core_power_up)
++		return sof_ops(sdev)->core_power_up(sdev, core_mask);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_core_power_down(struct snd_sof_dev *sdev,
++					      unsigned int core_mask)
++{
++	if (sof_ops(sdev)->core_power_down)
++		return sof_ops(sdev)->core_power_down(sdev, core_mask);
++
++	return 0;
++}
++
++/* pre/post fw load */
++static inline int snd_sof_dsp_pre_fw_run(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->pre_fw_run)
++		return sof_ops(sdev)->pre_fw_run(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_post_fw_run(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->post_fw_run)
++		return sof_ops(sdev)->post_fw_run(sdev);
++
++	return 0;
++}
++
++/* power management */
++static inline int snd_sof_dsp_resume(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->resume)
++		return sof_ops(sdev)->resume(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_suspend(struct snd_sof_dev *sdev, int state)
++{
++	if (sof_ops(sdev)->suspend)
++		return sof_ops(sdev)->suspend(sdev, state);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_runtime_resume(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->runtime_resume)
++		return sof_ops(sdev)->runtime_resume(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_runtime_suspend(struct snd_sof_dev *sdev,
++					      int state)
++{
++	if (sof_ops(sdev)->runtime_suspend)
++		return sof_ops(sdev)->runtime_suspend(sdev, state);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_set_clk(struct snd_sof_dev *sdev, u32 freq)
++{
++	if (sof_ops(sdev)->set_clk)
++		return sof_ops(sdev)->set_clk(sdev, freq);
++
++	return 0;
++}
++
++/* debug */
++static inline void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags)
++{
++	if (sof_ops(sdev)->dbg_dump)
++		return sof_ops(sdev)->dbg_dump(sdev, flags);
++}
++
++/* register IO */
++static inline void snd_sof_dsp_write(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 value)
++{
++	if (sof_ops(sdev)->write) {
++		sof_ops(sdev)->write(sdev, sdev->bar[bar] + offset, value);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++static inline void snd_sof_dsp_write64(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 value)
++{
++	if (sof_ops(sdev)->write64) {
++		sof_ops(sdev)->write64(sdev, sdev->bar[bar] + offset, value);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
++				   u32 offset)
++{
++	if (sof_ops(sdev)->read)
++		return sof_ops(sdev)->read(sdev, sdev->bar[bar] + offset);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset)
++{
++	if (sof_ops(sdev)->read64)
++		return sof_ops(sdev)->read64(sdev, sdev->bar[bar] + offset);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++/* block IO */
++static inline void snd_sof_dsp_block_read(struct snd_sof_dev *sdev, u32 bar,
++					  u32 offset, void *dest, size_t bytes)
++{
++	sof_ops(sdev)->block_read(sdev, bar, offset, dest, bytes);
++}
++
++static inline void snd_sof_dsp_block_write(struct snd_sof_dev *sdev, u32 bar,
++					   u32 offset, void *src, size_t bytes)
++{
++	sof_ops(sdev)->block_write(sdev, bar, offset, src, bytes);
++}
++
++/* ipc */
++static inline int snd_sof_dsp_send_msg(struct snd_sof_dev *sdev,
++				       struct snd_sof_ipc_msg *msg)
++{
++	return sof_ops(sdev)->send_msg(sdev, msg);
++}
++
++/* host DMA trace */
++static inline int snd_sof_dma_trace_init(struct snd_sof_dev *sdev,
++					 u32 *stream_tag)
++{
++	if (sof_ops(sdev)->trace_init)
++		return sof_ops(sdev)->trace_init(sdev, stream_tag);
++
++	return 0;
++}
++
++static inline int snd_sof_dma_trace_release(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->trace_release)
++		return sof_ops(sdev)->trace_release(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dma_trace_trigger(struct snd_sof_dev *sdev, int cmd)
++{
++	if (sof_ops(sdev)->trace_trigger)
++		return sof_ops(sdev)->trace_trigger(sdev, cmd);
++
++	return 0;
++}
++
++/* host PCM ops */
++static inline int
++snd_sof_pcm_platform_open(struct snd_sof_dev *sdev,
++			  struct snd_pcm_substream *substream)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_open)
++		return sof_ops(sdev)->pcm_open(sdev, substream);
++
++	return 0;
++}
++
++/* disconnect pcm substream to a host stream */
++static inline int
++snd_sof_pcm_platform_close(struct snd_sof_dev *sdev,
++			   struct snd_pcm_substream *substream)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_close)
++		return sof_ops(sdev)->pcm_close(sdev, substream);
++
++	return 0;
++}
++
++/* host stream hw params */
++static inline int
++snd_sof_pcm_platform_hw_params(struct snd_sof_dev *sdev,
++			       struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params,
++			       struct sof_ipc_stream_params *ipc_params)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_hw_params)
++		return sof_ops(sdev)->pcm_hw_params(sdev, substream,
++						    params, ipc_params);
++
++	return 0;
++}
++
++/* host stream trigger */
++static inline int
++snd_sof_pcm_platform_trigger(struct snd_sof_dev *sdev,
++			     struct snd_pcm_substream *substream, int cmd)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_trigger)
++		return sof_ops(sdev)->pcm_trigger(sdev, substream, cmd);
++
++	return 0;
++}
++
++/* host DSP message data */
++static inline void snd_sof_ipc_msg_data(struct snd_sof_dev *sdev,
++					struct snd_pcm_substream *substream,
++					void *p, size_t sz)
++{
++	sof_ops(sdev)->ipc_msg_data(sdev, substream, p, sz);
++}
++
++/* host configure DSP HW parameters */
++static inline int
++snd_sof_ipc_pcm_params(struct snd_sof_dev *sdev,
++		       struct snd_pcm_substream *substream,
++		       const struct sof_ipc_pcm_params_reply *reply)
++{
++	return sof_ops(sdev)->ipc_pcm_params(sdev, substream, reply);
++}
++
++/* host stream pointer */
++static inline snd_pcm_uframes_t
++snd_sof_pcm_platform_pointer(struct snd_sof_dev *sdev,
++			     struct snd_pcm_substream *substream)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_pointer)
++		return sof_ops(sdev)->pcm_pointer(sdev, substream);
++
++	return 0;
++}
++
++static inline const struct snd_sof_dsp_ops
++*sof_get_ops(const struct sof_dev_desc *d,
++	     const struct sof_ops_table mach_ops[], int asize)
++{
++	int i;
++
++	for (i = 0; i < asize; i++) {
++		if (d == mach_ops[i].desc)
++			return mach_ops[i].ops;
++	}
++
++	/* not found */
++	return NULL;
++}
 +
 +/**
-+ * SOF ABI versioning is based on Semantic Versioning where we have a given
-+ * MAJOR.MINOR.PATCH version number. See https://semver.org/
++ * snd_sof_dsp_register_poll_timeout - Periodically poll an address
++ * until a condition is met or a timeout occurs
++ * @op: accessor function (takes @addr as its only argument)
++ * @addr: Address to poll
++ * @val: Variable to read the value into
++ * @cond: Break condition (usually involving @val)
++ * @sleep_us: Maximum time to sleep between reads in us (0
++ *            tight-loops).  Should be less than ~20ms since usleep_range
++ *            is used (see Documentation/timers/timers-howto.txt).
++ * @timeout_us: Timeout in us, 0 means never timeout
 + *
-+ * Rules for incrementing or changing version :-
++ * Returns 0 on success and -ETIMEDOUT upon a timeout. In either
++ * case, the last read value at @addr is stored in @val. Must not
++ * be called from atomic context if sleep_us or timeout_us are used.
 + *
-+ * 1) Increment MAJOR version if you make incompatible API changes. MINOR and
-+ *    PATCH should be reset to 0.
-+ *
-+ * 2) Increment MINOR version if you add backwards compatible features or
-+ *    changes. PATCH should be reset to 0.
-+ *
-+ * 3) Increment PATCH version if you add backwards compatible bug fixes.
++ * This is modelled after the readx_poll_timeout macros in linux/iopoll.h.
 + */
-+
-+#ifndef __INCLUDE_UAPI_SOUND_SOF_ABI_H__
-+#define __INCLUDE_UAPI_SOUND_SOF_ABI_H__
-+
-+/* SOF ABI version major, minor and patch numbers */
-+#define SOF_ABI_MAJOR 3
-+#define SOF_ABI_MINOR 4
-+#define SOF_ABI_PATCH 0
-+
-+/* SOF ABI version number. Format within 32bit word is MMmmmppp */
-+#define SOF_ABI_MAJOR_SHIFT	24
-+#define SOF_ABI_MAJOR_MASK	0xff
-+#define SOF_ABI_MINOR_SHIFT	12
-+#define SOF_ABI_MINOR_MASK	0xfff
-+#define SOF_ABI_PATCH_SHIFT	0
-+#define SOF_ABI_PATCH_MASK	0xfff
-+
-+#define SOF_ABI_VER(major, minor, patch) \
-+	(((major) << SOF_ABI_MAJOR_SHIFT) | \
-+	((minor) << SOF_ABI_MINOR_SHIFT) | \
-+	((patch) << SOF_ABI_PATCH_SHIFT))
-+
-+#define SOF_ABI_VERSION_MAJOR(version) \
-+	(((version) >> SOF_ABI_MAJOR_SHIFT) & SOF_ABI_MAJOR_MASK)
-+#define SOF_ABI_VERSION_MINOR(version)	\
-+	(((version) >> SOF_ABI_MINOR_SHIFT) & SOF_ABI_MINOR_MASK)
-+#define SOF_ABI_VERSION_PATCH(version)	\
-+	(((version) >> SOF_ABI_PATCH_SHIFT) & SOF_ABI_PATCH_MASK)
-+
-+#define SOF_ABI_VERSION_INCOMPATIBLE(sof_ver, client_ver)		\
-+	(SOF_ABI_VERSION_MAJOR((sof_ver)) !=				\
-+		SOF_ABI_VERSION_MAJOR((client_ver))			\
-+	)
-+
-+#define SOF_ABI_VERSION SOF_ABI_VER(SOF_ABI_MAJOR, SOF_ABI_MINOR, SOF_ABI_PATCH)
-+
-+/* SOF ABI magic number "SOF\0". */
-+#define SOF_ABI_MAGIC		0x00464F53
-+
-+#endif
-diff --git a/include/uapi/sound/sof/eq.h b/include/uapi/sound/sof/eq.h
-new file mode 100644
-index 000000000000..666c2b6a3229
---- /dev/null
-+++ b/include/uapi/sound/sof/eq.h
-@@ -0,0 +1,172 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOUND_SOF_USER_EQ_H__
-+#define __INCLUDE_UAPI_SOUND_SOF_USER_EQ_H__
-+
-+/* FIR EQ type */
-+
-+#define SOF_EQ_FIR_IDX_SWITCH	0
-+
-+#define SOF_EQ_FIR_MAX_SIZE 4096 /* Max size allowed for coef data in bytes */
-+
-+#define SOF_EQ_FIR_MAX_LENGTH 192 /* Max length for individual filter */
-+
-+#define SOF_EQ_FIR_MAX_RESPONSES 8 /* A blob can define max 8 FIR EQs */
-+
-+/*
-+ * eq_fir_configuration data structure contains this information
-+ *     uint32_t size
-+ *	   This is the number of bytes need to store the received EQ
-+ *	   configuration.
-+ *     uint16_t channels_in_config
-+ *         This describes the number of channels in this EQ config data. It
-+ *         can be different from PLATFORM_MAX_CHANNELS.
-+ *     uint16_t number_of_responses
-+ *         0=no responses, 1=one response defined, 2=two responses defined, etc.
-+ *     int16_t data[]
-+ *         assign_response[channels_in_config]
-+ *             0 = use first response, 1 = use 2nd response, etc.
-+ *             E.g. {0, 0, 0, 0, 1, 1, 1, 1} would apply to channels 0-3 the
-+ *	       same first defined response and for to channels 4-7 the second.
-+ *         coef_data[]
-+ *             Repeated data
-+ *             { filter_length, output_shift, h[] }
-+ *	       for every EQ response defined where vector h has filter_length
-+ *             number of coefficients. Coefficients in h[] are in Q1.15 format.
-+ *             E.g. 16384 (Q1.15) = 0.5. The shifts are number of right shifts.
-+ *
-+ * NOTE: The channels_in_config must be even to have coef_data aligned to
-+ * 32 bit word in RAM. Therefore a mono EQ assign must be duplicated to 2ch
-+ * even if it would never used. Similarly a 5ch EQ assign must be increased
-+ * to 6ch. EQ init will return an error if this is not met.
-+ *
-+ * NOTE: The filter_length must be multiple of four. Therefore the filter must
-+ * be padded from the end with zeros have this condition met.
-+ */
-+
-+struct sof_eq_fir_config {
-+	uint32_t size;
-+	uint16_t channels_in_config;
-+	uint16_t number_of_responses;
-+
-+	/* reserved */
-+	uint32_t reserved[4];
-+
-+	int16_t data[];
-+} __packed;
-+
-+struct sof_eq_fir_coef_data {
-+	int16_t length; /* Number of FIR taps */
-+	int16_t out_shift; /* Amount of right shifts at output */
-+
-+	/* reserved */
-+	uint32_t reserved[4];
-+
-+	int16_t coef[]; /* FIR coefficients */
-+} __packed;
-+
-+/* In the struct above there's two 16 bit words (length, shift) and four
-+ * reserved 32 bit words before the actual FIR coefficients. This information
-+ * is used in parsing of the configuration blob.
-+ */
-+#define SOF_EQ_FIR_COEF_NHEADER \
-+	(sizeof(struct sof_eq_fir_coef_data) / sizeof(int16_t))
-+
-+/* IIR EQ type */
-+
-+#define SOF_EQ_IIR_IDX_SWITCH   0
-+
-+#define SOF_EQ_IIR_MAX_SIZE 1024 /* Max size allowed for coef data in bytes */
-+
-+#define SOF_EQ_IIR_MAX_RESPONSES 8 /* A blob can define max 8 IIR EQs */
-+
-+/* eq_iir_configuration
-+ *     uint32_t channels_in_config
-+ *         This describes the number of channels in this EQ config data. It
-+ *         can be different from PLATFORM_MAX_CHANNELS.
-+ *     uint32_t number_of_responses_defined
-+ *         0=no responses, 1=one response defined, 2=two responses defined, etc.
-+ *     int32_t data[]
-+ *         Data consist of two parts. First is the response assign vector that
-+ *	   has length of channels_in_config. The latter part is coefficient
-+ *         data.
-+ *         uint32_t assign_response[channels_in_config]
-+ *             -1 = not defined, 0 = use first response, 1 = use 2nd, etc.
-+ *             E.g. {0, 0, 0, 0, -1, -1, -1, -1} would apply to channels 0-3 the
-+ *             same first defined response and leave channels 4-7 unequalized.
-+ *         coefficient_data[]
-+ *             <1st EQ>
-+ *             uint32_t num_biquads
-+ *             uint32_t num_biquads_in_series
-+ *             <1st biquad>
-+ *             int32_t coef_a2       Q2.30 format
-+ *             int32_t coef_a1       Q2.30 format
-+ *             int32_t coef_b2       Q2.30 format
-+ *             int32_t coef_b1       Q2.30 format
-+ *             int32_t coef_b0       Q2.30 format
-+ *             int32_t output_shift  number of shifts right, shift left is negative
-+ *             int32_t output_gain   Q2.14 format
-+ *             <2nd biquad>
-+ *             ...
-+ *             <2nd EQ>
-+ *
-+ *         Note: A flat response biquad can be made with a section set to
-+ *         b0 = 1.0, gain = 1.0, and other parameters set to 0
-+ *         {0, 0, 0, 0, 1073741824, 0, 16484}
-+ */
-+
-+struct sof_eq_iir_config {
-+	uint32_t size;
-+	uint32_t channels_in_config;
-+	uint32_t number_of_responses;
-+
-+	/* reserved */
-+	uint32_t reserved[4];
-+
-+	int32_t data[]; /* eq_assign[channels], eq 0, eq 1, ... */
-+} __packed;
-+
-+struct sof_eq_iir_header_df2t {
-+	uint32_t num_sections;
-+	uint32_t num_sections_in_series;
-+
-+	/* reserved */
-+	uint32_t reserved[4];
-+
-+	int32_t biquads[]; /* Repeated biquad coefficients */
-+} __packed;
-+
-+struct sof_eq_iir_biquad_df2t {
-+	int32_t a2; /* Q2.30 */
-+	int32_t a1; /* Q2.30 */
-+	int32_t b2; /* Q2.30 */
-+	int32_t b1; /* Q2.30 */
-+	int32_t b0; /* Q2.30 */
-+	int32_t output_shift; /* Number of right shifts */
-+	int32_t output_gain;  /* Q2.14 */
-+} __packed;
-+
-+/* A full 22th order equalizer with 11 biquads cover octave bands 1-11 in
-+ * in the 0 - 20 kHz bandwidth.
-+ */
-+#define SOF_EQ_IIR_DF2T_BIQUADS_MAX 11
-+
-+/* The number of int32_t words in sof_eq_iir_header_df2t:
-+ *	num_sections, num_sections_in_series, reserved[4]
-+ */
-+#define SOF_EQ_IIR_NHEADER_DF2T \
-+	(sizeof(struct sof_eq_iir_header_df2t) / sizeof(int32_t))
-+
-+/* The number of int32_t words in sof_eq_iir_biquad_df2t:
-+ *	a2, a1, b2, b1, b0, output_shift, output_gain
-+ */
-+#define SOF_EQ_IIR_NBIQUAD_DF2T \
-+	(sizeof(struct sof_eq_iir_biquad_df2t) / sizeof(int32_t))
-+
-+#endif
-diff --git a/include/uapi/sound/sof/fw.h b/include/uapi/sound/sof/fw.h
-new file mode 100644
-index 000000000000..1afca973eb09
---- /dev/null
-+++ b/include/uapi/sound/sof/fw.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+/*
-+ * Firmware file format .
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOF_FW_H__
-+#define __INCLUDE_UAPI_SOF_FW_H__
-+
-+#define SND_SOF_FW_SIG_SIZE	4
-+#define SND_SOF_FW_ABI		1
-+#define SND_SOF_FW_SIG		"Reef"
-+
-+/*
-+ * Firmware module is made up of 1 . N blocks of different types. The
-+ * Block header is used to determine where and how block is to be copied in the
-+ * DSP/host memory space.
-+ */
-+enum snd_sof_fw_blk_type {
-+	SOF_FW_BLK_TYPE_INVALID	= -1,
-+	SOF_FW_BLK_TYPE_START	= 0,
-+	SOF_FW_BLK_TYPE_RSRVD0	= SOF_FW_BLK_TYPE_START,
-+	SOF_FW_BLK_TYPE_IRAM	= 1,	/* local instruction RAM */
-+	SOF_FW_BLK_TYPE_DRAM	= 2,	/* local data RAM */
-+	SOF_FW_BLK_TYPE_SRAM	= 3,	/* system RAM */
-+	SOF_FW_BLK_TYPE_ROM	= 4,
-+	SOF_FW_BLK_TYPE_IMR	= 5,
-+	SOF_FW_BLK_TYPE_RSRVD6	= 6,
-+	SOF_FW_BLK_TYPE_RSRVD7	= 7,
-+	SOF_FW_BLK_TYPE_RSRVD8	= 8,
-+	SOF_FW_BLK_TYPE_RSRVD9	= 9,
-+	SOF_FW_BLK_TYPE_RSRVD10	= 10,
-+	SOF_FW_BLK_TYPE_RSRVD11	= 11,
-+	SOF_FW_BLK_TYPE_RSRVD12	= 12,
-+	SOF_FW_BLK_TYPE_RSRVD13	= 13,
-+	SOF_FW_BLK_TYPE_RSRVD14	= 14,
-+	/* use SOF_FW_BLK_TYPE_RSVRDX for new block types */
-+	SOF_FW_BLK_TYPE_NUM
-+};
-+
-+struct snd_sof_blk_hdr {
-+	enum snd_sof_fw_blk_type type;
-+	uint32_t size;		/* bytes minus this header */
-+	uint32_t offset;	/* offset from base */
-+} __packed;
-+
-+/*
-+ * Firmware file is made up of 1 .. N different modules types. The module
-+ * type is used to determine how to load and parse the module.
-+ */
-+enum snd_sof_fw_mod_type {
-+	SOF_FW_BASE	= 0,	/* base firmware image */
-+	SOF_FW_MODULE	= 1,	/* firmware module */
-+};
-+
-+struct snd_sof_mod_hdr {
-+	enum snd_sof_fw_mod_type type;
-+	uint32_t size;		/* bytes minus this header */
-+	uint32_t num_blocks;	/* number of blocks */
-+} __packed;
-+
-+/*
-+ * Firmware file header.
-+ */
-+struct snd_sof_fw_header {
-+	unsigned char sig[SND_SOF_FW_SIG_SIZE]; /* "Reef" */
-+	uint32_t file_size;	/* size of file minus this header */
-+	uint32_t num_modules;	/* number of modules */
-+	uint32_t abi;		/* version of header format */
-+} __packed;
-+
-+#endif
-diff --git a/include/uapi/sound/sof/header.h b/include/uapi/sound/sof/header.h
-new file mode 100644
-index 000000000000..7868990b0d6f
---- /dev/null
-+++ b/include/uapi/sound/sof/header.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOUND_SOF_USER_HEADER_H__
-+#define __INCLUDE_UAPI_SOUND_SOF_USER_HEADER_H__
-+
-+/*
-+ * Header for all non IPC ABI data.
-+ *
-+ * Identifies data type, size and ABI.
-+ * Used by any bespoke component data structures or binary blobs.
-+ */
-+struct sof_abi_hdr {
-+	uint32_t magic;		/**< 'S', 'O', 'F', '\0' */
-+	uint32_t type;		/**< component specific type */
-+	uint32_t size;		/**< size in bytes of data excl. this struct */
-+	uint32_t abi;		/**< SOF ABI version */
-+	uint32_t reserved[4];	/**< reserved for future use */
-+	uint32_t data[0];	/**< Component data - opaque to core */
-+}  __packed;
-+
-+#endif
-diff --git a/include/uapi/sound/sof/manifest.h b/include/uapi/sound/sof/manifest.h
-new file mode 100644
-index 000000000000..2009ee30fad0
---- /dev/null
-+++ b/include/uapi/sound/sof/manifest.h
-@@ -0,0 +1,188 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOUND_SOF_USER_MANIFEST_H__
-+#define __INCLUDE_UAPI_SOUND_SOF_USER_MANIFEST_H__
-+
-+/* start offset for base FW module */
-+#define SOF_MAN_ELF_TEXT_OFFSET		0x2000
-+
-+/* FW Extended Manifest Header id = $AE1 */
-+#define SOF_MAN_EXT_HEADER_MAGIC	0x31454124
-+
-+/* module type load type */
-+#define SOF_MAN_MOD_TYPE_BUILTIN	0
-+#define SOF_MAN_MOD_TYPE_MODULE		1
-+
-+struct sof_man_module_type {
-+	uint32_t load_type:4;	/* SOF_MAN_MOD_TYPE_ */
-+	uint32_t auto_start:1;
-+	uint32_t domain_ll:1;
-+	uint32_t domain_dp:1;
-+	uint32_t rsvd_:25;
-+};
-+
-+/* segment flags.type */
-+#define SOF_MAN_SEGMENT_TEXT		0
-+#define SOF_MAN_SEGMENT_RODATA		1
-+#define SOF_MAN_SEGMENT_DATA		1
-+#define SOF_MAN_SEGMENT_BSS		2
-+#define SOF_MAN_SEGMENT_EMPTY		15
-+
-+union sof_man_segment_flags {
-+	uint32_t ul;
-+	struct {
-+		uint32_t contents:1;
-+		uint32_t alloc:1;
-+		uint32_t load:1;
-+		uint32_t readonly:1;
-+		uint32_t code:1;
-+		uint32_t data:1;
-+		uint32_t _rsvd0:2;
-+		uint32_t type:4;	/* MAN_SEGMENT_ */
-+		uint32_t _rsvd1:4;
-+		uint32_t length:16;	/* of segment in pages */
-+	} r;
-+} __packed;
-+
-+/*
-+ * Module segment descriptor. Used by ROM - Immutable.
-+ */
-+struct sof_man_segment_desc {
-+	union sof_man_segment_flags flags;
-+	uint32_t v_base_addr;
-+	uint32_t file_offset;
-+} __packed;
-+
-+/*
-+ * The firmware binary can be split into several modules.
-+ */
-+
-+#define SOF_MAN_MOD_ID_LEN		4
-+#define SOF_MAN_MOD_NAME_LEN		8
-+#define SOF_MAN_MOD_SHA256_LEN		32
-+#define SOF_MAN_MOD_ID			{'$', 'A', 'M', 'E'}
-+
-+/*
-+ * Each module has an entry in the FW header. Used by ROM - Immutable.
-+ */
-+struct sof_man_module {
-+	uint8_t struct_id[SOF_MAN_MOD_ID_LEN];	/* SOF_MAN_MOD_ID */
-+	uint8_t name[SOF_MAN_MOD_NAME_LEN];
-+	uint8_t uuid[16];
-+	struct sof_man_module_type type;
-+	uint8_t hash[SOF_MAN_MOD_SHA256_LEN];
-+	uint32_t entry_point;
-+	uint16_t cfg_offset;
-+	uint16_t cfg_count;
-+	uint32_t affinity_mask;
-+	uint16_t instance_max_count;	/* max number of instances */
-+	uint16_t instance_bss_size;	/* instance (pages) */
-+	struct sof_man_segment_desc segment[3];
-+} __packed;
-+
-+/*
-+ * Each module has a configuration in the FW header. Used by ROM - Immutable.
-+ */
-+struct sof_man_mod_config {
-+	uint32_t par[4];	/* module parameters */
-+	uint32_t is_pages;	/* actual size of instance .bss (pages) */
-+	uint32_t cps;		/* cycles per second */
-+	uint32_t ibs;		/* input buffer size (bytes) */
-+	uint32_t obs;		/* output buffer size (bytes) */
-+	uint32_t module_flags;	/* flags, reserved for future use */
-+	uint32_t cpc;		/* cycles per single run */
-+	uint32_t obls;		/* output block size, reserved for future use */
-+} __packed;
-+
-+/*
-+ * FW Manifest Header
-+ */
-+
-+#define SOF_MAN_FW_HDR_FW_NAME_LEN	8
-+#define SOF_MAN_FW_HDR_ID		{'$', 'A', 'M', '1'}
-+#define SOF_MAN_FW_HDR_NAME		"ADSPFW"
-+#define SOF_MAN_FW_HDR_FLAGS		0x0
-+#define SOF_MAN_FW_HDR_FEATURES		0xff
-+
-+/*
-+ * The firmware has a standard header that is checked by the ROM on firmware
-+ * loading. preload_page_count is used by DMA code loader and is entire
-+ * image size on CNL. i.e. CNL: total size of the binary’s .text and .rodata
-+ * Used by ROM - Immutable.
-+ */
-+struct sof_man_fw_header {
-+	uint8_t header_id[4];
-+	uint32_t header_len;
-+	uint8_t name[SOF_MAN_FW_HDR_FW_NAME_LEN];
-+	/* number of pages of preloaded image loaded by driver */
-+	uint32_t preload_page_count;
-+	uint32_t fw_image_flags;
-+	uint32_t feature_mask;
-+	uint16_t major_version;
-+	uint16_t minor_version;
-+	uint16_t hotfix_version;
-+	uint16_t build_version;
-+	uint32_t num_module_entries;
-+	uint32_t hw_buf_base_addr;
-+	uint32_t hw_buf_length;
-+	/* target address for binary loading as offset in IMR - must be == base offset */
-+	uint32_t load_offset;
-+} __packed;
-+
-+/*
-+ * Firmware manifest descriptor. This can contain N modules and N module
-+ * configs. Used by ROM - Immutable.
-+ */
-+struct sof_man_fw_desc {
-+	struct sof_man_fw_header header;
-+
-+	/* Warning - hack for module arrays. For some unknown reason the we
-+	 * have a variable size array of struct man_module followed by a
-+	 * variable size array of struct mod_config. These should have been
-+	 * merged into a variable array of a parent structure. We have to hack
-+	 * around this in many places....
-+	 *
-+	 * struct sof_man_module man_module[];
-+	 * struct sof_man_mod_config mod_config[];
-+	 */
-+
-+} __packed;
-+
-+/*
-+ * Component Descriptor. Used by ROM - Immutable.
-+ */
-+struct sof_man_component_desc {
-+	uint32_t reserved[2];	/* all 0 */
-+	uint32_t version;
-+	uint8_t hash[SOF_MAN_MOD_SHA256_LEN];
-+	uint32_t base_offset;
-+	uint32_t limit_offset;
-+	uint32_t attributes[4];
-+} __packed;
-+
-+/*
-+ * Audio DSP extended metadata. Used by ROM - Immutable.
-+ */
-+struct sof_man_adsp_meta_file_ext {
-+	uint32_t ext_type;	/* always 17 for ADSP extension */
-+	uint32_t ext_len;
-+	uint32_t imr_type;
-+	uint8_t reserved[16];	/* all 0 */
-+	struct sof_man_component_desc comp_desc[1];
-+} __packed;
-+
-+/*
-+ * Module Manifest for rimage module metadata. Not used by ROM.
-+ */
-+struct sof_man_module_manifest {
-+	struct sof_man_module module;
-+	uint32_t text_size;
-+} __packed;
-+
-+#endif
-diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
-new file mode 100644
-index 000000000000..53ea94bf1c08
---- /dev/null
-+++ b/include/uapi/sound/sof/tokens.h
-@@ -0,0 +1,107 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ * Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+ *         Keyon Jie <yang.jie@linux.intel.com>
-+ */
-+
-+/*
-+ * Topology IDs and tokens.
-+ *
-+ * ** MUST BE ALIGNED WITH TOPOLOGY CONFIGURATION TOKEN VALUES **
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOF_TOPOLOGY_H__
-+#define __INCLUDE_UAPI_SOF_TOPOLOGY_H__
-+
-+/*
-+ * Kcontrol IDs
-+ */
-+#define SOF_TPLG_KCTL_VOL_ID	256
-+#define SOF_TPLG_KCTL_ENUM_ID	257
-+#define SOF_TPLG_KCTL_BYTES_ID	258
-+#define SOF_TPLG_KCTL_SWITCH_ID	259
-+
-+/*
-+ * Tokens - must match values in topology configurations
-+ */
-+
-+/* buffers */
-+#define SOF_TKN_BUF_SIZE			100
-+#define SOF_TKN_BUF_CAPS			101
-+
-+/* DAI */
-+/* Token retired with ABI 3.2, do not use for new capabilities
-+ * #define	SOF_TKN_DAI_DMAC_CONFIG			153
-+ */
-+#define SOF_TKN_DAI_TYPE			154
-+#define SOF_TKN_DAI_INDEX			155
-+#define SOF_TKN_DAI_DIRECTION			156
-+
-+/* scheduling */
-+#define SOF_TKN_SCHED_PERIOD			200
-+#define SOF_TKN_SCHED_PRIORITY			201
-+#define SOF_TKN_SCHED_MIPS			202
-+#define SOF_TKN_SCHED_CORE			203
-+#define SOF_TKN_SCHED_FRAMES			204
-+#define SOF_TKN_SCHED_TIME_DOMAIN		205
-+
-+/* volume */
-+#define SOF_TKN_VOLUME_RAMP_STEP_TYPE		250
-+#define SOF_TKN_VOLUME_RAMP_STEP_MS		251
-+
-+/* SRC */
-+#define SOF_TKN_SRC_RATE_IN			300
-+#define SOF_TKN_SRC_RATE_OUT			301
-+
-+/* PCM */
-+#define SOF_TKN_PCM_DMAC_CONFIG			353
-+
-+/* Generic components */
-+#define SOF_TKN_COMP_PERIOD_SINK_COUNT		400
-+#define SOF_TKN_COMP_PERIOD_SOURCE_COUNT	401
-+#define SOF_TKN_COMP_FORMAT			402
-+/* Token retired with ABI 3.2, do not use for new capabilities
-+ * #define SOF_TKN_COMP_PRELOAD_COUNT		403
-+ */
-+
-+/* SSP */
-+#define SOF_TKN_INTEL_SSP_CLKS_CONTROL		500
-+#define SOF_TKN_INTEL_SSP_MCLK_ID		501
-+#define SOF_TKN_INTEL_SSP_SAMPLE_BITS		502
-+#define SOF_TKN_INTEL_SSP_FRAME_PULSE_WIDTH	503
-+#define SOF_TKN_INTEL_SSP_QUIRKS		504
-+#define SOF_TKN_INTEL_SSP_TDM_PADDING_PER_SLOT	505
-+
-+/* DMIC */
-+#define SOF_TKN_INTEL_DMIC_DRIVER_VERSION	600
-+#define SOF_TKN_INTEL_DMIC_CLK_MIN		601
-+#define SOF_TKN_INTEL_DMIC_CLK_MAX		602
-+#define SOF_TKN_INTEL_DMIC_DUTY_MIN		603
-+#define SOF_TKN_INTEL_DMIC_DUTY_MAX		604
-+#define SOF_TKN_INTEL_DMIC_NUM_PDM_ACTIVE	605
-+#define SOF_TKN_INTEL_DMIC_SAMPLE_RATE		608
-+#define SOF_TKN_INTEL_DMIC_FIFO_WORD_LENGTH	609
-+
-+/* DMIC PDM */
-+#define SOF_TKN_INTEL_DMIC_PDM_CTRL_ID		700
-+#define SOF_TKN_INTEL_DMIC_PDM_MIC_A_Enable	701
-+#define SOF_TKN_INTEL_DMIC_PDM_MIC_B_Enable	702
-+#define SOF_TKN_INTEL_DMIC_PDM_POLARITY_A	703
-+#define SOF_TKN_INTEL_DMIC_PDM_POLARITY_B	704
-+#define SOF_TKN_INTEL_DMIC_PDM_CLK_EDGE		705
-+#define SOF_TKN_INTEL_DMIC_PDM_SKEW		706
-+
-+/* Tone */
-+#define SOF_TKN_TONE_SAMPLE_RATE		800
-+
-+/* Processing Components */
-+#define SOF_TKN_PROCESS_TYPE                    900
-+
-+/* for backward compatibility */
-+#define SOF_TKN_EFFECT_TYPE	SOF_TKN_PROCESS_TYPE
-+
-+#endif
-diff --git a/include/uapi/sound/sof/tone.h b/include/uapi/sound/sof/tone.h
-new file mode 100644
-index 000000000000..d7c6e5d8317e
---- /dev/null
-+++ b/include/uapi/sound/sof/tone.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+* This file is provided under a dual BSD/GPLv2 license.  When using or
-+* redistributing this file, you may do so under either license.
-+*
-+* Copyright(c) 2018 Intel Corporation. All rights reserved.
-+*/
-+
-+#ifndef __INCLUDE_UAPI_SOUND_SOF_USER_TONE_H__
-+#define __INCLUDE_UAPI_SOUND_SOF_USER_TONE_H__
-+
-+#define SOF_TONE_IDX_FREQUENCY		0
-+#define SOF_TONE_IDX_AMPLITUDE		1
-+#define SOF_TONE_IDX_FREQ_MULT		2
-+#define SOF_TONE_IDX_AMPL_MULT		3
-+#define SOF_TONE_IDX_LENGTH		4
-+#define SOF_TONE_IDX_PERIOD		5
-+#define SOF_TONE_IDX_REPEATS		6
-+#define SOF_TONE_IDX_LIN_RAMP_STEP	7
-+
-+#endif
-diff --git a/include/uapi/sound/sof/trace.h b/include/uapi/sound/sof/trace.h
-new file mode 100644
-index 000000000000..ffa7288a0f16
---- /dev/null
-+++ b/include/uapi/sound/sof/trace.h
-@@ -0,0 +1,66 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOUND_SOF_USER_TRACE_H__
-+#define __INCLUDE_UAPI_SOUND_SOF_USER_TRACE_H__
-+
-+/*
-+ * Host system time.
-+ *
-+ * This property is used by the driver to pass down information about
-+ * current system time. It is expressed in us.
-+ * FW translates timestamps (in log entries, probe pockets) to this time
-+ * domain.
-+ *
-+ * (cavs: SystemTime).
-+ */
-+struct system_time {
-+	uint32_t val_l;  /* Lower dword of current host time value */
-+	uint32_t val_u;  /* Upper dword of current host time value */
-+} __packed;
-+
-+#define LOG_ENABLE		1  /* Enable logging */
-+#define LOG_DISABLE		0  /* Disable logging */
-+
-+#define LOG_LEVEL_CRITICAL	1  /* (FDK fatal) */
-+#define LOG_LEVEL_VERBOSE	2
-+
-+/*
-+ * Layout of a log fifo.
-+ */
-+struct log_buffer_layout {
-+	uint32_t read_ptr;  /*read pointer */
-+	uint32_t write_ptr; /* write pointer */
-+	uint32_t buffer[0]; /* buffer */
-+} __packed;
-+
-+/*
-+ * Log buffer status reported by FW.
-+ */
-+struct log_buffer_status {
-+	uint32_t core_id;  /* ID of core that logged to other half */
-+} __packed;
-+
-+#define TRACE_ID_LENGTH 12
-+
-+/*
-+ *  Log entry header.
-+ *
-+ * The header is followed by an array of arguments (uint32_t[]).
-+ * Number of arguments is specified by the params_num field of log_entry
-+ */
-+struct log_entry_header {
-+	uint32_t id_0 : TRACE_ID_LENGTH;	/* e.g. Pipeline ID */
-+	uint32_t id_1 : TRACE_ID_LENGTH;	/* e.g. Component ID */
-+	uint32_t core_id : 8;		/* Reporting core's id */
-+
-+	uint64_t timestamp;		/* Timestamp (in dsp ticks) */
-+	uint32_t log_entry_address;	/* Address of log entry in ELF */
-+} __packed;
-+
++#define snd_sof_dsp_read_poll_timeout(sdev, bar, offset, val, cond, sleep_us, timeout_us) \
++({ \
++	u64 __timeout_us = (timeout_us); \
++	unsigned long __sleep_us = (sleep_us); \
++	ktime_t __timeout = ktime_add_us(ktime_get(), __timeout_us); \
++	might_sleep_if((__sleep_us) != 0); \
++	for (;;) {							\
++		(val) = snd_sof_dsp_read(sdev, bar, offset);		\
++		if (cond) { \
++			dev_dbg(sdev->dev, \
++				"FW Poll Status: reg=%#x successful\n", (val)); \
++			break; \
++		} \
++		if (__timeout_us && \
++		    ktime_compare(ktime_get(), __timeout) > 0) { \
++			(val) = snd_sof_dsp_read(sdev, bar, offset); \
++			dev_dbg(sdev->dev, \
++				"FW Poll Status: reg=%#x timedout\n", (val)); \
++			break; \
++		} \
++		if (__sleep_us) \
++			usleep_range((__sleep_us >> 2) + 1, __sleep_us); \
++	} \
++	(cond) ? 0 : -ETIMEDOUT; \
++})
++
++/* This is for registers bits with attribute RWC */
++bool snd_sof_pci_update_bits(struct snd_sof_dev *sdev, u32 offset,
++			     u32 mask, u32 value);
++
++bool snd_sof_dsp_update_bits_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				      u32 offset, u32 mask, u32 value);
++
++bool snd_sof_dsp_update_bits64_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					u32 offset, u64 mask, u64 value);
++
++bool snd_sof_dsp_update_bits(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			     u32 mask, u32 value);
++
++bool snd_sof_dsp_update_bits64(struct snd_sof_dev *sdev, u32 bar,
++			       u32 offset, u64 mask, u64 value);
++
++void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
++				    u32 offset, u32 mask, u32 value);
++
++int snd_sof_dsp_register_poll(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u32 mask, u32 target, u32 timeout_ms,
++			      u32 interval_us);
++
++void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset);
 +#endif
 -- 
 2.20.1
-
-
---===============0133486462825915395==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0133486462825915395==--
