@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: add SKL+ platform DAIs" to
-	the asoc tree
-Date: Sat, 27 Apr 2019 18:52:41 +0100 (BST)
-Message-ID: <20190427175241.BE6E7441D41@finisterre.ee.mobilebroadband>
-References: <20190412160904.30418-15-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add Build support for SOF core and
+	Intel drivers" to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:39 +0100 (BST)
+Message-ID: <20190427175240.09A11441D3D@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-20-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160904.30418-15-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160904.30418-20-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,13 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Keyon Jie <yang.jie@linux.intel.com>
 Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: add SKL+ platform DAIs
+   ASoC: SOF: Add Build support for SOF core and Intel drivers
 
 has been applied to the asoc tree at
 
@@ -49,379 +48,485 @@ to this mail.
 Thanks,
 Mark
 
->From fdd961e37e47f2d450638f3a653cdb96911969ea Mon Sep 17 00:00:00 2001
-From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:08:57 -0500
-Subject: [PATCH] ASoC: SOF: Intel: add SKL+ platform DAIs
+>From 7e978fa37df7f771a5d02934ff828a0ee36bcf11 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:09:02 -0500
+Subject: [PATCH] ASoC: SOF: Add Build support for SOF core and Intel drivers
 
-Add declarations for DAIs and utilities for link DMA management
+Build SOF core and Intel-specific drivers.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-dai.c | 351 ++++++++++++++++++++++++++++++++++
- 1 file changed, 351 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-dai.c
+ sound/soc/Kconfig            |   1 +
+ sound/soc/Makefile           |   1 +
+ sound/soc/sof/Kconfig        | 141 +++++++++++++++++++++
+ sound/soc/sof/Makefile       |  18 +++
+ sound/soc/sof/intel/Kconfig  | 230 +++++++++++++++++++++++++++++++++++
+ sound/soc/sof/intel/Makefile |  19 +++
+ 6 files changed, 410 insertions(+)
+ create mode 100644 sound/soc/sof/Kconfig
+ create mode 100644 sound/soc/sof/Makefile
+ create mode 100644 sound/soc/sof/intel/Kconfig
+ create mode 100644 sound/soc/sof/intel/Makefile
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index aa35940f5c50..297be0ca3dbc 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -63,6 +63,7 @@ source "sound/soc/rockchip/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/sirf/Kconfig"
++source "sound/soc/sof/Kconfig"
+ source "sound/soc/spear/Kconfig"
+ source "sound/soc/sprd/Kconfig"
+ source "sound/soc/sti/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 974fb9821e17..d90ce8a32887 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_SND_SOC)	+= rockchip/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+ obj-$(CONFIG_SND_SOC)	+= sirf/
++obj-$(CONFIG_SND_SOC)	+= sof/
+ obj-$(CONFIG_SND_SOC)	+= spear/
+ obj-$(CONFIG_SND_SOC)	+= sprd/
+ obj-$(CONFIG_SND_SOC)	+= sti/
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
 new file mode 100644
-index 000000000000..830328af19c5
+index 000000000000..eaa380092c3b
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -0,0 +1,351 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2018 Intel Corporation. All rights reserved.
-+//
-+// Authors: Keyon Jie <yang.jie@linux.intel.com>
-+//
++++ b/sound/soc/sof/Kconfig
+@@ -0,0 +1,141 @@
++config SND_SOC_SOF_TOPLEVEL
++	bool "Sound Open Firmware Support"
++	help
++	  This adds support for Sound Open Firmware (SOF). SOF is a free and
++	  generic open source audio DSP firmware for multiple devices.
++	  Say Y if you have such a device that is supported by SOF.
++	  If unsure select "N".
 +
-+#include <sound/pcm_params.h>
-+#include <sound/hdaudio_ext.h>
-+#include "../sof-priv.h"
-+#include "hda.h"
++if SND_SOC_SOF_TOPLEVEL
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++config SND_SOC_SOF_PCI
++	tristate "SOF PCI enumeration support"
++	depends on PCI
++	select SND_SOC_SOF
++	select SND_SOC_ACPI if ACPI
++	select SND_SOC_SOF_OPTIONS
++	select SND_SOC_SOF_INTEL_PCI if SND_SOC_SOF_INTEL_TOPLEVEL
++	help
++	  This adds support for PCI enumeration. This option is
++	  required to enable Intel Skylake+ devices
++	  Say Y if you need this option
++	  If unsure select "N".
 +
-+struct hda_pipe_params {
-+	u8 host_dma_id;
-+	u8 link_dma_id;
-+	u32 ch;
-+	u32 s_freq;
-+	u32 s_fmt;
-+	u8 linktype;
-+	snd_pcm_format_t format;
-+	int link_index;
-+	int stream;
-+	unsigned int host_bps;
-+	unsigned int link_bps;
-+};
++config SND_SOC_SOF_ACPI
++	tristate "SOF ACPI enumeration support"
++	depends on ACPI || COMPILE_TEST
++	select SND_SOC_SOF
++	select SND_SOC_ACPI if ACPI
++	select SND_SOC_SOF_OPTIONS
++	select SND_SOC_SOF_INTEL_ACPI if SND_SOC_SOF_INTEL_TOPLEVEL
++	select IOSF_MBI if X86
++	help
++	  This adds support for ACPI enumeration. This option is required
++	  to enable Intel Haswell/Broadwell/Baytrail/Cherrytrail devices
++	  Say Y if you need this option
++	  If unsure select "N".
 +
-+/*
-+ * Unlike GP dma, there is a set of stream registers in hda controller
-+ * to control the link dma channels. Each register controls one link
-+ * dma channel and the relation is fixed. To make sure FW uses correct
-+ * link dma channels, host allocates stream registers and sends the
-+ * corresponding link dma channels to FW to allocate link dma channel
-+ *
-+ * FIXME: this API is abused in the sense that tx_num and rx_num are
-+ * passed as arguments, not returned. We need to find a better way to
-+ * retrieve the stream tag allocated for the link DMA
-+ */
-+static int hda_link_dma_get_channels(struct snd_soc_dai *dai,
-+				     unsigned int *tx_num,
-+				     unsigned int *tx_slot,
-+				     unsigned int *rx_num,
-+				     unsigned int *rx_slot)
-+{
-+	struct hdac_bus *bus;
-+	struct hdac_ext_stream *stream;
-+	struct snd_pcm_substream substream;
-+	struct snd_sof_dev *sdev =
-+		snd_soc_component_get_drvdata(dai->component);
++config SND_SOC_SOF_OPTIONS
++	tristate
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+	bus = sof_to_bus(sdev);
++if SND_SOC_SOF_OPTIONS
 +
-+	memset(&substream, 0, sizeof(substream));
-+	if (*tx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for playback");
-+			return -EBUSY;
-+		}
++config SND_SOC_SOF_NOCODEC
++	tristate "SOF nocodec mode Support"
++	help
++	  This adds support for a dummy/nocodec machine driver fallback
++	  option if no known codec is detected. This is typically only
++	  enabled for developers or devices where the sound card is
++	  controlled externally
++	  Say Y if you need this nocodec fallback option
++	  If unsure select "N".
 +
-+		snd_soc_dai_set_dma_data(dai, &substream, stream);
-+		*tx_slot = hdac_stream(stream)->stream_tag - 1;
++config SND_SOC_SOF_DEBUG
++	bool "SOF debugging features"
++	help
++	  This option can be used to enable or disable individual SOF firmware
++	  and driver debugging options.
++	  Say Y if you are debugging SOF FW or drivers.
++	  If unsure select "N".
 +
-+		dev_dbg(bus->dev, "link dma channel %d for playback", *tx_slot);
-+	}
++if SND_SOC_SOF_DEBUG
 +
-+	if (*rx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for capture");
-+			return -EBUSY;
-+		}
++config SND_SOC_SOF_FORCE_NOCODEC_MODE
++	bool "SOF force nocodec Mode"
++	depends on SND_SOC_SOF_NOCODEC
++	help
++	  This forces SOF to use dummy/nocodec as machine driver, even
++	  though there is a codec detected on the real platform. This is
++	  typically only enabled for developers for debug purposes, before
++	  codec/machine driver is ready, or to exclude the impact of those
++	  drivers
++	  Say Y if you need this force nocodec mode option
++	  If unsure select "N".
 +
-+		snd_soc_dai_set_dma_data(dai, &substream, stream);
-+		*rx_slot = hdac_stream(stream)->stream_tag - 1;
++config SND_SOC_SOF_DEBUG_XRUN_STOP
++	bool "SOF stop on XRUN"
++	help
++	  This option forces PCMs to stop on any XRUN event. This is useful to
++	  preserve any trace data ond pipeline status prior to the XRUN.
++	  Say Y if you are debugging SOF FW pipeline XRUNs.
++	  If unsure select "N".
 +
-+		dev_dbg(bus->dev, "link dma channel %d for capture", *rx_slot);
-+	}
++config SND_SOC_SOF_DEBUG_VERBOSE_IPC
++	bool "SOF verbose IPC logs"
++	help
++	  This option enables more verbose IPC logs, with command types in
++	  human-readable form instead of just 32-bit hex dumps. This is useful
++	  if you are trying to debug IPC with the DSP firmware.
++	  If unsure select "N".
 +
-+	return 0;
-+}
++config SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION
++	bool "SOF force to use IPC for position update on SKL+"
++	help
++	  This option force to handle stream position update IPCs and run pcm
++	  elapse to inform ALSA about that, on platforms (e.g. Intel SKL+) that
++	  with other approach (e.g. HDAC DPIB/posbuf) to elapse PCM.
++	  On platforms (e.g. Intel SKL-) where position update IPC is the only
++	  one choice, this setting won't impact anything.
++	  if you are trying to debug pointer update with position IPCs or where
++	  DPIB/posbuf is not ready, select "Y".
++	  If unsure select "N".
 +
-+static int hda_link_dma_params(struct hdac_ext_stream *stream,
-+			       struct hda_pipe_params *params)
-+{
-+	struct hdac_stream *hstream = &stream->hstream;
-+	unsigned char stream_tag = hstream->stream_tag;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_link *link;
-+	unsigned int format_val;
++config SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE
++	bool "SOF enable debugfs caching"
++	help
++	  This option enables caching of debugfs
++	  memory -> DSP resource (memory, register, etc)
++	  before the audio DSP is suspended. This will increase the suspend
++	  latency and therefore should be used for debug purposes only.
++	  Say Y if you want to enable caching the memory windows.
++	  If unsure, select "N".
 +
-+	snd_hdac_ext_stream_decouple(bus, stream, true);
-+	snd_hdac_ext_link_stream_reset(stream);
++endif ## SND_SOC_SOF_DEBUG
 +
-+	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
-+						 params->format,
-+						 params->link_bps, 0);
++endif ## SND_SOC_SOF_OPTIONS
 +
-+	dev_dbg(bus->dev, "format_val=%d, rate=%d, ch=%d, format=%d\n",
-+		format_val, params->s_freq, params->ch, params->format);
++config SND_SOC_SOF
++	tristate
++	select SND_SOC_TOPOLOGY
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++	  The selection is made at the top level and does not exactly follow
++	  module dependencies but since the module or built-in type is decided
++	  at the top level it doesn't matter.
 +
-+	snd_hdac_ext_link_stream_setup(stream, format_val);
++config SND_SOC_SOF_PROBE_WORK_QUEUE
++	bool
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++	  When selected, the probe is handled in two steps, for example to
++	  avoid lockdeps if request_module is used in the probe.
 +
-+	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		list_for_each_entry(link, &bus->hlink_list, list) {
-+			if (link->index == params->link_index)
-+				snd_hdac_ext_link_set_stream_id(link,
-+								stream_tag);
-+		}
-+	}
++source "sound/soc/sof/intel/Kconfig"
++source "sound/soc/sof/xtensa/Kconfig"
 +
-+	stream->link_prepared = 1;
++endif
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+new file mode 100644
+index 000000000000..8f14c9d2950b
+--- /dev/null
++++ b/sound/soc/sof/Makefile
+@@ -0,0 +1,18 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +
-+	return 0;
-+}
++snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
++		control.o trace.o utils.o
 +
-+static int hda_link_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct hda_pipe_params p_params = {0};
-+	struct hdac_ext_link *link;
-+	int stream_tag;
++snd-sof-pci-objs := sof-pci-dev.o
++snd-sof-acpi-objs := sof-acpi-dev.o
++snd-sof-nocodec-objs := nocodec.o
 +
-+	link_dev = snd_soc_dai_get_dma_data(dai, substream);
++obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
++obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
 +
-+	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
-+	if (!link)
-+		return -EINVAL;
 +
-+	stream_tag = hdac_stream(link_dev)->stream_tag;
++obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
++obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
 +
-+	/* set the stream tag in the codec dai dma params  */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	else
-+		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
++obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
++obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+new file mode 100644
+index 000000000000..32ee0fabab92
+--- /dev/null
++++ b/sound/soc/sof/intel/Kconfig
+@@ -0,0 +1,230 @@
++config SND_SOC_SOF_INTEL_TOPLEVEL
++	bool "SOF support for Intel audio DSPs"
++	depends on X86 || COMPILE_TEST
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms.
++	  Say Y if you have such a device.
++	  If unsure select "N".
 +
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	p_params.link_dma_id = stream_tag - 1;
-+	p_params.link_index = link->index;
-+	p_params.format = params_format(params);
++if SND_SOC_SOF_INTEL_TOPLEVEL
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		p_params.link_bps = codec_dai->driver->playback.sig_bits;
-+	else
-+		p_params.link_bps = codec_dai->driver->capture.sig_bits;
++config SND_SOC_SOF_INTEL_ACPI
++	tristate
++	select SND_SOC_SOF_BAYTRAIL  if SND_SOC_SOF_BAYTRAIL_SUPPORT
++	select SND_SOC_SOF_BROADWELL if SND_SOC_SOF_BROADWELL_SUPPORT
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+	return hda_link_dma_params(link_dev, &p_params);
-+}
++config SND_SOC_SOF_INTEL_PCI
++	tristate
++	select SND_SOC_SOF_MERRIFIELD  if SND_SOC_SOF_MERRIFIELD_SUPPORT
++	select SND_SOC_SOF_APOLLOLAKE  if SND_SOC_SOF_APOLLOLAKE_SUPPORT
++	select SND_SOC_SOF_GEMINILAKE  if SND_SOC_SOF_GEMINILAKE_SUPPORT
++	select SND_SOC_SOF_CANNONLAKE  if SND_SOC_SOF_CANNONLAKE_SUPPORT
++	select SND_SOC_SOF_COFFEELAKE  if SND_SOC_SOF_COFFEELAKE_SUPPORT
++	select SND_SOC_SOF_ICELAKE     if SND_SOC_SOF_ICELAKE_SUPPORT
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+static int hda_link_pcm_prepare(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_sof_dev *sdev =
-+		snd_soc_component_get_drvdata(dai->component);
-+	struct snd_sof_pcm *spcm;
-+	int stream = substream->stream;
++config SND_SOC_SOF_INTEL_HIFI_EP_IPC
++	tristate
++	help
++          This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
++config SND_SOC_SOF_INTEL_ATOM_HIFI_EP
++	tristate
++	select SND_SOC_INTEL_COMMON
++	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+	/* setup hw_params again only if resuming from system suspend */
-+	if (!spcm->hw_params_upon_resume[stream])
-+		return 0;
++config SND_SOC_SOF_INTEL_COMMON
++	tristate
++	select SND_SOC_ACPI_INTEL_MATCH
++	select SND_SOC_SOF_XTENSA
++	select SND_SOC_INTEL_MACH
++	select SND_SOC_ACPI if ACPI
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+	dev_dbg(sdev->dev, "hda: prepare stream %d dir %d\n",
-+		spcm->pcm.pcm_id, substream->stream);
++if SND_SOC_SOF_INTEL_ACPI
 +
-+	return hda_link_hw_params(substream, &rtd->dpcm[stream].hw_params,
-+				  dai);
-+}
++config SND_SOC_SOF_BAYTRAIL_SUPPORT
++	bool "SOF support for Baytrail, Braswell and Cherrytrail"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Baytrail, Braswell or Cherrytrail processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
 +
-+static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+	int ret;
++config SND_SOC_SOF_BAYTRAIL
++	tristate
++	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		/* set up hw_params */
-+		ret = hda_link_pcm_prepare(substream, dai);
-+		if (ret < 0) {
-+			dev_err(dai->dev,
-+				"error: setting up hw_params during resume\n");
-+			return ret;
-+		}
++config SND_SOC_SOF_BROADWELL_SUPPORT
++	bool "SOF support for Broadwell"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Broadwell processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
 +
-+		/* fallthrough */
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		snd_hdac_ext_link_stream_start(link_dev);
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_hdac_ext_link_stream_clear(link_dev);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
++config SND_SOC_SOF_BROADWELL
++	tristate
++	select SND_SOC_SOF_INTEL_COMMON
++	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+/*
-+ * FIXME: This API is also abused since it's used for two purposes.
-+ * when the substream argument is NULL this function is used for cleanups
-+ * that aren't necessarily required, and called explicitly by handling
-+ * ASoC core structures, which is not recommended.
-+ * This part will be reworked in follow-up patches.
-+ */
-+static int hda_link_hw_free(struct snd_pcm_substream *substream,
-+			    struct snd_soc_dai *dai)
-+{
-+	const char *name;
-+	unsigned int stream_tag;
-+	struct hdac_bus *bus;
-+	struct hdac_ext_link *link;
-+	struct hdac_stream *hstream;
-+	struct hdac_ext_stream *stream;
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_pcm_substream pcm_substream;
++endif ## SND_SOC_SOF_INTEL_ACPI
 +
-+	memset(&pcm_substream, 0, sizeof(pcm_substream));
-+	if (substream) {
-+		hstream = substream->runtime->private_data;
-+		bus = hstream->bus;
-+		rtd = snd_pcm_substream_chip(substream);
-+		link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+		snd_hdac_ext_stream_decouple(bus, link_dev, false);
-+		name = rtd->codec_dai->component->name;
-+		link = snd_hdac_ext_bus_get_link(bus, name);
-+		if (!link)
-+			return -EINVAL;
++if SND_SOC_SOF_INTEL_PCI
 +
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			stream_tag = hdac_stream(link_dev)->stream_tag;
-+			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
-+		}
++config SND_SOC_SOF_MERRIFIELD_SUPPORT
++	bool "SOF support for Tangier/Merrifield"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Tangier/Merrifield processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
 +
-+		link_dev->link_prepared = 0;
-+	} else {
-+		/* release all hda streams when dai link is unloaded */
-+		pcm_substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		}
++config SND_SOC_SOF_MERRIFIELD
++	tristate
++	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+		pcm_substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		}
-+	}
++config SND_SOC_SOF_APOLLOLAKE_SUPPORT
++	bool "SOF support for Apollolake"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Apollolake processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
 +
-+	return 0;
-+}
++config SND_SOC_SOF_APOLLOLAKE
++	tristate
++	select SND_SOC_SOF_HDA_COMMON
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
 +
-+static const struct snd_soc_dai_ops hda_link_dai_ops = {
-+	.hw_params = hda_link_hw_params,
-+	.hw_free = hda_link_hw_free,
-+	.trigger = hda_link_pcm_trigger,
-+	.prepare = hda_link_pcm_prepare,
-+	.get_channel_map = hda_link_dma_get_channels,
-+};
-+#endif
++config SND_SOC_SOF_GEMINILAKE_SUPPORT
++	bool "SOF support for GeminiLake"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Geminilake processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
 +
-+/*
-+ * common dai driver for skl+ platforms.
-+ * some products who use this DAI array only physically have a subset of
-+ * the DAIs, but no harm is done here by adding the whole set.
-+ */
-+struct snd_soc_dai_driver skl_dai[] = {
-+{
-+	.name = "SSP0 Pin",
-+},
-+{
-+	.name = "SSP1 Pin",
-+},
-+{
-+	.name = "SSP2 Pin",
-+},
-+{
-+	.name = "SSP3 Pin",
-+},
-+{
-+	.name = "SSP4 Pin",
-+},
-+{
-+	.name = "SSP5 Pin",
-+},
-+{
-+	.name = "DMIC01 Pin",
-+},
-+{
-+	.name = "DMIC16k Pin",
-+},
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+{
-+	.name = "iDisp1 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "iDisp2 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "iDisp3 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Digital CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Alt Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+#endif
-+};
++config SND_SOC_SOF_GEMINILAKE
++	tristate
++	select SND_SOC_SOF_HDA_COMMON
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++config SND_SOC_SOF_CANNONLAKE_SUPPORT
++	bool "SOF support for Cannonlake"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Cannonlake processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
++
++config SND_SOC_SOF_CANNONLAKE
++	tristate
++	select SND_SOC_SOF_HDA_COMMON
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++config SND_SOC_SOF_COFFEELAKE_SUPPORT
++	bool "SOF support for CoffeeLake"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Coffeelake processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
++
++config SND_SOC_SOF_COFFEELAKE
++	tristate
++	select SND_SOC_SOF_HDA_COMMON
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++config SND_SOC_SOF_ICELAKE_SUPPORT
++	bool "SOF support for Icelake"
++	help
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the Icelake processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
++
++config SND_SOC_SOF_ICELAKE
++	tristate
++	select SND_SOC_SOF_HDA_COMMON
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++config SND_SOC_SOF_HDA_COMMON
++	tristate
++	select SND_SOC_SOF_INTEL_COMMON
++	select SND_SOC_SOF_HDA_LINK_BASELINE
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++if SND_SOC_SOF_HDA_COMMON
++
++config SND_SOC_SOF_HDA_LINK
++	bool "SOF support for HDA Links(HDA/HDMI)"
++	depends on SND_SOC_SOF_NOCODEC=n
++	select SND_SOC_SOF_PROBE_WORK_QUEUE
++	help
++	  This adds support for HDA links(HDA/HDMI) with Sound Open Firmware
++		  for Intel(R) platforms.
++	  Say Y if you want to enable HDA links with SOF.
++	  If unsure select "N".
++
++config SND_SOC_SOF_HDA_AUDIO_CODEC
++	bool "SOF support for HDAudio codecs"
++	depends on SND_SOC_SOF_HDA_LINK
++	help
++	  This adds support for HDAudio codecs with Sound Open Firmware
++		  for Intel(R) platforms.
++	  Say Y if you want to enable HDAudio codecs with SOF.
++	  If unsure select "N".
++
++endif ## SND_SOC_SOF_HDA_COMMON
++
++config SND_SOC_SOF_HDA_LINK_BASELINE
++	tristate
++	select SND_SOC_SOF_HDA if SND_SOC_SOF_HDA_LINK
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++config SND_SOC_SOF_HDA
++	tristate
++	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
++	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
++endif ## SND_SOC_SOF_INTEL_PCI
++
++endif ## SND_SOC_SOF_INTEL_TOPLEVEL
+diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
+new file mode 100644
+index 000000000000..b8f58e006e29
+--- /dev/null
++++ b/sound/soc/sof/intel/Makefile
+@@ -0,0 +1,19 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++
++snd-sof-intel-byt-objs := byt.o
++snd-sof-intel-bdw-objs := bdw.o
++
++snd-sof-intel-ipc-objs := intel-ipc.o
++
++snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
++				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
++				 hda-dai.o hda-bus.o \
++				 apl.o cnl.o
++
++snd-sof-intel-hda-objs := hda-codec.o
++
++obj-$(CONFIG_SND_SOC_SOF_INTEL_ATOM_HIFI_EP) += snd-sof-intel-byt.o
++obj-$(CONFIG_SND_SOC_SOF_BROADWELL) += snd-sof-intel-bdw.o
++obj-$(CONFIG_SND_SOC_SOF_INTEL_HIFI_EP_IPC) += snd-sof-intel-ipc.o
++obj-$(CONFIG_SND_SOC_SOF_HDA_COMMON) += snd-sof-intel-hda-common.o
++obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
 -- 
 2.20.1
