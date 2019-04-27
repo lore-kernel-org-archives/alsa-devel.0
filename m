@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add firmware loader support" to
-	the asoc tree
-Date: Sat, 27 Apr 2019 18:52:59 +0100 (BST)
-Message-ID: <20190427175259.3FDC3441D3F@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add Nocodec machine driver
+	support" to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:57 +0100 (BST)
+Message-ID: <20190427175257.7A046441D56@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-13-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-10-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-13-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,12 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add firmware loader support
+   ASoC: SOF: Add Nocodec machine driver support
 
 has been applied to the asoc tree at
 
@@ -48,29 +48,54 @@ to this mail.
 Thanks,
 Mark
 
->From 70cd52544b95d02f8b20fadccb7400ce68a2cb84 Mon Sep 17 00:00:00 2001
+>From 8017b8fd37bf5ed4e9c0596f83295b019ff1c287 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:14 -0500
-Subject: [PATCH] ASoC: SOF: Add firmware loader support
+Date: Fri, 12 Apr 2019 11:05:17 -0500
+Subject: [PATCH] ASoC: SOF: Add Nocodec machine driver support
 
-The firmware loader exports APIs that can be called by core to load and
-process multiple different file formats.
+Add a simple "fallback" machine driver that can be used to enable SOF
+on boards with no codec device. This machine driver can also be forced
+for debug/development.
 
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/loader.c | 400 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 400 insertions(+)
- create mode 100644 sound/soc/sof/loader.c
+ include/sound/sof.h     |   6 +++
+ sound/soc/sof/nocodec.c | 109 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 115 insertions(+)
+ create mode 100644 sound/soc/sof/nocodec.c
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index 54f65ec33a6c..4640566b54fe 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -12,6 +12,7 @@
+ #define __INCLUDE_SOUND_SOF_H
+ 
+ #include <linux/pci.h>
++#include <sound/soc.h>
+ #include <sound/soc-acpi.h>
+ 
+ struct snd_sof_dsp_ops;
+@@ -91,4 +92,9 @@ struct sof_dev_desc {
+ 	const struct sof_arch_ops *arch_ops;
+ };
+ 
++int sof_nocodec_setup(struct device *dev,
++		      struct snd_sof_pdata *sof_pdata,
++		      struct snd_soc_acpi_mach *mach,
++		      const struct sof_dev_desc *desc,
++		      const struct snd_sof_dsp_ops *ops);
+ #endif
+diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
 new file mode 100644
-index 000000000000..81c7452aae17
+index 000000000000..f84b4344dcc3
 --- /dev/null
-+++ b/sound/soc/sof/loader.c
-@@ -0,0 +1,400 @@
++++ b/sound/soc/sof/nocodec.c
+@@ -0,0 +1,109 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -80,396 +105,105 @@ index 000000000000..81c7452aae17
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
-+// Generic firmware loader.
-+//
 +
-+#include <linux/firmware.h>
++#include <linux/module.h>
 +#include <sound/sof.h>
-+#include "ops.h"
++#include "sof-priv.h"
 +
-+static int get_ext_windows(struct snd_sof_dev *sdev,
-+			   struct sof_ipc_ext_data_hdr *ext_hdr)
++static struct snd_soc_card sof_nocodec_card = {
++	.name = "nocodec", /* the sof- prefix is added by the core */
++};
++
++static int sof_nocodec_bes_setup(struct device *dev,
++				 const struct snd_sof_dsp_ops *ops,
++				 struct snd_soc_dai_link *links,
++				 int link_num, struct snd_soc_card *card)
 +{
-+	struct sof_ipc_window *w =
-+		container_of(ext_hdr, struct sof_ipc_window, ext_hdr);
-+	size_t size;
++	int i;
 +
-+	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
++	if (!ops || !links || !card)
 +		return -EINVAL;
 +
-+	size = sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows;
++	/* set up BE dai_links */
++	for (i = 0; i < link_num; i++) {
++		links[i].name = devm_kasprintf(dev, GFP_KERNEL,
++					       "NoCodec-%d", i);
++		if (!links[i].name)
++			return -ENOMEM;
 +
-+	/* keep a local copy of the data */
-+	sdev->info_window = kmemdup(w, size, GFP_KERNEL);
-+	if (!sdev->info_window)
-+		return -ENOMEM;
++		links[i].id = i;
++		links[i].no_pcm = 1;
++		links[i].cpu_dai_name = ops->drv[i].name;
++		links[i].platform_name = dev_name(dev);
++		links[i].codec_dai_name = "snd-soc-dummy-dai";
++		links[i].codec_name = "snd-soc-dummy";
++		links[i].dpcm_playback = 1;
++		links[i].dpcm_capture = 1;
++	}
++
++	card->dai_link = links;
++	card->num_links = link_num;
 +
 +	return 0;
 +}
 +
-+/* parse the extended FW boot data structures from FW boot message */
-+int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
++int sof_nocodec_setup(struct device *dev,
++		      struct snd_sof_pdata *sof_pdata,
++		      struct snd_soc_acpi_mach *mach,
++		      const struct sof_dev_desc *desc,
++		      const struct snd_sof_dsp_ops *ops)
 +{
-+	struct sof_ipc_ext_data_hdr *ext_hdr;
-+	void *ext_data;
-+	int ret = 0;
-+
-+	ext_data = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!ext_data)
-+		return -ENOMEM;
-+
-+	/* get first header */
-+	snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
-+			       sizeof(*ext_hdr));
-+	ext_hdr = ext_data;
-+
-+	while (ext_hdr->hdr.cmd == SOF_IPC_FW_READY) {
-+		/* read in ext structure */
-+		offset += sizeof(*ext_hdr);
-+		snd_sof_dsp_block_read(sdev, bar, offset,
-+				   (void *)((u8 *)ext_data + sizeof(*ext_hdr)),
-+				   ext_hdr->hdr.size - sizeof(*ext_hdr));
-+
-+		dev_dbg(sdev->dev, "found ext header type %d size 0x%x\n",
-+			ext_hdr->type, ext_hdr->hdr.size);
-+
-+		/* process structure data */
-+		switch (ext_hdr->type) {
-+		case SOF_IPC_EXT_DMA_BUFFER:
-+			break;
-+		case SOF_IPC_EXT_WINDOW:
-+			ret = get_ext_windows(sdev, ext_hdr);
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: failed to parse ext data type %d\n",
-+				ext_hdr->type);
-+			break;
-+		}
-+
-+		/* move to next header */
-+		offset += ext_hdr->hdr.size;
-+		snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
-+				       sizeof(*ext_hdr));
-+		ext_hdr = ext_data;
-+	}
-+
-+	kfree(ext_data);
-+	return ret;
-+}
-+EXPORT_SYMBOL(snd_sof_fw_parse_ext_data);
-+
-+/* generic module parser for mmaped DSPs */
-+int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
-+				struct snd_sof_mod_hdr *module)
-+{
-+	struct snd_sof_blk_hdr *block;
-+	int count;
-+	u32 offset;
-+	size_t remaining;
-+
-+	dev_dbg(sdev->dev, "new module size 0x%x blocks 0x%x type 0x%x\n",
-+		module->size, module->num_blocks, module->type);
-+
-+	block = (struct snd_sof_blk_hdr *)((u8 *)module + sizeof(*module));
-+
-+	/* module->size doesn't include header size */
-+	remaining = module->size;
-+	for (count = 0; count < module->num_blocks; count++) {
-+		/* check for wrap */
-+		if (remaining < sizeof(*block)) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+
-+		/* minus header size of block */
-+		remaining -= sizeof(*block);
-+
-+		if (block->size == 0) {
-+			dev_warn(sdev->dev,
-+				 "warning: block %d size zero\n", count);
-+			dev_warn(sdev->dev, " type 0x%x offset 0x%x\n",
-+				 block->type, block->offset);
-+			continue;
-+		}
-+
-+		switch (block->type) {
-+		case SOF_FW_BLK_TYPE_RSRVD0:
-+		case SOF_FW_BLK_TYPE_SRAM...SOF_FW_BLK_TYPE_RSRVD14:
-+			continue;	/* not handled atm */
-+		case SOF_FW_BLK_TYPE_IRAM:
-+		case SOF_FW_BLK_TYPE_DRAM:
-+			offset = block->offset;
-+			break;
-+		default:
-+			dev_err(sdev->dev, "error: bad type 0x%x for block 0x%x\n",
-+				block->type, count);
-+			return -EINVAL;
-+		}
-+
-+		dev_dbg(sdev->dev,
-+			"block %d type 0x%x size 0x%x ==>  offset 0x%x\n",
-+			count, block->type, block->size, offset);
-+
-+		/* checking block->size to avoid unaligned access */
-+		if (block->size % sizeof(u32)) {
-+			dev_err(sdev->dev, "error: invalid block size 0x%x\n",
-+				block->size);
-+			return -EINVAL;
-+		}
-+		snd_sof_dsp_block_write(sdev, sdev->mmio_bar, offset,
-+					block + 1, block->size);
-+
-+		if (remaining < block->size) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+
-+		/* minus body size of block */
-+		remaining -= block->size;
-+		/* next block */
-+		block = (struct snd_sof_blk_hdr *)((u8 *)block + sizeof(*block)
-+			+ block->size);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_parse_module_memcpy);
-+
-+static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
-+{
-+	struct snd_sof_fw_header *header;
-+
-+	/* Read the header information from the data pointer */
-+	header = (struct snd_sof_fw_header *)fw->data;
-+
-+	/* verify FW sig */
-+	if (strncmp(header->sig, SND_SOF_FW_SIG, SND_SOF_FW_SIG_SIZE) != 0) {
-+		dev_err(sdev->dev, "error: invalid firmware signature\n");
-+		return -EINVAL;
-+	}
-+
-+	/* check size is valid */
-+	if (fw->size != header->file_size + sizeof(*header)) {
-+		dev_err(sdev->dev, "error: invalid filesize mismatch got 0x%zx expected 0x%zx\n",
-+			fw->size, header->file_size + sizeof(*header));
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(sdev->dev, "header size=0x%x modules=0x%x abi=0x%x size=%zu\n",
-+		header->file_size, header->num_modules,
-+		header->abi, sizeof(*header));
-+
-+	return 0;
-+}
-+
-+static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw)
-+{
-+	struct snd_sof_fw_header *header;
-+	struct snd_sof_mod_hdr *module;
-+	int (*load_module)(struct snd_sof_dev *sof_dev,
-+			   struct snd_sof_mod_hdr *hdr);
-+	int ret, count;
-+	size_t remaining;
-+
-+	header = (struct snd_sof_fw_header *)fw->data;
-+	load_module = sof_ops(sdev)->load_module;
-+	if (!load_module)
-+		return -EINVAL;
-+
-+	/* parse each module */
-+	module = (struct snd_sof_mod_hdr *)((u8 *)(fw->data) + sizeof(*header));
-+	remaining = fw->size - sizeof(*header);
-+	/* check for wrap */
-+	if (remaining > fw->size) {
-+		dev_err(sdev->dev, "error: fw size smaller than header size\n");
-+		return -EINVAL;
-+	}
-+
-+	for (count = 0; count < header->num_modules; count++) {
-+		/* check for wrap */
-+		if (remaining < sizeof(*module)) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+
-+		/* minus header size of module */
-+		remaining -= sizeof(*module);
-+
-+		/* module */
-+		ret = load_module(sdev, module);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: invalid module %d\n", count);
-+			return ret;
-+		}
-+
-+		if (remaining < module->size) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+
-+		/* minus body size of module */
-+		remaining -=  module->size;
-+		module = (struct snd_sof_mod_hdr *)((u8 *)module
-+			+ sizeof(*module) + module->size);
-+	}
-+
-+	return 0;
-+}
-+
-+int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	const char *fw_filename;
++	struct snd_soc_dai_link *links;
 +	int ret;
 +
-+	/* set code loading condition to true */
-+	sdev->code_loading = 1;
++	if (!mach)
++		return -EINVAL;
 +
-+	/* Don't request firmware again if firmware is already requested */
-+	if (plat_data->fw)
-+		return 0;
++	sof_pdata->drv_name = "sof-nocodec";
 +
-+	fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
-+				plat_data->fw_filename_prefix,
-+				plat_data->fw_filename);
-+	if (!fw_filename)
++	mach->drv_name = "sof-nocodec";
++	sof_pdata->fw_filename = desc->nocodec_fw_filename;
++	sof_pdata->tplg_filename = desc->nocodec_tplg_filename;
++
++	/* create dummy BE dai_links */
++	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
++			     ops->num_drv, GFP_KERNEL);
++	if (!links)
 +		return -ENOMEM;
 +
-+	ret = request_firmware(&plat_data->fw, fw_filename, sdev->dev);
-+
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: request firmware %s failed err: %d\n",
-+			fw_filename, ret);
-+	}
-+
-+	kfree(fw_filename);
-+
++	ret = sof_nocodec_bes_setup(dev, ops, links, ops->num_drv,
++				    &sof_nocodec_card);
 +	return ret;
 +}
-+EXPORT_SYMBOL(snd_sof_load_firmware_raw);
++EXPORT_SYMBOL(sof_nocodec_setup);
 +
-+int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
++static int sof_nocodec_probe(struct platform_device *pdev)
 +{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	int ret;
++	struct snd_soc_card *card = &sof_nocodec_card;
 +
-+	ret = snd_sof_load_firmware_raw(sdev);
-+	if (ret < 0)
-+		return ret;
++	card->dev = &pdev->dev;
 +
-+	/* make sure the FW header and file is valid */
-+	ret = check_header(sdev, plat_data->fw);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: invalid FW header\n");
-+		goto error;
-+	}
-+
-+	/* prepare the DSP for FW loading */
-+	ret = snd_sof_dsp_reset(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset DSP\n");
-+		goto error;
-+	}
-+
-+	/* parse and load firmware modules to DSP */
-+	ret = load_modules(sdev, plat_data->fw);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: invalid FW modules\n");
-+		goto error;
-+	}
-+
-+	return 0;
-+
-+error:
-+	release_firmware(plat_data->fw);
-+	plat_data->fw = NULL;
-+	return ret;
-+
++	return devm_snd_soc_register_card(&pdev->dev, card);
 +}
-+EXPORT_SYMBOL(snd_sof_load_firmware_memcpy);
 +
-+int snd_sof_load_firmware(struct snd_sof_dev *sdev)
++static int sof_nocodec_remove(struct platform_device *pdev)
 +{
-+	dev_dbg(sdev->dev, "loading firmware\n");
-+
-+	if (sof_ops(sdev)->load_firmware)
-+		return sof_ops(sdev)->load_firmware(sdev);
 +	return 0;
 +}
-+EXPORT_SYMBOL(snd_sof_load_firmware);
 +
-+int snd_sof_run_firmware(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+	int init_core_mask;
++static struct platform_driver sof_nocodec_audio = {
++	.probe = sof_nocodec_probe,
++	.remove = sof_nocodec_remove,
++	.driver = {
++		.name = "sof-nocodec",
++		.pm = &snd_soc_pm_ops,
++	},
++};
++module_platform_driver(sof_nocodec_audio)
 +
-+	init_waitqueue_head(&sdev->boot_wait);
-+	sdev->boot_complete = false;
-+
-+	/* create fw_version debugfs to store boot version info */
-+	if (sdev->first_boot) {
-+		ret = snd_sof_debugfs_buf_item(sdev, &sdev->fw_version,
-+					       sizeof(sdev->fw_version),
-+					       "fw_version");
-+		/* errors are only due to memory allocation, not debugfs */
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: snd_sof_debugfs_buf_item failed\n");
-+			return ret;
-+		}
-+	}
-+
-+	/* perform pre fw run operations */
-+	ret = snd_sof_dsp_pre_fw_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed pre fw run op\n");
-+		return ret;
-+	}
-+
-+	dev_dbg(sdev->dev, "booting DSP firmware\n");
-+
-+	/* boot the firmware on the DSP */
-+	ret = snd_sof_dsp_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset DSP\n");
-+		return ret;
-+	}
-+
-+	init_core_mask = ret;
-+
-+	/* now wait for the DSP to boot */
-+	ret = wait_event_timeout(sdev->boot_wait, sdev->boot_complete,
-+				 msecs_to_jiffies(sdev->boot_timeout));
-+	if (ret == 0) {
-+		dev_err(sdev->dev, "error: firmware boot failure\n");
-+		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
-+			SOF_DBG_TEXT | SOF_DBG_PCI);
-+		return -EIO;
-+	}
-+
-+	dev_info(sdev->dev, "firmware boot complete\n");
-+
-+	/* perform post fw run operations */
-+	ret = snd_sof_dsp_post_fw_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed post fw run op\n");
-+		return ret;
-+	}
-+
-+	/* fw boot is complete. Update the active cores mask */
-+	sdev->enabled_cores_mask = init_core_mask;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_run_firmware);
-+
-+void snd_sof_fw_unload(struct snd_sof_dev *sdev)
-+{
-+	/* TODO: support module unloading at runtime */
-+}
-+EXPORT_SYMBOL(snd_sof_fw_unload);
++MODULE_DESCRIPTION("ASoC sof nocodec");
++MODULE_AUTHOR("Liam Girdwood");
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_ALIAS("platform:sof-nocodec");
 -- 
 2.20.1
