@@ -1,13 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add PM support" to the asoc tree
-Date: Sat, 27 Apr 2019 18:52:58 +0100 (BST)
-Message-ID: <20190427175258.0F411441D57@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-12-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: Add BYT,
+	CHT and BSW DSP HW support." to the asoc tree
+Date: Sat, 27 Apr 2019 18:52:55 +0100 (BST)
+Message-ID: <20190427175255.BF689441D41@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-12-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160904.30418-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,12 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add PM support
+   ASoC: SOF: Intel: Add BYT, CHT and BSW DSP HW support.
 
 has been applied to the asoc tree at
 
@@ -47,41 +48,33 @@ to this mail.
 Thanks,
 Mark
 
->From 8920153c6461da69e49014a35275dc80cbf6ba14 Mon Sep 17 00:00:00 2001
+>From 9e42c5ca4a276a668b11116704f5f0d66ab80608 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:16 -0500
-Subject: [PATCH] ASoC: SOF: Add PM support
+Date: Fri, 12 Apr 2019 11:08:44 -0500
+Subject: [PATCH] ASoC: SOF: Intel: Add BYT, CHT and BSW DSP HW support.
 
-Add support for saving and restoring DSP context in D3 to host DDR.
+Add support for the audio DSP hardware found on Intel Baytrail,
+Cherrytrail and Braswell based devices.
 
-The suspend callback includes: suspend all pcm's stream that are running,
-send CTX_SAVE ipc, drop all ipc's, release trace dma and then
-power off the DSP.
-
-And the resume callback performs the following steps: load FW, run FW,
-re-initialize trace, restore pipeline, restore the kcontrol values
-and finally send the ctx restore ipc to the dsp.
-
-The streams that are suspended are resumed by the ALSA resume trigger.
-If the streams are paused during system suspend, they are marked
-explicitly so they can be restored during PAUSE_RELEASE.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pm.c | 385 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 385 insertions(+)
- create mode 100644 sound/soc/sof/pm.c
+ sound/soc/sof/intel/byt.c  | 874 +++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/intel/shim.h | 183 ++++++++
+ 2 files changed, 1057 insertions(+)
+ create mode 100644 sound/soc/sof/intel/byt.c
+ create mode 100644 sound/soc/sof/intel/shim.h
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
 new file mode 100644
-index 000000000000..fc599e1b6f65
+index 000000000000..7bf9143d3106
 --- /dev/null
-+++ b/sound/soc/sof/pm.c
-@@ -0,0 +1,385 @@
++++ b/sound/soc/sof/intel/byt.c
+@@ -0,0 +1,874 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -92,380 +85,1058 @@ index 000000000000..fc599e1b6f65
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
-+#include "ops.h"
-+#include "sof-priv.h"
++/*
++ * Hardware interface for audio DSP on Baytrail, Braswell and Cherrytrail.
++ */
 +
-+static int sof_restore_kcontrols(struct snd_sof_dev *sdev)
++#include <linux/module.h>
++#include <sound/sof.h>
++#include <sound/sof/xtensa.h>
++#include "../ops.h"
++#include "shim.h"
++
++/* DSP memories */
++#define IRAM_OFFSET		0x0C0000
++#define IRAM_SIZE		(80 * 1024)
++#define DRAM_OFFSET		0x100000
++#define DRAM_SIZE		(160 * 1024)
++#define SHIM_OFFSET		0x140000
++#define SHIM_SIZE		0x100
++#define MBOX_OFFSET		0x144000
++#define MBOX_SIZE		0x1000
++#define EXCEPT_OFFSET		0x800
++
++/* DSP peripherals */
++#define DMAC0_OFFSET		0x098000
++#define DMAC1_OFFSET		0x09c000
++#define DMAC2_OFFSET		0x094000
++#define DMAC_SIZE		0x420
++#define SSP0_OFFSET		0x0a0000
++#define SSP1_OFFSET		0x0a1000
++#define SSP2_OFFSET		0x0a2000
++#define SSP3_OFFSET		0x0a4000
++#define SSP4_OFFSET		0x0a5000
++#define SSP5_OFFSET		0x0a6000
++#define SSP_SIZE		0x100
++
++#define BYT_STACK_DUMP_SIZE	32
++
++#define BYT_PCI_BAR_SIZE	0x200000
++
++#define BYT_PANIC_OFFSET(x)	(((x) & GENMASK_ULL(47, 32)) >> 32)
++
++/*
++ * Debug
++ */
++
++#define MBOX_DUMP_SIZE	0x30
++
++/* BARs */
++#define BYT_DSP_BAR		0
++#define BYT_PCI_BAR		1
++#define BYT_IMR_BAR		2
++
++static const struct snd_sof_debugfs_map byt_debugfs[] = {
++	{"dmac0", BYT_DSP_BAR, DMAC0_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"dmac1", BYT_DSP_BAR,  DMAC1_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp0",  BYT_DSP_BAR, SSP0_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp1", BYT_DSP_BAR, SSP1_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp2", BYT_DSP_BAR, SSP2_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"iram", BYT_DSP_BAR, IRAM_OFFSET, IRAM_SIZE,
++	 SOF_DEBUGFS_ACCESS_D0_ONLY},
++	{"dram", BYT_DSP_BAR, DRAM_OFFSET, DRAM_SIZE,
++	 SOF_DEBUGFS_ACCESS_D0_ONLY},
++	{"shim", BYT_DSP_BAR, SHIM_OFFSET, SHIM_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++};
++
++static const struct snd_sof_debugfs_map cht_debugfs[] = {
++	{"dmac0", BYT_DSP_BAR, DMAC0_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"dmac1", BYT_DSP_BAR,  DMAC1_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"dmac2", BYT_DSP_BAR,  DMAC2_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp0",  BYT_DSP_BAR, SSP0_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp1", BYT_DSP_BAR, SSP1_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp2", BYT_DSP_BAR, SSP2_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp3", BYT_DSP_BAR, SSP3_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp4", BYT_DSP_BAR, SSP4_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp5", BYT_DSP_BAR, SSP5_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"iram", BYT_DSP_BAR, IRAM_OFFSET, IRAM_SIZE,
++	 SOF_DEBUGFS_ACCESS_D0_ONLY},
++	{"dram", BYT_DSP_BAR, DRAM_OFFSET, DRAM_SIZE,
++	 SOF_DEBUGFS_ACCESS_D0_ONLY},
++	{"shim", BYT_DSP_BAR, SHIM_OFFSET, SHIM_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++};
++
++static void byt_host_done(struct snd_sof_dev *sdev);
++static void byt_dsp_done(struct snd_sof_dev *sdev);
++static void byt_get_reply(struct snd_sof_dev *sdev);
++
++/*
++ * IPC Firmware ready.
++ */
++static void byt_get_windows(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_control *scontrol;
-+	int ipc_cmd, ctrl_type;
-+	int ret = 0;
++	struct sof_ipc_window_elem *elem;
++	u32 outbox_offset = 0;
++	u32 stream_offset = 0;
++	u32 inbox_offset = 0;
++	u32 outbox_size = 0;
++	u32 stream_size = 0;
++	u32 inbox_size = 0;
++	int i;
 +
-+	/* restore kcontrol values */
-+	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
-+		/* reset readback offset for scontrol after resuming */
-+		scontrol->readback_offset = 0;
++	if (!sdev->info_window) {
++		dev_err(sdev->dev, "error: have no window info\n");
++		return;
++	}
 +
-+		/* notify DSP of kcontrol values */
-+		switch (scontrol->cmd) {
-+		case SOF_CTRL_CMD_VOLUME:
-+		case SOF_CTRL_CMD_ENUM:
-+		case SOF_CTRL_CMD_SWITCH:
-+			ipc_cmd = SOF_IPC_COMP_SET_VALUE;
-+			ctrl_type = SOF_CTRL_TYPE_VALUE_CHAN_SET;
-+			ret = snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+							    ipc_cmd, ctrl_type,
-+							    scontrol->cmd,
-+							    true);
++	for (i = 0; i < sdev->info_window->num_windows; i++) {
++		elem = &sdev->info_window->window[i];
++
++		switch (elem->type) {
++		case SOF_IPC_REGION_UPBOX:
++			inbox_offset = elem->offset + MBOX_OFFSET;
++			inbox_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						inbox_offset,
++						elem->size, "inbox",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
 +			break;
-+		case SOF_CTRL_CMD_BINARY:
-+			ipc_cmd = SOF_IPC_COMP_SET_DATA;
-+			ctrl_type = SOF_CTRL_TYPE_DATA_SET;
-+			ret = snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
-+							    ipc_cmd, ctrl_type,
-+							    scontrol->cmd,
-+							    true);
++		case SOF_IPC_REGION_DOWNBOX:
++			outbox_offset = elem->offset + MBOX_OFFSET;
++			outbox_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						outbox_offset,
++						elem->size, "outbox",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
 +			break;
-+
++		case SOF_IPC_REGION_TRACE:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "etrace",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_DEBUG:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "debug",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_STREAM:
++			stream_offset = elem->offset + MBOX_OFFSET;
++			stream_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						stream_offset,
++						elem->size, "stream",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_REGS:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "regs",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_EXCEPTION:
++			sdev->dsp_oops_offset = elem->offset + MBOX_OFFSET;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BYT_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "exception",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
 +		default:
-+			break;
-+		}
-+
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed kcontrol value set for widget: %d\n",
-+				scontrol->comp_id);
-+
-+			return ret;
++			dev_err(sdev->dev, "error: get illegal window info\n");
++			return;
 +		}
 +	}
++
++	if (outbox_size == 0 || inbox_size == 0) {
++		dev_err(sdev->dev, "error: get illegal mailbox window\n");
++		return;
++	}
++
++	snd_sof_dsp_mailbox_init(sdev, inbox_offset, inbox_size,
++				 outbox_offset, outbox_size);
++	sdev->stream_box.offset = stream_offset;
++	sdev->stream_box.size = stream_size;
++
++	dev_dbg(sdev->dev, " mailbox upstream 0x%x - size 0x%x\n",
++		inbox_offset, inbox_size);
++	dev_dbg(sdev->dev, " mailbox downstream 0x%x - size 0x%x\n",
++		outbox_offset, outbox_size);
++	dev_dbg(sdev->dev, " stream region 0x%x - size 0x%x\n",
++		stream_offset, stream_size);
++}
++
++/* check for ABI compatibility and create memory windows on first boot */
++static int byt_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
++{
++	struct sof_ipc_fw_ready *fw_ready = &sdev->fw_ready;
++	u32 offset;
++	int ret;
++
++	/* mailbox must be on 4k boundary */
++	offset = MBOX_OFFSET;
++
++	dev_dbg(sdev->dev, "ipc: DSP is ready 0x%8.8x offset 0x%x\n",
++		msg_id, offset);
++
++	/* no need to re-check version/ABI for subsequent boots */
++	if (!sdev->first_boot)
++		return 0;
++
++	/* copy data from the DSP FW ready offset */
++	sof_block_read(sdev, sdev->mmio_bar, offset, fw_ready,
++		       sizeof(*fw_ready));
++
++	snd_sof_dsp_mailbox_init(sdev, fw_ready->dspbox_offset,
++				 fw_ready->dspbox_size,
++				 fw_ready->hostbox_offset,
++				 fw_ready->hostbox_size);
++
++	/* make sure ABI version is compatible */
++	ret = snd_sof_ipc_valid(sdev);
++	if (ret < 0)
++		return ret;
++
++	/* now check for extended data */
++	snd_sof_fw_parse_ext_data(sdev, sdev->mmio_bar, MBOX_OFFSET +
++				  sizeof(struct sof_ipc_fw_ready));
++
++	byt_get_windows(sdev);
 +
 +	return 0;
 +}
 +
-+static int sof_restore_pipelines(struct snd_sof_dev *sdev)
++/*
++ * Debug
++ */
++
++static void byt_get_registers(struct snd_sof_dev *sdev,
++			      struct sof_ipc_dsp_oops_xtensa *xoops,
++			      struct sof_ipc_panic_info *panic_info,
++			      u32 *stack, size_t stack_words)
 +{
-+	struct snd_sof_widget *swidget;
-+	struct snd_sof_route *sroute;
-+	struct sof_ipc_pipe_new *pipeline;
-+	struct snd_sof_dai *dai;
-+	struct sof_ipc_comp_dai *comp_dai;
-+	struct sof_ipc_cmd_hdr *hdr;
-+	int ret;
++	/* first read regsisters */
++	sof_mailbox_read(sdev, sdev->dsp_oops_offset, xoops, sizeof(*xoops));
 +
-+	/* restore pipeline components */
-+	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
-+		struct sof_ipc_comp_reply r;
++	/* then get panic info */
++	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops),
++			 panic_info, sizeof(*panic_info));
 +
-+		/* skip if there is no private data */
-+		if (!swidget->private)
-+			continue;
++	/* then get the stack */
++	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops) +
++			   sizeof(*panic_info), stack,
++			   stack_words * sizeof(u32));
++}
 +
-+		switch (swidget->id) {
-+		case snd_soc_dapm_dai_in:
-+		case snd_soc_dapm_dai_out:
-+			dai = swidget->private;
-+			comp_dai = &dai->comp_dai;
-+			ret = sof_ipc_tx_message(sdev->ipc,
-+						 comp_dai->comp.hdr.cmd,
-+						 comp_dai, sizeof(*comp_dai),
-+						 &r, sizeof(r));
-+			break;
-+		case snd_soc_dapm_scheduler:
++static void byt_dump(struct snd_sof_dev *sdev, u32 flags)
++{
++	struct sof_ipc_dsp_oops_xtensa xoops;
++	struct sof_ipc_panic_info panic_info;
++	u32 stack[BYT_STACK_DUMP_SIZE];
++	u32 status, panic;
 +
-+			/*
-+			 * During suspend, all DSP cores are powered off.
-+			 * Therefore upon resume, create the pipeline comp
-+			 * and power up the core that the pipeline is
-+			 * scheduled on.
-+			 */
-+			pipeline = swidget->private;
-+			ret = sof_load_pipeline_ipc(sdev, pipeline, &r);
-+			break;
-+		default:
-+			hdr = swidget->private;
-+			ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd,
-+						 swidget->private, hdr->size,
-+						 &r, sizeof(r));
-+			break;
-+		}
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to load widget type %d with ID: %d\n",
-+				swidget->widget->id, swidget->comp_id);
++	/* now try generic SOF status messages */
++	status = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IPCD);
++	panic = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IPCX);
++	byt_get_registers(sdev, &xoops, &panic_info, stack,
++			  BYT_STACK_DUMP_SIZE);
++	snd_sof_get_status(sdev, status, panic, &xoops, &panic_info, stack,
++			   BYT_STACK_DUMP_SIZE);
++}
 +
-+			return ret;
-+		}
-+	}
++/*
++ * IPC Doorbell IRQ handler and thread.
++ */
 +
-+	/* restore pipeline connections */
-+	list_for_each_entry_reverse(sroute, &sdev->route_list, list) {
-+		struct sof_ipc_pipe_comp_connect *connect;
-+		struct sof_ipc_reply reply;
++static irqreturn_t byt_irq_handler(int irq, void *context)
++{
++	struct snd_sof_dev *sdev = context;
++	u64 isr;
++	int ret = IRQ_NONE;
 +
-+		/* skip if there's no private data */
-+		if (!sroute->private)
-+			continue;
-+
-+		connect = sroute->private;
-+
-+		/* send ipc */
-+		ret = sof_ipc_tx_message(sdev->ipc,
-+					 connect->hdr.cmd,
-+					 connect, sizeof(*connect),
-+					 &reply, sizeof(reply));
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to load route sink %s control %s source %s\n",
-+				sroute->route->sink,
-+				sroute->route->control ? sroute->route->control
-+					: "none",
-+				sroute->route->source);
-+
-+			return ret;
-+		}
-+	}
-+
-+	/* restore dai links */
-+	list_for_each_entry_reverse(dai, &sdev->dai_list, list) {
-+		struct sof_ipc_reply reply;
-+		struct sof_ipc_dai_config *config = dai->dai_config;
-+
-+		if (!config) {
-+			dev_err(sdev->dev, "error: no config for DAI %s\n",
-+				dai->name);
-+			continue;
-+		}
-+
-+		ret = sof_ipc_tx_message(sdev->ipc,
-+					 config->hdr.cmd, config,
-+					 config->hdr.size,
-+					 &reply, sizeof(reply));
-+
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to set dai config for %s\n",
-+				dai->name);
-+
-+			return ret;
-+		}
-+	}
-+
-+	/* complete pipeline */
-+	list_for_each_entry(swidget, &sdev->widget_list, list) {
-+		switch (swidget->id) {
-+		case snd_soc_dapm_scheduler:
-+			swidget->complete =
-+				snd_sof_complete_pipeline(sdev, swidget);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	/* restore pipeline kcontrols */
-+	ret = sof_restore_kcontrols(sdev);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: restoring kcontrols after resume\n");
++	/* Interrupt arrived, check src */
++	isr = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_ISRX);
++	if (isr & (SHIM_ISRX_DONE | SHIM_ISRX_BUSY))
++		ret = IRQ_WAKE_THREAD;
 +
 +	return ret;
 +}
 +
-+static int sof_send_pm_ipc(struct snd_sof_dev *sdev, int cmd)
++static irqreturn_t byt_irq_thread(int irq, void *context)
 +{
-+	struct sof_ipc_pm_ctx pm_ctx;
++	struct snd_sof_dev *sdev = context;
++	u64 ipcx, ipcd;
++	u64 imrx;
++
++	imrx = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IMRX);
++	ipcx = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCX);
++
++	/* reply message from DSP */
++	if (ipcx & SHIM_BYT_IPCX_DONE &&
++	    !(imrx & SHIM_IMRX_DONE)) {
++		/* Mask Done interrupt before first */
++		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
++						   SHIM_IMRX,
++						   SHIM_IMRX_DONE,
++						   SHIM_IMRX_DONE);
++		/*
++		 * handle immediate reply from DSP core. If the msg is
++		 * found, set done bit in cmd_done which is called at the
++		 * end of message processing function, else set it here
++		 * because the done bit can't be set in cmd_done function
++		 * which is triggered by msg
++		 */
++		byt_get_reply(sdev);
++		snd_sof_ipc_reply(sdev, ipcx);
++
++		byt_dsp_done(sdev);
++	}
++
++	/* new message from DSP */
++	ipcd = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCD);
++	if (ipcd & SHIM_BYT_IPCD_BUSY &&
++	    !(imrx & SHIM_IMRX_BUSY)) {
++		/* Mask Busy interrupt before return */
++		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
++						   SHIM_IMRX,
++						   SHIM_IMRX_BUSY,
++						   SHIM_IMRX_BUSY);
++
++		/* Handle messages from DSP Core */
++		if ((ipcd & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
++			snd_sof_dsp_panic(sdev, BYT_PANIC_OFFSET(ipcd) +
++					  MBOX_OFFSET);
++		} else {
++			snd_sof_ipc_msgs_rx(sdev);
++		}
++
++		byt_host_done(sdev);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int byt_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
++{
++	u64 cmd = msg->header;
++
++	/* send the message */
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++	snd_sof_dsp_write64(sdev, BYT_DSP_BAR, SHIM_IPCX,
++			    cmd | SHIM_BYT_IPCX_BUSY);
++
++	return 0;
++}
++
++static void byt_get_reply(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_ipc_msg *msg = sdev->msg;
 +	struct sof_ipc_reply reply;
-+
-+	memset(&pm_ctx, 0, sizeof(pm_ctx));
-+
-+	/* configure ctx save ipc message */
-+	pm_ctx.hdr.size = sizeof(pm_ctx);
-+	pm_ctx.hdr.cmd = SOF_IPC_GLB_PM_MSG | cmd;
-+
-+	/* send ctx save ipc to dsp */
-+	return sof_ipc_tx_message(sdev->ipc, pm_ctx.hdr.cmd, &pm_ctx,
-+				 sizeof(pm_ctx), &reply, sizeof(reply));
-+}
-+
-+static void sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_sof_pcm *spcm;
-+	snd_pcm_state_t state;
-+	int dir;
++	unsigned long flags;
++	int ret = 0;
 +
 +	/*
-+	 * SOF requires hw_params to be set-up internally upon resume.
-+	 * So, set the flag to indicate this for those streams that
-+	 * have been suspended.
++	 * Sometimes, there is unexpected reply ipc arriving. The reply
++	 * ipc belongs to none of the ipcs sent from driver.
++	 * In this case, the driver must ignore the ipc.
 +	 */
-+	list_for_each_entry(spcm, &sdev->pcm_list, list) {
-+		for (dir = 0; dir <= SNDRV_PCM_STREAM_CAPTURE; dir++) {
-+			substream = spcm->stream[dir].substream;
-+			if (!substream || !substream->runtime)
-+				continue;
++	if (!msg) {
++		dev_warn(sdev->dev, "unexpected ipc interrupt raised!\n");
++		return;
++	}
 +
-+			state = substream->runtime->status->state;
-+			if (state == SNDRV_PCM_STATE_SUSPENDED)
-+				spcm->hw_params_upon_resume[dir] = 1;
++	/* get reply */
++	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
++
++	spin_lock_irqsave(&sdev->ipc_lock, flags);
++
++	if (reply.error < 0) {
++		memcpy(msg->reply_data, &reply, sizeof(reply));
++		ret = reply.error;
++	} else {
++		/* reply correct size ? */
++		if (reply.hdr.size != msg->reply_size) {
++			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
++				msg->reply_size, reply.hdr.size);
++			ret = -EINVAL;
 +		}
++
++		/* read the message */
++		if (msg->reply_size > 0)
++			sof_mailbox_read(sdev, sdev->host_box.offset,
++					 msg->reply_data, msg->reply_size);
 +	}
++
++	msg->reply_error = ret;
++
++	spin_unlock_irqrestore(&sdev->ipc_lock, flags);
 +}
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
-+static void sof_cache_debugfs(struct snd_sof_dev *sdev)
++static void byt_host_done(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_dfsentry *dfse;
++	/* clear BUSY bit and set DONE bit - accept new messages */
++	snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR, SHIM_IPCD,
++					   SHIM_BYT_IPCD_BUSY |
++					   SHIM_BYT_IPCD_DONE,
++					   SHIM_BYT_IPCD_DONE);
 +
-+	list_for_each_entry(dfse, &sdev->dfsentry_list, list) {
-+
-+		/* nothing to do if debugfs buffer is not IO mem */
-+		if (dfse->type == SOF_DFSENTRY_TYPE_BUF)
-+			continue;
-+
-+		/* cache memory that is only accessible in D0 */
-+		if (dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY)
-+			memcpy_fromio(dfse->cache_buf, dfse->io_mem,
-+				      dfse->size);
-+	}
++	/* unmask busy interrupt */
++	snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR, SHIM_IMRX,
++					   SHIM_IMRX_BUSY, 0);
 +}
-+#endif
 +
-+static int sof_resume(struct device *dev, bool runtime_resume)
++static void byt_dsp_done(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	/* clear DONE bit - tell DSP we have completed */
++	snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR, SHIM_IPCX,
++					   SHIM_BYT_IPCX_DONE, 0);
++
++	/* unmask Done interrupt */
++	snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR, SHIM_IMRX,
++					   SHIM_IMRX_DONE, 0);
++}
++
++/*
++ * DSP control.
++ */
++
++static int byt_run(struct snd_sof_dev *sdev)
++{
++	int tries = 10;
++
++	/* release stall and wait to unstall */
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_CSR,
++				  SHIM_BYT_CSR_STALL, 0x0);
++	while (tries--) {
++		if (!(snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_CSR) &
++		      SHIM_BYT_CSR_PWAITMODE))
++			break;
++		msleep(100);
++	}
++	if (tries < 0) {
++		dev_err(sdev->dev, "error:  unable to run DSP firmware\n");
++		byt_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
++		return -ENODEV;
++	}
++
++	/* return init core mask */
++	return 1;
++}
++
++static int byt_reset(struct snd_sof_dev *sdev)
++{
++	/* put DSP into reset, set reset vector and stall */
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_CSR,
++				  SHIM_BYT_CSR_RST | SHIM_BYT_CSR_VECTOR_SEL |
++				  SHIM_BYT_CSR_STALL,
++				  SHIM_BYT_CSR_RST | SHIM_BYT_CSR_VECTOR_SEL |
++				  SHIM_BYT_CSR_STALL);
++
++	usleep_range(10, 15);
++
++	/* take DSP out of reset and keep stalled for FW loading */
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_CSR,
++				  SHIM_BYT_CSR_RST, 0);
++
++	return 0;
++}
++
++/* Baytrail DAIs */
++static struct snd_soc_dai_driver byt_dai[] = {
++{
++	.name = "ssp0-port",
++},
++{
++	.name = "ssp1-port",
++},
++{
++	.name = "ssp2-port",
++},
++{
++	.name = "ssp3-port",
++},
++{
++	.name = "ssp4-port",
++},
++{
++	.name = "ssp5-port",
++},
++};
++
++/*
++ * Probe and remove.
++ */
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
++
++static int tangier_pci_probe(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_pdata *pdata = sdev->pdata;
++	const struct sof_dev_desc *desc = pdata->desc;
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	u32 base, size;
 +	int ret;
 +
-+	/* do nothing if dsp resume callbacks are not set */
-+	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
-+		return 0;
-+
-+	/*
-+	 * if the runtime_resume flag is set, call the runtime_resume routine
-+	 * or else call the system resume routine
-+	 */
-+	if (runtime_resume)
-+		ret = snd_sof_dsp_runtime_resume(sdev);
-+	else
-+		ret = snd_sof_dsp_resume(sdev);
++	/* DSP DMA can only access low 31 bits of host memory */
++	ret = dma_coerce_mask_and_coherent(&pci->dev, DMA_BIT_MASK(31));
 +	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to power up DSP after resume\n");
++		dev_err(sdev->dev, "error: failed to set DMA mask %d\n", ret);
 +		return ret;
 +	}
 +
-+	/* load the firmware */
-+	ret = snd_sof_load_firmware(sdev);
++	/* LPE base */
++	base = pci_resource_start(pci, desc->resindex_lpe_base) - IRAM_OFFSET;
++	size = BYT_PCI_BAR_SIZE;
++
++	dev_dbg(sdev->dev, "LPE PHY base at 0x%x size 0x%x", base, size);
++	sdev->bar[BYT_DSP_BAR] = devm_ioremap(sdev->dev, base, size);
++	if (!sdev->bar[BYT_DSP_BAR]) {
++		dev_err(sdev->dev, "error: failed to ioremap LPE base 0x%x size 0x%x\n",
++			base, size);
++		return -ENODEV;
++	}
++	dev_dbg(sdev->dev, "LPE VADDR %p\n", sdev->bar[BYT_DSP_BAR]);
++
++	/* IMR base - optional */
++	if (desc->resindex_imr_base == -1)
++		goto irq;
++
++	base = pci_resource_start(pci, desc->resindex_imr_base);
++	size = pci_resource_len(pci, desc->resindex_imr_base);
++
++	/* some BIOSes don't map IMR */
++	if (base == 0x55aa55aa || base == 0x0) {
++		dev_info(sdev->dev, "IMR not set by BIOS. Ignoring\n");
++		goto irq;
++	}
++
++	dev_dbg(sdev->dev, "IMR base at 0x%x size 0x%x", base, size);
++	sdev->bar[BYT_IMR_BAR] = devm_ioremap(sdev->dev, base, size);
++	if (!sdev->bar[BYT_IMR_BAR]) {
++		dev_err(sdev->dev, "error: failed to ioremap IMR base 0x%x size 0x%x\n",
++			base, size);
++		return -ENODEV;
++	}
++	dev_dbg(sdev->dev, "IMR VADDR %p\n", sdev->bar[BYT_IMR_BAR]);
++
++irq:
++	/* register our IRQ */
++	sdev->ipc_irq = pci->irq;
++	dev_dbg(sdev->dev, "using IRQ %d\n", sdev->ipc_irq);
++	ret = devm_request_threaded_irq(sdev->dev, sdev->ipc_irq,
++					byt_irq_handler, byt_irq_thread,
++					0, "AudioDSP", sdev);
 +	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to load DSP firmware after resume %d\n",
-+			ret);
++		dev_err(sdev->dev, "error: failed to register IRQ %d\n",
++			sdev->ipc_irq);
 +		return ret;
 +	}
 +
-+	/* boot the firmware */
-+	ret = snd_sof_run_firmware(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to boot DSP firmware after resume %d\n",
-+			ret);
-+		return ret;
-+	}
++	/* enable Interrupt from both sides */
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRX, 0x3, 0x0);
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRD, 0x3, 0x0);
 +
-+	/* resume DMA trace, only need send ipc */
-+	ret = snd_sof_init_trace_ipc(sdev);
-+	if (ret < 0) {
-+		/* non fatal */
-+		dev_warn(sdev->dev,
-+			 "warning: failed to init trace after resume %d\n",
-+			 ret);
-+	}
-+
-+	/* restore pipelines */
-+	ret = sof_restore_pipelines(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to restore pipeline after resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* notify DSP of system resume */
-+	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_RESTORE);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: ctx_restore ipc error during resume %d\n",
-+			ret);
++	/* set default mailbox offset for FW ready message */
++	sdev->dsp_box.offset = MBOX_OFFSET;
 +
 +	return ret;
 +}
 +
-+static int sof_suspend(struct device *dev, bool runtime_suspend)
++const struct snd_sof_dsp_ops sof_tng_ops = {
++	/* device init */
++	.probe		= tangier_pci_probe,
++
++	/* DSP core boot / reset */
++	.run		= byt_run,
++	.reset		= byt_reset,
++
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
++
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* doorbell */
++	.irq_handler	= byt_irq_handler,
++	.irq_thread	= byt_irq_thread,
++
++	/* ipc */
++	.send_msg	= byt_send_msg,
++	.fw_ready	= byt_fw_ready,
++
++	.ipc_msg_data	= intel_ipc_msg_data,
++	.ipc_pcm_params	= intel_ipc_pcm_params,
++
++	/* debug */
++	.debug_map	= byt_debugfs,
++	.debug_map_count	= ARRAY_SIZE(byt_debugfs),
++	.dbg_dump	= byt_dump,
++
++	/* stream callbacks */
++	.pcm_open	= intel_pcm_open,
++	.pcm_close	= intel_pcm_close,
++
++	/* module loading */
++	.load_module	= snd_sof_parse_module_memcpy,
++
++	/*Firmware loading */
++	.load_firmware	= snd_sof_load_firmware_memcpy,
++
++	/* DAI drivers */
++	.drv = byt_dai,
++	.num_drv = 3, /* we have only 3 SSPs on byt*/
++};
++EXPORT_SYMBOL(sof_tng_ops);
++
++const struct sof_intel_dsp_desc tng_chip_info = {
++	.cores_num = 1,
++	.cores_mask = 1,
++};
++EXPORT_SYMBOL(tng_chip_info);
++
++#endif /* CONFIG_SND_SOC_SOF_MERRIFIELD */
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++
++static int byt_acpi_probe(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	struct snd_sof_pdata *pdata = sdev->pdata;
++	const struct sof_dev_desc *desc = pdata->desc;
++	struct platform_device *pdev =
++		container_of(sdev->dev, struct platform_device, dev);
++	struct resource *mmio;
++	u32 base, size;
 +	int ret;
 +
-+	/* do nothing if dsp suspend callback is not set */
-+	if (!sof_ops(sdev)->suspend)
-+		return 0;
-+
-+	/* release trace */
-+	snd_sof_release_trace(sdev);
-+
-+	/* set restore_stream for all streams during system suspend */
-+	if (!runtime_suspend)
-+		sof_set_hw_params_upon_resume(sdev);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
-+	/* cache debugfs contents during runtime suspend */
-+	if (runtime_suspend)
-+		sof_cache_debugfs(sdev);
-+#endif
-+	/* notify DSP of upcoming power down */
-+	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
++	/* DSP DMA can only access low 31 bits of host memory */
++	ret = dma_coerce_mask_and_coherent(sdev->dev, DMA_BIT_MASK(31));
 +	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: ctx_save ipc error during suspend %d\n",
-+			ret);
++		dev_err(sdev->dev, "error: failed to set DMA mask %d\n", ret);
 +		return ret;
 +	}
 +
-+	/* power down all DSP cores */
-+	if (runtime_suspend)
-+		ret = snd_sof_dsp_runtime_suspend(sdev, 0);
-+	else
-+		ret = snd_sof_dsp_suspend(sdev, 0);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: failed to power down DSP during suspend %d\n",
-+			ret);
++	/* LPE base */
++	mmio = platform_get_resource(pdev, IORESOURCE_MEM,
++				     desc->resindex_lpe_base);
++	if (mmio) {
++		base = mmio->start;
++		size = resource_size(mmio);
++	} else {
++		dev_err(sdev->dev, "error: failed to get LPE base at idx %d\n",
++			desc->resindex_lpe_base);
++		return -EINVAL;
++	}
++
++	dev_dbg(sdev->dev, "LPE PHY base at 0x%x size 0x%x", base, size);
++	sdev->bar[BYT_DSP_BAR] = devm_ioremap(sdev->dev, base, size);
++	if (!sdev->bar[BYT_DSP_BAR]) {
++		dev_err(sdev->dev, "error: failed to ioremap LPE base 0x%x size 0x%x\n",
++			base, size);
++		return -ENODEV;
++	}
++	dev_dbg(sdev->dev, "LPE VADDR %p\n", sdev->bar[BYT_DSP_BAR]);
++
++	/* TODO: add offsets */
++	sdev->mmio_bar = BYT_DSP_BAR;
++	sdev->mailbox_bar = BYT_DSP_BAR;
++
++	/* IMR base - optional */
++	if (desc->resindex_imr_base == -1)
++		goto irq;
++
++	mmio = platform_get_resource(pdev, IORESOURCE_MEM,
++				     desc->resindex_imr_base);
++	if (mmio) {
++		base = mmio->start;
++		size = resource_size(mmio);
++	} else {
++		dev_err(sdev->dev, "error: failed to get IMR base at idx %d\n",
++			desc->resindex_imr_base);
++		return -ENODEV;
++	}
++
++	/* some BIOSes don't map IMR */
++	if (base == 0x55aa55aa || base == 0x0) {
++		dev_info(sdev->dev, "IMR not set by BIOS. Ignoring\n");
++		goto irq;
++	}
++
++	dev_dbg(sdev->dev, "IMR base at 0x%x size 0x%x", base, size);
++	sdev->bar[BYT_IMR_BAR] = devm_ioremap(sdev->dev, base, size);
++	if (!sdev->bar[BYT_IMR_BAR]) {
++		dev_err(sdev->dev, "error: failed to ioremap IMR base 0x%x size 0x%x\n",
++			base, size);
++		return -ENODEV;
++	}
++	dev_dbg(sdev->dev, "IMR VADDR %p\n", sdev->bar[BYT_IMR_BAR]);
++
++irq:
++	/* register our IRQ */
++	sdev->ipc_irq = platform_get_irq(pdev, desc->irqindex_host_ipc);
++	if (sdev->ipc_irq < 0) {
++		dev_err(sdev->dev, "error: failed to get IRQ at index %d\n",
++			desc->irqindex_host_ipc);
++		return sdev->ipc_irq;
++	}
++
++	dev_dbg(sdev->dev, "using IRQ %d\n", sdev->ipc_irq);
++	ret = devm_request_threaded_irq(sdev->dev, sdev->ipc_irq,
++					byt_irq_handler, byt_irq_thread,
++					IRQF_SHARED, "AudioDSP", sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to register IRQ %d\n",
++			sdev->ipc_irq);
++		return ret;
++	}
++
++	/* enable Interrupt from both sides */
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRX, 0x3, 0x0);
++	snd_sof_dsp_update_bits64(sdev, BYT_DSP_BAR, SHIM_IMRD, 0x3, 0x0);
++
++	/* set default mailbox offset for FW ready message */
++	sdev->dsp_box.offset = MBOX_OFFSET;
 +
 +	return ret;
 +}
 +
-+int snd_sof_runtime_suspend(struct device *dev)
-+{
-+	return sof_suspend(dev, true);
-+}
-+EXPORT_SYMBOL(snd_sof_runtime_suspend);
++/* baytrail ops */
++const struct snd_sof_dsp_ops sof_byt_ops = {
++	/* device init */
++	.probe		= byt_acpi_probe,
 +
-+int snd_sof_runtime_resume(struct device *dev)
-+{
-+	return sof_resume(dev, true);
-+}
-+EXPORT_SYMBOL(snd_sof_runtime_resume);
++	/* DSP core boot / reset */
++	.run		= byt_run,
++	.reset		= byt_reset,
 +
-+int snd_sof_resume(struct device *dev)
-+{
-+	return sof_resume(dev, false);
-+}
-+EXPORT_SYMBOL(snd_sof_resume);
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
 +
-+int snd_sof_suspend(struct device *dev)
-+{
-+	return sof_suspend(dev, false);
-+}
-+EXPORT_SYMBOL(snd_sof_suspend);
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* doorbell */
++	.irq_handler	= byt_irq_handler,
++	.irq_thread	= byt_irq_thread,
++
++	/* ipc */
++	.send_msg	= byt_send_msg,
++	.fw_ready	= byt_fw_ready,
++
++	.ipc_msg_data	= intel_ipc_msg_data,
++	.ipc_pcm_params	= intel_ipc_pcm_params,
++
++	/* debug */
++	.debug_map	= byt_debugfs,
++	.debug_map_count	= ARRAY_SIZE(byt_debugfs),
++	.dbg_dump	= byt_dump,
++
++	/* stream callbacks */
++	.pcm_open	= intel_pcm_open,
++	.pcm_close	= intel_pcm_close,
++
++	/* module loading */
++	.load_module	= snd_sof_parse_module_memcpy,
++
++	/*Firmware loading */
++	.load_firmware	= snd_sof_load_firmware_memcpy,
++
++	/* DAI drivers */
++	.drv = byt_dai,
++	.num_drv = 3, /* we have only 3 SSPs on byt*/
++};
++EXPORT_SYMBOL(sof_byt_ops);
++
++const struct sof_intel_dsp_desc byt_chip_info = {
++	.cores_num = 1,
++	.cores_mask = 1,
++};
++EXPORT_SYMBOL(byt_chip_info);
++
++/* cherrytrail and braswell ops */
++const struct snd_sof_dsp_ops sof_cht_ops = {
++	/* device init */
++	.probe		= byt_acpi_probe,
++
++	/* DSP core boot / reset */
++	.run		= byt_run,
++	.reset		= byt_reset,
++
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
++
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* doorbell */
++	.irq_handler	= byt_irq_handler,
++	.irq_thread	= byt_irq_thread,
++
++	/* ipc */
++	.send_msg	= byt_send_msg,
++	.fw_ready	= byt_fw_ready,
++
++	.ipc_msg_data	= intel_ipc_msg_data,
++	.ipc_pcm_params	= intel_ipc_pcm_params,
++
++	/* debug */
++	.debug_map	= cht_debugfs,
++	.debug_map_count	= ARRAY_SIZE(cht_debugfs),
++	.dbg_dump	= byt_dump,
++
++	/* stream callbacks */
++	.pcm_open	= intel_pcm_open,
++	.pcm_close	= intel_pcm_close,
++
++	/* module loading */
++	.load_module	= snd_sof_parse_module_memcpy,
++
++	/*Firmware loading */
++	.load_firmware	= snd_sof_load_firmware_memcpy,
++
++	/* DAI drivers */
++	.drv = byt_dai,
++	/* all 6 SSPs may be available for cherrytrail */
++	.num_drv = ARRAY_SIZE(byt_dai),
++};
++EXPORT_SYMBOL(sof_cht_ops);
++
++const struct sof_intel_dsp_desc cht_chip_info = {
++	.cores_num = 1,
++	.cores_mask = 1,
++};
++EXPORT_SYMBOL(cht_chip_info);
++
++#endif /* CONFIG_SND_SOC_SOF_BAYTRAIL */
++
++MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
+new file mode 100644
+index 000000000000..11fd77cb4e6d
+--- /dev/null
++++ b/sound/soc/sof/intel/shim.h
+@@ -0,0 +1,183 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2017 Intel Corporation. All rights reserved.
++ *
++ * Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++ */
++
++#ifndef __SOF_INTEL_SHIM_H
++#define __SOF_INTEL_SHIM_H
++
++/*
++ * SHIM registers for BYT, BSW, CHT, HSW, BDW
++ */
++
++#define SHIM_CSR		(SHIM_OFFSET + 0x00)
++#define SHIM_PISR		(SHIM_OFFSET + 0x08)
++#define SHIM_PIMR		(SHIM_OFFSET + 0x10)
++#define SHIM_ISRX		(SHIM_OFFSET + 0x18)
++#define SHIM_ISRD		(SHIM_OFFSET + 0x20)
++#define SHIM_IMRX		(SHIM_OFFSET + 0x28)
++#define SHIM_IMRD		(SHIM_OFFSET + 0x30)
++#define SHIM_IPCX		(SHIM_OFFSET + 0x38)
++#define SHIM_IPCD		(SHIM_OFFSET + 0x40)
++#define SHIM_ISRSC		(SHIM_OFFSET + 0x48)
++#define SHIM_ISRLPESC		(SHIM_OFFSET + 0x50)
++#define SHIM_IMRSC		(SHIM_OFFSET + 0x58)
++#define SHIM_IMRLPESC		(SHIM_OFFSET + 0x60)
++#define SHIM_IPCSC		(SHIM_OFFSET + 0x68)
++#define SHIM_IPCLPESC		(SHIM_OFFSET + 0x70)
++#define SHIM_CLKCTL		(SHIM_OFFSET + 0x78)
++#define SHIM_CSR2		(SHIM_OFFSET + 0x80)
++#define SHIM_LTRC		(SHIM_OFFSET + 0xE0)
++#define SHIM_HMDC		(SHIM_OFFSET + 0xE8)
++
++#define SHIM_PWMCTRL		0x1000
++
++/*
++ * SST SHIM register bits for BYT, BSW, CHT HSW, BDW
++ * Register bit naming and functionaility can differ between devices.
++ */
++
++/* CSR / CS */
++#define SHIM_CSR_RST		BIT(1)
++#define SHIM_CSR_SBCS0		BIT(2)
++#define SHIM_CSR_SBCS1		BIT(3)
++#define SHIM_CSR_DCS(x)		((x) << 4)
++#define SHIM_CSR_DCS_MASK	(0x7 << 4)
++#define SHIM_CSR_STALL		BIT(10)
++#define SHIM_CSR_S0IOCS		BIT(21)
++#define SHIM_CSR_S1IOCS		BIT(23)
++#define SHIM_CSR_LPCS		BIT(31)
++#define SHIM_CSR_24MHZ_LPCS \
++	(SHIM_CSR_SBCS0 | SHIM_CSR_SBCS1 | SHIM_CSR_LPCS)
++#define SHIM_CSR_24MHZ_NO_LPCS	(SHIM_CSR_SBCS0 | SHIM_CSR_SBCS1)
++#define SHIM_BYT_CSR_RST	BIT(0)
++#define SHIM_BYT_CSR_VECTOR_SEL	BIT(1)
++#define SHIM_BYT_CSR_STALL	BIT(2)
++#define SHIM_BYT_CSR_PWAITMODE	BIT(3)
++
++/*  ISRX / ISC */
++#define SHIM_ISRX_BUSY		BIT(1)
++#define SHIM_ISRX_DONE		BIT(0)
++#define SHIM_BYT_ISRX_REQUEST	BIT(1)
++
++/*  ISRD / ISD */
++#define SHIM_ISRD_BUSY		BIT(1)
++#define SHIM_ISRD_DONE		BIT(0)
++
++/* IMRX / IMC */
++#define SHIM_IMRX_BUSY		BIT(1)
++#define SHIM_IMRX_DONE		BIT(0)
++#define SHIM_BYT_IMRX_REQUEST	BIT(1)
++
++/* IMRD / IMD */
++#define SHIM_IMRD_DONE		BIT(0)
++#define SHIM_IMRD_BUSY		BIT(1)
++#define SHIM_IMRD_SSP0		BIT(16)
++#define SHIM_IMRD_DMAC0		BIT(21)
++#define SHIM_IMRD_DMAC1		BIT(22)
++#define SHIM_IMRD_DMAC		(SHIM_IMRD_DMAC0 | SHIM_IMRD_DMAC1)
++
++/*  IPCX / IPCC */
++#define	SHIM_IPCX_DONE		BIT(30)
++#define	SHIM_IPCX_BUSY		BIT(31)
++#define SHIM_BYT_IPCX_DONE	BIT_ULL(62)
++#define SHIM_BYT_IPCX_BUSY	BIT_ULL(63)
++
++/*  IPCD */
++#define	SHIM_IPCD_DONE		BIT(30)
++#define	SHIM_IPCD_BUSY		BIT(31)
++#define SHIM_BYT_IPCD_DONE	BIT_ULL(62)
++#define SHIM_BYT_IPCD_BUSY	BIT_ULL(63)
++
++/* CLKCTL */
++#define SHIM_CLKCTL_SMOS(x)	((x) << 24)
++#define SHIM_CLKCTL_MASK	(3 << 24)
++#define SHIM_CLKCTL_DCPLCG	BIT(18)
++#define SHIM_CLKCTL_SCOE1	BIT(17)
++#define SHIM_CLKCTL_SCOE0	BIT(16)
++
++/* CSR2 / CS2 */
++#define SHIM_CSR2_SDFD_SSP0	BIT(1)
++#define SHIM_CSR2_SDFD_SSP1	BIT(2)
++
++/* LTRC */
++#define SHIM_LTRC_VAL(x)	((x) << 0)
++
++/* HMDC */
++#define SHIM_HMDC_HDDA0(x)	((x) << 0)
++#define SHIM_HMDC_HDDA1(x)	((x) << 7)
++#define SHIM_HMDC_HDDA_E0_CH0	1
++#define SHIM_HMDC_HDDA_E0_CH1	2
++#define SHIM_HMDC_HDDA_E0_CH2	4
++#define SHIM_HMDC_HDDA_E0_CH3	8
++#define SHIM_HMDC_HDDA_E1_CH0	SHIM_HMDC_HDDA1(SHIM_HMDC_HDDA_E0_CH0)
++#define SHIM_HMDC_HDDA_E1_CH1	SHIM_HMDC_HDDA1(SHIM_HMDC_HDDA_E0_CH1)
++#define SHIM_HMDC_HDDA_E1_CH2	SHIM_HMDC_HDDA1(SHIM_HMDC_HDDA_E0_CH2)
++#define SHIM_HMDC_HDDA_E1_CH3	SHIM_HMDC_HDDA1(SHIM_HMDC_HDDA_E0_CH3)
++#define SHIM_HMDC_HDDA_E0_ALLCH	\
++	(SHIM_HMDC_HDDA_E0_CH0 | SHIM_HMDC_HDDA_E0_CH1 | \
++	 SHIM_HMDC_HDDA_E0_CH2 | SHIM_HMDC_HDDA_E0_CH3)
++#define SHIM_HMDC_HDDA_E1_ALLCH	\
++	(SHIM_HMDC_HDDA_E1_CH0 | SHIM_HMDC_HDDA_E1_CH1 | \
++	 SHIM_HMDC_HDDA_E1_CH2 | SHIM_HMDC_HDDA_E1_CH3)
++
++/* Audio DSP PCI registers */
++#define PCI_VDRTCTL0		0xa0
++#define PCI_VDRTCTL1		0xa4
++#define PCI_VDRTCTL2		0xa8
++#define PCI_VDRTCTL3		0xaC
++
++/* VDRTCTL0 */
++#define PCI_VDRTCL0_D3PGD		BIT(0)
++#define PCI_VDRTCL0_D3SRAMPGD		BIT(1)
++#define PCI_VDRTCL0_DSRAMPGE_SHIFT	12
++#define PCI_VDRTCL0_DSRAMPGE_MASK	GENMASK(PCI_VDRTCL0_DSRAMPGE_SHIFT + 19,\
++						PCI_VDRTCL0_DSRAMPGE_SHIFT)
++#define PCI_VDRTCL0_ISRAMPGE_SHIFT	2
++#define PCI_VDRTCL0_ISRAMPGE_MASK	GENMASK(PCI_VDRTCL0_ISRAMPGE_SHIFT + 9,\
++						PCI_VDRTCL0_ISRAMPGE_SHIFT)
++
++/* VDRTCTL2 */
++#define PCI_VDRTCL2_DCLCGE		BIT(1)
++#define PCI_VDRTCL2_DTCGE		BIT(10)
++#define PCI_VDRTCL2_APLLSE_MASK		BIT(31)
++
++/* PMCS */
++#define PCI_PMCS		0x84
++#define PCI_PMCS_PS_MASK	0x3
++
++/* DSP hardware descriptor */
++struct sof_intel_dsp_desc {
++	int cores_num;
++	int cores_mask;
++	int init_core_mask; /* cores available after fw boot */
++	int ipc_req;
++	int ipc_req_mask;
++	int ipc_ack;
++	int ipc_ack_mask;
++	int ipc_ctl;
++	int rom_init_timeout;
++};
++
++extern const struct snd_sof_dsp_ops sof_tng_ops;
++extern const struct snd_sof_dsp_ops sof_byt_ops;
++extern const struct snd_sof_dsp_ops sof_cht_ops;
++extern const struct snd_sof_dsp_ops sof_hsw_ops;
++extern const struct snd_sof_dsp_ops sof_bdw_ops;
++
++extern const struct sof_intel_dsp_desc byt_chip_info;
++extern const struct sof_intel_dsp_desc cht_chip_info;
++extern const struct sof_intel_dsp_desc bdw_chip_info;
++extern const struct sof_intel_dsp_desc hsw_chip_info;
++extern const struct sof_intel_dsp_desc tng_chip_info;
++
++struct sof_intel_stream {
++	size_t posn_offset;
++};
++
++#endif
 -- 
 2.20.1
