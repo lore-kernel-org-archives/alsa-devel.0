@@ -1,13 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add xtensa support" to the asoc
-	tree
-Date: Sat, 27 Apr 2019 18:52:56 +0100 (BST)
-Message-ID: <20190427175256.E2E78441D3C@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-14-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add driver debug support." to the
+	asoc tree
+Date: Sat, 27 Apr 2019 18:53:03 +0100 (BST)
+Message-ID: <20190427175303.32C2E441D3E@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4259935795579732932=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-14-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,16 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============4259935795579732932==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: SOF: Add xtensa support
+   ASoC: SOF: Add driver debug support.
 
 has been applied to the asoc tree at
 
@@ -51,103 +48,40 @@ to this mail.
 Thanks,
 Mark
 
->From e657c18a01c85d2c4ec0e96d52be8ba42b956593 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:18 -0500
-Subject: [PATCH] ASoC: SOF: Add xtensa support
+>From 86b02f71ccf320727473448733503e6f9378102d Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:05:08 -0500
+Subject: [PATCH] ASoC: SOF: Add driver debug support.
 
-Add common directory for xtensa architecture
+Add debugFS files that can be used to expose DSP memories and
+and peripherals to userspace to assist with firmware debugging.
+
+Since we cannot rely on debugFS, errors are logged but don't stop
+execution.
+
+When a resource cannot be read in D3, it is optionally cached on
+suspend. Copying memories from IO will increase the suspend latency,
+this should only used in engineering builds w/ debug options. This
+part will have to be enhanced when support for D0ix states is
+provided, currently only D0 and D3 are supported.
 
 Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof/xtensa.h    |  44 +++++++++++
- sound/soc/sof/xtensa/Kconfig  |   2 +
- sound/soc/sof/xtensa/Makefile |   5 ++
- sound/soc/sof/xtensa/core.c   | 138 ++++++++++++++++++++++++++++++++++
- 4 files changed, 189 insertions(+)
- create mode 100644 include/sound/sof/xtensa.h
- create mode 100644 sound/soc/sof/xtensa/Kconfig
- create mode 100644 sound/soc/sof/xtensa/Makefile
- create mode 100644 sound/soc/sof/xtensa/core.c
+ sound/soc/sof/debug.c | 232 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 232 insertions(+)
+ create mode 100644 sound/soc/sof/debug.c
 
-diff --git a/include/sound/sof/xtensa.h b/include/sound/sof/xtensa.h
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
 new file mode 100644
-index 000000000000..a7189984000d
+index 000000000000..55f1d808dba0
 --- /dev/null
-+++ b/include/sound/sof/xtensa.h
-@@ -0,0 +1,44 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_XTENSA_H__
-+#define __INCLUDE_SOUND_SOF_XTENSA_H__
-+
-+#include <sound/sof/header.h>
-+
-+/*
-+ * Architecture specific debug
-+ */
-+
-+/* Xtensa Firmware Oops data */
-+struct sof_ipc_dsp_oops_xtensa {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t exccause;
-+	uint32_t excvaddr;
-+	uint32_t ps;
-+	uint32_t epc1;
-+	uint32_t epc2;
-+	uint32_t epc3;
-+	uint32_t epc4;
-+	uint32_t epc5;
-+	uint32_t epc6;
-+	uint32_t epc7;
-+	uint32_t eps2;
-+	uint32_t eps3;
-+	uint32_t eps4;
-+	uint32_t eps5;
-+	uint32_t eps6;
-+	uint32_t eps7;
-+	uint32_t depc;
-+	uint32_t intenable;
-+	uint32_t interrupt;
-+	uint32_t sar;
-+	uint32_t stack;
-+}  __packed;
-+
-+#endif
-diff --git a/sound/soc/sof/xtensa/Kconfig b/sound/soc/sof/xtensa/Kconfig
-new file mode 100644
-index 000000000000..8a9343b85146
---- /dev/null
-+++ b/sound/soc/sof/xtensa/Kconfig
-@@ -0,0 +1,2 @@
-+config SND_SOC_SOF_XTENSA
-+	tristate
-diff --git a/sound/soc/sof/xtensa/Makefile b/sound/soc/sof/xtensa/Makefile
-new file mode 100644
-index 000000000000..cc89c7472a38
---- /dev/null
-+++ b/sound/soc/sof/xtensa/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+
-+snd-sof-xtensa-dsp-objs := core.o
-+
-+obj-$(CONFIG_SND_SOC_SOF_XTENSA) += snd-sof-xtensa-dsp.o
-diff --git a/sound/soc/sof/xtensa/core.c b/sound/soc/sof/xtensa/core.c
-new file mode 100644
-index 000000000000..c3ad23a85b99
---- /dev/null
-+++ b/sound/soc/sof/xtensa/core.c
-@@ -0,0 +1,138 @@
++++ b/sound/soc/sof/debug.c
+@@ -0,0 +1,232 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -155,146 +89,230 @@ index 000000000000..c3ad23a85b99
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Author: Pan Xiuli <xiuli.pan@linux.intel.com>
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++// Generic debug routines used to export DSP MMIO and memories to userspace
++// for firmware debugging.
 +//
 +
-+#include <linux/module.h>
-+#include <sound/sof.h>
-+#include <sound/sof/xtensa.h>
-+#include "../sof-priv.h"
++#include <linux/debugfs.h>
++#include <linux/io.h>
++#include <linux/pm_runtime.h>
++#include "sof-priv.h"
++#include "ops.h"
 +
-+struct xtensa_exception_cause {
-+	u32 id;
-+	const char *msg;
-+	const char *description;
-+};
-+
-+/*
-+ * From 4.4.1.5 table 4-64 Exception Causes of Xtensa
-+ * Instruction Set Architecture (ISA) Reference Manual
-+ */
-+static const struct xtensa_exception_cause xtensa_exception_causes[] = {
-+	{0, "IllegalInstructionCause", "Illegal instruction"},
-+	{1, "SyscallCause", "SYSCALL instruction"},
-+	{2, "InstructionFetchErrorCause",
-+	"Processor internal physical address or data error during instruction fetch"},
-+	{3, "LoadStoreErrorCause",
-+	"Processor internal physical address or data error during load or store"},
-+	{4, "Level1InterruptCause",
-+	"Level-1 interrupt as indicated by set level-1 bits in the INTERRUPT register"},
-+	{5, "AllocaCause",
-+	"MOVSP instruction, if caller’s registers are not in the register file"},
-+	{6, "IntegerDivideByZeroCause",
-+	"QUOS, QUOU, REMS, or REMU divisor operand is zero"},
-+	{8, "PrivilegedCause",
-+	"Attempt to execute a privileged operation when CRING ? 0"},
-+	{9, "LoadStoreAlignmentCause", "Load or store to an unaligned address"},
-+	{12, "InstrPIFDataErrorCause",
-+	"PIF data error during instruction fetch"},
-+	{13, "LoadStorePIFDataErrorCause",
-+	"Synchronous PIF data error during LoadStore access"},
-+	{14, "InstrPIFAddrErrorCause",
-+	"PIF address error during instruction fetch"},
-+	{15, "LoadStorePIFAddrErrorCause",
-+	"Synchronous PIF address error during LoadStore access"},
-+	{16, "InstTLBMissCause", "Error during Instruction TLB refill"},
-+	{17, "InstTLBMultiHitCause",
-+	"Multiple instruction TLB entries matched"},
-+	{18, "InstFetchPrivilegeCause",
-+	"An instruction fetch referenced a virtual address at a ring level less than CRING"},
-+	{20, "InstFetchProhibitedCause",
-+	"An instruction fetch referenced a page mapped with an attribute that does not permit instruction fetch"},
-+	{24, "LoadStoreTLBMissCause",
-+	"Error during TLB refill for a load or store"},
-+	{25, "LoadStoreTLBMultiHitCause",
-+	"Multiple TLB entries matched for a load or store"},
-+	{26, "LoadStorePrivilegeCause",
-+	"A load or store referenced a virtual address at a ring level less than CRING"},
-+	{28, "LoadProhibitedCause",
-+	"A load referenced a page mapped with an attribute that does not permit loads"},
-+	{32, "Coprocessor0Disabled",
-+	"Coprocessor 0 instruction when cp0 disabled"},
-+	{33, "Coprocessor1Disabled",
-+	"Coprocessor 1 instruction when cp1 disabled"},
-+	{34, "Coprocessor2Disabled",
-+	"Coprocessor 2 instruction when cp2 disabled"},
-+	{35, "Coprocessor3Disabled",
-+	"Coprocessor 3 instruction when cp3 disabled"},
-+	{36, "Coprocessor4Disabled",
-+	"Coprocessor 4 instruction when cp4 disabled"},
-+	{37, "Coprocessor5Disabled",
-+	"Coprocessor 5 instruction when cp5 disabled"},
-+	{38, "Coprocessor6Disabled",
-+	"Coprocessor 6 instruction when cp6 disabled"},
-+	{39, "Coprocessor7Disabled",
-+	"Coprocessor 7 instruction when cp7 disabled"},
-+};
-+
-+/* only need xtensa atm */
-+static void xtensa_dsp_oops(struct snd_sof_dev *sdev, void *oops)
++static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
++				 size_t count, loff_t *ppos)
 +{
-+	struct sof_ipc_dsp_oops_xtensa *xoops = oops;
-+	int i;
++	struct snd_sof_dfsentry *dfse = file->private_data;
++	struct snd_sof_dev *sdev = dfse->sdev;
++	loff_t pos = *ppos;
++	size_t size_ret;
++	int skip = 0;
++	int size;
++	u8 *buf;
 +
-+	dev_err(sdev->dev, "error: DSP Firmware Oops\n");
-+	for (i = 0; i < ARRAY_SIZE(xtensa_exception_causes); i++) {
-+		if (xtensa_exception_causes[i].id == xoops->exccause) {
-+			dev_err(sdev->dev, "error: Exception Cause: %s, %s\n",
-+				xtensa_exception_causes[i].msg,
-+				xtensa_exception_causes[i].description);
++	size = dfse->size;
++
++	/* validate position & count */
++	if (pos < 0)
++		return -EINVAL;
++	if (pos >= size || !count)
++		return 0;
++	/* find the minimum. min() is not used since it adds sparse warnings */
++	if (count > size - pos)
++		count = size - pos;
++
++	/* align io read start to u32 multiple */
++	pos = ALIGN_DOWN(pos, 4);
++
++	/* intermediate buffer size must be u32 multiple */
++	size = ALIGN(count, 4);
++
++	/* if start position is unaligned, read extra u32 */
++	if (unlikely(pos != *ppos)) {
++		skip = *ppos - pos;
++		if (pos + size + 4 < dfse->size)
++			size += 4;
++	}
++
++	buf = kzalloc(size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	if (dfse->type == SOF_DFSENTRY_TYPE_IOMEM) {
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
++		/*
++		 * If the DSP is active: copy from IO.
++		 * If the DSP is suspended:
++		 *	- Copy from IO if the memory is always accessible.
++		 *	- Otherwise, copy from cached buffer.
++		 */
++		if (pm_runtime_active(sdev->dev) ||
++		    dfse->access_type == SOF_DEBUGFS_ACCESS_ALWAYS) {
++			memcpy_fromio(buf, dfse->io_mem + pos, size);
++		} else {
++			dev_info(sdev->dev,
++				 "Copying cached debugfs data\n");
++			memcpy(buf, dfse->cache_buf + pos, size);
 +		}
++#else
++		/* if the DSP is in D3 */
++		if (!pm_runtime_active(sdev->dev) &&
++		    dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY) {
++			dev_err(sdev->dev,
++				"error: debugfs entry %s cannot be read in DSP D3\n",
++				dfse->dfsentry->d_name.name);
++			kfree(buf);
++			return -EINVAL;
++		}
++
++		memcpy_fromio(buf, dfse->io_mem + pos, size);
++#endif
++	} else {
++		memcpy(buf, ((u8 *)(dfse->buf) + pos), size);
 +	}
-+	dev_err(sdev->dev, "EXCCAUSE 0x%8.8x EXCVADDR 0x%8.8x PS       0x%8.8x SAR     0x%8.8x\n",
-+		xoops->exccause, xoops->excvaddr, xoops->ps, xoops->sar);
-+	dev_err(sdev->dev, "EPC1     0x%8.8x EPC2     0x%8.8x EPC3     0x%8.8x EPC4    0x%8.8x",
-+		xoops->epc1, xoops->epc2, xoops->epc3, xoops->epc4);
-+	dev_err(sdev->dev, "EPC5     0x%8.8x EPC6     0x%8.8x EPC7     0x%8.8x DEPC    0x%8.8x",
-+		xoops->epc5, xoops->epc6, xoops->epc7, xoops->depc);
-+	dev_err(sdev->dev, "EPS2     0x%8.8x EPS3     0x%8.8x EPS4     0x%8.8x EPS5    0x%8.8x",
-+		xoops->eps2, xoops->eps3, xoops->eps4, xoops->eps5);
-+	dev_err(sdev->dev, "EPS6     0x%8.8x EPS7     0x%8.8x INTENABL 0x%8.8x INTERRU 0x%8.8x",
-+		xoops->eps6, xoops->eps7, xoops->intenable, xoops->interrupt);
++
++	/* copy to userspace */
++	size_ret = copy_to_user(buffer, buf + skip, count);
++
++	kfree(buf);
++
++	/* update count & position if copy succeeded */
++	if (size_ret)
++		return -EFAULT;
++
++	*ppos = pos + count;
++
++	return count;
 +}
 +
-+static void xtensa_stack(struct snd_sof_dev *sdev, void *oops, u32 *stack,
-+			 u32 stack_words)
-+{
-+	struct sof_ipc_dsp_oops_xtensa *xoops = oops;
-+	u32 stack_ptr = xoops->stack;
-+	/* 4 * 8chars + 3 ws + 1 terminating NUL */
-+	unsigned char buf[4 * 8 + 3 + 1];
-+	int i;
-+
-+	dev_err(sdev->dev, "stack dump from 0x%8.8x\n", stack_ptr);
-+
-+	/*
-+	 * example output:
-+	 * 0x0049fbb0: 8000f2d0 0049fc00 6f6c6c61 00632e63
-+	 */
-+	for (i = 0; i < stack_words; i += 4) {
-+		hex_dump_to_buffer(stack + i * 4, 16, 16, 4,
-+				   buf, sizeof(buf), false);
-+		dev_err(sdev->dev, "0x%08x: %s\n", stack_ptr + i, buf);
-+	}
-+}
-+
-+const struct sof_arch_ops sof_xtensa_arch_ops = {
-+	.dsp_oops = xtensa_dsp_oops,
-+	.dsp_stack = xtensa_stack,
++static const struct file_operations sof_dfs_fops = {
++	.open = simple_open,
++	.read = sof_dfsentry_read,
++	.llseek = default_llseek,
 +};
-+EXPORT_SYMBOL(sof_xtensa_arch_ops);
 +
-+MODULE_DESCRIPTION("SOF Xtensa DSP support");
-+MODULE_LICENSE("Dual BSD/GPL");
++/* create FS entry for debug files that can expose DSP memories, registers */
++int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
++			    void __iomem *base, size_t size,
++			    const char *name,
++			    enum sof_debugfs_access_type access_type)
++{
++	struct snd_sof_dfsentry *dfse;
++
++	if (!sdev)
++		return -EINVAL;
++
++	dfse = devm_kzalloc(sdev->dev, sizeof(*dfse), GFP_KERNEL);
++	if (!dfse)
++		return -ENOMEM;
++
++	dfse->type = SOF_DFSENTRY_TYPE_IOMEM;
++	dfse->io_mem = base;
++	dfse->size = size;
++	dfse->sdev = sdev;
++	dfse->access_type = access_type;
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
++	/*
++	 * allocate cache buffer that will be used to save the mem window
++	 * contents prior to suspend
++	 */
++	if (access_type == SOF_DEBUGFS_ACCESS_D0_ONLY) {
++		dfse->cache_buf = devm_kzalloc(sdev->dev, size, GFP_KERNEL);
++		if (!dfse->cache_buf)
++			return -ENOMEM;
++	}
++#endif
++
++	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
++					     dfse, &sof_dfs_fops);
++	if (!dfse->dfsentry) {
++		/* can't rely on debugfs, only log error and keep going */
++		dev_err(sdev->dev, "error: cannot create debugfs entry %s\n",
++			name);
++	} else {
++		/* add to dfsentry list */
++		list_add(&dfse->list, &sdev->dfsentry_list);
++
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_sof_debugfs_io_item);
++
++/* create FS entry for debug files to expose kernel memory */
++int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
++			     void *base, size_t size,
++			     const char *name)
++{
++	struct snd_sof_dfsentry *dfse;
++
++	if (!sdev)
++		return -EINVAL;
++
++	dfse = devm_kzalloc(sdev->dev, sizeof(*dfse), GFP_KERNEL);
++	if (!dfse)
++		return -ENOMEM;
++
++	dfse->type = SOF_DFSENTRY_TYPE_BUF;
++	dfse->buf = base;
++	dfse->size = size;
++	dfse->sdev = sdev;
++
++	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
++					     dfse, &sof_dfs_fops);
++	if (!dfse->dfsentry) {
++		/* can't rely on debugfs, only log error and keep going */
++		dev_err(sdev->dev, "error: cannot create debugfs entry %s\n",
++			name);
++	} else {
++		/* add to dfsentry list */
++		list_add(&dfse->list, &sdev->dfsentry_list);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_sof_debugfs_buf_item);
++
++int snd_sof_dbg_init(struct snd_sof_dev *sdev)
++{
++	const struct snd_sof_dsp_ops *ops = sof_ops(sdev);
++	const struct snd_sof_debugfs_map *map;
++	int i;
++	int err;
++
++	/* use "sof" as top level debugFS dir */
++	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
++	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
++		dev_err(sdev->dev, "error: failed to create debugfs directory\n");
++		return 0;
++	}
++
++	/* init dfsentry list */
++	INIT_LIST_HEAD(&sdev->dfsentry_list);
++
++	/* create debugFS files for platform specific MMIO/DSP memories */
++	for (i = 0; i < ops->debug_map_count; i++) {
++		map = &ops->debug_map[i];
++
++		err = snd_sof_debugfs_io_item(sdev, sdev->bar[map->bar] +
++					      map->offset, map->size,
++					      map->name, map->access_type);
++		/* errors are only due to memory allocation, not debugfs */
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
++
++void snd_sof_free_debug(struct snd_sof_dev *sdev)
++{
++	debugfs_remove_recursive(sdev->debugfs_root);
++}
++EXPORT_SYMBOL_GPL(snd_sof_free_debug);
 -- 
 2.20.1
-
-
---===============4259935795579732932==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4259935795579732932==--
