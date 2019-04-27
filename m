@@ -1,14 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add Nocodec machine driver
-	support" to the asoc tree
-Date: Sat, 27 Apr 2019 18:52:57 +0100 (BST)
-Message-ID: <20190427175257.7A046441D56@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-13-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add xtensa support" to the asoc
+	tree
+Date: Sat, 27 Apr 2019 18:52:56 +0100 (BST)
+Message-ID: <20190427175256.E2E78441D3C@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-14-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4259935795579732932=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-13-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-14-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,12 +17,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
+
+--===============4259935795579732932==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: SOF: Add Nocodec machine driver support
+   ASoC: SOF: Add xtensa support
 
 has been applied to the asoc tree at
 
@@ -48,54 +51,103 @@ to this mail.
 Thanks,
 Mark
 
->From 8017b8fd37bf5ed4e9c0596f83295b019ff1c287 Mon Sep 17 00:00:00 2001
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:17 -0500
-Subject: [PATCH] ASoC: SOF: Add Nocodec machine driver support
+>From e657c18a01c85d2c4ec0e96d52be8ba42b956593 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 12 Apr 2019 11:05:18 -0500
+Subject: [PATCH] ASoC: SOF: Add xtensa support
 
-Add a simple "fallback" machine driver that can be used to enable SOF
-on boards with no codec device. This machine driver can also be forced
-for debug/development.
+Add common directory for xtensa architecture
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof.h     |   6 +++
- sound/soc/sof/nocodec.c | 109 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 115 insertions(+)
- create mode 100644 sound/soc/sof/nocodec.c
+ include/sound/sof/xtensa.h    |  44 +++++++++++
+ sound/soc/sof/xtensa/Kconfig  |   2 +
+ sound/soc/sof/xtensa/Makefile |   5 ++
+ sound/soc/sof/xtensa/core.c   | 138 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 189 insertions(+)
+ create mode 100644 include/sound/sof/xtensa.h
+ create mode 100644 sound/soc/sof/xtensa/Kconfig
+ create mode 100644 sound/soc/sof/xtensa/Makefile
+ create mode 100644 sound/soc/sof/xtensa/core.c
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 54f65ec33a6c..4640566b54fe 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -12,6 +12,7 @@
- #define __INCLUDE_SOUND_SOF_H
- 
- #include <linux/pci.h>
-+#include <sound/soc.h>
- #include <sound/soc-acpi.h>
- 
- struct snd_sof_dsp_ops;
-@@ -91,4 +92,9 @@ struct sof_dev_desc {
- 	const struct sof_arch_ops *arch_ops;
- };
- 
-+int sof_nocodec_setup(struct device *dev,
-+		      struct snd_sof_pdata *sof_pdata,
-+		      struct snd_soc_acpi_mach *mach,
-+		      const struct sof_dev_desc *desc,
-+		      const struct snd_sof_dsp_ops *ops);
- #endif
-diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
+diff --git a/include/sound/sof/xtensa.h b/include/sound/sof/xtensa.h
 new file mode 100644
-index 000000000000..f84b4344dcc3
+index 000000000000..a7189984000d
 --- /dev/null
-+++ b/sound/soc/sof/nocodec.c
-@@ -0,0 +1,109 @@
++++ b/include/sound/sof/xtensa.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2018 Intel Corporation. All rights reserved.
++ */
++
++#ifndef __INCLUDE_SOUND_SOF_XTENSA_H__
++#define __INCLUDE_SOUND_SOF_XTENSA_H__
++
++#include <sound/sof/header.h>
++
++/*
++ * Architecture specific debug
++ */
++
++/* Xtensa Firmware Oops data */
++struct sof_ipc_dsp_oops_xtensa {
++	struct sof_ipc_hdr hdr;
++	uint32_t exccause;
++	uint32_t excvaddr;
++	uint32_t ps;
++	uint32_t epc1;
++	uint32_t epc2;
++	uint32_t epc3;
++	uint32_t epc4;
++	uint32_t epc5;
++	uint32_t epc6;
++	uint32_t epc7;
++	uint32_t eps2;
++	uint32_t eps3;
++	uint32_t eps4;
++	uint32_t eps5;
++	uint32_t eps6;
++	uint32_t eps7;
++	uint32_t depc;
++	uint32_t intenable;
++	uint32_t interrupt;
++	uint32_t sar;
++	uint32_t stack;
++}  __packed;
++
++#endif
+diff --git a/sound/soc/sof/xtensa/Kconfig b/sound/soc/sof/xtensa/Kconfig
+new file mode 100644
+index 000000000000..8a9343b85146
+--- /dev/null
++++ b/sound/soc/sof/xtensa/Kconfig
+@@ -0,0 +1,2 @@
++config SND_SOC_SOF_XTENSA
++	tristate
+diff --git a/sound/soc/sof/xtensa/Makefile b/sound/soc/sof/xtensa/Makefile
+new file mode 100644
+index 000000000000..cc89c7472a38
+--- /dev/null
++++ b/sound/soc/sof/xtensa/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++
++snd-sof-xtensa-dsp-objs := core.o
++
++obj-$(CONFIG_SND_SOC_SOF_XTENSA) += snd-sof-xtensa-dsp.o
+diff --git a/sound/soc/sof/xtensa/core.c b/sound/soc/sof/xtensa/core.c
+new file mode 100644
+index 000000000000..c3ad23a85b99
+--- /dev/null
++++ b/sound/soc/sof/xtensa/core.c
+@@ -0,0 +1,138 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -103,107 +155,146 @@ index 000000000000..f84b4344dcc3
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++// Author: Pan Xiuli <xiuli.pan@linux.intel.com>
 +//
 +
 +#include <linux/module.h>
 +#include <sound/sof.h>
-+#include "sof-priv.h"
++#include <sound/sof/xtensa.h>
++#include "../sof-priv.h"
 +
-+static struct snd_soc_card sof_nocodec_card = {
-+	.name = "nocodec", /* the sof- prefix is added by the core */
++struct xtensa_exception_cause {
++	u32 id;
++	const char *msg;
++	const char *description;
 +};
 +
-+static int sof_nocodec_bes_setup(struct device *dev,
-+				 const struct snd_sof_dsp_ops *ops,
-+				 struct snd_soc_dai_link *links,
-+				 int link_num, struct snd_soc_card *card)
++/*
++ * From 4.4.1.5 table 4-64 Exception Causes of Xtensa
++ * Instruction Set Architecture (ISA) Reference Manual
++ */
++static const struct xtensa_exception_cause xtensa_exception_causes[] = {
++	{0, "IllegalInstructionCause", "Illegal instruction"},
++	{1, "SyscallCause", "SYSCALL instruction"},
++	{2, "InstructionFetchErrorCause",
++	"Processor internal physical address or data error during instruction fetch"},
++	{3, "LoadStoreErrorCause",
++	"Processor internal physical address or data error during load or store"},
++	{4, "Level1InterruptCause",
++	"Level-1 interrupt as indicated by set level-1 bits in the INTERRUPT register"},
++	{5, "AllocaCause",
++	"MOVSP instruction, if caller’s registers are not in the register file"},
++	{6, "IntegerDivideByZeroCause",
++	"QUOS, QUOU, REMS, or REMU divisor operand is zero"},
++	{8, "PrivilegedCause",
++	"Attempt to execute a privileged operation when CRING ? 0"},
++	{9, "LoadStoreAlignmentCause", "Load or store to an unaligned address"},
++	{12, "InstrPIFDataErrorCause",
++	"PIF data error during instruction fetch"},
++	{13, "LoadStorePIFDataErrorCause",
++	"Synchronous PIF data error during LoadStore access"},
++	{14, "InstrPIFAddrErrorCause",
++	"PIF address error during instruction fetch"},
++	{15, "LoadStorePIFAddrErrorCause",
++	"Synchronous PIF address error during LoadStore access"},
++	{16, "InstTLBMissCause", "Error during Instruction TLB refill"},
++	{17, "InstTLBMultiHitCause",
++	"Multiple instruction TLB entries matched"},
++	{18, "InstFetchPrivilegeCause",
++	"An instruction fetch referenced a virtual address at a ring level less than CRING"},
++	{20, "InstFetchProhibitedCause",
++	"An instruction fetch referenced a page mapped with an attribute that does not permit instruction fetch"},
++	{24, "LoadStoreTLBMissCause",
++	"Error during TLB refill for a load or store"},
++	{25, "LoadStoreTLBMultiHitCause",
++	"Multiple TLB entries matched for a load or store"},
++	{26, "LoadStorePrivilegeCause",
++	"A load or store referenced a virtual address at a ring level less than CRING"},
++	{28, "LoadProhibitedCause",
++	"A load referenced a page mapped with an attribute that does not permit loads"},
++	{32, "Coprocessor0Disabled",
++	"Coprocessor 0 instruction when cp0 disabled"},
++	{33, "Coprocessor1Disabled",
++	"Coprocessor 1 instruction when cp1 disabled"},
++	{34, "Coprocessor2Disabled",
++	"Coprocessor 2 instruction when cp2 disabled"},
++	{35, "Coprocessor3Disabled",
++	"Coprocessor 3 instruction when cp3 disabled"},
++	{36, "Coprocessor4Disabled",
++	"Coprocessor 4 instruction when cp4 disabled"},
++	{37, "Coprocessor5Disabled",
++	"Coprocessor 5 instruction when cp5 disabled"},
++	{38, "Coprocessor6Disabled",
++	"Coprocessor 6 instruction when cp6 disabled"},
++	{39, "Coprocessor7Disabled",
++	"Coprocessor 7 instruction when cp7 disabled"},
++};
++
++/* only need xtensa atm */
++static void xtensa_dsp_oops(struct snd_sof_dev *sdev, void *oops)
 +{
++	struct sof_ipc_dsp_oops_xtensa *xoops = oops;
 +	int i;
 +
-+	if (!ops || !links || !card)
-+		return -EINVAL;
-+
-+	/* set up BE dai_links */
-+	for (i = 0; i < link_num; i++) {
-+		links[i].name = devm_kasprintf(dev, GFP_KERNEL,
-+					       "NoCodec-%d", i);
-+		if (!links[i].name)
-+			return -ENOMEM;
-+
-+		links[i].id = i;
-+		links[i].no_pcm = 1;
-+		links[i].cpu_dai_name = ops->drv[i].name;
-+		links[i].platform_name = dev_name(dev);
-+		links[i].codec_dai_name = "snd-soc-dummy-dai";
-+		links[i].codec_name = "snd-soc-dummy";
-+		links[i].dpcm_playback = 1;
-+		links[i].dpcm_capture = 1;
++	dev_err(sdev->dev, "error: DSP Firmware Oops\n");
++	for (i = 0; i < ARRAY_SIZE(xtensa_exception_causes); i++) {
++		if (xtensa_exception_causes[i].id == xoops->exccause) {
++			dev_err(sdev->dev, "error: Exception Cause: %s, %s\n",
++				xtensa_exception_causes[i].msg,
++				xtensa_exception_causes[i].description);
++		}
 +	}
-+
-+	card->dai_link = links;
-+	card->num_links = link_num;
-+
-+	return 0;
++	dev_err(sdev->dev, "EXCCAUSE 0x%8.8x EXCVADDR 0x%8.8x PS       0x%8.8x SAR     0x%8.8x\n",
++		xoops->exccause, xoops->excvaddr, xoops->ps, xoops->sar);
++	dev_err(sdev->dev, "EPC1     0x%8.8x EPC2     0x%8.8x EPC3     0x%8.8x EPC4    0x%8.8x",
++		xoops->epc1, xoops->epc2, xoops->epc3, xoops->epc4);
++	dev_err(sdev->dev, "EPC5     0x%8.8x EPC6     0x%8.8x EPC7     0x%8.8x DEPC    0x%8.8x",
++		xoops->epc5, xoops->epc6, xoops->epc7, xoops->depc);
++	dev_err(sdev->dev, "EPS2     0x%8.8x EPS3     0x%8.8x EPS4     0x%8.8x EPS5    0x%8.8x",
++		xoops->eps2, xoops->eps3, xoops->eps4, xoops->eps5);
++	dev_err(sdev->dev, "EPS6     0x%8.8x EPS7     0x%8.8x INTENABL 0x%8.8x INTERRU 0x%8.8x",
++		xoops->eps6, xoops->eps7, xoops->intenable, xoops->interrupt);
 +}
 +
-+int sof_nocodec_setup(struct device *dev,
-+		      struct snd_sof_pdata *sof_pdata,
-+		      struct snd_soc_acpi_mach *mach,
-+		      const struct sof_dev_desc *desc,
-+		      const struct snd_sof_dsp_ops *ops)
++static void xtensa_stack(struct snd_sof_dev *sdev, void *oops, u32 *stack,
++			 u32 stack_words)
 +{
-+	struct snd_soc_dai_link *links;
-+	int ret;
++	struct sof_ipc_dsp_oops_xtensa *xoops = oops;
++	u32 stack_ptr = xoops->stack;
++	/* 4 * 8chars + 3 ws + 1 terminating NUL */
++	unsigned char buf[4 * 8 + 3 + 1];
++	int i;
 +
-+	if (!mach)
-+		return -EINVAL;
++	dev_err(sdev->dev, "stack dump from 0x%8.8x\n", stack_ptr);
 +
-+	sof_pdata->drv_name = "sof-nocodec";
-+
-+	mach->drv_name = "sof-nocodec";
-+	sof_pdata->fw_filename = desc->nocodec_fw_filename;
-+	sof_pdata->tplg_filename = desc->nocodec_tplg_filename;
-+
-+	/* create dummy BE dai_links */
-+	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
-+			     ops->num_drv, GFP_KERNEL);
-+	if (!links)
-+		return -ENOMEM;
-+
-+	ret = sof_nocodec_bes_setup(dev, ops, links, ops->num_drv,
-+				    &sof_nocodec_card);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sof_nocodec_setup);
-+
-+static int sof_nocodec_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &sof_nocodec_card;
-+
-+	card->dev = &pdev->dev;
-+
-+	return devm_snd_soc_register_card(&pdev->dev, card);
++	/*
++	 * example output:
++	 * 0x0049fbb0: 8000f2d0 0049fc00 6f6c6c61 00632e63
++	 */
++	for (i = 0; i < stack_words; i += 4) {
++		hex_dump_to_buffer(stack + i * 4, 16, 16, 4,
++				   buf, sizeof(buf), false);
++		dev_err(sdev->dev, "0x%08x: %s\n", stack_ptr + i, buf);
++	}
 +}
 +
-+static int sof_nocodec_remove(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct platform_driver sof_nocodec_audio = {
-+	.probe = sof_nocodec_probe,
-+	.remove = sof_nocodec_remove,
-+	.driver = {
-+		.name = "sof-nocodec",
-+		.pm = &snd_soc_pm_ops,
-+	},
++const struct sof_arch_ops sof_xtensa_arch_ops = {
++	.dsp_oops = xtensa_dsp_oops,
++	.dsp_stack = xtensa_stack,
 +};
-+module_platform_driver(sof_nocodec_audio)
++EXPORT_SYMBOL(sof_xtensa_arch_ops);
 +
-+MODULE_DESCRIPTION("ASoC sof nocodec");
-+MODULE_AUTHOR("Liam Girdwood");
++MODULE_DESCRIPTION("SOF Xtensa DSP support");
 +MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_ALIAS("platform:sof-nocodec");
 -- 
 2.20.1
+
+
+--===============4259935795579732932==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4259935795579732932==--
