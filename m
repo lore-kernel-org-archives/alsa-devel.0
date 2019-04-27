@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add ACPI device support" to the
-	asoc tree
+Subject: Applied "ASoC: SOF: Intel: Add Intel specific HDA IPC
+	mechanisms." to the asoc tree
 Date: Sat, 27 Apr 2019 18:52:46 +0100 (BST)
-Message-ID: <20190427175246.52C0D441D59@finisterre.ee.mobilebroadband>
-References: <20190412160904.30418-17-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190427175246.DD388441D41@finisterre.ee.mobilebroadband>
+References: <20190412160904.30418-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160904.30418-17-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160904.30418-8-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,12 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add ACPI device support
+   ASoC: SOF: Intel: Add Intel specific HDA IPC mechanisms.
 
 has been applied to the asoc tree at
 
@@ -48,28 +48,29 @@ to this mail.
 Thanks,
 Mark
 
->From cd679898cd323d958b35c014f97c575b4abb8ce2 Mon Sep 17 00:00:00 2001
+>From 6e9cde974863dc9d9c6cdb178f625e410c5be3d0 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:08:59 -0500
-Subject: [PATCH] ASoC: SOF: Add ACPI device support
+Date: Fri, 12 Apr 2019 11:08:50 -0500
+Subject: [PATCH] ASoC: SOF: Intel: Add Intel specific HDA IPC mechanisms.
 
-Add support ACPI based SOF DSP devices.
+Add HDA specific IPC mechanism for Intel DSP HW.
 
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-acpi-dev.c | 312 +++++++++++++++++++++++++++++++++++
- 1 file changed, 312 insertions(+)
- create mode 100644 sound/soc/sof/sof-acpi-dev.c
+ sound/soc/sof/intel/hda-ipc.c | 458 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 458 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-ipc.c
 
-diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
 new file mode 100644
-index 000000000000..e9cf69874b5b
+index 000000000000..a938f568dbb1
 --- /dev/null
-+++ b/sound/soc/sof/sof-acpi-dev.c
-@@ -0,0 +1,312 @@
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -0,0 +1,458 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -77,310 +78,456 @@ index 000000000000..e9cf69874b5b
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//	    Rander Wang <rander.wang@intel.com>
++//          Keyon Jie <yang.jie@linux.intel.com>
 +//
 +
-+#include <linux/acpi.h>
-+#include <linux/firmware.h>
-+#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+#include <sound/sof.h>
-+#ifdef CONFIG_X86
-+#include <asm/iosf_mbi.h>
-+#endif
++/*
++ * Hardware interface for generic Intel audio DSP HDA IP
++ */
 +
-+#include "ops.h"
++#include "../ops.h"
++#include "hda.h"
 +
-+/* platform specific devices */
-+#include "intel/shim.h"
-+
-+static char *fw_path;
-+module_param(fw_path, charp, 0444);
-+MODULE_PARM_DESC(fw_path, "alternate path for SOF firmware.");
-+
-+static char *tplg_path;
-+module_param(tplg_path, charp, 0444);
-+MODULE_PARM_DESC(tplg_path, "alternate path for SOF topology.");
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
-+static const struct sof_dev_desc sof_acpi_haswell_desc = {
-+	.machines = snd_soc_acpi_intel_haswell_machines,
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_imr_base = -1,
-+	.irqindex_host_ipc = 0,
-+	.chip_info = &hsw_chip_info,
-+	.default_fw_path = "intel/sof",
-+	.default_tplg_path = "intel/sof-tplg",
-+	.nocodec_fw_filename = "sof-hsw.ri",
-+	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
-+	.ops = &sof_hsw_ops,
-+	.arch_ops = &sof_xtensa_arch_ops
-+};
-+#endif
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
-+static const struct sof_dev_desc sof_acpi_broadwell_desc = {
-+	.machines = snd_soc_acpi_intel_broadwell_machines,
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_imr_base = -1,
-+	.irqindex_host_ipc = 0,
-+	.chip_info = &bdw_chip_info,
-+	.default_fw_path = "intel/sof",
-+	.default_tplg_path = "intel/sof-tplg",
-+	.nocodec_fw_filename = "sof-bdw.ri",
-+	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
-+	.ops = &sof_bdw_ops,
-+	.arch_ops = &sof_xtensa_arch_ops
-+};
-+#endif
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
-+
-+/* BYTCR uses different IRQ index */
-+static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
-+	.machines = snd_soc_acpi_intel_baytrail_machines,
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_imr_base = 2,
-+	.irqindex_host_ipc = 0,
-+	.chip_info = &byt_chip_info,
-+	.default_fw_path = "intel/sof",
-+	.default_tplg_path = "intel/sof-tplg",
-+	.nocodec_fw_filename = "sof-byt.ri",
-+	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
-+	.ops = &sof_byt_ops,
-+	.arch_ops = &sof_xtensa_arch_ops
-+};
-+
-+static const struct sof_dev_desc sof_acpi_baytrail_desc = {
-+	.machines = snd_soc_acpi_intel_baytrail_machines,
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_imr_base = 2,
-+	.irqindex_host_ipc = 5,
-+	.chip_info = &byt_chip_info,
-+	.default_fw_path = "intel/sof",
-+	.default_tplg_path = "intel/sof-tplg",
-+	.nocodec_fw_filename = "sof-byt.ri",
-+	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
-+	.ops = &sof_byt_ops,
-+	.arch_ops = &sof_xtensa_arch_ops
-+};
-+
-+#ifdef CONFIG_X86 /* TODO: move this to common helper */
-+
-+static bool is_byt_cr(struct platform_device *pdev)
++static void hda_dsp_ipc_host_done(struct snd_sof_dev *sdev)
 +{
-+	struct device *dev = &pdev->dev;
-+	int status;
++	/*
++	 * tell DSP cmd is done - clear busy
++	 * interrupt and send reply msg to dsp
++	 */
++	snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++				       HDA_DSP_REG_HIPCT,
++				       HDA_DSP_REG_HIPCT_BUSY,
++				       HDA_DSP_REG_HIPCT_BUSY);
 +
-+	if (iosf_mbi_available()) {
-+		u32 bios_status;
-+		status = iosf_mbi_read(BT_MBI_UNIT_PMC, /* 0x04 PUNIT */
-+				       MBI_REG_READ, /* 0x10 */
-+				       0x006, /* BIOS_CONFIG */
-+				       &bios_status);
-+
-+		if (status) {
-+			dev_err(dev, "could not read PUNIT BIOS_CONFIG\n");
-+		} else {
-+			/* bits 26:27 mirror PMIC options */
-+			bios_status = (bios_status >> 26) & 3;
-+
-+			if (bios_status == 1 || bios_status == 3) {
-+				dev_info(dev, "Detected Baytrail-CR platform\n");
-+				return true;
-+			}
-+
-+			dev_info(dev, "BYT-CR not detected\n");
-+		}
-+	} else {
-+		dev_info(dev, "IOSF_MBI not available, no BYT-CR detection\n");
-+	}
-+
-+	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
-+		/*
-+		 * Some devices detected as BYT-T have only a single IRQ listed,
-+		 * causing platform_get_irq with index 5 to return -ENXIO.
-+		 * The correct IRQ in this case is at index 0, as on BYT-CR.
-+		 */
-+		dev_info(dev, "Falling back to Baytrail-CR platform\n");
-+		return true;
-+	}
-+
-+	return false;
++	/* unmask BUSY interrupt */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++				HDA_DSP_REG_HIPCCTL,
++				HDA_DSP_REG_HIPCCTL_BUSY,
++				HDA_DSP_REG_HIPCCTL_BUSY);
 +}
-+#else
-+static int is_byt_cr(struct platform_device *pdev)
++
++static void hda_dsp_ipc_dsp_done(struct snd_sof_dev *sdev)
 +{
++	/*
++	 * set DONE bit - tell DSP we have received the reply msg
++	 * from DSP, and processed it, don't send more reply to host
++	 */
++	snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++				       HDA_DSP_REG_HIPCIE,
++				       HDA_DSP_REG_HIPCIE_DONE,
++				       HDA_DSP_REG_HIPCIE_DONE);
++
++	/* unmask Done interrupt */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++				HDA_DSP_REG_HIPCCTL,
++				HDA_DSP_REG_HIPCCTL_DONE,
++				HDA_DSP_REG_HIPCCTL_DONE);
++}
++
++int hda_dsp_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
++{
++	u32 cmd = msg->header;
++
++	/* send IPC message to DSP */
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++	snd_sof_dsp_write(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI,
++			  cmd | HDA_DSP_REG_HIPCI_BUSY);
++
 +	return 0;
 +}
-+#endif
 +
-+static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
-+	.machines = snd_soc_acpi_intel_cherrytrail_machines,
-+	.resindex_lpe_base = 0,
-+	.resindex_pcicfg_base = 1,
-+	.resindex_imr_base = 2,
-+	.irqindex_host_ipc = 5,
-+	.chip_info = &cht_chip_info,
-+	.default_fw_path = "intel/sof",
-+	.default_tplg_path = "intel/sof-tplg",
-+	.nocodec_fw_filename = "sof-cht.ri",
-+	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
-+	.ops = &sof_cht_ops,
-+	.arch_ops = &sof_xtensa_arch_ops
-+};
-+
-+#endif
-+
-+static const struct dev_pm_ops sof_acpi_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
-+	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
-+			   NULL)
-+};
-+
-+static void sof_acpi_probe_complete(struct device *dev)
++void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
 +{
-+	/* allow runtime_pm */
-+	pm_runtime_set_autosuspend_delay(dev, SND_SOF_SUSPEND_DELAY_MS);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_enable(dev);
++	struct snd_sof_ipc_msg *msg = sdev->msg;
++	struct sof_ipc_reply reply;
++	struct sof_ipc_cmd_hdr *hdr;
++	unsigned long flags;
++	int ret = 0;
++
++	/*
++	 * Sometimes, there is unexpected reply ipc arriving. The reply
++	 * ipc belongs to none of the ipcs sent from driver.
++	 * In this case, the driver must ignore the ipc.
++	 */
++	if (!msg) {
++		dev_warn(sdev->dev, "unexpected ipc interrupt raised!\n");
++		return;
++	}
++	spin_lock_irqsave(&sdev->ipc_lock, flags);
++
++	hdr = msg->msg_data;
++	if (hdr->cmd == (SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CTX_SAVE)) {
++		/*
++		 * memory windows are powered off before sending IPC reply,
++		 * so we can't read the mailbox for CTX_SAVE reply.
++		 */
++		reply.error = 0;
++		reply.hdr.cmd = SOF_IPC_GLB_REPLY;
++		reply.hdr.size = sizeof(reply);
++		memcpy(msg->reply_data, &reply, sizeof(reply));
++		goto out;
++	}
++
++	/* get IPC reply from DSP in the mailbox */
++	sof_mailbox_read(sdev, sdev->host_box.offset, &reply,
++			 sizeof(reply));
++
++	if (reply.error < 0) {
++		memcpy(msg->reply_data, &reply, sizeof(reply));
++		ret = reply.error;
++	} else {
++		/* reply correct size ? */
++		if (reply.hdr.size != msg->reply_size) {
++			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
++				msg->reply_size, reply.hdr.size);
++			ret = -EINVAL;
++		}
++
++		/* read the message */
++		if (msg->reply_size > 0)
++			sof_mailbox_read(sdev, sdev->host_box.offset,
++					 msg->reply_data, msg->reply_size);
++	}
++
++out:
++	msg->reply_error = ret;
++
++	spin_unlock_irqrestore(&sdev->ipc_lock, flags);
 +}
 +
-+static int sof_acpi_probe(struct platform_device *pdev)
++static bool hda_dsp_ipc_is_sof(uint32_t msg)
 +{
-+	struct device *dev = &pdev->dev;
-+	const struct sof_dev_desc *desc;
-+	struct snd_soc_acpi_mach *mach;
-+	struct snd_sof_pdata *sof_pdata;
-+	const struct snd_sof_dsp_ops *ops;
-+	int ret;
++	return (msg & (HDA_DSP_IPC_PURGE_FW | 0xf << 9)) != msg ||
++		(msg & HDA_DSP_IPC_PURGE_FW) != HDA_DSP_IPC_PURGE_FW;
++}
 +
-+	dev_dbg(&pdev->dev, "ACPI DSP detected");
++/* IPC handler thread */
++irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
++{
++	struct snd_sof_dev *sdev = context;
++	irqreturn_t ret = IRQ_NONE;
++	u32 hipci;
++	u32 hipcie;
++	u32 hipct;
++	u32 hipcte;
++	u32 hipcctl;
++	u32 msg;
++	u32 msg_ext;
 +
-+	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
-+	if (!sof_pdata)
-+		return -ENOMEM;
++	/* here we handle IPC interrupts only */
++	if (!(sdev->irq_status & HDA_DSP_ADSPIS_IPC))
++		return IRQ_NONE;
 +
-+	desc = device_get_match_data(dev);
-+	if (!desc)
-+		return -ENODEV;
++	/* read IPC status */
++	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++				  HDA_DSP_REG_HIPCIE);
++	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
++	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
-+	if (desc == &sof_acpi_baytrail_desc && is_byt_cr(pdev))
-+		desc = &sof_acpi_baytrailcr_desc;
-+#endif
++	/* reenable IPC interrupt */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
++				HDA_DSP_ADSPIC_IPC, HDA_DSP_ADSPIC_IPC);
 +
-+	/* get ops for platform */
-+	ops = desc->ops;
-+	if (!ops) {
-+		dev_err(dev, "error: no matching ACPI descriptor ops\n");
-+		return -ENODEV;
++	/* is this a reply message from the DSP */
++	if (hipcie & HDA_DSP_REG_HIPCIE_DONE &&
++	    hipcctl & HDA_DSP_REG_HIPCCTL_DONE) {
++		hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 HDA_DSP_REG_HIPCI);
++		msg = hipci & HDA_DSP_REG_HIPCI_MSG_MASK;
++		msg_ext = hipcie & HDA_DSP_REG_HIPCIE_MSG_MASK;
++
++		dev_vdbg(sdev->dev,
++			 "ipc: firmware response, msg:0x%x, msg_ext:0x%x\n",
++			 msg, msg_ext);
++
++		/* mask Done interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					HDA_DSP_REG_HIPCCTL,
++					HDA_DSP_REG_HIPCCTL_DONE, 0);
++
++		/* handle immediate reply from DSP core - ignore ROM messages */
++		if (hda_dsp_ipc_is_sof(msg)) {
++			hda_dsp_ipc_get_reply(sdev);
++			snd_sof_ipc_reply(sdev, msg);
++		}
++
++		/* wake up sleeper if we are loading code */
++		if (sdev->code_loading)	{
++			sdev->code_loading = 0;
++			wake_up(&sdev->waitq);
++		}
++
++		/* set the done bit */
++		hda_dsp_ipc_dsp_done(sdev);
++
++		ret = IRQ_HANDLED;
 +	}
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_FORCE_NOCODEC_MODE)
-+	/* force nocodec mode */
-+	dev_warn(dev, "Force to use nocodec mode\n");
-+	mach = devm_kzalloc(dev, sizeof(*mach), GFP_KERNEL);
-+	if (!mach)
-+		return -ENOMEM;
-+	ret = sof_nocodec_setup(dev, sof_pdata, mach, desc, ops);
-+	if (ret < 0)
-+		return ret;
-+#else
-+	/* find machine */
-+	mach = snd_soc_acpi_find_machine(desc->machines);
-+	if (!mach) {
-+		dev_warn(dev, "warning: No matching ASoC machine driver found\n");
-+	} else {
-+		sof_pdata->fw_filename = mach->sof_fw_filename;
-+		sof_pdata->tplg_filename = mach->sof_tplg_filename;
++	/* is this a new message from DSP */
++	if (hipct & HDA_DSP_REG_HIPCT_BUSY &&
++	    hipcctl & HDA_DSP_REG_HIPCCTL_BUSY) {
++
++		hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					  HDA_DSP_REG_HIPCTE);
++		msg = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
++		msg_ext = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
++
++		dev_vdbg(sdev->dev,
++			 "ipc: firmware initiated, msg:0x%x, msg_ext:0x%x\n",
++			 msg, msg_ext);
++
++		/* mask BUSY interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					HDA_DSP_REG_HIPCCTL,
++					HDA_DSP_REG_HIPCCTL_BUSY, 0);
++
++		/* handle messages from DSP */
++		if ((hipct & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
++			/* this is a PANIC message !! */
++			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext));
++		} else {
++			/* normal message - process normally */
++			snd_sof_ipc_msgs_rx(sdev);
++		}
++
++		hda_dsp_ipc_host_done(sdev);
++
++		ret = IRQ_HANDLED;
 +	}
-+#endif
-+
-+	if (mach) {
-+		mach->mach_params.platform = dev_name(dev);
-+		mach->mach_params.acpi_ipc_irq_index = desc->irqindex_host_ipc;
-+	}
-+
-+	sof_pdata->machine = mach;
-+	sof_pdata->desc = desc;
-+	sof_pdata->dev = &pdev->dev;
-+	sof_pdata->platform = dev_name(dev);
-+
-+	/* alternate fw and tplg filenames ? */
-+	if (fw_path)
-+		sof_pdata->fw_filename_prefix = fw_path;
-+	else
-+		sof_pdata->fw_filename_prefix =
-+			sof_pdata->desc->default_fw_path;
-+
-+	if (tplg_path)
-+		sof_pdata->tplg_filename_prefix = tplg_path;
-+	else
-+		sof_pdata->tplg_filename_prefix =
-+			sof_pdata->desc->default_tplg_path;
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
-+	/* set callback to enable runtime_pm */
-+	sof_pdata->sof_probe_complete = sof_acpi_probe_complete;
-+#endif
-+	/* call sof helper for DSP hardware probe */
-+	ret = snd_sof_device_probe(dev, sof_pdata);
-+	if (ret) {
-+		dev_err(dev, "error: failed to probe DSP hardware!\n");
-+		return ret;
-+	}
-+
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
-+	sof_acpi_probe_complete(dev);
-+#endif
 +
 +	return ret;
 +}
 +
-+static int sof_acpi_remove(struct platform_device *pdev)
++/* is this IRQ for ADSP ? - we only care about IPC here */
++irqreturn_t hda_dsp_ipc_irq_handler(int irq, void *context)
 +{
-+	pm_runtime_disable(&pdev->dev);
++	struct snd_sof_dev *sdev = context;
++	int ret = IRQ_NONE;
 +
-+	/* call sof helper for DSP hardware remove */
-+	snd_sof_device_remove(&pdev->dev);
++	spin_lock(&sdev->hw_lock);
++
++	/* store status */
++	sdev->irq_status = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					    HDA_DSP_REG_ADSPIS);
++
++	/* invalid message ? */
++	if (sdev->irq_status == 0xffffffff)
++		goto out;
++
++	/* IPC message ? */
++	if (sdev->irq_status & HDA_DSP_ADSPIS_IPC) {
++		/* disable IPC interrupt */
++		snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
++						 HDA_DSP_REG_ADSPIC,
++						 HDA_DSP_ADSPIC_IPC, 0);
++		ret = IRQ_WAKE_THREAD;
++	}
++
++out:
++	spin_unlock(&sdev->hw_lock);
++	return ret;
++}
++
++/* IPC Firmware ready */
++
++static void ipc_get_windows(struct snd_sof_dev *sdev)
++{
++	struct sof_ipc_window_elem *elem;
++	u32 outbox_offset = 0;
++	u32 stream_offset = 0;
++	u32 inbox_offset = 0;
++	u32 outbox_size = 0;
++	u32 stream_size = 0;
++	u32 inbox_size = 0;
++	int i;
++
++	if (!sdev->info_window) {
++		dev_err(sdev->dev, "error: have no window info\n");
++		return;
++	}
++
++	for (i = 0; i < sdev->info_window->num_windows; i++) {
++		elem = &sdev->info_window->window[i];
++
++		switch (elem->type) {
++		case SOF_IPC_REGION_UPBOX:
++			inbox_offset =
++				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
++			inbox_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						inbox_offset,
++						elem->size, "inbox",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_DOWNBOX:
++			outbox_offset =
++				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
++			outbox_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						outbox_offset,
++						elem->size, "outbox",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_TRACE:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						elem->offset +
++						SRAM_WINDOW_OFFSET
++						(elem->id),
++						elem->size, "etrace",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_DEBUG:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						elem->offset +
++						SRAM_WINDOW_OFFSET
++						(elem->id),
++						elem->size, "debug",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_STREAM:
++			stream_offset =
++				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
++			stream_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						elem->offset +
++						SRAM_WINDOW_OFFSET
++						(elem->id),
++						elem->size, "stream",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_REGS:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						elem->offset +
++						SRAM_WINDOW_OFFSET
++						(elem->id),
++						elem->size, "regs",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_EXCEPTION:
++			sdev->dsp_oops_offset = elem->offset +
++						SRAM_WINDOW_OFFSET(elem->id);
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[HDA_DSP_BAR] +
++						elem->offset +
++						SRAM_WINDOW_OFFSET
++						(elem->id),
++						elem->size, "exception",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		default:
++			dev_err(sdev->dev, "error: get illegal window info\n");
++			return;
++		}
++	}
++
++	if (outbox_size == 0 || inbox_size == 0) {
++		dev_err(sdev->dev, "error: get illegal mailbox window\n");
++		return;
++	}
++
++	snd_sof_dsp_mailbox_init(sdev, inbox_offset, inbox_size,
++				 outbox_offset, outbox_size);
++	sdev->stream_box.offset = stream_offset;
++	sdev->stream_box.size = stream_size;
++
++	dev_dbg(sdev->dev, " mailbox upstream 0x%x - size 0x%x\n",
++		inbox_offset, inbox_size);
++	dev_dbg(sdev->dev, " mailbox downstream 0x%x - size 0x%x\n",
++		outbox_offset, outbox_size);
++	dev_dbg(sdev->dev, " stream region 0x%x - size 0x%x\n",
++		stream_offset, stream_size);
++}
++
++/* check for ABI compatibility and create memory windows on first boot */
++int hda_dsp_ipc_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
++{
++	struct sof_ipc_fw_ready *fw_ready = &sdev->fw_ready;
++	u32 offset;
++	int ret;
++
++	/* mailbox must be on 4k boundary */
++	offset = HDA_DSP_MBOX_UPLINK_OFFSET;
++
++	dev_dbg(sdev->dev, "ipc: DSP is ready 0x%8.8x offset 0x%x\n",
++		msg_id, offset);
++
++	/* no need to re-check version/ABI for subsequent boots */
++	if (!sdev->first_boot)
++		return 0;
++
++	/* copy data from the DSP FW ready offset */
++	sof_block_read(sdev, sdev->mmio_bar, offset, fw_ready,
++		       sizeof(*fw_ready));
++
++	/* make sure ABI version is compatible */
++	ret = snd_sof_ipc_valid(sdev);
++	if (ret < 0)
++		return ret;
++
++	/* now check for extended data */
++	snd_sof_fw_parse_ext_data(sdev, sdev->mmio_bar,
++				  HDA_DSP_MBOX_UPLINK_OFFSET +
++				  sizeof(struct sof_ipc_fw_ready));
++
++	ipc_get_windows(sdev);
 +
 +	return 0;
 +}
 +
-+static const struct acpi_device_id sof_acpi_match[] = {
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
-+	{ "INT33C8", (unsigned long)&sof_acpi_haswell_desc },
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
-+	{ "INT3438", (unsigned long)&sof_acpi_broadwell_desc },
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
-+	{ "80860F28", (unsigned long)&sof_acpi_baytrail_desc },
-+	{ "808622A8", (unsigned long)&sof_acpi_cherrytrail_desc },
-+#endif
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, sof_acpi_match);
++void hda_ipc_msg_data(struct snd_sof_dev *sdev,
++		      struct snd_pcm_substream *substream,
++		      void *p, size_t sz)
++{
++	if (!substream || !sdev->stream_box.size) {
++		sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
++	} else {
++		struct hdac_stream *hstream = substream->runtime->private_data;
++		struct sof_intel_hda_stream *hda_stream;
 +
-+/* acpi_driver definition */
-+static struct platform_driver snd_sof_acpi_driver = {
-+	.probe = sof_acpi_probe,
-+	.remove = sof_acpi_remove,
-+	.driver = {
-+		.name = "sof-audio-acpi",
-+		.pm = &sof_acpi_pm,
-+		.acpi_match_table = ACPI_PTR(sof_acpi_match),
-+	},
-+};
-+module_platform_driver(snd_sof_acpi_driver);
++		hda_stream = container_of(hstream,
++					  struct sof_intel_hda_stream,
++					  hda_stream.hstream);
 +
-+MODULE_LICENSE("Dual BSD/GPL");
++		/* The stream might already be closed */
++		if (hstream)
++			sof_mailbox_read(sdev, hda_stream->stream.posn_offset,
++					 p, sz);
++	}
++}
++
++int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
++		       struct snd_pcm_substream *substream,
++		       const struct sof_ipc_pcm_params_reply *reply)
++{
++	struct hdac_stream *hstream = substream->runtime->private_data;
++	struct sof_intel_hda_stream *hda_stream;
++	/* validate offset */
++	size_t posn_offset = reply->posn_offset;
++
++	hda_stream = container_of(hstream, struct sof_intel_hda_stream,
++				  hda_stream.hstream);
++
++	/* check for unaligned offset or overflow */
++	if (posn_offset > sdev->stream_box.size ||
++	    posn_offset % sizeof(struct sof_ipc_stream_posn) != 0)
++		return -EINVAL;
++
++	hda_stream->stream.posn_offset = sdev->stream_box.offset + posn_offset;
++
++	dev_dbg(sdev->dev, "pcm: stream dir %d, posn mailbox offset is %zu",
++		substream->stream, hda_stream->stream.posn_offset);
++
++	return 0;
++}
 -- 
 2.20.1
