@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add PCM operations support" to the
-	asoc tree
-Date: Sat, 27 Apr 2019 18:53:01 +0100 (BST)
-Message-ID: <20190427175301.EDA93441D3C@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-6-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add firmware loader support" to
+	the asoc tree
+Date: Sat, 27 Apr 2019 18:52:59 +0100 (BST)
+Message-ID: <20190427175259.3FDC3441D3F@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-10-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-6-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-10-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,7 +23,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add PCM operations support
+   ASoC: SOF: Add firmware loader support
 
 has been applied to the asoc tree at
 
@@ -48,34 +48,29 @@ to this mail.
 Thanks,
 Mark
 
->From 868bd00f495514630a52161052d2fe155af599fe Mon Sep 17 00:00:00 2001
+>From 70cd52544b95d02f8b20fadccb7400ce68a2cb84 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:10 -0500
-Subject: [PATCH] ASoC: SOF: Add PCM operations support
+Date: Fri, 12 Apr 2019 11:05:14 -0500
+Subject: [PATCH] ASoC: SOF: Add firmware loader support
 
-Add support for exposing PCMs to userspace. PCMs are defined by topology
-and the operations in this patch map to SOF IPC calls.
-
-The .get_module_upon_open field is set to allow for module load/unload
-tests. There is no risk of the sof-pci/acpi-dev module being removed
-while the platform components are in use. This may need to be
-revisited when DT platforms are supported.
+The firmware loader exports APIs that can be called by core to load and
+process multiple different file formats.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pcm.c | 719 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 719 insertions(+)
- create mode 100644 sound/soc/sof/pcm.c
+ sound/soc/sof/loader.c | 400 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 400 insertions(+)
+ create mode 100644 sound/soc/sof/loader.c
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
 new file mode 100644
-index 000000000000..be4984c4da4e
+index 000000000000..81c7452aae17
 --- /dev/null
-+++ b/sound/soc/sof/pcm.c
-@@ -0,0 +1,719 @@
++++ b/sound/soc/sof/loader.c
+@@ -0,0 +1,400 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -85,715 +80,396 @@ index 000000000000..be4984c4da4e
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
-+// PCM Layer, interface between ALSA and IPC.
++// Generic firmware loader.
 +//
 +
-+#include <linux/pm_runtime.h>
-+#include <sound/pcm_params.h>
++#include <linux/firmware.h>
 +#include <sound/sof.h>
-+#include "sof-priv.h"
 +#include "ops.h"
 +
-+#define DRV_NAME	"sof-audio-component"
-+
-+/* Create DMA buffer page table for DSP */
-+static int create_page_table(struct snd_pcm_substream *substream,
-+			     unsigned char *dma_area, size_t size)
++static int get_ext_windows(struct snd_sof_dev *sdev,
++			   struct sof_ipc_ext_data_hdr *ext_hdr)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	struct snd_dma_buffer *dmab = snd_pcm_get_dma_buf(substream);
-+	int stream = substream->stream;
++	struct sof_ipc_window *w =
++		container_of(ext_hdr, struct sof_ipc_window, ext_hdr);
++	size_t size;
 +
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
++	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
 +		return -EINVAL;
 +
-+	return snd_sof_create_page_table(sdev, dmab,
-+		spcm->stream[stream].page_table.area, size);
-+}
-+
-+static int sof_pcm_dsp_params(struct snd_sof_pcm *spcm, struct snd_pcm_substream *substream,
-+			      const struct sof_ipc_pcm_params_reply *reply)
-+{
-+	struct snd_sof_dev *sdev = spcm->sdev;
-+	/* validate offset */
-+	int ret = snd_sof_ipc_pcm_params(sdev, substream, reply);
-+
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: got wrong reply for PCM %d\n",
-+			spcm->pcm.pcm_id);
-+
-+	return ret;
-+}
-+
-+/* this may get called several times by oss emulation */
-+static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	struct sof_ipc_pcm_params pcm;
-+	struct sof_ipc_pcm_params_reply ipc_params_reply;
-+	int ret;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	dev_dbg(sdev->dev, "pcm: hw params stream %d dir %d\n",
-+		spcm->pcm.pcm_id, substream->stream);
-+
-+	memset(&pcm, 0, sizeof(pcm));
-+
-+	/* allocate audio buffer pages */
-+	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: could not allocate %d bytes for PCM %d\n",
-+			params_buffer_bytes(params), spcm->pcm.pcm_id);
-+		return ret;
-+	}
-+	if (ret) {
-+		/*
-+		 * ret == 1 means the buffer is changed
-+		 * create compressed page table for audio firmware
-+		 * ret == 0 means the buffer is not changed
-+		 * so no need to regenerate the page table
-+		 */
-+		ret = create_page_table(substream, runtime->dma_area,
-+					runtime->dma_bytes);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* number of pages should be rounded up */
-+	pcm.params.buffer.pages = PFN_UP(runtime->dma_bytes);
-+
-+	/* set IPC PCM parameters */
-+	pcm.hdr.size = sizeof(pcm);
-+	pcm.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_PARAMS;
-+	pcm.comp_id = spcm->stream[substream->stream].comp_id;
-+	pcm.params.hdr.size = sizeof(pcm.params);
-+	pcm.params.buffer.phy_addr =
-+		spcm->stream[substream->stream].page_table.addr;
-+	pcm.params.buffer.size = runtime->dma_bytes;
-+	pcm.params.direction = substream->stream;
-+	pcm.params.sample_valid_bytes = params_width(params) >> 3;
-+	pcm.params.buffer_fmt = SOF_IPC_BUFFER_INTERLEAVED;
-+	pcm.params.rate = params_rate(params);
-+	pcm.params.channels = params_channels(params);
-+	pcm.params.host_period_bytes = params_period_bytes(params);
-+
-+	/* container size */
-+	ret = snd_pcm_format_physical_width(params_format(params));
-+	if (ret < 0)
-+		return ret;
-+	pcm.params.sample_container_bytes = ret >> 3;
-+
-+	/* format */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_S16_LE;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_S24_4LE;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_S32_LE;
-+		break;
-+	case SNDRV_PCM_FORMAT_FLOAT:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_FLOAT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* firmware already configured host stream */
-+	ret = snd_sof_pcm_platform_hw_params(sdev,
-+					     substream,
-+					     params,
-+					     &pcm.params);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: platform hw params failed\n");
-+		return ret;
-+	}
-+
-+	dev_dbg(sdev->dev, "stream_tag %d", pcm.params.stream_tag);
-+
-+	/* send IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc, pcm.hdr.cmd, &pcm, sizeof(pcm),
-+				 &ipc_params_reply, sizeof(ipc_params_reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: hw params ipc failed for stream %d\n",
-+			pcm.params.stream_tag);
-+		return ret;
-+	}
-+
-+	ret = sof_pcm_dsp_params(spcm, substream, &ipc_params_reply);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* save pcm hw_params */
-+	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
-+
-+	return ret;
-+}
-+
-+static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	struct sof_ipc_stream stream;
-+	struct sof_ipc_reply reply;
-+	int ret;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	dev_dbg(sdev->dev, "pcm: free stream %d dir %d\n", spcm->pcm.pcm_id,
-+		substream->stream);
-+
-+	stream.hdr.size = sizeof(stream);
-+	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
-+	stream.comp_id = spcm->stream[substream->stream].comp_id;
-+
-+	/* send IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
-+				 sizeof(stream), &reply, sizeof(reply));
-+
-+	snd_pcm_lib_free_pages(substream);
-+	return ret;
-+}
-+
-+static int sof_pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	int ret;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	/*
-+	 * check if hw_params needs to be set-up again.
-+	 * This is only needed when resuming from system sleep.
-+	 */
-+	if (!spcm->hw_params_upon_resume[substream->stream])
-+		return 0;
-+
-+	dev_dbg(sdev->dev, "pcm: prepare stream %d dir %d\n", spcm->pcm.pcm_id,
-+		substream->stream);
-+
-+	/* set hw_params */
-+	ret = sof_pcm_hw_params(substream, &spcm->params[substream->stream]);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: set pcm hw_params after resume\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * FE dai link trigger actions are always executed in non-atomic context because
-+ * they involve IPC's.
-+ */
-+static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	struct sof_ipc_stream stream;
-+	struct sof_ipc_reply reply;
-+	int ret;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	dev_dbg(sdev->dev, "pcm: trigger stream %d dir %d cmd %d\n",
-+		spcm->pcm.pcm_id, substream->stream, cmd);
-+
-+	stream.hdr.size = sizeof(stream);
-+	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG;
-+	stream.comp_id = spcm->stream[substream->stream].comp_id;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_PAUSE;
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_RELEASE;
-+		break;
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		/* set up hw_params */
-+		ret = sof_pcm_prepare(substream);
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to set up hw_params upon resume\n");
-+			return ret;
-+		}
-+
-+		/* fallthrough */
-+	case SNDRV_PCM_TRIGGER_START:
-+		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_START;
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_STOP;
-+		break;
-+	default:
-+		dev_err(sdev->dev, "error: unhandled trigger cmd %d\n", cmd);
-+		return -EINVAL;
-+	}
-+
-+	snd_sof_pcm_platform_trigger(sdev, substream, cmd);
-+
-+	/* send IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
-+				 sizeof(stream), &reply, sizeof(reply));
-+
-+	if (ret < 0 || cmd != SNDRV_PCM_TRIGGER_SUSPEND)
-+		return ret;
-+
-+	/*
-+	 * The hw_free op is usually called when the pcm stream is closed.
-+	 * Since the stream is not closed during suspend, the DSP needs to be
-+	 * notified explicitly to free pcm to prevent errors upon resume.
-+	 */
-+	stream.hdr.size = sizeof(stream);
-+	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
-+	stream.comp_id = spcm->stream[substream->stream].comp_id;
-+
-+	/* send IPC to the DSP */
-+	return sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
-+				  sizeof(stream), &reply, sizeof(reply));
-+}
-+
-+static snd_pcm_uframes_t sof_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	snd_pcm_uframes_t host, dai;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	/* use dsp ops pointer callback directly if set */
-+	if (sof_ops(sdev)->pcm_pointer)
-+		return sof_ops(sdev)->pcm_pointer(sdev, substream);
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	/* read position from DSP */
-+	host = bytes_to_frames(substream->runtime,
-+			       spcm->stream[substream->stream].posn.host_posn);
-+	dai = bytes_to_frames(substream->runtime,
-+			      spcm->stream[substream->stream].posn.dai_posn);
-+
-+	dev_dbg(sdev->dev, "PCM: stream %d dir %d DMA position %lu DAI position %lu\n",
-+		spcm->pcm.pcm_id, substream->stream, host, dai);
-+
-+	return host;
-+}
-+
-+static int sof_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	struct snd_soc_tplg_stream_caps *caps;
-+	int ret;
-+	int err;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	dev_dbg(sdev->dev, "pcm: open stream %d dir %d\n", spcm->pcm.pcm_id,
-+		substream->stream);
-+
-+	/* clear hw_params_upon_resume flag */
-+	spcm->hw_params_upon_resume[substream->stream] = 0;
-+
-+	caps = &spcm->pcm.caps[substream->stream];
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: pcm open failed to resume %d\n",
-+			ret);
-+		pm_runtime_put_noidle(sdev->dev);
-+		return ret;
-+	}
-+
-+	/* set any runtime constraints based on topology */
-+	snd_pcm_hw_constraint_step(substream->runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+				   le32_to_cpu(caps->period_size_min));
-+	snd_pcm_hw_constraint_step(substream->runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-+				   le32_to_cpu(caps->period_size_min));
-+
-+	/* set runtime config */
-+	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
-+			  SNDRV_PCM_INFO_MMAP_VALID |
-+			  SNDRV_PCM_INFO_INTERLEAVED |
-+			  SNDRV_PCM_INFO_PAUSE |
-+			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
-+	runtime->hw.formats = le64_to_cpu(caps->formats);
-+	runtime->hw.period_bytes_min = le32_to_cpu(caps->period_size_min);
-+	runtime->hw.period_bytes_max = le32_to_cpu(caps->period_size_max);
-+	runtime->hw.periods_min = le32_to_cpu(caps->periods_min);
-+	runtime->hw.periods_max = le32_to_cpu(caps->periods_max);
-+
-+	/*
-+	 * caps->buffer_size_min is not used since the
-+	 * snd_pcm_hardware structure only defines buffer_bytes_max
-+	 */
-+	runtime->hw.buffer_bytes_max = le32_to_cpu(caps->buffer_size_max);
-+
-+	dev_dbg(sdev->dev, "period min %zd max %zd bytes\n",
-+		runtime->hw.period_bytes_min,
-+		runtime->hw.period_bytes_max);
-+	dev_dbg(sdev->dev, "period count %d max %d\n",
-+		runtime->hw.periods_min,
-+		runtime->hw.periods_max);
-+	dev_dbg(sdev->dev, "buffer max %zd bytes\n",
-+		runtime->hw.buffer_bytes_max);
-+
-+	/* set wait time - TODO: come from topology */
-+	substream->wait_time = 500;
-+
-+	spcm->stream[substream->stream].posn.host_posn = 0;
-+	spcm->stream[substream->stream].posn.dai_posn = 0;
-+	spcm->stream[substream->stream].substream = substream;
-+
-+	ret = snd_sof_pcm_platform_open(sdev, substream);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: pcm open failed %d\n",
-+			ret);
-+
-+		pm_runtime_mark_last_busy(sdev->dev);
-+
-+		err = pm_runtime_put_autosuspend(sdev->dev);
-+		if (err < 0)
-+			dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
-+				err);
-+	}
-+
-+	return ret;
-+}
-+
-+static int sof_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	int err;
-+
-+	/* nothing to do for BE */
-+	if (rtd->dai_link->no_pcm)
-+		return 0;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
-+
-+	dev_dbg(sdev->dev, "pcm: close stream %d dir %d\n", spcm->pcm.pcm_id,
-+		substream->stream);
-+
-+	err = snd_sof_pcm_platform_close(sdev, substream);
-+	if (err < 0) {
-+		dev_err(sdev->dev, "error: pcm close failed %d\n",
-+			err);
-+		/*
-+		 * keep going, no point in preventing the close
-+		 * from happening
-+		 */
-+	}
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
-+			err);
-+
-+	return 0;
-+}
-+
-+static struct snd_pcm_ops sof_pcm_ops = {
-+	.open		= sof_pcm_open,
-+	.close		= sof_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= sof_pcm_hw_params,
-+	.prepare	= sof_pcm_prepare,
-+	.hw_free	= sof_pcm_hw_free,
-+	.trigger	= sof_pcm_trigger,
-+	.pointer	= sof_pcm_pointer,
-+	.page		= snd_pcm_sgbuf_ops_page,
-+};
-+
-+/*
-+ * Pre-allocate playback/capture audio buffer pages.
-+ * no need to explicitly release memory preallocated by sof_pcm_new in pcm_free
-+ * snd_pcm_lib_preallocate_free_for_all() is called by the core.
-+ */
-+static int sof_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+	struct snd_pcm *pcm = rtd->pcm;
-+	struct snd_soc_tplg_stream_caps *caps;
-+	int stream = SNDRV_PCM_STREAM_PLAYBACK;
-+
-+	/* find SOF PCM for this RTD */
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm) {
-+		dev_warn(sdev->dev, "warn: can't find PCM with DAI ID %d\n",
-+			 rtd->dai_link->id);
-+		return 0;
-+	}
-+
-+	dev_dbg(sdev->dev, "creating new PCM %s\n", spcm->pcm.pcm_name);
-+
-+	/* do we need to pre-allocate playback audio buffer pages */
-+	if (!spcm->pcm.playback)
-+		goto capture;
-+
-+	caps = &spcm->pcm.caps[stream];
-+
-+	/* pre-allocate playback audio buffer pages */
-+	dev_dbg(sdev->dev, "spcm: allocate %s playback DMA buffer size 0x%x max 0x%x\n",
-+		caps->name, caps->buffer_size_min, caps->buffer_size_max);
-+
-+	snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
-+				      SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
-+				      le32_to_cpu(caps->buffer_size_min),
-+				      le32_to_cpu(caps->buffer_size_max));
-+capture:
-+	stream = SNDRV_PCM_STREAM_CAPTURE;
-+
-+	/* do we need to pre-allocate capture audio buffer pages */
-+	if (!spcm->pcm.capture)
-+		return 0;
-+
-+	caps = &spcm->pcm.caps[stream];
-+
-+	/* pre-allocate capture audio buffer pages */
-+	dev_dbg(sdev->dev, "spcm: allocate %s capture DMA buffer size 0x%x max 0x%x\n",
-+		caps->name, caps->buffer_size_min, caps->buffer_size_max);
-+
-+	snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
-+				      SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
-+				      le32_to_cpu(caps->buffer_size_min),
-+				      le32_to_cpu(caps->buffer_size_max));
-+
-+	return 0;
-+}
-+
-+/* fixup the BE DAI link to match any values from topology */
-+static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
-+				  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_dai *dai =
-+		snd_sof_find_dai(sdev, (char *)rtd->dai_link->name);
-+
-+	/* no topology exists for this BE, try a common configuration */
-+	if (!dai) {
-+		dev_warn(sdev->dev, "warning: no topology found for BE DAI %s config\n",
-+			 rtd->dai_link->name);
-+
-+		/*  set 48k, stereo, 16bits by default */
-+		rate->min = 48000;
-+		rate->max = 48000;
-+
-+		channels->min = 2;
-+		channels->max = 2;
-+
-+		snd_mask_none(fmt);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+
-+		return 0;
-+	}
-+
-+	/* read format from topology */
-+	snd_mask_none(fmt);
-+
-+	switch (dai->comp_dai.config.frame_fmt) {
-+	case SOF_IPC_FRAME_S16_LE:
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+		break;
-+	case SOF_IPC_FRAME_S24_4LE:
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+		break;
-+	case SOF_IPC_FRAME_S32_LE:
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S32_LE);
-+		break;
-+	default:
-+		dev_err(sdev->dev, "error: No available DAI format!\n");
-+		return -EINVAL;
-+	}
-+
-+	/* read rate and channels from topology */
-+	switch (dai->dai_config->type) {
-+	case SOF_DAI_INTEL_SSP:
-+		rate->min = dai->dai_config->ssp.fsync_rate;
-+		rate->max = dai->dai_config->ssp.fsync_rate;
-+		channels->min = dai->dai_config->ssp.tdm_slots;
-+		channels->max = dai->dai_config->ssp.tdm_slots;
-+
-+		dev_dbg(sdev->dev,
-+			"rate_min: %d rate_max: %d\n", rate->min, rate->max);
-+		dev_dbg(sdev->dev,
-+			"channels_min: %d channels_max: %d\n",
-+			channels->min, channels->max);
-+
-+		break;
-+	case SOF_DAI_INTEL_DMIC:
-+		/* DMIC only supports 16 or 32 bit formats */
-+		if (dai->comp_dai.config.frame_fmt == SOF_IPC_FRAME_S24_4LE) {
-+			dev_err(sdev->dev,
-+				"error: invalid fmt %d for DAI type %d\n",
-+				dai->comp_dai.config.frame_fmt,
-+				dai->dai_config->type);
-+		}
-+		break;
-+	case SOF_DAI_INTEL_HDA:
-+		/* do nothing for HDA dai_link */
-+		break;
-+	default:
-+		dev_err(sdev->dev, "error: invalid DAI type %d\n",
-+			dai->dai_config->type);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sof_pcm_probe(struct snd_soc_component *component)
-+{
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	const char *tplg_filename;
-+	int ret;
-+
-+	/* load the default topology */
-+	sdev->component = component;
-+
-+	tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+				       "%s/%s",
-+				       plat_data->tplg_filename_prefix,
-+				       plat_data->tplg_filename);
-+	if (!tplg_filename)
++	size = sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows;
++
++	/* keep a local copy of the data */
++	sdev->info_window = kmemdup(w, size, GFP_KERNEL);
++	if (!sdev->info_window)
 +		return -ENOMEM;
 +
-+	ret = snd_sof_load_topology(sdev, tplg_filename);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to load DSP topology %d\n",
-+			ret);
-+		return ret;
++	return 0;
++}
++
++/* parse the extended FW boot data structures from FW boot message */
++int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
++{
++	struct sof_ipc_ext_data_hdr *ext_hdr;
++	void *ext_data;
++	int ret = 0;
++
++	ext_data = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!ext_data)
++		return -ENOMEM;
++
++	/* get first header */
++	snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
++			       sizeof(*ext_hdr));
++	ext_hdr = ext_data;
++
++	while (ext_hdr->hdr.cmd == SOF_IPC_FW_READY) {
++		/* read in ext structure */
++		offset += sizeof(*ext_hdr);
++		snd_sof_dsp_block_read(sdev, bar, offset,
++				   (void *)((u8 *)ext_data + sizeof(*ext_hdr)),
++				   ext_hdr->hdr.size - sizeof(*ext_hdr));
++
++		dev_dbg(sdev->dev, "found ext header type %d size 0x%x\n",
++			ext_hdr->type, ext_hdr->hdr.size);
++
++		/* process structure data */
++		switch (ext_hdr->type) {
++		case SOF_IPC_EXT_DMA_BUFFER:
++			break;
++		case SOF_IPC_EXT_WINDOW:
++			ret = get_ext_windows(sdev, ext_hdr);
++			break;
++		default:
++			break;
++		}
++
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: failed to parse ext data type %d\n",
++				ext_hdr->type);
++			break;
++		}
++
++		/* move to next header */
++		offset += ext_hdr->hdr.size;
++		snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
++				       sizeof(*ext_hdr));
++		ext_hdr = ext_data;
 +	}
 +
-+	/*
-+	 * Some platforms in SOF, ex: BYT, may not have their platform PM
-+	 * callbacks set. Increment the usage count so as to
-+	 * prevent the device from entering runtime suspend.
-+	 */
-+	if (!sof_ops(sdev)->runtime_suspend || !sof_ops(sdev)->runtime_resume)
-+		pm_runtime_get_noresume(sdev->dev);
++	kfree(ext_data);
++	return ret;
++}
++EXPORT_SYMBOL(snd_sof_fw_parse_ext_data);
++
++/* generic module parser for mmaped DSPs */
++int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
++				struct snd_sof_mod_hdr *module)
++{
++	struct snd_sof_blk_hdr *block;
++	int count;
++	u32 offset;
++	size_t remaining;
++
++	dev_dbg(sdev->dev, "new module size 0x%x blocks 0x%x type 0x%x\n",
++		module->size, module->num_blocks, module->type);
++
++	block = (struct snd_sof_blk_hdr *)((u8 *)module + sizeof(*module));
++
++	/* module->size doesn't include header size */
++	remaining = module->size;
++	for (count = 0; count < module->num_blocks; count++) {
++		/* check for wrap */
++		if (remaining < sizeof(*block)) {
++			dev_err(sdev->dev, "error: not enough data remaining\n");
++			return -EINVAL;
++		}
++
++		/* minus header size of block */
++		remaining -= sizeof(*block);
++
++		if (block->size == 0) {
++			dev_warn(sdev->dev,
++				 "warning: block %d size zero\n", count);
++			dev_warn(sdev->dev, " type 0x%x offset 0x%x\n",
++				 block->type, block->offset);
++			continue;
++		}
++
++		switch (block->type) {
++		case SOF_FW_BLK_TYPE_RSRVD0:
++		case SOF_FW_BLK_TYPE_SRAM...SOF_FW_BLK_TYPE_RSRVD14:
++			continue;	/* not handled atm */
++		case SOF_FW_BLK_TYPE_IRAM:
++		case SOF_FW_BLK_TYPE_DRAM:
++			offset = block->offset;
++			break;
++		default:
++			dev_err(sdev->dev, "error: bad type 0x%x for block 0x%x\n",
++				block->type, count);
++			return -EINVAL;
++		}
++
++		dev_dbg(sdev->dev,
++			"block %d type 0x%x size 0x%x ==>  offset 0x%x\n",
++			count, block->type, block->size, offset);
++
++		/* checking block->size to avoid unaligned access */
++		if (block->size % sizeof(u32)) {
++			dev_err(sdev->dev, "error: invalid block size 0x%x\n",
++				block->size);
++			return -EINVAL;
++		}
++		snd_sof_dsp_block_write(sdev, sdev->mmio_bar, offset,
++					block + 1, block->size);
++
++		if (remaining < block->size) {
++			dev_err(sdev->dev, "error: not enough data remaining\n");
++			return -EINVAL;
++		}
++
++		/* minus body size of block */
++		remaining -= block->size;
++		/* next block */
++		block = (struct snd_sof_blk_hdr *)((u8 *)block + sizeof(*block)
++			+ block->size);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(snd_sof_parse_module_memcpy);
++
++static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
++{
++	struct snd_sof_fw_header *header;
++
++	/* Read the header information from the data pointer */
++	header = (struct snd_sof_fw_header *)fw->data;
++
++	/* verify FW sig */
++	if (strncmp(header->sig, SND_SOF_FW_SIG, SND_SOF_FW_SIG_SIZE) != 0) {
++		dev_err(sdev->dev, "error: invalid firmware signature\n");
++		return -EINVAL;
++	}
++
++	/* check size is valid */
++	if (fw->size != header->file_size + sizeof(*header)) {
++		dev_err(sdev->dev, "error: invalid filesize mismatch got 0x%zx expected 0x%zx\n",
++			fw->size, header->file_size + sizeof(*header));
++		return -EINVAL;
++	}
++
++	dev_dbg(sdev->dev, "header size=0x%x modules=0x%x abi=0x%x size=%zu\n",
++		header->file_size, header->num_modules,
++		header->abi, sizeof(*header));
++
++	return 0;
++}
++
++static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw)
++{
++	struct snd_sof_fw_header *header;
++	struct snd_sof_mod_hdr *module;
++	int (*load_module)(struct snd_sof_dev *sof_dev,
++			   struct snd_sof_mod_hdr *hdr);
++	int ret, count;
++	size_t remaining;
++
++	header = (struct snd_sof_fw_header *)fw->data;
++	load_module = sof_ops(sdev)->load_module;
++	if (!load_module)
++		return -EINVAL;
++
++	/* parse each module */
++	module = (struct snd_sof_mod_hdr *)((u8 *)(fw->data) + sizeof(*header));
++	remaining = fw->size - sizeof(*header);
++	/* check for wrap */
++	if (remaining > fw->size) {
++		dev_err(sdev->dev, "error: fw size smaller than header size\n");
++		return -EINVAL;
++	}
++
++	for (count = 0; count < header->num_modules; count++) {
++		/* check for wrap */
++		if (remaining < sizeof(*module)) {
++			dev_err(sdev->dev, "error: not enough data remaining\n");
++			return -EINVAL;
++		}
++
++		/* minus header size of module */
++		remaining -= sizeof(*module);
++
++		/* module */
++		ret = load_module(sdev, module);
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: invalid module %d\n", count);
++			return ret;
++		}
++
++		if (remaining < module->size) {
++			dev_err(sdev->dev, "error: not enough data remaining\n");
++			return -EINVAL;
++		}
++
++		/* minus body size of module */
++		remaining -=  module->size;
++		module = (struct snd_sof_mod_hdr *)((u8 *)module
++			+ sizeof(*module) + module->size);
++	}
++
++	return 0;
++}
++
++int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_pdata *plat_data = sdev->pdata;
++	const char *fw_filename;
++	int ret;
++
++	/* set code loading condition to true */
++	sdev->code_loading = 1;
++
++	/* Don't request firmware again if firmware is already requested */
++	if (plat_data->fw)
++		return 0;
++
++	fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
++				plat_data->fw_filename_prefix,
++				plat_data->fw_filename);
++	if (!fw_filename)
++		return -ENOMEM;
++
++	ret = request_firmware(&plat_data->fw, fw_filename, sdev->dev);
++
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: request firmware %s failed err: %d\n",
++			fw_filename, ret);
++	}
++
++	kfree(fw_filename);
 +
 +	return ret;
 +}
++EXPORT_SYMBOL(snd_sof_load_firmware_raw);
 +
-+static void sof_pcm_remove(struct snd_soc_component *component)
++int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
 +{
-+	/* remove topology */
-+	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
-+}
-+
-+void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
-+{
-+	struct snd_soc_component_driver *pd = &sdev->plat_drv;
 +	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	const char *drv_name;
++	int ret;
 +
-+	drv_name = plat_data->machine->drv_name;
++	ret = snd_sof_load_firmware_raw(sdev);
++	if (ret < 0)
++		return ret;
 +
-+	pd->name = "sof-audio-component";
-+	pd->probe = sof_pcm_probe;
-+	pd->remove = sof_pcm_remove;
-+	pd->ops	= &sof_pcm_ops;
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
-+	pd->compr_ops = &sof_compressed_ops;
-+#endif
-+	pd->pcm_new = sof_pcm_new;
-+	pd->ignore_machine = drv_name;
-+	pd->be_hw_params_fixup = sof_pcm_dai_link_fixup;
-+	pd->be_pcm_base = SOF_BE_PCM_BASE;
-+	pd->use_dai_pcm_id = true;
-+	pd->topology_name_prefix = "sof";
++	/* make sure the FW header and file is valid */
++	ret = check_header(sdev, plat_data->fw);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: invalid FW header\n");
++		goto error;
++	}
 +
-+	 /* increment module refcount when a pcm is opened */
-+	pd->module_get_upon_open = 1;
++	/* prepare the DSP for FW loading */
++	ret = snd_sof_dsp_reset(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to reset DSP\n");
++		goto error;
++	}
++
++	/* parse and load firmware modules to DSP */
++	ret = load_modules(sdev, plat_data->fw);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: invalid FW modules\n");
++		goto error;
++	}
++
++	return 0;
++
++error:
++	release_firmware(plat_data->fw);
++	plat_data->fw = NULL;
++	return ret;
++
 +}
++EXPORT_SYMBOL(snd_sof_load_firmware_memcpy);
++
++int snd_sof_load_firmware(struct snd_sof_dev *sdev)
++{
++	dev_dbg(sdev->dev, "loading firmware\n");
++
++	if (sof_ops(sdev)->load_firmware)
++		return sof_ops(sdev)->load_firmware(sdev);
++	return 0;
++}
++EXPORT_SYMBOL(snd_sof_load_firmware);
++
++int snd_sof_run_firmware(struct snd_sof_dev *sdev)
++{
++	int ret;
++	int init_core_mask;
++
++	init_waitqueue_head(&sdev->boot_wait);
++	sdev->boot_complete = false;
++
++	/* create fw_version debugfs to store boot version info */
++	if (sdev->first_boot) {
++		ret = snd_sof_debugfs_buf_item(sdev, &sdev->fw_version,
++					       sizeof(sdev->fw_version),
++					       "fw_version");
++		/* errors are only due to memory allocation, not debugfs */
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: snd_sof_debugfs_buf_item failed\n");
++			return ret;
++		}
++	}
++
++	/* perform pre fw run operations */
++	ret = snd_sof_dsp_pre_fw_run(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed pre fw run op\n");
++		return ret;
++	}
++
++	dev_dbg(sdev->dev, "booting DSP firmware\n");
++
++	/* boot the firmware on the DSP */
++	ret = snd_sof_dsp_run(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to reset DSP\n");
++		return ret;
++	}
++
++	init_core_mask = ret;
++
++	/* now wait for the DSP to boot */
++	ret = wait_event_timeout(sdev->boot_wait, sdev->boot_complete,
++				 msecs_to_jiffies(sdev->boot_timeout));
++	if (ret == 0) {
++		dev_err(sdev->dev, "error: firmware boot failure\n");
++		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
++			SOF_DBG_TEXT | SOF_DBG_PCI);
++		return -EIO;
++	}
++
++	dev_info(sdev->dev, "firmware boot complete\n");
++
++	/* perform post fw run operations */
++	ret = snd_sof_dsp_post_fw_run(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed post fw run op\n");
++		return ret;
++	}
++
++	/* fw boot is complete. Update the active cores mask */
++	sdev->enabled_cores_mask = init_core_mask;
++
++	return 0;
++}
++EXPORT_SYMBOL(snd_sof_run_firmware);
++
++void snd_sof_fw_unload(struct snd_sof_dev *sdev)
++{
++	/* TODO: support module unloading at runtime */
++}
++EXPORT_SYMBOL(snd_sof_fw_unload);
 -- 
 2.20.1
