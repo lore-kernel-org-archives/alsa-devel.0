@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Add support for IPC IO between DSP
-	and Host" to the asoc tree
-Date: Sat, 27 Apr 2019 18:53:02 +0100 (BST)
-Message-ID: <20190427175302.9D128441D56@finisterre.ee.mobilebroadband>
-References: <20190412160519.30207-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Add support for loading
+	topologies" to the asoc tree
+Date: Sat, 27 Apr 2019 18:53:01 +0100 (BST)
+Message-ID: <20190427175301.5DE01441D3B@finisterre.ee.mobilebroadband>
+References: <20190412160519.30207-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190412160519.30207-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190412160519.30207-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,12 +18,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Add support for IPC IO between DSP and Host
+   ASoC: SOF: Add support for loading topologies
 
 has been applied to the asoc tree at
 
@@ -48,47 +48,33 @@ to this mail.
 Thanks,
 Mark
 
->From 53e0c72d98ba3eae314c32476103eac47612aa58 Mon Sep 17 00:00:00 2001
+>From 311ce4fe7637d96608b6e57bf9ebbd8aabcf429e Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 12 Apr 2019 11:05:09 -0500
-Subject: [PATCH] ASoC: SOF: Add support for IPC IO between DSP and Host
+Date: Fri, 12 Apr 2019 11:05:11 -0500
+Subject: [PATCH] ASoC: SOF: Add support for loading topologies
 
-Define an IPC ABI for all host <--> DSP communication. This ABI should
-be transport agnostic. i.e. it should work on MMIO and SPI/I2C style
-interfaces.
+SOF uses topology to define the DAPM graphs and widgets, DAIs, PCMs and set
+parameters for init and run time usage. This patch loads topology and
+maps it to IPC commands that are build the topology on the DSP.
 
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof/control.h   | 158 +++++++
- include/sound/sof/dai-intel.h | 178 ++++++++
- include/sound/sof/dai.h       |  75 +++
- include/sound/sof/header.h    | 158 +++++++
- include/sound/sof/info.h      | 118 +++++
- include/sound/sof/pm.h        |  48 ++
- include/sound/sof/stream.h    | 148 ++++++
- include/sound/sof/trace.h     |  67 +++
- sound/soc/sof/ipc.c           | 832 ++++++++++++++++++++++++++++++++++
- 9 files changed, 1782 insertions(+)
- create mode 100644 include/sound/sof/control.h
- create mode 100644 include/sound/sof/dai-intel.h
- create mode 100644 include/sound/sof/dai.h
- create mode 100644 include/sound/sof/header.h
- create mode 100644 include/sound/sof/info.h
- create mode 100644 include/sound/sof/pm.h
- create mode 100644 include/sound/sof/stream.h
- create mode 100644 include/sound/sof/trace.h
- create mode 100644 sound/soc/sof/ipc.c
+ include/sound/sof/topology.h |  256 +++
+ sound/soc/sof/topology.c     | 3164 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 3420 insertions(+)
+ create mode 100644 include/sound/sof/topology.h
+ create mode 100644 sound/soc/sof/topology.c
 
-diff --git a/include/sound/sof/control.h b/include/sound/sof/control.h
+diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
 new file mode 100644
-index 000000000000..bded69e696d4
+index 000000000000..46b2a7e63167
 --- /dev/null
-+++ b/include/sound/sof/control.h
-@@ -0,0 +1,158 @@
++++ b/include/sound/sof/topology.h
+@@ -0,0 +1,256 @@
 +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
 +/*
 + * This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -97,996 +83,260 @@ index 000000000000..bded69e696d4
 + * Copyright(c) 2018 Intel Corporation. All rights reserved.
 + */
 +
-+#ifndef __INCLUDE_SOUND_SOF_CONTROL_H__
-+#define __INCLUDE_SOUND_SOF_CONTROL_H__
-+
-+#include <uapi/sound/sof/header.h>
-+#include <sound/sof/header.h>
-+
-+/*
-+ * Component Mixers and Controls
-+ */
-+
-+/* channel positions - uses same values as ALSA */
-+enum sof_ipc_chmap {
-+	SOF_CHMAP_UNKNOWN = 0,
-+	SOF_CHMAP_NA,		/**< N/A, silent */
-+	SOF_CHMAP_MONO,		/**< mono stream */
-+	SOF_CHMAP_FL,		/**< front left */
-+	SOF_CHMAP_FR,		/**< front right */
-+	SOF_CHMAP_RL,		/**< rear left */
-+	SOF_CHMAP_RR,		/**< rear right */
-+	SOF_CHMAP_FC,		/**< front centre */
-+	SOF_CHMAP_LFE,		/**< LFE */
-+	SOF_CHMAP_SL,		/**< side left */
-+	SOF_CHMAP_SR,		/**< side right */
-+	SOF_CHMAP_RC,		/**< rear centre */
-+	SOF_CHMAP_FLC,		/**< front left centre */
-+	SOF_CHMAP_FRC,		/**< front right centre */
-+	SOF_CHMAP_RLC,		/**< rear left centre */
-+	SOF_CHMAP_RRC,		/**< rear right centre */
-+	SOF_CHMAP_FLW,		/**< front left wide */
-+	SOF_CHMAP_FRW,		/**< front right wide */
-+	SOF_CHMAP_FLH,		/**< front left high */
-+	SOF_CHMAP_FCH,		/**< front centre high */
-+	SOF_CHMAP_FRH,		/**< front right high */
-+	SOF_CHMAP_TC,		/**< top centre */
-+	SOF_CHMAP_TFL,		/**< top front left */
-+	SOF_CHMAP_TFR,		/**< top front right */
-+	SOF_CHMAP_TFC,		/**< top front centre */
-+	SOF_CHMAP_TRL,		/**< top rear left */
-+	SOF_CHMAP_TRR,		/**< top rear right */
-+	SOF_CHMAP_TRC,		/**< top rear centre */
-+	SOF_CHMAP_TFLC,		/**< top front left centre */
-+	SOF_CHMAP_TFRC,		/**< top front right centre */
-+	SOF_CHMAP_TSL,		/**< top side left */
-+	SOF_CHMAP_TSR,		/**< top side right */
-+	SOF_CHMAP_LLFE,		/**< left LFE */
-+	SOF_CHMAP_RLFE,		/**< right LFE */
-+	SOF_CHMAP_BC,		/**< bottom centre */
-+	SOF_CHMAP_BLC,		/**< bottom left centre */
-+	SOF_CHMAP_BRC,		/**< bottom right centre */
-+	SOF_CHMAP_LAST = SOF_CHMAP_BRC,
-+};
-+
-+/* control data type and direction */
-+enum sof_ipc_ctrl_type {
-+	/*  per channel data - uses struct sof_ipc_ctrl_value_chan */
-+	SOF_CTRL_TYPE_VALUE_CHAN_GET = 0,
-+	SOF_CTRL_TYPE_VALUE_CHAN_SET,
-+	/* component data - uses struct sof_ipc_ctrl_value_comp */
-+	SOF_CTRL_TYPE_VALUE_COMP_GET,
-+	SOF_CTRL_TYPE_VALUE_COMP_SET,
-+	/* bespoke data - uses struct sof_abi_hdr */
-+	SOF_CTRL_TYPE_DATA_GET,
-+	SOF_CTRL_TYPE_DATA_SET,
-+};
-+
-+/* control command type */
-+enum sof_ipc_ctrl_cmd {
-+	SOF_CTRL_CMD_VOLUME = 0, /**< maps to ALSA volume style controls */
-+	SOF_CTRL_CMD_ENUM,	/**< maps to ALSA enum style controls */
-+	SOF_CTRL_CMD_SWITCH,	/**< maps to ALSA switch style controls */
-+	SOF_CTRL_CMD_BINARY,	/**< maps to ALSA binary style controls */
-+};
-+
-+/* generic channel mapped value data */
-+struct sof_ipc_ctrl_value_chan {
-+	uint32_t channel;	/**< channel map - enum sof_ipc_chmap */
-+	uint32_t value;
-+} __packed;
-+
-+/* generic component mapped value data */
-+struct sof_ipc_ctrl_value_comp {
-+	uint32_t index;	/**< component source/sink/control index in control */
-+	union {
-+		uint32_t uvalue;
-+		int32_t svalue;
-+	};
-+} __packed;
-+
-+/* generic control data */
-+struct sof_ipc_ctrl_data {
-+	struct sof_ipc_reply rhdr;
-+	uint32_t comp_id;
-+
-+	/* control access and data type */
-+	uint32_t type;		/**< enum sof_ipc_ctrl_type */
-+	uint32_t cmd;		/**< enum sof_ipc_ctrl_cmd */
-+	uint32_t index;		/**< control index for comps > 1 control */
-+
-+	/* control data - can either be appended or DMAed from host */
-+	struct sof_ipc_host_buffer buffer;
-+	uint32_t num_elems;	/**< in array elems or bytes for data type */
-+	uint32_t elems_remaining;	/**< elems remaining if sent in parts */
-+
-+	uint32_t msg_index;	/**< for large messages sent in parts */
-+
-+	/* reserved for future use */
-+	uint32_t reserved[6];
-+
-+	/* control data - add new types if needed */
-+	union {
-+		/* channel values can be used by volume type controls */
-+		struct sof_ipc_ctrl_value_chan chanv[0];
-+		/* component values used by routing controls like mux, mixer */
-+		struct sof_ipc_ctrl_value_comp compv[0];
-+		/* data can be used by binary controls */
-+		struct sof_abi_hdr data[0];
-+	};
-+} __packed;
-+
-+/** Event type */
-+enum sof_ipc_ctrl_event_type {
-+	SOF_CTRL_EVENT_GENERIC = 0,	/**< generic event */
-+	SOF_CTRL_EVENT_GENERIC_METADATA,	/**< generic event with metadata */
-+	SOF_CTRL_EVENT_KD,	/**< keyword detection event */
-+	SOF_CTRL_EVENT_VAD,	/**< voice activity detection event */
-+};
-+
-+/**
-+ * Generic notification data.
-+ */
-+struct sof_ipc_comp_event {
-+	struct sof_ipc_reply rhdr;
-+	uint16_t src_comp_type;	/**< COMP_TYPE_ */
-+	uint32_t src_comp_id;	/**< source component id */
-+	uint32_t event_type;	/**< event type - SOF_CTRL_EVENT_* */
-+	uint32_t num_elems;	/**< in array elems or bytes for data type */
-+
-+	/* reserved for future use */
-+	uint32_t reserved[8];
-+
-+	/* control data - add new types if needed */
-+	union {
-+		/* data can be used by binary controls */
-+		struct sof_abi_hdr data[0];
-+		/* event specific values */
-+		uint32_t event_value;
-+	};
-+} __packed;
-+
-+#endif
-diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
-new file mode 100644
-index 000000000000..4bd83f7adddf
---- /dev/null
-+++ b/include/sound/sof/dai-intel.h
-@@ -0,0 +1,178 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_DAI_INTEL_H__
-+#define __INCLUDE_SOUND_SOF_DAI_INTEL_H__
++#ifndef __INCLUDE_SOUND_SOF_TOPOLOGY_H__
++#define __INCLUDE_SOUND_SOF_TOPOLOGY_H__
 +
 +#include <sound/sof/header.h>
 +
-+ /* ssc1: TINTE */
-+#define SOF_DAI_INTEL_SSP_QUIRK_TINTE		(1 << 0)
-+ /* ssc1: PINTE */
-+#define SOF_DAI_INTEL_SSP_QUIRK_PINTE		(1 << 1)
-+ /* ssc2: SMTATF */
-+#define SOF_DAI_INTEL_SSP_QUIRK_SMTATF		(1 << 2)
-+ /* ssc2: MMRATF */
-+#define SOF_DAI_INTEL_SSP_QUIRK_MMRATF		(1 << 3)
-+ /* ssc2: PSPSTWFDFD */
-+#define SOF_DAI_INTEL_SSP_QUIRK_PSPSTWFDFD	(1 << 4)
-+ /* ssc2: PSPSRWFDFD */
-+#define SOF_DAI_INTEL_SSP_QUIRK_PSPSRWFDFD	(1 << 5)
-+/* ssc1: LBM */
-+#define SOF_DAI_INTEL_SSP_QUIRK_LBM		(1 << 6)
-+
-+ /* here is the possibility to define others aux macros */
-+
-+#define SOF_DAI_INTEL_SSP_FRAME_PULSE_WIDTH_MAX		38
-+#define SOF_DAI_INTEL_SSP_SLOT_PADDING_MAX		31
-+
-+/* SSP clocks control settings
-+ *
-+ * Macros for clks_control field in sof_ipc_dai_ssp_params struct.
-+ */
-+
-+/* mclk 0 disable */
-+#define SOF_DAI_INTEL_SSP_MCLK_0_DISABLE		BIT(0)
-+/* mclk 1 disable */
-+#define SOF_DAI_INTEL_SSP_MCLK_1_DISABLE		BIT(1)
-+/* mclk keep active */
-+#define SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_KA		BIT(2)
-+/* bclk keep active */
-+#define SOF_DAI_INTEL_SSP_CLKCTRL_BCLK_KA		BIT(3)
-+/* fs keep active */
-+#define SOF_DAI_INTEL_SSP_CLKCTRL_FS_KA			BIT(4)
-+/* bclk idle */
-+#define SOF_DAI_INTEL_SSP_CLKCTRL_BCLK_IDLE_HIGH	BIT(5)
-+
-+/* SSP Configuration Request - SOF_IPC_DAI_SSP_CONFIG */
-+struct sof_ipc_dai_ssp_params {
-+	struct sof_ipc_hdr hdr;
-+	uint16_t reserved1;
-+	uint16_t mclk_id;
-+
-+	uint32_t mclk_rate;	/* mclk frequency in Hz */
-+	uint32_t fsync_rate;	/* fsync frequency in Hz */
-+	uint32_t bclk_rate;	/* bclk frequency in Hz */
-+
-+	/* TDM */
-+	uint32_t tdm_slots;
-+	uint32_t rx_slots;
-+	uint32_t tx_slots;
-+
-+	/* data */
-+	uint32_t sample_valid_bits;
-+	uint16_t tdm_slot_width;
-+	uint16_t reserved2;	/* alignment */
-+
-+	/* MCLK */
-+	uint32_t mclk_direction;
-+
-+	uint16_t frame_pulse_width;
-+	uint16_t tdm_per_slot_padding_flag;
-+	uint32_t clks_control;
-+	uint32_t quirks;
-+} __packed;
-+
-+/* HDA Configuration Request - SOF_IPC_DAI_HDA_CONFIG */
-+struct sof_ipc_dai_hda_params {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t link_dma_ch;
-+} __packed;
-+
-+/* DMIC Configuration Request - SOF_IPC_DAI_DMIC_CONFIG */
-+
-+/* This struct is defined per 2ch PDM controller available in the platform.
-+ * Normally it is sufficient to set the used microphone specific enables to 1
-+ * and keep other parameters as zero. The customizations are:
-+ *
-+ * 1. If a device mixes different microphones types with different polarity
-+ * and/or the absolute polarity matters the PCM signal from a microphone
-+ * can be inverted with the controls.
-+ *
-+ * 2. If the microphones in a stereo pair do not appear in captured stream
-+ * in desired order due to board schematics choises they can be swapped with
-+ * the clk_edge parameter.
-+ *
-+ * 3. If PDM bit errors are seen in capture (poor quality) the skew parameter
-+ * that delays the sampling time of data by half cycles of DMIC source clock
-+ * can be tried for improvement. However there is no guarantee for this to fix
-+ * data integrity problems.
-+ */
-+struct sof_ipc_dai_dmic_pdm_ctrl {
-+	struct sof_ipc_hdr hdr;
-+	uint16_t id;		/**< PDM controller ID */
-+
-+	uint16_t enable_mic_a;	/**< Use A (left) channel mic (0 or 1)*/
-+	uint16_t enable_mic_b;	/**< Use B (right) channel mic (0 or 1)*/
-+
-+	uint16_t polarity_mic_a; /**< Optionally invert mic A signal (0 or 1) */
-+	uint16_t polarity_mic_b; /**< Optionally invert mic B signal (0 or 1) */
-+
-+	uint16_t clk_edge;	/**< Optionally swap data clock edge (0 or 1) */
-+	uint16_t skew;		/**< Adjust PDM data sampling vs. clock (0..15) */
-+
-+	uint16_t reserved[3];	/**< Make sure the total size is 4 bytes aligned */
-+} __packed;
-+
-+/* This struct contains the global settings for all 2ch PDM controllers. The
-+ * version number used in configuration data is checked vs. version used by
-+ * device driver src/drivers/dmic.c need to match. It is incremented from
-+ * initial value 1 if updates done for the to driver would alter the operation
-+ * of the microhone.
-+ *
-+ * Note: The microphone clock (pdmclk_min, pdmclk_max, duty_min, duty_max)
-+ * parameters need to be set as defined in microphone data sheet. E.g. clock
-+ * range 1.0 - 3.2 MHz is usually supported microphones. Some microphones are
-+ * multi-mode capable and there may be denied mic clock frequencies between
-+ * the modes. In such case set the clock range limits of the desired mode to
-+ * avoid the driver to set clock to an illegal rate.
-+ *
-+ * The duty cycle could be set to 48-52% if not known. Generally these
-+ * parameters can be altered within data sheet specified limits to match
-+ * required audio application performance power.
-+ *
-+ * The microphone clock needs to be usually about 50-80 times the used audio
-+ * sample rate. With highest sample rates above 48 kHz this can relaxed
-+ * somewhat.
-+ *
-+ * The parameter wake_up_time describes how long time the microphone needs
-+ * for the data line to produce valid output from mic clock start. The driver
-+ * will mute the captured audio for the given time. The min_clock_on_time
-+ * parameter is used to prevent too short clock bursts to happen. The driver
-+ * will keep the clock active after capture stop if this time is not yet
-+ * met. The unit for both is microseconds (us). Exceed of 100 ms will be
-+ * treated as an error.
-+ */
-+struct sof_ipc_dai_dmic_params {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t driver_ipc_version;	/**< Version (1..N) */
-+
-+	uint32_t pdmclk_min;	/**< Minimum microphone clock in Hz (100000..N) */
-+	uint32_t pdmclk_max;	/**< Maximum microphone clock in Hz (min...N) */
-+
-+	uint32_t fifo_fs;	/**< FIFO sample rate in Hz (8000..96000) */
-+	uint32_t reserved_1;	/**< Reserved */
-+	uint16_t fifo_bits;	/**< FIFO word length (16 or 32) */
-+	uint16_t reserved_2;	/**< Reserved */
-+
-+	uint16_t duty_min;	/**< Min. mic clock duty cycle in % (20..80) */
-+	uint16_t duty_max;	/**< Max. mic clock duty cycle in % (min..80) */
-+
-+	uint32_t num_pdm_active; /**< Number of active pdm controllers */
-+
-+	uint32_t wake_up_time;      /**< Time from clock start to data (us) */
-+	uint32_t min_clock_on_time; /**< Min. time that clk is kept on (us) */
-+
-+	/* reserved for future use */
-+	uint32_t reserved[6];
-+
-+	/**< variable number of pdm controller config */
-+	struct sof_ipc_dai_dmic_pdm_ctrl pdm[0];
-+} __packed;
-+
-+#endif
-diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
-new file mode 100644
-index 000000000000..3b67c93ff101
---- /dev/null
-+++ b/include/sound/sof/dai.h
-@@ -0,0 +1,75 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
 +/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
++ * Component
 + */
 +
-+#ifndef __INCLUDE_SOUND_SOF_DAI_H__
-+#define __INCLUDE_SOUND_SOF_DAI_H__
-+
-+#include <sound/sof/header.h>
-+#include <sound/sof/dai-intel.h>
-+
-+/*
-+ * DAI Configuration.
-+ *
-+ * Each different DAI type will have it's own structure and IPC cmd.
-+ */
-+
-+#define SOF_DAI_FMT_I2S		1 /**< I2S mode */
-+#define SOF_DAI_FMT_RIGHT_J	2 /**< Right Justified mode */
-+#define SOF_DAI_FMT_LEFT_J	3 /**< Left Justified mode */
-+#define SOF_DAI_FMT_DSP_A	4 /**< L data MSB after FRM LRC */
-+#define SOF_DAI_FMT_DSP_B	5 /**< L data MSB during FRM LRC */
-+#define SOF_DAI_FMT_PDM		6 /**< Pulse density modulation */
-+
-+#define SOF_DAI_FMT_CONT	(1 << 4) /**< continuous clock */
-+#define SOF_DAI_FMT_GATED	(0 << 4) /**< clock is gated */
-+
-+#define SOF_DAI_FMT_NB_NF	(0 << 8) /**< normal bit clock + frame */
-+#define SOF_DAI_FMT_NB_IF	(2 << 8) /**< normal BCLK + inv FRM */
-+#define SOF_DAI_FMT_IB_NF	(3 << 8) /**< invert BCLK + nor FRM */
-+#define SOF_DAI_FMT_IB_IF	(4 << 8) /**< invert BCLK + FRM */
-+
-+#define SOF_DAI_FMT_CBM_CFM	(0 << 12) /**< codec clk & FRM master */
-+#define SOF_DAI_FMT_CBS_CFM	(2 << 12) /**< codec clk slave & FRM master */
-+#define SOF_DAI_FMT_CBM_CFS	(3 << 12) /**< codec clk master & frame slave */
-+#define SOF_DAI_FMT_CBS_CFS	(4 << 12) /**< codec clk & FRM slave */
-+
-+#define SOF_DAI_FMT_FORMAT_MASK		0x000f
-+#define SOF_DAI_FMT_CLOCK_MASK		0x00f0
-+#define SOF_DAI_FMT_INV_MASK		0x0f00
-+#define SOF_DAI_FMT_MASTER_MASK		0xf000
-+
-+/** \brief Types of DAI */
-+enum sof_ipc_dai_type {
-+	SOF_DAI_INTEL_NONE = 0,		/**< None */
-+	SOF_DAI_INTEL_SSP,		/**< Intel SSP */
-+	SOF_DAI_INTEL_DMIC,		/**< Intel DMIC */
-+	SOF_DAI_INTEL_HDA,		/**< Intel HD/A */
++/* types of component */
++enum sof_comp_type {
++	SOF_COMP_NONE = 0,
++	SOF_COMP_HOST,
++	SOF_COMP_DAI,
++	SOF_COMP_SG_HOST,	/**< scatter gather variant */
++	SOF_COMP_SG_DAI,	/**< scatter gather variant */
++	SOF_COMP_VOLUME,
++	SOF_COMP_MIXER,
++	SOF_COMP_MUX,
++	SOF_COMP_SRC,
++	SOF_COMP_SPLITTER,
++	SOF_COMP_TONE,
++	SOF_COMP_SWITCH,
++	SOF_COMP_BUFFER,
++	SOF_COMP_EQ_IIR,
++	SOF_COMP_EQ_FIR,
++	SOF_COMP_KEYWORD_DETECT,
++	SOF_COMP_KPB,			/* A key phrase buffer component */
++	SOF_COMP_SELECTOR,		/**< channel selector component */
++	/* keep FILEREAD/FILEWRITE as the last ones */
++	SOF_COMP_FILEREAD = 10000,	/**< host test based file IO */
++	SOF_COMP_FILEWRITE = 10001,	/**< host test based file IO */
 +};
 +
-+/* general purpose DAI configuration */
-+struct sof_ipc_dai_config {
++/* XRUN action for component */
++#define SOF_XRUN_STOP		1	/**< stop stream */
++#define SOF_XRUN_UNDER_ZERO	2	/**< send 0s to sink */
++#define SOF_XRUN_OVER_NULL	4	/**< send data to NULL */
++
++/* create new generic component - SOF_IPC_TPLG_COMP_NEW */
++struct sof_ipc_comp {
 +	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t type;		/**< DAI type - enum sof_ipc_dai_type */
++	uint32_t id;
++	enum sof_comp_type type;
++	uint32_t pipeline_id;
++
++	/* reserved for future use */
++	uint32_t reserved[2];
++} __packed;
++
++/*
++ * Component Buffers
++ */
++
++/*
++ * SOF memory capabilities, add new ones at the end
++ */
++#define SOF_MEM_CAPS_RAM			(1 << 0)
++#define SOF_MEM_CAPS_ROM			(1 << 1)
++#define SOF_MEM_CAPS_EXT			(1 << 2) /**< external */
++#define SOF_MEM_CAPS_LP			(1 << 3) /**< low power */
++#define SOF_MEM_CAPS_HP			(1 << 4) /**< high performance */
++#define SOF_MEM_CAPS_DMA			(1 << 5) /**< DMA'able */
++#define SOF_MEM_CAPS_CACHE			(1 << 6) /**< cacheable */
++#define SOF_MEM_CAPS_EXEC			(1 << 7) /**< executable */
++
++/* create new component buffer - SOF_IPC_TPLG_BUFFER_NEW */
++struct sof_ipc_buffer {
++	struct sof_ipc_comp comp;
++	uint32_t size;		/**< buffer size in bytes */
++	uint32_t caps;		/**< SOF_MEM_CAPS_ */
++} __packed;
++
++/* generic component config data - must always be after struct sof_ipc_comp */
++struct sof_ipc_comp_config {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t periods_sink;	/**< 0 means variable */
++	uint32_t periods_source;	/**< 0 means variable */
++	uint32_t reserved1;	/**< reserved */
++	uint32_t frame_fmt;		/**< SOF_IPC_FRAME_ */
++	uint32_t xrun_action;
++
++	/* reserved for future use */
++	uint32_t reserved[2];
++} __packed;
++
++/* generic host component */
++struct sof_ipc_comp_host {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++	uint32_t direction;	/**< SOF_IPC_STREAM_ */
++	uint32_t no_irq;	/**< don't send periodic IRQ to host/DSP */
++	uint32_t dmac_config; /**< DMA engine specific */
++}  __packed;
++
++/* generic DAI component */
++struct sof_ipc_comp_dai {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++	uint32_t direction;	/**< SOF_IPC_STREAM_ */
 +	uint32_t dai_index;	/**< index of this type dai */
-+
-+	/* physical protocol and clocking */
-+	uint16_t format;	/**< SOF_DAI_FMT_ */
-+	uint16_t reserved16;	/**< alignment */
-+
-+	/* reserved for future use */
-+	uint32_t reserved[8];
-+
-+	/* HW specific data */
-+	union {
-+		struct sof_ipc_dai_ssp_params ssp;
-+		struct sof_ipc_dai_dmic_params dmic;
-+		struct sof_ipc_dai_hda_params hda;
-+	};
-+} __packed;
-+
-+#endif
-diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-new file mode 100644
-index 000000000000..ccb6a004b37b
---- /dev/null
-+++ b/include/sound/sof/header.h
-@@ -0,0 +1,158 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_HEADER_H__
-+#define __INCLUDE_SOUND_SOF_HEADER_H__
-+
-+#include <uapi/sound/sof/abi.h>
-+
-+/** \addtogroup sof_uapi uAPI
-+ *  SOF uAPI specification.
-+ *  @{
-+ */
-+
-+/*
-+ * IPC messages have a prefixed 32 bit identifier made up as follows :-
-+ *
-+ * 0xGCCCNNNN where
-+ * G is global cmd type (4 bits)
-+ * C is command type (12 bits)
-+ * I is the ID number (16 bits) - monotonic and overflows
-+ *
-+ * This is sent at the start of the IPM message in the mailbox. Messages should
-+ * not be sent in the doorbell (special exceptions for firmware .
-+ */
-+
-+/* Global Message - Generic */
-+#define SOF_GLB_TYPE_SHIFT			28
-+#define SOF_GLB_TYPE_MASK			(0xf << SOF_GLB_TYPE_SHIFT)
-+#define SOF_GLB_TYPE(x)				((x) << SOF_GLB_TYPE_SHIFT)
-+
-+/* Command Message - Generic */
-+#define SOF_CMD_TYPE_SHIFT			16
-+#define SOF_CMD_TYPE_MASK			(0xfff << SOF_CMD_TYPE_SHIFT)
-+#define SOF_CMD_TYPE(x)				((x) << SOF_CMD_TYPE_SHIFT)
-+
-+/* Global Message Types */
-+#define SOF_IPC_GLB_REPLY			SOF_GLB_TYPE(0x1U)
-+#define SOF_IPC_GLB_COMPOUND			SOF_GLB_TYPE(0x2U)
-+#define SOF_IPC_GLB_TPLG_MSG			SOF_GLB_TYPE(0x3U)
-+#define SOF_IPC_GLB_PM_MSG			SOF_GLB_TYPE(0x4U)
-+#define SOF_IPC_GLB_COMP_MSG			SOF_GLB_TYPE(0x5U)
-+#define SOF_IPC_GLB_STREAM_MSG			SOF_GLB_TYPE(0x6U)
-+#define SOF_IPC_FW_READY			SOF_GLB_TYPE(0x7U)
-+#define SOF_IPC_GLB_DAI_MSG			SOF_GLB_TYPE(0x8U)
-+#define SOF_IPC_GLB_TRACE_MSG			SOF_GLB_TYPE(0x9U)
-+
-+/*
-+ * DSP Command Message Types
-+ */
-+
-+/* topology */
-+#define SOF_IPC_TPLG_COMP_NEW			SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_TPLG_COMP_FREE			SOF_CMD_TYPE(0x002)
-+#define SOF_IPC_TPLG_COMP_CONNECT		SOF_CMD_TYPE(0x003)
-+#define SOF_IPC_TPLG_PIPE_NEW			SOF_CMD_TYPE(0x010)
-+#define SOF_IPC_TPLG_PIPE_FREE			SOF_CMD_TYPE(0x011)
-+#define SOF_IPC_TPLG_PIPE_CONNECT		SOF_CMD_TYPE(0x012)
-+#define SOF_IPC_TPLG_PIPE_COMPLETE		SOF_CMD_TYPE(0x013)
-+#define SOF_IPC_TPLG_BUFFER_NEW			SOF_CMD_TYPE(0x020)
-+#define SOF_IPC_TPLG_BUFFER_FREE		SOF_CMD_TYPE(0x021)
-+
-+/* PM */
-+#define SOF_IPC_PM_CTX_SAVE			SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_PM_CTX_RESTORE			SOF_CMD_TYPE(0x002)
-+#define SOF_IPC_PM_CTX_SIZE			SOF_CMD_TYPE(0x003)
-+#define SOF_IPC_PM_CLK_SET			SOF_CMD_TYPE(0x004)
-+#define SOF_IPC_PM_CLK_GET			SOF_CMD_TYPE(0x005)
-+#define SOF_IPC_PM_CLK_REQ			SOF_CMD_TYPE(0x006)
-+#define SOF_IPC_PM_CORE_ENABLE			SOF_CMD_TYPE(0x007)
-+
-+/* component runtime config - multiple different types */
-+#define SOF_IPC_COMP_SET_VALUE			SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_COMP_GET_VALUE			SOF_CMD_TYPE(0x002)
-+#define SOF_IPC_COMP_SET_DATA			SOF_CMD_TYPE(0x003)
-+#define SOF_IPC_COMP_GET_DATA			SOF_CMD_TYPE(0x004)
-+
-+/* DAI messages */
-+#define SOF_IPC_DAI_CONFIG			SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_DAI_LOOPBACK			SOF_CMD_TYPE(0x002)
-+
-+/* stream */
-+#define SOF_IPC_STREAM_PCM_PARAMS		SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_STREAM_PCM_PARAMS_REPLY		SOF_CMD_TYPE(0x002)
-+#define SOF_IPC_STREAM_PCM_FREE			SOF_CMD_TYPE(0x003)
-+#define SOF_IPC_STREAM_TRIG_START		SOF_CMD_TYPE(0x004)
-+#define SOF_IPC_STREAM_TRIG_STOP		SOF_CMD_TYPE(0x005)
-+#define SOF_IPC_STREAM_TRIG_PAUSE		SOF_CMD_TYPE(0x006)
-+#define SOF_IPC_STREAM_TRIG_RELEASE		SOF_CMD_TYPE(0x007)
-+#define SOF_IPC_STREAM_TRIG_DRAIN		SOF_CMD_TYPE(0x008)
-+#define SOF_IPC_STREAM_TRIG_XRUN		SOF_CMD_TYPE(0x009)
-+#define SOF_IPC_STREAM_POSITION			SOF_CMD_TYPE(0x00a)
-+#define SOF_IPC_STREAM_VORBIS_PARAMS		SOF_CMD_TYPE(0x010)
-+#define SOF_IPC_STREAM_VORBIS_FREE		SOF_CMD_TYPE(0x011)
-+
-+/* trace and debug */
-+#define SOF_IPC_TRACE_DMA_PARAMS		SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_TRACE_DMA_POSITION		SOF_CMD_TYPE(0x002)
-+
-+/* Get message component id */
-+#define SOF_IPC_MESSAGE_ID(x)			((x) & 0xffff)
-+
-+/* maximum message size for mailbox Tx/Rx */
-+#define SOF_IPC_MSG_MAX_SIZE			384
-+
-+/*
-+ * Structure Header - Header for all IPC structures except command structs.
-+ * The size can be greater than the structure size and that means there is
-+ * extended bespoke data beyond the end of the structure including variable
-+ * arrays.
-+ */
-+
-+struct sof_ipc_hdr {
-+	uint32_t size;			/**< size of structure */
-+} __packed;
-+
-+/*
-+ * Command Header - Header for all IPC commands. Identifies IPC message.
-+ * The size can be greater than the structure size and that means there is
-+ * extended bespoke data beyond the end of the structure including variable
-+ * arrays.
-+ */
-+
-+struct sof_ipc_cmd_hdr {
-+	uint32_t size;			/**< size of structure */
-+	uint32_t cmd;			/**< SOF_IPC_GLB_ + cmd */
-+} __packed;
-+
-+/*
-+ * Generic reply message. Some commands override this with their own reply
-+ * types that must include this at start.
-+ */
-+struct sof_ipc_reply {
-+	struct sof_ipc_cmd_hdr hdr;
-+	int32_t error;			/**< negative error numbers */
++	uint32_t type;		/**< DAI type - SOF_DAI_ */
++	uint32_t reserved;	/**< reserved */
 +}  __packed;
 +
-+/*
-+ * Compound commands - SOF_IPC_GLB_COMPOUND.
-+ *
-+ * Compound commands are sent to the DSP as a single IPC operation. The
-+ * commands are split into blocks and each block has a header. This header
-+ * identifies the command type and the number of commands before the next
-+ * header.
-+ */
-+
-+struct sof_ipc_compound_hdr {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t count;		/**< count of 0 means end of compound sequence */
++/* generic mixer component */
++struct sof_ipc_comp_mixer {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
 +}  __packed;
 +
-+/** @}*/
-+
-+#endif
-diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
-new file mode 100644
-index 000000000000..21dae04d8183
---- /dev/null
-+++ b/include/sound/sof/info.h
-@@ -0,0 +1,118 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_INFO_H__
-+#define __INCLUDE_SOUND_SOF_INFO_H__
-+
-+#include <sound/sof/header.h>
-+#include <sound/sof/stream.h>
-+
-+/*
-+ * Firmware boot and version
-+ */
-+
-+#define SOF_IPC_MAX_ELEMS	16
-+
-+/* extended data types that can be appended onto end of sof_ipc_fw_ready */
-+enum sof_ipc_ext_data {
-+	SOF_IPC_EXT_DMA_BUFFER = 0,
-+	SOF_IPC_EXT_WINDOW,
++/* volume ramping types */
++enum sof_volume_ramp {
++	SOF_VOLUME_LINEAR	= 0,
++	SOF_VOLUME_LOG,
++	SOF_VOLUME_LINEAR_ZC,
++	SOF_VOLUME_LOG_ZC,
 +};
 +
-+/* FW version - SOF_IPC_GLB_VERSION */
-+struct sof_ipc_fw_version {
-+	struct sof_ipc_hdr hdr;
-+	uint16_t major;
-+	uint16_t minor;
-+	uint16_t micro;
-+	uint16_t build;
-+	uint8_t date[12];
-+	uint8_t time[10];
-+	uint8_t tag[6];
-+	uint32_t abi_version;
-+
-+	/* reserved for future use */
-+	uint32_t reserved[4];
-+} __packed;
-+
-+/* FW ready Message - sent by firmware when boot has completed */
-+struct sof_ipc_fw_ready {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t dspbox_offset;	 /* dsp initiated IPC mailbox */
-+	uint32_t hostbox_offset; /* host initiated IPC mailbox */
-+	uint32_t dspbox_size;
-+	uint32_t hostbox_size;
-+	struct sof_ipc_fw_version version;
-+
-+	/* Miscellaneous debug flags showing build/debug features enabled */
-+	union {
-+		uint64_t reserved;
-+		struct {
-+			uint64_t build:1;
-+			uint64_t locks:1;
-+			uint64_t locks_verbose:1;
-+			uint64_t gdb:1;
-+		} bits;
-+	} debug;
-+
-+	/* reserved for future use */
-+	uint32_t reserved[4];
-+} __packed;
-+
-+/*
-+ * Extended Firmware data. All optional, depends on platform/arch.
-+ */
-+enum sof_ipc_region {
-+	SOF_IPC_REGION_DOWNBOX	= 0,
-+	SOF_IPC_REGION_UPBOX,
-+	SOF_IPC_REGION_TRACE,
-+	SOF_IPC_REGION_DEBUG,
-+	SOF_IPC_REGION_STREAM,
-+	SOF_IPC_REGION_REGS,
-+	SOF_IPC_REGION_EXCEPTION,
-+};
-+
-+struct sof_ipc_ext_data_hdr {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t type;		/**< SOF_IPC_EXT_ */
-+} __packed;
-+
-+struct sof_ipc_dma_buffer_elem {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t type;		/**< SOF_IPC_REGION_ */
-+	uint32_t id;		/**< platform specific - used to map to host memory */
-+	struct sof_ipc_host_buffer buffer;
-+} __packed;
-+
-+/* extended data DMA buffers for IPC, trace and debug */
-+struct sof_ipc_dma_buffer_data {
-+	struct sof_ipc_ext_data_hdr ext_hdr;
-+	uint32_t num_buffers;
-+
-+	/* host files in buffer[n].buffer */
-+	struct sof_ipc_dma_buffer_elem buffer[];
++/* generic volume component */
++struct sof_ipc_comp_volume {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++	uint32_t channels;
++	uint32_t min_value;
++	uint32_t max_value;
++	uint32_t ramp;		/**< SOF_VOLUME_ */
++	uint32_t initial_ramp;	/**< ramp space in ms */
 +}  __packed;
 +
-+struct sof_ipc_window_elem {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t type;		/**< SOF_IPC_REGION_ */
-+	uint32_t id;		/**< platform specific - used to map to host memory */
-+	uint32_t flags;		/**< R, W, RW, etc - to define */
-+	uint32_t size;		/**< size of region in bytes */
-+	/* offset in window region as windows can be partitioned */
++/* generic SRC component */
++struct sof_ipc_comp_src {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++	/* either source or sink rate must be non zero */
++	uint32_t source_rate;	/**< source rate or 0 for variable */
++	uint32_t sink_rate;	/**< sink rate or 0 for variable */
++	uint32_t rate_mask;	/**< SOF_RATE_ supported rates */
++} __packed;
++
++/* generic MUX component */
++struct sof_ipc_comp_mux {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++} __packed;
++
++/* generic tone generator component */
++struct sof_ipc_comp_tone {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++	int32_t sample_rate;
++	int32_t frequency;
++	int32_t amplitude;
++	int32_t freq_mult;
++	int32_t ampl_mult;
++	int32_t length;
++	int32_t period;
++	int32_t repeats;
++	int32_t ramp_step;
++} __packed;
++
++/** \brief Types of processing components */
++enum sof_ipc_process_type {
++	SOF_PROCESS_NONE = 0,		/**< None */
++	SOF_PROCESS_EQFIR,		/**< Intel FIR */
++	SOF_PROCESS_EQIIR,		/**< Intel IIR */
++	SOF_PROCESS_KEYWORD_DETECT,	/**< Keyword Detection */
++	SOF_PROCESS_KPB,		/**< KeyPhrase Buffer Manager */
++	SOF_PROCESS_CHAN_SELECTOR,	/**< Channel Selector */
++};
++
++/* generic "effect", "codec" or proprietary processing component */
++struct sof_ipc_comp_process {
++	struct sof_ipc_comp comp;
++	struct sof_ipc_comp_config config;
++	uint32_t size;	/**< size of bespoke data section in bytes */
++	uint32_t type;	/**< sof_ipc_process_type */
++
++	/* reserved for future use */
++	uint32_t reserved[7];
++
++	unsigned char data[0];
++} __packed;
++
++/* frees components, buffers and pipelines
++ * SOF_IPC_TPLG_COMP_FREE, SOF_IPC_TPLG_PIPE_FREE, SOF_IPC_TPLG_BUFFER_FREE
++ */
++struct sof_ipc_free {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t id;
++} __packed;
++
++struct sof_ipc_comp_reply {
++	struct sof_ipc_reply rhdr;
++	uint32_t id;
 +	uint32_t offset;
 +} __packed;
 +
-+/* extended data memory windows for IPC, trace and debug */
-+struct sof_ipc_window {
-+	struct sof_ipc_ext_data_hdr ext_hdr;
-+	uint32_t num_windows;
-+	struct sof_ipc_window_elem window[];
-+}  __packed;
-+
-+#endif
-diff --git a/include/sound/sof/pm.h b/include/sound/sof/pm.h
-new file mode 100644
-index 000000000000..8ae3ad45bdf7
---- /dev/null
-+++ b/include/sound/sof/pm.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
 +/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
++ * Pipeline
 + */
 +
-+#ifndef __INCLUDE_SOUND_SOF_PM_H__
-+#define __INCLUDE_SOUND_SOF_PM_H__
-+
-+#include <sound/sof/header.h>
-+
-+/*
-+ * PM
-+ */
-+
-+/* PM context element */
-+struct sof_ipc_pm_ctx_elem {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t type;
-+	uint32_t size;
-+	uint64_t addr;
-+}  __packed;
-+
-+/*
-+ * PM context - SOF_IPC_PM_CTX_SAVE, SOF_IPC_PM_CTX_RESTORE,
-+ * SOF_IPC_PM_CTX_SIZE
-+ */
-+struct sof_ipc_pm_ctx {
-+	struct sof_ipc_cmd_hdr hdr;
-+	struct sof_ipc_host_buffer buffer;
-+	uint32_t num_elems;
-+	uint32_t size;
-+
-+	/* reserved for future use */
-+	uint32_t reserved[8];
-+
-+	struct sof_ipc_pm_ctx_elem elems[];
-+} __packed;
-+
-+/* enable or disable cores - SOF_IPC_PM_CORE_ENABLE */
-+struct sof_ipc_pm_core_config {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t enable_mask;
-+} __packed;
-+
-+#endif
-diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
-new file mode 100644
-index 000000000000..643f175cb479
---- /dev/null
-+++ b/include/sound/sof/stream.h
-@@ -0,0 +1,148 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_STREAM_H__
-+#define __INCLUDE_SOUND_SOF_STREAM_H__
-+
-+#include <sound/sof/header.h>
-+
-+/*
-+ * Stream configuration.
-+ */
-+
-+#define SOF_IPC_MAX_CHANNELS			8
-+
-+/* common sample rates for use in masks */
-+#define SOF_RATE_8000		(1 <<  0) /**< 8000Hz  */
-+#define SOF_RATE_11025		(1 <<  1) /**< 11025Hz */
-+#define SOF_RATE_12000		(1 <<  2) /**< 12000Hz */
-+#define SOF_RATE_16000		(1 <<  3) /**< 16000Hz */
-+#define SOF_RATE_22050		(1 <<  4) /**< 22050Hz */
-+#define SOF_RATE_24000		(1 <<  5) /**< 24000Hz */
-+#define SOF_RATE_32000		(1 <<  6) /**< 32000Hz */
-+#define SOF_RATE_44100		(1 <<  7) /**< 44100Hz */
-+#define SOF_RATE_48000		(1 <<  8) /**< 48000Hz */
-+#define SOF_RATE_64000		(1 <<  9) /**< 64000Hz */
-+#define SOF_RATE_88200		(1 << 10) /**< 88200Hz */
-+#define SOF_RATE_96000		(1 << 11) /**< 96000Hz */
-+#define SOF_RATE_176400		(1 << 12) /**< 176400Hz */
-+#define SOF_RATE_192000		(1 << 13) /**< 192000Hz */
-+
-+/* continuous and non-standard rates for flexibility */
-+#define SOF_RATE_CONTINUOUS	(1 << 30)  /**< range */
-+#define SOF_RATE_KNOT		(1 << 31)  /**< non-continuous */
-+
-+/* generic PCM flags for runtime settings */
-+#define SOF_PCM_FLAG_XRUN_STOP	(1 << 0) /**< Stop on any XRUN */
-+
-+/* stream PCM frame format */
-+enum sof_ipc_frame {
-+	SOF_IPC_FRAME_S16_LE = 0,
-+	SOF_IPC_FRAME_S24_4LE,
-+	SOF_IPC_FRAME_S32_LE,
-+	SOF_IPC_FRAME_FLOAT,
-+	/* other formats here */
++/** \brief Types of pipeline scheduling time domains */
++enum sof_ipc_pipe_sched_time_domain {
++	SOF_TIME_DOMAIN_DMA = 0,	/**< DMA interrupt */
++	SOF_TIME_DOMAIN_TIMER,		/**< Timer interrupt */
 +};
 +
-+/* stream buffer format */
-+enum sof_ipc_buffer_format {
-+	SOF_IPC_BUFFER_INTERLEAVED,
-+	SOF_IPC_BUFFER_NONINTERLEAVED,
-+	/* other formats here */
++/* new pipeline - SOF_IPC_TPLG_PIPE_NEW */
++struct sof_ipc_pipe_new {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t comp_id;	/**< component id for pipeline */
++	uint32_t pipeline_id;	/**< pipeline id */
++	uint32_t sched_id;	/**< Scheduling component id */
++	uint32_t core;		/**< core we run on */
++	uint32_t period;	/**< execution period in us*/
++	uint32_t priority;	/**< priority level 0 (low) to 10 (max) */
++	uint32_t period_mips;	/**< worst case instruction count per period */
++	uint32_t frames_per_sched;/**< output frames of pipeline, 0 is variable */
++	uint32_t xrun_limit_usecs; /**< report xruns greater than limit */
++	uint32_t time_domain;	/**< scheduling time domain */
++}  __packed;
++
++/* pipeline construction complete - SOF_IPC_TPLG_PIPE_COMPLETE */
++struct sof_ipc_pipe_ready {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t comp_id;
++}  __packed;
++
++struct sof_ipc_pipe_free {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t comp_id;
++}  __packed;
++
++/* connect two components in pipeline - SOF_IPC_TPLG_COMP_CONNECT */
++struct sof_ipc_pipe_comp_connect {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t source_id;
++	uint32_t sink_id;
++}  __packed;
++
++/* external events */
++enum sof_event_types {
++	SOF_EVENT_NONE = 0,
++	SOF_KEYWORD_DETECT_DAPM_EVENT,
 +};
 +
-+/* stream direction */
-+enum sof_ipc_stream_direction {
-+	SOF_IPC_STREAM_PLAYBACK = 0,
-+	SOF_IPC_STREAM_CAPTURE,
-+};
-+
-+/* stream ring info */
-+struct sof_ipc_host_buffer {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t phy_addr;
-+	uint32_t pages;
-+	uint32_t size;
-+	uint32_t reserved[3];
-+} __packed;
-+
-+struct sof_ipc_stream_params {
-+	struct sof_ipc_hdr hdr;
-+	struct sof_ipc_host_buffer buffer;
-+	uint32_t direction;	/**< enum sof_ipc_stream_direction */
-+	uint32_t frame_fmt;	/**< enum sof_ipc_frame */
-+	uint32_t buffer_fmt;	/**< enum sof_ipc_buffer_format */
-+	uint32_t rate;
-+	uint16_t stream_tag;
-+	uint16_t channels;
-+	uint16_t sample_valid_bytes;
-+	uint16_t sample_container_bytes;
-+
-+	/* for notifying host period has completed - 0 means no period IRQ */
-+	uint32_t host_period_bytes;
-+
-+	uint32_t reserved[2];
-+	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map - SOF_CHMAP_ */
-+} __packed;
-+
-+/* PCM params info - SOF_IPC_STREAM_PCM_PARAMS */
-+struct sof_ipc_pcm_params {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t comp_id;
-+	uint32_t flags;		/**< generic PCM flags - SOF_PCM_FLAG_ */
-+	uint32_t reserved[2];
-+	struct sof_ipc_stream_params params;
-+}  __packed;
-+
-+/* PCM params info reply - SOF_IPC_STREAM_PCM_PARAMS_REPLY */
-+struct sof_ipc_pcm_params_reply {
-+	struct sof_ipc_reply rhdr;
-+	uint32_t comp_id;
-+	uint32_t posn_offset;
-+} __packed;
-+
-+/* free stream - SOF_IPC_STREAM_PCM_PARAMS */
-+struct sof_ipc_stream {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t comp_id;
-+} __packed;
-+
-+/* flags indicating which time stamps are in sync with each other */
-+#define	SOF_TIME_HOST_SYNC	(1 << 0)
-+#define	SOF_TIME_DAI_SYNC	(1 << 1)
-+#define	SOF_TIME_WALL_SYNC	(1 << 2)
-+#define	SOF_TIME_STAMP_SYNC	(1 << 3)
-+
-+/* flags indicating which time stamps are valid */
-+#define	SOF_TIME_HOST_VALID	(1 << 8)
-+#define	SOF_TIME_DAI_VALID	(1 << 9)
-+#define	SOF_TIME_WALL_VALID	(1 << 10)
-+#define	SOF_TIME_STAMP_VALID	(1 << 11)
-+
-+/* flags indicating time stamps are 64bit else 3use low 32bit */
-+#define	SOF_TIME_HOST_64	(1 << 16)
-+#define	SOF_TIME_DAI_64		(1 << 17)
-+#define	SOF_TIME_WALL_64	(1 << 18)
-+#define	SOF_TIME_STAMP_64	(1 << 19)
-+
-+struct sof_ipc_stream_posn {
-+	struct sof_ipc_reply rhdr;
-+	uint32_t comp_id;	/**< host component ID */
-+	uint32_t flags;		/**< SOF_TIME_ */
-+	uint32_t wallclock_hz;	/**< frequency of wallclock in Hz */
-+	uint32_t timestamp_ns;	/**< resolution of timestamp in ns */
-+	uint64_t host_posn;	/**< host DMA position in bytes */
-+	uint64_t dai_posn;	/**< DAI DMA position in bytes */
-+	uint64_t comp_posn;	/**< comp position in bytes */
-+	uint64_t wallclock;	/**< audio wall clock */
-+	uint64_t timestamp;	/**< system time stamp */
-+	uint32_t xrun_comp_id;	/**< comp ID of XRUN component */
-+	int32_t xrun_size;	/**< XRUN size in bytes */
-+}  __packed;
-+
 +#endif
-diff --git a/include/sound/sof/trace.h b/include/sound/sof/trace.h
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
 new file mode 100644
-index 000000000000..7d211f319a92
+index 000000000000..2b9de1b97447
 --- /dev/null
-+++ b/include/sound/sof/trace.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2018 Intel Corporation. All rights reserved.
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_TRACE_H__
-+#define __INCLUDE_SOUND_SOF_TRACE_H__
-+
-+#include <sound/sof/header.h>
-+#include <sound/sof/stream.h>
-+
-+/*
-+ * DMA for Trace
-+ */
-+
-+#define SOF_TRACE_FILENAME_SIZE		32
-+
-+/* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS */
-+struct sof_ipc_dma_trace_params {
-+	struct sof_ipc_cmd_hdr hdr;
-+	struct sof_ipc_host_buffer buffer;
-+	uint32_t stream_tag;
-+}  __packed;
-+
-+/* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS */
-+struct sof_ipc_dma_trace_posn {
-+	struct sof_ipc_reply rhdr;
-+	uint32_t host_offset;	/* Offset of DMA host buffer */
-+	uint32_t overflow;	/* overflow bytes if any */
-+	uint32_t messages;	/* total trace messages */
-+}  __packed;
-+
-+/*
-+ * Commom debug
-+ */
-+
-+/*
-+ * SOF panic codes
-+ */
-+#define SOF_IPC_PANIC_MAGIC			0x0dead000
-+#define SOF_IPC_PANIC_MAGIC_MASK		0x0ffff000
-+#define SOF_IPC_PANIC_CODE_MASK			0x00000fff
-+#define SOF_IPC_PANIC_MEM			(SOF_IPC_PANIC_MAGIC | 0x0)
-+#define SOF_IPC_PANIC_WORK			(SOF_IPC_PANIC_MAGIC | 0x1)
-+#define SOF_IPC_PANIC_IPC			(SOF_IPC_PANIC_MAGIC | 0x2)
-+#define SOF_IPC_PANIC_ARCH			(SOF_IPC_PANIC_MAGIC | 0x3)
-+#define SOF_IPC_PANIC_PLATFORM			(SOF_IPC_PANIC_MAGIC | 0x4)
-+#define SOF_IPC_PANIC_TASK			(SOF_IPC_PANIC_MAGIC | 0x5)
-+#define SOF_IPC_PANIC_EXCEPTION			(SOF_IPC_PANIC_MAGIC | 0x6)
-+#define SOF_IPC_PANIC_DEADLOCK			(SOF_IPC_PANIC_MAGIC | 0x7)
-+#define SOF_IPC_PANIC_STACK			(SOF_IPC_PANIC_MAGIC | 0x8)
-+#define SOF_IPC_PANIC_IDLE			(SOF_IPC_PANIC_MAGIC | 0x9)
-+#define SOF_IPC_PANIC_WFI			(SOF_IPC_PANIC_MAGIC | 0xa)
-+#define SOF_IPC_PANIC_ASSERT			(SOF_IPC_PANIC_MAGIC | 0xb)
-+
-+/* panic info include filename and line number */
-+struct sof_ipc_panic_info {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t code;			/* SOF_IPC_PANIC_ */
-+	char filename[SOF_TRACE_FILENAME_SIZE];
-+	uint32_t linenum;
-+}  __packed;
-+
-+#endif
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-new file mode 100644
-index 000000000000..d00373ceca12
---- /dev/null
-+++ b/sound/soc/sof/ipc.c
-@@ -0,0 +1,832 @@
++++ b/sound/soc/sof/topology.c
+@@ -0,0 +1,3164 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -1096,828 +346,3160 @@ index 000000000000..d00373ceca12
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
-+// Generic IPC layer that can work over MMIO and SPI/I2C. PHY layer provided
-+// by platform driver code.
-+//
 +
-+#include <linux/mutex.h>
-+#include <linux/types.h>
-+
++#include <linux/firmware.h>
++#include <sound/tlv.h>
++#include <sound/pcm_params.h>
++#include <uapi/sound/sof/tokens.h>
 +#include "sof-priv.h"
 +#include "ops.h"
 +
++#define COMP_ID_UNASSIGNED		0xffffffff
 +/*
-+ * IPC message default size and timeout (ms).
-+ * TODO: allow platforms to set size and timeout.
++ * Constants used in the computation of linear volume gain
++ * from dB gain 20th root of 10 in Q1.16 fixed-point notation
 + */
-+#define IPC_TIMEOUT_MS		300
-+
-+static void ipc_trace_message(struct snd_sof_dev *sdev, u32 msg_id);
-+static void ipc_stream_message(struct snd_sof_dev *sdev, u32 msg_cmd);
-+
++#define VOL_TWENTIETH_ROOT_OF_TEN	73533
++/* 40th root of 10 in Q1.16 fixed-point notation*/
++#define VOL_FORTIETH_ROOT_OF_TEN	69419
 +/*
-+ * IPC message Tx/Rx message handling.
++ * Volume fractional word length define to 16 sets
++ * the volume linear gain value to use Qx.16 format
 + */
++#define VOLUME_FWL	16
++/* 0.5 dB step value in topology TLV */
++#define VOL_HALF_DB_STEP	50
++/* Full volume for default values */
++#define VOL_ZERO_DB	BIT(VOLUME_FWL)
 +
-+/* SOF generic IPC data */
-+struct snd_sof_ipc {
-+	struct snd_sof_dev *sdev;
++/* TLV data items */
++#define TLV_ITEMS	3
++#define TLV_MIN		0
++#define TLV_STEP	1
++#define TLV_MUTE	2
 +
-+	/* protects messages and the disable flag */
-+	struct mutex tx_mutex;
-+	/* disables further sending of ipc's */
-+	bool disable_ipc_tx;
++/* size of tplg abi in byte */
++#define SOF_TPLG_ABI_SIZE 3
 +
-+	struct snd_sof_ipc_msg msg;
-+};
-+
-+struct sof_ipc_ctrl_data_params {
-+	size_t msg_bytes;
-+	size_t hdr_bytes;
-+	size_t pl_size;
-+	size_t elems;
-+	u32 num_msg;
-+	u8 *src;
-+	u8 *dst;
-+};
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_VERBOSE_IPC)
-+static void ipc_log_header(struct device *dev, u8 *text, u32 cmd)
++/* send pcm params ipc */
++static int ipc_pcm_params(struct snd_sof_widget *swidget, int dir)
 +{
-+	u8 *str;
-+	u8 *str2 = NULL;
-+	u32 glb;
-+	u32 type;
++	struct sof_ipc_pcm_params_reply ipc_params_reply;
++	struct snd_sof_dev *sdev = swidget->sdev;
++	struct sof_ipc_pcm_params pcm;
++	struct snd_pcm_hw_params *params;
++	struct snd_sof_pcm *spcm;
++	int ret = 0;
 +
-+	glb = cmd & SOF_GLB_TYPE_MASK;
-+	type = cmd & SOF_CMD_TYPE_MASK;
++	memset(&pcm, 0, sizeof(pcm));
 +
-+	switch (glb) {
-+	case SOF_IPC_GLB_REPLY:
-+		str = "GLB_REPLY"; break;
-+	case SOF_IPC_GLB_COMPOUND:
-+		str = "GLB_COMPOUND"; break;
-+	case SOF_IPC_GLB_TPLG_MSG:
-+		str = "GLB_TPLG_MSG";
-+		switch (type) {
-+		case SOF_IPC_TPLG_COMP_NEW:
-+			str2 = "COMP_NEW"; break;
-+		case SOF_IPC_TPLG_COMP_FREE:
-+			str2 = "COMP_FREE"; break;
-+		case SOF_IPC_TPLG_COMP_CONNECT:
-+			str2 = "COMP_CONNECT"; break;
-+		case SOF_IPC_TPLG_PIPE_NEW:
-+			str2 = "PIPE_NEW"; break;
-+		case SOF_IPC_TPLG_PIPE_FREE:
-+			str2 = "PIPE_FREE"; break;
-+		case SOF_IPC_TPLG_PIPE_CONNECT:
-+			str2 = "PIPE_CONNECT"; break;
-+		case SOF_IPC_TPLG_PIPE_COMPLETE:
-+			str2 = "PIPE_COMPLETE"; break;
-+		case SOF_IPC_TPLG_BUFFER_NEW:
-+			str2 = "BUFFER_NEW"; break;
-+		case SOF_IPC_TPLG_BUFFER_FREE:
-+			str2 = "BUFFER_FREE"; break;
-+		default:
-+			str2 = "unknown type"; break;
-+		}
-+		break;
-+	case SOF_IPC_GLB_PM_MSG:
-+		str = "GLB_PM_MSG";
-+		switch (type) {
-+		case SOF_IPC_PM_CTX_SAVE:
-+			str2 = "CTX_SAVE"; break;
-+		case SOF_IPC_PM_CTX_RESTORE:
-+			str2 = "CTX_RESTORE"; break;
-+		case SOF_IPC_PM_CTX_SIZE:
-+			str2 = "CTX_SIZE"; break;
-+		case SOF_IPC_PM_CLK_SET:
-+			str2 = "CLK_SET"; break;
-+		case SOF_IPC_PM_CLK_GET:
-+			str2 = "CLK_GET"; break;
-+		case SOF_IPC_PM_CLK_REQ:
-+			str2 = "CLK_REQ"; break;
-+		case SOF_IPC_PM_CORE_ENABLE:
-+			str2 = "CORE_ENABLE"; break;
-+		default:
-+			str2 = "unknown type"; break;
-+		}
-+		break;
-+	case SOF_IPC_GLB_COMP_MSG:
-+		str = "GLB_COMP_MSG: SET_VALUE";
-+		switch (type) {
-+		case SOF_IPC_COMP_SET_VALUE:
-+			str2 = "SET_VALUE"; break;
-+		case SOF_IPC_COMP_GET_VALUE:
-+			str2 = "GET_VALUE"; break;
-+		case SOF_IPC_COMP_SET_DATA:
-+			str2 = "SET_DATA"; break;
-+		case SOF_IPC_COMP_GET_DATA:
-+			str2 = "GET_DATA"; break;
-+		default:
-+			str2 = "unknown type"; break;
-+		}
-+		break;
-+	case SOF_IPC_GLB_STREAM_MSG:
-+		str = "GLB_STREAM_MSG";
-+		switch (type) {
-+		case SOF_IPC_STREAM_PCM_PARAMS:
-+			str2 = "PCM_PARAMS"; break;
-+		case SOF_IPC_STREAM_PCM_PARAMS_REPLY:
-+			str2 = "PCM_REPLY"; break;
-+		case SOF_IPC_STREAM_PCM_FREE:
-+			str2 = "PCM_FREE"; break;
-+		case SOF_IPC_STREAM_TRIG_START:
-+			str2 = "TRIG_START"; break;
-+		case SOF_IPC_STREAM_TRIG_STOP:
-+			str2 = "TRIG_STOP"; break;
-+		case SOF_IPC_STREAM_TRIG_PAUSE:
-+			str2 = "TRIG_PAUSE"; break;
-+		case SOF_IPC_STREAM_TRIG_RELEASE:
-+			str2 = "TRIG_RELEASE"; break;
-+		case SOF_IPC_STREAM_TRIG_DRAIN:
-+			str2 = "TRIG_DRAIN"; break;
-+		case SOF_IPC_STREAM_TRIG_XRUN:
-+			str2 = "TRIG_XRUN"; break;
-+		case SOF_IPC_STREAM_POSITION:
-+			str2 = "POSITION"; break;
-+		case SOF_IPC_STREAM_VORBIS_PARAMS:
-+			str2 = "VORBIS_PARAMS"; break;
-+		case SOF_IPC_STREAM_VORBIS_FREE:
-+			str2 = "VORBIS_FREE"; break;
-+		default:
-+			str2 = "unknown type"; break;
-+		}
-+		break;
-+	case SOF_IPC_FW_READY:
-+		str = "FW_READY"; break;
-+	case SOF_IPC_GLB_DAI_MSG:
-+		str = "GLB_DAI_MSG";
-+		switch (type) {
-+		case SOF_IPC_DAI_CONFIG:
-+			str2 = "CONFIG"; break;
-+		case SOF_IPC_DAI_LOOPBACK:
-+			str2 = "LOOPBACK"; break;
-+		default:
-+			str2 = "unknown type"; break;
-+		}
-+		break;
-+	case SOF_IPC_GLB_TRACE_MSG:
-+		str = "GLB_TRACE_MSG"; break;
-+	default:
-+		str = "unknown GLB command"; break;
++	/* get runtime PCM params using widget's stream name */
++	spcm = snd_sof_find_spcm_name(sdev, swidget->widget->sname);
++	if (!spcm) {
++		dev_err(sdev->dev, "error: cannot find PCM for %s\n",
++			swidget->widget->name);
++		return -EINVAL;
 +	}
 +
-+	if (str2)
-+		dev_dbg(dev, "%s: 0x%x: %s: %s\n", text, cmd, str, str2);
-+	else
-+		dev_dbg(dev, "%s: 0x%x: %s\n", text, cmd, str);
++	params = &spcm->params[dir];
++
++	/* set IPC PCM params */
++	pcm.hdr.size = sizeof(pcm);
++	pcm.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_PARAMS;
++	pcm.comp_id = swidget->comp_id;
++	pcm.params.hdr.size = sizeof(pcm.params);
++	pcm.params.direction = dir;
++	pcm.params.sample_valid_bytes = params_width(params) >> 3;
++	pcm.params.buffer_fmt = SOF_IPC_BUFFER_INTERLEAVED;
++	pcm.params.rate = params_rate(params);
++	pcm.params.channels = params_channels(params);
++	pcm.params.host_period_bytes = params_period_bytes(params);
++
++	/* set format */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_S16_LE;
++		break;
++	case SNDRV_PCM_FORMAT_S24:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_S24_4LE;
++		break;
++	case SNDRV_PCM_FORMAT_S32:
++		pcm.params.frame_fmt = SOF_IPC_FRAME_S32_LE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* send IPC to the DSP */
++	ret = sof_ipc_tx_message(sdev->ipc, pcm.hdr.cmd, &pcm, sizeof(pcm),
++				 &ipc_params_reply, sizeof(ipc_params_reply));
++	if (ret < 0)
++		dev_err(sdev->dev, "error: pcm params failed for %s\n",
++			swidget->widget->name);
++
++	return ret;
 +}
-+#else
-+static inline void ipc_log_header(struct device *dev, u8 *text, u32 cmd)
++
++ /* send stream trigger ipc */
++static int ipc_trigger(struct snd_sof_widget *swidget, int cmd)
 +{
-+	dev_dbg(dev, "%s: 0x%x\n", text, cmd);
++	struct snd_sof_dev *sdev = swidget->sdev;
++	struct sof_ipc_stream stream;
++	struct sof_ipc_reply reply;
++	int ret = 0;
++
++	/* set IPC stream params */
++	stream.hdr.size = sizeof(stream);
++	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | cmd;
++	stream.comp_id = swidget->comp_id;
++
++	/* send IPC to the DSP */
++	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
++				 sizeof(stream), &reply, sizeof(reply));
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to trigger %s\n",
++			swidget->widget->name);
++
++	return ret;
 +}
-+#endif
 +
-+/* wait for IPC message reply */
-+static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
-+			void *reply_data)
++static int sof_keyword_dapm_event(struct snd_soc_dapm_widget *w,
++				  struct snd_kcontrol *k, int event)
 +{
-+	struct snd_sof_dev *sdev = ipc->sdev;
-+	struct sof_ipc_cmd_hdr *hdr = msg->msg_data;
-+	int ret;
++	struct snd_sof_widget *swidget = w->dobj.private;
++	struct snd_sof_dev *sdev;
++	int ret = 0;
 +
-+	/* wait for DSP IPC completion */
-+	ret = wait_event_timeout(msg->waitq, msg->ipc_complete,
-+				 msecs_to_jiffies(IPC_TIMEOUT_MS));
++	if (!swidget)
++		return 0;
 +
-+	if (ret == 0) {
-+		dev_err(sdev->dev, "error: ipc timed out for 0x%x size %d\n",
-+			hdr->cmd, hdr->size);
-+		snd_sof_dsp_dbg_dump(ipc->sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
-+		snd_sof_trace_notify_for_error(ipc->sdev);
-+		ret = -ETIMEDOUT;
-+	} else {
-+		/* copy the data returned from DSP */
-+		ret = msg->reply_error;
-+		if (msg->reply_size)
-+			memcpy(reply_data, msg->reply_data, msg->reply_size);
++	sdev = swidget->sdev;
++
++	dev_dbg(sdev->dev, "received event %d for widget %s\n",
++		event, w->name);
++
++	/* process events */
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* set pcm params */
++		ret = ipc_pcm_params(swidget, SOF_IPC_STREAM_CAPTURE);
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to set pcm params for widget %s\n",
++				swidget->widget->name);
++			break;
++		}
++
++		/* start trigger */
++		ret = ipc_trigger(swidget, SOF_IPC_STREAM_TRIG_START);
 +		if (ret < 0)
-+			dev_err(sdev->dev, "error: ipc error for 0x%x size %zu\n",
-+				hdr->cmd, msg->reply_size);
-+		else
-+			ipc_log_header(sdev->dev, "ipc tx succeeded", hdr->cmd);
++			dev_err(sdev->dev,
++				"error: failed to trigger widget %s\n",
++				swidget->widget->name);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* stop trigger */
++		ret = ipc_trigger(swidget, SOF_IPC_STREAM_TRIG_STOP);
++		if (ret < 0)
++			dev_err(sdev->dev,
++				"error: failed to trigger widget %s\n",
++				swidget->widget->name);
++
++		/* pcm free */
++		ret = ipc_trigger(swidget, SOF_IPC_STREAM_PCM_FREE);
++		if (ret < 0)
++			dev_err(sdev->dev,
++				"error: failed to trigger widget %s\n",
++				swidget->widget->name);
++		break;
++	default:
++		break;
 +	}
 +
 +	return ret;
 +}
 +
-+/* send IPC message from host to DSP */
-+static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
-+				       void *msg_data, size_t msg_bytes,
-+				       void *reply_data, size_t reply_bytes)
-+{
-+	struct snd_sof_dev *sdev = ipc->sdev;
-+	struct snd_sof_ipc_msg *msg;
-+	int ret;
++/* event handlers for keyword detect component */
++static const struct snd_soc_tplg_widget_events sof_kwd_events[] = {
++	{SOF_KEYWORD_DETECT_DAPM_EVENT, sof_keyword_dapm_event},
++};
 +
-+	if (ipc->disable_ipc_tx)
-+		return -ENODEV;
++static inline int get_tlv_data(const int *p, int tlv[TLV_ITEMS])
++{
++	/* we only support dB scale TLV type at the moment */
++	if ((int)p[SNDRV_CTL_TLVO_TYPE] != SNDRV_CTL_TLVT_DB_SCALE)
++		return -EINVAL;
++
++	/* min value in topology tlv data is multiplied by 100 */
++	tlv[TLV_MIN] = (int)p[SNDRV_CTL_TLVO_DB_SCALE_MIN] / 100;
++
++	/* volume steps */
++	tlv[TLV_STEP] = (int)(p[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP] &
++				TLV_DB_SCALE_MASK);
++
++	/* mute ON/OFF */
++	if ((p[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP] &
++		TLV_DB_SCALE_MUTE) == 0)
++		tlv[TLV_MUTE] = 0;
++	else
++		tlv[TLV_MUTE] = 1;
++
++	return 0;
++}
++
++/*
++ * Function to truncate an unsigned 64-bit number
++ * by x bits and return 32-bit unsigned number. This
++ * function also takes care of rounding while truncating
++ */
++static inline u32 vol_shift_64(u64 i, u32 x)
++{
++	/* do not truncate more than 32 bits */
++	if (x > 32)
++		x = 32;
++
++	if (x == 0)
++		return (u32)i;
++
++	return (u32)(((i >> (x - 1)) + 1) >> 1);
++}
++
++/*
++ * Function to compute a ^ exp where,
++ * a is a fractional number represented by a fixed-point
++ * integer with a fractional world length of "fwl"
++ * exp is an integer
++ * fwl is the fractional word length
++ * Return value is a fractional number represented by a
++ * fixed-point integer with a fractional word length of "fwl"
++ */
++static u32 vol_pow32(u32 a, int exp, u32 fwl)
++{
++	int i, iter;
++	u32 power = 1 << fwl;
++	u64 numerator;
++
++	/* if exponent is 0, return 1 */
++	if (exp == 0)
++		return power;
++
++	/* determine the number of iterations based on the exponent */
++	if (exp < 0)
++		iter = exp * -1;
++	else
++		iter = exp;
++
++	/* mutiply a "iter" times to compute power */
++	for (i = 0; i < iter; i++) {
++		/*
++		 * Product of 2 Qx.fwl fixed-point numbers yields a Q2*x.2*fwl
++		 * Truncate product back to fwl fractional bits with rounding
++		 */
++		power = vol_shift_64((u64)power * a, fwl);
++	}
++
++	if (exp > 0) {
++		/* if exp is positive, return the result */
++		return power;
++	}
++
++	/* if exp is negative, return the multiplicative inverse */
++	numerator = (u64)1 << (fwl << 1);
++	do_div(numerator, power);
++
++	return (u32)numerator;
++}
++
++/*
++ * Function to calculate volume gain from TLV data.
++ * This function can only handle gain steps that are multiples of 0.5 dB
++ */
++static u32 vol_compute_gain(u32 value, int *tlv)
++{
++	int dB_gain;
++	u32 linear_gain;
++	int f_step;
++
++	/* mute volume */
++	if (value == 0 && tlv[TLV_MUTE])
++		return 0;
 +
 +	/*
-+	 * The spin-lock is also still needed to protect message objects against
-+	 * other atomic contexts.
++	 * compute dB gain from tlv. tlv_step
++	 * in topology is multiplied by 100
 +	 */
-+	spin_lock_irq(&sdev->ipc_lock);
++	dB_gain = tlv[TLV_MIN] + (value * tlv[TLV_STEP]) / 100;
 +
-+	/* initialise the message */
-+	msg = &ipc->msg;
++	/*
++	 * compute linear gain represented by fixed-point
++	 * int with VOLUME_FWL fractional bits
++	 */
++	linear_gain = vol_pow32(VOL_TWENTIETH_ROOT_OF_TEN, dB_gain, VOLUME_FWL);
 +
-+	msg->header = header;
-+	msg->msg_size = msg_bytes;
-+	msg->reply_size = reply_bytes;
-+	msg->reply_error = 0;
++	/* extract the fractional part of volume step */
++	f_step = tlv[TLV_STEP] - (tlv[TLV_STEP] / 100);
 +
-+	/* attach any data */
-+	if (msg_bytes)
-+		memcpy(msg->msg_data, msg_data, msg_bytes);
++	/* if volume step is an odd multiple of 0.5 dB */
++	if (f_step == VOL_HALF_DB_STEP && (value & 1))
++		linear_gain = vol_shift_64((u64)linear_gain *
++						  VOL_FORTIETH_ROOT_OF_TEN,
++						  VOLUME_FWL);
 +
-+	sdev->msg = msg;
++	return linear_gain;
++}
 +
-+	ret = snd_sof_dsp_send_msg(sdev, msg);
-+	/* Next reply that we receive will be related to this message */
-+	if (!ret)
-+		msg->ipc_complete = false;
++/*
++ * Set up volume table for kcontrols from tlv data
++ * "size" specifies the number of entries in the table
++ */
++static int set_up_volume_table(struct snd_sof_control *scontrol,
++			       int tlv[TLV_ITEMS], int size)
++{
++	int j;
 +
-+	spin_unlock_irq(&sdev->ipc_lock);
++	/* init the volume table */
++	scontrol->volume_table = kcalloc(size, sizeof(u32), GFP_KERNEL);
++	if (!scontrol->volume_table)
++		return -ENOMEM;
 +
++	/* populate the volume table */
++	for (j = 0; j < size ; j++)
++		scontrol->volume_table[j] = vol_compute_gain(j, tlv);
++
++	return 0;
++}
++
++struct sof_dai_types {
++	const char *name;
++	enum sof_ipc_dai_type type;
++};
++
++static const struct sof_dai_types sof_dais[] = {
++	{"SSP", SOF_DAI_INTEL_SSP},
++	{"HDA", SOF_DAI_INTEL_HDA},
++	{"DMIC", SOF_DAI_INTEL_DMIC},
++};
++
++static enum sof_ipc_dai_type find_dai(const char *name)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sof_dais); i++) {
++		if (strcmp(name, sof_dais[i].name) == 0)
++			return sof_dais[i].type;
++	}
++
++	return SOF_DAI_INTEL_NONE;
++}
++
++/*
++ * Supported Frame format types and lookup, add new ones to end of list.
++ */
++
++struct sof_frame_types {
++	const char *name;
++	enum sof_ipc_frame frame;
++};
++
++static const struct sof_frame_types sof_frames[] = {
++	{"s16le", SOF_IPC_FRAME_S16_LE},
++	{"s24le", SOF_IPC_FRAME_S24_4LE},
++	{"s32le", SOF_IPC_FRAME_S32_LE},
++	{"float", SOF_IPC_FRAME_FLOAT},
++};
++
++static enum sof_ipc_frame find_format(const char *name)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sof_frames); i++) {
++		if (strcmp(name, sof_frames[i].name) == 0)
++			return sof_frames[i].frame;
++	}
++
++	/* use s32le if nothing is specified */
++	return SOF_IPC_FRAME_S32_LE;
++}
++
++struct sof_process_types {
++	const char *name;
++	enum sof_ipc_process_type type;
++	enum sof_comp_type comp_type;
++};
++
++static const struct sof_process_types sof_process[] = {
++	{"EQFIR", SOF_PROCESS_EQFIR, SOF_COMP_EQ_FIR},
++	{"EQIIR", SOF_PROCESS_EQIIR, SOF_COMP_EQ_IIR},
++	{"KEYWORD_DETECT", SOF_PROCESS_KEYWORD_DETECT, SOF_COMP_KEYWORD_DETECT},
++	{"KPB", SOF_PROCESS_KPB, SOF_COMP_KPB},
++	{"CHAN_SELECTOR", SOF_PROCESS_CHAN_SELECTOR, SOF_COMP_SELECTOR},
++};
++
++static enum sof_ipc_process_type find_process(const char *name)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sof_process); i++) {
++		if (strcmp(name, sof_process[i].name) == 0)
++			return sof_process[i].type;
++	}
++
++	return SOF_PROCESS_NONE;
++}
++
++static enum sof_comp_type find_process_comp_type(enum sof_ipc_process_type type)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sof_process); i++) {
++		if (sof_process[i].type == type)
++			return sof_process[i].comp_type;
++	}
++
++	return SOF_COMP_NONE;
++}
++
++/*
++ * Standard Kcontrols.
++ */
++
++static int sof_control_load_volume(struct snd_soc_component *scomp,
++				   struct snd_sof_control *scontrol,
++				   struct snd_kcontrol_new *kc,
++				   struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_mixer_control *mc =
++		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
++	struct sof_ipc_ctrl_data *cdata;
++	int tlv[TLV_ITEMS];
++	unsigned int i;
++	int ret;
++
++	/* validate topology data */
++	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN)
++		return -EINVAL;
++
++	/* init the volume get/put data */
++	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
++			 sizeof(struct sof_ipc_ctrl_value_chan) *
++			 le32_to_cpu(mc->num_channels);
++	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->control_data)
++		return -ENOMEM;
++
++	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->num_channels = le32_to_cpu(mc->num_channels);
++
++	/* set cmd for mixer control */
++	if (le32_to_cpu(mc->max) == 1) {
++		scontrol->cmd = SOF_CTRL_CMD_SWITCH;
++		goto out;
++	}
++
++	scontrol->cmd = SOF_CTRL_CMD_VOLUME;
++
++	/* extract tlv data */
++	if (get_tlv_data(kc->tlv.p, tlv) < 0) {
++		dev_err(sdev->dev, "error: invalid TLV data\n");
++		return -EINVAL;
++	}
++
++	/* set up volume table */
++	ret = set_up_volume_table(scontrol, tlv, le32_to_cpu(mc->max) + 1);
 +	if (ret < 0) {
-+		/* So far IPC TX never fails, consider making the above void */
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: ipc tx failed with error %d\n",
-+				    ret);
++		dev_err(sdev->dev, "error: setting up volume table\n");
 +		return ret;
 +	}
 +
-+	ipc_log_header(sdev->dev, "ipc tx", msg->header);
++	/* set default volume values to 0dB in control */
++	cdata = scontrol->control_data;
++	for (i = 0; i < scontrol->num_channels; i++) {
++		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = VOL_ZERO_DB;
++	}
 +
-+	/* now wait for completion */
-+	if (!ret)
-+		ret = tx_wait_done(ipc, msg, reply_data);
++out:
++	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
++		scontrol->comp_id, scontrol->num_channels);
 +
-+	return ret;
++	return 0;
 +}
 +
-+/* send IPC message from host to DSP */
-+int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
-+		       void *msg_data, size_t msg_bytes, void *reply_data,
-+		       size_t reply_bytes)
++static int sof_control_load_enum(struct snd_soc_component *scomp,
++				 struct snd_sof_control *scontrol,
++				 struct snd_kcontrol_new *kc,
++				 struct snd_soc_tplg_ctl_hdr *hdr)
 +{
-+	int ret;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_enum_control *ec =
++		container_of(hdr, struct snd_soc_tplg_enum_control, hdr);
 +
-+	if (msg_bytes > SOF_IPC_MSG_MAX_SIZE ||
-+	    reply_bytes > SOF_IPC_MSG_MAX_SIZE)
-+		return -ENOBUFS;
-+
-+	/* Serialise IPC TX */
-+	mutex_lock(&ipc->tx_mutex);
-+
-+	ret = sof_ipc_tx_message_unlocked(ipc, header, msg_data, msg_bytes,
-+					  reply_data, reply_bytes);
-+
-+	mutex_unlock(&ipc->tx_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(sof_ipc_tx_message);
-+
-+/* handle reply message from DSP */
-+int snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id)
-+{
-+	struct snd_sof_ipc_msg *msg = &sdev->ipc->msg;
-+	unsigned long flags;
-+
-+	/*
-+	 * Protect against a theoretical race with sof_ipc_tx_message(): if the
-+	 * DSP is fast enough to receive an IPC message, reply to it, and the
-+	 * host interrupt processing calls this function on a different core
-+	 * from the one, where the sending is taking place, the message might
-+	 * not yet be marked as expecting a reply.
-+	 */
-+	spin_lock_irqsave(&sdev->ipc_lock, flags);
-+
-+	if (msg->ipc_complete) {
-+		spin_unlock_irqrestore(&sdev->ipc_lock, flags);
-+		dev_err(sdev->dev, "error: no reply expected, received 0x%x",
-+			msg_id);
++	/* validate topology data */
++	if (le32_to_cpu(ec->num_channels) > SND_SOC_TPLG_MAX_CHAN)
 +		return -EINVAL;
-+	}
 +
-+	/* wake up and return the error if we have waiters on this message ? */
-+	msg->ipc_complete = true;
-+	wake_up(&msg->waitq);
-+
-+	spin_unlock_irqrestore(&sdev->ipc_lock, flags);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_ipc_reply);
-+
-+/* DSP firmware has sent host a message  */
-+void snd_sof_ipc_msgs_rx(struct snd_sof_dev *sdev)
-+{
-+	struct sof_ipc_cmd_hdr hdr;
-+	u32 cmd, type;
-+	int err = 0;
-+
-+	/* read back header */
-+	snd_sof_ipc_msg_data(sdev, NULL, &hdr, sizeof(hdr));
-+	ipc_log_header(sdev->dev, "ipc rx", hdr.cmd);
-+
-+	cmd = hdr.cmd & SOF_GLB_TYPE_MASK;
-+	type = hdr.cmd & SOF_CMD_TYPE_MASK;
-+
-+	/* check message type */
-+	switch (cmd) {
-+	case SOF_IPC_GLB_REPLY:
-+		dev_err(sdev->dev, "error: ipc reply unknown\n");
-+		break;
-+	case SOF_IPC_FW_READY:
-+		/* check for FW boot completion */
-+		if (!sdev->boot_complete) {
-+			err = sof_ops(sdev)->fw_ready(sdev, cmd);
-+			if (err < 0) {
-+				/*
-+				 * this indicates a mismatch in ABI
-+				 * between the driver and fw
-+				 */
-+				dev_err(sdev->dev, "error: ABI mismatch %d\n",
-+					err);
-+			} else {
-+				/* firmware boot completed OK */
-+				sdev->boot_complete = true;
-+			}
-+
-+			/* wake up firmware loader */
-+			wake_up(&sdev->boot_wait);
-+		}
-+		break;
-+	case SOF_IPC_GLB_COMPOUND:
-+	case SOF_IPC_GLB_TPLG_MSG:
-+	case SOF_IPC_GLB_PM_MSG:
-+	case SOF_IPC_GLB_COMP_MSG:
-+		break;
-+	case SOF_IPC_GLB_STREAM_MSG:
-+		/* need to pass msg id into the function */
-+		ipc_stream_message(sdev, hdr.cmd);
-+		break;
-+	case SOF_IPC_GLB_TRACE_MSG:
-+		ipc_trace_message(sdev, type);
-+		break;
-+	default:
-+		dev_err(sdev->dev, "error: unknown DSP message 0x%x\n", cmd);
-+		break;
-+	}
-+
-+	ipc_log_header(sdev->dev, "ipc rx done", hdr.cmd);
-+}
-+EXPORT_SYMBOL(snd_sof_ipc_msgs_rx);
-+
-+/*
-+ * IPC trace mechanism.
-+ */
-+
-+static void ipc_trace_message(struct snd_sof_dev *sdev, u32 msg_id)
-+{
-+	struct sof_ipc_dma_trace_posn posn;
-+
-+	switch (msg_id) {
-+	case SOF_IPC_TRACE_DMA_POSITION:
-+		/* read back full message */
-+		snd_sof_ipc_msg_data(sdev, NULL, &posn, sizeof(posn));
-+		snd_sof_trace_update_pos(sdev, &posn);
-+		break;
-+	default:
-+		dev_err(sdev->dev, "error: unhandled trace message %x\n",
-+			msg_id);
-+		break;
-+	}
-+}
-+
-+/*
-+ * IPC stream position.
-+ */
-+
-+static void ipc_period_elapsed(struct snd_sof_dev *sdev, u32 msg_id)
-+{
-+	struct snd_sof_pcm_stream *stream;
-+	struct sof_ipc_stream_posn posn;
-+	struct snd_sof_pcm *spcm;
-+	int direction;
-+
-+	spcm = snd_sof_find_spcm_comp(sdev, msg_id, &direction);
-+	if (!spcm) {
-+		dev_err(sdev->dev,
-+			"error: period elapsed for unknown stream, msg_id %d\n",
-+			msg_id);
-+		return;
-+	}
-+
-+	stream = &spcm->stream[direction];
-+	snd_sof_ipc_msg_data(sdev, stream->substream, &posn, sizeof(posn));
-+
-+	dev_dbg(sdev->dev, "posn : host 0x%llx dai 0x%llx wall 0x%llx\n",
-+		posn.host_posn, posn.dai_posn, posn.wallclock);
-+
-+	memcpy(&stream->posn, &posn, sizeof(posn));
-+
-+	/* only inform ALSA for period_wakeup mode */
-+	if (!stream->substream->runtime->no_period_wakeup)
-+		snd_pcm_period_elapsed(stream->substream);
-+}
-+
-+/* DSP notifies host of an XRUN within FW */
-+static void ipc_xrun(struct snd_sof_dev *sdev, u32 msg_id)
-+{
-+	struct snd_sof_pcm_stream *stream;
-+	struct sof_ipc_stream_posn posn;
-+	struct snd_sof_pcm *spcm;
-+	int direction;
-+
-+	spcm = snd_sof_find_spcm_comp(sdev, msg_id, &direction);
-+	if (!spcm) {
-+		dev_err(sdev->dev, "error: XRUN for unknown stream, msg_id %d\n",
-+			msg_id);
-+		return;
-+	}
-+
-+	stream = &spcm->stream[direction];
-+	snd_sof_ipc_msg_data(sdev, stream->substream, &posn, sizeof(posn));
-+
-+	dev_dbg(sdev->dev,  "posn XRUN: host %llx comp %d size %d\n",
-+		posn.host_posn, posn.xrun_comp_id, posn.xrun_size);
-+
-+#if defined(CONFIG_SND_SOC_SOF_DEBUG_XRUN_STOP)
-+	/* stop PCM on XRUN - used for pipeline debug */
-+	memcpy(&stream->posn, &posn, sizeof(posn));
-+	snd_pcm_stop_xrun(stream->substream);
-+#endif
-+}
-+
-+/* stream notifications from DSP FW */
-+static void ipc_stream_message(struct snd_sof_dev *sdev, u32 msg_cmd)
-+{
-+	/* get msg cmd type and msd id */
-+	u32 msg_type = msg_cmd & SOF_CMD_TYPE_MASK;
-+	u32 msg_id = SOF_IPC_MESSAGE_ID(msg_cmd);
-+
-+	switch (msg_type) {
-+	case SOF_IPC_STREAM_POSITION:
-+		ipc_period_elapsed(sdev, msg_id);
-+		break;
-+	case SOF_IPC_STREAM_TRIG_XRUN:
-+		ipc_xrun(sdev, msg_id);
-+		break;
-+	default:
-+		dev_err(sdev->dev, "error: unhandled stream message %x\n",
-+			msg_id);
-+		break;
-+	}
-+}
-+
-+/* get stream position IPC - use faster MMIO method if available on platform */
-+int snd_sof_ipc_stream_posn(struct snd_sof_dev *sdev,
-+			    struct snd_sof_pcm *spcm, int direction,
-+			    struct sof_ipc_stream_posn *posn)
-+{
-+	struct sof_ipc_stream stream;
-+	int err;
-+
-+	/* read position via slower IPC */
-+	stream.hdr.size = sizeof(stream);
-+	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_POSITION;
-+	stream.comp_id = spcm->stream[direction].comp_id;
-+
-+	/* send IPC to the DSP */
-+	err = sof_ipc_tx_message(sdev->ipc,
-+				 stream.hdr.cmd, &stream, sizeof(stream), &posn,
-+				 sizeof(*posn));
-+	if (err < 0) {
-+		dev_err(sdev->dev, "error: failed to get stream %d position\n",
-+			stream.comp_id);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_ipc_stream_posn);
-+
-+static int sof_get_ctrl_copy_params(enum sof_ipc_ctrl_type ctrl_type,
-+				    struct sof_ipc_ctrl_data *src,
-+				    struct sof_ipc_ctrl_data *dst,
-+				    struct sof_ipc_ctrl_data_params *sparams)
-+{
-+	switch (ctrl_type) {
-+	case SOF_CTRL_TYPE_VALUE_CHAN_GET:
-+	case SOF_CTRL_TYPE_VALUE_CHAN_SET:
-+		sparams->src = (u8 *)src->chanv;
-+		sparams->dst = (u8 *)dst->chanv;
-+		break;
-+	case SOF_CTRL_TYPE_VALUE_COMP_GET:
-+	case SOF_CTRL_TYPE_VALUE_COMP_SET:
-+		sparams->src = (u8 *)src->compv;
-+		sparams->dst = (u8 *)dst->compv;
-+		break;
-+	case SOF_CTRL_TYPE_DATA_GET:
-+	case SOF_CTRL_TYPE_DATA_SET:
-+		sparams->src = (u8 *)src->data->data;
-+		sparams->dst = (u8 *)dst->data->data;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* calculate payload size and number of messages */
-+	sparams->pl_size = SOF_IPC_MSG_MAX_SIZE - sparams->hdr_bytes;
-+	sparams->num_msg = DIV_ROUND_UP(sparams->msg_bytes, sparams->pl_size);
-+
-+	return 0;
-+}
-+
-+static int sof_set_get_large_ctrl_data(struct snd_sof_dev *sdev,
-+				       struct sof_ipc_ctrl_data *cdata,
-+				       struct sof_ipc_ctrl_data_params *sparams,
-+				       bool send)
-+{
-+	struct sof_ipc_ctrl_data *partdata;
-+	size_t send_bytes;
-+	size_t offset = 0;
-+	size_t msg_bytes;
-+	size_t pl_size;
-+	int err = 0;
-+	int i;
-+
-+	/* allocate max ipc size because we have at least one */
-+	partdata = kzalloc(SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
-+	if (!partdata)
++	/* init the enum get/put data */
++	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
++			 sizeof(struct sof_ipc_ctrl_value_chan) *
++			 le32_to_cpu(ec->num_channels);
++	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->control_data)
 +		return -ENOMEM;
 +
-+	if (send)
-+		sof_get_ctrl_copy_params(cdata->type, cdata, partdata, sparams);
-+	else
-+		sof_get_ctrl_copy_params(cdata->type, partdata, cdata, sparams);
++	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->num_channels = le32_to_cpu(ec->num_channels);
 +
-+	msg_bytes = sparams->msg_bytes;
-+	pl_size = sparams->pl_size;
++	scontrol->cmd = SOF_CTRL_CMD_ENUM;
 +
-+	/* copy the header data */
-+	memcpy(partdata, cdata, sparams->hdr_bytes);
++	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d comp_id %d\n",
++		scontrol->comp_id, scontrol->num_channels, scontrol->comp_id);
 +
-+	/* Serialise IPC TX */
-+	mutex_lock(&sdev->ipc->tx_mutex);
++	return 0;
++}
 +
-+	/* copy the payload data in a loop */
-+	for (i = 0; i < sparams->num_msg; i++) {
-+		send_bytes = min(msg_bytes, pl_size);
-+		partdata->num_elems = send_bytes;
-+		partdata->rhdr.hdr.size = sparams->hdr_bytes + send_bytes;
-+		partdata->msg_index = i;
-+		msg_bytes -= send_bytes;
-+		partdata->elems_remaining = msg_bytes;
++static int sof_control_load_bytes(struct snd_soc_component *scomp,
++				  struct snd_sof_control *scontrol,
++				  struct snd_kcontrol_new *kc,
++				  struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_ctrl_data *cdata;
++	struct snd_soc_tplg_bytes_control *control =
++		container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
++	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
++	int max_size = sbe->max;
 +
-+		if (send)
-+			memcpy(sparams->dst, sparams->src + offset, send_bytes);
-+
-+		err = sof_ipc_tx_message_unlocked(sdev->ipc,
-+						  partdata->rhdr.hdr.cmd,
-+						  partdata,
-+						  partdata->rhdr.hdr.size,
-+						  partdata,
-+						  partdata->rhdr.hdr.size);
-+		if (err < 0)
-+			break;
-+
-+		if (!send)
-+			memcpy(sparams->dst + offset, sparams->src, send_bytes);
-+
-+		offset += pl_size;
++	if (le32_to_cpu(control->priv.size) > max_size) {
++		dev_err(sdev->dev, "err: bytes data size %d exceeds max %d.\n",
++			control->priv.size, max_size);
++		return -EINVAL;
 +	}
 +
-+	mutex_unlock(&sdev->ipc->tx_mutex);
++	/* init the get/put bytes data */
++	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
++		le32_to_cpu(control->priv.size);
++	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
++	cdata = scontrol->control_data;
++	if (!scontrol->control_data)
++		return -ENOMEM;
 +
-+	kfree(partdata);
-+	return err;
++	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->cmd = SOF_CTRL_CMD_BINARY;
++
++	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
++		scontrol->comp_id, scontrol->num_channels);
++
++	if (le32_to_cpu(control->priv.size) > 0) {
++		memcpy(cdata->data, control->priv.data,
++		       le32_to_cpu(control->priv.size));
++
++		if (cdata->data->magic != SOF_ABI_MAGIC) {
++			dev_err(sdev->dev, "error: Wrong ABI magic 0x%08x.\n",
++				cdata->data->magic);
++			return -EINVAL;
++		}
++		if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION,
++						 cdata->data->abi)) {
++			dev_err(sdev->dev,
++				"error: Incompatible ABI version 0x%08x.\n",
++				cdata->data->abi);
++			return -EINVAL;
++		}
++		if (cdata->data->size + sizeof(const struct sof_abi_hdr) !=
++		    le32_to_cpu(control->priv.size)) {
++			dev_err(sdev->dev,
++				"error: Conflict in bytes vs. priv size.\n");
++			return -EINVAL;
++		}
++	}
++	return 0;
 +}
 +
 +/*
-+ * IPC get()/set() for kcontrols.
++ * Topology Token Parsing.
++ * New tokens should be added to headers and parsing tables below.
 + */
-+int snd_sof_ipc_set_get_comp_data(struct snd_sof_ipc *ipc,
-+				  struct snd_sof_control *scontrol,
-+				  u32 ipc_cmd,
-+				  enum sof_ipc_ctrl_type ctrl_type,
-+				  enum sof_ipc_ctrl_cmd ctrl_cmd,
-+				  bool send)
++
++struct sof_topology_token {
++	u32 token;
++	u32 type;
++	int (*get_token)(void *elem, void *object, u32 offset, u32 size);
++	u32 offset;
++	u32 size;
++};
++
++static int get_token_u32(void *elem, void *object, u32 offset, u32 size)
 +{
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct snd_sof_dev *sdev = ipc->sdev;
-+	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
-+	struct sof_ipc_fw_version *v = &ready->version;
-+	struct sof_ipc_ctrl_data_params sparams;
-+	size_t send_bytes;
-+	int err;
++	struct snd_soc_tplg_vendor_value_elem *velem = elem;
++	u32 *val = (u32 *)((u8 *)object + offset);
 +
-+	/* read or write firmware volume */
-+	if (scontrol->readback_offset != 0) {
-+		/* write/read value header via mmaped region */
-+		send_bytes = sizeof(struct sof_ipc_ctrl_value_chan) *
-+		cdata->num_elems;
-+		if (send)
-+			snd_sof_dsp_block_write(sdev, sdev->mmio_bar,
-+						scontrol->readback_offset,
-+						cdata->chanv, send_bytes);
++	*val = le32_to_cpu(velem->value);
++	return 0;
++}
 +
-+		else
-+			snd_sof_dsp_block_read(sdev, sdev->mmio_bar,
-+					       scontrol->readback_offset,
-+					       cdata->chanv, send_bytes);
++static int get_token_u16(void *elem, void *object, u32 offset, u32 size)
++{
++	struct snd_soc_tplg_vendor_value_elem *velem = elem;
++	u16 *val = (u16 *)((u8 *)object + offset);
++
++	*val = (u16)le32_to_cpu(velem->value);
++	return 0;
++}
++
++static int get_token_comp_format(void *elem, void *object, u32 offset, u32 size)
++{
++	struct snd_soc_tplg_vendor_string_elem *velem = elem;
++	u32 *val = (u32 *)((u8 *)object + offset);
++
++	*val = find_format(velem->string);
++	return 0;
++}
++
++static int get_token_dai_type(void *elem, void *object, u32 offset, u32 size)
++{
++	struct snd_soc_tplg_vendor_string_elem *velem = elem;
++	u32 *val = (u32 *)((u8 *)object + offset);
++
++	*val = find_dai(velem->string);
++	return 0;
++}
++
++static int get_token_process_type(void *elem, void *object, u32 offset,
++				  u32 size)
++{
++	struct snd_soc_tplg_vendor_string_elem *velem = elem;
++	u32 *val = (u32 *)((u8 *)object + offset);
++
++	*val = find_process(velem->string);
++	return 0;
++}
++
++/* Buffers */
++static const struct sof_topology_token buffer_tokens[] = {
++	{SOF_TKN_BUF_SIZE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_buffer, size), 0},
++	{SOF_TKN_BUF_CAPS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_buffer, caps), 0},
++};
++
++/* DAI */
++static const struct sof_topology_token dai_tokens[] = {
++	{SOF_TKN_DAI_TYPE, SND_SOC_TPLG_TUPLE_TYPE_STRING, get_token_dai_type,
++		offsetof(struct sof_ipc_comp_dai, type), 0},
++	{SOF_TKN_DAI_INDEX, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_dai, dai_index), 0},
++	{SOF_TKN_DAI_DIRECTION, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_dai, direction), 0},
++};
++
++/* BE DAI link */
++static const struct sof_topology_token dai_link_tokens[] = {
++	{SOF_TKN_DAI_TYPE, SND_SOC_TPLG_TUPLE_TYPE_STRING, get_token_dai_type,
++		offsetof(struct sof_ipc_dai_config, type), 0},
++	{SOF_TKN_DAI_INDEX, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_config, dai_index), 0},
++};
++
++/* scheduling */
++static const struct sof_topology_token sched_tokens[] = {
++	{SOF_TKN_SCHED_PERIOD, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_pipe_new, period), 0},
++	{SOF_TKN_SCHED_PRIORITY, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_pipe_new, priority), 0},
++	{SOF_TKN_SCHED_MIPS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_pipe_new, period_mips), 0},
++	{SOF_TKN_SCHED_CORE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_pipe_new, core), 0},
++	{SOF_TKN_SCHED_FRAMES, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_pipe_new, frames_per_sched), 0},
++	{SOF_TKN_SCHED_TIME_DOMAIN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_pipe_new, time_domain), 0},
++};
++
++/* volume */
++static const struct sof_topology_token volume_tokens[] = {
++	{SOF_TKN_VOLUME_RAMP_STEP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		get_token_u32, offsetof(struct sof_ipc_comp_volume, ramp), 0},
++	{SOF_TKN_VOLUME_RAMP_STEP_MS,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_volume, initial_ramp), 0},
++};
++
++/* SRC */
++static const struct sof_topology_token src_tokens[] = {
++	{SOF_TKN_SRC_RATE_IN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_src, source_rate), 0},
++	{SOF_TKN_SRC_RATE_OUT, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_src, sink_rate), 0},
++};
++
++/* Tone */
++static const struct sof_topology_token tone_tokens[] = {
++};
++
++/* EFFECT */
++static const struct sof_topology_token process_tokens[] = {
++	{SOF_TKN_PROCESS_TYPE, SND_SOC_TPLG_TUPLE_TYPE_STRING,
++		get_token_process_type,
++		offsetof(struct sof_ipc_comp_process, type), 0},
++};
++
++/* PCM */
++static const struct sof_topology_token pcm_tokens[] = {
++	{SOF_TKN_PCM_DMAC_CONFIG, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_host, dmac_config), 0},
++};
++
++/* Generic components */
++static const struct sof_topology_token comp_tokens[] = {
++	{SOF_TKN_COMP_PERIOD_SINK_COUNT,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_config, periods_sink), 0},
++	{SOF_TKN_COMP_PERIOD_SOURCE_COUNT,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_config, periods_source), 0},
++	{SOF_TKN_COMP_FORMAT,
++		SND_SOC_TPLG_TUPLE_TYPE_STRING, get_token_comp_format,
++		offsetof(struct sof_ipc_comp_config, frame_fmt), 0},
++};
++
++/* SSP */
++static const struct sof_topology_token ssp_tokens[] = {
++	{SOF_TKN_INTEL_SSP_CLKS_CONTROL,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_ssp_params, clks_control), 0},
++	{SOF_TKN_INTEL_SSP_MCLK_ID,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_ssp_params, mclk_id), 0},
++	{SOF_TKN_INTEL_SSP_SAMPLE_BITS, SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		get_token_u32,
++		offsetof(struct sof_ipc_dai_ssp_params, sample_valid_bits), 0},
++	{SOF_TKN_INTEL_SSP_FRAME_PULSE_WIDTH, SND_SOC_TPLG_TUPLE_TYPE_SHORT,
++		get_token_u16,
++		offsetof(struct sof_ipc_dai_ssp_params, frame_pulse_width), 0},
++	{SOF_TKN_INTEL_SSP_QUIRKS, SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		get_token_u32,
++		offsetof(struct sof_ipc_dai_ssp_params, quirks), 0},
++	{SOF_TKN_INTEL_SSP_TDM_PADDING_PER_SLOT, SND_SOC_TPLG_TUPLE_TYPE_BOOL,
++		get_token_u16,
++		offsetof(struct sof_ipc_dai_ssp_params,
++			 tdm_per_slot_padding_flag), 0},
++
++};
++
++/* DMIC */
++static const struct sof_topology_token dmic_tokens[] = {
++	{SOF_TKN_INTEL_DMIC_DRIVER_VERSION,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_dmic_params, driver_ipc_version),
++		0},
++	{SOF_TKN_INTEL_DMIC_CLK_MIN,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_dmic_params, pdmclk_min), 0},
++	{SOF_TKN_INTEL_DMIC_CLK_MAX,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_dmic_params, pdmclk_max), 0},
++	{SOF_TKN_INTEL_DMIC_SAMPLE_RATE,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_dmic_params, fifo_fs), 0},
++	{SOF_TKN_INTEL_DMIC_DUTY_MIN,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_params, duty_min), 0},
++	{SOF_TKN_INTEL_DMIC_DUTY_MAX,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_params, duty_max), 0},
++	{SOF_TKN_INTEL_DMIC_NUM_PDM_ACTIVE,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_dmic_params,
++			 num_pdm_active), 0},
++	{SOF_TKN_INTEL_DMIC_FIFO_WORD_LENGTH,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_params, fifo_bits), 0},
++};
++
++/*
++ * DMIC PDM Tokens
++ * SOF_TKN_INTEL_DMIC_PDM_CTRL_ID should be the first token
++ * as it increments the index while parsing the array of pdm tokens
++ * and determines the correct offset
++ */
++static const struct sof_topology_token dmic_pdm_tokens[] = {
++	{SOF_TKN_INTEL_DMIC_PDM_CTRL_ID,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, id),
++		0},
++	{SOF_TKN_INTEL_DMIC_PDM_MIC_A_Enable,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, enable_mic_a),
++		0},
++	{SOF_TKN_INTEL_DMIC_PDM_MIC_B_Enable,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, enable_mic_b),
++		0},
++	{SOF_TKN_INTEL_DMIC_PDM_POLARITY_A,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, polarity_mic_a),
++		0},
++	{SOF_TKN_INTEL_DMIC_PDM_POLARITY_B,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, polarity_mic_b),
++		0},
++	{SOF_TKN_INTEL_DMIC_PDM_CLK_EDGE,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, clk_edge),
++		0},
++	{SOF_TKN_INTEL_DMIC_PDM_SKEW,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_dmic_pdm_ctrl, skew),
++		0},
++};
++
++/* HDA */
++static const struct sof_topology_token hda_tokens[] = {
++};
++
++static void sof_parse_uuid_tokens(struct snd_soc_component *scomp,
++				  void *object,
++				  const struct sof_topology_token *tokens,
++				  int count,
++				  struct snd_soc_tplg_vendor_array *array)
++{
++	struct snd_soc_tplg_vendor_uuid_elem *elem;
++	int i, j;
++
++	/* parse element by element */
++	for (i = 0; i < le32_to_cpu(array->num_elems); i++) {
++		elem = &array->uuid[i];
++
++		/* search for token */
++		for (j = 0; j < count; j++) {
++			/* match token type */
++			if (tokens[j].type != SND_SOC_TPLG_TUPLE_TYPE_UUID)
++				continue;
++
++			/* match token id */
++			if (tokens[j].token != le32_to_cpu(elem->token))
++				continue;
++
++			/* matched - now load token */
++			tokens[j].get_token(elem, object, tokens[j].offset,
++					    tokens[j].size);
++		}
++	}
++}
++
++static void sof_parse_string_tokens(struct snd_soc_component *scomp,
++				    void *object,
++				    const struct sof_topology_token *tokens,
++				    int count,
++				    struct snd_soc_tplg_vendor_array *array)
++{
++	struct snd_soc_tplg_vendor_string_elem *elem;
++	int i, j;
++
++	/* parse element by element */
++	for (i = 0; i < le32_to_cpu(array->num_elems); i++) {
++		elem = &array->string[i];
++
++		/* search for token */
++		for (j = 0; j < count; j++) {
++			/* match token type */
++			if (tokens[j].type != SND_SOC_TPLG_TUPLE_TYPE_STRING)
++				continue;
++
++			/* match token id */
++			if (tokens[j].token != le32_to_cpu(elem->token))
++				continue;
++
++			/* matched - now load token */
++			tokens[j].get_token(elem, object, tokens[j].offset,
++					    tokens[j].size);
++		}
++	}
++}
++
++static void sof_parse_word_tokens(struct snd_soc_component *scomp,
++				  void *object,
++				  const struct sof_topology_token *tokens,
++				  int count,
++				  struct snd_soc_tplg_vendor_array *array)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_vendor_value_elem *elem;
++	size_t size = sizeof(struct sof_ipc_dai_dmic_pdm_ctrl);
++	int i, j;
++	u32 offset;
++	u32 *index = NULL;
++
++	/* parse element by element */
++	for (i = 0; i < le32_to_cpu(array->num_elems); i++) {
++		elem = &array->value[i];
++
++		/* search for token */
++		for (j = 0; j < count; j++) {
++			/* match token type */
++			if (!(tokens[j].type == SND_SOC_TPLG_TUPLE_TYPE_WORD ||
++			      tokens[j].type == SND_SOC_TPLG_TUPLE_TYPE_SHORT))
++				continue;
++
++			/* match token id */
++			if (tokens[j].token != le32_to_cpu(elem->token))
++				continue;
++
++			/* pdm config array index */
++			if (sdev->private)
++				index = sdev->private;
++
++			/* matched - determine offset */
++			switch (tokens[j].token) {
++			case SOF_TKN_INTEL_DMIC_PDM_CTRL_ID:
++
++				/* inc number of pdm array index */
++				if (index)
++					(*index)++;
++				/* fallthrough */
++			case SOF_TKN_INTEL_DMIC_PDM_MIC_A_Enable:
++			case SOF_TKN_INTEL_DMIC_PDM_MIC_B_Enable:
++			case SOF_TKN_INTEL_DMIC_PDM_POLARITY_A:
++			case SOF_TKN_INTEL_DMIC_PDM_POLARITY_B:
++			case SOF_TKN_INTEL_DMIC_PDM_CLK_EDGE:
++			case SOF_TKN_INTEL_DMIC_PDM_SKEW:
++
++				/* check if array index is valid */
++				if (!index || *index == 0) {
++					dev_err(sdev->dev,
++						"error: invalid array offset\n");
++					continue;
++				} else {
++					/* offset within the pdm config array */
++					offset = size * (*index - 1);
++				}
++				break;
++			default:
++				offset = 0;
++				break;
++			}
++
++			/* load token */
++			tokens[j].get_token(elem, object,
++					    offset + tokens[j].offset,
++					    tokens[j].size);
++		}
++	}
++}
++
++static int sof_parse_tokens(struct snd_soc_component *scomp,
++			    void *object,
++			    const struct sof_topology_token *tokens,
++			    int count,
++			    struct snd_soc_tplg_vendor_array *array,
++			    int priv_size)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	int asize;
++
++	while (priv_size > 0) {
++		asize = le32_to_cpu(array->size);
++
++		/* validate asize */
++		if (asize < 0) { /* FIXME: A zero-size array makes no sense */
++			dev_err(sdev->dev, "error: invalid array size 0x%x\n",
++				asize);
++			return -EINVAL;
++		}
++
++		/* make sure there is enough data before parsing */
++		priv_size -= asize;
++		if (priv_size < 0) {
++			dev_err(sdev->dev, "error: invalid array size 0x%x\n",
++				asize);
++			return -EINVAL;
++		}
++
++		/* call correct parser depending on type */
++		switch (le32_to_cpu(array->type)) {
++		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
++			sof_parse_uuid_tokens(scomp, object, tokens, count,
++					      array);
++			break;
++		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
++			sof_parse_string_tokens(scomp, object, tokens, count,
++						array);
++			break;
++		case SND_SOC_TPLG_TUPLE_TYPE_BOOL:
++		case SND_SOC_TPLG_TUPLE_TYPE_BYTE:
++		case SND_SOC_TPLG_TUPLE_TYPE_WORD:
++		case SND_SOC_TPLG_TUPLE_TYPE_SHORT:
++			sof_parse_word_tokens(scomp, object, tokens, count,
++					      array);
++			break;
++		default:
++			dev_err(sdev->dev, "error: unknown token type %d\n",
++				array->type);
++			return -EINVAL;
++		}
++
++		/* next array */
++		array = (struct snd_soc_tplg_vendor_array *)((u8 *)array
++			+ asize);
++	}
++	return 0;
++}
++
++static void sof_dbg_comp_config(struct snd_soc_component *scomp,
++				struct sof_ipc_comp_config *config)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++
++	dev_dbg(sdev->dev, " config: periods snk %d src %d fmt %d\n",
++		config->periods_sink, config->periods_source,
++		config->frame_fmt);
++}
++
++/* external kcontrol init - used for any driver specific init */
++static int sof_control_load(struct snd_soc_component *scomp, int index,
++			    struct snd_kcontrol_new *kc,
++			    struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	struct soc_mixer_control *sm;
++	struct soc_bytes_ext *sbe;
++	struct soc_enum *se;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_dobj *dobj;
++	struct snd_sof_control *scontrol;
++	int ret = -EINVAL;
++
++	dev_dbg(sdev->dev, "tplg: load control type %d name : %s\n",
++		hdr->type, hdr->name);
++
++	scontrol = kzalloc(sizeof(*scontrol), GFP_KERNEL);
++	if (!scontrol)
++		return -ENOMEM;
++
++	scontrol->sdev = sdev;
++
++	switch (le32_to_cpu(hdr->ops.info)) {
++	case SND_SOC_TPLG_CTL_VOLSW:
++	case SND_SOC_TPLG_CTL_VOLSW_SX:
++	case SND_SOC_TPLG_CTL_VOLSW_XR_SX:
++		sm = (struct soc_mixer_control *)kc->private_value;
++		dobj = &sm->dobj;
++		ret = sof_control_load_volume(scomp, scontrol, kc, hdr);
++		break;
++	case SND_SOC_TPLG_CTL_BYTES:
++		sbe = (struct soc_bytes_ext *)kc->private_value;
++		dobj = &sbe->dobj;
++		ret = sof_control_load_bytes(scomp, scontrol, kc, hdr);
++		break;
++	case SND_SOC_TPLG_CTL_ENUM:
++	case SND_SOC_TPLG_CTL_ENUM_VALUE:
++		se = (struct soc_enum *)kc->private_value;
++		dobj = &se->dobj;
++		ret = sof_control_load_enum(scomp, scontrol, kc, hdr);
++		break;
++	case SND_SOC_TPLG_CTL_RANGE:
++	case SND_SOC_TPLG_CTL_STROBE:
++	case SND_SOC_TPLG_DAPM_CTL_VOLSW:
++	case SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE:
++	case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
++	case SND_SOC_TPLG_DAPM_CTL_ENUM_VALUE:
++	case SND_SOC_TPLG_DAPM_CTL_PIN:
++	default:
++		dev_warn(sdev->dev, "control type not supported %d:%d:%d\n",
++			 hdr->ops.get, hdr->ops.put, hdr->ops.info);
++		kfree(scontrol);
 +		return 0;
 +	}
 +
-+	cdata->rhdr.hdr.cmd = SOF_IPC_GLB_COMP_MSG | ipc_cmd;
-+	cdata->cmd = ctrl_cmd;
-+	cdata->type = ctrl_type;
-+	cdata->comp_id = scontrol->comp_id;
-+	cdata->msg_index = 0;
-+
-+	/* calculate header and data size */
-+	switch (cdata->type) {
-+	case SOF_CTRL_TYPE_VALUE_CHAN_GET:
-+	case SOF_CTRL_TYPE_VALUE_CHAN_SET:
-+		sparams.msg_bytes = scontrol->num_channels *
-+			sizeof(struct sof_ipc_ctrl_value_chan);
-+		sparams.hdr_bytes = sizeof(struct sof_ipc_ctrl_data);
-+		sparams.elems = scontrol->num_channels;
-+		break;
-+	case SOF_CTRL_TYPE_VALUE_COMP_GET:
-+	case SOF_CTRL_TYPE_VALUE_COMP_SET:
-+		sparams.msg_bytes = scontrol->num_channels *
-+			sizeof(struct sof_ipc_ctrl_value_comp);
-+		sparams.hdr_bytes = sizeof(struct sof_ipc_ctrl_data);
-+		sparams.elems = scontrol->num_channels;
-+		break;
-+	case SOF_CTRL_TYPE_DATA_GET:
-+	case SOF_CTRL_TYPE_DATA_SET:
-+		sparams.msg_bytes = cdata->data->size;
-+		sparams.hdr_bytes = sizeof(struct sof_ipc_ctrl_data) +
-+			sizeof(struct sof_abi_hdr);
-+		sparams.elems = cdata->data->size;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	cdata->rhdr.hdr.size = sparams.msg_bytes + sparams.hdr_bytes;
-+	cdata->num_elems = sparams.elems;
-+	cdata->elems_remaining = 0;
-+
-+	/* send normal size ipc in one part */
-+	if (cdata->rhdr.hdr.size <= SOF_IPC_MSG_MAX_SIZE) {
-+		err = sof_ipc_tx_message(sdev->ipc, cdata->rhdr.hdr.cmd, cdata,
-+					 cdata->rhdr.hdr.size, cdata,
-+					 cdata->rhdr.hdr.size);
-+
-+		if (err < 0)
-+			dev_err(sdev->dev, "error: set/get ctrl ipc comp %d\n",
-+				cdata->comp_id);
-+
-+		return err;
-+	}
-+
-+	/* data is bigger than max ipc size, chop into smaller pieces */
-+	dev_dbg(sdev->dev, "large ipc size %u, control size %u\n",
-+		cdata->rhdr.hdr.size, scontrol->size);
-+
-+	/* large messages is only supported from ABI 3.3.0 onwards */
-+	if (v->abi_version < SOF_ABI_VER(3, 3, 0)) {
-+		dev_err(sdev->dev, "error: incompatible FW ABI version\n");
-+		return -EINVAL;
-+	}
-+
-+	err = sof_set_get_large_ctrl_data(sdev, cdata, &sparams, send);
-+
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: set/get large ctrl ipc comp %d\n",
-+			cdata->comp_id);
-+
-+	return err;
++	dobj->private = scontrol;
++	list_add(&scontrol->list, &sdev->kcontrol_list);
++	return ret;
 +}
-+EXPORT_SYMBOL(snd_sof_ipc_set_get_comp_data);
++
++static int sof_control_unload(struct snd_soc_component *scomp,
++			      struct snd_soc_dobj *dobj)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_free fcomp;
++	struct snd_sof_control *scontrol = dobj->private;
++
++	dev_dbg(sdev->dev, "tplg: unload control name : %s\n", scomp->name);
++
++	fcomp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_FREE;
++	fcomp.hdr.size = sizeof(fcomp);
++	fcomp.id = scontrol->comp_id;
++
++	kfree(scontrol->control_data);
++	list_del(&scontrol->list);
++	kfree(scontrol);
++	/* send IPC to the DSP */
++	return sof_ipc_tx_message(sdev->ipc,
++				  fcomp.hdr.cmd, &fcomp, sizeof(fcomp),
++				  NULL, 0);
++}
 +
 +/*
-+ * IPC layer enumeration.
++ * DAI Topology
 + */
 +
-+int snd_sof_dsp_mailbox_init(struct snd_sof_dev *sdev, u32 dspbox,
-+			     size_t dspbox_size, u32 hostbox,
-+			     size_t hostbox_size)
++static int sof_connect_dai_widget(struct snd_soc_component *scomp,
++				  struct snd_soc_dapm_widget *w,
++				  struct snd_soc_tplg_dapm_widget *tw,
++				  struct snd_sof_dai *dai)
 +{
-+	sdev->dsp_box.offset = dspbox;
-+	sdev->dsp_box.size = dspbox_size;
-+	sdev->host_box.offset = hostbox;
-+	sdev->host_box.size = hostbox_size;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_dsp_mailbox_init);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_card *card = scomp->card;
++	struct snd_soc_pcm_runtime *rtd;
 +
-+int snd_sof_ipc_valid(struct snd_sof_dev *sdev)
-+{
-+	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
-+	struct sof_ipc_fw_version *v = &ready->version;
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++		dev_vdbg(sdev->dev, "tplg: check widget: %s stream: %s dai stream: %s\n",
++			 w->name,  w->sname, rtd->dai_link->stream_name);
 +
-+	dev_info(sdev->dev,
-+		 "Firmware info: version %d:%d:%d-%s\n",  v->major, v->minor,
-+		 v->micro, v->tag);
-+	dev_info(sdev->dev,
-+		 "Firmware: ABI %d:%d:%d Kernel ABI %d:%d:%d\n",
-+		 SOF_ABI_VERSION_MAJOR(v->abi_version),
-+		 SOF_ABI_VERSION_MINOR(v->abi_version),
-+		 SOF_ABI_VERSION_PATCH(v->abi_version),
-+		 SOF_ABI_MAJOR, SOF_ABI_MINOR, SOF_ABI_PATCH);
++		if (!w->sname || !rtd->dai_link->stream_name)
++			continue;
 +
-+	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, v->abi_version)) {
-+		dev_err(sdev->dev, "error: incompatible FW ABI version\n");
++		/* does stream match DAI link ? */
++		if (strcmp(w->sname, rtd->dai_link->stream_name))
++			continue;
++
++		switch (w->id) {
++		case snd_soc_dapm_dai_out:
++			rtd->cpu_dai->capture_widget = w;
++			if (dai)
++				dai->name = rtd->dai_link->name;
++			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
++				w->name, rtd->dai_link->name);
++			break;
++		case snd_soc_dapm_dai_in:
++			rtd->cpu_dai->playback_widget = w;
++			if (dai)
++				dai->name = rtd->dai_link->name;
++			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
++				w->name, rtd->dai_link->name);
++			break;
++		default:
++			break;
++		}
++	}
++
++	/* check we have a connection */
++	if (!dai->name) {
++		dev_err(sdev->dev, "error: can't connect DAI %s stream %s\n",
++			w->name, w->sname);
 +		return -EINVAL;
 +	}
 +
-+	if (ready->debug.bits.build) {
-+		dev_info(sdev->dev,
-+			 "Firmware debug build %d on %s-%s - options:\n"
-+			 " GDB: %s\n"
-+			 " lock debug: %s\n"
-+			 " lock vdebug: %s\n",
-+			 v->build, v->date, v->time,
-+			 ready->debug.bits.gdb ? "enabled" : "disabled",
-+			 ready->debug.bits.locks ? "enabled" : "disabled",
-+			 ready->debug.bits.locks_verbose ? "enabled" : "disabled");
++	return 0;
++}
++
++static int sof_widget_load_dai(struct snd_soc_component *scomp, int index,
++			       struct snd_sof_widget *swidget,
++			       struct snd_soc_tplg_dapm_widget *tw,
++			       struct sof_ipc_comp_reply *r,
++			       struct snd_sof_dai *dai)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_dai comp_dai;
++	int ret;
++
++	/* configure dai IPC message */
++	memset(&comp_dai, 0, sizeof(comp_dai));
++	comp_dai.comp.hdr.size = sizeof(comp_dai);
++	comp_dai.comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	comp_dai.comp.id = swidget->comp_id;
++	comp_dai.comp.type = SOF_COMP_DAI;
++	comp_dai.comp.pipeline_id = index;
++	comp_dai.config.hdr.size = sizeof(comp_dai.config);
++
++	ret = sof_parse_tokens(scomp, &comp_dai, dai_tokens,
++			       ARRAY_SIZE(dai_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse dai tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
 +	}
 +
-+	/* copy the fw_version into debugfs at first boot */
-+	memcpy(&sdev->fw_version, v, sizeof(*v));
++	ret = sof_parse_tokens(scomp, &comp_dai.config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse dai.cfg tokens failed %d\n",
++			private->size);
++		return ret;
++	}
++
++	dev_dbg(sdev->dev, "dai %s: type %d index %d\n",
++		swidget->widget->name, comp_dai.type, comp_dai.dai_index);
++	sof_dbg_comp_config(scomp, &comp_dai.config);
++
++	ret = sof_ipc_tx_message(sdev->ipc, comp_dai.comp.hdr.cmd,
++				 &comp_dai, sizeof(comp_dai), r, sizeof(*r));
++
++	if (ret == 0 && dai) {
++		dai->sdev = sdev;
++		memcpy(&dai->comp_dai, &comp_dai, sizeof(comp_dai));
++	}
++
++	return ret;
++}
++
++/*
++ * Buffer topology
++ */
++
++static int sof_widget_load_buffer(struct snd_soc_component *scomp, int index,
++				  struct snd_sof_widget *swidget,
++				  struct snd_soc_tplg_dapm_widget *tw,
++				  struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_buffer *buffer;
++	int ret;
++
++	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
++	if (!buffer)
++		return -ENOMEM;
++
++	/* configure dai IPC message */
++	buffer->comp.hdr.size = sizeof(*buffer);
++	buffer->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_BUFFER_NEW;
++	buffer->comp.id = swidget->comp_id;
++	buffer->comp.type = SOF_COMP_BUFFER;
++	buffer->comp.pipeline_id = index;
++
++	ret = sof_parse_tokens(scomp, buffer, buffer_tokens,
++			       ARRAY_SIZE(buffer_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse buffer tokens failed %d\n",
++			private->size);
++		kfree(buffer);
++		return ret;
++	}
++
++	dev_dbg(sdev->dev, "buffer %s: size %d caps 0x%x\n",
++		swidget->widget->name, buffer->size, buffer->caps);
++
++	swidget->private = buffer;
++
++	ret = sof_ipc_tx_message(sdev->ipc, buffer->comp.hdr.cmd, buffer,
++				 sizeof(*buffer), r, sizeof(*r));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: buffer %s load failed\n",
++			swidget->widget->name);
++		kfree(buffer);
++	}
++
++	return ret;
++}
++
++/* bind PCM ID to host component ID */
++static int spcm_bind(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm,
++		     int dir)
++{
++	struct snd_sof_widget *host_widget;
++
++	host_widget = snd_sof_find_swidget_sname(sdev,
++						 spcm->pcm.caps[dir].name,
++						 dir);
++	if (!host_widget) {
++		dev_err(sdev->dev, "can't find host comp to bind pcm\n");
++		return -EINVAL;
++	}
++
++	spcm->stream[dir].comp_id = host_widget->comp_id;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(snd_sof_ipc_valid);
 +
-+struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
++/*
++ * PCM Topology
++ */
++
++static int sof_widget_load_pcm(struct snd_soc_component *scomp, int index,
++			       struct snd_sof_widget *swidget,
++			       enum sof_ipc_stream_direction dir,
++			       struct snd_soc_tplg_dapm_widget *tw,
++			       struct sof_ipc_comp_reply *r)
 +{
-+	struct snd_sof_ipc *ipc;
-+	struct snd_sof_ipc_msg *msg;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_host *host;
++	int ret;
 +
-+	/* check if mandatory ops required for ipc are defined */
-+	if (!sof_ops(sdev)->fw_ready) {
-+		dev_err(sdev->dev, "error: ipc mandatory ops not defined\n");
-+		return NULL;
++	host = kzalloc(sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return -ENOMEM;
++
++	/* configure host comp IPC message */
++	host->comp.hdr.size = sizeof(*host);
++	host->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	host->comp.id = swidget->comp_id;
++	host->comp.type = SOF_COMP_HOST;
++	host->comp.pipeline_id = index;
++	host->direction = dir;
++	host->config.hdr.size = sizeof(host->config);
++
++	ret = sof_parse_tokens(scomp, host, pcm_tokens,
++			       ARRAY_SIZE(pcm_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse host tokens failed %d\n",
++			private->size);
++		goto err;
 +	}
 +
-+	ipc = devm_kzalloc(sdev->dev, sizeof(*ipc), GFP_KERNEL);
-+	if (!ipc)
-+		return NULL;
++	ret = sof_parse_tokens(scomp, &host->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse host.cfg tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
 +
-+	mutex_init(&ipc->tx_mutex);
-+	ipc->sdev = sdev;
-+	msg = &ipc->msg;
++	dev_dbg(sdev->dev, "loaded host %s\n", swidget->widget->name);
++	sof_dbg_comp_config(scomp, &host->config);
 +
-+	/* indicate that we aren't sending a message ATM */
-+	msg->ipc_complete = true;
++	swidget->private = host;
 +
-+	/* pre-allocate message data */
-+	msg->msg_data = devm_kzalloc(sdev->dev, SOF_IPC_MSG_MAX_SIZE,
-+				     GFP_KERNEL);
-+	if (!msg->msg_data)
-+		return NULL;
-+
-+	msg->reply_data = devm_kzalloc(sdev->dev, SOF_IPC_MSG_MAX_SIZE,
-+				       GFP_KERNEL);
-+	if (!msg->reply_data)
-+		return NULL;
-+
-+	init_waitqueue_head(&msg->waitq);
-+
-+	return ipc;
++	ret = sof_ipc_tx_message(sdev->ipc, host->comp.hdr.cmd, host,
++				 sizeof(*host), r, sizeof(*r));
++	if (ret >= 0)
++		return ret;
++err:
++	kfree(host);
++	return ret;
 +}
-+EXPORT_SYMBOL(snd_sof_ipc_init);
 +
-+void snd_sof_ipc_free(struct snd_sof_dev *sdev)
++/*
++ * Pipeline Topology
++ */
++int sof_load_pipeline_ipc(struct snd_sof_dev *sdev,
++			  struct sof_ipc_pipe_new *pipeline,
++			  struct sof_ipc_comp_reply *r)
 +{
-+	struct snd_sof_ipc *ipc = sdev->ipc;
++	struct sof_ipc_pm_core_config pm_core_config;
++	int ret;
 +
-+	/* disable sending of ipc's */
-+	mutex_lock(&ipc->tx_mutex);
-+	ipc->disable_ipc_tx = true;
-+	mutex_unlock(&ipc->tx_mutex);
++	ret = sof_ipc_tx_message(sdev->ipc, pipeline->hdr.cmd, pipeline,
++				 sizeof(*pipeline), r, sizeof(*r));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: load pipeline ipc failure\n");
++		return ret;
++	}
++
++	/* power up the core that this pipeline is scheduled on */
++	ret = snd_sof_dsp_core_power_up(sdev, 1 << pipeline->core);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: powering up pipeline schedule core %d\n",
++			pipeline->core);
++		return ret;
++	}
++
++	/* update enabled cores mask */
++	sdev->enabled_cores_mask |= 1 << pipeline->core;
++
++	/*
++	 * Now notify DSP that the core that this pipeline is scheduled on
++	 * has been powered up
++	 */
++	memset(&pm_core_config, 0, sizeof(pm_core_config));
++	pm_core_config.enable_mask = sdev->enabled_cores_mask;
++
++	/* configure CORE_ENABLE ipc message */
++	pm_core_config.hdr.size = sizeof(pm_core_config);
++	pm_core_config.hdr.cmd = SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CORE_ENABLE;
++
++	/* send ipc */
++	ret = sof_ipc_tx_message(sdev->ipc, pm_core_config.hdr.cmd,
++				 &pm_core_config, sizeof(pm_core_config),
++				 &pm_core_config, sizeof(pm_core_config));
++	if (ret < 0)
++		dev_err(sdev->dev, "error: core enable ipc failure\n");
++
++	return ret;
 +}
-+EXPORT_SYMBOL(snd_sof_ipc_free);
++
++static int sof_widget_load_pipeline(struct snd_soc_component *scomp,
++				    int index, struct snd_sof_widget *swidget,
++				    struct snd_soc_tplg_dapm_widget *tw,
++				    struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_pipe_new *pipeline;
++	struct snd_sof_widget *comp_swidget;
++	int ret;
++
++	pipeline = kzalloc(sizeof(*pipeline), GFP_KERNEL);
++	if (!pipeline)
++		return -ENOMEM;
++
++	/* configure dai IPC message */
++	pipeline->hdr.size = sizeof(*pipeline);
++	pipeline->hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_PIPE_NEW;
++	pipeline->pipeline_id = index;
++	pipeline->comp_id = swidget->comp_id;
++
++	/* component at start of pipeline is our stream id */
++	comp_swidget = snd_sof_find_swidget(sdev, tw->sname);
++	if (!comp_swidget) {
++		dev_err(sdev->dev, "error: widget %s refers to non existent widget %s\n",
++			tw->name, tw->sname);
++		ret = -EINVAL;
++		goto err;
++	}
++
++	pipeline->sched_id = comp_swidget->comp_id;
++
++	dev_dbg(sdev->dev, "tplg: pipeline id %d comp %d scheduling comp id %d\n",
++		pipeline->pipeline_id, pipeline->comp_id, pipeline->sched_id);
++
++	ret = sof_parse_tokens(scomp, pipeline, sched_tokens,
++			       ARRAY_SIZE(sched_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse pipeline tokens failed %d\n",
++			private->size);
++		goto err;
++	}
++
++	dev_dbg(sdev->dev, "pipeline %s: period %d pri %d mips %d core %d frames %d\n",
++		swidget->widget->name, pipeline->period, pipeline->priority,
++		pipeline->period_mips, pipeline->core, pipeline->frames_per_sched);
++
++	swidget->private = pipeline;
++
++	/* send ipc's to create pipeline comp and power up schedule core */
++	ret = sof_load_pipeline_ipc(sdev, pipeline, r);
++	if (ret >= 0)
++		return ret;
++err:
++	kfree(pipeline);
++	return ret;
++}
++
++/*
++ * Mixer topology
++ */
++
++static int sof_widget_load_mixer(struct snd_soc_component *scomp, int index,
++				 struct snd_sof_widget *swidget,
++				 struct snd_soc_tplg_dapm_widget *tw,
++				 struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_mixer *mixer;
++	int ret;
++
++	mixer = kzalloc(sizeof(*mixer), GFP_KERNEL);
++	if (!mixer)
++		return -ENOMEM;
++
++	/* configure mixer IPC message */
++	mixer->comp.hdr.size = sizeof(*mixer);
++	mixer->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	mixer->comp.id = swidget->comp_id;
++	mixer->comp.type = SOF_COMP_MIXER;
++	mixer->comp.pipeline_id = index;
++	mixer->config.hdr.size = sizeof(mixer->config);
++
++	ret = sof_parse_tokens(scomp, &mixer->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse mixer.cfg tokens failed %d\n",
++			private->size);
++		kfree(mixer);
++		return ret;
++	}
++
++	sof_dbg_comp_config(scomp, &mixer->config);
++
++	swidget->private = mixer;
++
++	ret = sof_ipc_tx_message(sdev->ipc, mixer->comp.hdr.cmd, mixer,
++				 sizeof(*mixer), r, sizeof(*r));
++	if (ret < 0)
++		kfree(mixer);
++
++	return ret;
++}
++
++/*
++ * Mux topology
++ */
++static int sof_widget_load_mux(struct snd_soc_component *scomp, int index,
++			       struct snd_sof_widget *swidget,
++			       struct snd_soc_tplg_dapm_widget *tw,
++			       struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_mux *mux;
++	int ret;
++
++	mux = kzalloc(sizeof(*mux), GFP_KERNEL);
++	if (!mux)
++		return -ENOMEM;
++
++	/* configure mux IPC message */
++	mux->comp.hdr.size = sizeof(*mux);
++	mux->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	mux->comp.id = swidget->comp_id;
++	mux->comp.type = SOF_COMP_MUX;
++	mux->comp.pipeline_id = index;
++	mux->config.hdr.size = sizeof(mux->config);
++
++	ret = sof_parse_tokens(scomp, &mux->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse mux.cfg tokens failed %d\n",
++			private->size);
++		kfree(mux);
++		return ret;
++	}
++
++	sof_dbg_comp_config(scomp, &mux->config);
++
++	swidget->private = mux;
++
++	ret = sof_ipc_tx_message(sdev->ipc, mux->comp.hdr.cmd, mux,
++				 sizeof(*mux), r, sizeof(*r));
++	if (ret < 0)
++		kfree(mux);
++
++	return ret;
++}
++
++/*
++ * PGA Topology
++ */
++
++static int sof_widget_load_pga(struct snd_soc_component *scomp, int index,
++			       struct snd_sof_widget *swidget,
++			       struct snd_soc_tplg_dapm_widget *tw,
++			       struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_volume *volume;
++	int ret;
++
++	volume = kzalloc(sizeof(*volume), GFP_KERNEL);
++	if (!volume)
++		return -ENOMEM;
++
++	if (le32_to_cpu(tw->num_kcontrols) != 1) {
++		dev_err(sdev->dev, "error: invalid kcontrol count %d for volume\n",
++			tw->num_kcontrols);
++		ret = -EINVAL;
++		goto err;
++	}
++
++	/* configure volume IPC message */
++	volume->comp.hdr.size = sizeof(*volume);
++	volume->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	volume->comp.id = swidget->comp_id;
++	volume->comp.type = SOF_COMP_VOLUME;
++	volume->comp.pipeline_id = index;
++	volume->config.hdr.size = sizeof(volume->config);
++
++	ret = sof_parse_tokens(scomp, volume, volume_tokens,
++			       ARRAY_SIZE(volume_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse volume tokens failed %d\n",
++			private->size);
++		goto err;
++	}
++	ret = sof_parse_tokens(scomp, &volume->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse volume.cfg tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
++
++	sof_dbg_comp_config(scomp, &volume->config);
++
++	swidget->private = volume;
++
++	ret = sof_ipc_tx_message(sdev->ipc, volume->comp.hdr.cmd, volume,
++				 sizeof(*volume), r, sizeof(*r));
++	if (ret >= 0)
++		return ret;
++err:
++	kfree(volume);
++	return ret;
++}
++
++/*
++ * SRC Topology
++ */
++
++static int sof_widget_load_src(struct snd_soc_component *scomp, int index,
++			       struct snd_sof_widget *swidget,
++			       struct snd_soc_tplg_dapm_widget *tw,
++			       struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_src *src;
++	int ret;
++
++	src = kzalloc(sizeof(*src), GFP_KERNEL);
++	if (!src)
++		return -ENOMEM;
++
++	/* configure src IPC message */
++	src->comp.hdr.size = sizeof(*src);
++	src->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	src->comp.id = swidget->comp_id;
++	src->comp.type = SOF_COMP_SRC;
++	src->comp.pipeline_id = index;
++	src->config.hdr.size = sizeof(src->config);
++
++	ret = sof_parse_tokens(scomp, src, src_tokens,
++			       ARRAY_SIZE(src_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse src tokens failed %d\n",
++			private->size);
++		goto err;
++	}
++
++	ret = sof_parse_tokens(scomp, &src->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse src.cfg tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
++
++	dev_dbg(sdev->dev, "src %s: source rate %d sink rate %d\n",
++		swidget->widget->name, src->source_rate, src->sink_rate);
++	sof_dbg_comp_config(scomp, &src->config);
++
++	swidget->private = src;
++
++	ret = sof_ipc_tx_message(sdev->ipc, src->comp.hdr.cmd, src,
++				 sizeof(*src), r, sizeof(*r));
++	if (ret >= 0)
++		return ret;
++err:
++	kfree(src);
++	return ret;
++}
++
++/*
++ * Signal Generator Topology
++ */
++
++static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
++				  struct snd_sof_widget *swidget,
++				  struct snd_soc_tplg_dapm_widget *tw,
++				  struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_tone *tone;
++	int ret;
++
++	tone = kzalloc(sizeof(*tone), GFP_KERNEL);
++	if (!tone)
++		return -ENOMEM;
++
++	/* configure siggen IPC message */
++	tone->comp.hdr.size = sizeof(*tone);
++	tone->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	tone->comp.id = swidget->comp_id;
++	tone->comp.type = SOF_COMP_TONE;
++	tone->comp.pipeline_id = index;
++	tone->config.hdr.size = sizeof(tone->config);
++
++	ret = sof_parse_tokens(scomp, tone, tone_tokens,
++			       ARRAY_SIZE(tone_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse tone tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
++
++	ret = sof_parse_tokens(scomp, &tone->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse tone.cfg tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
++
++	dev_dbg(sdev->dev, "tone %s: frequency %d amplitude %d\n",
++		swidget->widget->name, tone->frequency, tone->amplitude);
++	sof_dbg_comp_config(scomp, &tone->config);
++
++	swidget->private = tone;
++
++	ret = sof_ipc_tx_message(sdev->ipc, tone->comp.hdr.cmd, tone,
++				 sizeof(*tone), r, sizeof(*r));
++	if (ret >= 0)
++		return ret;
++err:
++	kfree(tone);
++	return ret;
++}
++
++static int sof_process_load(struct snd_soc_component *scomp, int index,
++			    struct snd_sof_widget *swidget,
++			    struct snd_soc_tplg_dapm_widget *tw,
++			    struct sof_ipc_comp_reply *r,
++			    int type)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct snd_soc_dapm_widget *widget = swidget->widget;
++	const struct snd_kcontrol_new *kc;
++	struct soc_bytes_ext *sbe;
++	struct soc_mixer_control *sm;
++	struct soc_enum *se;
++	struct snd_sof_control *scontrol = NULL;
++	struct sof_abi_hdr *pdata = NULL;
++	struct sof_ipc_comp_process *process;
++	size_t ipc_size, ipc_data_size = 0;
++	int ret, i, offset = 0;
++
++	if (type == SOF_COMP_NONE) {
++		dev_err(sdev->dev, "error: invalid process comp type %d\n",
++			type);
++		return -EINVAL;
++	}
++
++	/*
++	 * get possible component controls - get size of all pdata,
++	 * then memcpy with headers
++	 */
++	for (i = 0; i < widget->num_kcontrols; i++) {
++
++		kc = &widget->kcontrol_news[i];
++
++		switch (widget->dobj.widget.kcontrol_type) {
++		case SND_SOC_TPLG_TYPE_MIXER:
++			sm = (struct soc_mixer_control *)kc->private_value;
++			scontrol = sm->dobj.private;
++			break;
++		case SND_SOC_TPLG_TYPE_BYTES:
++			sbe = (struct soc_bytes_ext *)kc->private_value;
++			scontrol = sbe->dobj.private;
++			break;
++		case SND_SOC_TPLG_TYPE_ENUM:
++			se = (struct soc_enum *)kc->private_value;
++			scontrol = se->dobj.private;
++			break;
++		default:
++			dev_err(sdev->dev, "error: unknown kcontrol type %d in widget %s\n",
++				widget->dobj.widget.kcontrol_type,
++				widget->name);
++			return -EINVAL;
++		}
++
++		if (!scontrol) {
++			dev_err(sdev->dev, "error: no scontrol for widget %s\n",
++				widget->name);
++			return -EINVAL;
++		}
++
++		/* don't include if no private data */
++		pdata = scontrol->control_data->data;
++		if (!pdata)
++			continue;
++
++		/* make sure data is valid - data can be updated at runtime */
++		if (pdata->magic != SOF_ABI_MAGIC)
++			continue;
++
++		ipc_data_size += pdata->size;
++	}
++
++	ipc_size = sizeof(struct sof_ipc_comp_process) +
++		le32_to_cpu(private->size) +
++		ipc_data_size;
++
++	process = kzalloc(ipc_size, GFP_KERNEL);
++	if (!process)
++		return -ENOMEM;
++
++	/* configure iir IPC message */
++	process->comp.hdr.size = ipc_size;
++	process->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_NEW;
++	process->comp.id = swidget->comp_id;
++	process->comp.type = type;
++	process->comp.pipeline_id = index;
++	process->config.hdr.size = sizeof(process->config);
++
++	ret = sof_parse_tokens(scomp, &process->config, comp_tokens,
++			       ARRAY_SIZE(comp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse process.cfg tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
++
++	sof_dbg_comp_config(scomp, &process->config);
++
++	/*
++	 * found private data in control, so copy it.
++	 * get possible component controls - get size of all pdata,
++	 * then memcpy with headers
++	 */
++	for (i = 0; i < widget->num_kcontrols; i++) {
++		kc = &widget->kcontrol_news[i];
++
++		switch (widget->dobj.widget.kcontrol_type) {
++		case SND_SOC_TPLG_TYPE_MIXER:
++			sm = (struct soc_mixer_control *)kc->private_value;
++			scontrol = sm->dobj.private;
++			break;
++		case SND_SOC_TPLG_TYPE_BYTES:
++			sbe = (struct soc_bytes_ext *)kc->private_value;
++			scontrol = sbe->dobj.private;
++			break;
++		case SND_SOC_TPLG_TYPE_ENUM:
++			se = (struct soc_enum *)kc->private_value;
++			scontrol = se->dobj.private;
++			break;
++		default:
++			dev_err(sdev->dev, "error: unknown kcontrol type %d in widget %s\n",
++				widget->dobj.widget.kcontrol_type,
++				widget->name);
++			return -EINVAL;
++		}
++
++		/* don't include if no private data */
++		pdata = scontrol->control_data->data;
++		if (!pdata)
++			continue;
++
++		/* make sure data is valid - data can be updated at runtime */
++		if (pdata->magic != SOF_ABI_MAGIC)
++			continue;
++
++		memcpy(&process->data + offset, pdata->data, pdata->size);
++		offset += pdata->size;
++	}
++
++	process->size = ipc_data_size;
++	swidget->private = process;
++
++	ret = sof_ipc_tx_message(sdev->ipc, process->comp.hdr.cmd, process,
++				 ipc_size, r, sizeof(*r));
++	if (ret >= 0)
++		return ret;
++err:
++	kfree(process);
++	return ret;
++}
++
++/*
++ * Processing Component Topology - can be "effect", "codec", or general
++ * "processing".
++ */
++
++static int sof_widget_load_process(struct snd_soc_component *scomp, int index,
++				   struct snd_sof_widget *swidget,
++				   struct snd_soc_tplg_dapm_widget *tw,
++				   struct sof_ipc_comp_reply *r)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &tw->priv;
++	struct sof_ipc_comp_process config;
++	int ret;
++
++	/* check we have some tokens - we need at least process type */
++	if (le32_to_cpu(private->size) == 0) {
++		dev_err(sdev->dev, "error: process tokens not found\n");
++		return -EINVAL;
++	}
++
++	memset(&config, 0, sizeof(config));
++
++	/* get the process token */
++	ret = sof_parse_tokens(scomp, &config, process_tokens,
++			       ARRAY_SIZE(process_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse process tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
++	}
++
++	/* now load process specific data and send IPC */
++	ret = sof_process_load(scomp, index, swidget, tw, r,
++			       find_process_comp_type(config.type));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: process loading failed\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int sof_widget_bind_event(struct snd_sof_dev *sdev,
++				 struct snd_sof_widget *swidget,
++				 u16 event_type)
++{
++	struct sof_ipc_comp *ipc_comp;
++
++	/* validate widget event type */
++	switch (event_type) {
++	case SOF_KEYWORD_DETECT_DAPM_EVENT:
++		/* only KEYWORD_DETECT comps should handle this */
++		if (swidget->id != snd_soc_dapm_effect)
++			break;
++
++		ipc_comp = swidget->private;
++		if (ipc_comp && ipc_comp->type != SOF_COMP_KEYWORD_DETECT)
++			break;
++
++		/* bind event to keyword detect comp */
++		return snd_soc_tplg_widget_bind_event(swidget->widget,
++						      sof_kwd_events,
++						      ARRAY_SIZE(sof_kwd_events),
++						      event_type);
++	default:
++		break;
++	}
++
++	dev_err(sdev->dev,
++		"error: invalid event type %d for widget %s\n",
++		event_type, swidget->widget->name);
++	return -EINVAL;
++}
++
++/* external widget init - used for any driver specific init */
++static int sof_widget_ready(struct snd_soc_component *scomp, int index,
++			    struct snd_soc_dapm_widget *w,
++			    struct snd_soc_tplg_dapm_widget *tw)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_sof_widget *swidget;
++	struct snd_sof_dai *dai;
++	struct sof_ipc_comp_reply reply;
++	struct snd_sof_control *scontrol;
++	int ret = 0;
++
++	swidget = kzalloc(sizeof(*swidget), GFP_KERNEL);
++	if (!swidget)
++		return -ENOMEM;
++
++	swidget->sdev = sdev;
++	swidget->widget = w;
++	swidget->comp_id = sdev->next_comp_id++;
++	swidget->complete = 0;
++	swidget->id = w->id;
++	swidget->pipeline_id = index;
++	swidget->private = NULL;
++	memset(&reply, 0, sizeof(reply));
++
++	dev_dbg(sdev->dev, "tplg: ready widget id %d pipe %d type %d name : %s stream %s\n",
++		swidget->comp_id, index, swidget->id, tw->name,
++		strnlen(tw->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) > 0
++			? tw->sname : "none");
++
++	/* handle any special case widgets */
++	switch (w->id) {
++	case snd_soc_dapm_dai_in:
++	case snd_soc_dapm_dai_out:
++		dai = kzalloc(sizeof(*dai), GFP_KERNEL);
++		if (!dai) {
++			kfree(swidget);
++			return -ENOMEM;
++		}
++
++		ret = sof_widget_load_dai(scomp, index, swidget, tw, &reply,
++					  dai);
++		if (ret == 0) {
++			sof_connect_dai_widget(scomp, w, tw, dai);
++			list_add(&dai->list, &sdev->dai_list);
++			swidget->private = dai;
++		} else {
++			kfree(dai);
++		}
++		break;
++	case snd_soc_dapm_mixer:
++		ret = sof_widget_load_mixer(scomp, index, swidget, tw, &reply);
++		break;
++	case snd_soc_dapm_pga:
++		ret = sof_widget_load_pga(scomp, index, swidget, tw, &reply);
++		/* Find scontrol for this pga and set readback offset*/
++		list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
++			if (scontrol->comp_id == swidget->comp_id) {
++				scontrol->readback_offset = reply.offset;
++				break;
++			}
++		}
++		break;
++	case snd_soc_dapm_buffer:
++		ret = sof_widget_load_buffer(scomp, index, swidget, tw, &reply);
++		break;
++	case snd_soc_dapm_scheduler:
++		ret = sof_widget_load_pipeline(scomp, index, swidget, tw,
++					       &reply);
++		break;
++	case snd_soc_dapm_aif_out:
++		ret = sof_widget_load_pcm(scomp, index, swidget,
++					  SOF_IPC_STREAM_CAPTURE, tw, &reply);
++		break;
++	case snd_soc_dapm_aif_in:
++		ret = sof_widget_load_pcm(scomp, index, swidget,
++					  SOF_IPC_STREAM_PLAYBACK, tw, &reply);
++		break;
++	case snd_soc_dapm_src:
++		ret = sof_widget_load_src(scomp, index, swidget, tw, &reply);
++		break;
++	case snd_soc_dapm_siggen:
++		ret = sof_widget_load_siggen(scomp, index, swidget, tw, &reply);
++		break;
++	case snd_soc_dapm_effect:
++		ret = sof_widget_load_process(scomp, index, swidget, tw,
++					      &reply);
++		break;
++	case snd_soc_dapm_mux:
++	case snd_soc_dapm_demux:
++		ret = sof_widget_load_mux(scomp, index, swidget, tw, &reply);
++		break;
++	case snd_soc_dapm_switch:
++	case snd_soc_dapm_dai_link:
++	case snd_soc_dapm_kcontrol:
++	default:
++		dev_warn(sdev->dev, "warning: widget type %d name %s not handled\n",
++			 swidget->id, tw->name);
++		break;
++	}
++
++	/* check IPC reply */
++	if (ret < 0 || reply.rhdr.error < 0) {
++		dev_err(sdev->dev,
++			"error: DSP failed to add widget id %d type %d name : %s stream %s reply %d\n",
++			tw->shift, swidget->id, tw->name,
++			strnlen(tw->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) > 0
++				? tw->sname : "none", reply.rhdr.error);
++		kfree(swidget);
++		return ret;
++	}
++
++	/* bind widget to external event */
++	if (tw->event_type) {
++		ret = sof_widget_bind_event(sdev, swidget,
++					    le16_to_cpu(tw->event_type));
++		if (ret) {
++			dev_err(sdev->dev, "error: widget event binding failed\n");
++			kfree(swidget->private);
++			kfree(swidget);
++			return ret;
++		}
++	}
++
++	w->dobj.private = swidget;
++	list_add(&swidget->list, &sdev->widget_list);
++	return ret;
++}
++
++static int sof_route_unload(struct snd_soc_component *scomp,
++			    struct snd_soc_dobj *dobj)
++{
++	struct snd_sof_route *sroute;
++
++	sroute = dobj->private;
++	if (!sroute)
++		return 0;
++
++	/* free sroute and its private data */
++	kfree(sroute->private);
++	list_del(&sroute->list);
++	kfree(sroute);
++
++	return 0;
++}
++
++static int sof_widget_unload(struct snd_soc_component *scomp,
++			     struct snd_soc_dobj *dobj)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct snd_kcontrol_new *kc;
++	struct snd_soc_dapm_widget *widget;
++	struct sof_ipc_pipe_new *pipeline;
++	struct snd_sof_control *scontrol;
++	struct snd_sof_widget *swidget;
++	struct soc_mixer_control *sm;
++	struct soc_bytes_ext *sbe;
++	struct snd_sof_dai *dai;
++	struct soc_enum *se;
++	int ret = 0;
++	int i;
++
++	swidget = dobj->private;
++	if (!swidget)
++		return 0;
++
++	widget = swidget->widget;
++
++	switch (swidget->id) {
++	case snd_soc_dapm_dai_in:
++	case snd_soc_dapm_dai_out:
++		dai = swidget->private;
++
++		if (dai) {
++			/* free dai config */
++			kfree(dai->dai_config);
++			list_del(&dai->list);
++		}
++		break;
++	case snd_soc_dapm_scheduler:
++
++		/* power down the pipeline schedule core */
++		pipeline = swidget->private;
++		ret = snd_sof_dsp_core_power_down(sdev, 1 << pipeline->core);
++		if (ret < 0)
++			dev_err(sdev->dev, "error: powering down pipeline schedule core %d\n",
++				pipeline->core);
++
++		/* update enabled cores mask */
++		sdev->enabled_cores_mask &= ~(1 << pipeline->core);
++
++		break;
++	default:
++		break;
++	}
++	for (i = 0; i < widget->num_kcontrols; i++) {
++		kc = &widget->kcontrol_news[i];
++		switch (dobj->widget.kcontrol_type) {
++		case SND_SOC_TPLG_TYPE_MIXER:
++			sm = (struct soc_mixer_control *)kc->private_value;
++			scontrol = sm->dobj.private;
++			if (sm->max > 1)
++				kfree(scontrol->volume_table);
++			break;
++		case SND_SOC_TPLG_TYPE_ENUM:
++			se = (struct soc_enum *)kc->private_value;
++			scontrol = se->dobj.private;
++			break;
++		case SND_SOC_TPLG_TYPE_BYTES:
++			sbe = (struct soc_bytes_ext *)kc->private_value;
++			scontrol = sbe->dobj.private;
++			break;
++		default:
++			dev_warn(sdev->dev, "unsupported kcontrol_type\n");
++			goto out;
++		}
++		kfree(scontrol->control_data);
++		list_del(&scontrol->list);
++		kfree(scontrol);
++	}
++
++out:
++	/* free private value */
++	kfree(swidget->private);
++
++	/* remove and free swidget object */
++	list_del(&swidget->list);
++	kfree(swidget);
++
++	return ret;
++}
++
++/*
++ * DAI HW configuration.
++ */
++
++/* FE DAI - used for any driver specific init */
++static int sof_dai_load(struct snd_soc_component *scomp, int index,
++			struct snd_soc_dai_driver *dai_drv,
++			struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_stream_caps *caps;
++	struct snd_sof_pcm *spcm;
++	int stream = SNDRV_PCM_STREAM_PLAYBACK;
++	int ret = 0;
++
++	/* nothing to do for BEs atm */
++	if (!pcm)
++		return 0;
++
++	spcm = kzalloc(sizeof(*spcm), GFP_KERNEL);
++	if (!spcm)
++		return -ENOMEM;
++
++	spcm->sdev = sdev;
++	spcm->stream[SNDRV_PCM_STREAM_PLAYBACK].comp_id = COMP_ID_UNASSIGNED;
++	spcm->stream[SNDRV_PCM_STREAM_CAPTURE].comp_id = COMP_ID_UNASSIGNED;
++
++	if (pcm) {
++		spcm->pcm = *pcm;
++		dev_dbg(sdev->dev, "tplg: load pcm %s\n", pcm->dai_name);
++	}
++	dai_drv->dobj.private = spcm;
++	list_add(&spcm->list, &sdev->pcm_list);
++
++	/* do we need to allocate playback PCM DMA pages */
++	if (!spcm->pcm.playback)
++		goto capture;
++
++	caps = &spcm->pcm.caps[stream];
++
++	/* allocate playback page table buffer */
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, sdev->dev,
++				  PAGE_SIZE, &spcm->stream[stream].page_table);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: can't alloc page table for %s %d\n",
++			caps->name, ret);
++
++		return ret;
++	}
++
++	/* bind pcm to host comp */
++	ret = spcm_bind(sdev, spcm, stream);
++	if (ret) {
++		dev_err(sdev->dev,
++			"error: can't bind pcm to host\n");
++		goto free_playback_tables;
++	}
++
++capture:
++	stream = SNDRV_PCM_STREAM_CAPTURE;
++
++	/* do we need to allocate capture PCM DMA pages */
++	if (!spcm->pcm.capture)
++		return ret;
++
++	caps = &spcm->pcm.caps[stream];
++
++	/* allocate capture page table buffer */
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, sdev->dev,
++				  PAGE_SIZE, &spcm->stream[stream].page_table);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: can't alloc page table for %s %d\n",
++			caps->name, ret);
++		goto free_playback_tables;
++	}
++
++	/* bind pcm to host comp */
++	ret = spcm_bind(sdev, spcm, stream);
++	if (ret) {
++		dev_err(sdev->dev,
++			"error: can't bind pcm to host\n");
++		snd_dma_free_pages(&spcm->stream[stream].page_table);
++		goto free_playback_tables;
++	}
++
++	return ret;
++
++free_playback_tables:
++	if (spcm->pcm.playback)
++		snd_dma_free_pages(&spcm->stream[SNDRV_PCM_STREAM_PLAYBACK].page_table);
++
++	return ret;
++}
++
++static int sof_dai_unload(struct snd_soc_component *scomp,
++			  struct snd_soc_dobj *dobj)
++{
++	struct snd_sof_pcm *spcm = dobj->private;
++
++	/* free PCM DMA pages */
++	if (spcm->pcm.playback)
++		snd_dma_free_pages(&spcm->stream[SNDRV_PCM_STREAM_PLAYBACK].page_table);
++
++	if (spcm->pcm.capture)
++		snd_dma_free_pages(&spcm->stream[SNDRV_PCM_STREAM_CAPTURE].page_table);
++
++	/* remove from list and free spcm */
++	list_del(&spcm->list);
++	kfree(spcm);
++
++	return 0;
++}
++
++static void sof_dai_set_format(struct snd_soc_tplg_hw_config *hw_config,
++			       struct sof_ipc_dai_config *config)
++{
++	/* clock directions wrt codec */
++	if (hw_config->bclk_master == SND_SOC_TPLG_BCLK_CM) {
++		/* codec is bclk master */
++		if (hw_config->fsync_master == SND_SOC_TPLG_FSYNC_CM)
++			config->format |= SOF_DAI_FMT_CBM_CFM;
++		else
++			config->format |= SOF_DAI_FMT_CBM_CFS;
++	} else {
++		/* codec is bclk slave */
++		if (hw_config->fsync_master == SND_SOC_TPLG_FSYNC_CM)
++			config->format |= SOF_DAI_FMT_CBS_CFM;
++		else
++			config->format |= SOF_DAI_FMT_CBS_CFS;
++	}
++
++	/* inverted clocks ? */
++	if (hw_config->invert_bclk) {
++		if (hw_config->invert_fsync)
++			config->format |= SOF_DAI_FMT_IB_IF;
++		else
++			config->format |= SOF_DAI_FMT_IB_NF;
++	} else {
++		if (hw_config->invert_fsync)
++			config->format |= SOF_DAI_FMT_NB_IF;
++		else
++			config->format |= SOF_DAI_FMT_NB_NF;
++	}
++}
++
++/* set config for all DAI's with name matching the link name */
++static int sof_set_dai_config(struct snd_sof_dev *sdev, u32 size,
++			      struct snd_soc_dai_link *link,
++			      struct sof_ipc_dai_config *config)
++{
++	struct snd_sof_dai *dai;
++	int found = 0;
++
++	list_for_each_entry(dai, &sdev->dai_list, list) {
++		if (!dai->name)
++			continue;
++
++		if (strcmp(link->name, dai->name) == 0) {
++			dai->dai_config = kmemdup(config, size, GFP_KERNEL);
++			if (!dai->dai_config)
++				return -ENOMEM;
++
++			found = 1;
++		}
++	}
++
++	/*
++	 * machine driver may define a dai link with playback and capture
++	 * dai enabled, but the dai link in topology would support both, one
++	 * or none of them. Here print a warning message to notify user
++	 */
++	if (!found) {
++		dev_warn(sdev->dev, "warning: failed to find dai for dai link %s",
++			 link->name);
++	}
++
++	return 0;
++}
++
++static int sof_link_ssp_load(struct snd_soc_component *scomp, int index,
++			     struct snd_soc_dai_link *link,
++			     struct snd_soc_tplg_link_config *cfg,
++			     struct snd_soc_tplg_hw_config *hw_config,
++			     struct sof_ipc_dai_config *config)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &cfg->priv;
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
++	int ret;
++
++	/* handle master/slave and inverted clocks */
++	sof_dai_set_format(hw_config, config);
++
++	/* init IPC */
++	memset(&config->ssp, 0, sizeof(struct sof_ipc_dai_ssp_params));
++	config->hdr.size = size;
++
++	ret = sof_parse_tokens(scomp, &config->ssp, ssp_tokens,
++			       ARRAY_SIZE(ssp_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse ssp tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
++	}
++
++	config->ssp.mclk_rate = le32_to_cpu(hw_config->mclk_rate);
++	config->ssp.bclk_rate = le32_to_cpu(hw_config->bclk_rate);
++	config->ssp.fsync_rate = le32_to_cpu(hw_config->fsync_rate);
++	config->ssp.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
++	config->ssp.tdm_slot_width = le32_to_cpu(hw_config->tdm_slot_width);
++	config->ssp.mclk_direction = hw_config->mclk_direction;
++	config->ssp.rx_slots = le32_to_cpu(hw_config->rx_slots);
++	config->ssp.tx_slots = le32_to_cpu(hw_config->tx_slots);
++
++	dev_dbg(sdev->dev, "tplg: config SSP%d fmt 0x%x mclk %d bclk %d fclk %d width (%d)%d slots %d mclk id %d quirks %d\n",
++		config->dai_index, config->format,
++		config->ssp.mclk_rate, config->ssp.bclk_rate,
++		config->ssp.fsync_rate, config->ssp.sample_valid_bits,
++		config->ssp.tdm_slot_width, config->ssp.tdm_slots,
++		config->ssp.mclk_id, config->ssp.quirks);
++
++	/* validate SSP fsync rate and channel count */
++	if (config->ssp.fsync_rate < 8000 || config->ssp.fsync_rate > 192000) {
++		dev_err(sdev->dev, "error: invalid fsync rate for SSP%d\n",
++			config->dai_index);
++		return -EINVAL;
++	}
++
++	if (config->ssp.tdm_slots < 1 || config->ssp.tdm_slots > 8) {
++		dev_err(sdev->dev, "error: invalid channel count for SSP%d\n",
++			config->dai_index);
++		return -EINVAL;
++	}
++
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 config->hdr.cmd, config, size, &reply,
++				 sizeof(reply));
++
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to set DAI config for SSP%d\n",
++			config->dai_index);
++		return ret;
++	}
++
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, config);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to save DAI config for SSP%d\n",
++			config->dai_index);
++
++	return ret;
++}
++
++static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
++			      struct snd_soc_dai_link *link,
++			      struct snd_soc_tplg_link_config *cfg,
++			      struct snd_soc_tplg_hw_config *hw_config,
++			      struct sof_ipc_dai_config *config)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &cfg->priv;
++	struct sof_ipc_dai_config *ipc_config;
++	struct sof_ipc_reply reply;
++	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
++	struct sof_ipc_fw_version *v = &ready->version;
++	u32 size;
++	int ret, j;
++
++	/*
++	 * config is only used for the common params in dmic_params structure
++	 * that does not include the PDM controller config array
++	 * Set the common params to 0.
++	 */
++	memset(&config->dmic, 0, sizeof(struct sof_ipc_dai_dmic_params));
++
++	/* get DMIC tokens */
++	ret = sof_parse_tokens(scomp, &config->dmic, dmic_tokens,
++			       ARRAY_SIZE(dmic_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse dmic tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
++	}
++
++	/*
++	 * allocate memory for dmic dai config accounting for the
++	 * variable number of active pdm controllers
++	 * This will be the ipc payload for setting dai config
++	 */
++	size = sizeof(*config) + sizeof(struct sof_ipc_dai_dmic_pdm_ctrl) *
++					config->dmic.num_pdm_active;
++
++	ipc_config = kzalloc(size, GFP_KERNEL);
++	if (!ipc_config)
++		return -ENOMEM;
++
++	/* copy the common dai config and dmic params */
++	memcpy(ipc_config, config, sizeof(*config));
++
++	/*
++	 * alloc memory for private member
++	 * Used to track the pdm config array index currently being parsed
++	 */
++	sdev->private = kzalloc(sizeof(u32), GFP_KERNEL);
++	if (!sdev->private) {
++		kfree(ipc_config);
++		return -ENOMEM;
++	}
++
++	/* get DMIC PDM tokens */
++	ret = sof_parse_tokens(scomp, &ipc_config->dmic.pdm[0], dmic_pdm_tokens,
++			       ARRAY_SIZE(dmic_pdm_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse dmic pdm tokens failed %d\n",
++			le32_to_cpu(private->size));
++		goto err;
++	}
++
++	/* set IPC header size */
++	ipc_config->hdr.size = size;
++
++	/* debug messages */
++	dev_dbg(sdev->dev, "tplg: config DMIC%d driver version %d\n",
++		ipc_config->dai_index, ipc_config->dmic.driver_ipc_version);
++	dev_dbg(sdev->dev, "pdmclk_min %d pdm_clkmax %d duty_min %hd\n",
++		ipc_config->dmic.pdmclk_min, ipc_config->dmic.pdmclk_max,
++		ipc_config->dmic.duty_min);
++	dev_dbg(sdev->dev, "duty_max %hd fifo_fs %d num_pdms active %d\n",
++		ipc_config->dmic.duty_max, ipc_config->dmic.fifo_fs,
++		ipc_config->dmic.num_pdm_active);
++	dev_dbg(sdev->dev, "fifo word length %hd\n",
++		ipc_config->dmic.fifo_bits);
++
++	for (j = 0; j < ipc_config->dmic.num_pdm_active; j++) {
++		dev_dbg(sdev->dev, "pdm %hd mic a %hd mic b %hd\n",
++			ipc_config->dmic.pdm[j].id,
++			ipc_config->dmic.pdm[j].enable_mic_a,
++			ipc_config->dmic.pdm[j].enable_mic_b);
++		dev_dbg(sdev->dev, "pdm %hd polarity a %hd polarity b %hd\n",
++			ipc_config->dmic.pdm[j].id,
++			ipc_config->dmic.pdm[j].polarity_mic_a,
++			ipc_config->dmic.pdm[j].polarity_mic_b);
++		dev_dbg(sdev->dev, "pdm %hd clk_edge %hd skew %hd\n",
++			ipc_config->dmic.pdm[j].id,
++			ipc_config->dmic.pdm[j].clk_edge,
++			ipc_config->dmic.pdm[j].skew);
++	}
++
++	if (SOF_ABI_VER(v->major, v->minor, v->micro) < SOF_ABI_VER(3, 0, 1)) {
++		/* this takes care of backwards compatible handling of fifo_bits_b */
++		ipc_config->dmic.reserved_2 = ipc_config->dmic.fifo_bits;
++	}
++
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 ipc_config->hdr.cmd, ipc_config, size, &reply,
++				 sizeof(reply));
++
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to set DAI config for DMIC%d\n",
++			config->dai_index);
++		goto err;
++	}
++
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, ipc_config);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to save DAI config for DMIC%d\n",
++			config->dai_index);
++
++err:
++	kfree(sdev->private);
++	kfree(ipc_config);
++
++	return ret;
++}
++
++/*
++ * for hda link, playback and capture are supported by different dai
++ * in FW. Here get the dai_index, set dma channel of each dai
++ * and send config to FW. In FW, each dai sets config by dai_index
++ */
++static int sof_link_hda_process(struct snd_sof_dev *sdev,
++				struct snd_soc_dai_link *link,
++				struct sof_ipc_dai_config *config,
++				int tx_slot,
++				int rx_slot)
++{
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
++	struct snd_sof_dai *sof_dai;
++	int found = 0;
++	int ret;
++
++	list_for_each_entry(sof_dai, &sdev->dai_list, list) {
++		if (!sof_dai->name)
++			continue;
++
++		if (strcmp(link->name, sof_dai->name) == 0) {
++			if (sof_dai->comp_dai.direction ==
++			    SNDRV_PCM_STREAM_PLAYBACK) {
++				if (!link->dpcm_playback)
++					return -EINVAL;
++
++				config->hda.link_dma_ch = tx_slot;
++			} else {
++				if (!link->dpcm_capture)
++					return -EINVAL;
++
++				config->hda.link_dma_ch = rx_slot;
++			}
++
++			config->dai_index = sof_dai->comp_dai.dai_index;
++			found = 1;
++
++			/* save config in dai component */
++			sof_dai->dai_config = kmemdup(config, size, GFP_KERNEL);
++			if (!sof_dai->dai_config)
++				return -ENOMEM;
++
++			/* send message to DSP */
++			ret = sof_ipc_tx_message(sdev->ipc,
++						 config->hdr.cmd, config, size,
++						 &reply, sizeof(reply));
++
++			if (ret < 0) {
++				dev_err(sdev->dev, "error: failed to set DAI config for direction:%d of HDA dai %d\n",
++					sof_dai->comp_dai.direction,
++					config->dai_index);
++
++				return ret;
++			}
++		}
++	}
++
++	/*
++	 * machine driver may define a dai link with playback and capture
++	 * dai enabled, but the dai link in topology would support both, one
++	 * or none of them. Here print a warning message to notify user
++	 */
++	if (!found) {
++		dev_warn(sdev->dev, "warning: failed to find dai for dai link %s",
++			 link->name);
++	}
++
++	return 0;
++}
++
++static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
++			     struct snd_soc_dai_link *link,
++			     struct snd_soc_tplg_link_config *cfg,
++			     struct snd_soc_tplg_hw_config *hw_config,
++			     struct sof_ipc_dai_config *config)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_dai_link_component dai_component;
++	struct snd_soc_tplg_private *private = &cfg->priv;
++	struct snd_soc_dai *dai;
++	u32 size = sizeof(*config);
++	u32 tx_num = 0;
++	u32 tx_slot = 0;
++	u32 rx_num = 0;
++	u32 rx_slot = 0;
++	int ret;
++
++	/* init IPC */
++	memset(&dai_component, 0, sizeof(dai_component));
++	memset(&config->hda, 0, sizeof(struct sof_ipc_dai_hda_params));
++	config->hdr.size = size;
++
++	/* get any bespoke DAI tokens */
++	ret = sof_parse_tokens(scomp, config, hda_tokens,
++			       ARRAY_SIZE(hda_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse hda tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
++	}
++
++	dai_component.dai_name = link->cpu_dai_name;
++	dai = snd_soc_find_dai(&dai_component);
++	if (!dai) {
++		dev_err(sdev->dev, "error: failed to find dai %s in %s",
++			dai_component.dai_name, __func__);
++		return -EINVAL;
++	}
++
++	if (link->dpcm_playback)
++		tx_num = 1;
++
++	if (link->dpcm_capture)
++		rx_num = 1;
++
++	ret = snd_soc_dai_get_channel_map(dai, &tx_num, &tx_slot,
++					  &rx_num, &rx_slot);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to get dma channel for HDA%d\n",
++			config->dai_index);
++
++		return ret;
++	}
++
++	ret = sof_link_hda_process(sdev, link, config, tx_slot, rx_slot);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to process hda dai link %s",
++			link->name);
++
++	return ret;
++}
++
++/* DAI link - used for any driver specific init */
++static int sof_link_load(struct snd_soc_component *scomp, int index,
++			 struct snd_soc_dai_link *link,
++			 struct snd_soc_tplg_link_config *cfg)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &cfg->priv;
++	struct sof_ipc_dai_config config;
++	struct snd_soc_tplg_hw_config *hw_config;
++	int num_hw_configs;
++	int ret;
++	int i = 0;
++
++	link->platform_name = dev_name(sdev->dev);
++
++	/*
++	 * Set nonatomic property for FE dai links as their trigger action
++	 * involves IPC's.
++	 */
++	if (!link->no_pcm) {
++		link->nonatomic = true;
++
++		/* nothing more to do for FE dai links */
++		return 0;
++	}
++
++	/* check we have some tokens - we need at least DAI type */
++	if (le32_to_cpu(private->size) == 0) {
++		dev_err(sdev->dev, "error: expected tokens for DAI, none found\n");
++		return -EINVAL;
++	}
++
++	/* Send BE DAI link configurations to DSP */
++	memset(&config, 0, sizeof(config));
++
++	/* get any common DAI tokens */
++	ret = sof_parse_tokens(scomp, &config, dai_link_tokens,
++			       ARRAY_SIZE(dai_link_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse link tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
++	}
++
++	/*
++	 * DAI links are expected to have at least 1 hw_config.
++	 * But some older topologies might have no hw_config for HDA dai links.
++	 */
++	num_hw_configs = le32_to_cpu(cfg->num_hw_configs);
++	if (!num_hw_configs) {
++		if (config.type != SOF_DAI_INTEL_HDA) {
++			dev_err(sdev->dev, "error: unexpected DAI config count %d!\n",
++				le32_to_cpu(cfg->num_hw_configs));
++			return -EINVAL;
++		}
++	} else {
++		dev_dbg(sdev->dev, "tplg: %d hw_configs found, default id: %d!\n",
++			cfg->num_hw_configs, le32_to_cpu(cfg->default_hw_config_id));
++
++		for (i = 0; i < num_hw_configs; i++) {
++			if (cfg->hw_config[i].id == cfg->default_hw_config_id)
++				break;
++		}
++
++		if (i == num_hw_configs) {
++			dev_err(sdev->dev, "error: default hw_config id: %d not found!\n",
++				le32_to_cpu(cfg->default_hw_config_id));
++			return -EINVAL;
++		}
++	}
++
++	/* configure dai IPC message */
++	hw_config = &cfg->hw_config[i];
++
++	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
++	config.format = le32_to_cpu(hw_config->fmt);
++
++	/* now load DAI specific data and send IPC - type comes from token */
++	switch (config.type) {
++	case SOF_DAI_INTEL_SSP:
++		ret = sof_link_ssp_load(scomp, index, link, cfg, hw_config,
++					&config);
++		break;
++	case SOF_DAI_INTEL_DMIC:
++		ret = sof_link_dmic_load(scomp, index, link, cfg, hw_config,
++					 &config);
++		break;
++	case SOF_DAI_INTEL_HDA:
++		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
++					&config);
++		break;
++	default:
++		dev_err(sdev->dev, "error: invalid DAI type %d\n", config.type);
++		ret = -EINVAL;
++		break;
++	}
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int sof_link_hda_unload(struct snd_sof_dev *sdev,
++			       struct snd_soc_dai_link *link)
++{
++	struct snd_soc_dai_link_component dai_component;
++	struct snd_soc_dai *dai;
++	int ret = 0;
++
++	memset(&dai_component, 0, sizeof(dai_component));
++	dai_component.dai_name = link->cpu_dai_name;
++	dai = snd_soc_find_dai(&dai_component);
++	if (!dai) {
++		dev_err(sdev->dev, "error: failed to find dai %s in %s",
++			dai_component.dai_name, __func__);
++		return -EINVAL;
++	}
++
++	/*
++	 * FIXME: this call to hw_free is mainly to release the link DMA ID.
++	 * This is abusing the API and handling SOC internals is not
++	 * recommended. This part will be reworked.
++	 */
++	if (dai->driver->ops->hw_free)
++		ret = dai->driver->ops->hw_free(NULL, dai);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to free hda resource for %s\n",
++			link->name);
++
++	return ret;
++}
++
++static int sof_link_unload(struct snd_soc_component *scomp,
++			   struct snd_soc_dobj *dobj)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_dai_link *link =
++		container_of(dobj, struct snd_soc_dai_link, dobj);
++
++	struct snd_sof_dai *sof_dai;
++	int ret = 0;
++
++	/* only BE link is loaded by sof */
++	if (!link->no_pcm)
++		return 0;
++
++	list_for_each_entry(sof_dai, &sdev->dai_list, list) {
++		if (!sof_dai->name)
++			continue;
++
++		if (strcmp(link->name, sof_dai->name) == 0)
++			goto found;
++	}
++
++	dev_err(sdev->dev, "error: failed to find dai %s in %s",
++		link->name, __func__);
++	return -EINVAL;
++found:
++
++	switch (sof_dai->dai_config->type) {
++	case SOF_DAI_INTEL_SSP:
++	case SOF_DAI_INTEL_DMIC:
++		/* no resource needs to be released for SSP and DMIC */
++		break;
++	case SOF_DAI_INTEL_HDA:
++		ret = sof_link_hda_unload(sdev, link);
++		break;
++	default:
++		dev_err(sdev->dev, "error: invalid DAI type %d\n",
++			sof_dai->dai_config->type);
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++/* DAI link - used for any driver specific init */
++static int sof_route_load(struct snd_soc_component *scomp, int index,
++			  struct snd_soc_dapm_route *route)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_pipe_comp_connect *connect;
++	struct snd_sof_widget *source_swidget, *sink_swidget;
++	struct snd_soc_dobj *dobj = &route->dobj;
++	struct snd_sof_route *sroute;
++	struct sof_ipc_reply reply;
++	int ret = 0;
++
++	/* allocate memory for sroute and connect */
++	sroute = kzalloc(sizeof(*sroute), GFP_KERNEL);
++	if (!sroute)
++		return -ENOMEM;
++
++	sroute->sdev = sdev;
++
++	connect = kzalloc(sizeof(*connect), GFP_KERNEL);
++	if (!connect) {
++		kfree(sroute);
++		return -ENOMEM;
++	}
++
++	connect->hdr.size = sizeof(*connect);
++	connect->hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_CONNECT;
++
++	dev_dbg(sdev->dev, "sink %s control %s source %s\n",
++		route->sink, route->control ? route->control : "none",
++		route->source);
++
++	/* source component */
++	source_swidget = snd_sof_find_swidget(sdev, (char *)route->source);
++	if (!source_swidget) {
++		dev_err(sdev->dev, "error: source %s not found\n",
++			route->source);
++		ret = -EINVAL;
++		goto err;
++	}
++
++	/*
++	 * Virtual widgets of type output/out_drv may be added in topology
++	 * for compatibility. These are not handled by the FW.
++	 * So, don't send routes whose source/sink widget is of such types
++	 * to the DSP.
++	 */
++	if (source_swidget->id == snd_soc_dapm_out_drv ||
++	    source_swidget->id == snd_soc_dapm_output)
++		goto err;
++
++	connect->source_id = source_swidget->comp_id;
++
++	/* sink component */
++	sink_swidget = snd_sof_find_swidget(sdev, (char *)route->sink);
++	if (!sink_swidget) {
++		dev_err(sdev->dev, "error: sink %s not found\n",
++			route->sink);
++		ret = -EINVAL;
++		goto err;
++	}
++
++	/*
++	 * Don't send routes whose sink widget is of type
++	 * output or out_drv to the DSP
++	 */
++	if (sink_swidget->id == snd_soc_dapm_out_drv ||
++	    sink_swidget->id == snd_soc_dapm_output)
++		goto err;
++
++	connect->sink_id = sink_swidget->comp_id;
++
++	/*
++	 * For virtual routes, both sink and source are not
++	 * buffer. Since only buffer linked to component is supported by
++	 * FW, others are reported as error, add check in route function,
++	 * do not send it to FW when both source and sink are not buffer
++	 */
++	if (source_swidget->id != snd_soc_dapm_buffer &&
++	    sink_swidget->id != snd_soc_dapm_buffer) {
++		dev_dbg(sdev->dev, "warning: neither Linked source component %s nor sink component %s is of buffer type, ignoring link\n",
++			route->source, route->sink);
++		ret = 0;
++		goto err;
++	} else {
++		ret = sof_ipc_tx_message(sdev->ipc,
++					 connect->hdr.cmd,
++					 connect, sizeof(*connect),
++					 &reply, sizeof(reply));
++
++		/* check IPC return value */
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: failed to add route sink %s control %s source %s\n",
++				route->sink,
++				route->control ? route->control : "none",
++				route->source);
++			goto err;
++		}
++
++		/* check IPC reply */
++		if (reply.error < 0) {
++			dev_err(sdev->dev, "error: DSP failed to add route sink %s control %s source %s result %d\n",
++				route->sink,
++				route->control ? route->control : "none",
++				route->source, reply.error);
++			ret = reply.error;
++			goto err;
++		}
++
++		sroute->route = route;
++		dobj->private = sroute;
++		sroute->private = connect;
++
++		/* add route to route list */
++		list_add(&sroute->list, &sdev->route_list);
++
++		return ret;
++	}
++
++err:
++	kfree(connect);
++	kfree(sroute);
++	return ret;
++}
++
++int snd_sof_complete_pipeline(struct snd_sof_dev *sdev,
++			      struct snd_sof_widget *swidget)
++{
++	struct sof_ipc_pipe_ready ready;
++	struct sof_ipc_reply reply;
++	int ret;
++
++	dev_dbg(sdev->dev, "tplg: complete pipeline %s id %d\n",
++		swidget->widget->name, swidget->comp_id);
++
++	memset(&ready, 0, sizeof(ready));
++	ready.hdr.size = sizeof(ready);
++	ready.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_PIPE_COMPLETE;
++	ready.comp_id = swidget->comp_id;
++
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 ready.hdr.cmd, &ready, sizeof(ready), &reply,
++				 sizeof(reply));
++	if (ret < 0)
++		return ret;
++	return 1;
++}
++
++/* completion - called at completion of firmware loading */
++static void sof_complete(struct snd_soc_component *scomp)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_sof_widget *swidget;
++
++	/* some widget types require completion notificattion */
++	list_for_each_entry(swidget, &sdev->widget_list, list) {
++		if (swidget->complete)
++			continue;
++
++		switch (swidget->id) {
++		case snd_soc_dapm_scheduler:
++			swidget->complete =
++				snd_sof_complete_pipeline(sdev, swidget);
++			break;
++		default:
++			break;
++		}
++	}
++}
++
++/* manifest - optional to inform component of manifest */
++static int sof_manifest(struct snd_soc_component *scomp, int index,
++			struct snd_soc_tplg_manifest *man)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	u32 size;
++
++	size = le32_to_cpu(man->priv.size);
++
++	/* backward compatible with tplg without ABI info */
++	if (!size) {
++		dev_dbg(sdev->dev, "No topology ABI info\n");
++		return 0;
++	}
++
++	if (size == SOF_TPLG_ABI_SIZE) {
++		dev_info(sdev->dev,
++			 "Topology: ABI %d:%d:%d Kernel ABI %d:%d:%d\n",
++			 man->priv.data[0], man->priv.data[1],
++			 man->priv.data[2], SOF_ABI_MAJOR, SOF_ABI_MINOR,
++			 SOF_ABI_PATCH);
++		if (SOF_ABI_VER(man->priv.data[0], man->priv.data[1],
++				man->priv.data[2]) <= SOF_ABI_VERSION)
++			return 0;
++	}
++	dev_err(sdev->dev,
++		"error: Incompatible ABI version %d:%d:%d\n",
++		man->priv.data[0], man->priv.data[1], man->priv.data[2]);
++	return -EINVAL;
++}
++
++/* vendor specific kcontrol handlers available for binding */
++static const struct snd_soc_tplg_kcontrol_ops sof_io_ops[] = {
++	{SOF_TPLG_KCTL_VOL_ID, snd_sof_volume_get, snd_sof_volume_put},
++	{SOF_TPLG_KCTL_BYTES_ID, snd_sof_bytes_get, snd_sof_bytes_put},
++	{SOF_TPLG_KCTL_ENUM_ID, snd_sof_enum_get, snd_sof_enum_put},
++	{SOF_TPLG_KCTL_SWITCH_ID, snd_sof_switch_get, snd_sof_switch_put},
++};
++
++/* vendor specific bytes ext handlers available for binding */
++static const struct snd_soc_tplg_bytes_ext_ops sof_bytes_ext_ops[] = {
++	{SOF_TPLG_KCTL_BYTES_ID, snd_sof_bytes_ext_get, snd_sof_bytes_ext_put},
++};
++
++static struct snd_soc_tplg_ops sof_tplg_ops = {
++	/* external kcontrol init - used for any driver specific init */
++	.control_load	= sof_control_load,
++	.control_unload	= sof_control_unload,
++
++	/* external kcontrol init - used for any driver specific init */
++	.dapm_route_load	= sof_route_load,
++	.dapm_route_unload	= sof_route_unload,
++
++	/* external widget init - used for any driver specific init */
++	/* .widget_load is not currently used */
++	.widget_ready	= sof_widget_ready,
++	.widget_unload	= sof_widget_unload,
++
++	/* FE DAI - used for any driver specific init */
++	.dai_load	= sof_dai_load,
++	.dai_unload	= sof_dai_unload,
++
++	/* DAI link - used for any driver specific init */
++	.link_load	= sof_link_load,
++	.link_unload	= sof_link_unload,
++
++	/* completion - called at completion of firmware loading */
++	.complete	= sof_complete,
++
++	/* manifest - optional to inform component of manifest */
++	.manifest	= sof_manifest,
++
++	/* vendor specific kcontrol handlers available for binding */
++	.io_ops		= sof_io_ops,
++	.io_ops_count	= ARRAY_SIZE(sof_io_ops),
++
++	/* vendor specific bytes ext handlers available for binding */
++	.bytes_ext_ops	= sof_bytes_ext_ops,
++	.bytes_ext_ops_count	= ARRAY_SIZE(sof_bytes_ext_ops),
++};
++
++int snd_sof_init_topology(struct snd_sof_dev *sdev,
++			  struct snd_soc_tplg_ops *ops)
++{
++	/* TODO: support linked list of topologies */
++	sdev->tplg_ops = ops;
++	return 0;
++}
++EXPORT_SYMBOL(snd_sof_init_topology);
++
++int snd_sof_load_topology(struct snd_sof_dev *sdev, const char *file)
++{
++	const struct firmware *fw;
++	int ret;
++
++	dev_dbg(sdev->dev, "loading topology:%s\n", file);
++
++	ret = request_firmware(&fw, file, sdev->dev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: tplg request firmware %s failed err: %d\n",
++			file, ret);
++		return ret;
++	}
++
++	ret = snd_soc_tplg_component_load(sdev->component,
++					  &sof_tplg_ops, fw,
++					  SND_SOC_TPLG_INDEX_ALL);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: tplg component load failed %d\n",
++			ret);
++		ret = -EINVAL;
++	}
++
++	release_firmware(fw);
++	return ret;
++}
++EXPORT_SYMBOL(snd_sof_load_topology);
 -- 
 2.20.1
