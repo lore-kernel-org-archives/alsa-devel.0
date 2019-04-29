@@ -1,51 +1,38 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [GIT PULL] soundwire updates for v5.2-rc1
-Date: Mon, 29 Apr 2019 17:16:17 +0530
-Message-ID: <20190429114617.GJ3845@vkoul-mobl.Dlink>
-References: <20190429112829.GH3845@vkoul-mobl.Dlink>
- <20190429114337.GA16771@kroah.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Subject: [PATCH -next] ASoC: sprd: Fix return value check in sprd_mcdt_probe()
+Date: Mon, 29 Apr 2019 12:25:12 +0000
+Message-ID: <20190429122512.59242-1-weiyongjun1@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C9F2F806E7
- for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2019 13:46:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20190429114337.GA16771@kroah.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linaro.org>, Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 29-04-19, 13:43, Greg KH wrote:
-> On Mon, Apr 29, 2019 at 04:58:29PM +0530, Vinod Koul wrote:
-> > Hey Greg,
-> > 
-> > Please PULL to receive updates to soundwire subsystem
-> > 
-> > The following changes since commit bfeffd155283772bbe78c6a05dec7c0128ee500c:
-> > 
-> >   Linux 5.0-rc1 (2019-01-06 17:08:20 -0800)
-> > 
-> > are available in the Git repository at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-5.2-rc1
-> 
-> Pulled and pushed out, thanks,
+In case of error, the function devm_ioremap_resource() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check should
+be replaced with IS_ERR().
 
-That was fast :)
+Fixes: d7bff893e04f ("ASoC: sprd: Add Spreadtrum multi-channel data transfer support")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ sound/soc/sprd/sprd-mcdt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks
--- 
-~Vinod
+diff --git a/sound/soc/sprd/sprd-mcdt.c b/sound/soc/sprd/sprd-mcdt.c
+index 28f5e649733d..e9318d7a4810 100644
+--- a/sound/soc/sprd/sprd-mcdt.c
++++ b/sound/soc/sprd/sprd-mcdt.c
+@@ -951,8 +951,8 @@ static int sprd_mcdt_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	mcdt->base = devm_ioremap_resource(&pdev->dev, res);
+-	if (!mcdt->base)
+-		return -ENOMEM;
++	if (IS_ERR(mcdt->base))
++		return PTR_ERR(mcdt->base);
+ 
+ 	mcdt->dev = &pdev->dev;
+ 	spin_lock_init(&mcdt->lock);
