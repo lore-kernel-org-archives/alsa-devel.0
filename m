@@ -1,47 +1,34 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH] ASoC: da7219: Use clk_round_rate to handle enabled
- bclk/wclk case
-Date: Mon, 29 Apr 2019 09:16:08 +0000
-Message-ID: <AM5PR1001MB0994EA351AEF82224D9AA6BF80390@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
-References: <20190426125925.04F3F3FB4A@swsrvapps-01.diasemi.com>
- <20190427171955.GH14916@sirena.org.uk>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 0/2] ASoC: fix hw_params/hw_free validity checks
+Date: Mon, 29 Apr 2019 11:47:48 +0200
+Message-ID: <20190429094750.1857-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190427171955.GH14916@sirena.org.uk>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Akshu Agrawal <Akshu.Agrawal@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27 April 2019 18:20, Mark Brown wrote:
+While working on a codec, I have found an odd situation. The hw_params
+callback which was provided by the codec dai was not called as expected.
+However, the hw_free callback was called, even if hw_params was skipped.
 
-> On Fri, Apr 26, 2019 at 01:59:24PM +0100, Adam Thomson wrote:
->=20
-> > +		/*
-> > +		 * Rounding the rate here avoids failure trying to set a new
-> > +		 * rate on an already enabled wclk. In that instance this will
-> > +		 * just set the same rate as is currently in use, and so should
-> > +		 * continue without problem.
-> > +		 */
-> > +		sr =3D clk_round_rate(wclk, sr);
-> >  		ret =3D clk_set_rate(wclk, sr);
-> >  		if (ret) {
-> >  			dev_err(component->dev,
->=20
-> Don't we need to validate that the rounded rate is actually viable for
-> the parameters we're trying to set here?  If there's missing constraints
-> causing something to try to do something unsupportable then we should
-> return an error rather than silently accept.
+After debugging, I found out that the dai was considered invalid because
+it did not specify any rates, only rate_min and rate_max. That's a first
+problem.
 
-Thanks for directing my gaze to this again. Actually I don't think the SR s=
-hould
-be rounded at all. If it doesn't match exactly it should fail so I'll remov=
-e the
-rounding here. Not sure what my brain was doing there.
+If a codec dai is considered invalid, hw_free should probably not be
+called either, that's a 2nd issue.
 
-For the BCLK rate, I'll see what checking can be added there to make sure t=
-he
-word length is compatible with the 'rounded' BCLK rate.
+This patchset is meant to solve both issues.
+
+Jerome Brunet (2):
+  ASoC: fix valid stream condition
+  ASoC: skip hw_free on codec dai for which the stream is invalid
+
+ sound/soc/soc-pcm.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+-- 
+2.20.1
