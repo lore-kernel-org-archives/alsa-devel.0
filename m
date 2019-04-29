@@ -1,42 +1,43 @@
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Subject: [PATCH -next] ASoC: sprd: Fix to use list_for_each_entry_safe() when delete items
-Date: Mon, 29 Apr 2019 12:37:13 +0000
-Message-ID: <20190429123713.64280-1-weiyongjun1@huawei.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 20/26] compat_ioctl: remove translation for sound ioctls
+Date: Mon, 29 Apr 2019 14:43:18 +0200
+Message-ID: <CAK8P3a1CbQsyTBykXkZv-35M_zQx97aOubtZD2YuzyPV94+4=w@mail.gmail.com>
+References: <20190416202013.4034148-1-arnd@arndb.de> <20190416202839.248216-1-arnd@arndb.de>
+ <s5hk1fthx9u.wl-tiwai@suse.de> <s5hv9yxjnp4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hv9yxjnp4.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linaro.org>, Chunyan Zhang <zhang.lyra@gmail.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Vinod Koul <vkoul@kernel.org>, linux-um@lists.infradead.org, y2038 Mailman List <y2038@lists.linaro.org>, Jaroslav Kysela <perex@perex.cz>, Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since we will remove items off the list using list_del() we need
-to use a safe version of the list_for_each_entry() macro aptly named
-list_for_each_entry_safe().
+On Mon, Apr 29, 2019 at 9:05 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 17 Apr 2019 10:05:33 +0200, Takashi Iwai wrote:
+> >
+> > On Tue, 16 Apr 2019 22:28:05 +0200, Arnd Bergmann wrote:
+> > > The compat_ioctl list contains one comment about SNDCTL_DSP_MAPINBUF and
+> > > SNDCTL_DSP_MAPOUTBUF, which actually would need a translation handler
+> > > if implemented. However, the native implementation just returns -EINVAL,
+> > > so we don't care.
+> > >
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >
+> > This looks like a really nice cleanup.  Thanks!
+> >
+> > Reviewed-by: Takashi Iwai <tiwai@suse.de>
+>
+> Is this supposed to be taken via sound git tree, or would you apply
+> over yours?  I'm fine in either way.
 
-Fixes: d7bff893e04f ("ASoC: sprd: Add Spreadtrum multi-channel data transfer support")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/sprd/sprd-mcdt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I was hoping that Al could pick up the entire series to avoid the merge
+conflicts, but then we had some more discussion about the earlier
+patches in the series and he did another version of those.
 
-diff --git a/sound/soc/sprd/sprd-mcdt.c b/sound/soc/sprd/sprd-mcdt.c
-index 28f5e649733d..df250f7f2b6f 100644
---- a/sound/soc/sprd/sprd-mcdt.c
-+++ b/sound/soc/sprd/sprd-mcdt.c
-@@ -978,12 +978,12 @@ static int sprd_mcdt_probe(struct platform_device *pdev)
- 
- static int sprd_mcdt_remove(struct platform_device *pdev)
- {
--	struct sprd_mcdt_chan *temp;
-+	struct sprd_mcdt_chan *chan, *temp;
- 
- 	mutex_lock(&sprd_mcdt_list_mutex);
- 
--	list_for_each_entry(temp, &sprd_mcdt_chan_list, list)
--		list_del(&temp->list);
-+	list_for_each_entry_safe(chan, temp, &sprd_mcdt_chan_list, list)
-+		list_del(&chan->list);
- 
- 	mutex_unlock(&sprd_mcdt_list_mutex);
+Al, what is your current plan for the compat-ioctl removal series?
+Are you working on a combined series, or should I resend a
+subset of my patches to you?
+
+       Arnd
