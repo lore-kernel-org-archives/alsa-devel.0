@@ -1,70 +1,113 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: tlv320aic3x: Add support for high
- power analog output
-Date: Mon, 29 Apr 2019 14:27:15 +0300
-Message-ID: <507b9ee8-2505-8014-114e-563dc5995e8f@ti.com>
-References: <20190427194005.7308-1-sravanhome@gmail.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: [GIT PULL] soundwire updates for v5.2-rc1
+Date: Mon, 29 Apr 2019 16:58:29 +0530
+Message-ID: <20190429112829.GH3845@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190427194005.7308-1-sravanhome@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Saravanan Sekar <sravanhome@gmail.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4953711455552681611=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46AC8F806E7
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2019 13:28:43 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On 27/04/2019 22.40, Saravanan Sekar wrote:
-> Add support to power and output level control for the analog high power
-> output drivers HPOUT and HPCOM.
-> 
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> ---
->  sound/soc/codecs/tlv320aic3x.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-> index 516d17cb2182..d4bafac802eb 100644
-> --- a/sound/soc/codecs/tlv320aic3x.c
-> +++ b/sound/soc/codecs/tlv320aic3x.c
-> @@ -419,6 +419,12 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
->  	/* Pop reduction */
->  	SOC_ENUM("Output Driver Power-On time", aic3x_poweron_time_enum),
->  	SOC_ENUM("Output Driver Ramp-up step", aic3x_rampup_step_enum),
-> +
-> +	/* Analog HPOUT, HPCOM power and output level controls */
-> +	SOC_DOUBLE_R("Analog output power control", HPROUT_CTRL,
-> +			HPRCOM_CTRL, 0, 1, 0),
-
-bit 0 of HPROUT_CTRL and HPRCOM_CTRL is handled by DAPM:
-"Right HP Out"
-"Right HP Com"
-
-> +	SOC_DOUBLE_R("Analog output level control", HPROUT_CTRL,
-> +			HPRCOM_CTRL, 4, 9, 0),
-
-and this will modify the HPR and HPRCOM (right channels) only.
-
-You should add two controls:
-
-/* HP/HPCOM volumes. From 0 to 9 dB in 1 dB steps */
-static DECLARE_TLV_DB_SCALE(hp_tlv, 0, 100, 0);
-
-SOC_DOUBLE_R_TLV("HP Playback Volume", HPLOUT_CTRL, HPROUT_CTRL, 4, 9,
-0, hp_tlv);
-
-SOC_DOUBLE_R_TLV("HPCOM Playback Volume", HPLCOM_CTRL, HPRCOM_CTRL, 4,
-9, 0, hp_tlv);
+--===============4953711455552681611==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
+Content-Disposition: inline
 
 
->  };
->  
->  /* For other than tlv320aic3104 */
-> 
+--oLBj+sq0vYjzfsbl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Péter
+Hey Greg,
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Please PULL to receive updates to soundwire subsystem
+
+The following changes since commit bfeffd155283772bbe78c6a05dec7c0128ee500c:
+
+  Linux 5.0-rc1 (2019-01-06 17:08:20 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.2-rc1
+
+for you to fetch changes up to 4abbd783d126cabfc20d1b8d50b1d5026b5cba09:
+
+  soundwire: intel: fix implicit header use of module.h/export.h (2019-04-1=
+4 15:52:50 +0530)
+
+----------------------------------------------------------------
+soundwire updates for v5.2-rc1
+
+This round saw interest from Intel, Linaro and Cadence in
+Soundwire. More patches are in pipeline (maybe next cycle)
+
+ - removal of useless initialzation in core
+ - couple of header and kcalloc inversion fixes on Intel driver
+
+----------------------------------------------------------------
+Paul Gortmaker (1):
+      soundwire: intel: fix implicit header use of module.h/export.h
+
+Pierre-Louis Bossart (3):
+      soundwire: intel: fix inversion in devm_kcalloc parameters
+      soundwire: remove useless initializations
+      soundwire: stream: remove useless initialization of local variable
+
+ drivers/soundwire/bus.c        | 2 --
+ drivers/soundwire/intel.c      | 5 +++--
+ drivers/soundwire/intel_init.c | 2 ++
+ drivers/soundwire/stream.c     | 2 +-
+ 4 files changed, 6 insertions(+), 5 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--oLBj+sq0vYjzfsbl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBAgAGBQJcxt/dAAoJEHwUBw8lI4NHz4AQAJAOb2nb95UYUxrr0RLV+jCv
+PRb7otRSeBJMfWcfAFVWdf2i4bdOeD/k4iGxYpYx/nWDtzHtLciZ2u+7S/+z+5bd
+KKCYpmuCEkhWgm0USTwuZzNV8DOHTnR8eOTrS79nueJHqZolcPyhnWOBXIpqC8Gd
+GiXFxedbsk/pXvs0Rj3HZLxQkFgSPlNg4rW69KWCNUMRpn70BsMv9xAaBrJRs5mx
+2XdtUqx8HPxgXXOA5eeo1d/UIZ6/9SSHvSYTb45CE4AVhqvFNnw5R4a/HH3A3Coa
+8nk0PAU79FFmHUIS8hpqk2qppL18+byuruiog99myI6J96GeS0UkuWwFX+C2mhdj
+4+DzaOBXapO0wB2tv2tqM5IxQAav5yOLywu4FccCzrXSKqv6tBnKjFQMk+0PIz3q
+cnmb3+FztSRpDFzYKbTGIabRT2rXjEBiHuh5b9RbjPpQTECdRCr9VyVgFILYinez
+EMoidk5kB2ErVa7vx9QQdTapAJPNOeruRXaNGiOZHz+weeECUpNM9R74h35TFTU8
+sU1DD8Na48dFW58DGS0s5SDcUgvtQWcGrwhJW4+MtV8ASs9EPIcfdLWKZeB+RMql
+BRYg/xaykYvriTaupv3HffnuzrXfwI6nZTNk9uM9mmyfmqKRd7AgS/7YSINQsxxC
+UQUF0H8CpChsCpn1a/Is
+=I1sV
+-----END PGP SIGNATURE-----
+
+--oLBj+sq0vYjzfsbl--
+
+--===============4953711455552681611==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4953711455552681611==--
