@@ -1,51 +1,89 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH] ASoC: cs42xx8: Add reset gpio handling
-Date: Mon, 29 Apr 2019 10:46:03 +0000
-Message-ID: <1556534756-15630-1-git-send-email-shengjiu.wang@nxp.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v2] ASoC: da7219: Use clk_round_rate to handle enabled bclk/wclk
+ case
+Date: Mon, 29 Apr 2019 11:57:33 +0100
+Message-ID: <20190429105733.71FB83FBCC@swsrvapps-01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: Akshu Agrawal <Akshu.Agrawal@amd.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGFuZGxlIHRoZSByZXNldCBHUElPIGFuZCByZXNldCB0aGUgZGV2aWNlIGluDQpwbV9ydW50aW1l
-X3Jlc3VtZQ0KDQpTaWduZWQtb2ZmLWJ5OiBTaGVuZ2ppdSBXYW5nIDxzaGVuZ2ppdS53YW5nQG54
-cC5jb20+DQotLS0NCiBzb3VuZC9zb2MvY29kZWNzL2NzNDJ4eDguYyB8IDE5ICsrKysrKysrKysr
-KysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2NvZGVjcy9jczQyeHg4LmMgYi9zb3VuZC9zb2MvY29kZWNzL2NzNDJ4eDgu
-Yw0KaW5kZXggZWJiOWUwY2Y4MzY0Li5mYzI4ZTZkMjZjNmQgMTAwNjQ0DQotLS0gYS9zb3VuZC9z
-b2MvY29kZWNzL2NzNDJ4eDguYw0KKysrIGIvc291bmQvc29jL2NvZGVjcy9jczQyeHg4LmMNCkBA
-IC0xNCw2ICsxNCw3IEBADQogI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+DQogI2luY2x1ZGUgPGxp
-bnV4L21vZHVsZS5oPg0KICNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCisjaW5jbHVkZSA8
-bGludXgvb2ZfZ3Bpby5oPg0KICNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1lLmg+DQogI2luY2x1
-ZGUgPGxpbnV4L3JlZ3VsYXRvci9jb25zdW1lci5oPg0KICNpbmNsdWRlIDxzb3VuZC9wY21fcGFy
-YW1zLmg+DQpAQCAtNDUsNiArNDYsNyBAQCBzdHJ1Y3QgY3M0Mnh4OF9wcml2IHsNCiAJYm9vbCBz
-bGF2ZV9tb2RlOw0KIAl1bnNpZ25lZCBsb25nIHN5c2NsazsNCiAJdTMyIHR4X2NoYW5uZWxzOw0K
-KwlpbnQgZ3Bpb19yZXNldDsNCiB9Ow0KIA0KIC8qIC0xMjcuNWRCIHRvIDBkQiB3aXRoIHN0ZXAg
-b2YgMC41ZEIgKi8NCkBAIC00NjcsNiArNDY5LDE3IEBAIGludCBjczQyeHg4X3Byb2JlKHN0cnVj
-dCBkZXZpY2UgKmRldiwgc3RydWN0IHJlZ21hcCAqcmVnbWFwKQ0KIAkJcmV0dXJuIC1FSU5WQUw7
-DQogCX0NCiANCisJY3M0Mnh4OC0+Z3Bpb19yZXNldCA9IG9mX2dldF9uYW1lZF9ncGlvKGRldi0+
-b2Zfbm9kZSwgImdwaW8tcmVzZXQiLCAwKTsNCisJaWYgKGdwaW9faXNfdmFsaWQoY3M0Mnh4OC0+
-Z3Bpb19yZXNldCkpIHsNCisJCXJldCA9IGRldm1fZ3Bpb19yZXF1ZXN0X29uZShkZXYsIGNzNDJ4
-eDgtPmdwaW9fcmVzZXQsDQorCQkJCUdQSU9GX09VVF9JTklUX0xPVywgImNzNDJ4eDggcmVzZXQi
-KTsNCisJCWlmIChyZXQpIHsNCisJCQlkZXZfZXJyKGRldiwgInVuYWJsZSB0byBnZXQgcmVzZXQg
-Z3Bpb1xuIik7DQorCQkJcmV0dXJuIHJldDsNCisJCX0NCisJCWdwaW9fc2V0X3ZhbHVlX2NhbnNs
-ZWVwKGNzNDJ4eDgtPmdwaW9fcmVzZXQsIDEpOw0KKwl9DQorDQogCWNzNDJ4eDgtPmNsayA9IGRl
-dm1fY2xrX2dldChkZXYsICJtY2xrIik7DQogCWlmIChJU19FUlIoY3M0Mnh4OC0+Y2xrKSkgew0K
-IAkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gZ2V0IHRoZSBjbG9jazogJWxkXG4iLA0KQEAgLTU0
-Nyw2ICs1NjAsMTEgQEAgc3RhdGljIGludCBjczQyeHg4X3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBk
-ZXZpY2UgKmRldikNCiAJCXJldHVybiByZXQ7DQogCX0NCiANCisJaWYgKGdwaW9faXNfdmFsaWQo
-Y3M0Mnh4OC0+Z3Bpb19yZXNldCkpIHsNCisJCWdwaW9fc2V0X3ZhbHVlX2NhbnNsZWVwKGNzNDJ4
-eDgtPmdwaW9fcmVzZXQsIDApOw0KKwkJZ3Bpb19zZXRfdmFsdWVfY2Fuc2xlZXAoY3M0Mnh4OC0+
-Z3Bpb19yZXNldCwgMSk7DQorCX0NCisNCiAJcmV0ID0gcmVndWxhdG9yX2J1bGtfZW5hYmxlKEFS
-UkFZX1NJWkUoY3M0Mnh4OC0+c3VwcGxpZXMpLA0KIAkJCQkgICAgY3M0Mnh4OC0+c3VwcGxpZXMp
-Ow0KIAlpZiAocmV0KSB7DQpAQCAtNTU5LDYgKzU3Nyw3IEBAIHN0YXRpYyBpbnQgY3M0Mnh4OF9y
-dW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQogDQogCXJlZ2NhY2hlX2NhY2hlX29u
-bHkoY3M0Mnh4OC0+cmVnbWFwLCBmYWxzZSk7DQogDQorCXJlZ2NhY2hlX21hcmtfZGlydHkoY3M0
-Mnh4OC0+cmVnbWFwKTsNCiAJcmV0ID0gcmVnY2FjaGVfc3luYyhjczQyeHg4LT5yZWdtYXApOw0K
-IAlpZiAocmV0KSB7DQogCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBzeW5jIHJlZ21hcDogJWRc
-biIsIHJldCk7DQotLSANCjEuOS4xDQoNCg==
+For some platforms where DA7219 is the DAI clock master, BCLK/WCLK
+will be set and enabled prior to the codec's hw_params() function
+being called. It is possible the platform requires a different
+BCLK configuration than would be chosen by hw_params(), for
+example S16_LE format needed with a 64-bit frame to satisfy certain
+devices using the clocks.
+
+To handle those kinds of scenarios, the use of clk_round_rate() is
+now employed as part of hw_params(). If BCLK is already enabled
+then this function will just return the currently set rate, if it
+is valid for the desired frame size, so the subsequent call to
+clk_set_rate() will succeed and nothing changes with regards to
+clocking. In addition the specific BCLK & WCLK recalc_rate()
+implementations needed updating to always give back a real value,
+as those functions are called as part of the clk init code and a
+real value is needed for the clk_round_rate() call to work as
+expected.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
+Changes in v2:
+ - Removed clk_round_rate() call for WCLK/SR as this is not sensible.
+ - Added checking after clk_round_rate() call for BCLK to verify returne rate is
+   suitable for the hw_params() desired frame size.
+
+ sound/soc/codecs/da7219.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5f5fa34..206d01c 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1621,6 +1621,21 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+ 
+ 		if (bclk) {
+ 			bclk_rate = frame_size * sr;
++			/*
++			 * Rounding the rate here avoids failure trying to set a
++			 * new rate on an already enabled bclk. In that
++			 * instance this will just set the same rate as is
++			 * currently in use, and so should continue without
++			 * problem, as long as the BCLK rate is suitable for the
++			 * desired frame size.
++			 */
++			bclk_rate = clk_round_rate(bclk, bclk_rate);
++			if ((bclk_rate / sr) < frame_size) {
++				dev_err(component->dev,
++					"BCLK rate mismatch against frame size");
++				return -EINVAL;
++			}
++
+ 			ret = clk_set_rate(bclk, bclk_rate);
+ 			if (ret) {
+ 				dev_err(component->dev,
+@@ -1927,9 +1942,6 @@ static unsigned long da7219_wclk_recalc_rate(struct clk_hw *hw,
+ 	struct snd_soc_component *component = da7219->component;
+ 	u8 fs = snd_soc_component_read32(component, DA7219_SR);
+ 
+-	if (!da7219->master)
+-		return 0;
+-
+ 	switch (fs & DA7219_SR_MASK) {
+ 	case DA7219_SR_8000:
+ 		return 8000;
+@@ -2016,9 +2028,6 @@ static unsigned long da7219_bclk_recalc_rate(struct clk_hw *hw,
+ 	u8 bclks_per_wclk = snd_soc_component_read32(component,
+ 						     DA7219_DAI_CLK_MODE);
+ 
+-	if (!da7219->master)
+-		return 0;
+-
+ 	switch (bclks_per_wclk & DA7219_DAI_BCLKS_PER_WCLK_MASK) {
+ 	case DA7219_DAI_BCLKS_PER_WCLK_32:
+ 		return parent_rate * 32;
+-- 
+1.9.1
