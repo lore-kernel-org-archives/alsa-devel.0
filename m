@@ -1,20 +1,21 @@
-From: Liwei Song <liwei.song@windriver.com>
-Subject: Re: [PATCH] ALSA: hda: check RIRB to avoid use NULL
-	pointer
-Date: Tue, 30 Apr 2019 16:32:47 +0800
-Message-ID: <5CC8082F.4090903@windriver.com>
-References: <1556604653-47363-1-git-send-email-liwei.song@windriver.com>
- <s5himuwhru3.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi - Don't report Jack event
+ if no need to do that
+Date: Tue, 30 Apr 2019 16:42:55 +0800
+Message-ID: <b0c859a8-3f7f-2948-2fc8-f657adf3c804@canonical.com>
+References: <20190430065711.14977-1-hui.wang@canonical.com>
+ <s5hh8aghro8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail5.wrs.com (mail5.windriver.com [192.103.53.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 389DBF80C0D
- for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2019 10:34:10 +0200 (CEST)
-In-Reply-To: <s5himuwhru3.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B7E6F80C0D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2019 10:43:05 +0200 (CEST)
+In-Reply-To: <s5hh8aghro8.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,128 +26,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Yu Zhao <yuzhao@google.com>, Keyon Jie <yang.jie@linux.intel.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 04/30/2019 03:31 PM, Takashi Iwai wrote:
-> On Tue, 30 Apr 2019 08:10:53 +0200,
-> Song liwei wrote:
->>
->> From: Liwei Song <liwei.song@windriver.com>
->>
->> Fix the following BUG:
->>
->> BUG: unable to handle kernel NULL pointer dereference at 000000000000000c
->> Workqueue: events azx_probe_work [snd_hda_intel]
->> RIP: 0010:snd_hdac_bus_update_rirb+0x80/0x160 [snd_hda_core]
->> Call Trace:
->>  <IRQ>
->>  azx_interrupt+0x78/0x140 [snd_hda_codec]
->>  __handle_irq_event_percpu+0x49/0x300
->>  handle_irq_event_percpu+0x23/0x60
->>  handle_irq_event+0x3c/0x60
->>  handle_edge_irq+0xdb/0x180
->>  handle_irq+0x23/0x30
->>  do_IRQ+0x6a/0x140
->>  common_interrupt+0xf/0xf
->>
->> The Call Trace happened when run kdump on a NFS rootfs system.
->> Exist the following calling sequence when boot the second kernel:
->>
->> azx_first_init()
->>    --> azx_acquire_irq()
->>                       <-- interrupt come in, azx_interrupt() was called
->>    --> hda_intel_init_chip()
->>       --> azx_init_chip()
->>          --> snd_hdac_bus_init_chip()
->>               --> snd_hdac_bus_init_cmd_io();
->>                     --> init rirb.buf and corb.buf
->>
->> Interrupt happened after azx_acquire_irq() while RIRB still didn't got
->> initialized, then NULL pointer will be used when process the interrupt.
->>
->> Check the value of RIRB to ensure it is not NULL, to aviod some special
->> case may hang the system.
->>
->> Fixes: 14752412721c ("ALSA: hda - Add the controller helper codes to hda-core module")
->> Signed-off-by: Liwei Song <liwei.song@windriver.com>
-> 
-> Oh, that's indeed a race there.
-> 
-> But I guess the check introduced by the patch is still error-prone.
-> Basically the interrupt handling should be moved after the chip
-> initialization.  I suppose that your platform uses the shared
-> interrupt, not the MSI?
-
-This is the information from /proc/interrupt
-134:          0        102          0          0  IR-PCI-MSI 514048-edge      snd_hda_intel:card0
-
-
-> 
-> In anyway, alternative (and likely more certain) fix would be to move
-> the azx_acquir_irq() call like the patch below (note: totally
-> untested).  Could you check whether it works?
-
-Yes, It works.
-
-Considering a previous patch like the one you provide will import some issue, 
-so I choose check the invalid value to low the risk, but just as you mentioned,
-It is not a good solution.
-
-commit 542cedec53c9e8b73f3f05bf8468823598c50489
-Author: Yu Zhao <yuzhao@google.com>
-Date:   Tue Sep 11 15:12:46 2018 -0600
-
-    Revert "ASoC: Intel: Skylake: Acquire irq after RIRB allocation"
-    
-    This reverts commit 12eeeb4f4733bbc4481d01df35933fc15beb8b19.
-    
-    The patch doesn't fix accessing memory with null pointer in
-    skl_interrupt().
-    
-    There are two problems: 1) skl_init_chip() is called twice, before
-    and after dma buffer is allocate. The first call sets bus->chip_init
-    which prevents the second from initializing bus->corb.buf and
-    rirb.buf from bus->rb.area. 2) snd_hdac_bus_init_chip() enables
-    interrupt before snd_hdac_bus_init_cmd_io() initializing dma buffers.
-    There is a small window which skl_interrupt() can be called if irq
-    has been acquired. If so, it crashes when using null dma buffer
-    pointers.
-
-Thanks,
-Liwei.
-
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1788,9 +1788,6 @@ static int azx_first_init(struct azx *chip)
->  			chip->msi = 0;
->  	}
->  
-> -	if (azx_acquire_irq(chip, 0) < 0)
-> -		return -EBUSY;
-> -
->  	pci_set_master(pci);
->  	synchronize_irq(bus->irq);
->  
-> @@ -1904,6 +1901,9 @@ static int azx_first_init(struct azx *chip)
->  		return -ENODEV;
->  	}
->  
-> +	if (azx_acquire_irq(chip, 0) < 0)
-> +		return -EBUSY;
-> +
->  	strcpy(card->driver, "HDA-Intel");
->  	strlcpy(card->shortname, driver_short_names[chip->driver_type],
->  		sizeof(card->shortname));
-> 
-> 
+Ck9uIDIwMTkvNC8zMCDkuIvljYgzOjM1LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAz
+MCBBcHIgMjAxOSAwODo1NzoxMSArMDIwMCwKPiBIdWkgV2FuZyB3cm90ZToKPj4gT24gdGhlIG1h
+Y2hpbmVzIHdpdGggQU1EIEdQVSBvciBOdmlkaWEgR1BVLCB3ZSBvZnRlbiBtZWV0IHRoaXMgaXNz
+dWVzOgo+PiBhZnRlciBzMywgdGhlcmUgYXJlIDQgSERNSS9EUCBhdWRpbyBkZXZpY2VzIGluIHRo
+ZSBnbm9tZS1zb3VuZC1zZXR0aW5nCj4+IGV2ZW4gdGhlcmUgaXMgbm8gYW55IG1vbml0b3JzIHBs
+dWdnZWQuCj4+Cj4+IFdoZW4gdGhpcyBwcm9ibGVtIGhhcHBlbnMsIHdlIGNoZWNrIHRoZSAvcHJv
+Yy9hc291bmQvY2FyZFgvZWxkI04uTSwgd2UKPj4gd2lsbCBmaW5kIHRoZSBtb25pdG9yX3ByZXNl
+bnQ9MSwgZWxkX3ZhbGlkPTAuCj4+Cj4+IFRoZSByb290IGNhdXNlIGlzIHNvbWVob3cgdGhlIHBp
+bl9zZW5zZSByZXBvcnRzIHRoZSBtb25pdG9yIGlzIHByZXNlbnQKPj4gYW5kIGVsZCBpcyB2YWxp
+ZCB3aGVuIHRoZXJlIGlzIG5vIG1vbml0b3IgcGx1Z2dlZC4KPj4KPj4gVGhlIGN1cnJlbnQgZHJp
+dmVyIHdpbGwgcmVhZCB0aGUgZWxkIGRhdGEgaWYgdGhlIHBpbl9zZW5zZSByZXBvcnRzIHRoZQo+
+PiBlbGQgaXMgdmFsaWQsIGJlY2F1c2Ugb2Ygbm8gbW9uaXRvciBpcyBwbHVnZ2VkLCB0aGVyZSBp
+cyBubyB2YWxpZCBlbGQKPj4gZGF0YSwgdGhlbiB0aGUgZWxkLT52YWxpZCBpcyBzZXQgdG8gMC4K
+Pj4KPj4gSWYgd2UgZG9uJ3QgbGV0IGRyaXZlciByZXBvcnQgSmFjayBldmVudCB3aGVuIG1vbml0
+b3JfcHJlc2VudD0xIHdoaWxlCj4+IGVsZF92YWxpZD0wLCB0aGVyZSB3aWxsIGJlIG5vIHRoaXMg
+aXNzdWUuCj4+Cj4+IEFmdGVyIHRoaXMgY2hhbmdlLCB0aGUgZHJpdmVyIG9ubHkgcmVwb3J0cyBK
+YWNrIGV2ZW50IHdpdGggb25lIG9mIHRoZQo+PiBiZWxvdyAyIGNvbmRpdG9uczoKPj4gICBlbGQt
+Pm1vbml0b3JfcHJlc2VudD0xIGFuZCBlbGQtPmVsZF92YWxpZD0xIChhIHZhbGlkIG1vbml0b3Ig
+ZGV0ZWN0KQo+PiAgIGVsZC0+bW9uaXRvcl9wcmVzZW50PTAgKGEgbW9uaXRvciBpcyB1bnBsdWdn
+ZWQpCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEh1aSBXYW5nIDxodWkud2FuZ0BjYW5vbmljYWwuY29t
+Pgo+IFdlbGwsIGlmIHRoZSBlbGRfdmFsaWQ9MSBpcyBtYW5kYXRvcnksIGJhc2ljYWxseSB3ZSBj
+YW4gdXNlIGl0IGFzIHRoZQo+IGNvbmRpdGlvbiBvZiBqYWNrPTEsIGxpa2UgdGhlIHBhdGNoIGJl
+bG93LiAgVGhlIHJldHVybiB2YWx1ZSBmcm9tCj4gaGRtaV9wcmVzZW50X3NlbnNlKCkgaW5kaWNh
+dGVzIG9ubHkgd2hldGhlciB3ZSBtYXkgc3luYyBqYWNrIHN0YXRlIG9yCj4gbm90LCBhbmQgaXQn
+cyBub3QgYWJvdXQgdGhlIGphY2sgc3RhdGUgaXRzZWxmLgo+Cj4KPiB0aGFua3MsCj4KPiBUYWth
+c2hpCj4KPiAtLS0KPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+ICsrKyBiL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCj4gQEAgLTE2MjUsNyArMTYyNSw3IEBAIHN0YXRpYyB2
+b2lkIHN5bmNfZWxkX3ZpYV9hY29tcChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKPiAgIAlpZiAo
+amFjayA9PSBOVUxMKQo+ICAgCQlnb3RvIHVubG9jazsKPiAgIAlzbmRfamFja19yZXBvcnQoamFj
+aywKPiAtCQkJZWxkLT5tb25pdG9yX3ByZXNlbnQgPyBTTkRfSkFDS19BVk9VVCA6IDApOwo+ICsJ
+CQkoZWxkLT5tb25pdG9yX3ByZXNlbnQgJiYgZWxkLT5lbGRfdmFsaWQpID8gU05EX0pBQ0tfQVZP
+VVQgOiAwKTsKPiAgICB1bmxvY2s6Cj4gICAJbXV0ZXhfdW5sb2NrKCZwZXJfcGluLT5sb2NrKTsK
+PiAgIH0KCkFsbCBJbnRlbCBtYWNoaW5lcyB3aGljaCBnZXQgZWxkIHZpYSBhY29tcCBkb24ndCBo
+YXZlIHRoaXMgaXNzdWUsIHNvIG5vIApuZWVkIHRvIGNoYW5nZSB0aGlzIGZ1bmN0aW9uLgoKRm9y
+IHRob3NlIG1hY2hpbmVzICh3aXRoIG52IGdwdSBjYXJkIG9yIGFtZCBncHUgY2FyZCnCoCB3aGlj
+aCBuZWVkIHRvIApjYWxsIGhkbWlfcHJlc2VudF9zZW5zZV92aWFfdmVyYnMoKSwgdGhleSBoYXZl
+IHRoaXMgaXNzdWUuIGlmIApoZG1pX3ByZXNlbnRfc2Vuc2VfdmlhX3ZlcmJzKCkgcmV0dXJucyB0
+cnVlLCB0aGUgaGRtaV9wcmVzZW50X3NlbnNlKCkgCnJldHVybnMgdHJ1ZSwgdGhlbiBzbmRfaGRh
+X2phY2tfcmVwb3J0X3N5bmMoKSB3aWxsIGJlIGNhbGxlZC4gU28gaWYgd2UgCndhbnQgdG8gZml4
+IHRoaXMgaXNzdWUsIHdlIG5lZWQgdG8gbGV0IGhkbWlfcHJlc2VudF9zZW5zZV92aWFfdmVyYnMo
+KSAKbm90IHJldHVybiB0cnVlIG9yIHdlIGNoYW5nZSB0aGUgcmVhZF9waW5fc2Vuc2UoKSBpbiB0
+aGUgaGRhX2phY2suYwoKCgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKPiBodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
