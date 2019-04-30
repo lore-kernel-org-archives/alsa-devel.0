@@ -1,17 +1,20 @@
-From: Kailang <kailang@realtek.com>
-Subject: move eapd coef function before ACT_PRE_PROBE state
-Date: Tue, 30 Apr 2019 07:40:31 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D76558C@RTITMBSVM07.realtek.com.tw>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [RFC PATCH] ASoC: max98357a: manage GPIO for component
+	rebinding
+Date: Tue, 30 Apr 2019 16:01:07 +0800
+Message-ID: <20190430080107.113871-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A1D76558CRTITMBSVM07real_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
+ [IPv6:2607:f8b0:4864:20::449])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAF35F8065C
- for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2019 09:40:36 +0200 (CEST)
-Content-Language: zh-TW
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFC2DF80759
+ for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2019 10:01:52 +0200 (CEST)
+Received: by mail-pf1-x449.google.com with SMTP id g1so8712733pfo.2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2019 01:01:52 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +24,127 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, tiwai@suse.com
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76558CRTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Component's probe() gets GPIO for "sdmode-gpios" via
+devm_gpiod_get_optional().  The GPIO binds to the device.
 
-Hi Takashi,
+When the component get removed but the device does not, the GPIO
+still binds to the device.
 
-alc_fill_eapd_coef(),this function was change EAPD control to default.
-Default was set EAPD by verb control.
-This function was run in ACT_INIT state.
-Move it to ACT_PRE_PROBE above. It will have a chance to change EAPD contro=
-l
-on ACT_PRE_PROBE state. It could change control by 0x20 coef bit.
+Then, when the component be probed again, devm_gpiod_get_optional()
+returns EBUSY.
 
-BR,
-Kailang
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+Hi,
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76558CRTITMBSVM07real_
-Content-Type: application/octet-stream;
-	name="0000-move-eapd-coef-func.patch"
-Content-Description: 0000-move-eapd-coef-func.patch
-Content-Disposition: attachment; filename="0000-move-eapd-coef-func.patch";
-	size=1327; creation-date="Fri, 26 Apr 2019 09:20:24 GMT";
-	modification-date="Fri, 26 Apr 2019 09:28:26 GMT"
-Content-Transfer-Encoding: base64
+We discovered the issue when rebinding sound card.  We found that the
+rebinding failed due to the GPIO was hold by the first time component's
+probe() in max98357.
 
-RnJvbSAyM2M5YTFjMzI4OGM0ZTc4MjU1ZjEzM2E0ZDljNDhmNTg0MmUwM2U2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgMjYgQXByIDIwMTkgMTc6MTY6NDggKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIE1vdmUgRVBBRCBieSB2ZXJiIGZ1bmN0aW9uCgphbGNfZmlsbF9lYXBk
-X2NvZWYoKSx0aGlzIGZ1bmN0aW9uIHdhcyBjaGFuZ2UgRUFQRCBjb250cm9sIHRvIGRlZmF1bHQu
-CkRlZmF1bHQgd2FzIHNldCBFQVBEIGJ5IHZlcmIgY29udHJvbC4KVGhpcyBmdW5jdGlvbiB3YXMg
-cnVuIGluIEFDVF9JTklUIHN0YXRlLgpNb3ZlIGl0IHRvIEFDVF9QUkVfUFJPQkUgYWJvdmUuIEl0
-IHdpbGwgaGF2ZSBhIGNoYW5jZSB0byBjaGFuZ2UgRUFQRCBjb250cm9sCm9uIEFDVF9QUkVfUFJP
-QkUgc3RhdGUuIEl0IGNvdWxkIGNoYW5nZSBjb250cm9sIGJ5IDB4MjAgY29lZiBiaXQuCgpTaWdu
-ZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0
-IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
-YWx0ZWsuYwppbmRleCAxZDBlMGYyZTY1MjYuLjc1NTNmNzA0Y2I3ZiAxMDA2NDQKLS0tIGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMKQEAgLTUwMSw3ICs1MDEsNiBAQCBzdGF0aWMgdm9pZCBhbGNfZWFwZF9zaHV0dXAoc3Ry
-dWN0IGhkYV9jb2RlYyAqY29kZWMpCiAvKiBnZW5lcmljIEVBUEQgaW5pdGlhbGl6YXRpb24gKi8K
-IHN0YXRpYyB2b2lkIGFsY19hdXRvX2luaXRfYW1wKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBp
-bnQgdHlwZSkKIHsKLQlhbGNfZmlsbF9lYXBkX2NvZWYoY29kZWMpOwogCWFsY19hdXRvX3NldHVw
-X2VhcGQoY29kZWMsIHRydWUpOwogCWFsY193cml0ZV9ncGlvKGNvZGVjKTsKIAlzd2l0Y2ggKHR5
-cGUpIHsKQEAgLTEwODUsNiArMTA4NCw3IEBAIHN0YXRpYyBpbnQgYWxjX2FsbG9jX3NwZWMoc3Ry
-dWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBtaXhlcl9uaWQpCiAJCXJldHVybiAtRU5P
-TUVNOwogCWNvZGVjLT5zcGVjID0gc3BlYzsKIAlzbmRfaGRhX2dlbl9zcGVjX2luaXQoJnNwZWMt
-Pmdlbik7CisJYWxjX2ZpbGxfZWFwZF9jb2VmKGNvZGVjKTsKIAlzcGVjLT5nZW4ubWl4ZXJfbmlk
-ID0gbWl4ZXJfbmlkOwogCXNwZWMtPmdlbi5vd25fZWFwZF9jdGwgPSAxOwogCWNvZGVjLT5zaW5n
-bGVfYWRjX2FtcCA9IDE7Cg==
+The patch changes devm to non-devm API, because we don't have equivalent
+API for ASoC components (e.g. compm_).
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76558CRTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Question: we are not very sure to move from devm to non-devm, because
+devm should be most encouraged.
+Question: does it suggest not to use devm for GPIO in component's
+probe()?  It seems there are still some such usages, for example
+sound/soc/codecs/dmic.c.
 
+ sound/soc/codecs/max98357a.c | 42 ++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76558CRTITMBSVM07real_--
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index d037a3e4d323..4e90876f6ef6 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -27,24 +27,28 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ 
++struct max98357a_priv {
++	struct gpio_desc *sdmode;
++};
++
+ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+ 		int cmd, struct snd_soc_dai *dai)
+ {
+-	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
++	struct max98357a_priv *max98357a = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (!sdmode)
++	if (!max98357a->sdmode)
+ 		return 0;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		gpiod_set_value(sdmode, 1);
++		gpiod_set_value(max98357a->sdmode, 1);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		gpiod_set_value(sdmode, 0);
++		gpiod_set_value(max98357a->sdmode, 0);
+ 		break;
+ 	}
+ 
+@@ -61,19 +65,31 @@ static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
+ 
+ static int max98357a_component_probe(struct snd_soc_component *component)
+ {
+-	struct gpio_desc *sdmode;
++	struct max98357a_priv *max98357a =
++			snd_soc_component_get_drvdata(component);
+ 
+-	sdmode = devm_gpiod_get_optional(component->dev, "sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode))
+-		return PTR_ERR(sdmode);
++	max98357a->sdmode = gpiod_get_optional(component->dev,
++					"sdmode", GPIOD_OUT_LOW);
++	if (IS_ERR(max98357a->sdmode))
++		return PTR_ERR(max98357a->sdmode);
+ 
+-	snd_soc_component_set_drvdata(component, sdmode);
++	snd_soc_component_set_drvdata(component, max98357a);
+ 
+ 	return 0;
+ }
+ 
++static void max98357a_component_remove(struct snd_soc_component *component)
++{
++	struct max98357a_priv *max98357a =
++			snd_soc_component_get_drvdata(component);
++
++	if (max98357a->sdmode)
++		gpiod_put(max98357a->sdmode);
++}
++
+ static const struct snd_soc_component_driver max98357a_component_driver = {
+ 	.probe			= max98357a_component_probe,
++	.remove			= max98357a_component_remove,
+ 	.dapm_widgets		= max98357a_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
+ 	.dapm_routes		= max98357a_dapm_routes,
+@@ -112,6 +128,14 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
+ 
+ static int max98357a_platform_probe(struct platform_device *pdev)
+ {
++	struct max98357a_priv *max98357a;
++
++	max98357a = devm_kzalloc(&pdev->dev, sizeof(*max98357a), GFP_KERNEL);
++	if (!max98357a)
++		return -ENOMEM;
++
++	dev_set_drvdata(&pdev->dev, max98357a);
++
+ 	return devm_snd_soc_register_component(&pdev->dev,
+ 			&max98357a_component_driver,
+ 			&max98357a_dai_driver, 1);
+-- 
+2.21.0.593.g511ec345e18-goog
