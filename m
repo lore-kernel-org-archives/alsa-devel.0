@@ -1,60 +1,70 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [PATCH -next] ASoC: sprd: Fix to use list_for_each_entry_safe()
- when delete items
-Date: Tue, 30 Apr 2019 11:05:14 +0800
-Message-ID: <CAMz4ku+v+DS_7N+6yWzqGQvn3KiW-3ACNbXL1W4YjWSmu3AxwA@mail.gmail.com>
-References: <20190429123713.64280-1-weiyongjun1@huawei.com>
+From: Song liwei <liwei.song@windriver.com>
+Subject: [PATCH] ALSA: hda: check RIRB to avoid use NULL pointer
+Date: Tue, 30 Apr 2019 02:10:53 -0400
+Message-ID: <1556604653-47363-1-git-send-email-liwei.song@windriver.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429123713.64280-1-weiyongjun1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Orson Zhai <orsonzhai@gmail.com>, Chunyan Zhang <zhang.lyra@gmail.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Yu Zhao <yuzhao@google.com>, Mark Brown <broonie@kernel.org>, Keyon Jie <yang.jie@linux.intel.com>, linux-kernel <linux-kernel@vger.kernel.org>, LiweiSong <liwei.song@windriver.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Liwei Song <liwei.song@windriver.com>
 
-On Mon, 29 Apr 2019 at 20:27, Wei Yongjun <weiyongjun1@huawei.com> wrote:
->
-> Since we will remove items off the list using list_del() we need
-> to use a safe version of the list_for_each_entry() macro aptly named
-> list_for_each_entry_safe().
->
-> Fixes: d7bff893e04f ("ASoC: sprd: Add Spreadtrum multi-channel data transfer support")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Fix the following BUG:
 
-Yes, thanks for your fixes.
-Reviewed-by: Baolin Wang <baolin.wang@linaro.org>
+BUG: unable to handle kernel NULL pointer dereference at 000000000000000c
+Workqueue: events azx_probe_work [snd_hda_intel]
+RIP: 0010:snd_hdac_bus_update_rirb+0x80/0x160 [snd_hda_core]
+Call Trace:
+ <IRQ>
+ azx_interrupt+0x78/0x140 [snd_hda_codec]
+ __handle_irq_event_percpu+0x49/0x300
+ handle_irq_event_percpu+0x23/0x60
+ handle_irq_event+0x3c/0x60
+ handle_edge_irq+0xdb/0x180
+ handle_irq+0x23/0x30
+ do_IRQ+0x6a/0x140
+ common_interrupt+0xf/0xf
 
-> ---
->  sound/soc/sprd/sprd-mcdt.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/soc/sprd/sprd-mcdt.c b/sound/soc/sprd/sprd-mcdt.c
-> index 28f5e649733d..df250f7f2b6f 100644
-> --- a/sound/soc/sprd/sprd-mcdt.c
-> +++ b/sound/soc/sprd/sprd-mcdt.c
-> @@ -978,12 +978,12 @@ static int sprd_mcdt_probe(struct platform_device *pdev)
->
->  static int sprd_mcdt_remove(struct platform_device *pdev)
->  {
-> -       struct sprd_mcdt_chan *temp;
-> +       struct sprd_mcdt_chan *chan, *temp;
->
->         mutex_lock(&sprd_mcdt_list_mutex);
->
-> -       list_for_each_entry(temp, &sprd_mcdt_chan_list, list)
-> -               list_del(&temp->list);
-> +       list_for_each_entry_safe(chan, temp, &sprd_mcdt_chan_list, list)
-> +               list_del(&chan->list);
->
->         mutex_unlock(&sprd_mcdt_list_mutex);
->
->
->
+The Call Trace happened when run kdump on a NFS rootfs system.
+Exist the following calling sequence when boot the second kernel:
 
+azx_first_init()
+   --> azx_acquire_irq()
+                      <-- interrupt come in, azx_interrupt() was called
+   --> hda_intel_init_chip()
+      --> azx_init_chip()
+         --> snd_hdac_bus_init_chip()
+              --> snd_hdac_bus_init_cmd_io();
+                    --> init rirb.buf and corb.buf
 
+Interrupt happened after azx_acquire_irq() while RIRB still didn't got
+initialized, then NULL pointer will be used when process the interrupt.
+
+Check the value of RIRB to ensure it is not NULL, to aviod some special
+case may hang the system.
+
+Fixes: 14752412721c ("ALSA: hda - Add the controller helper codes to hda-core module")
+Signed-off-by: Liwei Song <liwei.song@windriver.com>
+---
+ sound/hda/hdac_controller.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 74244d8e2909..2f0fa5353361 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -195,6 +195,9 @@ void snd_hdac_bus_update_rirb(struct hdac_bus *bus)
+ 		return;
+ 	bus->rirb.wp = wp;
+ 
++	if (!bus->rirb.buf)
++		return;
++
+ 	while (bus->rirb.rp != wp) {
+ 		bus->rirb.rp++;
+ 		bus->rirb.rp %= AZX_MAX_RIRB_ENTRIES;
 -- 
-Baolin Wang
-Best Regards
+2.7.4
