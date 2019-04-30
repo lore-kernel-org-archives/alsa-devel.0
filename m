@@ -1,14 +1,20 @@
-From: <vanitha.channaiah@in.bosch.com>
-Subject: [PATCH 5/5] pcm: Update pcm->avail_min with
-	needed_slave_avail_min, after reading unaligned frames
-Date: Tue, 30 Apr 2019 13:08:43 +0530
-Message-ID: <1556609923-14093-5-git-send-email-vanitha.channaiah@in.bosch.com>
-References: <1556609923-14093-1-git-send-email-vanitha.channaiah@in.bosch.com>
+From: Liwei Song <liwei.song@windriver.com>
+Subject: Re: [PATCH] ALSA: hda: check RIRB to avoid use NULL
+	pointer
+Date: Tue, 30 Apr 2019 16:32:47 +0800
+Message-ID: <5CC8082F.4090903@windriver.com>
+References: <1556604653-47363-1-git-send-email-liwei.song@windriver.com>
+ <s5himuwhru3.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1556609923-14093-1-git-send-email-vanitha.channaiah@in.bosch.com>
+Received: from mail5.wrs.com (mail5.windriver.com [192.103.53.11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 389DBF80C0D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2019 10:34:10 +0200 (CEST)
+In-Reply-To: <s5himuwhru3.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,94 +24,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: patch@alsa-project.org
-Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org, Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Yu Zhao <yuzhao@google.com>, Keyon Jie <yang.jie@linux.intel.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
-Issue: After partial read of unaligned frames, snd_pcm_wait()
-would block for the pcm->avail_min which would result in
-blocking of snd_pcm_wait() for longer periods i.e more than
-one period as specified by avail_min
 
-Fix: After reading unaligned frames, set the pcm->avail_min
-to the needed available frames so that snd_pcm_wait() blocks till
-needed available frames.
-Once needed available frames are read, set back the original
-pcm->avail_min
+On 04/30/2019 03:31 PM, Takashi Iwai wrote:
+> On Tue, 30 Apr 2019 08:10:53 +0200,
+> Song liwei wrote:
+>>
+>> From: Liwei Song <liwei.song@windriver.com>
+>>
+>> Fix the following BUG:
+>>
+>> BUG: unable to handle kernel NULL pointer dereference at 000000000000000c
+>> Workqueue: events azx_probe_work [snd_hda_intel]
+>> RIP: 0010:snd_hdac_bus_update_rirb+0x80/0x160 [snd_hda_core]
+>> Call Trace:
+>>  <IRQ>
+>>  azx_interrupt+0x78/0x140 [snd_hda_codec]
+>>  __handle_irq_event_percpu+0x49/0x300
+>>  handle_irq_event_percpu+0x23/0x60
+>>  handle_irq_event+0x3c/0x60
+>>  handle_edge_irq+0xdb/0x180
+>>  handle_irq+0x23/0x30
+>>  do_IRQ+0x6a/0x140
+>>  common_interrupt+0xf/0xf
+>>
+>> The Call Trace happened when run kdump on a NFS rootfs system.
+>> Exist the following calling sequence when boot the second kernel:
+>>
+>> azx_first_init()
+>>    --> azx_acquire_irq()
+>>                       <-- interrupt come in, azx_interrupt() was called
+>>    --> hda_intel_init_chip()
+>>       --> azx_init_chip()
+>>          --> snd_hdac_bus_init_chip()
+>>               --> snd_hdac_bus_init_cmd_io();
+>>                     --> init rirb.buf and corb.buf
+>>
+>> Interrupt happened after azx_acquire_irq() while RIRB still didn't got
+>> initialized, then NULL pointer will be used when process the interrupt.
+>>
+>> Check the value of RIRB to ensure it is not NULL, to aviod some special
+>> case may hang the system.
+>>
+>> Fixes: 14752412721c ("ALSA: hda - Add the controller helper codes to hda-core module")
+>> Signed-off-by: Liwei Song <liwei.song@windriver.com>
+> 
+> Oh, that's indeed a race there.
+> 
+> But I guess the check introduced by the patch is still error-prone.
+> Basically the interrupt handling should be moved after the chip
+> initialization.  I suppose that your platform uses the shared
+> interrupt, not the MSI?
 
-Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
----
- src/pcm/pcm.c       | 21 +++++++++++++++++++++
- src/pcm/pcm_local.h |  2 ++
- 2 files changed, 23 insertions(+)
+This is the information from /proc/interrupt
+134:          0        102          0          0  IR-PCI-MSI 514048-edge      snd_hda_intel:card0
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index f0db545..f361eb1 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -973,6 +973,7 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
- 		__snd_pcm_unlock(pcm);
- 		return err;
- 	}
-+	pcm->original_avail_min = pcm->avail_min;
- 	__snd_pcm_unlock(pcm);
- 	return 0;
- }
-@@ -7267,6 +7268,17 @@ void snd_pcm_areas_from_bufs(snd_pcm_t *pcm, snd_pcm_channel_area_t *areas,
- 	snd_pcm_unlock(pcm);
- }
- 
-+static void snd_pcm_set_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail)
-+{
-+	if (avail != pcm->avail_min) {
-+		snd_pcm_sw_params_t swparams;
-+
-+		snd_pcm_sw_params_current(pcm, &swparams);
-+		swparams.avail_min = avail;
-+		_snd_pcm_sw_params_internal(pcm, &swparams);
-+	}
-+}
-+
- snd_pcm_sframes_t snd_pcm_read_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_t *areas,
- 				     snd_pcm_uframes_t offset, snd_pcm_uframes_t size,
- 				     snd_pcm_xfer_areas_func_t func)
-@@ -7274,6 +7286,7 @@ snd_pcm_sframes_t snd_pcm_read_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_
- 	snd_pcm_uframes_t xfer = 0;
- 	snd_pcm_sframes_t err = 0;
- 	snd_pcm_state_t state;
-+	snd_pcm_uframes_t needed_slave_avail_min = 0;
- 
- 	if (size == 0)
- 		return 0;
-@@ -7332,6 +7345,14 @@ snd_pcm_sframes_t snd_pcm_read_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_
- 		if (err < 0)
- 			break;
- 		frames = err;
-+		pcm->unaligned_frames += frames;
-+		pcm->unaligned_frames %= pcm->period_size;
-+		if (pcm->unaligned_frames) {
-+			needed_slave_avail_min = pcm->period_size - pcm->unaligned_frames;
-+			snd_pcm_set_avail_min(pcm, needed_slave_avail_min);
-+		} else {
-+			snd_pcm_set_avail_min(pcm, pcm->original_avail_min);
-+		}
- 		offset += frames;
- 		size -= frames;
- 		xfer += frames;
-diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index e103f72..3fdffb4 100644
---- a/src/pcm/pcm_local.h
-+++ b/src/pcm/pcm_local.h
-@@ -210,6 +210,8 @@ struct _snd_pcm {
- 	snd_pcm_tstamp_type_t tstamp_type;	/* timestamp type */
- 	unsigned int period_step;
- 	snd_pcm_uframes_t avail_min;	/* min avail frames for wakeup */
-+	snd_pcm_uframes_t unaligned_frames;
-+	snd_pcm_uframes_t original_avail_min;
- 	int period_event;
- 	snd_pcm_uframes_t start_threshold;
- 	snd_pcm_uframes_t stop_threshold;
--- 
-2.7.4
+
+> 
+> In anyway, alternative (and likely more certain) fix would be to move
+> the azx_acquir_irq() call like the patch below (note: totally
+> untested).  Could you check whether it works?
+
+Yes, It works.
+
+Considering a previous patch like the one you provide will import some issue, 
+so I choose check the invalid value to low the risk, but just as you mentioned,
+It is not a good solution.
+
+commit 542cedec53c9e8b73f3f05bf8468823598c50489
+Author: Yu Zhao <yuzhao@google.com>
+Date:   Tue Sep 11 15:12:46 2018 -0600
+
+    Revert "ASoC: Intel: Skylake: Acquire irq after RIRB allocation"
+    
+    This reverts commit 12eeeb4f4733bbc4481d01df35933fc15beb8b19.
+    
+    The patch doesn't fix accessing memory with null pointer in
+    skl_interrupt().
+    
+    There are two problems: 1) skl_init_chip() is called twice, before
+    and after dma buffer is allocate. The first call sets bus->chip_init
+    which prevents the second from initializing bus->corb.buf and
+    rirb.buf from bus->rb.area. 2) snd_hdac_bus_init_chip() enables
+    interrupt before snd_hdac_bus_init_cmd_io() initializing dma buffers.
+    There is a small window which skl_interrupt() can be called if irq
+    has been acquired. If so, it crashes when using null dma buffer
+    pointers.
+
+Thanks,
+Liwei.
+
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1788,9 +1788,6 @@ static int azx_first_init(struct azx *chip)
+>  			chip->msi = 0;
+>  	}
+>  
+> -	if (azx_acquire_irq(chip, 0) < 0)
+> -		return -EBUSY;
+> -
+>  	pci_set_master(pci);
+>  	synchronize_irq(bus->irq);
+>  
+> @@ -1904,6 +1901,9 @@ static int azx_first_init(struct azx *chip)
+>  		return -ENODEV;
+>  	}
+>  
+> +	if (azx_acquire_irq(chip, 0) < 0)
+> +		return -EBUSY;
+> +
+>  	strcpy(card->driver, "HDA-Intel");
+>  	strlcpy(card->shortname, driver_short_names[chip->driver_type],
+>  		sizeof(card->shortname));
+> 
+> 
