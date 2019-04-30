@@ -1,7 +1,8 @@
 From: <vanitha.channaiah@in.bosch.com>
-Subject: [PATCH 4/5] pcm: restructuring sw params function
-Date: Tue, 30 Apr 2019 13:08:42 +0530
-Message-ID: <1556609923-14093-4-git-send-email-vanitha.channaiah@in.bosch.com>
+Subject: [PATCH 5/5] pcm: Update pcm->avail_min with
+	needed_slave_avail_min, after reading unaligned frames
+Date: Tue, 30 Apr 2019 13:08:43 +0530
+Message-ID: <1556609923-14093-5-git-send-email-vanitha.channaiah@in.bosch.com>
 References: <1556609923-14093-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,83 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
-snd_pcm_sw_params() is reformatted by using
-_snd_pcm_sw_params_internal() function
+Issue: After partial read of unaligned frames, snd_pcm_wait()
+would block for the pcm->avail_min which would result in
+blocking of snd_pcm_wait() for longer periods i.e more than
+one period as specified by avail_min
+
+Fix: After reading unaligned frames, set the pcm->avail_min
+to the needed available frames so that snd_pcm_wait() blocks till
+needed available frames.
+Once needed available frames are read, set back the original
+pcm->avail_min
 
 Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 ---
- src/pcm/pcm.c        | 12 +-----------
- src/pcm/pcm_local.h  |  1 +
- src/pcm/pcm_params.c | 21 +++++++++++++++++++++
- 3 files changed, 23 insertions(+), 11 deletions(-)
+ src/pcm/pcm.c       | 21 +++++++++++++++++++++
+ src/pcm/pcm_local.h |  2 ++
+ 2 files changed, 23 insertions(+)
 
 diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 3a71d79..f0db545 100644
+index f0db545..f361eb1 100644
 --- a/src/pcm/pcm.c
 +++ b/src/pcm/pcm.c
-@@ -968,21 +968,11 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
- 	}
- #endif
- 	__snd_pcm_lock(pcm); /* forced lock due to pcm field change */
--	err = pcm->ops->sw_params(pcm->op_arg, params);
-+	err = _snd_pcm_sw_params_internal(pcm, params);
- 	if (err < 0) {
+@@ -973,6 +973,7 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
  		__snd_pcm_unlock(pcm);
  		return err;
  	}
--	pcm->tstamp_mode = params->tstamp_mode;
--	pcm->tstamp_type = params->tstamp_type;
--	pcm->period_step = params->period_step;
--	pcm->avail_min = params->avail_min;
--	pcm->period_event = sw_get_period_event(params);
--	pcm->start_threshold = params->start_threshold;
--	pcm->stop_threshold = params->stop_threshold;
--	pcm->silence_threshold = params->silence_threshold;
--	pcm->silence_size = params->silence_size;
--	pcm->boundary = params->boundary;
++	pcm->original_avail_min = pcm->avail_min;
  	__snd_pcm_unlock(pcm);
  	return 0;
  }
+@@ -7267,6 +7268,17 @@ void snd_pcm_areas_from_bufs(snd_pcm_t *pcm, snd_pcm_channel_area_t *areas,
+ 	snd_pcm_unlock(pcm);
+ }
+ 
++static void snd_pcm_set_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail)
++{
++	if (avail != pcm->avail_min) {
++		snd_pcm_sw_params_t swparams;
++
++		snd_pcm_sw_params_current(pcm, &swparams);
++		swparams.avail_min = avail;
++		_snd_pcm_sw_params_internal(pcm, &swparams);
++	}
++}
++
+ snd_pcm_sframes_t snd_pcm_read_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_t *areas,
+ 				     snd_pcm_uframes_t offset, snd_pcm_uframes_t size,
+ 				     snd_pcm_xfer_areas_func_t func)
+@@ -7274,6 +7286,7 @@ snd_pcm_sframes_t snd_pcm_read_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_
+ 	snd_pcm_uframes_t xfer = 0;
+ 	snd_pcm_sframes_t err = 0;
+ 	snd_pcm_state_t state;
++	snd_pcm_uframes_t needed_slave_avail_min = 0;
+ 
+ 	if (size == 0)
+ 		return 0;
+@@ -7332,6 +7345,14 @@ snd_pcm_sframes_t snd_pcm_read_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_
+ 		if (err < 0)
+ 			break;
+ 		frames = err;
++		pcm->unaligned_frames += frames;
++		pcm->unaligned_frames %= pcm->period_size;
++		if (pcm->unaligned_frames) {
++			needed_slave_avail_min = pcm->period_size - pcm->unaligned_frames;
++			snd_pcm_set_avail_min(pcm, needed_slave_avail_min);
++		} else {
++			snd_pcm_set_avail_min(pcm, pcm->original_avail_min);
++		}
+ 		offset += frames;
+ 		size -= frames;
+ 		xfer += frames;
 diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index d52229d..e103f72 100644
+index e103f72..3fdffb4 100644
 --- a/src/pcm/pcm_local.h
 +++ b/src/pcm/pcm_local.h
-@@ -661,6 +661,7 @@ static inline int muldiv_near(int a, int b, int c)
- 	return n;
- }
- 
-+int _snd_pcm_sw_params_internal(snd_pcm_t *pcm, snd_pcm_sw_params_t *params);
- int snd_pcm_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params);
- int _snd_pcm_hw_params_internal(snd_pcm_t *pcm, snd_pcm_hw_params_t *params);
- #undef _snd_pcm_hw_params
-diff --git a/src/pcm/pcm_params.c b/src/pcm/pcm_params.c
-index 8826bc3..3ba05fb 100644
---- a/src/pcm/pcm_params.c
-+++ b/src/pcm/pcm_params.c
-@@ -2439,3 +2439,24 @@ int _snd_pcm_hw_params_internal(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- 	return 0;
- }
- 
-+int _snd_pcm_sw_params_internal(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
-+{
-+	int err;
-+
-+	assert(pcm && params);
-+	assert(pcm->setup);
-+	err = pcm->ops->sw_params(pcm->op_arg, params);
-+	if (err < 0)
-+		return err;
-+	pcm->tstamp_mode = params->tstamp_mode;
-+	pcm->tstamp_type = params->tstamp_type;
-+	pcm->period_step = params->period_step;
-+	pcm->avail_min = params->avail_min;
-+	pcm->period_event = sw_get_period_event(params);
-+	pcm->start_threshold = params->start_threshold;
-+	pcm->stop_threshold = params->stop_threshold;
-+	pcm->silence_threshold = params->silence_threshold;
-+	pcm->silence_size = params->silence_size;
-+	pcm->boundary = params->boundary;
-+	return 0;
-+}
+@@ -210,6 +210,8 @@ struct _snd_pcm {
+ 	snd_pcm_tstamp_type_t tstamp_type;	/* timestamp type */
+ 	unsigned int period_step;
+ 	snd_pcm_uframes_t avail_min;	/* min avail frames for wakeup */
++	snd_pcm_uframes_t unaligned_frames;
++	snd_pcm_uframes_t original_avail_min;
+ 	int period_event;
+ 	snd_pcm_uframes_t start_threshold;
+ 	snd_pcm_uframes_t stop_threshold;
 -- 
 2.7.4
