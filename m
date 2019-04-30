@@ -1,101 +1,52 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ACPI / device_sysfs: change _ADR
- representation to 64 bits
-Date: Tue, 30 Apr 2019 13:23:38 -0500
-Message-ID: <eda0ed4e-fc36-a53a-225f-e7d54bb73413@linux.intel.com>
-References: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
- <20190416032923.GQ28103@vkoul-mobl>
- <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Saravanan Sekar <sravanhome@gmail.com>
+Subject: [PATCH v2] ASoC: tlv320aic3x: Add support for high power analog output
+Date: Tue, 30 Apr 2019 22:01:18 +0200
+Message-ID: <20190430200118.13014-1-sravanhome@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "open list:ACPI" <linux-acpi@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Robert Moore <robert.moore@intel.com>, Mark Brown <broonie@kernel.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, jank@cadence.com, Joe Perches <joe@perches.com>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>, Erik Schmauss <erik.schmauss@intel.com>, Len Brown <lenb@kernel.org>
+To: sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Add support to output level control for the analog high power output
+drivers HPOUT and HPCOM.
 
+Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+---
 
-On 4/16/19 3:09 AM, Rafael J. Wysocki wrote:
-> On Tue, Apr 16, 2019 at 5:29 AM Vinod Koul <vkoul@kernel.org> wrote:
->>
->> On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
->>> Standards such as the MIPI DisCo for SoundWire 1.0 specification
->>> assume the _ADR field is 64 bits.
->>>
->>> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
->>> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
->>> struct acpi_device_info.
->>>
->>> This patch bumps the representation used for sysfs to 64 bits.
->>>
->>> Example with a SoundWire device, the results show the complete
->>> vendorID and linkID which were omitted before:
->>>
->>> Before:
->>> $ more /sys/bus/acpi/devices/device\:38/adr
->>> 0x5d070000
->>> After:
->>> $ more /sys/bus/acpi/devices/device\:38/adr
->>> 0x000010025d070000
->>
->> This looks fine but the sysfs file is an ABI. Not sure if we can modify
->> the value returned this way.. Though it should not cause userspace
->> reading 32bits to break...
-> 
-> Well, IIRC using "08" instead of "016" in the format field would
-> preserve the existing behavior for 32-bit values, wouldn't it?
+Notes:
+    Changes in V2:
+    - Removed power control as it is handled by DAPM
+    - Added level control for left channel
 
-yes, but it makes the 64-bit address not aligned depending on the number 
-of leading zeroes, see below. I get a migraine just looking at the results.
+ sound/soc/codecs/tlv320aic3x.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Maybe add a test to use 08 for values that are below 0xFFFFFFFF and 16 
-for addresses who really need the full range, typically because of an 
-encoding?
-
-w/ value-dependent format:
-/sys/bus/acpi/devices# cat */*/adr
-
-0x00160000
-0x00140003
-0x000d0000
-0x000d0002
-0x000d0003
-0x00070000
-0x00070001
-0x00070002
-0x00070003
-0x000010025d070100
-0x000110025d070100
-0x000210025d070100
-0x000310025d070100
-0x000010025d070000
-0x000110025d070000
-0x000210025d070000
-0x000310025d070000
-0x00000000
-
-w/ 0x08 only:
-
-0x00160000
-0x00140003
-0x000d0000
-0x000d0002
-0x000d0003
-0x00070000
-0x00070001
-0x00070002
-0x00070003
-0x10025d070100
-0x110025d070100
-0x210025d070100
-0x310025d070100
-0x10025d070000
-0x110025d070000
-0x210025d070000
-0x310025d070000
-0x00000000
-0x00000000
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 516d17cb2182..90f53f9b5c2f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -324,6 +324,9 @@ static DECLARE_TLV_DB_SCALE(adc_tlv, 0, 50, 0);
+  */
+ static DECLARE_TLV_DB_SCALE(output_stage_tlv, -5900, 50, 1);
+ 
++/* HP/HPCOM volumes. From 0 to 9 dB in 1 dB steps */
++static DECLARE_TLV_DB_SCALE(hp_tlv, 0, 100, 0);
++
+ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	/* Output */
+ 	SOC_DOUBLE_R_TLV("PCM Playback Volume",
+@@ -419,6 +422,12 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	/* Pop reduction */
+ 	SOC_ENUM("Output Driver Power-On time", aic3x_poweron_time_enum),
+ 	SOC_ENUM("Output Driver Ramp-up step", aic3x_rampup_step_enum),
++
++	/* Analog HPOUT, HPCOM output level controls */
++	SOC_DOUBLE_R_TLV("HP Playback Volume", HPLOUT_CTRL, HPROUT_CTRL,
++			4, 9, 0, hp_tlv);
++	SOC_DOUBLE_R_TLV("HPCOM Playback Volume", HPLCOM_CTRL, HPRCOM_CTRL,
++			4, 9, 0, hp_tlv);
+ };
+ 
+ /* For other than tlv320aic3104 */
+-- 
+2.17.1
