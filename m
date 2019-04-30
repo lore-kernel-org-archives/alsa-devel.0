@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 10/19] ASoC: SOF: PCM: add period_elapsed work
-	to fix race condition in interrupt context
-Date: Tue, 30 Apr 2019 18:09:25 -0500
-Message-ID: <20190430230934.4321-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/19] ASoC: SOF: Intel: hda-ipc: simplify
+	handling of IPC IRQ
+Date: Tue, 30 Apr 2019 18:09:28 -0500
+Message-ID: <20190430230934.4321-14-pierre-louis.bossart@linux.intel.com>
 References: <20190430230934.4321-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 007CEF89723
- for <alsa-devel@alsa-project.org>; Wed,  1 May 2019 01:10:02 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10504F89729
+ for <alsa-devel@alsa-project.org>; Wed,  1 May 2019 01:10:04 +0200 (CEST)
 In-Reply-To: <20190430230934.4321-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,117 +29,90 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Keyon Jie <yang.jie@linux.intel.com>
 
-The IPC implementation in SOF requires sending IPCs serially: we should
-not send a new IPC command to the firmware before we get an ACK (or time
-out) from firmware, and the IRQ processing is complete.
+When using a shared IRQ between IPC interrupt and stream IOC interrupt,
+the interrupt handlers need to check the interrupt source before
+scheduling their respective IRQ threads. In the case of IPC handler, it
+should check if it is an IPC interrupt before waking up the IPC IRQ
+thread.
 
-snd_pcm_period_elapsed() can be called in interrupt context before
-IRQ_HANDLED is returned. When the PCM is done draining, a STOP
-IPC will then be sent, which breaks the expectation that IPCs are
-handled serially and leads to IPC timeouts.
-
-This patch adds a workqueue to defer the call to snd_pcm_elapsed() after
-the IRQ is handled.
+The IPC IRQ thread, once scheduled, does not need to check the IRQ
+source again. So, remove the superfluous check in the thread. Remove the
+irq_status field from snd_sof_dev struct also as it is no longer needed.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c      | 48 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/sof/sof-priv.h |  2 ++
- 2 files changed, 50 insertions(+)
+ sound/soc/sof/intel/cnl.c     |  4 ----
+ sound/soc/sof/intel/hda-ipc.c | 13 +++++--------
+ sound/soc/sof/sof-priv.h      |  1 -
+ 3 files changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index be4984c4da4e..649968841dad 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -52,6 +52,48 @@ static int sof_pcm_dsp_params(struct snd_sof_pcm *spcm, struct snd_pcm_substream
- 	return ret;
- }
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 3afd96d9c925..d128839b2450 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -39,10 +39,6 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+ 	u32 msg_ext;
+ 	irqreturn_t ret = IRQ_NONE;
  
-+/*
-+ * sof pcm period elapse work
-+ */
-+static void sof_pcm_period_elapsed_work(struct work_struct *work)
-+{
-+	struct snd_sof_pcm_stream *sps =
-+		container_of(work, struct snd_sof_pcm_stream,
-+			     period_elapsed_work);
-+
-+	snd_pcm_period_elapsed(sps->substream);
-+}
-+
-+/*
-+ * sof pcm period elapse, this could be called at irq thread context.
-+ */
-+void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_sof_pcm *spcm;
-+
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm) {
-+		dev_err(sdev->dev,
-+			"error: period elapsed for unknown stream!\n");
-+		return;
-+	}
-+
-+	/*
-+	 * snd_pcm_period_elapsed() can be called in interrupt context
-+	 * before IRQ_HANDLED is returned. Inside snd_pcm_period_elapsed(),
-+	 * when the PCM is done draining or xrun happened, a STOP IPC will
-+	 * then be sent and this IPC will hit IPC timeout.
-+	 * To avoid sending IPC before the previous IPC is handled, we
-+	 * schedule delayed work here to call the snd_pcm_period_elapsed().
-+	 */
-+	schedule_work(&spcm->stream[substream->stream].period_elapsed_work);
-+}
-+EXPORT_SYMBOL(snd_sof_pcm_period_elapsed);
-+
- /* this may get called several times by oss emulation */
- static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
-@@ -169,6 +211,9 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
- 	/* save pcm hw_params */
- 	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
+-	/* here we handle IPC interrupts only */
+-	if (!(sdev->irq_status & HDA_DSP_ADSPIS_IPC))
+-		return ret;
+-
+ 	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
+ 	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
+ 	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index a938f568dbb1..73ead7070cde 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -145,10 +145,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 	u32 msg;
+ 	u32 msg_ext;
  
-+	INIT_WORK(&spcm->stream[substream->stream].period_elapsed_work,
-+		  sof_pcm_period_elapsed_work);
-+
- 	return ret;
- }
+-	/* here we handle IPC interrupts only */
+-	if (!(sdev->irq_status & HDA_DSP_ADSPIS_IPC))
+-		return IRQ_NONE;
+-
+ 	/* read IPC status */
+ 	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+ 				  HDA_DSP_REG_HIPCIE);
+@@ -234,19 +230,20 @@ irqreturn_t hda_dsp_ipc_irq_handler(int irq, void *context)
+ {
+ 	struct snd_sof_dev *sdev = context;
+ 	int ret = IRQ_NONE;
++	u32 irq_status;
  
-@@ -203,6 +248,9 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- 				 sizeof(stream), &reply, sizeof(reply));
+ 	spin_lock(&sdev->hw_lock);
  
- 	snd_pcm_lib_free_pages(substream);
-+
-+	cancel_work_sync(&spcm->stream[substream->stream].period_elapsed_work);
-+
- 	return ret;
- }
+ 	/* store status */
+-	sdev->irq_status = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+-					    HDA_DSP_REG_ADSPIS);
++	irq_status = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIS);
++	dev_vdbg(sdev->dev, "irq handler: irq_status:0x%x\n", irq_status);
  
+ 	/* invalid message ? */
+-	if (sdev->irq_status == 0xffffffff)
++	if (irq_status == 0xffffffff)
+ 		goto out;
+ 
+ 	/* IPC message ? */
+-	if (sdev->irq_status & HDA_DSP_ADSPIS_IPC) {
++	if (irq_status & HDA_DSP_ADSPIS_IPC) {
+ 		/* disable IPC interrupt */
+ 		snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
+ 						 HDA_DSP_REG_ADSPIC,
 diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 35e78ffecce2..675bb10c82f5 100644
+index 675bb10c82f5..bbc285018f9a 100644
 --- a/sound/soc/sof/sof-priv.h
 +++ b/sound/soc/sof/sof-priv.h
-@@ -274,6 +274,7 @@ struct snd_sof_pcm_stream {
- 	struct snd_dma_buffer page_table;
- 	struct sof_ipc_stream_posn posn;
- 	struct snd_pcm_substream *substream;
-+	struct work_struct period_elapsed_work;
- };
+@@ -366,7 +366,6 @@ struct snd_sof_dev {
+ 	struct snd_sof_mailbox host_box;	/* Host initiated IPC */
+ 	struct snd_sof_mailbox stream_box;	/* Stream position update */
+ 	struct snd_sof_ipc_msg *msg;
+-	u64 irq_status;
+ 	int ipc_irq;
+ 	u32 next_comp_id; /* monotonic - reset during S3 */
  
- /* ALSA SOF PCM device */
-@@ -495,6 +496,7 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_sof_dev *sdev,
- 					   int *direction);
- struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_sof_dev *sdev,
- 					     unsigned int pcm_id);
-+void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream);
- 
- /*
-  * Stream IPC
 -- 
 2.17.1
