@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 16/19] ASoC: SOF: intel: hda: add
-	hw_params_upon_resume flag for hda stream
-Date: Tue, 30 Apr 2019 18:09:31 -0500
-Message-ID: <20190430230934.4321-17-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 19/19] ASoC: SOF: Intel: CNL: add ipc dump
+	function
+Date: Tue, 30 Apr 2019 18:09:34 -0500
+Message-ID: <20190430230934.4321-20-pierre-louis.bossart@linux.intel.com>
 References: <20190430230934.4321-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38D3CF89731
- for <alsa-devel@alsa-project.org>; Wed,  1 May 2019 01:10:07 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D1C4F89734
+ for <alsa-devel@alsa-project.org>; Wed,  1 May 2019 01:10:09 +0200 (CEST)
 In-Reply-To: <20190430230934.4321-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,205 +24,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-The prepare() ioctl for BE dai link gets called both
-when the stream is started and when it is resumed from
-suspend. SOF uses this ioctl to set the hw params
-again only if the stream has been suspended.
+Add ipc dump function to CNL+ platforms.
 
-When the stream is started, the hw_params ioctl gets called
-before prepare() and hw_params is set for the BE dai link.
-So the prepare call does not need to do anything further.
-
-When the stream resumes after system suspend, SOF requires
-that the hw_params be set again for the BE dai. In order
-to determine which streams should set the hw params
-during prepare(), an internal flag called "hw_params_upon_resume"
-is introduced in struct sof_intel_hda_stream. The flag is set
-for hda streams when the sof device suspends and is
-cleared after hw_params is set.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c     |  1 +
- sound/soc/sof/intel/cnl.c     |  1 +
- sound/soc/sof/intel/hda-dai.c | 23 ++++++++++++++---------
- sound/soc/sof/intel/hda-dsp.c | 16 ++++++++++++++++
- sound/soc/sof/intel/hda.h     |  2 ++
- sound/soc/sof/ops.h           |  6 ++++++
- sound/soc/sof/pm.c            |  3 +++
- sound/soc/sof/sof-priv.h      |  1 +
- 8 files changed, 44 insertions(+), 9 deletions(-)
+ sound/soc/sof/intel/cnl.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 026dde839621..d1fb2f2ba1e1 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -91,6 +91,7 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.resume			= hda_dsp_resume,
- 	.runtime_suspend	= hda_dsp_runtime_suspend,
- 	.runtime_resume		= hda_dsp_runtime_resume,
-+	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
- };
- EXPORT_SYMBOL(sof_apl_ops);
- 
 diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index d128839b2450..2eac20bbcaea 100644
+index 2eac20bbcaea..08a1a3d3c08d 100644
 --- a/sound/soc/sof/intel/cnl.c
 +++ b/sound/soc/sof/intel/cnl.c
-@@ -225,6 +225,7 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.resume			= hda_dsp_resume,
- 	.runtime_suspend	= hda_dsp_runtime_suspend,
- 	.runtime_resume		= hda_dsp_runtime_resume,
-+	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
- };
- EXPORT_SYMBOL(sof_cnl_ops);
- 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 830328af19c5..e1decf25aeac 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -131,12 +131,17 @@ static int hda_link_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_stream *link_dev;
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct sof_intel_hda_stream *hda_stream;
- 	struct hda_pipe_params p_params = {0};
- 	struct hdac_ext_link *link;
- 	int stream_tag;
- 
- 	link_dev = snd_soc_dai_get_dma_data(dai, substream);
- 
-+	hda_stream = container_of(link_dev, struct sof_intel_hda_stream,
-+				  hda_stream);
-+	hda_stream->hw_params_upon_resume = 0;
-+
- 	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
- 	if (!link)
- 		return -EINVAL;
-@@ -168,22 +173,22 @@ static int hda_link_hw_params(struct snd_pcm_substream *substream,
- static int hda_link_pcm_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+	struct sof_intel_hda_stream *hda_stream;
- 	struct snd_sof_dev *sdev =
--		snd_soc_component_get_drvdata(dai->component);
--	struct snd_sof_pcm *spcm;
-+				snd_soc_component_get_drvdata(dai->component);
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	int stream = substream->stream;
- 
--	spcm = snd_sof_find_spcm_dai(sdev, rtd);
--	if (!spcm)
--		return -EINVAL;
-+	hda_stream = container_of(link_dev, struct sof_intel_hda_stream,
-+				  hda_stream);
- 
- 	/* setup hw_params again only if resuming from system suspend */
--	if (!spcm->hw_params_upon_resume[stream])
-+	if (!hda_stream->hw_params_upon_resume)
- 		return 0;
- 
--	dev_dbg(sdev->dev, "hda: prepare stream %d dir %d\n",
--		spcm->pcm.pcm_id, substream->stream);
-+	dev_dbg(sdev->dev, "hda: prepare stream dir %d\n", substream->stream);
- 
- 	return hda_link_hw_params(substream, &rtd->dpcm[stream].hw_params,
- 				  dai);
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 311fed502e09..5b73115a0b78 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -453,3 +453,19 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, int state)
- 
- 	return 0;
- }
-+
-+void hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct sof_intel_hda_stream *hda_stream;
-+	struct hdac_ext_stream *stream;
-+	struct hdac_stream *s;
-+
-+	/* set internal flag for BE */
-+	list_for_each_entry(s, &bus->stream_list, list) {
-+		stream = stream_to_hdac_ext_stream(s);
-+		hda_stream = container_of(stream, struct sof_intel_hda_stream,
-+					  hda_stream);
-+		hda_stream->hw_params_upon_resume = 1;
-+	}
-+}
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 7cb2fb92c4eb..4b00e5d88565 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -409,6 +409,7 @@ static inline struct hda_bus *sof_to_hbus(struct snd_sof_dev *s)
- struct sof_intel_hda_stream {
- 	struct hdac_ext_stream hda_stream;
- 	struct sof_intel_stream stream;
-+	int hw_params_upon_resume; /* set up hw_params upon resume */
- };
- 
- #define bus_to_sof_hda(bus) \
-@@ -443,6 +444,7 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, int state);
- int hda_dsp_resume(struct snd_sof_dev *sdev);
- int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev, int state);
- int hda_dsp_runtime_resume(struct snd_sof_dev *sdev);
-+void hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
- void hda_dsp_dump_skl(struct snd_sof_dev *sdev, u32 flags);
- void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
- 
-diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
-index 2a5d4c63f160..b8e2bf1fee24 100644
---- a/sound/soc/sof/ops.h
-+++ b/sound/soc/sof/ops.h
-@@ -134,6 +134,12 @@ static inline int snd_sof_dsp_runtime_suspend(struct snd_sof_dev *sdev,
+@@ -158,6 +158,24 @@ static int cnl_ipc_send_msg(struct snd_sof_dev *sdev,
  	return 0;
  }
  
-+static inline void snd_sof_dsp_hw_params_upon_resume(struct snd_sof_dev *sdev)
++static void cnl_ipc_dump(struct snd_sof_dev *sdev)
 +{
-+	if (sof_ops(sdev)->set_hw_params_upon_resume)
-+		sof_ops(sdev)->set_hw_params_upon_resume(sdev);
++	u32 hipcctl;
++	u32 hipcida;
++	u32 hipctdr;
++
++	/* read IPC status */
++	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
++	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
++	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
++
++	/* dump the IPC regs */
++	/* TODO: parse the raw msg */
++	dev_err(sdev->dev,
++		"error: host status 0x%8.8x dsp status 0x%8.8x mask 0x%8.8x\n",
++		hipcida, hipctdr, hipcctl);
 +}
 +
- static inline int snd_sof_dsp_set_clk(struct snd_sof_dev *sdev, u32 freq)
- {
- 	if (sof_ops(sdev)->set_clk)
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index fc599e1b6f65..8ef1d51025d8 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -227,6 +227,9 @@ static void sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
- 				spcm->hw_params_upon_resume[dir] = 1;
- 		}
- 	}
-+
-+	/* set internal flag for BE */
-+	snd_sof_dsp_hw_params_upon_resume(sdev);
- }
+ /* cannonlake ops */
+ const struct snd_sof_dsp_ops sof_cnl_ops = {
+ 	/* probe and remove */
+@@ -189,6 +207,7 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
+ 	.debug_map	= cnl_dsp_debugfs,
+ 	.debug_map_count	= ARRAY_SIZE(cnl_dsp_debugfs),
+ 	.dbg_dump	= hda_dsp_dump,
++	.ipc_dump	= cnl_ipc_dump,
  
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index bbc285018f9a..170adc21ef17 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -166,6 +166,7 @@ struct snd_sof_dsp_ops {
- 	int (*runtime_suspend)(struct snd_sof_dev *sof_dev,
- 			       int state); /* optional */
- 	int (*runtime_resume)(struct snd_sof_dev *sof_dev); /* optional */
-+	void (*set_hw_params_upon_resume)(struct snd_sof_dev *sdev); /* optional */
- 
- 	/* DSP clocking */
- 	int (*set_clk)(struct snd_sof_dev *sof_dev, u32 freq); /* optional */
+ 	/* stream callbacks */
+ 	.pcm_open	= hda_dsp_pcm_open,
 -- 
 2.17.1
