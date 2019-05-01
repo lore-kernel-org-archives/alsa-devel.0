@@ -1,60 +1,71 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] ASoC: max98090: Fix restore of DAPM Muxes
-Date: Wed, 1 May 2019 15:29:38 +0100
-Message-ID: <1556720978-13233-1-git-send-email-jonathanh@nvidia.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 00/22] soundwire: code cleanup
+Date: Wed,  1 May 2019 10:57:23 -0500
+Message-ID: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The max98090 driver defines 3 DAPM muxes; one for the right line output
-(LINMOD Mux), one for the left headphone mixer source (MIXHPLSEL Mux)
-and one for the right headphone mixer source (MIXHPRSEL Mux). The same
-bit is used for the mux as well as the DAPM enable, and although the mux
-can be correctly configured, after playback has completed, the mux will
-be reset during the disable phase. This is preventing the state of these
-muxes from being saved and restored correctly on system reboot. Fix this
-by marking these muxes as SND_SOC_NOPM.
+SoundWire support will be provided in Linux with the Sound Open
+Firmware (SOF) on Intel platforms. Before we start adding the missing
+pieces, there are a number of warnings and style issues reported by
+checkpatch, cppcheck and Coccinelle that need to be cleaned-up.
 
-Note this has been verified this on the Tegra124 Nyan Big which features
-the MAX98090 codec.
+Changes since v3:
+patch 1,3,4 were merged for 5.2-rc1
+No code change, only split patch2 in 21 patches to make Vinod
+happy. Each patch only fixes a specific issue. patch 5 is now patch22
+and wasn't changed. Not sure why Vinod reported the patch didn't
+apply.
+Added Takashi's Reviewed-by tag in all patches since the code is
+exactly the same as in v3.
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
-If this is the correct fix for this issue, can we tag this for stable?
-Or I can re-send with the stable tag. However, wanted to send out for
-review first.
+Changes since v2:
+fixed inversion of devm_kcalloc parameters, detected while rebasing
+additional patches.
 
- sound/soc/codecs/max98090.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Changes since v1:
+added missing newlines in new patch (suggested by Joe Perches)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 30c242c38d99..7619ea31ab50 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1194,14 +1194,14 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- 		&max98090_right_rcv_mixer_controls[0],
- 		ARRAY_SIZE(max98090_right_rcv_mixer_controls)),
- 
--	SND_SOC_DAPM_MUX("LINMOD Mux", M98090_REG_LOUTR_MIXER,
--		M98090_LINMOD_SHIFT, 0, &max98090_linmod_mux),
-+	SND_SOC_DAPM_MUX("LINMOD Mux", SND_SOC_NOPM, 0, 0,
-+		&max98090_linmod_mux),
- 
--	SND_SOC_DAPM_MUX("MIXHPLSEL Mux", M98090_REG_HP_CONTROL,
--		M98090_MIXHPLSEL_SHIFT, 0, &max98090_mixhplsel_mux),
-+	SND_SOC_DAPM_MUX("MIXHPLSEL Mux", SND_SOC_NOPM, 0, 0,
-+		&max98090_mixhplsel_mux),
- 
--	SND_SOC_DAPM_MUX("MIXHPRSEL Mux", M98090_REG_HP_CONTROL,
--		M98090_MIXHPRSEL_SHIFT, 0, &max98090_mixhprsel_mux),
-+	SND_SOC_DAPM_MUX("MIXHPRSEL Mux", SND_SOC_NOPM, 0, 0,
-+		&max98090_mixhprsel_mux),
- 
- 	SND_SOC_DAPM_PGA("HP Left Out", M98090_REG_OUTPUT_ENABLE,
- 		M98090_HPLEN_SHIFT, 0, NULL, 0),
+Pierre-Louis Bossart (22):
+  soundwire: Kconfig: fix help format
+  soundwire: fix SPDX license for header files
+  soundwire: fix alignment issues in header files
+  soundwire: bus: fix alignment issues
+  soundwire: bus: fix typos in comments
+  soundwire: bus: remove useless parentheses
+  soundwire: bus: fix boolean comparisons
+  soundwire: bus: remove spurious newline
+  soundwire: bus_type: fix alignment issues
+  soundwire: mipi_disco: fix alignment issues
+  soundwire: mipi_disco: fix boolean comparisons
+  soundwire: stream: fix alignment issues
+  soundwire: slave: fix alignment issues
+  soundwire: intel_init: fix alignment issues
+  soundwire: intel: fix alignment issues
+  soundwire: intel: protect macro parameters
+  soundwire: intel: fix boolean comparison
+  soundwire: cadence_master: fix alignment issues
+  soundwire: cadence_master: balance parentheses
+  soundwire: cadence_master: fix boolean comparisons
+  soundwire: cadence_master: remove spurious newline
+  soundwire: add missing newlines in dynamic debug logs
+
+ drivers/soundwire/Kconfig          |   2 +-
+ drivers/soundwire/bus.c            | 135 ++++++++-------
+ drivers/soundwire/bus.h            |  16 +-
+ drivers/soundwire/bus_type.c       |   4 +-
+ drivers/soundwire/cadence_master.c |  99 +++++------
+ drivers/soundwire/cadence_master.h |  22 +--
+ drivers/soundwire/intel.c          |  99 ++++++-----
+ drivers/soundwire/intel.h          |   4 +-
+ drivers/soundwire/intel_init.c     |  12 +-
+ drivers/soundwire/mipi_disco.c     | 116 +++++++------
+ drivers/soundwire/slave.c          |  10 +-
+ drivers/soundwire/stream.c         | 265 +++++++++++++++--------------
+ 12 files changed, 401 insertions(+), 383 deletions(-)
+
 -- 
-2.7.4
+2.17.1
