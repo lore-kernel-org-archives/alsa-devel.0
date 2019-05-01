@@ -1,60 +1,63 @@
-From: Logesh Kolandavel <logesh.kolandavel@timesys.com>
-Subject: [PATCH v2] ASoC: da7213: fix DAI_CLK_EN register bit overwrite
-Date: Wed,  1 May 2019 14:34:24 +0530
-Message-ID: <20190501090424.28861-1-logesh.kolandavel@timesys.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 2/2] ASoC: wm_adsp: Use DSP ops pointers to
+	stop watchdog in error handlers
+Date: Wed, 1 May 2019 11:13:32 +0100
+Message-ID: <20190501101332.31190-2-ckeepax@opensource.cirrus.com>
+References: <20190501101332.31190-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: support.opensource@diasemi.com
-Cc: Adam.Thomson.Opensource@diasemi.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, logesh.kolandavel@timesys.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BD7DF8075A
+ for <alsa-devel@alsa-project.org>; Wed,  1 May 2019 12:13:35 +0200 (CEST)
+In-Reply-To: <20190501101332.31190-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Logesh <logesh.kolandavel@timesys.com>
+Whilst this isn't strictly necessary as the code is already DSP specific
+better to use the pointers to avoid potential issues in the future if
+one core ends up having multiple methods of stopping the watchdog.
 
-If the da7213 codec is configured as Master with the DAPM power down
-delay time set, 'snd_soc_component_write' function overwrites the
-DAI_CLK_EN bit of DAI_CLK_MODE register which leads to audio play
-only once until it re-initialize after codec power up.
-
-Signed-off-by: Logesh <logesh.kolandavel@timesys.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
-Changes in v2:
--Include the mask DA7213_DAI_BCLKS_PER_WCLK_MASK
+ sound/soc/codecs/wm_adsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- sound/soc/codecs/da7213.c | 5 ++++-
- sound/soc/codecs/da7213.h | 2 ++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 92d006a5283e..425c11d63e49 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -1305,7 +1305,10 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	/* By default only 64 BCLK per WCLK is supported */
- 	dai_clk_mode |= DA7213_DAI_BCLKS_PER_WCLK_64;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index f3c28e54d6d6e..b26e6b825a900 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -4285,7 +4285,7 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
  
--	snd_soc_component_write(component, DA7213_DAI_CLK_MODE, dai_clk_mode);
-+	snd_soc_component_update_bits(component, DA7213_DAI_CLK_MODE,
-+			    DA7213_DAI_BCLKS_PER_WCLK_MASK |
-+			    DA7213_DAI_CLK_POL_MASK | DA7213_DAI_WCLK_POL_MASK,
-+			    dai_clk_mode);
- 	snd_soc_component_update_bits(component, DA7213_DAI_CTRL, DA7213_DAI_FORMAT_MASK,
- 			    dai_ctrl);
- 	snd_soc_component_write(component, DA7213_DAI_OFFSET, dai_offset);
-diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
-index 5a78dba1dcb5..9d31efc3cfe5 100644
---- a/sound/soc/codecs/da7213.h
-+++ b/sound/soc/codecs/da7213.h
-@@ -181,7 +181,9 @@
- #define DA7213_DAI_BCLKS_PER_WCLK_256				(0x3 << 0)
- #define DA7213_DAI_BCLKS_PER_WCLK_MASK				(0x3 << 0)
- #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
-+#define DA7213_DAI_CLK_POL_MASK					(0x1 << 2)
- #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
-+#define DA7213_DAI_WCLK_POL_MASK				(0x1 << 3)
- #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
+ 	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
+ 		adsp_err(dsp, "watchdog timeout error\n");
+-		wm_adsp_stop_watchdog(dsp);
++		dsp->ops->stop_watchdog(dsp);
+ 		wm_adsp_fatal_error(dsp);
+ 	}
  
- /* DA7213_DAI_CTRL = 0x29 */
+@@ -4396,7 +4396,7 @@ irqreturn_t wm_halo_wdt_expire(int irq, void *data)
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+ 	adsp_warn(dsp, "WDT Expiry Fault\n");
+-	wm_halo_stop_watchdog(dsp);
++	dsp->ops->stop_watchdog(dsp);
+ 	wm_adsp_fatal_error(dsp);
+ 
+ 	mutex_unlock(&dsp->pwr_lock);
 -- 
-2.21.0
+2.11.0
