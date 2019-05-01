@@ -1,9 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: wm_adsp: Use DSP ops pointers to
-	stop watchdog in error handlers
-Date: Wed, 1 May 2019 11:13:32 +0100
-Message-ID: <20190501101332.31190-2-ckeepax@opensource.cirrus.com>
-References: <20190501101332.31190-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Correct region base typo in
+	wm_halo_setup_algs
+Date: Wed, 1 May 2019 11:13:31 +0100
+Message-ID: <20190501101332.31190-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BD7DF8075A
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABF0AF896B6
  for <alsa-devel@alsa-project.org>; Wed,  1 May 2019 12:13:35 +0200 (CEST)
-In-Reply-To: <20190501101332.31190-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,36 +26,28 @@ To: broonie@kernel.org
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Whilst this isn't strictly necessary as the code is already DSP specific
-better to use the pointers to avoid potential issues in the future if
-one core ends up having multiple methods of stopping the watchdog.
+Due to a typo the wrong base is being supplied for the primary algorithm
+on Halo firmwares, which will cause the controls to not function.
 
+Fixes: 170b1e123f38 ("ASoC: wm_adsp: Add support for new Halo core DSPs")
+Reported-by: Stuart Henderson <stuarth@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f3c28e54d6d6e..b26e6b825a900 100644
+index a9298bfddd9c7..f3c28e54d6d6e 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -4285,7 +4285,7 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+@@ -2445,7 +2445,7 @@ static int wm_halo_setup_algs(struct wm_adsp *dsp)
+ 	wmfw_v3_parse_id_header(dsp, &halo_id.fw, n_algs);
  
- 	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
- 		adsp_err(dsp, "watchdog timeout error\n");
--		wm_adsp_stop_watchdog(dsp);
-+		dsp->ops->stop_watchdog(dsp);
- 		wm_adsp_fatal_error(dsp);
- 	}
+ 	ret = wm_halo_create_regions(dsp, halo_id.fw.id,
+-				     halo_id.ym_base, halo_id.ym_base);
++				     halo_id.xm_base, halo_id.ym_base);
+ 	if (ret)
+ 		return ret;
  
-@@ -4396,7 +4396,7 @@ irqreturn_t wm_halo_wdt_expire(int irq, void *data)
- 	mutex_lock(&dsp->pwr_lock);
- 
- 	adsp_warn(dsp, "WDT Expiry Fault\n");
--	wm_halo_stop_watchdog(dsp);
-+	dsp->ops->stop_watchdog(dsp);
- 	wm_adsp_fatal_error(dsp);
- 
- 	mutex_unlock(&dsp->pwr_lock);
 -- 
 2.11.0
