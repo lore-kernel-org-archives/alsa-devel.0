@@ -1,73 +1,60 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2] ACPI / device_sysfs: change _ADR representation to 64 bits
-Date: Wed,  1 May 2019 07:53:22 -0500
-Message-ID: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] ASoC: max98090: Fix restore of DAPM Muxes
+Date: Wed, 1 May 2019 15:29:38 +0100
+Message-ID: <1556720978-13233-1-git-send-email-jonathanh@nvidia.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE ACPICA" <devel@acpica.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Standards such as the MIPI DisCo for SoundWire 1.0 specification
-assume the _ADR field is 64 bits.
+The max98090 driver defines 3 DAPM muxes; one for the right line output
+(LINMOD Mux), one for the left headphone mixer source (MIXHPLSEL Mux)
+and one for the right headphone mixer source (MIXHPRSEL Mux). The same
+bit is used for the mux as well as the DAPM enable, and although the mux
+can be correctly configured, after playback has completed, the mux will
+be reset during the disable phase. This is preventing the state of these
+muxes from being saved and restored correctly on system reboot. Fix this
+by marking these muxes as SND_SOC_NOPM.
 
-_ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-struct acpi_device_info.
+Note this has been verified this on the Tegra124 Nyan Big which features
+the MAX98090 codec.
 
-This patch bumps the representation used for sysfs to 64 bits. To
-avoid any compatibility/ABI issues, the printf format is only extended
-to 16 characters when the actual _ADR value exceeds the 32 bit
-maximum.
-
-Example with a SoundWire device, the results show the complete
-vendorID and linkID which were omitted before:
-
-Before:
-$ more /sys/bus/acpi/devices/device\:38/adr
-0x5d070000
-After:
-$ more /sys/bus/acpi/devices/device\:38/adr
-0x000010025d070000
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
 ---
-v2: only use 64 bits when required to avoid compatibility issues
-(feedback from Vinod and Rafael)
+If this is the correct fix for this issue, can we tag this for stable?
+Or I can re-send with the stable tag. However, wanted to send out for
+review first.
 
- drivers/acpi/device_sysfs.c | 6 ++++--
- include/acpi/acpi_bus.h     | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/codecs/max98090.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-index 8940054d6250..7dda0ee05cd1 100644
---- a/drivers/acpi/device_sysfs.c
-+++ b/drivers/acpi/device_sysfs.c
-@@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device *dev,
- {
- 	struct acpi_device *acpi_dev = to_acpi_device(dev);
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 30c242c38d99..7619ea31ab50 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -1194,14 +1194,14 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
+ 		&max98090_right_rcv_mixer_controls[0],
+ 		ARRAY_SIZE(max98090_right_rcv_mixer_controls)),
  
--	return sprintf(buf, "0x%08x\n",
--		       (unsigned int)(acpi_dev->pnp.bus_address));
-+	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
-+		return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
-+	else
-+		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
- }
- static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+-	SND_SOC_DAPM_MUX("LINMOD Mux", M98090_REG_LOUTR_MIXER,
+-		M98090_LINMOD_SHIFT, 0, &max98090_linmod_mux),
++	SND_SOC_DAPM_MUX("LINMOD Mux", SND_SOC_NOPM, 0, 0,
++		&max98090_linmod_mux),
  
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index f7981751ac77..9075e28ea60a 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -230,7 +230,7 @@ struct acpi_device_dir {
- /* Plug and Play */
+-	SND_SOC_DAPM_MUX("MIXHPLSEL Mux", M98090_REG_HP_CONTROL,
+-		M98090_MIXHPLSEL_SHIFT, 0, &max98090_mixhplsel_mux),
++	SND_SOC_DAPM_MUX("MIXHPLSEL Mux", SND_SOC_NOPM, 0, 0,
++		&max98090_mixhplsel_mux),
  
- typedef char acpi_bus_id[8];
--typedef unsigned long acpi_bus_address;
-+typedef u64 acpi_bus_address;
- typedef char acpi_device_name[40];
- typedef char acpi_device_class[20];
+-	SND_SOC_DAPM_MUX("MIXHPRSEL Mux", M98090_REG_HP_CONTROL,
+-		M98090_MIXHPRSEL_SHIFT, 0, &max98090_mixhprsel_mux),
++	SND_SOC_DAPM_MUX("MIXHPRSEL Mux", SND_SOC_NOPM, 0, 0,
++		&max98090_mixhprsel_mux),
  
+ 	SND_SOC_DAPM_PGA("HP Left Out", M98090_REG_OUTPUT_ENABLE,
+ 		M98090_HPLEN_SHIFT, 0, NULL, 0),
 -- 
-2.17.1
+2.7.4
