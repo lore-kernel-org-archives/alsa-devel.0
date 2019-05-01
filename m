@@ -1,48 +1,73 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH][next] ASoC: SOF: Intel: fix spelling mistake
- "incompatble" -> "incompatible"
-Date: Wed, 1 May 2019 07:16:17 -0500
-Message-ID: <7aff79bd-e0d5-a10b-7443-6f27ea1f47c7@linux.intel.com>
-References: <20190501102308.30390-1-colin.king@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH v2] ACPI / device_sysfs: change _ADR representation to 64 bits
+Date: Wed,  1 May 2019 07:53:22 -0500
+Message-ID: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190501102308.30390-1-colin.king@canonical.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE ACPICA" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
+Standards such as the MIPI DisCo for SoundWire 1.0 specification
+assume the _ADR field is 64 bits.
 
+_ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+struct acpi_device_info.
 
-On 5/1/19 5:23 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in a hda_dsp_rom_msg message, fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+This patch bumps the representation used for sysfs to 64 bits. To
+avoid any compatibility/ABI issues, the printf format is only extended
+to 16 characters when the actual _ADR value exceeds the 32 bit
+maximum.
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Example with a SoundWire device, the results show the complete
+vendorID and linkID which were omitted before:
 
-Thanks for the fix!
+Before:
+$ more /sys/bus/acpi/devices/device\:38/adr
+0x5d070000
+After:
+$ more /sys/bus/acpi/devices/device\:38/adr
+0x000010025d070000
 
-> ---
->   sound/soc/sof/intel/hda.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> index b8fc19790f3b..84baf275b467 100644
-> --- a/sound/soc/sof/intel/hda.c
-> +++ b/sound/soc/sof/intel/hda.c
-> @@ -54,7 +54,7 @@ static const struct hda_dsp_msg_code hda_dsp_rom_msg[] = {
->   	{HDA_DSP_ROM_L2_CACHE_ERROR, "error: L2 cache error"},
->   	{HDA_DSP_ROM_LOAD_OFFSET_TO_SMALL, "error: load offset too small"},
->   	{HDA_DSP_ROM_API_PTR_INVALID, "error: API ptr invalid"},
-> -	{HDA_DSP_ROM_BASEFW_INCOMPAT, "error: base fw incompatble"},
-> +	{HDA_DSP_ROM_BASEFW_INCOMPAT, "error: base fw incompatible"},
->   	{HDA_DSP_ROM_UNHANDLED_INTERRUPT, "error: unhandled interrupt"},
->   	{HDA_DSP_ROM_MEMORY_HOLE_ECC, "error: ECC memory hole"},
->   	{HDA_DSP_ROM_KERNEL_EXCEPTION, "error: kernel exception"},
-> 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+v2: only use 64 bits when required to avoid compatibility issues
+(feedback from Vinod and Rafael)
+
+ drivers/acpi/device_sysfs.c | 6 ++++--
+ include/acpi/acpi_bus.h     | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index 8940054d6250..7dda0ee05cd1 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device *dev,
+ {
+ 	struct acpi_device *acpi_dev = to_acpi_device(dev);
+ 
+-	return sprintf(buf, "0x%08x\n",
+-		       (unsigned int)(acpi_dev->pnp.bus_address));
++	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
++		return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
++	else
++		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
+ }
+ static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+ 
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index f7981751ac77..9075e28ea60a 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -230,7 +230,7 @@ struct acpi_device_dir {
+ /* Plug and Play */
+ 
+ typedef char acpi_bus_id[8];
+-typedef unsigned long acpi_bus_address;
++typedef u64 acpi_bus_address;
+ typedef char acpi_device_name[40];
+ typedef char acpi_device_class[20];
+ 
+-- 
+2.17.1
