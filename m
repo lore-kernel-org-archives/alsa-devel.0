@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 19/22] soundwire: cadence_master: balance parentheses
-Date: Wed,  1 May 2019 10:57:42 -0500
-Message-ID: <20190501155745.21806-20-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 21/22] soundwire: cadence_master: remove spurious newline
+Date: Wed,  1 May 2019 10:57:44 -0500
+Message-ID: <20190501155745.21806-22-pierre-louis.bossart@linux.intel.com>
 References: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
@@ -10,29 +10,25 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-While not strictly necessary, balanced parentheses help with code
-readability.
+Extra newline does not improve readability.
 
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/soundwire/cadence_master.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index e45076be1e09..04632a97721e 100644
+index 50181752c2a4..5786a2e0be84 100644
 --- a/drivers/soundwire/cadence_master.c
 +++ b/drivers/soundwire/cadence_master.c
-@@ -569,8 +569,9 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- 					   cdns->defer->length, 0);
- 			complete(&cdns->defer->complete);
- 			cdns->defer = NULL;
--		} else
-+		} else {
- 			complete(&cdns->tx_complete);
-+		}
- 	}
+@@ -42,7 +42,6 @@
+ #define CDNS_MCP_CONTROL_CMD_ACCEPT		BIT(1)
+ #define CDNS_MCP_CONTROL_BLOCK_WAKEUP		BIT(0)
  
- 	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
+-
+ #define CDNS_MCP_CMDCTRL			0x8
+ #define CDNS_MCP_SSPSTAT			0xC
+ #define CDNS_MCP_FRAME_SHAPE			0x10
 -- 
 2.17.1
