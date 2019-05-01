@@ -1,62 +1,60 @@
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ACPI / device_sysfs: change _ADR
- representation to 64 bits
-Date: Wed, 1 May 2019 09:59:25 +0200
-Message-ID: <CAJZ5v0iwm5tLRy2mLX6_uTk2wh+1Y4VaEcqDx5Z1WDLZHMnpEg@mail.gmail.com>
-References: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
- <20190416032923.GQ28103@vkoul-mobl> <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
- <eda0ed4e-fc36-a53a-225f-e7d54bb73413@linux.intel.com>
+From: Logesh Kolandavel <logesh.kolandavel@timesys.com>
+Subject: [PATCH v2] ASoC: da7213: fix DAI_CLK_EN register bit overwrite
+Date: Wed,  1 May 2019 14:34:24 +0530
+Message-ID: <20190501090424.28861-1-logesh.kolandavel@timesys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <eda0ed4e-fc36-a53a-225f-e7d54bb73413@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Vinod Koul <vkoul@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "open list:ACPI" <linux-acpi@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Robert Moore <robert.moore@intel.com>, Mark Brown <broonie@kernel.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, jank@cadence.com, Joe Perches <joe@perches.com>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>, Erik Schmauss <erik.schmauss@intel.com>, Len Brown <lenb@kernel.org>
+To: support.opensource@diasemi.com
+Cc: Adam.Thomson.Opensource@diasemi.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, logesh.kolandavel@timesys.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 30, 2019 at 8:23 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->
->
-> On 4/16/19 3:09 AM, Rafael J. Wysocki wrote:
-> > On Tue, Apr 16, 2019 at 5:29 AM Vinod Koul <vkoul@kernel.org> wrote:
-> >>
-> >> On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
-> >>> Standards such as the MIPI DisCo for SoundWire 1.0 specification
-> >>> assume the _ADR field is 64 bits.
-> >>>
-> >>> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> >>> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> >>> struct acpi_device_info.
-> >>>
-> >>> This patch bumps the representation used for sysfs to 64 bits.
-> >>>
-> >>> Example with a SoundWire device, the results show the complete
-> >>> vendorID and linkID which were omitted before:
-> >>>
-> >>> Before:
-> >>> $ more /sys/bus/acpi/devices/device\:38/adr
-> >>> 0x5d070000
-> >>> After:
-> >>> $ more /sys/bus/acpi/devices/device\:38/adr
-> >>> 0x000010025d070000
-> >>
-> >> This looks fine but the sysfs file is an ABI. Not sure if we can modify
-> >> the value returned this way.. Though it should not cause userspace
-> >> reading 32bits to break...
-> >
-> > Well, IIRC using "08" instead of "016" in the format field would
-> > preserve the existing behavior for 32-bit values, wouldn't it?
->
-> yes, but it makes the 64-bit address not aligned depending on the number
-> of leading zeroes, see below. I get a migraine just looking at the results.
+From: Logesh <logesh.kolandavel@timesys.com>
 
-Well, scripts reading them won't get that, but fair enough.
+If the da7213 codec is configured as Master with the DAPM power down
+delay time set, 'snd_soc_component_write' function overwrites the
+DAI_CLK_EN bit of DAI_CLK_MODE register which leads to audio play
+only once until it re-initialize after codec power up.
 
-> Maybe add a test to use 08 for values that are below 0xFFFFFFFF and 16
-> for addresses who really need the full range, typically because of an
-> encoding?
+Signed-off-by: Logesh <logesh.kolandavel@timesys.com>
+---
+Changes in v2:
+-Include the mask DA7213_DAI_BCLKS_PER_WCLK_MASK
 
-That would be fine by me.
+ sound/soc/codecs/da7213.c | 5 ++++-
+ sound/soc/codecs/da7213.h | 2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 92d006a5283e..425c11d63e49 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1305,7 +1305,10 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* By default only 64 BCLK per WCLK is supported */
+ 	dai_clk_mode |= DA7213_DAI_BCLKS_PER_WCLK_64;
+ 
+-	snd_soc_component_write(component, DA7213_DAI_CLK_MODE, dai_clk_mode);
++	snd_soc_component_update_bits(component, DA7213_DAI_CLK_MODE,
++			    DA7213_DAI_BCLKS_PER_WCLK_MASK |
++			    DA7213_DAI_CLK_POL_MASK | DA7213_DAI_WCLK_POL_MASK,
++			    dai_clk_mode);
+ 	snd_soc_component_update_bits(component, DA7213_DAI_CTRL, DA7213_DAI_FORMAT_MASK,
+ 			    dai_ctrl);
+ 	snd_soc_component_write(component, DA7213_DAI_OFFSET, dai_offset);
+diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
+index 5a78dba1dcb5..9d31efc3cfe5 100644
+--- a/sound/soc/codecs/da7213.h
++++ b/sound/soc/codecs/da7213.h
+@@ -181,7 +181,9 @@
+ #define DA7213_DAI_BCLKS_PER_WCLK_256				(0x3 << 0)
+ #define DA7213_DAI_BCLKS_PER_WCLK_MASK				(0x3 << 0)
+ #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
++#define DA7213_DAI_CLK_POL_MASK					(0x1 << 2)
+ #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
++#define DA7213_DAI_WCLK_POL_MASK				(0x1 << 3)
+ #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
+ 
+ /* DA7213_DAI_CTRL = 0x29 */
+-- 
+2.21.0
