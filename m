@@ -1,8 +1,8 @@
 From: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH v2 1/5] dt-bindings: sound: sun4i-spdif: Add Allwinner H6
  compatible
-Date: Wed, 1 May 2019 14:50:19 -0500
-Message-ID: <20190501195019.GA13211@bogus>
+Date: Wed, 1 May 2019 16:52:34 -0500
+Message-ID: <20190501215234.GA31269@bogus>
 References: <20190419191730.9437-1-peron.clem@gmail.com>
  <20190419191730.9437-2-peron.clem@gmail.com>
 Mime-Version: 1.0
