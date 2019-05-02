@@ -1,52 +1,53 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 14/14] soundwire: remove multiple blank lines
-Date: Thu,  2 May 2019 16:29:30 +0530
-Message-ID: <20190502105930.9889-15-vkoul@kernel.org>
-References: <20190502105930.9889-1-vkoul@kernel.org>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ASoC: SOF: remove redundant null checks of dai
+Date: Thu,  2 May 2019 12:33:40 +0100
+Message-ID: <20190502113340.8688-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0EA6AF89756
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:49 +0200 (CEST)
-In-Reply-To: <20190502105930.9889-1-vkoul@kernel.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Multi-blank lines do not help readability so remove them
+From: Colin Ian King <colin.king@canonical.com>
 
-Checkpatch complains:
-CHECK: Please don't use multiple blank lines
+Currently there are two null checks of pointer dai in function
+sof_connect_dai_widget and yet there is no null check of dai
+at the end of the function when checking !dai->name.  The latter
+would be a null pointer deference if dai is null (as picked up
+by static analysis), however the function is only ever called
+when dai is successfully allocated, so the null checks are
+redundant. Clean up the code by removing the null checks.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Addresses-Coverity: ("Dereference after null check")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/linux/soundwire/sdw_registers.h | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sof/topology.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
-index e75b2e3cf93d..a686f7988156 100644
---- a/include/linux/soundwire/sdw_registers.h
-+++ b/include/linux/soundwire/sdw_registers.h
-@@ -73,7 +73,6 @@
- #define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
- #define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
- 
--
- #define SDW_SCP_INTSTAT3			0x43
- #define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
- 
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 2b9de1b97447..1f71857298a9 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1127,15 +1127,13 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
+ 		switch (w->id) {
+ 		case snd_soc_dapm_dai_out:
+ 			rtd->cpu_dai->capture_widget = w;
+-			if (dai)
+-				dai->name = rtd->dai_link->name;
++			dai->name = rtd->dai_link->name;
+ 			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
+ 				w->name, rtd->dai_link->name);
+ 			break;
+ 		case snd_soc_dapm_dai_in:
+ 			rtd->cpu_dai->playback_widget = w;
+-			if (dai)
+-				dai->name = rtd->dai_link->name;
++			dai->name = rtd->dai_link->name;
+ 			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
+ 				w->name, rtd->dai_link->name);
+ 			break;
 -- 
 2.20.1
