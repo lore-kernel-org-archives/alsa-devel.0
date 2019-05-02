@@ -1,57 +1,86 @@
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Subject: [PATCH] ASoC: da7219: Update the support rate list
-Date: Thu,  2 May 2019 12:07:43 +0800
-Message-ID: <20190502040743.184310-1-yuhsuan@chromium.org>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2] ACPI / device_sysfs: change _ADR representation to 64
+ bits
+Date: Thu, 2 May 2019 10:28:17 +0530
+Message-ID: <20190502045817.GZ3845@vkoul-mobl.Dlink>
+References: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, dgreid@chromium.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-If we want to set rate to 64000 on da7219, it fails and returns
-"snd_pcm_hw_params: Invalid argument".
-We should remove 64000 from support rate list because it is not
-available.
+On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
+> Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> assume the _ADR field is 64 bits.
+> 
+> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> struct acpi_device_info.
+> 
+> This patch bumps the representation used for sysfs to 64 bits. To
+> avoid any compatibility/ABI issues, the printf format is only extended
+> to 16 characters when the actual _ADR value exceeds the 32 bit
+> maximum.
+> 
+> Example with a SoundWire device, the results show the complete
+> vendorID and linkID which were omitted before:
+> 
+> Before:
+> $ more /sys/bus/acpi/devices/device\:38/adr
+> 0x5d070000
+> After:
+> $ more /sys/bus/acpi/devices/device\:38/adr
+> 0x000010025d070000
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+> v2: only use 64 bits when required to avoid compatibility issues
+> (feedback from Vinod and Rafael)
+> 
+>  drivers/acpi/device_sysfs.c | 6 ++++--
+>  include/acpi/acpi_bus.h     | 2 +-
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> index 8940054d6250..7dda0ee05cd1 100644
+> --- a/drivers/acpi/device_sysfs.c
+> +++ b/drivers/acpi/device_sysfs.c
+> @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device *dev,
+>  {
+>  	struct acpi_device *acpi_dev = to_acpi_device(dev);
+>  
+> -	return sprintf(buf, "0x%08x\n",
+> -		       (unsigned int)(acpi_dev->pnp.bus_address));
+> +	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
----
- sound/soc/codecs/da7219.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Would prefer to use U32_MAX instead of 0xFFFFFFFF
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 5f5fa3416af3..7497457cf3d4 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1658,20 +1658,26 @@ static const struct snd_soc_dai_ops da7219_dai_ops = {
- #define DA7219_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
-+#define DA7219_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
-+		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-+		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
-+		      SNDRV_PCM_RATE_96000)
-+
- static struct snd_soc_dai_driver da7219_dai = {
- 	.name = "da7219-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
- 		.channels_max = DA7219_DAI_CH_NUM_MAX,
--		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.rates = DA7219_RATES,
- 		.formats = DA7219_FORMATS,
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 1,
- 		.channels_max = DA7219_DAI_CH_NUM_MAX,
--		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.rates = DA7219_RATES,
- 		.formats = DA7219_FORMATS,
- 	},
- 	.ops = &da7219_dai_ops,
+> +		return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
+> +	else
+> +		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
+>  }
+>  static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+>  
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index f7981751ac77..9075e28ea60a 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -230,7 +230,7 @@ struct acpi_device_dir {
+>  /* Plug and Play */
+>  
+>  typedef char acpi_bus_id[8];
+> -typedef unsigned long acpi_bus_address;
+> +typedef u64 acpi_bus_address;
+>  typedef char acpi_device_name[40];
+>  typedef char acpi_device_class[20];
+>  
+> -- 
+> 2.17.1
+
 -- 
-2.21.0.593.g511ec345e18-goog
+~Vinod
