@@ -1,54 +1,66 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 22/22] soundwire: add missing newlines in
- dynamic debug logs
-Date: Thu, 2 May 2019 09:55:43 -0500
-Message-ID: <5e81b8ff-b5e0-47a0-8bb9-d63e7532bf14@linux.intel.com>
-References: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
- <20190501155745.21806-23-pierre-louis.bossart@linux.intel.com>
- <20190502053746.GE3845@vkoul-mobl.Dlink> <20190502063219.GB14347@kroah.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 01/14] soundwire: fix kconfig help format
+Date: Thu, 2 May 2019 17:07:54 +0200
+Message-ID: <20190502150754.GA17197@kroah.com>
+References: <20190502105930.9889-1-vkoul@kernel.org>
+ <20190502105930.9889-2-vkoul@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190502063219.GB14347@kroah.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <gregkh@linuxfoundation.org>, Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8F3EF89693
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 17:07:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190502105930.9889-2-vkoul@kernel.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 5/2/19 1:32 AM, Greg KH wrote:
-> On Thu, May 02, 2019 at 11:07:46AM +0530, Vinod Koul wrote:
->> On 01-05-19, 10:57, Pierre-Louis Bossart wrote:
->>> For some reason the newlines are not used everywhere. Fix as needed.
->>>
->>> Reported-by: Joe Perches <joe@perches.com>
->>> Reviewed-by: Takashi Iwai <tiwai@suse.de>
->>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> ---
->>>   drivers/soundwire/bus.c            |  74 +++++++++----------
->>>   drivers/soundwire/cadence_master.c |  12 ++--
->>>   drivers/soundwire/intel.c          |  12 ++--
->>>   drivers/soundwire/stream.c         | 110 ++++++++++++++---------------
->>
->> Sorry this needs to be split up. I think bus.c and stream.c should go
->> in patch with cadence_master.c and intel.c in different ones
+On Thu, May 02, 2019 at 04:29:17PM +0530, Vinod Koul wrote:
+> Move to help format instead of --help-- as that is not recommended and
+> this makes file consistent with other instance
 > 
-> Again, _way_ too picky.  You can't look a gift horse _too_ closely in
-> the mouth...
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/soundwire/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> greg k-h
+> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+> index 84876a74874f..53b55b79c4af 100644
+> --- a/drivers/soundwire/Kconfig
+> +++ b/drivers/soundwire/Kconfig
+> @@ -28,7 +28,7 @@ config SOUNDWIRE_INTEL
+>  	select SOUNDWIRE_CADENCE
+>  	select SOUNDWIRE_BUS
+>  	depends on X86 && ACPI && SND_SOC
+> -	---help---
+> +	help
+>  	  SoundWire Intel Master driver.
+>  	  If you have an Intel platform which has a SoundWire Master then
+>  	  enable this config option to get the SoundWire support for that
+> -- 
+> 2.20.1
+> 
 
-Vinod, your distinction between subsystem and driver is quite arbitrary 
-and borderline unreasonable. I would counter that the Intel parts have 
-actually nothing to do in this drivers/soundwire directory and should be 
-moved to the SOF tree if you push your own logic one step. There already 
-known variations on capabilities and number of links which would be 
-better handled in sound/soc/sof/intel, just like SoundWire slaves are 
-expected to be in sound/soc/codecs.
+Huh?
 
-Besides this fixes *newlines*...
+Pierre-Louis sent this patch before you did.  Why did you just rewrite
+the changelog text a bit and then ignore his authorship and
+signed-off-by?
 
-I will send an update but I am not happy about the directions here.
+That's a really really shitty thing to do, I'm going to go take his
+version of these patches instead, let me see how they line up...
+
+greg k-h
