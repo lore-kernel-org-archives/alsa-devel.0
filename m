@@ -1,7 +1,7 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 09/14] soundwire: intel: more alignment fixes
-Date: Thu,  2 May 2019 16:29:25 +0530
-Message-ID: <20190502105930.9889-10-vkoul@kernel.org>
+Subject: [PATCH 10/14] soundwire: avoid multiple assignments
+Date: Thu,  2 May 2019 16:29:26 +0530
+Message-ID: <20190502105930.9889-11-vkoul@kernel.org>
 References: <20190502105930.9889-1-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48A03F8973A
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:36 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E497F89744
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:38 +0200 (CEST)
 In-Reply-To: <20190502105930.9889-1-vkoul@kernel.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,110 +26,49 @@ To: alsa-devel@alsa-project.org
 Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Found few more issues reported checkpatch on code alignment so fix those
-as well in the intel module.
+Modify the code to avoid multiple assignments by assigning to variable
+after error checks in soundwire bus.
+
+CHECK: multiple assignments should be avoided
 
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/intel.c           | 36 ++++++++++++++---------------
- include/linux/soundwire/sdw_intel.h |  2 +-
- 2 files changed, 19 insertions(+), 19 deletions(-)
+ drivers/soundwire/bus.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 9774dc1e4029..31336b0271b0 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -691,9 +691,9 @@ static int intel_create_dai(struct sdw_cdns *cdns,
- 			return -ENOMEM;
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 16b2a3b2662d..aac35fc3cf22 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -812,12 +812,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
  
- 		if (type == INTEL_PDI_BD || type == INTEL_PDI_OUT) {
--			dais[i].playback.stream_name = kasprintf(GFP_KERNEL,
--							"SDW%d Tx%d",
--							cdns->instance, i);
-+			dais[i].playback.stream_name =
-+				kasprintf(GFP_KERNEL, "SDW%d Tx%d",
-+					  cdns->instance, i);
- 			if (!dais[i].playback.stream_name) {
- 				kfree(dais[i].name);
- 				return -ENOMEM;
-@@ -706,9 +706,9 @@ static int intel_create_dai(struct sdw_cdns *cdns,
+ 	/* Read Instat 1, Instat 2 and Instat 3 registers */
+-	buf = ret = sdw_read(slave, SDW_SCP_INT1);
++	ret = sdw_read(slave, SDW_SCP_INT1);
+ 	if (ret < 0) {
+ 		dev_err(slave->bus->dev,
+ 			"SDW_SCP_INT1 read failed:%d\n", ret);
+ 		return ret;
+ 	}
++	buf = ret;
+ 
+ 	ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, buf2);
+ 	if (ret < 0) {
+@@ -910,12 +911,13 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 		 * Read status again to ensure no new interrupts arrived
+ 		 * while servicing interrupts.
+ 		 */
+-		_buf = ret = sdw_read(slave, SDW_SCP_INT1);
++		ret = sdw_read(slave, SDW_SCP_INT1);
+ 		if (ret < 0) {
+ 			dev_err(slave->bus->dev,
+ 				"SDW_SCP_INT1 read failed:%d\n", ret);
+ 			return ret;
  		}
++		_buf = ret;
  
- 		if (type == INTEL_PDI_BD || type == INTEL_PDI_IN) {
--			dais[i].capture.stream_name = kasprintf(GFP_KERNEL,
--							"SDW%d Rx%d",
--							cdns->instance, i);
-+			dais[i].capture.stream_name =
-+				kasprintf(GFP_KERNEL, "SDW%d Rx%d",
-+					  cdns->instance, i);
- 			if (!dais[i].capture.stream_name) {
- 				kfree(dais[i].name);
- 				kfree(dais[i].playback.stream_name);
-@@ -749,40 +749,40 @@ static int intel_register_dai(struct sdw_intel *sdw)
- 	/* Create PCM DAIs */
- 	stream = &cdns->pcm;
- 
--	ret = intel_create_dai(cdns, dais, INTEL_PDI_IN,
--			stream->num_in, off, stream->num_ch_in, true);
-+	ret = intel_create_dai(cdns, dais, INTEL_PDI_IN, stream->num_in,
-+			       off, stream->num_ch_in, true);
- 	if (ret)
- 		return ret;
- 
- 	off += cdns->pcm.num_in;
--	ret = intel_create_dai(cdns, dais, INTEL_PDI_OUT,
--			cdns->pcm.num_out, off, stream->num_ch_out, true);
-+	ret = intel_create_dai(cdns, dais, INTEL_PDI_OUT, cdns->pcm.num_out,
-+			       off, stream->num_ch_out, true);
- 	if (ret)
- 		return ret;
- 
- 	off += cdns->pcm.num_out;
--	ret = intel_create_dai(cdns, dais, INTEL_PDI_BD,
--			cdns->pcm.num_bd, off, stream->num_ch_bd, true);
-+	ret = intel_create_dai(cdns, dais, INTEL_PDI_BD, cdns->pcm.num_bd,
-+			       off, stream->num_ch_bd, true);
- 	if (ret)
- 		return ret;
- 
- 	/* Create PDM DAIs */
- 	stream = &cdns->pdm;
- 	off += cdns->pcm.num_bd;
--	ret = intel_create_dai(cdns, dais, INTEL_PDI_IN,
--			cdns->pdm.num_in, off, stream->num_ch_in, false);
-+	ret = intel_create_dai(cdns, dais, INTEL_PDI_IN, cdns->pdm.num_in,
-+			       off, stream->num_ch_in, false);
- 	if (ret)
- 		return ret;
- 
- 	off += cdns->pdm.num_in;
--	ret = intel_create_dai(cdns, dais, INTEL_PDI_OUT,
--			cdns->pdm.num_out, off, stream->num_ch_out, false);
-+	ret = intel_create_dai(cdns, dais, INTEL_PDI_OUT, cdns->pdm.num_out,
-+			       off, stream->num_ch_out, false);
- 	if (ret)
- 		return ret;
- 
- 	off += cdns->pdm.num_bd;
--	ret = intel_create_dai(cdns, dais, INTEL_PDI_BD,
--			cdns->pdm.num_bd, off, stream->num_ch_bd, false);
-+	ret = intel_create_dai(cdns, dais, INTEL_PDI_BD, cdns->pdm.num_bd,
-+			       off, stream->num_ch_bd, false);
- 	if (ret)
- 		return ret;
- 
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 0848f9d38bcb..4d70da45363d 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -11,7 +11,7 @@
-  */
- struct sdw_intel_ops {
- 	int (*config_stream)(void *arg, void *substream,
--			void *dai, void *hw_params, int stream_num);
-+			     void *dai, void *hw_params, int stream_num);
- };
- 
- /**
+ 		ret = sdw_nread(slave, SDW_SCP_INTSTAT2, 2, _buf2);
+ 		if (ret < 0) {
 -- 
 2.20.1
