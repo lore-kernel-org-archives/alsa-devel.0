@@ -1,84 +1,72 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2] ACPI / device_sysfs: change _ADR representation to 64
- bits
-Date: Thu, 2 May 2019 10:28:17 +0530
-Message-ID: <20190502045817.GZ3845@vkoul-mobl.Dlink>
-References: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 02/22] soundwire: fix SPDX license for header files
+Date: Thu, 2 May 2019 10:46:49 +0530
+Message-ID: <20190502051440.GA3845@vkoul-mobl.Dlink>
+References: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
+ <20190501155745.21806-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190501155745.21806-3-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
-> Standards such as the MIPI DisCo for SoundWire 1.0 specification
-> assume the _ADR field is 64 bits.
+On 01-05-19, 10:57, Pierre-Louis Bossart wrote:
+> No C++ comments in .h files
 > 
-> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> struct acpi_device_info.
-> 
-> This patch bumps the representation used for sysfs to 64 bits. To
-> avoid any compatibility/ABI issues, the printf format is only extended
-> to 16 characters when the actual _ADR value exceeds the 32 bit
-> maximum.
-> 
-> Example with a SoundWire device, the results show the complete
-> vendorID and linkID which were omitted before:
-> 
-> Before:
-> $ more /sys/bus/acpi/devices/device\:38/adr
-> 0x5d070000
-> After:
-> $ more /sys/bus/acpi/devices/device\:38/adr
-> 0x000010025d070000
-> 
+> Reviewed-by: Takashi Iwai <tiwai@suse.de>
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
-> v2: only use 64 bits when required to avoid compatibility issues
-> (feedback from Vinod and Rafael)
-> 
->  drivers/acpi/device_sysfs.c | 6 ++++--
->  include/acpi/acpi_bus.h     | 2 +-
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> index 8940054d6250..7dda0ee05cd1 100644
-> --- a/drivers/acpi/device_sysfs.c
-> +++ b/drivers/acpi/device_sysfs.c
-> @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device *dev,
->  {
->  	struct acpi_device *acpi_dev = to_acpi_device(dev);
->  
-> -	return sprintf(buf, "0x%08x\n",
-> -		       (unsigned int)(acpi_dev->pnp.bus_address));
-> +	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
+>  drivers/soundwire/bus.h            | 4 ++--
+>  drivers/soundwire/cadence_master.h | 4 ++--
+>  drivers/soundwire/intel.h          | 4 ++--
 
-Would prefer to use U32_MAX instead of 0xFFFFFFFF
+As I said previously this touches subsystem header as well as driver
+headers which is not ideal. Also I agree with Greg, SPDX line format is
+a requirement but not the copyright one but that is not a deal breaker
+here.
 
-> +		return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
-> +	else
-> +		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
->  }
->  static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> index c77de05b8100..2f8436584e7f 100644
+> --- a/drivers/soundwire/bus.h
+> +++ b/drivers/soundwire/bus.h
+> @@ -1,5 +1,5 @@
+> -// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> -// Copyright(c) 2015-17 Intel Corporation.
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> +/* Copyright(c) 2015-17 Intel Corporation. */
 >  
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index f7981751ac77..9075e28ea60a 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -230,7 +230,7 @@ struct acpi_device_dir {
->  /* Plug and Play */
+>  #ifndef __SDW_BUS_H
+>  #define __SDW_BUS_H
+> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+> index eb902b19c5a4..75f7412cfbbd 100644
+> --- a/drivers/soundwire/cadence_master.h
+> +++ b/drivers/soundwire/cadence_master.h
+> @@ -1,5 +1,5 @@
+> -// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> -// Copyright(c) 2015-17 Intel Corporation.
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> +/* Copyright(c) 2015-17 Intel Corporation. */
+>  #include <sound/soc.h>
 >  
->  typedef char acpi_bus_id[8];
-> -typedef unsigned long acpi_bus_address;
-> +typedef u64 acpi_bus_address;
->  typedef char acpi_device_name[40];
->  typedef char acpi_device_class[20];
+>  #ifndef __SDW_CADENCE_H
+> diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+> index c1a5bac6212e..71050e5f643d 100644
+> --- a/drivers/soundwire/intel.h
+> +++ b/drivers/soundwire/intel.h
+> @@ -1,5 +1,5 @@
+> -// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> -// Copyright(c) 2015-17 Intel Corporation.
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> +/* Copyright(c) 2015-17 Intel Corporation. */
 >  
+>  #ifndef __SDW_INTEL_LOCAL_H
+>  #define __SDW_INTEL_LOCAL_H
 > -- 
 > 2.17.1
 
