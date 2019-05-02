@@ -1,49 +1,54 @@
-From: Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH v2] ASoC: mediatek: mt8516: register ADDA DAI
-Date: Thu,  2 May 2019 15:12:14 +0200
-Message-ID: <20190502131214.24009-1-fparent@baylibre.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 22/22] soundwire: add missing newlines in
+ dynamic debug logs
+Date: Thu, 2 May 2019 09:55:43 -0500
+Message-ID: <5e81b8ff-b5e0-47a0-8bb9-d63e7532bf14@linux.intel.com>
+References: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
+ <20190501155745.21806-23-pierre-louis.bossart@linux.intel.com>
+ <20190502053746.GE3845@vkoul-mobl.Dlink> <20190502063219.GB14347@kroah.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190502063219.GB14347@kroah.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, Fabien Parent <fparent@baylibre.com>
+To: Greg KH <gregkh@linuxfoundation.org>, Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Register the ADDA DAI driver into the MT8516 PCM driver.
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
 
-This patch depends on patch serie:
-	[PATCH 0/5] ASoC: mediatek: Add basic PCM driver for MT8516
+On 5/2/19 1:32 AM, Greg KH wrote:
+> On Thu, May 02, 2019 at 11:07:46AM +0530, Vinod Koul wrote:
+>> On 01-05-19, 10:57, Pierre-Louis Bossart wrote:
+>>> For some reason the newlines are not used everywhere. Fix as needed.
+>>>
+>>> Reported-by: Joe Perches <joe@perches.com>
+>>> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>> ---
+>>>   drivers/soundwire/bus.c            |  74 +++++++++----------
+>>>   drivers/soundwire/cadence_master.c |  12 ++--
+>>>   drivers/soundwire/intel.c          |  12 ++--
+>>>   drivers/soundwire/stream.c         | 110 ++++++++++++++---------------
+>>
+>> Sorry this needs to be split up. I think bus.c and stream.c should go
+>> in patch with cadence_master.c and intel.c in different ones
+> 
+> Again, _way_ too picky.  You can't look a gift horse _too_ closely in
+> the mouth...
+> 
+> greg k-h
 
-v2:
-	* Register ADDA before memif to fix ordering issue.
+Vinod, your distinction between subsystem and driver is quite arbitrary 
+and borderline unreasonable. I would counter that the Intel parts have 
+actually nothing to do in this drivers/soundwire directory and should be 
+moved to the SOF tree if you push your own logic one step. There already 
+known variations on capabilities and number of links which would be 
+better handled in sound/soc/sof/intel, just like SoundWire slaves are 
+expected to be in sound/soc/codecs.
 
----
- sound/soc/mediatek/mt8516/mt8516-afe-pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Besides this fixes *newlines*...
 
-diff --git a/sound/soc/mediatek/mt8516/mt8516-afe-pcm.c b/sound/soc/mediatek/mt8516/mt8516-afe-pcm.c
-index 84fbb5dbbd14..dea9221c67aa 100644
---- a/sound/soc/mediatek/mt8516/mt8516-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8516/mt8516-afe-pcm.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- 
-+#include "mt8516-afe-common.h"
- #include "mt8516-afe-regs.h"
- 
- #include "../common/mtk-afe-platform-driver.h"
-@@ -669,6 +670,7 @@ static int mt8516_dai_memif_register(struct mtk_base_afe *afe)
- 
- typedef int (*dai_register_cb)(struct mtk_base_afe *);
- static const dai_register_cb dai_register_cbs[] = {
-+	mt8516_dai_adda_register,
- 	mt8516_dai_memif_register,
- };
- 
--- 
-2.20.1
+I will send an update but I am not happy about the directions here.
