@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Document r8a77470 bindings" to
-	the asoc tree
-Date: Thu,  2 May 2019 03:18:27 +0100 (BST)
-Message-ID: <20190502021827.D1B70441D3C@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: Intel: common: add Geminilake
+	Realtek+Maxim machine driver entry" to the asoc tree
+Date: Thu,  2 May 2019 03:18:23 +0100 (BST)
+Message-ID: <20190502021823.EEE54441D3D@finisterre.ee.mobilebroadband>
+References: <1554917251-16772-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77532F89733
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:33 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F15BF89724
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:32 +0200 (CEST)
+In-Reply-To: <1554917251-16772-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cao Van Dong <cv-dong@jinso.co.jp>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Yong Zhi <yong.zhi@intel.com>
+Cc: alsa-devel@alsa-project.org, harshapriya.n@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, tiwai@suse.de, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, Naveen Manohar <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Document r8a77470 bindings
+   ASoC: Intel: common: add Geminilake Realtek+Maxim machine driver entry
 
 has been applied to the asoc tree at
 
@@ -53,30 +55,43 @@ to this mail.
 Thanks,
 Mark
 
->From 21c7f3e31ec582bf7f0fa4068333acd22b8cb445 Mon Sep 17 00:00:00 2001
-From: Cao Van Dong <cv-dong@jinso.co.jp>
-Date: Thu, 11 Apr 2019 16:54:18 +0900
-Subject: [PATCH] ASoC: rsnd: Document r8a77470 bindings
+>From d3692cb5c56daa2fb8046a8f4ebe1b2b8b22c895 Mon Sep 17 00:00:00 2001
+From: Yong Zhi <yong.zhi@intel.com>
+Date: Wed, 10 Apr 2019 12:27:31 -0500
+Subject: [PATCH] ASoC: Intel: common: add Geminilake Realtek+Maxim machine
+ driver entry
 
-Document SoC specific bindings for R-Car RZ/G1C(r8a77470) SoC.
+This patch adds glk_rt5682_max98357a_i2s machine driver entry into
+machine table. Both Skylake and SOF platform drivers can use this
+machine drivers.
 
-Signed-off-by: Cao Van Dong <cv-dong@jinso.co.jp>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index b34afa66fb00..5c52182f7dcf 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -266,6 +266,7 @@ Required properties:
- 				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
- 				    - "renesas,rcar_sound-r8a7744" (RZ/G1N)
- 				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
-+				    - "renesas,rcar_sound-r8a77470" (RZ/G1C)
- 				    - "renesas,rcar_sound-r8a774a1" (RZ/G2M)
- 				    - "renesas,rcar_sound-r8a774c0" (RZ/G2E)
- 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+index 3f2061475ae4..616eb09e78a0 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -31,6 +31,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 		.sof_fw_filename = "sof-glk.ri",
+ 		.sof_tplg_filename = "sof-glk-da7219.tplg",
+ 	},
++	{
++		.id = "10EC5682",
++		.drv_name = "glk_rt5682_max98357a",
++		.fw_filename = "intel/dsp_fw_glk.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &glk_codecs,
++		.sof_fw_filename = "sof-glk.ri",
++		.sof_tplg_filename = "sof-glk-rt5682.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_glk_machines);
 -- 
 2.20.1
