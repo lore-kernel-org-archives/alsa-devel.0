@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx: fix fiq dependencies" to the asoc tree
-Date: Thu,  2 May 2019 03:18:36 +0100 (BST)
-Message-ID: <20190502021836.A4527441D3C@finisterre.ee.mobilebroadband>
-References: <20190416131242.1232143-1-arnd@arndb.de>
+Subject: Applied "ASoC: atmel: tse850: Make some functions static" to the asoc tree
+Date: Thu,  2 May 2019 03:18:34 +0100 (BST)
+Message-ID: <20190502021834.90851441D3B@finisterre.ee.mobilebroadband>
+References: <20190416144718.25576-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190416131242.1232143-1-arnd@arndb.de>
+In-Reply-To: <20190416144718.25576-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Cosmin Samoila <cosmin.samoila@nxp.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, broonie@kernel.org, codrin.ciubotariu@microchip.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, nicolas.ferre@microchip.com, peda@axentia.se, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx: fix fiq dependencies
+   ASoC: atmel: tse850: Make some functions static
 
 has been applied to the asoc tree at
 
@@ -37,66 +37,72 @@ to this mail.
 Thanks,
 Mark
 
->From ea751227c813ab833609afecfeedaf0aa26f327e Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 16 Apr 2019 15:12:23 +0200
-Subject: [PATCH] ASoC: imx: fix fiq dependencies
+>From 6f547c96b45de0d42de91ef56c7d291aa6d3c88f Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Tue, 16 Apr 2019 22:47:18 +0800
+Subject: [PATCH] ASoC: atmel: tse850: Make some functions static
 
-During randconfig builds, I occasionally run into an invalid configuration
-of the freescale FIQ sound support:
+Fix sparse warnings:
 
-WARNING: unmet direct dependencies detected for SND_SOC_IMX_PCM_FIQ
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]
-  Selected by [y]:
-  - SND_SOC_FSL_SPDIF [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]!=n && (MXC_TZIC [=n] || MXC_AVIC [=y])
+sound/soc/atmel/tse850-pcm5142.c:120:5: warning: symbol 'tse850_get_mix' was not declared. Should it be static?
+sound/soc/atmel/tse850-pcm5142.c:132:5: warning: symbol 'tse850_put_mix' was not declared. Should it be static?
+sound/soc/atmel/tse850-pcm5142.c:154:5: warning: symbol 'tse850_get_ana' was not declared. Should it be static?
+sound/soc/atmel/tse850-pcm5142.c:187:5: warning: symbol 'tse850_put_ana' was not declared. Should it be static?
 
-sound/soc/fsl/imx-ssi.o: In function `imx_ssi_remove':
-imx-ssi.c:(.text+0x28): undefined reference to `imx_pcm_fiq_exit'
-sound/soc/fsl/imx-ssi.o: In function `imx_ssi_probe':
-imx-ssi.c:(.text+0xa64): undefined reference to `imx_pcm_fiq_init'
-
-The Kconfig warning is a result of the symbol being defined inside of
-the "if SND_IMX_SOC" block, and is otherwise harmless. The link error
-is more tricky and happens with SND_SOC_IMX_SSI=y, which may or may not
-imply FIQ support. However, if SND_SOC_FSL_SSI is set to =m at the same
-time, that selects SND_SOC_IMX_PCM_FIQ as a loadable module dependency,
-which then causes a link failure from imx-ssi.
-
-The solution here is to make SND_SOC_IMX_PCM_FIQ built-in whenever
-one of its potential users is built-in.
-
-Fixes: ff40260f79dc ("ASoC: fsl: refine DMA/FIQ dependencies")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/Kconfig | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/atmel/tse850-pcm5142.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index d87c842806bd..55ed47c599e2 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -189,16 +189,17 @@ config SND_MPC52xx_SOC_EFIKA
+diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
+index 214adcad5419..ae445184614a 100644
+--- a/sound/soc/atmel/tse850-pcm5142.c
++++ b/sound/soc/atmel/tse850-pcm5142.c
+@@ -117,8 +117,8 @@ static int tse850_put_mux2(struct snd_kcontrol *kctrl,
+ 	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
+ }
  
- endif # SND_POWERPC_SOC
+-int tse850_get_mix(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_get_mix(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -129,8 +129,8 @@ int tse850_get_mix(struct snd_kcontrol *kctrl,
+ 	return 0;
+ }
  
-+config SND_SOC_IMX_PCM_FIQ
-+	tristate
-+	default y if SND_SOC_IMX_SSI=y && (SND_SOC_FSL_SSI=m || SND_SOC_FSL_SPDIF=m) && (MXC_TZIC || MXC_AVIC)
-+	select FIQ
-+
- if SND_IMX_SOC
+-int tse850_put_mix(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_put_mix(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -151,8 +151,8 @@ int tse850_put_mix(struct snd_kcontrol *kctrl,
+ 	return 1;
+ }
  
- config SND_SOC_IMX_SSI
- 	tristate
- 	select SND_SOC_FSL_UTILS
+-int tse850_get_ana(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_get_ana(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -184,8 +184,8 @@ int tse850_get_ana(struct snd_kcontrol *kctrl,
+ 	return 0;
+ }
  
--config SND_SOC_IMX_PCM_FIQ
--	tristate
--	select FIQ
--
- comment "SoC Audio support for Freescale i.MX boards:"
- 
- config SND_MXC_SOC_WM1133_EV1
+-int tse850_put_ana(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_put_ana(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
 -- 
 2.20.1
