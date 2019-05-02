@@ -1,71 +1,68 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH] ASoC: da7219: Update the support rate list
-Date: Thu, 2 May 2019 10:07:05 +0000
-Message-ID: <AM5PR1001MB0994A52E77F12680F71AB08080340@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
-References: <20190502040743.184310-1-yuhsuan@chromium.org>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 00/14] soundwire: more code cleanups
+Date: Thu,  2 May 2019 16:29:16 +0530
+Message-ID: <20190502105930.9889-1-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190502040743.184310-1-yuhsuan@chromium.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Yu-Hsuan Hsu <yuhsuan@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dgreid@chromium.org" <dgreid@chromium.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F8D7F80722
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:13 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02 May 2019 05:08, Yu-Hsuan Hsu wrote:
+After applying cleanup from Pierre, I realized few more things can be
+cleaned up as well, so fixing these instance in the subsystem.
 
-> If we want to set rate to 64000 on da7219, it fails and returns
-> "snd_pcm_hw_params: Invalid argument".
-> We should remove 64000 from support rate list because it is not
-> available.
->=20
-> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Looks like bool is no longer encouraged, but I have skipped those and few
+alignment as they caused code to look worse.
 
-Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Greg,
+if you are okay I would like to add this as well (i know it is late, but
+they are cosmetic changes and no logic ones, let me know and I can
+send a updated PR)
 
-> ---
->  sound/soc/codecs/da7219.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->=20
-> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> index 5f5fa3416af3..7497457cf3d4 100644
-> --- a/sound/soc/codecs/da7219.c
-> +++ b/sound/soc/codecs/da7219.c
-> @@ -1658,20 +1658,26 @@ static const struct snd_soc_dai_ops da7219_dai_op=
-s
-> =3D {
->  #define DA7219_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |
-> SNDRV_PCM_FMTBIT_S20_3LE |\
->  			SNDRV_PCM_FMTBIT_S24_LE |
-> SNDRV_PCM_FMTBIT_S32_LE)
->=20
-> +#define DA7219_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025
-> |\
-> +		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
-> +		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-> +		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
-> +		      SNDRV_PCM_RATE_96000)
-> +
->  static struct snd_soc_dai_driver da7219_dai =3D {
->  	.name =3D "da7219-hifi",
->  	.playback =3D {
->  		.stream_name =3D "Playback",
->  		.channels_min =3D 1,
->  		.channels_max =3D DA7219_DAI_CH_NUM_MAX,
-> -		.rates =3D SNDRV_PCM_RATE_8000_96000,
-> +		.rates =3D DA7219_RATES,
->  		.formats =3D DA7219_FORMATS,
->  	},
->  	.capture =3D {
->  		.stream_name =3D "Capture",
->  		.channels_min =3D 1,
->  		.channels_max =3D DA7219_DAI_CH_NUM_MAX,
-> -		.rates =3D SNDRV_PCM_RATE_8000_96000,
-> +		.rates =3D DA7219_RATES,
->  		.formats =3D DA7219_FORMATS,
->  	},
->  	.ops =3D &da7219_dai_ops,
-> --
-> 2.21.0.593.g511ec345e18-goog
+Vinod Koul (14):
+  soundwire: fix kconfig help format
+  soundwire: fix SPDX license for header files
+  soundwire: intel: fix SPDX license for header file
+  soundwire: remove empty line before/after braces
+  soundwire: cadence: remove empty line after braces
+  soundwire: intel: remove empty line after braces
+  soundwire: add argument to function definition
+  soundwire: more alignment fixes
+  soundwire: intel: more alignment fixes
+  soundwire: avoid multiple assignments
+  soundwire: fix more typos
+  soundwire: wrap macro argument in parenthesis
+  soundwire: add a blank line between functions
+  soundwire: remove multiple blank lines
+
+ drivers/soundwire/Kconfig               |  2 +-
+ drivers/soundwire/bus.c                 | 17 +++++-------
+ drivers/soundwire/cadence_master.c      |  1 -
+ drivers/soundwire/intel.c               | 36 ++++++++++++-------------
+ drivers/soundwire/intel_init.c          |  1 -
+ drivers/soundwire/mipi_disco.c          |  6 -----
+ drivers/soundwire/stream.c              | 28 +++++++++----------
+ include/linux/soundwire/sdw.h           | 16 +++++------
+ include/linux/soundwire/sdw_intel.h     |  6 ++---
+ include/linux/soundwire/sdw_registers.h |  5 ++--
+ include/linux/soundwire/sdw_type.h      |  6 ++---
+ 11 files changed, 54 insertions(+), 70 deletions(-)
+
+-- 
+2.20.1
