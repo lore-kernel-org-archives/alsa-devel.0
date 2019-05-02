@@ -1,126 +1,75 @@
-From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?=
-        <benoit.thebaudeau.dev@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v3] ASoC: tlv320aic3x: Add support for high
- power analog output
-Date: Fri, 3 May 2019 00:44:31 +0200
-Message-ID: <CA+sos7-U49b7DyQ76h-RohhGqPSPqsV-u-r+oaZnB5=DAkbm6w@mail.gmail.com>
-References: <20190502181332.5503-1-sravanhome@gmail.com>
+From: ecmk <info@ecmk.org>
+Subject: Re: Kernel patch needed for Asus Q325UAR
+Date: Thu, 2 May 2019 16:06:30 -0700
+Message-ID: <5a782605-3c26-eb30-65dc-b4aaa0fa0188@ecmk.org>
+References: <1887e6cb-0c33-664c-d3be-c282d8b797de@ecmk.org>
+ <s5hmukp3s6o.wl-tiwai@suse.de>
+ <c341a56c-be1d-2301-1bde-b8eb403c6391@ecmk.org>
+ <s5hmukgeost.wl-tiwai@suse.de>
+ <9e12d82d-0b7b-7952-4367-b6fe333c4c5d@ecmk.org>
+ <s5hmuk7iqk0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190502181332.5503-1-sravanhome@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Saravanan Sekar <sravanhome@gmail.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, Alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5C47F8075A
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 01:06:36 +0200 (CEST)
+In-Reply-To: <s5hmuk7iqk0.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Saravanan Sekar,
+Great! Thank you!
 
-On Thu, May 2, 2019 at 8:14 PM Saravanan Sekar <sravanhome@gmail.com> wrote=
-:
+On 4/30/19 6:13 AM, Takashi Iwai wrote:
+> On Wed, 24 Apr 2019 01:21:36 +0200,
+> ecmk wrote:
+>> Here is the alsa-info output
+> Thanks.  Below is the fix patch.  I'm going to apply it.
 >
-> Add support to output level control for the analog high power output
-> drivers HPOUT and HPCOM.
 >
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda/realtek - Apply the fixup for ASUS Q325UAR
+>
+> Some ASUS models like Q325UAR with ALC295 codec requires the same
+> fixup that has been applied to ALC294 codec.  Just copy the entry with
+> the pin matching to cover ALC295 too.
+>
+> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1784485
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
+>   sound/pci/hda/patch_realtek.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 >
-> Notes:
->     Changes in V3:
->     -Fixed compilation error
->
->     Changes in V2:
->     - Removed power control as it is handled by DAPM
->     - Added level control for left channel
->
->  sound/soc/codecs/tlv320aic3x.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3=
-x.c
-> index 516d17cb2182..489a6d89d63d 100644
-> --- a/sound/soc/codecs/tlv320aic3x.c
-> +++ b/sound/soc/codecs/tlv320aic3x.c
-> @@ -324,6 +324,9 @@ static DECLARE_TLV_DB_SCALE(adc_tlv, 0, 50, 0);
->   */
->  static DECLARE_TLV_DB_SCALE(output_stage_tlv, -5900, 50, 1);
->
-> +/* HP/HPCOM volumes. From 0 to 9 dB in 1 dB steps */
-> +static DECLARE_TLV_DB_SCALE(hp_tlv, 0, 100, 0);
-
-This could be made "const" (as well as the other instances of
-DECLARE_TLV_DB_SCALE()).
-
-The hp_tlv naming is fine for the change here, but something not
-HP-specific, such as out_tlv would be better if you consider the
-further changes that could use this definition:
-static DECLARE_TLV_DB_SCALE(output_stage_tlv, -5900, 50, 1);
-+/* Output volumes. From 0 to 9 dB in 1 dB steps */
-+static const DECLARE_TLV_DB_SCALE(out_tlv, 0, 100, 0);
-
-E.g., the following control could be added to aic3x_snd_controls[]:
-+SOC_DOUBLE_R_TLV("Line Playback Volume", LLOPM_CTRL, RLOPM_CTRL, 4,
-9, 0, out_tlv),
-
-And this control could be added to aic3x_mono_controls[]:
-+SOC_SINGLE_TLV("Mono Playback Volume", MONOLOPM_CTRL, 4, 9, 0, out_tlv),
-
-The MONOLOPM_CTRL register exists for the 33 and 3106, but not for the
-31, 32, 3007, and 3104 (it should not be written to for these CODECs).
-However, the driver uses this register for the 31 and 32 too, which
-should be fixed rather than disabling the corresponding pin as
-suggested in the file top comment.
-
-> +
->  static const struct snd_kcontrol_new aic3x_snd_controls[] =3D {
->         /* Output */
->         SOC_DOUBLE_R_TLV("PCM Playback Volume",
-> @@ -419,6 +422,12 @@ static const struct snd_kcontrol_new aic3x_snd_contr=
-ols[] =3D {
->         /* Pop reduction */
->         SOC_ENUM("Output Driver Power-On time", aic3x_poweron_time_enum),
->         SOC_ENUM("Output Driver Ramp-up step", aic3x_rampup_step_enum),
-> +
-> +       /* Analog HPOUT, HPCOM output level controls */
-> +       SOC_DOUBLE_R_TLV("HP Playback Volume", HPLOUT_CTRL, HPROUT_CTRL,
-> +                       4, 9, 0, hp_tlv),
-
-Correct for all the supported CODECs.
-
-> +       SOC_DOUBLE_R_TLV("HPCOM Playback Volume", HPLCOM_CTRL, HPRCOM_CTR=
-L,
-> +                       4, 9, 0, hp_tlv),
-
-Correct for all the supported CODECs but the TLV320AIC3007. The latter
-has no HPRCOM output, but only HPCOM (=3D HPLCOM). The HPRCOM_CTRL
-register of this CODEC is reserved and should not be written to. All
-the references to this register for this CODEC are actually broken in
-this driver. You could still add this control, and the 3007 issue
-could be fixed separately by you or someone else.
-
-You could keep the volumes grouped with the corresponding switches,
-just like all the AGC or PGA Capture controls are grouped together:
--/* Output pin mute controls */
-+/* Output pin controls */
-+SOC_DOUBLE_R_TLV("Line Playback Volume", LLOPM_CTRL, RLOPM_CTRL, 4,
-9, 0, out_tlv),
-SOC_DOUBLE_R("Line Playback Switch", LLOPM_CTRL, RLOPM_CTRL, 3, 0x01, 0),
-+SOC_DOUBLE_R_TLV("HP Playback Volume", HPLOUT_CTRL, HPROUT_CTRL, 4,
-9, 0, out_tlv),
-SOC_DOUBLE_R("HP Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3, 0x01, 0),
-+SOC_DOUBLE_R_TLV("HPCOM Playback Volume", HPLCOM_CTRL, HPRCOM_CTRL,
-4, 9, 0, out_tlv),
-SOC_DOUBLE_R("HPCOM Playback Switch", HPLCOM_CTRL, HPRCOM_CTRL, 3, 0x01, 0)=
-,
-
-And:
-+SOC_SINGLE_TLV("Mono Playback Volume", MONOLOPM_CTRL, 4, 9, 0, out_tlv),
-SOC_SINGLE("Mono Playback Switch", MONOLOPM_CTRL, 3, 0x01, 0),
-
->  };
->
->  /* For other than tlv320aic3104 */
-
-Best regards
-Beno=C3=AEt
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 7da7fa4f4201..42cd3945e0de 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -7547,6 +7547,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+>   		{0x12, 0x90a60130},
+>   		{0x17, 0x90170110},
+>   		{0x21, 0x04211020}),
+> +	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1043, "ASUS", ALC294_FIXUP_ASUS_SPK,
+> +		{0x12, 0x90a60130},
+> +		{0x17, 0x90170110},
+> +		{0x21, 0x03211020}),
+>   	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
+>   		{0x14, 0x90170110},
+>   		{0x21, 0x04211020}),
