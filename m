@@ -1,62 +1,57 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH V5] ASoC: fsl_esai: Fix missing break in switch statement
-Date: Wed, 1 May 2019 22:59:00 -0500
-Message-ID: <dc58fb7a-dab8-2ee0-43e0-76da75ca2e0d@embeddedor.com>
-References: <a2c4e289d292ac0e691131784962305f8207a4d8.1554971930.git.shengjiu.wang@nxp.com>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: [PATCH] ASoC: da7219: Update the support rate list
+Date: Thu,  2 May 2019 12:07:43 +0800
+Message-ID: <20190502040743.184310-1-yuhsuan@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a2c4e289d292ac0e691131784962305f8207a4d8.1554971930.git.shengjiu.wang@nxp.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, dgreid@chromium.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+If we want to set rate to 64000 on da7219, it fails and returns
+"snd_pcm_hw_params: Invalid argument".
+We should remove 64000 from support rate list because it is not
+available.
 
-I wonder if you are going to take this patch.
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+ sound/soc/codecs/da7219.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Thanks
---
-Gustavo
-
-On 4/11/19 3:43 AM, S.j. Wang wrote:
-> case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be
-> independent of each other, so replace fall-through with break.
-> 
-> Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> ---
-> Changes in v5
-> - remove new line after Fixes
-> 
-> Changes in v4
-> - Add acked-by
-> 
-> Changes in v3
-> - Update subject line and cc stable
-> 
-> Changes in v2
-> - Fix "Fixes" tag
-> 
->  sound/soc/fsl/fsl_esai.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 3623aa9a6f2e..15202a637197 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
->  		break;
->  	case ESAI_HCKT_EXTAL:
->  		ecr |= ESAI_ECR_ETI;
-> -		/* fall through */
-> +		break;
->  	case ESAI_HCKR_EXTAL:
->  		ecr |= ESAI_ECR_ERI;
->  		break;
-> 
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5f5fa3416af3..7497457cf3d4 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1658,20 +1658,26 @@ static const struct snd_soc_dai_ops da7219_dai_ops = {
+ #define DA7219_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
++#define DA7219_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
++		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
++		      SNDRV_PCM_RATE_96000)
++
+ static struct snd_soc_dai_driver da7219_dai = {
+ 	.name = "da7219-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = DA7219_DAI_CH_NUM_MAX,
+-		.rates = SNDRV_PCM_RATE_8000_96000,
++		.rates = DA7219_RATES,
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 1,
+ 		.channels_max = DA7219_DAI_CH_NUM_MAX,
+-		.rates = SNDRV_PCM_RATE_8000_96000,
++		.rates = DA7219_RATES,
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.ops = &da7219_dai_ops,
+-- 
+2.21.0.593.g511ec345e18-goog
