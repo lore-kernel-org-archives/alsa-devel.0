@@ -1,121 +1,62 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/hdmi - Don't report Jack event
- if no need to do that
-Date: Thu, 2 May 2019 10:52:46 +0800
-Message-ID: <1be4853e-05cd-fc87-8db6-7ba17ee009ab@canonical.com>
-References: <20190430065711.14977-1-hui.wang@canonical.com>
- <s5hh8aghro8.wl-tiwai@suse.de>
- <b0c859a8-3f7f-2948-2fc8-f657adf3c804@canonical.com>
- <s5h36lzj27d.wl-tiwai@suse.de>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH V5] ASoC: fsl_esai: Fix missing break in switch statement
+Date: Wed, 1 May 2019 22:59:00 -0500
+Message-ID: <dc58fb7a-dab8-2ee0-43e0-76da75ca2e0d@embeddedor.com>
+References: <a2c4e289d292ac0e691131784962305f8207a4d8.1554971930.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC3F4F80722
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:52:52 +0200 (CEST)
-In-Reply-To: <s5h36lzj27d.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <a2c4e289d292ac0e691131784962305f8207a4d8.1554971930.git.shengjiu.wang@nxp.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDIwMTkvNC8zMCDkuIvljYg1OjAyLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAz
-MCBBcHIgMjAxOSAxMDo0Mjo1NSArMDIwMCwKPiBIdWkgV2FuZyB3cm90ZToKPj4KPj4gT24gMjAx
-OS80LzMwIOS4i+WNiDM6MzUsIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIFR1ZSwgMzAgQXBy
-IDIwMTkgMDg6NTc6MTEgKzAyMDAsCj4+PiBIdWkgV2FuZyB3cm90ZToKPj4+PiBPbiB0aGUgbWFj
-aGluZXMgd2l0aCBBTUQgR1BVIG9yIE52aWRpYSBHUFUsIHdlIG9mdGVuIG1lZXQgdGhpcyBpc3N1
-ZXM6Cj4+Pj4gYWZ0ZXIgczMsIHRoZXJlIGFyZSA0IEhETUkvRFAgYXVkaW8gZGV2aWNlcyBpbiB0
-aGUgZ25vbWUtc291bmQtc2V0dGluZwo+Pj4+IGV2ZW4gdGhlcmUgaXMgbm8gYW55IG1vbml0b3Jz
-IHBsdWdnZWQuCj4+Pj4KPj4+PiBXaGVuIHRoaXMgcHJvYmxlbSBoYXBwZW5zLCB3ZSBjaGVjayB0
-aGUgL3Byb2MvYXNvdW5kL2NhcmRYL2VsZCNOLk0sIHdlCj4+Pj4gd2lsbCBmaW5kIHRoZSBtb25p
-dG9yX3ByZXNlbnQ9MSwgZWxkX3ZhbGlkPTAuCj4+Pj4KPj4+PiBUaGUgcm9vdCBjYXVzZSBpcyBz
-b21laG93IHRoZSBwaW5fc2Vuc2UgcmVwb3J0cyB0aGUgbW9uaXRvciBpcyBwcmVzZW50Cj4+Pj4g
-YW5kIGVsZCBpcyB2YWxpZCB3aGVuIHRoZXJlIGlzIG5vIG1vbml0b3IgcGx1Z2dlZC4KPj4+Pgo+
-Pj4+IFRoZSBjdXJyZW50IGRyaXZlciB3aWxsIHJlYWQgdGhlIGVsZCBkYXRhIGlmIHRoZSBwaW5f
-c2Vuc2UgcmVwb3J0cyB0aGUKPj4+PiBlbGQgaXMgdmFsaWQsIGJlY2F1c2Ugb2Ygbm8gbW9uaXRv
-ciBpcyBwbHVnZ2VkLCB0aGVyZSBpcyBubyB2YWxpZCBlbGQKPj4+PiBkYXRhLCB0aGVuIHRoZSBl
-bGQtPnZhbGlkIGlzIHNldCB0byAwLgo+Pj4+Cj4+Pj4gSWYgd2UgZG9uJ3QgbGV0IGRyaXZlciBy
-ZXBvcnQgSmFjayBldmVudCB3aGVuIG1vbml0b3JfcHJlc2VudD0xIHdoaWxlCj4+Pj4gZWxkX3Zh
-bGlkPTAsIHRoZXJlIHdpbGwgYmUgbm8gdGhpcyBpc3N1ZS4KPj4+Pgo+Pj4+IEFmdGVyIHRoaXMg
-Y2hhbmdlLCB0aGUgZHJpdmVyIG9ubHkgcmVwb3J0cyBKYWNrIGV2ZW50IHdpdGggb25lIG9mIHRo
-ZQo+Pj4+IGJlbG93IDIgY29uZGl0b25zOgo+Pj4+ICAgIGVsZC0+bW9uaXRvcl9wcmVzZW50PTEg
-YW5kIGVsZC0+ZWxkX3ZhbGlkPTEgKGEgdmFsaWQgbW9uaXRvciBkZXRlY3QpCj4+Pj4gICAgZWxk
-LT5tb25pdG9yX3ByZXNlbnQ9MCAoYSBtb25pdG9yIGlzIHVucGx1Z2dlZCkKPj4+Pgo+Pj4+IFNp
-Z25lZC1vZmYtYnk6IEh1aSBXYW5nIDxodWkud2FuZ0BjYW5vbmljYWwuY29tPgo+Pj4gV2VsbCwg
-aWYgdGhlIGVsZF92YWxpZD0xIGlzIG1hbmRhdG9yeSwgYmFzaWNhbGx5IHdlIGNhbiB1c2UgaXQg
-YXMgdGhlCj4+PiBjb25kaXRpb24gb2YgamFjaz0xLCBsaWtlIHRoZSBwYXRjaCBiZWxvdy4gIFRo
-ZSByZXR1cm4gdmFsdWUgZnJvbQo+Pj4gaGRtaV9wcmVzZW50X3NlbnNlKCkgaW5kaWNhdGVzIG9u
-bHkgd2hldGhlciB3ZSBtYXkgc3luYyBqYWNrIHN0YXRlIG9yCj4+PiBub3QsIGFuZCBpdCdzIG5v
-dCBhYm91dCB0aGUgamFjayBzdGF0ZSBpdHNlbGYuCj4+Pgo+Pj4KPj4+IHRoYW5rcywKPj4+Cj4+
-PiBUYWthc2hpCj4+Pgo+Pj4gLS0tCj4+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWku
-Ywo+Pj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPj4+IEBAIC0xNjI1LDcgKzE2
-MjUsNyBAQCBzdGF0aWMgdm9pZCBzeW5jX2VsZF92aWFfYWNvbXAoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMsCj4+PiAgICAJaWYgKGphY2sgPT0gTlVMTCkKPj4+ICAgIAkJZ290byB1bmxvY2s7Cj4+
-PiAgICAJc25kX2phY2tfcmVwb3J0KGphY2ssCj4+PiAtCQkJZWxkLT5tb25pdG9yX3ByZXNlbnQg
-PyBTTkRfSkFDS19BVk9VVCA6IDApOwo+Pj4gKwkJCShlbGQtPm1vbml0b3JfcHJlc2VudCAmJiBl
-bGQtPmVsZF92YWxpZCkgPyBTTkRfSkFDS19BVk9VVCA6IDApOwo+Pj4gICAgIHVubG9jazoKPj4+
-ICAgIAltdXRleF91bmxvY2soJnBlcl9waW4tPmxvY2spOwo+Pj4gICAgfQo+PiBBbGwgSW50ZWwg
-bWFjaGluZXMgd2hpY2ggZ2V0IGVsZCB2aWEgYWNvbXAgZG9uJ3QgaGF2ZSB0aGlzIGlzc3VlLCBz
-bwo+PiBubyBuZWVkIHRvIGNoYW5nZSB0aGlzIGZ1bmN0aW9uLgo+IFllcywgYnV0IHRoZSBIRE1J
-IGF1ZGlvIHdvbid0IHdvcmsgd2l0aG91dCB0aGUgdmFsaWQgRUxEIG5vIG1hdHRlcgo+IHdoZXRo
-ZXIgaXQncyByZXBvcnRlZCB2aWEgYXVkaW8tY29tcG9uZW50IG9yIHZlcmJzLiAgU28gdGhpcyBj
-aGFuZ2UKPiBhbHNvIGNvcnJlY3RzIGEgY29ybmVyIGNhc2Ugb2YgSW50ZWwgcGxhdGZvcm1zLCB0
-b28uClllcywgaW5kZWVkIGl0IGlzLgo+Cj4+IEZvciB0aG9zZSBtYWNoaW5lcyAod2l0aCBudiBn
-cHUgY2FyZCBvciBhbWQgZ3B1IGNhcmQpwqAgd2hpY2ggbmVlZCB0bwo+PiBjYWxsIGhkbWlfcHJl
-c2VudF9zZW5zZV92aWFfdmVyYnMoKSwgdGhleSBoYXZlIHRoaXMgaXNzdWUuIGlmCj4+IGhkbWlf
-cHJlc2VudF9zZW5zZV92aWFfdmVyYnMoKSByZXR1cm5zIHRydWUsIHRoZSBoZG1pX3ByZXNlbnRf
-c2Vuc2UoKQo+PiByZXR1cm5zIHRydWUsIHRoZW4gc25kX2hkYV9qYWNrX3JlcG9ydF9zeW5jKCkg
-d2lsbCBiZSBjYWxsZWQuIFNvIGlmIHdlCj4+IHdhbnQgdG8gZml4IHRoaXMgaXNzdWUsIHdlIG5l
-ZWQgdG8gbGV0IGhkbWlfcHJlc2VudF9zZW5zZV92aWFfdmVyYnMoKQo+PiBub3QgcmV0dXJuIHRy
-dWUgb3Igd2UgY2hhbmdlIHRoZSByZWFkX3Bpbl9zZW5zZSgpIGluIHRoZSBoZGFfamFjay5jCj4g
-VGhlIHJlcG9ydF9zeW5jKCkgZG9lc24ndCByZXBvcnQgaW1tZWRpYXRlbHk7IGl0IHVwZGF0ZXMg
-dGhlIHN0YXRlCj4gdGhlbiBub3RpZmllcyAqb25seSBpZiogdGhlIHN0YXRlIGNoYW5nZSBoYXBw
-ZW5lZC4gIFRoYXQgaXMsIHRoZSByb290Cj4gY2F1c2UgaXMgdGhlIGZhbHNlIHN0YXRlIGNoYW5n
-ZSBhcyBpZiBpdCB3ZXJlIHdvcnRoIGZvciByZXBvcnRpbmcuClllcywgYmVmb3JlIHN1c3BlbmQs
-IHRoZSBtb25pdG9yX3ByZXNlbnQ9MCwgd2hpbGUgYWZ0ZXIgcmVzdW1lLCB0aGUgCm1vbml0b3Jf
-cHJlc2VudD0xIChJIGd1ZXNzIGl0IGlzIHRoZSBncmFwaGljIGRyaXZlciBsaWtlIGFtZGdwdSBv
-ciAKbnZpZGlhL25vdXZlYXUgb3IgQklPUyBtYWtlIHRoZSBQUkVTRU5TRSByZWdpc3RlciBjaGFu
-Z2UpLgo+Cj4gSU9XLCB0aGUgc3RhdGUgIm1vbml0b3JfZGV0ZWN0ZWQ9MSBhbmQgZWxkX3ZhbGlk
-PTAiIGNhbiBoYXBwZW4gYXQgYW55Cj4gdGltZSwgbm90IG9ubHkgYXQgcmVzdW1lLiAgVXNlciBt
-YXkgcHV0IGEgcG9sbGluZyB3b3JrLCBmb3IgZXhhbXBsZS4KPiBBbmQsIHJlcG9ydGluZyB0aGlz
-IGFzIHRoZSBqYWNrPTEgY2F1c2VzIHRoZSB0cm91YmxlLCBubyBtYXR0ZXIKPiB3aGV0aGVyIGl0
-J3MgcmVzdW1lIHBhdGggb3Igbm90LiAgU28gd2UgcmF0aGVyIG5lZWQgdG8gZml4IHRoaXMgZmFs
-c2UKPiBzdGF0ZSByZXBvcnRpbmcgaW5zdGVhZC4KCllvdSBhcmUgcmlnaHQuCgpTbyB0aGUgZml4
-IGlzIHB1dHRpbmcgeW91ciBjaGFuZ2UgYW5kIG15IGNoYW5nZSB0b2dldGhlciBsaWtlIGJlbG93
-PwoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hk
-YS9wYXRjaF9oZG1pLmMKaW5kZXggOGIzYWM2OTBlZmEzLi4xNGI3OTlhODU4NzMgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hf
-aGRtaS5jCkBAIC0xNTQ4LDcgKzE1NDgsNyBAQCBzdGF0aWMgYm9vbCBoZG1pX3ByZXNlbnRfc2Vu
-c2VfdmlhX3ZlcmJzKHN0cnVjdCAKaGRtaV9zcGVjX3Blcl9waW4gKnBlcl9waW4sCiDCoMKgwqDC
-oMKgwqDCoCBlbHNlCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdXBkYXRlX2VsZChj
-b2RlYywgcGVyX3BpbiwgZWxkKTsKCi3CoMKgwqDCoMKgwqAgcmV0ID0gIXJlcG9sbCB8fCAhZWxk
-LT5tb25pdG9yX3ByZXNlbnQgfHwgZWxkLT5lbGRfdmFsaWQ7CivCoMKgwqDCoMKgwqAgcmV0ID0g
-IWVsZC0+bW9uaXRvcl9wcmVzZW50IHx8IGVsZC0+ZWxkX3ZhbGlkOwoKIMKgwqDCoMKgwqDCoMKg
-IGphY2sgPSBzbmRfaGRhX2phY2tfdGJsX2dldChjb2RlYywgcGluX25pZCk7CiDCoMKgwqDCoMKg
-wqDCoCBpZiAoamFjaykKQEAgLTE2MjUsNyArMTYyNSw3IEBAIHN0YXRpYyB2b2lkIHN5bmNfZWxk
-X3ZpYV9hY29tcChzdHJ1Y3QgaGRhX2NvZGVjIAoqY29kZWMsCiDCoMKgwqDCoMKgwqDCoCBpZiAo
-amFjayA9PSBOVUxMKQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gdW5sb2Nr
-OwogwqDCoMKgwqDCoMKgwqAgc25kX2phY2tfcmVwb3J0KGphY2ssCi3CoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbGQtPm1vbml0b3JfcHJlc2VudCA/IFNORF9K
-QUNLX0FWT1VUIDogMCk7CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAoZWxkLT5tb25pdG9yX3ByZXNlbnQgJiYgZWxkLT5lbGRfdmFsaWQpID8gClNORF9KQUNL
-X0FWT1VUIDogMCk7CiDCoCB1bmxvY2s6CiDCoMKgwqDCoMKgwqDCoCBtdXRleF91bmxvY2soJnBl
-cl9waW4tPmxvY2spOwoKPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Mark,
+
+I wonder if you are going to take this patch.
+
+Thanks
+--
+Gustavo
+
+On 4/11/19 3:43 AM, S.j. Wang wrote:
+> case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be
+> independent of each other, so replace fall-through with break.
+> 
+> Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+> Changes in v5
+> - remove new line after Fixes
+> 
+> Changes in v4
+> - Add acked-by
+> 
+> Changes in v3
+> - Update subject line and cc stable
+> 
+> Changes in v2
+> - Fix "Fixes" tag
+> 
+>  sound/soc/fsl/fsl_esai.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index 3623aa9a6f2e..15202a637197 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+>  		break;
+>  	case ESAI_HCKT_EXTAL:
+>  		ecr |= ESAI_ECR_ETI;
+> -		/* fall through */
+> +		break;
+>  	case ESAI_HCKR_EXTAL:
+>  		ecr |= ESAI_ECR_ERI;
+>  		break;
+> 
