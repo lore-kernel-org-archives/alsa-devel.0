@@ -1,17 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: fix a NULL pointer dereference" to the asoc tree
-Date: Thu,  2 May 2019 03:18:21 +0100 (BST)
-Message-ID: <20190502021821.E7690441D3B@finisterre.ee.mobilebroadband>
-References: <20190315034833.25037-1-kjlu@umn.edu>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190315034833.25037-1-kjlu@umn.edu>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, pakki001@umn.edu, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: mpc5200_psc_i2s: Fix invalid license ID" to the asoc
+ tree
+Date: Thu,  2 May 2019 03:18:32 +0100 (BST)
+Message-ID: <20190502021832.499DE441D3C@finisterre.ee.mobilebroadband>
+References: <20190414191450.18377-3-andradanciu1997@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190414191450.18377-3-andradanciu1997@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Andra Danciu <andradanciu1997@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, s.hauer@pengutronix.de, linuxppc-dev@lists.ozlabs.org, daniel.baluta@gmail.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, Mark Brown <broonie@kernel.org>, linux-imx@nxp.com, kernel@pengutronix.de, tiwai@suse.com, shawnguo@kernel.org, Thomas Gleixner <tglx@linutronix.de>, perex@perex.cz, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: fix a NULL pointer dereference
+   ASoC: mpc5200_psc_i2s: Fix invalid license ID
 
 has been applied to the asoc tree at
 
@@ -36,33 +49,32 @@ to this mail.
 Thanks,
 Mark
 
->From 51dd97d1df5fb9ac58b9b358e63e67b530f6ae21 Mon Sep 17 00:00:00 2001
-From: Kangjie Lu <kjlu@umn.edu>
-Date: Thu, 14 Mar 2019 22:48:32 -0500
-Subject: [PATCH] ASoC: rt5645: fix a NULL pointer dereference
+>From 680ae69d52279474ecb204f0f7bae1f4d9361cbd Mon Sep 17 00:00:00 2001
+From: Andra Danciu <andradanciu1997@gmail.com>
+Date: Sun, 14 Apr 2019 22:14:50 +0300
+Subject: [PATCH] ASoC: mpc5200_psc_i2s: Fix invalid license ID
 
-devm_kcalloc() may fail and return NULL. The fix returns ENOMEM
-in case it fails to avoid NULL pointer dereference.
+As the file had no other license notice/reference, it falls under the
+project license and therefore the proper SPDX id is: GPL-2.0-only
 
-Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Fixes: 864a8472c4412 ("ASoC: mpc5200_psc_i2s: Switch to SPDX identifier")
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/fsl/mpc5200_psc_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 9a0751978090..f842775dbf2c 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3419,6 +3419,9 @@ static int rt5645_probe(struct snd_soc_component *component)
- 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
- 		GFP_KERNEL);
- 
-+	if (!rt5645->eq_param)
-+		return -ENOMEM;
-+
- 	return 0;
- }
- 
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index 6de97461ba25..9bc01f374b39 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // Freescale MPC5200 PSC in I2S mode
+ // ALSA SoC Digital Audio Interface (DAI) driver
 -- 
 2.20.1
