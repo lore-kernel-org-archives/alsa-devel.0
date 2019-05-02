@@ -1,68 +1,46 @@
-From: mac.chiang@intel.com
-Subject: [PATCH] ASoC: Intel: kbl_da7219_max98357a: Map BTN_0
-	to KEY_PLAYPAUSE
-Date: Thu,  2 May 2019 14:16:15 +0800
-Message-ID: <1556777775-7598-1-git-send-email-mac.chiang@intel.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v4 02/22] soundwire: fix SPDX license for header files
+Date: Thu, 2 May 2019 08:31:39 +0200
+Message-ID: <20190502063139.GA14347@kroah.com>
+References: <20190501155745.21806-1-pierre-louis.bossart@linux.intel.com>
+ <20190501155745.21806-3-pierre-louis.bossart@linux.intel.com>
+ <20190502051440.GA3845@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E19F2F8075A
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 08:16:02 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: mac.chiang@intel.com, broonie@kernel.org, chintan.m.patel@intel.com, pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190502051440.GA3845@vkoul-mobl.Dlink>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
+On Thu, May 02, 2019 at 10:46:49AM +0530, Vinod Koul wrote:
+> On 01-05-19, 10:57, Pierre-Louis Bossart wrote:
+> > No C++ comments in .h files
+> > 
+> > Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > ---
+> >  drivers/soundwire/bus.h            | 4 ++--
+> >  drivers/soundwire/cadence_master.h | 4 ++--
+> >  drivers/soundwire/intel.h          | 4 ++--
+> 
+> As I said previously this touches subsystem header as well as driver
+> headers which is not ideal.
 
-On kbl_rt5663_max98927, commit 38a5882e4292
-    ("ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE")
-    This key pair mapping to play/pause when playing Youtube
+What?  Who knows that?  Who cares?
 
-The Android 3.5mm Headset jack specification mentions that BTN_0 should
-be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
-which has much broader userspace support.
+This is doing "one logical thing" to all of the needed files.  Your
+split of "this is a driver" vs. "this is a subsystem" split is _VERY_
+arbritary.
 
-For example, the Chrome OS userspace now supports KEY_PLAYPAUSE to toggle
-play/pause of videos and audio, but does not handle KEY_MEDIA.
+That's just too picky and assumes a subsystem-internal-knowledge much
+deeper than anyone submitting a normal cleanup patch would ever know.
 
-Furthermore, Android itself now supports KEY_PLAYPAUSE equivalently, as the
-new USB headset spec requires KEY_PLAYPAUSE for BTN_0.
-https://source.android.com/devices/accessories/headset/usb-headset-spec
+I think you have swung too far to the "too picky" side, you might want
+to dial it back.
 
-The same fix is required on Chrome kbl_da7219_max98357a.
+thanks,
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Reviewed-by: Benson Leung <bleung@chromium.org>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 38f6ab7..07491a0 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -188,7 +188,7 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	jack = &ctx->kabylake_headset;
- 
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
--- 
-2.7.4
+greg k-h
