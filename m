@@ -1,45 +1,97 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [EXT] Re: [PATCH V4] ASoC: fsl_esai: Add pm runtime function
-Date: Thu, 2 May 2019 11:32:31 -0700
-Message-ID: <20190502183230.GA25229@Asurada-Nvidia.nvidia.com>
-References: <c4cf809a66b8c98de11e43f7e9fa2823cf3c5ba6.1556417687.git.shengjiu.wang@nxp.com>
- <20190502023945.GA19532@sirena.org.uk>
- <VE1PR04MB6479F3EED50613DF8F041713E3340@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: stian.skjelstad@gmail.com
+Subject: [PATCH - maemo fixes 1/1] maemo plugin has two crashes
+	I was able to see in a valgrind log from another user:
+Date: Thu,  2 May 2019 23:26:15 +0200
+Message-ID: <20190502212615.11457-1-stian.skjelstad@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6479F3EED50613DF8F041713E3340@VE1PR04MB6479.eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Stian Skjelstad <stian.skjelstad@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 02, 2019 at 09:13:58AM +0000, S.j. Wang wrote:
-> > On Sun, Apr 28, 2019 at 02:24:54AM +0000, S.j. Wang wrote:
-> > > Add pm runtime support and move clock handling there.
-> > > Close the clocks at suspend to reduce the power consumption.
-> > >
-> > > fsl_esai_suspend is replaced by pm_runtime_force_suspend.
-> > > fsl_esai_resume is replaced by pm_runtime_force_resume.
-> > 
-> > This doesn't apply against for-5.2 again.  Sorry about this, I think this one is
-> > due to some messups with my scripts which caused some patches to be
-> > dropped for a while (and it's likely to be what happened the last time as
-> > well).  Can you check and resend again please?  Like I say sorry about this, I
-> > think it's my mistake.
-> 
-> I am checking, but I don't know why this patch failed in your side. I 
-> Tried to apply this patch on for-5.1, for 5.2,  for-linus  and for-next, all are
+From: Stian Skjelstad <stian.skjelstad@gmail.com>
 
-I just tried to apply it against top of trees of for-next and for-5.2
-and both were fine on my side too.
+* maximum write size was calculated in words (16bit), but checked against
+  byte-size length. This causes memcpy later to overflow the buffer
+  (normally by up to 12KB).
+* remove a double free (by marking free'd data with NULL)
 
-> Successful.  The git is git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git.
+* mmap returns MMAP_FAILED on error, not NULL
 
-Btw, this git link no longer works for me, not sure why:
-# git remote add broonie git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-# git fetch broonie
-fatal: remote error: access denied or repository not exported: /m/korg/pub/scm/linux/kernel/git/broonie/sound.git
+I suspect that this plugin/driver might have other issues aswell, since I
+am unable to find any logic for checking DSP buffer status, and no
+implementation for odelay reporting.
 
-It started to work after I changed "git://" to "https://" though...
+Author: Stian Skjelstad <stian.skjelstad@gmail.com>
+Signed-off-by: Stian Skjelstad <stian.skjelstad@gmail.com>
+
+diff --git a/maemo/alsa-dsp.c b/maemo/alsa-dsp.c
+index 7e04f6a..3307384 100644
+--- a/maemo/alsa-dsp.c
++++ b/maemo/alsa-dsp.c
+@@ -135,18 +135,18 @@ static snd_pcm_sframes_t alsa_dsp_transfer(snd_pcm_ioplug_t * io,
+ 	snd_pcm_alsa_dsp_t *alsa_dsp = io->private_data;
+ 	DENTER();
+ 	char *buf;
+-	int words;
++	int bytes, words;
+ 	ssize_t result;
+ 
+-	words = size * alsa_dsp->bytes_per_frame;
+-	words /= 2;
+-	DPRINT("***** Info: words %d size %lu bpf: %d\n", words, size,
+-	       alsa_dsp->bytes_per_frame);
+-	if (words > alsa_dsp->dsp_protocol->mmap_buffer_size) {
+-		DERROR("Requested too much data transfer (playing only %d)\n",
+-		       alsa_dsp->dsp_protocol->mmap_buffer_size);
+-		words = alsa_dsp->dsp_protocol->mmap_buffer_size;
++	bytes = size * alsa_dsp->bytes_per_frame;
++	DPRINT("***** Info: samples %lu * bpf %d => bytes %d\n",
++	       size, alsa_dsp->bytes_per_frame, bytes);
++	if (bytes > alsa_dsp->dsp_protocol->mmap_buffer_size) {
++		DERROR("Requested too much data transfer (requested %d, playing only %d)\n",
++		       bytes, alsa_dsp->dsp_protocol->mmap_buffer_size);
++		bytes = alsa_dsp->dsp_protocol->mmap_buffer_size;
+ 	}
++	words = bytes / 2;
+ 	if (alsa_dsp->dsp_protocol->state != STATE_PLAYING) {
+ 		DPRINT("I did nothing - No start sent\n");
+ 		alsa_dsp_start(io);
+diff --git a/maemo/dsp-ctl.c b/maemo/dsp-ctl.c
+index 5bcda36..ac05942 100644
+--- a/maemo/dsp-ctl.c
++++ b/maemo/dsp-ctl.c
+@@ -93,6 +93,7 @@ static void dsp_ctl_close(snd_ctl_ext_t * ext)
+ 	snd_ctl_dsp_t *dsp_ctl = ext->private_data;
+ 	DENTER();
+ 	free(dsp_ctl->controls);
++	dsp_ctl->controls = NULL;
+ 	free_control_list(&(dsp_ctl->playback_devices));
+ 	free_control_list(&(dsp_ctl->recording_devices));
+ //      free(dsp_ctl);
+diff --git a/maemo/dsp-protocol.c b/maemo/dsp-protocol.c
+index af67251..32193d3 100644
+--- a/maemo/dsp-protocol.c
++++ b/maemo/dsp-protocol.c
+@@ -194,7 +194,7 @@ int dsp_protocol_open_node(dsp_protocol_t * dsp_protocol, const char *device)
+ 	    mmap((void *)0, dsp_protocol->mmap_buffer_size,
+ 		 PROT_READ | PROT_WRITE, MAP_SHARED, dsp_protocol->fd, 0);
+ 
+-	if (dsp_protocol->mmap_buffer == NULL) {
++	if (dsp_protocol->mmap_buffer == MAP_FAILED) {
+ 		report_dsp_protocol("Cannot mmap data buffer", dsp_protocol);
+ 		ret = -ENOMEM;
+ 		goto unlock;
+-- 
+2.17.1
