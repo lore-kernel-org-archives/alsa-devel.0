@@ -1,39 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: AD ASoC: declare missing of table" to
-	the spi tree
-Date: Thu,  2 May 2019 03:19:00 +0100 (BST)
-Message-ID: <20190502021900.5D8EE441D3D@finisterre.ee.mobilebroadband>
-References: <1555960353-8836-1-git-send-email-dagmcr@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B7DFF8975A
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:19:06 +0200 (CEST)
-In-Reply-To: <1555960353-8836-1-git-send-email-dagmcr@gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.com, lgirdwood@gmail.com, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, dagmcr@gmail.com, Javier Martinez Canillas <javier@dowhile0.org>
+Subject: Applied "ASoC: da7219: Use clk_round_rate to handle enabled bclk/wclk case" to the asoc tree
+Date: Thu,  2 May 2019 03:40:26 +0100 (BST)
+Message-ID: <20190502024027.0D700441D3C@finisterre.ee.mobilebroadband>
+References: <20190429105733.71FB83FBCC@swsrvapps-01.diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190429105733.71FB83FBCC@swsrvapps-01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Akshu Agrawal <Akshu.Agrawal@amd.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Support Opensource <support.opensource@diasemi.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   spi: AD ASoC: declare missing of table
+   ASoC: da7219: Use clk_round_rate to handle enabled bclk/wclk case
 
-has been applied to the spi tree at
+has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -54,70 +37,81 @@ to this mail.
 Thanks,
 Mark
 
->From 2a168e10d6db7b77190c55d994e42fc5a58fc8e5 Mon Sep 17 00:00:00 2001
-From: Daniel Gomez <dagmcr@gmail.com>
-Date: Mon, 22 Apr 2019 21:12:33 +0200
-Subject: [PATCH] spi: AD ASoC: declare missing of table
+>From 1cd472d2ac1654f939ae01164b29e81fc76e0a93 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Mon, 29 Apr 2019 11:57:33 +0100
+Subject: [PATCH] ASoC: da7219: Use clk_round_rate to handle enabled bclk/wclk
+ case
 
-Add missing <of_device_id> table for SPI driver relying on SPI
-device match since compatible is in a DT binding or in a DTS.
+For some platforms where DA7219 is the DAI clock master, BCLK/WCLK
+will be set and enabled prior to the codec's hw_params() function
+being called. It is possible the platform requires a different
+BCLK configuration than would be chosen by hw_params(), for
+example S16_LE format needed with a 64-bit frame to satisfy certain
+devices using the clocks.
 
-Before this patch:
-modinfo sound/soc/codecs/snd-soc-adau1977-spi.ko | grep alias
-alias:          spi:adau1979
-alias:          spi:adau1978
-alias:          spi:adau1977
+To handle those kinds of scenarios, the use of clk_round_rate() is
+now employed as part of hw_params(). If BCLK is already enabled
+then this function will just return the currently set rate, if it
+is valid for the desired frame size, so the subsequent call to
+clk_set_rate() will succeed and nothing changes with regards to
+clocking. In addition the specific BCLK & WCLK recalc_rate()
+implementations needed updating to always give back a real value,
+as those functions are called as part of the clk init code and a
+real value is needed for the clk_round_rate() call to work as
+expected.
 
-After this patch:
-modinfo sound/soc/codecs/snd-soc-adau1977-spi.ko | grep alias
-alias:          of:N*T*Cadi,adau1979C*
-alias:          of:N*T*Cadi,adau1979
-alias:          of:N*T*Cadi,adau1978C*
-alias:          of:N*T*Cadi,adau1978
-alias:          of:N*T*Cadi,adau1977C*
-alias:          of:N*T*Cadi,adau1977
-alias:          spi:adau1979
-alias:          spi:adau1978
-alias:          spi:adau1977
-
-Reported-by: Javier Martinez Canillas <javier@dowhile0.org>
-Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1977-spi.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/da7219.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1977-spi.c b/sound/soc/codecs/adau1977-spi.c
-index 84ffbde9583f..2baf61567b59 100644
---- a/sound/soc/codecs/adau1977-spi.c
-+++ b/sound/soc/codecs/adau1977-spi.c
-@@ -10,6 +10,8 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/spi/spi.h>
- #include <sound/soc.h>
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5f5fa3416af3..206d01c6eb7e 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1621,6 +1621,21 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
  
-@@ -54,9 +56,18 @@ static const struct spi_device_id adau1977_spi_ids[] = {
- };
- MODULE_DEVICE_TABLE(spi, adau1977_spi_ids);
- 
-+static const struct of_device_id adau1977_spi_of_match[] = {
-+        { .compatible = "adi,adau1977" },
-+        { .compatible = "adi,adau1978" },
-+        { .compatible = "adi,adau1979" },
-+        { },
-+};
-+MODULE_DEVICE_TABLE(of, adau1977_spi_of_match);
+ 		if (bclk) {
+ 			bclk_rate = frame_size * sr;
++			/*
++			 * Rounding the rate here avoids failure trying to set a
++			 * new rate on an already enabled bclk. In that
++			 * instance this will just set the same rate as is
++			 * currently in use, and so should continue without
++			 * problem, as long as the BCLK rate is suitable for the
++			 * desired frame size.
++			 */
++			bclk_rate = clk_round_rate(bclk, bclk_rate);
++			if ((bclk_rate / sr) < frame_size) {
++				dev_err(component->dev,
++					"BCLK rate mismatch against frame size");
++				return -EINVAL;
++			}
 +
- static struct spi_driver adau1977_spi_driver = {
- 	.driver = {
- 		.name = "adau1977",
-+		.of_match_table = of_match_ptr(adau1977_spi_of_match),
- 	},
- 	.probe = adau1977_spi_probe,
- 	.id_table = adau1977_spi_ids,
+ 			ret = clk_set_rate(bclk, bclk_rate);
+ 			if (ret) {
+ 				dev_err(component->dev,
+@@ -1927,9 +1942,6 @@ static unsigned long da7219_wclk_recalc_rate(struct clk_hw *hw,
+ 	struct snd_soc_component *component = da7219->component;
+ 	u8 fs = snd_soc_component_read32(component, DA7219_SR);
+ 
+-	if (!da7219->master)
+-		return 0;
+-
+ 	switch (fs & DA7219_SR_MASK) {
+ 	case DA7219_SR_8000:
+ 		return 8000;
+@@ -2016,9 +2028,6 @@ static unsigned long da7219_bclk_recalc_rate(struct clk_hw *hw,
+ 	u8 bclks_per_wclk = snd_soc_component_read32(component,
+ 						     DA7219_DAI_CLK_MODE);
+ 
+-	if (!da7219->master)
+-		return 0;
+-
+ 	switch (bclks_per_wclk & DA7219_DAI_BCLKS_PER_WCLK_MASK) {
+ 	case DA7219_DAI_BCLKS_PER_WCLK_32:
+ 		return parent_rate * 32;
 -- 
 2.20.1
