@@ -1,8 +1,7 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 13/14] soundwire: add a blank line between
-	functions
-Date: Thu,  2 May 2019 16:29:29 +0530
-Message-ID: <20190502105930.9889-14-vkoul@kernel.org>
+Subject: [PATCH 14/14] soundwire: remove multiple blank lines
+Date: Thu,  2 May 2019 16:29:30 +0530
+Message-ID: <20190502105930.9889-15-vkoul@kernel.org>
 References: <20190502105930.9889-1-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +10,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97287F89756
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:46 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EA6AF89756
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:49 +0200 (CEST)
 In-Reply-To: <20190502105930.9889-1-vkoul@kernel.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,29 +26,27 @@ To: alsa-devel@alsa-project.org
 Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For improving code readability it helps to have a blank line between
-function so add when missing.
+Multi-blank lines do not help readability so remove them
 
 Checkpatch complains:
-CHECK: Please use a blank line after function/struct/union/enum
-declarations
+CHECK: Please don't use multiple blank lines
 
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/stream.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/soundwire/sdw_registers.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index debb67882df4..d01060dbee96 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -52,6 +52,7 @@ static int sdw_find_row_index(int row)
- 	pr_warn("Requested row not found, selecting lowest row no: 48\n");
- 	return 0;
- }
-+
- static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 					  struct sdw_slave *slave,
- 					  struct sdw_transport_params *t_params,
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+index e75b2e3cf93d..a686f7988156 100644
+--- a/include/linux/soundwire/sdw_registers.h
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -73,7 +73,6 @@
+ #define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
+ #define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
+ 
+-
+ #define SDW_SCP_INTSTAT3			0x43
+ #define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
+ 
 -- 
 2.20.1
