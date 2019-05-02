@@ -1,31 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_esai: Fix missing break in switch statement" to
- the asoc tree
-Date: Thu,  2 May 2019 03:18:00 +0100 (BST)
-Message-ID: <20190502021800.2B82D441D3B@finisterre.ee.mobilebroadband>
-References: <1556418264-17810-1-git-send-email-shengjiu.wang@nxp.com>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <1556418264-17810-1-git-send-email-shengjiu.wang@nxp.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: Applied "ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set
+ to module" to the asoc tree
+Date: Thu,  2 May 2019 03:18:49 +0100 (BST)
+Message-ID: <20190502021849.6798B441D3E@finisterre.ee.mobilebroadband>
+References: <20190417152932.36436-1-yuehaibing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190417152932.36436-1-yuehaibing@huawei.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>, shunli.wang@mediatek.com, matthias.bgg@gmail.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_esai: Fix missing break in switch statement
+   ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to module
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -46,35 +49,47 @@ to this mail.
 Thanks,
 Mark
 
->From 903c220b1ece12f17c868e43f2243b8f81ff2d4c Mon Sep 17 00:00:00 2001
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Date: Sun, 28 Apr 2019 02:24:27 +0000
-Subject: [PATCH] ASoC: fsl_esai: Fix missing break in switch statement
+>From f2a1fdb50d3187266a91bcf99b504e99695772a6 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Wed, 17 Apr 2019 23:29:32 +0800
+Subject: [PATCH] ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to
+ module
 
-case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be
-independent of each other, so replace fall-through with break.
+During randconfig builds, I occasionally run into an invalid configuration
 
-Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: <stable@vger.kernel.org>
+WARNING: unmet direct dependencies detected for SND_SOC_TS3A227E
+  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=m]
+  Selected by [y]:
+  - SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_MT8183 [=y]
+
+sound/soc/codecs/ts3a227e.o: In function `ts3a227e_i2c_probe':
+ts3a227e.c:(.text+0x684): undefined reference to `__devm_regmap_init_i2c'
+sound/soc/codecs/ts3a227e.o: In function `ts3a227e_driver_init':
+ts3a227e.c:(.init.text+0x18): undefined reference to `i2c_register_driver'
+sound/soc/codecs/ts3a227e.o: In function `ts3a227e_driver_exit':
+ts3a227e.c:(.exit.text+0x14): undefined reference to `i2c_del_driver'
+
+This patch add I2C dependency to fix this.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: ebbddc75bbe8 ("ASoC: Mediatek: MT8183: Add machine driver with DA7219")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mediatek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c7410bbfd2af..bad0dfed6b68 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 		break;
- 	case ESAI_HCKT_EXTAL:
- 		ecr |= ESAI_ECR_ETI;
--		/* fall through */
-+		break;
- 	case ESAI_HCKR_EXTAL:
- 		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
- 		break;
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 874404bcccfd..f70b7109f2b6 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -118,6 +118,7 @@ config SND_SOC_MT8183
+ 
+ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+ 	tristate "ASoC Audio driver for MT8183 with MT6358 TS3A227E MAX98357A codec"
++	depends on I2C
+ 	depends on SND_SOC_MT8183
+ 	select SND_SOC_MT6358
+ 	select SND_SOC_MAX98357A
 -- 
 2.20.1
