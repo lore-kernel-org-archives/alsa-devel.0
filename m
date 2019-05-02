@@ -1,22 +1,31 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static" to the asoc tree
-Date: Thu,  2 May 2019 03:18:38 +0100 (BST)
-Message-ID: <20190502021838.BE8A2441D3B@finisterre.ee.mobilebroadband>
-References: <20190416145251.16800-1-yuehaibing@huawei.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190416145251.16800-1-yuehaibing@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, colin.king@canonical.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, maruthi.bayyavarapu@amd.com, perex@perex.cz, tiwai@suse.com, Vijendar.Mukunda@amd.com
+Subject: Applied "ASoC: fsl_esai: Fix missing break in switch statement" to
+ the asoc tree
+Date: Thu,  2 May 2019 03:18:00 +0100 (BST)
+Message-ID: <20190502021800.2B82D441D3B@finisterre.ee.mobilebroadband>
+References: <1556418264-17810-1-git-send-email-shengjiu.wang@nxp.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <1556418264-17810-1-git-send-email-shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static
+   ASoC: fsl_esai: Fix missing break in switch statement
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,35 +46,35 @@ to this mail.
 Thanks,
 Mark
 
->From a1a86e1bd4a87fd09171fd8555fe7490917e4e94 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Tue, 16 Apr 2019 22:52:51 +0800
-Subject: [PATCH] ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static
+>From 903c220b1ece12f17c868e43f2243b8f81ff2d4c Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Sun, 28 Apr 2019 02:24:27 +0000
+Subject: [PATCH] ASoC: fsl_esai: Fix missing break in switch statement
 
-Fix sparse warning:
+case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be
+independent of each other, so replace fall-through with break.
 
-sound/soc/amd/raven/acp3x-pcm-dma.c:561:24: warning:
- symbol 'acp3x_dai_i2s_ops' was not declared. Should it be static?
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 1a2e15ff1456..9775bda2a4ca 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -558,7 +558,7 @@ static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
-+static struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
- 	.hw_params = acp3x_dai_i2s_hwparams,
- 	.trigger   = acp3x_dai_i2s_trigger,
- 	.set_fmt = acp3x_dai_i2s_set_fmt,
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c7410bbfd2af..bad0dfed6b68 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		break;
+ 	case ESAI_HCKT_EXTAL:
+ 		ecr |= ESAI_ECR_ETI;
+-		/* fall through */
++		break;
+ 	case ESAI_HCKR_EXTAL:
+ 		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
+ 		break;
 -- 
 2.20.1
