@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sprd: Fix to use list_for_each_entry_safe() when delete items" to the asoc tree
-Date: Thu,  2 May 2019 03:18:02 +0100 (BST)
-Message-ID: <20190502021802.767DF441D3F@finisterre.ee.mobilebroadband>
-References: <20190429123713.64280-1-weiyongjun1@huawei.com>
+Subject: Applied "ASoC: da7213: fix DAI_CLK_EN register bit overwrite" to the asoc tree
+Date: Thu,  2 May 2019 03:18:03 +0100 (BST)
+Message-ID: <20190502021803.9926D441D56@finisterre.ee.mobilebroadband>
+References: <20190501090424.28861-1-logesh.kolandavel@timesys.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429123713.64280-1-weiyongjun1@huawei.com>
+In-Reply-To: <20190501090424.28861-1-logesh.kolandavel@timesys.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>, Chunyan Zhang <zhang.lyra@gmail.com>, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Orson Zhai <orsonzhai@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: Adam.Thomson.Opensource@diasemi.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, logesh.kolandavel@timesys.comMark Brown <broonie@kernel.org>, perex@perex.cz, support.opensource@diasemi.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sprd: Fix to use list_for_each_entry_safe() when delete items
+   ASoC: da7213: fix DAI_CLK_EN register bit overwrite
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,43 +36,53 @@ to this mail.
 Thanks,
 Mark
 
->From 81a812c98b6eda7e3101305d57354433e3edc541 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Mon, 29 Apr 2019 12:37:13 +0000
-Subject: [PATCH] ASoC: sprd: Fix to use list_for_each_entry_safe() when delete
- items
+>From 414a7321d60bc0abced4a760e22b8187e2b4aecf Mon Sep 17 00:00:00 2001
+From: Logesh <logesh.kolandavel@timesys.com>
+Date: Wed, 1 May 2019 14:34:24 +0530
+Subject: [PATCH] ASoC: da7213: fix DAI_CLK_EN register bit overwrite
 
-Since we will remove items off the list using list_del() we need
-to use a safe version of the list_for_each_entry() macro aptly named
-list_for_each_entry_safe().
+If the da7213 codec is configured as Master with the DAPM power down
+delay time set, 'snd_soc_component_write' function overwrites the
+DAI_CLK_EN bit of DAI_CLK_MODE register which leads to audio play
+only once until it re-initialize after codec power up.
 
-Fixes: d7bff893e04f ("ASoC: sprd: Add Spreadtrum multi-channel data transfer support")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Logesh <logesh.kolandavel@timesys.com>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sprd/sprd-mcdt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/da7213.c | 5 ++++-
+ sound/soc/codecs/da7213.h | 2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sprd/sprd-mcdt.c b/sound/soc/sprd/sprd-mcdt.c
-index e9318d7a4810..7448015a4935 100644
---- a/sound/soc/sprd/sprd-mcdt.c
-+++ b/sound/soc/sprd/sprd-mcdt.c
-@@ -978,12 +978,12 @@ static int sprd_mcdt_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 92d006a5283e..425c11d63e49 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1305,7 +1305,10 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* By default only 64 BCLK per WCLK is supported */
+ 	dai_clk_mode |= DA7213_DAI_BCLKS_PER_WCLK_64;
  
- static int sprd_mcdt_remove(struct platform_device *pdev)
- {
--	struct sprd_mcdt_chan *temp;
-+	struct sprd_mcdt_chan *chan, *temp;
+-	snd_soc_component_write(component, DA7213_DAI_CLK_MODE, dai_clk_mode);
++	snd_soc_component_update_bits(component, DA7213_DAI_CLK_MODE,
++			    DA7213_DAI_BCLKS_PER_WCLK_MASK |
++			    DA7213_DAI_CLK_POL_MASK | DA7213_DAI_WCLK_POL_MASK,
++			    dai_clk_mode);
+ 	snd_soc_component_update_bits(component, DA7213_DAI_CTRL, DA7213_DAI_FORMAT_MASK,
+ 			    dai_ctrl);
+ 	snd_soc_component_write(component, DA7213_DAI_OFFSET, dai_offset);
+diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
+index 5a78dba1dcb5..9d31efc3cfe5 100644
+--- a/sound/soc/codecs/da7213.h
++++ b/sound/soc/codecs/da7213.h
+@@ -181,7 +181,9 @@
+ #define DA7213_DAI_BCLKS_PER_WCLK_256				(0x3 << 0)
+ #define DA7213_DAI_BCLKS_PER_WCLK_MASK				(0x3 << 0)
+ #define DA7213_DAI_CLK_POL_INV					(0x1 << 2)
++#define DA7213_DAI_CLK_POL_MASK					(0x1 << 2)
+ #define DA7213_DAI_WCLK_POL_INV					(0x1 << 3)
++#define DA7213_DAI_WCLK_POL_MASK				(0x1 << 3)
+ #define DA7213_DAI_CLK_EN_MASK					(0x1 << 7)
  
- 	mutex_lock(&sprd_mcdt_list_mutex);
- 
--	list_for_each_entry(temp, &sprd_mcdt_chan_list, list)
--		list_del(&temp->list);
-+	list_for_each_entry_safe(chan, temp, &sprd_mcdt_chan_list, list)
-+		list_del(&chan->list);
- 
- 	mutex_unlock(&sprd_mcdt_list_mutex);
- 
+ /* DA7213_DAI_CTRL = 0x29 */
 -- 
 2.20.1
