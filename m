@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sprd: Fix return value check in sprd_mcdt_probe()" to the asoc tree
-Date: Thu,  2 May 2019 03:18:02 +0100 (BST)
-Message-ID: <20190502021803.0F5F9441D41@finisterre.ee.mobilebroadband>
-References: <20190429122512.59242-1-weiyongjun1@huawei.com>
+Subject: Applied "ASoC: rt5645: fix a NULL pointer dereference" to the asoc tree
+Date: Thu,  2 May 2019 03:18:21 +0100 (BST)
+Message-ID: <20190502021821.E7690441D3B@finisterre.ee.mobilebroadband>
+References: <20190315034833.25037-1-kjlu@umn.edu>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429122512.59242-1-weiyongjun1@huawei.com>
+In-Reply-To: <20190315034833.25037-1-kjlu@umn.edu>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>, Chunyan Zhang <zhang.lyra@gmail.com>, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Orson Zhai <orsonzhai@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, pakki001@umn.edu, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sprd: Fix return value check in sprd_mcdt_probe()
+   ASoC: rt5645: fix a NULL pointer dereference
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,37 +36,33 @@ to this mail.
 Thanks,
 Mark
 
->From 7c88b92816dfe5eab224b96577b50ac00b4be68a Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Mon, 29 Apr 2019 12:25:12 +0000
-Subject: [PATCH] ASoC: sprd: Fix return value check in sprd_mcdt_probe()
+>From 51dd97d1df5fb9ac58b9b358e63e67b530f6ae21 Mon Sep 17 00:00:00 2001
+From: Kangjie Lu <kjlu@umn.edu>
+Date: Thu, 14 Mar 2019 22:48:32 -0500
+Subject: [PATCH] ASoC: rt5645: fix a NULL pointer dereference
 
-In case of error, the function devm_ioremap_resource() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check should
-be replaced with IS_ERR().
+devm_kcalloc() may fail and return NULL. The fix returns ENOMEM
+in case it fails to avoid NULL pointer dereference.
 
-Fixes: d7bff893e04f ("ASoC: sprd: Add Spreadtrum multi-channel data transfer support")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Kangjie Lu <kjlu@umn.edu>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sprd/sprd-mcdt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5645.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sprd/sprd-mcdt.c b/sound/soc/sprd/sprd-mcdt.c
-index 28f5e649733d..e9318d7a4810 100644
---- a/sound/soc/sprd/sprd-mcdt.c
-+++ b/sound/soc/sprd/sprd-mcdt.c
-@@ -951,8 +951,8 @@ static int sprd_mcdt_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9a0751978090..f842775dbf2c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3419,6 +3419,9 @@ static int rt5645_probe(struct snd_soc_component *component)
+ 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+ 		GFP_KERNEL);
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	mcdt->base = devm_ioremap_resource(&pdev->dev, res);
--	if (!mcdt->base)
--		return -ENOMEM;
-+	if (IS_ERR(mcdt->base))
-+		return PTR_ERR(mcdt->base);
++	if (!rt5645->eq_param)
++		return -ENOMEM;
++
+ 	return 0;
+ }
  
- 	mcdt->dev = &pdev->dev;
- 	spin_lock_init(&mcdt->lock);
 -- 
 2.20.1
