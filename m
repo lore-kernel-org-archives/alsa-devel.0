@@ -1,7 +1,8 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 00/14] soundwire: more code cleanups
-Date: Thu,  2 May 2019 16:29:16 +0530
-Message-ID: <20190502105930.9889-1-vkoul@kernel.org>
+Subject: [PATCH 01/14] soundwire: fix kconfig help format
+Date: Thu,  2 May 2019 16:29:17 +0530
+Message-ID: <20190502105930.9889-2-vkoul@kernel.org>
+References: <20190502105930.9889-1-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -9,8 +10,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F8D7F80722
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:13 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAD78F89693
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:15 +0200 (CEST)
+In-Reply-To: <20190502105930.9889-1-vkoul@kernel.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +26,26 @@ To: alsa-devel@alsa-project.org
 Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-After applying cleanup from Pierre, I realized few more things can be
-cleaned up as well, so fixing these instance in the subsystem.
+Move to help format instead of --help-- as that is not recommended and
+this makes file consistent with other instance
 
-Looks like bool is no longer encouraged, but I have skipped those and few
-alignment as they caused code to look worse.
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ drivers/soundwire/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Greg,
-if you are okay I would like to add this as well (i know it is late, but
-they are cosmetic changes and no logic ones, let me know and I can
-send a updated PR)
-
-Vinod Koul (14):
-  soundwire: fix kconfig help format
-  soundwire: fix SPDX license for header files
-  soundwire: intel: fix SPDX license for header file
-  soundwire: remove empty line before/after braces
-  soundwire: cadence: remove empty line after braces
-  soundwire: intel: remove empty line after braces
-  soundwire: add argument to function definition
-  soundwire: more alignment fixes
-  soundwire: intel: more alignment fixes
-  soundwire: avoid multiple assignments
-  soundwire: fix more typos
-  soundwire: wrap macro argument in parenthesis
-  soundwire: add a blank line between functions
-  soundwire: remove multiple blank lines
-
- drivers/soundwire/Kconfig               |  2 +-
- drivers/soundwire/bus.c                 | 17 +++++-------
- drivers/soundwire/cadence_master.c      |  1 -
- drivers/soundwire/intel.c               | 36 ++++++++++++-------------
- drivers/soundwire/intel_init.c          |  1 -
- drivers/soundwire/mipi_disco.c          |  6 -----
- drivers/soundwire/stream.c              | 28 +++++++++----------
- include/linux/soundwire/sdw.h           | 16 +++++------
- include/linux/soundwire/sdw_intel.h     |  6 ++---
- include/linux/soundwire/sdw_registers.h |  5 ++--
- include/linux/soundwire/sdw_type.h      |  6 ++---
- 11 files changed, 54 insertions(+), 70 deletions(-)
-
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 84876a74874f..53b55b79c4af 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -28,7 +28,7 @@ config SOUNDWIRE_INTEL
+ 	select SOUNDWIRE_CADENCE
+ 	select SOUNDWIRE_BUS
+ 	depends on X86 && ACPI && SND_SOC
+-	---help---
++	help
+ 	  SoundWire Intel Master driver.
+ 	  If you have an Intel platform which has a SoundWire Master then
+ 	  enable this config option to get the SoundWire support for that
 -- 
 2.20.1
