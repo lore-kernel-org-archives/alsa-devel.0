@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3168a: Enable TDM support for
-	DSP_A/B modes" to the asoc tree
-Date: Thu,  2 May 2019 03:18:44 +0100 (BST)
-Message-ID: <20190502021845.06AC6441D3C@finisterre.ee.mobilebroadband>
-References: <20190417113140.15572-1-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: hdmi-codec: fix spelling mistake
+	"plalform" -> "platform"" to the asoc tree
+Date: Thu,  2 May 2019 03:18:51 +0100 (BST)
+Message-ID: <20190502021851.5E79D441D3D@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 853F0F89727
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:49 +0200 (CEST)
-In-Reply-To: <20190417113140.15572-1-peter.ujfalusi@ti.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26EAEF89751
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:55 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3168a: Enable TDM support for DSP_A/B modes
+   ASoC: hdmi-codec: fix spelling mistake "plalform" -> "platform"
 
 has been applied to the asoc tree at
 
@@ -55,51 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 5011454ee34a84700e9a8c7eb1138efceea9d662 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Wed, 17 Apr 2019 14:31:40 +0300
-Subject: [PATCH] ASoC: pcm3168a: Enable TDM support for DSP_A/B modes
+>From 7b6531c5054e7804ccce25f389a2d4810357f5c9 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 17 Apr 2019 17:26:28 +0100
+Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake "plalform" ->
+ "platform"
 
-The 24-bit TDM mode also applies to DSP_A and DSP_B modes.
-Most dais on the SoC side can not interpret I2S/Left_j with other than 2
-channels of audio.
+There is a spelling mistake in a dev_err message. Fix it.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/codecs/hdmi-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 08d3fe192e65..e0d5839fe1a7 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -457,13 +457,16 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 	if (chan > 2) {
- 		switch (fmt) {
- 		case PCM3168A_FMT_I2S:
-+		case PCM3168A_FMT_DSP_A:
- 			fmt = PCM3168A_FMT_I2S_TDM;
- 			break;
- 		case PCM3168A_FMT_LEFT_J:
-+		case PCM3168A_FMT_DSP_B:
- 			fmt = PCM3168A_FMT_LEFT_J_TDM;
- 			break;
- 		default:
--			dev_err(component->dev, "TDM is supported under I2S/Left_J only\n");
-+			dev_err(component->dev,
-+				"TDM is supported under DSP/I2S/Left_J only\n");
- 			return -EINVAL;
- 		}
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 35df73e42cbc..b9d9dde9fbaf 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -757,7 +757,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	dev_dbg(dev, "%s()\n", __func__);
+ 
+ 	if (!hcd) {
+-		dev_err(dev, "%s: No plalform data\n", __func__);
++		dev_err(dev, "%s: No platform data\n", __func__);
+ 		return -EINVAL;
  	}
-@@ -526,6 +529,8 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 		break;
- 	case PCM3168A_FMT_LEFT_J:
- 	case PCM3168A_FMT_I2S:
-+	case PCM3168A_FMT_DSP_A:
-+	case PCM3168A_FMT_DSP_B:
- 		sample_min  = 24;
- 		channel_max = channel_maxs[tx];
- 		break;
+ 
 -- 
 2.20.1
