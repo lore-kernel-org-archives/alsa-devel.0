@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: fix kcontrols for effect widgets"
-	to the asoc tree
-Date: Thu,  2 May 2019 03:18:04 +0100 (BST)
-Message-ID: <20190502021804.22810441D3B@finisterre.ee.mobilebroadband>
-References: <20190430231134.4471-1-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: tlv320aic32x4: Fix potential
+	uninitialized variable" to the asoc tree
+Date: Thu,  2 May 2019 03:18:08 +0100 (BST)
+Message-ID: <20190502021808.45C05441D3B@finisterre.ee.mobilebroadband>
+References: <20190409044159.17202-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 706EEF8971A
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:10 +0200 (CEST)
-In-Reply-To: <20190430231134.4471-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 579E3F896C7
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:17 +0200 (CEST)
+In-Reply-To: <20190409044159.17202-1-nh6z@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Annaliese McDermond <nh6z@nh6z.net>
+Cc: team@nwdigitalradio.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: fix kcontrols for effect widgets
+   ASoC: tlv320aic32x4: Fix potential uninitialized variable
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,48 +55,32 @@ to this mail.
 Thanks,
 Mark
 
->From 882c8b4af315bf921431142c1e9f5f69df99da34 Mon Sep 17 00:00:00 2001
-From: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-Date: Tue, 30 Apr 2019 18:11:34 -0500
-Subject: [PATCH] ASoC: dapm: fix kcontrols for effect widgets
+>From a23e34c064b933cf5f24e443f86bbfdd624d2e8b Mon Sep 17 00:00:00 2001
+From: Annaliese McDermond <nh6z@nh6z.net>
+Date: Mon, 8 Apr 2019 21:41:59 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Fix potential uninitialized variable
 
-This patch adds the handling of snd_soc_dapm_effect that was missing.
+Fix compiler warning about uninitialized variable reported by
+Stephen Rothwell <sfr@canb.auug.org.au>.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/tlv320aic32x4-clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 0382a47b30bd..29cdfbf4c888 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -883,6 +883,7 @@ static int dapm_create_or_share_kcontrol(struct snd_soc_dapm_widget *w,
- 			case snd_soc_dapm_switch:
- 			case snd_soc_dapm_mixer:
- 			case snd_soc_dapm_pga:
-+			case snd_soc_dapm_effect:
- 			case snd_soc_dapm_out_drv:
- 				wname_in_long_name = true;
- 				kcname_in_long_name = true;
-@@ -2370,6 +2371,7 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
- 		case snd_soc_dapm_dac:
- 		case snd_soc_dapm_adc:
- 		case snd_soc_dapm_pga:
-+		case snd_soc_dapm_effect:
- 		case snd_soc_dapm_out_drv:
- 		case snd_soc_dapm_mixer:
- 		case snd_soc_dapm_mixer_named_ctl:
-@@ -3197,6 +3199,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 			dapm_new_mux(w);
- 			break;
- 		case snd_soc_dapm_pga:
-+		case snd_soc_dapm_effect:
- 		case snd_soc_dapm_out_drv:
- 			dapm_new_pga(w);
- 			break;
+diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
+index 9e4899eb1d8e..156c153c12ab 100644
+--- a/sound/soc/codecs/tlv320aic32x4-clk.c
++++ b/sound/soc/codecs/tlv320aic32x4-clk.c
+@@ -82,7 +82,7 @@ static int clk_aic32x4_pll_get_muldiv(struct clk_aic32x4 *pll,
+ 	int ret;
+ 
+ 	ret = regmap_read(pll->regmap, AIC32X4_PLLPR, &val);
+-	if (ret)
++	if (ret < 0)
+ 		return ret;
+ 	settings->r = val & AIC32X4_PLL_R_MASK;
+ 	settings->p = (val & AIC32X4_PLL_P_MASK) >> AIC32X4_PLL_P_SHIFT;
 -- 
 2.20.1
