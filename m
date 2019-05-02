@@ -1,8 +1,8 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 06/14] soundwire: intel: remove empty line
-	after braces
-Date: Thu,  2 May 2019 16:29:22 +0530
-Message-ID: <20190502105930.9889-7-vkoul@kernel.org>
+Subject: [PATCH 07/14] soundwire: add argument to function
+	definition
+Date: Thu,  2 May 2019 16:29:23 +0530
+Message-ID: <20190502105930.9889-8-vkoul@kernel.org>
 References: <20190502105930.9889-1-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2674F89727
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:28 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCE84F8972A
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:30 +0200 (CEST)
 In-Reply-To: <20190502105930.9889-1-vkoul@kernel.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,29 +27,29 @@ To: alsa-devel@alsa-project.org
 Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Linux code style doesn't expect empty lines after braces and
-gives warning:
+Checkpatch warns that function definition of __sdw_register_driver
+misses argument, so add it
 
-CHECK: Blank lines aren't necessary after an open brace '{'
-
-Remove the empty line in intel module
+WARNING: function definition argument 'struct module *' should also have
+an identifier name
 
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/intel_init.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/soundwire/sdw_type.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 9ad6045720c4..d3d6b54c5791 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -106,7 +106,6 @@ static struct sdw_intel_ctx
+diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
+index b7e198a035c9..9c756b5a0dfe 100644
+--- a/include/linux/soundwire/sdw_type.h
++++ b/include/linux/soundwire/sdw_type.h
+@@ -11,7 +11,7 @@ extern struct bus_type sdw_bus_type;
+ #define sdw_register_driver(drv) \
+ 	__sdw_register_driver(drv, THIS_MODULE)
  
- 	/* Create SDW Master devices */
- 	for (i = 0; i < count; i++) {
--
- 		link->res.irq = res->irq;
- 		link->res.registers = res->mmio_base + SDW_LINK_BASE
- 					+ (SDW_LINK_SIZE * i);
+-int __sdw_register_driver(struct sdw_driver *drv, struct module *);
++int __sdw_register_driver(struct sdw_driver *drv, struct module *owner);
+ void sdw_unregister_driver(struct sdw_driver *drv);
+ 
+ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
 -- 
 2.20.1
