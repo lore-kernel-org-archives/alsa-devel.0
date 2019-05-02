@@ -1,7 +1,8 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 01/14] soundwire: fix kconfig help format
-Date: Thu,  2 May 2019 16:29:17 +0530
-Message-ID: <20190502105930.9889-2-vkoul@kernel.org>
+Subject: [PATCH 02/14] soundwire: fix SPDX license for header
+	files
+Date: Thu,  2 May 2019 16:29:18 +0530
+Message-ID: <20190502105930.9889-3-vkoul@kernel.org>
 References: <20190502105930.9889-1-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAD78F89693
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:15 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8036BF896AA
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 13:00:18 +0200 (CEST)
 In-Reply-To: <20190502105930.9889-1-vkoul@kernel.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,26 +27,51 @@ To: alsa-devel@alsa-project.org
 Cc: Greg KH <gregkh@linuxfoundation.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Move to help format instead of --help-- as that is not recommended and
-this makes file consistent with other instance
+Some more headers had C++ style SDPX line, fix that and change copyright
+so that it is consistent with rest of the code in subsystem
 
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/soundwire/sdw.h           | 4 ++--
+ include/linux/soundwire/sdw_registers.h | 4 ++--
+ include/linux/soundwire/sdw_type.h      | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index 84876a74874f..53b55b79c4af 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -28,7 +28,7 @@ config SOUNDWIRE_INTEL
- 	select SOUNDWIRE_CADENCE
- 	select SOUNDWIRE_BUS
- 	depends on X86 && ACPI && SND_SOC
--	---help---
-+	help
- 	  SoundWire Intel Master driver.
- 	  If you have an Intel platform which has a SoundWire Master then
- 	  enable this config option to get the SoundWire support for that
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index df313913e856..d9102af5e26c 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -1,5 +1,5 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+-// Copyright(c) 2015-17 Intel Corporation.
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/* Copyright(c) 2015-17 Intel Corporation. */
+ 
+ #ifndef __SOUNDWIRE_H
+ #define __SOUNDWIRE_H
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+index df472b1ab410..e75b2e3cf93d 100644
+--- a/include/linux/soundwire/sdw_registers.h
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -1,5 +1,5 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+-// Copyright(c) 2015-17 Intel Corporation.
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/* Copyright(c) 2015-17 Intel Corporation. */
+ 
+ #ifndef __SDW_REGISTERS_H
+ #define __SDW_REGISTERS_H
+diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
+index 9fd553e553e9..b7e198a035c9 100644
+--- a/include/linux/soundwire/sdw_type.h
++++ b/include/linux/soundwire/sdw_type.h
+@@ -1,5 +1,5 @@
+-// SPDX-License-Identifier: GPL-2.0
+-// Copyright(c) 2015-17 Intel Corporation.
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright(c) 2015-17 Intel Corporation. */
+ 
+ #ifndef __SOUNDWIRE_TYPES_H
+ #define __SOUNDWIRE_TYPES_H
 -- 
 2.20.1
