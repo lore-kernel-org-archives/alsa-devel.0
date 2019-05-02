@@ -1,21 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs43130: fix a NULL pointer dereference" to the asoc tree
-Date: Thu,  2 May 2019 03:18:19 +0100 (BST)
-Message-ID: <20190502021820.053F2441D3C@finisterre.ee.mobilebroadband>
-References: <20190315035120.25913-1-kjlu@umn.edu>
+Subject: Applied "ASoC: sprd: Fix return value check in sprd_mcdt_probe()" to the asoc tree
+Date: Thu,  2 May 2019 03:18:02 +0100 (BST)
+Message-ID: <20190502021803.0F5F9441D41@finisterre.ee.mobilebroadband>
+References: <20190429122512.59242-1-weiyongjun1@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190315035120.25913-1-kjlu@umn.edu>
+In-Reply-To: <20190429122512.59242-1-weiyongjun1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, pakki001@umn.edu, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>, Chunyan Zhang <zhang.lyra@gmail.com>, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Orson Zhai <orsonzhai@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs43130: fix a NULL pointer dereference
+   ASoC: sprd: Fix return value check in sprd_mcdt_probe()
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -36,32 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From a2be42f18d409213bb7e7a736e3ef6ba005115bb Mon Sep 17 00:00:00 2001
-From: Kangjie Lu <kjlu@umn.edu>
-Date: Thu, 14 Mar 2019 22:51:20 -0500
-Subject: [PATCH] ASoC: cs43130: fix a NULL pointer dereference
+>From 7c88b92816dfe5eab224b96577b50ac00b4be68a Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 29 Apr 2019 12:25:12 +0000
+Subject: [PATCH] ASoC: sprd: Fix return value check in sprd_mcdt_probe()
 
-In case create_singlethread_workqueue fails, the fix returns
--ENOMEM to avoid potential NULL pointer dereference.
+In case of error, the function devm_ioremap_resource() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check should
+be replaced with IS_ERR().
 
-Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+Fixes: d7bff893e04f ("ASoC: sprd: Add Spreadtrum multi-channel data transfer support")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Reviewed-by: Baolin Wang <baolin.wang@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sprd/sprd-mcdt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 3f7b255587e6..80d672710eae 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -2322,6 +2322,8 @@ static int cs43130_probe(struct snd_soc_component *component)
- 			return ret;
+diff --git a/sound/soc/sprd/sprd-mcdt.c b/sound/soc/sprd/sprd-mcdt.c
+index 28f5e649733d..e9318d7a4810 100644
+--- a/sound/soc/sprd/sprd-mcdt.c
++++ b/sound/soc/sprd/sprd-mcdt.c
+@@ -951,8 +951,8 @@ static int sprd_mcdt_probe(struct platform_device *pdev)
  
- 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
-+		if (!cs43130->wq)
-+			return -ENOMEM;
- 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
- 	}
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	mcdt->base = devm_ioremap_resource(&pdev->dev, res);
+-	if (!mcdt->base)
+-		return -ENOMEM;
++	if (IS_ERR(mcdt->base))
++		return PTR_ERR(mcdt->base);
  
+ 	mcdt->dev = &pdev->dev;
+ 	spin_lock_init(&mcdt->lock);
 -- 
 2.20.1
