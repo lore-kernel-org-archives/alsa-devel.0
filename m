@@ -1,53 +1,58 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: SOF: remove redundant null checks of dai
-Date: Thu,  2 May 2019 12:33:40 +0100
-Message-ID: <20190502113340.8688-1-colin.king@canonical.com>
+From: Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH 2/5] dt-bindings: sound: Add MT8516 AFE PCM bindings
+Date: Thu,  2 May 2019 14:10:38 +0200
+Message-ID: <20190502121041.8045-3-fparent@baylibre.com>
+References: <20190502121041.8045-1-fparent@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190502121041.8045-1-fparent@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, kaichieh.chuang@mediatek.com, shunli.wang@mediatek.com
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, Fabien Parent <fparent@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Add documentation for the bindings of the MT8516 AFE PCM driver.
 
-Currently there are two null checks of pointer dai in function
-sof_connect_dai_widget and yet there is no null check of dai
-at the end of the function when checking !dai->name.  The latter
-would be a null pointer deference if dai is null (as picked up
-by static analysis), however the function is only ever called
-when dai is successfully allocated, so the null checks are
-redundant. Clean up the code by removing the null checks.
-
-Addresses-Coverity: ("Dereference after null check")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
 ---
- sound/soc/sof/topology.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ .../bindings/sound/mt8516-afe-pcm.txt         | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8516-afe-pcm.txt
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 2b9de1b97447..1f71857298a9 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1127,15 +1127,13 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
- 		switch (w->id) {
- 		case snd_soc_dapm_dai_out:
- 			rtd->cpu_dai->capture_widget = w;
--			if (dai)
--				dai->name = rtd->dai_link->name;
-+			dai->name = rtd->dai_link->name;
- 			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
- 				w->name, rtd->dai_link->name);
- 			break;
- 		case snd_soc_dapm_dai_in:
- 			rtd->cpu_dai->playback_widget = w;
--			if (dai)
--				dai->name = rtd->dai_link->name;
-+			dai->name = rtd->dai_link->name;
- 			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
- 				w->name, rtd->dai_link->name);
- 			break;
+diff --git a/Documentation/devicetree/bindings/sound/mt8516-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt8516-afe-pcm.txt
+new file mode 100644
+index 000000000000..c5fb3c55a7f4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8516-afe-pcm.txt
+@@ -0,0 +1,28 @@
++Mediatek AFE PCM controller for mt8516
++
++Required properties:
++- compatible:  "mediatek,mt8516-audio"
++- interrupts: should contain AFE interrupt
++- clocks: Must contain an entry for each entry in clock-names
++- clock-names: should have these clock names:
++		"top_pdn_audio",
++		"aud_dac_clk",
++		"aud_dac_predis_clk",
++		"aud_adc_clk";
++
++Example:
++
++
++	afe: mt8516-afe-pcm@11140000  {
++		compatible = "mediatek,mt8516-audio";
++		reg = <0 0x11140000 0 0x1000>;
++		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_LOW>;
++		clocks = <&topckgen CLK_TOP_AUDIO>,
++			 <&audiotop CLK_AUD_DAC>,
++			 <&audiotop CLK_AUD_DAC_PREDIS>,
++			 <&audiotop CLK_AUD_ADC>;
++		clock-names = "top_pdn_audio",
++			      "aud_dac_clk",
++			      "aud_dac_predis_clk",
++			      "aud_adc_clk";
++	};
 -- 
 2.20.1
