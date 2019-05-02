@@ -1,56 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da7219: Use clk_round_rate to handle enabled
- bclk/wclk case
-Date: Thu, 2 May 2019 10:30:22 +0900
-Message-ID: <20190502013022.GN14916@sirena.org.uk>
-References: <20190426125925.04F3F3FB4A@swsrvapps-01.diasemi.com>
- <20190427171955.GH14916@sirena.org.uk>
- <AM5PR1001MB0994EA351AEF82224D9AA6BF80390@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+Subject: Re: Correct git tree for ALSA development
+Date: Thu, 2 May 2019 10:35:56 +0900
+Message-ID: <20190502013556.GO14916@sirena.org.uk>
+References: <20190429202918.GA35915@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TN8pJM9vJMHHFgJc"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <AM5PR1001MB0994EA351AEF82224D9AA6BF80390@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Akshu Agrawal <Akshu.Agrawal@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>
+Content-Type: multipart/mixed; boundary="===============3497531339079597765=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C2F0F8065C
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 03:36:02 +0200 (CEST)
+In-Reply-To: <20190429202918.GA35915@google.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Ross Zwisler <zwisler@google.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---TN8pJM9vJMHHFgJc
+--===============3497531339079597765==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bAr+fMtvBxbbbkvl"
+Content-Disposition: inline
+
+
+--bAr+fMtvBxbbbkvl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 29, 2019 at 09:16:08AM +0000, Adam Thomson wrote:
-> On 27 April 2019 18:20, Mark Brown wrote:
+On Mon, Apr 29, 2019 at 02:29:18PM -0600, Ross Zwisler wrote:
 
-> > Don't we need to validate that the rounded rate is actually viable for
-> > the parameters we're trying to set here?  If there's missing constraints
-> > causing something to try to do something unsupportable then we should
-> > return an error rather than silently accept.
+> it seems like current development/maintenance actually happens somewhere else,
+> possibly on Mark Brown's kernel.org tree?
 
-> Thanks for directing my gaze to this again. Actually I don't think the SR should
-> be rounded at all. If it doesn't match exactly it should fail so I'll remove the
-> rounding here. Not sure what my brain was doing there.
+My tree and Takashi's tree for our work.
 
-Yeah, rounding is dubious with sample rate.  Many applications will be
-able to tolerate *some* variation as there's tolerances in the crystals
-if nothing else but intentionally allowing it is a bit different.
+> If so, should we update those stale MAINTAINERS entries?
 
---TN8pJM9vJMHHFgJc
+You need to check with the relevant submaintainers, they may well still
+be using the relevant trees for their specific areas.  If something is
+listed separately in MAINTAINERS then there's a submaintainer who may be
+maintaining their own stuff.
+
+--bAr+fMtvBxbbbkvl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzKSCsACgkQJNaLcl1U
-h9DXvAf+P9971wrO2YV773UVMXkelPV+MmTYvPVA/VL4bLD1Mg7EU4Q42Xm2TrC+
-p6me4v618rDTK6qjyHbVW2naAgUgMEMYWmY53WO50rDBM6CcmLdpp0U0jqZTd2La
-/fVKdYNXJf3ZUpoe6OqJ05GpD/Ah3yq4iEdCTHCkiEjsRuSO3PbZxZvlU6QqOXeJ
-doBoeBlBU0XT/bjO/W9tzUUVQFtBQWHG19mzuSosxosl4AVMjBzajSITE9QsjGQE
-0xRfb1ClDpLFyypsOBhM7cuTuPCcnJvWHbJeKy8lrr8TpZ+LE0AxRLUX/d5oLdqN
-0Z+RhTSeFWZpThbExo/oc9/sqBSDaA==
-=XOH+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzKSXwACgkQJNaLcl1U
+h9BovAf/bwLtqcAVsqmVhs5NN4rhvNHpCrOqS7ZUc783n8zHxerZNtNBSkjaBnaD
+r2VsGhfPc5PLG88IEoniNmJabe2TlakiZSArnFqqUFLw15zkdCxXSWNl8wOZ4cdv
+8YizlxD7x7t4/OWzsRDHj3F/9e94lNQ5453b9hwYW32hYEjxJV5QT/4+HywD41bT
+rn9yzeQ0aQjwe+L9px/CpVH8fJJsE/ePPHDaPx0eW56izfEPKBtb+Uy5Zh6KSOEb
+W87O1AOtwu1YT4WHfJom0MT161/eDBKdz5W5LFh5mj/0dqr7XjTf2faw1dNrTzp/
+syJYkKMcvmyTIiao1c5boK+8HiYA0A==
+=GEWW
 -----END PGP SIGNATURE-----
 
---TN8pJM9vJMHHFgJc--
+--bAr+fMtvBxbbbkvl--
+
+--===============3497531339079597765==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3497531339079597765==--
