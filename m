@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: fix spelling mistake "incompatble" -> "incompatible"" to the asoc tree
-Date: Thu,  2 May 2019 03:18:01 +0100 (BST)
-Message-ID: <20190502021801.515C4441D3D@finisterre.ee.mobilebroadband>
-References: <20190501102308.30390-1-colin.king@canonical.com>
+Subject: Applied "ASoC: cs43130: fix a NULL pointer dereference" to the asoc tree
+Date: Thu,  2 May 2019 03:18:19 +0100 (BST)
+Message-ID: <20190502021820.053F2441D3C@finisterre.ee.mobilebroadband>
+References: <20190315035120.25913-1-kjlu@umn.edu>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190501102308.30390-1-colin.king@canonical.com>
+In-Reply-To: <20190315035120.25913-1-kjlu@umn.edu>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Keyon Jie <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, pakki001@umn.edu, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: fix spelling mistake "incompatble" -> "incompatible"
+   ASoC: cs43130: fix a NULL pointer dereference
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,34 +36,32 @@ to this mail.
 Thanks,
 Mark
 
->From 07f80454369e5a8141dbbf4ae0a535230f223f2b Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 1 May 2019 11:23:08 +0100
-Subject: [PATCH] ASoC: SOF: Intel: fix spelling mistake "incompatble" ->
- "incompatible"
+>From a2be42f18d409213bb7e7a736e3ef6ba005115bb Mon Sep 17 00:00:00 2001
+From: Kangjie Lu <kjlu@umn.edu>
+Date: Thu, 14 Mar 2019 22:51:20 -0500
+Subject: [PATCH] ASoC: cs43130: fix a NULL pointer dereference
 
-There is a spelling mistake in a hda_dsp_rom_msg message, fix it.
+In case create_singlethread_workqueue fails, the fix returns
+-ENOMEM to avoid potential NULL pointer dereference.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Kangjie Lu <kjlu@umn.edu>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs43130.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index b8fc19790f3b..84baf275b467 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -54,7 +54,7 @@ static const struct hda_dsp_msg_code hda_dsp_rom_msg[] = {
- 	{HDA_DSP_ROM_L2_CACHE_ERROR, "error: L2 cache error"},
- 	{HDA_DSP_ROM_LOAD_OFFSET_TO_SMALL, "error: load offset too small"},
- 	{HDA_DSP_ROM_API_PTR_INVALID, "error: API ptr invalid"},
--	{HDA_DSP_ROM_BASEFW_INCOMPAT, "error: base fw incompatble"},
-+	{HDA_DSP_ROM_BASEFW_INCOMPAT, "error: base fw incompatible"},
- 	{HDA_DSP_ROM_UNHANDLED_INTERRUPT, "error: unhandled interrupt"},
- 	{HDA_DSP_ROM_MEMORY_HOLE_ECC, "error: ECC memory hole"},
- 	{HDA_DSP_ROM_KERNEL_EXCEPTION, "error: kernel exception"},
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 3f7b255587e6..80d672710eae 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -2322,6 +2322,8 @@ static int cs43130_probe(struct snd_soc_component *component)
+ 			return ret;
+ 
+ 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
++		if (!cs43130->wq)
++			return -ENOMEM;
+ 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
+ 	}
+ 
 -- 
 2.20.1
