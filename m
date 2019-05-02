@@ -1,57 +1,145 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: tlv320aic3x: Add support for high power analog
- output
-Date: Thu, 2 May 2019 11:09:22 +0900
-Message-ID: <20190502020922.GA1602@sirena.org.uk>
-References: <20190430200118.13014-1-sravanhome@gmail.com>
+Subject: Applied "ASoC: fsl_audmix: cache pdev->dev pointer" to the asoc tree
+Date: Thu,  2 May 2019 03:18:06 +0100 (BST)
+Message-ID: <20190502021806.39C17441D3C@finisterre.ee.mobilebroadband>
+References: <1554894380-25153-5-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190430200118.13014-1-sravanhome@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Saravanan Sekar <sravanhome@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1554894380-25153-5-git-send-email-viorel.suman@nxp.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Nicolin Chen <nicoleotsuka@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Viorel Suman <viorel.suman@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Takashi Iwai <tiwai@suse.com>, Fabio Estevam <festevam@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@li>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: fsl_audmix: cache pdev->dev pointer
 
-On Tue, Apr 30, 2019 at 10:01:18PM +0200, Saravanan Sekar wrote:
-> Add support to output level control for the analog high power output
-> drivers HPOUT and HPCOM.
->=20
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+has been applied to the asoc tree at
 
-This doesn't build with current code:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-  CC      sound/soc/codecs/tlv320aic3x.o
-sound/soc/codecs/tlv320aic3x.c:428:20: error: expected =E2=80=98}=E2=80=99 =
-before =E2=80=98;=E2=80=99 token
-    4, 9, 0, hp_tlv);
-                    ^
-sound/soc/codecs/tlv320aic3x.c:330:61: note: to match this =E2=80=98{=E2=80=
-=99
- static const struct snd_kcontrol_new aic3x_snd_controls[] =3D {
-                                                             ^
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzKUVEACgkQJNaLcl1U
-h9COAgf/bEXTHlf3176QpGpGHCWyhIp2dGCP6gMgr0PXVEVWSMHxsgsy+VoB9x/n
-lApLY1dU5su1ZFAIfrgKw50lYRcplng82rn9ucAWXaU/mRh5siPAvHoNajCauI8n
-6mjjlv4gngHg8ctQQ2y0vNyzs96MlMcs9aYnIBYnLDOthFBbcai8IBRcgxw2pWp7
-dqJK+je2hIFMyJN3ChvgU0h9/C0OFWraSShvMEZRmQJJQ04IxjjuCUXKqHUYoqcZ
-QkGa/zyYw/rrD4XlTp0dQF3aVwe+b4SuytbQ6Hf0bd6Z8G2ze70jSXuArQpLa/Tq
-jx6FAB963mIStEewayY4z0zmNbQqzQ==
-=WLwu
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---Qxx1br4bt0+wmkIi--
+Thanks,
+Mark
+
+>From 62be484f7ad8443c393293a415392fbf3190c864 Mon Sep 17 00:00:00 2001
+From: Viorel Suman <viorel.suman@nxp.com>
+Date: Wed, 10 Apr 2019 11:06:39 +0000
+Subject: [PATCH] ASoC: fsl_audmix: cache pdev->dev pointer
+
+There should be no trouble to understand dev = pdev->dev.
+This can save some space to have more print info or save
+some wrapped lines.
+
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Suggested-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_audmix.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
+index dc802d5c4ccd..3897a54a11fe 100644
+--- a/sound/soc/fsl/fsl_audmix.c
++++ b/sound/soc/fsl/fsl_audmix.c
+@@ -456,6 +456,7 @@ MODULE_DEVICE_TABLE(of, fsl_audmix_ids);
+ 
+ static int fsl_audmix_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct fsl_audmix *priv;
+ 	struct resource *res;
+ 	const char *mdrv;
+@@ -463,52 +464,50 @@ static int fsl_audmix_probe(struct platform_device *pdev)
+ 	void __iomem *regs;
+ 	int ret;
+ 
+-	of_id = of_match_device(fsl_audmix_ids, &pdev->dev);
++	of_id = of_match_device(fsl_audmix_ids, dev);
+ 	if (!of_id || !of_id->data)
+ 		return -EINVAL;
+ 
+ 	mdrv = of_id->data;
+ 
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+ 	/* Get the addresses */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	regs = devm_ioremap_resource(&pdev->dev, res);
++	regs = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+ 
+-	priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "ipg", regs,
++	priv->regmap = devm_regmap_init_mmio_clk(dev, "ipg", regs,
+ 						 &fsl_audmix_regmap_config);
+ 	if (IS_ERR(priv->regmap)) {
+-		dev_err(&pdev->dev, "failed to init regmap\n");
++		dev_err(dev, "failed to init regmap\n");
+ 		return PTR_ERR(priv->regmap);
+ 	}
+ 
+-	priv->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
++	priv->ipg_clk = devm_clk_get(dev, "ipg");
+ 	if (IS_ERR(priv->ipg_clk)) {
+-		dev_err(&pdev->dev, "failed to get ipg clock\n");
++		dev_err(dev, "failed to get ipg clock\n");
+ 		return PTR_ERR(priv->ipg_clk);
+ 	}
+ 
+ 	platform_set_drvdata(pdev, priv);
+-	pm_runtime_enable(&pdev->dev);
++	pm_runtime_enable(dev);
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_audmix_component,
++	ret = devm_snd_soc_register_component(dev, &fsl_audmix_component,
+ 					      fsl_audmix_dai,
+ 					      ARRAY_SIZE(fsl_audmix_dai));
+ 	if (ret) {
+-		dev_err(&pdev->dev, "failed to register ASoC DAI\n");
++		dev_err(dev, "failed to register ASoC DAI\n");
+ 		return ret;
+ 	}
+ 
+-	priv->pdev = platform_device_register_data(&pdev->dev, mdrv, 0, NULL,
+-						   0);
++	priv->pdev = platform_device_register_data(dev, mdrv, 0, NULL, 0);
+ 	if (IS_ERR(priv->pdev)) {
+ 		ret = PTR_ERR(priv->pdev);
+-		dev_err(&pdev->dev, "failed to register platform %s: %d\n",
+-			mdrv, ret);
++		dev_err(dev, "failed to register platform %s: %d\n", mdrv, ret);
+ 	}
+ 
+ 	return ret;
+-- 
+2.20.1
