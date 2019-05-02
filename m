@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-audmix: fix object reference leaks
-	in probe" to the asoc tree
-Date: Thu,  2 May 2019 03:18:18 +0100 (BST)
-Message-ID: <20190502021818.16B99441D3B@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: rsnd: Document r8a77470 bindings" to
+	the asoc tree
+Date: Thu,  2 May 2019 03:18:27 +0100 (BST)
+Message-ID: <20190502021827.D1B70441D3C@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28F14F89727
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:22 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77532F89733
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2019 04:18:33 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Cao Van Dong <cv-dong@jinso.co.jp>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-audmix: fix object reference leaks in probe
+   ASoC: rsnd: Document r8a77470 bindings
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 8bb678d75954e9e5b9ecabfe95b20f650fd91edb Mon Sep 17 00:00:00 2001
-From: Viorel Suman <viorel.suman@nxp.com>
-Date: Wed, 10 Apr 2019 11:06:38 +0000
-Subject: [PATCH] ASoC: imx-audmix: fix object reference leaks in probe
+>From 21c7f3e31ec582bf7f0fa4068333acd22b8cb445 Mon Sep 17 00:00:00 2001
+From: Cao Van Dong <cv-dong@jinso.co.jp>
+Date: Thu, 11 Apr 2019 16:54:18 +0900
+Subject: [PATCH] ASoC: rsnd: Document r8a77470 bindings
 
-Release the reference to the underlying device taken
-by of_find_device_by_node() call.
+Document SoC specific bindings for R-Car RZ/G1C(r8a77470) SoC.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Reported-by: Julia Lawall <Julia.Lawall@lip6.fr>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Cao Van Dong <cv-dong@jinso.co.jp>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-audmix.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 7983bd339c01..9aaf3e5b45b9 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -171,6 +171,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 			np->full_name);
- 		return -EINVAL;
- 	}
-+	put_device(&audmix_pdev->dev);
- 
- 	num_dai = of_count_phandle_with_args(audmix_np, "dais", NULL);
- 	if (num_dai != FSL_AUDMIX_MAX_DAIS) {
-@@ -216,6 +217,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "failed to find SAI platform device\n");
- 			return -EINVAL;
- 		}
-+		put_device(&cpu_pdev->dev);
- 
- 		dai_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s%s",
- 					  fe_name_pref, args.np->full_name + 1);
-@@ -280,6 +282,8 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "failed to find SAI platform device\n");
- 		return -EINVAL;
- 	}
-+	put_device(&cpu_pdev->dev);
-+
- 	priv->cpu_mclk = devm_clk_get(&cpu_pdev->dev, "mclk1");
- 	if (IS_ERR(priv->cpu_mclk)) {
- 		ret = PTR_ERR(priv->cpu_mclk);
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index b34afa66fb00..5c52182f7dcf 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -266,6 +266,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
+ 				    - "renesas,rcar_sound-r8a7744" (RZ/G1N)
+ 				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
++				    - "renesas,rcar_sound-r8a77470" (RZ/G1C)
+ 				    - "renesas,rcar_sound-r8a774a1" (RZ/G2M)
+ 				    - "renesas,rcar_sound-r8a774c0" (RZ/G2E)
+ 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
 -- 
 2.20.1
