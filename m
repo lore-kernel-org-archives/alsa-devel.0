@@ -1,24 +1,22 @@
-From: ecmk <info@ecmk.org>
-Subject: Re: Kernel patch needed for Asus Q325UAR
-Date: Thu, 2 May 2019 16:06:30 -0700
-Message-ID: <5a782605-3c26-eb30-65dc-b4aaa0fa0188@ecmk.org>
-References: <1887e6cb-0c33-664c-d3be-c282d8b797de@ecmk.org>
- <s5hmukp3s6o.wl-tiwai@suse.de>
- <c341a56c-be1d-2301-1bde-b8eb403c6391@ecmk.org>
- <s5hmukgeost.wl-tiwai@suse.de>
- <9e12d82d-0b7b-7952-4367-b6fe333c4c5d@ecmk.org>
- <s5hmuk7iqk0.wl-tiwai@suse.de>
+From: Ben Zhang <benzh@chromium.org>
+Subject: Re: [PATCH] ASoC: RT5677-SPI: Disable 16Bit SPI
+	Transfers
+Date: Thu, 2 May 2019 19:25:44 -0400
+Message-ID: <CAEQjanM3geN7us7ZqmGqX_68csCtQK9qwOwrnZ_fCXRgy4QymQ@mail.gmail.com>
+References: <20190502222016.241729-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com
+ [IPv6:2607:f8b0:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5C47F8075A
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 01:06:36 +0200 (CEST)
-In-Reply-To: <s5hmuk7iqk0.wl-tiwai@suse.de>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id B793DF8075A
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 01:25:57 +0200 (CEST)
+Received: by mail-ot1-x343.google.com with SMTP id s11so3767302otp.0
+ for <alsa-devel@alsa-project.org>; Thu, 02 May 2019 16:25:57 -0700 (PDT)
+In-Reply-To: <20190502222016.241729-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,48 +26,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Great! Thank you!
-
-On 4/30/19 6:13 AM, Takashi Iwai wrote:
-> On Wed, 24 Apr 2019 01:21:36 +0200,
-> ecmk wrote:
->> Here is the alsa-info output
-> Thanks.  Below is the fix patch.  I'm going to apply it.
+On Thu, May 2, 2019 at 6:20 PM Curtis Malainey
+<cujomalainey@chromium.org> wrote:
 >
+> The current algorithm allows 3 types of transfers, 16bit, 32bit and
+> burst. According to Realtek, 16bit transfers have a special restriction
+> in that it is restricted to the memory region of
+> 0x18020000 ~ 0x18021000. This region is the memory location of the I2C
+> registers. The current algorithm does not uphold this restriction and
+> therefore fails to complete writes.
 >
-> Takashi
+> Since this has been broken for some time it likely no one is using it.
+> Better to simply disable the 16 bit writes. This will allow users to
+> properly load firmware over SPI without data corruption.
 >
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda/realtek - Apply the fixup for ASUS Q325UAR
->
-> Some ASUS models like Q325UAR with ALC295 codec requires the same
-> fixup that has been applied to ALC294 codec.  Just copy the entry with
-> the pin matching to cover ALC295 too.
->
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1784485
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> CC: Ben Zhang <benzh@chromium.org>
+> CC: Oder Chiou <oder_chiou@realtek.com>
+> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 > ---
->   sound/pci/hda/patch_realtek.c | 4 ++++
->   1 file changed, 4 insertions(+)
+>  sound/soc/codecs/rt5677-spi.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 >
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 7da7fa4f4201..42cd3945e0de 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -7547,6 +7547,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
->   		{0x12, 0x90a60130},
->   		{0x17, 0x90170110},
->   		{0x21, 0x04211020}),
-> +	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1043, "ASUS", ALC294_FIXUP_ASUS_SPK,
-> +		{0x12, 0x90a60130},
-> +		{0x17, 0x90170110},
-> +		{0x21, 0x03211020}),
->   	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
->   		{0x14, 0x90170110},
->   		{0x21, 0x04211020}),
+> diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+> index 167a02773a0b..b296e62fdbb4 100644
+> --- a/sound/soc/codecs/rt5677-spi.c
+> +++ b/sound/soc/codecs/rt5677-spi.c
+> @@ -58,13 +58,15 @@ static DEFINE_MUTEX(spi_mutex);
+>   * RT5677_SPI_READ/WRITE_32:   Transfer 4 bytes
+>   * RT5677_SPI_READ/WRITE_BURST:        Transfer any multiples of 8 bytes
+>   *
+> - * For example, reading 260 bytes at 0x60030002 uses the following commands:
+> - * 0x60030002 RT5677_SPI_READ_16       2 bytes
+> + * Note:
+> + * 16 Bit writes and reads are restricted to the address range
+> + * 0x18020000 ~ 0x18021000
+> + *
+> + * For example, reading 256 bytes at 0x60030004 uses the following commands:
+>   * 0x60030004 RT5677_SPI_READ_32       4 bytes
+>   * 0x60030008 RT5677_SPI_READ_BURST    240 bytes
+>   * 0x600300F8 RT5677_SPI_READ_BURST    8 bytes
+>   * 0x60030100 RT5677_SPI_READ_32       4 bytes
+> - * 0x60030104 RT5677_SPI_READ_16       2 bytes
+>   *
+>   * Input:
+>   * @read: true for read commands; false for write commands
+> @@ -79,15 +81,13 @@ static u8 rt5677_spi_select_cmd(bool read, u32 align, u32 remain, u32 *len)
+>  {
+>         u8 cmd;
+>
+> -       if (align == 2 || align == 6 || remain == 2) {
+> -               cmd = RT5677_SPI_READ_16;
+> -               *len = 2;
+> -       } else if (align == 4 || remain <= 6) {
+> +       if (align == 4 || remain <= 4) {
+>                 cmd = RT5677_SPI_READ_32;
+>                 *len = 4;
+>         } else {
+>                 cmd = RT5677_SPI_READ_BURST;
+> -               *len = min_t(u32, remain & ~7, RT5677_SPI_BURST_LEN);
+> +               *len = (((remain - 1) >> 3) + 1) << 3;
+> +               *len = min_t(u32, *len, RT5677_SPI_BURST_LEN);
+
+Since it already handles the case where remain&7 != 0 here, I think we
+can remove len_with_pad in rt5677_spi_write and replace it with len in
+the for loop to make it simpler.
+
+>         }
+>         return read ? cmd : cmd + 1;
+>  }
+> @@ -108,7 +108,7 @@ static void rt5677_spi_reverse(u8 *dst, u32 dstlen, const u8 *src, u32 srclen)
+>         }
+>  }
+>
+> -/* Read DSP address space using SPI. addr and len have to be 2-byte aligned. */
+> +/* Read DSP address space using SPI. addr and len have to be 4-byte aligned. */
+>  int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
+>  {
+>         u32 offset;
+> @@ -124,7 +124,7 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
+>         if (!g_spi)
+>                 return -ENODEV;
+>
+> -       if ((addr & 1) || (len & 1)) {
+> +       if ((addr & 3) || (len & 3)) {
+>                 dev_err(&g_spi->dev, "Bad read align 0x%x(%zu)\n", addr, len);
+>                 return -EACCES;
+>         }
+> @@ -159,8 +159,8 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
+>  }
+>  EXPORT_SYMBOL_GPL(rt5677_spi_read);
+>
+> -/* Write DSP address space using SPI. addr has to be 2-byte aligned.
+> - * If len is not 2-byte aligned, an extra byte of zero is written at the end
+> +/* Write DSP address space using SPI. addr has to be 4-byte aligned.
+> + * If len is not 4-byte aligned, then extra zeros are written at the end
+>   * as padding.
+>   */
+>  int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
+> @@ -178,7 +178,7 @@ int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
+>         if (!g_spi)
+>                 return -ENODEV;
+>
+> -       if (addr & 1) {
+> +       if (addr & 3) {
+>                 dev_err(&g_spi->dev, "Bad write align 0x%x(%zu)\n", addr, len);
+>                 return -EACCES;
+>         }
+> --
+> 2.21.0.593.g511ec345e18-goog
+>
