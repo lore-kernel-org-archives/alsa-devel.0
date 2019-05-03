@@ -1,100 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5] ASoC: mediatek: Add MT8516 PCM driver
-Date: Fri, 3 May 2019 14:58:09 +0900
-Message-ID: <20190503055809.GC14916@sirena.org.uk>
-References: <20190502121041.8045-1-fparent@baylibre.com>
- <20190502121041.8045-4-fparent@baylibre.com>
+Subject: Re: [PATCH v2] ASoC: mediatek: mt8516: register ADDA DAI
+Date: Fri, 3 May 2019 15:11:11 +0900
+Message-ID: <20190503061111.GA32229@sirena.org.uk>
+References: <20190502131214.24009-1-fparent@baylibre.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e7WmlSfQJTtHfSol"
+        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190502121041.8045-4-fparent@baylibre.com>
+In-Reply-To: <20190502131214.24009-1-fparent@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Fabien Parent <fparent@baylibre.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, kaichieh.chuang@mediatek.com, shunli.wang@mediatek.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---e7WmlSfQJTtHfSol
+--SLDf9lqlvOQaIe6s
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 02, 2019 at 02:10:39PM +0200, Fabien Parent wrote:
+On Thu, May 02, 2019 at 03:12:14PM +0200, Fabien Parent wrote:
 
-> +static irqreturn_t mt8516_afe_irq_handler(int irq, void *dev_id)
-> +{
-> +	struct mtk_base_afe *afe = dev_id;
-> +	unsigned int reg_value;
-> +	unsigned int memif_status;
-> +	int i, ret;
-> +
-> +	ret = regmap_read(afe->regmap, AFE_IRQ_STATUS, &reg_value);
-> +	if (ret) {
-> +		reg_value = AFE_IRQ_STATUS_BITS;
-> +		goto exit_irq;
-> +	}
+> This patch depends on patch serie:
+> 	[PATCH 0/5] ASoC: mediatek: Add basic PCM driver for MT8516
+>=20
+> v2:
+> 	* Register ADDA before memif to fix ordering issue.
 
-...
+This is v2 of a single patch which depends on an in review patch series?
+Please don't do things like this, it makes it much more confusing to
+follow what's going on - unless there's some strong reason to do
+otherwise it's better to either wait for the existing patch series to be
+reviewed or to resend the whole thing.
 
-> +exit_irq:
-> +	regmap_write(afe->regmap, AFE_IRQ_CLR, reg_value & AFE_IRQ_STATUS_BITS);
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-This unconditionally says it handled an interrupt regardless of what
-happened.  This means that the interrupt line can't be shared and that
-the error handling code in the generic interrupt subsystem can't tell if
-something goes wrong and the interrupt gets stuck.
-
-> +	ret = devm_request_irq(afe->dev, irq_id, mt8516_afe_irq_handler,
-> +			       0, "Afe_ISR_Handle", (void *)afe);
-> +	if (ret) {
-> +		dev_err(afe->dev, "could not request_irq\n");
-> +		return ret;
-> +	}
-
-Are you sure the interrupt handler can safely use managed resources,
-especially given...
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(afe->base_addr))
-> +		return PTR_ERR(afe->base_addr);
-> +
-> +	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
-> +		&mt8516_afe_regmap_config);
-> +	if (IS_ERR(afe->regmap))
-> +		return PTR_ERR(afe->regmap);
-
-...that things like the register map and the I/O resources for the chip
-are allocated after and therefore freed before before the interrupt is
-freed.  Normally the interrupt should be one of the last things to be
-allocated.
-
-> +static int mt8516_afe_pcm_dev_remove(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
-
-In general if functions can legitimately be empty they should just be
-omitted, if they are required that usually means they have to do
-something.
-
---e7WmlSfQJTtHfSol
+--SLDf9lqlvOQaIe6s
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL2HAACgkQJNaLcl1U
-h9CyAwf9G6RLyjC0l1jZ7PuvlyUWgPa0meffYGQwZm5IRVLUCEfYjhxodTO5hKh2
-fFN64GvyEDq68fgDpF1ILhSFWZFRBLkdFwJ2/e2tknzzQ3QWpWA3mvzrzEzyZlOB
-Z0ocR20bgbYxO+OAas//SnwCaY+Hm14Dho0oQooGlWHWGfQtxF7OcKKVTYnf1uij
-GHYwqmasG50ldZZ+Lwu8tgueOohnt53QpM5L8wx33IBSYmmAdpCw6C6raql8bQAe
-9dyCLUtxkI+dUhvn9cemnDD6VTPhPvj7AGL+L8Xp2/3T8GQQkYTyskjPWt/3nCan
-5wADxvamyeOpeEhFqke6O33PxGD2jA==
-=0nPV
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL234ACgkQJNaLcl1U
+h9DlYAf+NB6GD7ylQBBA7/swvGJd8bxeuqc3fRRWHfYBVXV1nkAQOhs5IoTziCE3
+W2b1ACZX9lv2scdJ/8/OwxN10Q4/i30ShHMTIPeY2/hEn6dnPcYoTQg8n+W+Ca5e
+Aa0ixg+VrXMYV7mSo8qYtuVULeOK1H8drM8pA61is2RlupNHtdwdFwfiCXO6uKRU
+1FKvToH0OGsohgfGXdfGlz1JpSLNZrWefcyo2talqy3GTpXnMpROsGGZyNNx0EyF
+bWLfdfuArrauf4kXhF559nMoWTIuA2/paZFVNNxZrmC5C8ViyU51Yh+nAz4iLFbg
+f+dC4E1ARwca+ZyOMN/7V06nYMyx0A==
+=dh9z
 -----END PGP SIGNATURE-----
 
---e7WmlSfQJTtHfSol--
+--SLDf9lqlvOQaIe6s--
