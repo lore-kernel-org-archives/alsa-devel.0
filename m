@@ -1,72 +1,100 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: stream is already locked in hw_params" to the asoc tree
-Date: Fri,  3 May 2019 07:21:30 +0100 (BST)
-Message-ID: <20190503062130.85F76441D68@finisterre.ee.mobilebroadband>
-References: <20190429132943.16269-4-jbrunet@baylibre.com>
+Subject: Re: [PATCH 3/5] ASoC: mediatek: Add MT8516 PCM driver
+Date: Fri, 3 May 2019 14:58:09 +0900
+Message-ID: <20190503055809.GC14916@sirena.org.uk>
+References: <20190502121041.8045-1-fparent@baylibre.com>
+ <20190502121041.8045-4-fparent@baylibre.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e7WmlSfQJTtHfSol"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429132943.16269-4-jbrunet@baylibre.com>
+Content-Disposition: inline
+In-Reply-To: <20190502121041.8045-4-fparent@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
+To: Fabien Parent <fparent@baylibre.com>
+Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, kaichieh.chuang@mediatek.com, shunli.wang@mediatek.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdmi-codec: stream is already locked in hw_params
+--e7WmlSfQJTtHfSol
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Thu, May 02, 2019 at 02:10:39PM +0200, Fabien Parent wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+> +static irqreturn_t mt8516_afe_irq_handler(int irq, void *dev_id)
+> +{
+> +	struct mtk_base_afe *afe = dev_id;
+> +	unsigned int reg_value;
+> +	unsigned int memif_status;
+> +	int i, ret;
+> +
+> +	ret = regmap_read(afe->regmap, AFE_IRQ_STATUS, &reg_value);
+> +	if (ret) {
+> +		reg_value = AFE_IRQ_STATUS_BITS;
+> +		goto exit_irq;
+> +	}
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +exit_irq:
+> +	regmap_write(afe->regmap, AFE_IRQ_CLR, reg_value & AFE_IRQ_STATUS_BITS);
+> +
+> +	return IRQ_HANDLED;
+> +}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This unconditionally says it handled an interrupt regardless of what
+happened.  This means that the interrupt line can't be shared and that
+the error handling code in the generic interrupt subsystem can't tell if
+something goes wrong and the interrupt gets stuck.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +	ret = devm_request_irq(afe->dev, irq_id, mt8516_afe_irq_handler,
+> +			       0, "Afe_ISR_Handle", (void *)afe);
+> +	if (ret) {
+> +		dev_err(afe->dev, "could not request_irq\n");
+> +		return ret;
+> +	}
 
-Thanks,
-Mark
+Are you sure the interrupt handler can safely use managed resources,
+especially given...
 
->From 726fc60babe4a46e946e69a9dbd3e21aaec4d58e Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 29 Apr 2019 15:29:40 +0200
-Subject: [PATCH] ASoC: hdmi-codec: stream is already locked in hw_params
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(afe->base_addr))
+> +		return PTR_ERR(afe->base_addr);
+> +
+> +	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
+> +		&mt8516_afe_regmap_config);
+> +	if (IS_ERR(afe->regmap))
+> +		return PTR_ERR(afe->regmap);
 
-startup() should have run before hw_params() is called, so the
-current_substream pointer should already be properly set. There
-is no reason to call hdmi_codec_new_stream() again in the
-hw_params() callback
+...that things like the register map and the I/O resources for the chip
+are allocated after and therefore freed before before the interrupt is
+freed.  Normally the interrupt should be one of the last things to be
+allocated.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdmi-codec.c | 4 ----
- 1 file changed, 4 deletions(-)
+> +static int mt8516_afe_pcm_dev_remove(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index b9d9dde9fbaf..ef6d6959ecc5 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -492,10 +492,6 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	ret = hdmi_codec_new_stream(substream, dai);
--	if (ret)
--		return ret;
--
- 	hdmi_audio_infoframe_init(&hp.cea);
- 	hp.cea.channels = params_channels(params);
- 	hp.cea.coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
--- 
-2.20.1
+In general if functions can legitimately be empty they should just be
+omitted, if they are required that usually means they have to do
+something.
+
+--e7WmlSfQJTtHfSol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL2HAACgkQJNaLcl1U
+h9CyAwf9G6RLyjC0l1jZ7PuvlyUWgPa0meffYGQwZm5IRVLUCEfYjhxodTO5hKh2
+fFN64GvyEDq68fgDpF1ILhSFWZFRBLkdFwJ2/e2tknzzQ3QWpWA3mvzrzEzyZlOB
+Z0ocR20bgbYxO+OAas//SnwCaY+Hm14Dho0oQooGlWHWGfQtxF7OcKKVTYnf1uij
+GHYwqmasG50ldZZ+Lwu8tgueOohnt53QpM5L8wx33IBSYmmAdpCw6C6raql8bQAe
+9dyCLUtxkI+dUhvn9cemnDD6VTPhPvj7AGL+L8Xp2/3T8GQQkYTyskjPWt/3nCan
+5wADxvamyeOpeEhFqke6O33PxGD2jA==
+=0nPV
+-----END PGP SIGNATURE-----
+
+--e7WmlSfQJTtHfSol--
