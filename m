@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: avoid Oops if DMA setup fails" to the asoc tree
-Date: Fri,  3 May 2019 07:18:42 +0100 (BST)
-Message-ID: <20190503061842.6D839441D58@finisterre.ee.mobilebroadband>
-References: <20190429182517.210909-1-zwisler@google.com>
+Subject: Applied "ASoC: hdmi-codec: stream is already locked in hw_params" to the asoc tree
+Date: Fri,  3 May 2019 07:23:32 +0100 (BST)
+Message-ID: <20190503062332.C43F4441D58@finisterre.ee.mobilebroadband>
+References: <20190429132943.16269-4-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429182517.210909-1-zwisler@google.com>
+In-Reply-To: <20190429132943.16269-4-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ross Zwisler <zwisler@chromium.org>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ross Zwisler <zwisler@google.com>, stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: avoid Oops if DMA setup fails
+   ASoC: hdmi-codec: stream is already locked in hw_params
 
 has been applied to the asoc tree at
 
@@ -37,63 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 0efa3334d65b7f421ba12382dfa58f6ff5bf83c4 Mon Sep 17 00:00:00 2001
-From: Ross Zwisler <zwisler@chromium.org>
-Date: Mon, 29 Apr 2019 12:25:17 -0600
-Subject: [PATCH] ASoC: Intel: avoid Oops if DMA setup fails
+>From 726fc60babe4a46e946e69a9dbd3e21aaec4d58e Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 29 Apr 2019 15:29:40 +0200
+Subject: [PATCH] ASoC: hdmi-codec: stream is already locked in hw_params
 
-Currently in sst_dsp_new() if we get an error return from sst_dma_new()
-we just print an error message and then still complete the function
-successfully.  This means that we are trying to run without sst->dma
-properly set up, which will result in NULL pointer dereference when
-sst->dma is later used.  This was happening for me in
-sst_dsp_dma_get_channel():
+startup() should have run before hw_params() is called, so the
+current_substream pointer should already be properly set. There
+is no reason to call hdmi_codec_new_stream() again in the
+hw_params() callback
 
-        struct sst_dma *dma = dsp->dma;
-	...
-        dma->ch = dma_request_channel(mask, dma_chan_filter, dsp);
-
-This resulted in:
-
-   BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
-   IP: sst_dsp_dma_get_channel+0x4f/0x125 [snd_soc_sst_firmware]
-
-Fix this by adding proper error handling for the case where we fail to
-set up DMA.
-
-This change only affects Haswell and Broadwell systems.  Baytrail
-systems explicilty opt-out of DMA via sst->pdata->resindex_dma_base
-being set to -1.
-
-Signed-off-by: Ross Zwisler <zwisler@google.com>
-Cc: stable@vger.kernel.org
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-firmware.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index 1e067504b604..f830e59f93ea 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -1251,11 +1251,15 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
- 		goto irq_err;
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index b9d9dde9fbaf..ef6d6959ecc5 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -492,10 +492,6 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
- 	err = sst_dma_new(sst);
--	if (err)
--		dev_warn(dev, "sst_dma_new failed %d\n", err);
-+	if (err)  {
-+		dev_err(dev, "sst_dma_new failed %d\n", err);
-+		goto dma_err;
-+	}
- 
- 	return sst;
- 
-+dma_err:
-+	free_irq(sst->irq, sst);
- irq_err:
- 	if (sst->ops->free)
- 		sst->ops->free(sst);
+-	ret = hdmi_codec_new_stream(substream, dai);
+-	if (ret)
+-		return ret;
+-
+ 	hdmi_audio_infoframe_init(&hp.cea);
+ 	hp.cea.channels = params_channels(params);
+ 	hp.cea.coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
 -- 
 2.20.1
