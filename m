@@ -1,17 +1,17 @@
 From: mac.chiang@intel.com
-Subject: [PATCH] ASoC: Intel: boards: kbl_da7219_max98927: add
-	dai_trigger function
-Date: Fri,  3 May 2019 10:27:33 +0800
-Message-ID: <1556850453-32619-1-git-send-email-mac.chiang@intel.com>
+Subject: [PATCH RESEND v4] ASoC: Intel: boards:
+	kbl_da7219_max98927: add dai_trigger function
+Date: Fri,  3 May 2019 10:48:17 +0800
+Message-ID: <1556851697-301-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96666F8075A
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 04:27:19 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 881F8F80722
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 04:48:03 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
