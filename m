@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix valid stream condition" to the asoc tree
-Date: Fri,  3 May 2019 07:23:34 +0100 (BST)
-Message-ID: <20190503062334.9B15D441D41@finisterre.ee.mobilebroadband>
-References: <20190429094750.1857-2-jbrunet@baylibre.com>
+Subject: Applied "ASoC: Intel: avoid Oops if DMA setup fails" to the asoc tree
+Date: Fri,  3 May 2019 07:18:42 +0100 (BST)
+Message-ID: <20190503061842.6D839441D58@finisterre.ee.mobilebroadband>
+References: <20190429182517.210909-1-zwisler@google.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429094750.1857-2-jbrunet@baylibre.com>
+In-Reply-To: <20190429182517.210909-1-zwisler@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
+To: Ross Zwisler <zwisler@chromium.org>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ross Zwisler <zwisler@google.com>, stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fix valid stream condition
+   ASoC: Intel: avoid Oops if DMA setup fails
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,37 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 6a7c59c6d9f3b280e81d7a04bbe4e55e90152dce Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 29 Apr 2019 11:47:49 +0200
-Subject: [PATCH] ASoC: fix valid stream condition
+>From 0efa3334d65b7f421ba12382dfa58f6ff5bf83c4 Mon Sep 17 00:00:00 2001
+From: Ross Zwisler <zwisler@chromium.org>
+Date: Mon, 29 Apr 2019 12:25:17 -0600
+Subject: [PATCH] ASoC: Intel: avoid Oops if DMA setup fails
 
-A stream may specify a rate range using 'rate_min' and 'rate_max', so a
-stream may be valid and not specify any rates. However, as stream cannot
-be valid and not have any channel. Let's use this condition instead to
-determine if a stream is valid or not.
+Currently in sst_dsp_new() if we get an error return from sst_dma_new()
+we just print an error message and then still complete the function
+successfully.  This means that we are trying to run without sst->dma
+properly set up, which will result in NULL pointer dereference when
+sst->dma is later used.  This was happening for me in
+sst_dsp_dma_get_channel():
 
-Fixes: cde79035c6cf ("ASoC: Handle multiple codecs with split playback / capture")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+        struct sst_dma *dma = dsp->dma;
+	...
+        dma->ch = dma_request_channel(mask, dma_chan_filter, dsp);
+
+This resulted in:
+
+   BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
+   IP: sst_dsp_dma_get_channel+0x4f/0x125 [snd_soc_sst_firmware]
+
+Fix this by adding proper error handling for the case where we fail to
+set up DMA.
+
+This change only affects Haswell and Broadwell systems.  Baytrail
+systems explicilty opt-out of DMA via sst->pdata->resindex_dma_base
+being set to -1.
+
+Signed-off-by: Ross Zwisler <zwisler@google.com>
+Cc: stable@vger.kernel.org
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/common/sst-firmware.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d21247546f7f..57088bd69e5d 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -43,8 +43,8 @@ static bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream)
- 	else
- 		codec_stream = &dai->driver->capture;
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index 1e067504b604..f830e59f93ea 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -1251,11 +1251,15 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
+ 		goto irq_err;
  
--	/* If the codec specifies any rate at all, it supports the stream. */
--	return codec_stream->rates;
-+	/* If the codec specifies any channels at all, it supports the stream */
-+	return codec_stream->channels_min;
- }
+ 	err = sst_dma_new(sst);
+-	if (err)
+-		dev_warn(dev, "sst_dma_new failed %d\n", err);
++	if (err)  {
++		dev_err(dev, "sst_dma_new failed %d\n", err);
++		goto dma_err;
++	}
  
- /**
+ 	return sst;
+ 
++dma_err:
++	free_irq(sst->irq, sst);
+ irq_err:
+ 	if (sst->ops->free)
+ 		sst->ops->free(sst);
 -- 
 2.20.1
