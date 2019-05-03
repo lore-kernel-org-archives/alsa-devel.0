@@ -1,21 +1,20 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v2 22/30] mfd: cros_ec: Add Smart Battery
-	Firmware update API
-Date: Fri,  3 May 2019 15:02:25 -0700
-Message-ID: <20190503220233.64546-23-gwendal@chromium.org>
+Subject: [PATCH v2 27/30] mfd: cros_ec: Add API for rwsig
+Date: Fri,  3 May 2019 15:02:30 -0700
+Message-ID: <20190503220233.64546-28-gwendal@chromium.org>
 References: <20190503220233.64546-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
+ [IPv6:2607:f8b0:4864:20::641])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33E7EF8974B
- for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:03:20 +0200 (CEST)
-Received: by mail-pg1-x542.google.com with SMTP id h1so3352853pgs.2
- for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:03:20 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F5F9F8973C
+ for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:03:28 +0200 (CEST)
+Received: by mail-pl1-x641.google.com with SMTP id e92so3316242plb.6
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:03:28 -0700 (PDT)
 In-Reply-To: <20190503220233.64546-1-gwendal@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,97 +29,51 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add API to update battery firmware.
+Add command to retrieve signature of image stored in the RW memory
+slot(s).
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 73 ++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 7f98c6e63ad1..49ea905cfd18 100644
+index 4a9ac3861bdd..3d3a37b11002 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -4243,6 +4243,79 @@ struct ec_response_battery_vendor_param {
- 	uint32_t value;
- } __ec_align4;
+@@ -5043,6 +5043,32 @@ struct ec_response_pd_chip_info_v1 {
+ 	};
+ } __ec_align2;
  
-+/*****************************************************************************/
-+/*
-+ * Smart Battery Firmware Update Commands
-+ */
-+#define EC_CMD_SB_FW_UPDATE 0x00B5
++/* Run RW signature verification and get status */
++#define EC_CMD_RWSIG_CHECK_STATUS	0x011C
 +
-+enum ec_sb_fw_update_subcmd {
-+	EC_SB_FW_UPDATE_PREPARE  = 0x0,
-+	EC_SB_FW_UPDATE_INFO     = 0x1, /*query sb info */
-+	EC_SB_FW_UPDATE_BEGIN    = 0x2, /*check if protected */
-+	EC_SB_FW_UPDATE_WRITE    = 0x3, /*check if protected */
-+	EC_SB_FW_UPDATE_END      = 0x4,
-+	EC_SB_FW_UPDATE_STATUS   = 0x5,
-+	EC_SB_FW_UPDATE_PROTECT  = 0x6,
-+	EC_SB_FW_UPDATE_MAX      = 0x7,
++struct ec_response_rwsig_check_status {
++	uint32_t status;
++} __ec_align4;
++
++/* For controlling RWSIG task */
++#define EC_CMD_RWSIG_ACTION	0x011D
++
++enum rwsig_action {
++	RWSIG_ACTION_ABORT = 0,		/* Abort RWSIG and prevent jumping */
++	RWSIG_ACTION_CONTINUE = 1,	/* Jump to RW immediately */
 +};
 +
-+#define SB_FW_UPDATE_CMD_WRITE_BLOCK_SIZE 32
-+#define SB_FW_UPDATE_CMD_STATUS_SIZE 2
-+#define SB_FW_UPDATE_CMD_INFO_SIZE 8
-+
-+struct ec_sb_fw_update_header {
-+	uint16_t subcmd;  /* enum ec_sb_fw_update_subcmd */
-+	uint16_t fw_id;   /* firmware id */
++struct ec_params_rwsig_action {
++	uint32_t action;
 +} __ec_align4;
 +
-+struct ec_params_sb_fw_update {
-+	struct ec_sb_fw_update_header hdr;
-+	union {
-+		/* EC_SB_FW_UPDATE_PREPARE  = 0x0 */
-+		/* EC_SB_FW_UPDATE_INFO     = 0x1 */
-+		/* EC_SB_FW_UPDATE_BEGIN    = 0x2 */
-+		/* EC_SB_FW_UPDATE_END      = 0x4 */
-+		/* EC_SB_FW_UPDATE_STATUS   = 0x5 */
-+		/* EC_SB_FW_UPDATE_PROTECT  = 0x6 */
-+		/* Those have no args */
++/* Run verification on a slot */
++#define EC_CMD_EFS_VERIFY	0x011E
 +
-+		/* EC_SB_FW_UPDATE_WRITE    = 0x3 */
-+		struct __ec_align4 {
-+			uint8_t  data[SB_FW_UPDATE_CMD_WRITE_BLOCK_SIZE];
-+		} write;
-+	};
-+} __ec_align4;
-+
-+struct ec_response_sb_fw_update {
-+	union {
-+		/* EC_SB_FW_UPDATE_INFO     = 0x1 */
-+		struct __ec_align1 {
-+			uint8_t data[SB_FW_UPDATE_CMD_INFO_SIZE];
-+		} info;
-+
-+		/* EC_SB_FW_UPDATE_STATUS   = 0x5 */
-+		struct __ec_align1 {
-+			uint8_t data[SB_FW_UPDATE_CMD_STATUS_SIZE];
-+		} status;
-+	};
++struct ec_params_efs_verify {
++	uint8_t region;		/* enum ec_flash_region */
 +} __ec_align1;
 +
-+/*
-+ * Entering Verified Boot Mode Command
-+ * Default mode is VBOOT_MODE_NORMAL if EC did not receive this command.
-+ * Valid Modes are: normal, developer, and recovery.
-+ */
-+#define EC_CMD_ENTERING_MODE 0x00B6
-+
-+struct ec_params_entering_mode {
-+	int vboot_mode;
-+} __ec_align4;
-+
-+#define VBOOT_MODE_NORMAL    0
-+#define VBOOT_MODE_DEVELOPER 1
-+#define VBOOT_MODE_RECOVERY  2
-+
  /*****************************************************************************/
- /*
-  * HDMI CEC commands
+ /* Fingerprint MCU commands: range 0x0400-0x040x */
+ 
 -- 
 2.21.0.1020.gf2820cf01a-goog
