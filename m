@@ -1,61 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [EXT] Re: [PATCH V4] ASoC: fsl_esai: Add pm runtime function
-Date: Fri, 3 May 2019 13:27:31 +0900
-Message-ID: <20190503042731.GX14916@sirena.org.uk>
-References: <c4cf809a66b8c98de11e43f7e9fa2823cf3c5ba6.1556417687.git.shengjiu.wang@nxp.com>
- <20190502023945.GA19532@sirena.org.uk>
- <VE1PR04MB6479F3EED50613DF8F041713E3340@VE1PR04MB6479.eurprd04.prod.outlook.com>
+Subject: Re: [RFC PATCH] ASoC: max98357a: manage GPIO for
+	component rebinding
+Date: Fri, 3 May 2019 13:29:03 +0900
+Message-ID: <20190503042903.GY14916@sirena.org.uk>
+References: <20190430080107.113871-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7fXEoLLey27Fs/d6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6479F3EED50613DF8F041713E3340@VE1PR04MB6479.eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============4944152721041089040=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 635F5F8075A
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 06:29:18 +0200 (CEST)
+In-Reply-To: <20190430080107.113871-1-tzungbi@google.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: alsa-devel@alsa-project.org, dgreid@google.com, tiwai@suse.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
 
---7fXEoLLey27Fs/d6
+--===============4944152721041089040==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="m8yuz6kcWj4yJ5vq"
+Content-Disposition: inline
+
+
+--m8yuz6kcWj4yJ5vq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 02, 2019 at 09:13:58AM +0000, S.j. Wang wrote:
+On Tue, Apr 30, 2019 at 04:01:07PM +0800, Tzung-Bi Shih wrote:
 
-> I am checking, but I don't know why this patch failed in your side. I=20
-> Tried to apply this patch on for-5.1, for 5.2,  for-linus  and for-next, =
-all are
-> Successful.  The git is git://git.kernel.org/pub/scm/linux/kernel/git/bro=
-onie/sound.git.
+> The patch changes devm to non-devm API, because we don't have equivalent
+> API for ASoC components (e.g. compm_).
 
-> I can't reproduce your problem. Is there any my operation wrong?
+Don't do this, if you're missing a needed API then add it.
 
-The error message I got was:
-
-Applying: ASoC: fsl_esai: Add pm runtime function
-error: patch failed: sound/soc/fsl/fsl_esai.c:9
-error: sound/soc/fsl/fsl_esai.c: patch does not apply
-Patch failed at 0001 ASoC: fsl_esai: Add pm runtime function
-
-which is the header addition.  I can't spot any obvious issues visually
-looking at the patch, only thing I can think is some kind of whitespace
-damage somewhere.
-
---7fXEoLLey27Fs/d6
+--m8yuz6kcWj4yJ5vq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzLwzAACgkQJNaLcl1U
-h9AAiQf9HER7t18a/h1Xns+qrJ2Gt/oRnh2FQEPHz/ajt0N1I2kyvwnDMxXjU34Q
-FKJHEqKuZ0uke450rOvpVifBPhnbxhdkqVCKjT4sW0fyznHNxy9PQ0/3L25J0v1J
-pPEBlTC98wytk8rkdrJqwY3gBV6lzaO/2s+dntb+7w9jqadwDz/QvpGBY3rFGCtd
-D2vBoMjd3MhCZRZv2VuVfPuV/xtmdS+/wwhiE9Wo8Q8+55wfgN+7mNaYAkyofhUS
-3l0RLeg4aXFJvltKO0oHlToG+emSt5i06hp0QQfTFuUKYe/d9xVKb7z8Icas0mMf
-LhcnV09lhAjvRs4boOmGzenukdsmxw==
-=jyVv
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzLw44ACgkQJNaLcl1U
+h9Aluwf+KeFXrcGCCW0XtpzMGsFElg8Yk32enWwFClNcq9QwXfoeB6T/cNNLDCH9
+WUT9IUMGyyjkfCBOG/hd9Af7OJqZKjcbBm17lRcoKpyVNyBXUZDjx7W6wPtFHaJu
++xN7UcxiqiY1iHfjcF7t8rquFeOxRQQOOr8ddxRyz3RMxkjTuM+ZkHQJpGr6v5LT
+54hT/qzXUne5RhSYWxMkou3k69lwxFedvOvh0aCvsTFLgchzLwv2VV+CwSnaLXly
+je5NJuXMC7eb1nz3ztuReqLQNu/xtKZ96vCgvbjxp1+Yu/0G5YtyDVPOmgCrywiA
+t73ZsnybCbhFeRSGPg2GL7tnp4FJKg==
+=dBZL
 -----END PGP SIGNATURE-----
 
---7fXEoLLey27Fs/d6--
+--m8yuz6kcWj4yJ5vq--
+
+--===============4944152721041089040==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4944152721041089040==--
