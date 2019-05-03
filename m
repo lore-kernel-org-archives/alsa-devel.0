@@ -1,21 +1,20 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v2 08/30] mfd: cros_ec: move HDMI CEC API
-	definition
-Date: Fri,  3 May 2019 15:02:11 -0700
-Message-ID: <20190503220233.64546-9-gwendal@chromium.org>
+Subject: [PATCH v2 12/30] mfd: cros_ec: Add lightbar v2 API
+Date: Fri,  3 May 2019 15:02:15 -0700
+Message-ID: <20190503220233.64546-13-gwendal@chromium.org>
 References: <20190503220233.64546-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
+ [IPv6:2607:f8b0:4864:20::644])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B263F8075A
- for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:02:58 +0200 (CEST)
-Received: by mail-pg1-x542.google.com with SMTP id w22so2030111pgi.6
- for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:02:57 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF5A5F896B7
+ for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:03:04 +0200 (CEST)
+Received: by mail-pl1-x644.google.com with SMTP id x15so3311560pln.9
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:03:04 -0700 (PDT)
 In-Reply-To: <20190503220233.64546-1-gwendal@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,179 +29,210 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Move near the end of file.
+New API split commands, improve EC command latency.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 148 ++++++++++++++-------------
- 1 file changed, 75 insertions(+), 73 deletions(-)
+ include/linux/mfd/cros_ec_commands.h | 124 ++++++++++++++++++++++++++-
+ 1 file changed, 120 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 6538c5789c43..67e15c29e083 100644
+index 5747bbcfa45f..d55f155eb735 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -3124,6 +3124,81 @@ struct ec_response_battery_vendor_param {
- } __ec_align4;
+@@ -1628,7 +1628,10 @@ struct lightbar_params_v1 {
+ 	int32_t s3_sleep_for;
+ 	int32_t s3_ramp_up;
+ 	int32_t s3_ramp_down;
++	int32_t s5_ramp_up;
++	int32_t s5_ramp_down;
+ 	int32_t tap_tick_delay;
++	int32_t tap_gate_delay;
+ 	int32_t tap_display_time;
  
- /*****************************************************************************/
-+/*
-+ * HDMI CEC commands
+ 	/* Tap-for-battery params */
+@@ -1656,11 +1659,82 @@ struct lightbar_params_v1 {
+ 	uint8_t s0_idx[2][LB_BATTERY_LEVELS];	/* AP is running */
+ 	uint8_t s3_idx[2][LB_BATTERY_LEVELS];	/* AP is sleeping */
+ 
++	/* s5: single color pulse on inhibited power-up */
++	uint8_t s5_idx;
++
+ 	/* Color palette */
+ 	struct rgb_s color[8];			/* 0-3 are Google colors */
+ } __ec_todo_packed;
+ 
+-/* Lightbar program */
++/* Lightbar command params v2
++ * crbug.com/467716
 + *
-+ * These commands are for sending and receiving message via HDMI CEC
++ * lightbar_parms_v1 was too big for i2c, therefore in v2, we split them up by
++ * logical groups to make it more manageable ( < 120 bytes).
++ *
++ * NOTE: Each of these groups must be less than 120 bytes.
 + */
 +
-+#define MAX_CEC_MSG_LEN 16
++struct lightbar_params_v2_timing {
++	/* Timing */
++	int32_t google_ramp_up;
++	int32_t google_ramp_down;
++	int32_t s3s0_ramp_up;
++	int32_t s0_tick_delay[2];		/* AC=0/1 */
++	int32_t s0a_tick_delay[2];		/* AC=0/1 */
++	int32_t s0s3_ramp_down;
++	int32_t s3_sleep_for;
++	int32_t s3_ramp_up;
++	int32_t s3_ramp_down;
++	int32_t s5_ramp_up;
++	int32_t s5_ramp_down;
++	int32_t tap_tick_delay;
++	int32_t tap_gate_delay;
++	int32_t tap_display_time;
++} __ec_todo_packed;
 +
-+/* CEC message from the AP to be written on the CEC bus */
-+#define EC_CMD_CEC_WRITE_MSG 0x00B8
++struct lightbar_params_v2_tap {
++	/* Tap-for-battery params */
++	uint8_t tap_pct_red;
++	uint8_t tap_pct_green;
++	uint8_t tap_seg_min_on;
++	uint8_t tap_seg_max_on;
++	uint8_t tap_seg_osc;
++	uint8_t tap_idx[3];
++} __ec_todo_packed;
 +
-+/**
-+ * struct ec_params_cec_write - Message to write to the CEC bus
-+ * @msg: message content to write to the CEC bus
-+ */
-+struct ec_params_cec_write {
-+	uint8_t msg[MAX_CEC_MSG_LEN];
-+} __ec_align1;
++struct lightbar_params_v2_oscillation {
++	/* Oscillation */
++	uint8_t osc_min[2];			/* AC=0/1 */
++	uint8_t osc_max[2];			/* AC=0/1 */
++	uint8_t w_ofs[2];			/* AC=0/1 */
++} __ec_todo_packed;
 +
-+/* Set various CEC parameters */
-+#define EC_CMD_CEC_SET 0x00BA
++struct lightbar_params_v2_brightness {
++	/* Brightness limits based on the backlight and AC. */
++	uint8_t bright_bl_off_fixed[2];		/* AC=0/1 */
++	uint8_t bright_bl_on_min[2];		/* AC=0/1 */
++	uint8_t bright_bl_on_max[2];		/* AC=0/1 */
++} __ec_todo_packed;
 +
-+/**
-+ * struct ec_params_cec_set - CEC parameters set
-+ * @cmd: parameter type, can be CEC_CMD_ENABLE or CEC_CMD_LOGICAL_ADDRESS
-+ * @val: in case cmd is CEC_CMD_ENABLE, this field can be 0 to disable CEC
-+ *	or 1 to enable CEC functionality, in case cmd is
-+ *	CEC_CMD_LOGICAL_ADDRESS, this field encodes the requested logical
-+ *	address between 0 and 15 or 0xff to unregister
-+ */
-+struct ec_params_cec_set {
-+	uint8_t cmd; /* enum cec_command */
-+	uint8_t val;
-+} __ec_align1;
++struct lightbar_params_v2_thresholds {
++	/* Battery level thresholds */
++	uint8_t battery_threshold[LB_BATTERY_LEVELS - 1];
++} __ec_todo_packed;
 +
-+/* Read various CEC parameters */
-+#define EC_CMD_CEC_GET 0x00BB
++struct lightbar_params_v2_colors {
++	/* Map [AC][battery_level] to color index */
++	uint8_t s0_idx[2][LB_BATTERY_LEVELS];	/* AP is running */
++	uint8_t s3_idx[2][LB_BATTERY_LEVELS];	/* AP is sleeping */
 +
-+/**
-+ * struct ec_params_cec_get - CEC parameters get
-+ * @cmd: parameter type, can be CEC_CMD_ENABLE or CEC_CMD_LOGICAL_ADDRESS
-+ */
-+struct ec_params_cec_get {
-+	uint8_t cmd; /* enum cec_command */
-+} __ec_align1;
++	/* s5: single color pulse on inhibited power-up */
++	uint8_t s5_idx;
 +
-+/**
-+ * struct ec_response_cec_get - CEC parameters get response
-+ * @val: in case cmd was CEC_CMD_ENABLE, this field will 0 if CEC is
-+ *	disabled or 1 if CEC functionality is enabled,
-+ *	in case cmd was CEC_CMD_LOGICAL_ADDRESS, this will encode the
-+ *	configured logical address between 0 and 15 or 0xff if unregistered
-+ */
-+struct ec_response_cec_get {
-+	uint8_t val;
-+} __ec_align1;
++	/* Color palette */
++	struct rgb_s color[8];			/* 0-3 are Google colors */
++} __ec_todo_packed;
 +
-+/* CEC parameters command */
-+enum cec_command {
-+	/* CEC reading, writing and events enable */
-+	CEC_CMD_ENABLE,
-+	/* CEC logical address  */
-+	CEC_CMD_LOGICAL_ADDRESS,
-+};
-+
-+/* Events from CEC to AP */
-+enum mkbp_cec_event {
-+	/* Outgoing message was acknowledged by a follower */
-+	EC_MKBP_CEC_SEND_OK			= BIT(0),
-+	/* Outgoing message was not acknowledged */
-+	EC_MKBP_CEC_SEND_FAILED			= BIT(1),
-+};
-+
-+/*****************************************************************************/
-+
- /* Commands for I2S recording on audio codec. */
++/* Lightbar program. */
+ #define EC_LB_PROG_LEN 192
+ struct lightbar_program {
+ 	uint8_t size;
+@@ -1674,7 +1748,10 @@ struct ec_params_lightbar {
+ 		 * The following commands have no args:
+ 		 *
+ 		 * dump, off, on, init, get_seq, get_params_v0, get_params_v1,
+-		 * version, get_brightness, get_demo, suspend, resume
++		 * version, get_brightness, get_demo, suspend, resume,
++		 * get_params_v2_timing, get_params_v2_tap, get_params_v2_osc,
++		 * get_params_v2_bright, get_params_v2_thlds,
++		 * get_params_v2_colors
+ 		 *
+ 		 * Don't use an empty struct, because C++ hates that.
+ 		 */
+@@ -1701,6 +1778,14 @@ struct ec_params_lightbar {
  
- #define EC_CMD_CODEC_I2S 0x00BC
-@@ -3252,79 +3327,6 @@ struct ec_params_reboot_ec {
-  */
- #define EC_CMD_GET_PANIC_INFO 0x00D3
+ 		struct lightbar_params_v0 set_params_v0;
+ 		struct lightbar_params_v1 set_params_v1;
++
++		struct lightbar_params_v2_timing set_v2par_timing;
++		struct lightbar_params_v2_tap set_v2par_tap;
++		struct lightbar_params_v2_oscillation set_v2par_osc;
++		struct lightbar_params_v2_brightness set_v2par_bright;
++		struct lightbar_params_v2_thresholds set_v2par_thlds;
++		struct lightbar_params_v2_colors set_v2par_colors;
++
+ 		struct lightbar_program set_program;
+ 	};
+ } __ec_todo_packed;
+@@ -1722,6 +1807,14 @@ struct ec_response_lightbar {
+ 		struct lightbar_params_v0 get_params_v0;
+ 		struct lightbar_params_v1 get_params_v1;
  
--/*****************************************************************************/
--/*
-- * HDMI CEC commands
-- *
-- * These commands are for sending and receiving message via HDMI CEC
-- */
--#define EC_MAX_CEC_MSG_LEN 16
--
--/* CEC message from the AP to be written on the CEC bus */
--#define EC_CMD_CEC_WRITE_MSG 0x00B8
--
--/**
-- * struct ec_params_cec_write - Message to write to the CEC bus
-- * @msg: message content to write to the CEC bus
-- */
--struct ec_params_cec_write {
--	uint8_t msg[EC_MAX_CEC_MSG_LEN];
--} __ec_align1;
--
--/* Set various CEC parameters */
--#define EC_CMD_CEC_SET 0x00BA
--
--/**
-- * struct ec_params_cec_set - CEC parameters set
-- * @cmd: parameter type, can be CEC_CMD_ENABLE or CEC_CMD_LOGICAL_ADDRESS
-- * @val: in case cmd is CEC_CMD_ENABLE, this field can be 0 to disable CEC
-- *	or 1 to enable CEC functionality, in case cmd is CEC_CMD_LOGICAL_ADDRESS,
-- *	this field encodes the requested logical address between 0 and 15
-- *	or 0xff to unregister
-- */
--struct ec_params_cec_set {
--	uint8_t cmd; /* enum cec_command */
--	uint8_t val;
--} __ec_align1;
--
--/* Read various CEC parameters */
--#define EC_CMD_CEC_GET 0x00BB
--
--/**
-- * struct ec_params_cec_get - CEC parameters get
-- * @cmd: parameter type, can be CEC_CMD_ENABLE or CEC_CMD_LOGICAL_ADDRESS
-- */
--struct ec_params_cec_get {
--	uint8_t cmd; /* enum cec_command */
--} __ec_align1;
--
--/**
-- * struct ec_response_cec_get - CEC parameters get response
-- * @val: in case cmd was CEC_CMD_ENABLE, this field will 0 if CEC is
-- *	disabled or 1 if CEC functionality is enabled,
-- *	in case cmd was CEC_CMD_LOGICAL_ADDRESS, this will encode the
-- *	configured logical address between 0 and 15 or 0xff if unregistered
-- */
--struct ec_response_cec_get {
--	uint8_t val;
--} __ec_align1;
--
--/* CEC parameters command */
--enum ec_cec_command {
--	/* CEC reading, writing and events enable */
--	CEC_CMD_ENABLE,
--	/* CEC logical address  */
--	CEC_CMD_LOGICAL_ADDRESS,
--};
--
--/* Events from CEC to AP */
--enum mkbp_cec_event {
--	/* Outgoing message was acknowledged by a follower */
--	EC_MKBP_CEC_SEND_OK			= BIT(0),
--	/* Outgoing message was not acknowledged */
--	EC_MKBP_CEC_SEND_FAILED			= BIT(1),
--};
--
- /*****************************************************************************/
- /*
-  * Special commands
++
++		struct lightbar_params_v2_timing get_params_v2_timing;
++		struct lightbar_params_v2_tap get_params_v2_tap;
++		struct lightbar_params_v2_oscillation get_params_v2_osc;
++		struct lightbar_params_v2_brightness get_params_v2_bright;
++		struct lightbar_params_v2_thresholds get_params_v2_thlds;
++		struct lightbar_params_v2_colors get_params_v2_colors;
++
+ 		struct __ec_todo_unpacked {
+ 			uint32_t num;
+ 			uint32_t flags;
+@@ -1734,9 +1827,11 @@ struct ec_response_lightbar {
+ 		/*
+ 		 * The following commands have no response:
+ 		 *
+-		 * off, on, init, set_brightness, seq, reg, set_rgb,
++		 * off, on, init, set_brightness, seq, reg, set_rgb, demo,
+ 		 * set_params_v0, set_params_v1, set_program,
+-		 * manual_suspend_ctrl, suspend, resume
++		 * manual_suspend_ctrl, suspend, resume, set_v2par_timing,
++		 * set_v2par_tap, set_v2par_osc, set_v2par_bright,
++		 * set_v2par_thlds, set_v2par_colors
+ 		 */
+ 	};
+ } __ec_todo_packed;
+@@ -1765,6 +1860,18 @@ enum lightbar_command {
+ 	LIGHTBAR_CMD_MANUAL_SUSPEND_CTRL = 19,
+ 	LIGHTBAR_CMD_SUSPEND = 20,
+ 	LIGHTBAR_CMD_RESUME = 21,
++	LIGHTBAR_CMD_GET_PARAMS_V2_TIMING = 22,
++	LIGHTBAR_CMD_SET_PARAMS_V2_TIMING = 23,
++	LIGHTBAR_CMD_GET_PARAMS_V2_TAP = 24,
++	LIGHTBAR_CMD_SET_PARAMS_V2_TAP = 25,
++	LIGHTBAR_CMD_GET_PARAMS_V2_OSCILLATION = 26,
++	LIGHTBAR_CMD_SET_PARAMS_V2_OSCILLATION = 27,
++	LIGHTBAR_CMD_GET_PARAMS_V2_BRIGHTNESS = 28,
++	LIGHTBAR_CMD_SET_PARAMS_V2_BRIGHTNESS = 29,
++	LIGHTBAR_CMD_GET_PARAMS_V2_THRESHOLDS = 30,
++	LIGHTBAR_CMD_SET_PARAMS_V2_THRESHOLDS = 31,
++	LIGHTBAR_CMD_GET_PARAMS_V2_COLORS = 32,
++	LIGHTBAR_CMD_SET_PARAMS_V2_COLORS = 33,
+ 	LIGHTBAR_NUM_CMDS
+ };
+ 
+@@ -1783,6 +1890,14 @@ enum ec_led_id {
+ 	EC_LED_ID_POWER_LED,
+ 	/* LED on power adapter or its plug */
+ 	EC_LED_ID_ADAPTER_LED,
++	/* LED to indicate left side */
++	EC_LED_ID_LEFT_LED,
++	/* LED to indicate right side */
++	EC_LED_ID_RIGHT_LED,
++	/* LED to indicate recovery mode with HW_REINIT */
++	EC_LED_ID_RECOVERY_HW_REINIT_LED,
++	/* LED to indicate sysrq debug mode. */
++	EC_LED_ID_SYSRQ_DEBUG_LED,
+ 
+ 	EC_LED_ID_COUNT
+ };
+@@ -1797,6 +1912,7 @@ enum ec_led_colors {
+ 	EC_LED_COLOR_BLUE,
+ 	EC_LED_COLOR_YELLOW,
+ 	EC_LED_COLOR_WHITE,
++	EC_LED_COLOR_AMBER,
+ 
+ 	EC_LED_COLOR_COUNT
+ };
 -- 
 2.21.0.1020.gf2820cf01a-goog
