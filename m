@@ -1,46 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Intel: avoid Oops if DMA setup fails
-Date: Fri, 3 May 2019 13:34:06 +0900
-Message-ID: <20190503043406.GZ14916@sirena.org.uk>
-References: <0b030b85-00c8-2e35-3064-bb764aaff0f6@linux.intel.com>
- <20190429182517.210909-1-zwisler@google.com>
+Subject: Re: [PATCH v2 2/2] regmap: soundwire: fix Kconfig select/depend issue
+Date: Fri, 3 May 2019 13:39:57 +0900
+Message-ID: <20190503043957.GA14916@sirena.org.uk>
+References: <20190419194649.18467-1-pierre-louis.bossart@linux.intel.com>
+ <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p+/4B2pcxE3X6xU6"
-Return-path: <stable-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="pMHZerOf5PT7gmN5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190429182517.210909-1-zwisler@google.com>
-Sender: stable-owner@vger.kernel.org
-To: Ross Zwisler <zwisler@chromium.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Ross Zwisler <zwisler@google.com>, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+In-Reply-To: <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rafael@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---p+/4B2pcxE3X6xU6
+--pMHZerOf5PT7gmN5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 29, 2019 at 12:25:17PM -0600, Ross Zwisler wrote:
-> Currently in sst_dsp_new() if we get an error return from sst_dma_new()
-> we just print an error message and then still complete the function
-> successfully.  This means that we are trying to run without sst->dma
+On Fri, Apr 19, 2019 at 02:46:49PM -0500, Pierre-Louis Bossart wrote:
 
-Please don't bury patches in the replies to existing threads, it makes
-it harder to spot them.
+>  config REGMAP_SOUNDWIRE
+>  	tristate
+> -	depends on SOUNDWIRE_BUS
+> +	select SOUNDWIRE_BUS
 
---p+/4B2pcxE3X6xU6
+This now makes _SOUNDWIRE different to all the other bus types; if this
+is a good change then surely the same thing should be done for all the
+other bus types.  It's also not clear to me that this actually does
+anything, do selects from symbols that are themselves selected actually
+do anything?
+
+--pMHZerOf5PT7gmN5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzLxL4ACgkQJNaLcl1U
-h9Bf5gf/b4Rd4TJAVsVpVmu3GoujrMqNu/jOVgDjPKDNLE70Cj/x4nvuVMvV6YAA
-1W93C0kngsJWKhAgw3gvDsW2iIBGRLOCxB0JaHXntb5bO1ruAMKvyDfy1E09038c
-RvoJg8367XfDLvnJKgoaktPKu+d4yPf73shGOVgEpSEvT5vs4bl5/zV1tB3NNHMG
-U5QkmT8AoRhkDRWOrIETSfPaZJwk01VI7qjp9UxSqszBvbcxhwMbuDPyCcr5reXn
-Q5aYlCH8a1mZoW4Az6NHsykSi8NyqPt1rvKYStPQn4WsasuXkV406EddfJL98bI1
-I/gMNH5m5xTM4wPel4/Bi8jxQQ+V5w==
-=A4ke
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzLxhwACgkQJNaLcl1U
+h9BFVAf+Kt8GD1suXskJzvuY/n6wUgMPGxKm9mip+31Y4Nv5D7V6nydDFOwdS/f2
+0C6007zZSPyN2VqhgqhyuXlop/FAn9NkAHSsw5MEdOTabr3z07tL6TazA7pH5fG1
+9/uTD3fbEcxQXJLvHhgR2KlkmbougPBt+Xbsl+7r/FHx1ZZ4lxhdAFZJmpHVRUo8
+NtWcaeWOOpBEfd/0L335nNPOVChuNgpgUxj5mVidltafNB5H+9ygUWlF2ad0YaRK
+qmjRWKCopc7DAghRUqIf8UoL+VV+YJnsuvTXky5lsuv56h3SXQiX50+QH/aKhbBu
++CDExuiE/VrK6yKLt8+xXpUHATjxEQ==
+=RQMe
 -----END PGP SIGNATURE-----
 
---p+/4B2pcxE3X6xU6--
+--pMHZerOf5PT7gmN5--
