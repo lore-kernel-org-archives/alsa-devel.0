@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: stream is already locked in hw_params" to the asoc tree
-Date: Fri,  3 May 2019 07:23:32 +0100 (BST)
-Message-ID: <20190503062332.C43F4441D58@finisterre.ee.mobilebroadband>
-References: <20190429132943.16269-4-jbrunet@baylibre.com>
+Subject: Applied "ASoC: hdmi-codec: unlock the device on startup errors" to the asoc tree
+Date: Fri,  3 May 2019 07:18:45 +0100 (BST)
+Message-ID: <20190503061845.8BD02441D3F@finisterre.ee.mobilebroadband>
+References: <20190429132943.16269-3-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429132943.16269-4-jbrunet@baylibre.com>
+In-Reply-To: <20190429132943.16269-3-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
@@ -12,11 +12,11 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: stream is already locked in hw_params
+   ASoC: hdmi-codec: unlock the device on startup errors
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,36 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 726fc60babe4a46e946e69a9dbd3e21aaec4d58e Mon Sep 17 00:00:00 2001
+>From 30180e8436046344b12813dc954b2e01dfdcd22d Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 29 Apr 2019 15:29:40 +0200
-Subject: [PATCH] ASoC: hdmi-codec: stream is already locked in hw_params
+Date: Mon, 29 Apr 2019 15:29:39 +0200
+Subject: [PATCH] ASoC: hdmi-codec: unlock the device on startup errors
 
-startup() should have run before hw_params() is called, so the
-current_substream pointer should already be properly set. There
-is no reason to call hdmi_codec_new_stream() again in the
-hw_params() callback
+If the hdmi codec startup fails, it should clear the current_substream
+pointer to free the device. This is properly done for the audio_startup()
+callback but for snd_pcm_hw_constraint_eld().
+
+Make sure the pointer cleared if an error is reported.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index b9d9dde9fbaf..ef6d6959ecc5 100644
+index 35df73e42cbc..fb2f0ac1f16f 100644
 --- a/sound/soc/codecs/hdmi-codec.c
 +++ b/sound/soc/codecs/hdmi-codec.c
-@@ -492,10 +492,6 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	ret = hdmi_codec_new_stream(substream, dai);
--	if (ret)
--		return ret;
--
- 	hdmi_audio_infoframe_init(&hp.cea);
- 	hp.cea.channels = params_channels(params);
- 	hp.cea.coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
+@@ -439,8 +439,12 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 		if (!ret) {
+ 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
+ 							hcp->eld);
+-			if (ret)
++			if (ret) {
++				mutex_lock(&hcp->current_stream_lock);
++				hcp->current_stream = NULL;
++				mutex_unlock(&hcp->current_stream_lock);
+ 				return ret;
++			}
+ 		}
+ 		/* Select chmap supported */
+ 		hdmi_codec_eld_chmap(hcp);
 -- 
 2.20.1
