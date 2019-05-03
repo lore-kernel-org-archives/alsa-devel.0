@@ -1,52 +1,91 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: mediatek: mt8516: register ADDA DAI
-Date: Fri, 3 May 2019 15:11:11 +0900
-Message-ID: <20190503061111.GA32229@sirena.org.uk>
-References: <20190502131214.24009-1-fparent@baylibre.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Subject: Applied "ASoC: da7219: Update the support rate list" to the asoc tree
+Date: Fri,  3 May 2019 07:18:46 +0100 (BST)
+Message-ID: <20190503061846.31FF8441D41@finisterre.ee.mobilebroadband>
+References: <20190502040743.184310-1-yuhsuan@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190502131214.24009-1-fparent@baylibre.com>
+In-Reply-To: <20190502040743.184310-1-yuhsuan@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabien Parent <fparent@baylibre.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, dgreid@chromium.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Support Opensource <support.opensource@diasemi.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: da7219: Update the support rate list
 
-On Thu, May 02, 2019 at 03:12:14PM +0200, Fabien Parent wrote:
+has been applied to the asoc tree at
 
-> This patch depends on patch serie:
-> 	[PATCH 0/5] ASoC: mediatek: Add basic PCM driver for MT8516
->=20
-> v2:
-> 	* Register ADDA before memif to fix ordering issue.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
-This is v2 of a single patch which depends on an in review patch series?
-Please don't do things like this, it makes it much more confusing to
-follow what's going on - unless there's some strong reason to do
-otherwise it's better to either wait for the existing patch series to be
-reviewed or to resend the whole thing.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL234ACgkQJNaLcl1U
-h9DlYAf+NB6GD7ylQBBA7/swvGJd8bxeuqc3fRRWHfYBVXV1nkAQOhs5IoTziCE3
-W2b1ACZX9lv2scdJ/8/OwxN10Q4/i30ShHMTIPeY2/hEn6dnPcYoTQg8n+W+Ca5e
-Aa0ixg+VrXMYV7mSo8qYtuVULeOK1H8drM8pA61is2RlupNHtdwdFwfiCXO6uKRU
-1FKvToH0OGsohgfGXdfGlz1JpSLNZrWefcyo2talqy3GTpXnMpROsGGZyNNx0EyF
-bWLfdfuArrauf4kXhF559nMoWTIuA2/paZFVNNxZrmC5C8ViyU51Yh+nAz4iLFbg
-f+dC4E1ARwca+ZyOMN/7V06nYMyx0A==
-=dh9z
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---SLDf9lqlvOQaIe6s--
+Thanks,
+Mark
+
+>From cd8926e38e8cc53413a2a4ed2f705db7437a55fb Mon Sep 17 00:00:00 2001
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Thu, 2 May 2019 12:07:43 +0800
+Subject: [PATCH] ASoC: da7219: Update the support rate list
+
+If we want to set rate to 64000 on da7219, it fails and returns
+"snd_pcm_hw_params: Invalid argument".
+We should remove 64000 from support rate list because it is not
+available.
+
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/da7219.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 121a8190f93e..9f6970eed6f6 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1583,20 +1583,26 @@ static const struct snd_soc_dai_ops da7219_dai_ops = {
+ #define DA7219_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
++#define DA7219_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
++		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
++		      SNDRV_PCM_RATE_96000)
++
+ static struct snd_soc_dai_driver da7219_dai = {
+ 	.name = "da7219-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = DA7219_DAI_CH_NUM_MAX,
+-		.rates = SNDRV_PCM_RATE_8000_96000,
++		.rates = DA7219_RATES,
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 1,
+ 		.channels_max = DA7219_DAI_CH_NUM_MAX,
+-		.rates = SNDRV_PCM_RATE_8000_96000,
++		.rates = DA7219_RATES,
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.ops = &da7219_dai_ops,
+-- 
+2.20.1
