@@ -1,73 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix valid stream condition" to the asoc tree
-Date: Fri,  3 May 2019 07:18:44 +0100 (BST)
-Message-ID: <20190503061844.ECD7A441D59@finisterre.ee.mobilebroadband>
-References: <20190429094750.1857-2-jbrunet@baylibre.com>
+Subject: Re: [PATCH V6 1/3] ASoC: fsl_asrc: Fix the issue about unsupported
+ rate
+Date: Fri, 3 May 2019 15:17:25 +0900
+Message-ID: <20190503061725.GA5107@sirena.org.uk>
+References: <cover.1555908545.git.shengjiu.wang@nxp.com>
+ <2cea4cb992a445863e88fa7865f55a02a83e031e.1555908545.git.shengjiu.wang@nxp.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429094750.1857-2-jbrunet@baylibre.com>
+Content-Disposition: inline
+In-Reply-To: <2cea4cb992a445863e88fa7865f55a02a83e031e.1555908545.git.shengjiu.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: fix valid stream condition
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
+On Mon, Apr 22, 2019 at 04:52:02AM +0000, S.j. Wang wrote:
+> When the output sample rate is [8kHz, 30kHz], the limitation
+> of the supported ratio range is [1/24, 8]. In the driver
+> we use (8kHz, 30kHz) instead of [8kHz, 30kHz].
+> So this patch is to fix this issue and the potential rounding
+> issue with divider.
+>=20
+None of this series applies either, with similar error messages:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+Applying: ASoC: fsl_asrc: Fix the issue about unsupported rate
+Using index info to reconstruct a base tree...
+error: patch failed: sound/soc/fsl/fsl_asrc.c:282
+error: sound/soc/fsl/fsl_asrc.c: patch does not apply
+error: Did you hand edit your patch?
+It does not apply to blobs recorded in its index.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+(I get the same error message for your PM patch when applying without
+using patchwork as my main workflow does.)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL3PUACgkQJNaLcl1U
+h9AuFwf9GU1mu4UAbguaCvzQD7KN7UOFPnMm2fjMErvpmxgq/cV7aFQEJv6Kc9Z6
+A2/l/TYJ+iNoJ01SPYwRKqw63mJmthjOsikQzaH3VISq6kF09ENT35Z4U1r8zOkb
+6IbPno6mpS6rBk0ckEJ7TLf4dl9zDh4djeaGWVK8MFX+D2eW86vfn0qNSWVCO55O
+p46Qvf2iwJJyc9HVx1AR8hJFAtadOWlmfPYUbUJ0DIJpAzT1aCFtoIGqj2Ef40hl
+YMo9B11fGc9xoae/INeoJIAOInjLKeS/Pm0n4N5FJpPeke/b13n0bDJ7EuHOy+td
+YCXUiBuuUhxXCy372VZHevRq1JK7hw==
+=B7sO
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
->From 6a7c59c6d9f3b280e81d7a04bbe4e55e90152dce Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 29 Apr 2019 11:47:49 +0200
-Subject: [PATCH] ASoC: fix valid stream condition
-
-A stream may specify a rate range using 'rate_min' and 'rate_max', so a
-stream may be valid and not specify any rates. However, as stream cannot
-be valid and not have any channel. Let's use this condition instead to
-determine if a stream is valid or not.
-
-Fixes: cde79035c6cf ("ASoC: Handle multiple codecs with split playback / capture")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d21247546f7f..57088bd69e5d 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -43,8 +43,8 @@ static bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream)
- 	else
- 		codec_stream = &dai->driver->capture;
- 
--	/* If the codec specifies any rate at all, it supports the stream. */
--	return codec_stream->rates;
-+	/* If the codec specifies any channels at all, it supports the stream */
-+	return codec_stream->channels_min;
- }
- 
- /**
--- 
-2.20.1
+--k+w/mQv8wyuph6w0--
