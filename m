@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: unlock the device on startup errors" to the asoc tree
-Date: Fri,  3 May 2019 07:21:32 +0100 (BST)
-Message-ID: <20190503062132.CB63B441D6C@finisterre.ee.mobilebroadband>
-References: <20190429132943.16269-3-jbrunet@baylibre.com>
+Subject: Applied "ASoC: skip hw_free on codec dai for which the stream is invalid" to the asoc tree
+Date: Fri,  3 May 2019 07:21:31 +0100 (BST)
+Message-ID: <20190503062131.ACD87441D6A@finisterre.ee.mobilebroadband>
+References: <20190429094750.1857-3-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190429132943.16269-3-jbrunet@baylibre.com>
+In-Reply-To: <20190429094750.1857-3-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: unlock the device on startup errors
+   ASoC: skip hw_free on codec dai for which the stream is invalid
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From 30180e8436046344b12813dc954b2e01dfdcd22d Mon Sep 17 00:00:00 2001
+>From f47b9ad927c6370b80922af434dda98764a43804 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 29 Apr 2019 15:29:39 +0200
-Subject: [PATCH] ASoC: hdmi-codec: unlock the device on startup errors
+Date: Mon, 29 Apr 2019 11:47:50 +0200
+Subject: [PATCH] ASoC: skip hw_free on codec dai for which the stream is
+ invalid
 
-If the hdmi codec startup fails, it should clear the current_substream
-pointer to free the device. This is properly done for the audio_startup()
-callback but for snd_pcm_hw_constraint_eld().
+Like for hw_params, hw_free should not be called on codec dai for
+which the current stream is invalid.
 
-Make sure the pointer cleared if an error is reported.
-
+Fixes: cde79035c6cf ("ASoC: Handle multiple codecs with split playback / capture")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 35df73e42cbc..fb2f0ac1f16f 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -439,8 +439,12 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 		if (!ret) {
- 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
- 							hcp->eld);
--			if (ret)
-+			if (ret) {
-+				mutex_lock(&hcp->current_stream_lock);
-+				hcp->current_stream = NULL;
-+				mutex_unlock(&hcp->current_stream_lock);
- 				return ret;
-+			}
- 		}
- 		/* Select chmap supported */
- 		hdmi_codec_eld_chmap(hcp);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 57088bd69e5d..a810f6eeffee 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1031,6 +1031,9 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ codec_err:
+ 	for_each_rtd_codec_dai_rollback(rtd, i, codec_dai) {
++		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
++			continue;
++
+ 		if (codec_dai->driver->ops->hw_free)
+ 			codec_dai->driver->ops->hw_free(substream, codec_dai);
+ 		codec_dai->rate = 0;
+@@ -1088,6 +1091,9 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	/* now free hw params for the DAIs  */
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
++		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
++			continue;
++
+ 		if (codec_dai->driver->ops->hw_free)
+ 			codec_dai->driver->ops->hw_free(substream, codec_dai);
+ 	}
 -- 
 2.20.1
