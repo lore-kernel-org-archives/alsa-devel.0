@@ -1,265 +1,104 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v5] ASoC: fsl_esai: Add pm runtime function
-Date: Fri,  3 May 2019 12:49:44 -0700
-Message-ID: <20190503194944.30167-1-nicoleotsuka@gmail.com>
+From: "Moore, Robert" <robert.moore@intel.com>
+Subject: RE: [PATCH v2] ACPI / device_sysfs: change _ADR representation to
+ 64 bits
+Date: Fri, 3 May 2019 19:54:57 +0000
+Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B958C7AE@ORSMSX110.amr.corp.intel.com>
+References: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, shengjiu.wang@nxp.com
-Cc: timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "vkoul@kernel.org" <vkoul@kernel.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "jank@cadence.com" <jank@cadence.com>, "joe@perches.com" <joe@perches.com>, "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "Schmauss, Erik" <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
 
-Add pm runtime support and move clock handling there.
-Close the clocks at suspend to reduce the power consumption.
 
-fsl_esai_suspend is replaced by pm_runtime_force_suspend.
-fsl_esai_resume is replaced by pm_runtime_force_resume.
+> -----Original Message-----
+> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+> Sent: Wednesday, May 1, 2019 5:53 AM
+> To: alsa-devel@alsa-project.org
+> Cc: linux-kernel@vger.kernel.org; tiwai@suse.de; broonie@kernel.org;
+> vkoul@kernel.org; gregkh@linuxfoundation.org;
+> liam.r.girdwood@linux.intel.com; jank@cadence.com; joe@perches.com;
+> srinivas.kandagatla@linaro.org; Pierre-Louis Bossart <pierre-
+> louis.bossart@linux.intel.com>; Rafael J. Wysocki <rjw@rjwysocki.net>;
+> Len Brown <lenb@kernel.org>; Moore, Robert <robert.moore@intel.com>;
+> Schmauss, Erik <erik.schmauss@intel.com>; open list:ACPI <linux-
+> acpi@vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE (ACPICA)
+> <devel@acpica.org>
+> Subject: [PATCH v2] ACPI / device_sysfs: change _ADR representation to
+> 64 bits
+> 
+> Standards such as the MIPI DisCo for SoundWire 1.0 specification assume
+> the _ADR field is 64 bits.
+> 
+> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> struct acpi_device_info.
+> 
+[Moore, Robert] 
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-Changes in v5
--Replaced my Acked-by with Signed-off-by as a resend.
+Just to be precise: since acpi 2.0 the integer width is either 32 bits or 64 bits, depending on the version number of the DSDT (1-->32, 2 or greater --> 64).
 
-Changes in v4
--resend base on for-5.2
 
-Changes in v3
--refine the commit comments.
--add acked-by
-
-Changes in v2
--refine the commit comments.
--move regcache_mark_dirty to runtime suspend.
-
- sound/soc/fsl/fsl_esai.c | 141 +++++++++++++++++++++------------------
- 1 file changed, 77 insertions(+), 64 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c7410bbfd2af..022368c8a074 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -9,6 +9,7 @@
- #include <linux/module.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-+#include <linux/pm_runtime.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
- 
-@@ -466,30 +467,6 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
- 			    struct snd_soc_dai *dai)
- {
- 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
--	int ret;
--
--	/*
--	 * Some platforms might use the same bit to gate all three or two of
--	 * clocks, so keep all clocks open/close at the same time for safety
--	 */
--	ret = clk_prepare_enable(esai_priv->coreclk);
--	if (ret)
--		return ret;
--	if (!IS_ERR(esai_priv->spbaclk)) {
--		ret = clk_prepare_enable(esai_priv->spbaclk);
--		if (ret)
--			goto err_spbaclk;
--	}
--	if (!IS_ERR(esai_priv->extalclk)) {
--		ret = clk_prepare_enable(esai_priv->extalclk);
--		if (ret)
--			goto err_extalck;
--	}
--	if (!IS_ERR(esai_priv->fsysclk)) {
--		ret = clk_prepare_enable(esai_priv->fsysclk);
--		if (ret)
--			goto err_fsysclk;
--	}
- 
- 	if (!dai->active) {
- 		/* Set synchronous mode */
-@@ -506,16 +483,6 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
- 
- 	return 0;
- 
--err_fsysclk:
--	if (!IS_ERR(esai_priv->extalclk))
--		clk_disable_unprepare(esai_priv->extalclk);
--err_extalck:
--	if (!IS_ERR(esai_priv->spbaclk))
--		clk_disable_unprepare(esai_priv->spbaclk);
--err_spbaclk:
--	clk_disable_unprepare(esai_priv->coreclk);
--
--	return ret;
- }
- 
- static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
-@@ -576,20 +543,6 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static void fsl_esai_shutdown(struct snd_pcm_substream *substream,
--			      struct snd_soc_dai *dai)
--{
--	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
--
--	if (!IS_ERR(esai_priv->fsysclk))
--		clk_disable_unprepare(esai_priv->fsysclk);
--	if (!IS_ERR(esai_priv->extalclk))
--		clk_disable_unprepare(esai_priv->extalclk);
--	if (!IS_ERR(esai_priv->spbaclk))
--		clk_disable_unprepare(esai_priv->spbaclk);
--	clk_disable_unprepare(esai_priv->coreclk);
--}
--
- static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 			    struct snd_soc_dai *dai)
- {
-@@ -658,7 +611,6 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
- 	.startup = fsl_esai_startup,
--	.shutdown = fsl_esai_shutdown,
- 	.trigger = fsl_esai_trigger,
- 	.hw_params = fsl_esai_hw_params,
- 	.set_sysclk = fsl_esai_set_dai_sysclk,
-@@ -947,6 +899,10 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	pm_runtime_enable(&pdev->dev);
-+
-+	regcache_cache_only(esai_priv->regmap, true);
-+
- 	ret = imx_pcm_dma_init(pdev, IMX_ESAI_DMABUF_SIZE);
- 	if (ret)
- 		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
-@@ -954,6 +910,13 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static int fsl_esai_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id fsl_esai_dt_ids[] = {
- 	{ .compatible = "fsl,imx35-esai", },
- 	{ .compatible = "fsl,vf610-esai", },
-@@ -961,22 +924,35 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
- 
--#ifdef CONFIG_PM_SLEEP
--static int fsl_esai_suspend(struct device *dev)
--{
--	struct fsl_esai *esai = dev_get_drvdata(dev);
--
--	regcache_cache_only(esai->regmap, true);
--	regcache_mark_dirty(esai->regmap);
--
--	return 0;
--}
--
--static int fsl_esai_resume(struct device *dev)
-+#ifdef CONFIG_PM
-+static int fsl_esai_runtime_resume(struct device *dev)
- {
- 	struct fsl_esai *esai = dev_get_drvdata(dev);
- 	int ret;
- 
-+	/*
-+	 * Some platforms might use the same bit to gate all three or two of
-+	 * clocks, so keep all clocks open/close at the same time for safety
-+	 */
-+	ret = clk_prepare_enable(esai->coreclk);
-+	if (ret)
-+		return ret;
-+	if (!IS_ERR(esai->spbaclk)) {
-+		ret = clk_prepare_enable(esai->spbaclk);
-+		if (ret)
-+			goto err_spbaclk;
-+	}
-+	if (!IS_ERR(esai->extalclk)) {
-+		ret = clk_prepare_enable(esai->extalclk);
-+		if (ret)
-+			goto err_extalclk;
-+	}
-+	if (!IS_ERR(esai->fsysclk)) {
-+		ret = clk_prepare_enable(esai->fsysclk);
-+		if (ret)
-+			goto err_fsysclk;
-+	}
-+
- 	regcache_cache_only(esai->regmap, false);
- 
- 	/* FIFO reset for safety */
-@@ -987,22 +963,59 @@ static int fsl_esai_resume(struct device *dev)
- 
- 	ret = regcache_sync(esai->regmap);
- 	if (ret)
--		return ret;
-+		goto err_regcache_sync;
- 
- 	/* FIFO reset done */
- 	regmap_update_bits(esai->regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
- 	regmap_update_bits(esai->regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
- 
-+	return 0;
-+
-+err_regcache_sync:
-+	if (!IS_ERR(esai->fsysclk))
-+		clk_disable_unprepare(esai->fsysclk);
-+err_fsysclk:
-+	if (!IS_ERR(esai->extalclk))
-+		clk_disable_unprepare(esai->extalclk);
-+err_extalclk:
-+	if (!IS_ERR(esai->spbaclk))
-+		clk_disable_unprepare(esai->spbaclk);
-+err_spbaclk:
-+	clk_disable_unprepare(esai->coreclk);
-+
-+	return ret;
-+}
-+
-+static int fsl_esai_runtime_suspend(struct device *dev)
-+{
-+	struct fsl_esai *esai = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(esai->regmap, true);
-+	regcache_mark_dirty(esai->regmap);
-+
-+	if (!IS_ERR(esai->fsysclk))
-+		clk_disable_unprepare(esai->fsysclk);
-+	if (!IS_ERR(esai->extalclk))
-+		clk_disable_unprepare(esai->extalclk);
-+	if (!IS_ERR(esai->spbaclk))
-+		clk_disable_unprepare(esai->spbaclk);
-+	clk_disable_unprepare(esai->coreclk);
-+
- 	return 0;
- }
--#endif /* CONFIG_PM_SLEEP */
-+#endif /* CONFIG_PM */
- 
- static const struct dev_pm_ops fsl_esai_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(fsl_esai_suspend, fsl_esai_resume)
-+	SET_RUNTIME_PM_OPS(fsl_esai_runtime_suspend,
-+			   fsl_esai_runtime_resume,
-+			   NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
- 
- static struct platform_driver fsl_esai_driver = {
- 	.probe = fsl_esai_probe,
-+	.remove = fsl_esai_remove,
- 	.driver = {
- 		.name = "fsl-esai-dai",
- 		.pm = &fsl_esai_pm_ops,
--- 
-2.17.1
+> This patch bumps the representation used for sysfs to 64 bits. To avoid
+> any compatibility/ABI issues, the printf format is only extended to 16
+> characters when the actual _ADR value exceeds the 32 bit maximum.
+> 
+> Example with a SoundWire device, the results show the complete vendorID
+> and linkID which were omitted before:
+> 
+> Before:
+> $ more /sys/bus/acpi/devices/device\:38/adr
+> 0x5d070000
+> After:
+> $ more /sys/bus/acpi/devices/device\:38/adr
+> 0x000010025d070000
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-
+> louis.bossart@linux.intel.com>
+> ---
+> v2: only use 64 bits when required to avoid compatibility issues
+> (feedback from Vinod and Rafael)
+> 
+>  drivers/acpi/device_sysfs.c | 6 ++++--
+>  include/acpi/acpi_bus.h     | 2 +-
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> index 8940054d6250..7dda0ee05cd1 100644
+> --- a/drivers/acpi/device_sysfs.c
+> +++ b/drivers/acpi/device_sysfs.c
+> @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device
+> *dev,  {
+>  	struct acpi_device *acpi_dev = to_acpi_device(dev);
+> 
+> -	return sprintf(buf, "0x%08x\n",
+> -		       (unsigned int)(acpi_dev->pnp.bus_address));
+> +	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
+> +		return sprintf(buf, "0x%016llx\n", acpi_dev-
+> >pnp.bus_address);
+> +	else
+> +		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
+>  }
+>  static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+> 
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h index
+> f7981751ac77..9075e28ea60a 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -230,7 +230,7 @@ struct acpi_device_dir {
+>  /* Plug and Play */
+> 
+>  typedef char acpi_bus_id[8];
+> -typedef unsigned long acpi_bus_address;
+> +typedef u64 acpi_bus_address;
+>  typedef char acpi_device_name[40];
+>  typedef char acpi_device_class[20];
+> 
+> --
+> 2.17.1
