@@ -1,52 +1,99 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: mediatek: mt8516: Add ADDA DAI driver
-Date: Fri, 3 May 2019 15:00:34 +0900
-Message-ID: <20190503060034.GD14916@sirena.org.uk>
-References: <20190502121041.8045-1-fparent@baylibre.com>
- <20190502121041.8045-5-fparent@baylibre.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/EQiL+SffV/fXkvV"
+Subject: Applied "ASoC: Intel: avoid Oops if DMA setup fails" to the asoc tree
+Date: Fri,  3 May 2019 07:23:32 +0100 (BST)
+Message-ID: <20190503062332.33FB0441D3F@finisterre.ee.mobilebroadband>
+References: <20190429182517.210909-1-zwisler@google.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190502121041.8045-5-fparent@baylibre.com>
+In-Reply-To: <20190429182517.210909-1-zwisler@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabien Parent <fparent@baylibre.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, kaichieh.chuang@mediatek.com, shunli.wang@mediatek.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Ross Zwisler <zwisler@chromium.org>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ross Zwisler <zwisler@google.com>, stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---/EQiL+SffV/fXkvV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: Intel: avoid Oops if DMA setup fails
 
-On Thu, May 02, 2019 at 02:10:40PM +0200, Fabien Parent wrote:
+has been applied to the asoc tree at
 
-> +static int mt8516_afe_adda_hw_params(struct snd_pcm_substream *substream,
-> +			  struct snd_pcm_hw_params *params,
-> +			  struct snd_soc_dai *dai)
-> +{
-> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-> +	unsigned int width_val = params_width(params) > 16 ?
-> +		(AFE_CONN_24BIT_O03 | AFE_CONN_24BIT_O04) : 0;
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
-Please write normal conditional statements rather than burying things in
-the variable declarations usin the ternery operator, it makes things
-much more legible.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---/EQiL+SffV/fXkvV
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL2QEACgkQJNaLcl1U
-h9CnBQf+I75JGpPa7HZs9a5wiVauteNssp4QFPfRbk8PmvqiqEycEs+1ykqmWwhK
-K7c2GX0MELLAlaU9UmlelicrJB5+xaGGOAUFl5CVnVt9zxLdrXPvfeet/dK9FBtY
-Vpjh1BVvkUYgD9gz/u2sRgOtysfwQzfB17Uh3GtNHfoofg4Fhi/MqevPdkDyRf00
-ZelGCTTFYLeFLm66hzyjZHfGPlRBTG1G7IcNJ/mRgGg7Asc2LaxhauBM0nLTqANG
-H5t9WOoaoIbQy2JDR0PCw22mB0gE+tY7gkMZZy3NWxnzZk4uNTgR5Me2P/vly6Bc
-x6jXh8xYjanv7sdTg/r/in0JXtVYTA==
-=rEDi
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---/EQiL+SffV/fXkvV--
+Thanks,
+Mark
+
+>From 0efa3334d65b7f421ba12382dfa58f6ff5bf83c4 Mon Sep 17 00:00:00 2001
+From: Ross Zwisler <zwisler@chromium.org>
+Date: Mon, 29 Apr 2019 12:25:17 -0600
+Subject: [PATCH] ASoC: Intel: avoid Oops if DMA setup fails
+
+Currently in sst_dsp_new() if we get an error return from sst_dma_new()
+we just print an error message and then still complete the function
+successfully.  This means that we are trying to run without sst->dma
+properly set up, which will result in NULL pointer dereference when
+sst->dma is later used.  This was happening for me in
+sst_dsp_dma_get_channel():
+
+        struct sst_dma *dma = dsp->dma;
+	...
+        dma->ch = dma_request_channel(mask, dma_chan_filter, dsp);
+
+This resulted in:
+
+   BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
+   IP: sst_dsp_dma_get_channel+0x4f/0x125 [snd_soc_sst_firmware]
+
+Fix this by adding proper error handling for the case where we fail to
+set up DMA.
+
+This change only affects Haswell and Broadwell systems.  Baytrail
+systems explicilty opt-out of DMA via sst->pdata->resindex_dma_base
+being set to -1.
+
+Signed-off-by: Ross Zwisler <zwisler@google.com>
+Cc: stable@vger.kernel.org
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/common/sst-firmware.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index 1e067504b604..f830e59f93ea 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -1251,11 +1251,15 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
+ 		goto irq_err;
+ 
+ 	err = sst_dma_new(sst);
+-	if (err)
+-		dev_warn(dev, "sst_dma_new failed %d\n", err);
++	if (err)  {
++		dev_err(dev, "sst_dma_new failed %d\n", err);
++		goto dma_err;
++	}
+ 
+ 	return sst;
+ 
++dma_err:
++	free_irq(sst->irq, sst);
+ irq_err:
+ 	if (sst->ops->free)
+ 		sst->ops->free(sst);
+-- 
+2.20.1
