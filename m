@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: remove redundant null checks of dai" to the asoc tree
-Date: Fri,  3 May 2019 07:18:43 +0100 (BST)
-Message-ID: <20190503061843.B209D441D3D@finisterre.ee.mobilebroadband>
-References: <20190502113340.8688-1-colin.king@canonical.com>
+Subject: Applied "ASoC: da7219: Update the support rate list" to the asoc tree
+Date: Fri,  3 May 2019 07:21:33 +0100 (BST)
+Message-ID: <20190503062133.63690441D6D@finisterre.ee.mobilebroadband>
+References: <20190502040743.184310-1-yuhsuan@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190502113340.8688-1-colin.king@canonical.com>
+In-Reply-To: <20190502040743.184310-1-yuhsuan@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, dgreid@chromium.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Support Opensource <support.opensource@diasemi.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: remove redundant null checks of dai
+   ASoC: da7219: Update the support rate list
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,47 +37,55 @@ to this mail.
 Thanks,
 Mark
 
->From c437ba0300cec1ca8758fdd71a3b2f8cd02c6e2a Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 2 May 2019 12:33:40 +0100
-Subject: [PATCH] ASoC: SOF: remove redundant null checks of dai
+>From cd8926e38e8cc53413a2a4ed2f705db7437a55fb Mon Sep 17 00:00:00 2001
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Thu, 2 May 2019 12:07:43 +0800
+Subject: [PATCH] ASoC: da7219: Update the support rate list
 
-Currently there are two null checks of pointer dai in function
-sof_connect_dai_widget and yet there is no null check of dai
-at the end of the function when checking !dai->name.  The latter
-would be a null pointer deference if dai is null (as picked up
-by static analysis), however the function is only ever called
-when dai is successfully allocated, so the null checks are
-redundant. Clean up the code by removing the null checks.
+If we want to set rate to 64000 on da7219, it fails and returns
+"snd_pcm_hw_params: Invalid argument".
+We should remove 64000 from support rate list because it is not
+available.
 
-Addresses-Coverity: ("Dereference after null check")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/da7219.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 2b9de1b97447..1f71857298a9 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1127,15 +1127,13 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
- 		switch (w->id) {
- 		case snd_soc_dapm_dai_out:
- 			rtd->cpu_dai->capture_widget = w;
--			if (dai)
--				dai->name = rtd->dai_link->name;
-+			dai->name = rtd->dai_link->name;
- 			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
- 				w->name, rtd->dai_link->name);
- 			break;
- 		case snd_soc_dapm_dai_in:
- 			rtd->cpu_dai->playback_widget = w;
--			if (dai)
--				dai->name = rtd->dai_link->name;
-+			dai->name = rtd->dai_link->name;
- 			dev_dbg(sdev->dev, "tplg: connected widget %s -> DAI link %s\n",
- 				w->name, rtd->dai_link->name);
- 			break;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 121a8190f93e..9f6970eed6f6 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1583,20 +1583,26 @@ static const struct snd_soc_dai_ops da7219_dai_ops = {
+ #define DA7219_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
++#define DA7219_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
++		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
++		      SNDRV_PCM_RATE_96000)
++
+ static struct snd_soc_dai_driver da7219_dai = {
+ 	.name = "da7219-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = DA7219_DAI_CH_NUM_MAX,
+-		.rates = SNDRV_PCM_RATE_8000_96000,
++		.rates = DA7219_RATES,
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 1,
+ 		.channels_max = DA7219_DAI_CH_NUM_MAX,
+-		.rates = SNDRV_PCM_RATE_8000_96000,
++		.rates = DA7219_RATES,
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.ops = &da7219_dai_ops,
 -- 
 2.20.1
