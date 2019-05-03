@@ -1,91 +1,127 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Update the support rate list" to the asoc tree
-Date: Fri,  3 May 2019 07:23:35 +0100 (BST)
-Message-ID: <20190503062335.E0B4D441D3D@finisterre.ee.mobilebroadband>
-References: <20190502040743.184310-1-yuhsuan@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190502040743.184310-1-yuhsuan@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, alsa-devel@alsa-project.org, dgreid@chromium.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Support Opensource <support.opensource@diasemi.com>, Takashi Iwai <tiwai@suse.com>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: Re: [PATCH v2 2/5] ASoC: sun4i-spdif: Add support for
+	H6 SoC
+Date: Fri, 3 May 2019 16:54:35 +0200
+Message-ID: <20190503145435.jziomr3sqxp6jbpd@flea>
+References: <20190419191730.9437-1-peron.clem@gmail.com>
+ <20190419191730.9437-3-peron.clem@gmail.com>
+ <20190502082526.c5zo4uzceqzizbxo@flea>
+ <CAJiuCcdFUPBsXfKtDLt-p6Edx-7JrST9d0C=ofCU4CL8ZxwcsA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3672828247969754182=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
+ [217.70.183.201])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7603DF8075A
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 16:54:41 +0200 (CEST)
+In-Reply-To: <CAJiuCcdFUPBsXfKtDLt-p6Edx-7JrST9d0C=ofCU4CL8ZxwcsA@mail.gmail.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc: devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: da7219: Update the support rate list
+--===============3672828247969754182==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="f5z2x6ysmbssgmgl"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
+--f5z2x6ysmbssgmgl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, May 02, 2019 at 11:39:24AM +0200, Cl=E9ment P=E9ron wrote:
+> > > @@ -169,16 +181,25 @@ struct sun4i_spdif_dev {
+> > >       struct snd_soc_dai_driver cpu_dai_drv;
+> > >       struct regmap *regmap;
+> > >       struct snd_dmaengine_dai_dma_data dma_params_tx;
+> > > +     const struct sun4i_spdif_quirks *quirks;
+> >
+> > I guess this will generate a warning since the structure hasn't been
+> > defined yet?
+>
+> It's a pointer to a structure so no warning from the compiler.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Damn, I was convinced just declaring a pointer to a structure would
+result to a gcc warning. Nevermind then.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > > @@ -405,22 +426,26 @@ static struct snd_soc_dai_driver sun4i_spdif_da=
+i =3D {
+> > >       .name =3D "spdif",
+> > >  };
+> > >
+> > > -struct sun4i_spdif_quirks {
+> > > -     unsigned int reg_dac_txdata;    /* TX FIFO offset for DMA confi=
+g */
+> > > -     bool has_reset;
+> > > -};
+> > > -
+> > >  static const struct sun4i_spdif_quirks sun4i_a10_spdif_quirks =3D {
+> > >       .reg_dac_txdata =3D SUN4I_SPDIF_TXFIFO,
+> > > +     .reg_fctl_ftx   =3D SUN4I_SPDIF_FCTL_FTX,
+> > >  };
+> > >
+> > >  static const struct sun4i_spdif_quirks sun6i_a31_spdif_quirks =3D {
+> > >       .reg_dac_txdata =3D SUN4I_SPDIF_TXFIFO,
+> > > +     .reg_fctl_ftx   =3D SUN4I_SPDIF_FCTL_FTX,
+> > >       .has_reset      =3D true,
+> > >  };
+> > >
+> > >  static const struct sun4i_spdif_quirks sun8i_h3_spdif_quirks =3D {
+> > >       .reg_dac_txdata =3D SUN8I_SPDIF_TXFIFO,
+> > > +     .reg_fctl_ftx   =3D SUN4I_SPDIF_FCTL_FTX,
+> > > +     .has_reset      =3D true,
+> > > +};
+> > >
+> > > +static const struct sun4i_spdif_quirks sun50i_h6_spdif_quirks =3D {
+> > > +     .reg_dac_txdata =3D SUN8I_SPDIF_TXFIFO,
+> > > +     .reg_fctl_ftx   =3D SUN50I_H6_SPDIF_FCTL_FTX,
+> > >       .has_reset      =3D true,
+> >
+> > The reg_dac_txdata and reg_fctl_ftx changes here should also be part
+> > of a separate patch.
+>
+> You mean the reg_fctl_ftx quirk and the H6 introduction should be split ?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Yep
 
-Thanks,
-Mark
+Maxime
 
->From cd8926e38e8cc53413a2a4ed2f705db7437a55fb Mon Sep 17 00:00:00 2001
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Date: Thu, 2 May 2019 12:07:43 +0800
-Subject: [PATCH] ASoC: da7219: Update the support rate list
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-If we want to set rate to 64000 on da7219, it fails and returns
-"snd_pcm_hw_params: Invalid argument".
-We should remove 64000 from support rate list because it is not
-available.
+--f5z2x6ysmbssgmgl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/da7219.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 121a8190f93e..9f6970eed6f6 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1583,20 +1583,26 @@ static const struct snd_soc_dai_ops da7219_dai_ops = {
- #define DA7219_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
-+#define DA7219_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
-+		      SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-+		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
-+		      SNDRV_PCM_RATE_96000)
-+
- static struct snd_soc_dai_driver da7219_dai = {
- 	.name = "da7219-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
- 		.channels_max = DA7219_DAI_CH_NUM_MAX,
--		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.rates = DA7219_RATES,
- 		.formats = DA7219_FORMATS,
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 1,
- 		.channels_max = DA7219_DAI_CH_NUM_MAX,
--		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.rates = DA7219_RATES,
- 		.formats = DA7219_FORMATS,
- 	},
- 	.ops = &da7219_dai_ops,
--- 
-2.20.1
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXMxWKwAKCRDj7w1vZxhR
+xTheAQD9sE7A0WEHij5Wf1qBjNLpFuz3ZidjjR2KW3BxB9EWSgD/fmxUP0w8djKy
+bpfpawxYsCpDiDgb1b2tfBSFbXO87wE=
+=ry69
+-----END PGP SIGNATURE-----
+
+--f5z2x6ysmbssgmgl--
+
+--===============3672828247969754182==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3672828247969754182==--
