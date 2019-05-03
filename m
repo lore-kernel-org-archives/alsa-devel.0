@@ -1,20 +1,21 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v2 11/30] mfd: cros_ec: Add PWM_SET_DUTY API
-Date: Fri,  3 May 2019 15:02:14 -0700
-Message-ID: <20190503220233.64546-12-gwendal@chromium.org>
+Subject: [PATCH v2 10/30] mfd: cros_ec: Add Flash V2 commands
+	API
+Date: Fri,  3 May 2019 15:02:13 -0700
+Message-ID: <20190503220233.64546-11-gwendal@chromium.org>
 References: <20190503220233.64546-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
+ [IPv6:2607:f8b0:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E30CF8972F
- for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:03:03 +0200 (CEST)
-Received: by mail-pg1-x541.google.com with SMTP id e6so3349055pgc.4
- for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:03:02 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43B8BF896E2
+ for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:03:01 +0200 (CEST)
+Received: by mail-pf1-x441.google.com with SMTP id v80so3540573pfa.3
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:03:01 -0700 (PDT)
 In-Reply-To: <20190503220233.64546-1-gwendal@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,65 +30,238 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add API for fan control.
+Added for supporting larger embedded controller flash.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ include/linux/mfd/cros_ec_commands.h | 150 ++++++++++++++++++++++++++-
+ 1 file changed, 147 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 393c5abab7a0..5747bbcfa45f 100644
+index 2e5c93d858d8..393c5abab7a0 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -1491,11 +1491,19 @@ struct ec_response_pwm_get_fan_rpm {
- /* Set target fan RPM */
- #define EC_CMD_PWM_SET_FAN_TARGET_RPM 0x0021
+@@ -1108,6 +1108,7 @@ struct ec_response_get_features {
  
--struct ec_params_pwm_set_fan_target_rpm {
-+/* Version 0 of input params */
-+struct ec_params_pwm_set_fan_target_rpm_v0 {
- 	uint32_t rpm;
-+} __ec_align4;
+ /* Get flash info */
+ #define EC_CMD_FLASH_INFO 0x0010
++#define EC_VER_FLASH_INFO 2
+ 
+ /**
+  * struct ec_response_flash_info - Response to the flash info command.
+@@ -1134,6 +1135,15 @@ struct ec_response_flash_info {
+  */
+ #define EC_FLASH_INFO_ERASE_TO_0 BIT(0)
+ 
++/*
++ * Flash must be selected for read/write/erase operations to succeed.  This may
++ * be necessary on a chip where write/erase can be corrupted by other board
++ * activity, or where the chip needs to enable some sort of programming voltage,
++ * or where the read/write/erase operations require cleanly suspending other
++ * chip functionality.
++ */
++#define EC_FLASH_INFO_SELECT_REQUIRED BIT(1)
 +
-+/* Version 1 of input params */
-+struct ec_params_pwm_set_fan_target_rpm_v1 {
-+	uint32_t rpm;
-+	uint8_t fan_idx;
- } __ec_align_size1;
- 
- /* Get keyboard backlight */
-+/* OBSOLETE - Use EC_CMD_PWM_SET_DUTY */
- #define EC_CMD_PWM_GET_KEYBOARD_BACKLIGHT 0x0022
- 
- struct ec_response_pwm_get_keyboard_backlight {
-@@ -1504,6 +1512,7 @@ struct ec_response_pwm_get_keyboard_backlight {
- } __ec_align1;
- 
- /* Set keyboard backlight */
-+/* OBSOLETE - Use EC_CMD_PWM_SET_DUTY */
- #define EC_CMD_PWM_SET_KEYBOARD_BACKLIGHT 0x0023
- 
- struct ec_params_pwm_set_keyboard_backlight {
-@@ -1513,10 +1522,17 @@ struct ec_params_pwm_set_keyboard_backlight {
- /* Set target fan PWM duty cycle */
- #define EC_CMD_PWM_SET_FAN_DUTY 0x0024
- 
--struct ec_params_pwm_set_fan_duty {
-+/* Version 0 of input params */
-+struct ec_params_pwm_set_fan_duty_v0 {
- 	uint32_t percent;
+ /**
+  * struct ec_response_flash_info_1 - Response to the flash info v1 command.
+  * @flash_size: Usable flash size in bytes.
+@@ -1156,6 +1166,12 @@ struct ec_response_flash_info {
+  * gcc anonymous structs don't seem to get along with the __packed directive;
+  * if they did we'd define the version 0 structure as a sub-structure of this
+  * one.
++ *
++ * Version 2 supports flash banks of different sizes:
++ * The caller specified the number of banks it has preallocated
++ * (num_banks_desc)
++ * The EC returns the number of banks describing the flash memory.
++ * It adds banks descriptions up to num_banks_desc.
+  */
+ struct ec_response_flash_info_1 {
+ 	/* Version 0 fields; see above for description */
+@@ -1169,6 +1185,42 @@ struct ec_response_flash_info_1 {
+ 	uint32_t flags;
  } __ec_align4;
  
-+/* Version 1 of input params */
-+struct ec_params_pwm_set_fan_duty_v1 {
-+	uint32_t percent;
-+	uint8_t fan_idx;
-+} __ec_align_size1;
++struct ec_params_flash_info_2 {
++	/* Number of banks to describe */
++	uint16_t num_banks_desc;
++	/* Reserved; set 0; ignore on read */
++	uint8_t reserved[2];
++} __ec_align4;
 +
- #define EC_CMD_PWM_SET_DUTY 0x0025
- /* 16 bit duty cycle, 0xffff = 100% */
- #define EC_PWM_MAX_DUTY 0xffff
++struct ec_flash_bank {
++	/* Number of sector is in this bank. */
++	uint16_t count;
++	/* Size in power of 2 of each sector (8 --> 256 bytes) */
++	uint8_t size_exp;
++	/* Minimal write size for the sectors in this bank */
++	uint8_t write_size_exp;
++	/* Erase size for the sectors in this bank */
++	uint8_t erase_size_exp;
++	/* Size for write protection, usually identical to erase size. */
++	uint8_t protect_size_exp;
++	/* Reserved; set 0; ignore on read */
++	uint8_t reserved[2];
++};
++
++struct ec_response_flash_info_2 {
++	/* Total flash in the EC. */
++	uint32_t flash_size;
++	/* Flags; see EC_FLASH_INFO_* */
++	uint32_t flags;
++	/* Maximum size to use to send data to write to the EC. */
++	uint32_t write_ideal_size;
++	/* Number of banks present in the EC. */
++	uint16_t num_banks_total;
++	/* Number of banks described in banks array. */
++	uint16_t num_banks_desc;
++	struct ec_flash_bank banks[0];
++} __ec_align4;
++
+ /*
+  * Read flash
+  *
+@@ -1208,7 +1260,7 @@ struct ec_params_flash_write {
+ #define EC_CMD_FLASH_ERASE 0x0013
+ 
+ /**
+- * struct ec_params_flash_erase - Parameters for the flash erase command.
++ * struct ec_params_flash_erase - Parameters for the flash erase command, v0.
+  * @offset: Byte offset to erase.
+  * @size: Size to erase in bytes.
+  */
+@@ -1217,6 +1269,43 @@ struct ec_params_flash_erase {
+ 	uint32_t size;
+ } __ec_align4;
+ 
++/*
++ * v1 add async erase:
++ * subcommands can returns:
++ * EC_RES_SUCCESS : erased (see ERASE_SECTOR_ASYNC case below).
++ * EC_RES_INVALID_PARAM : offset/size are not aligned on a erase boundary.
++ * EC_RES_ERROR : other errors.
++ * EC_RES_BUSY : an existing erase operation is in progress.
++ * EC_RES_ACCESS_DENIED: Trying to erase running image.
++ *
++ * When ERASE_SECTOR_ASYNC returns EC_RES_SUCCESS, the operation is just
++ * properly queued. The user must call ERASE_GET_RESULT subcommand to get
++ * the proper result.
++ * When ERASE_GET_RESULT returns EC_RES_BUSY, the caller must wait and send
++ * ERASE_GET_RESULT again to get the result of ERASE_SECTOR_ASYNC.
++ * ERASE_GET_RESULT command may timeout on EC where flash access is not
++ * permitted while erasing. (For instance, STM32F4).
++ */
++enum ec_flash_erase_cmd {
++	FLASH_ERASE_SECTOR,     /* Erase and wait for result */
++	FLASH_ERASE_SECTOR_ASYNC,  /* Erase and return immediately. */
++	FLASH_ERASE_GET_RESULT,  /* Ask for last erase result */
++};
++
++/**
++ * struct ec_params_flash_erase_v1 - Parameters for the flash erase command, v1.
++ * @cmd: One of ec_flash_erase_cmd.
++ * @reserved: Pad byte; currently always contains 0.
++ * @flag: No flags defined yet; set to 0.
++ * @params: Same as v0 parameters.
++ */
++struct ec_params_flash_erase_v1 {
++	uint8_t  cmd;
++	uint8_t  reserved;
++	uint16_t flag;
++	struct ec_params_flash_erase params;
++} __ec_align4;
++
+ /*
+  * Get/set flash protection.
+  *
+@@ -1252,6 +1341,15 @@ struct ec_params_flash_erase {
+ #define EC_FLASH_PROTECT_ERROR_INCONSISTENT BIT(5)
+ /* Entire flash code protected when the EC boots */
+ #define EC_FLASH_PROTECT_ALL_AT_BOOT        BIT(6)
++/* RW flash code protected when the EC boots */
++#define EC_FLASH_PROTECT_RW_AT_BOOT         BIT(7)
++/* RW flash code protected now. */
++#define EC_FLASH_PROTECT_RW_NOW             BIT(8)
++/* Rollback information flash region protected when the EC boots */
++#define EC_FLASH_PROTECT_ROLLBACK_AT_BOOT   BIT(9)
++/* Rollback information flash region protected now */
++#define EC_FLASH_PROTECT_ROLLBACK_NOW       BIT(10)
++
+ 
+ /**
+  * struct ec_params_flash_protect - Parameters for the flash protect command.
+@@ -1290,16 +1388,31 @@ struct ec_response_flash_protect {
+ enum ec_flash_region {
+ 	/* Region which holds read-only EC image */
+ 	EC_FLASH_REGION_RO = 0,
+-	/* Region which holds rewritable EC image */
+-	EC_FLASH_REGION_RW,
++	/*
++	 * Region which holds active RW image. 'Active' is different from
++	 * 'running'. Active means 'scheduled-to-run'. Since RO image always
++	 * scheduled to run, active/non-active applies only to RW images (for
++	 * the same reason 'update' applies only to RW images. It's a state of
++	 * an image on a flash. Running image can be RO, RW_A, RW_B but active
++	 * image can only be RW_A or RW_B. In recovery mode, an active RW image
++	 * doesn't enter 'running' state but it's still active on a flash.
++	 */
++	EC_FLASH_REGION_ACTIVE,
+ 	/*
+ 	 * Region which should be write-protected in the factory (a superset of
+ 	 * EC_FLASH_REGION_RO)
+ 	 */
+ 	EC_FLASH_REGION_WP_RO,
++	/* Region which holds updatable (non-active) RW image */
++	EC_FLASH_REGION_UPDATE,
+ 	/* Number of regions */
+ 	EC_FLASH_REGION_COUNT,
+ };
++/*
++ * 'RW' is vague if there are multiple RW images; we mean the active one,
++ * so the old constant is deprecated.
++ */
++#define EC_FLASH_REGION_RW EC_FLASH_REGION_ACTIVE
+ 
+ /**
+  * struct ec_params_flash_region_info - Parameters for the flash region info
+@@ -1334,6 +1447,37 @@ struct ec_response_vbnvcontext {
+ 	uint8_t block[EC_VBNV_BLOCK_SIZE];
+ } __ec_align4;
+ 
++
++/* Get SPI flash information */
++#define EC_CMD_FLASH_SPI_INFO 0x0018
++
++struct ec_response_flash_spi_info {
++	/* JEDEC info from command 0x9F (manufacturer, memory type, size) */
++	uint8_t jedec[3];
++
++	/* Pad byte; currently always contains 0 */
++	uint8_t reserved0;
++
++	/* Manufacturer / device ID from command 0x90 */
++	uint8_t mfr_dev_id[2];
++
++	/* Status registers from command 0x05 and 0x35 */
++	uint8_t sr1, sr2;
++} __ec_align1;
++
++
++/* Select flash during flash operations */
++#define EC_CMD_FLASH_SELECT 0x0019
++
++/**
++ * struct ec_params_flash_select - Parameters for the flash select command.
++ * @select: 1 to select flash, 0 to deselect flash
++ */
++struct ec_params_flash_select {
++	uint8_t select;
++} __ec_align4;
++
++
+ /*****************************************************************************/
+ /* PWM commands */
+ 
 -- 
 2.21.0.1020.gf2820cf01a-goog
