@@ -1,22 +1,19 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: Re: [PATCH v2] ASoC: RT5677-SPI: Disable 16Bit SPI
-	Transfers
-Date: Fri, 3 May 2019 16:54:37 -0400
-Message-ID: <CAEQjanPVZe0X+Qsp-J7N=wVG=5i3aHy5ZWxbcLV+onn=Nci8SA@mail.gmail.com>
-References: <20190503193213.227189-1-cujomalainey@chromium.org>
+From: Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH v2 00/30] Update cros_ec_commands.h
+Date: Fri,  3 May 2019 15:02:03 -0700
+Message-ID: <20190503220233.64546-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com
- [IPv6:2607:f8b0:4864:20::242])
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
+ [IPv6:2607:f8b0:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4ECBF80722
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 22:54:50 +0200 (CEST)
-Received: by mail-oi1-x242.google.com with SMTP id t189so5389080oih.12
- for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 13:54:50 -0700 (PDT)
-In-Reply-To: <20190503193213.227189-1-cujomalainey@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B120F80720
+ for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 00:02:43 +0200 (CEST)
+Received: by mail-pf1-x442.google.com with SMTP id b3so3548972pfd.1
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 15:02:43 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,138 +23,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.jones@linaro.org, jic23@kernel.org, broonie@kernel.org, cychiang@chromium.org, tiwai@suse.com
+Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 3, 2019 at 3:32 PM Curtis Malainey
-<cujomalainey@chromium.org> wrote:
->
-> The current algorithm allows 3 types of transfers, 16bit, 32bit and
-> burst. According to Realtek, 16bit transfers have a special restriction
-> in that it is restricted to the memory region of
-> 0x18020000 ~ 0x18021000. This region is the memory location of the I2C
-> registers. The current algorithm does not uphold this restriction and
-> therefore fails to complete writes.
->
-> Since this has been broken for some time it likely no one is using it.
-> Better to simply disable the 16 bit writes. This will allow users to
-> properly load firmware over SPI without data corruption.
->
-> CC: Ben Zhang <benzh@chromium.org>
-> CC: Oder Chiou <oder_chiou@realtek.com>
-> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+The interface between CrosEC embedded controller and the host,
+described by cros_ec_commands.h, as diverged from what the embedded
+controller really support.
 
-Reviewed-by: Ben Zhang <benzh@chromium.org>
-Looks good to me. Thanks for the fix.
+The source of thruth is at
+https://chromium.googlesource.com/chromiumos/platform/ec/+/master/include/ec_commands.h
 
-> ---
->  sound/soc/codecs/rt5677-spi.c | 35 ++++++++++++++++-------------------
->  1 file changed, 16 insertions(+), 19 deletions(-)
->
-> diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-> index 167a02773a0b..84b6bd8b50e1 100644
-> --- a/sound/soc/codecs/rt5677-spi.c
-> +++ b/sound/soc/codecs/rt5677-spi.c
-> @@ -58,13 +58,15 @@ static DEFINE_MUTEX(spi_mutex);
->   * RT5677_SPI_READ/WRITE_32:   Transfer 4 bytes
->   * RT5677_SPI_READ/WRITE_BURST:        Transfer any multiples of 8 bytes
->   *
-> - * For example, reading 260 bytes at 0x60030002 uses the following commands:
-> - * 0x60030002 RT5677_SPI_READ_16       2 bytes
-> + * Note:
-> + * 16 Bit writes and reads are restricted to the address range
-> + * 0x18020000 ~ 0x18021000
-> + *
-> + * For example, reading 256 bytes at 0x60030004 uses the following commands:
->   * 0x60030004 RT5677_SPI_READ_32       4 bytes
->   * 0x60030008 RT5677_SPI_READ_BURST    240 bytes
->   * 0x600300F8 RT5677_SPI_READ_BURST    8 bytes
->   * 0x60030100 RT5677_SPI_READ_32       4 bytes
-> - * 0x60030104 RT5677_SPI_READ_16       2 bytes
->   *
->   * Input:
->   * @read: true for read commands; false for write commands
-> @@ -79,15 +81,13 @@ static u8 rt5677_spi_select_cmd(bool read, u32 align, u32 remain, u32 *len)
->  {
->         u8 cmd;
->
-> -       if (align == 2 || align == 6 || remain == 2) {
-> -               cmd = RT5677_SPI_READ_16;
-> -               *len = 2;
-> -       } else if (align == 4 || remain <= 6) {
-> +       if (align == 4 || remain <= 4) {
->                 cmd = RT5677_SPI_READ_32;
->                 *len = 4;
->         } else {
->                 cmd = RT5677_SPI_READ_BURST;
-> -               *len = min_t(u32, remain & ~7, RT5677_SPI_BURST_LEN);
-> +               *len = (((remain - 1) >> 3) + 1) << 3;
-> +               *len = min_t(u32, *len, RT5677_SPI_BURST_LEN);
->         }
->         return read ? cmd : cmd + 1;
->  }
-> @@ -108,7 +108,7 @@ static void rt5677_spi_reverse(u8 *dst, u32 dstlen, const u8 *src, u32 srclen)
->         }
->  }
->
-> -/* Read DSP address space using SPI. addr and len have to be 2-byte aligned. */
-> +/* Read DSP address space using SPI. addr and len have to be 4-byte aligned. */
->  int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
->  {
->         u32 offset;
-> @@ -124,7 +124,7 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
->         if (!g_spi)
->                 return -ENODEV;
->
-> -       if ((addr & 1) || (len & 1)) {
-> +       if ((addr & 3) || (len & 3)) {
->                 dev_err(&g_spi->dev, "Bad read align 0x%x(%zu)\n", addr, len);
->                 return -EACCES;
->         }
-> @@ -159,13 +159,13 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
->  }
->  EXPORT_SYMBOL_GPL(rt5677_spi_read);
->
-> -/* Write DSP address space using SPI. addr has to be 2-byte aligned.
-> - * If len is not 2-byte aligned, an extra byte of zero is written at the end
-> +/* Write DSP address space using SPI. addr has to be 4-byte aligned.
-> + * If len is not 4-byte aligned, then extra zeros are written at the end
->   * as padding.
->   */
->  int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
->  {
-> -       u32 offset, len_with_pad = len;
-> +       u32 offset;
->         int status = 0;
->         struct spi_transfer t;
->         struct spi_message m;
-> @@ -178,22 +178,19 @@ int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
->         if (!g_spi)
->                 return -ENODEV;
->
-> -       if (addr & 1) {
-> +       if (addr & 3) {
->                 dev_err(&g_spi->dev, "Bad write align 0x%x(%zu)\n", addr, len);
->                 return -EACCES;
->         }
->
-> -       if (len & 1)
-> -               len_with_pad = len + 1;
-> -
->         memset(&t, 0, sizeof(t));
->         t.tx_buf = buf;
->         t.speed_hz = RT5677_SPI_FREQ;
->         spi_message_init_with_transfers(&m, &t, 1);
->
-> -       for (offset = 0; offset < len_with_pad;) {
-> +       for (offset = 0; offset < len;) {
->                 spi_cmd = rt5677_spi_select_cmd(false, (addr + offset) & 7,
-> -                               len_with_pad - offset, &t.len);
-> +                               len - offset, &t.len);
->
->                 /* Construct SPI message header */
->                 buf[0] = spi_cmd;
-> --
-> 2.21.0.1020.gf2820cf01a-goog
->
+That include file is converted to remove ACPI and Embedded only code.
+
+>From now on, cros_ec_commands.h will be automatically generated from
+the file above, do not modify directly.
+
+Fell free to squash the commits below.
+
+Changes in v2:
+- Move I2S changes at the end of the patchset, squashed with change in
+  sound/soc/codecs/cros_ec_codec.c to match new interface.
+- Add Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Gwendal Grignou (30):
+  mfd: cros_ec: Update license term
+  mfd: cros_ec: Zero BUILD_ macro
+  mfd: cros_ec: set comments properly
+  mfd: cros_ec: add ec_align macros
+  mfd: cros_ec: Define commands as 4-digit UPPER CASE hex values
+  mfd: cros_ec: use BIT macro
+  mfd: cros_ec: Update ACPI interface definition
+  mfd: cros_ec: move HDMI CEC API definition
+  mfd: cros_ec: Remove zero-size structs
+  mfd: cros_ec: Add Flash V2 commands API
+  mfd: cros_ec: Add PWM_SET_DUTY API
+  mfd: cros_ec: Add lightbar v2 API
+  mfd: cros_ec: Expand hash API
+  mfd: cros_ec: Add EC transport protocol v4
+  mfd: cros_ec: Complete MEMS sensor API
+  mfd: cros_ec: Fix event processing API
+  mfd: cros_ec: Add fingerprint API
+  mfd: cros_ec: Fix temperature API
+  mfd: cros_ec: Complete Power and USB PD API
+  mfd: cros_ec: Add API for keyboard testing
+  mfd: cros_ec: Add Hibernate API
+  mfd: cros_ec: Add Smart Battery Firmware update API
+  mfd: cros_ec: Add I2C passthru protection API
+  mfd: cros_ec: Add API for EC-EC communication
+  mfd: cros_ec: Add API for Touchpad support
+  mfd: cros_ec: Add API for Fingerprint support
+  mfd: cros_ec: Add API for rwsig
+  mfd: cros_ec: Add SKU ID and Secure storage API
+  mfd: cros_ec: Add Management API entry points
+  mfd: cros_ec: Update I2S API
+
+ include/linux/mfd/cros_ec_commands.h | 3735 +++++++++++++++++++++-----
+ sound/soc/codecs/cros_ec_codec.c     |    8 +-
+ 2 files changed, 2997 insertions(+), 746 deletions(-)
+
+-- 
+2.21.0.1020.gf2820cf01a-goog
