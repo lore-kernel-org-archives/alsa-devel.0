@@ -1,44 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: hdmi-codec: remove function name debug traces
-Date: Fri, 3 May 2019 15:17:47 +0900
-Message-ID: <20190503061747.GB5107@sirena.org.uk>
-References: <20190429132943.16269-1-jbrunet@baylibre.com>
- <20190429132943.16269-2-jbrunet@baylibre.com>
+From: Ross Zwisler <zwisler@chromium.org>
+Subject: Re: [PATCH] MAINTAINERS: update git tree for sound
+	entries
+Date: Fri, 3 May 2019 08:06:40 -0600
+Message-ID: <CAGRrVHxXFSOKFW6Di49OwAEnqvak6W+gkpA_TB3ULGe2PHjZ-w@mail.gmail.com>
+References: <20190502172700.215737-1-zwisler@google.com>
+ <s5hr29grlz9.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5/uDoXvLw7AC5HRs"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190429132943.16269-2-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patchwork-bot+notify@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com
+ [IPv6:2a00:1450:4864:20::544])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F0BAF80720
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 16:06:55 +0200 (CEST)
+Received: by mail-ed1-x544.google.com with SMTP id w11so6152281edl.5
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 07:06:55 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com.
+ [209.85.208.50])
+ by smtp.gmail.com with ESMTPSA id n3sm353258eja.70.2019.05.03.07.06.52
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+ Fri, 03 May 2019 07:06:53 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id m4so6151157edd.8
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2019 07:06:52 -0700 (PDT)
+In-Reply-To: <s5hr29grlz9.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, May 3, 2019 at 2:17 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Thu, 02 May 2019 19:27:00 +0200,
+> Ross Zwisler wrote:
+> >
+> > Several sound related entries in MAINTAINERS refer to the old git tree
+> > at "git://git.alsa-project.org/alsa-kernel.git".  This is no longer used
+> > for development, and Takashi Iwai's kernel.org tree is used instead.
+> >
+> > Signed-off-by: Ross Zwisler <zwisler@google.com>
+>
+> Ross, would you like to keep @chromium.org as your author address
+> while the sign-off is with @google.com?  It's OK and some people even
+> prefer giving different addresses, but it's often an overlook.  So,
+> just for confirmation.
 
---5/uDoXvLw7AC5HRs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Takashi,
 
-On Mon, Apr 29, 2019 at 03:29:38PM +0200, Jerome Brunet wrote:
-> Remove the debug traces only showing the function name on entry.
-> The same can be obtained using ftrace.
+It's fine to leave the author address as @chromium.org with the
+sign-off @google.com.  Thank you for checking.
 
-This doesn't apply against current code, please check and resend.
-
---5/uDoXvLw7AC5HRs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL3QoACgkQJNaLcl1U
-h9DTZwf9E0RjhBTjs8Fldz7GoebR5XAWGDHkM+nHkLCu7dcZsFswSBRMPUzk8Kds
-rfkiV6GMbmKU91nNmR4ofZ+h/Gfs37/rSiszw2kd5cZAWTnuW454IKvtTqtjgg3d
-uiHYtZu77kOlsd2oTI2hhg7QSE2B2TgcB7HnoBqp3XtThnMtK77qSfqphSSNLeGw
-hAhoN1Ij28WZOJwMJfCWlQs+n7Eyeie8My057WUsHNab1HFj14BrmcIfj8ic5P45
-hu/HrXAPSSKs8XC9hRVyvmxctIh/O0k6D8iUJG/NvZWrbouZshNKz2TicanISl6u
-pMRFvnaHlyRYmzDTMcyk7xvLiPW2Ig==
-=+amZ
------END PGP SIGNATURE-----
-
---5/uDoXvLw7AC5HRs--
+- Ross
