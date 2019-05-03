@@ -1,22 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Add support for Conexant CX2072X
-	CODEC
-Date: Fri, 3 May 2019 15:52:07 +0900
-Message-ID: <20190503065207.GG14916@sirena.org.uk>
-References: <20190423141336.12568-1-tiwai@suse.de>
- <20190423141336.12568-2-tiwai@suse.de>
- <20190427175938.GJ14916@sirena.org.uk>
- <s5h36lxpcbd.wl-tiwai@suse.de> <s5hsgtxnvhz.wl-tiwai@suse.de>
+From: "Jeremy Soller" <jeremy@system76.com>
+Subject: [PATCH] Headset fixup for System76 Gazelle (gaze14)
+Date: Fri, 03 May 2019 12:00:40 -0400
+Message-ID: <ed364456-7db7-4d8f-966a-c7311a6350c1@www.fastmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1904691544575323139=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25E5CF8075A
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 08:52:20 +0200 (CEST)
-In-Reply-To: <s5hsgtxnvhz.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 680E5F80722
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 18:00:45 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id CF4CF5E3
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2019 12:00:42 -0400 (EDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,64 +24,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On the System76 Gazelle (gaze14), there is a headset microphone input attached to 0x1a that does not have a jack detect. In order to get it working, the pin configuration needs to be set correctly, and the ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC fixup needs to be applied. This is identical to the patch already applied for the System76 Darter Pro (darp5).
 
---===============1904691544575323139==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qCuyVVLLFvr0p6ls"
-Content-Disposition: inline
+Signed-off-by: Jeremy Soller <jeremy@system76.com>
 
-
---qCuyVVLLFvr0p6ls
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 02, 2019 at 09:52:40AM +0200, Takashi Iwai wrote:
-> Takashi Iwai wrote:
-
-> > Not to read the register while the chip is turned off, I suppose.
-
-> Actually other way round: the codec driver tries to avoid the whole
-> register access while the chip is in BIAS_OFF state.  OTOH, the jack
-> state check is still required even in that state, so it flips the
-> cache-only flag temporarily at reading the jack detect bit.
-
-> I guess we may remove the cache-only behavior, although this is a
-> nice-to-have thing.
-
-No, it should be removed - it's buggy and racy.  Devices should only be
-going into cache only mode if they can't be physically accessed,
-otherwise you end up with incoherent things like this that create bugs.
-If the driver is actually able to access the register map, actively
-doing so and therefore needs to try flipping cache only mode on and off
-without coordinating with the rest of the device it isn't really in a
-cache only mode.
-
---qCuyVVLLFvr0p6ls
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzL5RYACgkQJNaLcl1U
-h9B39Af8DFdRU4DenPYRVOhhCVX5lnAR3Y1cM7UtBQlzr6G2ZaWkp5tK51mXP4E0
-3QttvJVXq/Vv3ckDP8CuLtN9LMGc1030IeYe1nUglbsmo82qt4IKxY2WqdKrXCDd
-4IqfHD/qRn77l513Eq0bYueZ04XBXTyua6LejeO1YqEao3jlESvwF4SzLdKjlwu7
-nsKns/xTma7PQhjXVA66SMr8BHzIQZx3QRNmA2v6BT5XTKUick+oz+k+UdHBu7uv
-wxuIXDb02iVEdn2jKHlVG6DQQFw2OyEu/KDuWzK0pcZbKNyxSwWr3lptwFG7gtbh
-ojRy7vadrRTT04OYJTtGMHbFP5Nblw==
-=DMEO
------END PGP SIGNATURE-----
-
---qCuyVVLLFvr0p6ls--
-
---===============1904691544575323139==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1904691544575323139==--
+---
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f5b510f119ed..4ea3affad617 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6931,6 +6931,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1558, 0x1325, "System76 Darter Pro (darp5)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x8550, "System76 Gazelle (gaze14)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC233_FIXUP_LENOVO_MULTI_CODECS),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
