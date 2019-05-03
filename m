@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: avoid Oops if DMA setup fails" to the asoc tree
-Date: Fri,  3 May 2019 07:23:32 +0100 (BST)
-Message-ID: <20190503062332.33FB0441D3F@finisterre.ee.mobilebroadband>
+Date: Fri,  3 May 2019 07:21:29 +0100 (BST)
+Message-ID: <20190503062129.EDBA1441D67@finisterre.ee.mobilebroadband>
 References: <20190429182517.210909-1-zwisler@google.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190429182517.210909-1-zwisler@google.com>
