@@ -1,104 +1,48 @@
-From: "Moore, Robert" <robert.moore@intel.com>
-Subject: RE: [PATCH v2] ACPI / device_sysfs: change _ADR representation to
- 64 bits
-Date: Fri, 3 May 2019 19:54:57 +0000
-Message-ID: <94F2FBAB4432B54E8AACC7DFDE6C92E3B958C7AE@ORSMSX110.amr.corp.intel.com>
-References: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [EXT] Re: [PATCH V4] ASoC: fsl_esai: Add pm runtime function
+Date: Fri, 3 May 2019 12:56:49 -0700
+Message-ID: <20190503195648.GA30289@Asurada-Nvidia.nvidia.com>
+References: <c4cf809a66b8c98de11e43f7e9fa2823cf3c5ba6.1556417687.git.shengjiu.wang@nxp.com>
+ <20190502023945.GA19532@sirena.org.uk>
+ <VE1PR04MB6479F3EED50613DF8F041713E3340@VE1PR04MB6479.eurprd04.prod.outlook.com>
+ <20190503042731.GX14916@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190503042731.GX14916@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "vkoul@kernel.org" <vkoul@kernel.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "jank@cadence.com" <jank@cadence.com>, "joe@perches.com" <joe@perches.com>, "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "Schmauss, Erik" <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark, 
+On Fri, May 03, 2019 at 01:27:31PM +0900, Mark Brown wrote:
+> On Thu, May 02, 2019 at 09:13:58AM +0000, S.j. Wang wrote:
+> 
+> > I am checking, but I don't know why this patch failed in your side. I 
+> > Tried to apply this patch on for-5.1, for 5.2,  for-linus  and for-next, all are
+> > Successful.  The git is git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git.
+> 
+> > I can't reproduce your problem. Is there any my operation wrong?
+> 
+> The error message I got was:
+> 
+> Applying: ASoC: fsl_esai: Add pm runtime function
+> error: patch failed: sound/soc/fsl/fsl_esai.c:9
+> error: sound/soc/fsl/fsl_esai.c: patch does not apply
+> Patch failed at 0001 ASoC: fsl_esai: Add pm runtime function
+> 
+> which is the header addition.  I can't spot any obvious issues visually
+> looking at the patch, only thing I can think is some kind of whitespace
+> damage somewhere.
 
+I downloaded this v4 from patchwork and resubmitted a v5 for a
+test. Would you please try to apply that one?
 
-> -----Original Message-----
-> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
-> Sent: Wednesday, May 1, 2019 5:53 AM
-> To: alsa-devel@alsa-project.org
-> Cc: linux-kernel@vger.kernel.org; tiwai@suse.de; broonie@kernel.org;
-> vkoul@kernel.org; gregkh@linuxfoundation.org;
-> liam.r.girdwood@linux.intel.com; jank@cadence.com; joe@perches.com;
-> srinivas.kandagatla@linaro.org; Pierre-Louis Bossart <pierre-
-> louis.bossart@linux.intel.com>; Rafael J. Wysocki <rjw@rjwysocki.net>;
-> Len Brown <lenb@kernel.org>; Moore, Robert <robert.moore@intel.com>;
-> Schmauss, Erik <erik.schmauss@intel.com>; open list:ACPI <linux-
-> acpi@vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE (ACPICA)
-> <devel@acpica.org>
-> Subject: [PATCH v2] ACPI / device_sysfs: change _ADR representation to
-> 64 bits
-> 
-> Standards such as the MIPI DisCo for SoundWire 1.0 specification assume
-> the _ADR field is 64 bits.
-> 
-> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> struct acpi_device_info.
-> 
-[Moore, Robert] 
+If my v5 works vs. having merge conflict at v4, maybe something
+wrong with Git version of Shengjiu's? I compared my v5 and his
+v4 using vimdiff, there is no much difference of whitespace.
 
-Just to be precise: since acpi 2.0 the integer width is either 32 bits or 64 bits, depending on the version number of the DSDT (1-->32, 2 or greater --> 64).
-
-
-> This patch bumps the representation used for sysfs to 64 bits. To avoid
-> any compatibility/ABI issues, the printf format is only extended to 16
-> characters when the actual _ADR value exceeds the 32 bit maximum.
-> 
-> Example with a SoundWire device, the results show the complete vendorID
-> and linkID which were omitted before:
-> 
-> Before:
-> $ more /sys/bus/acpi/devices/device\:38/adr
-> 0x5d070000
-> After:
-> $ more /sys/bus/acpi/devices/device\:38/adr
-> 0x000010025d070000
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-
-> louis.bossart@linux.intel.com>
-> ---
-> v2: only use 64 bits when required to avoid compatibility issues
-> (feedback from Vinod and Rafael)
-> 
->  drivers/acpi/device_sysfs.c | 6 ++++--
->  include/acpi/acpi_bus.h     | 2 +-
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> index 8940054d6250..7dda0ee05cd1 100644
-> --- a/drivers/acpi/device_sysfs.c
-> +++ b/drivers/acpi/device_sysfs.c
-> @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device
-> *dev,  {
->  	struct acpi_device *acpi_dev = to_acpi_device(dev);
-> 
-> -	return sprintf(buf, "0x%08x\n",
-> -		       (unsigned int)(acpi_dev->pnp.bus_address));
-> +	if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
-> +		return sprintf(buf, "0x%016llx\n", acpi_dev-
-> >pnp.bus_address);
-> +	else
-> +		return sprintf(buf, "0x%08llx\n", acpi_dev->pnp.bus_address);
->  }
->  static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
-> 
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h index
-> f7981751ac77..9075e28ea60a 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -230,7 +230,7 @@ struct acpi_device_dir {
->  /* Plug and Play */
-> 
->  typedef char acpi_bus_id[8];
-> -typedef unsigned long acpi_bus_address;
-> +typedef u64 acpi_bus_address;
->  typedef char acpi_device_name[40];
->  typedef char acpi_device_class[20];
-> 
-> --
-> 2.17.1
+Thanks
+Nicolin
