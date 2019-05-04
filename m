@@ -1,8 +1,8 @@
 From: Greg KH <gregkh@linuxfoundation.org>
 Subject: Re: [RFC PATCH 6/7] soundwire: cadence_master: add debugfs register
  dump
-Date: Sat, 4 May 2019 09:03:46 +0200
-Message-ID: <20190504070346.GE9770@kroah.com>
+Date: Sat, 4 May 2019 09:04:10 +0200
+Message-ID: <20190504070410.GF9770@kroah.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
  <20190504010030.29233-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
@@ -141,9 +141,4 @@ On Fri, May 03, 2019 at 08:00:29PM -0500, Pierre-Louis Bossart wrote:
 > +}
 > +EXPORT_SYMBOL(sdw_cdns_debugfs_init);
 
-Don't wrap debugfs calls with export symbol without using
-EXPORT_SYMBOL_GPL() or you will get grumpy emails from me :)
-
-thanks,
-
-greg k-h
+Wait, why is this exported at all?  No one is calling it.
