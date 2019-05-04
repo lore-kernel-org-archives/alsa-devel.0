@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 5/7] soundwire: add debugfs support
-Date: Fri,  3 May 2019 20:00:28 -0500
-Message-ID: <20190504010030.29233-6-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 7/7] soundwire: intel: add debugfs register dump
+Date: Fri,  3 May 2019 20:00:30 -0500
+Message-ID: <20190504010030.29233-8-pierre-louis.bossart@linux.intel.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
@@ -10,12 +10,7 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add base debugfs mechanism for SoundWire bus by creating soundwire
-root and master-N and slave-x hierarchy.
-
-Also add SDW Slave SCP, DP0 and DP-N register debug file.
-
-Registers not implemented will print as "XX"
+Add debugfs file to dump the Intel SoundWire registers
 
 Credits: this patch is based on an earlier internal contribution by
 Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. The main change
@@ -23,278 +18,112 @@ is the use of scnprintf to avoid known issues with snprintf.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/Makefile    |   3 +-
- drivers/soundwire/bus.c       |   5 +
- drivers/soundwire/bus.h       |  28 +++++
- drivers/soundwire/bus_type.c  |   3 +
- drivers/soundwire/debugfs.c   | 214 ++++++++++++++++++++++++++++++++++
- drivers/soundwire/slave.c     |   1 +
- include/linux/soundwire/sdw.h |   9 ++
- 7 files changed, 262 insertions(+), 1 deletion(-)
- create mode 100644 drivers/soundwire/debugfs.c
+ drivers/soundwire/intel.c | 115 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index a72a29731a28..f2c425fa15bd 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -4,7 +4,8 @@
- 
- #Bus Objs
- soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o \
--			sysfs.o sysfs_slave_dp0.o sysfs_slave_dpn.o
-+			sysfs.o sysfs_slave_dp0.o sysfs_slave_dpn.o  \
-+			debugfs.o
- obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
- 
- #Cadence Objs
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index dd9181693554..b79eba321b71 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -53,6 +53,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 	if (ret < 0)
- 		dev_warn(bus->dev, "Bus sysfs init failed:%d\n", ret);
- 
-+	bus->debugfs = sdw_bus_debugfs_init(bus);
-+
- 	/*
- 	 * Device numbers in SoundWire are 0 through 15. Enumeration device
- 	 * number (0), Broadcast device number (15), Group numbers (12 and
-@@ -114,6 +116,7 @@ static int sdw_delete_slave(struct device *dev, void *data)
- 	struct sdw_bus *bus = slave->bus;
- 
- 	sdw_sysfs_slave_exit(slave);
-+	sdw_slave_debugfs_exit(slave->debugfs);
- 
- 	mutex_lock(&bus->bus_lock);
- 
-@@ -136,6 +139,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
- void sdw_delete_bus_master(struct sdw_bus *bus)
- {
- 	sdw_sysfs_bus_exit(bus);
-+	if (bus->debugfs)
-+		sdw_bus_debugfs_exit(bus->debugfs);
- 
- 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
- }
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 0707e68a8d21..f0b1f4f9d7b2 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -20,6 +20,34 @@ void sdw_extract_slave_id(struct sdw_bus *bus,
- 
- extern const struct attribute_group *sdw_slave_dev_attr_groups[];
- 
-+#ifdef CONFIG_DEBUG_FS
-+struct sdw_bus_debugfs *sdw_bus_debugfs_init(struct sdw_bus *bus);
-+void sdw_bus_debugfs_exit(struct sdw_bus_debugfs *d);
-+struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d);
-+struct sdw_slave_debugfs *sdw_slave_debugfs_init(struct sdw_slave *slave);
-+void sdw_slave_debugfs_exit(struct sdw_slave_debugfs *d);
-+void sdw_debugfs_init(void);
-+void sdw_debugfs_exit(void);
-+#else
-+struct sdw_bus_debugfs *sdw_bus_debugfs_init(struct sdw_bus *bus)
-+{ return NULL; }
-+
-+void sdw_bus_debugfs_exit(struct sdw_bus_debugfs *d) {}
-+
-+struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d)
-+{ return NULL; }
-+
-+struct sdw_slave_debugfs *sdw_slave_debugfs_init(struct sdw_slave *slave)
-+{ return NULL; }
-+
-+void sdw_slave_debugfs_exit(struct sdw_slave_debugfs *d) {}
-+
-+void sdw_debugfs_init(void) {}
-+
-+void sdw_debugfs_exit(void) {}
-+
-+#endif
-+
- enum {
- 	SDW_MSG_FLAG_READ = 0,
- 	SDW_MSG_FLAG_WRITE,
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index f68fe45c1037..f28c1a2446af 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 4ac141730b13..7fb2cd6d5bb5 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
 @@ -6,6 +6,7 @@
- #include <linux/pm_domain.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_type.h>
-+#include "bus.h"
+  */
  
- /**
-  * sdw_get_device_id - find the matching SoundWire device id
-@@ -182,11 +183,13 @@ EXPORT_SYMBOL_GPL(sdw_unregister_driver);
- 
- static int __init sdw_bus_init(void)
- {
-+	sdw_debugfs_init();
- 	return bus_register(&sdw_bus_type);
- }
- 
- static void __exit sdw_bus_exit(void)
- {
-+	sdw_debugfs_exit();
- 	bus_unregister(&sdw_bus_type);
- }
- 
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-new file mode 100644
-index 000000000000..8a8b4df95c46
---- /dev/null
-+++ b/drivers/soundwire/debugfs.c
-@@ -0,0 +1,214 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2017-19 Intel Corporation.
-+
-+#include <linux/device.h>
+ #include <linux/acpi.h>
 +#include <linux/debugfs.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/slab.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_registers.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+@@ -16,6 +17,7 @@
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_intel.h>
+ #include "cadence_master.h"
 +#include "bus.h"
-+
-+#ifdef CONFIG_DEBUG_FS
-+struct dentry *sdw_debugfs_root;
-+#endif
-+
-+struct sdw_bus_debugfs {
-+	struct sdw_bus *bus;
-+
+ #include "intel.h"
+ 
+ /* Intel SHIM Registers Definition */
+@@ -98,6 +100,7 @@ struct sdw_intel {
+ 	struct sdw_cdns cdns;
+ 	int instance;
+ 	struct sdw_intel_link_res *res;
 +	struct dentry *fs;
-+};
+ };
+ 
+ #define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
+@@ -161,6 +164,115 @@ static int intel_set_bit(void __iomem *base, int offset, u32 value, u32 mask)
+ 	return -EAGAIN;
+ }
+ 
++/*
++ * debugfs
++ */
 +
-+struct sdw_bus_debugfs *sdw_bus_debugfs_init(struct sdw_bus *bus)
-+{
-+	struct sdw_bus_debugfs *d;
-+	char name[16];
++#define RD_BUF (2 * PAGE_SIZE)
 +
-+	if (!sdw_debugfs_root)
-+		return NULL;
-+
-+	d = kzalloc(sizeof(*d), GFP_KERNEL);
-+	if (!d)
-+		return NULL;
-+
-+	/* create the debugfs master-N */
-+	snprintf(name, sizeof(name), "master-%d", bus->link_id);
-+	d->fs = debugfs_create_dir(name, sdw_debugfs_root);
-+	if (IS_ERR_OR_NULL(d->fs)) {
-+		dev_err(bus->dev, "debugfs root creation failed\n");
-+		goto err;
-+	}
-+
-+	d->bus = bus;
-+
-+	return d;
-+
-+err:
-+	kfree(d);
-+	return NULL;
-+}
-+
-+void sdw_bus_debugfs_exit(struct sdw_bus_debugfs *d)
-+{
-+	debugfs_remove_recursive(d->fs);
-+	kfree(d);
-+}
-+
-+struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d)
-+{
-+	if (d)
-+		return d->fs;
-+	return NULL;
-+}
-+EXPORT_SYMBOL(sdw_bus_debugfs_get_root);
-+
-+struct sdw_slave_debugfs {
-+	struct sdw_slave *slave;
-+
-+	struct dentry *fs;
-+};
-+
-+#define RD_BUF (3 * PAGE_SIZE)
-+
-+static ssize_t sdw_sprintf(struct sdw_slave *slave,
-+			   char *buf, size_t pos, unsigned int reg)
++static ssize_t intel_sprintf(void __iomem *mem, bool l,
++			     char *buf, size_t pos, unsigned int reg)
 +{
 +	int value;
 +
-+	value = sdw_read(slave, reg);
-+
-+	if (value < 0)
-+		return scnprintf(buf + pos, RD_BUF - pos, "%3x\tXX\n", reg);
++	if (l)
++		value = intel_readl(mem, reg);
 +	else
-+		return scnprintf(buf + pos, RD_BUF - pos,
-+				"%3x\t%2x\n", reg, value);
++		value = intel_readw(mem, reg);
++
++	return scnprintf(buf + pos, RD_BUF - pos, "%4x\t%4x\n", reg, value);
 +}
 +
-+static ssize_t sdw_slave_reg_read(struct file *file, char __user *user_buf,
-+				  size_t count, loff_t *ppos)
++static ssize_t intel_reg_read(struct file *file, char __user *user_buf,
++			      size_t count, loff_t *ppos)
 +{
-+	struct sdw_slave *slave = file->private_data;
-+	unsigned int reg;
++	struct sdw_intel *sdw = file->private_data;
++	void __iomem *s = sdw->res->shim;
++	void __iomem *a = sdw->res->alh;
 +	char *buf;
 +	ssize_t ret;
 +	int i, j;
++	unsigned int links, reg;
 +
 +	buf = kzalloc(RD_BUF, GFP_KERNEL);
 +	if (!buf)
 +		return -ENOMEM;
 +
++	links = intel_readl(s, SDW_SHIM_LCAP) & GENMASK(2, 0);
++
 +	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nDP0\n");
++	ret += scnprintf(buf + ret, RD_BUF - ret, "\nShim\n");
 +
-+	for (i = 0; i < 6; i++)
-+		ret += sdw_sprintf(slave, buf, ret, i);
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
-+	ret += sdw_sprintf(slave, buf, ret, SDW_DP0_CHANNELEN);
-+	for (i = SDW_DP0_SAMPLECTRL1; i <= SDW_DP0_LANECTRL; i++)
-+		ret += sdw_sprintf(slave, buf, ret, i);
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
-+	ret += sdw_sprintf(slave, buf, ret,
-+			SDW_DP0_CHANNELEN + SDW_BANK1_OFFSET);
-+	for (i = SDW_DP0_SAMPLECTRL1 + SDW_BANK1_OFFSET;
-+			i <= SDW_DP0_LANECTRL + SDW_BANK1_OFFSET; i++)
-+		ret += sdw_sprintf(slave, buf, ret, i);
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nSCP\n");
-+	for (i = SDW_SCP_INT1; i <= SDW_SCP_BANKDELAY; i++)
-+		ret += sdw_sprintf(slave, buf, ret, i);
-+	for (i = SDW_SCP_DEVID_0; i <= SDW_SCP_DEVID_5; i++)
-+		ret += sdw_sprintf(slave, buf, ret, i);
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
-+	ret += sdw_sprintf(slave, buf, ret, SDW_SCP_FRAMECTRL_B0);
-+	ret += sdw_sprintf(slave, buf, ret, SDW_SCP_NEXTFRAME_B0);
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
-+	ret += sdw_sprintf(slave, buf, ret, SDW_SCP_FRAMECTRL_B1);
-+	ret += sdw_sprintf(slave, buf, ret, SDW_SCP_NEXTFRAME_B1);
-+
-+	for (i = 1; i < 14; i++) {
-+		ret += scnprintf(buf + ret, RD_BUF - ret, "\nDP%d\n", i);
-+		reg = SDW_DPN_INT(i);
-+		for (j = 0; j < 6; j++)
-+			ret += sdw_sprintf(slave, buf, ret, reg + j);
-+
-+		ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
-+		reg = SDW_DPN_CHANNELEN_B0(i);
-+		for (j = 0; j < 9; j++)
-+			ret += sdw_sprintf(slave, buf, ret, reg + j);
-+
-+		ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
-+		reg = SDW_DPN_CHANNELEN_B1(i);
-+		for (j = 0; j < 9; j++)
-+			ret += sdw_sprintf(slave, buf, ret, reg + j);
++	for (i = 0; i < 4; i++) {
++		reg = SDW_SHIM_LCAP + i * 4;
++		ret += intel_sprintf(s, true, buf, ret, reg);
 +	}
++
++	for (i = 0; i < links; i++) {
++		ret += scnprintf(buf + ret, RD_BUF - ret, "\nLink%d\n", i);
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLSCAP(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS0CM(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS1CM(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS2CM(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS3CM(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_PCMSCAP(i));
++
++		for (j = 0; j < 8; j++) {
++			ret += intel_sprintf(s, false, buf, ret,
++					SDW_SHIM_PCMSYCHM(i, j));
++			ret += intel_sprintf(s, false, buf, ret,
++					SDW_SHIM_PCMSYCHC(i, j));
++		}
++
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_PDMSCAP(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_IOCTL(i));
++		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTMCTL(i));
++	}
++
++	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_WAKEEN);
++	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_WAKESTS);
++
++	ret += scnprintf(buf + ret, RD_BUF - ret, "\nALH\n");
++	for (i = 0; i < 8; i++)
++		ret += intel_sprintf(a, true, buf, ret, SDW_ALH_STRMZCFG(i));
 +
 +	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
 +	kfree(buf);
@@ -302,134 +131,56 @@ index 000000000000..8a8b4df95c46
 +	return ret;
 +}
 +
-+static const struct file_operations sdw_slave_reg_fops = {
++static const struct file_operations intel_reg_fops = {
 +	.open = simple_open,
-+	.read = sdw_slave_reg_read,
++	.read = intel_reg_read,
 +	.llseek = default_llseek,
 +};
 +
-+struct sdw_slave_debugfs *sdw_slave_debugfs_init(struct sdw_slave *slave)
++static void intel_debugfs_init(struct sdw_intel *sdw)
 +{
-+	struct sdw_bus_debugfs *master;
-+	struct sdw_slave_debugfs *d;
-+	char name[32];
++	struct dentry *root = sdw_bus_debugfs_get_root(sdw->cdns.bus.debugfs);
 +
-+	master = slave->bus->debugfs;
-+	if (!master)
-+		return NULL;
++	if (!root)
++		return;
 +
-+	d = kzalloc(sizeof(*d), GFP_KERNEL);
-+	if (!d)
-+		return NULL;
-+
-+	/* create the debugfs slave-name */
-+	snprintf(name, sizeof(name), "%s", dev_name(&slave->dev));
-+	d->fs = debugfs_create_dir(name, master->fs);
-+	if (IS_ERR_OR_NULL(d->fs)) {
-+		dev_err(&slave->dev, "slave debugfs root creation failed\n");
-+		goto err;
-+	}
-+
-+	d->slave = slave;
-+
-+	debugfs_create_file("registers", 0400, d->fs,
-+			    slave, &sdw_slave_reg_fops);
-+
-+	return d;
-+
-+err:
-+	kfree(d);
-+	return NULL;
-+}
-+
-+void sdw_slave_debugfs_exit(struct sdw_slave_debugfs *d)
-+{
-+	debugfs_remove_recursive(d->fs);
-+	kfree(d);
-+}
-+
-+void sdw_debugfs_init(void)
-+{
-+	sdw_debugfs_root = debugfs_create_dir("soundwire", NULL);
-+	if (IS_ERR_OR_NULL(sdw_debugfs_root)) {
-+		pr_warn("SoundWire: Failed to create debugfs directory\n");
-+		sdw_debugfs_root = NULL;
++	sdw->fs = debugfs_create_dir("intel-sdw", root);
++	if (IS_ERR_OR_NULL(sdw->fs)) {
++		dev_err(sdw->cdns.dev, "debugfs root creation failed\n");
++		sdw->fs = NULL;
 +		return;
 +	}
++
++	debugfs_create_file("intel-registers", 0400, sdw->fs, sdw,
++			    &intel_reg_fops);
++
++	sdw_cdns_debugfs_init(&sdw->cdns, sdw->fs);
 +}
 +
-+void sdw_debugfs_exit(void)
++static void intel_debugfs_exit(struct sdw_intel *sdw)
 +{
-+	debugfs_remove_recursive(sdw_debugfs_root);
++	debugfs_remove_recursive(sdw->fs);
 +}
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index bad73a267fdd..e41332a7f340 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -57,6 +57,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 		mutex_unlock(&bus->bus_lock);
- 		put_device(&slave->dev);
++
+ /*
+  * shim ops
+  */
+@@ -890,6 +1002,8 @@ static int intel_probe(struct platform_device *pdev)
+ 		goto err_dai;
  	}
-+	slave->debugfs = sdw_slave_debugfs_init(slave);
  
- 	return ret;
- }
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index fae3a3ad6e68..3684ca106408 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -547,6 +547,8 @@ struct sdw_slave_ops {
- 			 enum sdw_port_prep_ops pre_ops);
- };
- 
-+struct sdw_slave_debugfs;
++	intel_debugfs_init(sdw);
 +
- /**
-  * struct sdw_slave - SoundWire Slave
-  * @id: MIPI device ID
-@@ -556,6 +558,7 @@ struct sdw_slave_ops {
-  * @ops: Slave callback ops
-  * @prop: Slave properties
-  * @sysfs: Sysfs interface
-+ * @debugfs: Slave debugfs
-  * @node: node for bus list
-  * @port_ready: Port ready completion flag for each Slave port
-  * @dev_num: Device Number assigned by Bus
-@@ -568,6 +571,7 @@ struct sdw_slave {
- 	const struct sdw_slave_ops *ops;
- 	struct sdw_slave_prop prop;
- 	struct sdw_slave_sysfs *sysfs;
-+	struct sdw_slave_debugfs *debugfs;
- 	struct list_head node;
- 	struct completion *port_ready;
- 	u16 dev_num;
-@@ -728,6 +732,8 @@ struct sdw_master_ops {
+ 	return 0;
  
- };
+ err_dai:
+@@ -906,6 +1020,7 @@ static int intel_remove(struct platform_device *pdev)
  
-+struct sdw_bus_debugfs;
-+
- /**
-  * struct sdw_bus - SoundWire bus
-  * @dev: Master linux device
-@@ -742,8 +748,10 @@ struct sdw_master_ops {
-  * @params: Current bus parameters
-  * @prop: Master properties
-  * @m_rt_list: List of Master instance of all stream(s) running on Bus. This
-+ * @rt_list: List of Master instance of all stream(s) running on Bus. This
-  * is used to compute and program bus bandwidth, clock, frame shape,
-  * transport and port parameters
-+ * @debugfs: Bus debugfs
-  * @sysfs: Bus sysfs
-  * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
-@@ -765,6 +773,7 @@ struct sdw_bus {
- 	struct sdw_master_prop prop;
- 	struct list_head m_rt_list;
- 	struct sdw_master_sysfs *sysfs;
-+	struct sdw_bus_debugfs *debugfs;
- 	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
- 	u32 bank_switch_timeout;
+ 	sdw = platform_get_drvdata(pdev);
+ 
++	intel_debugfs_exit(sdw);
+ 	free_irq(sdw->res->irq, sdw);
+ 	snd_soc_unregister_component(sdw->cdns.dev);
+ 	sdw_delete_bus_master(&sdw->cdns.bus);
 -- 
 2.17.1
