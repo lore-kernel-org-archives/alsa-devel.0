@@ -1,22 +1,21 @@
 From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [RFC PATCH 6/7] soundwire: cadence_master: add debugfs register
- dump
-Date: Sat, 4 May 2019 09:04:10 +0200
-Message-ID: <20190504070410.GF9770@kroah.com>
+Subject: Re: [RFC PATCH 7/7] soundwire: intel: add debugfs register dump
+Date: Sat, 4 May 2019 09:04:58 +0200
+Message-ID: <20190504070458.GG9770@kroah.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-7-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190504010030.29233-7-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190504010030.29233-8-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 03, 2019 at 08:00:29PM -0500, Pierre-Louis Bossart wrote:
-> Add debugfs file to dump the Cadence master registers
+On Fri, May 03, 2019 at 08:00:30PM -0500, Pierre-Louis Bossart wrote:
+> Add debugfs file to dump the Intel SoundWire registers
 > 
 > Credits: this patch is based on an earlier internal contribution by
 > Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. The main change
@@ -24,23 +23,38 @@ On Fri, May 03, 2019 at 08:00:29PM -0500, Pierre-Louis Bossart wrote:
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/cadence_master.c | 98 ++++++++++++++++++++++++++++++
->  drivers/soundwire/cadence_master.h |  5 ++
->  2 files changed, 103 insertions(+)
+>  drivers/soundwire/intel.c | 115 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 115 insertions(+)
 > 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 682789bb8ab3..e9c30f18ce25 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -8,6 +8,7 @@
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index 4ac141730b13..7fb2cd6d5bb5 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -6,6 +6,7 @@
+>   */
 >  
->  #include <linux/delay.h>
->  #include <linux/device.h>
+>  #include <linux/acpi.h>
 > +#include <linux/debugfs.h>
->  #include <linux/interrupt.h>
+>  #include <linux/delay.h>
 >  #include <linux/module.h>
->  #include <linux/mod_devicetable.h>
-> @@ -222,6 +223,103 @@ static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
+>  #include <linux/interrupt.h>
+> @@ -16,6 +17,7 @@
+>  #include <linux/soundwire/sdw.h>
+>  #include <linux/soundwire/sdw_intel.h>
+>  #include "cadence_master.h"
+> +#include "bus.h"
+>  #include "intel.h"
+>  
+>  /* Intel SHIM Registers Definition */
+> @@ -98,6 +100,7 @@ struct sdw_intel {
+>  	struct sdw_cdns cdns;
+>  	int instance;
+>  	struct sdw_intel_link_res *res;
+> +	struct dentry *fs;
+>  };
+>  
+>  #define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
+> @@ -161,6 +164,115 @@ static int intel_set_bit(void __iomem *base, int offset, u32 value, u32 mask)
 >  	return -EAGAIN;
 >  }
 >  
@@ -50,73 +64,71 @@ On Fri, May 03, 2019 at 08:00:29PM -0500, Pierre-Louis Bossart wrote:
 > +
 > +#define RD_BUF (2 * PAGE_SIZE)
 > +
-> +static ssize_t cdns_sprintf(struct sdw_cdns *cdns,
-> +			    char *buf, size_t pos, unsigned int reg)
+> +static ssize_t intel_sprintf(void __iomem *mem, bool l,
+> +			     char *buf, size_t pos, unsigned int reg)
 > +{
-> +	return scnprintf(buf + pos, RD_BUF - pos,
-> +			 "%4x\t%4x\n", reg, cdns_readl(cdns, reg));
+> +	int value;
+> +
+> +	if (l)
+> +		value = intel_readl(mem, reg);
+> +	else
+> +		value = intel_readw(mem, reg);
+> +
+> +	return scnprintf(buf + pos, RD_BUF - pos, "%4x\t%4x\n", reg, value);
 > +}
 > +
-> +static ssize_t cdns_reg_read(struct file *file, char __user *user_buf,
-> +			     size_t count, loff_t *ppos)
+> +static ssize_t intel_reg_read(struct file *file, char __user *user_buf,
+> +			      size_t count, loff_t *ppos)
 > +{
-> +	struct sdw_cdns *cdns = file->private_data;
+> +	struct sdw_intel *sdw = file->private_data;
+> +	void __iomem *s = sdw->res->shim;
+> +	void __iomem *a = sdw->res->alh;
 > +	char *buf;
 > +	ssize_t ret;
 > +	int i, j;
+> +	unsigned int links, reg;
 > +
 > +	buf = kzalloc(RD_BUF, GFP_KERNEL);
 > +	if (!buf)
 > +		return -ENOMEM;
 > +
+> +	links = intel_readl(s, SDW_SHIM_LCAP) & GENMASK(2, 0);
+> +
 > +	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
-> +	ret += scnprintf(buf + ret, RD_BUF - ret, "\nMCP Registers\n");
-> +	for (i = 0; i < 8; i++) /* 8 MCP registers */
-> +		ret += cdns_sprintf(cdns, buf, ret, i * 4);
+> +	ret += scnprintf(buf + ret, RD_BUF - ret, "\nShim\n");
 > +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret,
-> +			 "\nStatus & Intr Registers\n");
-> +	for (i = 0; i < 13; i++) /* 13 Status & Intr registers */
-> +		ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_STAT + i * 4);
-> +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret,
-> +			 "\nSSP & Clk ctrl Registers\n");
-> +	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_SSP_CTRL0);
-> +	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_SSP_CTRL1);
-> +	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_CLK_CTRL0);
-> +	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_CLK_CTRL1);
-> +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret,
-> +			 "\nDPn B0 Registers\n");
-> +	for (i = 0; i < 7; i++) {
-> +		ret += scnprintf(buf + ret, RD_BUF - ret,
-> +				 "\nDP-%d\n", i);
-> +		for (j = 0; j < 6; j++)
-> +			ret += cdns_sprintf(cdns, buf, ret,
-> +					CDNS_DPN_B0_CONFIG(i) + j * 4);
+> +	for (i = 0; i < 4; i++) {
+> +		reg = SDW_SHIM_LCAP + i * 4;
+> +		ret += intel_sprintf(s, true, buf, ret, reg);
 > +	}
 > +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret,
-> +			 "\nDPn B1 Registers\n");
-> +	for (i = 0; i < 7; i++) {
-> +		ret += scnprintf(buf + ret, RD_BUF - ret,
-> +				 "\nDP-%d\n", i);
+> +	for (i = 0; i < links; i++) {
+> +		ret += scnprintf(buf + ret, RD_BUF - ret, "\nLink%d\n", i);
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLSCAP(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS0CM(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS1CM(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS2CM(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS3CM(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_PCMSCAP(i));
 > +
-> +		for (j = 0; j < 6; j++)
-> +			ret += cdns_sprintf(cdns, buf, ret,
-> +					CDNS_DPN_B1_CONFIG(i) + j * 4);
+> +		for (j = 0; j < 8; j++) {
+> +			ret += intel_sprintf(s, false, buf, ret,
+> +					SDW_SHIM_PCMSYCHM(i, j));
+> +			ret += intel_sprintf(s, false, buf, ret,
+> +					SDW_SHIM_PCMSYCHC(i, j));
+> +		}
+> +
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_PDMSCAP(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_IOCTL(i));
+> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTMCTL(i));
 > +	}
 > +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret,
-> +			 "\nDPn Control Registers\n");
-> +	for (i = 0; i < 7; i++)
-> +		ret += cdns_sprintf(cdns, buf, ret,
-> +				CDNS_PORTCTRL + i * CDNS_PORT_OFFSET);
+> +	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_WAKEEN);
+> +	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_WAKESTS);
 > +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret,
-> +			 "\nPDIn Config Registers\n");
-> +	for (i = 0; i < 7; i++)
-> +		ret += cdns_sprintf(cdns, buf, ret, CDNS_PDI_CONFIG(i));
+> +	ret += scnprintf(buf + ret, RD_BUF - ret, "\nALH\n");
+> +	for (i = 0; i < 8; i++)
+> +		ret += intel_sprintf(a, true, buf, ret, SDW_ALH_STRMZCFG(i));
 > +
 > +	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
 > +	kfree(buf);
@@ -124,21 +136,24 @@ On Fri, May 03, 2019 at 08:00:29PM -0500, Pierre-Louis Bossart wrote:
 > +	return ret;
 > +}
 > +
-> +static const struct file_operations cdns_reg_fops = {
+> +static const struct file_operations intel_reg_fops = {
 > +	.open = simple_open,
-> +	.read = cdns_reg_read,
+> +	.read = intel_reg_read,
 > +	.llseek = default_llseek,
 > +};
 > +
-> +/**
-> + * sdw_cdns_debugfs_init() - Cadence debugfs init
-> + * @cdns: Cadence instance
-> + * @root: debugfs root
-> + */
-> +void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+> +static void intel_debugfs_init(struct sdw_intel *sdw)
 > +{
-> +	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
-> +}
-> +EXPORT_SYMBOL(sdw_cdns_debugfs_init);
+> +	struct dentry *root = sdw_bus_debugfs_get_root(sdw->cdns.bus.debugfs);
+> +
+> +	if (!root)
+> +		return;
+> +
+> +	sdw->fs = debugfs_create_dir("intel-sdw", root);
+> +	if (IS_ERR_OR_NULL(sdw->fs)) {
 
-Wait, why is this exported at all?  No one is calling it.
+Again, you do not care, do not check this.
+
+thanks,
+
+greg k-h
