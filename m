@@ -1,223 +1,74 @@
 From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [RFC PATCH 1/7] soundwire: Add sysfs support for master(s)
-Date: Sat, 4 May 2019 08:52:42 +0200
-Message-ID: <20190504065242.GA9770@kroah.com>
+Subject: Re: [RFC PATCH 3/7] ABI: testing: Add description of soundwire
+ master sysfs files
+Date: Sat, 4 May 2019 08:53:52 +0200
+Message-ID: <20190504065352.GB9770@kroah.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190504010030.29233-4-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 03, 2019 at 08:00:24PM -0500, Pierre-Louis Bossart wrote:
-> For each master N, add a device sdw-master:N and add the
-> master properties as attributes.
+On Fri, May 03, 2019 at 08:00:26PM -0500, Pierre-Louis Bossart wrote:
+> The description is directly derived from the MIPI DisCo specification.
 > 
 > Credits: this patch is based on an earlier internal contribution by
 > Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah.
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/Makefile    |   3 +-
->  drivers/soundwire/bus.c       |   6 ++
->  drivers/soundwire/sysfs.c     | 162 ++++++++++++++++++++++++++++++++++
->  include/linux/soundwire/sdw.h |  10 +++
->  4 files changed, 180 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/soundwire/sysfs.c
+>  .../ABI/testing/sysfs-bus-soundwire-master    | 21 +++++++++++++++++++
+>  drivers/soundwire/sysfs.c                     |  1 +
+>  2 files changed, 22 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-soundwire-master
 > 
-> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-> index 5817beaca0e1..787f1cbf342c 100644
-> --- a/drivers/soundwire/Makefile
-> +++ b/drivers/soundwire/Makefile
-> @@ -3,7 +3,8 @@
->  #
->  
->  #Bus Objs
-> -soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
-> +soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o \
-> +			sysfs.o
->  obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
->  
->  #Cadence Objs
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index fe745830a261..38de7071e135 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -49,6 +49,10 @@ int sdw_add_bus_master(struct sdw_bus *bus)
->  		}
->  	}
->  
-> +	ret = sdw_sysfs_bus_init(bus);
-> +	if (ret < 0)
-> +		dev_warn(bus->dev, "Bus sysfs init failed:%d\n", ret);
-> +
->  	/*
->  	 * Device numbers in SoundWire are 0 through 15. Enumeration device
->  	 * number (0), Broadcast device number (15), Group numbers (12 and
-> @@ -129,6 +133,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
->   */
->  void sdw_delete_bus_master(struct sdw_bus *bus)
->  {
-> +	sdw_sysfs_bus_exit(bus);
-> +
->  	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
->  }
->  EXPORT_SYMBOL(sdw_delete_bus_master);
-> diff --git a/drivers/soundwire/sysfs.c b/drivers/soundwire/sysfs.c
+> diff --git a/Documentation/ABI/testing/sysfs-bus-soundwire-master b/Documentation/ABI/testing/sysfs-bus-soundwire-master
 > new file mode 100644
-> index 000000000000..7b6c3826a73a
+> index 000000000000..69cadf31049d
 > --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-soundwire-master
+> @@ -0,0 +1,21 @@
+> +What:		/sys/bus/soundwire/devices/sdw-master-N/revision
+> +		/sys/bus/soundwire/devices/sdw-master-N/clk_stop_modes
+> +		/sys/bus/soundwire/devices/sdw-master-N/clk_freq
+> +		/sys/bus/soundwire/devices/sdw-master-N/clk_gears
+> +		/sys/bus/soundwire/devices/sdw-master-N/default_col
+> +		/sys/bus/soundwire/devices/sdw-master-N/default_frame_rate
+> +		/sys/bus/soundwire/devices/sdw-master-N/default_row
+> +		/sys/bus/soundwire/devices/sdw-master-N/dynamic_shape
+> +		/sys/bus/soundwire/devices/sdw-master-N/err_threshold
+> +		/sys/bus/soundwire/devices/sdw-master-N/max_clk_freq
+> +
+> +Date:		May 2019
+> +
+> +Contact:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> +
+> +Description:	SoundWire Master-N DisCo properties.
+> +		These properties are defined by MIPI DisCo Specification
+> +		for SoundWire. They define various properties of the Master
+> +		and are used by the bus to configure the Master. clk_stop_modes
+> +		is a bitmask for simplifications and combines the
+> +		clock-stop-mode0 and clock-stop-mode1 properties.
+> diff --git a/drivers/soundwire/sysfs.c b/drivers/soundwire/sysfs.c
+> index 734e2c8bc5cd..c2e5b7ad42fb 100644
+> --- a/drivers/soundwire/sysfs.c
 > +++ b/drivers/soundwire/sysfs.c
-> @@ -0,0 +1,162 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +// Copyright(c) 2015-19 Intel Corporation.
-> +
-> +#include <linux/device.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/slab.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/soundwire/sdw.h>
-> +#include <linux/soundwire/sdw_type.h>
-> +#include "bus.h"
-> +
-> +struct sdw_master_sysfs {
-> +	struct device dev;
-> +	struct sdw_bus *bus;
-> +};
-> +
-> +#define to_sdw_device(_dev) \
-> +	container_of(_dev, struct sdw_master_sysfs, dev)
-> +
-> +/*
-> + * The sysfs for properties reflects the MIPI description as given
-> + * in the MIPI DisCo spec
-> + *
-> + * Base file is:
-> + *	sdw-master-N
-> + *      |---- revision
-> + *      |---- clk_stop_modes
-> + *      |---- max_clk_freq
-> + *      |---- clk_freq
-> + *      |---- clk_gears
-> + *      |---- default_row
-> + *      |---- default_col
-> + *      |---- dynamic_shape
-> + *      |---- err_threshold
-> + */
-> +
-> +#define sdw_master_attr(field, format_string)				\
-> +static ssize_t field##_show(struct device *dev,				\
-> +			    struct device_attribute *attr,		\
-> +			    char *buf)					\
-> +{									\
-> +	struct sdw_master_sysfs *master = to_sdw_device(dev);		\
-> +	return sprintf(buf, format_string, master->bus->prop.field);	\
-> +}									\
-> +static DEVICE_ATTR_RO(field)
-> +
-> +sdw_master_attr(revision, "0x%x\n");
-> +sdw_master_attr(clk_stop_modes, "0x%x\n");
-> +sdw_master_attr(max_clk_freq, "%d\n");
-> +sdw_master_attr(default_row, "%d\n");
-> +sdw_master_attr(default_col, "%d\n");
-> +sdw_master_attr(default_frame_rate, "%d\n");
-> +sdw_master_attr(dynamic_frame, "%d\n");
-> +sdw_master_attr(err_threshold, "%d\n");
-> +
-> +static ssize_t clock_frequencies_show(struct device *dev,
-> +				      struct device_attribute *attr, char *buf)
-> +{
-> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
-> +	ssize_t size = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < master->bus->prop.num_clk_freq; i++)
-> +		size += sprintf(buf + size, "%8d ",
-> +				master->bus->prop.clk_freq[i]);
-> +	size += sprintf(buf + size, "\n");
-> +
-> +	return size;
-> +}
-> +static DEVICE_ATTR_RO(clock_frequencies);
-> +
-> +static ssize_t clock_gears_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
-> +	ssize_t size = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < master->bus->prop.num_clk_gears; i++)
-> +		size += sprintf(buf + size, "%8d ",
-> +				master->bus->prop.clk_gears[i]);
-> +	size += sprintf(buf + size, "\n");
-> +
-> +	return size;
-> +}
-> +static DEVICE_ATTR_RO(clock_gears);
-> +
-> +static struct attribute *master_node_attrs[] = {
-> +	&dev_attr_revision.attr,
-> +	&dev_attr_clk_stop_modes.attr,
-> +	&dev_attr_max_clk_freq.attr,
-> +	&dev_attr_default_row.attr,
-> +	&dev_attr_default_col.attr,
-> +	&dev_attr_default_frame_rate.attr,
-> +	&dev_attr_dynamic_frame.attr,
-> +	&dev_attr_err_threshold.attr,
-> +	&dev_attr_clock_frequencies.attr,
-> +	&dev_attr_clock_gears.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group sdw_master_node_group = {
-> +	.attrs = master_node_attrs,
-> +};
-> +
-> +static const struct attribute_group *sdw_master_node_groups[] = {
-> +	&sdw_master_node_group,
-> +	NULL
-> +};
+> @@ -31,6 +31,7 @@ struct sdw_master_sysfs {
+>   *      |---- clk_gears
+>   *      |---- default_row
+>   *      |---- default_col
+> + *      |---- default_frame_shape
+>   *      |---- dynamic_shape
+>   *      |---- err_threshold
+>   */
 
-Minor nit, you can use the ATTRIBUTE_GROUPS() macro here to save you a
-few lines.
-
-> +
-> +static void sdw_device_release(struct device *dev)
-> +{
-> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
-> +
-> +	kfree(master);
-> +}
-> +
-> +static struct device_type sdw_device_type = {
-> +	.name =	"sdw_device",
-> +	.release = sdw_device_release,
-> +};
-> +
-> +int sdw_sysfs_bus_init(struct sdw_bus *bus)
-> +{
-> +	struct sdw_master_sysfs *master;
-> +	int err;
-> +
-> +	if (bus->sysfs) {
-> +		dev_err(bus->dev, "SDW sysfs is already initialized\n");
-> +		return -EIO;
-> +	}
-> +
-> +	master = kzalloc(sizeof(*master), GFP_KERNEL);
-> +	if (!master)
-> +		return -ENOMEM;
-
-Why are you creating a whole new device to put all of this under?  Is
-this needed?  What will the sysfs tree look like when you do this?  Why
-can't the "bus" device just get all of these attributes and no second
-device be created?
+This last chunk should go in patch 1 of this series, right?
 
 thanks,
 
