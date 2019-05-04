@@ -1,415 +1,113 @@
-From: Rob van der Putten <rob@sput.nl>
-Subject: Re: [PATCH] Aseqnet, no nagle and dual stack
-Date: Sat, 4 May 2019 14:51:53 +0200
-Message-ID: <qak1t9$4vqg$1@blaine.gmane.org>
-References: <q9nlbm$3kqm$1@blaine.gmane.org> <s5h1s1mmudg.wl-tiwai@suse.de>
+From: Nariman <narimantos@gmail.com>
+Subject: [PATCH] ASoC: Intel: bytcr_5640.c: refactored codec_fixup
+Date: Sat,  4 May 2019 17:16:51 +0200
+Message-ID: <20190504151652.5213-3-user@elitebook-localhost>
+References: <20190504151652.5213-1-user@elitebook-localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blaine.gmane.org (unknown [195.159.176.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 138DFF80726
- for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 14:52:03 +0200 (CEST)
-Received: from list by blaine.gmane.org with local (Exim 4.89)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1hMu94-000goC-W6
- for alsa-devel@alsa-project.org; Sat, 04 May 2019 14:52:02 +0200
-In-Reply-To: <s5h1s1mmudg.wl-tiwai@suse.de>
-Content-Language: en-GB
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190504151652.5213-1-user@elitebook-localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: hdegoede@redhat.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, Erik Bussing <eabbussing@outlook.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there
+From: Erik Bussing <eabbussing@outlook.com>
 
+Remove code duplication in byt_rt5640_codec_fixup
 
-On 28/04/2019 10:00, Takashi Iwai wrote:
+Signed-off-by: Erik Bussing <eabbussing@outlook.com>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 64 ++++++++++-----------------
+ 1 file changed, 23 insertions(+), 41 deletions(-)
 
-> On Tue, 23 Apr 2019 20:25:58 +0200,
-> Rob van der Putten wrote:
-> On Tue, 23 Apr 2019 20:25:58 +0200,
-> Rob van der Putten wrote:
->>
->> Hi there
->>
->>
->> Not an ALSA source patch, but a patch for an ALSA related util.
->> Aseqnet sends ALSA sound_seq MIDI over TCP/IP. The patch below
->> disables nagle, enables quickack and makes aseqnet dual-stack.
-> 
-> Thanks for the patch.  Could you repost with a proper patch change log
-> and your Signed-off-by line so that one can apply to git repo?
-
-Added
-- Disabled Nagle's algorithm
-- Enbled quickack
-- IPv6 support
-
-Signed-off-by: Rob van der Putten <rob@sput.nl>
-
-> About the changes:
->> --- aseqnet.c.bak	2012-01-25 10:43:38.000000000 +0100
->> +++ aseqnet.c	2017-08-26 14:17:58.261868853 +0200
->> @@ -3,6 +3,8 @@
->>    *   ver.0.1
->>    *
->>    * Copyright (C) 1999-2000 Takashi Iwai
->> + * Modified by Rob van der Putten, Leiden, Holland,
->> + * rob at sput dot nl.
-> 
-> We don't need to add each change in the source like that as all
-> tracked in git.
-> 
->> @@ -15,18 +17,21 @@
->>    *
->>    */
->>
->> +#include <alsa/asoundlib.h>
->> +#include <arpa/inet.h>
->> +#include <assert.h>
->> +#include <ctype.h>
->> +#include <getopt.h>
->> +#include <locale.h>
->> +#include <netdb.h>
->> +#include <netinet/in.h>
->> +#include <netinet/tcp.h>
->> +#include <signal.h>
->>   #include <stdio.h>
->>   #include <stdlib.h>
->> -#include <ctype.h>
->>   #include <string.h>
->> -#include <netinet/in.h>
->>   #include <sys/socket.h>
->> -#include <netdb.h>
->> -#include <locale.h>
->> -#include <alsa/asoundlib.h>
->> -#include <getopt.h>
->> -#include <signal.h>
->> -#include <assert.h>
->> +#include <sys/types.h>
->>   #include "aconfig.h"
->>   #include "gettext.h"
-> 
-> Why these large rearrangement of include files?  If it must be
-> inevitably done, please describe the reason in the changelog, too.
-
-I just put them into alphabetical order. I changed that back.
-
->> @@ -327,17 +332,24 @@
->>    */
->>   static void init_server(int port)
->>   {
->> +	/*
->> +	*       RvdP, changed to support IPv6
->> +	*       Dual stack only!
->> +	*/
-> 
-> Wouldn't it potentially break things?  IMO, it's better to keep the
-> old behavior (ipv4-only), at least, with an option.
-
-Server:
-The behaviour is determined by /proc/sys/net/ipv6/bindv6only
-If this is one, the listening socket will be IPv6 only instead of dual
-stack. A socket option is used to set IPV6_V6ONLY to zero, which forces 
-the listening socket dual stack.
-
-Client:
-The 'for (rp = result; rp != NULL; rp = rp->ai_next) {' loop keeps 
-trying to connect to the remote host: If IPv6 fails, it uses IPv4 instead.
-
-Both:
-I added a -4 / --ipv4 option.
-This not in the previous patch.
-It also introduces the string '-4, --ipv4 : IPv4 only' for which there 
-no translations. And a new bit in the man page, with an added man page 
-patch.
-
-> Also, drop your initials in the commit, it's rather superfluous.
-
-A new aseqnet patch. Note: This patches the original, not the previous 
-patch.
---- a/seq/aseqnet/aseqnet.c
-+++ b/seq/aseqnet/aseqnet.c
-@@ -29,6 +29,9 @@
-  #include <assert.h>
-  #include "aconfig.h"
-  #include "gettext.h"
-+#include <arpa/inet.h>
-+#include <netinet/tcp.h>
-+#include <sys/types.h>
-
-  /*
-   * prototypes
-@@ -78,6 +81,8 @@
-  static int verbose = 0;
-  static int info = 0;
-
-+static int ipv4only = 0;
-+
-
-  /*
-   * main routine
-@@ -90,6 +95,7 @@
-         {"help", 0, NULL, 'h'},
-         {"verbose", 0, NULL, 'v'},
-         {"info", 0, NULL, 'i'},
-+       {"ipv4", 0, NULL, '4'},
-         {NULL, 0, NULL, 0},
-  };
-
-@@ -104,7 +110,7 @@
-         textdomain(PACKAGE);
-  #endif
-
--       while ((c = getopt_long(argc, argv, "p:s:d:vi", long_option, 
-NULL)) != -1) {
-+       while ((c = getopt_long(argc, argv, "p:s:d:vi4", long_option, 
-NULL)) != -1) {
-                 switch (c) {
-                 case 'p':
-                         if (isdigit(*optarg))
-@@ -124,6 +130,9 @@
-                 case 'i':
-                         info++;
-                         break;
-+               case '4':
-+                       ipv4only++;
-+                       break;
-                 default:
-                         usage();
-                         exit(1);
-@@ -172,6 +181,7 @@
-         printf(_("  -d,--dest addr : write to given addr 
-(client:port)\n"));
-         printf(_("  -v, --verbose : print verbose messages\n"));
-         printf(_("  -i, --info : print certain received events\n"));
-+       printf(_("  -4, --ipv4 : IPv4 only\n"));
-  }
-
-
-@@ -329,25 +339,64 @@
-  {
-         int i;
-         int curstate = 1;
--       struct sockaddr_in addr;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a22366ce33c4..679be55418bf 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -939,6 +939,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	int ret;
++	int bits;
+ 
+ 	/* The DSP will covert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+@@ -949,53 +950,34 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 		/* set SSP0 to 16-bit */
+ 		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
 -
--       memset(&addr, 0, sizeof(addr));
+-		/*
+-		 * Default mode for SSP configuration is TDM 4 slot, override config
+-		 * with explicit setting to I2S 2ch 16-bit. The word length is set with
+-		 * dai_set_tdm_slot() since there is no other API exposed
+-		 */
+-		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+-					SND_SOC_DAIFMT_I2S     |
+-					SND_SOC_DAIFMT_NB_NF   |
+-					SND_SOC_DAIFMT_CBS_CFS
+-			);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-			return ret;
+-		}
 -
--       addr.sin_family = AF_INET;
--       addr.sin_addr.s_addr = INADDR_ANY;
--       addr.sin_port = htons(port);
-+       int ipv6only = 0;
-+       int nodelay  = 1;
-+       int quickack = 1;
-+       struct sockaddr_in addr4;
-+       struct sockaddr_in6 addr;
+-		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
+-			return ret;
+-		}
+-
++	bits = 16;
+ 	} else {
+ 
+ 		/* set SSP2 to 24-bit */
+ 		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++		bits = 24;
++	}
+ 
+-		/*
+-		 * Default mode for SSP configuration is TDM 4 slot, override config
+-		 * with explicit setting to I2S 2ch 24-bit. The word length is set with
+-		 * dai_set_tdm_slot() since there is no other API exposed
+-		 */
+-		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+-					SND_SOC_DAIFMT_I2S     |
+-					SND_SOC_DAIFMT_NB_NF   |
+-					SND_SOC_DAIFMT_CBS_CFS
+-			);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-			return ret;
+-		}
+ 
+-		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
+-			return ret;
+-		}
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot, override config
++	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
++	 * dai_set_tdm_slot() since there is no other API exposed
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++		SND_SOC_DAIFMT_I2S     |
++		SND_SOC_DAIFMT_NB_NF   |
++		SND_SOC_DAIFMT_CBS_CFS
++	);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++		return ret;
++	}
 +
-+       if (ipv4only == 0) {
-+               memset(&addr, 0, sizeof(addr));
-+
-+               addr.sin6_family = AF_INET6;
-+               inet_pton(AF_INET6, "::", &(addr.sin6_addr));
-+               addr.sin6_port = htons(port);
-+
-+               sockfd = socket(PF_INET6, SOCK_STREAM, 0);
-+               if (sockfd < 0)  {
-+                       perror("create socket");
-+                       exit(1);
-+               }
-+       } else {
-+               memset(&addr4, 0, sizeof(addr4));
-
--       sockfd = socket(AF_INET, SOCK_STREAM, 0);
--       if (sockfd < 0)  {
--               perror("create socket");
--               exit(1);
-+               addr4.sin_family = AF_INET;
-+               addr4.sin_addr.s_addr = INADDR_ANY;
-+               addr4.sin_port = htons(port);
-+
-+               sockfd = socket(AF_INET, SOCK_STREAM, 0);
-+               if (sockfd < 0)  {
-+                       perror("create socket");
-+                       exit(1);
-+               }
-         }
-         setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &curstate, 
-sizeof(curstate));
-         /* the return value is ignored.. */
-
--       if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0)  {
--               perror("can't bind");
--               exit(1);
-+       if (ipv4only == 0) {
-+               /*    Force dual stack    */
-+               setsockopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6only, 
-sizeof(ipv6only));
-+               /* the return value is ignored.. */
-+       }
-+
-+       /*    Nagle and quickack  */
-+       if ((setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &nodelay, 
-sizeof(nodelay))) < 0) {
-+               perror("Error setsockopt tcp_nodelay");
-+       }
-+       if ((setsockopt(sockfd, IPPROTO_TCP, TCP_QUICKACK, &quickack, 
-sizeof(quickack))) < 0) {
-+               perror("Error setsockopt tcp_quickack");
-+       }
-+
-+       if (ipv4only == 0) {
-+               if (bind(sockfd, (struct sockaddr *) &addr, 
-sizeof(addr)) < 0)  {
-+                       perror("can't bind");
-+                       exit(1);
-+               }
-+       } else {
-+               if (bind(sockfd, (struct sockaddr *) &addr4, 
-sizeof(addr4)) < 0)  {
-+                       perror("can't bind");
-+                       exit(1);
-+               }
-         }
-
-         if (listen(sockfd, 5) < 0)  {
-@@ -365,7 +414,8 @@
-   */
-  static void start_connection(void)
-  {
--       struct sockaddr_in addr;
-+       struct sockaddr_in6 addr;
-+       struct sockaddr_in addr4;
-         int i;
-         socklen_t addr_len;
-
-@@ -377,9 +427,15 @@
-                 fprintf(stderr, _("too many connections!\n"));
-                 exit(1);
-         }
--       memset(&addr, 0, sizeof(addr));
--       addr_len = sizeof(addr);
--       netfd[i] = accept(sockfd, (struct sockaddr *)&addr, &addr_len);
-+       if (ipv4only == 0) {
-+               memset(&addr, 0, sizeof(addr));
-+               addr_len = sizeof(addr);
-+               netfd[i] = accept(sockfd, (struct sockaddr *)&addr, 
-&addr_len);
-+       } else {
-+               memset(&addr4, 0, sizeof(addr4));
-+               addr_len = sizeof(addr4);
-+               netfd[i] = accept(sockfd, (struct sockaddr *)&addr4, 
-&addr_len);
-+       }
-         if (netfd[i] < 0) {
-                 perror("accept");
-                 exit(1);
-@@ -394,30 +450,57 @@
-   */
-  static void init_client(char *server, int port)
-  {
--       struct sockaddr_in addr;
--       struct hostent *host;
-+       struct addrinfo hints;
-+       struct addrinfo *result, *rp;
-         int curstate = 1;
--       int fd;
-+       int nodelay  = 1;
-+       int quickack = 1;
-+       int fd, s;
-+       char portstr[8];
-+       struct hostent *host;
-
--       if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
--               perror("create socket");
-+       memset(&hints, 0, sizeof(struct addrinfo));
-+       if(ipv4only == 0)
-+               hints.ai_family = AF_UNSPEC;
-+       else
-+               hints.ai_family = AF_INET;
-+       hints.ai_socktype = SOCK_STREAM;
-+       /* hints.ai_protocol = IPPROTO_TCP; */
-+       hints.ai_flags    = 0;
-+
-+       memset(portstr, 0, 8);
-+       snprintf(portstr, 6, "%d", port);
-+
-+       s = getaddrinfo(server, portstr, &hints, &result);
-+       if (s != 0) {
-+               fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
-+               exit(1);
-+       }
-+       for (rp = result; rp != NULL; rp = rp->ai_next) {
-+               fd = socket(rp->ai_family, rp->ai_socktype, 
-rp->ai_protocol);
-+               if (fd == -1)
-+                       continue;
-+               if (connect(fd, rp->ai_addr, rp->ai_addrlen) != -1)
-+                       break;
-+               close(fd);
-+       }
-+       if (rp == NULL) {
-+               fprintf(stderr, "Could not connect\n");
-                 exit(1);
-         }
-+
-         if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &curstate, 
-sizeof(curstate)) < 0) {
-                 perror("setsockopt");
-                 exit(1);
-         }
--       if ((host = gethostbyname(server)) == NULL){
--               fprintf(stderr, _("can't get address %s\n"), server);
--               exit(1);
-+
-+       if ((setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, 
-sizeof(nodelay))) < 0) {
-+               perror("Error setsockopt tcp_nodelay");
-         }
--       addr.sin_port = htons(port);
--       addr.sin_family = AF_INET;
--       memcpy(&addr.sin_addr, host->h_addr, host->h_length);
--       if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
--               perror("connect");
--               exit(1);
-+       if ((setsockopt(fd, IPPROTO_TCP, TCP_QUICKACK, &quickack, 
-sizeof(quickack))) < 0) {
-+               perror("Error setsockopt tcp_quickack");
-         }
-+
-         if (verbose)
-                 fprintf(stderr, _("ok.. connected\n"));
-         netfd[0] = fd;
-
-
-A man page patch;
---- a/seq/aseqnet/aseqnet.1
-+++ b/seq/aseqnet/aseqnet.1
-@@ -1,4 +1,4 @@
--.TH aseqnet 1 "January 1, 2000"
-+.TH aseqnet 1 "May 1, 2019"
-  .SH NAME
-  aseqnet \- ALSA sequencer connectors over network
-
-@@ -72,6 +72,9 @@
-  .TP
-  .B \-v
-  Verbose mode.
-+.TP
-+.B \-4
-+IPv4 only.
-
-  .SH "SEE ALSO"
-  aconnect(1), pmidi(1)
-
-
-Regards,
-Rob
++	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, bits);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++		return ret;
+ 	}
+ 	return 0;
+ }
+-- 
+2.20.1
