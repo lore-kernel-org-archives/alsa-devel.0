@@ -1,171 +1,224 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/hdmi - Don't report Jack event
- if no need to do that
-Date: Sat, 4 May 2019 10:45:36 +0800
-Message-ID: <a1c69f75-da2b-8ac0-9dfa-34958cdb5fd8@canonical.com>
-References: <20190430065711.14977-1-hui.wang@canonical.com>
- <s5hh8aghro8.wl-tiwai@suse.de>
- <b0c859a8-3f7f-2948-2fc8-f657adf3c804@canonical.com>
- <s5h36lzj27d.wl-tiwai@suse.de>
- <1be4853e-05cd-fc87-8db6-7ba17ee009ab@canonical.com>
- <s5ha7g4ua92.wl-tiwai@suse.de>
- <4611984b-c80f-8aa4-a760-72343572470e@canonical.com>
- <s5himurr0no.wl-tiwai@suse.de>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [RFC PATCH 1/7] soundwire: Add sysfs support for master(s)
+Date: Sat, 4 May 2019 08:52:42 +0200
+Message-ID: <20190504065242.GA9770@kroah.com>
+References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1725F80726
- for <alsa-devel@alsa-project.org>; Sat,  4 May 2019 04:45:43 +0200 (CEST)
-In-Reply-To: <s5himurr0no.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDIwMTkvNS8zIOS4i+WNiDExOjU3LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gRnJpLCAw
-MyBNYXkgMjAxOSAwNjowNTowOSArMDIwMCwKPiBIdWkgV2FuZyB3cm90ZToKPj4KPj4gT24gMjAx
-OS81LzIg5LiL5Y2IMTE6NDksIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIFRodSwgMDIgTWF5
-IDIwMTkgMDQ6NTI6NDYgKzAyMDAsCj4+PiBIdWkgV2FuZyB3cm90ZToKPj4+PiBPbiAyMDE5LzQv
-MzAg5LiL5Y2INTowMiwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+PiBPbiBUdWUsIDMwIEFwciAy
-MDE5IDEwOjQyOjU1ICswMjAwLAo+Pj4+PiBIdWkgV2FuZyB3cm90ZToKPj4+Pj4+IE9uIDIwMTkv
-NC8zMCDkuIvljYgzOjM1LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4+Pj4gT24gVHVlLCAzMCBB
-cHIgMjAxOSAwODo1NzoxMSArMDIwMCwKPj4+Pj4+PiBIdWkgV2FuZyB3cm90ZToKPj4+Pj4+Pj4g
-T24gdGhlIG1hY2hpbmVzIHdpdGggQU1EIEdQVSBvciBOdmlkaWEgR1BVLCB3ZSBvZnRlbiBtZWV0
-IHRoaXMgaXNzdWVzOgo+Pj4+Pj4+PiBhZnRlciBzMywgdGhlcmUgYXJlIDQgSERNSS9EUCBhdWRp
-byBkZXZpY2VzIGluIHRoZSBnbm9tZS1zb3VuZC1zZXR0aW5nCj4+Pj4+Pj4+IGV2ZW4gdGhlcmUg
-aXMgbm8gYW55IG1vbml0b3JzIHBsdWdnZWQuCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFdoZW4gdGhpcyBw
-cm9ibGVtIGhhcHBlbnMsIHdlIGNoZWNrIHRoZSAvcHJvYy9hc291bmQvY2FyZFgvZWxkI04uTSwg
-d2UKPj4+Pj4+Pj4gd2lsbCBmaW5kIHRoZSBtb25pdG9yX3ByZXNlbnQ9MSwgZWxkX3ZhbGlkPTAu
-Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFNvIHRoZSBmaXggaXMgcHV0dGluZyB5b3VyIGNoYW5nZSBhbmQg
-bXkgY2hhbmdlIHRvZ2V0aGVyIGxpa2UgYmVsb3c/Cj4+PiBXZWxsLCByZW1vdmluZyAiIXJlcG9s
-bCIgc2hvdWxkIGJlIHRyZWF0ZWQgYXMgYSBzZXBhcmF0ZSBwYXRjaCwgYW5kCj4+PiBJJ20gbm90
-IHN1cmUgd2hldGhlciB3ZSB3YW50IHRvIGdldCByaWQgb2YgaXQuCj4+Pgo+Pj4gVGhlICIhcmVw
-b2xsIiBjaGVjayBpcyBhIGJpdCBtaXNsZWFkaW5nLiAgVGhpcyBjb25kaXRpb24gaW5kaWNhdGVz
-Cj4+PiB0aGF0IHRoZSBqYWNrIHN0YXR1cyBzeW5jIGlzIHJlcXVpcmVkLCBlLmcuIGl0J3MgdGhl
-IGNhc2Ugd2hlcmUKPj4+IHBvbGxpbmcgZ29lcyB0byB0aW1lb3V0IG9yIGF0IHRoZSBiZWdpbm5p
-bmcgb2YgdGhlIHByb2JlLiAgRm9yCj4+PiBleGFtcGxlLCBpbiB0aGUgY2FzZSBvZiByZXN1bWUs
-IGl0IHN0YXJ0cyB3aXRoIHJlcG9sbD0xLiAgSWYgYW4KPj4+IGluY29tcGxldGUgc3RhdGUgKG1v
-bml0b3I9MSwgZWxkX3ZhbGlkPTApIGlzIHNlZW4gYXQgdGhpcyBwb2ludCwgdGhlCj4+PiBjb2Rl
-IHNjaGVkdWxlcyBmb3IgdGhlIHJldHJ5IGF0IGEgbGF0ZXIgcG9pbnQuICBBbmQgaWYgaXQgcmVh
-Y2hlcyB0bwo+Pj4gdGhlIG1heCBjb3VudCwgaXQgY2xlYXJzIHRvIHJlcG9sbD0wIGFuZCB0cnkg
-dGhlIGxhc3QgYXR0ZW1wdCwgd2hpY2gKPj4+IHdvbid0IHNjaGVkdWxlIGFueSBsb25nZXIuCj4+
-Pgo+Pj4gU28sIGF0IHRoaXMgcG9pbnQsIHdlICpoYXZlIHRvKiBub3RpZnkgdGhlIHJlc3VsdCBu
-byBtYXR0ZXIgd2hldGhlcgo+Pj4gaXQncyBzYXRpc2Z5aW5nIG9yIG5vdC4KPj4+Cj4+Pgo+Pj4g
-dGhhbmtzLAo+Pj4KPj4+IFRha2FzaGkKPj4gU28gbGV0IHVzIGRvIHN0aCBpbiB0aGUgaGRhX2ph
-Y2suYywgYWRkaW5nIHR3byBtZW1iZXJzIGNoZWNrX2VsZCBhbmQKPj4gZWxkX3ZhbGlkIGluIHRo
-ZSBzdHJ1Y3QgaGRhX2phY2tfdGJse30sCj4+Cj4+IFdoZW4gYnVpbGRpbmcgbmV3IGphY2tzLCBz
-aW5jZSB0aGVyZSBpcyBubyBlbGRfZGF0YSB5ZXQsIGp1c3QgZm9sbG93Cj4+IG9sZCBydWxlcyAo
-b25seSBjaGVja2luZyBBQ19QSU5TRU5TRV9QUkVTRU5DRSkKPj4KPj4gQWZ0ZXIgYnVpbGRpbmcg
-bmV3IGphY2tzLCBpZiBpdCBpcyBub3QgYSBwaGFudG9tIG9uZSwgc2V0IGNoZWNrX2VsZCB0byAx
-Cj4+Cj4+IGV2ZXJ5IHRpbWUgd2UgZ2V0IGVsZCAodmlhIHZlcmJzIG9yIGFjb21wKSwgd2Ugd2ls
-bCBzeW5jCj4+IGphY2stPmVsZF92YWxpZCB0byBlbGQtPmVsZF92YWxpZC4KPj4KPj4gaW4gdGhl
-IHJlcG9ydF9zeW5jKCksIHdlIHdpbGwgY2hlY2sgY2hlY2tfZWxkIGFuZCBlbGRfdmFsaWQsIG5v
-dAo+PiBkZXBlbmRzIG9uIEFDX1BJTlNFTlNFX1BSRVNFTkNFIG9ubHkuCj4+Cj4+IE5vIG1hdHRl
-ciBpbnRlcnJ1cHQsIHMzIG9yIHBvbGwswqAgdGhlIGphY2stPmVsZF92YWxpZCB3aWxsIGJlIHN5
-bmNlZAo+PiBhbmQgdGhlIHJlcG9ydF9zeW5jKCkgd2lsbCByZXBvcnQgamFjayBzdGF0ZSBkZXBl
-bmVkcyBvbiBib3RoCj4+IEFDX1BJTlNFTlNFX1BSRVNFTkNFIGFuZCBlbGRfdmFsaWQKPj4KPj4g
-RG9lcyBpdCBzb3VuZCBnb29kPwo+IE9LLCBJIHdhcyBjb25mdXNlZCAtLSBJIG92ZXJsb29rZWQg
-dGhlIGZhY3QgdGhhdCBoZGFfamFjay5jIHVwZGF0ZXMKPiB0aGUgcGluIHNlbnNlIGxvY2FsbHku
-ICBBbmQgdGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbiwgd2UncmUgaGVhZGluZwo+IHRvIHRoZSBy
-aWdodCBkaXJlY3Rpb24uCj4KPiBPbmUgdGhpbmcgdGhhdCBkb2Vzbid0IGZpdCBpcyBpbnRyb2R1
-Y2luZyBIRE1JLXNwZWNpZmljIHRoaW5ncyBsaWtlCj4gZWxkX3ZhbGlkIGFuZCBjaGVja19lbGQu
-ICBCYXNpY2FsbHkgdGhpcyBpcyBhYm91dCB0aGUgZmFsc2VseSByZXBvcnRlZAo+IGphY2sgZGV0
-ZWN0aW9uLCBhZnRlciBhbGwuICBTbywgd2hhdCB3ZSBuZWVkIGlzIHRoZSBjb3JyZWN0aW9uIG9m
-IHRoZQo+IGluY29ycmVjdCBqYWNrIGRldGVjdGlvbiAtLSBvciBhIHdheSB0byBvdmVycmlkZSB0
-aGUgdmFsdWUuCj4KPiBBY3R1YWxseSwgZm9yIEhETUksIHRoZXJlIGlzIG5vIHJlYXNvbiB0byBy
-ZWFkIHRoZSBwaW4gc2Vuc2UgYXQgYWxsLgo+IEFsbCB3ZSBuZWVkIGlzIGFscmVhZHkgcHJvdmlk
-ZWQgYnkgdGhlIEhETUkgY29kZWMgZHJpdmVyIChtb25pdG9yCj4gcHJlc2VudCBhbmQgZWxkIHZh
-bGlkKS4KPgo+IFRoZW4gSSBjYW4gdGhpbmsgb2YgYWRkaW5nIGEgbmV3IGZsYWcgaGRhX2phY2tf
-dGJsLm1hbnVhbF9waW5fc2Vuc2UsCj4gZm9yIGV4YW1wbGUsIGluZGljYXRpbmcgdGhhdCB0aGUg
-cGluIHNlbnNlIGlzIHVwZGF0ZWQgYnkgdGhlIGRyaXZlci4KPiBUaGF0J3MgYSBjaGFuZ2Ugc29t
-ZXRoaW5nIGxpa2UgYmVsb3cuCj4KTG9va3MgbGlrZSB0aGUgaGRtaV9wcmVzZW50X3NlbnNlX3Zp
-YV92ZXJicygpIHN0aWxsIGhhcyBzb21lIGlzc3VlLiBBdCAKdGhlIGVudHJ5IG9mIHRoaXMgZnVu
-Y3Rpb24swqAgaXQgY2FsbHMgc25kX2hkYV9waW5fc2Vuc2UoKSBhbmQgcmVhZCB0aGUgCmVsZF9k
-YXRhIGRlcGVuZGluZyBvbiB0aGUgcmV0dXJuIHZhbHVlLMKgIGhlcmUgaXQgZXhwZWN0cyByZWFk
-aW5nIHRoZSBwaW4gCnNlbnNlIHJlZ2lzdGVyLCBhZnRlciBhcHBseWluZyB5b3VyIGNoYW5nZSwg
-dGhpcyBmdW5jdGlvbiByZXR1cm5zIGEgCnNoYWRvdyB2YWx1ZSBpbnN0ZWFkIG9mIGEgcmVnaXN0
-ZXIgdmFsdWUsIGlmIHdlIHNldCB0aGUgcGluX3NlbnNlIHRvIDAsIAp0aGVuIGl0IGlzIHBvc3Np
-YmxlIHRoYXQgdGhlIHBpbl9nZXRfZWxkKCkgd2lsbCBub3QgYmUgY2FsbGVkIGFueW1vcmUuCgpB
-bmQgaW5zcGlyZWQgYnkgeW91ciBjaGFuZ2UsIG1heWJlIHdlIGp1c3QgbWFrZSB0aGlzIGNoYW5n
-ZSwgdGhlbiBpdCBpcyAKZW5vdWdoIHRvIGZpeCB0aGUgZmFsc2VseSByZXBvcnQgaXNzdWUgaGVy
-ZS4KCkBAIC0xNTUxLDggKzE1NTEsMTEgQEAgc3RhdGljIGJvb2wgaGRtaV9wcmVzZW50X3NlbnNl
-X3ZpYV92ZXJicyhzdHJ1Y3QgaGRtaV9zcGVjX3Blcl9waW4gKnBlcl9waW4sCiAgCXJldCA9ICFy
-ZXBvbGwgfHwgIWVsZC0+bW9uaXRvcl9wcmVzZW50IHx8IGVsZC0+ZWxkX3ZhbGlkOwogIAogIAlq
-YWNrID0gc25kX2hkYV9qYWNrX3RibF9nZXQoY29kZWMsIHBpbl9uaWQpOwotCWlmIChqYWNrKQor
-CWlmIChqYWNrKSB7CiAgCQlqYWNrLT5ibG9ja19yZXBvcnQgPSAhcmV0OworCQlqYWNrLT5waW5f
-c2Vuc2UgPSAoZWxkLT5tb25pdG9yX3ByZXNlbnQgJiYgZWxkLT5lbGRfdmFsaWQpID8KKwkJCUFD
-X1BJTlNFTlNFX1BSRVNFTkNFIDogMDsKKwl9CgpiZWNhdXNlIGluIHRoZSBzbmRfaGRhX3Bpbl9z
-ZW5zZSgpLCB0aGUgamFja19kaXJ0eSBpcyBzZXQgdG8gMCwgdGhlbiB3ZSAKY2hhbmdlIHRoZSBq
-YWNrLT5waW5fc2Vuc2UswqAgYW5kIGluIHRoZSByZXBvcnRfc3luYygpIGl0IHdpbGwgZGVjaWRl
-IHRoZSAKamFjayBzdGF0ZSBhY2NvcmRpbmcgdG8gdGhlIGphY2stPnBpbl9zZW5zZSB3ZSBjaGFu
-Z2VkLgoKVGhhbmtzLAoKSHVpLgoKCj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4gLS0tIGEvc291
-bmQvcGNpL2hkYS9oZGFfamFjay5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfamFjay5jCj4g
-QEAgLTE4OSw3ICsxODksNyBAQCB2b2lkIHNuZF9oZGFfamFja19zZXRfZGlydHlfYWxsKHN0cnVj
-dCBoZGFfY29kZWMgKmNvZGVjKQo+ICAgCWludCBpOwo+ICAgCj4gICAJZm9yIChpID0gMDsgaSA8
-IGNvZGVjLT5qYWNrdGJsLnVzZWQ7IGkrKywgamFjaysrKQo+IC0JCWlmIChqYWNrLT5uaWQpCj4g
-KwkJaWYgKGphY2stPm5pZCAmJiAhamFjay0+bWFudWFsX3Bpbl9zZW5zZSkKPiAgIAkJCWphY2st
-PmphY2tfZGlydHkgPSAxOwo+ICAgfQo+ICAgRVhQT1JUX1NZTUJPTF9HUEwoc25kX2hkYV9qYWNr
-X3NldF9kaXJ0eV9hbGwpOwo+IEBAIC01NjgsNyArNTY4LDggQEAgdm9pZCBzbmRfaGRhX2phY2tf
-dW5zb2xfZXZlbnQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIHVuc2lnbmVkIGludCByZXMpCj4g
-ICAJZXZlbnQgPSBzbmRfaGRhX2phY2tfdGJsX2dldF9mcm9tX3RhZyhjb2RlYywgdGFnKTsKPiAg
-IAlpZiAoIWV2ZW50KQo+ICAgCQlyZXR1cm47Cj4gLQlldmVudC0+amFja19kaXJ0eSA9IDE7Cj4g
-KwlpZiAoIWV2ZW50LT5tYW51YWxfcGluX3NlbnNlKQo+ICsJCWV2ZW50LT5qYWNrX2RpcnR5ID0g
-MTsKPiAgIAo+ICAgCWNhbGxfamFja19jYWxsYmFjayhjb2RlYywgcmVzLCBldmVudCk7Cj4gICAJ
-c25kX2hkYV9qYWNrX3JlcG9ydF9zeW5jKGNvZGVjKTsKPiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hk
-YV9qYWNrLmgKPiArKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmgKPiBAQCAtNDAsNiArNDAs
-NyBAQCBzdHJ1Y3QgaGRhX2phY2tfdGJsIHsKPiAgIAl1bnNpZ25lZCBpbnQgamFja19kaXJ0eTox
-OwkvKiBuZWVkcyB0byB1cGRhdGU/ICovCj4gICAJdW5zaWduZWQgaW50IHBoYW50b21famFjazox
-OyAgICAvKiBhIGZpeGVkLCBhbHdheXMgcHJlc2VudCBwb3J0PyAqLwo+ICAgCXVuc2lnbmVkIGlu
-dCBibG9ja19yZXBvcnQ6MTsgICAgLyogaW4gYSB0cmFuc2l0aW9uYWwgc3RhdGUgLSBkbyBub3Qg
-cmVwb3J0IHRvIHVzZXJzcGFjZSAqLwo+ICsJdW5zaWduZWQgaW50IG1hbnVhbF9waW5fc2Vuc2U6
-MTsgLyogcGluX3NlbnNlIGlzIHVwZGF0ZWQgYnkgY29kZWMgZHJpdmVyICovCj4gICAJaGRhX25p
-ZF90IGdhdGluZ19qYWNrOwkJLyogdmFsaWQgd2hlbiBnYXRpbmcgamFjayBwbHVnZ2VkICovCj4g
-ICAJaGRhX25pZF90IGdhdGVkX2phY2s7CQkvKiBnYXRlZCBpcyBkZXBlbmRlbnQgb24gdGhpcyBq
-YWNrICovCj4gICAJaW50IHR5cGU7Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMK
-PiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+IEBAIC0xNzAsNiArMTcwLDcgQEAg
-c3RydWN0IGhkbWlfc3BlYyB7Cj4gICAKPiAgIAlib29sIGR5bl9waW5fb3V0Owo+ICAgCWJvb2wg
-ZHluX3BjbV9hc3NpZ247Cj4gKwlib29sIHVzZV9waW5fc2Vuc2U7Cj4gICAJLyoKPiAgIAkgKiBO
-b24tZ2VuZXJpYyBWSUEvTlZJRElBIHNwZWNpZmljCj4gICAJICovCj4gQEAgLTc5Nyw3ICs3OTgs
-NiBAQCBzdGF0aWMgdm9pZCBoZG1pX2ludHJpbnNpY19ldmVudChzdHJ1Y3QgaGRhX2NvZGVjICpj
-b2RlYywgdW5zaWduZWQgaW50IHJlcykKPiAgIAlqYWNrID0gc25kX2hkYV9qYWNrX3RibF9nZXRf
-ZnJvbV90YWcoY29kZWMsIHRhZyk7Cj4gICAJaWYgKCFqYWNrKQo+ICAgCQlyZXR1cm47Cj4gLQlq
-YWNrLT5qYWNrX2RpcnR5ID0gMTsKPiAgIAo+ICAgCWNvZGVjX2RiZyhjb2RlYywKPiAgIAkJIkhE
-TUkgaG90IHBsdWcgZXZlbnQ6IENvZGVjPSVkIFBpbj0lZCBEZXZpY2U9JWQgSW5hY3RpdmU9JWQg
-UHJlc2VuY2VfRGV0ZWN0PSVkIEVMRF9WYWxpZD0lZFxuIiwKPiBAQCAtMTU1MSw4ICsxNTUxLDEx
-IEBAIHN0YXRpYyBib29sIGhkbWlfcHJlc2VudF9zZW5zZV92aWFfdmVyYnMoc3RydWN0IGhkbWlf
-c3BlY19wZXJfcGluICpwZXJfcGluLAo+ICAgCXJldCA9ICFyZXBvbGwgfHwgIWVsZC0+bW9uaXRv
-cl9wcmVzZW50IHx8IGVsZC0+ZWxkX3ZhbGlkOwo+ICAgCj4gICAJamFjayA9IHNuZF9oZGFfamFj
-a190YmxfZ2V0KGNvZGVjLCBwaW5fbmlkKTsKPiAtCWlmIChqYWNrKQo+ICsJaWYgKGphY2spIHsK
-PiAgIAkJamFjay0+YmxvY2tfcmVwb3J0ID0gIXJldDsKPiArCQlqYWNrLT5waW5fc2Vuc2UgPSAo
-ZWxkLT5tb25pdG9yX3ByZXNlbnQgJiYgZWxkLT5lbGRfdmFsaWQpID8KPiArCQkJQUNfUElOU0VO
-U0VfUFJFU0VOQ0UgOiAwOwo+ICsJfQo+ICAgCj4gICAJbXV0ZXhfdW5sb2NrKCZwZXJfcGluLT5s
-b2NrKTsKPiAgIAlyZXR1cm4gcmV0Owo+IEBAIC0yMTYzLDYgKzIxNjYsNyBAQCBzdGF0aWMgaW50
-IGdlbmVyaWNfaGRtaV9idWlsZF9qYWNrKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBpbnQgcGNt
-X2lkeCkKPiAgIAkgKiBhbGlnbiB3aXRoIGR5bl9wY21fYXNzaWduIG1vZGUKPiAgIAkgKi8KPiAg
-IAlzcGVjLT5wY21fcmVjW3BjbV9pZHhdLmphY2sgPSBqYWNrLT5qYWNrOwo+ICsJamFjay0+bWFu
-dWFsX3Bpbl9zZW5zZSA9ICFzcGVjLT51c2VfcGluX3NlbnNlOwo+ICAgCXJldHVybiAwOwo+ICAg
-fQo+ICAgCj4gQEAgLTI5NzIsNiArMjk3Niw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfc2ltcGxlX2hk
-bWkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCj4gICAJc3BlYy0+bXVsdGlvdXQuZGlnX291dF9u
-aWQgPSBjdnRfbmlkOwo+ICAgCXNwZWMtPm51bV9jdnRzID0gMTsKPiAgIAlzcGVjLT5udW1fcGlu
-cyA9IDE7Cj4gKwlzcGVjLT51c2VfcGluX3NlbnNlID0gdHJ1ZTsKPiAgIAlwZXJfcGluID0gc25k
-X2FycmF5X25ldygmc3BlYy0+cGlucyk7Cj4gICAJcGVyX2N2dCA9IHNuZF9hcnJheV9uZXcoJnNw
-ZWMtPmN2dHMpOwo+ICAgCWlmICghcGVyX3BpbiB8fCAhcGVyX2N2dCkgewo+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwczovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Fri, May 03, 2019 at 08:00:24PM -0500, Pierre-Louis Bossart wrote:
+> For each master N, add a device sdw-master:N and add the
+> master properties as attributes.
+> 
+> Credits: this patch is based on an earlier internal contribution by
+> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/Makefile    |   3 +-
+>  drivers/soundwire/bus.c       |   6 ++
+>  drivers/soundwire/sysfs.c     | 162 ++++++++++++++++++++++++++++++++++
+>  include/linux/soundwire/sdw.h |  10 +++
+>  4 files changed, 180 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/soundwire/sysfs.c
+> 
+> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> index 5817beaca0e1..787f1cbf342c 100644
+> --- a/drivers/soundwire/Makefile
+> +++ b/drivers/soundwire/Makefile
+> @@ -3,7 +3,8 @@
+>  #
+>  
+>  #Bus Objs
+> -soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
+> +soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o \
+> +			sysfs.o
+>  obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+>  
+>  #Cadence Objs
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index fe745830a261..38de7071e135 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -49,6 +49,10 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+>  		}
+>  	}
+>  
+> +	ret = sdw_sysfs_bus_init(bus);
+> +	if (ret < 0)
+> +		dev_warn(bus->dev, "Bus sysfs init failed:%d\n", ret);
+> +
+>  	/*
+>  	 * Device numbers in SoundWire are 0 through 15. Enumeration device
+>  	 * number (0), Broadcast device number (15), Group numbers (12 and
+> @@ -129,6 +133,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+>   */
+>  void sdw_delete_bus_master(struct sdw_bus *bus)
+>  {
+> +	sdw_sysfs_bus_exit(bus);
+> +
+>  	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+>  }
+>  EXPORT_SYMBOL(sdw_delete_bus_master);
+> diff --git a/drivers/soundwire/sysfs.c b/drivers/soundwire/sysfs.c
+> new file mode 100644
+> index 000000000000..7b6c3826a73a
+> --- /dev/null
+> +++ b/drivers/soundwire/sysfs.c
+> @@ -0,0 +1,162 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> +// Copyright(c) 2015-19 Intel Corporation.
+> +
+> +#include <linux/device.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/slab.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/soundwire/sdw.h>
+> +#include <linux/soundwire/sdw_type.h>
+> +#include "bus.h"
+> +
+> +struct sdw_master_sysfs {
+> +	struct device dev;
+> +	struct sdw_bus *bus;
+> +};
+> +
+> +#define to_sdw_device(_dev) \
+> +	container_of(_dev, struct sdw_master_sysfs, dev)
+> +
+> +/*
+> + * The sysfs for properties reflects the MIPI description as given
+> + * in the MIPI DisCo spec
+> + *
+> + * Base file is:
+> + *	sdw-master-N
+> + *      |---- revision
+> + *      |---- clk_stop_modes
+> + *      |---- max_clk_freq
+> + *      |---- clk_freq
+> + *      |---- clk_gears
+> + *      |---- default_row
+> + *      |---- default_col
+> + *      |---- dynamic_shape
+> + *      |---- err_threshold
+> + */
+> +
+> +#define sdw_master_attr(field, format_string)				\
+> +static ssize_t field##_show(struct device *dev,				\
+> +			    struct device_attribute *attr,		\
+> +			    char *buf)					\
+> +{									\
+> +	struct sdw_master_sysfs *master = to_sdw_device(dev);		\
+> +	return sprintf(buf, format_string, master->bus->prop.field);	\
+> +}									\
+> +static DEVICE_ATTR_RO(field)
+> +
+> +sdw_master_attr(revision, "0x%x\n");
+> +sdw_master_attr(clk_stop_modes, "0x%x\n");
+> +sdw_master_attr(max_clk_freq, "%d\n");
+> +sdw_master_attr(default_row, "%d\n");
+> +sdw_master_attr(default_col, "%d\n");
+> +sdw_master_attr(default_frame_rate, "%d\n");
+> +sdw_master_attr(dynamic_frame, "%d\n");
+> +sdw_master_attr(err_threshold, "%d\n");
+> +
+> +static ssize_t clock_frequencies_show(struct device *dev,
+> +				      struct device_attribute *attr, char *buf)
+> +{
+> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
+> +	ssize_t size = 0;
+> +	int i;
+> +
+> +	for (i = 0; i < master->bus->prop.num_clk_freq; i++)
+> +		size += sprintf(buf + size, "%8d ",
+> +				master->bus->prop.clk_freq[i]);
+> +	size += sprintf(buf + size, "\n");
+> +
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RO(clock_frequencies);
+> +
+> +static ssize_t clock_gears_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
+> +	ssize_t size = 0;
+> +	int i;
+> +
+> +	for (i = 0; i < master->bus->prop.num_clk_gears; i++)
+> +		size += sprintf(buf + size, "%8d ",
+> +				master->bus->prop.clk_gears[i]);
+> +	size += sprintf(buf + size, "\n");
+> +
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RO(clock_gears);
+> +
+> +static struct attribute *master_node_attrs[] = {
+> +	&dev_attr_revision.attr,
+> +	&dev_attr_clk_stop_modes.attr,
+> +	&dev_attr_max_clk_freq.attr,
+> +	&dev_attr_default_row.attr,
+> +	&dev_attr_default_col.attr,
+> +	&dev_attr_default_frame_rate.attr,
+> +	&dev_attr_dynamic_frame.attr,
+> +	&dev_attr_err_threshold.attr,
+> +	&dev_attr_clock_frequencies.attr,
+> +	&dev_attr_clock_gears.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group sdw_master_node_group = {
+> +	.attrs = master_node_attrs,
+> +};
+> +
+> +static const struct attribute_group *sdw_master_node_groups[] = {
+> +	&sdw_master_node_group,
+> +	NULL
+> +};
+
+Minor nit, you can use the ATTRIBUTE_GROUPS() macro here to save you a
+few lines.
+
+> +
+> +static void sdw_device_release(struct device *dev)
+> +{
+> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
+> +
+> +	kfree(master);
+> +}
+> +
+> +static struct device_type sdw_device_type = {
+> +	.name =	"sdw_device",
+> +	.release = sdw_device_release,
+> +};
+> +
+> +int sdw_sysfs_bus_init(struct sdw_bus *bus)
+> +{
+> +	struct sdw_master_sysfs *master;
+> +	int err;
+> +
+> +	if (bus->sysfs) {
+> +		dev_err(bus->dev, "SDW sysfs is already initialized\n");
+> +		return -EIO;
+> +	}
+> +
+> +	master = kzalloc(sizeof(*master), GFP_KERNEL);
+> +	if (!master)
+> +		return -ENOMEM;
+
+Why are you creating a whole new device to put all of this under?  Is
+this needed?  What will the sysfs tree look like when you do this?  Why
+can't the "bus" device just get all of these attributes and no second
+device be created?
+
+thanks,
+
+greg k-h
