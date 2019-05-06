@@ -1,93 +1,54 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if
- statement and removed buffer
-Date: Mon, 6 May 2019 10:50:25 -0500
-Message-ID: <d9cb3ce3-d97b-a8ce-252f-c7d8455f5ae1@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5651.c: remove string buffers
+ 'byt_rt5651_cpu_dai_name' and 'byt_rt5651_cpu_dai_name'
+Date: Mon, 6 May 2019 10:50:52 -0500
+Message-ID: <b8ced03c-4137-0be6-1c2b-705caba3bbc1@linux.intel.com>
 References: <20190504151652.5213-1-user@elitebook-localhost>
- <423c7b83-abd6-4f75-ad3a-7c650b76e8bb@linux.intel.com>
- <6b7111b1-2387-5366-3536-f369a9b0982a@redhat.com>
+ <20190504151652.5213-4-user@elitebook-localhost>
+ <s5ha7g1l4oq.wl-tiwai@suse.de>
+ <b9ea51f6-29fb-5ae8-607b-a047eba4bac0@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6b7111b1-2387-5366-3536-f369a9b0982a@redhat.com>
+In-Reply-To: <b9ea51f6-29fb-5ae8-607b-a047eba4bac0@redhat.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Hans de Goede <hdegoede@redhat.com>, Nariman <narimantos@gmail.com>, linux-kernel@vger.kernel.org
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, yang.jie@linux.intel.com, tiwai@suse.com
+To: Hans de Goede <hdegoede@redhat.com>, Takashi Iwai <tiwai@suse.de>, Nariman <narimantos@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jordy Ubink <jordyubink@hotmail.nl>, broonie@kernel.org, liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On 5/6/19 10:43 AM, Hans de Goede wrote:
-> Hi Pierre-Louis,
+On 5/6/19 10:40 AM, Hans de Goede wrote:
+> Hi,
 > 
-> Nariman and the author authors of these patches are a group of students 
-> doing
-> some kernel work for me and this is a warm-up assignment for them to get 
-> used
-> to the kernel development process.
-> 
-> On 06-05-19 17:21, Pierre-Louis Bossart wrote:
+> On 05-05-19 09:51, Takashi Iwai wrote:
+>> On Sat, 04 May 2019 17:16:52 +0200,
+>> Nariman wrote:
+>>>
+>>> From: Jordy Ubink <jordyubink@hotmail.nl>
+>>>
+>>> The snprintf calls filling byt_rt5651_cpu_dai_name / 
+>>> byt_rt5651_cpu_dai_name always fill them with the same string 
+>>> (ssp0-port" resp "rt5651-aif2"). So instead of keeping these buffers 
+>>> around and making the cpu_dai_name / codec_dai_name point to this, 
+>>> simply update the foo_dai_name pointers to directly point to a string 
+>>> constant containing the desired string.
+>>>
+>>> Signed-off-by: Jordy Ubink <jordyubink@hotmail.nl>
 >>
->>>   static int byt_rt5640_suspend(struct snd_soc_card *card)
->>> @@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct 
->>> platform_device *pdev)
->>>       log_quirks(&pdev->dev);
->>>       if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
->>> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
->>> -
->>> -        /* fixup codec aif name */
->>> -        snprintf(byt_rt5640_codec_aif_name,
->>> -            sizeof(byt_rt5640_codec_aif_name),
->>> -            "%s", "rt5640-aif2");
->>> -
->>> -        byt_rt5640_dais[dai_index].codec_dai_name =
->>> -            byt_rt5640_codec_aif_name;
->>> -    }
->>> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->>> +        byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
->>
->> This is not equivalent, you don't deal with the (byt_rt5640_quirk & 
->> BYT_RT5640_SSP2_AIF2) case. The default is SSP_AIF1
+>> If you submit a patch, please give your own sign-off as well as the
+>> author's one, even if the patch is not written by you.  This is a
+>> legal requirement.
 > 
-> I might be mistaken here, but look closer, the original:
->      if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
+> Sorry, that is my bad, Nariman and the author authors of the patches
+> are a group of students doing some kernel work for me and this is
+> a warm-up assignment for them to get used to the kernel development
+> process.
 > 
-> Line is kept, so the new code block is:
-> 
->      if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
->          (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->          byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
-> 
-> Which does take the BYT_RT5640_SSP2_AIF2 into account.
+> I forgot to point out to Nariman that since he is sending
+> out the entire series for all 4 of them, he needs to add his
+> S-o-b.
 
-Ah yes, my mistake. Looks good then.
-
-> 
->>>       if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
->>> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
->>> -
->>> -        /* fixup cpu dai name name */
->>> -        snprintf(byt_rt5640_cpu_dai_name,
->>> -            sizeof(byt_rt5640_cpu_dai_name),
->>> -            "%s", "ssp0-port");
->>> -
->>> -        byt_rt5640_dais[dai_index].cpu_dai_name =
->>> -            byt_rt5640_cpu_dai_name;
->>> -    }
->>> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->>> +        byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
->>
->> Same here, this is not equivalent. the SSP0_AIF1 case is not handled.
->> it's fine to remove the intermediate buffers, but you can't remove 
->> support for 2 out of the 4 combinations supported.
-> 
-> Same remark here from me too :)
-> 
-> Regards,
-> 
-> Hans
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+One suggestion for additional cleanups: can we try and remove all these 
+static variables and move them to the context structure? It's been on my 
+TODO list for a while.
