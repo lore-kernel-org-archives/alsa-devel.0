@@ -1,33 +1,142 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] regmap: soundwire: fix Kconfig select/depend issue
-Date: Mon, 6 May 2019 10:28:35 -0500
-Message-ID: <9f63f0dc-e4ce-bcdc-bee4-d12ebd3aa369@linux.intel.com>
-References: <20190419194649.18467-1-pierre-louis.bossart@linux.intel.com>
- <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
- <20190503043957.GA14916@sirena.org.uk>
- <535dfeac-77d8-1307-0329-33b8f2675bbd@linux.intel.com>
- <20190506044012.GM14916@sirena.org.uk>
+Subject: Re: [RFC PATCH] ASoC: codec: hdac_hdmi: no checking
+ monitor in hw_params
+Date: Mon, 6 May 2019 10:37:32 -0500
+Message-ID: <bebcb1f6-1d8b-63aa-a22d-b48047b64809@linux.intel.com>
+References: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190506044012.GM14916@sirena.org.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E34E2F80C07
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:37:38 +0200 (CEST)
+In-Reply-To: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rafael@kernel.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: libin.yang@intel.com, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, subhransu.s.prusty@intel.com, samreen.nilofer@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 5/5/19 11:40 PM, Mark Brown wrote:
-> On Fri, May 03, 2019 at 09:32:53AM -0500, Pierre-Louis Bossart wrote:
+On 5/6/19 1:59 AM, libin.yang@intel.com wrote:
+> From: Libin Yang <libin.yang@intel.com>
 > 
->> As I mentioned it'll compile the bus even if there is no user for it, but
->> it's your call: alignment or optimization.
+> This patch move the check of monitor from hw_params to trigger callback.
 > 
-> You can have both.  Alignment is a requirement.  If you want to optimize
-> this then it'd be better to optimize all the bus types rather than just
-> having the one weird bus type that does something different for no
-> documented reason.
+> The original code will check the monitor presence in hw_params. If the
+> monitor doesn't exist, hw_params will return -ENODEV. Mostly this is OK.
+> 
+> However, pulseaudio will check the pcm devices when kernel is booting up.
+> It will try to open, set hw_params, prepare such pcm devices. We can't
+> guarantee that the monitor will be connected when kernel is booting up.
+> Especially, hdac_hdmi will export 3 pcms at most. It's hard to say users
+> will connect 3 monitors to the HDMI/DP ports. This will cause pulseaudio
+> fail in parsing the pcm devices because the driver will return -ENODEV in
+> hw_params.
+> 
+> This patch tries to move the check of monitor presence into trigger
+> callback. This can "trick" the pulseaudio the pcm is ready.
+> 
+> This bug is found when we try to enable HDMI detection in
+> gnome-sound-setting for ASoC hdac_hdmi. After we enable the hdmi in UCM,
+> pulseaudio will try to parse the hdmi pcm devices. It will cause failure if
+> there are no monitors connected.
 
-Fine, I'll align if this is the requirement.
-Thanks for the feedback.
+Out of curiosity, how is this handled in the legacy driver? I haven't 
+done this for a long time but I remember very clearly being able to play 
+on the HDMI:3,7, etc devices without any monitors connected. You'd get 
+of course no sound but there was no error reported to userspace. The 
+hardware is perfectly capable of pushing samples into the display 
+controller using the HDAudio/iDisp link.
+
+> 
+> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> ---
+>   sound/soc/codecs/hdac_hdmi.c | 44 +++++++++++++++++++++++++++++++-------------
+>   1 file changed, 31 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> index 4de1fbf..f482e09 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -455,24 +455,11 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+>   	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
+>   {
+>   	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+> -	struct hdac_device *hdev = hdmi->hdev;
+>   	struct hdac_hdmi_dai_port_map *dai_map;
+> -	struct hdac_hdmi_port *port;
+>   	struct hdac_hdmi_pcm *pcm;
+>   	int format;
+>   
+>   	dai_map = &hdmi->dai_map[dai->id];
+> -	port = dai_map->port;
+> -
+> -	if (!port)
+> -		return -ENODEV;
+> -
+> -	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
+> -		dev_err(&hdev->dev,
+> -			"device is not configured for this pin:port%d:%d\n",
+> -					port->pin->nid, port->id);
+> -		return -ENODEV;
+> -	}
+>   
+>   	format = snd_hdac_calc_stream_format(params_rate(hparams),
+>   			params_channels(hparams), params_format(hparams),
+> @@ -630,6 +617,36 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+>   		dai_map->port = NULL;
+>   }
+>   
+> +static int hdac_hdmi_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+> +				 struct snd_soc_dai *dai)
+> +{
+> +	struct hdac_hdmi_port *port;
+> +	struct hdac_hdmi_dai_port_map *dai_map;
+> +	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+> +	struct hdac_device *hdev = hdmi->hdev;
+> +
+> +	/*
+> +	 * When start, if there is no monitor,
+> +	 * It should not start audio.
+> +	 */
+> +	if (cmd == SNDRV_PCM_TRIGGER_START) {
+> +		dai_map = &hdmi->dai_map[dai->id];
+> +		port = dai_map->port;
+> +
+> +		if (!port)
+> +			return -ENODEV;
+> +
+> +		if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
+> +			dev_err(&hdev->dev,
+> +				"device is not configured for this pin:port%d:%d\n",
+> +				port->pin->nid, port->id);
+> +			return -ENODEV;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int
+>   hdac_hdmi_query_cvt_params(struct hdac_device *hdev, struct hdac_hdmi_cvt *cvt)
+>   {
+> @@ -1389,6 +1406,7 @@ static const struct snd_soc_dai_ops hdmi_dai_ops = {
+>   	.startup = hdac_hdmi_pcm_open,
+>   	.shutdown = hdac_hdmi_pcm_close,
+>   	.hw_params = hdac_hdmi_set_hw_params,
+> +	.trigger = hdac_hdmi_pcm_trigger,
+>   	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
+>   };
+>   
+> 
