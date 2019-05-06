@@ -1,19 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ASoC: rockchip: Fix an uninitialized
-	variable compile warning
-Date: Mon,  6 May 2019 17:02:24 +0200
-Message-ID: <20190506150224.1394-4-tiwai@suse.de>
-References: <20190506150224.1394-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_esai: Add pm runtime function" to
+	the asoc tree
+Date: Mon,  6 May 2019 16:03:41 +0100 (BST)
+Message-ID: <20190506150341.88B0244000C@finisterre.ee.mobilebroadband>
+References: <20190503194944.30167-1-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37EE8F89701
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:02:25 +0200 (CEST)
-In-Reply-To: <20190506150224.1394-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1E8EF80C07
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:03:48 +0200 (CEST)
+In-Reply-To: <20190503194944.30167-1-nicoleotsuka@gmail.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +24,278 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-UGFwZXIgb3ZlciBhIHRyaXZpYWwgY2FzZSBsZWFkaW5nIHRvIGFuIHVuaW5pdGlhbGl6ZWQgdmFy
-aWFibGUgY29tcGlsZQp3YXJuaW5nOgogIHNvdW5kL3NvYy9yb2NrY2hpcC9yb2NrY2hpcF9wZG0u
-YzoxNzk6Mzogd2FybmluZzog4oCYY2xrX291dOKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVk
-IGluIHRoaXMgZnVuY3Rpb24gWy1XbWF5YmUtdW5pbml0aWFsaXplZF0KCkZpeGVzOiA2MjRlOGUw
-MGFjYWYgKCJBU29DOiByb2NrY2hpcDogcGRtOiBmaXh1cCBwZG0gZnJhY3Rpb25hbCBkaXYiKQpT
-aWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ci0tLQogc291bmQvc29j
-L3JvY2tjaGlwL3JvY2tjaGlwX3BkbS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3JvY2tjaGlwL3Jv
-Y2tjaGlwX3BkbS5jIGIvc291bmQvc29jL3JvY2tjaGlwL3JvY2tjaGlwX3BkbS5jCmluZGV4IDZj
-MGYyNDJkYjVlZi4uYjljMWQ4YWQ3N2MxIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvcm9ja2NoaXAv
-cm9ja2NoaXBfcGRtLmMKKysrIGIvc291bmQvc29jL3JvY2tjaGlwL3JvY2tjaGlwX3BkbS5jCkBA
-IC0xNTgsNyArMTU4LDcgQEAgc3RhdGljIGludCByb2NrY2hpcF9wZG1faHdfcGFyYW1zKHN0cnVj
-dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCXN0cnVjdCBya19wZG1fZGV2ICpwZG0g
-PSB0b19pbmZvKGRhaSk7CiAJdW5zaWduZWQgaW50IHZhbCA9IDA7CiAJdW5zaWduZWQgaW50IGNs
-a19yYXRlLCBjbGtfZGl2LCBzYW1wbGVyYXRlOwotCXVuc2lnbmVkIGludCBjbGtfc3JjLCBjbGtf
-b3V0OworCXVuc2lnbmVkIGludCBjbGtfc3JjLCBjbGtfb3V0ID0gMDsKIAl1bnNpZ25lZCBsb25n
-IG0sIG47CiAJYm9vbCBjaGFuZ2U7CiAJaW50IHJldDsKLS0gCjIuMTYuNAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: fsl_esai: Add pm runtime function
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b2d337d8de9fb6dd4f2970ebec0fa2375f7c9cdd Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Fri, 3 May 2019 12:49:44 -0700
+Subject: [PATCH] ASoC: fsl_esai: Add pm runtime function
+
+Add pm runtime support and move clock handling there.
+Close the clocks at suspend to reduce the power consumption.
+
+fsl_esai_suspend is replaced by pm_runtime_force_suspend.
+fsl_esai_resume is replaced by pm_runtime_force_resume.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_esai.c | 141 +++++++++++++++++++++------------------
+ 1 file changed, 77 insertions(+), 64 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index bad0dfed6b68..10d2210c91ef 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_platform.h>
++#include <linux/pm_runtime.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+ 
+@@ -466,30 +467,6 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
+ {
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+-	int ret;
+-
+-	/*
+-	 * Some platforms might use the same bit to gate all three or two of
+-	 * clocks, so keep all clocks open/close at the same time for safety
+-	 */
+-	ret = clk_prepare_enable(esai_priv->coreclk);
+-	if (ret)
+-		return ret;
+-	if (!IS_ERR(esai_priv->spbaclk)) {
+-		ret = clk_prepare_enable(esai_priv->spbaclk);
+-		if (ret)
+-			goto err_spbaclk;
+-	}
+-	if (!IS_ERR(esai_priv->extalclk)) {
+-		ret = clk_prepare_enable(esai_priv->extalclk);
+-		if (ret)
+-			goto err_extalck;
+-	}
+-	if (!IS_ERR(esai_priv->fsysclk)) {
+-		ret = clk_prepare_enable(esai_priv->fsysclk);
+-		if (ret)
+-			goto err_fsysclk;
+-	}
+ 
+ 	if (!dai->active) {
+ 		/* Set synchronous mode */
+@@ -506,16 +483,6 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 
+ 	return 0;
+ 
+-err_fsysclk:
+-	if (!IS_ERR(esai_priv->extalclk))
+-		clk_disable_unprepare(esai_priv->extalclk);
+-err_extalck:
+-	if (!IS_ERR(esai_priv->spbaclk))
+-		clk_disable_unprepare(esai_priv->spbaclk);
+-err_spbaclk:
+-	clk_disable_unprepare(esai_priv->coreclk);
+-
+-	return ret;
+ }
+ 
+ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+@@ -576,20 +543,6 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static void fsl_esai_shutdown(struct snd_pcm_substream *substream,
+-			      struct snd_soc_dai *dai)
+-{
+-	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+-
+-	if (!IS_ERR(esai_priv->fsysclk))
+-		clk_disable_unprepare(esai_priv->fsysclk);
+-	if (!IS_ERR(esai_priv->extalclk))
+-		clk_disable_unprepare(esai_priv->extalclk);
+-	if (!IS_ERR(esai_priv->spbaclk))
+-		clk_disable_unprepare(esai_priv->spbaclk);
+-	clk_disable_unprepare(esai_priv->coreclk);
+-}
+-
+ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			    struct snd_soc_dai *dai)
+ {
+@@ -658,7 +611,6 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
+ 	.startup = fsl_esai_startup,
+-	.shutdown = fsl_esai_shutdown,
+ 	.trigger = fsl_esai_trigger,
+ 	.hw_params = fsl_esai_hw_params,
+ 	.set_sysclk = fsl_esai_set_dai_sysclk,
+@@ -947,6 +899,10 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
++	regcache_cache_only(esai_priv->regmap, true);
++
+ 	ret = imx_pcm_dma_init(pdev, IMX_ESAI_DMABUF_SIZE);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
+@@ -954,6 +910,13 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static int fsl_esai_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
+ static const struct of_device_id fsl_esai_dt_ids[] = {
+ 	{ .compatible = "fsl,imx35-esai", },
+ 	{ .compatible = "fsl,vf610-esai", },
+@@ -961,22 +924,35 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int fsl_esai_suspend(struct device *dev)
+-{
+-	struct fsl_esai *esai = dev_get_drvdata(dev);
+-
+-	regcache_cache_only(esai->regmap, true);
+-	regcache_mark_dirty(esai->regmap);
+-
+-	return 0;
+-}
+-
+-static int fsl_esai_resume(struct device *dev)
++#ifdef CONFIG_PM
++static int fsl_esai_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_esai *esai = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	/*
++	 * Some platforms might use the same bit to gate all three or two of
++	 * clocks, so keep all clocks open/close at the same time for safety
++	 */
++	ret = clk_prepare_enable(esai->coreclk);
++	if (ret)
++		return ret;
++	if (!IS_ERR(esai->spbaclk)) {
++		ret = clk_prepare_enable(esai->spbaclk);
++		if (ret)
++			goto err_spbaclk;
++	}
++	if (!IS_ERR(esai->extalclk)) {
++		ret = clk_prepare_enable(esai->extalclk);
++		if (ret)
++			goto err_extalclk;
++	}
++	if (!IS_ERR(esai->fsysclk)) {
++		ret = clk_prepare_enable(esai->fsysclk);
++		if (ret)
++			goto err_fsysclk;
++	}
++
+ 	regcache_cache_only(esai->regmap, false);
+ 
+ 	/* FIFO reset for safety */
+@@ -987,22 +963,59 @@ static int fsl_esai_resume(struct device *dev)
+ 
+ 	ret = regcache_sync(esai->regmap);
+ 	if (ret)
+-		return ret;
++		goto err_regcache_sync;
+ 
+ 	/* FIFO reset done */
+ 	regmap_update_bits(esai->regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
+ 	regmap_update_bits(esai->regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
+ 
++	return 0;
++
++err_regcache_sync:
++	if (!IS_ERR(esai->fsysclk))
++		clk_disable_unprepare(esai->fsysclk);
++err_fsysclk:
++	if (!IS_ERR(esai->extalclk))
++		clk_disable_unprepare(esai->extalclk);
++err_extalclk:
++	if (!IS_ERR(esai->spbaclk))
++		clk_disable_unprepare(esai->spbaclk);
++err_spbaclk:
++	clk_disable_unprepare(esai->coreclk);
++
++	return ret;
++}
++
++static int fsl_esai_runtime_suspend(struct device *dev)
++{
++	struct fsl_esai *esai = dev_get_drvdata(dev);
++
++	regcache_cache_only(esai->regmap, true);
++	regcache_mark_dirty(esai->regmap);
++
++	if (!IS_ERR(esai->fsysclk))
++		clk_disable_unprepare(esai->fsysclk);
++	if (!IS_ERR(esai->extalclk))
++		clk_disable_unprepare(esai->extalclk);
++	if (!IS_ERR(esai->spbaclk))
++		clk_disable_unprepare(esai->spbaclk);
++	clk_disable_unprepare(esai->coreclk);
++
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP */
++#endif /* CONFIG_PM */
+ 
+ static const struct dev_pm_ops fsl_esai_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(fsl_esai_suspend, fsl_esai_resume)
++	SET_RUNTIME_PM_OPS(fsl_esai_runtime_suspend,
++			   fsl_esai_runtime_resume,
++			   NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static struct platform_driver fsl_esai_driver = {
+ 	.probe = fsl_esai_probe,
++	.remove = fsl_esai_remove,
+ 	.driver = {
+ 		.name = "fsl-esai-dai",
+ 		.pm = &fsl_esai_pm_ops,
+-- 
+2.20.1
