@@ -1,71 +1,56 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
-Date: Mon, 6 May 2019 11:46:06 -0500
-Message-ID: <be72bbb1-b51f-8201-fdff-958836ed94d1@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 5/7] soundwire: add debugfs support
+Date: Mon, 6 May 2019 11:54:11 -0500
+Message-ID: <f1b632e7-e62d-bbd4-e160-36009ee57249@linux.intel.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
- <20190504065444.GC9770@kroah.com>
- <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
- <20190506151953.GA13178@kroah.com> <20190506162208.GI3845@vkoul-mobl.Dlink>
+ <20190504010030.29233-6-pierre-louis.bossart@linux.intel.com>
+ <20190504070301.GD9770@kroah.com>
+ <a9e1c3d2-fe29-1683-9253-b66034c62010@linux.intel.com>
+ <20190506163810.GK3845@vkoul-mobl.Dlink>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190506162208.GI3845@vkoul-mobl.Dlink>
+In-Reply-To: <20190506163810.GK3845@vkoul-mobl.Dlink>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Vinod Koul <vkoul@kernel.org>, Greg KH <gregkh@linuxfoundation.org>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/6/19 11:22 AM, Vinod Koul wrote:
-> On 06-05-19, 17:19, Greg KH wrote:
->> On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
->>>>> +
->>>>> +int sdw_sysfs_slave_init(struct sdw_slave *slave)
->>>>> +{
->>>>> +	struct sdw_slave_sysfs *sysfs;
->>>>> +	unsigned int src_dpns, sink_dpns, i, j;
->>>>> +	int err;
->>>>> +
->>>>> +	if (slave->sysfs) {
->>>>> +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
->>>>> +		err = -EIO;
->>>>> +		goto err_ret;
->>>>> +	}
->>>>> +
->>>>> +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
->>>>
->>>> Same question as patch 1, why a new device?
+On 5/6/19 11:38 AM, Vinod Koul wrote:
+> On 06-05-19, 09:48, Pierre-Louis Bossart wrote:
+> 
+>>>> +struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d)
+>>>> +{
+>>>> +	if (d)
+>>>> +		return d->fs;
+>>>> +	return NULL;
+>>>> +}
+>>>> +EXPORT_SYMBOL(sdw_bus_debugfs_get_root);
 >>>
->>> yes it's the same open. In this case, the slave devices are defined at a
->>> different level so it's also confusing to create a device to represent the
->>> slave properties. The code works but I am not sure the initial directions
->>> are correct.
+>>> _GPL()?
 >>
->> You can just make a subdir for your attributes by using the attribute
->> group name, if a subdirectory is needed just to keep things a bit more
->> organized.
+>> Oops, that's a big miss. will fix, thanks for spotting this.
 > 
-> The key here is 'a subdir' which is not the case here. We did discuss
-> this in the initial patches for SoundWire which had sysfs :)
+> Not really. The Soundwire code is dual licensed. Many of the soundwire
+> symbols are indeed exported as EXPORT_SYMBOL. But I agree this one is
+> 'linux' specific so can be made _GPL.
 > 
-> The way MIPI disco spec organized properties, we have dp0 and dpN
-> properties each of them requires to have a subdir of their own and that
-> was the reason why I coded it to be creating a device.
+> Pierre, does Intel still care about this being dual licensed or not?
 
-Vinod, the question was not for dp0 and dpN, it's fine to have 
-subdirectories there, but rather why we need separate devices for the 
-master and slave properties.
+Debugfs was never in scope for the dual-licensed parts, we've already 
+agreed for SOF to move to _GPL.
 
 > 
-> Do we have a better way to handle this?
-> 
->> Otherwise, you need to mess with having multiple "types" of struct
->> device all associated with the same bus.  It is possible, and not that
->> hard, but I don't think you are doing that here.
 >>
->> thnaks,
+>>>
+>>> But why is this exported at all?  No one calls this function.
 >>
->> greg k-h
+>> I will have to check.
 > 
+> It is used by codec driver which are not upstream yet. So my suggestion
+> would be NOT to export this and only do so when we have users for it
+> That would be true for other APIs exported out as well.
+
+It'll just make the first codec driver patchset more complicated but fine.
