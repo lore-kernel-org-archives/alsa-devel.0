@@ -1,50 +1,108 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] regmap: soundwire: fix Kconfig select/depend issue
-Date: Mon, 6 May 2019 13:40:12 +0900
-Message-ID: <20190506044012.GM14916@sirena.org.uk>
-References: <20190419194649.18467-1-pierre-louis.bossart@linux.intel.com>
- <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
- <20190503043957.GA14916@sirena.org.uk>
- <535dfeac-77d8-1307-0329-33b8f2675bbd@linux.intel.com>
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: Re: Applied "ASoC: sprd: Add reserved DMA memory support" to the asoc tree
+Date: Mon, 6 May 2019 15:37:39 +0800
+Message-ID: <CAMz4kuLK_XS93Wpq+BkXVAJA3M+vFnL8pR0gR7aRpYxBzwLv9w@mail.gmail.com>
+References: <ee4a22c3491628abf94c8d356dccd67984604811.1555049554.git.baolin.wang@linaro.org>
+ <20190418102606.AE0181126DA9@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hS2jB1L/urRucW8g"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <535dfeac-77d8-1307-0329-33b8f2675bbd@linux.intel.com>
+In-Reply-To: <20190418102606.AE0181126DA9@debutante.sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rafael@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Orson Zhai <orsonzhai@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chunyan Zhang <zhang.lyra@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---hS2jB1L/urRucW8g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, 18 Apr 2019 at 18:26, Mark Brown <broonie@kernel.org> wrote:
+>
+> The patch
+>
+>    ASoC: sprd: Add reserved DMA memory support
+>
+> has been applied to the asoc tree at
+>
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+>
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+>
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+>
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+>
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
 
-On Fri, May 03, 2019 at 09:32:53AM -0500, Pierre-Louis Bossart wrote:
+I did not find this patch in your sound git tree and the linux-next
+tree, so could you check if you missed this patch? Or did I miss
+anything? Thanks a lot.
 
-> As I mentioned it'll compile the bus even if there is no user for it, but
-> it's your call: alignment or optimization.
+>
+> Thanks,
+> Mark
+>
+> From 25a073bb9ceda91b8bf731b20ac01b68cc8877a9 Mon Sep 17 00:00:00 2001
+> From: Baolin Wang <baolin.wang@linaro.org>
+> Date: Fri, 12 Apr 2019 14:40:17 +0800
+> Subject: [PATCH] ASoC: sprd: Add reserved DMA memory support
+>
+> For Spreadtrum audio platform driver, it need allocate a larger DMA buffer
+> dynamically to copy audio data between userspace and kernel space, but that
+> will increase the risk of memory allocation failure especially the system
+> is under heavy load situation.
+>
+> To make sure the audio can work in this scenario, we usually reserve one
+> region of memory to be used as a shared pool of DMA buffers for the
+> platform component. So add of_reserved_mem_device_init_by_idx() function
+> to initialize the shared pool of DMA buffers to be used by the platform
+> component.
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  sound/soc/sprd/sprd-pcm-dma.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
+> index 9be6d4b2bf74..d38ebbbbf169 100644
+> --- a/sound/soc/sprd/sprd-pcm-dma.c
+> +++ b/sound/soc/sprd/sprd-pcm-dma.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/dma/sprd-dma.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/of_reserved_mem.h>
+>  #include <linux/platform_device.h>
+>  #include <sound/pcm.h>
+>  #include <sound/pcm_params.h>
+> @@ -530,8 +531,14 @@ static const struct snd_soc_component_driver sprd_soc_component = {
+>
+>  static int sprd_soc_platform_probe(struct platform_device *pdev)
+>  {
+> +       struct device_node *np = pdev->dev.of_node;
+>         int ret;
+>
+> +       ret = of_reserved_mem_device_init_by_idx(&pdev->dev, np, 0);
+> +       if (ret)
+> +               dev_warn(&pdev->dev,
+> +                        "no reserved DMA memory for audio platform device\n");
+> +
+>         ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
+>                                               NULL, 0);
+>         if (ret)
+> --
+> 2.20.1
+>
 
-You can have both.  Alignment is a requirement.  If you want to optimize
-this then it'd be better to optimize all the bus types rather than just
-having the one weird bus type that does something different for no
-documented reason.
 
---hS2jB1L/urRucW8g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzPuqsACgkQJNaLcl1U
-h9C3gwf/aCYXhO7xjzbVx9t1Sndb/c/UMHT0O5CXlHTDLFHr1Qjt+C6/EVAM0ku7
-LgY7KpSCoMzqDf1AsI/kB2YyjCxC6h/7t0VRLGqulLDxELKXocOqISneW1WjuDrt
-UehqoT/opy+sONl7v68Rqf4hAEZ/pM9IPQ6yDFB2HzZ9eqRE7OC6HC5V9NfwX2/q
-V3399AowQFYUI9CtlPDkBV/uWEUOysqSLVLUq8gDbuptte2zLy3M+tiycCu/sNpG
-9ZUrqC/M7TqjyeX9VT8U0aN1Ij2eL2+eqkR8p6LyUtR7z5e0jH9Spe+tJK1LcwlY
-RhcJzggLimdE8hFYlTAtdBaWO+gPpA==
-=LwsG
------END PGP SIGNATURE-----
-
---hS2jB1L/urRucW8g--
+-- 
+Baolin Wang
+Best Regards
