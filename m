@@ -1,78 +1,110 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if
- statement and removed buffer
-Date: Mon, 6 May 2019 17:43:16 +0200
-Message-ID: <6b7111b1-2387-5366-3536-f369a9b0982a@redhat.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: cht_bsw_rt5645.c: Remove buffer
+ and snprintf calls
+Date: Mon, 6 May 2019 17:48:17 +0200
+Message-ID: <93914256-4fbd-a17b-c283-7dbad37649d0@redhat.com>
 References: <20190504151652.5213-1-user@elitebook-localhost>
- <423c7b83-abd6-4f75-ad3a-7c650b76e8bb@linux.intel.com>
+ <20190504151652.5213-2-user@elitebook-localhost>
+ <92f39b95-aabe-0a92-714e-15d2ea123f49@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <423c7b83-abd6-4f75-ad3a-7c650b76e8bb@linux.intel.com>
+In-Reply-To: <92f39b95-aabe-0a92-714e-15d2ea123f49@linux.intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Nariman <narimantos@gmail.com>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Damian van Soelen <dj.vsoelen@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre-Louis,
+Hi,
 
-Nariman and the author authors of these patches are a group of students doing
-some kernel work for me and this is a warm-up assignment for them to get used
-to the kernel development process.
-
-On 06-05-19 17:21, Pierre-Louis Bossart wrote:
+On 06-05-19 17:24, Pierre-Louis Bossart wrote:
+> On 5/4/19 10:16 AM, Nariman wrote:
+>> From: Damian van Soelen <dj.vsoelen@gmail.com>
+>>
+>> The snprintf calls filling cht_rt5645_cpu_dai_name / cht_rt5645_codec_aif_name
+>> always fill them with the same string ("ssp0-port" resp "rt5645-aif2") so
+>> instead of keeping these buffers around and making the cpu_dai_name /
+>> codec_aif_name point to this, simply update the foo_dai_name and foo_aif_name pointers to
+>> directly point to a string constant containing the desired string.
+>>
+>> Signed-off-by: Damian van Soelen <dj.vsoelen@gmail.com>
 > 
->>   static int byt_rt5640_suspend(struct snd_soc_card *card)
->> @@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+> Need Nariman's Signoff-of-by tag here.
+
+Yes, Nariman can you resend with your S-o-b added once the other part
+of this discussion is resolved?
+
+Note you need to pass
+
+--subject-prefix="PATCH v2"
+
+To git send-email when sending out the new version with your S-o-b added
+to the 3 patches which you are not the author of.
+
+
+
+
+>> ---
+>>   sound/soc/intel/boards/cht_bsw_rt5645.c | 26 ++++---------------------
+>>   1 file changed, 4 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+>> index cbc2d458483f..b15459e56665 100644
+>> --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
+>> +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+>> @@ -506,8 +506,6 @@ static struct cht_acpi_card snd_soc_cards[] = {
+>>   };
+>>   static char cht_rt5645_codec_name[SND_ACPI_I2C_ID_LEN];
+>> -static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
+>> -static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+>>   static bool is_valleyview(void)
+>>   {
+>> @@ -641,28 +639,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
 >>       log_quirks(&pdev->dev);
->>       if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
->> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+>>       if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
+>> -        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
 >> -
 >> -        /* fixup codec aif name */
->> -        snprintf(byt_rt5640_codec_aif_name,
->> -            sizeof(byt_rt5640_codec_aif_name),
->> -            "%s", "rt5640-aif2");
+>> -        snprintf(cht_rt5645_codec_aif_name,
+>> -            sizeof(cht_rt5645_codec_aif_name),
+>> -            "%s", "rt5645-aif2");
 >> -
->> -        byt_rt5640_dais[dai_index].codec_dai_name =
->> -            byt_rt5640_codec_aif_name;
+>> -        cht_dailink[dai_index].codec_dai_name =
+>> -            cht_rt5645_codec_aif_name;
 >> -    }
->> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->> +        byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
+>> +        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2))
+>> +            cht_dailink[dai_index].codec_dai_name = "rt5645-aif2";
 > 
-> This is not equivalent, you don't deal with the (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) case. The default is SSP_AIF1
+> same, not equivalent. SSP2_AIF2 is not handled.
 
-I might be mistaken here, but look closer, the original:
-	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
-
-Line is kept, so the new code block is:
-
-	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
-	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
-		byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
-
-Which does take the BYT_RT5640_SSP2_AIF2 into account.
-
->>       if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
->> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
->> -
->> -        /* fixup cpu dai name name */
->> -        snprintf(byt_rt5640_cpu_dai_name,
->> -            sizeof(byt_rt5640_cpu_dai_name),
->> -            "%s", "ssp0-port");
->> -
->> -        byt_rt5640_dais[dai_index].cpu_dai_name =
->> -            byt_rt5640_cpu_dai_name;
->> -    }
->> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->> +        byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
-> 
-> Same here, this is not equivalent. the SSP0_AIF1 case is not handled.
-> it's fine to remove the intermediate buffers, but you can't remove support for 2 out of the 4 combinations supported.
-
-Same remark here from me too :)
+Same remark from me, and also the same for the 3th patch you've
+responded to.
 
 Regards,
 
 Hans
+
+
+> 
+>>       if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
+>> -        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
+>> -
+>> -        /* fixup cpu dai name name */
+>> -        snprintf(cht_rt5645_cpu_dai_name,
+>> -            sizeof(cht_rt5645_cpu_dai_name),
+>> -            "%s", "ssp0-port");
+>> -
+>> -        cht_dailink[dai_index].cpu_dai_name =
+>> -            cht_rt5645_cpu_dai_name;
+>> -    }
+>> +        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2))
+>> +            cht_dailink[dai_index].cpu_dai_name = "ssp0-port";
+> 
+> and same here, SSP0_AIF1 will no longer work.
+> 
+>>       /* override plaform name, if required */
+>>       platform_name = mach->mach_params.platform;
+>>
+> 
