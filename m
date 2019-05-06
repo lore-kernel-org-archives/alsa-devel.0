@@ -1,142 +1,47 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH] ASoC: codec: hdac_hdmi: no checking
- monitor in hw_params
-Date: Mon, 6 May 2019 10:37:32 -0500
-Message-ID: <bebcb1f6-1d8b-63aa-a22d-b48047b64809@linux.intel.com>
-References: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5651.c: remove string buffers
+ 'byt_rt5651_cpu_dai_name' and 'byt_rt5651_cpu_dai_name'
+Date: Mon, 6 May 2019 17:40:21 +0200
+Message-ID: <b9ea51f6-29fb-5ae8-607b-a047eba4bac0@redhat.com>
+References: <20190504151652.5213-1-user@elitebook-localhost>
+ <20190504151652.5213-4-user@elitebook-localhost>
+ <s5ha7g1l4oq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E34E2F80C07
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:37:38 +0200 (CEST)
-In-Reply-To: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5ha7g1l4oq.wl-tiwai@suse.de>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: libin.yang@intel.com, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, subhransu.s.prusty@intel.com, samreen.nilofer@intel.com
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Nariman <narimantos@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jordy Ubink <jordyubink@hotmail.nl>, broonie@kernel.org, liam.r.girdwood@linux.intel.com, pierre-louis.bossart@linux.intel.com, yang.jie@linux.intel.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On 5/6/19 1:59 AM, libin.yang@intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
-> 
-> This patch move the check of monitor from hw_params to trigger callback.
-> 
-> The original code will check the monitor presence in hw_params. If the
-> monitor doesn't exist, hw_params will return -ENODEV. Mostly this is OK.
-> 
-> However, pulseaudio will check the pcm devices when kernel is booting up.
-> It will try to open, set hw_params, prepare such pcm devices. We can't
-> guarantee that the monitor will be connected when kernel is booting up.
-> Especially, hdac_hdmi will export 3 pcms at most. It's hard to say users
-> will connect 3 monitors to the HDMI/DP ports. This will cause pulseaudio
-> fail in parsing the pcm devices because the driver will return -ENODEV in
-> hw_params.
-> 
-> This patch tries to move the check of monitor presence into trigger
-> callback. This can "trick" the pulseaudio the pcm is ready.
-> 
-> This bug is found when we try to enable HDMI detection in
-> gnome-sound-setting for ASoC hdac_hdmi. After we enable the hdmi in UCM,
-> pulseaudio will try to parse the hdmi pcm devices. It will cause failure if
-> there are no monitors connected.
+Hi,
 
-Out of curiosity, how is this handled in the legacy driver? I haven't 
-done this for a long time but I remember very clearly being able to play 
-on the HDMI:3,7, etc devices without any monitors connected. You'd get 
-of course no sound but there was no error reported to userspace. The 
-hardware is perfectly capable of pushing samples into the display 
-controller using the HDAudio/iDisp link.
+On 05-05-19 09:51, Takashi Iwai wrote:
+> On Sat, 04 May 2019 17:16:52 +0200,
+> Nariman wrote:
+>>
+>> From: Jordy Ubink <jordyubink@hotmail.nl>
+>>
+>> The snprintf calls filling byt_rt5651_cpu_dai_name / byt_rt5651_cpu_dai_name always fill them with the same string (ssp0-port" resp "rt5651-aif2"). So instead of keeping these buffers around and making the cpu_dai_name / codec_dai_name point to this, simply update the foo_dai_name pointers to directly point to a string constant containing the desired string.
+>>
+>> Signed-off-by: Jordy Ubink <jordyubink@hotmail.nl>
+> 
+> If you submit a patch, please give your own sign-off as well as the
+> author's one, even if the patch is not written by you.  This is a
+> legal requirement.
 
-> 
-> Signed-off-by: Libin Yang <libin.yang@intel.com>
-> ---
->   sound/soc/codecs/hdac_hdmi.c | 44 +++++++++++++++++++++++++++++++-------------
->   1 file changed, 31 insertions(+), 13 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> index 4de1fbf..f482e09 100644
-> --- a/sound/soc/codecs/hdac_hdmi.c
-> +++ b/sound/soc/codecs/hdac_hdmi.c
-> @@ -455,24 +455,11 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
->   	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
->   {
->   	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
-> -	struct hdac_device *hdev = hdmi->hdev;
->   	struct hdac_hdmi_dai_port_map *dai_map;
-> -	struct hdac_hdmi_port *port;
->   	struct hdac_hdmi_pcm *pcm;
->   	int format;
->   
->   	dai_map = &hdmi->dai_map[dai->id];
-> -	port = dai_map->port;
-> -
-> -	if (!port)
-> -		return -ENODEV;
-> -
-> -	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
-> -		dev_err(&hdev->dev,
-> -			"device is not configured for this pin:port%d:%d\n",
-> -					port->pin->nid, port->id);
-> -		return -ENODEV;
-> -	}
->   
->   	format = snd_hdac_calc_stream_format(params_rate(hparams),
->   			params_channels(hparams), params_format(hparams),
-> @@ -630,6 +617,36 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
->   		dai_map->port = NULL;
->   }
->   
-> +static int hdac_hdmi_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
-> +				 struct snd_soc_dai *dai)
-> +{
-> +	struct hdac_hdmi_port *port;
-> +	struct hdac_hdmi_dai_port_map *dai_map;
-> +	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
-> +	struct hdac_device *hdev = hdmi->hdev;
-> +
-> +	/*
-> +	 * When start, if there is no monitor,
-> +	 * It should not start audio.
-> +	 */
-> +	if (cmd == SNDRV_PCM_TRIGGER_START) {
-> +		dai_map = &hdmi->dai_map[dai->id];
-> +		port = dai_map->port;
-> +
-> +		if (!port)
-> +			return -ENODEV;
-> +
-> +		if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
-> +			dev_err(&hdev->dev,
-> +				"device is not configured for this pin:port%d:%d\n",
-> +				port->pin->nid, port->id);
-> +			return -ENODEV;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static int
->   hdac_hdmi_query_cvt_params(struct hdac_device *hdev, struct hdac_hdmi_cvt *cvt)
->   {
-> @@ -1389,6 +1406,7 @@ static const struct snd_soc_dai_ops hdmi_dai_ops = {
->   	.startup = hdac_hdmi_pcm_open,
->   	.shutdown = hdac_hdmi_pcm_close,
->   	.hw_params = hdac_hdmi_set_hw_params,
-> +	.trigger = hdac_hdmi_pcm_trigger,
->   	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
->   };
->   
-> 
+Sorry, that is my bad, Nariman and the author authors of the patches
+are a group of students doing some kernel work for me and this is
+a warm-up assignment for them to get used to the kernel development
+process.
+
+I forgot to point out to Nariman that since he is sending
+out the entire series for all 4 of them, he needs to add his
+S-o-b.
+
+Regards,
+
+Hans
