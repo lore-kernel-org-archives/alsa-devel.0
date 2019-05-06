@@ -1,52 +1,145 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V4] ASoC: fsl_esai: Add pm runtime function
-Date: Mon, 6 May 2019 12:53:45 +0900
-Message-ID: <20190506035345.GJ14916@sirena.org.uk>
-References: <VE1PR04MB64794DF2979F3AD350A9EB3DE3370@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC PATCH] ASoC: codec: hdac_hdmi: no checking
+ monitor in hw_params
+Date: Mon, 6 May 2019 10:19:48 +0200
+Message-ID: <320b97c1-ed3c-6c56-0829-c00d2e475278@perex.cz>
+References: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7e8BFhNxqpjiNKz7"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB64794DF2979F3AD350A9EB3DE3370@VE1PR04MB6479.eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E2D7F8962A
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 10:19:56 +0200 (CEST)
+In-Reply-To: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: libin.yang@intel.com, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@linux.intel.com, samreen.nilofer@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Dne 06. 05. 19 v 8:59 libin.yang@intel.com napsal(a):
+> From: Libin Yang <libin.yang@intel.com>
+> 
+> This patch move the check of monitor from hw_params to trigger callback.
+> 
+> The original code will check the monitor presence in hw_params. If the
+> monitor doesn't exist, hw_params will return -ENODEV. Mostly this is OK.
+> 
+> However, pulseaudio will check the pcm devices when kernel is booting up.
+> It will try to open, set hw_params, prepare such pcm devices. We can't
+> guarantee that the monitor will be connected when kernel is booting up.
+> Especially, hdac_hdmi will export 3 pcms at most. It's hard to say users
+> will connect 3 monitors to the HDMI/DP ports. This will cause pulseaudio
+> fail in parsing the pcm devices because the driver will return -ENODEV in
+> hw_params.
+> 
+> This patch tries to move the check of monitor presence into trigger
+> callback. This can "trick" the pulseaudio the pcm is ready.
+> 
+> This bug is found when we try to enable HDMI detection in
+> gnome-sound-setting for ASoC hdac_hdmi. After we enable the hdmi in UCM,
+> pulseaudio will try to parse the hdmi pcm devices. It will cause failure if
+> there are no monitors connected.
 
---7e8BFhNxqpjiNKz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I don't like this solution much. PA should use the Jack control to add the
+devices dynamically and avoid probing when the Jack control is false.
 
-On Sun, May 05, 2019 at 03:28:59AM +0000, S.j. Wang wrote:
+						Jaroslav
 
-> We find that maybe it is caused by the Transfer-Encoding format.
-> We sent the patch by the  --transfer-encoding=8bit, but in the receiver side
-> it shows:
-]
-> Content-Type: text/plain; charset="utf-8"
-> Content-Transfer-Encoding: base64
+> 
+> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> ---
+>  sound/soc/codecs/hdac_hdmi.c | 44 +++++++++++++++++++++++++++++++-------------
+>  1 file changed, 31 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> index 4de1fbf..f482e09 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -455,24 +455,11 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+>  	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
+>  {
+>  	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+> -	struct hdac_device *hdev = hdmi->hdev;
+>  	struct hdac_hdmi_dai_port_map *dai_map;
+> -	struct hdac_hdmi_port *port;
+>  	struct hdac_hdmi_pcm *pcm;
+>  	int format;
+>  
+>  	dai_map = &hdmi->dai_map[dai->id];
+> -	port = dai_map->port;
+> -
+> -	if (!port)
+> -		return -ENODEV;
+> -
+> -	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
+> -		dev_err(&hdev->dev,
+> -			"device is not configured for this pin:port%d:%d\n",
+> -					port->pin->nid, port->id);
+> -		return -ENODEV;
+> -	}
+>  
+>  	format = snd_hdac_calc_stream_format(params_rate(hparams),
+>  			params_channels(hparams), params_format(hparams),
+> @@ -630,6 +617,36 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+>  		dai_map->port = NULL;
+>  }
+>  
+> +static int hdac_hdmi_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+> +				 struct snd_soc_dai *dai)
+> +{
+> +	struct hdac_hdmi_port *port;
+> +	struct hdac_hdmi_dai_port_map *dai_map;
+> +	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+> +	struct hdac_device *hdev = hdmi->hdev;
+> +
+> +	/*
+> +	 * When start, if there is no monitor,
+> +	 * It should not start audio.
+> +	 */
+> +	if (cmd == SNDRV_PCM_TRIGGER_START) {
+> +		dai_map = &hdmi->dai_map[dai->id];
+> +		port = dai_map->port;
+> +
+> +		if (!port)
+> +			return -ENODEV;
+> +
+> +		if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
+> +			dev_err(&hdev->dev,
+> +				"device is not configured for this pin:port%d:%d\n",
+> +				port->pin->nid, port->id);
+> +			return -ENODEV;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int
+>  hdac_hdmi_query_cvt_params(struct hdac_device *hdev, struct hdac_hdmi_cvt *cvt)
+>  {
+> @@ -1389,6 +1406,7 @@ static const struct snd_soc_dai_ops hdmi_dai_ops = {
+>  	.startup = hdac_hdmi_pcm_open,
+>  	.shutdown = hdac_hdmi_pcm_close,
+>  	.hw_params = hdac_hdmi_set_hw_params,
+> +	.trigger = hdac_hdmi_pcm_trigger,
+>  	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
+>  };
+>  
+> 
 
-> It may be caused by our company's mail server. We are checking...
 
-Ah, that looks likely...  not sure I have any great suggestions for how
-to resolve it but at least it looks like progress on figuring out the
-cause, I haven't been able to see anything wrong locally.
-
---7e8BFhNxqpjiNKz7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzPr8gACgkQJNaLcl1U
-h9DVeQf7ByKyqDU+F0dmHJsGDAll4nFkuDLq9wax+i1rjUCghvBhzq+0tNPf51Dk
-oJT0+OmCtKJcYIu4Z7OsLBDr75SiQE83YxdWnaAGik49IJUA7ggTXCtXfpLcs2Vy
-VtPc2H969t2crPjYI3AkUIJzYHB2GCwgsWvKmDeWS0c6Sb55eN5DptFsS6UuPcrI
-CCOhBJvO9P85bBNjkMRAla+SM6GV77Uq5DC4iV7ert68gwp8pRVdMY1sNTx9J7BZ
-soqk2U9xLPJtJUeZs89WKZy8mCW1BtFuvQAvt1W/mNJmkWWedc4FkAQgHV3b/pIn
-z4slaJ2AqBkaAIC0hq6wGq8dKSVecQ==
-=/QHA
------END PGP SIGNATURE-----
-
---7e8BFhNxqpjiNKz7--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
