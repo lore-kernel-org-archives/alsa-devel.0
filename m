@@ -1,19 +1,17 @@
-From: Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v2 01/30] mfd: cros_ec: Update license term
-Date: Sun, 5 May 2019 16:46:37 +0100
-Message-ID: <20190505164637.579ffb11@archlinux>
-References: <20190503220233.64546-1-gwendal@chromium.org>
- <20190503220233.64546-2-gwendal@chromium.org>
+From: Kailang <kailang@realtek.com>
+Subject: Re: move eapd coef function before ACT_PRE_PROBE state
+Date: Mon, 6 May 2019 06:45:39 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D76583F@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62615F80C0B
- for <alsa-devel@alsa-project.org>; Sun,  5 May 2019 17:46:45 +0200 (CEST)
-In-Reply-To: <20190503220233.64546-2-gwendal@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7A1EF80C07
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 08:45:47 +0200 (CEST)
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +21,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, bleung@chromium.org, tiwai@suse.com, groeck@chromium.org, broonie@kernel.org, enric.balletbo@collabora.com, lee.jones@linaro.org, cychiang@chromium.org
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri,  3 May 2019 15:02:04 -0700
-Gwendal Grignou <gwendal@chromium.org> wrote:
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> Update to SPDX-License-Identifier, GPL-2.0
-> 
-> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
-Nitpick. There are a few other trivial changes in here, that the description
-should probably mention.  I doubt anyone really cares though given
-how trivial the other comment changes are.
+Hi Takashi,
 
-Jonathan
+Are you available for apply this ?
+Thanks.
 
-> ---
->  include/linux/mfd/cros_ec_commands.h | 20 +++++---------------
->  1 file changed, 5 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-> index 43bee4f7d137..6fa508643da3 100644
-> --- a/include/linux/mfd/cros_ec_commands.h
-> +++ b/include/linux/mfd/cros_ec_commands.h
-> @@ -1,25 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
->  /*
->   * Host communication command constants for ChromeOS EC
->   *
->   * Copyright (C) 2012 Google, Inc
->   *
-> - * This software is licensed under the terms of the GNU General Public
-> - * License version 2, as published by the Free Software Foundation, and
-> - * may be copied, distributed, and modified under those terms.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
-> - *
-> - * The ChromeOS EC multi function device is used to mux all the requests
-> - * to the EC device for its multiple features: keyboard controller,
-> - * battery charging and regulator control, firmware update.
-> - *
-> - * NOTE: This file is copied verbatim from the ChromeOS EC Open Source
-> - * project in an attempt to make future updates easy to make.
-> + * NOTE: This file is auto-generated from ChromeOS EC Open Source code from
-> + * https://chromium.googlesource.com/chromiumos/platform/ec/+/master/include/ec_commands.h
->   */
->  
-> +/* Host communication command constants for Chrome EC */
-> +
->  #ifndef __CROS_EC_COMMANDS_H
->  #define __CROS_EC_COMMANDS_H
->  
+BR,
+Kailang
+
+> -----Original Message-----
+> From: Kailang
+> Sent: Tuesday, April 30, 2019 3:41 PM
+> To: Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
+> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> Subject: move eapd coef function before ACT_PRE_PROBE state
+>=20
+> Hi Takashi,
+>=20
+> alc_fill_eapd_coef(),this function was change EAPD control to default.
+> Default was set EAPD by verb control.
+> This function was run in ACT_INIT state.
+> Move it to ACT_PRE_PROBE above. It will have a chance to change EAPD
+> control on ACT_PRE_PROBE state. It could change control by 0x20 coef bit.
+>=20
+> BR,
+> Kailang
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_
+Content-Type: application/octet-stream;
+	name="0000-move-eapd-coef-func.patch"
+Content-Description: 0000-move-eapd-coef-func.patch
+Content-Disposition: attachment; filename="0000-move-eapd-coef-func.patch";
+	size=1327; creation-date="Fri, 26 Apr 2019 09:20:24 GMT";
+	modification-date="Fri, 26 Apr 2019 09:28:26 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAyM2M5YTFjMzI4OGM0ZTc4MjU1ZjEzM2E0ZDljNDhmNTg0MmUwM2U2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgMjYgQXByIDIwMTkgMTc6MTY6NDggKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIE1vdmUgRVBBRCBieSB2ZXJiIGZ1bmN0aW9uCgphbGNfZmlsbF9lYXBk
+X2NvZWYoKSx0aGlzIGZ1bmN0aW9uIHdhcyBjaGFuZ2UgRUFQRCBjb250cm9sIHRvIGRlZmF1bHQu
+CkRlZmF1bHQgd2FzIHNldCBFQVBEIGJ5IHZlcmIgY29udHJvbC4KVGhpcyBmdW5jdGlvbiB3YXMg
+cnVuIGluIEFDVF9JTklUIHN0YXRlLgpNb3ZlIGl0IHRvIEFDVF9QUkVfUFJPQkUgYWJvdmUuIEl0
+IHdpbGwgaGF2ZSBhIGNoYW5jZSB0byBjaGFuZ2UgRUFQRCBjb250cm9sCm9uIEFDVF9QUkVfUFJP
+QkUgc3RhdGUuIEl0IGNvdWxkIGNoYW5nZSBjb250cm9sIGJ5IDB4MjAgY29lZiBiaXQuCgpTaWdu
+ZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0
+IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
+YWx0ZWsuYwppbmRleCAxZDBlMGYyZTY1MjYuLjc1NTNmNzA0Y2I3ZiAxMDA2NDQKLS0tIGEvc291
+bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
+dGVrLmMKQEAgLTUwMSw3ICs1MDEsNiBAQCBzdGF0aWMgdm9pZCBhbGNfZWFwZF9zaHV0dXAoc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMpCiAvKiBnZW5lcmljIEVBUEQgaW5pdGlhbGl6YXRpb24gKi8K
+IHN0YXRpYyB2b2lkIGFsY19hdXRvX2luaXRfYW1wKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBp
+bnQgdHlwZSkKIHsKLQlhbGNfZmlsbF9lYXBkX2NvZWYoY29kZWMpOwogCWFsY19hdXRvX3NldHVw
+X2VhcGQoY29kZWMsIHRydWUpOwogCWFsY193cml0ZV9ncGlvKGNvZGVjKTsKIAlzd2l0Y2ggKHR5
+cGUpIHsKQEAgLTEwODUsNiArMTA4NCw3IEBAIHN0YXRpYyBpbnQgYWxjX2FsbG9jX3NwZWMoc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBtaXhlcl9uaWQpCiAJCXJldHVybiAtRU5P
+TUVNOwogCWNvZGVjLT5zcGVjID0gc3BlYzsKIAlzbmRfaGRhX2dlbl9zcGVjX2luaXQoJnNwZWMt
+Pmdlbik7CisJYWxjX2ZpbGxfZWFwZF9jb2VmKGNvZGVjKTsKIAlzcGVjLT5nZW4ubWl4ZXJfbmlk
+ID0gbWl4ZXJfbmlkOwogCXNwZWMtPmdlbi5vd25fZWFwZF9jdGwgPSAxOwogCWNvZGVjLT5zaW5n
+bGVfYWRjX2FtcCA9IDE7Cg==
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_--
