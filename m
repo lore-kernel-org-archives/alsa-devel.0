@@ -1,44 +1,30 @@
-From: GitHub pull_request - opened <github@alsa-project.org>
-Subject: alsa-utils: axfer/test: fix compiler warnings due to
- uninitialized return value
-Date: Mon,  6 May 2019 23:01:10 +0200 (CEST)
-Message-ID: <20190506210110.85150F896F0@alsa1.perex.cz>
-References: <1557176467691142082-webhooks-bot@alsa-project.org>
+From: Evan Green <evgreen@chromium.org>
+Subject: [PATCH v1 0/2] ASoC: Intel: Add Cometlake PCI IDs
+Date: Mon,  6 May 2019 15:53:19 -0700
+Message-ID: <20190506225321.74100-1-evgreen@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 64EF5F80C07
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 23:01:08 +0200 (CEST)
-In-Reply-To: <1557176467691142082-webhooks-bot@alsa-project.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Naveen M <naveen.m@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Evan Green <evgreen@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Jenny TC <jenny.tc@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-utils pull request #18 was opened from takaswie:
 
-Hi,
+This small series adds PCI IDs for Cometlake platforms, for a
+dazzling audio experience.
 
-One of test programs for axfer internals has bugs to let compiler generate warnings due to uninitialized return value. This patchset fixes them.
 
-```
-Takashi Sakamoto (2):
-  axfer/test: fix uninitialized warning
-  axfer/test: fix uninitialized warning
+Evan Green (2):
+  ASoC: SOF: Add Comet Lake PCI ID
+  ASoC: Intel: Skylake: Add Cometlake PCI IDs
 
- axfer/test/mapper-test.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-```
+ sound/soc/intel/Kconfig                |  9 +++++++++
+ sound/soc/intel/skylake/skl-messages.c |  8 ++++++++
+ sound/soc/intel/skylake/skl.c          |  5 +++++
+ sound/soc/sof/intel/Kconfig            | 16 ++++++++++++++++
+ sound/soc/sof/sof-pci-dev.c            |  4 ++++
+ 5 files changed, 42 insertions(+)
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/18
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/18.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+-- 
+2.20.1
