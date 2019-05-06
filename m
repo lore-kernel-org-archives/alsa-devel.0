@@ -1,17 +1,17 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: move eapd coef function before ACT_PRE_PROBE state
-Date: Mon, 6 May 2019 06:45:39 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D76583F@RTITMBSVM07.realtek.com.tw>
+From: libin.yang@intel.com
+Subject: [RFC PATCH] ASoC: codec: hdac_hdmi: no checking
+	monitor in hw_params
+Date: Mon,  6 May 2019 14:59:20 +0800
+Message-ID: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7A1EF80C07
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 08:45:47 +0200 (CEST)
-Content-Language: zh-TW
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8467F80C07
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 09:18:47 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,79 +21,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Libin Yang <libin.yang@intel.com>, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, samreen.nilofer@intel.com
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: Libin Yang <libin.yang@intel.com>
 
-Hi Takashi,
+This patch move the check of monitor from hw_params to trigger callback.
 
-Are you available for apply this ?
-Thanks.
+The original code will check the monitor presence in hw_params. If the
+monitor doesn't exist, hw_params will return -ENODEV. Mostly this is OK.
 
-BR,
-Kailang
+However, pulseaudio will check the pcm devices when kernel is booting up.
+It will try to open, set hw_params, prepare such pcm devices. We can't
+guarantee that the monitor will be connected when kernel is booting up.
+Especially, hdac_hdmi will export 3 pcms at most. It's hard to say users
+will connect 3 monitors to the HDMI/DP ports. This will cause pulseaudio
+fail in parsing the pcm devices because the driver will return -ENODEV in
+hw_params.
 
-> -----Original Message-----
-> From: Kailang
-> Sent: Tuesday, April 30, 2019 3:41 PM
-> To: Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: move eapd coef function before ACT_PRE_PROBE state
->=20
-> Hi Takashi,
->=20
-> alc_fill_eapd_coef(),this function was change EAPD control to default.
-> Default was set EAPD by verb control.
-> This function was run in ACT_INIT state.
-> Move it to ACT_PRE_PROBE above. It will have a chance to change EAPD
-> control on ACT_PRE_PROBE state. It could change control by 0x20 coef bit.
->=20
-> BR,
-> Kailang
+This patch tries to move the check of monitor presence into trigger
+callback. This can "trick" the pulseaudio the pcm is ready.
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_
-Content-Type: application/octet-stream;
-	name="0000-move-eapd-coef-func.patch"
-Content-Description: 0000-move-eapd-coef-func.patch
-Content-Disposition: attachment; filename="0000-move-eapd-coef-func.patch";
-	size=1327; creation-date="Fri, 26 Apr 2019 09:20:24 GMT";
-	modification-date="Fri, 26 Apr 2019 09:28:26 GMT"
-Content-Transfer-Encoding: base64
+This bug is found when we try to enable HDMI detection in
+gnome-sound-setting for ASoC hdac_hdmi. After we enable the hdmi in UCM,
+pulseaudio will try to parse the hdmi pcm devices. It will cause failure if
+there are no monitors connected.
 
-RnJvbSAyM2M5YTFjMzI4OGM0ZTc4MjU1ZjEzM2E0ZDljNDhmNTg0MmUwM2U2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgMjYgQXByIDIwMTkgMTc6MTY6NDggKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIE1vdmUgRVBBRCBieSB2ZXJiIGZ1bmN0aW9uCgphbGNfZmlsbF9lYXBk
-X2NvZWYoKSx0aGlzIGZ1bmN0aW9uIHdhcyBjaGFuZ2UgRUFQRCBjb250cm9sIHRvIGRlZmF1bHQu
-CkRlZmF1bHQgd2FzIHNldCBFQVBEIGJ5IHZlcmIgY29udHJvbC4KVGhpcyBmdW5jdGlvbiB3YXMg
-cnVuIGluIEFDVF9JTklUIHN0YXRlLgpNb3ZlIGl0IHRvIEFDVF9QUkVfUFJPQkUgYWJvdmUuIEl0
-IHdpbGwgaGF2ZSBhIGNoYW5jZSB0byBjaGFuZ2UgRUFQRCBjb250cm9sCm9uIEFDVF9QUkVfUFJP
-QkUgc3RhdGUuIEl0IGNvdWxkIGNoYW5nZSBjb250cm9sIGJ5IDB4MjAgY29lZiBiaXQuCgpTaWdu
-ZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0
-IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
-YWx0ZWsuYwppbmRleCAxZDBlMGYyZTY1MjYuLjc1NTNmNzA0Y2I3ZiAxMDA2NDQKLS0tIGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMKQEAgLTUwMSw3ICs1MDEsNiBAQCBzdGF0aWMgdm9pZCBhbGNfZWFwZF9zaHV0dXAoc3Ry
-dWN0IGhkYV9jb2RlYyAqY29kZWMpCiAvKiBnZW5lcmljIEVBUEQgaW5pdGlhbGl6YXRpb24gKi8K
-IHN0YXRpYyB2b2lkIGFsY19hdXRvX2luaXRfYW1wKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBp
-bnQgdHlwZSkKIHsKLQlhbGNfZmlsbF9lYXBkX2NvZWYoY29kZWMpOwogCWFsY19hdXRvX3NldHVw
-X2VhcGQoY29kZWMsIHRydWUpOwogCWFsY193cml0ZV9ncGlvKGNvZGVjKTsKIAlzd2l0Y2ggKHR5
-cGUpIHsKQEAgLTEwODUsNiArMTA4NCw3IEBAIHN0YXRpYyBpbnQgYWxjX2FsbG9jX3NwZWMoc3Ry
-dWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBtaXhlcl9uaWQpCiAJCXJldHVybiAtRU5P
-TUVNOwogCWNvZGVjLT5zcGVjID0gc3BlYzsKIAlzbmRfaGRhX2dlbl9zcGVjX2luaXQoJnNwZWMt
-Pmdlbik7CisJYWxjX2ZpbGxfZWFwZF9jb2VmKGNvZGVjKTsKIAlzcGVjLT5nZW4ubWl4ZXJfbmlk
-ID0gbWl4ZXJfbmlkOwogCXNwZWMtPmdlbi5vd25fZWFwZF9jdGwgPSAxOwogCWNvZGVjLT5zaW5n
-bGVfYWRjX2FtcCA9IDE7Cg==
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 44 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A1D76583FRTITMBSVM07real_--
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 4de1fbf..f482e09 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -455,24 +455,11 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
+ {
+ 	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_device *hdev = hdmi->hdev;
+ 	struct hdac_hdmi_dai_port_map *dai_map;
+-	struct hdac_hdmi_port *port;
+ 	struct hdac_hdmi_pcm *pcm;
+ 	int format;
+ 
+ 	dai_map = &hdmi->dai_map[dai->id];
+-	port = dai_map->port;
+-
+-	if (!port)
+-		return -ENODEV;
+-
+-	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
+-		dev_err(&hdev->dev,
+-			"device is not configured for this pin:port%d:%d\n",
+-					port->pin->nid, port->id);
+-		return -ENODEV;
+-	}
+ 
+ 	format = snd_hdac_calc_stream_format(params_rate(hparams),
+ 			params_channels(hparams), params_format(hparams),
+@@ -630,6 +617,36 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 		dai_map->port = NULL;
+ }
+ 
++static int hdac_hdmi_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
++				 struct snd_soc_dai *dai)
++{
++	struct hdac_hdmi_port *port;
++	struct hdac_hdmi_dai_port_map *dai_map;
++	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
++	struct hdac_device *hdev = hdmi->hdev;
++
++	/*
++	 * When start, if there is no monitor,
++	 * It should not start audio.
++	 */
++	if (cmd == SNDRV_PCM_TRIGGER_START) {
++		dai_map = &hdmi->dai_map[dai->id];
++		port = dai_map->port;
++
++		if (!port)
++			return -ENODEV;
++
++		if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
++			dev_err(&hdev->dev,
++				"device is not configured for this pin:port%d:%d\n",
++				port->pin->nid, port->id);
++			return -ENODEV;
++		}
++	}
++
++	return 0;
++}
++
+ static int
+ hdac_hdmi_query_cvt_params(struct hdac_device *hdev, struct hdac_hdmi_cvt *cvt)
+ {
+@@ -1389,6 +1406,7 @@ static const struct snd_soc_dai_ops hdmi_dai_ops = {
+ 	.startup = hdac_hdmi_pcm_open,
+ 	.shutdown = hdac_hdmi_pcm_close,
+ 	.hw_params = hdac_hdmi_set_hw_params,
++	.trigger = hdac_hdmi_pcm_trigger,
+ 	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
+ };
+ 
+-- 
+2.7.4
