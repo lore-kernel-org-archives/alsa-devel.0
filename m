@@ -1,36 +1,38 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 0/3] ASoC: stm32: spdifrx: add some features
-Date: Mon, 6 May 2019 14:44:03 +0200
-Message-ID: <1557146646-18150-1-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 2/3] ASoC: stm32: spdifrx: change trace level on iec control
+Date: Mon, 6 May 2019 14:44:05 +0200
+Message-ID: <1557146646-18150-3-git-send-email-olivier.moysan@st.com>
+References: <1557146646-18150-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1557146646-18150-1-git-send-email-olivier.moysan@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com
 Cc: benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Update and add some features in STM32 SPDIFRX driver.
-- pdate pcm hardware constraints
-- change trace level on iec control
-- add management of identification registers
+Change trace level to debug to avoid spurious messages.
+Return quietly when accessing iec958 control, while no
+S/PDIF signal is available.
 
-Olivier Moysan (3):
-  ASoC: stm32: spdifrx: update pcm hardware constraints
-  ASoC: stm32: spdifrx: change trace level on iec control
-  ASoC: stm32: spdifrx: manage identification registers
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ sound/soc/stm/stm32_spdifrx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/soc/stm/stm32_spdifrx.c | 42 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 4 deletions(-)
-
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index aa83b50efabb..3d64200edbb5 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -496,7 +496,7 @@ static int stm32_spdifrx_get_ctrl_data(struct stm32_spdifrx_data *spdifrx)
+ 	if (wait_for_completion_interruptible_timeout(&spdifrx->cs_completion,
+ 						      msecs_to_jiffies(100))
+ 						      <= 0) {
+-		dev_err(&spdifrx->pdev->dev, "Failed to get control data\n");
++		dev_dbg(&spdifrx->pdev->dev, "Failed to get control data\n");
+ 		ret = -EAGAIN;
+ 	}
+ 
 -- 
 2.7.4
