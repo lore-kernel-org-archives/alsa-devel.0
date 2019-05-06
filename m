@@ -1,68 +1,52 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: BE dai needs prepare when
- pause release after resume
-Date: Mon, 6 May 2019 10:07:31 -0500
-Message-ID: <1135262a-0488-3261-e8d3-5e538837ba8d@linux.intel.com>
-References: <1557038262-26356-1-git-send-email-libin.yang@intel.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
+Date: Mon, 6 May 2019 17:19:53 +0200
+Message-ID: <20190506151953.GA13178@kroah.com>
+References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
+ <20190504065444.GC9770@kroah.com>
+ <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E3A1F80C07
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:07:33 +0200 (CEST)
-In-Reply-To: <1557038262-26356-1-git-send-email-libin.yang@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: libin.yang@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: ranjani.sridharan@intel.com, rander.wang@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/5/19 1:37 AM, libin.yang@intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
+On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
+> > > +
+> > > +int sdw_sysfs_slave_init(struct sdw_slave *slave)
+> > > +{
+> > > +	struct sdw_slave_sysfs *sysfs;
+> > > +	unsigned int src_dpns, sink_dpns, i, j;
+> > > +	int err;
+> > > +
+> > > +	if (slave->sysfs) {
+> > > +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
+> > > +		err = -EIO;
+> > > +		goto err_ret;
+> > > +	}
+> > > +
+> > > +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
+> > 
+> > Same question as patch 1, why a new device?
 > 
-> If playback/capture is paused and system enters S3, after system returns
-> from suspend, BE dai needs to call prepare() callback when playback/capture
-> is released from pause.
+> yes it's the same open. In this case, the slave devices are defined at a
+> different level so it's also confusing to create a device to represent the
+> slave properties. The code works but I am not sure the initial directions
+> are correct.
 
-Libin, this patch was discussed at length on GitHub [1] and the commit 
-message does not convey any of the information we looked into. It's not 
-very helpful to send such patches to a larger audience without 
-explaining context and goals. I personally still have no idea of the 
-state machine and if all solutions need this or if this is only needed 
-in the case where the RESUME_INFO flag is not set.
+You can just make a subdir for your attributes by using the attribute
+group name, if a subdirectory is needed just to keep things a bit more
+organized.
 
-[1] https://github.com/thesofproject/linux/pull/868
+Otherwise, you need to mess with having multiple "types" of struct
+device all associated with the same bus.  It is possible, and not that
+hard, but I don't think you are doing that here.
 
+thnaks,
 
-> 
-> Signed-off-by: Libin Yang <libin.yang@intel.com>
-> ---
->   sound/soc/soc-pcm.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index d2aa560..0888995 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2471,7 +2471,8 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
->   
->   		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
->   		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-> -		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
-> +		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND) &&
-> +		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
->   			continue;
->   
->   		dev_dbg(be->dev, "ASoC: prepare BE %s\n",
-> 
+greg k-h
