@@ -1,21 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 5/7] soundwire: add debugfs support
-Date: Mon, 6 May 2019 09:48:30 -0500
-Message-ID: <a9e1c3d2-fe29-1683-9253-b66034c62010@linux.intel.com>
-References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-6-pierre-louis.bossart@linux.intel.com>
- <20190504070301.GD9770@kroah.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.2
+Date: Mon, 6 May 2019 23:48:34 +0900
+Message-ID: <20190506144834.GW14916@sirena.org.uk>
+References: <20190506141144.GR14916@sirena.org.uk>
+ <s5hr29b4qas.wl-tiwai@suse.de>
+ <20190506144000.GV14916@sirena.org.uk>
+ <s5hef5b4pak.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8938960786080265670=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A91DF80C07
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 16:48:34 +0200 (CEST)
-In-Reply-To: <20190504070301.GD9770@kroah.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66CFCF896F0
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 16:48:39 +0200 (CEST)
+In-Reply-To: <s5hef5b4pak.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,112 +25,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
->> @@ -136,6 +139,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
->>   void sdw_delete_bus_master(struct sdw_bus *bus)
->>   {
->>   	sdw_sysfs_bus_exit(bus);
->> +	if (bus->debugfs)
->> +		sdw_bus_debugfs_exit(bus->debugfs);
-> 
-> No need to check, just call it.
-
-That was on my todo list, will remove.
+--===============8938960786080265670==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pwp4JDU+MaGmJm70"
+Content-Disposition: inline
 
 
->> +struct sdw_bus_debugfs {
->> +	struct sdw_bus *bus;
-> 
-> Why do you need to save this pointer?
-> 
->> +	struct dentry *fs;
-> 
-> This really is all you need to have around, right?
+--pwp4JDU+MaGmJm70
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-will check.
+On Mon, May 06, 2019 at 04:42:59PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
->> +struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d)
->> +{
->> +	if (d)
->> +		return d->fs;
->> +	return NULL;
->> +}
->> +EXPORT_SYMBOL(sdw_bus_debugfs_get_root);
-> 
-> _GPL()?
+> OK, then I'll submit a few trivial fix patches for covering the random
+> build warnings.
 
-Oops, that's a big miss. will fix, thanks for spotting this.
+> In addition to the above, I see two others during my build tests:
 
-> 
-> But why is this exported at all?  No one calls this function.
+> sound/soc/sof/ops.c:20:6: warning: =E2=80=98ret=E2=80=99 is used uninitia=
+lized in this function [-Wuninitialized]
 
-I will have to check.
+> sound/soc/codecs/da7219.c:2366:6: warning: unused variable =E2=80=98i=E2=
+=80=99 [-Wunused-variable]
 
-> 
->> +struct sdw_slave_debugfs {
->> +	struct sdw_slave *slave;
-> 
-> Same question as above, why do you need this pointer?
+Dunno what compiler you're using but I'm not seeing those two, nor does
+kernelci:
 
-will check.
+   https://storage.kernelci.org/broonie-sound/for-next/v5.1-rc7-328-g6455a8=
+745ac1/arm64/allmodconfig/gcc-7/build.log
 
-> 
-> And meta-comment, if you _EVER_ save off a pointer to a reference
-> counted object (like this and the above one), you HAVE to grab a
-> reference to it, otherwise it can go away at any point in time as that
-> is the point of reference counted objects.
-> 
-> So even if you do need/want this, you have to properly handle the
-> reference count by incrementing/decrementing it as needed.
+(same results there on x86, both using Debian's GCC).
 
-good comment, thank you for the guidance.
+--pwp4JDU+MaGmJm70
+Content-Type: application/pgp-signature; name="signature.asc"
 
->> +struct sdw_slave_debugfs *sdw_slave_debugfs_init(struct sdw_slave *slave)
->> +{
->> +	struct sdw_bus_debugfs *master;
->> +	struct sdw_slave_debugfs *d;
->> +	char name[32];
->> +
->> +	master = slave->bus->debugfs;
->> +	if (!master)
->> +		return NULL;
->> +
->> +	d = kzalloc(sizeof(*d), GFP_KERNEL);
->> +	if (!d)
->> +		return NULL;
->> +
->> +	/* create the debugfs slave-name */
->> +	snprintf(name, sizeof(name), "%s", dev_name(&slave->dev));
->> +	d->fs = debugfs_create_dir(name, master->fs);
->> +	if (IS_ERR_OR_NULL(d->fs)) {
->> +		dev_err(&slave->dev, "slave debugfs root creation failed\n");
->> +		goto err;
->> +	}
-> 
-> You never care about the return value of a debugfs call.  I have a 100+
-> patch series stripping all of this out of the kernel, please don't force
-> me to add another one to it :)
-> 
-> Just call debugfs and move on, you can always put the return value of
-> one call into another one just fine, and your function logic should
-> never change if debugfs returns an error or not, you do not care.
+-----BEGIN PGP SIGNATURE-----
 
-Yes, it's agreed that we should not depend on debugfs or fail here. will 
-fix, no worries.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzQSUEACgkQJNaLcl1U
+h9DEZgf9E4Z1HuoUFnaYFrL7mCe8XJQiOdNkJW3bF9NgkDsygF2pKjuska1KAeFd
+5RYvOGRDxSLEyKmWtW0M8C1Q2KQZLdoCUZ4Txe5hkLQQc4SAzHiuZjFfH5LTY7EY
+jDZwh42cuQNLQnheIdfLaEqTzldJpnrpKz9PeudN519zo4Kz2CFpHUkH+vIyhpuK
+F2LVEaAmC34lOQYD2YRBKzUR8lL0C2Q7FOfS4hVNODtGj6JZsAca07/xNZcDuP8b
+8EIXTeD0zySXIG/dmycHPCHDWiWUMxEVTr42QVWw24IR8ZaZeDVoaN5s93EsCKyO
+j2vX+Ssn4ArM7NOebfRfGRY00dSj4Q==
+=tkwL
+-----END PGP SIGNATURE-----
 
->
->> +void sdw_debugfs_init(void)
->> +{
->> +	sdw_debugfs_root = debugfs_create_dir("soundwire", NULL);
->> +	if (IS_ERR_OR_NULL(sdw_debugfs_root)) {
->> +		pr_warn("SoundWire: Failed to create debugfs directory\n");
->> +		sdw_debugfs_root = NULL;
->> +		return;
-> 
-> Same here, just call the function and return.
+--pwp4JDU+MaGmJm70--
 
-yep, will do.
+--===============8938960786080265670==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8938960786080265670==--
