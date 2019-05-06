@@ -1,16 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/3] ASoC: trivial compile warning fixes
-Date: Mon,  6 May 2019 17:02:21 +0200
-Message-ID: <20190506150224.1394-1-tiwai@suse.de>
+Subject: [PATCH 1/3] ASoC: da7219: Fix a compile warning at
+	CONFIG_COMMON_CLK=n
+Date: Mon,  6 May 2019 17:02:22 +0200
+Message-ID: <20190506150224.1394-2-tiwai@suse.de>
+References: <20190506150224.1394-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F986F89673
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C658F89715
  for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:02:25 +0200 (CEST)
+In-Reply-To: <20190506150224.1394-1-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,25 +27,21 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-here are the three fixes for trivial compile warnings I caught during
-build test.
-
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ASoC: da7219: Fix a compile warning at CONFIG_COMMON_CLK=n
-  ASoC: SOF: Fix a compile warning with CONFIG_PCI=n
-  ASoC: rockchip: Fix an uninitialized variable compile warning
-
- sound/soc/codecs/da7219.c         | 2 ++
- sound/soc/rockchip/rockchip_pdm.c | 2 +-
- sound/soc/sof/ops.c               | 2 +-
- 3 files changed, 4 insertions(+), 2 deletions(-)
-
--- 
-2.16.4
+QSB0cml2aWFsIGZpeCBmb3IgdGhlIHJhbmRjb25maWcgYnVpbGQgZXJyb3I6CiAgc291bmQvc29j
+L2NvZGVjcy9kYTcyMTkuYzoyMzY2OjY6IHdhcm5pbmc6IHVudXNlZCB2YXJpYWJsZSDigJhp4oCZ
+IFstV3VudXNlZC12YXJpYWJsZV0KCkZpeGVzOiBkOTBiYTZjOGI1M2UgKCJBU29DOiBkYTcyMTk6
+IEV4cG9zZSBCQ0xLIGFuZCBXQ0xLIGNvbnRyb2wgdGhyb3VnaCBDQ0YiKQpTaWduZWQtb2ZmLWJ5
+OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ci0tLQogc291bmQvc29jL2NvZGVjcy9kYTcy
+MTkuYyB8IDIgKysKIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQg
+YS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jIGIvc291bmQvc29jL2NvZGVjcy9kYTcyMTkuYwpp
+bmRleCBjZjI5NDhjMDAyNjIuLjdkOWQxZjg0ZWVkOCAxMDA2NDQKLS0tIGEvc291bmQvc29jL2Nv
+ZGVjcy9kYTcyMTkuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jCkBAIC0yMzYzLDcg
+KzIzNjMsOSBAQCBzdGF0aWMgaW50IGRhNzIxOV9wcm9iZShzdHJ1Y3Qgc25kX3NvY19jb21wb25l
+bnQgKmNvbXBvbmVudCkKIHN0YXRpYyB2b2lkIGRhNzIxOV9yZW1vdmUoc3RydWN0IHNuZF9zb2Nf
+Y29tcG9uZW50ICpjb21wb25lbnQpCiB7CiAJc3RydWN0IGRhNzIxOV9wcml2ICpkYTcyMTkgPSBz
+bmRfc29jX2NvbXBvbmVudF9nZXRfZHJ2ZGF0YShjb21wb25lbnQpOworI2lmZGVmIENPTkZJR19D
+T01NT05fQ0xLCiAJaW50IGk7CisjZW5kaWYKIAogCWRhNzIxOV9hYWRfZXhpdChjb21wb25lbnQp
+OwogCi0tIAoyLjE2LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
