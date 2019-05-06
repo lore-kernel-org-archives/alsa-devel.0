@@ -1,56 +1,49 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 5/7] soundwire: add debugfs support
-Date: Mon, 6 May 2019 11:54:11 -0500
-Message-ID: <f1b632e7-e62d-bbd4-e160-36009ee57249@linux.intel.com>
-References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-6-pierre-louis.bossart@linux.intel.com>
- <20190504070301.GD9770@kroah.com>
- <a9e1c3d2-fe29-1683-9253-b66034c62010@linux.intel.com>
- <20190506163810.GK3845@vkoul-mobl.Dlink>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 2/3] ASoC: SOF: Fix a compile warning with
+ CONFIG_PCI=n
+Date: Mon, 06 May 2019 11:21:57 -0700
+Message-ID: <b8f759f63a64b7e9ea21ae8b659a5e1d5ff294df.camel@linux.intel.com>
+References: <20190506150224.1394-1-tiwai@suse.de>
+ <20190506150224.1394-3-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190506163810.GK3845@vkoul-mobl.Dlink>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>, Greg KH <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69A95F80C07
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 20:22:13 +0200 (CEST)
+In-Reply-To: <20190506150224.1394-3-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/6/19 11:38 AM, Vinod Koul wrote:
-> On 06-05-19, 09:48, Pierre-Louis Bossart wrote:
-> 
->>>> +struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d)
->>>> +{
->>>> +	if (d)
->>>> +		return d->fs;
->>>> +	return NULL;
->>>> +}
->>>> +EXPORT_SYMBOL(sdw_bus_debugfs_get_root);
->>>
->>> _GPL()?
->>
->> Oops, that's a big miss. will fix, thanks for spotting this.
-> 
-> Not really. The Soundwire code is dual licensed. Many of the soundwire
-> symbols are indeed exported as EXPORT_SYMBOL. But I agree this one is
-> 'linux' specific so can be made _GPL.
-> 
-> Pierre, does Intel still care about this being dual licensed or not?
-
-Debugfs was never in scope for the dual-licensed parts, we've already 
-agreed for SOF to move to _GPL.
-
-> 
->>
->>>
->>> But why is this exported at all?  No one calls this function.
->>
->> I will have to check.
-> 
-> It is used by codec driver which are not upstream yet. So my suggestion
-> would be NOT to export this and only do so when we have users for it
-> That would be true for other APIs exported out as well.
-
-It'll just make the first codec driver patchset more complicated but fine.
+T24gTW9uLCAyMDE5LTA1LTA2IGF0IDE3OjAyICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+QSB0cml2aWFsIGZpeCBmb3IgdGhlIHJhbmRjb25maWcgYnVpbGQgZXJyb3I6Cj4gICBzb3VuZC9z
+b2Mvc29mL29wcy5jOjIwOjY6IHdhcm5pbmc6IOKAmHJldOKAmSBpcyB1c2VkIHVuaW5pdGlhbGl6
+ZWQgaW4KPiB0aGlzIGZ1bmN0aW9uIFstV3VuaW5pdGlhbGl6ZWRdCkxvb2tzIGdvb2QuIFRoYW5r
+cywgVGFrYXNoaS4KClJhbmphbmkKPiAKPiBGaXhlczogZDFkOTVmY2I2M2UzICgiQVNvQzogU09G
+OiBBZGQgRFNQIEhXIGFic3RyYWN0aW9uIG9wZXJhdGlvbnMiKQo+IFNpZ25lZC1vZmYtYnk6IFRh
+a2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KPiAtLS0KPiAgc291bmQvc29jL3NvZi9vcHMuYyB8
+IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4g
+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2Yvb3BzLmMgYi9zb3VuZC9zb2Mvc29mL29wcy5j
+Cj4gaW5kZXggODBmOTA3NzQwYjgyLi43YTI3YzNiNzE5ZTcgMTAwNjQ0Cj4gLS0tIGEvc291bmQv
+c29jL3NvZi9vcHMuYwo+ICsrKyBiL3NvdW5kL3NvYy9zb2Yvb3BzLmMKPiBAQCAtMTcsNyArMTcs
+NyBAQCBib29sIHNuZF9zb2ZfcGNpX3VwZGF0ZV9iaXRzX3VubG9ja2VkKHN0cnVjdAo+IHNuZF9z
+b2ZfZGV2ICpzZGV2LCB1MzIgb2Zmc2V0LAo+ICB7Cj4gIAlzdHJ1Y3QgcGNpX2RldiAqcGNpID0g
+dG9fcGNpX2RldihzZGV2LT5kZXYpOwo+ICAJdW5zaWduZWQgaW50IG9sZCwgbmV3Owo+IC0JdTMy
+IHJldDsKPiArCXUzMiByZXQgPSAwOwo+ICAKPiAgCXBjaV9yZWFkX2NvbmZpZ19kd29yZChwY2ks
+IG9mZnNldCwgJnJldCk7Cj4gIAlvbGQgPSByZXQ7CgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
