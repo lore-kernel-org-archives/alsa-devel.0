@@ -1,66 +1,81 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
-Date: Mon, 6 May 2019 21:52:08 +0530
-Message-ID: <20190506162208.GI3845@vkoul-mobl.Dlink>
+Subject: Re: [RFC PATCH 3/7] ABI: testing: Add description of soundwire
+ master sysfs files
+Date: Mon, 6 May 2019 21:54:39 +0530
+Message-ID: <20190506162439.GJ3845@vkoul-mobl.Dlink>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
- <20190504065444.GC9770@kroah.com>
- <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
- <20190506151953.GA13178@kroah.com>
+ <20190504010030.29233-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190506151953.GA13178@kroah.com>
+In-Reply-To: <20190504010030.29233-4-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06-05-19, 17:19, Greg KH wrote:
-> On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
-> > > > +
-> > > > +int sdw_sysfs_slave_init(struct sdw_slave *slave)
-> > > > +{
-> > > > +	struct sdw_slave_sysfs *sysfs;
-> > > > +	unsigned int src_dpns, sink_dpns, i, j;
-> > > > +	int err;
-> > > > +
-> > > > +	if (slave->sysfs) {
-> > > > +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
-> > > > +		err = -EIO;
-> > > > +		goto err_ret;
-> > > > +	}
-> > > > +
-> > > > +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
-> > > 
-> > > Same question as patch 1, why a new device?
-> > 
-> > yes it's the same open. In this case, the slave devices are defined at a
-> > different level so it's also confusing to create a device to represent the
-> > slave properties. The code works but I am not sure the initial directions
-> > are correct.
+On 03-05-19, 20:00, Pierre-Louis Bossart wrote:
+> The description is directly derived from the MIPI DisCo specification.
 > 
-> You can just make a subdir for your attributes by using the attribute
-> group name, if a subdirectory is needed just to keep things a bit more
-> organized.
-
-The key here is 'a subdir' which is not the case here. We did discuss
-this in the initial patches for SoundWire which had sysfs :)
-
-The way MIPI disco spec organized properties, we have dp0 and dpN
-properties each of them requires to have a subdir of their own and that
-was the reason why I coded it to be creating a device.
-
-Do we have a better way to handle this?
-
-> Otherwise, you need to mess with having multiple "types" of struct
-> device all associated with the same bus.  It is possible, and not that
-> hard, but I don't think you are doing that here.
+> Credits: this patch is based on an earlier internal contribution by
+> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah.
 > 
-> thnaks,
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  .../ABI/testing/sysfs-bus-soundwire-master    | 21 +++++++++++++++++++
+>  drivers/soundwire/sysfs.c                     |  1 +
+>  2 files changed, 22 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-soundwire-master
 > 
-> greg k-h
+> diff --git a/Documentation/ABI/testing/sysfs-bus-soundwire-master b/Documentation/ABI/testing/sysfs-bus-soundwire-master
+> new file mode 100644
+> index 000000000000..69cadf31049d
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-soundwire-master
+> @@ -0,0 +1,21 @@
+> +What:		/sys/bus/soundwire/devices/sdw-master-N/revision
+> +		/sys/bus/soundwire/devices/sdw-master-N/clk_stop_modes
+> +		/sys/bus/soundwire/devices/sdw-master-N/clk_freq
+> +		/sys/bus/soundwire/devices/sdw-master-N/clk_gears
+> +		/sys/bus/soundwire/devices/sdw-master-N/default_col
+> +		/sys/bus/soundwire/devices/sdw-master-N/default_frame_rate
+> +		/sys/bus/soundwire/devices/sdw-master-N/default_row
+> +		/sys/bus/soundwire/devices/sdw-master-N/dynamic_shape
+> +		/sys/bus/soundwire/devices/sdw-master-N/err_threshold
+> +		/sys/bus/soundwire/devices/sdw-master-N/max_clk_freq
+> +
+> +Date:		May 2019
+> +
+> +Contact:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+As the author of original code, it would be great if you can add me as a
+contact as well.
+
+> +
+> +Description:	SoundWire Master-N DisCo properties.
+> +		These properties are defined by MIPI DisCo Specification
+> +		for SoundWire. They define various properties of the Master
+> +		and are used by the bus to configure the Master. clk_stop_modes
+> +		is a bitmask for simplifications and combines the
+> +		clock-stop-mode0 and clock-stop-mode1 properties.
+> diff --git a/drivers/soundwire/sysfs.c b/drivers/soundwire/sysfs.c
+> index 734e2c8bc5cd..c2e5b7ad42fb 100644
+> --- a/drivers/soundwire/sysfs.c
+> +++ b/drivers/soundwire/sysfs.c
+> @@ -31,6 +31,7 @@ struct sdw_master_sysfs {
+>   *      |---- clk_gears
+>   *      |---- default_row
+>   *      |---- default_col
+> + *      |---- default_frame_shape
+
+This should be folded into 1st patch
+
+>   *      |---- dynamic_shape
+>   *      |---- err_threshold
+>   */
+> -- 
+> 2.17.1
 
 -- 
 ~Vinod
