@@ -1,108 +1,52 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: Applied "ASoC: sprd: Add reserved DMA memory support" to the asoc tree
-Date: Mon, 6 May 2019 15:37:39 +0800
-Message-ID: <CAMz4kuLK_XS93Wpq+BkXVAJA3M+vFnL8pR0gR7aRpYxBzwLv9w@mail.gmail.com>
-References: <ee4a22c3491628abf94c8d356dccd67984604811.1555049554.git.baolin.wang@linaro.org>
- <20190418102606.AE0181126DA9@debutante.sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V4] ASoC: fsl_esai: Add pm runtime function
+Date: Mon, 6 May 2019 12:53:45 +0900
+Message-ID: <20190506035345.GJ14916@sirena.org.uk>
+References: <VE1PR04MB64794DF2979F3AD350A9EB3DE3370@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7e8BFhNxqpjiNKz7"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190418102606.AE0181126DA9@debutante.sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <VE1PR04MB64794DF2979F3AD350A9EB3DE3370@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Orson Zhai <orsonzhai@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chunyan Zhang <zhang.lyra@gmail.com>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Thu, 18 Apr 2019 at 18:26, Mark Brown <broonie@kernel.org> wrote:
->
-> The patch
->
->    ASoC: sprd: Add reserved DMA memory support
->
-> has been applied to the asoc tree at
->
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
->
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
->
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
->
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
->
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
+--7e8BFhNxqpjiNKz7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I did not find this patch in your sound git tree and the linux-next
-tree, so could you check if you missed this patch? Or did I miss
-anything? Thanks a lot.
+On Sun, May 05, 2019 at 03:28:59AM +0000, S.j. Wang wrote:
 
->
-> Thanks,
-> Mark
->
-> From 25a073bb9ceda91b8bf731b20ac01b68cc8877a9 Mon Sep 17 00:00:00 2001
-> From: Baolin Wang <baolin.wang@linaro.org>
-> Date: Fri, 12 Apr 2019 14:40:17 +0800
-> Subject: [PATCH] ASoC: sprd: Add reserved DMA memory support
->
-> For Spreadtrum audio platform driver, it need allocate a larger DMA buffer
-> dynamically to copy audio data between userspace and kernel space, but that
-> will increase the risk of memory allocation failure especially the system
-> is under heavy load situation.
->
-> To make sure the audio can work in this scenario, we usually reserve one
-> region of memory to be used as a shared pool of DMA buffers for the
-> platform component. So add of_reserved_mem_device_init_by_idx() function
-> to initialize the shared pool of DMA buffers to be used by the platform
-> component.
->
-> Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  sound/soc/sprd/sprd-pcm-dma.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-> index 9be6d4b2bf74..d38ebbbbf169 100644
-> --- a/sound/soc/sprd/sprd-pcm-dma.c
-> +++ b/sound/soc/sprd/sprd-pcm-dma.c
-> @@ -6,6 +6,7 @@
->  #include <linux/dma/sprd-dma.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> +#include <linux/of_reserved_mem.h>
->  #include <linux/platform_device.h>
->  #include <sound/pcm.h>
->  #include <sound/pcm_params.h>
-> @@ -530,8 +531,14 @@ static const struct snd_soc_component_driver sprd_soc_component = {
->
->  static int sprd_soc_platform_probe(struct platform_device *pdev)
->  {
-> +       struct device_node *np = pdev->dev.of_node;
->         int ret;
->
-> +       ret = of_reserved_mem_device_init_by_idx(&pdev->dev, np, 0);
-> +       if (ret)
-> +               dev_warn(&pdev->dev,
-> +                        "no reserved DMA memory for audio platform device\n");
-> +
->         ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
->                                               NULL, 0);
->         if (ret)
-> --
-> 2.20.1
->
+> We find that maybe it is caused by the Transfer-Encoding format.
+> We sent the patch by the  --transfer-encoding=8bit, but in the receiver side
+> it shows:
+]
+> Content-Type: text/plain; charset="utf-8"
+> Content-Transfer-Encoding: base64
 
+> It may be caused by our company's mail server. We are checking...
 
--- 
-Baolin Wang
-Best Regards
+Ah, that looks likely...  not sure I have any great suggestions for how
+to resolve it but at least it looks like progress on figuring out the
+cause, I haven't been able to see anything wrong locally.
+
+--7e8BFhNxqpjiNKz7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzPr8gACgkQJNaLcl1U
+h9DVeQf7ByKyqDU+F0dmHJsGDAll4nFkuDLq9wax+i1rjUCghvBhzq+0tNPf51Dk
+oJT0+OmCtKJcYIu4Z7OsLBDr75SiQE83YxdWnaAGik49IJUA7ggTXCtXfpLcs2Vy
+VtPc2H969t2crPjYI3AkUIJzYHB2GCwgsWvKmDeWS0c6Sb55eN5DptFsS6UuPcrI
+CCOhBJvO9P85bBNjkMRAla+SM6GV77Uq5DC4iV7ert68gwp8pRVdMY1sNTx9J7BZ
+soqk2U9xLPJtJUeZs89WKZy8mCW1BtFuvQAvt1W/mNJmkWWedc4FkAQgHV3b/pIn
+z4slaJ2AqBkaAIC0hq6wGq8dKSVecQ==
+=/QHA
+-----END PGP SIGNATURE-----
+
+--7e8BFhNxqpjiNKz7--
