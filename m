@@ -1,90 +1,36 @@
-From: GitHub issues - opened <github@alsa-project.org>
-Subject: 1.1.8: test suite is failing
-Date: Mon,  6 May 2019 14:43:01 +0200 (CEST)
-Message-ID: <20190506124301.D65C6F896F0@alsa1.perex.cz>
-References: <1557146578509116888-webhooks-bot@alsa-project.org>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [PATCH 0/3] ASoC: stm32: spdifrx: add some features
+Date: Mon, 6 May 2019 14:44:03 +0200
+Message-ID: <1557146646-18150-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2EB91F89673
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 14:42:58 +0200 (CEST)
-In-Reply-To: <1557146578509116888-webhooks-bot@alsa-project.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com
+Cc: benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-utils issue #16 was opened from kloczek:
+Update and add some features in STM32 SPDIFRX driver.
+- pdate pcm hardware constraints
+- change trace level on iec control
+- add management of identification registers
 
-<pre>+ /usr/bin/make -O -j4 check
-Making check in include
-Making check in alsactl
-Making check in init
-make[2]: Nothing to be done for &apos;check&apos;.
-make[2]: Nothing to be done for &apos;check-am&apos;.
-Making check in utils
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in m4
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in po
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in alsa-info
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in alsamixer
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in amixer
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in amidi
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in aplay
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in iecset
-make[1]: Nothing to be done for &apos;check&apos;.
-Making check in speaker-test
-Making check in samples
-make[2]: Nothing to be done for &apos;check&apos;.
-make[2]: Nothing to be done for &apos;check-am&apos;.
-Making check in axfer
-Making check in test
-/usr/bin/make  container-test mapper-test
-make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-au.o `test -f &apos;../container-au.c&apos; || echo &apos;./&apos;`../container-au.c
-make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-riff-wave.o `test -f &apos;../container-riff-wave.c&apos; || echo &apos;./&apos;`../container-riff-wave.c
-make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o generator.o generator.c
-generator.c:9:10: fatal error: generator.h: No such file or directory
-    9 | #include &quot;generator.h&quot;
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[3]: *** [Makefile:640: generator.o] Error 1
-make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-make[3]: *** Waiting for unfinished jobs....
-make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container.o `test -f &apos;../container.c&apos; || echo &apos;./&apos;`../container.c
-make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-voc.o `test -f &apos;../container-voc.c&apos; || echo &apos;./&apos;`../container-voc.c
-make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-raw.o `test -f &apos;../container-raw.c&apos; || echo &apos;./&apos;`../container-raw.c
-make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
-make[2]: *** [Makefile:1017: check-am] Error 2
-make[1]: *** [Makefile:650: check-recursive] Error 1
-make: *** [Makefile:428: check-recursive] Error 1
-error: Bad exit status from /var/tmp/rpm-tmp.VI5lrR (%check)
-</pre>
+Olivier Moysan (3):
+  ASoC: stm32: spdifrx: update pcm hardware constraints
+  ASoC: stm32: spdifrx: change trace level on iec control
+  ASoC: stm32: spdifrx: manage identification registers
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/16
-Repository URL: https://github.com/alsa-project/alsa-utils
+ sound/soc/stm/stm32_spdifrx.c | 42 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 4 deletions(-)
+
+-- 
+2.7.4
