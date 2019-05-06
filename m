@@ -1,52 +1,57 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
-Date: Mon, 6 May 2019 17:19:53 +0200
-Message-ID: <20190506151953.GA13178@kroah.com>
-References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
- <20190504065444.GC9770@kroah.com>
- <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if
+ statement and removed buffer
+Date: Mon, 6 May 2019 10:21:56 -0500
+Message-ID: <423c7b83-abd6-4f75-ad3a-7c650b76e8bb@linux.intel.com>
+References: <20190504151652.5213-1-user@elitebook-localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
+In-Reply-To: <20190504151652.5213-1-user@elitebook-localhost>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Nariman <narimantos@gmail.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com, liam.r.girdwood@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
-> > > +
-> > > +int sdw_sysfs_slave_init(struct sdw_slave *slave)
-> > > +{
-> > > +	struct sdw_slave_sysfs *sysfs;
-> > > +	unsigned int src_dpns, sink_dpns, i, j;
-> > > +	int err;
-> > > +
-> > > +	if (slave->sysfs) {
-> > > +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
-> > > +		err = -EIO;
-> > > +		goto err_ret;
-> > > +	}
-> > > +
-> > > +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
-> > 
-> > Same question as patch 1, why a new device?
-> 
-> yes it's the same open. In this case, the slave devices are defined at a
-> different level so it's also confusing to create a device to represent the
-> slave properties. The code works but I am not sure the initial directions
-> are correct.
 
-You can just make a subdir for your attributes by using the attribute
-group name, if a subdirectory is needed just to keep things a bit more
-organized.
+>   static int byt_rt5640_suspend(struct snd_soc_card *card)
+> @@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+>   	log_quirks(&pdev->dev);
+>   
+>   	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
+> -	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+> -
+> -		/* fixup codec aif name */
+> -		snprintf(byt_rt5640_codec_aif_name,
+> -			sizeof(byt_rt5640_codec_aif_name),
+> -			"%s", "rt5640-aif2");
+> -
+> -		byt_rt5640_dais[dai_index].codec_dai_name =
+> -			byt_rt5640_codec_aif_name;
+> -	}
+> +	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+> +		byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
 
-Otherwise, you need to mess with having multiple "types" of struct
-device all associated with the same bus.  It is possible, and not that
-hard, but I don't think you are doing that here.
+This is not equivalent, you don't deal with the (byt_rt5640_quirk & 
+BYT_RT5640_SSP2_AIF2) case. The default is SSP_AIF1
 
-thnaks,
+>   
+>   	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
+> -	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+> -
+> -		/* fixup cpu dai name name */
+> -		snprintf(byt_rt5640_cpu_dai_name,
+> -			sizeof(byt_rt5640_cpu_dai_name),
+> -			"%s", "ssp0-port");
+> -
+> -		byt_rt5640_dais[dai_index].cpu_dai_name =
+> -			byt_rt5640_cpu_dai_name;
+> -	}
+> +	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+> +		byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
 
-greg k-h
+Same here, this is not equivalent. the SSP0_AIF1 case is not handled.
+it's fine to remove the intermediate buffers, but you can't remove 
+support for 2 out of the 4 combinations supported.
