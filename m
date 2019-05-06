@@ -1,110 +1,75 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: cht_bsw_rt5645.c: Remove buffer
- and snprintf calls
-Date: Mon, 6 May 2019 17:48:17 +0200
-Message-ID: <93914256-4fbd-a17b-c283-7dbad37649d0@redhat.com>
-References: <20190504151652.5213-1-user@elitebook-localhost>
- <20190504151652.5213-2-user@elitebook-localhost>
- <92f39b95-aabe-0a92-714e-15d2ea123f49@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH] ASoC: codec: hdac_hdmi: no checking
+ monitor in hw_params
+Date: Mon, 6 May 2019 10:47:25 -0500
+Message-ID: <5286a2bd-cb71-8094-84d5-6ac2ad2b1c02@linux.intel.com>
+References: <1557125960-29353-1-git-send-email-libin.yang@intel.com>
+ <bebcb1f6-1d8b-63aa-a22d-b48047b64809@linux.intel.com>
+ <s5hzhnz3817.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <92f39b95-aabe-0a92-714e-15d2ea123f49@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E70C3F80C07
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 17:47:29 +0200 (CEST)
+In-Reply-To: <s5hzhnz3817.wl-tiwai@suse.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Nariman <narimantos@gmail.com>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Damian van Soelen <dj.vsoelen@gmail.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: libin.yang@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, samreen.nilofer@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 06-05-19 17:24, Pierre-Louis Bossart wrote:
-> On 5/4/19 10:16 AM, Nariman wrote:
->> From: Damian van Soelen <dj.vsoelen@gmail.com>
+On 5/6/19 10:41 AM, Takashi Iwai wrote:
+> On Mon, 06 May 2019 17:37:32 +0200,
+> Pierre-Louis Bossart wrote:
 >>
->> The snprintf calls filling cht_rt5645_cpu_dai_name / cht_rt5645_codec_aif_name
->> always fill them with the same string ("ssp0-port" resp "rt5645-aif2") so
->> instead of keeping these buffers around and making the cpu_dai_name /
->> codec_aif_name point to this, simply update the foo_dai_name and foo_aif_name pointers to
->> directly point to a string constant containing the desired string.
+>> On 5/6/19 1:59 AM, libin.yang@intel.com wrote:
+>>> From: Libin Yang <libin.yang@intel.com>
+>>>
+>>> This patch move the check of monitor from hw_params to trigger callback.
+>>>
+>>> The original code will check the monitor presence in hw_params. If the
+>>> monitor doesn't exist, hw_params will return -ENODEV. Mostly this is OK.
+>>>
+>>> However, pulseaudio will check the pcm devices when kernel is booting up.
+>>> It will try to open, set hw_params, prepare such pcm devices. We can't
+>>> guarantee that the monitor will be connected when kernel is booting up.
+>>> Especially, hdac_hdmi will export 3 pcms at most. It's hard to say users
+>>> will connect 3 monitors to the HDMI/DP ports. This will cause pulseaudio
+>>> fail in parsing the pcm devices because the driver will return -ENODEV in
+>>> hw_params.
+>>>
+>>> This patch tries to move the check of monitor presence into trigger
+>>> callback. This can "trick" the pulseaudio the pcm is ready.
+>>>
+>>> This bug is found when we try to enable HDMI detection in
+>>> gnome-sound-setting for ASoC hdac_hdmi. After we enable the hdmi in UCM,
+>>> pulseaudio will try to parse the hdmi pcm devices. It will cause failure if
+>>> there are no monitors connected.
 >>
->> Signed-off-by: Damian van Soelen <dj.vsoelen@gmail.com>
+>> Out of curiosity, how is this handled in the legacy driver? I haven't
+>> done this for a long time but I remember very clearly being able to
+>> play on the HDMI:3,7, etc devices without any monitors
+>> connected. You'd get of course no sound but there was no error
+>> reported to userspace. The hardware is perfectly capable of pushing
+>> samples into the display controller using the HDAudio/iDisp link.
 > 
-> Need Nariman's Signoff-of-by tag here.
+> As mentioned in the thread, PA just picks up the stream that is
+> connected via a monitor by checking / notified by the corresponding
+> Jack control.  On hdac_hdmi driver, the jack control has different
+> base name that is irrelevant with the output pins, so PA doesn't know
+> how to interpret it, hence it's ignored.
 
-Yes, Nariman can you resend with your S-o-b added once the other part
-of this discussion is resolved?
-
-Note you need to pass
-
---subject-prefix="PATCH v2"
-
-To git send-email when sending out the new version with your S-o-b added
-to the 3 patches which you are not the author of.
-
-
-
-
->> ---
->>   sound/soc/intel/boards/cht_bsw_rt5645.c | 26 ++++---------------------
->>   1 file changed, 4 insertions(+), 22 deletions(-)
->>
->> diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
->> index cbc2d458483f..b15459e56665 100644
->> --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
->> +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
->> @@ -506,8 +506,6 @@ static struct cht_acpi_card snd_soc_cards[] = {
->>   };
->>   static char cht_rt5645_codec_name[SND_ACPI_I2C_ID_LEN];
->> -static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
->> -static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
->>   static bool is_valleyview(void)
->>   {
->> @@ -641,28 +639,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
->>       log_quirks(&pdev->dev);
->>       if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
->> -        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
->> -
->> -        /* fixup codec aif name */
->> -        snprintf(cht_rt5645_codec_aif_name,
->> -            sizeof(cht_rt5645_codec_aif_name),
->> -            "%s", "rt5645-aif2");
->> -
->> -        cht_dailink[dai_index].codec_dai_name =
->> -            cht_rt5645_codec_aif_name;
->> -    }
->> +        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2))
->> +            cht_dailink[dai_index].codec_dai_name = "rt5645-aif2";
-> 
-> same, not equivalent. SSP2_AIF2 is not handled.
-
-Same remark from me, and also the same for the 3th patch you've
-responded to.
-
-Regards,
-
-Hans
-
-
-> 
->>       if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
->> -        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
->> -
->> -        /* fixup cpu dai name name */
->> -        snprintf(cht_rt5645_cpu_dai_name,
->> -            sizeof(cht_rt5645_cpu_dai_name),
->> -            "%s", "ssp0-port");
->> -
->> -        cht_dailink[dai_index].cpu_dai_name =
->> -            cht_rt5645_cpu_dai_name;
->> -    }
->> +        (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2))
->> +            cht_dailink[dai_index].cpu_dai_name = "ssp0-port";
-> 
-> and same here, SSP0_AIF1 will no longer work.
-> 
->>       /* override plaform name, if required */
->>       platform_name = mach->mach_params.platform;
->>
-> 
+Yes, but do we have any error checks in the hw_params or trigger cases 
+with the legacy driver?
