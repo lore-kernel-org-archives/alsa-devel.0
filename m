@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 6/7] soundwire: cadence_master: add
- debugfs register dump
-Date: Mon, 6 May 2019 09:50:26 -0500
-Message-ID: <dbcb67d0-aec3-cae7-c908-81a2e40efbb5@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 7/7] soundwire: intel: add debugfs
+ register dump
+Date: Mon, 6 May 2019 09:51:36 -0500
+Message-ID: <b01b3d30-901a-f5dc-8526-32a6dad9afd0@linux.intel.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-7-pierre-louis.bossart@linux.intel.com>
- <20190504070346.GE9770@kroah.com>
+ <20190504010030.29233-8-pierre-louis.bossart@linux.intel.com>
+ <20190504070458.GG9770@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190504070346.GE9770@kroah.com>
+In-Reply-To: <20190504070458.GG9770@kroah.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Greg KH <gregkh@linuxfoundation.org>
@@ -18,14 +18,17 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, li
 List-Id: alsa-devel@alsa-project.org
 
 
->> +void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+>> +static void intel_debugfs_init(struct sdw_intel *sdw)
 >> +{
->> +	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
->> +}
->> +EXPORT_SYMBOL(sdw_cdns_debugfs_init);
+>> +	struct dentry *root = sdw_bus_debugfs_get_root(sdw->cdns.bus.debugfs);
+>> +
+>> +	if (!root)
+>> +		return;
+>> +
+>> +	sdw->fs = debugfs_create_dir("intel-sdw", root);
+>> +	if (IS_ERR_OR_NULL(sdw->fs)) {
 > 
-> Don't wrap debugfs calls with export symbol without using
-> EXPORT_SYMBOL_GPL() or you will get grumpy emails from me :)
+> Again, you do not care, do not check this.
 
-Yes, that's a miss. I've already seen this comment and fixed it for SOF, 
-I should have thought about it for SoundWire, my bad.
+yes will check all this.
+Thanks for all the comments, much appreciated.
