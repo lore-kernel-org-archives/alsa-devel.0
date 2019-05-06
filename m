@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v5.2
-Date: Mon, 6 May 2019 23:40:00 +0900
-Message-ID: <20190506144000.GV14916@sirena.org.uk>
-References: <20190506141144.GR14916@sirena.org.uk>
- <s5hr29b4qas.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 2/7] soundwire: add Slave sysfs support
+Date: Mon, 6 May 2019 09:42:35 -0500
+Message-ID: <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
+References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
+ <20190504065444.GC9770@kroah.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0689740444249494063=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3487EF80C07
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 16:40:07 +0200 (CEST)
-In-Reply-To: <s5hr29b4qas.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4F29F89673
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 16:42:39 +0200 (CEST)
+In-Reply-To: <20190504065444.GC9770@kroah.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +25,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0689740444249494063==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ndc0uqT8Jh5ZONBY"
-Content-Disposition: inline
+>> +static struct attribute_group sdw_slave_dev_attr_group = {
+>> +	.attrs	= slave_dev_attrs,
+>> +};
+>> +
+>> +const struct attribute_group *sdw_slave_dev_attr_groups[] = {
+>> +	&sdw_slave_dev_attr_group,
+>> +	NULL
+>> +};
+> 
+> ATTRIBUTE_GROUP()?
 
+yes.
 
---Ndc0uqT8Jh5ZONBY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> 
+>> +
+>> +int sdw_sysfs_slave_init(struct sdw_slave *slave)
+>> +{
+>> +	struct sdw_slave_sysfs *sysfs;
+>> +	unsigned int src_dpns, sink_dpns, i, j;
+>> +	int err;
+>> +
+>> +	if (slave->sysfs) {
+>> +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
+>> +		err = -EIO;
+>> +		goto err_ret;
+>> +	}
+>> +
+>> +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
+> 
+> Same question as patch 1, why a new device?
 
-On Mon, May 06, 2019 at 04:21:15PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> sound/soc/rockchip/rockchip_pdm.c: In function =E2=80=98rockchip_pdm_hw_p=
-arams=E2=80=99:
-> sound/soc/rockchip/rockchip_pdm.c:179:3: warning: =E2=80=98clk_out=E2=80=
-=99 may be used uninitialized in this function [-Wmaybe-uninitialized]
->    rational_best_approximation(clk_out, clk_src,
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->           GENMASK(16 - 1, 0),
->           ~~~~~~~~~~~~~~~~~~~
->           GENMASK(16 - 1, 0),
->           ~~~~~~~~~~~~~~~~~~~
->           &m, &n);
->           ~~~~~~~
-
-> Is a fix on your tree already?
-
-No, I don't have anything I didn't sent to you.
-
---Ndc0uqT8Jh5ZONBY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzQRz8ACgkQJNaLcl1U
-h9BXPQf+OH1RiCOpVMQUu7HLJbWirezlfu8x7SFuolrPS+ikvEiIzRF8wsB4Laa3
-sQP8B+vxtvRreWBgdhL0BbvDLV4Ehe9tz/AMGMLGDXj82WtFlAu0MMMjjtjK6BiN
-iqtAGQjaNC7Zz3nTnFbuolnEd1Phcsu7JRn6mqVsqALq/6PrRlos95hjZ4pU3gYE
-YFTa7+wL8JmobeUkyXiawsfFF76Ni2K/RhggpaqY+kv3fxZj6e6/Wl5tnj/zsovL
-ij2Oo79nXrMkik5erTudUbbEMrhJAjZJuZ03ywc46/oqs2e0qXRbhWt4JXAPaoPT
-h0DNd2ZfwbO+5G6+5Iqdikmp9fZikQ==
-=X7+L
------END PGP SIGNATURE-----
-
---Ndc0uqT8Jh5ZONBY--
-
---===============0689740444249494063==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0689740444249494063==--
+yes it's the same open. In this case, the slave devices are defined at a 
+different level so it's also confusing to create a device to represent 
+the slave properties. The code works but I am not sure the initial 
+directions are correct.
