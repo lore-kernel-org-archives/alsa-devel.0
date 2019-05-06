@@ -1,108 +1,90 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [alsa-devel] ALSA -> pulseaudio channel
- mapping, what is it (and why?)
-Date: Mon, 06 May 2019 14:04:37 +0300
-Message-ID: <491dc670d9aaa8a9a72a6f0aaf5071be935a1aca.camel@iki.fi>
-References: <20190503180521.gtfv64hel5427dx7@localhost>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: GitHub issues - opened <github@alsa-project.org>
+Subject: 1.1.8: test suite is failing
+Date: Mon,  6 May 2019 14:43:01 +0200 (CEST)
+Message-ID: <20190506124301.D65C6F896F0@alsa1.perex.cz>
+References: <1557146578509116888-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <20190503180521.gtfv64hel5427dx7@localhost>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: frederik@ofb.net, alsa-devel@alsa-project.org
-Cc: pulseaudio-discuss@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2EB91F89673
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2019 14:42:58 +0200 (CEST)
+In-Reply-To: <1557146578509116888-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE5LTA1LTAzIGF0IDExOjA1IC0wNzAwLCBmcmVkZXJpa0BvZmIubmV0IHdyb3Rl
-Ogo+IERlYXIgQUxTQSBkZXZlbG9wZXJzLAo+IAo+IEkgcmFuIGludG8gYSBwcm9ibGVtIHdoaWNo
-IHNlZW1zIHRvIGJlIGNhdXNlZCBieSBzb21lIGxpbmVzIGluCj4gImFsc2EtcGx1Z2lucy0xLjEu
-OC9wdWxzZS9wY21fcHVsc2UuYyIuCj4gCj4gVGhlIHByb2JsZW0gaXMgdGhhdCBpZiBJIGNyZWF0
-ZSBhIDYtY2hhbm5lbCBQdWxzZUF1ZGlvIGRldmljZSwgYW5kCj4gdGhlbiBJIGNvbmZpZ3VyZSBh
-biBBTFNBIGRldmljZSBpbiB+Ly5hc291bmRyYyB0byBvdXRwdXQgdG8gdGhlCj4gUHVsc2VBdWRp
-byBkZXZpY2UsIHRoZSBjaGFubmVscyBvZiB0aGUgQUxTQSBkZXZpY2UgYXJlIG1peGVkIHRvZ2V0
-aGVyCj4gaW4gdmFyaW91cyB3YXlzIGFuZCBkb24ndCBjb3JyZXNwb25kIDEtMSB3aXRoIHRoZSBj
-aGFubmVscyBvZiB0aGUKPiBQdWxzZUF1ZGlvIGRldmljZS4KPiAKPiBJIGZpbmQgdGhpcyB0byBi
-ZSBjb3VudGVyLWludHVpdGl2ZS4gSWYgSSB3YW50ZWQgY2hhbm5lbHMgdG8gYmUgbWl4ZWQKPiBh
-bmQgcmVtYXBwZWQgaW4gdmFyaW91cyB3YXlzLCBJIHdvdWxkIHVzZSB0aGUgUHVsc2VBdWRpbyBt
-b2R1bGUKPiBtb2R1bGUtcmVtYXAtc2luayBvbiB0aGUgUHVsc2VBdWRpbyBzaWRlLCBzaW5jZSBB
-RkFJQ1QgQUxTQSBkb2VzIG5vdAo+IHN1cHBvcnQgbmFtZWQgY2hhbm5lbHMuCgpUaGVyZSBpcyBh
-biBBUEkgZm9yIHF1ZXJ5aW5nIGFuZCBjb25maWd1cmluZyBQQ00gZGV2aWNlIGNoYW5uZWwgbWFw
-cy4KcGNtX3B1bHNlLmMgZG9lc24ndCBzZWVtIHRvIGltcGxlbWVudCB0aGF0IEFQSSwgdGhvdWdo
-LCBzbyBhcHBsaWNhdGlvbnMKYXJlIGV4cGVjdGVkIHRvIHVzZSB0aGUgZGVmYXVsdCBjaGFubmVs
-IG1hcCwgYW5kIGlmIHRoYXQgZG9lc24ndCBtYXRjaAp0aGUgc2luayBjaGFubmVsIG1hcCwgdGhl
-biBQdWxzZUF1ZGlvIHdpbGwgZG8gdGhlIHJlbWFwcGluZyAoYW5kCnBvc3NpYmx5IHJlbWl4aW5n
-LCBpZiB0aGUgY2hhbm5lbCBtYXBzIGRpZmZlciBpbiBvdGhlciB3YXlzIHRoYW4ganVzdApjaGFu
-bmVsIG9yZGVyKS4KCj4gSSB3b3VsZCBub3QgZXhwZWN0IHJlbWl4aW5nIHRvIGhhcHBlbiBpbiB0
-aGUKPiBBTFNBLT5QdWxzZSBicmlkZ2UsIHNpbmNlIHRoZSByZWxldmFudCBQQ00gcGx1Z2luIGNv
-bnRhaW5zIG5vIGNoYW5uZWwKPiBtYXAgcGFyYW1ldGVyLgoKVGhlIHJlbWl4aW5nIGhhcHBlbnMg
-aW4gUHVsc2VBdWRpbywgbm90IGluIHBjbV9wdWxzZS5jLiBwY21fcHVsc2UuYwpqdXN0IHRlbGxz
-IFB1bHNlQXVkaW8gdGhlIGNoYW5uZWwgbWFwIHRoYXQgdGhlIHN0cmVhbSB1c2VzLgoKPiBJIGRv
-bid0IGV2ZW4ga25vdyB3aGF0IGNoYW5uZWwgbWFwIEkgc2hvdWxkIGdpdmUgdGhlIFB1bHNlQXVk
-aW8gZGV2aWNlCj4gaW4gb3JkZXIgdG8gcHJldmVudCByZW1peGluZyBmcm9tIG9jY3VycmluZy4g
-VGhlIGZpbGUgcGNtX3B1bHNlLmMKPiBjb250YWlucyB0aGUgbGluZXM6Cj4gCj4gICAgICAgICBm
-b3IgKGMgPSBwY20tPnNzLmNoYW5uZWxzOyBjID4gMDsgYy0tKQo+ICAgICAgICAgICAgICAgICBp
-ZiAocGFfY2hhbm5lbF9tYXBfaW5pdF9hdXRvKCZtYXAsIGMsIFBBX0NIQU5ORUxfTUFQX0FMU0Ep
-KQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwo+IAo+IFRoaXMgcmVmZXJzIHRvIGEg
-bWFjcm8gaW4gL3Vzci9pbmNsdWRlL3B1bHNlL2NoYW5uZWxtYXAuaDoKPiAKPiAgICAgLyoqIFxj
-b25kIGZ1bGxkb2NzICovCj4gICAgICAgICBQQV9DSEFOTkVMX01BUF9BTFNBLAo+ICAgICAgICAg
-LyoqPCBUaGUgZGVmYXVsdCBtYXBwaW5nIHVzZWQgYnkgQUxTQS4gVGhpcyBtYXBwaW5nIGlzIHBy
-b2JhYmx5Cj4gICAgICAgICAgKiBub3QgdG9vIHVzZWZ1bCBzaW5jZSBBTFNBJ3MgZGVmYXVsdCBj
-aGFubmVsIG1hcHBpbmcgZGVwZW5kcyBvbgo+ICAgICAgICAgICogdGhlIGRldmljZSBzdHJpbmcg
-dXNlZC4gKi8KPiAgICAgLyoqIFxlbmRjb25kICovCj4gCj4gVGhlIGNvbW1lbnQgc2F5cyB0aGF0
-IHRoZSBBTFNBIG1hcHBpbmcgaXMgIm5vdCB0b28gdXNlZnVsIiAtIHNvIHdoeQo+IGFyZSB3ZSB1
-c2luZyBpdD8KCnBjbV9wdWxzZS5jIGhhcyB0byBzcGVjaWZ5IHNvbWUgY2hhbm5lbCBtYXAuIERv
-IHlvdSBoYXZlIGJldHRlcgpwcm9wb3NhbHMgdGhhbiBQQV9DSEFOTkVMX01BUF9BTFNBPwoKPiBB
-bHNvLCBob3cgZG8gSSBmaW5kIG91dCB3aGF0IGl0IGlzLCBpZiBpdCAiZGVwZW5kcyBvbgo+IHRo
-ZSBkZXZpY2Ugc3RyaW5nIHVzZWQiPwoKVGhlcmUncyBjdXJyZW50bHkgbm8gd2F5IHRvIHF1ZXJ5
-IHRoZSBzaW5rIGNoYW5uZWwgbWFwIHRocm91Z2ggdGhlIEFMU0EKQVBJLiBUaGVyZSdzIHNuZF9w
-Y21fZ2V0X2NobWFwKCkgdGhhdCBwY21fcHVsc2UuYyBjb3VsZCBtYXliZQppbXBsZW1lbnQuIFRo
-ZXJlJ3MgdGhlIGNvbXBsaWNhdGlvbiB0aGF0IHVzdWFsbHkgdGhlIHB1bHNlIFBDTSB1c2VzIHRo
-ZQpkZWZhdWx0IHNpbmssIGFuZCB0aGUgZGVmYXVsdCBzaW5rIGNhbiBjaGFuZ2UgYXQgYW55IHRp
-bWUsIHNvIHRoZQpjaGFubmVsIG1hcCBjYW4gY2hhbmdlIGF0IGFueSB0aW1lIHRvbywgYnV0IHRo
-YXQncyBwcm9iYWJseSBub3QgYSBodWdlCnByb2JsZW0gaW4gcHJhY3RpY2UuCgo+IE15IHByZWZl
-cmVuY2Ugd291bGQgc2ltcGx5IGJlIHRvIGhhdmUgYSAxLTEgY2hhbm5lbCBtYXAgaW4gcGNtX3B1
-bHNlLAo+IHNvIHRoYXQgYSBQdWxzZUF1ZGlvIGRldmljZSB3aXRoIDYgY2hhbm5lbHMgd2lsbCB0
-dXJuIGludG8gYW4gQUxTQQo+IGRldmljZSB3aXRoIFRIRSBTQU1FIDYgQ0hBTk5FTFMuIE5vIG1p
-eGluZy4gTWl4aW5nIGlzIGNvbmZ1c2luZyBpbgo+IHRoaXMgY29udGV4dCwgYW5kIHNlZW1zIHVu
-ZG9jdW1lbnRlZCBvdXRzaWRlIG9mIHRoZSBjb2RlLgoKUmVtYXBwaW5nL3JlbWl4aW5nIGlzIHZl
-cnkgbXVjaCBleHBlY3RlZCBpbiB1c3VhbCBtZWRpYSBwbGF5YmFjayBjYXNlcy4KSWYgeW91IGhh
-dmUgYSA1LjEgbW92aWUsIGl0J3MgZWFzaWVyIGZvciB0aGUgcGxheWVyIGFwcGxpY2F0aW9uIHRv
-IHBsYXkKdGhlIGF1ZGlvIGluIHdoYXRldmVyIGNoYW5uZWwgb3JkZXIgaXQgd2FudHMgYW5kIGxl
-dCB0aGUgc291bmQgc2VydmVyCnRvIHJlbWFwIGFuZCByZW1peCBhcyBuZWNlc3NhcnkuCgo+IEkg
-dHJpZWQgdXNpbmcgYXV4MCB0aHJ1IGF1eDUgYXMgdGhlIFB1bHNlQXVkaW8gY2hhbm5lbCBtYXAs
-IHRvIHByZXZlbnQKPiBnZW9tZXRyeS1iYXNlZCByZW1peGluZy4gSG93ZXZlciwgdGhpcyByZXN1
-bHRzIGluIHNpbGVuY2UgLSBhcHBhcmVudGx5Cj4gbm9uZSBvZiB0aGUgNiBBTFNBIGNoYW5uZWxz
-IGVuZCB1cCBnb2luZyBhbnl3aGVyZS4gVGhhdCB3YXMgYWxzbwo+IHVuZXhwZWN0ZWQuIFNpbmNl
-IEkgYW0gcGxheWluZyA2LWNoYW5uZWwgYXVkaW8gdG8gYSA2LWNoYW5uZWwgZGV2aWNlLAo+IHdo
-aWNoIGVtdWxhdGVzIGFub3RoZXIgNi1jaGFubmVsIGRldmljZSwgSSB3b3VsZCBoYXZlIHRob3Vn
-aHQgdGhhdCB0aGUKPiBjaGFubmVsIG1hcHBpbmcgd291bGRuJ3QgYmUgY29tcGxpY2F0ZWQuIElu
-c3RlYWQsIGl0IGFwcGVhcnMgdGhhdCB0aGUKPiBQdWxzZUF1ZGlvIHNpbmsgbmVlZHMgdG8gaGF2
-ZSBjaGFubmVscyB3aXRoIHNwZWNpZmljIG5hbWVzIGluIG9yZGVyIHRvCj4gcmVjZWl2ZSBkYXRh
-IGZyb20gQUxTQS4KPiAKPiBDYW4gd2UgZml4IHRoaXMsIG9yIGltcHJvdmUgdGhlIHVzZXIgZXhw
-ZXJpZW5jZT8KCldoYXQncyB0aGUgc2luayBjaGFubmVsIG1hcCBpbiBQdWxzZUF1ZGlvIGFuZCB3
-aGF0J3MgeW91ciBhcHBsaWNhdGlvbidzCmNoYW5uZWwgbWFwPyBBcHBhcmVudGx5IG9uZSBvZiB0
-aGVtIGlzIG5vdCB1c2luZyB0aGUgZGVmYXVsdCBBTFNBIG1hcApmb3IgNiBjaGFubmVscy4KCklm
-IHlvdXIgYXBwbGljYXRpb24gaXMgbm90IHVzaW5nIHRoZSBkZWZhdWx0IGNoYW5uZWwgbWFwLCB3
-aHkgbm90PwoKSWYgdGhlIHNpbmsgaXMgbm90IHVzaW5nIHRoZSBkZWZhdWx0IGNoYW5uZWwgbWFw
-LCB0aGVuIGl0J3MgZXhwZWN0ZWQKdGhhdCBQdWxzZUF1ZGlvIHNodWZmbGVzIHRoZSBjaGFubmVs
-cyBhcm91bmQsIG90aGVyd2lzZSBhdWRpbyBtZWFudCBmb3IKdGhlIGZyb250IGxlZnQgc3BlYWtl
-ciBjb3VsZCBlbmQgdXAgaW4gdGhlIHJlYXIgcmlnaHQgc3BlYWtlciwgZm9yCmV4YW1wbGUuIERv
-IHlvdSBoYXZlIGEgdXNlIGNhc2UgZm9yIGlnbm9yaW5nIHRoZSBjaGFubmVsIG1hcD8gTWF5YmUg
-dGhlClNORF9QQ01fTk9fQVVUT19DSEFOTkVMUyBmbGFnIGNvdWxkIGJlIHVzZWQgaW4gcGNtX3B1
-bHNlLmMgdG8gZGlzYWJsZQpjaGFubmVsIHJlbWFwcGluZyAoSSdtIG5vdCB2b2x1bnRlZXJpbmcg
-dG8gaW1wbGVtZW50IHRoYXQsIHRob3VnaCkuCgotLSAKVGFudQoKaHR0cHM6Ly93d3cucGF0cmVv
-bi5jb20vdGFudWsKaHR0cHM6Ly9saWJlcmFwYXkuY29tL3RhbnVrCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFpbGlu
-ZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9s
-aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3M=
+alsa-project/alsa-utils issue #16 was opened from kloczek:
+
+<pre>+ /usr/bin/make -O -j4 check
+Making check in include
+Making check in alsactl
+Making check in init
+make[2]: Nothing to be done for &apos;check&apos;.
+make[2]: Nothing to be done for &apos;check-am&apos;.
+Making check in utils
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in m4
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in po
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in alsa-info
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in alsamixer
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in amixer
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in amidi
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in aplay
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in iecset
+make[1]: Nothing to be done for &apos;check&apos;.
+Making check in speaker-test
+Making check in samples
+make[2]: Nothing to be done for &apos;check&apos;.
+make[2]: Nothing to be done for &apos;check-am&apos;.
+Making check in axfer
+Making check in test
+/usr/bin/make  container-test mapper-test
+make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-au.o `test -f &apos;../container-au.c&apos; || echo &apos;./&apos;`../container-au.c
+make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-riff-wave.o `test -f &apos;../container-riff-wave.c&apos; || echo &apos;./&apos;`../container-riff-wave.c
+make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o generator.o generator.c
+generator.c:9:10: fatal error: generator.h: No such file or directory
+    9 | #include &quot;generator.h&quot;
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [Makefile:640: generator.o] Error 1
+make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+make[3]: *** Waiting for unfinished jobs....
+make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container.o `test -f &apos;../container.c&apos; || echo &apos;./&apos;`../container.c
+make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-voc.o `test -f &apos;../container-voc.c&apos; || echo &apos;./&apos;`../container-voc.c
+make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+make[3]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+gcc -DHAVE_CONFIG_H -I. -I../../include     -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -Os -c -o container-raw.o `test -f &apos;../container-raw.c&apos; || echo &apos;./&apos;`../container-raw.c
+make[3]: Leaving directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-utils-1.1.8/axfer/test&apos;
+make[2]: *** [Makefile:1017: check-am] Error 2
+make[1]: *** [Makefile:650: check-recursive] Error 1
+make: *** [Makefile:428: check-recursive] Error 1
+error: Bad exit status from /var/tmp/rpm-tmp.VI5lrR (%check)
+</pre>
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/16
+Repository URL: https://github.com/alsa-project/alsa-utils
