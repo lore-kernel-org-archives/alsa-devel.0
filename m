@@ -1,76 +1,74 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH 5/7] soundwire: add debugfs support
-Date: Mon, 6 May 2019 22:08:10 +0530
-Message-ID: <20190506163810.GK3845@vkoul-mobl.Dlink>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 1/7] soundwire: Add sysfs support for
+ master(s)
+Date: Mon, 6 May 2019 11:43:51 -0500
+Message-ID: <b36e5b42-6069-0a73-8cab-7fcfc999f3a8@linux.intel.com>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-6-pierre-louis.bossart@linux.intel.com>
- <20190504070301.GD9770@kroah.com>
- <a9e1c3d2-fe29-1683-9253-b66034c62010@linux.intel.com>
+ <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+ <20190504065242.GA9770@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <a9e1c3d2-fe29-1683-9253-b66034c62010@linux.intel.com>
+In-Reply-To: <20190504065242.GA9770@kroah.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Greg KH <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06-05-19, 09:48, Pierre-Louis Bossart wrote:
+Thanks for the quick feedback Greg!
 
-> > > +struct dentry *sdw_bus_debugfs_get_root(struct sdw_bus_debugfs *d)
-> > > +{
-> > > +	if (d)
-> > > +		return d->fs;
-> > > +	return NULL;
-> > > +}
-> > > +EXPORT_SYMBOL(sdw_bus_debugfs_get_root);
-> > 
-> > _GPL()?
+>> +static const struct attribute_group sdw_master_node_group = {
+>> +	.attrs = master_node_attrs,
+>> +};
+>> +
+>> +static const struct attribute_group *sdw_master_node_groups[] = {
+>> +	&sdw_master_node_group,
+>> +	NULL
+>> +};
 > 
-> Oops, that's a big miss. will fix, thanks for spotting this.
+> Minor nit, you can use the ATTRIBUTE_GROUPS() macro here to save you a
+> few lines.
 
-Not really. The Soundwire code is dual licensed. Many of the soundwire
-symbols are indeed exported as EXPORT_SYMBOL. But I agree this one is
-'linux' specific so can be made _GPL.
+will do.
 
-Pierre, does Intel still care about this being dual licensed or not?
-
+>> +
+>> +static void sdw_device_release(struct device *dev)
+>> +{
+>> +	struct sdw_master_sysfs *master = to_sdw_device(dev);
+>> +
+>> +	kfree(master);
+>> +}
+>> +
+>> +static struct device_type sdw_device_type = {
+>> +	.name =	"sdw_device",
+>> +	.release = sdw_device_release,
+>> +};
+>> +
+>> +int sdw_sysfs_bus_init(struct sdw_bus *bus)
+>> +{
+>> +	struct sdw_master_sysfs *master;
+>> +	int err;
+>> +
+>> +	if (bus->sysfs) {
+>> +		dev_err(bus->dev, "SDW sysfs is already initialized\n");
+>> +		return -EIO;
+>> +	}
+>> +
+>> +	master = kzalloc(sizeof(*master), GFP_KERNEL);
+>> +	if (!master)
+>> +		return -ENOMEM;
 > 
-> > 
-> > But why is this exported at all?  No one calls this function.
-> 
-> I will have to check.
+> Why are you creating a whole new device to put all of this under?  Is
+> this needed?  What will the sysfs tree look like when you do this?  Why
+> can't the "bus" device just get all of these attributes and no second
+> device be created?
 
-It is used by codec driver which are not upstream yet. So my suggestion
-would be NOT to export this and only do so when we have users for it
-That would be true for other APIs exported out as well.
+This is indeed my main question on this code (see cover letter) and why 
+I tagged the series as RFC. I find it odd to create an int-sdw.0 
+platform device to model the SoundWire master, and a sdw-master:0 device 
+whose purpose is only to expose the properties of that master. it'd be 
+simpler if all the properties were exposed one level up.
 
-> > 
-> > > +struct sdw_slave_debugfs {
-> > > +	struct sdw_slave *slave;
-> > 
-> > Same question as above, why do you need this pointer?
-> 
-> will check.
-
-The deubugfs code does hold a ref to slave object to read the data and
-dump, this particular instance might be able to get rid of (should be
-doable)
-
-> > And meta-comment, if you _EVER_ save off a pointer to a reference
-> > counted object (like this and the above one), you HAVE to grab a
-> > reference to it, otherwise it can go away at any point in time as that
-> > is the point of reference counted objects.
-> > 
-> > So even if you do need/want this, you have to properly handle the
-> > reference count by incrementing/decrementing it as needed.
-
-Yes, but then device exit routine is supposed to do debugfs cleanup as
-well, so that would ensure these references are dropped at that point of
-time. Greg should that not take care of it or we *should* always do
-refcounting.
-
-Thanks
--- 
-~Vinod
+Vinod and Sanyog might be able to shed some light on this?
