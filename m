@@ -1,90 +1,103 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
-Date: Tue, 7 May 2019 10:49:59 +0530
-Message-ID: <20190507051959.GC16052@vkoul-mobl>
+Subject: Re: [alsa-devel] [RFC PATCH 1/7] soundwire: Add sysfs support for
+ master(s)
+Date: Tue, 7 May 2019 10:57:32 +0530
+Message-ID: <20190507052732.GD16052@vkoul-mobl>
 References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
- <20190504065444.GC9770@kroah.com>
- <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
- <20190506151953.GA13178@kroah.com>
- <20190506162208.GI3845@vkoul-mobl.Dlink>
- <be72bbb1-b51f-8201-fdff-958836ed94d1@linux.intel.com>
+ <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+ <20190504065242.GA9770@kroah.com>
+ <b0059709-027e-26c4-25a1-bd55df7c507f@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <be72bbb1-b51f-8201-fdff-958836ed94d1@linux.intel.com>
+In-Reply-To: <b0059709-027e-26c4-25a1-bd55df7c507f@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Greg KH <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06-05-19, 11:46, Pierre-Louis Bossart wrote:
-> On 5/6/19 11:22 AM, Vinod Koul wrote:
-> > On 06-05-19, 17:19, Greg KH wrote:
-> > > On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
-> > > > > > +
-> > > > > > +int sdw_sysfs_slave_init(struct sdw_slave *slave)
-> > > > > > +{
-> > > > > > +	struct sdw_slave_sysfs *sysfs;
-> > > > > > +	unsigned int src_dpns, sink_dpns, i, j;
-> > > > > > +	int err;
-> > > > > > +
-> > > > > > +	if (slave->sysfs) {
-> > > > > > +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
-> > > > > > +		err = -EIO;
-> > > > > > +		goto err_ret;
-> > > > > > +	}
-> > > > > > +
-> > > > > > +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
-> > > > > 
-> > > > > Same question as patch 1, why a new device?
-> > > > 
-> > > > yes it's the same open. In this case, the slave devices are defined at a
-> > > > different level so it's also confusing to create a device to represent the
-> > > > slave properties. The code works but I am not sure the initial directions
-> > > > are correct.
-> > > 
-> > > You can just make a subdir for your attributes by using the attribute
-> > > group name, if a subdirectory is needed just to keep things a bit more
-> > > organized.
-> > 
-> > The key here is 'a subdir' which is not the case here. We did discuss
-> > this in the initial patches for SoundWire which had sysfs :)
-> > 
-> > The way MIPI disco spec organized properties, we have dp0 and dpN
-> > properties each of them requires to have a subdir of their own and that
-> > was the reason why I coded it to be creating a device.
+On 06-05-19, 21:24, Pierre-Louis Bossart wrote:
 > 
-> Vinod, the question was not for dp0 and dpN, it's fine to have
-> subdirectories there, but rather why we need separate devices for the master
-> and slave properties.
-
-Slave does not have a separate device. IIRC the properties for Slave are
-in /sys/bus/soundwire/device/<slave>/...
-
-For master yes we can skip the device creation, it was done for
-consistency sake of having these properties ties into sys/bus/soundwire/
-
-I don't mind if they are shown up in respective device node (PCI/platform
-etc) /sys/bus/foo/device/<> 
-
-But for creating subdirectories you would need the new dpX devices.
-
-HTH
-
+> > > +int sdw_sysfs_bus_init(struct sdw_bus *bus)
+> > > +{
+> > > +	struct sdw_master_sysfs *master;
+> > > +	int err;
+> > > +
+> > > +	if (bus->sysfs) {
+> > > +		dev_err(bus->dev, "SDW sysfs is already initialized\n");
+> > > +		return -EIO;
+> > > +	}
+> > > +
+> > > +	master = kzalloc(sizeof(*master), GFP_KERNEL);
+> > > +	if (!master)
+> > > +		return -ENOMEM;
+> > 
+> > Why are you creating a whole new device to put all of this under?  Is
+> > this needed?  What will the sysfs tree look like when you do this?  Why
+> > can't the "bus" device just get all of these attributes and no second
+> > device be created?
 > 
-> > 
-> > Do we have a better way to handle this?
-> > 
-> > > Otherwise, you need to mess with having multiple "types" of struct
-> > > device all associated with the same bus.  It is possible, and not that
-> > > hard, but I don't think you are doing that here.
-> > > 
-> > > thnaks,
-> > > 
-> > > greg k-h
-> > 
+> I tried a quick hack and indeed we could simplify the code with something as
+> simple as:
+> 
+> [attributes omitted]
+> 
+> static const struct attribute_group sdw_master_node_group = {
+> 	.attrs = master_node_attrs,
+> 	.name = "mipi-disco"
+> };
+> 
+> int sdw_sysfs_bus_init(struct sdw_bus *bus)
+> {
+> 	return sysfs_create_group(&bus->dev->kobj, &sdw_master_node_group);
+> }
+> 
+> void sdw_sysfs_bus_exit(struct sdw_bus *bus)
+> {
+> 	sysfs_remove_group(&bus->dev->kobj, &sdw_master_node_group);	
+> }
+> 
+> which gives me a simpler structure and doesn't require additional
+> pretend-devices:
+> 
+> /sys/bus/acpi/devices/PRP00001:00/int-sdw.0/mipi-disco# ls
+> clock_gears
+> /sys/bus/acpi/devices/PRP00001:00/int-sdw.0/mipi-disco# more clock_gears
+> 8086
+> 
+> The issue I have is that for the _show() functions, I don't see a way to go
+> from the device argument to bus. In the example above I forced the output
+> but would need a helper.
+> 
+> static ssize_t clock_gears_show(struct device *dev,
+> 				struct device_attribute *attr, char *buf)
+> {
+> 	struct sdw_bus *bus; // this is what I need to find from dev
+> 	ssize_t size = 0;
+> 	int i;
+> 
+> 	return sprintf(buf, "%d \n", 8086);
+> }
+> 
+> my brain is starting to fry, but I don't see how container_of() would work
+> here since the bus structure contains a pointer to the device. I don't also
+> see a way to check for all devices for the bus_type soundwire.
+> For the slaves we do have a macro based on container_of(), so wondering if
+> we made a mistake in the bus definition? Vinod, any thoughts?
 
+yeah I dont recall a way to get bus fed into create_group, I did look at
+the other examples back then and IIRC and most of them were using a
+global to do the trick (I didn't want to go down that route).
+
+I think that was the reason I wrote it this way...
+
+BTW if you do use psedo-device you can create your own struct foo which
+embeds device and then then you can use container approach to get foo
+(and foo contains bus as a member).
+
+Greg, any thoughts?
+
+Thanks
 -- 
 ~Vinod
