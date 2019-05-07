@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Fix a compile warning with
-	CONFIG_PCI=n" to the asoc tree
+Subject: Applied "ASoC: da7219: Fix a compile warning at
+	CONFIG_COMMON_CLK=n" to the asoc tree
 Date: Tue,  7 May 2019 03:30:31 +0100 (BST)
-Message-ID: <20190507023031.68EA9440017@finisterre.sirena.org.uk>
-References: <20190506150224.1394-3-tiwai@suse.de>
+Message-ID: <20190507023031.EE9E0440033@finisterre.sirena.org.uk>
+References: <20190506150224.1394-2-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8723188799544856757=="
+Content-Type: multipart/mixed; boundary="===============9107255679392435023=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB393F807B5
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:35 +0200 (CEST)
-In-Reply-To: <20190506150224.1394-3-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CDA2F80726
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:36 +0200 (CEST)
+In-Reply-To: <20190506150224.1394-2-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,15 +24,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============8723188799544856757==
+--===============9107255679392435023==
 Content-Type: text/plain
 
 The patch
 
-   ASoC: SOF: Fix a compile warning with CONFIG_PCI=n
+   ASoC: da7219: Fix a compile warning at CONFIG_COMMON_CLK=n
 
 has been applied to the asoc tree at
 
@@ -57,47 +57,47 @@ to this mail.
 Thanks,
 Mark
 
->From c41d384c39f17ffb5326531da2374a1ab5859403 Mon Sep 17 00:00:00 2001
+>From ab0c433f32f86370152bc9cb4900e5fe9a11055c Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 6 May 2019 17:02:23 +0200
-Subject: [PATCH] ASoC: SOF: Fix a compile warning with CONFIG_PCI=n
+Date: Mon, 6 May 2019 17:02:22 +0200
+Subject: [PATCH] ASoC: da7219: Fix a compile warning at CONFIG_COMMON_CLK=n
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 A trivial fix for the randconfig build error:
-  sound/soc/sof/ops.c:20:6: warning: ‘ret’ is used uninitialized in this function [-Wuninitialized]
+  sound/soc/codecs/da7219.c:2366:6: warning: unused variable ‘i’ [-Wunused-variable]
 
-Fixes: d1d95fcb63e3 ("ASoC: SOF: Add DSP HW abstraction operations")
+Fixes: d90ba6c8b53e ("ASoC: da7219: Expose BCLK and WCLK control through CCF")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da7219.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
-index 80f907740b82..7a27c3b719e7 100644
---- a/sound/soc/sof/ops.c
-+++ b/sound/soc/sof/ops.c
-@@ -17,7 +17,7 @@ bool snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 206d01c6eb7e..43c03e7b2f0e 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -2357,7 +2357,9 @@ static int da7219_probe(struct snd_soc_component *component)
+ static void da7219_remove(struct snd_soc_component *component)
  {
- 	struct pci_dev *pci = to_pci_dev(sdev->dev);
- 	unsigned int old, new;
--	u32 ret;
-+	u32 ret = 0;
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
++#ifdef CONFIG_COMMON_CLK
+ 	int i;
++#endif
  
- 	pci_read_config_dword(pci, offset, &ret);
- 	old = ret;
+ 	da7219_aad_exit(component);
+ 
 -- 
 2.20.1
 
 
---===============8723188799544856757==
+--===============9107255679392435023==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8723188799544856757==--
+--===============9107255679392435023==--
