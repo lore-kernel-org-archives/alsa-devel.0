@@ -1,36 +1,26 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: use more of the volume range
-	from DACs" to the asoc tree
-Date: Tue,  7 May 2019 03:28:50 +0100 (BST)
-Message-ID: <20190507022850.379CE44000C@finisterre.sirena.org.uk>
-References: <20190506203006.161158-1-cujomalainey@chromium.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 234A3F89673
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:28:57 +0200 (CEST)
-In-Reply-To: <20190506203006.161158-1-cujomalainey@chromium.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Dylan Reid <dgreid@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Ross Zwisler <zwisler@google.com>, Liam Girdwood <lgirdwood@gmail.com>, Hsinyu Chao <hychao@chromium.org>, Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
+Subject: Applied "ASoC: fsl_esai: Add pm runtime function" to the asoc tree
+Date: Tue,  7 May 2019 03:30:33 +0100 (BST)
+Message-ID: <20190507023033.26DF4440035@finisterre.sirena.org.uk>
+References: <20190503194944.30167-1-nicoleotsuka@gmail.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20190503194944.30167-1-nicoleotsuka@gmail.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: use more of the volume range from DACs
+   ASoC: fsl_esai: Add pm runtime function
 
 has been applied to the asoc tree at
 
@@ -55,46 +45,248 @@ to this mail.
 Thanks,
 Mark
 
->From 753c36a4d8a85beeb97640d1f91f2ead6aaee85e Mon Sep 17 00:00:00 2001
-From: Dylan Reid <dgreid@chromium.org>
-Date: Mon, 6 May 2019 13:30:06 -0700
-Subject: [PATCH] ASoC: rt5677: use more of the volume range from DACs
+>From b2d337d8de9fb6dd4f2970ebec0fa2375f7c9cdd Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Fri, 3 May 2019 12:49:44 -0700
+Subject: [PATCH] ASoC: fsl_esai: Add pm runtime function
 
-The DACs volume can go over 0, both according to the data sheet and
-real world testing.  The control can go up to +30dB.
+Add pm runtime support and move clock handling there.
+Close the clocks at suspend to reduce the power consumption.
 
-This was tested by playing audio at full volume on a samus chromebook.
+fsl_esai_suspend is replaced by pm_runtime_force_suspend.
+fsl_esai_resume is replaced by pm_runtime_force_resume.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
-Reviewed-by: Hsinyu Chao <hychao@chromium.org>
-Signed-off-by: Ross Zwisler <zwisler@google.com>
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 141 +++++++++++++++++++++------------------
+ 1 file changed, 77 insertions(+), 64 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 6fc70e441458..907c957b614d 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -832,13 +832,13 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index bad0dfed6b68..10d2210c91ef 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_platform.h>
++#include <linux/pm_runtime.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
  
- 	/* DAC Digital Volume */
- 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5677_DAC1_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5677_DAC2_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 	SOC_DOUBLE_TLV("DAC3 Playback Volume", RT5677_DAC3_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 	SOC_DOUBLE_TLV("DAC4 Playback Volume", RT5677_DAC4_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+@@ -466,30 +467,6 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
+ {
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+-	int ret;
+-
+-	/*
+-	 * Some platforms might use the same bit to gate all three or two of
+-	 * clocks, so keep all clocks open/close at the same time for safety
+-	 */
+-	ret = clk_prepare_enable(esai_priv->coreclk);
+-	if (ret)
+-		return ret;
+-	if (!IS_ERR(esai_priv->spbaclk)) {
+-		ret = clk_prepare_enable(esai_priv->spbaclk);
+-		if (ret)
+-			goto err_spbaclk;
+-	}
+-	if (!IS_ERR(esai_priv->extalclk)) {
+-		ret = clk_prepare_enable(esai_priv->extalclk);
+-		if (ret)
+-			goto err_extalck;
+-	}
+-	if (!IS_ERR(esai_priv->fsysclk)) {
+-		ret = clk_prepare_enable(esai_priv->fsysclk);
+-		if (ret)
+-			goto err_fsysclk;
+-	}
  
- 	/* IN1/IN2 Control */
- 	SOC_SINGLE_TLV("IN1 Boost", RT5677_IN1, RT5677_BST_SFT1, 8, 0, bst_tlv),
+ 	if (!dai->active) {
+ 		/* Set synchronous mode */
+@@ -506,16 +483,6 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 
+ 	return 0;
+ 
+-err_fsysclk:
+-	if (!IS_ERR(esai_priv->extalclk))
+-		clk_disable_unprepare(esai_priv->extalclk);
+-err_extalck:
+-	if (!IS_ERR(esai_priv->spbaclk))
+-		clk_disable_unprepare(esai_priv->spbaclk);
+-err_spbaclk:
+-	clk_disable_unprepare(esai_priv->coreclk);
+-
+-	return ret;
+ }
+ 
+ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+@@ -576,20 +543,6 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static void fsl_esai_shutdown(struct snd_pcm_substream *substream,
+-			      struct snd_soc_dai *dai)
+-{
+-	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+-
+-	if (!IS_ERR(esai_priv->fsysclk))
+-		clk_disable_unprepare(esai_priv->fsysclk);
+-	if (!IS_ERR(esai_priv->extalclk))
+-		clk_disable_unprepare(esai_priv->extalclk);
+-	if (!IS_ERR(esai_priv->spbaclk))
+-		clk_disable_unprepare(esai_priv->spbaclk);
+-	clk_disable_unprepare(esai_priv->coreclk);
+-}
+-
+ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			    struct snd_soc_dai *dai)
+ {
+@@ -658,7 +611,6 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
+ 	.startup = fsl_esai_startup,
+-	.shutdown = fsl_esai_shutdown,
+ 	.trigger = fsl_esai_trigger,
+ 	.hw_params = fsl_esai_hw_params,
+ 	.set_sysclk = fsl_esai_set_dai_sysclk,
+@@ -947,6 +899,10 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
++	regcache_cache_only(esai_priv->regmap, true);
++
+ 	ret = imx_pcm_dma_init(pdev, IMX_ESAI_DMABUF_SIZE);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
+@@ -954,6 +910,13 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static int fsl_esai_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
+ static const struct of_device_id fsl_esai_dt_ids[] = {
+ 	{ .compatible = "fsl,imx35-esai", },
+ 	{ .compatible = "fsl,vf610-esai", },
+@@ -961,22 +924,35 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int fsl_esai_suspend(struct device *dev)
+-{
+-	struct fsl_esai *esai = dev_get_drvdata(dev);
+-
+-	regcache_cache_only(esai->regmap, true);
+-	regcache_mark_dirty(esai->regmap);
+-
+-	return 0;
+-}
+-
+-static int fsl_esai_resume(struct device *dev)
++#ifdef CONFIG_PM
++static int fsl_esai_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_esai *esai = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	/*
++	 * Some platforms might use the same bit to gate all three or two of
++	 * clocks, so keep all clocks open/close at the same time for safety
++	 */
++	ret = clk_prepare_enable(esai->coreclk);
++	if (ret)
++		return ret;
++	if (!IS_ERR(esai->spbaclk)) {
++		ret = clk_prepare_enable(esai->spbaclk);
++		if (ret)
++			goto err_spbaclk;
++	}
++	if (!IS_ERR(esai->extalclk)) {
++		ret = clk_prepare_enable(esai->extalclk);
++		if (ret)
++			goto err_extalclk;
++	}
++	if (!IS_ERR(esai->fsysclk)) {
++		ret = clk_prepare_enable(esai->fsysclk);
++		if (ret)
++			goto err_fsysclk;
++	}
++
+ 	regcache_cache_only(esai->regmap, false);
+ 
+ 	/* FIFO reset for safety */
+@@ -987,22 +963,59 @@ static int fsl_esai_resume(struct device *dev)
+ 
+ 	ret = regcache_sync(esai->regmap);
+ 	if (ret)
+-		return ret;
++		goto err_regcache_sync;
+ 
+ 	/* FIFO reset done */
+ 	regmap_update_bits(esai->regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
+ 	regmap_update_bits(esai->regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
+ 
++	return 0;
++
++err_regcache_sync:
++	if (!IS_ERR(esai->fsysclk))
++		clk_disable_unprepare(esai->fsysclk);
++err_fsysclk:
++	if (!IS_ERR(esai->extalclk))
++		clk_disable_unprepare(esai->extalclk);
++err_extalclk:
++	if (!IS_ERR(esai->spbaclk))
++		clk_disable_unprepare(esai->spbaclk);
++err_spbaclk:
++	clk_disable_unprepare(esai->coreclk);
++
++	return ret;
++}
++
++static int fsl_esai_runtime_suspend(struct device *dev)
++{
++	struct fsl_esai *esai = dev_get_drvdata(dev);
++
++	regcache_cache_only(esai->regmap, true);
++	regcache_mark_dirty(esai->regmap);
++
++	if (!IS_ERR(esai->fsysclk))
++		clk_disable_unprepare(esai->fsysclk);
++	if (!IS_ERR(esai->extalclk))
++		clk_disable_unprepare(esai->extalclk);
++	if (!IS_ERR(esai->spbaclk))
++		clk_disable_unprepare(esai->spbaclk);
++	clk_disable_unprepare(esai->coreclk);
++
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP */
++#endif /* CONFIG_PM */
+ 
+ static const struct dev_pm_ops fsl_esai_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(fsl_esai_suspend, fsl_esai_resume)
++	SET_RUNTIME_PM_OPS(fsl_esai_runtime_suspend,
++			   fsl_esai_runtime_resume,
++			   NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static struct platform_driver fsl_esai_driver = {
+ 	.probe = fsl_esai_probe,
++	.remove = fsl_esai_remove,
+ 	.driver = {
+ 		.name = "fsl-esai-dai",
+ 		.pm = &fsl_esai_pm_ops,
 -- 
 2.20.1
