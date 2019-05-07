@@ -1,114 +1,51 @@
-From: Evan Green <evgreen@chromium.org>
-Subject: [PATCH v2 2/2] ASoC: Intel: Skylake: Add Cometlake PCI IDs
-Date: Tue,  7 May 2019 14:53:59 -0700
-Message-ID: <20190507215359.113378-3-evgreen@chromium.org>
-References: <20190507215359.113378-1-evgreen@chromium.org>
+From: Fletcher Woodruff <fletcherw@chromium.org>
+Subject: [PATCH v5 0/3] Fix jack detection for Chromebook Pixel
+Date: Tue,  7 May 2019 16:01:12 -0600
+Message-ID: <20190507220115.90395-1-fletcherw@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190507215359.113378-1-evgreen@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Naveen M <naveen.m@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Evan Green <evgreen@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Guenter Roeck <groeck@chromium.org>, Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jenny TC <jenny.tc@intel.com>, Jie Yang <yang.jie@linux.intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: Fletcher Woodruff <fletcherw@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add PCI IDs for Intel CometLake platforms, which from a software
-point of view are extremely similar to Cannonlake platforms.
+Headphone/mic jack detection doesn't work on the Chromebook Pixel 2015.
 
-Signed-off-by: Evan Green <evgreen@chromium.org>
----
+This patch changes the irq implementation to support polarity flipping
+and fixes the configuration code so that correct GPIO pins are read
+from ACPI.
 
-Changes in v2:
-- Add 0x06c8 for CML-H (Pierre-Louis)
+With this series, plugging and unplugging the headphone jack switches
+between headphones and speakers automatically, and headset microphones 
+are also detected.
 
- sound/soc/intel/Kconfig                | 18 ++++++++++++++++++
- sound/soc/intel/skylake/skl-messages.c | 16 ++++++++++++++++
- sound/soc/intel/skylake/skl.c          | 10 ++++++++++
- 3 files changed, 44 insertions(+)
+v5:
+  - Fix void* parameter to devm_request_threaded_irq
+  - Correct authorship for patch 2/3
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index fc1396adde71..1ebac54b7081 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -110,6 +110,8 @@ config SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_INTEL_GLK
- 	select SND_SOC_INTEL_CNL
- 	select SND_SOC_INTEL_CFL
-+	select SND_SOC_INTEL_CML_H
-+	select SND_SOC_INTEL_CML_LP
- 	help
-           This is a backwards-compatible option to select all devices
- 	  supported by the Intel SST/Skylake driver. This option is no
-@@ -165,6 +167,22 @@ config SND_SOC_INTEL_CFL
- 	  If you have a Intel CoffeeLake platform with the DSP
- 	  enabled in the BIOS then enable this option by saying Y or m.
- 
-+config SND_SOC_INTEL_CML_H
-+	tristate "CometLake-H Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel CometLake-H platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_CML_LP
-+	tristate "CometLake-LP Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel CometLake-LP platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
- config SND_SOC_INTEL_SKYLAKE_FAMILY
- 	tristate
- 	select SND_SOC_INTEL_SKYLAKE_COMMON
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 4bf70b4429f0..df01dc952521 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -255,6 +255,22 @@ static const struct skl_dsp_ops dsp_ops[] = {
- 		.init_fw = cnl_sst_init_fw,
- 		.cleanup = cnl_sst_dsp_cleanup
- 	},
-+	{
-+		.id = 0x02c8,
-+		.num_cores = 4,
-+		.loader_ops = bxt_get_loader_ops,
-+		.init = cnl_sst_dsp_init,
-+		.init_fw = cnl_sst_init_fw,
-+		.cleanup = cnl_sst_dsp_cleanup
-+	},
-+	{
-+		.id = 0x06c8,
-+		.num_cores = 4,
-+		.loader_ops = bxt_get_loader_ops,
-+		.init = cnl_sst_dsp_init,
-+		.init_fw = cnl_sst_init_fw,
-+		.cleanup = cnl_sst_dsp_cleanup
-+	},
- };
- 
- const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4ed5b7e17d44..f864f7b3df3a 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1166,6 +1166,16 @@ static const struct pci_device_id skl_ids[] = {
- 	/* CFL */
- 	{ PCI_DEVICE(0x8086, 0xa348),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_LP)
-+	/* CML-LP */
-+	{ PCI_DEVICE(0x8086, 0x02c8),
-+		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_H)
-+	/* CML-H */
-+	{ PCI_DEVICE(0x8086, 0x06c8),
-+		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
- #endif
- 	{ 0, }
- };
+v4:
+  - Fix incorrect void* cast in rt5677_irq() 
+
+v3:
+  - Update commit message for patch 1/3 to clarify why we implement
+    our own irq_chip.
+
+v2:
+  - Split IRQ change into two patches: adding and fixing potential race
+  - Change config reading code to try both DT and ACPI style names
+
+
+Ben Zhang (2):
+  ASoC: rt5677: allow multiple interrupt sources
+  ASoC: rt5677: handle concurrent interrupts
+
+Fletcher Woodruff (1):
+  ASoC: rt5677: fall back to DT prop names on error
+
+ sound/soc/codecs/rt5677.c | 346 ++++++++++++++++++++++++++------------
+ sound/soc/codecs/rt5677.h |  14 +-
+ 2 files changed, 256 insertions(+), 104 deletions(-)
+
 -- 
-2.20.1
+2.21.0.1020.gf2820cf01a-goog
