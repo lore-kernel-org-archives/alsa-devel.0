@@ -1,109 +1,126 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH 3/3] ASoC: mediatek: mt6358: save PGA for mixer
-	control
-Date: Tue,  7 May 2019 18:12:20 +0800
-Message-ID: <20190507101220.182466-4-tzungbi@google.com>
-References: <20190507101220.182466-1-tzungbi@google.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [alsa-devel] [RFC PATCH 1/7] soundwire: Add sysfs support for
+ master(s)
+Date: Tue, 7 May 2019 16:33:31 +0530
+Message-ID: <20190507110331.GL16052@vkoul-mobl>
+References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+ <20190504065242.GA9770@kroah.com>
+ <b0059709-027e-26c4-25a1-bd55df7c507f@linux.intel.com>
+ <20190507052732.GD16052@vkoul-mobl>
+ <20190507055432.GB17986@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw1-xc49.google.com (mail-yw1-xc49.google.com
- [IPv6:2607:f8b0:4864:20::c49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DD81F89727
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 12:13:05 +0200 (CEST)
-Received: by mail-yw1-xc49.google.com with SMTP id q2so30502773ywd.9
- for <alsa-devel@alsa-project.org>; Tue, 07 May 2019 03:13:05 -0700 (PDT)
-In-Reply-To: <20190507101220.182466-1-tzungbi@google.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, tiwai@suse.com
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190507055432.GB17986@kroah.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-mt6358_amic_disable() resets PGA to 0.
+On 07-05-19, 07:54, Greg KH wrote:
+> On Tue, May 07, 2019 at 10:57:32AM +0530, Vinod Koul wrote:
+> > On 06-05-19, 21:24, Pierre-Louis Bossart wrote:
+> > > 
+> > > > > +int sdw_sysfs_bus_init(struct sdw_bus *bus)
+> > > > > +{
+> > > > > +	struct sdw_master_sysfs *master;
+> > > > > +	int err;
+> > > > > +
+> > > > > +	if (bus->sysfs) {
+> > > > > +		dev_err(bus->dev, "SDW sysfs is already initialized\n");
+> > > > > +		return -EIO;
+> > > > > +	}
+> > > > > +
+> > > > > +	master = kzalloc(sizeof(*master), GFP_KERNEL);
+> > > > > +	if (!master)
+> > > > > +		return -ENOMEM;
+> > > > 
+> > > > Why are you creating a whole new device to put all of this under?  Is
+> > > > this needed?  What will the sysfs tree look like when you do this?  Why
+> > > > can't the "bus" device just get all of these attributes and no second
+> > > > device be created?
+> > > 
+> > > I tried a quick hack and indeed we could simplify the code with something as
+> > > simple as:
+> > > 
+> > > [attributes omitted]
+> > > 
+> > > static const struct attribute_group sdw_master_node_group = {
+> > > 	.attrs = master_node_attrs,
+> > > 	.name = "mipi-disco"
+> > > };
+> > > 
+> > > int sdw_sysfs_bus_init(struct sdw_bus *bus)
+> > > {
+> > > 	return sysfs_create_group(&bus->dev->kobj, &sdw_master_node_group);
+> > > }
+> > > 
+> > > void sdw_sysfs_bus_exit(struct sdw_bus *bus)
+> > > {
+> > > 	sysfs_remove_group(&bus->dev->kobj, &sdw_master_node_group);	
+> > > }
+> > > 
+> > > which gives me a simpler structure and doesn't require additional
+> > > pretend-devices:
+> > > 
+> > > /sys/bus/acpi/devices/PRP00001:00/int-sdw.0/mipi-disco# ls
+> > > clock_gears
+> > > /sys/bus/acpi/devices/PRP00001:00/int-sdw.0/mipi-disco# more clock_gears
+> > > 8086
+> > > 
+> > > The issue I have is that for the _show() functions, I don't see a way to go
+> > > from the device argument to bus. In the example above I forced the output
+> > > but would need a helper.
+> > > 
+> > > static ssize_t clock_gears_show(struct device *dev,
+> > > 				struct device_attribute *attr, char *buf)
+> > > {
+> > > 	struct sdw_bus *bus; // this is what I need to find from dev
+> > > 	ssize_t size = 0;
+> > > 	int i;
+> > > 
+> > > 	return sprintf(buf, "%d \n", 8086);
+> > > }
+> > > 
+> > > my brain is starting to fry, but I don't see how container_of() would work
+> > > here since the bus structure contains a pointer to the device. I don't also
+> > > see a way to check for all devices for the bus_type soundwire.
+> > > For the slaves we do have a macro based on container_of(), so wondering if
+> > > we made a mistake in the bus definition? Vinod, any thoughts?
+> > 
+> > yeah I dont recall a way to get bus fed into create_group, I did look at
+> > the other examples back then and IIRC and most of them were using a
+> > global to do the trick (I didn't want to go down that route).
+> > 
+> > I think that was the reason I wrote it this way...
+> > 
+> > BTW if you do use psedo-device you can create your own struct foo which
+> > embeds device and then then you can use container approach to get foo
+> > (and foo contains bus as a member).
+> > 
+> > Greg, any thoughts?
+> 
+> Why would you have "bus" attributes on a device?  I don't think you are
+> using "bus" here like the driver model uses the term "bus", right?
+> 
+> What are you really trying to show here?
+> 
+> And if you need to know the bus pointer from the device, why don't you
+> have a pointer to it in your device-specific structure?
 
-Save the gain settings from mixer control and restore them when using
-the microphone.
+The model here is that Master device is PCI or Platform device and then
+creates a bus instance which has soundwire slave devices.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/codecs/mt6358.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+So for any attribute on Master device (which has properties as well and
+representation in sysfs), device specfic struct (PCI/platfrom doesn't
+help). For slave that is not a problem as sdw_slave structure takes care
+if that.
 
-diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
-index 44edbda8afcc..50b3fc5457ea 100644
---- a/sound/soc/codecs/mt6358.c
-+++ b/sound/soc/codecs/mt6358.c
-@@ -450,6 +450,15 @@ static int mt6358_put_volsw(struct snd_kcontrol *kcontrol,
- 		priv->ana_gain[AUDIO_ANALOG_VOLUME_HSOUTR] =
- 			(reg >> RG_AUDHSGAIN_SFT) & RG_AUDHSGAIN_MASK;
- 		break;
-+	case MT6358_AUDENC_ANA_CON0:
-+	case MT6358_AUDENC_ANA_CON1:
-+		regmap_read(priv->regmap, MT6358_AUDENC_ANA_CON0, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1] =
-+			(reg >> RG_AUDPREAMPLGAIN_SFT) & RG_AUDPREAMPLGAIN_MASK;
-+		regmap_read(priv->regmap, MT6358_AUDENC_ANA_CON1, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2] =
-+			(reg >> RG_AUDPREAMPRGAIN_SFT) & RG_AUDPREAMPRGAIN_MASK;
-+		break;
- 	}
- 
- 	return ret;
-@@ -470,10 +479,10 @@ static const struct snd_kcontrol_new mt6358_snd_controls[] = {
- 			   MT6358_ZCD_CON3, 0, 0x12, 1,
- 			   snd_soc_get_volsw, mt6358_put_volsw, playback_tlv),
- 	/* ul pga gain */
--	SOC_DOUBLE_R_TLV("PGA Volume",
--			 MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
--			 8, 4, 0,
--			 pga_tlv),
-+	SOC_DOUBLE_R_EXT_TLV("PGA Volume",
-+			     MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
-+			     8, 4, 0,
-+			     snd_soc_get_volsw, mt6358_put_volsw, pga_tlv),
- };
- 
- /* MUX */
-@@ -1750,6 +1759,21 @@ static void mt6358_dmic_disable(struct mt6358_priv *priv)
- 	regmap_write(priv->regmap, MT6358_AUDENC_ANA_CON9, 0x0000);
- }
- 
-+static void mt6358_restore_pga(struct mt6358_priv *priv)
-+{
-+	unsigned int gain_l, gain_r;
-+
-+	gain_l = priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1];
-+	gain_r = priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2];
-+
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON0,
-+			   RG_AUDPREAMPLGAIN_MASK_SFT,
-+			   gain_l << RG_AUDPREAMPLGAIN_SFT);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON1,
-+			   RG_AUDPREAMPRGAIN_MASK_SFT,
-+			   gain_r << RG_AUDPREAMPRGAIN_SFT);
-+}
-+
- static int mt_mic_type_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol,
- 			     int event)
-@@ -1774,6 +1798,7 @@ static int mt_mic_type_event(struct snd_soc_dapm_widget *w,
- 			mt6358_amic_enable(priv);
- 			break;
- 		}
-+		mt6358_restore_pga(priv);
- 
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
+So, the solution was to create the psedo sdw_master device for the
+representation and have device-specific structure.
+
+Thanks
 -- 
-2.21.0.1020.gf2820cf01a-goog
+~Vinod
