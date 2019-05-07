@@ -1,73 +1,201 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: SOF: core: fix undefined nocodec
-	reference
-Date: Tue,  7 May 2019 11:32:36 -0500
-Message-ID: <20190507163236.8783-3-pierre-louis.bossart@linux.intel.com>
-References: <20190507163236.8783-1-pierre-louis.bossart@linux.intel.com>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: [PATCH v2 1/2] dt-bindings: sound: Convert Allwinner SPDIF binding to
+ YAML
+Date: Tue,  7 May 2019 20:07:28 +0200
+Message-ID: <dc84c7e9ce272109052f553a5e050bfe1a09e9d6.1557252411.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49F8FF80726
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 18:32:46 +0200 (CEST)
-In-Reply-To: <20190507163236.8783-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, kbuild-all@01.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The existing code mistakenly uses IS_ENABLED in C code instead of as
-in conditional compilation, leading to the following error:
+The Allwinner SoCs feature an SPDIF controller across multiple SoC
+generations.
 
-ld: sound/soc/sof/core.o: in function `sof_machine_check':
-sound/soc/sof/core.c:279: undefined reference to `sof_nocodec_setup'
+However, earlier generations were a bit simpler than the subsequent ones,
+and for example would always have RX and TX capabilities, and no reset
+lines.
 
-Fix by using #if !IS_ENABLED()
+In order to express this, let's create two YAML schemas instead of the free
+form text we had before.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+
 ---
- sound/soc/sof/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 39cbd84ff9c8..5ddbfa8f1a28 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -265,11 +265,10 @@ static int sof_machine_check(struct snd_sof_dev *sdev)
- 	if (plat_data->machine)
- 		return 0;
- 
--	if (!IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)) {
--		dev_err(sdev->dev, "error: no matching ASoC machine driver found - aborting probe\n");
--		return -ENODEV;
--	}
+Changes from v1:
+  - Merged the two schemas together and used the draft-7 conditionals
+---
+ Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt          | 42 +-------------------------------
+ 2 files changed, 98 insertions(+), 42 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+new file mode 100644
+index 000000000000..5698e5de5e31
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+@@ -0,0 +1,98 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/allwinner,sun4i-a10-spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Allwinner A10 S/PDIF Controller Device Tree Bindings
++
++maintainers:
++  - Chen-Yu Tsai <wens@csie.org>
++  - Liam Girdwood <lgirdwood@gmail.com>
++  - Mark Brown <broonie@kernel.org>
++  - Maxime Ripard <maxime.ripard@bootlin.com>
++
++properties:
++  "#sound-dai-cells":
++    const: 0
++
++  compatible:
++    oneOf:
++      - const: allwinner,sun4i-a10-spdif
++      - const: allwinner,sun6i-a31-spdif
++      - const: allwinner,sun8i-h3-spdif
++      - items:
++          - const: allwinner,sun8i-a83t-spdif
++          - const: allwinner,sun8i-h3-spdif
++      - items:
++          - const: allwinner,sun50i-a64-spdif
++          - const: allwinner,sun8i-h3-spdif
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    items:
++      - const: apb
++      - const: spdif
++
++  dmas:
++    items:
++      - description: RX DMA Channel
++      - description: TX DMA Channel
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  resets:
++    maxItems: 1
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - allwinner,sun6i-a31-spdif
++              - allwinner,sun8i-h3-spdif
++
++    then:
++      required:
++        - resets
++
++required:
++  - "#sound-dai-cells"
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    spdif: spdif@1c21000 {
++        #sound-dai-cells = <0>;
++        compatible = "allwinner,sun4i-a10-spdif";
++        reg = <0x01c21000 0x40>;
++        interrupts = <13>;
++        clocks = <&apb0_gates 1>, <&spdif_clk>;
++        clock-names = "apb", "spdif";
++        dmas = <&dma 0 2>, <&dma 0 2>;
++        dma-names = "rx", "tx";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+deleted file mode 100644
+index 0c64a209c2e9..000000000000
+--- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
++++ /dev/null
+@@ -1,42 +0,0 @@
+-Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
 -
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)
-+	dev_err(sdev->dev, "error: no matching ASoC machine driver found - aborting probe\n");
-+	return -ENODEV;
-+#else
- 	/* fallback to nocodec mode */
- 	dev_warn(sdev->dev, "No ASoC machine driver found - using nocodec\n");
- 	machine = devm_kzalloc(sdev->dev, sizeof(*machine), GFP_KERNEL);
-@@ -284,6 +283,7 @@ static int sof_machine_check(struct snd_sof_dev *sdev)
- 	plat_data->machine = machine;
- 
- 	return 0;
-+#endif
- }
- 
- static int sof_probe_continue(struct snd_sof_dev *sdev)
+-The Allwinner S/PDIF audio block is a transceiver that allows the
+-processor to receive and transmit digital audio via an coaxial cable or
+-a fibre cable.
+-For now only playback is supported.
+-
+-Required properties:
+-
+-  - compatible		: should be one of the following:
+-    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
+-    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
+-    - "allwinner,sun8i-h3-spdif": for the Allwinner H3 SoC
+-
+-  - reg			: Offset and length of the register set for the device.
+-
+-  - interrupts		: Contains the spdif interrupt.
+-
+-  - dmas		: Generic dma devicetree binding as described in
+-			  Documentation/devicetree/bindings/dma/dma.txt.
+-
+-  - dma-names		: Two dmas have to be defined, "tx" and "rx".
+-
+-  - clocks		: Contains an entry for each entry in clock-names.
+-
+-  - clock-names		: Includes the following entries:
+-	"apb"		  clock for the spdif bus.
+-	"spdif"		  clock for spdif controller.
+-
+-  - resets		: reset specifier for the ahb reset (A31 and newer only)
+-
+-Example:
+-
+-spdif: spdif@1c21000 {
+-	compatible = "allwinner,sun4i-a10-spdif";
+-	reg = <0x01c21000 0x40>;
+-	interrupts = <13>;
+-	clocks = <&apb0_gates 1>, <&spdif_clk>;
+-	clock-names = "apb", "spdif";
+-	dmas = <&dma 0 2>, <&dma 0 2>;
+-	dma-names = "rx", "tx";
+-};
+
+base-commit: 00c3bc00f0cadbb48f2414370733892676511e79
 -- 
-2.17.1
+git-series 0.9.1
