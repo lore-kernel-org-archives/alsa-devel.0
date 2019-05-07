@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Fix an uninitialized variable
-	compile warning" to the asoc tree
+Subject: Applied "ASoC: rt5677: use more of the volume range
+	from DACs" to the asoc tree
 Date: Tue,  7 May 2019 03:30:30 +0100 (BST)
-Message-ID: <20190507023030.D5013440010@finisterre.sirena.org.uk>
-References: <20190506150224.1394-4-tiwai@suse.de>
+Message-ID: <20190507023030.4CC2644000C@finisterre.sirena.org.uk>
+References: <20190506203006.161158-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8353707999669851046=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C55AF8975C
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:45 +0200 (CEST)
-In-Reply-To: <20190506150224.1394-4-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F10DF89760
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:46 +0200 (CEST)
+In-Reply-To: <20190506203006.161158-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Dylan Reid <dgreid@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Ross Zwisler <zwisler@google.com>, Liam Girdwood <lgirdwood@gmail.com>, Hsinyu Chao <hychao@chromium.org>, Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
 List-Id: alsa-devel@alsa-project.org
-
---===============8353707999669851046==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: rockchip: Fix an uninitialized variable compile warning
+   ASoC: rt5677: use more of the volume range from DACs
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -57,47 +55,46 @@ to this mail.
 Thanks,
 Mark
 
->From f153bf49ddf6169544b24ef5ea26fa3eb4996b95 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 6 May 2019 17:02:24 +0200
-Subject: [PATCH] ASoC: rockchip: Fix an uninitialized variable compile warning
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 753c36a4d8a85beeb97640d1f91f2ead6aaee85e Mon Sep 17 00:00:00 2001
+From: Dylan Reid <dgreid@chromium.org>
+Date: Mon, 6 May 2019 13:30:06 -0700
+Subject: [PATCH] ASoC: rt5677: use more of the volume range from DACs
 
-Paper over a trivial case leading to an uninitialized variable compile
-warning:
-  sound/soc/rockchip/rockchip_pdm.c:179:3: warning: ‘clk_out’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+The DACs volume can go over 0, both according to the data sheet and
+real world testing.  The control can go up to +30dB.
 
-Fixes: 624e8e00acaf ("ASoC: rockchip: pdm: fixup pdm fractional div")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This was tested by playing audio at full volume on a samus chromebook.
+
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+Reviewed-by: Hsinyu Chao <hychao@chromium.org>
+Signed-off-by: Ross Zwisler <zwisler@google.com>
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_pdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5677.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index 6c0f242db5ef..b9c1d8ad77c1 100644
---- a/sound/soc/rockchip/rockchip_pdm.c
-+++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -158,7 +158,7 @@ static int rockchip_pdm_hw_params(struct snd_pcm_substream *substream,
- 	struct rk_pdm_dev *pdm = to_info(dai);
- 	unsigned int val = 0;
- 	unsigned int clk_rate, clk_div, samplerate;
--	unsigned int clk_src, clk_out;
-+	unsigned int clk_src, clk_out = 0;
- 	unsigned long m, n;
- 	bool change;
- 	int ret;
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 6fc70e441458..907c957b614d 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -832,13 +832,13 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
+ 
+ 	/* DAC Digital Volume */
+ 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5677_DAC1_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5677_DAC2_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_TLV("DAC3 Playback Volume", RT5677_DAC3_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_TLV("DAC4 Playback Volume", RT5677_DAC4_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 
+ 	/* IN1/IN2 Control */
+ 	SOC_SINGLE_TLV("IN1 Boost", RT5677_IN1, RT5677_BST_SFT1, 8, 0, bst_tlv),
 -- 
 2.20.1
-
-
---===============8353707999669851046==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8353707999669851046==--
