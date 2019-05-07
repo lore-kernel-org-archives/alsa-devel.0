@@ -1,52 +1,46 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ALSA: hda/intel: add CometLake PCI IDs
-Date: Tue,  7 May 2019 15:25:00 -0500
-Message-ID: <20190507202500.14333-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v1 1/2] ASoC: SOF: Add Comet Lake PCI ID
+Date: Tue, 7 May 2019 15:26:45 -0500
+Message-ID: <5c42b741-5e5c-ce00-8321-59df1df115f1@linux.intel.com>
+References: <20190506225321.74100-1-evgreen@chromium.org>
+ <20190506225321.74100-2-evgreen@chromium.org>
+ <74e8cfcd-b99f-7f66-48ce-44d60eb2bbca@linux.intel.com>
+ <64FD1F8348A3A14CA3CB4D4C9EB1D15F30A7C756@BGSMSX107.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2046F807B5
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 22:25:11 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <64FD1F8348A3A14CA3CB4D4C9EB1D15F30A7C756@BGSMSX107.gar.corp.intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>, Evan Green <evgreen@chromium.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Rajat Jain <rajatja@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ben Zhang <benzh@chromium.org>, "M, Naveen" <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add PCI IDs for LP and H skews.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/pci/hda/hda_intel.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 789308f54785..0741eae23f10 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2378,6 +2378,12 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Cannonlake */
- 	{ PCI_DEVICE(0x8086, 0x9dc8),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	/* CometLake-LP */
-+	{ PCI_DEVICE(0x8086, 0x02C8),
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	/* CometLake-H */
-+	{ PCI_DEVICE(0x8086, 0x06C8),
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Icelake */
- 	{ PCI_DEVICE(0x8086, 0x34c8),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--- 
-2.17.1
+> On 5/6/19 5:53 PM, Evan Green wrote:
+>>> Add support for Intel Comet Lake platforms by adding a new Kconfig for
+>>> CometLake and the appropriate PCI ID.
+> 
+>> This is odd. I checked internally a few weeks back and the CML PCI ID was 9dc8, same as WHL and CNL, so we did not add a PCI ID on purpose. To the best of my knowledge SOF probes fine on CML and the known issues can be found on the SOF github [1].
+> 
+> The PCI ID change is seen on later production Si versions. The PCI ID is 02c8.
+
+As I suspected, we are talking about different skews and generations of 
+the chipset and a board-level change, not silicon change.
+
+The CNL PCH-LP PCI ID is 0x9DC8, the CNL PCH-H PCI ID is 0xA348 (used 
+for CoffeeLake). Both are supported by SOF.
+
+What we are missing are the PCI IDs for CML PCH-LP (0x02C8) and CML 
+PCH-H (0x06C8).
+
+Can we respin this patchset to add support for those last two instead of 
+just the -LP case?
+
+I'll send a patch to add those IDs for the HDaudio legacy driver for 
+consistency.
+
+Thanks!
+-Pierre
