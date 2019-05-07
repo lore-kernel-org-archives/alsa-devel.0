@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sound/soc/sof/: fix kconfig dependency warning" to the asoc tree
-Date: Tue,  7 May 2019 03:28:52 +0100 (BST)
-Message-ID: <20190507022852.EFDB8440034@finisterre.sirena.org.uk>
-References: <418abbd5-f01c-19ef-c9f2-7de5662f10a2@infradead.org>
+Subject: Applied "ASoC: stm32: spdifrx: manage identification registers" to the asoc tree
+Date: Tue,  7 May 2019 03:28:54 +0100 (BST)
+Message-ID: <20190507022901.9D39444000C@finisterre.sirena.org.uk>
+References: <1557146646-18150-4-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <418abbd5-f01c-19ef-c9f2-7de5662f10a2@infradead.org>
+In-Reply-To: <1557146646-18150-4-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>moderated for non-subscribers <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alexandre.torgue@st.com, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, broonie@kernel.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.comMark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, olivier.moysan@st.com, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sound/soc/sof/: fix kconfig dependency warning
+   ASoC: stm32: spdifrx: manage identification registers
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,41 +36,111 @@ to this mail.
 Thanks,
 Mark
 
->From 4c88519133bdd802fb0df4707b5a8c066af7154d Mon Sep 17 00:00:00 2001
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Mon, 6 May 2019 12:01:40 -0700
-Subject: [PATCH] ASoC: sound/soc/sof/: fix kconfig dependency warning
+>From 1a5c0b28fc56044737f988960f3bc5fdcdba0827 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 6 May 2019 14:44:06 +0200
+Subject: [PATCH] ASoC: stm32: spdifrx: manage identification registers
 
-Fix kconfig warning for unmet dependency for IOSF_MBI when
-PCI is not set/enabled.  Fixes this warning:
+Add support of identification registers in STM32 SPDIFRX.
 
-WARNING: unmet direct dependencies detected for IOSF_MBI
-  Depends on [n]: PCI [=n]
-  Selected by [y]:
-  - SND_SOC_SOF_ACPI [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_SOF_TOPLEVEL [=y] && (ACPI [=y] || COMPILE_TEST [=n]) && X86 [=y]
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_spdifrx.c | 37 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index a1a9ffe605dc..b204c65698f9 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -28,7 +28,7 @@ config SND_SOC_SOF_ACPI
- 	select SND_SOC_ACPI if ACPI
- 	select SND_SOC_SOF_OPTIONS
- 	select SND_SOC_SOF_INTEL_ACPI if SND_SOC_SOF_INTEL_TOPLEVEL
--	select IOSF_MBI if X86
-+	select IOSF_MBI if X86 && PCI
- 	help
- 	  This adds support for ACPI enumeration. This option is required
- 	  to enable Intel Haswell/Broadwell/Baytrail/Cherrytrail devices
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index b4c3d983e195..62a887ee4a03 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -16,6 +16,7 @@
+  * details.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+ #include <linux/delay.h>
+@@ -36,6 +37,9 @@
+ #define STM32_SPDIFRX_DR	0x10
+ #define STM32_SPDIFRX_CSR	0x14
+ #define STM32_SPDIFRX_DIR	0x18
++#define STM32_SPDIFRX_VERR	0x3F4
++#define STM32_SPDIFRX_IDR	0x3F8
++#define STM32_SPDIFRX_SIDR	0x3FC
+ 
+ /* Bit definition for SPDIF_CR register */
+ #define SPDIFRX_CR_SPDIFEN_SHIFT	0
+@@ -169,6 +173,18 @@
+ #define SPDIFRX_SPDIFEN_SYNC	0x1
+ #define SPDIFRX_SPDIFEN_ENABLE	0x3
+ 
++/* Bit definition for SPDIFRX_VERR register */
++#define SPDIFRX_VERR_MIN_MASK	GENMASK(3, 0)
++#define SPDIFRX_VERR_MAJ_MASK	GENMASK(7, 4)
++
++/* Bit definition for SPDIFRX_IDR register */
++#define SPDIFRX_IDR_ID_MASK	GENMASK(31, 0)
++
++/* Bit definition for SPDIFRX_SIDR register */
++#define SPDIFRX_SIDR_SID_MASK	GENMASK(31, 0)
++
++#define SPDIFRX_IPIDR_NUMBER	0x00130041
++
+ #define SPDIFRX_IN1		0x1
+ #define SPDIFRX_IN2		0x2
+ #define SPDIFRX_IN3		0x3
+@@ -607,6 +623,9 @@ static bool stm32_spdifrx_readable_reg(struct device *dev, unsigned int reg)
+ 	case STM32_SPDIFRX_DR:
+ 	case STM32_SPDIFRX_CSR:
+ 	case STM32_SPDIFRX_DIR:
++	case STM32_SPDIFRX_VERR:
++	case STM32_SPDIFRX_IDR:
++	case STM32_SPDIFRX_SIDR:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -642,10 +661,11 @@ static const struct regmap_config stm32_h7_spdifrx_regmap_conf = {
+ 	.reg_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_bits = 32,
+-	.max_register = STM32_SPDIFRX_DIR,
++	.max_register = STM32_SPDIFRX_SIDR,
+ 	.readable_reg = stm32_spdifrx_readable_reg,
+ 	.volatile_reg = stm32_spdifrx_volatile_reg,
+ 	.writeable_reg = stm32_spdifrx_writeable_reg,
++	.num_reg_defaults_raw = STM32_SPDIFRX_SIDR / sizeof(u32) + 1,
+ 	.fast_io = true,
+ 	.cache_type = REGCACHE_FLAT,
+ };
+@@ -911,6 +931,7 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 	struct stm32_spdifrx_data *spdifrx;
+ 	struct reset_control *rst;
+ 	const struct snd_dmaengine_pcm_config *pcm_config = NULL;
++	u32 ver, idr;
+ 	int ret;
+ 
+ 	spdifrx = devm_kzalloc(&pdev->dev, sizeof(*spdifrx), GFP_KERNEL);
+@@ -967,7 +988,19 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 		goto error;
+ 	}
+ 
+-	return 0;
++	ret = regmap_read(spdifrx->regmap, STM32_SPDIFRX_IDR, &idr);
++	if (ret)
++		goto error;
++
++	if (idr == SPDIFRX_IPIDR_NUMBER) {
++		ret = regmap_read(spdifrx->regmap, STM32_SPDIFRX_VERR, &ver);
++
++		dev_dbg(&pdev->dev, "SPDIFRX version: %lu.%lu registered\n",
++			FIELD_GET(SPDIFRX_VERR_MAJ_MASK, ver),
++			FIELD_GET(SPDIFRX_VERR_MIN_MASK, ver));
++	}
++
++	return ret;
+ 
+ error:
+ 	if (!IS_ERR(spdifrx->ctrl_chan))
 -- 
 2.20.1
