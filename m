@@ -1,124 +1,79 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
-Date: Tue, 7 May 2019 08:54:28 -0500
-Message-ID: <fde9c4cd-518b-cb67-5b05-1608c9d029e4@linux.intel.com>
-References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
- <20190504065444.GC9770@kroah.com>
- <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
- <20190506151953.GA13178@kroah.com> <20190506162208.GI3845@vkoul-mobl.Dlink>
- <be72bbb1-b51f-8201-fdff-958836ed94d1@linux.intel.com>
- <20190507051959.GC16052@vkoul-mobl>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [RESEND PATCH v3] ASoC: fsl_sai: Move clock operation to PM runtime
+Date: Tue, 7 May 2019 14:06:52 +0000
+Message-ID: <20190507140632.15996-1-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190507051959.GC16052@vkoul-mobl>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: "broonie@kernel.org" <broonie@kernel.org>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 5/7/19 12:19 AM, Vinod Koul wrote:
-> On 06-05-19, 11:46, Pierre-Louis Bossart wrote:
->> On 5/6/19 11:22 AM, Vinod Koul wrote:
->>> On 06-05-19, 17:19, Greg KH wrote:
->>>> On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
->>>>>>> +
->>>>>>> +int sdw_sysfs_slave_init(struct sdw_slave *slave)
->>>>>>> +{
->>>>>>> +	struct sdw_slave_sysfs *sysfs;
->>>>>>> +	unsigned int src_dpns, sink_dpns, i, j;
->>>>>>> +	int err;
->>>>>>> +
->>>>>>> +	if (slave->sysfs) {
->>>>>>> +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
->>>>>>> +		err = -EIO;
->>>>>>> +		goto err_ret;
->>>>>>> +	}
->>>>>>> +
->>>>>>> +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
->>>>>>
->>>>>> Same question as patch 1, why a new device?
->>>>>
->>>>> yes it's the same open. In this case, the slave devices are defined at a
->>>>> different level so it's also confusing to create a device to represent the
->>>>> slave properties. The code works but I am not sure the initial directions
->>>>> are correct.
->>>>
->>>> You can just make a subdir for your attributes by using the attribute
->>>> group name, if a subdirectory is needed just to keep things a bit more
->>>> organized.
->>>
->>> The key here is 'a subdir' which is not the case here. We did discuss
->>> this in the initial patches for SoundWire which had sysfs :)
->>>
->>> The way MIPI disco spec organized properties, we have dp0 and dpN
->>> properties each of them requires to have a subdir of their own and that
->>> was the reason why I coded it to be creating a device.
->>
->> Vinod, the question was not for dp0 and dpN, it's fine to have
->> subdirectories there, but rather why we need separate devices for the master
->> and slave properties.
-> 
-> Slave does not have a separate device. IIRC the properties for Slave are
-> in /sys/bus/soundwire/device/<slave>/...
-
-I am not sure this is correct
-
-ACPI defines the slaves devices under
-/sys/bus/acpi/PRP0001, e.g.
-
-/sys/bus/acpi/devices/PRP00001:00/device:17# ls
-adr                                 mipi-sdw-dp-5-sink-subproperties
-intel-endpoint-descriptor-0         mipi-sdw-dp-6-source-subproperties
-intel-endpoint-descriptor-1         mipi-sdw-dp-7-sink-subproperties
-mipi-sdw-dp-0-subproperties         mipi-sdw-dp-8-source-subproperties
-mipi-sdw-dp-1-sink-subproperties    path
-mipi-sdw-dp-1-source-subproperties  physical_node
-mipi-sdw-dp-2-sink-subproperties    power
-mipi-sdw-dp-2-source-subproperties  subsystem
-mipi-sdw-dp-3-sink-subproperties    uevent
-mipi-sdw-dp-4-source-subproperties
-
-but the sysfs for slaves is shown as
-/sys/bus/acpi/devices/PRP00001:00/int-sdw.0/sdw:0:25d:700:0:0# ls
-bank_delay_support  master_count             sink_ports
-ch_prep_timeout     mipi_revision            source_ports
-clk_stop_mode1      modalias                 src-dp2
-clk_stop_timeout    p15_behave               src-dp4
-dp0                 paging_support           subsystem
-driver              power                    test_mode_capable
-firmware_node       reset_behave             uevent
-hda_reg             simple_clk_stop_capable  wake_capable
-high_PHY_capable    sink-dp1
-index_reg           sink-dp3
-
-and in sys/bus/soundwire/devices/sdw:0:25d:700:0:0# ls
-bank_delay_support  master_count             sink_ports
-ch_prep_timeout     mipi_revision            source_ports
-clk_stop_mode1      modalias                 src-dp2
-clk_stop_timeout    p15_behave               src-dp4
-dp0                 paging_support           subsystem
-driver              power                    test_mode_capable
-firmware_node       reset_behave             uevent
-hda_reg             simple_clk_stop_capable  wake_capable
-high_PHY_capable    sink-dp1
-index_reg           sink-dp3
-
-So I would think we *do* create a new device for each slave instead of 
-using the one that's already exposed by ACPI.
-
-> 
-> For master yes we can skip the device creation, it was done for
-> consistency sake of having these properties ties into sys/bus/soundwire/
-> 
-> I don't mind if they are shown up in respective device node (PCI/platform
-> etc) /sys/bus/foo/device/<>
-> 
-> But for creating subdirectories you would need the new dpX devices.
-
-yes, that's agreed.
+RnJvbTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0KDQpUdXJuIG9mZi9v
+biBjbG9ja3Mgd2hlbiBkZXZpY2UgZW50ZXJzIHN1c3BlbmQvcmVzdW1lLiBUaGlzDQpjYW4gaGVs
+cCBzYXZpbmcgcG93ZXIuDQoNCkFzIGEgZnVydGhlciBvcHRpbWl6YXRpb24sIHdlIHR1cm4gb2Zm
+L29uIG1jbGsgb25seSB3aGVuIFNBSQ0KaXMgaW4gbWFzdGVyIG1vZGUgYmVjYXVzZSBvdGhlcndp
+c2UgbWNsayBpcyBleHRlcm5hbGx5IHByb3ZpZGVkLg0KDQpTaWduZWQtb2ZmLWJ5OiBTaGVuZ2pp
+dSBXYW5nIDxzaGVuZ2ppdS53YW5nQG54cC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFs
+dXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+DQpSZXZpZXdlZC1ieTogVmlvcmVsIFN1bWFuIDx2
+aW9yZWwuc3VtYW5AbnhwLmNvbT4NCi0tLQ0KLSBpbml0aWFsbHkgcGFydCBvZiB0aGlzIDMgcGF0
+Y2ggc2VyaWVzIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTA5MTE1MTkvDQot
+IGZpcnN0IDIgcGF0Y2hlcyB3ZXJlIG1lcmdlZA0KDQogc291bmQvc29jL2ZzbC9mc2xfc2FpLmMg
+fCA1NCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLQ0KIDEgZmlsZSBj
+aGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBh
+L3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMNCmluZGV4
+IDg1OTMyNjkxNTZiZC4uZDU4Y2MzYWU5MGQ4IDEwMDY0NA0KLS0tIGEvc291bmQvc29jL2ZzbC9m
+c2xfc2FpLmMNCisrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jDQpAQCAtNTk2LDE1ICs1OTYs
+OCBAQCBzdGF0aWMgaW50IGZzbF9zYWlfc3RhcnR1cChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
+KnN1YnN0cmVhbSwNCiB7DQogCXN0cnVjdCBmc2xfc2FpICpzYWkgPSBzbmRfc29jX2RhaV9nZXRf
+ZHJ2ZGF0YShjcHVfZGFpKTsNCiAJYm9vbCB0eCA9IHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJW
+X1BDTV9TVFJFQU1fUExBWUJBQ0s7DQotCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZzYWktPnBkZXYt
+PmRldjsNCiAJaW50IHJldDsNCiANCi0JcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKHNhaS0+YnVz
+X2Nsayk7DQotCWlmIChyZXQpIHsNCi0JCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIGVuYWJsZSBi
+dXMgY2xvY2s6ICVkXG4iLCByZXQpOw0KLQkJcmV0dXJuIHJldDsNCi0JfQ0KLQ0KIAlyZWdtYXBf
+dXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlfeENSMyh0eCksIEZTTF9TQUlfQ1IzX1RS
+Q0UsDQogCQkJICAgRlNMX1NBSV9DUjNfVFJDRSk7DQogDQpAQCAtNjIxLDggKzYxNCw2IEBAIHN0
+YXRpYyB2b2lkIGZzbF9zYWlfc2h1dGRvd24oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
+dHJlYW0sDQogCWJvb2wgdHggPSBzdWJzdHJlYW0tPnN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFN
+X1BMQVlCQUNLOw0KIA0KIAlyZWdtYXBfdXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlf
+eENSMyh0eCksIEZTTF9TQUlfQ1IzX1RSQ0UsIDApOw0KLQ0KLQljbGtfZGlzYWJsZV91bnByZXBh
+cmUoc2FpLT5idXNfY2xrKTsNCiB9DQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2Rh
+aV9vcHMgZnNsX3NhaV9wY21fZGFpX29wcyA9IHsNCkBAIC05MzUsNiArOTI2LDE0IEBAIHN0YXRp
+YyBpbnQgZnNsX3NhaV9ydW50aW1lX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0KIHsNCiAJ
+c3RydWN0IGZzbF9zYWkgKnNhaSA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KIA0KKwlpZiAoc2Fp
+LT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFKSkNCisJCWNsa19k
+aXNhYmxlX3VucHJlcGFyZShzYWktPm1jbGtfY2xrW3NhaS0+bWNsa19pZFswXV0pOw0KKw0KKwlp
+ZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykpDQor
+CQljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMV1dKTsN
+CisNCisJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHNhaS0+YnVzX2Nsayk7DQorDQogCXJlZ2NhY2hl
+X2NhY2hlX29ubHkoc2FpLT5yZWdtYXAsIHRydWUpOw0KIAlyZWdjYWNoZV9tYXJrX2RpcnR5KHNh
+aS0+cmVnbWFwKTsNCiANCkBAIC05NDQsNiArOTQzLDI1IEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9y
+dW50aW1lX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0KIHN0YXRpYyBpbnQgZnNsX3NhaV9y
+dW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQogew0KIAlzdHJ1Y3QgZnNsX3NhaSAq
+c2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQorCWludCByZXQ7DQorDQorCXJldCA9IGNsa19w
+cmVwYXJlX2VuYWJsZShzYWktPmJ1c19jbGspOw0KKwlpZiAocmV0KSB7DQorCQlkZXZfZXJyKGRl
+diwgImZhaWxlZCB0byBlbmFibGUgYnVzIGNsb2NrOiAlZFxuIiwgcmV0KTsNCisJCXJldHVybiBy
+ZXQ7DQorCX0NCisNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJF
+QU1fUExBWUJBQ0spKSB7DQorCQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoc2FpLT5tY2xrX2Ns
+a1tzYWktPm1jbGtfaWRbMV1dKTsNCisJCWlmIChyZXQpDQorCQkJZ290byBkaXNhYmxlX2J1c19j
+bGs7DQorCX0NCisNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJF
+QU1fQ0FQVFVSRSkpIHsNCisJCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShzYWktPm1jbGtfY2xr
+W3NhaS0+bWNsa19pZFswXV0pOw0KKwkJaWYgKHJldCkNCisJCQlnb3RvIGRpc2FibGVfdHhfY2xr
+Ow0KKwl9DQogDQogCXJlZ2NhY2hlX2NhY2hlX29ubHkoc2FpLT5yZWdtYXAsIGZhbHNlKTsNCiAJ
+cmVnbWFwX3dyaXRlKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsIEZTTF9TQUlfQ1NSX1NSKTsN
+CkBAIC05NTEsNyArOTY5LDIzIEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9ydW50aW1lX3Jlc3VtZShz
+dHJ1Y3QgZGV2aWNlICpkZXYpDQogCXVzbGVlcF9yYW5nZSgxMDAwLCAyMDAwKTsNCiAJcmVnbWFw
+X3dyaXRlKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsIDApOw0KIAlyZWdtYXBfd3JpdGUoc2Fp
+LT5yZWdtYXAsIEZTTF9TQUlfUkNTUiwgMCk7DQotCXJldHVybiByZWdjYWNoZV9zeW5jKHNhaS0+
+cmVnbWFwKTsNCisNCisJcmV0ID0gcmVnY2FjaGVfc3luYyhzYWktPnJlZ21hcCk7DQorCWlmIChy
+ZXQpDQorCQlnb3RvIGRpc2FibGVfcnhfY2xrOw0KKw0KKwlyZXR1cm4gMDsNCisNCitkaXNhYmxl
+X3J4X2NsazoNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJFQU1f
+Q0FQVFVSRSkpDQorCQljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1j
+bGtfaWRbMF1dKTsNCitkaXNhYmxlX3R4X2NsazoNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYg
+QklUKFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spKQ0KKwkJY2xrX2Rpc2FibGVfdW5wcmVwYXJl
+KHNhaS0+bWNsa19jbGtbc2FpLT5tY2xrX2lkWzFdXSk7DQorZGlzYWJsZV9idXNfY2xrOg0KKwlj
+bGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5idXNfY2xrKTsNCisNCisJcmV0dXJuIHJldDsNCiB9
+DQogI2VuZGlmIC8qIENPTkZJR19QTSAqLw0KIA0KLS0gDQoyLjE3LjENCg0K
