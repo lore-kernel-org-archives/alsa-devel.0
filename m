@@ -1,79 +1,79 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [RESEND PATCH v3] ASoC: fsl_sai: Move clock operation to PM runtime
-Date: Tue, 7 May 2019 14:06:52 +0000
-Message-ID: <20190507140632.15996-1-daniel.baluta@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/8] soundwire: intel: filter SoundWire controller device
+ search
+Date: Tue, 7 May 2019 09:43:15 -0500
+Message-ID: <47fd3ca6-6910-f101-9b63-f653cd1443f9@linux.intel.com>
+References: <20190504002926.28815-1-pierre-louis.bossart@linux.intel.com>
+ <20190504002926.28815-2-pierre-louis.bossart@linux.intel.com>
+ <20190507122651.GO16052@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190507122651.GO16052@vkoul-mobl>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0KDQpUdXJuIG9mZi9v
-biBjbG9ja3Mgd2hlbiBkZXZpY2UgZW50ZXJzIHN1c3BlbmQvcmVzdW1lLiBUaGlzDQpjYW4gaGVs
-cCBzYXZpbmcgcG93ZXIuDQoNCkFzIGEgZnVydGhlciBvcHRpbWl6YXRpb24sIHdlIHR1cm4gb2Zm
-L29uIG1jbGsgb25seSB3aGVuIFNBSQ0KaXMgaW4gbWFzdGVyIG1vZGUgYmVjYXVzZSBvdGhlcndp
-c2UgbWNsayBpcyBleHRlcm5hbGx5IHByb3ZpZGVkLg0KDQpTaWduZWQtb2ZmLWJ5OiBTaGVuZ2pp
-dSBXYW5nIDxzaGVuZ2ppdS53YW5nQG54cC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFs
-dXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+DQpSZXZpZXdlZC1ieTogVmlvcmVsIFN1bWFuIDx2
-aW9yZWwuc3VtYW5AbnhwLmNvbT4NCi0tLQ0KLSBpbml0aWFsbHkgcGFydCBvZiB0aGlzIDMgcGF0
-Y2ggc2VyaWVzIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTA5MTE1MTkvDQot
-IGZpcnN0IDIgcGF0Y2hlcyB3ZXJlIG1lcmdlZA0KDQogc291bmQvc29jL2ZzbC9mc2xfc2FpLmMg
-fCA1NCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLQ0KIDEgZmlsZSBj
-aGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMNCmluZGV4
-IDg1OTMyNjkxNTZiZC4uZDU4Y2MzYWU5MGQ4IDEwMDY0NA0KLS0tIGEvc291bmQvc29jL2ZzbC9m
-c2xfc2FpLmMNCisrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jDQpAQCAtNTk2LDE1ICs1OTYs
-OCBAQCBzdGF0aWMgaW50IGZzbF9zYWlfc3RhcnR1cChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
-KnN1YnN0cmVhbSwNCiB7DQogCXN0cnVjdCBmc2xfc2FpICpzYWkgPSBzbmRfc29jX2RhaV9nZXRf
-ZHJ2ZGF0YShjcHVfZGFpKTsNCiAJYm9vbCB0eCA9IHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJW
-X1BDTV9TVFJFQU1fUExBWUJBQ0s7DQotCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZzYWktPnBkZXYt
-PmRldjsNCiAJaW50IHJldDsNCiANCi0JcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKHNhaS0+YnVz
-X2Nsayk7DQotCWlmIChyZXQpIHsNCi0JCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIGVuYWJsZSBi
-dXMgY2xvY2s6ICVkXG4iLCByZXQpOw0KLQkJcmV0dXJuIHJldDsNCi0JfQ0KLQ0KIAlyZWdtYXBf
-dXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlfeENSMyh0eCksIEZTTF9TQUlfQ1IzX1RS
-Q0UsDQogCQkJICAgRlNMX1NBSV9DUjNfVFJDRSk7DQogDQpAQCAtNjIxLDggKzYxNCw2IEBAIHN0
-YXRpYyB2b2lkIGZzbF9zYWlfc2h1dGRvd24oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sDQogCWJvb2wgdHggPSBzdWJzdHJlYW0tPnN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFN
-X1BMQVlCQUNLOw0KIA0KIAlyZWdtYXBfdXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZTTF9TQUlf
-eENSMyh0eCksIEZTTF9TQUlfQ1IzX1RSQ0UsIDApOw0KLQ0KLQljbGtfZGlzYWJsZV91bnByZXBh
-cmUoc2FpLT5idXNfY2xrKTsNCiB9DQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2Rh
-aV9vcHMgZnNsX3NhaV9wY21fZGFpX29wcyA9IHsNCkBAIC05MzUsNiArOTI2LDE0IEBAIHN0YXRp
-YyBpbnQgZnNsX3NhaV9ydW50aW1lX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0KIHsNCiAJ
-c3RydWN0IGZzbF9zYWkgKnNhaSA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KIA0KKwlpZiAoc2Fp
-LT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFKSkNCisJCWNsa19k
-aXNhYmxlX3VucHJlcGFyZShzYWktPm1jbGtfY2xrW3NhaS0+bWNsa19pZFswXV0pOw0KKw0KKwlp
-ZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykpDQor
-CQljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMV1dKTsN
-CisNCisJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHNhaS0+YnVzX2Nsayk7DQorDQogCXJlZ2NhY2hl
-X2NhY2hlX29ubHkoc2FpLT5yZWdtYXAsIHRydWUpOw0KIAlyZWdjYWNoZV9tYXJrX2RpcnR5KHNh
-aS0+cmVnbWFwKTsNCiANCkBAIC05NDQsNiArOTQzLDI1IEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9y
-dW50aW1lX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0KIHN0YXRpYyBpbnQgZnNsX3NhaV9y
-dW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQogew0KIAlzdHJ1Y3QgZnNsX3NhaSAq
-c2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQorCWludCByZXQ7DQorDQorCXJldCA9IGNsa19w
-cmVwYXJlX2VuYWJsZShzYWktPmJ1c19jbGspOw0KKwlpZiAocmV0KSB7DQorCQlkZXZfZXJyKGRl
-diwgImZhaWxlZCB0byBlbmFibGUgYnVzIGNsb2NrOiAlZFxuIiwgcmV0KTsNCisJCXJldHVybiBy
-ZXQ7DQorCX0NCisNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJF
-QU1fUExBWUJBQ0spKSB7DQorCQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoc2FpLT5tY2xrX2Ns
-a1tzYWktPm1jbGtfaWRbMV1dKTsNCisJCWlmIChyZXQpDQorCQkJZ290byBkaXNhYmxlX2J1c19j
-bGs7DQorCX0NCisNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJF
-QU1fQ0FQVFVSRSkpIHsNCisJCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShzYWktPm1jbGtfY2xr
-W3NhaS0+bWNsa19pZFswXV0pOw0KKwkJaWYgKHJldCkNCisJCQlnb3RvIGRpc2FibGVfdHhfY2xr
-Ow0KKwl9DQogDQogCXJlZ2NhY2hlX2NhY2hlX29ubHkoc2FpLT5yZWdtYXAsIGZhbHNlKTsNCiAJ
-cmVnbWFwX3dyaXRlKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsIEZTTF9TQUlfQ1NSX1NSKTsN
-CkBAIC05NTEsNyArOTY5LDIzIEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9ydW50aW1lX3Jlc3VtZShz
-dHJ1Y3QgZGV2aWNlICpkZXYpDQogCXVzbGVlcF9yYW5nZSgxMDAwLCAyMDAwKTsNCiAJcmVnbWFw
-X3dyaXRlKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsIDApOw0KIAlyZWdtYXBfd3JpdGUoc2Fp
-LT5yZWdtYXAsIEZTTF9TQUlfUkNTUiwgMCk7DQotCXJldHVybiByZWdjYWNoZV9zeW5jKHNhaS0+
-cmVnbWFwKTsNCisNCisJcmV0ID0gcmVnY2FjaGVfc3luYyhzYWktPnJlZ21hcCk7DQorCWlmIChy
-ZXQpDQorCQlnb3RvIGRpc2FibGVfcnhfY2xrOw0KKw0KKwlyZXR1cm4gMDsNCisNCitkaXNhYmxl
-X3J4X2NsazoNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJFQU1f
-Q0FQVFVSRSkpDQorCQljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1j
-bGtfaWRbMF1dKTsNCitkaXNhYmxlX3R4X2NsazoNCisJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYg
-QklUKFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spKQ0KKwkJY2xrX2Rpc2FibGVfdW5wcmVwYXJl
-KHNhaS0+bWNsa19jbGtbc2FpLT5tY2xrX2lkWzFdXSk7DQorZGlzYWJsZV9idXNfY2xrOg0KKwlj
-bGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5idXNfY2xrKTsNCisNCisJcmV0dXJuIHJldDsNCiB9
-DQogI2VuZGlmIC8qIENPTkZJR19QTSAqLw0KIA0KLS0gDQoyLjE3LjENCg0K
+
+
+On 5/7/19 7:26 AM, Vinod Koul wrote:
+> On 03-05-19, 19:29, Pierre-Louis Bossart wrote:
+>> The convention is that the SoundWire controller device is a child of
+>> the HDAudio controller. However there can be more than one child
+>> exposed in the DSDT table, and the current namespace walk returns the
+>> last device.
+>>
+>> Add a filter and terminate early when a valid _ADR is provided,
+>> otherwise keep iterating to find the next child.
+> 
+> So what are the other devices in DSDT here..
+
+this is what I see:
+
+Scope (HDAS)
+         {
+             Device (IDA)
+             {
+                 Name (_ADR, 0x00020001)  // _ADR: Address
+             }
+         }
+
+I thought this was nonsense but your question triggered me to look into 
+the Intel SST ACPI specs (not public I am afraid but shared with the OS 
+who shall not be named).
+Using the same source of information as below, I *believe* this is 
+HDaudio related, bits 31..16 mean HDaudio with codec SDI 2, and NodeId 1 
+for the function group. This would make sense as I believe there are two 
+codecs on the board that can be pin-strapped to boot either in HDaudio 
+or SoundWire mode- but this is a conjecture only.
+
+At any rate, we need a hardware rework and mutual exclusion between 
+HDaudio and SoundWire, so we have to ignore this one when SoundWire is 
+enabled.
+
+>> +
+>> +	/*
+>> +	 * On some Intel platforms, multiple children of the HDAS
+>> +	 * device can be found, but only one of them is the SoundWire
+>> +	 * controller. The SNDW device is always exposed with
+>> +	 * Name(_ADR, 0x40000000) so filter accordingly
+>> +	 */
+>> +	if (adr != 0x40000000)
+> 
+> I do not recall if 4 corresponds to the links you have or soundwire
+> device type, is this number documented somewhere is HDA specs?
+
+I thought it was a magic number, but I did check and for once it's 
+documented and the values match the spec :-)
+I see in the ACPI docs bits 31..28 set to 4 indicate a SoundWire Link 
+Type and bits 3..0 indicate the SoundWire controller instance, the rest 
+is reserved to zero.
+
+> 
+> Also it might good to create a define for this
+
+I will respin this one to add the documentation above, and only filter 
+on the 4 ms-bits. Thanks for forcing me to RTFM :-)
