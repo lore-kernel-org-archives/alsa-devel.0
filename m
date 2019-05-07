@@ -1,132 +1,43 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] ASoC: Intel: Skylake: Add Cometlake PCI IDs
-Date: Tue, 7 May 2019 17:31:06 -0500
-Message-ID: <866afac2-e457-375b-d745-88952b11d75e@linux.intel.com>
-References: <20190507215359.113378-1-evgreen@chromium.org>
- <20190507215359.113378-3-evgreen@chromium.org>
+Subject: Re: [alsa-devel] [RFC PATCH 1/7] soundwire: Add sysfs support for
+ master(s)
+Date: Tue, 7 May 2019 17:49:48 -0500
+Message-ID: <10fef156-7b01-7a08-77b4-ae3153eaaabc@linux.intel.com>
+References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+ <20190504065242.GA9770@kroah.com>
+ <b0059709-027e-26c4-25a1-bd55df7c507f@linux.intel.com>
+ <20190507052732.GD16052@vkoul-mobl> <20190507055432.GB17986@kroah.com>
+ <20190507110331.GL16052@vkoul-mobl> <20190507111956.GB1092@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190507215359.113378-3-evgreen@chromium.org>
+In-Reply-To: <20190507111956.GB1092@kroah.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Evan Green <evgreen@chromium.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Naveen M <naveen.m@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Guenter Roeck <groeck@chromium.org>, Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jenny TC <jenny.tc@intel.com>, Jie Yang <yang.jie@linux.intel.com>
+To: Greg KH <gregkh@linuxfoundation.org>, Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/7/19 4:53 PM, Evan Green wrote:
-> Add PCI IDs for Intel CometLake platforms, which from a software
-> point of view are extremely similar to Cannonlake platforms.
 
-Humm, I have mixed feelings here.
+>> The model here is that Master device is PCI or Platform device and then
+>> creates a bus instance which has soundwire slave devices.
+>>
+>> So for any attribute on Master device (which has properties as well and
+>> representation in sysfs), device specfic struct (PCI/platfrom doesn't
+>> help). For slave that is not a problem as sdw_slave structure takes care
+>> if that.
+>>
+>> So, the solution was to create the psedo sdw_master device for the
+>> representation and have device-specific structure.
+> 
+> Ok, much like the "USB host controller" type device.  That's fine, make
+> such a device, add it to your bus, and set the type correctly.  And keep
+> a pointer to that structure in your device-specific structure if you
+> really need to get to anything in it.
 
-Yes the hardware is nearly identical, with the exception of one detail 
-that's not visible to the kernel, but there is no support for DMICs with 
-the Skylake driver w/ HDaudio, and Chrome platforms are only going with 
-SOF, so is it wise to add these two CometLake platforms to the default 
-SND_SOC_INTEL_SKYLAKE selector, which is used by a number of distributions?
-
-I don't mind if we add those PCI IDs and people use this driver if they 
-wish to, but it may be time for an explicit opt-in? The 
-SND_SOC_INTEL_SKYLAKE definition should even be pruned to mean SKL, APL, 
-KBL and GLK, and we can add DMI-based quirks for e.g. the Up2 board and 
-GLK Chromebooks which work with SOF.
-
-> 
-> Signed-off-by: Evan Green <evgreen@chromium.org>
-> ---
-> 
-> Changes in v2:
-> - Add 0x06c8 for CML-H (Pierre-Louis)
-> 
->   sound/soc/intel/Kconfig                | 18 ++++++++++++++++++
->   sound/soc/intel/skylake/skl-messages.c | 16 ++++++++++++++++
->   sound/soc/intel/skylake/skl.c          | 10 ++++++++++
->   3 files changed, 44 insertions(+)
-> 
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index fc1396adde71..1ebac54b7081 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -110,6 +110,8 @@ config SND_SOC_INTEL_SKYLAKE
->   	select SND_SOC_INTEL_GLK
->   	select SND_SOC_INTEL_CNL
->   	select SND_SOC_INTEL_CFL
-> +	select SND_SOC_INTEL_CML_H
-> +	select SND_SOC_INTEL_CML_LP
->   	help
->             This is a backwards-compatible option to select all devices
->   	  supported by the Intel SST/Skylake driver. This option is no
-> @@ -165,6 +167,22 @@ config SND_SOC_INTEL_CFL
->   	  If you have a Intel CoffeeLake platform with the DSP
->   	  enabled in the BIOS then enable this option by saying Y or m.
->   
-> +config SND_SOC_INTEL_CML_H
-> +	tristate "CometLake-H Platforms"
-> +	depends on PCI && ACPI
-> +	select SND_SOC_INTEL_SKYLAKE_FAMILY
-> +	help
-> +	  If you have a Intel CometLake-H platform with the DSP
-> +	  enabled in the BIOS then enable this option by saying Y or m.
-> +
-> +config SND_SOC_INTEL_CML_LP
-> +	tristate "CometLake-LP Platforms"
-> +	depends on PCI && ACPI
-> +	select SND_SOC_INTEL_SKYLAKE_FAMILY
-> +	help
-> +	  If you have a Intel CometLake-LP platform with the DSP
-> +	  enabled in the BIOS then enable this option by saying Y or m.
-> +
->   config SND_SOC_INTEL_SKYLAKE_FAMILY
->   	tristate
->   	select SND_SOC_INTEL_SKYLAKE_COMMON
-> diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-> index 4bf70b4429f0..df01dc952521 100644
-> --- a/sound/soc/intel/skylake/skl-messages.c
-> +++ b/sound/soc/intel/skylake/skl-messages.c
-> @@ -255,6 +255,22 @@ static const struct skl_dsp_ops dsp_ops[] = {
->   		.init_fw = cnl_sst_init_fw,
->   		.cleanup = cnl_sst_dsp_cleanup
->   	},
-> +	{
-> +		.id = 0x02c8,
-> +		.num_cores = 4,
-> +		.loader_ops = bxt_get_loader_ops,
-> +		.init = cnl_sst_dsp_init,
-> +		.init_fw = cnl_sst_init_fw,
-> +		.cleanup = cnl_sst_dsp_cleanup
-> +	},
-> +	{
-> +		.id = 0x06c8,
-> +		.num_cores = 4,
-> +		.loader_ops = bxt_get_loader_ops,
-> +		.init = cnl_sst_dsp_init,
-> +		.init_fw = cnl_sst_init_fw,
-> +		.cleanup = cnl_sst_dsp_cleanup
-> +	},
->   };
->   
->   const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index 4ed5b7e17d44..f864f7b3df3a 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -1166,6 +1166,16 @@ static const struct pci_device_id skl_ids[] = {
->   	/* CFL */
->   	{ PCI_DEVICE(0x8086, 0xa348),
->   		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-> +#endif
-> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_LP)
-> +	/* CML-LP */
-> +	{ PCI_DEVICE(0x8086, 0x02c8),
-> +		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-> +#endif
-> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_H)
-> +	/* CML-H */
-> +	{ PCI_DEVICE(0x8086, 0x06c8),
-> +		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
->   #endif
->   	{ 0, }
->   };
-> 
+humm, you lost me on the last sentence. Did you mean using 
+set_drv/platform_data during the init and retrieving the bus information 
+with get_drv/platform_data as needed later? Or something else I badly 
+need to learn?
