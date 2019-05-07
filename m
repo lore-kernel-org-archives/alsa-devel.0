@@ -1,21 +1,42 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: spdifrx: manage identification registers" to the asoc tree
-Date: Tue,  7 May 2019 03:28:54 +0100 (BST)
-Message-ID: <20190507022901.9D39444000C@finisterre.sirena.org.uk>
-References: <1557146646-18150-4-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1557146646-18150-4-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: alexandre.torgue@st.com, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, broonie@kernel.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.comMark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, olivier.moysan@st.com, perex@perex.cz, tiwai@suse.com
+Subject: Applied "ASoC: SOF: Fix a compile warning with
+	CONFIG_PCI=n" to the asoc tree
+Date: Tue,  7 May 2019 03:28:51 +0100 (BST)
+Message-ID: <20190507022851.9D800440017@finisterre.sirena.org.uk>
+References: <20190506150224.1394-3-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7513827711148578589=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5797FF89671
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:28:57 +0200 (CEST)
+In-Reply-To: <20190506150224.1394-3-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
+
+--===============7513827711148578589==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: stm32: spdifrx: manage identification registers
+   ASoC: SOF: Fix a compile warning with CONFIG_PCI=n
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -36,111 +57,47 @@ to this mail.
 Thanks,
 Mark
 
->From 1a5c0b28fc56044737f988960f3bc5fdcdba0827 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 6 May 2019 14:44:06 +0200
-Subject: [PATCH] ASoC: stm32: spdifrx: manage identification registers
+>From c41d384c39f17ffb5326531da2374a1ab5859403 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 6 May 2019 17:02:23 +0200
+Subject: [PATCH] ASoC: SOF: Fix a compile warning with CONFIG_PCI=n
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Add support of identification registers in STM32 SPDIFRX.
+A trivial fix for the randconfig build error:
+  sound/soc/sof/ops.c:20:6: warning: ‘ret’ is used uninitialized in this function [-Wuninitialized]
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Fixes: d1d95fcb63e3 ("ASoC: SOF: Add DSP HW abstraction operations")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_spdifrx.c | 37 +++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+ sound/soc/sof/ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index b4c3d983e195..62a887ee4a03 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -16,6 +16,7 @@
-  * details.
-  */
+diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
+index 80f907740b82..7a27c3b719e7 100644
+--- a/sound/soc/sof/ops.c
++++ b/sound/soc/sof/ops.c
+@@ -17,7 +17,7 @@ bool snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
+ {
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	unsigned int old, new;
+-	u32 ret;
++	u32 ret = 0;
  
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/delay.h>
-@@ -36,6 +37,9 @@
- #define STM32_SPDIFRX_DR	0x10
- #define STM32_SPDIFRX_CSR	0x14
- #define STM32_SPDIFRX_DIR	0x18
-+#define STM32_SPDIFRX_VERR	0x3F4
-+#define STM32_SPDIFRX_IDR	0x3F8
-+#define STM32_SPDIFRX_SIDR	0x3FC
- 
- /* Bit definition for SPDIF_CR register */
- #define SPDIFRX_CR_SPDIFEN_SHIFT	0
-@@ -169,6 +173,18 @@
- #define SPDIFRX_SPDIFEN_SYNC	0x1
- #define SPDIFRX_SPDIFEN_ENABLE	0x3
- 
-+/* Bit definition for SPDIFRX_VERR register */
-+#define SPDIFRX_VERR_MIN_MASK	GENMASK(3, 0)
-+#define SPDIFRX_VERR_MAJ_MASK	GENMASK(7, 4)
-+
-+/* Bit definition for SPDIFRX_IDR register */
-+#define SPDIFRX_IDR_ID_MASK	GENMASK(31, 0)
-+
-+/* Bit definition for SPDIFRX_SIDR register */
-+#define SPDIFRX_SIDR_SID_MASK	GENMASK(31, 0)
-+
-+#define SPDIFRX_IPIDR_NUMBER	0x00130041
-+
- #define SPDIFRX_IN1		0x1
- #define SPDIFRX_IN2		0x2
- #define SPDIFRX_IN3		0x3
-@@ -607,6 +623,9 @@ static bool stm32_spdifrx_readable_reg(struct device *dev, unsigned int reg)
- 	case STM32_SPDIFRX_DR:
- 	case STM32_SPDIFRX_CSR:
- 	case STM32_SPDIFRX_DIR:
-+	case STM32_SPDIFRX_VERR:
-+	case STM32_SPDIFRX_IDR:
-+	case STM32_SPDIFRX_SIDR:
- 		return true;
- 	default:
- 		return false;
-@@ -642,10 +661,11 @@ static const struct regmap_config stm32_h7_spdifrx_regmap_conf = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
--	.max_register = STM32_SPDIFRX_DIR,
-+	.max_register = STM32_SPDIFRX_SIDR,
- 	.readable_reg = stm32_spdifrx_readable_reg,
- 	.volatile_reg = stm32_spdifrx_volatile_reg,
- 	.writeable_reg = stm32_spdifrx_writeable_reg,
-+	.num_reg_defaults_raw = STM32_SPDIFRX_SIDR / sizeof(u32) + 1,
- 	.fast_io = true,
- 	.cache_type = REGCACHE_FLAT,
- };
-@@ -911,6 +931,7 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
- 	struct stm32_spdifrx_data *spdifrx;
- 	struct reset_control *rst;
- 	const struct snd_dmaengine_pcm_config *pcm_config = NULL;
-+	u32 ver, idr;
- 	int ret;
- 
- 	spdifrx = devm_kzalloc(&pdev->dev, sizeof(*spdifrx), GFP_KERNEL);
-@@ -967,7 +988,19 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
- 		goto error;
- 	}
- 
--	return 0;
-+	ret = regmap_read(spdifrx->regmap, STM32_SPDIFRX_IDR, &idr);
-+	if (ret)
-+		goto error;
-+
-+	if (idr == SPDIFRX_IPIDR_NUMBER) {
-+		ret = regmap_read(spdifrx->regmap, STM32_SPDIFRX_VERR, &ver);
-+
-+		dev_dbg(&pdev->dev, "SPDIFRX version: %lu.%lu registered\n",
-+			FIELD_GET(SPDIFRX_VERR_MAJ_MASK, ver),
-+			FIELD_GET(SPDIFRX_VERR_MIN_MASK, ver));
-+	}
-+
-+	return ret;
- 
- error:
- 	if (!IS_ERR(spdifrx->ctrl_chan))
+ 	pci_read_config_dword(pci, offset, &ret);
+ 	old = ret;
 -- 
 2.20.1
+
+
+--===============7513827711148578589==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7513827711148578589==--
