@@ -1,108 +1,72 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: [PATCH v2 2/2] dt-bindings: sound: sun4i-spdif: Document that the RX
- channel can be missing
-Date: Tue,  7 May 2019 20:07:29 +0200
-Message-ID: <d9afb19c32f8b9b2c40c8d4c0c3df74bff0ccf35.1557252411.git-series.maxime.ripard@bootlin.com>
-References: <dc84c7e9ce272109052f553a5e050bfe1a09e9d6.1557252411.git-series.maxime.ripard@bootlin.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: SOF: Propagate
+	sof_get_ctrl_copy_params() error properly
+Date: Tue,  7 May 2019 21:39:10 +0200
+Message-ID: <20190507193910.23943-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <dc84c7e9ce272109052f553a5e050bfe1a09e9d6.1557252411.git-series.maxime.ripard@bootlin.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 566ADF89671
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 21:39:12 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The H3 and compatibles controllers don't have any reception capabilities,
-even though it was never documented as such in the binding before.
+This fixes a compile warning below by properly handling the error code
+from sof_get_ctrl_copy_params():
+  include/linux/kernel.h:843:43: warning: 'sparams.pl_size' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  sound/soc/sof/ipc.c:639:34: note: 'sparams.pl_size' was declared here
 
-Therefore, on those controllers, we don't have the option to set an RX DMA
-channel.
+The function returns an error before setting sparams.pl_size, so it'd
+assign an uninitialized value at a later point.
 
-This was already done in the DTSI, but the binding itself was never
-updated. Let's add a special case in the schemas.
-
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-
+Fixes: 53e0c72d98ba ("ASoC: SOF: Add support for IPC IO between DSP and Host")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
+ sound/soc/sof/ipc.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Changes from v1:
-  - switch to a draft7 conditional
----
- Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml | 45 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 36 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-index 5698e5de5e31..8f1bc1a1af96 100644
---- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-@@ -44,15 +44,8 @@ properties:
-       - const: apb
-       - const: spdif
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index ba1bb17a8d1e..f0b9d3c53f6f 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -567,7 +567,7 @@ static int sof_set_get_large_ctrl_data(struct snd_sof_dev *sdev,
+ 	size_t offset = 0;
+ 	size_t msg_bytes;
+ 	size_t pl_size;
+-	int err = 0;
++	int err;
+ 	int i;
  
--  dmas:
--    items:
--      - description: RX DMA Channel
--      - description: TX DMA Channel
--
--  dma-names:
--    items:
--      - const: rx
--      - const: tx
-+  dmas: true
-+  dma-names: true
+ 	/* allocate max ipc size because we have at least one */
+@@ -576,9 +576,13 @@ static int sof_set_get_large_ctrl_data(struct snd_sof_dev *sdev,
+ 		return -ENOMEM;
  
-   resets:
-     maxItems: 1
-@@ -70,6 +63,40 @@ allOf:
-       required:
-         - resets
+ 	if (send)
+-		sof_get_ctrl_copy_params(cdata->type, cdata, partdata, sparams);
++		err = sof_get_ctrl_copy_params(cdata->type, cdata, partdata,
++					       sparams);
+ 	else
+-		sof_get_ctrl_copy_params(cdata->type, partdata, cdata, sparams);
++		err = sof_get_ctrl_copy_params(cdata->type, partdata, cdata,
++					       sparams);
++	if (err < 0)
++		return err;
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: allwinner,sun8i-h3-spdif
-+
-+    then:
-+      properties:
-+        dmas:
-+          maxItems: 1
-+          items:
-+            - description: RX DMA Channel
-+
-+        dma-names:
-+          maxItems: 1
-+          items:
-+            - const: tx
-+
-+    else:
-+      properties:
-+        dmas:
-+          minItems: 2
-+          maxItems: 2
-+          items:
-+            - description: RX DMA Channel
-+            - description: TX DMA Channel
-+
-+        dma-names:
-+          minItems: 2
-+          maxItems: 2
-+          items:
-+            - const: rx
-+            - const: tx
-+
- required:
-   - "#sound-dai-cells"
-   - compatible
+ 	msg_bytes = sparams->msg_bytes;
+ 	pl_size = sparams->pl_size;
 -- 
-git-series 0.9.1
+2.16.4
