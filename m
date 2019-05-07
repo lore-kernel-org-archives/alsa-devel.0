@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Fix a compile warning at
-	CONFIG_COMMON_CLK=n" to the asoc tree
-Date: Tue,  7 May 2019 03:30:31 +0100 (BST)
-Message-ID: <20190507023031.EE9E0440033@finisterre.sirena.org.uk>
-References: <20190506150224.1394-2-tiwai@suse.de>
+Subject: Applied "ASoC: rt5677-spi: Rename driver to
+	differentiate from main codec" to the asoc tree
+Date: Tue,  7 May 2019 03:30:34 +0100 (BST)
+Message-ID: <20190507023034.4E83D440039@finisterre.sirena.org.uk>
+References: <20190503193342.241330-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9107255679392435023=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CDA2F80726
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:36 +0200 (CEST)
-In-Reply-To: <20190506150224.1394-2-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78DB6F89759
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:41 +0200 (CEST)
+In-Reply-To: <20190503193342.241330-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============9107255679392435023==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: da7219: Fix a compile warning at CONFIG_COMMON_CLK=n
+   ASoC: rt5677-spi: Rename driver to differentiate from main codec
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -57,47 +55,43 @@ to this mail.
 Thanks,
 Mark
 
->From ab0c433f32f86370152bc9cb4900e5fe9a11055c Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 6 May 2019 17:02:22 +0200
-Subject: [PATCH] ASoC: da7219: Fix a compile warning at CONFIG_COMMON_CLK=n
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From b9960f6ea22da072c2fb27305a1a51517c3643fe Mon Sep 17 00:00:00 2001
+From: Curtis Malainey <cujomalainey@chromium.org>
+Date: Fri, 3 May 2019 12:33:42 -0700
+Subject: [PATCH] ASoC: rt5677-spi: Rename driver to differentiate from main
+ codec
 
-A trivial fix for the randconfig build error:
-  sound/soc/codecs/da7219.c:2366:6: warning: unused variable ‘i’ [-Wunused-variable]
+Currently the SPI driver and the main codec share the same name. This
+will become confusing when looking up components when using both
+drivers.
 
-Fixes: d90ba6c8b53e ("ASoC: da7219: Expose BCLK and WCLK control through CCF")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/rt5677-spi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 206d01c6eb7e..43c03e7b2f0e 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -2357,7 +2357,9 @@ static int da7219_probe(struct snd_soc_component *component)
- static void da7219_remove(struct snd_soc_component *component)
- {
- 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
-+#ifdef CONFIG_COMMON_CLK
- 	int i;
-+#endif
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index 167a02773a0b..1efc37ee625f 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -29,6 +29,8 @@
  
- 	da7219_aad_exit(component);
+ #include "rt5677-spi.h"
  
++#define DRV_NAME "rt5677spi"
++
+ #define RT5677_SPI_BURST_LEN	240
+ #define RT5677_SPI_HEADER	5
+ #define RT5677_SPI_FREQ		6000000
+@@ -235,7 +237,7 @@ MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
+ 
+ static struct spi_driver rt5677_spi_driver = {
+ 	.driver = {
+-		.name = "rt5677",
++		.name = DRV_NAME,
+ 		.acpi_match_table = ACPI_PTR(rt5677_spi_acpi_id),
+ 	},
+ 	.probe = rt5677_spi_probe,
 -- 
 2.20.1
-
-
---===============9107255679392435023==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9107255679392435023==--
