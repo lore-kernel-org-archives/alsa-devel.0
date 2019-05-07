@@ -1,22 +1,22 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2 00/30] Update cros_ec_commands.h
-Date: Tue, 7 May 2019 10:44:46 +0100
-Message-ID: <20190507094446.GD4529@dell>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v2 30/30] mfd: cros_ec: Update I2S API
+Date: Tue, 7 May 2019 17:50:17 +0800
+Message-ID: <CAFv8NwJzSrAU+AsFuqy6YBabmYKO+jJmDeS27_rE=hcqUU-tvQ@mail.gmail.com>
 References: <20190503220233.64546-1-gwendal@chromium.org>
+ <20190503220233.64546-31-gwendal@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com
+ [IPv6:2607:f8b0:4864:20::a43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E23DF807B5
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 11:44:48 +0200 (CEST)
-Received: by mail-wm1-x341.google.com with SMTP id o25so8447074wmf.2
- for <alsa-devel@alsa-project.org>; Tue, 07 May 2019 02:44:48 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20190503220233.64546-1-gwendal@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C01B1F89671
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 11:50:45 +0200 (CEST)
+Received: by mail-vk1-xa43.google.com with SMTP id q189so3883439vkq.11
+ for <alsa-devel@alsa-project.org>; Tue, 07 May 2019 02:50:45 -0700 (PDT)
+In-Reply-To: <20190503220233.64546-31-gwendal@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,167 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Gwendal Grignou <gwendal@chromium.org>
-Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, tiwai@suse.com, groeck@chromium.org, broonie@kernel.org, enric.balletbo@collabora.com, bleung@chromium.org, jic23@kernel.org, cychiang@chromium.org
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, linux-iio@vger.kernel.org, Benson Leung <bleung@chromium.org>, Takashi Iwai <tiwai@suse.com>, Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Lee Jones <lee.jones@linaro.org>, jic23@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAwMyBNYXkgMjAxOSwgR3dlbmRhbCBHcmlnbm91IHdyb3RlOgoKPiBUaGUgaW50ZXJm
-YWNlIGJldHdlZW4gQ3Jvc0VDIGVtYmVkZGVkIGNvbnRyb2xsZXIgYW5kIHRoZSBob3N0LAo+IGRl
-c2NyaWJlZCBieSBjcm9zX2VjX2NvbW1hbmRzLmgsIGFzIGRpdmVyZ2VkIGZyb20gd2hhdCB0aGUg
-ZW1iZWRkZWQKPiBjb250cm9sbGVyIHJlYWxseSBzdXBwb3J0Lgo+IAo+IFRoZSBzb3VyY2Ugb2Yg
-dGhydXRoIGlzIGF0Cj4gaHR0cHM6Ly9jaHJvbWl1bS5nb29nbGVzb3VyY2UuY29tL2Nocm9taXVt
-b3MvcGxhdGZvcm0vZWMvKy9tYXN0ZXIvaW5jbHVkZS9lY19jb21tYW5kcy5oCj4gCj4gVGhhdCBp
-bmNsdWRlIGZpbGUgaXMgY29udmVydGVkIHRvIHJlbW92ZSBBQ1BJIGFuZCBFbWJlZGRlZCBvbmx5
-IGNvZGUuCj4gCj4gRnJvbSBub3cgb24sIGNyb3NfZWNfY29tbWFuZHMuaCB3aWxsIGJlIGF1dG9t
-YXRpY2FsbHkgZ2VuZXJhdGVkIGZyb20KPiB0aGUgZmlsZSBhYm92ZSwgZG8gbm90IG1vZGlmeSBk
-aXJlY3RseS4KPiAKPiBGZWxsIGZyZWUgdG8gc3F1YXNoIHRoZSBjb21taXRzIGJlbG93Lgo+IAo+
-IENoYW5nZXMgaW4gdjI6Cj4gLSBNb3ZlIEkyUyBjaGFuZ2VzIGF0IHRoZSBlbmQgb2YgdGhlIHBh
-dGNoc2V0LCBzcXVhc2hlZCB3aXRoIGNoYW5nZSBpbgo+ICAgc291bmQvc29jL2NvZGVjcy9jcm9z
-X2VjX2NvZGVjLmMgdG8gbWF0Y2ggbmV3IGludGVyZmFjZS4KPiAtIEFkZCBBY2tlZC1ieTogRW5y
-aWMgQmFsbGV0Ym8gaSBTZXJyYSA8ZW5yaWMuYmFsbGV0Ym9AY29sbGFib3JhLmNvbT4KPiAKPiBH
-d2VuZGFsIEdyaWdub3UgKDMwKToKPiAgIG1mZDogY3Jvc19lYzogVXBkYXRlIGxpY2Vuc2UgdGVy
-bQo+ICAgbWZkOiBjcm9zX2VjOiBaZXJvIEJVSUxEXyBtYWNybwo+ICAgbWZkOiBjcm9zX2VjOiBz
-ZXQgY29tbWVudHMgcHJvcGVybHkKPiAgIG1mZDogY3Jvc19lYzogYWRkIGVjX2FsaWduIG1hY3Jv
-cwo+ICAgbWZkOiBjcm9zX2VjOiBEZWZpbmUgY29tbWFuZHMgYXMgNC1kaWdpdCBVUFBFUiBDQVNF
-IGhleCB2YWx1ZXMKPiAgIG1mZDogY3Jvc19lYzogdXNlIEJJVCBtYWNybwo+ICAgbWZkOiBjcm9z
-X2VjOiBVcGRhdGUgQUNQSSBpbnRlcmZhY2UgZGVmaW5pdGlvbgo+ICAgbWZkOiBjcm9zX2VjOiBt
-b3ZlIEhETUkgQ0VDIEFQSSBkZWZpbml0aW9uCj4gICBtZmQ6IGNyb3NfZWM6IFJlbW92ZSB6ZXJv
-LXNpemUgc3RydWN0cwo+ICAgbWZkOiBjcm9zX2VjOiBBZGQgRmxhc2ggVjIgY29tbWFuZHMgQVBJ
-Cj4gICBtZmQ6IGNyb3NfZWM6IEFkZCBQV01fU0VUX0RVVFkgQVBJCj4gICBtZmQ6IGNyb3NfZWM6
-IEFkZCBsaWdodGJhciB2MiBBUEkKPiAgIG1mZDogY3Jvc19lYzogRXhwYW5kIGhhc2ggQVBJCj4g
-ICBtZmQ6IGNyb3NfZWM6IEFkZCBFQyB0cmFuc3BvcnQgcHJvdG9jb2wgdjQKPiAgIG1mZDogY3Jv
-c19lYzogQ29tcGxldGUgTUVNUyBzZW5zb3IgQVBJCj4gICBtZmQ6IGNyb3NfZWM6IEZpeCBldmVu
-dCBwcm9jZXNzaW5nIEFQSQo+ICAgbWZkOiBjcm9zX2VjOiBBZGQgZmluZ2VycHJpbnQgQVBJCj4g
-ICBtZmQ6IGNyb3NfZWM6IEZpeCB0ZW1wZXJhdHVyZSBBUEkKPiAgIG1mZDogY3Jvc19lYzogQ29t
-cGxldGUgUG93ZXIgYW5kIFVTQiBQRCBBUEkKPiAgIG1mZDogY3Jvc19lYzogQWRkIEFQSSBmb3Ig
-a2V5Ym9hcmQgdGVzdGluZwo+ICAgbWZkOiBjcm9zX2VjOiBBZGQgSGliZXJuYXRlIEFQSQo+ICAg
-bWZkOiBjcm9zX2VjOiBBZGQgU21hcnQgQmF0dGVyeSBGaXJtd2FyZSB1cGRhdGUgQVBJCj4gICBt
-ZmQ6IGNyb3NfZWM6IEFkZCBJMkMgcGFzc3RocnUgcHJvdGVjdGlvbiBBUEkKPiAgIG1mZDogY3Jv
-c19lYzogQWRkIEFQSSBmb3IgRUMtRUMgY29tbXVuaWNhdGlvbgo+ICAgbWZkOiBjcm9zX2VjOiBB
-ZGQgQVBJIGZvciBUb3VjaHBhZCBzdXBwb3J0Cj4gICBtZmQ6IGNyb3NfZWM6IEFkZCBBUEkgZm9y
-IEZpbmdlcnByaW50IHN1cHBvcnQKPiAgIG1mZDogY3Jvc19lYzogQWRkIEFQSSBmb3IgcndzaWcK
-PiAgIG1mZDogY3Jvc19lYzogQWRkIFNLVSBJRCBhbmQgU2VjdXJlIHN0b3JhZ2UgQVBJCj4gICBt
-ZmQ6IGNyb3NfZWM6IEFkZCBNYW5hZ2VtZW50IEFQSSBlbnRyeSBwb2ludHMKPiAgIG1mZDogY3Jv
-c19lYzogVXBkYXRlIEkyUyBBUEkKPiAKPiAgaW5jbHVkZS9saW51eC9tZmQvY3Jvc19lY19jb21t
-YW5kcy5oIHwgMzczNSArKysrKysrKysrKysrKysrKysrKystLS0tLQo+ICBzb3VuZC9zb2MvY29k
-ZWNzL2Nyb3NfZWNfY29kZWMuYyAgICAgfCAgICA4ICstCj4gIDIgZmlsZXMgY2hhbmdlZCwgMjk5
-NyBpbnNlcnRpb25zKCspLCA3NDYgZGVsZXRpb25zKC0pCgpBZ2FpbiwgaXQgd291bGQgYmUgZ29v
-ZCB0byBnZXQgMSBvciAyIG1vcmUgQ2hyb21pdW0gQWNrcywgZ2l2ZW4gdGhlCmV4dGVudCBvZiB0
-aGUgY2hhbmdlcy4KCi0tIApMZWUgSm9uZXMgW+adjueQvOaWr10KTGluYXJvIFNlcnZpY2VzIFRl
-Y2huaWNhbCBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0g
-U29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Gwendal,
+Thanks for the fix!
+
+
+From: Gwendal Grignou <gwendal@chromium.org>
+Date: Sat, May 4, 2019 at 6:03 AM
+To: <enric.balletbo@collabora.com>, <bleung@chromium.org>,
+<groeck@chromium.org>, <lee.jones@linaro.org>, <jic23@kernel.org>,
+<broonie@kernel.org>, <cychiang@chromium.org>, <tiwai@suse.com>
+Cc: <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>, Gwendal Grignou
+
+> Improve I2S API.
+> Rename ec_response_codec_gain into ec_codec_i2s_gain,
+> update caller accordlingly.
+>
+> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> ---
+>  include/linux/mfd/cros_ec_commands.h | 44 +++++++++++++---------------
+>  sound/soc/codecs/cros_ec_codec.c     |  8 ++---
+>  2 files changed, 24 insertions(+), 28 deletions(-)
+>
+> diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
+> index fc8babce1576..fa397722f17e 100644
+> --- a/include/linux/mfd/cros_ec_commands.h
+> +++ b/include/linux/mfd/cros_ec_commands.h
+> @@ -4471,6 +4471,7 @@ enum mkbp_cec_event {
+>  /* Commands for I2S recording on audio codec. */
+>
+>  #define EC_CMD_CODEC_I2S 0x00BC
+> +#define EC_WOV_I2S_SAMPLE_RATE 48000
+>
+>  enum ec_codec_i2s_subcmd {
+>         EC_CODEC_SET_SAMPLE_DEPTH = 0x0,
+> @@ -4480,6 +4481,7 @@ enum ec_codec_i2s_subcmd {
+>         EC_CODEC_I2S_SET_CONFIG = 0x4,
+>         EC_CODEC_I2S_SET_TDM_CONFIG = 0x5,
+>         EC_CODEC_I2S_SET_BCLK = 0x6,
+> +       EC_CODEC_I2S_SUBCMD_COUNT = 0x7,
+>  };
+>
+>  enum ec_sample_depth_value {
+> @@ -4496,6 +4498,21 @@ enum ec_i2s_config {
+>         EC_DAI_FMT_PCM_TDM = 5,
+>  };
+>
+> +/*
+> + * For subcommand EC_CODEC_GET_GAIN.
+> + */
+> +struct __ec_align1 ec_codec_i2s_gain {
+> +       uint8_t left;
+> +       uint8_t right;
+> +};
+> +
+> +struct __ec_todo_unpacked ec_param_codec_i2s_tdm {
+> +       int16_t ch0_delay; /* 0 to 496 */
+> +       int16_t ch1_delay; /* -1 to 496 */
+> +       uint8_t adjacent_to_ch0;
+> +       uint8_t adjacent_to_ch1;
+> +};
+> +
+>  struct __ec_todo_packed ec_param_codec_i2s {
+>         /* enum ec_codec_i2s_subcmd */
+>         uint8_t cmd;
+> @@ -4510,10 +4527,7 @@ struct __ec_todo_packed ec_param_codec_i2s {
+>                  * EC_CODEC_SET_GAIN
+>                  * Value should be 0~43 for both channels.
+>                  */
+> -               struct __ec_align1 ec_param_codec_i2s_set_gain {
+> -                       uint8_t left;
+> -                       uint8_t right;
+> -               } gain;
+> +               struct ec_codec_i2s_gain gain;
+>
+>                 /*
+>                  * EC_CODEC_I2S_ENABLE
+> @@ -4522,7 +4536,7 @@ struct __ec_todo_packed ec_param_codec_i2s {
+>                 uint8_t i2s_enable;
+>
+>                 /*
+> -                * EC_CODEC_I2S_SET_COFNIG
+> +                * EC_CODEC_I2S_SET_CONFIG
+>                  * Value should be one of ec_i2s_config.
+>                  */
+>                 uint8_t i2s_config;
+> @@ -4531,18 +4545,7 @@ struct __ec_todo_packed ec_param_codec_i2s {
+>                  * EC_CODEC_I2S_SET_TDM_CONFIG
+>                  * Value should be one of ec_i2s_config.
+>                  */
+> -               struct __ec_todo_unpacked ec_param_codec_i2s_tdm {
+> -                       /*
+> -                        * 0 to 496
+> -                        */
+> -                       int16_t ch0_delay;
+> -                       /*
+> -                        * -1 to 496
+> -                        */
+> -                       int16_t ch1_delay;
+> -                       uint8_t adjacent_to_ch0;
+> -                       uint8_t adjacent_to_ch1;
+> -               } tdm_param;
+> +               struct ec_param_codec_i2s_tdm tdm_param;
+>
+>                 /*
+>                  * EC_CODEC_I2S_SET_BCLK
+> @@ -4551,13 +4554,6 @@ struct __ec_todo_packed ec_param_codec_i2s {
+>         };
+>  };
+>
+> -/*
+> - * For subcommand EC_CODEC_GET_GAIN.
+> - */
+> -struct ec_response_codec_gain {
+> -       uint8_t left;
+> -       uint8_t right;
+> -} __ec_align1;
+>
+>  /*****************************************************************************/
+>  /* System commands */
+> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+> index 99a3af8a15ff..87830ed5ebf4 100644
+> --- a/sound/soc/codecs/cros_ec_codec.c
+> +++ b/sound/soc/codecs/cros_ec_codec.c
+> @@ -38,21 +38,21 @@ static const DECLARE_TLV_DB_SCALE(ec_mic_gain_tlv, 0, 100, 0);
+>
+>  static int ec_command_get_gain(struct snd_soc_component *component,
+>                                struct ec_param_codec_i2s *param,
+> -                              struct ec_response_codec_gain *resp)
+> +                              struct ec_codec_i2s_gain *resp)
+>  {
+>         struct cros_ec_codec_data *codec_data =
+>                 snd_soc_component_get_drvdata(component);
+>         struct cros_ec_device *ec_device = codec_data->ec_device;
+>         u8 buffer[sizeof(struct cros_ec_command) +
+>                   max(sizeof(struct ec_param_codec_i2s),
+> -                     sizeof(struct ec_response_codec_gain))];
+> +                     sizeof(struct ec_codec_i2s_gain))];
+>         struct cros_ec_command *msg = (struct cros_ec_command *)&buffer;
+>         int ret;
+>
+>         msg->version = 0;
+>         msg->command = EC_CMD_CODEC_I2S;
+>         msg->outsize = sizeof(struct ec_param_codec_i2s);
+> -       msg->insize = sizeof(struct ec_response_codec_gain);
+> +       msg->insize = sizeof(struct ec_codec_i2s_gain);
+>
+>         memcpy(msg->data, param, msg->outsize);
+>
+> @@ -226,7 +226,7 @@ static int get_ec_mic_gain(struct snd_soc_component *component,
+>                            u8 *left, u8 *right)
+>  {
+>         struct ec_param_codec_i2s param;
+> -       struct ec_response_codec_gain resp;
+> +       struct ec_codec_i2s_gain resp;
+>         int ret;
+>
+>         param.cmd = EC_CODEC_GET_GAIN;
+> --
+> 2.21.0.1020.gf2820cf01a-goog
+>
+Acked-by: Cheng-Yi Chiang <cychiang@chromium.org>
