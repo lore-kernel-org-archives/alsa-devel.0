@@ -1,88 +1,135 @@
-From: "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>
-Subject: RE: [PATCH v1 1/2] ASoC: SOF: Add Comet Lake PCI ID
-Date: Tue, 7 May 2019 03:34:02 +0000
-Message-ID: <64FD1F8348A3A14CA3CB4D4C9EB1D15F30A7C756@BGSMSX107.gar.corp.intel.com>
-References: <20190506225321.74100-1-evgreen@chromium.org>
- <20190506225321.74100-2-evgreen@chromium.org>
- <74e8cfcd-b99f-7f66-48ce-44d60eb2bbca@linux.intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: max98357a: release GPIO when component
+	removing
+Date: Tue,  7 May 2019 13:11:40 +0800
+Message-ID: <20190507051140.240245-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <74e8cfcd-b99f-7f66-48ce-44d60eb2bbca@linux.intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Evan Green <evgreen@chromium.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: "M, Naveen" <naveen.m@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw1-xc49.google.com (mail-yw1-xc49.google.com
+ [IPv6:2607:f8b0:4864:20::c49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79C9AF89671
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 07:12:24 +0200 (CEST)
+Received: by mail-yw1-xc49.google.com with SMTP id v123so29617166ywf.16
+ for <alsa-devel@alsa-project.org>; Mon, 06 May 2019 22:12:24 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, tiwai@suse.com
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2Fy
-dCBbbWFpbHRvOnBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbV0gDQpTZW50OiBU
-dWVzZGF5LCBNYXkgNywgMjAxOSA3OjExIEFNDQpUbzogRXZhbiBHcmVlbiA8ZXZncmVlbkBjaHJv
-bWl1bS5vcmc+OyBMaWFtIEdpcmR3b29kIDxsaWFtLnIuZ2lyZHdvb2RAbGludXguaW50ZWwuY29t
-PjsgTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPg0KQ2M6IE0sIE5hdmVlbiA8bmF2ZWVu
-Lm1AaW50ZWwuY29tPjsgTSBSLCBTYXRoeWEgUHJha2FzaCA8c2F0aHlhLnByYWthc2gubS5yQGlu
-dGVsLmNvbT47IEJlbiBaaGFuZyA8YmVuemhAY2hyb21pdW0ub3JnPjsgUmFqYXQgSmFpbiA8cmFq
-YXRqYUBjaHJvbWl1bS5vcmc+OyBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PjsgYWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBU
-YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuY29tPjsgTGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdt
-YWlsLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMS8yXSBBU29DOiBTT0Y6IEFkZCBDb21l
-dCBMYWtlIFBDSSBJRA0KDQoNCg0KT24gNS82LzE5IDU6NTMgUE0sIEV2YW4gR3JlZW4gd3JvdGU6
-DQo+PiBBZGQgc3VwcG9ydCBmb3IgSW50ZWwgQ29tZXQgTGFrZSBwbGF0Zm9ybXMgYnkgYWRkaW5n
-IGEgbmV3IEtjb25maWcgZm9yIA0KPj4gQ29tZXRMYWtlIGFuZCB0aGUgYXBwcm9wcmlhdGUgUENJ
-IElELg0KDQo+VGhpcyBpcyBvZGQuIEkgY2hlY2tlZCBpbnRlcm5hbGx5IGEgZmV3IHdlZWtzIGJh
-Y2sgYW5kIHRoZSBDTUwgUENJIElEIHdhcyA5ZGM4LCBzYW1lIGFzIFdITCBhbmQgQ05MLCBzbyB3
-ZSBkaWQgbm90IGFkZCBhIFBDSSBJRCBvbiBwdXJwb3NlLiBUbyB0aGUgYmVzdCBvZiBteSBrbm93
-bGVkZ2UgU09GIHByb2JlcyBmaW5lIG9uIENNTCBhbmQgdGhlIGtub3duIGlzc3VlcyBjYW4gYmUg
-Zm91bmQgb24gdGhlIFNPRiBnaXRodWIgWzFdLg0KDQpUaGUgUENJIElEIGNoYW5nZSBpcyBzZWVu
-IG9uIGxhdGVyIHByb2R1Y3Rpb24gU2kgdmVyc2lvbnMuIFRoZSBQQ0kgSUQgaXMgMDJjOC4NCg0K
-PkNhcmUgdG8gc2VuZCB0aGUgbG9nIG9mIHN1ZG8gbHNwY2kgLXMgMDoxZi4zIC12biA/DQoNCkhl
-cmUgeW91IGdvOg0KbG9jYWxob3N0IH4gIyBzdWRvIGxzcGNpIC1zIDA6MWYuMyAtdm4NCjAwOjFm
-LjMgMDQwMTogODA4NjowMmM4DQogICAgICAgIFN1YnN5c3RlbTogODA4Njo3MjcwDQogICAgICAg
-IEZsYWdzOiBmYXN0IGRldnNlbCwgSVJRIDExDQogICAgICAgIE1lbW9yeSBhdCBkMTExNDAwMCAo
-NjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNktdDQogICAgICAgIE1lbW9yeSBhdCBk
-MTAwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xTV0NCiAgICAgICAgQ2Fw
-YWJpbGl0aWVzOiBbNTBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAzDQogICAgICAgIENhcGFi
-aWxpdGllczogWzgwXSBWZW5kb3IgU3BlY2lmaWMgSW5mb3JtYXRpb246IExlbj0xNCA8Pz4NCiAg
-ICAgICAgQ2FwYWJpbGl0aWVzOiBbNjBdIE1TSTogRW5hYmxlLSBDb3VudD0xLzEgTWFza2FibGUt
-IDY0Yml0Kw0KDQoNClsxXQ0KaHR0cHM6Ly9naXRodWIuY29tL3RoZXNvZnByb2plY3Qvc29mL2lz
-c3Vlcz9xPWlzJTNBb3BlbitpcyUzQWlzc3VlK2xhYmVsJTNBQ01MDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBFdmFuIEdyZWVuIDxldmdyZWVuQGNocm9taXVtLm9yZz4NCj4gLS0tDQo+IA0KPiAgIHNv
-dW5kL3NvYy9zb2YvaW50ZWwvS2NvbmZpZyB8IDE2ICsrKysrKysrKysrKysrKysNCj4gICBzb3Vu
-ZC9zb2Mvc29mL3NvZi1wY2ktZGV2LmMgfCAgNCArKysrDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAy
-MCBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvZi9pbnRlbC9L
-Y29uZmlnIGIvc291bmQvc29jL3NvZi9pbnRlbC9LY29uZmlnIA0KPiBpbmRleCAzMmVlMGZhYmFi
-OTIuLjBiNjE2ZDAyNWYwNSAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL3NvZi9pbnRlbC9LY29u
-ZmlnDQo+ICsrKyBiL3NvdW5kL3NvYy9zb2YvaW50ZWwvS2NvbmZpZw0KPiBAQCAtMjQsNiArMjQs
-NyBAQCBjb25maWcgU05EX1NPQ19TT0ZfSU5URUxfUENJDQo+ICAgCXNlbGVjdCBTTkRfU09DX1NP
-Rl9DQU5OT05MQUtFICBpZiBTTkRfU09DX1NPRl9DQU5OT05MQUtFX1NVUFBPUlQNCj4gICAJc2Vs
-ZWN0IFNORF9TT0NfU09GX0NPRkZFRUxBS0UgIGlmIFNORF9TT0NfU09GX0NPRkZFRUxBS0VfU1VQ
-UE9SVA0KPiAgIAlzZWxlY3QgU05EX1NPQ19TT0ZfSUNFTEFLRSAgICAgaWYgU05EX1NPQ19TT0Zf
-SUNFTEFLRV9TVVBQT1JUDQo+ICsJc2VsZWN0IFNORF9TT0NfU09GX0NPTUVUTEFLRSAgIGlmIFNO
-RF9TT0NfU09GX0NPTUVUTEFLRV9TVVBQT1JUDQo+ICAgCWhlbHANCj4gICAJICBUaGlzIG9wdGlv
-biBpcyBub3QgdXNlci1zZWxlY3RhYmxlIGJ1dCBhdXRvbWFnaWNhbGx5IGhhbmRsZWQgYnkNCj4g
-ICAJICAnc2VsZWN0JyBzdGF0ZW1lbnRzIGF0IGEgaGlnaGVyIGxldmVsIEBAIC0xNzksNiArMTgw
-LDIxIEBAIGNvbmZpZyANCj4gU05EX1NPQ19TT0ZfSUNFTEFLRQ0KPiAgIAkgIFRoaXMgb3B0aW9u
-IGlzIG5vdCB1c2VyLXNlbGVjdGFibGUgYnV0IGF1dG9tYWdpY2FsbHkgaGFuZGxlZCBieQ0KPiAg
-IAkgICdzZWxlY3QnIHN0YXRlbWVudHMgYXQgYSBoaWdoZXIgbGV2ZWwNCj4gICANCj4gK2NvbmZp
-ZyBTTkRfU09DX1NPRl9DT01FVExBS0UNCj4gKwl0cmlzdGF0ZQ0KPiArCXNlbGVjdCBTTkRfU09D
-X1NPRl9DQU5OT05MQUtFDQo+ICsJaGVscA0KPiArCSAgVGhpcyBvcHRpb24gaXMgbm90IHVzZXIt
-c2VsZWN0YWJsZSBidXQgYXV0b21hZ2ljYWxseSBoYW5kbGVkIGJ5DQo+ICsJICAnc2VsZWN0JyBz
-dGF0ZW1lbnRzIGF0IGEgaGlnaGVyIGxldmVsDQo+ICsNCj4gK2NvbmZpZyBTTkRfU09DX1NPRl9D
-T01FVExBS0VfU1VQUE9SVA0KPiArCWJvb2wgIlNPRiBzdXBwb3J0IGZvciBDb21ldExha2UiDQo+
-ICsJaGVscA0KPiArCSAgVGhpcyBhZGRzIHN1cHBvcnQgZm9yIFNvdW5kIE9wZW4gRmlybXdhcmUg
-Zm9yIEludGVsKFIpIHBsYXRmb3Jtcw0KPiArCSAgdXNpbmcgdGhlIENvbWV0bGFrZSBwcm9jZXNz
-b3JzLg0KPiArCSAgU2F5IFkgaWYgeW91IGhhdmUgc3VjaCBhIGRldmljZS4NCj4gKwkgIElmIHVu
-c3VyZSBzZWxlY3QgIk4iLg0KPiArDQo+ICAgY29uZmlnIFNORF9TT0NfU09GX0hEQV9DT01NT04N
-Cj4gICAJdHJpc3RhdGUNCj4gICAJc2VsZWN0IFNORF9TT0NfU09GX0lOVEVMX0NPTU1PTg0KPiBk
-aWZmIC0tZ2l0IGEvc291bmQvc29jL3NvZi9zb2YtcGNpLWRldi5jIGIvc291bmQvc29jL3NvZi9z
-b2YtcGNpLWRldi5jIA0KPiBpbmRleCBiNzc4ZGZmYjJkMjUuLjVmMDEyODMzN2U0MCAxMDA2NDQN
-Cj4gLS0tIGEvc291bmQvc29jL3NvZi9zb2YtcGNpLWRldi5jDQo+ICsrKyBiL3NvdW5kL3NvYy9z
-b2Yvc29mLXBjaS1kZXYuYw0KPiBAQCAtMzUzLDYgKzM1MywxMCBAQCBzdGF0aWMgY29uc3Qgc3Ry
-dWN0IHBjaV9kZXZpY2VfaWQgc29mX3BjaV9pZHNbXSA9IHsNCj4gICAjaWYgSVNfRU5BQkxFRChD
-T05GSUdfU05EX1NPQ19TT0ZfSUNFTEFLRSkNCj4gICAJeyBQQ0lfREVWSUNFKDB4ODA4NiwgMHgz
-NEM4KSwNCj4gICAJCS5kcml2ZXJfZGF0YSA9ICh1bnNpZ25lZCBsb25nKSZpY2xfZGVzY30sDQo+
-ICsjZW5kaWYNCj4gKyNpZiBJU19FTkFCTEVEKENPTkZJR19TTkRfU09DX1NPRl9DT01FVExBS0Up
-DQo+ICsJeyBQQ0lfREVWSUNFKDB4ODA4NiwgMHgwMmM4KSwNCj4gKwkJLmRyaXZlcl9kYXRhID0g
-KHVuc2lnbmVkIGxvbmcpJmNubF9kZXNjfSwNCj4gICAjZW5kaWYNCj4gICAJeyAwLCB9DQo+ICAg
-fTsNCj4gDQo=
+Component's probe() gets GPIO for "sdmode-gpios" via
+devm_gpiod_get_optional().  The GPIO binds to the device.
+
+When the component get removed but the device does not, the GPIO
+still binds to the device.  Then, when the component be probed
+again, devm_gpiod_get_optional() returns EBUSY.
+
+Release the GPIO proactively when component is removing.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+ sound/soc/codecs/max98357a.c | 42 ++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index d037a3e4d323..b11c6cb81f55 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -27,24 +27,28 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ 
++struct max98357a_priv {
++	struct gpio_desc *sdmode;
++};
++
+ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+ 		int cmd, struct snd_soc_dai *dai)
+ {
+-	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
++	struct max98357a_priv *max98357a = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (!sdmode)
++	if (!max98357a->sdmode)
+ 		return 0;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		gpiod_set_value(sdmode, 1);
++		gpiod_set_value(max98357a->sdmode, 1);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		gpiod_set_value(sdmode, 0);
++		gpiod_set_value(max98357a->sdmode, 0);
+ 		break;
+ 	}
+ 
+@@ -61,19 +65,31 @@ static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
+ 
+ static int max98357a_component_probe(struct snd_soc_component *component)
+ {
+-	struct gpio_desc *sdmode;
++	struct max98357a_priv *max98357a =
++			snd_soc_component_get_drvdata(component);
+ 
+-	sdmode = devm_gpiod_get_optional(component->dev, "sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode))
+-		return PTR_ERR(sdmode);
++	max98357a->sdmode = devm_gpiod_get_optional(component->dev,
++					"sdmode", GPIOD_OUT_LOW);
++	if (IS_ERR(max98357a->sdmode))
++		return PTR_ERR(max98357a->sdmode);
+ 
+-	snd_soc_component_set_drvdata(component, sdmode);
++	snd_soc_component_set_drvdata(component, max98357a);
+ 
+ 	return 0;
+ }
+ 
++static void max98357a_component_remove(struct snd_soc_component *component)
++{
++	struct max98357a_priv *max98357a =
++			snd_soc_component_get_drvdata(component);
++
++	if (max98357a->sdmode)
++		devm_gpiod_put(component->dev, max98357a->sdmode);
++}
++
+ static const struct snd_soc_component_driver max98357a_component_driver = {
+ 	.probe			= max98357a_component_probe,
++	.remove			= max98357a_component_remove,
+ 	.dapm_widgets		= max98357a_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
+ 	.dapm_routes		= max98357a_dapm_routes,
+@@ -112,6 +128,14 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
+ 
+ static int max98357a_platform_probe(struct platform_device *pdev)
+ {
++	struct max98357a_priv *max98357a;
++
++	max98357a = devm_kzalloc(&pdev->dev, sizeof(*max98357a), GFP_KERNEL);
++	if (!max98357a)
++		return -ENOMEM;
++
++	dev_set_drvdata(&pdev->dev, max98357a);
++
+ 	return devm_snd_soc_register_component(&pdev->dev,
+ 			&max98357a_component_driver,
+ 			&max98357a_dai_driver, 1);
+-- 
+2.21.0.1020.gf2820cf01a-goog
