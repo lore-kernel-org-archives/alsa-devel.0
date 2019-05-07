@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: rt5677: use more of the volume range
 	from DACs" to the asoc tree
-Date: Tue,  7 May 2019 03:30:30 +0100 (BST)
-Message-ID: <20190507023030.4CC2644000C@finisterre.sirena.org.uk>
+Date: Tue,  7 May 2019 03:32:45 +0100 (BST)
+Message-ID: <20190507023245.7BE3844000C@finisterre.sirena.org.uk>
 References: <20190506203006.161158-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F10DF89760
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:30:46 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 988AEF896DF
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 04:32:52 +0200 (CEST)
 In-Reply-To: <20190506203006.161158-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
