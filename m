@@ -1,86 +1,88 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/19] ASoC: SOF: improvements for ABI
- checks and Intel code
-Date: Tue, 7 May 2019 12:04:46 +0900
-Message-ID: <20190507030446.GD14916@sirena.org.uk>
-References: <20190430230934.4321-1-pierre-louis.bossart@linux.intel.com>
- <20190503054047.GB14916@sirena.org.uk>
- <6ac56436-5ce1-d977-45ef-f305f77bfe01@linux.intel.com>
- <20190506035133.GI14916@sirena.org.uk>
- <cf4cf0ca-b11d-48ff-8e23-fd2e308ec3af@linux.intel.com>
+From: "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>
+Subject: RE: [PATCH v1 1/2] ASoC: SOF: Add Comet Lake PCI ID
+Date: Tue, 7 May 2019 03:34:02 +0000
+Message-ID: <64FD1F8348A3A14CA3CB4D4C9EB1D15F30A7C756@BGSMSX107.gar.corp.intel.com>
+References: <20190506225321.74100-1-evgreen@chromium.org>
+ <20190506225321.74100-2-evgreen@chromium.org>
+ <74e8cfcd-b99f-7f66-48ce-44d60eb2bbca@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8020003008254999319=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2182CF80726
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2019 05:04:58 +0200 (CEST)
-In-Reply-To: <cf4cf0ca-b11d-48ff-8e23-fd2e308ec3af@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <74e8cfcd-b99f-7f66-48ce-44d60eb2bbca@linux.intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Evan Green <evgreen@chromium.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: "M, Naveen" <naveen.m@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8020003008254999319==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4zKt6bo/V7G+vDr7"
-Content-Disposition: inline
-
-
---4zKt6bo/V7G+vDr7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 06, 2019 at 09:59:24AM -0500, Pierre-Louis Bossart wrote:
-> On 5/5/19 10:51 PM, Mark Brown wrote:
-
-> > The last point there is that Intel only write patches, nobody from Intel
-> > is reviewing other people's patches especially in areas of the code like
-> > DPCM which are complex, fragile and where Intel is by far the most
-> > active user.
-
-> It's a valid point, and for now we indeed only check for non-regressions and
-> provide point solutions without looking at the bigger picture. We have a
-> couple of people ramping up (Ranjani, Libin, Guennadi, Jaska) and hopefully
-> at some point we'll be able to review and improve.
-
-Even just testing (rather than reviewing, though obviously reviewing
-would be good!) patches off the list would be very helpful and is close
-to the regression testing stuff you're already doing.
-
---4zKt6bo/V7G+vDr7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzQ9c0ACgkQJNaLcl1U
-h9DqnQf7BbIANJ8L8hITt30Bp0GVGsM7lzTpSl+yY2Uk3xJZQNC4VivJQQ6SY8b7
-bF8wOqXGrsmuhTN0ToZbSSbwKXJHOMEdNNKNSz+qAf1SU/JdjCJ98uykimrhWlXu
-d9SlAyXInUmFSpion+/hVYhQJmSYmOzIcAQSM2ISNUdwj2uNEIG0CM7Op9J2MmBb
-g+B0ppysb/qR0kRSEFtwc16FejnXfA7YRQcPLwNvg7Rkb02AgNlZI8PsGE+E8oYI
-5UfI7RKBMXLWHIVUgULAfOC8Ew7y9+jUMHsD7TulR+b0vhrWXVnyEYVzF/QsK5KC
-cq2NTKtSe3jaBwjVWRMjvWTuyxRWlw==
-=trxJ
------END PGP SIGNATURE-----
-
---4zKt6bo/V7G+vDr7--
-
---===============8020003008254999319==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8020003008254999319==--
+DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2Fy
+dCBbbWFpbHRvOnBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbV0gDQpTZW50OiBU
+dWVzZGF5LCBNYXkgNywgMjAxOSA3OjExIEFNDQpUbzogRXZhbiBHcmVlbiA8ZXZncmVlbkBjaHJv
+bWl1bS5vcmc+OyBMaWFtIEdpcmR3b29kIDxsaWFtLnIuZ2lyZHdvb2RAbGludXguaW50ZWwuY29t
+PjsgTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPg0KQ2M6IE0sIE5hdmVlbiA8bmF2ZWVu
+Lm1AaW50ZWwuY29tPjsgTSBSLCBTYXRoeWEgUHJha2FzaCA8c2F0aHlhLnByYWthc2gubS5yQGlu
+dGVsLmNvbT47IEJlbiBaaGFuZyA8YmVuemhAY2hyb21pdW0ub3JnPjsgUmFqYXQgSmFpbiA8cmFq
+YXRqYUBjaHJvbWl1bS5vcmc+OyBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PjsgYWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBU
+YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuY29tPjsgTGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdt
+YWlsLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMS8yXSBBU29DOiBTT0Y6IEFkZCBDb21l
+dCBMYWtlIFBDSSBJRA0KDQoNCg0KT24gNS82LzE5IDU6NTMgUE0sIEV2YW4gR3JlZW4gd3JvdGU6
+DQo+PiBBZGQgc3VwcG9ydCBmb3IgSW50ZWwgQ29tZXQgTGFrZSBwbGF0Zm9ybXMgYnkgYWRkaW5n
+IGEgbmV3IEtjb25maWcgZm9yIA0KPj4gQ29tZXRMYWtlIGFuZCB0aGUgYXBwcm9wcmlhdGUgUENJ
+IElELg0KDQo+VGhpcyBpcyBvZGQuIEkgY2hlY2tlZCBpbnRlcm5hbGx5IGEgZmV3IHdlZWtzIGJh
+Y2sgYW5kIHRoZSBDTUwgUENJIElEIHdhcyA5ZGM4LCBzYW1lIGFzIFdITCBhbmQgQ05MLCBzbyB3
+ZSBkaWQgbm90IGFkZCBhIFBDSSBJRCBvbiBwdXJwb3NlLiBUbyB0aGUgYmVzdCBvZiBteSBrbm93
+bGVkZ2UgU09GIHByb2JlcyBmaW5lIG9uIENNTCBhbmQgdGhlIGtub3duIGlzc3VlcyBjYW4gYmUg
+Zm91bmQgb24gdGhlIFNPRiBnaXRodWIgWzFdLg0KDQpUaGUgUENJIElEIGNoYW5nZSBpcyBzZWVu
+IG9uIGxhdGVyIHByb2R1Y3Rpb24gU2kgdmVyc2lvbnMuIFRoZSBQQ0kgSUQgaXMgMDJjOC4NCg0K
+PkNhcmUgdG8gc2VuZCB0aGUgbG9nIG9mIHN1ZG8gbHNwY2kgLXMgMDoxZi4zIC12biA/DQoNCkhl
+cmUgeW91IGdvOg0KbG9jYWxob3N0IH4gIyBzdWRvIGxzcGNpIC1zIDA6MWYuMyAtdm4NCjAwOjFm
+LjMgMDQwMTogODA4NjowMmM4DQogICAgICAgIFN1YnN5c3RlbTogODA4Njo3MjcwDQogICAgICAg
+IEZsYWdzOiBmYXN0IGRldnNlbCwgSVJRIDExDQogICAgICAgIE1lbW9yeSBhdCBkMTExNDAwMCAo
+NjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNktdDQogICAgICAgIE1lbW9yeSBhdCBk
+MTAwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xTV0NCiAgICAgICAgQ2Fw
+YWJpbGl0aWVzOiBbNTBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAzDQogICAgICAgIENhcGFi
+aWxpdGllczogWzgwXSBWZW5kb3IgU3BlY2lmaWMgSW5mb3JtYXRpb246IExlbj0xNCA8Pz4NCiAg
+ICAgICAgQ2FwYWJpbGl0aWVzOiBbNjBdIE1TSTogRW5hYmxlLSBDb3VudD0xLzEgTWFza2FibGUt
+IDY0Yml0Kw0KDQoNClsxXQ0KaHR0cHM6Ly9naXRodWIuY29tL3RoZXNvZnByb2plY3Qvc29mL2lz
+c3Vlcz9xPWlzJTNBb3BlbitpcyUzQWlzc3VlK2xhYmVsJTNBQ01MDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBFdmFuIEdyZWVuIDxldmdyZWVuQGNocm9taXVtLm9yZz4NCj4gLS0tDQo+IA0KPiAgIHNv
+dW5kL3NvYy9zb2YvaW50ZWwvS2NvbmZpZyB8IDE2ICsrKysrKysrKysrKysrKysNCj4gICBzb3Vu
+ZC9zb2Mvc29mL3NvZi1wY2ktZGV2LmMgfCAgNCArKysrDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAy
+MCBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvZi9pbnRlbC9L
+Y29uZmlnIGIvc291bmQvc29jL3NvZi9pbnRlbC9LY29uZmlnIA0KPiBpbmRleCAzMmVlMGZhYmFi
+OTIuLjBiNjE2ZDAyNWYwNSAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL3NvZi9pbnRlbC9LY29u
+ZmlnDQo+ICsrKyBiL3NvdW5kL3NvYy9zb2YvaW50ZWwvS2NvbmZpZw0KPiBAQCAtMjQsNiArMjQs
+NyBAQCBjb25maWcgU05EX1NPQ19TT0ZfSU5URUxfUENJDQo+ICAgCXNlbGVjdCBTTkRfU09DX1NP
+Rl9DQU5OT05MQUtFICBpZiBTTkRfU09DX1NPRl9DQU5OT05MQUtFX1NVUFBPUlQNCj4gICAJc2Vs
+ZWN0IFNORF9TT0NfU09GX0NPRkZFRUxBS0UgIGlmIFNORF9TT0NfU09GX0NPRkZFRUxBS0VfU1VQ
+UE9SVA0KPiAgIAlzZWxlY3QgU05EX1NPQ19TT0ZfSUNFTEFLRSAgICAgaWYgU05EX1NPQ19TT0Zf
+SUNFTEFLRV9TVVBQT1JUDQo+ICsJc2VsZWN0IFNORF9TT0NfU09GX0NPTUVUTEFLRSAgIGlmIFNO
+RF9TT0NfU09GX0NPTUVUTEFLRV9TVVBQT1JUDQo+ICAgCWhlbHANCj4gICAJICBUaGlzIG9wdGlv
+biBpcyBub3QgdXNlci1zZWxlY3RhYmxlIGJ1dCBhdXRvbWFnaWNhbGx5IGhhbmRsZWQgYnkNCj4g
+ICAJICAnc2VsZWN0JyBzdGF0ZW1lbnRzIGF0IGEgaGlnaGVyIGxldmVsIEBAIC0xNzksNiArMTgw
+LDIxIEBAIGNvbmZpZyANCj4gU05EX1NPQ19TT0ZfSUNFTEFLRQ0KPiAgIAkgIFRoaXMgb3B0aW9u
+IGlzIG5vdCB1c2VyLXNlbGVjdGFibGUgYnV0IGF1dG9tYWdpY2FsbHkgaGFuZGxlZCBieQ0KPiAg
+IAkgICdzZWxlY3QnIHN0YXRlbWVudHMgYXQgYSBoaWdoZXIgbGV2ZWwNCj4gICANCj4gK2NvbmZp
+ZyBTTkRfU09DX1NPRl9DT01FVExBS0UNCj4gKwl0cmlzdGF0ZQ0KPiArCXNlbGVjdCBTTkRfU09D
+X1NPRl9DQU5OT05MQUtFDQo+ICsJaGVscA0KPiArCSAgVGhpcyBvcHRpb24gaXMgbm90IHVzZXIt
+c2VsZWN0YWJsZSBidXQgYXV0b21hZ2ljYWxseSBoYW5kbGVkIGJ5DQo+ICsJICAnc2VsZWN0JyBz
+dGF0ZW1lbnRzIGF0IGEgaGlnaGVyIGxldmVsDQo+ICsNCj4gK2NvbmZpZyBTTkRfU09DX1NPRl9D
+T01FVExBS0VfU1VQUE9SVA0KPiArCWJvb2wgIlNPRiBzdXBwb3J0IGZvciBDb21ldExha2UiDQo+
+ICsJaGVscA0KPiArCSAgVGhpcyBhZGRzIHN1cHBvcnQgZm9yIFNvdW5kIE9wZW4gRmlybXdhcmUg
+Zm9yIEludGVsKFIpIHBsYXRmb3Jtcw0KPiArCSAgdXNpbmcgdGhlIENvbWV0bGFrZSBwcm9jZXNz
+b3JzLg0KPiArCSAgU2F5IFkgaWYgeW91IGhhdmUgc3VjaCBhIGRldmljZS4NCj4gKwkgIElmIHVu
+c3VyZSBzZWxlY3QgIk4iLg0KPiArDQo+ICAgY29uZmlnIFNORF9TT0NfU09GX0hEQV9DT01NT04N
+Cj4gICAJdHJpc3RhdGUNCj4gICAJc2VsZWN0IFNORF9TT0NfU09GX0lOVEVMX0NPTU1PTg0KPiBk
+aWZmIC0tZ2l0IGEvc291bmQvc29jL3NvZi9zb2YtcGNpLWRldi5jIGIvc291bmQvc29jL3NvZi9z
+b2YtcGNpLWRldi5jIA0KPiBpbmRleCBiNzc4ZGZmYjJkMjUuLjVmMDEyODMzN2U0MCAxMDA2NDQN
+Cj4gLS0tIGEvc291bmQvc29jL3NvZi9zb2YtcGNpLWRldi5jDQo+ICsrKyBiL3NvdW5kL3NvYy9z
+b2Yvc29mLXBjaS1kZXYuYw0KPiBAQCAtMzUzLDYgKzM1MywxMCBAQCBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IHBjaV9kZXZpY2VfaWQgc29mX3BjaV9pZHNbXSA9IHsNCj4gICAjaWYgSVNfRU5BQkxFRChD
+T05GSUdfU05EX1NPQ19TT0ZfSUNFTEFLRSkNCj4gICAJeyBQQ0lfREVWSUNFKDB4ODA4NiwgMHgz
+NEM4KSwNCj4gICAJCS5kcml2ZXJfZGF0YSA9ICh1bnNpZ25lZCBsb25nKSZpY2xfZGVzY30sDQo+
+ICsjZW5kaWYNCj4gKyNpZiBJU19FTkFCTEVEKENPTkZJR19TTkRfU09DX1NPRl9DT01FVExBS0Up
+DQo+ICsJeyBQQ0lfREVWSUNFKDB4ODA4NiwgMHgwMmM4KSwNCj4gKwkJLmRyaXZlcl9kYXRhID0g
+KHVuc2lnbmVkIGxvbmcpJmNubF9kZXNjfSwNCj4gICAjZW5kaWYNCj4gICAJeyAwLCB9DQo+ICAg
+fTsNCj4gDQo=
