@@ -1,50 +1,79 @@
-From: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 15/16] video: fbdev: pxafb: use new match_string() helper/macro
-Date: Wed, 8 May 2019 14:28:41 +0300
-Message-ID: <20190508112842.11654-17-alexandru.ardelean@analog.com>
+From: "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+Subject: Re: [PATCH 01/16] lib: fix match_string() helper on -1
+	array size
+Date: Wed, 8 May 2019 11:31:15 +0000
+Message-ID: <c8cfa5dbdfc0b0665d1b48f37ba57c3ec1233197.camel__22815.8730011032$1557315151$gmane$org@analog.com>
 References: <20190508112842.11654-1-alexandru.ardelean@analog.com>
+ <20190508112842.11654-2-alexandru.ardelean@analog.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190508112842.11654-1-alexandru.ardelean@analog.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org, kvm@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-mtd@lists.infradead.org, cgroups@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org
-Cc: gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com, Alexandru Ardelean <alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-eopbgr740075.outbound.protection.outlook.com [40.107.74.75])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 471C8F80796
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 13:31:23 +0200 (CEST)
+In-Reply-To: <20190508112842.11654-2-alexandru.ardelean@analog.com>
+Content-Language: en-US
+Content-ID: <BE083E2328EDB84B98DBA67ED168014A@analog.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "linux-integrity@vger.kernel.org" <linux-integrity@vger.kern>
+Cc: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The `lcd_types` array is a static array of strings.
-Using match_string() (which computes the array size via ARRAY_SIZE())
-is possible.
+On Wed, 2019-05-08 at 14:28 +0300, Alexandru Ardelean wrote:
+> The documentation the `_match_string()` helper mentions that `n`
+> should be:
+>  * @n: number of strings in the array or -1 for NULL terminated arrays
+> 
+> The behavior of the function is different, in the sense that it exits on
+> the first NULL element in the array, regardless of whether `n` is -1 or a
+> positive number.
+> 
+> This patch changes the behavior, to exit the loop when a NULL element is
+> found and n == -1. Essentially, this aligns the behavior with the
+> doc-string.
+> 
+> There are currently many users of `match_string()`, and so, in order to
+> go
+> through them, the next patches in the series will focus on doing some
+> cosmetic changes, which are aimed at grouping the users of
+> `match_string()`.
+> 
 
-This reduces the array by 1 element, since the NULL (at the end of the
-array) is no longer needed.
+This is the duplicate & should be dropped.
+Sorry for this.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/video/fbdev/pxafb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/video/fbdev/pxafb.c b/drivers/video/fbdev/pxafb.c
-index 0025781e6e1e..e657a04f5b1d 100644
---- a/drivers/video/fbdev/pxafb.c
-+++ b/drivers/video/fbdev/pxafb.c
-@@ -2114,7 +2114,7 @@ static void pxafb_check_options(struct device *dev, struct pxafb_mach_info *inf)
- #if defined(CONFIG_OF)
- static const char * const lcd_types[] = {
- 	"unknown", "mono-stn", "mono-dstn", "color-stn", "color-dstn",
--	"color-tft", "smart-panel", NULL
-+	"color-tft", "smart-panel"
- };
- 
- static int of_get_pxafb_display(struct device *dev, struct device_node *disp,
-@@ -2129,7 +2129,7 @@ static int of_get_pxafb_display(struct device *dev, struct device_node *disp,
- 	if (ret)
- 		s = "color-tft";
- 
--	i = __match_string(lcd_types, -1, s);
-+	i = match_string(lcd_types, s);
- 	if (i < 0) {
- 		dev_err(dev, "lcd-type %s is unknown\n", s);
- 		return i;
--- 
-2.17.1
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  lib/string.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/string.c b/lib/string.c
+> index 3ab861c1a857..76edb7bf76cb 100644
+> --- a/lib/string.c
+> +++ b/lib/string.c
+> @@ -648,8 +648,11 @@ int match_string(const char * const *array, size_t
+> n, const char *string)
+>  
+>  	for (index = 0; index < n; index++) {
+>  		item = array[index];
+> -		if (!item)
+> +		if (!item) {
+> +			if (n != (size_t)-1)
+> +				continue;
+>  			break;
+> +		}
+>  		if (!strcmp(item, string))
+>  			return index;
+>  	}
