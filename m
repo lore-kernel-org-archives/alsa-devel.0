@@ -1,22 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/2] ASoC: SOF: core: fix undefined nocodec
- reference
-Date: Wed, 8 May 2019 11:21:36 -0500
-Message-ID: <44be7c35-1b4d-5183-ce4a-1def4126c55f@linux.intel.com>
-References: <20190507163236.8783-1-pierre-louis.bossart@linux.intel.com>
- <20190507163236.8783-3-pierre-louis.bossart@linux.intel.com>
- <20190508062717.GK14916@sirena.org.uk>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: max98357a: request GPIO when device get
+	probed
+Date: Thu,  9 May 2019 00:22:23 +0800
+Message-ID: <20190508162223.75322-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com
+ [IPv6:2607:f8b0:4864:20::84a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 442DDF8075E
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 18:21:39 +0200 (CEST)
-In-Reply-To: <20190508062717.GK14916@sirena.org.uk>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id C361DF8075E
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 18:22:31 +0200 (CEST)
+Received: by mail-qt1-x84a.google.com with SMTP id i5so21780486qtd.17
+ for <alsa-devel@alsa-project.org>; Wed, 08 May 2019 09:22:31 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,22 +24,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, kbuild-all@01.org
+To: broonie@kernel.org, tiwai@suse.com
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
+devm_gpiod_get_optional() returns EBUSY after component rebound.
 
+Request GPIO in max98357a_platform_probe() to support component
+rebinding.
 
-On 5/8/19 1:27 AM, Mark Brown wrote:
-> On Tue, May 07, 2019 at 11:32:36AM -0500, Pierre-Louis Bossart wrote:
->> The existing code mistakenly uses IS_ENABLED in C code instead of as
->> in conditional compilation, leading to the following error:
-> 
->> ld: sound/soc/sof/core.o: in function `sof_machine_check':
->> sound/soc/sof/core.c:279: undefined reference to `sof_nocodec_setup'
-> 
-> There's nothing wrong with using IS_ENABLED() in C code - it can be
-> cleaner than using an ifdef to help the compiler eliminate unneeded
-> code.
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+v1:
+ASoC: max98357a: manage GPIO for component rebinding
+=> don't move from devm to non-devm
 
-Agree, and we do make use of it. In this case it wasn't smart though.
+v2:
+ASoC: max98357a: release GPIO when component removing
+=> only put things that really need the card in component's probe()
+=> don't use devm_gpiod_put() if possible
+
+ sound/soc/codecs/max98357a.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index d037a3e4d323..0a14f9dacbee 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -61,14 +61,6 @@ static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
+ 
+ static int max98357a_component_probe(struct snd_soc_component *component)
+ {
+-	struct gpio_desc *sdmode;
+-
+-	sdmode = devm_gpiod_get_optional(component->dev, "sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode))
+-		return PTR_ERR(sdmode);
+-
+-	snd_soc_component_set_drvdata(component, sdmode);
+-
+ 	return 0;
+ }
+ 
+@@ -112,6 +104,15 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
+ 
+ static int max98357a_platform_probe(struct platform_device *pdev)
+ {
++	struct gpio_desc *sdmode;
++
++	sdmode = devm_gpiod_get_optional(&pdev->dev,
++				"sdmode", GPIOD_OUT_LOW);
++	if (IS_ERR(sdmode))
++		return PTR_ERR(sdmode);
++
++	dev_set_drvdata(&pdev->dev, sdmode);
++
+ 	return devm_snd_soc_register_component(&pdev->dev,
+ 			&max98357a_component_driver,
+ 			&max98357a_dai_driver, 1);
+-- 
+2.21.0.1020.gf2820cf01a-goog
