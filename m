@@ -1,56 +1,120 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] ASoC: Intel: Skylake: Add Cometlake PCI IDs
-Date: Wed, 8 May 2019 12:04:27 -0500
-Message-ID: <6fd9ca2b-dcf6-801f-209e-11eba59203fe@linux.intel.com>
-References: <20190507215359.113378-1-evgreen@chromium.org>
- <20190507215359.113378-3-evgreen@chromium.org>
- <866afac2-e457-375b-d745-88952b11d75e@linux.intel.com>
- <CAE=gft4sDo1cLeU8Cm1CRZu2PzVG0iu-b7UaWxWVrsUeZ=SYhQ@mail.gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 2/2] dt-bindings: sound: sun4i-spdif: Document that the
+ RX channel can be missing
+Date: Wed, 8 May 2019 14:35:10 -0500
+Message-ID: <CAL_Jsq+iLmzti5TX-TUU3PN4taC66UMqHMk-aKTjZKt1kVRtMQ@mail.gmail.com>
+References: <dc84c7e9ce272109052f553a5e050bfe1a09e9d6.1557252411.git-series.maxime.ripard@bootlin.com>
+ <d9afb19c32f8b9b2c40c8d4c0c3df74bff0ccf35.1557252411.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAE=gft4sDo1cLeU8Cm1CRZu2PzVG0iu-b7UaWxWVrsUeZ=SYhQ@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Evan Green <evgreen@chromium.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Guenter Roeck <groeck@chromium.org>, Yu Zhao <yuzhao@google.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jenny TC <jenny.tc@intel.com>, Jie Yang <yang.jie@linux.intel.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <d9afb19c32f8b9b2c40c8d4c0c3df74bff0ccf35.1557252411.git-series.maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, May 7, 2019 at 1:07 PM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
+>
+> The H3 and compatibles controllers don't have any reception capabilities,
+> even though it was never documented as such in the binding before.
+>
+> Therefore, on those controllers, we don't have the option to set an RX DMA
+> channel.
+>
+> This was already done in the DTSI, but the binding itself was never
+> updated. Let's add a special case in the schemas.
+>
+> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+>
+> ---
+>
+> Changes from v1:
+>   - switch to a draft7 conditional
+> ---
+>  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml | 45 ++++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 36 insertions(+), 9 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+> index 5698e5de5e31..8f1bc1a1af96 100644
+> --- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+> @@ -44,15 +44,8 @@ properties:
+>        - const: apb
+>        - const: spdif
+>
+> -  dmas:
+> -    items:
+> -      - description: RX DMA Channel
+> -      - description: TX DMA Channel
+> -
+> -  dma-names:
+> -    items:
+> -      - const: rx
+> -      - const: tx
+> +  dmas: true
+> +  dma-names: true
+>
+>    resets:
+>      maxItems: 1
+> @@ -70,6 +63,40 @@ allOf:
+>        required:
+>          - resets
+>
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: allwinner,sun8i-h3-spdif
+> +
+> +    then:
+> +      properties:
+> +        dmas:
+> +          maxItems: 1
 
+In this and below, these should get added automatically by
+fixup_schema. If not present, we set minItems/maxItems to the size of
+the items list. It look like you added support for that, so left over
+from before you addressed that for if/then/else?
 
-On 5/8/19 11:51 AM, Evan Green wrote:
-> On Tue, May 7, 2019 at 3:31 PM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->>
->> On 5/7/19 4:53 PM, Evan Green wrote:
->>> Add PCI IDs for Intel CometLake platforms, which from a software
->>> point of view are extremely similar to Cannonlake platforms.
->>
->> Humm, I have mixed feelings here.
->>
->> Yes the hardware is nearly identical, with the exception of one detail
->> that's not visible to the kernel, but there is no support for DMICs with
->> the Skylake driver w/ HDaudio, and Chrome platforms are only going with
->> SOF, so is it wise to add these two CometLake platforms to the default
->> SND_SOC_INTEL_SKYLAKE selector, which is used by a number of distributions?
->>
->> I don't mind if we add those PCI IDs and people use this driver if they
->> wish to, but it may be time for an explicit opt-in? The
->> SND_SOC_INTEL_SKYLAKE definition should even be pruned to mean SKL, APL,
->> KBL and GLK, and we can add DMI-based quirks for e.g. the Up2 board and
->> GLK Chromebooks which work with SOF.
-> 
-> I don't have the context here, so feel free to ignore me. But it seems
-> like such a tiny amount of extra bits to add to make Cometlake work,
-> and then there's no hassle for the distributions when Cometlake
-> devices start showing up in the wild. So while things are more or less
-> the same, why not continue piggypacking off the default?
-> Or are you saying that the lack of DMIC support means the default
-> should be to use a different driver?
+> +          items:
+> +            - description: RX DMA Channel
 
-Yes, it's the latter case, SOF will be the only driver supporting DMICs 
-on CometLake, so it'd be better to avoid creating a conflict with SOF or 
-enabling a configuration by default which is known to have restrictions. 
-It's fine to add the CML IDs, but better avoid adding CML under the 
-SKYLAKE all-you-can-eat selector.
+s/RX/TX/
+
+> +
+> +        dma-names:
+> +          maxItems: 1
+> +          items:
+> +            - const: tx
+> +
+> +    else:
+> +      properties:
+> +        dmas:
+> +          minItems: 2
+> +          maxItems: 2
+> +          items:
+> +            - description: RX DMA Channel
+> +            - description: TX DMA Channel
+> +
+> +        dma-names:
+> +          minItems: 2
+> +          maxItems: 2
+> +          items:
+> +            - const: rx
+> +            - const: tx
+
+I'm really on the fence whether it's worth it to add all this just add
+the restrictions based on the compatible. I guess with copy-n-paste
+this would be a common error.
+
+Rob
