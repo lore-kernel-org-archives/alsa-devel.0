@@ -1,48 +1,139 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 3/3] ASoC: rt5677: fall back to DT prop names on error
-Date: Wed, 8 May 2019 18:04:06 +0900
-Message-ID: <20190508090406.GG14916@sirena.org.uk>
-References: <20190507220115.90395-1-fletcherw@chromium.org>
- <20190507220115.90395-4-fletcherw@chromium.org>
+Subject: Applied "ASoC: mediatek: mt6358: save PGA for mixer
+	control" to the asoc tree
+Date: Wed,  8 May 2019 10:01:31 +0100 (BST)
+Message-ID: <20190508090131.41E6044003F@finisterre.sirena.org.uk>
+References: <20190507101220.182466-4-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+if5tLMzDwmTCkiQ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190507220115.90395-4-fletcherw@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fletcher Woodruff <fletcherw@chromium.org>
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA463F89726
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 11:01:44 +0200 (CEST)
+In-Reply-To: <20190507101220.182466-4-tzungbi@google.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, tiwai@suse.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---+if5tLMzDwmTCkiQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: mediatek: mt6358: save PGA for mixer control
 
-On Tue, May 07, 2019 at 04:01:15PM -0600, Fletcher Woodruff wrote:
-> The rt5677 driver uses ACPI-style property names to read from the
-> device API. However, these do not match the property names in _DSD
-> used on the Chromebook Pixel 2015, which are closer to the Device Tree
-> style.  Unify the two functions for reading from the device API so that
-> they try ACPI-style names first and fall back to the DT names on error.
+has been applied to the asoc tree at
 
-This is OK and should probably be the first patch in the series since
-it's much simpler than the other ones but depends on them.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
---+if5tLMzDwmTCkiQ
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzSm4UACgkQJNaLcl1U
-h9BXYgf9HL6kgqhLX5BgKf3C1D9thjRYiOmKbp5R2x6lp5KlyJkhLSBNUFaJVciZ
-6cshYtsU42VNjyT9ICN7OD3CoROo+HDvy5PaPfylSaNSUq180OQV6t4KE2SNrGZ8
-5O1GpwPLUJ2Q+0biQMPOp4eic90mz3usZtSIFgg9K8i0ZsYtmV2t75OeSETJY1au
-nxnYwLttQ1R73oRfaB7/uvYETekume/zHZ5BNi6xFPRgKY2cPoK+qUvWKH6CaaLa
-WOufUF3Os1nB7azLSxLfZvhRleqVmpv95d/jHtdYOH4920YbHqsImkyInJc8Uh0z
-tkxlqDjblH4PgakMTEmJ+T0M7JEAKA==
-=gN76
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---+if5tLMzDwmTCkiQ--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ec0574a6ce31f2d6640bb8a5edf98973356dd3b4 Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Tue, 7 May 2019 18:12:20 +0800
+Subject: [PATCH] ASoC: mediatek: mt6358: save PGA for mixer control
+
+mt6358_amic_disable() resets PGA to 0.
+
+Save the gain settings from mixer control and restore them when using
+the microphone.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/mt6358.c | 33 +++++++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
+index 44edbda8afcc..50b3fc5457ea 100644
+--- a/sound/soc/codecs/mt6358.c
++++ b/sound/soc/codecs/mt6358.c
+@@ -450,6 +450,15 @@ static int mt6358_put_volsw(struct snd_kcontrol *kcontrol,
+ 		priv->ana_gain[AUDIO_ANALOG_VOLUME_HSOUTR] =
+ 			(reg >> RG_AUDHSGAIN_SFT) & RG_AUDHSGAIN_MASK;
+ 		break;
++	case MT6358_AUDENC_ANA_CON0:
++	case MT6358_AUDENC_ANA_CON1:
++		regmap_read(priv->regmap, MT6358_AUDENC_ANA_CON0, &reg);
++		priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1] =
++			(reg >> RG_AUDPREAMPLGAIN_SFT) & RG_AUDPREAMPLGAIN_MASK;
++		regmap_read(priv->regmap, MT6358_AUDENC_ANA_CON1, &reg);
++		priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2] =
++			(reg >> RG_AUDPREAMPRGAIN_SFT) & RG_AUDPREAMPRGAIN_MASK;
++		break;
+ 	}
+ 
+ 	return ret;
+@@ -470,10 +479,10 @@ static const struct snd_kcontrol_new mt6358_snd_controls[] = {
+ 			   MT6358_ZCD_CON3, 0, 0x12, 1,
+ 			   snd_soc_get_volsw, mt6358_put_volsw, playback_tlv),
+ 	/* ul pga gain */
+-	SOC_DOUBLE_R_TLV("PGA Volume",
+-			 MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
+-			 8, 4, 0,
+-			 pga_tlv),
++	SOC_DOUBLE_R_EXT_TLV("PGA Volume",
++			     MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
++			     8, 4, 0,
++			     snd_soc_get_volsw, mt6358_put_volsw, pga_tlv),
+ };
+ 
+ /* MUX */
+@@ -1750,6 +1759,21 @@ static void mt6358_dmic_disable(struct mt6358_priv *priv)
+ 	regmap_write(priv->regmap, MT6358_AUDENC_ANA_CON9, 0x0000);
+ }
+ 
++static void mt6358_restore_pga(struct mt6358_priv *priv)
++{
++	unsigned int gain_l, gain_r;
++
++	gain_l = priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1];
++	gain_r = priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2];
++
++	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON0,
++			   RG_AUDPREAMPLGAIN_MASK_SFT,
++			   gain_l << RG_AUDPREAMPLGAIN_SFT);
++	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON1,
++			   RG_AUDPREAMPRGAIN_MASK_SFT,
++			   gain_r << RG_AUDPREAMPRGAIN_SFT);
++}
++
+ static int mt_mic_type_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol,
+ 			     int event)
+@@ -1774,6 +1798,7 @@ static int mt_mic_type_event(struct snd_soc_dapm_widget *w,
+ 			mt6358_amic_enable(priv);
+ 			break;
+ 		}
++		mt6358_restore_pga(priv);
+ 
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-- 
+2.20.1
