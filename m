@@ -1,63 +1,45 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH 1/7] soundwire: Add sysfs support for
- master(s)
-Date: Wed, 8 May 2019 13:16:06 +0530
-Message-ID: <20190508074606.GV16052@vkoul-mobl>
-References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
- <20190504065242.GA9770@kroah.com>
- <b0059709-027e-26c4-25a1-bd55df7c507f@linux.intel.com>
- <20190507052732.GD16052@vkoul-mobl>
- <20190507055432.GB17986@kroah.com>
- <20190507110331.GL16052@vkoul-mobl>
- <20190507111956.GB1092@kroah.com>
- <10fef156-7b01-7a08-77b4-ae3153eaaabc@linux.intel.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH v2 2/4] ASoC: hdmi-codec: remove reference to the
+ current substream
+Date: Wed, 08 May 2019 10:08:44 +0200
+Message-ID: <fd633a5597703f557d75e43c14213699efe295f0.camel@baylibre.com>
+References: <20190506095815.24578-1-jbrunet@baylibre.com>
+         <20190506095815.24578-3-jbrunet@baylibre.com>
+         <20190508070058.GQ14916@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <10fef156-7b01-7a08-77b4-ae3153eaaabc@linux.intel.com>
+In-Reply-To: <20190508070058.GQ14916@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07-05-19, 17:49, Pierre-Louis Bossart wrote:
+On Wed, 2019-05-08 at 16:00 +0900, Mark Brown wrote:
+> On Mon, May 06, 2019 at 11:58:13AM +0200, Jerome Brunet wrote:
 > 
-> > > The model here is that Master device is PCI or Platform device and then
-> > > creates a bus instance which has soundwire slave devices.
-> > > 
-> > > So for any attribute on Master device (which has properties as well and
-> > > representation in sysfs), device specfic struct (PCI/platfrom doesn't
-> > > help). For slave that is not a problem as sdw_slave structure takes care
-> > > if that.
-> > > 
-> > > So, the solution was to create the psedo sdw_master device for the
-> > > representation and have device-specific structure.
-> > 
-> > Ok, much like the "USB host controller" type device.  That's fine, make
-> > such a device, add it to your bus, and set the type correctly.  And keep
-> > a pointer to that structure in your device-specific structure if you
-> > really need to get to anything in it.
+> > Remove current_substream pointer and replace the exclusive locking
+> > mechanism with a simple variable and some atomic operations.
 > 
-> humm, you lost me on the last sentence. Did you mean using
-> set_drv/platform_data during the init and retrieving the bus information
-> with get_drv/platform_data as needed later? Or something else I badly need
-> to learn?
+> The advantage of mutexes is that they are very simple and clear to
+> reason about.  It is therefore unclear that this conversion to use
+> atomic variables is an improvement, they're generally more complex 
+> to reason about and fragile.
 
-IIUC Greg meant we should represent a soundwire master device type and
-use that here. Just like we have soundwire slave device type. Something
-like:
+The point of this patch is not to remove the mutex in favor of atomic
+operations
 
-struct sdw_master {
-        struct device dev;
-        struct sdw_master_prop *prop;
-        ...
-};
+The point was to remove the current_substream pointer in favor of a
+simple 'busy' flag. After that, I ended up with a mutex protecting
+a flag and it seemed a bit overkill to me. Atomic op seemed like a
+good fit for this but I don't really care about that particular
+point.
 
-In show function you get master from dev (container of) and then use
-that to access the master properties. So int.sdw.0 can be of this type.
+I can put back mutex to protect the flag if you prefer.
 
-Thanks
--- 
-~Vinod
+Another solution would be to use the mutex as the 'busy' flag.
+Get the ownership of the hdmi using try_lock() in startup() and
+release it in shutdown()
+
+Would you have a preference Mark ? 
