@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: xtensa: fix undefined references"
-	to the asoc tree
-Date: Wed,  8 May 2019 07:47:08 +0100 (BST)
-Message-ID: <20190508064708.607E6440017@finisterre.sirena.org.uk>
-References: <20190507163236.8783-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: core: fix undefined nocodec
+	reference" to the asoc tree
+Date: Wed,  8 May 2019 07:47:07 +0100 (BST)
+Message-ID: <20190508064707.AA0FB440010@finisterre.sirena.org.uk>
+References: <20190507163236.8783-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35272F8075E
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 08:47:20 +0200 (CEST)
-In-Reply-To: <20190507163236.8783-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A79FAF8075E
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 08:47:22 +0200 (CEST)
+In-Reply-To: <20190507163236.8783-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: xtensa: fix undefined references
+   ASoC: SOF: core: fix undefined nocodec reference
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,53 @@ to this mail.
 Thanks,
 Mark
 
->From 78989ff8aeaddc183237da558ee07deee35fbbbd Mon Sep 17 00:00:00 2001
+>From ce38a75089f70f6380fc63a5478a7659b4eb3f47 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 7 May 2019 11:32:35 -0500
-Subject: [PATCH] ASoC: SOF: xtensa: fix undefined references
+Date: Tue, 7 May 2019 11:32:36 -0500
+Subject: [PATCH] ASoC: SOF: core: fix undefined nocodec reference
 
-The SND_SOC_INTEL_COMMON Kconfig was removed months ago from SOF
-Kconfig files but is still selected instead of the correct
-SND_SOC_SOF_INTEL_COMMON kconfig which does select xtensa stuff,
-leading to the following errors.
+The existing code mistakenly uses IS_ENABLED in C code instead of as
+in conditional compilation, leading to the following error:
 
-ld: sound/soc/sof/sof-acpi-dev.o:(.rodata+0x120): undefined reference
-to `sof_xtensa_arch_ops'
-ld: sound/soc/sof/sof-acpi-dev.o:(.rodata+0x180): undefined reference
-to `sof_xtensa_arch_ops'
-ld: sound/soc/sof/sof-acpi-dev.o:(.rodata+0x1e0): undefined reference
-to `sof_xtensa_arch_ops'
+ld: sound/soc/sof/core.o: in function `sof_machine_check':
+sound/soc/sof/core.c:279: undefined reference to `sof_nocodec_setup'
+
+Fix by using #if !IS_ENABLED()
 
 Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 32ee0fabab92..603e0db4f012 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -36,7 +36,7 @@ config SND_SOC_SOF_INTEL_HIFI_EP_IPC
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 39cbd84ff9c8..5ddbfa8f1a28 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -265,11 +265,10 @@ static int sof_machine_check(struct snd_sof_dev *sdev)
+ 	if (plat_data->machine)
+ 		return 0;
  
- config SND_SOC_SOF_INTEL_ATOM_HIFI_EP
- 	tristate
--	select SND_SOC_INTEL_COMMON
-+	select SND_SOC_SOF_INTEL_COMMON
- 	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
- 	help
- 	  This option is not user-selectable but automagically handled by
+-	if (!IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)) {
+-		dev_err(sdev->dev, "error: no matching ASoC machine driver found - aborting probe\n");
+-		return -ENODEV;
+-	}
+-
++#if !IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)
++	dev_err(sdev->dev, "error: no matching ASoC machine driver found - aborting probe\n");
++	return -ENODEV;
++#else
+ 	/* fallback to nocodec mode */
+ 	dev_warn(sdev->dev, "No ASoC machine driver found - using nocodec\n");
+ 	machine = devm_kzalloc(sdev->dev, sizeof(*machine), GFP_KERNEL);
+@@ -284,6 +283,7 @@ static int sof_machine_check(struct snd_sof_dev *sdev)
+ 	plat_data->machine = machine;
+ 
+ 	return 0;
++#endif
+ }
+ 
+ static int sof_probe_continue(struct snd_sof_dev *sdev)
 -- 
 2.20.1
