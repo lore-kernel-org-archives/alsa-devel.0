@@ -1,21 +1,22 @@
 From: Benson Leung <bleung@google.com>
-Subject: Re: [PATCH v2 00/30] Update cros_ec_commands.h
-Date: Wed, 8 May 2019 16:19:54 -0700
-Message-ID: <20190508231954.GA41543@google.com>
+Subject: Re: [PATCH v2 24/30] mfd: cros_ec: Add API for EC-EC
+	communication
+Date: Wed, 8 May 2019 16:22:39 -0700
+Message-ID: <20190508232239.GB41543@google.com>
 References: <20190503220233.64546-1-gwendal@chromium.org>
- <20190507094446.GD4529@dell>
+ <20190503220233.64546-25-gwendal@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4607715805174036768=="
+Content-Type: multipart/mixed; boundary="===============3755417370401129016=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
- [IPv6:2607:f8b0:4864:20::442])
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
+ [IPv6:2607:f8b0:4864:20::644])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CA03F807B5
- for <alsa-devel@alsa-project.org>; Thu,  9 May 2019 01:20:03 +0200 (CEST)
-Received: by mail-pf1-x442.google.com with SMTP id s11so218962pfm.12
- for <alsa-devel@alsa-project.org>; Wed, 08 May 2019 16:20:03 -0700 (PDT)
-In-Reply-To: <20190507094446.GD4529@dell>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97BA8F807B5
+ for <alsa-devel@alsa-project.org>; Thu,  9 May 2019 01:22:48 +0200 (CEST)
+Received: by mail-pl1-x644.google.com with SMTP id y3so153358plp.0
+ for <alsa-devel@alsa-project.org>; Wed, 08 May 2019 16:22:48 -0700 (PDT)
+In-Reply-To: <20190503220233.64546-25-gwendal@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,94 +26,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>, alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, tiwai@suse.com, groeck@chromium.org, broonie@kernel.org, enric.balletbo@collabora.com, bleung@chromium.org, jic23@kernel.org, cychiang@chromium.org
+To: Gwendal Grignou <gwendal@chromium.org>
+Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, bleung@chromium.org, tiwai@suse.com, groeck@chromium.org, broonie@kernel.org, enric.balletbo@collabora.com, lee.jones@linaro.org, jic23@kernel.org, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4607715805174036768==
+--===============3755417370401129016==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
+	protocol="application/pgp-signature"; boundary="MW5yreqqjyrRcusr"
 Content-Disposition: inline
 
 
---3V7upXqbjpZ4EhLz
+--MW5yreqqjyrRcusr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Gwendal, Hi Lee,
+Hi Gwendal,
 
-On Tue, May 07, 2019 at 10:44:46AM +0100, Lee Jones wrote:
-> On Fri, 03 May 2019, Gwendal Grignou wrote:
->=20
-> > The interface between CrosEC embedded controller and the host,
-> > described by cros_ec_commands.h, as diverged from what the embedded
-> > controller really support.
-> >=20
-> > The source of thruth is at
-> > https://chromium.googlesource.com/chromiumos/platform/ec/+/master/inclu=
-de/ec_commands.h
-> >=20
-> > That include file is converted to remove ACPI and Embedded only code.
-> >=20
-> > From now on, cros_ec_commands.h will be automatically generated from
-> > the file above, do not modify directly.
-> >=20
-> > Fell free to squash the commits below.
-> >=20
-> > Changes in v2:
-> > - Move I2S changes at the end of the patchset, squashed with change in
-> >   sound/soc/codecs/cros_ec_codec.c to match new interface.
-> > - Add Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> >=20
-> > Gwendal Grignou (30):
-> >   mfd: cros_ec: Update license term
-> >   mfd: cros_ec: Zero BUILD_ macro
-> >   mfd: cros_ec: set comments properly
-> >   mfd: cros_ec: add ec_align macros
-> >   mfd: cros_ec: Define commands as 4-digit UPPER CASE hex values
-> >   mfd: cros_ec: use BIT macro
-> >   mfd: cros_ec: Update ACPI interface definition
-> >   mfd: cros_ec: move HDMI CEC API definition
-> >   mfd: cros_ec: Remove zero-size structs
-> >   mfd: cros_ec: Add Flash V2 commands API
-> >   mfd: cros_ec: Add PWM_SET_DUTY API
-> >   mfd: cros_ec: Add lightbar v2 API
-> >   mfd: cros_ec: Expand hash API
-> >   mfd: cros_ec: Add EC transport protocol v4
-> >   mfd: cros_ec: Complete MEMS sensor API
-> >   mfd: cros_ec: Fix event processing API
-> >   mfd: cros_ec: Add fingerprint API
-> >   mfd: cros_ec: Fix temperature API
-> >   mfd: cros_ec: Complete Power and USB PD API
-> >   mfd: cros_ec: Add API for keyboard testing
-> >   mfd: cros_ec: Add Hibernate API
-> >   mfd: cros_ec: Add Smart Battery Firmware update API
-> >   mfd: cros_ec: Add I2C passthru protection API
-> >   mfd: cros_ec: Add API for EC-EC communication
-> >   mfd: cros_ec: Add API for Touchpad support
-> >   mfd: cros_ec: Add API for Fingerprint support
-> >   mfd: cros_ec: Add API for rwsig
-> >   mfd: cros_ec: Add SKU ID and Secure storage API
-> >   mfd: cros_ec: Add Management API entry points
-> >   mfd: cros_ec: Update I2S API
-> >=20
-> >  include/linux/mfd/cros_ec_commands.h | 3735 +++++++++++++++++++++-----
-> >  sound/soc/codecs/cros_ec_codec.c     |    8 +-
-> >  2 files changed, 2997 insertions(+), 746 deletions(-)
->=20
-> Again, it would be good to get 1 or 2 more Chromium Acks, given the
-> extent of the changes.
+Really tiny commit message nit, otherwise look good.
 
-I've gone ahead and looked through all 30 of the changes here. It looks goo=
-d to me.
+On Fri, May 03, 2019 at 03:02:27PM -0700, Gwendal Grignou wrote:
+> Allow EC to talk to other ECs that are not presented to the host.
+> Neeed when EC are present in detachable keyboard.
 
-Acked-By: Benson Leung <bleung@chromium.org>
+s/Neeed/Needed
 
-Thanks Gwendal.
 
+Thanks,
 Benson
+>=20
+> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> ---
+>  include/linux/mfd/cros_ec_commands.h | 95 ++++++++++++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+>=20
+> diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cro=
+s_ec_commands.h
+> index 59ad6bae3f9b..52fd9bfafc7f 100644
+> --- a/include/linux/mfd/cros_ec_commands.h
+> +++ b/include/linux/mfd/cros_ec_commands.h
+> @@ -5043,6 +5043,101 @@ struct ec_response_pd_chip_info_v1 {
+>  	};
+>  } __ec_align2;
+> =20
+> +/***********************************************************************=
+******/
+> +/* EC-EC communication commands: range 0x0600-0x06FF */
+> +
+> +#define EC_COMM_TEXT_MAX 8
+> +
+> +/*
+> + * Get battery static information, i.e. information that never changes, =
+or
+> + * very infrequently.
+> + */
+> +#define EC_CMD_BATTERY_GET_STATIC 0x0600
+> +
+> +/**
+> + * struct ec_params_battery_static_info - Battery static info parameters
+> + * @index: Battery index.
+> + */
+> +struct ec_params_battery_static_info {
+> +	uint8_t index;
+> +} __ec_align_size1;
+> +
+> +/**
+> + * struct ec_response_battery_static_info - Battery static info response
+> + * @design_capacity: Battery Design Capacity (mAh)
+> + * @design_voltage: Battery Design Voltage (mV)
+> + * @manufacturer: Battery Manufacturer String
+> + * @model: Battery Model Number String
+> + * @serial: Battery Serial Number String
+> + * @type: Battery Type String
+> + * @cycle_count: Battery Cycle Count
+> + */
+> +struct ec_response_battery_static_info {
+> +	uint16_t design_capacity;
+> +	uint16_t design_voltage;
+> +	char manufacturer[EC_COMM_TEXT_MAX];
+> +	char model[EC_COMM_TEXT_MAX];
+> +	char serial[EC_COMM_TEXT_MAX];
+> +	char type[EC_COMM_TEXT_MAX];
+> +	/* TODO(crbug.com/795991): Consider moving to dynamic structure. */
+> +	uint32_t cycle_count;
+> +} __ec_align4;
+> +
+> +/*
+> + * Get battery dynamic information, i.e. information that is likely to c=
+hange
+> + * every time it is read.
+> + */
+> +#define EC_CMD_BATTERY_GET_DYNAMIC 0x0601
+> +
+> +/**
+> + * struct ec_params_battery_dynamic_info - Battery dynamic info paramete=
+rs
+> + * @index: Battery index.
+> + */
+> +struct ec_params_battery_dynamic_info {
+> +	uint8_t index;
+> +} __ec_align_size1;
+> +
+> +/**
+> + * struct ec_response_battery_dynamic_info - Battery dynamic info respon=
+se
+> + * @actual_voltage: Battery voltage (mV)
+> + * @actual_current: Battery current (mA); negative=3Ddischarging
+> + * @remaining_capacity: Remaining capacity (mAh)
+> + * @full_capacity: Capacity (mAh, might change occasionally)
+> + * @flags: Flags, see EC_BATT_FLAG_*
+> + * @desired_voltage: Charging voltage desired by battery (mV)
+> + * @desired_current: Charging current desired by battery (mA)
+> + */
+> +struct ec_response_battery_dynamic_info {
+> +	int16_t actual_voltage;
+> +	int16_t actual_current;
+> +	int16_t remaining_capacity;
+> +	int16_t full_capacity;
+> +	int16_t flags;
+> +	int16_t desired_voltage;
+> +	int16_t desired_current;
+> +} __ec_align2;
+> +
+> +/*
+> + * Control charger chip. Used to control charger chip on the slave.
+> + */
+> +#define EC_CMD_CHARGER_CONTROL 0x0602
+> +
+> +/**
+> + * struct ec_params_charger_control - Charger control parameters
+> + * @max_current: Charger current (mA). Positive to allow base to draw up=
+ to
+> + *     max_current and (possibly) charge battery, negative to request cu=
+rrent
+> + *     from base (OTG).
+> + * @otg_voltage: Voltage (mV) to use in OTG mode, ignored if max_current=
+ is
+> + *     >=3D 0.
+> + * @allow_charging: Allow base battery charging (only makes sense if
+> + *     max_current > 0).
+> + */
+> +struct ec_params_charger_control {
+> +	int16_t max_current;
+> +	uint16_t otg_voltage;
+> +	uint8_t allow_charging;
+> +} __ec_align_size1;
+> +
+>  /***********************************************************************=
+******/
+>  /*
+>   * Reserve a range of host commands for board-specific, experimental, or
+> --=20
+> 2.21.0.1020.gf2820cf01a-goog
+>=20
 
 --=20
 Benson Leung
@@ -123,33 +191,33 @@ bleung@google.com
 Chromium OS Project
 bleung@chromium.org
 
---3V7upXqbjpZ4EhLz
+--MW5yreqqjyrRcusr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIyBAABCgAdFiEE6gYDF28Li+nEiKLaHwn1ewov5lgFAlzTZBcACgkQHwn1ewov
-5lhjUA/3fA/KxWw5Iys7vvzAAJjcfVmJy+xWem/JAjKjAe0kVJIX/t6badYGOTsI
-KkdhoeXjrd+UDnhCQ3zAfRNz8UbAB0GFh1xOg7Tx9ooy2RiGHjcwyGvp1F+d9T9A
-9LWavFRzNj+NECuV91pdMHi1VN7UOYoQj8o7f/LMIdsv2dfjfT7/grsYj3q3cjzX
-gyi8a5QUb46vcmSSR+hh9KX/ymAjegSEPLWPBC7B237PHmdRSQ3W0C3M0V8ke7nB
-gNH+7T8p9/ZzEfVSVydNogTpNDRiXpdEG1PIk5eXbRIr3C3Kv25JR76k5Ljkf6U8
-zXdNMZUYFISYPqsqtp2YAbDrZh0Ok7M5I63Wf5SioUFI4bCEQUq0PZjM0//q3/RE
-8+walobqHB/+zCLHwh8hqEmy/67J6b6Cww+1pO7l2YUa3ohit6xYTSzs+kGZ3MJ5
-s0goLRIMvOvduBuRmW1JrJ57JQSypGL5idWnaX104t/1qHBllKs2w4O1jK1xx4tE
-2XvTf/h/8Oq1k4/BYsmI3Tg+beXZogpNEmoXwzxDxE8PNlJ2aEJmZhdcnzT0ZCM8
-fGutiblcNwe0JyceAgNrwhlTcVMIlu8tyyXLZBovccSMLBP3w/Fhw5bQbVN5YdRQ
-kxXbzvKM6IqwtoqtcWwkKfMahw3ViEpJm41VSrwU5Esz3Ryk0w==
-=O6+L
+iQIzBAABCgAdFiEE6gYDF28Li+nEiKLaHwn1ewov5lgFAlzTZL8ACgkQHwn1ewov
+5lgliBAAi2Xkq93LTZDfzRbcO20fikTdY5Os7wvDskLQqxOhuCQegTvlsMT5H4NZ
+CHowvQYqTXOJHnAVO9PdwZ52a6LXuvFf6mHrHlS1wKHVnBaWoUvY1mbPT8OMXaWf
+ixJ8adShf43SdVP7IPjj5HPYv3qdCknqOGJMonUjNM2FFn5YXjYbtOFjwrOohdMT
+iGoy2TOxpb8j5LK/Kgnzy5i9BcSQ1QkNggBedPoM/jRHw7IE/WKO4X1L9HLiHcVy
+UuvYMSAzRVP+80HbMCAAjBvrmD3ngVyHvIjVl5jcjpw2JkpayMpCHWHAIU2hKjN5
+qehGEdME9Uy8pwdab3n/7fuH+blawfCKjI73oyYly4xkbvRDlWCXRhKGMQMbBTMR
+s60Bjl4TXQfyrWzivPATHaH55OXiQa6dsmcOz0c64+jMTi0AEgBTuR6g9FwEBe23
+fqRO4sapql8jaq4K6jyvurM8ElrjF0ubTXHsTUD2n9bPxbk48KhwtEetzzKuAVit
+I4BrnNZQV8yXfoiYRB839bGdKHgxIR19PA8xP+64I5UfKWyCzIq9flSjgFMlA35T
+7AUol4jfr36gJppK1hdZW3VPEcpA/5MycUc00vRqzM5AkiqUvIeaxuvlFSWpUkl9
+VDy1jzZ0pW9JlAboUear7pyrRaP3uZfrjwVCYFqC2zJXaedFmko=
+=krvY
 -----END PGP SIGNATURE-----
 
---3V7upXqbjpZ4EhLz--
+--MW5yreqqjyrRcusr--
 
---===============4607715805174036768==
+--===============3755417370401129016==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4607715805174036768==--
+--===============3755417370401129016==--
