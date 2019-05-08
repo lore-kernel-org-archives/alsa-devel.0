@@ -1,139 +1,118 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH 2/7] soundwire: add Slave sysfs support
-Date: Wed, 8 May 2019 13:10:09 +0530
-Message-ID: <20190508074009.GU16052@vkoul-mobl>
-References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
- <20190504010030.29233-3-pierre-louis.bossart@linux.intel.com>
- <20190504065444.GC9770@kroah.com>
- <c675ea60-5bfa-2475-8878-c589b8d20b32@linux.intel.com>
- <20190506151953.GA13178@kroah.com>
- <20190506162208.GI3845@vkoul-mobl.Dlink>
- <be72bbb1-b51f-8201-fdff-958836ed94d1@linux.intel.com>
- <20190507051959.GC16052@vkoul-mobl>
- <fde9c4cd-518b-cb67-5b05-1608c9d029e4@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v5.2
+Date: Wed, 8 May 2019 16:42:18 +0900
+Message-ID: <20190508074218.GU14916@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <fde9c4cd-518b-cb67-5b05-1608c9d029e4@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: multipart/mixed; boundary="===============2960650980195246025=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4455F8075E
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 09:42:26 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07-05-19, 08:54, Pierre-Louis Bossart wrote:
-> On 5/7/19 12:19 AM, Vinod Koul wrote:
-> > On 06-05-19, 11:46, Pierre-Louis Bossart wrote:
-> > > On 5/6/19 11:22 AM, Vinod Koul wrote:
-> > > > On 06-05-19, 17:19, Greg KH wrote:
-> > > > > On Mon, May 06, 2019 at 09:42:35AM -0500, Pierre-Louis Bossart wrote:
-> > > > > > > > +
-> > > > > > > > +int sdw_sysfs_slave_init(struct sdw_slave *slave)
-> > > > > > > > +{
-> > > > > > > > +	struct sdw_slave_sysfs *sysfs;
-> > > > > > > > +	unsigned int src_dpns, sink_dpns, i, j;
-> > > > > > > > +	int err;
-> > > > > > > > +
-> > > > > > > > +	if (slave->sysfs) {
-> > > > > > > > +		dev_err(&slave->dev, "SDW Slave sysfs is already initialized\n");
-> > > > > > > > +		err = -EIO;
-> > > > > > > > +		goto err_ret;
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > > +	sysfs = kzalloc(sizeof(*sysfs), GFP_KERNEL);
-> > > > > > > 
-> > > > > > > Same question as patch 1, why a new device?
-> > > > > > 
-> > > > > > yes it's the same open. In this case, the slave devices are defined at a
-> > > > > > different level so it's also confusing to create a device to represent the
-> > > > > > slave properties. The code works but I am not sure the initial directions
-> > > > > > are correct.
-> > > > > 
-> > > > > You can just make a subdir for your attributes by using the attribute
-> > > > > group name, if a subdirectory is needed just to keep things a bit more
-> > > > > organized.
-> > > > 
-> > > > The key here is 'a subdir' which is not the case here. We did discuss
-> > > > this in the initial patches for SoundWire which had sysfs :)
-> > > > 
-> > > > The way MIPI disco spec organized properties, we have dp0 and dpN
-> > > > properties each of them requires to have a subdir of their own and that
-> > > > was the reason why I coded it to be creating a device.
-> > > 
-> > > Vinod, the question was not for dp0 and dpN, it's fine to have
-> > > subdirectories there, but rather why we need separate devices for the master
-> > > and slave properties.
-> > 
-> > Slave does not have a separate device. IIRC the properties for Slave are
-> > in /sys/bus/soundwire/device/<slave>/...
-> 
-> I am not sure this is correct
-> 
-> ACPI defines the slaves devices under
-> /sys/bus/acpi/PRP0001, e.g.
 
-Yes the bus will create 'soundwire slave' device type (In acpi case
-created from ACPI walk) and we do link the ACPI as the firmware node.
-This is 'not' created for properties but for soundwire representation of
-slave devices. This is the one code driver attaches to.
- 
-> /sys/bus/acpi/devices/PRP00001:00/device:17# ls
+--===============2960650980195246025==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="TIr7t44h4GvinQKN"
+Content-Disposition: inline
 
-Yes this would the companion ACPI device
 
-> adr                                 mipi-sdw-dp-5-sink-subproperties
-> intel-endpoint-descriptor-0         mipi-sdw-dp-6-source-subproperties
-> intel-endpoint-descriptor-1         mipi-sdw-dp-7-sink-subproperties
-> mipi-sdw-dp-0-subproperties         mipi-sdw-dp-8-source-subproperties
-> mipi-sdw-dp-1-sink-subproperties    path
-> mipi-sdw-dp-1-source-subproperties  physical_node
-> mipi-sdw-dp-2-sink-subproperties    power
-> mipi-sdw-dp-2-source-subproperties  subsystem
-> mipi-sdw-dp-3-sink-subproperties    uevent
-> mipi-sdw-dp-4-source-subproperties
-> 
-> but the sysfs for slaves is shown as
-> /sys/bus/acpi/devices/PRP00001:00/int-sdw.0/sdw:0:25d:700:0:0# ls
-> bank_delay_support  master_count             sink_ports
-> ch_prep_timeout     mipi_revision            source_ports
-> clk_stop_mode1      modalias                 src-dp2
-> clk_stop_timeout    p15_behave               src-dp4
-> dp0                 paging_support           subsystem
-> driver              power                    test_mode_capable
-> firmware_node       reset_behave             uevent
-> hda_reg             simple_clk_stop_capable  wake_capable
-> high_PHY_capable    sink-dp1
-> index_reg           sink-dp3
-> 
-> and in sys/bus/soundwire/devices/sdw:0:25d:700:0:0# ls
+--TIr7t44h4GvinQKN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think both are same nodes. Since the SoundWire slave is a child of
-master it appears under int-sdw.0 as well
+The following changes since commit 1587a061ef562de0d97c82a95863e191bcd69d63:
 
-> bank_delay_support  master_count             sink_ports
-> ch_prep_timeout     mipi_revision            source_ports
-> clk_stop_mode1      modalias                 src-dp2
-> clk_stop_timeout    p15_behave               src-dp4
-> dp0                 paging_support           subsystem
-> driver              power                    test_mode_capable
-> firmware_node       reset_behave             uevent
-> hda_reg             simple_clk_stop_capable  wake_capable
-> high_PHY_capable    sink-dp1
-> index_reg           sink-dp3
-> 
-> So I would think we *do* create a new device for each slave instead of using
-> the one that's already exposed by ACPI.
-> 
-> > 
-> > For master yes we can skip the device creation, it was done for
-> > consistency sake of having these properties ties into sys/bus/soundwire/
-> > 
-> > I don't mind if they are shown up in respective device node (PCI/platform
-> > etc) /sys/bus/foo/device/<>
-> > 
-> > But for creating subdirectories you would need the new dpX devices.
-> 
-> yes, that's agreed.
+  ASoC: sprd: Add reserved DMA memory support (2019-05-06 22:48:03 +0900)
 
--- 
-~Vinod
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.2-2
+
+for you to fetch changes up to ce38a75089f70f6380fc63a5478a7659b4eb3f47:
+
+  ASoC: SOF: core: fix undefined nocodec reference (2019-05-08 15:42:00 +0900)
+
+----------------------------------------------------------------
+ASoC: Fixes for v5.2
+
+A bunch of driver specific fixes that came in since the initial pull
+request for v5.2, mainly warning fixes for the newly added Sound Open
+Firmware code which people appeared to only start looking at after I'd
+sent the pull request.
+
+----------------------------------------------------------------
+Curtis Malainey (1):
+      ASoC: RT5677-SPI: Disable 16Bit SPI Transfers
+
+Jon Hunter (1):
+      ASoC: max98090: Fix restore of DAPM Muxes
+
+Olivier Moysan (2):
+      ASoC: stm32: spdifrx: update pcm hardware constraints
+      ASoC: stm32: spdifrx: change trace level on iec control
+
+Pierre-Louis Bossart (2):
+      ASoC: SOF: xtensa: fix undefined references
+      ASoC: SOF: core: fix undefined nocodec reference
+
+Randy Dunlap (1):
+      ASoC: sound/soc/sof/: fix kconfig dependency warning
+
+Takashi Iwai (4):
+      ASoC: da7219: Fix a compile warning at CONFIG_COMMON_CLK=n
+      ASoC: SOF: Fix a compile warning with CONFIG_PCI=n
+      ASoC: rockchip: Fix an uninitialized variable compile warning
+      ASoC: SOF: Propagate sof_get_ctrl_copy_params() error properly
+
+ sound/soc/codecs/da7219.c         |  2 ++
+ sound/soc/codecs/max98090.c       | 12 ++++++------
+ sound/soc/codecs/rt5677-spi.c     | 35 ++++++++++++++++-------------------
+ sound/soc/rockchip/rockchip_pdm.c |  2 +-
+ sound/soc/sof/Kconfig             |  2 +-
+ sound/soc/sof/core.c              | 10 +++++-----
+ sound/soc/sof/intel/Kconfig       |  2 +-
+ sound/soc/sof/ipc.c               | 10 +++++++---
+ sound/soc/sof/ops.c               |  2 +-
+ sound/soc/stm/stm32_spdifrx.c     |  5 +++--
+ 10 files changed, 43 insertions(+), 39 deletions(-)
+
+--TIr7t44h4GvinQKN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzSiFkACgkQJNaLcl1U
+h9ADzgf/YywBjk4cXfFUzyQy9XFAQ0MdzX0H0G6egowYaMvOXhBZ0NKX9twzC8fL
+XsmwKKWeWi3hJ348GDhjvPjJCWyGjeWdqbuExUSP8Wnq2bhut6oUOjbgZyXCxlSb
+3IfDAzpQfOqBwHKPKTB6nRKFRxZCrKq3RxrH3RX7mwKDm7zR981ReCEr7+6Fe5w4
+LGmtnHJmaIT8u+M9d0WmclLvMieDuJssEAEScFiPxhGEINVSNoIXn3lTOHDYDgqK
+Br4DvK3n42U7JDEWpQRWDG0xGCmEvf9C0+ROKeXzLtoM8D+/Cm80J2qVtOPtDqh9
+6ImdxnKRvnky+1sQLyBOeS1N38O6FQ==
+=aIqx
+-----END PGP SIGNATURE-----
+
+--TIr7t44h4GvinQKN--
+
+--===============2960650980195246025==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2960650980195246025==--
