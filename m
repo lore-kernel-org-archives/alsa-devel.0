@@ -1,22 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: remove reference to the current substream" to the asoc tree
-Date: Wed,  8 May 2019 10:01:28 +0100 (BST)
-Message-ID: <20190508090129.00B9A440035@finisterre.sirena.org.uk>
-References: <20190506095815.24578-3-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190506095815.24578-3-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
+Subject: Applied "ASoC: stm32: i2s: update pcm hardware constraints" to the
+ asoc tree
+Date: Wed,  8 May 2019 10:01:30 +0100 (BST)
+Message-ID: <20190508090130.165F0440039@finisterre.sirena.org.uk>
+References: <1557147252-18679-2-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1557147252-18679-2-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: remove reference to the current substream
+   ASoC: stm32: i2s: update pcm hardware constraints
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,144 +48,35 @@ to this mail.
 Thanks,
 Mark
 
->From 3fcf94ef4d418668fa66e33ce9aabb05689b55f6 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 6 May 2019 11:58:13 +0200
-Subject: [PATCH] ASoC: hdmi-codec: remove reference to the current substream
+>From 4fc19fffaaf87335aafaeb059a561ef91aa6031c Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 6 May 2019 14:54:11 +0200
+Subject: [PATCH] ASoC: stm32: i2s: update pcm hardware constraints
 
-If the hdmi-codec is on a codec-to-codec link, the substream pointer
-it receives is completely made up by snd_soc_dai_link_event().
-The pointer will be different between startup() and shutdown().
+- Set period minimum size. Ensure at least 5ms period
+up to 48kHz/16 bits to prevent underrun/overrun.
+- Remove MDMA constraints on period maximum size and
+set period maximum to half the buffer maximum size.
 
-The hdmi-codec complains when this happens even if it is not really a
-problem. The current_substream pointer is not used for anything useful
-apart from getting the exclusive ownership of the device.
-
-Remove current_substream pointer and replace the exclusive locking
-mechanism with a simple variable and some atomic operations.
-
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 58 ++++++++++-------------------------
- 1 file changed, 16 insertions(+), 42 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index eb31d7eddcbf..4d32f93f6be6 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -280,11 +280,10 @@ struct hdmi_codec_priv {
- 	struct hdmi_codec_pdata hcd;
- 	struct snd_soc_dai_driver *daidrv;
- 	struct hdmi_codec_daifmt daifmt[2];
--	struct mutex current_stream_lock;
--	struct snd_pcm_substream *current_stream;
- 	uint8_t eld[MAX_ELD_BYTES];
- 	struct snd_pcm_chmap *chmap_info;
- 	unsigned int chmap_idx;
-+	unsigned long busy;
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 97d5e9901a0e..8ee697ff1f86 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -731,7 +731,8 @@ static const struct snd_soc_dai_ops stm32_i2s_pcm_dai_ops = {
+ static const struct snd_pcm_hardware stm32_i2s_pcm_hw = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_MMAP,
+ 	.buffer_bytes_max = 8 * PAGE_SIZE,
+-	.period_bytes_max = 2048,
++	.period_bytes_min = 1024,
++	.period_bytes_max = 4 * PAGE_SIZE,
+ 	.periods_min = 2,
+ 	.periods_max = 8,
  };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -392,42 +391,22 @@ static int hdmi_codec_chmap_ctl_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
--				 struct snd_soc_dai *dai)
--{
--	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
--	int ret = 0;
--
--	mutex_lock(&hcp->current_stream_lock);
--	if (!hcp->current_stream) {
--		hcp->current_stream = substream;
--	} else if (hcp->current_stream != substream) {
--		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
--		ret = -EINVAL;
--	}
--	mutex_unlock(&hcp->current_stream_lock);
--
--	return ret;
--}
--
- static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	int ret = 0;
- 
--	ret = hdmi_codec_new_stream(substream, dai);
--	if (ret)
--		return ret;
-+	ret = test_and_set_bit(0, &hcp->busy);
-+	if (ret) {
-+		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
-+		return -EINVAL;
-+	}
- 
- 	if (hcp->hcd.ops->audio_startup) {
- 		ret = hcp->hcd.ops->audio_startup(dai->dev->parent, hcp->hcd.data);
--		if (ret) {
--			mutex_lock(&hcp->current_stream_lock);
--			hcp->current_stream = NULL;
--			mutex_unlock(&hcp->current_stream_lock);
--			return ret;
--		}
-+		if (ret)
-+			goto err;
- 	}
- 
- 	if (hcp->hcd.ops->get_eld) {
-@@ -437,17 +416,18 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 		if (!ret) {
- 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
- 							hcp->eld);
--			if (ret) {
--				mutex_lock(&hcp->current_stream_lock);
--				hcp->current_stream = NULL;
--				mutex_unlock(&hcp->current_stream_lock);
--				return ret;
--			}
-+			if (ret)
-+				goto err;
- 		}
- 		/* Select chmap supported */
- 		hdmi_codec_eld_chmap(hcp);
- 	}
- 	return 0;
-+
-+err:
-+	/* Release the exclusive lock on error */
-+	clear_bit(0, &hcp->busy);
-+	return ret;
- }
- 
- static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
-@@ -455,14 +435,10 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 
--	WARN_ON(hcp->current_stream != substream);
--
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
- 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
- 
--	mutex_lock(&hcp->current_stream_lock);
--	hcp->current_stream = NULL;
--	mutex_unlock(&hcp->current_stream_lock);
-+	clear_bit(0, &hcp->busy);
- }
- 
- static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
-@@ -761,8 +737,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	hcp->hcd = *hcd;
--	mutex_init(&hcp->current_stream_lock);
--
- 	hcp->daidrv = devm_kcalloc(dev, dai_count, sizeof(*hcp->daidrv),
- 				   GFP_KERNEL);
- 	if (!hcp->daidrv)
 -- 
 2.20.1
