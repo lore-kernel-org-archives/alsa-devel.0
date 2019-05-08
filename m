@@ -1,29 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: manage identification registers" to the
- asoc tree
-Date: Wed,  8 May 2019 10:01:27 +0100 (BST)
-Message-ID: <20190508090127.495B0440017@finisterre.sirena.org.uk>
-References: <1557147252-18679-3-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1557147252-18679-3-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: hdmi-codec: remove reference to the current substream" to the asoc tree
+Date: Wed,  8 May 2019 10:01:28 +0100 (BST)
+Message-ID: <20190508090129.00B9A440035@finisterre.sirena.org.uk>
+References: <20190506095815.24578-3-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190506095815.24578-3-jbrunet@baylibre.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: manage identification registers
+   ASoC: hdmi-codec: remove reference to the current substream
 
 has been applied to the asoc tree at
 
@@ -48,134 +37,144 @@ to this mail.
 Thanks,
 Mark
 
->From 71ed4bddde08285cd02d6d28c861ea1815d67476 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 6 May 2019 14:54:12 +0200
-Subject: [PATCH] ASoC: stm32: i2s: manage identification registers
+>From 3fcf94ef4d418668fa66e33ce9aabb05689b55f6 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:13 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove reference to the current substream
 
-Add support of identification registers in STM32 I2S.
+If the hdmi-codec is on a codec-to-codec link, the substream pointer
+it receives is completely made up by snd_soc_dai_link_event().
+The pointer will be different between startup() and shutdown().
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+The hdmi-codec complains when this happens even if it is not really a
+problem. The current_substream pointer is not used for anything useful
+apart from getting the exclusive ownership of the device.
+
+Remove current_substream pointer and replace the exclusive locking
+mechanism with a simple variable and some atomic operations.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 60 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 57 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 58 ++++++++++-------------------------
+ 1 file changed, 16 insertions(+), 42 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 97d5e9901a0e..9755c49ae7dc 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -16,6 +16,7 @@
-  * details.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/module.h>
-@@ -37,6 +38,10 @@
- #define STM32_I2S_TXDR_REG	0X20
- #define STM32_I2S_RXDR_REG	0x30
- #define STM32_I2S_CGFR_REG	0X50
-+#define STM32_I2S_HWCFGR_REG	0x3F0
-+#define STM32_I2S_VERR_REG	0x3F4
-+#define STM32_I2S_IPIDR_REG	0x3F8
-+#define STM32_I2S_SIDR_REG	0x3FC
- 
- /* Bit definition for SPI2S_CR1 register */
- #define I2S_CR1_SPE		BIT(0)
-@@ -143,6 +148,23 @@
- #define I2S_CGFR_ODD		BIT(I2S_CGFR_ODD_SHIFT)
- #define I2S_CGFR_MCKOE		BIT(25)
- 
-+/* Registers below apply to I2S version 1.1 and more */
-+
-+/* Bit definition for SPI_HWCFGR register */
-+#define I2S_HWCFGR_I2S_SUPPORT_MASK	GENMASK(15, 12)
-+
-+/* Bit definition for SPI_VERR register */
-+#define I2S_VERR_MIN_MASK	GENMASK(3, 0)
-+#define I2S_VERR_MAJ_MASK	GENMASK(7, 4)
-+
-+/* Bit definition for SPI_IPIDR register */
-+#define I2S_IPIDR_ID_MASK	GENMASK(31, 0)
-+
-+/* Bit definition for SPI_SIDR register */
-+#define I2S_SIDR_ID_MASK	GENMASK(31, 0)
-+
-+#define I2S_IPIDR_NUMBER	0x00130022
-+
- enum i2s_master_mode {
- 	I2S_MS_NOT_SET,
- 	I2S_MS_MASTER,
-@@ -280,6 +302,10 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
- 	case STM32_I2S_SR_REG:
- 	case STM32_I2S_RXDR_REG:
- 	case STM32_I2S_CGFR_REG:
-+	case STM32_I2S_HWCFGR_REG:
-+	case STM32_I2S_VERR_REG:
-+	case STM32_I2S_IPIDR_REG:
-+	case STM32_I2S_SIDR_REG:
- 		return true;
- 	default:
- 		return false;
-@@ -711,10 +737,11 @@ static const struct regmap_config stm32_h7_i2s_regmap_conf = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
--	.max_register = STM32_I2S_CGFR_REG,
-+	.max_register = STM32_I2S_SIDR_REG,
- 	.readable_reg = stm32_i2s_readable_reg,
- 	.volatile_reg = stm32_i2s_volatile_reg,
- 	.writeable_reg = stm32_i2s_writeable_reg,
-+	.num_reg_defaults_raw = STM32_I2S_SIDR_REG / sizeof(u32) + 1,
- 	.fast_io = true,
- 	.cache_type = REGCACHE_FLAT,
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index eb31d7eddcbf..4d32f93f6be6 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -280,11 +280,10 @@ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+ 	struct snd_soc_dai_driver *daidrv;
+ 	struct hdmi_codec_daifmt daifmt[2];
+-	struct mutex current_stream_lock;
+-	struct snd_pcm_substream *current_stream;
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
++	unsigned long busy;
  };
-@@ -864,6 +891,7 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
- static int stm32_i2s_probe(struct platform_device *pdev)
+ 
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -392,42 +391,22 @@ static int hdmi_codec_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
+-				 struct snd_soc_dai *dai)
+-{
+-	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	int ret = 0;
+-
+-	mutex_lock(&hcp->current_stream_lock);
+-	if (!hcp->current_stream) {
+-		hcp->current_stream = substream;
+-	} else if (hcp->current_stream != substream) {
+-		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
+-		ret = -EINVAL;
+-	}
+-	mutex_unlock(&hcp->current_stream_lock);
+-
+-	return ret;
+-}
+-
+ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
  {
- 	struct stm32_i2s_data *i2s;
-+	u32 val;
- 	int ret;
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
  
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
-@@ -902,8 +930,34 @@ static int stm32_i2s_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* Set SPI/I2S in i2s mode */
--	return regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
--				  I2S_CGFR_I2SMOD, I2S_CGFR_I2SMOD);
-+	ret = regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
-+				 I2S_CGFR_I2SMOD, I2S_CGFR_I2SMOD);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(i2s->regmap, STM32_I2S_IPIDR_REG, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val == I2S_IPIDR_NUMBER) {
-+		ret = regmap_read(i2s->regmap, STM32_I2S_HWCFGR_REG, &val);
-+		if (ret)
-+			return ret;
-+
-+		if (!FIELD_GET(I2S_HWCFGR_I2S_SUPPORT_MASK, val)) {
-+			dev_err(&pdev->dev,
-+				"Device does not support i2s mode\n");
-+			return -EPERM;
-+		}
-+
-+		ret = regmap_read(i2s->regmap, STM32_I2S_VERR_REG, &val);
-+
-+		dev_dbg(&pdev->dev, "I2S version: %lu.%lu registered\n",
-+			FIELD_GET(I2S_VERR_MAJ_MASK, val),
-+			FIELD_GET(I2S_VERR_MIN_MASK, val));
+-	ret = hdmi_codec_new_stream(substream, dai);
+-	if (ret)
+-		return ret;
++	ret = test_and_set_bit(0, &hcp->busy);
++	if (ret) {
++		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
++		return -EINVAL;
 +	}
+ 
+ 	if (hcp->hcd.ops->audio_startup) {
+ 		ret = hcp->hcd.ops->audio_startup(dai->dev->parent, hcp->hcd.data);
+-		if (ret) {
+-			mutex_lock(&hcp->current_stream_lock);
+-			hcp->current_stream = NULL;
+-			mutex_unlock(&hcp->current_stream_lock);
+-			return ret;
+-		}
++		if (ret)
++			goto err;
+ 	}
+ 
+ 	if (hcp->hcd.ops->get_eld) {
+@@ -437,17 +416,18 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 		if (!ret) {
+ 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
+ 							hcp->eld);
+-			if (ret) {
+-				mutex_lock(&hcp->current_stream_lock);
+-				hcp->current_stream = NULL;
+-				mutex_unlock(&hcp->current_stream_lock);
+-				return ret;
+-			}
++			if (ret)
++				goto err;
+ 		}
+ 		/* Select chmap supported */
+ 		hdmi_codec_eld_chmap(hcp);
+ 	}
+ 	return 0;
 +
++err:
++	/* Release the exclusive lock on error */
++	clear_bit(0, &hcp->busy);
 +	return ret;
  }
  
- MODULE_DEVICE_TABLE(of, stm32_i2s_ids);
+ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+@@ -455,14 +435,10 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 
+-	WARN_ON(hcp->current_stream != substream);
+-
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+ 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
+ 
+-	mutex_lock(&hcp->current_stream_lock);
+-	hcp->current_stream = NULL;
+-	mutex_unlock(&hcp->current_stream_lock);
++	clear_bit(0, &hcp->busy);
+ }
+ 
+ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -761,8 +737,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	hcp->hcd = *hcd;
+-	mutex_init(&hcp->current_stream_lock);
+-
+ 	hcp->daidrv = devm_kcalloc(dev, dai_count, sizeof(*hcp->daidrv),
+ 				   GFP_KERNEL);
+ 	if (!hcp->daidrv)
 -- 
 2.20.1
