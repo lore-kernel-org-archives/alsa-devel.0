@@ -1,39 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt6358: save output volume
-	for mixer controls" to the asoc tree
-Date: Wed,  8 May 2019 10:01:31 +0100 (BST)
-Message-ID: <20190508090131.CB8F044000C@finisterre.sirena.org.uk>
-References: <20190507101220.182466-3-tzungbi@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 553A5F8973A
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 11:01:50 +0200 (CEST)
-In-Reply-To: <20190507101220.182466-3-tzungbi@google.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, tiwai@suse.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, dgreid@google.com
+Subject: Applied "ASoC: hdmi-codec: remove ops dependency on the dai id" to the asoc tree
+Date: Wed,  8 May 2019 10:01:27 +0100 (BST)
+Message-ID: <20190508090127.D2C36440033@finisterre.sirena.org.uk>
+References: <20190506095815.24578-5-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190506095815.24578-5-jbrunet@baylibre.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt6358: save output volume for mixer controls
+   ASoC: hdmi-codec: remove ops dependency on the dai id
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -54,165 +37,249 @@ to this mail.
 Thanks,
 Mark
 
->From bbb56537a3279f7221e253afc29e834a3d99662f Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Tue, 7 May 2019 18:12:19 +0800
-Subject: [PATCH] ASoC: mediatek: mt6358: save output volume for mixer controls
+>From 0cf4610b9f297e570da4d98514b310f076ecc8ab Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:15 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove ops dependency on the dai id
 
-Output volume settings from mixer controls would be lost.
+The dependency on the dai_id can be removed by setting different ops
+for the i2s and spdif dai and storing the dai format information in
+each dai structure. It simplies the code a bit.
 
-Imagine that "Headphone Volume" has set to -10dB via amixer:
-- in mtk_hp_enable()
-  - hp_store_gain() saves the volume setting -10dB from regmap_read()
-    to ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL]
-  - headset_volume_ramp() ramps up from -10dB to -10dB
-- in mtk_hp_disable()
-  - headset_volume_ramp() ramps down from -10dB to -40dB
-
-Next time in mtk_hp_enable(), hp_store_gain() would save -40dB but
-not -10dB.  As a result, headset_volume_ramp() would ramp from -10dB to
--40dB (which is mute).
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mt6358.c | 91 ++++++++++++++++++++++-----------------
- 1 file changed, 51 insertions(+), 40 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 100 +++++++++++++++++++++++-----------
+ 1 file changed, 67 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
-index 96547ae50a5d..44edbda8afcc 100644
---- a/sound/soc/codecs/mt6358.c
-+++ b/sound/soc/codecs/mt6358.c
-@@ -320,32 +320,6 @@ enum {
- #define DL_GAIN_N_40DB_REG (DL_GAIN_N_40DB << 7 | DL_GAIN_N_40DB)
- #define DL_GAIN_REG_MASK 0x0f9f
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 9408e6bc4d3e..90a892766625 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -278,7 +278,6 @@ static const struct hdmi_codec_cea_spk_alloc hdmi_codec_channel_alloc[] = {
  
--static void lo_store_gain(struct mt6358_priv *priv)
--{
--	unsigned int reg;
--	unsigned int gain_l, gain_r;
--
--	regmap_read(priv->regmap, MT6358_ZCD_CON1, &reg);
--	gain_l = (reg >> RG_AUDLOLGAIN_SFT) & RG_AUDLOLGAIN_MASK;
--	gain_r = (reg >> RG_AUDLORGAIN_SFT) & RG_AUDLORGAIN_MASK;
--
--	priv->ana_gain[AUDIO_ANALOG_VOLUME_LINEOUTL] = gain_l;
--	priv->ana_gain[AUDIO_ANALOG_VOLUME_LINEOUTR] = gain_r;
--}
--
--static void hp_store_gain(struct mt6358_priv *priv)
--{
--	unsigned int reg;
--	unsigned int gain_l, gain_r;
--
--	regmap_read(priv->regmap, MT6358_ZCD_CON2, &reg);
--	gain_l = (reg >> RG_AUDHPLGAIN_SFT) & RG_AUDHPLGAIN_MASK;
--	gain_r = (reg >> RG_AUDHPRGAIN_SFT) & RG_AUDHPRGAIN_MASK;
--
--	priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] = gain_l;
--	priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] = gain_r;
--}
--
- static void hp_zcd_disable(struct mt6358_priv *priv)
+ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+-	struct hdmi_codec_daifmt daifmt[2];
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
+@@ -445,6 +444,7 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
  {
- 	regmap_write(priv->regmap, MT6358_ZCD_CON0, 0x0000);
-@@ -439,20 +413,62 @@ static void headset_volume_ramp(struct mt6358_priv *priv, int from, int to)
- 	}
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
++	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
+ 	struct hdmi_codec_params hp = {
+ 		.iec = {
+ 			.status = { 0 },
+@@ -489,28 +489,27 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 	hp.channels = params_channels(params);
+ 
+ 	return hcp->hcd.ops->hw_params(dai->dev->parent, hcp->hcd.data,
+-				       &hcp->daifmt[dai->id], &hp);
++				       cf, &hp);
  }
  
-+static int mt6358_put_volsw(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+			snd_soc_kcontrol_component(kcontrol);
-+	struct mt6358_priv *priv = snd_soc_component_get_drvdata(component);
-+	struct soc_mixer_control *mc =
-+			(struct soc_mixer_control *)kcontrol->private_value;
-+	unsigned int reg;
+-static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
+-			      unsigned int fmt)
++static int hdmi_codec_i2s_set_fmt(struct snd_soc_dai *dai,
++				  unsigned int fmt)
+ {
+-	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	struct hdmi_codec_daifmt cf = { 0 };
++	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
+ 
+-	if (dai->id == DAI_ID_SPDIF)
+-		return 0;
++	/* Reset daifmt */
++	memset(cf, 0, sizeof(*cf));
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		cf.bit_clk_master = 1;
+-		cf.frame_clk_master = 1;
++		cf->bit_clk_master = 1;
++		cf->frame_clk_master = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+-		cf.frame_clk_master = 1;
++		cf->frame_clk_master = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+-		cf.bit_clk_master = 1;
++		cf->bit_clk_master = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		break;
+@@ -522,43 +521,41 @@ static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		cf.frame_clk_inv = 1;
++		cf->frame_clk_inv = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		cf.bit_clk_inv = 1;
++		cf->bit_clk_inv = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+-		cf.frame_clk_inv = 1;
+-		cf.bit_clk_inv = 1;
++		cf->frame_clk_inv = 1;
++		cf->bit_clk_inv = 1;
+ 		break;
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		cf.fmt = HDMI_I2S;
++		cf->fmt = HDMI_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		cf.fmt = HDMI_DSP_A;
++		cf->fmt = HDMI_DSP_A;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		cf.fmt = HDMI_DSP_B;
++		cf->fmt = HDMI_DSP_B;
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+-		cf.fmt = HDMI_RIGHT_J;
++		cf->fmt = HDMI_RIGHT_J;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		cf.fmt = HDMI_LEFT_J;
++		cf->fmt = HDMI_LEFT_J;
+ 		break;
+ 	case SND_SOC_DAIFMT_AC97:
+-		cf.fmt = HDMI_AC97;
++		cf->fmt = HDMI_AC97;
+ 		break;
+ 	default:
+ 		dev_err(dai->dev, "Invalid DAI interface format\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	hcp->daifmt[dai->id] = cf;
+-
+ 	return 0;
+ }
+ 
+@@ -573,14 +570,20 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops hdmi_dai_ops = {
++static const struct snd_soc_dai_ops hdmi_codec_i2s_dai_ops = {
+ 	.startup	= hdmi_codec_startup,
+ 	.shutdown	= hdmi_codec_shutdown,
+ 	.hw_params	= hdmi_codec_hw_params,
+-	.set_fmt	= hdmi_codec_set_fmt,
++	.set_fmt	= hdmi_codec_i2s_set_fmt,
+ 	.digital_mute	= hdmi_codec_digital_mute,
+ };
+ 
++static const struct snd_soc_dai_ops hdmi_codec_spdif_dai_ops = {
++	.startup	= hdmi_codec_startup,
++	.shutdown	= hdmi_codec_shutdown,
++	.hw_params	= hdmi_codec_hw_params,
++	.digital_mute	= hdmi_codec_digital_mute,
++};
+ 
+ #define HDMI_RATES	(SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
+ 			 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
+@@ -648,20 +651,52 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ static int hdmi_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_dapm_context *dapm;
++	struct hdmi_codec_daifmt *daifmt;
+ 	struct snd_soc_dapm_route route = {
+ 		.sink = "TX",
+ 		.source = dai->driver->playback.stream_name,
+ 	};
 +	int ret;
-+
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+	if (ret < 0)
+ 
+ 	dapm = snd_soc_component_get_dapm(dai->component);
++	ret = snd_soc_dapm_add_routes(dapm, &route, 1);
++	if (ret)
 +		return ret;
 +
-+	switch (mc->reg) {
-+	case MT6358_ZCD_CON2:
-+		regmap_read(priv->regmap, MT6358_ZCD_CON2, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] =
-+			(reg >> RG_AUDHPLGAIN_SFT) & RG_AUDHPLGAIN_MASK;
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] =
-+			(reg >> RG_AUDHPRGAIN_SFT) & RG_AUDHPRGAIN_MASK;
-+		break;
-+	case MT6358_ZCD_CON1:
-+		regmap_read(priv->regmap, MT6358_ZCD_CON1, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_LINEOUTL] =
-+			(reg >> RG_AUDLOLGAIN_SFT) & RG_AUDLOLGAIN_MASK;
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_LINEOUTR] =
-+			(reg >> RG_AUDLORGAIN_SFT) & RG_AUDLORGAIN_MASK;
-+		break;
-+	case MT6358_ZCD_CON3:
-+		regmap_read(priv->regmap, MT6358_ZCD_CON3, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_HSOUTL] =
-+			(reg >> RG_AUDHSGAIN_SFT) & RG_AUDHSGAIN_MASK;
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_HSOUTR] =
-+			(reg >> RG_AUDHSGAIN_SFT) & RG_AUDHSGAIN_MASK;
-+		break;
-+	}
-+
-+	return ret;
++	daifmt = kzalloc(sizeof(*daifmt), GFP_KERNEL);
++	if (!daifmt)
++		return -ENOMEM;
+ 
+-	return snd_soc_dapm_add_routes(dapm, &route, 1);
++	dai->playback_dma_data = daifmt;
++	return 0;
 +}
 +
- static const DECLARE_TLV_DB_SCALE(playback_tlv, -1000, 100, 0);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 600, 0);
++static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
++{
++	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
++	int ret;
++
++	ret = hdmi_dai_probe(dai);
++	if (ret)
++		return ret;
++
++	cf = dai->playback_dma_data;
++	cf->fmt = HDMI_SPDIF;
++
++	return 0;
++}
++
++static int hdmi_codec_dai_remove(struct snd_soc_dai *dai)
++{
++	kfree(dai->playback_dma_data);
++	return 0;
+ }
  
- static const struct snd_kcontrol_new mt6358_snd_controls[] = {
- 	/* dl pga gain */
--	SOC_DOUBLE_TLV("Headphone Volume",
--		       MT6358_ZCD_CON2, 0, 7, 0x12, 1,
--		       playback_tlv),
--	SOC_DOUBLE_TLV("Lineout Volume",
--		       MT6358_ZCD_CON1, 0, 7, 0x12, 1,
--		       playback_tlv),
--	SOC_SINGLE_TLV("Handset Volume",
--		       MT6358_ZCD_CON3, 0, 0x12, 1,
--		       playback_tlv),
-+	SOC_DOUBLE_EXT_TLV("Headphone Volume",
-+			   MT6358_ZCD_CON2, 0, 7, 0x12, 1,
-+			   snd_soc_get_volsw, mt6358_put_volsw, playback_tlv),
-+	SOC_DOUBLE_EXT_TLV("Lineout Volume",
-+			   MT6358_ZCD_CON1, 0, 7, 0x12, 1,
-+			   snd_soc_get_volsw, mt6358_put_volsw, playback_tlv),
-+	SOC_SINGLE_EXT_TLV("Handset Volume",
-+			   MT6358_ZCD_CON3, 0, 0x12, 1,
-+			   snd_soc_get_volsw, mt6358_put_volsw, playback_tlv),
- 	/* ul pga gain */
- 	SOC_DOUBLE_R_TLV("PGA Volume",
- 			 MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
-@@ -831,8 +847,6 @@ static int mtk_hp_enable(struct mt6358_priv *priv)
- 	/* Reduce ESD resistance of AU_REFN */
- 	regmap_write(priv->regmap, MT6358_AUDDEC_ANA_CON2, 0x4000);
+ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 	.name = "i2s-hifi",
+ 	.id = DAI_ID_I2S,
+ 	.probe = hdmi_dai_probe,
++	.remove = hdmi_codec_dai_remove,
+ 	.playback = {
+ 		.stream_name = "I2S Playback",
+ 		.channels_min = 2,
+@@ -670,14 +705,15 @@ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 		.formats = I2S_FORMATS,
+ 		.sig_bits = 24,
+ 	},
+-	.ops = &hdmi_dai_ops,
++	.ops = &hdmi_codec_i2s_dai_ops,
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
  
--	/* save target gain to restore after hardware open complete */
--	hp_store_gain(priv);
- 	/* Set HPR/HPL gain as minimum (~ -40dB) */
- 	regmap_write(priv->regmap, MT6358_ZCD_CON2, DL_GAIN_N_40DB_REG);
+ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 	.name = "spdif-hifi",
+ 	.id = DAI_ID_SPDIF,
+-	.probe = hdmi_dai_probe,
++	.probe = hdmi_dai_spdif_probe,
++	.remove = hdmi_codec_dai_remove,
+ 	.playback = {
+ 		.stream_name = "SPDIF Playback",
+ 		.channels_min = 2,
+@@ -685,7 +721,7 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 		.rates = HDMI_RATES,
+ 		.formats = SPDIF_FORMATS,
+ 	},
+-	.ops = &hdmi_dai_ops,
++	.ops = &hdmi_codec_spdif_dai_ops,
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
  
-@@ -1042,8 +1056,6 @@ static int mtk_hp_spk_enable(struct mt6358_priv *priv)
- 	/* Reduce ESD resistance of AU_REFN */
- 	regmap_write(priv->regmap, MT6358_AUDDEC_ANA_CON2, 0x4000);
+@@ -747,10 +783,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		i++;
+ 	}
  
--	/* save target gain to restore after hardware open complete */
--	hp_store_gain(priv);
- 	/* Set HPR/HPL gain to -10dB */
- 	regmap_write(priv->regmap, MT6358_ZCD_CON2, DL_GAIN_N_10DB_REG);
+-	if (hcd->spdif) {
++	if (hcd->spdif)
+ 		daidrv[i] = hdmi_spdif_dai;
+-		hcp->daifmt[DAI_ID_SPDIF].fmt = HDMI_SPDIF;
+-	}
  
-@@ -1103,7 +1115,6 @@ static int mtk_hp_spk_enable(struct mt6358_priv *priv)
- 	hp_main_output_ramp(priv, true);
+ 	dev_set_drvdata(dev, hcp);
  
- 	/* Set LO gain as minimum (~ -40dB) */
--	lo_store_gain(priv);
- 	regmap_write(priv->regmap, MT6358_ZCD_CON1, DL_GAIN_N_40DB_REG);
- 	/* apply volume setting */
- 	headset_volume_ramp(priv,
 -- 
 2.20.1
