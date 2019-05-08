@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec: hdac_hdmi: no checking monitor
-	in hw_params" to the asoc tree
-Date: Wed,  8 May 2019 10:01:30 +0100 (BST)
-Message-ID: <20190508090130.ABCEE44003B@finisterre.sirena.org.uk>
-References: <1557210791-20332-1-git-send-email-libin.yang@intel.com>
+Subject: Applied "ASoC: mediatek: mt6358: initialize setting
+	when ramping volume" to the asoc tree
+Date: Wed,  8 May 2019 10:01:32 +0100 (BST)
+Message-ID: <20190508090132.61F98440040@finisterre.sirena.org.uk>
+References: <20190507101220.182466-2-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AD3AF8973D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05F95F8973C
  for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 11:01:50 +0200 (CEST)
-In-Reply-To: <1557210791-20332-1-git-send-email-libin.yang@intel.com>
+In-Reply-To: <20190507101220.182466-2-tzungbi@google.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Libin Yang <libin.yang@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, hui.wang@canonical.com, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, tiwai@suse.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec: hdac_hdmi: no checking monitor in hw_params
+   ASoC: mediatek: mt6358: initialize setting when ramping volume
 
 has been applied to the asoc tree at
 
@@ -55,55 +54,51 @@ to this mail.
 Thanks,
 Mark
 
->From 939507f2779836919271ba0311723d1001d3993b Mon Sep 17 00:00:00 2001
-From: Libin Yang <libin.yang@intel.com>
-Date: Tue, 7 May 2019 14:33:11 +0800
-Subject: [PATCH] ASoC: codec: hdac_hdmi: no checking monitor in hw_params
+>From bdb8fa6b09a801a6cbe3c2487f0228860f9c5aba Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Tue, 7 May 2019 18:12:18 +0800
+Subject: [PATCH] ASoC: mediatek: mt6358: initialize setting when ramping
+ volume
 
-Some userspace apps, like pulseaudio, may call open, hw_params,
-prepare to judge whether the pcm is ready or not. Current hdac_hdmi
-will return -ENODEV if monitor is not connected, which will cause
-the apps believe the pcm is not ready. Actually PCM for hdmi is ready,
-even the monitor is not connected.
+Mt6358 ramps up from the smallest volume (i.e. -10dB) to target dB when
+opening and ramps down from target dB to mute (i.e. -40dB) when closing.
+If target is equal to -10dB when opening, headset_volume_ramp() simply
+leaves current setting (which may not be -10dB) unchanged.
 
-This patch removes the check of monitor presence in hw_params, just like
-what the legacy HD-Audio driver does.
+Execute the loop at least once to initialize the setting to the
+starting point (i.e. from).
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ sound/soc/codecs/mt6358.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 4de1fbfa8827..660e0587f399 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -455,24 +455,11 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
+diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
+index d4c4fee6d3d9..96547ae50a5d 100644
+--- a/sound/soc/codecs/mt6358.c
++++ b/sound/soc/codecs/mt6358.c
+@@ -405,10 +405,9 @@ static bool is_valid_hp_pga_idx(int reg_idx)
+ 	       reg_idx == DL_GAIN_N_40DB;
+ }
+ 
+-static void headset_volume_ramp(struct mt6358_priv *priv,
+-				int from, int to)
++static void headset_volume_ramp(struct mt6358_priv *priv, int from, int to)
  {
- 	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
--	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_dai_port_map *dai_map;
--	struct hdac_hdmi_port *port;
- 	struct hdac_hdmi_pcm *pcm;
- 	int format;
+-	int offset = 0, count = 1, reg_idx;
++	int offset = 0, count = 0, reg_idx;
  
- 	dai_map = &hdmi->dai_map[dai->id];
--	port = dai_map->port;
--
--	if (!port)
--		return -ENODEV;
--
--	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
--		dev_err(&hdev->dev,
--			"device is not configured for this pin:port%d:%d\n",
--					port->pin->nid, port->id);
--		return -ENODEV;
--	}
+ 	if (!is_valid_hp_pga_idx(from) || !is_valid_hp_pga_idx(to))
+ 		dev_warn(priv->dev, "%s(), volume index is not valid, from %d, to %d\n",
+@@ -422,7 +421,7 @@ static void headset_volume_ramp(struct mt6358_priv *priv,
+ 	else
+ 		offset = from - to;
  
- 	format = snd_hdac_calc_stream_format(params_rate(hparams),
- 			params_channels(hparams), params_format(hparams),
+-	while (offset > 0) {
++	while (offset >= 0) {
+ 		if (to > from)
+ 			reg_idx = from + count;
+ 		else
 -- 
 2.20.1
