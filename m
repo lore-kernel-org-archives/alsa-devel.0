@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "sound: soc-acpi: fix implicit header use of module.h/export.h" to the asoc tree
-Date: Wed,  8 May 2019 10:01:24 +0100 (BST)
-Message-ID: <20190508090124.34D1C44000C@finisterre.sirena.org.uk>
-References: <1555168518-15287-1-git-send-email-paul.gortmaker@windriver.com>
+Subject: Applied "ASoC: hdmi-codec: remove reference to the dai drivers in the private data" to the asoc tree
+Date: Wed,  8 May 2019 10:01:28 +0100 (BST)
+Message-ID: <20190508090128.6916C440034@finisterre.sirena.org.uk>
+References: <20190506095815.24578-4-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1555168518-15287-1-git-send-email-paul.gortmaker@windriver.com>
+In-Reply-To: <20190506095815.24578-4-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   sound: soc-acpi: fix implicit header use of module.h/export.h
+   ASoC: hdmi-codec: remove reference to the dai drivers in the private data
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,79 @@ to this mail.
 Thanks,
 Mark
 
->From 473849e7f208b2d7de004c6c6c0eabe037d125ac Mon Sep 17 00:00:00 2001
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Date: Sat, 13 Apr 2019 11:15:18 -0400
-Subject: [PATCH] sound: soc-acpi: fix implicit header use of module.h/export.h
+>From 1de005d47d90343666c5cc50a50929e05e52baac Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:14 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove reference to the dai drivers in the
+ private data
 
-This file is implicitly relying on an instance of including
-module.h from <linux/acpi.h>.
+Keeping the a pointer to the dai drivers is not necessary. It is not used
+by the hdmi_codec after the probe.
 
-Ideally, header files under include/linux shouldn't be adding
-includes of other headers, in anticipation of their consumers,
-but just the headers needed for the header itself to pass
-parsing with CPP.
+Even if it was used, the 'struct snd_soc_dai_driver' can accessed through
+the 'struct snd_soc_dai' so keeping the pointer in the private data
+structure is not useful.
 
-The module.h is particularly bad in this sense, as it itself does
-include a whole bunch of other headers, due to the complexity of
-module support.
-
-Here, we make the include explicit, in order to allow the future
-removal of module.h from linux/acpi.h without causing build breakage.
-
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-acpi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/hdmi-codec.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-index 4fb29f0e561e..444ce0602f76 100644
---- a/sound/soc/soc-acpi.c
-+++ b/sound/soc/soc-acpi.c
-@@ -4,6 +4,8 @@
- //
- // Copyright (c) 2013-15, Intel Corporation.
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 4d32f93f6be6..9408e6bc4d3e 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -278,7 +278,6 @@ static const struct hdmi_codec_cea_spk_alloc hdmi_codec_channel_alloc[] = {
  
-+#include <linux/export.h>
-+#include <linux/module.h>
- #include <sound/soc-acpi.h>
+ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+-	struct snd_soc_dai_driver *daidrv;
+ 	struct hdmi_codec_daifmt daifmt[2];
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+@@ -715,6 +714,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
+ static int hdmi_codec_probe(struct platform_device *pdev)
+ {
+ 	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
++	struct snd_soc_dai_driver *daidrv;
+ 	struct device *dev = &pdev->dev;
+ 	struct hdmi_codec_priv *hcp;
+ 	int dai_count, i = 0;
+@@ -737,27 +737,25 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- struct snd_soc_acpi_mach *
+ 	hcp->hcd = *hcd;
+-	hcp->daidrv = devm_kcalloc(dev, dai_count, sizeof(*hcp->daidrv),
+-				   GFP_KERNEL);
+-	if (!hcp->daidrv)
++	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
++	if (!daidrv)
+ 		return -ENOMEM;
+ 
+ 	if (hcd->i2s) {
+-		hcp->daidrv[i] = hdmi_i2s_dai;
+-		hcp->daidrv[i].playback.channels_max =
+-			hcd->max_i2s_channels;
++		daidrv[i] = hdmi_i2s_dai;
++		daidrv[i].playback.channels_max = hcd->max_i2s_channels;
+ 		i++;
+ 	}
+ 
+ 	if (hcd->spdif) {
+-		hcp->daidrv[i] = hdmi_spdif_dai;
++		daidrv[i] = hdmi_spdif_dai;
+ 		hcp->daifmt[DAI_ID_SPDIF].fmt = HDMI_SPDIF;
+ 	}
+ 
+ 	dev_set_drvdata(dev, hcp);
+ 
+-	ret = devm_snd_soc_register_component(dev, &hdmi_driver, hcp->daidrv,
+-				     dai_count);
++	ret = devm_snd_soc_register_component(dev, &hdmi_driver, daidrv,
++					      dai_count);
+ 	if (ret) {
+ 		dev_err(dev, "%s: snd_soc_register_component() failed (%d)\n",
+ 			__func__, ret);
 -- 
 2.20.1
