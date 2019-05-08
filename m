@@ -1,44 +1,43 @@
-From: Evan Green <evgreen@chromium.org>
-Subject: Re: [PATCH v2 2/2] ASoC: Intel: Skylake: Add Cometlake PCI IDs
-Date: Wed, 8 May 2019 09:51:18 -0700
-Message-ID: <CAE=gft4sDo1cLeU8Cm1CRZu2PzVG0iu-b7UaWxWVrsUeZ=SYhQ@mail.gmail.com>
-References: <20190507215359.113378-1-evgreen@chromium.org> <20190507215359.113378-3-evgreen@chromium.org>
- <866afac2-e457-375b-d745-88952b11d75e@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: SOF: Add Comet Lake PCI IDs
+Date: Wed, 8 May 2019 12:00:15 -0500
+Message-ID: <0d2c6330-7882-a7e5-8dcb-51eec0e845ba@linux.intel.com>
+References: <20190507215359.113378-1-evgreen@chromium.org>
+ <20190507215359.113378-2-evgreen@chromium.org>
+ <cb0accd5-6b0d-065a-9b54-321252862d88@linux.intel.com>
+ <CAE=gft7PtNWzH1QYigbQvDcJwZSb7ZLWoKzurPGBnh72DYcZrw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <866afac2-e457-375b-d745-88952b11d75e@linux.intel.com>
+In-Reply-To: <CAE=gft7PtNWzH1QYigbQvDcJwZSb7ZLWoKzurPGBnh72DYcZrw@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Guenter Roeck <groeck@chromium.org>, Yu Zhao <yuzhao@google.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jenny TC <jenny.tc@intel.com>, Jie Yang <yang.jie@linux.intel.com>
+To: Evan Green <evgreen@chromium.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Ben Zhang <benzh@chromium.org>, Rajat Jain <rajatja@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 7, 2019 at 3:31 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> On 5/7/19 4:53 PM, Evan Green wrote:
-> > Add PCI IDs for Intel CometLake platforms, which from a software
-> > point of view are extremely similar to Cannonlake platforms.
->
-> Humm, I have mixed feelings here.
->
-> Yes the hardware is nearly identical, with the exception of one detail
-> that's not visible to the kernel, but there is no support for DMICs with
-> the Skylake driver w/ HDaudio, and Chrome platforms are only going with
-> SOF, so is it wise to add these two CometLake platforms to the default
-> SND_SOC_INTEL_SKYLAKE selector, which is used by a number of distributions?
->
-> I don't mind if we add those PCI IDs and people use this driver if they
-> wish to, but it may be time for an explicit opt-in? The
-> SND_SOC_INTEL_SKYLAKE definition should even be pruned to mean SKL, APL,
-> KBL and GLK, and we can add DMI-based quirks for e.g. the Up2 board and
-> GLK Chromebooks which work with SOF.
 
-I don't have the context here, so feel free to ignore me. But it seems
-like such a tiny amount of extra bits to add to make Cometlake work,
-and then there's no hassle for the distributions when Cometlake
-devices start showing up in the wild. So while things are more or less
-the same, why not continue piggypacking off the default?
-Or are you saying that the lack of DMIC support means the default
-should be to use a different driver?
--Evan
+
+On 5/8/19 11:42 AM, Evan Green wrote:
+> On Tue, May 7, 2019 at 3:14 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>>
+>> Minor nit-picks below. The Kconfig would work but select CANNONLAKE even
+>> if you don't want it.
+>>
+>>>
+>>> +config SND_SOC_SOF_COMETLAKE_LP
+>>> +     tristate
+>>> +     select SND_SOC_SOF_CANNONLAKE
+>>
+>> This should be
+>> select SND_SOF_SOF_HDA_COMMON
+> 
+> You mean SND_SOC_SOF_HDA_COMMON I assume.
+> Except that I also need &cnl_desc, so I need CANNONLAKE to be on as
+> well. Should I select them both?
+
+Ah I see. I'd rather use a different descriptor then, and make the two 
+platforms independent, as I did for CoffeeLake. You can use the same 
+descriptor for the two -H and -LP skews though.
