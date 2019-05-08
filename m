@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt6358: save PGA for mixer
-	control" to the asoc tree
-Date: Wed,  8 May 2019 10:01:31 +0100 (BST)
-Message-ID: <20190508090131.41E6044003F@finisterre.sirena.org.uk>
-References: <20190507101220.182466-4-tzungbi@google.com>
+Subject: Applied "ASoC: codec: hdac_hdmi: no checking monitor
+	in hw_params" to the asoc tree
+Date: Wed,  8 May 2019 10:01:30 +0100 (BST)
+Message-ID: <20190508090130.ABCEE44003B@finisterre.sirena.org.uk>
+References: <1557210791-20332-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA463F89726
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 11:01:44 +0200 (CEST)
-In-Reply-To: <20190507101220.182466-4-tzungbi@google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AD3AF8973D
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 11:01:50 +0200 (CEST)
+In-Reply-To: <1557210791-20332-1-git-send-email-libin.yang@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,12 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, tiwai@suse.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, dgreid@google.com
+To: Libin Yang <libin.yang@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, hui.wang@canonical.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt6358: save PGA for mixer control
+   ASoC: codec: hdac_hdmi: no checking monitor in hw_params
 
 has been applied to the asoc tree at
 
@@ -54,86 +55,55 @@ to this mail.
 Thanks,
 Mark
 
->From ec0574a6ce31f2d6640bb8a5edf98973356dd3b4 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Tue, 7 May 2019 18:12:20 +0800
-Subject: [PATCH] ASoC: mediatek: mt6358: save PGA for mixer control
+>From 939507f2779836919271ba0311723d1001d3993b Mon Sep 17 00:00:00 2001
+From: Libin Yang <libin.yang@intel.com>
+Date: Tue, 7 May 2019 14:33:11 +0800
+Subject: [PATCH] ASoC: codec: hdac_hdmi: no checking monitor in hw_params
 
-mt6358_amic_disable() resets PGA to 0.
+Some userspace apps, like pulseaudio, may call open, hw_params,
+prepare to judge whether the pcm is ready or not. Current hdac_hdmi
+will return -ENODEV if monitor is not connected, which will cause
+the apps believe the pcm is not ready. Actually PCM for hdmi is ready,
+even the monitor is not connected.
 
-Save the gain settings from mixer control and restore them when using
-the microphone.
+This patch removes the check of monitor presence in hw_params, just like
+what the legacy HD-Audio driver does.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mt6358.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
-index 44edbda8afcc..50b3fc5457ea 100644
---- a/sound/soc/codecs/mt6358.c
-+++ b/sound/soc/codecs/mt6358.c
-@@ -450,6 +450,15 @@ static int mt6358_put_volsw(struct snd_kcontrol *kcontrol,
- 		priv->ana_gain[AUDIO_ANALOG_VOLUME_HSOUTR] =
- 			(reg >> RG_AUDHSGAIN_SFT) & RG_AUDHSGAIN_MASK;
- 		break;
-+	case MT6358_AUDENC_ANA_CON0:
-+	case MT6358_AUDENC_ANA_CON1:
-+		regmap_read(priv->regmap, MT6358_AUDENC_ANA_CON0, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1] =
-+			(reg >> RG_AUDPREAMPLGAIN_SFT) & RG_AUDPREAMPLGAIN_MASK;
-+		regmap_read(priv->regmap, MT6358_AUDENC_ANA_CON1, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2] =
-+			(reg >> RG_AUDPREAMPRGAIN_SFT) & RG_AUDPREAMPRGAIN_MASK;
-+		break;
- 	}
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 4de1fbfa8827..660e0587f399 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -455,24 +455,11 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
+ {
+ 	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_device *hdev = hdmi->hdev;
+ 	struct hdac_hdmi_dai_port_map *dai_map;
+-	struct hdac_hdmi_port *port;
+ 	struct hdac_hdmi_pcm *pcm;
+ 	int format;
  
- 	return ret;
-@@ -470,10 +479,10 @@ static const struct snd_kcontrol_new mt6358_snd_controls[] = {
- 			   MT6358_ZCD_CON3, 0, 0x12, 1,
- 			   snd_soc_get_volsw, mt6358_put_volsw, playback_tlv),
- 	/* ul pga gain */
--	SOC_DOUBLE_R_TLV("PGA Volume",
--			 MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
--			 8, 4, 0,
--			 pga_tlv),
-+	SOC_DOUBLE_R_EXT_TLV("PGA Volume",
-+			     MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
-+			     8, 4, 0,
-+			     snd_soc_get_volsw, mt6358_put_volsw, pga_tlv),
- };
+ 	dai_map = &hdmi->dai_map[dai->id];
+-	port = dai_map->port;
+-
+-	if (!port)
+-		return -ENODEV;
+-
+-	if ((!port->eld.monitor_present) || (!port->eld.eld_valid)) {
+-		dev_err(&hdev->dev,
+-			"device is not configured for this pin:port%d:%d\n",
+-					port->pin->nid, port->id);
+-		return -ENODEV;
+-	}
  
- /* MUX */
-@@ -1750,6 +1759,21 @@ static void mt6358_dmic_disable(struct mt6358_priv *priv)
- 	regmap_write(priv->regmap, MT6358_AUDENC_ANA_CON9, 0x0000);
- }
- 
-+static void mt6358_restore_pga(struct mt6358_priv *priv)
-+{
-+	unsigned int gain_l, gain_r;
-+
-+	gain_l = priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP1];
-+	gain_r = priv->ana_gain[AUDIO_ANALOG_VOLUME_MICAMP2];
-+
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON0,
-+			   RG_AUDPREAMPLGAIN_MASK_SFT,
-+			   gain_l << RG_AUDPREAMPLGAIN_SFT);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON1,
-+			   RG_AUDPREAMPRGAIN_MASK_SFT,
-+			   gain_r << RG_AUDPREAMPRGAIN_SFT);
-+}
-+
- static int mt_mic_type_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol,
- 			     int event)
-@@ -1774,6 +1798,7 @@ static int mt_mic_type_event(struct snd_soc_dapm_widget *w,
- 			mt6358_amic_enable(priv);
- 			break;
- 		}
-+		mt6358_restore_pga(priv);
- 
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
+ 	format = snd_hdac_calc_stream_format(params_rate(hparams),
+ 			params_channels(hparams), params_format(hparams),
 -- 
 2.20.1
