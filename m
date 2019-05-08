@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: remove function name debug traces" to the asoc tree
-Date: Wed,  8 May 2019 10:01:29 +0100 (BST)
-Message-ID: <20190508090129.85A0D440036@finisterre.sirena.org.uk>
-References: <20190506095815.24578-2-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190506095815.24578-2-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
+Subject: Applied "ASoC: stm32: i2s: manage identification registers" to the
+ asoc tree
+Date: Wed,  8 May 2019 10:01:27 +0100 (BST)
+Message-ID: <20190508090127.495B0440017@finisterre.sirena.org.uk>
+References: <1557147252-18679-3-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1557147252-18679-3-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: remove function name debug traces
+   ASoC: stm32: i2s: manage identification registers
 
 has been applied to the asoc tree at
 
@@ -37,77 +48,134 @@ to this mail.
 Thanks,
 Mark
 
->From 900e5daf7034cf65ce4072b86f297c42f9042433 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 6 May 2019 11:58:12 +0200
-Subject: [PATCH] ASoC: hdmi-codec: remove function name debug traces
+>From 71ed4bddde08285cd02d6d28c861ea1815d67476 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 6 May 2019 14:54:12 +0200
+Subject: [PATCH] ASoC: stm32: i2s: manage identification registers
 
-Remove the debug traces only showing the function name on entry.
-The same can be obtained using ftrace.
+Add support of identification registers in STM32 I2S.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 60 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 57 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 39caf19abb0b..eb31d7eddcbf 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -416,8 +416,6 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	int ret = 0;
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 97d5e9901a0e..9755c49ae7dc 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -16,6 +16,7 @@
+  * details.
+  */
  
--	dev_dbg(dai->dev, "%s()\n", __func__);
--
- 	ret = hdmi_codec_new_stream(substream, dai);
- 	if (ret)
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
+@@ -37,6 +38,10 @@
+ #define STM32_I2S_TXDR_REG	0X20
+ #define STM32_I2S_RXDR_REG	0x30
+ #define STM32_I2S_CGFR_REG	0X50
++#define STM32_I2S_HWCFGR_REG	0x3F0
++#define STM32_I2S_VERR_REG	0x3F4
++#define STM32_I2S_IPIDR_REG	0x3F8
++#define STM32_I2S_SIDR_REG	0x3FC
+ 
+ /* Bit definition for SPI2S_CR1 register */
+ #define I2S_CR1_SPE		BIT(0)
+@@ -143,6 +148,23 @@
+ #define I2S_CGFR_ODD		BIT(I2S_CGFR_ODD_SHIFT)
+ #define I2S_CGFR_MCKOE		BIT(25)
+ 
++/* Registers below apply to I2S version 1.1 and more */
++
++/* Bit definition for SPI_HWCFGR register */
++#define I2S_HWCFGR_I2S_SUPPORT_MASK	GENMASK(15, 12)
++
++/* Bit definition for SPI_VERR register */
++#define I2S_VERR_MIN_MASK	GENMASK(3, 0)
++#define I2S_VERR_MAJ_MASK	GENMASK(7, 4)
++
++/* Bit definition for SPI_IPIDR register */
++#define I2S_IPIDR_ID_MASK	GENMASK(31, 0)
++
++/* Bit definition for SPI_SIDR register */
++#define I2S_SIDR_ID_MASK	GENMASK(31, 0)
++
++#define I2S_IPIDR_NUMBER	0x00130022
++
+ enum i2s_master_mode {
+ 	I2S_MS_NOT_SET,
+ 	I2S_MS_MASTER,
+@@ -280,6 +302,10 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ 	case STM32_I2S_SR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 	case STM32_I2S_CGFR_REG:
++	case STM32_I2S_HWCFGR_REG:
++	case STM32_I2S_VERR_REG:
++	case STM32_I2S_IPIDR_REG:
++	case STM32_I2S_SIDR_REG:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -711,10 +737,11 @@ static const struct regmap_config stm32_h7_i2s_regmap_conf = {
+ 	.reg_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_bits = 32,
+-	.max_register = STM32_I2S_CGFR_REG,
++	.max_register = STM32_I2S_SIDR_REG,
+ 	.readable_reg = stm32_i2s_readable_reg,
+ 	.volatile_reg = stm32_i2s_volatile_reg,
+ 	.writeable_reg = stm32_i2s_writeable_reg,
++	.num_reg_defaults_raw = STM32_I2S_SIDR_REG / sizeof(u32) + 1,
+ 	.fast_io = true,
+ 	.cache_type = REGCACHE_FLAT,
+ };
+@@ -864,6 +891,7 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+ static int stm32_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct stm32_i2s_data *i2s;
++	u32 val;
+ 	int ret;
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+@@ -902,8 +930,34 @@ static int stm32_i2s_probe(struct platform_device *pdev)
  		return ret;
-@@ -457,8 +455,6 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
  
--	dev_dbg(dai->dev, "%s()\n", __func__);
--
- 	WARN_ON(hcp->current_stream != substream);
+ 	/* Set SPI/I2S in i2s mode */
+-	return regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
+-				  I2S_CGFR_I2SMOD, I2S_CGFR_I2SMOD);
++	ret = regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
++				 I2S_CGFR_I2SMOD, I2S_CGFR_I2SMOD);
++	if (ret)
++		return ret;
++
++	ret = regmap_read(i2s->regmap, STM32_I2S_IPIDR_REG, &val);
++	if (ret)
++		return ret;
++
++	if (val == I2S_IPIDR_NUMBER) {
++		ret = regmap_read(i2s->regmap, STM32_I2S_HWCFGR_REG, &val);
++		if (ret)
++			return ret;
++
++		if (!FIELD_GET(I2S_HWCFGR_I2S_SUPPORT_MASK, val)) {
++			dev_err(&pdev->dev,
++				"Device does not support i2s mode\n");
++			return -EPERM;
++		}
++
++		ret = regmap_read(i2s->regmap, STM32_I2S_VERR_REG, &val);
++
++		dev_dbg(&pdev->dev, "I2S version: %lu.%lu registered\n",
++			FIELD_GET(I2S_VERR_MAJ_MASK, val),
++			FIELD_GET(I2S_VERR_MIN_MASK, val));
++	}
++
++	return ret;
+ }
  
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
-@@ -527,8 +523,6 @@ static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	struct hdmi_codec_daifmt cf = { 0 };
- 
--	dev_dbg(dai->dev, "%s()\n", __func__);
--
- 	if (dai->id == DAI_ID_SPDIF)
- 		return 0;
- 
-@@ -597,8 +591,6 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 
--	dev_dbg(dai->dev, "%s()\n", __func__);
--
- 	if (hcp->hcd.ops->digital_mute)
- 		return hcp->hcd.ops->digital_mute(dai->dev->parent,
- 						  hcp->hcd.data, mute);
-@@ -656,8 +648,6 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 	};
- 	int ret;
- 
--	dev_dbg(dai->dev, "%s()\n", __func__);
--
- 	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 				      NULL, drv->playback.channels_max, 0,
- 				      &hcp->chmap_info);
-@@ -754,8 +744,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	int dai_count, i = 0;
- 	int ret;
- 
--	dev_dbg(dev, "%s()\n", __func__);
--
- 	if (!hcd) {
- 		dev_err(dev, "%s: No platform data\n", __func__);
- 		return -EINVAL;
+ MODULE_DEVICE_TABLE(of, stm32_i2s_ids);
 -- 
 2.20.1
