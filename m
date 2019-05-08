@@ -1,126 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Add component driver name" to
-	the asoc tree
-Date: Wed,  8 May 2019 07:47:06 +0100 (BST)
-Message-ID: <20190508064707.1090544000C@finisterre.sirena.org.uk>
-References: <20190507233213.53036-1-cujomalainey@chromium.org>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [alsa-devel] [RFC PATCH 1/7] soundwire: Add sysfs support for
+ master(s)
+Date: Wed, 8 May 2019 13:16:06 +0530
+Message-ID: <20190508074606.GV16052@vkoul-mobl>
+References: <20190504010030.29233-1-pierre-louis.bossart@linux.intel.com>
+ <20190504010030.29233-2-pierre-louis.bossart@linux.intel.com>
+ <20190504065242.GA9770@kroah.com>
+ <b0059709-027e-26c4-25a1-bd55df7c507f@linux.intel.com>
+ <20190507052732.GD16052@vkoul-mobl>
+ <20190507055432.GB17986@kroah.com>
+ <20190507110331.GL16052@vkoul-mobl>
+ <20190507111956.GB1092@kroah.com>
+ <10fef156-7b01-7a08-77b4-ae3153eaaabc@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71E6AF80796
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2019 09:44:07 +0200 (CEST)
-In-Reply-To: <20190507233213.53036-1-cujomalainey@chromium.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <10fef156-7b01-7a08-77b4-ae3153eaaabc@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 07-05-19, 17:49, Pierre-Louis Bossart wrote:
+> 
+> > > The model here is that Master device is PCI or Platform device and then
+> > > creates a bus instance which has soundwire slave devices.
+> > > 
+> > > So for any attribute on Master device (which has properties as well and
+> > > representation in sysfs), device specfic struct (PCI/platfrom doesn't
+> > > help). For slave that is not a problem as sdw_slave structure takes care
+> > > if that.
+> > > 
+> > > So, the solution was to create the psedo sdw_master device for the
+> > > representation and have device-specific structure.
+> > 
+> > Ok, much like the "USB host controller" type device.  That's fine, make
+> > such a device, add it to your bus, and set the type correctly.  And keep
+> > a pointer to that structure in your device-specific structure if you
+> > really need to get to anything in it.
+> 
+> humm, you lost me on the last sentence. Did you mean using
+> set_drv/platform_data during the init and retrieving the bus information
+> with get_drv/platform_data as needed later? Or something else I badly need
+> to learn?
 
-   ASoC: rt5677: Add component driver name
+IIUC Greg meant we should represent a soundwire master device type and
+use that here. Just like we have soundwire slave device type. Something
+like:
 
-has been applied to the asoc tree at
+struct sdw_master {
+        struct device dev;
+        struct sdw_master_prop *prop;
+        ...
+};
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+In show function you get master from dev (container of) and then use
+that to access the master properties. So int.sdw.0 can be of this type.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 893d1a9c5c1c246eb756c828a12b5966d2ed9a17 Mon Sep 17 00:00:00 2001
-From: Curtis Malainey <cujomalainey@chromium.org>
-Date: Tue, 7 May 2019 16:32:13 -0700
-Subject: [PATCH] ASoC: rt5677: Add component driver name
-
-Add name to component driver so it is possible to lookup the component
-when needed.
-
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5677.c | 7 ++++---
- sound/soc/codecs/rt5677.h | 2 ++
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 907c957b614d..c49b5c218666 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4650,7 +4650,7 @@ static int rt5677_to_irq(struct gpio_chip *chip, unsigned offset)
- }
- 
- static const struct gpio_chip rt5677_template_chip = {
--	.label			= "rt5677",
-+	.label			= RT5677_DRV_NAME,
- 	.owner			= THIS_MODULE,
- 	.direction_output	= rt5677_gpio_direction_out,
- 	.set			= rt5677_gpio_set,
-@@ -4958,6 +4958,7 @@ static struct snd_soc_dai_driver rt5677_dai[] = {
- };
- 
- static const struct snd_soc_component_driver soc_component_dev_rt5677 = {
-+	.name			= RT5677_DRV_NAME,
- 	.probe			= rt5677_probe,
- 	.remove			= rt5677_remove,
- 	.suspend		= rt5677_suspend,
-@@ -5079,7 +5080,7 @@ static struct regmap_irq rt5677_irqs[] = {
- };
- 
- static struct regmap_irq_chip rt5677_irq_chip = {
--	.name = "rt5677",
-+	.name = RT5677_DRV_NAME,
- 	.irqs = rt5677_irqs,
- 	.num_irqs = ARRAY_SIZE(rt5677_irqs),
- 
-@@ -5267,7 +5268,7 @@ static int rt5677_i2c_remove(struct i2c_client *i2c)
- 
- static struct i2c_driver rt5677_i2c_driver = {
- 	.driver = {
--		.name = "rt5677",
-+		.name = RT5677_DRV_NAME,
- 		.of_match_table = rt5677_of_match,
- 		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
- 	},
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 183d92b03045..11a2ffceec3b 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1674,6 +1674,8 @@
- #define RT5677_FIRMWARE1	"rt5677_dsp_fw1.bin"
- #define RT5677_FIRMWARE2	"rt5677_dsp_fw2.bin"
- 
-+#define RT5677_DRV_NAME		"rt5677"
-+
- /* System Clock Source */
- enum {
- 	RT5677_SCLK_S_MCLK,
+Thanks
 -- 
-2.20.1
+~Vinod
