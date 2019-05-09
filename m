@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v3 23/30] mfd: cros_ec: Add I2C passthru protection API
-Date: Thu,  9 May 2019 14:13:46 -0700
-Message-ID: <20190509211353.213194-24-gwendal@chromium.org>
+Subject: [PATCH v3 27/30] mfd: cros_ec: Add API for rwsig
+Date: Thu,  9 May 2019 14:13:50 -0700
+Message-ID: <20190509211353.213194-28-gwendal@chromium.org>
 References: <20190509211353.213194-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,47 +12,52 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Prevent direct i2c access to device behind EC when not in development mode.
+Add command to retrieve signature of image stored in the RW memory
+slot(s).
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 49ea905cfd18..59ad6bae3f9b 100644
+index 4a9ac3861bdd..3d3a37b11002 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -4316,6 +4316,28 @@ struct ec_params_entering_mode {
- #define VBOOT_MODE_DEVELOPER 1
- #define VBOOT_MODE_RECOVERY  2
+@@ -5043,6 +5043,32 @@ struct ec_response_pd_chip_info_v1 {
+ 	};
+ } __ec_align2;
  
-+/*****************************************************************************/
-+/*
-+ * I2C passthru protection command: Protects I2C tunnels against access on
-+ * certain addresses (board-specific).
-+ */
-+#define EC_CMD_I2C_PASSTHRU_PROTECT 0x00B7
++/* Run RW signature verification and get status */
++#define EC_CMD_RWSIG_CHECK_STATUS	0x011C
 +
-+enum ec_i2c_passthru_protect_subcmd {
-+	EC_CMD_I2C_PASSTHRU_PROTECT_STATUS = 0x0,
-+	EC_CMD_I2C_PASSTHRU_PROTECT_ENABLE = 0x1,
++struct ec_response_rwsig_check_status {
++	uint32_t status;
++} __ec_align4;
++
++/* For controlling RWSIG task */
++#define EC_CMD_RWSIG_ACTION	0x011D
++
++enum rwsig_action {
++	RWSIG_ACTION_ABORT = 0,		/* Abort RWSIG and prevent jumping */
++	RWSIG_ACTION_CONTINUE = 1,	/* Jump to RW immediately */
 +};
 +
-+struct ec_params_i2c_passthru_protect {
-+	uint8_t subcmd;
-+	uint8_t port;		/* I2C port number */
-+} __ec_align1;
++struct ec_params_rwsig_action {
++	uint32_t action;
++} __ec_align4;
 +
-+struct ec_response_i2c_passthru_protect {
-+	uint8_t status;		/* Status flags (0: unlocked, 1: locked) */
-+} __ec_align1;
++/* Run verification on a slot */
++#define EC_CMD_EFS_VERIFY	0x011E
 +
++struct ec_params_efs_verify {
++	uint8_t region;		/* enum ec_flash_region */
++} __ec_align1;
 +
  /*****************************************************************************/
- /*
-  * HDMI CEC commands
+ /* Fingerprint MCU commands: range 0x0400-0x040x */
+ 
 -- 
 2.21.0.1020.gf2820cf01a-goog
