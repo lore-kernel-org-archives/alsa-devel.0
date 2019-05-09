@@ -1,46 +1,76 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: [PATCH 2/2] ASoC: ak4458: add return value for ak4458_probe
-Date: Thu, 9 May 2019 13:30:36 +0000
-Message-ID: <1557408607-25115-3-git-send-email-viorel.suman@nxp.com>
-References: <1557408607-25115-1-git-send-email-viorel.suman@nxp.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: soc-pcm: BE dai needs prepare
+ when pause release after resume
+Date: Thu, 09 May 2019 09:56:12 -0700
+Message-ID: <ac99b2fefe05833787e473cbd2327a35c02de68b.camel@linux.intel.com>
+References: <1557282761-26146-1-git-send-email-libin.yang@intel.com>
+ <aa0c6eea81a721f340dd1362801e49049a6620dd.camel@linux.intel.com>
+ <s5htve4mymn.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1557408607-25115-1-git-send-email-viorel.suman@nxp.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Viorel Suman <viorel.suman@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Daniel Baluta <daniel.baluta@nxp.com>, Colin Ian King <colin.king@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53932F89674
+ for <alsa-devel@alsa-project.org>; Thu,  9 May 2019 18:56:16 +0200 (CEST)
+In-Reply-To: <s5htve4mymn.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: libin.yang@intel.com, alsa-devel@alsa-project.org, ranjani.sridharan@intel.com, pierre-louis.bossart@linux.intel.com, rander.wang@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-QUs0NDU4IGlzIHByb2JlZCBzdWNjZXNzZnVsbHkgZXZlbiBpZiBBSzQ0NTggaXMgbm90IHByZXNl
-bnQgLSB0aGlzDQppcyBjYXVzZWQgYnkgcHJvYmUgZnVuY3Rpb24gcmV0dXJuaW5nIG5vIGVycm9y
-IG9uIGkyYyBhY2Nlc3MgZmFpbHVyZS4NClJldHVybiBhbiBlcnJvciBvbiBwcm9iZSBpZiBpMmMg
-YWNjZXNzIGhhcyBmYWlsZWQuDQoNClNpZ25lZC1vZmYtYnk6IFNoZW5naml1IFdhbmcgPHNoZW5n
-aml1LndhbmdAbnhwLmNvbT4NClNpZ25lZC1vZmYtYnk6IFZpb3JlbCBTdW1hbiA8dmlvcmVsLnN1
-bWFuQG54cC5jb20+DQotLS0NCiBzb3VuZC9zb2MvY29kZWNzL2FrNDQ1OC5jIHwgMTMgKysrKysr
-Ky0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0p
-DQoNCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FrNDQ1OC5jIGIvc291bmQvc29jL2Nv
-ZGVjcy9hazQ0NTguYw0KaW5kZXggNDc5NWUzMi4uZDE5Mjc3NDM1MyAxMDA2NDQNCi0tLSBhL3Nv
-dW5kL3NvYy9jb2RlY3MvYWs0NDU4LmMNCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvYWs0NDU4LmMN
-CkBAIC01MzcsOSArNTM3LDEwIEBAIHN0YXRpYyB2b2lkIGFrNDQ1OF9wb3dlcl9vbihzdHJ1Y3Qg
-YWs0NDU4X3ByaXYgKmFrNDQ1OCkNCiAJfQ0KIH0NCiANCi1zdGF0aWMgdm9pZCBhazQ0NThfaW5p
-dChzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCkNCitzdGF0aWMgaW50IGFrNDQ1
-OF9pbml0KHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50KQ0KIHsNCiAJc3RydWN0
-IGFrNDQ1OF9wcml2ICphazQ0NTggPSBzbmRfc29jX2NvbXBvbmVudF9nZXRfZHJ2ZGF0YShjb21w
-b25lbnQpOw0KKwlpbnQgcmV0Ow0KIA0KIAkvKiBFeHRlcm5hbCBNdXRlIE9OICovDQogCWlmIChh
-azQ0NTgtPm11dGVfZ3Bpb2QpDQpAQCAtNTQ3LDIxICs1NDgsMjEgQEAgc3RhdGljIHZvaWQgYWs0
-NDU4X2luaXQoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQpDQogDQogCWFrNDQ1
-OF9wb3dlcl9vbihhazQ0NTgpOw0KIA0KLQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVfYml0cyhj
-b21wb25lbnQsIEFLNDQ1OF8wMF9DT05UUk9MMSwNCisJcmV0ID0gc25kX3NvY19jb21wb25lbnRf
-dXBkYXRlX2JpdHMoY29tcG9uZW50LCBBSzQ0NThfMDBfQ09OVFJPTDEsDQogCQkJICAgIDB4ODAs
-IDB4ODApOyAgIC8qIEFDS1MgYml0ID0gMTsgMTAwMDAwMDAgKi8NCisJaWYgKHJldCA8IDApDQor
-CQlyZXR1cm4gcmV0Ow0KIA0KLQlhazQ0NThfcnN0bl9jb250cm9sKGNvbXBvbmVudCwgMSk7DQor
-CXJldHVybiBhazQ0NThfcnN0bl9jb250cm9sKGNvbXBvbmVudCwgMSk7DQogfQ0KIA0KIHN0YXRp
-YyBpbnQgYWs0NDU4X3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50KQ0K
-IHsNCiAJc3RydWN0IGFrNDQ1OF9wcml2ICphazQ0NTggPSBzbmRfc29jX2NvbXBvbmVudF9nZXRf
-ZHJ2ZGF0YShjb21wb25lbnQpOw0KIA0KLQlhazQ0NThfaW5pdChjb21wb25lbnQpOw0KLQ0KIAlh
-azQ0NTgtPmZzID0gNDgwMDA7DQogDQotCXJldHVybiAwOw0KKwlyZXR1cm4gYWs0NDU4X2luaXQo
-Y29tcG9uZW50KTsNCiB9DQogDQogc3RhdGljIHZvaWQgYWs0NDU4X3JlbW92ZShzdHJ1Y3Qgc25k
-X3NvY19jb21wb25lbnQgKmNvbXBvbmVudCkNCi0tIA0KMi43LjQNCg0K
+> Hm, it's a good question.  Currently the PCM core doesn't care about
+> the paused stream wrt PM by the assumption that the paused / stopped
+> stream doesn't need a special resume treatment.  But, generally
+> speaking, the pause-release won't work for a hardware that doesn't
+> support the full resume, either.  For example, the legacy HD-audio
+> may
+> restart from some wrong position if resumed from the pause.
+> 
+> Maybe this problem hasn't been seen just because the pause function
+> is
+> rarely used.
+> 
+> So, the safe behavior would be to let the stream being SUSPENDED
+> state
+> at snd_pcm_stream_suspend() when it's in the PAUSED and has no
+> INFO_RESUME capability.  Then the application does re-prepare the
+> stream like the running one.
+> 
+> But the question is what's expected at next.  Should the application
+> re-start?  But it was paused.  Should PCM core automatically move to
+> pause?  But most hardware can't move the pointer to any random
+> position.
+> 
+> My gut feeling is just to treat like a normal error-restart,
+> i.e. re-prepare / re-start.  But I'm open and would like to hear more
+> opinions.
+
+Hi Takashi,
+
+So in the current scenario what we see is that after resuming from S3,
+a pause-release action from the user results in a FE prepare() followed
+by the START trigger (and not a PAUSE-RELEASE trigger).
+
+Libin's patch proposes to do a prepare() for the BE even in the case of
+a regular pause-release. But this might not be ideal since other
+drivers might have logic in the prepare() ioctl that might end up with
+errors. 
+
+So I am thinking maybe we can have some internal logic in the SOF
+prepare() callback that will also call the BE prepare() when the 
+be->dpcm[stream].state is SND_SOC_DPCM_STATE_PAUSED? Would that make
+sense?
+
+Thanks,
+Ranjani
