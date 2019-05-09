@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v3 15/30] mfd: cros_ec: Complete MEMS sensor API
-Date: Thu,  9 May 2019 14:13:38 -0700
-Message-ID: <20190509211353.213194-16-gwendal@chromium.org>
+Subject: [PATCH v3 12/30] mfd: cros_ec: Add lightbar v2 API
+Date: Thu,  9 May 2019 14:13:35 -0700
+Message-ID: <20190509211353.213194-13-gwendal@chromium.org>
 References: <20190509211353.213194-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,608 +12,211 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add new command for batched mode, add support for more sensors.
+New API split commands, improve EC command latency.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 464 +++++++++++++++++++++++----
- 1 file changed, 406 insertions(+), 58 deletions(-)
+ include/linux/mfd/cros_ec_commands.h | 124 ++++++++++++++++++++++++++-
+ 1 file changed, 120 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 40a8069a58e8..701b03cfa445 100644
+index 2b3a94a4f0f4..0ff1941288cf 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -2191,7 +2191,13 @@ enum motionsense_command {
+@@ -1658,7 +1658,10 @@ struct lightbar_params_v1 {
+ 	int32_t s3_sleep_for;
+ 	int32_t s3_ramp_up;
+ 	int32_t s3_ramp_down;
++	int32_t s5_ramp_up;
++	int32_t s5_ramp_down;
+ 	int32_t tap_tick_delay;
++	int32_t tap_gate_delay;
+ 	int32_t tap_display_time;
  
- 	/*
- 	 * EC Rate command is a setter/getter command for the EC sampling rate
--	 * of all motion sensors in milliseconds.
-+	 * in milliseconds.
-+	 * It is per sensor, the EC run sample task  at the minimum of all
-+	 * sensors EC_RATE.
-+	 * For sensors without hardware FIFO, EC_RATE should be equals to 1/ODR
-+	 * to collect all the sensor samples.
-+	 * For sensor with hardware FIFO, EC_RATE is used as the maximal delay
-+	 * to process of all motion sensors in milliseconds.
- 	 */
- 	MOTIONSENSE_CMD_EC_RATE = 2,
+ 	/* Tap-for-battery params */
+@@ -1686,11 +1689,82 @@ struct lightbar_params_v1 {
+ 	uint8_t s0_idx[2][LB_BATTERY_LEVELS];	/* AP is running */
+ 	uint8_t s3_idx[2][LB_BATTERY_LEVELS];	/* AP is sleeping */
  
-@@ -2222,32 +2228,76 @@ enum motionsense_command {
- 	MOTIONSENSE_CMD_DATA = 6,
- 
- 	/*
--	 * Perform low level calibration.. On sensors that support it, ask to
--	 * do offset calibration.
-+	 * Return sensor fifo info.
-+	 */
-+	MOTIONSENSE_CMD_FIFO_INFO = 7,
++	/* s5: single color pulse on inhibited power-up */
++	uint8_t s5_idx;
 +
-+	/*
-+	 * Insert a flush element in the fifo and return sensor fifo info.
-+	 * The host can use that element to synchronize its operation.
-+	 */
-+	MOTIONSENSE_CMD_FIFO_FLUSH = 8,
-+
-+	/*
-+	 * Return a portion of the fifo.
-+	 */
-+	MOTIONSENSE_CMD_FIFO_READ = 9,
-+
-+	/*
-+	 * Perform low level calibration.
-+	 * On sensors that support it, ask to do offset calibration.
- 	 */
- 	MOTIONSENSE_CMD_PERFORM_CALIB = 10,
- 
- 	/*
--	 * Sensor Offset command is a setter/getter command for the offset used
--	 * for calibration. The offsets can be calculated by the host, or via
-+	 * Sensor Offset command is a setter/getter command for the offset
-+	 * used for calibration.
-+	 * The offsets can be calculated by the host, or via
- 	 * PERFORM_CALIB command.
- 	 */
- 	MOTIONSENSE_CMD_SENSOR_OFFSET = 11,
- 
--	/* Number of motionsense sub-commands. */
--	MOTIONSENSE_NUM_CMDS
--};
-+	/*
-+	 * List available activities for a MOTION sensor.
-+	 * Indicates if they are enabled or disabled.
-+	 */
-+	MOTIONSENSE_CMD_LIST_ACTIVITIES = 12,
-+
-+	/*
-+	 * Activity management
-+	 * Enable/Disable activity recognition.
-+	 */
-+	MOTIONSENSE_CMD_SET_ACTIVITY = 13,
-+
-+	/*
-+	 * Lid Angle
-+	 */
-+	MOTIONSENSE_CMD_LID_ANGLE = 14,
-+
-+	/*
-+	 * Allow the FIFO to trigger interrupt via MKBP events.
-+	 * By default the FIFO does not send interrupt to process the FIFO
-+	 * until the AP is ready or it is coming from a wakeup sensor.
-+	 */
-+	MOTIONSENSE_CMD_FIFO_INT_ENABLE = 15,
-+
-+	/*
-+	 * Spoof the readings of the sensors.  The spoofed readings can be set
-+	 * to arbitrary values, or will lock to the last read actual values.
-+	 */
-+	MOTIONSENSE_CMD_SPOOF = 16,
- 
--enum motionsensor_id {
--	EC_MOTION_SENSOR_ACCEL_BASE = 0,
--	EC_MOTION_SENSOR_ACCEL_LID = 1,
--	EC_MOTION_SENSOR_GYRO = 2,
-+	/* Set lid angle for tablet mode detection. */
-+	MOTIONSENSE_CMD_TABLET_MODE_LID_ANGLE = 17,
- 
- 	/*
--	 * Note, if more sensors are added and this count changes, the padding
--	 * in ec_response_motion_sense dump command must be modified.
-+	 * Sensor Scale command is a setter/getter command for the calibration
-+	 * scale.
- 	 */
--	EC_MOTION_SENSOR_COUNT = 3
-+	MOTIONSENSE_CMD_SENSOR_SCALE = 18,
-+
-+	/* Number of motionsense sub-commands. */
-+	MOTIONSENSE_NUM_CMDS
- };
- 
- /* List of motion sensor types. */
-@@ -2259,6 +2309,7 @@ enum motionsensor_type {
- 	MOTIONSENSE_TYPE_LIGHT = 4,
- 	MOTIONSENSE_TYPE_ACTIVITY = 5,
- 	MOTIONSENSE_TYPE_BARO = 6,
-+	MOTIONSENSE_TYPE_SYNC = 7,
- 	MOTIONSENSE_TYPE_MAX,
- };
- 
-@@ -2266,36 +2317,48 @@ enum motionsensor_type {
- enum motionsensor_location {
- 	MOTIONSENSE_LOC_BASE = 0,
- 	MOTIONSENSE_LOC_LID = 1,
-+	MOTIONSENSE_LOC_CAMERA = 2,
- 	MOTIONSENSE_LOC_MAX,
- };
- 
- /* List of motion sensor chips. */
- enum motionsensor_chip {
- 	MOTIONSENSE_CHIP_KXCJ9 = 0,
-+	MOTIONSENSE_CHIP_LSM6DS0 = 1,
-+	MOTIONSENSE_CHIP_BMI160 = 2,
-+	MOTIONSENSE_CHIP_SI1141 = 3,
-+	MOTIONSENSE_CHIP_SI1142 = 4,
-+	MOTIONSENSE_CHIP_SI1143 = 5,
-+	MOTIONSENSE_CHIP_KX022 = 6,
-+	MOTIONSENSE_CHIP_L3GD20H = 7,
-+	MOTIONSENSE_CHIP_BMA255 = 8,
-+	MOTIONSENSE_CHIP_BMP280 = 9,
-+	MOTIONSENSE_CHIP_OPT3001 = 10,
-+	MOTIONSENSE_CHIP_BH1730 = 11,
-+	MOTIONSENSE_CHIP_GPIO = 12,
-+	MOTIONSENSE_CHIP_LIS2DH = 13,
-+	MOTIONSENSE_CHIP_LSM6DSM = 14,
-+	MOTIONSENSE_CHIP_LIS2DE = 15,
-+	MOTIONSENSE_CHIP_LIS2MDL = 16,
-+	MOTIONSENSE_CHIP_LSM6DS3 = 17,
-+	MOTIONSENSE_CHIP_LSM6DSO = 18,
-+	MOTIONSENSE_CHIP_LNG2DM = 19,
-+	MOTIONSENSE_CHIP_MAX,
- };
- 
--/* Module flag masks used for the dump sub-command. */
--#define MOTIONSENSE_MODULE_FLAG_ACTIVE (1<<0)
--
--/* Sensor flag masks used for the dump sub-command. */
--#define MOTIONSENSE_SENSOR_FLAG_PRESENT (1<<0)
--
--/*
-- * Send this value for the data element to only perform a read. If you
-- * send any other value, the EC will interpret it as data to set and will
-- * return the actual value set.
-- */
--#define EC_MOTION_SENSE_NO_VALUE -1
--
--#define EC_MOTION_SENSE_INVALID_CALIB_TEMP 0x8000
--
--/* Set Calibration information */
--#define MOTION_SENSE_SET_OFFSET	1
-+/* List of orientation positions */
-+enum motionsensor_orientation {
-+	MOTIONSENSE_ORIENTATION_LANDSCAPE = 0,
-+	MOTIONSENSE_ORIENTATION_PORTRAIT = 1,
-+	MOTIONSENSE_ORIENTATION_UPSIDE_DOWN_PORTRAIT = 2,
-+	MOTIONSENSE_ORIENTATION_UPSIDE_DOWN_LANDSCAPE = 3,
-+	MOTIONSENSE_ORIENTATION_UNKNOWN = 4,
-+};
- 
- struct ec_response_motion_sensor_data {
- 	/* Flags for each sensor. */
- 	uint8_t flags;
--	/* Sensor number the data comes from */
-+	/* Sensor number the data comes from. */
- 	uint8_t sensor_num;
- 	/* Each sensor is up to 3-axis. */
- 	union {
-@@ -2312,22 +2375,138 @@ struct ec_response_motion_sensor_data {
- 	};
+ 	/* Color palette */
+ 	struct rgb_s color[8];			/* 0-3 are Google colors */
  } __ec_todo_packed;
  
-+/* Note: used in ec_response_get_next_data */
-+struct ec_response_motion_sense_fifo_info {
-+	/* Size of the fifo */
-+	uint16_t size;
-+	/* Amount of space used in the fifo */
-+	uint16_t count;
-+	/* Timestamp recorded in us.
-+	 * aka accurate timestamp when host event was triggered.
-+	 */
-+	uint32_t timestamp;
-+	/* Total amount of vector lost */
-+	uint16_t total_lost;
-+	/* Lost events since the last fifo_info, per sensors */
-+	uint16_t lost[0];
+-/* Lightbar program */
++/* Lightbar command params v2
++ * crbug.com/467716
++ *
++ * lightbar_parms_v1 was too big for i2c, therefore in v2, we split them up by
++ * logical groups to make it more manageable ( < 120 bytes).
++ *
++ * NOTE: Each of these groups must be less than 120 bytes.
++ */
++
++struct lightbar_params_v2_timing {
++	/* Timing */
++	int32_t google_ramp_up;
++	int32_t google_ramp_down;
++	int32_t s3s0_ramp_up;
++	int32_t s0_tick_delay[2];		/* AC=0/1 */
++	int32_t s0a_tick_delay[2];		/* AC=0/1 */
++	int32_t s0s3_ramp_down;
++	int32_t s3_sleep_for;
++	int32_t s3_ramp_up;
++	int32_t s3_ramp_down;
++	int32_t s5_ramp_up;
++	int32_t s5_ramp_down;
++	int32_t tap_tick_delay;
++	int32_t tap_gate_delay;
++	int32_t tap_display_time;
 +} __ec_todo_packed;
 +
-+struct ec_response_motion_sense_fifo_data {
-+	uint32_t number_data;
-+	struct ec_response_motion_sensor_data data[0];
++struct lightbar_params_v2_tap {
++	/* Tap-for-battery params */
++	uint8_t tap_pct_red;
++	uint8_t tap_pct_green;
++	uint8_t tap_seg_min_on;
++	uint8_t tap_seg_max_on;
++	uint8_t tap_seg_osc;
++	uint8_t tap_idx[3];
 +} __ec_todo_packed;
 +
-+/* List supported activity recognition */
-+enum motionsensor_activity {
-+	MOTIONSENSE_ACTIVITY_RESERVED = 0,
-+	MOTIONSENSE_ACTIVITY_SIG_MOTION = 1,
-+	MOTIONSENSE_ACTIVITY_DOUBLE_TAP = 2,
-+	MOTIONSENSE_ACTIVITY_ORIENTATION = 3,
-+};
++struct lightbar_params_v2_oscillation {
++	/* Oscillation */
++	uint8_t osc_min[2];			/* AC=0/1 */
++	uint8_t osc_max[2];			/* AC=0/1 */
++	uint8_t w_ofs[2];			/* AC=0/1 */
++} __ec_todo_packed;
 +
-+struct ec_motion_sense_activity {
-+	uint8_t sensor_num;
-+	uint8_t activity; /* one of enum motionsensor_activity */
-+	uint8_t enable;   /* 1: enable, 0: disable */
-+	uint8_t reserved;
-+	uint16_t parameters[3]; /* activity dependent parameters */
-+} __ec_todo_unpacked;
++struct lightbar_params_v2_brightness {
++	/* Brightness limits based on the backlight and AC. */
++	uint8_t bright_bl_off_fixed[2];		/* AC=0/1 */
++	uint8_t bright_bl_on_min[2];		/* AC=0/1 */
++	uint8_t bright_bl_on_max[2];		/* AC=0/1 */
++} __ec_todo_packed;
 +
-+/* Module flag masks used for the dump sub-command. */
-+#define MOTIONSENSE_MODULE_FLAG_ACTIVE BIT(0)
++struct lightbar_params_v2_thresholds {
++	/* Battery level thresholds */
++	uint8_t battery_threshold[LB_BATTERY_LEVELS - 1];
++} __ec_todo_packed;
 +
-+/* Sensor flag masks used for the dump sub-command. */
-+#define MOTIONSENSE_SENSOR_FLAG_PRESENT BIT(0)
++struct lightbar_params_v2_colors {
++	/* Map [AC][battery_level] to color index */
++	uint8_t s0_idx[2][LB_BATTERY_LEVELS];	/* AP is running */
++	uint8_t s3_idx[2][LB_BATTERY_LEVELS];	/* AP is sleeping */
 +
-+/*
-+ * Flush entry for synchronization.
-+ * data contains time stamp
-+ */
-+#define MOTIONSENSE_SENSOR_FLAG_FLUSH BIT(0)
-+#define MOTIONSENSE_SENSOR_FLAG_TIMESTAMP BIT(1)
-+#define MOTIONSENSE_SENSOR_FLAG_WAKEUP BIT(2)
-+#define MOTIONSENSE_SENSOR_FLAG_TABLET_MODE BIT(3)
-+#define MOTIONSENSE_SENSOR_FLAG_ODR BIT(4)
++	/* s5: single color pulse on inhibited power-up */
++	uint8_t s5_idx;
 +
-+/*
-+ * Send this value for the data element to only perform a read. If you
-+ * send any other value, the EC will interpret it as data to set and will
-+ * return the actual value set.
-+ */
-+#define EC_MOTION_SENSE_NO_VALUE -1
++	/* Color palette */
++	struct rgb_s color[8];			/* 0-3 are Google colors */
++} __ec_todo_packed;
 +
-+#define EC_MOTION_SENSE_INVALID_CALIB_TEMP 0x8000
-+
-+/* MOTIONSENSE_CMD_SENSOR_OFFSET subcommand flag */
-+/* Set Calibration information */
-+#define MOTION_SENSE_SET_OFFSET BIT(0)
-+
-+/* Default Scale value, factor 1. */
-+#define MOTION_SENSE_DEFAULT_SCALE BIT(15)
-+
-+#define LID_ANGLE_UNRELIABLE 500
-+
-+enum motionsense_spoof_mode {
-+	/* Disable spoof mode. */
-+	MOTIONSENSE_SPOOF_MODE_DISABLE = 0,
-+
-+	/* Enable spoof mode, but use provided component values. */
-+	MOTIONSENSE_SPOOF_MODE_CUSTOM,
-+
-+	/* Enable spoof mode, but use the current sensor values. */
-+	MOTIONSENSE_SPOOF_MODE_LOCK_CURRENT,
-+
-+	/* Query the current spoof mode status for the sensor. */
-+	MOTIONSENSE_SPOOF_MODE_QUERY,
-+};
-+
- struct ec_params_motion_sense {
- 	uint8_t cmd;
- 	union {
- 		/* Used for MOTIONSENSE_CMD_DUMP. */
- 		struct __ec_todo_unpacked {
--			/* no args */
-+			/*
-+			 * Maximal number of sensor the host is expecting.
-+			 * 0 means the host is only interested in the number
-+			 * of sensors controlled by the EC.
-+			 */
-+			uint8_t max_sensor_count;
- 		} dump;
- 
- 		/*
--		 * Used for MOTIONSENSE_CMD_EC_RATE and
--		 * MOTIONSENSE_CMD_KB_WAKE_ANGLE.
-+		 * Used for MOTIONSENSE_CMD_KB_WAKE_ANGLE.
++/* Lightbar program. */
+ #define EC_LB_PROG_LEN 192
+ struct lightbar_program {
+ 	uint8_t size;
+@@ -1704,7 +1778,10 @@ struct ec_params_lightbar {
+ 		 * The following commands have no args:
+ 		 *
+ 		 * dump, off, on, init, get_seq, get_params_v0, get_params_v1,
+-		 * version, get_brightness, get_demo, suspend, resume
++		 * version, get_brightness, get_demo, suspend, resume,
++		 * get_params_v2_timing, get_params_v2_tap, get_params_v2_osc,
++		 * get_params_v2_bright, get_params_v2_thlds,
++		 * get_params_v2_colors
+ 		 *
+ 		 * Don't use an empty struct, because C++ hates that.
  		 */
- 		struct __ec_todo_unpacked {
--			/* Data to set or EC_MOTION_SENSE_NO_VALUE to read. */
-+			/* Data to set or EC_MOTION_SENSE_NO_VALUE to read.
-+			 * kb_wake_angle: angle to wakup AP.
-+			 */
- 			int16_t data;
--		} ec_rate, kb_wake_angle;
-+		} kb_wake_angle;
-+
-+		/*
-+		 * Used for MOTIONSENSE_CMD_INFO, MOTIONSENSE_CMD_DATA
-+		 * and MOTIONSENSE_CMD_PERFORM_CALIB.
-+		 */
-+		struct __ec_todo_unpacked {
-+			uint8_t sensor_num;
-+		} info, info_3, data, fifo_flush, perform_calib,
-+				list_activities;
-+
-+		/*
-+		 * Used for MOTIONSENSE_CMD_EC_RATE, MOTIONSENSE_CMD_SENSOR_ODR
-+		 * and MOTIONSENSE_CMD_SENSOR_RANGE.
-+		 */
-+		struct __ec_todo_unpacked {
-+			uint8_t sensor_num;
-+
-+			/* Rounding flag, true for round-up, false for down. */
-+			uint8_t roundup;
-+
-+			uint16_t reserved;
-+
-+			/* Data to set or EC_MOTION_SENSE_NO_VALUE to read. */
-+			int32_t data;
-+		} ec_rate, sensor_odr, sensor_range;
+@@ -1731,6 +1808,14 @@ struct ec_params_lightbar {
  
- 		/* Used for MOTIONSENSE_CMD_SENSOR_OFFSET */
- 		struct __ec_todo_packed {
-@@ -2358,33 +2537,99 @@ struct ec_params_motion_sense {
- 			int16_t offset[3];
- 		} sensor_offset;
- 
--		/* Used for MOTIONSENSE_CMD_INFO. */
-+		/* Used for MOTIONSENSE_CMD_SENSOR_SCALE */
- 		struct __ec_todo_packed {
- 			uint8_t sensor_num;
--		} info;
- 
--		/*
--		 * Used for MOTIONSENSE_CMD_SENSOR_ODR and
--		 * MOTIONSENSE_CMD_SENSOR_RANGE.
--		 */
--		struct {
--			/* Should be element of enum motionsensor_id. */
--			uint8_t sensor_num;
-+			/*
-+			 * bit 0: If set (MOTION_SENSE_SET_OFFSET), set
-+			 * the calibration information in the EC.
-+			 * If unset, just retrieve calibration information.
-+			 */
-+			uint16_t flags;
- 
--			/* Rounding flag, true for round-up, false for down. */
--			uint8_t roundup;
-+			/*
-+			 * Temperature at calibration, in units of 0.01 C
-+			 * 0x8000: invalid / unknown.
-+			 * 0x0: 0C
-+			 * 0x7fff: +327.67C
-+			 */
-+			int16_t temp;
- 
--			uint16_t reserved;
-+			/*
-+			 * Scale for calibration:
-+			 * By default scale is 1, it is encoded on 16bits:
-+			 * 1 = BIT(15)
-+			 * ~2 = 0xFFFF
-+			 * ~0 = 0.
-+			 */
-+			uint16_t scale[3];
-+		} sensor_scale;
- 
--			/* Data to set or EC_MOTION_SENSE_NO_VALUE to read. */
--			int32_t data;
--		} sensor_odr, sensor_range;
+ 		struct lightbar_params_v0 set_params_v0;
+ 		struct lightbar_params_v1 set_params_v1;
 +
-+		/* Used for MOTIONSENSE_CMD_FIFO_INFO */
-+		/* (no params) */
++		struct lightbar_params_v2_timing set_v2par_timing;
++		struct lightbar_params_v2_tap set_v2par_tap;
++		struct lightbar_params_v2_oscillation set_v2par_osc;
++		struct lightbar_params_v2_brightness set_v2par_bright;
++		struct lightbar_params_v2_thresholds set_v2par_thlds;
++		struct lightbar_params_v2_colors set_v2par_colors;
 +
-+		/* Used for MOTIONSENSE_CMD_FIFO_READ */
-+		struct __ec_todo_unpacked {
-+			/*
-+			 * Number of expected vector to return.
-+			 * EC may return less or 0 if none available.
-+			 */
-+			uint32_t max_data_vector;
-+		} fifo_read;
-+
-+		struct ec_motion_sense_activity set_activity;
-+
-+		/* Used for MOTIONSENSE_CMD_LID_ANGLE */
-+		/* (no params) */
-+
-+		/* Used for MOTIONSENSE_CMD_FIFO_INT_ENABLE */
-+		struct __ec_todo_unpacked {
-+			/*
-+			 * 1: enable, 0 disable fifo,
-+			 * EC_MOTION_SENSE_NO_VALUE return value.
-+			 */
-+			int8_t enable;
-+		} fifo_int_enable;
-+
-+		/* Used for MOTIONSENSE_CMD_SPOOF */
-+		struct __ec_todo_packed {
-+			uint8_t sensor_id;
-+
-+			/* See enum motionsense_spoof_mode. */
-+			uint8_t spoof_enable;
-+
-+			/* Ignored, used for alignment. */
-+			uint8_t reserved;
-+
-+			/* Individual component values to spoof. */
-+			int16_t components[3];
-+		} spoof;
-+
-+		/* Used for MOTIONSENSE_CMD_TABLET_MODE_LID_ANGLE. */
-+		struct __ec_todo_unpacked {
-+			/*
-+			 * Lid angle threshold for switching between tablet and
-+			 * clamshell mode.
-+			 */
-+			int16_t lid_angle;
-+
-+			/*
-+			 * Hysteresis degree to prevent fluctuations between
-+			 * clamshell and tablet mode if lid angle keeps
-+			 * changing around the threshold. Lid motion driver will
-+			 * use lid_angle + hys_degree to trigger tablet mode and
-+			 * lid_angle - hys_degree to trigger clamshell mode.
-+			 */
-+			int16_t hys_degree;
-+		} tablet_mode_threshold;
+ 		struct lightbar_program set_program;
  	};
  } __ec_todo_packed;
+@@ -1752,6 +1837,14 @@ struct ec_response_lightbar {
+ 		struct lightbar_params_v0 get_params_v0;
+ 		struct lightbar_params_v1 get_params_v1;
  
- struct ec_response_motion_sense {
- 	union {
--		/* Used for MOTIONSENSE_CMD_DUMP. */
-+		/* Used for MOTIONSENSE_CMD_DUMP */
++
++		struct lightbar_params_v2_timing get_params_v2_timing;
++		struct lightbar_params_v2_tap get_params_v2_tap;
++		struct lightbar_params_v2_oscillation get_params_v2_osc;
++		struct lightbar_params_v2_brightness get_params_v2_bright;
++		struct lightbar_params_v2_thresholds get_params_v2_thlds;
++		struct lightbar_params_v2_colors get_params_v2_colors;
++
  		struct __ec_todo_unpacked {
- 			/* Flags representing the motion sensor module. */
- 			uint8_t module_flags;
-@@ -2411,27 +2656,118 @@ struct ec_response_motion_sense {
- 			uint8_t chip;
- 		} info;
- 
-+		/* Used for MOTIONSENSE_CMD_INFO version 3 */
-+		struct __ec_todo_unpacked {
-+			/* Should be element of enum motionsensor_type. */
-+			uint8_t type;
-+
-+			/* Should be element of enum motionsensor_location. */
-+			uint8_t location;
-+
-+			/* Should be element of enum motionsensor_chip. */
-+			uint8_t chip;
-+
-+			/* Minimum sensor sampling frequency */
-+			uint32_t min_frequency;
-+
-+			/* Maximum sensor sampling frequency */
-+			uint32_t max_frequency;
-+
-+			/* Max number of sensor events that could be in fifo */
-+			uint32_t fifo_max_event_count;
-+		} info_3;
-+
- 		/* Used for MOTIONSENSE_CMD_DATA */
- 		struct ec_response_motion_sensor_data data;
- 
+ 			uint32_t num;
+ 			uint32_t flags;
+@@ -1764,9 +1857,11 @@ struct ec_response_lightbar {
  		/*
- 		 * Used for MOTIONSENSE_CMD_EC_RATE, MOTIONSENSE_CMD_SENSOR_ODR,
--		 * MOTIONSENSE_CMD_SENSOR_RANGE, and
--		 * MOTIONSENSE_CMD_KB_WAKE_ANGLE.
-+		 * MOTIONSENSE_CMD_SENSOR_RANGE,
-+		 * MOTIONSENSE_CMD_KB_WAKE_ANGLE,
-+		 * MOTIONSENSE_CMD_FIFO_INT_ENABLE and
-+		 * MOTIONSENSE_CMD_SPOOF.
+ 		 * The following commands have no response:
+ 		 *
+-		 * off, on, init, set_brightness, seq, reg, set_rgb,
++		 * off, on, init, set_brightness, seq, reg, set_rgb, demo,
+ 		 * set_params_v0, set_params_v1, set_program,
+-		 * manual_suspend_ctrl, suspend, resume
++		 * manual_suspend_ctrl, suspend, resume, set_v2par_timing,
++		 * set_v2par_tap, set_v2par_osc, set_v2par_bright,
++		 * set_v2par_thlds, set_v2par_colors
  		 */
- 		struct __ec_todo_unpacked {
- 			/* Current value of the parameter queried. */
- 			int32_t ret;
--		} ec_rate, sensor_odr, sensor_range, kb_wake_angle;
-+		} ec_rate, sensor_odr, sensor_range, kb_wake_angle,
-+		  fifo_int_enable, spoof;
- 
--		/* Used for MOTIONSENSE_CMD_SENSOR_OFFSET */
-+		/*
-+		 * Used for MOTIONSENSE_CMD_SENSOR_OFFSET,
-+		 * PERFORM_CALIB.
-+		 */
- 		struct __ec_todo_unpacked  {
- 			int16_t temp;
- 			int16_t offset[3];
- 		} sensor_offset, perform_calib;
-+
-+		/* Used for MOTIONSENSE_CMD_SENSOR_SCALE */
-+		struct __ec_todo_unpacked  {
-+			int16_t temp;
-+			uint16_t scale[3];
-+		} sensor_scale;
-+
-+		struct ec_response_motion_sense_fifo_info fifo_info, fifo_flush;
-+
-+		struct ec_response_motion_sense_fifo_data fifo_read;
-+
-+		struct __ec_todo_packed {
-+			uint16_t reserved;
-+			uint32_t enabled;
-+			uint32_t disabled;
-+		} list_activities;
-+
-+		/* No params for set activity */
-+
-+		/* Used for MOTIONSENSE_CMD_LID_ANGLE */
-+		struct __ec_todo_unpacked {
-+			/*
-+			 * Angle between 0 and 360 degree if available,
-+			 * LID_ANGLE_UNRELIABLE otherwise.
-+			 */
-+			uint16_t value;
-+		} lid_angle;
-+
-+		/* Used for MOTIONSENSE_CMD_TABLET_MODE_LID_ANGLE. */
-+		struct __ec_todo_unpacked {
-+			/*
-+			 * Lid angle threshold for switching between tablet and
-+			 * clamshell mode.
-+			 */
-+			uint16_t lid_angle;
-+
-+			/* Hysteresis degree. */
-+			uint16_t hys_degree;
-+		} tablet_mode_threshold;
-+
  	};
  } __ec_todo_packed;
+@@ -1795,6 +1890,18 @@ enum lightbar_command {
+ 	LIGHTBAR_CMD_MANUAL_SUSPEND_CTRL = 19,
+ 	LIGHTBAR_CMD_SUSPEND = 20,
+ 	LIGHTBAR_CMD_RESUME = 21,
++	LIGHTBAR_CMD_GET_PARAMS_V2_TIMING = 22,
++	LIGHTBAR_CMD_SET_PARAMS_V2_TIMING = 23,
++	LIGHTBAR_CMD_GET_PARAMS_V2_TAP = 24,
++	LIGHTBAR_CMD_SET_PARAMS_V2_TAP = 25,
++	LIGHTBAR_CMD_GET_PARAMS_V2_OSCILLATION = 26,
++	LIGHTBAR_CMD_SET_PARAMS_V2_OSCILLATION = 27,
++	LIGHTBAR_CMD_GET_PARAMS_V2_BRIGHTNESS = 28,
++	LIGHTBAR_CMD_SET_PARAMS_V2_BRIGHTNESS = 29,
++	LIGHTBAR_CMD_GET_PARAMS_V2_THRESHOLDS = 30,
++	LIGHTBAR_CMD_SET_PARAMS_V2_THRESHOLDS = 31,
++	LIGHTBAR_CMD_GET_PARAMS_V2_COLORS = 32,
++	LIGHTBAR_CMD_SET_PARAMS_V2_COLORS = 33,
+ 	LIGHTBAR_NUM_CMDS
+ };
  
-+/*****************************************************************************/
-+/* Force lid open command */
-+
-+/* Make lid event always open */
-+#define EC_CMD_FORCE_LID_OPEN 0x002C
-+
-+struct ec_params_force_lid_open {
-+	uint8_t enabled;
-+} __ec_align1;
-+
-+/*****************************************************************************/
-+/* Configure the behavior of the power button */
-+#define EC_CMD_CONFIG_POWER_BUTTON 0x002D
-+
-+enum ec_config_power_button_flags {
-+	/* Enable/Disable power button pulses for x86 devices */
-+	EC_POWER_BUTTON_ENABLE_PULSE = BIT(0),
-+};
-+
-+struct ec_params_config_power_button {
-+	/* See enum ec_config_power_button_flags */
-+	uint8_t flags;
-+} __ec_align1;
-+
- /*****************************************************************************/
- /* USB charging control commands */
+@@ -1813,6 +1920,14 @@ enum ec_led_id {
+ 	EC_LED_ID_POWER_LED,
+ 	/* LED on power adapter or its plug */
+ 	EC_LED_ID_ADAPTER_LED,
++	/* LED to indicate left side */
++	EC_LED_ID_LEFT_LED,
++	/* LED to indicate right side */
++	EC_LED_ID_RIGHT_LED,
++	/* LED to indicate recovery mode with HW_REINIT */
++	EC_LED_ID_RECOVERY_HW_REINIT_LED,
++	/* LED to indicate sysrq debug mode. */
++	EC_LED_ID_SYSRQ_DEBUG_LED,
  
-@@ -2888,6 +3224,12 @@ union __ec_align_offset1 ec_response_get_next_data {
- 	/* Unaligned */
- 	uint32_t  host_event;
+ 	EC_LED_ID_COUNT
+ };
+@@ -1827,6 +1942,7 @@ enum ec_led_colors {
+ 	EC_LED_COLOR_BLUE,
+ 	EC_LED_COLOR_YELLOW,
+ 	EC_LED_COLOR_WHITE,
++	EC_LED_COLOR_AMBER,
  
-+	struct __ec_todo_unpacked {
-+		/* For aligning the fifo_info */
-+		uint8_t reserved[3];
-+		struct ec_response_motion_sense_fifo_info info;
-+	} sensor_fifo;
-+
- 	uint32_t   buttons;
- 	uint32_t   switches;
- 	uint32_t   sysrq;
-@@ -2896,6 +3238,12 @@ union __ec_align_offset1 ec_response_get_next_data {
- union __ec_align_offset1 ec_response_get_next_data_v1 {
- 	uint8_t key_matrix[16];
- 	uint32_t host_event;
-+	struct __ec_todo_unpacked {
-+		/* For aligning the fifo_info */
-+		uint8_t reserved[3];
-+		struct ec_response_motion_sense_fifo_info info;
-+	} sensor_fifo;
-+
- 	uint32_t buttons;
- 	uint32_t switches;
- 	uint32_t sysrq;
+ 	EC_LED_COLOR_COUNT
+ };
 -- 
 2.21.0.1020.gf2820cf01a-goog
