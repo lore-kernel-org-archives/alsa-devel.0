@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v3 14/30] mfd: cros_ec: Add EC transport protocol v4
-Date: Thu,  9 May 2019 14:13:37 -0700
-Message-ID: <20190509211353.213194-15-gwendal@chromium.org>
+Subject: [PATCH v3 20/30] mfd: cros_ec: Add API for keyboard testing
+Date: Thu,  9 May 2019 14:13:43 -0700
+Message-ID: <20190509211353.213194-21-gwendal@chromium.org>
 References: <20190509211353.213194-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,182 +12,50 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce a new transport procotol between EC and host.
+Add command to allow keyboard testing in factory.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 143 ++++++++++++++++++++++++++-
- 1 file changed, 141 insertions(+), 2 deletions(-)
+ include/linux/mfd/cros_ec_commands.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 76943e64998a..40a8069a58e8 100644
+index e05cdcb12481..cc054a0a4c4c 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -455,7 +455,10 @@
- #define EC_LPC_STATUS_BUSY_MASK \
- 	(EC_LPC_STATUS_FROM_HOST | EC_LPC_STATUS_PROCESSING)
+@@ -3142,6 +3142,17 @@ struct ec_params_mkbp_simulate_key {
+ 	uint8_t pressed;
+ } __ec_align1;
  
--/* Host command response codes */
-+/*
-+ * Host command response codes (16-bit).  Note that response codes should be
-+ * stored in a uint16_t rather than directly in a value of this type.
-+ */
- enum ec_status {
- 	EC_RES_SUCCESS = 0,
- 	EC_RES_INVALID_COMMAND = 1,
-@@ -471,7 +474,13 @@ enum ec_status {
- 	EC_RES_OVERFLOW = 11,		/* Table / data overflow */
- 	EC_RES_INVALID_HEADER = 12,     /* Header contains invalid data */
- 	EC_RES_REQUEST_TRUNCATED = 13,  /* Didn't get the entire request */
--	EC_RES_RESPONSE_TOO_BIG = 14    /* Response was too big to handle */
-+	EC_RES_RESPONSE_TOO_BIG = 14,   /* Response was too big to handle */
-+	EC_RES_BUS_ERROR = 15,		/* Communications bus error */
-+	EC_RES_BUSY = 16,		/* Up but too busy.  Should retry */
-+	EC_RES_INVALID_HEADER_VERSION = 17,  /* Header version invalid */
-+	EC_RES_INVALID_HEADER_CRC = 18,      /* Header CRC invalid */
-+	EC_RES_INVALID_DATA_CRC = 19,        /* Data CRC invalid */
-+	EC_RES_DUP_UNAVAILABLE = 20,         /* Can't resend response */
- };
- 
- /*
-@@ -744,6 +753,136 @@ struct ec_host_response {
- 	uint16_t reserved;
- } __ec_align4;
- 
-+/*****************************************************************************/
++#define EC_CMD_GET_KEYBOARD_ID 0x0063
 +
-+/*
-+ * Host command protocol V4.
-+ *
-+ * Packets always start with a request or response header.  They are followed
-+ * by data_len bytes of data.  If the data_crc_present flag is set, the data
-+ * bytes are followed by a CRC-8 of that data, using using x^8 + x^2 + x + 1
-+ * polynomial.
-+ *
-+ * Host algorithm when sending a request q:
-+ *
-+ * 101) tries_left=(some value, e.g. 3);
-+ * 102) q.seq_num++
-+ * 103) q.seq_dup=0
-+ * 104) Calculate q.header_crc.
-+ * 105) Send request q to EC.
-+ * 106) Wait for response r.  Go to 201 if received or 301 if timeout.
-+ *
-+ * 201) If r.struct_version != 4, go to 301.
-+ * 202) If r.header_crc mismatches calculated CRC for r header, go to 301.
-+ * 203) If r.data_crc_present and r.data_crc mismatches, go to 301.
-+ * 204) If r.seq_num != q.seq_num, go to 301.
-+ * 205) If r.seq_dup == q.seq_dup, return success.
-+ * 207) If r.seq_dup == 1, go to 301.
-+ * 208) Return error.
-+ *
-+ * 301) If --tries_left <= 0, return error.
-+ * 302) If q.seq_dup == 1, go to 105.
-+ * 303) q.seq_dup = 1
-+ * 304) Go to 104.
-+ *
-+ * EC algorithm when receiving a request q.
-+ * EC has response buffer r, error buffer e.
-+ *
-+ * 101) If q.struct_version != 4, set e.result = EC_RES_INVALID_HEADER_VERSION
-+ *      and go to 301
-+ * 102) If q.header_crc mismatches calculated CRC, set e.result =
-+ *      EC_RES_INVALID_HEADER_CRC and go to 301
-+ * 103) If q.data_crc_present, calculate data CRC.  If that mismatches the CRC
-+ *      byte at the end of the packet, set e.result = EC_RES_INVALID_DATA_CRC
-+ *      and go to 301.
-+ * 104) If q.seq_dup == 0, go to 201.
-+ * 105) If q.seq_num != r.seq_num, go to 201.
-+ * 106) If q.seq_dup == r.seq_dup, go to 205, else go to 203.
-+ *
-+ * 201) Process request q into response r.
-+ * 202) r.seq_num = q.seq_num
-+ * 203) r.seq_dup = q.seq_dup
-+ * 204) Calculate r.header_crc
-+ * 205) If r.data_len > 0 and data is no longer available, set e.result =
-+ *      EC_RES_DUP_UNAVAILABLE and go to 301.
-+ * 206) Send response r.
-+ *
-+ * 301) e.seq_num = q.seq_num
-+ * 302) e.seq_dup = q.seq_dup
-+ * 303) Calculate e.header_crc.
-+ * 304) Send error response e.
-+ */
-+
-+/* Version 4 request from host */
-+struct ec_host_request4 {
-+	/*
-+	 * bits 0-3: struct_version: Structure version (=4)
-+	 * bit    4: is_response: Is response (=0)
-+	 * bits 5-6: seq_num: Sequence number
-+	 * bit    7: seq_dup: Sequence duplicate flag
-+	 */
-+	uint8_t fields0;
-+
-+	/*
-+	 * bits 0-4: command_version: Command version
-+	 * bits 5-6: Reserved (set 0, ignore on read)
-+	 * bit    7: data_crc_present: Is data CRC present after data
-+	 */
-+	uint8_t fields1;
-+
-+	/* Command code (EC_CMD_*) */
-+	uint16_t command;
-+
-+	/* Length of data which follows this header (not including data CRC) */
-+	uint16_t data_len;
-+
-+	/* Reserved (set 0, ignore on read) */
-+	uint8_t reserved;
-+
-+	/* CRC-8 of above fields, using x^8 + x^2 + x + 1 polynomial */
-+	uint8_t header_crc;
++struct ec_response_keyboard_id {
++	uint32_t keyboard_id;
 +} __ec_align4;
 +
-+/* Version 4 response from EC */
-+struct ec_host_response4 {
-+	/*
-+	 * bits 0-3: struct_version: Structure version (=4)
-+	 * bit    4: is_response: Is response (=1)
-+	 * bits 5-6: seq_num: Sequence number
-+	 * bit    7: seq_dup: Sequence duplicate flag
-+	 */
-+	uint8_t fields0;
++enum keyboard_id {
++	KEYBOARD_ID_UNSUPPORTED = 0,
++	KEYBOARD_ID_UNREADABLE = 0xffffffff,
++};
 +
-+	/*
-+	 * bits 0-6: Reserved (set 0, ignore on read)
-+	 * bit    7: data_crc_present: Is data CRC present after data
-+	 */
-+	uint8_t fields1;
+ /* Configure keyboard scanning */
+ #define EC_CMD_MKBP_SET_CONFIG 0x0064
+ #define EC_CMD_MKBP_GET_CONFIG 0x0065
+@@ -3390,6 +3401,13 @@ struct ec_response_get_next_event_v1 {
+ #define EC_MKBP_TABLET_MODE	1
+ #define EC_MKBP_BASE_ATTACHED	2
+ 
++/* Run keyboard factory test scanning */
++#define EC_CMD_KEYBOARD_FACTORY_TEST 0x0068
 +
-+	/* Result code (EC_RES_*) */
-+	uint16_t result;
++struct ec_response_keyboard_factory_test {
++	uint16_t shorted;	/* Keyboard pins are shorted */
++} __ec_align2;
 +
-+	/* Length of data which follows this header (not including data CRC) */
-+	uint16_t data_len;
-+
-+	/* Reserved (set 0, ignore on read) */
-+	uint8_t reserved;
-+
-+	/* CRC-8 of above fields, using x^8 + x^2 + x + 1 polynomial */
-+	uint8_t header_crc;
-+} __ec_align4;
-+
-+/* Fields in fields0 byte */
-+#define EC_PACKET4_0_STRUCT_VERSION_MASK	0x0f
-+#define EC_PACKET4_0_IS_RESPONSE_MASK		0x10
-+#define EC_PACKET4_0_SEQ_NUM_SHIFT		5
-+#define EC_PACKET4_0_SEQ_NUM_MASK		0x60
-+#define EC_PACKET4_0_SEQ_DUP_MASK		0x80
-+
-+/* Fields in fields1 byte */
-+#define EC_PACKET4_1_COMMAND_VERSION_MASK	0x1f  /* (request only) */
-+#define EC_PACKET4_1_DATA_CRC_PRESENT_MASK	0x80
-+
- /*****************************************************************************/
- /*
-  * Notes on commands:
+ /* Fingerprint events in 'fp_events' for EC_MKBP_EVENT_FINGERPRINT */
+ #define EC_MKBP_FP_RAW_EVENT(fp_events) ((fp_events) & 0x00FFFFFF)
+ #define EC_MKBP_FP_ERRCODE(fp_events)   ((fp_events) & 0x0000000F)
 -- 
 2.21.0.1020.gf2820cf01a-goog
