@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v3 22/30] mfd: cros_ec: Add Smart Battery Firmware update API
-Date: Thu,  9 May 2019 14:13:45 -0700
-Message-ID: <20190509211353.213194-23-gwendal@chromium.org>
+Subject: [PATCH v3 23/30] mfd: cros_ec: Add I2C passthru protection API
+Date: Thu,  9 May 2019 14:13:46 -0700
+Message-ID: <20190509211353.213194-24-gwendal@chromium.org>
 References: <20190509211353.213194-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,95 +12,44 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add API to update battery firmware.
+Prevent direct i2c access to device behind EC when not in development mode.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 73 ++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 7f98c6e63ad1..49ea905cfd18 100644
+index 49ea905cfd18..59ad6bae3f9b 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -4243,6 +4243,79 @@ struct ec_response_battery_vendor_param {
- 	uint32_t value;
- } __ec_align4;
+@@ -4316,6 +4316,28 @@ struct ec_params_entering_mode {
+ #define VBOOT_MODE_DEVELOPER 1
+ #define VBOOT_MODE_RECOVERY  2
  
 +/*****************************************************************************/
 +/*
-+ * Smart Battery Firmware Update Commands
++ * I2C passthru protection command: Protects I2C tunnels against access on
++ * certain addresses (board-specific).
 + */
-+#define EC_CMD_SB_FW_UPDATE 0x00B5
++#define EC_CMD_I2C_PASSTHRU_PROTECT 0x00B7
 +
-+enum ec_sb_fw_update_subcmd {
-+	EC_SB_FW_UPDATE_PREPARE  = 0x0,
-+	EC_SB_FW_UPDATE_INFO     = 0x1, /*query sb info */
-+	EC_SB_FW_UPDATE_BEGIN    = 0x2, /*check if protected */
-+	EC_SB_FW_UPDATE_WRITE    = 0x3, /*check if protected */
-+	EC_SB_FW_UPDATE_END      = 0x4,
-+	EC_SB_FW_UPDATE_STATUS   = 0x5,
-+	EC_SB_FW_UPDATE_PROTECT  = 0x6,
-+	EC_SB_FW_UPDATE_MAX      = 0x7,
++enum ec_i2c_passthru_protect_subcmd {
++	EC_CMD_I2C_PASSTHRU_PROTECT_STATUS = 0x0,
++	EC_CMD_I2C_PASSTHRU_PROTECT_ENABLE = 0x1,
 +};
 +
-+#define SB_FW_UPDATE_CMD_WRITE_BLOCK_SIZE 32
-+#define SB_FW_UPDATE_CMD_STATUS_SIZE 2
-+#define SB_FW_UPDATE_CMD_INFO_SIZE 8
-+
-+struct ec_sb_fw_update_header {
-+	uint16_t subcmd;  /* enum ec_sb_fw_update_subcmd */
-+	uint16_t fw_id;   /* firmware id */
-+} __ec_align4;
-+
-+struct ec_params_sb_fw_update {
-+	struct ec_sb_fw_update_header hdr;
-+	union {
-+		/* EC_SB_FW_UPDATE_PREPARE  = 0x0 */
-+		/* EC_SB_FW_UPDATE_INFO     = 0x1 */
-+		/* EC_SB_FW_UPDATE_BEGIN    = 0x2 */
-+		/* EC_SB_FW_UPDATE_END      = 0x4 */
-+		/* EC_SB_FW_UPDATE_STATUS   = 0x5 */
-+		/* EC_SB_FW_UPDATE_PROTECT  = 0x6 */
-+		/* Those have no args */
-+
-+		/* EC_SB_FW_UPDATE_WRITE    = 0x3 */
-+		struct __ec_align4 {
-+			uint8_t  data[SB_FW_UPDATE_CMD_WRITE_BLOCK_SIZE];
-+		} write;
-+	};
-+} __ec_align4;
-+
-+struct ec_response_sb_fw_update {
-+	union {
-+		/* EC_SB_FW_UPDATE_INFO     = 0x1 */
-+		struct __ec_align1 {
-+			uint8_t data[SB_FW_UPDATE_CMD_INFO_SIZE];
-+		} info;
-+
-+		/* EC_SB_FW_UPDATE_STATUS   = 0x5 */
-+		struct __ec_align1 {
-+			uint8_t data[SB_FW_UPDATE_CMD_STATUS_SIZE];
-+		} status;
-+	};
++struct ec_params_i2c_passthru_protect {
++	uint8_t subcmd;
++	uint8_t port;		/* I2C port number */
 +} __ec_align1;
 +
-+/*
-+ * Entering Verified Boot Mode Command
-+ * Default mode is VBOOT_MODE_NORMAL if EC did not receive this command.
-+ * Valid Modes are: normal, developer, and recovery.
-+ */
-+#define EC_CMD_ENTERING_MODE 0x00B6
++struct ec_response_i2c_passthru_protect {
++	uint8_t status;		/* Status flags (0: unlocked, 1: locked) */
++} __ec_align1;
 +
-+struct ec_params_entering_mode {
-+	int vboot_mode;
-+} __ec_align4;
-+
-+#define VBOOT_MODE_NORMAL    0
-+#define VBOOT_MODE_DEVELOPER 1
-+#define VBOOT_MODE_RECOVERY  2
 +
  /*****************************************************************************/
  /*
