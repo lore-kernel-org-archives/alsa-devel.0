@@ -1,38 +1,50 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH v2 2/4] ASoC: hdmi-codec: remove reference to the
- current substream
-Date: Thu, 09 May 2019 10:11:48 +0200
-Message-ID: <5b677f1581565bd8c915a14cd91352ec4bcabdd7.camel@baylibre.com>
-References: <20190506095815.24578-1-jbrunet@baylibre.com>
-         <20190506095815.24578-3-jbrunet@baylibre.com>
-         <20190508070058.GQ14916@sirena.org.uk>
-         <fd633a5597703f557d75e43c14213699efe295f0.camel@baylibre.com>
-         <20190508085758.GE14916@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC : cs4265 : readable register too low
+Date: Thu, 9 May 2019 11:45:14 +0100
+Message-ID: <20190509104514.GB45394@ediswmail.ad.cirrus.com>
+References: <20190508063313.18099-1-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190508085758.GE14916@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patchwork-bot+notify@kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3258EF8073C
+ for <alsa-devel@alsa-project.org>; Thu,  9 May 2019 12:45:18 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190508063313.18099-1-flatmax@flatmax.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2019-05-08 at 17:57 +0900, Mark Brown wrote:
-> > Another solution would be to use the mutex as the 'busy' flag.
-> > Get the ownership of the hdmi using try_lock() in startup() and
-> > release it in shutdown()
+On Wed, May 08, 2019 at 04:33:13PM +1000, Matt Flax wrote:
+> The cs4265_readable_register function stopped short of the maximum
+> register.
 > 
-> > Would you have a preference Mark ? 
+> An example bug is taken from :
+> https://github.com/Audio-Injector/Ultra/issues/25
 > 
-> Probably using a mutex for the flag is clearer.  I'd rather keep things
-> as simple as absolutely possible to avoid people making mistakes in
-> future.
+> Where alsactl store fails with :
+> Cannot read control '2,0,0,C Data Buffer,0': Input/output error
+> 
+> This patch fixes the bug by setting the cs4265 to have readable
+> registers up to the maximum hardware register CS4265_MAX_REGISTER.
+> 
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
 
-Hi Mark,
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-I received a notification that you applied this patch.
-Just to confirm, you expect a follow up patch to re-introduce the mutex, right ?
-
-Thanks
-Jerome
+Thanks,
+Charles
