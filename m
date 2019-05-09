@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [PATCH v3 26/30] mfd: cros_ec: Add API for Fingerprint support
-Date: Thu,  9 May 2019 14:13:49 -0700
-Message-ID: <20190509211353.213194-27-gwendal@chromium.org>
+Subject: [PATCH v3 29/30] mfd: cros_ec: Add Management API entry points
+Date: Thu,  9 May 2019 14:13:52 -0700
+Message-ID: <20190509211353.213194-30-gwendal@chromium.org>
 References: <20190509211353.213194-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,253 +12,139 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add API for fingerprint sensor presented by embedded controller.
+Add commands for test and management.
+Add command space for future development.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 228 +++++++++++++++++++++++++++
- 1 file changed, 228 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 113 +++++++++++++++++++++++++++
+ 1 file changed, 113 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 1d0311df44d3..4a9ac3861bdd 100644
+index 860a76274334..fc8babce1576 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -5043,6 +5043,234 @@ struct ec_response_pd_chip_info_v1 {
- 	};
- } __ec_align2;
+@@ -5176,6 +5176,119 @@ struct ec_params_set_cbi {
+ 	uint8_t data[];		/* For string and raw data */
+ } __ec_align1;
  
-+/*****************************************************************************/
-+/* Fingerprint MCU commands: range 0x0400-0x040x */
-+
-+/* Fingerprint SPI sensor passthru command: prototyping ONLY */
-+#define EC_CMD_FP_PASSTHRU 0x0400
-+
-+#define EC_FP_FLAG_NOT_COMPLETE 0x1
-+
-+struct ec_params_fp_passthru {
-+	uint16_t len;		/* Number of bytes to write then read */
-+	uint16_t flags;		/* EC_FP_FLAG_xxx */
-+	uint8_t data[];		/* Data to send */
-+} __ec_align2;
-+
-+/* Configure the Fingerprint MCU behavior */
-+#define EC_CMD_FP_MODE 0x0402
-+
-+/* Put the sensor in its lowest power mode */
-+#define FP_MODE_DEEPSLEEP      BIT(0)
-+/* Wait to see a finger on the sensor */
-+#define FP_MODE_FINGER_DOWN    BIT(1)
-+/* Poll until the finger has left the sensor */
-+#define FP_MODE_FINGER_UP      BIT(2)
-+/* Capture the current finger image */
-+#define FP_MODE_CAPTURE        BIT(3)
-+/* Finger enrollment session on-going */
-+#define FP_MODE_ENROLL_SESSION BIT(4)
-+/* Enroll the current finger image */
-+#define FP_MODE_ENROLL_IMAGE   BIT(5)
-+/* Try to match the current finger image */
-+#define FP_MODE_MATCH          BIT(6)
-+/* Reset and re-initialize the sensor. */
-+#define FP_MODE_RESET_SENSOR   BIT(7)
-+/* special value: don't change anything just read back current mode */
-+#define FP_MODE_DONT_CHANGE    BIT(31)
-+
-+#define FP_VALID_MODES (FP_MODE_DEEPSLEEP      | \
-+			FP_MODE_FINGER_DOWN    | \
-+			FP_MODE_FINGER_UP      | \
-+			FP_MODE_CAPTURE        | \
-+			FP_MODE_ENROLL_SESSION | \
-+			FP_MODE_ENROLL_IMAGE   | \
-+			FP_MODE_MATCH          | \
-+			FP_MODE_RESET_SENSOR   | \
-+			FP_MODE_DONT_CHANGE)
-+
-+/* Capture types defined in bits [30..28] */
-+#define FP_MODE_CAPTURE_TYPE_SHIFT 28
-+#define FP_MODE_CAPTURE_TYPE_MASK  (0x7 << FP_MODE_CAPTURE_TYPE_SHIFT)
 +/*
-+ * This enum must remain ordered, if you add new values you must ensure that
-+ * FP_CAPTURE_TYPE_MAX is still the last one.
++ * Information about resets of the AP by the EC and the EC's own uptime.
 + */
-+enum fp_capture_type {
-+	/* Full blown vendor-defined capture (produces 'frame_size' bytes) */
-+	FP_CAPTURE_VENDOR_FORMAT = 0,
-+	/* Simple raw image capture (produces width x height x bpp bits) */
-+	FP_CAPTURE_SIMPLE_IMAGE = 1,
-+	/* Self test pattern (e.g. checkerboard) */
-+	FP_CAPTURE_PATTERN0 = 2,
-+	/* Self test pattern (e.g. inverted checkerboard) */
-+	FP_CAPTURE_PATTERN1 = 3,
-+	/* Capture for Quality test with fixed contrast */
-+	FP_CAPTURE_QUALITY_TEST = 4,
-+	/* Capture for pixel reset value test */
-+	FP_CAPTURE_RESET_TEST = 5,
-+	FP_CAPTURE_TYPE_MAX,
-+};
-+/* Extracts the capture type from the sensor 'mode' word */
-+#define FP_CAPTURE_TYPE(mode) (((mode) & FP_MODE_CAPTURE_TYPE_MASK) \
-+				       >> FP_MODE_CAPTURE_TYPE_SHIFT)
++#define EC_CMD_GET_UPTIME_INFO 0x0121
 +
-+struct ec_params_fp_mode {
-+	uint32_t mode; /* as defined by FP_MODE_ constants */
-+} __ec_align4;
-+
-+struct ec_response_fp_mode {
-+	uint32_t mode; /* as defined by FP_MODE_ constants */
-+} __ec_align4;
-+
-+/* Retrieve Fingerprint sensor information */
-+#define EC_CMD_FP_INFO 0x0403
-+
-+/* Number of dead pixels detected on the last maintenance */
-+#define FP_ERROR_DEAD_PIXELS(errors) ((errors) & 0x3FF)
-+/* Unknown number of dead pixels detected on the last maintenance */
-+#define FP_ERROR_DEAD_PIXELS_UNKNOWN (0x3FF)
-+/* No interrupt from the sensor */
-+#define FP_ERROR_NO_IRQ    BIT(12)
-+/* SPI communication error */
-+#define FP_ERROR_SPI_COMM  BIT(13)
-+/* Invalid sensor Hardware ID */
-+#define FP_ERROR_BAD_HWID  BIT(14)
-+/* Sensor initialization failed */
-+#define FP_ERROR_INIT_FAIL BIT(15)
-+
-+struct ec_response_fp_info_v0 {
-+	/* Sensor identification */
-+	uint32_t vendor_id;
-+	uint32_t product_id;
-+	uint32_t model_id;
-+	uint32_t version;
-+	/* Image frame characteristics */
-+	uint32_t frame_size;
-+	uint32_t pixel_format; /* using V4L2_PIX_FMT_ */
-+	uint16_t width;
-+	uint16_t height;
-+	uint16_t bpp;
-+	uint16_t errors; /* see FP_ERROR_ flags above */
-+} __ec_align4;
-+
-+struct ec_response_fp_info {
-+	/* Sensor identification */
-+	uint32_t vendor_id;
-+	uint32_t product_id;
-+	uint32_t model_id;
-+	uint32_t version;
-+	/* Image frame characteristics */
-+	uint32_t frame_size;
-+	uint32_t pixel_format; /* using V4L2_PIX_FMT_ */
-+	uint16_t width;
-+	uint16_t height;
-+	uint16_t bpp;
-+	uint16_t errors; /* see FP_ERROR_ flags above */
-+	/* Template/finger current information */
-+	uint32_t template_size;  /* max template size in bytes */
-+	uint16_t template_max;   /* maximum number of fingers/templates */
-+	uint16_t template_valid; /* number of valid fingers/templates */
-+	uint32_t template_dirty; /* bitmap of templates with MCU side changes */
-+	uint32_t template_version; /* version of the template format */
-+} __ec_align4;
-+
-+/* Get the last captured finger frame or a template content */
-+#define EC_CMD_FP_FRAME 0x0404
-+
-+/* constants defining the 'offset' field which also contains the frame index */
-+#define FP_FRAME_INDEX_SHIFT       28
-+/* Frame buffer where the captured image is stored */
-+#define FP_FRAME_INDEX_RAW_IMAGE    0
-+/* First frame buffer holding a template */
-+#define FP_FRAME_INDEX_TEMPLATE     1
-+#define FP_FRAME_GET_BUFFER_INDEX(offset) ((offset) >> FP_FRAME_INDEX_SHIFT)
-+#define FP_FRAME_OFFSET_MASK       0x0FFFFFFF
-+
-+/* Version of the format of the encrypted templates. */
-+#define FP_TEMPLATE_FORMAT_VERSION 3
-+
-+/* Constants for encryption parameters */
-+#define FP_CONTEXT_NONCE_BYTES 12
-+#define FP_CONTEXT_USERID_WORDS (32 / sizeof(uint32_t))
-+#define FP_CONTEXT_TAG_BYTES 16
-+#define FP_CONTEXT_SALT_BYTES 16
-+#define FP_CONTEXT_TPM_BYTES 32
-+
-+struct ec_fp_template_encryption_metadata {
++struct ec_response_uptime_info {
 +	/*
-+	 * Version of the structure format (N=3).
++	 * Number of milliseconds since the last EC boot. Sysjump resets
++	 * typically do not restart the EC's time_since_boot epoch.
++	 *
++	 * WARNING: The EC's sense of time is much less accurate than the AP's
++	 * sense of time, in both phase and frequency.  This timebase is similar
++	 * to CLOCK_MONOTONIC_RAW, but with 1% or more frequency error.
 +	 */
-+	uint16_t struct_version;
-+	/* Reserved bytes, set to 0. */
-+	uint16_t reserved;
++	uint32_t time_since_ec_boot_ms;
++
 +	/*
-+	 * The salt is *only* ever used for key derivation. The nonce is unique,
-+	 * a different one is used for every message.
++	 * Number of times the AP was reset by the EC since the last EC boot.
++	 * Note that the AP may be held in reset by the EC during the initial
++	 * boot sequence, such that the very first AP boot may count as more
++	 * than one here.
 +	 */
-+	uint8_t nonce[FP_CONTEXT_NONCE_BYTES];
-+	uint8_t salt[FP_CONTEXT_SALT_BYTES];
-+	uint8_t tag[FP_CONTEXT_TAG_BYTES];
++	uint32_t ap_resets_since_ec_boot;
++
++	/*
++	 * The set of flags which describe the EC's most recent reset.  See
++	 * include/system.h RESET_FLAG_* for details.
++	 */
++	uint32_t ec_reset_flags;
++
++	/* Empty log entries have both the cause and timestamp set to zero. */
++	struct ap_reset_log_entry {
++		/*
++		 * See include/chipset.h: enum chipset_{reset,shutdown}_reason
++		 * for details.
++		 */
++		uint16_t reset_cause;
++
++		/* Reserved for protocol growth. */
++		uint16_t reserved;
++
++		/*
++		 * The time of the reset's assertion, in milliseconds since the
++		 * last EC boot, in the same epoch as time_since_ec_boot_ms.
++		 * Set to zero if the log entry is empty.
++		 */
++		uint32_t reset_time_ms;
++	} recent_ap_reset[4];
++} __ec_align4;
++
++/*
++ * Add entropy to the device secret (stored in the rollback region).
++ *
++ * Depending on the chip, the operation may take a long time (e.g. to erase
++ * flash), so the commands are asynchronous.
++ */
++#define EC_CMD_ADD_ENTROPY	0x0122
++
++enum add_entropy_action {
++	/* Add entropy to the current secret. */
++	ADD_ENTROPY_ASYNC = 0,
++	/*
++	 * Add entropy, and also make sure that the previous secret is erased.
++	 * (this can be implemented by adding entropy multiple times until
++	 * all rolback blocks have been overwritten).
++	 */
++	ADD_ENTROPY_RESET_ASYNC = 1,
++	/* Read back result from the previous operation. */
++	ADD_ENTROPY_GET_RESULT = 2,
 +};
 +
-+struct ec_params_fp_frame {
-+	/*
-+	 * The offset contains the template index or FP_FRAME_INDEX_RAW_IMAGE
-+	 * in the high nibble, and the real offset within the frame in
-+	 * FP_FRAME_OFFSET_MASK.
-+	 */
-+	uint32_t offset;
-+	uint32_t size;
++struct ec_params_rollback_add_entropy {
++	uint8_t action;
++} __ec_align1;
++
++/*
++ * Perform a single read of a given ADC channel.
++ */
++#define EC_CMD_ADC_READ		0x0123
++
++struct ec_params_adc_read {
++	uint8_t adc_channel;
++} __ec_align1;
++
++struct ec_response_adc_read {
++	int32_t adc_value;
 +} __ec_align4;
 +
-+/* Load a template into the MCU */
-+#define EC_CMD_FP_TEMPLATE 0x0405
++/*
++ * Read back rollback info
++ */
++#define EC_CMD_ROLLBACK_INFO		0x0124
 +
-+/* Flag in the 'size' field indicating that the full template has been sent */
-+#define FP_TEMPLATE_COMMIT 0x80000000
-+
-+struct ec_params_fp_template {
-+	uint32_t offset;
-+	uint32_t size;
-+	uint8_t data[];
++struct ec_response_rollback_info {
++	int32_t id; /* Incrementing number to indicate which region to use. */
++	int32_t rollback_min_version;
++	int32_t rw_rollback_version;
 +} __ec_align4;
 +
-+/* Clear the current fingerprint user context and set a new one */
-+#define EC_CMD_FP_CONTEXT 0x0406
 +
-+struct ec_params_fp_context {
-+	uint32_t userid[FP_CONTEXT_USERID_WORDS];
-+} __ec_align4;
++/* Issue AP reset */
++#define EC_CMD_AP_RESET 0x0125
 +
-+#define EC_CMD_FP_STATS 0x0407
++/*****************************************************************************/
++/* The command range 0x200-0x2FF is reserved for Rotor. */
 +
-+#define FPSTATS_CAPTURE_INV  BIT(0)
-+#define FPSTATS_MATCHING_INV BIT(1)
-+
-+struct ec_response_fp_stats {
-+	uint32_t capture_time_us;
-+	uint32_t matching_time_us;
-+	uint32_t overall_time_us;
-+	struct {
-+		uint32_t lo;
-+		uint32_t hi;
-+	} overall_t0;
-+	uint8_t timestamps_invalid;
-+	int8_t template_matched;
-+} __ec_align2;
-+
-+#define EC_CMD_FP_SEED 0x0408
-+struct ec_params_fp_seed {
-+	/*
-+	 * Version of the structure format (N=3).
-+	 */
-+	uint16_t struct_version;
-+	/* Reserved bytes, set to 0. */
-+	uint16_t reserved;
-+	/* Seed from the TPM. */
-+	uint8_t seed[FP_CONTEXT_TPM_BYTES];
-+} __ec_align4;
++/*****************************************************************************/
++/*
++ * Reserve a range of host commands for the CR51 firmware.
++ */
++#define EC_CMD_CR51_BASE 0x0300
++#define EC_CMD_CR51_LAST 0x03FF
 +
  /*****************************************************************************/
- /* Touchpad MCU commands: range 0x0500-0x05FF */
+ /* Fingerprint MCU commands: range 0x0400-0x040x */
  
 -- 
 2.21.0.1020.gf2820cf01a-goog
