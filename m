@@ -1,79 +1,76 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH V2] ASoC: SOF: Fix build error with
- CONFIG_SND_SOC_SOF_NOCODEC=m
-Date: Fri, 10 May 2019 11:24:18 -0500
-Message-ID: <fc8fa6ea-b32c-0866-cc96-1cee2e2baae1@linux.intel.com>
-References: <20190510023657.8960-1-yuehaibing@huawei.com>
- <20190510132940.28184-1-yuehaibing@huawei.com>
- <9284cd65-98e3-5f7e-1427-8245dd84edcd@linux.intel.com>
- <34a5afbc-c165-78aa-0269-7362b523195a@huawei.com>
+Subject: [PATCH] ASoC: SOF: nocodec: fix undefined reference
+Date: Fri, 10 May 2019 11:38:03 -0500
+Message-ID: <20190510163803.8742-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <34a5afbc-c165-78aa-0269-7362b523195a@huawei.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, rdunlap@infradead.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D81C8F89673
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 18:38:19 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, YueHaibing <yuehaibing@huawei.com>, rdunlap@infradead.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The nocodec option can be selected individually, leading to the following
+issue:
 
+sound/soc/sof/core.o: In function `snd_sof_device_probe':
+core.c:(.text+0x4af): undefined reference to `sof_nocodec_setup'
 
-On 5/10/19 8:50 AM, YueHaibing wrote:
-> On 2019/5/10 21:36, Pierre-Louis Bossart wrote:
->> On 5/10/19 8:29 AM, YueHaibing wrote:
->>> Fix gcc build error while CONFIG_SND_SOC_SOF_NOCODEC=m
->>>
->>> sound/soc/sof/core.o: In function `snd_sof_device_probe':
->>> core.c:(.text+0x4af): undefined reference to `sof_nocodec_setup'
->>>
->>> Change IS_ENABLED to IS_REACHABLE to fix this.
->>
->> this just hides the issue instead of fixing it.
->> please send the config+sha1 so that we can check.
-> 
-> Sure,  config sha1 5fdc79b550c1d850eee604aa58bad4d6da9223f0
+Fix by selecting the SND_SOF_NOCODEC option as needed.
 
-Indeed there is an issue. will send a patch shortly to alsa-devel.
-Thanks for spotting this.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reported-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/Kconfig | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> 
->>
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Suggested-by: Takashi Iwai <tiwai@suse.de>
->>> Fixes: c16211d6226d ("ASoC: SOF: Add Sound Open Firmware driver core")
->>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->>> ---
->>> V2: use IS_REACHABLE
->>> ---
->>>    sound/soc/sof/core.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
->>> index 32105e0..38e22f4 100644
->>> --- a/sound/soc/sof/core.c
->>> +++ b/sound/soc/sof/core.c
->>> @@ -259,7 +259,7 @@ int snd_sof_create_page_table(struct snd_sof_dev *sdev,
->>>    static int sof_machine_check(struct snd_sof_dev *sdev)
->>>    {
->>>        struct snd_sof_pdata *plat_data = sdev->pdata;
->>> -#if IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)
->>> +#if IS_REACHABLE(CONFIG_SND_SOC_SOF_NOCODEC)
->>>        struct snd_soc_acpi_mach *machine;
->>>        int ret;
->>>    #endif
->>> @@ -267,7 +267,7 @@ static int sof_machine_check(struct snd_sof_dev *sdev)
->>>        if (plat_data->machine)
->>>            return 0;
->>>    -#if !IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)
->>> +#if !IS_REACHABLE(CONFIG_SND_SOC_SOF_NOCODEC)
->>>        dev_err(sdev->dev, "error: no matching ASoC machine driver found - aborting probe\n");
->>>        return -ENODEV;
->>>    #else
->>>
->>
->>
->> .
->>
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index b204c65698f9..a9a1d502daae 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -44,7 +44,10 @@ config SND_SOC_SOF_OPTIONS
+ if SND_SOC_SOF_OPTIONS
+ 
+ config SND_SOC_SOF_NOCODEC
+-	tristate "SOF nocodec mode Support"
++	tristate
++
++config SND_SOC_SOF_NOCODEC_SUPPORT
++	bool "SOF nocodec mode support"
+ 	help
+ 	  This adds support for a dummy/nocodec machine driver fallback
+ 	  option if no known codec is detected. This is typically only
+@@ -80,7 +83,7 @@ if SND_SOC_SOF_DEBUG
+ 
+ config SND_SOC_SOF_FORCE_NOCODEC_MODE
+ 	bool "SOF force nocodec Mode"
+-	depends on SND_SOC_SOF_NOCODEC
++	depends on SND_SOC_SOF_NOCODEC_SUPPORT
+ 	help
+ 	  This forces SOF to use dummy/nocodec as machine driver, even
+ 	  though there is a codec detected on the real platform. This is
+@@ -135,6 +138,7 @@ endif ## SND_SOC_SOF_OPTIONS
+ config SND_SOC_SOF
+ 	tristate
+ 	select SND_SOC_TOPOLOGY
++	select SND_SOC_SOF_NOCODEC if SND_SOC_SOF_NOCODEC_SUPPORT
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+-- 
+2.17.1
