@@ -1,81 +1,55 @@
 From: YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH] ASoC: SOF: Fix build error with
- CONFIG_SND_SOC_SOF_NOCODEC=m
-Date: Fri, 10 May 2019 21:09:59 +0800
-Message-ID: <07c6a947-aa4f-2195-d4bf-3a757528352e@huawei.com>
+Subject: [PATCH V2] ASoC: SOF: Fix build error with CONFIG_SND_SOC_SOF_NOCODEC=m
+Date: Fri, 10 May 2019 21:29:40 +0800
+Message-ID: <20190510132940.28184-1-yuehaibing@huawei.com>
 References: <20190510023657.8960-1-yuehaibing@huawei.com>
- <s5h7eayn5or.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h7eayn5or.wl-tiwai@suse.de>
+In-Reply-To: <20190510023657.8960-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: lgirdwood@gmail.com, rdunlap@infradead.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, pierre-louis.bossart@linux.intel.com, rdunlap@infradead.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019/5/10 15:12, Takashi Iwai wrote:
-> On Fri, 10 May 2019 04:36:57 +0200,
-> YueHaibing wrote:
->>
->> Fix gcc build error while CONFIG_SND_SOC_SOF_NOCODEC=m
->>
->> sound/soc/sof/core.o: In function `snd_sof_device_probe':
->> core.c:(.text+0x4af): undefined reference to `sof_nocodec_setup'
->>
->> Change SND_SOC_SOF_NOCODEC to bool to fix this.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Fixes: c16211d6226d ("ASoC: SOF: Add Sound Open Firmware driver core")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> 
-> This change would break things severely.  This won't allow to build it
-> as a module any longer.
-> 
-> A better fix would be to somehow restrict the SND_SOC_SOF_NOCODEC to
-> align with SND_SOC_SOF, i.e. disallow SND_SOC_SOF=y &&
-> SND_SOC_SOF_NOCODEC=m.  Because of the complex mix of select and
-> depends-on in SOF, I'm afraid that it's not that trivial, though.
-> There might be something I overlooked, hopefully...
-> 
-> An easier alternative would be to replace
-> IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC) with
-> IS_REACHABLE(CONFIG_SND_SOC_SOF_NOCODEC).  This assures the condition
-> at the build time, although the error at probe might be a surprising
-> to some users that don't know this hidden dependency.
-> 
+Fix gcc build error while CONFIG_SND_SOC_SOF_NOCODEC=m
 
-Yes, I prefer to use IS_REACHABLE, thanks!
+sound/soc/sof/core.o: In function `snd_sof_device_probe':
+core.c:(.text+0x4af): undefined reference to `sof_nocodec_setup'
 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->> ---
->>  sound/soc/sof/Kconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
->> index b204c65..9c280c9 100644
->> --- a/sound/soc/sof/Kconfig
->> +++ b/sound/soc/sof/Kconfig
->> @@ -44,7 +44,7 @@ config SND_SOC_SOF_OPTIONS
->>  if SND_SOC_SOF_OPTIONS
->>  
->>  config SND_SOC_SOF_NOCODEC
->> -	tristate "SOF nocodec mode Support"
->> +	bool "SOF nocodec mode Support"
->>  	help
->>  	  This adds support for a dummy/nocodec machine driver fallback
->>  	  option if no known codec is detected. This is typically only
->> -- 
->> 2.7.4
->>
->>
->>
-> 
-> .
-> 
+Change IS_ENABLED to IS_REACHABLE to fix this.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Fixes: c16211d6226d ("ASoC: SOF: Add Sound Open Firmware driver core")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+V2: use IS_REACHABLE
+---
+ sound/soc/sof/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 32105e0..38e22f4 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -259,7 +259,7 @@ int snd_sof_create_page_table(struct snd_sof_dev *sdev,
+ static int sof_machine_check(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_sof_pdata *plat_data = sdev->pdata;
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)
++#if IS_REACHABLE(CONFIG_SND_SOC_SOF_NOCODEC)
+ 	struct snd_soc_acpi_mach *machine;
+ 	int ret;
+ #endif
+@@ -267,7 +267,7 @@ static int sof_machine_check(struct snd_sof_dev *sdev)
+ 	if (plat_data->machine)
+ 		return 0;
+ 
+-#if !IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)
++#if !IS_REACHABLE(CONFIG_SND_SOC_SOF_NOCODEC)
+ 	dev_err(sdev->dev, "error: no matching ASoC machine driver found - aborting probe\n");
+ 	return -ENODEV;
+ #else
+-- 
+2.7.4
