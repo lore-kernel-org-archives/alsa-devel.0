@@ -1,39 +1,25 @@
-From: Mats Lindestam <mats.lindestam@axis.com>
-Subject: Alsa-loopback
-Date: Fri, 10 May 2019 07:15:46 +0000
-Message-ID: <1557472546239.42034@axis.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: FW: move eapd coef function before ACT_PRE_PROBE
+	state
+Date: Fri, 10 May 2019 07:24:04 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D765FAE@RTITMBSVM07.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A1D765A9D@RTITMBSVM07.realtek.com.tw>
+ <s5hmujy39go.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1D765C5E@RTITMBSVM07.realtek.com.tw>
+ <s5hv9ylo167.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1D765CA5@RTITMBSVM07.realtek.com.tw>
+ <s5h36lpnvzj.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B408F8073C
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by bastet.se.axis.com (Postfix) with ESMTP id AB7B2184D9
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:47 +0200 (CEST)
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id dzidXKaBPA3C for <alsa-devel@alsa-project.org>;
- Fri, 10 May 2019 09:15:46 +0200 (CEST)
-Received: from boulder02.se.axis.com (boulder02.se.axis.com [10.0.8.16])
- by bastet.se.axis.com (Postfix) with ESMTPS id D2B8618577
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:46 +0200 (CEST)
-Received: from boulder02.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C064C1A072
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:46 +0200 (CEST)
-Received: from boulder02.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B57281A06F
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:46 +0200 (CEST)
-Received: from thoth.se.axis.com (unknown [10.0.2.173])
- by boulder02.se.axis.com (Postfix) with ESMTP
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:46 +0200 (CEST)
-Received: from XBOX04.axis.com (xbox04.axis.com [10.0.5.18])
- by thoth.se.axis.com (Postfix) with ESMTP id A9E6229C6
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:15:46 +0200 (CEST)
-Content-Language: sv-SE
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDB3AF89673
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:24:09 +0200 (CEST)
+In-Reply-To: <s5h36lpnvzj.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -43,45 +29,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Takashi,
 
+The patch was work for me.
+Thanks.
 
-I am new to Alsa and I have been told that there is some kind of buffer/queue, in Alsa-loopback, that regulates when 'sound-buffers' is dropped.
+BR,
+Kailang
 
-What I would like to achieve is make the buffer/queue larger (500 ms).
-
-
->From what I have heard is that it should be possible to configure the buffer/queue, in Alsa-loopback, via the /etc/asound.conf configuration file.
-
-
-It seems that the parameters period_time, period_size, buffer_time, buffer_size & rate are important to achieve what I want. I haven't found any information on what these parameters do and how or if they are used in conjunction with each other.
-
-
-Here is my asound.conf file:
-
-
-  # cat /etc/asound.conf
-  pcm_slave.aloopcommon {
-    pcm "hw:Loopback,0,0"
-    ...
-    rate 16000
-    period_time 64000
-    buffer_time 512000
-  }
-
-  pcm.!audiosource0 {
-    type dsnoop
-    ...
-    slave aloopcommon
-    ...
-  }
-
-Is there somewhere where these parameters are explained and how they interact?
-
-BR
-
-/Mats
-?
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Wednesday, May 8, 2019 5:20 PM
+> To: Kailang <kailang@realtek.com>
+> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> Subject: Re: FW: move eapd coef function before ACT_PRE_PROBE state
+> 
+> On Wed, 08 May 2019 11:17:30 +0200,
+> Kailang wrote:
+> >
+> > Sorry!! I didn't get the mail.
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai <tiwai@suse.de>
+> > > Sent: Wednesday, May 8, 2019 3:28 PM
+> > > To: Kailang <kailang@realtek.com>
+> > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > > Subject: Re: FW: move eapd coef function before ACT_PRE_PROBE state
+> > >
+> > > On Wed, 08 May 2019 08:59:02 +0200,
+> > > Kailang wrote:
+> > > >
+> > > > Hi Takashi,
+> > > >
+> > > > I recreate patch as attach.
+> > >
+> > > No, no, it's not what I meant.  I already *reviewed* and replied your
+> patch.
+> > >
+> > > I copy my previous reply once again.  Please read and test it.
+> >
+> > Patch fail.
+> >
+> > patch: **** malformed patch at line 10: @@ -796,10 +795,22 @@ static int
+> alc_build_controls(struct hda_codec *codec)
+> 
+> Some mailer problem...  Use the attachment below.
+> 
+> 
+> Takashi
+> 
+> 
+> ------Please consider the environment before printing this e-mail.
