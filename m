@@ -1,24 +1,16 @@
 From: Kailang <kailang@realtek.com>
-Subject: Re: FW: move eapd coef function before ACT_PRE_PROBE
-	state
-Date: Fri, 10 May 2019 07:24:04 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D765FAE@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A1D765A9D@RTITMBSVM07.realtek.com.tw>
- <s5hmujy39go.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1D765C5E@RTITMBSVM07.realtek.com.tw>
- <s5hv9ylo167.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1D765CA5@RTITMBSVM07.realtek.com.tw>
- <s5h36lpnvzj.wl-tiwai@suse.de>
+Subject: ALC298 headphone noise
+Date: Fri, 10 May 2019 08:40:43 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D76602E@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A1D76602ERTITMBSVM07real_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDB3AF89673
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 09:24:09 +0200 (CEST)
-In-Reply-To: <s5h36lpnvzj.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC14DF89673
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2019 10:40:50 +0200 (CEST)
 Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,58 +21,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
 Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76602ERTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
 Hi Takashi,
 
-The patch was work for me.
-Thanks.
+Dell platform with ALC298.
+system enter to runtime suspend. Headphone had noise.
+Let Headset Mic not shutup will solve this issue.
 
 BR,
 Kailang
 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Wednesday, May 8, 2019 5:20 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: FW: move eapd coef function before ACT_PRE_PROBE state
-> 
-> On Wed, 08 May 2019 11:17:30 +0200,
-> Kailang wrote:
-> >
-> > Sorry!! I didn't get the mail.
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Sent: Wednesday, May 8, 2019 3:28 PM
-> > > To: Kailang <kailang@realtek.com>
-> > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > Subject: Re: FW: move eapd coef function before ACT_PRE_PROBE state
-> > >
-> > > On Wed, 08 May 2019 08:59:02 +0200,
-> > > Kailang wrote:
-> > > >
-> > > > Hi Takashi,
-> > > >
-> > > > I recreate patch as attach.
-> > >
-> > > No, no, it's not what I meant.  I already *reviewed* and replied your
-> patch.
-> > >
-> > > I copy my previous reply once again.  Please read and test it.
-> >
-> > Patch fail.
-> >
-> > patch: **** malformed patch at line 10: @@ -796,10 +795,22 @@ static int
-> alc_build_controls(struct hda_codec *codec)
-> 
-> Some mailer problem...  Use the attachment below.
-> 
-> 
-> Takashi
-> 
-> 
-> ------Please consider the environment before printing this e-mail.
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76602ERTITMBSVM07real_
+Content-Type: application/octet-stream;
+	name="0000-alc298-headset-mic-no-shutup.patch"
+Content-Description: 0000-alc298-headset-mic-no-shutup.patch
+Content-Disposition: attachment;
+	filename="0000-alc298-headset-mic-no-shutup.patch"; size=2976;
+	creation-date="Fri, 10 May 2019 03:47:00 GMT";
+	modification-date="Fri, 10 May 2019 08:37:20 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSBmNjhjYmEwZWI5ZGU4MDFiNTY1OTUwOWVkMmJiMDk0MzcxZTAzNjM2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgMTAgTWF5IDIwMTkgMTY6Mjg6NTcgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEZpeHVwIGhlYWRwaG9uZSBub2lzZSB2aWEgcnVudGltZSBzdXNwZW5k
+CgpEZWxsIHBsYXRmb3JtIHdpdGggQUxDMjk4LgpzeXN0ZW0gZW50ZXIgdG8gcnVudGltZSBzdXNw
+ZW5kLiBIZWFkcGhvbmUgaGFkIG5vaXNlLgpMZXQgSGVhZHNldCBNaWMgbm90IHNodXR1cCB3aWxs
+IHNvbHZlIHRoaXMgaXNzdWUuCgpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdA
+cmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMg
+Yi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCBkYWNjY2FjYjVmZTAuLjczMzNi
+Mzc2YmE0ZiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTQ3OCwxMiArNDc4LDQwIEBAIHN0YXRp
+YyB2b2lkIGFsY19hdXRvX3NldHVwX2VhcGQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGJvb2wg
+b24pCiAJCXNldF9lYXBkKGNvZGVjLCAqcCwgb24pOwogfQogCitzdGF0aWMgaW50IGZpbmRfZXh0
+X21pY19waW4oc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpOworCitzdGF0aWMgdm9pZCBhbGNfaGVh
+ZHNldF9taWNfbm9fc2h1dHVwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKSB7CisJY29uc3Qgc3Ry
+dWN0IGhkYV9waW5jZmcgKnBpbjsKKwlpbnQgaTsKKwlpbnQgbWljX3BpbiA9IGZpbmRfZXh0X21p
+Y19waW4oY29kZWMpOworCS8qIGRvbid0IHNodXQgdXAgcGlucyB3aGVuIHVubG9hZGluZyB0aGUg
+ZHJpdmVyOyBvdGhlcndpc2UgaXQgYnJlYWtzCisJICogdGhlIGRlZmF1bHQgcGluIHNldHVwIGF0
+IHRoZSBuZXh0IGxvYWQgb2YgdGhlIGRyaXZlcgorCSAqLworCWlmIChjb2RlYy0+YnVzLT5zaHV0
+ZG93bikKKwkJcmV0dXJuOworCXNuZF9hcnJheV9mb3JfZWFjaCgmY29kZWMtPmluaXRfcGlucywg
+aSwgcGluKSB7CisJCS8qIHVzZSByZWFkIGhlcmUgZm9yIHN5bmNpbmcgYWZ0ZXIgaXNzdWluZyBl
+YWNoIHZlcmIgKi8KKwkJaWYgKHBpbi0+bmlkICE9IG1pY19waW4pCisJCQlzbmRfaGRhX2NvZGVj
+X3JlYWQoY29kZWMsIHBpbi0+bmlkLCAwLAorCQkJCQlBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NP
+TlRST0wsIDApOworCX0KKwljb2RlYy0+cGluc19zaHV0dXAgPSAxOworfQorCiBzdGF0aWMgdm9p
+ZCBhbGNfc2h1dHVwX3BpbnMoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAJc3RydWN0IGFs
+Y19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7Ci0KLQlpZiAoIXNwZWMtPm5vX3NodXR1cF9waW5z
+KQotCQlzbmRfaGRhX3NodXR1cF9waW5zKGNvZGVjKTsKKwlzd2l0Y2ggKGNvZGVjLT5jb3JlLnZl
+bmRvcl9pZCkgeworCQljYXNlIDB4MTBlYzAyODY6CisJCWNhc2UgMHgxMGVjMDI4ODoKKwkJY2Fz
+ZSAweDEwZWMwMjk4OgorCQkJYWxjX2hlYWRzZXRfbWljX25vX3NodXR1cChjb2RlYyk7CisJCQli
+cmVhazsKKwkJZGVmYXVsdDoKKwkJCWlmICghc3BlYy0+bm9fc2h1dHVwX3BpbnMpCisJCQkJc25k
+X2hkYV9zaHV0dXBfcGlucyhjb2RlYyk7CisJCQlicmVhazsKKwkJfQogfQogCiAvKiBnZW5lcmlj
+IHNodXR1cCBjYWxsYmFjazsKQEAgLTI5MjQsMjcgKzI5NTIsNiBAQCBzdGF0aWMgaW50IGFsYzI2
+OV9wYXJzZV9hdXRvX2NvbmZpZyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAlyZXR1cm4gYWxj
+X3BhcnNlX2F1dG9fY29uZmlnKGNvZGVjLCBhbGMyNjlfaWdub3JlLCBzc2lkcyk7CiB9CiAKLXN0
+YXRpYyBpbnQgZmluZF9leHRfbWljX3BpbihzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyk7Ci0KLXN0
+YXRpYyB2b2lkIGFsYzI4Nl9zaHV0dXAoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCi17Ci0JY29u
+c3Qgc3RydWN0IGhkYV9waW5jZmcgKnBpbjsKLQlpbnQgaTsKLQlpbnQgbWljX3BpbiA9IGZpbmRf
+ZXh0X21pY19waW4oY29kZWMpOwotCS8qIGRvbid0IHNodXQgdXAgcGlucyB3aGVuIHVubG9hZGlu
+ZyB0aGUgZHJpdmVyOyBvdGhlcndpc2UgaXQgYnJlYWtzCi0JICogdGhlIGRlZmF1bHQgcGluIHNl
+dHVwIGF0IHRoZSBuZXh0IGxvYWQgb2YgdGhlIGRyaXZlcgotCSAqLwotCWlmIChjb2RlYy0+YnVz
+LT5zaHV0ZG93bikKLQkJcmV0dXJuOwotCXNuZF9hcnJheV9mb3JfZWFjaCgmY29kZWMtPmluaXRf
+cGlucywgaSwgcGluKSB7Ci0JCS8qIHVzZSByZWFkIGhlcmUgZm9yIHN5bmNpbmcgYWZ0ZXIgaXNz
+dWluZyBlYWNoIHZlcmIgKi8KLQkJaWYgKHBpbi0+bmlkICE9IG1pY19waW4pCi0JCQlzbmRfaGRh
+X2NvZGVjX3JlYWQoY29kZWMsIHBpbi0+bmlkLCAwLAotCQkJCQlBQ19WRVJCX1NFVF9QSU5fV0lE
+R0VUX0NPTlRST0wsIDApOwotCX0KLQljb2RlYy0+cGluc19zaHV0dXAgPSAxOwotfQotCiBzdGF0
+aWMgdm9pZCBhbGMyNjl2Yl90b2dnbGVfcG93ZXJfb3V0cHV0KHN0cnVjdCBoZGFfY29kZWMgKmNv
+ZGVjLCBpbnQgcG93ZXJfdXApCiB7CiAJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHgwNCwg
+MSA8PCAxMSwgcG93ZXJfdXAgPyAoMSA8PCAxMSkgOiAwKTsKQEAgLTc3MjEsNyArNzcyOCw2IEBA
+IHN0YXRpYyBpbnQgcGF0Y2hfYWxjMjY5KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCWNhc2Ug
+MHgxMGVjMDI4NjoKIAljYXNlIDB4MTBlYzAyODg6CiAJCXNwZWMtPmNvZGVjX3ZhcmlhbnQgPSBB
+TEMyNjlfVFlQRV9BTEMyODY7Ci0JCXNwZWMtPnNodXR1cCA9IGFsYzI4Nl9zaHV0dXA7CiAJCWJy
+ZWFrOwogCWNhc2UgMHgxMGVjMDI5ODoKIAkJc3BlYy0+Y29kZWNfdmFyaWFudCA9IEFMQzI2OV9U
+WVBFX0FMQzI5ODsK
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76602ERTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1D76602ERTITMBSVM07real_--
