@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: fix error in verbose ipc command
-	parsing" to the asoc tree
-Date: Mon, 13 May 2019 13:30:30 +0100 (BST)
-Message-ID: <20190513123030.9841A1129233@debutante.sirena.org.uk>
-References: <20190509201027.3906-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: kbl: fix wrong number of
+	channels" to the asoc tree
+Date: Mon, 13 May 2019 13:30:39 +0100 (BST)
+Message-ID: <20190513123039.F03441129232@debutante.sirena.org.uk>
+References: <20190408090858.261269-1-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4A23F89736
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B62EF8072A
  for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:43 +0200 (CEST)
-In-Reply-To: <20190509201027.3906-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190408090858.261269-1-tzungbi@google.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: fix error in verbose ipc command parsing
+   ASoC: Intel: kbl: fix wrong number of channels
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,33 +54,33 @@ to this mail.
 Thanks,
 Mark
 
->From 8199a12037892f01e2cf5bedf5fbf08dff11b282 Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Thu, 9 May 2019 15:10:25 -0500
-Subject: [PATCH] ASoC: SOF: fix error in verbose ipc command parsing
+>From f91ac502d77725ac55f7331e8ab29cafd0ec932b Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Mon, 8 Apr 2019 17:08:58 +0800
+Subject: [PATCH] ASoC: Intel: kbl: fix wrong number of channels
 
-Remove the erroneous addition of "SET_VALUE" to the GLB
-IPC command string.
+Fix wrong setting on number of channels.  The context wants to set
+constraint to 2 channels instead of 4.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/ipc.c | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index f0b9d3c53f6f..894e68cbd69d 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -115,7 +115,7 @@ static void ipc_log_header(struct device *dev, u8 *text, u32 cmd)
- 		}
- 		break;
- 	case SOF_IPC_GLB_COMP_MSG:
--		str = "GLB_COMP_MSG: SET_VALUE";
-+		str = "GLB_COMP_MSG";
- 		switch (type) {
- 		case SOF_IPC_COMP_SET_VALUE:
- 			str2 = "SET_VALUE"; break;
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 7044d8c2b187..879f14257a3e 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -405,7 +405,7 @@ static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+ };
+ 
+ static const unsigned int dmic_2ch[] = {
+-	4,
++	2,
+ };
+ 
+ static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
 -- 
 2.20.1
