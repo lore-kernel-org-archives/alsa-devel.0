@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC : cs4265 : readable register too low" to
-	the asoc tree
-Date: Mon, 13 May 2019 13:30:30 +0100 (BST)
-Message-ID: <20190513123030.645CA1129236@debutante.sirena.org.uk>
-References: <20190508063313.18099-1-flatmax@flatmax.org>
+Subject: Applied "ASoC: soc-pcm: add soc_pcm_components_open()"
+	to the asoc tree
+Date: Mon, 13 May 2019 13:30:26 +0100 (BST)
+Message-ID: <20190513123026.470341129233@debutante.sirena.org.uk>
+References: <87lfzaalpn.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33808F89738
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:43 +0200 (CEST)
-In-Reply-To: <20190508063313.18099-1-flatmax@flatmax.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1698F89633
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:38 +0200 (CEST)
+In-Reply-To: <87lfzaalpn.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, clemens@ladisch.de, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC : cs4265 : readable register too low
+   ASoC: soc-pcm: add soc_pcm_components_open()
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,42 +55,115 @@ to this mail.
 Thanks,
 Mark
 
->From f3df05c805983427319eddc2411a2105ee1757cf Mon Sep 17 00:00:00 2001
-From: Matt Flax <flatmax@flatmax.org>
-Date: Wed, 8 May 2019 16:33:13 +1000
-Subject: [PATCH] ASoC : cs4265 : readable register too low
+>From e7ecfdb794fef1f6c91f62a40fd6aa3d4d8d2471 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 13 May 2019 16:08:33 +0900
+Subject: [PATCH] ASoC: soc-pcm: add soc_pcm_components_open()
 
-The cs4265_readable_register function stopped short of the maximum
-register.
+soc-pcm.c has soc_pcm_components_close() but not have its open()
+side function. This kind of unbalance function is very unreadable.
 
-An example bug is taken from :
-https://github.com/Audio-Injector/Ultra/issues/25
+And, current error handling is not correct.
+Because it is using for_each_rtdcom() loop, we need to call
+soc_pcm_components_close() anyway even though
+CPU DAI .startup() failed.
 
-Where alsactl store fails with :
-Cannot read control '2,0,0,C Data Buffer,0': Input/output error
+This patch adds soc_pcm_components_open(), and fixup error
+handling issue.
 
-This patch fixes the bug by setting the cs4265 to have readable
-registers up to the maximum hardware register CS4265_MAX_REGISTER.
-
-Signed-off-by: Matt Flax <flatmax@flatmax.org>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4265.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 63 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 40 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index ab27d2b94d02..c0190ec59e74 100644
---- a/sound/soc/codecs/cs4265.c
-+++ b/sound/soc/codecs/cs4265.c
-@@ -60,7 +60,7 @@ static const struct reg_default cs4265_reg_defaults[] = {
- static bool cs4265_readable_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2dcc44c73f6c..74c7d38af2c6 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -446,6 +446,42 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
+ }
+ 
++static int soc_pcm_components_open(struct snd_pcm_substream *substream,
++				   struct snd_soc_component **last)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_rtdcom_list *rtdcom;
++	struct snd_soc_component *component;
++	int ret = 0;
++
++	for_each_rtdcom(rtd, rtdcom) {
++		component = rtdcom->component;
++		*last = component;
++
++		if (!component->driver->ops ||
++		    !component->driver->ops->open)
++			continue;
++
++		if (component->driver->module_get_upon_open &&
++		    !try_module_get(component->dev->driver->owner)) {
++			dev_err(component->dev,
++				"ASoC: can't get module %s\n",
++				component->name);
++			return -ENODEV;
++		}
++
++		ret = component->driver->ops->open(substream);
++		if (ret < 0) {
++			dev_err(component->dev,
++				"ASoC: can't open component %s: %d\n",
++				component->name, ret);
++			return ret;
++		}
++	}
++	*last = NULL;
++	return 0;
++}
++
+ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_component *last)
  {
- 	switch (reg) {
--	case CS4265_CHIP_ID ... CS4265_SPDIF_CTL2:
-+	case CS4265_CHIP_ID ... CS4265_MAX_REGISTER:
- 		return true;
- 	default:
- 		return false;
+@@ -510,28 +546,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 
+-	for_each_rtdcom(rtd, rtdcom) {
+-		component = rtdcom->component;
+-
+-		if (!component->driver->ops ||
+-		    !component->driver->ops->open)
+-			continue;
+-
+-		if (component->driver->module_get_upon_open &&
+-		    !try_module_get(component->dev->driver->owner)) {
+-			ret = -ENODEV;
+-			goto module_err;
+-		}
+-
+-		ret = component->driver->ops->open(substream);
+-		if (ret < 0) {
+-			dev_err(component->dev,
+-				"ASoC: can't open component %s: %d\n",
+-				component->name, ret);
+-			goto component_err;
+-		}
+-	}
+-	component = NULL;
++	ret = soc_pcm_components_open(substream, &component);
++	if (ret < 0)
++		goto component_err;
+ 
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+ 		if (codec_dai->driver->ops->startup) {
+@@ -638,7 +655,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 
+ component_err:
+ 	soc_pcm_components_close(substream, component);
+-module_err:
++
+ 	if (cpu_dai->driver->ops->shutdown)
+ 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+ out:
 -- 
 2.20.1
