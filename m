@@ -1,77 +1,49 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking
-Date: Mon, 13 May 2019 10:18:47 +0200
-Message-ID: <20190513081847.31140-1-jbrunet@baylibre.com>
+From: Kailang <kailang@realtek.com>
+Subject: Boot procudure on HDA driver
+Date: Mon, 13 May 2019 09:00:18 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D766254@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patchwork-bot+notify@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 857EBF8072A
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 11:00:24 +0200 (CEST)
+Content-Language: zh-TW
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Replace the bit atomic operations by a mutex to ensure only one dai
-at a time is active on the hdmi codec.
+Hi Takashi,
 
-This is a follow up on change:
-3fcf94ef4d41 ("ASoC: hdmi-codec: remove reference to the current substream")
+When System Boot up.
+The Hda Driver running step was as below.
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/codecs/hdmi-codec.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+alc_init();
+alc_shutup();
+alc_init();
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 90a892766625..6a0cc8d7e141 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -281,7 +281,7 @@ struct hdmi_codec_priv {
- 	uint8_t eld[MAX_ELD_BYTES];
- 	struct snd_pcm_chmap *chmap_info;
- 	unsigned int chmap_idx;
--	unsigned long busy;
-+	struct mutex lock;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -395,8 +395,8 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	int ret = 0;
- 
--	ret = test_and_set_bit(0, &hcp->busy);
--	if (ret) {
-+	ret = mutex_trylock(&hcp->lock);
-+	if (!ret) {
- 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
- 		return -EINVAL;
- 	}
-@@ -424,7 +424,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 
- err:
- 	/* Release the exclusive lock on error */
--	clear_bit(0, &hcp->busy);
-+	mutex_unlock(&hcp->lock);
- 	return ret;
- }
- 
-@@ -436,7 +436,7 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
- 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
- 
--	clear_bit(0, &hcp->busy);
-+	mutex_unlock(&hcp->lock);
- }
- 
- static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
-@@ -773,6 +773,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	hcp->hcd = *hcd;
-+	mutex_init(&hcp->lock);
-+
- 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
- 	if (!daidrv)
- 		return -ENOMEM;
--- 
-2.20.1
+The depop procedure was put in spec->init_hook and spec->shutup.
+
+But I find more codec which run spec->shutup at boot up. It will occur pop noise.
+If it doesn't run spec->shutup, it will not occur pop noise or reduce pop noise.
+
+How could the spec->shutup not run at boot up?
+
+I ever test to put the check in spec->shutup() for PM_EVENT_SUSPEND and PM_EVENT_HIBERNATE and shutdown.
+But if power_save=1, it was have issue for this.
+Codec was idle already in power_save=1 state. If system go suspend, it will not run spec->shutup() again.
+
+BR,
+Kailang
