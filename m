@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: re-introduce mutex locking" to the asoc tree
-Date: Mon, 13 May 2019 13:30:26 +0100 (BST)
-Message-ID: <20190513123026.151071129232@debutante.sirena.org.uk>
-References: <20190513081847.31140-1-jbrunet@baylibre.com>
+Subject: Applied "ASoC: wcd9335: Fix missing regmap requirement" to the asoc tree
+Date: Mon, 13 May 2019 13:30:31 +0100 (BST)
+Message-ID: <20190513123031.3B9B71129235@debutante.sirena.org.uk>
+References: <8c0b22e2-2c67-8d45-a57d-dfc54043fbc9@free.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190513081847.31140-1-jbrunet@baylibre.com>
+In-Reply-To: <8c0b22e2-2c67-8d45-a57d-dfc54043fbc9@free.fr>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, patchwork-bot+notify@kernel.org
+To: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: re-introduce mutex locking
+   ASoC: wcd9335: Fix missing regmap requirement
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,74 +37,30 @@ to this mail.
 Thanks,
 Mark
 
->From eb1ecadb7f67dde94ef0efd3ddaed5cb6c9a65ed Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 13 May 2019 10:18:47 +0200
-Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking
+>From 741bfce676b765f01396e148862740caec91338c Mon Sep 17 00:00:00 2001
+From: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Date: Wed, 10 Apr 2019 16:23:38 +0200
+Subject: [PATCH] ASoC: wcd9335: Fix missing regmap requirement
 
-Replace the bit atomic operations by a mutex to ensure only one dai
-at a time is active on the hdmi codec.
+wcd9335.c: undefined reference to 'devm_regmap_add_irq_chip'
 
-This is a follow up on change:
-3fcf94ef4d41 ("ASoC: hdmi-codec: remove reference to the current substream")
-
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Marc Gonzalez <marc.w.gonzalez@free.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 90a892766625..6a0cc8d7e141 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -281,7 +281,7 @@ struct hdmi_codec_priv {
- 	uint8_t eld[MAX_ELD_BYTES];
- 	struct snd_pcm_chmap *chmap_info;
- 	unsigned int chmap_idx;
--	unsigned long busy;
-+	struct mutex lock;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -395,8 +395,8 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	int ret = 0;
- 
--	ret = test_and_set_bit(0, &hcp->busy);
--	if (ret) {
-+	ret = mutex_trylock(&hcp->lock);
-+	if (!ret) {
- 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
- 		return -EINVAL;
- 	}
-@@ -424,7 +424,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 
- err:
- 	/* Release the exclusive lock on error */
--	clear_bit(0, &hcp->busy);
-+	mutex_unlock(&hcp->lock);
- 	return ret;
- }
- 
-@@ -436,7 +436,7 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
- 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
- 
--	clear_bit(0, &hcp->busy);
-+	mutex_unlock(&hcp->lock);
- }
- 
- static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
-@@ -773,6 +773,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	hcp->hcd = *hcd;
-+	mutex_init(&hcp->lock);
-+
- 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
- 	if (!daidrv)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 419114edfd57..667fc1d59e18 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1151,6 +1151,7 @@ config SND_SOC_WCD9335
+ 	tristate "WCD9335 Codec"
+ 	depends on SLIMBUS
+ 	select REGMAP_SLIMBUS
++	select REGMAP_IRQ
+ 	help
+ 	  The WCD9335 is a standalone Hi-Fi audio CODEC IC, supports
+ 	  Qualcomm Technologies, Inc. (QTI) multimedia solutions,
 -- 
 2.20.1
