@@ -1,114 +1,115 @@
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
-        <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v2] ALSA: hda: Fix race between creating and refreshing sysfs entries
-Date: Mon, 13 May 2019 11:18:01 +0200
-Message-ID: <20190513091801.985-1-amadeuszx.slawinski@linux.intel.com>
+From: Lars Wendler <polynomial-c@gentoo.org>
+Subject: Re: alsa-lib-1.1.6.tar.bz2: some files are missing in
+ the tarball
+Date: Mon, 13 May 2019 11:13:58 +0200
+Message-ID: <20190513111358.73510257@abudhabi.paradoxon.rec>
+References: <20180409151616.6c8338a7@abudhabi.paradoxon.rec>
+ <s5hh8og8v3a.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Content-Type: multipart/mixed; boundary="===============8655437897794955633=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 28FE4F8072A
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 11:14:09 +0200 (CEST)
+In-Reply-To: <s5hh8og8v3a.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, alsa-bugs@gentoo.org
 List-Id: alsa-devel@alsa-project.org
 
-hda_widget_sysfs_reinit() can free underlying codec->widgets structure
-on which widget_tree_create() operates. Add locking to prevent such
-issues from happening.
+--===============8655437897794955633==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_//6nlpVArOKG0JClRI8AXegq"; protocol="application/pgp-signature"
 
-Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=110382
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
+--Sig_//6nlpVArOKG0JClRI8AXegq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Changes since v1:
- - Moved mutexes around the callers
- - Added comments noting that functions should be called with mutex held
+On Thu, 12 Apr 2018 14:31:21 +0200 Takashi Iwai wrote:
 
----
- include/sound/hdaudio.h | 1 +
- sound/hda/hdac_device.c | 7 +++++++
- sound/hda/hdac_sysfs.c  | 3 +++
- 3 files changed, 11 insertions(+)
+>On Mon, 09 Apr 2018 15:16:16 +0200,
+>Lars Wendler wrote:
+>>=20
+>> Hello list,
+>>=20
+>> please have a look at this Gentoo bug report [1] where a user
+>> reported that he cannot compile alsa-lib-1.1.6 with --enable-alisp
+>> configure option. The error message is:
+>>=20
+>>   make[3]: *** No rule to make target 'SI7018/sndoc-mixer.alisp',
+>>   needed by 'all-am'. Stop.
+>>=20
+>> This happens because the directory src/conf/cards/SI7018 is missing
+>> as well as the following files:
+>>=20
+>> src/conf/cards/aliases.alisp
+>> src/conf/smixer.conf
+>> src/conf/sndo-mixer.alisp
+>>=20
+>> First I thought those files were removed intentionally but checking
+>> the alsa-lib git tree I can see all files still being available. So
+>> at Gentoo we fixed this by re-adding the files through a patch [2].
+>>=20
+>> Any chance this was an accidental oversight?
+>
+>It's because the contents of EXTRA_DIST also depends on the configure
+>option, and the tarball was created without enabling the feature, I
+>suppose.  Maybe we should fix EXTRA_DIST to list all files
+>unconditionally.
+>
+>
+>thanks,
+>
+>Takashi
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 45f944d57982..85835d0c33cc 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -81,6 +81,7 @@ struct hdac_device {
- 	atomic_t in_pm;		/* suspend/resume being performed */
- 
- 	/* sysfs */
-+	struct mutex widget_lock;
- 	struct hdac_widget_tree *widgets;
- 
- 	/* regmap */
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 95b073ee4b32..4769f4c03e14 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -55,6 +55,7 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
- 	codec->bus = bus;
- 	codec->addr = addr;
- 	codec->type = HDA_DEV_CORE;
-+	mutex_init(&codec->widget_lock);
- 	pm_runtime_set_active(&codec->dev);
- 	pm_runtime_get_noresume(&codec->dev);
- 	atomic_set(&codec->in_pm, 0);
-@@ -141,7 +142,9 @@ int snd_hdac_device_register(struct hdac_device *codec)
- 	err = device_add(&codec->dev);
- 	if (err < 0)
- 		return err;
-+	mutex_lock(&codec->widget_lock);
- 	err = hda_widget_sysfs_init(codec);
-+	mutex_unlock(&codec->widget_lock);
- 	if (err < 0) {
- 		device_del(&codec->dev);
- 		return err;
-@@ -158,7 +161,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_register);
- void snd_hdac_device_unregister(struct hdac_device *codec)
- {
- 	if (device_is_registered(&codec->dev)) {
-+		mutex_lock(&codec->widget_lock);
- 		hda_widget_sysfs_exit(codec);
-+		mutex_unlock(&codec->widget_lock);
- 		device_del(&codec->dev);
- 		snd_hdac_bus_remove_device(codec->bus, codec);
- 	}
-@@ -404,7 +409,9 @@ int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs)
- 	}
- 
- 	if (sysfs) {
-+		mutex_lock(&codec->widget_lock);
- 		err = hda_widget_sysfs_reinit(codec, start_nid, nums);
-+		mutex_unlock(&codec->widget_lock);
- 		if (err < 0)
- 			return err;
- 	}
-diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
-index fb2aa344981e..909d5ef1179c 100644
---- a/sound/hda/hdac_sysfs.c
-+++ b/sound/hda/hdac_sysfs.c
-@@ -395,6 +395,7 @@ static int widget_tree_create(struct hdac_device *codec)
- 	return 0;
- }
- 
-+/* call with codec->widget_lock held */
- int hda_widget_sysfs_init(struct hdac_device *codec)
- {
- 	int err;
-@@ -411,11 +412,13 @@ int hda_widget_sysfs_init(struct hdac_device *codec)
- 	return 0;
- }
- 
-+/* call with codec->widget_lock held */
- void hda_widget_sysfs_exit(struct hdac_device *codec)
- {
- 	widget_tree_free(codec);
- }
- 
-+/* call with codec->widget_lock held */
- int hda_widget_sysfs_reinit(struct hdac_device *codec,
- 			    hda_nid_t start_nid, int num_nodes)
- {
--- 
-2.17.1
+This is still an issue with latest 1.1.9 release tarball. Did you
+forget about this or do you still look for a good solution?
+
+Lars
+
+--=20
+Lars Wendler
+Gentoo package maintainer
+GPG: 21CC CF02 4586 0A07 ED93  9F68 498F E765 960E 9B39
+
+--Sig_//6nlpVArOKG0JClRI8AXegq
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEWCOBmo8i7LhvVmNAVx3S0DQ8YDkFAlzZNVYACgkQVx3S0DQ8
+YDm7fQ//cWtopnpLut0UMwHMuGsiPGv7QzHPotLkXt0svZ2c6U1TmcsrzaU2PXEv
+l0prj6Hueae9j39q0B3muoNjyWHOdzfwTHk0llnqlSP4hR2S5T5mvnjEuDy5znuv
+AEk2uNIlIWIiQnoTJi4p8k9QxuU6TiP7z1i2A/5BLErR841f4FZZvfPABnW19aoN
+5cHggRibp9pUzBDIdIqGCkqATD+/93TjQpqAwbZWlnsRU317Y2ji/G5a5oc//4Yf
+epW97HKIicRRIz9NYeC9hBScediUv5DOasSuZtxbNnBBa2Bhpe3UFOR/u3wCeh8a
+W0aHYu9ev9KqyHv1bWFIzx9AKQEltkfdqTRY2MGL67CNeUceBdpsIfYddHijpO2Y
++Pbl5/RVdm1uqhnH/+tGujtRw/yfd9mbAk37reLZ4Rb1wPB8DSqy25Kfe8//W7DW
+GgkI6BV0zh8QWMgadrcYPOwL9ZU5tokyBmlbrwsymtMmZpafuqR/RpB8mUJcS/hb
+Om+BY0XPyuK+gC+e573Sq8E8UqaRhRq8GzyrrwktZyF61oZmAWi+q64HxWR9G21I
+YozF/SQyqQygpTjK77kkjY6vnXgV86Il34If4HcwWXKyYVnqLMcznn1z+8TXrSEM
+roaZ8dLbJebrDPg+4mLpV257ZBgXb5iyz3MinsmBT9lS33JtrgM=
+=WA0c
+-----END PGP SIGNATURE-----
+
+--Sig_//6nlpVArOKG0JClRI8AXegq--
+
+--===============8655437897794955633==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8655437897794955633==--
