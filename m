@@ -1,69 +1,79 @@
-From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v1 2/2] sound: Enable micmute led for Huawei laptops
-Date: Mon, 13 May 2019 16:30:06 -0400
-Message-ID: <20190513203009.28686-3-ayman.bagabas@gmail.com>
-References: <20190513203009.28686-1-ayman.bagabas@gmail.com>
+From: =?UTF-8?Q?Micha=c5=82_Wadowski?= <wadosm@gmail.com>
+Subject: [PATCH] Fix for Lenovo B50-70 inverted internal
+	microphone bug.
+Date: Mon, 13 May 2019 23:25:36 +0200
+Message-ID: <158b63b9-ff73-7f53-de83-5a7b8a21b250@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190513203009.28686-1-ayman.bagabas@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Jian-Hong Pan <jian-hong@endlessm.com>, Daniel Drake <drake@endlessm.com>, Chris Chiu <chiu@endlessm.com>, Hui Wang <hui.wang@canonical.com>, platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: ayman.bagabas@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com
+ [IPv6:2a00:1450:4864:20::144])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00D4EF8961A
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 23:25:39 +0200 (CEST)
+Received: by mail-lf1-x144.google.com with SMTP id x132so10189927lfd.0
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:25:39 -0700 (PDT)
+Received: from [192.168.0.94] (31-178-116-31.dynamic.chello.pl.
+ [31.178.116.31])
+ by smtp.googlemail.com with ESMTPSA id j19sm3444537lfj.52.2019.05.13.14.25.37
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 13 May 2019 14:25:37 -0700 (PDT)
+Content-Language: pl-PL
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since this LED is found on huawei laptops, we can hook it to
-huawei-wmi platform driver which uses the common WMI interface present
-in these laptops to control the LED.
-
-I've also made some renames and used product name instead of common name
-to avoid confusion.
-
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 42cd3945e0de..3661470766ba 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5684,7 +5684,7 @@ enum {
- 	ALC298_FIXUP_TPT470_DOCK,
- 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
- 	ALC255_FIXUP_DELL_HEADSET_MIC,
--	ALC256_FIXUP_HUAWEI_MBXP_PINS,
-+	ALC256_FIXUP_HUAWEI_MACH_WX9_PINS,
- 	ALC295_FIXUP_HP_X360,
- 	ALC221_FIXUP_HP_HEADSET_MIC,
- 	ALC285_FIXUP_LENOVO_HEADPHONE_NOISE,
-@@ -5975,7 +5975,7 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
--	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
-+	[ALC256_FIXUP_HUAWEI_MACH_WX9_PINS] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
- 			{0x12, 0x90a60130},
-@@ -6996,9 +6996,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
--	SND_PCI_QUIRK(0x19e5, 0x3200, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
--	SND_PCI_QUIRK(0x19e5, 0x3201, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
--	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
-+	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MACH-WX9", ALC256_FIXUP_HUAWEI_MACH_WX9_PINS),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
- 
- #if 0
-@@ -7057,6 +7055,7 @@ static const struct snd_pci_quirk alc269_fixup_vendor_tbl[] = {
- 	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
- 	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
-+	SND_PCI_QUIRK_VENDOR(0x19e5, "Huawei Matebook", ALC255_FIXUP_MIC_MUTE_LED),
- 	{}
- };
- 
--- 
-2.20.1
+QWRkIHBhdGNoIGZvciByZWFsdGVrIGNvZGVjIGluIExlbm92byBCNTAtNzAuCkJ1Z3ppbGxhOiBo
+dHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9hbHNhLWRyaXZlci8rYnVn
+LzE1MjQyMTUKClNpZ25lZC1vZmYtYnk6IE1pY2hhxYIgV2Fkb3dza2kgPHdhZG9zbUBnbWFpbC5j
+b20+Ci0tLQogc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgfCA3ICsrKysrKysKIDEgZmls
+ZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3Bh
+dGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDQyY2Qz
+OTQ1ZTBkZS4uMzZjMThhNWJhMjg4IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
+YWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtNTY3Niw2ICs1
+Njc2LDcgQEAgZW51bSB7CiAJQUxDMjMzX0ZJWFVQX0VBUERfQ09FRl9BTkRfTUlDX05PX1BSRVNF
+TkNFLAogCUFMQzIzM19GSVhVUF9MRU5PVk9fTVVMVElfQ09ERUNTLAogCUFMQzIzM19GSVhVUF9B
+Q0VSX0hFQURTRVRfTUlDLAorCUFMQzIzM19GSVhVUF9JTlZfRE1JQywKIAlBTEMyOTRfRklYVVBf
+TEVOT1ZPX01JQ19MT0NBVElPTiwKIAlBTEMyMjVfRklYVVBfREVMTF9XWVNFX01JQ19OT19QUkVT
+RU5DRSwKIAlBTEM3MDBfRklYVVBfSU5URUxfUkVGRVJFTkNFLApAQCAtNjM4NCw2ICs2Mzg1LDEw
+IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2OV9maXh1cHNbXSA9IHsKIAkJ
+LnR5cGUgPSBIREFfRklYVVBfRlVOQywKIAkJLnYuZnVuYyA9IGFsYzIzM19maXh1cF9sZW5vdm9f
+bGluZTJfbWljX2hvdGtleSwKIAl9LAorCVtBTEMyMzNfRklYVVBfSU5WX0RNSUNdID0geworCQku
+dHlwZSA9IEhEQV9GSVhVUF9GVU5DLAorCQkudi5mdW5jID0gYWxjX2ZpeHVwX2ludl9kbWljLAor
+CX0sCiAJW0FMQzI1NV9GSVhVUF9ERUxMX1NQS19OT0lTRV0gPSB7CiAJCS50eXBlID0gSERBX0ZJ
+WFVQX0ZVTkMsCiAJCS52LmZ1bmMgPSBhbGNfZml4dXBfZGlzYWJsZV9hYW1peCwKQEAgLTY5NzUs
+NiArNjk4MCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGMyNjlfZml4
+dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MzEzYywgIlRoaW5rQ2VudHJl
+IFN0YXRpb24iLCBBTEMyOTRfRklYVVBfTEVOT1ZPX01JQ19MT0NBVElPTiksCiAJU05EX1BDSV9R
+VUlSSygweDE3YWEsIDB4MzkwMiwgIkxlbm92byBFNTAtODAiLCBBTEMyNjlfRklYVVBfRE1JQ19U
+SElOS1BBRF9BQ1BJKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgzOTc3LCAiSWRlYVBhZCBT
+MjEwIiwgQUxDMjgzX0ZJWFVQX0lOVF9NSUMpLAorCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDM5
+NzgsICJMZW5vdm8gQjUwLTcwIiwgQUxDMjMzX0ZJWFVQX0lOVl9ETUlDKSwKIAlTTkRfUENJX1FV
+SVJLKDB4MTdhYSwgMHgzOTc4LCAiSWRlYVBhZCBZNDEwUCIsIEFMQzI2OV9GSVhVUF9OT19TSFVU
+VVApLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDUwMTMsICJUaGlua3BhZCIsIEFMQzI2OV9G
+SVhVUF9MSU1JVF9JTlRfTUlDX0JPT1NUKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHg1MDFh
+LCAiVGhpbmtwYWQiLCBBTEMyODNfRklYVVBfSU5UX01JQyksCkBAIC03MTU3LDYgKzcxNjMsNyBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9tb2RlbF9maXh1cCBhbGMyNjlfZml4dXBfbW9kZWxz
+W10gPSB7CiAJey5pZCA9IEFMQzI1Nl9GSVhVUF9BU1VTX0FJT19HUElPMiwgLm5hbWUgPSAiYWxj
+MjU2LWFzdXMtYWlvIn0sCiAJey5pZCA9IEFMQzIzM19GSVhVUF9BU1VTX01JQ19OT19QUkVTRU5D
+RSwgLm5hbWUgPSAiYWxjMjMzLWFzdXMifSwKIAl7LmlkID0gQUxDMjMzX0ZJWFVQX0VBUERfQ09F
+Rl9BTkRfTUlDX05PX1BSRVNFTkNFLCAubmFtZSA9ICJhbGMyMzMtZWFwZCJ9LAorCXsuaWQgPSBB
+TEMyMzNfRklYVVBfSU5WX0RNSUMsIC5uYW1lID0gImFjbDIzMy1pbnYtZG1pYyJ9LAogCXsuaWQg
+PSBBTEMyOTRfRklYVVBfTEVOT1ZPX01JQ19MT0NBVElPTiwgLm5hbWUgPSAiYWxjMjk0LWxlbm92
+by1taWMifSwKIAl7LmlkID0gQUxDMjI1X0ZJWFVQX0RFTExfV1lTRV9NSUNfTk9fUFJFU0VOQ0Us
+IC5uYW1lID0gImFsYzIyNS13eXNlIn0sCiAJey5pZCA9IEFMQzI3NF9GSVhVUF9ERUxMX0FJT19M
+SU5FT1VUX1ZFUkIsIC5uYW1lID0gImFsYzI3NC1kZWxsLWFpbyJ9LAotLSAKMi43LjQKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
