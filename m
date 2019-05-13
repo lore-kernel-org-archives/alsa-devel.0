@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-pcm: BE dai needs prepare when
-	pause release after resume" to the asoc tree
-Date: Mon, 13 May 2019 13:30:29 +0100 (BST)
-Message-ID: <20190513123029.EC3121129237@debutante.sirena.org.uk>
-References: <1557282761-26146-1-git-send-email-libin.yang@intel.com>
+Subject: Applied "ASoC: soc.h: fe_compr can be bit field" to
+	the asoc tree
+Date: Mon, 13 May 2019 13:30:26 +0100 (BST)
+Message-ID: <20190513123026.DF79E1129236@debutante.sirena.org.uk>
+References: <87pnomalri.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D42A7F89732
+ by alsa1.perex.cz (Postfix) with ESMTPS id D17ADF8968A
  for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:38 +0200 (CEST)
-In-Reply-To: <1557282761-26146-1-git-send-email-libin.yang@intel.com>
+In-Reply-To: <87pnomalri.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Libin Yang <libin.yang@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, ranjani.sridharan@intel.com, pierre-louis.bossart@linux.intel.com, rander.wang@intel.com, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-pcm: BE dai needs prepare when pause release after resume
+   ASoC: soc.h: fe_compr can be bit field
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,47 +55,43 @@ to this mail.
 Thanks,
 Mark
 
->From 5087a8f17df868601cd7568299e91c28086d2b45 Mon Sep 17 00:00:00 2001
-From: Libin Yang <libin.yang@intel.com>
-Date: Wed, 8 May 2019 10:32:41 +0800
-Subject: [PATCH] ASoC: soc-pcm: BE dai needs prepare when pause release after
- resume
+>From 7426af5010d1b4a109e5d7ee639f3c3e0e5b3cdd Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 13 May 2019 16:07:27 +0900
+Subject: [PATCH] ASoC: soc.h: fe_compr can be bit field
 
-If playback/capture is paused and system enters S3, after system returns
-from suspend, BE dai needs to call prepare() callback when playback/capture
-is released from pause if RESUME_INFO flag is not set.
+fe_compr is used at soc-compress, it can be bit field.
+This patch move it from int to bit field.
 
-Currently, the dpcm_be_dai_prepare() function will block calling prepare()
-if the pcm is in SND_SOC_DPCM_STATE_PAUSED state. This will cause the
-following test case fail if the pcm uses BE:
+> grep fe_compr -r sound/soc/*
+sound/soc/soc-compress.c:               rtd->fe_compr = 1;
+sound/soc/soc-pcm.c:            if (!fe->dpcm[stream].runtime && !fe->fe_compr)
 
-playback -> pause -> S3 suspend -> S3 resume -> pause release
-
-The playback may exit abnormally when pause is released because the BE dai
-prepare() is not called.
-
-This patch allows dpcm_be_dai_prepare() to call dai prepare() callback in
-SND_SOC_DPCM_STATE_PAUSED state.
-
-Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 74695355c1f8..7347e6f99248 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2471,7 +2471,8 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 482b4ea87c3c..f20785aa7b4a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1214,7 +1214,6 @@ struct snd_soc_pcm_runtime {
  
- 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
- 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND) &&
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 			continue;
+ 	/* Dynamic PCM BE runtime data */
+ 	struct snd_soc_dpcm_runtime dpcm[2];
+-	int fe_compr;
  
- 		dev_dbg(be->dev, "ASoC: prepare BE %s\n",
+ 	long pmdown_time;
+ 
+@@ -1239,6 +1238,7 @@ struct snd_soc_pcm_runtime {
+ 	/* bit field */
+ 	unsigned int dev_registered:1;
+ 	unsigned int pop_wait:1;
++	unsigned int fe_compr:1; /* for Dynamic PCM */
+ };
+ #define for_each_rtd_codec_dai(rtd, i, dai)\
+ 	for ((i) = 0;						       \
 -- 
 2.20.1
