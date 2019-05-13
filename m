@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: fix race in FW boot timeout
-	handling" to the asoc tree
-Date: Mon, 13 May 2019 13:30:30 +0100 (BST)
-Message-ID: <20190513123030.CC50F1129232@debutante.sirena.org.uk>
-References: <20190509201027.3906-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: pcm: remove runtime PM calls
+	during pcm open/close" to the asoc tree
+Date: Mon, 13 May 2019 13:30:28 +0100 (BST)
+Message-ID: <20190513123028.CFE011129236@debutante.sirena.org.uk>
+References: <20190509201027.3906-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D41E0F89731
+ by alsa1.perex.cz (Postfix) with ESMTPS id D188CF89707
  for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:38 +0200 (CEST)
-In-Reply-To: <20190509201027.3906-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190509201027.3906-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: fix race in FW boot timeout handling
+   ASoC: SOF: pcm: remove runtime PM calls during pcm open/close
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,37 +55,83 @@ to this mail.
 Thanks,
 Mark
 
->From a69270d8bfeb35fc89d047ea6db803cd75a74f12 Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Thu, 9 May 2019 15:10:23 -0500
-Subject: [PATCH] ASoC: SOF: fix race in FW boot timeout handling
+>From 14a2212dd4bcb55a03eddaf66d62068c9cece585 Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Thu, 9 May 2019 15:10:24 -0500
+Subject: [PATCH] ASoC: SOF: pcm: remove runtime PM calls during pcm open/close
 
-A race condition exists in handling firmware boot timeout.
-If FW sends FW_READY just after boot timeout has expired in
-driver, a kernel exception will result as FW_READY handler
-will be run while the state is still being cleaned up in
-snd_sof_run_firmware(). Avoid the race by setting
-boot_complete also in the error case.
+pm_runtime_get_sync()/pm_runtime_put_autosuspend() calls are
+already invoked by the ASoC core in soc_pcm_open() and
+soc_pcm_close(). So the SOF component driver does not need
+to call them again.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/loader.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sof/pcm.c | 29 ++---------------------------
+ 1 file changed, 2 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 81c7452aae17..628fae552442 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -372,6 +372,8 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
- 				 msecs_to_jiffies(sdev->boot_timeout));
- 	if (ret == 0) {
- 		dev_err(sdev->dev, "error: firmware boot failure\n");
-+		/* after this point FW_READY msg should be ignored */
-+		sdev->boot_complete = true;
- 		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
- 			SOF_DBG_TEXT | SOF_DBG_PCI);
- 		return -EIO;
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 649968841dad..4f536c0de0a5 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -416,7 +416,6 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_sof_pcm *spcm;
+ 	struct snd_soc_tplg_stream_caps *caps;
+ 	int ret;
+-	int err;
+ 
+ 	/* nothing to do for BE */
+ 	if (rtd->dai_link->no_pcm)
+@@ -434,14 +433,6 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 
+ 	caps = &spcm->pcm.caps[substream->stream];
+ 
+-	ret = pm_runtime_get_sync(sdev->dev);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: pcm open failed to resume %d\n",
+-			ret);
+-		pm_runtime_put_noidle(sdev->dev);
+-		return ret;
+-	}
+-
+ 	/* set any runtime constraints based on topology */
+ 	snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+@@ -485,17 +476,8 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 	spcm->stream[substream->stream].substream = substream;
+ 
+ 	ret = snd_sof_pcm_platform_open(sdev, substream);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: pcm open failed %d\n",
+-			ret);
+-
+-		pm_runtime_mark_last_busy(sdev->dev);
+-
+-		err = pm_runtime_put_autosuspend(sdev->dev);
+-		if (err < 0)
+-			dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
+-				err);
+-	}
++	if (ret < 0)
++		dev_err(sdev->dev, "error: pcm open failed %d\n", ret);
+ 
+ 	return ret;
+ }
+@@ -530,13 +512,6 @@ static int sof_pcm_close(struct snd_pcm_substream *substream)
+ 		 */
+ 	}
+ 
+-	pm_runtime_mark_last_busy(sdev->dev);
+-
+-	err = pm_runtime_put_autosuspend(sdev->dev);
+-	if (err < 0)
+-		dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
+-			err);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
