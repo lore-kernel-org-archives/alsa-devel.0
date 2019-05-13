@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: tidyup soc_bind_dai_link()
-	comment balance" to the asoc tree
-Date: Mon, 13 May 2019 13:30:27 +0100 (BST)
-Message-ID: <20190513123027.873A91129239@debutante.sirena.org.uk>
-References: <87tvdyalsp.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: ak4458: add return value for
+	ak4458_probe" to the asoc tree
+Date: Mon, 13 May 2019 13:30:30 +0100 (BST)
+Message-ID: <20190513123030.303621129235@debutante.sirena.org.uk>
+References: <1557408607-25115-3-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1739F89684
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4095F8972D
  for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:38 +0200 (CEST)
-In-Reply-To: <87tvdyalsp.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <1557408607-25115-3-git-send-email-viorel.suman@nxp.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "S.j. Wang" <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Viorel Suman <viorel.suman@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Colin Ian King <colin.king@canonical.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: tidyup soc_bind_dai_link() comment balance
+   ASoC: ak4458: add return value for ak4458_probe
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,44 +55,64 @@ to this mail.
 Thanks,
 Mark
 
->From e2b30edfb9435879dc68cdb7ce20299492012101 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 13 May 2019 16:06:44 +0900
-Subject: [PATCH] ASoC: soc-core: tidyup soc_bind_dai_link() comment balance
+>From a8dee20d792432740509237943700fbcfc230bad Mon Sep 17 00:00:00 2001
+From: Viorel Suman <viorel.suman@nxp.com>
+Date: Thu, 9 May 2019 13:30:36 +0000
+Subject: [PATCH] ASoC: ak4458: add return value for ak4458_probe
 
-Many code at soc_bind_dai_link() was changed, and its comment is
-now a little bit anbalanced.
-This patch tidyup these.
+AK4458 is probed successfully even if AK4458 is not present - this
+is caused by probe function returning no error on i2c access failure.
+Return an error on probe if i2c access has failed.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ak4458.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2ceca7fdf622..c80e7df3b20b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -906,9 +906,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index eab7c76cfcd9..4c5c3ec92609 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -536,9 +536,10 @@ static void ak4458_power_on(struct ak4458_priv *ak4458)
  	}
- 	snd_soc_rtdcom_add(rtd, rtd->cpu_dai->component);
+ }
  
--	rtd->num_codecs = dai_link->num_codecs;
+-static void ak4458_init(struct snd_soc_component *component)
++static int ak4458_init(struct snd_soc_component *component)
+ {
+ 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
++	int ret;
+ 
+ 	/* External Mute ON */
+ 	if (ak4458->mute_gpiod)
+@@ -546,21 +547,21 @@ static void ak4458_init(struct snd_soc_component *component)
+ 
+ 	ak4458_power_on(ak4458);
+ 
+-	snd_soc_component_update_bits(component, AK4458_00_CONTROL1,
++	ret = snd_soc_component_update_bits(component, AK4458_00_CONTROL1,
+ 			    0x80, 0x80);   /* ACKS bit = 1; 10000000 */
++	if (ret < 0)
++		return ret;
+ 
+-	ak4458_rstn_control(component, 1);
++	return ak4458_rstn_control(component, 1);
+ }
+ 
+ static int ak4458_probe(struct snd_soc_component *component)
+ {
+ 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
+ 
+-	ak4458_init(component);
 -
- 	/* Find CODEC from registered CODECs */
-+	rtd->num_codecs = dai_link->num_codecs;
- 	for_each_link_codecs(dai_link, i, codecs) {
- 		rtd->codec_dais[i] = snd_soc_find_dai(codecs);
- 		if (!rtd->codec_dais[i]) {
-@@ -922,7 +921,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	/* Single codec links expect codec and codec_dai in runtime data */
- 	rtd->codec_dai = rtd->codec_dais[0];
+ 	ak4458->fs = 48000;
  
--	/* find one from the set of registered platforms */
-+	/* Find PLATFORM from registered PLATFORMs */
- 	for_each_component(component) {
- 		if (!snd_soc_is_matching_component(dai_link->platforms,
- 						   component))
+-	return 0;
++	return ak4458_init(component);
+ }
+ 
+ static void ak4458_remove(struct snd_soc_component *component)
 -- 
 2.20.1
