@@ -1,43 +1,77 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] mfd: madera: Add missing of table registration
-Date: Mon, 13 May 2019 09:15:21 +0100
-Message-ID: <20190513081521.GE45394@ediswmail.ad.cirrus.com>
-References: <1557569038-20340-1-git-send-email-dagmcr@gmail.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking
+Date: Mon, 13 May 2019 10:18:47 +0200
+Message-ID: <20190513081847.31140-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1557569038-20340-1-git-send-email-dagmcr@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Gomez <dagmcr@gmail.com>
-Cc: Richard Fitzgerald <rf@opensource.cirrus.com>, Lee Jones <lee.jones@linaro.org>, "moderated list:CIRRUS LOGIC MADERA CODEC DRIVERS" <alsa-devel@alsa-project.org>, "open list:CIRRUS LOGIC MADERA CODEC DRIVERS" <patches@opensource.cirrus.com>, open list <linux-kernel@vger.kernel.org>, javier@dowhile0.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patchwork-bot+notify@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 11, 2019 at 12:03:58PM +0200, Daniel Gomez wrote:
-> MODULE_DEVICE_TABLE(of, <of_match_table> should be called to complete DT
-> OF mathing mechanism and register it.
-> 
-> Before this patch:
-> modinfo ./drivers/mfd/madera.ko | grep alias
-> 
-> After this patch:
-> modinfo ./drivers/mfd/madera.ko | grep alias
-> alias:          of:N*T*Ccirrus,wm1840C*
-> alias:          of:N*T*Ccirrus,wm1840
-> alias:          of:N*T*Ccirrus,cs47l91C*
-> alias:          of:N*T*Ccirrus,cs47l91
-> alias:          of:N*T*Ccirrus,cs47l90C*
-> alias:          of:N*T*Ccirrus,cs47l90
-> alias:          of:N*T*Ccirrus,cs47l85C*
-> alias:          of:N*T*Ccirrus,cs47l85
-> alias:          of:N*T*Ccirrus,cs47l35C*
-> alias:          of:N*T*Ccirrus,cs47l35
-> 
-> Reported-by: Javier Martinez Canillas <javier@dowhile0.org>
-> Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
-> ---
+Replace the bit atomic operations by a mutex to ensure only one dai
+at a time is active on the hdmi codec.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+This is a follow up on change:
+3fcf94ef4d41 ("ASoC: hdmi-codec: remove reference to the current substream")
 
-Thanks,
-Charles
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/codecs/hdmi-codec.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 90a892766625..6a0cc8d7e141 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -281,7 +281,7 @@ struct hdmi_codec_priv {
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
+-	unsigned long busy;
++	struct mutex lock;
+ };
+ 
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -395,8 +395,8 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
+ 
+-	ret = test_and_set_bit(0, &hcp->busy);
+-	if (ret) {
++	ret = mutex_trylock(&hcp->lock);
++	if (!ret) {
+ 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
+ 		return -EINVAL;
+ 	}
+@@ -424,7 +424,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 
+ err:
+ 	/* Release the exclusive lock on error */
+-	clear_bit(0, &hcp->busy);
++	mutex_unlock(&hcp->lock);
+ 	return ret;
+ }
+ 
+@@ -436,7 +436,7 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+ 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
+ 
+-	clear_bit(0, &hcp->busy);
++	mutex_unlock(&hcp->lock);
+ }
+ 
+ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -773,6 +773,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	hcp->hcd = *hcd;
++	mutex_init(&hcp->lock);
++
+ 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
+ 	if (!daidrv)
+ 		return -ENOMEM;
+-- 
+2.20.1
