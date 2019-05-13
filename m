@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Reporting accurate hw_ptr for
-	acp3x dma" to the asoc tree
-Date: Mon, 13 May 2019 13:30:29 +0100 (BST)
-Message-ID: <20190513123029.B90561129234@debutante.sirena.org.uk>
-References: <1557452486-13396-1-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Applied "ASoC: SOF: fix race in FW boot timeout
+	handling" to the asoc tree
+Date: Mon, 13 May 2019 13:30:30 +0100 (BST)
+Message-ID: <20190513123030.CC50F1129232@debutante.sirena.org.uk>
+References: <20190509201027.3906-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D775FF89735
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:43 +0200 (CEST)
-In-Reply-To: <1557452486-13396-1-git-send-email-Vijendar.Mukunda@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D41E0F89731
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:38 +0200 (CEST)
+In-Reply-To: <20190509201027.3906-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Cc: SOC@sirena.org.uk, alsa-devel@alsa-project.org, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, "Gustavo A.R.Silva" <gustavo@embeddedor.com>, /@sirena.org.uk, Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>, moderated@sirena.org.uk, "Cc:"@sirena.org.uk, -@sirena.org.uk, Mark Brown <broonie@kernel.org>, DYNAMIC@sirena.org.uk, "list:SOUND"@sirena.org.uk, LAYER@sirena.org.uk, AUDIO@sirena.org.uk, Alexander.Deucher@amd.com, open list <linux-kernel@vger.kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: Reporting accurate hw_ptr for acp3x dma
+   ASoC: SOF: fix race in FW boot timeout handling
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,96 +55,37 @@ to this mail.
 Thanks,
 Mark
 
->From 35a7086eaa057a5ef6eef77af957e46c040be48b Mon Sep 17 00:00:00 2001
-From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Date: Fri, 10 May 2019 07:11:07 +0530
-Subject: [PATCH] ASoC: amd: Reporting accurate hw_ptr for acp3x dma
+>From a69270d8bfeb35fc89d047ea6db803cd75a74f12 Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Thu, 9 May 2019 15:10:23 -0500
+Subject: [PATCH] ASoC: SOF: fix race in FW boot timeout handling
 
-acp3x dma pointer callback has issues in reporting hw_ptr.
-Modified logic to use linear position registers to
-retrieve accurate hw_ptr.
+A race condition exists in handling firmware boot timeout.
+If FW sends FW_READY just after boot timeout has expired in
+driver, a kernel exception will result as FW_READY handler
+will be run while the state is still being cleaned up in
+snd_sof_run_firmware(). Avoid the race by setting
+boot_complete also in the error case.
 
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 43 +++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 12 deletions(-)
+ sound/soc/sof/loader.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 9775bda2a4ca..a4ade6bb5beb 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -32,6 +32,7 @@ struct i2s_stream_instance {
- 	u16 channels;
- 	u32 xfer_resolution;
- 	struct page *pg;
-+	u64 bytescount;
- 	void __iomem *acp3x_base;
- };
- 
-@@ -317,6 +318,24 @@ static int acp3x_dma_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
-+static u64 acp_get_byte_count(struct i2s_stream_instance *rtd, int direction)
-+{
-+	u64 byte_count;
-+
-+	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		byte_count = rv_readl(rtd->acp3x_base +
-+				      mmACP_BT_TX_LINEARPOSITIONCNTR_HIGH);
-+		byte_count |= rv_readl(rtd->acp3x_base +
-+				       mmACP_BT_TX_LINEARPOSITIONCNTR_LOW);
-+	} else {
-+		byte_count = rv_readl(rtd->acp3x_base +
-+				      mmACP_BT_RX_LINEARPOSITIONCNTR_HIGH);
-+		byte_count |= rv_readl(rtd->acp3x_base +
-+				       mmACP_BT_RX_LINEARPOSITIONCNTR_LOW);
-+	}
-+	return byte_count;
-+}
-+
- static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params)
- {
-@@ -350,18 +369,17 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
- static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_pcm_substream *substream)
- {
- 	u32 pos = 0;
--	struct i2s_stream_instance *rtd = substream->runtime->private_data;
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		pos = rv_readl(rtd->acp3x_base +
--			       mmACP_BT_TX_LINKPOSITIONCNTR);
--	else
--		pos = rv_readl(rtd->acp3x_base +
--			       mmACP_BT_RX_LINKPOSITIONCNTR);
--
--	if (pos >= MAX_BUFFER)
--		pos = 0;
--
-+	u32 buffersize = 0;
-+	u64 bytescount = 0;
-+	struct i2s_stream_instance *rtd =
-+		substream->runtime->private_data;
-+
-+	buffersize = frames_to_bytes(substream->runtime,
-+				     substream->runtime->buffer_size);
-+	bytescount = acp_get_byte_count(rtd, substream->stream);
-+	if (bytescount > rtd->bytescount)
-+		bytescount -= rtd->bytescount;
-+	pos = do_div(bytescount, buffersize);
- 	return bytes_to_frames(substream->runtime, pos);
- }
- 
-@@ -521,6 +539,7 @@ static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		rtd->bytescount = acp_get_byte_count(rtd, substream->stream);
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			rv_writel(period_bytes, rtd->acp3x_base +
- 				  mmACP_BT_TX_INTR_WATERMARK_SIZE);
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index 81c7452aae17..628fae552442 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -372,6 +372,8 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+ 				 msecs_to_jiffies(sdev->boot_timeout));
+ 	if (ret == 0) {
+ 		dev_err(sdev->dev, "error: firmware boot failure\n");
++		/* after this point FW_READY msg should be ignored */
++		sdev->boot_complete = true;
+ 		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
+ 			SOF_DBG_TEXT | SOF_DBG_PCI);
+ 		return -EIO;
 -- 
 2.20.1
