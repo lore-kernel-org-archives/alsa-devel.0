@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: use soc_find_component() at
-	snd_soc_get_dai_id()" to the asoc tree
-Date: Mon, 13 May 2019 13:30:27 +0100 (BST)
-Message-ID: <20190513123027.208EB1129237@debutante.sirena.org.uk>
-References: <87r292alro.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC : cs4265 : readable register too low" to
+	the asoc tree
+Date: Mon, 13 May 2019 13:30:30 +0100 (BST)
+Message-ID: <20190513123030.645CA1129236@debutante.sirena.org.uk>
+References: <20190508063313.18099-1-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D181EF896B8
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:38 +0200 (CEST)
-In-Reply-To: <87r292alro.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33808F89738
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2019 14:30:43 +0200 (CEST)
+In-Reply-To: <20190508063313.18099-1-flatmax@flatmax.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, clemens@ladisch.de, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: use soc_find_component() at snd_soc_get_dai_id()
+   ASoC : cs4265 : readable register too low
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,56 +55,42 @@ to this mail.
 Thanks,
 Mark
 
->From 09d4cc03ff77790872b8b9e51b6d7b5863686fc5 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 13 May 2019 16:07:20 +0900
-Subject: [PATCH] ASoC: soc-core: use soc_find_component() at
- snd_soc_get_dai_id()
+>From f3df05c805983427319eddc2411a2105ee1757cf Mon Sep 17 00:00:00 2001
+From: Matt Flax <flatmax@flatmax.org>
+Date: Wed, 8 May 2019 16:33:13 +1000
+Subject: [PATCH] ASoC : cs4265 : readable register too low
 
-soc-core core already has soc_find_component() which find
-component from device node.
-Let's use existing function to find component.
+The cs4265_readable_register function stopped short of the maximum
+register.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+An example bug is taken from :
+https://github.com/Audio-Injector/Ultra/issues/25
+
+Where alsactl store fails with :
+Cannot read control '2,0,0,C Data Buffer,0': Input/output error
+
+This patch fixes the bug by setting the cs4265 to have readable
+registers up to the maximum hardware register CS4265_MAX_REGISTER.
+
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ sound/soc/codecs/cs4265.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e55170ce6d3e..e83edbe27041 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3751,7 +3751,7 @@ EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
- 
- int snd_soc_get_dai_id(struct device_node *ep)
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index ab27d2b94d02..c0190ec59e74 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -60,7 +60,7 @@ static const struct reg_default cs4265_reg_defaults[] = {
+ static bool cs4265_readable_register(struct device *dev, unsigned int reg)
  {
--	struct snd_soc_component *pos;
-+	struct snd_soc_component *component;
- 	struct device_node *node;
- 	int ret;
- 
-@@ -3765,17 +3765,10 @@ int snd_soc_get_dai_id(struct device_node *ep)
- 	 */
- 	ret = -ENOTSUPP;
- 	mutex_lock(&client_mutex);
--	for_each_component(pos) {
--		struct device_node *component_of_node = soc_component_to_node(pos);
--
--		if (component_of_node != node)
--			continue;
--
--		if (pos->driver->of_xlate_dai_id)
--			ret = pos->driver->of_xlate_dai_id(pos, ep);
--
--		break;
--	}
-+	component = soc_find_component(node, NULL);
-+	if (component &&
-+	    component->driver->of_xlate_dai_id)
-+		ret = component->driver->of_xlate_dai_id(component, ep);
- 	mutex_unlock(&client_mutex);
- 
- 	of_node_put(node);
+ 	switch (reg) {
+-	case CS4265_CHIP_ID ... CS4265_SPDIF_CTL2:
++	case CS4265_CHIP_ID ... CS4265_MAX_REGISTER:
+ 		return true;
+ 	default:
+ 		return false;
 -- 
 2.20.1
