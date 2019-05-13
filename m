@@ -1,33 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: fix master clock management" to the asoc
- tree
-Date: Mon, 13 May 2019 13:30:37 +0100 (BST)
-Message-ID: <20190513123037.1C44F1129232@debutante.sirena.org.uk>
-References: <1554883716-10436-1-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1554883716-10436-1-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: Intel: Skylake: Add Cometlake PCI IDs" to the asoc tree
+Date: Mon, 13 May 2019 13:30:29 +0100 (BST)
+Message-ID: <20190513123029.4BF481129232@debutante.sirena.org.uk>
+References: <20190510223929.165569-3-evgreen@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190510223929.165569-3-evgreen@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Evan Green <evgreen@chromium.org>
+Cc: alsa-devel@alsa-project.org, Ben Zhang <benzh@chromium.org>, Guenter Roeck <groeck@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Rajat Jain <rajatja@chromium.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Sathya Prakash <sathya.prakash.m.r@intel.com>, Takashi Iwai <tiwai@suse.com>, Yu Zhao <yuzhao@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: fix master clock management
+   ASoC: Intel: Skylake: Add Cometlake PCI IDs
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -48,136 +37,96 @@ to this mail.
 Thanks,
 Mark
 
->From cc34920a122b6ad7593d5751303c073fd12b96e4 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 10 Apr 2019 10:08:36 +0200
-Subject: [PATCH] ASoC: stm32: sai: fix master clock management
+>From 5f740b243014f54e503ea5aca0a90680b56d0134 Mon Sep 17 00:00:00 2001
+From: Evan Green <evgreen@chromium.org>
+Date: Fri, 10 May 2019 15:39:29 -0700
+Subject: [PATCH] ASoC: Intel: Skylake: Add Cometlake PCI IDs
 
-When master clock is used, master clock rate is set exclusively.
-Parent clocks of master clock cannot be changed after a call to
-clk_set_rate_exclusive(). So the parent clock of SAI kernel clock
-must be set before.
-Ensure also that exclusive rate operations are balanced
-in STM32 SAI driver.
+Add PCI IDs for Intel CometLake platforms, which from a software
+point of view are extremely similar to Cannonlake platforms.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Evan Green <evgreen@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 64 +++++++++++++++++++++++++----------
- 1 file changed, 47 insertions(+), 17 deletions(-)
+ sound/soc/intel/Kconfig                | 16 ++++++++++++++++
+ sound/soc/intel/skylake/skl-messages.c | 16 ++++++++++++++++
+ sound/soc/intel/skylake/skl.c          | 10 ++++++++++
+ 3 files changed, 42 insertions(+)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 83d8a7ac56f4..d7045aa520de 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -70,6 +70,7 @@
- #define SAI_IEC60958_STATUS_BYTES	24
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index fc1396adde71..b089ed3bf77f 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -165,6 +165,22 @@ config SND_SOC_INTEL_CFL
+ 	  If you have a Intel CoffeeLake platform with the DSP
+ 	  enabled in the BIOS then enable this option by saying Y or m.
  
- #define SAI_MCLK_NAME_LEN		32
-+#define SAI_RATE_11K			11025
- 
- /**
-  * struct stm32_sai_sub_data - private data of SAI sub block (block A or B)
-@@ -309,6 +310,25 @@ static int stm32_sai_set_clk_div(struct stm32_sai_sub_data *sai,
- 	return ret;
- }
- 
-+static int stm32_sai_set_parent_clock(struct stm32_sai_sub_data *sai,
-+				      unsigned int rate)
-+{
-+	struct platform_device *pdev = sai->pdev;
-+	struct clk *parent_clk = sai->pdata->clk_x8k;
-+	int ret;
++config SND_SOC_INTEL_CML_H
++	tristate "CometLake-H Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel CometLake-H platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
 +
-+	if (!(rate % SAI_RATE_11K))
-+		parent_clk = sai->pdata->clk_x11k;
++config SND_SOC_INTEL_CML_LP
++	tristate "CometLake-LP Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel CometLake-LP platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
 +
-+	ret = clk_set_parent(sai->sai_ck, parent_clk);
-+	if (ret)
-+		dev_err(&pdev->dev, " Error %d setting sai_ck parent clock. %s",
-+			ret, ret == -EBUSY ?
-+			"Active stream rates conflict\n" : "\n");
-+
-+	return ret;
-+}
-+
- static long stm32_sai_mclk_round_rate(struct clk_hw *hw, unsigned long rate,
- 				      unsigned long *prate)
- {
-@@ -490,25 +510,29 @@ static int stm32_sai_set_sysclk(struct snd_soc_dai *cpu_dai,
- 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	int ret;
+ config SND_SOC_INTEL_SKYLAKE_FAMILY
+ 	tristate
+ 	select SND_SOC_INTEL_SKYLAKE_COMMON
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 4bf70b4429f0..df01dc952521 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -255,6 +255,22 @@ static const struct skl_dsp_ops dsp_ops[] = {
+ 		.init_fw = cnl_sst_init_fw,
+ 		.cleanup = cnl_sst_dsp_cleanup
+ 	},
++	{
++		.id = 0x02c8,
++		.num_cores = 4,
++		.loader_ops = bxt_get_loader_ops,
++		.init = cnl_sst_dsp_init,
++		.init_fw = cnl_sst_init_fw,
++		.cleanup = cnl_sst_dsp_cleanup
++	},
++	{
++		.id = 0x06c8,
++		.num_cores = 4,
++		.loader_ops = bxt_get_loader_ops,
++		.init = cnl_sst_dsp_init,
++		.init_fw = cnl_sst_init_fw,
++		.cleanup = cnl_sst_dsp_cleanup
++	},
+ };
  
--	if (dir == SND_SOC_CLOCK_OUT) {
-+	if (dir == SND_SOC_CLOCK_OUT && sai->sai_mclk) {
- 		ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
- 					 SAI_XCR1_NODIV,
- 					 (unsigned int)~SAI_XCR1_NODIV);
- 		if (ret < 0)
- 			return ret;
- 
--		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
--		sai->mclk_rate = freq;
-+		/* If master clock is used, set parent clock now */
-+		ret = stm32_sai_set_parent_clock(sai, freq);
-+		if (ret)
-+			return ret;
- 
--		if (sai->sai_mclk) {
--			ret = clk_set_rate_exclusive(sai->sai_mclk,
--						     sai->mclk_rate);
--			if (ret) {
--				dev_err(cpu_dai->dev,
--					"Could not set mclk rate\n");
--				return ret;
--			}
-+		ret = clk_set_rate_exclusive(sai->sai_mclk, freq);
-+		if (ret) {
-+			dev_err(cpu_dai->dev,
-+				ret == -EBUSY ?
-+				"Active streams have incompatible rates" :
-+				"Could not set mclk rate\n");
-+			return ret;
- 		}
-+
-+		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
-+		sai->mclk_rate = freq;
- 	}
- 
- 	return 0;
-@@ -916,11 +940,13 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 	int div = 0, cr1 = 0;
- 	int sai_clk_rate, mclk_ratio, den;
- 	unsigned int rate = params_rate(params);
-+	int ret;
- 
--	if (!(rate % 11025))
--		clk_set_parent(sai->sai_ck, sai->pdata->clk_x11k);
--	else
--		clk_set_parent(sai->sai_ck, sai->pdata->clk_x8k);
-+	if (!sai->sai_mclk) {
-+		ret = stm32_sai_set_parent_clock(sai, rate);
-+		if (ret)
-+			return ret;
-+	}
- 	sai_clk_rate = clk_get_rate(sai->sai_ck);
- 
- 	if (STM_SAI_IS_F4(sai->pdata)) {
-@@ -1079,9 +1105,13 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
- 	regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX, SAI_XCR1_NODIV,
- 			   SAI_XCR1_NODIV);
- 
--	clk_disable_unprepare(sai->sai_ck);
-+	/* Release mclk rate only if rate was actually set */
-+	if (sai->mclk_rate) {
-+		clk_rate_exclusive_put(sai->sai_mclk);
-+		sai->mclk_rate = 0;
-+	}
- 
--	clk_rate_exclusive_put(sai->sai_mclk);
-+	clk_disable_unprepare(sai->sai_ck);
- 
- 	spin_lock_irqsave(&sai->irq_lock, flags);
- 	sai->substream = NULL;
+ const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 4ed5b7e17d44..f864f7b3df3a 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1166,6 +1166,16 @@ static const struct pci_device_id skl_ids[] = {
+ 	/* CFL */
+ 	{ PCI_DEVICE(0x8086, 0xa348),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_LP)
++	/* CML-LP */
++	{ PCI_DEVICE(0x8086, 0x02c8),
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_H)
++	/* CML-H */
++	{ PCI_DEVICE(0x8086, 0x06c8),
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
+ #endif
+ 	{ 0, }
+ };
 -- 
 2.20.1
