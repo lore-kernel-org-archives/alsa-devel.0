@@ -1,26 +1,70 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 2/5] dt-bindings: sound: Add MT8516 AFE PCM bindings
-Date: Tue, 14 May 2019 15:31:17 -0500
-Message-ID: <20190514203117.GA26954@bogus>
-References: <20190502121041.8045-1-fparent@baylibre.com>
- <20190502121041.8045-3-fparent@baylibre.com>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v2] ACPI / device_sysfs: change _ADR representation to 64 bits
+Date: Tue, 14 May 2019 23:29:18 +0200
+Message-ID: <1683867.ro8ObbCUgW@kreacher>
+References: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com> <20190502045817.GZ3845@vkoul-mobl.Dlink> <CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190502121041.8045-3-fparent@baylibre.com>
+In-Reply-To: <CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, kaichieh.chuang@mediatek.com, shunli.wang@mediatek.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, Fabien Parent <fparent@baylibre.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, jank@cadence.com, Joe Perches <joe@perches.com>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu,  2 May 2019 14:10:38 +0200, Fabien Parent wrote:
-> Add documentation for the bindings of the MT8516 AFE PCM driver.
+On Monday, May 6, 2019 10:36:22 AM CEST Rafael J. Wysocki wrote:
+> On Thu, May 2, 2019 at 6:58 AM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > On 01-05-19, 07:53, Pierre-Louis Bossart wrote:
+> > > Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> > > assume the _ADR field is 64 bits.
+> > >
+> > > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> > > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> > > struct acpi_device_info.
+> > >
+> > > This patch bumps the representation used for sysfs to 64 bits. To
+> > > avoid any compatibility/ABI issues, the printf format is only extended
+> > > to 16 characters when the actual _ADR value exceeds the 32 bit
+> > > maximum.
+> > >
+> > > Example with a SoundWire device, the results show the complete
+> > > vendorID and linkID which were omitted before:
+> > >
+> > > Before:
+> > > $ more /sys/bus/acpi/devices/device\:38/adr
+> > > 0x5d070000
+> > > After:
+> > > $ more /sys/bus/acpi/devices/device\:38/adr
+> > > 0x000010025d070000
+> > >
+> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > ---
+> > > v2: only use 64 bits when required to avoid compatibility issues
+> > > (feedback from Vinod and Rafael)
+> > >
+> > >  drivers/acpi/device_sysfs.c | 6 ++++--
+> > >  include/acpi/acpi_bus.h     | 2 +-
+> > >  2 files changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> > > index 8940054d6250..7dda0ee05cd1 100644
+> > > --- a/drivers/acpi/device_sysfs.c
+> > > +++ b/drivers/acpi/device_sysfs.c
+> > > @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device *dev,
+> > >  {
+> > >       struct acpi_device *acpi_dev = to_acpi_device(dev);
+> > >
+> > > -     return sprintf(buf, "0x%08x\n",
+> > > -                    (unsigned int)(acpi_dev->pnp.bus_address));
+> > > +     if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
+> >
+> > Would prefer to use U32_MAX instead of 0xFFFFFFFF
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  .../bindings/sound/mt8516-afe-pcm.txt         | 28 +++++++++++++++++++
->  1 file changed, 28 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8516-afe-pcm.txt
+> I would.
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I have made that change manually and applied the patch.
+
+Thanks!
