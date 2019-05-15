@@ -1,8 +1,8 @@
 From: <vanitha.channaiah@in.bosch.com>
-Subject: [PATCH v2 1/6] pcm: direct: Add generic
-	hw_ptr_alignment function for dmix, dshare and dsnoop
-Date: Wed, 15 May 2019 11:56:32 +0530
-Message-ID: <1557901597-19215-2-git-send-email-vanitha.channaiah@in.bosch.com>
+Subject: [PATCH v2 2/6] pcm: dshare: Added "hw_ptr_alignment"
+	option in configuration for alignment of slave pointers
+Date: Wed, 15 May 2019 11:56:33 +0530
+Message-ID: <1557901597-19215-3-git-send-email-vanitha.channaiah@in.bosch.com>
 References: <1557901597-19215-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,132 +24,121 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
-Move the code snd_pcm_direct_reset_slave_ptr() from pcm_dmix.c
-to pcm_direct.c and its header so that the helper function can be
-re-used by other direct-pcm plugins.
-There is no change in the behavior or the functionality.
+This change adapt the fix commit 6b058fda9dce
+("pcm: dmix: Add option to allow alignment of slave pointers")
+for dshare plugin
+
+Issue is that snd_pcm_wait() goes back to waiting because the hw_ptr
+is not period aligned. Therefore snd_pcm_wait() will block for a longer
+time as required.
+
+With these rcar driver changes the exact position of the dma is returned.
+During snd_pcm_start they read hw_ptr as reference, and this hw_ptr
+is now not period aligned, and is a little ahead over the period while it
+is read. Therefore when the avail is calculated during snd_pcm_wait(),
+it is missing the avail_min by a few frames.
+
+An additional option hw_ptr_alignment is provided to dshare configuration,
+to allow the user to configure the slave application and hw pointer
+alignment at startup
 
 Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 ---
- src/pcm/pcm_direct.c | 19 +++++++++++++++++++
- src/pcm/pcm_direct.h |  8 ++++++++
- src/pcm/pcm_dmix.c   | 25 ++-----------------------
- 3 files changed, 29 insertions(+), 23 deletions(-)
+ src/pcm/pcm_dshare.c | 40 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 666a8ce..411a035 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -2040,3 +2040,22 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index f135b5d..cf8a863 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -333,16 +333,16 @@ static int snd_pcm_dshare_reset(snd_pcm_t *pcm)
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+ 	dshare->hw_ptr %= pcm->period_size;
+ 	dshare->appl_ptr = dshare->last_appl_ptr = dshare->hw_ptr;
+-	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
++	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
  	return 0;
  }
-+
-+void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
-+{
-+	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
-+
-+	if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDUP ||
-+		(dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
-+		pcm->buffer_size <= pcm->period_size * 2))
-+		dmix->slave_appl_ptr =
-+			((dmix->slave_appl_ptr + dmix->slave_period_size - 1) /
-+			dmix->slave_period_size) * dmix->slave_period_size;
-+	else if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDDOWN ||
-+		(dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
-+		(dmix->slave_period_size * SEC_TO_MS) /
-+		pcm->rate < LOW_LATENCY_PERIOD_TIME))
-+		dmix->slave_appl_ptr = dmix->slave_hw_ptr =
-+			((dmix->slave_hw_ptr / dmix->slave_period_size) *
-+			dmix->slave_period_size);
-+}
-diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index da5e280..a71aab1 100644
---- a/src/pcm/pcm_direct.h
-+++ b/src/pcm/pcm_direct.h
-@@ -24,6 +24,11 @@
  
- #define DIRECT_IPC_SEMS         1
- #define DIRECT_IPC_SEM_CLIENT   0
-+/* Seconds representing in Milli seconds */
-+#define SEC_TO_MS               1000
-+/* slave_period time for low latency requirements in ms */
-+#define LOW_LATENCY_PERIOD_TIME 10
-+
- 
- typedef void (mix_areas_t)(unsigned int size,
- 			   volatile void *dst, void *src,
-@@ -257,6 +262,8 @@ struct snd_pcm_direct {
- 	snd1_pcm_direct_get_chmap
- #define snd_pcm_direct_set_chmap \
- 	snd1_pcm_direct_set_chmap
-+#define snd_pcm_direct_reset_slave_ptr \
-+	snd1_pcm_direct_reset_slave_ptr
- 
- int snd_pcm_direct_semaphore_create_or_connect(snd_pcm_direct_t *dmix);
- 
-@@ -341,6 +348,7 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct);
- int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm);
- int snd_timer_async(snd_timer_t *timer, int sig, pid_t pid);
- struct timespec snd_pcm_hw_fast_tstamp(snd_pcm_t *pcm);
-+void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix);
- 
- struct snd_pcm_direct_open_conf {
- 	key_t ipc_key;
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index c5592cd..dcde40d 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -55,9 +55,6 @@ const char *_snd_module_pcm_dmix = "";
- #define STATE_RUN_PENDING	1024
- #endif
- 
--#define SEC_TO_MS	1000			/* Seconds representing in Milli seconds */
--#define LOW_LATENCY_PERIOD_TIME	10	/* slave_period time for low latency requirements in ms */
--
- /*
-  *
-  */
-@@ -560,30 +557,12 @@ static int snd_pcm_dmix_hwsync(snd_pcm_t *pcm)
- 	}
- }
- 
--static void reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
--{
--	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
--
--	if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDUP ||
--	    (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
--	     pcm->buffer_size <= pcm->period_size * 2))
--		dmix->slave_appl_ptr =
--			((dmix->slave_appl_ptr + dmix->slave_period_size - 1)
--			 / dmix->slave_period_size) * dmix->slave_period_size;
--	else if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDDOWN ||
--		 (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
--		  (dmix->slave_period_size * SEC_TO_MS) / pcm->rate < LOW_LATENCY_PERIOD_TIME))
--		dmix->slave_appl_ptr = dmix->slave_hw_ptr =
--			((dmix->slave_hw_ptr / dmix->slave_period_size) *
--			 dmix->slave_period_size);
--}
--
- static int snd_pcm_dmix_reset(snd_pcm_t *pcm)
+-static int snd_pcm_dshare_start_timer(snd_pcm_direct_t *dshare)
++static int snd_pcm_dshare_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dshare)
  {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
- 	dmix->hw_ptr %= pcm->period_size;
- 	dmix->appl_ptr = dmix->last_appl_ptr = dmix->hw_ptr;
--	reset_slave_ptr(pcm, dmix);
-+	snd_pcm_direct_reset_slave_ptr(pcm, dmix);
- 	return 0;
- }
- 
-@@ -592,7 +571,7 @@ static int snd_pcm_dmix_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
  	int err;
  
- 	snd_pcm_hwsync(dmix->spcm);
--	reset_slave_ptr(pcm, dmix);
-+	snd_pcm_direct_reset_slave_ptr(pcm, dmix);
- 	err = snd_timer_start(dmix->timer);
+ 	snd_pcm_hwsync(dshare->spcm);
+-	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
++	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
+ 	err = snd_timer_start(dshare->timer);
  	if (err < 0)
  		return err;
+@@ -364,7 +364,8 @@ static int snd_pcm_dshare_start(snd_pcm_t *pcm)
+ 	else if (avail < 0)
+ 		return 0;
+ 	else {
+-		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
++		err = snd_pcm_dshare_start_timer(pcm, dshare);
++		if (err < 0)
+ 			return err;
+ 		snd_pcm_dshare_sync_area(pcm);
+ 	}
+@@ -547,7 +548,8 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ 		return 0;
+ 	snd_pcm_mmap_appl_forward(pcm, size);
+ 	if (dshare->state == STATE_RUN_PENDING) {
+-		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
++		err = snd_pcm_dshare_start_timer(pcm, dshare);
++		if (err < 0)
+ 			return err;
+ 	} else if (dshare->state == SND_PCM_STATE_RUNNING ||
+ 		   dshare->state == SND_PCM_STATE_DRAINING) {
+@@ -755,6 +757,7 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
+ 	dshare->slowptr = opts->slowptr;
+ 	dshare->max_periods = opts->max_periods;
+ 	dshare->var_periodsize = opts->var_periodsize;
++	dshare->hw_ptr_alignment = opts->hw_ptr_alignment;
+ 	dshare->sync_ptr = snd_pcm_dshare_sync_ptr;
+ 
+  retry:
+@@ -912,6 +915,12 @@ pcm.name {
+ 	ipc_key INT		# unique IPC key
+ 	ipc_key_add_uid BOOL	# add current uid to unique IPC key
+ 	ipc_perm INT		# IPC permissions (octal, default 0600)
++	hw_ptr_alignment STR	# Slave application and hw pointer alignment type
++		# STR can be one of the below strings :
++		# no
++		# roundup
++		# rounddown
++		# auto (default)
+ 	slave STR
+ 	# or
+ 	slave {			# Slave definition
+@@ -936,6 +945,27 @@ pcm.name {
+ }
+ \endcode
+ 
++<code>hw_ptr_alignment</code> specifies slave application and hw
++pointer alignment type. By default hw_ptr_alignment is auto. Below are
++the possible configurations:
++- no: minimal latency with minimal frames dropped at startup. But
++  wakeup of application (return from snd_pcm_wait() or poll()) can
++  take up to 2 * period.
++- roundup: It is guaranteed that all frames will be played at
++  startup. But the latency will increase upto period-1 frames.
++- rounddown: It is guaranteed that a wakeup will happen for each
++  period and frames can be written from application. But on startup
++  upto period-1 frames will be dropped.
++- auto: Selects the best approach depending on the used period and
++  buffer size.
++  If the application buffer size is < 2 * application period,
++  "roundup" will be selected to avoid under runs. If the slave_period
++  is < 10ms we could expect that there are low latency
++  requirements. Therefore "rounddown" will be chosen to avoid long
++  wakeup times. Such wakeup delay could otherwise end up with Xruns in
++  case of a dependency to another sound device (e.g. forwarding of
++  microphone to speaker). Else "no" will be chosen.
++
+ \subsection pcm_plugins_dshare_funcref Function reference
+ 
+ <UL>
 -- 
 2.7.4
