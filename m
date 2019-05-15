@@ -1,34 +1,43 @@
-From: Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH 0/5] ASoC: meson: add hdmitx glue support
-Date: Wed, 15 May 2019 11:33:17 -0700
-Message-ID: <7h7eard0uq.fsf@baylibre.com>
-References: <20190515131858.32130-1-jbrunet@baylibre.com>
+From: ayman.bagabas@gmail.com
+Subject: Re: [PATCH v1 2/2] sound: Enable micmute led for Huawei laptops
+Date: Wed, 15 May 2019 16:54:23 -0400
+Message-ID: <39f32949f84185c87b245b594131824b1865d1ee.camel@gmail.com>
+References: <20190513203009.28686-1-ayman.bagabas@gmail.com>
+         <20190513203009.28686-3-ayman.bagabas@gmail.com>
+         <s5hk1erj20h.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190515131858.32130-1-jbrunet@baylibre.com>
+In-Reply-To: <s5hk1erj20h.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Hui Wang <hui.wang@canonical.com>, Chris Chiu <chiu@endlessm.com>, Daniel Drake <drake@endlessm.com>, Jian-Hong Pan <jian-hong@endlessm.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Jerome Brunet <jbrunet@baylibre.com> writes:
+On Wed, 2019-05-15 at 15:11 +0200, Takashi Iwai wrote:
+> On Mon, 13 May 2019 22:30:06 +0200,
+> Ayman Bagabas wrote:
+> > Since this LED is found on huawei laptops, we can hook it to
+> > huawei-wmi platform driver which uses the common WMI interface
+> > present
+> > in these laptops to control the LED.
+> > 
+> > I've also made some renames and used product name instead of common
+> > name
+> > to avoid confusion.
+> > 
+> > Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+> 
+> This looks applicable independently from the patch 1?
+> If so, it can go via sound git tree while another via x86-platform
+> tree.
+> 
 
-> On the Amlogic SoC, there is a glue between the SoC audio outputs and the
-> input of the embedded Synopsys HDMI controller.
->
-> On the g12a, this glue is mostly a couple of muxes to select the i2s and
-> spdif inputs of the hdmi controller. Each of these inputs may have
-> different hw_params and fmt which makes our life a little bit more
-> interesting, especially when switching between to active inputs.
->
-> This glue is modeled as codec driver and uses codec-to-codec links to
-> connect to the Synopsys controller. This allows to use the regular
-> hdmi-codec driver (used by dw-hdmi i2s).
->
-> To avoid glitches while switching input, the trick is to temporarily
-> force a disconnection of the mux output, which shutdowns the output dai
-> link. This also ensure that the stream parameters and fmt are updated
-> when the output is connected back.
+Yes it is. Will send another one.
 
-Tested-by: Kevin Hilman <khilman@baylibre.com>
+> 
+> thanks,
+> 
+> Takashi
+> 
