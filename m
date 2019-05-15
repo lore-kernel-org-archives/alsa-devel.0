@@ -1,43 +1,50 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2] ACPI / device_sysfs: change _ADR
- representation to 64 bits
-Date: Tue, 14 May 2019 16:37:13 -0500
-Message-ID: <05820f12-de32-c5bb-0780-75c43557e677@linux.intel.com>
-References: <20190501125322.23791-1-pierre-louis.bossart@linux.intel.com>
- <20190502045817.GZ3845@vkoul-mobl.Dlink>
- <CAJZ5v0i+M8y3ddr+Z5o5af8OatMXq3xqCF5CUg5PjnANrTOSHw@mail.gmail.com>
- <1683867.ro8ObbCUgW@kreacher>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: [PATCH RESEND V6 0/3] Support more sample rate in asrc
+Date: Wed, 15 May 2019 06:42:13 +0000
+Message-ID: <cover.1557901312.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1683867.ro8ObbCUgW@kreacher>
 Content-Language: en-US
+Content-ID: <87370C3853C0CE4EAF56FE94A4790CCF@eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Vinod Koul <vkoul@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, jank@cadence.com, Joe Perches <joe@perches.com>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Support more sample rate in asrc
 
->>>> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
->>>> index 8940054d6250..7dda0ee05cd1 100644
->>>> --- a/drivers/acpi/device_sysfs.c
->>>> +++ b/drivers/acpi/device_sysfs.c
->>>> @@ -428,8 +428,10 @@ static ssize_t acpi_device_adr_show(struct device *dev,
->>>>   {
->>>>        struct acpi_device *acpi_dev = to_acpi_device(dev);
->>>>
->>>> -     return sprintf(buf, "0x%08x\n",
->>>> -                    (unsigned int)(acpi_dev->pnp.bus_address));
->>>> +     if (acpi_dev->pnp.bus_address > 0xFFFFFFFF)
->>>
->>> Would prefer to use U32_MAX instead of 0xFFFFFFFF
->>
->> I would.
->>
-> 
-> I have made that change manually and applied the patch.
-> 
-> Thanks!
+Shengjiu Wang (3):
+  ASoC: fsl_asrc: Fix the issue about unsupported rate
+  ASoC: fsl_asrc: replace the process_option table with function
+  ASoC: fsl_asrc: Unify the supported input and output rate
 
-Thanks, much appreciated.
+Changes in RESEND V6
+- change the Content-Transfer-Encoding to "quoted-printable", for
+- "base64" can't be applied
+
+Changes in v6
+- add acked-by
+- fixed minor issue according to comments in v5
+
+Changes in v5
+- fix the [1/24, 8]
+- move fsl_asrc_sel_proc before setting
+
+Changes in v4
+- add patch to Fix the [8kHz, 30kHz] open set issue.
+
+Changes in v3
+- remove FSL_ASRC_RATES
+- refine fsl_asrc_sel_proc according to comments
+
+Changes in v2
+- add more comments in code
+- add commit "Unify the supported input and output rate"
+
+ sound/soc/fsl/fsl_asrc.c | 105 ++++++++++++++++++++++++++-------------
+ 1 file changed, 71 insertions(+), 34 deletions(-)
+
+--=20
+2.21.0
