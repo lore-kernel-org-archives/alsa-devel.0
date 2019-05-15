@@ -1,8 +1,7 @@
 From: <vanitha.channaiah@in.bosch.com>
-Subject: [PATCH v2 4/6] pcm: direct: Round up of slave_app_ptr
-	pointer if buffer size is less than 2 period size.
-Date: Wed, 15 May 2019 11:56:35 +0530
-Message-ID: <1557901597-19215-5-git-send-email-vanitha.channaiah@in.bosch.com>
+Subject: [PATCH v2 5/6] pcm: restructuring sw params function
+Date: Wed, 15 May 2019 11:56:36 +0530
+Message-ID: <1557901597-19215-6-git-send-email-vanitha.channaiah@in.bosch.com>
 References: <1557901597-19215-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,59 +23,93 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
-For buffer size less than two period size, the start position
-of slave_app_ptr is rounded up in order to avoid xruns
-For e.g.:
-Considering below parameters and its values
-Period size = 96
-Buffer size = 191
-slave_appl_ptr = slave_hw_ptr = unaligned value
-
-Issue:
-- During the start of the stream, app_ptr = hw_ptr = 0
-- Application writes one period of data in the buffer i.e
-  app_ptr = 96, hw_ptr = 0
-- Now, the avail is just period-1 frames available.
-  avail = hw_ptr + buffer_size - app_ptr = 95
-  i.e. shortage of 1 frame space
-- so application is waiting for the 1frame space to be available.
-- slave_app_ptr and slave_hw_ptr would get updated to lower values
-- This could lead to under run to occur.
-
-Fix:
-If we round Up the slave_app_ptr pointer,
-- During the start of the stream, app_ptr = hw_ptr = 0
-- Application writes one period of data in the buffer i.e
-  app_ptr = 96, hw_ptr = 0
-- Round Up of slave_app_ptr pointer leads to below calculation:
-- slave_app_ptr rounded to 96
-- slave_app_ptr and slave_hw_ptr would get updated to larger value nearing to 2 period size
-- avail = greater than period size.
-- Here, there is a lower chance of under run.
+snd_pcm_sw_params() is reformatted by using _snd_pcm_sw_params_internal()
+function.
+Critical section of snd_pcm_sw_param() is moved to
+_snd_pcm_sw_params_internal(). This allows to call the snd_pcm_sw_params()
+function from an internal function which has already locked the API mutex.
+Calling snd_pcm_sw_params() from an internal function with locked
+API mutex would end up in an deadlock because recursive locking is not
+supported.
+This patch doesnot change the behavior or the functionality.
+To avoid double lock conditions, a separate _snd_pcm_sw_params_internal()
+function is added which can be used internally by any other
+functions in alsa-lib
 
 Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 ---
- src/pcm/pcm_direct.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ src/pcm/pcm.c        | 12 +-----------
+ src/pcm/pcm_local.h  |  1 +
+ src/pcm/pcm_params.c | 21 +++++++++++++++++++++
+ 3 files changed, 23 insertions(+), 11 deletions(-)
 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 54d9900..b56da85 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -2043,10 +2043,12 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 3a71d79..f0db545 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -968,21 +968,11 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
+ 	}
+ #endif
+ 	__snd_pcm_lock(pcm); /* forced lock due to pcm field change */
+-	err = pcm->ops->sw_params(pcm->op_arg, params);
++	err = _snd_pcm_sw_params_internal(pcm, params);
+ 	if (err < 0) {
+ 		__snd_pcm_unlock(pcm);
+ 		return err;
+ 	}
+-	pcm->tstamp_mode = params->tstamp_mode;
+-	pcm->tstamp_type = params->tstamp_type;
+-	pcm->period_step = params->period_step;
+-	pcm->avail_min = params->avail_min;
+-	pcm->period_event = sw_get_period_event(params);
+-	pcm->start_threshold = params->start_threshold;
+-	pcm->stop_threshold = params->stop_threshold;
+-	pcm->silence_threshold = params->silence_threshold;
+-	pcm->silence_size = params->silence_size;
+-	pcm->boundary = params->boundary;
+ 	__snd_pcm_unlock(pcm);
+ 	return 0;
+ }
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index d52229d..e103f72 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -661,6 +661,7 @@ static inline int muldiv_near(int a, int b, int c)
+ 	return n;
+ }
  
- void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
- {
--
-+	/* For buffer size less than two period size, the start position
-+	 * of slave app ptr is rounded up in order to avoid xruns
-+	 */
- 	if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDUP ||
- 		(dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
--		pcm->buffer_size <= pcm->period_size * 2))
-+		pcm->buffer_size < pcm->period_size * 2))
- 		dmix->slave_appl_ptr =
- 			((dmix->slave_appl_ptr + dmix->slave_period_size - 1) /
- 			dmix->slave_period_size) * dmix->slave_period_size;
++int _snd_pcm_sw_params_internal(snd_pcm_t *pcm, snd_pcm_sw_params_t *params);
+ int snd_pcm_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params);
+ int _snd_pcm_hw_params_internal(snd_pcm_t *pcm, snd_pcm_hw_params_t *params);
+ #undef _snd_pcm_hw_params
+diff --git a/src/pcm/pcm_params.c b/src/pcm/pcm_params.c
+index 8826bc3..3ba05fb 100644
+--- a/src/pcm/pcm_params.c
++++ b/src/pcm/pcm_params.c
+@@ -2439,3 +2439,24 @@ int _snd_pcm_hw_params_internal(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
+ 	return 0;
+ }
+ 
++int _snd_pcm_sw_params_internal(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
++{
++	int err;
++
++	assert(pcm && params);
++	assert(pcm->setup);
++	err = pcm->ops->sw_params(pcm->op_arg, params);
++	if (err < 0)
++		return err;
++	pcm->tstamp_mode = params->tstamp_mode;
++	pcm->tstamp_type = params->tstamp_type;
++	pcm->period_step = params->period_step;
++	pcm->avail_min = params->avail_min;
++	pcm->period_event = sw_get_period_event(params);
++	pcm->start_threshold = params->start_threshold;
++	pcm->stop_threshold = params->stop_threshold;
++	pcm->silence_threshold = params->silence_threshold;
++	pcm->silence_size = params->silence_size;
++	pcm->boundary = params->boundary;
++	return 0;
++}
 -- 
 2.7.4
