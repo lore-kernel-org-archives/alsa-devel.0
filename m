@@ -1,8 +1,8 @@
 From: <vanitha.channaiah@in.bosch.com>
-Subject: [PATCH v2 3/6] pcm: dsnoop: Added "hw_ptr_alignment"
-	option in configuration for slave pointer alignment
-Date: Wed, 15 May 2019 11:56:34 +0530
-Message-ID: <1557901597-19215-4-git-send-email-vanitha.channaiah@in.bosch.com>
+Subject: [PATCH v2 4/6] pcm: direct: Round up of slave_app_ptr
+	pointer if buffer size is less than 2 period size.
+Date: Wed, 15 May 2019 11:56:35 +0530
+Message-ID: <1557901597-19215-5-git-send-email-vanitha.channaiah@in.bosch.com>
 References: <1557901597-19215-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,157 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
-This change adapt the fix commit 6b058fda9dce
-("pcm: dmix: Add option to allow alignment of slave pointers")
-for dsnoop plugin
+For buffer size less than two period size, the start position
+of slave_app_ptr is rounded up in order to avoid xruns
+For e.g.:
+Considering below parameters and its values
+Period size = 96
+Buffer size = 191
+slave_appl_ptr = slave_hw_ptr = unaligned value
 
-Issue is that snd_pcm_wait() goes back to waiting because the hw_ptr
-is not period aligned. Therefore snd_pcm_wait() will block for a longer
-time as required.
+Issue:
+- During the start of the stream, app_ptr = hw_ptr = 0
+- Application writes one period of data in the buffer i.e
+  app_ptr = 96, hw_ptr = 0
+- Now, the avail is just period-1 frames available.
+  avail = hw_ptr + buffer_size - app_ptr = 95
+  i.e. shortage of 1 frame space
+- so application is waiting for the 1frame space to be available.
+- slave_app_ptr and slave_hw_ptr would get updated to lower values
+- This could lead to under run to occur.
 
-With these rcar driver changes the exact position of the dma is returned.
-During snd_pcm_start they read hw_ptr as reference, and this hw_ptr
-is now not period aligned, and is a little ahead over the period while it
-is read. Therefore when the avail is calculated during snd_pcm_wait(),
-it is missing the avail_min by a few frames.
-
-An additional option hw_ptr_alignment is provided to dsnoop configuration,
-to allow the user to configure the slave application and hw pointer
-alignment at startup
+Fix:
+If we round Up the slave_app_ptr pointer,
+- During the start of the stream, app_ptr = hw_ptr = 0
+- Application writes one period of data in the buffer i.e
+  app_ptr = 96, hw_ptr = 0
+- Round Up of slave_app_ptr pointer leads to below calculation:
+- slave_app_ptr rounded to 96
+- slave_app_ptr and slave_hw_ptr would get updated to larger value nearing to 2 period size
+- avail = greater than period size.
+- Here, there is a lower chance of under run.
 
 Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 ---
- src/pcm/pcm_direct.c |  1 -
- src/pcm/pcm_dmix.c   |  2 ++
- src/pcm/pcm_dshare.c |  2 ++
- src/pcm/pcm_dsnoop.c | 30 +++++++++++++++++++++++++++++-
- 4 files changed, 33 insertions(+), 2 deletions(-)
+ src/pcm/pcm_direct.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 411a035..54d9900 100644
+index 54d9900..b56da85 100644
 --- a/src/pcm/pcm_direct.c
 +++ b/src/pcm/pcm_direct.c
-@@ -2043,7 +2043,6 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
+@@ -2043,10 +2043,12 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
  
  void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
  {
--	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
- 
+-
++	/* For buffer size less than two period size, the start position
++	 * of slave app ptr is rounded up in order to avoid xruns
++	 */
  	if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDUP ||
  		(dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index dcde40d..274726e 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -562,6 +562,7 @@ static int snd_pcm_dmix_reset(snd_pcm_t *pcm)
- 	snd_pcm_direct_t *dmix = pcm->private_data;
- 	dmix->hw_ptr %= pcm->period_size;
- 	dmix->appl_ptr = dmix->last_appl_ptr = dmix->hw_ptr;
-+	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
- 	snd_pcm_direct_reset_slave_ptr(pcm, dmix);
- 	return 0;
- }
-@@ -571,6 +572,7 @@ static int snd_pcm_dmix_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
- 	int err;
- 
- 	snd_pcm_hwsync(dmix->spcm);
-+	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
- 	snd_pcm_direct_reset_slave_ptr(pcm, dmix);
- 	err = snd_timer_start(dmix->timer);
- 	if (err < 0)
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index cf8a863..b75809c 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -333,6 +333,7 @@ static int snd_pcm_dshare_reset(snd_pcm_t *pcm)
- 	snd_pcm_direct_t *dshare = pcm->private_data;
- 	dshare->hw_ptr %= pcm->period_size;
- 	dshare->appl_ptr = dshare->last_appl_ptr = dshare->hw_ptr;
-+	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
- 	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
- 	return 0;
- }
-@@ -342,6 +343,7 @@ static int snd_pcm_dshare_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dshare)
- 	int err;
- 
- 	snd_pcm_hwsync(dshare->spcm);
-+	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
- 	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
- 	err = snd_timer_start(dshare->timer);
- 	if (err < 0)
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index d08b624..58b1e53 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -278,6 +278,7 @@ static int snd_pcm_dsnoop_reset(snd_pcm_t *pcm)
- 	dsnoop->hw_ptr %= pcm->period_size;
- 	dsnoop->appl_ptr = dsnoop->hw_ptr;
- 	dsnoop->slave_appl_ptr = dsnoop->slave_hw_ptr;
-+	snd_pcm_direct_reset_slave_ptr(pcm, dsnoop);
- 	return 0;
- }
- 
-@@ -285,12 +286,13 @@ static int snd_pcm_dsnoop_start(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dsnoop = pcm->private_data;
- 	int err;
--	
-+
- 	if (dsnoop->state != SND_PCM_STATE_PREPARED)
- 		return -EBADFD;
- 	snd_pcm_hwsync(dsnoop->spcm);
- 	snoop_timestamp(pcm);
- 	dsnoop->slave_appl_ptr = dsnoop->slave_hw_ptr;
-+	snd_pcm_direct_reset_slave_ptr(pcm, dsnoop);
- 	err = snd_timer_start(dsnoop->timer);
- 	if (err < 0)
- 		return err;
-@@ -627,6 +629,7 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
- 	dsnoop->max_periods = opts->max_periods;
- 	dsnoop->var_periodsize = opts->var_periodsize;
- 	dsnoop->sync_ptr = snd_pcm_dsnoop_sync_ptr;
-+	dsnoop->hw_ptr_alignment = opts->hw_ptr_alignment;
- 
-  retry:
- 	if (first_instance) {
-@@ -771,6 +774,12 @@ pcm.name {
- 	ipc_key INT		# unique IPC key
- 	ipc_key_add_uid BOOL	# add current uid to unique IPC key
- 	ipc_perm INT		# IPC permissions (octal, default 0600)
-+	hw_ptr_alignment STR	# Slave application and hw pointer alignment type
-+		# STR can be one of the below strings :
-+		# no
-+		# roundup
-+		# rounddown
-+		# auto (default)
- 	slave STR
- 	# or
- 	slave {			# Slave definition
-@@ -795,6 +804,25 @@ pcm.name {
- }
- \endcode
- 
-+<code>hw_ptr_alignment</code> specifies slave application and hw
-+pointer alignment type. By default hw_ptr_alignment is auto. Below are
-+the possible configurations:
-+- no: minimal latency with minimal frames dropped at startup. But
-+  wakeup of application (return from snd_pcm_wait() or poll()) can
-+  take up to 2 * period.
-+- roundup: It is guaranteed that all frames will be played at
-+  startup. But the latency will increase upto period-1 frames.
-+- rounddown: It is guaranteed that a wakeup will happen for each
-+  period and frames can be written from application. But on startup
-+  upto period-1 frames will be dropped.
-+- auto: Selects the best approach depending on the used period and
-+  buffer size.
-+  If the application buffer size is < 2 * application period,
-+  "roundup" will be selected to avoid over runs. If the slave_period
-+  is < 10ms we could expect that there are low latency
-+  requirements. Therefore "rounddown" will be chosen to avoid long
-+  wakeup times. Else "no" will be chosen.
-+
- \subsection pcm_plugins_dsnoop_funcref Function reference
- 
- <UL>
+-		pcm->buffer_size <= pcm->period_size * 2))
++		pcm->buffer_size < pcm->period_size * 2))
+ 		dmix->slave_appl_ptr =
+ 			((dmix->slave_appl_ptr + dmix->slave_period_size - 1) /
+ 			dmix->slave_period_size) * dmix->slave_period_size;
 -- 
 2.7.4
