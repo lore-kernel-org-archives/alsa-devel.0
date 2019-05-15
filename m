@@ -1,8 +1,8 @@
 From: <vanitha.channaiah@in.bosch.com>
-Subject: [PATCH v2 2/6] pcm: dshare: Added "hw_ptr_alignment"
-	option in configuration for alignment of slave pointers
-Date: Wed, 15 May 2019 11:56:33 +0530
-Message-ID: <1557901597-19215-3-git-send-email-vanitha.channaiah@in.bosch.com>
+Subject: [PATCH v2 3/6] pcm: dsnoop: Added "hw_ptr_alignment"
+	option in configuration for slave pointer alignment
+Date: Wed, 15 May 2019 11:56:34 +0530
+Message-ID: <1557901597-19215-4-git-send-email-vanitha.channaiah@in.bosch.com>
 References: <1557901597-19215-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,7 +26,7 @@ From: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 
 This change adapt the fix commit 6b058fda9dce
 ("pcm: dmix: Add option to allow alignment of slave pointers")
-for dshare plugin
+for dsnoop plugin
 
 Issue is that snd_pcm_wait() goes back to waiting because the hw_ptr
 is not period aligned. Therefore snd_pcm_wait() will block for a longer
@@ -38,68 +38,106 @@ is now not period aligned, and is a little ahead over the period while it
 is read. Therefore when the avail is calculated during snd_pcm_wait(),
 it is missing the avail_min by a few frames.
 
-An additional option hw_ptr_alignment is provided to dshare configuration,
+An additional option hw_ptr_alignment is provided to dsnoop configuration,
 to allow the user to configure the slave application and hw pointer
 alignment at startup
 
 Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
 ---
- src/pcm/pcm_dshare.c | 40 +++++++++++++++++++++++++++++++++++-----
- 1 file changed, 35 insertions(+), 5 deletions(-)
+ src/pcm/pcm_direct.c |  1 -
+ src/pcm/pcm_dmix.c   |  2 ++
+ src/pcm/pcm_dshare.c |  2 ++
+ src/pcm/pcm_dsnoop.c | 30 +++++++++++++++++++++++++++++-
+ 4 files changed, 33 insertions(+), 2 deletions(-)
 
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 411a035..54d9900 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -2043,7 +2043,6 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
+ 
+ void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
+ {
+-	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
+ 
+ 	if (dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_ROUNDUP ||
+ 		(dmix->hw_ptr_alignment == SND_PCM_HW_PTR_ALIGNMENT_AUTO &&
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index dcde40d..274726e 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -562,6 +562,7 @@ static int snd_pcm_dmix_reset(snd_pcm_t *pcm)
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+ 	dmix->hw_ptr %= pcm->period_size;
+ 	dmix->appl_ptr = dmix->last_appl_ptr = dmix->hw_ptr;
++	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
+ 	snd_pcm_direct_reset_slave_ptr(pcm, dmix);
+ 	return 0;
+ }
+@@ -571,6 +572,7 @@ static int snd_pcm_dmix_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
+ 	int err;
+ 
+ 	snd_pcm_hwsync(dmix->spcm);
++	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
+ 	snd_pcm_direct_reset_slave_ptr(pcm, dmix);
+ 	err = snd_timer_start(dmix->timer);
+ 	if (err < 0)
 diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index f135b5d..cf8a863 100644
+index cf8a863..b75809c 100644
 --- a/src/pcm/pcm_dshare.c
 +++ b/src/pcm/pcm_dshare.c
-@@ -333,16 +333,16 @@ static int snd_pcm_dshare_reset(snd_pcm_t *pcm)
+@@ -333,6 +333,7 @@ static int snd_pcm_dshare_reset(snd_pcm_t *pcm)
  	snd_pcm_direct_t *dshare = pcm->private_data;
  	dshare->hw_ptr %= pcm->period_size;
  	dshare->appl_ptr = dshare->last_appl_ptr = dshare->hw_ptr;
--	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
-+	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
++	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
+ 	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
  	return 0;
  }
- 
--static int snd_pcm_dshare_start_timer(snd_pcm_direct_t *dshare)
-+static int snd_pcm_dshare_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dshare)
- {
+@@ -342,6 +343,7 @@ static int snd_pcm_dshare_start_timer(snd_pcm_t *pcm, snd_pcm_direct_t *dshare)
  	int err;
  
  	snd_pcm_hwsync(dshare->spcm);
--	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
-+	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
++	dshare->slave_appl_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
+ 	snd_pcm_direct_reset_slave_ptr(pcm, dshare);
  	err = snd_timer_start(dshare->timer);
  	if (err < 0)
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index d08b624..58b1e53 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -278,6 +278,7 @@ static int snd_pcm_dsnoop_reset(snd_pcm_t *pcm)
+ 	dsnoop->hw_ptr %= pcm->period_size;
+ 	dsnoop->appl_ptr = dsnoop->hw_ptr;
+ 	dsnoop->slave_appl_ptr = dsnoop->slave_hw_ptr;
++	snd_pcm_direct_reset_slave_ptr(pcm, dsnoop);
+ 	return 0;
+ }
+ 
+@@ -285,12 +286,13 @@ static int snd_pcm_dsnoop_start(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+ 	int err;
+-	
++
+ 	if (dsnoop->state != SND_PCM_STATE_PREPARED)
+ 		return -EBADFD;
+ 	snd_pcm_hwsync(dsnoop->spcm);
+ 	snoop_timestamp(pcm);
+ 	dsnoop->slave_appl_ptr = dsnoop->slave_hw_ptr;
++	snd_pcm_direct_reset_slave_ptr(pcm, dsnoop);
+ 	err = snd_timer_start(dsnoop->timer);
+ 	if (err < 0)
  		return err;
-@@ -364,7 +364,8 @@ static int snd_pcm_dshare_start(snd_pcm_t *pcm)
- 	else if (avail < 0)
- 		return 0;
- 	else {
--		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
-+		err = snd_pcm_dshare_start_timer(pcm, dshare);
-+		if (err < 0)
- 			return err;
- 		snd_pcm_dshare_sync_area(pcm);
- 	}
-@@ -547,7 +548,8 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
- 		return 0;
- 	snd_pcm_mmap_appl_forward(pcm, size);
- 	if (dshare->state == STATE_RUN_PENDING) {
--		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
-+		err = snd_pcm_dshare_start_timer(pcm, dshare);
-+		if (err < 0)
- 			return err;
- 	} else if (dshare->state == SND_PCM_STATE_RUNNING ||
- 		   dshare->state == SND_PCM_STATE_DRAINING) {
-@@ -755,6 +757,7 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
- 	dshare->slowptr = opts->slowptr;
- 	dshare->max_periods = opts->max_periods;
- 	dshare->var_periodsize = opts->var_periodsize;
-+	dshare->hw_ptr_alignment = opts->hw_ptr_alignment;
- 	dshare->sync_ptr = snd_pcm_dshare_sync_ptr;
+@@ -627,6 +629,7 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
+ 	dsnoop->max_periods = opts->max_periods;
+ 	dsnoop->var_periodsize = opts->var_periodsize;
+ 	dsnoop->sync_ptr = snd_pcm_dsnoop_sync_ptr;
++	dsnoop->hw_ptr_alignment = opts->hw_ptr_alignment;
  
   retry:
-@@ -912,6 +915,12 @@ pcm.name {
+ 	if (first_instance) {
+@@ -771,6 +774,12 @@ pcm.name {
  	ipc_key INT		# unique IPC key
  	ipc_key_add_uid BOOL	# add current uid to unique IPC key
  	ipc_perm INT		# IPC permissions (octal, default 0600)
@@ -112,7 +150,7 @@ index f135b5d..cf8a863 100644
  	slave STR
  	# or
  	slave {			# Slave definition
-@@ -936,6 +945,27 @@ pcm.name {
+@@ -795,6 +804,25 @@ pcm.name {
  }
  \endcode
  
@@ -130,14 +168,12 @@ index f135b5d..cf8a863 100644
 +- auto: Selects the best approach depending on the used period and
 +  buffer size.
 +  If the application buffer size is < 2 * application period,
-+  "roundup" will be selected to avoid under runs. If the slave_period
++  "roundup" will be selected to avoid over runs. If the slave_period
 +  is < 10ms we could expect that there are low latency
 +  requirements. Therefore "rounddown" will be chosen to avoid long
-+  wakeup times. Such wakeup delay could otherwise end up with Xruns in
-+  case of a dependency to another sound device (e.g. forwarding of
-+  microphone to speaker). Else "no" will be chosen.
++  wakeup times. Else "no" will be chosen.
 +
- \subsection pcm_plugins_dshare_funcref Function reference
+ \subsection pcm_plugins_dsnoop_funcref Function reference
  
  <UL>
 -- 
