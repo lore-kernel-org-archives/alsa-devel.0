@@ -1,55 +1,74 @@
-From: Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 0/5] ASoC: meson: add hdmitx glue support
-Date: Wed, 15 May 2019 15:32:55 +0200
-Message-ID: <f7bafd16-1332-e124-79fb-7f045975aed9@baylibre.com>
-References: <20190515131858.32130-1-jbrunet@baylibre.com>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: Re: [PATCH] ASoC: sun4i-codec: fix first delay on Speaker
+Date: Wed, 15 May 2019 15:58:13 +0200
+Message-ID: <20190515135813.5y72f2h526yjkncy@flea>
+References: <1557925120-31498-1-git-send-email-georgii.staroselskii@emlid.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190515131858.32130-1-jbrunet@baylibre.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1557925120-31498-1-git-send-email-georgii.staroselskii@emlid.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Georgii Staroselskii <georgii.staroselskii@emlid.com>
+Cc: alsa-devel@alsa-project.org, dannym@scratchpost.org, tiwai@suse.com, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 15/05/2019 15:18, Jerome Brunet wrote:
-> On the Amlogic SoC, there is a glue between the SoC audio outputs and the
-> input of the embedded Synopsys HDMI controller.
-> 
-> On the g12a, this glue is mostly a couple of muxes to select the i2s and
-> spdif inputs of the hdmi controller. Each of these inputs may have
-> different hw_params and fmt which makes our life a little bit more
-> interesting, especially when switching between to active inputs.
-> 
-> This glue is modeled as codec driver and uses codec-to-codec links to
-> connect to the Synopsys controller. This allows to use the regular
-> hdmi-codec driver (used by dw-hdmi i2s).
-> 
-> To avoid glitches while switching input, the trick is to temporarily
-> force a disconnection of the mux output, which shutdowns the output dai
-> link. This also ensure that the stream parameters and fmt are updated
-> when the output is connected back.
-> 
-> Jerome Brunet (5):
->   ASoC: meson: axg-card: set link name based on link node name
->   ASoC: dapm: allow muxes to force a disconnect
->   ASoC: meson: add tohdmitx DT bindings
->   ASoC: meson: axg-card: add basic codec-to-codec link support
->   ASoC: meson: add g12a tohdmitx control
-> 
->  .../bindings/sound/amlogic,g12a-tohdmitx.txt  |  55 +++
->  .../dt-bindings/sound/meson-g12a-tohdmitx.h   |  13 +
->  sound/soc/meson/Kconfig                       |   8 +
->  sound/soc/meson/Makefile                      |   2 +
->  sound/soc/meson/axg-card.c                    |  31 +-
->  sound/soc/meson/g12a-tohdmitx.c               | 413 ++++++++++++++++++
->  sound/soc/soc-dapm.c                          |   2 +-
->  7 files changed, 518 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
->  create mode 100644 include/dt-bindings/sound/meson-g12a-tohdmitx.h
->  create mode 100644 sound/soc/meson/g12a-tohdmitx.c
-> 
+Hi,
 
-Tested-by: Neil Armstrong <narmstrong@baylibre.com>
+On Wed, May 15, 2019 at 03:58:40PM +0300, Georgii Staroselskii wrote:
+> This commit fixes the same issue as bf14da7 but for another codepath.
+> The issue can be triggered by having Speaker in codec audio routing.
+
+Mentionning what "the issue" is in the commit log would be great.
+
+> &codec {
+>         allwinner,pa-gpios = <&r_pio 0 11 GPIO_ACTIVE_HIGH>; /* PL11 */
+>         allwinner,audio-routing =
+>                 "Speaker", "LINEOUT";
+>
+>         status = "okay";
+> }
+>
+> Signed-off-by: Georgii Staroselskii <georgii.staroselskii@emlid.com>
+> ---
+>  sound/soc/sunxi/sun4i-codec.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index 15d08e3..e0099519 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -1329,6 +1329,15 @@ static int sun4i_codec_spk_event(struct snd_soc_dapm_widget *w,
+>  	gpiod_set_value_cansleep(scodec->gpio_pa,
+>  				 !!SND_SOC_DAPM_EVENT_ON(event));
+>
+> +	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> +		/*
+> +		 * Need a delay to have the amplifier up. 700ms seems the best
+> +		 * compromise between the time to let the amplifier up and the
+> +		 * time not to feel this delay while playing a sound.
+> +		 */
+> +		msleep(700);
+> +	}
+> +
+
+Since this is an external amplifier, I guess they would have different
+warm-up time depending on the exact part being used?
+
+If so, we should use a property and set it on a per-board basis.
+
+Maxime
+
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
