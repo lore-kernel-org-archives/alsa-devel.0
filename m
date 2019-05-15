@@ -1,107 +1,55 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 3/5] ASoC: meson: add tohdmitx DT bindings
-Date: Wed, 15 May 2019 15:18:56 +0200
-Message-ID: <20190515131858.32130-4-jbrunet@baylibre.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 0/5] ASoC: meson: add hdmitx glue support
+Date: Wed, 15 May 2019 15:32:55 +0200
+Message-ID: <f7bafd16-1332-e124-79fb-7f045975aed9@baylibre.com>
 References: <20190515131858.32130-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190515131858.32130-1-jbrunet@baylibre.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the bindings and the related documentation for the audio hdmitx
-control glue of the Amlogic g12a SoC family
+On 15/05/2019 15:18, Jerome Brunet wrote:
+> On the Amlogic SoC, there is a glue between the SoC audio outputs and the
+> input of the embedded Synopsys HDMI controller.
+> 
+> On the g12a, this glue is mostly a couple of muxes to select the i2s and
+> spdif inputs of the hdmi controller. Each of these inputs may have
+> different hw_params and fmt which makes our life a little bit more
+> interesting, especially when switching between to active inputs.
+> 
+> This glue is modeled as codec driver and uses codec-to-codec links to
+> connect to the Synopsys controller. This allows to use the regular
+> hdmi-codec driver (used by dw-hdmi i2s).
+> 
+> To avoid glitches while switching input, the trick is to temporarily
+> force a disconnection of the mux output, which shutdowns the output dai
+> link. This also ensure that the stream parameters and fmt are updated
+> when the output is connected back.
+> 
+> Jerome Brunet (5):
+>   ASoC: meson: axg-card: set link name based on link node name
+>   ASoC: dapm: allow muxes to force a disconnect
+>   ASoC: meson: add tohdmitx DT bindings
+>   ASoC: meson: axg-card: add basic codec-to-codec link support
+>   ASoC: meson: add g12a tohdmitx control
+> 
+>  .../bindings/sound/amlogic,g12a-tohdmitx.txt  |  55 +++
+>  .../dt-bindings/sound/meson-g12a-tohdmitx.h   |  13 +
+>  sound/soc/meson/Kconfig                       |   8 +
+>  sound/soc/meson/Makefile                      |   2 +
+>  sound/soc/meson/axg-card.c                    |  31 +-
+>  sound/soc/meson/g12a-tohdmitx.c               | 413 ++++++++++++++++++
+>  sound/soc/soc-dapm.c                          |   2 +-
+>  7 files changed, 518 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
+>  create mode 100644 include/dt-bindings/sound/meson-g12a-tohdmitx.h
+>  create mode 100644 sound/soc/meson/g12a-tohdmitx.c
+> 
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- .../bindings/sound/amlogic,g12a-tohdmitx.txt  | 55 +++++++++++++++++++
- .../dt-bindings/sound/meson-g12a-tohdmitx.h   | 13 +++++
- 2 files changed, 68 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
- create mode 100644 include/dt-bindings/sound/meson-g12a-tohdmitx.h
-
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt b/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
-new file mode 100644
-index 000000000000..aa6c35570d31
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
-@@ -0,0 +1,55 @@
-+* Amlogic HDMI Tx control glue
-+
-+Required properties:
-+- compatible: "amlogic,g12a-tohdmitx"
-+- reg: physical base address of the controller and length of memory
-+       mapped region.
-+- #sound-dai-cells: should be 1.
-+
-+Example on the S905X2 SoC:
-+
-+tohdmitx: audio-controller@744 {
-+	compatible = "amlogic,g12a-tohdmitx";
-+	reg = <0x0 0x744 0x0 0x4>;
-+	#sound-dai-cells = <1>;
-+};
-+
-+Example of an 'amlogic,axg-sound-card':
-+
-+sound {
-+	compatible = "amlogic,axg-sound-card";
-+
-+[...]
-+
-+	dai-link-x {
-+		sound-dai = <&tdmif_a>;
-+		dai-format = "i2s";
-+		dai-tdm-slot-tx-mask-0 = <1 1>;
-+
-+		codec-0 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
-+		};
-+
-+		codec-1 {
-+			sound-dai = <&external_dac>;
-+		};
-+	};
-+
-+	dai-link-y {
-+		sound-dai = <&tdmif_c>;
-+		dai-format = "i2s";
-+		dai-tdm-slot-tx-mask-0 = <1 1>;
-+
-+		codec {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_IN_C>;
-+		};
-+	};
-+
-+	dai-link-z {
-+		sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+		codec {
-+			sound-dai = <&hdmi_tx>;
-+		};
-+	};
-+};
-diff --git a/include/dt-bindings/sound/meson-g12a-tohdmitx.h b/include/dt-bindings/sound/meson-g12a-tohdmitx.h
-new file mode 100644
-index 000000000000..c5e1f48d30d0
---- /dev/null
-+++ b/include/dt-bindings/sound/meson-g12a-tohdmitx.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_MESON_G12A_TOHDMITX_H
-+#define __DT_MESON_G12A_TOHDMITX_H
-+
-+#define TOHDMITX_I2S_IN_A	0
-+#define TOHDMITX_I2S_IN_B	1
-+#define TOHDMITX_I2S_IN_C	2
-+#define TOHDMITX_I2S_OUT	3
-+#define TOHDMITX_SPDIF_IN_A	4
-+#define TOHDMITX_SPDIF_IN_B	5
-+#define TOHDMITX_SPDIF_OUT	6
-+
-+#endif /* __DT_MESON_G12A_TOHDMITX_H */
--- 
-2.20.1
+Tested-by: Neil Armstrong <narmstrong@baylibre.com>
