@@ -1,49 +1,109 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: ASoc : cs42xx8 : merge cs42xx8-i2c.c into cs42xx8.c
-Date: Thu, 16 May 2019 06:34:47 +0000
-Message-ID: <15b3a74a46f3c17f9240e5d90805e4056f80c55f.camel@nxp.com>
-References: <e182bf72-c369-7344-e4d1-0524b09ca489@flatmax.org>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: [PATCH v3 2/2] dt-bindings: sound: sun4i-spdif: Document that the RX
+ channel can be missing
+Date: Thu, 16 May 2019 09:59:26 +0200
+Message-ID: <a0558cf83011d21c4f44fecc078dff1e67cdbe9d.1557993523.git-series.maxime.ripard@bootlin.com>
+References: <706cb97ae45cc9edc49c8709b2189ed786d2c7db.1557993523.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr140078.outbound.protection.outlook.com [40.107.14.78])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3652CF80C18
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 08:34:48 +0200 (CEST)
-In-Reply-To: <e182bf72-c369-7344-e4d1-0524b09ca489@flatmax.org>
-Content-Language: en-US
-Content-ID: <54999218004CDD4FA30925CF5C05F8F0@eurprd04.prod.outlook.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>, "flatmax@flatmax.org" <flatmax@flatmax.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <706cb97ae45cc9edc49c8709b2189ed786d2c7db.1557993523.git-series.maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matt,
+The H3 and compatibles controllers don't have any reception capabilities,
+even though it was never documented as such in the binding before.
 
-On Thu, 2019-05-16 at 16:15 +1000, Matt Flax wrote:
-> Do you think it would be a good idea to merge cs42xx8-i2c.c into
-> cs42xx8.c ?
+Therefore, on those controllers, we don't have the option to set an RX DMA
+channel.
 
-I think it is fine to keep this separate. The i2c code is clean
-and easy to understand.
+This was already done in the DTSI, but the binding itself was never
+updated. Let's add a special case in the schemas.
 
-> 
-> Is there a reason to keep these two related driver functions separate
-> ?
-> 
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 
-cs42xxx codec has also an SPI interface. If anyone wants to implement
-support for that it would be easier with the current split.
+---
 
-thanks,
-Daniel.
+Changes from v2:
+  - Removed the expanded items description and rely on yaml-bindings tools
+    to fill them
+  - Fix typo in dmas property description
+
+Changes from v1:
+  - switch to a draft7 conditional
+---
+ Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml | 38 ++++++++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+index 5d72d48e923e..a49ef2294a74 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
+@@ -44,19 +44,11 @@ properties:
+       - const: apb
+       - const: spdif
+ 
+-  dmas:
+-    items:
+-      - description: RX DMA Channel
+-      - description: TX DMA Channel
+-
+-  dma-names:
+-    items:
+-      - const: rx
+-      - const: tx
+-
+   # Even though it only applies to subschemas under the conditionals,
+   # not listing them here will trigger a warning because of the
+   # additionalsProperties set to false.
++  dmas: true
++  dma-names: true
+   resets:
+     maxItems: 1
+ 
+@@ -73,6 +65,32 @@ allOf:
+       required:
+         - resets
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: allwinner,sun8i-h3-spdif
++
++    then:
++      properties:
++        dmas:
++          description: TX DMA Channel
++
++        dma-names:
++          const: tx
++
++    else:
++      properties:
++        dmas:
++          items:
++            - description: RX DMA Channel
++            - description: TX DMA Channel
++
++        dma-names:
++          items:
++            - const: rx
++            - const: tx
++
+ required:
+   - "#sound-dai-cells"
+   - compatible
+-- 
+git-series 0.9.1
