@@ -1,207 +1,77 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: [PATCH v3 1/2] dt-bindings: sound: Convert Allwinner SPDIF binding to
- YAML
-Date: Thu, 16 May 2019 09:59:25 +0200
-Message-ID: <706cb97ae45cc9edc49c8709b2189ed786d2c7db.1557993523.git-series.maxime.ripard@bootlin.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoc : cs42xx8 : merge cs42xx8-i2c.c into cs42xx8.c
+Date: Thu, 16 May 2019 10:52:34 +0100
+Message-ID: <20190516095234.GB5598@sirena.org.uk>
+References: <e182bf72-c369-7344-e4d1-0524b09ca489@flatmax.org>
+ <15b3a74a46f3c17f9240e5d90805e4056f80c55f.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============5806011392624164275=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CB82F8078F
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 11:52:41 +0200 (CEST)
+In-Reply-To: <15b3a74a46f3c17f9240e5d90805e4056f80c55f.camel@nxp.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "flatmax@flatmax.org" <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
-The Allwinner SoCs feature an SPDIF controller across multiple SoC
-generations.
 
-However, earlier generations were a bit simpler than the subsequent ones,
-and for example would always have RX and TX capabilities, and no reset
-lines.
+--===============5806011392624164275==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BwCQnh7xodEAoBMC"
+Content-Disposition: inline
 
-In order to express this, let's create two YAML schemas instead of the free
-form text we had before.
 
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+--BwCQnh7xodEAoBMC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
----
+On Thu, May 16, 2019 at 06:34:47AM +0000, Daniel Baluta wrote:
+> On Thu, 2019-05-16 at 16:15 +1000, Matt Flax wrote:
 
-Changes from v2:
-  - Add comments
+> > Is there a reason to keep these two related driver functions separate
+> > ?
 
-Changes from v1:
-  - Merged the two schemas together and used the draft-7 conditionals
----
- Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt          |  42 +------------------------------
- 2 files changed, 101 insertions(+), 42 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+> cs42xxx codec has also an SPI interface. If anyone wants to implement
+> support for that it would be easier with the current split.
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-new file mode 100644
-index 000000000000..5d72d48e923e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-@@ -0,0 +1,101 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun4i-a10-spdif.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner A10 S/PDIF Controller Device Tree Bindings
-+
-+maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Liam Girdwood <lgirdwood@gmail.com>
-+  - Mark Brown <broonie@kernel.org>
-+  - Maxime Ripard <maxime.ripard@bootlin.com>
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    oneOf:
-+      - const: allwinner,sun4i-a10-spdif
-+      - const: allwinner,sun6i-a31-spdif
-+      - const: allwinner,sun8i-h3-spdif
-+      - items:
-+          - const: allwinner,sun8i-a83t-spdif
-+          - const: allwinner,sun8i-h3-spdif
-+      - items:
-+          - const: allwinner,sun50i-a64-spdif
-+          - const: allwinner,sun8i-h3-spdif
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: apb
-+      - const: spdif
-+
-+  dmas:
-+    items:
-+      - description: RX DMA Channel
-+      - description: TX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  # Even though it only applies to subschemas under the conditionals,
-+  # not listing them here will trigger a warning because of the
-+  # additionalsProperties set to false.
-+  resets:
-+    maxItems: 1
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - allwinner,sun6i-a31-spdif
-+              - allwinner,sun8i-h3-spdif
-+
-+    then:
-+      required:
-+        - resets
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spdif: spdif@1c21000 {
-+        #sound-dai-cells = <0>;
-+        compatible = "allwinner,sun4i-a10-spdif";
-+        reg = <0x01c21000 0x40>;
-+        interrupts = <13>;
-+        clocks = <&apb0_gates 1>, <&spdif_clk>;
-+        clock-names = "apb", "spdif";
-+        dmas = <&dma 0 2>, <&dma 0 2>;
-+        dma-names = "rx", "tx";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-deleted file mode 100644
-index 0c64a209c2e9..000000000000
---- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-+++ /dev/null
-@@ -1,42 +0,0 @@
--Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
--
--The Allwinner S/PDIF audio block is a transceiver that allows the
--processor to receive and transmit digital audio via an coaxial cable or
--a fibre cable.
--For now only playback is supported.
--
--Required properties:
--
--  - compatible		: should be one of the following:
--    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
--    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
--    - "allwinner,sun8i-h3-spdif": for the Allwinner H3 SoC
--
--  - reg			: Offset and length of the register set for the device.
--
--  - interrupts		: Contains the spdif interrupt.
--
--  - dmas		: Generic dma devicetree binding as described in
--			  Documentation/devicetree/bindings/dma/dma.txt.
--
--  - dma-names		: Two dmas have to be defined, "tx" and "rx".
--
--  - clocks		: Contains an entry for each entry in clock-names.
--
--  - clock-names		: Includes the following entries:
--	"apb"		  clock for the spdif bus.
--	"spdif"		  clock for spdif controller.
--
--  - resets		: reset specifier for the ahb reset (A31 and newer only)
--
--Example:
--
--spdif: spdif@1c21000 {
--	compatible = "allwinner,sun4i-a10-spdif";
--	reg = <0x01c21000 0x40>;
--	interrupts = <13>;
--	clocks = <&apb0_gates 1>, <&spdif_clk>;
--	clock-names = "apb", "spdif";
--	dmas = <&dma 0 2>, <&dma 0 2>;
--	dma-names = "rx", "tx";
--};
+Right, that's the reason for the split - the split would need to be
+redone if anyone wants to add SPI support.
 
-base-commit: 00c3bc00f0cadbb48f2414370733892676511e79
--- 
-git-series 0.9.1
+--BwCQnh7xodEAoBMC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzdMuEACgkQJNaLcl1U
+h9B4/gf+NjLSAA6IupLoX3Fba1yPJQGR+BIHpC4hNUgTBX4dkVEnRAYOJAud0KIi
+FuRnEy6qIemTDq87JFHB92Tqv8QXbyzjp/PSXr4mVKOSAgnwCDnrpG1jVV/NxaoY
+EIDWb/wTGBRsP3tD0+0OMePIYL3YFq5tG/3u+pfvC09/oY7KLOucLqXwwnJg8OVb
+X8tvgkBj8QJrhqznYIZbS1deeyuHFxdf9JD8ysMbFVqmZ1khv9aFrZk4MgFhYL4F
+/anN5XSYEr8nObkKTcDjiYiYlaqtLH0QcHeCmXuscIrHF5jpv3ywaOLk12KCydrU
+bwEERuGYbjgZDquC4EM3kjh0fXwKnw==
+=j1CO
+-----END PGP SIGNATURE-----
+
+--BwCQnh7xodEAoBMC--
+
+--===============5806011392624164275==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5806011392624164275==--
