@@ -1,22 +1,85 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH] ASoC: AK4458: add regulator for ak4458
-Date: Thu, 16 May 2019 14:16:20 +0000
-Message-ID: <3bfeb07f8faad6f434da59571150639f4bfb52e5.camel@nxp.com>
-References: <1558011640-7864-1-git-send-email-viorel.suman@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt1308: Add RT1308 amplifier driver
+Date: Thu, 16 May 2019 17:52:59 +0100
+Message-ID: <20190516165259.GI5598@sirena.org.uk>
+References: <20190417150518.GB5703@sirena.org.uk>
+ <BC6F7617C38F3E4E8CA887E07B35B828011660AC@RTITEXDAG02.realtek.com.tw>
+ <20190508064537.GN14916@sirena.org.uk>
+ <BC6F7617C38F3E4E8CA887E07B35B82805B1144E@RTITMBSVM07.realtek.com.tw>
+ <20190512080621.GH21483@sirena.org.uk>
+ <BC6F7617C38F3E4E8CA887E07B35B82805B13EE2@RTITMBSVM07.realtek.com.tw>
+ <20190513145608.GA5168@sirena.org.uk>
+ <BC6F7617C38F3E4E8CA887E07B35B82805B14BFF@RTITMBSVM07.realtek.com.tw>
+ <20190515161429.GH5613@sirena.org.uk>
+ <BC6F7617C38F3E4E8CA887E07B35B82805B15635@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1558011640-7864-1-git-send-email-viorel.suman@nxp.com>
-Content-Language: en-US
-Content-ID: <387C47A069F5BB4EA42CFCF5B3C3D313@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "colin.king@canonical.com" <colin.king@canonical.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Viorel Suman <viorel.suman@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "Julia.Lawall@lip6.fr" <Julia.Lawall@lip6.fr>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "viorel.suman@gmail.com" <viorel.suman@gmail.com>
+Content-Type: multipart/mixed; boundary="===============7559080890686009165=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD47DF80C18
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 18:53:11 +0200 (CEST)
+In-Reply-To: <BC6F7617C38F3E4E8CA887E07B35B82805B15635@RTITMBSVM07.realtek.com.tw>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Albert Chen <albertchen@realtek.com>, "bard.liao@intel.com" <bard.liao@intel.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDE5LTA1LTE2IGF0IDEzOjAwICswMDAwLCBWaW9yZWwgU3VtYW4gd3JvdGU6DQo+
-IEZyb206IFNoZW5naml1IFdhbmcgPHNoZW5naml1LndhbmdAbnhwLmNvbT4NCj4gDQo+IEFkZCBy
-ZWd1bGF0b3IgZm9yIGFrNDQ1OC4NCj4gDQpIaSBWaW9yZWwsDQoNCldoaWxlIGF0IGl0IHBsZWFz
-ZSBkaXNhYmxlL2VuYWJsZSB0aGUgcmVndWxhdG9yIGluIHN1c3BlbmQvcmVzdW1lLg0KDQp0aGFu
-a3MsDQpEYW5pZWwuDQo=
+
+--===============7559080890686009165==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="X0cz4bGbQuRbxrVl"
+Content-Disposition: inline
+
+
+--X0cz4bGbQuRbxrVl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, May 16, 2019 at 01:46:53PM +0000, Derek [=E6=96=B9=E5=BE=B7=E7=BE=
+=A9] wrote:
+
+> > It's better to have a comment than not have one, I think I'd be happier
+> > if I understood what was actually being limited here - that might make
+> > it clear why it's not system specific which is what's concerning me.
+
+> I will give a comment that describes the limit setting reason clearly.
+
+OK.
+
+--X0cz4bGbQuRbxrVl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzdlWoACgkQJNaLcl1U
+h9B7yQf/a95gVfuo5W6rYTxbjFPj4IUC7975Ts6OAP8/9XCz1UW/YXAQUKSUHbrd
+voLJEJp2hECn6NlEQgww6E1VsaqUSpDqQvBUhZ0670Pe6dvawGj26yGUBJm74Eln
+0k23vNGjyJH4mQECUznrvGYSpRyjqfb/fE7rxj/uugZUfx47DIrSjyJnb4TRGK/C
+yNKgKDLqE7oAC6Dmwp5mmXfdemuwdQL3ZJSPCGtoxB9/QBAyItftwRtN3wKulw1Z
+izRy5QhbxD9vBciJeN/fa6tT84Ko6fLkh6pxlW896dyrRwQZ6KxoxlalL7QWSk3i
+WVGs20P4fF3cMNU//TdpIW6wVEjoPg==
+=R929
+-----END PGP SIGNATURE-----
+
+--X0cz4bGbQuRbxrVl--
+
+--===============7559080890686009165==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7559080890686009165==--
