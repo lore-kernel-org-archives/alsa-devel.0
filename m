@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: Convert Allwinner SPDIF binding to YAML"
- to the asoc tree
+Subject: Applied "dt-bindings: sound: sun4i-spdif: Document that the RX
+ channel can be missing" to the asoc tree
 Date: Thu, 16 May 2019 19:02:59 +0100 (BST)
-Message-ID: <20190516180259.46AC9112929D@debutante.sirena.org.uk>
-References: <706cb97ae45cc9edc49c8709b2189ed786d2c7db.1557993523.git-series.maxime.ripard@bootlin.com>
+Message-ID: <20190516180259.13F28112929C@debutante.sirena.org.uk>
+References: <a0558cf83011d21c4f44fecc078dff1e67cdbe9d.1557993523.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <706cb97ae45cc9edc49c8709b2189ed786d2c7db.1557993523.git-series.maxime.ripard@bootlin.com>
+In-Reply-To: <a0558cf83011d21c4f44fecc078dff1e67cdbe9d.1557993523.git-series.maxime.ripard@bootlin.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -24,7 +24,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: Convert Allwinner SPDIF binding to YAML
+   dt-bindings: sound: sun4i-spdif: Document that the RX channel can be missing
 
 has been applied to the asoc tree at
 
@@ -49,185 +49,86 @@ to this mail.
 Thanks,
 Mark
 
->From 506c7f9b0612c46732aa74317f59a28d9477905b Mon Sep 17 00:00:00 2001
+>From b1f35dfd7c2f509b0736f1ff02c314130b6b773e Mon Sep 17 00:00:00 2001
 From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Thu, 16 May 2019 09:59:25 +0200
-Subject: [PATCH] dt-bindings: sound: Convert Allwinner SPDIF binding to YAML
+Date: Thu, 16 May 2019 09:59:26 +0200
+Subject: [PATCH] dt-bindings: sound: sun4i-spdif: Document that the RX channel
+ can be missing
 
-The Allwinner SoCs feature an SPDIF controller across multiple SoC
-generations.
+The H3 and compatibles controllers don't have any reception capabilities,
+even though it was never documented as such in the binding before.
 
-However, earlier generations were a bit simpler than the subsequent ones,
-and for example would always have RX and TX capabilities, and no reset
-lines.
+Therefore, on those controllers, we don't have the option to set an RX DMA
+channel.
 
-In order to express this, let's create two YAML schemas instead of the free
-form text we had before.
+This was already done in the DTSI, but the binding itself was never
+updated. Let's add a special case in the schemas.
 
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../sound/allwinner,sun4i-a10-spdif.yaml      | 101 ++++++++++++++++++
- .../bindings/sound/sunxi,sun4i-spdif.txt      |  42 --------
- 2 files changed, 101 insertions(+), 42 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+ .../sound/allwinner,sun4i-a10-spdif.yaml      | 38 ++++++++++++++-----
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-new file mode 100644
-index 000000000000..5d72d48e923e
---- /dev/null
+index 5d72d48e923e..a49ef2294a74 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
 +++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-@@ -0,0 +1,101 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun4i-a10-spdif.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner A10 S/PDIF Controller Device Tree Bindings
-+
-+maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Liam Girdwood <lgirdwood@gmail.com>
-+  - Mark Brown <broonie@kernel.org>
-+  - Maxime Ripard <maxime.ripard@bootlin.com>
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    oneOf:
-+      - const: allwinner,sun4i-a10-spdif
-+      - const: allwinner,sun6i-a31-spdif
-+      - const: allwinner,sun8i-h3-spdif
-+      - items:
-+          - const: allwinner,sun8i-a83t-spdif
-+          - const: allwinner,sun8i-h3-spdif
-+      - items:
-+          - const: allwinner,sun50i-a64-spdif
-+          - const: allwinner,sun8i-h3-spdif
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: apb
-+      - const: spdif
-+
-+  dmas:
-+    items:
-+      - description: RX DMA Channel
-+      - description: TX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  # Even though it only applies to subschemas under the conditionals,
-+  # not listing them here will trigger a warning because of the
-+  # additionalsProperties set to false.
-+  resets:
-+    maxItems: 1
-+
-+allOf:
+@@ -44,19 +44,11 @@ properties:
+       - const: apb
+       - const: spdif
+ 
+-  dmas:
+-    items:
+-      - description: RX DMA Channel
+-      - description: TX DMA Channel
+-
+-  dma-names:
+-    items:
+-      - const: rx
+-      - const: tx
+-
+   # Even though it only applies to subschemas under the conditionals,
+   # not listing them here will trigger a warning because of the
+   # additionalsProperties set to false.
++  dmas: true
++  dma-names: true
+   resets:
+     maxItems: 1
+ 
+@@ -73,6 +65,32 @@ allOf:
+       required:
+         - resets
+ 
 +  - if:
 +      properties:
 +        compatible:
 +          contains:
-+            enum:
-+              - allwinner,sun6i-a31-spdif
-+              - allwinner,sun8i-h3-spdif
++            const: allwinner,sun8i-h3-spdif
 +
 +    then:
-+      required:
-+        - resets
++      properties:
++        dmas:
++          description: TX DMA Channel
 +
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
++        dma-names:
++          const: tx
 +
-+additionalProperties: false
++    else:
++      properties:
++        dmas:
++          items:
++            - description: RX DMA Channel
++            - description: TX DMA Channel
 +
-+examples:
-+  - |
-+    spdif: spdif@1c21000 {
-+        #sound-dai-cells = <0>;
-+        compatible = "allwinner,sun4i-a10-spdif";
-+        reg = <0x01c21000 0x40>;
-+        interrupts = <13>;
-+        clocks = <&apb0_gates 1>, <&spdif_clk>;
-+        clock-names = "apb", "spdif";
-+        dmas = <&dma 0 2>, <&dma 0 2>;
-+        dma-names = "rx", "tx";
-+    };
++        dma-names:
++          items:
++            - const: rx
++            - const: tx
 +
-+...
-diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-deleted file mode 100644
-index 0c64a209c2e9..000000000000
---- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-+++ /dev/null
-@@ -1,42 +0,0 @@
--Allwinner Sony/Philips Digital Interface Format (S/PDIF) Controller
--
--The Allwinner S/PDIF audio block is a transceiver that allows the
--processor to receive and transmit digital audio via an coaxial cable or
--a fibre cable.
--For now only playback is supported.
--
--Required properties:
--
--  - compatible		: should be one of the following:
--    - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
--    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
--    - "allwinner,sun8i-h3-spdif": for the Allwinner H3 SoC
--
--  - reg			: Offset and length of the register set for the device.
--
--  - interrupts		: Contains the spdif interrupt.
--
--  - dmas		: Generic dma devicetree binding as described in
--			  Documentation/devicetree/bindings/dma/dma.txt.
--
--  - dma-names		: Two dmas have to be defined, "tx" and "rx".
--
--  - clocks		: Contains an entry for each entry in clock-names.
--
--  - clock-names		: Includes the following entries:
--	"apb"		  clock for the spdif bus.
--	"spdif"		  clock for spdif controller.
--
--  - resets		: reset specifier for the ahb reset (A31 and newer only)
--
--Example:
--
--spdif: spdif@1c21000 {
--	compatible = "allwinner,sun4i-a10-spdif";
--	reg = <0x01c21000 0x40>;
--	interrupts = <13>;
--	clocks = <&apb0_gates 1>, <&spdif_clk>;
--	clock-names = "apb", "spdif";
--	dmas = <&dma 0 2>, <&dma 0 2>;
--	dma-names = "rx", "tx";
--};
+ required:
+   - "#sound-dai-cells"
+   - compatible
 -- 
 2.20.1
