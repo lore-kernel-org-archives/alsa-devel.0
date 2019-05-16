@@ -1,49 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND V3] ASoC: cs42xx8: add reset-gpio in binding
- document
-Date: Thu, 16 May 2019 12:27:48 +0100
-Message-ID: <20190516112748.GF5598@sirena.org.uk>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: RE: [EXT] Re: [PATCH RESEND V3] ASoC: cs42xx8: add reset-gpio in
+ binding document
+Date: Thu, 16 May 2019 11:30:29 +0000
+Message-ID: <VE1PR04MB6479D0799A49E0C6E685F6A7E30A0@VE1PR04MB6479.eurprd04.prod.outlook.com>
 References: <c2118efa4ee6c915473060405805e6c6c6db681f.1558005661.git.shengjiu.wang@nxp.com>
+ <20190516112748.GF5598@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="L2Brqb15TUChFOBK"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <c2118efa4ee6c915473060405805e6c6c6db681f.1558005661.git.shengjiu.wang@nxp.com>
+In-Reply-To: <20190516112748.GF5598@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
+To: Mark Brown <broonie@kernel.org>
 Cc: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---L2Brqb15TUChFOBK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 16, 2019 at 11:24:12AM +0000, S.j. Wang wrote:
-
-> +Optional properties:
-> +
-> +  - reset-gpio : a GPIO spec to define which pin is connected to the chip's
-> +    !RESET pin
-
-gpio properties are supposed to be called -gpios even if there's a
-single GPIO possible due to DT rules.  The code will accept plain -gpio
-but the documentation should say gpios.
-
---L2Brqb15TUChFOBK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzdSTMACgkQJNaLcl1U
-h9AI0wf9H/v9XOHLGG0s1+nmST8FhMRdMALRocSMlNs0hntuI+4uxBG9/dXi2ST1
-Id5glMJZn5CDpvgp/RUiuTWBAwfejMgpbwxxLtDbrmdqBolGsO0bpnWoEiZTpOop
-gVBPRVGueduh/5HWKPbCn9PRfHuyUKq/0uenLwDGEy9VN4dXP6926tOFzTAIewI2
-BoFx+Chib3VXyep6aG6PuFzTPPLo4XeXckbROsUj5WNaOIP46A4E9e7nK3aRqd6M
-YpPyJN7v/H7BesUV3v9DLZQLcaSCYGxLvfwl07Dz+zI0a3hRQ5eXohzPxWewfqXh
-A6lcsDuR+5dafko56EbffC3HlkMhoA==
-=692j
------END PGP SIGNATURE-----
-
---L2Brqb15TUChFOBK--
+DQpIaQ0KDQo+IA0KPiA+ICtPcHRpb25hbCBwcm9wZXJ0aWVzOg0KPiA+ICsNCj4gPiArICAtIHJl
+c2V0LWdwaW8gOiBhIEdQSU8gc3BlYyB0byBkZWZpbmUgd2hpY2ggcGluIGlzIGNvbm5lY3RlZCB0
+byB0aGUgY2hpcCdzDQo+ID4gKyAgICAhUkVTRVQgcGluDQo+IA0KPiBncGlvIHByb3BlcnRpZXMg
+YXJlIHN1cHBvc2VkIHRvIGJlIGNhbGxlZCAtZ3Bpb3MgZXZlbiBpZiB0aGVyZSdzIGEgc2luZ2xl
+DQo+IEdQSU8gcG9zc2libGUgZHVlIHRvIERUIHJ1bGVzLiAgVGhlIGNvZGUgd2lsbCBhY2NlcHQg
+cGxhaW4gLWdwaW8gYnV0IHRoZQ0KPiBkb2N1bWVudGF0aW9uIHNob3VsZCBzYXkgZ3Bpb3MuDQpP
+aywgd2lsbCB1cGRhdGUgaW4gdjQg8J+Yig0KDQpCZXN0IHJlZ2FyZHMNCldhbmcgc2hlbmdqaXUN
+Cg==
