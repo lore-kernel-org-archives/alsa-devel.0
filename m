@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-card: set link name based on link node name" to the asoc tree
+Subject: Applied "ASoC: meson: add tohdmitx DT bindings" to the asoc tree
 Date: Thu, 16 May 2019 12:13:54 +0100 (BST)
-Message-ID: <20190516111354.9ECA01126D49@debutante.sirena.org.uk>
-References: <20190515131858.32130-2-jbrunet@baylibre.com>
+Message-ID: <20190516111354.3D1DD1126D47@debutante.sirena.org.uk>
+References: <20190515131858.32130-4-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190515131858.32130-2-jbrunet@baylibre.com>
+In-Reply-To: <20190515131858.32130-4-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-card: set link name based on link node name
+   ASoC: meson: add tohdmitx DT bindings
 
 has been applied to the asoc tree at
 
@@ -37,81 +37,104 @@ to this mail.
 Thanks,
 Mark
 
->From 1b74211011eb064914b8155a77a8aaae61cd27eb Mon Sep 17 00:00:00 2001
+>From e35f5ad6a965de5d301ca5957a1c48c53fe366fb Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Wed, 15 May 2019 15:18:54 +0200
-Subject: [PATCH] ASoC: meson: axg-card: set link name based on link node name
+Date: Wed, 15 May 2019 15:18:56 +0200
+Subject: [PATCH] ASoC: meson: add tohdmitx DT bindings
 
-So far the link names of the axg sound card was derived from the cpu name
-of the link. Since the dai link must be unique, it works as long as a
-device does not provide more than one cpu dai. However, the 'tohdmitx'
-does provide 2 dais used as cpu on codec-to-codec links
-
-Instead of cpu name, use the node name of the dai link. DT already enforce
-the uniqueness of this name
+Add the bindings and the related documentation for the audio hdmitx
+control glue of the Amlogic g12a SoC family
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Tested-by: Neil Armstrong <narmstrong@baylibre.com>
 Tested-by: Kevin Hilman <khilman@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-card.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ .../bindings/sound/amlogic,g12a-tohdmitx.txt  | 55 +++++++++++++++++++
+ .../dt-bindings/sound/meson-g12a-tohdmitx.h   | 13 +++++
+ 2 files changed, 68 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
+ create mode 100644 include/dt-bindings/sound/meson-g12a-tohdmitx.h
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index aa54d2c612c9..5c8deee8d512 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -80,10 +80,11 @@ static int axg_card_parse_dai(struct snd_soc_card *card,
- 
- static int axg_card_set_link_name(struct snd_soc_card *card,
- 				  struct snd_soc_dai_link *link,
-+				  struct device_node *node,
- 				  const char *prefix)
- {
- 	char *name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
--				    prefix, link->cpu_of_node->full_name);
-+				    prefix, node->full_name);
- 	if (!name)
- 		return -ENOMEM;
- 
-@@ -474,7 +475,7 @@ static int axg_card_set_be_link(struct snd_soc_card *card,
- 		codec++;
- 	}
- 
--	ret = axg_card_set_link_name(card, link, "be");
-+	ret = axg_card_set_link_name(card, link, node, "be");
- 	if (ret)
- 		dev_err(card->dev, "error setting %pOFn link name\n", np);
- 
-@@ -483,6 +484,7 @@ static int axg_card_set_be_link(struct snd_soc_card *card,
- 
- static int axg_card_set_fe_link(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *link,
-+				struct device_node *node,
- 				bool is_playback)
- {
- 	link->dynamic = 1;
-@@ -497,7 +499,7 @@ static int axg_card_set_fe_link(struct snd_soc_card *card,
- 	else
- 		link->dpcm_capture = 1;
- 
--	return axg_card_set_link_name(card, link, "fe");
-+	return axg_card_set_link_name(card, link, node, "fe");
- }
- 
- static int axg_card_cpu_is_capture_fe(struct device_node *np)
-@@ -527,9 +529,9 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
- 		return ret;
- 
- 	if (axg_card_cpu_is_playback_fe(dai_link->cpu_of_node))
--		ret = axg_card_set_fe_link(card, dai_link, true);
-+		ret = axg_card_set_fe_link(card, dai_link, np, true);
- 	else if (axg_card_cpu_is_capture_fe(dai_link->cpu_of_node))
--		ret = axg_card_set_fe_link(card, dai_link, false);
-+		ret = axg_card_set_fe_link(card, dai_link, np, false);
- 	else
- 		ret = axg_card_set_be_link(card, dai_link, np);
- 
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt b/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
+new file mode 100644
+index 000000000000..aa6c35570d31
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
+@@ -0,0 +1,55 @@
++* Amlogic HDMI Tx control glue
++
++Required properties:
++- compatible: "amlogic,g12a-tohdmitx"
++- reg: physical base address of the controller and length of memory
++       mapped region.
++- #sound-dai-cells: should be 1.
++
++Example on the S905X2 SoC:
++
++tohdmitx: audio-controller@744 {
++	compatible = "amlogic,g12a-tohdmitx";
++	reg = <0x0 0x744 0x0 0x4>;
++	#sound-dai-cells = <1>;
++};
++
++Example of an 'amlogic,axg-sound-card':
++
++sound {
++	compatible = "amlogic,axg-sound-card";
++
++[...]
++
++	dai-link-x {
++		sound-dai = <&tdmif_a>;
++		dai-format = "i2s";
++		dai-tdm-slot-tx-mask-0 = <1 1>;
++
++		codec-0 {
++			sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
++		};
++
++		codec-1 {
++			sound-dai = <&external_dac>;
++		};
++	};
++
++	dai-link-y {
++		sound-dai = <&tdmif_c>;
++		dai-format = "i2s";
++		dai-tdm-slot-tx-mask-0 = <1 1>;
++
++		codec {
++			sound-dai = <&tohdmitx TOHDMITX_I2S_IN_C>;
++		};
++	};
++
++	dai-link-z {
++		sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
++
++		codec {
++			sound-dai = <&hdmi_tx>;
++		};
++	};
++};
+diff --git a/include/dt-bindings/sound/meson-g12a-tohdmitx.h b/include/dt-bindings/sound/meson-g12a-tohdmitx.h
+new file mode 100644
+index 000000000000..c5e1f48d30d0
+--- /dev/null
++++ b/include/dt-bindings/sound/meson-g12a-tohdmitx.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_MESON_G12A_TOHDMITX_H
++#define __DT_MESON_G12A_TOHDMITX_H
++
++#define TOHDMITX_I2S_IN_A	0
++#define TOHDMITX_I2S_IN_B	1
++#define TOHDMITX_I2S_IN_C	2
++#define TOHDMITX_I2S_OUT	3
++#define TOHDMITX_SPDIF_IN_A	4
++#define TOHDMITX_SPDIF_IN_B	5
++#define TOHDMITX_SPDIF_OUT	6
++
++#endif /* __DT_MESON_G12A_TOHDMITX_H */
 -- 
 2.20.1
