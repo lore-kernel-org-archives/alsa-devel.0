@@ -1,59 +1,49 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH RESEND V3] ASoC: cs42xx8: add reset-gpio in binding document
-Date: Thu, 16 May 2019 11:24:12 +0000
-Message-ID: <c2118efa4ee6c915473060405805e6c6c6db681f.1558005661.git.shengjiu.wang@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND V3] ASoC: cs42xx8: add reset-gpio in binding
+ document
+Date: Thu, 16 May 2019 12:27:48 +0100
+Message-ID: <20190516112748.GF5598@sirena.org.uk>
+References: <c2118efa4ee6c915473060405805e6c6c6db681f.1558005661.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="L2Brqb15TUChFOBK"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Content-ID: <B540429D4C6352488F3D67CDEADD7BBC@eurprd04.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <c2118efa4ee6c915473060405805e6c6c6db681f.1558005661.git.shengjiu.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add reset-gpio property, which is an optional option
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-Changes in RESEND v3
-- send updated binding document only
+--L2Brqb15TUChFOBK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changes in v3
-- update binding document.
+On Thu, May 16, 2019 at 11:24:12AM +0000, S.j. Wang wrote:
 
-Changes in v2
-- use devm_gpiod_get_optional instead of of_get_named_gpio
+> +Optional properties:
+> +
+> +  - reset-gpio : a GPIO spec to define which pin is connected to the chip's
+> +    !RESET pin
 
- Documentation/devicetree/bindings/sound/cs42xx8.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+gpio properties are supposed to be called -gpios even if there's a
+single GPIO possible due to DT rules.  The code will accept plain -gpio
+but the documentation should say gpios.
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42xx8.txt b/Document=
-ation/devicetree/bindings/sound/cs42xx8.txt
-index 8619a156d038..ab8f54095269 100644
---- a/Documentation/devicetree/bindings/sound/cs42xx8.txt
-+++ b/Documentation/devicetree/bindings/sound/cs42xx8.txt
-@@ -14,6 +14,11 @@ Required properties:
-   - VA-supply, VD-supply, VLS-supply, VLC-supply: power supplies for the d=
-evice,
-     as covered in Documentation/devicetree/bindings/regulator/regulator.tx=
-t
-=20
-+Optional properties:
-+
-+  - reset-gpio : a GPIO spec to define which pin is connected to the chip'=
-s
-+    !RESET pin
-+
- Example:
-=20
- cs42888: codec@48 {
-@@ -25,4 +30,5 @@ cs42888: codec@48 {
- 	VD-supply =3D <&reg_audio>;
- 	VLS-supply =3D <&reg_audio>;
- 	VLC-supply =3D <&reg_audio>;
-+	reset-gpio =3D <&pca9557_b 1 1>;
- };
---=20
-2.21.0
+--L2Brqb15TUChFOBK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzdSTMACgkQJNaLcl1U
+h9AI0wf9H/v9XOHLGG0s1+nmST8FhMRdMALRocSMlNs0hntuI+4uxBG9/dXi2ST1
+Id5glMJZn5CDpvgp/RUiuTWBAwfejMgpbwxxLtDbrmdqBolGsO0bpnWoEiZTpOop
+gVBPRVGueduh/5HWKPbCn9PRfHuyUKq/0uenLwDGEy9VN4dXP6926tOFzTAIewI2
+BoFx+Chib3VXyep6aG6PuFzTPPLo4XeXckbROsUj5WNaOIP46A4E9e7nK3aRqd6M
+YpPyJN7v/H7BesUV3v9DLZQLcaSCYGxLvfwl07Dz+zI0a3hRQ5eXohzPxWewfqXh
+A6lcsDuR+5dafko56EbffC3HlkMhoA==
+=692j
+-----END PGP SIGNATURE-----
+
+--L2Brqb15TUChFOBK--
