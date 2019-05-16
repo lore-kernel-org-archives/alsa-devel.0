@@ -1,7 +1,7 @@
 From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 1/2] ASoC: Mediatek: add memory interface data align
-Date: Thu, 16 May 2019 17:54:37 +0800
-Message-ID: <20190516095438.15759-2-shunli.wang@mediatek.com>
+Subject: [PATCH 2/2] ASoC: Mediatek: MT8183: set data align
+Date: Thu, 16 May 2019 17:54:38 +0800
+Message-ID: <20190516095438.15759-3-shunli.wang@mediatek.com>
 References: <20190516095438.15759-1-shunli.wang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,63 +21,107 @@ To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This supports two data align settings. One is S32_LE and
-other is S24_LE.
+This patch sets register and bit information about
+data align for every memory interface.
 
 Signed-off-by: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 ---
- sound/soc/mediatek/common/mtk-afe-fe-dai.c | 7 +++++++
- sound/soc/mediatek/common/mtk-base-afe.h   | 2 ++
- 2 files changed, 9 insertions(+)
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-index fded11d14cde..19048c3dc324 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-@@ -241,6 +241,7 @@ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
- 	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
- 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
- 	int hd_audio = 0;
-+	int hd_align = 1;
- 
- 	/* set hd mode */
- 	switch (substream->runtime->format) {
-@@ -249,9 +250,11 @@ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
- 		hd_audio = 1;
-+		hd_align = 1;
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 		hd_audio = 1;
-+		hd_align = 0;
- 		break;
- 	default:
- 		dev_err(afe->dev, "%s() error: unsupported format %d\n",
-@@ -262,6 +265,10 @@ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
- 	mtk_regmap_update_bits(afe->regmap, memif->data->hd_reg,
- 			       1, hd_audio, memif->data->hd_shift);
- 
-+	mtk_regmap_update_bits(afe->regmap, memif->data->hd_align_reg,
-+			       memif->data->hd_align_mshift,
-+			       hd_align ? memif->data->hd_align_mshift : 0);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mtk_afe_fe_prepare);
-diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
-index bd8d5e0c6843..60cb609a9790 100644
---- a/sound/soc/mediatek/common/mtk-base-afe.h
-+++ b/sound/soc/mediatek/common/mtk-base-afe.h
-@@ -24,7 +24,9 @@ struct mtk_base_memif_data {
- 	int enable_reg;
- 	int enable_shift;
- 	int hd_reg;
-+	int hd_align_reg;
- 	int hd_shift;
-+	int hd_align_mshift;
- 	int msb_reg;
- 	int msb_shift;
- 	int agent_disable_reg;
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 1bc0fafe5e29..ab2bce1d9b3d 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -437,7 +437,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = DL1_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = DL1_HD_SFT,
++		.hd_align_mshift = DL1_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -456,7 +458,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = DL2_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = DL2_HD_SFT,
++		.hd_align_mshift = DL2_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -475,7 +479,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = DL3_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = DL3_HD_SFT,
++		.hd_align_mshift = DL3_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -494,7 +500,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = VUL2_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = VUL2_HD_SFT,
++		.hd_align_mshift = VUL2_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -513,7 +521,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = AWB_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = AWB_HD_SFT,
++		.hd_align_mshift = AWB_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -532,7 +542,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = AWB2_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = AWB2_HD_SFT,
++		.hd_align_mshift = AWB2_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -551,7 +563,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = VUL12_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = VUL12_HD_SFT,
++		.hd_align_mshift = VUL12_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -570,7 +584,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = AFE_DAC_CON0,
+ 		.enable_shift = MOD_DAI_ON_SFT,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = MOD_DAI_HD_SFT,
++		.hd_align_mshift = MOD_DAI_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -589,7 +605,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.enable_reg = -1,	/* control in tdm for sync start */
+ 		.enable_shift = -1,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
++		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = HDMI_HD_SFT,
++		.hd_align_mshift = HDMI_HD_ALIGN_MASK_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
 -- 
 2.18.0
