@@ -1,34 +1,39 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: sun4i-spdif: Document that the RX
- channel can be missing" to the asoc tree
+Subject: Applied "ASoC: fsl_asrc: Fix the issue about
+	unsupported rate" to the asoc tree
 Date: Thu, 16 May 2019 19:02:59 +0100 (BST)
-Message-ID: <20190516180259.13F28112929C@debutante.sirena.org.uk>
-References: <a0558cf83011d21c4f44fecc078dff1e67cdbe9d.1557993523.git-series.maxime.ripard@bootlin.com>
+Message-ID: <20190516180259.AA4AD112929F@debutante.sirena.org.uk>
+References: <e0c519d616b48a1481c9f239646517b453e7ce50.1557901312.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <a0558cf83011d21c4f44fecc078dff1e67cdbe9d.1557993523.git-series.maxime.ripard@bootlin.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8EA19F8078F
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 20:03:02 +0200 (CEST)
+In-Reply-To: <e0c519d616b48a1481c9f239646517b453e7ce50.1557901312.git.shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: sun4i-spdif: Document that the RX channel can be missing
+   ASoC: fsl_asrc: Fix the issue about unsupported rate
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -49,86 +54,41 @@ to this mail.
 Thanks,
 Mark
 
->From b1f35dfd7c2f509b0736f1ff02c314130b6b773e Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Thu, 16 May 2019 09:59:26 +0200
-Subject: [PATCH] dt-bindings: sound: sun4i-spdif: Document that the RX channel
- can be missing
+>From b06c58c2a1eed571ea2a6640fdb85b7b00196b1e Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Wed, 15 May 2019 06:42:18 +0000
+Subject: [PATCH] ASoC: fsl_asrc: Fix the issue about unsupported rate
 
-The H3 and compatibles controllers don't have any reception capabilities,
-even though it was never documented as such in the binding before.
+When the output sample rate is [8kHz, 30kHz], the limitation
+of the supported ratio range is [1/24, 8]. In the driver
+we use (8kHz, 30kHz) instead of [8kHz, 30kHz].
+So this patch is to fix this issue and the potential rounding
+issue with divider.
 
-Therefore, on those controllers, we don't have the option to set an RX DMA
-channel.
-
-This was already done in the DTSI, but the binding itself was never
-updated. Let's add a special case in the schemas.
-
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: fff6e03c7b65 ("ASoC: fsl_asrc: add support for 8-30kHz
+output sample rate")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../sound/allwinner,sun4i-a10-spdif.yaml      | 38 ++++++++++++++-----
- 1 file changed, 28 insertions(+), 10 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-index 5d72d48e923e..a49ef2294a74 100644
---- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml
-@@ -44,19 +44,11 @@ properties:
-       - const: apb
-       - const: spdif
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 0b937924d2e4..ea035c12a325 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -282,8 +282,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 		return -EINVAL;
+ 	}
  
--  dmas:
--    items:
--      - description: RX DMA Channel
--      - description: TX DMA Channel
--
--  dma-names:
--    items:
--      - const: rx
--      - const: tx
--
-   # Even though it only applies to subschemas under the conditionals,
-   # not listing them here will trigger a warning because of the
-   # additionalsProperties set to false.
-+  dmas: true
-+  dma-names: true
-   resets:
-     maxItems: 1
- 
-@@ -73,6 +65,32 @@ allOf:
-       required:
-         - resets
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: allwinner,sun8i-h3-spdif
-+
-+    then:
-+      properties:
-+        dmas:
-+          description: TX DMA Channel
-+
-+        dma-names:
-+          const: tx
-+
-+    else:
-+      properties:
-+        dmas:
-+          items:
-+            - description: RX DMA Channel
-+            - description: TX DMA Channel
-+
-+        dma-names:
-+          items:
-+            - const: rx
-+            - const: tx
-+
- required:
-   - "#sound-dai-cells"
-   - compatible
+-	if ((outrate > 8000 && outrate < 30000) &&
+-	    (outrate/inrate > 24 || inrate/outrate > 8)) {
++	if ((outrate >= 8000 && outrate <= 30000) &&
++	    (outrate > 24 * inrate || inrate > 8 * outrate)) {
+ 		pair_err("exceed supported ratio range [1/24, 8] for \
+ 				inrate/outrate: %d/%d\n", inrate, outrate);
+ 		return -EINVAL;
 -- 
 2.20.1
