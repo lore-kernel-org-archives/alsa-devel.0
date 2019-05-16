@@ -1,39 +1,31 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: Fix the issue about
-	unsupported rate" to the asoc tree
+Subject: Applied "ASoC: fsl_asrc: replace the process_option table with
+ function" to the asoc tree
 Date: Thu, 16 May 2019 19:02:59 +0100 (BST)
-Message-ID: <20190516180259.AA4AD112929F@debutante.sirena.org.uk>
-References: <e0c519d616b48a1481c9f239646517b453e7ce50.1557901312.git.shengjiu.wang@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EA19F8078F
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 20:03:02 +0200 (CEST)
-In-Reply-To: <e0c519d616b48a1481c9f239646517b453e7ce50.1557901312.git.shengjiu.wang@nxp.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20190516180259.768C1112929E@debutante.sirena.org.uk>
+References: <7d683186c3de9314e361fd4ead42f9691968e65c.1557901312.git.shengjiu.wang@nxp.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <7d683186c3de9314e361fd4ead42f9691968e65c.1557901312.git.shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc: Fix the issue about unsupported rate
+   ASoC: fsl_asrc: replace the process_option table with function
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -54,41 +46,133 @@ to this mail.
 Thanks,
 Mark
 
->From b06c58c2a1eed571ea2a6640fdb85b7b00196b1e Mon Sep 17 00:00:00 2001
+>From 4aecaa0a82b3142fb2f2862b3f25ecc96dc06d8c Mon Sep 17 00:00:00 2001
 From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Date: Wed, 15 May 2019 06:42:18 +0000
-Subject: [PATCH] ASoC: fsl_asrc: Fix the issue about unsupported rate
+Date: Wed, 15 May 2019 06:42:22 +0000
+Subject: [PATCH] ASoC: fsl_asrc: replace the process_option table with
+ function
 
-When the output sample rate is [8kHz, 30kHz], the limitation
-of the supported ratio range is [1/24, 8]. In the driver
-we use (8kHz, 30kHz) instead of [8kHz, 30kHz].
-So this patch is to fix this issue and the potential rounding
-issue with divider.
+When we want to support more sample rate, for example 12kHz/24kHz
+we need update the process_option table, if we want to support more
+sample rate next time, the table need to be updated again. which
+is not flexible.
 
-Fixes: fff6e03c7b65 ("ASoC: fsl_asrc: add support for 8-30kHz
-output sample rate")
-Cc: <stable@vger.kernel.org>
+We got a function fsl_asrc_sel_proc to replace the table, which can
+give the pre-processing and post-processing options according to
+the sample rate.
+
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 71 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 51 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 0b937924d2e4..ea035c12a325 100644
+index 0b937924d2e4..71793d3dc75c 100644
 --- a/sound/soc/fsl/fsl_asrc.c
 +++ b/sound/soc/fsl/fsl_asrc.c
-@@ -282,8 +282,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
- 		return -EINVAL;
- 	}
+@@ -26,24 +26,6 @@
+ #define pair_dbg(fmt, ...) \
+ 	dev_dbg(&asrc_priv->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
  
--	if ((outrate > 8000 && outrate < 30000) &&
--	    (outrate/inrate > 24 || inrate/outrate > 8)) {
-+	if ((outrate >= 8000 && outrate <= 30000) &&
-+	    (outrate > 24 * inrate || inrate > 8 * outrate)) {
- 		pair_err("exceed supported ratio range [1/24, 8] for \
- 				inrate/outrate: %d/%d\n", inrate, outrate);
- 		return -EINVAL;
+-/* Sample rates are aligned with that defined in pcm.h file */
+-static const u8 process_option[][12][2] = {
+-	/* 8kHz 11.025kHz 16kHz 22.05kHz 32kHz 44.1kHz 48kHz   64kHz   88.2kHz 96kHz   176kHz  192kHz */
+-	{{0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},},	/* 5512Hz */
+-	{{0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},},	/* 8kHz */
+-	{{0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},},	/* 11025Hz */
+-	{{1, 2}, {0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},},	/* 16kHz */
+-	{{1, 2}, {1, 2}, {0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},},	/* 22050Hz */
+-	{{1, 2}, {2, 1}, {2, 1}, {0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0}, {0, 0},},	/* 32kHz */
+-	{{2, 2}, {2, 2}, {2, 1}, {2, 1}, {0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0},},	/* 44.1kHz */
+-	{{2, 2}, {2, 2}, {2, 1}, {2, 1}, {0, 2}, {0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0}, {0, 0},},	/* 48kHz */
+-	{{2, 2}, {2, 2}, {2, 2}, {2, 1}, {1, 2}, {0, 2}, {0, 2}, {0, 1}, {0, 1}, {0, 1}, {0, 1}, {0, 0},},	/* 64kHz */
+-	{{2, 2}, {2, 2}, {2, 2}, {2, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1},},	/* 88.2kHz */
+-	{{2, 2}, {2, 2}, {2, 2}, {2, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1},},	/* 96kHz */
+-	{{2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 1}, {2, 1}, {2, 1}, {2, 1}, {2, 1},},	/* 176kHz */
+-	{{2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 2}, {2, 1}, {2, 1}, {2, 1}, {2, 1}, {2, 1},},	/* 192kHz */
+-};
+-
+ /* Corresponding to process_option */
+ static int supported_input_rate[] = {
+ 	5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200,
+@@ -79,6 +61,52 @@ static unsigned char output_clk_map_imx53[] = {
+ 
+ static unsigned char *clk_map[2];
+ 
++/**
++ * Select the pre-processing and post-processing options
++ * Make sure to exclude following unsupported cases before
++ * calling this function:
++ * 1) inrate > 8.125 * outrate
++ * 2) inrate > 16.125 * outrate
++ *
++ * inrate: input sample rate
++ * outrate: output sample rate
++ * pre_proc: return value for pre-processing option
++ * post_proc: return value for post-processing option
++ */
++static void fsl_asrc_sel_proc(int inrate, int outrate,
++			     int *pre_proc, int *post_proc)
++{
++	bool post_proc_cond2;
++	bool post_proc_cond0;
++
++	/* select pre_proc between [0, 2] */
++	if (inrate * 8 > 33 * outrate)
++		*pre_proc = 2;
++	else if (inrate * 8 > 15 * outrate) {
++		if (inrate > 152000)
++			*pre_proc = 2;
++		else
++			*pre_proc = 1;
++	} else if (inrate < 76000)
++		*pre_proc = 0;
++	else if (inrate > 152000)
++		*pre_proc = 2;
++	else
++		*pre_proc = 1;
++
++	/* Condition for selection of post-processing */
++	post_proc_cond2 = (inrate * 15 > outrate * 16 && outrate < 56000) ||
++			  (inrate > 56000 && outrate < 56000);
++	post_proc_cond0 = inrate * 23 < outrate * 8;
++
++	if (post_proc_cond2)
++		*post_proc = 2;
++	else if (post_proc_cond0)
++		*post_proc = 0;
++	else
++		*post_proc = 1;
++}
++
+ /**
+  * Request ASRC pair
+  *
+@@ -239,6 +267,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	u32 inrate, outrate, indiv, outdiv;
+ 	u32 clk_index[2], div[2];
+ 	int in, out, channels;
++	int pre_proc, post_proc;
+ 	struct clk *clk;
+ 	bool ideal;
+ 
+@@ -377,11 +406,13 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 			   ASRCTR_IDRi_MASK(index) | ASRCTR_USRi_MASK(index),
+ 			   ASRCTR_IDR(index) | ASRCTR_USR(index));
+ 
++	fsl_asrc_sel_proc(inrate, outrate, &pre_proc, &post_proc);
++
+ 	/* Apply configurations for pre- and post-processing */
+ 	regmap_update_bits(asrc_priv->regmap, REG_ASRCFG,
+ 			   ASRCFG_PREMODi_MASK(index) |	ASRCFG_POSTMODi_MASK(index),
+-			   ASRCFG_PREMOD(index, process_option[in][out][0]) |
+-			   ASRCFG_POSTMOD(index, process_option[in][out][1]));
++			   ASRCFG_PREMOD(index, pre_proc) |
++			   ASRCFG_POSTMOD(index, post_proc));
+ 
+ 	return fsl_asrc_set_ideal_ratio(pair, inrate, outrate);
+ }
 -- 
 2.20.1
