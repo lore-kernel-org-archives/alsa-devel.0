@@ -1,81 +1,37 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V2] ASoC: cs42xx8: Add reset gpio handling
-Date: Thu, 16 May 2019 06:04:58 +0000
-Message-ID: <95eb314ef6d47ee6581094a406516a6069278d56.1557986457.git.shengjiu.wang@nxp.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: ASoc : cs42xx8 : merge cs42xx8-i2c.c into cs42xx8.c
+Date: Thu, 16 May 2019 16:15:11 +1000
+Message-ID: <e182bf72-c369-7344-e4d1-0524b09ca489@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79FB6F80C18
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 08:15:31 +0200 (CEST)
 Content-Language: en-US
-Content-ID: <C63C6422A1A4D4419D9E44128DAF2612@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>, broonie@kernel.org, ckeepax@opensource.cirrus.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Handle the reset GPIO and reset the device every time we
-start it.
+Do you think it would be a good idea to merge cs42xx8-i2c.c into cs42xx8.c ?
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-Changes in v2
-- use devm_gpiod_get_optional instead of of_get_named_gpio
+Is there a reason to keep these two related driver functions separate ?
 
- sound/soc/codecs/cs42xx8.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Here is their source code :
 
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index 28a4ac36c4f8..b377cddaf2e6 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -14,6 +14,7 @@
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-+#include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- #include <sound/pcm_params.h>
-@@ -45,6 +46,7 @@ struct cs42xx8_priv {
- 	bool slave_mode;
- 	unsigned long sysclk;
- 	u32 tx_channels;
-+	struct gpio_desc *gpiod_reset;
- };
-=20
- /* -127.5dB to 0dB with step of 0.5dB */
-@@ -467,6 +469,13 @@ int cs42xx8_probe(struct device *dev, struct regmap *r=
-egmap)
- 		return -EINVAL;
- 	}
-=20
-+	cs42xx8->gpiod_reset =3D devm_gpiod_get_optional(dev, "reset",
-+							GPIOD_OUT_HIGH);
-+	if (IS_ERR(cs42xx8->gpiod_reset))
-+		return PTR_ERR(cs42xx8->gpiod_reset);
-+
-+	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
-+
- 	cs42xx8->clk =3D devm_clk_get(dev, "mclk");
- 	if (IS_ERR(cs42xx8->clk)) {
- 		dev_err(dev, "failed to get the clock: %ld\n",
-@@ -547,6 +556,8 @@ static int cs42xx8_runtime_resume(struct device *dev)
- 		return ret;
- 	}
-=20
-+	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
-+
- 	ret =3D regulator_bulk_enable(ARRAY_SIZE(cs42xx8->supplies),
- 				    cs42xx8->supplies);
- 	if (ret) {
-@@ -586,6 +597,8 @@ static int cs42xx8_runtime_suspend(struct device *dev)
- 	regulator_bulk_disable(ARRAY_SIZE(cs42xx8->supplies),
- 			       cs42xx8->supplies);
-=20
-+	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 1);
-+
- 	clk_disable_unprepare(cs42xx8->clk);
-=20
- 	return 0;
---=20
-2.21.0
+https://github.com/torvalds/linux/blob/master/sound/soc/codecs/cs42xx8-i2c.c
+
+https://github.com/torvalds/linux/blob/master/sound/soc/codecs/cs42xx8.c
+
+Matt
