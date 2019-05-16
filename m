@@ -1,65 +1,46 @@
 From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V5] ASoC: cs42xx8: add reset-gpios in binding document
-Date: Thu, 16 May 2019 11:40:56 +0000
-Message-ID: <3e15abaee348468a69005e4240346822320c7f69.1558006714.git.shengjiu.wang@nxp.com>
+Subject: Re: [PATCH V4] ASoC: cs42xx8: add reset-gpios in
+ binding document
+Date: Thu, 16 May 2019 11:41:46 +0000
+Message-ID: <VE1PR04MB647937130B57B9C3F818F3DEE30A0@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr130048.outbound.protection.outlook.com [40.107.13.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17720F896B6
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2019 13:41:47 +0200 (CEST)
 Content-Language: en-US
-Content-ID: <B74D0E497AF0AA44BEE6A4D2CF2369CA@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add reset-gpios property, which is optional.
+Hi
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-Changes in V5
-- use GPIO_ACTIVE_LOW
+> On Thu, May 16, 2019 at 8:36 AM S.j. Wang <shengjiu.wang@nxp.com>
+> wrote:
+> 
+> >  cs42888: codec@48 {
+> > @@ -25,4 +30,5 @@ cs42888: codec@48 {
+> >         VD-supply = <&reg_audio>;
+> >         VLS-supply = <&reg_audio>;
+> >         VLC-supply = <&reg_audio>;
+> > +       reset-gpios = <&pca9557_b 1 1>;
+> 
+>  reset-gpios = <&pca9557_b 1 GPIO_ACTIVE_LOW>;  please
+Ok, sent v5.
 
-Changes in V4
-- use gpios instead of gpio
-
-Changes in RESEND v3
-- send updated binding document only
-
-Changes in v3
-- update binding document.
-
-Changes in v2
-- use devm_gpiod_get_optional instead of of_get_named_gpio
-
- Documentation/devicetree/bindings/sound/cs42xx8.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/cs42xx8.txt b/Document=
-ation/devicetree/bindings/sound/cs42xx8.txt
-index 8619a156d038..bbfe39347c20 100644
---- a/Documentation/devicetree/bindings/sound/cs42xx8.txt
-+++ b/Documentation/devicetree/bindings/sound/cs42xx8.txt
-@@ -14,6 +14,11 @@ Required properties:
-   - VA-supply, VD-supply, VLS-supply, VLC-supply: power supplies for the d=
-evice,
-     as covered in Documentation/devicetree/bindings/regulator/regulator.tx=
-t
-=20
-+Optional properties:
-+
-+  - reset-gpios : a GPIO spec to define which pin is connected to the chip=
-'s
-+    !RESET pin
-+
- Example:
-=20
- cs42888: codec@48 {
-@@ -25,4 +30,5 @@ cs42888: codec@48 {
- 	VD-supply =3D <&reg_audio>;
- 	VLS-supply =3D <&reg_audio>;
- 	VLC-supply =3D <&reg_audio>;
-+	reset-gpios =3D <&pca9557_b 1 GPIO_ACTIVE_LOW>;
- };
---=20
-2.21.0
+Best regards
+Wang shengjiu
