@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-card: add basic codec-to-codec link support" to the asoc tree
+Subject: Applied "ASoC: dapm: allow muxes to force a disconnect" to the asoc tree
 Date: Thu, 16 May 2019 12:13:54 +0100 (BST)
-Message-ID: <20190516111354.07B201126D46@debutante.sirena.org.uk>
-References: <20190515131858.32130-5-jbrunet@baylibre.com>
+Message-ID: <20190516111354.6E96D1126D48@debutante.sirena.org.uk>
+References: <20190515131858.32130-3-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190515131858.32130-5-jbrunet@baylibre.com>
+In-Reply-To: <20190515131858.32130-3-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-card: add basic codec-to-codec link support
+   ASoC: dapm: allow muxes to force a disconnect
 
 has been applied to the asoc tree at
 
@@ -37,69 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 0a8f1117a6803398d361e7bd76fef59c636f143b Mon Sep 17 00:00:00 2001
+>From c3456a4b2142550944f73a87a8f338074508b249 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Wed, 15 May 2019 15:18:57 +0200
-Subject: [PATCH] ASoC: meson: axg-card: add basic codec-to-codec link support
+Date: Wed, 15 May 2019 15:18:55 +0200
+Subject: [PATCH] ASoC: dapm: allow muxes to force a disconnect
 
-Add basic support for codec-to-codec link in the axg sound card.
-The cpu side of these links is expected to properly set the hw_params
-and format of the link.
+Let soc_dapm_mux_update_power() accept NULL as 'e' enum.
 
-ATM, only the tohdmitx glue is supported but others (like the
-internal DAC glue) should follow.
+It makes the code a bit more robust and, more importantly, let the calling
+mux force a disconnect of the output path if necessary.
+
+This is useful if the dapm elements following the mux must be off
+while updating the mux, to avoid glitches or force a (re)configuration.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Tested-by: Neil Armstrong <narmstrong@baylibre.com>
 Tested-by: Kevin Hilman <khilman@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-card.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 5c8deee8d512..db0a7fc18928 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -29,6 +29,18 @@ struct axg_dai_link_tdm_data {
- 	struct axg_dai_link_tdm_mask *codec_masks;
- };
- 
-+/*
-+ * Base params for the codec to codec links
-+ * Those will be over-written by the CPU side of the link
-+ */
-+static const struct snd_soc_pcm_stream codec_params = {
-+	.formats = SNDRV_PCM_FMTBIT_S24_LE,
-+	.rate_min = 5525,
-+	.rate_max = 192000,
-+	.channels_min = 1,
-+	.channels_max = 8,
-+};
-+
- #define PREFIX "amlogic,"
- 
- static int axg_card_reallocate_links(struct axg_card *priv,
-@@ -517,6 +529,11 @@ static int axg_card_cpu_is_tdm_iface(struct device_node *np)
- 	return of_device_is_compatible(np, PREFIX "axg-tdm-iface");
- }
- 
-+static int axg_card_cpu_is_codec(struct device_node *np)
-+{
-+	return of_device_is_compatible(np, PREFIX "g12a-tohdmitx");
-+}
-+
- static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
- 			     int *index)
- {
-@@ -540,6 +557,8 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
- 
- 	if (axg_card_cpu_is_tdm_iface(dai_link->cpu_of_node))
- 		ret = axg_card_parse_tdm(card, np, index);
-+	else if (axg_card_cpu_is_codec(dai_link->cpu_of_node))
-+		dai_link->params = &codec_params;
- 
- 	return ret;
- }
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 81a7a12196ff..a4d6c068b545 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2245,7 +2245,7 @@ static int soc_dapm_mux_update_power(struct snd_soc_card *card,
+ 	dapm_kcontrol_for_each_path(path, kcontrol) {
+ 		found = 1;
+ 		/* we now need to match the string in the enum to the path */
+-		if (!(strcmp(path->name, e->texts[mux])))
++		if (e && !(strcmp(path->name, e->texts[mux])))
+ 			connect = true;
+ 		else
+ 			connect = false;
 -- 
 2.20.1
