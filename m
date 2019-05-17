@@ -1,9 +1,9 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH][RFC] ASoC: soc-core: WARN() is not related
- to component->driver->probe
-Date: Fri, 17 May 2019 08:08:08 -0500
-Message-ID: <0ba565ea-2f61-015d-f6e3-63124f94e78a@linux.intel.com>
-References: <87imu939x3.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH][RFC] ASoC: soc-pcm: fixup try_module_get()
+	calling timing
+Date: Fri, 17 May 2019 08:22:08 -0500
+Message-ID: <c1fb57af-0710-98ca-9cc2-05e14dd221ac@linux.intel.com>
+References: <87h89t39t6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A6D6F806E7
- for <alsa-devel@alsa-project.org>; Fri, 17 May 2019 15:08:12 +0200 (CEST)
-In-Reply-To: <87imu939x3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98E16F806E7
+ for <alsa-devel@alsa-project.org>; Fri, 17 May 2019 15:22:11 +0200 (CEST)
+In-Reply-To: <87h89t39t6.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,69 +30,92 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 5/17/19 1:06 AM, Kuninori Morimoto wrote:
+On 5/17/19 1:08 AM, Kuninori Morimoto wrote:
+> 
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> soc_probe_component() has WARN() under if (component->driver->probe),
-> but, this WARN() check is not related to .probe callback.
-> So, it should be called at (B) instead of (A).
-> This patch moves it out of if().
+> soc_pcm_components_open() try to call try_module_get()
+> based on component->driver->module_get_upon_open.
+> But, it should be always called, not relatead to .open callback.
+> It should be called at (A) istead of (B)
 > 
-> 	if (component->driver->probe) {
-> 		ret = component->driver->probe(component);
+> => (A)
+> 	if (!component->driver->ops ||
+> 	    !component->driver->ops->open)
+> 		continue;
+> => (B)
+> 	if (component->driver->module_get_upon_open &&
+> 	    !try_module_get(component->dev->driver->owner)) {
 > 		...
-> (A)		WARN(...)
 > 	}
-> (B)	WARN(...)
+> 
+> 	ret = component->driver->ops->open(substream);
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
 > Mark, Pierre-Louis, Vinod, Liam
 > 
 > I think this patch is correct, but I'm not sure.
-> I'm happy someone can confirm it.
+> I'm happy if someone can confirm it.
 
-This WARN() was added in 2012 by ff541f4b2a75 ('ASoC: core: giving WARN 
-when device starting from non-off bias with idle_bias_off')
+The try_module_get()/module_put() mechanism is based on the assumption 
+that the .open and .close callbacks are both mandatory.
 
-The commit message hints at an intentional check
+open flow:
+		if (!component->driver->ops ||
+		    !component->driver->ops->open)
+			continue;
 
-"
-Just found some cases that some codec drivers set the bias to _STANDBY 
-and set idle_bias_off to 1 during probing.
-It will cause unpaired runtime_get_sync/put() issue. Also as Mark 
-suggested, there is no reason to start from _STANDBY bias with 
-idle_bias_off == 1.
+		if (component->driver->module_get_upon_open &&
+		    !try_module_get(component->dev->driver->owner)) {
+			ret = -ENODEV;
+			goto module_err;
+		}
 
-So here giving one warning when detected (dapm.idle_bias_off == 1) and
-     (dapm.bias_level != SND_SOC_BIAS_OFF) just after driver->probe().
-"
+		ret = component->driver->ops->open(substream);
 
-My take is that unless we can prove this is incorrect we leave it as is.
+close flow:
+		if (!component->driver->ops ||
+		    !component->driver->ops->close)
+			continue;
+
+		component->driver->ops->close(substream);
+
+		if (component->driver->module_get_upon_open)
+			module_put(component->dev->driver->owner);
+
+it'd be odd to allow the refcount to be increased when there is no 
+.open, since if there is no .close either then the refcount never decreases.
 
 > 
->   sound/soc/soc-core.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index cab30ae..7157d67 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1420,12 +1420,11 @@ static int soc_probe_component(struct snd_soc_card *card,
->   				"ASoC: failed to probe component %d\n", ret);
->   			goto err_probe;
->   		}
-> -
-> -		WARN(dapm->idle_bias_off &&
-> -			dapm->bias_level != SND_SOC_BIAS_OFF,
-> -			"codec %s can not start from non-off bias with idle_bias_off==1\n",
-> -			component->name);
->   	}
-> +	WARN(dapm->idle_bias_off &&
-> +	     dapm->bias_level != SND_SOC_BIAS_OFF,
-> +	     "codec %s can not start from non-off bias with idle_bias_off==1\n",
-> +	     component->name);
+>   sound/soc/soc-pcm.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 7737e00..7b4cda6 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -440,10 +440,6 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream,
+>   		component = rtdcom->component;
+>   		*last = component;
 >   
->   	/* machine specific init */
->   	if (component->init) {
+> -		if (!component->driver->ops ||
+> -		    !component->driver->ops->open)
+> -			continue;
+> -
+>   		if (component->driver->module_get_upon_open &&
+>   		    !try_module_get(component->dev->driver->owner)) {
+>   			dev_err(component->dev,
+> @@ -452,6 +448,10 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream,
+>   			return -ENODEV;
+>   		}
+>   
+> +		if (!component->driver->ops ||
+> +		    !component->driver->ops->open)
+> +			continue;
+> +
+>   		ret = component->driver->ops->open(substream);
+>   		if (ret < 0) {
+>   			dev_err(component->dev,
 > 
