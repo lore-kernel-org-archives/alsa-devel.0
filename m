@@ -1,21 +1,39 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Add support for high power analog output" to the asoc tree
-Date: Fri, 17 May 2019 11:34:38 +0100 (BST)
-Message-ID: <20190517103438.D58891126D64@debutante.sirena.org.uk>
-References: <20190511151149.28823-1-sravanhome@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190511151149.28823-1-sravanhome@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, sravanhome@gmail.com, tiwai@suse.com
+Subject: Applied "ASoC: cs42xx8: Add reset gpio handling" to
+	the asoc tree
+Date: Fri, 17 May 2019 11:34:39 +0100 (BST)
+Message-ID: <20190517103439.130F41126D71@debutante.sirena.org.uk>
+References: <95eb314ef6d47ee6581094a406516a6069278d56.1557986457.git.shengjiu.wang@nxp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B48D8F80C18
+ for <alsa-devel@alsa-project.org>; Fri, 17 May 2019 12:34:44 +0200 (CEST)
+In-Reply-To: <95eb314ef6d47ee6581094a406516a6069278d56.1557986457.git.shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic3x: Add support for high power analog output
+   ASoC: cs42xx8: Add reset gpio handling
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -36,62 +54,71 @@ to this mail.
 Thanks,
 Mark
 
->From bfa8130f50a63563eae10ef933fe01b50b3e87a0 Mon Sep 17 00:00:00 2001
-From: Saravanan Sekar <sravanhome@gmail.com>
-Date: Sat, 11 May 2019 17:11:49 +0200
-Subject: [PATCH] ASoC: tlv320aic3x: Add support for high power analog output
+>From bfe95dfa4dacefbe20a8532bdac0a19da0708be4 Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Thu, 16 May 2019 06:04:58 +0000
+Subject: [PATCH] ASoC: cs42xx8: Add reset gpio handling
 
-Add support to output level control for the analog high power output
-drivers HPOUT and HPCOM.
+Handle the reset GPIO and reset the device every time we
+start it.
 
-Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic3x.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42xx8.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 516d17cb2182..599e4ed3850b 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -324,6 +324,9 @@ static DECLARE_TLV_DB_SCALE(adc_tlv, 0, 50, 0);
-  */
- static DECLARE_TLV_DB_SCALE(output_stage_tlv, -5900, 50, 1);
- 
-+/* Output volumes. From 0 to 9 dB in 1 dB steps */
-+static const DECLARE_TLV_DB_SCALE(out_tlv, 0, 100, 0);
-+
- static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 	/* Output */
- 	SOC_DOUBLE_R_TLV("PCM Playback Volume",
-@@ -386,11 +389,17 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 			 DACL1_2_HPLCOM_VOL, DACR1_2_HPRCOM_VOL,
- 			 0, 118, 1, output_stage_tlv),
- 
--	/* Output pin mute controls */
-+	/* Output pin controls */
-+	SOC_DOUBLE_R_TLV("Line Playback Volume", LLOPM_CTRL, RLOPM_CTRL, 4,
-+			 9, 0, out_tlv),
- 	SOC_DOUBLE_R("Line Playback Switch", LLOPM_CTRL, RLOPM_CTRL, 3,
- 		     0x01, 0),
-+	SOC_DOUBLE_R_TLV("HP Playback Volume", HPLOUT_CTRL, HPROUT_CTRL, 4,
-+			 9, 0, out_tlv),
- 	SOC_DOUBLE_R("HP Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3,
- 		     0x01, 0),
-+	SOC_DOUBLE_R_TLV("HPCOM Playback Volume", HPLCOM_CTRL, HPRCOM_CTRL,
-+			 4, 9, 0, out_tlv),
- 	SOC_DOUBLE_R("HPCOM Playback Switch", HPLCOM_CTRL, HPRCOM_CTRL, 3,
- 		     0x01, 0),
- 
-@@ -472,6 +481,9 @@ static const struct snd_kcontrol_new aic3x_mono_controls[] = {
- 			 0, 118, 1, output_stage_tlv),
- 
- 	SOC_SINGLE("Mono Playback Switch", MONOLOPM_CTRL, 3, 0x01, 0),
-+	SOC_SINGLE_TLV("Mono Playback Volume", MONOLOPM_CTRL, 4, 9, 0,
-+			out_tlv),
-+
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index ebb9e0cf8364..3e8dbf63adbe 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -14,6 +14,7 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
++#include <linux/of_gpio.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/pcm_params.h>
+@@ -45,6 +46,7 @@ struct cs42xx8_priv {
+ 	bool slave_mode;
+ 	unsigned long sysclk;
+ 	u32 tx_channels;
++	struct gpio_desc *gpiod_reset;
  };
  
- /*
+ /* -127.5dB to 0dB with step of 0.5dB */
+@@ -467,6 +469,13 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
+ 		return -EINVAL;
+ 	}
+ 
++	cs42xx8->gpiod_reset = devm_gpiod_get_optional(dev, "reset",
++							GPIOD_OUT_HIGH);
++	if (IS_ERR(cs42xx8->gpiod_reset))
++		return PTR_ERR(cs42xx8->gpiod_reset);
++
++	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
++
+ 	cs42xx8->clk = devm_clk_get(dev, "mclk");
+ 	if (IS_ERR(cs42xx8->clk)) {
+ 		dev_err(dev, "failed to get the clock: %ld\n",
+@@ -547,6 +556,8 @@ static int cs42xx8_runtime_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
++	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
++
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(cs42xx8->supplies),
+ 				    cs42xx8->supplies);
+ 	if (ret) {
+@@ -585,6 +596,8 @@ static int cs42xx8_runtime_suspend(struct device *dev)
+ 	regulator_bulk_disable(ARRAY_SIZE(cs42xx8->supplies),
+ 			       cs42xx8->supplies);
+ 
++	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 1);
++
+ 	clk_disable_unprepare(cs42xx8->clk);
+ 
+ 	return 0;
 -- 
 2.20.1
