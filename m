@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42xx8: Add reset gpio handling" to
+Subject: Applied "ASoC: cs42xx8: Add regcache mask dirty" to
 	the asoc tree
 Date: Fri, 17 May 2019 11:34:39 +0100 (BST)
-Message-ID: <20190517103439.130F41126D71@debutante.sirena.org.uk>
-References: <95eb314ef6d47ee6581094a406516a6069278d56.1557986457.git.shengjiu.wang@nxp.com>
+Message-ID: <20190517103439.467241126D72@debutante.sirena.org.uk>
+References: <e6fb6598dd863b74241e10d14652d12fe701845d.1557986478.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B48D8F80C18
- for <alsa-devel@alsa-project.org>; Fri, 17 May 2019 12:34:44 +0200 (CEST)
-In-Reply-To: <95eb314ef6d47ee6581094a406516a6069278d56.1557986457.git.shengjiu.wang@nxp.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7F3EF8972A
+ for <alsa-devel@alsa-project.org>; Fri, 17 May 2019 12:34:53 +0200 (CEST)
+In-Reply-To: <e6fb6598dd863b74241e10d14652d12fe701845d.1557986478.git.shengjiu.wang@nxp.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,16 +24,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42xx8: Add reset gpio handling
+   ASoC: cs42xx8: Add regcache mask dirty
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -54,71 +54,35 @@ to this mail.
 Thanks,
 Mark
 
->From bfe95dfa4dacefbe20a8532bdac0a19da0708be4 Mon Sep 17 00:00:00 2001
+>From ad6eecbfc01c987e0253371f274c3872042e4350 Mon Sep 17 00:00:00 2001
 From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Date: Thu, 16 May 2019 06:04:58 +0000
-Subject: [PATCH] ASoC: cs42xx8: Add reset gpio handling
+Date: Thu, 16 May 2019 06:04:29 +0000
+Subject: [PATCH] ASoC: cs42xx8: Add regcache mask dirty
 
-Handle the reset GPIO and reset the device every time we
-start it.
+Add regcache_mark_dirty before regcache_sync for power
+of codec may be lost at suspend, then all the register
+need to be reconfigured.
 
+Fixes: 0c516b4ff85c ("ASoC: cs42xx8: Add codec driver
+support for CS42448/CS42888")
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42xx8.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/codecs/cs42xx8.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index ebb9e0cf8364..3e8dbf63adbe 100644
+index ebb9e0cf8364..28a4ac36c4f8 100644
 --- a/sound/soc/codecs/cs42xx8.c
 +++ b/sound/soc/codecs/cs42xx8.c
-@@ -14,6 +14,7 @@
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-+#include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- #include <sound/pcm_params.h>
-@@ -45,6 +46,7 @@ struct cs42xx8_priv {
- 	bool slave_mode;
- 	unsigned long sysclk;
- 	u32 tx_channels;
-+	struct gpio_desc *gpiod_reset;
- };
+@@ -558,6 +558,7 @@ static int cs42xx8_runtime_resume(struct device *dev)
+ 	msleep(5);
  
- /* -127.5dB to 0dB with step of 0.5dB */
-@@ -467,6 +469,13 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
- 		return -EINVAL;
- 	}
+ 	regcache_cache_only(cs42xx8->regmap, false);
++	regcache_mark_dirty(cs42xx8->regmap);
  
-+	cs42xx8->gpiod_reset = devm_gpiod_get_optional(dev, "reset",
-+							GPIOD_OUT_HIGH);
-+	if (IS_ERR(cs42xx8->gpiod_reset))
-+		return PTR_ERR(cs42xx8->gpiod_reset);
-+
-+	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
-+
- 	cs42xx8->clk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(cs42xx8->clk)) {
- 		dev_err(dev, "failed to get the clock: %ld\n",
-@@ -547,6 +556,8 @@ static int cs42xx8_runtime_resume(struct device *dev)
- 		return ret;
- 	}
- 
-+	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(cs42xx8->supplies),
- 				    cs42xx8->supplies);
+ 	ret = regcache_sync(cs42xx8->regmap);
  	if (ret) {
-@@ -585,6 +596,8 @@ static int cs42xx8_runtime_suspend(struct device *dev)
- 	regulator_bulk_disable(ARRAY_SIZE(cs42xx8->supplies),
- 			       cs42xx8->supplies);
- 
-+	gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 1);
-+
- 	clk_disable_unprepare(cs42xx8->clk);
- 
- 	return 0;
 -- 
 2.20.1
