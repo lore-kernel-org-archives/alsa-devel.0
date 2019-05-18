@@ -1,36 +1,32 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 00/30] Update cros_ec_commands.h
-Date: Sat, 18 May 2019 07:39:49 +0100
-Message-ID: <20190518063949.GY4319@dell>
-References: <20190509211353.213194-1-gwendal@chromium.org>
- <CAPUE2ut4OUhrmbx6n8KCj7+ghXmC9iMnxGN8DMvyvZstznwwng@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Weitao Hou <houweitaoo@gmail.com>
+Subject: [PATCH] sound: fix typos in code comments
+Date: Sat, 18 May 2019 20:10:26 +0800
+Message-ID: <20190518121026.19135-1-houweitaoo@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAPUE2ut4OUhrmbx6n8KCj7+ghXmC9iMnxGN8DMvyvZstznwwng@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>, Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, Jonathan Cameron <jic23@kernel.org>, Mark Brown <broonie@kernel.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Takashi Iwai <tiwai@suse.com>, linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org, niklas.cassel@linaro.org, yuehaibing@huawei.com, houweitaoo@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 17 May 2019, Gwendal Grignou wrote:
+fix lenght to length
 
-> Lee,
-> 
-> I verified and merged the changes on the kernels (3.18, 4.4 and 4.14)
-> used on chromebook using a squashed version of these patches.
-> (crrev.com/c/1583322, crrev.com/c/1583385, crrev.com/c/1583321
-> respectively)
-> Please let me know if you have any questions.
+Signed-off-by: Weitao Hou <houweitaoo@gmail.com>
+---
+ sound/soc/qcom/qdsp6/q6asm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Is no one else from Chromium going to review?
-
-These seem like quite important changes.
-
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 4f85cb19a309..e8141a33a55e 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -1194,7 +1194,7 @@ EXPORT_SYMBOL_GPL(q6asm_open_read);
+  * q6asm_write_async() - non blocking write
+  *
+  * @ac: audio client pointer
+- * @len: lenght in bytes
++ * @len: length in bytes
+  * @msw_ts: timestamp msw
+  * @lsw_ts: timestamp lsw
+  * @wflags: flags associated with write
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.18.0
