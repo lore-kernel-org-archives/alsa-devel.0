@@ -1,19 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/3] ASoC: Intel: glk_rt5682_max98357a: Remap
-	button control-function
-Date: Sat, 18 May 2019 13:30:09 -0500
-Message-ID: <20190518183009.13359-4-pierre-louis.bossart@linux.intel.com>
-References: <20190518183009.13359-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/12] ASoC: SOF: stability fixes
+Date: Sat, 18 May 2019 15:26:52 -0500
+Message-ID: <20190518202704.7772-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9881F80C18
- for <alsa-devel@alsa-project.org>; Sat, 18 May 2019 20:30:20 +0200 (CEST)
-In-Reply-To: <20190518183009.13359-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76C00F806E7
+ for <alsa-devel@alsa-project.org>; Sat, 18 May 2019 22:27:22 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +21,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Naveen Manohar <naveen.m@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Yong Zhi <yong.zhi@intel.com>
-
-Assign button functions based on Android wired headset specs(v1.1).
-
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index d17126f7757c..6b677b5bcdcd 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -169,9 +169,10 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	jack = &ctx->geminilake_headset;
- 
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
- 	ret = snd_soc_component_set_jack(component, jack, NULL);
- 
- 	if (ret) {
--- 
-2.20.1
+Tm8gbmV3IGZ1bmN0aW9uYWxpdHkgaGVyZSBidXQgZml4ZXMgdG8gdGhlIElQQywgbWVtb3J5IGFs
+bG9jYXRpb24sCndvcmtxdWV1ZXMsIGNvbnRyb2wsIHJ1bnRpbWVfcG0gYW5kIEhEYXVkaW8gc3Vw
+cG9ydC4gVGhlc2UgaXNzdWVzIHdlcmUKaWRlbnRpZmllZCBkdXJpbmcgdGhlIGludGVncmF0aW9u
+L3Byb2R1Y3RpemF0aW9uIG9mIG5ldyBwbGF0Zm9ybXMuCgpJIGFkZGVkIGEgJ0ZpeGVzJyB0YWcg
+dG8gbWFrZSBzdXJlIGJhY2twb3J0cy9zdGFibGUgY2FuIHBpY2sgdXAgdGhlc2UKcGF0Y2hlcywg
+aW4gY2FzZSBpdCdzIHRvbyBsYXRlIGZvciB0aGVtIHRvIGxhbmQgaW4gNS4yCgpUaGUgbmV4dCBi
+YXRjaCBmb3IgU09GIHdpbGwgYmUgYSBzZXQgb2YgbmV3IGNhcGFiaWxpdGllcyBmb3IgdHJhY2Us
+CklQQyB0ZXN0LCBIZGF1ZGlvIHN1cHBvcnQsIHRoZXkgd2lsbCBiZSBzdWJtaXR0ZWQgYWZ0ZXIg
+YWRkaXRpb25hbAp0ZXN0cyBhbmQgb25jZSB0aGVzZSBmaXhlcyBhcmUgcmV2aWV3ZWQvbWVyZ2Vk
+LgoKVGhhbmtzIQoKQW1hZGV1c3ogU8WCYXdpxYRza2kgKDEpOgogIEFMU0E6IGhkYWM6IGZpeCBt
+ZW1vcnkgcmVsZWFzZSBmb3IgU1NUIGFuZCBTT0YgZHJpdmVycwoKR3Vlbm5hZGkgTGlha2hvdmV0
+c2tpICgxKToKICBBU29DOiBTT0Y6IGlwYzogZml4IGEgcmFjZSwgbGVhZGluZyB0byBJUEMgdGlt
+ZW91dHMKCktleW9uIEppZSAoMSk6CiAgQVNvQzogU09GOiBjb250cm9sOiBjb3JyZWN0IHRoZSBj
+b3B5IHNpemUgZm9yIGJ5dGVzIGtjb250cm9sIHB1dAoKTGliaW4gWWFuZyAoMik6CiAgQVNvQzog
+U09GOiBwY206IGNsZWFyIGh3X3BhcmFtc191cG9uX3Jlc3VtZSBmbGFnIGNvcnJlY3RseQogIEFT
+b0M6IFNPRjogSW50ZWw6IGhkYS1jb2RlYzogZml4IG1lbW9yeSBhbGxvY2F0aW9uCgpQaWVycmUt
+TG91aXMgQm9zc2FydCAoMik6CiAgQVNvQzogU09GOiBjb3JlOiBmaXggZXJyb3IgaGFuZGxpbmcg
+d2l0aCB0aGUgcHJvYmUgd29ya3F1ZXVlCiAgQVNvQzogU09GOiBwY206IHJlbW92ZSB3YXJuaW5n
+IC0gaW5pdGlhbGl6ZSB3b3JrcXVldWUgb24gb3BlbgoKUmFuamFuaSBTcmlkaGFyYW4gKDMpOgog
+IEFTb0M6IFNPRjogY29yZTogcmVtb3ZlIERTUCBhZnRlciB1bnJlZ2lzdGVyaW5nIG1hY2hpbmUg
+ZHJpdmVyCiAgQVNvQzogU09GOiBjb3JlOiByZW1vdmUgc25kX3NvY191bnJlZ2lzdGVyX2NvbXBv
+bmVudCBpbiBjYXNlIG9mIGVycm9yCiAgQVNvQzogU09GOiBwY206IHJlbW92ZSBydW50aW1lIFBN
+IGNhbGxzIGR1cmluZyBwY20gb3Blbi9jbG9zZQoKWmh1IFlpbmdqaWFuZyAoMik6CiAgQVNvQzog
+U09GOiBJbnRlbDogaGRhOiBmaXggdGhlIGhkYSBpbml0IGNoaXAKICBBU29DOiBTT0Y6IEludGVs
+OiBoZGE6IHVzZSB0aGUgZGVmaW5lZCBwcGNhcCBmdW5jdGlvbnMKCiBzb3VuZC9oZGEvZXh0L2hk
+YWNfZXh0X2J1cy5jICAgIHwgICAxIC0KIHNvdW5kL3NvYy9zb2YvY29udHJvbC5jICAgICAgICAg
+fCAgIDkgKy0tCiBzb3VuZC9zb2Mvc29mL2NvcmUuYyAgICAgICAgICAgIHwgIDI5ICsrKysrKyst
+LQogc291bmQvc29jL3NvZi9pbnRlbC9iZHcuYyAgICAgICB8ICAxMSArKy0tCiBzb3VuZC9zb2Mv
+c29mL2ludGVsL2J5dC5jICAgICAgIHwgIDEyICsrLS0KIHNvdW5kL3NvYy9zb2YvaW50ZWwvY25s
+LmMgICAgICAgfCAgIDYgKysKIHNvdW5kL3NvYy9zb2YvaW50ZWwvaGRhLWNvZGVjLmMgfCAgIDYg
+Ky0KIHNvdW5kL3NvYy9zb2YvaW50ZWwvaGRhLWN0cmwuYyAgfCAxMDIgKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tCiBzb3VuZC9zb2Mvc29mL2ludGVsL2hkYS1pcGMuYyAgIHwgIDE5ICsr
+KysrLQogc291bmQvc29jL3NvZi9pbnRlbC9oZGEuYyAgICAgICB8IDEwOSArKysrKysrLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQogc291bmQvc29jL3NvZi9pcGMuYyAgICAgICAgICAgICB8ICAx
+MyAtLS0tCiBzb3VuZC9zb2Mvc29mL3BjbS5jICAgICAgICAgICAgIHwgIDM3ICsrLS0tLS0tLS0t
+CiAxMiBmaWxlcyBjaGFuZ2VkLCAxODggaW5zZXJ0aW9ucygrKSwgMTY2IGRlbGV0aW9ucygtKQoK
+LS0gCjIuMjAuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
