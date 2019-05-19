@@ -1,7 +1,7 @@
 From: nariman <narimantos@gmail.com>
-Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645.c: Remove buffer and snprintf calls
-Date: Sun, 19 May 2019 19:57:04 +0200
-Message-ID: <20190519175706.3998-2-narimantos@gmail.com>
+Subject: [PATCH] ASoC: Intel: bytcr_5640.c: refactored codec_fixup
+Date: Sun, 19 May 2019 19:57:05 +0200
+Message-ID: <20190519175706.3998-3-narimantos@gmail.com>
 References: <20190519175706.3998-1-narimantos@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,68 +9,106 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190519175706.3998-1-narimantos@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, hdegoede@redhat.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Damian van Soelen <dj.vsoelen@gmail.com>, Nariman Etemadi <narimantos@gmail.com>
+Cc: Erik Bussing <eabbussing@outlook.com>, Nariman Etemadi <narimantos@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Damian van Soelen <dj.vsoelen@gmail.com>
+From: Erik Bussing <eabbussing@outlook.com>
 
-The snprintf calls filling cht_rt5645_cpu_dai_name / cht_rt5645_codec_aif_name
-always fill them with the same string ("ssp0-port" resp "rt5645-aif2") so
-instead of keeping these buffers around and making the cpu_dai_name /
-codec_aif_name point to this, simply update the foo_dai_name and foo_aif_name pointers to
-directly point to a string constant containing the desired string.
+Remove code duplication in byt_rt5640_codec_fixup
 
-Signed-off-by: Damian van Soelen <dj.vsoelen@gmail.com>
+Signed-off-by: Erik Bussing <eabbussing@outlook.com>
 Signed-off-by: Nariman Etemadi <narimantos@gmail.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 26 ++++---------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 64 ++++++++++-----------------
+ 1 file changed, 23 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index cbc2d458483f..b15459e56665 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -506,8 +506,6 @@ static struct cht_acpi_card snd_soc_cards[] = {
- };
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a22366ce33c4..679be55418bf 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -939,6 +939,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	int ret;
++	int bits;
  
- static char cht_rt5645_codec_name[SND_ACPI_I2C_ID_LEN];
--static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
--static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 	/* The DSP will covert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+@@ -949,53 +950,34 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  
- static bool is_valleyview(void)
- {
-@@ -641,28 +639,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	log_quirks(&pdev->dev);
- 
- 	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
--		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
+ 		/* set SSP0 to 16-bit */
+ 		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
 -
--		/* fixup codec aif name */
--		snprintf(cht_rt5645_codec_aif_name,
--			sizeof(cht_rt5645_codec_aif_name),
--			"%s", "rt5645-aif2");
+-		/*
+-		 * Default mode for SSP configuration is TDM 4 slot, override config
+-		 * with explicit setting to I2S 2ch 16-bit. The word length is set with
+-		 * dai_set_tdm_slot() since there is no other API exposed
+-		 */
+-		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+-					SND_SOC_DAIFMT_I2S     |
+-					SND_SOC_DAIFMT_NB_NF   |
+-					SND_SOC_DAIFMT_CBS_CFS
+-			);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-			return ret;
+-		}
 -
--		cht_dailink[dai_index].codec_dai_name =
--			cht_rt5645_codec_aif_name;
--	}
-+		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2))
-+			cht_dailink[dai_index].codec_dai_name = "rt5645-aif2";
+-		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
+-			return ret;
+-		}
+-
++	bits = 16;
+ 	} else {
  
- 	if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
--		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
--
--		/* fixup cpu dai name name */
--		snprintf(cht_rt5645_cpu_dai_name,
--			sizeof(cht_rt5645_cpu_dai_name),
--			"%s", "ssp0-port");
--
--		cht_dailink[dai_index].cpu_dai_name =
--			cht_rt5645_cpu_dai_name;
--	}
-+		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2))
-+			cht_dailink[dai_index].cpu_dai_name = "ssp0-port";
+ 		/* set SSP2 to 24-bit */
+ 		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++		bits = 24;
++	}
  
- 	/* override plaform name, if required */
- 	platform_name = mach->mach_params.platform;
+-		/*
+-		 * Default mode for SSP configuration is TDM 4 slot, override config
+-		 * with explicit setting to I2S 2ch 24-bit. The word length is set with
+-		 * dai_set_tdm_slot() since there is no other API exposed
+-		 */
+-		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+-					SND_SOC_DAIFMT_I2S     |
+-					SND_SOC_DAIFMT_NB_NF   |
+-					SND_SOC_DAIFMT_CBS_CFS
+-			);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-			return ret;
+-		}
+ 
+-		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
+-			return ret;
+-		}
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot, override config
++	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
++	 * dai_set_tdm_slot() since there is no other API exposed
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++		SND_SOC_DAIFMT_I2S     |
++		SND_SOC_DAIFMT_NB_NF   |
++		SND_SOC_DAIFMT_CBS_CFS
++	);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, bits);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++		return ret;
+ 	}
+ 	return 0;
+ }
 -- 
 2.20.1
