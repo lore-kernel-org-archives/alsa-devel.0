@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] firewire-lib: use the same type of
-	argument for CIP header for tracing event
-Date: Sun, 19 May 2019 19:01:05 +0900
-Message-ID: <20190519100109.14167-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/5] firewire-lib: use dynamic array for CIP
+	header of tracing events
+Date: Sun, 19 May 2019 19:01:08 +0900
+Message-ID: <20190519100109.14167-5-o-takashi@sakamocchi.jp>
 References: <20190519100109.14167-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
  [66.111.4.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F762F8962F
- for <alsa-devel@alsa-project.org>; Sun, 19 May 2019 12:01:17 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0E52F89618
+ for <alsa-devel@alsa-project.org>; Sun, 19 May 2019 12:01:21 +0200 (CEST)
 In-Reply-To: <20190519100109.14167-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,53 +28,120 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-An argument for CIP header in 'in_packet' event is not the same type in
-'out_packet' event. This is not good to unify these events.
+This modules handles two types of isochronous packet; one has CIP header
+in IEC 61883-1/6 and another doesn't. The module also have tracing events
+corresponding to the types of packet. To unify the events, one event
+should be probed with or without CIP header.
 
-This commit uses the same type of argument for these events.
+This commit uses dynamic array for the events to be available for the
+types of packet.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream-trace.h | 6 +++---
- sound/firewire/amdtp-stream.c       | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/firewire/amdtp-stream-trace.h | 36 ++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
-index ac20acf48fc6..a86a827eab90 100644
+index 30c547552cd2..614dfd08aa48 100644
 --- a/sound/firewire/amdtp-stream-trace.h
 +++ b/sound/firewire/amdtp-stream-trace.h
-@@ -14,7 +14,7 @@
- #include <linux/tracepoint.h>
- 
- TRACE_EVENT(in_packet,
--	TP_PROTO(const struct amdtp_stream *s, u32 cycles, u32 *cip_header, unsigned int payload_length, unsigned int index),
-+	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int index),
- 	TP_ARGS(s, cycles, cip_header, payload_length, index),
- 	TP_STRUCT__entry(
- 		__field(unsigned int, second)
-@@ -35,8 +35,8 @@ TRACE_EVENT(in_packet,
+@@ -22,8 +22,7 @@ TRACE_EVENT(in_packet,
+ 		__field(int, channel)
+ 		__field(int, src)
+ 		__field(int, dest)
+-		__field(u32, cip_header0)
+-		__field(u32, cip_header1)
++		__dynamic_array(u8, cip_header, cip_header ? 8 : 0)
+ 		__field(unsigned int, payload_quadlets)
+ 		__field(unsigned int, data_blocks)
+ 		__field(unsigned int, data_block_counter)
+@@ -37,8 +36,10 @@ TRACE_EVENT(in_packet,
  		__entry->channel = s->context->channel;
  		__entry->src = fw_parent_device(s->unit)->node_id;
  		__entry->dest = fw_parent_device(s->unit)->card->node_id;
--		__entry->cip_header0 = cip_header[0];
--		__entry->cip_header1 = cip_header[1];
-+		__entry->cip_header0 = be32_to_cpu(cip_header[0]);
-+		__entry->cip_header1 = be32_to_cpu(cip_header[1]);
- 		__entry->payload_quadlets = payload_length / 4;
- 		__entry->packet_index = s->packet_index;
- 		__entry->irq = !!in_interrupt();
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 43f28b813386..2614fa551e24 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -555,7 +555,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	cip_header[0] = be32_to_cpu(buffer[0]);
- 	cip_header[1] = be32_to_cpu(buffer[1]);
+-		__entry->cip_header0 = be32_to_cpu(cip_header[0]);
+-		__entry->cip_header1 = be32_to_cpu(cip_header[1]);
++		if (cip_header) {
++			memcpy(__get_dynamic_array(cip_header), cip_header,
++			       __get_dynamic_array_len(cip_header));
++		}
+ 		__entry->payload_quadlets = payload_length / sizeof(__be32);
+ 		__entry->data_blocks = data_blocks;
+ 		__entry->data_block_counter = s->data_block_counter,
+@@ -47,20 +48,21 @@ TRACE_EVENT(in_packet,
+ 		__entry->index = index;
+ 	),
+ 	TP_printk(
+-		"%02u %04u %04x %04x %02d %08x %08x %03u %02u %03u %02u %01u %02u",
++		"%02u %04u %04x %04x %02d %03u %02u %03u %02u %01u %02u %s",
+ 		__entry->second,
+ 		__entry->cycle,
+ 		__entry->src,
+ 		__entry->dest,
+ 		__entry->channel,
+-		__entry->cip_header0,
+-		__entry->cip_header1,
+ 		__entry->payload_quadlets,
+ 		__entry->data_blocks,
+ 		__entry->data_block_counter,
+ 		__entry->packet_index,
+ 		__entry->irq,
+-		__entry->index)
++		__entry->index,
++		__print_array(__get_dynamic_array(cip_header),
++			      __get_dynamic_array_len(cip_header),
++			      sizeof(u8)))
+ );
  
--	trace_in_packet(s, cycle, cip_header, payload_length, index);
-+	trace_in_packet(s, cycle, buffer, payload_length, index);
+ TRACE_EVENT(out_packet,
+@@ -72,8 +74,7 @@ TRACE_EVENT(out_packet,
+ 		__field(int, channel)
+ 		__field(int, src)
+ 		__field(int, dest)
+-		__field(u32, cip_header0)
+-		__field(u32, cip_header1)
++		__dynamic_array(u8, cip_header, cip_header ? 8 : 0)
+ 		__field(unsigned int, payload_quadlets)
+ 		__field(unsigned int, data_blocks)
+ 		__field(unsigned int, data_block_counter)
+@@ -87,8 +88,10 @@ TRACE_EVENT(out_packet,
+ 		__entry->channel = s->context->channel;
+ 		__entry->src = fw_parent_device(s->unit)->card->node_id;
+ 		__entry->dest = fw_parent_device(s->unit)->node_id;
+-		__entry->cip_header0 = be32_to_cpu(cip_header[0]);
+-		__entry->cip_header1 = be32_to_cpu(cip_header[1]);
++		if (cip_header) {
++			memcpy(__get_dynamic_array(cip_header), cip_header,
++			       __get_dynamic_array_len(cip_header));
++		}
+ 		__entry->payload_quadlets = payload_length / sizeof(__be32);
+ 		__entry->data_blocks = data_blocks;
+ 		__entry->data_block_counter = s->data_block_counter,
+@@ -97,20 +100,21 @@ TRACE_EVENT(out_packet,
+ 		__entry->index = index;
+ 	),
+ 	TP_printk(
+-		"%02u %04u %04x %04x %02d %08x %08x %03u %02u %03u %02u %01u %02u",
++		"%02u %04u %04x %04x %02d %03u %02u %03u %02u %01u %02u %s",
+ 		__entry->second,
+ 		__entry->cycle,
+ 		__entry->src,
+ 		__entry->dest,
+ 		__entry->channel,
+-		__entry->cip_header0,
+-		__entry->cip_header1,
+ 		__entry->payload_quadlets,
+ 		__entry->data_blocks,
+ 		__entry->data_block_counter,
+ 		__entry->packet_index,
+ 		__entry->irq,
+-		__entry->index)
++		__entry->index,
++		__print_array(__get_dynamic_array(cip_header),
++			      __get_dynamic_array_len(cip_header),
++			      sizeof(u8)))
+ );
  
- 	/*
- 	 * This module supports 'Two-quadlet CIP header with SYT field'.
+ TRACE_EVENT(in_packet_without_header,
 -- 
 2.20.1
