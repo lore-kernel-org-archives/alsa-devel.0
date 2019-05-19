@@ -1,69 +1,70 @@
 From: nariman <narimantos@gmail.com>
-Subject: [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if statement and removed buffer
-Date: Sun, 19 May 2019 19:57:03 +0200
-Message-ID: <20190519175706.3998-1-narimantos@gmail.com>
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651.c: remove string buffers 'byt_rt5651_cpu_dai_name' and 'byt_rt5651_cpu_dai_name'
+Date: Sun, 19 May 2019 19:57:06 +0200
+Message-ID: <20190519175706.3998-4-narimantos@gmail.com>
+References: <20190519175706.3998-1-narimantos@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190519175706.3998-1-narimantos@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, hdegoede@redhat.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Nariman Etemadi <narimantos@gmail.com>
+Cc: Jordy Ubink <jordyubink@hotmail.nl>, Nariman Etemadi <narimantos@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Nariman Etemadi <narimantos@gmail.com>
+From: Jordy Ubink <jordyubink@hotmail.nl>
 
-in function snd_byt_rt5640_mc_probe and removed buffer yt_rt5640_codec_aif_name & byt_rt5640_cpu_dai_name
+The snprintf calls filling byt_rt5651_cpu_dai_name / byt_rt5651_cpu_dai_name always fill them with the same string (ssp0-port" resp "rt5651-aif2"). So instead of keeping these buffers around and making the cpu_dai_name / codec_dai_name point to this, simply update the foo_dai_name pointers to directly point to a string constant containing the desired string.
 
+Signed-off-by: Jordy Ubink <jordyubink@hotmail.nl>
 Signed-off-by: Nariman Etemadi <narimantos@gmail.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 940eb27158da..0d91642ca287 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1075,8 +1075,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index e528995668b7..2e1bf43820d8 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -730,8 +730,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
  
  /* SoC card */
- static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
--static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
--static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
+ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+-static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+-static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
  
- static int byt_rt5640_suspend(struct snd_soc_card *card)
-@@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ static int byt_rt5651_suspend(struct snd_soc_card *card)
+@@ -1009,26 +1007,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  	log_quirks(&pdev->dev);
  
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
--	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
--
+ 	if ((byt_rt5651_quirk & BYT_RT5651_SSP2_AIF2) ||
+-	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2)) {
 -		/* fixup codec aif name */
--		snprintf(byt_rt5640_codec_aif_name,
--			sizeof(byt_rt5640_codec_aif_name),
--			"%s", "rt5640-aif2");
+-		snprintf(byt_rt5651_codec_aif_name,
+-			sizeof(byt_rt5651_codec_aif_name),
+-			"%s", "rt5651-aif2");
 -
--		byt_rt5640_dais[dai_index].codec_dai_name =
--			byt_rt5640_codec_aif_name;
+-		byt_rt5651_dais[dai_index].codec_dai_name =
+-			byt_rt5651_codec_aif_name;
 -	}
-+	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
-+		byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
++	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2))
++		byt_rt5651_dais[dai_index].codec_dai_name = "rt5651-aif2";
  
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
--	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
--
+ 	if ((byt_rt5651_quirk & BYT_RT5651_SSP0_AIF1) ||
+-	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2)) {
 -		/* fixup cpu dai name name */
--		snprintf(byt_rt5640_cpu_dai_name,
--			sizeof(byt_rt5640_cpu_dai_name),
+-		snprintf(byt_rt5651_cpu_dai_name,
+-			sizeof(byt_rt5651_cpu_dai_name),
 -			"%s", "ssp0-port");
 -
--		byt_rt5640_dais[dai_index].cpu_dai_name =
--			byt_rt5640_cpu_dai_name;
+-		byt_rt5651_dais[dai_index].cpu_dai_name =
+-			byt_rt5651_cpu_dai_name;
 -	}
-+	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
-+		byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
++	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2))
++		byt_rt5651_dais[dai_index].cpu_dai_name = "ssp0-port";
  
- 	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
  		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
 -- 
 2.20.1
