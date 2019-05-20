@@ -1,191 +1,57 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if
- statement and removed buffer
-Date: Mon, 20 May 2019 08:50:28 -0500
-Message-ID: <b4e2ee77-cab9-5457-9649-2ff0804fc2b9@linux.intel.com>
-References: <20190519175706.3998-1-narimantos@gmail.com>
- <783c330c-b706-9d19-467d-a19d2f414a05@redhat.com>
+Subject: Re: [PATCH 1/3] ASoC: Intel: sof-rt5682: Few minor
+ fixes for AMP SSP and codec button
+Date: Mon, 20 May 2019 08:39:24 -0500
+Message-ID: <bc2f98be-6eb7-b668-8d6e-2be7e8ecc929@linux.intel.com>
+References: <20190518183009.13359-1-pierre-louis.bossart@linux.intel.com>
+ <20190518183009.13359-2-pierre-louis.bossart@linux.intel.com>
+ <20190520123114.GA10827@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <783c330c-b706-9d19-467d-a19d2f414a05@redhat.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55BA8F80726
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 15:39:28 +0200 (CEST)
+In-Reply-To: <20190520123114.GA10827@sirena.org.uk>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hans de Goede <hdegoede@redhat.com>, nariman <narimantos@gmail.com>, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 5/20/19 3:37 AM, Hans de Goede wrote:
-> Hi all,
-> 
-> On 19-05-19 19:57, nariman wrote:
->> From: Nariman Etemadi <narimantos@gmail.com>
+On 5/20/19 7:31 AM, Mark Brown wrote:
+> On Sat, May 18, 2019 at 01:30:07PM -0500, Pierre-Louis Bossart wrote:
+>> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
 >>
->> in function snd_byt_rt5640_mc_probe and removed buffer 
->> yt_rt5640_codec_aif_name & byt_rt5640_cpu_dai_name
->>
->> Signed-off-by: Nariman Etemadi <narimantos@gmail.com>
+>>      This fixes:
+>>      1. BIT mask for AMP SSP was incorrect.
+>>      2. The RT5682 codec button mapping is corrected.
 > 
-> Series (all 4 patches) look good to me:
+> Indentation is a bit weird here, and these are really two changes that
+> should be split.
 > 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Thanks for the update (I believe it's the v2, yes?)
-
-the code is fine but can be polished to fix a couple of
-alignment issues
-
-+	bits = 16;
-  	} else {
-
-and checkpatch.pl --strict is quite verbose here. Some reports look like 
-false-alarms but the commit message should be wrapped and alignement fixed.
-
----------------------------------------------------------
-0001-ASoC-Intel-bytcr_5640.c-refactored-codec_fixup.patch
----------------------------------------------------------
-CHECK: Alignment should match open parenthesis
-#86: FILE: sound/soc/intel/boards/bytcr_rt5640.c:980:
-+	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
-+		SND_SOC_DAIFMT_I2S     |
-
-total: 0 errors, 0 warnings, 1 checks, 82 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-       mechanically convert to the typical style using --fix or 
---fix-inplace.
-
-0001-ASoC-Intel-bytcr_5640.c-refactored-codec_fixup.patch has style 
-problems, please review.
----------------------------------------------------------------
-0002-ASoC-Intel-bytcr_5640.c-Refactored-if-statement-and-.patch
----------------------------------------------------------------
-WARNING: Possible unwrapped commit description (prefer a maximum 75 
-chars per line)
-#7:
-in function snd_byt_rt5640_mc_probe and removed buffer 
-yt_rt5640_codec_aif_name & byt_rt5640_cpu_dai_name
-
-total: 0 errors, 1 warnings, 0 checks, 40 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-       mechanically convert to the typical style using --fix or 
---fix-inplace.
-
-0002-ASoC-Intel-bytcr_5640.c-Refactored-if-statement-and-.patch has 
-style problems, please review.
----------------------------------------------------------------
-0003-ASoC-Intel-bytcr_rt5651.c-remove-string-buffers-byt_.patch
----------------------------------------------------------------
-WARNING: Possible unwrapped commit description (prefer a maximum 75 
-chars per line)
-#7:
-The snprintf calls filling byt_rt5651_cpu_dai_name / 
-byt_rt5651_cpu_dai_name always fill them with the same string 
-(ssp0-port" resp "rt5651-aif2"). So instead of keeping these buffers 
-around and making the cpu_dai_name / codec_dai_name point to this, 
-simply update the foo_dai_name pointers to directly point to a string 
-constant containing the desired string.
-
-total: 0 errors, 1 warnings, 0 checks, 38 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-       mechanically convert to the typical style using --fix or 
---fix-inplace.
-
-0003-ASoC-Intel-bytcr_rt5651.c-remove-string-buffers-byt_.patch has 
-style problems, please review.
----------------------------------------------------------------
-0004-ASoC-Intel-cht_bsw_rt5645.c-Remove-buffer-and-snprin.patch
----------------------------------------------------------------
-WARNING: Possible unwrapped commit description (prefer a maximum 75 
-chars per line)
-#7:
-The snprintf calls filling cht_rt5645_cpu_dai_name / 
-cht_rt5645_codec_aif_name
-
-WARNING: suspect code indent for conditional statements (8, 24)
-#35: FILE: sound/soc/intel/boards/cht_bsw_rt5645.c:642:
-  	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
-[...]
-+			cht_dailink[dai_index].codec_dai_name = "rt5645-aif2";
-
-WARNING: suspect code indent for conditional statements (8, 24)
-#49: FILE: sound/soc/intel/boards/cht_bsw_rt5645.c:646:
-  	if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
-[...]
-+			cht_dailink[dai_index].cpu_dai_name = "ssp0-port";
-
-total: 0 errors, 3 warnings, 0 checks, 40 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-       mechanically convert to the typical style using --fix or 
---fix-inplace.
-
-0004-ASoC-Intel-cht_bsw_rt5645.c-Remove-buffer-and-snprin.patch has 
-style problems, please review.
-
-
-
+>> @@ -519,6 +520,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+>>   
+>>   	/* compute number of dai links */
+>>   	sof_audio_card_rt5682.num_links = 1 + dmic_num + hdmi_num;
+>> +
+>>   	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
+>>   		sof_audio_card_rt5682.num_links++;
+>>   
 > 
-> Regards,
-> 
-> Hans
-> 
-> 
->> ---
->>   sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++----------------------
->>   1 file changed, 4 insertions(+), 22 deletions(-)
->>
->> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c 
->> b/sound/soc/intel/boards/bytcr_rt5640.c
->> index 940eb27158da..0d91642ca287 100644
->> --- a/sound/soc/intel/boards/bytcr_rt5640.c
->> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
->> @@ -1075,8 +1075,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] 
->> = {
->>   /* SoC card */
->>   static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
->> -static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
->> -static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
->>   static char byt_rt5640_long_name[40]; /* = 
->> "bytcr-rt5640-*-spk-*-mic" */
->>   static int byt_rt5640_suspend(struct snd_soc_card *card)
->> @@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct 
->> platform_device *pdev)
->>       log_quirks(&pdev->dev);
->>       if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
->> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
->> -
->> -        /* fixup codec aif name */
->> -        snprintf(byt_rt5640_codec_aif_name,
->> -            sizeof(byt_rt5640_codec_aif_name),
->> -            "%s", "rt5640-aif2");
->> -
->> -        byt_rt5640_dais[dai_index].codec_dai_name =
->> -            byt_rt5640_codec_aif_name;
->> -    }
->> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->> +        byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
->>       if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
->> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
->> -
->> -        /* fixup cpu dai name name */
->> -        snprintf(byt_rt5640_cpu_dai_name,
->> -            sizeof(byt_rt5640_cpu_dai_name),
->> -            "%s", "ssp0-port");
->> -
->> -        byt_rt5640_dais[dai_index].cpu_dai_name =
->> -            byt_rt5640_cpu_dai_name;
->> -    }
->> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
->> +        byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
->>       if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
->>           priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> and this is an unrelated indentation change.
+
+ok, I'll send a v2.
