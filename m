@@ -1,19 +1,22 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: soc-pcm: fixup
- try_module_get()/module_put() timing
-Date: Mon, 20 May 2019 08:29:50 -0500
-Message-ID: <deb932a6-32cf-d455-e609-ea4657ecb229@linux.intel.com>
-References: <87imu5zzh7.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 08/12] ASoC: SOF: ipc: fix a race,
+ leading to IPC timeouts
+Date: Mon, 20 May 2019 08:36:09 -0500
+Message-ID: <6e573117-d3f7-5086-3f35-1ee185846381@linux.intel.com>
+References: <20190518202704.7772-1-pierre-louis.bossart@linux.intel.com>
+ <20190518202704.7772-9-pierre-louis.bossart@linux.intel.com>
+ <s5hftpaewq0.wl-tiwai@suse.de>
+ <20190520071547.godyxigamihl5gav@debian.ka.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C38BF80726
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 15:29:58 +0200 (CEST)
-In-Reply-To: <87imu5zzh7.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55CBFF89618
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 15:36:18 +0200 (CEST)
+In-Reply-To: <20190520071547.godyxigamihl5gav@debian.ka.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,89 +27,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
+>>> diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+>>> index 065cb868bdfa..9dfdc02192b7 100644
+>>> --- a/sound/soc/sof/intel/bdw.c
+>>> +++ b/sound/soc/sof/intel/bdw.c
+>>> @@ -278,11 +278,15 @@ static irqreturn_t bdw_irq_thread(int irq, void *context)
+>>>   	/* reply message from DSP */
+>>>   	if (ipcx & SHIM_IPCX_DONE &&
+>>>   	    !(imrx & SHIM_IMRX_DONE)) {
+>>> +		unsigned long flags;
+>>> +
+>>>   		/* Mask Done interrupt before return */
+>>>   		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR,
+>>>   						 SHIM_IMRX, SHIM_IMRX_DONE,
+>>>   						 SHIM_IMRX_DONE);
+>>> +		spin_lock_irqsave(&sdev->ipc_lock, flags);
+>>
+>> Here is an threaded irq handler, so the irqflag is superfluous.
+>> You can use spin_lock_irq() and spin_unlock_irq().
+> 
+> Oh, sure, thanks for catching this! That was a blind moving of the
+> spin-lock from lower-level functions. I'll send an updated version to
+> Pierre, unless you want to apply it immediately, in which case I can
+> send it to you now.
 
-On 5/19/19 8:42 PM, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> soc_pcm_components_open/close() try to call
-> try_module_get()/module_put() based on
-> component->driver->module_get_upon_open.
-> 
-> Here, the purpose why we need to call these functions are to
-> checking module reference.
-> Thus, we need to call try_module_open() even though it doesn't
-> have .open callback.
-> 
-> The same reason, we need to call module_put() even though it
-> doesn't have .close
-> 
-> This patch calls try_module_get()/module_put() regardless of
-> .open/.close
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+I can send a v2 with Guennadi's update and Takashi's Reviewed-by tag.
 
-
-LGTM, this removes the assumptions on the implementation of .open and 
-.close.
-
-FWIW
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Thanks!
-
-> ---
-> v1 -> v2
 > 
->   - merge both try_module_get()/module_put() patch into 1
+>>> diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+>>> index 7bf9143d3106..5a11a104110b 100644
+>>> --- a/sound/soc/sof/intel/byt.c
+>>> +++ b/sound/soc/sof/intel/byt.c
+>>> @@ -324,11 +324,16 @@ static irqreturn_t byt_irq_thread(int irq, void *context)
+>>>   	/* reply message from DSP */
+>>>   	if (ipcx & SHIM_BYT_IPCX_DONE &&
+>>>   	    !(imrx & SHIM_IMRX_DONE)) {
+>>> +		unsigned long flags;
+>>> +
+>>>   		/* Mask Done interrupt before first */
+>>>   		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
+>>>   						   SHIM_IMRX,
+>>>   						   SHIM_IMRX_DONE,
+>>>   						   SHIM_IMRX_DONE);
+>>
+>> BTW, is this usage of _unlocked() version safe?  The previous one also
+>> contained that, and I wonder why _unlocked variant must be used here.
 > 
->   sound/soc/soc-pcm.c | 16 +++++++---------
->   1 file changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 7737e00..e24eab3 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -440,10 +440,6 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream,
->   		component = rtdcom->component;
->   		*last = component;
->   
-> -		if (!component->driver->ops ||
-> -		    !component->driver->ops->open)
-> -			continue;
-> -
->   		if (component->driver->module_get_upon_open &&
->   		    !try_module_get(component->dev->driver->owner)) {
->   			dev_err(component->dev,
-> @@ -452,6 +448,10 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream,
->   			return -ENODEV;
->   		}
->   
-> +		if (!component->driver->ops ||
-> +		    !component->driver->ops->open)
-> +			continue;
-> +
->   		ret = component->driver->ops->open(substream);
->   		if (ret < 0) {
->   			dev_err(component->dev,
-> @@ -477,11 +477,9 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
->   		if (component == last)
->   			break;
->   
-> -		if (!component->driver->ops ||
-> -		    !component->driver->ops->close)
-> -			continue;
-> -
-> -		component->driver->ops->close(substream);
-> +		if (component->driver->ops &&
-> +		    component->driver->ops->close)
-> +			component->driver->ops->close(substream);
->   
->   		if (component->driver->module_get_upon_open)
->   			module_put(component->dev->driver->owner);
-> 
+> Some of those uses seem rather fragile to me too, but it looks like they
+> *should* be safe in normal cases. There seem to be a potential problem
+> on Broadwell, where an ISR is first configured, which uses *_unlocked()
+> to access the SHIM_IMRX register, and then bdw_set_dsp_D0() is called,
+> which also touches that register. So, it's relying on the fact, that no
+> IPC interrupts will occur until probing is completed. This should also
+> normally be the case, but if for some reason such an interrupt does
+> trigger at that time, access to that register can be messed up. This
+> should be reviewed and possibly refined separately.
+
+There will be additional IPC hardening fixes that are being tested at 
+the moment, the introduction of HDaudio support seems to have exposed a 
+number of issues we didn't see with I2S/TDM/DMIC interfaces. I included 
+Guennadi's patch in the series since we have evidence it does improve 
+things on the Up2. we can look at the _unlocked parts in the next update 
+with more validation.
