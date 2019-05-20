@@ -1,66 +1,85 @@
-From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v2] ASoC: Mediatek: MT8183: enable IIR filter
-Date: Mon, 20 May 2019 16:24:20 +0800
-Message-ID: <20190520082420.11236-1-shunli.wang@mediatek.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if statement and
+ removed buffer
+Date: Mon, 20 May 2019 10:37:01 +0200
+Message-ID: <783c330c-b706-9d19-467d-a19d2f414a05@redhat.com>
+References: <20190519175706.3998-1-narimantos@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190519175706.3998-1-narimantos@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: nariman <narimantos@gmail.com>, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-IIR fileter can remove DC offset. It must be enabled when
-dmic or amic connected to pmic is used.
+Hi all,
 
-Signed-off-by: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
----
-v2:
-correct the commit message
----
- sound/soc/mediatek/mt8183/mt8183-dai-adda.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+On 19-05-19 19:57, nariman wrote:
+> From: Nariman Etemadi <narimantos@gmail.com>
+> 
+> in function snd_byt_rt5640_mc_probe and removed buffer yt_rt5640_codec_aif_name & byt_rt5640_cpu_dai_name
+> 
+> Signed-off-by: Nariman Etemadi <narimantos@gmail.com>
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-adda.c b/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-index 017d7d1d9148..2b758a18c2ea 100644
---- a/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-@@ -176,9 +176,6 @@ static int mtk_adda_ul_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* should delayed 1/fs(smallest is 8k) = 125us before afe off */
- 		usleep_range(125, 135);
--
--		/* reset dmic */
--		afe_priv->mtkaif_dmic = 0;
- 		break;
- 	default:
- 		break;
-@@ -426,6 +423,17 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 
- 		ul_src_con0 |= (voice_mode << 17) & (0x7 << 17);
- 
-+		/* enable iir */
-+		ul_src_con0 |= (1 << UL_IIR_ON_TMP_CTL_SFT) &
-+			       UL_IIR_ON_TMP_CTL_MASK_SFT;
-+
-+		/* 35Hz @ 48k */
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_02_01, 0x00000000);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_04_03, 0x00003FB8);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_06_05, 0x3FB80000);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_08_07, 0x3FB80000);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_10_09, 0x0000C048);
-+
- 		regmap_write(afe->regmap, AFE_ADDA_UL_SRC_CON0, ul_src_con0);
- 
- 		/* mtkaif_rxif_data_mode = 0, amic */
--- 
-2.18.0
+Series (all 4 patches) look good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+> ---
+>   sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++----------------------
+>   1 file changed, 4 insertions(+), 22 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index 940eb27158da..0d91642ca287 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -1075,8 +1075,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+>   
+>   /* SoC card */
+>   static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+> -static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+> -static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+>   static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
+>   
+>   static int byt_rt5640_suspend(struct snd_soc_card *card)
+> @@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+>   	log_quirks(&pdev->dev);
+>   
+>   	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
+> -	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+> -
+> -		/* fixup codec aif name */
+> -		snprintf(byt_rt5640_codec_aif_name,
+> -			sizeof(byt_rt5640_codec_aif_name),
+> -			"%s", "rt5640-aif2");
+> -
+> -		byt_rt5640_dais[dai_index].codec_dai_name =
+> -			byt_rt5640_codec_aif_name;
+> -	}
+> +	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+> +		byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
+>   
+>   	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
+> -	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+> -
+> -		/* fixup cpu dai name name */
+> -		snprintf(byt_rt5640_cpu_dai_name,
+> -			sizeof(byt_rt5640_cpu_dai_name),
+> -			"%s", "ssp0-port");
+> -
+> -		byt_rt5640_dais[dai_index].cpu_dai_name =
+> -			byt_rt5640_cpu_dai_name;
+> -	}
+> +	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+> +		byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
+>   
+>   	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+>   		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
+> 
