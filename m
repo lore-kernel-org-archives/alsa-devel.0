@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: Intel: sof-rt5682: Few minor
- fixes for AMP SSP and codec button
-Date: Mon, 20 May 2019 13:31:14 +0100
-Message-ID: <20190520123114.GA10827@sirena.org.uk>
-References: <20190518183009.13359-1-pierre-louis.bossart@linux.intel.com>
- <20190518183009.13359-2-pierre-louis.bossart@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: soc-pcm: fixup
+ try_module_get()/module_put() timing
+Date: Mon, 20 May 2019 08:29:50 -0500
+Message-ID: <deb932a6-32cf-d455-e609-ea4657ecb229@linux.intel.com>
+References: <87imu5zzh7.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1520501915821710657=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48881F89618
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 14:31:25 +0200 (CEST)
-In-Reply-To: <20190518183009.13359-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C38BF80726
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 15:29:58 +0200 (CEST)
+In-Reply-To: <87imu5zzh7.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +24,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1520501915821710657==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
-Content-Disposition: inline
+
+On 5/19/19 8:42 PM, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> soc_pcm_components_open/close() try to call
+> try_module_get()/module_put() based on
+> component->driver->module_get_upon_open.
+> 
+> Here, the purpose why we need to call these functions are to
+> checking module reference.
+> Thus, we need to call try_module_open() even though it doesn't
+> have .open callback.
+> 
+> The same reason, we need to call module_put() even though it
+> doesn't have .close
+> 
+> This patch calls try_module_get()/module_put() regardless of
+> .open/.close
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+LGTM, this removes the assumptions on the implementation of .open and 
+.close.
 
-On Sat, May 18, 2019 at 01:30:07PM -0500, Pierre-Louis Bossart wrote:
-> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
->=20
->     This fixes:
->     1. BIT mask for AMP SSP was incorrect.
->     2. The RT5682 codec button mapping is corrected.
+FWIW
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Indentation is a bit weird here, and these are really two changes that
-should be split.
+Thanks!
 
-> @@ -519,6 +520,7 @@ static int sof_audio_probe(struct platform_device *pd=
-ev)
-> =20
->  	/* compute number of dai links */
->  	sof_audio_card_rt5682.num_links =3D 1 + dmic_num + hdmi_num;
+> ---
+> v1 -> v2
+> 
+>   - merge both try_module_get()/module_put() patch into 1
+> 
+>   sound/soc/soc-pcm.c | 16 +++++++---------
+>   1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 7737e00..e24eab3 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -440,10 +440,6 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream,
+>   		component = rtdcom->component;
+>   		*last = component;
+>   
+> -		if (!component->driver->ops ||
+> -		    !component->driver->ops->open)
+> -			continue;
+> -
+>   		if (component->driver->module_get_upon_open &&
+>   		    !try_module_get(component->dev->driver->owner)) {
+>   			dev_err(component->dev,
+> @@ -452,6 +448,10 @@ static int soc_pcm_components_open(struct snd_pcm_substream *substream,
+>   			return -ENODEV;
+>   		}
+>   
+> +		if (!component->driver->ops ||
+> +		    !component->driver->ops->open)
+> +			continue;
 > +
->  	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
->  		sof_audio_card_rt5682.num_links++;
-> =20
-
-and this is an unrelated indentation change.
-
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzinhEACgkQJNaLcl1U
-h9BnYgf/bGq8I2zFlJlvsMY65l3WK4CtzIZPewElK8MjJyt6vFJdWUXozUsOuACJ
-irLFbnpDssRTTUBL1mTQlWjPrRZLvbEtNukQBNBLTXUKItwZ1CVv9kuj4Lzxkir/
-rjO4nBLTb2DYb6VgwvSyAkBiM/lzv9s9OEkdCPwETTU+xcrGAmkOiox+hb7P+obW
-zVASvuKqha5Rr5Y/spjxUphgdtaw5TXJtPLLsgTrBE4OQUo+pohfN/vOvduYHp6e
-6PWuNNJW1uu6AnUJC19NfLCpy5IodOSInzYw7BfK7kyZjgUmS2B931ZcuvCQnV4O
-kjaREIylE53thMsI17oW6TEP24A1NQ==
-=PBzd
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
-
---===============1520501915821710657==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1520501915821710657==--
+>   		ret = component->driver->ops->open(substream);
+>   		if (ret < 0) {
+>   			dev_err(component->dev,
+> @@ -477,11 +477,9 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
+>   		if (component == last)
+>   			break;
+>   
+> -		if (!component->driver->ops ||
+> -		    !component->driver->ops->close)
+> -			continue;
+> -
+> -		component->driver->ops->close(substream);
+> +		if (component->driver->ops &&
+> +		    component->driver->ops->close)
+> +			component->driver->ops->close(substream);
+>   
+>   		if (component->driver->module_get_upon_open)
+>   			module_put(component->dev->driver->owner);
+> 
