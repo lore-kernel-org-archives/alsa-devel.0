@@ -1,57 +1,40 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/3] ASoC: Intel: sof-rt5682: Few minor
- fixes for AMP SSP and codec button
-Date: Mon, 20 May 2019 08:39:24 -0500
-Message-ID: <bc2f98be-6eb7-b668-8d6e-2be7e8ecc929@linux.intel.com>
-References: <20190518183009.13359-1-pierre-louis.bossart@linux.intel.com>
- <20190518183009.13359-2-pierre-louis.bossart@linux.intel.com>
- <20190520123114.GA10827@sirena.org.uk>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH 07/10] mfd: madera: point to the right pinctrl binding file
+Date: Mon, 20 May 2019 11:47:36 -0300
+Message-ID: <fb47879d405e624374d7d4e099988296ed2af668.1558362030.git.mchehab+samsung@kernel.org>
+References: <cover.1558362030.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55BA8F80726
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 15:39:28 +0200 (CEST)
-In-Reply-To: <20190520123114.GA10827@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1558362030.git.mchehab+samsung@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Charles Keepax <ckeepax@opensource.cirrus.com>, Richard Fitzgerald <rf@opensource.cirrus.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
+The reference to Documentation/pinctrl.txt doesn't exist, but
+there is an specific binding for the madera driver.
 
+So, point to it.
 
-On 5/20/19 7:31 AM, Mark Brown wrote:
-> On Sat, May 18, 2019 at 01:30:07PM -0500, Pierre-Louis Bossart wrote:
->> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
->>
->>      This fixes:
->>      1. BIT mask for AMP SSP was incorrect.
->>      2. The RT5682 codec button mapping is corrected.
-> 
-> Indentation is a bit weird here, and these are really two changes that
-> should be split.
-> 
->> @@ -519,6 +520,7 @@ static int sof_audio_probe(struct platform_device *pdev)
->>   
->>   	/* compute number of dai links */
->>   	sof_audio_card_rt5682.num_links = 1 + dmic_num + hdmi_num;
->> +
->>   	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
->>   		sof_audio_card_rt5682.num_links++;
->>   
-> 
-> and this is an unrelated indentation change.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+---
+ include/linux/mfd/madera/pdata.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-ok, I'll send a v2.
+diff --git a/include/linux/mfd/madera/pdata.h b/include/linux/mfd/madera/pdata.h
+index 8dc852402dbb..c7e0658eb74b 100644
+--- a/include/linux/mfd/madera/pdata.h
++++ b/include/linux/mfd/madera/pdata.h
+@@ -34,7 +34,8 @@ struct madera_codec_pdata;
+  * @micvdd:	    Substruct of pdata for the MICVDD regulator
+  * @irq_flags:	    Mode for primary IRQ (defaults to active low)
+  * @gpio_base:	    Base GPIO number
+- * @gpio_configs:   Array of GPIO configurations (See Documentation/pinctrl.txt)
++ * @gpio_configs:   Array of GPIO configurations
++ *		    (See Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt)
+  * @n_gpio_configs: Number of entries in gpio_configs
+  * @gpsw:	    General purpose switch mode setting. Depends on the external
+  *		    hardware connected to the switch. (See the SW1_MODE field
+-- 
+2.21.0
