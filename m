@@ -1,85 +1,89 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: udev: Access permission of fw character device in
- which fw node includes unit handled by ALSA
-Date: Mon, 20 May 2019 21:27:27 +0900
-Message-ID: <20190520122724.GA14864@workstation>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: Intel: sof-rt5682: Few minor
+ fixes for AMP SSP and codec button
+Date: Mon, 20 May 2019 13:31:14 +0100
+Message-ID: <20190520123114.GA10827@sirena.org.uk>
+References: <20190518183009.13359-1-pierre-louis.bossart@linux.intel.com>
+ <20190518183009.13359-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <systemd-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/systemd-devel>,
- <mailto:systemd-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/systemd-devel>
-List-Post: <mailto:systemd-devel@lists.freedesktop.org>
-List-Help: <mailto:systemd-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/systemd-devel>,
- <mailto:systemd-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: systemd-devel-bounces@lists.freedesktop.org
-Sender: "systemd-devel" <systemd-devel-bounces@lists.freedesktop.org>
-To: systemd-devel@lists.freedesktop.org
-Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sourceforge.net
+Content-Type: multipart/mixed; boundary="===============1520501915821710657=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48881F89618
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 14:31:25 +0200 (CEST)
+In-Reply-To: <20190518183009.13359-2-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLAoKSSdtIGFuIEFMU0EgZGV2ZWxvcGVyLCBtYWlubHkgY29tbWl0dGluZyB0byBkcml2
-ZXJzIGZvciBhdWRpbyBhbmQKbXVzaWMgdW5pdHMgb24gSUVFRSAxMzk0IGJ1cyAoeWVzLCBpdCdz
-IGxlZ2FjeSBGaXJlV2lyZSkuIEkgaGF2ZSBhCmNvbmNlcm4gYWJvdXQgYWNjZXNzIHBlcm1pc3Np
-b24gZm9yIGZ3IGNoYXJhY3RlciBkZXZpY2UuCgpJbiB0aGUgbGFzdCBmZXcgeWVhcnMgOSBkcml2
-ZXJzIGhhdmUgYmVlbiBhZGRlZCB0byBzdXBwb3J0IDEyMCBtb2RlbHMKYXJvdW5kWzFdLiBUaGUg
-ZHJpdmVycyBhbGxvdyBBTFNBIGFwcGxpY2F0aW9ucyB0byB0cmFuc2ZlciBhdWRpbyBkYXRhCmZy
-YW1lcyBhbmQgTUlESSBtZXNzYWdlcywgYnV0IHRoZXkgZXhwZWN0IHVzZXJzcGFjZSBhcHBsaWNh
-dGlvbiB0bwp1c2UgZncgY2hhcmFjdGVyIGRldmljZSBmb3Igb3BlcmF0aW9ucyBvZiB0aGUgb3Ro
-ZXIgZnVuY3Rpb25hbGl0aWVzCnN1Y2ggYXMgcGh5c2ljYWwgdm9sdW1lIGNvbnRyb2xzLgoKQXQg
-cHJlc2VudCwgZm9yIHNvbWUgbW9kZWxzLCB1ZGV2ZCBjb25maWd1cmVzIGZ3IGNoYXJhY3RlciBk
-ZXZpY2UgZm9yCmdvb2QgYWNjZXNzIHBlcm1pc3Npb24gdG8gdXNlcnNwYWNlIGFwcGxpY2F0aW9u
-cy4gT24gdGhlIG90aGVyIGhhbmQsCmZvciB0aGUgb3RoZXIgbW9kZWxzLCB1ZGV2ZCBkb2Vzbid0
-LiBJbiBteSBvcGluaW9uLCBmb3Igb25lIGhhbGYgb2YKc3VwcG9ydGVkIG1vZGVscywgZncgY2hh
-cmFjdGVyIGRldmljZSBpcyBjb25maWd1cmVkIHdpdGggcm9vdDpyb290LzA1MDAuCgpJJ2QgbGlr
-ZSB0byBjaGFuZ2UgdGhpcyBpbmNvbnZlbmllbmNlLCBjaGFuZ2luZyBncm91cCBvd25lcnNoaXAg
-b2YgdGhlCnNwZWNpYWwgZmlsZSB0byAnYXVkaW8nLCBhbmQgYWRkIEFDTCArdWFjY2VzcyB3aGVu
-IGxvZ2dpbmcgaW4uCgpGb3IgeW91ciBpbmZvcm1hdGlvbiwgSSBwcmVwYXJlIGEgcmVwb3NpdG9y
-eSBpbmNsdWRpbmcgaW1hZ2Ugb2YKY29uZmlndXJhdGlvbiBST00gZnJvbSBzdXBwb3J0ZWQgZGV2
-aWNlc1syXS4gQXQgcHJlc2VudCwgODAgaW1hZ2VzIGFyZQphZGRlZC4gIFlvdSBjYW4gcGFyc2Ug
-dGhlIGltYWdlIGJ5IGNycHAgaW4gbGludXgtZmlyZXdpcmUtdXRpbHMKcmVwb3NpdG9yeVszXS4K
-CkF0IHByZXNlbnQgSSBhc3N1bWUgdGhyZWUgb3B0aW9uczoKCjEuIEFkZCBlbnRyaWVzIGludG8g
-dWRldiBydWxlcyBmb3IgZWFjaCBvZiBkZXZpY2UKClRoaXMgaXMgYW4gZW5oYW5jZW1lbnQgb2Yg
-ZXhpc3RlbnQgcnVsZXNbNF1bNV0gYW5kIHNpbXBsZSBzb2x1dGlvbi4KQnV0IGRldmVsb3BlcnMg
-YWx3YXlzIHRha2UgY2FyZSBvZiBhZGRpbmcgbmV3IGVudHJpZXMgd2hlbiB1c2VycyBzdWdnZXN0
-cywKcGVyaGFwcy4KCjIuIFJlY29uZmlndXJlIGZ3IGNoYXJhY3RlciBkZXZpY2Ugd2hlbiBBTFNB
-IGZpcmV3aXJlIGRyaXZlciBpcyBhdHRhY2hlZAogICB0byB1bml0CgpJRUVFIDEzOTQgc3BlY2lm
-aWNhdGlvbiByZWZlcnMgdG8gSUVFRSAxMjEyIHRvIHJlcHJlc2VudCBkZXZpY2UgYW5kIGl0cwpm
-dW5jdGlvbmFsaXRpZXMuIEVhY2ggZGV2aWNlIGlzIHJlcHJlc2VudGVkIGFzICdub2RlJyBhbmQg
-aXRzCmZ1bmN0aW9uYWxpdGllcyBhcmUgcmVwcmVzZW50ZWQgYXMgJ3VuaXQnLiBUaGUgaW5mb3Jt
-YXRpb24gYWJvdXQgJ25vZGUnCmFuZCAndW5pdCcgaXMgaW4gY29uZmlndXJhdGlvbiBST00uCgpM
-aW51eCBmaXJld2lyZSBzdWJzeXN0ZW0gcmVhZHMgY29udGVudCBvZiB0aGUgUk9NLCBwYXJzZXMK
-aXQgYW5kIGFkZHMgZncgY2hhcmFjdGVyIGRldmljZSB0byBzeXN0ZW0gZm9yICdub2RlJywgdGhl
-biBiaW5kcyBpbi1rZXJuZWwKZHJpdmVyIHRvICd1bml0Jy4gS2V2ZW50cyBmb3IgdGhlIG5vZGUg
-YW5kIHVuaXQgYXJlIGdlbmVyYXRlZCBzZXBhcmF0ZWx5LgoKSWYgdWRldmQgaGFuZGxlcyB1bml0
-IGtldmVudCB0byBzZWVrIGJpbmRpbmcgZHJpdmVyIHRoZW4gY29uZmlndXJlcyBmdwpjaGFyYWN0
-ZXIgZGV2aWNlLCBkZXZlbG9wZXJzIGRvbid0IG5lZWQgdG8gbWFpbnRhaW4gcnVsZSBsaXN0LiBB
-bHRob3VnaApvbmUgbm9kZSBpcyBhbGxvd2VkIHRvIGhhdmUgc2V2ZXJhbCB1bml0cywgbnV0IHRo
-ZSBtb3N0IG9mIHN1cHBvcnRlZAptb2RlbHMgaGF2ZSBvbmx5IG9uZSB1bml0LCBleGNlcHQgZm9y
-IEFwcGxpZSBpU2lnaHRbNl0uCgozLiBGdWxmaWxsIGh3ZGIgdG8gaGF2ZSBzdXBwbGVtZW50YWwg
-aW5mb3JtYXRpb24KCkknbSBub3QgZ29vZCBhdCBod2RiLCBidXQgYWNjb3JkaW5nIHRvIGl0cyBu
-YW1lLCBod2RiIGlzIGdvb2QgdG8gc3RvcmUKZGV2aWNlIGRlcGVuZGVudCBpbmZvcm1hdGlvbi4g
-SWYgYWRkaW5nIHNvbWUgaGludHMgdG8gZGF0YWJhc2UgYW5kCnVzaW5nIHRoZSBpbmZvcm1hdGlv
-biwgdGhpcyBpc3N1ZSBtaWdodCBiZSBzb2x2ZWQuCgpJJ20gaGFwcHkgdG8gcmVjZWl2ZSB5b3Vy
-IGNvbW1lbnRzIHRvIGltcHJvdmUgdGhpcyBzaXR1YXRpb24uCgpBcyBhIG1vY2t1cCBvZiBzdWNo
-IGNvbnRyb2wgYXBwbGljYXRpb24sIEkgd3JvdGUgbGliaGluYXdhWzddIGFuZApoaW5hd2EtdXRp
-bHNbOF0uIFRoZXkncmUgbXkgKHJvdWdoKSBwcml2YXRlIHdvcmsgYW5kIG91dCBvZiBBTFNBIHBy
-b2plY3QsCmJ1dCBmb3IgZnV0dXJlIEkgd2lzaCB0byBwcm9wb3NlIGJldHRlciBpbXBsZW1lbnRh
-dGlvbiB0byBBTFNBIHByb2plY3QKYXMgYSBjb250cm9sIHNlcnZlciBwcm9ncmFtLgoKWzFdIGh0
-dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xp
-bnV4LmdpdC90cmVlL3NvdW5kL2ZpcmV3aXJlL0tjb25maWcKWzJdIGh0dHBzOi8vZ2l0aHViLmNv
-bS90YWthc3dpZS9hbS1jb25maWctcm9tcy8KWzNdIGh0dHBzOi8vZ2l0aHViLmNvbS9jbGFkaXNj
-aC9saW51eC1maXJld2lyZS11dGlscwpbNF0gaHR0cHM6Ly9naXRodWIuY29tL3N5c3RlbWQvc3lz
-dGVtZC9ibG9iL21hc3Rlci9ydWxlcy81MC11ZGV2LWRlZmF1bHQucnVsZXMuaW4KWzVdIGh0dHBz
-Oi8vZ2l0aHViLmNvbS9zeXN0ZW1kL3N5c3RlbWQvYmxvYi9tYXN0ZXIvc3JjL2xvZ2luLzcwLXVh
-Y2Nlc3MucnVsZXMubTQKICAgIFRoaXMgcnVsZSByZWZlcnMgdG8gYSBydWxlIG9wdGlvbmFsbHkg
-YWRkZWQgYnkgRkZBRE8gcHJvamVjdC4KWzZdIFRoaXMgZGV2aWNlIGhhcyBmb3VyIHVuaXRzOyBJ
-SURDLCBBdWRpbywgdmVuZG9yLWRlcGVuZGVudCBhbmQgSVJJUy4KWzddIGh0dHBzOi8vZ2l0aHVi
-LmNvbS90YWthc3dpZS9saWJoaW5hd2EvCls4XSBodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUv
-aGluYXdhLXV0aWxzLwoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18Kc3lzdGVtZC1kZXZlbCBtYWlsaW5nIGxp
-c3QKc3lzdGVtZC1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9zeXN0ZW1kLWRldmVs
+
+--===============1520501915821710657==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
+
+
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, May 18, 2019 at 01:30:07PM -0500, Pierre-Louis Bossart wrote:
+> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+>=20
+>     This fixes:
+>     1. BIT mask for AMP SSP was incorrect.
+>     2. The RT5682 codec button mapping is corrected.
+
+Indentation is a bit weird here, and these are really two changes that
+should be split.
+
+> @@ -519,6 +520,7 @@ static int sof_audio_probe(struct platform_device *pd=
+ev)
+> =20
+>  	/* compute number of dai links */
+>  	sof_audio_card_rt5682.num_links =3D 1 + dmic_num + hdmi_num;
+> +
+>  	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
+>  		sof_audio_card_rt5682.num_links++;
+> =20
+
+and this is an unrelated indentation change.
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzinhEACgkQJNaLcl1U
+h9BnYgf/bGq8I2zFlJlvsMY65l3WK4CtzIZPewElK8MjJyt6vFJdWUXozUsOuACJ
+irLFbnpDssRTTUBL1mTQlWjPrRZLvbEtNukQBNBLTXUKItwZ1CVv9kuj4Lzxkir/
+rjO4nBLTb2DYb6VgwvSyAkBiM/lzv9s9OEkdCPwETTU+xcrGAmkOiox+hb7P+obW
+zVASvuKqha5Rr5Y/spjxUphgdtaw5TXJtPLLsgTrBE4OQUo+pohfN/vOvduYHp6e
+6PWuNNJW1uu6AnUJC19NfLCpy5IodOSInzYw7BfK7kyZjgUmS2B931ZcuvCQnV4O
+kjaREIylE53thMsI17oW6TEP24A1NQ==
+=PBzd
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
+
+--===============1520501915821710657==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1520501915821710657==--
