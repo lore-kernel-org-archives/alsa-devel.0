@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 3/5] ASoC: Intel: sof-rt5682: add newline
-	for clarity
-Date: Mon, 20 May 2019 14:46:43 -0500
-Message-ID: <20190520194645.432-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 5/5] ASoC: Intel: glk_rt5682_max98357a:
+	Remap button control-function
+Date: Mon, 20 May 2019 14:46:45 -0500
+Message-ID: <20190520194645.432-6-pierre-louis.bossart@linux.intel.com>
 References: <20190520194645.432-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B138FF89618
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 21:46:56 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C72DAF806E7
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 21:46:57 +0200 (CEST)
 In-Reply-To: <20190520194645.432-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,30 +24,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Naveen Manohar <naveen.m@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+From: Yong Zhi <yong.zhi@intel.com>
 
-Make sure quirk handling is cleary split from number of links.
+Assign button functions based on Android wired headset specs(v1.1).
 
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 3343dbcd506f..e441dc979966 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -520,6 +520,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index d17126f7757c..6b677b5bcdcd 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -169,9 +169,10 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	jack = &ctx->geminilake_headset;
  
- 	/* compute number of dai links */
- 	sof_audio_card_rt5682.num_links = 1 + dmic_num + hdmi_num;
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
 +
- 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
- 		sof_audio_card_rt5682.num_links++;
+ 	ret = snd_soc_component_set_jack(component, jack, NULL);
  
+ 	if (ret) {
 -- 
 2.20.1
