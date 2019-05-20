@@ -1,96 +1,191 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 08/12] ASoC: SOF: ipc: fix a race,
- leading to IPC timeouts
-Date: Mon, 20 May 2019 08:36:09 -0500
-Message-ID: <6e573117-d3f7-5086-3f35-1ee185846381@linux.intel.com>
-References: <20190518202704.7772-1-pierre-louis.bossart@linux.intel.com>
- <20190518202704.7772-9-pierre-louis.bossart@linux.intel.com>
- <s5hftpaewq0.wl-tiwai@suse.de>
- <20190520071547.godyxigamihl5gav@debian.ka.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: bytcr_5640.c:Refactored if
+ statement and removed buffer
+Date: Mon, 20 May 2019 08:50:28 -0500
+Message-ID: <b4e2ee77-cab9-5457-9649-2ff0804fc2b9@linux.intel.com>
+References: <20190519175706.3998-1-narimantos@gmail.com>
+ <783c330c-b706-9d19-467d-a19d2f414a05@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55CBFF89618
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2019 15:36:18 +0200 (CEST)
-In-Reply-To: <20190520071547.godyxigamihl5gav@debian.ka.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <783c330c-b706-9d19-467d-a19d2f414a05@redhat.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans de Goede <hdegoede@redhat.com>, nariman <narimantos@gmail.com>, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
->>> diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
->>> index 065cb868bdfa..9dfdc02192b7 100644
->>> --- a/sound/soc/sof/intel/bdw.c
->>> +++ b/sound/soc/sof/intel/bdw.c
->>> @@ -278,11 +278,15 @@ static irqreturn_t bdw_irq_thread(int irq, void *context)
->>>   	/* reply message from DSP */
->>>   	if (ipcx & SHIM_IPCX_DONE &&
->>>   	    !(imrx & SHIM_IMRX_DONE)) {
->>> +		unsigned long flags;
->>> +
->>>   		/* Mask Done interrupt before return */
->>>   		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR,
->>>   						 SHIM_IMRX, SHIM_IMRX_DONE,
->>>   						 SHIM_IMRX_DONE);
->>> +		spin_lock_irqsave(&sdev->ipc_lock, flags);
+
+On 5/20/19 3:37 AM, Hans de Goede wrote:
+> Hi all,
+> 
+> On 19-05-19 19:57, nariman wrote:
+>> From: Nariman Etemadi <narimantos@gmail.com>
 >>
->> Here is an threaded irq handler, so the irqflag is superfluous.
->> You can use spin_lock_irq() and spin_unlock_irq().
-> 
-> Oh, sure, thanks for catching this! That was a blind moving of the
-> spin-lock from lower-level functions. I'll send an updated version to
-> Pierre, unless you want to apply it immediately, in which case I can
-> send it to you now.
-
-I can send a v2 with Guennadi's update and Takashi's Reviewed-by tag.
-
-> 
->>> diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
->>> index 7bf9143d3106..5a11a104110b 100644
->>> --- a/sound/soc/sof/intel/byt.c
->>> +++ b/sound/soc/sof/intel/byt.c
->>> @@ -324,11 +324,16 @@ static irqreturn_t byt_irq_thread(int irq, void *context)
->>>   	/* reply message from DSP */
->>>   	if (ipcx & SHIM_BYT_IPCX_DONE &&
->>>   	    !(imrx & SHIM_IMRX_DONE)) {
->>> +		unsigned long flags;
->>> +
->>>   		/* Mask Done interrupt before first */
->>>   		snd_sof_dsp_update_bits64_unlocked(sdev, BYT_DSP_BAR,
->>>   						   SHIM_IMRX,
->>>   						   SHIM_IMRX_DONE,
->>>   						   SHIM_IMRX_DONE);
+>> in function snd_byt_rt5640_mc_probe and removed buffer 
+>> yt_rt5640_codec_aif_name & byt_rt5640_cpu_dai_name
 >>
->> BTW, is this usage of _unlocked() version safe?  The previous one also
->> contained that, and I wonder why _unlocked variant must be used here.
+>> Signed-off-by: Nariman Etemadi <narimantos@gmail.com>
 > 
-> Some of those uses seem rather fragile to me too, but it looks like they
-> *should* be safe in normal cases. There seem to be a potential problem
-> on Broadwell, where an ISR is first configured, which uses *_unlocked()
-> to access the SHIM_IMRX register, and then bdw_set_dsp_D0() is called,
-> which also touches that register. So, it's relying on the fact, that no
-> IPC interrupts will occur until probing is completed. This should also
-> normally be the case, but if for some reason such an interrupt does
-> trigger at that time, access to that register can be messed up. This
-> should be reviewed and possibly refined separately.
+> Series (all 4 patches) look good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-There will be additional IPC hardening fixes that are being tested at 
-the moment, the introduction of HDaudio support seems to have exposed a 
-number of issues we didn't see with I2S/TDM/DMIC interfaces. I included 
-Guennadi's patch in the series since we have evidence it does improve 
-things on the Up2. we can look at the _unlocked parts in the next update 
-with more validation.
+Thanks for the update (I believe it's the v2, yes?)
+
+the code is fine but can be polished to fix a couple of
+alignment issues
+
++	bits = 16;
+  	} else {
+
+and checkpatch.pl --strict is quite verbose here. Some reports look like 
+false-alarms but the commit message should be wrapped and alignement fixed.
+
+---------------------------------------------------------
+0001-ASoC-Intel-bytcr_5640.c-refactored-codec_fixup.patch
+---------------------------------------------------------
+CHECK: Alignment should match open parenthesis
+#86: FILE: sound/soc/intel/boards/bytcr_rt5640.c:980:
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++		SND_SOC_DAIFMT_I2S     |
+
+total: 0 errors, 0 warnings, 1 checks, 82 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+       mechanically convert to the typical style using --fix or 
+--fix-inplace.
+
+0001-ASoC-Intel-bytcr_5640.c-refactored-codec_fixup.patch has style 
+problems, please review.
+---------------------------------------------------------------
+0002-ASoC-Intel-bytcr_5640.c-Refactored-if-statement-and-.patch
+---------------------------------------------------------------
+WARNING: Possible unwrapped commit description (prefer a maximum 75 
+chars per line)
+#7:
+in function snd_byt_rt5640_mc_probe and removed buffer 
+yt_rt5640_codec_aif_name & byt_rt5640_cpu_dai_name
+
+total: 0 errors, 1 warnings, 0 checks, 40 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+       mechanically convert to the typical style using --fix or 
+--fix-inplace.
+
+0002-ASoC-Intel-bytcr_5640.c-Refactored-if-statement-and-.patch has 
+style problems, please review.
+---------------------------------------------------------------
+0003-ASoC-Intel-bytcr_rt5651.c-remove-string-buffers-byt_.patch
+---------------------------------------------------------------
+WARNING: Possible unwrapped commit description (prefer a maximum 75 
+chars per line)
+#7:
+The snprintf calls filling byt_rt5651_cpu_dai_name / 
+byt_rt5651_cpu_dai_name always fill them with the same string 
+(ssp0-port" resp "rt5651-aif2"). So instead of keeping these buffers 
+around and making the cpu_dai_name / codec_dai_name point to this, 
+simply update the foo_dai_name pointers to directly point to a string 
+constant containing the desired string.
+
+total: 0 errors, 1 warnings, 0 checks, 38 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+       mechanically convert to the typical style using --fix or 
+--fix-inplace.
+
+0003-ASoC-Intel-bytcr_rt5651.c-remove-string-buffers-byt_.patch has 
+style problems, please review.
+---------------------------------------------------------------
+0004-ASoC-Intel-cht_bsw_rt5645.c-Remove-buffer-and-snprin.patch
+---------------------------------------------------------------
+WARNING: Possible unwrapped commit description (prefer a maximum 75 
+chars per line)
+#7:
+The snprintf calls filling cht_rt5645_cpu_dai_name / 
+cht_rt5645_codec_aif_name
+
+WARNING: suspect code indent for conditional statements (8, 24)
+#35: FILE: sound/soc/intel/boards/cht_bsw_rt5645.c:642:
+  	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
+[...]
++			cht_dailink[dai_index].codec_dai_name = "rt5645-aif2";
+
+WARNING: suspect code indent for conditional statements (8, 24)
+#49: FILE: sound/soc/intel/boards/cht_bsw_rt5645.c:646:
+  	if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
+[...]
++			cht_dailink[dai_index].cpu_dai_name = "ssp0-port";
+
+total: 0 errors, 3 warnings, 0 checks, 40 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+       mechanically convert to the typical style using --fix or 
+--fix-inplace.
+
+0004-ASoC-Intel-cht_bsw_rt5645.c-Remove-buffer-and-snprin.patch has 
+style problems, please review.
+
+
+
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+>> ---
+>>   sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++----------------------
+>>   1 file changed, 4 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c 
+>> b/sound/soc/intel/boards/bytcr_rt5640.c
+>> index 940eb27158da..0d91642ca287 100644
+>> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+>> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+>> @@ -1075,8 +1075,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] 
+>> = {
+>>   /* SoC card */
+>>   static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+>> -static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+>> -static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+>>   static char byt_rt5640_long_name[40]; /* = 
+>> "bytcr-rt5640-*-spk-*-mic" */
+>>   static int byt_rt5640_suspend(struct snd_soc_card *card)
+>> @@ -1268,28 +1266,12 @@ static int snd_byt_rt5640_mc_probe(struct 
+>> platform_device *pdev)
+>>       log_quirks(&pdev->dev);
+>>       if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
+>> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+>> -
+>> -        /* fixup codec aif name */
+>> -        snprintf(byt_rt5640_codec_aif_name,
+>> -            sizeof(byt_rt5640_codec_aif_name),
+>> -            "%s", "rt5640-aif2");
+>> -
+>> -        byt_rt5640_dais[dai_index].codec_dai_name =
+>> -            byt_rt5640_codec_aif_name;
+>> -    }
+>> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+>> +        byt_rt5640_dais[dai_index].codec_dai_name = "rt5640-aif2";
+>>       if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
+>> -        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+>> -
+>> -        /* fixup cpu dai name name */
+>> -        snprintf(byt_rt5640_cpu_dai_name,
+>> -            sizeof(byt_rt5640_cpu_dai_name),
+>> -            "%s", "ssp0-port");
+>> -
+>> -        byt_rt5640_dais[dai_index].cpu_dai_name =
+>> -            byt_rt5640_cpu_dai_name;
+>> -    }
+>> +        (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+>> +        byt_rt5640_dais[dai_index].cpu_dai_name = "ssp0-port";
+>>       if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+>>           priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
