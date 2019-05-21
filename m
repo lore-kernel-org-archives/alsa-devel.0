@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v1 4/6] ASoC: sgtl5000: Fix charge pump source assignment
-Date: Tue, 21 May 2019 13:36:17 +0300
-Message-ID: <20190521103619.4707-5-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v1 2/6] ASoC: sgtl5000: add ADC mute control
+Date: Tue, 21 May 2019 13:36:15 +0300
+Message-ID: <20190521103619.4707-3-oleksandr.suvorov@toradex.com>
 References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -12,41 +12,27 @@ To: Fabio Estevam <festevam@gmail.com>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 List-Id: alsa-devel@alsa-project.org
 
-If VDDA != VDDIO and any of them is greater than 3.1V, charge pump
-source can be assigned automatically.
+This control mute/unmute the ADC input of SGTL5000
+using its CHIP_ANA_CTRL register.
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 ---
 
- sound/soc/codecs/sgtl5000.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c
-index e813a37910af..ee1e4bf61322 100644
+index 5e49523ee0b6..bb58c997c691 100644
 --- sound/soc/codecs/sgtl5000.c
 +++ sound/soc/codecs/sgtl5000.c
-@@ -1174,12 +1174,16 @@ static int sgtl5000_set_power_regs(struct snd_soc_component *component)
- 					SGTL5000_INT_OSC_EN);
- 		/* Enable VDDC charge pump */
- 		ana_pwr |= SGTL5000_VDDC_CHRGPMP_POWERUP;
--	} else if (vddio >= 3100 && vdda >= 3100) {
-+	} else {
- 		ana_pwr &= ~SGTL5000_VDDC_CHRGPMP_POWERUP;
--		/* VDDC use VDDIO rail */
--		lreg_ctrl |= SGTL5000_VDDC_ASSN_OVRD;
--		lreg_ctrl |= SGTL5000_VDDC_MAN_ASSN_VDDIO <<
--			    SGTL5000_VDDC_MAN_ASSN_SHIFT;
-+		/* if vddio == vdda the source of charge pump should be
-+		 * assigned manually to VDDIO
-+		 */
-+		if (vddio == vdda) {
-+			lreg_ctrl |= SGTL5000_VDDC_ASSN_OVRD;
-+			lreg_ctrl |= SGTL5000_VDDC_MAN_ASSN_VDDIO <<
-+				    SGTL5000_VDDC_MAN_ASSN_SHIFT;
-+		}
- 	}
+@@ -556,6 +556,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ 			SGTL5000_CHIP_ANA_ADC_CTRL,
+ 			8, 1, 0, capture_6db_attenuate),
+ 	SOC_SINGLE("Capture ZC Switch", SGTL5000_CHIP_ANA_CTRL, 1, 1, 0),
++	SOC_SINGLE("Capture Switch", SGTL5000_CHIP_ANA_CTRL, 0, 1, 1),
  
- 	snd_soc_component_write(component, SGTL5000_CHIP_LINREG_CTRL, lreg_ctrl);
+ 	SOC_DOUBLE_TLV("Headphone Playback Volume",
+ 			SGTL5000_CHIP_ANA_HP_CTRL,
 -- 
 2.20.1
 
