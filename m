@@ -1,81 +1,97 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][RFC] ASoC: soc-core: WARN() is not related
- to component->driver->probe
-Date: Tue, 21 May 2019 19:32:42 +0100
-Message-ID: <20190521183242.GC16633@sirena.org.uk>
-References: <87imu939x3.wl-kuninori.morimoto.gx@renesas.com>
- <0ba565ea-2f61-015d-f6e3-63124f94e78a@linux.intel.com>
- <87pnoeyo9f.wl-kuninori.morimoto.gx@renesas.com>
- <513fa7aa-60ca-dea2-1888-1d9df531f478@linux.intel.com>
- <87d0kctzwb.wl-kuninori.morimoto.gx@renesas.com>
- <5d16b18e-fd21-931a-ced6-f682afffc5b8@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2969139787793035730=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26AFAF806E7
- for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 20:32:48 +0200 (CEST)
-In-Reply-To: <5d16b18e-fd21-931a-ced6-f682afffc5b8@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card: Fix configuration of DAI format" to the asoc tree
+Date: Tue, 21 May 2019 21:32:41 +0100 (BST)
+Message-ID: <20190521203241.B277E1126D1B@debutante.sirena.org.uk>
+References: <1558029086-18024-1-git-send-email-jonathanh@nvidia.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1558029086-18024-1-git-send-email-jonathanh@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2969139787793035730==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="i7F3eY7HS/tUJxUd"
-Content-Disposition: inline
+   ASoC: simple-card: Fix configuration of DAI format
 
+has been applied to the asoc tree at
 
---i7F3eY7HS/tUJxUd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
-On Tue, May 21, 2019 at 09:22:47AM -0500, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> I don't know how to help further. Doing this change will result in the
-> warning being thrown in cases where it wasn't before. and since no one knows
-> what this warning means in the first place, either we leave it or we remove
-> it, changing its location would be very odd.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-It's fairly clear from the commit message what the warning means - it's
-trying to catch drivers that had buggy probe() functions that left the
-device powered up when it was expected to be idled.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---i7F3eY7HS/tUJxUd
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzkREkACgkQJNaLcl1U
-h9Dm8Af/bmXmRN5vMf5QNJ4HF13lG7ZP1MTfDnXMA/C86c8Sn02/y8veeOI5bXY8
-BJMgxYSAgChCdmSPM/O4RGpvwopbVu2LNZWSCOduChiqb98GEi52sob3WJETjMA6
-b6NMhvV46Hfbr/TVC27Bw0bRujmZDlVtbBfQ51Tw0ZJKbsx6kEul43JJ6KZjTg91
-ETCdKBEAceCHM0VWxEINqUcYVcaoYdewjIhcLp8pq71OxgKdcCXMjp65sVyULnZ1
-CvgyKM0oevSmOow7k4REipUJIznGkUz3oepucn+RpXpyqgc001UhDQHNgDY2hesE
-qKMO3435h00P587Z/877ZPJ+bGJTQA==
-=5x+g
------END PGP SIGNATURE-----
+>From 069d037aea98ffa64c26d4b1dc958fb8f39f5c2b Mon Sep 17 00:00:00 2001
+From: Jon Hunter <jonathanh@nvidia.com>
+Date: Thu, 16 May 2019 18:51:26 +0100
+Subject: [PATCH] ASoC: simple-card: Fix configuration of DAI format
 
---i7F3eY7HS/tUJxUd--
+When configuring a codec to be both bit-clock and frame-master, it was
+found that the codec was always configured as bit-clock and frame-slave.
+Looking at the simple_dai_link_of() function there appears to be two
+problems with the configuration of the DAI format, which are ...
 
---===============2969139787793035730==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+1. The function asoc_simple_parse_daifmt() is called before the function
+   asoc_simple_parse_codec() and this means that the device-tree node
+   for the codec has not been parsed yet, which is needed by the
+   function asoc_simple_parse_daifmt() to determine who is the codec.
+2. The phandle passed to asoc_simple_parse_daifmt() is the phandle to
+   the 'codec' node and not the phandle of the actual codec defined by
+   the 'sound-dai' property under the 'codec' node.
 
+Fix the above by moving the call to asoc_simple_parse_daifmt() after the
+the call to asoc_simple_parse_codec() and pass the phandle for the codec
+to asoc_simple_parse_daifmt().
 
---===============2969139787793035730==--
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/simple-card.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 9b568f578bcd..c2c8dcbcf795 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -283,11 +283,6 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	codec_dai		=
+ 	dai_props->codec_dai	= &priv->dais[li->dais++];
+ 
+-	ret = asoc_simple_parse_daifmt(dev, node, codec,
+-				       prefix, &dai_link->dai_fmt);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+ 	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
+ 
+ 	ret = asoc_simple_parse_cpu(cpu, dai_link, &single_cpu);
+@@ -298,6 +293,11 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
++	ret = asoc_simple_parse_daifmt(dev, node, dai_link->codecs->of_node,
++				       prefix, &dai_link->dai_fmt);
++	if (ret < 0)
++		goto dai_link_of_err;
++
+ 	ret = asoc_simple_parse_platform(plat, dai_link);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+-- 
+2.20.1
