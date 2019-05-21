@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v1 2/6] ASoC: sgtl5000: add ADC mute control
-Date: Tue, 21 May 2019 13:36:15 +0300
-Message-ID: <20190521103619.4707-3-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v1 3/6] ASoC: sgtl5000: Fix of unmute outputs on probe
+Date: Tue, 21 May 2019 13:36:16 +0300
+Message-ID: <20190521103619.4707-4-oleksandr.suvorov@toradex.com>
 References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -12,27 +12,40 @@ To: Fabio Estevam <festevam@gmail.com>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 List-Id: alsa-devel@alsa-project.org
 
-This control mute/unmute the ADC input of SGTL5000
-using its CHIP_ANA_CTRL register.
+To enable "zero cross detect" for ADC/HP, change
+HP_ZCD_EN/ADC_ZCD_EN bits only instead of writing the whole
+CHIP_ANA_CTRL register.
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 ---
 
- sound/soc/codecs/sgtl5000.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/sgtl5000.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c
-index 5e49523ee0b6..bb58c997c691 100644
+index bb58c997c691..e813a37910af 100644
 --- sound/soc/codecs/sgtl5000.c
 +++ sound/soc/codecs/sgtl5000.c
-@@ -556,6 +556,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- 			SGTL5000_CHIP_ANA_ADC_CTRL,
- 			8, 1, 0, capture_6db_attenuate),
- 	SOC_SINGLE("Capture ZC Switch", SGTL5000_CHIP_ANA_CTRL, 1, 1, 0),
-+	SOC_SINGLE("Capture Switch", SGTL5000_CHIP_ANA_CTRL, 0, 1, 1),
+@@ -1289,6 +1289,7 @@ static int sgtl5000_probe(struct snd_soc_component *component)
+ 	int ret;
+ 	u16 reg;
+ 	struct sgtl5000_priv *sgtl5000 = snd_soc_component_get_drvdata(component);
++	unsigned int zcd_mask = SGTL5000_HP_ZCD_EN | SGTL5000_ADC_ZCD_EN;
  
- 	SOC_DOUBLE_TLV("Headphone Playback Volume",
- 			SGTL5000_CHIP_ANA_HP_CTRL,
+ 	/* power up sgtl5000 */
+ 	ret = sgtl5000_set_power_regs(component);
+@@ -1316,9 +1317,8 @@ static int sgtl5000_probe(struct snd_soc_component *component)
+ 	       0x1f);
+ 	snd_soc_component_write(component, SGTL5000_CHIP_PAD_STRENGTH, reg);
+ 
+-	snd_soc_component_write(component, SGTL5000_CHIP_ANA_CTRL,
+-			SGTL5000_HP_ZCD_EN |
+-			SGTL5000_ADC_ZCD_EN);
++	snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_CTRL,
++		zcd_mask, zcd_mask);
+ 
+ 	snd_soc_component_update_bits(component, SGTL5000_CHIP_MIC_CTRL,
+ 			SGTL5000_BIAS_R_MASK,
 -- 
 2.20.1
 
