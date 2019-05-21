@@ -1,125 +1,72 @@
-From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: Mediatek: MT8183: fix compile error
-Date: Tue, 21 May 2019 17:29:38 +0800
-Message-ID: <1558430978-2440-3-git-send-email-jiaxin.yu@mediatek.com>
-References: <1558430978-2440-1-git-send-email-jiaxin.yu@mediatek.com>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Subject: [PATCH v1 0/6] VAG power control improvement for sgtl5000 codec
+Date: Tue, 21 May 2019 13:36:13 +0300
+Message-ID: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1558430978-2440-1-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Content-Type: text/plain; charset="US-ASCII"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-mtk_regmap_update_bits() has been changed to take a shift and warn
-when reg >= 0 but shift < 0.So the hd_align_mshift must not have shift.
-Change it from XXX_HD_ALIGN_MASK_SFT to XXX_HD_ALIGN_MASK.
 
-Fixes: cf61f5b01531 ("ASoC: Mediatek: MT8183: set data align")
+VAG power control is improved to fit the manual. This fixes as
+minimum one bug: if customer muxes Headphone to Line-In right after boot
+w/o playing any sound, the VAG power remains off that leads to poor
+sound quality from line-in.
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
----
-Hi,
-	This patch is base on for-5.3 branch.
-	And tested pass on kukui board locally.
----
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+I.e. after boot:
+- Connect sound source to Line-In jack;
+- Connect headphone to HP jack;
+- Run following commands:
+$ amixer set 'Headphone' 80%
+$ amixer set 'Headphone Mux' LINE_IN
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index ab2bce1..56c3732 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -439,7 +439,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = DL1_HD_SFT,
--		.hd_align_mshift = DL1_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = DL1_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -460,7 +460,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = DL2_HD_SFT,
--		.hd_align_mshift = DL2_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = DL2_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -481,7 +481,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = DL3_HD_SFT,
--		.hd_align_mshift = DL3_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = DL3_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -502,7 +502,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = VUL2_HD_SFT,
--		.hd_align_mshift = VUL2_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = VUL2_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -523,7 +523,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = AWB_HD_SFT,
--		.hd_align_mshift = AWB_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = AWB_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -544,7 +544,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = AWB2_HD_SFT,
--		.hd_align_mshift = AWB2_ALIGN_MASK_SFT,
-+		.hd_align_mshift = AWB2_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -565,7 +565,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = VUL12_HD_SFT,
--		.hd_align_mshift = VUL12_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = VUL12_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -586,7 +586,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = MOD_DAI_HD_SFT,
--		.hd_align_mshift = MOD_DAI_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = MOD_DAI_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
-@@ -607,7 +607,7 @@ static int mt8183_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 		.hd_reg = AFE_MEMIF_HD_MODE,
- 		.hd_align_reg = AFE_MEMIF_HDALIGN,
- 		.hd_shift = HDMI_HD_SFT,
--		.hd_align_mshift = HDMI_HD_ALIGN_MASK_SFT,
-+		.hd_align_mshift = HDMI_HD_ALIGN_SFT,
- 		.agent_disable_reg = -1,
- 		.agent_disable_shift = -1,
- 		.msb_reg = -1,
+Also this series includes fixes of non-important bugs in sgtl5000 codec
+driver.
+
+
+Oleksandr Suvorov (6):
+  ASoC: sgtl5000: Fix definition of VAG Ramp Control
+  ASoC: sgtl5000: add ADC mute control
+  ASoC: sgtl5000: Fix of unmute outputs on probe
+  ASoC: sgtl5000: Fix charge pump source assignment
+  ASoC: Define a set of DAPM pre/post-up events
+  ASoC: sgtl5000: Improve VAG power and mute control
+
+ include/sound/soc-dapm.h    |   2 +
+ sound/soc/codecs/sgtl5000.c | 250 ++++++++++++++++++++++++++++++------
+ sound/soc/codecs/sgtl5000.h |   2 +-
+ 3 files changed, 212 insertions(+), 42 deletions(-)
+
 -- 
-1.8.1.1.dirty
+2.20.1
+
+
+-- 
+
+Ciklum refers to one or more of Ciklum Group Holdings LTD. and its 
+subsidiaries and affiliates each of which is a legally separate entity. 
+Ciklum LLC is a limited liability company registered in Ukraine under 
+EDRPOU code 31902643, with its registered address at 12 Amosova St., 03680, 
+Kyiv, Ukraine.
+
+
+
+The contents of this e-mail (including any attachments) 
+are confidential and may be legally privileged. If you are not the intended 
+recipient of this e-mail, please notify the sender immediately and then 
+delete it (including any attachments) from all your systems. Any 
+unauthorised use, reproduction, distribution, disclosure and/or 
+modification of this message and/or its contents are strictly prohibited. 
+We cannot guarantee that this e-mail is secure or error-free. Ciklum cannot 
+be held liable for any loss or damage caused by software viruses or 
+resulting from any use of or reliance on this email by anyone, other than 
+the intended addressee to the extent agreed in a contract for the matter to 
+which this email relates (if any). Messages sent to and from Ciklum may be 
+monitored; by replying to this e-mail you give your consent to such 
+monitoring.  Notice: we do not accept service by e-mail of court 
+proceedings, other processes or formal notices of any kind without specific 
+prior written agreement. This email does not constitute a binding offer or 
+acceptance for Ciklum unless so set forth in a separate document.
