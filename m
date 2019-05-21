@@ -1,40 +1,31 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sof-rt5682: fix AMP quirk
-	support" to the asoc tree
-Date: Tue, 21 May 2019 21:32:41 +0100 (BST)
-Message-ID: <20190521203241.3EB451126D18@debutante.sirena.org.uk>
-References: <20190520194645.432-3-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9749DF89723
- for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:49 +0200 (CEST)
-In-Reply-To: <20190520194645.432-3-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: fsl_asrc: Unify the supported input and output rate"
+ to the asoc tree
+Date: Tue, 21 May 2019 22:04:00 +0100 (BST)
+Message-ID: <20190521210400.226341126D13@debutante.sirena.org.uk>
+References: <39916109c570791be514db4a3a7793a9467d6484.1557901312.git.shengjiu.wang@nxp.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <39916109c570791be514db4a3a7793a9467d6484.1557901312.git.shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sof-rt5682: fix AMP quirk support
+   ASoC: fsl_asrc: Unify the supported input and output rate
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,36 +46,108 @@ to this mail.
 Thanks,
 Mark
 
->From df9366131a452296d040a7a496d93108f1fc240c Mon Sep 17 00:00:00 2001
-From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Date: Mon, 20 May 2019 14:46:42 -0500
-Subject: [PATCH] ASoC: Intel: sof-rt5682: fix AMP quirk support
+>From d281bf5d924a0284f0dac1f471e1d8328b3a92ca Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Wed, 15 May 2019 06:42:26 +0000
+Subject: [PATCH] ASoC: fsl_asrc: Unify the supported input and output rate
 
-The use of BIT/GENMASK was incorrect, fix.
+Unify the supported input and output rate, add the
+12kHz/24kHz/128kHz to the support list
 
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 39ddefec4991..3343dbcd506f 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -29,9 +29,10 @@
- #define SOF_RT5682_MCLK_EN			BIT(3)
- #define SOF_RT5682_MCLK_24MHZ			BIT(4)
- #define SOF_SPEAKER_AMP_PRESENT		BIT(5)
--#define SOF_RT5682_SSP_AMP(quirk)		((quirk) & GENMASK(8, 6))
--#define SOF_RT5682_SSP_AMP_MASK			(GENMASK(8, 6))
- #define SOF_RT5682_SSP_AMP_SHIFT		6
-+#define SOF_RT5682_SSP_AMP_MASK                 (GENMASK(8, 6))
-+#define SOF_RT5682_SSP_AMP(quirk)	\
-+	(((quirk) << SOF_RT5682_SSP_AMP_SHIFT) & SOF_RT5682_SSP_AMP_MASK)
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index a8d6710f2541..cbbf6257f08a 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -27,13 +27,14 @@
+ 	dev_dbg(&asrc_priv->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
  
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+ /* Corresponding to process_option */
+-static int supported_input_rate[] = {
+-	5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200,
+-	96000, 176400, 192000,
++static unsigned int supported_asrc_rate[] = {
++	5512, 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
++	64000, 88200, 96000, 128000, 176400, 192000,
+ };
+ 
+-static int supported_asrc_rate[] = {
+-	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200, 96000, 176400, 192000,
++static struct snd_pcm_hw_constraint_list fsl_asrc_rate_constraints = {
++	.count = ARRAY_SIZE(supported_asrc_rate),
++	.list = supported_asrc_rate,
+ };
+ 
+ /**
+@@ -293,11 +294,11 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	ideal = config->inclk == INCLK_NONE;
+ 
+ 	/* Validate input and output sample rates */
+-	for (in = 0; in < ARRAY_SIZE(supported_input_rate); in++)
+-		if (inrate == supported_input_rate[in])
++	for (in = 0; in < ARRAY_SIZE(supported_asrc_rate); in++)
++		if (inrate == supported_asrc_rate[in])
+ 			break;
+ 
+-	if (in == ARRAY_SIZE(supported_input_rate)) {
++	if (in == ARRAY_SIZE(supported_asrc_rate)) {
+ 		pair_err("unsupported input sample rate: %dHz\n", inrate);
+ 		return -EINVAL;
+ 	}
+@@ -311,7 +312,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 		return -EINVAL;
+ 	}
+ 
+-	if ((outrate >= 8000 && outrate <= 30000) &&
++	if ((outrate >= 5512 && outrate <= 30000) &&
+ 	    (outrate > 24 * inrate || inrate > 8 * outrate)) {
+ 		pair_err("exceed supported ratio range [1/24, 8] for \
+ 				inrate/outrate: %d/%d\n", inrate, outrate);
+@@ -486,7 +487,9 @@ static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
+ 		snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 					   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+ 
+-	return 0;
++
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &fsl_asrc_rate_constraints);
+ }
+ 
+ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+@@ -599,7 +602,6 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
+-#define FSL_ASRC_RATES		 SNDRV_PCM_RATE_8000_192000
+ #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
+ 				 SNDRV_PCM_FMTBIT_S16_LE | \
+ 				 SNDRV_PCM_FMTBIT_S20_3LE)
+@@ -610,14 +612,18 @@ static struct snd_soc_dai_driver fsl_asrc_dai = {
+ 		.stream_name = "ASRC-Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 10,
+-		.rates = FSL_ASRC_RATES,
++		.rate_min = 5512,
++		.rate_max = 192000,
++		.rates = SNDRV_PCM_RATE_KNOT,
+ 		.formats = FSL_ASRC_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "ASRC-Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 10,
+-		.rates = FSL_ASRC_RATES,
++		.rate_min = 5512,
++		.rate_max = 192000,
++		.rates = SNDRV_PCM_RATE_KNOT,
+ 		.formats = FSL_ASRC_FORMATS,
+ 	},
+ 	.ops = &fsl_asrc_dai_ops,
 -- 
 2.20.1
