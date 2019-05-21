@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sof-rt5682: add newline for
-	clarity" to the asoc tree
-Date: Tue, 21 May 2019 21:32:40 +0100 (BST)
-Message-ID: <20190521203240.839A41126D13@debutante.sirena.org.uk>
-References: <20190520194645.432-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: sof-rt5682: fix AMP quirk
+	support" to the asoc tree
+Date: Tue, 21 May 2019 21:32:41 +0100 (BST)
+Message-ID: <20190521203241.3EB451126D18@debutante.sirena.org.uk>
+References: <20190520194645.432-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97378F89674
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9749DF89723
  for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:49 +0200 (CEST)
-In-Reply-To: <20190520194645.432-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190520194645.432-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,11 +30,11 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sof-rt5682: add newline for clarity
+   ASoC: Intel: sof-rt5682: fix AMP quirk support
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,31 +55,36 @@ to this mail.
 Thanks,
 Mark
 
->From b385256eb54f0193f0f595a675409ba6e7282ffe Mon Sep 17 00:00:00 2001
+>From df9366131a452296d040a7a496d93108f1fc240c Mon Sep 17 00:00:00 2001
 From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Date: Mon, 20 May 2019 14:46:43 -0500
-Subject: [PATCH] ASoC: Intel: sof-rt5682: add newline for clarity
+Date: Mon, 20 May 2019 14:46:42 -0500
+Subject: [PATCH] ASoC: Intel: sof-rt5682: fix AMP quirk support
 
-Make sure quirk handling is cleary split from number of links.
+The use of BIT/GENMASK was incorrect, fix.
 
 Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/sof_rt5682.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index f28fb98cc306..fea42e275326 100644
+index 39ddefec4991..3343dbcd506f 100644
 --- a/sound/soc/intel/boards/sof_rt5682.c
 +++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -519,6 +519,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+@@ -29,9 +29,10 @@
+ #define SOF_RT5682_MCLK_EN			BIT(3)
+ #define SOF_RT5682_MCLK_24MHZ			BIT(4)
+ #define SOF_SPEAKER_AMP_PRESENT		BIT(5)
+-#define SOF_RT5682_SSP_AMP(quirk)		((quirk) & GENMASK(8, 6))
+-#define SOF_RT5682_SSP_AMP_MASK			(GENMASK(8, 6))
+ #define SOF_RT5682_SSP_AMP_SHIFT		6
++#define SOF_RT5682_SSP_AMP_MASK                 (GENMASK(8, 6))
++#define SOF_RT5682_SSP_AMP(quirk)	\
++	(((quirk) << SOF_RT5682_SSP_AMP_SHIFT) & SOF_RT5682_SSP_AMP_MASK)
  
- 	/* compute number of dai links */
- 	sof_audio_card_rt5682.num_links = 1 + dmic_num + hdmi_num;
-+
- 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
- 		sof_audio_card_rt5682.num_links++;
- 
+ /* Default: MCLK on, MCLK 19.2M, SSP0  */
+ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
 -- 
 2.20.1
