@@ -1,28 +1,36 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: Mediatek: MT8183: enable IIR filter" to the asoc tree
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: move pcm_new from
+	snd_soc_component_driver to snd_soc_dai_driver" to the asoc tree
 Date: Tue, 21 May 2019 21:32:42 +0100 (BST)
-Message-ID: <20190521203242.E20DC1126D20@debutante.sirena.org.uk>
-References: <20190520082420.11236-1-shunli.wang@mediatek.com>
+Message-ID: <20190521203242.6FA3C1126D1E@debutante.sirena.org.uk>
+References: <87lfz53mrc.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20190520082420.11236-1-shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB9A6F89670
+ for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:46 +0200 (CEST)
+In-Reply-To: <87lfz53mrc.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Mediatek: MT8183: enable IIR filter
+   ASoC: rsnd: move pcm_new from snd_soc_component_driver to snd_soc_dai_driver
 
 has been applied to the asoc tree at
 
@@ -47,51 +55,171 @@ to this mail.
 Thanks,
 Mark
 
->From 326b18176353d26df54dbc8b4b75ed4332898f61 Mon Sep 17 00:00:00 2001
-From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Mon, 20 May 2019 16:24:20 +0800
-Subject: [PATCH] ASoC: Mediatek: MT8183: enable IIR filter
+>From e9b5daad4e9bdd1b9e467873a4463c867ccf9ff1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 17 May 2019 10:29:16 +0900
+Subject: [PATCH] ASoC: rsnd: move pcm_new from snd_soc_component_driver to
+ snd_soc_dai_driver
 
-IIR fileter can remove DC offset. It must be enabled when
-dmic or amic connected to pmic is used.
+snd_soc_dai_driver :: pcm_new has snd_soc_dai as parameter, but
+snd_soc_component_driver :: pcm_new doesn't have it.
 
-Signed-off-by: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+rsnd driver needs snd_soc_dai at pcm_new.
+This patch moves .pcm_new from snd_soc_component_driver to
+snd_soc_dai_driver, and don't use rtd->cpu_dai anymore.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-dai-adda.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 120 +++++++++++++++++++--------------------
+ 1 file changed, 60 insertions(+), 60 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-adda.c b/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-index 017d7d1d9148..2b758a18c2ea 100644
---- a/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-@@ -176,9 +176,6 @@ static int mtk_adda_ul_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* should delayed 1/fs(smallest is 8k) = 125us before afe off */
- 		usleep_range(125, 135);
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 37cb61553d5f..56e8dae9a15c 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1176,6 +1176,65 @@ static struct device_node *rsnd_dai_of_node(struct rsnd_priv *priv,
+ 	return ret;
+ }
+ 
++
++#define PREALLOC_BUFFER		(32 * 1024)
++#define PREALLOC_BUFFER_MAX	(32 * 1024)
++
++static int rsnd_preallocate_pages(struct snd_soc_pcm_runtime *rtd,
++				  struct rsnd_dai_stream *io,
++				  int stream)
++{
++	struct rsnd_priv *priv = rsnd_io_to_priv(io);
++	struct device *dev = rsnd_priv_to_dev(priv);
++	struct snd_pcm_substream *substream;
++
++	/*
++	 * use Audio-DMAC dev if we can use IPMMU
++	 * see
++	 *	rsnd_dmaen_attach()
++	 */
++	if (io->dmac_dev)
++		dev = io->dmac_dev;
++
++	for (substream = rtd->pcm->streams[stream].substream;
++	     substream;
++	     substream = substream->next) {
++		snd_pcm_lib_preallocate_pages(substream,
++					      SNDRV_DMA_TYPE_DEV,
++					      dev,
++					      PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
++	}
++
++	return 0;
++}
++
++static int rsnd_pcm_new(struct snd_soc_pcm_runtime *rtd,
++			struct snd_soc_dai *dai)
++{
++	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
++	int ret;
++
++	ret = rsnd_dai_call(pcm_new, &rdai->playback, rtd);
++	if (ret)
++		return ret;
++
++	ret = rsnd_dai_call(pcm_new, &rdai->capture, rtd);
++	if (ret)
++		return ret;
++
++	ret = rsnd_preallocate_pages(rtd, &rdai->playback,
++				     SNDRV_PCM_STREAM_PLAYBACK);
++	if (ret)
++		return ret;
++
++	ret = rsnd_preallocate_pages(rtd, &rdai->capture,
++				     SNDRV_PCM_STREAM_CAPTURE);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
+ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 			     struct device_node *dai_np,
+ 			     int dai_i)
+@@ -1198,6 +1257,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 	rdai->priv	= priv;
+ 	drv->name	= rdai->name;
+ 	drv->ops	= &rsnd_soc_dai_ops;
++	drv->pcm_new	= rsnd_pcm_new;
+ 
+ 	snprintf(io_playback->name, RSND_DAI_NAME_SIZE,
+ 		 "DAI%d Playback", dai_i);
+@@ -1572,68 +1632,8 @@ int rsnd_kctrl_new(struct rsnd_mod *mod,
+ /*
+  *		snd_soc_component
+  */
 -
--		/* reset dmic */
--		afe_priv->mtkaif_dmic = 0;
- 		break;
- 	default:
- 		break;
-@@ -426,6 +423,17 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
+-#define PREALLOC_BUFFER		(32 * 1024)
+-#define PREALLOC_BUFFER_MAX	(32 * 1024)
+-
+-static int rsnd_preallocate_pages(struct snd_soc_pcm_runtime *rtd,
+-				  struct rsnd_dai_stream *io,
+-				  int stream)
+-{
+-	struct rsnd_priv *priv = rsnd_io_to_priv(io);
+-	struct device *dev = rsnd_priv_to_dev(priv);
+-	struct snd_pcm_substream *substream;
+-
+-	/*
+-	 * use Audio-DMAC dev if we can use IPMMU
+-	 * see
+-	 *	rsnd_dmaen_attach()
+-	 */
+-	if (io->dmac_dev)
+-		dev = io->dmac_dev;
+-
+-	for (substream = rtd->pcm->streams[stream].substream;
+-	     substream;
+-	     substream = substream->next) {
+-		snd_pcm_lib_preallocate_pages(substream,
+-					SNDRV_DMA_TYPE_DEV,
+-					dev,
+-					PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
+-	}
+-
+-	return 0;
+-}
+-
+-static int rsnd_pcm_new(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_dai *dai = rtd->cpu_dai;
+-	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+-	int ret;
+-
+-	ret = rsnd_dai_call(pcm_new, &rdai->playback, rtd);
+-	if (ret)
+-		return ret;
+-
+-	ret = rsnd_dai_call(pcm_new, &rdai->capture, rtd);
+-	if (ret)
+-		return ret;
+-
+-	ret = rsnd_preallocate_pages(rtd, &rdai->playback,
+-				     SNDRV_PCM_STREAM_PLAYBACK);
+-	if (ret)
+-		return ret;
+-
+-	ret = rsnd_preallocate_pages(rtd, &rdai->capture,
+-				     SNDRV_PCM_STREAM_CAPTURE);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
+-}
+-
+ static const struct snd_soc_component_driver rsnd_soc_component = {
+ 	.ops		= &rsnd_pcm_ops,
+-	.pcm_new	= rsnd_pcm_new,
+ 	.name		= "rsnd",
+ };
  
- 		ul_src_con0 |= (voice_mode << 17) & (0x7 << 17);
- 
-+		/* enable iir */
-+		ul_src_con0 |= (1 << UL_IIR_ON_TMP_CTL_SFT) &
-+			       UL_IIR_ON_TMP_CTL_MASK_SFT;
-+
-+		/* 35Hz @ 48k */
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_02_01, 0x00000000);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_04_03, 0x00003FB8);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_06_05, 0x3FB80000);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_08_07, 0x3FB80000);
-+		regmap_write(afe->regmap, AFE_ADDA_IIR_COEF_10_09, 0x0000C048);
-+
- 		regmap_write(afe->regmap, AFE_ADDA_UL_SRC_CON0, ul_src_con0);
- 
- 		/* mtkaif_rxif_data_mode = 0, amic */
 -- 
 2.20.1
