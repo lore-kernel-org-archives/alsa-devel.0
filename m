@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sof-rt5682: fix for codec button
-	mapping" to the asoc tree
-Date: Tue, 21 May 2019 21:32:41 +0100 (BST)
-Message-ID: <20190521203241.781D41126D1A@debutante.sirena.org.uk>
-References: <20190520194645.432-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: soc-acpi: Fix machine selection
+	order" to the asoc tree
+Date: Tue, 21 May 2019 21:32:43 +0100 (BST)
+Message-ID: <20190521203243.607721126D22@debutante.sirena.org.uk>
+References: <20190518183009.13359-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30BC5F89725
- for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:50 +0200 (CEST)
-In-Reply-To: <20190520194645.432-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E6B9F89728
+ for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:51 +0200 (CEST)
+In-Reply-To: <20190518183009.13359-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sof-rt5682: fix for codec button mapping
+   ASoC: Intel: soc-acpi: Fix machine selection order
 
 has been applied to the asoc tree at
 
@@ -55,37 +55,47 @@ to this mail.
 Thanks,
 Mark
 
->From d5952f34ade5e6034e5eca3617fb77d4395bf492 Mon Sep 17 00:00:00 2001
+>From 30d9d4ff53532087bc13ed29d7715df868794b5e Mon Sep 17 00:00:00 2001
 From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Date: Mon, 20 May 2019 14:46:41 -0500
-Subject: [PATCH] ASoC: Intel: sof-rt5682: fix for codec button mapping
+Date: Sat, 18 May 2019 13:30:08 -0500
+Subject: [PATCH] ASoC: Intel: soc-acpi: Fix machine selection order
 
-The RT5682 codec button mapping, initially copied from the DA7219 one,
-needs to be corrected.
+The selection order of m/c in match table is corrected
+to use common codec as last in the list.
 
 Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index f28fb98cc306..39ddefec4991 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -144,9 +144,9 @@ static int sof_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	jack = &ctx->sof_headset;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+index df7c52cad5c3..c36c0aa4f683 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+@@ -29,17 +29,17 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+ 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.id = "MX98357A",
+ 		.drv_name = "sof_rt5682",
++		.quirk_data = &cml_codecs,
+ 		.sof_fw_filename = "sof-cnl.ri",
+-		.sof_tplg_filename = "sof-cml-rt5682.tplg",
++		.sof_tplg_filename = "sof-cml-rt5682-max98357a.tplg",
+ 	},
+ 	{
+-		.id = "MX98357A",
++		.id = "10EC5682",
+ 		.drv_name = "sof_rt5682",
+-		.quirk_data = &cml_codecs,
+ 		.sof_fw_filename = "sof-cnl.ri",
+-		.sof_tplg_filename = "sof-cml-rt5682-max98357a.tplg",
++		.sof_tplg_filename = "sof-cml-rt5682.tplg",
+ 	},
  
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
- 	ret = snd_soc_component_set_jack(component, jack, NULL);
- 
- 	if (ret) {
+ 	{},
 -- 
 2.20.1
