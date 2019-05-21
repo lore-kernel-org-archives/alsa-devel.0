@@ -1,45 +1,53 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v1 0/6] VAG power control improvement for sgtl5000 codec
-Date: Tue, 21 May 2019 13:36:13 +0300
-Message-ID: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
+Date: Tue, 21 May 2019 13:36:14 +0300
+Message-ID: <20190521103619.4707-2-oleksandr.suvorov@toradex.com>
+References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Fabio Estevam <festevam@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 List-Id: alsa-devel@alsa-project.org
 
+SGTL5000_SMALL_POP is a bit mask, not a value. Usage of
+correct definition makes device probing code more clear.
 
-VAG power control is improved to fit the manual. This fixes as
-minimum one bug: if customer muxes Headphone to Line-In right after boot
-w/o playing any sound, the VAG power remains off that leads to poor
-sound quality from line-in.
+Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+---
 
-I.e. after boot:
-- Connect sound source to Line-In jack;
-- Connect headphone to HP jack;
-- Run following commands:
-$ amixer set 'Headphone' 80%
-$ amixer set 'Headphone Mux' LINE_IN
+ sound/soc/codecs/sgtl5000.c | 2 +-
+ sound/soc/codecs/sgtl5000.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Also this series includes fixes of non-important bugs in sgtl5000 codec
-driver.
-
-
-Oleksandr Suvorov (6):
-  ASoC: sgtl5000: Fix definition of VAG Ramp Control
-  ASoC: sgtl5000: add ADC mute control
-  ASoC: sgtl5000: Fix of unmute outputs on probe
-  ASoC: sgtl5000: Fix charge pump source assignment
-  ASoC: Define a set of DAPM pre/post-up events
-  ASoC: sgtl5000: Improve VAG power and mute control
-
- include/sound/soc-dapm.h    |   2 +
- sound/soc/codecs/sgtl5000.c | 250 ++++++++++++++++++++++++++++++------
- sound/soc/codecs/sgtl5000.h |   2 +-
- 3 files changed, 212 insertions(+), 42 deletions(-)
-
+diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c
+index a6a4748c97f9..5e49523ee0b6 100644
+--- sound/soc/codecs/sgtl5000.c
++++ sound/soc/codecs/sgtl5000.c
+@@ -1296,7 +1296,7 @@ static int sgtl5000_probe(struct snd_soc_component *component)
+ 
+ 	/* enable small pop, introduce 400ms delay in turning off */
+ 	snd_soc_component_update_bits(component, SGTL5000_CHIP_REF_CTRL,
+-				SGTL5000_SMALL_POP, 1);
++				SGTL5000_SMALL_POP, SGTL5000_SMALL_POP);
+ 
+ 	/* disable short cut detector */
+ 	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL, 0);
+diff --git sound/soc/codecs/sgtl5000.h sound/soc/codecs/sgtl5000.h
+index 18cae08bbd3a..a4bf4bca95bf 100644
+--- sound/soc/codecs/sgtl5000.h
++++ sound/soc/codecs/sgtl5000.h
+@@ -273,7 +273,7 @@
+ #define SGTL5000_BIAS_CTRL_MASK			0x000e
+ #define SGTL5000_BIAS_CTRL_SHIFT		1
+ #define SGTL5000_BIAS_CTRL_WIDTH		3
+-#define SGTL5000_SMALL_POP			1
++#define SGTL5000_SMALL_POP			0x0001
+ 
+ /*
+  * SGTL5000_CHIP_MIC_CTRL
 -- 
 2.20.1
 
