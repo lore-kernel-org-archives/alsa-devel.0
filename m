@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
-Date: Tue, 21 May 2019 13:36:14 +0300
-Message-ID: <20190521103619.4707-2-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v1 5/6] ASoC: Define a set of DAPM pre/post-up events
+Date: Tue, 21 May 2019 13:36:18 +0300
+Message-ID: <20190521103619.4707-6-oleksandr.suvorov@toradex.com>
 References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -9,45 +9,31 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Fabio Estevam <festevam@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGTL5000_SMALL_POP is a bit mask, not a value. Usage of
-correct definition makes device probing code more clear.
+Prepare to use SND_SOC_DAPM_PRE_POST_PMU definition to
+reduce coming code size and make it more readable.
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 ---
 
- sound/soc/codecs/sgtl5000.c | 2 +-
- sound/soc/codecs/sgtl5000.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc-dapm.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c
-index a6a4748c97f9..5e49523ee0b6 100644
---- sound/soc/codecs/sgtl5000.c
-+++ sound/soc/codecs/sgtl5000.c
-@@ -1296,7 +1296,7 @@ static int sgtl5000_probe(struct snd_soc_component *component)
+diff --git include/sound/soc-dapm.h include/sound/soc-dapm.h
+index c00a0b8ade08..6c6694160130 100644
+--- include/sound/soc-dapm.h
++++ include/sound/soc-dapm.h
+@@ -353,6 +353,8 @@ struct device;
+ #define SND_SOC_DAPM_WILL_PMD   0x80    /* called at start of sequence */
+ #define SND_SOC_DAPM_PRE_POST_PMD \
+ 				(SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD)
++#define SND_SOC_DAPM_PRE_POST_PMU \
++				(SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU)
  
- 	/* enable small pop, introduce 400ms delay in turning off */
- 	snd_soc_component_update_bits(component, SGTL5000_CHIP_REF_CTRL,
--				SGTL5000_SMALL_POP, 1);
-+				SGTL5000_SMALL_POP, SGTL5000_SMALL_POP);
- 
- 	/* disable short cut detector */
- 	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL, 0);
-diff --git sound/soc/codecs/sgtl5000.h sound/soc/codecs/sgtl5000.h
-index 18cae08bbd3a..a4bf4bca95bf 100644
---- sound/soc/codecs/sgtl5000.h
-+++ sound/soc/codecs/sgtl5000.h
-@@ -273,7 +273,7 @@
- #define SGTL5000_BIAS_CTRL_MASK			0x000e
- #define SGTL5000_BIAS_CTRL_SHIFT		1
- #define SGTL5000_BIAS_CTRL_WIDTH		3
--#define SGTL5000_SMALL_POP			1
-+#define SGTL5000_SMALL_POP			0x0001
- 
- /*
-  * SGTL5000_CHIP_MIC_CTRL
+ /* convenience event type detection */
+ #define SND_SOC_DAPM_EVENT_ON(e)	\
 -- 
 2.20.1
 
