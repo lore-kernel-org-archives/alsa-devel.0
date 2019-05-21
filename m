@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: glk_rt5682_max98357a: Remap
-	button control-function" to the asoc tree
-Date: Tue, 21 May 2019 21:32:42 +0100 (BST)
-Message-ID: <20190521203242.A91C41126D1F@debutante.sirena.org.uk>
-References: <20190518183009.13359-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rt5677-spi: Handle over reading when
+	flipping bytes" to the asoc tree
+Date: Tue, 21 May 2019 21:32:43 +0100 (BST)
+Message-ID: <20190521203243.9A6CE1126D23@debutante.sirena.org.uk>
+References: <20190517014341.133938-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F664F8972E
- for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:52 +0200 (CEST)
-In-Reply-To: <20190518183009.13359-4-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DB9DF8972D
+ for <alsa-devel@alsa-project.org>; Tue, 21 May 2019 22:32:51 +0200 (CEST)
+In-Reply-To: <20190517014341.133938-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Yong Zhi <yong.zhi@intel.com>
-Cc: tiwai@suse.de, Naveen Manohar <naveen.m@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: glk_rt5682_max98357a: Remap button control-function
+   ASoC: rt5677-spi: Handle over reading when flipping bytes
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,39 +55,47 @@ to this mail.
 Thanks,
 Mark
 
->From 39f2d114a1c7d73d601f19cbea0a955ade2784c3 Mon Sep 17 00:00:00 2001
-From: Yong Zhi <yong.zhi@intel.com>
-Date: Sat, 18 May 2019 13:30:09 -0500
-Subject: [PATCH] ASoC: Intel: glk_rt5682_max98357a: Remap button
- control-function
+>From 7b8164c1a29ce8ef91672c50ceac5c14475f5601 Mon Sep 17 00:00:00 2001
+From: Curtis Malainey <cujomalainey@chromium.org>
+Date: Thu, 16 May 2019 18:43:40 -0700
+Subject: [PATCH] ASoC: rt5677-spi: Handle over reading when flipping bytes
 
-Assign button functions based on Android wired headset specs(v1.1).
+There is a case when a we want to read a large number of bytes that
+require a burst but is not a multiple of the word size (8). When this
+happens rt5677_spi_reverse will run off the end of the buffer. The
+solution is to tell spi_reverse the actual size of the destination and
+stop if we reach it even if we have data left that we read.
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5677-spi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index d17126f7757c..6b677b5bcdcd 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -169,9 +169,10 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	jack = &ctx->geminilake_headset;
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index 84b6bd8b50e1..a4dfa0345c6e 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -101,7 +101,7 @@ static void rt5677_spi_reverse(u8 *dst, u32 dstlen, const u8 *src, u32 srclen)
+ 	u32 word_size = min_t(u32, dstlen, 8);
  
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+ 	for (w = 0; w < dstlen; w += word_size) {
+-		for (i = 0; i < word_size; i++) {
++		for (i = 0; i < word_size && i + w < dstlen; i++) {
+ 			si = w + word_size - i - 1;
+ 			dst[w + i] = si < srclen ? src[si] : 0;
+ 		}
+@@ -152,8 +152,9 @@ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
+ 		status |= spi_sync(g_spi, &m);
+ 		mutex_unlock(&spi_mutex);
+ 
 +
- 	ret = snd_soc_component_set_jack(component, jack, NULL);
- 
- 	if (ret) {
+ 		/* Copy data back to caller buffer */
+-		rt5677_spi_reverse(cb + offset, t[1].len, body, t[1].len);
++		rt5677_spi_reverse(cb + offset, len - offset, body, t[1].len);
+ 	}
+ 	return status;
+ }
 -- 
 2.20.1
