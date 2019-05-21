@@ -1,22 +1,33 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: Fix configuration of DAI format" to the asoc tree
-Date: Tue, 21 May 2019 21:32:41 +0100 (BST)
-Message-ID: <20190521203241.B277E1126D1B@debutante.sirena.org.uk>
-References: <1558029086-18024-1-git-send-email-jonathanh@nvidia.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1558029086-18024-1-git-send-email-jonathanh@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: Mediatek: MT8183: fix compile error" to the asoc tree
+Date: Tue, 21 May 2019 21:32:40 +0100 (BST)
+Message-ID: <20190521203240.BC44C1126D16@debutante.sirena.org.uk>
+References: <1558430978-2440-3-git-send-email-jiaxin.yu@mediatek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1558430978-2440-3-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: Fix configuration of DAI format
+   ASoC: Mediatek: MT8183: fix compile error
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,61 +48,107 @@ to this mail.
 Thanks,
 Mark
 
->From 069d037aea98ffa64c26d4b1dc958fb8f39f5c2b Mon Sep 17 00:00:00 2001
-From: Jon Hunter <jonathanh@nvidia.com>
-Date: Thu, 16 May 2019 18:51:26 +0100
-Subject: [PATCH] ASoC: simple-card: Fix configuration of DAI format
+>From 383d30e72e682021fdaf0371ade1c58ad2c434a4 Mon Sep 17 00:00:00 2001
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Tue, 21 May 2019 17:29:38 +0800
+Subject: [PATCH] ASoC: Mediatek: MT8183: fix compile error
 
-When configuring a codec to be both bit-clock and frame-master, it was
-found that the codec was always configured as bit-clock and frame-slave.
-Looking at the simple_dai_link_of() function there appears to be two
-problems with the configuration of the DAI format, which are ...
+mtk_regmap_update_bits() has been changed to take a shift and warn
+when reg >= 0 but shift < 0.So the hd_align_mshift must not have shift.
+Change it from XXX_HD_ALIGN_MASK_SFT to XXX_HD_ALIGN_MASK.
 
-1. The function asoc_simple_parse_daifmt() is called before the function
-   asoc_simple_parse_codec() and this means that the device-tree node
-   for the codec has not been parsed yet, which is needed by the
-   function asoc_simple_parse_daifmt() to determine who is the codec.
-2. The phandle passed to asoc_simple_parse_daifmt() is the phandle to
-   the 'codec' node and not the phandle of the actual codec defined by
-   the 'sound-dai' property under the 'codec' node.
+Fixes: cf61f5b01531 ("ASoC: Mediatek: MT8183: set data align")
 
-Fix the above by moving the call to asoc_simple_parse_daifmt() after the
-the call to asoc_simple_parse_codec() and pass the phandle for the codec
-to asoc_simple_parse_daifmt().
-
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/generic/simple-card.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 9b568f578bcd..c2c8dcbcf795 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -283,11 +283,6 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	codec_dai		=
- 	dai_props->codec_dai	= &priv->dais[li->dais++];
- 
--	ret = asoc_simple_parse_daifmt(dev, node, codec,
--				       prefix, &dai_link->dai_fmt);
--	if (ret < 0)
--		goto dai_link_of_err;
--
- 	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
- 
- 	ret = asoc_simple_parse_cpu(cpu, dai_link, &single_cpu);
-@@ -298,6 +293,11 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
-+	ret = asoc_simple_parse_daifmt(dev, node, dai_link->codecs->of_node,
-+				       prefix, &dai_link->dai_fmt);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
- 	ret = asoc_simple_parse_platform(plat, dai_link);
- 	if (ret < 0)
- 		goto dai_link_of_err;
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index ab2bce1d9b3d..56c37323bc13 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -439,7 +439,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = DL1_HD_SFT,
+-		.hd_align_mshift = DL1_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = DL1_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -460,7 +460,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = DL2_HD_SFT,
+-		.hd_align_mshift = DL2_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = DL2_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -481,7 +481,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = DL3_HD_SFT,
+-		.hd_align_mshift = DL3_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = DL3_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -502,7 +502,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = VUL2_HD_SFT,
+-		.hd_align_mshift = VUL2_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = VUL2_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -523,7 +523,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = AWB_HD_SFT,
+-		.hd_align_mshift = AWB_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = AWB_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -544,7 +544,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = AWB2_HD_SFT,
+-		.hd_align_mshift = AWB2_ALIGN_MASK_SFT,
++		.hd_align_mshift = AWB2_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -565,7 +565,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = VUL12_HD_SFT,
+-		.hd_align_mshift = VUL12_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = VUL12_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -586,7 +586,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = MOD_DAI_HD_SFT,
+-		.hd_align_mshift = MOD_DAI_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = MOD_DAI_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
+@@ -607,7 +607,7 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_align_reg = AFE_MEMIF_HDALIGN,
+ 		.hd_shift = HDMI_HD_SFT,
+-		.hd_align_mshift = HDMI_HD_ALIGN_MASK_SFT,
++		.hd_align_mshift = HDMI_HD_ALIGN_SFT,
+ 		.agent_disable_reg = -1,
+ 		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
 -- 
 2.20.1
