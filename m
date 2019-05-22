@@ -1,7 +1,7 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Subject: Re: [PATCH] soundwire: stream: fix bad unlock balance
-Date: Wed, 22 May 2019 11:41:38 -0500
-Message-ID: <4744834c-36b1-dd8d-45fa-76c75eb3d5cb@linux.intel.com>
+Date: Wed, 22 May 2019 17:41:44 +0100
+Message-ID: <dd34d1ba-b8b6-7882-3e71-d036a97f41df@linaro.org>
 References: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
@@ -10,13 +10,13 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-Cc: sanyog.r.kale@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: vkoul@kernel.org
+Cc: sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 5/22/19 11:25 AM, Srinivas Kandagatla wrote:
+On 22/05/2019 17:25, Srinivas Kandagatla wrote:
 > This patch fixes below warning due to unlocking without locking.
 > 
 >   =====================================
@@ -27,7 +27,7 @@ On 5/22/19 11:25 AM, Srinivas Kandagatla wrote:
 >   do_bank_switch+0x21c/0x480
 >   but there are no more locks to release!
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
 > ---
 >   drivers/soundwire/stream.c | 3 ++-
 >   1 file changed, 2 insertions(+), 1 deletion(-)
@@ -43,14 +43,9 @@ On 5/22/19 11:25 AM, Srinivas Kandagatla wrote:
 > -		mutex_unlock(&bus->msg_lock);
 > +		if (mutex_is_locked(&bus->msg_lock))
 > +			utex_unlock(&bus->msg_lock);
+Looks like I messed this up!
 
-Does this even compile? should be mutex_unlock, no?
+I will resend this one!
 
-We also may want to identify the issue in more details without pushing 
-it under the rug. The locking mechanism is far from simple and it's 
-likely there are a number of problems with it.
-
+--srini
 >   	}
->   
->   	return ret;
-> 
