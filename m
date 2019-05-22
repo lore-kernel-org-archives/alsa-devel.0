@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 13/15] soundwire: Intel: add log for number of PCM and PDM PDIs
-Date: Wed, 22 May 2019 14:47:29 -0500
-Message-ID: <20190522194732.25704-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 14/15] soundwire: fix typo in comments
+Date: Wed, 22 May 2019 14:47:30 -0500
+Message-ID: <20190522194732.25704-15-pierre-louis.bossart@linux.intel.com>
 References: <20190522194732.25704-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,37 +12,25 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This information will be reflected in debugfs but it's easier to see
-as a dmesg log.
+Copy/paste of sdw_intel_res
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/soundwire/intel.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 4ac141730b13..92be6ad84e8d 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -263,6 +263,9 @@ static void intel_pdi_init(struct sdw_intel *sdw,
- 	config->pcm_out = (pcm_cap & SDW_SHIM_PCMSCAP_OSS) >>
- 					SDW_REG_SHIFT(SDW_SHIM_PCMSCAP_OSS);
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index 71050e5f643d..d923b6262330 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -5,7 +5,7 @@
+ #define __SDW_INTEL_LOCAL_H
  
-+	dev_dbg(sdw->cdns.dev, "PCM cap bd:%d in:%d out:%d\n",
-+		config->pcm_bd, config->pcm_in, config->pcm_out);
-+
- 	/* PDM Stream Capability */
- 	pdm_cap = intel_readw(shim, SDW_SHIM_PDMSCAP(link_id));
- 
-@@ -272,6 +275,9 @@ static void intel_pdi_init(struct sdw_intel *sdw,
- 					SDW_REG_SHIFT(SDW_SHIM_PDMSCAP_ISS);
- 	config->pdm_out = (pdm_cap & SDW_SHIM_PDMSCAP_OSS) >>
- 					SDW_REG_SHIFT(SDW_SHIM_PDMSCAP_OSS);
-+
-+	dev_dbg(sdw->cdns.dev, "PDM cap bd:%d in:%d out:%d\n",
-+		config->pdm_bd, config->pdm_in, config->pdm_out);
- }
- 
- static int
+ /**
+- * struct sdw_intel_res - Soundwire link resources
++ * struct sdw_intel_link_res - Soundwire link resources
+  * @registers: Link IO registers base
+  * @shim: Audio shim pointer
+  * @alh: ALH (Audio Link Hub) pointer
 -- 
 2.20.1
