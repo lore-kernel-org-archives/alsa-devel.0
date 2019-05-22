@@ -1,43 +1,75 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] soundwire: stream: fix bad unlock balance
-Date: Wed, 22 May 2019 17:25:28 +0100
-Message-ID: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 05/12] ASoC: SOF: pcm: clear
+	hw_params_upon_resume flag correctly
+Date: Wed, 22 May 2019 11:21:35 -0500
+Message-ID: <20190522162142.11525-6-pierre-louis.bossart@linux.intel.com>
+References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: vkoul@kernel.org
-Cc: sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8145F89625
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 18:21:56 +0200 (CEST)
+In-Reply-To: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Libin Yang <libin.yang@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes below warning due to unlocking without locking.
+From: Libin Yang <libin.yang@intel.com>
 
- =====================================
- WARNING: bad unlock balance detected!
- 5.1.0-16506-gc1c383a6f0a2-dirty #1523 Tainted: G        W
- -------------------------------------
- aplay/2954 is trying to release lock (&bus->msg_lock) at:
- do_bank_switch+0x21c/0x480
- but there are no more locks to release!
+sof_pcm_hw_params() can only be called once to setup the FW hw_params.
+So after calling sof_pcm_hw_params(), hw_params_upon_resume flag must
+be cleared to avoid multiple invoking sof_pcm_hw_params() by prepare.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+For example, after resume, there is an xrun happened, prepare() will
+be called. As the hw_params_upon_resume flag is not cleared,
+sof_pcm_hw_params() will be called and this will cause IPC timeout.
+
+This patch fixes such issues.
+
+Fixes: 868bd00f495 ("ASoC: SOF: Add PCM operations support")
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/stream.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sof/pcm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 544925ff0b40..d16268f30e4f 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -814,7 +814,8 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
- 			goto error;
- 		}
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 4f536c0de0a5..e94892053690 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -214,6 +214,9 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	INIT_WORK(&spcm->stream[substream->stream].period_elapsed_work,
+ 		  sof_pcm_period_elapsed_work);
  
--		mutex_unlock(&bus->msg_lock);
-+		if (mutex_is_locked(&bus->msg_lock))
-+			utex_unlock(&bus->msg_lock);
- 	}
- 
++	/* clear hw_params_upon_resume flag */
++	spcm->hw_params_upon_resume[substream->stream] = 0;
++
  	return ret;
+ }
+ 
+@@ -428,9 +431,6 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 	dev_dbg(sdev->dev, "pcm: open stream %d dir %d\n", spcm->pcm.pcm_id,
+ 		substream->stream);
+ 
+-	/* clear hw_params_upon_resume flag */
+-	spcm->hw_params_upon_resume[substream->stream] = 0;
+-
+ 	caps = &spcm->pcm.caps[substream->stream];
+ 
+ 	/* set any runtime constraints based on topology */
 -- 
-2.21.0
+2.20.1
