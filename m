@@ -1,14 +1,13 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] soundwire: stream: fix out of boundary access on port
- properties
-Date: Wed, 22 May 2019 11:37:01 -0500
-Message-ID: <19ad7a42-9625-f547-eab3-66d3aeded6c0@linux.intel.com>
-References: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] soundwire: stream: fix bad unlock balance
+Date: Wed, 22 May 2019 11:41:38 -0500
+Message-ID: <4744834c-36b1-dd8d-45fa-76c75eb3d5cb@linux.intel.com>
+References: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
@@ -17,36 +16,41 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 5/22/19 11:24 AM, Srinivas Kandagatla wrote:
-> Assigning local iterator to array element and using it again for
-> indexing would cross the array boundary.
-> Fix this by directly referring array element without using the local
-> variable.
-
-The change is valid and indeed the code could never work as is. I 
-vaguely recall providing this feedback as well in an earlier version.
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+On 5/22/19 11:25 AM, Srinivas Kandagatla wrote:
+> This patch fixes below warning due to unlocking without locking.
+> 
+>   =====================================
+>   WARNING: bad unlock balance detected!
+>   5.1.0-16506-gc1c383a6f0a2-dirty #1523 Tainted: G        W
+>   -------------------------------------
+>   aplay/2954 is trying to release lock (&bus->msg_lock) at:
+>   do_bank_switch+0x21c/0x480
+>   but there are no more locks to release!
 > 
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->   drivers/soundwire/stream.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
+>   drivers/soundwire/stream.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
 > diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index d01060dbee96..544925ff0b40 100644
+> index 544925ff0b40..d16268f30e4f 100644
 > --- a/drivers/soundwire/stream.c
 > +++ b/drivers/soundwire/stream.c
-> @@ -1406,9 +1406,7 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+> @@ -814,7 +814,8 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+>   			goto error;
+>   		}
+>   
+> -		mutex_unlock(&bus->msg_lock);
+> +		if (mutex_is_locked(&bus->msg_lock))
+> +			utex_unlock(&bus->msg_lock);
+
+Does this even compile? should be mutex_unlock, no?
+
+We also may want to identify the issue in more details without pushing 
+it under the rug. The locking mechanism is far from simple and it's 
+likely there are a number of problems with it.
+
 >   	}
 >   
->   	for (i = 0; i < num_ports; i++) {
-> -		dpn_prop = &dpn_prop[i];
-> -
-> -		if (dpn_prop->num == port_num)
-> +		if (dpn_prop[i].num == port_num)
->   			return &dpn_prop[i];
->   	}
->   
+>   	return ret;
 > 
