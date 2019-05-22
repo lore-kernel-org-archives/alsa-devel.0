@@ -1,16 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 00/12] ASoC: SOF: stability fixes
-Date: Wed, 22 May 2019 11:21:30 -0500
-Message-ID: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 01/12] ASoC: SOF: core: remove DSP after
+	unregistering machine driver
+Date: Wed, 22 May 2019 11:21:31 -0500
+Message-ID: <20190522162142.11525-2-pierre-louis.bossart@linux.intel.com>
+References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2E40F8079B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2851FF8962C
  for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 18:21:52 +0200 (CEST)
+In-Reply-To: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +24,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Tm8gbmV3IGZ1bmN0aW9uYWxpdHkgaGVyZSBidXQgZml4ZXMgdG8gdGhlIElQQywgbWVtb3J5IGFs
-bG9jYXRpb24sCndvcmtxdWV1ZXMsIGNvbnRyb2wsIHJ1bnRpbWVfcG0gYW5kIEhEYXVkaW8gc3Vw
-cG9ydC4gVGhlc2UgaXNzdWVzIHdlcmUKaWRlbnRpZmllZCBkdXJpbmcgdGhlIGludGVncmF0aW9u
-L3Byb2R1Y3RpemF0aW9uIG9mIG5ldyBwbGF0Zm9ybXMuCgpJIGFkZGVkIGEgJ0ZpeGVzJyB0YWcg
-dG8gbWFrZSBzdXJlIGJhY2twb3J0cy9zdGFibGUgY2FuIHBpY2sgdXAgdGhlc2UKcGF0Y2hlcywg
-aW4gY2FzZSBpdCdzIHRvbyBsYXRlIGZvciB0aGVtIHRvIGxhbmQgaW4gNS4yCgpUaGUgbmV4dCBi
-YXRjaCBmb3IgU09GIHdpbGwgYmUgYSBzZXQgb2YgbmV3IGNhcGFiaWxpdGllcyBmb3IgdHJhY2Us
-CklQQyB0ZXN0LCBIZGF1ZGlvIHN1cHBvcnQsIHRoZXkgd2lsbCBiZSBzdWJtaXR0ZWQgYWZ0ZXIg
-YWRkaXRpb25hbAp0ZXN0cyBhbmQgb25jZSB0aGVzZSBmaXhlcyBhcmUgcmV2aWV3ZWQvbWVyZ2Vk
-LgoKVGhhbmtzIQoKQ2hhbmdlcyBzaW5jZSB2MToKRmVlZGJhY2sgZnJvbSBUYWthc2hpOiB1c2Ug
-c3Bpbl9sb2NrX2lycSBpbnN0ZWFkIG9mIHNwaW5fbG9ja19pcnFfc2F2ZQpBZGRlZCBUYWthc2hp
-J3MgUmV2aWV3ZWQtYnkgdGFnCgpBbWFkZXVzeiBTxYJhd2nFhHNraSAoMSk6CiAgQUxTQTogaGRh
-YzogZml4IG1lbW9yeSByZWxlYXNlIGZvciBTU1QgYW5kIFNPRiBkcml2ZXJzCgpHdWVubmFkaSBM
-aWFraG92ZXRza2kgKDEpOgogIEFTb0M6IFNPRjogaXBjOiBmaXggYSByYWNlLCBsZWFkaW5nIHRv
-IElQQyB0aW1lb3V0cwoKS2V5b24gSmllICgxKToKICBBU29DOiBTT0Y6IGNvbnRyb2w6IGNvcnJl
-Y3QgdGhlIGNvcHkgc2l6ZSBmb3IgYnl0ZXMga2NvbnRyb2wgcHV0CgpMaWJpbiBZYW5nICgyKToK
-ICBBU29DOiBTT0Y6IHBjbTogY2xlYXIgaHdfcGFyYW1zX3Vwb25fcmVzdW1lIGZsYWcgY29ycmVj
-dGx5CiAgQVNvQzogU09GOiBJbnRlbDogaGRhLWNvZGVjOiBmaXggbWVtb3J5IGFsbG9jYXRpb24K
-ClBpZXJyZS1Mb3VpcyBCb3NzYXJ0ICgyKToKICBBU29DOiBTT0Y6IGNvcmU6IGZpeCBlcnJvciBo
-YW5kbGluZyB3aXRoIHRoZSBwcm9iZSB3b3JrcXVldWUKICBBU29DOiBTT0Y6IHBjbTogcmVtb3Zl
-IHdhcm5pbmcgLSBpbml0aWFsaXplIHdvcmtxdWV1ZSBvbiBvcGVuCgpSYW5qYW5pIFNyaWRoYXJh
-biAoMyk6CiAgQVNvQzogU09GOiBjb3JlOiByZW1vdmUgRFNQIGFmdGVyIHVucmVnaXN0ZXJpbmcg
-bWFjaGluZSBkcml2ZXIKICBBU29DOiBTT0Y6IGNvcmU6IHJlbW92ZSBzbmRfc29jX3VucmVnaXN0
-ZXJfY29tcG9uZW50IGluIGNhc2Ugb2YgZXJyb3IKICBBU29DOiBTT0Y6IHBjbTogcmVtb3ZlIHJ1
-bnRpbWUgUE0gY2FsbHMgZHVyaW5nIHBjbSBvcGVuL2Nsb3NlCgpaaHUgWWluZ2ppYW5nICgyKToK
-ICBBU29DOiBTT0Y6IEludGVsOiBoZGE6IGZpeCB0aGUgaGRhIGluaXQgY2hpcAogIEFTb0M6IFNP
-RjogSW50ZWw6IGhkYTogdXNlIHRoZSBkZWZpbmVkIHBwY2FwIGZ1bmN0aW9ucwoKIHNvdW5kL2hk
-YS9leHQvaGRhY19leHRfYnVzLmMgICAgfCAgIDEgLQogc291bmQvc29jL3NvZi9jb250cm9sLmMg
-ICAgICAgICB8ICAgOSArLS0KIHNvdW5kL3NvYy9zb2YvY29yZS5jICAgICAgICAgICAgfCAgMjkg
-KysrKysrKy0tCiBzb3VuZC9zb2Mvc29mL2ludGVsL2Jkdy5jICAgICAgIHwgIDEwICstLQogc291
-bmQvc29jL3NvZi9pbnRlbC9ieXQuYyAgICAgICB8ICAxMSArKy0tCiBzb3VuZC9zb2Mvc29mL2lu
-dGVsL2NubC5jICAgICAgIHwgICA1ICsrCiBzb3VuZC9zb2Mvc29mL2ludGVsL2hkYS1jb2RlYy5j
-IHwgICA2ICstCiBzb3VuZC9zb2Mvc29mL2ludGVsL2hkYS1jdHJsLmMgIHwgMTAyICsrKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tLQogc291bmQvc29jL3NvZi9pbnRlbC9oZGEtaXBjLmMgICB8
-ICAxOCArKysrKy0KIHNvdW5kL3NvYy9zb2YvaW50ZWwvaGRhLmMgICAgICAgfCAxMDkgKysrKysr
-Ky0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIHNvdW5kL3NvYy9zb2YvaXBjLmMgICAgICAgICAg
-ICAgfCAgMTMgLS0tLQogc291bmQvc29jL3NvZi9wY20uYyAgICAgICAgICAgICB8ICAzNyArKy0t
-LS0tLS0tLQogMTIgZmlsZXMgY2hhbmdlZCwgMTg0IGluc2VydGlvbnMoKyksIDE2NiBkZWxldGlv
-bnMoLSkKCi0tIAoyLjIwLjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+
+snd_sof_remove() disables the DSP and unmaps the DSP BAR.
+Removing topology after disabling the DSP results in a
+kernel panic while unloading the pipeline widget. This is
+because pipeline widget unload attempts to power down
+the core it is scheduled on by accessing the DSP registers.
+
+So, the suggested fix here is to unregister the machine driver
+first to remove the topology and then disable the DSP
+to avoid the situation described above.
+
+Note that the kernel panic only happens in cases where the
+HDaudio link is not managed by the hdac library,
+e.g. no codec or when HDMI is not supported.
+When the hdac library is used, snd_sof_remove() calls
+snd_hdac_ext_bus_device_remove() to remove the codec which
+unregisters the component driver thereby also removing the
+topology before the DSP is disabled.
+
+Fixes: c16211d6226 ("ASoC: SOF: Add Sound Open Firmware driver core")
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 32105e0fabe8..0bc4a8472c10 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -484,7 +484,6 @@ int snd_sof_device_remove(struct device *dev)
+ 	snd_sof_ipc_free(sdev);
+ 	snd_sof_free_debug(sdev);
+ 	snd_sof_free_trace(sdev);
+-	snd_sof_remove(sdev);
+ 
+ 	/*
+ 	 * Unregister machine driver. This will unbind the snd_card which
+@@ -494,6 +493,14 @@ int snd_sof_device_remove(struct device *dev)
+ 	if (!IS_ERR_OR_NULL(pdata->pdev_mach))
+ 		platform_device_unregister(pdata->pdev_mach);
+ 
++	/*
++	 * Unregistering the machine driver results in unloading the topology.
++	 * Some widgets, ex: scheduler, attempt to power down the core they are
++	 * scheduled on, when they are unloaded. Therefore, the DSP must be
++	 * removed only after the topology has been unloaded.
++	 */
++	snd_sof_remove(sdev);
++
+ 	/* release firmware */
+ 	release_firmware(pdata->fw);
+ 	pdata->fw = NULL;
+-- 
+2.20.1
