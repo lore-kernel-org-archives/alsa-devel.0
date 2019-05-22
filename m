@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] soundwire: stream: fix out of boundary access on port properties
-Date: Wed, 22 May 2019 17:24:43 +0100
-Message-ID: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH] soundwire: stream: fix bad unlock balance
+Date: Wed, 22 May 2019 17:25:28 +0100
+Message-ID: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -10,30 +10,34 @@ To: vkoul@kernel.org
 Cc: sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Assigning local iterator to array element and using it again for
-indexing would cross the array boundary.
-Fix this by directly referring array element without using the local
-variable.
+This patch fixes below warning due to unlocking without locking.
+
+ =====================================
+ WARNING: bad unlock balance detected!
+ 5.1.0-16506-gc1c383a6f0a2-dirty #1523 Tainted: G        W
+ -------------------------------------
+ aplay/2954 is trying to release lock (&bus->msg_lock) at:
+ do_bank_switch+0x21c/0x480
+ but there are no more locks to release!
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/stream.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/soundwire/stream.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index d01060dbee96..544925ff0b40 100644
+index 544925ff0b40..d16268f30e4f 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -1406,9 +1406,7 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+@@ -814,7 +814,8 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+ 			goto error;
+ 		}
+ 
+-		mutex_unlock(&bus->msg_lock);
++		if (mutex_is_locked(&bus->msg_lock))
++			utex_unlock(&bus->msg_lock);
  	}
  
- 	for (i = 0; i < num_ports; i++) {
--		dpn_prop = &dpn_prop[i];
--
--		if (dpn_prop->num == port_num)
-+		if (dpn_prop[i].num == port_num)
- 			return &dpn_prop[i];
- 	}
- 
+ 	return ret;
 -- 
 2.21.0
