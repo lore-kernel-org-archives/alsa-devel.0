@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 04/12] ASoC: SOF: pcm: remove runtime PM
-	calls during pcm open/close
-Date: Wed, 22 May 2019 11:21:34 -0500
-Message-ID: <20190522162142.11525-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 06/12] ASoC: SOF: pcm: remove warning -
+	initialize workqueue on open
+Date: Wed, 22 May 2019 11:21:36 -0500
+Message-ID: <20190522162142.11525-7-pierre-louis.bossart@linux.intel.com>
 References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21075F89636
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 18:21:54 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64138F89633
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 18:21:56 +0200 (CEST)
 In-Reply-To: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,84 +24,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+If the SOF hw_params() fail, typically with an IPC error thrown by the
+firmware, the period_elapsed workqueue is not initialized, but we
+still cancel it in hw_free(), which results in a kernel warning.
 
-pm_runtime_get_sync()/pm_runtime_put_autosuspend() calls are
-already invoked by the ASoC core in soc_pcm_open() and
-soc_pcm_close(). So the SOF component driver does not need
-to call them again.
+Move the initialization to the .open callback. Tested on Broadwell
+(Samus) and IceLake.
 
-Fixes: 868bd00f495 ("ASoC: SOF: Add PCM operations support")
+Fixes: e2803e610ae ("ASoC: SOF: PCM: add period_elapsed work to fix
+race condition in interrupt context")
+
+GitHub issue: https://github.com/thesofproject/linux/issues/932
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c | 29 ++---------------------------
- 1 file changed, 2 insertions(+), 27 deletions(-)
+ sound/soc/sof/pcm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 649968841dad..4f536c0de0a5 100644
+index e94892053690..6dc5f97be0bc 100644
 --- a/sound/soc/sof/pcm.c
 +++ b/sound/soc/sof/pcm.c
-@@ -416,7 +416,6 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_sof_pcm *spcm;
- 	struct snd_soc_tplg_stream_caps *caps;
- 	int ret;
--	int err;
+@@ -211,9 +211,6 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	/* save pcm hw_params */
+ 	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
  
- 	/* nothing to do for BE */
- 	if (rtd->dai_link->no_pcm)
-@@ -434,14 +433,6 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+-	INIT_WORK(&spcm->stream[substream->stream].period_elapsed_work,
+-		  sof_pcm_period_elapsed_work);
+-
+ 	/* clear hw_params_upon_resume flag */
+ 	spcm->hw_params_upon_resume[substream->stream] = 0;
  
+@@ -431,6 +428,9 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 	dev_dbg(sdev->dev, "pcm: open stream %d dir %d\n", spcm->pcm.pcm_id,
+ 		substream->stream);
+ 
++	INIT_WORK(&spcm->stream[substream->stream].period_elapsed_work,
++		  sof_pcm_period_elapsed_work);
++
  	caps = &spcm->pcm.caps[substream->stream];
  
--	ret = pm_runtime_get_sync(sdev->dev);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: pcm open failed to resume %d\n",
--			ret);
--		pm_runtime_put_noidle(sdev->dev);
--		return ret;
--	}
--
  	/* set any runtime constraints based on topology */
- 	snd_pcm_hw_constraint_step(substream->runtime, 0,
- 				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-@@ -485,17 +476,8 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
- 	spcm->stream[substream->stream].substream = substream;
- 
- 	ret = snd_sof_pcm_platform_open(sdev, substream);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: pcm open failed %d\n",
--			ret);
--
--		pm_runtime_mark_last_busy(sdev->dev);
--
--		err = pm_runtime_put_autosuspend(sdev->dev);
--		if (err < 0)
--			dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
--				err);
--	}
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: pcm open failed %d\n", ret);
- 
- 	return ret;
- }
-@@ -530,13 +512,6 @@ static int sof_pcm_close(struct snd_pcm_substream *substream)
- 		 */
- 	}
- 
--	pm_runtime_mark_last_busy(sdev->dev);
--
--	err = pm_runtime_put_autosuspend(sdev->dev);
--	if (err < 0)
--		dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
--			err);
--
- 	return 0;
- }
- 
 -- 
 2.20.1
