@@ -1,70 +1,52 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
-	memory allocation
-Date: Wed, 22 May 2019 11:21:42 -0500
-Message-ID: <20190522162142.11525-13-pierre-louis.bossart@linux.intel.com>
-References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] soundwire: stream: fix out of boundary access on port
+ properties
+Date: Wed, 22 May 2019 11:37:01 -0500
+Message-ID: <19ad7a42-9625-f547-eab3-66d3aeded6c0@linux.intel.com>
+References: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFE5CF8972C
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 18:22:01 +0200 (CEST)
-In-Reply-To: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Libin Yang <libin.yang@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
+Cc: sanyog.r.kale@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
 
-Align all users of the hdac library to use devm_kzalloc.
 
-Note for backports/stable: the patch ("ALSA: hdac: fix memory release
-for SST and SOF drivers") needs to be applied as well.
+On 5/22/19 11:24 AM, Srinivas Kandagatla wrote:
+> Assigning local iterator to array element and using it again for
+> indexing would cross the array boundary.
+> Fix this by directly referring array element without using the local
+> variable.
 
-Fixes: 5507b8103e26 ("ASoC: SOF: Intel: Add support for HDAudio codecs")
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/intel/hda-codec.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+The change is valid and indeed the code could never work as is. I 
+vaguely recall providing this feedback as well in an earlier version.
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index b8b37f082309..0d8437b080bf 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -62,8 +62,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 		address, resp);
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
--	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
--	hda_priv = kzalloc(sizeof(*hda_priv), GFP_KERNEL);
-+	hda_priv = devm_kzalloc(sdev->dev, sizeof(*hda_priv), GFP_KERNEL);
- 	if (!hda_priv)
- 		return -ENOMEM;
- 
-@@ -82,8 +81,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 
- 	return 0;
- #else
--	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
--	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	hdev = devm_kzalloc(sdev->dev, sizeof(*hdev), GFP_KERNEL);
- 	if (!hdev)
- 		return -ENOMEM;
- 
--- 
-2.20.1
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   drivers/soundwire/stream.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index d01060dbee96..544925ff0b40 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -1406,9 +1406,7 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+>   	}
+>   
+>   	for (i = 0; i < num_ports; i++) {
+> -		dpn_prop = &dpn_prop[i];
+> -
+> -		if (dpn_prop->num == port_num)
+> +		if (dpn_prop[i].num == port_num)
+>   			return &dpn_prop[i];
+>   	}
+>   
+> 
