@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Mediatek: MT8183: enable dev runtime
- suspend and resume
-Date: Wed, 22 May 2019 16:31:28 +0100
-Message-ID: <20190522153128.GF8582@sirena.org.uk>
-References: <1558536724-18293-1-git-send-email-jiaxin.yu@mediatek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 00/12] ASoC: SOF: stability fixes
+Date: Wed, 22 May 2019 11:21:30 -0500
+Message-ID: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1979129659672657977=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99EBCF8079B
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 17:31:31 +0200 (CEST)
-In-Reply-To: <1558536724-18293-1-git-send-email-jiaxin.yu@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2E40F8079B
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 18:21:52 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +20,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, srv_heupstream@mediatek.com, garlic.tseng@mediatek.com, tzungbi@google.com, linux-mediatek@list.infradead.org, kaichieh.chuang@mediatek.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1979129659672657977==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pyE8wggRBhVBcj8z"
-Content-Disposition: inline
-
-
---pyE8wggRBhVBcj8z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, May 22, 2019 at 10:52:04PM +0800, Jiaxin Yu wrote:
-> System suspend will power off audio, so we need regcache sync when
-> system resume.
->=20
-> Remove pm_runtime_get_sync in dev probe and pm_runtime_put_sync in
-> dev remove.So that audio dev can triggle runitme suspend and resume.
-
-While allowing runtime PM to run is good it'd be better to have a
-standard system power management resume function as well that ensures
-everything is restored after suspend to avoid unfortunate interactions
-with user configuration of runtime PM.
-
---pyE8wggRBhVBcj8z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzla08ACgkQJNaLcl1U
-h9CTmAf/aR+hpSMlz7odh/3zH6QgA5d+Q1r6lg/BubEjiLp6YWSBxnzUsz+fOcYh
-zJ66EYLu6KsH/PT/vkYXdxAvt9n/agC6ZRHcpZJOuMiDhItY94ZYTFjZvbt8krx2
-DxW2O9b6OrFu8jaPle0D5NvWWA+F1az9oaGxBicgJ4Qh7Cput5ArKP6v7mbaveuU
-Prc01/wsk81KuqObX0PchyxHabyR7ntaGf/SjrGUdcpQBLfPBKspfh5AZHo3wtRj
-vwEj5YGoXInhcVFvUEJCqmVVI3v8y9peD2BmPrz3fvE6J2UiRMAHLiPq8WzUydzR
-tK1wpu+piOp3gK0fJEydVpnjYMTHnQ==
-=mS3Q
------END PGP SIGNATURE-----
-
---pyE8wggRBhVBcj8z--
-
---===============1979129659672657977==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1979129659672657977==--
+Tm8gbmV3IGZ1bmN0aW9uYWxpdHkgaGVyZSBidXQgZml4ZXMgdG8gdGhlIElQQywgbWVtb3J5IGFs
+bG9jYXRpb24sCndvcmtxdWV1ZXMsIGNvbnRyb2wsIHJ1bnRpbWVfcG0gYW5kIEhEYXVkaW8gc3Vw
+cG9ydC4gVGhlc2UgaXNzdWVzIHdlcmUKaWRlbnRpZmllZCBkdXJpbmcgdGhlIGludGVncmF0aW9u
+L3Byb2R1Y3RpemF0aW9uIG9mIG5ldyBwbGF0Zm9ybXMuCgpJIGFkZGVkIGEgJ0ZpeGVzJyB0YWcg
+dG8gbWFrZSBzdXJlIGJhY2twb3J0cy9zdGFibGUgY2FuIHBpY2sgdXAgdGhlc2UKcGF0Y2hlcywg
+aW4gY2FzZSBpdCdzIHRvbyBsYXRlIGZvciB0aGVtIHRvIGxhbmQgaW4gNS4yCgpUaGUgbmV4dCBi
+YXRjaCBmb3IgU09GIHdpbGwgYmUgYSBzZXQgb2YgbmV3IGNhcGFiaWxpdGllcyBmb3IgdHJhY2Us
+CklQQyB0ZXN0LCBIZGF1ZGlvIHN1cHBvcnQsIHRoZXkgd2lsbCBiZSBzdWJtaXR0ZWQgYWZ0ZXIg
+YWRkaXRpb25hbAp0ZXN0cyBhbmQgb25jZSB0aGVzZSBmaXhlcyBhcmUgcmV2aWV3ZWQvbWVyZ2Vk
+LgoKVGhhbmtzIQoKQ2hhbmdlcyBzaW5jZSB2MToKRmVlZGJhY2sgZnJvbSBUYWthc2hpOiB1c2Ug
+c3Bpbl9sb2NrX2lycSBpbnN0ZWFkIG9mIHNwaW5fbG9ja19pcnFfc2F2ZQpBZGRlZCBUYWthc2hp
+J3MgUmV2aWV3ZWQtYnkgdGFnCgpBbWFkZXVzeiBTxYJhd2nFhHNraSAoMSk6CiAgQUxTQTogaGRh
+YzogZml4IG1lbW9yeSByZWxlYXNlIGZvciBTU1QgYW5kIFNPRiBkcml2ZXJzCgpHdWVubmFkaSBM
+aWFraG92ZXRza2kgKDEpOgogIEFTb0M6IFNPRjogaXBjOiBmaXggYSByYWNlLCBsZWFkaW5nIHRv
+IElQQyB0aW1lb3V0cwoKS2V5b24gSmllICgxKToKICBBU29DOiBTT0Y6IGNvbnRyb2w6IGNvcnJl
+Y3QgdGhlIGNvcHkgc2l6ZSBmb3IgYnl0ZXMga2NvbnRyb2wgcHV0CgpMaWJpbiBZYW5nICgyKToK
+ICBBU29DOiBTT0Y6IHBjbTogY2xlYXIgaHdfcGFyYW1zX3Vwb25fcmVzdW1lIGZsYWcgY29ycmVj
+dGx5CiAgQVNvQzogU09GOiBJbnRlbDogaGRhLWNvZGVjOiBmaXggbWVtb3J5IGFsbG9jYXRpb24K
+ClBpZXJyZS1Mb3VpcyBCb3NzYXJ0ICgyKToKICBBU29DOiBTT0Y6IGNvcmU6IGZpeCBlcnJvciBo
+YW5kbGluZyB3aXRoIHRoZSBwcm9iZSB3b3JrcXVldWUKICBBU29DOiBTT0Y6IHBjbTogcmVtb3Zl
+IHdhcm5pbmcgLSBpbml0aWFsaXplIHdvcmtxdWV1ZSBvbiBvcGVuCgpSYW5qYW5pIFNyaWRoYXJh
+biAoMyk6CiAgQVNvQzogU09GOiBjb3JlOiByZW1vdmUgRFNQIGFmdGVyIHVucmVnaXN0ZXJpbmcg
+bWFjaGluZSBkcml2ZXIKICBBU29DOiBTT0Y6IGNvcmU6IHJlbW92ZSBzbmRfc29jX3VucmVnaXN0
+ZXJfY29tcG9uZW50IGluIGNhc2Ugb2YgZXJyb3IKICBBU29DOiBTT0Y6IHBjbTogcmVtb3ZlIHJ1
+bnRpbWUgUE0gY2FsbHMgZHVyaW5nIHBjbSBvcGVuL2Nsb3NlCgpaaHUgWWluZ2ppYW5nICgyKToK
+ICBBU29DOiBTT0Y6IEludGVsOiBoZGE6IGZpeCB0aGUgaGRhIGluaXQgY2hpcAogIEFTb0M6IFNP
+RjogSW50ZWw6IGhkYTogdXNlIHRoZSBkZWZpbmVkIHBwY2FwIGZ1bmN0aW9ucwoKIHNvdW5kL2hk
+YS9leHQvaGRhY19leHRfYnVzLmMgICAgfCAgIDEgLQogc291bmQvc29jL3NvZi9jb250cm9sLmMg
+ICAgICAgICB8ICAgOSArLS0KIHNvdW5kL3NvYy9zb2YvY29yZS5jICAgICAgICAgICAgfCAgMjkg
+KysrKysrKy0tCiBzb3VuZC9zb2Mvc29mL2ludGVsL2Jkdy5jICAgICAgIHwgIDEwICstLQogc291
+bmQvc29jL3NvZi9pbnRlbC9ieXQuYyAgICAgICB8ICAxMSArKy0tCiBzb3VuZC9zb2Mvc29mL2lu
+dGVsL2NubC5jICAgICAgIHwgICA1ICsrCiBzb3VuZC9zb2Mvc29mL2ludGVsL2hkYS1jb2RlYy5j
+IHwgICA2ICstCiBzb3VuZC9zb2Mvc29mL2ludGVsL2hkYS1jdHJsLmMgIHwgMTAyICsrKysrKysr
+KysrKysrKysrKysrKysrKysrKy0tLQogc291bmQvc29jL3NvZi9pbnRlbC9oZGEtaXBjLmMgICB8
+ICAxOCArKysrKy0KIHNvdW5kL3NvYy9zb2YvaW50ZWwvaGRhLmMgICAgICAgfCAxMDkgKysrKysr
+Ky0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIHNvdW5kL3NvYy9zb2YvaXBjLmMgICAgICAgICAg
+ICAgfCAgMTMgLS0tLQogc291bmQvc29jL3NvZi9wY20uYyAgICAgICAgICAgICB8ICAzNyArKy0t
+LS0tLS0tLQogMTIgZmlsZXMgY2hhbmdlZCwgMTg0IGluc2VydGlvbnMoKyksIDE2NiBkZWxldGlv
+bnMoLSkKCi0tIAoyLjIwLjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
