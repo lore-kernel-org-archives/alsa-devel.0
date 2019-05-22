@@ -1,74 +1,65 @@
-From: Suren Baghdasaryan <surenb@google.com>
-Subject: [PATCH 1/1] ALSA: usb-audio: Fix UAF decrement if card has no live
- interfaces in card.c
-Date: Wed, 22 May 2019 10:26:55 -0700
-Message-ID: <20190522172655.183977-1-surenb@google.com>
+From: Curtis Malainey <cujomalainey@google.com>
+Subject: Re: Cannot build broadwell on for-5.3
+Date: Wed, 22 May 2019 11:30:31 -0700
+Message-ID: <CAOReqxjUk_6Fvc=CRnCWu7c=QvObxhwA_psWLz5gLO_v5Fc5Pg@mail.gmail.com>
+References: <CAOReqxjQAya8GQ4bOSBfTBHwXd38c33pOMc35rrSj4O4jMaMSQ@mail.gmail.com>
+ <s5hwoii1rd3.wl-tiwai@suse.de>
+ <6eb7cc4d-aa95-74b9-e849-22559737f47a@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: surenb@google.com
-Cc: perex@perex.cz, tiwai@suse.de, mathias.payer@nebelwelt.net, benquike@gmail.com, kdeus@google.com, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com
+ [IPv6:2a00:1450:4864:20::142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C786CF8079B
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 20:30:44 +0200 (CEST)
+Received: by mail-lf1-x142.google.com with SMTP id d8so2431041lfb.8
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2019 11:30:44 -0700 (PDT)
+In-Reply-To: <6eb7cc4d-aa95-74b9-e849-22559737f47a@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>, Guenter Roeck <groeck@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 5f8cf712582617d523120df67d392059eaf2fc4b upstream.
-
-This is a backport to stable 3.18.y. Implementation in 3.18 differs using
-chip->probing flag instead of chip->active atomic but it still has the UAF
-issue.
-
-If a USB sound card reports 0 interfaces, an error condition is triggered
-and the function usb_audio_probe errors out. In the error path, there was a
-use-after-free vulnerability where the memory object of the card was first
-freed, followed by a decrement of the number of active chips. Moving the
-decrement above the atomic_dec fixes the UAF.
-
-[ The original problem was introduced in 3.1 kernel, while it was
-  developed in a different form.  The Fixes tag below indicates the
-  original commit but it doesn't mean that the patch is applicable
-  cleanly. -- tiwai ]
-
-Fixes: 362e4e49abe5 ("ALSA: usb-audio - clear chip->probing on error exit")
-Reported-by: Hui Peng <benquike@gmail.com>
-Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-Signed-off-by: Hui Peng <benquike@gmail.com>
-Signed-off-by: Mathias Payer <mathias.payer@nebelwelt.net>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-[surenb@google.com: resolve 3.18 differences]
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
-Analysis for 3.18 codebase:
-snd_usb_audio_create() sets card->device_data = chip
-snd_usb_audio_probe() calls snd_card_free() and then resets chip->probing
-snd_card_free() results in the following call chain:
- snd_card_free_when_closed() which waits on release_completion
- snd_card_do_free() calls snd_device_free_all() and signals release_completion
- snd_card_do_free() calls __snd_device_free()
- __snd_device_free() calls dev->ops->dev_free() == snd_usb_audio_dev_free()
- snd_usb_audio_dev_free() calls snd_usb_audio_free(chip) and frees "chip"
-chip->probing = 0 results in UAF
-
- sound/usb/card.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index f7dbdc10bf77..59fb1ef3cd55 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -593,9 +593,12 @@ snd_usb_audio_probe(struct usb_device *dev,
- 
-  __error:
- 	if (chip) {
-+		/* chip->probing is inside the chip->card object,
-+		 * reset before memory is possibly returned.
-+		 */
-+		chip->probing = 0;
- 		if (!chip->num_interfaces)
- 			snd_card_free(chip->card);
--		chip->probing = 0;
- 	}
- 	mutex_unlock(&register_mutex);
-  __err_val:
--- 
-2.21.0.1020.gf2820cf01a-goog
+On Wed, May 22, 2019 at 8:22 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+> >> It appears the for-5.3 branch had some broken commits pulled in at
+> >> 1c7c3237c0cc4ad3c7b0df458290c8e2a652f178 ("Merge tag 'v5.2-rc1' into
+> >> asoc-5.3 ")
+> >>
+> >> building for the pixelbook I get the following build errors:
+> >>
+> >> Invalid absolute R_X86_64_32S relocation: _etext
+> >> make[3]: *** [/mnt/host/source/src/third_party/kernel/v4.14/arch/x86/boot/compressed/Makefile:130:
+> >> arch/x86/boot/compressed/vmlinux.relocs] Error 1
+> >> make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
+> >>
+> >> Mainline is still broken as well. Not sure how to propagate this up to
+> >> the responsible parties, figured I would start a discussion here
+> >> first. I am also open to suggestions if there is a chance I am missing
+> >> something.
+> >
+> > Looks like some leftover interfering the build.
+> > Try to cleanup your work directory, e.g. make distclean and rebuild.
+>
+> works for me with the attached .config.
+> Likely an environment problem.
+Yea, cleaning didn't help, Pierre is right, it appears to be tied to
+our gcc version we are stuck on. I will see what I can do to work
+around this. Thanks.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
