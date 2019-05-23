@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 2/6] ASoC: Intel: Skylake: move NHLT header
-	to common directory
-Date: Thu, 23 May 2019 18:39:47 -0500
-Message-ID: <20190523233951.31122-3-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 3/6] ASoC: Intel: common: move parts of
+	NHLT code to new module
+Date: Thu, 23 May 2019 18:39:48 -0500
+Message-ID: <20190523233951.31122-4-pierre-louis.bossart@linux.intel.com>
 References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E1F8F89674
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 01:40:36 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D018FF8079B
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 01:40:37 +0200 (CEST)
 In-Reply-To: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,69 +27,204 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Prepare move from NHLT code to common directory, starting with header.
+Move parts of the code outside of the Skylake driver to help detect
+the presence of DMICs (which are not supported by the HDaudio legacy
+driver).
+
+No functionality change, only indentation and checkpatch fixes, and making sure that the code compiles without ACPI
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/{skylake/skl-nhlt.h => common/intel-nhlt.h} | 0
- sound/soc/intel/skylake/skl-nhlt.c                          | 1 +
- sound/soc/intel/skylake/skl-ssp-clk.c                       | 1 +
- sound/soc/intel/skylake/skl-topology.c                      | 1 +
- sound/soc/intel/skylake/skl.h                               | 1 -
- 5 files changed, 3 insertions(+), 1 deletion(-)
- rename sound/soc/intel/{skylake/skl-nhlt.h => common/intel-nhlt.h} (100%)
+ sound/soc/intel/Kconfig             |  3 +
+ sound/soc/intel/common/Makefile     |  3 +
+ sound/soc/intel/common/intel-nhlt.c | 98 +++++++++++++++++++++++++++++
+ sound/soc/intel/common/intel-nhlt.h | 28 +++++++++
+ 4 files changed, 132 insertions(+)
+ create mode 100644 sound/soc/intel/common/intel-nhlt.c
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/common/intel-nhlt.h
-similarity index 100%
-rename from sound/soc/intel/skylake/skl-nhlt.h
-rename to sound/soc/intel/common/intel-nhlt.h
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 5d125a3df527..8c72b737c1fa 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -18,6 +18,7 @@
-  *
-  */
- #include <linux/pci.h>
-+#include "../common/intel-nhlt.h"
- #include "skl.h"
- #include "skl-i2s.h"
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index b089ed3bf77f..71f19b73eed7 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -205,6 +205,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
+ 	select SND_SOC_ACPI_INTEL_MATCH
++	select SND_SOC_INTEL_NHLT
+ 	help
+ 	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+ 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+@@ -224,6 +225,8 @@ config SND_SOC_ACPI_INTEL_MATCH
  
-diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
-index cda1b5fa7436..55a066c22c81 100644
---- a/sound/soc/intel/skylake/skl-ssp-clk.c
-+++ b/sound/soc/intel/skylake/skl-ssp-clk.c
-@@ -14,6 +14,7 @@
- #include "skl.h"
- #include "skl-ssp-clk.h"
- #include "skl-topology.h"
-+#include "../common/intel-nhlt.h"
+ endif ## SND_SOC_INTEL_SST_TOPLEVEL || SND_SOC_SOF_INTEL_TOPLEVEL
  
- #define to_skl_clk(_hw)	container_of(_hw, struct skl_clk, hw)
++config SND_SOC_INTEL_NHLT
++	tristate
  
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 389f1862bc43..a900c38328d5 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -30,6 +30,7 @@
- #include "skl.h"
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
-+#include "../common/intel-nhlt.h"
+ # ASoC codec drivers
+ source "sound/soc/intel/boards/Kconfig"
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 56c81e20b5bf..4a5d2e4c28e4 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -10,7 +10,10 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
+ 	soc-acpi-intel-cnl-match.o soc-acpi-intel-icl-match.o \
+ 	soc-acpi-intel-hda-match.o
  
- #define SKL_CH_FIXUP_MASK		(1 << 0)
- #define SKL_RATE_FIXUP_MASK		(1 << 1)
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 85f8bb6687dc..f0a15cb3d311 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -25,7 +25,6 @@
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_codec.h>
- #include <sound/soc.h>
--#include "skl-nhlt.h"
- #include "skl-ssp-clk.h"
++snd-soc-intel-nhlt-objs := intel-nhlt.o
++
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_FIRMWARE) += snd-soc-sst-firmware.o
+ obj-$(CONFIG_SND_SOC_ACPI_INTEL_MATCH) += snd-soc-acpi-intel-match.o
++obj-$(CONFIG_SND_SOC_INTEL_NHLT) += snd-soc-intel-nhlt.o
+diff --git a/sound/soc/intel/common/intel-nhlt.c b/sound/soc/intel/common/intel-nhlt.c
+new file mode 100644
+index 000000000000..d93ecc32d996
+--- /dev/null
++++ b/sound/soc/intel/common/intel-nhlt.c
+@@ -0,0 +1,98 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2015-2019 Intel Corporation
++
++#include <linux/acpi.h>
++#include "intel-nhlt.h"
++
++#define NHLT_ACPI_HEADER_SIG	"NHLT"
++
++/* Unique identification for getting NHLT blobs */
++static guid_t osc_guid =
++	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
++		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
++
++struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
++{
++	acpi_handle handle;
++	union acpi_object *obj;
++	struct nhlt_resource_desc  *nhlt_ptr = NULL;
++	struct nhlt_acpi_table *nhlt_table = NULL;
++
++	handle = ACPI_HANDLE(dev);
++	if (!handle) {
++		dev_err(dev, "Didn't find ACPI_HANDLE\n");
++		return NULL;
++	}
++
++	obj = acpi_evaluate_dsm(handle, &osc_guid, 1, 1, NULL);
++	if (obj && obj->type == ACPI_TYPE_BUFFER) {
++		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
++		if (nhlt_ptr->length)
++			nhlt_table = (struct nhlt_acpi_table *)
++				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
++					 MEMREMAP_WB);
++		ACPI_FREE(obj);
++		if (nhlt_table &&
++		    (strncmp(nhlt_table->header.signature,
++			     NHLT_ACPI_HEADER_SIG,
++			     strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
++			memunmap(nhlt_table);
++			dev_err(dev, "NHLT ACPI header signature incorrect\n");
++			return NULL;
++		}
++		return nhlt_table;
++	}
++
++	dev_dbg(dev, "No NHLT table found\n");
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(intel_nhlt_init);
++
++void intel_nhlt_free(struct nhlt_acpi_table *nhlt)
++{
++	memunmap((void *)nhlt);
++}
++EXPORT_SYMBOL_GPL(intel_nhlt_free);
++
++int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
++{
++	struct nhlt_endpoint *epnt;
++	struct nhlt_dmic_array_config *cfg;
++	unsigned int dmic_geo = 0;
++	u8 j;
++
++	if (!nhlt)
++		return 0;
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++
++	for (j = 0; j < nhlt->endpoint_count; j++) {
++		if (epnt->linktype == NHLT_LINK_DMIC) {
++			cfg = (struct nhlt_dmic_array_config  *)
++					(epnt->config.caps);
++			switch (cfg->array_type) {
++			case NHLT_MIC_ARRAY_2CH_SMALL:
++			case NHLT_MIC_ARRAY_2CH_BIG:
++				dmic_geo |= MIC_ARRAY_2CH;
++				break;
++
++			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
++			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
++			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
++				dmic_geo |= MIC_ARRAY_4CH;
++				break;
++
++			default:
++				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
++					 cfg->array_type);
++			}
++		}
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return dmic_geo;
++}
++EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel NHLT driver");
+diff --git a/sound/soc/intel/common/intel-nhlt.h b/sound/soc/intel/common/intel-nhlt.h
+index 116534e7b3c5..125e47ae9a3c 100644
+--- a/sound/soc/intel/common/intel-nhlt.h
++++ b/sound/soc/intel/common/intel-nhlt.h
+@@ -20,6 +20,8 @@
+ #ifndef __SKL_NHLT_H__
+ #define __SKL_NHLT_H__
  
- #define SKL_SUSPEND_DELAY 2000
++#if IS_ENABLED(CONFIG_ACPI)
++
+ #include <linux/acpi.h>
+ 
+ struct wav_fmt {
+@@ -125,4 +127,30 @@ enum {
+ 	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
+ };
+ 
++struct nhlt_acpi_table *intel_nhlt_init(struct device *dev);
++
++void intel_nhlt_free(struct nhlt_acpi_table *addr);
++
++int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
++
++#else
++
++struct nhlt_acpi_table;
++
++static inline nhlt_acpi_table *intel_nhlt_init(struct device *dev)
++{
++	return NULL;
++}
++
++static inline void intel_nhlt_free(struct nhlt_acpi_table *addr)
++{
++}
++
++static inline int intel_nhlt_get_dmic_geo(struct device *dev,
++					  struct nhlt_acpi_table *nhlt)
++{
++	return 0;
++}
++#endif
++
+ #endif
 -- 
 2.20.1
