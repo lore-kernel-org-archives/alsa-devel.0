@@ -1,20 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/4] ALSA: firewire-lib: use 8 byte packet
-	header for IT context to separate CIP header from CIP payload
-Date: Fri, 24 May 2019 00:14:40 +0900
-Message-ID: <20190523151440.5127-5-o-takashi@sakamocchi.jp>
-References: <20190523151440.5127-1-o-takashi@sakamocchi.jp>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/5] ASoC: madera: Add DT bindings for Cirrus
+	Logic Madera codecs
+Date: Thu, 23 May 2019 16:43:43 +0100
+Message-ID: <20190523154347.10442-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F208F80C0F
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 17:14:52 +0200 (CEST)
-In-Reply-To: <20190523151440.5127-1-o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED2F4F89625
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 17:43:54 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,150 +22,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-In Linux firewire subsystem, for IT context, some quadlets of isochronous
-packet payload can be indicated as a part of packet header to queue to
-the context.
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-This commit uses the packet header to split CIP headers from CIP
-payload. As a result, regardless of CIP or non-CIP, context payload
-includes data blocks only.
+The Cirrus Logic Madera codecs are a family of related codecs with
+extensive digital and analogue I/O, digital mixing and routing,
+signal processing and programmable DSPs.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/firewire/amdtp-stream.c | 63 +++++++++++++++++++----------------
- 1 file changed, 35 insertions(+), 28 deletions(-)
+ Documentation/devicetree/bindings/sound/madera.txt | 67 ++++++++++++++++++++++
+ MAINTAINERS                                        |  1 +
+ include/dt-bindings/sound/madera.h                 | 29 ++++++++++
+ 3 files changed, 97 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/madera.txt
+ create mode 100644 include/dt-bindings/sound/madera.h
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index e813d31ff2ad..791efa5585c2 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -62,6 +62,9 @@
- #define IR_CTX_HEADER_SIZE_NO_CIP	8
- #define HEADER_TSTAMP_MASK	0x0000ffff
- 
-+#define IT_PKT_HEADER_SIZE_CIP		8 // For 2 CIP header.
-+#define IT_PKT_HEADER_SIZE_NO_CIP	0 // Nothing.
+diff --git a/Documentation/devicetree/bindings/sound/madera.txt b/Documentation/devicetree/bindings/sound/madera.txt
+new file mode 100644
+index 0000000000000..1114fcf1aa4c2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/madera.txt
+@@ -0,0 +1,67 @@
++Cirrus Logic Madera class audio codecs
 +
- static void pcm_period_tasklet(unsigned long data);
- 
- /**
-@@ -452,13 +455,10 @@ static int queue_packet(struct amdtp_stream *s, struct fw_iso_packet *params)
- }
- 
- static inline int queue_out_packet(struct amdtp_stream *s,
--				   struct fw_iso_packet *params,
--				   unsigned int payload_length)
-+				   struct fw_iso_packet *params)
- {
--	// No header for this packet.
--	params->header_length = 0;
--	params->payload_length = payload_length;
--	params->skip = !!(payload_length == 0);
-+	params->skip =
-+		!!(params->header_length == 0 && params->payload_length == 0);
- 	return queue_packet(s, params);
- }
- 
-@@ -491,41 +491,41 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
- {
- 	unsigned int syt;
- 	unsigned int data_blocks;
--	unsigned int payload_length;
- 	__be32 *cip_header;
- 	unsigned int pcm_frames;
- 	struct snd_pcm_substream *pcm;
--	struct fw_iso_packet params = {0};
-+	struct {
-+		struct fw_iso_packet params;
-+		__be32 header[IT_PKT_HEADER_SIZE_CIP / sizeof(__be32)];
-+	} template = { {0}, {0} };
- 
- 	syt = calculate_syt(s, cycle);
- 	data_blocks = calculate_data_blocks(s, syt);
--
--	payload_length = data_blocks * sizeof(__be32) * s->data_block_quadlets;
--	if (!(s->flags & CIP_NO_HEADER)) {
--		cip_header = buffer;
--		buffer += 2;
--		payload_length += 2 * sizeof(__be32);
--	} else {
--		cip_header = NULL;
--	}
--
- 	pcm_frames = s->process_data_blocks(s, buffer, data_blocks, &syt);
- 
- 	if (s->flags & CIP_DBC_IS_END_EVENT)
- 		s->data_block_counter =
- 				(s->data_block_counter + data_blocks) & 0xff;
- 
--	if (cip_header)
-+	if (!(s->flags & CIP_NO_HEADER)) {
-+		cip_header = (__be32 *)template.params.header;
- 		generate_cip_header(s, cip_header, syt);
-+		template.params.header_length = 2 * sizeof(__be32);
-+	} else {
-+		cip_header = NULL;
-+	}
- 
- 	if (!(s->flags & CIP_DBC_IS_END_EVENT))
- 		s->data_block_counter =
- 				(s->data_block_counter + data_blocks) & 0xff;
- 
--	trace_amdtp_packet(s, cycle, cip_header, payload_length, data_blocks,
--			   index);
-+	template.params.payload_length =
-+			data_blocks * sizeof(__be32) * s->data_block_quadlets;
++This describes audio configuration bindings for these codecs.
 +
-+	trace_amdtp_packet(s, cycle, cip_header, template.params.payload_length,
-+			   data_blocks, index);
- 
--	if (queue_out_packet(s, &params, payload_length) < 0)
-+	if (queue_out_packet(s, &template.params) < 0)
- 		return -EIO;
- 
- 	pcm = READ_ONCE(s->pcm);
-@@ -878,14 +878,18 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 			ctx_header_size = IR_CTX_HEADER_SIZE_CIP;
- 		else
- 			ctx_header_size = IR_CTX_HEADER_SIZE_NO_CIP;
++See also the core bindings for the parent MFD driver:
++See Documentation/devicetree/bindings/mfd/madera.txt
 +
-+		max_ctx_payload_size = amdtp_stream_get_max_payload(s) -
-+				       ctx_header_size;
- 	} else {
- 		dir = DMA_TO_DEVICE;
- 		type = FW_ISO_CONTEXT_TRANSMIT;
- 		ctx_header_size = 0;	// No effect for IT context.
--	}
- 
--	max_ctx_payload_size = amdtp_stream_get_max_payload(s) -
--			       ctx_header_size;
-+		max_ctx_payload_size = amdtp_stream_get_max_payload(s);
-+		if (!(s->flags & CIP_NO_HEADER))
-+			max_ctx_payload_size -= IT_PKT_HEADER_SIZE_CIP;
-+	}
- 
- 	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
- 				      max_ctx_payload_size, dir);
-@@ -918,10 +922,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	s->packet_index = 0;
- 	do {
- 		struct fw_iso_packet params;
--		if (s->direction == AMDTP_IN_STREAM)
-+		if (s->direction == AMDTP_IN_STREAM) {
- 			err = queue_in_packet(s, &params);
--		else
--			err = queue_out_packet(s, &params, 0);
-+		} else {
-+			params.header_length = 0;
-+			params.payload_length = 0;
-+			err = queue_out_packet(s, &params);
-+		}
- 		if (err < 0)
- 			goto err_context;
- 	} while (s->packet_index > 0);
++and defines for values used in these bindings:
++include/dt-bindings/sound/madera.h
++
++These properties are all contained in the parent MFD node.
++
++Optional properties:
++  - cirrus,dmic-ref : Indicates how the MICBIAS pins have been externally
++    connected to DMICs on each input, one cell per input.
++    <IN1 IN2 IN3 ...>
++    A value of 0 indicates MICVDD and is the default, other values depend on the
++    codec:
++    For CS47L35 one of the CS47L35_DMIC_REF_xxx values
++    For all other codecs one of the MADERA_DMIC_REF_xxx values
++    Also see the datasheet for a description of the INn_DMIC_SUP field.
++
++  - cirrus,inmode : A list of input mode settings for each input. A maximum of
++    16 cells, with four cells per input in the order INnAL, INnAR INnBL INnBR.
++    For non-muxed inputs the first two cells for that input set the mode for
++    the left and right channel and the second two cells must be 0.
++    For muxed inputs the first two cells for that input set the mode of the
++    left and right A inputs and the second two cells set the mode of the left
++    and right B inputs.
++    Valid mode values are one of the MADERA_INMODE_xxx. If the array is shorter
++    than the number of inputs the unspecified inputs default to
++    MADERA_INMODE_DIFF.
++
++  - cirrus,out-mono : Mono bit for each output, must contain six cells if
++    specified. A non-zero value indicates the corresponding output is mono.
++
++  - cirrus,max-channels-clocked : Maximum number of channels that I2S clocks
++    will be generated for. Useful when clock master for systems where the I2S
++    bus has multiple data lines.
++    One cell for each AIF, use a value of zero for AIFs that should be handled
++    normally.
++
++  - cirrus,pdm-fmt : PDM speaker data format, must contain 2 cells
++    (OUT5 and OUT6). See the PDM_SPKn_FMT field in the datasheet for a
++    description of this value.
++    The second cell is ignored for codecs that do not have OUT6.
++
++  - cirrus,pdm-mute : PDM mute format, must contain 2 cells
++    (OUT5 and OUT6). See the PDM_SPKn_CTRL_1 register in the datasheet for a
++    description of this value.
++    The second cell is ignored for codecs that do not have OUT6.
++
++Example:
++
++cs47l35@0 {
++	compatible = "cirrus,cs47l35";
++
++	cirrus,dmic-ref = <0 0 CS47L35_DMIC_REF_MICBIAS1B 0>;
++	cirrus,inmode = <
++		MADERA_INMODE_DMIC MADERA_INMODE_DMIC /* IN1A digital */
++		MADERA_INMODE_SE   MADERA_INMODE_SE   /* IN1B single-ended */
++		MADERA_INMODE_DIFF MADERA_INMODE_DIFF /* IN2 differential */
++		0 0 	/* not used on this codec */
++	>;
++	cirrus,out-mono = <0 0 0 0 0 0>;
++	cirrus,max-channels-clocked = <2 0 0>;
++};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5cfbea4ce5750..642cb5610dd50 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3915,6 +3915,7 @@ W:	https://github.com/CirrusLogic/linux-drivers/wiki
+ S:	Supported
+ F:	Documentation/devicetree/bindings/mfd/madera.txt
+ F:	Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
++F:	include/dt-bindings/sound/madera*
+ F:	include/linux/irqchip/irq-madera*
+ F:	include/linux/mfd/madera/*
+ F:	drivers/gpio/gpio-madera*
+diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
+new file mode 100644
+index 0000000000000..9ff4eae5259b0
+--- /dev/null
++++ b/include/dt-bindings/sound/madera.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Device Tree defines for Madera codecs
++ *
++ * Copyright (C) 2016-2017 Cirrus Logic, Inc. and
++ *                         Cirrus Logic International Semiconductor Ltd.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef DT_BINDINGS_SOUND_MADERA_H
++#define DT_BINDINGS_SOUND_MADERA_H
++
++#define MADERA_INMODE_DIFF		0
++#define MADERA_INMODE_SE		1
++#define MADERA_INMODE_DMIC		2
++
++#define MADERA_DMIC_REF_MICVDD		0
++#define MADERA_DMIC_REF_MICBIAS1	1
++#define MADERA_DMIC_REF_MICBIAS2	2
++#define MADERA_DMIC_REF_MICBIAS3	3
++
++#define CS47L35_DMIC_REF_MICBIAS1B	1
++#define CS47L35_DMIC_REF_MICBIAS2A	2
++#define CS47L35_DMIC_REF_MICBIAS2B	3
++
++#endif
 -- 
-2.20.1
+2.11.0
