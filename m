@@ -1,79 +1,58 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: qdsp6: q6core: Use struct_size() in kmemdup()
-Date: Thu, 23 May 2019 11:07:48 -0500
-Message-ID: <20190523160748.GA4844@embeddedor>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH] ASoC: core: lock client_mutex while removing
+	link components
+Date: Thu, 23 May 2019 10:12:01 -0700
+Message-ID: <20190523171201.31104-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE7C9F80C0F
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 19:12:05 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes, in particular in the
-context in which this code is being used.
+Removing link components results in topology unloading. So,
+acquire the client_mutex before removing components in
+soc_remove_link_components. This will prevent the lockdep warning
+seen when dai links are removed during topology removal.
 
-So, replace code of the following form:
-
-sizeof(*fwk) + fwk->num_services * sizeof(fwk->svc_api_info[0]);
-
-with:
-
-struct_size(fwk, svc_api_info, fwk->num_services)
-
-and so on...
-
-Notice that variables bytes and len are unnecessary, hence they are
-removed.
-
-This code was detected with the help of Coccinelle.
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/qcom/qdsp6/q6core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
-index cdfc8ab6cfc0..ae314a652efe 100644
---- a/sound/soc/qcom/qdsp6/q6core.c
-+++ b/sound/soc/qcom/qdsp6/q6core.c
-@@ -98,13 +98,13 @@ static int q6core_callback(struct apr_device *adev, struct apr_resp_pkt *data)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ce8c057bcd5b..bbb52fbd195e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1010,12 +1010,14 @@ static void soc_remove_link_components(struct snd_soc_card *card,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 
++	mutex_lock(&client_mutex);
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+ 		if (component->driver->remove_order == order)
+ 			soc_remove_component(component);
  	}
- 	case AVCS_CMDRSP_GET_FWK_VERSION: {
- 		struct avcs_cmdrsp_get_fwk_version *fwk;
--		int bytes;
++	mutex_unlock(&client_mutex);
+ }
  
- 		fwk = data->payload;
--		bytes = sizeof(*fwk) + fwk->num_services *
--				sizeof(fwk->svc_api_info[0]);
- 
--		core->fwk_version = kmemdup(data->payload, bytes, GFP_ATOMIC);
-+		core->fwk_version = kmemdup(data->payload,
-+					    struct_size(fwk, svc_api_info,
-+							fwk->num_services),
-+					    GFP_ATOMIC);
- 		if (!core->fwk_version)
- 			return -ENOMEM;
- 
-@@ -115,13 +115,13 @@ static int q6core_callback(struct apr_device *adev, struct apr_resp_pkt *data)
- 	}
- 	case AVCS_GET_VERSIONS_RSP: {
- 		struct avcs_cmdrsp_get_version *v;
--		int len;
- 
- 		v = data->payload;
- 
--		len = sizeof(*v) + v->num_services * sizeof(v->svc_api_info[0]);
--
--		core->svc_version = kmemdup(data->payload, len, GFP_ATOMIC);
-+		core->svc_version = kmemdup(data->payload,
-+					    struct_size(v, svc_api_info,
-+							v->num_services),
-+					    GFP_ATOMIC);
- 		if (!core->svc_version)
- 			return -ENOMEM;
- 
+ static void soc_remove_dai_links(struct snd_soc_card *card)
 -- 
-2.21.0
+2.17.1
