@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8183: remove unused DAPM
-	pins" to the asoc tree
+Subject: Applied "ASoC: mediatek: mt8183: move card
+	registration to the end of probe" to the asoc tree
 Date: Thu, 23 May 2019 14:48:53 +0100 (BST)
-Message-ID: <20190523134853.D99DB1126D25@debutante.sirena.org.uk>
-References: <20190522145505.257961-1-tzungbi@google.com>
+Message-ID: <20190523134853.9FB631126D24@debutante.sirena.org.uk>
+References: <20190522145402.256102-1-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AA6BF89717
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35542F89715
  for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 15:49:00 +0200 (CEST)
-In-Reply-To: <20190522145505.257961-1-tzungbi@google.com>
+In-Reply-To: <20190522145402.256102-1-tzungbi@google.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,7 +29,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183: remove unused DAPM pins
+   ASoC: mediatek: mt8183: move card registration to the end of probe
 
 has been applied to the asoc tree at
 
@@ -54,90 +54,62 @@ to this mail.
 Thanks,
 Mark
 
->From 108d0d40b932f80fc7f1dbd1de548d666e649a4b Mon Sep 17 00:00:00 2001
+>From 63ba8e4d04ab921f8aaa89227d2e0f7ad79725be Mon Sep 17 00:00:00 2001
 From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Wed, 22 May 2019 22:55:05 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: remove unused DAPM pins
+Date: Wed, 22 May 2019 22:54:02 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: move card registration to the end of
+ probe
 
-Kernel emits the following messages when booting.
-ASoC: DAPM unknown pin Headset Mic
-ASoC: DAPM unknown pin Headphone
+mt8183_mt6358_ts3a227_max98357_dev_probe() does not return immediately
+if devm_snd_soc_register_card() returns fail.  As a result, the rest of
+code still get executed.
 
-Remove the unused DAPM pins.
+Two options to fix:
+1. add an extra return statement if devm_snd_soc_register_card()
+   returns fail
+2. move devm_snd_soc_register_card() to the end of probe
+
+Adopt option 2 which is more clear and common.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../soc/mediatek/mt8183/mt8183-da7219-max98357.c | 15 +--------------
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c      | 16 +---------------
- 2 files changed, 2 insertions(+), 29 deletions(-)
+ .../soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 31ea8632c397..231fb49d79b9 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -18,18 +18,6 @@
- 
- static struct snd_soc_jack headset_jack;
- 
--/* Headset jack detection DAPM pins */
--static struct snd_soc_jack_pin headset_jack_pins[] = {
--	{
--		.pin = "Headphone",
--		.mask = SND_JACK_HEADPHONE,
--	},
--	{
--		.pin = "Headset Mic",
--		.mask = SND_JACK_MICROPHONE,
--	},
--};
--
- static struct snd_soc_dai_link_component
- mt8183_da7219_max98357_external_codecs[] = {
- 	{
-@@ -375,8 +363,7 @@ mt8183_da7219_max98357_headset_init(struct snd_soc_component *component)
- 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
- 				    &headset_jack,
--				    headset_jack_pins,
--				    ARRAY_SIZE(headset_jack_pins));
-+				    NULL, 0);
- 	if (ret)
- 		return ret;
- 
 diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 4e44e5689d6f..1ba7aa58e4b6 100644
+index 1ba7aa58e4b6..23c422f13808 100644
 --- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
 +++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -17,19 +17,6 @@
+@@ -331,7 +331,7 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 	struct device_node *platform_node;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct pinctrl *default_pins;
+-	int ret, i;
++	int i;
  
- static struct snd_soc_jack headset_jack;
+ 	card->dev = &pdev->dev;
  
--/* Headset jack detection DAPM pins */
--static struct snd_soc_jack_pin headset_jack_pins[] = {
--	{
--		.pin = "Headphone",
--		.mask = SND_JACK_HEADPHONE,
--	},
--	{
--		.pin = "Headset Mic",
--		.mask = SND_JACK_MICROPHONE,
--	},
+@@ -366,11 +366,6 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = devm_snd_soc_register_card(&pdev->dev, card);
+-	if (ret)
+-		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
+-			__func__, ret);
 -
--};
--
- static int mt8183_mt6358_i2s_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
- {
-@@ -328,8 +315,7 @@ mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *component)
- 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
- 				    &headset_jack,
--				    headset_jack_pins,
--				    ARRAY_SIZE(headset_jack_pins));
-+				    NULL, 0);
- 	if (ret)
- 		return ret;
+ 	default_pins =
+ 		devm_pinctrl_get_select(&pdev->dev, PINCTRL_STATE_DEFAULT);
+ 	if (IS_ERR(default_pins)) {
+@@ -379,7 +374,7 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 		return PTR_ERR(default_pins);
+ 	}
  
+-	return ret;
++	return devm_snd_soc_register_card(&pdev->dev, card);
+ }
+ 
+ #ifdef CONFIG_OF
 -- 
 2.20.1
