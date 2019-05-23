@@ -1,90 +1,71 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
- memory allocation
-Date: Thu, 23 May 2019 08:34:29 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1952841741@SHSMSX103.ccr.corp.intel.com>
-References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
- <20190522162142.11525-13-pierre-louis.bossart@linux.intel.com>
- <96A12704CE18D347B625EE2D4A099D195284169B@SHSMSX103.ccr.corp.intel.com>
- <s5hr28pfux1.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19528416D3@SHSMSX103.ccr.corp.intel.com>
- <s5ho93tfuea.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] soundwire: stream: fix bad unlock balance
+Date: Thu, 23 May 2019 09:43:14 +0100
+Message-ID: <2dc66f9d-e508-d457-a7d6-c06c4336e7b8@linaro.org>
+References: <20190522162528.5892-1-srinivas.kandagatla@linaro.org>
+ <4744834c-36b1-dd8d-45fa-76c75eb3d5cb@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32FA7F80C0F
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 10:34:35 +0200 (CEST)
-In-Reply-To: <s5ho93tfuea.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4744834c-36b1-dd8d-45fa-76c75eb3d5cb@linux.intel.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org
+Cc: sanyog.r.kale@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
->-----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de]
->Sent: Thursday, May 23, 2019 4:27 PM
->To: Yang, Libin <libin.yang@intel.com>
->Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; alsa-
->devel@alsa-project.org; broonie@kernel.org
->Subject: Re: [alsa-devel] [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
->memory allocation
->
->On Thu, 23 May 2019 10:21:20 +0200,
->Yang, Libin wrote:
->>
->> Hi Takashi,
->>
->> >-----Original Message-----
->> >From: Takashi Iwai [mailto:tiwai@suse.de]
->> >Sent: Thursday, May 23, 2019 4:16 PM
->> >To: Yang, Libin <libin.yang@intel.com>
->> >Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>;
->> >alsa- devel@alsa-project.org; broonie@kernel.org
->> >Subject: Re: [alsa-devel] [PATCH v2 12/12] ASoC: SOF: Intel:
->> >hda-codec: fix memory allocation
->> >
->> >On Thu, 23 May 2019 10:03:03 +0200,
->> >Yang, Libin wrote:
->> >>
->> >> Please let me describe the issue here.
->> >>
->> >> The test case is:
->> >> 1) Unload module with script "sudo ./sof_remove.sh" ,
->> >> 2) reload module with script "sudo ./sof_insert.sh"
->> >>
->> >> After several rounds of removing and inserting kernel modules,
->> >> system will complain like below:
->> >> "BUG: unable to handle kernel paging request at 000000292a282031"
->> >
->> >Did you try some kernel debug options?  It might show what went wrong.
->>
->> No, I haven't. I'm not sure which options I can use for this case.
->> Could you please give me some suggestions?
->
->You can enable CONFIG_DEBUG_DEVRES and adjust the devres.log option for
->showing each devres allocation and removal.  And I'd try
->CONFIG_DEBUG_SLAB and CONFIG_DEBUG_KMEMLEAK or whatever
->interesting in CONFIG_DEBUG section, too.
 
-Thanks. I will have a try.
+On 22/05/2019 17:41, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 5/22/19 11:25 AM, Srinivas Kandagatla wrote:
+>> This patch fixes below warning due to unlocking without locking.
+>>
+>>   =====================================
+>>   WARNING: bad unlock balance detected!
+>>   5.1.0-16506-gc1c383a6f0a2-dirty #1523 Tainted: G        W
+>>   -------------------------------------
+>>   aplay/2954 is trying to release lock (&bus->msg_lock) at:
+>>   do_bank_switch+0x21c/0x480
+>>   but there are no more locks to release!
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/soundwire/stream.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+>> index 544925ff0b40..d16268f30e4f 100644
+>> --- a/drivers/soundwire/stream.c
+>> +++ b/drivers/soundwire/stream.c
+>> @@ -814,7 +814,8 @@ static int do_bank_switch(struct 
+>> sdw_stream_runtime *stream)
+>>               goto error;
+>>           }
+>> -        mutex_unlock(&bus->msg_lock);
+>> +        if (mutex_is_locked(&bus->msg_lock))
+>> +            utex_unlock(&bus->msg_lock);
+> 
+> Does this even compile? should be mutex_unlock, no?
+> 
+> We also may want to identify the issue in more details without pushing 
+> it under the rug. The locking mechanism is far from simple and it's 
+> likely there are a number of problems with it.
+> 
+msg_lock is taken conditionally during multi link bank switch cases, 
+however the unlock is done unconditionally leading to this warning.
 
-Regards,
-Libin
+Having a closer look show that there could be a dead lock in this path 
+while executing sdw_transfer(). And infact there is no need to take 
+msg_lock in  multi link switch cases as sdw_transfer should take care of 
+this.
 
->
->
->Takashi
+Vinod/Sanyog any reason why msg_lock is really required in this path?
+
+--srini
+
+>>       }
+>>       return ret;
+>>
