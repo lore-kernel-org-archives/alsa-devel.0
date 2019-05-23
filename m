@@ -1,110 +1,50 @@
-From: Adam Miartus <amiartus@de.adit-jv.com>
-Subject: [PATCH 2/2] pcm_file: add infile read support for mmap
-	mode
-Date: Thu, 23 May 2019 15:00:40 +0200
-Message-ID: <1558616440-21044-3-git-send-email-amiartus@de.adit-jv.com>
-References: <1558616440-21044-1-git-send-email-amiartus@de.adit-jv.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ASoC: simple-card: Fix configuration of DAI format" to
+ the asoc tree
+Date: Thu, 23 May 2019 14:17:52 +0100
+Message-ID: <20190523131752.GE17245@sirena.org.uk>
+References: <20190521203241.B277E1126D1B@debutante.sirena.org.uk>
+ <51ce00db-05ce-ba66-f1be-74c800f6daed@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1558616440-21044-1-git-send-email-amiartus@de.adit-jv.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XuV1QlJbYrcVoo+x"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <51ce00db-05ce-ba66-f1be-74c800f6daed@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-mmap_begin callback is used to copy data from input file to mmaped
-buffer
 
-guard for corner use of api (multiple mmap_begin calls by user) is
-introduced to check if next continuous buffer was already overwritten
+--XuV1QlJbYrcVoo+x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-buffer is overwritten with input file data only in case of stream capture
+On Thu, May 23, 2019 at 09:54:25AM +0100, Jon Hunter wrote:
 
-Signed-off-by: Adam Miartus <amiartus@de.adit-jv.com>
-Reviewed-by: Timo Wischer <twischer@de.adit-jv.com>
----
- src/pcm/pcm_file.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+> Please can you drop this patch?
 
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index 8e2c70b..52cc10a 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -88,6 +88,7 @@ typedef struct {
- 	size_t buffer_bytes;
- 	struct wav_fmt wav_header;
- 	size_t filelen;
-+	char ifmmap_overwritten;
- } snd_pcm_file_t;
- 
- #if __BYTE_ORDER == __LITTLE_ENDIAN
-@@ -630,6 +631,8 @@ static snd_pcm_sframes_t snd_pcm_file_mmap_commit(snd_pcm_t *pcm,
- 	const snd_pcm_channel_area_t *areas;
- 	snd_pcm_sframes_t result;
- 
-+	file->ifmmap_overwritten = 0;
-+
- 	result = snd_pcm_mmap_begin(file->gen.slave, &areas, &ofs, &siz);
- 	if (result >= 0) {
- 		assert(ofs == offset && siz == size);
-@@ -640,6 +643,32 @@ static snd_pcm_sframes_t snd_pcm_file_mmap_commit(snd_pcm_t *pcm,
- 	return result;
- }
- 
-+static int snd_pcm_file_mmap_begin(snd_pcm_t *pcm, const snd_pcm_channel_area_t **areas,
-+	snd_pcm_uframes_t *offset, snd_pcm_uframes_t *frames)
-+{
-+	snd_pcm_file_t *file = pcm->private_data;
-+	snd_pcm_channel_area_t areas_if[pcm->channels];
-+	snd_pcm_uframes_t frames_if;
-+	void *buffer = NULL;
-+	int result;
-+
-+	result = snd_pcm_mmap_begin(file->gen.slave, areas, offset, frames);
-+	if (result < 0)
-+		return result;
-+
-+	if (pcm->stream != SND_PCM_STREAM_CAPTURE)
-+		return result;
-+
-+	/* user may run mmap_begin without mmap_commit multiple times in row */
-+	if (file->ifmmap_overwritten)
-+		return result;
-+	file->ifmmap_overwritten = 1;
-+
-+	snd_pcm_file_areas_read_infile(pcm, *areas, *offset, *frames);
-+
-+	return result;
-+}
-+
- static int snd_pcm_file_hw_free(snd_pcm_t *pcm)
- {
- 	snd_pcm_file_t *file = pcm->private_data;
-@@ -666,6 +695,7 @@ static int snd_pcm_file_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 	file->wbuf_size = slave->buffer_size * 2;
- 	file->wbuf_size_bytes = snd_pcm_frames_to_bytes(slave, file->wbuf_size);
- 	file->wbuf_used_bytes = 0;
-+	file->ifmmap_overwritten = 0;
- 	assert(!file->wbuf);
- 	file->wbuf = malloc(file->wbuf_size_bytes);
- 	if (file->wbuf == NULL) {
-@@ -777,6 +807,7 @@ static const snd_pcm_fast_ops_t snd_pcm_file_fast_ops = {
- 	.poll_descriptors = snd_pcm_generic_poll_descriptors,
- 	.poll_revents = snd_pcm_generic_poll_revents,
- 	.htimestamp = snd_pcm_generic_htimestamp,
-+	.mmap_begin = snd_pcm_file_mmap_begin,
- };
- 
- /**
--- 
-2.7.4
+> Per some offline review with Morimoto-san, it turns out that the actual
+> issue resided in my DT (which was incorrect) and not the simple-card
+> machine driver.
+
+Sure, can you send a patch doing a revert with a commit log explaining
+why please?
+
+--XuV1QlJbYrcVoo+x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzmnX8ACgkQJNaLcl1U
+h9DyeAf/aqaSRpEHFdpE0yh4ivOxtAiWHU4BGbL0CGJ3CqeO3BzuYJQHxDNAgNWe
+6+jnVf+RcMVwAFOJ3E4fqt6rYsQ+qIf/aHRGKmUX++TapvVWGnYCMZ6QK3FugGdp
+9YAdt2Go05f+SuPe8xCpgnh2NZubzLRmKycDBbW9xc9C7OOgi+2BxXpdyL7Z66bH
+cYsJ/OdsgDBVnrl2wT4xVMfS6C4x93ym2m4BZEls7E9tyV3E4niW/wMcTlC3I2gd
+SvunVwfZf/3SagJYwJpOBl2zFX/Mi27G+b0O3uCXpidWAZag2CgDPtB2CoAH7/XH
+r9LWxEXv8rzMATbdPAIp9UFP+BE4JA==
+=jm60
+-----END PGP SIGNATURE-----
+
+--XuV1QlJbYrcVoo+x--
