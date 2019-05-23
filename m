@@ -1,9 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ALSA: firewire-lib: split helper function
-	to generate CIP header
-Date: Fri, 24 May 2019 00:14:37 +0900
-Message-ID: <20190523151440.5127-2-o-takashi@sakamocchi.jp>
-References: <20190523151440.5127-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/4] ALSA: firewire-lib: unify handlers for
+	outgoing packet
+Date: Fri, 24 May 2019 00:14:36 +0900
+Message-ID: <20190523151440.5127-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABC0FF80C0F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 428C4F8079B
  for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 17:14:47 +0200 (CEST)
-In-Reply-To: <20190523151440.5127-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,53 +26,25 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is minor code refactoring to split a function to generate CIP
-header.
+Hi,
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+In IT context of Linux firewire subsystem, some quadlets of packet
+payload can be put as a part of packet header. This enables to
+use context payload for data blocks only.
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 2d9c764061d1..25985663bb2b 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -477,6 +477,19 @@ static inline int queue_in_packet(struct amdtp_stream *s)
- 	return queue_packet(s, s->ctx_data.tx.max_ctx_payload_length);
- }
- 
-+static void generate_cip_header(struct amdtp_stream *s, __be32 cip_header[2],
-+				unsigned int syt)
-+{
-+	cip_header[0] = cpu_to_be32(READ_ONCE(s->source_node_id_field) |
-+				(s->data_block_quadlets << CIP_DBS_SHIFT) |
-+				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
-+				s->data_block_counter);
-+	cip_header[1] = cpu_to_be32(CIP_EOH |
-+			((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
-+			((s->ctx_data.rx.fdf << CIP_FDF_SHIFT) & CIP_FDF_MASK) |
-+			(syt & CIP_SYT_MASK));
-+}
-+
- static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
- 			     const __be32 *ctx_header, __be32 *buffer,
- 			     unsigned int index)
-@@ -495,14 +508,7 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
- 		s->data_block_counter =
- 				(s->data_block_counter + data_blocks) & 0xff;
- 
--	buffer[0] = cpu_to_be32(READ_ONCE(s->source_node_id_field) |
--				(s->data_block_quadlets << CIP_DBS_SHIFT) |
--				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
--				s->data_block_counter);
--	buffer[1] = cpu_to_be32(CIP_EOH |
--			((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
--			((s->ctx_data.rx.fdf << CIP_FDF_SHIFT) & CIP_FDF_MASK) |
--			(syt & CIP_SYT_MASK));
-+	generate_cip_header(s, buffer, syt);
- 
- 	if (!(s->flags & CIP_DBC_IS_END_EVENT))
- 		s->data_block_counter =
+This patchset uses the mechanism to unify handlers of outgoing packet
+for with-CIP and without-CIP headers.
+
+Takashi Sakamoto (4):
+  ALSA: firewire-lib: split helper function to generate CIP header
+  ALSA: firewire-lib: unify packet handler for IT context
+  ALSA: firewire-lib: code refactoring to queueing packets
+  ALSA: firewire-lib: use 8 byte packet header for IT context to
+    separate CIP header from CIP payload
+
+ sound/firewire/amdtp-stream.c | 150 ++++++++++++++++------------------
+ sound/firewire/amdtp-stream.h |   3 -
+ 2 files changed, 69 insertions(+), 84 deletions(-)
+
 -- 
 2.20.1
