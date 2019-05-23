@@ -1,62 +1,55 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/1] ALSA: usb-audio: Fix UAF decrement if card has no
- live interfaces in card.c
-Date: Thu, 23 May 2019 19:43:05 +0200
-Message-ID: <20190523174305.GA29438@kroah.com>
-References: <20190522172655.183977-1-surenb@google.com>
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Subject: No sound on Asrock Z68 Extreme4
+Date: Thu, 23 May 2019 21:11:14 +0200
+Message-ID: <f4c9b563-af22-c351-47ee-9a748a9f4cc9@juszkiewicz.com.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190522172655.183977-1-surenb@google.com>
-Sender: stable-owner@vger.kernel.org
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: perex@perex.cz, tiwai@suse.de, mathias.payer@nebelwelt.net, benquike@gmail.com, kdeus@google.com, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from malenstwo.juszkiewicz.com.pl (malenstwo.juszkiewicz.com.pl
+ [37.187.99.30]) by alsa1.perex.cz (Postfix) with ESMTP id 65F20F8079B
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 21:11:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by malenstwo.juszkiewicz.com.pl (Postfix) with ESMTP id 608C8C057E
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2019 21:11:17 +0200 (CEST)
+Received: from malenstwo.juszkiewicz.com.pl ([127.0.0.1])
+ by localhost (mail.juszkiewicz.com.pl [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id QihVe6T223sT for <alsa-devel@alsa-project.org>;
+ Thu, 23 May 2019 21:11:15 +0200 (CEST)
+Received: from puchatek.local (89-67-26-161.dynamic.chello.pl [89.67.26.161])
+ by malenstwo.juszkiewicz.com.pl (Postfix) with ESMTPSA id CA739C034E
+ for <alsa-devel@alsa-project.org>;
+ Thu, 23 May 2019 21:11:14 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 22, 2019 at 10:26:55AM -0700, Suren Baghdasaryan wrote:
-> Commit 5f8cf712582617d523120df67d392059eaf2fc4b upstream.
-> 
-> This is a backport to stable 3.18.y. Implementation in 3.18 differs using
-> chip->probing flag instead of chip->active atomic but it still has the UAF
-> issue.
-> 
-> If a USB sound card reports 0 interfaces, an error condition is triggered
-> and the function usb_audio_probe errors out. In the error path, there was a
-> use-after-free vulnerability where the memory object of the card was first
-> freed, followed by a decrement of the number of active chips. Moving the
-> decrement above the atomic_dec fixes the UAF.
-> 
-> [ The original problem was introduced in 3.1 kernel, while it was
->   developed in a different form.  The Fixes tag below indicates the
->   original commit but it doesn't mean that the patch is applicable
->   cleanly. -- tiwai ]
-> 
-> Fixes: 362e4e49abe5 ("ALSA: usb-audio - clear chip->probing on error exit")
-> Reported-by: Hui Peng <benquike@gmail.com>
-> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> Signed-off-by: Hui Peng <benquike@gmail.com>
-> Signed-off-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> [surenb@google.com: resolve 3.18 differences]
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
-> Analysis for 3.18 codebase:
-> snd_usb_audio_create() sets card->device_data = chip
-> snd_usb_audio_probe() calls snd_card_free() and then resets chip->probing
-> snd_card_free() results in the following call chain:
->  snd_card_free_when_closed() which waits on release_completion
->  snd_card_do_free() calls snd_device_free_all() and signals release_completion
->  snd_card_do_free() calls __snd_device_free()
->  __snd_device_free() calls dev->ops->dev_free() == snd_usb_audio_dev_free()
->  snd_usb_audio_dev_free() calls snd_usb_audio_free(chip) and frees "chip"
-> chip->probing = 0 results in UAF
+I recently moved my home machine to Asrock Z68 Extreme4 mainboard.
+Booted into Fedora 30 and found out that my speakers are not making any
+sound.
 
-Thanks for the backport.  I've added it to my "internal" 3.18 queue.  As
-there is not going to be any more public kernel.org 3.18.y releases,
-I'll just be doing updates in the android-common tree over time every
-few weeks.  This will end up in the next batch that gets merged into
-there, thanks!
+alsa-info.sh output:
+http://alsa-project.org/db/?f=9c079d91b5f2278d3c3bd98518a6a717c86d31df
 
-greg k-h
+Pulseaudio says that are no speakers connected and 'hdajacksensetest'
+says the same:
+
+21:08 (0s) hrw@puchatek:~$ sudo hdajacksensetest
+Pin 0x14 (Green Line Out, Rear side): present = No
+Pin 0x15 (Black Line Out, Rear side): present = No
+Pin 0x16 (Orange Line Out, Rear side): present = No
+Pin 0x18 (Pink Mic, Rear side): present = No
+Pin 0x1a (Blue Line In, Rear side): present = No
+
+I noticed 'hdajackretask' tool but no idea how to use it properly.
+
+Any ideas?
