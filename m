@@ -1,7 +1,8 @@
 From: bgoswami@codeaurora.org
-Subject: [PATCH 2/3] input: Add SW_UNSUPPORT_INSERT define
-Date: Fri, 24 May 2019 13:40:38 -0700
-Message-ID: <1558730438-16524-1-git-send-email-bgoswami@codeaurora.org>
+Subject: [PATCH 1/3] ALSA: jack: Remove hard coding of
+	jack_switch_types array size
+Date: Fri, 24 May 2019 13:40:23 -0700
+Message-ID: <1558730423-16490-1-git-send-email-bgoswami@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -9,7 +10,7 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 310BBF80C0F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A6EAF806F7
  for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 22:50:54 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,53 +21,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: dmitry.torokhov@gmail.com
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, plai@codeaurora.org, tiwai@suse.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, linux-input@vger.kernel.org, Gopikrishnaiah Anandan <agopik@codeaurora.org>
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, plai@codeaurora.org, Gopikrishnaiah Anandan <agopik@codeaurora.org>, broonie@kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Banajit Goswami <bgoswami@codeaurora.org>
 
-Some devices may not support specific type of input devices. For example,
-when a headset or extension cable with GND/MIC swap is plugged into a
-headset jack that does not support the headset/cable, it needs to be
-reported with a corresponding input event. Also, increase the max values
-for INPUT_DEVICE_ID_SW_MAX and SW_MAX, to accommodate future extension of
-the number of event.
+The size for jack_switch_types array is currently controlled by
+a MACRO 'SND_JACK_SWITCH_TYPES', whose value needs to be updated
+everytime a new jack switch type is added. Remove this MACRO
+and use ARRAY_SIZE instead to get size of the array.
 
 Signed-off-by: Gopikrishnaiah Anandan <agopik@codeaurora.org>
 Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- include/linux/mod_devicetable.h        | 2 +-
- include/uapi/linux/input-event-codes.h | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ include/sound/jack.h | 3 ---
+ sound/core/jack.c    | 4 ++--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index 448621c..7586099 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -299,7 +299,7 @@ struct pcmcia_device_id {
- #define INPUT_DEVICE_ID_LED_MAX		0x0f
- #define INPUT_DEVICE_ID_SND_MAX		0x07
- #define INPUT_DEVICE_ID_FF_MAX		0x7f
--#define INPUT_DEVICE_ID_SW_MAX		0x0f
-+#define INPUT_DEVICE_ID_SW_MAX		0x1f
- #define INPUT_DEVICE_ID_PROP_MAX	0x1f
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 1e84bfb..b0791c5 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -68,9 +68,6 @@ enum snd_jack_types {
+ 	SND_JACK_BTN_5		= 0x0200,
+ };
  
- #define INPUT_DEVICE_ID_MATCH_BUS	1
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 85387c7..960fa86 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -808,7 +808,8 @@
- #define SW_LINEIN_INSERT	0x0d  /* set = inserted */
- #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
- #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
--#define SW_MAX			0x0f
-+#define SW_UNSUPPORT_INSERT	0x10  /* set = unsupported device inserted */
-+#define SW_MAX			0x1f
- #define SW_CNT			(SW_MAX+1)
+-/* Keep in sync with definitions above */
+-#define SND_JACK_SWITCH_TYPES 6
+-
+ struct snd_jack {
+ 	struct list_head kctl_list;
+ 	struct snd_card *card;
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index 84c2a17..36b047b 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -33,7 +33,7 @@ struct snd_jack_kctl {
+ };
  
- /*
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+-static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
++static int jack_switch_types[] = {
+ 	SW_HEADPHONE_INSERT,
+ 	SW_MICROPHONE_INSERT,
+ 	SW_LINEOUT_INSERT,
+@@ -250,7 +250,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 
+ 		jack->type = type;
+ 
+-		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
++		for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++)
+ 			if (type & (1 << i))
+ 				input_set_capability(jack->input_dev, EV_SW,
+ 						     jack_switch_types[i]);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
