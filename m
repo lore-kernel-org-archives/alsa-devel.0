@@ -1,18 +1,24 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 000/145] ASoC: modern dai_link style support
-Date: Fri, 24 May 2019 10:58:29 -0500
-Message-ID: <03cf0a3b-3464-57fd-c313-cfe8db01d2cd@linux.intel.com>
-References: <87sgt7p3zo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
+ are detected
+Date: Fri, 24 May 2019 13:38:04 -0500
+Message-ID: <d399bbcb-c094-d0b9-5ae3-8267ee613d6f@linux.intel.com>
+References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
+ <s5hk1ege12p.wl-tiwai@suse.de>
+ <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
+ <CAD8Lp47qCbPh+aZjr0pjzZAcBXqRbMU+5Y_HPy7jrJhUgsD3Tg@mail.gmail.com>
+ <72729168-214a-264d-c704-f718d7cfde4b@linux.intel.com>
+ <CAD8Lp47Yc5CwkM-y=eqXdPDZ7+1=qa6m1sCELhBsidsYYSzfQQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 996D4F89625
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 20:37:08 +0200 (CEST)
-In-Reply-To: <87sgt7p3zo.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 573D3F8962F
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 20:38:07 +0200 (CEST)
+In-Reply-To: <CAD8Lp47Yc5CwkM-y=eqXdPDZ7+1=qa6m1sCELhBsidsYYSzfQQ@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,43 +29,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Daniel Drake <drake@endlessm.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
 
-> These are for modern dai_link style support patches.
-> [001/145] adds missing modern dai_link style for CPU.
-> and others are switch to modern style from legacy style.
-> Last patch removes legacy style.
+
+On 5/24/19 12:34 PM, Daniel Drake wrote:
+> Still not quite clear about the default behaviour here.
 > 
-> These are based on mark/for-5.3 + v5.2-rc1
+> On Fri, May 24, 2019 at 10:12 AM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>> b) the decision to abort the HDaudio legacy driver probe should not be
+>> the default, since it depends on BIOS information that may be wrong and
+>> on which I have *zero* control.
+>> [...]
+>> 1. DMICs attached to PCH and BIOS/NHLT reports DMICS -> abort HDaudio
+>> legacy probe
 > 
-> I hope these work well for all sound card, but I can't test for all.
-> Please test these at each sound cards.
+> In the case of DMICs attached to PCH and BIOS/NHLT reports DMIC, is
+> the HDaudio legacy probe aborted by default or not?
 
-We're testing for Intel stuff w/ SOF.
-
-One question: I try to enforce the use of checkpatch --strict to avoid 
-different styles in the Intel contributions, and your series generates a 
-ton of alignment warnings, e.g.
-
-CHECK: Alignment should match open parenthesis
-#45: FILE: sound/soc/intel/boards/sof_rt5682.c:373:
-+		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-  							"ssp%d-port",
-
-CHECK: Alignment should match open parenthesis
-#81: FILE: sound/soc/intel/boards/glk_rt5682_max98357a.c:378:
-+SND_SOC_DAILINK_DEF(idisp3_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
-
-I am not too religious on style as long as there is a style.
-I'd be fine if the expectation is that all the dailink definitions use a 
-tab for readability (and it's a one-time change), but would like the 
-functional code changes to be aligned to avoid future warnings.
-Would that work for you? I can send you the Intel changes if that helps.
-
-Thanks
--Pierre
+no.
