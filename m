@@ -1,21 +1,20 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 5/6] ALSA / hda: stop probe if DMICS
- are detected on Skylake+ platforms
-Date: Fri, 24 May 2019 08:18:36 -0500
-Message-ID: <3b8a3259-df2a-26b9-ae7e-b32bb036245a@linux.intel.com>
+Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
+	are detected
+Date: Fri, 24 May 2019 08:26:54 -0500
+Message-ID: <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
 References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
- <20190523233951.31122-6-pierre-louis.bossart@linux.intel.com>
- <s5hlfywe15c.wl-tiwai@suse.de>
+ <s5hk1ege12p.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F111AF806F7
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 15:18:39 +0200 (CEST)
-In-Reply-To: <s5hlfywe15c.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD4A5F80C0F
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 15:26:58 +0200 (CEST)
+In-Reply-To: <s5hk1ege12p.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,24 +31,47 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 5/24/19 2:56 AM, Takashi Iwai wrote:
-> On Fri, 24 May 2019 01:39:50 +0200,
+On 5/24/19 2:58 AM, Takashi Iwai wrote:
+> On Fri, 24 May 2019 01:39:45 +0200,
 > Pierre-Louis Bossart wrote:
 >>
->> The legacy HD-Audio driver cannot handle Skylake+ platforms with
->> digital microphones. For those platforms, the SOF driver needs to be
->> used.
+>> This is the second take on same problem of detecting when the HDaudio
+>> legacy driver can be used and when the SST or SOF drivers are
+>> required.
 >>
->> Use the common intel-nhlt module to stop the probe when the DSP is
->> enabled and DMICs are exposed in the NHTL tables.
+>> The previous attempt based on a the PCI Class information was a
+>> resounding failure and broke audio on Linus' laptop, so we need
+>> additional information to avoid enabling a DSP-based driver without a
+>> good reason to do so.
 >>
->> Note: This assumes that the BIOS information is correct, and
->> additional testing is required to see on which platforms the detection
->> is a false positive.
+>> This patchset suggests the use of the NHLT information which *in
+>> theory* exposes DMIC endpoints. The legacy HDaudio driver cannot
+>> handle DMICs and will not provide any capture capabilities. Since it's
+>> typically the first one to probe due to the Makefile order, aborting
+>> the probe will let the PCI subsystem look for the next driver which
+>> hopefully will support this capability.
 >>
->> FIXME: I need to find what is the mirror of azx_create() to free all
->> the resources on exit.
+>> I tested this patch on 5 devices (SKL, KBL, APL, GLK, WHL), three
+>> without DMICs and two with, and the detection seems to work as
+>> planned. I would appreciate it if HDaudio integrators and folks at
+>> Google/Canonical/Endless can give this a try. As usual I expect that
+>> we will have to use quirks and work-arounds, but it'd be a better idea
+>> than a build-time mutual exclusion. We could also make this optional
+>> (Kconfig and/or module parameters) if people prefer to muck with
+>> blacklists.
+>>
+>> Feedback and comments welcome!
 > 
-> azx_free() does the whole, so just goto out_free should suffice.
+> The general idea and suggested implementation look almost good to me.
+> Of course we have to provide a way to override the default behavior in
+> case of buggy BIOS (I bet a drink for the existence of such :)
 
-ok, thanks for the feedback!
+I am not sure if it's a good idea to enable this by default, the 
+experience of the first round showed it's risky to make assumptions on 
+what BIOS vendors implemented.
+I'd rather make this an opt-in solution for distros that have to deal 
+with this conflict and don't want to use blacklists, and provide both a 
+Kconfig and kernel parameter to either statically or dynamically enable 
+this capability. Also this is really needed mostly with WHL+ platforms 
+where a lot of vendors use DMICs, for previous generations there are 
+only Chromebooks and a single-digit number of KBL devices.
