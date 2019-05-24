@@ -1,197 +1,98 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: [PATCH 1/2] dt-bindings: sound: Convert Allwinner I2S binding to YAML
-Date: Fri, 24 May 2019 14:57:58 +0200
-Message-ID: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoc: fix
+ sound/soc/intel/skylake/slk-ssp-clk.c build error on IA64
+Date: Fri, 24 May 2019 08:03:09 -0500
+Message-ID: <7d685525-b0fe-429b-f0ea-f363069cf667@linux.intel.com>
+References: <9019c87f-cf1a-b59f-d87e-8169b247cf88@infradead.org>
+ <6b89e370-90e3-6962-c71a-80919b7c6154@linux.intel.com>
+ <4cedd724-7c2e-10c2-a328-61f7af3ab9ed@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4cedd724-7c2e-10c2-a328-61f7af3ab9ed@infradead.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>, LKML <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, kbuild test robot <lkp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Allwinner SoCs feature an I2S controller across multiple SoC
-generations.
 
-However, earlier generations were a bit simpler than the subsequent ones,
-and for example would always have RX and TX capabilities, and no reset
-lines.
 
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
----
- Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- Documentation/devicetree/bindings/sound/sun4i-i2s.txt                |  45 +--------------------------------
- 2 files changed, 100 insertions(+), 45 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+On 5/23/19 9:59 PM, Randy Dunlap wrote:
+> On 5/23/19 4:28 AM, Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 5/22/19 10:58 PM, Randy Dunlap wrote:
+>>> From: Randy Dunlap <rdunlap@infradead.org>
+>>>
+>>> skl-ssp-clk.c does not build on IA64 because the driver
+>>> uses the common clock interface, so make the driver depend
+>>> on COMMON_CLK.
+>>>
+>>> Fixes this build error:
+>>> ../sound/soc/intel/skylake/skl-ssp-clk.c:26:16: error: field 'hw' has incomplete type
+>>>     struct clk_hw hw;
+>>>                   ^~
+>>>
+>>> Reported-by: kbuild test robot <lkp@intel.com>
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: Mark Brown <broonie@kernel.org>
+>>> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>>> Cc: Jie Yang <yang.jie@linux.intel.com>
+>>> Cc: alsa-devel@alsa-project.org
+>>> ---
+>>>    sound/soc/intel/Kconfig        |    3 ++-
+>>>    sound/soc/intel/boards/Kconfig |    2 +-
+>>>    2 files changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> --- lnx-52-rc1.orig/sound/soc/intel/Kconfig
+>>> +++ lnx-52-rc1/sound/soc/intel/Kconfig
+>>> @@ -104,7 +104,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+>>>    config SND_SOC_INTEL_SKYLAKE
+>>>        tristate "All Skylake/SST Platforms"
+>>>        depends on PCI && ACPI
+>>> -    select SND_SOC_INTEL_SKL
+>>> +    select SND_SOC_INTEL_SKL if COMMON_CLK
+>>
+>> Is this really necessary? The COMMON_CLK is only needed for the SND_SOC_INTEL_SKYLAKE_SSP_CLK option, isn't it?
+> 
+> It prevents this Kconfig warning:
+> 
+> WARNING: unmet direct dependencies detected for SND_SOC_INTEL_SKL
+>    Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_SST_TOPLEVEL [=y] && PCI [=y] && ACPI [=y] && COMMON_CLK [=n]
+>    Selected by [y]:
+>    - SND_SOC_INTEL_SKYLAKE [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_SST_TOPLEVEL [=y] && PCI [=y] && ACPI [=y]
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-new file mode 100644
-index 000000000000..85b2d6d84055
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-@@ -0,0 +1,100 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun4i-a10-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner A10 I2S Controller Device Tree Bindings
-+
-+maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Maxime Ripard <maxime.ripard@bootlin.com>
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    oneOf:
-+      - const: allwinner,sun4i-a10-i2s
-+      - const: allwinner,sun6i-a31-i2s
-+      - const: allwinner,sun8i-a83t-i2s
-+      - const: allwinner,sun8i-h3-i2s
-+      - const: allwinner,sun50i-a64-codec-i2s
-+      - items:
-+          - const: allwinner,sun50i-a64-i2s
-+          - const: allwinner,sun8i-h3-i2s
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: apb
-+      - const: mod
-+
-+  dmas:
-+    items:
-+      - description: RX DMA Channel
-+      - description: TX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  # Even though it only applies to subschemas under the conditionals,
-+  # not listing them here will trigger a warning because of the
-+  # additionalsProperties set to false.
-+  resets:
-+    maxItems: 1
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - allwinner,sun6i-a31-i2s
-+              - allwinner,sun8i-a83t-i2s
-+              - allwinner,sun8i-h3-i2s
-+              - allwinner,sun50i-a64-codec-i2s
-+
-+    then:
-+      required:
-+        - resets
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2s0: i2s@1c22400 {
-+        #sound-dai-cells = <0>;
-+        compatible = "allwinner,sun4i-a10-i2s";
-+        reg = <0x01c22400 0x400>;
-+        interrupts = <0 16 4>;
-+        clocks = <&apb0_gates 3>, <&i2s0_clk>;
-+        clock-names = "apb", "mod";
-+        dmas = <&dma 0 3>, <&dma 0 3>;
-+        dma-names = "rx", "tx";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-deleted file mode 100644
-index 61e71c1729e0..000000000000
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ /dev/null
-@@ -1,45 +0,0 @@
--* Allwinner A10 I2S controller
--
--The I2S bus (Inter-IC sound bus) is a serial link for digital
--audio data transfer between devices in the system.
--
--Required properties:
--
--- compatible: should be one of the following:
--   - "allwinner,sun4i-a10-i2s"
--   - "allwinner,sun6i-a31-i2s"
--   - "allwinner,sun8i-a83t-i2s"
--   - "allwinner,sun8i-h3-i2s"
--   - "allwinner,sun50i-a64-codec-i2s"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- interrupts: should contain the I2S interrupt.
--- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
--	Documentation/devicetree/bindings/dma/dma.txt
--- dma-names: should include "tx" and "rx".
--- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
--- clock-names: should contain the following:
--   - "apb" : clock for the I2S bus interface
--   - "mod" : module clock for the I2S controller
--- #sound-dai-cells : Must be equal to 0
--
--Required properties for the following compatibles:
--	- "allwinner,sun6i-a31-i2s"
--	- "allwinner,sun8i-a83t-i2s"
--	- "allwinner,sun8i-h3-i2s"
--	- "allwinner,sun50i-a64-codec-i2s"
--- resets: phandle to the reset line for this codec
--
--Example:
--
--i2s0: i2s@1c22400 {
--	#sound-dai-cells = <0>;
--	compatible = "allwinner,sun4i-a10-i2s";
--	reg = <0x01c22400 0x400>;
--	interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
--	clocks = <&apb0_gates 3>, <&i2s0_clk>;
--	clock-names = "apb", "mod";
--	dmas = <&dma SUN4I_DMA_NORMAL 3>,
--	       <&dma SUN4I_DMA_NORMAL 3>;
--	dma-names = "rx", "tx";
--};
+Humm, ok. Can you share the config? I'd like to look into this. There 
+may be a need for this COMMON_CLK, but applying it here would not be 
+fully correct: you can unselect SND_SOC_INTEL_SKYLAKE and only select 
+SND_SOC_INTEL_SKL and still have the same problem.
 
-base-commit: 86c9acd4fdf5b2e1648a6cf3d6e99a7f0d35cb4f
--- 
-git-series 0.9.1
+> 
+>>>        select SND_SOC_INTEL_APL
+>>>        select SND_SOC_INTEL_KBL
+>>>        select SND_SOC_INTEL_GLK
+>>> @@ -120,6 +120,7 @@ config SND_SOC_INTEL_SKYLAKE
+>>>    config SND_SOC_INTEL_SKL
+>>>        tristate "Skylake Platforms"
+>>>        depends on PCI && ACPI
+>>> +    depends on COMMON_CLK
+>>>        select SND_SOC_INTEL_SKYLAKE_FAMILY
+>>>        help
+>>>          If you have a Intel Skylake platform with the DSP enabled
+>>> --- lnx-52-rc1.orig/sound/soc/intel/boards/Kconfig
+>>> +++ lnx-52-rc1/sound/soc/intel/boards/Kconfig
+>>> @@ -286,7 +286,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927
+>>>        select SND_SOC_MAX98927
+>>>        select SND_SOC_DMIC
+>>>        select SND_SOC_HDAC_HDMI
+>>> -    select SND_SOC_INTEL_SKYLAKE_SSP_CLK
+>>> +    select SND_SOC_INTEL_SKYLAKE_SSP_CLK if COMMON_CLK
+>>
+>> and here I would make it a depend. I guess your solution solves the compilation but doesn't fully represent the fact that this machine driver is not functional without COMMON_CLK+SKYLAKE_SSP_CLK.
+> 
+> Not functional on ia64 anyway.  :)
+
+Yeah, I am fine with this.
