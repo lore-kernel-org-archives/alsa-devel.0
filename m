@@ -1,20 +1,26 @@
-From: =?UTF-8?B?VGFtw6FzIEtvdsOhY3M=?= <kepszlok@gmail.com>
-Subject: [PATCH] ASoC: Intel: Baytrail: add quirk for Aegex 10
-	(RU2) tablet
-Date: Fri, 24 May 2019 19:03:08 +0200
-Message-ID: <CAOz7CXoOS3rA5uWVQgs+6LGephq0sNoPfom=sq0pjHsJEWGsKg@mail.gmail.com>
+From: Daniel Drake <drake@endlessm.com>
+Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
+	are detected
+Date: Fri, 24 May 2019 11:34:38 -0600
+Message-ID: <CAD8Lp47Yc5CwkM-y=eqXdPDZ7+1=qa6m1sCELhBsidsYYSzfQQ@mail.gmail.com>
+References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
+ <s5hk1ege12p.wl-tiwai@suse.de>
+ <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
+ <CAD8Lp47qCbPh+aZjr0pjzZAcBXqRbMU+5Y_HPy7jrJhUgsD3Tg@mail.gmail.com>
+ <72729168-214a-264d-c704-f718d7cfde4b@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
- [IPv6:2607:f8b0:4864:20::442])
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C04E7F80C0F
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 19:03:22 +0200 (CEST)
-Received: by mail-pf1-x442.google.com with SMTP id a23so5689344pff.4
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 10:03:22 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74426F89625
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 19:34:51 +0200 (CEST)
+Received: by mail-qk1-x741.google.com with SMTP id p26so6136902qkj.5
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 10:34:51 -0700 (PDT)
+In-Reply-To: <72729168-214a-264d-c704-f718d7cfde4b@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +30,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyB0YWJsZXQgaGFzIGFuIGluY29ycmVjdCBhY3BpIGlkZW50aWZpZXIsIHdoaWNoIGlzIHdo
-eSBpdCBpcyB0cnlpbmcgdG8KbG9hZCB0aGUgUlQ1NjQwIGRyaXZlciBpbnN0ZWFkIG9mIHRoZSBS
-VDU3NjIgZHJpdmVyLiBUaGUgUlQ1NjQwIGRyaXZlciwgb24KdGhlIG90aGVyIGhhbmQsIGNoZWNr
-cyB0aGUgaGFyZHdhcmUgSUQsIHNvIG5vIGRyaXZlcnMgYXJlIGxvYWRlZCBkdXJpbmcKYm9vdC4K
-VGhpcyBmaXggcmVzb2x2ZXMgdG8gbG9hZCB0aGUgUlQ1NjcyIGRyaXZlciBvbiB0aGlzIHRhYmxl
-dCBkdXJpbmcgYm9vdC4gSXQKYWxzbyBwcm92aWRlcyB0aGUgY29ycmVjdCBJTyBjb25maWd1cmF0
-aW9uLCBsaWtlIHRoZSBqYWNrIGRldGVjdCBtb2RlIDMsCmZvciAxLjhWIHB1bGx1cC4KSSB3b3Vs
-ZCBsaWtlIHRvIHRoYW5rIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IGZvciBoZWxwaW5nIHdpdGggdGhp
-cyBwYXRjaC4KClNpZ25lZC1vZmYtYnk6IEtvdsOhY3MgVGFtw6FzIDxrZXBzemxva0BnbWFpbC5j
-b20+Ci0tLQpkaWZmIC0tZ2l0IGEvb3JpL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc29jLWFjcGkt
-aW50ZWwtYnl0LW1hdGNoLmMKYi9uZXcvc291bmQvc29jL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1p
-bnRlbC1ieXQtbWF0Y2guYwppbmRleCBmZTgxMmE5Li5lNTQ5OTUwIDEwMDY0NAotLS0gYS9vcmkv
-c291bmQvc29jL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1ieXQtbWF0Y2guYworKysgYi9u
-ZXcvc291bmQvc29jL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1ieXQtbWF0Y2guYwpAQCAt
-MSw0ICsxLDQgQEAKLS8qCivvu78vKgogICogc29jLWFwY2ktaW50ZWwtYnl0LW1hdGNoLmMgLSB0
-YWJsZXMgYW5kIHN1cHBvcnQgZm9yIEJZVCBBQ1BJCmVudW1lcmF0aW9uLgogICoKICAqIENvcHly
-aWdodCAoYykgMjAxNywgSW50ZWwgQ29ycG9yYXRpb24uCkBAIC0yMiw2ICsyMiw3IEBAIHN0YXRp
-YyB1bnNpZ25lZCBsb25nIGJ5dF9tYWNoaW5lX2lkOwoKICNkZWZpbmUgQllUX1RISU5LUEFEXzEw
-ICAxCiAjZGVmaW5lIEJZVF9QT1ZfUDEwMDZXICAgMgorI2RlZmluZSBCWVRfQUVHRVhfMTAgICAg
-IDMKCiBzdGF0aWMgaW50IGJ5dF90aGlua3BhZDEwX3F1aXJrX2NiKGNvbnN0IHN0cnVjdCBkbWlf
-c3lzdGVtX2lkICppZCkKIHsKQEAgLTM1LDYgKzM2LDEyIEBAIHN0YXRpYyBpbnQgYnl0X3Bvdl9w
-MTAwNndfcXVpcmtfY2IoY29uc3Qgc3RydWN0CmRtaV9zeXN0ZW1faWQgKmlkKQogIHJldHVybiAx
-OwogfQoKK3N0YXRpYyBpbnQgYnl0X2FlZ2V4MTBfcXVpcmtfY2IoY29uc3Qgc3RydWN0IGRtaV9z
-eXN0ZW1faWQgKmlkKQoreworIGJ5dF9tYWNoaW5lX2lkID0gQllUX0FFR0VYXzEwOworIHJldHVy
-biAxOworfQorCiBzdGF0aWMgY29uc3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQgYnl0X3RhYmxlW10g
-PSB7CiAgewogIC5jYWxsYmFjayA9IGJ5dF90aGlua3BhZDEwX3F1aXJrX2NiLApAQCAtNzUsNiAr
-ODIsMTQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBkbWlfc3lzdGVtX2lkIGJ5dF90YWJsZVtdID0g
-ewogIERNSV9FWEFDVF9NQVRDSChETUlfQk9BUkRfTkFNRSwgIjBFNTciKSwKICB9LAogIH0sCisg
-eworIC8qIEFlZ2V4IDEwIHRhYmxldCAoUlUyKSAqLworIC5jYWxsYmFjayA9IGJ5dF9hZWdleDEw
-X3F1aXJrX2NiLAorIC5tYXRjaGVzID0geworIERNSV9NQVRDSChETUlfU1lTX1ZFTkRPUiwgIkFF
-R0VYIiksCisgRE1JX01BVENIKERNSV9QUk9EVUNUX1ZFUlNJT04sICJSVTIiKSwKKyB9LAorIH0s
-CiAgeyB9CiB9OwoKQEAgLTk2LDYgKzExMSwxNSBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfYWNw
-aV9tYWNoIGJ5dF9wb3ZfcDEwMDZ3ID0gewogIC5zb2ZfdHBsZ19maWxlbmFtZSA9ICJzb2YtYnl0
-LXJ0NTY1MS50cGxnIiwKIH07Cgorc3RhdGljIHN0cnVjdCBzbmRfc29jX2FjcGlfbWFjaCBieXRf
-YWVnZXhfMTAgPSB7CisgLmlkID0gIjEwRUM1NjQwIiwKKyAuZHJ2X25hbWUgPSAiY2h0LWJzdy1y
-dDU2NzIiLAorIC5md19maWxlbmFtZSA9ICJpbnRlbC9md19zc3RfMGYyOC5iaW4iLAorIC5ib2Fy
-ZCA9ICJjaHQtYnN3IiwKKyAuc29mX2Z3X2ZpbGVuYW1lID0gImludGVsL3NvZi1ieXQucmkiLAor
-IC5zb2ZfdHBsZ19maWxlbmFtZSA9ICJpbnRlbC9zb2YtYnl0LXJ0NTY3MC50cGxnIiwKK307CisK
-IHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19hY3BpX21hY2ggKmJ5dF9xdWlyayh2b2lkICphcmcpCiB7
-CiAgc3RydWN0IHNuZF9zb2NfYWNwaV9tYWNoICptYWNoID0gYXJnOwpAQCAtMTA3LDYgKzEzMSw4
-IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19hY3BpX21hY2ggKmJ5dF9xdWlyayh2b2lkICphcmcp
-CiAgcmV0dXJuICZieXRfdGhpbmtwYWRfMTA7CiAgY2FzZSBCWVRfUE9WX1AxMDA2VzoKICByZXR1
-cm4gJmJ5dF9wb3ZfcDEwMDZ3OworIGNhc2UgQllUX0FFR0VYXzEwOgorIHJldHVybiAmYnl0X2Fl
-Z2V4XzEwOwogIGRlZmF1bHQ6CiAgcmV0dXJuIG1hY2g7CiAgfQoKZGlmZiAtLWdpdCBhL29yaS9z
-b3VuZC9zb2MvY29kZWNzL3J0NTY3MC5jIGIvbmV3L3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMK
-aW5kZXggOWEwMzcxMC4uMzdjY2UwNCAxMDA2NDQKLS0tIGEvb3JpL3NvdW5kL3NvYy9jb2RlY3Mv
-cnQ1NjcwLmMKKysrIGIvbmV3L3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMKQEAgLTEsNCArMSw0
-IEBACi0vKgor77u/LyoKICAqIHJ0NTY3MC5jICAtLSAgUlQ1NjcwIEFMU0EgU29DIGF1ZGlvIGNv
-ZGVjIGRyaXZlcgogICoKICAqIENvcHlyaWdodCAyMDE0IFJlYWx0ZWsgU2VtaWNvbmR1Y3RvciBD
-b3JwLgpAQCAtMjg4Miw2ICsyODgyLDE4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3Rl
-bV9pZApkbWlfcGxhdGZvcm1faW50ZWxfcXVpcmtzW10gPSB7CiAgUlQ1NjcwX0RFVl9HUElPIHwK
-ICBSVDU2NzBfSkRfTU9ERTMpLAogIH0sCisgeworIC5jYWxsYmFjayA9IHJ0NTY3MF9xdWlya19j
-YiwKKyAuaWRlbnQgPSAiQWVnZXggMTAgdGFibGV0IChSVTIpIiwKKyAubWF0Y2hlcyA9IHsKKyBE
-TUlfTUFUQ0goRE1JX1NZU19WRU5ET1IsICJBRUdFWCIpLAorIERNSV9NQVRDSChETUlfUFJPRFVD
-VF9WRVJTSU9OLCAiUlUyIiksCisgfSwKKyAuZHJpdmVyX2RhdGEgPSAodW5zaWduZWQgbG9uZyAq
-KShSVDU2NzBfRE1JQ19FTiB8CisgUlQ1NjcwX0RNSUMyX0lOUiB8CisgUlQ1NjcwX0RFVl9HUElP
-IHwKKyBSVDU2NzBfSkRfTU9ERTMpLAorIH0sCiAge30KIH07Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Still not quite clear about the default behaviour here.
+
+On Fri, May 24, 2019 at 10:12 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> b) the decision to abort the HDaudio legacy driver probe should not be
+> the default, since it depends on BIOS information that may be wrong and
+> on which I have *zero* control.
+> [...]
+> 1. DMICs attached to PCH and BIOS/NHLT reports DMICS -> abort HDaudio
+> legacy probe
+
+In the case of DMICs attached to PCH and BIOS/NHLT reports DMIC, is
+the HDaudio legacy probe aborted by default or not?
+
+Thanks
+Daniel
