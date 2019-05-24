@@ -1,14 +1,15 @@
 From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: sound: Convert Allwinner I2S binding to
- YAML
-Date: Fri, 24 May 2019 15:28:07 -0500
-Message-ID: <CAL_JsqKX==vmpbW=EERnJHRwL-o4R903p-9p_x0abFHJjWGvMw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: sound: sun4i-i2s: Document that the RX
+ channel can be missing
+Date: Fri, 24 May 2019 15:28:35 -0500
+Message-ID: <CAL_JsqKhP0DvZSAEHA47d4UY6LQYKobZdfAxSk_9FWuBS9UJgQ@mail.gmail.com>
 References: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
+ <9b280f9ce894e4e2ea7259db505cbe1a3e00120e.1558702660.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
+In-Reply-To: <9b280f9ce894e4e2ea7259db505cbe1a3e00120e.1558702660.git-series.maxime.ripard@bootlin.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -24,19 +25,19 @@ List-Id: alsa-devel@alsa-project.org
 
 On Fri, May 24, 2019 at 7:58 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
 >
-> The Allwinner SoCs feature an I2S controller across multiple SoC
-> generations.
+> The A83t and compatibles controllers don't have any reception capabilities
+> on some instances of the controllers, even though it was never documented
+> as such in the binding before.
 >
-> However, earlier generations were a bit simpler than the subsequent ones,
-> and for example would always have RX and TX capabilities, and no reset
-> lines.
+> Therefore, on those controllers, we don't have the option to set an RX DMA
+> channel.
+>
+> This was already done in the DTSI, but the binding itself was never
+> updated. Let's add a special case in the schemas.
 >
 > Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  Documentation/devicetree/bindings/sound/sun4i-i2s.txt                |  45 +--------------------------------
->  2 files changed, 100 insertions(+), 45 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml | 52 ++++++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 42 insertions(+), 10 deletions(-)
 
 Reviewed-by: Rob Herring <robh@kernel.org>
