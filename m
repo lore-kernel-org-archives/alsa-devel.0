@@ -1,46 +1,65 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
-	are detected
-Date: Fri, 24 May 2019 09:45:21 -0600
-Message-ID: <CAD8Lp47qCbPh+aZjr0pjzZAcBXqRbMU+5Y_HPy7jrJhUgsD3Tg@mail.gmail.com>
-References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
- <s5hk1ege12p.wl-tiwai@suse.de>
- <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ASoC: SOF: topology: Use struct_size() helper
+Date: Fri, 24 May 2019 11:10:51 -0500
+Message-ID: <20190524161051.GA26061@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C05DF80C0F
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 17:45:34 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id o2so7897601qkb.3
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 08:45:34 -0700 (PDT)
-In-Reply-To: <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the patches!
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes, in particular in the
+context in which this code is being used.
 
-On Fri, May 24, 2019 at 7:26 AM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> I am not sure if it's a good idea to enable this by default, the
-> experience of the first round showed it's risky to make assumptions on
-> what BIOS vendors implemented.
+So, replace the following form:
 
-Can you clarify what you mean here, are you saying you don't want to
-enable this new DMIC hardware support by default?
+sizeof(struct sof_ipc_ctrl_data) + sizeof(struct sof_ipc_ctrl_value_chan) *
+	le32_to_cpu(mc->num_channels)
 
-Daniel
+with:
+
+struct_size(scontrol->control_data, chanv, le32_to_cpu(mc->num_channels))
+
+and so on...
+
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/soc/sof/topology.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index c88afa872a58..745cb875863c 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -442,9 +442,8 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 		return -EINVAL;
+ 
+ 	/* init the volume get/put data */
+-	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
+-			 sizeof(struct sof_ipc_ctrl_value_chan) *
+-			 le32_to_cpu(mc->num_channels);
++	scontrol->size = struct_size(scontrol->control_data, chanv,
++				     le32_to_cpu(mc->num_channels));
+ 	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+ 	if (!scontrol->control_data)
+ 		return -ENOMEM;
+@@ -501,9 +500,8 @@ static int sof_control_load_enum(struct snd_soc_component *scomp,
+ 		return -EINVAL;
+ 
+ 	/* init the enum get/put data */
+-	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
+-			 sizeof(struct sof_ipc_ctrl_value_chan) *
+-			 le32_to_cpu(ec->num_channels);
++	scontrol->size = struct_size(scontrol->control_data, chanv,
++				     le32_to_cpu(ec->num_channels));
+ 	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+ 	if (!scontrol->control_data)
+ 		return -ENOMEM;
+-- 
+2.21.0
