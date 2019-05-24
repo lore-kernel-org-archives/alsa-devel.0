@@ -1,97 +1,184 @@
 From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [alsa-devel] [PATCH] ASoc: fix
- sound/soc/intel/skylake/slk-ssp-clk.c build error on IA64
-Date: Thu, 23 May 2019 19:59:19 -0700
-Message-ID: <4cedd724-7c2e-10c2-a328-61f7af3ab9ed@infradead.org>
-References: <9019c87f-cf1a-b59f-d87e-8169b247cf88@infradead.org>
- <6b89e370-90e3-6962-c71a-80919b7c6154@linux.intel.com>
+Subject: [PATCH v2] ASoC: drop COMPILE_TEST for sound/soc/intel/boards/ that
+ use X86_INTEL_LPSS
+Date: Thu, 23 May 2019 20:45:22 -0700
+Message-ID: <03640e4f-1f8e-9090-c03b-364918e633d3@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6b89e370-90e3-6962-c71a-80919b7c6154@linux.intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, kbuild test robot <lkp@intel.com>
+To: LKML <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/23/19 4:28 AM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 5/22/19 10:58 PM, Randy Dunlap wrote:
->> From: Randy Dunlap <rdunlap@infradead.org>
->>
->> skl-ssp-clk.c does not build on IA64 because the driver
->> uses the common clock interface, so make the driver depend
->> on COMMON_CLK.
->>
->> Fixes this build error:
->> ../sound/soc/intel/skylake/skl-ssp-clk.c:26:16: error: field 'hw' has incomplete type
->>    struct clk_hw hw;
->>                  ^~
->>
->> Reported-by: kbuild test robot <lkp@intel.com>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Mark Brown <broonie@kernel.org>
->> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
->> Cc: Jie Yang <yang.jie@linux.intel.com>
->> Cc: alsa-devel@alsa-project.org
->> ---
->>   sound/soc/intel/Kconfig        |    3 ++-
->>   sound/soc/intel/boards/Kconfig |    2 +-
->>   2 files changed, 3 insertions(+), 2 deletions(-)
->>
->> --- lnx-52-rc1.orig/sound/soc/intel/Kconfig
->> +++ lnx-52-rc1/sound/soc/intel/Kconfig
->> @@ -104,7 +104,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
->>   config SND_SOC_INTEL_SKYLAKE
->>       tristate "All Skylake/SST Platforms"
->>       depends on PCI && ACPI
->> -    select SND_SOC_INTEL_SKL
->> +    select SND_SOC_INTEL_SKL if COMMON_CLK
-> 
-> Is this really necessary? The COMMON_CLK is only needed for the SND_SOC_INTEL_SKYLAKE_SSP_CLK option, isn't it?
+From: Randy Dunlap <rdunlap@infradead.org>
 
-It prevents this Kconfig warning:
+This is a partial revert of 164a263bf8d0, which causes build errors
+on non-X86 platforms (specifically seen on IA64) when COMPILE_TEST
+is set/enabled.
 
-WARNING: unmet direct dependencies detected for SND_SOC_INTEL_SKL
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_SST_TOPLEVEL [=y] && PCI [=y] && ACPI [=y] && COMMON_CLK [=n]
-  Selected by [y]:
-  - SND_SOC_INTEL_SKYLAKE [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_SST_TOPLEVEL [=y] && PCI [=y] && ACPI [=y]
+Fixes these build errors (on ia64):
+i../sound/soc/intel/boards/bxt_da7219_max98357a.c:19:10: fatal error: asm/cpu_device_id.h: No such file or directory
+ #include <asm/cpu_device_id.h>
+../sound/soc/intel/boards/bytcr_rt5640.c:31:10: fatal error: asm/cpu_device_id.h: No such file or directory
+ #include <asm/cpu_device_id.h>
+../sound/soc/intel/boards/bytcr_rt5651.c:33:10: fatal error: asm/cpu_device_id.h: No such file or directory
+ #include <asm/cpu_device_id.h>
+../sound/soc/intel/boards/cht_bsw_rt5645.c:29:10: fatal error: asm/cpu_device_id.h: No such file or directory
+ #include <asm/cpu_device_id.h>
+../sound/soc/intel/boards/bytcht_es8316.c:33:10: fatal error: asm/cpu_device_id.h: No such file or directory
+ #include <asm/cpu_device_id.h>
+../sound/soc/intel/boards/bytcht_da7213.c:26:10: fatal error: asm/platform_sst_audio.h: No such file or directory
+ #include <asm/platform_sst_audio.h>
 
+Fixes: 164a263bf8d0 ("ASoC: Intel: Make boards more available for compile test")
 
->>       select SND_SOC_INTEL_APL
->>       select SND_SOC_INTEL_KBL
->>       select SND_SOC_INTEL_GLK
->> @@ -120,6 +120,7 @@ config SND_SOC_INTEL_SKYLAKE
->>   config SND_SOC_INTEL_SKL
->>       tristate "Skylake Platforms"
->>       depends on PCI && ACPI
->> +    depends on COMMON_CLK
->>       select SND_SOC_INTEL_SKYLAKE_FAMILY
->>       help
->>         If you have a Intel Skylake platform with the DSP enabled
->> --- lnx-52-rc1.orig/sound/soc/intel/boards/Kconfig
->> +++ lnx-52-rc1/sound/soc/intel/boards/Kconfig
->> @@ -286,7 +286,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927
->>       select SND_SOC_MAX98927
->>       select SND_SOC_DMIC
->>       select SND_SOC_HDAC_HDMI
->> -    select SND_SOC_INTEL_SKYLAKE_SSP_CLK
->> +    select SND_SOC_INTEL_SKYLAKE_SSP_CLK if COMMON_CLK
-> 
-> and here I would make it a depend. I guess your solution solves the compilation but doesn't fully represent the fact that this machine driver is not functional without COMMON_CLK+SKYLAKE_SSP_CLK.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Jie Yang <yang.jie@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/intel/boards/Kconfig |   30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Not functional on ia64 anyway.  :)
-
-> 
->>       help
->>         This adds support for ASoC Onboard Codec I2S machine driver. This will
->>         create an alsa sound card for RT5663 + MAX98927.
-
-
-Thanks.
--- 
-~Randy
+--- lnx-52-rc1.orig/sound/soc/intel/boards/Kconfig
++++ lnx-52-rc1/sound/soc/intel/boards/Kconfig
+@@ -18,7 +18,7 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "Haswell Lynxpoint"
+ 	depends on I2C
+ 	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
+@@ -35,7 +35,7 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	depends on I2C
+ 	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
+ 	depends on GPIOLIB || COMPILE_TEST
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_RT5677
+ 	help
+ 	  This adds support for Intel Broadwell platform based boards with
+@@ -47,7 +47,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "Broadwell Wildcatpoint"
+ 	depends on I2C
+ 	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_RT286
+ 	help
+ 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
+@@ -61,7 +61,7 @@ if SND_SOC_INTEL_BAYTRAIL
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "Baytrail with MAX98090 codec"
+ 	depends on I2C
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+@@ -72,7 +72,7 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "Baytrail with RT5640 codec"
+ 	depends on I2C
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+@@ -86,7 +86,7 @@ if SND_SST_ATOM_HIFI2_PLATFORM || SND_SO
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	tristate "Baytrail and Baytrail-CR with RT5640 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5640
+ 	help
+@@ -98,7 +98,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 	tristate "Baytrail and Baytrail-CR with RT5651 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5651
+ 	help
+@@ -110,7 +110,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ 	tristate "Cherrytrail & Braswell with RT5672 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5670
+         help
+@@ -122,7 +122,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "Cherrytrail & Braswell with RT5645/5650 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5645
+ 	help
+@@ -134,7 +134,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 	tristate "Cherrytrail & Braswell with MAX98090 & TI codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_TS3A227E
+ 	help
+@@ -146,7 +146,7 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI
+ config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
+ 	tristate "Cherrytrail & Braswell with NAU88L24 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_NAU8824
+ 	help
+@@ -158,7 +158,7 @@ config SND_SOC_INTEL_CHT_BSW_NAU8824_MAC
+ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	tristate "Baytrail & Cherrytrail with DA7212/7213 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_DA7213
+ 	help
+@@ -170,7 +170,7 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	tristate "Baytrail & Cherrytrail with ES8316 codec"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_ES8316
+ 	help
+@@ -186,7 +186,7 @@ if SND_SST_ATOM_HIFI2_PLATFORM
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+ 	depends on I2C && ACPI
+-	depends on X86_INTEL_LPSS || COMPILE_TEST
++	depends on X86_INTEL_LPSS
+ 	help
+ 	  This adds support for ASoC machine driver for the MinnowBoard Max or
+ 	  Up boards and provides access to I2S signals on the Low-Speed
+@@ -248,7 +248,7 @@ if SND_SOC_INTEL_APL
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
+ 	depends on I2C && ACPI
+-	depends on MFD_INTEL_LPSS || COMPILE_TEST
++	depends on MFD_INTEL_LPSS
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
