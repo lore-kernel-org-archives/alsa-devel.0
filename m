@@ -1,49 +1,42 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
-	are detected
-Date: Fri, 24 May 2019 13:33:34 -0600
-Message-ID: <CAD8Lp46B523hZ5jRya5HFcRK6ZHL7JxRFj=FiGPf47aaVuUbog@mail.gmail.com>
-References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
- <s5hk1ege12p.wl-tiwai@suse.de>
- <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
- <CAD8Lp47qCbPh+aZjr0pjzZAcBXqRbMU+5Y_HPy7jrJhUgsD3Tg@mail.gmail.com>
- <72729168-214a-264d-c704-f718d7cfde4b@linux.intel.com>
- <CAD8Lp47Yc5CwkM-y=eqXdPDZ7+1=qa6m1sCELhBsidsYYSzfQQ@mail.gmail.com>
- <d399bbcb-c094-d0b9-5ae3-8267ee613d6f@linux.intel.com>
+From: Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: sound: Convert Allwinner I2S binding to
+ YAML
+Date: Fri, 24 May 2019 15:28:07 -0500
+Message-ID: <CAL_JsqKX==vmpbW=EERnJHRwL-o4R903p-9p_x0abFHJjWGvMw@mail.gmail.com>
+References: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF35CF89625
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 21:33:47 +0200 (CEST)
-Received: by mail-qk1-x741.google.com with SMTP id w25so9151473qkj.11
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 12:33:47 -0700 (PDT)
-In-Reply-To: <d399bbcb-c094-d0b9-5ae3-8267ee613d6f@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 24, 2019 at 12:38 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> > In the case of DMICs attached to PCH and BIOS/NHLT reports DMIC, is
-> > the HDaudio legacy probe aborted by default or not?
+On Fri, May 24, 2019 at 7:58 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
 >
-> no.
+> The Allwinner SoCs feature an I2S controller across multiple SoC
+> generations.
+>
+> However, earlier generations were a bit simpler than the subsequent ones,
+> and for example would always have RX and TX capabilities, and no reset
+> lines.
+>
+> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  Documentation/devicetree/bindings/sound/sun4i-i2s.txt                |  45 +--------------------------------
+>  2 files changed, 100 insertions(+), 45 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s.txt
 
-Thanks for the clarification. The plan makes sense to me! I'll check
-if we have any more devices available with DMIC where we can test.
-
-Daniel
+Reviewed-by: Rob Herring <robh@kernel.org>
