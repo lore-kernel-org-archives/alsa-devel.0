@@ -1,39 +1,40 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ALSA: firewire-lib: remove redundant assignment to cip_header
-Date: Fri, 24 May 2019 22:33:51 +0100
-Message-ID: <20190524213351.24594-1-colin.king@canonical.com>
+Subject: [PATCH][next] ASoC: cx2072x: remove redundant assignment to pulse_len
+Date: Fri, 24 May 2019 22:44:19 +0100
+Message-ID: <20190524214419.25075-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Simon Ho <simon.ho@conexant.com>, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-The assignement to cip_header is redundant as the value never
-read and it is being re-assigned in the if and else paths of
-the following if statement. Clean up the code by removing it.
+Variable pulse_len is being initialized to 1 however this value is
+never read and pulse_len is being re-assigned later in a switch
+statement.  Clean up the code by removing the redundant initialization.
 
 Addresses-Coverity: ("Unused value")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/firewire/amdtp-stream.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/cx2072x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 2d9c764061d1..4236955bbf57 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -675,7 +675,6 @@ static int handle_in_packet(struct amdtp_stream *s, unsigned int cycle,
- 		return -EIO;
- 	}
- 
--	cip_header = ctx_header + 2;
- 	if (!(s->flags & CIP_NO_HEADER)) {
- 		cip_header = &ctx_header[2];
- 		err = check_cip_header(s, cip_header, payload_length,
+diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
+index 23d2b25fe04c..c11a585bbf70 100644
+--- a/sound/soc/codecs/cx2072x.c
++++ b/sound/soc/codecs/cx2072x.c
+@@ -679,7 +679,7 @@ static int cx2072x_config_i2spcm(struct cx2072x_priv *cx2072x)
+ 	int is_right_j = 0;
+ 	int is_frame_inv = 0;
+ 	int is_bclk_inv = 0;
+-	int pulse_len = 1;
++	int pulse_len;
+ 	int frame_len = cx2072x->frame_size;
+ 	int sample_size = cx2072x->sample_size;
+ 	int i2s_right_slot;
 -- 
 2.20.1
