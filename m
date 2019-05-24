@@ -1,77 +1,125 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add a debug log to track DAPM widget
-	power up/down
-Date: Fri, 24 May 2019 12:29:31 +0100
-Message-ID: <20190524112931.GB2456@sirena.org.uk>
-References: <1558684467-11333-1-git-send-email-bgoswami@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2102980459712228591=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D274AF806F7
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 13:54:00 +0200 (CEST)
-In-Reply-To: <1558684467-11333-1-git-send-email-bgoswami@codeaurora.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: bgoswami@codeaurora.org
-Cc: alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org, plai@codeaurora.org
+Subject: Applied "ASoC: simple-card: Restore original configuration of DAI format" to the asoc tree
+Date: Fri, 24 May 2019 13:12:37 +0100 (BST)
+Message-ID: <20190524121238.0163B440049@finisterre.sirena.org.uk>
+References: <1558688044-22025-1-git-send-email-jonathanh@nvidia.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1558688044-22025-1-git-send-email-jonathanh@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2102980459712228591==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wzJLGUyc3ArbnUjN"
-Content-Disposition: inline
+   ASoC: simple-card: Restore original configuration of DAI format
 
+has been applied to the asoc tree at
 
---wzJLGUyc3ArbnUjN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
-On Fri, May 24, 2019 at 12:54:27AM -0700, bgoswami@codeaurora.org wrote:
-> From: Banajit Goswami <bgoswami@codeaurora.org>
->=20
-> Add a debug log to help track widgets being powered-up and powered-down
-> by DAPM.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-We already have huge amounts of trace available via tracepoints and
-having something on by default in the debug logs seems like it's going
-to get very verbose for people who aren't specifically working on audio.
-What's the advantage of adding dev_dbg() logs as well?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---wzJLGUyc3ArbnUjN
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzn1ZsACgkQJNaLcl1U
-h9CL6Qf+P1bE2wDz1Z+mFlBUSWst8Df7vmXu/fK/uO0xkPH0B9Jw9fRe48G5RHeK
-EW37C6ORAGvJrqtTHJDJLw3Uarqu8o0S9pS8Y4/xye+B9RYtZDj5Poj4czl/O5ZL
-6gW1NzFlt64Cn0rLuvw92Pu3pete6jtrIf3p2Uzpr4/YWwo20x2879MOaZy/27hA
-7VDo1X1TZ/wYGdsBMj7y0VvkCaYsqFkPe0N3FocMA1Xpk7C/8zFRJym+zpfSMkAR
-fqwyz1xOxWmfxhduLL4rrZqcuK+9LmT44MzZgc9eu3BJz8BknXMmBWcqhtChWgzs
-GdeMtNjhcqZhkFXH92+IWuz708Sklg==
-=O7zi
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---wzJLGUyc3ArbnUjN--
+>From 4819d06292c9b57eabdd6d1603e49a27baf183be Mon Sep 17 00:00:00 2001
+From: Jon Hunter <jonathanh@nvidia.com>
+Date: Fri, 24 May 2019 09:54:04 +0100
+Subject: [PATCH] ASoC: simple-card: Restore original configuration of DAI
+ format
 
---===============2102980459712228591==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Revert commit 069d037aea98 ("ASoC: simple-card: Fix configuration of
+DAI format"). During further review, it turns out that the actual issue
+was caused by an incorrectly formatted device-tree node describing the
+soundcard.
 
+The following is incorrect because the simple-audio-card
+'bitclock-master' and 'frame-master' properties should not reference the
+actual codec phandle ...
 
---===============2102980459712228591==--
+	sound {
+		compatible = "simple-audio-card";
+		...
+	=>	simple-audio-card,bitclock-master = <&codec>;
+	=>	simple-audio-card,frame-master = <&codec>;
+		...
+
+		simple-audio-card,cpu {
+			sound-dai = <&xxx>;
+		};
+
+		simple-audio-card,codec {
+	=>		sound-dai = <&codec>;
+		};
+	};
+
+Rather, these properties should reference the phandle to the
+'simple-audio-card,codec' property as shown below ...
+
+	sound {
+		compatible = "simple-audio-card";
+		...
+	=>	simple-audio-card,bitclock-master = <&codec>;
+	=>	simple-audio-card,frame-master = <&codec>;
+		...
+
+		simple-audio-card,cpu {
+			sound-dai = <&xxx>;
+		};
+
+	=>	codec: simple-audio-card,codec { /* simple-card wants here */
+			sound-dai = <&xxx>;	 /* not here */
+		};
+	};
+
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/simple-card.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index c2c8dcbcf795..9b568f578bcd 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -283,6 +283,11 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	codec_dai		=
+ 	dai_props->codec_dai	= &priv->dais[li->dais++];
+ 
++	ret = asoc_simple_parse_daifmt(dev, node, codec,
++				       prefix, &dai_link->dai_fmt);
++	if (ret < 0)
++		goto dai_link_of_err;
++
+ 	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
+ 
+ 	ret = asoc_simple_parse_cpu(cpu, dai_link, &single_cpu);
+@@ -293,11 +298,6 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_parse_daifmt(dev, node, dai_link->codecs->of_node,
+-				       prefix, &dai_link->dai_fmt);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+ 	ret = asoc_simple_parse_platform(plat, dai_link);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+-- 
+2.20.1
