@@ -1,43 +1,55 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: sound: sun4i-i2s: Document that the RX
- channel can be missing
-Date: Fri, 24 May 2019 15:28:35 -0500
-Message-ID: <CAL_JsqKhP0DvZSAEHA47d4UY6LQYKobZdfAxSk_9FWuBS9UJgQ@mail.gmail.com>
-References: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
- <9b280f9ce894e4e2ea7259db505cbe1a3e00120e.1558702660.git-series.maxime.ripard@bootlin.com>
+From: bgoswami@codeaurora.org
+Subject: [PATCH 3/3] ALSA: jack: add switch event for
+	unsupported jack types
+Date: Fri, 24 May 2019 13:40:50 -0700
+Message-ID: <1558730450-16580-1-git-send-email-bgoswami@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <9b280f9ce894e4e2ea7259db505cbe1a3e00120e.1558702660.git-series.maxime.ripard@bootlin.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35000F8962F
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 22:50:54 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, plai@codeaurora.org, Gopikrishnaiah Anandan <agopik@codeaurora.org>, broonie@kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 24, 2019 at 7:58 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
->
-> The A83t and compatibles controllers don't have any reception capabilities
-> on some instances of the controllers, even though it was never documented
-> as such in the binding before.
->
-> Therefore, on those controllers, we don't have the option to set an RX DMA
-> channel.
->
-> This was already done in the DTSI, but the binding itself was never
-> updated. Let's add a special case in the schemas.
->
-> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml | 52 ++++++++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 42 insertions(+), 10 deletions(-)
+From: Banajit Goswami <bgoswami@codeaurora.org>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Add a jack switch event to report unsupported plug type.
+This event can be used to report a headset or an extension
+cable with GND/MIC swap etc., which may not be supported by
+the device.
+
+Signed-off-by: Gopikrishnaiah Anandan <agopik@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+---
+ sound/core/jack.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index 36b047b..4c21e48 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -40,6 +40,7 @@ struct snd_jack_kctl {
+ 	SW_JACK_PHYSICAL_INSERT,
+ 	SW_VIDEOOUT_INSERT,
+ 	SW_LINEIN_INSERT,
++	SW_UNSUPPORT_INSERT,
+ };
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
