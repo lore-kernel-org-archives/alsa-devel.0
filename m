@@ -1,17 +1,29 @@
-From: bgoswami@codeaurora.org
-Subject: [PATCH 1/3] ALSA: jack: Remove hard coding of
-	jack_switch_types array size
-Date: Fri, 24 May 2019 13:40:23 -0700
-Message-ID: <1558730423-16490-1-git-send-email-bgoswami@codeaurora.org>
+From: Aditya Paluri <Venkata.AdityaPaluri@synopsys.com>
+Subject: arecord doesnt record into file
+Date: Fri, 24 May 2019 13:54:39 +0000
+Message-ID: <83B5A2EBEFF68E46AB106DA39CB25921010ED695@IN01WEMBXA.internal.synopsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from smtprelay-out1.synopsys.com (unknown [198.182.47.102])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A6EAF806F7
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 22:50:54 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 951ECF80C0F
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 15:54:47 +0200 (CEST)
+Received: from mailhost.synopsys.com (badc-mailhost2.synopsys.com
+ [10.192.0.18])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 00AF8C0152
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 13:54:52 +0000 (UTC)
+Received: from US01WEHTC3.internal.synopsys.com
+ (us01wehtc3.internal.synopsys.com [10.15.84.232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mailhost.synopsys.com (Postfix) with ESMTPS id 998C5A0076
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 13:54:43 +0000 (UTC)
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +33,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, plai@codeaurora.org, Gopikrishnaiah Anandan <agopik@codeaurora.org>, broonie@kernel.org, srinivas.kandagatla@linaro.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Banajit Goswami <bgoswami@codeaurora.org>
+Hello all,
 
-The size for jack_switch_types array is currently controlled by
-a MACRO 'SND_JACK_SWITCH_TYPES', whose value needs to be updated
-everytime a new jack switch type is added. Remove this MACRO
-and use ARRAY_SIZE instead to get size of the array.
+I use the below command:
 
-Signed-off-by: Gopikrishnaiah Anandan <agopik@codeaurora.org>
-Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
----
- include/sound/jack.h | 3 ---
- sound/core/jack.c    | 4 ++--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+arecord --device plughw:0,2 -r 48000 -f S16_LE -c 2 recorded_sound.wav
 
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 1e84bfb..b0791c5 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -68,9 +68,6 @@ enum snd_jack_types {
- 	SND_JACK_BTN_5		= 0x0200,
- };
- 
--/* Keep in sync with definitions above */
--#define SND_JACK_SWITCH_TYPES 6
--
- struct snd_jack {
- 	struct list_head kctl_list;
- 	struct snd_card *card;
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index 84c2a17..36b047b 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -33,7 +33,7 @@ struct snd_jack_kctl {
- };
- 
- #ifdef CONFIG_SND_JACK_INPUT_DEV
--static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
-+static int jack_switch_types[] = {
- 	SW_HEADPHONE_INSERT,
- 	SW_MICROPHONE_INSERT,
- 	SW_LINEOUT_INSERT,
-@@ -250,7 +250,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 
- 		jack->type = type;
- 
--		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
-+		for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++)
- 			if (type & (1 << i))
- 				input_set_capability(jack->input_dev, EV_SW,
- 						     jack_switch_types[i]);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+And as I see the audio stream getting dumped onto the DRAM/memory, I donot see recorded_sound.wav contain any data on the file system.
+I have tried to use strace and I could only see "write" system call happen on the file only for writing the wav format header.
+
+ioctl(4, _IOC(_IOC_READ|_IOC_WRITE, 0x41, 0x23, 0x88), 0x1ec27190) = 0
+newfstatat(AT_FDCWD, "/home/root/recorded_wave.wav", 0x7fe8bfeb50, AT_SYMLINK_NOFOLLOW) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/root/recorded_wave.wav", O_WRONLY|O_CREAT, 0644) = 3
+write(3, "RIFF$\0\0\200WAVE", 12)       = 12
+write(3, "fmt \20\0\0\0", 8)            = 8
+write(3, "\1\0\2\0\200\273\0\0\0\356\2\0\4\0\20\0", 16) = 16
+write(3, "data\0\0\0\200", 8)           = 8
+ioctl(4, _IOC(_IOC_READ|_IOC_WRITE, 0x41, 0x23, 0x88), 0x1ec27190) = 0
+ioctl(4, _IOC(_IOC_READ, 0x41, 0x51, 0x18)[   24.145583] [   24.587069]  [0
+
+
+I also see EPIPE error due to overrun.
+
+, 0x7fe8bfeaa8) = -1 EPIPE (Broken pipe)
+ioctl(4, _IOC(_IOC_READ|_IOC_WRITE, 0x41, 0x24, 0x98), 0x7fe8bfe9b0) = 0
+write(2, "overrun!!! (at least 0.717 ms lo"..., 36overrun!!! (at least 0.717 ms long)
+) = 36
+
+Could you please help me in understanding why the recorded_sound.wav doesn't contain any data ?
+
+BR\Thanks.
+Aditya Paluri.
