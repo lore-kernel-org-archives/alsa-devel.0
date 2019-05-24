@@ -1,25 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
- are detected
-Date: Fri, 24 May 2019 13:38:04 -0500
-Message-ID: <d399bbcb-c094-d0b9-5ae3-8267ee613d6f@linux.intel.com>
-References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
- <s5hk1ege12p.wl-tiwai@suse.de>
- <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
- <CAD8Lp47qCbPh+aZjr0pjzZAcBXqRbMU+5Y_HPy7jrJhUgsD3Tg@mail.gmail.com>
- <72729168-214a-264d-c704-f718d7cfde4b@linux.intel.com>
- <CAD8Lp47Yc5CwkM-y=eqXdPDZ7+1=qa6m1sCELhBsidsYYSzfQQ@mail.gmail.com>
+Subject: [PATCH v3 1/9] ASoC: SOF: core: remove DSP after
+	unregistering machine driver
+Date: Fri, 24 May 2019 14:09:17 -0500
+Message-ID: <20190524190925.5931-2-pierre-louis.bossart@linux.intel.com>
+References: <20190524190925.5931-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 573D3F8962F
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 20:38:07 +0200 (CEST)
-In-Reply-To: <CAD8Lp47Yc5CwkM-y=eqXdPDZ7+1=qa6m1sCELhBsidsYYSzfQQ@mail.gmail.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F732F80C0F
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 21:09:34 +0200 (CEST)
+In-Reply-To: <20190524190925.5931-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,25 +23,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Daniel Drake <drake@endlessm.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
+snd_sof_remove() disables the DSP and unmaps the DSP BAR.
+Removing topology after disabling the DSP results in a
+kernel panic while unloading the pipeline widget. This is
+because pipeline widget unload attempts to power down
+the core it is scheduled on by accessing the DSP registers.
 
-On 5/24/19 12:34 PM, Daniel Drake wrote:
-> Still not quite clear about the default behaviour here.
-> 
-> On Fri, May 24, 2019 at 10:12 AM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->> b) the decision to abort the HDaudio legacy driver probe should not be
->> the default, since it depends on BIOS information that may be wrong and
->> on which I have *zero* control.
->> [...]
->> 1. DMICs attached to PCH and BIOS/NHLT reports DMICS -> abort HDaudio
->> legacy probe
-> 
-> In the case of DMICs attached to PCH and BIOS/NHLT reports DMIC, is
-> the HDaudio legacy probe aborted by default or not?
+So, the suggested fix here is to unregister the machine driver
+first to remove the topology and then disable the DSP
+to avoid the situation described above.
 
-no.
+Note that the kernel panic only happens in cases where the
+HDaudio link is not managed by the hdac library,
+e.g. no codec or when HDMI is not supported.
+When the hdac library is used, snd_sof_remove() calls
+snd_hdac_ext_bus_device_remove() to remove the codec which
+unregisters the component driver thereby also removing the
+topology before the DSP is disabled.
+
+Fixes: c16211d6226 ("ASoC: SOF: Add Sound Open Firmware driver core")
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 32105e0fabe8..0bc4a8472c10 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -484,7 +484,6 @@ int snd_sof_device_remove(struct device *dev)
+ 	snd_sof_ipc_free(sdev);
+ 	snd_sof_free_debug(sdev);
+ 	snd_sof_free_trace(sdev);
+-	snd_sof_remove(sdev);
+ 
+ 	/*
+ 	 * Unregister machine driver. This will unbind the snd_card which
+@@ -494,6 +493,14 @@ int snd_sof_device_remove(struct device *dev)
+ 	if (!IS_ERR_OR_NULL(pdata->pdev_mach))
+ 		platform_device_unregister(pdata->pdev_mach);
+ 
++	/*
++	 * Unregistering the machine driver results in unloading the topology.
++	 * Some widgets, ex: scheduler, attempt to power down the core they are
++	 * scheduled on, when they are unloaded. Therefore, the DSP must be
++	 * removed only after the topology has been unloaded.
++	 */
++	snd_sof_remove(sdev);
++
+ 	/* release firmware */
+ 	release_firmware(pdata->fw);
+ 	pdata->fw = NULL;
+-- 
+2.20.1
