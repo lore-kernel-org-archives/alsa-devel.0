@@ -1,70 +1,79 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
- memory allocation
-Date: Fri, 24 May 2019 01:10:48 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1952841DCB@SHSMSX103.ccr.corp.intel.com>
-References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
- <20190522162142.11525-13-pierre-louis.bossart@linux.intel.com>
- <96A12704CE18D347B625EE2D4A099D195284169B@SHSMSX103.ccr.corp.intel.com>
- <s5hr28pfux1.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19528416F0@SHSMSX103.ccr.corp.intel.com>
- <31702c41-aef4-712a-d11b-ee44e446a6cb@linux.intel.com>
+From: Gen Zhang <blackgod016574@gmail.com>
+Subject: [PATCH] pcm030-audio-fabric: Fix a memory leaking bug in
+ pcm030_fabric_probe()
+Date: Fri, 24 May 2019 10:12:21 +0800
+Message-ID: <20190524021221.GA4753@zhanggen-UX430UQ>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A17A6F89625
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 03:10:52 +0200 (CEST)
-In-Reply-To: <31702c41-aef4-712a-d11b-ee44e446a6cb@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peirre,
+In pcm030_fabric_probe(), 'pdata->codec_device' is allocated by
+platform_device_alloc(). When this allocation fails, ENOMEM is returned.
+However, 'pdata' is allocated by devm_kzalloc() before this site. We
+should free 'pdata' before function ends to prevent memory leaking.
 
->>>>
->>>> On Thu, 23 May 2019 10:03:03 +0200,
->>>> Yang, Libin wrote:
->>>>>
->>>>> Please let me describe the issue here.
->>>>>
->>>>> The test case is:
->>>>> 1) Unload module with script "sudo ./sof_remove.sh" ,
->>>>> 2) reload module with script "sudo ./sof_insert.sh"
->>>>>
->>>>> After several rounds of removing and inserting kernel modules,
->>>>> system will complain like below:
->>>>> "BUG: unable to handle kernel paging request at 000000292a282031"
->>>>
->>>> Did you try some kernel debug options?  It might show what went wrong.
->>>
->>> No, I haven't. I'm not sure which options I can use for this case.
->>> Could you please give me some suggestions?
->>
->> BTW: I have enabled DEBUG_DEVRES. Are there any other options I can try?
->
->There are already a set of kconfig fragments for debug, see
->https://github.com/thesofproject/kconfig and select memory-debug-defconfig.
->
->I guess I will need to require this test in the SOF CI, I really don't get how this
->issue was not seen earlier. Gah.
+Similarly, we should free 'pdata' when 'pdata->codec_device' is NULL.
+And we should free 'pdata->codec_device' and 'pdata' when 'ret' is error
+to prevent memory leaking.
 
-This bug can't be reproduced easily sometimes. Sometimes, the bug will be hit 
-at the second or third round of the test. And sometimes, we need do more 
-rounds to reproduce this bug. This may be the reason we didn't hit this bug before.
-
-Regards,
-Libin
+Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
+---
+diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
+index a7fe4ad..d2e6eae 100644
+--- a/sound/soc/fsl/pcm030-audio-fabric.c
++++ b/sound/soc/fsl/pcm030-audio-fabric.c
+@@ -72,29 +72,43 @@ static int pcm030_fabric_probe(struct platform_device *op)
+ 	platform_np = of_parse_phandle(np, "asoc-platform", 0);
+ 	if (!platform_np) {
+ 		dev_err(&op->dev, "ac97 not registered\n");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto out_free1;
+ 	}
+ 
+ 	for_each_card_prelinks(card, i, dai_link)
+ 		dai_link->platform_of_node = platform_np;
+ 
+ 	ret = request_module("snd-soc-wm9712");
+-	if (ret)
++	if (ret) {
+ 		dev_err(&op->dev, "request_module returned: %d\n", ret);
++		goto out_free1;
++	}
+ 
+ 	pdata->codec_device = platform_device_alloc("wm9712-codec", -1);
+-	if (!pdata->codec_device)
++	if (!pdata->codec_device) {
+ 		dev_err(&op->dev, "platform_device_alloc() failed\n");
++		ret = -ENOMEM;
++		goto out_free1;
++	}
+ 
+ 	ret = platform_device_add(pdata->codec_device);
+-	if (ret)
++	if (ret) {
+ 		dev_err(&op->dev, "platform_device_add() failed: %d\n", ret);
++		goto out_free2;
++	}
+ 
+ 	ret = snd_soc_register_card(card);
+-	if (ret)
++	if (ret) {
+ 		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
++		goto out_free2;
++	}
+ 
+ 	platform_set_drvdata(op, pdata);
++out_free2:
++	platform_device_put(pdata->codec_device);
++out_free1:
++	devm_kfree(&op->dev, pdata);
+ 
+ 	return ret;
+ }
+---
