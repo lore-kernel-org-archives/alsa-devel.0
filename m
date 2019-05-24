@@ -1,79 +1,97 @@
-From: Gen Zhang <blackgod016574@gmail.com>
-Subject: [PATCH] pcm030-audio-fabric: Fix a memory leaking bug in
- pcm030_fabric_probe()
-Date: Fri, 24 May 2019 10:12:21 +0800
-Message-ID: <20190524021221.GA4753@zhanggen-UX430UQ>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [alsa-devel] [PATCH] ASoc: fix
+ sound/soc/intel/skylake/slk-ssp-clk.c build error on IA64
+Date: Thu, 23 May 2019 19:59:19 -0700
+Message-ID: <4cedd724-7c2e-10c2-a328-61f7af3ab9ed@infradead.org>
+References: <9019c87f-cf1a-b59f-d87e-8169b247cf88@infradead.org>
+ <6b89e370-90e3-6962-c71a-80919b7c6154@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <6b89e370-90e3-6962-c71a-80919b7c6154@linux.intel.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, kbuild test robot <lkp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In pcm030_fabric_probe(), 'pdata->codec_device' is allocated by
-platform_device_alloc(). When this allocation fails, ENOMEM is returned.
-However, 'pdata' is allocated by devm_kzalloc() before this site. We
-should free 'pdata' before function ends to prevent memory leaking.
+On 5/23/19 4:28 AM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 5/22/19 10:58 PM, Randy Dunlap wrote:
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> skl-ssp-clk.c does not build on IA64 because the driver
+>> uses the common clock interface, so make the driver depend
+>> on COMMON_CLK.
+>>
+>> Fixes this build error:
+>> ../sound/soc/intel/skylake/skl-ssp-clk.c:26:16: error: field 'hw' has incomplete type
+>>    struct clk_hw hw;
+>>                  ^~
+>>
+>> Reported-by: kbuild test robot <lkp@intel.com>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Mark Brown <broonie@kernel.org>
+>> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>> Cc: Jie Yang <yang.jie@linux.intel.com>
+>> Cc: alsa-devel@alsa-project.org
+>> ---
+>>   sound/soc/intel/Kconfig        |    3 ++-
+>>   sound/soc/intel/boards/Kconfig |    2 +-
+>>   2 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> --- lnx-52-rc1.orig/sound/soc/intel/Kconfig
+>> +++ lnx-52-rc1/sound/soc/intel/Kconfig
+>> @@ -104,7 +104,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+>>   config SND_SOC_INTEL_SKYLAKE
+>>       tristate "All Skylake/SST Platforms"
+>>       depends on PCI && ACPI
+>> -    select SND_SOC_INTEL_SKL
+>> +    select SND_SOC_INTEL_SKL if COMMON_CLK
+> 
+> Is this really necessary? The COMMON_CLK is only needed for the SND_SOC_INTEL_SKYLAKE_SSP_CLK option, isn't it?
 
-Similarly, we should free 'pdata' when 'pdata->codec_device' is NULL.
-And we should free 'pdata->codec_device' and 'pdata' when 'ret' is error
-to prevent memory leaking.
+It prevents this Kconfig warning:
 
-Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
----
-diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
-index a7fe4ad..d2e6eae 100644
---- a/sound/soc/fsl/pcm030-audio-fabric.c
-+++ b/sound/soc/fsl/pcm030-audio-fabric.c
-@@ -72,29 +72,43 @@ static int pcm030_fabric_probe(struct platform_device *op)
- 	platform_np = of_parse_phandle(np, "asoc-platform", 0);
- 	if (!platform_np) {
- 		dev_err(&op->dev, "ac97 not registered\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto out_free1;
- 	}
- 
- 	for_each_card_prelinks(card, i, dai_link)
- 		dai_link->platform_of_node = platform_np;
- 
- 	ret = request_module("snd-soc-wm9712");
--	if (ret)
-+	if (ret) {
- 		dev_err(&op->dev, "request_module returned: %d\n", ret);
-+		goto out_free1;
-+	}
- 
- 	pdata->codec_device = platform_device_alloc("wm9712-codec", -1);
--	if (!pdata->codec_device)
-+	if (!pdata->codec_device) {
- 		dev_err(&op->dev, "platform_device_alloc() failed\n");
-+		ret = -ENOMEM;
-+		goto out_free1;
-+	}
- 
- 	ret = platform_device_add(pdata->codec_device);
--	if (ret)
-+	if (ret) {
- 		dev_err(&op->dev, "platform_device_add() failed: %d\n", ret);
-+		goto out_free2;
-+	}
- 
- 	ret = snd_soc_register_card(card);
--	if (ret)
-+	if (ret) {
- 		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
-+		goto out_free2;
-+	}
- 
- 	platform_set_drvdata(op, pdata);
-+out_free2:
-+	platform_device_put(pdata->codec_device);
-+out_free1:
-+	devm_kfree(&op->dev, pdata);
- 
- 	return ret;
- }
----
+WARNING: unmet direct dependencies detected for SND_SOC_INTEL_SKL
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_SST_TOPLEVEL [=y] && PCI [=y] && ACPI [=y] && COMMON_CLK [=n]
+  Selected by [y]:
+  - SND_SOC_INTEL_SKYLAKE [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_SST_TOPLEVEL [=y] && PCI [=y] && ACPI [=y]
+
+
+>>       select SND_SOC_INTEL_APL
+>>       select SND_SOC_INTEL_KBL
+>>       select SND_SOC_INTEL_GLK
+>> @@ -120,6 +120,7 @@ config SND_SOC_INTEL_SKYLAKE
+>>   config SND_SOC_INTEL_SKL
+>>       tristate "Skylake Platforms"
+>>       depends on PCI && ACPI
+>> +    depends on COMMON_CLK
+>>       select SND_SOC_INTEL_SKYLAKE_FAMILY
+>>       help
+>>         If you have a Intel Skylake platform with the DSP enabled
+>> --- lnx-52-rc1.orig/sound/soc/intel/boards/Kconfig
+>> +++ lnx-52-rc1/sound/soc/intel/boards/Kconfig
+>> @@ -286,7 +286,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927
+>>       select SND_SOC_MAX98927
+>>       select SND_SOC_DMIC
+>>       select SND_SOC_HDAC_HDMI
+>> -    select SND_SOC_INTEL_SKYLAKE_SSP_CLK
+>> +    select SND_SOC_INTEL_SKYLAKE_SSP_CLK if COMMON_CLK
+> 
+> and here I would make it a depend. I guess your solution solves the compilation but doesn't fully represent the fact that this machine driver is not functional without COMMON_CLK+SKYLAKE_SSP_CLK.
+
+Not functional on ia64 anyway.  :)
+
+> 
+>>       help
+>>         This adds support for ASoC Onboard Codec I2S machine driver. This will
+>>         create an alsa sound card for RT5663 + MAX98927.
+
+
+Thanks.
+-- 
+~Randy
