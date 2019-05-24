@@ -1,125 +1,114 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: Restore original configuration of DAI format" to the asoc tree
-Date: Fri, 24 May 2019 13:12:37 +0100 (BST)
-Message-ID: <20190524121238.0163B440049@finisterre.sirena.org.uk>
-References: <1558688044-22025-1-git-send-email-jonathanh@nvidia.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1558688044-22025-1-git-send-email-jonathanh@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: [PATCH 2/2] dt-bindings: sound: sun4i-i2s: Document that the RX
+ channel can be missing
+Date: Fri, 24 May 2019 14:57:59 +0200
+Message-ID: <9b280f9ce894e4e2ea7259db505cbe1a3e00120e.1558702660.git-series.maxime.ripard@bootlin.com>
+References: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <5f8095fbd5c2c34478792b9715059675251a30e6.1558702660.git-series.maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The A83t and compatibles controllers don't have any reception capabilities
+on some instances of the controllers, even though it was never documented
+as such in the binding before.
 
-   ASoC: simple-card: Restore original configuration of DAI format
+Therefore, on those controllers, we don't have the option to set an RX DMA
+channel.
 
-has been applied to the asoc tree at
+This was already done in the DTSI, but the binding itself was never
+updated. Let's add a special case in the schemas.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4819d06292c9b57eabdd6d1603e49a27baf183be Mon Sep 17 00:00:00 2001
-From: Jon Hunter <jonathanh@nvidia.com>
-Date: Fri, 24 May 2019 09:54:04 +0100
-Subject: [PATCH] ASoC: simple-card: Restore original configuration of DAI
- format
-
-Revert commit 069d037aea98 ("ASoC: simple-card: Fix configuration of
-DAI format"). During further review, it turns out that the actual issue
-was caused by an incorrectly formatted device-tree node describing the
-soundcard.
-
-The following is incorrect because the simple-audio-card
-'bitclock-master' and 'frame-master' properties should not reference the
-actual codec phandle ...
-
-	sound {
-		compatible = "simple-audio-card";
-		...
-	=>	simple-audio-card,bitclock-master = <&codec>;
-	=>	simple-audio-card,frame-master = <&codec>;
-		...
-
-		simple-audio-card,cpu {
-			sound-dai = <&xxx>;
-		};
-
-		simple-audio-card,codec {
-	=>		sound-dai = <&codec>;
-		};
-	};
-
-Rather, these properties should reference the phandle to the
-'simple-audio-card,codec' property as shown below ...
-
-	sound {
-		compatible = "simple-audio-card";
-		...
-	=>	simple-audio-card,bitclock-master = <&codec>;
-	=>	simple-audio-card,frame-master = <&codec>;
-		...
-
-		simple-audio-card,cpu {
-			sound-dai = <&xxx>;
-		};
-
-	=>	codec: simple-audio-card,codec { /* simple-card wants here */
-			sound-dai = <&xxx>;	 /* not here */
-		};
-	};
-
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/generic/simple-card.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml | 52 ++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 42 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index c2c8dcbcf795..9b568f578bcd 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -283,6 +283,11 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	codec_dai		=
- 	dai_props->codec_dai	= &priv->dais[li->dais++];
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+index 85b2d6d84055..eb3992138eec 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+@@ -41,19 +41,11 @@ properties:
+       - const: apb
+       - const: mod
  
-+	ret = asoc_simple_parse_daifmt(dev, node, codec,
-+				       prefix, &dai_link->dai_fmt);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
- 	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
- 
- 	ret = asoc_simple_parse_cpu(cpu, dai_link, &single_cpu);
-@@ -293,11 +298,6 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	ret = asoc_simple_parse_daifmt(dev, node, dai_link->codecs->of_node,
--				       prefix, &dai_link->dai_fmt);
--	if (ret < 0)
--		goto dai_link_of_err;
+-  dmas:
+-    items:
+-      - description: RX DMA Channel
+-      - description: TX DMA Channel
 -
- 	ret = asoc_simple_parse_platform(plat, dai_link);
- 	if (ret < 0)
- 		goto dai_link_of_err;
+-  dma-names:
+-    items:
+-      - const: rx
+-      - const: tx
+-
+   # Even though it only applies to subschemas under the conditionals,
+   # not listing them here will trigger a warning because of the
+   # additionalsProperties set to false.
++  dmas: true
++  dma-names: true
+   resets:
+     maxItems: 1
+ 
+@@ -72,6 +64,46 @@ allOf:
+       required:
+         - resets
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: allwinner,sun8i-a83t-i2s
++
++    then:
++      properties:
++        dmas:
++          minItems: 1
++          maxItems: 2
++          items:
++            - description: RX DMA Channel
++            - description: TX DMA Channel
++          description:
++            Some controllers cannot receive but can only transmit
++            data. In such a case, the RX DMA channel is to be omitted.
++
++        dma-names:
++          oneOf:
++            - items:
++                - const: rx
++                - const: tx
++            - const: tx
++          description:
++            Some controllers cannot receive but can only transmit
++            data. In such a case, the RX name is to be omitted.
++
++    else:
++      properties:
++        dmas:
++          items:
++            - description: RX DMA Channel
++            - description: TX DMA Channel
++
++        dma-names:
++          items:
++            - const: rx
++            - const: tx
++
+ required:
+   - "#sound-dai-cells"
+   - compatible
 -- 
-2.20.1
+git-series 0.9.1
