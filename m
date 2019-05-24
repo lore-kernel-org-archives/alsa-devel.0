@@ -1,38 +1,46 @@
-From: Gen Zhang <blackgod016574@gmail.com>
-Subject: Re: [PATCH] tegra_wm9712: Fix a memory leaking bug in
- tegra_wm9712_driver_probe()
-Date: Fri, 24 May 2019 23:42:52 +0800
-Message-ID: <20190524154252.GA10186@zhanggen-UX430UQ>
-References: <20190524005014.GA2289@zhanggen-UX430UQ>
- <b2d43dfe-17e5-a975-435b-49f2aa2ad550@nvidia.com>
- <20190524143309.GA8631@zhanggen-UX430UQ>
- <e52f4140-a119-a584-40a2-6359d6e1784a@nvidia.com>
- <20190524150053.GA9235@zhanggen-UX430UQ>
- <1740686f-a466-430c-9d01-ab83ea6998ac@nvidia.com>
+From: Daniel Drake <drake@endlessm.com>
+Subject: Re: [RFC PATCH 0/6] ALSA/HDA: abort probe when DMICs
+	are detected
+Date: Fri, 24 May 2019 09:45:21 -0600
+Message-ID: <CAD8Lp47qCbPh+aZjr0pjzZAcBXqRbMU+5Y_HPy7jrJhUgsD3Tg@mail.gmail.com>
+References: <20190523233951.31122-1-pierre-louis.bossart@linux.intel.com>
+ <s5hk1ege12p.wl-tiwai@suse.de>
+ <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1740686f-a466-430c-9d01-ab83ea6998ac@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
+ [IPv6:2607:f8b0:4864:20::743])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C05DF80C0F
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 17:45:34 +0200 (CEST)
+Received: by mail-qk1-x743.google.com with SMTP id o2so7897601qkb.3
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2019 08:45:34 -0700 (PDT)
+In-Reply-To: <284f78d4-ec5a-0ff1-2b67-2977b3634692@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 24, 2019 at 04:36:54PM +0100, Jon Hunter wrote:
-> There could well be cases where you need to explicitly call
-> devm_kfree(), but having a quick glance at the example above, I don't
-> see why you would call devm_kfree() here and yes looks like that code
-> could be simplified significantly. Notice that hisi_sas_debugfs_exit()
-> does not free any memory as it is not necessary to explicitly do so.
-> 
-> Cheers
-> Jon
-> 
-> -- 
-> nvpublic
-Thanks for your suggestions, Jon! I think I need to e-mail to those
-maintainers about this issue.
+Thanks for the patches!
 
-Thanks
-Gen
+On Fri, May 24, 2019 at 7:26 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> I am not sure if it's a good idea to enable this by default, the
+> experience of the first round showed it's risky to make assumptions on
+> what BIOS vendors implemented.
+
+Can you clarify what you mean here, are you saying you don't want to
+enable this new DMIC hardware support by default?
+
+Daniel
