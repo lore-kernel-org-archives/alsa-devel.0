@@ -1,46 +1,56 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: cx2072x: remove set but not used variable 'is_right_j '
-Date: Sat, 25 May 2019 20:32:04 +0800
-Message-ID: <20190525123204.16148-1-yuehaibing@huawei.com>
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v3 0/7] Allwinner H6 SPDIF support
+Date: Sat, 25 May 2019 18:23:16 +0200
+Message-ID: <20190525162323.20216-1-peron.clem@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jagan Teki <jagan@amarulasolutions.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+*H6 DMA support IS REQUIRED*
 
-sound/soc/codecs/cx2072x.c: In function cx2072x_config_i2spcm:
-sound/soc/codecs/cx2072x.c:679:6: warning: variable is_right_j set but not used [-Wunused-but-set-variable]
+Allwinner H6 SoC has a SPDIF controller called One Wire Audio (OWA) which
+is different from the previous H3 generation and not compatible.
 
-It's never used and can be removed.
+Difference are an increase of fifo sizes, some memory mapping are different
+and there is now the possibility to output the master clock on a pin.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/codecs/cx2072x.c | 2 --
- 1 file changed, 2 deletions(-)
+Actually all these features are unused and only a bit for flushing the TX
+fifo is required.
 
-diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
-index 23d2b25fe04c..a066ef83de1a 100644
---- a/sound/soc/codecs/cx2072x.c
-+++ b/sound/soc/codecs/cx2072x.c
-@@ -676,7 +676,6 @@ static int cx2072x_config_i2spcm(struct cx2072x_priv *cx2072x)
- 	unsigned int bclk_rate = 0;
- 	int is_i2s = 0;
- 	int has_one_bit_delay = 0;
--	int is_right_j = 0;
- 	int is_frame_inv = 0;
- 	int is_bclk_inv = 0;
- 	int pulse_len = 1;
-@@ -740,7 +739,6 @@ static int cx2072x_config_i2spcm(struct cx2072x_priv *cx2072x)
- 
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		is_i2s = 1;
--		is_right_j = 1;
- 		pulse_len = frame_len / 2;
- 		break;
- 
+Also this series requires the DMA working on H6, a first version has been
+submitted by Jernej Škrabec[1] but has not been accepted yet.
+
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=89011
+
+Changes since v2:
+ - Split quirks and H6 support patch
+ - Add specific section for quirks comment
+
+Changes since v1:
+ - Remove H3 compatible
+ - Add TX fifo bit flush quirks
+ - Add H6 bindings in SPDIF driver
+
+Clément Péron (7):
+  dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible
+  ASoC: sun4i-spdif: Move quirks to the top
+  ASoC: sun4i-spdif: Add TX fifo bit flush quirks
+  ASoC: sun4i-spdif: Add support for H6 SoC
+  arm64: dts: allwinner: Add SPDIF node for Allwinner H6
+  arm64: dts: allwinner: h6: Enable SPDIF for Beelink GS1
+  arm64: defconfig: Enable Sun4i SPDIF module
+
+ .../bindings/sound/sunxi,sun4i-spdif.txt      |  3 +-
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  4 ++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 38 ++++++++++++++
+ arch/arm64/configs/defconfig                  |  1 +
+ sound/soc/sunxi/sun4i-spdif.c                 | 49 ++++++++++++++++---
+ 5 files changed, 88 insertions(+), 7 deletions(-)
+
 -- 
-2.17.1
+2.20.1
