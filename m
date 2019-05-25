@@ -1,7 +1,7 @@
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v3 4/7] ASoC: sun4i-spdif: Add support for H6 SoC
-Date: Sat, 25 May 2019 18:23:20 +0200
-Message-ID: <20190525162323.20216-5-peron.clem@gmail.com>
+Subject: [PATCH v3 5/7] arm64: dts: allwinner: Add SPDIF node for Allwinner H6
+Date: Sat, 25 May 2019 18:23:21 +0200
+Message-ID: <20190525162323.20216-6-peron.clem@gmail.com>
 References: <20190525162323.20216-1-peron.clem@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,64 +13,77 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allwinner H6 has a different mapping for the fifo register controller.
+The Allwinner H6 has a SPDIF controller called OWA (One Wire Audio).
 
-Actually only the fifo TX bit is used in the drivers.
-
-Use the freshly introduced quirks to make this drivers compatible with
-the Allwinner H6.
+Only one pinmuxing is available so set it as default.
 
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 38 ++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index 8317bbee0712..86bf6a99703f 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -75,6 +75,18 @@
- 	#define SUN4I_SPDIF_FCTL_RXOM(v)		((v) << 0)
- 	#define SUN4I_SPDIF_FCTL_RXOM_MASK		GENMASK(1, 0)
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index f4ea596c82ce..307d3c896ff2 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -83,6 +83,24 @@
+ 		method = "smc";
+ 	};
  
-+#define SUN50I_H6_SPDIF_FCTL (0x14)
-+	#define SUN50I_H6_SPDIF_FCTL_HUB_EN		BIT(31)
-+	#define SUN50I_H6_SPDIF_FCTL_FTX		BIT(30)
-+	#define SUN50I_H6_SPDIF_FCTL_FRX		BIT(29)
-+	#define SUN50I_H6_SPDIF_FCTL_TXTL(v)		((v) << 12)
-+	#define SUN50I_H6_SPDIF_FCTL_TXTL_MASK		GENMASK(19, 12)
-+	#define SUN50I_H6_SPDIF_FCTL_RXTL(v)		((v) << 4)
-+	#define SUN50I_H6_SPDIF_FCTL_RXTL_MASK		GENMASK(10, 4)
-+	#define SUN50I_H6_SPDIF_FCTL_TXIM		BIT(2)
-+	#define SUN50I_H6_SPDIF_FCTL_RXOM(v)		((v) << 0)
-+	#define SUN50I_H6_SPDIF_FCTL_RXOM_MASK		GENMASK(1, 0)
++	sound_spdif {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "On-board SPDIF";
 +
- #define SUN4I_SPDIF_FSTA	(0x18)
- 	#define SUN4I_SPDIF_FSTA_TXE			BIT(14)
- 	#define SUN4I_SPDIF_FSTA_TXECNTSHT		(8)
-@@ -438,6 +450,12 @@ static const struct sun4i_spdif_quirks sun8i_h3_spdif_quirks = {
- 	.has_reset	= true,
- };
++		simple-audio-card,cpu {
++			sound-dai = <&spdif>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&spdif_out>;
++		};
++	};
++
++	spdif_out: spdif-out {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dit";
++	};
++
+ 	timer {
+ 		compatible = "arm,armv8-timer";
+ 		interrupts = <GIC_PPI 13
+@@ -273,6 +291,11 @@
+ 				bias-pull-up;
+ 			};
  
-+static const struct sun4i_spdif_quirks sun50i_h6_spdif_quirks = {
-+	.reg_dac_txdata = SUN8I_SPDIF_TXFIFO,
-+	.reg_fctl_ftx   = SUN50I_H6_SPDIF_FCTL_FTX,
-+	.has_reset      = true,
-+};
++			spdif_tx_pin: spdif-tx-pin {
++				pins = "PH7";
++				function = "spdif";
++			};
 +
- static const struct of_device_id sun4i_spdif_of_match[] = {
- 	{
- 		.compatible = "allwinner,sun4i-a10-spdif",
-@@ -451,6 +469,10 @@ static const struct of_device_id sun4i_spdif_of_match[] = {
- 		.compatible = "allwinner,sun8i-h3-spdif",
- 		.data = &sun8i_h3_spdif_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun50i-h6-spdif",
-+		.data = &sun50i_h6_spdif_quirks,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
+ 			uart0_ph_pins: uart0-ph-pins {
+ 				pins = "PH0", "PH1";
+ 				function = "uart0";
+@@ -402,6 +425,21 @@
+ 			};
+ 		};
+ 
++		spdif: spdif@5093000 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun50i-h6-spdif";
++			reg = <0x05093000 0x400>;
++			interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_SPDIF>, <&ccu CLK_SPDIF>;
++			clock-names = "apb", "spdif";
++			resets = <&ccu RST_BUS_SPDIF>;
++			dmas = <&dma 2>;
++			dma-names = "tx";
++			pinctrl-names = "default";
++			pinctrl-0 = <&spdif_tx_pin>;
++			status = "disabled";
++		};
++
+ 		usb2otg: usb@5100000 {
+ 			compatible = "allwinner,sun50i-h6-musb",
+ 				     "allwinner,sun8i-a33-musb";
 -- 
 2.20.1
