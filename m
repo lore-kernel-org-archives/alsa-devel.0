@@ -1,8 +1,8 @@
 From: Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 2/5] ALSA: hda: assign polling_mode after
-	azx_bus_init
-Date: Mon, 27 May 2019 00:58:33 +0800
-Message-ID: <20190526165836.10867-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 4/5] ALSA: hda: add polling mode in
+	snd_hdac_bus_get_response
+Date: Mon, 27 May 2019 00:58:35 +0800
+Message-ID: <20190526165836.10867-4-yung-chuan.liao@linux.intel.com>
 References: <20190526165836.10867-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE006F8072E
- for <alsa-devel@alsa-project.org>; Mon, 27 May 2019 06:57:30 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 792FCF80730
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2019 06:57:31 +0200 (CEST)
 In-Reply-To: <20190526165836.10867-1-yung-chuan.liao@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,39 +29,25 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-We will move the polling_mode flag from struct azx to struct hdac_bus,
-and the flag should be assigned after bus init.
+Polling mode is useful if a machine somehow missed an expected IRQ.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/hda/hdac_controller.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index a93468ffb85c..a3c190f2e17a 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1701,10 +1701,6 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	else
- 		chip->bdl_pos_adj = bdl_pos_adj[dev];
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index b2e9454f5816..a16ac31bda83 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -239,6 +239,8 @@ int snd_hdac_bus_get_response(struct hdac_bus *bus, unsigned int addr,
+ 	timeout = jiffies + msecs_to_jiffies(1000);
  
--	/* Workaround for a communication error on CFL (bko#199007) and CNL */
--	if (IS_CFL(pci) || IS_CNL(pci))
--		chip->polling_mode = 1;
--
- 	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
- 	if (err < 0) {
- 		kfree(hda);
-@@ -1712,6 +1708,10 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 		return err;
- 	}
- 
-+	/* Workaround for a communication error on CFL (bko#199007) and CNL */
-+	if (IS_CFL(pci) || IS_CNL(pci))
-+		chip->polling_mode = 1;
-+
- 	if (chip->driver_type == AZX_DRIVER_NVIDIA) {
- 		dev_dbg(chip->card->dev, "Enable delay in RIRB handling\n");
- 		chip->bus.needs_damn_long_delay = 1;
+ 	for (loopcounter = 0;; loopcounter++) {
++		if (bus->polling_mode)
++			snd_hdac_bus_update_rirb(bus);
+ 		spin_lock_irq(&bus->reg_lock);
+ 		if (!bus->rirb.cmds[addr]) {
+ 			if (res)
 -- 
 2.17.1
