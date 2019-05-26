@@ -1,8 +1,8 @@
 From: Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 4/5] ALSA: hda: add polling mode in
-	snd_hdac_bus_get_response
-Date: Mon, 27 May 2019 00:58:35 +0800
-Message-ID: <20190526165836.10867-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: SOF: Force polling mode on CFL and
+	CNL
+Date: Mon, 27 May 2019 00:58:36 +0800
+Message-ID: <20190526165836.10867-5-yung-chuan.liao@linux.intel.com>
 References: <20190526165836.10867-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 792FCF80730
- for <alsa-devel@alsa-project.org>; Mon, 27 May 2019 06:57:31 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 624A9F896F7
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2019 06:57:34 +0200 (CEST)
 In-Reply-To: <20190526165836.10867-1-yung-chuan.liao@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,25 +29,40 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Polling mode is useful if a machine somehow missed an expected IRQ.
+There is a workaround in legacy HDA codec for too long time respone
+with CFL machine. We need the same workaround on SOF driver. The same
+issue is also seen on CNL machine.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/hda/hdac_controller.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sof/intel/hda.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index b2e9454f5816..a16ac31bda83 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -239,6 +239,8 @@ int snd_hdac_bus_get_response(struct hdac_bus *bus, unsigned int addr,
- 	timeout = jiffies + msecs_to_jiffies(1000);
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 5c78f4dde6f5..b9f3c802924b 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -32,6 +32,9 @@
+ /* platform specific devices */
+ #include "shim.h"
  
- 	for (loopcounter = 0;; loopcounter++) {
-+		if (bus->polling_mode)
-+			snd_hdac_bus_update_rirb(bus);
- 		spin_lock_irq(&bus->reg_lock);
- 		if (!bus->rirb.cmds[addr]) {
- 			if (res)
++#define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
++#define IS_CNL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9dc8)
++
+ /*
+  * Debug
+  */
+@@ -217,6 +220,11 @@ static int hda_init(struct snd_sof_dev *sdev)
+ 	ext_ops = snd_soc_hdac_hda_get_ops();
+ #endif
+ 	sof_hda_bus_init(bus, &pci->dev, ext_ops);
++
++	/* Workaround for a communication error on CFL (bko#199007) and CNL */
++	if (IS_CFL(pci) || IS_CNL(pci))
++		bus->polling_mode = 1;
++
+ 	bus->use_posbuf = 1;
+ 	bus->bdl_pos_adj = 0;
+ 
 -- 
 2.17.1
