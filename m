@@ -1,26 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 2/5] ASoC: madera: Add common support for
- Cirrus Logic Madera codecs
-Date: Mon, 27 May 2019 09:32:38 +0100
-Message-ID: <20190527083238.GD28362@ediswmail.ad.cirrus.com>
-References: <20190524104158.30731-1-ckeepax@opensource.cirrus.com>
- <20190524104158.30731-2-ckeepax@opensource.cirrus.com>
- <20190524145603.GE2456@sirena.org.uk>
- <2f4ab4ff-5b1e-8ef5-3ef7-8dfe413b4b95@opensource.cirrus.com>
- <ae5eee88-0b79-1e58-5812-9e46e5bf3b75@opensource.cirrus.com>
- <20190526121846.GG2456@sirena.org.uk>
+From: libin.yang@intel.com
+Subject: [RFC PATCH 0/4] ASoC: hdac_hdmi: refine the hdac_hdmi
+	jacks
+Date: Mon, 27 May 2019 17:07:23 +0800
+Message-ID: <1558948047-18930-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FF35F8072E
- for <alsa-devel@alsa-project.org>; Mon, 27 May 2019 10:32:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20190526121846.GG2456@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09DEDF8065A
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2019 11:27:34 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,30 +21,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, Richard Fitzgerald <rf@opensource.cirrus.com>, robh+dt@kernel.org, lee.jones@linaro.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, libin.yang@intel.com, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 26, 2019 at 01:18:46PM +0100, Mark Brown wrote:
-> On Fri, May 24, 2019 at 04:24:10PM +0100, Richard Fitzgerald wrote:
-> > On 24/05/19 16:21, Richard Fitzgerald wrote:
-> > > On 24/05/19 15:56, Mark Brown wrote:
-> > > > This will delay both before and after every power up and power down.
-> > > > Are you sure that makes sense?
-> 
-> > > I think that's correct but we can re-check with hardware people.
-> > > It's not just a delay, it needs to ensure there are always a
-> > > certain number of SYSCLK cycles in the hardware to avoid leaving
-> > > certain state machines in limbo.
-> 
-> That sounds like you might want both _POST_PMU and _POST_PMD but do you
-> really need the _PREs as well?
+From: Libin Yang <libin.yang@intel.com>
 
-Yeah the requirement from the hardware guys was that we needed a
-guard band between changing the SYSCLK state and other things
-happening. So it has to happen both before and after the state of
-SYSCLK changes. It is certainly far from ideal but it is what it
-is.
+This patchset refines the hdac_hdmi jacks:
+1. kctl setting should not impact on hdmi jack status
+2. bind jack to pin-port instead of pcm
+3. move creating jack into hdac_hdmi from machine drivers
 
-Thanks,
-Charles
+Libin Yang (4):
+  ASoC: hdac_hdmi: amixer kctl setting should not impact on jack status
+  ASoC: hdac_hdmi: jack_event represents the status
+  ASoC: hdac_hdmi: refine hdmi jacks
+  ASoC: hdac_hdmi: fix some coding style issue
+
+ sound/soc/codecs/hdac_hdmi.c                       | 176 +++++++++++----------
+ sound/soc/intel/boards/bxt_da7219_max98357a.c      |  10 --
+ sound/soc/intel/boards/bxt_rt298.c                 |  10 --
+ sound/soc/intel/boards/glk_rt5682_max98357a.c      |  10 --
+ sound/soc/intel/boards/kbl_da7219_max98357a.c      |  10 --
+ sound/soc/intel/boards/kbl_da7219_max98927.c       |  10 --
+ sound/soc/intel/boards/kbl_rt5660.c                |  10 --
+ sound/soc/intel/boards/kbl_rt5663_max98927.c       |  10 --
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  |   9 --
+ sound/soc/intel/boards/skl_hda_dsp_common.c        |   9 --
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c    |  11 --
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c      |  11 --
+ sound/soc/intel/boards/skl_rt286.c                 |  10 --
+ sound/soc/intel/boards/sof_rt5682.c                |  11 --
+ 14 files changed, 92 insertions(+), 215 deletions(-)
+
+-- 
+2.7.4
