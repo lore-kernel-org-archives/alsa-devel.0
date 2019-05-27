@@ -1,24 +1,23 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] soundwire: stream: fix out of boundary access on port
- properties
-Date: Mon, 27 May 2019 10:34:38 +0530
-Message-ID: <20190527050438.GY15118@vkoul-mobl>
-References: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] soundwire: cdns: Fix compilation error on arm64
+Date: Mon, 27 May 2019 10:37:01 +0530
+Message-ID: <20190527050701.GZ15118@vkoul-mobl>
+References: <20190404081221.341-1-jank@cadence.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190522162443.5780-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190404081221.341-1-jank@cadence.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Jan Kotas <jank@cadence.com>
 Cc: sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22-05-19, 17:24, Srinivas Kandagatla wrote:
-> Assigning local iterator to array element and using it again for
-> indexing would cross the array boundary.
-> Fix this by directly referring array element without using the local
-> variable.
+On 04-04-19, 09:12, Jan Kotas wrote:
+> On arm64 the cadence_master.c file doesn't compile.
+> 
+> readl and writel are undefined.
+> This patch fixes that by including io.h.
 
 Applied, thanks
 
