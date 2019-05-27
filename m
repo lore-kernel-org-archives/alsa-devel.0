@@ -1,82 +1,53 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH v3 3/7] ASoC: sun4i-spdif: Add TX fifo bit flush quirks
-Date: Mon, 27 May 2019 14:28:57 +0200
-Message-ID: <20190527122857.lphlgr7dc5z4f5o3@flea>
-References: <20190525162323.20216-1-peron.clem@gmail.com>
- <20190525162323.20216-4-peron.clem@gmail.com>
- <20190526182410.soqb6bne6w66d5j6@flea>
- <CAJiuCce8UNbA+Ljkbw92ZJu3Ni6N9ciFKGsLtBYJ0_J8E1Gi2g@mail.gmail.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v8 1/6] drm/bridge: sii902x: add input_bus_flags
+Date: Mon, 27 May 2019 16:47:52 +0300
+Message-ID: <deb02a1fd508c514472a4e660092f301e6681361.1558964241.git.jsarha@ti.com>
+References: <cover.1558964241.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5fgdhizk55u3fsr6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJiuCce8UNbA+Ljkbw92ZJu3Ni6N9ciFKGsLtBYJ0_J8E1Gi2g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jagan Teki <jagan@amarulasolutions.com>, Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <cover.1558964241.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com
 List-Id: alsa-devel@alsa-project.org
 
-
---5fgdhizk55u3fsr6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, May 26, 2019 at 09:00:30PM +0200, Cl=E9ment P=E9ron wrote:
-> Hi Maxime,
->
-> On Sun, 26 May 2019 at 20:24, Maxime Ripard <maxime.ripard@bootlin.com> w=
-rote:
-> >
-> > On Sat, May 25, 2019 at 06:23:19PM +0200, Cl=E9ment P=E9ron wrote:
-> > > Allwinner H6 has a different bit to flush the TX FIFO.
-> > >
-> > > Add a quirks to prepare introduction of H6 SoC.
-> > >
-> > > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
-> > > ---
-> > >  sound/soc/sunxi/sun4i-spdif.c | 11 ++++++++++-
-> > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-sp=
-dif.c
-> > > index b6c66a62e915..8317bbee0712 100644
-> > > --- a/sound/soc/sunxi/sun4i-spdif.c
-> > > +++ b/sound/soc/sunxi/sun4i-spdif.c
-> > > @@ -166,10 +166,12 @@
-> > >   *
-> > >   * @reg_dac_tx_data: TX FIFO offset for DMA config.
-> > >   * @has_reset: SoC needs reset deasserted.
-> > > + * @reg_fctl_ftx: TX FIFO flush bitmask.
-> >
-> > It's a bit weird to use the same prefix for a register offset
-> > (reg_dac_tx_data) and a value (reg_fctl_ftx).
->
-> I just look at sun4i-codec and they use a regmap, But I think it's a
-> bit overkill no?
-
-For a single value, yeah
-
-> What do you think about val_fctl_ftx ?
-
-Looks good, thanks!
-Maxime
-
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
---5fgdhizk55u3fsr6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXOvYCQAKCRDj7w1vZxhR
-xWpYAQDonSAGR8IIIJfCwN6P7pyQ5D2rskJl7lfFfD4Mo5WZ8QD/aAaog6/za5ta
-r3GfRL559CHukEIi7he29P416ycIjw0=
-=3d9d
------END PGP SIGNATURE-----
-
---5fgdhizk55u3fsr6--
+RnJvbTogVG9taSBWYWxrZWluZW4gPHRvbWkudmFsa2VpbmVuQHRpLmNvbT4KClRoZSBkcml2ZXIg
+YWx3YXlzIHNldHMgSW5wdXRCdXNGbXQ6RURHRSB0byAwIChmYWxsaW5nIGVkZ2UpLgoKQWRkIGRy
+bV9icmlkZ2VfdGltaW5ncydzIGlucHV0X2J1c19mbGFncyB0byByZWZsZWN0IHRoYXQgdGhlIGJy
+aWRnZQpzYW1wbGVzIG9uIGZhbGxpbmcgZWRnZXMuCgpTaWduZWQtb2ZmLWJ5OiBUb21pIFZhbGtl
+aW5lbiA8dG9taS52YWxrZWluZW5AdGkuY29tPgpTaWduZWQtb2ZmLWJ5OiBKeXJpIFNhcmhhIDxq
+c2FyaGFAdGkuY29tPgpSZXZpZXdlZC1ieTogQW5kcnplaiBIYWpkYSA8YS5oYWpkYUBzYW1zdW5n
+LmNvbT4KUmV2aWV3ZWQtYnk6IExhdXJlbnQgUGluY2hhcnQgPGxhdXJlbnQucGluY2hhcnRAaWRl
+YXNvbmJvYXJkLmNvbT4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL3NpaTkwMnguYyB8IDcg
+KysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvZ3B1L2RybS9icmlkZ2Uvc2lpOTAyeC5jIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9z
+aWk5MDJ4LmMKaW5kZXggY2RiOGRmZGIyZGZmLi4wZDNkNzMwYjk3ZmYgMTAwNjQ0Ci0tLSBhL2Ry
+aXZlcnMvZ3B1L2RybS9icmlkZ2Uvc2lpOTAyeC5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9icmlk
+Z2Uvc2lpOTAyeC5jCkBAIC00NjEsNiArNDYxLDEyIEBAIHN0YXRpYyBpbnQgc2lpOTAyeF9pMmNf
+YnlwYXNzX2Rlc2VsZWN0KHN0cnVjdCBpMmNfbXV4X2NvcmUgKm11eCwgdTMyIGNoYW5faWQpCiAJ
+cmV0dXJuIDA7CiB9CiAKK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX2JyaWRnZV90aW1pbmdzIGRl
+ZmF1bHRfc2lpOTAyeF90aW1pbmdzID0geworCS5pbnB1dF9idXNfZmxhZ3MgPSBEUk1fQlVTX0ZM
+QUdfUElYREFUQV9TQU1QTEVfTkVHRURHRQorCQkgfCBEUk1fQlVTX0ZMQUdfU1lOQ19TQU1QTEVf
+TkVHRURHRQorCQkgfCBEUk1fQlVTX0ZMQUdfREVfSElHSCwKK307CisKIHN0YXRpYyBpbnQgc2lp
+OTAyeF9wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50LAogCQkJIGNvbnN0IHN0cnVjdCBp
+MmNfZGV2aWNlX2lkICppZCkKIHsKQEAgLTUzMSw2ICs1MzcsNyBAQCBzdGF0aWMgaW50IHNpaTkw
+MnhfcHJvYmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKIAogCXNpaTkwMngtPmJyaWRnZS5m
+dW5jcyA9ICZzaWk5MDJ4X2JyaWRnZV9mdW5jczsKIAlzaWk5MDJ4LT5icmlkZ2Uub2Zfbm9kZSA9
+IGRldi0+b2Zfbm9kZTsKKwlzaWk5MDJ4LT5icmlkZ2UudGltaW5ncyA9ICZkZWZhdWx0X3NpaTkw
+MnhfdGltaW5nczsKIAlkcm1fYnJpZGdlX2FkZCgmc2lpOTAyeC0+YnJpZGdlKTsKIAogCWkyY19z
+ZXRfY2xpZW50ZGF0YShjbGllbnQsIHNpaTkwMngpOwotLSAKVGV4YXMgSW5zdHJ1bWVudHMgRmlu
+bGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuIFktdHVubnVzL0J1c2lu
+ZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGlu
+ZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVl
+ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWw=
