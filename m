@@ -1,13 +1,15 @@
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v4 0/7] Allwinner H6 SPDIF support
-Date: Mon, 27 May 2019 22:06:20 +0200
-Message-ID: <20190527200627.8635-1-peron.clem@gmail.com>
+Subject: [PATCH v4 3/7] ASoC: sun4i-spdif: Add TX fifo bit flush quirks
+Date: Mon, 27 May 2019 22:06:23 +0200
+Message-ID: <20190527200627.8635-4-peron.clem@gmail.com>
+References: <20190527200627.8635-1-peron.clem@gmail.com>
 Reply-To: peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCELXIX7UICBBJMIWHTQKGQE5BYK4SQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCELXIX7UICBBKMIWHTQKGQEYMDMW5Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20190527200627.8635-1-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -18,54 +20,82 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-*H6 DMA support IS REQUIRED*
+Allwinner H6 has a different bit to flush the TX FIFO.
 
-Allwinner H6 SoC has a SPDIF controller called One Wire Audio (OWA) which
-is different from the previous H3 generation and not compatible.
+Add a quirks to prepare introduction of H6 SoC.
 
-Difference are an increase of fifo sizes, some memory mapping are different
-and there is now the possibility to output the master clock on a pin.
+Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-spdif.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Actually all these features are unused and only a bit for flushing the TX
-fifo is required.
-
-Also this series requires the DMA working on H6, a first version has been
-submitted by Jernej =C5=A0krabec[1] but has not been accepted yet.
-
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=3D89=
-011
-
-Changes since v3:
- - rename reg_fctl_ftx to val_fctl_ftx
- - rebase this series on sound-next
- - fix dt-bindings due to change in sound-next
- - change node name sound_spdif to sound-spdif
-
-Changes since v2:
- - Split quirks and H6 support patch
- - Add specific section for quirks comment
-
-Changes since v1:
- - Remove H3 compatible
- - Add TX fifo bit flush quirks
- - Add H6 bindings in SPDIF driver
-
-Cl=C3=A9ment P=C3=A9ron (7):
-  dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible
-  ASoC: sun4i-spdif: Move quirks to the top
-  ASoC: sun4i-spdif: Add TX fifo bit flush quirks
-  ASoC: sun4i-spdif: Add support for H6 SoC
-  arm64: dts: allwinner: Add SPDIF node for Allwinner H6
-  arm64: dts: allwinner: h6: Enable SPDIF for Beelink GS1
-  arm64: defconfig: Enable Sun4i SPDIF module
-
- .../sound/allwinner,sun4i-a10-spdif.yaml      |  1 +
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  4 ++
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 38 ++++++++++++++
- arch/arm64/configs/defconfig                  |  1 +
- sound/soc/sunxi/sun4i-spdif.c                 | 49 ++++++++++++++++---
- 5 files changed, 87 insertions(+), 6 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index b6c66a62e915..045d0cc4b62a 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -166,10 +166,12 @@
+  *
+  * @reg_dac_tx_data: TX FIFO offset for DMA config.
+  * @has_reset: SoC needs reset deasserted.
++ * @val_fctl_ftx: TX FIFO flush bitmask.
+  */
+ struct sun4i_spdif_quirks {
+ 	unsigned int reg_dac_txdata;
+ 	bool has_reset;
++	unsigned int val_fctl_ftx;
+ };
+=20
+ struct sun4i_spdif_dev {
+@@ -180,16 +182,19 @@ struct sun4i_spdif_dev {
+ 	struct snd_soc_dai_driver cpu_dai_drv;
+ 	struct regmap *regmap;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
++	const struct sun4i_spdif_quirks *quirks;
+ };
+=20
+ static void sun4i_spdif_configure(struct sun4i_spdif_dev *host)
+ {
++	const struct sun4i_spdif_quirks *quirks =3D host->quirks;
++
+ 	/* soft reset SPDIF */
+ 	regmap_write(host->regmap, SUN4I_SPDIF_CTL, SUN4I_SPDIF_CTL_RESET);
+=20
+ 	/* flush TX FIFO */
+ 	regmap_update_bits(host->regmap, SUN4I_SPDIF_FCTL,
+-			   SUN4I_SPDIF_FCTL_FTX, SUN4I_SPDIF_FCTL_FTX);
++			   quirks->val_fctl_ftx, quirks->val_fctl_ftx);
+=20
+ 	/* clear TX counter */
+ 	regmap_write(host->regmap, SUN4I_SPDIF_TXCNT, 0);
+@@ -418,15 +423,18 @@ static struct snd_soc_dai_driver sun4i_spdif_dai =3D =
+{
+=20
+ static const struct sun4i_spdif_quirks sun4i_a10_spdif_quirks =3D {
+ 	.reg_dac_txdata	=3D SUN4I_SPDIF_TXFIFO,
++	.val_fctl_ftx   =3D SUN4I_SPDIF_FCTL_FTX,
+ };
+=20
+ static const struct sun4i_spdif_quirks sun6i_a31_spdif_quirks =3D {
+ 	.reg_dac_txdata	=3D SUN4I_SPDIF_TXFIFO,
++	.val_fctl_ftx   =3D SUN4I_SPDIF_FCTL_FTX,
+ 	.has_reset	=3D true,
+ };
+=20
+ static const struct sun4i_spdif_quirks sun8i_h3_spdif_quirks =3D {
+ 	.reg_dac_txdata	=3D SUN8I_SPDIF_TXFIFO,
++	.val_fctl_ftx   =3D SUN4I_SPDIF_FCTL_FTX,
+ 	.has_reset	=3D true,
+ };
+=20
+@@ -507,6 +515,7 @@ static int sun4i_spdif_probe(struct platform_device *pd=
+ev)
+ 		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
+ 		return -ENODEV;
+ 	}
++	host->quirks =3D quirks;
+=20
+ 	host->regmap =3D devm_regmap_init_mmio(&pdev->dev, base,
+ 						&sun4i_spdif_regmap_config);
 --=20
 2.20.1
 
@@ -75,5 +105,5 @@ linux-sunxi" group.
 To unsubscribe from this group and stop receiving emails from it, send an e=
 mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
 To view this discussion on the web, visit https://groups.google.com/d/msgid=
-/linux-sunxi/20190527200627.8635-1-peron.clem%40gmail.com.
+/linux-sunxi/20190527200627.8635-4-peron.clem%40gmail.com.
 For more options, visit https://groups.google.com/d/optout.
