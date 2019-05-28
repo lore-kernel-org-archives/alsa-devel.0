@@ -1,63 +1,54 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: sof-rt5682: fix undefined
-	references with Baytrail-only support
-Date: Tue, 28 May 2019 11:28:22 -0500
-Message-ID: <20190528162822.9178-1-pierre-louis.bossart@linux.intel.com>
+From: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 2/5] rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()
+Date: Tue, 28 May 2019 17:30:19 +0100
+Message-ID: <4654.1559061019@warthog.procyon.org.uk>
+References: <20190528142424.19626-3-geert@linux-m68k.org> <20190528142424.19626-1-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6719F8065A
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 18:28:41 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, kbuild test robot <lkp@intel.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190528142424.19626-3-geert@linux-m68k.org>
+Content-ID: <4653.1559061019.1@warthog.procyon.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: dhowells@redhat.com, Igor Konopko <igor.j.konopko@intel.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>, linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-afs@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The sof-rt5682 machine driver supports both legacy Baytrail devices
-and more recent ApolloLake/CometLake platforms. When only Baytrail is
-selected, the compilation fails with the following errors:
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-ERROR: "hdac_hdmi_jack_port_init"
-[sound/soc/intel/boards/snd-soc-sof_rt5682.ko] undefined!
+> While this is not a real false-positive, I believe it cannot cause harm
+> in practice, as AF_RXRPC cannot be used with other transport families
+> than IPv4 and IPv6.
 
-ERROR: "hdac_hdmi_jack_init"
-[sound/soc/intel/boards/snd-soc-sof_rt5682.ko] undefined!
+Agreed.
 
-Fix by selecting SND_SOC_HDAC_HDMI unconditionally. The code for HDMI
-support is not reachable on Baytrail so this change has no functional
-impact.
+> ---
+>  net/rxrpc/output.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
+> index 004c762c2e8d063c..1473d774d67100c5 100644
+> --- a/net/rxrpc/output.c
+> +++ b/net/rxrpc/output.c
+> @@ -403,8 +403,10 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, struct sk_buff *skb,
+>  
+>  	/* send the packet with the don't fragment bit set if we currently
+>  	 * think it's small enough */
+> -	if (iov[1].iov_len >= call->peer->maxdata)
+> +	if (iov[1].iov_len >= call->peer->maxdata) {
+> +		ret = 0;
+>  		goto send_fragmentable;
+> +	}
+>  
+>  	down_read(&conn->params.local->defrag_sem);
+>  
 
-Fixes: f70abd75b7c6 ("ASoC: Intel: add sof-rt5682 machine driver")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Simply setting 0 is wrong.  That would give the impression that the thing
+worked if support for a new transport address family was added and came
+through this function without full modification (say AF_INET7 becomes a
+thing).
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 59e366edc16b..317ee1e8c8c6 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -402,7 +402,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 		   (SND_SOC_SOF_BAYTRAIL && X86_INTEL_LPSS)
- 	select SND_SOC_RT5682
- 	select SND_SOC_DMIC
--	select SND_SOC_HDAC_HDMI if SND_SOC_SOF_HDA_COMMON
-+	select SND_SOC_HDAC_HDMI
- 	help
- 	   This adds support for ASoC machine driver for SOF platforms
- 	   with rt5682 codec.
--- 
-2.20.1
+A better way to do things would be to add a default case into the
+send_fragmentable switch statement that either BUG's or sets -EAFNOSUPPORT.
+
+David
