@@ -1,48 +1,57 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/5] lightnvm: Fix uninitialized pointer in nvm_remove_tgt()
-Date: Tue, 28 May 2019 16:24:20 +0200
-Message-ID: <20190528142424.19626-2-geert@linux-m68k.org>
-References: <20190528142424.19626-1-geert@linux-m68k.org>
+Subject: [PATCH 0/5] Assorted fixes discovered with gcc 4.1
+Date: Tue, 28 May 2019 16:24:19 +0200
+Message-ID: <20190528142424.19626-1-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190528142424.19626-1-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Igor Konopko <igor.j.konopko@intel.com>, David Howells <dhowells@redhat.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>
 Cc: linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-afs@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
-With gcc 4.1:
+	Hi all,
 
-    drivers/lightnvm/core.c: In function ‘nvm_remove_tgt’:
-    drivers/lightnvm/core.c:510: warning: ‘t’ is used uninitialized in this function
+Ever since commit cafa0010cd51fb71 ("Raise the minimum required gcc
+version to 4.6"), I felt bored when looking at my test build logs, as I
+was no longer discovering many real issues.  Hence I started wondering
+if the modern gcc versions are really catching these classes of bugs
+caught before with gcc 4.1, or if they just go undetected.
 
-Indeed, if no NVM devices have been registered, t will be an
-uninitialized pointer, and may be dereferenced later.  A call to
-nvm_remove_tgt() can be triggered from userspace by issuing the
-NVM_DEV_REMOVE ioctl on the lightnvm control device.
+I reverted some changes and applied some fixes, which allowed me to
+compile most of the kernel with gcc 4.1 again.  I built an
+m68k/allmodconfig kernel, looked at all new warnings, and fixed the ones
+that are not false positives.  The result is a patch series of 5
+patches, of which one or two fix real bugs.
 
-Fix this by preinitializing t to NULL.
+Thanks for your comments, and for applying where appropriate!
 
-Fixes: 843f2edbdde085b4 ("lightnvm: do not remove instance under global lock")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/lightnvm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Geert Uytterhoeven (5):
+  lightnvm: Fix uninitialized pointer in nvm_remove_tgt()
+  rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()
+  net: sched: pie: Use ULL suffix for 64-bit constant
+  ALSA: fireface: Use ULL suffixes for 64-bit constants
+  [RFC] devlink: Fix uninitialized error code in
+    devlink_fmsg_prepare_skb()
 
-diff --git a/drivers/lightnvm/core.c b/drivers/lightnvm/core.c
-index 0df7454832efe082..aa017f48eb8c588c 100644
---- a/drivers/lightnvm/core.c
-+++ b/drivers/lightnvm/core.c
-@@ -492,7 +492,7 @@ static void __nvm_remove_target(struct nvm_target *t, bool graceful)
-  */
- static int nvm_remove_tgt(struct nvm_ioctl_remove *remove)
- {
--	struct nvm_target *t;
-+	struct nvm_target *t = NULL;
- 	struct nvm_dev *dev;
- 
- 	down_read(&nvm_lock);
+ drivers/lightnvm/core.c                      |  2 +-
+ net/core/devlink.c                           |  2 +-
+ net/rxrpc/output.c                           |  4 +++-
+ net/sched/sch_pie.c                          |  2 +-
+ sound/firewire/fireface/ff-protocol-latter.c | 10 +++++-----
+ 5 files changed, 11 insertions(+), 9 deletions(-)
+
 -- 
 2.17.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
