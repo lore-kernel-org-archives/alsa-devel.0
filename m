@@ -1,71 +1,66 @@
-From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v4 4/7] ASoC: sun4i-spdif: Add support for
- H6 SoC
-Date: Tue, 28 May 2019 11:13:15 +0200
-Message-ID: <20190528091315.ysfieiebn5gk53f5@flea>
-References: <20190527200627.8635-1-peron.clem@gmail.com>
- <20190527200627.8635-5-peron.clem@gmail.com>
-Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
+From: Georgii Staroselskii <georgii.staroselskii@emlid.com>
+Subject: [PATCH v2] ASoC: sun4i-codec: fix first delay on Speaker
+Date: Tue, 28 May 2019 13:47:39 +0300
+Message-ID: <1559040459-16488-1-git-send-email-georgii.staroselskii@emlid.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="chyxdzlab5sysxo6"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBMHXWPTQKGQEYFNRAGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20190527200627.8635-5-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jagan Teki <jagan-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@bootlin.com, wens@csie.org, dannym@scratchpost.org
+Cc: georgii.staroselskii@emlid.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Allwinner DAC seems to have a delay in the Speaker audio routing. When
+playing a sound for the first time, the sound gets chopped. On a second
+play the sound is played correctly. After some time (~5s) the issue gets
+back.
 
---chyxdzlab5sysxo6
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This commit seems to be fixing the same issue as bf14da7 but
+for another codepath.
 
-On Mon, May 27, 2019 at 10:06:24PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> Allwinner H6 has a different mapping for the fifo register controller.
->
-> Actually only the fifo TX bit is used in the drivers.
->
-> Use the freshly introduced quirks to make this drivers compatible with
-> the Allwinner H6.
->
-> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+This is the DTS that was used to debug the problem.
 
-Acked-by: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+&codec {
+        allwinner,pa-gpios = <&r_pio 0 11 GPIO_ACTIVE_HIGH>; /* PL11 */
+        allwinner,audio-routing =
+                "Speaker", "LINEOUT";
 
-Maxime
+        status = "okay";
+}
 
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Signed-off-by: Georgii Staroselskii <georgii.staroselskii@emlid.com>
+---
+ sound/soc/sunxi/sun4i-codec.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-To view this discussion on the web, visit https://groups.google.com/d/msgid=
-/linux-sunxi/20190528091315.ysfieiebn5gk53f5%40flea.
-For more options, visit https://groups.google.com/d/optout.
-
---chyxdzlab5sysxo6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXOz7qwAKCRDj7w1vZxhR
-xSIiAP9nmxuaqkOOSRfudhUw4zPITHUHtndI2JThUfrXTighbwEAyJjIFkev8yqr
-i6HikA6T6bWimgGAMVM9UxUwiD1Rdgc=
-=iAGv
------END PGP SIGNATURE-----
-
---chyxdzlab5sysxo6--
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index f2deffe..9e1f00e 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1320,6 +1320,15 @@ static int sun4i_codec_spk_event(struct snd_soc_dapm_widget *w,
+ 	gpiod_set_value_cansleep(scodec->gpio_pa,
+ 				 !!SND_SOC_DAPM_EVENT_ON(event));
+ 
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		/*
++		 * Need a delay to wait for DAC to push the data. 700ms seems
++		 * to be the best compromise not to feel this delay while
++		 * playing a sound.
++		 */
++		msleep(700);
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
