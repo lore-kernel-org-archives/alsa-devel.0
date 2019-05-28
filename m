@@ -1,54 +1,106 @@
-From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v4 7/7] arm64: defconfig: Enable Sun4i SPDIF module
-Date: Mon, 27 May 2019 22:06:27 +0200
-Message-ID: <20190527200627.8635-8-peron.clem@gmail.com>
-References: <20190527200627.8635-1-peron.clem@gmail.com>
-Reply-To: peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: "Liao, Bard" <bard.liao@intel.com>
+Subject: Re: [PATCH 1/5] ALSA: hda - Force polling mode on CNL
+ for fixing codec communication
+Date: Tue, 28 May 2019 00:10:02 +0000
+Message-ID: <567A313375B6F043A9BE3A1D9B8C6E7F0B43C750@SHSMSX101.ccr.corp.intel.com>
+References: <20190526165836.10867-1-yung-chuan.liao@linux.intel.com>
+ <s5ha7f89wm7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCELXIX7UICBBLUIWHTQKGQE4LB5NKY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20190527200627.8635-1-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jagan Teki <jagan-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ACA7FF8065A
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 02:10:08 +0200 (CEST)
+In-Reply-To: <s5ha7f89wm7.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Yang,
+ Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allwinner A64 and H6 use the Sun4i SPDIF driver.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, May 27, 2019 3:37 PM
+> To: Bard liao <yung-chuan.liao@linux.intel.com>
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org;
+> liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; Liao,
+> Bard <bard.liao@intel.com>; Yang, Libin <libin.yang@intel.com>
+> Subject: Re: [PATCH 1/5] ALSA: hda - Force polling mode on CNL for fixing codec
+> communication
+> 
+> On Sun, 26 May 2019 18:58:32 +0200,
+> Bard liao wrote:
+> >
+> > From: Bard Liao <yung-chuan.liao@linux.intel.com>
+> >
+> > We observed the same issue as reported by commit
+> > a8d7bde23e7130686b7662
+> > ("ALSA: hda - Force polling mode on CFL for fixing codec
+> > communication") We don't have a better solution. So apply the same
+> workaround to CNL.
+> >
+> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> 
+> I think this should go to 5.2-rc, as it's a bug fix, so likely I'm going to take it soon
+> later.
+> 
+> The question is about the rest patches.  The patches 2-4 are basically to move
+> the polling handling into HDA-core, so they could be for 5.3.
+> And patch 5 is for SOF.  This is still an open question.  If this SOF fix is needed for
+> 5.2, all patches should go as well.
 
-Enable this to allow a proper support.
+I am fine if patches 2-5 are for 5.3 :)
 
-Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b535f0f412cc..de5b65d45311 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -526,6 +526,7 @@ CONFIG_SND_SOC_ROCKCHIP_RT5645=3Dm
- CONFIG_SND_SOC_RK3399_GRU_SOUND=3Dm
- CONFIG_SND_SOC_SAMSUNG=3Dy
- CONFIG_SND_SOC_RCAR=3Dm
-+CONFIG_SND_SUN4I_SPDIF=3Dm
- CONFIG_SND_SOC_AK4613=3Dm
- CONFIG_SND_SOC_ES7134=3Dm
- CONFIG_SND_SOC_ES7241=3Dm
---=20
-2.20.1
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-To view this discussion on the web, visit https://groups.google.com/d/msgid=
-/linux-sunxi/20190527200627.8635-8-peron.clem%40gmail.com.
-For more options, visit https://groups.google.com/d/optout.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> > ---
+> >  sound/pci/hda/hda_intel.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index 2ec91085fa3e..a93468ffb85c 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -375,6 +375,7 @@ enum {
+> >
+> >  #define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device ==
+> > 0x5a98)  #define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device
+> > == 0xa348)
+> > +#define IS_CNL(pci) ((pci)->vendor == 0x8086 && (pci)->device ==
+> > +0x9dc8)
+> >
+> >  static char *driver_short_names[] = {
+> >  	[AZX_DRIVER_ICH] = "HDA Intel",
+> > @@ -1700,8 +1701,8 @@ static int azx_create(struct snd_card *card, struct
+> pci_dev *pci,
+> >  	else
+> >  		chip->bdl_pos_adj = bdl_pos_adj[dev];
+> >
+> > -	/* Workaround for a communication error on CFL (bko#199007) */
+> > -	if (IS_CFL(pci))
+> > +	/* Workaround for a communication error on CFL (bko#199007) and
+> CNL */
+> > +	if (IS_CFL(pci) || IS_CNL(pci))
+> >  		chip->polling_mode = 1;
+> >
+> >  	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
+> > --
+> > 2.17.1
+> >
