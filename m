@@ -1,415 +1,68 @@
-From: Paulo Fidalgo <paulo.fidalgo.pt@gmail.com>
-Subject: Re: Dell XPS 9360 continuous hissing sound
-Date: Tue, 28 May 2019 10:07:19 +0100
-Message-ID: <CAKbjie7MD9oNWUqZQpGAUmVZUuRMYkcKeMoq43c7ouDFFqo2dw@mail.gmail.com>
-References: <CAKbjie7OEVyB4vq4L01p2ov3Vo3Mw+3edLQxwT2eVhzaj-Cu0g@mail.gmail.com>
- <s5hftreapj1.wl-tiwai@suse.de>
- <CAKbjie63rA-gj+m2ZvtMJY4_FZSopt=ef2nVm6NSqS2wm8kw0A@mail.gmail.com>
- <s5hmulmq279.wl-tiwai@suse.de>
- <CAKbjie7oiqbT=6Y2RT06fZjwAX42oumTSSjcHY=Vs4o-q+r7-g@mail.gmail.com>
- <CAKbjie7MAJPTOF0QYzikjEu7eNovqtYQoDEjEMFsP3VvCfgMEQ@mail.gmail.com>
- <s5hwoicxluk.wl-tiwai@suse.de>
- <CAKbjie6kJy31FK+Pjgvj+OJSBngbygzCDd5dwXkmpQ+dKwwFXQ@mail.gmail.com>
- <s5hv9xwxkrw.wl-tiwai@suse.de> <s5hsgt0xk9k.wl-tiwai@suse.de>
+From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH v4 3/7] ASoC: sun4i-spdif: Add TX fifo bit
+ flush quirks
+Date: Tue, 28 May 2019 11:12:59 +0200
+Message-ID: <20190528091259.qrzegazyilviuy2n@flea>
+References: <20190527200627.8635-1-peron.clem@gmail.com>
+ <20190527200627.8635-4-peron.clem@gmail.com>
+Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71889F8072E
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 11:07:32 +0200 (CEST)
-Received: by mail-qk1-x743.google.com with SMTP id w187so11135203qkb.11
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 02:07:32 -0700 (PDT)
-In-Reply-To: <s5hsgt0xk9k.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zi3crwvz5dqqoqhp"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBH7XWPTQKGQESJPNI6I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20190527200627.8635-4-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jagan Teki <jagan-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-I've tested and there's only one situation when I can ear that sound,
-after pausing a music, I can ear it from a few seconds (~6 seconds).
-I guess this is OK now, at least now I can live with it.
+--zi3crwvz5dqqoqhp
+Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As a side note, the headset detection still only detects the
-heaphones, not the mic.
+On Mon, May 27, 2019 at 10:06:23PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> Allwinner H6 has a different bit to flush the TX FIFO.
+>
+> Add a quirks to prepare introduction of H6 SoC.
+>
+> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Thanks!
+Acked-by: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
 
-On Mon, 27 May 2019 at 11:30, Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Mon, 27 May 2019 12:18:59 +0200,
-> Takashi Iwai wrote:
-> >
-> > On Mon, 27 May 2019 12:11:24 +0200,
-> > Paulo Fidalgo wrote:
-> > >
-> > > Sure,
-> > >
-> > > Can you point me to an updated doc? I'm using fedora, if there's
-> > > anything specific.
-> >
-> > I have no idea about Fedora, but what I'm asking is to test the
-> > upstream kernel, so it should be independent from the distro.
->
-> FWIW, the git tree is found at
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->
-> and you need to checkout for-linus branch.
->
->
-> Takashi
->
->
-> >
-> >
-> > Takashi
-> >
-> > >
-> > > Kind regards,
-> > >
-> > > Paulo Fidalgo
-> > >
-> > > On Mon, 27 May 2019 at 10:55, Takashi Iwai <tiwai@suse.de> wrote:
-> > > >
-> > > > On Mon, 27 May 2019 11:48:36 +0200,
-> > > > Paulo Fidalgo wrote:
-> > > > >
-> > > > > Since I don't know if you are waiting for the command output or not I
-> > > > > will provide it:
-> > > > >
-> > > > > After a reboot with the headset unplugged:
-> > > > >
-> > > > > amixer -c0 cget numid=10
-> > > > > numid=10,iface=MIXER,name='Headphone Mic Boost Volume'
-> > > > >   ; type=INTEGER,access=rw---R--,values=2,min=0,max=3,step=0
-> > > > >   : values=0,0
-> > > > >   | dBscale-min=0.00dB,step=10.00dB,mute=0
-> > > > >
-> > > > > After a reboot with the headset plugged I have the same value:
-> > > > >
-> > > > > amixer -c0 cget numid=10
-> > > > > numid=10,iface=MIXER,name='Headphone Mic Boost Volume'
-> > > > >   ; type=INTEGER,access=rw---R--,values=2,min=0,max=3,step=0
-> > > > >   : values=0,0
-> > > > >   | dBscale-min=0.00dB,step=10.00dB,mute=0
-> > > > >
-> > > > >
-> > > > > Also when the headset is plugged the mic, seems to not be detected, as
-> > > > > it keeps with the internal mic of the laptop, but I will create
-> > > > > another thread for that.
-> > > >
-> > > > Could you try the latest for-linus branch of sound.git tree?
-> > > > Now we disable the poewr_save_node flag as default for some Realtek
-> > > > codecs, and this might influence on such behavior.
-> > > >
-> > > >
-> > > > thanks,
-> > > >
-> > > > Takashi
-> > > >
-> > > > >
-> > > > > Kind regards,
-> > > > >
-> > > > > Paulo Fidalgo
-> > > > >
-> > > > > On Thu, 16 May 2019 at 15:45, Paulo Fidalgo <paulo.fidalgo.pt@gmail.com> wrote:
-> > > > > >
-> > > > > > Since I don't know if you are waiting for the command output or not I
-> > > > > > will provide it:
-> > > > > >
-> > > > > > After a reboot with the headset unplugged:
-> > > > > >
-> > > > > > amixer -c0 cget numid=10
-> > > > > > numid=10,iface=MIXER,name='Headphone Mic Boost Volume'
-> > > > > >   ; type=INTEGER,access=rw---R--,values=2,min=0,max=3,step=0
-> > > > > >   : values=0,0
-> > > > > >   | dBscale-min=0.00dB,step=10.00dB,mute=0
-> > > > > >
-> > > > > > After a reboot with the headset plugged I have the same value:
-> > > > > >
-> > > > > > amixer -c0 cget numid=10
-> > > > > > numid=10,iface=MIXER,name='Headphone Mic Boost Volume'
-> > > > > >   ; type=INTEGER,access=rw---R--,values=2,min=0,max=3,step=0
-> > > > > >   : values=0,0
-> > > > > >   | dBscale-min=0.00dB,step=10.00dB,mute=0
-> > > > > >
-> > > > > >
-> > > > > > Also when the headset is plugged the mic, seems to not be detected, as
-> > > > > > it keeps with the internal mic of the laptop, but I will create
-> > > > > > another thread for that.
-> > > > > >
-> > > > > > Kind regards,
-> > > > > >
-> > > > > > Paulo Fidalgo
-> > > > > >
-> > > > > >
-> > > > > > On Fri, 22 Mar 2019 at 16:54, Takashi Iwai <tiwai@suse.de> wrote:
-> > > > > > >
-> > > > > > > On Fri, 22 Mar 2019 17:07:15 +0100,
-> > > > > > > Paulo Fidalgo wrote:
-> > > > > > > >
-> > > > > > > > Strangely the command returns amixer: Unable to find simple control 'numid=10',0
-> > > > > > > > So I've runned "amixer -c0" and you can find the output in before.txt
-> > > > > > >
-> > > > > > > Ah sorry, it was a typo: use "cget" instead of "get".
-> > > > > > >
-> > > > > > >
-> > > > > > > > Then I've runned amixer -c 0 cset 'numid=10' 1
-> > > > > > > > and again the "amixer -c0" and you can find the output in after.txt
-> > > > > > > >
-> > > > > > > > Also I've notice that the sound appears after I playing a music on
-> > > > > > > > computer and goes a few (like 10 ) seconds after the music stopped.
-> > > > > > >
-> > > > > > > It sounds like a state after runtime PM.
-> > > > > > >
-> > > > > > >
-> > > > > > > Takashi
-> > > > > > >
-> > > > > > > >
-> > > > > > > > On Fri, 22 Mar 2019 at 15:37, Takashi Iwai <tiwai@suse.de> wrote:
-> > > > > > > > >
-> > > > > > > > > On Fri, 22 Mar 2019 12:40:22 +0100,
-> > > > > > > > > Paulo Fidalgo wrote:
-> > > > > > > > > >
-> > > > > > > > > > Hi!
-> > > > > > > > > >
-> > > > > > > > > > After a bug report on Fedora
-> > > > > > > > > > (https://bugzilla.redhat.com/show_bug.cgi?id=1677353)
-> > > > > > > > > >
-> > > > > > > > > > ----
-> > > > > > > > > > When I start t he computer I hears a continuous background noise. The
-> > > > > > > > > > problem is also described here:
-> > > > > > > > > > https://wiki.archlinux.org/index.php/Dell_XPS_13_(9360)#Continuous_hissing_sound_with_headphones
-> > > > > > > > > >
-> > > > > > > > > > I need to issue the command `amixer -c 0 cset 'numid=10' 1` to solve
-> > > > > > > > > > the problem, but every time I reboot the computer I need to run it
-> > > > > > > > > > again.
-> > > > > > > > > > This has been happening for quite some time, but I've been post-poning
-> > > > > > > > > > the bug report.
-> > > > > > > > >
-> > > > > > > > > What is the original value before setting this amixer command above?
-> > > > > > > > > You can get via "amixer -c0 get numid=10'.
-> > > > > > > > >
-> > > > > > > > > Does the noise again when you restore the value after setting to 1 in
-> > > > > > > > > the above?
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > Takashi
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > Current kernel: 4.20.7-200.fc29.x86_64
-> > > > > > > > > >
-> > > > > > > > > > Alsa information:
-> > > > > > > > > > http://www.alsa-project.org/db/?f=df4834c53335709abb521c767e7b1da2f4371744
-> > > > > > > > > > ----
-> > > > > > > > > > They advise me to contact you, to see if we can get a solution on this.
-> > > > > > > > > >
-> > > > > > > > > > Note: The computer also does not recognise (switch to) when I plug an headset.
-> > > > > > > > > >
-> > > > > > > > > > If you need more information, I'm eager to help diagnose and help to
-> > > > > > > > > > solve this, but I have no Kernel programming skills, other than that
-> > > > > > > > > > count on me.
-> > > > > > > > > >
-> > > > > > > > > > Kind regards,
-> > > > > > > > > >
-> > > > > > > > > > Paulo Fidalgo
-> > > > > > > > > >
-> > > > > > > > Simple mixer control 'Master',0
-> > > > > > > >   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Limits: Playback 0 - 87
-> > > > > > > >   Mono: Playback 87 [100%] [0.00dB] [on]
-> > > > > > > > Simple mixer control 'Headphone',0
-> > > > > > > >   Capabilities: pvolume pswitch
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Limits: Playback 0 - 87
-> > > > > > > >   Mono:
-> > > > > > > >   Front Left: Playback 87 [100%] [0.00dB] [on]
-> > > > > > > >   Front Right: Playback 87 [100%] [0.00dB] [on]
-> > > > > > > > Simple mixer control 'Headphone Mic',0
-> > > > > > > >   Capabilities: cswitch cswitch-joined cswitch-exclusive
-> > > > > > > >   Capture exclusive group: 0
-> > > > > > > >   Capture channels: Mono
-> > > > > > > >   Mono: Capture [off]
-> > > > > > > > Simple mixer control 'Headphone Mic Boost',0
-> > > > > > > >   Capabilities: volume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: 0 - 3
-> > > > > > > >   Front Left: 1 [33%] [10.00dB]
-> > > > > > > >   Front Right: 1 [33%] [10.00dB]
-> > > > > > > > Simple mixer control 'Speaker',0
-> > > > > > > >   Capabilities: pvolume pswitch
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Limits: Playback 0 - 87
-> > > > > > > >   Mono:
-> > > > > > > >   Front Left: Playback 0 [0%] [-65.25dB] [off]
-> > > > > > > >   Front Right: Playback 0 [0%] [-65.25dB] [off]
-> > > > > > > > Simple mixer control 'PCM',0
-> > > > > > > >   Capabilities: pvolume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Limits: Playback 0 - 255
-> > > > > > > >   Mono:
-> > > > > > > >   Front Left: Playback 255 [100%] [0.00dB]
-> > > > > > > >   Front Right: Playback 255 [100%] [0.00dB]
-> > > > > > > > Simple mixer control 'IEC958',0
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [off]
-> > > > > > > > Simple mixer control 'IEC958',1
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'IEC958',2
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'IEC958',3
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'IEC958',4
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'Capture',0
-> > > > > > > >   Capabilities: cvolume cswitch
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: Capture 0 - 63
-> > > > > > > >   Front Left: Capture 63 [100%] [30.00dB] [on]
-> > > > > > > >   Front Right: Capture 63 [100%] [30.00dB] [on]
-> > > > > > > > Simple mixer control 'Auto-Mute Mode',0
-> > > > > > > >   Capabilities: enum
-> > > > > > > >   Items: 'Disabled' 'Enabled'
-> > > > > > > >   Item0: 'Disabled'
-> > > > > > > > Simple mixer control 'Headset Mic',0
-> > > > > > > >   Capabilities: cswitch cswitch-joined cswitch-exclusive
-> > > > > > > >   Capture exclusive group: 0
-> > > > > > > >   Capture channels: Mono
-> > > > > > > >   Mono: Capture [on]
-> > > > > > > > Simple mixer control 'Headset Mic Boost',0
-> > > > > > > >   Capabilities: volume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: 0 - 3
-> > > > > > > >   Front Left: 1 [33%] [10.00dB]
-> > > > > > > >   Front Right: 1 [33%] [10.00dB]
-> > > > > > > > Simple mixer control 'Internal Mic',0
-> > > > > > > >   Capabilities: cswitch cswitch-joined cswitch-exclusive
-> > > > > > > >   Capture exclusive group: 0
-> > > > > > > >   Capture channels: Mono
-> > > > > > > >   Mono: Capture [off]
-> > > > > > > > Simple mixer control 'Internal Mic Boost',0
-> > > > > > > >   Capabilities: volume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: 0 - 3
-> > > > > > > >   Front Left: 0 [0%] [0.00dB]
-> > > > > > > >   Front Right: 0 [0%] [0.00dB]
-> > > > > > > > Simple mixer control 'Master',0
-> > > > > > > >   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Limits: Playback 0 - 87
-> > > > > > > >   Mono: Playback 83 [95%] [-3.00dB] [on]
-> > > > > > > > Simple mixer control 'Headphone',0
-> > > > > > > >   Capabilities: pvolume pswitch
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Limits: Playback 0 - 87
-> > > > > > > >   Mono:
-> > > > > > > >   Front Left: Playback 87 [100%] [0.00dB] [on]
-> > > > > > > >   Front Right: Playback 87 [100%] [0.00dB] [on]
-> > > > > > > > Simple mixer control 'Headphone Mic',0
-> > > > > > > >   Capabilities: cswitch cswitch-joined cswitch-exclusive
-> > > > > > > >   Capture exclusive group: 0
-> > > > > > > >   Capture channels: Mono
-> > > > > > > >   Mono: Capture [off]
-> > > > > > > > Simple mixer control 'Headphone Mic Boost',0
-> > > > > > > >   Capabilities: volume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: 0 - 3
-> > > > > > > >   Front Left: 0 [0%] [0.00dB]
-> > > > > > > >   Front Right: 0 [0%] [0.00dB]
-> > > > > > > > Simple mixer control 'Speaker',0
-> > > > > > > >   Capabilities: pvolume pswitch
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Limits: Playback 0 - 87
-> > > > > > > >   Mono:
-> > > > > > > >   Front Left: Playback 0 [0%] [-65.25dB] [off]
-> > > > > > > >   Front Right: Playback 0 [0%] [-65.25dB] [off]
-> > > > > > > > Simple mixer control 'PCM',0
-> > > > > > > >   Capabilities: pvolume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Limits: Playback 0 - 255
-> > > > > > > >   Mono:
-> > > > > > > >   Front Left: Playback 255 [100%] [0.00dB]
-> > > > > > > >   Front Right: Playback 255 [100%] [0.00dB]
-> > > > > > > > Simple mixer control 'IEC958',0
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [off]
-> > > > > > > > Simple mixer control 'IEC958',1
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'IEC958',2
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'IEC958',3
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'IEC958',4
-> > > > > > > >   Capabilities: pswitch pswitch-joined
-> > > > > > > >   Playback channels: Mono
-> > > > > > > >   Mono: Playback [on]
-> > > > > > > > Simple mixer control 'Capture',0
-> > > > > > > >   Capabilities: cvolume cswitch
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: Capture 0 - 63
-> > > > > > > >   Front Left: Capture 63 [100%] [30.00dB] [on]
-> > > > > > > >   Front Right: Capture 63 [100%] [30.00dB] [on]
-> > > > > > > > Simple mixer control 'Auto-Mute Mode',0
-> > > > > > > >   Capabilities: enum
-> > > > > > > >   Items: 'Disabled' 'Enabled'
-> > > > > > > >   Item0: 'Disabled'
-> > > > > > > > Simple mixer control 'Headset Mic',0
-> > > > > > > >   Capabilities: cswitch cswitch-joined cswitch-exclusive
-> > > > > > > >   Capture exclusive group: 0
-> > > > > > > >   Capture channels: Mono
-> > > > > > > >   Mono: Capture [on]
-> > > > > > > > Simple mixer control 'Headset Mic Boost',0
-> > > > > > > >   Capabilities: volume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: 0 - 3
-> > > > > > > >   Front Left: 1 [33%] [10.00dB]
-> > > > > > > >   Front Right: 1 [33%] [10.00dB]
-> > > > > > > > Simple mixer control 'Internal Mic',0
-> > > > > > > >   Capabilities: cswitch cswitch-joined cswitch-exclusive
-> > > > > > > >   Capture exclusive group: 0
-> > > > > > > >   Capture channels: Mono
-> > > > > > > >   Mono: Capture [off]
-> > > > > > > > Simple mixer control 'Internal Mic Boost',0
-> > > > > > > >   Capabilities: volume
-> > > > > > > >   Playback channels: Front Left - Front Right
-> > > > > > > >   Capture channels: Front Left - Front Right
-> > > > > > > >   Limits: 0 - 3
-> > > > > > > >   Front Left: 0 [0%] [0.00dB]
-> > > > > > > >   Front Right: 0 [0%] [0.00dB]
-> > > > >
-> > >
+Maxime
+
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+To view this discussion on the web, visit https://groups.google.com/d/msgid=
+/linux-sunxi/20190528091259.qrzegazyilviuy2n%40flea.
+For more options, visit https://groups.google.com/d/optout.
+
+--zi3crwvz5dqqoqhp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXOz7mwAKCRDj7w1vZxhR
+xYHnAQCF0T/LyvPDLxyjIVgapteJRIIteH2cyprro9XfsXCZKAEA/Jy3TK1gXH37
+KQ0w0ZON8xPR32fd/FxWTsrhVYDGswU=
+=xOqB
+-----END PGP SIGNATURE-----
+
+--zi3crwvz5dqqoqhp--
