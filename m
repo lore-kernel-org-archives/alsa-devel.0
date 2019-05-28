@@ -1,54 +1,50 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 2/5] rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()
-Date: Tue, 28 May 2019 17:30:19 +0100
-Message-ID: <4654.1559061019@warthog.procyon.org.uk>
-References: <20190528142424.19626-3-geert@linux-m68k.org> <20190528142424.19626-1-geert@linux-m68k.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Merging the new firmware files for CA0132 into
+	alsa-firmware
+Date: Tue, 28 May 2019 18:38:48 +0200
+Message-ID: <9668d632-c5c9-5114-39cb-0e8a105a547c@perex.cz>
+References: <s5hblzmvdcq.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190528142424.19626-3-geert@linux-m68k.org>
-Content-ID: <4653.1559061019.1@warthog.procyon.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: dhowells@redhat.com, Igor Konopko <igor.j.konopko@intel.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>, linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-afs@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C99CAF8072E
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 18:38:53 +0200 (CEST)
+In-Reply-To: <s5hblzmvdcq.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, Connor McAdams <conmanx360@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-
-> While this is not a real false-positive, I believe it cannot cause harm
-> in practice, as AF_RXRPC cannot be used with other transport families
-> than IPv4 and IPv6.
-
-Agreed.
-
-> ---
->  net/rxrpc/output.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+Dne 28. 05. 19 v 16:54 Takashi Iwai napsal(a):
+> Hi,
 > 
-> diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
-> index 004c762c2e8d063c..1473d774d67100c5 100644
-> --- a/net/rxrpc/output.c
-> +++ b/net/rxrpc/output.c
-> @@ -403,8 +403,10 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, struct sk_buff *skb,
->  
->  	/* send the packet with the don't fragment bit set if we currently
->  	 * think it's small enough */
-> -	if (iov[1].iov_len >= call->peer->maxdata)
-> +	if (iov[1].iov_len >= call->peer->maxdata) {
-> +		ret = 0;
->  		goto send_fragmentable;
-> +	}
->  
->  	down_read(&conn->params.local->defrag_sem);
->  
+> it seems that Connor's previous attempt to put a couple of ca0132
+> firmware files into linux-firmware tree didn't go through,
+> unfortunately.  And now I'm thinking of taking them into alsa-firmware
+> package as a stop-gap.  We already distribute other ca0132 firmware
+> files, so the addition shouldn't be a big problem.
+> 
+> Jaroslav, what do you think?
 
-Simply setting 0 is wrong.  That would give the impression that the thing
-worked if support for a new transport address family was added and came
-through this function without full modification (say AF_INET7 becomes a
-thing).
+No problem. The same situation is for the SoC SOF firmware files (drivers are
+in kernel, firmware files are missing). Perhaps, we can release those files
+quickly in alsa-firmware and then migrate them slowly to linux-firmware.
 
-A better way to do things would be to add a default case into the
-send_fragmentable switch statement that either BUG's or sets -EAFNOSUPPORT.
+					Jaroslav
 
-David
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
