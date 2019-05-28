@@ -1,8 +1,9 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: line6: Assure canceling delayed work at
-	disconnection
-Date: Tue, 28 May 2019 09:06:57 +0200
-Message-ID: <20190528070657.26125-1-tiwai@suse.de>
+Subject: [PATCH v2 1/5] ALSA: line6: pod: Rewrite complex timer
+	& work combo with a delayed work
+Date: Tue, 28 May 2019 09:11:57 +0200
+Message-ID: <20190528071201.27400-2-tiwai@suse.de>
+References: <20190528071201.27400-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,11 +11,12 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2867CF8072E
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 09:07:02 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEBC4F808F6
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 09:12:09 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3968BAC8D
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 07:07:02 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 1FF18AE2E
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 07:12:09 +0000 (UTC)
+In-Reply-To: <20190528071201.27400-1-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,142 +29,181 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The current code performs the cancel of a delayed work at the late
-stage of disconnection procedure, which may lead to the access to the
-already cleared state.
+The POD driver had a complex staged startup procedure using both timer
+and work.  This patch simplifies it via a single delayed work with the
+reduced stages.
 
-This patch assures to call cancel_delayed_work_sync() at the beginning
-of the disconnection procedure for avoiding that race.  The delayed
-work object is now assigned in the common line6 object instead of its
-derivative, so that we can call cancel_delayed_work_sync().
+Now basically only two intermediate stages:
+- POD_STARTUP_VERSIONREQ:
+  requesting the version information and the process_message callback
+  triggers the next stage,
+- POD_STARTUP_SETUP:
+  registering the actual card object.
 
-Along with the change, the startup function is called via the new
-callback instead.  This will make it easier to port other LINE6
-drivers to use the delayed work for startup in later patches.
-
-Reported-by: syzbot+5255458d5e0a2b10bbb9@syzkaller.appspotmail.com
-Fixes: 7f84ff68be05 ("ALSA: line6: toneport: Fix broken usage of timer for delayed execution")
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/driver.c   | 12 ++++++++++++
- sound/usb/line6/driver.h   |  4 ++++
- sound/usb/line6/toneport.c | 15 +++------------
- 3 files changed, 19 insertions(+), 12 deletions(-)
+ sound/usb/line6/pod.c | 96 +++++++++++++++------------------------------------
+ 1 file changed, 27 insertions(+), 69 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index b61f65bed4e4..2b57854335b3 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -720,6 +720,15 @@ static int line6_init_cap_control(struct usb_line6 *line6)
- 	return 0;
- }
- 
-+static void line6_startup_work(struct work_struct *work)
-+{
-+	struct usb_line6 *line6 =
-+		container_of(work, struct usb_line6, startup_work.work);
-+
-+	if (line6->startup)
-+		line6->startup(line6);
-+}
-+
- /*
- 	Probe USB device.
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index ce45b6dab651..995e6ccc8122 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -39,11 +39,9 @@
+ 	Stages of POD startup procedure
  */
-@@ -755,6 +764,7 @@ int line6_probe(struct usb_interface *interface,
- 	line6->properties = properties;
- 	line6->usbdev = usbdev;
- 	line6->ifcdev = &interface->dev;
-+	INIT_DELAYED_WORK(&line6->startup_work, line6_startup_work);
- 
- 	strcpy(card->id, properties->id);
- 	strcpy(card->driver, driver_name);
-@@ -825,6 +835,8 @@ void line6_disconnect(struct usb_interface *interface)
- 	if (WARN_ON(usbdev != line6->usbdev))
- 		return;
- 
-+	cancel_delayed_work(&line6->startup_work);
-+
- 	if (line6->urb_listen != NULL)
- 		line6_stop_listen(line6);
- 
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 61425597eb61..650d909c9c4f 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -178,11 +178,15 @@ struct usb_line6 {
- 			fifo;
- 	} messages;
- 
-+	/* Work for delayed PCM startup */
-+	struct delayed_work startup_work;
-+
- 	/* If MIDI is supported, buffer_message contains the pre-processed data;
- 	 * otherwise the data is only in urb_listen (buffer_incoming).
- 	 */
- 	void (*process_message)(struct usb_line6 *);
- 	void (*disconnect)(struct usb_line6 *line6);
-+	void (*startup)(struct usb_line6 *line6);
+ enum {
+-	POD_STARTUP_INIT = 1,
+ 	POD_STARTUP_VERSIONREQ,
+-	POD_STARTUP_WORKQUEUE,
+ 	POD_STARTUP_SETUP,
+-	POD_STARTUP_LAST = POD_STARTUP_SETUP - 1
++	POD_STARTUP_DONE,
  };
  
- extern char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1,
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index e28368d8eba2..55865f7e437d 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -54,9 +54,6 @@ struct usb_line6_toneport {
- 	/* Firmware version (x 100) */
- 	u8 firmware_version;
+ enum {
+@@ -63,12 +61,6 @@ struct usb_line6_pod {
+ 	/* Instrument monitor level */
+ 	int monitor_level;
  
--	/* Work for delayed PCM startup */
--	struct delayed_work pcm_work;
+-	/* Timer for device initialization */
+-	struct timer_list startup_timer;
 -
- 	/* Device type */
- 	enum line6_device_type type;
+-	/* Work handler for device initialization */
+-	struct work_struct startup_work;
+-
+ 	/* Current progress in startup procedure */
+ 	int startup_progress;
  
-@@ -241,12 +238,8 @@ static int snd_toneport_source_put(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
+@@ -173,10 +165,6 @@ static const char pod_version_header[] = {
+ 	0xf2, 0x7e, 0x7f, 0x06, 0x02
+ };
  
--static void toneport_start_pcm(struct work_struct *work)
-+static void toneport_startup(struct usb_line6 *line6)
+-/* forward declarations: */
+-static void pod_startup2(struct timer_list *t);
+-static void pod_startup3(struct usb_line6_pod *pod);
+-
+ static char *pod_alloc_sysex_buffer(struct usb_line6_pod *pod, int code,
+ 				    int size)
  {
--	struct usb_line6_toneport *toneport =
--		container_of(work, struct usb_line6_toneport, pcm_work.work);
--	struct usb_line6 *line6 = &toneport->line6;
+@@ -196,7 +184,10 @@ static void line6_pod_process_message(struct usb_line6 *line6)
+ 		pod->firmware_version = buf[13] * 100 + buf[14] * 10 + buf[15];
+ 		pod->device_id = ((int)buf[8] << 16) | ((int)buf[9] << 8) |
+ 				 (int) buf[10];
+-		pod_startup3(pod);
++		if (pod->startup_progress == POD_STARTUP_VERSIONREQ) {
++			pod->startup_progress = POD_STARTUP_SETUP;
++			schedule_delayed_work(&line6->startup_work, 0);
++		}
+ 		return;
+ 	}
+ 
+@@ -281,47 +272,27 @@ static ssize_t device_id_show(struct device *dev,
+ 	context). After the last one has finished, the device is ready to use.
+ */
+ 
+-static void pod_startup1(struct usb_line6_pod *pod)
+-{
+-	CHECK_STARTUP_PROGRESS(pod->startup_progress, POD_STARTUP_INIT);
 -
- 	line6_pcm_acquire(line6->line6pcm, LINE6_STREAM_MONITOR, true);
+-	/* delay startup procedure: */
+-	line6_start_timer(&pod->startup_timer, POD_STARTUP_DELAY, pod_startup2);
+-}
+-
+-static void pod_startup2(struct timer_list *t)
++static void pod_startup(struct usb_line6 *line6)
+ {
+-	struct usb_line6_pod *pod = from_timer(pod, t, startup_timer);
+-	struct usb_line6 *line6 = &pod->line6;
+-
+-	CHECK_STARTUP_PROGRESS(pod->startup_progress, POD_STARTUP_VERSIONREQ);
+-
+-	/* request firmware version: */
+-	line6_version_request_async(line6);
+-}
+-
+-static void pod_startup3(struct usb_line6_pod *pod)
+-{
+-	CHECK_STARTUP_PROGRESS(pod->startup_progress, POD_STARTUP_WORKQUEUE);
+-
+-	/* schedule work for global work queue: */
+-	schedule_work(&pod->startup_work);
+-}
+-
+-static void pod_startup4(struct work_struct *work)
+-{
+-	struct usb_line6_pod *pod =
+-	    container_of(work, struct usb_line6_pod, startup_work);
+-	struct usb_line6 *line6 = &pod->line6;
+-
+-	CHECK_STARTUP_PROGRESS(pod->startup_progress, POD_STARTUP_SETUP);
+-
+-	/* serial number: */
+-	line6_read_serial_number(&pod->line6, &pod->serial_number);
++	struct usb_line6_pod *pod = (struct usb_line6_pod *) line6;
+ 
+-	/* ALSA audio interface: */
+-	if (snd_card_register(line6->card))
+-		dev_err(line6->ifcdev, "Failed to register POD card.\n");
++	switch (pod->startup_progress) {
++	case POD_STARTUP_VERSIONREQ:
++		/* request firmware version: */
++		line6_version_request_async(line6);
++		break;
++	case POD_STARTUP_SETUP:
++		/* serial number: */
++		line6_read_serial_number(&pod->line6, &pod->serial_number);
++
++		/* ALSA audio interface: */
++		if (snd_card_register(line6->card))
++			dev_err(line6->ifcdev, "Failed to register POD card.\n");
++		pod->startup_progress = POD_STARTUP_DONE;
++		break;
++	default:
++		break;
++	}
  }
  
-@@ -394,7 +387,7 @@ static int toneport_setup(struct usb_line6_toneport *toneport)
- 	if (toneport_has_led(toneport))
- 		toneport_update_led(toneport);
+ /* POD special files: */
+@@ -390,17 +361,6 @@ static const struct snd_kcontrol_new pod_control_monitor = {
+ 	.put = snd_pod_control_monitor_put
+ };
  
--	schedule_delayed_work(&toneport->pcm_work,
-+	schedule_delayed_work(&toneport->line6.startup_work,
- 			      msecs_to_jiffies(TONEPORT_PCM_DELAY * 1000));
+-/*
+-	POD device disconnected.
+-*/
+-static void line6_pod_disconnect(struct usb_line6 *line6)
+-{
+-	struct usb_line6_pod *pod = (struct usb_line6_pod *)line6;
+-
+-	del_timer_sync(&pod->startup_timer);
+-	cancel_work_sync(&pod->startup_work);
+-}
+-
+ /*
+ 	 Try to init POD device.
+ */
+@@ -411,10 +371,7 @@ static int pod_init(struct usb_line6 *line6,
+ 	struct usb_line6_pod *pod = (struct usb_line6_pod *) line6;
+ 
+ 	line6->process_message = line6_pod_process_message;
+-	line6->disconnect = line6_pod_disconnect;
+-
+-	timer_setup(&pod->startup_timer, NULL, 0);
+-	INIT_WORK(&pod->startup_work, pod_startup4);
++	line6->startup = pod_startup;
+ 
+ 	/* create sysfs entries: */
+ 	err = snd_card_add_dev_attr(line6->card, &pod_dev_attr_group);
+@@ -447,7 +404,8 @@ static int pod_init(struct usb_line6 *line6,
+ 		pod->monitor_level = POD_SYSTEM_INVALID;
+ 
+ 		/* initiate startup procedure: */
+-		pod_startup1(pod);
++		schedule_delayed_work(&line6->startup_work,
++				      msecs_to_jiffies(POD_STARTUP_DELAY));
+ 	}
+ 
  	return 0;
- }
-@@ -407,8 +400,6 @@ static void line6_toneport_disconnect(struct usb_line6 *line6)
- 	struct usb_line6_toneport *toneport =
- 		(struct usb_line6_toneport *)line6;
- 
--	cancel_delayed_work_sync(&toneport->pcm_work);
--
- 	if (toneport_has_led(toneport))
- 		toneport_remove_leds(toneport);
- }
-@@ -424,9 +415,9 @@ static int toneport_init(struct usb_line6 *line6,
- 	struct usb_line6_toneport *toneport =  (struct usb_line6_toneport *) line6;
- 
- 	toneport->type = id->driver_info;
--	INIT_DELAYED_WORK(&toneport->pcm_work, toneport_start_pcm);
- 
- 	line6->disconnect = line6_toneport_disconnect;
-+	line6->startup = toneport_startup;
- 
- 	/* initialize PCM subsystem: */
- 	err = line6_init_pcm(line6, &toneport_pcm_properties);
 -- 
 2.16.4
