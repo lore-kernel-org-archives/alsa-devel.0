@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cx2072x: fix spelling mistake "configued" -> "configured"" to the asoc tree
-Date: Tue, 28 May 2019 16:06:54 +0100 (BST)
-Message-ID: <20190528150654.CCB04440046@finisterre.sirena.org.uk>
-References: <20190525203244.7829-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190525203244.7829-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: soc-core: fixup references at soc_cleanup_card_resources()" to the asoc tree
+Date: Tue, 28 May 2019 16:07:06 +0100 (BST)
+Message-ID: <20190528150706.EEE96440046@finisterre.sirena.org.uk>
+References: <87zhn8s60h.wl-kuninori.morimoto.gx@renesas.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <87zhn8s60h.wl-kuninori.morimoto.gx@renesas.com>
+Sender: stable-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.orgLinux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgstable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cx2072x: fix spelling mistake "configued" -> "configured"
+   ASoC: soc-core: fixup references at soc_cleanup_card_resources()
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,33 +37,77 @@ to this mail.
 Thanks,
 Mark
 
->From 9aa37874d1930da139a08f4db1eff5d305f2ddc8 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Sat, 25 May 2019 21:32:44 +0100
-Subject: [PATCH] ASoC: cx2072x: fix spelling mistake "configued" ->
- "configured"
+>From 29040d1ac569606fece70966179de272cfc0d4db Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 27 May 2019 16:51:34 +0900
+Subject: [PATCH] ASoC: soc-core: fixup references at
+ soc_cleanup_card_resources()
 
-There is a spelling mistake in a dev_err error message. Fit it.
+commit 53e947a0e1f7 ("ASoC: soc-core: merge card resources cleanup
+method") merged cleanup method of snd_soc_instantiate_card() and
+soc_cleanup_card_resources().
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+But, after this commit, if user uses unbind/bind to Component factor
+drivers, Kernel might indicates refcount error at
+soc_cleanup_card_resources().
+
+The 1st reason is card->snd_card is still exist even though
+snd_card_free() was called, but it is already cleaned.
+We need to set NULL to it.
+
+2nd is card->dapm and card create debugfs, but its dentry is still
+exist even though it was removed. We need to set NULL to it.
+
+Fixes: 53e947a0e1f7 ("ASoC: soc-core: merge card resources cleanup method")
+Cc: stable@vger.kernel.org # for v5.1
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cx2072x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-core.c | 7 ++++++-
+ sound/soc/soc-dapm.c | 3 +++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
-index ed762546eaee..8b0830854bb3 100644
---- a/sound/soc/codecs/cx2072x.c
-+++ b/sound/soc/codecs/cx2072x.c
-@@ -933,7 +933,7 @@ static int cx2072x_hw_params(struct snd_pcm_substream *substream,
- 		return frame_size;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 7c9415987ac7..46042d41b79b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -228,7 +228,10 @@ static void soc_init_card_debugfs(struct snd_soc_card *card)
  
- 	if (cx2072x->mclk_rate == 0) {
--		dev_err(dev, "Master clock rate is not configued\n");
-+		dev_err(dev, "Master clock rate is not configured\n");
- 		return -EINVAL;
- 	}
+ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
+ {
++	if (!card->debugfs_card_root)
++		return;
+ 	debugfs_remove_recursive(card->debugfs_card_root);
++	card->debugfs_card_root = NULL;
+ }
  
+ static void snd_soc_debugfs_init(void)
+@@ -2039,8 +2042,10 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ {
+ 	/* free the ALSA card at first; this syncs with pending operations */
+-	if (card->snd_card)
++	if (card->snd_card) {
+ 		snd_card_free(card->snd_card);
++		card->snd_card = NULL;
++	}
+ 
+ 	/* remove and free each DAI */
+ 	soc_remove_dai_links(card);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 62e27defce56..5fc57af9cb6f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2192,7 +2192,10 @@ static void dapm_debugfs_add_widget(struct snd_soc_dapm_widget *w)
+ 
+ static void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
+ {
++	if (!dapm->debugfs_dapm)
++		return;
+ 	debugfs_remove_recursive(dapm->debugfs_dapm);
++	dapm->debugfs_dapm = NULL;
+ }
+ 
+ #else
 -- 
 2.20.1
