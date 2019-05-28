@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98357a: Show KConfig entry" to the asoc tree
-Date: Tue, 28 May 2019 16:06:58 +0100 (BST)
-Message-ID: <20190528150658.8B8C7440049@finisterre.sirena.org.uk>
-References: <20190527163809.28104-1-mjourdan@baylibre.com>
+Subject: Applied "ASoC: cx2072x: fix integer overflow on unsigned int multiply" to the asoc tree
+Date: Tue, 28 May 2019 16:06:55 +0100 (BST)
+Message-ID: <20190528150655.5341D440049@finisterre.sirena.org.uk>
+References: <20190524222551.26573-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190527163809.28104-1-mjourdan@baylibre.com>
+In-Reply-To: <20190524222551.26573-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Jourdan <mjourdan@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Simon Ho <simon.ho@conexant.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98357a: Show KConfig entry
+   ASoC: cx2072x: fix integer overflow on unsigned int multiply
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 99afc8df8b6f2d039b1ab20d879e4721068a6c34 Mon Sep 17 00:00:00 2001
-From: Maxime Jourdan <mjourdan@baylibre.com>
-Date: Mon, 27 May 2019 18:38:09 +0200
-Subject: [PATCH] ASoC: max98357a: Show KConfig entry
+>From be0461048b60066eaba9046178fb96e78579af21 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 24 May 2019 23:25:51 +0100
+Subject: [PATCH] ASoC: cx2072x: fix integer overflow on unsigned int multiply
 
-The SEI510 board features a standalone MAX98357A codec.
-Add a tristate prompt to allow selecting the codec.
+In the case where frac_div larger than 96 the result of an unsigned
+multiplication overflows an unsigned int.  For example, this can
+happen when the sample_rate is 192000 and pll_input is 122.  Fix
+this by casing the first term of the mutiply to a u64. Also remove
+the extraneous parentheses around the expression.
 
-Signed-off-by: Maxime Jourdan <mjourdan@baylibre.com>
+Addresses-Coverity: ("Unintentional integer overflow")
+Fixes: a497a4363706 ("ASoC: Add support for Conexant CX2072X CODEC")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cx2072x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 472bde124ebe..0835d4b0d8c3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -714,7 +714,8 @@ config SND_SOC_MAX98095
-        tristate
- 
- config SND_SOC_MAX98357A
--       tristate
-+	tristate "Maxim MAX98357A CODEC"
-+	depends on GPIOLIB
- 
- config SND_SOC_MAX98371
-        tristate
+diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
+index c11a585bbf70..ed762546eaee 100644
+--- a/sound/soc/codecs/cx2072x.c
++++ b/sound/soc/codecs/cx2072x.c
+@@ -627,7 +627,7 @@ static int cx2072x_config_pll(struct cx2072x_priv *cx2072x)
+ 	if (frac_div) {
+ 		frac_div *= 1000;
+ 		frac_div /= pll_input;
+-		frac_num = ((4000 + frac_div) * ((1 << 20) - 4));
++		frac_num = (u64)(4000 + frac_div) * ((1 << 20) - 4);
+ 		do_div(frac_num, 7);
+ 		frac = ((u32)frac_num + 499) / 1000;
+ 	}
 -- 
 2.20.1
