@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Use struct_size() in kmemdup()" to
-	the asoc tree
+Subject: Applied "ASoC: SOF: trace: remove code duplication in
+	sof_wait_trace_avail()" to the asoc tree
 Date: Tue, 28 May 2019 16:06:57 +0100 (BST)
-Message-ID: <20190528150657.D7F0D440046@finisterre.sirena.org.uk>
-References: <20190523155800.GA2428@embeddedor>
+Message-ID: <20190528150657.5B0FC440049@finisterre.sirena.org.uk>
+References: <20190524192309.6359-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 218A1F896EB
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 17:07:00 +0200 (CEST)
-In-Reply-To: <20190523155800.GA2428@embeddedor>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3DD7DF8970A
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 17:06:59 +0200 (CEST)
+In-Reply-To: <20190524192309.6359-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Use struct_size() in kmemdup()
+   ASoC: SOF: trace: remove code duplication in sof_wait_trace_avail()
 
 has been applied to the asoc tree at
 
@@ -55,54 +55,71 @@ to this mail.
 Thanks,
 Mark
 
->From b11c5b5e573968d69aa9fec7507de7aa8fbf76e6 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Thu, 23 May 2019 10:58:00 -0500
-Subject: [PATCH] ASoC: SOF: Use struct_size() in kmemdup()
+>From f627b0524ccf993b646bd56f9bdacc973c8c39cc Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Fri, 24 May 2019 14:23:05 -0500
+Subject: [PATCH] ASoC: SOF: trace: remove code duplication in
+ sof_wait_trace_avail()
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes, in particular in the
-context in which this code is being used.
+Move duplicated code in sof_wait_trace_avail() to a helper function.
 
-So, replace code of the following form:
-
-sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows
-
-with:
-
-struct_size(w, window, w->num_windows)
-
-Notice that variable size is unnecessary, hence it is removed.
-
-This code was detected with the help of Coccinelle.
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/loader.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/sof/trace.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 628fae552442..16b016b76fd8 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -19,15 +19,13 @@ static int get_ext_windows(struct snd_sof_dev *sdev,
+diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+index d588e4b70fad..a2d89d295f0f 100644
+--- a/sound/soc/sof/trace.c
++++ b/sound/soc/sof/trace.c
+@@ -13,10 +13,9 @@
+ #include "sof-priv.h"
+ #include "ops.h"
+ 
+-static size_t sof_wait_trace_avail(struct snd_sof_dev *sdev,
+-				   loff_t pos, size_t buffer_size)
++static size_t sof_trace_avail(struct snd_sof_dev *sdev,
++			      loff_t pos, size_t buffer_size)
  {
- 	struct sof_ipc_window *w =
- 		container_of(ext_hdr, struct sof_ipc_window, ext_hdr);
--	size_t size;
+-	wait_queue_entry_t wait;
+ 	loff_t host_offset = READ_ONCE(sdev->host_offset);
  
- 	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
- 		return -EINVAL;
+ 	/*
+@@ -31,6 +30,19 @@ static size_t sof_wait_trace_avail(struct snd_sof_dev *sdev,
+ 	if (host_offset > pos)
+ 		return host_offset - pos;
  
--	size = sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows;
++	return 0;
++}
++
++static size_t sof_wait_trace_avail(struct snd_sof_dev *sdev,
++				   loff_t pos, size_t buffer_size)
++{
++	wait_queue_entry_t wait;
++	size_t ret = sof_trace_avail(sdev, pos, buffer_size);
++
++	/* data immediately available */
++	if (ret)
++		return ret;
++
+ 	/* wait for available trace data from FW */
+ 	init_waitqueue_entry(&wait, current);
+ 	set_current_state(TASK_INTERRUPTIBLE);
+@@ -42,12 +54,7 @@ static size_t sof_wait_trace_avail(struct snd_sof_dev *sdev,
+ 	}
+ 	remove_wait_queue(&sdev->trace_sleep, &wait);
+ 
+-	/* return bytes available for copy */
+-	host_offset = READ_ONCE(sdev->host_offset);
+-	if (host_offset < pos)
+-		return buffer_size - pos;
 -
- 	/* keep a local copy of the data */
--	sdev->info_window = kmemdup(w, size, GFP_KERNEL);
-+	sdev->info_window = kmemdup(w, struct_size(w, window, w->num_windows),
-+				    GFP_KERNEL);
- 	if (!sdev->info_window)
- 		return -ENOMEM;
+-	return host_offset - pos;
++	return sof_trace_avail(sdev, pos, buffer_size);
+ }
  
+ static ssize_t sof_dfsentry_trace_read(struct file *file, char __user *buffer,
 -- 
 2.20.1
