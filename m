@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: core: remove DSP after
-	unregistering machine driver" to the asoc tree
-Date: Tue, 28 May 2019 16:07:06 +0100 (BST)
-Message-ID: <20190528150706.40EB0440046@finisterre.sirena.org.uk>
-References: <20190524190925.5931-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: pcm: clear hw_params_upon_resume
+	flag correctly" to the asoc tree
+Date: Tue, 28 May 2019 16:07:04 +0100 (BST)
+Message-ID: <20190528150704.4845A440049@finisterre.sirena.org.uk>
+References: <20190524190925.5931-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A18FDF8973E
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 17:07:07 +0200 (CEST)
-In-Reply-To: <20190524190925.5931-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74179F8972C
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2019 17:07:09 +0200 (CEST)
+In-Reply-To: <20190524190925.5931-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Libin Yang <libin.yang@intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: core: remove DSP after unregistering machine driver
+   ASoC: SOF: pcm: clear hw_params_upon_resume flag correctly
 
 has been applied to the asoc tree at
 
@@ -55,65 +55,53 @@ to this mail.
 Thanks,
 Mark
 
->From b85459aafae63f250606bd406d4f7537fda33b51 Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Fri, 24 May 2019 14:09:17 -0500
-Subject: [PATCH] ASoC: SOF: core: remove DSP after unregistering machine
- driver
+>From 04ea642ff62a2b2da3d5844283991a41328f49b1 Mon Sep 17 00:00:00 2001
+From: Libin Yang <libin.yang@intel.com>
+Date: Fri, 24 May 2019 14:09:20 -0500
+Subject: [PATCH] ASoC: SOF: pcm: clear hw_params_upon_resume flag correctly
 
-snd_sof_remove() disables the DSP and unmaps the DSP BAR.
-Removing topology after disabling the DSP results in a
-kernel panic while unloading the pipeline widget. This is
-because pipeline widget unload attempts to power down
-the core it is scheduled on by accessing the DSP registers.
+sof_pcm_hw_params() can only be called once to setup the FW hw_params.
+So after calling sof_pcm_hw_params(), hw_params_upon_resume flag must
+be cleared to avoid multiple invoking sof_pcm_hw_params() by prepare.
 
-So, the suggested fix here is to unregister the machine driver
-first to remove the topology and then disable the DSP
-to avoid the situation described above.
+For example, after resume, there is an xrun happened, prepare() will
+be called. As the hw_params_upon_resume flag is not cleared,
+sof_pcm_hw_params() will be called and this will cause IPC timeout.
 
-Note that the kernel panic only happens in cases where the
-HDaudio link is not managed by the hdac library,
-e.g. no codec or when HDMI is not supported.
-When the hdac library is used, snd_sof_remove() calls
-snd_hdac_ext_bus_device_remove() to remove the codec which
-unregisters the component driver thereby also removing the
-topology before the DSP is disabled.
+This patch fixes such issues.
 
-Fixes: c16211d6226 ("ASoC: SOF: Add Sound Open Firmware driver core")
+Fixes: 868bd00f495 ("ASoC: SOF: Add PCM operations support")
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/sof/pcm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 32105e0fabe8..0bc4a8472c10 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -484,7 +484,6 @@ int snd_sof_device_remove(struct device *dev)
- 	snd_sof_ipc_free(sdev);
- 	snd_sof_free_debug(sdev);
- 	snd_sof_free_trace(sdev);
--	snd_sof_remove(sdev);
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 649968841dad..d6dc9a7df0f4 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -214,6 +214,9 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	INIT_WORK(&spcm->stream[substream->stream].period_elapsed_work,
+ 		  sof_pcm_period_elapsed_work);
  
- 	/*
- 	 * Unregister machine driver. This will unbind the snd_card which
-@@ -494,6 +493,14 @@ int snd_sof_device_remove(struct device *dev)
- 	if (!IS_ERR_OR_NULL(pdata->pdev_mach))
- 		platform_device_unregister(pdata->pdev_mach);
- 
-+	/*
-+	 * Unregistering the machine driver results in unloading the topology.
-+	 * Some widgets, ex: scheduler, attempt to power down the core they are
-+	 * scheduled on, when they are unloaded. Therefore, the DSP must be
-+	 * removed only after the topology has been unloaded.
-+	 */
-+	snd_sof_remove(sdev);
++	/* clear hw_params_upon_resume flag */
++	spcm->hw_params_upon_resume[substream->stream] = 0;
 +
- 	/* release firmware */
- 	release_firmware(pdata->fw);
- 	pdata->fw = NULL;
+ 	return ret;
+ }
+ 
+@@ -429,9 +432,6 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 	dev_dbg(sdev->dev, "pcm: open stream %d dir %d\n", spcm->pcm.pcm_id,
+ 		substream->stream);
+ 
+-	/* clear hw_params_upon_resume flag */
+-	spcm->hw_params_upon_resume[substream->stream] = 0;
+-
+ 	caps = &spcm->pcm.caps[substream->stream];
+ 
+ 	ret = pm_runtime_get_sync(sdev->dev);
 -- 
 2.20.1
