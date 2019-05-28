@@ -1,62 +1,48 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH 3/3] ASoC: fsl_sai: Read SAI clock source 0 from DT
-Date: Tue, 28 May 2019 13:21:03 +0000
-Message-ID: <20190528132034.3908-4-daniel.baluta@nxp.com>
-References: <20190528132034.3908-1-daniel.baluta@nxp.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/5] lightnvm: Fix uninitialized pointer in nvm_remove_tgt()
+Date: Tue, 28 May 2019 16:24:20 +0200
+Message-ID: <20190528142424.19626-2-geert@linux-m68k.org>
+References: <20190528142424.19626-1-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190528132034.3908-1-daniel.baluta@nxp.com>
-Content-Language: en-US
-Content-ID: <C2E969A3D2B45545A97375DBC035038B@eurprd04.prod.outlook.com>
+In-Reply-To: <20190528142424.19626-1-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "robh+dt@kernel.org" <robh+dt@kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Baluta <daniel.baluta@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>
+To: Igor Konopko <igor.j.konopko@intel.com>, David Howells <dhowells@redhat.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>
+Cc: linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-afs@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
-SAI provide multiple master clock source options selectable
-via bit MSEL of TCR2/RCR2.
+With gcc 4.1:
 
-All possible master clock sources are stored in sai->mclk_clk
-array. Current implementation assumes that MCLK0 source is always
-busclk, but this is wrong!
+    drivers/lightnvm/core.c: In function ‘nvm_remove_tgt’:
+    drivers/lightnvm/core.c:510: warning: ‘t’ is used uninitialized in this function
 
-For example, on i.MX8QM we have:
+Indeed, if no NVM devices have been registered, t will be an
+uninitialized pointer, and may be dereferenced later.  A call to
+nvm_remove_tgt() can be triggered from userspace by issuing the
+NVM_DEV_REMOVE ioctl on the lightnvm control device.
 
-00b - Bus Clock selected.
-01b - Master Clock (MCLK) 1 option selected.
-10b - Master Clock (MCLK) 2 option selected.
-11b - Master Clock (MCLK) 3 option selected.
+Fix this by preinitializing t to NULL.
 
-while on i.MX6SX we have:
-
-00b - Master Clock (MCLK) 1 option selected.
-01b - Master Clock (MCLK) 1 option selected.
-10b - Master Clock (MCLK) 2 option selected.
-11b - Master Clock (MCLK) 3 option selected.
-
-So, this patch will read mclk0 source clock from device tree.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Fixes: 843f2edbdde085b4 ("lightnvm: do not remove instance under global lock")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- sound/soc/fsl/fsl_sai.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/lightnvm/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index db9e0872f73d..b563004fb89f 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -826,8 +826,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		sai->bus_clk =3D NULL;
- 	}
-=20
--	sai->mclk_clk[0] =3D sai->bus_clk;
--	for (i =3D 1; i < FSL_SAI_MCLK_MAX; i++) {
-+	for (i =3D 0; i < FSL_SAI_MCLK_MAX; i++) {
- 		sprintf(tmp, "mclk%d", i);
- 		sai->mclk_clk[i] =3D devm_clk_get(&pdev->dev, tmp);
- 		if (IS_ERR(sai->mclk_clk[i])) {
---=20
+diff --git a/drivers/lightnvm/core.c b/drivers/lightnvm/core.c
+index 0df7454832efe082..aa017f48eb8c588c 100644
+--- a/drivers/lightnvm/core.c
++++ b/drivers/lightnvm/core.c
+@@ -492,7 +492,7 @@ static void __nvm_remove_target(struct nvm_target *t, bool graceful)
+  */
+ static int nvm_remove_tgt(struct nvm_ioctl_remove *remove)
+ {
+-	struct nvm_target *t;
++	struct nvm_target *t = NULL;
+ 	struct nvm_dev *dev;
+ 
+ 	down_read(&nvm_lock);
+-- 
 2.17.1
