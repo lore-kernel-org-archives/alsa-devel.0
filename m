@@ -1,55 +1,55 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl: sai: Fix clock source for mclk0
-Date: Tue, 28 May 2019 15:39:44 +0300
-Message-ID: <CAEnQRZD6nNH04xZjpSi7ozL=sNJvJdkEAGAYQStJESeu_2R=Eg@mail.gmail.com>
-References: <20190420154038.14576-1-daniel.baluta@nxp.com> <20190421053749.GA5552@Asurada>
- <CAEnQRZDs_gnS8ehjM2M_y+Yw0Ge-Sq=A2c9BV-g=P_d0+O40hQ@mail.gmail.com>
- <20190421080439.GA8784@Asurada> <20190421082627.GB8304@Asurada>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH 0/3] Add mclk0 clock source for SAI
+Date: Tue, 28 May 2019 13:20:46 +0000
+Message-ID: <20190528132034.3908-1-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190421082627.GB8304@Asurada>
+Content-Language: en-US
+Content-ID: <27ECECFB133A6741B1718F4D42309625@eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: "robh+dt@kernel.org" <robh+dt@kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 21, 2019 at 11:26 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Sun, Apr 21, 2019 at 01:04:39AM -0700, Nicolin Chen wrote:
-> > On Sun, Apr 21, 2019 at 10:26:40AM +0300, Daniel Baluta wrote:
-> > > > Firstly, according to your commit message, neither imx8qm nor
-> > > > imx6sx has an "mclk0" clock in the clock list. Either of them
-> > > > starts with "mclk1". So, before you change the driver, I don't
-> > > > think it's even a right thing to define an "mclk0" in the DT.
-> > >
-> > > From what I understand mclk0 means option 00b of MSEL bits which is:
-> > > * busclk for i.MX8
-> > > * mclk1 for i.MX6/7.
-> >
-> > MSEL bit is used for an internal clock MUX to select four clock
-> > inputs. However,  these four clock inputs aren't exactly 1:1 of
-> > SAI's inputs. As fas as I can tell, SAI only has one bus clock
-> > and three MCLK[1-3]; the internal clock MUX maps the bus clock
-> > or MCLK1 to its input0, and then linearly maps MCLK[1-3] to its
-> > inputs[1-3]. So it doesn't sound right to me that you define an
-> > "MCLK0" in the DT, as it's supposed to describe input clocks of
-> > SAI block, other than its internal clock MUX's.
->
-> Daniel, I think I's saying this too confident, though I do feel
-> so :) But if you can prove me wrong and justify that there is an
-> "MCLK0" as an external input of the SAI block, I will agree with
-> this change.
+This patch series brings together patches [1] and [2] which
+introduce mclk0 clock source via DT.
 
-Looking inside the RTL for SAI on i.MX8 I found that there
-is a MUX with 4 inputs exactly as RM says:
-- bus
-- master clock 1
-- master clock 2
-- master clock 3
+mclk0..3 are the four clock sources options
+of SAI's clock MUX.=20
 
-My point is that the DT is modelling the internal clock MUX
-used for SAI to select its clock source.
+mclk0 option selects:
+ - Bus Clock on i.MX8
+ - MCLK1 on i.MX6/7
 
-thanks,
-Daniel.
+Finally we also update the DT binding information for SAI clocks.
+
+In [1] and [2] Nicolin had a very good point on the fact that
+mclk0 might not be needed in the DT. Anyhow, there are two reasons
+for which I think mlck0 should be added to DT:
+
+1) SAI clock source select MUX is really part of the hardware
+2) flexibility! We let DT tell us which is the option for MUX
+option 0.
+
+
+[1] lkml.org/lkml/2019/4/20/141
+[2] lkml.org/lkml/2019/4/20/56
+
+Daniel Baluta (2):
+  dt-bindings: sound: Clarify the usage of clocks in SAI
+  ASoC: fsl_sai: Read SAI clock source 0 from DT
+
+Shengjiu Wang (1):
+  ARM: dts: imx: Add mclk0 clock for SAI
+
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 5 +++--
+ arch/arm/boot/dts/imx6sx.dtsi                       | 6 ++++--
+ arch/arm/boot/dts/imx6ul.dtsi                       | 9 ++++++---
+ arch/arm/boot/dts/imx7s.dtsi                        | 9 ++++++---
+ sound/soc/fsl/fsl_sai.c                             | 3 +--
+ 5 files changed, 20 insertions(+), 12 deletions(-)
+
+--=20
+2.17.1
