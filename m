@@ -1,18 +1,18 @@
 From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v4 3/7] ASoC: sun4i-spdif: Add TX fifo bit
- flush quirks
-Date: Tue, 28 May 2019 11:12:59 +0200
-Message-ID: <20190528091259.qrzegazyilviuy2n@flea>
+Subject: Re: [PATCH v4 4/7] ASoC: sun4i-spdif: Add support for
+ H6 SoC
+Date: Tue, 28 May 2019 11:13:15 +0200
+Message-ID: <20190528091315.ysfieiebn5gk53f5@flea>
 References: <20190527200627.8635-1-peron.clem@gmail.com>
- <20190527200627.8635-4-peron.clem@gmail.com>
+ <20190527200627.8635-5-peron.clem@gmail.com>
 Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zi3crwvz5dqqoqhp"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBH7XWPTQKGQESJPNI6I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="chyxdzlab5sysxo6"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBMHXWPTQKGQEYFNRAGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20190527200627.8635-4-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <20190527200627.8635-5-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,15 +24,18 @@ Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 List-Id: alsa-devel@alsa-project.org
 
 
---zi3crwvz5dqqoqhp
+--chyxdzlab5sysxo6
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 27, 2019 at 10:06:23PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> Allwinner H6 has a different bit to flush the TX FIFO.
+On Mon, May 27, 2019 at 10:06:24PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> Allwinner H6 has a different mapping for the fifo register controller.
 >
-> Add a quirks to prepare introduction of H6 SoC.
+> Actually only the fifo TX bit is used in the drivers.
+>
+> Use the freshly introduced quirks to make this drivers compatible with
+> the Allwinner H6.
 >
 > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
@@ -51,18 +54,18 @@ linux-sunxi" group.
 To unsubscribe from this group and stop receiving emails from it, send an e=
 mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
 To view this discussion on the web, visit https://groups.google.com/d/msgid=
-/linux-sunxi/20190528091259.qrzegazyilviuy2n%40flea.
+/linux-sunxi/20190528091315.ysfieiebn5gk53f5%40flea.
 For more options, visit https://groups.google.com/d/optout.
 
---zi3crwvz5dqqoqhp
+--chyxdzlab5sysxo6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXOz7mwAKCRDj7w1vZxhR
-xYHnAQCF0T/LyvPDLxyjIVgapteJRIIteH2cyprro9XfsXCZKAEA/Jy3TK1gXH37
-KQ0w0ZON8xPR32fd/FxWTsrhVYDGswU=
-=xOqB
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXOz7qwAKCRDj7w1vZxhR
+xSIiAP9nmxuaqkOOSRfudhUw4zPITHUHtndI2JThUfrXTighbwEAyJjIFkev8yqr
+i6HikA6T6bWimgGAMVM9UxUwiD1Rdgc=
+=iAGv
 -----END PGP SIGNATURE-----
 
---zi3crwvz5dqqoqhp--
+--chyxdzlab5sysxo6--
