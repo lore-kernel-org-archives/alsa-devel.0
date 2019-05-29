@@ -1,49 +1,70 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH 065/145] ASoC: atmel: mikroe-proto: use
- modern dai_link style
-Date: Wed, 29 May 2019 15:24:26 +0000
-Message-ID: <d7af4dec-a808-fc97-0f36-5c6b3aa4b2c4@microchip.com>
-References: <87sgt7p3zo.wl-kuninori.morimoto.gx@renesas.com>
- <877eajmaij.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa5.microchip.iphmx.com (esa5.microchip.iphmx.com
- [216.71.150.166])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E097F806E5
- for <alsa-devel@alsa-project.org>; Wed, 29 May 2019 17:24:31 +0200 (CEST)
-In-Reply-To: <877eajmaij.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-Content-ID: <6DAB9C92DA18E9438D4F537681A49F77@namprd11.prod.outlook.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: kuninori.morimoto.gx@renesas.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "wcd9335: fix a incorrect use of kstrndup()" to the asoc tree
+Date: Wed, 29 May 2019 16:45:29 +0100 (BST)
+Message-ID: <20190529154529.3178944004A@finisterre.sirena.org.uk>
+References: <20190529015305.GA4700@zhanggen-UX430UQ>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190529015305.GA4700@zhanggen-UX430UQ>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Gen Zhang <blackgod016574@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, wen.yang99@zte.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On 22.05.2019 06:44, Kuninori Morimoto wrote:
-> External E-Mail
-> 
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> ASoC is now supporting modern style dai_link
-> (= snd_soc_dai_link_component) for CPU/Codec/Platform.
-> This patch switches to use it.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The patch
 
-Tested-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+   wcd9335: fix a incorrect use of kstrndup()
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Codrin
+Mark
+
+>From a54988113985ca22e414e132054f234fc8a92604 Mon Sep 17 00:00:00 2001
+From: Gen Zhang <blackgod016574@gmail.com>
+Date: Wed, 29 May 2019 09:53:05 +0800
+Subject: [PATCH] wcd9335: fix a incorrect use of kstrndup()
+
+In wcd9335_codec_enable_dec(), 'widget_name' is allocated by kstrndup().
+However, according to doc: "Note: Use kmemdup_nul() instead if the size
+is known exactly." So we should use kmemdup_nul() here instead of
+kstrndup().
+
+Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wcd9335.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index a04a7cedd99d..85737fe54474 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -2734,7 +2734,7 @@ static int wcd9335_codec_enable_dec(struct snd_soc_dapm_widget *w,
+ 	char *dec;
+ 	u8 hpf_coff_freq;
+ 
+-	widget_name = kstrndup(w->name, 15, GFP_KERNEL);
++	widget_name = kmemdup_nul(w->name, 15, GFP_KERNEL);
+ 	if (!widget_name)
+ 		return -ENOMEM;
+ 
+-- 
+2.20.1
