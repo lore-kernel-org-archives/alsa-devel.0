@@ -1,108 +1,49 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: Question about dapm setup
-Date: Wed, 29 May 2019 11:34:39 +0100
-Message-ID: <20190529103439.GI28362@ediswmail.ad.cirrus.com>
-References: <87woi9x4ho.wl-kuninori.morimoto.gx@renesas.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 3/5] net: sched: pie: Use ULL suffix for 64-bit constant
+Date: Wed, 29 May 2019 13:39:06 +0200
+Message-ID: <CAK8P3a3yPBOfw+GhTXGXZzr3wdz1yA3kKZGqqWYnW6+TzXm_PQ@mail.gmail.com>
+References: <20190528142424.19626-1-geert@linux-m68k.org> <20190528142424.19626-4-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A80EF8065A
- for <alsa-devel@alsa-project.org>; Wed, 29 May 2019 12:34:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <87woi9x4ho.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190528142424.19626-4-geert@linux-m68k.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Igor Konopko <igor.j.konopko@intel.com>, David Howells <dhowells@redhat.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Dan Carpenter <dan.carpenter@oracle.com>, linux-block <linux-block@vger.kernel.org>, Networking <netdev@vger.kernel.org>, linux-afs@lists.infradead.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 29, 2019 at 01:50:07PM +0900, Kuninori Morimoto wrote:
-> 
-> Hi ALSA ML
-> 
-> snd_soc_instantiate_card() setups dapm, but its timing seems
-> very randomly for me.
-> In my understanding, dapm setup timing is not so serious.
-> So, I think we can do it in one place,
-> but are there some reasons ?
-> For example, "xxxx should be called after yyyy"
-> 
+On Tue, May 28, 2019 at 4:24 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> With gcc 4.1, when compiling for a 32-bit platform:
+>
+>     net/sched/sch_pie.c: In function ‘drop_early’:
+>     net/sched/sch_pie.c:116: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:138: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:144: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:147: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c: In function ‘pie_qdisc_enqueue’:
+>     net/sched/sch_pie.c:173: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c: In function ‘calculate_probability’:
+>     net/sched/sch_pie.c:371: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:372: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:377: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:382: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:397: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:398: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:399: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:407: warning: integer constant is too large for ‘long’ type
+>     net/sched/sch_pie.c:414: warning: integer constant is too large for ‘long’ type
+>
+> Fix this by adding the missing "ULL" suffix.
+>
+> Fixes: 3f7ae5f3dc5295ac ("net: sched: pie: add more cases to auto-tune alpha and beta")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-There are certainly reasons for some of it, but might be easier
-to explain what you are thinking of moving, rather than trying to
-list all dependencies.
+I created patches for all instances of this issue at some point in the past,
+but did not send those as we raised the minimum compiler version to one
+that handles this in the expected way without a warning.
 
-> 
-> static int snd_soc_instantiate_card(struct snd_soc_card *card)
-> {
-> 	...
-> 
-> =>	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
-> 
-> 	...
-> 
-> 	if (card->dapm_widgets)
-> 		snd_soc_dapm_new_controls(&card->dapm, card->dapm_widgets,
-> 					  card->num_dapm_widgets);
-> 
-> 	if (card->of_dapm_widgets)
-> 		snd_soc_dapm_new_controls(&card->dapm, card->of_dapm_widgets,
-> 					  card->num_of_dapm_widgets);
-> 
-> 	...
-> 
-> 	snd_soc_dapm_link_dai_widgets(card);
-> 	snd_soc_dapm_connect_dai_link_widgets(card);
+Maybe you can just ignore these as well?
 
-For example we need the calls to snd_soc_dapm_new_controls to
-be before these two so that the widgets exist for linking them.
-
-> 
-> 	if (card->controls)
-> 		snd_soc_add_card_controls(card, card->controls,
-> 					  card->num_controls);
-> 
-
-This needs to be before the routes are added so that the routes
-can find their associated controls.
-
-> 	if (card->dapm_routes)
-> 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
-> 					card->num_dapm_routes);
-> 
-> 	if (card->of_dapm_routes)
-> 		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
-> 					card->num_of_dapm_routes);
-> 	...
-
-And the routes also obviously need to be after the widgets are
-added as well.
-
-> 
-> 	snd_soc_dapm_new_widgets(card);
-> 
-> 	...
-> 
-> 	dapm_mark_endpoints_dirty(card);
-> 	snd_soc_dapm_sync(&card->dapm);
-> 	...
-> }
-> 
-> 
-
-Hope that is roughly the sort of thing you were interested in.
-
-Thanks,
-Charles
+      Arnd
