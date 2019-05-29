@@ -1,67 +1,56 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/5] lightnvm: Fix uninitialized pointer in nvm_remove_tgt()
-Date: Wed, 29 May 2019 10:12:45 +0200
-Message-ID: <CAMuHMdVtM9NWSXbWE=XKOt3fiQdjWaDvLiYdXbbri-buDn7jpg@mail.gmail.com>
-References: <20190528142424.19626-1-geert@linux-m68k.org> <20190528142424.19626-2-geert@linux-m68k.org>
- <4b666e32-04b6-228a-691d-0745fa48a57f@lightnvm.io>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/6] device property: Add new array helper
+Date: Wed, 29 May 2019 10:48:14 +0100
+Message-ID: <20190529094814.GH28362@ediswmail.ad.cirrus.com>
+References: <20190528154312.14435-1-ckeepax@opensource.cirrus.com>
+ <CAJZ5v0h28OAiT7KP=TLu069hNvYjCLoFndS+zx7_iE+jKfOF2w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4b666e32-04b6-228a-691d-0745fa48a57f@lightnvm.io>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?Matias_Bj=C3=B8rling?= <mb@lightnvm.io>
-Cc: Igor Konopko <igor.j.konopko@intel.com>, David Howells <dhowells@redhat.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>, linux-block@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-afs@lists.infradead.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vg>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4000FF8065A
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2019 11:48:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0h28OAiT7KP=TLu069hNvYjCLoFndS+zx7_iE+jKfOF2w@mail.gmail.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matias,
+On Tue, May 28, 2019 at 07:01:38PM +0200, Rafael J. Wysocki wrote:
+> On Tue, May 28, 2019 at 5:43 PM Charles Keepax
+> <ckeepax@opensource.cirrus.com> wrote:
+> >
+> > It is fairly common to want to read an integer array property
+> > that is composed of an unknown number of fixed size integer
+> > groups. For example, say each group consists of three values
+> > which correspond to the settings for one input on the device
+> > and the driver supports several chips with different numbers
+> > of inputs.
+> >
+> > Add a new helper function to provide this functionality, it
+> > differs for the existing helpers in that it allows reading a
+> > smaller number of values than the full array size and checks
+> > that the number of values read is a multiple of the group size.
+> 
+> As a rule, you need also CC all of the device property framework
+> changes to linux-acpi@vger.kernel.org, so please resend the series
+> with that taken into account.
+> 
 
-On Wed, May 29, 2019 at 10:08 AM Matias Bjørling <mb@lightnvm.io> wrote:
-> On 5/28/19 4:24 PM, Geert Uytterhoeven wrote:
-> > With gcc 4.1:
-> >
-> >      drivers/lightnvm/core.c: In function ‘nvm_remove_tgt’:
-> >      drivers/lightnvm/core.c:510: warning: ‘t’ is used uninitialized in this function
-> >
-> > Indeed, if no NVM devices have been registered, t will be an
-> > uninitialized pointer, and may be dereferenced later.  A call to
-> > nvm_remove_tgt() can be triggered from userspace by issuing the
-> > NVM_DEV_REMOVE ioctl on the lightnvm control device.
-> >
-> > Fix this by preinitializing t to NULL.
-> >
-> > Fixes: 843f2edbdde085b4 ("lightnvm: do not remove instance under global lock")
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> >   drivers/lightnvm/core.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/lightnvm/core.c b/drivers/lightnvm/core.c
-> > index 0df7454832efe082..aa017f48eb8c588c 100644
-> > --- a/drivers/lightnvm/core.c
-> > +++ b/drivers/lightnvm/core.c
-> > @@ -492,7 +492,7 @@ static void __nvm_remove_target(struct nvm_target *t, bool graceful)
-> >    */
-> >   static int nvm_remove_tgt(struct nvm_ioctl_remove *remove)
-> >   {
-> > -     struct nvm_target *t;
-> > +     struct nvm_target *t = NULL;
-> >       struct nvm_dev *dev;
-> >
-> >       down_read(&nvm_lock);
-> >
->
-> Thanks Geert. Would you like me to carry the patch?
+Sorry will resend with them included.
 
-Yes please. Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Charles
