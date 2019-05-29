@@ -1,73 +1,108 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: sun4i-codec: fix first delay on Speaker
-Date: Wed, 29 May 2019 11:28:24 +0100
-Message-ID: <20190529102824.GN2456@sirena.org.uk>
-References: <1559040459-16488-1-git-send-email-georgii.staroselskii@emlid.com>
- <CAGb2v64osE5yVdpCxSRfpkaq2TqeUUiLUbr3wZWW1rawuqxW-Q@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: Question about dapm setup
+Date: Wed, 29 May 2019 11:34:39 +0100
+Message-ID: <20190529103439.GI28362@ediswmail.ad.cirrus.com>
+References: <87woi9x4ho.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7900415209613570430=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAGb2v64osE5yVdpCxSRfpkaq2TqeUUiLUbr3wZWW1rawuqxW-Q@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Danny Milosavljevic <dannym@scratchpost.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Georgii Staroselskii <georgii.staroselskii@emlid.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A80EF8065A
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2019 12:34:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <87woi9x4ho.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 29, 2019 at 01:50:07PM +0900, Kuninori Morimoto wrote:
+> 
+> Hi ALSA ML
+> 
+> snd_soc_instantiate_card() setups dapm, but its timing seems
+> very randomly for me.
+> In my understanding, dapm setup timing is not so serious.
+> So, I think we can do it in one place,
+> but are there some reasons ?
+> For example, "xxxx should be called after yyyy"
+> 
 
---===============7900415209613570430==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sWvRP97dwRHm9fX+"
-Content-Disposition: inline
+There are certainly reasons for some of it, but might be easier
+to explain what you are thinking of moving, rather than trying to
+list all dependencies.
 
+> 
+> static int snd_soc_instantiate_card(struct snd_soc_card *card)
+> {
+> 	...
+> 
+> =>	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
+> 
+> 	...
+> 
+> 	if (card->dapm_widgets)
+> 		snd_soc_dapm_new_controls(&card->dapm, card->dapm_widgets,
+> 					  card->num_dapm_widgets);
+> 
+> 	if (card->of_dapm_widgets)
+> 		snd_soc_dapm_new_controls(&card->dapm, card->of_dapm_widgets,
+> 					  card->num_of_dapm_widgets);
+> 
+> 	...
+> 
+> 	snd_soc_dapm_link_dai_widgets(card);
+> 	snd_soc_dapm_connect_dai_link_widgets(card);
 
---sWvRP97dwRHm9fX+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For example we need the calls to snd_soc_dapm_new_controls to
+be before these two so that the widgets exist for linking them.
 
-On Wed, May 29, 2019 at 10:34:25AM +0800, Chen-Yu Tsai wrote:
+> 
+> 	if (card->controls)
+> 		snd_soc_add_card_controls(card, card->controls,
+> 					  card->num_controls);
+> 
 
-> I wonder if we shouldn't just keep the amplifier section powered up
-> all the time.
-> Also it seems not very many codec drivers go all out with DAPM.
+This needs to be before the routes are added so that the routes
+can find their associated controls.
 
-Leaving the amplifier powered up all the time is going to burn a lot of
-power and make any pop/click issues in the inputs more apparent.
+> 	if (card->dapm_routes)
+> 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+> 					card->num_dapm_routes);
+> 
+> 	if (card->of_dapm_routes)
+> 		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+> 					card->num_of_dapm_routes);
+> 	...
 
---sWvRP97dwRHm9fX+
-Content-Type: application/pgp-signature; name="signature.asc"
+And the routes also obviously need to be after the widgets are
+added as well.
 
------BEGIN PGP SIGNATURE-----
+> 
+> 	snd_soc_dapm_new_widgets(card);
+> 
+> 	...
+> 
+> 	dapm_mark_endpoints_dirty(card);
+> 	snd_soc_dapm_sync(&card->dapm);
+> 	...
+> }
+> 
+> 
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlzuXr0ACgkQJNaLcl1U
-h9B/JQgAhiaOXeIOyteRvhqURWW/1spsihg8TeHWBScXmrQX/R0VwELj3hjhy5Ba
-W6e7/X6sS/WUY8U+GE1/JWoOGCzGB/wi/Gs6W4E3GmegSu184H2gWwEpVlSjKP3C
-fmvTSqommDR+xP/XxOv/oD0oyEkttLMX4psUw+jNjN/1GTNVZSxtX03V+/NM3OIg
-tQGvT8LodFWr7zVrU3vrJCtEudoXIXtvYXUD77rulZjpDZqS4O0EJPUfIgA12AQ4
-3H9C9Hk4CmcZfvjE0tfDMCcPdlo1RZTyCZVfNpOXgmW6zTHZW7tGhg06gMo1GoWy
-Muw0Y5jjzucEaRn//CF6GyeK/xsIXg==
-=3Vid
------END PGP SIGNATURE-----
+Hope that is roughly the sort of thing you were interested in.
 
---sWvRP97dwRHm9fX+--
-
-
---===============7900415209613570430==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============7900415209613570430==--
+Thanks,
+Charles
