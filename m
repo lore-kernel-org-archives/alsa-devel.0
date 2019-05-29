@@ -1,22 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "wcd9335: fix a incorrect use of kstrndup()" to the asoc tree
+Subject: Applied "ASoC: sun4i-codec: fix first delay on Speaker" to the asoc
+ tree
 Date: Wed, 29 May 2019 16:45:29 +0100 (BST)
-Message-ID: <20190529154529.3178944004A@finisterre.sirena.org.uk>
-References: <20190529015305.GA4700@zhanggen-UX430UQ>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190529015305.GA4700@zhanggen-UX430UQ>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Gen Zhang <blackgod016574@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, wen.yang99@zte.com.cn
+Message-ID: <20190529154529.F1F06440046@finisterre.sirena.org.uk>
+References: <1559040459-16488-1-git-send-email-georgii.staroselskii@emlid.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1559040459-16488-1-git-send-email-georgii.staroselskii@emlid.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, maxime.ripard@bootlin.com, dannym@scratchpost.org, tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz, georgii.staroselskii@emlid.com, wens@csie.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   wcd9335: fix a incorrect use of kstrndup()
+   ASoC: sun4i-codec: fix first delay on Speaker
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,34 +48,55 @@ to this mail.
 Thanks,
 Mark
 
->From a54988113985ca22e414e132054f234fc8a92604 Mon Sep 17 00:00:00 2001
-From: Gen Zhang <blackgod016574@gmail.com>
-Date: Wed, 29 May 2019 09:53:05 +0800
-Subject: [PATCH] wcd9335: fix a incorrect use of kstrndup()
+>From 1f2675f6655838aaf910f911fd0abc821e3ff3df Mon Sep 17 00:00:00 2001
+From: Georgii Staroselskii <georgii.staroselskii@emlid.com>
+Date: Tue, 28 May 2019 13:47:39 +0300
+Subject: [PATCH] ASoC: sun4i-codec: fix first delay on Speaker
 
-In wcd9335_codec_enable_dec(), 'widget_name' is allocated by kstrndup().
-However, according to doc: "Note: Use kmemdup_nul() instead if the size
-is known exactly." So we should use kmemdup_nul() here instead of
-kstrndup().
+Allwinner DAC seems to have a delay in the Speaker audio routing. When
+playing a sound for the first time, the sound gets chopped. On a second
+play the sound is played correctly. After some time (~5s) the issue gets
+back.
 
-Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
+This commit seems to be fixing the same issue as bf14da7 but
+for another codepath.
+
+This is the DTS that was used to debug the problem.
+
+&codec {
+        allwinner,pa-gpios = <&r_pio 0 11 GPIO_ACTIVE_HIGH>; /* PL11 */
+        allwinner,audio-routing =
+                "Speaker", "LINEOUT";
+
+        status = "okay";
+}
+
+Signed-off-by: Georgii Staroselskii <georgii.staroselskii@emlid.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-codec.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index a04a7cedd99d..85737fe54474 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -2734,7 +2734,7 @@ static int wcd9335_codec_enable_dec(struct snd_soc_dapm_widget *w,
- 	char *dec;
- 	u8 hpf_coff_freq;
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 15d08e343b47..28d2f7713f8d 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1329,6 +1329,15 @@ static int sun4i_codec_spk_event(struct snd_soc_dapm_widget *w,
+ 	gpiod_set_value_cansleep(scodec->gpio_pa,
+ 				 !!SND_SOC_DAPM_EVENT_ON(event));
  
--	widget_name = kstrndup(w->name, 15, GFP_KERNEL);
-+	widget_name = kmemdup_nul(w->name, 15, GFP_KERNEL);
- 	if (!widget_name)
- 		return -ENOMEM;
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		/*
++		 * Need a delay to wait for DAC to push the data. 700ms seems
++		 * to be the best compromise not to feel this delay while
++		 * playing a sound.
++		 */
++		msleep(700);
++	}
++
+ 	return 0;
+ }
  
 -- 
 2.20.1
