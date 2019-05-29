@@ -1,73 +1,49 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: mediatek: Make some symbols static
-Date: Wed, 29 May 2019 23:04:37 +0800
-Message-ID: <20190529150437.19004-1-yuehaibing@huawei.com>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [PATCH 065/145] ASoC: atmel: mikroe-proto: use
+ modern dai_link style
+Date: Wed, 29 May 2019 15:24:26 +0000
+Message-ID: <d7af4dec-a808-fc97-0f36-5c6b3aa4b2c4@microchip.com>
+References: <87sgt7p3zo.wl-kuninori.morimoto.gx@renesas.com>
+ <877eajmaij.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, kaichieh.chuang@mediatek.com
-Cc: linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from esa5.microchip.iphmx.com (esa5.microchip.iphmx.com
+ [216.71.150.166])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E097F806E5
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2019 17:24:31 +0200 (CEST)
+In-Reply-To: <877eajmaij.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Content-ID: <6DAB9C92DA18E9438D4F537681A49F77@namprd11.prod.outlook.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: kuninori.morimoto.gx@renesas.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix sparse warnings:
+On 22.05.2019 06:44, Kuninori Morimoto wrote:
+> External E-Mail
+> 
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> ASoC is now supporting modern style dai_link
+> (= snd_soc_dai_link_component) for CPU/Codec/Platform.
+> This patch switches to use it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-sound/soc/mediatek/common/mtk-btcvsd.c:410:5: warning: symbol 'mtk_btcvsd_write_to_bt' was not declared. Should it be static?
-sound/soc/mediatek/common/mtk-btcvsd.c:698:9: warning: symbol 'mtk_btcvsd_snd_read' was not declared. Should it be static?
-sound/soc/mediatek/common/mtk-btcvsd.c:779:9: warning: symbol 'mtk_btcvsd_snd_write' was not declared. Should it be static?
+Tested-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/mediatek/common/mtk-btcvsd.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
-index bd55c546e790..c7a81c4be068 100644
---- a/sound/soc/mediatek/common/mtk-btcvsd.c
-+++ b/sound/soc/mediatek/common/mtk-btcvsd.c
-@@ -407,11 +407,11 @@ static int mtk_btcvsd_read_from_bt(struct mtk_btcvsd_snd *bt,
- 	return 0;
- }
- 
--int mtk_btcvsd_write_to_bt(struct mtk_btcvsd_snd *bt,
--			   enum bt_sco_packet_len packet_type,
--			   unsigned int packet_length,
--			   unsigned int packet_num,
--			   unsigned int blk_size)
-+static int mtk_btcvsd_write_to_bt(struct mtk_btcvsd_snd *bt,
-+				  enum bt_sco_packet_len packet_type,
-+				  unsigned int packet_length,
-+				  unsigned int packet_num,
-+				  unsigned int blk_size)
- {
- 	unsigned int i;
- 	unsigned long flags;
-@@ -695,9 +695,9 @@ static int wait_for_bt_irq(struct mtk_btcvsd_snd *bt,
- 	return 0;
- }
- 
--ssize_t mtk_btcvsd_snd_read(struct mtk_btcvsd_snd *bt,
--			    char __user *buf,
--			    size_t count)
-+static ssize_t mtk_btcvsd_snd_read(struct mtk_btcvsd_snd *bt,
-+				   char __user *buf,
-+				   size_t count)
- {
- 	ssize_t read_size = 0, read_count = 0, cur_read_idx, cont;
- 	unsigned int cur_buf_ofs = 0;
-@@ -776,9 +776,9 @@ ssize_t mtk_btcvsd_snd_read(struct mtk_btcvsd_snd *bt,
- 	return read_count;
- }
- 
--ssize_t mtk_btcvsd_snd_write(struct mtk_btcvsd_snd *bt,
--			     char __user *buf,
--			     size_t count)
-+static ssize_t mtk_btcvsd_snd_write(struct mtk_btcvsd_snd *bt,
-+				    char __user *buf,
-+				    size_t count)
- {
- 	int written_size = count, avail = 0, cur_write_idx, write_size, cont;
- 	unsigned int cur_buf_ofs = 0;
--- 
-2.17.1
+Thanks,
+Codrin
