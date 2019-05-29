@@ -1,30 +1,63 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH 0/3] Add mclk0 clock source for SAI
-Date: Thu, 30 May 2019 08:32:41 +0000
-Message-ID: <fe755bc76ac7226790a7db6ab025db04fcd6d8d5.camel@nxp.com>
-References: <20190528132034.3908-1-daniel.baluta@nxp.com>
-         <20190529230357.GB17556@Asurada-Nvidia.nvidia.com>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] ALSA: hda: fix: lock reg_lock before calling
+	snd_hdac_bus_update_rirb
+Date: Thu, 30 May 2019 04:59:00 +0800
+Message-ID: <20190529205900.26060-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190529230357.GB17556@Asurada-Nvidia.nvidia.com>
-Content-Language: en-US
-Content-ID: <1F4BDF9EB712444AB8F6F83A9950F048@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "timur@kernel.org" <timur@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "tiwai@suse.com" <tiwai@suse.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pen>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 972E6F8065A
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2019 10:57:50 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, tiwai@suse.de
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE5LTA1LTI5IGF0IDE2OjAzIC0wNzAwLCBOaWNvbGluIENoZW4gd3JvdGU6DQo+
-IE9uIFR1ZSwgTWF5IDI4LCAyMDE5IGF0IDAxOjIwOjQ2UE0gKzAwMDAsIERhbmllbCBCYWx1dGEg
-d3JvdGU6DQo+IA0KPiA+IDEpIFNBSSBjbG9jayBzb3VyY2Ugc2VsZWN0IE1VWCBpcyByZWFsbHkg
-cGFydCBvZiB0aGUgaGFyZHdhcmUNCj4gPiAyKSBmbGV4aWJpbGl0eSEgV2UgbGV0IERUIHRlbGwg
-dXMgd2hpY2ggaXMgdGhlIG9wdGlvbiBmb3IgTVVYDQo+ID4gb3B0aW9uIDAuDQo+IA0KPiBJIHRo
-aW5rIHRoZSAiTVVYIiBpcyBwbGF1c2libGUgY29tcGFyaW5nIHRvIHlvdXIgcHJldmlvdXMgdmVy
-c2lvbi4NCj4gQXMgbG9uZyBhcyBEVCBtYWludGFpbmVycyBhY2sgdGhlIERUIGJpbmRpbmcgZG9j
-LCBJIHdvdWxkIGJlIG9rYXkNCj4gdG8gYWNrIHRvby4gSnVzdCBvbmUgY29tbWVudHMgYXQgdGhl
-IGR0cy9kdHNpIGNoYW5nZXMsIEkga25vdyB0aGUNCj4gZHJpdmVyIHdvdWxkIGp1c3Qgd2FybiBv
-bGQgRFRzLCBidXQgaXQgZG9lcyBjaGFuZ2UgdGhlIGJlaGF2aW9yIGF0DQo+IHRoZSBtY2xrX2Ns
-a1swXSBmcm9tIHByZXZpb3VzbHkgYnVzX2NsayB0byBOVUxMIGFmdGVyIHRoaXMgc2VyaWVzLg0K
-DQpUaGFua3MgZm9yIHJldmlldywgd2lsbCBmaXggaW4gdjIuDQo=
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+
+The patch is to fix commit 5e13cf6cd64c
+(ALSA: hda: add polling mode in snd_hdac_bus_get_response)
+spin_lock_irq should be called before snd_hdac_bus_update_rirb.
+
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+Takashi,
+
+Sorry, I make a mistake on the "ALSA: hda: add polling mode in
+snd_hdac_bus_get_response" patch. This patch is a fix for that.
+
+Thanks,
+Bard
+---
+ sound/hda/hdac_controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index a16ac31bda83..d6a91429c058 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -239,9 +239,9 @@ int snd_hdac_bus_get_response(struct hdac_bus *bus, unsigned int addr,
+ 	timeout = jiffies + msecs_to_jiffies(1000);
+ 
+ 	for (loopcounter = 0;; loopcounter++) {
++		spin_lock_irq(&bus->reg_lock);
+ 		if (bus->polling_mode)
+ 			snd_hdac_bus_update_rirb(bus);
+-		spin_lock_irq(&bus->reg_lock);
+ 		if (!bus->rirb.cmds[addr]) {
+ 			if (res)
+ 				*res = bus->rirb.res[addr]; /* the last value */
+-- 
+2.17.1
