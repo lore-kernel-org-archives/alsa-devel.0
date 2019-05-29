@@ -1,91 +1,57 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v2] ASoC: sun4i-codec: fix first delay on Speaker
-Date: Wed, 29 May 2019 10:34:25 +0800
-Message-ID: <CAGb2v64osE5yVdpCxSRfpkaq2TqeUUiLUbr3wZWW1rawuqxW-Q@mail.gmail.com>
-References: <1559040459-16488-1-git-send-email-georgii.staroselskii@emlid.com>
+From: shengjiu.wang@nxp.com
+Subject: [PATCH] ASoC: cs42xx8: Fix build error with CONFIG_GPIOLIB is not set
+Date: Wed, 29 May 2019 11:30:02 +0800
+Message-ID: <20190529033002.16606-1-shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1559040459-16488-1-git-send-email-georgii.staroselskii@emlid.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Georgii Staroselskii <georgii.staroselskii@emlid.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Danny Milosavljevic <dannym@scratchpost.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 28, 2019 at 6:48 PM Georgii Staroselskii
-<georgii.staroselskii@emlid.com> wrote:
->
-> Allwinner DAC seems to have a delay in the Speaker audio routing. When
-> playing a sound for the first time, the sound gets chopped. On a second
-> play the sound is played correctly. After some time (~5s) the issue gets
-> back.
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-FYI that is DAPM powering down the amp. You'll here a light pop when that
-happens.
+config: x86_64-randconfig-x000201921-201921
+compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
+reproduce:
+        make ARCH=x86_64
 
-> This commit seems to be fixing the same issue as bf14da7 but
-> for another codepath.
->
-> This is the DTS that was used to debug the problem.
->
-> &codec {
->         allwinner,pa-gpios = <&r_pio 0 11 GPIO_ACTIVE_HIGH>; /* PL11 */
->         allwinner,audio-routing =
->                 "Speaker", "LINEOUT";
->
->         status = "okay";
-> }
->
-> Signed-off-by: Georgii Staroselskii <georgii.staroselskii@emlid.com>
-> ---
->  sound/soc/sunxi/sun4i-codec.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index f2deffe..9e1f00e 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -1320,6 +1320,15 @@ static int sun4i_codec_spk_event(struct snd_soc_dapm_widget *w,
->         gpiod_set_value_cansleep(scodec->gpio_pa,
->                                  !!SND_SOC_DAPM_EVENT_ON(event));
->
-> +       if (SND_SOC_DAPM_EVENT_ON(event)) {
-> +               /*
-> +                * Need a delay to wait for DAC to push the data. 700ms seems
-> +                * to be the best compromise not to feel this delay while
-> +                * playing a sound.
+sound/soc/codecs/cs42xx8.c: In function ‘cs42xx8_probe’:
+sound/soc/codecs/cs42xx8.c:472:25: error: implicit declaration of function ‘devm_gpiod_get_optional’; did you mean ‘devm_clk_get_optional’? [-Werror=implicit-function-declaration]
+  cs42xx8->gpiod_reset = devm_gpiod_get_optional(dev, "reset",
+                         ^~~~~~~~~~~~~~~~~~~~~~~
+                         devm_clk_get_optional
+sound/soc/codecs/cs42xx8.c:473:8: error: ‘GPIOD_OUT_HIGH’ undeclared (first use in this function); did you mean ‘GPIOF_INIT_HIGH’?
+        GPIOD_OUT_HIGH);
+        ^~~~~~~~~~~~~~
+        GPIOF_INIT_HIGH
+sound/soc/codecs/cs42xx8.c:473:8: note: each undeclared identifier is reported only once for each function it appears in
+sound/soc/codecs/cs42xx8.c:477:2: error: implicit declaration of function ‘gpiod_set_value_cansleep’; did you mean ‘gpio_set_value_cansleep’? [-Werror=implicit-function-declaration]
+  gpiod_set_value_cansleep(cs42xx8->gpiod_reset, 0);
+  ^~~~~~~~~~~~~~~~~~~~~~~~
+  gpio_set_value_cansleep
 
-It is not that the DAC is not pushing data, it's just the internal headphone
-amp needs some time to charge up. So this patch basically adds a delay before
-sound is actually pushed out, thereby preventing any sound from being silently
-dropped. It doesn't help with the pop on power down though, and the latency
-might not be that great.
+Fixes: bfe95dfa4dac ("ASoC: cs42xx8: Add reset gpio handling")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/codecs/cs42xx8.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I wonder if we shouldn't just keep the amplifier section powered up
-all the time.
-Also it seems not very many codec drivers go all out with DAPM.
-
-Mark, any suggestions on the matter?
-
-ChenYu
-
-
-> +                */
-> +               msleep(700);
-> +       }
-> +
->         return 0;
->  }
->
-> --
-> 2.7.4
->
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index 3e8dbf63adbe..3bbc62322dfe 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -14,7 +14,7 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+-#include <linux/of_gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/pcm_params.h>
+-- 
+2.21.0
