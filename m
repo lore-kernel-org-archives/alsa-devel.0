@@ -1,9 +1,9 @@
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.1 274/405] ASoC: eukrea-tlv320: fix a leaked
+Subject: [PATCH 5.0 248/346] ASoC: eukrea-tlv320: fix a leaked
 	reference by adding missing of_node_put
-Date: Wed, 29 May 2019 20:04:32 -0700
-Message-ID: <20190530030554.758240117@linuxfoundation.org>
-References: <20190530030540.291644921@linuxfoundation.org>
+Date: Wed, 29 May 2019 20:05:21 -0700
+Message-ID: <20190530030553.592279120@linuxfoundation.org>
+References: <20190530030540.363386121@linuxfoundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8976EF80C1B
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2019 05:11:46 +0200 (CEST)
-In-Reply-To: <20190530030540.291644921@linuxfoundation.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 703E2F8072E
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2019 05:15:08 +0200 (CEST)
+In-Reply-To: <20190530030540.363386121@linuxfoundation.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
