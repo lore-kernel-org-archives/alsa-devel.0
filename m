@@ -1,7 +1,7 @@
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] Revert "ASoC: core: use component driver name as component name"
-Date: Fri, 31 May 2019 12:31:47 +0200
-Message-ID: <1559298707-14903-1-git-send-email-krzk@kernel.org>
+Subject: [PATCH v2] Revert "ASoC: core: use component driver name as component name"
+Date: Fri, 31 May 2019 12:34:02 +0200
+Message-ID: <1559298842-15059-1-git-send-email-krzk@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
@@ -11,13 +11,18 @@ List-Id: alsa-devel@alsa-project.org
 Using component driver as a name is not unique and it breaks audio in
 certain configurations, e.g. Hardkernel Odroid XU3 board where following
 components are registered:
- - 3830000.i2s with driver snd_dmaengine_pcm
- - 3830000.i2s-sec with driver snd_dmaengine_pcm
- - 3830000.i2s with driver 3830000.i2s-sec
+ - "3830000.i2s" with driver name "snd_dmaengine_pcm"
+ - "3830000.i2s-sec" with driver name "snd_dmaengine_pcm"
+ - "3830000.i2s" with driver name "samsung-i2s"
 
 This reverts commit b19671d6caf1ac393681864d5d85dda9fa99a448.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+---
+
+Changes since v1:
+1. Fix driver name in commit msg.
 ---
  sound/soc/soc-core.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
