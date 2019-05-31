@@ -1,66 +1,131 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [BISECT] No audio after
- "ASoC: core: use component driver name as component name"
-Date: Fri, 31 May 2019 15:44:04 +0200
-Message-ID: <f0e6753d-6eb4-b56e-d4f4-0d483a685b41@samsung.com>
-References: <CAJKOXPfREyt3P2H8bL9=6+EQ1S3Ja7Urkhy1x7sCHaaubMqV1Q@mail.gmail.com>
-        <CGME20190531102017epcas1p3b5522b9a133bf50659d9d306ed9d6d52@epcas1p3.samsung.com>
-        <CA+Px+wXs1u9VjkzDerb-BVPQRLZNMnw8Rh5prkb+0mHAggwWgg@mail.gmail.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH] ASoC: hda: increment codec device refcount
+ when it is added to the card
+Date: Fri, 31 May 2019 06:52:27 -0700
+Message-ID: <0f75caffee97f7cec5a1bd31e9f3eb3ea1a12948.camel@linux.intel.com>
+References: <20190530201828.2648-1-ranjani.sridharan@linux.intel.com>
+ <684fe069-d2fb-f716-bd3e-67f0c7a52de0@linux.intel.com>
+ <s5hftovtaq0.wl-tiwai@suse.de>
+ <e8bdeb7b299a11932ec98df805045a2871c0f79d.camel@linux.intel.com>
+ <s5hef4en4ct.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+Px+wXs1u9VjkzDerb-BVPQRLZNMnw8Rh5prkb+0mHAggwWgg@mail.gmail.com>
-Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tzung-Bi Shih <tzungbi@google.com>, Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4FAAF80C1B
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 15:52:30 +0200 (CEST)
+In-Reply-To: <s5hef4en4ct.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/31/19 12:20, Tzung-Bi Shih wrote:
-> On Fri, May 31, 2019 at 5:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->> The problem might be in component name. The driver->name and
->> fmt_single_name(dev, &component->id) are:
->> snd_dmaengine_pcm != 3830000.i2s
->> snd_dmaengine_pcm != 3830000.i2s-sec
->> samsung-i2s != 3830000.i2s
->>
->> This commit should not go in without fixing the users of old
->> behavior... I could adjust the platform names for primary and
->> secondary links... but now it looks like two components will have the
->> same name.
->
-> That is because the two component drivers used the same name in
-> somehow.  But yes, we should not have the commit without fixing
-> potential errors for users depend on old behavior.
+On Fri, 2019-05-31 at 15:25 +0200, Takashi Iwai wrote:
+> On Fri, 31 May 2019 15:18:03 +0200,
+> Ranjani Sridharan wrote:
+> > 
+> > On Fri, 2019-05-31 at 08:11 +0200, Takashi Iwai wrote:
+> > > On Thu, 30 May 2019 23:00:10 +0200,
+> > > Pierre-Louis Bossart wrote:
+> > > > 
+> > > > 
+> > > > 
+> > > > On 5/30/19 3:18 PM, Ranjani Sridharan wrote:
+> > > > > Calling snd_device_new() makes the codec devices managed by
+> > > > > the
+> > > > > card.
+> > > > > So, when the card is removed, the refcount for the codec
+> > > > > device is decremented and results in the codec device's
+> > > > > kobject
+> > > > > being cleaned up if the refcount is 0. But, this leads to a
+> > > > > NULL
+> > > > > pointer exception while attempting to remove the symlinks
+> > > > > when
+> > > > > the
+> > > > > codec driver is released later on. Therefore, increment the
+> > > > > codec
+> > > > > device's refcount before adding it to the card to prevent
+> > > > > this.
+> > > > 
+> > > > Ranjani, you should add a bit of context for the rest of the
+> > > > list...
+> > > > 
+> > > > This patch suggest a solution to a set of sightings occurring
+> > > > when
+> > > > removing/adding modules in a loop, and the current analysis
+> > > > points
+> > > > to
+> > > > a difference between the way the HDMI and HDaudio codecs are
+> > > > handled.
+> > > > 
+> > > > https://github.com/thesofproject/linux/issues/981
+> > > > https://github.com/thesofproject/linux/issues/966
+> > > > https://github.com/thesofproject/linux/pull/988
+> > > > 
+> > > > Since it's not SOF specific it's better to get feedback
+> > > > directly
+> > > > from
+> > > > the large ALSA community/maintainers. We probably want to focus
+> > > > on
+> > > > the
+> > > > platform-specific/vendor-specific stuff on GitHub and use the
+> > > > mailing
+> > > > list for such framework-level changes.
+> > > 
+> > > Hm, I still wonder why this doens't happen with the HDA legacy.
+> > > 
+> > > What is the shortest way to trigger the bug manually without a
+> > > script?
+> > 
+> > Hi Takashi,
+> > 
+> > With SOF, I can reproduce the issue if I just unload the
+> > sof_pci_dev
+> > module with rmmod. 
+> > 
+> > Basically, the remove routine for the SOF pci device, unregisters
+> > the
+> > machine driver and then removes the codec device. So the first step
+> > of
+> > unregistering the machine driver frees the card which decrements
+> > the
+> > refcount for the HDA codec's kobject. In the case of HDMI codec,
+> > since
+> > it is not managed by the card, the refcount is not decremented when
+> > the
+> > card is removed. 
+> 
+> So it's only about hdac_hdmi codec, or only about hdac_hda codec?
 
-There are 2 platform devices (3830000.i2s, 3830000.i2s-sec), for each
-a platform/DMA component is created. For 3830000.i2s there is also
-a component with 2 CPU DAIs registered. 
+It is only about the hdac_hda codec. 
+> 
+> And why HDMI codec isn't managed by the card...?  IOW, isn't it
+> dangerous -- it means the codec being always removable after bound to
+> the card?
+That is a good point. Probably this needs to be fixed as well. I can
+include the change for that if you think it is the right thing to do.
 
-If we derive the platform/DMA component name from the component's driver
-name then we end up with non unique Platform component names 
-(snd_dmaengine_pcm) and subsequently we fail to assign Platform component 
-to DAI links.
+But I was wondering if it makes sense to increment the refcount when
+the device is added to the card with snd_device_new()? 
+I'm not sure how it affects the other devices so didnt go down this
+route.
 
-Here is list of components before the patch:
+Thanks,
+Ranjani
 
-# cat /sys/kernel/debug/asoc/components 
-3830000.i2s
-3830000.i2s-sec
-3830000.i2s
-hdmi-audio-codec.3.auto
-max98090.5-0010
-snd-soc-dummy
-snd-soc-dummy
-
-And after the patch:
-
-root@target:~# cat /sys/kernel/debug/asoc/components 
-samsung-i2s
-snd_dmaengine_pcm
-snd_dmaengine_pcm
-hdmi-audio-codec.3.auto
-max98090.5-0010
-snd-soc-dummy
-snd-soc-dummy
+> 
+> 
+> thanks,
+> 
+> Takashi
