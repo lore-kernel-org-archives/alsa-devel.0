@@ -1,62 +1,31 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: control: Use struct_size()
-Date: Fri, 31 May 2019 11:53:19 +0200
-Message-ID: <20190531095321.16002-2-tiwai@suse.de>
-References: <20190531095321.16002-1-tiwai@suse.de>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [BISECT] No audio after "ASoC: core: use component driver name as
+ component name"
+Date: Fri, 31 May 2019 18:20:03 +0800
+Message-ID: <CA+Px+wXs1u9VjkzDerb-BVPQRLZNMnw8Rh5prkb+0mHAggwWgg@mail.gmail.com>
+References: <CAJKOXPfREyt3P2H8bL9=6+EQ1S3Ja7Urkhy1x7sCHaaubMqV1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52358F896E4
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 11:53:25 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 4CDDCB020
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 09:53:25 +0000 (UTC)
-In-Reply-To: <20190531095321.16002-1-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAJKOXPfREyt3P2H8bL9=6+EQ1S3Ja7Urkhy1x7sCHaaubMqV1Q@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-For code simplification and safety, use struct_size() macro for
-calculating the snd_kcontrol object size with the variable array.
+On Fri, May 31, 2019 at 5:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> The problem might be in component name. The driver->name and
+> fmt_single_name(dev, &component->id) are:
+> snd_dmaengine_pcm != 3830000.i2s
+> snd_dmaengine_pcm != 3830000.i2s-sec
+> samsung-i2s != 3830000.i2s
+>
+> This commit should not go in without fixing the users of old
+> behavior... I could adjust the platform names for primary and
+> secondary links... but now it looks like two components will have the
+> same name.
+That is because the two component drivers used the same name in
+somehow.  But yes, we should not have the commit without fixing
+potential errors for users depend on old behavior.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/control.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/sound/core/control.c b/sound/core/control.c
-index a5cc9a874062..04eb1a15ffb4 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -211,16 +211,12 @@ EXPORT_SYMBOL(snd_ctl_notify);
- static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
- 		       unsigned int access, struct snd_ctl_file *file)
- {
--	unsigned int size;
- 	unsigned int idx;
- 
- 	if (count == 0 || count > MAX_CONTROL_COUNT)
- 		return -EINVAL;
- 
--	size  = sizeof(struct snd_kcontrol);
--	size += sizeof(struct snd_kcontrol_volatile) * count;
--
--	*kctl = kzalloc(size, GFP_KERNEL);
-+	*kctl = kzalloc(struct_size(*kctl, vd, count), GFP_KERNEL);
- 	if (!*kctl)
- 		return -ENOMEM;
- 
--- 
-2.16.4
+Could you send a patch to revert the commit b19671d6caf1?
