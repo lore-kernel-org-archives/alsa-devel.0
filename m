@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: hda/ca0132: Use struct_size()
-Date: Fri, 31 May 2019 11:53:21 +0200
-Message-ID: <20190531095321.16002-4-tiwai@suse.de>
+Subject: [PATCH 2/3] ALSA: hda: Use struct_size()
+Date: Fri, 31 May 2019 11:53:20 +0200
+Message-ID: <20190531095321.16002-3-tiwai@suse.de>
 References: <20190531095321.16002-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41D9DF8072E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E2F5F896E5
  for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 11:53:25 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 663B6B028
+ by mx1.suse.de (Postfix) with ESMTP id 5A5F4B026
  for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 09:53:25 +0000 (UTC)
 In-Reply-To: <20190531095321.16002-1-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,25 +29,25 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 For code simplification and safety, use struct_size() macro for
-calculating the dsp_image_seg object size.
+calculating the hda_conn_list object size with the variable array.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_ca0132.c | 2 +-
+ sound/pci/hda/hda_codec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index e1ebc6d5f382..de61179c91e2 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -2731,7 +2731,7 @@ static bool is_last(const struct dsp_image_seg *p)
- 
- static size_t dsp_sizeof(const struct dsp_image_seg *p)
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index b20eb7fc83eb..d0f1dbcfbda4 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -122,7 +122,7 @@ static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
  {
--	return sizeof(*p) + p->count*sizeof(u32);
-+	return struct_size(p, data, p->count);
- }
+ 	struct hda_conn_list *p;
  
- static const struct dsp_image_seg *get_next_seg_ptr(
+-	p = kmalloc(sizeof(*p) + len * sizeof(hda_nid_t), GFP_KERNEL);
++	p = kmalloc(struct_size(p, conns, len), GFP_KERNEL);
+ 	if (!p)
+ 		return -ENOMEM;
+ 	p->len = len;
 -- 
 2.16.4
