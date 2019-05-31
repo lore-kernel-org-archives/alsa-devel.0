@@ -1,16 +1,16 @@
 From: GitHub issues - edited <github@alsa-project.org>
 Subject: aplay - pcm_read: Input/output error
-Date: Fri, 31 May 2019 14:01:45 +0200 (CEST)
-Message-ID: <20190531120145.5F293F896F2@alsa1.perex.cz>
-References: <1559304103088720083-webhooks-bot@alsa-project.org>
+Date: Fri, 31 May 2019 14:02:24 +0200 (CEST)
+Message-ID: <20190531120224.B5370F8972A@alsa1.perex.cz>
+References: <1559304142272198915-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 3E568F80C1B
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 14:01:43 +0200 (CEST)
-In-Reply-To: <1559304103088720083-webhooks-bot@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTP id 6A530F80C1B
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 14:02:22 +0200 (CEST)
+In-Reply-To: <1559304142272198915-webhooks-bot@alsa-project.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -41,9 +41,9 @@ As I said system aplay works fine. Moreover I compared hw params for both system
 
 I also tried to built alsa-utils from debian package here I did:
 
-apt source alsa-lib && sudo apt build-dep alsa-utils && fakeroot debian/rules clean && fakeroot debian/rules build && fakeroot debian/rules binary
+`apt source alsa-lib && sudo apt build-dep alsa-utils && fakeroot debian/rules clean && fakeroot debian/rules build && fakeroot debian/rules binary`
 
-All finished fine, now I repeated above steps for alsa-utils and here is aproblem at fakeroot debian/rules binary step. At some point it stops with error message saying:
+All finished fine, now I repeated above steps for alsa-utils and here is a problem at `fakeroot debian/rules binary` step. At some point it stops with an error message saying:
 
 `dpkg-shlibdeps: error: no dependency information found for /usr/lib/libasound.co.s2 (used by debian/alsa-utils/usr/bin/alsaucm)`
 
