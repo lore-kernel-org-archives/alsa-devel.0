@@ -1,18 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Why open-coding in sof_hda_bus_init()?
-Date: Fri, 31 May 2019 12:43:59 -0500
-Message-ID: <1f3059d6-b271-f612-c670-e7214674892f@linux.intel.com>
-References: <s5h7ea6lfaa.wl-tiwai@suse.de>
+Subject: Re: [PATCH V3] ASoC: Intel: Baytrail: add quirk for
+ Aegex 10 (RU2) tablet
+Date: Fri, 31 May 2019 12:49:14 -0500
+Message-ID: <97104d01-848b-a980-42b1-e0af00efc0b4@linux.intel.com>
+References: <20190531172226.7114-1-kepszlok@zohomail.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBA1CF80757
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 19:44:03 +0200 (CEST)
-In-Reply-To: <s5h7ea6lfaa.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C03CF8072E
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 19:49:23 +0200 (CEST)
+In-Reply-To: <20190531172226.7114-1-kepszlok@zohomail.eu>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,195 +24,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Keyon Jie <yang.jie@linux.intel.com>
+To: =?UTF-8?B?S292w6FjcyBUYW3DoXM=?= <kepszlok@zohomail.eu>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/31/19 12:11 PM, Takashi Iwai wrote:
-> Hi,
-> 
-> while looking at SOF code due to the recent debugging session, I
-> noticed that sof_hda_bus_init() is basically an open-code of the
-> existing snd_hdac_ext_bus_init().  Why don't we simply call
-> snd_hdac_ext_bus_init() like below?
-
-It's intentional.
-We've been asked since Day1 of SOF on ApolloLake to provide a 
-'self-contained' controller-only support that has no dependency on the 
-snd_hdac library for solutions where HDaudio links+codecs are not used 
-(typically IOT devices). This was driven by the lack of separation 
-between layers in that library as well as a desire to have a 
-dual-license. That's why you see the init and some of the basic 
-utilities re-implemented for SOF.
-
-However for cases where HDaudio+HDMI are required, we didn't want to 
-reinvent the wheel - HDaudio is complicated enough - and do make use of 
-this snd_hdac library.
-
-We have a config SND_SOC_SOF_HDA that controls in which mode we operate, 
-and it enables HDMI by default (for I2S+HDMI solutions). To get external 
-HDaudio codecs you need the additional SOF_HDAUDIO_CODEC kconfig.
-
-Does this help?
-
-> 
-> The only thing that differs is the handling of bus->id number, where
-> SOF fixes to zero (which was actually done in a patch after the first
-> commit).  But judging from the comment, this doesn't seem like a big
-> matter, as we assume a single bus, so far...
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-> index b8f58e006e29..f42450a9a7b6 100644
-> --- a/sound/soc/sof/intel/Makefile
-> +++ b/sound/soc/sof/intel/Makefile
-> @@ -7,7 +7,7 @@ snd-sof-intel-ipc-objs := intel-ipc.o
->   
->   snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
->   				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
-> -				 hda-dai.o hda-bus.o \
-> +				 hda-dai.o \
->   				 apl.o cnl.o
->   
->   snd-sof-intel-hda-objs := hda-codec.o
-> diff --git a/sound/soc/sof/intel/hda-bus.c b/sound/soc/sof/intel/hda-bus.c
-> deleted file mode 100644
-> index a7e6d8227df6..000000000000
-> --- a/sound/soc/sof/intel/hda-bus.c
-> +++ /dev/null
-> @@ -1,111 +0,0 @@
-> -// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> -//
-> -// This file is provided under a dual BSD/GPLv2 license.  When using or
-> -// redistributing this file, you may do so under either license.
-> -//
-> -// Copyright(c) 2018 Intel Corporation. All rights reserved.
-> -//
-> -// Authors: Keyon Jie <yang.jie@linux.intel.com>
-> -
-> -#include <linux/io.h>
-> -#include <sound/hdaudio.h>
-> -#include "../sof-priv.h"
-> -#include "hda.h"
-> -
-> -#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-> -
-> -static const struct hdac_bus_ops bus_ops = {
-> -	.command = snd_hdac_bus_send_cmd,
-> -	.get_response = snd_hdac_bus_get_response,
-> -};
-> -
-> -#endif
-> -
-> -static void sof_hda_writel(u32 value, u32 __iomem *addr)
-> -{
-> -	writel(value, addr);
-> -}
-> -
-> -static u32 sof_hda_readl(u32 __iomem *addr)
-> -{
-> -	return readl(addr);
-> -}
-> -
-> -static void sof_hda_writew(u16 value, u16 __iomem *addr)
-> -{
-> -	writew(value, addr);
-> -}
-> -
-> -static u16 sof_hda_readw(u16 __iomem *addr)
-> -{
-> -	return readw(addr);
-> -}
-> -
-> -static void sof_hda_writeb(u8 value, u8 __iomem *addr)
-> -{
-> -	writeb(value, addr);
-> -}
-> -
-> -static u8 sof_hda_readb(u8 __iomem *addr)
-> -{
-> -	return readb(addr);
-> -}
-> -
-> -static int sof_hda_dma_alloc_pages(struct hdac_bus *bus, int type,
-> -				   size_t size, struct snd_dma_buffer *buf)
-> -{
-> -	return snd_dma_alloc_pages(type, bus->dev, size, buf);
-> -}
-> -
-> -static void sof_hda_dma_free_pages(struct hdac_bus *bus,
-> -				   struct snd_dma_buffer *buf)
-> -{
-> -	snd_dma_free_pages(buf);
-> -}
-> -
-> -static const struct hdac_io_ops io_ops = {
-> -	.reg_writel = sof_hda_writel,
-> -	.reg_readl = sof_hda_readl,
-> -	.reg_writew = sof_hda_writew,
-> -	.reg_readw = sof_hda_readw,
-> -	.reg_writeb = sof_hda_writeb,
-> -	.reg_readb = sof_hda_readb,
-> -	.dma_alloc_pages = sof_hda_dma_alloc_pages,
-> -	.dma_free_pages = sof_hda_dma_free_pages,
-> -};
-> -
-> -/*
-> - * This can be used for both with/without hda link support.
-> - */
-> -void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev,
-> -		      const struct hdac_ext_bus_ops *ext_ops)
-> -{
-> -	memset(bus, 0, sizeof(*bus));
-> -	bus->dev = dev;
-> -
-> -	bus->io_ops = &io_ops;
-> -	INIT_LIST_HEAD(&bus->stream_list);
-> -
-> -	bus->irq = -1;
-> -	bus->ext_ops = ext_ops;
-> -
-> -	/*
-> -	 * There is only one HDA bus atm. keep the index as 0.
-> -	 * Need to fix when there are more than one HDA bus.
-> -	 */
-> -	bus->idx = 0;
-> -
-> -	spin_lock_init(&bus->reg_lock);
-> -
-> -#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-> -	INIT_LIST_HEAD(&bus->codec_list);
-> -	INIT_LIST_HEAD(&bus->hlink_list);
-> -
-> -	mutex_init(&bus->cmd_mutex);
-> -	mutex_init(&bus->lock);
-> -	bus->ops = &bus_ops;
-> -	INIT_WORK(&bus->unsol_work, snd_hdac_bus_process_unsol_events);
-> -	bus->cmd_dma_state = true;
-> -#endif
-> -
-> -}
-> diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-> index 92d45c43b4b1..a9de6a297b56 100644
-> --- a/sound/soc/sof/intel/hda.h
-> +++ b/sound/soc/sof/intel/hda.h
-> @@ -532,8 +532,11 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset);
->   /*
->    * HDA bus operations.
->    */
-> -void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev,
-> -		      const struct hdac_ext_bus_ops *ext_ops);
-> +static inline void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev,
-> +				    const struct hdac_ext_bus_ops *ext_ops)
-> +{
-> +	snd_hdac_ext_bus_init(bus, dev, NULL, NULL, ext_ops);
-> +}
->   
->   #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
->   /*
-> 
+T24gNS8zMS8xOSAxMjoyMiBQTSwgS292w6FjcyBUYW3DoXMgd3JvdGU6Cj4gVGhpcyB0YWJsZXQg
+aGFzIGFuIGluY29ycmVjdCBhY3BpIGlkZW50aWZpZXIganVzdCBsaWtlCj4gVGhpbmtwYWQxMCB0
+YWJsZXQsIHdoaWNoIGlzIHdoeSBpdCBpcyB0cnlpbmcgdG8gbG9hZCB0aGUgUlQ1NjQwIGRyaXZl
+cgo+IGluc3RlYWQgb2YgdGhlIFJUNTc2MiBkcml2ZXIuIFRoZSBSVDU2NDAgZHJpdmVyLCBvbiB0
+aGUgb3RoZXIgaGFuZCwgY2hlY2tzCj4gdGhlIGhhcmR3YXJlIElELCBzbyBubyBkcml2ZXIgYXJl
+IGxvYWRlZCBkdXJpbmcgYm9vdC4gVGhpcyBmaXggcmVzb2x2ZXMgdG8KPiBsb2FkIHRoZSBSVDU2
+NzIgZHJpdmVyIG9uIHRoaXMgdGFibGV0IGR1cmluZyBib290LiBJdCBhbHNvIHByb3ZpZGVzIHRo
+ZQo+IGNvcnJlY3QgSU8gY29uZmlndXJhdGlvbiwgbGlrZSB0aGUgamFjayBkZXRlY3QgbW9kZSAz
+LCBmb3IgMS44ViBwdWxsdXAuIEkKPiB3b3VsZCBsaWtlIHRvIHRoYW5rIFBpZXJyZS1Mb3VpcyBC
+b3NzYXJ0IGZvciBoZWxwaW5nIHdpdGggdGhpcyBwYXRjaC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBL
+b3bDoWNzIFRhbcOhcyA8a2Vwc3psb2tAem9ob21haWwuZXU+CgpUaGFua3MsIGxvb2tzIGdvb2Qg
+bm93IQoKQWNrZWQtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2Fy
+dEBsaW51eC5pbnRlbC5jb20+CgoKCj4gLS0tCj4gICBzb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5j
+ICAgICAgICAgICAgICAgICAgICAgICB8IDEyICsrKysrKysrKysrKwo+ICAgLi4uL3NvYy9pbnRl
+bC9jb21tb24vc29jLWFjcGktaW50ZWwtYnl0LW1hdGNoLmMgfCAxNyArKysrKysrKysrKysrKysr
+Kwo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBh
+L3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5jCj4g
+aW5kZXggOWEwMzcxMDhiMWFlLi5hNzQ2ZTExY2NmZTMgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
+L2NvZGVjcy9ydDU2NzAuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMKPiBAQCAt
+Mjg4Miw2ICsyODgyLDE4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBkbWlf
+cGxhdGZvcm1faW50ZWxfcXVpcmtzW10gPSB7Cj4gICAJCQkJCQkgUlQ1NjcwX0RFVl9HUElPIHwK
+PiAgIAkJCQkJCSBSVDU2NzBfSkRfTU9ERTMpLAo+ICAgCX0sCj4gKwl7Cj4gKwkJLmNhbGxiYWNr
+ID0gcnQ1NjcwX3F1aXJrX2NiLAo+ICsJCS5pZGVudCA9ICJBZWdleCAxMCB0YWJsZXQgKFJVMiki
+LAo+ICsJCS5tYXRjaGVzID0gewo+ICsJCQlETUlfTUFUQ0goRE1JX1NZU19WRU5ET1IsICJBRUdF
+WCIpLAo+ICsJCQlETUlfTUFUQ0goRE1JX1BST0RVQ1RfVkVSU0lPTiwgIlJVMiIpLAo+ICsJCX0s
+Cj4gKwkJLmRyaXZlcl9kYXRhID0gKHVuc2lnbmVkIGxvbmcgKikoUlQ1NjcwX0RNSUNfRU4gfAo+
+ICsJCQkJCQkgUlQ1NjcwX0RNSUMyX0lOUiB8Cj4gKwkJCQkJCSBSVDU2NzBfREVWX0dQSU8gfAo+
+ICsJCQkJCQkgUlQ1NjcwX0pEX01PREUzKSwKPiArCX0sCj4gICAJe30KPiAgIH07Cj4gICAKPiBk
+aWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1ieXQtbWF0
+Y2guYyBiL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtYnl0LW1hdGNoLmMK
+PiBpbmRleCAwY2ZhYjI0Nzg3NmEuLjlmYjU4ZjFmMDk1ZiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9z
+b2MvaW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWJ5dC1tYXRjaC5jCj4gKysrIGIvc291bmQv
+c29jL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1ieXQtbWF0Y2guYwo+IEBAIC0yMiw2ICsy
+Miw3IEBAIHN0YXRpYyB1bnNpZ25lZCBsb25nIGJ5dF9tYWNoaW5lX2lkOwo+ICAgCj4gICAjZGVm
+aW5lIEJZVF9USElOS1BBRF8xMCAgMQo+ICAgI2RlZmluZSBCWVRfUE9WX1AxMDA2VyAgIDIKPiAr
+I2RlZmluZSBCWVRfQUVHRVhfMTAgICAgIDMKPiAgIAo+ICAgc3RhdGljIGludCBieXRfdGhpbmtw
+YWQxMF9xdWlya19jYihjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCAqaWQpCj4gICB7Cj4gQEAg
+LTM1LDYgKzM2LDEyIEBAIHN0YXRpYyBpbnQgYnl0X3Bvdl9wMTAwNndfcXVpcmtfY2IoY29uc3Qg
+c3RydWN0IGRtaV9zeXN0ZW1faWQgKmlkKQo+ICAgCXJldHVybiAxOwo+ICAgfQo+ICAgCj4gK3N0
+YXRpYyBpbnQgYnl0X2FlZ2V4MTBfcXVpcmtfY2IoY29uc3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQg
+KmlkKQo+ICt7Cj4gKwlieXRfbWFjaGluZV9pZCA9IEJZVF9BRUdFWF8xMDsKPiArCXJldHVybiAx
+Owo+ICt9Cj4gKwo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBkbWlfc3lzdGVtX2lkIGJ5dF90YWJs
+ZVtdID0gewo+ICAgCXsKPiAgIAkJLmNhbGxiYWNrID0gYnl0X3RoaW5rcGFkMTBfcXVpcmtfY2Is
+Cj4gQEAgLTc1LDkgKzgyLDE4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBi
+eXRfdGFibGVbXSA9IHsKPiAgIAkJCURNSV9FWEFDVF9NQVRDSChETUlfQk9BUkRfTkFNRSwgIjBF
+NTciKSwKPiAgIAkJfSwKPiAgIAl9LAo+ICsJewo+ICsJCS8qIEFlZ2V4IDEwIHRhYmxldCAoUlUy
+KSAqLwo+ICsJCS5jYWxsYmFjayA9IGJ5dF9hZWdleDEwX3F1aXJrX2NiLAo+ICsJCS5tYXRjaGVz
+ID0gewo+ICsJCQlETUlfTUFUQ0goRE1JX1NZU19WRU5ET1IsICJBRUdFWCIpLAo+ICsJCQlETUlf
+TUFUQ0goRE1JX1BST0RVQ1RfVkVSU0lPTiwgIlJVMiIpLAo+ICsJCX0sCj4gKwl9LAo+ICAgCXsg
+fQo+ICAgfTsKPiAgIAo+ICsvKiBUaGUgVGhpbmthcGQgMTAgYW5kIEFlZ2V4IDEwIHRhYmxldHMg
+aGF2ZSB0aGUgc2FtZSBJRCBwcm9ibGVtICovCj4gICBzdGF0aWMgc3RydWN0IHNuZF9zb2NfYWNw
+aV9tYWNoIGJ5dF90aGlua3BhZF8xMCA9IHsKPiAgIAkuaWQgPSAiMTBFQzU2NDAiLAo+ICAgCS5k
+cnZfbmFtZSA9ICJjaHQtYnN3LXJ0NTY3MiIsCj4gQEAgLTEwNCw2ICsxMjAsNyBAQCBzdGF0aWMg
+c3RydWN0IHNuZF9zb2NfYWNwaV9tYWNoICpieXRfcXVpcmsodm9pZCAqYXJnKQo+ICAgCj4gICAJ
+c3dpdGNoIChieXRfbWFjaGluZV9pZCkgewo+ICAgCWNhc2UgQllUX1RISU5LUEFEXzEwOgo+ICsJ
+Y2FzZSBCWVRfQUVHRVhfMTA6Cj4gICAJCXJldHVybiAmYnl0X3RoaW5rcGFkXzEwOwo+ICAgCWNh
+c2UgQllUX1BPVl9QMTAwNlc6Cj4gICAJCXJldHVybiAmYnl0X3Bvdl9wMTAwNnc7Cj4gCj4gCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
