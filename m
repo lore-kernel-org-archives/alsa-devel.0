@@ -1,16 +1,21 @@
-From: GitHub issues - edited <github@alsa-project.org>
-Subject: aplay - pcm_read: Input/output error
-Date: Fri, 31 May 2019 14:02:24 +0200 (CEST)
-Message-ID: <20190531120224.B5370F8972A@alsa1.perex.cz>
-References: <1559304142272198915-webhooks-bot@alsa-project.org>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH] ASoC: hda: increment codec device refcount
+ when it is added to the card
+Date: Fri, 31 May 2019 06:18:03 -0700
+Message-ID: <e8bdeb7b299a11932ec98df805045a2871c0f79d.camel@linux.intel.com>
+References: <20190530201828.2648-1-ranjani.sridharan@linux.intel.com>
+ <684fe069-d2fb-f716-bd3e-67f0c7a52de0@linux.intel.com>
+ <s5hftovtaq0.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6A530F80C1B
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 14:02:22 +0200 (CEST)
-In-Reply-To: <1559304142272198915-webhooks-bot@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D24AAF8072E
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 15:18:07 +0200 (CEST)
+In-Reply-To: <s5hftovtaq0.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,34 +25,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-lib issue #7 was edited from mrajwa:
+On Fri, 2019-05-31 at 08:11 +0200, Takashi Iwai wrote:
+> On Thu, 30 May 2019 23:00:10 +0200,
+> Pierre-Louis Bossart wrote:
+> > 
+> > 
+> > 
+> > On 5/30/19 3:18 PM, Ranjani Sridharan wrote:
+> > > Calling snd_device_new() makes the codec devices managed by the
+> > > card.
+> > > So, when the card is removed, the refcount for the codec
+> > > device is decremented and results in the codec device's kobject
+> > > being cleaned up if the refcount is 0. But, this leads to a NULL
+> > > pointer exception while attempting to remove the symlinks when
+> > > the
+> > > codec driver is released later on. Therefore, increment the codec
+> > > device's refcount before adding it to the card to prevent this.
+> > 
+> > Ranjani, you should add a bit of context for the rest of the
+> > list...
+> > 
+> > This patch suggest a solution to a set of sightings occurring when
+> > removing/adding modules in a loop, and the current analysis points
+> > to
+> > a difference between the way the HDMI and HDaudio codecs are
+> > handled.
+> > 
+> > https://github.com/thesofproject/linux/issues/981
+> > https://github.com/thesofproject/linux/issues/966
+> > https://github.com/thesofproject/linux/pull/988
+> > 
+> > Since it's not SOF specific it's better to get feedback directly
+> > from
+> > the large ALSA community/maintainers. We probably want to focus on
+> > the
+> > platform-specific/vendor-specific stuff on GitHub and use the
+> > mailing
+> > list for such framework-level changes.
+> 
+> Hm, I still wonder why this doens't happen with the HDA legacy.
+> 
+> What is the shortest way to trigger the bug manually without a
+> script?
+Hi Takashi,
 
-Hello,
+With SOF, I can reproduce the issue if I just unload the sof_pci_dev
+module with rmmod. 
 
-I came across an issue with custom built aplay (system one works OK on Ubuntu 18.04):
+Basically, the remove routine for the SOF pci device, unregisters the
+machine driver and then removes the codec device. So the first step of
+unregistering the machine driver frees the card which decrements the
+refcount for the HDA codec's kobject. In the case of HDMI codec, since
+it is not managed by the card, the refcount is not decremented when the
+card is removed. 
 
-I have fetched both alsa-lib and alsa-utils repositories, built them now try to run:
-
-`path_to_aplay/aplay -C -D hw:0,8 -r 16000 -f S16_LE -c 2 tmp.wav -vvv`
-
-Immediately after the start it prints hw params and the error message saying:
-
-`arecord: pcm_read:2103: read errorL Input/output error`
-
-As I said system aplay works fine. Moreover I compared hw params for both system and this custom built aplay and they are exactly the same!
-
-I also tried to built alsa-utils from debian package here I did:
-
-`apt source alsa-lib && sudo apt build-dep alsa-utils && fakeroot debian/rules clean && fakeroot debian/rules build && fakeroot debian/rules binary`
-
-All finished fine, now I repeated above steps for alsa-utils and here is a problem at `fakeroot debian/rules binary` step. At some point it stops with an error message saying:
-
-`dpkg-shlibdeps: error: no dependency information found for /usr/lib/libasound.co.s2 (used by debian/alsa-utils/usr/bin/alsaucm)`
-
-Does anybody have any idea what is going on here?
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/7
-Repository URL: https://github.com/alsa-project/alsa-lib
+Thanks,
+Ranjani
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
