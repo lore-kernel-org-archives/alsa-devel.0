@@ -1,7 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/3] ALSA: trivial conversions to struct_size()
-Date: Fri, 31 May 2019 11:53:18 +0200
-Message-ID: <20190531095321.16002-1-tiwai@suse.de>
+Subject: [PATCH 3/3] ALSA: hda/ca0132: Use struct_size()
+Date: Fri, 31 May 2019 11:53:21 +0200
+Message-ID: <20190531095321.16002-4-tiwai@suse.de>
+References: <20190531095321.16002-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -9,11 +10,12 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D537F80C1B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41D9DF8072E
  for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 11:53:25 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 494FFB01F
+ by mx1.suse.de (Postfix) with ESMTP id 663B6B028
  for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 09:53:25 +0000 (UTC)
+In-Reply-To: <20190531095321.16002-1-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,25 +28,26 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+For code simplification and safety, use struct_size() macro for
+calculating the dsp_image_seg object size.
 
-there are a few more places that can be better written with
-struct_size() macro.  Let's replace them.
-
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ALSA: control: Use struct_size()
-  ALSA: hda: Use struct_size()
-  ALSA: hda/ca0132: Use struct_size()
-
- sound/core/control.c         | 6 +-----
- sound/pci/hda/hda_codec.c    | 2 +-
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
  sound/pci/hda/patch_ca0132.c | 2 +-
- 3 files changed, 3 insertions(+), 7 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index e1ebc6d5f382..de61179c91e2 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -2731,7 +2731,7 @@ static bool is_last(const struct dsp_image_seg *p)
+ 
+ static size_t dsp_sizeof(const struct dsp_image_seg *p)
+ {
+-	return sizeof(*p) + p->count*sizeof(u32);
++	return struct_size(p, data, p->count);
+ }
+ 
+ static const struct dsp_image_seg *get_next_seg_ptr(
 -- 
 2.16.4
