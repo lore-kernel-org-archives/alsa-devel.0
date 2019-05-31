@@ -1,56 +1,53 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH] rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()
-Date: Fri, 31 May 2019 11:34:44 +0100
-Message-ID: <15499.1559298884@warthog.procyon.org.uk>
-References: <20190528142424.19626-3-geert@linux-m68k.org> <20190528142424.19626-1-geert@linux-m68k.org>
+From: GitHub issues - opened <github@alsa-project.org>
+Subject: aplay - pcm_read: Input/output error
+Date: Fri, 31 May 2019 14:00:53 +0200 (CEST)
+Message-ID: <20190531120053.38561F896E5@alsa1.perex.cz>
+References: <1559304050087626934-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190528142424.19626-3-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: dhowells@redhat.com, Igor Konopko <igor.j.konopko@intel.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>, linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-afs@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id E91E9F8072E
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 14:00:50 +0200 (CEST)
+In-Reply-To: <1559304050087626934-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+alsa-project/alsa-lib issue #7 was opened from mrajwa:
 
-Hi Geert,
+Hello,
 
-Here's my take on the patch.
+I came across an issue with custom built aplay (system one works OK on Ubuntu 18.04):
 
-David
----
-rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()    
-    
-With gcc 4.1:
+I have fetched both alsa-lib and alsa-utils repositories, built them now try to run:
 
-    net/rxrpc/output.c: In function ‘rxrpc_send_data_packet’:
-    net/rxrpc/output.c:338: warning: ‘ret’ may be used uninitialized in this function
+`path_to_aplay/aplay -C -D hw:0,8 -r 16000 -f S16_LE -c 2 tmp.wav -vvv`
 
-Indeed, if the first jump to the send_fragmentable label is made, and
-the address family is not handled in the switch() statement, ret will be
-used uninitialized.
+Immediately after the start it prints hw_params and the and error message saying:
 
-Fix this by BUG()'ing as is done in other places in rxrpc where internal
-support for future address families will need adding.  It should not be
-possible to reach this normally as the address families are checked
-up-front.
+`arecord: pcm_read:2103: read errorL Input/output error`
 
-Fixes: 5a924b8951f835b5 ("rxrpc: Don't store the rxrpc header in the Tx queue sk_buffs")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
-index 004c762c2e8d..6f2b4fb4b0aa 100644
---- a/net/rxrpc/output.c
-+++ b/net/rxrpc/output.c
-@@ -523,6 +523,9 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, struct sk_buff *skb,
- 		}
- 		break;
- #endif
-+
-+	default:
-+		BUG();
- 	}
- 
- 	if (ret < 0)
+As I said system aplay works fine. Moreover I compared hw_params for both system and this custom built aplay and they are exactly the same!
+
+I also tried to built alsa-utils from debian package here I did:
+
+apt source alsa-lib && sudo apt build-dep alsa-utils && fakeroot debian/rules clean && fakeroot debian/rules build && fakeroot debian/rules binary
+
+All finished fine, now I repeated above steps for alsa-utils and here is aproblem at fakeroot debian/rules binary step. At some point it stops with error message saying:
+
+`dpkg-shlibdeps: error: no dependency information found for /usr/lib/libasound.co.s2 (used by debian/alsa-utils/usr/bin/alsaucm)`
+
+Does anybody have any idea what is going on here?
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/7
+Repository URL: https://github.com/alsa-project/alsa-lib
