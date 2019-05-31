@@ -1,131 +1,48 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH] ASoC: hda: increment codec device refcount
- when it is added to the card
-Date: Fri, 31 May 2019 06:52:27 -0700
-Message-ID: <0f75caffee97f7cec5a1bd31e9f3eb3ea1a12948.camel@linux.intel.com>
-References: <20190530201828.2648-1-ranjani.sridharan@linux.intel.com>
- <684fe069-d2fb-f716-bd3e-67f0c7a52de0@linux.intel.com>
- <s5hftovtaq0.wl-tiwai@suse.de>
- <e8bdeb7b299a11932ec98df805045a2871c0f79d.camel@linux.intel.com>
- <s5hef4en4ct.wl-tiwai@suse.de>
+From: Andrzej Hajda <a.hajda@samsung.com>
+Subject: Re: [PATCH v8 0/6] drm/bridge: sii902x: HDMI-audio support and some
+ fixes
+Date: Fri, 31 May 2019 15:59:03 +0200
+Message-ID: <0d627548-0b53-6da3-8468-9bfa2d66cca4@samsung.com>
+References: <CGME20190527134816epcas1p1498005cdec8554f27e15281095d4958d@epcas1p1.samsung.com>
+ <cover.1558964241.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4FAAF80C1B
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 15:52:30 +0200 (CEST)
-In-Reply-To: <s5hef4en4ct.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <cover.1558964241.git.jsarha@ti.com>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2019-05-31 at 15:25 +0200, Takashi Iwai wrote:
-> On Fri, 31 May 2019 15:18:03 +0200,
-> Ranjani Sridharan wrote:
-> > 
-> > On Fri, 2019-05-31 at 08:11 +0200, Takashi Iwai wrote:
-> > > On Thu, 30 May 2019 23:00:10 +0200,
-> > > Pierre-Louis Bossart wrote:
-> > > > 
-> > > > 
-> > > > 
-> > > > On 5/30/19 3:18 PM, Ranjani Sridharan wrote:
-> > > > > Calling snd_device_new() makes the codec devices managed by
-> > > > > the
-> > > > > card.
-> > > > > So, when the card is removed, the refcount for the codec
-> > > > > device is decremented and results in the codec device's
-> > > > > kobject
-> > > > > being cleaned up if the refcount is 0. But, this leads to a
-> > > > > NULL
-> > > > > pointer exception while attempting to remove the symlinks
-> > > > > when
-> > > > > the
-> > > > > codec driver is released later on. Therefore, increment the
-> > > > > codec
-> > > > > device's refcount before adding it to the card to prevent
-> > > > > this.
-> > > > 
-> > > > Ranjani, you should add a bit of context for the rest of the
-> > > > list...
-> > > > 
-> > > > This patch suggest a solution to a set of sightings occurring
-> > > > when
-> > > > removing/adding modules in a loop, and the current analysis
-> > > > points
-> > > > to
-> > > > a difference between the way the HDMI and HDaudio codecs are
-> > > > handled.
-> > > > 
-> > > > https://github.com/thesofproject/linux/issues/981
-> > > > https://github.com/thesofproject/linux/issues/966
-> > > > https://github.com/thesofproject/linux/pull/988
-> > > > 
-> > > > Since it's not SOF specific it's better to get feedback
-> > > > directly
-> > > > from
-> > > > the large ALSA community/maintainers. We probably want to focus
-> > > > on
-> > > > the
-> > > > platform-specific/vendor-specific stuff on GitHub and use the
-> > > > mailing
-> > > > list for such framework-level changes.
-> > > 
-> > > Hm, I still wonder why this doens't happen with the HDA legacy.
-> > > 
-> > > What is the shortest way to trigger the bug manually without a
-> > > script?
-> > 
-> > Hi Takashi,
-> > 
-> > With SOF, I can reproduce the issue if I just unload the
-> > sof_pci_dev
-> > module with rmmod. 
-> > 
-> > Basically, the remove routine for the SOF pci device, unregisters
-> > the
-> > machine driver and then removes the codec device. So the first step
-> > of
-> > unregistering the machine driver frees the card which decrements
-> > the
-> > refcount for the HDA codec's kobject. In the case of HDMI codec,
-> > since
-> > it is not managed by the card, the refcount is not decremented when
-> > the
-> > card is removed. 
-> 
-> So it's only about hdac_hdmi codec, or only about hdac_hda codec?
-
-It is only about the hdac_hda codec. 
-> 
-> And why HDMI codec isn't managed by the card...?  IOW, isn't it
-> dangerous -- it means the codec being always removable after bound to
-> the card?
-That is a good point. Probably this needs to be fixed as well. I can
-include the change for that if you think it is the right thing to do.
-
-But I was wondering if it makes sense to increment the refcount when
-the device is added to the card with snd_device_new()? 
-I'm not sure how it affects the other devices so didnt go down this
-route.
-
-Thanks,
-Ranjani
-
-> 
-> 
-> thanks,
-> 
-> Takashi
+T24gMjcuMDUuMjAxOSAxNTo0NywgSnlyaSBTYXJoYSB3cm90ZToKPiBJIHRoaW5rIHRoZXNlIHNo
+b3VsZCBiZSByZWFkeSBmb3IgYXBwbHlpbmcgdG8gZHJtLW1pc2MuCj4KPiBDaGFuZ2VzIHNpbmNl
+IHY3Ogo+ICAtIERlYmFzZWQgb24gdG9wIG9mIHRoZSBsYXN0cyBkcm0tbWlzYy1uZXh0IGFuZCB0
+ZXN0ZWQKPiAgLSAiZHQtYmluZGluZ3M6IGRpc3BsYXk6IHNpaTkwMng6IEFkZCBIRE1JIGF1ZGlv
+IGJpbmRpbmdzIgo+ICAgIC0gRHJvcHBlZCBvZmYgIm9yIGhpZ2hlciB0byBhdm9pZCBjb25mbGlj
+dCB3aXRoIHZpZGVvIHBvcnRzIgo+ICAgICAgYW5kIGFkZGVkICJSZXZpZXdlZC1ieTogUm9iIEhl
+cnJpbmcgPHJvYmhAa2VybmVsLm9yZz4iCj4KPiBUaGVyIHByZXZpb3VzIHJvdW5kOgo+IGh0dHBz
+Oi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTA5MTkxNzMvCj4KPiBKeXJpIFNhcmhhICg1
+KToKPiAgIGRybS9icmlkZ2U6IHNpaTkwMng6IFNldCBvdXRwdXQgbW9kZSB0byBIRE1JIG9yIERW
+SSBhY2NvcmRpbmcgdG8gRURJRAo+ICAgZHJtL2JyaWRnZTogc2lpOTAyeDogcGl4ZWwgY2xvY2sg
+dW5pdCBpcyAxMGtIeiBpbnN0ZWFkIG9mIDFrSHoKPiAgIGR0LWJpbmRpbmdzOiBkaXNwbGF5OiBz
+aWk5MDJ4OiBSZW1vdmUgdHJhaWxpbmcgd2hpdGUgc3BhY2UKPiAgIGR0LWJpbmRpbmdzOiBkaXNw
+bGF5OiBzaWk5MDJ4OiBBZGQgSERNSSBhdWRpbyBiaW5kaW5ncwo+ICAgZHJtL2JyaWRnZTogc2lp
+OTAyeDogSW1wbGVtZW50IEhETUkgYXVkaW8gc3VwcG9ydAo+Cj4gVG9taSBWYWxrZWluZW4gKDEp
+Ogo+ICAgZHJtL2JyaWRnZTogc2lpOTAyeDogYWRkIGlucHV0X2J1c19mbGFncwo+Cj4gIC4uLi9i
+aW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dCAgICAgICB8ICA0MiArLQo+ICBkcml2
+ZXJzL2dwdS9kcm0vYnJpZGdlL3NpaTkwMnguYyAgICAgICAgICAgICAgfCA0ODggKysrKysrKysr
+KysrKysrKystCj4gIDIgZmlsZXMgY2hhbmdlZCwgNTIyIGluc2VydGlvbnMoKyksIDggZGVsZXRp
+b25zKC0pCj4KUXVldWVkIHRvIGRybS1taXNjLW5leHQuCgotLQpSZWdhcmRzCkFuZHJ6ZWoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBt
+YWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3Rz
+LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbA==
