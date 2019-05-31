@@ -1,47 +1,56 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2] Revert "ASoC: core: use component driver name as component name"
-Date: Fri, 31 May 2019 12:34:02 +0200
-Message-ID: <1559298842-15059-1-git-send-email-krzk@kernel.org>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH] rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()
+Date: Fri, 31 May 2019 11:34:44 +0100
+Message-ID: <15499.1559298884@warthog.procyon.org.uk>
+References: <20190528142424.19626-3-geert@linux-m68k.org> <20190528142424.19626-1-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190528142424.19626-3-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Tzung-Bi Shih <tzungbi@google.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: dhowells@redhat.com, Igor Konopko <igor.j.konopko@intel.com>, "Mohit P . Tahiliani" <tahiliani@nitk.edu.in>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Eran Ben Elisha <eranbe@mellanox.com>, Matias Bjorling <mb@lightnvm.io>, Jiri Pirko <jiri@mellanox.com>, "David S . Miller" <davem@davemloft.net>, Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@oracle.com>, linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-afs@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Using component driver as a name is not unique and it breaks audio in
-certain configurations, e.g. Hardkernel Odroid XU3 board where following
-components are registered:
- - "3830000.i2s" with driver name "snd_dmaengine_pcm"
- - "3830000.i2s-sec" with driver name "snd_dmaengine_pcm"
- - "3830000.i2s" with driver name "samsung-i2s"
 
-This reverts commit b19671d6caf1ac393681864d5d85dda9fa99a448.
+Hi Geert,
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Here's my take on the patch.
 
+David
 ---
+rxrpc: Fix uninitialized error code in rxrpc_send_data_packet()    
+    
+With gcc 4.1:
 
-Changes since v1:
-1. Fix driver name in commit msg.
+    net/rxrpc/output.c: In function ‘rxrpc_send_data_packet’:
+    net/rxrpc/output.c:338: warning: ‘ret’ may be used uninitialized in this function
+
+Indeed, if the first jump to the send_fragmentable label is made, and
+the address family is not handled in the switch() statement, ret will be
+used uninitialized.
+
+Fix this by BUG()'ing as is done in other places in rxrpc where internal
+support for future address families will need adding.  It should not be
+possible to reach this normally as the address families are checked
+up-front.
+
+Fixes: 5a924b8951f835b5 ("rxrpc: Don't store the rxrpc header in the Tx queue sk_buffs")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- sound/soc/soc-core.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2d3520fca613..7abb017a83f3 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3113,10 +3113,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- {
- 	struct snd_soc_dapm_context *dapm;
+diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
+index 004c762c2e8d..6f2b4fb4b0aa 100644
+--- a/net/rxrpc/output.c
++++ b/net/rxrpc/output.c
+@@ -523,6 +523,9 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, struct sk_buff *skb,
+ 		}
+ 		break;
+ #endif
++
++	default:
++		BUG();
+ 	}
  
--	if (driver->name)
--		component->name = kstrdup(driver->name, GFP_KERNEL);
--	else
--		component->name = fmt_single_name(dev, &component->id);
-+	component->name = fmt_single_name(dev, &component->id);
- 	if (!component->name) {
- 		dev_err(dev, "ASoC: Failed to allocate name\n");
- 		return -ENOMEM;
--- 
-2.7.4
+ 	if (ret < 0)
