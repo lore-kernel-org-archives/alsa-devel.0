@@ -1,17 +1,23 @@
-From: =?UTF-8?q?Kov=C3=A1cs=20Tam=C3=A1s?= <kepszlok@zohomail.eu>
-Subject: [PATCH V3] ASoC: Intel: Baytrail: add quirk for Aegex
-	10 (RU2) tablet
-Date: Fri, 31 May 2019 19:22:26 +0200
-Message-ID: <20190531172226.7114-1-kepszlok@zohomail.eu>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Why open-coding in sof_hda_bus_init()?
+Date: Fri, 31 May 2019 15:23:37 -0500
+Message-ID: <68aa2fa2-41fc-3dfb-c82f-1f88be5bd867@linux.intel.com>
+References: <s5h7ea6lfaa.wl-tiwai@suse.de>
+ <1f3059d6-b271-f612-c670-e7214674892f@linux.intel.com>
+ <s5h36kulc07.wl-tiwai@suse.de>
+ <a2737284-ee55-59e5-cab7-2503d27c92bb@linux.intel.com>
+ <s5hzhn2jvf2.wl-tiwai@suse.de> <s5hv9xqjto3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender-pp-o92.zoho.eu (sender-pp-o92.zoho.eu [185.20.209.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88183F80757
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 19:22:43 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C26FFF8072E
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2019 22:23:40 +0200 (CEST)
+In-Reply-To: <s5hv9xqjto3.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +27,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com, =?UTF-8?q?Kov=C3=A1cs=20Tam=C3=A1s?= <kepszlok@zohomail.eu>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Keyon Jie <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyB0YWJsZXQgaGFzIGFuIGluY29ycmVjdCBhY3BpIGlkZW50aWZpZXIganVzdCBsaWtlClRo
-aW5rcGFkMTAgdGFibGV0LCB3aGljaCBpcyB3aHkgaXQgaXMgdHJ5aW5nIHRvIGxvYWQgdGhlIFJU
-NTY0MCBkcml2ZXIKaW5zdGVhZCBvZiB0aGUgUlQ1NzYyIGRyaXZlci4gVGhlIFJUNTY0MCBkcml2
-ZXIsIG9uIHRoZSBvdGhlciBoYW5kLCBjaGVja3MKdGhlIGhhcmR3YXJlIElELCBzbyBubyBkcml2
-ZXIgYXJlIGxvYWRlZCBkdXJpbmcgYm9vdC4gVGhpcyBmaXggcmVzb2x2ZXMgdG8KbG9hZCB0aGUg
-UlQ1NjcyIGRyaXZlciBvbiB0aGlzIHRhYmxldCBkdXJpbmcgYm9vdC4gSXQgYWxzbyBwcm92aWRl
-cyB0aGUKY29ycmVjdCBJTyBjb25maWd1cmF0aW9uLCBsaWtlIHRoZSBqYWNrIGRldGVjdCBtb2Rl
-IDMsIGZvciAxLjhWIHB1bGx1cC4gSQp3b3VsZCBsaWtlIHRvIHRoYW5rIFBpZXJyZS1Mb3VpcyBC
-b3NzYXJ0IGZvciBoZWxwaW5nIHdpdGggdGhpcyBwYXRjaC4KClNpZ25lZC1vZmYtYnk6IEtvdsOh
-Y3MgVGFtw6FzIDxrZXBzemxva0B6b2hvbWFpbC5ldT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL3J0
-NTY3MC5jICAgICAgICAgICAgICAgICAgICAgICB8IDEyICsrKysrKysrKysrKwogLi4uL3NvYy9p
-bnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtYnl0LW1hdGNoLmMgfCAxNyArKysrKysrKysrKysr
-KysrKwogMiBmaWxlcyBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2NvZGVjcy9ydDU2NzAuYyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMKaW5kZXgg
-OWEwMzcxMDhiMWFlLi5hNzQ2ZTExY2NmZTMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mv
-cnQ1NjcwLmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NzAuYwpAQCAtMjg4Miw2ICsyODgy
-LDE4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBkbWlfcGxhdGZvcm1faW50
-ZWxfcXVpcmtzW10gPSB7CiAJCQkJCQkgUlQ1NjcwX0RFVl9HUElPIHwKIAkJCQkJCSBSVDU2NzBf
-SkRfTU9ERTMpLAogCX0sCisJeworCQkuY2FsbGJhY2sgPSBydDU2NzBfcXVpcmtfY2IsCisJCS5p
-ZGVudCA9ICJBZWdleCAxMCB0YWJsZXQgKFJVMikiLAorCQkubWF0Y2hlcyA9IHsKKwkJCURNSV9N
-QVRDSChETUlfU1lTX1ZFTkRPUiwgIkFFR0VYIiksCisJCQlETUlfTUFUQ0goRE1JX1BST0RVQ1Rf
-VkVSU0lPTiwgIlJVMiIpLAorCQl9LAorCQkuZHJpdmVyX2RhdGEgPSAodW5zaWduZWQgbG9uZyAq
-KShSVDU2NzBfRE1JQ19FTiB8CisJCQkJCQkgUlQ1NjcwX0RNSUMyX0lOUiB8CisJCQkJCQkgUlQ1
-NjcwX0RFVl9HUElPIHwKKwkJCQkJCSBSVDU2NzBfSkRfTU9ERTMpLAorCX0sCiAJe30KIH07CiAK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtYnl0LW1h
-dGNoLmMgYi9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWJ5dC1tYXRjaC5j
-CmluZGV4IDBjZmFiMjQ3ODc2YS4uOWZiNThmMWYwOTVmIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mv
-aW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWJ5dC1tYXRjaC5jCisrKyBiL3NvdW5kL3NvYy9p
-bnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtYnl0LW1hdGNoLmMKQEAgLTIyLDYgKzIyLDcgQEAg
-c3RhdGljIHVuc2lnbmVkIGxvbmcgYnl0X21hY2hpbmVfaWQ7CiAKICNkZWZpbmUgQllUX1RISU5L
-UEFEXzEwICAxCiAjZGVmaW5lIEJZVF9QT1ZfUDEwMDZXICAgMgorI2RlZmluZSBCWVRfQUVHRVhf
-MTAgICAgIDMKIAogc3RhdGljIGludCBieXRfdGhpbmtwYWQxMF9xdWlya19jYihjb25zdCBzdHJ1
-Y3QgZG1pX3N5c3RlbV9pZCAqaWQpCiB7CkBAIC0zNSw2ICszNiwxMiBAQCBzdGF0aWMgaW50IGJ5
-dF9wb3ZfcDEwMDZ3X3F1aXJrX2NiKGNvbnN0IHN0cnVjdCBkbWlfc3lzdGVtX2lkICppZCkKIAly
-ZXR1cm4gMTsKIH0KIAorc3RhdGljIGludCBieXRfYWVnZXgxMF9xdWlya19jYihjb25zdCBzdHJ1
-Y3QgZG1pX3N5c3RlbV9pZCAqaWQpCit7CisJYnl0X21hY2hpbmVfaWQgPSBCWVRfQUVHRVhfMTA7
-CisJcmV0dXJuIDE7Cit9CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBieXRf
-dGFibGVbXSA9IHsKIAl7CiAJCS5jYWxsYmFjayA9IGJ5dF90aGlua3BhZDEwX3F1aXJrX2NiLApA
-QCAtNzUsOSArODIsMTggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBkbWlfc3lzdGVtX2lkIGJ5dF90
-YWJsZVtdID0gewogCQkJRE1JX0VYQUNUX01BVENIKERNSV9CT0FSRF9OQU1FLCAiMEU1NyIpLAog
-CQl9LAogCX0sCisJeworCQkvKiBBZWdleCAxMCB0YWJsZXQgKFJVMikgKi8KKwkJLmNhbGxiYWNr
-ID0gYnl0X2FlZ2V4MTBfcXVpcmtfY2IsCisJCS5tYXRjaGVzID0geworCQkJRE1JX01BVENIKERN
-SV9TWVNfVkVORE9SLCAiQUVHRVgiKSwKKwkJCURNSV9NQVRDSChETUlfUFJPRFVDVF9WRVJTSU9O
-LCAiUlUyIiksCisJCX0sCisJfSwKIAl7IH0KIH07CiAKKy8qIFRoZSBUaGlua2FwZCAxMCBhbmQg
-QWVnZXggMTAgdGFibGV0cyBoYXZlIHRoZSBzYW1lIElEIHByb2JsZW0gKi8KIHN0YXRpYyBzdHJ1
-Y3Qgc25kX3NvY19hY3BpX21hY2ggYnl0X3RoaW5rcGFkXzEwID0gewogCS5pZCA9ICIxMEVDNTY0
-MCIsCiAJLmRydl9uYW1lID0gImNodC1ic3ctcnQ1NjcyIiwKQEAgLTEwNCw2ICsxMjAsNyBAQCBz
-dGF0aWMgc3RydWN0IHNuZF9zb2NfYWNwaV9tYWNoICpieXRfcXVpcmsodm9pZCAqYXJnKQogCiAJ
-c3dpdGNoIChieXRfbWFjaGluZV9pZCkgewogCWNhc2UgQllUX1RISU5LUEFEXzEwOgorCWNhc2Ug
-QllUX0FFR0VYXzEwOgogCQlyZXR1cm4gJmJ5dF90aGlua3BhZF8xMDsKIAljYXNlIEJZVF9QT1Zf
-UDEwMDZXOgogCQlyZXR1cm4gJmJ5dF9wb3ZfcDEwMDZ3OwoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+
+On 5/31/19 2:44 PM, Takashi Iwai wrote:
+> On Fri, 31 May 2019 21:06:25 +0200,
+> Takashi Iwai wrote:
+>>
+>> On Fri, 31 May 2019 20:31:33 +0200,
+>> Pierre-Louis Bossart wrote:
+>>>
+>>> On 5/31/19 1:22 PM, Takashi Iwai wrote:
+>>>> On Fri, 31 May 2019 19:43:59 +0200,
+>>>> Pierre-Louis Bossart wrote:
+>>>>>
+>>>>> On 5/31/19 12:11 PM, Takashi Iwai wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> while looking at SOF code due to the recent debugging session, I
+>>>>>> noticed that sof_hda_bus_init() is basically an open-code of the
+>>>>>> existing snd_hdac_ext_bus_init().  Why don't we simply call
+>>>>>> snd_hdac_ext_bus_init() like below?
+>>>>>
+>>>>> It's intentional.
+>>>>> We've been asked since Day1 of SOF on ApolloLake to provide a
+>>>>> 'self-contained' controller-only support that has no dependency on the
+>>>>> snd_hdac library for solutions where HDaudio links+codecs are not used
+>>>>> (typically IOT devices). This was driven by the lack of separation
+>>>>> between layers in that library as well as a desire to have a
+>>>>> dual-license. That's why you see the init and some of the basic
+>>>>> utilities re-implemented for SOF.
+>>>>>
+>>>>> However for cases where HDaudio+HDMI are required, we didn't want to
+>>>>> reinvent the wheel - HDaudio is complicated enough - and do make use
+>>>>> of this snd_hdac library.
+>>>>>
+>>>>> We have a config SND_SOC_SOF_HDA that controls in which mode we
+>>>>> operate, and it enables HDMI by default (for I2S+HDMI solutions). To
+>>>>> get external HDaudio codecs you need the additional SOF_HDAUDIO_CODEC
+>>>>> kconfig.
+>>>>>
+>>>>> Does this help?
+>>>>
+>>>> Well, what's wrong with the conditional build with Kconfig?
+>>>> You can just wrap the call snd_hdac_ext_bus_init() with #if/endif,
+>>>> e.g. in soc/sof/intel/hda.h,
+>>>>
+>>>> static inline void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev,
+>>>> 				    const struct hdac_ext_bus_ops *ext_ops)
+>>>> {
+>>>> #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+>>>> 	snd_hdac_ext_bus_init(bus, dev, NULL, NULL, ext_ops);
+>>>> #endif
+>>>> }
+>>>
+>>> We still need initializations for some of the data structures when
+>>> SOF_HDA is not defined.
+>>
+>> Which data structure?  The function above is only initializing the
+>> given struct hdac_bus object.  I'm not suggesting to change the caller
+>> site, hda_init() of sound/soc/sof/intel/hda.c.
+
+we need everything that was removed in your proposal :-)
+
+-	memset(bus, 0, sizeof(*bus));
+-	bus->dev = dev;
+-
+-	bus->io_ops = &io_ops;
+-	INIT_LIST_HEAD(&bus->stream_list);
+-
+-	bus->irq = -1;
+-	bus->ext_ops = ext_ops;
+-
+-	/*
+-	 * There is only one HDA bus atm. keep the index as 0.
+-	 * Need to fix when there are more than one HDA bus.
+-	 */
+-	bus->idx = 0;
+-
+-	spin_lock_init(&bus->reg_lock);
+
+This is the smallest set of initialization needed when you don't need 
+hdmi/hdaudio codec support.
+
+> 
+> Also, if the size matters: we can split hda-core code between the thin
+> bus accessor and the rest.  Basically what you need unconditionally is
+> the functions in sound/hda/hdac_bus.c, and they are fairly independent
+> from other HD-audio functios, so it can be its own module.  And the
+> recent ext_bus init and exit implementations are very close to the
+> bare init/exit code, too, so they can be simply moved into the
+> hdac-core-bus or provided as a static inline, too.
+> 
+> 
+> In anyway, my point is that there are tons better way than the open
+> code of such a complex object initialization.
+
+It's actually not open-coding based on copy/paste, it took us a long 
+time to figure out what was strictly necessary.
