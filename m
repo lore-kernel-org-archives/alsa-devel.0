@@ -1,114 +1,51 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH] treewide: fix typos of SPDX-License-Identifier
-Date: Sat,  1 Jun 2019 12:22:42 +0900
-Message-ID: <20190601032242.10405-1-yamada.masahiro@socionext.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ALSA: lx6464es - Remove set but not used variables 'orun_mask, urun_mask'
+Date: Sat, 1 Jun 2019 04:12:14 +0000
+Message-ID: <20190601041214.99366-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Geert Uytterhoeven <geert+renesas@glider.be>, linux-gpio@vger.kernel.org, Russell King <linux@armlinux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, linux-renesas-soc@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Joe Perches <joe@perches.com>, linux-spdx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Kishon Vijay Abraham I <kishon@ti.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, Alexandre Torgue <alexandre.torgue@st.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+Cc: YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Prior to the adoption of SPDX, it was difficult for tools to determine
-the correct license due to incomplete or badly formatted license text.
-The SPDX solves this issue, assuming people can correctly spell
-"SPDX-License-Identifier" although this assumption is broken in some
-places.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Since scripts/spdxcheck.py parses only lines that exactly matches to
-the correct tag, it cannot (should not) detect this kind of error.
+sound/pci/lx6464es/lx_core.c: In function 'lx_interrupt_handle_async_events':
+sound/pci/lx6464es/lx_core.c:990:6: warning:
+ variable 'urun_mask' set but not used [-Wunused-but-set-variable]
+sound/pci/lx6464es/lx_core.c:989:6: warning:
+ variable 'orun_mask' set but not used [-Wunused-but-set-variable]
 
-If the correct tag is missing, scripts/checkpatch.pl warns like this:
+They are never used, so can be removed.
 
- WARNING: Missing or malformed SPDX-License-Identifier tag in line *
-
-So, people should notice it before the patch submission, but in reality
-broken tags sometimes slip in. The checkpatch warning is not useful for
-checking the committed files globally since large number of files still
-have no SPDX tag.
-
-Also, I am not sure about the legal effect when the SPDX tag is broken.
-
-Anyway, these typos are absolutely worth fixing. It is pretty easy to
-find suspicious lines by grep.
-
-  $ git grep --not -e SPDX-License-Identifier --and -e SPDX- -- \
-    :^LICENSES :^scripts/spdxcheck.py :^*/license-rules.rst
-  arch/arm/kernel/bugs.c:// SPDX-Identifier: GPL-2.0
-  drivers/phy/st/phy-stm32-usbphyc.c:// SPDX-Licence-Identifier: GPL-2.0
-  drivers/pinctrl/sh-pfc/pfc-r8a77980.c:// SPDX-Lincense-Identifier: GPL 2.0
-  lib/test_stackinit.c:// SPDX-Licenses: GPLv2
-  sound/soc/codecs/max9759.c:// SPDX-Licence-Identifier: GPL-2.0
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
+ sound/pci/lx6464es/lx_core.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
- arch/arm/kernel/bugs.c                | 2 +-
- drivers/phy/st/phy-stm32-usbphyc.c    | 2 +-
- drivers/pinctrl/sh-pfc/pfc-r8a77980.c | 2 +-
- lib/test_stackinit.c                  | 2 +-
- sound/soc/codecs/max9759.c            | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm/kernel/bugs.c b/arch/arm/kernel/bugs.c
-index d41d3598e5e5..14c8dbbb7d2d 100644
---- a/arch/arm/kernel/bugs.c
-+++ b/arch/arm/kernel/bugs.c
-@@ -1,4 +1,4 @@
--// SPDX-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0
- #include <linux/init.h>
- #include <asm/bugs.h>
- #include <asm/proc-fns.h>
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index 1255cd1d9a60..56bdea4b0bd9 100644
---- a/drivers/phy/st/phy-stm32-usbphyc.c
-+++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -1,4 +1,4 @@
--// SPDX-Licence-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * STMicroelectronics STM32 USB PHY Controller driver
-  *
-diff --git a/drivers/pinctrl/sh-pfc/pfc-r8a77980.c b/drivers/pinctrl/sh-pfc/pfc-r8a77980.c
-index 473da65890a7..9ed4ead2dafb 100644
---- a/drivers/pinctrl/sh-pfc/pfc-r8a77980.c
-+++ b/drivers/pinctrl/sh-pfc/pfc-r8a77980.c
-@@ -1,4 +1,4 @@
--// SPDX-Lincense-Identifier: GPL 2.0
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * R8A77980 processor support - PFC hardware block.
-  *
-diff --git a/lib/test_stackinit.c b/lib/test_stackinit.c
-index 13115b6f2b88..e97dc54b4fdf 100644
---- a/lib/test_stackinit.c
-+++ b/lib/test_stackinit.c
-@@ -1,4 +1,4 @@
--// SPDX-Licenses: GPLv2
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Test cases for compiler-based stack variable zeroing via future
-  * compiler flags or CONFIG_GCC_PLUGIN_STRUCTLEAK*.
-diff --git a/sound/soc/codecs/max9759.c b/sound/soc/codecs/max9759.c
-index ecfb4a80424b..00e9d4fd1651 100644
---- a/sound/soc/codecs/max9759.c
-+++ b/sound/soc/codecs/max9759.c
-@@ -1,4 +1,4 @@
--// SPDX-Licence-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * MAX9759 Amplifier Driver
-  *
--- 
-2.17.1
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index 9236a1a8c49b..dd3a873777eb 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -986,8 +986,6 @@ static int lx_interrupt_handle_async_events(struct lx6464es *chip, u32 irqsrc,
+ 	 * Stat[8]	LSB overrun
+ 	 * */
+ 
+-	u64 orun_mask;
+-	u64 urun_mask;
+ 	int eb_pending_out = (irqsrc & MASK_SYS_STATUS_EOBO) ? 1 : 0;
+ 	int eb_pending_in  = (irqsrc & MASK_SYS_STATUS_EOBI) ? 1 : 0;
+ 
+@@ -1010,9 +1008,6 @@ static int lx_interrupt_handle_async_events(struct lx6464es *chip, u32 irqsrc,
+ 			    *r_notified_out_pipe_mask);
+ 	}
+ 
+-	orun_mask = ((u64)stat[7] << 32) + stat[8];
+-	urun_mask = ((u64)stat[5] << 32) + stat[6];
+-
+ 	/* todo: handle xrun notification */
+ 
+ 	return err;
