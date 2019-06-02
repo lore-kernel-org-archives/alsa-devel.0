@@ -1,9 +1,9 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 00/15] ALSA: firewire-tascam/fireface:
-	reserve/release isochronous resources in
-	pcm.hw_params/hw_free callbacks
-Date: Sun,  2 Jun 2019 16:12:44 +0900
-Message-ID: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/15] ALSA: firewire-tascam: code refactoring
+	for registration of isochronous channels
+Date: Sun,  2 Jun 2019 16:12:45 +0900
+Message-ID: <20190602071259.21622-2-o-takashi@sakamocchi.jp>
+References: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,8 +12,9 @@ Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B28EF80C06
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:06 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7CADF80CC4
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:07 +0200 (CEST)
+In-Reply-To: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,69 +28,153 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This commit is a part of preparation to perform allocation/release
+of isochronous channels in pcm.hw_params/hw_free callbacks.
 
-This patchset is a part of series of patches for all of drivers in
-ALSA firewire stack to reserve/release isochronous resources in
-pcm.hw_params/hw_free callbacks.
+The registration of isochronous channels is done just after allocation
+of isochronous resources. This commit separates the registration just
+before starting packet streaming.
 
-In current implementation, the resources are reserved at the same time
-to start packet streaming, and released at the same time to stop packet
-streaming. However, once allocated, the resources are available
-independent of lifetime of packet streaming.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/tascam/tascam-stream.c | 84 +++++++++++++--------------
+ 1 file changed, 40 insertions(+), 44 deletions(-)
 
-The isochronous resources are the resources of IEEE 1394 bus. On the
-other side of view, it's a kind of resources of hardware to maintain
-the bus (isochronous resource manager). For this kind of reservation and
-release, hw_params and hw_free operations are suitable in ALSA PCM
-interface.
-
-Ideally, the operation to reserve/release isochronous resource should
-be separated from the operation to start/stop packet streaming. However,
-IEEE 1394 bus has reset event. Once reset occurs, isochronous resource
-manager releases allocated resources. The resources should be
-reallocated by requesters themselves. For this reason, in this patchset,
-bus generation is checked before starting packet streaming. If
-generation is updated, reallocation is requested to isochronous
-resource manager, then packet streaming starts.
-
-Takashi Sakamoto (15):
-  ALSA: firewire-tascam: code refactoring for registration of
-    isochronous channels
-  ALSA: firewire-tascam: code refactoring for reservation of isochronous
-    resources
-  ALSA: firewire-tascam: code refactoring for release of isochronous
-    resources
-  ALSA: firewire-tascam: reserve/release isochronous resources in
-    pcm.hw_params/hw_free callbacks
-  ALSA: firewire-tascam: update isochronous resources when starting
-    packet streaming after bus reset
-  ALSA: firewire-tascam: minor code refactoring to finish streaming
-    session
-  ALSA: firewire-tascam: code refactoring for pcm.hw_params/hw_free
-    callbacks
-  ALSA: fireface: add protocol-specific operation to allocate
-    isochronous resources
-  ALSA: fireface: support allocate_resources operation in ff800 protocol
-  ALSA: fireface: support allocate_resources operation in ff400 protocol
-  ALSA: fireface: support allocate_resources operation in latter
-    protocol
-  ALSA: fireface: reserve/release isochronous resources in
-    pcm.hw_params/hw_free callbacks
-  ALSA: fireface: update isochronous resources when starting packet
-    streaming after bus-reset
-  ALSA: fireface: minor code refactoring to finish streaming session
-  ALSA: fireface: code refactoring for pcm.hw_params/hw_free callbacks
-
- sound/firewire/fireface/ff-pcm.c             |  57 ++---
- sound/firewire/fireface/ff-protocol-former.c | 112 +++++-----
- sound/firewire/fireface/ff-protocol-latter.c | 114 +++++-----
- sound/firewire/fireface/ff-stream.c          |  85 ++++----
- sound/firewire/fireface/ff.h                 |   3 +
- sound/firewire/tascam/tascam-pcm.c           |  59 ++----
- sound/firewire/tascam/tascam-stream.c        | 209 ++++++++++---------
- sound/firewire/tascam/tascam.h               |   2 +
- 8 files changed, 306 insertions(+), 335 deletions(-)
-
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
+index f1657a4e0621..7cddd9ece4ee 100644
+--- a/sound/firewire/tascam/tascam-stream.c
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -195,6 +195,19 @@ static void finish_session(struct snd_tscm *tscm)
+ 			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_ON,
+ 			   &reg, sizeof(reg), 0);
+ 
++	// Unregister channels.
++	reg = cpu_to_be32(0x00000000);
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
++			   &reg, sizeof(reg), 0);
++	reg = cpu_to_be32(0x00000000);
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
++			   &reg, sizeof(reg), 0);
++	reg = cpu_to_be32(0x00000000);
++	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
++			   &reg, sizeof(reg), 0);
+ }
+ 
+ static int begin_session(struct snd_tscm *tscm)
+@@ -202,6 +215,30 @@ static int begin_session(struct snd_tscm *tscm)
+ 	__be32 reg;
+ 	int err;
+ 
++	// Register the isochronous channel for transmitting stream.
++	reg = cpu_to_be32(tscm->tx_resources.channel);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	// Unknown.
++	reg = cpu_to_be32(0x00000002);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
++	// Register the isochronous channel for receiving stream.
++	reg = cpu_to_be32(tscm->rx_resources.channel);
++	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
++				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
++				 &reg, sizeof(reg), 0);
++	if (err < 0)
++		return err;
++
+ 	reg = cpu_to_be32(0x00000001);
+ 	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+ 				 TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
+@@ -216,7 +253,7 @@ static int begin_session(struct snd_tscm *tscm)
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* Set an option for unknown purpose. */
++	// Set an option for unknown purpose.
+ 	reg = cpu_to_be32(0x00002000);
+ 	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+ 				 TSCM_ADDR_BASE + TSCM_OFFSET_SET_OPTION,
+@@ -224,7 +261,7 @@ static int begin_session(struct snd_tscm *tscm)
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* Start multiplexing PCM samples on packets. */
++	// Start multiplexing PCM samples on packets.
+ 	reg = cpu_to_be32(0x00000001);
+ 	return snd_fw_transaction(tscm->unit,
+ 				  TCODE_WRITE_QUADLET_REQUEST,
+@@ -234,30 +271,13 @@ static int begin_session(struct snd_tscm *tscm)
+ 
+ static void release_resources(struct snd_tscm *tscm)
+ {
+-	__be32 reg;
+-
+-	/* Unregister channels. */
+-	reg = cpu_to_be32(0x00000000);
+-	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+-			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
+-			   &reg, sizeof(reg), 0);
+-	reg = cpu_to_be32(0x00000000);
+-	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+-			   TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
+-			   &reg, sizeof(reg), 0);
+-	reg = cpu_to_be32(0x00000000);
+-	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+-			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
+-			   &reg, sizeof(reg), 0);
+-
+-	/* Release isochronous resources. */
++	// Release isochronous resources.
+ 	fw_iso_resources_free(&tscm->tx_resources);
+ 	fw_iso_resources_free(&tscm->rx_resources);
+ }
+ 
+ static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
+ {
+-	__be32 reg;
+ 	int err;
+ 
+ 	/* Keep resources for in-stream. */
+@@ -280,30 +300,6 @@ static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* Register the isochronous channel for transmitting stream. */
+-	reg = cpu_to_be32(tscm->tx_resources.channel);
+-	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+-				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
+-				 &reg, sizeof(reg), 0);
+-	if (err < 0)
+-		goto error;
+-
+-	/* Unknown */
+-	reg = cpu_to_be32(0x00000002);
+-	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+-				 TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
+-				 &reg, sizeof(reg), 0);
+-	if (err < 0)
+-		goto error;
+-
+-	/* Register the isochronous channel for receiving stream. */
+-	reg = cpu_to_be32(tscm->rx_resources.channel);
+-	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+-				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
+-				 &reg, sizeof(reg), 0);
+-	if (err < 0)
+-		goto error;
+-
+ 	return 0;
+ error:
+ 	release_resources(tscm);
 -- 
 2.20.1
