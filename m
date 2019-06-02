@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/15] ALSA: fireface: minor code refactoring
-	to finish streaming session
-Date: Sun,  2 Jun 2019 16:12:58 +0900
-Message-ID: <20190602071259.21622-15-o-takashi@sakamocchi.jp>
+Subject: [PATCH 15/15] ALSA: fireface: code refactoring for
+	pcm.hw_params/hw_free callbacks
+Date: Sun,  2 Jun 2019 16:12:59 +0900
+Message-ID: <20190602071259.21622-16-o-takashi@sakamocchi.jp>
 References: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28D47F8974F
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:27 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7EF7F89756
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:28 +0200 (CEST)
 In-Reply-To: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,79 +28,102 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The operation to finish packet streaming corresponds to stopping
-isochronous contexts.
+The pairs of pcm.hw_params callbacks and .hw_free callbacks for both
+direction have no differences.
 
-This commit applies code refactoring to move codes to stop into
-a helper function to finish the session.
+This commit unifies the pairs.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-stream.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
+ sound/firewire/fireface/ff-pcm.c | 55 ++++----------------------------
+ 1 file changed, 7 insertions(+), 48 deletions(-)
 
-diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
-index 4f40dfb11979..884705ecf940 100644
---- a/sound/firewire/fireface/ff-stream.c
-+++ b/sound/firewire/fireface/ff-stream.c
-@@ -33,6 +33,9 @@ int snd_ff_stream_get_multiplier_mode(enum cip_sfc sfc,
- 
- static inline void finish_session(struct snd_ff *ff)
- {
-+	amdtp_stream_stop(&ff->tx_stream);
-+	amdtp_stream_stop(&ff->rx_stream);
-+
- 	ff->spec->protocol->finish_session(ff);
- 	ff->spec->protocol->switch_fetching_mode(ff, false);
- }
-@@ -112,9 +115,6 @@ int snd_ff_stream_reserve_duplex(struct snd_ff *ff, unsigned int rate)
- 		enum snd_ff_stream_mode mode;
- 		int i;
- 
--		amdtp_stream_stop(&ff->tx_stream);
--		amdtp_stream_stop(&ff->rx_stream);
--
- 		finish_session(ff);
- 
- 		fw_iso_resources_free(&ff->tx_resources);
-@@ -165,12 +165,8 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
- 		return 0;
- 
- 	if (amdtp_streaming_error(&ff->tx_stream) ||
--	    amdtp_streaming_error(&ff->rx_stream)) {
--		amdtp_stream_stop(&ff->tx_stream);
--		amdtp_stream_stop(&ff->rx_stream);
--
-+	    amdtp_streaming_error(&ff->rx_stream))
- 		finish_session(ff);
--	}
- 
- 	/*
- 	 * Regardless of current source of clock signal, drivers transfer some
-@@ -214,9 +210,6 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
- 
+diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
+index 53477404a58f..938985c2d4a8 100644
+--- a/sound/firewire/fireface/ff-pcm.c
++++ b/sound/firewire/fireface/ff-pcm.c
+@@ -199,8 +199,8 @@ static int pcm_close(struct snd_pcm_substream *substream)
  	return 0;
- error:
--	amdtp_stream_stop(&ff->tx_stream);
--	amdtp_stream_stop(&ff->rx_stream);
--
- 	finish_session(ff);
- 
- 	return err;
-@@ -224,12 +217,8 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
- 
- void snd_ff_stream_stop_duplex(struct snd_ff *ff)
- {
--	if (ff->substreams_counter > 0)
--		return;
--
--	amdtp_stream_stop(&ff->tx_stream);
--	amdtp_stream_stop(&ff->rx_stream);
--	finish_session(ff);
-+	if (ff->substreams_counter == 0)
-+		finish_session(ff);
  }
  
- void snd_ff_stream_update_duplex(struct snd_ff *ff)
+-static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+-				 struct snd_pcm_hw_params *hw_params)
++static int pcm_hw_params(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_ff *ff = substream->private_data;
+ 	int err;
+@@ -223,48 +223,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
+-				  struct snd_pcm_hw_params *hw_params)
+-{
+-	struct snd_ff *ff = substream->private_data;
+-	int err;
+-
+-	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-					       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		return err;
+-
+-	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+-		unsigned int rate = params_rate(hw_params);
+-
+-		mutex_lock(&ff->mutex);
+-		err = snd_ff_stream_reserve_duplex(ff, rate);
+-		if (err >= 0)
+-			++ff->substreams_counter;
+-		mutex_unlock(&ff->mutex);
+-	}
+-
+-	return 0;
+-}
+-
+-static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_ff *ff = substream->private_data;
+-
+-	mutex_lock(&ff->mutex);
+-
+-	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		--ff->substreams_counter;
+-
+-	snd_ff_stream_stop_duplex(ff);
+-	snd_ff_stream_release_duplex(ff);
+-
+-	mutex_unlock(&ff->mutex);
+-
+-	return snd_pcm_lib_free_vmalloc_buffer(substream);
+-}
+-
+-static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++static int pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_ff *ff = substream->private_data;
+ 
+@@ -385,8 +344,8 @@ int snd_ff_create_pcm_devices(struct snd_ff *ff)
+ 		.open		= pcm_open,
+ 		.close		= pcm_close,
+ 		.ioctl		= snd_pcm_lib_ioctl,
+-		.hw_params	= pcm_capture_hw_params,
+-		.hw_free	= pcm_capture_hw_free,
++		.hw_params	= pcm_hw_params,
++		.hw_free	= pcm_hw_free,
+ 		.prepare	= pcm_capture_prepare,
+ 		.trigger	= pcm_capture_trigger,
+ 		.pointer	= pcm_capture_pointer,
+@@ -397,8 +356,8 @@ int snd_ff_create_pcm_devices(struct snd_ff *ff)
+ 		.open		= pcm_open,
+ 		.close		= pcm_close,
+ 		.ioctl		= snd_pcm_lib_ioctl,
+-		.hw_params	= pcm_playback_hw_params,
+-		.hw_free	= pcm_playback_hw_free,
++		.hw_params	= pcm_hw_params,
++		.hw_free	= pcm_hw_free,
+ 		.prepare	= pcm_playback_prepare,
+ 		.trigger	= pcm_playback_trigger,
+ 		.pointer	= pcm_playback_pointer,
 -- 
 2.20.1
