@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/15] ALSA: firewire-tascam: code refactoring
-	for registration of isochronous channels
-Date: Sun,  2 Jun 2019 16:12:45 +0900
-Message-ID: <20190602071259.21622-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/15] ALSA: firewire-tascam: code refactoring
+	for reservation of isochronous resources
+Date: Sun,  2 Jun 2019 16:12:46 +0900
+Message-ID: <20190602071259.21622-3-o-takashi@sakamocchi.jp>
 References: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7CADF80CC4
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:07 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2EFE5F896EF
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:08 +0200 (CEST)
 In-Reply-To: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,150 +31,76 @@ List-Id: alsa-devel@alsa-project.org
 This commit is a part of preparation to perform allocation/release
 of isochronous channels in pcm.hw_params/hw_free callbacks.
 
-The registration of isochronous channels is done just after allocation
-of isochronous resources. This commit separates the registration just
-before starting packet streaming.
+This commit applies minor code refactoring for a helper function to
+allocate isochronous resources.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-stream.c | 84 +++++++++++++--------------
- 1 file changed, 40 insertions(+), 44 deletions(-)
+ sound/firewire/tascam/tascam-stream.c | 38 +++++++++++----------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
 
 diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
-index f1657a4e0621..7cddd9ece4ee 100644
+index 7cddd9ece4ee..fc963469f6b0 100644
 --- a/sound/firewire/tascam/tascam-stream.c
 +++ b/sound/firewire/tascam/tascam-stream.c
-@@ -195,6 +195,19 @@ static void finish_session(struct snd_tscm *tscm)
- 			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_ON,
- 			   &reg, sizeof(reg), 0);
- 
-+	// Unregister channels.
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
-+			   &reg, sizeof(reg), 0);
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
-+			   &reg, sizeof(reg), 0);
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
-+			   &reg, sizeof(reg), 0);
- }
- 
- static int begin_session(struct snd_tscm *tscm)
-@@ -202,6 +215,30 @@ static int begin_session(struct snd_tscm *tscm)
- 	__be32 reg;
- 	int err;
- 
-+	// Register the isochronous channel for transmitting stream.
-+	reg = cpu_to_be32(tscm->tx_resources.channel);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	// Unknown.
-+	reg = cpu_to_be32(0x00000002);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	// Register the isochronous channel for receiving stream.
-+	reg = cpu_to_be32(tscm->rx_resources.channel);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
- 	reg = cpu_to_be32(0x00000001);
- 	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
- 				 TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
-@@ -216,7 +253,7 @@ static int begin_session(struct snd_tscm *tscm)
- 	if (err < 0)
- 		return err;
- 
--	/* Set an option for unknown purpose. */
-+	// Set an option for unknown purpose.
- 	reg = cpu_to_be32(0x00002000);
- 	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
- 				 TSCM_ADDR_BASE + TSCM_OFFSET_SET_OPTION,
-@@ -224,7 +261,7 @@ static int begin_session(struct snd_tscm *tscm)
- 	if (err < 0)
- 		return err;
- 
--	/* Start multiplexing PCM samples on packets. */
-+	// Start multiplexing PCM samples on packets.
- 	reg = cpu_to_be32(0x00000001);
- 	return snd_fw_transaction(tscm->unit,
- 				  TCODE_WRITE_QUADLET_REQUEST,
-@@ -234,30 +271,13 @@ static int begin_session(struct snd_tscm *tscm)
- 
- static void release_resources(struct snd_tscm *tscm)
- {
--	__be32 reg;
--
--	/* Unregister channels. */
--	reg = cpu_to_be32(0x00000000);
--	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
--			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
--			   &reg, sizeof(reg), 0);
--	reg = cpu_to_be32(0x00000000);
--	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
--			   TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
--			   &reg, sizeof(reg), 0);
--	reg = cpu_to_be32(0x00000000);
--	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
--			   TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
--			   &reg, sizeof(reg), 0);
--
--	/* Release isochronous resources. */
-+	// Release isochronous resources.
- 	fw_iso_resources_free(&tscm->tx_resources);
+@@ -276,34 +276,24 @@ static void release_resources(struct snd_tscm *tscm)
  	fw_iso_resources_free(&tscm->rx_resources);
  }
  
- static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
+-static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
++static int keep_resources(struct snd_tscm *tscm, unsigned int rate,
++			  struct amdtp_stream *stream)
  {
--	__be32 reg;
++	struct fw_iso_resources *resources;
  	int err;
  
- 	/* Keep resources for in-stream. */
-@@ -280,30 +300,6 @@ static int keep_resources(struct snd_tscm *tscm, unsigned int rate)
+-	/* Keep resources for in-stream. */
+-	err = amdtp_tscm_set_parameters(&tscm->tx_stream, rate);
+-	if (err < 0)
+-		return err;
+-	err = fw_iso_resources_allocate(&tscm->tx_resources,
+-			amdtp_stream_get_max_payload(&tscm->tx_stream),
+-			fw_parent_device(tscm->unit)->max_speed);
+-	if (err < 0)
+-		goto error;
++	if (stream == &tscm->tx_stream)
++		resources = &tscm->tx_resources;
++	else
++		resources = &tscm->rx_resources;
+ 
+-	/* Keep resources for out-stream. */
+-	err = amdtp_tscm_set_parameters(&tscm->rx_stream, rate);
+-	if (err < 0)
+-		return err;
+-	err = fw_iso_resources_allocate(&tscm->rx_resources,
+-			amdtp_stream_get_max_payload(&tscm->rx_stream),
+-			fw_parent_device(tscm->unit)->max_speed);
++	err = amdtp_tscm_set_parameters(stream, rate);
  	if (err < 0)
  		return err;
  
--	/* Register the isochronous channel for transmitting stream. */
--	reg = cpu_to_be32(tscm->tx_resources.channel);
--	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
--				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_TX_CH,
--				 &reg, sizeof(reg), 0);
--	if (err < 0)
--		goto error;
--
--	/* Unknown */
--	reg = cpu_to_be32(0x00000002);
--	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
--				 TSCM_ADDR_BASE + TSCM_OFFSET_UNKNOWN,
--				 &reg, sizeof(reg), 0);
--	if (err < 0)
--		goto error;
--
--	/* Register the isochronous channel for receiving stream. */
--	reg = cpu_to_be32(tscm->rx_resources.channel);
--	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
--				 TSCM_ADDR_BASE + TSCM_OFFSET_ISOC_RX_CH,
--				 &reg, sizeof(reg), 0);
--	if (err < 0)
--		goto error;
--
- 	return 0;
- error:
- 	release_resources(tscm);
+-	return 0;
+-error:
+-	release_resources(tscm);
+-	return err;
++	return fw_iso_resources_allocate(resources,
++				amdtp_stream_get_max_payload(stream),
++				fw_parent_device(tscm->unit)->max_speed);
+ }
+ 
+ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
+@@ -388,7 +378,11 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 	}
+ 
+ 	if (!amdtp_stream_running(&tscm->rx_stream)) {
+-		err = keep_resources(tscm, rate);
++		err = keep_resources(tscm, rate, &tscm->tx_stream);
++		if (err < 0)
++			goto error;
++
++		err = keep_resources(tscm, rate, &tscm->rx_stream);
+ 		if (err < 0)
+ 			goto error;
+ 
 -- 
 2.20.1
