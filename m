@@ -1,52 +1,95 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH] treewide: fix typos of SPDX-License-Identifier
-Date: Sat, 1 Jun 2019 18:29:45 +0200
-Message-ID: <20190601162945.GA6395@kroah.com>
-References: <20190601032242.10405-1-yamada.masahiro@socionext.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 00/15] ALSA: firewire-tascam/fireface:
+	reserve/release isochronous resources in
+	pcm.hw_params/hw_free callbacks
+Date: Sun,  2 Jun 2019 16:12:44 +0900
+Message-ID: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190601032242.10405-1-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-spdx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, Joe Perches <joe@perches.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org, Alexandre Torgue <alexandre.torgue@st.com>, Linus Walleij <linus.walleij@linaro.org>, linux-stm32@st-md-mailman.stormreply.com, linux-renesas-soc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Kishon Vijay Abraham I <kishon@ti.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B28EF80C06
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:06 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 01, 2019 at 12:22:42PM +0900, Masahiro Yamada wrote:
-> Prior to the adoption of SPDX, it was difficult for tools to determine
-> the correct license due to incomplete or badly formatted license text.
-> The SPDX solves this issue, assuming people can correctly spell
-> "SPDX-License-Identifier" although this assumption is broken in some
-> places.
-> 
-> Since scripts/spdxcheck.py parses only lines that exactly matches to
-> the correct tag, it cannot (should not) detect this kind of error.
-> 
-> If the correct tag is missing, scripts/checkpatch.pl warns like this:
-> 
->  WARNING: Missing or malformed SPDX-License-Identifier tag in line *
-> 
-> So, people should notice it before the patch submission, but in reality
-> broken tags sometimes slip in. The checkpatch warning is not useful for
-> checking the committed files globally since large number of files still
-> have no SPDX tag.
-> 
-> Also, I am not sure about the legal effect when the SPDX tag is broken.
-> 
-> Anyway, these typos are absolutely worth fixing. It is pretty easy to
-> find suspicious lines by grep.
-> 
->   $ git grep --not -e SPDX-License-Identifier --and -e SPDX- -- \
->     :^LICENSES :^scripts/spdxcheck.py :^*/license-rules.rst
->   arch/arm/kernel/bugs.c:// SPDX-Identifier: GPL-2.0
->   drivers/phy/st/phy-stm32-usbphyc.c:// SPDX-Licence-Identifier: GPL-2.0
->   drivers/pinctrl/sh-pfc/pfc-r8a77980.c:// SPDX-Lincense-Identifier: GPL 2.0
->   lib/test_stackinit.c:// SPDX-Licenses: GPLv2
->   sound/soc/codecs/max9759.c:// SPDX-Licence-Identifier: GPL-2.0
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Hi,
 
-Very nice catch, thanks!  I'll go queue this up now.
+This patchset is a part of series of patches for all of drivers in
+ALSA firewire stack to reserve/release isochronous resources in
+pcm.hw_params/hw_free callbacks.
 
-greg k-h
+In current implementation, the resources are reserved at the same time
+to start packet streaming, and released at the same time to stop packet
+streaming. However, once allocated, the resources are available
+independent of lifetime of packet streaming.
+
+The isochronous resources are the resources of IEEE 1394 bus. On the
+other side of view, it's a kind of resources of hardware to maintain
+the bus (isochronous resource manager). For this kind of reservation and
+release, hw_params and hw_free operations are suitable in ALSA PCM
+interface.
+
+Ideally, the operation to reserve/release isochronous resource should
+be separated from the operation to start/stop packet streaming. However,
+IEEE 1394 bus has reset event. Once reset occurs, isochronous resource
+manager releases allocated resources. The resources should be
+reallocated by requesters themselves. For this reason, in this patchset,
+bus generation is checked before starting packet streaming. If
+generation is updated, reallocation is requested to isochronous
+resource manager, then packet streaming starts.
+
+Takashi Sakamoto (15):
+  ALSA: firewire-tascam: code refactoring for registration of
+    isochronous channels
+  ALSA: firewire-tascam: code refactoring for reservation of isochronous
+    resources
+  ALSA: firewire-tascam: code refactoring for release of isochronous
+    resources
+  ALSA: firewire-tascam: reserve/release isochronous resources in
+    pcm.hw_params/hw_free callbacks
+  ALSA: firewire-tascam: update isochronous resources when starting
+    packet streaming after bus reset
+  ALSA: firewire-tascam: minor code refactoring to finish streaming
+    session
+  ALSA: firewire-tascam: code refactoring for pcm.hw_params/hw_free
+    callbacks
+  ALSA: fireface: add protocol-specific operation to allocate
+    isochronous resources
+  ALSA: fireface: support allocate_resources operation in ff800 protocol
+  ALSA: fireface: support allocate_resources operation in ff400 protocol
+  ALSA: fireface: support allocate_resources operation in latter
+    protocol
+  ALSA: fireface: reserve/release isochronous resources in
+    pcm.hw_params/hw_free callbacks
+  ALSA: fireface: update isochronous resources when starting packet
+    streaming after bus-reset
+  ALSA: fireface: minor code refactoring to finish streaming session
+  ALSA: fireface: code refactoring for pcm.hw_params/hw_free callbacks
+
+ sound/firewire/fireface/ff-pcm.c             |  57 ++---
+ sound/firewire/fireface/ff-protocol-former.c | 112 +++++-----
+ sound/firewire/fireface/ff-protocol-latter.c | 114 +++++-----
+ sound/firewire/fireface/ff-stream.c          |  85 ++++----
+ sound/firewire/fireface/ff.h                 |   3 +
+ sound/firewire/tascam/tascam-pcm.c           |  59 ++----
+ sound/firewire/tascam/tascam-stream.c        | 209 ++++++++++---------
+ sound/firewire/tascam/tascam.h               |   2 +
+ 8 files changed, 306 insertions(+), 335 deletions(-)
+
+-- 
+2.20.1
