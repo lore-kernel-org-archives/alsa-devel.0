@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/15] ALSA: firewire-tascam: update
-	isochronous resources when starting packet streaming after bus reset
-Date: Sun,  2 Jun 2019 16:12:49 +0900
-Message-ID: <20190602071259.21622-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/15] ALSA: firewire-tascam: minor code
+	refactoring to finish streaming session
+Date: Sun,  2 Jun 2019 16:12:50 +0900
+Message-ID: <20190602071259.21622-7-o-takashi@sakamocchi.jp>
 References: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C43FFF896F7
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:13 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F403AF896FE
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:14 +0200 (CEST)
 In-Reply-To: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,63 +28,78 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After bus reset, isochronous resource manager releases all of allocated
-isochronous resources. The nodes to restart packet streaming should
-request reallocation of the resources.
+The operation to finish packet streaming corresponds to stopping
+isochronous contexts.
 
-However, between the bus-reset and invocation of 'struct fw_driver.update'
-handler, ALSA PCM application can detect this situation by XRUN because
-the target device cancelled to transmit packets once bus-reset occurs.
-
-Due to the above mechanism, ALSA firewire-tascam driver just stops
-packet streaming in the update handler, thus pcm.prepare handler
-should request the reallocation.
-
-This commit requests the reallocation in pcm.prepare callback when
-bus generation is changed.
+This commit applies code refactoring to move codes to stop into
+a helper function to finish the session.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-stream.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ sound/firewire/tascam/tascam-stream.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
 diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
-index 18d554d46be5..be9dcc808188 100644
+index be9dcc808188..f572dfc15114 100644
 --- a/sound/firewire/tascam/tascam-stream.c
 +++ b/sound/firewire/tascam/tascam-stream.c
-@@ -321,7 +321,7 @@ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
+@@ -181,6 +181,9 @@ static void finish_session(struct snd_tscm *tscm)
+ {
+ 	__be32 reg;
+ 
++	amdtp_stream_stop(&tscm->rx_stream);
++	amdtp_stream_stop(&tscm->tx_stream);
++
+ 	reg = 0;
+ 	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+ 			   TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
+@@ -354,9 +357,6 @@ int snd_tscm_stream_reserve_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 		return err;
+ 
+ 	if (tscm->substreams_counter == 0 || rate != curr_rate) {
+-		amdtp_stream_stop(&tscm->rx_stream);
+-		amdtp_stream_stop(&tscm->tx_stream);
+-
+ 		finish_session(tscm);
+ 
+ 		fw_iso_resources_free(&tscm->tx_resources);
+@@ -397,12 +397,8 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 		return 0;
+ 
+ 	if (amdtp_streaming_error(&tscm->rx_stream) ||
+-	    amdtp_streaming_error(&tscm->tx_stream)) {
+-		amdtp_stream_stop(&tscm->rx_stream);
+-		amdtp_stream_stop(&tscm->tx_stream);
+-
++	    amdtp_streaming_error(&tscm->tx_stream))
+ 		finish_session(tscm);
+-	}
+ 
+ 	if (generation != fw_parent_device(tscm->unit)->card->generation) {
+ 		err = fw_iso_resources_update(&tscm->tx_resources);
+@@ -452,9 +448,6 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 
+ 	return 0;
+ error:
+-	amdtp_stream_stop(&tscm->rx_stream);
+-	amdtp_stream_stop(&tscm->tx_stream);
+-
+ 	finish_session(tscm);
+ 
  	return err;
+@@ -462,12 +455,8 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
+ {
+-	if (tscm->substreams_counter == 0) {
+-		amdtp_stream_stop(&tscm->tx_stream);
+-		amdtp_stream_stop(&tscm->rx_stream);
+-
++	if (tscm->substreams_counter == 0)
+ 		finish_session(tscm);
+-	}
  }
  
--/* At bus reset, streaming is stopped and some registers are clear. */
-+// At bus reset, streaming is stopped and some registers are clear.
- void snd_tscm_stream_update_duplex(struct snd_tscm *tscm)
- {
- 	amdtp_stream_pcm_abort(&tscm->tx_stream);
-@@ -390,6 +390,7 @@ void snd_tscm_stream_release_duplex(struct snd_tscm *tscm)
- 
- int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- {
-+	unsigned int generation = tscm->rx_resources.generation;
- 	int err;
- 
- 	if (tscm->substreams_counter == 0)
-@@ -403,6 +404,16 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- 		finish_session(tscm);
- 	}
- 
-+	if (generation != fw_parent_device(tscm->unit)->card->generation) {
-+		err = fw_iso_resources_update(&tscm->tx_resources);
-+		if (err < 0)
-+			goto error;
-+
-+		err = fw_iso_resources_update(&tscm->rx_resources);
-+		if (err < 0)
-+			goto error;
-+	}
-+
- 	if (!amdtp_stream_running(&tscm->rx_stream)) {
- 		err = set_stream_formats(tscm, rate);
- 		if (err < 0)
+ void snd_tscm_stream_lock_changed(struct snd_tscm *tscm)
 -- 
 2.20.1
