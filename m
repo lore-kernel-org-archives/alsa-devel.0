@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/15] ALSA: fireface: support
-	allocate_resources operation in latter protocol
-Date: Sun,  2 Jun 2019 16:12:55 +0900
-Message-ID: <20190602071259.21622-12-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/15] ALSA: fireface: reserve/release
+	isochronous resources in pcm.hw_params/hw_free callbacks
+Date: Sun,  2 Jun 2019 16:12:56 +0900
+Message-ID: <20190602071259.21622-13-o-takashi@sakamocchi.jp>
 References: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DAE0F89741
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:22 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37EF2F89744
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2019 09:13:24 +0200 (CEST)
 In-Reply-To: <20190602071259.21622-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,190 +28,215 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit is a part of preparation to perform allocation/release
-of isochronous channels in pcm.hw_params/hw_free callbacks.
+Once allocated, isochronous resources are available for packet
+streaming, even if the streaming is cancelled. For this reason,
+current implementation handles allocation of the resources and
+starting packet streaming at the same time. However, this brings
+complicated procedure to start packet streaming.
 
-This commit implements allocate_resources callback for the protocol
-specific to latter models. The encoded values of constant table is
-split into several condition statements to separate the operation
-to configure sampling transfer frequency from the operation to
-configure the number of data channels in rx packet.
+This commit separates the allocation and starting. The allocation is
+done in pcm.hw_params callback and available till pcm.hw_free callback.
+Even if any XRUN occurs, pcm.prepare callback is done to restart
+packet streaming for allocated the resources.
+
+There are two points to stop packet streaming; in pcm.hw_params and
+pcm.prepare callbacks.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-protocol-latter.c | 113 +++++++++----------
- 1 file changed, 56 insertions(+), 57 deletions(-)
+ sound/firewire/fireface/ff-pcm.c    | 18 ++++++--
+ sound/firewire/fireface/ff-stream.c | 67 ++++++++++++++++++-----------
+ sound/firewire/fireface/ff.h        |  2 +
+ 3 files changed, 57 insertions(+), 30 deletions(-)
 
-diff --git a/sound/firewire/fireface/ff-protocol-latter.c b/sound/firewire/fireface/ff-protocol-latter.c
-index c8236ff89b7f..3d12ba5b2a9b 100644
---- a/sound/firewire/fireface/ff-protocol-latter.c
-+++ b/sound/firewire/fireface/ff-protocol-latter.c
-@@ -97,25 +97,64 @@ static int latter_switch_fetching_mode(struct snd_ff *ff, bool enable)
- 				  LATTER_FETCH_MODE, &reg, sizeof(reg), 0);
- }
+diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
+index 5adf04b95c04..53477404a58f 100644
+--- a/sound/firewire/fireface/ff-pcm.c
++++ b/sound/firewire/fireface/ff-pcm.c
+@@ -211,8 +211,12 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 		return err;
  
--static int keep_resources(struct snd_ff *ff, unsigned int rate)
-+static int latter_allocate_resources(struct snd_ff *ff, unsigned int rate)
- {
- 	enum snd_ff_stream_mode mode;
-+	unsigned int code;
-+	__le32 reg;
-+	unsigned int count;
- 	int i;
- 	int err;
- 
--	// Check whether the given value is supported or not.
--	for (i = 0; i < CIP_SFC_COUNT; i++) {
--		if (amdtp_rate_table[i] == rate)
-+	// Set the number of data blocks transferred in a second.
-+	if (rate % 32000 == 0)
-+		code = 0x00;
-+	else if (rate % 44100 == 0)
-+		code = 0x02;
-+	else if (rate % 48000 == 0)
-+		code = 0x04;
-+	else
-+		return -EINVAL;
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		unsigned int rate = params_rate(hw_params);
 +
-+	if (rate >= 64000 && rate < 128000)
-+		code |= 0x08;
-+	else if (rate >= 128000 && rate < 192000)
-+		code |= 0x10;
-+
-+	reg = cpu_to_le32(code);
-+	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 LATTER_STF, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	// Confirm to shift transmission clock.
-+	count = 0;
-+	while (count++ < 10) {
-+		unsigned int curr_rate;
-+		enum snd_ff_clock_src src;
-+
-+		err = latter_get_clock(ff, &curr_rate, &src);
-+		if (err < 0)
-+			return err;
-+
-+		if (curr_rate == rate)
- 			break;
+ 		mutex_lock(&ff->mutex);
+-		ff->substreams_counter++;
++		err = snd_ff_stream_reserve_duplex(ff, rate);
++		if (err >= 0)
++			++ff->substreams_counter;
+ 		mutex_unlock(&ff->mutex);
  	}
--	if (i >= CIP_SFC_COUNT)
-+	if (count == 10)
-+		return -ETIMEDOUT;
+ 
+@@ -231,8 +235,12 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ 		return err;
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		unsigned int rate = params_rate(hw_params);
 +
-+	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); ++i) {
-+		if (rate == amdtp_rate_table[i])
-+			break;
-+	}
-+	if (i == ARRAY_SIZE(amdtp_rate_table))
- 		return -EINVAL;
+ 		mutex_lock(&ff->mutex);
+-		ff->substreams_counter++;
++		err = snd_ff_stream_reserve_duplex(ff, rate);
++		if (err >= 0)
++			++ff->substreams_counter;
+ 		mutex_unlock(&ff->mutex);
+ 	}
  
- 	err = snd_ff_stream_get_multiplier_mode(i, &mode);
- 	if (err < 0)
- 		return err;
+@@ -246,9 +254,10 @@ static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+ 	mutex_lock(&ff->mutex);
  
--	/* Keep resources for in-stream. */
-+	// Keep resources for in-stream.
- 	ff->tx_resources.channels_mask = 0x00000000000000ffuLL;
- 	err = fw_iso_resources_allocate(&ff->tx_resources,
- 			amdtp_stream_get_max_payload(&ff->tx_stream),
-@@ -123,7 +162,7 @@ static int keep_resources(struct snd_ff *ff, unsigned int rate)
- 	if (err < 0)
- 		return err;
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		ff->substreams_counter--;
++		--ff->substreams_counter;
  
--	/* Keep resources for out-stream. */
-+	// Keep resources for out-stream.
- 	ff->rx_resources.channels_mask = 0x00000000000000ffuLL;
- 	err = fw_iso_resources_allocate(&ff->rx_resources,
- 			amdtp_stream_get_max_payload(&ff->rx_stream),
-@@ -136,61 +175,20 @@ static int keep_resources(struct snd_ff *ff, unsigned int rate)
+ 	snd_ff_stream_stop_duplex(ff);
++	snd_ff_stream_release_duplex(ff);
  
- static int latter_begin_session(struct snd_ff *ff, unsigned int rate)
+ 	mutex_unlock(&ff->mutex);
+ 
+@@ -262,9 +271,10 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
+ 	mutex_lock(&ff->mutex);
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		ff->substreams_counter--;
++		--ff->substreams_counter;
+ 
+ 	snd_ff_stream_stop_duplex(ff);
++	snd_ff_stream_release_duplex(ff);
+ 
+ 	mutex_unlock(&ff->mutex);
+ 
+diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
+index 740963e4e1c9..d9d1b469a8e9 100644
+--- a/sound/firewire/fireface/ff-stream.c
++++ b/sound/firewire/fireface/ff-stream.c
+@@ -31,12 +31,6 @@ int snd_ff_stream_get_multiplier_mode(enum cip_sfc sfc,
+ 	return 0;
+ }
+ 
+-static void release_resources(struct snd_ff *ff)
+-{
+-	fw_iso_resources_free(&ff->tx_resources);
+-	fw_iso_resources_free(&ff->rx_resources);
+-}
+-
+ static inline void finish_session(struct snd_ff *ff)
  {
--	static const struct {
--		unsigned int stf;
--		unsigned int code;
--		unsigned int flag;
--	} *entry, rate_table[] = {
--		{ 32000,  0x00, 0x92, },
--		{ 44100,  0x02, 0x92, },
--		{ 48000,  0x04, 0x92, },
--		{ 64000,  0x08, 0x8e, },
--		{ 88200,  0x0a, 0x8e, },
--		{ 96000,  0x0c, 0x8e, },
--		{ 128000, 0x10, 0x8c, },
--		{ 176400, 0x12, 0x8c, },
--		{ 192000, 0x14, 0x8c, },
--	};
-+	unsigned int flag;
- 	u32 data;
- 	__le32 reg;
--	unsigned int count;
--	int i;
+ 	ff->spec->protocol->finish_session(ff);
+@@ -104,36 +98,27 @@ void snd_ff_stream_destroy_duplex(struct snd_ff *ff)
+ 	destroy_stream(ff, AMDTP_OUT_STREAM);
+ }
+ 
+-int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
++int snd_ff_stream_reserve_duplex(struct snd_ff *ff, unsigned int rate)
+ {
+ 	unsigned int curr_rate;
+ 	enum snd_ff_clock_src src;
  	int err;
  
--	for (i = 0; i < ARRAY_SIZE(rate_table); ++i) {
--		entry = rate_table + i;
--		if (entry->stf == rate)
--			break;
--	}
--	if (i == ARRAY_SIZE(rate_table))
-+	if (rate >= 32000 && rate <= 48000)
-+		flag = 0x92;
-+	else if (rate >= 64000 && rate <= 96000)
-+		flag = 0x8e;
-+	else if (rate >= 128000 && rate <= 192000)
-+		flag = 0x8c;
-+	else
- 		return -EINVAL;
+-	if (ff->substreams_counter == 0)
+-		return 0;
+-
+ 	err = ff->spec->protocol->get_clock(ff, &curr_rate, &src);
+ 	if (err < 0)
+ 		return err;
+-	if (curr_rate != rate ||
+-	    amdtp_streaming_error(&ff->tx_stream) ||
+-	    amdtp_streaming_error(&ff->rx_stream)) {
+-		finish_session(ff);
++
++	if (ff->substreams_counter == 0 || curr_rate != rate) {
++		enum snd_ff_stream_mode mode;
++		int i;
  
--	reg = cpu_to_le32(entry->code);
--	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
--				 LATTER_STF, &reg, sizeof(reg), 0);
--	if (err < 0)
--		return err;
--
--	// Confirm to shift transmission clock.
--	count = 0;
--	while (count++ < 10) {
--		unsigned int curr_rate;
--		enum snd_ff_clock_src src;
--
--		err = latter_get_clock(ff, &curr_rate, &src);
--		if (err < 0)
--			return err;
--
--		if (curr_rate == rate)
--			break;
--	}
--	if (count == 10)
--		return -ETIMEDOUT;
--
--	err = keep_resources(ff, rate);
--	if (err < 0)
--		return err;
--
- 	data = (ff->tx_resources.channel << 8) | ff->rx_resources.channel;
- 	reg = cpu_to_le32(data);
- 	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-@@ -200,7 +198,7 @@ static int latter_begin_session(struct snd_ff *ff, unsigned int rate)
+ 		amdtp_stream_stop(&ff->tx_stream);
+ 		amdtp_stream_stop(&ff->rx_stream);
  
- 	// Always use the maximum number of data channels in data block of
- 	// packet.
--	reg = cpu_to_le32(entry->flag);
-+	reg = cpu_to_le32(flag);
- 	return snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
- 				  LATTER_ISOC_START, &reg, sizeof(reg), 0);
+-		release_resources(ff);
+-	}
++		finish_session(ff);
+ 
+-	/*
+-	 * Regardless of current source of clock signal, drivers transfer some
+-	 * packets. Then, the device transfers packets.
+-	 */
+-	if (!amdtp_stream_running(&ff->rx_stream)) {
+-		enum snd_ff_stream_mode mode;
+-		int i;
++		fw_iso_resources_free(&ff->tx_resources);
++		fw_iso_resources_free(&ff->rx_resources);
+ 
+ 		for (i = 0; i < CIP_SFC_COUNT; ++i) {
+ 			if (amdtp_rate_table[i] == rate)
+@@ -158,8 +143,40 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
+ 
+ 		err = ff->spec->protocol->allocate_resources(ff, rate);
+ 		if (err < 0)
+-			goto error;
++			return err;
++	}
++
++	return 0;
++}
++
++void snd_ff_stream_release_duplex(struct snd_ff *ff)
++{
++	if (ff->substreams_counter == 0) {
++		fw_iso_resources_free(&ff->tx_resources);
++		fw_iso_resources_free(&ff->rx_resources);
++	}
++}
++
++int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
++{
++	int err;
++
++	if (ff->substreams_counter == 0)
++		return 0;
+ 
++	if (amdtp_streaming_error(&ff->tx_stream) ||
++	    amdtp_streaming_error(&ff->rx_stream)) {
++		amdtp_stream_stop(&ff->tx_stream);
++		amdtp_stream_stop(&ff->rx_stream);
++
++		finish_session(ff);
++	}
++
++	/*
++	 * Regardless of current source of clock signal, drivers transfer some
++	 * packets. Then, the device transfers packets.
++	 */
++	if (!amdtp_stream_running(&ff->rx_stream)) {
+ 		err = ff->spec->protocol->begin_session(ff, rate);
+ 		if (err < 0)
+ 			goto error;
+@@ -201,7 +218,6 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
+ 	amdtp_stream_stop(&ff->rx_stream);
+ 
+ 	finish_session(ff);
+-	release_resources(ff);
+ 
+ 	return err;
  }
-@@ -424,6 +422,7 @@ const struct snd_ff_protocol snd_ff_protocol_latter = {
- 	.fill_midi_msg		= latter_fill_midi_msg,
- 	.get_clock		= latter_get_clock,
- 	.switch_fetching_mode	= latter_switch_fetching_mode,
-+	.allocate_resources	= latter_allocate_resources,
- 	.begin_session		= latter_begin_session,
- 	.finish_session		= latter_finish_session,
- 	.dump_status		= latter_dump_status,
+@@ -214,7 +230,6 @@ void snd_ff_stream_stop_duplex(struct snd_ff *ff)
+ 	amdtp_stream_stop(&ff->tx_stream);
+ 	amdtp_stream_stop(&ff->rx_stream);
+ 	finish_session(ff);
+-	release_resources(ff);
+ }
+ 
+ void snd_ff_stream_update_duplex(struct snd_ff *ff)
+diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
+index c478103388a2..fe5739ee1c88 100644
+--- a/sound/firewire/fireface/ff.h
++++ b/sound/firewire/fireface/ff.h
+@@ -138,6 +138,8 @@ int snd_ff_stream_get_multiplier_mode(enum cip_sfc sfc,
+ 				      enum snd_ff_stream_mode *mode);
+ int snd_ff_stream_init_duplex(struct snd_ff *ff);
+ void snd_ff_stream_destroy_duplex(struct snd_ff *ff);
++int snd_ff_stream_reserve_duplex(struct snd_ff *ff, unsigned int rate);
++void snd_ff_stream_release_duplex(struct snd_ff *ff);
+ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate);
+ void snd_ff_stream_stop_duplex(struct snd_ff *ff);
+ void snd_ff_stream_update_duplex(struct snd_ff *ff);
 -- 
 2.20.1
