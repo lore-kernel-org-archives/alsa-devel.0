@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [RESEND PATCH v3 17/30] mfd: cros_ec: Add fingerprint API
-Date: Mon,  3 Jun 2019 11:33:48 -0700
-Message-ID: <20190603183401.151408-18-gwendal@chromium.org>
+Subject: [RESEND PATCH v3 11/30] mfd: cros_ec: Add PWM_SET_DUTY API
+Date: Mon,  3 Jun 2019 11:33:42 -0700
+Message-ID: <20190603183401.151408-12-gwendal@chromium.org>
 References: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,60 +12,67 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for fingerprint sensors managed by embedded controller.
+Add API for fan control.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Reviewed-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 34 ++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 51fe65170ce6..d5d07a9957ec 100644
+index 3d1d26f62bd3..2b3a94a4f0f4 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -3339,6 +3339,40 @@ struct ec_response_get_next_event_v1 {
- #define EC_MKBP_TABLET_MODE	1
- #define EC_MKBP_BASE_ATTACHED	2
+@@ -1521,11 +1521,19 @@ struct ec_response_pwm_get_fan_rpm {
+ /* Set target fan RPM */
+ #define EC_CMD_PWM_SET_FAN_TARGET_RPM 0x0021
  
-+/* Fingerprint events in 'fp_events' for EC_MKBP_EVENT_FINGERPRINT */
-+#define EC_MKBP_FP_RAW_EVENT(fp_events) ((fp_events) & 0x00FFFFFF)
-+#define EC_MKBP_FP_ERRCODE(fp_events)   ((fp_events) & 0x0000000F)
-+#define EC_MKBP_FP_ENROLL_PROGRESS_OFFSET 4
-+#define EC_MKBP_FP_ENROLL_PROGRESS(fpe) (((fpe) & 0x00000FF0) \
-+					 >> EC_MKBP_FP_ENROLL_PROGRESS_OFFSET)
-+#define EC_MKBP_FP_MATCH_IDX_OFFSET 12
-+#define EC_MKBP_FP_MATCH_IDX_MASK 0x0000F000
-+#define EC_MKBP_FP_MATCH_IDX(fpe) (((fpe) & EC_MKBP_FP_MATCH_IDX_MASK) \
-+					 >> EC_MKBP_FP_MATCH_IDX_OFFSET)
-+#define EC_MKBP_FP_ENROLL               BIT(27)
-+#define EC_MKBP_FP_MATCH                BIT(28)
-+#define EC_MKBP_FP_FINGER_DOWN          BIT(29)
-+#define EC_MKBP_FP_FINGER_UP            BIT(30)
-+#define EC_MKBP_FP_IMAGE_READY          BIT(31)
-+/* code given by EC_MKBP_FP_ERRCODE() when EC_MKBP_FP_ENROLL is set */
-+#define EC_MKBP_FP_ERR_ENROLL_OK               0
-+#define EC_MKBP_FP_ERR_ENROLL_LOW_QUALITY      1
-+#define EC_MKBP_FP_ERR_ENROLL_IMMOBILE         2
-+#define EC_MKBP_FP_ERR_ENROLL_LOW_COVERAGE     3
-+#define EC_MKBP_FP_ERR_ENROLL_INTERNAL         5
-+/* Can be used to detect if image was usable for enrollment or not. */
-+#define EC_MKBP_FP_ERR_ENROLL_PROBLEM_MASK     1
-+/* code given by EC_MKBP_FP_ERRCODE() when EC_MKBP_FP_MATCH is set */
-+#define EC_MKBP_FP_ERR_MATCH_NO                0
-+#define EC_MKBP_FP_ERR_MATCH_NO_INTERNAL       6
-+#define EC_MKBP_FP_ERR_MATCH_NO_TEMPLATES      7
-+#define EC_MKBP_FP_ERR_MATCH_NO_LOW_QUALITY    2
-+#define EC_MKBP_FP_ERR_MATCH_NO_LOW_COVERAGE   4
-+#define EC_MKBP_FP_ERR_MATCH_YES               1
-+#define EC_MKBP_FP_ERR_MATCH_YES_UPDATED       3
-+#define EC_MKBP_FP_ERR_MATCH_YES_UPDATE_FAILED 5
+-struct ec_params_pwm_set_fan_target_rpm {
++/* Version 0 of input params */
++struct ec_params_pwm_set_fan_target_rpm_v0 {
+ 	uint32_t rpm;
++} __ec_align4;
 +
-+
- /*****************************************************************************/
- /* Temperature sensor commands */
++/* Version 1 of input params */
++struct ec_params_pwm_set_fan_target_rpm_v1 {
++	uint32_t rpm;
++	uint8_t fan_idx;
+ } __ec_align_size1;
  
+ /* Get keyboard backlight */
++/* OBSOLETE - Use EC_CMD_PWM_SET_DUTY */
+ #define EC_CMD_PWM_GET_KEYBOARD_BACKLIGHT 0x0022
+ 
+ struct ec_response_pwm_get_keyboard_backlight {
+@@ -1534,6 +1542,7 @@ struct ec_response_pwm_get_keyboard_backlight {
+ } __ec_align1;
+ 
+ /* Set keyboard backlight */
++/* OBSOLETE - Use EC_CMD_PWM_SET_DUTY */
+ #define EC_CMD_PWM_SET_KEYBOARD_BACKLIGHT 0x0023
+ 
+ struct ec_params_pwm_set_keyboard_backlight {
+@@ -1543,10 +1552,17 @@ struct ec_params_pwm_set_keyboard_backlight {
+ /* Set target fan PWM duty cycle */
+ #define EC_CMD_PWM_SET_FAN_DUTY 0x0024
+ 
+-struct ec_params_pwm_set_fan_duty {
++/* Version 0 of input params */
++struct ec_params_pwm_set_fan_duty_v0 {
+ 	uint32_t percent;
+ } __ec_align4;
+ 
++/* Version 1 of input params */
++struct ec_params_pwm_set_fan_duty_v1 {
++	uint32_t percent;
++	uint8_t fan_idx;
++} __ec_align_size1;
++
+ #define EC_CMD_PWM_SET_DUTY 0x0025
+ /* 16 bit duty cycle, 0xffff = 100% */
+ #define EC_PWM_MAX_DUTY 0xffff
 -- 
 2.21.0.1020.gf2820cf01a-goog
