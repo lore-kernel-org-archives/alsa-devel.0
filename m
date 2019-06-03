@@ -1,95 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: uapi: mirror firmware changes" to
-	the asoc tree
-Date: Mon,  3 Jun 2019 19:02:06 +0100 (BST)
-Message-ID: <20190603180206.CC1E1440049@finisterre.sirena.org.uk>
-References: <20190603161821.7486-2-pierre-louis.bossart@linux.intel.com>
+From: Gwendal Grignou <gwendal@chromium.org>
+Subject: [RESEND PATCH v3 00/30] Update cros_ec_commands.h
+Date: Mon,  3 Jun 2019 11:33:31 -0700
+Message-ID: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10B83F8973F
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:02:07 +0200 (CEST)
-In-Reply-To: <20190603161821.7486-2-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.jones@linaro.org, jic23@kernel.org, broonie@kernel.org, cychiang@chromium.org, tiwai@suse.com, fabien.lahoudere@collabora.com
+Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The interface between CrosEC embedded controller and the host,
+described by cros_ec_commands.h, as diverged from what the embedded
+controller really support.
 
-   ASoC: SOF: uapi: mirror firmware changes
+The source of thruth is at
+https://chromium.googlesource.com/chromiumos/platform/ec/+/master/include/ec_commands.h
 
-has been applied to the asoc tree at
+That include file is converted to remove ACPI and Embedded only code.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+>From now on, cros_ec_commands.h will be automatically generated from
+the file above, do not modify directly.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Fell free to squash the commits below.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+v3 resent: Add Fabien's ack.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Changes in v3:
+- Rebase after commit 81888d8ab1532 ("mfd: cros_ec: Update the EC feature codes")
+- Add Acked-by: Benson Leung <bleung@chromium.org>
+Reviewed-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Changes in v2:
+- Move I2S changes at the end of the patchset, squashed with change in
+  sound/soc/codecs/cros_ec_codec.c to match new interface.
+- Add Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-Thanks,
-Mark
+Gwendal Grignou (30):
+  mfd: cros_ec: Update license term
+  mfd: cros_ec: Zero BUILD_ macro
+  mfd: cros_ec: set comments properly
+  mfd: cros_ec: add ec_align macros
+  mfd: cros_ec: Define commands as 4-digit UPPER CASE hex values
+  mfd: cros_ec: use BIT macro
+  mfd: cros_ec: Update ACPI interface definition
+  mfd: cros_ec: move HDMI CEC API definition
+  mfd: cros_ec: Remove zero-size structs
+  mfd: cros_ec: Add Flash V2 commands API
+  mfd: cros_ec: Add PWM_SET_DUTY API
+  mfd: cros_ec: Add lightbar v2 API
+  mfd: cros_ec: Expand hash API
+  mfd: cros_ec: Add EC transport protocol v4
+  mfd: cros_ec: Complete MEMS sensor API
+  mfd: cros_ec: Fix event processing API
+  mfd: cros_ec: Add fingerprint API
+  mfd: cros_ec: Fix temperature API
+  mfd: cros_ec: Complete Power and USB PD API
+  mfd: cros_ec: Add API for keyboard testing
+  mfd: cros_ec: Add Hibernate API
+  mfd: cros_ec: Add Smart Battery Firmware update API
+  mfd: cros_ec: Add I2C passthru protection API
+  mfd: cros_ec: Add API for EC-EC communication
+  mfd: cros_ec: Add API for Touchpad support
+  mfd: cros_ec: Add API for Fingerprint support
+  mfd: cros_ec: Add API for rwsig
+  mfd: cros_ec: Add SKU ID and Secure storage API
+  mfd: cros_ec: Add Management API entry points
+  mfd: cros_ec: Update I2S API
 
->From 59be197354496b87869792bfa15477e8798462da Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 3 Jun 2019 11:18:13 -0500
-Subject: [PATCH] ASoC: SOF: uapi: mirror firmware changes
+ include/linux/mfd/cros_ec_commands.h | 3658 ++++++++++++++++++++------
+ sound/soc/codecs/cros_ec_codec.c     |    8 +-
+ 2 files changed, 2915 insertions(+), 751 deletions(-)
 
-We missed these two definitions for GDB support and component
-notifications, they are defined for the SOF firmware. Since they are
-not used by the kernel so far, we can still add them without any ABI
-change.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/sof/header.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-index ccb6a004b37b..0aeb2c8ad6fd 100644
---- a/include/sound/sof/header.h
-+++ b/include/sound/sof/header.h
-@@ -48,6 +48,7 @@
- #define SOF_IPC_FW_READY			SOF_GLB_TYPE(0x7U)
- #define SOF_IPC_GLB_DAI_MSG			SOF_GLB_TYPE(0x8U)
- #define SOF_IPC_GLB_TRACE_MSG			SOF_GLB_TYPE(0x9U)
-+#define SOF_IPC_GLB_GDB_DEBUG                   SOF_GLB_TYPE(0xAU)
- 
- /*
-  * DSP Command Message Types
-@@ -78,6 +79,7 @@
- #define SOF_IPC_COMP_GET_VALUE			SOF_CMD_TYPE(0x002)
- #define SOF_IPC_COMP_SET_DATA			SOF_CMD_TYPE(0x003)
- #define SOF_IPC_COMP_GET_DATA			SOF_CMD_TYPE(0x004)
-+#define SOF_IPC_COMP_NOTIFICATION		SOF_CMD_TYPE(0x005)
- 
- /* DAI messages */
- #define SOF_IPC_DAI_CONFIG			SOF_CMD_TYPE(0x001)
 -- 
-2.20.1
+2.21.0.1020.gf2820cf01a-goog
