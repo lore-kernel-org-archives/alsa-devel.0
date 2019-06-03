@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/9] ASoC: SOF: send time stamp to FW for
-	alignment
-Date: Mon,  3 Jun 2019 11:18:17 -0500
-Message-ID: <20190603161821.7486-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 9/9] ASoC: SOF: topology: add support for
+	mux/demux component
+Date: Mon,  3 Jun 2019 11:18:21 -0500
+Message-ID: <20190603161821.7486-10-pierre-louis.bossart@linux.intel.com>
 References: <20190603161821.7486-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C092BF896EE
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:18:33 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61DEDF80CC4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:18:37 +0200 (CEST)
 In-Reply-To: <20190603161821.7486-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,109 +24,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Jaska Uimonen <jaska.uimonen@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard liao <yung-chuan.liao@linux.intel.com>
+From: Jaska Uimonen <jaska.uimonen@intel.com>
 
-Timer will be reset when DSP is powered down. So the time stamp of trace
-log will be reset after resume. Send time stamp to FW can align the time
-stamp and avoid reset time stamp in trace log.
+Add enumerations to support mux/demux processing component.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/header.h   |  1 +
- include/sound/sof/trace.h    | 10 ++++++++++
- include/uapi/sound/sof/abi.h |  2 +-
- sound/soc/sof/trace.c        | 16 +++++++++++++---
- 4 files changed, 25 insertions(+), 4 deletions(-)
+ include/sound/sof/topology.h | 3 +++
+ sound/soc/sof/topology.c     | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-index 1efcf7b18ec2..ab5862d80afe 100644
---- a/include/sound/sof/header.h
-+++ b/include/sound/sof/header.h
-@@ -102,6 +102,7 @@
- /* trace and debug */
- #define SOF_IPC_TRACE_DMA_PARAMS		SOF_CMD_TYPE(0x001)
- #define SOF_IPC_TRACE_DMA_POSITION		SOF_CMD_TYPE(0x002)
-+#define SOF_IPC_TRACE_DMA_PARAMS_EXT		SOF_CMD_TYPE(0x003)
+diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
+index 4afed7f1c6b2..41dcabf89899 100644
+--- a/include/sound/sof/topology.h
++++ b/include/sound/sof/topology.h
+@@ -35,6 +35,7 @@ enum sof_comp_type {
+ 	SOF_COMP_KEYWORD_DETECT,
+ 	SOF_COMP_KPB,			/* A key phrase buffer component */
+ 	SOF_COMP_SELECTOR,		/**< channel selector component */
++	SOF_COMP_DEMUX,
+ 	/* keep FILEREAD/FILEWRITE as the last ones */
+ 	SOF_COMP_FILEREAD = 10000,	/**< host test based file IO */
+ 	SOF_COMP_FILEWRITE = 10001,	/**< host test based file IO */
+@@ -175,6 +176,8 @@ enum sof_ipc_process_type {
+ 	SOF_PROCESS_KEYWORD_DETECT,	/**< Keyword Detection */
+ 	SOF_PROCESS_KPB,		/**< KeyPhrase Buffer Manager */
+ 	SOF_PROCESS_CHAN_SELECTOR,	/**< Channel Selector */
++	SOF_PROCESS_MUX,
++	SOF_PROCESS_DEMUX,
+ };
  
- /* Get message component id */
- #define SOF_IPC_MESSAGE_ID(x)			((x) & 0xffff)
-diff --git a/include/sound/sof/trace.h b/include/sound/sof/trace.h
-index fdb30078448f..9257d5473d97 100644
---- a/include/sound/sof/trace.h
-+++ b/include/sound/sof/trace.h
-@@ -19,12 +19,22 @@
- #define SOF_TRACE_FILENAME_SIZE		32
+ /* generic "effect", "codec" or proprietary processing component */
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 745cb875863c..b969686f954f 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -394,6 +394,8 @@ static const struct sof_process_types sof_process[] = {
+ 	{"KEYWORD_DETECT", SOF_PROCESS_KEYWORD_DETECT, SOF_COMP_KEYWORD_DETECT},
+ 	{"KPB", SOF_PROCESS_KPB, SOF_COMP_KPB},
+ 	{"CHAN_SELECTOR", SOF_PROCESS_CHAN_SELECTOR, SOF_COMP_SELECTOR},
++	{"MUX", SOF_PROCESS_MUX, SOF_COMP_MUX},
++	{"DEMUX", SOF_PROCESS_DEMUX, SOF_COMP_DEMUX},
+ };
  
- /* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS */
-+/* Deprecated - use sof_ipc_dma_trace_params_ext */
- struct sof_ipc_dma_trace_params {
- 	struct sof_ipc_cmd_hdr hdr;
- 	struct sof_ipc_host_buffer buffer;
- 	uint32_t stream_tag;
- }  __packed;
- 
-+/* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS_EXT */
-+struct sof_ipc_dma_trace_params_ext {
-+	struct sof_ipc_cmd_hdr hdr;
-+	struct sof_ipc_host_buffer buffer;
-+	uint32_t stream_tag;
-+	uint64_t timestamp_ns; /* in nanosecond */
-+	uint32_t reserved[8];
-+}  __packed;
-+
- /* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS */
- struct sof_ipc_dma_trace_posn {
- 	struct sof_ipc_reply rhdr;
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
-index 0868eb47acf7..92eee681bc62 100644
---- a/include/uapi/sound/sof/abi.h
-+++ b/include/uapi/sound/sof/abi.h
-@@ -26,7 +26,7 @@
- 
- /* SOF ABI version major, minor and patch numbers */
- #define SOF_ABI_MAJOR 3
--#define SOF_ABI_MINOR 6
-+#define SOF_ABI_MINOR 7
- #define SOF_ABI_PATCH 0
- 
- /* SOF ABI version number. Format within 32bit word is MMmmmppp */
-diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
-index 2613dd3e0dfc..84d89206a0e0 100644
---- a/sound/soc/sof/trace.c
-+++ b/sound/soc/sof/trace.c
-@@ -161,7 +161,9 @@ static int trace_debugfs_create(struct snd_sof_dev *sdev)
- 
- int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
- {
--	struct sof_ipc_dma_trace_params params;
-+	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
-+	struct sof_ipc_fw_version *v = &ready->version;
-+	struct sof_ipc_dma_trace_params_ext params;
- 	struct sof_ipc_reply ipc_reply;
- 	int ret;
- 
-@@ -172,8 +174,16 @@ int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
- 		return -EINVAL;
- 
- 	/* set IPC parameters */
--	params.hdr.size = sizeof(params);
--	params.hdr.cmd = SOF_IPC_GLB_TRACE_MSG | SOF_IPC_TRACE_DMA_PARAMS;
-+	params.hdr.cmd = SOF_IPC_GLB_TRACE_MSG;
-+	/* PARAMS_EXT is only supported from ABI 3.7.0 onwards */
-+	if (v->abi_version >= SOF_ABI_VER(3, 7, 0)) {
-+		params.hdr.size = sizeof(struct sof_ipc_dma_trace_params_ext);
-+		params.hdr.cmd |= SOF_IPC_TRACE_DMA_PARAMS_EXT;
-+		params.timestamp_ns = ktime_get(); /* in nanosecond */
-+	} else {
-+		params.hdr.size = sizeof(struct sof_ipc_dma_trace_params);
-+		params.hdr.cmd |= SOF_IPC_TRACE_DMA_PARAMS;
-+	}
- 	params.buffer.phy_addr = sdev->dmatp.addr;
- 	params.buffer.size = sdev->dmatb.bytes;
- 	params.buffer.pages = sdev->dma_trace_pages;
+ static enum sof_ipc_process_type find_process(const char *name)
 -- 
 2.20.1
