@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda-ipc: read all IPC
-	registers first" to the asoc tree
-Date: Mon,  3 Jun 2019 19:01:57 +0100 (BST)
-Message-ID: <20190603180157.C7E1D440046@finisterre.sirena.org.uk>
-References: <20190603162032.7626-6-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: bump to ABI 3.6" to the asoc tree
+Date: Mon,  3 Jun 2019 19:02:03 +0100 (BST)
+Message-ID: <20190603180203.E09EF440046@finisterre.sirena.org.uk>
+References: <20190603161821.7486-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 081BAF89739
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:02:03 +0200 (CEST)
-In-Reply-To: <20190603162032.7626-6-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FFDAF8973A
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:02:05 +0200 (CEST)
+In-Reply-To: <20190603161821.7486-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,11 +29,11 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: hda-ipc: read all IPC registers first
+   ASoC: SOF: bump to ABI 3.6
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,55 +54,37 @@ to this mail.
 Thanks,
 Mark
 
->From 5dbeb8287421984a09c92a79c503f8bd41cf3fe7 Mon Sep 17 00:00:00 2001
+>From f86588302360e01fd0e0a4fc1a8d1b05e85e5173 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 3 Jun 2019 11:20:29 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda-ipc: read all IPC registers first
+Date: Mon, 3 Jun 2019 11:18:16 -0500
+Subject: [PATCH] ASoC: SOF: bump to ABI 3.6
 
-Align with hardware recommended sequences, and read all IPC registers
-before doing any other actions. Playing with BUSY and DONE bits may
-invalidate values.
+We had a couple of misses with ABI changes, e.g. for Xtensa oops
+information and the integration of sound trigger, before we set-up a
+formal process to track evolutions.
 
-The values read may not actually be necessary but at least this
-provides a snapshot of the IPC registers with no consistency issues.
+With this patch, the SOF kernel patches are officially aligned with
+the firmware 3.6 level. Changing this level has no impact on existing
+users and is fully backwards-compatible.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-ipc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ include/uapi/sound/sof/abi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 728dd1e075a4..1f01897fa6e3 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -145,6 +145,8 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 				  HDA_DSP_REG_HIPCIE);
- 	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
- 	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
-+	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI);
-+	hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCTE);
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index 13a4eca04577..0868eb47acf7 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -26,7 +26,7 @@
  
- 	/* reenable IPC interrupt */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
-@@ -153,8 +155,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 	/* is this a reply message from the DSP */
- 	if (hipcie & HDA_DSP_REG_HIPCIE_DONE &&
- 	    hipcctl & HDA_DSP_REG_HIPCCTL_DONE) {
--		hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
--					 HDA_DSP_REG_HIPCI);
- 		msg = hipci & HDA_DSP_REG_HIPCI_MSG_MASK;
- 		msg_ext = hipcie & HDA_DSP_REG_HIPCIE_MSG_MASK;
+ /* SOF ABI version major, minor and patch numbers */
+ #define SOF_ABI_MAJOR 3
+-#define SOF_ABI_MINOR 5
++#define SOF_ABI_MINOR 6
+ #define SOF_ABI_PATCH 0
  
-@@ -202,9 +202,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 	/* is this a new message from DSP */
- 	if (hipct & HDA_DSP_REG_HIPCT_BUSY &&
- 	    hipcctl & HDA_DSP_REG_HIPCCTL_BUSY) {
--
--		hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
--					  HDA_DSP_REG_HIPCTE);
- 		msg = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
- 		msg_ext = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
- 
+ /* SOF ABI version number. Format within 32bit word is MMmmmppp */
 -- 
 2.20.1
