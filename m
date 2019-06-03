@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: bump to ABI 3.6" to the asoc tree
+Subject: Applied "ASoC: SOF: ipc: replace fw ready bitfield
+	with explicit bit ordering" to the asoc tree
 Date: Mon,  3 Jun 2019 19:02:03 +0100 (BST)
-Message-ID: <20190603180203.E09EF440046@finisterre.sirena.org.uk>
-References: <20190603161821.7486-5-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190603180203.51D96440049@finisterre.sirena.org.uk>
+References: <20190603162032.7626-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FFDAF8973A
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:02:05 +0200 (CEST)
-In-Reply-To: <20190603161821.7486-5-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BEBBF8973C
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:02:04 +0200 (CEST)
+In-Reply-To: <20190603162032.7626-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: bump to ABI 3.6
+   ASoC: SOF: ipc: replace fw ready bitfield with explicit bit ordering
 
 has been applied to the asoc tree at
 
@@ -54,37 +55,91 @@ to this mail.
 Thanks,
 Mark
 
->From f86588302360e01fd0e0a4fc1a8d1b05e85e5173 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 3 Jun 2019 11:18:16 -0500
-Subject: [PATCH] ASoC: SOF: bump to ABI 3.6
+>From 347d1c4b0779cbeabaebb9b8e9967afe28db22f1 Mon Sep 17 00:00:00 2001
+From: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
+Date: Mon, 3 Jun 2019 11:20:32 -0500
+Subject: [PATCH] ASoC: SOF: ipc: replace fw ready bitfield with explicit bit
+ ordering
 
-We had a couple of misses with ABI changes, e.g. for Xtensa oops
-information and the integration of sound trigger, before we set-up a
-formal process to track evolutions.
+Previously the structure used bitfields, which do not guarantee bit
+ordering.
 
-With this patch, the SOF kernel patches are officially aligned with
-the firmware 3.6 level. Changing this level has no impact on existing
-users and is fully backwards-compatible.
+This change makes sure the order is clearly defined.  It also renames
+and repurposes the field for general use.
 
+Signed-off-by: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/sof/abi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/sof/info.h | 20 ++++++++++----------
+ sound/soc/sof/ipc.c      | 11 +++++++----
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
-index 13a4eca04577..0868eb47acf7 100644
---- a/include/uapi/sound/sof/abi.h
-+++ b/include/uapi/sound/sof/abi.h
-@@ -26,7 +26,7 @@
+diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
+index 21dae04d8183..16528d2b4a50 100644
+--- a/include/sound/sof/info.h
++++ b/include/sound/sof/info.h
+@@ -18,6 +18,14 @@
  
- /* SOF ABI version major, minor and patch numbers */
- #define SOF_ABI_MAJOR 3
--#define SOF_ABI_MINOR 5
-+#define SOF_ABI_MINOR 6
- #define SOF_ABI_PATCH 0
+ #define SOF_IPC_MAX_ELEMS	16
  
- /* SOF ABI version number. Format within 32bit word is MMmmmppp */
++/*
++ * Firmware boot info flag bits (64-bit)
++ */
++#define SOF_IPC_INFO_BUILD		BIT(0)
++#define SOF_IPC_INFO_LOCKS		BIT(1)
++#define SOF_IPC_INFO_LOCKSV		BIT(2)
++#define SOF_IPC_INFO_GDB		BIT(3)
++
+ /* extended data types that can be appended onto end of sof_ipc_fw_ready */
+ enum sof_ipc_ext_data {
+ 	SOF_IPC_EXT_DMA_BUFFER = 0,
+@@ -49,16 +57,8 @@ struct sof_ipc_fw_ready {
+ 	uint32_t hostbox_size;
+ 	struct sof_ipc_fw_version version;
+ 
+-	/* Miscellaneous debug flags showing build/debug features enabled */
+-	union {
+-		uint64_t reserved;
+-		struct {
+-			uint64_t build:1;
+-			uint64_t locks:1;
+-			uint64_t locks_verbose:1;
+-			uint64_t gdb:1;
+-		} bits;
+-	} debug;
++	/* Miscellaneous flags */
++	uint64_t flags;
+ 
+ 	/* reserved for future use */
+ 	uint32_t reserved[4];
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 10304a90cf25..2414640a32d1 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -763,16 +763,19 @@ int snd_sof_ipc_valid(struct snd_sof_dev *sdev)
+ 		}
+ 	}
+ 
+-	if (ready->debug.bits.build) {
++	if (ready->flags & SOF_IPC_INFO_BUILD) {
+ 		dev_info(sdev->dev,
+ 			 "Firmware debug build %d on %s-%s - options:\n"
+ 			 " GDB: %s\n"
+ 			 " lock debug: %s\n"
+ 			 " lock vdebug: %s\n",
+ 			 v->build, v->date, v->time,
+-			 ready->debug.bits.gdb ? "enabled" : "disabled",
+-			 ready->debug.bits.locks ? "enabled" : "disabled",
+-			 ready->debug.bits.locks_verbose ? "enabled" : "disabled");
++			 ready->flags & SOF_IPC_INFO_GDB ?
++				"enabled" : "disabled",
++			 ready->flags & SOF_IPC_INFO_LOCKS ?
++				"enabled" : "disabled",
++			 ready->flags & SOF_IPC_INFO_LOCKSV ?
++				"enabled" : "disabled");
+ 	}
+ 
+ 	/* copy the fw_version into debugfs at first boot */
 -- 
 2.20.1
