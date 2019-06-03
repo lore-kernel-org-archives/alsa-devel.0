@@ -1,7 +1,7 @@
 From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH 3/7] drm/bridge/synopsys: dw-hdmi: Add HDMI notifier support
-Date: Mon,  3 Jun 2019 12:32:47 +0800
-Message-ID: <20190603043251.226549-4-cychiang@chromium.org>
+Subject: [PATCH 4/7] ASoC: rockchip_max98090: Add dai_link for HDMI
+Date: Mon,  3 Jun 2019 12:32:48 +0800
+Message-ID: <20190603043251.226549-5-cychiang@chromium.org>
 References: <20190603043251.226549-1-cychiang@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,107 +12,169 @@ To: linux-kernel@vger.kernel.org
 Cc: Hans Verkuil <hverkuil@xs4all.nl>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philipp Zabel <p.zabel@pengutronix.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kern
 List-Id: alsa-devel@alsa-project.org
 
-Use hdmi-notifier to notify codec driver that there is HDMI plug/unplug
-event.
+Use two dai_links. One for HDMI and one for max98090.
+With this setup, audio can play to speaker and HDMI selectively.
 
 Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 ---
- drivers/gpu/drm/bridge/synopsys/Kconfig   |  1 +
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 28 +++++++++++++++++++++--
- 2 files changed, 27 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_max98090.c | 82 +++++++++++++++++++-------
+ 1 file changed, 60 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/Kconfig b/drivers/gpu/drm/bridge/synopsys/Kconfig
-index 3cc53b44186e..43192d9d7357 100644
---- a/drivers/gpu/drm/bridge/synopsys/Kconfig
-+++ b/drivers/gpu/drm/bridge/synopsys/Kconfig
-@@ -3,6 +3,7 @@ config DRM_DW_HDMI
- 	select DRM_KMS_HELPER
- 	select REGMAP_MMIO
- 	select CEC_CORE if CEC_NOTIFIER
-+	select HDMI_NOTIFIERS
- 
- config DRM_DW_HDMI_AHB_AUDIO
- 	tristate "Synopsys Designware AHB Audio interface"
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-index ab7968c8f6a2..53701921eb1f 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -17,6 +17,7 @@
- #include <linux/err.h>
- #include <linux/clk.h>
- #include <linux/hdmi.h>
-+#include <linux/hdmi-notifier.h>
- #include <linux/mutex.h>
- #include <linux/of_device.h>
- #include <linux/regmap.h>
-@@ -190,6 +191,7 @@ struct dw_hdmi {
- 	void (*disable_audio)(struct dw_hdmi *hdmi);
- 
- 	struct cec_notifier *cec_notifier;
-+	struct hdmi_notifier *hdmi_notifier;
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 789d6f1e2b5f..2dd247670c7a 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -53,6 +53,7 @@ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_LINE("HDMI", NULL),
  };
  
- #define HDMI_IH_PHY_STAT0_RX_SENSE \
-@@ -2301,8 +2303,15 @@ static irqreturn_t dw_hdmi_irq(int irq, void *dev_id)
+ static const struct snd_soc_dapm_route rk_audio_map[] = {
+@@ -64,6 +65,7 @@ static const struct snd_soc_dapm_route rk_audio_map[] = {
+ 	{"Headphone", NULL, "HPR"},
+ 	{"Speaker", NULL, "SPKL"},
+ 	{"Speaker", NULL, "SPKR"},
++	{"HDMI", NULL, "TX"},
+ };
+ 
+ static const struct snd_kcontrol_new rk_mc_controls[] = {
+@@ -71,6 +73,7 @@ static const struct snd_kcontrol_new rk_mc_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Int Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Speaker"),
++	SOC_DAPM_PIN_SWITCH("HDMI"),
+ };
+ 
+ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+@@ -104,33 +107,48 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
+ 				     SND_SOC_CLOCK_OUT);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "Can't set codec clock %d\n", ret);
++	if (ret && ret != -ENOTSUPP) {
++		dev_err(cpu_dai->dev, "Can't set cpu dai clock %d\n", ret);
+ 		return ret;
  	}
  
- 	if (intr_stat & HDMI_IH_PHY_STAT0_HPD) {
--		dev_dbg(hdmi->dev, "EVENT=%s\n",
--			phy_int_pol & HDMI_PHY_HPD ? "plugin" : "plugout");
-+		if (phy_int_pol & HDMI_PHY_HPD) {
-+			dev_dbg(hdmi->dev, "EVENT=plugin\n");
-+			if (hdmi->hdmi_notifier)
-+				hdmi_event_connect(hdmi->hdmi_notifier);
-+		} else {
-+			dev_dbg(hdmi->dev, "EVENT=plugout\n");
-+			if (hdmi->hdmi_notifier)
-+				hdmi_event_disconnect(hdmi->hdmi_notifier);
-+		}
- 		if (hdmi->bridge.dev)
- 			drm_helper_hpd_irq_event(hdmi->bridge.dev);
- 	}
-@@ -2606,6 +2615,12 @@ __dw_hdmi_probe(struct platform_device *pdev,
- 		goto err_iahb;
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+ 				     SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "Can't set codec clock %d\n", ret);
++	if (ret && ret != -ENOTSUPP) {
++		dev_err(codec_dai->dev, "Can't set codec dai clock %d\n", ret);
+ 		return ret;
  	}
  
-+	hdmi->hdmi_notifier = hdmi_notifier_get(dev);
-+	if (!hdmi->hdmi_notifier) {
-+		ret = -ENOMEM;
-+		goto err_iahb;
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct snd_soc_ops rk_aif1_ops = {
+ 	.hw_params = rk_aif1_hw_params,
+ };
+ 
+-static struct snd_soc_dai_link rk_dailink = {
+-	.name = "max98090",
+-	.stream_name = "Audio",
+-	.codec_dai_name = "HiFi",
+-	.ops = &rk_aif1_ops,
+-	/* set max98090 as slave */
+-	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-		SND_SOC_DAIFMT_CBS_CFS,
++enum {
++	DAILINK_MAX98090,
++	DAILINK_HDMI,
++};
++
++/* max98090 and HDMI codec dai_link */
++static struct snd_soc_dai_link rk_dailinks[] = {
++	[DAILINK_MAX98090] = {
++		.name = "max98090",
++		.stream_name = "Analog",
++		.ops = &rk_aif1_ops,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++	},
++	[DAILINK_HDMI] = {
++		.name = "HDMI",
++		.stream_name = "HDMI",
++		.codec_name = "hdmi-audio-codec.3.auto",
++		.codec_dai_name = "i2s-hifi",
++		.ops = &rk_aif1_ops,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++	}
+ };
+ 
+ static int rk_98090_headset_init(struct snd_soc_component *component);
+@@ -143,8 +161,8 @@ static struct snd_soc_aux_dev rk_98090_headset_dev = {
+ static struct snd_soc_card snd_soc_card_rk = {
+ 	.name = "ROCKCHIP-I2S",
+ 	.owner = THIS_MODULE,
+-	.dai_link = &rk_dailink,
+-	.num_links = 1,
++	.dai_link = rk_dailinks,
++	.num_links = ARRAY_SIZE(rk_dailinks),
+ 	.aux_dev = &rk_98090_headset_dev,
+ 	.num_aux_devs = 1,
+ 	.dapm_widgets = rk_dapm_widgets,
+@@ -180,27 +198,47 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 	int ret = 0;
+ 	struct snd_soc_card *card = &snd_soc_card_rk;
+ 	struct device_node *np = pdev->dev.of_node;
++	struct device_node *np_cpu;
++	struct of_phandle_args args;
+ 
+ 	/* register the soc card */
+ 	card->dev = &pdev->dev;
+ 
+-	rk_dailink.codec_of_node = of_parse_phandle(np,
+-			"rockchip,audio-codec", 0);
+-	if (!rk_dailink.codec_of_node) {
++	rk_dailinks[DAILINK_MAX98090].codec_of_node =
++			of_parse_phandle(np, "rockchip,audio-codec", 0);
++	if (!rk_dailinks[DAILINK_MAX98090].codec_of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'rockchip,audio-codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	rk_dailink.cpu_of_node = of_parse_phandle(np,
+-			"rockchip,i2s-controller", 0);
+-	if (!rk_dailink.cpu_of_node) {
++	ret = of_parse_phandle_with_fixed_args(np, "rockchip,audio-codec",
++					       0, 0, &args);
++	if (ret) {
++		dev_err(&pdev->dev,
++			"Unable to parse property 'rockchip,audio-codec'\n");
++		return ret;
 +	}
 +
- 	/*
- 	 * To prevent overflows in HDMI_IH_FC_STAT2, set the clk regenerator
- 	 * N and cts values before enabling phy
-@@ -2696,6 +2711,9 @@ __dw_hdmi_probe(struct platform_device *pdev,
- 	if (hdmi->cec_notifier)
- 		cec_notifier_put(hdmi->cec_notifier);
- 
-+	if (hdmi->hdmi_notifier)
-+		hdmi_notifier_put(hdmi->hdmi_notifier);
++	ret = snd_soc_get_dai_name(
++			&args, &rk_dailinks[DAILINK_MAX98090].codec_dai_name);
++	if (ret) {
++		dev_err(&pdev->dev, "Unable to get codec_dai_name\n");
++		return ret;
++	}
 +
- 	clk_disable_unprepare(hdmi->iahb_clk);
- 	if (hdmi->cec_clk)
- 		clk_disable_unprepare(hdmi->cec_clk);
-@@ -2709,6 +2727,9 @@ __dw_hdmi_probe(struct platform_device *pdev,
- 
- static void __dw_hdmi_remove(struct dw_hdmi *hdmi)
- {
-+	if (hdmi->hdmi_notifier)
-+		hdmi_event_disconnect(hdmi->hdmi_notifier);
++	np_cpu = of_parse_phandle(np, "rockchip,i2s-controller", 0);
 +
- 	if (hdmi->audio && !IS_ERR(hdmi->audio))
- 		platform_device_unregister(hdmi->audio);
- 	if (!IS_ERR(hdmi->cec))
-@@ -2720,6 +2741,9 @@ static void __dw_hdmi_remove(struct dw_hdmi *hdmi)
- 	if (hdmi->cec_notifier)
- 		cec_notifier_put(hdmi->cec_notifier);
++	if (!np_cpu) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'rockchip,i2s-controller' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
  
-+	if (hdmi->hdmi_notifier)
-+		hdmi_notifier_put(hdmi->hdmi_notifier);
-+
- 	clk_disable_unprepare(hdmi->iahb_clk);
- 	clk_disable_unprepare(hdmi->isfr_clk);
- 	if (hdmi->cec_clk)
+-	rk_dailink.platform_of_node = rk_dailink.cpu_of_node;
++	rk_dailinks[DAILINK_MAX98090].cpu_of_node = np_cpu;
++	rk_dailinks[DAILINK_MAX98090].platform_of_node = np_cpu;
++	rk_dailinks[DAILINK_HDMI].cpu_of_node = np_cpu;
++	rk_dailinks[DAILINK_HDMI].platform_of_node = np_cpu;
+ 
+ 	rk_98090_headset_dev.codec_of_node = of_parse_phandle(np,
+ 			"rockchip,headset-codec", 0);
 -- 
 2.22.0.rc1.257.g3120a18244-goog
