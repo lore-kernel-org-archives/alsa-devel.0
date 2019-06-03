@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/9] ASoC: SOF: fix DSP oops definitions in FW
-	ABI
-Date: Mon,  3 Jun 2019 11:18:15 -0500
-Message-ID: <20190603161821.7486-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 5/9] ASoC: SOF: send time stamp to FW for
+	alignment
+Date: Mon,  3 Jun 2019 11:18:17 -0500
+Message-ID: <20190603161821.7486-6-pierre-louis.bossart@linux.intel.com>
 References: <20190603161821.7486-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2D0AF80CC4
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:18:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C092BF896EE
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:18:33 +0200 (CEST)
 In-Reply-To: <20190603161821.7486-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,193 +24,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
 
-The definitions for DSP oops structures were not aligned
-correctly to current FW ABI version 3.6.0, leading to
-invalid data being printed out to debug logs. Fix the structs
-and update related platform code accordingly.
+Timer will be reset when DSP is powered down. So the time stamp of trace
+log will be reset after resume. Send time stamp to FW can align the time
+stamp and avoid reset time stamp in trace log.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/header.h  | 21 +++++++++++++++++++++
- include/sound/sof/xtensa.h  |  9 +++++++--
- sound/soc/sof/intel/bdw.c   | 17 ++++++++++-------
- sound/soc/sof/intel/byt.c   | 15 +++++++++------
- sound/soc/sof/intel/hda.c   | 16 ++++++++++------
- sound/soc/sof/xtensa/core.c |  2 +-
- 6 files changed, 58 insertions(+), 22 deletions(-)
+ include/sound/sof/header.h   |  1 +
+ include/sound/sof/trace.h    | 10 ++++++++++
+ include/uapi/sound/sof/abi.h |  2 +-
+ sound/soc/sof/trace.c        | 16 +++++++++++++---
+ 4 files changed, 25 insertions(+), 4 deletions(-)
 
 diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-index 0aeb2c8ad6fd..1efcf7b18ec2 100644
+index 1efcf7b18ec2..ab5862d80afe 100644
 --- a/include/sound/sof/header.h
 +++ b/include/sound/sof/header.h
-@@ -155,6 +155,27 @@ struct sof_ipc_compound_hdr {
- 	uint32_t count;		/**< count of 0 means end of compound sequence */
+@@ -102,6 +102,7 @@
+ /* trace and debug */
+ #define SOF_IPC_TRACE_DMA_PARAMS		SOF_CMD_TYPE(0x001)
+ #define SOF_IPC_TRACE_DMA_POSITION		SOF_CMD_TYPE(0x002)
++#define SOF_IPC_TRACE_DMA_PARAMS_EXT		SOF_CMD_TYPE(0x003)
+ 
+ /* Get message component id */
+ #define SOF_IPC_MESSAGE_ID(x)			((x) & 0xffff)
+diff --git a/include/sound/sof/trace.h b/include/sound/sof/trace.h
+index fdb30078448f..9257d5473d97 100644
+--- a/include/sound/sof/trace.h
++++ b/include/sound/sof/trace.h
+@@ -19,12 +19,22 @@
+ #define SOF_TRACE_FILENAME_SIZE		32
+ 
+ /* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS */
++/* Deprecated - use sof_ipc_dma_trace_params_ext */
+ struct sof_ipc_dma_trace_params {
+ 	struct sof_ipc_cmd_hdr hdr;
+ 	struct sof_ipc_host_buffer buffer;
+ 	uint32_t stream_tag;
  }  __packed;
  
-+/**
-+ * OOPS header architecture specific data.
-+ */
-+struct sof_ipc_dsp_oops_arch_hdr {
-+	uint32_t arch;		/* Identifier of architecture */
-+	uint32_t totalsize;	/* Total size of oops message */
++/* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS_EXT */
++struct sof_ipc_dma_trace_params_ext {
++	struct sof_ipc_cmd_hdr hdr;
++	struct sof_ipc_host_buffer buffer;
++	uint32_t stream_tag;
++	uint64_t timestamp_ns; /* in nanosecond */
++	uint32_t reserved[8];
 +}  __packed;
 +
-+/**
-+ * OOPS header platform specific data.
-+ */
-+struct sof_ipc_dsp_oops_plat_hdr {
-+	uint32_t configidhi;	/* ConfigID hi 32bits */
-+	uint32_t configidlo;	/* ConfigID lo 32bits */
-+	uint32_t numaregs;	/* Special regs num */
-+	uint32_t stackoffset;	/* Offset to stack pointer from beginning of
-+				 * oops message
-+				 */
-+	uint32_t stackptr;	/* Stack ptr */
-+}  __packed;
-+
- /** @}*/
+ /* DMA for Trace params info - SOF_IPC_DEBUG_DMA_PARAMS */
+ struct sof_ipc_dma_trace_posn {
+ 	struct sof_ipc_reply rhdr;
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index 0868eb47acf7..92eee681bc62 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -26,7 +26,7 @@
  
- #endif
-diff --git a/include/sound/sof/xtensa.h b/include/sound/sof/xtensa.h
-index a7189984000d..d25c764b10e8 100644
---- a/include/sound/sof/xtensa.h
-+++ b/include/sound/sof/xtensa.h
-@@ -17,7 +17,8 @@
+ /* SOF ABI version major, minor and patch numbers */
+ #define SOF_ABI_MAJOR 3
+-#define SOF_ABI_MINOR 6
++#define SOF_ABI_MINOR 7
+ #define SOF_ABI_PATCH 0
  
- /* Xtensa Firmware Oops data */
- struct sof_ipc_dsp_oops_xtensa {
--	struct sof_ipc_hdr hdr;
-+	struct sof_ipc_dsp_oops_arch_hdr arch_hdr;
-+	struct sof_ipc_dsp_oops_plat_hdr plat_hdr;
- 	uint32_t exccause;
- 	uint32_t excvaddr;
- 	uint32_t ps;
-@@ -38,7 +39,11 @@ struct sof_ipc_dsp_oops_xtensa {
- 	uint32_t intenable;
- 	uint32_t interrupt;
- 	uint32_t sar;
--	uint32_t stack;
-+	uint32_t debugcause;
-+	uint32_t windowbase;
-+	uint32_t windowstart;
-+	uint32_t excsave1;
-+	uint32_t ar[];
- }  __packed;
+ /* SOF ABI version number. Format within 32bit word is MMmmmppp */
+diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+index 2613dd3e0dfc..84d89206a0e0 100644
+--- a/sound/soc/sof/trace.c
++++ b/sound/soc/sof/trace.c
+@@ -161,7 +161,9 @@ static int trace_debugfs_create(struct snd_sof_dev *sdev)
  
- #endif
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 8ff3ee520aea..70d524ef9bc0 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -220,17 +220,20 @@ static void bdw_get_registers(struct snd_sof_dev *sdev,
- 			      struct sof_ipc_panic_info *panic_info,
- 			      u32 *stack, size_t stack_words)
+ int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
  {
--	/* first read regsisters */
--	sof_mailbox_read(sdev, sdev->dsp_oops_offset, xoops, sizeof(*xoops));
-+	u32 offset = sdev->dsp_oops_offset;
-+
-+	/* first read registers */
-+	sof_mailbox_read(sdev, offset, xoops, sizeof(*xoops));
-+
-+	/* note: variable AR register array is not read */
+-	struct sof_ipc_dma_trace_params params;
++	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
++	struct sof_ipc_fw_version *v = &ready->version;
++	struct sof_ipc_dma_trace_params_ext params;
+ 	struct sof_ipc_reply ipc_reply;
+ 	int ret;
  
- 	/* then get panic info */
--	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops),
--			 panic_info, sizeof(*panic_info));
-+	offset += xoops->arch_hdr.totalsize;
-+	sof_mailbox_read(sdev, offset, panic_info, sizeof(*panic_info));
+@@ -172,8 +174,16 @@ int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
+ 		return -EINVAL;
  
- 	/* then get the stack */
--	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops) +
--			   sizeof(*panic_info), stack,
--			   stack_words * sizeof(u32));
-+	offset += sizeof(*panic_info);
-+	sof_mailbox_read(sdev, offset, stack, stack_words * sizeof(u32));
- }
- 
- static void bdw_dump(struct snd_sof_dev *sdev, u32 flags)
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 8765eedfcf54..107d711efc3f 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -265,17 +265,20 @@ static void byt_get_registers(struct snd_sof_dev *sdev,
- 			      struct sof_ipc_panic_info *panic_info,
- 			      u32 *stack, size_t stack_words)
- {
-+	u32 offset = sdev->dsp_oops_offset;
-+
- 	/* first read regsisters */
--	sof_mailbox_read(sdev, sdev->dsp_oops_offset, xoops, sizeof(*xoops));
-+	sof_mailbox_read(sdev, offset, xoops, sizeof(*xoops));
-+
-+	/* note: variable AR register array is not read */
- 
- 	/* then get panic info */
--	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops),
--			 panic_info, sizeof(*panic_info));
-+	offset += xoops->arch_hdr.totalsize;
-+	sof_mailbox_read(sdev, offset, panic_info, sizeof(*panic_info));
- 
- 	/* then get the stack */
--	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops) +
--			   sizeof(*panic_info), stack,
--			   stack_words * sizeof(u32));
-+	offset += sizeof(*panic_info);
-+	sof_mailbox_read(sdev, offset, stack, stack_words * sizeof(u32));
- }
- 
- static void byt_dump(struct snd_sof_dev *sdev, u32 flags)
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 68db2ac8b6f8..5b6c21565b96 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -111,17 +111,21 @@ static void hda_dsp_get_registers(struct snd_sof_dev *sdev,
- 				  struct sof_ipc_panic_info *panic_info,
- 				  u32 *stack, size_t stack_words)
- {
-+	u32 offset = sdev->dsp_oops_offset;
-+
- 	/* first read registers */
--	sof_block_read(sdev, sdev->mmio_bar, sdev->dsp_oops_offset, xoops,
--		       sizeof(*xoops));
-+	sof_mailbox_read(sdev, offset, xoops, sizeof(*xoops));
-+
-+	/* note: variable AR register array is not read */
- 
- 	/* then get panic info */
--	sof_block_read(sdev, sdev->mmio_bar, sdev->dsp_oops_offset +
--		       sizeof(*xoops), panic_info, sizeof(*panic_info));
-+	offset += xoops->arch_hdr.totalsize;
-+	sof_block_read(sdev, sdev->mmio_bar, offset,
-+		       panic_info, sizeof(*panic_info));
- 
- 	/* then get the stack */
--	sof_block_read(sdev, sdev->mmio_bar, sdev->dsp_oops_offset +
--		       sizeof(*xoops) + sizeof(*panic_info), stack,
-+	offset += sizeof(*panic_info);
-+	sof_block_read(sdev, sdev->mmio_bar, offset, stack,
- 		       stack_words * sizeof(u32));
- }
- 
-diff --git a/sound/soc/sof/xtensa/core.c b/sound/soc/sof/xtensa/core.c
-index c3ad23a85b99..46a4905a9dce 100644
---- a/sound/soc/sof/xtensa/core.c
-+++ b/sound/soc/sof/xtensa/core.c
-@@ -110,7 +110,7 @@ static void xtensa_stack(struct snd_sof_dev *sdev, void *oops, u32 *stack,
- 			 u32 stack_words)
- {
- 	struct sof_ipc_dsp_oops_xtensa *xoops = oops;
--	u32 stack_ptr = xoops->stack;
-+	u32 stack_ptr = xoops->plat_hdr.stackptr;
- 	/* 4 * 8chars + 3 ws + 1 terminating NUL */
- 	unsigned char buf[4 * 8 + 3 + 1];
- 	int i;
+ 	/* set IPC parameters */
+-	params.hdr.size = sizeof(params);
+-	params.hdr.cmd = SOF_IPC_GLB_TRACE_MSG | SOF_IPC_TRACE_DMA_PARAMS;
++	params.hdr.cmd = SOF_IPC_GLB_TRACE_MSG;
++	/* PARAMS_EXT is only supported from ABI 3.7.0 onwards */
++	if (v->abi_version >= SOF_ABI_VER(3, 7, 0)) {
++		params.hdr.size = sizeof(struct sof_ipc_dma_trace_params_ext);
++		params.hdr.cmd |= SOF_IPC_TRACE_DMA_PARAMS_EXT;
++		params.timestamp_ns = ktime_get(); /* in nanosecond */
++	} else {
++		params.hdr.size = sizeof(struct sof_ipc_dma_trace_params);
++		params.hdr.cmd |= SOF_IPC_TRACE_DMA_PARAMS;
++	}
+ 	params.buffer.phy_addr = sdev->dmatp.addr;
+ 	params.buffer.size = sdev->dmatb.bytes;
+ 	params.buffer.pages = sdev->dma_trace_pages;
 -- 
 2.20.1
