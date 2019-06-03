@@ -1,19 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/5] ASoC: SOF: suspend/resume debug tools
-Date: Mon, 3 Jun 2019 10:45:52 -0500
-Message-ID: <436681ea-6ffb-93f5-9bae-1f01d98e072f@linux.intel.com>
-References: <20190524192309.6359-1-pierre-louis.bossart@linux.intel.com>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: atmel SSC DSP A mode
+Date: Mon, 3 Jun 2019 16:05:49 +0000
+Message-ID: <155857e2-1fbd-f154-5316-a4426a74b7b4@microchip.com>
+References: <8d2cb6d3212c82c5b1430dc5e13c79c1@rose-es.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+Received: from esa1.microchip.iphmx.com (esa1.microchip.iphmx.com
+ [68.232.147.91])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFB74F80774
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 17:45:56 +0200 (CEST)
-In-Reply-To: <20190524192309.6359-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EB83F896CE
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:06:06 +0200 (CEST)
+In-Reply-To: <8d2cb6d3212c82c5b1430dc5e13c79c1@rose-es.nl>
 Content-Language: en-US
+Content-ID: <D4D368BBE8D9814C84B9AC8934F8A60E@namprd11.prod.outlook.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +25,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org
+To: willemromkes@rose-es.nl, nicolas.ferre@atmel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 5/24/19 2:23 PM, Pierre-Louis Bossart wrote:
-> No new functionality per se, just utilities for developers. The vast
-> majority of current integration issues are related to HDAudio + trace
-> support combined with runtime suspend/resume.
-> 
-> Add a couple of changes to make it easier for developers to see the
-> firmware logs across suspend/resume transitions, disable the trace
-> and/or disable runtime_pm to help narrow down the problems.
-> 
-> Kai Vehmanen (2):
->    ASoC: SOF: trace: remove code duplication in sof_wait_trace_avail()
->    ASoC: SOF: force end-of-file for debugfs trace at suspend
-
-Hi Mark, you applied the first two patches in this series but the last 3 
-patches were left out. Were they missed somehow or is there any objection?
-
-> Pierre-Louis Bossart (3):
->    ASoC: SOF: trace: move to opt-in with Kconfig and module parameter
->    ASoC: SOF: acpi: add module param to disable pm_runtime
->    ASoC: SOF: pci: add module param to disable pm_runtime
-> 
->   sound/soc/sof/Kconfig        |  8 +++++
->   sound/soc/sof/core.c         | 26 ++++++++++----
->   sound/soc/sof/sof-acpi-dev.c | 12 ++++++-
->   sound/soc/sof/sof-pci-dev.c  | 12 ++++++-
->   sound/soc/sof/sof-priv.h     |  3 ++
->   sound/soc/sof/trace.c        | 67 ++++++++++++++++++++++++++++++------
->   6 files changed, 110 insertions(+), 18 deletions(-)
-> 
-> 
-> base-commit: 188d45fe779eeb8e3521b59fcb12cc48a6f2c203
-> 
+T24gMDMuMDYuMjAxOSAxMzoxOSwgV2lsbGVtIFJvbWtlcyB3cm90ZToNCj4gDQo+ICoNCj4gKg0K
+PiANCj4gSGksDQo+IA0KPiBXZSBhcmUgdXNpbmcgbGludXgtYXQ5MSBhbmQgbGF0ZWx5IEkgaGF2
+ZSBiZWVuIHdvcmtpbmcgb24gYWRkaW5nIHN1cHBvcnQgDQo+IGZvciBhIGN1c3RvbSBzb3VuZGNh
+cmQsIGEgZHVhbCB0bHYzMjBhaWMzeCBjb2RlYyBvbiBTQU1BNUQzIHBsYXRmb3JtLiANCj4gVGhp
+cyBzb3VuZGNhcmQgdXNlcyBEU1AgQSBtb2RlLg0KPiANCj4gV2UgYXJlIGZhY2luZyBhdWRpbyBp
+c3N1ZXM6IFdoZW4gd2UgcGxheWJhY2sgYSBXQVYgZmlsZSB3aXRoIGEgc2luZSANCj4gd2F2ZSwg
+dGhlIGNvZGVjIG91dHB1dHMgZmFyIGZyb20gYSBjbGVhbiBzaW5lIHdhdmUuIFRoZSBwcm9ibGVt
+IEkgdGhpbmsgDQo+IGlzIHRoYXQgdGhlIENLSSBzZXR0aW5ncyBmb3IgdGhlIFRNQ1IgcmVnaXN0
+ZXIgaXNuJ3Qgc2V0IGNvcnJlY3RseS4gDQo+IHNlZcKgY29tbWl0IDIwY2YyNjAzYjEyMmJmNzFm
+YjU0ZGVmMWRlNmEyYWQ3M2Q1ZGRiMGINCj4gQXV0aG9yOiBCbyBTaGVuIDx2b2ljZS5zaGVuQGF0
+bWVsLmNvbT4NCj4gRGF0ZTrCoMKgIEZyaSBKYW4gMzAgMTc6Mzg6NDIgMjAxNSArMDgwMA0KPiAN
+Cj4gIMKgwqDCoCBBU29DOiBhdG1lbF9zc2NfZGFpOiBmaXggdGhlIHNldHRpbmcgZm9yIERTUCBt
+b2RlDQo+IA0KPiAgwqDCoMKgIFdoZW4gU0NDIHdvcmsgaW4gRFNQIEEgbW9kZSwgdGhlIGRhdGEg
+b3V0cHV0cy9pbnB1dHMgYXJlIHNoaWZ0IG91dCBvbg0KPiAgwqDCoMKgIGZhbGxpbmcgZWRnZSwg
+dGhlIGZyYW1lIHN5bmMgYXJlIHNhbXBsZSBvbiB0aGUgcmlzaW5nIGVkZ2UuDQo+IA0KPiAgwqDC
+oMKgIFJlcG9ydGVkLWJ5OiBTb25nanVuIFd1IDxzb25nanVuLnd1QGF0bWVsLmNvbT4NCj4gIMKg
+wqDCoCBTaWduZWQtb2ZmLWJ5OiBCbyBTaGVuIDx2b2ljZS5zaGVuQGF0bWVsLmNvbT4NCj4gIMKg
+wqDCoCBTaWduZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+DQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyANCj4gYi9zb3Vu
+ZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jDQo+IGluZGV4IGU2OTFhYWIuLjM1ZTQ0ZTQgMTAw
+NjQ0DQo+IC0tLSBhL3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMNCj4gKysrIGIvc291
+bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYw0KPiBAQCAtNTAyLDcgKzUwMiw3IEBAIHN0YXRp
+YyBpbnQgYXRtZWxfc3NjX2h3X3BhcmFtcyhzdHJ1Y3QgDQo+IHNuZF9wY21fc3Vic3RyZWFtICpz
+dWJzdHJlYW0sDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmNtciA9wqDCoMKg
+IFNTQ19CRihSQ01SX1BFUklPRCwgc3NjX3AtPnJjbXJfcGVyaW9kKQ0KPiAgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IFNTQ19CRihSQ01SX1NUVERMWSwg
+MSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCBT
+U0NfQkYoUkNNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19SRikNCj4gLcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgU1NDX0JGKFJDTVJfQ0tJLCBTU0NfQ0tJ
+X1JJU0lORykNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHwgU1NDX0JGKFJDTVJfQ0tJLCBTU0NfQ0tJX0ZBTExJTkcpDQo+ICDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgU1NDX0JGKFJDTVJfQ0tPLCBTU0NfQ0tP
+X05PTkUpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHwgU1NDX0JGKFJDTVJfQ0tTLCBTU0NfQ0tTX0RJVik7DQo+IA0KPiBAQCAtNTE3LDcgKzUxNyw3
+IEBAIHN0YXRpYyBpbnQgYXRtZWxfc3NjX2h3X3BhcmFtcyhzdHJ1Y3QgDQo+IHNuZF9wY21fc3Vi
+c3RyZWFtICpzdWJzdHJlYW0sDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGNt
+ciA9wqDCoMKgIFNTQ19CRihUQ01SX1BFUklPRCwgc3NjX3AtPnRjbXJfcGVyaW9kKQ0KPiAgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IFNTQ19CRihUQ01S
+X1NUVERMWSwgMSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgfCBTU0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19SRikNCj4gLcKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgU1NDX0JGKFRDTVJfQ0tJ
+LCBTU0NfQ0tJX1JJU0lORykNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIHwgU1NDX0JGKFRDTVJfQ0tJLCBTU0NfQ0tJX0ZBTExJTkcpDQo+ICDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgU1NDX0JGKFRDTVJfQ0tP
+LCBTU0NfQ0tPX0NPTlRJTlVPVVMpDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIHwgU1NDX0JGKFRDTVJfQ0tTLCBTU0NfQ0tTX0RJVik7DQo+IA0KPiBA
+QCAtNTQ2LDcgKzU0Niw3IEBAIHN0YXRpYyBpbnQgYXRtZWxfc3NjX2h3X3BhcmFtcyhzdHJ1Y3Qg
+DQo+IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgcmNtciA9wqDCoMKgIFNTQ19CRihSQ01SX1BFUklPRCwgMCkNCj4gIMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCBTU0NfQkYoUkNNUl9T
+VFRETFksIFNUQVJUX0RFTEFZKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCB8IFNTQ19CRihSQ01SX1NUQVJULCBTU0NfU1RBUlRfUklTSU5HX1JGKQ0K
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCBTU0NfQkYo
+UkNNUl9DS0ksIFNTQ19DS0lfUklTSU5HKQ0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgfCBTU0NfQkYoUkNNUl9DS0ksIFNTQ19DS0lfRkFMTElORykNCj4g
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCBTU0NfQkYo
+UkNNUl9DS08sIFNTQ19DS09fTk9ORSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgfCBTU0NfQkYoUkNNUl9DS1MsIHNzYy0+Y2xrX2Zyb21fcmtfcGlu
+ID8NCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTU0NfQ0tTX1BJTiA6IFNTQ19DS1Nf
+Q0xPQ0spOw0KPiANCj4gRm9yIGJvdGggdGhlIFRDTVIgYW5kIFJDTVIgdGhlIENLSSBpcyBzZXQg
+dG8gU1NDX0NLSV9GQUxMSU5HLCBidXQgSSANCj4gdGhpbmsgZm9yIHRoZSBUQ01SIHRoZSBDS0kg
+c2hvdWxkIGJlIHNldCB0byBTU0NfQ0tJX1JJU0lORy4gU2VlIGRhdGFzaGVldDoNCj4gDQo+IFRD
+TVIgQ0tJOiAiMTogVGhlIGRhdGEgb3V0cHV0cyAoRGF0YSBhbmQgRnJhbWUgU3luYyBzaWduYWxz
+KSBhcmUgc2hpZnRlZCANCj4gb3V0IG9uIFRyYW5zbWl0IENsb2NrIHJpc2luZyBlZGdlLiBUaGUg
+RnJhbWUgc3luYyBzaWduYWwNCj4gaW5wdXQgaXMgc2FtcGxlZCBvbiBUcmFuc21pdCBjbG9jayBm
+YWxsaW5nIGVkZ2UuIg0KPiANCj4gUkNNUiBDS0k6ICIwOiBUaGUgZGF0YSBpbnB1dHMgKERhdGEg
+YW5kIEZyYW1lIFN5bmMgc2lnbmFscykgYXJlIHNhbXBsZWQgDQo+IG9uIFJlY2VpdmUgQ2xvY2sg
+ZmFsbGluZyBlZGdlLiBUaGUgRnJhbWUgU3luYyBzaWduYWwgb3V0LQ0KPiBwdXQgaXMgc2hpZnRl
+ZCBvdXQgb24gUmVjZWl2ZSBDbG9jayByaXNpbmcgZWRnZS4iDQo+IA0KPiBTZXR0aW5nIHRoZSBD
+S0kgaW4gVENNUiB0byBTU0NfQ0tJX1JJU0lORyB0byBmaXhlcyBvdXIgaXNzdWVzLg0KDQpIaSBX
+aWxsZW0sDQoNCkl0IHRoaXMgRFMgb2YgdGhlIGNvZGVjIHlvdSBhcmUgdXNpbmc/DQpodHRwOi8v
+d3d3LnRpLmNvbS9saXQvZHMvc3ltbGluay90bHYzMjBhaWMzMy5wZGYNCg0KQXJlIHlvdSB1c2lu
+ZyB0aGUgRFNQIG1vZGUgZGVzY3JpYmVkIGluIGZpZ3VyZSAyNSBEU1AgU2VyaWFsIEJ1cyBNb2Rl
+IA0KT3BlcmF0aW9uPyBJZiB5ZXMsIHRoZW4geW91IHNob3VsZCB1c2UgdGhlIERTUF9CIG1vZGUu
+Li4NCg0KVGhhbmtzIGFuZCBiZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
