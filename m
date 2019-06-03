@@ -1,225 +1,271 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH 1/7] video: add HDMI state notifier support
-Date: Mon, 3 Jun 2019 09:45:49 +0200
-Message-ID: <41e7052b-a58c-5a8c-5d94-37237e0c2070@xs4all.nl>
+From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
+        <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 2/7] ASoC: hdmi-codec: use HDMI state
+ notifier to add jack support
+Date: Mon, 3 Jun 2019 10:03:01 +0200
+Message-ID: <20190603100301.00d68690@xxx>
 References: <20190603043251.226549-1-cychiang@chromium.org>
- <20190603043251.226549-2-cychiang@chromium.org>
+ <20190603043251.226549-3-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20190603043251.226549-2-cychiang@chromium.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, linux-rockchip@lists.infradead.org, dgreid@chromium.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, tzungbi@chromium.org, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Russell King <rmk+kernel@armlinux.org.uk>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dianders@chromium.org, Mark Brown <broonie@kernel.org>, Dariusz Marcinkiewicz <darekm@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190603043251.226549-3-cychiang@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, dgreid@chromium.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, tzungbi@chromium.org, Philipp Zabel <p.zabel@pengutronix.de>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Russell King <rmk+kernel@armlinux.org.uk>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dianders@chro
 List-Id: alsa-devel@alsa-project.org
 
-T24gNi8zLzE5IDY6MzIgQU0sIENoZW5nLVlpIENoaWFuZyB3cm90ZToKPiBGcm9tOiBIYW5zIFZl
-cmt1aWwgPGhhbnMudmVya3VpbEBjaXNjby5jb20+Cj4gCj4gQWRkIHN1cHBvcnQgZm9yIEhETUkg
-aG90cGx1ZyBhbmQgRURJRCBub3RpZmllcnMsIHdoaWNoIGlzIHVzZWQgdG8gY29udmV5Cj4gaW5m
-b3JtYXRpb24gZnJvbSBIRE1JIGRyaXZlcnMgdG8gdGhlaXIgQ0VDIGFuZCBhdWRpbyBjb3VudGVy
-cGFydHMuCj4gCj4gQmFzZWQgb24gYW4gZWFybGllciB2ZXJzaW9uIGZyb20gUnVzc2VsbCBLaW5n
-Ogo+IAo+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvOTI3NzA0My8KPiAKPiBU
-aGUgaGRtaV9ub3RpZmllciBpcyBhIHJlZmVyZW5jZSBjb3VudGVkIG9iamVjdCBjb250YWluaW5n
-IHRoZSBIRE1JIHN0YXRlCj4gb2YgYW4gSERNSSBkZXZpY2UuCj4gCj4gV2hlbiBhIG5ldyBub3Rp
-ZmllciBpcyByZWdpc3RlcmVkIHRoZSBjdXJyZW50IHN0YXRlIHdpbGwgYmUgcmVwb3J0ZWQgdG8K
-PiB0aGF0IG5vdGlmaWVyIGF0IHJlZ2lzdHJhdGlvbiB0aW1lLgo+IAo+IEJhc2VkIG9uIEhhbnMg
-VmVya3VpbCdzIHBhdGNoOgo+IAo+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gv
-OTQ3MjUyMS8KCkVybSwgeW91IGFyZSBhd2FyZSB0aGF0IHRoaXMgcGF0Y2ggbW9ycGhlZCBpbnRv
-IGEgQ0VDLXNwZWNpZmljIG5vdGlmaWVyCmZvdW5kIGluIGRyaXZlcnMvbWVkaWEvY2VjL2NlYy1u
-b3RpZmllci5jPwoKSSBkb24ndCB0aGluayBpdCBtYWtlcyBzZW5zZSB0byBoYXZlIHR3byBub3Rp
-ZmllciBpbXBsZW1lbnRhdGlvbnMgaW4gdGhlIGtlcm5lbC4KVGhlIG9yaWdpbmFsIGludGVudGlv
-biB3YXMgdG8gaGF2ZSB0aGUgbm90aWZpZXIgZGVhbCB3aXRoIGJvdGggQ0VDIGFuZCBBU29DCm5v
-dGlmaWNhdGlvbnMsIGJ1dCB0aGVyZSB3YXMgbm90IGVub3VnaCBpbnRlcmVzdCBmb3IgdGhlIEFT
-b0MgYml0cyBhdCB0aGUgdGltZQphbmQgaXQgd2FzIGRyb3BwZWQuCgpJIGFtIHBsYW5uaW5nIGNo
-YW5nZXMgdG8gdGhlIGNlYy1ub3RpZmllciBBUEksIEkgaG9wZSB0byB3b3JrIG9uIHRoYXQgdGhp
-cwp3ZWVrLiBJJ2xsIENDIHlvdSB3aGVuIEkgcG9zdCB0aG9zZS4gVGhvc2UgbWlnaHQgYmUgYSBn
-b29kIHN0YXJ0aW5nIHBvaW50CnRvIGNvbnZlcnQgdGhlIGNlYy1ub3RpZmllciB0byBhbiBoZG1p
-LW5vdGlmaWVyIGFzIHdhcyBvcmlnaW5hbGx5IGludGVuZGVkLgoKSSd2ZSBhZGRlZCB5b3VyIGNv
-bGxlYWd1ZSBEYXJpdXN6IE1hcmNpbmtpZXdpY3ogdG8gdGhlIENDIGxpc3Qgc2luY2UgaGUncyBi
-ZWVuCndvcmtpbmcgb24gc29tZSBuaWNlIGNlYy1ub3RpZmllciBpbXByb3ZlbWVudHMgYXMgd2Vs
-bC4KClJlZ2FyZHMsCgoJSGFucwoKPiAKPiBNb2RpZmllZCBieSBDaGVuZy1ZaSBDaGlhbmc6Cj4g
-IC0gQWRkIGEgc2VjdGlvbiBpbiBNQUlOVEFJTkVSLgo+ICAtIENoYW5nZXMgY29ubmVjdGVkIGFu
-ZCBoYXNfZWxkIHRvIGJpdGZpZWxkIG9mIHVuc2lnbmVkIGludC4KPiAgLSBPdGhlciBtaW5vciBm
-aXhlcyB0byBwYXNzIGNoZWNrcGF0Y2gucGwgLS1zdHJpY3QgY2hlY2tzLgo+IAo+IFNpZ25lZC1v
-ZmYtYnk6IEhhbnMgVmVya3VpbCA8aGFucy52ZXJrdWlsQGNpc2NvLmNvbT4KPiBBY2tlZC1ieTog
-UGhpbGlwcCBaYWJlbCA8cC56YWJlbEBwZW5ndXRyb25peC5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBD
-aGVuZy1ZaSBDaGlhbmcgPGN5Y2hpYW5nQGNocm9taXVtLm9yZz4KPiAtLS0KPiBUaGUgb3JpZ2lu
-YWwgcGF0Y2ggaXMgYXQKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1hcm0ta2VybmVs
-LzIwMTYxMjEzMTUwODEzLjM3OTY2LTItaHZlcmt1aWxAeHM0YWxsLm5sCj4gCj4gIE1BSU5UQUlO
-RVJTICAgICAgICAgICAgICAgICAgIHwgICA2ICsrCj4gIGRyaXZlcnMvdmlkZW8vS2NvbmZpZyAg
-ICAgICAgIHwgICAzICsKPiAgZHJpdmVycy92aWRlby9NYWtlZmlsZSAgICAgICAgfCAgIDEgKwo+
-ICBkcml2ZXJzL3ZpZGVvL2hkbWktbm90aWZpZXIuYyB8IDE0NSArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrCj4gIGluY2x1ZGUvbGludXgvaGRtaS1ub3RpZmllci5oIHwgMTEyICsr
-KysrKysrKysrKysrKysrKysrKysrKysrCj4gIDUgZmlsZXMgY2hhbmdlZCwgMjY3IGluc2VydGlv
-bnMoKykKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvdmlkZW8vaGRtaS1ub3RpZmllci5j
-Cj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L2hkbWktbm90aWZpZXIuaAo+IAo+
-IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTCj4gaW5kZXggNWNmYmVhNGNl
-NTc1Li5mZmI3Mzc2Zjk1MDkgMTAwNjQ0Cj4gLS0tIGEvTUFJTlRBSU5FUlMKPiArKysgYi9NQUlO
-VEFJTkVSUwo+IEBAIC0xNjY3Niw2ICsxNjY3NiwxMiBAQCBXOglodHRwczovL2xpbnV4dHYub3Jn
-Cj4gIFM6CU1haW50YWluZWQKPiAgRjoJZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS92aWNvZGVjLyoK
-PiAgCj4gK1ZJREVPIEZSQU1FV09SSwo+ICtNOglIYW5zIFZlcmt1aWwgPGh2ZXJrdWlsQHhzNGFs
-bC5ubD4KPiArTDoJbGludXgtbWVkaWFAdmdlci5rZXJuZWwub3JnCj4gK0Y6CWRyaXZlcnMvdmlk
-ZW8vaGRtaS1ub3RpZmllci4qCj4gK1M6CU1haW50YWluZWQKPiArCj4gIFZJREVPIE1VTFRJUExF
-WEVSIERSSVZFUgo+ICBNOglQaGlsaXBwIFphYmVsIDxwLnphYmVsQHBlbmd1dHJvbml4LmRlPgo+
-ICBMOglsaW51eC1tZWRpYUB2Z2VyLmtlcm5lbC5vcmcKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92
-aWRlby9LY29uZmlnIGIvZHJpdmVycy92aWRlby9LY29uZmlnCj4gaW5kZXggODNkM2QyNzFjYTE1
-Li4wMDBiYTliYzBhZTcgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aWRlby9LY29uZmlnCj4gKysr
-IGIvZHJpdmVycy92aWRlby9LY29uZmlnCj4gQEAgLTM0LDYgKzM0LDkgQEAgY29uZmlnIFZJREVP
-TU9ERV9IRUxQRVJTCj4gIGNvbmZpZyBIRE1JCj4gIAlib29sCj4gIAo+ICtjb25maWcgSERNSV9O
-T1RJRklFUlMKPiArCWJvb2wKPiArCj4gIGVuZGlmICMgSEFTX0lPTUVNCj4gIAo+ICBpZiBWVAo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL01ha2VmaWxlIGIvZHJpdmVycy92aWRlby9NYWtl
-ZmlsZQo+IGluZGV4IGRmNzY1MGFkZWRlOS4uZWZmNDczNjEwMmNhIDEwMDY0NAo+IC0tLSBhL2Ry
-aXZlcnMvdmlkZW8vTWFrZWZpbGUKPiArKysgYi9kcml2ZXJzL3ZpZGVvL01ha2VmaWxlCj4gQEAg
-LTEsNiArMSw3IEBACj4gICMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPiAgb2Jq
-LSQoQ09ORklHX1ZHQVNUQVRFKSAgICAgICAgICAgICs9IHZnYXN0YXRlLm8KPiAgb2JqLSQoQ09O
-RklHX0hETUkpICAgICAgICAgICAgICAgICs9IGhkbWkubwo+ICtvYmotJChDT05GSUdfSERNSV9O
-T1RJRklFUlMpICAgICAgKz0gaGRtaS1ub3RpZmllci5vCj4gIAo+ICBvYmotJChDT05GSUdfVlQp
-CQkgICs9IGNvbnNvbGUvCj4gIG9iai0kKENPTkZJR19GQl9TVEkpCQkgICs9IGNvbnNvbGUvCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vaGRtaS1ub3RpZmllci5jIGIvZHJpdmVycy92aWRl
-by9oZG1pLW5vdGlmaWVyLmMKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAw
-MDAwMC4uZDFlZWRmNjYxNjQ4Cj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2RyaXZlcnMvdmlkZW8v
-aGRtaS1ub3RpZmllci5jCj4gQEAgLTAsMCArMSwxNDUgQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlk
-ZW50aWZpZXI6IEdQTC0yLjAKPiArLyogaGRtaS1ub3RpZmllci5jIC0gbm90aWZ5IGludGVyZXN0
-ZWQgcGFydGllcyBvZiAoZGlzKWNvbm5lY3QgYW5kIEVESUQKPiArICogZXZlbnRzCj4gKyAqCj4g
-KyAqIENvcHlyaWdodCAyMDE2IFJ1c3NlbGwgS2luZyA8cm1rK2tlcm5lbEBhcm0ubGludXgub3Jn
-LnVrPgo+ICsgKiBDb3B5cmlnaHQgMjAxNiBDaXNjbyBTeXN0ZW1zLCBJbmMuIGFuZC9vciBpdHMg
-YWZmaWxpYXRlcy4KPiArICogQWxsIHJpZ2h0cyByZXNlcnZlZC4KPiArICovCj4gKwo+ICsjaW5j
-bHVkZSA8bGludXgvZXhwb3J0Lmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9oZG1pLW5vdGlmaWVyLmg+
-Cj4gKyNpbmNsdWRlIDxsaW51eC9zdHJpbmcuaD4KPiArI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4K
-PiArI2luY2x1ZGUgPGxpbnV4L2xpc3QuaD4KPiArCj4gK3N0YXRpYyBMSVNUX0hFQUQoaGRtaV9u
-b3RpZmllcnMpOwo+ICtzdGF0aWMgREVGSU5FX01VVEVYKGhkbWlfbm90aWZpZXJzX2xvY2spOwo+
-ICsKPiArc3RydWN0IGhkbWlfbm90aWZpZXIgKmhkbWlfbm90aWZpZXJfZ2V0KHN0cnVjdCBkZXZp
-Y2UgKmRldikKPiArewo+ICsJc3RydWN0IGhkbWlfbm90aWZpZXIgKm47Cj4gKwo+ICsJbXV0ZXhf
-bG9jaygmaGRtaV9ub3RpZmllcnNfbG9jayk7Cj4gKwlsaXN0X2Zvcl9lYWNoX2VudHJ5KG4sICZo
-ZG1pX25vdGlmaWVycywgaGVhZCkgewo+ICsJCWlmIChuLT5kZXYgPT0gZGV2KSB7Cj4gKwkJCW11
-dGV4X3VubG9jaygmaGRtaV9ub3RpZmllcnNfbG9jayk7Cj4gKwkJCWtyZWZfZ2V0KCZuLT5rcmVm
-KTsKPiArCQkJcmV0dXJuIG47Cj4gKwkJfQo+ICsJfQo+ICsJbiA9IGt6YWxsb2Moc2l6ZW9mKCpu
-KSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIW4pCj4gKwkJZ290byB1bmxvY2s7Cj4gKwluLT5kZXYg
-PSBkZXY7Cj4gKwltdXRleF9pbml0KCZuLT5sb2NrKTsKPiArCUJMT0NLSU5HX0lOSVRfTk9USUZJ
-RVJfSEVBRCgmbi0+bm90aWZpZXJzKTsKPiArCWtyZWZfaW5pdCgmbi0+a3JlZik7Cj4gKwlsaXN0
-X2FkZF90YWlsKCZuLT5oZWFkLCAmaGRtaV9ub3RpZmllcnMpOwo+ICt1bmxvY2s6Cj4gKwltdXRl
-eF91bmxvY2soJmhkbWlfbm90aWZpZXJzX2xvY2spOwo+ICsJcmV0dXJuIG47Cj4gK30KPiArRVhQ
-T1JUX1NZTUJPTF9HUEwoaGRtaV9ub3RpZmllcl9nZXQpOwo+ICsKPiArc3RhdGljIHZvaWQgaGRt
-aV9ub3RpZmllcl9yZWxlYXNlKHN0cnVjdCBrcmVmICprcmVmKQo+ICt7Cj4gKwlzdHJ1Y3QgaGRt
-aV9ub3RpZmllciAqbiA9Cj4gKwkJY29udGFpbmVyX29mKGtyZWYsIHN0cnVjdCBoZG1pX25vdGlm
-aWVyLCBrcmVmKTsKPiArCj4gKwltdXRleF9sb2NrKCZoZG1pX25vdGlmaWVyc19sb2NrKTsKPiAr
-CWxpc3RfZGVsKCZuLT5oZWFkKTsKPiArCW11dGV4X3VubG9jaygmaGRtaV9ub3RpZmllcnNfbG9j
-ayk7Cj4gKwlrZnJlZShuLT5lZGlkKTsKPiArCWtmcmVlKG4pOwo+ICt9Cj4gKwo+ICt2b2lkIGhk
-bWlfbm90aWZpZXJfcHV0KHN0cnVjdCBoZG1pX25vdGlmaWVyICpuKQo+ICt7Cj4gKwlrcmVmX3B1
-dCgmbi0+a3JlZiwgaGRtaV9ub3RpZmllcl9yZWxlYXNlKTsKPiArfQo+ICtFWFBPUlRfU1lNQk9M
-X0dQTChoZG1pX25vdGlmaWVyX3B1dCk7Cj4gKwo+ICtpbnQgaGRtaV9ub3RpZmllcl9yZWdpc3Rl
-cihzdHJ1Y3QgaGRtaV9ub3RpZmllciAqbiwgc3RydWN0IG5vdGlmaWVyX2Jsb2NrICpuYikKPiAr
-ewo+ICsJaW50IHJldCA9IGJsb2NraW5nX25vdGlmaWVyX2NoYWluX3JlZ2lzdGVyKCZuLT5ub3Rp
-ZmllcnMsIG5iKTsKPiArCj4gKwlpZiAocmV0KQo+ICsJCXJldHVybiByZXQ7Cj4gKwlrcmVmX2dl
-dCgmbi0+a3JlZik7Cj4gKwltdXRleF9sb2NrKCZuLT5sb2NrKTsKPiArCWlmIChuLT5jb25uZWN0
-ZWQpIHsKPiArCQlibG9ja2luZ19ub3RpZmllcl9jYWxsX2NoYWluKCZuLT5ub3RpZmllcnMsIEhE
-TUlfQ09OTkVDVEVELCBuKTsKPiArCQlpZiAobi0+ZWRpZF9zaXplKQo+ICsJCQlibG9ja2luZ19u
-b3RpZmllcl9jYWxsX2NoYWluKCZuLT5ub3RpZmllcnMsCj4gKwkJCQkJCSAgICAgSERNSV9ORVdf
-RURJRCwgbik7Cj4gKwkJaWYgKG4tPmhhc19lbGQpCj4gKwkJCWJsb2NraW5nX25vdGlmaWVyX2Nh
-bGxfY2hhaW4oJm4tPm5vdGlmaWVycywKPiArCQkJCQkJICAgICBIRE1JX05FV19FTEQsIG4pOwo+
-ICsJfQo+ICsJbXV0ZXhfdW5sb2NrKCZuLT5sb2NrKTsKPiArCXJldHVybiAwOwo+ICt9Cj4gK0VY
-UE9SVF9TWU1CT0xfR1BMKGhkbWlfbm90aWZpZXJfcmVnaXN0ZXIpOwo+ICsKPiAraW50IGhkbWlf
-bm90aWZpZXJfdW5yZWdpc3RlcihzdHJ1Y3QgaGRtaV9ub3RpZmllciAqbiwgc3RydWN0IG5vdGlm
-aWVyX2Jsb2NrICpuYikKPiArewo+ICsJaW50IHJldCA9IGJsb2NraW5nX25vdGlmaWVyX2NoYWlu
-X3VucmVnaXN0ZXIoJm4tPm5vdGlmaWVycywgbmIpOwo+ICsKPiArCWlmIChyZXQgPT0gMCkKPiAr
-CQloZG1pX25vdGlmaWVyX3B1dChuKTsKPiArCXJldHVybiByZXQ7Cj4gK30KPiArRVhQT1JUX1NZ
-TUJPTF9HUEwoaGRtaV9ub3RpZmllcl91bnJlZ2lzdGVyKTsKPiArCj4gK3ZvaWQgaGRtaV9ldmVu
-dF9jb25uZWN0KHN0cnVjdCBoZG1pX25vdGlmaWVyICpuKQo+ICt7Cj4gKwltdXRleF9sb2NrKCZu
-LT5sb2NrKTsKPiArCW4tPmNvbm5lY3RlZCA9IHRydWU7Cj4gKwlibG9ja2luZ19ub3RpZmllcl9j
-YWxsX2NoYWluKCZuLT5ub3RpZmllcnMsIEhETUlfQ09OTkVDVEVELCBuKTsKPiArCW11dGV4X3Vu
-bG9jaygmbi0+bG9jayk7Cj4gK30KPiArRVhQT1JUX1NZTUJPTF9HUEwoaGRtaV9ldmVudF9jb25u
-ZWN0KTsKPiArCj4gK3ZvaWQgaGRtaV9ldmVudF9kaXNjb25uZWN0KHN0cnVjdCBoZG1pX25vdGlm
-aWVyICpuKQo+ICt7Cj4gKwltdXRleF9sb2NrKCZuLT5sb2NrKTsKPiArCW4tPmNvbm5lY3RlZCA9
-IGZhbHNlOwo+ICsJbi0+aGFzX2VsZCA9IGZhbHNlOwo+ICsJbi0+ZWRpZF9zaXplID0gMDsKPiAr
-CWJsb2NraW5nX25vdGlmaWVyX2NhbGxfY2hhaW4oJm4tPm5vdGlmaWVycywgSERNSV9ESVNDT05O
-RUNURUQsIG4pOwo+ICsJbXV0ZXhfdW5sb2NrKCZuLT5sb2NrKTsKPiArfQo+ICtFWFBPUlRfU1lN
-Qk9MX0dQTChoZG1pX2V2ZW50X2Rpc2Nvbm5lY3QpOwo+ICsKPiAraW50IGhkbWlfZXZlbnRfbmV3
-X2VkaWQoc3RydWN0IGhkbWlfbm90aWZpZXIgKm4sIGNvbnN0IHZvaWQgKmVkaWQsIHNpemVfdCBz
-aXplKQo+ICt7Cj4gKwltdXRleF9sb2NrKCZuLT5sb2NrKTsKPiArCWlmIChuLT5lZGlkX2FsbG9j
-YXRlZF9zaXplIDwgc2l6ZSkgewo+ICsJCXZvaWQgKnAgPSBrbWFsbG9jKHNpemUsIEdGUF9LRVJO
-RUwpOwo+ICsKPiArCQlpZiAoIXApIHsKPiArCQkJbXV0ZXhfdW5sb2NrKCZuLT5sb2NrKTsKPiAr
-CQkJcmV0dXJuIC1FTk9NRU07Cj4gKwkJfQo+ICsJCWtmcmVlKG4tPmVkaWQpOwo+ICsJCW4tPmVk
-aWQgPSBwOwo+ICsJCW4tPmVkaWRfYWxsb2NhdGVkX3NpemUgPSBzaXplOwo+ICsJfQo+ICsJbWVt
-Y3B5KG4tPmVkaWQsIGVkaWQsIHNpemUpOwo+ICsJbi0+ZWRpZF9zaXplID0gc2l6ZTsKPiArCWJs
-b2NraW5nX25vdGlmaWVyX2NhbGxfY2hhaW4oJm4tPm5vdGlmaWVycywgSERNSV9ORVdfRURJRCwg
-bik7Cj4gKwltdXRleF91bmxvY2soJm4tPmxvY2spOwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArRVhQ
-T1JUX1NZTUJPTF9HUEwoaGRtaV9ldmVudF9uZXdfZWRpZCk7Cj4gKwo+ICt2b2lkIGhkbWlfZXZl
-bnRfbmV3X2VsZChzdHJ1Y3QgaGRtaV9ub3RpZmllciAqbiwgY29uc3QgdTggZWxkWzEyOF0pCj4g
-K3sKPiArCW11dGV4X2xvY2soJm4tPmxvY2spOwo+ICsJbWVtY3B5KG4tPmVsZCwgZWxkLCBzaXpl
-b2Yobi0+ZWxkKSk7Cj4gKwluLT5oYXNfZWxkID0gdHJ1ZTsKPiArCWJsb2NraW5nX25vdGlmaWVy
-X2NhbGxfY2hhaW4oJm4tPm5vdGlmaWVycywgSERNSV9ORVdfRUxELCBuKTsKPiArCW11dGV4X3Vu
-bG9jaygmbi0+bG9jayk7Cj4gK30KPiArRVhQT1JUX1NZTUJPTF9HUEwoaGRtaV9ldmVudF9uZXdf
-ZWxkKTsKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9oZG1pLW5vdGlmaWVyLmggYi9pbmNs
-dWRlL2xpbnV4L2hkbWktbm90aWZpZXIuaAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXgg
-MDAwMDAwMDAwMDAwLi5jOGYzNTExMGUzZTMKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvaW5jbHVk
-ZS9saW51eC9oZG1pLW5vdGlmaWVyLmgKPiBAQCAtMCwwICsxLDExMiBAQAo+ICsvKiBTUERYLUxp
-Y2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMAo+ICsgKiBoZG1pLW5vdGlmaWVyLmggLSBub3RpZnkg
-aW50ZXJlc3RlZCBwYXJ0aWVzIG9mIChkaXMpY29ubmVjdCBhbmQgRURJRAo+ICsgKiBldmVudHMK
-PiArICoKPiArICogQ29weXJpZ2h0IDIwMTYgUnVzc2VsbCBLaW5nIDxybWsra2VybmVsQGFybS5s
-aW51eC5vcmcudWs+Cj4gKyAqIENvcHlyaWdodCAyMDE2IENpc2NvIFN5c3RlbXMsIEluYy4gYW5k
-L29yIGl0cyBhZmZpbGlhdGVzLgo+ICsgKiBBbGwgcmlnaHRzIHJlc2VydmVkLgo+ICsgKi8KPiAr
-Cj4gKyNpZm5kZWYgTElOVVhfSERNSV9OT1RJRklFUl9ICj4gKyNkZWZpbmUgTElOVVhfSERNSV9O
-T1RJRklFUl9ICj4gKwo+ICsjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4KPiArI2luY2x1ZGUgPGxp
-bnV4L25vdGlmaWVyLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9rcmVmLmg+Cj4gKwo+ICtlbnVtIHsK
-PiArCUhETUlfQ09OTkVDVEVELAo+ICsJSERNSV9ESVNDT05ORUNURUQsCj4gKwlIRE1JX05FV19F
-RElELAo+ICsJSERNSV9ORVdfRUxELAo+ICt9Owo+ICsKPiArc3RydWN0IGRldmljZTsKPiArCj4g
-K3N0cnVjdCBoZG1pX25vdGlmaWVyIHsKPiArCS8qIExvY2sgdG8gcHJvdGVjdCBjYWxsYmFjayBy
-ZWdpc3RyYXRpb24gYW5kIG5vdGlmaWNhdGlvbi4gKi8KPiArCXN0cnVjdCBtdXRleCBsb2NrOwo+
-ICsJc3RydWN0IGxpc3RfaGVhZCBoZWFkOwo+ICsJc3RydWN0IGtyZWYga3JlZjsKPiArCXN0cnVj
-dCBibG9ja2luZ19ub3RpZmllcl9oZWFkIG5vdGlmaWVyczsKPiArCXN0cnVjdCBkZXZpY2UgKmRl
-djsKPiArCj4gKwkvKiBDdXJyZW50IHN0YXRlICovCj4gKwl1bnNpZ25lZCBpbnQgY29ubmVjdGVk
-IDogMTsKPiArCXVuc2lnbmVkIGludCBoYXNfZWxkIDogMTsKPiArCXVuc2lnbmVkIGNoYXIgZWxk
-WzEyOF07Cj4gKwl2b2lkICplZGlkOwo+ICsJc2l6ZV90IGVkaWRfc2l6ZTsKPiArCXNpemVfdCBl
-ZGlkX2FsbG9jYXRlZF9zaXplOwo+ICt9Owo+ICsKPiArLyoqCj4gKyAqIGhkbWlfbm90aWZpZXJf
-Z2V0IC0gZmluZCBvciBjcmVhdGUgYSBuZXcgaGRtaV9ub3RpZmllciBmb3IgdGhlIGdpdmVuIGRl
-dmljZS4KPiArICogQGRldjogZGV2aWNlIHRoYXQgc2VuZHMgdGhlIGV2ZW50cy4KPiArICoKPiAr
-ICogSWYgYSBub3RpZmllciBmb3IgZGV2aWNlIEBkZXYgYWxyZWFkeSBleGlzdHMsIHRoZW4gaW5j
-cmVhc2UgdGhlIHJlZmNvdW50Cj4gKyAqIGFuZCByZXR1cm4gdGhhdCBub3RpZmllci4KPiArICoK
-PiArICogSWYgaXQgZG9lc24ndCBleGlzdCwgdGhlbiBhbGxvY2F0ZSBhIG5ldyBub3RpZmllciBz
-dHJ1Y3QgYW5kIHJldHVybiBhCj4gKyAqIHBvaW50ZXIgdG8gdGhhdCBuZXcgc3RydWN0Lgo+ICsg
-Kgo+ICsgKiBSZXR1cm4gTlVMTCBpZiB0aGUgbWVtb3J5IGNvdWxkIG5vdCBiZSBhbGxvY2F0ZWQu
-Cj4gKyAqLwo+ICtzdHJ1Y3QgaGRtaV9ub3RpZmllciAqaGRtaV9ub3RpZmllcl9nZXQoc3RydWN0
-IGRldmljZSAqZGV2KTsKPiArCj4gKy8qKgo+ICsgKiBoZG1pX25vdGlmaWVyX3B1dCAtIGRlY3Jl
-YXNlIHJlZmNvdW50IGFuZCBkZWxldGUgd2hlbiB0aGUgcmVmY291bnQgcmVhY2hlcyAwLgo+ICsg
-KiBAbjogbm90aWZpZXIKPiArICovCj4gK3ZvaWQgaGRtaV9ub3RpZmllcl9wdXQoc3RydWN0IGhk
-bWlfbm90aWZpZXIgKm4pOwo+ICsKPiArLyoqCj4gKyAqIGhkbWlfbm90aWZpZXJfcmVnaXN0ZXIg
-LSByZWdpc3RlciB0aGUgbm90aWZpZXIgd2l0aCB0aGUgbm90aWZpZXJfYmxvY2suCj4gKyAqIEBu
-OiB0aGUgSERNSSBub3RpZmllcgo+ICsgKiBAbmI6IHRoZSBub3RpZmllcl9ibG9jawo+ICsgKi8K
-PiAraW50IGhkbWlfbm90aWZpZXJfcmVnaXN0ZXIoc3RydWN0IGhkbWlfbm90aWZpZXIgKm4sIHN0
-cnVjdCBub3RpZmllcl9ibG9jayAqbmIpOwo+ICsKPiArLyoqCj4gKyAqIGhkbWlfbm90aWZpZXJf
-dW5yZWdpc3RlciAtIHVucmVnaXN0ZXIgdGhlIG5vdGlmaWVyIHdpdGggdGhlIG5vdGlmaWVyX2Js
-b2NrLgo+ICsgKiBAbjogdGhlIEhETUkgbm90aWZpZXIKPiArICogQG5iOiB0aGUgbm90aWZpZXJf
-YmxvY2sKPiArICovCj4gK2ludCBoZG1pX25vdGlmaWVyX3VucmVnaXN0ZXIoc3RydWN0IGhkbWlf
-bm90aWZpZXIgKm4sCj4gKwkJCSAgICAgc3RydWN0IG5vdGlmaWVyX2Jsb2NrICpuYik7Cj4gKwo+
-ICsvKioKPiArICogaGRtaV9ldmVudF9jb25uZWN0IC0gc2VuZCBhIGNvbm5lY3QgZXZlbnQuCj4g
-KyAqIEBuOiB0aGUgSERNSSBub3RpZmllcgo+ICsgKgo+ICsgKiBTZW5kIGFuIEhETUlfQ09OTkVD
-VEVEIGV2ZW50IHRvIGFueSByZWdpc3RlcmVkIHBhcnRpZXMuCj4gKyAqLwo+ICt2b2lkIGhkbWlf
-ZXZlbnRfY29ubmVjdChzdHJ1Y3QgaGRtaV9ub3RpZmllciAqbik7Cj4gKwo+ICsvKioKPiArICog
-aGRtaV9ldmVudF9kaXNjb25uZWN0IC0gc2VuZCBhIGRpc2Nvbm5lY3QgZXZlbnQuCj4gKyAqIEBu
-OiB0aGUgSERNSSBub3RpZmllcgo+ICsgKgo+ICsgKiBTZW5kIGFuIEhETUlfRElTQ09OTkVDVEVE
-IGV2ZW50IHRvIGFueSByZWdpc3RlcmVkIHBhcnRpZXMuCj4gKyAqLwo+ICt2b2lkIGhkbWlfZXZl
-bnRfZGlzY29ubmVjdChzdHJ1Y3QgaGRtaV9ub3RpZmllciAqbik7Cj4gKwo+ICsvKioKPiArICog
-aGRtaV9ldmVudF9uZXdfZWRpZCAtIHNlbmQgYSBuZXcgRURJRCBldmVudC4KPiArICogQG46IHRo
-ZSBIRE1JIG5vdGlmaWVyCj4gKyAqCj4gKyAqIFNlbmQgYW4gSERNSV9ORVdfRURJRCBldmVudCB0
-byBhbnkgcmVnaXN0ZXJlZCBwYXJ0aWVzLgo+ICsgKiBUaGlzIGZ1bmN0aW9uIHdpbGwgbWFrZSBh
-IGNvcHkgdGhlIEVESUQgc28gaXQgY2FuIHJldHVybiAtRU5PTUVNIGlmCj4gKyAqIG5vIG1lbW9y
-eSBjb3VsZCBiZSBhbGxvY2F0ZWQuCj4gKyAqLwo+ICtpbnQgaGRtaV9ldmVudF9uZXdfZWRpZChz
-dHJ1Y3QgaGRtaV9ub3RpZmllciAqbiwgY29uc3Qgdm9pZCAqZWRpZCwgc2l6ZV90IHNpemUpOwo+
-ICsKPiArLyoqCj4gKyAqIGhkbWlfZXZlbnRfbmV3X2VsZCAtIHNlbmQgYSBuZXcgRUxEIGV2ZW50
-Lgo+ICsgKiBAbjogdGhlIEhETUkgbm90aWZpZXIKPiArICoKPiArICogU2VuZCBhbiBIRE1JX05F
-V19FTEQgZXZlbnQgdG8gYW55IHJlZ2lzdGVyZWQgcGFydGllcy4KPiArICovCj4gK3ZvaWQgaGRt
-aV9ldmVudF9uZXdfZWxkKHN0cnVjdCBoZG1pX25vdGlmaWVyICpuLCBjb25zdCB1OCBlbGRbMTI4
-XSk7Cj4gKwo+ICsjZW5kaWYKPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2RyaS1kZXZlbA==
+On Mon,  3 Jun 2019 12:32:46 +0800
+Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+
+> From: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> Use HDMI connection / disconnection notifications to update an ALSA
+> jack object. Also make a copy of the ELD block after every change.
+> 
+> This was posted by Philipp Zabel at
+> 
+> https://patchwork.kernel.org/patch/9430747/
+> 
+> Modified by Cheng-Yi Chiang:
+> - Fix the conflict of removed hdmi_codec_remove ops.
+> - Other minor fix for the conflict with latest hdmi-codec on ASoC
+>   for-next tree.
+> 
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> ---
+> The original patch is at https://patchwork.kernel.org/patch/9430747/
+> I could not find the LKML link for the patch.
+> 
+>  include/sound/hdmi-codec.h    |   7 +++
+>  sound/soc/codecs/Kconfig      |   1 +
+>  sound/soc/codecs/hdmi-codec.c | 104
+> +++++++++++++++++++++++++++++++++- 3 files changed, 110
+> insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+> index 9483c55f871b..4fa39c93363f 100644
+> --- a/include/sound/hdmi-codec.h
+> +++ b/include/sound/hdmi-codec.h
+> @@ -107,6 +107,13 @@ struct hdmi_codec_pdata {
+>  	void *data;
+>  };
+>  
+> +struct snd_soc_component;
+> +struct snd_soc_jack;
+> +
+> +int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+> +			       struct snd_soc_jack *jack,
+> +			       struct device *dev);
+> +
+>  #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
+>  
+>  #endif /* __HDMI_CODEC_H__ */
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index 8f577258080b..f5f6dd04234c 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -639,6 +639,7 @@ config SND_SOC_HDMI_CODEC
+>  	select SND_PCM_ELD
+>  	select SND_PCM_IEC958
+>  	select HDMI
+> +	select HDMI_NOTIFIERS
+>  
+>  config SND_SOC_ES7134
+>         tristate "Everest Semi ES7134 CODEC"
+> diff --git a/sound/soc/codecs/hdmi-codec.c
+> b/sound/soc/codecs/hdmi-codec.c index 6a0cc8d7e141..fe796a7475a5
+> 100644 --- a/sound/soc/codecs/hdmi-codec.c
+> +++ b/sound/soc/codecs/hdmi-codec.c
+> @@ -12,9 +12,12 @@
+>   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See
+> the GNU
+>   * General Public License for more details.
+>   */
+> +#include <linux/hdmi-notifier.h>
+>  #include <linux/module.h>
+> +#include <linux/notifier.h>
+>  #include <linux/string.h>
+>  #include <sound/core.h>
+> +#include <sound/jack.h>
+>  #include <sound/pcm.h>
+>  #include <sound/pcm_params.h>
+>  #include <sound/soc.h>
+> @@ -282,6 +285,13 @@ struct hdmi_codec_priv {
+>  	struct snd_pcm_chmap *chmap_info;
+>  	unsigned int chmap_idx;
+>  	struct mutex lock;
+> +	struct snd_soc_jack *jack;
+> +	/* Lock to protect setting and getting eld. */
+> +	struct mutex eld_lock;
+> +	struct device *dev;
+> +	struct hdmi_notifier *notifier;
+> +	struct notifier_block nb;
+> +	unsigned int jack_status;
+>  };
+>  
+>  static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+> @@ -308,7 +318,9 @@ static int hdmi_eld_ctl_get(struct snd_kcontrol
+> *kcontrol, struct snd_soc_component *component =
+> snd_kcontrol_chip(kcontrol); struct hdmi_codec_priv *hcp =
+> snd_soc_component_get_drvdata(component); 
+> +	mutex_lock(&hcp->eld_lock);
+>  	memcpy(ucontrol->value.bytes.data, hcp->eld,
+> sizeof(hcp->eld));
+> +	mutex_unlock(&hcp->eld_lock);
+>  
+>  	return 0;
+>  }
+> @@ -393,7 +405,7 @@ static int hdmi_codec_startup(struct
+> snd_pcm_substream *substream, struct snd_soc_dai *dai)
+>  {
+>  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+> -	int ret = 0;
+> +	int ret;
+>  
+>  	ret = mutex_trylock(&hcp->lock);
+>  	if (!ret) {
+> @@ -408,9 +420,9 @@ static int hdmi_codec_startup(struct
+> snd_pcm_substream *substream, }
+>  
+>  	if (hcp->hcd.ops->get_eld) {
+> +		mutex_lock(&hcp->eld_lock);
+>  		ret = hcp->hcd.ops->get_eld(dai->dev->parent,
+> hcp->hcd.data, hcp->eld, sizeof(hcp->eld));
+> -
+>  		if (!ret) {
+>  			ret =
+> snd_pcm_hw_constraint_eld(substream->runtime, hcp->eld);
+
+Seems to me like you missed unlock here. There is return inside this
+if().
+
+> @@ -419,6 +431,7 @@ static int hdmi_codec_startup(struct
+> snd_pcm_substream *substream, }
+>  		/* Select chmap supported */
+>  		hdmi_codec_eld_chmap(hcp);
+> +		mutex_unlock(&hcp->eld_lock);
+>  	}
+>  	return 0;
+>  
+> @@ -747,6 +760,77 @@ static const struct snd_soc_component_driver
+> hdmi_driver = { .non_legacy_dai_naming	= 1,
+>  };
+>  
+> +static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
+> +				   unsigned int jack_status)
+> +{
+> +	if (!hcp->jack)
+> +		return;
+> +
+> +	if (jack_status != hcp->jack_status) {
+> +		snd_soc_jack_report(hcp->jack, jack_status,
+> SND_JACK_LINEOUT);
+> +		hcp->jack_status = jack_status;
+> +	}
+> +}
+> +
+> +static int hdmi_codec_notify(struct notifier_block *nb, unsigned
+> long event,
+> +			     void *data)
+> +{
+> +	struct hdmi_codec_priv *hcp = container_of(nb, struct
+> hdmi_codec_priv,
+> +						   nb);
+> +	struct hdmi_notifier *n = data;
+> +
+> +	if (!hcp->jack)
+> +		return NOTIFY_OK;
+> +
+> +	switch (event) {
+> +	case HDMI_NEW_ELD:
+> +		mutex_lock(&hcp->eld_lock);
+> +		memcpy(hcp->eld, n->eld, sizeof(hcp->eld));
+> +		mutex_unlock(&hcp->eld_lock);
+> +		/* fall through */
+> +	case HDMI_CONNECTED:
+> +		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
+> +		break;
+> +	case HDMI_DISCONNECTED:
+> +		hdmi_codec_jack_report(hcp, 0);
+> +		break;
+> +	}
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +/**
+> + * hdmi_codec_set_jack_detect - register HDMI state notifier callback
+> + * @component: the hdmi-codec instance
+> + * @jack: ASoC jack to report (dis)connection events on
+> + * @dev: hdmi_notifier device, usually HDMI_TX or CEC device
+> + */
+> +int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+> +			       struct snd_soc_jack *jack,
+> +			       struct device *dev)
+> +{
+> +	struct hdmi_codec_priv *hcp =
+> snd_soc_component_get_drvdata(component);
+> +	int ret;
+> +
+> +	hcp->notifier = hdmi_notifier_get(dev);
+> +	if (!hcp->notifier)
+> +		return -ENOMEM;
+> +
+> +	hcp->jack = jack;
+> +	hcp->nb.notifier_call = hdmi_codec_notify;
+> +	ret = hdmi_notifier_register(hcp->notifier, &hcp->nb);
+> +	if (ret)
+> +		goto err_notifier_put;
+> +
+> +	return 0;
+> +
+> +err_notifier_put:
+> +	hdmi_notifier_put(hcp->notifier);
+> +	hcp->notifier = NULL;
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
+> +
+>  static int hdmi_codec_probe(struct platform_device *pdev)
+>  {
+>  	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
+> @@ -774,6 +858,7 @@ static int hdmi_codec_probe(struct
+> platform_device *pdev) 
+>  	hcp->hcd = *hcd;
+>  	mutex_init(&hcp->lock);
+> +	mutex_init(&hcp->eld_lock);
+>  
+>  	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv),
+> GFP_KERNEL); if (!daidrv)
+> @@ -797,6 +882,20 @@ static int hdmi_codec_probe(struct
+> platform_device *pdev) __func__, ret);
+>  		return ret;
+>  	}
+> +
+> +	hcp->dev = dev;
+> +
+> +	return 0;
+> +}
+> +
+> +static int hdmi_codec_remove(struct platform_device *pdev)
+> +{
+> +	struct hdmi_codec_priv *hcp = platform_get_drvdata(pdev);
+> +
+> +	if (hcp->notifier) {
+> +		hdmi_notifier_unregister(hcp->notifier, &hcp->nb);
+> +		hdmi_notifier_put(hcp->notifier);
+> +	}
+>  	return 0;
+>  }
+>  
+> @@ -805,6 +904,7 @@ static struct platform_driver hdmi_codec_driver =
+> { .name = HDMI_CODEC_DRV_NAME,
+>  	},
+>  	.probe = hdmi_codec_probe,
+> +	.remove = hdmi_codec_remove,
+>  };
+>  
+>  module_platform_driver(hdmi_codec_driver);
