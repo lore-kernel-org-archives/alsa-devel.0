@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 4/8] ASoC: SOF: Intel: cnl-ipc: re-enable IPC
-	IRQ at end of handler
-Date: Mon,  3 Jun 2019 11:20:28 -0500
-Message-ID: <20190603162032.7626-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/8] ASoC: SOF: Intel: ipc: don't check for
+	HIPCCTL register value
+Date: Mon,  3 Jun 2019 11:20:31 -0500
+Message-ID: <20190603162032.7626-8-pierre-louis.bossart@linux.intel.com>
 References: <20190603162032.7626-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEAACF896DB
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:20:42 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9194F8975E
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:20:44 +0200 (CEST)
 In-Reply-To: <20190603162032.7626-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,73 +27,81 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Align with Skylake driver and enable the IRQ at end of handler,
-instead of at beginning.
-
-Also add an error log if we have nothing to do in this handler.
+The HIPCCTL register controls the IPC interrupts. It can be set or
+cleared to mask or enable these interrupts, but it makes no sense to
+read and test its fields in an interrupt (which can only executed if
+its fields are set).
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/cnl.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ sound/soc/sof/intel/cnl.c     | 5 +----
+ sound/soc/sof/intel/hda-ipc.c | 8 ++------
+ 2 files changed, 3 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 4ecba1d8ec7f..b794a881542f 100644
+index b794a881542f..9a4927b6b6ae 100644
 --- a/sound/soc/sof/intel/cnl.c
 +++ b/sound/soc/sof/intel/cnl.c
-@@ -37,7 +37,7 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+@@ -31,7 +31,6 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+ {
+ 	struct snd_sof_dev *sdev = context;
+ 	u32 hipci;
+-	u32 hipcctl;
+ 	u32 hipcida;
+ 	u32 hipctdr;
  	u32 hipctdd;
- 	u32 msg;
- 	u32 msg_ext;
--	irqreturn_t ret = IRQ_NONE;
-+	bool ipc_irq = false;
+@@ -40,14 +39,12 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+ 	bool ipc_irq = false;
  
  	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
- 	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
-@@ -45,10 +45,6 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+-	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
+ 	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
  	hipctdd = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDD);
  	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR);
  
--	/* reenable IPC interrupt */
--	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
--				HDA_DSP_ADSPIC_IPC, HDA_DSP_ADSPIC_IPC);
--
  	/* reply message from DSP */
- 	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE &&
- 	    hipcctl & CNL_DSP_REG_HIPCCTL_DONE) {
-@@ -79,7 +75,7 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+-	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE &&
+-	    hipcctl & CNL_DSP_REG_HIPCCTL_DONE) {
++	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE) {
+ 		msg_ext = hipci & CNL_DSP_REG_HIPCIDR_MSG_MASK;
+ 		msg = hipcida & CNL_DSP_REG_HIPCIDA_MSG_MASK;
  
- 		spin_unlock_irq(&sdev->ipc_lock);
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index 04972f27ffe6..50244b82600c 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -135,7 +135,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 	u32 hipcie;
+ 	u32 hipct;
+ 	u32 hipcte;
+-	u32 hipcctl;
+ 	u32 msg;
+ 	u32 msg_ext;
+ 	bool ipc_irq = false;
+@@ -144,13 +143,11 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+ 				  HDA_DSP_REG_HIPCIE);
+ 	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
+-	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
+ 	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI);
+ 	hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCTE);
  
--		ret = IRQ_HANDLED;
-+		ipc_irq = true;
+ 	/* is this a reply message from the DSP */
+-	if (hipcie & HDA_DSP_REG_HIPCIE_DONE &&
+-	    hipcctl & HDA_DSP_REG_HIPCCTL_DONE) {
++	if (hipcie & HDA_DSP_REG_HIPCIE_DONE) {
+ 		msg = hipci & HDA_DSP_REG_HIPCI_MSG_MASK;
+ 		msg_ext = hipcie & HDA_DSP_REG_HIPCIE_MSG_MASK;
+ 
+@@ -196,8 +193,7 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
  	}
  
- 	/* new message from DSP */
-@@ -101,10 +97,22 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
+ 	/* is this a new message from DSP */
+-	if (hipct & HDA_DSP_REG_HIPCT_BUSY &&
+-	    hipcctl & HDA_DSP_REG_HIPCCTL_BUSY) {
++	if (hipct & HDA_DSP_REG_HIPCT_BUSY) {
+ 		msg = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
+ 		msg_ext = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
  
- 		cnl_ipc_host_done(sdev);
- 
--		ret = IRQ_HANDLED;
-+		ipc_irq = true;
-+	}
-+
-+	if (!ipc_irq) {
-+		/*
-+		 * This interrupt is not shared so no need to return IRQ_NONE.
-+		 */
-+		dev_err_ratelimited(sdev->dev,
-+				    "error: nothing to do in IRQ thread\n");
- 	}
- 
--	return ret;
-+	/* re-enable IPC interrupt */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
-+				HDA_DSP_ADSPIC_IPC, HDA_DSP_ADSPIC_IPC);
-+
-+	return IRQ_HANDLED;
- }
- 
- static void cnl_ipc_host_done(struct snd_sof_dev *sdev)
 -- 
 2.20.1
