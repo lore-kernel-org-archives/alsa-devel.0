@@ -1,12 +1,15 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v4 0/9]ASoC: sun4i-i2s: Updates to the driver
-Date: Mon,  3 Jun 2019 19:47:26 +0200
-Message-ID: <20190603174735.21002-1-codekipper@gmail.com>
+Subject: [PATCH v4 2/9] ASoC: sun4i-i2s: Add offset to RX
+ channel select
+Date: Mon,  3 Jun 2019 19:47:28 +0200
+Message-ID: <20190603174735.21002-3-codekipper@gmail.com>
+References: <20190603174735.21002-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBOV22XTQKGQEYPFOIDI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBPF22XTQKGQELB5GBEQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20190603174735.21002-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -19,73 +22,30 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hi All,
+Whilst testing the capture functionality of the i2s on the newer
+SoCs it was noticed that the recording was somewhat distorted.
+This was due to the offset not being set correctly on the receiver
+side.
 
-here is a patch series to add some improvements to the sun4i-i2s driver
-found whilst getting slave clocking and hdmi audio working on the newer
-SoCs. As the LibreELEC project is progressing extremely well then there
-has been some activity getting surround sound working and this is included.
-
-The functionality included with the new patch set has been extended to
-cover more sample resolutions, multi-lane data output for HDMI audio
-and some bug fixes that have been discovered along the way.
-
-I can see more usage of the tdm property since I last attempted to push
-these patches and the examples currently in mainline sort of the opposite
-to what I'm trying to achieve. When we first started looking at the i2s
-driver, the codecs that we were using allowed for the frame width to be
-determined based on the sampling resolution but in most use cases it
-seems that a fixed width is required(my highest priority should be to get
-HDMI audio support in). We're using the tdm property to override the old
-way to calculate the frame width. What I've seen in what has already been
-mainlined is that the i2s driver has a frame width that is fixed to 32
-bits and this can be overridden using the tdm property.
-
-I still need to investigate the FIFO syncing issues which i've not had a 
-chance to change or address the concerns that broonie and wens brought up.
-This change has been moved to the top of the patch stack.
-
-BR,
-CK
-
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
-v4 changes compared to v3 are:
-- Moved patches around so that the more controversial of patches are
-  at the top of the stack.
-- Added more details to commit messages.
-- Fixed 20bit audio PCM format to use 4 bytes.
-- Reduced number of flags used to indicate a new SoC.
+ sound/soc/sunxi/sun4i-i2s.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-v3 changes compared to v2 are:
- - added back slave mode changes
- - added back the use of tdm properties
- - changes to regmap and caching
- - removed loopback functionality
- - fixes to the channel offset mask
-
-v2 changes compared to v1 are:
- - removed slave mode changes which didn't set mclk and bclk div.
- - removed use of tdm and now use a dedicated property.
- - fix commit message to better explain reason for sign extending
- - add divider calculations for newer SoCs.
- - add support for multi-lane i2s data output.
- - add support for 20, 24 and 32 bit samples.
- - add loopback property so blocks can be tested without a codec.
-
-
-Marcus Cooper (9):
-  ASoC: sun4i-i2s: Fix sun8i tx channel offset mask
-  ASoC: sun4i-i2s: Add offset to RX channel select
-  ASoC: sun4i-i2s: Add regmap field to sign extend sample
-  ASoC: sun4i-i2s: Reduce quirks for sun8i-h3
-  ASoC: sun4i-i2s: Add set_tdm_slot functionality
-  ASoC: sun4i-i2s: Add multi-lane functionality
-  ASoC: sun4i-i2s: Add multichannel functionality
-  ASoc: sun4i-i2s: Add 20, 24 and 32 bit support
-  ASoC: sun4i-i2s: Adjust regmap settings
-
- sound/soc/sunxi/sun4i-i2s.c | 242 ++++++++++++++++++++++++------------
- 1 file changed, 164 insertions(+), 78 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 90bd3963d8ae..fd7c37596f21 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -456,6 +456,10 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+ 				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
+ 				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
++
++		regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
++				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
++				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
+ 	}
+ 
+ 	regmap_field_write(i2s->field_fmt_mode, val);
 -- 
 2.21.0
