@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [RESEND PATCH v3 22/30] mfd: cros_ec: Add Smart Battery Firmware update API
-Date: Mon,  3 Jun 2019 11:33:53 -0700
-Message-ID: <20190603183401.151408-23-gwendal@chromium.org>
+Subject: [RESEND PATCH v3 30/30] mfd: cros_ec: Update I2S API
+Date: Mon,  3 Jun 2019 11:34:01 -0700
+Message-ID: <20190603183401.151408-31-gwendal@chromium.org>
 References: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,99 +12,153 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add API to update battery firmware.
+Improve I2S API.
+Rename ec_response_codec_gain into ec_codec_i2s_gain,
+update caller accordlingly.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Reviewed-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 73 ++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 44 +++++++++++++---------------
+ sound/soc/codecs/cros_ec_codec.c     |  8 ++---
+ 2 files changed, 24 insertions(+), 28 deletions(-)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 7f98c6e63ad1..49ea905cfd18 100644
+index fc8babce1576..fa397722f17e 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -4243,6 +4243,79 @@ struct ec_response_battery_vendor_param {
- 	uint32_t value;
- } __ec_align4;
+@@ -4471,6 +4471,7 @@ enum mkbp_cec_event {
+ /* Commands for I2S recording on audio codec. */
  
-+/*****************************************************************************/
+ #define EC_CMD_CODEC_I2S 0x00BC
++#define EC_WOV_I2S_SAMPLE_RATE 48000
+ 
+ enum ec_codec_i2s_subcmd {
+ 	EC_CODEC_SET_SAMPLE_DEPTH = 0x0,
+@@ -4480,6 +4481,7 @@ enum ec_codec_i2s_subcmd {
+ 	EC_CODEC_I2S_SET_CONFIG = 0x4,
+ 	EC_CODEC_I2S_SET_TDM_CONFIG = 0x5,
+ 	EC_CODEC_I2S_SET_BCLK = 0x6,
++	EC_CODEC_I2S_SUBCMD_COUNT = 0x7,
+ };
+ 
+ enum ec_sample_depth_value {
+@@ -4496,6 +4498,21 @@ enum ec_i2s_config {
+ 	EC_DAI_FMT_PCM_TDM = 5,
+ };
+ 
 +/*
-+ * Smart Battery Firmware Update Commands
++ * For subcommand EC_CODEC_GET_GAIN.
 + */
-+#define EC_CMD_SB_FW_UPDATE 0x00B5
-+
-+enum ec_sb_fw_update_subcmd {
-+	EC_SB_FW_UPDATE_PREPARE  = 0x0,
-+	EC_SB_FW_UPDATE_INFO     = 0x1, /*query sb info */
-+	EC_SB_FW_UPDATE_BEGIN    = 0x2, /*check if protected */
-+	EC_SB_FW_UPDATE_WRITE    = 0x3, /*check if protected */
-+	EC_SB_FW_UPDATE_END      = 0x4,
-+	EC_SB_FW_UPDATE_STATUS   = 0x5,
-+	EC_SB_FW_UPDATE_PROTECT  = 0x6,
-+	EC_SB_FW_UPDATE_MAX      = 0x7,
++struct __ec_align1 ec_codec_i2s_gain {
++	uint8_t left;
++	uint8_t right;
 +};
 +
-+#define SB_FW_UPDATE_CMD_WRITE_BLOCK_SIZE 32
-+#define SB_FW_UPDATE_CMD_STATUS_SIZE 2
-+#define SB_FW_UPDATE_CMD_INFO_SIZE 8
++struct __ec_todo_unpacked ec_param_codec_i2s_tdm {
++	int16_t ch0_delay; /* 0 to 496 */
++	int16_t ch1_delay; /* -1 to 496 */
++	uint8_t adjacent_to_ch0;
++	uint8_t adjacent_to_ch1;
++};
 +
-+struct ec_sb_fw_update_header {
-+	uint16_t subcmd;  /* enum ec_sb_fw_update_subcmd */
-+	uint16_t fw_id;   /* firmware id */
-+} __ec_align4;
-+
-+struct ec_params_sb_fw_update {
-+	struct ec_sb_fw_update_header hdr;
-+	union {
-+		/* EC_SB_FW_UPDATE_PREPARE  = 0x0 */
-+		/* EC_SB_FW_UPDATE_INFO     = 0x1 */
-+		/* EC_SB_FW_UPDATE_BEGIN    = 0x2 */
-+		/* EC_SB_FW_UPDATE_END      = 0x4 */
-+		/* EC_SB_FW_UPDATE_STATUS   = 0x5 */
-+		/* EC_SB_FW_UPDATE_PROTECT  = 0x6 */
-+		/* Those have no args */
-+
-+		/* EC_SB_FW_UPDATE_WRITE    = 0x3 */
-+		struct __ec_align4 {
-+			uint8_t  data[SB_FW_UPDATE_CMD_WRITE_BLOCK_SIZE];
-+		} write;
-+	};
-+} __ec_align4;
-+
-+struct ec_response_sb_fw_update {
-+	union {
-+		/* EC_SB_FW_UPDATE_INFO     = 0x1 */
-+		struct __ec_align1 {
-+			uint8_t data[SB_FW_UPDATE_CMD_INFO_SIZE];
-+		} info;
-+
-+		/* EC_SB_FW_UPDATE_STATUS   = 0x5 */
-+		struct __ec_align1 {
-+			uint8_t data[SB_FW_UPDATE_CMD_STATUS_SIZE];
-+		} status;
-+	};
-+} __ec_align1;
-+
-+/*
-+ * Entering Verified Boot Mode Command
-+ * Default mode is VBOOT_MODE_NORMAL if EC did not receive this command.
-+ * Valid Modes are: normal, developer, and recovery.
-+ */
-+#define EC_CMD_ENTERING_MODE 0x00B6
-+
-+struct ec_params_entering_mode {
-+	int vboot_mode;
-+} __ec_align4;
-+
-+#define VBOOT_MODE_NORMAL    0
-+#define VBOOT_MODE_DEVELOPER 1
-+#define VBOOT_MODE_RECOVERY  2
-+
+ struct __ec_todo_packed ec_param_codec_i2s {
+ 	/* enum ec_codec_i2s_subcmd */
+ 	uint8_t cmd;
+@@ -4510,10 +4527,7 @@ struct __ec_todo_packed ec_param_codec_i2s {
+ 		 * EC_CODEC_SET_GAIN
+ 		 * Value should be 0~43 for both channels.
+ 		 */
+-		struct __ec_align1 ec_param_codec_i2s_set_gain {
+-			uint8_t left;
+-			uint8_t right;
+-		} gain;
++		struct ec_codec_i2s_gain gain;
+ 
+ 		/*
+ 		 * EC_CODEC_I2S_ENABLE
+@@ -4522,7 +4536,7 @@ struct __ec_todo_packed ec_param_codec_i2s {
+ 		uint8_t i2s_enable;
+ 
+ 		/*
+-		 * EC_CODEC_I2S_SET_COFNIG
++		 * EC_CODEC_I2S_SET_CONFIG
+ 		 * Value should be one of ec_i2s_config.
+ 		 */
+ 		uint8_t i2s_config;
+@@ -4531,18 +4545,7 @@ struct __ec_todo_packed ec_param_codec_i2s {
+ 		 * EC_CODEC_I2S_SET_TDM_CONFIG
+ 		 * Value should be one of ec_i2s_config.
+ 		 */
+-		struct __ec_todo_unpacked ec_param_codec_i2s_tdm {
+-			/*
+-			 * 0 to 496
+-			 */
+-			int16_t ch0_delay;
+-			/*
+-			 * -1 to 496
+-			 */
+-			int16_t ch1_delay;
+-			uint8_t adjacent_to_ch0;
+-			uint8_t adjacent_to_ch1;
+-		} tdm_param;
++		struct ec_param_codec_i2s_tdm tdm_param;
+ 
+ 		/*
+ 		 * EC_CODEC_I2S_SET_BCLK
+@@ -4551,13 +4554,6 @@ struct __ec_todo_packed ec_param_codec_i2s {
+ 	};
+ };
+ 
+-/*
+- * For subcommand EC_CODEC_GET_GAIN.
+- */
+-struct ec_response_codec_gain {
+-	uint8_t left;
+-	uint8_t right;
+-} __ec_align1;
+ 
  /*****************************************************************************/
- /*
-  * HDMI CEC commands
+ /* System commands */
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 99a3af8a15ff..87830ed5ebf4 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -38,21 +38,21 @@ static const DECLARE_TLV_DB_SCALE(ec_mic_gain_tlv, 0, 100, 0);
+ 
+ static int ec_command_get_gain(struct snd_soc_component *component,
+ 			       struct ec_param_codec_i2s *param,
+-			       struct ec_response_codec_gain *resp)
++			       struct ec_codec_i2s_gain *resp)
+ {
+ 	struct cros_ec_codec_data *codec_data =
+ 		snd_soc_component_get_drvdata(component);
+ 	struct cros_ec_device *ec_device = codec_data->ec_device;
+ 	u8 buffer[sizeof(struct cros_ec_command) +
+ 		  max(sizeof(struct ec_param_codec_i2s),
+-		      sizeof(struct ec_response_codec_gain))];
++		      sizeof(struct ec_codec_i2s_gain))];
+ 	struct cros_ec_command *msg = (struct cros_ec_command *)&buffer;
+ 	int ret;
+ 
+ 	msg->version = 0;
+ 	msg->command = EC_CMD_CODEC_I2S;
+ 	msg->outsize = sizeof(struct ec_param_codec_i2s);
+-	msg->insize = sizeof(struct ec_response_codec_gain);
++	msg->insize = sizeof(struct ec_codec_i2s_gain);
+ 
+ 	memcpy(msg->data, param, msg->outsize);
+ 
+@@ -226,7 +226,7 @@ static int get_ec_mic_gain(struct snd_soc_component *component,
+ 			   u8 *left, u8 *right)
+ {
+ 	struct ec_param_codec_i2s param;
+-	struct ec_response_codec_gain resp;
++	struct ec_codec_i2s_gain resp;
+ 	int ret;
+ 
+ 	param.cmd = EC_CODEC_GET_GAIN;
 -- 
 2.21.0.1020.gf2820cf01a-goog
