@@ -1,65 +1,45 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/5] ASoC: SOF: suspend/resume debug tools
-Date: Mon, 3 Jun 2019 13:58:15 -0500
-Message-ID: <5a6ddd11-5fb8-d11a-7765-a4f483c67ec5@linux.intel.com>
-References: <20190524192309.6359-1-pierre-louis.bossart@linux.intel.com>
- <436681ea-6ffb-93f5-9bae-1f01d98e072f@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH v3 00/30] Update cros_ec_commands.h
+Date: Mon, 3 Jun 2019 20:42:49 +0100
+Message-ID: <20190603194249.GD2456@sirena.org.uk>
+References: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52CFDF80CC4
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:58:18 +0200 (CEST)
-In-Reply-To: <436681ea-6ffb-93f5-9bae-1f01d98e072f@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/w6WUUxYkubDgwa5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190603183401.151408-1-gwendal@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Gwendal Grignou <gwendal@chromium.org>
+Cc: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.jones@linaro.org, jic23@kernel.org, cychiang@chromium.org, tiwai@suse.com, fabien.lahoudere@collabora.com, linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gNi8zLzE5IDEwOjQ1IEFNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiAKPiAKPiBP
-biA1LzI0LzE5IDI6MjMgUE0sIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+PiBObyBuZXcg
-ZnVuY3Rpb25hbGl0eSBwZXIgc2UsIGp1c3QgdXRpbGl0aWVzIGZvciBkZXZlbG9wZXJzLiBUaGUg
-dmFzdAo+PiBtYWpvcml0eSBvZiBjdXJyZW50IGludGVncmF0aW9uIGlzc3VlcyBhcmUgcmVsYXRl
-ZCB0byBIREF1ZGlvICsgdHJhY2UKPj4gc3VwcG9ydCBjb21iaW5lZCB3aXRoIHJ1bnRpbWUgc3Vz
-cGVuZC9yZXN1bWUuCj4+Cj4+IEFkZCBhIGNvdXBsZSBvZiBjaGFuZ2VzIHRvIG1ha2UgaXQgZWFz
-aWVyIGZvciBkZXZlbG9wZXJzIHRvIHNlZSB0aGUKPj4gZmlybXdhcmUgbG9ncyBhY3Jvc3Mgc3Vz
-cGVuZC9yZXN1bWUgdHJhbnNpdGlvbnMsIGRpc2FibGUgdGhlIHRyYWNlCj4+IGFuZC9vciBkaXNh
-YmxlIHJ1bnRpbWVfcG0gdG8gaGVscCBuYXJyb3cgZG93biB0aGUgcHJvYmxlbXMuCj4+Cj4+IEth
-aSBWZWhtYW5lbiAoMik6Cj4+IMKgwqAgQVNvQzogU09GOiB0cmFjZTogcmVtb3ZlIGNvZGUgZHVw
-bGljYXRpb24gaW4gc29mX3dhaXRfdHJhY2VfYXZhaWwoKQo+PiDCoMKgIEFTb0M6IFNPRjogZm9y
-Y2UgZW5kLW9mLWZpbGUgZm9yIGRlYnVnZnMgdHJhY2UgYXQgc3VzcGVuZAo+IAo+IEhpIE1hcmss
-IHlvdSBhcHBsaWVkIHRoZSBmaXJzdCB0d28gcGF0Y2hlcyBpbiB0aGlzIHNlcmllcyBidXQgdGhl
-IGxhc3QgMyAKPiBwYXRjaGVzIHdlcmUgbGVmdCBvdXQuIFdlcmUgdGhleSBtaXNzZWQgc29tZWhv
-dyBvciBpcyB0aGVyZSBhbnkgb2JqZWN0aW9uPwoKTmV2ZXIgbWluZCwgSSdsbCBoYXZlIHRvIHJl
-c3VibWl0IHRoaXMgc2VyaWVzIHNpbmNlIGl0IG5vIGxvbmdlciBhcHBsaWVzIAoob3RoZXIgcGF0
-Y2hlcyBtZXJnZWQgZmlyc3QpLiBObyBiaWcgZGVhbC4KCj4gCj4+IFBpZXJyZS1Mb3VpcyBCb3Nz
-YXJ0ICgzKToKPj4gwqDCoCBBU29DOiBTT0Y6IHRyYWNlOiBtb3ZlIHRvIG9wdC1pbiB3aXRoIEtj
-b25maWcgYW5kIG1vZHVsZSBwYXJhbWV0ZXIKPj4gwqDCoCBBU29DOiBTT0Y6IGFjcGk6IGFkZCBt
-b2R1bGUgcGFyYW0gdG8gZGlzYWJsZSBwbV9ydW50aW1lCj4+IMKgwqAgQVNvQzogU09GOiBwY2k6
-IGFkZCBtb2R1bGUgcGFyYW0gdG8gZGlzYWJsZSBwbV9ydW50aW1lCj4+Cj4+IMKgIHNvdW5kL3Nv
-Yy9zb2YvS2NvbmZpZ8KgwqDCoMKgwqDCoMKgIHzCoCA4ICsrKysrCj4+IMKgIHNvdW5kL3NvYy9z
-b2YvY29yZS5jwqDCoMKgwqDCoMKgwqDCoCB8IDI2ICsrKysrKysrKystLS0tCj4+IMKgIHNvdW5k
-L3NvYy9zb2Yvc29mLWFjcGktZGV2LmMgfCAxMiArKysrKystCj4+IMKgIHNvdW5kL3NvYy9zb2Yv
-c29mLXBjaS1kZXYuY8KgIHwgMTIgKysrKysrLQo+PiDCoCBzb3VuZC9zb2Mvc29mL3NvZi1wcml2
-LmjCoMKgwqDCoCB8wqAgMyArKwo+PiDCoCBzb3VuZC9zb2Mvc29mL3RyYWNlLmPCoMKgwqDCoMKg
-wqDCoCB8IDY3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLQo+PiDCoCA2IGZp
-bGVzIGNoYW5nZWQsIDExMCBpbnNlcnRpb25zKCspLCAxOCBkZWxldGlvbnMoLSkKPj4KPj4KPj4g
-YmFzZS1jb21taXQ6IDE4OGQ0NWZlNzc5ZWViOGUzNTIxYjU5ZmNiMTJjYzQ4YTZmMmMyMDMKPj4K
-PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cHM6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--/w6WUUxYkubDgwa5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 03, 2019 at 11:33:31AM -0700, Gwendal Grignou wrote:
+> The interface between CrosEC embedded controller and the host,
+> described by cros_ec_commands.h, as diverged from what the embedded
+> controller really support.
+
+I'm not clear why I keep getting copied on this series or why it's being
+resent?
+
+--/w6WUUxYkubDgwa5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz1eDgACgkQJNaLcl1U
+h9CUdAf+P7DPQoMLbmeun5gNLN/SYRZqIpBVijDS49/Z+3iKziqHNPbU20RonvSz
+T4tnB1L5i1kpNoERu8p4Gi1EZZxci83XbMhdY3lFpB9g8hG1Rzbkr/hDNmW9gNRt
+c8j7vHmPfUDkSFqW8q0xVFaUqKjA6bY/9fcnPQxjPO8JSI79pEEbWDW2Zl3rCjJU
+HG9J9bJyyb1oi6aYeNaqW1yxlO0NGFMGOptkjnsMiFiezIyTXJvjyJkCRbDRvKO2
+GONx71tvF+Yu5xgtjvHI4BvGRvTc7ACZHFzU1QddoviXcN5W8yQYRzUA22m0tQWk
+/OZapcFla0zR1p4UibW4OXdzmbrOJA==
+=MFOE
+-----END PGP SIGNATURE-----
+
+--/w6WUUxYkubDgwa5--
