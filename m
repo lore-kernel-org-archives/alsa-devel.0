@@ -1,29 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: manage identification registers" to the
- asoc tree
-Date: Mon,  3 Jun 2019 19:02:02 +0100 (BST)
-Message-ID: <20190603180202.21C90440049@finisterre.sirena.org.uk>
-References: <1559549794-7246-1-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1559549794-7246-1-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "Revert "ASoC: core: use component driver name as component name"" to the asoc tree
+Date: Mon,  3 Jun 2019 19:02:01 +0100 (BST)
+Message-ID: <20190603180201.78878440046@finisterre.sirena.org.uk>
+References: <1559298842-15059-1-git-send-email-krzk@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1559298842-15059-1-git-send-email-krzk@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>, Tzung-Bi Shih <tzungbi@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: manage identification registers
+   Revert "ASoC: core: use component driver name as component name"
 
 has been applied to the asoc tree at
 
@@ -48,264 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 1d9c95c1896256a64e3a8d825f9e78cc79d29ebb Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 3 Jun 2019 10:16:34 +0200
-Subject: [PATCH] ASoC: stm32: sai: manage identification registers
+>From 9d563eb95b81f32b9ffa4255033717484d50d06b Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Fri, 31 May 2019 12:34:02 +0200
+Subject: [PATCH] Revert "ASoC: core: use component driver name as component
+ name"
 
-Add support of identification registers in STM32 SAI.
+Using component driver as a name is not unique and it breaks audio in
+certain configurations, e.g. Hardkernel Odroid XU3 board where following
+components are registered:
+ - "3830000.i2s" with driver name "snd_dmaengine_pcm"
+ - "3830000.i2s-sec" with driver name "snd_dmaengine_pcm"
+ - "3830000.i2s" with driver name "samsung-i2s"
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+This reverts commit b19671d6caf1ac393681864d5d85dda9fa99a448.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai.c     | 44 ++++++++++++++++++++++++----
- sound/soc/stm/stm32_sai.h     | 54 ++++++++++++++++++++++++++---------
- sound/soc/stm/stm32_sai_sub.c | 14 +++++----
- 3 files changed, 88 insertions(+), 24 deletions(-)
+ sound/soc/soc-core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index 7550d5f08be3..98b29f712831 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -30,13 +30,20 @@
- #include "stm32_sai.h"
- 
- static const struct stm32_sai_conf stm32_sai_conf_f4 = {
--	.version = SAI_STM32F4,
--	.has_spdif = false,
-+	.version = STM_SAI_STM32F4,
-+	.fifo_size = 8,
-+	.has_spdif_pdm = false,
- };
- 
-+/*
-+ * Default settings for stm32 H7 socs and next.
-+ * These default settings will be overridden if the soc provides
-+ * support of hardware configuration registers.
-+ */
- static const struct stm32_sai_conf stm32_sai_conf_h7 = {
--	.version = SAI_STM32H7,
--	.has_spdif = true,
-+	.version = STM_SAI_STM32H7,
-+	.fifo_size = 8,
-+	.has_spdif_pdm = true,
- };
- 
- static const struct of_device_id stm32_sai_ids[] = {
-@@ -157,6 +164,8 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 	struct reset_control *rst;
- 	struct resource *res;
- 	const struct of_device_id *of_id;
-+	u32 val;
-+	int ret;
- 
- 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
- 	if (!sai)
-@@ -169,7 +178,8 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 
- 	of_id = of_match_device(stm32_sai_ids, &pdev->dev);
- 	if (of_id)
--		sai->conf = (struct stm32_sai_conf *)of_id->data;
-+		memcpy(&sai->conf, (const struct stm32_sai_conf *)of_id->data,
-+		       sizeof(struct stm32_sai_conf));
- 	else
- 		return -EINVAL;
- 
-@@ -208,6 +218,30 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 		reset_control_deassert(rst);
- 	}
- 
-+	/* Enable peripheral clock to allow register access */
-+	ret = clk_prepare_enable(sai->pclk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to enable clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	val = FIELD_GET(SAI_IDR_ID_MASK,
-+			readl_relaxed(sai->base + STM_SAI_IDR));
-+	if (val == SAI_IPIDR_NUMBER) {
-+		val = readl_relaxed(sai->base + STM_SAI_HWCFGR);
-+		sai->conf.fifo_size = FIELD_GET(SAI_HWCFGR_FIFO_SIZE, val);
-+		sai->conf.has_spdif_pdm = !!FIELD_GET(SAI_HWCFGR_SPDIF_PDM,
-+						      val);
-+
-+		val = readl_relaxed(sai->base + STM_SAI_VERR);
-+		sai->conf.version = val;
-+
-+		dev_dbg(&pdev->dev, "SAI version: %lu.%lu registered\n",
-+			FIELD_GET(SAI_VERR_MAJ_MASK, val),
-+			FIELD_GET(SAI_VERR_MIN_MASK, val));
-+	}
-+	clk_disable_unprepare(sai->pclk);
-+
- 	sai->pdev = pdev;
- 	sai->set_sync = &stm32_sai_set_sync;
- 	platform_set_drvdata(pdev, sai);
-diff --git a/sound/soc/stm/stm32_sai.h b/sound/soc/stm/stm32_sai.h
-index 9c36a393ab7b..158c73f557f7 100644
---- a/sound/soc/stm/stm32_sai.h
-+++ b/sound/soc/stm/stm32_sai.h
-@@ -37,6 +37,12 @@
- #define STM_SAI_PDMCR_REGX	0x40
- #define STM_SAI_PDMLY_REGX	0x44
- 
-+/* Hardware configuration registers */
-+#define STM_SAI_HWCFGR		0x3F0
-+#define STM_SAI_VERR		0x3F4
-+#define STM_SAI_IDR		0x3F8
-+#define STM_SAI_SIDR		0x3FC
-+
- /******************** Bit definition for SAI_GCR register *******************/
- #define SAI_GCR_SYNCIN_SHIFT	0
- #define SAI_GCR_SYNCIN_WDTH	2
-@@ -82,7 +88,7 @@
- #define SAI_XCR1_NODIV		BIT(SAI_XCR1_NODIV_SHIFT)
- 
- #define SAI_XCR1_MCKDIV_SHIFT	20
--#define SAI_XCR1_MCKDIV_WIDTH(x)	(((x) == SAI_STM32F4) ? 4 : 6)
-+#define SAI_XCR1_MCKDIV_WIDTH(x)	(((x) == STM_SAI_STM32F4) ? 4 : 6)
- #define SAI_XCR1_MCKDIV_MASK(x) GENMASK((SAI_XCR1_MCKDIV_SHIFT + (x) - 1),\
- 				SAI_XCR1_MCKDIV_SHIFT)
- #define SAI_XCR1_MCKDIV_SET(x)	((x) << SAI_XCR1_MCKDIV_SHIFT)
-@@ -234,8 +240,33 @@
- #define SAI_PDMDLY_4R_MASK	GENMASK(30, SAI_PDMDLY_4R_SHIFT)
- #define SAI_PDMDLY_4R_WIDTH	3
- 
--#define STM_SAI_IS_F4(ip)	((ip)->conf->version == SAI_STM32F4)
--#define STM_SAI_IS_H7(ip)	((ip)->conf->version == SAI_STM32H7)
-+/* Registers below apply to SAI version 2.1 and more */
-+
-+/* Bit definition for SAI_HWCFGR register */
-+#define SAI_HWCFGR_FIFO_SIZE	GENMASK(7, 0)
-+#define SAI_HWCFGR_SPDIF_PDM	GENMASK(11, 8)
-+#define SAI_HWCFGR_REGOUT	GENMASK(19, 12)
-+
-+/* Bit definition for SAI_VERR register */
-+#define SAI_VERR_MIN_MASK	GENMASK(3, 0)
-+#define SAI_VERR_MAJ_MASK	GENMASK(7, 4)
-+
-+/* Bit definition for SAI_IDR register */
-+#define SAI_IDR_ID_MASK		GENMASK(31, 0)
-+
-+/* Bit definition for SAI_SIDR register */
-+#define SAI_SIDR_ID_MASK	GENMASK(31, 0)
-+
-+#define SAI_IPIDR_NUMBER	0x00130031
-+
-+/* SAI version numbers are 1.x for F4. Major version number set to 1 for F4 */
-+#define STM_SAI_STM32F4		BIT(4)
-+/* Dummy version number for H7 socs and next */
-+#define STM_SAI_STM32H7		0x0
-+
-+#define STM_SAI_IS_F4(ip)	((ip)->conf.version == STM_SAI_STM32F4)
-+#define STM_SAI_HAS_SPDIF_PDM(ip)\
-+				((ip)->pdata->conf.has_spdif_pdm)
- 
- enum stm32_sai_syncout {
- 	STM_SAI_SYNC_OUT_NONE,
-@@ -243,19 +274,16 @@ enum stm32_sai_syncout {
- 	STM_SAI_SYNC_OUT_B,
- };
- 
--enum stm32_sai_version {
--	SAI_STM32F4,
--	SAI_STM32H7
--};
--
- /**
-  * struct stm32_sai_conf - SAI configuration
-  * @version: SAI version
-- * @has_spdif: SAI S/PDIF support flag
-+ * @fifo_size: SAI fifo size as words number
-+ * @has_spdif_pdm: SAI S/PDIF and PDM features support flag
-  */
- struct stm32_sai_conf {
--	int version;
--	bool has_spdif;
-+	u32 version;
-+	u32 fifo_size;
-+	bool has_spdif_pdm;
- };
- 
- /**
-@@ -265,7 +293,7 @@ struct stm32_sai_conf {
-  * @pclk: SAI bus clock
-  * @clk_x8k: SAI parent clock for sampling frequencies multiple of 8kHz
-  * @clk_x11k: SAI parent clock for sampling frequencies multiple of 11kHz
-- * @version: SOC version
-+ * @conf: SAI hardware capabitilites
-  * @irq: SAI interrupt line
-  * @set_sync: pointer to synchro mode configuration callback
-  * @gcr: SAI Global Configuration Register
-@@ -276,7 +304,7 @@ struct stm32_sai_data {
- 	struct clk *pclk;
- 	struct clk *clk_x8k;
- 	struct clk *clk_x11k;
--	struct stm32_sai_conf *conf;
-+	struct stm32_sai_conf conf;
- 	int irq;
- 	int (*set_sync)(struct stm32_sai_data *sai,
- 			struct device_node *np_provider, int synco, int synci);
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 2a74ce7c9440..7d27efb19380 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -45,7 +45,6 @@
- #define SAI_DATASIZE_24		0x6
- #define SAI_DATASIZE_32		0x7
- 
--#define STM_SAI_FIFO_SIZE	8
- #define STM_SAI_DAI_NAME_SIZE	15
- 
- #define STM_SAI_IS_PLAYBACK(ip)	((ip)->dir == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -63,7 +62,8 @@
- #define SAI_SYNC_EXTERNAL	0x2
- 
- #define STM_SAI_PROTOCOL_IS_SPDIF(ip)	((ip)->spdif)
--#define STM_SAI_HAS_SPDIF(x)	((x)->pdata->conf->has_spdif)
-+#define STM_SAI_HAS_SPDIF(x)	((x)->pdata->conf.has_spdif_pdm)
-+#define STM_SAI_HAS_PDM(x)	((x)->pdata->conf.has_spdif_pdm)
- #define STM_SAI_HAS_EXT_SYNC(x) (!STM_SAI_IS_F4(sai->pdata))
- 
- #define SAI_IEC60958_BLOCK_FRAMES	192
-@@ -274,7 +274,7 @@ static int stm32_sai_get_clk_div(struct stm32_sai_sub_data *sai,
- 				 unsigned long input_rate,
- 				 unsigned long output_rate)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2d3520fca613..7abb017a83f3 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3113,10 +3113,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
  {
--	int version = sai->pdata->conf->version;
-+	int version = sai->pdata->conf.version;
- 	int div;
+ 	struct snd_soc_dapm_context *dapm;
  
- 	div = DIV_ROUND_CLOSEST(input_rate, output_rate);
-@@ -295,7 +295,7 @@ static int stm32_sai_get_clk_div(struct stm32_sai_sub_data *sai,
- static int stm32_sai_set_clk_div(struct stm32_sai_sub_data *sai,
- 				 unsigned int div)
- {
--	int version = sai->pdata->conf->version;
-+	int version = sai->pdata->conf.version;
- 	int ret, cr1, mask;
- 
- 	if (div > SAI_XCR1_MCKDIV_MAX(version)) {
-@@ -1148,6 +1148,8 @@ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- 	 * constraints).
- 	 */
- 	sai->dma_params.maxburst = 4;
-+	if (sai->pdata->conf.fifo_size < 8)
-+		sai->dma_params.maxburst = 1;
- 	/* Buswidth will be set by framework at runtime */
- 	sai->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_UNDEFINED;
- 
-@@ -1315,8 +1317,8 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 	sai->phys_addr = res->start;
- 
- 	sai->regmap_config = &stm32_sai_sub_regmap_config_f4;
--	/* Note: PDM registers not available for H7 sub-block B */
--	if (STM_SAI_IS_H7(sai->pdata) && STM_SAI_IS_SUB_A(sai))
-+	/* Note: PDM registers not available for sub-block B */
-+	if (STM_SAI_HAS_PDM(sai) && STM_SAI_IS_SUB_A(sai))
- 		sai->regmap_config = &stm32_sai_sub_regmap_config_h7;
- 
- 	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "sai_ck",
+-	if (driver->name)
+-		component->name = kstrdup(driver->name, GFP_KERNEL);
+-	else
+-		component->name = fmt_single_name(dev, &component->id);
++	component->name = fmt_single_name(dev, &component->id);
+ 	if (!component->name) {
+ 		dev_err(dev, "ASoC: Failed to allocate name\n");
+ 		return -ENOMEM;
 -- 
 2.20.1
