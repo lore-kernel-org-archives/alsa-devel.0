@@ -1,45 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH v3 00/30] Update cros_ec_commands.h
-Date: Mon, 3 Jun 2019 20:42:49 +0100
-Message-ID: <20190603194249.GD2456@sirena.org.uk>
-References: <20190603183401.151408-1-gwendal@chromium.org>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] rxrpc: Fix uninitialized error code in
+ rxrpc_send_data_packet()
+Date: Mon, 03 Jun 2019 14:30:54 -0700 (PDT)
+Message-ID: <20190603.143054.1734848612616501920.davem@davemloft.net>
+References: <20190528142424.19626-3-geert@linux-m68k.org>
+ <20190528142424.19626-1-geert@linux-m68k.org>
+ <15499.1559298884@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/w6WUUxYkubDgwa5"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190603183401.151408-1-gwendal@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.jones@linaro.org, jic23@kernel.org, cychiang@chromium.org, tiwai@suse.com, fabien.lahoudere@collabora.com, linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from shards.monkeyblade.net (shards.monkeyblade.net
+ [IPv6:2620:137:e000::1:9])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68EDEF896CE
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 23:31:03 +0200 (CEST)
+In-Reply-To: <15499.1559298884@warthog.procyon.org.uk>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: dhowells@redhat.com
+Cc: alsa-devel@alsa-project.org, linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org, arnd@arndb.de, netdev@vger.kernel.org, tiwai@suse.com, clemens@ladisch.de, jhs@mojatatu.com, linux-block@vger.kernel.org, jiri@mellanox.com, geert@linux-m68k.org, xiyou.wangcong@gmail.com, joe@perches.com, tahiliani@nitk.edu.in, mb@lightnvm.io, eranbe@mellanox.com, dan.carpenter@oracle.com, igor.j.konopko@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 31 May 2019 11:34:44 +0100
 
---/w6WUUxYkubDgwa5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Here's my take on the patch.
 
-On Mon, Jun 03, 2019 at 11:33:31AM -0700, Gwendal Grignou wrote:
-> The interface between CrosEC embedded controller and the host,
-> described by cros_ec_commands.h, as diverged from what the embedded
-> controller really support.
-
-I'm not clear why I keep getting copied on this series or why it's being
-resent?
-
---/w6WUUxYkubDgwa5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz1eDgACgkQJNaLcl1U
-h9CUdAf+P7DPQoMLbmeun5gNLN/SYRZqIpBVijDS49/Z+3iKziqHNPbU20RonvSz
-T4tnB1L5i1kpNoERu8p4Gi1EZZxci83XbMhdY3lFpB9g8hG1Rzbkr/hDNmW9gNRt
-c8j7vHmPfUDkSFqW8q0xVFaUqKjA6bY/9fcnPQxjPO8JSI79pEEbWDW2Zl3rCjJU
-HG9J9bJyyb1oi6aYeNaqW1yxlO0NGFMGOptkjnsMiFiezIyTXJvjyJkCRbDRvKO2
-GONx71tvF+Yu5xgtjvHI4BvGRvTc7ACZHFzU1QddoviXcN5W8yQYRzUA22m0tQWk
-/OZapcFla0zR1p4UibW4OXdzmbrOJA==
-=MFOE
------END PGP SIGNATURE-----
-
---/w6WUUxYkubDgwa5--
+I assume I'll see a final version of this under separate cover.
