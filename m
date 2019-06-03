@@ -1,85 +1,119 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 00/30] Update cros_ec_commands.h
-Date: Mon, 3 Jun 2019 13:53:13 +0100
-Message-ID: <20190603125313.GU4797@dell>
-References: <20190509211353.213194-1-gwendal@chromium.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
+ memory allocation
+Date: Mon, 3 Jun 2019 08:45:26 -0500
+Message-ID: <475384fa-718f-14f4-7f5f-8257240163f6@linux.intel.com>
+References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
+ <20190522162142.11525-13-pierre-louis.bossart@linux.intel.com>
+ <96A12704CE18D347B625EE2D4A099D195284169B@SHSMSX103.ccr.corp.intel.com>
+ <s5hr28pfux1.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19528416D3@SHSMSX103.ccr.corp.intel.com>
+ <s5ho93tfuea.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195285B18B@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190509211353.213194-1-gwendal@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, jic23@kernel.org, broonie@kernel.org, cychiang@chromium.org, tiwai@suse.com, linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B1BCF80774
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 15:45:30 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D195285B18B@SHSMSX103.ccr.corp.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "Yang, Libin" <libin.yang@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 09 May 2019, Gwendal Grignou wrote:
+Hi Libin,
 
-> The interface between CrosEC embedded controller and the host,
-> described by cros_ec_commands.h, as diverged from what the embedded
-> controller really support.
+>>>>> Please let me describe the issue here.
+>>>>>
+>>>>> The test case is:
+>>>>> 1) Unload module with script "sudo ./sof_remove.sh" ,
+>>>>> 2) reload module with script "sudo ./sof_insert.sh"
+>>>>>
+>>>>> After several rounds of removing and inserting kernel modules,
+>>>>> system will complain like below:
+>>>>> "BUG: unable to handle kernel paging request at 000000292a282031"
+>>>>
+>>>> Did you try some kernel debug options?  It might show what went wrong.
+>>>
+>>> No, I haven't. I'm not sure which options I can use for this case.
+>>> Could you please give me some suggestions?
+>>
+>> You can enable CONFIG_DEBUG_DEVRES and adjust the devres.log option for
+>> showing each devres allocation and removal.  And I'd try
+>> CONFIG_DEBUG_SLAB and CONFIG_DEBUG_KMEMLEAK or whatever
+>> interesting in CONFIG_DEBUG section, too.
 > 
-> The source of thruth is at
-> https://chromium.googlesource.com/chromiumos/platform/ec/+/master/include/ec_commands.h
+> Thanks for your suggestion. After more than 1 week debug, I think maybe
+> I have root caused this issue from the devres.log message.
 > 
-> That include file is converted to remove ACPI and Embedded only code.
+> Below is my finding.
+> 1. When initialing the codecs, snd_hdac_ext_bus_device_init() will be called,
+> and it will set hdev->dev.release = default_release.
+> However, for analog codec (not hdac_hdmi codec), hdac_hda_codec_probe()
+> will be called later. And it will call snd_hda_codec_device_new(), which will
+> reset codec->code.dev.release = snd_hda_codec_dev_release;
+> This means hdac_hdmi's hdev dev release is default_release() defined in
+> hdac_ext_bus.c, and other hda codec's hdev dev release is
+> snd_hda_codec_dev_release().
 > 
-> From now on, cros_ec_commands.h will be automatically generated from
-> the file above, do not modify directly.
+> Both default_release() and snd_hda_codec_dev_release() will call kfree()
+> to free the hdac_device (or its container) in the current code.
 > 
-> Fell free to squash the commits below.
+> 2. When we run rmmod sof_pci_dev, it will free the sdev. If we use
+> Struct hdac_device *hdev = devm_kzalloc(sdev->dev...). This means
+> hdev will also be freed automatically.
 > 
-> Changes in v3:
-> - Rebase after commit 81888d8ab1532 ("mfd: cros_ec: Update the EC feature codes")
-> - Add Acked-by: Benson Leung <bleung@chromium.org>
-> 
-> Changes in v2:
-> - Move I2S changes at the end of the patchset, squashed with change in
->   sound/soc/codecs/cros_ec_codec.c to match new interface.
-> - Add Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> Gwendal Grignou (30):
->   mfd: cros_ec: Update license term
->   mfd: cros_ec: Zero BUILD_ macro
->   mfd: cros_ec: set comments properly
->   mfd: cros_ec: add ec_align macros
->   mfd: cros_ec: Define commands as 4-digit UPPER CASE hex values
->   mfd: cros_ec: use BIT macro
->   mfd: cros_ec: Update ACPI interface definition
->   mfd: cros_ec: move HDMI CEC API definition
->   mfd: cros_ec: Remove zero-size structs
->   mfd: cros_ec: Add Flash V2 commands API
->   mfd: cros_ec: Add PWM_SET_DUTY API
->   mfd: cros_ec: Add lightbar v2 API
->   mfd: cros_ec: Expand hash API
->   mfd: cros_ec: Add EC transport protocol v4
->   mfd: cros_ec: Complete MEMS sensor API
->   mfd: cros_ec: Fix event processing API
->   mfd: cros_ec: Add fingerprint API
->   mfd: cros_ec: Fix temperature API
->   mfd: cros_ec: Complete Power and USB PD API
->   mfd: cros_ec: Add API for keyboard testing
->   mfd: cros_ec: Add Hibernate API
->   mfd: cros_ec: Add Smart Battery Firmware update API
->   mfd: cros_ec: Add I2C passthru protection API
->   mfd: cros_ec: Add API for EC-EC communication
->   mfd: cros_ec: Add API for Touchpad support
->   mfd: cros_ec: Add API for Fingerprint support
->   mfd: cros_ec: Add API for rwsig
->   mfd: cros_ec: Add SKU ID and Secure storage API
->   mfd: cros_ec: Add Management API entry points
->   mfd: cros_ec: Update I2S API
-> 
->  include/linux/mfd/cros_ec_commands.h | 3658 ++++++++++++++++++++------
->  sound/soc/codecs/cros_ec_codec.c     |    8 +-
->  2 files changed, 2915 insertions(+), 751 deletions(-)
+> In the removal, snd_hdac_ext_bus_device_remove() will be called
+> to remove the hdev (in this function it is struct hdac_device *codec.
+> The name is not aligned in different places).
+> However for hdac_hdmi, the hdev->dev is used by other code.
 
-Okay, I'm ready to apply this now.  Could you collect all of the Acks
-you received and submit a RESEND please?
+what other code? Can you elaborate on why the release is delayed?
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> So calling device.release() (the function default_release()) will
+> be postponed. After after sdev is freed, the device.release() will
+> be called. But for devm_xxx, hdev will also be freed when sdev is
+> freed. This means hdev.dev after sdev is freed is invalid now as
+> hdev has already freed. It will access invalid memory. This will cause the bug.
+
+This is very hard to follow. 4 lines above you wrote the release is 
+postponed but the way you describe is looks completely sequential.
+
+> 
+> So I think we should not use devm_xxx, and let's free the hdev manually.
+> 
+> At the end of this topic, I still found 2 suspicious code in the current code.
+> 1. in sound/soc/intel/skylate/skl.c
+> it calls hdev = devm_kazlloc() or hda_codec = devm_kzalloc().
+> As we will call kfree() in the current code, should we replace it with
+> kzalloc()? Maybe we need cavs drivers owner's help on it.
+
+maybe you should send a diff suggestion to help everyone understand the 
+changes you are referring to?
+
+> 
+> 2. in snd_hdac_ext_bus_device_remove()
+> It will call snd_hdac_device_unregister() to unregister the hdac_devices
+> and put_device(&codec->dev) to release the dev.
+> For analog codec, snd_hdac_device_unregister()  will free the codec->dev's
+> kobject. And snd_hda_codec_dev_release() will be called to free the
+> hdac_device.
+> So it is invalid to call put_device(&codec->dev). If you print
+> refcound_read(&(codec->dev.kobj.kref.refcount)) for analog codec before
+> put_device(), you will find the refcount has already been 0.
+
+Isn't it a different problem though? Does this cause a freeze or is this 
+just a bad refcount?
