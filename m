@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [RESEND PATCH v3 29/30] mfd: cros_ec: Add Management API entry points
-Date: Mon,  3 Jun 2019 11:34:00 -0700
-Message-ID: <20190603183401.151408-30-gwendal@chromium.org>
+Subject: [RESEND PATCH v3 18/30] mfd: cros_ec: Fix temperature API
+Date: Mon,  3 Jun 2019 11:33:49 -0700
+Message-ID: <20190603183401.151408-19-gwendal@chromium.org>
 References: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,140 +12,119 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add commands for test and management.
-Add command space for future development.
+Improve API to retrieve temperature information.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Reviewed-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 113 +++++++++++++++++++++++++++
- 1 file changed, 113 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 64 +++++++++++++++++++++++++---
+ 1 file changed, 57 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 860a76274334..fc8babce1576 100644
+index d5d07a9957ec..9a84aad7475a 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -5176,6 +5176,119 @@ struct ec_params_set_cbi {
- 	uint8_t data[];		/* For string and raw data */
+@@ -2945,9 +2945,28 @@ enum ec_temp_thresholds {
+ /*
+  * Thermal configuration for one temperature sensor. Temps are in degrees K.
+  * Zero values will be silently ignored by the thermal task.
++ *
++ * Set 'temp_host' value allows thermal task to trigger some event with 1 degree
++ * hysteresis.
++ * For example,
++ *	temp_host[EC_TEMP_THRESH_HIGH] = 300 K
++ *	temp_host_release[EC_TEMP_THRESH_HIGH] = 0 K
++ * EC will throttle ap when temperature >= 301 K, and release throttling when
++ * temperature <= 299 K.
++ *
++ * Set 'temp_host_release' value allows thermal task has a custom hysteresis.
++ * For example,
++ *	temp_host[EC_TEMP_THRESH_HIGH] = 300 K
++ *	temp_host_release[EC_TEMP_THRESH_HIGH] = 295 K
++ * EC will throttle ap when temperature >= 301 K, and release throttling when
++ * temperature <= 294 K.
++ *
++ * Note that this structure is a sub-structure of
++ * ec_params_thermal_set_threshold_v1, but maintains its alignment there.
+  */
+ struct ec_thermal_config {
+ 	uint32_t temp_host[EC_TEMP_THRESH_COUNT]; /* levels of hotness */
++	uint32_t temp_host_release[EC_TEMP_THRESH_COUNT]; /* release levels */
+ 	uint32_t temp_fan_off;		/* no active cooling needed */
+ 	uint32_t temp_fan_max;		/* max active cooling needed */
+ } __ec_align4;
+@@ -2973,32 +2992,63 @@ struct ec_params_thermal_set_threshold_v1 {
+ /* Toggle automatic fan control */
+ #define EC_CMD_THERMAL_AUTO_FAN_CTRL 0x0052
+ 
+-/* Get TMP006 calibration data */
++/* Version 1 of input params */
++struct ec_params_auto_fan_ctrl_v1 {
++	uint8_t fan_idx;
++} __ec_align1;
++
++/* Get/Set TMP006 calibration data */
+ #define EC_CMD_TMP006_GET_CALIBRATION 0x0053
++#define EC_CMD_TMP006_SET_CALIBRATION 0x0054
++
++/*
++ * The original TMP006 calibration only needed four params, but now we need
++ * more. Since the algorithm is nothing but magic numbers anyway, we'll leave
++ * the params opaque. The v1 "get" response will include the algorithm number
++ * and how many params it requires. That way we can change the EC code without
++ * needing to update this file. We can also use a different algorithm on each
++ * sensor.
++ */
+ 
++/* This is the same struct for both v0 and v1. */
+ struct ec_params_tmp006_get_calibration {
+ 	uint8_t index;
  } __ec_align1;
  
-+/*
-+ * Information about resets of the AP by the EC and the EC's own uptime.
-+ */
-+#define EC_CMD_GET_UPTIME_INFO 0x0121
-+
-+struct ec_response_uptime_info {
-+	/*
-+	 * Number of milliseconds since the last EC boot. Sysjump resets
-+	 * typically do not restart the EC's time_since_boot epoch.
-+	 *
-+	 * WARNING: The EC's sense of time is much less accurate than the AP's
-+	 * sense of time, in both phase and frequency.  This timebase is similar
-+	 * to CLOCK_MONOTONIC_RAW, but with 1% or more frequency error.
-+	 */
-+	uint32_t time_since_ec_boot_ms;
-+
-+	/*
-+	 * Number of times the AP was reset by the EC since the last EC boot.
-+	 * Note that the AP may be held in reset by the EC during the initial
-+	 * boot sequence, such that the very first AP boot may count as more
-+	 * than one here.
-+	 */
-+	uint32_t ap_resets_since_ec_boot;
-+
-+	/*
-+	 * The set of flags which describe the EC's most recent reset.  See
-+	 * include/system.h RESET_FLAG_* for details.
-+	 */
-+	uint32_t ec_reset_flags;
-+
-+	/* Empty log entries have both the cause and timestamp set to zero. */
-+	struct ap_reset_log_entry {
-+		/*
-+		 * See include/chipset.h: enum chipset_{reset,shutdown}_reason
-+		 * for details.
-+		 */
-+		uint16_t reset_cause;
-+
-+		/* Reserved for protocol growth. */
-+		uint16_t reserved;
-+
-+		/*
-+		 * The time of the reset's assertion, in milliseconds since the
-+		 * last EC boot, in the same epoch as time_since_ec_boot_ms.
-+		 * Set to zero if the log entry is empty.
-+		 */
-+		uint32_t reset_time_ms;
-+	} recent_ap_reset[4];
+-struct ec_response_tmp006_get_calibration {
++/* Version 0 */
++struct ec_response_tmp006_get_calibration_v0 {
+ 	float s0;
+ 	float b0;
+ 	float b1;
+ 	float b2;
+ } __ec_align4;
+ 
+-/* Set TMP006 calibration data */
+-#define EC_CMD_TMP006_SET_CALIBRATION 0x0054
+-
+-struct ec_params_tmp006_set_calibration {
++struct ec_params_tmp006_set_calibration_v0 {
+ 	uint8_t index;
+-	uint8_t reserved[3];  /* Reserved; set 0 */
++	uint8_t reserved[3];
+ 	float s0;
+ 	float b0;
+ 	float b1;
+ 	float b2;
+ } __ec_align4;
+ 
++/* Version 1 */
++struct ec_response_tmp006_get_calibration_v1 {
++	uint8_t algorithm;
++	uint8_t num_params;
++	uint8_t reserved[2];
++	float val[0];
 +} __ec_align4;
 +
-+/*
-+ * Add entropy to the device secret (stored in the rollback region).
-+ *
-+ * Depending on the chip, the operation may take a long time (e.g. to erase
-+ * flash), so the commands are asynchronous.
-+ */
-+#define EC_CMD_ADD_ENTROPY	0x0122
-+
-+enum add_entropy_action {
-+	/* Add entropy to the current secret. */
-+	ADD_ENTROPY_ASYNC = 0,
-+	/*
-+	 * Add entropy, and also make sure that the previous secret is erased.
-+	 * (this can be implemented by adding entropy multiple times until
-+	 * all rolback blocks have been overwritten).
-+	 */
-+	ADD_ENTROPY_RESET_ASYNC = 1,
-+	/* Read back result from the previous operation. */
-+	ADD_ENTROPY_GET_RESULT = 2,
-+};
-+
-+struct ec_params_rollback_add_entropy {
-+	uint8_t action;
-+} __ec_align1;
-+
-+/*
-+ * Perform a single read of a given ADC channel.
-+ */
-+#define EC_CMD_ADC_READ		0x0123
-+
-+struct ec_params_adc_read {
-+	uint8_t adc_channel;
-+} __ec_align1;
-+
-+struct ec_response_adc_read {
-+	int32_t adc_value;
-+} __ec_align4;
-+
-+/*
-+ * Read back rollback info
-+ */
-+#define EC_CMD_ROLLBACK_INFO		0x0124
-+
-+struct ec_response_rollback_info {
-+	int32_t id; /* Incrementing number to indicate which region to use. */
-+	int32_t rollback_min_version;
-+	int32_t rw_rollback_version;
++struct ec_params_tmp006_set_calibration_v1 {
++	uint8_t index;
++	uint8_t algorithm;
++	uint8_t num_params;
++	uint8_t reserved;
++	float val[0];
 +} __ec_align4;
 +
 +
-+/* Issue AP reset */
-+#define EC_CMD_AP_RESET 0x0125
-+
-+/*****************************************************************************/
-+/* The command range 0x200-0x2FF is reserved for Rotor. */
-+
-+/*****************************************************************************/
-+/*
-+ * Reserve a range of host commands for the CR51 firmware.
-+ */
-+#define EC_CMD_CR51_BASE 0x0300
-+#define EC_CMD_CR51_LAST 0x03FF
-+
- /*****************************************************************************/
- /* Fingerprint MCU commands: range 0x0400-0x040x */
+ /* Read raw TMP006 data */
+ #define EC_CMD_TMP006_GET_RAW 0x0055
  
 -- 
 2.21.0.1020.gf2820cf01a-goog
