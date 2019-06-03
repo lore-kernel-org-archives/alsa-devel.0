@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [RESEND PATCH v3 20/30] mfd: cros_ec: Add API for keyboard testing
-Date: Mon,  3 Jun 2019 11:33:51 -0700
-Message-ID: <20190603183401.151408-21-gwendal@chromium.org>
+Subject: [RESEND PATCH v3 23/30] mfd: cros_ec: Add I2C passthru protection API
+Date: Mon,  3 Jun 2019 11:33:54 -0700
+Message-ID: <20190603183401.151408-24-gwendal@chromium.org>
 References: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,51 +12,48 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add command to allow keyboard testing in factory.
+Prevent direct i2c access to device behind EC when not in development mode.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Reviewed-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index e05cdcb12481..cc054a0a4c4c 100644
+index 49ea905cfd18..59ad6bae3f9b 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -3142,6 +3142,17 @@ struct ec_params_mkbp_simulate_key {
- 	uint8_t pressed;
- } __ec_align1;
+@@ -4316,6 +4316,28 @@ struct ec_params_entering_mode {
+ #define VBOOT_MODE_DEVELOPER 1
+ #define VBOOT_MODE_RECOVERY  2
  
-+#define EC_CMD_GET_KEYBOARD_ID 0x0063
++/*****************************************************************************/
++/*
++ * I2C passthru protection command: Protects I2C tunnels against access on
++ * certain addresses (board-specific).
++ */
++#define EC_CMD_I2C_PASSTHRU_PROTECT 0x00B7
 +
-+struct ec_response_keyboard_id {
-+	uint32_t keyboard_id;
-+} __ec_align4;
-+
-+enum keyboard_id {
-+	KEYBOARD_ID_UNSUPPORTED = 0,
-+	KEYBOARD_ID_UNREADABLE = 0xffffffff,
++enum ec_i2c_passthru_protect_subcmd {
++	EC_CMD_I2C_PASSTHRU_PROTECT_STATUS = 0x0,
++	EC_CMD_I2C_PASSTHRU_PROTECT_ENABLE = 0x1,
 +};
 +
- /* Configure keyboard scanning */
- #define EC_CMD_MKBP_SET_CONFIG 0x0064
- #define EC_CMD_MKBP_GET_CONFIG 0x0065
-@@ -3390,6 +3401,13 @@ struct ec_response_get_next_event_v1 {
- #define EC_MKBP_TABLET_MODE	1
- #define EC_MKBP_BASE_ATTACHED	2
- 
-+/* Run keyboard factory test scanning */
-+#define EC_CMD_KEYBOARD_FACTORY_TEST 0x0068
++struct ec_params_i2c_passthru_protect {
++	uint8_t subcmd;
++	uint8_t port;		/* I2C port number */
++} __ec_align1;
 +
-+struct ec_response_keyboard_factory_test {
-+	uint16_t shorted;	/* Keyboard pins are shorted */
-+} __ec_align2;
++struct ec_response_i2c_passthru_protect {
++	uint8_t status;		/* Status flags (0: unlocked, 1: locked) */
++} __ec_align1;
 +
- /* Fingerprint events in 'fp_events' for EC_MKBP_EVENT_FINGERPRINT */
- #define EC_MKBP_FP_RAW_EVENT(fp_events) ((fp_events) & 0x00FFFFFF)
- #define EC_MKBP_FP_ERRCODE(fp_events)   ((fp_events) & 0x0000000F)
++
+ /*****************************************************************************/
+ /*
+  * HDMI CEC commands
 -- 
 2.21.0.1020.gf2820cf01a-goog
