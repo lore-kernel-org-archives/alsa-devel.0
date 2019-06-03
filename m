@@ -1,19 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 8/8] ASoC: SOF: ipc: replace fw ready bitfield
-	with explicit bit ordering
-Date: Mon,  3 Jun 2019 11:20:32 -0500
-Message-ID: <20190603162032.7626-9-pierre-louis.bossart@linux.intel.com>
-References: <20190603162032.7626-1-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/9] ASoC: SOF: uapi: mirror firmware
+	changes
+Date: Mon, 3 Jun 2019 17:27:43 +0100
+Message-ID: <20190603162743.GZ2456@sirena.org.uk>
+References: <20190603161821.7486-1-pierre-louis.bossart@linux.intel.com>
+ <20190603161821.7486-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0417947329364843004=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 103F2F8975F
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:20:44 +0200 (CEST)
-In-Reply-To: <20190603162032.7626-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCE33F896CE
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 18:27:46 +0200 (CEST)
+In-Reply-To: <20190603161821.7486-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,90 +24,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Slawomir Blauciak <slawomir.blauciak@linux.intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
 
-Previously the structure used bitfields, which do not guarantee bit
-ordering.
+--===============0417947329364843004==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LmcuB6YxSMQAV95c"
+Content-Disposition: inline
 
-This change makes sure the order is clearly defined.  It also renames
-and repurposes the field for general use.
 
-Signed-off-by: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/sound/sof/info.h | 20 ++++++++++----------
- sound/soc/sof/ipc.c      | 11 +++++++----
- 2 files changed, 17 insertions(+), 14 deletions(-)
+--LmcuB6YxSMQAV95c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
-index 21dae04d8183..16528d2b4a50 100644
---- a/include/sound/sof/info.h
-+++ b/include/sound/sof/info.h
-@@ -18,6 +18,14 @@
- 
- #define SOF_IPC_MAX_ELEMS	16
- 
-+/*
-+ * Firmware boot info flag bits (64-bit)
-+ */
-+#define SOF_IPC_INFO_BUILD		BIT(0)
-+#define SOF_IPC_INFO_LOCKS		BIT(1)
-+#define SOF_IPC_INFO_LOCKSV		BIT(2)
-+#define SOF_IPC_INFO_GDB		BIT(3)
-+
- /* extended data types that can be appended onto end of sof_ipc_fw_ready */
- enum sof_ipc_ext_data {
- 	SOF_IPC_EXT_DMA_BUFFER = 0,
-@@ -49,16 +57,8 @@ struct sof_ipc_fw_ready {
- 	uint32_t hostbox_size;
- 	struct sof_ipc_fw_version version;
- 
--	/* Miscellaneous debug flags showing build/debug features enabled */
--	union {
--		uint64_t reserved;
--		struct {
--			uint64_t build:1;
--			uint64_t locks:1;
--			uint64_t locks_verbose:1;
--			uint64_t gdb:1;
--		} bits;
--	} debug;
-+	/* Miscellaneous flags */
-+	uint64_t flags;
- 
- 	/* reserved for future use */
- 	uint32_t reserved[4];
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 4327b4718116..996ac19986b7 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -764,16 +764,19 @@ int snd_sof_ipc_valid(struct snd_sof_dev *sdev)
- 		}
- 	}
- 
--	if (ready->debug.bits.build) {
-+	if (ready->flags & SOF_IPC_INFO_BUILD) {
- 		dev_info(sdev->dev,
- 			 "Firmware debug build %d on %s-%s - options:\n"
- 			 " GDB: %s\n"
- 			 " lock debug: %s\n"
- 			 " lock vdebug: %s\n",
- 			 v->build, v->date, v->time,
--			 ready->debug.bits.gdb ? "enabled" : "disabled",
--			 ready->debug.bits.locks ? "enabled" : "disabled",
--			 ready->debug.bits.locks_verbose ? "enabled" : "disabled");
-+			 ready->flags & SOF_IPC_INFO_GDB ?
-+				"enabled" : "disabled",
-+			 ready->flags & SOF_IPC_INFO_LOCKS ?
-+				"enabled" : "disabled",
-+			 ready->flags & SOF_IPC_INFO_LOCKSV ?
-+				"enabled" : "disabled");
- 	}
- 
- 	/* copy the fw_version into debugfs at first boot */
--- 
-2.20.1
+On Mon, Jun 03, 2019 at 11:18:13AM -0500, Pierre-Louis Bossart wrote:
+> We missed these two definitions for GDB support and component
+> notifications, they are defined for the SOF firmware. Since they are
+> not used by the kernel so far, we can still add them without any ABI
+> change.
+
+Adding stuff is generally not an ABI break in and of itself (though
+requiring new stuff can be).
+
+--LmcuB6YxSMQAV95c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz1Sn4ACgkQJNaLcl1U
+h9Du3Qf9H0V+Vetf32dkzHrxtqz899sW7+vIMmG9WnFbinxUZTpZpPOV3T2cqu/i
+aFB8ZPFt7ifX2hDhNwOAhZvmSJBR0XbcceWKOFwRe9D/sJp0ylBHQofjWMmmzSjn
+83zZRFgCKyolgnHCrXNpFqE4Iecb9KIbx2L6WNptxRRgx9xXNl9FL1PW8hk3ddqq
+3hFA6Bz4tXFcAV55ncLYtuKmm2Vb/BC1vTnluTPWyKJ6fwz8sswemV4uDcfIsYtI
+xBktS5a+b4TK01KqDgsrTduZxaynLlF8XbYpac87Ju+l6lLS0qwuECXZS4kt+nYn
+ka6kjye8MeqdBDRWwGfwxUtY/hHKVQ==
+=2h30
+-----END PGP SIGNATURE-----
+
+--LmcuB6YxSMQAV95c--
+
+--===============0417947329364843004==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0417947329364843004==--
