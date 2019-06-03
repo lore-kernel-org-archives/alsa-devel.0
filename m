@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hda: fix unbalanced codec dev refcount
-	for HDA_DEV_ASOC" to the asoc tree
-Date: Mon,  3 Jun 2019 19:02:02 +0100 (BST)
-Message-ID: <20190603180202.ADC9B440046@finisterre.sirena.org.uk>
-References: <20190531160137.5603-1-ranjani.sridharan@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: hda-ipc: read all IPC
+	registers first" to the asoc tree
+Date: Mon,  3 Jun 2019 19:01:57 +0100 (BST)
+Message-ID: <20190603180157.C7E1D440046@finisterre.sirena.org.uk>
+References: <20190603162032.7626-6-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAB5CF89737
+ by alsa1.perex.cz (Postfix) with ESMTPS id 081BAF89739
  for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:02:03 +0200 (CEST)
-In-Reply-To: <20190531160137.5603-1-ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20190603162032.7626-6-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hda: fix unbalanced codec dev refcount for HDA_DEV_ASOC
+   ASoC: SOF: Intel: hda-ipc: read all IPC registers first
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,45 +55,55 @@ to this mail.
 Thanks,
 Mark
 
->From d6947bb234dcc86e878d502516d0fb9d635aa2ae Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Fri, 31 May 2019 09:01:37 -0700
-Subject: [PATCH] ASoC: hda: fix unbalanced codec dev refcount for HDA_DEV_ASOC
+>From 5dbeb8287421984a09c92a79c503f8bd41cf3fe7 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 3 Jun 2019 11:20:29 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda-ipc: read all IPC registers first
 
-HDA_DEV_ASOC type codec device refcounts are managed differently
-from HDA_DEV_LEGACY devices. The refcount is released explicitly
-in snd_hdac_ext_bus_device_remove() for ASOC type devices.
-So, remove the put_device() call in snd_hda_codec_dev_free()
-for such devices to make the refcount balanced. This will prevent
-the NULL pointer exception when the codec driver is released
-after the card is freed.
+Align with hardware recommended sequences, and read all IPC registers
+before doing any other actions. Playing with BUSY and DONE bits may
+invalidate values.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+The values read may not actually be necessary but at least this
+provides a snapshot of the IPC registers with no consistency issues.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/pci/hda/hda_codec.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-ipc.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index ec0b8595eb4d..6cdec64dc68a 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -834,7 +834,14 @@ static int snd_hda_codec_dev_free(struct snd_device *device)
- 	codec->in_freeing = 1;
- 	snd_hdac_device_unregister(&codec->core);
- 	codec_display_power(codec, false);
--	put_device(hda_codec_dev(codec));
-+
-+	/*
-+	 * In the case of ASoC HD-audio bus, the device refcount is released in
-+	 * snd_hdac_ext_bus_device_remove() explicitly.
-+	 */
-+	if (codec->core.type == HDA_DEV_LEGACY)
-+		put_device(hda_codec_dev(codec));
-+
- 	return 0;
- }
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index 728dd1e075a4..1f01897fa6e3 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -145,6 +145,8 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 				  HDA_DSP_REG_HIPCIE);
+ 	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
+ 	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
++	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI);
++	hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCTE);
+ 
+ 	/* reenable IPC interrupt */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
+@@ -153,8 +155,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 	/* is this a reply message from the DSP */
+ 	if (hipcie & HDA_DSP_REG_HIPCIE_DONE &&
+ 	    hipcctl & HDA_DSP_REG_HIPCCTL_DONE) {
+-		hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+-					 HDA_DSP_REG_HIPCI);
+ 		msg = hipci & HDA_DSP_REG_HIPCI_MSG_MASK;
+ 		msg_ext = hipcie & HDA_DSP_REG_HIPCIE_MSG_MASK;
+ 
+@@ -202,9 +202,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 	/* is this a new message from DSP */
+ 	if (hipct & HDA_DSP_REG_HIPCT_BUSY &&
+ 	    hipcctl & HDA_DSP_REG_HIPCCTL_BUSY) {
+-
+-		hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+-					  HDA_DSP_REG_HIPCTE);
+ 		msg = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
+ 		msg_ext = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
  
 -- 
 2.20.1
