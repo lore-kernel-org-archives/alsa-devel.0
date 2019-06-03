@@ -1,7 +1,7 @@
 From: Gwendal Grignou <gwendal@chromium.org>
-Subject: [RESEND PATCH v3 27/30] mfd: cros_ec: Add API for rwsig
-Date: Mon,  3 Jun 2019 11:33:58 -0700
-Message-ID: <20190603183401.151408-28-gwendal@chromium.org>
+Subject: [RESEND PATCH v3 17/30] mfd: cros_ec: Add fingerprint API
+Date: Mon,  3 Jun 2019 11:33:48 -0700
+Message-ID: <20190603183401.151408-18-gwendal@chromium.org>
 References: <20190603183401.151408-1-gwendal@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,53 +12,60 @@ To: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.
 Cc: linux-iio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add command to retrieve signature of image stored in the RW memory
-slot(s).
+Add support for fingerprint sensors managed by embedded controller.
 
 Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Acked-by: Benson Leung <bleung@chromium.org>
 Reviewed-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- include/linux/mfd/cros_ec_commands.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ include/linux/mfd/cros_ec_commands.h | 34 ++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 4a9ac3861bdd..3d3a37b11002 100644
+index 51fe65170ce6..d5d07a9957ec 100644
 --- a/include/linux/mfd/cros_ec_commands.h
 +++ b/include/linux/mfd/cros_ec_commands.h
-@@ -5043,6 +5043,32 @@ struct ec_response_pd_chip_info_v1 {
- 	};
- } __ec_align2;
+@@ -3339,6 +3339,40 @@ struct ec_response_get_next_event_v1 {
+ #define EC_MKBP_TABLET_MODE	1
+ #define EC_MKBP_BASE_ATTACHED	2
  
-+/* Run RW signature verification and get status */
-+#define EC_CMD_RWSIG_CHECK_STATUS	0x011C
++/* Fingerprint events in 'fp_events' for EC_MKBP_EVENT_FINGERPRINT */
++#define EC_MKBP_FP_RAW_EVENT(fp_events) ((fp_events) & 0x00FFFFFF)
++#define EC_MKBP_FP_ERRCODE(fp_events)   ((fp_events) & 0x0000000F)
++#define EC_MKBP_FP_ENROLL_PROGRESS_OFFSET 4
++#define EC_MKBP_FP_ENROLL_PROGRESS(fpe) (((fpe) & 0x00000FF0) \
++					 >> EC_MKBP_FP_ENROLL_PROGRESS_OFFSET)
++#define EC_MKBP_FP_MATCH_IDX_OFFSET 12
++#define EC_MKBP_FP_MATCH_IDX_MASK 0x0000F000
++#define EC_MKBP_FP_MATCH_IDX(fpe) (((fpe) & EC_MKBP_FP_MATCH_IDX_MASK) \
++					 >> EC_MKBP_FP_MATCH_IDX_OFFSET)
++#define EC_MKBP_FP_ENROLL               BIT(27)
++#define EC_MKBP_FP_MATCH                BIT(28)
++#define EC_MKBP_FP_FINGER_DOWN          BIT(29)
++#define EC_MKBP_FP_FINGER_UP            BIT(30)
++#define EC_MKBP_FP_IMAGE_READY          BIT(31)
++/* code given by EC_MKBP_FP_ERRCODE() when EC_MKBP_FP_ENROLL is set */
++#define EC_MKBP_FP_ERR_ENROLL_OK               0
++#define EC_MKBP_FP_ERR_ENROLL_LOW_QUALITY      1
++#define EC_MKBP_FP_ERR_ENROLL_IMMOBILE         2
++#define EC_MKBP_FP_ERR_ENROLL_LOW_COVERAGE     3
++#define EC_MKBP_FP_ERR_ENROLL_INTERNAL         5
++/* Can be used to detect if image was usable for enrollment or not. */
++#define EC_MKBP_FP_ERR_ENROLL_PROBLEM_MASK     1
++/* code given by EC_MKBP_FP_ERRCODE() when EC_MKBP_FP_MATCH is set */
++#define EC_MKBP_FP_ERR_MATCH_NO                0
++#define EC_MKBP_FP_ERR_MATCH_NO_INTERNAL       6
++#define EC_MKBP_FP_ERR_MATCH_NO_TEMPLATES      7
++#define EC_MKBP_FP_ERR_MATCH_NO_LOW_QUALITY    2
++#define EC_MKBP_FP_ERR_MATCH_NO_LOW_COVERAGE   4
++#define EC_MKBP_FP_ERR_MATCH_YES               1
++#define EC_MKBP_FP_ERR_MATCH_YES_UPDATED       3
++#define EC_MKBP_FP_ERR_MATCH_YES_UPDATE_FAILED 5
 +
-+struct ec_response_rwsig_check_status {
-+	uint32_t status;
-+} __ec_align4;
-+
-+/* For controlling RWSIG task */
-+#define EC_CMD_RWSIG_ACTION	0x011D
-+
-+enum rwsig_action {
-+	RWSIG_ACTION_ABORT = 0,		/* Abort RWSIG and prevent jumping */
-+	RWSIG_ACTION_CONTINUE = 1,	/* Jump to RW immediately */
-+};
-+
-+struct ec_params_rwsig_action {
-+	uint32_t action;
-+} __ec_align4;
-+
-+/* Run verification on a slot */
-+#define EC_CMD_EFS_VERIFY	0x011E
-+
-+struct ec_params_efs_verify {
-+	uint8_t region;		/* enum ec_flash_region */
-+} __ec_align1;
 +
  /*****************************************************************************/
- /* Fingerprint MCU commands: range 0x0400-0x040x */
+ /* Temperature sensor commands */
  
 -- 
 2.21.0.1020.gf2820cf01a-goog
