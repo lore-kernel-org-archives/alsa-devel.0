@@ -1,67 +1,71 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: Re: [PATCH] ASoC: core: move DAI pre-links initiation
-	to snd_soc_instantiate_card
-Date: Mon, 3 Jun 2019 10:40:36 +0800
-Message-ID: <CA+Px+wXJsar1X=1EdDvMDvPv4DzDG+BmOgSopAqU48Y3Qa=acg@mail.gmail.com>
-References: <20190530073229.121032-1-tzungbi@google.com>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH 0/7] Add HDMI audio support on RK3288 veyron board
+Date: Mon,  3 Jun 2019 12:32:44 +0800
+Message-ID: <20190603043251.226549-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com
- [IPv6:2607:f8b0:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21FD5F896CE
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 04:40:49 +0200 (CEST)
-Received: by mail-ot1-x341.google.com with SMTP id t24so916685otl.12
- for <alsa-devel@alsa-project.org>; Sun, 02 Jun 2019 19:40:49 -0700 (PDT)
-In-Reply-To: <20190530073229.121032-1-tzungbi@google.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philipp Zabel <p.zabel@pengutronix.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kern
 List-Id: alsa-devel@alsa-project.org
 
-Please ignore this patch.
+This patch series is to support HDMI audio on RK3288 veyron board.
 
-On Thu, May 30, 2019 at 3:32 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 2d3520fca613..82ff384753c7 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -2072,6 +2072,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
->         mutex_lock(&client_mutex);
->         mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
->
-> +       for_each_card_prelinks(card, i, dai_link) {
-> +               ret = soc_init_dai_link(card, dai_link);
-> +               if (ret) {
-> +                       dev_err(card->dev, "ASoC: failed to init link %s: %d\n",
-> +                               dai_link->name, ret);
-> +                       goto probe_end;
-> +               }
-> +       }
-> +
->         card->dapm.bias_level = SND_SOC_BIAS_OFF;
->         card->dapm.dev = card->dev;
->         card->dapm.card = card;
-> @@ -2241,7 +2250,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
->         snd_soc_dapm_sync(&card->dapm);
->
->  probe_end:
-> -       if (ret < 0)
-> +       if (ret < 0 && ret != -EPROBE_DEFER)
->                 soc_cleanup_card_resources(card);
-Should not call soc_cleanup_card_resources() if soc_init_dai_link()
-returns fail.  Some context has not initialized yet in the case.
+To support jack reporting, there are two old patches:
 
->
->         mutex_unlock(&card->mutex);
+video: add HDMI state notifier support
+
+<https://lore.kernel.org/linux-media/20161213150813.37966-2-hverkuil@xs4all.nl/>
+
+ASoC: hdmi-codec: use HDMI state notifier to add jack support
+
+<https://patchwork.kernel.org/patch/9430355/>
+
+They are modified to pass checkpatch checking based on latest ASoC tree
+
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+
+for-next branch.
+
+With these two patches at hand, hdmi-notifier support is then added to dw-hdmi
+driver so the plug/unplug event can be passed to codec driver.
+
+The rest patches are about machine driver rockchip_max98090.
+A HDMI DAI link is added for HDMI playback so there will be two devices on
+this sound card. One for max98090 and one for HDMI.
+The HDMI node is passed from DTS so machine driver can set the correct
+hdmi-notifier on codec driver.
+
+Cheng-Yi Chiang (5):
+  drm/bridge/synopsys: dw-hdmi: Add HDMI notifier support
+  ASoC: rockchip_max98090: Add dai_link for HDMI
+  ASoC: rockchip: rockchip-max98090: Add node for HDMI
+  ASoC: rockchip_max98090: Add HDMI jack support
+  ARM: dts: rockchip: Specify HDMI node to sound card node
+
+Hans Verkuil (1):
+  video: add HDMI state notifier support
+
+Philipp Zabel (1):
+  ASoC: hdmi-codec: use HDMI state notifier to add jack support
+
+ .../bindings/sound/rockchip-max98090.txt      |   2 +
+ MAINTAINERS                                   |   6 +
+ .../boot/dts/rk3288-veyron-analog-audio.dtsi  |   1 +
+ drivers/gpu/drm/bridge/synopsys/Kconfig       |   1 +
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |  28 +++-
+ drivers/video/Kconfig                         |   3 +
+ drivers/video/Makefile                        |   1 +
+ drivers/video/hdmi-notifier.c                 | 145 ++++++++++++++++++
+ include/linux/hdmi-notifier.h                 | 112 ++++++++++++++
+ include/sound/hdmi-codec.h                    |   7 +
+ sound/soc/codecs/Kconfig                      |   1 +
+ sound/soc/codecs/hdmi-codec.c                 | 104 ++++++++++++-
+ sound/soc/rockchip/rockchip_max98090.c        | 123 ++++++++++++---
+ 13 files changed, 508 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/video/hdmi-notifier.c
+ create mode 100644 include/linux/hdmi-notifier.h
+
+-- 
+2.22.0.rc1.257.g3120a18244-goog
