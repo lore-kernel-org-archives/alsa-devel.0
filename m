@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: ipc: don't check for
-	HIPCCTL register value" to the asoc tree
-Date: Mon,  3 Jun 2019 19:01:56 +0100 (BST)
-Message-ID: <20190603180156.9A4E2440046@finisterre.sirena.org.uk>
-References: <20190603162032.7626-8-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: soundwire: add initial soundwire
+	support" to the asoc tree
+Date: Mon,  3 Jun 2019 19:01:55 +0100 (BST)
+Message-ID: <20190603180156.04C5E440049@finisterre.sirena.org.uk>
+References: <20190603161821.7486-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB235F80CC4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11321F896DE
  for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 20:01:57 +0200 (CEST)
-In-Reply-To: <20190603162032.7626-8-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190603161821.7486-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pan Xiuli <xiuli.pan@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: ipc: don't check for HIPCCTL register value
+   ASoC: SOF: soundwire: add initial soundwire support
 
 has been applied to the asoc tree at
 
@@ -55,87 +55,45 @@ to this mail.
 Thanks,
 Mark
 
->From 09a173a63fbb89762712a4ec48722ba98d4e1bcc Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 3 Jun 2019 11:20:31 -0500
-Subject: [PATCH] ASoC: SOF: Intel: ipc: don't check for HIPCCTL register value
+>From a893ef9b8bba6a1ba262d9afa04012fcab334c34 Mon Sep 17 00:00:00 2001
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
+Date: Mon, 3 Jun 2019 11:18:14 -0500
+Subject: [PATCH] ASoC: SOF: soundwire: add initial soundwire support
 
-The HIPCCTL register controls the IPC interrupts. It can be set or
-cleared to mask or enable these interrupts, but it makes no sense to
-read and test its fields in an interrupt (which can only executed if
-its fields are set).
+Add soundwire dai type and update ABI version.
 
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/cnl.c     | 5 +----
- sound/soc/sof/intel/hda-ipc.c | 8 ++------
- 2 files changed, 3 insertions(+), 10 deletions(-)
+ include/sound/sof/dai.h      | 1 +
+ include/uapi/sound/sof/abi.h | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index b794a881542f..9a4927b6b6ae 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -31,7 +31,6 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- {
- 	struct snd_sof_dev *sdev = context;
- 	u32 hipci;
--	u32 hipcctl;
- 	u32 hipcida;
- 	u32 hipctdr;
- 	u32 hipctdd;
-@@ -40,14 +39,12 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- 	bool ipc_irq = false;
+diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
+index 3b67c93ff101..3d174e20aa53 100644
+--- a/include/sound/sof/dai.h
++++ b/include/sound/sof/dai.h
+@@ -49,6 +49,7 @@ enum sof_ipc_dai_type {
+ 	SOF_DAI_INTEL_SSP,		/**< Intel SSP */
+ 	SOF_DAI_INTEL_DMIC,		/**< Intel DMIC */
+ 	SOF_DAI_INTEL_HDA,		/**< Intel HD/A */
++	SOF_DAI_INTEL_SOUNDWIRE,	/**< Intel SoundWire */
+ };
  
- 	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
--	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
- 	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
- 	hipctdd = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDD);
- 	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR);
+ /* general purpose DAI configuration */
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index 37e0a90dc9e6..13a4eca04577 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -26,7 +26,7 @@
  
- 	/* reply message from DSP */
--	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE &&
--	    hipcctl & CNL_DSP_REG_HIPCCTL_DONE) {
-+	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE) {
- 		msg_ext = hipci & CNL_DSP_REG_HIPCIDR_MSG_MASK;
- 		msg = hipcida & CNL_DSP_REG_HIPCIDA_MSG_MASK;
+ /* SOF ABI version major, minor and patch numbers */
+ #define SOF_ABI_MAJOR 3
+-#define SOF_ABI_MINOR 4
++#define SOF_ABI_MINOR 5
+ #define SOF_ABI_PATCH 0
  
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 04972f27ffe6..50244b82600c 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -135,7 +135,6 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 	u32 hipcie;
- 	u32 hipct;
- 	u32 hipcte;
--	u32 hipcctl;
- 	u32 msg;
- 	u32 msg_ext;
- 	bool ipc_irq = false;
-@@ -144,13 +143,11 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
- 				  HDA_DSP_REG_HIPCIE);
- 	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
--	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
- 	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI);
- 	hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCTE);
- 
- 	/* is this a reply message from the DSP */
--	if (hipcie & HDA_DSP_REG_HIPCIE_DONE &&
--	    hipcctl & HDA_DSP_REG_HIPCCTL_DONE) {
-+	if (hipcie & HDA_DSP_REG_HIPCIE_DONE) {
- 		msg = hipci & HDA_DSP_REG_HIPCI_MSG_MASK;
- 		msg_ext = hipcie & HDA_DSP_REG_HIPCIE_MSG_MASK;
- 
-@@ -196,8 +193,7 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 	}
- 
- 	/* is this a new message from DSP */
--	if (hipct & HDA_DSP_REG_HIPCT_BUSY &&
--	    hipcctl & HDA_DSP_REG_HIPCCTL_BUSY) {
-+	if (hipct & HDA_DSP_REG_HIPCT_BUSY) {
- 		msg = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
- 		msg_ext = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
- 
+ /* SOF ABI version number. Format within 32bit word is MMmmmppp */
 -- 
 2.20.1
