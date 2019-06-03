@@ -1,119 +1,76 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v4 9/9] ASoC: sun4i-i2s: Adjust regmap settings
-Date: Mon,  3 Jun 2019 19:47:35 +0200
-Message-ID: <20190603174735.21002-10-codekipper@gmail.com>
-References: <20190603174735.21002-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-core: fix ifnullfree.cocci
+	warnings
+Date: Mon, 3 Jun 2019 18:58:43 +0100
+Message-ID: <20190603175843.GA30701@sirena.org.uk>
+References: <alpine.DEB.2.21.1905301904530.2500@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBQ522XTQKGQE64JHKYQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20190603174735.21002-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============3399619187531891029=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D645F80CC4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 19:58:48 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.21.1905301904530.2500@hadrien>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Bypass the regmap cache when flushing the i2s FIFOs and modify the tables
-to reflect this.
+--===============3399619187531891029==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Disposition: inline
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/soc/sunxi/sun4i-i2s.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 351b8021173b..92828a84902d 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -595,9 +595,11 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
- {
- 	/* Flush RX FIFO */
-+	regcache_cache_bypass(i2s->regmap, true);
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
- 			   SUN4I_I2S_FIFO_CTRL_FLUSH_RX,
- 			   SUN4I_I2S_FIFO_CTRL_FLUSH_RX);
-+	regcache_cache_bypass(i2s->regmap, false);
- 
- 	/* Clear RX counter */
- 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CNT_REG, 0);
-@@ -616,9 +618,11 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
- static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
- {
- 	/* Flush TX FIFO */
-+	regcache_cache_bypass(i2s->regmap, true);
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
- 			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
- 			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
-+	regcache_cache_bypass(i2s->regmap, false);
- 
- 	/* Clear TX counter */
- 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CNT_REG, 0);
-@@ -771,13 +775,7 @@ static const struct snd_soc_component_driver sun4i_i2s_component = {
- 
- static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
- {
--	switch (reg) {
--	case SUN4I_I2S_FIFO_TX_REG:
--		return false;
--
--	default:
--		return true;
--	}
-+	return true;
- }
- 
- static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
-@@ -796,6 +794,8 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case SUN4I_I2S_FIFO_RX_REG:
-+	case SUN4I_I2S_FIFO_TX_REG:
-+	case SUN4I_I2S_FIFO_STA_REG:
- 	case SUN4I_I2S_INT_STA_REG:
- 	case SUN4I_I2S_RX_CNT_REG:
- 	case SUN4I_I2S_TX_CNT_REG:
-@@ -806,23 +806,12 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
--{
--	switch (reg) {
--	case SUN8I_I2S_FIFO_TX_REG:
--		return false;
--
--	default:
--		return true;
--	}
--}
--
- static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	if (reg == SUN8I_I2S_INT_STA_REG)
- 		return true;
- 	if (reg == SUN8I_I2S_FIFO_TX_REG)
--		return false;
-+		return true;
- 
- 	return sun4i_i2s_volatile_reg(dev, reg);
- }
-@@ -877,7 +866,7 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
- 	.reg_defaults	= sun8i_i2s_reg_defaults,
- 	.num_reg_defaults	= ARRAY_SIZE(sun8i_i2s_reg_defaults),
- 	.writeable_reg	= sun4i_i2s_wr_reg,
--	.readable_reg	= sun8i_i2s_rd_reg,
-+	.readable_reg	= sun4i_i2s_rd_reg,
- 	.volatile_reg	= sun8i_i2s_volatile_reg,
- };
- 
--- 
-2.21.0
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, May 30, 2019 at 07:06:11PM -0400, Julia Lawall wrote:
+> From: kbuild test robot <lkp@intel.com>
+>=20
+> sound/soc/soc-core.c:391:2-7: WARNING: NULL check before some freeing fun=
+ctions is not needed.
+>=20
+>  NULL check before some freeing functions is not needed.
+
+This doesn't apply against current code, please check and resend.
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz1X9IACgkQJNaLcl1U
+h9CjqAf/dHMmaH160jKSA3JntU1LqgMdZeChArVfnwMLbNzKgFHsL3QKbmUKc4AG
+Tr2UTEkqrx9bWisFr6QHitR8Cn4J65tJd11GlgbtKhbIp4SzA0R91QBgwIq11Ydf
+be3a/fPLacVITJLzpB6HXX84NbutITX7NXO3UBrHdvGungUBdp8Y+v7fEtQslP4u
+jJjMISUqPyM7zZzKR53beoKqjHQpfyKXaEyM/zJwvj/1kQzOLfw2CXQ7qEfIs0B0
+im0OuQfsVNFiOwzP5Ns10p96TbTJ+pTFuuT0jbiMwmKjNDgETC9chUUljIsZZwM+
+mCFTYM80ltgY0iT3MjGFN/GPtxoUqA==
+=kyDr
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
+
+--===============3399619187531891029==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3399619187531891029==--
