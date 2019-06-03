@@ -1,137 +1,106 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v4 6/9] ASoC: sun4i-i2s: Add multi-lane functionality
-Date: Mon,  3 Jun 2019 19:47:32 +0200
-Message-ID: <20190603174735.21002-7-codekipper@gmail.com>
+From: codekipper@gmail.com
+Subject: [PATCH v4 3/9] ASoC: sun4i-i2s: Add regmap field to sign extend sample
+Date: Mon,  3 Jun 2019 19:47:29 +0200
+Message-ID: <20190603174735.21002-4-codekipper@gmail.com>
 References: <20190603174735.21002-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBQF22XTQKGQE3XHFDWQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20190603174735.21002-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190603174735.21002-1-codekipper@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: maxime.ripard@free-electrons.com, wens@csie.org, linux-sunxi@googlegroups.com
+Cc: linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it, Marcus Cooper <codekipper@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Marcus Cooper <codekipper@gmail.com>
 
-The i2s block supports multi-lane i2s output however this functionality
-is only possible in earlier SoCs where the pins are exposed and for
-the i2s block used for HDMI audio on the later SoCs.
+On the newer SoCs this is set by default to transfer a 0 after
+each sample in each slot. However the platform that this driver
+was developed on had the default setting where it padded the
+audio gain with zeros. This isn't a problem whilst we have only
+support for 16bit audio but with larger sample resolution rates
+in the pipeline then it should be fixed to also pad. Without this
+the audio gets distorted.
 
-To enable this functionality, an optional property has been added to
-the bindings.
-
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 44 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 39 insertions(+), 5 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index bca73b3c0d74..75217fb52bfa 100644
+index fd7c37596f21..e2961d8f6e8c 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -23,7 +23,7 @@
+@@ -134,6 +134,7 @@
+  * @field_fmt_bclk: regmap field to set clk polarity.
+  * @field_fmt_lrclk: regmap field to set frame polarity.
+  * @field_fmt_mode: regmap field to set the operational mode.
++ * @field_fmt_sext: regmap field to set the sign extension.
+  * @field_txchanmap: location of the tx channel mapping register.
+  * @field_rxchanmap: location of the rx channel mapping register.
+  * @field_txchansel: location of the tx channel select bit fields.
+@@ -159,6 +160,7 @@ struct sun4i_i2s_quirks {
+ 	struct reg_field		field_fmt_bclk;
+ 	struct reg_field		field_fmt_lrclk;
+ 	struct reg_field		field_fmt_mode;
++	struct reg_field		field_fmt_sext;
+ 	struct reg_field		field_txchanmap;
+ 	struct reg_field		field_rxchanmap;
+ 	struct reg_field		field_txchansel;
+@@ -183,6 +185,7 @@ struct sun4i_i2s {
+ 	struct regmap_field	*field_fmt_bclk;
+ 	struct regmap_field	*field_fmt_lrclk;
+ 	struct regmap_field	*field_fmt_mode;
++	struct regmap_field	*field_fmt_sext;
+ 	struct regmap_field	*field_txchanmap;
+ 	struct regmap_field	*field_rxchanmap;
+ 	struct regmap_field	*field_txchansel;
+@@ -342,6 +345,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+ 				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
  
- #define SUN4I_I2S_CTRL_REG		0x00
- #define SUN4I_I2S_CTRL_SDO_EN_MASK		GENMASK(11, 8)
--#define SUN4I_I2S_CTRL_SDO_EN(sdo)			BIT(8 + (sdo))
-+#define SUN4I_I2S_CTRL_SDO_EN(lines)		(((1 << lines) - 1) << 8)
- #define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
- #define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
- #define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
-@@ -355,14 +355,23 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	int sr, wss, channels;
- 	u32 width;
-+	int lines;
- 
- 	channels = params_channels(params);
--	if (channels != 2) {
-+	if ((channels > dai->driver->playback.channels_max) ||
-+		(channels < dai->driver->playback.channels_min)) {
- 		dev_err(dai->dev, "Unsupported number of channels: %d\n",
- 			channels);
- 		return -EINVAL;
- 	}
- 
-+	lines = (channels + 1) / 2;
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_field_write(i2s->field_fmt_sext, 0);
 +
-+	/* Enable the required output lines */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+			   SUN4I_I2S_CTRL_SDO_EN_MASK,
-+			   SUN4I_I2S_CTRL_SDO_EN(lines));
+ 	return 0;
+ }
+ 
+@@ -887,6 +893,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+ 	.has_slave_select_bit	= true,
+ 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
++	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
+ 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -904,6 +911,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+ 	.has_slave_select_bit	= true,
+ 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
++	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
+ 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -944,6 +952,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
+ 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
++	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
+ 	.field_txchanmap	= REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -1006,6 +1015,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 	if (IS_ERR(i2s->field_fmt_mode))
+ 		return PTR_ERR(i2s->field_fmt_mode);
+ 
++	i2s->field_fmt_sext =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_fmt_sext);
++	if (IS_ERR(i2s->field_fmt_sext))
++		return PTR_ERR(i2s->field_fmt_sext);
 +
- 	if (i2s->variant->is_h3_i2s_based) {
- 		regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
- 				   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK,
-@@ -373,8 +382,19 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Map the channels for playback and capture */
--	regmap_field_write(i2s->field_txchanmap, 0x76543210);
- 	regmap_field_write(i2s->field_rxchanmap, 0x00003210);
-+	regmap_field_write(i2s->field_txchanmap, 0x10);
-+	if (i2s->variant->is_h3_i2s_based) {
-+		if (channels > 2)
-+			regmap_write(i2s->regmap,
-+				     SUN8I_I2S_TX_CHAN_MAP_REG+4, 0x32);
-+		if (channels > 4)
-+			regmap_write(i2s->regmap,
-+				     SUN8I_I2S_TX_CHAN_MAP_REG+8, 0x54);
-+		if (channels > 6)
-+			regmap_write(i2s->regmap,
-+				     SUN8I_I2S_TX_CHAN_MAP_REG+12, 0x76);
-+	}
- 
- 	/* Configure the channels */
- 	regmap_field_write(i2s->field_txchansel,
-@@ -1057,9 +1077,10 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
- static int sun4i_i2s_probe(struct platform_device *pdev)
- {
- 	struct sun4i_i2s *i2s;
-+	struct snd_soc_dai_driver *soc_dai;
- 	struct resource *res;
- 	void __iomem *regs;
--	int irq, ret;
-+	int irq, ret, val;
- 
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
- 	if (!i2s)
-@@ -1126,6 +1147,19 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 	i2s->capture_dma_data.addr = res->start + SUN4I_I2S_FIFO_RX_REG;
- 	i2s->capture_dma_data.maxburst = 8;
- 
-+	soc_dai = devm_kmemdup(&pdev->dev, &sun4i_i2s_dai,
-+			       sizeof(*soc_dai), GFP_KERNEL);
-+	if (!soc_dai) {
-+		ret = -ENOMEM;
-+		goto err_pm_disable;
-+	}
-+
-+	if (!of_property_read_u32(pdev->dev.of_node,
-+				  "allwinner,playback-channels", &val)) {
-+		if (val >= 2 && val <= 8)
-+			soc_dai->playback.channels_max = val;
-+	}
-+
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
- 		ret = sun4i_i2s_runtime_resume(&pdev->dev);
-@@ -1135,7 +1169,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &sun4i_i2s_component,
--					      &sun4i_i2s_dai, 1);
-+					      soc_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI\n");
- 		goto err_suspend;
+ 	i2s->field_txchanmap =
+ 			devm_regmap_field_alloc(dev, i2s->regmap,
+ 						i2s->variant->field_txchanmap);
 -- 
 2.21.0
