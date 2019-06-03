@@ -1,20 +1,26 @@
-From: Banajit Goswami <bgoswami@codeaurora.org>
-Subject: Re: [PATCH] ALSA: pcm: Check for integer overflow
- during multiplication
-Date: Sun, 2 Jun 2019 21:43:41 -0700
-Message-ID: <ef3f8ccc-8e0e-b8d9-38ca-350621905dea@codeaurora.org>
-References: <1559021223-28674-1-git-send-email-bgoswami@codeaurora.org>
- <s5hftoz870o.wl-tiwai@suse.de>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: Why open-coding in sof_hda_bus_init()?
+Date: Mon, 3 Jun 2019 13:58:03 +0800
+Message-ID: <f82b90df-77d5-911f-c448-e53957d6ce35@linux.intel.com>
+References: <s5h7ea6lfaa.wl-tiwai@suse.de>
+ <1f3059d6-b271-f612-c670-e7214674892f@linux.intel.com>
+ <s5h36kulc07.wl-tiwai@suse.de>
+ <a2737284-ee55-59e5-cab7-2503d27c92bb@linux.intel.com>
+ <s5hzhn2jvf2.wl-tiwai@suse.de> <s5hv9xqjto3.wl-tiwai@suse.de>
+ <68aa2fa2-41fc-3dfb-c82f-1f88be5bd867@linux.intel.com>
+ <s5hmuj2jr9a.wl-tiwai@suse.de>
+ <13dce83f-a092-6d9f-4676-8e3fc46bdc23@linux.intel.com>
+ <s5hftoujp7k.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C564F80774
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 06:43:57 +0200 (CEST)
-In-Reply-To: <s5hftoz870o.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D0DAF80774
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 07:53:20 +0200 (CEST)
+In-Reply-To: <s5hftoujp7k.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,42 +31,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, plai@codeaurora.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, Phani Kumar Uppalapati <phaniu@codeaurora.org>
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Takashi for the review!
-
-On 5/27/2019 10:47 PM, Takashi Iwai wrote:
-> On Tue, 28 May 2019 07:27:03 +0200,
-> <bgoswami@codeaurora.org> wrote:
->> From: Phani Kumar Uppalapati <phaniu@codeaurora.org>
->>
->> Channel info data structure is parsed from userspace and if
->> the number of channels is not set correctly, it could lead
->> to integer overflow when the number of channels is multiplied
->> with pcm bit width. Add a condition to check for integer
->> overflow during the multiplication operationi, and return error
->> if overflow detected.
->>
->> Signed-off-by: Phani Kumar Uppalapati <phaniu@codeaurora.org>
->> Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
-> Did you really hit this?
-
-This was reported by static analysis tool.
-
-I will take your feedback, and re-look at the issue, to see if this 
-issue can happen.
-
-> The info->channel value is already checked in snd_pcm_channel_info()
-> before calling the ioctl ops, to the upper bound runtime->channels.
-> So it shouldn't overflow at the point you suggested.
->
->
-> thanks,
->
-> Takashi
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+CgpPbiAyMDE5LzYvMSDkuIrljYg1OjIwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gRnJpLCAz
+MSBNYXkgMjAxOSAyMjo1OToxNyArMDIwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToK
+Pj4KPj4KPj4+PiB3ZSBuZWVkIGV2ZXJ5dGhpbmcgdGhhdCB3YXMgcmVtb3ZlZCBpbiB5b3VyIHBy
+b3Bvc2FsIDotKQo+Pj4+Cj4+Pj4gLQltZW1zZXQoYnVzLCAwLCBzaXplb2YoKmJ1cykpOwo+Pj4+
+IC0JYnVzLT5kZXYgPSBkZXY7Cj4+Pj4gLQo+Pj4+IC0JYnVzLT5pb19vcHMgPSAmaW9fb3BzOwo+
+Pj4+IC0JSU5JVF9MSVNUX0hFQUQoJmJ1cy0+c3RyZWFtX2xpc3QpOwo+Pj4+IC0KPj4+PiAtCWJ1
+cy0+aXJxID0gLTE7Cj4+Pj4gLQlidXMtPmV4dF9vcHMgPSBleHRfb3BzOwo+Pj4+IC0KPj4+PiAt
+CS8qCj4+Pj4gLQkgKiBUaGVyZSBpcyBvbmx5IG9uZSBIREEgYnVzIGF0bS4ga2VlcCB0aGUgaW5k
+ZXggYXMgMC4KPj4+PiAtCSAqIE5lZWQgdG8gZml4IHdoZW4gdGhlcmUgYXJlIG1vcmUgdGhhbiBv
+bmUgSERBIGJ1cy4KPj4+PiAtCSAqLwo+Pj4+IC0JYnVzLT5pZHggPSAwOwo+Pj4+IC0KPj4+PiAt
+CXNwaW5fbG9ja19pbml0KCZidXMtPnJlZ19sb2NrKTsKPj4+Pgo+Pj4+IFRoaXMgaXMgdGhlIHNt
+YWxsZXN0IHNldCBvZiBpbml0aWFsaXphdGlvbiBuZWVkZWQgd2hlbiB5b3UgZG9uJ3QgbmVlZAo+
+Pj4+IGhkbWkvaGRhdWRpbyBjb2RlYyBzdXBwb3J0Lgo+Pj4KPj4+IEkgZG9uJ3QgdW5kZXJzdGFu
+ZCBpdC4uLiAgV2h5IFNPRiBjb3JlIG5lZWRzIHRvIGluaXRpYWxpemUgdGhlIGNvbnRlbnQKPj4+
+IG9mIEhELWF1ZGlvIGJ1cyBvYmplY3QgZXZlbiBpZiB5b3Ugd29uJ3QgdXNlIGl0Pwo+Pgo+PiB3
+ZSBkbyB1c2UgaXQgbGVmdCBhbmQgcmlnaHQsIGJ1dCB3ZSBvbmx5IHVzZSB0aGUgJ2NvbnRyb2xs
+ZXIvRE1BJwo+PiBwYXJ0cyBvZiB0aGF0IHN0cnVjdHVyZS4gd2UgaGF2ZSB6ZXJvIHVzZSBmb3Ig
+Q09SQi9SSVJCIGFuZAo+PiBjb2RlYy1zcGVjaWZpYyBzdHVmZiB3aGVuIEkyUyBhbmQgRE1JQyBh
+cmUgdGhlIG9ubHkgY29ubmVjdGlvbnMgdG8gM3JkCj4+IHBhcnR5IGNoaXBzCj4gCj4gU28geW91
+IHdhbnQgdG8gYXZvaWQgdGhlIGRlcGVuZGVuY3kgb24gc25kLWhkYS1jb3JlIGlmIHRoZSBzeXN0
+ZW0gaXMKPiB3aXRoIG9ubHkgSTJTL0RNSUM/CgpIaSBUYWthc2hpLCB5ZXMsIHRoYXQncyB0cnVl
+LiBXZSB3YW50IHRvIHJldXNlIHRoZSBoZGFjIHJlZ2lzdGVycyBhY2Nlc3MgCnBhcnQoYnVzLT5p
+b19vcHMsIGJ1cy0+c3RyZWFtX2xpc3QpLCBmb3IgaG9zdCBETUEgc3RyZWFtIG1hbmFnZW1lbnQo
+ZS5nLiAKaW4gc29mL2ludGVsL2hkYS1zdHJlYW0uYyksIHdpdGhvdXQgdGhlIGRlcGVuZGVuY3kg
+b24gc25kLWhkYS1jb3JlLgoKPiAKPiBCdXQsIHNuZC1zb2YtaW50ZWwtaGRhLWNvbW1vbiBhbHJl
+YWR5IGhhcyB0aGUgaGFyZCBkZXBlbmRlbmN5IG9uCj4gc25kLWhkYS1jb3JlIGlmIENPTkZJR19T
+TkRfU09DX1NPRl9IREEgaXMgZW5hYmxlZC4gIFNvIHRoZSBhdHRlbXB0Cj4gbWFrZXMgbGl0dGxl
+IHNlbnNlIGFzIGxvbmcgYXMgQ09ORklHX1NORF9TT0NfU09GX0hEQSBpcyBzZXQuCj4gCj4gQW5k
+LCBpZiBDT05GSUdfU05EX1NPQ19TT0ZfSERBIGlzbid0IHNldCAtLSBpLmUuCj4gQ09ORklHX1NO
+RF9TT0NfSEZfSERBX0xJTksgaXNuJ3Qgc2V0IGVpdGhlcjsgaXQgaW1wbGllcyB0aGF0IHRoZXJl
+IGNhbgo+IGJlIG5vIHVzZXIgb2YgSEQtYXVkaW8gYnVzLiAgU28sIEkgc2VlIG5vIGJpZyByZWFz
+b24gd2UgbmVlZCB0byBjYXJlCj4gYWJvdXQgdGhlIHN0dWZmLi4uCj4gCj4gCj4+PiBJT1csIHdo
+YXQncyB0aGUgbWVyaXQgb2YgaGF2aW5nIGhkYS1idXMuYyB3aXRoIHRoZSBjb3B5IG9mCj4+PiBz
+bmQtaGRhLWNvcmUgY29kZT8gIEFzIGZhciBhcyBJIHNlZSwgYm90aCBoZGEuYyBhbmQgaGRhLWJ1
+cy5jIGFyZQo+Pj4gbGlua2VkIGludG8gdGhlIHNhbWUgc25kLXNvZi1pbnRlbC1oZGEtY29tbW9u
+IG1vZHVsZS4gIEFuZCwgdGhlIGZvcm1lcgo+Pj4gaGFzIHRoZSBkaXJlY3QgY2FsbHMgb2YgSEQt
+YXVkaW8gY29yZSBBUEkgKHdpdGgKPj4+IENPTkZJR19TTkRfU09DX1NPRl9IREEpOyBpLmUuIHNu
+ZC1zb2YtaW50ZWwtaGRhLWNvbW1vbiBhbHJlYWR5IGRlcGVuZHMKPj4+IG9uIHNuZC1oZGEtY29y
+ZSBpZiBDT05GSUdfU05EX1NPQ19TT0ZfSERBIGlzIG9uLCBubyBtYXR0ZXIgaG93IHlvdQo+Pj4g
+Y29kZSBoZGEtYnVzLmMuCj4+Cj4+IEkgYWdyZWUgd2UgY291bGQgaW1wbGVtZW50IGhkYS1idXMg
+aW4gYSBjbGVhbmVyIHdheSAtIGJ1dCBpdCdzIGEgdmVyeQo+PiBzbWFsbCBmaWxlLgo+IAo+IFll
+cywgYnV0IHRoaXMgaXMgYSBraW5kIG9mIGxheWVyIHZpb2xhdGlvbi4gIEltYWdpbmUgeW91IGRv
+IGluaXRpYWxpemUKPiB0aGUgc3RydWN0IHBjaV9kZXYgb3Igd2hhdGV2ZXIgZWxzZSBkZXZpY2Ug
+b2JqZWN0IGJlY2F1c2UgeW91IHdhbnQgdG8KPiByZWR1Y2UgdGhlIGRlcGVuZGVuY3kgb24gb3Ro
+ZXIgY29yZSBoZWxwZXJzOyBpdCB3b3VsZCBiZSBuaWdodG1hcmUKPiBmcm9tIHRoZSBtYWludGVu
+YW5jZSBQT1YuCj4gCj4gSSd2ZSBoYWQgYWxyZWFkeSBoYXJkIHRpbWUgdG8gZmlndXJlIG91dCB3
+aHkgU09GIEhEQSBpbml0aWFsaXplcyB0aGUKPiBIRC1hdWRpbyBidXMsIGJlY2F1c2UgaXQgbWlz
+c2VzIHRoZSBleHBsaWNpdCBzbmRfaGRhY18qX2J1c19pbml0KCkKPiBjYWxsLiAgVGhhdCdzIHRo
+ZSBzdGFydGluZyBwb2ludCBvZiB0aGlzIHRocmVhZC4KPiAKPiBTbywgbGV0J3MgYXZvaWQgdWds
+eSBoYWNrcy4gIE1ha2UgaXQgbW9yZSBzdHJhaWdodGZvcndhcmQuICBBZ2FpbiwgaWYKPiB0aGUg
+bW9kdWxlIHNpemUgbWF0dGVycywgd2UgY2FuIHNwbGl0IGFuZCByZWR1Y2UgdGhlIHBhcnQgb2Yg
+SEQtYXVkaW8KPiBjb3JlIHN0dWZmIHRoYXQgaXMgZGlyZWN0bHkgbGlua2VkIHRvIFNPRiBjb3Jl
+LgoKSWYgd2UgY2FuIHNwbGl0IEhELWF1ZGlvIGNvcmUgc3R1ZmYgdG8gcHJvdmlkZSBhIGhvc3Qg
+RE1BL3N0cmVhbSBvbmx5IAptb2R1bGUgZm9yIEkyUy9ETUlDLCB0aGF0IHdvdWxkIGJlIGdyZWF0
+LgoKVGhhbmtzLAp+S2V5b24KCj4gCj4+IEEgbGFyZ2VyIGNvcmUgcmVwYXJ0aXRpb25pbmcgd291
+bGQgdGFrZSBxdWl0ZSBhIGJpdCBvZgo+PiB0aW1lLCBhbmQgaW4gdGhlIG1lYW4gdGltZSB3ZSBh
+bHJlYWR5IGhhdmUgdG8gc29ydCBvdXQgYWxsIHRoZSBkZWx0YXMKPj4gYmV0d2VlbiBsZWdhY3kg
+ZHJpdmVyIGFuZCBoZGFjIGxpYnJhcnkuCj4+Cj4+IEFueXdheXMsIHRoYXQncyBpdCBmb3IgbWUg
+dGhpcyB3ZWVrLCBlbmpveSB5b3VyIHZhY2F0aW9uIQo+IAo+IFRoYW5rcyEKPiAKPiAKPiBUYWth
+c2hpCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
