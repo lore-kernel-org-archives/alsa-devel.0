@@ -1,41 +1,91 @@
-From: Curtis Malainey <cujomalainey@google.com>
-Subject: Re: [PATCH] ASoC: core: move DAI pre-links initiation
-	to snd_soc_instantiate_card
-Date: Mon, 3 Jun 2019 10:10:14 -0700
-Message-ID: <CAOReqxiJGEsEBR7g3sK57d_b3SZJZBCmfrARpCSWBiEm6sNk6w@mail.gmail.com>
-References: <20190530073229.121032-1-tzungbi@google.com>
- <CA+Px+wXJsar1X=1EdDvMDvPv4DzDG+BmOgSopAqU48Y3Qa=acg@mail.gmail.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v4 0/9]ASoC: sun4i-i2s: Updates to the driver
+Date: Mon,  3 Jun 2019 19:47:26 +0200
+Message-ID: <20190603174735.21002-1-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E30B0F80CC4
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2019 19:10:26 +0200 (CEST)
-Received: by mail-lj1-x242.google.com with SMTP id r76so16948892lja.12
- for <alsa-devel@alsa-project.org>; Mon, 03 Jun 2019 10:10:26 -0700 (PDT)
-In-Reply-To: <CA+Px+wXJsar1X=1EdDvMDvPv4DzDG+BmOgSopAqU48Y3Qa=acg@mail.gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBOV22XTQKGQEYPFOIDI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> >  probe_end:
-> > -       if (ret < 0)
-> > +       if (ret < 0 && ret != -EPROBE_DEFER)
-> >                 soc_cleanup_card_resources(card);
-> Should not call soc_cleanup_card_resources() if soc_init_dai_link()
-> returns fail.  Some context has not initialized yet in the case.
-Why not? You need to clean up the platform naming if links fails which
-will causes a use-after-free bug if you don't clean it up.
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+
+Hi All,
+
+here is a patch series to add some improvements to the sun4i-i2s driver
+found whilst getting slave clocking and hdmi audio working on the newer
+SoCs. As the LibreELEC project is progressing extremely well then there
+has been some activity getting surround sound working and this is included.
+
+The functionality included with the new patch set has been extended to
+cover more sample resolutions, multi-lane data output for HDMI audio
+and some bug fixes that have been discovered along the way.
+
+I can see more usage of the tdm property since I last attempted to push
+these patches and the examples currently in mainline sort of the opposite
+to what I'm trying to achieve. When we first started looking at the i2s
+driver, the codecs that we were using allowed for the frame width to be
+determined based on the sampling resolution but in most use cases it
+seems that a fixed width is required(my highest priority should be to get
+HDMI audio support in). We're using the tdm property to override the old
+way to calculate the frame width. What I've seen in what has already been
+mainlined is that the i2s driver has a frame width that is fixed to 32
+bits and this can be overridden using the tdm property.
+
+I still need to investigate the FIFO syncing issues which i've not had a 
+chance to change or address the concerns that broonie and wens brought up.
+This change has been moved to the top of the patch stack.
+
+BR,
+CK
+
+---
+v4 changes compared to v3 are:
+- Moved patches around so that the more controversial of patches are
+  at the top of the stack.
+- Added more details to commit messages.
+- Fixed 20bit audio PCM format to use 4 bytes.
+- Reduced number of flags used to indicate a new SoC.
+
+v3 changes compared to v2 are:
+ - added back slave mode changes
+ - added back the use of tdm properties
+ - changes to regmap and caching
+ - removed loopback functionality
+ - fixes to the channel offset mask
+
+v2 changes compared to v1 are:
+ - removed slave mode changes which didn't set mclk and bclk div.
+ - removed use of tdm and now use a dedicated property.
+ - fix commit message to better explain reason for sign extending
+ - add divider calculations for newer SoCs.
+ - add support for multi-lane i2s data output.
+ - add support for 20, 24 and 32 bit samples.
+ - add loopback property so blocks can be tested without a codec.
+
+
+Marcus Cooper (9):
+  ASoC: sun4i-i2s: Fix sun8i tx channel offset mask
+  ASoC: sun4i-i2s: Add offset to RX channel select
+  ASoC: sun4i-i2s: Add regmap field to sign extend sample
+  ASoC: sun4i-i2s: Reduce quirks for sun8i-h3
+  ASoC: sun4i-i2s: Add set_tdm_slot functionality
+  ASoC: sun4i-i2s: Add multi-lane functionality
+  ASoC: sun4i-i2s: Add multichannel functionality
+  ASoc: sun4i-i2s: Add 20, 24 and 32 bit support
+  ASoC: sun4i-i2s: Adjust regmap settings
+
+ sound/soc/sunxi/sun4i-i2s.c | 242 ++++++++++++++++++++++++------------
+ 1 file changed, 164 insertions(+), 78 deletions(-)
+
+-- 
+2.21.0
