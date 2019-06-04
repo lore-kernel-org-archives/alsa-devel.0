@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Fix build error without CONFIG_I2C" to the asoc tree
-Date: Tue,  4 Jun 2019 15:58:58 +0100 (BST)
-Message-ID: <20190604145858.A0D11440049@finisterre.sirena.org.uk>
-References: <20190601085144.13832-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: SOF: Intel: hda: Fix COMPILE_TEST build error" to the asoc tree
+Date: Tue,  4 Jun 2019 15:58:59 +0100 (BST)
+Message-ID: <20190604145859.3CED2440046@finisterre.sirena.org.uk>
+References: <20190531142526.12712-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190601085144.13832-1-yuehaibing@huawei.com>
+In-Reply-To: <20190531142526.12712-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.orgMark Brown <broonie@kernel.org>, matthias.bgg@gmail.com, perex@perex.cz, shunli.wang@mediatek.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, pierre-louis.bossart@linux.intel.comPierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com, yingjiang.zhu@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Fix build error without CONFIG_I2C
+   ASoC: SOF: Intel: hda: Fix COMPILE_TEST build error
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,51 @@ to this mail.
 Thanks,
 Mark
 
->From cbc0fa7b6e8c6180c18fd951d28197281a526330 Mon Sep 17 00:00:00 2001
+>From ad169f9f0dbb531cd68db921b351ccafcf684ae4 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Sat, 1 Jun 2019 16:51:44 +0800
-Subject: [PATCH] ASoC: da7219: Fix build error without CONFIG_I2C
+Date: Fri, 31 May 2019 22:25:26 +0800
+Subject: [PATCH] ASoC: SOF: Intel: hda: Fix COMPILE_TEST build error
 
-Fix gcc build error while CONFIG_I2C is not set
+while building without PCI:
 
-sound/soc/codecs/da7219.c:2640:1: warning: data definition has no type or storage class
- module_i2c_driver(da7219_i2c_driver);
- ^~~~~~~~~~~~~~~~~
-sound/soc/codecs/da7219.c:2640:1: error: type defaults to int in declaration of module_i2c_driver [-Werror=implicit-int]
-sound/soc/codecs/da7219.c:2640:1: warning: parameter names (without types) in function declaration
-sound/soc/codecs/da7219.c:2629:26: warning: da7219_i2c_driver defined but not used [-Wunused-variable]
+sound/soc/sof/intel/hda.o: In function `hda_dsp_probe':
+hda.c:(.text+0x79c): undefined reference to `pci_ioremap_bar'
+hda.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `pci_ioremap_bar'
+hda.c:(.text+0x7c4): undefined reference to `pci_ioremap_bar'
+hda.c:(.text+0x7c4): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `pci_ioremap_bar'
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 6d817c0e9fd7 ("ASoC: codecs: Add da7219 codec driver")
+Fixes: e13ef82a9ab8 ("ASoC: SOF: add COMPILE_TEST for PCI options")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/intel/hda.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index f70b7109f2b6..59980df5add6 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -132,7 +132,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 8f5c68861bbc..9e2e0f21524e 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -227,7 +227,9 @@ static int hda_init(struct snd_sof_dev *sdev)
  
- config SND_SOC_MT8183_DA7219_MAX98357A
- 	tristate "ASoC Audio driver for MT8183 with DA7219 MAX98357A codec"
--	depends on SND_SOC_MT8183
-+	depends on SND_SOC_MT8183 && I2C
- 	select SND_SOC_MT6358
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DA7219
+ 	/* initialise hdac bus */
+ 	bus->addr = pci_resource_start(pci, 0);
++#if IS_ENABLED(CONFIG_PCI)
+ 	bus->remap_addr = pci_ioremap_bar(pci, 0);
++#endif
+ 	if (!bus->remap_addr) {
+ 		dev_err(bus->dev, "error: ioremap error\n");
+ 		return -ENXIO;
+@@ -454,7 +456,9 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 		goto hdac_bus_unmap;
+ 
+ 	/* DSP base */
++#if IS_ENABLED(CONFIG_PCI)
+ 	sdev->bar[HDA_DSP_BAR] = pci_ioremap_bar(pci, HDA_DSP_BAR);
++#endif
+ 	if (!sdev->bar[HDA_DSP_BAR]) {
+ 		dev_err(sdev->dev, "error: ioremap error\n");
+ 		ret = -ENXIO;
 -- 
 2.20.1
