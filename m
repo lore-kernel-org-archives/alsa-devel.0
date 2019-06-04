@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98090: remove 24-bit format support if RJ is 0" to the asoc tree
+Subject: Applied "ASoC: da7219: Fix build error without CONFIG_I2C" to the asoc tree
 Date: Tue,  4 Jun 2019 15:58:58 +0100 (BST)
-Message-ID: <20190604145858.1D7AA440046@finisterre.sirena.org.uk>
-References: <20190604104909.112984-1-yuhsuan@chromium.org>
+Message-ID: <20190604145858.A0D11440049@finisterre.sirena.org.uk>
+References: <20190601085144.13832-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190604104909.112984-1-yuhsuan@chromium.org>
+In-Reply-To: <20190601085144.13832-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Cc: alsa-devel@alsa-project.org, cychiang@chromium.org, dgreid@chromium.org, Jaroslav Kysela <perex@perex.cz>, Jon Hunter <jonathanh@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.orgMark Brown <broonie@kernel.org>, matthias.bgg@gmail.com, perex@perex.cz, shunli.wang@mediatek.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98090: remove 24-bit format support if RJ is 0
+   ASoC: da7219: Fix build error without CONFIG_I2C
 
 has been applied to the asoc tree at
 
@@ -37,55 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 5628c8979642a076f91ee86c3bae5ad251639af0 Mon Sep 17 00:00:00 2001
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Date: Tue, 4 Jun 2019 18:49:09 +0800
-Subject: [PATCH] ASoC: max98090: remove 24-bit format support if RJ is 0
+>From cbc0fa7b6e8c6180c18fd951d28197281a526330 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Sat, 1 Jun 2019 16:51:44 +0800
+Subject: [PATCH] ASoC: da7219: Fix build error without CONFIG_I2C
 
-The supported formats are S16_LE and S24_LE now. However, by datasheet
-of max98090, S24_LE is only supported when it is in the right justified
-mode. We should remove 24-bit format if it is not in that mode to avoid
-triggering error.
+Fix gcc build error while CONFIG_I2C is not set
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+sound/soc/codecs/da7219.c:2640:1: warning: data definition has no type or storage class
+ module_i2c_driver(da7219_i2c_driver);
+ ^~~~~~~~~~~~~~~~~
+sound/soc/codecs/da7219.c:2640:1: error: type defaults to int in declaration of module_i2c_driver [-Werror=implicit-int]
+sound/soc/codecs/da7219.c:2640:1: warning: parameter names (without types) in function declaration
+sound/soc/codecs/da7219.c:2629:26: warning: da7219_i2c_driver defined but not used [-Wunused-variable]
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 6d817c0e9fd7 ("ASoC: codecs: Add da7219 codec driver")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/mediatek/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 7619ea31ab50..ada8c25e643d 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1909,6 +1909,21 @@ static int max98090_configure_dmic(struct max98090_priv *max98090,
- 	return 0;
- }
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index f70b7109f2b6..59980df5add6 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -132,7 +132,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
  
-+static int max98090_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98090_priv *max98090 = snd_soc_component_get_drvdata(component);
-+	unsigned int fmt = max98090->dai_fmt;
-+
-+	/* Remove 24-bit format support if it is not in right justified mode. */
-+	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_RIGHT_J) {
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+		snd_pcm_hw_constraint_msbits(substream->runtime, 0, 16, 16);
-+	}
-+	return 0;
-+}
-+
- static int max98090_dai_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params,
- 				   struct snd_soc_dai *dai)
-@@ -2316,6 +2331,7 @@ EXPORT_SYMBOL_GPL(max98090_mic_detect);
- #define MAX98090_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- 
- static const struct snd_soc_dai_ops max98090_dai_ops = {
-+	.startup = max98090_dai_startup,
- 	.set_sysclk = max98090_dai_set_sysclk,
- 	.set_fmt = max98090_dai_set_fmt,
- 	.set_tdm_slot = max98090_set_tdm_slot,
+ config SND_SOC_MT8183_DA7219_MAX98357A
+ 	tristate "ASoC Audio driver for MT8183 with DA7219 MAX98357A codec"
+-	depends on SND_SOC_MT8183
++	depends on SND_SOC_MT8183 && I2C
+ 	select SND_SOC_MT6358
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DA7219
 -- 
 2.20.1
