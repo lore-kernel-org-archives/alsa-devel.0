@@ -1,40 +1,53 @@
-From: "Ser, Simon" <simon.ser@intel.com>
-Subject: Linking ALSA playback devices and DRM connectors
-Date: Tue, 4 Jun 2019 15:05:37 +0000
-Message-ID: <f69f48bd4b9b2dc6f8228cd47406882c71758cdf.camel@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 13/22] docs: soundwire: locking: fix tags
+ for a code-block
+Date: Tue, 4 Jun 2019 10:12:52 -0500
+Message-ID: <50782689-9cc1-9f4e-c2c0-23e6229cd2be@linux.intel.com>
+References: <cover.1559656538.git.mchehab+samsung@kernel.org>
+ <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
 Content-Language: en-US
-Content-ID: <391125E733B4D941BB49D82C9C9A0F19@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksDQoNCkknbSB0cnlpbmcgdG8gbGluayBBTFNBIHBsYXliYWNrIGRldmljZXMgYW5kIERSTSBj
-b25uZWN0b3JzLiBJbiBvdGhlcg0Kd29yZHMsIEknZCBsaWtlIHRvIGJlIGFibGUgdG8ga25vdyB3
-aGljaCBBTFNBIGRldmljZSBJIHNob3VsZCBvcGVuIHRvDQpwbGF5IGF1ZGlvIG9uIGEgZ2l2ZW4g
-Y29ubmVjdG9yLg0KDQpVbmZvcnR1bmF0ZWx5LCBJIGhhdmVuJ3QgZm91bmQgYSB3YXkgdG8gZXh0
-cmFjdCB0aGlzIGluZm9ybWF0aW9uLiBJDQprbm93IC9wcm9jL2Fzb3VuZC9jYXJkTi9lbGQqIGV4
-cG9zZSB0aGUgRURJRC1saWtlIGRhdGEuIEhvd2V2ZXIgYnkNCmxvb2tpbmcgYXQgdGhlIEFMU0Eg
-QVBJIChhbHNvOiBhcGxheSAtbCBhbmQgLUwpIEkgY2FuJ3QgZmluZCBhIHdheSB0bw0KZmlndXJl
-IG91dCB3aGljaCBQQ00gZGV2aWNlIG1hcHMgdG8gdGhlIEVMRC4NCg0KQW0gSSBtaXNzaW5nIHNv
-bWV0aGluZz8NCg0KSWYgbm90LCB3aGF0IHdvdWxkIGJlIHRoZSBiZXN0IHdheSB0byBleHBvc2Ug
-dGhpcz8NCg0KLSBBIHN5bWxpbmsgdG8gdGhlIEFMU0EgYXVkaW8gUENNIGRldmljZSBpbg0KICAv
-c3lzL2NsYXNzL2RybS9jYXJkTi1DT05ORUNUT1I/DQotIEEgc3ltbGluayB0byB0aGUgRFJNIGNv
-bm5lY3RvciBpbiAvc3lzL2NsYXNzL3NvdW5kL3BjbSo/DQotIEEgRFJNIGNvbm5lY3RvciBwcm9w
-ZXJ0eT8NCi0gU29tZWhvdyBleHBvc2UgdGhlIGNvbm5lY3RvciBuYW1lIHZpYSB0aGUgQUxTQSBB
-UEk/DQotIEV4cG9zZSB0aGUgY29ubmVjdG9yIEVESUQgdmlhIEFMU0E/DQotIE90aGVyIGlkZWFz
-Pw0KDQpUaGFua3MhDQoNClNpbW9uIFNlcg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vZHJpLWRldmVs
+On 6/4/19 9:17 AM, Mauro Carvalho Chehab wrote:
+> There's an ascii artwork at Example 1 whose code-block is not properly
+> idented, causing those warnings.
+> 
+>      Documentation/driver-api/soundwire/locking.rst:50: WARNING: Inconsistent literal block quoting.
+>      Documentation/driver-api/soundwire/locking.rst:51: WARNING: Line block ends without a blank line.
+>      Documentation/driver-api/soundwire/locking.rst:55: WARNING: Inline substitution_reference start-string without end-string.
+>      Documentation/driver-api/soundwire/locking.rst:56: WARNING: Line block ends without a blank line.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks for fixing this.
+
+> ---
+>   Documentation/driver-api/soundwire/locking.rst | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/driver-api/soundwire/locking.rst b/Documentation/driver-api/soundwire/locking.rst
+> index 253f73555255..3a7ffb3d87f3 100644
+> --- a/Documentation/driver-api/soundwire/locking.rst
+> +++ b/Documentation/driver-api/soundwire/locking.rst
+> @@ -44,7 +44,9 @@ Message transfer.
+>        b. Transfer message (Read/Write) to Slave1 or broadcast message on
+>           Bus in case of bank switch.
+>   
+> -     c. Release Message lock ::
+> +     c. Release Message lock
+> +
+> +     ::
+>   
+>   	+----------+                    +---------+
+>   	|          |                    |         |
+> 
