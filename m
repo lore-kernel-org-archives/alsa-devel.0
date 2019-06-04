@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Add offset to RX channel select" to the asoc tree
-Date: Tue,  4 Jun 2019 15:58:56 +0100 (BST)
-Message-ID: <20190604145856.F07A6440046@finisterre.sirena.org.uk>
-References: <20190603174735.21002-3-codekipper@gmail.com>
+Subject: Applied "ASoC: max98090: remove 24-bit format support if RJ is 0" to the asoc tree
+Date: Tue,  4 Jun 2019 15:58:58 +0100 (BST)
+Message-ID: <20190604145858.1D7AA440046@finisterre.sirena.org.uk>
+References: <20190604104909.112984-1-yuhsuan@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190603174735.21002-3-codekipper@gmail.com>
+In-Reply-To: <20190604104909.112984-1-yuhsuan@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marcus Cooper <codekipper@gmail.com>
-Cc: alsa-devel@alsa-project.org, be17068@iperbole.bo.it, broonie@kernel.org, Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.comMark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, Maxime Ripard <maxime.ripard@bootlin.com>wens@csie.org
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Cc: alsa-devel@alsa-project.org, cychiang@chromium.org, dgreid@chromium.org, Jaroslav Kysela <perex@perex.cz>, Jon Hunter <jonathanh@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Add offset to RX channel select
+   ASoC: max98090: remove 24-bit format support if RJ is 0
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,55 @@ to this mail.
 Thanks,
 Mark
 
->From f9927000cb35f250051f0f1878db12ee2626eea1 Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Mon, 3 Jun 2019 19:47:28 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Add offset to RX channel select
+>From 5628c8979642a076f91ee86c3bae5ad251639af0 Mon Sep 17 00:00:00 2001
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Tue, 4 Jun 2019 18:49:09 +0800
+Subject: [PATCH] ASoC: max98090: remove 24-bit format support if RJ is 0
 
-Whilst testing the capture functionality of the i2s on the newer
-SoCs it was noticed that the recording was somewhat distorted.
-This was due to the offset not being set correctly on the receiver
-side.
+The supported formats are S16_LE and S24_LE now. However, by datasheet
+of max98090, S24_LE is only supported when it is in the right justified
+mode. We should remove 24-bit format if it is not in that mode to avoid
+triggering error.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/max98090.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 8162e107e50b..bc128e2a6096 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -460,6 +460,10 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
- 				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
- 				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
-+
-+		regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
-+				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
-+				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
- 	}
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 7619ea31ab50..ada8c25e643d 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -1909,6 +1909,21 @@ static int max98090_configure_dmic(struct max98090_priv *max98090,
+ 	return 0;
+ }
  
- 	regmap_field_write(i2s->field_fmt_mode, val);
++static int max98090_dai_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct max98090_priv *max98090 = snd_soc_component_get_drvdata(component);
++	unsigned int fmt = max98090->dai_fmt;
++
++	/* Remove 24-bit format support if it is not in right justified mode. */
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_RIGHT_J) {
++		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++		snd_pcm_hw_constraint_msbits(substream->runtime, 0, 16, 16);
++	}
++	return 0;
++}
++
+ static int max98090_dai_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params,
+ 				   struct snd_soc_dai *dai)
+@@ -2316,6 +2331,7 @@ EXPORT_SYMBOL_GPL(max98090_mic_detect);
+ #define MAX98090_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ static const struct snd_soc_dai_ops max98090_dai_ops = {
++	.startup = max98090_dai_startup,
+ 	.set_sysclk = max98090_dai_set_sysclk,
+ 	.set_fmt = max98090_dai_set_fmt,
+ 	.set_tdm_slot = max98090_set_tdm_slot,
 -- 
 2.20.1
