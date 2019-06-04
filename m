@@ -1,20 +1,20 @@
-From: Jurgen Lambrecht <J.Lambrecht@TELEVIC.com>
-Subject: why error return in
- sound/soc/codecs/pcm3168a.c::pcm3168a_set_dai_fmt ?
-Date: Tue, 4 Jun 2019 06:37:48 +0000
-Message-ID: <8e4d6674-0a5b-7063-534d-cea4e55056d5@televic.com>
+From: Willem Romkes <willemromkes@rose-es.nl>
+Subject: Re: atmel SSC DSP A mode
+Date: Tue, 04 Jun 2019 09:15:28 +0200
+Message-ID: <089a90e9c111e7a8bdd2b0d57ce05ea4@rose-es.nl>
+References: <8d2cb6d3212c82c5b1430dc5e13c79c1@rose-es.nl>
+ <155857e2-1fbd-f154-5316-a4426a74b7b4@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00112.outbound.protection.outlook.com [40.107.0.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from filter04.hostcontrol.com (filter04.hostcontrol.com
+ [5.157.86.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9872EF89673
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2019 08:37:50 +0200 (CEST)
-Content-Language: en-US
-Content-ID: <0ABC482D4FD47D43898E715D4AA122F9@eurprd07.prod.outlook.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8203F80054
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2019 09:15:36 +0200 (CEST)
+In-Reply-To: <155857e2-1fbd-f154-5316-a4426a74b7b4@microchip.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +24,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Codrin.Ciubotariu@microchip.com
+Cc: alsa-devel@alsa-project.org, nicolas.ferre@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksDQoNCldoZW4gZm9sbG93aW5nIA0KaHR0cHM6Ly9ib290bGluLmNvbS9ibG9nL2VpZ2h0LWNo
-YW5uZWxzLWF1ZGlvLW9uLWktbXg3LXdpdGgtcGNtMzE2OC8gSSANCmdldCB0aGlzIGVycm9yIChm
-cm9tIHNvY19jb3JlLmMpOg0KDQouLi4ga2VybmVsOiBbwqDCoMKgIDMuMDU5NjM0XVvCoMKgIFQx
-NV0gcGNtMzE2OGEgMy0wMDM5OiBBU29DOiBGYWlsZWQgdG8gc2V0IA0KREFJIGZvcm1hdDogLTIy
-DQoNCkkgY291bGQgcHJvcG9zZSB0aGlzIHBhdGNoIChJIGdldCB0aGF0IHByaW50ZiB3aGVuIGFw
-cGx5aW5nIHRoZSBwYXRjaCkNCihhbGwgb3RoZXIgZXJyb3JzIGluIHRoYXQgZmlsZSBoYXZlIGEg
-cHJpbnRmKToNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvcGNtMzE2OGEuYyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvcGNtMzE2OGEuYw0KaW5kZXggMDhkM2ZlMTkyZTY1Li43NWNjYmI5MTk5
-MDIgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvY29kZWNzL3BjbTMxNjhhLmMNCisrKyBiL3NvdW5k
-L3NvYy9jb2RlY3MvcGNtMzE2OGEuYw0KQEAgLTM1Myw2ICszNTMsNyBAQCBzdGF0aWMgaW50IHBj
-bTMxNjhhX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpLA0KIMKgwqDCoMKgwqDC
-oMKgIGNhc2UgU05EX1NPQ19EQUlGTVRfTkJfTkY6DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGJyZWFrOw0KIMKgwqDCoMKgwqDCoMKgIGRlZmF1bHQ6DQorwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBkZXZfZXJyKGNvbXBvbmVudC0+ZGV2LCAid3JvbmcgSU5WX01BU0tcbiIp
-Ow0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsNCiDCoMKg
-wqDCoMKgwqDCoCB9DQoNCkJ1dCB3aHkgZG9lcyB0aGlzIGNvZGUgcmV0dXJucyBhbiBlcnJvciBm
-b3IgY29kZSB0aGF0IGhhcyBubyBlZmZlY3Q/DQpPSywgaXQgY291bGQgYmUgYmVjYXVzZSBTTkRf
-U09DX0RBSUZNVF9JTlZfTUFTSyBtdXN0IGJlIA0KU05EX1NPQ19EQUlGTVRfTkJfTkYuIEJ1dCB0
-aGVuIEFsZXhhbmRyZSdzIGJsb2cgY29udGFpbnMgYW4gZXJyb3IsIA0KYmVjYXVzZSB0aGUgZGFj
-IFRETSBzZXRzIGZyYW1lLWludmVyc2lvbiBpbiBpdHMgZHRzIChhbmQgaXQgc2hvdWxkIG5vdCku
-DQoNCi0tIA0KDQpLaW5kIFJlZ2FyZHMsDQoNCipKw7xyZ2VuIExhbWJyZWNodCoNClImRCBBc3Nv
-Y2lhdGUNCg0KVGVsOiArMzIgNTEgMzAzMDQ1DQoNCnd3dy50ZWxldmljLXJhaWwuY29tIDxodHRw
-czovL3d3dy50ZWxldmljLXJhaWwuY29tPg0KDQpUZWxldmljIFJhaWwgTlYgLSBMZW8gQmVrYWVy
-dGxhYW4gMSAtIDg4NzAgSXplZ2VtIC0gQmVsZ2l1bQ0KQ29tcGFueSBudW1iZXIgMDgyNSA1Mzkg
-NTgxIC0gUlBSIEtvcnRyaWprDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Hi Codrin, 
+
+Thank you for responding. 
+
+We are using the tlv320aic3107 with the tlv320aic3x codec driver. You
+are correct that we could use DSP B mode. but the atmel_ssc_dai driver
+doesn't support DSP B mode. On the other hand, the tlv320aic3x driver
+does support DSP A mode where it just applies an offset of one bit. 
+
+I have continued investigating this issue and I think the whole issue is
+caused by our soundcard driver setting the SND_SOC_DAIFMT_IB_NF in the
+DAI format, which is correct if I refer to figure 25 of the tlv320aic33
+datasheet and the tlv320aic3x driver. The atmel_ssc_dai driver however
+doesn't check on this and has the clock settings hard-coded and in the
+current master branch it expects you to use SND_SOC_DAIFMT_NB_NF
+instead. It would be a good idea to add support for the different
+SND_SOC_DAIFMT_xB_xF DAI formats to the atmel_ssc_dai driver.
+
+Best regards, 
+
+---
+Willem Romkes
+ Rose Engineering Services 
+
+ 		M
+ 		06-48013381
+
+ 		E
+ 		willemromkes@rose-es.nl
+
+ 		I
+ 		www.rose-es.nl
+
+On 03-06-2019 18:05, Codrin.Ciubotariu@microchip.com wrote:
+
+> On 03.06.2019 13:19, Willem Romkes wrote: 
+> 
+>> *
+>> *
+>> 
+>> Hi,
+>> 
+>> We are using linux-at91 and lately I have been working on adding support 
+>> for a custom soundcard, a dual tlv320aic3x codec on SAMA5D3 platform. 
+>> This soundcard uses DSP A mode.
+>> 
+>> We are facing audio issues: When we playback a WAV file with a sine 
+>> wave, the codec outputs far from a clean sine wave. The problem I think 
+>> is that the CKI settings for the TMCR register isn't set correctly. 
+>> see commit 20cf2603b122bf71fb54def1de6a2ad73d5ddb0b
+>> Author: Bo Shen <voice.shen@atmel.com>
+>> Date:   Fri Jan 30 17:38:42 2015 +0800
+>> 
+>> ASoC: atmel_ssc_dai: fix the setting for DSP mode
+>> 
+>> When SCC work in DSP A mode, the data outputs/inputs are shift out on
+>> falling edge, the frame sync are sample on the rising edge.
+>> 
+>> Reported-by: Songjun Wu <songjun.wu@atmel.com>
+>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+>> Signed-off-by: Mark Brown <broonie@kernel.org>
+>> 
+>> diff --git a/sound/soc/atmel/atmel_ssc_dai.c 
+>> b/sound/soc/atmel/atmel_ssc_dai.c
+>> index e691aab..35e44e4 100644
+>> --- a/sound/soc/atmel/atmel_ssc_dai.c
+>> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+>> @@ -502,7 +502,7 @@ static int atmel_ssc_hw_params(struct 
+>> snd_pcm_substream *substream,
+>> rcmr =    SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
+>> | SSC_BF(RCMR_STTDLY, 1)
+>> | SSC_BF(RCMR_START, SSC_START_RISING_RF)
+>> -                       | SSC_BF(RCMR_CKI, SSC_CKI_RISING)
+>> +                       | SSC_BF(RCMR_CKI, SSC_CKI_FALLING)
+>> | SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+>> | SSC_BF(RCMR_CKS, SSC_CKS_DIV);
+>> 
+>> @@ -517,7 +517,7 @@ static int atmel_ssc_hw_params(struct 
+>> snd_pcm_substream *substream,
+>> tcmr =    SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
+>> | SSC_BF(TCMR_STTDLY, 1)
+>> | SSC_BF(TCMR_START, SSC_START_RISING_RF)
+>> -                       | SSC_BF(TCMR_CKI, SSC_CKI_RISING)
+>> +                       | SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+>> | SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS)
+>> | SSC_BF(TCMR_CKS, SSC_CKS_DIV);
+>> 
+>> @@ -546,7 +546,7 @@ static int atmel_ssc_hw_params(struct 
+>> snd_pcm_substream *substream,
+>> rcmr =    SSC_BF(RCMR_PERIOD, 0)
+>> | SSC_BF(RCMR_STTDLY, START_DELAY)
+>> | SSC_BF(RCMR_START, SSC_START_RISING_RF)
+>> -                       | SSC_BF(RCMR_CKI, SSC_CKI_RISING)
+>> +                       | SSC_BF(RCMR_CKI, SSC_CKI_FALLING)
+>> | SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+>> | SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
+>> SSC_CKS_PIN : SSC_CKS_CLOCK);
+>> 
+>> For both the TCMR and RCMR the CKI is set to SSC_CKI_FALLING, but I 
+>> think for the TCMR the CKI should be set to SSC_CKI_RISING. See datasheet:
+>> 
+>> TCMR CKI: "1: The data outputs (Data and Frame Sync signals) are shifted 
+>> out on Transmit Clock rising edge. The Frame sync signal
+>> input is sampled on Transmit clock falling edge."
+>> 
+>> RCMR CKI: "0: The data inputs (Data and Frame Sync signals) are sampled 
+>> on Receive Clock falling edge. The Frame Sync signal out-
+>> put is shifted out on Receive Clock rising edge."
+>> 
+>> Setting the CKI in TCMR to SSC_CKI_RISING to fixes our issues.
+> 
+> Hi Willem,
+> 
+> It this DS of the codec you are using?
+> http://www.ti.com/lit/ds/symlink/tlv320aic33.pd [1] 
+> 
+> Are you using the DSP mode described in figure 25 DSP Serial Bus Mode 
+> Operation? If yes, then you should use the DSP_B mode...
+> 
+> Thanks and best regards,
+> Codrin
+ 
+
+Links:
+------
+[1] http://www.ti.com/lit/ds/symlink/tlv320aic33.pdf
