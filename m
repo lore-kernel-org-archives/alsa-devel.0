@@ -1,44 +1,85 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH v2 13/22] docs: soundwire: locking: fix tags for a code-block
-Date: Tue,  4 Jun 2019 11:17:47 -0300
-Message-ID: <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
-References: <cover.1559656538.git.mchehab+samsung@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sun4i-i2s: Change SR and WSS computation
+Date: Tue, 4 Jun 2019 15:45:17 +0100
+Message-ID: <20190604144517.GF2456@sirena.org.uk>
+References: <20190604085449.13195-1-maxime.ripard@bootlin.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1559656538.git.mchehab+samsung@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3270520772289476369=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190604085449.13195-1-maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There's an ascii artwork at Example 1 whose code-block is not properly
-idented, causing those warnings.
 
-    Documentation/driver-api/soundwire/locking.rst:50: WARNING: Inconsistent literal block quoting.
-    Documentation/driver-api/soundwire/locking.rst:51: WARNING: Line block ends without a blank line.
-    Documentation/driver-api/soundwire/locking.rst:55: WARNING: Inline substitution_reference start-string without end-string.
-    Documentation/driver-api/soundwire/locking.rst:56: WARNING: Line block ends without a blank line.
+--===============3270520772289476369==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="PLVMksexArUZ/iL3"
+Content-Disposition: inline
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/driver-api/soundwire/locking.rst | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/soundwire/locking.rst b/Documentation/driver-api/soundwire/locking.rst
-index 253f73555255..3a7ffb3d87f3 100644
---- a/Documentation/driver-api/soundwire/locking.rst
-+++ b/Documentation/driver-api/soundwire/locking.rst
-@@ -44,7 +44,9 @@ Message transfer.
-      b. Transfer message (Read/Write) to Slave1 or broadcast message on
-         Bus in case of bank switch.
- 
--     c. Release Message lock ::
-+     c. Release Message lock
-+
-+     ::
- 
- 	+----------+                    +---------+
- 	|          |                    |         |
--- 
-2.21.0
+--PLVMksexArUZ/iL3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jun 04, 2019 at 10:54:49AM +0200, Maxime Ripard wrote:
+> The current computation for the SR (sample resolution) and the WSS (word
+> slot size) register parameters is based on a switch returning the matching
+> parameters for a given params width.
+
+This doesn't build for me with current code:
+
+  CC      sound/soc/sunxi/sun4i-i2s.o
+sound/soc/sunxi/sun4i-i2s.c:169:28: warning: =E2=80=98struct sun4i_i2s=E2=
+=80=99 declared inside parameter list will not be visible outside of this d=
+efinition or declaration
+  s8 (*get_sr)(const struct sun4i_i2s *, int);
+                            ^~~~~~~~~
+sound/soc/sunxi/sun4i-i2s.c:170:29: warning: =E2=80=98struct sun4i_i2s=E2=
+=80=99 declared inside parameter list will not be visible outside of this d=
+efinition or declaration
+  s8 (*get_wss)(const struct sun4i_i2s *, int);
+                             ^~~~~~~~~
+
+and lots of similar stuff.
+
+--PLVMksexArUZ/iL3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz2g/wACgkQJNaLcl1U
+h9BCIgf/WLTKo7F+GH5yembRxj+jHQz35TZZPqb9mhx/Hyogn+/+bF5LeqEi8hKq
+L7Mpzf0KyzhKz/VDRGc3TlsLihsQ0okqybE+/PlOS3Y7DRvd115KYLsOdfVYOucD
+bF48im6bMWWARcoIyK6B2vAYx9y28Z4qUgLcJGOcLVwwCC1K/nq6A9kFul0lXXs6
+44SRqWz911MOpt3VCP2FHpMnjiHcJP9nZ0pRZTmaV057lQCthPaCNuz+r5nzGy/Z
+Oh8Q+0DbkTmOriia5YZ6OY83lRYHBKFEPtc3nf3zuxgesObEJdvPVRur6ZGZSNDL
+tKXQOFITXAVWrTfyE+Z809Bz1jgX5g==
+=cwPD
+-----END PGP SIGNATURE-----
+
+--PLVMksexArUZ/iL3--
+
+
+--===============3270520772289476369==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============3270520772289476369==--
