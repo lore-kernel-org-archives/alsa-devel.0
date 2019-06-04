@@ -1,53 +1,52 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 13/22] docs: soundwire: locking: fix tags
- for a code-block
-Date: Tue, 4 Jun 2019 10:12:52 -0500
-Message-ID: <50782689-9cc1-9f4e-c2c0-23e6229cd2be@linux.intel.com>
-References: <cover.1559656538.git.mchehab+samsung@kernel.org>
- <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
+From: =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Subject: Re: Linking ALSA playback devices and DRM connectors
+Date: Tue, 4 Jun 2019 17:15:00 +0200
+Message-ID: <157c9015-32c8-2c1d-236f-48da16f43399@gmail.com>
+References: <f69f48bd4b9b2dc6f8228cd47406882c71758cdf.camel@intel.com>
+Reply-To: christian.koenig@amd.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <f69f48bd4b9b2dc6f8228cd47406882c71758cdf.camel@intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Ser, Simon" <simon.ser@intel.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>, "Wentland, Harry" <Harry.Wentland@amd.com>, "Leo (Sunpeng) Li" <sunpeng.li@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/4/19 9:17 AM, Mauro Carvalho Chehab wrote:
-> There's an ascii artwork at Example 1 whose code-block is not properly
-> idented, causing those warnings.
-> 
->      Documentation/driver-api/soundwire/locking.rst:50: WARNING: Inconsistent literal block quoting.
->      Documentation/driver-api/soundwire/locking.rst:51: WARNING: Line block ends without a blank line.
->      Documentation/driver-api/soundwire/locking.rst:55: WARNING: Inline substitution_reference start-string without end-string.
->      Documentation/driver-api/soundwire/locking.rst:56: WARNING: Line block ends without a blank line.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Thanks for fixing this.
-
-> ---
->   Documentation/driver-api/soundwire/locking.rst | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/driver-api/soundwire/locking.rst b/Documentation/driver-api/soundwire/locking.rst
-> index 253f73555255..3a7ffb3d87f3 100644
-> --- a/Documentation/driver-api/soundwire/locking.rst
-> +++ b/Documentation/driver-api/soundwire/locking.rst
-> @@ -44,7 +44,9 @@ Message transfer.
->        b. Transfer message (Read/Write) to Slave1 or broadcast message on
->           Bus in case of bank switch.
->   
-> -     c. Release Message lock ::
-> +     c. Release Message lock
-> +
-> +     ::
->   
->   	+----------+                    +---------+
->   	|          |                    |         |
-> 
+QW0gMDQuMDYuMTkgdW0gMTc6MDUgc2NocmllYiBTZXIsIFNpbW9uOgo+IEhpLAo+Cj4gSSdtIHRy
+eWluZyB0byBsaW5rIEFMU0EgcGxheWJhY2sgZGV2aWNlcyBhbmQgRFJNIGNvbm5lY3RvcnMuIElu
+IG90aGVyCj4gd29yZHMsIEknZCBsaWtlIHRvIGJlIGFibGUgdG8ga25vdyB3aGljaCBBTFNBIGRl
+dmljZSBJIHNob3VsZCBvcGVuIHRvCj4gcGxheSBhdWRpbyBvbiBhIGdpdmVuIGNvbm5lY3Rvci4K
+Pgo+IFVuZm9ydHVuYXRlbHksIEkgaGF2ZW4ndCBmb3VuZCBhIHdheSB0byBleHRyYWN0IHRoaXMg
+aW5mb3JtYXRpb24uIEkKPiBrbm93IC9wcm9jL2Fzb3VuZC9jYXJkTi9lbGQqIGV4cG9zZSB0aGUg
+RURJRC1saWtlIGRhdGEuIEhvd2V2ZXIgYnkKPiBsb29raW5nIGF0IHRoZSBBTFNBIEFQSSAoYWxz
+bzogYXBsYXkgLWwgYW5kIC1MKSBJIGNhbid0IGZpbmQgYSB3YXkgdG8KPiBmaWd1cmUgb3V0IHdo
+aWNoIFBDTSBkZXZpY2UgbWFwcyB0byB0aGUgRUxELgo+Cj4gQW0gSSBtaXNzaW5nIHNvbWV0aGlu
+Zz8KCklzIHRoYXQgYWN0dWFsbHkgZml4ZWQgb24gYWxsIGhhcmR3YXJlPyBPciBkbyB3ZSBtYXli
+ZSBoYXZlIHNvbWUgCmhhcmR3YXJlIHdpdGggb25seSBvbmUgYXVkaW8gY29kZWMgYW5kIG11bHRp
+cGxlIGNvbm5lY3RvcnM/Cgo+Cj4gSWYgbm90LCB3aGF0IHdvdWxkIGJlIHRoZSBiZXN0IHdheSB0
+byBleHBvc2UgdGhpcz8KPgo+IC0gQSBzeW1saW5rIHRvIHRoZSBBTFNBIGF1ZGlvIFBDTSBkZXZp
+Y2UgaW4KPiAgICAvc3lzL2NsYXNzL2RybS9jYXJkTi1DT05ORUNUT1I/Cj4gLSBBIHN5bWxpbmsg
+dG8gdGhlIERSTSBjb25uZWN0b3IgaW4gL3N5cy9jbGFzcy9zb3VuZC9wY20qPwoKSWYgaXQncyBm
+aXhlZCB0aGFuIHRob3NlIHR3byBvcHRpb25zIHNvdW5kIHNhbmUgdG8gbWUuCgo+IC0gQSBEUk0g
+Y29ubmVjdG9yIHByb3BlcnR5PwoKSWYgaXQncyBjb25maWd1cmFibGUgdGhhbiB0aGF0IHNvdW5k
+cyBsaWtlIGEgZ29vZCBvcHRpb24gdG8gbWUuCgpBbnl3YXkgYWRkZWQgb3VyIERDIHRlYW0sIHN0
+dWZmIGxpa2UgdGhhdCBpcyB0aGVpciBjb25zdHJ1Y3Rpb24gc2l0ZS4KClJlZ2FyZHMsCkNocmlz
+dGlhbi4KCj4gLSBTb21laG93IGV4cG9zZSB0aGUgY29ubmVjdG9yIG5hbWUgdmlhIHRoZSBBTFNB
+IEFQST8KPiAtIEV4cG9zZSB0aGUgY29ubmVjdG9yIEVESUQgdmlhIEFMU0E/Cj4gLSBPdGhlciBp
+ZGVhcz8KPgo+IFRoYW5rcyEKPgo+IFNpbW9uIFNlcgo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gZHJpLWRldmVsIG1haWxpbmcgbGlzdAo+IGRyaS1k
+ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
+bGlzdGluZm8vZHJpLWRldmVs
