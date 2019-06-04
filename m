@@ -1,30 +1,73 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 13/22] docs: soundwire: locking: fix tags for a
- code-block
-Date: Tue, 4 Jun 2019 20:49:16 +0530
-Message-ID: <20190604151916.GK15118@vkoul-mobl>
-References: <cover.1559656538.git.mchehab+samsung@kernel.org>
- <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: Linking ALSA playback devices and DRM connectors
+Date: Tue, 4 Jun 2019 17:24:35 +0200
+Message-ID: <CAKMK7uHQ-hS7s_OZuyGjn19tqmz3f-DtcRiD=bjujK1oYHO9tA@mail.gmail.com>
+References: <f69f48bd4b9b2dc6f8228cd47406882c71758cdf.camel@intel.com>
+ <157c9015-32c8-2c1d-236f-48da16f43399@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0ea9c284f8db3867985c410d2764a2b68e5b35c1.1559656538.git.mchehab+samsung@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <157c9015-32c8-2c1d-236f-48da16f43399@gmail.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Leo (Sunpeng) Li" <sunpeng.li@amd.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Ser,
+ Simon" <simon.ser@intel.com>, "Kazlauskas,
+ Nicholas" <Nicholas.Kazlauskas@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04-06-19, 11:17, Mauro Carvalho Chehab wrote:
-> There's an ascii artwork at Example 1 whose code-block is not properly
-> idented, causing those warnings.
-> 
->     Documentation/driver-api/soundwire/locking.rst:50: WARNING: Inconsistent literal block quoting.
->     Documentation/driver-api/soundwire/locking.rst:51: WARNING: Line block ends without a blank line.
->     Documentation/driver-api/soundwire/locking.rst:55: WARNING: Inline substitution_reference start-string without end-string.
->     Documentation/driver-api/soundwire/locking.rst:56: WARNING: Line block ends without a blank line.
-
-Applied, thanks
-
--- 
-~Vinod
+T24gVHVlLCBKdW4gNCwgMjAxOSBhdCA1OjE1IFBNIENocmlzdGlhbiBLw7ZuaWcKPGNrb2VuaWcu
+bGVpY2h0enVtZXJrZW5AZ21haWwuY29tPiB3cm90ZToKPgo+IEFtIDA0LjA2LjE5IHVtIDE3OjA1
+IHNjaHJpZWIgU2VyLCBTaW1vbjoKPiA+IEhpLAo+ID4KPiA+IEknbSB0cnlpbmcgdG8gbGluayBB
+TFNBIHBsYXliYWNrIGRldmljZXMgYW5kIERSTSBjb25uZWN0b3JzLiBJbiBvdGhlcgo+ID4gd29y
+ZHMsIEknZCBsaWtlIHRvIGJlIGFibGUgdG8ga25vdyB3aGljaCBBTFNBIGRldmljZSBJIHNob3Vs
+ZCBvcGVuIHRvCj4gPiBwbGF5IGF1ZGlvIG9uIGEgZ2l2ZW4gY29ubmVjdG9yLgo+ID4KPiA+IFVu
+Zm9ydHVuYXRlbHksIEkgaGF2ZW4ndCBmb3VuZCBhIHdheSB0byBleHRyYWN0IHRoaXMgaW5mb3Jt
+YXRpb24uIEkKPiA+IGtub3cgL3Byb2MvYXNvdW5kL2NhcmROL2VsZCogZXhwb3NlIHRoZSBFRElE
+LWxpa2UgZGF0YS4gSG93ZXZlciBieQo+ID4gbG9va2luZyBhdCB0aGUgQUxTQSBBUEkgKGFsc286
+IGFwbGF5IC1sIGFuZCAtTCkgSSBjYW4ndCBmaW5kIGEgd2F5IHRvCj4gPiBmaWd1cmUgb3V0IHdo
+aWNoIFBDTSBkZXZpY2UgbWFwcyB0byB0aGUgRUxELgo+ID4KPiA+IEFtIEkgbWlzc2luZyBzb21l
+dGhpbmc/Cj4KPiBJcyB0aGF0IGFjdHVhbGx5IGZpeGVkIG9uIGFsbCBoYXJkd2FyZT8gT3IgZG8g
+d2UgbWF5YmUgaGF2ZSBzb21lCj4gaGFyZHdhcmUgd2l0aCBvbmx5IG9uZSBhdWRpbyBjb2RlYyBh
+bmQgbXVsdGlwbGUgY29ubmVjdG9ycz8KPgo+ID4KPiA+IElmIG5vdCwgd2hhdCB3b3VsZCBiZSB0
+aGUgYmVzdCB3YXkgdG8gZXhwb3NlIHRoaXM/Cj4gPgo+ID4gLSBBIHN5bWxpbmsgdG8gdGhlIEFM
+U0EgYXVkaW8gUENNIGRldmljZSBpbgo+ID4gICAgL3N5cy9jbGFzcy9kcm0vY2FyZE4tQ09OTkVD
+VE9SPwo+ID4gLSBBIHN5bWxpbmsgdG8gdGhlIERSTSBjb25uZWN0b3IgaW4gL3N5cy9jbGFzcy9z
+b3VuZC9wY20qPwo+Cj4gSWYgaXQncyBmaXhlZCB0aGFuIHRob3NlIHR3byBvcHRpb25zIHNvdW5k
+IHNhbmUgdG8gbWUuCj4KPiA+IC0gQSBEUk0gY29ubmVjdG9yIHByb3BlcnR5Pwo+Cj4gSWYgaXQn
+cyBjb25maWd1cmFibGUgdGhhbiB0aGF0IHNvdW5kcyBsaWtlIGEgZ29vZCBvcHRpb24gdG8gbWUu
+Cj4KPiBBbnl3YXkgYWRkZWQgb3VyIERDIHRlYW0sIHN0dWZmIGxpa2UgdGhhdCBpcyB0aGVpciBj
+b25zdHJ1Y3Rpb24gc2l0ZS4KPgo+IFJlZ2FyZHMsCj4gQ2hyaXN0aWFuLgo+Cj4gPiAtIFNvbWVo
+b3cgZXhwb3NlIHRoZSBjb25uZWN0b3IgbmFtZSB2aWEgdGhlIEFMU0EgQVBJPwo+ID4gLSBFeHBv
+c2UgdGhlIGNvbm5lY3RvciBFRElEIHZpYSBBTFNBPwo+ID4gLSBPdGhlciBpZGVhcz8KCkkgdGhp
+bmsgb24gb3VyIE1TVCBodyB5b3UgZ2V0IGEgY29tYmluYXRpb24gb2YgQ1JUQ3MgeCBDT05ORUNU
+T1JzIG9uCnRoZSBhbHNhIHNpZGUuIEkuZS4gZm9yIGV2ZXJ5IHBhaXIgb2YgY29ubmVjdG9yIGFu
+ZCBjcnRjIHlvdSBnZXQgYQpzZXBhcmF0ZSBhbHNhIHBpbi4gVGhpcyBpcyBiZWNhdXNlIHdpdGgg
+bXN0LCB5b3UgY291bGQgaGF2ZSB1cCB0bwpudW1fY3J0Y3Mgc3RyZWFtcyBvbiBhIHNpbmdsZSBj
+b25uZWN0b3IuIE5vdCBzdXJlIGhvdyB0byBtb2RlbCB0aGF0LgoKQmlnZ2VyIHF1ZXN0aW9uOiBI
+b3cgZG8geW91IHdhbnQgdG8gbWFrZSB0aGUgY29vcGVyYXRpb24gaGFwcGVuPwpUaGVyZSdzIGJl
+ZW4gc29tZSBpZGVhcyBmbG9hdGluZyBhYm91dCBtYWtpbmcgdGhlIGhkbWkgY29ubmVjdGlvbgpi
+ZXR3ZWVuIGRybSBhbmQgYWxzYSBzb21laG93IHJlcHJlc2VudGVkIGluIHRoZSBjb2RlLCBidXQg
+bm90aGluZyBldmVyCnJlYWxseSBoYXBwZW5lZC4gdGhlcmUncyBkcm1fYXVkaW9fY29tcG9uZW50
+LmgsIGJ1dCB0aGF0J3MganVzdCB0aGUKaW50ZXJmYWNlLCBpdCBkb2Vzbid0IHJlYWxseSBzb2x2
+ZSBob3cgdG8gbWFrZSB0aGUgY29ubmVjdGlvbi4gQWxzbwpvbmx5IHVzZWQgYnkgaTkxNS9oZGEu
+Ci1EYW5pZWwKCgoKPiA+IFRoYW5rcyEKPiA+Cj4gPiBTaW1vbiBTZXIKPiA+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBkcmktZGV2ZWwgbWFpbGlu
+ZyBsaXN0Cj4gPiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gPiBodHRwczovL2xp
+c3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo+Cj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBkcmktZGV2ZWwgbWFp
+bGluZyBsaXN0Cj4gZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IGh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCgoKCi0tIApEYW5p
+ZWwgVmV0dGVyClNvZnR3YXJlIEVuZ2luZWVyLCBJbnRlbCBDb3Jwb3JhdGlvbgorNDEgKDApIDc5
+IDM2NSA1NyA0OCAtIGh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVs
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2RyaS1kZXZlbA==
