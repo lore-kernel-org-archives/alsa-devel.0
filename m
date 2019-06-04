@@ -1,7 +1,7 @@
 From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Subject: [PATCH] ASoC: max98090: remove 24-bit format support if RJ is 0
-Date: Tue,  4 Jun 2019 17:06:30 +0800
-Message-ID: <20190604090630.151610-1-yuhsuan@chromium.org>
+Subject: [PATCH v2] ASoC: max98090: remove 24-bit format support if RJ is 0
+Date: Tue,  4 Jun 2019 17:11:50 +0800
+Message-ID: <20190604091150.154384-1-yuhsuan@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -21,7 +21,7 @@ Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
  1 file changed, 16 insertions(+)
 
 diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 7619ea31ab50..4cbfb0b95404 100644
+index 7619ea31ab50..a6c2cb89767c 100644
 --- a/sound/soc/codecs/max98090.c
 +++ b/sound/soc/codecs/max98090.c
 @@ -1909,6 +1909,21 @@ static int max98090_configure_dmic(struct max98090_priv *max98090,
@@ -35,7 +35,7 @@ index 7619ea31ab50..4cbfb0b95404 100644
 +	struct max98090_priv *max98090 = snd_soc_component_get_drvdata(component);
 +	unsigned int fmt = max98090->dai_fmt;
 +
-+	/* Remove 24-bit format support if RJ is 1. */
++	/* Remove 24-bit format support if it is not in right justified mode. */
 +	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_RIGHT_J) {
 +		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
 +		snd_pcm_hw_constraint_msbits(substream->runtime, 0, 16, 16);
