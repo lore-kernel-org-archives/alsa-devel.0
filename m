@@ -1,135 +1,89 @@
-From: Code Kipper <codekipper@gmail.com>
-Subject: Re: [linux-sunxi] [PATCH v4 3/9] ASoC: sun4i-i2s: Add regmap field to
- sign extend sample
-Date: Tue, 4 Jun 2019 13:46:17 +0200
-Message-ID: <CAEKpxBme2KTNrtb3GpB+UPF5LHbj=iqngu5jrYpFecCZ9d8Whw@mail.gmail.com>
-References: <20190603174735.21002-1-codekipper@gmail.com> <20190603174735.21002-4-codekipper@gmail.com>
- <CAGb2v65vfQEiXYN6rvdfP6rAvXRVTAnCzxEgpjsJAkDJ16Y+rg@mail.gmail.com>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH v2 20/22] dt: bindings: fix some broken links from txt->yaml
+ conversion
+Date: Tue,  4 Jun 2019 11:17:54 -0300
+Message-ID: <92db0dbd37803154475fc73948fe59893ea041e8.1559656538.git.mchehab+samsung@kernel.org>
+References: <cover.1559656538.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGb2v65vfQEiXYN6rvdfP6rAvXRVTAnCzxEgpjsJAkDJ16Y+rg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, linux-sunxi <linux-sunxi@googlegroups.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <cover.1559656538.git.mchehab+samsung@kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Linus Walleij <linus.walleij@linaro.org>, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, "Paul E. McKenney" <paulmck@linux.ibm.com>, linux-stm32@st-md-mailman.stormreply.com, Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org, Alexandre Torgue <alexandre.torgue@st.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Mark Brown <broonie@kernel.org>, Hugues Fruchet <hugues.fruchet@st.com>, linux-arm-kernel@lists.infradead.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, "David S. Miller" <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 4 Jun 2019 at 09:53, Chen-Yu Tsai <wens@csie.org> wrote:
->
-> On Tue, Jun 4, 2019 at 1:47 AM <codekipper@gmail.com> wrote:
-> >
-> > From: Marcus Cooper <codekipper@gmail.com>
-> >
-> > On the newer SoCs this is set by default to transfer a 0 after
-> > each sample in each slot. However the platform that this driver
-> > was developed on had the default setting where it padded the
-> > audio gain with zeros. This isn't a problem whilst we have only
-> > support for 16bit audio but with larger sample resolution rates
-> > in the pipeline then it should be fixed to also pad. Without this
-> > the audio gets distorted.
->
-> Curious, both the A10 and A20 manuals say the default value for this
-> field is 0, which means 0 padding.
->
-> sun4i_i2s_reg_defaults[] also has that field set to 0.
->
-> You're saying you are seeing the field set to 1?
+Some new files got converted to yaml, but references weren't
+updated accordingly.
 
-On the newer SoCs (H3 onwards) this setting defaults to 3 which is
-"Transfer 0 after each sample in each slot" which resulted in distortion.
-Setting SEXT to 0 "Zeros or audio gain padding at LSB" alligns the
-setup with that of the earlier block and fixed the issue we were hearing.
-It's really noticeable with HDMI audio.
-BR,
-CK
->
-> ChenYu
->
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > ---
-> >  sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > index fd7c37596f21..e2961d8f6e8c 100644
-> > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > @@ -134,6 +134,7 @@
-> >   * @field_fmt_bclk: regmap field to set clk polarity.
-> >   * @field_fmt_lrclk: regmap field to set frame polarity.
-> >   * @field_fmt_mode: regmap field to set the operational mode.
-> > + * @field_fmt_sext: regmap field to set the sign extension.
-> >   * @field_txchanmap: location of the tx channel mapping register.
-> >   * @field_rxchanmap: location of the rx channel mapping register.
-> >   * @field_txchansel: location of the tx channel select bit fields.
-> > @@ -159,6 +160,7 @@ struct sun4i_i2s_quirks {
-> >         struct reg_field                field_fmt_bclk;
-> >         struct reg_field                field_fmt_lrclk;
-> >         struct reg_field                field_fmt_mode;
-> > +       struct reg_field                field_fmt_sext;
-> >         struct reg_field                field_txchanmap;
-> >         struct reg_field                field_rxchanmap;
-> >         struct reg_field                field_txchansel;
-> > @@ -183,6 +185,7 @@ struct sun4i_i2s {
-> >         struct regmap_field     *field_fmt_bclk;
-> >         struct regmap_field     *field_fmt_lrclk;
-> >         struct regmap_field     *field_fmt_mode;
-> > +       struct regmap_field     *field_fmt_sext;
-> >         struct regmap_field     *field_txchanmap;
-> >         struct regmap_field     *field_rxchanmap;
-> >         struct regmap_field     *field_txchansel;
-> > @@ -342,6 +345,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
-> >                                    SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
-> >                                    SUN8I_I2S_FMT0_LRCK_PERIOD(32));
-> >
-> > +       /* Set sign extension to pad out LSB with 0 */
-> > +       regmap_field_write(i2s->field_fmt_sext, 0);
-> > +
-> >         return 0;
-> >  }
-> >
-> > @@ -887,6 +893,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
-> >         .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-> >         .has_slave_select_bit   = true,
-> >         .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-> > +       .field_fmt_sext         = REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
-> >         .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-> >         .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-> >         .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> > @@ -904,6 +911,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
-> >         .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-> >         .has_slave_select_bit   = true,
-> >         .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-> > +       .field_fmt_sext         = REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
-> >         .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-> >         .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-> >         .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> > @@ -944,6 +952,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
-> >         .field_fmt_bclk         = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-> >         .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
-> >         .field_fmt_mode         = REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
-> > +       .field_fmt_sext         = REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
-> >         .field_txchanmap        = REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
-> >         .field_rxchanmap        = REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
-> >         .field_txchansel        = REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> > @@ -1006,6 +1015,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
-> >         if (IS_ERR(i2s->field_fmt_mode))
-> >                 return PTR_ERR(i2s->field_fmt_mode);
-> >
-> > +       i2s->field_fmt_sext =
-> > +                       devm_regmap_field_alloc(dev, i2s->regmap,
-> > +                                               i2s->variant->field_fmt_sext);
-> > +       if (IS_ERR(i2s->field_fmt_sext))
-> > +               return PTR_ERR(i2s->field_fmt_sext);
-> > +
-> >         i2s->field_txchanmap =
-> >                         devm_regmap_field_alloc(dev, i2s->regmap,
-> >                                                 i2s->variant->field_txchanmap);
-> > --
-> > 2.21.0
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> > To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20190603174735.21002-4-codekipper%40gmail.com.
-> > For more options, visit https://groups.google.com/d/optout.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+---
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.txt | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.txt  | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-sai.txt  | 2 +-
+ MAINTAINERS                                               | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt b/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt
+index 249790a93017..3122ded82eb4 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt
+@@ -11,7 +11,7 @@ Required properties:
+ - clock-names: must contain "mclk", which is the DCMI peripherial clock
+ - pinctrl: the pincontrol settings to configure muxing properly
+            for pins that connect to DCMI device.
+-           See Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.txt.
++           See Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml.
+ - dmas: phandle to DMA controller node,
+         see Documentation/devicetree/bindings/dma/stm32-dma.txt
+ - dma-names: must contain "tx", which is the transmit channel from DCMI to DMA
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
+index 58c341300552..cbf24bcd1b8d 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
+@@ -18,7 +18,7 @@ Required properties:
+     See Documentation/devicetree/bindings/dma/stm32-dma.txt.
+   - dma-names: Identifier for each DMA request line. Must be "tx" and "rx".
+   - pinctrl-names: should contain only value "default"
+-  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.txt
++  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+ 
+ Optional properties:
+   - resets: Reference to a reset controller asserting the reset controller
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+index 3f4467ff0aa2..944743dd9212 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+@@ -41,7 +41,7 @@ SAI subnodes required properties:
+ 	"tx": if sai sub-block is configured as playback DAI
+ 	"rx": if sai sub-block is configured as capture DAI
+   - pinctrl-names: should contain only value "default"
+-  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.txt
++  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+ 
+ SAI subnodes Optional properties:
+   - st,sync: specify synchronization mode.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0dc7c3c5ddb0..2ab2337a029c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1298,7 +1298,7 @@ ARM PRIMECELL SSP PL022 SPI DRIVER
+ M:	Linus Walleij <linus.walleij@linaro.org>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/spi/spi_pl022.txt
++F:	Documentation/devicetree/bindings/spi/spi-pl022.yaml
+ F:	drivers/spi/spi-pl022.c
+ 
+ ARM PRIMECELL UART PL010 AND PL011 DRIVERS
+-- 
+2.21.0
