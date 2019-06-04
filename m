@@ -1,7 +1,7 @@
 From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Subject: [PATCH v3] ASoC: max98090: remove 24-bit format support if RJ is 0
-Date: Tue,  4 Jun 2019 18:45:32 +0800
-Message-ID: <20190604104532.110492-1-yuhsuan@chromium.org>
+Subject: [PATCH v4] ASoC: max98090: remove 24-bit format support if RJ is 0
+Date: Tue,  4 Jun 2019 18:49:09 +0800
+Message-ID: <20190604104909.112984-1-yuhsuan@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -15,12 +15,9 @@ of max98090, S24_LE is only supported when it is in the right justified
 mode. We should remove 24-bit format if it is not in that mode to avoid
 triggering error.
 
-Change-Id: I304882e0b67974f8fe4c2a47c61a41a04635b2df
 Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 ---
-Fix compile error.
-codec->dai => dai
-runtime => substream->runtime
+ Remove Change-Id.
 
  sound/soc/codecs/max98090.c | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
