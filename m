@@ -1,76 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 08/12] ASoC: SOF: ipc: fix a race,
- leading to IPC timeouts
-Date: Wed, 5 Jun 2019 12:34:20 +0100
-Message-ID: <20190605113420.GQ2456@sirena.org.uk>
-References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
- <20190522162142.11525-9-pierre-louis.bossart@linux.intel.com>
- <20190523063433.6zuwdlt4vzw6urxj@debian.ka.intel.com>
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+        <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 00/14] Fix driver reload issues
+Date: Wed,  5 Jun 2019 15:45:42 +0200
+Message-ID: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8086920979213112540=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A104F808E7
- for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2019 13:34:23 +0200 (CEST)
-In-Reply-To: <20190523063433.6zuwdlt4vzw6urxj@debian.ka.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============8086920979213112540==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xPlWqmdJYj61cSlc"
-Content-Disposition: inline
+This series of patches introduces fixes to various issues found while
+trying to unload all snd* modules and then loading them again. This
+allows for modules to be really _modules_ and be unloaded and loaded on
+demand, making it easier to develop and test them without constant
+system reboots.
 
+There are some fixes in flow, either we don't initialize things before
+cleaning them up, clean up in wrong places or don't clean up at all.
+Other patches fix memory management problems, mostly things are not
+being freed. And finally there is few miscellaneous patches, please
+refer to specific patches to see what they do.
 
---xPlWqmdJYj61cSlc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series was tested on SKL, BXT, GLK & KBL.
 
-On Thu, May 23, 2019 at 08:34:35AM +0200, Guennadi Liakhovetski wrote:
-> Currently on all supported platforms the IPC IRQ thread first signals
-> the sender when an IPC response is received from the DSP, then
-> unmasks the IPC interrupt. Those actions are performed without
+Small note:
+Patch 2 in this series was already send to this list along with SOF
+counterpart, however it seems that there is some problem:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-May/149638.html
+and related patch on SOF side (with discussion):
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-May/149640.html
+It is included in this patchset for completeness.
 
-Please don't send new versions of single patches in the middle of a
-series, it makes it really hard to follow what the current version of
-the series is.  It's better to resend the whole series.
+Amadeusz Sławiński (14):
+  ASoC: Intel: Skylake: Initialize lists before access so they are safe
+    to use
+  ALSA: hdac: fix memory release for SST and SOF drivers
+  ALSA: hdac: Fix codec name after machine driver is unloaded and
+    reloaded
+  ASoC: compress: Fix memory leak from snd_soc_new_compress
+  ASoC: Intel: Skylake: Don't return failure on machine driver reload
+  ASoC: Intel: Skylake: Remove static table index when parsing topology
+  ASoC: Intel: Skylake: Add function to cleanup debugfs interface
+  ASoC: Intel: Skylake: Properly cleanup on component removal
+  ASoC: Intel: Skylake: Fix NULL ptr dereference when unloading clk dev
+  SoC: rt274: Fix internal jack assignment in set_jack callback
+  ASoC: core: Tell codec that jack is being removed
+  ASoC: Intel: hdac_hdmi: Set ops to NULL on remove
+  ASoC: topology: Consolidate how dtexts and dvalues are freed
+  ASoC: topology: Consolidate and fix asoc_tplg_dapm_widget_*_create
+    flow
 
---xPlWqmdJYj61cSlc
-Content-Type: application/pgp-signature; name="signature.asc"
+ sound/hda/ext/hdac_ext_bus.c           |  12 ++-
+ sound/soc/codecs/hdac_hdmi.c           |   6 ++
+ sound/soc/codecs/rt274.c               |   3 +-
+ sound/soc/intel/skylake/skl-debug.c    |   9 ++
+ sound/soc/intel/skylake/skl-pcm.c      |  16 ++--
+ sound/soc/intel/skylake/skl-ssp-clk.c  |  16 ++--
+ sound/soc/intel/skylake/skl-topology.c |  50 ++++++-----
+ sound/soc/intel/skylake/skl-topology.h |   2 +
+ sound/soc/intel/skylake/skl.c          |   7 +-
+ sound/soc/intel/skylake/skl.h          |   5 ++
+ sound/soc/soc-compress.c               |  17 ++--
+ sound/soc/soc-core.c                   |   1 +
+ sound/soc/soc-topology.c               | 114 ++++++++++++-------------
+ 13 files changed, 143 insertions(+), 115 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz3qLsACgkQJNaLcl1U
-h9BM/QgAg4zzmQfbPs0RSTstn6Cv+Kxkd7F/3BLjBozmaQSInhw9rKQeZTmHPyd2
-D8UsXW/HbhA4DvY+0nkGBbD+ULpzxXSC1XfjfAAqd+M9/39yMSWJBd7QBkhm33QL
-Eh5KlNeX1DirL7CZeQ39iK8PfcojDIfELOKiPNu7mYstbt5Y/6jLzonemcQYwVQ+
-y25/1fcmmxSVYaJ7sieSURIL579HT32nnG/olbvaFfyHveijqJ2F4v3RkTBq5QZp
-DQoFA/34DCE0s9LJnvI4XV5PH2hSouYFd2suoMY7CDLy3wygoq16AE+vpVZ26EI+
-lQru4olf586Ystsw+esVOS3268MUBg==
-=7GCB
------END PGP SIGNATURE-----
-
---xPlWqmdJYj61cSlc--
-
---===============8086920979213112540==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8086920979213112540==--
+-- 
+2.17.1
