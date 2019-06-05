@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 10/14] SoC: rt274: Fix internal jack assignment in set_jack callback
-Date: Wed,  5 Jun 2019 15:45:52 +0200
-Message-ID: <20190605134556.10322-11-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 09/14] ASoC: Intel: Skylake: Fix NULL ptr dereference when unloading clk dev
+Date: Wed,  5 Jun 2019 15:45:51 +0200
+Message-ID: <20190605134556.10322-10-amadeuszx.slawinski@linux.intel.com>
 References: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -11,49 +11,57 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-When we call snd_soc_component_set_jack(component, NULL, NULL) we should
-set rt274->jack to passed jack, so when interrupt is triggered it calls
-snd_soc_jack_report(rt274->jack, ...) with proper value.
-
-This fixes problem in machine where in register, we call
-snd_soc_register(component, &headset, NULL), which just calls
-rt274_mic_detect via callback.
-Now when machine driver is removed "headset" will be gone, so we
-need to tell codec driver that it's gone with:
-snd_soc_register(component, NULL, NULL), but we also need to be able
-to handle NULL jack argument here gracefully.
-If we don't set it to NULL, next time the rt274_irq runs it will call
-snd_soc_jack_report with first argument being invalid pointer and there
-will be Oops.
+When driver is probed, we iterate over NHLT and check if clk entries are
+present. For each such entry we call register_skl_clk and keep the
+result in data->clk[].
+Currently data->clk is sparsely indexed using NHLT table iterator, while
+when freeing we use number of registered entries. Let's just use
+data->avail_clk_cnt as index, so it can be reset back in
+unregister_src_clk.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/codecs/rt274.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-ssp-clk.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index adf59039a3b6..cdd312db3e78 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -405,6 +405,8 @@ static int rt274_mic_detect(struct snd_soc_component *component,
+diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+index cda1b5fa7436..5bb6e40d4d3e 100644
+--- a/sound/soc/intel/skylake/skl-ssp-clk.c
++++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+@@ -276,10 +276,8 @@ static void unregister_parent_src_clk(struct skl_clk_parent *pclk,
+ 
+ static void unregister_src_clk(struct skl_clk_data *dclk)
  {
- 	struct rt274_priv *rt274 = snd_soc_component_get_drvdata(component);
+-	u8 cnt = dclk->avail_clk_cnt;
+-
+-	while (cnt--)
+-		clkdev_drop(dclk->clk[cnt]->lookup);
++	while (dclk->avail_clk_cnt--)
++		clkdev_drop(dclk->clk[dclk->avail_clk_cnt]->lookup);
+ }
  
-+	rt274->jack = jack;
+ static int skl_register_parent_clks(struct device *dev,
+@@ -381,13 +379,13 @@ static int skl_clk_dev_probe(struct platform_device *pdev)
+ 		if (clks[i].rate_cfg[0].rate == 0)
+ 			continue;
+ 
+-		data->clk[i] = register_skl_clk(dev, &clks[i], clk_pdata, i);
+-		if (IS_ERR(data->clk[i])) {
+-			ret = PTR_ERR(data->clk[i]);
++		data->clk[data->avail_clk_cnt] = register_skl_clk(dev,
++				&clks[i], clk_pdata, i);
 +
- 	if (jack == NULL) {
- 		/* Disable jack detection */
- 		regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
-@@ -412,7 +414,6 @@ static int rt274_mic_detect(struct snd_soc_component *component,
- 
- 		return 0;
++		if (IS_ERR(data->clk[data->avail_clk_cnt])) {
++			ret = PTR_ERR(data->clk[data->avail_clk_cnt++]);
+ 			goto err_unreg_skl_clk;
+ 		}
+-
+-		data->avail_clk_cnt++;
  	}
--	rt274->jack = jack;
  
- 	regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
- 				RT274_IRQ_EN, RT274_IRQ_EN);
+ 	platform_set_drvdata(pdev, data);
 -- 
 2.17.1
