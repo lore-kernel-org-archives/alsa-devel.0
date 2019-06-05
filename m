@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 11/14] ASoC: core: Tell codec that jack is being removed
-Date: Wed,  5 Jun 2019 15:45:53 +0200
-Message-ID: <20190605134556.10322-12-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 06/14] ASoC: Intel: Skylake: Remove static table index when parsing topology
+Date: Wed,  5 Jun 2019 15:45:48 +0200
+Message-ID: <20190605134556.10322-7-amadeuszx.slawinski@linux.intel.com>
 References: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -14,25 +14,75 @@ To: alsa-devel@alsa-project.org
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-When component is being removed we should disable jack, otherwise some
-codecs will try to trigger interrupt using freed structures.
+Currently when we remove and reload driver we use previous ref_count
+value to start iterating over skl->modules which leads to out of table
+access. To fix this just inline the function and calculate indexes
+everytime we parse UUID token.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/skylake/skl-topology.c | 35 ++++++++++----------------
+ 1 file changed, 13 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7abb017a83f3..ace5fb01d9a0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -951,6 +951,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index c69d999d7bf1..44f3b29a7210 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3477,25 +3477,6 @@ static int skl_tplg_get_int_tkn(struct device *dev,
+ 	return tkn_count;
+ }
  
- static void soc_cleanup_component(struct snd_soc_component *component)
+-static int skl_tplg_get_manifest_uuid(struct device *dev,
+-				struct skl *skl,
+-				struct snd_soc_tplg_vendor_uuid_elem *uuid_tkn)
+-{
+-	static int ref_count;
+-	struct skl_module *mod;
+-
+-	if (uuid_tkn->token == SKL_TKN_UUID) {
+-		mod = skl->modules[ref_count];
+-		memcpy(&mod->uuid, &uuid_tkn->uuid, sizeof(uuid_tkn->uuid));
+-		ref_count++;
+-	} else {
+-		dev_err(dev, "Not an UUID token tkn %d\n", uuid_tkn->token);
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+ /*
+  * Fill the manifest structure by parsing the tokens based on the
+  * type.
+@@ -3506,6 +3487,7 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
  {
-+	snd_soc_component_set_jack(component, NULL, NULL);
- 	list_del(&component->card_list);
- 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
- 	soc_cleanup_component_debugfs(component);
+ 	int tkn_count = 0, ret;
+ 	int off = 0, tuple_size = 0;
++	u8 uuid_index = 0;
+ 	struct snd_soc_tplg_vendor_array *array;
+ 	struct snd_soc_tplg_vendor_value_elem *tkn_elem;
+ 
+@@ -3528,9 +3510,18 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
+ 			continue;
+ 
+ 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
+-			ret = skl_tplg_get_manifest_uuid(dev, skl, array->uuid);
+-			if (ret < 0)
+-				return ret;
++			if (array->uuid->token != SKL_TKN_UUID) {
++				dev_err(dev, "Not an UUID token: %d\n",
++					array->uuid->token);
++				return -EINVAL;
++			}
++			if (uuid_index >= skl->nr_modules) {
++				dev_err(dev, "Too many UUID tokens\n");
++				return -EINVAL;
++			}
++			memcpy(&skl->modules[uuid_index++]->uuid,
++			       &array->uuid->uuid,
++			       sizeof(array->uuid->uuid));
+ 
+ 			tuple_size += sizeof(*array->uuid);
+ 			continue;
 -- 
 2.17.1
