@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 02/14] ALSA: hdac: fix memory release for SST and SOF drivers
-Date: Wed,  5 Jun 2019 15:45:44 +0200
-Message-ID: <20190605134556.10322-3-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 04/14] ASoC: compress: Fix memory leak from snd_soc_new_compress
+Date: Wed,  5 Jun 2019 15:45:46 +0200
+Message-ID: <20190605134556.10322-5-amadeuszx.slawinski@linux.intel.com>
 References: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -11,38 +11,70 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, Vinod Koul <vkoul@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-During the integration of HDaudio support, we changed the way in which
-we get hdev in snd_hdac_ext_bus_device_init() to use one preallocated
-with devm_kzalloc(), however it still left kfree(hdev) in
-snd_hdac_ext_bus_device_exit(). It leads to oopses when trying to
-rmmod and modprobe. Fix it, by just removing kfree call.
+Change kzalloc to devm_kzalloc, so compr gets automatically freed when
+it's no longer needed.
 
-SOF also uses some of the snd_hdac_ functions for HDAudio support but
-allocated the memory with kzalloc. A matching fix is provided
-separately to align all users of the snd_hdac_ library.
-
-Fixes: 6298542fa33b ("ALSA: hdac: remove memory allocation from snd_hdac_ext_bus_device_init")
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/hda/ext/hdac_ext_bus.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/soc-compress.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index c203af71a099..f33ba58b753c 100644
---- a/sound/hda/ext/hdac_ext_bus.c
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -170,7 +170,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
- void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
- {
- 	snd_hdac_device_exit(hdev);
--	kfree(hdev);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 03d5b9ccd3fc..ddef4ff677ce 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -896,16 +896,14 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	else
+ 		direction = SND_COMPRESS_CAPTURE;
  
+-	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
++	compr = devm_kzalloc(rtd->card->dev, sizeof(*compr), GFP_KERNEL);
+ 	if (!compr)
+ 		return -ENOMEM;
+ 
+ 	compr->ops = devm_kzalloc(rtd->card->dev, sizeof(soc_compr_ops),
+ 				  GFP_KERNEL);
+-	if (!compr->ops) {
+-		ret = -ENOMEM;
+-		goto compr_err;
+-	}
++	if (!compr->ops)
++		return -ENOMEM;
+ 
+ 	if (rtd->dai_link->dynamic) {
+ 		snprintf(new_name, sizeof(new_name), "(%s)",
+@@ -918,7 +916,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 			dev_err(rtd->card->dev,
+ 				"Compress ASoC: can't create compressed for %s: %d\n",
+ 				rtd->dai_link->name, ret);
+-			goto compr_err;
++			return ret;
+ 		}
+ 
+ 		rtd->pcm = be_pcm;
+@@ -954,7 +952,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 		dev_err(component->dev,
+ 			"Compress ASoC: can't create compress for codec %s: %d\n",
+ 			component->name, ret);
+-		goto compr_err;
++		return ret;
+ 	}
+ 
+ 	/* DAPM dai link stream work */
+@@ -965,10 +963,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 
+ 	dev_info(rtd->card->dev, "Compress ASoC: %s <-> %s mapping ok\n",
+ 		 codec_dai->name, cpu_dai->name);
+-	return ret;
+ 
+-compr_err:
+-	kfree(compr);
+-	return ret;
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_new_compress);
 -- 
 2.17.1
