@@ -1,60 +1,59 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2 3/6] ASoC: madera: Add common support
- for Cirrus Logic Madera codecs
-Date: Wed, 5 Jun 2019 11:17:40 +0100
-Message-ID: <20190605101740.GN28362@ediswmail.ad.cirrus.com>
-References: <20190528154312.14435-1-ckeepax@opensource.cirrus.com>
- <20190528154312.14435-3-ckeepax@opensource.cirrus.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: fix the channel swap issue after xrun
+Date: Wed, 5 Jun 2019 10:29:37 +0000
+Message-ID: <VE1PR04MB6479D7512EDE1217228033CAE3160@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1083F808E7
- for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2019 12:17:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20190528154312.14435-3-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, rafael@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com, robh+dt@kernel.org, patches@opensource.cirrus.com, lee.jones@linaro.org
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 28, 2019 at 04:43:09PM +0100, Charles Keepax wrote:
-> From: Richard Fitzgerald <rf@opensource.cirrus.com>
-> 
-> The Cirrus Logic Madera codecs are a family of related codecs with
-> extensive digital and analogue I/O, digital mixing and routing,
-> signal processing and programmable DSPs. This patch adds common
-> support code shared by all Madera codecs.
-> 
-> This patch also adds the pdata to the parent mfd pdata struct.
-> Since there is a circular build dependency it's convenient to
-> patch them both atomically.
-> 
-> Signed-off-by: Nariman Poushin <nariman@opensource.cirrus.com>
-> Signed-off-by: Nikesh Oswal <Nikesh.Oswal@cirrus.com>
-> Signed-off-by: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
-> Signed-off-by: Ajit Pandey <ajit.pandey@incubesol.com>
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
-> +static int madera_inmux_put(struct snd_kcontrol *kcontrol,
-> +			    struct snd_ctl_elem_value *ucontrol)
-> +{
+Hi
+> > > > > Sounds like a bug to me...should fix it first by marking the
+> > > > > data registers as volatile.
+> > > > >
+> > > > The ETDR is a writable register, it is not volatile. Even we
+> > > > change it to Volatile, I don't think we can't avoid this issue.
+> > > > for the regcache_sync Just to write this register, it is correct be=
+havior.
+> > >
+> > > Is that so? Quoting the comments of regcache_sync():
+> > > "* regcache_sync - Sync the register cache with the hardware.
+> > >  *
+> > >  * @map: map to configure.
+> > >  *
+> > >  * Any registers that should not be synced should be marked as
+> > >  * volatile."
+> > >
+> > > If regcache_sync() does sync volatile registers too as you said, I
+> > > don't mind having this FIFO reset WAR for now, though I think this
+> > > mismatch between the comments and the actual behavior then should
+> get people's attention.
+> > >
+> > > Thank you
+> >
+> > ETDR is not volatile,  if we mark it is volatile, is it correct?
+>=20
+> Well, you have a point -- it might not be ideally true, but it sounds lik=
+e a
+> correct fix to me according to this comments.
+>=20
+> We can wait for Mark's comments or just send a patch to the mail list for
+> review.
+>=20
+> Thanks you
 
-Looks like there are still some issues with the inmux handling
-here, afraid I will probably need to do a v3 to fix them up.
+I test this patch, we don't need to reset the FIFO, and regcache_sync didn'=
+t
+Write the ETDR even the EDTR is not volatile.  This fault maybe caused by
+Legacy, in the beginning we add this patch in internal branch, there maybe
+Something cause this issue, but now can't reproduced.=20
 
-Thanks,
-Charles
+So I will remove the reset of FIFO.
+
+Best regards
+Wang Shengjiu =20
