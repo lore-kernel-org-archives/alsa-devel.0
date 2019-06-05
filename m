@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 08/14] ASoC: Intel: Skylake: Properly cleanup on component removal
-Date: Wed,  5 Jun 2019 15:45:50 +0200
-Message-ID: <20190605134556.10322-9-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 10/14] SoC: rt274: Fix internal jack assignment in set_jack callback
+Date: Wed,  5 Jun 2019 15:45:52 +0200
+Message-ID: <20190605134556.10322-11-amadeuszx.slawinski@linux.intel.com>
 References: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -11,97 +11,49 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-When we remove component we need to reverse things which were done on
-init, this consists of topology cleanup, lists cleanup and releasing
-firmware.
+When we call snd_soc_component_set_jack(component, NULL, NULL) we should
+set rt274->jack to passed jack, so when interrupt is triggered it calls
+snd_soc_jack_report(rt274->jack, ...) with proper value.
 
-Currently cleanup handlers are put in wrong places or otherwise missing.
-So add proper component cleanup function and perform cleanups in it.
+This fixes problem in machine where in register, we call
+snd_soc_register(component, &headset, NULL), which just calls
+rt274_mic_detect via callback.
+Now when machine driver is removed "headset" will be gone, so we
+need to tell codec driver that it's gone with:
+snd_soc_register(component, NULL, NULL), but we also need to be able
+to handle NULL jack argument here gracefully.
+If we don't set it to NULL, next time the rt274_irq runs it will call
+snd_soc_jack_report with first argument being invalid pointer and there
+will be Oops.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c      |  8 ++++++--
- sound/soc/intel/skylake/skl-topology.c | 15 +++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |  2 ++
- sound/soc/intel/skylake/skl.c          |  2 --
- 4 files changed, 23 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt274.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 44062806fbed..7e8110c15258 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1459,8 +1459,12 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
- 
- static void skl_pcm_remove(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index adf59039a3b6..cdd312db3e78 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -405,6 +405,8 @@ static int rt274_mic_detect(struct snd_soc_component *component,
  {
--	/* remove topology */
--	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
-+	struct hdac_bus *bus = dev_get_drvdata(component->dev);
-+	struct skl *skl = bus_to_skl(bus);
-+
-+	skl_tplg_exit(component, bus);
-+
-+	skl_debugfs_exit(skl);
- }
+ 	struct rt274_priv *rt274 = snd_soc_component_get_drvdata(component);
  
- static const struct snd_soc_component_driver skl_component  = {
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 44f3b29a7210..3964262109ac 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3748,3 +3748,18 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
- 
- 	return 0;
- }
++	rt274->jack = jack;
 +
-+void skl_tplg_exit(struct snd_soc_component *component, struct hdac_bus *bus)
-+{
-+	struct skl *skl = bus_to_skl(bus);
-+	struct skl_pipeline *ppl, *tmp;
-+
-+	if (!list_empty(&skl->ppl_list))
-+		list_for_each_entry_safe(ppl, tmp, &skl->ppl_list, node)
-+			list_del(&ppl->node);
-+
-+	/* clean up topology */
-+	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
-+
-+	release_firmware(skl->tplg);
-+}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 82282cac9751..7d32c61c73e7 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -471,6 +471,8 @@ void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
- 	struct skl_pipe_params *params, int stream);
- int skl_tplg_init(struct snd_soc_component *component,
- 				struct hdac_bus *ebus);
-+void skl_tplg_exit(struct snd_soc_component *component,
-+				struct hdac_bus *bus);
- struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
- 		struct snd_soc_dai *dai, int stream);
- int skl_tplg_update_pipe_params(struct device *dev,
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 6d6401410250..e4881ff427ea 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1119,14 +1119,12 @@ static void skl_remove(struct pci_dev *pci)
- 	struct skl *skl = bus_to_skl(bus);
+ 	if (jack == NULL) {
+ 		/* Disable jack detection */
+ 		regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
+@@ -412,7 +414,6 @@ static int rt274_mic_detect(struct snd_soc_component *component,
  
- 	cancel_work_sync(&skl->probe_work);
--	release_firmware(skl->tplg);
+ 		return 0;
+ 	}
+-	rt274->jack = jack;
  
- 	pm_runtime_get_noresume(&pci->dev);
- 
- 	/* codec removal, invoke bus_device_remove */
- 	snd_hdac_ext_bus_device_remove(bus);
- 
--	skl->debugfs = NULL;
- 	skl_platform_unregister(&pci->dev);
- 	skl_free_dsp(skl);
- 	skl_machine_device_unregister(skl);
+ 	regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
+ 				RT274_IRQ_EN, RT274_IRQ_EN);
 -- 
 2.17.1
