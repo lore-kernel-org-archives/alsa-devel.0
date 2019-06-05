@@ -1,98 +1,60 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH] ASoC: sun4i-i2s: Change SR and WSS computation
-Date: Wed, 5 Jun 2019 12:08:44 +0200
-Message-ID: <20190605100844.kzaw7r3zasfqhnuu@flea>
-References: <20190604085449.13195-1-maxime.ripard@bootlin.com>
- <20190604144517.GF2456@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 3/6] ASoC: madera: Add common support
+ for Cirrus Logic Madera codecs
+Date: Wed, 5 Jun 2019 11:17:40 +0100
+Message-ID: <20190605101740.GN28362@ediswmail.ad.cirrus.com>
+References: <20190528154312.14435-1-ckeepax@opensource.cirrus.com>
+ <20190528154312.14435-3-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6027104896691045339=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190604144517.GF2456@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1083F808E7
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2019 12:17:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190528154312.14435-3-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, rafael@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com, robh+dt@kernel.org, patches@opensource.cirrus.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, May 28, 2019 at 04:43:09PM +0100, Charles Keepax wrote:
+> From: Richard Fitzgerald <rf@opensource.cirrus.com>
+> 
+> The Cirrus Logic Madera codecs are a family of related codecs with
+> extensive digital and analogue I/O, digital mixing and routing,
+> signal processing and programmable DSPs. This patch adds common
+> support code shared by all Madera codecs.
+> 
+> This patch also adds the pdata to the parent mfd pdata struct.
+> Since there is a circular build dependency it's convenient to
+> patch them both atomically.
+> 
+> Signed-off-by: Nariman Poushin <nariman@opensource.cirrus.com>
+> Signed-off-by: Nikesh Oswal <Nikesh.Oswal@cirrus.com>
+> Signed-off-by: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
+> Signed-off-by: Ajit Pandey <ajit.pandey@incubesol.com>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+> +static int madera_inmux_put(struct snd_kcontrol *kcontrol,
+> +			    struct snd_ctl_elem_value *ucontrol)
+> +{
 
---===============6027104896691045339==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qhomvzhpyiavwpcf"
-Content-Disposition: inline
+Looks like there are still some issues with the inmux handling
+here, afraid I will probably need to do a v3 to fix them up.
 
-
---qhomvzhpyiavwpcf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Jun 04, 2019 at 03:45:17PM +0100, Mark Brown wrote:
-> On Tue, Jun 04, 2019 at 10:54:49AM +0200, Maxime Ripard wrote:
-> > The current computation for the SR (sample resolution) and the WSS (word
-> > slot size) register parameters is based on a switch returning the match=
-ing
-> > parameters for a given params width.
->
-> This doesn't build for me with current code:
->
->   CC      sound/soc/sunxi/sun4i-i2s.o
-> sound/soc/sunxi/sun4i-i2s.c:169:28: warning: =E2=80=98struct sun4i_i2s=E2=
-=80=99 declared inside parameter list will not be visible outside of this d=
-efinition or declaration
->   s8 (*get_sr)(const struct sun4i_i2s *, int);
->                             ^~~~~~~~~
-> sound/soc/sunxi/sun4i-i2s.c:170:29: warning: =E2=80=98struct sun4i_i2s=E2=
-=80=99 declared inside parameter list will not be visible outside of this d=
-efinition or declaration
->   s8 (*get_wss)(const struct sun4i_i2s *, int);
->                              ^~~~~~~~~
->
-> and lots of similar stuff.
-
-Sigh, so much for sending a patch part of a branch...
-
-Sorry for wasting your time on this, I've sent a v2 with this fixed.
-
-Maxime
-
-
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
---qhomvzhpyiavwpcf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXPeUrAAKCRDj7w1vZxhR
-xScXAPwN8ypur7UlU8bNKMKWbFc0f1dSEHVT5ZDOnsRZQKzswwEAi27OmMmw2FeN
-7aj+QHjqrk9psWgk+O/LHTS3NFkUcAM=
-=vzYH
------END PGP SIGNATURE-----
-
---qhomvzhpyiavwpcf--
-
-
---===============6027104896691045339==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============6027104896691045339==--
+Thanks,
+Charles
