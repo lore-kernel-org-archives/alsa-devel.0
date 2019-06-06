@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: corgi: use modern dai_link style"
-	to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:58 +0100 (BST)
-Message-ID: <20190606212659.0FBB9440049@finisterre.sirena.org.uk>
-References: <8736knl64a.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: samsung: jive_wm8750: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:00 +0100 (BST)
+Message-ID: <20190606212700.31733440046@finisterre.sirena.org.uk>
+References: <875zpjl64k.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04C07F897DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE70FF897E1
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:00 +0200 (CEST)
-In-Reply-To: <8736knl64a.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zpjl64k.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: corgi: use modern dai_link style
+   ASoC: samsung: jive_wm8750: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 432895f4f6d916eed93a6e434adc3c67655de2d2 Mon Sep 17 00:00:00 2001
+>From 9423082951be26bd60d9fc1133d2ea9014aade6b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:10:56 +0900
-Subject: [PATCH] ASoC: pxa: corgi: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:10:46 +0900
+Subject: [PATCH] ASoC: samsung: jive_wm8750: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,35 +67,35 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/corgi.c | 10 ++++++----
+ sound/soc/samsung/jive_wm8750.c | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 054e0d65db9d..dae128833692 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -260,16 +260,18 @@ static const struct snd_kcontrol_new wm8731_corgi_controls[] = {
+diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+index f05f9e03f07d..949d2e029962 100644
+--- a/sound/soc/samsung/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -78,16 +78,18 @@ static const struct snd_soc_ops jive_ops = {
+ 	.hw_params	= jive_hw_params,
  };
  
- /* corgi digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEFS(wm8731,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
++SND_SOC_DAILINK_DEFS(wm8750,
++	DAILINK_COMP_ARRAY(COMP_CPU("s3c2412-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8750.0-001a", "wm8750-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("s3c2412-i2s")));
 +
- static struct snd_soc_dai_link corgi_dai = {
- 	.name = "WM8731",
- 	.stream_name = "WM8731",
--	.cpu_dai_name = "pxa2xx-i2s",
--	.codec_dai_name = "wm8731-hifi",
--	.platform_name = "pxa-pcm-audio",
--	.codec_name = "wm8731.0-001b",
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 		   SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &corgi_ops,
-+	SND_SOC_DAILINK_REG(wm8731),
+ static struct snd_soc_dai_link jive_dai = {
+ 	.name		= "wm8750",
+ 	.stream_name	= "WM8750",
+-	.cpu_dai_name	= "s3c2412-i2s",
+-	.codec_dai_name = "wm8750-hifi",
+-	.platform_name	= "s3c2412-i2s",
+-	.codec_name	= "wm8750.0-001a",
+ 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &jive_ops,
++	SND_SOC_DAILINK_REG(wm8750),
  };
  
- /* corgi audio machine driver */
+ /* jive audio machine driver */
 -- 
 2.20.1
