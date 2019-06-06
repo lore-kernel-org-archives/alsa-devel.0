@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: skl_nau88l25_ssm4567: use modern
-	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:00 +0100 (BST)
-Message-ID: <20190606212600.3E4D0440046@finisterre.sirena.org.uk>
-References: <87v9xje4sa.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: kbl_rt5663_rt5514_max98927: use
+	modern dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:01 +0100 (BST)
+Message-ID: <20190606212602.054A4440049@finisterre.sirena.org.uk>
+References: <87zhmve4so.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A9A8F89710
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:01 +0200 (CEST)
-In-Reply-To: <87v9xje4sa.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4215F896EF
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:02 +0200 (CEST)
+In-Reply-To: <87zhmve4so.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: skl_nau88l25_ssm4567: use modern dai_link style
+   ASoC: Intel: kbl_rt5663_rt5514_max98927: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,46 +55,49 @@ to this mail.
 Thanks,
 Mark
 
->From 502a522b7b8b98bd453ef948dbe47eddc787826c Mon Sep 17 00:00:00 2001
+>From 42ac21b9b17dfa7dba9a481d0716d50f535fdd5d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:21:36 +0900
-Subject: [PATCH] ASoC: Intel: skl_nau88l25_ssm4567: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:21:22 +0900
+Subject: [PATCH] ASoC: Intel: kbl_rt5663_rt5514_max98927: use modern dai_link
+ style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
 This patch switches to use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 132 +++++++++---------
- 1 file changed, 69 insertions(+), 63 deletions(-)
+ .../intel/boards/kbl_rt5663_rt5514_max98927.c | 126 +++++++++---------
+ 1 file changed, 64 insertions(+), 62 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 8433c521d39f..36ab838c77f1 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -164,17 +164,6 @@ static struct snd_soc_codec_conf ssm4567_codec_conf[] = {
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 879f14257a3e..a22749e48943 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -145,20 +145,6 @@ static struct snd_soc_codec_conf max98927_codec_conf[] = {
  	},
  };
  
--static struct snd_soc_dai_link_component ssm4567_codec_components[] = {
+-static struct snd_soc_dai_link_component ssp0_codec_components[] = {
 -	{ /* Left */
--		.name = "i2c-INT343B:00",
--		.dai_name = SKL_SSM_CODEC_DAI,
+-		.name = MAXIM_DEV0_NAME,
+-		.dai_name = KBL_MAXIM_CODEC_DAI,
 -	},
 -	{ /* Right */
--		.name = "i2c-INT343B:01",
--		.dai_name = SKL_SSM_CODEC_DAI,
+-		.name = MAXIM_DEV1_NAME,
+-		.dai_name = KBL_MAXIM_CODEC_DAI,
+-	},
+-	{ /*dmic */
+-		.name = RT5514_DEV_NAME,
+-		.dai_name = KBL_REALTEK_DMIC_CODEC_DAI,
 -	},
 -};
--
- static int skylake_ssm4567_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static int kabylake_rt5663_fe_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	int ret;
-@@ -453,105 +442,140 @@ static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = skylake_refcap_startup,
+@@ -430,108 +416,136 @@ static struct snd_soc_ops kabylake_dmic_ops = {
+ 	.startup = kabylake_dmic_startup,
  };
  
 +SND_SOC_DAILINK_DEF(dummy,
@@ -103,8 +106,16 @@ index 8433c521d39f..36ab838c77f1 100644
 +SND_SOC_DAILINK_DEF(system,
 +	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
 +
-+SND_SOC_DAILINK_DEF(reference,
-+	DAILINK_COMP_ARRAY(COMP_CPU("Reference Pin")));
++SND_SOC_DAILINK_DEF(system2,
++	DAILINK_COMP_ARRAY(COMP_CPU("System Pin2")));
++
++SND_SOC_DAILINK_DEF(echoref,
++	DAILINK_COMP_ARRAY(COMP_CPU("Echoref Pin")));
++
++SND_SOC_DAILINK_DEF(spi_cpu,
++	DAILINK_COMP_ARRAY(COMP_CPU("spi-PRP0001:00")));
++SND_SOC_DAILINK_DEF(spi_platform,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("spi-PRP0001:00")));
 +
 +SND_SOC_DAILINK_DEF(dmic,
 +	DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
@@ -115,25 +126,18 @@ index 8433c521d39f..36ab838c77f1 100644
 +SND_SOC_DAILINK_DEF(hdmi2,
 +	DAILINK_COMP_ARRAY(COMP_CPU("HDMI2 Pin")));
 +
-+SND_SOC_DAILINK_DEF(hdmi3,
-+	DAILINK_COMP_ARRAY(COMP_CPU("HDMI3 Pin")));
-+
 +SND_SOC_DAILINK_DEF(ssp0_pin,
 +	DAILINK_COMP_ARRAY(COMP_CPU("SSP0 Pin")));
 +SND_SOC_DAILINK_DEF(ssp0_codec,
 +	DAILINK_COMP_ARRAY(
-+	/* Left */	COMP_CODEC("i2c-INT343B:00", SKL_SSM_CODEC_DAI),
-+	/* Right */	COMP_CODEC("i2c-INT343B:01", SKL_SSM_CODEC_DAI)));
++	/* Left */ COMP_CODEC(MAXIM_DEV0_NAME, KBL_MAXIM_CODEC_DAI),
++	/* Right */COMP_CODEC(MAXIM_DEV1_NAME, KBL_MAXIM_CODEC_DAI),
++	/* dmic */ COMP_CODEC(RT5514_DEV_NAME, KBL_REALTEK_DMIC_CODEC_DAI)));
 +
 +SND_SOC_DAILINK_DEF(ssp1_pin,
 +	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
 +SND_SOC_DAILINK_DEF(ssp1_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10508825:00", SKL_NUVOTON_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(dmic01_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
-+SND_SOC_DAILINK_DEF(dmic_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(RT5663_DEV_NAME, KBL_REALTEK_CODEC_DAI)));
 +
 +SND_SOC_DAILINK_DEF(idisp1_pin,
 +	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
@@ -145,19 +149,14 @@ index 8433c521d39f..36ab838c77f1 100644
 +SND_SOC_DAILINK_DEF(idisp2_codec,
 +	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi2")));
 +
-+SND_SOC_DAILINK_DEF(idisp3_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")));
-+SND_SOC_DAILINK_DEF(idisp3_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
-+
 +SND_SOC_DAILINK_DEF(platform,
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:1f.3")));
 +
- /* skylake digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link skylake_dais[] = {
+ /* kabylake digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link kabylake_dais[] = {
  	/* Front End DAI links */
- 	[SKL_DPCM_AUDIO_PB] = {
- 		.name = "Skl Audio Port",
+ 	[KBL_DPCM_AUDIO_PB] = {
+ 		.name = "Kbl Audio Port",
  		.stream_name = "Audio",
 -		.cpu_dai_name = "System Pin",
 -		.platform_name = "0000:00:1f.3",
@@ -165,15 +164,15 @@ index 8433c521d39f..36ab838c77f1 100644
 -		.codec_name = "snd-soc-dummy",
 -		.codec_dai_name = "snd-soc-dummy-dai",
  		.nonatomic = 1,
- 		.init = skylake_nau8825_fe_init,
+ 		.init = kabylake_rt5663_fe_init,
  		.trigger = {
  			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_playback = 1,
- 		.ops = &skylake_nau8825_fe_ops,
+ 		.ops = &kabylake_rt5663_fe_ops,
 +		SND_SOC_DAILINK_REG(system, dummy, platform),
  	},
- 	[SKL_DPCM_AUDIO_CP] = {
- 		.name = "Skl Audio Capture Port",
+ 	[KBL_DPCM_AUDIO_CP] = {
+ 		.name = "Kbl Audio Capture Port",
  		.stream_name = "Audio Record",
 -		.cpu_dai_name = "System Pin",
 -		.platform_name = "0000:00:1f.3",
@@ -184,25 +183,44 @@ index 8433c521d39f..36ab838c77f1 100644
  		.trigger = {
  			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_capture = 1,
- 		.ops = &skylake_nau8825_fe_ops,
+ 		.ops = &kabylake_rt5663_fe_ops,
 +		SND_SOC_DAILINK_REG(system, dummy, platform),
  	},
- 	[SKL_DPCM_AUDIO_REF_CP] = {
- 		.name = "Skl Audio Reference cap",
- 		.stream_name = "Wake on Voice",
--		.cpu_dai_name = "Reference Pin",
+ 	[KBL_DPCM_AUDIO_HS_PB] = {
+ 		.name = "Kbl Audio Headset Playback",
+ 		.stream_name = "Headset Audio",
+-		.cpu_dai_name = "System Pin2",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:1f.3",
+ 		.dpcm_playback = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(system2, dummy, platform),
+ 	},
+ 	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
+ 		.name = "Kbl Audio Echo Reference cap",
+ 		.stream_name = "Echoreference Capture",
+-		.cpu_dai_name = "Echoref Pin",
 -		.codec_name = "snd-soc-dummy",
 -		.codec_dai_name = "snd-soc-dummy-dai",
 -		.platform_name = "0000:00:1f.3",
  		.init = NULL,
- 		.dpcm_capture = 1,
+ 		.capture_only = 1,
  		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &skylake_refcap_ops,
-+		SND_SOC_DAILINK_REG(reference, dummy, platform),
++		SND_SOC_DAILINK_REG(echoref, dummy, platform),
  	},
- 	[SKL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Skl Audio DMIC cap",
+ 	[KBL_DPCM_AUDIO_RT5514_DSP] = {
+ 		.name = "rt5514 dsp",
+ 		.stream_name = "Wake on Voice",
+-		.cpu_dai_name = "spi-PRP0001:00",
+-		.platform_name = "spi-PRP0001:00",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
++		SND_SOC_DAILINK_REG(spi_cpu, dummy, spi_platform),
+ 	},
+ 	[KBL_DPCM_AUDIO_DMIC_CP] = {
+ 		.name = "Kbl Audio DMIC cap",
  		.stream_name = "dmiccap",
 -		.cpu_dai_name = "DMIC Pin",
 -		.codec_name = "snd-soc-dummy",
@@ -212,11 +230,11 @@ index 8433c521d39f..36ab838c77f1 100644
  		.dpcm_capture = 1,
  		.nonatomic = 1,
  		.dynamic = 1,
- 		.ops = &skylake_dmic_ops,
+ 		.ops = &kabylake_dmic_ops,
 +		SND_SOC_DAILINK_REG(dmic, dummy, platform),
  	},
- 	[SKL_DPCM_AUDIO_HDMI1_PB] = {
- 		.name = "Skl HDMI Port1",
+ 	[KBL_DPCM_AUDIO_HDMI1_PB] = {
+ 		.name = "Kbl HDMI Port1",
  		.stream_name = "Hdmi1",
 -		.cpu_dai_name = "HDMI1 Pin",
 -		.codec_name = "snd-soc-dummy",
@@ -230,8 +248,8 @@ index 8433c521d39f..36ab838c77f1 100644
  		.dynamic = 1,
 +		SND_SOC_DAILINK_REG(hdmi1, dummy, platform),
  	},
- 	[SKL_DPCM_AUDIO_HDMI2_PB] = {
- 		.name = "Skl HDMI Port2",
+ 	[KBL_DPCM_AUDIO_HDMI2_PB] = {
+ 		.name = "Kbl HDMI Port2",
  		.stream_name = "Hdmi2",
 -		.cpu_dai_name = "HDMI2 Pin",
 -		.codec_name = "snd-soc-dummy",
@@ -245,71 +263,42 @@ index 8433c521d39f..36ab838c77f1 100644
  		.dynamic = 1,
 +		SND_SOC_DAILINK_REG(hdmi2, dummy, platform),
  	},
- 	[SKL_DPCM_AUDIO_HDMI3_PB] = {
- 		.name = "Skl HDMI Port3",
- 		.stream_name = "Hdmi3",
--		.cpu_dai_name = "HDMI3 Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:1f.3",
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_playback = 1,
- 		.init = NULL,
- 		.nonatomic = 1,
- 		.dynamic = 1,
-+		SND_SOC_DAILINK_REG(hdmi3, dummy, platform),
- 	},
- 
  	/* Back End DAI links */
-@@ -559,11 +583,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
+ 	/* single Back end dai for both max speakers and dmic */
+@@ -539,11 +553,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
  		/* SSP0 - Codec */
  		.name = "SSP0-Codec",
  		.id = 0,
 -		.cpu_dai_name = "SSP0 Pin",
 -		.platform_name = "0000:00:1f.3",
  		.no_pcm = 1,
--		.codecs = ssm4567_codec_components,
--		.num_codecs = ARRAY_SIZE(ssm4567_codec_components),
- 		.dai_fmt = SND_SOC_DAIFMT_DSP_A |
- 			SND_SOC_DAIFMT_IB_NF |
+-		.codecs = ssp0_codec_components,
+-		.num_codecs = ARRAY_SIZE(ssp0_codec_components),
+ 		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
+ 			SND_SOC_DAIFMT_NB_NF |
  			SND_SOC_DAIFMT_CBS_CFS,
-@@ -572,16 +592,13 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.be_hw_params_fixup = skylake_ssp_fixup,
+@@ -552,15 +562,12 @@ static struct snd_soc_dai_link kabylake_dais[] = {
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
+ 		.ops = &kabylake_ssp0_ops,
 +		SND_SOC_DAILINK_REG(ssp0_pin, ssp0_codec, platform),
  	},
  	{
- 		/* SSP1 - Codec */
  		.name = "SSP1-Codec",
  		.id = 1,
 -		.cpu_dai_name = "SSP1 Pin",
 -		.platform_name = "0000:00:1f.3",
  		.no_pcm = 1,
--		.codec_name = "i2c-10508825:00",
--		.codec_dai_name = SKL_NUVOTON_CODEC_DAI,
- 		.init = skylake_nau8825_codec_init,
+-		.codec_name = RT5663_DEV_NAME,
+-		.codec_dai_name = KBL_REALTEK_CODEC_DAI,
+ 		.init = kabylake_rt5663_codec_init,
  		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
  			SND_SOC_DAIFMT_CBS_CFS,
-@@ -590,51 +607,40 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.ops = &skylake_nau8825_ops,
+@@ -569,28 +576,23 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+ 		.ops = &kabylake_rt5663_ops,
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
 +		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
- 	},
- 	{
- 		.name = "dmic01",
- 		.id = 2,
--		.cpu_dai_name = "DMIC01 Pin",
--		.codec_name = "dmic-codec",
--		.codec_dai_name = "dmic-hifi",
--		.platform_name = "0000:00:1f.3",
- 		.ignore_suspend = 1,
- 		.be_hw_params_fixup = skylake_dmic_fixup,
- 		.dpcm_capture = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(dmic01_pin, dmic_codec, platform),
  	},
  	{
  		.name = "iDisp1",
@@ -319,7 +308,7 @@ index 8433c521d39f..36ab838c77f1 100644
 -		.codec_dai_name = "intel-hdmi-hifi1",
 -		.platform_name = "0000:00:1f.3",
  		.dpcm_playback = 1,
- 		.init = skylake_hdmi1_init,
+ 		.init = kabylake_hdmi1_init,
  		.no_pcm = 1,
 +		SND_SOC_DAILINK_REG(idisp1_pin, idisp1_codec, platform),
  	},
@@ -330,22 +319,10 @@ index 8433c521d39f..36ab838c77f1 100644
 -		.codec_name = "ehdaudio0D2",
 -		.codec_dai_name = "intel-hdmi-hifi2",
 -		.platform_name = "0000:00:1f.3",
- 		.init = skylake_hdmi2_init,
+ 		.init = kabylake_hdmi2_init,
  		.dpcm_playback = 1,
  		.no_pcm = 1,
 +		SND_SOC_DAILINK_REG(idisp2_pin, idisp2_codec, platform),
- 	},
- 	{
- 		.name = "iDisp3",
- 		.id = 5,
--		.cpu_dai_name = "iDisp3 Pin",
--		.codec_name = "ehdaudio0D2",
--		.codec_dai_name = "intel-hdmi-hifi3",
--		.platform_name = "0000:00:1f.3",
- 		.init = skylake_hdmi3_init,
- 		.dpcm_playback = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
  	},
  };
  
