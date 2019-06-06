@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: glk_rt5682_max98357a: use modern
-	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:25:57 +0100 (BST)
-Message-ID: <20190606212557.46BF0440046@finisterre.sirena.org.uk>
-References: <87o93be4rd.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: sof_rt5682: use modern dai_link
+	style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:25:56 +0100 (BST)
+Message-ID: <20190606212556.A8D89440049@finisterre.sirena.org.uk>
+References: <87muive4r8.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82F9DF896CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id E027BF8072A
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:25:58 +0200 (CEST)
-In-Reply-To: <87o93be4rd.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87muive4r8.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: glk_rt5682_max98357a: use modern dai_link style
+   ASoC: Intel: sof_rt5682: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,306 +55,134 @@ to this mail.
 Thanks,
 Mark
 
->From 02c31963d156025be6264d88ee42f78091112ca5 Mon Sep 17 00:00:00 2001
+>From e1684073ef2142c241375487b1e158abe169ce61 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:22:09 +0900
-Subject: [PATCH] ASoC: Intel: glk_rt5682_max98357a: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:22:14 +0900
+Subject: [PATCH] ASoC: Intel: sof_rt5682: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
 This patch switches to use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 137 ++++++++++--------
- 1 file changed, 77 insertions(+), 60 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 57 +++++++++++++++++------------
+ 1 file changed, 34 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index 7180100a9084..bd2d371f2acd 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -317,152 +317,180 @@ static const struct snd_soc_ops geminilake_refcap_ops = {
- 	.startup = geminilake_refcap_startup,
- };
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 355fd9730a44..e2e5f97d9920 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -331,12 +331,15 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 							  int hdmi_num)
+ {
+ 	struct snd_soc_dai_link_component *idisp_components;
++	struct snd_soc_dai_link_component *cpus;
+ 	struct snd_soc_dai_link *links;
+ 	int i, id = 0;
  
-+SND_SOC_DAILINK_DEF(dummy,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+
-+SND_SOC_DAILINK_DEF(system,
-+	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
-+
-+SND_SOC_DAILINK_DEF(system2,
-+	DAILINK_COMP_ARRAY(COMP_CPU("System Pin2")));
-+
-+SND_SOC_DAILINK_DEF(echoref,
-+	DAILINK_COMP_ARRAY(COMP_CPU("Echoref Pin")));
-+
-+SND_SOC_DAILINK_DEF(reference,
-+	DAILINK_COMP_ARRAY(COMP_CPU("Reference Pin")));
-+
-+SND_SOC_DAILINK_DEF(dmic,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
-+
-+SND_SOC_DAILINK_DEF(hdmi1,
-+	DAILINK_COMP_ARRAY(COMP_CPU("HDMI1 Pin")));
-+
-+SND_SOC_DAILINK_DEF(hdmi2,
-+	DAILINK_COMP_ARRAY(COMP_CPU("HDMI2 Pin")));
-+
-+SND_SOC_DAILINK_DEF(hdmi3,
-+	DAILINK_COMP_ARRAY(COMP_CPU("HDMI3 Pin")));
-+
-+SND_SOC_DAILINK_DEF(ssp1_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
-+SND_SOC_DAILINK_DEF(ssp1_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC(MAXIM_DEV0_NAME,
-+				      GLK_MAXIM_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(ssp2_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("SSP2 Pin")));
-+SND_SOC_DAILINK_DEF(ssp2_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00",
-+				      GLK_REALTEK_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(dmic_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
-+SND_SOC_DAILINK_DEF(dmic_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
-+
-+SND_SOC_DAILINK_DEF(idisp1_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
-+SND_SOC_DAILINK_DEF(idisp1_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
-+
-+SND_SOC_DAILINK_DEF(idisp2_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
-+SND_SOC_DAILINK_DEF(idisp2_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi2")));
-+
-+SND_SOC_DAILINK_DEF(idisp3_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")));
-+SND_SOC_DAILINK_DEF(idisp3_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:0e.0")));
-+
- /* geminilake digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link geminilake_dais[] = {
- 	/* Front End DAI links */
- 	[GLK_DPCM_AUDIO_PB] = {
- 		.name = "Glk Audio Port",
- 		.stream_name = "Audio",
--		.cpu_dai_name = "System Pin",
--		.platform_name = "0000:00:0e.0",
- 		.dynamic = 1,
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
- 		.nonatomic = 1,
- 		.init = geminilake_rt5682_fe_init,
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(system, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_CP] = {
- 		.name = "Glk Audio Capture Port",
- 		.stream_name = "Audio Record",
--		.cpu_dai_name = "System Pin",
--		.platform_name = "0000:00:0e.0",
- 		.dynamic = 1,
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
- 		.nonatomic = 1,
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(system, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_HS_PB] = {
- 		.name = "Glk Audio Headset Playback",
- 		.stream_name = "Headset Audio",
--		.cpu_dai_name = "System Pin2",
--		.platform_name = "0000:00:0e.0",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
- 		.dpcm_playback = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
-+		SND_SOC_DAILINK_REG(system2, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_ECHO_REF_CP] = {
- 		.name = "Glk Audio Echo Reference cap",
- 		.stream_name = "Echoreference Capture",
--		.cpu_dai_name = "Echoref Pin",
--		.platform_name = "0000:00:0e.0",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
- 		.init = NULL,
- 		.capture_only = 1,
- 		.nonatomic = 1,
-+		SND_SOC_DAILINK_REG(echoref, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_REF_CP] = {
- 		.name = "Glk Audio Reference cap",
- 		.stream_name = "Refcap",
--		.cpu_dai_name = "Reference Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:0e.0",
- 		.init = NULL,
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &geminilake_refcap_ops,
-+		SND_SOC_DAILINK_REG(reference, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Glk Audio DMIC cap",
- 		.stream_name = "dmiccap",
--		.cpu_dai_name = "DMIC Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:0e.0",
- 		.init = NULL,
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &geminilake_dmic_ops,
-+		SND_SOC_DAILINK_REG(dmic, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_HDMI1_PB] = {
- 		.name = "Glk HDMI Port1",
- 		.stream_name = "Hdmi1",
--		.cpu_dai_name = "HDMI1 Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:0e.0",
- 		.dpcm_playback = 1,
- 		.init = NULL,
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.nonatomic = 1,
- 		.dynamic = 1,
-+		SND_SOC_DAILINK_REG(hdmi1, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_HDMI2_PB] =	{
- 		.name = "Glk HDMI Port2",
- 		.stream_name = "Hdmi2",
--		.cpu_dai_name = "HDMI2 Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:0e.0",
- 		.dpcm_playback = 1,
- 		.init = NULL,
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.nonatomic = 1,
- 		.dynamic = 1,
-+		SND_SOC_DAILINK_REG(hdmi2, dummy, platform),
- 	},
- 	[GLK_DPCM_AUDIO_HDMI3_PB] =	{
- 		.name = "Glk HDMI Port3",
- 		.stream_name = "Hdmi3",
--		.cpu_dai_name = "HDMI3 Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:0e.0",
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_playback = 1,
- 		.init = NULL,
- 		.nonatomic = 1,
- 		.dynamic = 1,
-+		SND_SOC_DAILINK_REG(hdmi3, dummy, platform),
- 	},
- 	/* Back End DAI links */
- 	{
- 		/* SSP1 - Codec */
- 		.name = "SSP1-Codec",
- 		.id = 0,
--		.cpu_dai_name = "SSP1 Pin",
--		.platform_name = "0000:00:0e.0",
- 		.no_pcm = 1,
--		.codec_name = MAXIM_DEV0_NAME,
--		.codec_dai_name = GLK_MAXIM_CODEC_DAI,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S |
- 			SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = geminilake_ssp_fixup,
- 		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
- 	},
- 	{
- 		/* SSP2 - Codec */
- 		.name = "SSP2-Codec",
- 		.id = 1,
--		.cpu_dai_name = "SSP2 Pin",
--		.platform_name = "0000:00:0e.0",
- 		.no_pcm = 1,
--		.codec_name = "i2c-10EC5682:00",
--		.codec_dai_name = GLK_REALTEK_CODEC_DAI,
- 		.init = geminilake_rt5682_codec_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
-@@ -471,51 +499,40 @@ static struct snd_soc_dai_link geminilake_dais[] = {
- 		.ops = &geminilake_rt5682_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(ssp2_pin, ssp2_codec, platform),
- 	},
- 	{
- 		.name = "dmic01",
- 		.id = 2,
--		.cpu_dai_name = "DMIC01 Pin",
--		.codec_name = "dmic-codec",
--		.codec_dai_name = "dmic-hifi",
--		.platform_name = "0000:00:0e.0",
- 		.ignore_suspend = 1,
- 		.be_hw_params_fixup = geminilake_dmic_fixup,
- 		.dpcm_capture = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
- 	},
- 	{
- 		.name = "iDisp1",
- 		.id = 3,
--		.cpu_dai_name = "iDisp1 Pin",
--		.codec_name = "ehdaudio0D2",
--		.codec_dai_name = "intel-hdmi-hifi1",
--		.platform_name = "0000:00:0e.0",
- 		.init = geminilake_hdmi_init,
- 		.dpcm_playback = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp1_pin, idisp1_codec, platform),
- 	},
- 	{
- 		.name = "iDisp2",
- 		.id = 4,
--		.cpu_dai_name = "iDisp2 Pin",
--		.codec_name = "ehdaudio0D2",
--		.codec_dai_name = "intel-hdmi-hifi2",
--		.platform_name = "0000:00:0e.0",
- 		.init = geminilake_hdmi_init,
- 		.dpcm_playback = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp2_pin, idisp2_codec, platform),
- 	},
- 	{
- 		.name = "iDisp3",
- 		.id = 5,
--		.cpu_dai_name = "iDisp3 Pin",
--		.codec_name = "ehdaudio0D2",
--		.codec_dai_name = "intel-hdmi-hifi3",
--		.platform_name = "0000:00:0e.0",
- 		.init = geminilake_hdmi_init,
- 		.dpcm_playback = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
- 	},
- };
+ 	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
+ 			     sof_audio_card_rt5682.num_links, GFP_KERNEL);
+-	if (!links)
++	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component) *
++			     sof_audio_card_rt5682.num_links, GFP_KERNEL);
++	if (!links || !cpus)
+ 		goto devm_err;
  
+ 	/* codec SSP */
+@@ -356,11 +359,13 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 	links[id].dpcm_playback = 1;
+ 	links[id].dpcm_capture = 1;
+ 	links[id].no_pcm = 1;
++	links[id].cpus = &cpus[id];
++	links[id].num_cpus = 1;
+ 	if (is_legacy_cpu) {
+-		links[id].cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-							"ssp%d-port",
+-							ssp_codec);
+-		if (!links[id].cpu_dai_name)
++		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++							  "ssp%d-port",
++							  ssp_codec);
++		if (!links[id].cpus->dai_name)
+ 			goto devm_err;
+ 	} else {
+ 		/*
+@@ -373,10 +378,10 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		 * It can be removed once we can control MCLK by driver.
+ 		 */
+ 		links[id].ignore_pmdown_time = 1;
+-		links[id].cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-							"SSP%d Pin",
+-							ssp_codec);
+-		if (!links[id].cpu_dai_name)
++		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++							  "SSP%d Pin",
++							  ssp_codec);
++		if (!links[id].cpus->dai_name)
+ 			goto devm_err;
+ 	}
+ 	id++;
+@@ -389,9 +394,11 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			goto devm_err;
+ 
+ 		links[id].id = id;
+-		links[id].cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-							"DMIC%02d Pin", i);
+-		if (!links[id].cpu_dai_name)
++		links[id].cpus = &cpus[id];
++		links[id].num_cpus = 1;
++		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++							  "DMIC%02d Pin", i);
++		if (!links[id].cpus->dai_name)
+ 			goto devm_err;
+ 
+ 		links[id].codecs = dmic_component;
+@@ -419,9 +426,11 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			goto devm_err;
+ 
+ 		links[id].id = id;
+-		links[id].cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-							"iDisp%d Pin", i);
+-		if (!links[id].cpu_dai_name)
++		links[id].cpus = &cpus[id];
++		links[id].num_cpus = 1;
++		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++							  "iDisp%d Pin", i);
++		if (!links[id].cpus->dai_name)
+ 			goto devm_err;
+ 
+ 		idisp_components[i - 1].name = "ehdaudio0D2";
+@@ -458,18 +467,20 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		links[id].nonatomic = true;
+ 		links[id].dpcm_playback = 1;
+ 		links[id].no_pcm = 1;
++		links[id].cpus = &cpus[id];
++		links[id].num_cpus = 1;
+ 		if (is_legacy_cpu) {
+-			links[id].cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-								"ssp%d-port",
+-								ssp_amp);
+-			if (!links[id].cpu_dai_name)
++			links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++								  "ssp%d-port",
++								  ssp_amp);
++			if (!links[id].cpus->dai_name)
+ 				goto devm_err;
+ 
+ 		} else {
+-			links[id].cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-								"SSP%d Pin",
+-								ssp_amp);
+-			if (!links[id].cpu_dai_name)
++			links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++								  "SSP%d Pin",
++								  ssp_amp);
++			if (!links[id].cpus->dai_name)
+ 				goto devm_err;
+ 		}
+ 	}
 -- 
 2.20.1
