@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: ttc-dkb: use modern dai_link
+Subject: Applied "ASoC: pxa: palm27x: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:52 +0100 (BST)
-Message-ID: <20190606212652.55CF9440049@finisterre.sirena.org.uk>
-References: <87lfyfjrhn.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:53 +0100 (BST)
+Message-ID: <20190606212654.0CFF5440046@finisterre.sirena.org.uk>
+References: <87pnnrjri1.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D3ECF897D5
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:53 +0200 (CEST)
-In-Reply-To: <87lfyfjrhn.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C50FAF8972F
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:54 +0200 (CEST)
+In-Reply-To: <87pnnrjri1.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: ttc-dkb: use modern dai_link style
+   ASoC: pxa: palm27x: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 0d246384cae61ad45940cacf3960bed29f1cd30c Mon Sep 17 00:00:00 2001
+>From ef15331de2e4e660361b3a72569011793d3a3d9c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:12:16 +0900
-Subject: [PATCH] ASoC: pxa: ttc-dkb: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:12:01 +0900
+Subject: [PATCH] ASoC: pxa: palm27x: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,34 +67,46 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/ttc-dkb.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/pxa/palm27x.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/pxa/ttc-dkb.c b/sound/soc/pxa/ttc-dkb.c
-index 5d6e61a4bb7e..5a13e36a2499 100644
---- a/sound/soc/pxa/ttc-dkb.c
-+++ b/sound/soc/pxa/ttc-dkb.c
-@@ -94,17 +94,19 @@ static int ttc_pm860x_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
+index 97167048572d..d973f9ba9fd7 100644
+--- a/sound/soc/pxa/palm27x.c
++++ b/sound/soc/pxa/palm27x.c
+@@ -87,23 +87,27 @@ static int palm27x_ac97_init(struct snd_soc_pcm_runtime *rtd)
+ 	return err;
  }
  
- /* ttc/td-dkb digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEFS(i2s,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa-ssp-dai.1")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("88pm860x-codec", "88pm860x-i2s")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("mmp-pcm-audio")));
++SND_SOC_DAILINK_DEFS(hifi,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
- static struct snd_soc_dai_link ttc_pm860x_hifi_dai[] = {
++SND_SOC_DAILINK_DEFS(aux,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97-aux")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-aux")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
++
+ static struct snd_soc_dai_link palm27x_dai[] = {
  {
- 	 .name = "88pm860x i2s",
- 	 .stream_name = "audio playback",
--	 .codec_name = "88pm860x-codec",
--	 .platform_name = "mmp-pcm-audio",
--	 .cpu_dai_name = "pxa-ssp-dai.1",
--	 .codec_dai_name = "88pm860x-i2s",
- 	 .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBM_CFM,
- 	 .init = ttc_pm860x_init,
-+	 SND_SOC_DAILINK_REG(i2s),
+ 	.name = "AC97 HiFi",
+ 	.stream_name = "AC97 HiFi",
+-	.cpu_dai_name = "pxa2xx-ac97",
+-	.codec_dai_name =  "wm9712-hifi",
+-	.codec_name = "wm9712-codec",
+-	.platform_name = "pxa-pcm-audio",
+ 	.init = palm27x_ac97_init,
++	SND_SOC_DAILINK_REG(hifi),
+ },
+ {
+ 	.name = "AC97 Aux",
+ 	.stream_name = "AC97 Aux",
+-	.cpu_dai_name = "pxa2xx-ac97-aux",
+-	.codec_dai_name = "wm9712-aux",
+-	.codec_name = "wm9712-codec",
+-	.platform_name = "pxa-pcm-audio",
++	SND_SOC_DAILINK_REG(aux),
  },
  };
  
