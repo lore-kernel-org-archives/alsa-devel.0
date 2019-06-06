@@ -1,68 +1,135 @@
 From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
-        <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 02/14] ALSA: hdac: fix memory release for
- SST and SOF drivers
-Date: Thu, 6 Jun 2019 14:57:44 +0200
-Message-ID: <20190606145744.4ea389db@xxx>
-References: <20190605134556.10322-1-amadeuszx.slawinski@linux.intel.com>
- <20190605134556.10322-3-amadeuszx.slawinski@linux.intel.com>
- <190f5c09-e6ae-918e-3fcc-d91a72a895da@linux.intel.com>
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH v2 114/146] ASoC: soc-topology: use modern
+ dai_link style
+Date: Thu, 6 Jun 2019 15:17:47 +0200
+Message-ID: <20190606151747.343ddd4c@xxx>
+References: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
+ <87v9xjfjgo.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <190f5c09-e6ae-918e-3fcc-d91a72a895da@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 238C1F896CE
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 15:14:02 +0200 (CEST)
+In-Reply-To: <87v9xjfjgo.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 Jun 2019 10:06:47 -0500
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
+On 06 Jun 2019 13:19:14 +0900
+Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
 
-> On 6/5/19 8:45 AM, Amadeusz Sławiński wrote:
-> > During the integration of HDaudio support, we changed the way in
-> > which we get hdev in snd_hdac_ext_bus_device_init() to use one
-> > preallocated with devm_kzalloc(), however it still left kfree(hdev)
-> > in snd_hdac_ext_bus_device_exit(). It leads to oopses when trying to
-> > rmmod and modprobe. Fix it, by just removing kfree call.
-> > 
-> > SOF also uses some of the snd_hdac_ functions for HDAudio support
-> > but allocated the memory with kzalloc. A matching fix is provided
-> > separately to align all users of the snd_hdac_ library.  
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> There are stability issues with this change (already shared in a 
-> separate series) and additional findings reported by Libin so this 
-> should not be applied for now.
+> ASoC is now supporting modern style dai_link
+> (= snd_soc_dai_link_component) for CPU/Codec/Platform.
+> This patch switches to use it.
 > 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/soc-topology.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 3299ebb..f485f7f 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -560,7 +560,7 @@ static void remove_link(struct snd_soc_component
+> *comp, 
+>  	kfree(link->name);
+>  	kfree(link->stream_name);
+> -	kfree(link->cpu_dai_name);
+> +	kfree(link->cpus->dai_name);
+>  
+>  	list_del(&dobj->list);
+>  	snd_soc_remove_dai_link(comp->card, link);
+> @@ -1879,12 +1879,22 @@ static int soc_tplg_fe_link_create(struct
+> soc_tplg *tplg, struct snd_soc_tplg_pcm *pcm)
+>  {
+>  	struct snd_soc_dai_link *link;
+> +	struct snd_soc_dai_link_component *dlc;
+>  	int ret;
+>  
+> -	link = kzalloc(sizeof(struct snd_soc_dai_link), GFP_KERNEL);
+> +	/* link + cpu + codec */
+> +	link = kzalloc(sizeof(*link) + (2 * sizeof(*dlc)),
+> GFP_KERNEL); if (link == NULL)
+>  		return -ENOMEM;
+>  
+> +	dlc = (struct snd_soc_dai_link_component *)(link + 1);
+> +
+> +	link->cpus	= &dlc[0];
+> +	link->codecs	= &dlc[1];
 
-Yes, as mentioned in cover letter there is pending discussion, I
-provided it for completeness.
+While I understand what is going on here, I find this bit ugly.
+Can it perhaps be changed to something like:
 
-> > 
-> > Fixes: 6298542fa33b ("ALSA: hdac: remove memory allocation from
-> > snd_hdac_ext_bus_device_init") Reviewed-by: Takashi Iwai
-> > <tiwai@suse.de> Signed-off-by: Amadeusz Sławiński
-> > <amadeuszx.slawinski@linux.intel.com> Signed-off-by: Pierre-Louis
-> > Bossart <pierre-louis.bossart@linux.intel.com> ---
-> >   sound/hda/ext/hdac_ext_bus.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/sound/hda/ext/hdac_ext_bus.c
-> > b/sound/hda/ext/hdac_ext_bus.c index c203af71a099..f33ba58b753c
-> > 100644 --- a/sound/hda/ext/hdac_ext_bus.c
-> > +++ b/sound/hda/ext/hdac_ext_bus.c
-> > @@ -170,7 +170,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
-> >   void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
-> >   {
-> >   	snd_hdac_device_exit(hdev);
-> > -	kfree(hdev);
-> >   }
-> >   EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
-> >   
-> >   
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+	link = kzalloc(sizeof(*link), GFP_KERNEL);
+	if (link == NULL)
+		return -ENOMEM;
+	link->cpus = kzalloc(sizeof(*dlc), GFP_KERNEL);
+	if (link->cpus == NULL) {
+		ret = -ENOMEM;
+		goto err;
+	}
+	link->codecs = kzalloc(sizeof(*dlc), GFP_KERNEL);
+	if (link->cpus == NULL) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+(...)
+err:
+	kfree(link->cpus);
+	kfree(link);
+	return ret;
+
+While it has a bit more of boiler plate it's easier to follow.
+
+And while I look at soc_tplg_fe_link_create() it could use some
+more memory checks, but it's a topic for separate patch.
+
+> +
+> +	link->num_cpus	 = 1;
+> +	link->num_codecs = 1;
+> +
+>  	if (strlen(pcm->pcm_name)) {
+>  		link->name = kstrdup(pcm->pcm_name, GFP_KERNEL);
+>  		link->stream_name = kstrdup(pcm->pcm_name,
+> GFP_KERNEL); @@ -1892,10 +1902,10 @@ static int
+> soc_tplg_fe_link_create(struct soc_tplg *tplg, link->id =
+> le32_to_cpu(pcm->pcm_id); 
+>  	if (strlen(pcm->dai_name))
+> -		link->cpu_dai_name = kstrdup(pcm->dai_name,
+> GFP_KERNEL);
+> +		link->cpus->dai_name = kstrdup(pcm->dai_name,
+> GFP_KERNEL); 
+> -	link->codec_name = "snd-soc-dummy";
+> -	link->codec_dai_name = "snd-soc-dummy-dai";
+> +	link->codecs->name = "snd-soc-dummy";
+> +	link->codecs->dai_name = "snd-soc-dummy-dai";
+>  
+>  	/* enable DPCM */
+>  	link->dynamic = 1;
+> @@ -1912,7 +1922,7 @@ static int soc_tplg_fe_link_create(struct
+> soc_tplg *tplg, dev_err(tplg->comp->dev, "ASoC: FE link loading
+> failed\n"); kfree(link->name);
+>  		kfree(link->stream_name);
+> -		kfree(link->cpu_dai_name);
+> +		kfree(link->cpus->dai_name);
+>  		kfree(link);
+>  		return ret;
+>  	}
