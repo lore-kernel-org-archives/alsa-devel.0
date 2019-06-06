@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: rx51: use modern dai_link style" to
-	the asoc tree
+Subject: Applied "ASoC: ti: omap-twl4030: use modern dai_link
+	style" to the asoc tree
 Date: Thu,  6 Jun 2019 22:26:45 +0100 (BST)
-Message-ID: <20190606212645.1BE10440046@finisterre.sirena.org.uk>
-References: <8736knjrfz.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212645.A14E0440046@finisterre.sirena.org.uk>
+References: <874l53jrg3.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA58CF897B7
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:45 +0200 (CEST)
-In-Reply-To: <8736knjrfz.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88DAFF897B5
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:46 +0200 (CEST)
+In-Reply-To: <874l53jrg3.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: rx51: use modern dai_link style
+   ASoC: ti: omap-twl4030: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From c3e2a4af64cb74ea66abca1c80aa38b0c9d15567 Mon Sep 17 00:00:00 2001
+>From d6db366a411c7e3ecc13096c58a290593be7a804 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:13:15 +0900
-Subject: [PATCH] ASoC: ti: rx51: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:13:11 +0900
+Subject: [PATCH] ASoC: ti: omap-twl4030: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,63 +67,81 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/rx51.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ sound/soc/ti/omap-twl4030.c | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
-index 57448bd5ad77..0684f961de76 100644
---- a/sound/soc/ti/rx51.c
-+++ b/sound/soc/ti/rx51.c
-@@ -312,18 +312,21 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/ti/omap-twl4030.c b/sound/soc/ti/omap-twl4030.c
+index cccc316743fa..ddd24b2809b8 100644
+--- a/sound/soc/ti/omap-twl4030.c
++++ b/sound/soc/ti/omap-twl4030.c
+@@ -209,26 +209,30 @@ static int omap_twl4030_init(struct snd_soc_pcm_runtime *rtd)
  }
  
  /* Digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEFS(aic34,
++SND_SOC_DAILINK_DEFS(hifi,
 +	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.2")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("tlv320aic3x-codec.2-0018",
-+				      "tlv320aic3x-hifi")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.2")));
 +
- static struct snd_soc_dai_link rx51_dai[] = {
++SND_SOC_DAILINK_DEFS(voice,
++	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.3")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-voice")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.3")));
++
+ static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
  	{
- 		.name = "TLV320AIC34",
- 		.stream_name = "AIC34",
+ 		.name = "TWL4030 HiFi",
+ 		.stream_name = "TWL4030 HiFi",
 -		.cpu_dai_name = "omap-mcbsp.2",
--		.codec_dai_name = "tlv320aic3x-hifi",
+-		.codec_dai_name = "twl4030-hifi",
 -		.platform_name = "omap-mcbsp.2",
--		.codec_name = "tlv320aic3x-codec.2-0018",
+-		.codec_name = "twl4030-codec",
+ 		.init = omap_twl4030_init,
+ 		.ops = &omap_twl4030_ops,
++		SND_SOC_DAILINK_REG(hifi),
+ 	},
+ 	{
+ 		.name = "TWL4030 Voice",
+ 		.stream_name = "TWL4030 Voice",
+-		.cpu_dai_name = "omap-mcbsp.3",
+-		.codec_dai_name = "twl4030-voice",
+-		.platform_name = "omap-mcbsp.3",
+-		.codec_name = "twl4030-codec",
  		.dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF |
  			   SND_SOC_DAIFMT_CBM_CFM,
- 		.init = rx51_aic34_init,
- 		.ops = &rx51_ops,
-+		SND_SOC_DAILINK_REG(aic34),
++		SND_SOC_DAILINK_REG(voice),
  	},
  };
  
-@@ -389,18 +392,18 @@ static int rx51_soc_probe(struct platform_device *pdev)
+@@ -272,21 +276,21 @@ static int omap_twl4030_probe(struct platform_device *pdev)
  			dev_err(&pdev->dev, "McBSP node is not provided\n");
  			return -EINVAL;
  		}
--		rx51_dai[0].cpu_dai_name = NULL;
--		rx51_dai[0].platform_name = NULL;
--		rx51_dai[0].cpu_of_node = dai_node;
--		rx51_dai[0].platform_of_node = dai_node;
-+		rx51_dai[0].cpus->dai_name = NULL;
-+		rx51_dai[0].platforms->name = NULL;
-+		rx51_dai[0].cpus->of_node = dai_node;
-+		rx51_dai[0].platforms->of_node = dai_node;
+-		omap_twl4030_dai_links[0].cpu_dai_name  = NULL;
+-		omap_twl4030_dai_links[0].cpu_of_node = dai_node;
++		omap_twl4030_dai_links[0].cpus->dai_name  = NULL;
++		omap_twl4030_dai_links[0].cpus->of_node = dai_node;
  
- 		dai_node = of_parse_phandle(np, "nokia,audio-codec", 0);
+-		omap_twl4030_dai_links[0].platform_name  = NULL;
+-		omap_twl4030_dai_links[0].platform_of_node = dai_node;
++		omap_twl4030_dai_links[0].platforms->name  = NULL;
++		omap_twl4030_dai_links[0].platforms->of_node = dai_node;
+ 
+ 		dai_node = of_parse_phandle(node, "ti,mcbsp-voice", 0);
  		if (!dai_node) {
- 			dev_err(&pdev->dev, "Codec node is not provided\n");
- 			return -EINVAL;
+ 			card->num_links = 1;
+ 		} else {
+-			omap_twl4030_dai_links[1].cpu_dai_name  = NULL;
+-			omap_twl4030_dai_links[1].cpu_of_node = dai_node;
++			omap_twl4030_dai_links[1].cpus->dai_name  = NULL;
++			omap_twl4030_dai_links[1].cpus->of_node = dai_node;
+ 
+-			omap_twl4030_dai_links[1].platform_name  = NULL;
+-			omap_twl4030_dai_links[1].platform_of_node = dai_node;
++			omap_twl4030_dai_links[1].platforms->name  = NULL;
++			omap_twl4030_dai_links[1].platforms->of_node = dai_node;
  		}
--		rx51_dai[0].codec_name = NULL;
--		rx51_dai[0].codec_of_node = dai_node;
-+		rx51_dai[0].codecs->name = NULL;
-+		rx51_dai[0].codecs->of_node = dai_node;
  
- 		dai_node = of_parse_phandle(np, "nokia,audio-codec", 1);
- 		if (!dai_node) {
+ 		priv->jack_detect = of_get_named_gpio(node,
 -- 
 2.20.1
