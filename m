@@ -1,120 +1,54 @@
-From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-Subject: RE: [alsa-devel] [PATCH v2] ASoC: sun4i-i2s: Change SR and WSS
- computation
-Date: Thu, 6 Jun 2019 11:49:58 +0000
-Message-ID: <3BD9CEE4EBD5E74B98FE2D277EB60E0B3900D3A0@IRSMSX104.ger.corp.intel.com>
-References: <20190605100801.2488-1-maxime.ripard@bootlin.com>
- <3BD9CEE4EBD5E74B98FE2D277EB60E0B38FF8117@IRSMSX104.ger.corp.intel.com>
- <20190606110647.iojplb27mdo276xk@flea>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: msm8916-wcd-digital: Add sidetone support
+Date: Thu, 6 Jun 2019 12:54:42 +0100
+Message-ID: <20190606115441.GB2456@sirena.org.uk>
+References: <20190606114002.17251-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190606110647.iojplb27mdo276xk@flea>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9Ox1BgGQfTDeiDFL"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190606114002.17251-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->Hi,
->
->On Wed, Jun 05, 2019 at 04:36:28PM +0000, Rojewski, Cezary wrote:
->> >+static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
->> >+{
->> >+	if (width < 16 || width > 24)
->> >+		return -EINVAL;
->> >+
->> >+	if (width % 4)
->> >+		return -EINVAL;
->> >+
->> >+	return (width - 16) / 4;
->> >+}
->> >+
->> >+static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
->> >+{
->> >+	if (width < 16 || width > 32)
->> >+		return -EINVAL;
->> >+
->> >+	if (width % 4)
->> >+		return -EINVAL;
->> >+
->> >+	return (width - 16) / 4;
->> >+}
->> >+
->> >+static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
->> >+{
->> >+	if (width % 4)
->> >+		return -EINVAL;
->> >+
->>
->> In the two above you start with boundary check before mod yet in
->> this one the order is reversed.  Keeping the same order should prove
->> more cohesive.
->
->Indeed, I'll fix this.
->
->>
->> >+	if (width < 8 || width > 32)
->> >+		return -EINVAL;
->> >+
->> >+	return (width - 8) / 4 + 1;
->> >+}
->> >+
->>
->> Other, probably less welcome suggestion is introduction of unified
->> function which ones listed here would simply invoke. All of these
->> "computations" differ in fact only in: min and max boundary. The +1
->> for _sr_wss is negligible, you can append it on return.
->
->It's not just about the min and max boundaries. It's also the offset
->at which to start with (16 vs 8), and the offset to apply to the
->result (0 vs 1).
->
->That's 4 parameters out of 5 that are different. For something that
->trivial, I don't think it's worth it to put it in common.
->
->Maxime
 
-This is what was going through my mind:
+--9Ox1BgGQfTDeiDFL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-static inline s8 my_unified(int width, u8 min, u8 max)
-{
-	if (width < min || width > max)
-		return -EINVAL;
+On Thu, Jun 06, 2019 at 12:40:02PM +0100, Srinivas Kandagatla wrote:
 
-	if (width % 4)
-		return -EINVAL;
+> +	default:
+> +		pr_err("%s: event = %d not expected\n", __func__, event);
+> +	}
 
-	return (width - min) / 4;
-}
+dev_err() please (and a break; as well, it isn't strictly needed but
+stops people having to check that it isn't needed).
 
-static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
-{
-	return my_unified(width, 16, 24);
-}
+> +	SOC_SINGLE_EXT("IIR1 Enable Band1", IIR1, BAND1, 1, 0,
+> +	msm8x16_wcd_get_iir_enable_audio_mixer,
+> +	msm8x16_wcd_put_iir_enable_audio_mixer),
 
-static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
-{
-	return my_unified(width, 16, 32);
-}
+The indentation here is *really* messed up.  What are these controls,
+with names like "Enable" they sound like on/off controls in which case
+they should be standard Switch controls.
 
-static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
-{
-	return my_unified(width, 8, 32) + 1;
-}
+--9Ox1BgGQfTDeiDFL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-However, if indeed 'start' offset is variable and may differ from min boundary, then my approach would fail.
-Otherwise, treat it as suggestion, personally I find it easier to update only the unified function (development phase), especially if you're planning for adding more of these (the min/ max variants) in the future.
+-----BEGIN PGP SIGNATURE-----
 
-One more thing, the i2s ptr is unused - consider flagging it or simply removing from declaration?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz4/wEACgkQJNaLcl1U
+h9CHXgf9ELgAnvcZKwTjonidDRb4OSre9kePfh4H+mFw7tR6ZR9tmBAT2jbsVbGZ
+WvScbpmCOfn++MhbvUy/EPYBm2WKdhiVRzT7K4m40Z/FJI3ZsZcKmR6WXaQnml9u
+xkTXA6na7ohZkJ4lpkmN1GMo/3pE0XjQudzjSEUBlY3/ZbLhEf1uOke3Fphilxb7
+y2QF6JumJj9Zb1SBYIy30NV738gGDGmQY4A4Dtj1nm1Z4beiB079IxOXTRCoZ15+
+fzJ61eL4qFymDuuJ0NTNsvos01adD0vGWVLhR+ngBDILwNatpwJ0gP+gK7XhxKWQ
+9JDBbNRSzsgduDJnCk4IIC+A38m0HA==
+=3Tnd
+-----END PGP SIGNATURE-----
 
-Czarek
+--9Ox1BgGQfTDeiDFL--
