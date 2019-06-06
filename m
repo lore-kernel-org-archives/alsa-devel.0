@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mxs: mxs-sgtl5000: use modern dai_link
+Subject: Applied "ASoC: jz4740: qi_lb60: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:27 +0100 (BST)
-Message-ID: <20190606212627.3BB80440046@finisterre.sirena.org.uk>
-References: <87sgsngy5h.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:28 +0100 (BST)
+Message-ID: <20190606212628.51080440049@finisterre.sirena.org.uk>
+References: <87v9xjgy5s.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4A3DF89780
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:27 +0200 (CEST)
-In-Reply-To: <87sgsngy5h.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11341F89787
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:29 +0200 (CEST)
+In-Reply-To: <87v9xjgy5s.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mxs: mxs-sgtl5000: use modern dai_link style
+   ASoC: jz4740: qi_lb60: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 49cb448846f57227a9758dc71a19ce1e24ddbbdd Mon Sep 17 00:00:00 2001
+>From 7c5cbcfe966b4952ab69a1f6c8f06806d9396e9d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:16:37 +0900
-Subject: [PATCH] ASoC: mxs: mxs-sgtl5000: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:16:26 +0900
+Subject: [PATCH] ASoC: jz4740: qi_lb60: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,66 +67,34 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mxs/mxs-sgtl5000.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ sound/soc/jz4740/qi_lb60.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index 2b3f2408301a..459fced603b0 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -75,21 +75,32 @@ static const struct snd_soc_ops mxs_sgtl5000_hifi_ops = {
- #define MXS_SGTL5000_DAI_FMT (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
- 	SND_SOC_DAIFMT_CBS_CFS)
- 
-+
-+SND_SOC_DAILINK_DEFS(hifi_tx,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(hifi_rx,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
- static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
- 	{
- 		.name		= "HiFi Tx",
- 		.stream_name	= "HiFi Playback",
--		.codec_dai_name	= "sgtl5000",
- 		.dai_fmt	= MXS_SGTL5000_DAI_FMT,
- 		.ops		= &mxs_sgtl5000_hifi_ops,
- 		.playback_only	= true,
-+		SND_SOC_DAILINK_REG(hifi_tx),
- 	}, {
- 		.name		= "HiFi Rx",
- 		.stream_name	= "HiFi Capture",
--		.codec_dai_name	= "sgtl5000",
- 		.dai_fmt	= MXS_SGTL5000_DAI_FMT,
- 		.ops		= &mxs_sgtl5000_hifi_ops,
- 		.capture_only	= true,
-+		SND_SOC_DAILINK_REG(hifi_rx),
- 	},
+diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
+index 53586999fcaa..45bdcaf6da98 100644
+--- a/sound/soc/jz4740/qi_lb60.c
++++ b/sound/soc/jz4740/qi_lb60.c
+@@ -49,15 +49,17 @@ static const struct snd_soc_dapm_route qi_lb60_routes[] = {
+ 	{"Speaker", NULL, "ROUT"},
  };
  
-@@ -124,12 +135,12 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
- 	}
++SND_SOC_DAILINK_DEFS(hifi,
++	DAILINK_COMP_ARRAY(COMP_CPU("jz4740-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("jz4740-codec", "jz4740-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("jz4740-i2s")));
++
+ static struct snd_soc_dai_link qi_lb60_dai = {
+ 	.name = "jz4740",
+ 	.stream_name = "jz4740",
+-	.cpu_dai_name = "jz4740-i2s",
+-	.platform_name = "jz4740-i2s",
+-	.codec_dai_name = "jz4740-hifi",
+-	.codec_name = "jz4740-codec",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		SND_SOC_DAIFMT_CBM_CFM,
++	SND_SOC_DAILINK_REG(hifi),
+ };
  
- 	for (i = 0; i < 2; i++) {
--		mxs_sgtl5000_dai[i].codec_name = NULL;
--		mxs_sgtl5000_dai[i].codec_of_node = codec_np;
--		mxs_sgtl5000_dai[i].cpu_dai_name = NULL;
--		mxs_sgtl5000_dai[i].cpu_of_node = saif_np[i];
--		mxs_sgtl5000_dai[i].platform_name = NULL;
--		mxs_sgtl5000_dai[i].platform_of_node = saif_np[i];
-+		mxs_sgtl5000_dai[i].codecs->name = NULL;
-+		mxs_sgtl5000_dai[i].codecs->of_node = codec_np;
-+		mxs_sgtl5000_dai[i].cpus->dai_name = NULL;
-+		mxs_sgtl5000_dai[i].cpus->of_node = saif_np[i];
-+		mxs_sgtl5000_dai[i].platforms->name = NULL;
-+		mxs_sgtl5000_dai[i].platforms->of_node = saif_np[i];
- 	}
- 
- 	of_node_put(codec_np);
+ static struct snd_soc_card qi_lb60_card = {
 -- 
 2.20.1
