@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: zylonite: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:53 +0100 (BST)
-Message-ID: <20190606212653.76913440049@finisterre.sirena.org.uk>
-References: <87o93bjrhw.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pxa: mioa701_wm9713: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:54 +0100 (BST)
+Message-ID: <20190606212654.94B69440049@finisterre.sirena.org.uk>
+References: <87r287jri6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E50DF897D7
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:54 +0200 (CEST)
-In-Reply-To: <87o93bjrhw.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C690F89751
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:55 +0200 (CEST)
+In-Reply-To: <87r287jri6.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: zylonite: use modern dai_link style
+   ASoC: pxa: mioa701_wm9713: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1129efb0a390c7f00a4e0b70ddc4c8d4860ead39 Mon Sep 17 00:00:00 2001
+>From a94112f5bd0b4b05ba727491c3d96dfb4c702823 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:12:06 +0900
-Subject: [PATCH] ASoC: pxa: zylonite: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:11:56 +0900
+Subject: [PATCH] ASoC: pxa: mioa701_wm9713: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,16 +67,16 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/zylonite.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ sound/soc/pxa/mioa701_wm9713.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
-index 230eee450f45..ac7d05201772 100644
---- a/sound/soc/pxa/zylonite.c
-+++ b/sound/soc/pxa/zylonite.c
-@@ -127,34 +127,40 @@ static const struct snd_soc_ops zylonite_voice_ops = {
- 	.hw_params = zylonite_voice_hw_params,
- };
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 47052fe3f5f4..6244e5caddbe 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -142,25 +142,29 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static struct snd_soc_ops mioa701_ops;
  
 +SND_SOC_DAILINK_DEFS(ac97,
 +	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
@@ -88,43 +88,28 @@ index 230eee450f45..ac7d05201772 100644
 +	DAILINK_COMP_ARRAY(COMP_CODEC("wm9713-codec", "wm9713-aux")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
-+SND_SOC_DAILINK_DEFS(voice,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa-ssp-dai.2")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9713-codec", "wm9713-voice")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
-+
- static struct snd_soc_dai_link zylonite_dai[] = {
- {
- 	.name = "AC97",
- 	.stream_name = "AC97 HiFi",
--	.codec_name = "wm9713-codec",
--	.platform_name = "pxa-pcm-audio",
--	.cpu_dai_name = "pxa2xx-ac97",
--	.codec_dai_name = "wm9713-hifi",
- 	.init = zylonite_wm9713_init,
-+	SND_SOC_DAILINK_REG(ac97),
- },
- {
- 	.name = "AC97 Aux",
- 	.stream_name = "AC97 Aux",
--	.codec_name = "wm9713-codec",
--	.platform_name = "pxa-pcm-audio",
--	.cpu_dai_name = "pxa2xx-ac97-aux",
--	.codec_dai_name = "wm9713-aux",
-+	SND_SOC_DAILINK_REG(ac97_aux),
- },
- {
- 	.name = "WM9713 Voice",
- 	.stream_name = "WM9713 Voice",
--	.codec_name = "wm9713-codec",
--	.platform_name = "pxa-pcm-audio",
--	.cpu_dai_name = "pxa-ssp-dai.2",
--	.codec_dai_name = "wm9713-voice",
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 		   SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &zylonite_voice_ops,
-+	SND_SOC_DAILINK_REG(voice),
- },
+ static struct snd_soc_dai_link mioa701_dai[] = {
+ 	{
+ 		.name = "AC97",
+ 		.stream_name = "AC97 HiFi",
+-		.cpu_dai_name = "pxa2xx-ac97",
+-		.codec_dai_name = "wm9713-hifi",
+-		.codec_name = "wm9713-codec",
+ 		.init = mioa701_wm9713_init,
+-		.platform_name = "pxa-pcm-audio",
+ 		.ops = &mioa701_ops,
++		SND_SOC_DAILINK_REG(ac97),
+ 	},
+ 	{
+ 		.name = "AC97 Aux",
+ 		.stream_name = "AC97 Aux",
+-		.cpu_dai_name = "pxa2xx-ac97-aux",
+-		.codec_dai_name = "wm9713-aux",
+-		.codec_name = "wm9713-codec",
+-		.platform_name = "pxa-pcm-audio",
+ 		.ops = &mioa701_ops,
++		SND_SOC_DAILINK_REG(ac97_aux),
+ 	},
  };
  
 -- 
