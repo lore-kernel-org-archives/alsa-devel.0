@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: imx-spdif: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:34 +0100 (BST)
-Message-ID: <20190606212635.05C6A440049@finisterre.sirena.org.uk>
-References: <87d0jrict8.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: cirrus: snappercl15: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:36 +0100 (BST)
+Message-ID: <20190606212636.2078B440046@finisterre.sirena.org.uk>
+References: <87ftonictj.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4D8DF8979E
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:35 +0200 (CEST)
-In-Reply-To: <87d0jrict8.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5B9CF897A2
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:36 +0200 (CEST)
+In-Reply-To: <87ftonictj.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: imx-spdif: use modern dai_link style
+   ASoC: cirrus: snappercl15: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8337ef4f48876dc4ea9d869a6983c659f65f55bb Mon Sep 17 00:00:00 2001
+>From 40989980bf4b9483ad2fb99c58324123a8c74c92 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:14:38 +0900
-Subject: [PATCH] ASoC: fsl: imx-spdif: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:14:28 +0900
+Subject: [PATCH] ASoC: cirrus: snappercl15: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,52 +67,36 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-spdif.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/soc/cirrus/snappercl15.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-index 4f7f210beb18..6c4dadf60355 100644
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -15,6 +15,7 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
- {
- 	struct device_node *spdif_np, *np = pdev->dev.of_node;
- 	struct imx_spdif_data *data;
-+	struct snd_soc_dai_link_component *comp;
- 	int ret = 0;
+diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
+index dea4909154c8..0b4efcc51232 100644
+--- a/sound/soc/cirrus/snappercl15.c
++++ b/sound/soc/cirrus/snappercl15.c
+@@ -65,16 +65,19 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MICIN", NULL, "Mic Jack"},
+ };
  
- 	spdif_np = of_parse_phandle(np, "spdif-controller", 0);
-@@ -25,17 +26,26 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
- 	}
- 
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--	if (!data) {
-+	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
-+	if (!data || !comp) {
- 		ret = -ENOMEM;
- 		goto end;
- 	}
- 
-+	data->dai.cpus		= &comp[0];
-+	data->dai.codecs	= &comp[1];
-+	data->dai.platforms	= &comp[2];
++SND_SOC_DAILINK_DEFS(aic23,
++	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("tlv320aic23-codec.0-001a",
++				      "tlv320aic23-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
 +
-+	data->dai.num_cpus	= 1;
-+	data->dai.num_codecs	= 1;
-+	data->dai.num_platforms	= 1;
-+
- 	data->dai.name = "S/PDIF PCM";
- 	data->dai.stream_name = "S/PDIF PCM";
--	data->dai.codec_dai_name = "snd-soc-dummy-dai";
--	data->dai.codec_name = "snd-soc-dummy";
--	data->dai.cpu_of_node = spdif_np;
--	data->dai.platform_of_node = spdif_np;
-+	data->dai.codecs->dai_name = "snd-soc-dummy-dai";
-+	data->dai.codecs->name = "snd-soc-dummy";
-+	data->dai.cpus->of_node = spdif_np;
-+	data->dai.platforms->of_node = spdif_np;
- 	data->dai.playback_only = true;
- 	data->dai.capture_only = true;
+ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "AIC23",
+-	.cpu_dai_name	= "ep93xx-i2s",
+-	.codec_dai_name	= "tlv320aic23-hifi",
+-	.codec_name	= "tlv320aic23-codec.0-001a",
+-	.platform_name	= "ep93xx-i2s",
+ 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &snappercl15_ops,
++	SND_SOC_DAILINK_REG(aic23),
+ };
  
+ static struct snd_soc_card snd_soc_snappercl15 = {
 -- 
 2.20.1
