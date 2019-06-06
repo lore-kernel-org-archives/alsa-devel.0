@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: em-x270: use modern dai_link
-	style" to the asoc tree
+Subject: Applied "ASoC: pxa: hx4700: use modern dai_link style"
+	to the asoc tree
 Date: Thu,  6 Jun 2019 22:26:56 +0100 (BST)
-Message-ID: <20190606212656.C3FFA440049@finisterre.sirena.org.uk>
-References: <87wohzjrj9.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212656.3D8F5440046@finisterre.sirena.org.uk>
+References: <87v9xjjril.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 888F5F897D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04E84F89710
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:57 +0200 (CEST)
-In-Reply-To: <87wohzjrj9.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v9xjjril.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: em-x270: use modern dai_link style
+   ASoC: pxa: hx4700: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From d7d8e1b14c165fc4c32037521af736669c454e02 Mon Sep 17 00:00:00 2001
+>From 08baa54ee7d15981aaa4176abd04a6d4206920cb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:11:18 +0900
-Subject: [PATCH] ASoC: pxa: em-x270: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:11:41 +0900
+Subject: [PATCH] ASoC: pxa: hx4700: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,47 +67,36 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/em-x270.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/pxa/hx4700.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/pxa/em-x270.c b/sound/soc/pxa/em-x270.c
-index e046770ce70e..9ff2a64e0981 100644
---- a/sound/soc/pxa/em-x270.c
-+++ b/sound/soc/pxa/em-x270.c
-@@ -30,22 +30,26 @@
- #include <asm/mach-types.h>
- #include <mach/audio.h>
+diff --git a/sound/soc/pxa/hx4700.c b/sound/soc/pxa/hx4700.c
+index 6cdef5d4954e..5d86e61c4f6a 100644
+--- a/sound/soc/pxa/hx4700.c
++++ b/sound/soc/pxa/hx4700.c
+@@ -139,17 +139,19 @@ static int hx4700_ak4641_init(struct snd_soc_pcm_runtime *rtd)
+ }
  
-+SND_SOC_DAILINK_DEFS(ac97,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-hifi")),
+ /* hx4700 digital audio interface glue - connects codec <--> CPU */
++SND_SOC_DAILINK_DEFS(ak4641,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("ak4641.0-0012", "ak4641-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
-+SND_SOC_DAILINK_DEFS(ac97_aux,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97-aux")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-aux")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
-+
- static struct snd_soc_dai_link em_x270_dai[] = {
- 	{
- 		.name = "AC97",
- 		.stream_name = "AC97 HiFi",
--		.cpu_dai_name = "pxa2xx-ac97",
--		.codec_dai_name = "wm9712-hifi",
--		.platform_name = "pxa-pcm-audio",
--		.codec_name = "wm9712-codec",
-+		SND_SOC_DAILINK_REG(ac97),
- 	},
- 	{
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
--		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name = "wm9712-aux",
--		.platform_name = "pxa-pcm-audio",
--		.codec_name = "wm9712-codec",
-+		SND_SOC_DAILINK_REG(ac97_aux),
- 	},
+ static struct snd_soc_dai_link hx4700_dai = {
+ 	.name = "ak4641",
+ 	.stream_name = "AK4641",
+-	.cpu_dai_name = "pxa2xx-i2s",
+-	.codec_dai_name = "ak4641-hifi",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_name = "ak4641.0-0012",
+ 	.init = hx4700_ak4641_init,
+ 	.dai_fmt = SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &hx4700_ops,
++	SND_SOC_DAILINK_REG(ak4641),
  };
  
+ /* hx4700 audio machine driver */
 -- 
 2.20.1
