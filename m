@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_nau8824: fix kernel oops
-	with platform_name override" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:24 +0100 (BST)
-Message-ID: <20190606212724.5A0BA440046@finisterre.sirena.org.uk>
-References: <20190604200858.4867-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: cht_bsw_max98090: fix kernel
+	oops with platform_name override" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:25 +0100 (BST)
+Message-ID: <20190606212725.77E2B440046@finisterre.sirena.org.uk>
+References: <20190604200858.4867-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21350F89779
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:25 +0200 (CEST)
-In-Reply-To: <20190604200858.4867-4-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 320ECF8981F
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:26 +0200 (CEST)
+In-Reply-To: <20190604200858.4867-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_nau8824: fix kernel oops with platform_name override
+   ASoC: Intel: cht_bsw_max98090: fix kernel oops with platform_name override
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,42 @@ to this mail.
 Thanks,
 Mark
 
->From 096701e8131425044d2054a0c210d6ea24ee7386 Mon Sep 17 00:00:00 2001
+>From fb54555134b9b17835545e4d096b5550c27eed64 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 4 Jun 2019 15:08:57 -0500
-Subject: [PATCH] ASoC: Intel: cht_bsw_nau8824: fix kernel oops with
+Date: Tue, 4 Jun 2019 15:08:55 -0500
+Subject: [PATCH] ASoC: Intel: cht_bsw_max98090: fix kernel oops with
  platform_name override
 
 The platform override code uses devm_ functions to allocate memory for
 the new name but the card device is not initialized. Fix by moving the
 init earlier.
 
-Fixes: 4506db8043341 ("ASoC: Intel: cht_bsw_nau8824: platform name fixup support")
+Fixes: 7e7e24d7c7ff0 ("ASoC: Intel: cht_bsw_max98090_ti: platform name fixup support")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_nau8824.c | 2 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index 02c2fa239331..20fae391c75a 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -257,6 +257,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index c0e0844f75b9..572e336ae0f9 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -454,6 +454,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	}
  
  	/* override plaform name, if required */
 +	snd_soc_card_cht.dev = &pdev->dev;
  	mach = (&pdev->dev)->platform_data;
  	platform_name = mach->mach_params.platform;
  
-@@ -266,7 +267,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+@@ -463,7 +464,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  		return ret_val;
  
  	/* register the soc card */
 -	snd_soc_card_cht.dev = &pdev->dev;
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
- 	if (ret_val) {
- 		dev_err(&pdev->dev,
+ 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+ 
+ 	if (drv->quirks & QUIRK_PMC_PLT_CLK_0)
 -- 
 2.20.1
