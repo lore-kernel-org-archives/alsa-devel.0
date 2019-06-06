@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8173-rt5650-rt5676: use
-	modern dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:13 +0100 (BST)
-Message-ID: <20190606212713.B05CF440046@finisterre.sirena.org.uk>
-References: <874l53mksz.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: mediatek: mt2701-wm8960: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:16 +0100 (BST)
+Message-ID: <20190606212716.126BC440046@finisterre.sirena.org.uk>
+References: <87a7evmktq.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A03D9F8980C
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:14 +0200 (CEST)
-In-Reply-To: <874l53mksz.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8366F89769
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:16 +0200 (CEST)
+In-Reply-To: <87a7evmktq.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8173-rt5650-rt5676: use modern dai_link style
+   ASoC: mediatek: mt2701-wm8960: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,11 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 05ab66178cb27ee795aa458b43818d2caa2d3953 Mon Sep 17 00:00:00 2001
+>From b664e06d530eba6c5f2f1a9571c2bc78e9fb783f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:08:23 +0900
-Subject: [PATCH] ASoC: mediatek: mt8173-rt5650-rt5676: use modern dai_link
- style
+Date: Thu, 6 Jun 2019 13:07:57 +0900
+Subject: [PATCH] ASoC: mediatek: mt2701-wm8960: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -68,143 +67,76 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mediatek/mt8173/mt8173-rt5650-rt5676.c    | 85 +++++++++++--------
- 1 file changed, 48 insertions(+), 37 deletions(-)
+ sound/soc/mediatek/mt2701/mt2701-wm8960.c | 34 +++++++++++++++--------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-index d83cd039b413..9d4dd9721154 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-@@ -111,14 +111,6 @@ static int mt8173_rt5650_rt5676_init(struct snd_soc_pcm_runtime *runtime)
- 				      &mt8173_rt5650_rt5676_jack);
- }
- 
--static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
--	{
--		.dai_name = "rt5645-aif1",
--	},
--	{
--		.dai_name = "rt5677-aif1",
--	},
--};
- 
- enum {
- 	DAI_LINK_PLAYBACK,
-@@ -129,47 +121,69 @@ enum {
- 	DAI_LINK_INTERCODEC
+diff --git a/sound/soc/mediatek/mt2701/mt2701-wm8960.c b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
+index 6bc1d3d58e64..8c4c89e4c616 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-wm8960.c
++++ b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
+@@ -44,41 +44,51 @@ static struct snd_soc_ops mt2701_wm8960_be_ops = {
+ 	.hw_params = mt2701_wm8960_be_ops_hw_params
  };
  
 +SND_SOC_DAILINK_DEFS(playback,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
++	DAILINK_COMP_ARRAY(COMP_CPU("PCMO0")),
 +	DAILINK_COMP_ARRAY(COMP_DUMMY()),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
 +SND_SOC_DAILINK_DEFS(capture,
-+	DAILINK_COMP_ARRAY(COMP_CPU("VUL")),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(hdmi_pcm,
-+	DAILINK_COMP_ARRAY(COMP_CPU("HDMI")),
++	DAILINK_COMP_ARRAY(COMP_CPU("PCM0")),
 +	DAILINK_COMP_ARRAY(COMP_DUMMY()),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
 +SND_SOC_DAILINK_DEFS(codec,
-+	DAILINK_COMP_ARRAY(COMP_CPU("I2S")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5645-aif1"),
-+			   COMP_CODEC(NULL, "rt5677-aif1")),
++	DAILINK_COMP_ARRAY(COMP_CPU("I2S0")),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
-+SND_SOC_DAILINK_DEFS(hdmi_be,
-+	DAILINK_COMP_ARRAY(COMP_CPU("HDMIO")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "i2s-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(intercodec,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5677-aif2")),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+
- /* Digital audio interface glue - connects codec <---> CPU */
- static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 	/* Front End DAI links */
- 	[DAI_LINK_PLAYBACK] = {
- 		.name = "rt5650_rt5676 Playback",
- 		.stream_name = "rt5650_rt5676 Playback",
--		.cpu_dai_name = "DL1",
+ static struct snd_soc_dai_link mt2701_wm8960_dai_links[] = {
+ 	/* FE */
+ 	{
+ 		.name = "wm8960-playback",
+ 		.stream_name = "wm8960-playback",
+-		.cpu_dai_name = "PCMO0",
 -		.codec_name = "snd-soc-dummy",
 -		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
+ 			    SND_SOC_DPCM_TRIGGER_POST},
  		.dynamic = 1,
  		.dpcm_playback = 1,
 +		SND_SOC_DAILINK_REG(playback),
  	},
- 	[DAI_LINK_CAPTURE] = {
- 		.name = "rt5650_rt5676 Capture",
- 		.stream_name = "rt5650_rt5676 Capture",
--		.cpu_dai_name = "VUL",
+ 	{
+ 		.name = "wm8960-capture",
+ 		.stream_name = "wm8960-capture",
+-		.cpu_dai_name = "PCM0",
 -		.codec_name = "snd-soc-dummy",
 -		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
+ 			    SND_SOC_DPCM_TRIGGER_POST},
  		.dynamic = 1,
  		.dpcm_capture = 1,
 +		SND_SOC_DAILINK_REG(capture),
  	},
- 	[DAI_LINK_HDMI] = {
- 		.name = "HDMI",
- 		.stream_name = "HDMI PCM",
--		.cpu_dai_name = "HDMI",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(hdmi_pcm),
- 	},
- 
- 	/* Back End DAI links */
- 	[DAI_LINK_CODEC_I2S] = {
- 		.name = "Codec",
--		.cpu_dai_name = "I2S",
+ 	/* BE */
+ 	{
+ 		.name = "wm8960-codec",
+-		.cpu_dai_name = "I2S0",
  		.no_pcm = 1,
--		.codecs = mt8173_rt5650_rt5676_codecs,
--		.num_codecs = 2,
- 		.init = mt8173_rt5650_rt5676_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-@@ -177,26 +191,23 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.ignore_pmdown_time = 1,
+-		.codec_dai_name = "wm8960-hifi",
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS
+ 			| SND_SOC_DAIFMT_GATED,
+ 		.ops = &mt2701_wm8960_be_ops,
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
 +		SND_SOC_DAILINK_REG(codec),
  	},
- 	[DAI_LINK_HDMI_I2S] = {
- 		.name = "HDMI BE",
--		.cpu_dai_name = "HDMIO",
- 		.no_pcm = 1,
--		.codec_dai_name = "i2s-hifi",
- 		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(hdmi_be),
- 	},
- 	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
- 	[DAI_LINK_INTERCODEC] = {
- 		.name = "rt5650_rt5676 intercodec",
- 		.stream_name = "rt5650_rt5676 intercodec",
--		.cpu_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "snd-soc-dummy",
- 		.no_pcm = 1,
--		.codec_dai_name = "rt5677-aif2",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAILINK_REG(intercodec),
- 	},
--
  };
  
- static struct snd_soc_codec_conf mt8173_rt5650_rt5676_codec_conf[] = {
-@@ -235,34 +246,34 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+@@ -107,9 +117,9 @@ static int mt2701_wm8960_machine_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
- 
  	for_each_card_prelinks(card, i, dai_link) {
 -		if (dai_link->platform_name)
 +		if (dai_link->platforms->name)
@@ -213,40 +145,18 @@ index d83cd039b413..9d4dd9721154 100644
 +		dai_link->platforms->of_node = platform_node;
  	}
  
--	mt8173_rt5650_rt5676_codecs[0].of_node =
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_CODEC_I2S].codecs[0].of_node =
- 		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 0);
--	if (!mt8173_rt5650_rt5676_codecs[0].of_node) {
-+	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_CODEC_I2S].codecs[0].of_node) {
- 		dev_err(&pdev->dev,
- 			"Property 'audio-codec' missing or invalid\n");
+ 	card->dev = &pdev->dev;
+@@ -122,9 +132,9 @@ static int mt2701_wm8960_machine_probe(struct platform_device *pdev)
  		return -EINVAL;
  	}
--	mt8173_rt5650_rt5676_codecs[1].of_node =
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_CODEC_I2S].codecs[1].of_node =
- 		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 1);
--	if (!mt8173_rt5650_rt5676_codecs[1].of_node) {
-+	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_CODEC_I2S].codecs[1].of_node) {
- 		dev_err(&pdev->dev,
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (dai_link->codec_name)
++		if (dai_link->codecs->name)
+ 			continue;
+-		dai_link->codec_of_node = codec_node;
++		dai_link->codecs->of_node = codec_node;
  	}
- 	mt8173_rt5650_rt5676_codec_conf[0].of_node =
--		mt8173_rt5650_rt5676_codecs[1].of_node;
-+		mt8173_rt5650_rt5676_dais[DAI_LINK_CODEC_I2S].codecs[1].of_node;
  
--	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codec_of_node =
--		mt8173_rt5650_rt5676_codecs[1].of_node;
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_INTERCODEC].codecs->of_node =
-+		mt8173_rt5650_rt5676_dais[DAI_LINK_CODEC_I2S].codecs[1].of_node;
- 
--	mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node =
-+	mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codecs->of_node =
- 		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 2);
--	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codec_of_node) {
-+	if (!mt8173_rt5650_rt5676_dais[DAI_LINK_HDMI_I2S].codecs->of_node) {
- 		dev_err(&pdev->dev,
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
+ 	ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
 -- 
 2.20.1
