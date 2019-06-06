@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: brownstone: use modern dai_link
+Subject: Applied "ASoC: pxa: e740_wm9705: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:59 +0100 (BST)
-Message-ID: <20190606212659.9ABA3440046@finisterre.sirena.org.uk>
-References: <874l53l64f.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:58 +0100 (BST)
+Message-ID: <20190606212658.75BEA440046@finisterre.sirena.org.uk>
+References: <871s07l645.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 613ABF897E2
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:00 +0200 (CEST)
-In-Reply-To: <874l53l64f.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E54DF897DE
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:59 +0200 (CEST)
+In-Reply-To: <871s07l645.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: brownstone: use modern dai_link style
+   ASoC: pxa: e740_wm9705: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From b63eec7443b16c760ee76a887ed3b715a163580e Mon Sep 17 00:00:00 2001
+>From 312989a1ed69564bf6b9d329ce60e39c8487c32a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:10:51 +0900
-Subject: [PATCH] ASoC: pxa: brownstone: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:11:01 +0900
+Subject: [PATCH] ASoC: pxa: e740_wm9705: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,35 +67,46 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/brownstone.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/pxa/e740_wm9705.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
-index 9a3f5b799720..38ea26cfc7c8 100644
---- a/sound/soc/pxa/brownstone.c
-+++ b/sound/soc/pxa/brownstone.c
-@@ -78,17 +78,19 @@ static const struct snd_soc_ops brownstone_ops = {
- 	.hw_params = brownstone_wm8994_hw_params,
+diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
+index 8ab7032631b7..15141a89c9ba 100644
+--- a/sound/soc/pxa/e740_wm9705.c
++++ b/sound/soc/pxa/e740_wm9705.c
+@@ -84,22 +84,26 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Mic Amp", NULL, "Mic (Internal)"},
  };
  
-+SND_SOC_DAILINK_DEFS(wm8994,
-+	DAILINK_COMP_ARRAY(COMP_CPU("mmp-sspa-dai.0")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("mmp-pcm-audio")));
++SND_SOC_DAILINK_DEFS(ac97,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm9705-codec", "wm9705-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
- static struct snd_soc_dai_link brownstone_wm8994_dai[] = {
- {
- 	.name		= "WM8994",
- 	.stream_name	= "WM8994 HiFi",
--	.cpu_dai_name	= "mmp-sspa-dai.0",
--	.codec_dai_name	= "wm8994-aif1",
--	.platform_name	= "mmp-pcm-audio",
--	.codec_name	= "wm8994-codec",
- 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 				SND_SOC_DAIFMT_CBS_CFS,
- 	.ops		= &brownstone_ops,
-+	SND_SOC_DAILINK_REG(wm8994),
- },
++SND_SOC_DAILINK_DEFS(ac97_aux,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97-aux")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm9705-codec", "wm9705-aux")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
++
+ static struct snd_soc_dai_link e740_dai[] = {
+ 	{
+ 		.name = "AC97",
+ 		.stream_name = "AC97 HiFi",
+-		.cpu_dai_name = "pxa2xx-ac97",
+-		.codec_dai_name = "wm9705-hifi",
+-		.platform_name = "pxa-pcm-audio",
+-		.codec_name = "wm9705-codec",
++		SND_SOC_DAILINK_REG(ac97),
+ 	},
+ 	{
+ 		.name = "AC97 Aux",
+ 		.stream_name = "AC97 Aux",
+-		.cpu_dai_name = "pxa2xx-ac97-aux",
+-		.codec_dai_name = "wm9705-aux",
+-		.platform_name = "pxa-pcm-audio",
+-		.codec_name = "wm9705-codec",
++		SND_SOC_DAILINK_REG(ac97_aux),
+ 	},
  };
  
 -- 
