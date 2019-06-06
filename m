@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: e750_wm9705: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:57 +0100 (BST)
-Message-ID: <20190606212657.DF8C1440046@finisterre.sirena.org.uk>
-References: <87zhmvjrjk.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pxa: corgi: use modern dai_link style"
+	to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:58 +0100 (BST)
+Message-ID: <20190606212659.0FBB9440049@finisterre.sirena.org.uk>
+References: <8736knl64a.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9ADC4F897DC
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:58 +0200 (CEST)
-In-Reply-To: <87zhmvjrjk.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04C07F897DF
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:00 +0200 (CEST)
+In-Reply-To: <8736knl64a.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: e750_wm9705: use modern dai_link style
+   ASoC: pxa: corgi: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From f78ced5147dc8dd64053bb905787c332bc195543 Mon Sep 17 00:00:00 2001
+>From 432895f4f6d916eed93a6e434adc3c67655de2d2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:11:06 +0900
-Subject: [PATCH] ASoC: pxa: e750_wm9705: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:10:56 +0900
+Subject: [PATCH] ASoC: pxa: corgi: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,48 +67,35 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/e750_wm9705.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/pxa/corgi.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
-index 82bcbbb1841b..406ecf2a822f 100644
---- a/sound/soc/pxa/e750_wm9705.c
-+++ b/sound/soc/pxa/e750_wm9705.c
-@@ -67,23 +67,27 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MIC1", NULL, "Mic (Internal)"},
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 054e0d65db9d..dae128833692 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -260,16 +260,18 @@ static const struct snd_kcontrol_new wm8731_corgi_controls[] = {
  };
  
-+SND_SOC_DAILINK_DEFS(ac97,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9705-codec", "wm9705-hifi")),
+ /* corgi digital audio interface glue - connects codec <--> CPU */
++SND_SOC_DAILINK_DEFS(wm8731,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
-+SND_SOC_DAILINK_DEFS(ac97_aux,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97-aux")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9705-codec", "wm9705-aux")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
-+
- static struct snd_soc_dai_link e750_dai[] = {
- 	{
- 		.name = "AC97",
- 		.stream_name = "AC97 HiFi",
--		.cpu_dai_name = "pxa2xx-ac97",
--		.codec_dai_name = "wm9705-hifi",
--		.platform_name = "pxa-pcm-audio",
--		.codec_name = "wm9705-codec",
-+		SND_SOC_DAILINK_REG(ac97),
- 		/* use ops to check startup state */
- 	},
- 	{
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
--		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name = "wm9705-aux",
--		.platform_name = "pxa-pcm-audio",
--		.codec_name = "wm9705-codec",
-+		SND_SOC_DAILINK_REG(ac97_aux),
- 	},
+ static struct snd_soc_dai_link corgi_dai = {
+ 	.name = "WM8731",
+ 	.stream_name = "WM8731",
+-	.cpu_dai_name = "pxa2xx-i2s",
+-	.codec_dai_name = "wm8731-hifi",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_name = "wm8731.0-001b",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &corgi_ops,
++	SND_SOC_DAILINK_REG(wm8731),
  };
  
+ /* corgi audio machine driver */
 -- 
 2.20.1
