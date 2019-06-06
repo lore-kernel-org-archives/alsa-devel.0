@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bdw-rt5677: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:12 +0100 (BST)
-Message-ID: <20190606212612.DA5C1440049@finisterre.sirena.org.uk>
-References: <87r287fjg8.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sof: use modern dai_link style" to the
+	asoc tree
+Date: Thu,  6 Jun 2019 22:26:13 +0100 (BST)
+Message-ID: <20190606212613.73D2F440046@finisterre.sirena.org.uk>
+References: <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8388F8974E
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:13 +0200 (CEST)
-In-Reply-To: <87r287fjg8.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F4EBF89751
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:14 +0200 (CEST)
+In-Reply-To: <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bdw-rt5677: use modern dai_link style
+   ASoC: sof: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 3f6c2a2e9abe1ac636a49ad96dfbb42ce8d39be9 Mon Sep 17 00:00:00 2001
+>From 7ba06110de2628137554cf4da849ef08f255f385 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:19:30 +0900
-Subject: [PATCH] ASoC: Intel: bdw-rt5677: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:19:24 +0900
+Subject: [PATCH] ASoC: sof: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,69 +67,121 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bdw-rt5677.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ sound/soc/sof/nocodec.c  | 21 +++++++++++++++++----
+ sound/soc/sof/topology.c | 20 +++++++++-----------
+ 2 files changed, 26 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 6520a8ea5537..ff32be5af019 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -257,16 +257,24 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
- }
+diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
+index f84b4344dcc3..3d128e5a132c 100644
+--- a/sound/soc/sof/nocodec.c
++++ b/sound/soc/sof/nocodec.c
+@@ -21,6 +21,7 @@ static int sof_nocodec_bes_setup(struct device *dev,
+ 				 struct snd_soc_dai_link *links,
+ 				 int link_num, struct snd_soc_card *card)
+ {
++	struct snd_soc_dai_link_component *dlc;
+ 	int i;
  
- /* broadwell digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEF(dummy,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+
-+SND_SOC_DAILINK_DEF(fe,
-+	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("haswell-pcm-audio")));
-+
-+SND_SOC_DAILINK_DEF(be,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-aif1")));
-+
- static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 	/* Front End DAI links */
- 	{
- 		.name = "System PCM",
- 		.stream_name = "System Playback/Capture",
--		.cpu_dai_name = "System Pin",
--		.platform_name = "haswell-pcm-audio",
- 		.dynamic = 1,
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
- #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- 		.init = bdw_rt5677_rtd_init,
- #endif
-@@ -276,6 +284,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		},
- 		.dpcm_capture = 1,
- 		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(fe, dummy, platform),
- 	},
+ 	if (!ops || !links || !card)
+@@ -28,17 +29,29 @@ static int sof_nocodec_bes_setup(struct device *dev,
  
- 	/* Back End DAI links */
-@@ -283,11 +292,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		/* SSP0 - Codec */
- 		.name = "Codec",
- 		.id = 0,
--		.cpu_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "snd-soc-dummy",
- 		.no_pcm = 1,
--		.codec_name = "i2c-RT5677CE:00",
--		.codec_dai_name = "rt5677-aif1",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_suspend = 1,
-@@ -297,6 +302,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 		.init = bdw_rt5677_init,
-+		SND_SOC_DAILINK_REG(dummy, be, dummy),
- 	},
- };
+ 	/* set up BE dai_links */
+ 	for (i = 0; i < link_num; i++) {
++		dlc = devm_kzalloc(dev, 3 * sizeof(*dlc), GFP_KERNEL);
++		if (!dlc)
++			return -ENOMEM;
++
+ 		links[i].name = devm_kasprintf(dev, GFP_KERNEL,
+ 					       "NoCodec-%d", i);
+ 		if (!links[i].name)
+ 			return -ENOMEM;
+ 
++		links[i].cpus = &dlc[0];
++		links[i].codecs = &dlc[1];
++		links[i].platforms = &dlc[2];
++
++		links[i].num_cpus = 1;
++		links[i].num_codecs = 1;
++		links[i].num_platforms = 1;
++
+ 		links[i].id = i;
+ 		links[i].no_pcm = 1;
+-		links[i].cpu_dai_name = ops->drv[i].name;
+-		links[i].platform_name = dev_name(dev);
+-		links[i].codec_dai_name = "snd-soc-dummy-dai";
+-		links[i].codec_name = "snd-soc-dummy";
++		links[i].cpus->dai_name = ops->drv[i].name;
++		links[i].platforms->name = dev_name(dev);
++		links[i].codecs->dai_name = "snd-soc-dummy-dai";
++		links[i].codecs->name = "snd-soc-dummy";
+ 		links[i].dpcm_playback = 1;
+ 		links[i].dpcm_capture = 1;
+ 	}
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index b969686f954f..a13233ae6d0e 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -2639,7 +2639,6 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
+ 			     struct sof_ipc_dai_config *config)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-	struct snd_soc_dai_link_component dai_component;
+ 	struct snd_soc_tplg_private *private = &cfg->priv;
+ 	struct snd_soc_dai *dai;
+ 	u32 size = sizeof(*config);
+@@ -2650,7 +2649,6 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
+ 	int ret;
+ 
+ 	/* init IPC */
+-	memset(&dai_component, 0, sizeof(dai_component));
+ 	memset(&config->hda, 0, sizeof(struct sof_ipc_dai_hda_params));
+ 	config->hdr.size = size;
+ 
+@@ -2664,11 +2662,10 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
+ 		return ret;
+ 	}
+ 
+-	dai_component.dai_name = link->cpu_dai_name;
+-	dai = snd_soc_find_dai(&dai_component);
++	dai = snd_soc_find_dai(link->cpus);
+ 	if (!dai) {
+ 		dev_err(sdev->dev, "error: failed to find dai %s in %s",
+-			dai_component.dai_name, __func__);
++			link->cpus->dai_name, __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -2708,7 +2705,11 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 	int ret;
+ 	int i = 0;
+ 
+-	link->platform_name = dev_name(sdev->dev);
++	if (!link->platforms) {
++		dev_err(sdev->dev, "error: no platforms\n");
++		return -EINVAL;
++	}
++	link->platforms->name = dev_name(sdev->dev);
+ 
+ 	/*
+ 	 * Set nonatomic property for FE dai links as their trigger action
+@@ -2801,16 +2802,13 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ static int sof_link_hda_unload(struct snd_sof_dev *sdev,
+ 			       struct snd_soc_dai_link *link)
+ {
+-	struct snd_soc_dai_link_component dai_component;
+ 	struct snd_soc_dai *dai;
+ 	int ret = 0;
+ 
+-	memset(&dai_component, 0, sizeof(dai_component));
+-	dai_component.dai_name = link->cpu_dai_name;
+-	dai = snd_soc_find_dai(&dai_component);
++	dai = snd_soc_find_dai(link->cpus);
+ 	if (!dai) {
+ 		dev_err(sdev->dev, "error: failed to find dai %s in %s",
+-			dai_component.dai_name, __func__);
++			link->cpus->dai_name, __func__);
+ 		return -EINVAL;
+ 	}
  
 -- 
 2.20.1
