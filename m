@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: mikroe-proto: use modern
-	dai_link style" to the asoc tree
+Subject: Applied "ASoC: amd: acp-rt5645: use modern dai_link
+	style" to the asoc tree
 Date: Thu,  6 Jun 2019 22:26:42 +0100 (BST)
-Message-ID: <20190606212642.4E102440046@finisterre.sirena.org.uk>
-References: <87v9xjicuw.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212642.D2B06440049@finisterre.sirena.org.uk>
+References: <87wohzicv1.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63F38F897AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E8AFF897AF
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:43 +0200 (CEST)
-In-Reply-To: <87v9xjicuw.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wohzicv1.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: mikroe-proto: use modern dai_link style
+   ASoC: amd: acp-rt5645: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,78 +55,67 @@ to this mail.
 Thanks,
 Mark
 
->From ed00d6ccde62a7deafdfbf22d37725945890e536 Mon Sep 17 00:00:00 2001
+>From 19913c163e219376e543e8138ca4f05670ee9f4a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:13:38 +0900
-Subject: [PATCH] ASoC: atmel: mikroe-proto: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:13:33 +0900
+Subject: [PATCH] ASoC: amd: acp-rt5645: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
 This patch switches to use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/mikroe-proto.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ sound/soc/amd/acp-rt5645.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/atmel/mikroe-proto.c b/sound/soc/atmel/mikroe-proto.c
-index d47aaa5bf75a..255168a9df5b 100644
---- a/sound/soc/atmel/mikroe-proto.c
-+++ b/sound/soc/atmel/mikroe-proto.c
-@@ -66,6 +66,7 @@ static struct snd_soc_card snd_proto = {
- static int snd_proto_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_dai_link *dai;
-+	struct snd_soc_dai_link_component *comp;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct device_node *codec_np, *cpu_np;
- 	struct device_node *bitclkmaster = NULL;
-@@ -87,12 +88,24 @@ static int snd_proto_probe(struct platform_device *pdev)
- 	if (!dai)
- 		return -ENOMEM;
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+index b79b922b08a0..91abeb92b648 100644
+--- a/sound/soc/amd/acp-rt5645.c
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -95,29 +95,34 @@ static struct snd_soc_ops cz_aif1_ops = {
+ 	.hw_params = cz_aif1_hw_params,
+ };
  
-+	/* for cpus/codecs/platforms */
-+	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
-+	if (!comp)
-+		return -ENOMEM;
++SND_SOC_DAILINK_DEF(designware1,
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.1.auto")));
++SND_SOC_DAILINK_DEF(designware2,
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.2.auto")));
 +
- 	snd_proto.dai_link = dai;
- 	snd_proto.num_links = 1;
- 
-+	dai->cpus = &comp[0];
-+	dai->num_cpus = 1;
-+	dai->codecs = &comp[1];
-+	dai->num_codecs = 1;
-+	dai->platforms = &comp[2];
-+	dai->num_platforms = 1;
++SND_SOC_DAILINK_DEF(codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
 +
- 	dai->name = "WM8731";
- 	dai->stream_name = "WM8731 HiFi";
--	dai->codec_dai_name = "wm8731-hifi";
-+	dai->codecs->dai_name = "wm8731-hifi";
- 	dai->init = &snd_proto_init;
++SND_SOC_DAILINK_DEF(platform,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.0.auto")));
++
+ static struct snd_soc_dai_link cz_dai_rt5650[] = {
+ 	{
+ 		.name = "amd-rt5645-play",
+ 		.stream_name = "RT5645_AIF1",
+-		.platform_name = "acp_audio_dma.0.auto",
+-		.cpu_dai_name = "designware-i2s.1.auto",
+-		.codec_dai_name = "rt5645-aif1",
+-		.codec_name = "i2c-10EC5650:00",
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.init = cz_init,
+ 		.ops = &cz_aif1_ops,
++		SND_SOC_DAILINK_REG(designware1, codec, platform),
+ 	},
+ 	{
+ 		.name = "amd-rt5645-cap",
+ 		.stream_name = "RT5645_AIF1",
+-		.platform_name = "acp_audio_dma.0.auto",
+-		.cpu_dai_name = "designware-i2s.2.auto",
+-		.codec_dai_name = "rt5645-aif1",
+-		.codec_name = "i2c-10EC5650:00",
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.ops = &cz_aif1_ops,
++		SND_SOC_DAILINK_REG(designware2, codec, platform),
+ 	},
+ };
  
- 	codec_np = of_parse_phandle(np, "audio-codec", 0);
-@@ -100,15 +113,15 @@ static int snd_proto_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "audio-codec node missing\n");
- 		return -EINVAL;
- 	}
--	dai->codec_of_node = codec_np;
-+	dai->codecs->of_node = codec_np;
- 
- 	cpu_np = of_parse_phandle(np, "i2s-controller", 0);
- 	if (!cpu_np) {
- 		dev_err(&pdev->dev, "i2s-controller missing\n");
- 		return -EINVAL;
- 	}
--	dai->cpu_of_node = cpu_np;
--	dai->platform_of_node = cpu_np;
-+	dai->cpus->of_node = cpu_np;
-+	dai->platforms->of_node = cpu_np;
- 
- 	dai_fmt = snd_soc_of_parse_daifmt(np, NULL,
- 					  &bitclkmaster, &framemaster);
 -- 
 2.20.1
