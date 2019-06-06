@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: mioa701_wm9713: use modern
-	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:54 +0100 (BST)
-Message-ID: <20190606212654.94B69440049@finisterre.sirena.org.uk>
-References: <87r287jri6.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pxa: imote2: use modern dai_link style"
+	to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:55 +0100 (BST)
+Message-ID: <20190606212655.AD927440046@finisterre.sirena.org.uk>
+References: <87tvd3jrig.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C690F89751
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:55 +0200 (CEST)
-In-Reply-To: <87r287jri6.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63B6DF897DA
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:56 +0200 (CEST)
+In-Reply-To: <87tvd3jrig.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: mioa701_wm9713: use modern dai_link style
+   ASoC: pxa: imote2: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From a94112f5bd0b4b05ba727491c3d96dfb4c702823 Mon Sep 17 00:00:00 2001
+>From 76359b17c38d513743a151b3cf747a5867dd6216 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:11:56 +0900
-Subject: [PATCH] ASoC: pxa: mioa701_wm9713: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:11:46 +0900
+Subject: [PATCH] ASoC: pxa: imote2: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,50 +67,36 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mioa701_wm9713.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/pxa/imote2.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index 47052fe3f5f4..6244e5caddbe 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -142,25 +142,29 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
- 
- static struct snd_soc_ops mioa701_ops;
- 
-+SND_SOC_DAILINK_DEFS(ac97,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9713-codec", "wm9713-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
-+
-+SND_SOC_DAILINK_DEFS(ac97_aux,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97-aux")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9713-codec", "wm9713-aux")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
-+
- static struct snd_soc_dai_link mioa701_dai[] = {
- 	{
- 		.name = "AC97",
- 		.stream_name = "AC97 HiFi",
--		.cpu_dai_name = "pxa2xx-ac97",
--		.codec_dai_name = "wm9713-hifi",
--		.codec_name = "wm9713-codec",
- 		.init = mioa701_wm9713_init,
--		.platform_name = "pxa-pcm-audio",
- 		.ops = &mioa701_ops,
-+		SND_SOC_DAILINK_REG(ac97),
- 	},
- 	{
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
--		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name = "wm9713-aux",
--		.codec_name = "wm9713-codec",
--		.platform_name = "pxa-pcm-audio",
- 		.ops = &mioa701_ops,
-+		SND_SOC_DAILINK_REG(ac97_aux),
- 	},
+diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
+index 78475376f971..9095edd6a374 100644
+--- a/sound/soc/pxa/imote2.c
++++ b/sound/soc/pxa/imote2.c
+@@ -46,16 +46,19 @@ static const struct snd_soc_ops imote2_asoc_ops = {
+ 	.hw_params = imote2_asoc_hw_params,
  };
  
++SND_SOC_DAILINK_DEFS(wm8940,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8940-codec.0-0034",
++				      "wm8940-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
++
+ static struct snd_soc_dai_link imote2_dai = {
+ 	.name = "WM8940",
+ 	.stream_name = "WM8940",
+-	.cpu_dai_name = "pxa2xx-i2s",
+-	.codec_dai_name = "wm8940-hifi",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_name = "wm8940-codec.0-0034",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &imote2_asoc_ops,
++	SND_SOC_DAILINK_REG(wm8940),
+ };
+ 
+ static struct snd_soc_card imote2 = {
 -- 
 2.20.1
