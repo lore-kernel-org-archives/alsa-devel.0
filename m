@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl_da7219_max98357a: use modern
-	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:00 +0100 (BST)
-Message-ID: <20190606212600.CC97C440049@finisterre.sirena.org.uk>
-References: <87wohze4sf.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: kbl_rt5660: use modern dai_link
+	style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:03 +0100 (BST)
+Message-ID: <20190606212603.315F1440046@finisterre.sirena.org.uk>
+References: <8736knfjdf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D45BF8971E
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:01 +0200 (CEST)
-In-Reply-To: <87wohze4sf.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5B6DF89733
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:03 +0200 (CEST)
+In-Reply-To: <8736knfjdf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl_da7219_max98357a: use modern dai_link style
+   ASoC: Intel: kbl_rt5660: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 27eb6c7cb9027c4f0bb3a1b98659c1376b91d46c Mon Sep 17 00:00:00 2001
+>From 168bfa962ed22b0fa44ea0d6cf1875cb917a5270 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:21:31 +0900
-Subject: [PATCH] ASoC: Intel: kbl_da7219_max98357a: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:21:12 +0900
+Subject: [PATCH] ASoC: Intel: kbl_rt5660: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,15 +67,15 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 114 ++++++++++--------
- 1 file changed, 66 insertions(+), 48 deletions(-)
+ sound/soc/intel/boards/kbl_rt5660.c | 83 ++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 4e5db2241fb9..537a88932bb6 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -349,92 +349,128 @@ static const unsigned int ch_mono[] = {
- 	1,
+diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
+index 3255e0029276..74fe1f3a5479 100644
+--- a/sound/soc/intel/boards/kbl_rt5660.c
++++ b/sound/soc/intel/boards/kbl_rt5660.c
+@@ -317,78 +317,101 @@ static const struct snd_soc_ops kabylake_rt5660_fe_ops = {
+ 	.startup = kbl_fe_startup,
  };
  
 +SND_SOC_DAILINK_DEF(dummy,
@@ -83,9 +83,6 @@ index 4e5db2241fb9..537a88932bb6 100644
 +
 +SND_SOC_DAILINK_DEF(system,
 +	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
-+
-+SND_SOC_DAILINK_DEF(dmic,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
 +
 +SND_SOC_DAILINK_DEF(hdmi1,
 +	DAILINK_COMP_ARRAY(COMP_CPU("HDMI1 Pin")));
@@ -99,25 +96,12 @@ index 4e5db2241fb9..537a88932bb6 100644
 +SND_SOC_DAILINK_DEF(ssp0_pin,
 +	DAILINK_COMP_ARRAY(COMP_CPU("SSP0 Pin")));
 +SND_SOC_DAILINK_DEF(ssp0_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC(MAXIM_DEV0_NAME,
-+				      KBL_MAXIM_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(ssp1_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
-+SND_SOC_DAILINK_DEF(ssp1_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-DLGS7219:00",
-+				      KBL_DIALOG_CODEC_DAI)));
-+
-+SND_SOC_DAILINK_DEF(dmic_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
-+SND_SOC_DAILINK_DEF(dmic_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC3277:00", KBL_RT5660_CODEC_DAI)));
 +
 +SND_SOC_DAILINK_DEF(idisp1_pin,
-+	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
++		    DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
 +SND_SOC_DAILINK_DEF(idisp1_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2",
-+				      "intel-hdmi-hifi1")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
 +
 +SND_SOC_DAILINK_DEF(idisp2_pin,
 +	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
@@ -132,8 +116,8 @@ index 4e5db2241fb9..537a88932bb6 100644
 +SND_SOC_DAILINK_DEF(platform,
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:1f.3")));
 +
- /* kabylake digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link kabylake_dais[] = {
+ /* kabylake digital audio interface glue - connects rt5660 codec <--> CPU */
+ static struct snd_soc_dai_link kabylake_rt5660_dais[] = {
  	/* Front End DAI links */
  	[KBL_DPCM_AUDIO_PB] = {
  		.name = "Kbl Audio Port",
@@ -144,11 +128,10 @@ index 4e5db2241fb9..537a88932bb6 100644
 -		.codec_name = "snd-soc-dummy",
 -		.codec_dai_name = "snd-soc-dummy-dai",
  		.nonatomic = 1,
- 		.init = kabylake_da7219_fe_init,
  		.trigger = {
  			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_playback = 1,
- 		.ops = &kabylake_da7219_fe_ops,
+ 		.ops = &kabylake_rt5660_fe_ops,
 +		SND_SOC_DAILINK_REG(system, dummy, platform),
  	},
  	[KBL_DPCM_AUDIO_CP] = {
@@ -163,22 +146,8 @@ index 4e5db2241fb9..537a88932bb6 100644
  		.trigger = {
  			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_capture = 1,
- 		.ops = &kabylake_da7219_fe_ops,
+ 		.ops = &kabylake_rt5660_fe_ops,
 +		SND_SOC_DAILINK_REG(system, dummy, platform),
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
- 		.stream_name = "dmiccap",
--		.cpu_dai_name = "DMIC Pin",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.platform_name = "0000:00:1f.3",
- 		.init = NULL,
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.ops = &kabylake_dmic_ops,
-+		SND_SOC_DAILINK_REG(dmic, dummy, platform),
  	},
  	[KBL_DPCM_AUDIO_HDMI1_PB] = {
  		.name = "Kbl HDMI Port1",
@@ -227,57 +196,27 @@ index 4e5db2241fb9..537a88932bb6 100644
  	},
  
  	/* Back End DAI links */
-@@ -442,27 +478,20 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+@@ -396,11 +419,7 @@ static struct snd_soc_dai_link kabylake_rt5660_dais[] = {
  		/* SSP0 - Codec */
  		.name = "SSP0-Codec",
  		.id = 0,
 -		.cpu_dai_name = "SSP0 Pin",
 -		.platform_name = "0000:00:1f.3",
  		.no_pcm = 1,
--		.codec_name = MAXIM_DEV0_NAME,
--		.codec_dai_name = KBL_MAXIM_CODEC_DAI,
+-		.codec_name = "i2c-10EC3277:00",
+-		.codec_dai_name = KBL_RT5660_CODEC_DAI,
+ 		.init = kabylake_rt5660_codec_init,
  		.dai_fmt = SND_SOC_DAIFMT_I2S |
- 			SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = kabylake_ssp_fixup,
+ 		SND_SOC_DAIFMT_NB_NF |
+@@ -410,39 +429,31 @@ static struct snd_soc_dai_link kabylake_rt5660_dais[] = {
+ 		.ops = &kabylake_rt5660_ops,
  		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
 +		SND_SOC_DAILINK_REG(ssp0_pin, ssp0_codec, platform),
  	},
  	{
- 		/* SSP1 - Codec */
- 		.name = "SSP1-Codec",
- 		.id = 1,
--		.cpu_dai_name = "SSP1 Pin",
--		.platform_name = "0000:00:1f.3",
- 		.no_pcm = 1,
--		.codec_name = "i2c-DLGS7219:00",
--		.codec_dai_name = KBL_DIALOG_CODEC_DAI,
- 		.init = kabylake_da7219_codec_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
-@@ -470,51 +499,40 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.be_hw_params_fixup = kabylake_ssp_fixup,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
- 	},
- 	{
- 		.name = "dmic01",
- 		.id = 2,
--		.cpu_dai_name = "DMIC01 Pin",
--		.codec_name = "dmic-codec",
--		.codec_dai_name = "dmic-hifi",
--		.platform_name = "0000:00:1f.3",
- 		.be_hw_params_fixup = kabylake_dmic_fixup,
- 		.ignore_suspend = 1,
- 		.dpcm_capture = 1,
- 		.no_pcm = 1,
-+		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
- 	},
- 	{
  		.name = "iDisp1",
- 		.id = 3,
+ 		.id = 1,
 -		.cpu_dai_name = "iDisp1 Pin",
 -		.codec_name = "ehdaudio0D2",
 -		.codec_dai_name = "intel-hdmi-hifi1",
@@ -289,7 +228,7 @@ index 4e5db2241fb9..537a88932bb6 100644
  	},
  	{
  		.name = "iDisp2",
- 		.id = 4,
+ 		.id = 2,
 -		.cpu_dai_name = "iDisp2 Pin",
 -		.codec_name = "ehdaudio0D2",
 -		.codec_dai_name = "intel-hdmi-hifi2",
@@ -301,7 +240,7 @@ index 4e5db2241fb9..537a88932bb6 100644
  	},
  	{
  		.name = "iDisp3",
- 		.id = 5,
+ 		.id = 3,
 -		.cpu_dai_name = "iDisp3 Pin",
 -		.codec_name = "ehdaudio0D2",
 -		.codec_dai_name = "intel-hdmi-hifi3",
