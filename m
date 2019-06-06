@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sof: use modern dai_link style" to the
-	asoc tree
-Date: Thu,  6 Jun 2019 22:26:13 +0100 (BST)
-Message-ID: <20190606212613.73D2F440046@finisterre.sirena.org.uk>
-References: <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tegra: tegra_max98090: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:15 +0100 (BST)
+Message-ID: <20190606212615.2260A440046@finisterre.sirena.org.uk>
+References: <87wohzfjgs.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F4EBF89751
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:14 +0200 (CEST)
-In-Reply-To: <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5969F8975A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:15 +0200 (CEST)
+In-Reply-To: <87wohzfjgs.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sof: use modern dai_link style
+   ASoC: tegra: tegra_max98090: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 7ba06110de2628137554cf4da849ef08f255f385 Mon Sep 17 00:00:00 2001
+>From f60adf38514183b897301cdf616ef8bf5ef34094 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:19:24 +0900
-Subject: [PATCH] ASoC: sof: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:19:10 +0900
+Subject: [PATCH] ASoC: tegra: tegra_max98090: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,121 +67,64 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/nocodec.c  | 21 +++++++++++++++++----
- sound/soc/sof/topology.c | 20 +++++++++-----------
- 2 files changed, 26 insertions(+), 15 deletions(-)
+ sound/soc/tegra/tegra_max98090.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
-index f84b4344dcc3..3d128e5a132c 100644
---- a/sound/soc/sof/nocodec.c
-+++ b/sound/soc/sof/nocodec.c
-@@ -21,6 +21,7 @@ static int sof_nocodec_bes_setup(struct device *dev,
- 				 struct snd_soc_dai_link *links,
- 				 int link_num, struct snd_soc_card *card)
- {
-+	struct snd_soc_dai_link_component *dlc;
- 	int i;
+diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+index cf142e2c7bd7..b6c1f4839266 100644
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -176,14 +176,19 @@ static int tegra_max98090_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
- 	if (!ops || !links || !card)
-@@ -28,17 +29,29 @@ static int sof_nocodec_bes_setup(struct device *dev,
- 
- 	/* set up BE dai_links */
- 	for (i = 0; i < link_num; i++) {
-+		dlc = devm_kzalloc(dev, 3 * sizeof(*dlc), GFP_KERNEL);
-+		if (!dlc)
-+			return -ENOMEM;
++SND_SOC_DAILINK_DEFS(pcm,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
- 		links[i].name = devm_kasprintf(dev, GFP_KERNEL,
- 					       "NoCodec-%d", i);
- 		if (!links[i].name)
- 			return -ENOMEM;
+ static struct snd_soc_dai_link tegra_max98090_dai = {
+ 	.name = "max98090",
+ 	.stream_name = "max98090 PCM",
+-	.codec_dai_name = "HiFi",
+ 	.init = tegra_max98090_asoc_init,
+ 	.ops = &tegra_max98090_ops,
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
++	SND_SOC_DAILINK_REG(pcm),
+ };
  
-+		links[i].cpus = &dlc[0];
-+		links[i].codecs = &dlc[1];
-+		links[i].platforms = &dlc[2];
-+
-+		links[i].num_cpus = 1;
-+		links[i].num_codecs = 1;
-+		links[i].num_platforms = 1;
-+
- 		links[i].id = i;
- 		links[i].no_pcm = 1;
--		links[i].cpu_dai_name = ops->drv[i].name;
--		links[i].platform_name = dev_name(dev);
--		links[i].codec_dai_name = "snd-soc-dummy-dai";
--		links[i].codec_name = "snd-soc-dummy";
-+		links[i].cpus->dai_name = ops->drv[i].name;
-+		links[i].platforms->name = dev_name(dev);
-+		links[i].codecs->dai_name = "snd-soc-dummy-dai";
-+		links[i].codecs->name = "snd-soc-dummy";
- 		links[i].dpcm_playback = 1;
- 		links[i].dpcm_capture = 1;
- 	}
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index b969686f954f..a13233ae6d0e 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2639,7 +2639,6 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
- 			     struct sof_ipc_dai_config *config)
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
--	struct snd_soc_dai_link_component dai_component;
- 	struct snd_soc_tplg_private *private = &cfg->priv;
- 	struct snd_soc_dai *dai;
- 	u32 size = sizeof(*config);
-@@ -2650,7 +2649,6 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
- 	int ret;
+ static struct snd_soc_card snd_soc_tegra_max98090 = {
+@@ -230,25 +235,25 @@ static int tegra_max98090_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err;
  
- 	/* init IPC */
--	memset(&dai_component, 0, sizeof(dai_component));
- 	memset(&config->hda, 0, sizeof(struct sof_ipc_dai_hda_params));
- 	config->hdr.size = size;
- 
-@@ -2664,11 +2662,10 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
- 		return ret;
+-	tegra_max98090_dai.codec_of_node = of_parse_phandle(np,
++	tegra_max98090_dai.codecs->of_node = of_parse_phandle(np,
+ 			"nvidia,audio-codec", 0);
+-	if (!tegra_max98090_dai.codec_of_node) {
++	if (!tegra_max98090_dai.codecs->of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,audio-codec' missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto err;
  	}
  
--	dai_component.dai_name = link->cpu_dai_name;
--	dai = snd_soc_find_dai(&dai_component);
-+	dai = snd_soc_find_dai(link->cpus);
- 	if (!dai) {
- 		dev_err(sdev->dev, "error: failed to find dai %s in %s",
--			dai_component.dai_name, __func__);
-+			link->cpus->dai_name, __func__);
- 		return -EINVAL;
+-	tegra_max98090_dai.cpu_of_node = of_parse_phandle(np,
++	tegra_max98090_dai.cpus->of_node = of_parse_phandle(np,
+ 			"nvidia,i2s-controller", 0);
+-	if (!tegra_max98090_dai.cpu_of_node) {
++	if (!tegra_max98090_dai.cpus->of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,i2s-controller' missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto err;
  	}
  
-@@ -2708,7 +2705,11 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
- 	int ret;
- 	int i = 0;
+-	tegra_max98090_dai.platform_of_node = tegra_max98090_dai.cpu_of_node;
++	tegra_max98090_dai.platforms->of_node = tegra_max98090_dai.cpus->of_node;
  
--	link->platform_name = dev_name(sdev->dev);
-+	if (!link->platforms) {
-+		dev_err(sdev->dev, "error: no platforms\n");
-+		return -EINVAL;
-+	}
-+	link->platforms->name = dev_name(sdev->dev);
- 
- 	/*
- 	 * Set nonatomic property for FE dai links as their trigger action
-@@ -2801,16 +2802,13 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
- static int sof_link_hda_unload(struct snd_sof_dev *sdev,
- 			       struct snd_soc_dai_link *link)
- {
--	struct snd_soc_dai_link_component dai_component;
- 	struct snd_soc_dai *dai;
- 	int ret = 0;
- 
--	memset(&dai_component, 0, sizeof(dai_component));
--	dai_component.dai_name = link->cpu_dai_name;
--	dai = snd_soc_find_dai(&dai_component);
-+	dai = snd_soc_find_dai(link->cpus);
- 	if (!dai) {
- 		dev_err(sdev->dev, "error: failed to find dai %s in %s",
--			dai_component.dai_name, __func__);
-+			link->cpus->dai_name, __func__);
- 		return -EINVAL;
- 	}
- 
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
 -- 
 2.20.1
