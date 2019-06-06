@@ -1,37 +1,66 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] soundwire: intel: set dai min and max channels correctly
-Date: Thu,  6 Jun 2019 12:23:04 +0100
-Message-ID: <20190606112304.16560-1-srinivas.kandagatla@linaro.org>
+From: Enric Balletbo Serra <eballetbo@gmail.com>
+Subject: Re: [alsa-devel] [RESEND PATCH v3 00/30] Update cros_ec_commands.h
+Date: Thu, 6 Jun 2019 13:25:40 +0200
+Message-ID: <CAFqH_51gMu81f=VFQaF4u9-tAWDMocGAwM_fOPT3Cctv6KWniw@mail.gmail.com>
+References: <20190603183401.151408-1-gwendal@chromium.org> <20190604055908.GA4797@dell>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190604055908.GA4797@dell>
 Sender: linux-kernel-owner@vger.kernel.org
-To: vkoul@kernel.org
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>, alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, fabien.lahoudere@collabora.com, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Benson Leung <bleung@chromium.org>, Jonathan Cameron <jic23@kernel.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Looks like there is a copy paste error.
-This patch fixes it!
+Hi Lee,
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/intel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Missatge de Lee Jones <lee.jones@linaro.org> del dia dt., 4 de juny
+2019 a les 8:00:
+>
+> On Mon, 03 Jun 2019, Gwendal Grignou wrote:
+>
+> > The interface between CrosEC embedded controller and the host,
+> > described by cros_ec_commands.h, as diverged from what the embedded
+> > controller really support.
+> >
+> > The source of thruth is at
+> > https://chromium.googlesource.com/chromiumos/platform/ec/+/master/inclu=
+de/ec_commands.h
+> >
+> > That include file is converted to remove ACPI and Embedded only code.
+> >
+> > From now on, cros_ec_commands.h will be automatically generated from
+> > the file above, do not modify directly.
+> >
+> > Fell free to squash the commits below.
+> >
+> > v3 resent: Add Fabien's ack.
+>
+> Thanks for doing that.
+>
+> In future, please ensure *-bys tags are in chronological order with
+> the first one either being a Suggested-by or your SoB.  Reviews, tests
+> etc usually come *after* first submission.
+>
+> I've changed this for you this time, yes in all 30 patches!  :)
+>
+> Anyway, all applied, thanks.
+>
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 92be6ad84e8d..317873bc0555 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -721,8 +721,8 @@ static int intel_create_dai(struct sdw_cdns *cdns,
- 				return -ENOMEM;
- 			}
- 
--			dais[i].playback.channels_min = 1;
--			dais[i].playback.channels_max = max_ch;
-+			dais[i].capture.channels_min = 1;
-+			dais[i].capture.channels_max = max_ch;
- 			dais[i].capture.rates = SNDRV_PCM_RATE_48000;
- 			dais[i].capture.formats = SNDRV_PCM_FMTBIT_S16_LE;
- 		}
--- 
-2.21.0
+Could you do an immutable branch with those? I've few patches that
+depends on those changes and probably I'll have more. Otherwise, I'll
+wait for those to land.
+
+Thanks,
+ Enric
+
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Linaro Services Technical Lead
+> Linaro.org =E2=94=82 Open source software for ARM SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
