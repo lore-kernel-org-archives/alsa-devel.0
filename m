@@ -1,10 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek:
-	mt8183-mt6358-ts3a227-max98357: use modern dai_link style" to
-	the asoc tree
-Date: Thu,  6 Jun 2019 22:27:11 +0100 (BST)
-Message-ID: <20190606212712.0464D440046@finisterre.sirena.org.uk>
-References: <87zhmvl67t.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: mediatek: mt8183-da7219-max98357: use
+	modern dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:12 +0100 (BST)
+Message-ID: <20190606212712.8EF71440049@finisterre.sirena.org.uk>
+References: <871s07mksf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -13,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C20EFF89805
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:12 +0200 (CEST)
-In-Reply-To: <87zhmvl67t.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A55BF89762
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:13 +0200 (CEST)
+In-Reply-To: <871s07mksf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183-mt6358-ts3a227-max98357: use modern dai_link style
+   ASoC: mediatek: mt8183-da7219-max98357: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -56,11 +55,11 @@ to this mail.
 Thanks,
 Mark
 
->From fa284fd002477d5e96bd96f638fbebd65316a750 Mon Sep 17 00:00:00 2001
+>From 4b99064229b426260d6873e865cd9f6732074f6f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:08:49 +0900
-Subject: [PATCH] ASoC: mediatek: mt8183-mt6358-ts3a227-max98357: use modern
- dai_link style
+Date: Thu, 6 Jun 2019 13:08:43 +0900
+Subject: [PATCH] ASoC: mediatek: mt8183-da7219-max98357: use modern dai_link
+ style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -69,15 +68,34 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 168 +++++++++++-------
- 1 file changed, 106 insertions(+), 62 deletions(-)
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  | 182 ++++++++++--------
+ 1 file changed, 107 insertions(+), 75 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 23c422f13808..887c932229d0 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -96,193 +96,246 @@ static const struct snd_soc_ops mt8183_mt6358_ts3a227_max98357_bt_sco_ops = {
- 	.startup = mt8183_mt6358_ts3a227_max98357_bt_sco_startup,
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 231fb49d79b9..59076e21cb47 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -18,18 +18,6 @@
+ 
+ static struct snd_soc_jack headset_jack;
+ 
+-static struct snd_soc_dai_link_component
+-mt8183_da7219_max98357_external_codecs[] = {
+-	{
+-		.name = "max98357a",
+-		.dai_name = "HiFi",
+-	},
+-	{
+-		.name = "da7219.5-001a",
+-		.dai_name = "da7219-hifi",
+-	},
+-};
+-
+ static int mt8183_mt6358_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				       struct snd_pcm_hw_params *params)
+ {
+@@ -137,191 +125,244 @@ static const struct snd_soc_dapm_route mt8183_da7219_max98357_dapm_routes[] = {
+ 	{"IT6505_8CH", NULL, "TDM"},
  };
  
 +/* FE */
@@ -149,12 +167,13 @@ index 23c422f13808..887c932229d0 100644
 +
 +SND_SOC_DAILINK_DEFS(i2s2,
 +	DAILINK_COMP_ARRAY(COMP_CPU("I2S2")),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC("da7219.5-001a", "da7219-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
 +SND_SOC_DAILINK_DEFS(i2s3,
 +	DAILINK_COMP_ARRAY(COMP_CPU("I2S3")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("max98357a", "HiFi")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("max98357a", "HiFi"),
++			 COMP_CODEC("da7219.5-001a", "da7219-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
 +SND_SOC_DAILINK_DEFS(i2s5,
@@ -167,8 +186,7 @@ index 23c422f13808..887c932229d0 100644
 +	DAILINK_COMP_ARRAY(COMP_DUMMY()),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
- static struct snd_soc_dai_link
- mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
  	/* FE */
  	{
  		.name = "Playback_1",
@@ -192,7 +210,6 @@ index 23c422f13808..887c932229d0 100644
  			    SND_SOC_DPCM_TRIGGER_PRE},
  		.dynamic = 1,
  		.dpcm_playback = 1,
- 		.ops = &mt8183_mt6358_ts3a227_max98357_bt_sco_ops,
 +		SND_SOC_DAILINK_REG(playback2),
  	},
  	{
@@ -217,7 +234,6 @@ index 23c422f13808..887c932229d0 100644
  			    SND_SOC_DPCM_TRIGGER_PRE},
  		.dynamic = 1,
  		.dpcm_capture = 1,
- 		.ops = &mt8183_mt6358_ts3a227_max98357_bt_sco_ops,
 +		SND_SOC_DAILINK_REG(capture1),
  	},
  	{
@@ -329,25 +345,26 @@ index 23c422f13808..887c932229d0 100644
  	{
  		.name = "I2S2",
 -		.cpu_dai_name = "I2S2",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "da7219-hifi",
+-		.codec_name = "da7219.5-001a",
  		.no_pcm = 1,
  		.dpcm_capture = 1,
  		.ignore_suspend = 1,
  		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
- 		.ops = &mt8183_mt6358_i2s_ops,
+ 		.ops = &mt8183_da7219_i2s_ops,
 +		SND_SOC_DAILINK_REG(i2s2),
  	},
  	{
  		.name = "I2S3",
 -		.cpu_dai_name = "I2S3",
--		.codec_dai_name = "HiFi",
--		.codec_name = "max98357a",
+-		.codecs = mt8183_da7219_max98357_external_codecs,
+-		.num_codecs =
+-			ARRAY_SIZE(mt8183_da7219_max98357_external_codecs),
  		.no_pcm = 1,
  		.dpcm_playback = 1,
  		.ignore_suspend = 1,
  		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
- 		.ops = &mt8183_mt6358_i2s_ops,
+ 		.ops = &mt8183_da7219_i2s_ops,
 +		SND_SOC_DAILINK_REG(i2s3),
  	},
  	{
@@ -374,7 +391,7 @@ index 23c422f13808..887c932229d0 100644
  	},
  };
  
-@@ -343,18 +396,9 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+@@ -390,18 +431,9 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
  	}
  
  	for_each_card_prelinks(card, i, dai_link) {
@@ -394,6 +411,6 @@ index 23c422f13808..887c932229d0 100644
 +		dai_link->platforms->of_node = platform_node;
  	}
  
- 	mt8183_mt6358_ts3a227_max98357_headset_dev.codec_of_node =
+ 	mt8183_da7219_max98357_headset_dev.codec_of_node =
 -- 
 2.20.1
