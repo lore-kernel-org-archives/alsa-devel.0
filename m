@@ -1,36 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove legacy style dai_link"
-	to the asoc tree
-Date: Thu,  6 Jun 2019 22:25:56 +0100 (BST)
-Message-ID: <20190606212556.19376440046@finisterre.sirena.org.uk>
-References: <87lfyfe4r3.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 851DEF896EF
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:25:57 +0200 (CEST)
-In-Reply-To: <87lfyfe4r3.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt1011: Mark format integer literals as unsigned" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:19 +0100 (BST)
+Message-ID: <20190606212719.B0F8B440046@finisterre.sirena.org.uk>
+References: <20190606051227.90944-1-natechancellor@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190606051227.90944-1-natechancellor@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nathan Chancellor <natechancellor@gmail.com>
+Cc: alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, clang-built-linux@googlegroups.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Oder Chiou <oder_chiou@realtek.com>, Shuming Fan <shumingf@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove legacy style dai_link
+   ASoC: rt1011: Mark format integer literals as unsigned
 
 has been applied to the asoc tree at
 
@@ -55,342 +37,60 @@ to this mail.
 Thanks,
 Mark
 
->From adb76b5b9c4740a11f6ad6c68764515961ae8ade Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:22:19 +0900
-Subject: [PATCH] ASoC: soc-core: remove legacy style dai_link
+>From 83a6edbb8fe928e801b9b6cab13e81109b185918 Mon Sep 17 00:00:00 2001
+From: Nathan Chancellor <natechancellor@gmail.com>
+Date: Wed, 5 Jun 2019 22:12:27 -0700
+Subject: [PATCH] ASoC: rt1011: Mark format integer literals as unsigned
 
-All drivers switched to modern style dai_link
-(= struct snd_soc_dai_link_component).
-Let's remove legacy style dai_link.
+Clang warns:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+sound/soc/codecs/rt1011.c:1291:12: warning: integer literal is too large
+to be represented in type 'long', interpreting as 'unsigned long' per
+C89; this literal will have type 'long long' in C99 onwards
+[-Wc99-compat]
+                format = 2147483648; /* 2^24 * 128 */
+                         ^
+sound/soc/codecs/rt1011.c:2123:13: warning: integer literal is too large
+to be represented in type 'long', interpreting as 'unsigned long' per
+C89; this literal will have type 'long long' in C99 onwards
+[-Wc99-compat]
+                        format = 2147483648; /* 2^24 * 128 */
+                                 ^
+2 warnings generated.
+
+Mark the integer literals as unsigned explicitly so that if the kernel
+does ever bump the C standard it uses, the behavior is consitent.
+
+Fixes: d6e65bb7ff0d ("ASoC: rt1011: Add RT1011 amplifier driver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/506
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  65 ++---------------
- sound/soc/soc-core.c | 165 ++-----------------------------------------
- 2 files changed, 12 insertions(+), 218 deletions(-)
+ sound/soc/codecs/rt1011.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0fa79b8330d7..055e6d035e04 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -900,17 +900,6 @@ struct snd_soc_dai_link {
- 	const char *name;			/* Codec name */
- 	const char *stream_name;		/* Stream name */
+diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
+index 349d6db7ecd4..3a0ae80c5ee0 100644
+--- a/sound/soc/codecs/rt1011.c
++++ b/sound/soc/codecs/rt1011.c
+@@ -1288,7 +1288,7 @@ static int rt1011_r0_load_mode_put(struct snd_kcontrol *kcontrol,
+ 	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
+ 		rt1011->r0_reg = ucontrol->value.integer.value[0];
  
--	/*
--	 *	cpu_name
--	 *	cpu_of_node
--	 *	cpu_dai_name
--	 *
--	 * These are legacy style, and will be replaced to
--	 * modern style (= snd_soc_dai_link_component) in the future,
--	 * but, not yet supported so far.
--	 * If modern style was supported for CPU, all driver will switch
--	 * to use it, and, legacy style code will be removed from ALSA SoC.
--	 */
- 	/*
- 	 * You MAY specify the link's CPU-side device, either by device name,
- 	 * or by DT/OF node, but not both. If this information is omitted,
-@@ -918,60 +907,27 @@ struct snd_soc_dai_link {
- 	 * must be globally unique. These fields are currently typically used
- 	 * only for codec to codec links, or systems using device tree.
- 	 */
--	const char *cpu_name;
--	struct device_node *cpu_of_node;
- 	/*
- 	 * You MAY specify the DAI name of the CPU DAI. If this information is
- 	 * omitted, the CPU-side DAI is matched using .cpu_name/.cpu_of_node
- 	 * only, which only works well when that device exposes a single DAI.
- 	 */
--	const char *cpu_dai_name;
--
- 	struct snd_soc_dai_link_component *cpus;
- 	unsigned int num_cpus;
- 
--	/*
--	 *	codec_name
--	 *	codec_of_node
--	 *	codec_dai_name
--	 *
--	 * These are legacy style, it will be converted to modern style
--	 * (= snd_soc_dai_link_component) automatically in soc-core
--	 * if driver is using legacy style.
--	 * Driver shouldn't use both legacy and modern style in the same time.
--	 * If modern style was supported for CPU, all driver will switch
--	 * to use it, and, legacy style code will be removed from ALSA SoC.
--	 */
- 	/*
- 	 * You MUST specify the link's codec, either by device name, or by
- 	 * DT/OF node, but not both.
- 	 */
--	const char *codec_name;
--	struct device_node *codec_of_node;
- 	/* You MUST specify the DAI name within the codec */
--	const char *codec_dai_name;
--
- 	struct snd_soc_dai_link_component *codecs;
- 	unsigned int num_codecs;
- 
--	/*
--	 *	platform_name
--	 *	platform_of_node
--	 *
--	 * These are legacy style, it will be converted to modern style
--	 * (= snd_soc_dai_link_component) automatically in soc-core
--	 * if driver is using legacy style.
--	 * Driver shouldn't use both legacy and modern style in the same time.
--	 * If modern style was supported for CPU, all driver will switch
--	 * to use it, and, legacy style code will be removed from ALSA SoC.
--	 */
- 	/*
- 	 * You MAY specify the link's platform/PCM/DMA driver, either by
- 	 * device name, or by DT/OF node, but not both. Some forms of link
- 	 * do not need a platform.
- 	 */
--	const char *platform_name;
--	struct device_node *platform_of_node;
- 	struct snd_soc_dai_link_component *platforms;
- 	unsigned int num_platforms;
- 
-@@ -1033,13 +989,6 @@ struct snd_soc_dai_link {
- 	/* Do not create a PCM for this DAI link (Backend link) */
- 	unsigned int ignore:1;
- 
--	/*
--	 * This driver uses legacy platform naming. Set by the core, machine
--	 * drivers should not modify this value.
--	 */
--	unsigned int legacy_platform:1;
--	unsigned int legacy_cpu:1;
--
- 	struct list_head list; /* DAI link list of the soc card */
- 	struct snd_soc_dobj dobj; /* For topology */
- };
-@@ -1699,15 +1648,11 @@ int snd_soc_fixup_dai_links_platform_name(struct snd_soc_card *card,
- 		if (!name)
- 			return -ENOMEM;
- 
--		if (dai_link->platforms)
--			/* only single platform is supported for now */
--			dai_link->platforms->name = name;
--		else
--			/*
--			 * legacy mode, this case will be removed when all
--			 * derivers are switched to modern style dai_link.
--			 */
--			dai_link->platform_name = name;
-+		if (!dai_link->platforms)
-+			return -EINVAL;
-+
-+		/* only single platform is supported for now */
-+		dai_link->platforms->name = name;
- 	}
- 
- 	return 0;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9bd6b08d79b5..f8426c8120b2 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1053,167 +1053,18 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 	}
- }
- 
--static int snd_soc_init_cpu(struct snd_soc_card *card,
--			    struct snd_soc_dai_link *dai_link)
--{
--	struct snd_soc_dai_link_component *cpu = dai_link->cpus;
--
--	/*
--	 * REMOVE ME
--	 *
--	 * This is glue code for Legacy vs Modern dai_link.
--	 * This function will be removed if all derivers are switched to
--	 * modern style dai_link.
--	 * Driver shouldn't use both legacy and modern style in the same time.
--	 * see
--	 *	soc.h :: struct snd_soc_dai_link
--	 */
--	/* convert Legacy platform link */
--	if (!cpu) {
--		cpu = devm_kzalloc(card->dev,
--				   sizeof(struct snd_soc_dai_link_component),
--				   GFP_KERNEL);
--		if (!cpu)
--			return -ENOMEM;
--
--		dai_link->cpus		= cpu;
--		dai_link->num_cpus	= 1;
--		dai_link->legacy_cpu	= 1;
--
--		cpu->name	= dai_link->cpu_name;
--		cpu->of_node	= dai_link->cpu_of_node;
--		cpu->dai_name	= dai_link->cpu_dai_name;
--	}
--
--	if (!dai_link->cpus) {
--		dev_err(card->dev, "ASoC: DAI link has no CPUs\n");
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int snd_soc_init_platform(struct snd_soc_card *card,
--				 struct snd_soc_dai_link *dai_link)
--{
--	struct snd_soc_dai_link_component *platform = dai_link->platforms;
--
--	/*
--	 * REMOVE ME
--	 *
--	 * This is glue code for Legacy vs Modern dai_link.
--	 * This function will be removed if all derivers are switched to
--	 * modern style dai_link.
--	 * Driver shouldn't use both legacy and modern style in the same time.
--	 * see
--	 *	soc.h :: struct snd_soc_dai_link
--	 */
--	/* convert Legacy platform link */
--	if (!platform) {
--		platform = devm_kzalloc(card->dev,
--				sizeof(struct snd_soc_dai_link_component),
--				GFP_KERNEL);
--		if (!platform)
--			return -ENOMEM;
--
--		dai_link->platforms	  = platform;
--		dai_link->num_platforms	  = 1;
--		dai_link->legacy_platform = 1;
--		platform->name		  = dai_link->platform_name;
--		platform->of_node	  = dai_link->platform_of_node;
--		platform->dai_name	  = NULL;
--	}
--
--	/* if there's no platform we match on the empty platform */
--	if (!platform->name &&
--	    !platform->of_node)
--		platform->name = "snd-soc-dummy";
--
--	return 0;
--}
--
--static void soc_cleanup_legacy(struct snd_soc_card *card)
--{
--	struct snd_soc_dai_link *link;
--	int i;
--	/*
--	 * FIXME
--	 *
--	 * this function should be removed with snd_soc_init_platform
--	 */
--
--	for_each_card_prelinks(card, i, link) {
--		if (link->legacy_platform) {
--			link->legacy_platform = 0;
--			link->platforms       = NULL;
--		}
--		if (link->legacy_cpu) {
--			link->legacy_cpu = 0;
--			link->cpus = NULL;
--		}
--	}
--}
--
--static int snd_soc_init_multicodec(struct snd_soc_card *card,
--				   struct snd_soc_dai_link *dai_link)
--{
--	/*
--	 * REMOVE ME
--	 *
--	 * This is glue code for Legacy vs Modern dai_link.
--	 * This function will be removed if all derivers are switched to
--	 * modern style dai_link.
--	 * Driver shouldn't use both legacy and modern style in the same time.
--	 * see
--	 *	soc.h :: struct snd_soc_dai_link
--	 */
--
--	/* Legacy codec/codec_dai link is a single entry in multicodec */
--	if (dai_link->codec_name || dai_link->codec_of_node ||
--	    dai_link->codec_dai_name) {
--		dai_link->num_codecs = 1;
--
--		dai_link->codecs = devm_kzalloc(card->dev,
--				sizeof(struct snd_soc_dai_link_component),
--				GFP_KERNEL);
--		if (!dai_link->codecs)
--			return -ENOMEM;
--
--		dai_link->codecs[0].name = dai_link->codec_name;
--		dai_link->codecs[0].of_node = dai_link->codec_of_node;
--		dai_link->codecs[0].dai_name = dai_link->codec_dai_name;
--	}
--
--	if (!dai_link->codecs) {
--		dev_err(card->dev, "ASoC: DAI link has no CODECs\n");
--		return -EINVAL;
--	}
--
--	return 0;
--}
-+static struct snd_soc_dai_link_component dummy_link = COMP_DUMMY();
- 
- static int soc_init_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *link)
- {
--	int i, ret;
-+	int i;
- 	struct snd_soc_dai_link_component *codec;
- 
--	ret = snd_soc_init_cpu(card, link);
--	if (ret) {
--		dev_err(card->dev, "ASoC: failed to init cpu\n");
--		return ret;
--	}
--
--	ret = snd_soc_init_platform(card, link);
--	if (ret) {
--		dev_err(card->dev, "ASoC: failed to init multiplatform\n");
--		return ret;
--	}
--
--	ret = snd_soc_init_multicodec(card, link);
--	if (ret) {
--		dev_err(card->dev, "ASoC: failed to init multicodec\n");
--		return ret;
-+	/* default Platform */
-+	if (!link->platforms || !link->num_platforms) {
-+		link->platforms = &dummy_link;
-+		link->num_platforms = 1;
- 	}
- 
- 	for_each_link_codecs(link, i, codec) {
-@@ -2060,7 +1911,7 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 				 card->dai_link[i].name);
- 
- 			/* override platform component */
--			if (snd_soc_init_platform(card, dai_link) < 0) {
-+			if (!dai_link->platforms) {
- 				dev_err(card->dev, "init platform error");
- 				continue;
- 			}
-@@ -2111,7 +1962,6 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
- 	/* remove and free each DAI */
- 	soc_remove_dai_links(card);
- 	soc_remove_pcm_runtimes(card);
--	soc_cleanup_legacy(card);
- 
- 	/* remove auxiliary devices */
- 	soc_remove_aux_devices(card);
-@@ -2868,7 +2718,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 
- 		ret = soc_init_dai_link(card, link);
- 		if (ret) {
--			soc_cleanup_legacy(card);
- 			dev_err(card->dev, "ASoC: failed to init link %s\n",
- 				link->name);
- 			mutex_unlock(&client_mutex);
+-		format = 2147483648; /* 2^24 * 128 */
++		format = 2147483648U; /* 2^24 * 128 */
+ 		r0_integer = format / rt1011->r0_reg / 128;
+ 		r0_factor = ((format / rt1011->r0_reg * 100) / 128)
+ 						- (r0_integer * 100);
+@@ -2120,7 +2120,7 @@ static int rt1011_calibrate(struct rt1011_priv *rt1011, unsigned char cali_flag)
+ 			dev_err(dev,	"Calibrate R0 Failure\n");
+ 			ret = -EAGAIN;
+ 		} else {
+-			format = 2147483648; /* 2^24 * 128 */
++			format = 2147483648U; /* 2^24 * 128 */
+ 			r0_integer = format / r0[0] / 128;
+ 			r0_factor = ((format / r0[0] * 100) / 128)
+ 							- (r0_integer * 100);
 -- 
 2.20.1
