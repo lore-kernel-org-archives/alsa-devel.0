@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: imx-audmix: use modern dai_link
+Subject: Applied "ASoC: fsl: imx-mc13783: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:28 +0100 (BST)
-Message-ID: <20190606212628.D4819440046@finisterre.sirena.org.uk>
-References: <87wohzgy5y.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:29 +0100 (BST)
+Message-ID: <20190606212629.E6975440046@finisterre.sirena.org.uk>
+References: <87zhmvgy6b.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE8CEF89786
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:29 +0200 (CEST)
-In-Reply-To: <87wohzgy5y.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A83E8F8978D
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:30 +0200 (CEST)
+In-Reply-To: <87zhmvgy6b.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: imx-audmix: use modern dai_link style
+   ASoC: fsl: imx-mc13783: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 79782e283ed3df04bfb77129091f1d6726987f1e Mon Sep 17 00:00:00 2001
+>From 8a147e503dd622fe744759bf6199b2a6da45e893 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:16:20 +0900
-Subject: [PATCH] ASoC: fsl: imx-audmix: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:16:08 +0900
+Subject: [PATCH] ASoC: fsl: imx-mc13783: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,81 +67,36 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-audmix.c | 45 +++++++++++++++++++++++++++++---------
- 1 file changed, 35 insertions(+), 10 deletions(-)
+ sound/soc/fsl/imx-mc13783.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 9aaf3e5b45b9..9e1cb18859ce 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -205,6 +205,15 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+index 545815a27074..2b679680c93f 100644
+--- a/sound/soc/fsl/imx-mc13783.c
++++ b/sound/soc/fsl/imx-mc13783.c
+@@ -46,17 +46,19 @@ static const struct snd_soc_ops imx_mc13783_hifi_ops = {
+ 	.hw_params = imx_mc13783_hifi_hw_params,
+ };
  
- 	for (i = 0; i < num_dai; i++) {
-+		struct snd_soc_dai_link_component *dlc;
++SND_SOC_DAILINK_DEFS(hifi,
++	DAILINK_COMP_ARRAY(COMP_CPU("imx-ssi.0")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("mc13783-codec", "mc13783-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("imx-ssi.0")));
 +
-+		/* for CPU/Codec/Platform x 2 */
-+		dlc = devm_kzalloc(&pdev->dev, 6 * sizeof(*dlc), GFP_KERNEL);
-+		if (!dlc) {
-+			dev_err(&pdev->dev, "failed to allocate dai_link\n");
-+			return -ENOMEM;
-+		}
-+
- 		ret = of_parse_phandle_with_args(audmix_np, "dais", NULL, i,
- 						 &args);
- 		if (ret < 0) {
-@@ -231,13 +240,21 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 					       dai_name, "CPU-Capture");
- 		}
+ static struct snd_soc_dai_link imx_mc13783_dai_mc13783[] = {
+ 	{
+ 		.name = "MC13783",
+ 		.stream_name	 = "Sound",
+-		.codec_dai_name	 = "mc13783-hifi",
+-		.codec_name	 = "mc13783-codec",
+-		.cpu_dai_name	 = "imx-ssi.0",
+-		.platform_name	 = "imx-ssi.0",
+ 		.ops		 = &imx_mc13783_hifi_ops,
+ 		.symmetric_rates = 1,
+ 		.dai_fmt 	 = FMT_SSI,
++		SND_SOC_DAILINK_REG(hifi),
+ 	},
+ };
  
-+		priv->dai[i].cpus = &dlc[0];
-+		priv->dai[i].codecs = &dlc[1];
-+		priv->dai[i].platforms = &dlc[2];
-+
-+		priv->dai[i].num_cpus = 1;
-+		priv->dai[i].num_codecs = 1;
-+		priv->dai[i].num_platforms = 1;
-+
- 		priv->dai[i].name = dai_name;
- 		priv->dai[i].stream_name = "HiFi-AUDMIX-FE";
--		priv->dai[i].codec_dai_name = "snd-soc-dummy-dai";
--		priv->dai[i].codec_name = "snd-soc-dummy";
--		priv->dai[i].cpu_of_node = args.np;
--		priv->dai[i].cpu_dai_name = dev_name(&cpu_pdev->dev);
--		priv->dai[i].platform_of_node = args.np;
-+		priv->dai[i].codecs->dai_name = "snd-soc-dummy-dai";
-+		priv->dai[i].codecs->name = "snd-soc-dummy";
-+		priv->dai[i].cpus->of_node = args.np;
-+		priv->dai[i].cpus->dai_name = dev_name(&cpu_pdev->dev);
-+		priv->dai[i].platforms->of_node = args.np;
- 		priv->dai[i].dynamic = 1;
- 		priv->dai[i].dpcm_playback = 1;
- 		priv->dai[i].dpcm_capture = (i == 0 ? 1 : 0);
-@@ -252,12 +269,20 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		be_cp = devm_kasprintf(&pdev->dev, GFP_KERNEL,
- 				       "AUDMIX-Capture-%d", i);
- 
-+		priv->dai[num_dai + i].cpus = &dlc[3];
-+		priv->dai[num_dai + i].codecs = &dlc[4];
-+		priv->dai[num_dai + i].platforms = &dlc[5];
-+
-+		priv->dai[num_dai + i].num_cpus = 1;
-+		priv->dai[num_dai + i].num_codecs = 1;
-+		priv->dai[num_dai + i].num_platforms = 1;
-+
- 		priv->dai[num_dai + i].name = be_name;
--		priv->dai[num_dai + i].codec_dai_name = "snd-soc-dummy-dai";
--		priv->dai[num_dai + i].codec_name = "snd-soc-dummy";
--		priv->dai[num_dai + i].cpu_of_node = audmix_np;
--		priv->dai[num_dai + i].cpu_dai_name = be_name;
--		priv->dai[num_dai + i].platform_name = "snd-soc-dummy";
-+		priv->dai[num_dai + i].codecs->dai_name = "snd-soc-dummy-dai";
-+		priv->dai[num_dai + i].codecs->name = "snd-soc-dummy";
-+		priv->dai[num_dai + i].cpus->of_node = audmix_np;
-+		priv->dai[num_dai + i].cpus->dai_name = be_name;
-+		priv->dai[num_dai + i].platforms->name = "snd-soc-dummy";
- 		priv->dai[num_dai + i].no_pcm = 1;
- 		priv->dai[num_dai + i].dpcm_playback = 1;
- 		priv->dai[num_dai + i].dpcm_capture  = 1;
 -- 
 2.20.1
