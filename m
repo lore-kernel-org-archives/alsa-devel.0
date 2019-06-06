@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: tobermory: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:07 +0100 (BST)
-Message-ID: <20190606212707.8AB67440046@finisterre.sirena.org.uk>
-References: <87o93bl66i.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: samsung: arndale_rt5631: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:08 +0100 (BST)
+Message-ID: <20190606212708.1B994440049@finisterre.sirena.org.uk>
+References: <87pnnrl66o.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 519BAF897F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B953AF897F3
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:08 +0200 (CEST)
-In-Reply-To: <87o93bl66i.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87pnnrl66o.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: tobermory: use modern dai_link style
+   ASoC: samsung: arndale_rt5631: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 19bca225e7202710529a14e916a783b1aa42720b Mon Sep 17 00:00:00 2001
+>From 930f74a171f5f3a5acc551568c6a1515344ceef1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:09:36 +0900
-Subject: [PATCH] ASoC: samsung: tobermory: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:09:30 +0900
+Subject: [PATCH] ASoC: samsung: arndale_rt5631: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,36 +67,68 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/tobermory.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/samsung/arndale_rt5631.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
-index 14b11acb12a4..ef51f289fbc7 100644
---- a/sound/soc/samsung/tobermory.c
-+++ b/sound/soc/samsung/tobermory.c
-@@ -109,17 +109,19 @@ static struct snd_soc_ops tobermory_ops = {
- 	.hw_params = tobermory_hw_params,
+diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
+index cc334e1866f6..c213913eb984 100644
+--- a/sound/soc/samsung/arndale_rt5631.c
++++ b/sound/soc/samsung/arndale_rt5631.c
+@@ -50,15 +50,20 @@ static struct snd_soc_ops arndale_ops = {
+ 	.hw_params = arndale_hw_params,
  };
  
-+SND_SOC_DAILINK_DEFS(cpu,
-+	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.0")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8962.1-001a", "wm8962")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
++SND_SOC_DAILINK_DEFS(rt5631_hifi,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
- static struct snd_soc_dai_link tobermory_dai[] = {
+ static struct snd_soc_dai_link arndale_rt5631_dai[] = {
  	{
- 		.name = "CPU",
- 		.stream_name = "CPU",
--		.cpu_dai_name = "samsung-i2s.0",
--		.codec_dai_name = "wm8962",
--		.platform_name = "samsung-i2s.0",
--		.codec_name = "wm8962.1-001a",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.ops = &tobermory_ops,
-+		SND_SOC_DAILINK_REG(cpu),
+ 		.name = "RT5631 HiFi",
+ 		.stream_name = "Primary",
+-		.codec_dai_name = "rt5631-hifi",
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S
+ 			| SND_SOC_DAIFMT_NB_NF
+ 			| SND_SOC_DAIFMT_CBS_CFS,
+ 		.ops = &arndale_ops,
++		SND_SOC_DAILINK_REG(rt5631_hifi),
  	},
  };
  
+@@ -78,24 +83,24 @@ static int arndale_audio_probe(struct platform_device *pdev)
+ 	card->dev = &pdev->dev;
+ 
+ 	for (n = 0; np && n < ARRAY_SIZE(arndale_rt5631_dai); n++) {
+-		if (!arndale_rt5631_dai[n].cpu_dai_name) {
+-			arndale_rt5631_dai[n].cpu_of_node = of_parse_phandle(np,
++		if (!arndale_rt5631_dai[n].cpus->dai_name) {
++			arndale_rt5631_dai[n].cpus->of_node = of_parse_phandle(np,
+ 					"samsung,audio-cpu", n);
+ 
+-			if (!arndale_rt5631_dai[n].cpu_of_node) {
++			if (!arndale_rt5631_dai[n].cpus->of_node) {
+ 				dev_err(&pdev->dev,
+ 				"Property 'samsung,audio-cpu' missing or invalid\n");
+ 				return -EINVAL;
+ 			}
+ 		}
+-		if (!arndale_rt5631_dai[n].platform_name)
+-			arndale_rt5631_dai[n].platform_of_node =
+-					arndale_rt5631_dai[n].cpu_of_node;
++		if (!arndale_rt5631_dai[n].platforms->name)
++			arndale_rt5631_dai[n].platforms->of_node =
++					arndale_rt5631_dai[n].cpus->of_node;
+ 
+-		arndale_rt5631_dai[n].codec_name = NULL;
+-		arndale_rt5631_dai[n].codec_of_node = of_parse_phandle(np,
++		arndale_rt5631_dai[n].codecs->name = NULL;
++		arndale_rt5631_dai[n].codecs->of_node = of_parse_phandle(np,
+ 					"samsung,audio-codec", n);
+-		if (!arndale_rt5631_dai[0].codec_of_node) {
++		if (!arndale_rt5631_dai[0].codecs->of_node) {
+ 			dev_err(&pdev->dev,
+ 			"Property 'samsung,audio-codec' missing or invalid\n");
+ 			return -EINVAL;
 -- 
 2.20.1
