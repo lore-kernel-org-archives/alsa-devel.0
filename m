@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: skl-pcm: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:25:58 +0100 (BST)
-Message-ID: <20190606212558.7895A440046@finisterre.sirena.org.uk>
-References: <87r287e4rv.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: skl_hda_dsp_common: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:25:57 +0100 (BST)
+Message-ID: <20190606212557.D55CE440049@finisterre.sirena.org.uk>
+References: <87pnnre4ri.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F2E3F896F8
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:25:59 +0200 (CEST)
-In-Reply-To: <87r287e4rv.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F367F896F7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:25:58 +0200 (CEST)
+In-Reply-To: <87pnnre4ri.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: skl-pcm: use modern dai_link style
+   ASoC: Intel: skl_hda_dsp_common: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2bfa8c35d90c2f3f6fc1814d37bc80f13246a762 Mon Sep 17 00:00:00 2001
+>From a78959f407e66b2f74fb72b47b252f4ed8b1671e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:21:51 +0900
-Subject: [PATCH] ASoC: Intel: skl-pcm: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:22:04 +0900
+Subject: [PATCH] ASoC: Intel: skl_hda_dsp_common: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,21 +67,154 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/skl_hda_dsp_common.c  | 66 ++++++++++++--------
+ sound/soc/intel/boards/skl_hda_dsp_generic.c |  4 +-
+ 2 files changed, 43 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 9735e2412251..edc5ecfc0b55 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1085,7 +1085,7 @@ static int skl_platform_open(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
+index 82f10bf2abb2..55fd82e05e2c 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
+@@ -38,77 +38,93 @@ int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device)
+ 	return 0;
+ }
  
- 	dev_dbg(rtd->cpu_dai->dev, "In %s:%s\n", __func__,
--					dai_link->cpu_dai_name);
-+					dai_link->cpus->dai_name);
++SND_SOC_DAILINK_DEFS(idisp1,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
++
++SND_SOC_DAILINK_DEFS(idisp2,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi2")));
++
++SND_SOC_DAILINK_DEFS(idisp3,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
++
++SND_SOC_DAILINK_DEF(analog_cpu,
++	DAILINK_COMP_ARRAY(COMP_CPU("Analog CPU DAI")));
++SND_SOC_DAILINK_DEF(analog_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D0", "Analog Codec DAI")));
++
++SND_SOC_DAILINK_DEF(digital_cpu,
++	DAILINK_COMP_ARRAY(COMP_CPU("Digital CPU DAI")));
++SND_SOC_DAILINK_DEF(digital_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D0", "Digital Codec DAI")));
++
++SND_SOC_DAILINK_DEF(dmic_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
++
++SND_SOC_DAILINK_DEF(dmic_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++
++SND_SOC_DAILINK_DEF(dmic16k,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC16k Pin")));
++
++SND_SOC_DAILINK_DEF(platform,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:1f.3")));
++
+ /* skl_hda_digital audio interface glue - connects codec <--> CPU */
+ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+ 	/* Back End DAI links */
+ 	{
+ 		.name = "iDisp1",
+ 		.id = 1,
+-		.cpu_dai_name = "iDisp1 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi1",
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp1),
+ 	},
+ 	{
+ 		.name = "iDisp2",
+ 		.id = 2,
+-		.cpu_dai_name = "iDisp2 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi2",
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp2),
+ 	},
+ 	{
+ 		.name = "iDisp3",
+ 		.id = 3,
+-		.cpu_dai_name = "iDisp3 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi3",
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp3),
+ 	},
+ 	{
+ 		.name = "Analog Playback and Capture",
+ 		.id = 4,
+-		.cpu_dai_name = "Analog CPU DAI",
+-		.codec_name = "ehdaudio0D0",
+-		.codec_dai_name = "Analog Codec DAI",
+-		.platform_name = "0000:00:1f.3",
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(analog_cpu, analog_codec, platform),
+ 	},
+ 	{
+ 		.name = "Digital Playback and Capture",
+ 		.id = 5,
+-		.cpu_dai_name = "Digital CPU DAI",
+-		.codec_name = "ehdaudio0D0",
+-		.codec_dai_name = "Digital Codec DAI",
+-		.platform_name = "0000:00:1f.3",
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(digital_cpu, digital_codec, platform),
+ 	},
+ 	{
+ 		.name = "dmic01",
+ 		.id = 6,
+-		.cpu_dai_name = "DMIC01 Pin",
+-		.codec_name = "dmic-codec",
+-		.codec_dai_name = "dmic-hifi",
+-		.platform_name = "0000:00:1f.3",
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
+ 	},
+ 	{
+ 		.name = "dmic16k",
+ 		.id = 7,
+-		.cpu_dai_name = "DMIC16k Pin",
+-		.codec_name = "dmic-codec",
+-		.codec_dai_name = "dmic-hifi",
+-		.platform_name = "0000:00:1f.3",
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic16k, dmic_codec, platform),
+ 	},
+ };
  
- 	snd_soc_set_runtime_hwparams(substream, &azx_pcm_hw);
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index fc52d3a32354..9ed68eb4f058 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -69,7 +69,7 @@ skl_hda_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
+ 	int ret = 0;
  
+ 	dev_dbg(card->dev, "%s: dai link name - %s\n", __func__, link->name);
+-	link->platform_name = ctx->platform_name;
++	link->platforms->name = ctx->platform_name;
+ 	link->nonatomic = 1;
+ 
+ 	if (strstr(link->name, "HDMI")) {
+@@ -142,7 +142,7 @@ static int skl_hda_fill_card_info(struct snd_soc_acpi_mach_params *mach_params)
+ 	card->num_dapm_routes = num_route;
+ 
+ 	for_each_card_prelinks(card, i, dai_link)
+-		dai_link->platform_name = mach_params->platform;
++		dai_link->platforms->name = mach_params->platform;
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
