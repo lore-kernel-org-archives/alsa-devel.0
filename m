@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: osk5912: use modern dai_link style"
+Subject: Applied "ASoC: pxa: spitz: use modern dai_link style"
 	to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:48 +0100 (BST)
-Message-ID: <20190606212649.04CEB440049@finisterre.sirena.org.uk>
-References: <87d0jrjrgv.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:51 +0100 (BST)
+Message-ID: <20190606212651.39824440046@finisterre.sirena.org.uk>
+References: <87imtjjrhd.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B23DEF897C1
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:49 +0200 (CEST)
-In-Reply-To: <87d0jrjrgv.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEBC2F897CF
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:51 +0200 (CEST)
+In-Reply-To: <87imtjjrhd.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: osk5912: use modern dai_link style
+   ASoC: pxa: spitz: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5cffc237432d47084add97e42f13dbd055c107a8 Mon Sep 17 00:00:00 2001
+>From 196a521a3c86eb627004cf6b420cd7b2f6c587a0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:12:43 +0900
-Subject: [PATCH] ASoC: ti: osk5912: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:12:25 +0900
+Subject: [PATCH] ASoC: pxa: spitz: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,36 +67,35 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/osk5912.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/soc/pxa/spitz.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/ti/osk5912.c b/sound/soc/ti/osk5912.c
-index e4096779ca05..0144f91f4778 100644
---- a/sound/soc/ti/osk5912.c
-+++ b/sound/soc/ti/osk5912.c
-@@ -91,16 +91,19 @@ static const struct snd_soc_dapm_route audio_map[] = {
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 1671da648e95..7973466b0948 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -257,16 +257,18 @@ static const struct snd_kcontrol_new wm8750_spitz_controls[] = {
  };
  
- /* Digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEFS(aic23,
-+	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.1")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("tlv320aic23-codec",
-+				      "tlv320aic23-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.1")));
+ /* spitz digital audio interface glue - connects codec <--> CPU */
++SND_SOC_DAILINK_DEFS(wm8750,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8750.0-001b", "wm8750-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
- static struct snd_soc_dai_link osk_dai = {
- 	.name = "TLV320AIC23",
- 	.stream_name = "AIC23",
--	.cpu_dai_name = "omap-mcbsp.1",
--	.codec_dai_name = "tlv320aic23-hifi",
--	.platform_name = "omap-mcbsp.1",
--	.codec_name = "tlv320aic23-codec",
- 	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
- 		   SND_SOC_DAIFMT_CBM_CFM,
- 	.ops = &osk_ops,
-+	SND_SOC_DAILINK_REG(aic23),
+ static struct snd_soc_dai_link spitz_dai = {
+ 	.name = "wm8750",
+ 	.stream_name = "WM8750",
+-	.cpu_dai_name = "pxa2xx-i2s",
+-	.codec_dai_name = "wm8750-hifi",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_name = "wm8750.0-001b",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &spitz_ops,
++	SND_SOC_DAILINK_REG(wm8750),
  };
  
- /* Audio machine driver */
+ /* spitz audio machine driver */
 -- 
 2.20.1
