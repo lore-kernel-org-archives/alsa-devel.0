@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: atmel-classd: use modern
+Subject: Applied "ASoC: atmel: atmel-wm8904: use modern
 	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:38 +0100 (BST)
-Message-ID: <20190606212638.E9AE9440046@finisterre.sirena.org.uk>
-References: <87muivicu6.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:40 +0100 (BST)
+Message-ID: <20190606212640.19065440046@finisterre.sirena.org.uk>
+References: <87pnnricuf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8736F89741
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:39 +0200 (CEST)
-In-Reply-To: <87muivicu6.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0F0AF897A8
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:40 +0200 (CEST)
+In-Reply-To: <87pnnricuf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: atmel-classd: use modern dai_link style
+   ASoC: atmel: atmel-wm8904: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 3d14a1df7d301eb12592297c4b4ec0a00d76b0f2 Mon Sep 17 00:00:00 2001
+>From 079878be6fea4e5671e9fb9020985e4f2b45289c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:14:04 +0900
-Subject: [PATCH] ASoC: atmel: atmel-classd: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:13:55 +0900
+Subject: [PATCH] ASoC: atmel: atmel-wm8904: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,47 +67,71 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-classd.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ sound/soc/atmel/atmel_wm8904.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 3d70061901a0..cfebbeb92ef1 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -500,17 +500,30 @@ static int atmel_classd_asoc_card_init(struct device *dev,
- {
- 	struct snd_soc_dai_link *dai_link;
- 	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai_link_component *comp;
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+index fbc10f61eb55..084788ed328c 100644
+--- a/sound/soc/atmel/atmel_wm8904.c
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -57,14 +57,19 @@ static const struct snd_soc_ops atmel_asoc_wm8904_ops = {
+ 	.hw_params = atmel_asoc_wm8904_hw_params,
+ };
  
- 	dai_link = devm_kzalloc(dev, sizeof(*dai_link), GFP_KERNEL);
- 	if (!dai_link)
- 		return -ENOMEM;
++SND_SOC_DAILINK_DEFS(pcm,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8904-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++
+ static struct snd_soc_dai_link atmel_asoc_wm8904_dailink = {
+ 	.name = "WM8904",
+ 	.stream_name = "WM8904 PCM",
+-	.codec_dai_name = "wm8904-hifi",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S
+ 		| SND_SOC_DAIFMT_NB_NF
+ 		| SND_SOC_DAIFMT_CBM_CFM,
+ 	.ops = &atmel_asoc_wm8904_ops,
++	SND_SOC_DAILINK_REG(pcm),
+ };
  
-+	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
-+	if (!comp)
-+		return -ENOMEM;
-+
-+	dai_link->cpus		= &comp[0];
-+	dai_link->codecs	= &comp[1];
-+	dai_link->platforms	= &comp[2];
-+
-+	dai_link->num_cpus	= 1;
-+	dai_link->num_codecs	= 1;
-+	dai_link->num_platforms	= 1;
-+
- 	dai_link->name			= "CLASSD";
- 	dai_link->stream_name		= "CLASSD PCM";
--	dai_link->codec_dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
--	dai_link->cpu_dai_name		= dev_name(dev);
--	dai_link->codec_name		= dev_name(dev);
--	dai_link->platform_name		= dev_name(dev);
-+	dai_link->codecs->dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
-+	dai_link->cpus->dai_name	= dev_name(dev);
-+	dai_link->codecs->name		= dev_name(dev);
-+	dai_link->platforms->name	= dev_name(dev);
+ static struct snd_soc_card atmel_asoc_wm8904_card = {
+@@ -108,8 +113,8 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+ 		ret = -EINVAL;
+ 		return ret;
+ 	}
+-	dailink->cpu_of_node = cpu_np;
+-	dailink->platform_of_node = cpu_np;
++	dailink->cpus->of_node = cpu_np;
++	dailink->platforms->of_node = cpu_np;
+ 	of_node_put(cpu_np);
  
- 	card->dai_link	= dai_link;
- 	card->num_links	= 1;
+ 	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
+@@ -118,7 +123,7 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+ 		ret = -EINVAL;
+ 		return ret;
+ 	}
+-	dailink->codec_of_node = codec_np;
++	dailink->codecs->of_node = codec_np;
+ 	of_node_put(codec_np);
+ 
+ 	return 0;
+@@ -137,7 +142,7 @@ static int atmel_asoc_wm8904_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	id = of_alias_get_id((struct device_node *)dailink->cpu_of_node, "ssc");
++	id = of_alias_get_id((struct device_node *)dailink->cpus->of_node, "ssc");
+ 	ret = atmel_ssc_set_audio(id);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "failed to set SSC %d for audio\n", id);
+@@ -163,7 +168,7 @@ static int atmel_asoc_wm8904_remove(struct platform_device *pdev)
+ 	struct snd_soc_dai_link *dailink = &atmel_asoc_wm8904_dailink;
+ 	int id;
+ 
+-	id = of_alias_get_id((struct device_node *)dailink->cpu_of_node, "ssc");
++	id = of_alias_get_id((struct device_node *)dailink->cpus->of_node, "ssc");
+ 
+ 	snd_soc_unregister_card(card);
+ 	atmel_ssc_put_audio(id);
 -- 
 2.20.1
