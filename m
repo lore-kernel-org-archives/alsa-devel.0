@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_max98090: fix kernel
-	oops with platform_name override" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:25 +0100 (BST)
-Message-ID: <20190606212725.77E2B440046@finisterre.sirena.org.uk>
-References: <20190604200858.4867-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcht_es8316: fix kernel oops
+	with platform_name override" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:24 +0100 (BST)
+Message-ID: <20190606212724.E1C12440049@finisterre.sirena.org.uk>
+References: <20190604200858.4867-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 320ECF8981F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36FB6F8981B
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:26 +0200 (CEST)
-In-Reply-To: <20190604200858.4867-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190604200858.4867-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_max98090: fix kernel oops with platform_name override
+   ASoC: Intel: bytcht_es8316: fix kernel oops with platform_name override
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,42 @@ to this mail.
 Thanks,
 Mark
 
->From fb54555134b9b17835545e4d096b5550c27eed64 Mon Sep 17 00:00:00 2001
+>From 79136a016add1acb690fe8d96be50dd22a143d26 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 4 Jun 2019 15:08:55 -0500
-Subject: [PATCH] ASoC: Intel: cht_bsw_max98090: fix kernel oops with
+Date: Tue, 4 Jun 2019 15:08:56 -0500
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: fix kernel oops with
  platform_name override
 
 The platform override code uses devm_ functions to allocate memory for
 the new name but the card device is not initialized. Fix by moving the
 init earlier.
 
-Fixes: 7e7e24d7c7ff0 ("ASoC: Intel: cht_bsw_max98090_ti: platform name fixup support")
+Fixes: e4bc6b1195f64 ("ASoC: Intel: bytcht_es8316: platform name fixup support")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 2 +-
+ sound/soc/intel/boards/bytcht_es8316.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index c0e0844f75b9..572e336ae0f9 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -454,6 +454,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index e8c585ffd04d..128b57932a92 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -495,6 +495,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  	}
  
  	/* override plaform name, if required */
-+	snd_soc_card_cht.dev = &pdev->dev;
- 	mach = (&pdev->dev)->platform_data;
++	byt_cht_es8316_card.dev = dev;
  	platform_name = mach->mach_params.platform;
  
-@@ -463,7 +464,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		return ret_val;
+ 	ret = snd_soc_fixup_dai_links_platform_name(&byt_cht_es8316_card,
+@@ -575,7 +576,6 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
+ 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
+ 	byt_cht_es8316_card.long_name = long_name;
+-	byt_cht_es8316_card.dev = dev;
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
  
- 	/* register the soc card */
--	snd_soc_card_cht.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
- 
- 	if (drv->quirks & QUIRK_PMC_PLT_CLK_0)
+ 	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
 -- 
 2.20.1
