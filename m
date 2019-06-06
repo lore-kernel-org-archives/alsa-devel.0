@@ -1,30 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Change SR and WSS computation" to the asoc
- tree
-Date: Thu,  6 Jun 2019 22:27:20 +0100 (BST)
-Message-ID: <20190606212720.D7CE5440046@finisterre.sirena.org.uk>
-References: <20190605100801.2488-1-maxime.ripard@bootlin.com>
+Subject: Applied "ASoC: Intel: glk_rt5682_max98357a: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:25:57 +0100 (BST)
+Message-ID: <20190606212557.46BF0440046@finisterre.sirena.org.uk>
+References: <87o93be4rd.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190605100801.2488-1-maxime.ripard@bootlin.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82F9DF896CE
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:25:58 +0200 (CEST)
+In-Reply-To: <87o93be4rd.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Change SR and WSS computation
+   ASoC: Intel: glk_rt5682_max98357a: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -49,203 +55,306 @@ to this mail.
 Thanks,
 Mark
 
->From 619c15f7fac98fbeaae02d76a5529f5026a2b6d7 Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Wed, 5 Jun 2019 12:08:01 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Change SR and WSS computation
+>From 02c31963d156025be6264d88ee42f78091112ca5 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 6 Jun 2019 13:22:09 +0900
+Subject: [PATCH] ASoC: Intel: glk_rt5682_max98357a: use modern dai_link style
 
-The current computation for the SR (sample resolution) and the WSS (word
-slot size) register parameters is based on a switch returning the matching
-parameters for a given params width.
+ASoC is now supporting modern style dai_link
+(= snd_soc_dai_link_component) for CPU/Codec/Platform.
+This patch switches to use it.
 
-Later SoCs (A83t, H3, A64) changed that calculation, which was loosely the
-same with an offset. Therefore, an offset was added to adjust those
-parameters.
-
-However, the calculation is a bit less trivial than initially thought.
-Indeed, while we assumed that SR and WSS were always the same, on older
-SoCs, SR will max at 24 (since those SoCs do not support 32 bits formats),
-but the word size can be 32.
-
-Newer SoCs can also support a much larger range (8 bits to 32 bits, by
-increments of 4) of size than the older SoCs could.
-
-Finally, the A64 and A83t were never adjusted to have that offset in the
-first place, and were therefore broken from that point of view.
-
-In order to fix all those issues, let's introduce two functions, get_wss
-and get_sr, with their respective implementations for all the SoCs
-supported so far.
-
-Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
-Fixes: 66ecce332538 ("ASoC: sun4i-i2s: Add compatibility with A64 codec I2S")
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 71 ++++++++++++++++++++++++++++---------
- 1 file changed, 55 insertions(+), 16 deletions(-)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 137 ++++++++++--------
+ 1 file changed, 77 insertions(+), 60 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d5ec1a20499d..03696f880080 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -118,6 +118,8 @@
- #define SUN8I_I2S_RX_CHAN_SEL_REG	0x54
- #define SUN8I_I2S_RX_CHAN_MAP_REG	0x58
- 
-+struct sun4i_i2s;
-+
- /**
-  * struct sun4i_i2s_quirks - Differences between SoC variants.
-  *
-@@ -131,7 +133,6 @@
-  * @sun4i_i2s_regmap: regmap config to use.
-  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
-- * @fmt_offset: Value by which wss and sr needs to be adjusted.
-  * @field_clkdiv_mclk_en: regmap field to enable mclk output.
-  * @field_fmt_wss: regmap field to set word select size.
-  * @field_fmt_sr: regmap field to set sample resolution.
-@@ -154,7 +155,6 @@ struct sun4i_i2s_quirks {
- 	const struct regmap_config	*sun4i_i2s_regmap;
- 	unsigned int			mclk_offset;
- 	unsigned int			bclk_offset;
--	unsigned int			fmt_offset;
- 
- 	/* Register fields for i2s */
- 	struct reg_field		field_clkdiv_mclk_en;
-@@ -167,6 +167,9 @@ struct sun4i_i2s_quirks {
- 	struct reg_field		field_rxchanmap;
- 	struct reg_field		field_txchansel;
- 	struct reg_field		field_rxchansel;
-+
-+	s8	(*get_sr)(const struct sun4i_i2s *, int);
-+	s8	(*get_wss)(const struct sun4i_i2s *, int);
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index 7180100a9084..bd2d371f2acd 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -317,152 +317,180 @@ static const struct snd_soc_ops geminilake_refcap_ops = {
+ 	.startup = geminilake_refcap_startup,
  };
  
- struct sun4i_i2s {
-@@ -349,6 +352,39 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
-+{
-+	if (width < 16 || width > 24)
-+		return -EINVAL;
++SND_SOC_DAILINK_DEF(dummy,
++	DAILINK_COMP_ARRAY(COMP_DUMMY()));
 +
-+	if (width % 4)
-+		return -EINVAL;
++SND_SOC_DAILINK_DEF(system,
++	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
 +
-+	return (width - 16) / 4;
-+}
++SND_SOC_DAILINK_DEF(system2,
++	DAILINK_COMP_ARRAY(COMP_CPU("System Pin2")));
 +
-+static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
-+{
-+	if (width < 16 || width > 32)
-+		return -EINVAL;
++SND_SOC_DAILINK_DEF(echoref,
++	DAILINK_COMP_ARRAY(COMP_CPU("Echoref Pin")));
 +
-+	if (width % 4)
-+		return -EINVAL;
++SND_SOC_DAILINK_DEF(reference,
++	DAILINK_COMP_ARRAY(COMP_CPU("Reference Pin")));
 +
-+	return (width - 16) / 4;
-+}
++SND_SOC_DAILINK_DEF(dmic,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
 +
-+static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
-+{
-+	if (width % 4)
-+		return -EINVAL;
++SND_SOC_DAILINK_DEF(hdmi1,
++	DAILINK_COMP_ARRAY(COMP_CPU("HDMI1 Pin")));
 +
-+	if (width < 8 || width > 32)
-+		return -EINVAL;
++SND_SOC_DAILINK_DEF(hdmi2,
++	DAILINK_COMP_ARRAY(COMP_CPU("HDMI2 Pin")));
 +
-+	return (width - 8) / 4 + 1;
-+}
++SND_SOC_DAILINK_DEF(hdmi3,
++	DAILINK_COMP_ARRAY(COMP_CPU("HDMI3 Pin")));
 +
- static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params,
- 			       struct snd_soc_dai *dai)
-@@ -400,22 +436,16 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	i2s->playback_dma_data.addr_width = width;
- 
--	switch (params_width(params)) {
--	case 16:
--		sr = 0;
--		wss = 0;
--		break;
-+	sr = i2s->variant->get_sr(i2s, params_width(params));
-+	if (sr < 0)
-+		return -EINVAL;
- 
--	default:
--		dev_err(dai->dev, "Unsupported sample width: %d\n",
--			params_width(params));
-+	wss = i2s->variant->get_wss(i2s, params_width(params));
-+	if (wss < 0)
- 		return -EINVAL;
--	}
- 
--	regmap_field_write(i2s->field_fmt_wss,
--			   wss + i2s->variant->fmt_offset);
--	regmap_field_write(i2s->field_fmt_sr,
--			   sr + i2s->variant->fmt_offset);
-+	regmap_field_write(i2s->field_fmt_wss, wss);
-+	regmap_field_write(i2s->field_fmt_sr, sr);
- 
- 	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
- 				      params_width(params));
-@@ -891,6 +921,8 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
- 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+	.get_sr			= sun4i_i2s_get_sr,
-+	.get_wss		= sun4i_i2s_get_wss,
++SND_SOC_DAILINK_DEF(ssp1_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
++SND_SOC_DAILINK_DEF(ssp1_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC(MAXIM_DEV0_NAME,
++				      GLK_MAXIM_CODEC_DAI)));
++
++SND_SOC_DAILINK_DEF(ssp2_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSP2 Pin")));
++SND_SOC_DAILINK_DEF(ssp2_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00",
++				      GLK_REALTEK_CODEC_DAI)));
++
++SND_SOC_DAILINK_DEF(dmic_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
++SND_SOC_DAILINK_DEF(dmic_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++
++SND_SOC_DAILINK_DEF(idisp1_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
++SND_SOC_DAILINK_DEF(idisp1_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
++
++SND_SOC_DAILINK_DEF(idisp2_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
++SND_SOC_DAILINK_DEF(idisp2_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi2")));
++
++SND_SOC_DAILINK_DEF(idisp3_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")));
++SND_SOC_DAILINK_DEF(idisp3_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
++
++SND_SOC_DAILINK_DEF(platform,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:0e.0")));
++
+ /* geminilake digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link geminilake_dais[] = {
+ 	/* Front End DAI links */
+ 	[GLK_DPCM_AUDIO_PB] = {
+ 		.name = "Glk Audio Port",
+ 		.stream_name = "Audio",
+-		.cpu_dai_name = "System Pin",
+-		.platform_name = "0000:00:0e.0",
+ 		.dynamic = 1,
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.nonatomic = 1,
+ 		.init = geminilake_rt5682_fe_init,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.dpcm_playback = 1,
++		SND_SOC_DAILINK_REG(system, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_CP] = {
+ 		.name = "Glk Audio Capture Port",
+ 		.stream_name = "Audio Record",
+-		.cpu_dai_name = "System Pin",
+-		.platform_name = "0000:00:0e.0",
+ 		.dynamic = 1,
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.nonatomic = 1,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.dpcm_capture = 1,
++		SND_SOC_DAILINK_REG(system, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_HS_PB] = {
+ 		.name = "Glk Audio Headset Playback",
+ 		.stream_name = "Headset Audio",
+-		.cpu_dai_name = "System Pin2",
+-		.platform_name = "0000:00:0e.0",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.dpcm_playback = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(system2, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_ECHO_REF_CP] = {
+ 		.name = "Glk Audio Echo Reference cap",
+ 		.stream_name = "Echoreference Capture",
+-		.cpu_dai_name = "Echoref Pin",
+-		.platform_name = "0000:00:0e.0",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.init = NULL,
+ 		.capture_only = 1,
+ 		.nonatomic = 1,
++		SND_SOC_DAILINK_REG(echoref, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_REF_CP] = {
+ 		.name = "Glk Audio Reference cap",
+ 		.stream_name = "Refcap",
+-		.cpu_dai_name = "Reference Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = NULL,
+ 		.dpcm_capture = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
+ 		.ops = &geminilake_refcap_ops,
++		SND_SOC_DAILINK_REG(reference, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_DMIC_CP] = {
+ 		.name = "Glk Audio DMIC cap",
+ 		.stream_name = "dmiccap",
+-		.cpu_dai_name = "DMIC Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = NULL,
+ 		.dpcm_capture = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
+ 		.ops = &geminilake_dmic_ops,
++		SND_SOC_DAILINK_REG(dmic, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_HDMI1_PB] = {
+ 		.name = "Glk HDMI Port1",
+ 		.stream_name = "Hdmi1",
+-		.cpu_dai_name = "HDMI1 Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(hdmi1, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_HDMI2_PB] =	{
+ 		.name = "Glk HDMI Port2",
+ 		.stream_name = "Hdmi2",
+-		.cpu_dai_name = "HDMI2 Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(hdmi2, dummy, platform),
+ 	},
+ 	[GLK_DPCM_AUDIO_HDMI3_PB] =	{
+ 		.name = "Glk HDMI Port3",
+ 		.stream_name = "Hdmi3",
+-		.cpu_dai_name = "HDMI3 Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(hdmi3, dummy, platform),
+ 	},
+ 	/* Back End DAI links */
+ 	{
+ 		/* SSP1 - Codec */
+ 		.name = "SSP1-Codec",
+ 		.id = 0,
+-		.cpu_dai_name = "SSP1 Pin",
+-		.platform_name = "0000:00:0e.0",
+ 		.no_pcm = 1,
+-		.codec_name = MAXIM_DEV0_NAME,
+-		.codec_dai_name = GLK_MAXIM_CODEC_DAI,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S |
+ 			SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+ 		.be_hw_params_fixup = geminilake_ssp_fixup,
+ 		.dpcm_playback = 1,
++		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
+ 	},
+ 	{
+ 		/* SSP2 - Codec */
+ 		.name = "SSP2-Codec",
+ 		.id = 1,
+-		.cpu_dai_name = "SSP2 Pin",
+-		.platform_name = "0000:00:0e.0",
+ 		.no_pcm = 1,
+-		.codec_name = "i2c-10EC5682:00",
+-		.codec_dai_name = GLK_REALTEK_CODEC_DAI,
+ 		.init = geminilake_rt5682_codec_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+@@ -471,51 +499,40 @@ static struct snd_soc_dai_link geminilake_dais[] = {
+ 		.ops = &geminilake_rt5682_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
++		SND_SOC_DAILINK_REG(ssp2_pin, ssp2_codec, platform),
+ 	},
+ 	{
+ 		.name = "dmic01",
+ 		.id = 2,
+-		.cpu_dai_name = "DMIC01 Pin",
+-		.codec_name = "dmic-codec",
+-		.codec_dai_name = "dmic-hifi",
+-		.platform_name = "0000:00:0e.0",
+ 		.ignore_suspend = 1,
+ 		.be_hw_params_fixup = geminilake_dmic_fixup,
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
+ 	},
+ 	{
+ 		.name = "iDisp1",
+ 		.id = 3,
+-		.cpu_dai_name = "iDisp1 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi1",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = geminilake_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp1_pin, idisp1_codec, platform),
+ 	},
+ 	{
+ 		.name = "iDisp2",
+ 		.id = 4,
+-		.cpu_dai_name = "iDisp2 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi2",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = geminilake_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp2_pin, idisp2_codec, platform),
+ 	},
+ 	{
+ 		.name = "iDisp3",
+ 		.id = 5,
+-		.cpu_dai_name = "iDisp3 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi3",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = geminilake_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
+ 	},
  };
  
- static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
-@@ -908,6 +940,8 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
- 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+	.get_sr			= sun4i_i2s_get_sr,
-+	.get_wss		= sun4i_i2s_get_wss,
- };
- 
- static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
-@@ -925,6 +959,8 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
- 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+	.get_sr			= sun8i_i2s_get_sr_wss,
-+	.get_wss		= sun8i_i2s_get_sr_wss,
- };
- 
- static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
-@@ -933,7 +969,6 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.sun4i_i2s_regmap	= &sun8i_i2s_regmap_config,
- 	.mclk_offset		= 1,
- 	.bclk_offset		= 2,
--	.fmt_offset		= 3,
- 	.has_fmt_set_lrck_period = true,
- 	.has_chcfg		= true,
- 	.has_chsel_tx_chen	= true,
-@@ -948,6 +983,8 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
- 	.field_rxchansel	= REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+	.get_sr			= sun8i_i2s_get_sr_wss,
-+	.get_wss		= sun8i_i2s_get_sr_wss,
- };
- 
- static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
-@@ -965,6 +1002,8 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
- 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+	.get_sr			= sun8i_i2s_get_sr_wss,
-+	.get_wss		= sun8i_i2s_get_sr_wss,
- };
- 
- static int sun4i_i2s_init_regmap_fields(struct device *dev,
 -- 
 2.20.1
