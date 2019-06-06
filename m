@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: broadwell: use modern dai_link
+Subject: Applied "ASoC: Intel: haswell: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:11 +0100 (BST)
-Message-ID: <20190606212611.C0560440049@finisterre.sirena.org.uk>
-References: <87o93bfjfy.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:12 +0100 (BST)
+Message-ID: <20190606212612.50D5A440046@finisterre.sirena.org.uk>
+References: <87pnnrfjg3.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88B67F8974C
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:12 +0200 (CEST)
-In-Reply-To: <87o93bfjfy.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52EEEF8974B
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:13 +0200 (CEST)
+In-Reply-To: <87pnnrfjg3.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: broadwell: use modern dai_link style
+   ASoC: Intel: haswell: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 4c3db473f77ddb8a632c4b66a35ae1855de3a1b7 Mon Sep 17 00:00:00 2001
+>From 77b365b8e99d0ddb6a62fe3e93ebbbe14a2734ab Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:19:40 +0900
-Subject: [PATCH] ASoC: Intel: broadwell: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:19:35 +0900
+Subject: [PATCH] ASoC: Intel: haswell: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,17 +67,20 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/broadwell.c | 46 +++++++++++++++++-------------
+ sound/soc/intel/boards/haswell.c | 46 ++++++++++++++++++--------------
  1 file changed, 26 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 0f18f8964f51..fd8d88550d0b 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -152,67 +152,72 @@ static int broadwell_rtd_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
+index 971226d42042..aace44e09fc2 100644
+--- a/sound/soc/intel/boards/haswell.c
++++ b/sound/soc/intel/boards/haswell.c
+@@ -105,53 +105,62 @@ static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
  }
- #endif
  
++SND_SOC_DAILINK_DEF(dummy,
++	DAILINK_COMP_ARRAY(COMP_DUMMY()));
++
 +SND_SOC_DAILINK_DEF(system,
 +	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
 +
@@ -90,29 +93,23 @@ index 0f18f8964f51..fd8d88550d0b 100644
 +SND_SOC_DAILINK_DEF(loopback,
 +	DAILINK_COMP_ARRAY(COMP_CPU("Loopback Pin")));
 +
-+SND_SOC_DAILINK_DEF(dummy,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
++SND_SOC_DAILINK_DEF(codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-INT33CA:00", "rt5640-aif1")));
 +
 +SND_SOC_DAILINK_DEF(platform,
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("haswell-pcm-audio")));
 +
-+SND_SOC_DAILINK_DEF(codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-INT343A:00", "rt286-aif1")));
-+
- /* broadwell digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
  	/* Front End DAI links */
  	{
- 		.name = "System PCM",
+ 		.name = "System",
  		.stream_name = "System Playback/Capture",
 -		.cpu_dai_name = "System Pin",
 -		.platform_name = "haswell-pcm-audio",
  		.dynamic = 1,
 -		.codec_name = "snd-soc-dummy",
 -		.codec_dai_name = "snd-soc-dummy-dai",
- #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- 		.init = broadwell_rtd_init,
- #endif
+ 		.init = haswell_rtd_init,
  		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
@@ -143,7 +140,7 @@ index 0f18f8964f51..fd8d88550d0b 100644
 +		SND_SOC_DAILINK_REG(offload1, dummy, platform),
  	},
  	{
- 		.name = "Loopback PCM",
+ 		.name = "Loopback",
  		.stream_name = "Loopback",
 -		.cpu_dai_name = "Loopback Pin",
 -		.platform_name = "haswell-pcm-audio",
@@ -154,21 +151,22 @@ index 0f18f8964f51..fd8d88550d0b 100644
  		.dpcm_capture = 1,
 +		SND_SOC_DAILINK_REG(loopback, dummy, platform),
  	},
+ 
  	/* Back End DAI links */
- 	{
+@@ -159,11 +168,7 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
  		/* SSP0 - Codec */
  		.name = "Codec",
  		.id = 0,
 -		.cpu_dai_name = "snd-soc-dummy-dai",
 -		.platform_name = "snd-soc-dummy",
  		.no_pcm = 1,
--		.codec_name = "i2c-INT343A:00",
--		.codec_dai_name = "rt286-aif1",
- 		.init = broadwell_rt286_codec_init,
+-		.codec_name = "i2c-INT33CA:00",
+-		.codec_dai_name = "rt5640-aif1",
  		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
  			SND_SOC_DAIFMT_CBS_CFS,
-@@ -222,6 +227,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
- 		.ops = &broadwell_rt286_ops,
+ 		.ignore_suspend = 1,
+@@ -172,6 +177,7 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
+ 		.ops = &haswell_rt5640_ops,
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
 +		SND_SOC_DAILINK_REG(dummy, codec, dummy),
