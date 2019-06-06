@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cirrus: edb93xx: use modern dai_link
+Subject: Applied "ASoC: au1x: db1000: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:37 +0100 (BST)
-Message-ID: <20190606212637.443DE440046@finisterre.sirena.org.uk>
-References: <87imtjicts.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:38 +0100 (BST)
+Message-ID: <20190606212638.6064A440049@finisterre.sirena.org.uk>
+References: <87lfyficu1.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9C52F897A5
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:37 +0200 (CEST)
-In-Reply-To: <87imtjicts.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29BB8F89747
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:39 +0200 (CEST)
+In-Reply-To: <87lfyficu1.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cirrus: edb93xx: use modern dai_link style
+   ASoC: au1x: db1000: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5e883ff15fc079a8004a104209e2ecb14e5b4bb0 Mon Sep 17 00:00:00 2001
+>From 34592f7ecb4e0b1c79ab5669ed3fcbee0ae4b835 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:14:18 +0900
-Subject: [PATCH] ASoC: cirrus: edb93xx: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:14:09 +0900
+Subject: [PATCH] ASoC: au1x: db1000: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,35 +67,32 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/cirrus/edb93xx.c | 10 ++++++----
+ sound/soc/au1x/db1000.c | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-index f678b4c1514a..1528d1410ff2 100644
---- a/sound/soc/cirrus/edb93xx.c
-+++ b/sound/soc/cirrus/edb93xx.c
-@@ -60,16 +60,18 @@ static const struct snd_soc_ops edb93xx_ops = {
- 	.hw_params	= edb93xx_hw_params,
- };
+diff --git a/sound/soc/au1x/db1000.c b/sound/soc/au1x/db1000.c
+index e97c32798e98..5819b897bdd8 100644
+--- a/sound/soc/au1x/db1000.c
++++ b/sound/soc/au1x/db1000.c
+@@ -18,13 +18,15 @@
+ 
+ #include "psc.h"
  
 +SND_SOC_DAILINK_DEFS(hifi,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("spi0.0", "cs4271-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
++	DAILINK_COMP_ARRAY(COMP_CPU("alchemy-ac97c")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("ac97-codec", "ac97-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("alchemy-pcm-dma.0")));
 +
- static struct snd_soc_dai_link edb93xx_dai = {
- 	.name		= "CS4271",
- 	.stream_name	= "CS4271 HiFi",
--	.platform_name	= "ep93xx-i2s",
--	.cpu_dai_name	= "ep93xx-i2s",
--	.codec_name	= "spi0.0",
--	.codec_dai_name	= "cs4271-hifi",
- 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			  SND_SOC_DAIFMT_CBS_CFS,
- 	.ops		= &edb93xx_ops,
+ static struct snd_soc_dai_link db1000_ac97_dai = {
+ 	.name		= "AC97",
+ 	.stream_name	= "AC97 HiFi",
+-	.codec_dai_name	= "ac97-hifi",
+-	.cpu_dai_name	= "alchemy-ac97c",
+-	.platform_name	= "alchemy-pcm-dma.0",
+-	.codec_name	= "ac97-codec",
 +	SND_SOC_DAILINK_REG(hifi),
  };
  
- static struct snd_soc_card snd_soc_edb93xx = {
+ static struct snd_soc_card db1000_ac97 = {
 -- 
 2.20.1
