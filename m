@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: kirkwood: armada-370-db: use modern
-	dai_link style" to the asoc tree
+Subject: Applied "ASoC: pxa: poodle: use modern dai_link style"
+	to the asoc tree
 Date: Thu,  6 Jun 2019 22:26:50 +0100 (BST)
-Message-ID: <20190606212650.1F35D440046@finisterre.sirena.org.uk>
-References: <87ftonjrh4.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212650.A5B09440046@finisterre.sirena.org.uk>
+References: <87h893jrh9.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC699F897C8
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:50 +0200 (CEST)
-In-Reply-To: <87ftonjrh4.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60EC9F897CD
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:51 +0200 (CEST)
+In-Reply-To: <87h893jrh9.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: kirkwood: armada-370-db: use modern dai_link style
+   ASoC: pxa: poodle: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1d17821f79ae0fe6960231d38aaac66eed707b5f Mon Sep 17 00:00:00 2001
+>From 8ba9c5cbe9f27808346927bf173b263e2552f80f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:12:34 +0900
-Subject: [PATCH] ASoC: kirkwood: armada-370-db: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:12:29 +0900
+Subject: [PATCH] ASoC: pxa: poodle: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,95 +67,35 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/armada-370-db.c | 42 +++++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+ sound/soc/pxa/poodle.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
-index 677a48d7b891..b2d735b610b8 100644
---- a/sound/soc/kirkwood/armada-370-db.c
-+++ b/sound/soc/kirkwood/armada-370-db.c
-@@ -58,28 +58,40 @@ static const struct snd_soc_dapm_route a370db_route[] = {
- 	{ "AIN1L",	NULL,	"In Jack" },
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index b6693f32fc02..2a564187b2ce 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -224,16 +224,18 @@ static const struct snd_kcontrol_new wm8731_poodle_controls[] = {
  };
  
-+SND_SOC_DAILINK_DEFS(analog,
-+	DAILINK_COMP_ARRAY(COMP_CPU("i2s")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "cs42l51-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ /* poodle digital audio interface glue - connects codec <--> CPU */
++SND_SOC_DAILINK_DEFS(wm8731,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
-+SND_SOC_DAILINK_DEFS(spdif_out,
-+	DAILINK_COMP_ARRAY(COMP_CPU("spdif")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dit-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(spdif_in,
-+	DAILINK_COMP_ARRAY(COMP_CPU("spdif")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dir-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
- static struct snd_soc_dai_link a370db_dai[] = {
- {
- 	.name = "CS42L51",
- 	.stream_name = "analog",
--	.cpu_dai_name = "i2s",
--	.codec_dai_name = "cs42l51-hifi",
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &a370db_ops,
-+	SND_SOC_DAILINK_REG(analog),
- },
- {
- 	.name = "S/PDIF out",
- 	.stream_name = "spdif-out",
--	.cpu_dai_name = "spdif",
--	.codec_dai_name = "dit-hifi",
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
-+	SND_SOC_DAILINK_REG(spdif_out),
- },
- {
- 	.name = "S/PDIF in",
- 	.stream_name = "spdif-in",
--	.cpu_dai_name = "spdif",
--	.codec_dai_name = "dir-hifi",
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
-+	SND_SOC_DAILINK_REG(spdif_in),
- },
+ static struct snd_soc_dai_link poodle_dai = {
+ 	.name = "WM8731",
+ 	.stream_name = "WM8731",
+-	.cpu_dai_name = "pxa2xx-i2s",
+-	.codec_dai_name = "wm8731-hifi",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_name = "wm8731.0-001b",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &poodle_ops,
++	SND_SOC_DAILINK_REG(wm8731),
  };
  
-@@ -100,26 +112,26 @@ static int a370db_probe(struct platform_device *pdev)
- 
- 	card->dev = &pdev->dev;
- 
--	a370db_dai[0].cpu_of_node =
-+	a370db_dai[0].cpus->of_node =
- 		of_parse_phandle(pdev->dev.of_node,
- 				 "marvell,audio-controller", 0);
--	a370db_dai[0].platform_of_node = a370db_dai[0].cpu_of_node;
-+	a370db_dai[0].platforms->of_node = a370db_dai[0].cpus->of_node;
- 
--	a370db_dai[0].codec_of_node =
-+	a370db_dai[0].codecs->of_node =
- 		of_parse_phandle(pdev->dev.of_node,
- 				 "marvell,audio-codec", 0);
- 
--	a370db_dai[1].cpu_of_node = a370db_dai[0].cpu_of_node;
--	a370db_dai[1].platform_of_node = a370db_dai[0].cpu_of_node;
-+	a370db_dai[1].cpus->of_node = a370db_dai[0].cpus->of_node;
-+	a370db_dai[1].platforms->of_node = a370db_dai[0].cpus->of_node;
- 
--	a370db_dai[1].codec_of_node =
-+	a370db_dai[1].codecs->of_node =
- 		of_parse_phandle(pdev->dev.of_node,
- 				 "marvell,audio-codec", 1);
- 
--	a370db_dai[2].cpu_of_node = a370db_dai[0].cpu_of_node;
--	a370db_dai[2].platform_of_node = a370db_dai[0].cpu_of_node;
-+	a370db_dai[2].cpus->of_node = a370db_dai[0].cpus->of_node;
-+	a370db_dai[2].platforms->of_node = a370db_dai[0].cpus->of_node;
- 
--	a370db_dai[2].codec_of_node =
-+	a370db_dai[2].codecs->of_node =
- 		of_parse_phandle(pdev->dev.of_node,
- 				 "marvell,audio-codec", 2);
- 
+ /* poodle audio machine driver */
 -- 
 2.20.1
