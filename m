@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-topology: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:14 +0100 (BST)
-Message-ID: <20190606212614.91D92440046@finisterre.sirena.org.uk>
-References: <87v9xjfjgo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tegra: tegra_rt5640: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:16 +0100 (BST)
+Message-ID: <20190606212616.BB9AE440049@finisterre.sirena.org.uk>
+References: <871s07gy1m.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B3B6F89755
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:15 +0200 (CEST)
-In-Reply-To: <87v9xjfjgo.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B266F8975C
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:17 +0200 (CEST)
+In-Reply-To: <871s07gy1m.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-topology: use modern dai_link style
+   ASoC: tegra: tegra_rt5640: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 23b946ce2808bd4f1bfca1bae1fafbf552be18a4 Mon Sep 17 00:00:00 2001
+>From 5a44ad1e587a3ff8d4d92340543327b4245dc7fa Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:19:14 +0900
-Subject: [PATCH] ASoC: soc-topology: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:18:56 +0900
+Subject: [PATCH] ASoC: tegra: tegra_rt5640: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,68 +67,64 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ sound/soc/tegra/tegra_rt5640.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 3299ebb48c1a..f485f7f751a1 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -560,7 +560,7 @@ static void remove_link(struct snd_soc_component *comp,
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index fc81b48aa9d6..3f0756132ac4 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -126,14 +126,19 @@ static int tegra_rt5640_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
- 	kfree(link->name);
- 	kfree(link->stream_name);
--	kfree(link->cpu_dai_name);
-+	kfree(link->cpus->dai_name);
- 
- 	list_del(&dobj->list);
- 	snd_soc_remove_dai_link(comp->card, link);
-@@ -1879,12 +1879,22 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
- {
- 	struct snd_soc_dai_link *link;
-+	struct snd_soc_dai_link_component *dlc;
- 	int ret;
- 
--	link = kzalloc(sizeof(struct snd_soc_dai_link), GFP_KERNEL);
-+	/* link + cpu + codec */
-+	link = kzalloc(sizeof(*link) + (2 * sizeof(*dlc)), GFP_KERNEL);
- 	if (link == NULL)
- 		return -ENOMEM;
- 
-+	dlc = (struct snd_soc_dai_link_component *)(link + 1);
++SND_SOC_DAILINK_DEFS(aif1,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5640-aif1")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
-+	link->cpus	= &dlc[0];
-+	link->codecs	= &dlc[1];
-+
-+	link->num_cpus	 = 1;
-+	link->num_codecs = 1;
-+
- 	if (strlen(pcm->pcm_name)) {
- 		link->name = kstrdup(pcm->pcm_name, GFP_KERNEL);
- 		link->stream_name = kstrdup(pcm->pcm_name, GFP_KERNEL);
-@@ -1892,10 +1902,10 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 	link->id = le32_to_cpu(pcm->pcm_id);
+ static struct snd_soc_dai_link tegra_rt5640_dai = {
+ 	.name = "RT5640",
+ 	.stream_name = "RT5640 PCM",
+-	.codec_dai_name = "rt5640-aif1",
+ 	.init = tegra_rt5640_asoc_init,
+ 	.ops = &tegra_rt5640_ops,
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
++	SND_SOC_DAILINK_REG(aif1),
+ };
  
- 	if (strlen(pcm->dai_name))
--		link->cpu_dai_name = kstrdup(pcm->dai_name, GFP_KERNEL);
-+		link->cpus->dai_name = kstrdup(pcm->dai_name, GFP_KERNEL);
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
+@@ -176,25 +181,25 @@ static int tegra_rt5640_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err;
  
--	link->codec_name = "snd-soc-dummy";
--	link->codec_dai_name = "snd-soc-dummy-dai";
-+	link->codecs->name = "snd-soc-dummy";
-+	link->codecs->dai_name = "snd-soc-dummy-dai";
- 
- 	/* enable DPCM */
- 	link->dynamic = 1;
-@@ -1912,7 +1922,7 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 		dev_err(tplg->comp->dev, "ASoC: FE link loading failed\n");
- 		kfree(link->name);
- 		kfree(link->stream_name);
--		kfree(link->cpu_dai_name);
-+		kfree(link->cpus->dai_name);
- 		kfree(link);
- 		return ret;
+-	tegra_rt5640_dai.codec_of_node = of_parse_phandle(np,
++	tegra_rt5640_dai.codecs->of_node = of_parse_phandle(np,
+ 			"nvidia,audio-codec", 0);
+-	if (!tegra_rt5640_dai.codec_of_node) {
++	if (!tegra_rt5640_dai.codecs->of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,audio-codec' missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto err;
  	}
+ 
+-	tegra_rt5640_dai.cpu_of_node = of_parse_phandle(np,
++	tegra_rt5640_dai.cpus->of_node = of_parse_phandle(np,
+ 			"nvidia,i2s-controller", 0);
+-	if (!tegra_rt5640_dai.cpu_of_node) {
++	if (!tegra_rt5640_dai.cpus->of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,i2s-controller' missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+ 
+-	tegra_rt5640_dai.platform_of_node = tegra_rt5640_dai.cpu_of_node;
++	tegra_rt5640_dai.platforms->of_node = tegra_rt5640_dai.cpus->of_node;
+ 
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
 -- 
 2.20.1
