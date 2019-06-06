@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: e740_wm9705: use modern dai_link
+Subject: Applied "ASoC: pxa: e750_wm9705: use modern dai_link
 	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:58 +0100 (BST)
-Message-ID: <20190606212658.75BEA440046@finisterre.sirena.org.uk>
-References: <871s07l645.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:57 +0100 (BST)
+Message-ID: <20190606212657.DF8C1440046@finisterre.sirena.org.uk>
+References: <87zhmvjrjk.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E54DF897DE
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:59 +0200 (CEST)
-In-Reply-To: <871s07l645.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9ADC4F897DC
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:58 +0200 (CEST)
+In-Reply-To: <87zhmvjrjk.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: e740_wm9705: use modern dai_link style
+   ASoC: pxa: e750_wm9705: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 312989a1ed69564bf6b9d329ce60e39c8487c32a Mon Sep 17 00:00:00 2001
+>From f78ced5147dc8dd64053bb905787c332bc195543 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:11:01 +0900
-Subject: [PATCH] ASoC: pxa: e740_wm9705: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:11:06 +0900
+Subject: [PATCH] ASoC: pxa: e750_wm9705: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,15 +67,15 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/e740_wm9705.c | 20 ++++++++++++--------
+ sound/soc/pxa/e750_wm9705.c | 20 ++++++++++++--------
  1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
-index 8ab7032631b7..15141a89c9ba 100644
---- a/sound/soc/pxa/e740_wm9705.c
-+++ b/sound/soc/pxa/e740_wm9705.c
-@@ -84,22 +84,26 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Mic Amp", NULL, "Mic (Internal)"},
+diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
+index 82bcbbb1841b..406ecf2a822f 100644
+--- a/sound/soc/pxa/e750_wm9705.c
++++ b/sound/soc/pxa/e750_wm9705.c
+@@ -67,23 +67,27 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MIC1", NULL, "Mic (Internal)"},
  };
  
 +SND_SOC_DAILINK_DEFS(ac97,
@@ -88,7 +88,7 @@ index 8ab7032631b7..15141a89c9ba 100644
 +	DAILINK_COMP_ARRAY(COMP_CODEC("wm9705-codec", "wm9705-aux")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
- static struct snd_soc_dai_link e740_dai[] = {
+ static struct snd_soc_dai_link e750_dai[] = {
  	{
  		.name = "AC97",
  		.stream_name = "AC97 HiFi",
@@ -97,6 +97,7 @@ index 8ab7032631b7..15141a89c9ba 100644
 -		.platform_name = "pxa-pcm-audio",
 -		.codec_name = "wm9705-codec",
 +		SND_SOC_DAILINK_REG(ac97),
+ 		/* use ops to check startup state */
  	},
  	{
  		.name = "AC97 Aux",
