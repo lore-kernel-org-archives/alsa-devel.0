@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: txx9: txx9aclc-generic: use modern
-	dai_link style" to the asoc tree
+Subject: Applied "ASoC: sunxi: sun4i-codec: use modern dai_link
+	style" to the asoc tree
 Date: Thu,  6 Jun 2019 22:26:20 +0100 (BST)
-Message-ID: <20190606212620.1477A440049@finisterre.sirena.org.uk>
-References: <87a7evgy2h.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212620.B7354440046@finisterre.sirena.org.uk>
+References: <87blzbgy2n.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C07CFF89764
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:20 +0200 (CEST)
-In-Reply-To: <87a7evgy2h.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77262F89769
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:21 +0200 (CEST)
+In-Reply-To: <87blzbgy2n.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: txx9: txx9aclc-generic: use modern dai_link style
+   ASoC: sunxi: sun4i-codec: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From f4010b4c8b382c2acb024fd91e2734323e457f98 Mon Sep 17 00:00:00 2001
+>From 950d10e879d4a263ca10ab1ff9657a258208e7b9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:18:25 +0900
-Subject: [PATCH] ASoC: txx9: txx9aclc-generic: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:18:19 +0900
+Subject: [PATCH] ASoC: sunxi: sun4i-codec: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,32 +67,43 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/txx9/txx9aclc-generic.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc-generic.c b/sound/soc/txx9/txx9aclc-generic.c
-index d0b1e7759968..c5aaad158280 100644
---- a/sound/soc/txx9/txx9aclc-generic.c
-+++ b/sound/soc/txx9/txx9aclc-generic.c
-@@ -21,13 +21,15 @@
- #include <sound/soc.h>
- #include "txx9aclc.h"
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 28d2f7713f8d..161444fe4518 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1305,15 +1305,25 @@ static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
+ {
+ 	struct snd_soc_dai_link *link = devm_kzalloc(dev, sizeof(*link),
+ 						     GFP_KERNEL);
+-	if (!link)
++	struct snd_soc_dai_link_component *dlc = devm_kzalloc(dev,
++						3 * sizeof(*dlc), GFP_KERNEL);
++	if (!link || !dlc)
+ 		return NULL;
  
-+SND_SOC_DAILINK_DEFS(hifi,
-+	DAILINK_COMP_ARRAY(COMP_CPU("txx9aclc-ac97")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ac97-codec", "ac97-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("txx9aclc-pcm-audio")));
++	link->cpus	= &dlc[0];
++	link->codecs	= &dlc[1];
++	link->platforms	= &dlc[2];
 +
- static struct snd_soc_dai_link txx9aclc_generic_dai = {
- 	.name = "AC97",
- 	.stream_name = "AC97 HiFi",
--	.cpu_dai_name = "txx9aclc-ac97",
--	.codec_dai_name = "ac97-hifi",
--	.platform_name	= "txx9aclc-pcm-audio",
--	.codec_name	= "ac97-codec",
-+	SND_SOC_DAILINK_REG(hifi),
- };
++	link->num_cpus		= 1;
++	link->num_codecs	= 1;
++	link->num_platforms	= 1;
++
+ 	link->name		= "cdc";
+ 	link->stream_name	= "CDC PCM";
+-	link->codec_dai_name	= "Codec";
+-	link->cpu_dai_name	= dev_name(dev);
+-	link->codec_name	= dev_name(dev);
+-	link->platform_name	= dev_name(dev);
++	link->codecs->dai_name	= "Codec";
++	link->cpus->dai_name	= dev_name(dev);
++	link->codecs->name	= dev_name(dev);
++	link->platforms->name	= dev_name(dev);
+ 	link->dai_fmt		= SND_SOC_DAIFMT_I2S;
  
- static struct snd_soc_card txx9aclc_generic_card = {
+ 	*num_links = 1;
 -- 
 2.20.1
