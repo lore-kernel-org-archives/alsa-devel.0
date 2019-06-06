@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cirrus: snappercl15: use modern
-	dai_link style" to the asoc tree
+Subject: Applied "ASoC: cirrus: simone: use modern dai_link
+	style" to the asoc tree
 Date: Thu,  6 Jun 2019 22:26:36 +0100 (BST)
-Message-ID: <20190606212636.2078B440046@finisterre.sirena.org.uk>
-References: <87ftonictj.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212636.AE945440046@finisterre.sirena.org.uk>
+References: <87h893icto.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5B9CF897A2
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:36 +0200 (CEST)
-In-Reply-To: <87ftonictj.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73D4AF89730
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:37 +0200 (CEST)
+In-Reply-To: <87h893icto.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cirrus: snappercl15: use modern dai_link style
+   ASoC: cirrus: simone: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 40989980bf4b9483ad2fb99c58324123a8c74c92 Mon Sep 17 00:00:00 2001
+>From cda80e05c648ff5b702ddbbbf1cd170cc00dba02 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:14:28 +0900
-Subject: [PATCH] ASoC: cirrus: snappercl15: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:14:22 +0900
+Subject: [PATCH] ASoC: cirrus: simone: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,36 +67,32 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/cirrus/snappercl15.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/soc/cirrus/simone.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
-index dea4909154c8..0b4efcc51232 100644
---- a/sound/soc/cirrus/snappercl15.c
-+++ b/sound/soc/cirrus/snappercl15.c
-@@ -65,16 +65,19 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic Jack"},
- };
+diff --git a/sound/soc/cirrus/simone.c b/sound/soc/cirrus/simone.c
+index cb850530331b..88b082c15c66 100644
+--- a/sound/soc/cirrus/simone.c
++++ b/sound/soc/cirrus/simone.c
+@@ -21,13 +21,15 @@
  
-+SND_SOC_DAILINK_DEFS(aic23,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("tlv320aic23-codec.0-001a",
-+				      "tlv320aic23-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
+ #include <asm/mach-types.h>
+ 
++SND_SOC_DAILINK_DEFS(hifi,
++	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-ac97")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("ac97-codec", "ac97-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-ac97")));
 +
- static struct snd_soc_dai_link snappercl15_dai = {
- 	.name		= "tlv320aic23",
- 	.stream_name	= "AIC23",
--	.cpu_dai_name	= "ep93xx-i2s",
--	.codec_dai_name	= "tlv320aic23-hifi",
--	.codec_name	= "tlv320aic23-codec.0-001a",
--	.platform_name	= "ep93xx-i2s",
- 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			  SND_SOC_DAIFMT_CBS_CFS,
- 	.ops		= &snappercl15_ops,
-+	SND_SOC_DAILINK_REG(aic23),
+ static struct snd_soc_dai_link simone_dai = {
+ 	.name		= "AC97",
+ 	.stream_name	= "AC97 HiFi",
+-	.cpu_dai_name	= "ep93xx-ac97",
+-	.codec_dai_name	= "ac97-hifi",
+-	.codec_name	= "ac97-codec",
+-	.platform_name	= "ep93xx-ac97",
++	SND_SOC_DAILINK_REG(hifi),
  };
  
- static struct snd_soc_card snd_soc_snappercl15 = {
+ static struct snd_soc_card snd_soc_simone = {
 -- 
 2.20.1
