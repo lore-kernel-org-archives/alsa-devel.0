@@ -1,43 +1,73 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 000/146] ASoC: modern dai_link style
- support
-Date: Thu, 6 Jun 2019 09:08:56 -0500
-Message-ID: <3b43fab0-b476-4623-1bdc-9d750eaae83d@linux.intel.com>
-References: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
- <20190606105632.GY2456@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH v2] soundwire: stream: fix bad unlock balance
+Date: Thu, 6 Jun 2019 09:28:25 -0500
+Message-ID: <9427a73a-e09a-4a9c-7690-271d2e2e1024@linux.intel.com>
+References: <20190606112222.16502-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12572F80768
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 16:08:57 +0200 (CEST)
-In-Reply-To: <20190606105632.GY2456@sirena.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190606112222.16502-1-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/6/19 5:56 AM, Mark Brown wrote:
-> On Thu, Jun 06, 2019 at 01:06:52PM +0900, Kuninori Morimoto wrote:
-> 
->> I added posted Tested-by at ateml mikroe-proto,
->> and Signed-off-by Pierre-Louis for some Intel patches,
->> and new patch for new Intel bytcht_cx2072x
-> 
-> Are you sure those should be signoffs and not acks or reviewed-bys?
+On 6/6/19 6:22 AM, Srinivas Kandagatla wrote:
+> multi bank switching code takes lock on condition but releases without
+> any check resulting in below warning.
+> This patch fixes this.
 
-I did provide 10 corrections with a Signed-off tag directly to 
-Morimoto-san, but I am fine with a change to Reviewed-by if it's deemed 
-more appropriate.
+
+Question to make sure we are talking about the same thing: multi-link 
+bank switching is a capability beyond the scope of the SoundWire spec 
+which requires hardware support to synchronize links and as Sanyog 
+hinted at in a previous email follow a different flow for bank switches.
+
+You would not use the multi-link mode if you have different links that 
+can operate independently and have no synchronization requirement. You 
+would conversely use the multi-link mode if you have two devices on the 
+same type on different links and want audio to be rendered at the same time.
+
+Can you clarify if indeed you were using the full-blown multi-link mode 
+with hardware synchronization or a regular single-link operation? I am 
+not asking for details of your test hardware, just trying to reconstruct 
+the program flow leading to this problem.
+
+It could also be that your commit message was meant to say:
+"the msg lock is taken for multi-link cases only but released 
+unconditionally, leading to an unlock balance warning for single-link 
+usages"?
+
+Thanks!
+
+> 
+>   =====================================
+>   WARNING: bad unlock balance detected!
+>   5.1.0-16506-gc1c383a6f0a2-dirty #1523 Tainted: G        W
+>   -------------------------------------
+>   aplay/2954 is trying to release lock (&bus->msg_lock) at:
+>   do_bank_switch+0x21c/0x480
+>   but there are no more locks to release!
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   drivers/soundwire/stream.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index ce9cb7fa4724..73c52cd4fec8 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -814,7 +814,8 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+>   			goto error;
+>   		}
+>   
+> -		mutex_unlock(&bus->msg_lock);
+> +		if (bus->multi_link)
+> +			mutex_unlock(&bus->msg_lock);
+>   	}
+>   
+>   	return ret;
+> 
