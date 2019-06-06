@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: use modern
+Subject: Applied "ASoC: Intel: bxt_da7219_max98357a: use modern
 	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:08 +0100 (BST)
-Message-ID: <20190606212608.E0583440046@finisterre.sirena.org.uk>
-References: <87h893fjev.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:11 +0100 (BST)
+Message-ID: <20190606212611.37BBF440046@finisterre.sirena.org.uk>
+References: <87muivfjfe.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C43ABF896F7
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:09 +0200 (CEST)
-In-Reply-To: <87h893fjev.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2744FF8974A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:12 +0200 (CEST)
+In-Reply-To: <87muivfjfe.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: use modern dai_link style
+   ASoC: Intel: bxt_da7219_max98357a: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 143029dbb8c9800bbcd4f74d91769590fafeca52 Mon Sep 17 00:00:00 2001
+>From 56b2f3187419b1fed17d4d1cb051ffdce2fcbbcb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:20:20 +0900
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:20:00 +0900
+Subject: [PATCH] ASoC: Intel: bxt_da7219_max98357a: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,111 +67,308 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 38 ++++++++++++++++----------
- 1 file changed, 23 insertions(+), 15 deletions(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 140 ++++++++++--------
+ 1 file changed, 80 insertions(+), 60 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 1f319b2a835f..b56f9230d1bc 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -307,32 +307,43 @@ static const struct snd_soc_ops byt_cht_es8316_aif1_ops = {
- 	.startup = byt_cht_es8316_aif1_startup,
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 4ee769a86201..d712623854a3 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -373,146 +373,177 @@ static const struct snd_soc_ops broxton_refcap_ops = {
  };
  
+ /* broxton digital audio interface glue - connects codec <--> CPU */
 +SND_SOC_DAILINK_DEF(dummy,
 +	DAILINK_COMP_ARRAY(COMP_DUMMY()));
 +
-+SND_SOC_DAILINK_DEF(media,
-+	DAILINK_COMP_ARRAY(COMP_CPU("media-cpu-dai")));
++SND_SOC_DAILINK_DEF(system,
++	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
 +
-+SND_SOC_DAILINK_DEF(deepbuffer,
-+	DAILINK_COMP_ARRAY(COMP_CPU("deepbuffer-cpu-dai")));
++SND_SOC_DAILINK_DEF(system2,
++	DAILINK_COMP_ARRAY(COMP_CPU("System Pin2")));
 +
-+SND_SOC_DAILINK_DEF(ssp2_port,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ssp2-port")));
-+SND_SOC_DAILINK_DEF(ssp2_codec,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ESSX8316:00", "ES8316 HiFi")));
++SND_SOC_DAILINK_DEF(reference,
++	DAILINK_COMP_ARRAY(COMP_CPU("Reference Pin")));
++
++SND_SOC_DAILINK_DEF(dmic,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
++
++SND_SOC_DAILINK_DEF(hdmi1,
++	DAILINK_COMP_ARRAY(COMP_CPU("HDMI1 Pin")));
++
++SND_SOC_DAILINK_DEF(hdmi2,
++	DAILINK_COMP_ARRAY(COMP_CPU("HDMI2 Pin")));
++
++SND_SOC_DAILINK_DEF(hdmi3,
++	DAILINK_COMP_ARRAY(COMP_CPU("HDMI3 Pin")));
++
++ /* Back End DAI */
++SND_SOC_DAILINK_DEF(ssp5_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSP5 Pin")));
++SND_SOC_DAILINK_DEF(ssp5_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("MX98357A:00",
++				      BXT_MAXIM_CODEC_DAI)));
++
++SND_SOC_DAILINK_DEF(ssp1_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
++SND_SOC_DAILINK_DEF(ssp1_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-DLGS7219:00",
++				      BXT_DIALOG_CODEC_DAI)));
++
++SND_SOC_DAILINK_DEF(dmic_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
++SND_SOC_DAILINK_DEF(dmic_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++
++SND_SOC_DAILINK_DEF(idisp1_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
++SND_SOC_DAILINK_DEF(idisp1_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
++
++SND_SOC_DAILINK_DEF(idisp2_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
++SND_SOC_DAILINK_DEF(idisp2_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2",
++				      "intel-hdmi-hifi2")));
++
++SND_SOC_DAILINK_DEF(idisp3_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")));
++SND_SOC_DAILINK_DEF(idisp3_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2",
++				      "intel-hdmi-hifi3")));
 +
 +SND_SOC_DAILINK_DEF(platform,
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("sst-mfld-platform")));
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:0e.0")));
 +
- static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
- 	[MERR_DPCM_AUDIO] = {
- 		.name = "Audio Port",
+ static struct snd_soc_dai_link broxton_dais[] = {
+ 	/* Front End DAI links */
+ 	[BXT_DPCM_AUDIO_PB] =
+ 	{
+ 		.name = "Bxt Audio Port",
  		.stream_name = "Audio",
--		.cpu_dai_name = "media-cpu-dai",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.codec_name = "snd-soc-dummy",
--		.platform_name = "sst-mfld-platform",
- 		.nonatomic = true,
+-		.cpu_dai_name = "System Pin",
+-		.platform_name = "0000:00:0e.0",
  		.dynamic = 1,
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.nonatomic = 1,
+ 		.init = broxton_da7219_fe_init,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_playback = 1,
+ 		.ops = &broxton_da7219_fe_ops,
++		SND_SOC_DAILINK_REG(system, dummy, platform),
+ 	},
+ 	[BXT_DPCM_AUDIO_CP] =
+ 	{
+ 		.name = "Bxt Audio Capture Port",
+ 		.stream_name = "Audio Record",
+-		.cpu_dai_name = "System Pin",
+-		.platform_name = "0000:00:0e.0",
+ 		.dynamic = 1,
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.nonatomic = 1,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_capture = 1,
- 		.ops = &byt_cht_es8316_aif1_ops,
-+		SND_SOC_DAILINK_REG(media, dummy, platform),
+ 		.ops = &broxton_da7219_fe_ops,
++		SND_SOC_DAILINK_REG(system, dummy, platform),
  	},
- 
- 	[MERR_DPCM_DEEP_BUFFER] = {
- 		.name = "Deep-Buffer Audio Port",
- 		.stream_name = "Deep-Buffer Audio",
--		.cpu_dai_name = "deepbuffer-cpu-dai",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.codec_name = "snd-soc-dummy",
--		.platform_name = "sst-mfld-platform",
- 		.nonatomic = true,
+ 	[BXT_DPCM_AUDIO_HS_PB] = {
+ 		.name = "Bxt Audio Headset Playback",
+ 		.stream_name = "Headset Playback",
+-		.cpu_dai_name = "System Pin2",
+-		.platform_name = "0000:00:0e.0",
  		.dynamic = 1,
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.nonatomic = 1,
+ 		.trigger = {
+ 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
  		.dpcm_playback = 1,
- 		.ops = &byt_cht_es8316_aif1_ops,
-+		SND_SOC_DAILINK_REG(deepbuffer, dummy, platform),
+ 		.ops = &broxton_da7219_fe_ops,
++		SND_SOC_DAILINK_REG(system2, dummy, platform),
  	},
- 
- 		/* back ends */
-@@ -342,11 +353,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
- 		 */
- 		.name = "SSP2-Codec",
+ 	[BXT_DPCM_AUDIO_REF_CP] =
+ 	{
+ 		.name = "Bxt Audio Reference cap",
+ 		.stream_name = "Refcap",
+-		.cpu_dai_name = "Reference Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = NULL,
+ 		.dpcm_capture = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
+ 		.ops = &broxton_refcap_ops,
++		SND_SOC_DAILINK_REG(reference, dummy, platform),
+ 	},
+ 	[BXT_DPCM_AUDIO_DMIC_CP] =
+ 	{
+ 		.name = "Bxt Audio DMIC cap",
+ 		.stream_name = "dmiccap",
+-		.cpu_dai_name = "DMIC Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = NULL,
+ 		.dpcm_capture = 1,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
+ 		.ops = &broxton_dmic_ops,
++		SND_SOC_DAILINK_REG(dmic, dummy, platform),
+ 	},
+ 	[BXT_DPCM_AUDIO_HDMI1_PB] =
+ 	{
+ 		.name = "Bxt HDMI Port1",
+ 		.stream_name = "Hdmi1",
+-		.cpu_dai_name = "HDMI1 Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(hdmi1, dummy, platform),
+ 	},
+ 	[BXT_DPCM_AUDIO_HDMI2_PB] =
+ 	{
+ 		.name = "Bxt HDMI Port2",
+ 		.stream_name = "Hdmi2",
+-		.cpu_dai_name = "HDMI2 Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(hdmi2, dummy, platform),
+ 	},
+ 	[BXT_DPCM_AUDIO_HDMI3_PB] =
+ 	{
+ 		.name = "Bxt HDMI Port3",
+ 		.stream_name = "Hdmi3",
+-		.cpu_dai_name = "HDMI3 Pin",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.platform_name = "0000:00:0e.0",
+ 		.dpcm_playback = 1,
+ 		.init = NULL,
+ 		.nonatomic = 1,
+ 		.dynamic = 1,
++		SND_SOC_DAILINK_REG(hdmi3, dummy, platform),
+ 	},
+ 	/* Back End DAI links */
+ 	{
+ 		/* SSP5 - Codec */
+ 		.name = "SSP5-Codec",
  		.id = 0,
--		.cpu_dai_name = "ssp2-port",
--		.platform_name = "sst-mfld-platform",
+-		.cpu_dai_name = "SSP5 Pin",
+-		.platform_name = "0000:00:0e.0",
  		.no_pcm = 1,
--		.codec_dai_name = "ES8316 HiFi",
--		.codec_name = "i2c-ESSX8316:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 						| SND_SOC_DAIFMT_CBS_CFS,
- 		.be_hw_params_fixup = byt_cht_es8316_codec_fixup,
-@@ -354,6 +361,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
+-		.codec_name = "MX98357A:00",
+-		.codec_dai_name = BXT_MAXIM_CODEC_DAI,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S |
+ 			SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+ 		.be_hw_params_fixup = broxton_ssp_fixup,
+ 		.dpcm_playback = 1,
++		SND_SOC_DAILINK_REG(ssp5_pin, ssp5_codec, platform),
+ 	},
+ 	{
+ 		/* SSP1 - Codec */
+ 		.name = "SSP1-Codec",
+ 		.id = 1,
+-		.cpu_dai_name = "SSP1 Pin",
+-		.platform_name = "0000:00:0e.0",
+ 		.no_pcm = 1,
+-		.codec_name = "i2c-DLGS7219:00",
+-		.codec_dai_name = BXT_DIALOG_CODEC_DAI,
+ 		.init = broxton_da7219_codec_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+@@ -520,51 +551,40 @@ static struct snd_soc_dai_link broxton_dais[] = {
+ 		.be_hw_params_fixup = broxton_ssp_fixup,
  		.dpcm_playback = 1,
  		.dpcm_capture = 1,
- 		.init = byt_cht_es8316_init,
-+		SND_SOC_DAILINK_REG(ssp2_port, ssp2_codec, platform),
++		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
+ 	},
+ 	{
+ 		.name = "dmic01",
+ 		.id = 2,
+-		.cpu_dai_name = "DMIC01 Pin",
+-		.codec_name = "dmic-codec",
+-		.codec_dai_name = "dmic-hifi",
+-		.platform_name = "0000:00:0e.0",
+ 		.ignore_suspend = 1,
+ 		.be_hw_params_fixup = broxton_dmic_fixup,
+ 		.dpcm_capture = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
+ 	},
+ 	{
+ 		.name = "iDisp1",
+ 		.id = 3,
+-		.cpu_dai_name = "iDisp1 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi1",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = broxton_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp1_pin, idisp1_codec, platform),
+ 	},
+ 	{
+ 		.name = "iDisp2",
+ 		.id = 4,
+-		.cpu_dai_name = "iDisp2 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi2",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = broxton_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp2_pin, idisp2_codec, platform),
+ 	},
+ 	{
+ 		.name = "iDisp3",
+ 		.id = 5,
+-		.cpu_dai_name = "iDisp3 Pin",
+-		.codec_name = "ehdaudio0D2",
+-		.codec_dai_name = "intel-hdmi-hifi3",
+-		.platform_name = "0000:00:0e.0",
+ 		.init = broxton_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
  	},
  };
  
-@@ -471,7 +479,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	mach = dev->platform_data;
- 	/* fix index of codec dai */
- 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
--		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
-+		if (!strcmp(byt_cht_es8316_dais[i].codecs->name,
- 			    "i2c-ESSX8316:00")) {
- 			dai_index = i;
- 			break;
-@@ -484,7 +492,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		snprintf(codec_name, sizeof(codec_name),
- 			 "i2c-%s", acpi_dev_name(adev));
- 		put_device(&adev->dev);
--		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
-+		byt_cht_es8316_dais[dai_index].codecs->name = codec_name;
+@@ -647,16 +667,16 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 		/* Fixup the SSP entries for geminilake */
+ 		for (i = 0; i < ARRAY_SIZE(broxton_dais); i++) {
+ 			/* MAXIM_CODEC is connected to SSP1. */
+-			if (!strcmp(broxton_dais[i].codec_dai_name,
++			if (!strcmp(broxton_dais[i].codecs->dai_name,
+ 				    BXT_MAXIM_CODEC_DAI)) {
+ 				broxton_dais[i].name = "SSP1-Codec";
+-				broxton_dais[i].cpu_dai_name = "SSP1 Pin";
++				broxton_dais[i].cpus->dai_name = "SSP1 Pin";
+ 			}
+ 			/* DIALOG_CODE is connected to SSP2 */
+-			else if (!strcmp(broxton_dais[i].codec_dai_name,
++			else if (!strcmp(broxton_dais[i].codecs->dai_name,
+ 					 BXT_DIALOG_CODEC_DAI)) {
+ 				broxton_dais[i].name = "SSP2-Codec";
+-				broxton_dais[i].cpu_dai_name = "SSP2 Pin";
++				broxton_dais[i].cpus->dai_name = "SSP2 Pin";
+ 			}
+ 		}
  	}
- 
- 	/* override plaform name, if required */
-@@ -518,7 +526,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	log_quirks(dev);
- 
- 	if (quirk & BYT_CHT_ES8316_SSP0)
--		byt_cht_es8316_dais[dai_index].cpu_dai_name = "ssp0-port";
-+		byt_cht_es8316_dais[dai_index].cpus->dai_name = "ssp0-port";
- 
- 	/* get the clock */
- 	priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
 -- 
 2.20.1
