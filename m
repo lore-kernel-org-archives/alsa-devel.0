@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ux500: mop500: use modern dai_link
-	style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:21 +0100 (BST)
-Message-ID: <20190606212621.78319440046@finisterre.sirena.org.uk>
-References: <87d0jrgy2s.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tegra: tegra_wm8753: use modern
+	dai_link style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:26:18 +0100 (BST)
+Message-ID: <20190606212618.F28AE440046@finisterre.sirena.org.uk>
+References: <877e9zgy27.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 500B6F8976D
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:22 +0200 (CEST)
-In-Reply-To: <87d0jrgy2s.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF46AF89762
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:19 +0200 (CEST)
+In-Reply-To: <877e9zgy27.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ux500: mop500: use modern dai_link style
+   ASoC: tegra: tegra_wm8753: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8ad8d81a0ff66f48a28a6fc795524085ce999111 Mon Sep 17 00:00:00 2001
+>From efefce542260fb9c26634fa01582aabc72166259 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:18:14 +0900
-Subject: [PATCH] ASoC: ux500: mop500: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:18:36 +0900
+Subject: [PATCH] ASoC: tegra: tegra_wm8753: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,81 +67,64 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ux500/mop500.c | 36 ++++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 16 deletions(-)
+ sound/soc/tegra/tegra_wm8753.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index c60a57797640..20552e9d9217 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -27,26 +27,30 @@
- #include "mop500_ab8500.h"
- 
- /* Define the whole MOP500 soundcard, linking platform to the codec-drivers  */
-+SND_SOC_DAILINK_DEFS(link1,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ux500-msp-i2s.1")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ab8500-codec.0", "ab8500-codec-dai.0")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("ux500-msp-i2s.1")));
-+
-+SND_SOC_DAILINK_DEFS(link2,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ux500-msp-i2s.3")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("ab8500-codec.0", "ab8500-codec-dai.1")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("ux500-msp-i2s.3")));
-+
- static struct snd_soc_dai_link mop500_dai_links[] = {
- 	{
- 		.name = "ab8500_0",
- 		.stream_name = "ab8500_0",
--		.cpu_dai_name = "ux500-msp-i2s.1",
--		.codec_dai_name = "ab8500-codec-dai.0",
--		.platform_name = "ux500-msp-i2s.1",
--		.codec_name = "ab8500-codec.0",
- 		.init = mop500_ab8500_machine_init,
- 		.ops = mop500_ab8500_ops,
-+		SND_SOC_DAILINK_REG(link1),
- 	},
- 	{
- 		.name = "ab8500_1",
- 		.stream_name = "ab8500_1",
--		.cpu_dai_name = "ux500-msp-i2s.3",
--		.codec_dai_name = "ab8500-codec-dai.1",
--		.platform_name = "ux500-msp-i2s.3",
--		.codec_name = "ab8500-codec.0",
- 		.init = NULL,
- 		.ops = mop500_ab8500_ops,
-+		SND_SOC_DAILINK_REG(link2),
- 	},
+diff --git a/sound/soc/tegra/tegra_wm8753.c b/sound/soc/tegra/tegra_wm8753.c
+index 23a810e3bacc..8492b3dbb788 100644
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -98,14 +98,19 @@ static const struct snd_soc_dapm_widget tegra_wm8753_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
  };
  
-@@ -63,8 +67,8 @@ static void mop500_of_node_put(void)
- 	int i;
++SND_SOC_DAILINK_DEFS(pcm,
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8753-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++
+ static struct snd_soc_dai_link tegra_wm8753_dai = {
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 PCM",
+-	.codec_dai_name = "wm8753-hifi",
+ 	.ops = &tegra_wm8753_ops,
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S |
+ 			SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
++	SND_SOC_DAILINK_REG(pcm),
+ };
  
- 	for (i = 0; i < 2; i++) {
--		of_node_put(mop500_dai_links[i].cpu_of_node);
--		of_node_put(mop500_dai_links[i].codec_of_node);
-+		of_node_put(mop500_dai_links[i].cpus->of_node);
-+		of_node_put(mop500_dai_links[i].codecs->of_node);
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
+@@ -142,25 +147,25 @@ static int tegra_wm8753_driver_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err;
+ 
+-	tegra_wm8753_dai.codec_of_node = of_parse_phandle(np,
++	tegra_wm8753_dai.codecs->of_node = of_parse_phandle(np,
+ 			"nvidia,audio-codec", 0);
+-	if (!tegra_wm8753_dai.codec_of_node) {
++	if (!tegra_wm8753_dai.codecs->of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,audio-codec' missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto err;
  	}
- }
  
-@@ -85,12 +89,12 @@ static int mop500_of_probe(struct platform_device *pdev,
+-	tegra_wm8753_dai.cpu_of_node = of_parse_phandle(np,
++	tegra_wm8753_dai.cpus->of_node = of_parse_phandle(np,
+ 			"nvidia,i2s-controller", 0);
+-	if (!tegra_wm8753_dai.cpu_of_node) {
++	if (!tegra_wm8753_dai.cpus->of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,i2s-controller' missing or invalid\n");
+ 		ret = -EINVAL;
+ 		goto err;
  	}
  
- 	for (i = 0; i < 2; i++) {
--		mop500_dai_links[i].cpu_of_node = msp_np[i];
--		mop500_dai_links[i].cpu_dai_name = NULL;
--		mop500_dai_links[i].platform_of_node = msp_np[i];
--		mop500_dai_links[i].platform_name = NULL;
--		mop500_dai_links[i].codec_of_node = codec_np;
--		mop500_dai_links[i].codec_name = NULL;
-+		mop500_dai_links[i].cpus->of_node = msp_np[i];
-+		mop500_dai_links[i].cpus->dai_name = NULL;
-+		mop500_dai_links[i].platforms->of_node = msp_np[i];
-+		mop500_dai_links[i].platforms->name = NULL;
-+		mop500_dai_links[i].codecs->of_node = codec_np;
-+		mop500_dai_links[i].codecs->name = NULL;
- 	}
+-	tegra_wm8753_dai.platform_of_node = tegra_wm8753_dai.cpu_of_node;
++	tegra_wm8753_dai.platforms->of_node = tegra_wm8753_dai.cpus->of_node;
  
- 	snd_soc_of_parse_card_name(&mop500_card, "stericsson,card-name");
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
 -- 
 2.20.1
