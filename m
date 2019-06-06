@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: poodle: use modern dai_link style"
+Subject: Applied "ASoC: pxa: tosa: use modern dai_link style"
 	to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:50 +0100 (BST)
-Message-ID: <20190606212650.A5B09440046@finisterre.sirena.org.uk>
-References: <87h893jrh9.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:51 +0100 (BST)
+Message-ID: <20190606212651.C5FBF440046@finisterre.sirena.org.uk>
+References: <87k1dzjrhi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60EC9F897CD
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:51 +0200 (CEST)
-In-Reply-To: <87h893jrh9.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9873AF897D3
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:52 +0200 (CEST)
+In-Reply-To: <87k1dzjrhi.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: poodle: use modern dai_link style
+   ASoC: pxa: tosa: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8ba9c5cbe9f27808346927bf173b263e2552f80f Mon Sep 17 00:00:00 2001
+>From cc7b2401cd93a884813af224cc24c8d8f31f39cd Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:12:29 +0900
-Subject: [PATCH] ASoC: pxa: poodle: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:12:20 +0900
+Subject: [PATCH] ASoC: pxa: tosa: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,35 +67,49 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/poodle.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/pxa/tosa.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index b6693f32fc02..2a564187b2ce 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -224,16 +224,18 @@ static const struct snd_kcontrol_new wm8731_poodle_controls[] = {
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index ae9c12e1ea2a..e7cb450d9e8a 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -182,24 +182,28 @@ static const struct snd_kcontrol_new tosa_controls[] = {
+ 		tosa_set_spk),
  };
  
- /* poodle digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEFS(wm8731,
-+	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-i2s")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")),
++SND_SOC_DAILINK_DEFS(ac97,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
 +
- static struct snd_soc_dai_link poodle_dai = {
- 	.name = "WM8731",
- 	.stream_name = "WM8731",
--	.cpu_dai_name = "pxa2xx-i2s",
--	.codec_dai_name = "wm8731-hifi",
++SND_SOC_DAILINK_DEFS(ac97_aux,
++	DAILINK_COMP_ARRAY(COMP_CPU("pxa2xx-ac97-aux")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-aux")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("pxa-pcm-audio")));
++
+ static struct snd_soc_dai_link tosa_dai[] = {
+ {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 HiFi",
+-	.cpu_dai_name = "pxa2xx-ac97",
+-	.codec_dai_name = "wm9712-hifi",
 -	.platform_name = "pxa-pcm-audio",
--	.codec_name = "wm8731.0-001b",
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 		   SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &poodle_ops,
-+	SND_SOC_DAILINK_REG(wm8731),
+-	.codec_name = "wm9712-codec",
+ 	.ops = &tosa_ops,
++	SND_SOC_DAILINK_REG(ac97),
+ },
+ {
+ 	.name = "AC97 Aux",
+ 	.stream_name = "AC97 Aux",
+-	.cpu_dai_name = "pxa2xx-ac97-aux",
+-	.codec_dai_name = "wm9712-aux",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_name = "wm9712-codec",
+ 	.ops = &tosa_ops,
++	SND_SOC_DAILINK_REG(ac97_aux),
+ },
  };
  
- /* poodle audio machine driver */
 -- 
 2.20.1
