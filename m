@@ -1,77 +1,73 @@
-From: "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: Re: Linking ALSA playback devices and DRM connectors
-Date: Thu, 6 Jun 2019 09:20:13 +0000
-Message-ID: <80d5ea60-5bb3-81a8-e74d-ab7dc8d6cd31@amd.com>
-References: <f69f48bd4b9b2dc6f8228cd47406882c71758cdf.camel@intel.com>
- <157c9015-32c8-2c1d-236f-48da16f43399@gmail.com>
- <ccd5d702b4c15cb14e3ec44758cce8880e28b74c.camel@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 000/146] ASoC: modern dai_link style
+	support
+Date: Thu, 6 Jun 2019 11:56:32 +0100
+Message-ID: <20190606105632.GY2456@sirena.org.uk>
+References: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <ccd5d702b4c15cb14e3ec44758cce8880e28b74c.camel@intel.com>
-Content-Language: en-US
-Content-ID: <911DA7E9A54EE749BC9EEF4AA45ACBD8@namprd12.prod.outlook.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: "Ser, Simon" <simon.ser@intel.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>, "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wentland,
- Harry" <Harry.Wentland@amd.com>
+Content-Type: multipart/mixed; boundary="===============5155269390993206129=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F109F896CE
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 12:56:34 +0200 (CEST)
+In-Reply-To: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-QW0gMDYuMDYuMTkgdW0gMTE6MTMgc2NocmllYiBTZXIsIFNpbW9uOg0KPiBPbiBUdWUsIDIwMTkt
-MDYtMDQgYXQgMTc6MTUgKzAyMDAsIENocmlzdGlhbiBLw7ZuaWcgd3JvdGU6DQo+PiBBbSAwNC4w
-Ni4xOSB1bSAxNzowNSBzY2hyaWViIFNlciwgU2ltb246DQo+Pj4gSGksDQo+Pj4NCj4+PiBJJ20g
-dHJ5aW5nIHRvIGxpbmsgQUxTQSBwbGF5YmFjayBkZXZpY2VzIGFuZCBEUk0gY29ubmVjdG9ycy4g
-SW4gb3RoZXINCj4+PiB3b3JkcywgSSdkIGxpa2UgdG8gYmUgYWJsZSB0byBrbm93IHdoaWNoIEFM
-U0EgZGV2aWNlIEkgc2hvdWxkIG9wZW4gdG8NCj4+PiBwbGF5IGF1ZGlvIG9uIGEgZ2l2ZW4gY29u
-bmVjdG9yLg0KPj4+DQo+Pj4gVW5mb3J0dW5hdGVseSwgSSBoYXZlbid0IGZvdW5kIGEgd2F5IHRv
-IGV4dHJhY3QgdGhpcyBpbmZvcm1hdGlvbi4gSQ0KPj4+IGtub3cgL3Byb2MvYXNvdW5kL2NhcmRO
-L2VsZCogZXhwb3NlIHRoZSBFRElELWxpa2UgZGF0YS4gSG93ZXZlciBieQ0KPj4+IGxvb2tpbmcg
-YXQgdGhlIEFMU0EgQVBJIChhbHNvOiBhcGxheSAtbCBhbmQgLUwpIEkgY2FuJ3QgZmluZCBhIHdh
-eSB0bw0KPj4+IGZpZ3VyZSBvdXQgd2hpY2ggUENNIGRldmljZSBtYXBzIHRvIHRoZSBFTEQuDQo+
-Pj4NCj4+PiBBbSBJIG1pc3Npbmcgc29tZXRoaW5nPw0KPj4gSXMgdGhhdCBhY3R1YWxseSBmaXhl
-ZCBvbiBhbGwgaGFyZHdhcmU/IE9yIGRvIHdlIG1heWJlIGhhdmUgc29tZQ0KPj4gaGFyZHdhcmUg
-d2l0aCBvbmx5IG9uZSBhdWRpbyBjb2RlYyBhbmQgbXVsdGlwbGUgY29ubmVjdG9ycz8NCj4+DQo+
-Pj4gSWYgbm90LCB3aGF0IHdvdWxkIGJlIHRoZSBiZXN0IHdheSB0byBleHBvc2UgdGhpcz8NCj4+
-Pg0KPj4+IC0gQSBzeW1saW5rIHRvIHRoZSBBTFNBIGF1ZGlvIFBDTSBkZXZpY2UgaW4NCj4+PiAg
-ICAgL3N5cy9jbGFzcy9kcm0vY2FyZE4tQ09OTkVDVE9SPw0KPj4+IC0gQSBzeW1saW5rIHRvIHRo
-ZSBEUk0gY29ubmVjdG9yIGluIC9zeXMvY2xhc3Mvc291bmQvcGNtKj8NCj4+IElmIGl0J3MgZml4
-ZWQgdGhhbiB0aG9zZSB0d28gb3B0aW9ucyBzb3VuZCBzYW5lIHRvIG1lLg0KPj4NCj4+PiAtIEEg
-RFJNIGNvbm5lY3RvciBwcm9wZXJ0eT8NCj4+IElmIGl0J3MgY29uZmlndXJhYmxlIHRoYW4gdGhh
-dCBzb3VuZHMgbGlrZSBhIGdvb2Qgb3B0aW9uIHRvIG1lLg0KPiBJJ20gc3RpbGwgbm90IHN1cmUg
-d2hldGhlciB0aGlzIGlzIGZpeGVkIG9uIGFsbCBoYXJkd2FyZSBvciBub3QuDQoNCldlbGwgZnJv
-bSByZWFkaW5nIHVwIG9uIHRoZSB0aHJlYWQgSSB0aGluayB0aGUgYW5zd2VyIGlzIHRoYXQgdGhp
-cyBpcyANCk5PVCBmaXhlZC4NCg0KQXQgbGVhc3QgZnJvbSBBTUQgaGFyZHdhcmUgSSBrbm93IHRo
-YXQgdGhlIG9yaWdpbmFsIFI2MDAgaGFkIG9ubHkgb25lIA0KYXVkaW8gY29kZWMgd2hpY2ggY291
-bGQgYmUgcm91dGVkIHRvIG11bHRpcGxlIEhETUkgY29ubmVjdG9ycyBhdCB0aGUgDQpzYW1lIHRp
-bWUuDQoNCkFuZCBJIHVuZGVyc3RhbmQgdGhlIHJlcGx5IGFib3V0IE1TVCBzbyB0aGF0IHlvdSBj
-YW4gZXZlbiBoYXZlIG11bHRpcGxlIA0Kc3RyZWFtcyBvdmVyIHRoZSBzYW1lIGNvZGVjIHJvdXRl
-ZCB0byBkaWZmZXJlbnQgY29ubmVjdG9ycy4NCg0KQ2hyaXN0aWFuLg0KDQo+DQo+IFZpbGxlLCBv
-biB0aGlzIG9sZCBJbnRlbCBodywgaXMgdGhlIHNpbmdsZSBjb25uZWN0b3IgdGhhdCBnZXRzIHRo
-ZQ0KPiBhdWRpbyBjb25maWd1cmFibGU/DQo+DQo+IEFkZGl0aW9uYWwgdGhvdWdodDogc2luY2Ug
-SSBuZWVkIHRoaXMgZm9yIHRoZSBJR1QgdGVzdCBzdWl0ZSBJIGRvbid0DQo+IHJlYWxseSBjYXJl
-IGhvdyB0aGlzIGluZm8gaXMgZXhwb3NlZCBhcyBsb25nIGFzIGl0J3MgZXhwb3NlZCwgYnV0IG90
-aGVyDQo+IHVzZXJzcGFjZSBwcm9ncmFtcyAoREVzKSBhcmUgcHJvYmFibHkgaW50ZXJlc3RlZCBp
-biB0aGlzIGluZm9ybWF0aW9uDQo+IHRvby4gVGhpcyB3b3VsZCBhbGxvdyB1c2VycyB0byBhY3R1
-YWxseSBoYXZlIHRoZSBuYW1lIG9mIHRoZSBtb25pdG9yIGluDQo+IHRoZSBhdWRpbyBvdXRwdXQg
-c2VsZWN0aW9uIFVJLiBIYXZpbmcgc29tZXRoaW5nIHRoYXQgZG9lc24ndCBkZXBlbmQgb24NCj4g
-c3lzZnMgd291bGQgYmUgYmV0dGVyIGZvciB0aGlzLg0KPg0KPiBXb3VsZCB0aGVyZSBiZSBhIHdh
-eSB0byBleHBvc2Ugc29tZSBpbmZvIGFib3V0IHRoZSBtb25pdG9yIGluIHRoZSBBTFNBDQo+IEFQ
-ST8NCj4NCj4+IEFueXdheSBhZGRlZCBvdXIgREMgdGVhbSwgc3R1ZmYgbGlrZSB0aGF0IGlzIHRo
-ZWlyIGNvbnN0cnVjdGlvbiBzaXRlLg0KPj4NCj4+IFJlZ2FyZHMsDQo+PiBDaHJpc3RpYW4uDQo+
-Pg0KPj4+IC0gU29tZWhvdyBleHBvc2UgdGhlIGNvbm5lY3RvciBuYW1lIHZpYSB0aGUgQUxTQSBB
-UEk/DQo+Pj4gLSBFeHBvc2UgdGhlIGNvbm5lY3RvciBFRElEIHZpYSBBTFNBPw0KPj4+IC0gT3Ro
-ZXIgaWRlYXM/DQo+Pj4NCj4+PiBUaGFua3MhDQo+Pj4NCj4+PiBTaW1vbiBTZXINCj4+PiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPj4+IGRyaS1kZXZl
-bCBtYWlsaW5nIGxpc3QNCj4+PiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQo+Pj4g
-aHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwN
-Cg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
-dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+
+--===============5155269390993206129==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aWODCRBxMR7ARF42"
+Content-Disposition: inline
+
+
+--aWODCRBxMR7ARF42
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jun 06, 2019 at 01:06:52PM +0900, Kuninori Morimoto wrote:
+
+> I added posted Tested-by at ateml mikroe-proto,
+> and Signed-off-by Pierre-Louis for some Intel patches,
+> and new patch for new Intel bytcht_cx2072x
+
+Are you sure those should be signoffs and not acks or reviewed-bys?
+
+--aWODCRBxMR7ARF42
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz48VwACgkQJNaLcl1U
+h9A+fgf/VX5tPqfmaZ5eerBKtEU5Sav8frTJDHCrcpr3N9YV2H6O7bS1l5KpkARq
+GAysCnM4HAQvI9FFfb/BCrTipccjKZusa7qI5XHiy/oAaPGhvDRIKbxVuAkUaS4x
+oVYZ4h1q14Oawq93b6MhO5mnlMTZ7nLMDqzbap07VMy7JTHWwrrniFUp48ylfjiZ
+ZInZZodZggN2Ort9tCoeRnR3Q+tQoq0Lco/wDKZzsLARkR36L2QZzNAAGGhjc2iF
+7KR5tknNc5ijCzOBC0KsJezF3XhUTrbuXE+9C0iuSzJ3uCpwLC3K7vr06aGo6tO3
+rA289e5tq5tHo6w7/11H8s1CTKPwaw==
+=ataU
+-----END PGP SIGNATURE-----
+
+--aWODCRBxMR7ARF42--
+
+--===============5155269390993206129==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5155269390993206129==--
