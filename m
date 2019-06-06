@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: smartq_wm8987: use modern
-	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:05 +0100 (BST)
-Message-ID: <20190606212705.325DF440046@finisterre.sirena.org.uk>
-References: <87imtjl65t.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: samsung: tobermory: use modern dai_link
+	style" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:07 +0100 (BST)
+Message-ID: <20190606212707.8AB67440046@finisterre.sirena.org.uk>
+References: <87o93bl66i.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7C71F897EC
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:05 +0200 (CEST)
-In-Reply-To: <87imtjl65t.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 519BAF897F2
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:08 +0200 (CEST)
+In-Reply-To: <87o93bl66i.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: smartq_wm8987: use modern dai_link style
+   ASoC: samsung: tobermory: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From a259926056dde250bcb34f015dd9eb72d4709b69 Mon Sep 17 00:00:00 2001
+>From 19bca225e7202710529a14e916a783b1aa42720b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:10:01 +0900
-Subject: [PATCH] ASoC: samsung: smartq_wm8987: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:09:36 +0900
+Subject: [PATCH] ASoC: samsung: tobermory: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,35 +67,34 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/smartq_wm8987.c | 10 ++++++----
+ sound/soc/samsung/tobermory.c | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-index b9e887ea60b2..fab3db9fdb98 100644
---- a/sound/soc/samsung/smartq_wm8987.c
-+++ b/sound/soc/samsung/smartq_wm8987.c
-@@ -153,18 +153,20 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
- 	return err;
- }
+diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
+index 14b11acb12a4..ef51f289fbc7 100644
+--- a/sound/soc/samsung/tobermory.c
++++ b/sound/soc/samsung/tobermory.c
+@@ -109,17 +109,19 @@ static struct snd_soc_ops tobermory_ops = {
+ 	.hw_params = tobermory_hw_params,
+ };
  
-+SND_SOC_DAILINK_DEFS(wm8987,
++SND_SOC_DAILINK_DEFS(cpu,
 +	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.0")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8750.0-0x1a", "wm8750-hifi")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8962.1-001a", "wm8962")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
 +
- static struct snd_soc_dai_link smartq_dai[] = {
+ static struct snd_soc_dai_link tobermory_dai[] = {
  	{
- 		.name		= "wm8987",
- 		.stream_name	= "SmartQ Hi-Fi",
--		.cpu_dai_name	= "samsung-i2s.0",
--		.codec_dai_name	= "wm8750-hifi",
--		.platform_name	= "samsung-i2s.0",
--		.codec_name	= "wm8750.0-0x1a",
- 		.init		= smartq_wm8987_init,
- 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBS_CFS,
- 		.ops		= &smartq_hifi_ops,
-+		SND_SOC_DAILINK_REG(wm8987),
+ 		.name = "CPU",
+ 		.stream_name = "CPU",
+-		.cpu_dai_name = "samsung-i2s.0",
+-		.codec_dai_name = "wm8962",
+-		.platform_name = "samsung-i2s.0",
+-		.codec_name = "wm8962.1-001a",
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.ops = &tobermory_ops,
++		SND_SOC_DAILINK_REG(cpu),
  	},
  };
  
