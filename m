@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: tm2_wm5110: use modern
+Subject: Applied "ASoC: samsung: smartq_wm8987: use modern
 	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:06 +0100 (BST)
-Message-ID: <20190606212707.01CB5440046@finisterre.sirena.org.uk>
-References: <87muivl66a.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:27:05 +0100 (BST)
+Message-ID: <20190606212705.325DF440046@finisterre.sirena.org.uk>
+References: <87imtjl65t.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4B6EF897EE
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:07 +0200 (CEST)
-In-Reply-To: <87muivl66a.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7C71F897EC
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:05 +0200 (CEST)
+In-Reply-To: <87imtjl65t.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: tm2_wm5110: use modern dai_link style
+   ASoC: samsung: smartq_wm8987: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From f1d26f2b947ea6cc3265b0e3c0a265c57a43f945 Mon Sep 17 00:00:00 2001
+>From a259926056dde250bcb34f015dd9eb72d4709b69 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:09:44 +0900
-Subject: [PATCH] ASoC: samsung: tm2_wm5110: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:10:01 +0900
+Subject: [PATCH] ASoC: samsung: smartq_wm8987: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,105 +67,37 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/tm2_wm5110.c | 42 ++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 12 deletions(-)
+ sound/soc/samsung/smartq_wm8987.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
-index 31f4256c6c65..c091033d17ad 100644
---- a/sound/soc/samsung/tm2_wm5110.c
-+++ b/sound/soc/samsung/tm2_wm5110.c
-@@ -427,38 +427,56 @@ static struct snd_soc_dai_driver tm2_ext_dai[] = {
+diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+index b9e887ea60b2..fab3db9fdb98 100644
+--- a/sound/soc/samsung/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -153,18 +153,20 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
+ 	return err;
+ }
+ 
++SND_SOC_DAILINK_DEFS(wm8987,
++	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.0")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8750.0-0x1a", "wm8750-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
++
+ static struct snd_soc_dai_link smartq_dai[] = {
+ 	{
+ 		.name		= "wm8987",
+ 		.stream_name	= "SmartQ Hi-Fi",
+-		.cpu_dai_name	= "samsung-i2s.0",
+-		.codec_dai_name	= "wm8750-hifi",
+-		.platform_name	= "samsung-i2s.0",
+-		.codec_name	= "wm8750.0-0x1a",
+ 		.init		= smartq_wm8987_init,
+ 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 				  SND_SOC_DAIFMT_CBS_CFS,
+ 		.ops		= &smartq_hifi_ops,
++		SND_SOC_DAILINK_REG(wm8987),
  	},
  };
  
-+SND_SOC_DAILINK_DEFS(aif1,
-+	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif1")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(voice,
-+	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif2")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(bt,
-+	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif3")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+SND_SOC_DAILINK_DEFS(hdmi,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
- static struct snd_soc_dai_link tm2_dai_links[] = {
- 	{
- 		.name		= "WM5110 AIF1",
- 		.stream_name	= "HiFi Primary",
--		.cpu_dai_name   = SAMSUNG_I2S_DAI,
--		.codec_dai_name = "wm5110-aif1",
- 		.ops		= &tm2_aif1_ops,
- 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBM_CFM,
-+		SND_SOC_DAILINK_REG(aif1),
- 	}, {
- 		.name		= "WM5110 Voice",
- 		.stream_name	= "Voice call",
--		.cpu_dai_name   = SAMSUNG_I2S_DAI,
--		.codec_dai_name = "wm5110-aif2",
- 		.ops		= &tm2_aif2_ops,
- 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBM_CFM,
- 		.ignore_suspend = 1,
-+		SND_SOC_DAILINK_REG(voice),
- 	}, {
- 		.name		= "WM5110 BT",
- 		.stream_name	= "Bluetooth",
--		.cpu_dai_name   = SAMSUNG_I2S_DAI,
--		.codec_dai_name = "wm5110-aif3",
- 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBM_CFM,
- 		.ignore_suspend = 1,
-+		SND_SOC_DAILINK_REG(bt),
- 	}, {
- 		.name		= "HDMI",
- 		.stream_name	= "i2s1",
- 		.ops		= &tm2_hdmi_ops,
- 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 				  SND_SOC_DAIFMT_CBS_CFS,
-+		SND_SOC_DAILINK_REG(hdmi),
- 	}
- };
- 
-@@ -557,15 +575,15 @@ static int tm2_probe(struct platform_device *pdev)
- 	for_each_card_prelinks(card, i, dai_link) {
- 		unsigned int dai_index = 0; /* WM5110 */
- 
--		dai_link->cpu_name = NULL;
--		dai_link->platform_name = NULL;
-+		dai_link->cpus->name = NULL;
-+		dai_link->platforms->name = NULL;
- 
- 		if (num_codecs > 1 && i == card->num_links - 1)
- 			dai_index = 1; /* HDMI */
- 
--		dai_link->codec_of_node = codec_dai_node[dai_index];
--		dai_link->cpu_of_node = cpu_dai_node[dai_index];
--		dai_link->platform_of_node = cpu_dai_node[dai_index];
-+		dai_link->codecs->of_node = codec_dai_node[dai_index];
-+		dai_link->cpus->of_node = cpu_dai_node[dai_index];
-+		dai_link->platforms->of_node = cpu_dai_node[dai_index];
- 	}
- 
- 	if (num_codecs > 1) {
-@@ -579,7 +597,7 @@ static int tm2_probe(struct platform_device *pdev)
- 			goto dai_node_put;
- 		}
- 
--		ret = snd_soc_get_dai_name(&args, &card->dai_link[i].codec_dai_name);
-+		ret = snd_soc_get_dai_name(&args, &card->dai_link[i].codecs->dai_name);
- 		if (ret) {
- 			dev_err(dev, "Unable to get codec_dai_name\n");
- 			goto dai_node_put;
 -- 
 2.20.1
