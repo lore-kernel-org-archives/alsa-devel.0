@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_nocodec: use modern
+Subject: Applied "ASoC: Intel: byt-max98090: use modern
 	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:26:08 +0100 (BST)
-Message-ID: <20190606212608.567C9440049@finisterre.sirena.org.uk>
-References: <87ftonfjep.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:26:09 +0100 (BST)
+Message-ID: <20190606212609.73D63440046@finisterre.sirena.org.uk>
+References: <87imtjfjf0.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C949F89741
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:09 +0200 (CEST)
-In-Reply-To: <87ftonfjep.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49162F89747
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:26:10 +0200 (CEST)
+In-Reply-To: <87imtjfjf0.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_nocodec: use modern dai_link style
+   ASoC: Intel: byt-max98090: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 365a8a586afb7ee4e6736ab7b5020502e121e69d Mon Sep 17 00:00:00 2001
+>From 0034172031aa695911cc2c2db2a3cd76ebff6cf4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:20:25 +0900
-Subject: [PATCH] ASoC: Intel: bytcht_nocodec: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:20:15 +0900
+Subject: [PATCH] ASoC: Intel: byt-max98090: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,80 +67,34 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_nocodec.c | 30 +++++++++++++++----------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ sound/soc/intel/boards/byt-max98090.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_nocodec.c b/sound/soc/intel/boards/bytcht_nocodec.c
-index b80ec027a0e8..ecb8585900bd 100644
---- a/sound/soc/intel/boards/bytcht_nocodec.c
-+++ b/sound/soc/intel/boards/bytcht_nocodec.c
-@@ -105,44 +105,49 @@ static struct snd_soc_ops aif1_ops = {
- 	.startup = aif1_startup,
- };
+diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
+index f1283634b22b..589499fcd36d 100644
+--- a/sound/soc/intel/boards/byt-max98090.c
++++ b/sound/soc/intel/boards/byt-max98090.c
+@@ -117,17 +117,19 @@ static int byt_max98090_init(struct snd_soc_pcm_runtime *runtime)
+ 				       hs_jack_gpios);
+ }
  
-+SND_SOC_DAILINK_DEF(dummy,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
++SND_SOC_DAILINK_DEFS(baytrail,
++	DAILINK_COMP_ARRAY(COMP_CPU("baytrail-pcm-audio")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-193C9890:00", "HiFi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("baytrail-pcm-audio")));
 +
-+SND_SOC_DAILINK_DEF(media,
-+	DAILINK_COMP_ARRAY(COMP_CPU("media-cpu-dai")));
-+
-+SND_SOC_DAILINK_DEF(deepbuffer,
-+	DAILINK_COMP_ARRAY(COMP_CPU("deepbuffer-cpu-dai")));
-+
-+SND_SOC_DAILINK_DEF(ssp2_port,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ssp2-port")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("sst-mfld-platform")));
-+
- static struct snd_soc_dai_link dais[] = {
- 	[MERR_DPCM_AUDIO] = {
- 		.name = "Audio Port",
- 		.stream_name = "Audio",
--		.cpu_dai_name = "media-cpu-dai",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.codec_name = "snd-soc-dummy",
--		.platform_name = "sst-mfld-platform",
- 		.ignore_suspend = 1,
- 		.nonatomic = true,
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 		.ops = &aif1_ops,
-+		SND_SOC_DAILINK_REG(media, dummy, platform),
- 	},
- 	[MERR_DPCM_DEEP_BUFFER] = {
- 		.name = "Deep-Buffer Audio Port",
- 		.stream_name = "Deep-Buffer Audio",
--		.cpu_dai_name = "deepbuffer-cpu-dai",
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.codec_name = "snd-soc-dummy",
--		.platform_name = "sst-mfld-platform",
- 		.ignore_suspend = 1,
- 		.nonatomic = true,
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
- 		.ops = &aif1_ops,
-+		SND_SOC_DAILINK_REG(deepbuffer, dummy, platform),
- 	},
- 	/* CODEC<->CODEC link */
- 	/* back ends */
+ static struct snd_soc_dai_link byt_max98090_dais[] = {
  	{
- 		.name = "SSP2-LowSpeed Connector",
- 		.id = 0,
--		.cpu_dai_name = "ssp2-port",
--		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
--		.codec_dai_name = "snd-soc-dummy-dai",
--		.codec_name = "snd-soc-dummy",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 						| SND_SOC_DAIFMT_CBS_CFS,
- 		.be_hw_params_fixup = codec_fixup,
-@@ -150,6 +155,7 @@ static struct snd_soc_dai_link dais[] = {
- 		.nonatomic = true,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(ssp2_port, dummy, platform),
+ 		.name = "Baytrail Audio",
+ 		.stream_name = "Audio",
+-		.cpu_dai_name = "baytrail-pcm-audio",
+-		.codec_dai_name = "HiFi",
+-		.codec_name = "i2c-193C9890:00",
+-		.platform_name = "baytrail-pcm-audio",
+ 		.init = byt_max98090_init,
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			   SND_SOC_DAIFMT_CBS_CFS,
++		SND_SOC_DAILINK_REG(baytrail),
  	},
  };
  
