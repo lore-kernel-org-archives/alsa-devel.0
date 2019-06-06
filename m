@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: smdk_spdif: use modern
+Subject: Applied "ASoC: samsung: h1940_uda1380: use modern
 	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:09 +0100 (BST)
-Message-ID: <20190606212709.34F25440049@finisterre.sirena.org.uk>
-References: <87sgsnl66z.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:27:08 +0100 (BST)
+Message-ID: <20190606212708.A5235440046@finisterre.sirena.org.uk>
+References: <87r287l66t.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9443F897F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64EF1F897F7
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:09 +0200 (CEST)
-In-Reply-To: <87sgsnl66z.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r287l66t.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: smdk_spdif: use modern dai_link style
+   ASoC: samsung: h1940_uda1380: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From e076cc1d9b0567962d48f67fcf5431237ce0ba10 Mon Sep 17 00:00:00 2001
+>From 88dd84a196ef69eb33baf555b74687de192f34a5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:09:19 +0900
-Subject: [PATCH] ASoC: samsung: smdk_spdif: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:09:25 +0900
+Subject: [PATCH] ASoC: samsung: h1940_uda1380: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,33 +67,37 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/smdk_spdif.c | 10 ++++++----
+ sound/soc/samsung/h1940_uda1380.c | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
-index 87a70d872c00..4baef84d29ee 100644
---- a/sound/soc/samsung/smdk_spdif.c
-+++ b/sound/soc/samsung/smdk_spdif.c
-@@ -142,14 +142,16 @@ static const struct snd_soc_ops smdk_spdif_ops = {
- 	.hw_params = smdk_hw_params,
- };
+diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
+index 95925c4a5964..a95c34e53a2b 100644
+--- a/sound/soc/samsung/h1940_uda1380.c
++++ b/sound/soc/samsung/h1940_uda1380.c
+@@ -165,18 +165,20 @@ static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
+ }
  
-+SND_SOC_DAILINK_DEFS(spdif,
-+	DAILINK_COMP_ARRAY(COMP_CPU("samsung-spdif")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("spdif-dit", "dit-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-spdif")));
+ /* s3c24xx digital audio interface glue - connects codec <--> CPU */
++SND_SOC_DAILINK_DEFS(uda1380,
++	DAILINK_COMP_ARRAY(COMP_CPU("s3c24xx-iis")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("uda1380-codec.0-001a", "uda1380-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("s3c24xx-iis")));
 +
- static struct snd_soc_dai_link smdk_dai = {
- 	.name = "S/PDIF",
- 	.stream_name = "S/PDIF PCM Playback",
--	.platform_name = "samsung-spdif",
--	.cpu_dai_name = "samsung-spdif",
--	.codec_dai_name = "dit-hifi",
--	.codec_name = "spdif-dit",
- 	.ops = &smdk_spdif_ops,
-+	SND_SOC_DAILINK_REG(spdif),
+ static struct snd_soc_dai_link h1940_uda1380_dai[] = {
+ 	{
+ 		.name		= "uda1380",
+ 		.stream_name	= "UDA1380 Duplex",
+-		.cpu_dai_name	= "s3c24xx-iis",
+-		.codec_dai_name	= "uda1380-hifi",
+ 		.init		= h1940_uda1380_init,
+-		.platform_name	= "s3c24xx-iis",
+-		.codec_name	= "uda1380-codec.0-001a",
+ 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 				  SND_SOC_DAIFMT_CBS_CFS,
+ 		.ops		= &h1940_ops,
++		SND_SOC_DAILINK_REG(uda1380),
+ 	},
  };
  
- static struct snd_soc_card smdk = {
 -- 
 2.20.1
