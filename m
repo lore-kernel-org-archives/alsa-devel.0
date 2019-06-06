@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1011: fix warning reported by kbuild
-	test robot and minor issue" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:19 +0100 (BST)
-Message-ID: <20190606212719.20FEC440046@finisterre.sirena.org.uk>
-References: <20190606062232.3753-1-shumingf@realtek.com>
+Subject: Applied "ASoC: core: move DAI pre-links initiation to
+	snd_soc_instantiate_card" to the asoc tree
+Date: Thu,  6 Jun 2019 22:27:23 +0100 (BST)
+Message-ID: <20190606212723.2F002440049@finisterre.sirena.org.uk>
+References: <20190604033102.206782-1-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B927F89818
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:21 +0200 (CEST)
-In-Reply-To: <20190606062232.3753-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC1DCF89819
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:23 +0200 (CEST)
+In-Reply-To: <20190604033102.206782-1-tzungbi@google.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, cychiang@google.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, mingjane_hsieh@realtek.com, flove@realtek.com, hychao@google.com
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt1011: fix warning reported by kbuild test robot and minor issue
+   ASoC: core: move DAI pre-links initiation to snd_soc_instantiate_card
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,58 +54,90 @@ to this mail.
 Thanks,
 Mark
 
->From 64429a8711e121e5d5d93d970c5ed3492332dd18 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Thu, 6 Jun 2019 14:22:32 +0800
-Subject: [PATCH] ASoC: rt1011: fix warning reported by kbuild test robot and
- minor issue
+>From 70fc53734e71ce51f46dfcfd1a1c319e1cfe080c Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Tue, 4 Jun 2019 11:31:02 +0800
+Subject: [PATCH] ASoC: core: move DAI pre-links initiation to
+ snd_soc_instantiate_card
 
-This patch fixes following issues:
-- warning: this decimal constant is unsigned only in ISO C90
-- sparse: incorrect type in assignment
-- check if value.integer.value is zero for "R0 Load Mode" control
+Kernel crashes when an ASoC component rebinding.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
+The dai_link->platforms has been reset to NULL by soc_cleanup_platform()
+in soc_cleanup_card_resources() when un-registering component.  However,
+it has no chance to re-allocate the dai_link->platforms when registering
+the component again.
+
+Move the DAI pre-links initiation from snd_soc_register_card() to
+snd_soc_instantiate_card() to make sure all DAI pre-links get initiated
+when component rebinding.
+
+As an example, by using the following commands:
+- echo -n max98357a > /sys/bus/platform/drivers/max98357a/unbind
+- echo -n max98357a > /sys/bus/platform/drivers/max98357a/bind
+
+Got the error message:
+"Unable to handle kernel NULL pointer dereference at virtual address".
+
+The call trace:
+snd_soc_is_matching_component+0x30/0x6c
+soc_bind_dai_link+0x16c/0x240
+snd_soc_bind_card+0x1e4/0xb10
+snd_soc_add_component+0x270/0x300
+snd_soc_register_component+0x54/0x6c
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 3a0ae80c5ee0..5605b660f4bf 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -1145,8 +1145,8 @@ static int rt1011_bq_drc_coeff_get(struct snd_kcontrol *kcontrol,
- 	bq_drc_info = rt1011->bq_drc_params[mode_idx];
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 46042d41b79b..3fecd957995e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2072,6 +2072,16 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	int ret, i, order;
  
- 	for (i = 0; i < RT1011_BQ_DRC_NUM; i++) {
--		params[i].reg = cpu_to_le16(bq_drc_info[i].reg);
--		params[i].val = cpu_to_le16(bq_drc_info[i].val);
-+		params[i].reg = bq_drc_info[i].reg;
-+		params[i].val = bq_drc_info[i].val;
- 	}
+ 	mutex_lock(&client_mutex);
++	for_each_card_prelinks(card, i, dai_link) {
++		ret = soc_init_dai_link(card, dai_link);
++		if (ret) {
++			soc_cleanup_platform(card);
++			dev_err(card->dev, "ASoC: failed to init link %s: %d\n",
++				dai_link->name, ret);
++			mutex_unlock(&client_mutex);
++			return ret;
++		}
++	}
+ 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
  
- 	return 0;
-@@ -1187,8 +1187,8 @@ static int rt1011_bq_drc_coeff_put(struct snd_kcontrol *kcontrol,
- 	pr_info("%s, id.name=%s, mode_idx=%d\n", __func__,
- 		ucontrol->id.name, mode_idx);
- 	for (i = 0; i < RT1011_BQ_DRC_NUM; i++) {
--		bq_drc_info[i].reg =	le16_to_cpu(params[i].reg);
--		bq_drc_info[i].val =	le16_to_cpu(params[i].val);
-+		bq_drc_info[i].reg = params[i].reg;
-+		bq_drc_info[i].val = params[i].val;
- 	}
+ 	card->dapm.bias_level = SND_SOC_BIAS_OFF;
+@@ -2796,26 +2806,9 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+  */
+ int snd_soc_register_card(struct snd_soc_card *card)
+ {
+-	int i, ret;
+-	struct snd_soc_dai_link *link;
+-
+ 	if (!card->name || !card->dev)
+ 		return -EINVAL;
  
- 	for (i = 0; i < RT1011_BQ_DRC_NUM; i++) {
-@@ -1284,6 +1284,9 @@ static int rt1011_r0_load_mode_put(struct snd_kcontrol *kcontrol,
- 	if (!component->card->instantiated)
- 		return 0;
+-	mutex_lock(&client_mutex);
+-	for_each_card_prelinks(card, i, link) {
+-
+-		ret = soc_init_dai_link(card, link);
+-		if (ret) {
+-			soc_cleanup_platform(card);
+-			dev_err(card->dev, "ASoC: failed to init link %s\n",
+-				link->name);
+-			mutex_unlock(&client_mutex);
+-			return ret;
+-		}
+-	}
+-	mutex_unlock(&client_mutex);
+-
+ 	dev_set_drvdata(card->dev, card);
  
-+	if (ucontrol->value.integer.value[0] == 0)
-+		return -EINVAL;
-+
- 	dev = regmap_get_device(rt1011->regmap);
- 	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
- 		rt1011->r0_reg = ucontrol->value.integer.value[0];
+ 	snd_soc_initialize_card_lists(card);
 -- 
 2.20.1
