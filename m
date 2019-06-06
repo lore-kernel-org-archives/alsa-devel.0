@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: littlemill: use modern
+Subject: Applied "ASoC: samsung: neo1973_wm8753: use modern
 	dai_link style" to the asoc tree
-Date: Thu,  6 Jun 2019 22:27:00 +0100 (BST)
-Message-ID: <20190606212700.BE7D4440046@finisterre.sirena.org.uk>
-References: <877e9zl64p.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu,  6 Jun 2019 22:27:01 +0100 (BST)
+Message-ID: <20190606212701.CFA9D440046@finisterre.sirena.org.uk>
+References: <87a7evl64z.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83205F897E3
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:01 +0200 (CEST)
-In-Reply-To: <877e9zl64p.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F623F897E5
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:02 +0200 (CEST)
+In-Reply-To: <87a7evl64z.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: littlemill: use modern dai_link style
+   ASoC: samsung: neo1973_wm8753: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From e28d6e02889c7448b470e55ea8440b65fd2ddf75 Mon Sep 17 00:00:00 2001
+>From 0391b03374ceb8a4f40e13e1c5780d694488228d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:10:41 +0900
-Subject: [PATCH] ASoC: samsung: littlemill: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:10:32 +0900
+Subject: [PATCH] ASoC: samsung: neo1973_wm8753: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,52 +67,51 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/littlemill.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ sound/soc/samsung/neo1973_wm8753.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
-index cd70b06cc99d..6132cee8550b 100644
---- a/sound/soc/samsung/littlemill.c
-+++ b/sound/soc/samsung/littlemill.c
-@@ -142,28 +142,33 @@ static const struct snd_soc_pcm_stream baseband_params = {
- 	.channels_max = 2,
- };
+diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+index 7e625066ddcd..396776ffd670 100644
+--- a/sound/soc/samsung/neo1973_wm8753.c
++++ b/sound/soc/samsung/neo1973_wm8753.c
+@@ -266,28 +266,32 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
-+SND_SOC_DAILINK_DEFS(cpu,
-+	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.0")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
++SND_SOC_DAILINK_DEFS(wm8753,
++	DAILINK_COMP_ARRAY(COMP_CPU("s3c24xx-iis")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8753.0-001a", "wm8753-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("s3c24xx-iis")));
 +
-+SND_SOC_DAILINK_DEFS(baseband,
-+	DAILINK_COMP_ARRAY(COMP_CPU("wm8994-aif2")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm1250-ev1.1-0027",
-+				      "wm1250-ev1")));
++SND_SOC_DAILINK_DEFS(bluetooth,
++	DAILINK_COMP_ARRAY(COMP_CPU("bt-sco-pcm")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8753.0-001a", "wm8753-voice")));
 +
- static struct snd_soc_dai_link littlemill_dai[] = {
- 	{
- 		.name = "CPU",
- 		.stream_name = "CPU",
--		.cpu_dai_name = "samsung-i2s.0",
--		.codec_dai_name = "wm8994-aif1",
--		.platform_name = "samsung-i2s.0",
--		.codec_name = "wm8994-codec",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.ops = &littlemill_ops,
-+		SND_SOC_DAILINK_REG(cpu),
- 	},
- 	{
- 		.name = "Baseband",
- 		.stream_name = "Baseband",
--		.cpu_dai_name = "wm8994-aif2",
--		.codec_dai_name = "wm1250-ev1",
--		.codec_name = "wm1250-ev1.1-0027",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.ignore_suspend = 1,
- 		.params = &baseband_params,
-+		SND_SOC_DAILINK_REG(baseband),
- 	},
+ static struct snd_soc_dai_link neo1973_dai[] = {
+ { /* Hifi Playback - for similatious use with voice below */
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 HiFi",
+-	.platform_name = "s3c24xx-iis",
+-	.cpu_dai_name = "s3c24xx-iis",
+-	.codec_dai_name = "wm8753-hifi",
+-	.codec_name = "wm8753.0-001a",
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBM_CFM,
+ 	.init = neo1973_wm8753_init,
+ 	.ops = &neo1973_hifi_ops,
++	SND_SOC_DAILINK_REG(wm8753),
+ },
+ { /* Voice via BT */
+ 	.name = "Bluetooth",
+ 	.stream_name = "Voice",
+-	.cpu_dai_name = "bt-sco-pcm",
+-	.codec_dai_name = "wm8753-voice",
+-	.codec_name = "wm8753.0-001a",
+ 	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
+ 		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &neo1973_voice_ops,
++	SND_SOC_DAILINK_REG(bluetooth),
+ },
  };
  
 -- 
