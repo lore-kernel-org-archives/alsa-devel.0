@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: smdk_wm8994: use modern
+Subject: Applied "ASoC: samsung: smdk_wm8580: use modern
 	dai_link style" to the asoc tree
 Date: Thu,  6 Jun 2019 22:27:10 +0100 (BST)
-Message-ID: <20190606212710.4E1ED440046@finisterre.sirena.org.uk>
-References: <87v9xjl67c.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190606212710.D5154440046@finisterre.sirena.org.uk>
+References: <87wohzl67h.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D448F89766
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98E3CF89802
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2019 23:27:11 +0200 (CEST)
-In-Reply-To: <87v9xjl67c.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wohzl67h.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: smdk_wm8994: use modern dai_link style
+   ASoC: samsung: smdk_wm8580: use modern dai_link style
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2f8ea84e3a8c9d57a6c893088a3f6145c96d72ee Mon Sep 17 00:00:00 2001
+>From 10601860559d4d2765ff2ccebb3d6a1df4a41c4f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Jun 2019 13:09:06 +0900
-Subject: [PATCH] ASoC: samsung: smdk_wm8994: use modern dai_link style
+Date: Thu, 6 Jun 2019 13:09:01 +0900
+Subject: [PATCH] ASoC: samsung: smdk_wm8580: use modern dai_link style
 
 ASoC is now supporting modern style dai_link
 (= snd_soc_dai_link_component) for CPU/Codec/Platform.
@@ -67,76 +67,52 @@ This patch switches to use it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/smdk_wm8994.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ sound/soc/samsung/smdk_wm8580.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-index 135d8c2745be..28f8be000aa1 100644
---- a/sound/soc/samsung/smdk_wm8994.c
-+++ b/sound/soc/samsung/smdk_wm8994.c
-@@ -100,28 +100,32 @@ static int smdk_wm8994_init_paiftx(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
+diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+index 987807e6f8c3..d096ff912260 100644
+--- a/sound/soc/samsung/smdk_wm8580.c
++++ b/sound/soc/samsung/smdk_wm8580.c
+@@ -140,27 +140,31 @@ enum {
+ #define SMDK_DAI_FMT (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
+ 	SND_SOC_DAIFMT_CBM_CFM)
  
-+SND_SOC_DAILINK_DEFS(aif1,
-+	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.0")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")),
++SND_SOC_DAILINK_DEFS(paif_rx,
++	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.2")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8580.0-001b", "wm8580-hifi-playback")),
 +	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
 +
-+SND_SOC_DAILINK_DEFS(fifo_tx,
-+	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s-sec")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s-sec")));
++SND_SOC_DAILINK_DEFS(paif_tx,
++	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.2")),
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8580.0-001b", "wm8580-hifi-capture")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
 +
  static struct snd_soc_dai_link smdk_dai[] = {
- 	{ /* Primary DAI i/f */
- 		.name = "WM8994 AIF1",
- 		.stream_name = "Pri_Dai",
--		.cpu_dai_name = "samsung-i2s.0",
--		.codec_dai_name = "wm8994-aif1",
+ 	[PRI_PLAYBACK] = { /* Primary Playback i/f */
+ 		.name = "WM8580 PAIF RX",
+ 		.stream_name = "Playback",
+-		.cpu_dai_name = "samsung-i2s.2",
+-		.codec_dai_name = "wm8580-hifi-playback",
 -		.platform_name = "samsung-i2s.0",
--		.codec_name = "wm8994-codec",
- 		.init = smdk_wm8994_init_paiftx,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBM_CFM,
+-		.codec_name = "wm8580.0-001b",
+ 		.dai_fmt = SMDK_DAI_FMT,
  		.ops = &smdk_ops,
-+		SND_SOC_DAILINK_REG(aif1),
- 	}, { /* Sec_Fifo Playback i/f */
- 		.name = "Sec_FIFO TX",
- 		.stream_name = "Sec_Dai",
--		.cpu_dai_name = "samsung-i2s-sec",
--		.codec_dai_name = "wm8994-aif1",
--		.platform_name = "samsung-i2s-sec",
--		.codec_name = "wm8994-codec",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBM_CFM,
++		SND_SOC_DAILINK_REG(paif_rx),
+ 	},
+ 	[PRI_CAPTURE] = { /* Primary Capture i/f */
+ 		.name = "WM8580 PAIF TX",
+ 		.stream_name = "Capture",
+-		.cpu_dai_name = "samsung-i2s.2",
+-		.codec_dai_name = "wm8580-hifi-capture",
+-		.platform_name = "samsung-i2s.0",
+-		.codec_name = "wm8580.0-001b",
+ 		.dai_fmt = SMDK_DAI_FMT,
+ 		.init = smdk_wm8580_init_paiftx,
  		.ops = &smdk_ops,
-+		SND_SOC_DAILINK_REG(fifo_tx),
++		SND_SOC_DAILINK_REG(paif_tx),
  	},
  };
  
-@@ -153,17 +157,17 @@ static int smdk_audio_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	if (np) {
--		smdk_dai[0].cpu_dai_name = NULL;
--		smdk_dai[0].cpu_of_node = of_parse_phandle(np,
-+		smdk_dai[0].cpus->dai_name = NULL;
-+		smdk_dai[0].cpus->of_node = of_parse_phandle(np,
- 				"samsung,i2s-controller", 0);
--		if (!smdk_dai[0].cpu_of_node) {
-+		if (!smdk_dai[0].cpus->of_node) {
- 			dev_err(&pdev->dev,
- 			   "Property 'samsung,i2s-controller' missing or invalid\n");
- 			ret = -EINVAL;
- 		}
- 
--		smdk_dai[0].platform_name = NULL;
--		smdk_dai[0].platform_of_node = smdk_dai[0].cpu_of_node;
-+		smdk_dai[0].platforms->name = NULL;
-+		smdk_dai[0].platforms->of_node = smdk_dai[0].cpus->of_node;
- 	}
- 
- 	id = of_match_device(of_match_ptr(samsung_wm8994_of_match), &pdev->dev);
 -- 
 2.20.1
