@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 3/6] soundwire: core: define SDW_MAX_PORT
-Date: Fri,  7 Jun 2019 09:56:40 +0100
-Message-ID: <20190607085643.932-4-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 5/6] dt-bindings: soundwire: add bindings for Qcom controller
+Date: Fri,  7 Jun 2019 09:56:42 +0100
+Message-ID: <20190607085643.932-6-srinivas.kandagatla@linaro.org>
 References: <20190607085643.932-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,24 +12,85 @@ To: broonie@kernel.org, vkoul@kernel.org
 Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds SDW_MAX_PORT so that other driver can use it.
+This patch adds bindings for Qualcomm soundwire controller.
+
+Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
+either integrated as part of WCD audio codecs via slimbus or
+as part of SOC I/O.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/linux/soundwire/sdw.h | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/soundwire/qcom,swr.txt           | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,swr.txt
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index aac68e879fae..80ca997e4e5d 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -36,6 +36,7 @@ struct sdw_slave;
- #define SDW_FRAME_CTRL_BITS		48
- #define SDW_MAX_DEVICES			11
- 
-+#define SDW_MAX_PORTS	14
- #define SDW_VALID_PORT_RANGE(n)		((n) <= 14 && (n) >= 1)
- 
- #define SDW_DAI_ID_RANGE_START		100
+diff --git a/Documentation/devicetree/bindings/soundwire/qcom,swr.txt b/Documentation/devicetree/bindings/soundwire/qcom,swr.txt
+new file mode 100644
+index 000000000000..eb84d0f4f36f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soundwire/qcom,swr.txt
+@@ -0,0 +1,62 @@
++Qualcomm SoundWire Controller
++
++This binding describes the Qualcomm SoundWire Controller Bindings.
++
++Required properties:
++
++- compatible:		Must be "qcom,soundwire-v<MAJOR>.<MINOR>.<STEP>",
++	 		example:
++			"qcom,soundwire-v1.3.0"
++			"qcom,soundwire-v1.5.0"
++			"qcom,soundwire-v1.6.0"
++- reg:			SoundWire controller address space.
++- interrupts:		SoundWire controller interrupt.
++- clock-names:		Must contain "iface".
++- clocks:		Interface clocks needed for controller.
++- #sound-dai-cells:	Must be 1 for digital audio interfaces on the controllers.
++- #address-cells:	Must be 1 for SoundWire devices;
++- #size-cells:		Must be <0> as SoundWire addresses have no size component.
++- qcom,dout-ports: 	Must be count of data out ports
++- qcom,din-ports: 	Must be count of data in ports
++- qcom,ports-offset1:	Must be frame offset1 of each data port.
++			Out followed by In. Used for Block size calculation.
++- qcom,ports-offset2: 	Must be frame offset2 of each data port.
++			Out followed by In. Used for Block size calculation.
++- qcom,ports-sinterval-low: Must be sample interval low of each data port.
++			Out followed by In. Used for Sample Interval calculation.
++
++= SoundWire devices
++Each subnode of the bus represents SoundWire device attached to it.
++The properties of these nodes are defined by the individual bindings.
++
++= EXAMPLE
++The following example represents a SoundWire controller on DB845c board
++which has controller integrated inside WCD934x codec on SDM845 SoC.
++
++soundwire: soundwire@c85 {
++	compatible = "qcom,soundwire-v1.3.0";
++	reg = <0xc85 0x20>;
++	interrupts = <20 IRQ_TYPE_EDGE_RISING>;
++	clocks = <&wcc>;
++	clock-names = "iface";
++	#sound-dai-cells = <1>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	qcom,dout-ports	= <6>;
++	qcom,din-ports	= <2>;
++	qcom,ports-sinterval-low =/bits/ 8  <0x07 0x1F 0x3F 0x7 0x1F 0x3F 0x0F 0x0F>;
++	qcom,ports-offset1 = /bits/ 8 <0x01 0x02 0x0C 0x6 0x12 0x0D 0x07 0x0A >;
++	qcom,ports-offset2 = /bits/ 8 <0x00 0x00 0x1F 0x00 0x00 0x1F 0x00 0x00>;
++
++	/* Left Speaker */
++	wsa8810@1{
++		....
++		reg = <1>;
++	};
++
++	/* Right Speaker */
++	wsa8810@2{
++		....
++		reg = <2>;
++	};
++};
 -- 
 2.21.0
