@@ -1,18 +1,23 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: Fix freeing of incompletely initialized
- snd_soc_dapm_context
-Date: Fri, 07 Jun 2019 16:17:45 +0200
-Message-ID: <20190607141745.759-1-s.nawrocki@samsung.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH] ASoC: Fix freeing of incompletely
+	initialized snd_soc_dapm_context
+Date: Fri, 7 Jun 2019 23:02:37 +0800
+Message-ID: <CA+Px+wUOjG9YvDrPud7TH1xdBVDX50Y9f3mA8hgyFQBVTgM==A@mail.gmail.com>
 References: <CGME20190607141821epcas2p120786c8cc5a1f1b71dbd1828b0a9d837@epcas2p1.samsung.com>
+ <20190607141745.759-1-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com
+ [IPv6:2607:f8b0:4864:20::241])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1CC2F896CE
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2019 16:18:27 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B46A6F896CE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2019 17:02:50 +0200 (CEST)
+Received: by mail-oi1-x241.google.com with SMTP id s184so1640096oie.9
+ for <alsa-devel@alsa-project.org>; Fri, 07 Jun 2019 08:02:50 -0700 (PDT)
+In-Reply-To: <20190607141745.759-1-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +27,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, tzungbi@google.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Jimmy Cheng-Yi Chiang <cychiang@google.com>, kuninori.morimoto.gx@renesas.com, b.zolnierkie@samsung.com, Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-When soc_init_dai_link() call at the beginning of snd_soc_instantiate_card
-function fails soc_cleanup_card_resources() and then snd_soc_dapm_free()
-gets called with an incompletely initialized card->dapm. In particular
-card->dapm.card is NULL and it gets dereferenced in dapm_free_widgets().
-Also dapm->list is invalid and there is an invalid pointer dereference
-from list_del().
+On Fri, Jun 7, 2019 at 10:18 PM Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+>
+> When soc_init_dai_link() call at the beginning of snd_soc_instantiate_card
+> function fails soc_cleanup_card_resources() and then snd_soc_dapm_free()
+> gets called with an incompletely initialized card->dapm. In particular
+> card->dapm.card is NULL and it gets dereferenced in dapm_free_widgets().
+> Also dapm->list is invalid and there is an invalid pointer dereference
+> from list_del().
+>
+You don't need to do this.  In my original patch
+(https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=70fc53734e71ce51f46dfcfd1a1c319e1cfe080c),
+soc_cleanup_card_resources() should not be called if
+soc_init_dai_link() returns fail.
 
-The function call stack (deferred probing) on Chromebook Snow where this
-issue has shown up in todays -next:
+I found there is a merge conflict.  Kuninori Morimoto removed some
+legacy code (i.e. soc_cleanup_platform() -> soc_cleanup_legacy()) at
+the same time (https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=adb76b5b9c4740a11f6ad6c68764515961ae8ade).
 
- snd_soc_dapm_free
- soc_cleanup_card_resources
- snd_soc_instantiate_card
- snd_soc_register_card
- devm_snd_soc_register_card
- snow_probe
+But, the conflict was not fixed correctly
+(https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=a8e992342ce4cd173d437d0aa4eecc9e30489f72),
+the soc_cleanup_platform() turns to soc_cleanup_card_resources().
 
-Fix this by testing dapm->card before attempting to free dapm widgets.
-
-Fixes: 70fc53734e71 ("ASoC: core: move DAI pre-links initiation to snd_soc_instantiate_card")
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- sound/soc/soc-dapm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 6b44b4a78b8e..5774cbd393fe 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4658,8 +4658,11 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_ignore_suspend);
- void snd_soc_dapm_free(struct snd_soc_dapm_context *dapm)
- {
- 	dapm_debugfs_cleanup(dapm);
--	dapm_free_widgets(dapm);
--	list_del(&dapm->list);
-+
-+	if (dapm->card) {
-+		dapm_free_widgets(dapm);
-+		list_del(&dapm->list);
-+	}
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
-
---
-2.17.1
+Based on current for-next branch, we could simply remove the
+soc_cleanup_card_resources() call.
