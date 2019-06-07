@@ -1,157 +1,58 @@
-From: Guillaume Tucker <guillaume.tucker@collabora.com>
-Subject: Re: [alsa-devel] next/master boot bisection: next-20190528 on
- sun8i-h3-libretech-all-h3-cc
-Date: Fri, 7 Jun 2019 17:31:12 +0100
-Message-ID: <8ca25787-fc03-7942-0705-3ec7d88862a6@collabora.com>
-References: <5cef9f66.1c69fb81.39f30.21e8@mx.google.com>
- <s5hr28gszvj.wl-tiwai@suse.de>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: Linking ALSA playback devices and DRM connectors
+Date: Fri, 7 Jun 2019 20:02:04 +0300
+Message-ID: <20190607170204.GA5942@intel.com>
+References: <f69f48bd4b9b2dc6f8228cd47406882c71758cdf.camel@intel.com>
+ <157c9015-32c8-2c1d-236f-48da16f43399@gmail.com>
+ <ccd5d702b4c15cb14e3ec44758cce8880e28b74c.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr28gszvj.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: tomeu.vizoso@collabora.com, mgalka@collabora.com, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, "kernelci.org bot" <bot@kernelci.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <ccd5d702b4c15cb14e3ec44758cce8880e28b74c.camel@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Ser, Simon" <simon.ser@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "sunpeng.li@amd.com" <sunpeng.li@amd.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Nicholas.Kazlauskas@amd.com" <Nicholas.Kazlauskas@amd.com>, "christian.koenig@amd.com" <christian.koenig@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 30/05/2019 16:53, Takashi Iwai wrote:
-> On Thu, 30 May 2019 11:16:22 +0200,
-> kernelci.org bot wrote:
->>
->> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->> * This automated bisection report was sent to you on the basis  *
->> * that you may be involved with the breaking commit it has      *
->> * found.  No manual investigation has been done to verify it,   *
->> * and the root cause of the problem may be somewhere else.      *
->> * Hope this helps!                                              *
->> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->>
->> next/master boot bisection: next-20190528 on sun8i-h3-libretech-all-h3-cc
->>
->> Summary:
->>   Start:      531b0a360899 Add linux-next specific files for 20190528
->>   Details:    https://kernelci.org/boot/id/5cece0fd59b5144bc47a362b
->>   Plain log:  https://storage.kernelci.org//next/master/next-20190528/arm/sunxi_defconfig/gcc-8/lab-baylibre/boot-sun8i-h3-libretech-all-h3-cc.txt
->>   HTML log:   https://storage.kernelci.org//next/master/next-20190528/arm/sunxi_defconfig/gcc-8/lab-baylibre/boot-sun8i-h3-libretech-all-h3-cc.html
->>   Result:     34ac3c3eb8f0 ASoC: core: lock client_mutex while removing link components
->>
->> Checks:
->>   revert:     PASS
->>   verify:     PASS
->>
->> Parameters:
->>   Tree:       next
->>   URL:        git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->>   Branch:     master
->>   Target:     sun8i-h3-libretech-all-h3-cc
->>   CPU arch:   arm
->>   Lab:        lab-baylibre
->>   Compiler:   gcc-8
->>   Config:     sunxi_defconfig
->>   Test suite: boot
->>
->> Breaking commit found:
->>
->> -------------------------------------------------------------------------------
->> commit 34ac3c3eb8f0c07252ceddf0a22dd240e5c91ccb
->> Author: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->> Date:   Thu May 23 10:12:01 2019 -0700
->>
->>     ASoC: core: lock client_mutex while removing link components
->>     
->>     Removing link components results in topology unloading. So,
->>     acquire the client_mutex before removing components in
->>     soc_remove_link_components. This will prevent the lockdep warning
->>     seen when dai links are removed during topology removal.
->>     
->>     Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->>     Signed-off-by: Mark Brown <broonie@kernel.org>
->>
->> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
->> index 2403bec2fccf..7c9415987ac7 100644
->> --- a/sound/soc/soc-core.c
->> +++ b/sound/soc/soc-core.c
->> @@ -1005,12 +1005,14 @@ static void soc_remove_link_components(struct snd_soc_card *card,
->>  	struct snd_soc_component *component;
->>  	struct snd_soc_rtdcom_list *rtdcom;
->>  
->> +	mutex_lock(&client_mutex);
->>  	for_each_rtdcom(rtd, rtdcom) {
->>  		component = rtdcom->component;
->>  
->>  		if (component->driver->remove_order == order)
->>  			soc_remove_component(component);
->>  	}
->> +	mutex_unlock(&client_mutex);
->>  }
-> 
-> Indeed this dead-locks in the error path of
-> snd_soc_instantiate_card():
-> 
-> snd_soc_instantiate_card() ->
->   mutex_lock(&client_mutex);
->   ....
->   -> soc_cleanup_card_resources();
->     -> soc_remove_dai_links();
->       -> soc_remove_link_components();
->          mutex_lock(&client_mutex);
-> 
-> 
-> Ranjani, which code path your patch tries to address?  Maybe better to
-> wrap client_mutex() in the caller side like snd_soc_unbind_card()?
-
-Is anyone looking into this issue?
-
-It is still occurring in next-20190606, there was a bisection
-today which landed on the same commit.  There just hasn't been
-any new bisection reports because they have been temporarily
-disabled while we fix some issues on kernelci.org.
-
-Thanks,
-Guillaume
-
->>  static void soc_remove_dai_links(struct snd_soc_card *card)
->> -------------------------------------------------------------------------------
->>
->>
->> Git bisection log:
->>
->> -------------------------------------------------------------------------------
->> git bisect start
->> # good: [cd6c84d8f0cdc911df435bb075ba22ce3c605b07] Linux 5.2-rc2
->> git bisect good cd6c84d8f0cdc911df435bb075ba22ce3c605b07
->> # bad: [531b0a360899269bd99a38ba9852a8ba46852bcd] Add linux-next specific files for 20190528
->> git bisect bad 531b0a360899269bd99a38ba9852a8ba46852bcd
->> # bad: [0b61d4c3b7d7938ef0014778c328e3f65c0d6d57] Merge remote-tracking branch 'crypto/master'
->> git bisect bad 0b61d4c3b7d7938ef0014778c328e3f65c0d6d57
->> # bad: [6179e21b065dc0f592cd3d9d3676bd64d4278025] Merge remote-tracking branch 'xtensa/xtensa-for-next'
->> git bisect bad 6179e21b065dc0f592cd3d9d3676bd64d4278025
->> # bad: [3e085f66fe7e93575f2a583a3d434415cef2d860] Merge remote-tracking branch 'amlogic/for-next'
->> git bisect bad 3e085f66fe7e93575f2a583a3d434415cef2d860
->> # bad: [b9afa223a3420432bc483d2b43429c88c6a5d0e0] Merge remote-tracking branch 'staging.current/staging-linus'
->> git bisect bad b9afa223a3420432bc483d2b43429c88c6a5d0e0
->> # good: [fc6557648e19dbd207dc815c6e09fc6452f01e63] Merge remote-tracking branch 'bpf/master'
->> git bisect good fc6557648e19dbd207dc815c6e09fc6452f01e63
->> # bad: [6c3f2a0e0f236f31b47d63ab7d3f4ec889821d0d] Merge remote-tracking branch 'spi-fixes/for-linus'
->> git bisect bad 6c3f2a0e0f236f31b47d63ab7d3f4ec889821d0d
->> # bad: [20a5f9c8649d74407aa657ce5b76cf8b0bbb17e3] Merge branch 'asoc-5.2' into asoc-linus
->> git bisect bad 20a5f9c8649d74407aa657ce5b76cf8b0bbb17e3
->> # good: [ad6eecbfc01c987e0253371f274c3872042e4350] ASoC: cs42xx8: Add regcache mask dirty
->> git bisect good ad6eecbfc01c987e0253371f274c3872042e4350
->> # good: [069d037aea98ffa64c26d4b1dc958fb8f39f5c2b] ASoC: simple-card: Fix configuration of DAI format
->> git bisect good 069d037aea98ffa64c26d4b1dc958fb8f39f5c2b
->> # good: [df9366131a452296d040a7a496d93108f1fc240c] ASoC: Intel: sof-rt5682: fix AMP quirk support
->> git bisect good df9366131a452296d040a7a496d93108f1fc240c
->> # bad: [34ac3c3eb8f0c07252ceddf0a22dd240e5c91ccb] ASoC: core: lock client_mutex while removing link components
->> git bisect bad 34ac3c3eb8f0c07252ceddf0a22dd240e5c91ccb
->> # good: [4819d06292c9b57eabdd6d1603e49a27baf183be] ASoC: simple-card: Restore original configuration of DAI format
->> git bisect good 4819d06292c9b57eabdd6d1603e49a27baf183be
->> # first bad commit: [34ac3c3eb8f0c07252ceddf0a22dd240e5c91ccb] ASoC: core: lock client_mutex while removing link components
->> -------------------------------------------------------------------------------
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+T24gVGh1LCBKdW4gMDYsIDIwMTkgYXQgMDk6MTM6NTFBTSArMDAwMCwgU2VyLCBTaW1vbiB3cm90
+ZToKPiBPbiBUdWUsIDIwMTktMDYtMDQgYXQgMTc6MTUgKzAyMDAsIENocmlzdGlhbiBLw7ZuaWcg
+d3JvdGU6Cj4gPiBBbSAwNC4wNi4xOSB1bSAxNzowNSBzY2hyaWViIFNlciwgU2ltb246Cj4gPiA+
+IEhpLAo+ID4gPiAKPiA+ID4gSSdtIHRyeWluZyB0byBsaW5rIEFMU0EgcGxheWJhY2sgZGV2aWNl
+cyBhbmQgRFJNIGNvbm5lY3RvcnMuIEluIG90aGVyCj4gPiA+IHdvcmRzLCBJJ2QgbGlrZSB0byBi
+ZSBhYmxlIHRvIGtub3cgd2hpY2ggQUxTQSBkZXZpY2UgSSBzaG91bGQgb3BlbiB0bwo+ID4gPiBw
+bGF5IGF1ZGlvIG9uIGEgZ2l2ZW4gY29ubmVjdG9yLgo+ID4gPiAKPiA+ID4gVW5mb3J0dW5hdGVs
+eSwgSSBoYXZlbid0IGZvdW5kIGEgd2F5IHRvIGV4dHJhY3QgdGhpcyBpbmZvcm1hdGlvbi4gSQo+
+ID4gPiBrbm93IC9wcm9jL2Fzb3VuZC9jYXJkTi9lbGQqIGV4cG9zZSB0aGUgRURJRC1saWtlIGRh
+dGEuIEhvd2V2ZXIgYnkKPiA+ID4gbG9va2luZyBhdCB0aGUgQUxTQSBBUEkgKGFsc286IGFwbGF5
+IC1sIGFuZCAtTCkgSSBjYW4ndCBmaW5kIGEgd2F5IHRvCj4gPiA+IGZpZ3VyZSBvdXQgd2hpY2gg
+UENNIGRldmljZSBtYXBzIHRvIHRoZSBFTEQuCj4gPiA+IAo+ID4gPiBBbSBJIG1pc3Npbmcgc29t
+ZXRoaW5nPwo+ID4gCj4gPiBJcyB0aGF0IGFjdHVhbGx5IGZpeGVkIG9uIGFsbCBoYXJkd2FyZT8g
+T3IgZG8gd2UgbWF5YmUgaGF2ZSBzb21lIAo+ID4gaGFyZHdhcmUgd2l0aCBvbmx5IG9uZSBhdWRp
+byBjb2RlYyBhbmQgbXVsdGlwbGUgY29ubmVjdG9ycz8KPiA+IAo+ID4gPiBJZiBub3QsIHdoYXQg
+d291bGQgYmUgdGhlIGJlc3Qgd2F5IHRvIGV4cG9zZSB0aGlzPwo+ID4gPiAKPiA+ID4gLSBBIHN5
+bWxpbmsgdG8gdGhlIEFMU0EgYXVkaW8gUENNIGRldmljZSBpbgo+ID4gPiAgICAvc3lzL2NsYXNz
+L2RybS9jYXJkTi1DT05ORUNUT1I/Cj4gPiA+IC0gQSBzeW1saW5rIHRvIHRoZSBEUk0gY29ubmVj
+dG9yIGluIC9zeXMvY2xhc3Mvc291bmQvcGNtKj8KPiA+IAo+ID4gSWYgaXQncyBmaXhlZCB0aGFu
+IHRob3NlIHR3byBvcHRpb25zIHNvdW5kIHNhbmUgdG8gbWUuCj4gPiAKPiA+ID4gLSBBIERSTSBj
+b25uZWN0b3IgcHJvcGVydHk/Cj4gPiAKPiA+IElmIGl0J3MgY29uZmlndXJhYmxlIHRoYW4gdGhh
+dCBzb3VuZHMgbGlrZSBhIGdvb2Qgb3B0aW9uIHRvIG1lLgo+IAo+IEknbSBzdGlsbCBub3Qgc3Vy
+ZSB3aGV0aGVyIHRoaXMgaXMgZml4ZWQgb24gYWxsIGhhcmR3YXJlIG9yIG5vdC4KPiAKPiBWaWxs
+ZSwgb24gdGhpcyBvbGQgSW50ZWwgaHcsIGlzIHRoZSBzaW5nbGUgY29ubmVjdG9yIHRoYXQgZ2V0
+cyB0aGUKPiBhdWRpbyBjb25maWd1cmFibGU/CgpUaGUgZm9yY2UtYXVkaW8gcHJvcGVydHkgY2Fu
+IGJlIHVzZWQgZm9yIHRoYXQuIFRoYXQgaXMsIHlvdSBjYW4gZm9yY2UKYXVkaW8gb2ZmIGZvciBh
+bGwgdGhlIGNvbm5lY3RvciB3aGVyZSB5b3UgZG9uJ3Qgd2FudCBhdWRpbyBhbmQgdGhlbgppdCBz
+aG91bGQgZ2V0IGF1dG9tYWdpY2FsbHkgcm91dGVkIHRvIHRoZSByZW1haW5pbmcgY29ubmVjdG9y
+LgoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0
+cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9kcmktZGV2ZWw=
