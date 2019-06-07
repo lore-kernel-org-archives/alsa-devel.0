@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 1/6] ASoC: core: add support to snd_soc_dai_get_sdw_stream()
-Date: Fri,  7 Jun 2019 09:56:38 +0100
-Message-ID: <20190607085643.932-2-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 2/6] soundwire: Add compute_params callback
+Date: Fri,  7 Jun 2019 09:56:39 +0100
+Message-ID: <20190607085643.932-3-srinivas.kandagatla@linaro.org>
 References: <20190607085643.932-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,44 +12,56 @@ To: broonie@kernel.org, vkoul@kernel.org
 Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On platforms which have smart speaker amplifiers connected via
-soundwire and modeled as aux devices in ASoC, in such usecases machine
-driver should be able to get sdw master stream from dai so that it can
-use the runtime stream to setup slave streams.
+From: Vinod Koul <vkoul@kernel.org>
 
-soundwire already as a set function, get function would provide more
-flexibility to above configurations.
+This callback allows masters to compute the bus parameters required.
 
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/sound/soc-dai.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/soundwire/stream.c    | 9 +++++++++
+ include/linux/soundwire/sdw.h | 2 ++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index f5d70041108f..9f90b936fd9a 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -177,6 +177,7 @@ struct snd_soc_dai_ops {
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 73c52cd4fec8..b86992145799 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1485,6 +1485,15 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+ 		bus->params.bandwidth += m_rt->stream->params.rate *
+ 			m_rt->ch_count * m_rt->stream->params.bps;
  
- 	int (*set_sdw_stream)(struct snd_soc_dai *dai,
- 			void *stream, int direction);
-+	void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
- 	/*
- 	 * DAI digital mute - optional.
- 	 * Called by soc-core to minimise any pops.
-@@ -385,4 +386,13 @@ static inline int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
- 		return -ENOTSUPP;
- }
- 
-+static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai, int direction)
-+{
-+	if (dai->driver->ops->get_sdw_stream)
-+		return dai->driver->ops->get_sdw_stream(dai, direction);
-+	else
-+		return NULL;
++		/* Compute params */
++		if (bus->compute_params) {
++			ret = bus->compute_params(bus);
++			if (ret < 0) {
++				dev_err(bus->dev, "Compute params failed: %d", ret);
++				return ret;
++			}
++		}
 +
-+}
-+
- #endif
+ 		/* Program params */
+ 		ret = sdw_program_params(bus);
+ 		if (ret < 0) {
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index bea46bd8b6ce..aac68e879fae 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -718,6 +718,7 @@ struct sdw_master_ops {
+  * Bit set implies used number, bit clear implies unused number.
+  * @bus_lock: bus lock
+  * @msg_lock: message lock
++ * @compute_params: points to Bus resource management implementation
+  * @ops: Master callback ops
+  * @port_ops: Master port callback ops
+  * @params: Current bus parameters
+@@ -739,6 +740,7 @@ struct sdw_bus {
+ 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+ 	struct mutex bus_lock;
+ 	struct mutex msg_lock;
++	int (*compute_params)(struct sdw_bus *bus);
+ 	const struct sdw_master_ops *ops;
+ 	const struct sdw_master_port_ops *port_ops;
+ 	struct sdw_bus_params params;
 -- 
 2.21.0
