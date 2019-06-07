@@ -1,111 +1,113 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: fix some broken links from txt->yaml conversion" to the asoc tree
-Date: Fri,  7 Jun 2019 20:07:07 +0100 (BST)
-Message-ID: <20190607190707.50C1E440046@finisterre.sirena.org.uk>
-References: <effeafed3023d8dc5f2440c8d5637ea31c02a533.1559933665.git.mchehab+samsung@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] next/master boot bisection: next-20190528 on
+ sun8i-h3-libretech-all-h3-cc
+Date: Fri, 7 Jun 2019 15:08:45 -0500
+Message-ID: <6959db6d-1ab4-8f94-7e58-57606b8b42f6@linux.intel.com>
+References: <5cef9f66.1c69fb81.39f30.21e8@mx.google.com>
+ <s5hr28gszvj.wl-tiwai@suse.de>
+ <8ca25787-fc03-7942-0705-3ec7d88862a6@collabora.com>
+ <20190607190021.GK2456@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------00ECFFF18126FC8F2B9D28E7"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <effeafed3023d8dc5f2440c8d5637ea31c02a533.1559933665.git.mchehab+samsung@kernel.org>
+In-Reply-To: <20190607190021.GK2456@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, devicetree@vger.kernel.org, Hugues Fruchet <hugues.fruchet@st.com>, Jonathan Corbet <corbet@lwn.net>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Linux Doc Mailing List <linux-doc@vger.kernel.org>, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Olivier Moysan <olivier.moysan@st.com>, Rob Herring <robh+dt@kernel.org>
+To: Mark Brown <broonie@kernel.org>, Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, tomeu.vizoso@collabora.com, mgalka@collabora.com, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, "kernelci.org bot" <bot@kernelci.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This is a multi-part message in MIME format.
+--------------00ECFFF18126FC8F2B9D28E7
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
-   ASoC: dt-bindings: fix some broken links from txt->yaml conversion
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+On 6/7/19 2:00 PM, Mark Brown wrote:
+> On Fri, Jun 07, 2019 at 05:31:12PM +0100, Guillaume Tucker wrote:
+>> On 30/05/2019 16:53, Takashi Iwai wrote:
+> 
+>>>> +	mutex_lock(&client_mutex);
+>>>>   	for_each_rtdcom(rtd, rtdcom) {
+>>>>   		component = rtdcom->component;
+>>>>   
+>>>>   		if (component->driver->remove_order == order)
+>>>>   			soc_remove_component(component);
+>>>>   	}
+>>>> +	mutex_unlock(&client_mutex);
+> 
+>>> Ranjani, which code path your patch tries to address?  Maybe better to
+>>> wrap client_mutex() in the caller side like snd_soc_unbind_card()?
+> 
+>> Is anyone looking into this issue?
+> 
+>> It is still occurring in next-20190606, there was a bisection
+>> today which landed on the same commit.  There just hasn't been
+>> any new bisection reports because they have been temporarily
+>> disabled while we fix some issues on kernelci.org.
+> 
+> I was expecting that Ranjani or one of the other Intel people was
+> looking into it...
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Ack. We've all been underwater this week and this wasn't addressed, 
+sorry about the delay. It's probably wise to revert this commit at this 
+point while we look for an alternate solution?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+There was an initial proposal submitted on GitHub [1] (patch attached) 
+which implemented what Takashi suggested in his comments. This proposal 
+was later optimized further, it could be that the optimization was one 
+bridge too far.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Could you let us know if this attached patch has any negative effects on 
+non-Intel platforms?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Thanks!
 
-Thanks,
-Mark
+[1] 
+https://github.com/thesofproject/linux/commit/9fd09dd417bc8be7a4a8bdd1621558151f8d117b
 
->From 6c0215f5d9f2a1fa5cab2ca320a41d9f19cfa80c Mon Sep 17 00:00:00 2001
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Date: Fri, 7 Jun 2019 15:54:33 -0300
-Subject: [PATCH] ASoC: dt-bindings: fix some broken links from txt->yaml
- conversion
+--------------00ECFFF18126FC8F2B9D28E7
+Content-Type: text/x-patch;
+ name="9fd09dd417bc8be7a4a8bdd1621558151f8d117b.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="9fd09dd417bc8be7a4a8bdd1621558151f8d117b.patch"
 
-Some new files got converted to yaml, but references weren't
-updated accordingly.
+>From 9fd09dd417bc8be7a4a8bdd1621558151f8d117b Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Wed, 22 May 2019 10:52:40 -0700
+Subject: [PATCH] ASoC: core: lock client_mutex while removing link components
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Removing link components results in topology unloading. So,
+acquire the client_mutex before removing components in
+snd_soc_unbind_card(). This will prevent lockdep warning
+when the dai link is removed.
+
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- Documentation/devicetree/bindings/media/st,stm32-dcmi.txt | 2 +-
- Documentation/devicetree/bindings/sound/st,stm32-i2s.txt  | 2 +-
- Documentation/devicetree/bindings/sound/st,stm32-sai.txt  | 2 +-
- MAINTAINERS                                               | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt b/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt
-index 249790a93017..3122ded82eb4 100644
---- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt
-+++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.txt
-@@ -11,7 +11,7 @@ Required properties:
- - clock-names: must contain "mclk", which is the DCMI peripherial clock
- - pinctrl: the pincontrol settings to configure muxing properly
-            for pins that connect to DCMI device.
--           See Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.txt.
-+           See Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml.
- - dmas: phandle to DMA controller node,
-         see Documentation/devicetree/bindings/dma/stm32-dma.txt
- - dma-names: must contain "tx", which is the transmit channel from DCMI to DMA
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-index 58c341300552..cbf24bcd1b8d 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-@@ -18,7 +18,7 @@ Required properties:
-     See Documentation/devicetree/bindings/dma/stm32-dma.txt.
-   - dma-names: Identifier for each DMA request line. Must be "tx" and "rx".
-   - pinctrl-names: should contain only value "default"
--  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.txt
-+  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2403bec2fccf3..5609398f05d80 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2839,12 +2839,14 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
+ 		snd_soc_dapm_shutdown(card);
+ 		snd_soc_flush_all_delayed_work(card);
  
- Optional properties:
-   - resets: Reference to a reset controller asserting the reset controller
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-index 3f4467ff0aa2..944743dd9212 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-@@ -41,7 +41,7 @@ SAI subnodes required properties:
- 	"tx": if sai sub-block is configured as playback DAI
- 	"rx": if sai sub-block is configured as capture DAI
-   - pinctrl-names: should contain only value "default"
--  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.txt
-+  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
++		mutex_lock(&client_mutex);
+ 		/* remove all components used by DAI links on this card */
+ 		for_each_comp_order(order) {
+ 			for_each_card_rtds(card, rtd) {
+ 				soc_remove_link_components(card, rtd, order);
+ 			}
+ 		}
++		mutex_unlock(&client_mutex);
  
- SAI subnodes Optional properties:
-   - st,sync: specify synchronization mode.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5cfbea4ce575..b3d686fba562 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1288,7 +1288,7 @@ ARM PRIMECELL SSP PL022 SPI DRIVER
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/spi/spi_pl022.txt
-+F:	Documentation/devicetree/bindings/spi/spi-pl022.yaml
- F:	drivers/spi/spi-pl022.c
- 
- ARM PRIMECELL UART PL010 AND PL011 DRIVERS
--- 
-2.20.1
+ 		soc_cleanup_card_resources(card);
+ 		if (!unregister)
+
+--------------00ECFFF18126FC8F2B9D28E7--
