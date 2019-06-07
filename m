@@ -1,46 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 17/20] dt: bindings: fix some broken links from
- txt->yaml conversion
-Date: Fri, 7 Jun 2019 19:57:28 +0100
-Message-ID: <20190607185728.GJ2456@sirena.org.uk>
-References: <ff457774d46d96e8fe56b45409aba39d87a8672a.1559933665.git.mchehab+samsung@kernel.org>
- <effeafed3023d8dc5f2440c8d5637ea31c02a533.1559933665.git.mchehab+samsung@kernel.org>
+Subject: Re: [alsa-devel] next/master boot bisection: next-20190528 on
+ sun8i-h3-libretech-all-h3-cc
+Date: Fri, 7 Jun 2019 20:00:21 +0100
+Message-ID: <20190607190021.GK2456@sirena.org.uk>
+References: <5cef9f66.1c69fb81.39f30.21e8@mx.google.com>
+ <s5hr28gszvj.wl-tiwai@suse.de>
+ <8ca25787-fc03-7942-0705-3ec7d88862a6@collabora.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hEaoa1KyNVzF3lFU"
+        protocol="application/pgp-signature"; boundary="y+dl6OcicAkN96vR"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <effeafed3023d8dc5f2440c8d5637ea31c02a533.1559933665.git.mchehab+samsung@kernel.org>
+In-Reply-To: <8ca25787-fc03-7942-0705-3ec7d88862a6@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Hugues Fruchet <hugues.fruchet@st.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+To: Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, tomeu.vizoso@collabora.com, mgalka@collabora.com, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, "kernelci.org bot" <bot@kernelci.org>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---hEaoa1KyNVzF3lFU
+--y+dl6OcicAkN96vR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 07, 2019 at 03:54:33PM -0300, Mauro Carvalho Chehab wrote:
-> Some new files got converted to yaml, but references weren't
-> updated accordingly.
+On Fri, Jun 07, 2019 at 05:31:12PM +0100, Guillaume Tucker wrote:
+> On 30/05/2019 16:53, Takashi Iwai wrote:
 
-These should probably just be sent as normal patches rather than tied in
-with the rest of this series...
+> >> +	mutex_lock(&client_mutex);
+> >>  	for_each_rtdcom(rtd, rtdcom) {
+> >>  		component =3D rtdcom->component;
+> >> =20
+> >>  		if (component->driver->remove_order =3D=3D order)
+> >>  			soc_remove_component(component);
+> >>  	}
+> >> +	mutex_unlock(&client_mutex);
 
---hEaoa1KyNVzF3lFU
+> > Ranjani, which code path your patch tries to address?  Maybe better to
+> > wrap client_mutex() in the caller side like snd_soc_unbind_card()?
+
+> Is anyone looking into this issue?
+
+> It is still occurring in next-20190606, there was a bisection
+> today which landed on the same commit.  There just hasn't been
+> any new bisection reports because they have been temporarily
+> disabled while we fix some issues on kernelci.org.
+
+I was expecting that Ranjani or one of the other Intel people was
+looking into it...
+
+--y+dl6OcicAkN96vR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz6s5UACgkQJNaLcl1U
-h9CF/gf6A8YyjbtWR9vuIU+hiuuPGNe8l/3mKrBQmFg2nEkOiWE+N7jc0/RT0WYy
-PdT6jbc6Cwn5mJJ6fqF0h32OgglLotXMlY3ZtBPiTYfgyfXYLDw8717VzdoI3BBq
-AAprBuCMcg0qZJLD5pYXpWCO0cMo0YZU9dRMIFYeuw/U3RMw+oCd+mf38tXh5kce
-dFFdfcmYNcxsRyICaJl42uB5swb46QAtSo+9HiOLhTQy3kMJuBVAoKjG9OjVbgNX
-w9xYiPp4+6GikQO7Vl+901wH80kUHNSaZYfiTUfssYQHaorIrdRYZCd2RfmK9NO7
-LeseTuJ18aBVgxKkqDEkks1EQqQrEw==
-=sF8P
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlz6tEQACgkQJNaLcl1U
+h9Dh3wf/TNLGXITYp6q9mQ9egkequDBS+4Phd+1FUwWoAvAmPXJ1f5U3mBFy/7mT
+5ZiqLcBmGCrEJWoeohd9oqBw6vCq9g+qGUKxcv/1qG0eI4kTvLi5Vrq8VvJpzYop
+wRcBL30vIj27Z6AlWCEHqzQkFdKo06UiWtvb1GbDgIfpII1pr/m8hfenlcmR5b8j
+JvGLkVxJ248cTy73FsK4/RiS+Cb45Dgbrj90jTKP5FT7SHE67KnDCV54K7HRK3qA
+5SxBggCaEgEk93RcuwbhhbPIXv8qsNhsrtC6sJpFQ7WM68oeJ0zIkofpnfv85g27
+DzUdFQChfcThUIgj21AdnLC/rXxgrA==
+=9vhX
 -----END PGP SIGNATURE-----
 
---hEaoa1KyNVzF3lFU--
+--y+dl6OcicAkN96vR--
