@@ -1,113 +1,45 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] next/master boot bisection: next-20190528 on
- sun8i-h3-libretech-all-h3-cc
-Date: Fri, 7 Jun 2019 15:08:45 -0500
-Message-ID: <6959db6d-1ab4-8f94-7e58-57606b8b42f6@linux.intel.com>
-References: <5cef9f66.1c69fb81.39f30.21e8@mx.google.com>
- <s5hr28gszvj.wl-tiwai@suse.de>
- <8ca25787-fc03-7942-0705-3ec7d88862a6@collabora.com>
- <20190607190021.GK2456@sirena.org.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [RFC/RFT PATCH] Revert "ASoC: fsl_esai: ETDR and TX0~5 registers
+ are non volatile"
+Date: Fri, 7 Jun 2019 15:05:18 -0700
+Message-ID: <20190607220517.GA3824@Asurada-Nvidia.nvidia.com>
+References: <20190606230105.4385-1-nicoleotsuka@gmail.com>
+ <20190607111244.GE2456@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------00ECFFF18126FC8F2B9D28E7"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190607190021.GK2456@sirena.org.uk>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190607111244.GE2456@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, tomeu.vizoso@collabora.com, mgalka@collabora.com, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, "kernelci.org bot" <bot@kernelci.org>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: shengjiu.wang@nxp.com, timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------00ECFFF18126FC8F2B9D28E7
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello Mark,
 
-
-
-On 6/7/19 2:00 PM, Mark Brown wrote:
-> On Fri, Jun 07, 2019 at 05:31:12PM +0100, Guillaume Tucker wrote:
->> On 30/05/2019 16:53, Takashi Iwai wrote:
+On Fri, Jun 07, 2019 at 12:12:44PM +0100, Mark Brown wrote:
+> On Thu, Jun 06, 2019 at 04:01:05PM -0700, Nicolin Chen wrote:
+> > This reverts commit 8973112aa41b8ad956a5b47f2fe17bc2a5cf2645.
 > 
->>>> +	mutex_lock(&client_mutex);
->>>>   	for_each_rtdcom(rtd, rtdcom) {
->>>>   		component = rtdcom->component;
->>>>   
->>>>   		if (component->driver->remove_order == order)
->>>>   			soc_remove_component(component);
->>>>   	}
->>>> +	mutex_unlock(&client_mutex);
+> Please use subject lines matching the style for the subsystem.  This
+> makes it easier for people to identify relevant patches.
 > 
->>> Ranjani, which code path your patch tries to address?  Maybe better to
->>> wrap client_mutex() in the caller side like snd_soc_unbind_card()?
+> > 1) Though ETDR and TX0~5 are not volatile but write-only registers,
+> >    they should not be cached either. According to the definition of
+> >    "volatile_reg", one should be put in the volatile list if it can
+> >    not be cached.
 > 
->> Is anyone looking into this issue?
-> 
->> It is still occurring in next-20190606, there was a bisection
->> today which landed on the same commit.  There just hasn't been
->> any new bisection reports because they have been temporarily
->> disabled while we fix some issues on kernelci.org.
-> 
-> I was expecting that Ranjani or one of the other Intel people was
-> looking into it...
+> There's no problem with caching write only registers, having a cache
+> allows one to do read/modify/write cycles on them and can help with
+> debugging.  The original reason we had cache code in ASoC was for write
+> only devices.
 
-Ack. We've all been underwater this week and this wasn't addressed, 
-sorry about the delay. It's probably wise to revert this commit at this 
-point while we look for an alternate solution?
+Maybe because my paragraph doesn't state it clearly -- it's nothing
+wrong with regmap caching write-only registers; but it caching data
+registers would potentially cause dirty data or channel swap/shift.
+So the reason (1) here is "cannot cached" == "should be volatile".
 
-There was an initial proposal submitted on GitHub [1] (patch attached) 
-which implemented what Takashi suggested in his comments. This proposal 
-was later optimized further, it could be that the optimization was one 
-bridge too far.
+I will revise the commit message for review and fix the subject.
 
-Could you let us know if this attached patch has any negative effects on 
-non-Intel platforms?
-
-Thanks!
-
-[1] 
-https://github.com/thesofproject/linux/commit/9fd09dd417bc8be7a4a8bdd1621558151f8d117b
-
---------------00ECFFF18126FC8F2B9D28E7
-Content-Type: text/x-patch;
- name="9fd09dd417bc8be7a4a8bdd1621558151f8d117b.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="9fd09dd417bc8be7a4a8bdd1621558151f8d117b.patch"
-
->From 9fd09dd417bc8be7a4a8bdd1621558151f8d117b Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 22 May 2019 10:52:40 -0700
-Subject: [PATCH] ASoC: core: lock client_mutex while removing link components
-
-Removing link components results in topology unloading. So,
-acquire the client_mutex before removing components in
-snd_soc_unbind_card(). This will prevent lockdep warning
-when the dai link is removed.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/soc-core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2403bec2fccf3..5609398f05d80 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2839,12 +2839,14 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- 		snd_soc_dapm_shutdown(card);
- 		snd_soc_flush_all_delayed_work(card);
- 
-+		mutex_lock(&client_mutex);
- 		/* remove all components used by DAI links on this card */
- 		for_each_comp_order(order) {
- 			for_each_card_rtds(card, rtd) {
- 				soc_remove_link_components(card, rtd, order);
- 			}
- 		}
-+		mutex_unlock(&client_mutex);
- 
- 		soc_cleanup_card_resources(card);
- 		if (!unregister)
-
---------------00ECFFF18126FC8F2B9D28E7--
+Thank you
+Nicolin
