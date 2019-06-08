@@ -1,52 +1,51 @@
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/3] ASoC: jz4740-i2s: Make probe function
- __init_or_module
-Date: Sat, 08 Jun 2019 12:24:25 +0200
-Message-ID: <1559989465.1815.8@crapouillou.net>
-References: <20190607161500.17379-1-paul@crapouillou.net>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: Re: [PATCH v3 17/20] dt: bindings: fix some broken links from
+ txt->yaml conversion
+Date: Sat, 8 Jun 2019 07:51:13 -0300
+Message-ID: <20190608075113.32f2c7bb@coco.lan>
+References: <ff457774d46d96e8fe56b45409aba39d87a8672a.1559933665.git.mchehab+samsung@kernel.org>
+ <effeafed3023d8dc5f2440c8d5637ea31c02a533.1559933665.git.mchehab+samsung@kernel.org>
+ <20190607185728.GJ2456@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190607161500.17379-1-paul@crapouillou.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: od@zcrc.me, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190607185728.GJ2456@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, Jonathan Corbet <corbet@lwn.net>, Liam Girdwood <lgirdwood@gmail.com>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Rob Herring <robh+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Hugues Fruchet <hugues.fruchet@st.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-I misunderstood what __init_or_module was for. Please ignore this=20
-patchset. Sorry for the noise.
+Em Fri, 7 Jun 2019 19:57:28 +0100
+Mark Brown <broonie@kernel.org> escreveu:
+
+> On Fri, Jun 07, 2019 at 03:54:33PM -0300, Mauro Carvalho Chehab wrote:
+> > Some new files got converted to yaml, but references weren't
+> > updated accordingly.  
+> 
+> These should probably just be sent as normal patches rather than tied in
+> with the rest of this series...
+
+Thanks for applying it!
+
+Yeah, but the problem with documentation patches is that sometimes
+the patches are merged via docs tree, and sometimes via maintainer's
+tree, depending on the subsystem.
+
+Anyway, Jon merged this week a patch that should produce warnings
+on COMPILE_TEST builds when a file has a broken link.
+
+Hopefully, this will help a lot to warn people against regressions
+related to it.
 
 
-Le ven. 7 juin 2019 =E0 18:14, Paul Cercueil <paul@crapouillou.net> a=20
-=E9crit :
-> This allows the probe function to be dropped after the kernel finished
-> its initialization, in the case where the driver was not compiled as a
-> module.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  sound/soc/jz4740/jz4740-i2s.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c=20
-> b/sound/soc/jz4740/jz4740-i2s.c
-> index 13408de34055..1f596770b01a 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -492,7 +492,7 @@ static const struct of_device_id=20
-> jz4740_of_matches[] =3D {
->  MODULE_DEVICE_TABLE(of, jz4740_of_matches);
->  #endif
->=20
-> -static int jz4740_i2s_dev_probe(struct platform_device *pdev)
-> +static int __init_or_module jz4740_i2s_dev_probe(struct=20
-> platform_device *pdev)
->  {
->  	struct jz4740_i2s *i2s;
->  	struct resource *mem;
-> --
-> 2.21.0.593.g511ec345e18
->=20
-
-=
+Thanks,
+Mauro
