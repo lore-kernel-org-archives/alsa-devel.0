@@ -1,146 +1,69 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 1/2] pcm_file: do not disrupt playback on
- output file write fail
-Date: Sat, 8 Jun 2019 20:38:07 +0200
-Message-ID: <4418bd15-24a0-401a-9d86-709fc99d7b49@intel.com>
-References: <1559910203-29795-1-git-send-email-amiartus@de.adit-jv.com>
- <1559910203-29795-2-git-send-email-amiartus@de.adit-jv.com>
+Subject: Re: [RFC PATCH 1/6] ASoC: core: add support to
+ snd_soc_dai_get_sdw_stream()
+Date: Sat, 8 Jun 2019 21:22:08 +0200
+Message-ID: <13bfb632-f743-c416-2224-c7acb5b28604@intel.com>
+References: <20190607085643.932-1-srinivas.kandagatla@linaro.org>
+ <20190607085643.932-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1559910203-29795-2-git-send-email-amiartus@de.adit-jv.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190607085643.932-2-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Adam Miartus <amiartus@de.adit-jv.com>, patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, vkoul@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-06-07 14:23, Adam Miartus wrote:
-> previously playback could be interrupted by snd_pcm_file_add_frames:
->      assert(file->wbuf_used_bytes < file->wbuf_size_bytes)
+On 2019-06-07 10:56, Srinivas Kandagatla wrote:
+> On platforms which have smart speaker amplifiers connected via
+> soundwire and modeled as aux devices in ASoC, in such usecases machine
+> driver should be able to get sdw master stream from dai so that it can
+> use the runtime stream to setup slave streams.
 > 
-> in case snd_pcm_file_write_bytes fails to write full amount of bytes
-> to file, variable wbuf_used_bytes would not be fully decremented by
-> requested amount of bytes function was called with
+> soundwire already as a set function, get function would provide more
+> flexibility to above configurations.
 > 
-> for the assert to trigger, multiple write fails need to happen, so
-> that wbuf_used_bytes overflows wbuf_size_bytes,
-> 
-> this patch will allow application to report error code to api user
-> who might have an idea how to recover, before assert is triggered,
-> also reporting error along with the print out message might give user
-> a better idea of what is going on, where previously reason for
-> mentioned assert was not immediately clear
-> 
-> Signed-off-by: Adam Miartus <amiartus@de.adit-jv.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->   src/pcm/pcm_file.c | 36 ++++++++++++++++++++++++------------
->   1 file changed, 24 insertions(+), 12 deletions(-)
+>   include/sound/soc-dai.h | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
 > 
-> diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-> index 1ef80b5..a1d15d6 100644
-> --- a/src/pcm/pcm_file.c
-> +++ b/src/pcm/pcm_file.c
-> @@ -381,27 +381,31 @@ static void fixup_wav_header(snd_pcm_t *pcm)
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index f5d70041108f..9f90b936fd9a 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -177,6 +177,7 @@ struct snd_soc_dai_ops {
 >   
+>   	int (*set_sdw_stream)(struct snd_soc_dai *dai,
+>   			void *stream, int direction);
+> +	void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
+>   	/*
+>   	 * DAI digital mute - optional.
+>   	 * Called by soc-core to minimise any pops.
+> @@ -385,4 +386,13 @@ static inline int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
+>   		return -ENOTSUPP;
+>   }
 >   
->   
-> -static void snd_pcm_file_write_bytes(snd_pcm_t *pcm, size_t bytes)
-> +/* return error code in case write failed */
-> +static int snd_pcm_file_write_bytes(snd_pcm_t *pcm, size_t bytes)
->   {
->   	snd_pcm_file_t *file = pcm->private_data;
-> +	snd_pcm_sframes_t err = 0;
->   	assert(bytes <= file->wbuf_used_bytes);
->   
->   	if (file->format == SND_PCM_FILE_FORMAT_WAV &&
->   	    !file->wav_header.fmt) {
-> -		if (write_wav_header(pcm) < 0)
-> -			return;
-> +		err = write_wav_header(pcm);
-> +		if (err < 0) {
-> +			SYSERR("%s write failed, file data may be corrupt", file->fname);
-> +			return err;
-> +		}
+> +static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai, int direction)
 
-write_wav_header already dumps "Write error" on failure. Both messages 
-are quite similar. Your message dumps filename though, so it's clearly 
-more descriptive - consider updating write_wav_header SYSERR message all 
-along while simplifying code here.
+Exceeds character limit?
 
->   	}
->   
->   	while (bytes > 0) {
-> -		snd_pcm_sframes_t err;
->   		size_t n = bytes;
->   		size_t cont = file->wbuf_size_bytes - file->file_ptr_bytes;
->   		if (n > cont)
->   			n = cont;
->   		err = write(file->fd, file->wbuf + file->file_ptr_bytes, n);
->   		if (err < 0) {
-> -			SYSERR("write failed");
-> -			break;
-> +			SYSERR("%s write failed, file data may be corrupt", file->fname);
-> +			return err;
->   		}
->   		bytes -= err;
->   		file->wbuf_used_bytes -= err;
-> @@ -412,15 +416,18 @@ static void snd_pcm_file_write_bytes(snd_pcm_t *pcm, size_t bytes)
->   		if ((snd_pcm_uframes_t)err != n)
->   			break;
->   	}
+> +{
+> +	if (dai->driver->ops->get_sdw_stream)
+> +		return dai->driver->ops->get_sdw_stream(dai, direction);
+> +	else
+> +		return NULL;
+
+set_ equivalent returns -ENOTSUPP instead.
+ERR_PTR seems to make more sense here.
+
 > +
-> +	return 0;
->   }
->   
-> -static void snd_pcm_file_add_frames(snd_pcm_t *pcm,
-> -				    const snd_pcm_channel_area_t *areas,
-> -				    snd_pcm_uframes_t offset,
-> -				    snd_pcm_uframes_t frames)
-> +static int snd_pcm_file_add_frames(snd_pcm_t *pcm,
-> +				   const snd_pcm_channel_area_t *areas,
-> +				   snd_pcm_uframes_t offset,
-> +				   snd_pcm_uframes_t frames)
->   {
->   	snd_pcm_file_t *file = pcm->private_data;
->   	while (frames > 0) {
-> +		int err = 0;
->   		snd_pcm_uframes_t n = frames;
->   		snd_pcm_uframes_t cont = file->wbuf_size - file->appl_ptr;
->   		snd_pcm_uframes_t avail = file->wbuf_size - snd_pcm_bytes_to_frames(pcm, file->wbuf_used_bytes);
-> @@ -437,10 +444,15 @@ static void snd_pcm_file_add_frames(snd_pcm_t *pcm,
->   		if (file->appl_ptr == file->wbuf_size)
->   			file->appl_ptr = 0;
->   		file->wbuf_used_bytes += snd_pcm_frames_to_bytes(pcm, n);
-> -		if (file->wbuf_used_bytes > file->buffer_bytes)
-> -			snd_pcm_file_write_bytes(pcm, file->wbuf_used_bytes - file->buffer_bytes);
-> +		if (file->wbuf_used_bytes > file->buffer_bytes) {
-> +			err = snd_pcm_file_write_bytes(pcm, file->wbuf_used_bytes - file->buffer_bytes);
-> +			if (err < 0) {
-> +				return err;
-> +			}
 
-Suggestion: drop unnecessary brackets.
+Unnecessary newline.
 
-> +		}
->   		assert(file->wbuf_used_bytes < file->wbuf_size_bytes);
->   	}
-> +	return 0;
-
-Hmm. For snd_pcm_file_write_bytes you've chosen a different form: 
-newline + return. Code looks more cohesive if it's "formatted" in the 
-same fashion.
-
->   }
->   
->   static int snd_pcm_file_close(snd_pcm_t *pcm)
+> +}
+> +
+>   #endif
 > 
