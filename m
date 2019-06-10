@@ -1,126 +1,110 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: fix kmalloc call with wrong flags" to the asoc tree
-Date: Mon, 10 Jun 2019 18:34:36 +0100 (BST)
-Message-ID: <20190610173436.F095D440049@finisterre.sirena.org.uk>
-References: <20190607221911.118136-1-levinale@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190607221911.118136-1-levinale@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alex Levin <levinale@chromium.org>
-Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, benzh@chromium.org, cujomalainey@chromium.org, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+From: Federico Vaga <federico.vaga@vaga.pv.it>
+Subject: Re: [PATCH v3 14/33] docs: kbuild: convert docs to ReST
+	and rename to *.rst
+Date: Mon, 10 Jun 2019 18:48:26 +0200
+Message-ID: <15154261.vasc4R9psd@harkonnen>
+References: <cover.1560045490.git.mchehab+samsung@kernel.org>
+	<3d40d111d0512d785b6a67573772f532f88d2359.1560045490.git.mchehab+samsung@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <bridge-bounces@lists.linux-foundation.org>
+In-Reply-To: <3d40d111d0512d785b6a67573772f532f88d2359.1560045490.git.mchehab+samsung@kernel.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/bridge>,
+	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/bridge/>
+List-Post: <mailto:bridge@lists.linux-foundation.org>
+List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/bridge>,
+	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
+Sender: bridge-bounces@lists.linux-foundation.org
+Errors-To: bridge-bounces@lists.linux-foundation.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org, Emmanuel Grumbach <emmanuel.grumbach@intel.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Vignesh Raghavendra <vigneshr@ti.com>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, bridge@lists.linux-foundation.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, David Woodhouse <dwmw2@infr.linuxfoundation.org>, Palmer Dabbelt <palmer@sifive.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Ofer Levi <oferle@mellanox.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Harry Wei <harryxiyou@gmail.com>, Paul Mackerras <paulus@samba.org>, Miquel Raynal <miquel.raynal@bootlin.com>, linux-riscv@lists.infradead.org, Vincent Chen <deanbo422@gmail.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Jonas Bonn <jonas@southpole.se>, Alex Shi <alex.shi@linux.alibaba.com>, linux-c6x-dev@linu
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+In data Sunday, June 9, 2019 4:27:04 AM CEST, Mauro Carvalho Chehab ha 
+scritto:
+> The kbuild documentation clearly shows that the documents
+> there are written at different times: some use markdown,
+> some use their own peculiar logic to split sections.
+> 
+> Convert everything to ReST without affecting too much
+> the author's style and avoiding adding uneeded markups.
+> 
+> The conversion is actually:
+>   - add blank lines and identation in order to identify paragraphs;
+>   - fix tables markups;
+>   - add some lists markups;
+>   - mark literal blocks;
+>   - adjust title markups.
+> 
+> At its new index.rst, let's add a :orphan: while this is not linked to
+> the main index.rst file, in order to avoid build warnings.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
+>  Documentation/admin-guide/README.rst          |   2 +-
+>  ...eaders_install.txt => headers_install.rst} |   5 +-
+>  Documentation/kbuild/index.rst                |  27 +
+>  Documentation/kbuild/issues.rst               |  11 +
+>  .../kbuild/{kbuild.txt => kbuild.rst}         | 119 ++--
+>  ...nfig-language.txt => kconfig-language.rst} | 232 ++++----
+>  ...anguage.txt => kconfig-macro-language.rst} |  37 +-
+>  .../kbuild/{kconfig.txt => kconfig.rst}       | 136 +++--
+>  .../kbuild/{makefiles.txt => makefiles.rst}   | 530 +++++++++++-------
+>  .../kbuild/{modules.txt => modules.rst}       | 168 +++---
+>  Documentation/kernel-hacking/hacking.rst      |   4 +-
+>  Documentation/process/coding-style.rst        |   2 +-
+>  Documentation/process/submit-checklist.rst    |   2 +-
+>  .../it_IT/kernel-hacking/hacking.rst          |   4 +-
+>  .../it_IT/process/coding-style.rst            |   2 +-
+>  .../it_IT/process/submit-checklist.rst        |   2 +-
 
-   ASoC: Intel: sst: fix kmalloc call with wrong flags
+Limited to translations/it_IT
 
-has been applied to the asoc tree at
+Acked-by: Federico Vaga <federico.vaga@vaga.pv.it>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 3da428ff2aa5a5191ba2f1630eea75f03242f3f2 Mon Sep 17 00:00:00 2001
-From: Alex Levin <levinale@chromium.org>
-Date: Fri, 7 Jun 2019 15:19:11 -0700
-Subject: [PATCH] ASoC: Intel: sst: fix kmalloc call with wrong flags
-
-When calling kmalloc with GFP_KERNEL in case CONFIG_SLOB is unset,
-kmem_cache_alloc_trace is called.
-
-In case CONFIG_TRACING is set, kmem_cache_alloc_trace will ball
-slab_alloc, which will call slab_pre_alloc_hook which might_sleep_if.
-
-The context in which it is called in this case, the
-intel_sst_interrupt_mrfld, calling a sleeping kmalloc generates a BUG():
-
-Fixes: 972b0d456e64 ("ASoC: Intel: remove GFP_ATOMIC, use GFP_KERNEL")
-
-[   20.250671] BUG: sleeping function called from invalid context at mm/slab.h:422
-[   20.250683] in_atomic(): 1, irqs_disabled(): 1, pid: 1791, name: Chrome_IOThread
-[   20.250690] CPU: 0 PID: 1791 Comm: Chrome_IOThread Tainted: G        W         4.19.43 #61
-[   20.250693] Hardware name: GOOGLE Kefka, BIOS Google_Kefka.7287.337.0 03/02/2017
-[   20.250697] Call Trace:
-[   20.250704]  <IRQ>
-[   20.250716]  dump_stack+0x7e/0xc3
-[   20.250725]  ___might_sleep+0x12a/0x140
-[   20.250731]  kmem_cache_alloc_trace+0x53/0x1c5
-[   20.250736]  ? update_cfs_rq_load_avg+0x17e/0x1aa
-[   20.250740]  ? cpu_load_update+0x6c/0xc2
-[   20.250746]  sst_create_ipc_msg+0x2d/0x88
-[   20.250752]  intel_sst_interrupt_mrfld+0x12a/0x22c
-[   20.250758]  __handle_irq_event_percpu+0x133/0x228
-[   20.250764]  handle_irq_event_percpu+0x35/0x7a
-[   20.250768]  handle_irq_event+0x36/0x55
-[   20.250773]  handle_fasteoi_irq+0xab/0x16c
-[   20.250779]  handle_irq+0xd9/0x11e
-[   20.250785]  do_IRQ+0x54/0xe0
-[   20.250791]  common_interrupt+0xf/0xf
-[   20.250795]  </IRQ>
-[   20.250800] RIP: 0010:__lru_cache_add+0x4e/0xad
-[   20.250806] Code: 00 01 48 c7 c7 b8 df 01 00 65 48 03 3c 25 28 f1 00 00 48 8b 48 08 48 89 ca 48 ff ca f6 c1 01 48 0f 44 d0 f0 ff 42 34 0f b6 0f <89> ca fe c2 88 17 48 89 44 cf 08 80 fa 0f 74 0e 48 8b 08 66 85 c9
-[   20.250809] RSP: 0000:ffffa568810bfd98 EFLAGS: 00000202 ORIG_RAX: ffffffffffffffd6
-[   20.250814] RAX: ffffd3b904eb1940 RBX: ffffd3b904eb1940 RCX: 0000000000000004
-[   20.250817] RDX: ffffd3b904eb1940 RSI: ffffa10ee5c47450 RDI: ffffa10efba1dfb8
-[   20.250821] RBP: ffffa568810bfda8 R08: ffffa10ef9c741c1 R09: dead000000000100
-[   20.250824] R10: 0000000000000000 R11: 0000000000000000 R12: ffffa10ee8d52a40
-[   20.250827] R13: ffffa10ee8d52000 R14: ffffa10ee5c47450 R15: 800000013ac65067
-[   20.250835]  lru_cache_add_active_or_unevictable+0x4e/0xb8
-[   20.250841]  handle_mm_fault+0xd98/0x10c4
-[   20.250848]  __do_page_fault+0x235/0x42d
-[   20.250853]  ? page_fault+0x8/0x30
-[   20.250858]  do_page_fault+0x3d/0x17a
-[   20.250862]  ? page_fault+0x8/0x30
-[   20.250866]  page_fault+0x1e/0x30
-[   20.250872] RIP: 0033:0x7962fdea9304
-[   20.250875] Code: 0f 11 4c 17 f0 c3 48 3b 15 f1 26 31 00 0f 83 e2 00 00 00 48 39 f7 72 0f 74 12 4c 8d 0c 16 4c 39 cf 0f 82 63 01 00 00 48 89 d1 <f3> a4 c3 80 fa 08 73 12 80 fa 04 73 1e 80 fa 01 77 26 72 05 0f b6
-[   20.250879] RSP: 002b:00007962f4db5468 EFLAGS: 00010206
-[   20.250883] RAX: 00003c8cc9d47008 RBX: 0000000000000000 RCX: 0000000000001b48
-[   20.250886] RDX: 0000000000002b40 RSI: 00003c8cc9551000 RDI: 00003c8cc9d48000
-[   20.250890] RBP: 00007962f4db5820 R08: 0000000000000000 R09: 00003c8cc9552b48
-[   20.250893] R10: 0000562dd1064d30 R11: 00003c8cc825b908 R12: 00003c8cc966d3c0
-[   20.250896] R13: 00003c8cc9e280c0 R14: 0000000000000000 R15: 0000000000000000
-
-Signed-off-by: Alex Levin <levinale@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/atom/sst/sst_pvt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
-index 00a37a09dc9b..dba0ca07ebf9 100644
---- a/sound/soc/intel/atom/sst/sst_pvt.c
-+++ b/sound/soc/intel/atom/sst/sst_pvt.c
-@@ -166,11 +166,11 @@ int sst_create_ipc_msg(struct ipc_post **arg, bool large)
- {
- 	struct ipc_post *msg;
- 
--	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
-+	msg = kzalloc(sizeof(*msg), GFP_ATOMIC);
- 	if (!msg)
- 		return -ENOMEM;
- 	if (large) {
--		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
-+		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_ATOMIC);
- 		if (!msg->mailbox_data) {
- 			kfree(msg);
- 			return -ENOMEM;
--- 
-2.20.1
+>  .../zh_CN/process/coding-style.rst            |   2 +-
+>  .../zh_CN/process/submit-checklist.rst        |   2 +-
+>  Kconfig                                       |   2 +-
+>  arch/arc/plat-eznps/Kconfig                   |   2 +-
+>  arch/c6x/Kconfig                              |   2 +-
+>  arch/microblaze/Kconfig.debug                 |   2 +-
+>  arch/microblaze/Kconfig.platform              |   2 +-
+>  arch/nds32/Kconfig                            |   2 +-
+>  arch/openrisc/Kconfig                         |   2 +-
+>  arch/powerpc/sysdev/Kconfig                   |   2 +-
+>  arch/riscv/Kconfig                            |   2 +-
+>  drivers/auxdisplay/Kconfig                    |   2 +-
+>  drivers/firmware/Kconfig                      |   2 +-
+>  drivers/mtd/devices/Kconfig                   |   2 +-
+>  drivers/net/ethernet/smsc/Kconfig             |   6 +-
+>  drivers/net/wireless/intel/iwlegacy/Kconfig   |   4 +-
+>  drivers/net/wireless/intel/iwlwifi/Kconfig    |   2 +-
+>  drivers/parport/Kconfig                       |   2 +-
+>  drivers/scsi/Kconfig                          |   4 +-
+>  drivers/staging/sm750fb/Kconfig               |   2 +-
+>  drivers/usb/misc/Kconfig                      |   4 +-
+>  drivers/video/fbdev/Kconfig                   |  14 +-
+>  net/bridge/netfilter/Kconfig                  |   2 +-
+>  net/ipv4/netfilter/Kconfig                    |   2 +-
+>  net/ipv6/netfilter/Kconfig                    |   2 +-
+>  net/netfilter/Kconfig                         |  16 +-
+>  net/tipc/Kconfig                              |   2 +-
+>  scripts/Kbuild.include                        |   4 +-
+>  scripts/Makefile.host                         |   2 +-
+>  scripts/kconfig/symbol.c                      |   2 +-
+>  .../tests/err_recursive_dep/expected_stderr   |  14 +-
+>  sound/oss/dmasound/Kconfig                    |   6 +-
+>  48 files changed, 840 insertions(+), 561 deletions(-)
+>  rename Documentation/kbuild/{headers_install.txt => headers_install.rst}
+> (96%) create mode 100644 Documentation/kbuild/index.rst
+>  create mode 100644 Documentation/kbuild/issues.rst
+>  rename Documentation/kbuild/{kbuild.txt => kbuild.rst} (72%)
+>  rename Documentation/kbuild/{kconfig-language.txt => kconfig-language.rst}
+> (85%) rename Documentation/kbuild/{kconfig-macro-language.txt =>
+> kconfig-macro-language.rst} (94%) rename Documentation/kbuild/{kconfig.txt
+> => kconfig.rst} (80%)
+>  rename Documentation/kbuild/{makefiles.txt => makefiles.rst} (83%)
+>  rename Documentation/kbuild/{modules.txt => modules.rst} (84%)
