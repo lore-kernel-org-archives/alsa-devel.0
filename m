@@ -1,16 +1,16 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH 1/6] ASoC: core: add support to
- snd_soc_dai_get_sdw_stream()
-Date: Mon, 10 Jun 2019 08:58:33 +0100
-Message-ID: <689065b2-9d5c-68b4-d72f-1e971b903df2@linaro.org>
+Subject: Re: [RFC PATCH 5/6] dt-bindings: soundwire: add bindings for Qcom
+ controller
+Date: Mon, 10 Jun 2019 09:14:38 +0100
+Message-ID: <f1e68207-caa2-02e0-19af-ac5763c86e41@linaro.org>
 References: <20190607085643.932-1-srinivas.kandagatla@linaro.org>
- <20190607085643.932-2-srinivas.kandagatla@linaro.org>
- <20190610043432.GI9160@vkoul-mobl.Dlink>
+ <20190607085643.932-6-srinivas.kandagatla@linaro.org>
+ <20190610045150.GJ9160@vkoul-mobl.Dlink>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190610043432.GI9160@vkoul-mobl.Dlink>
+In-Reply-To: <20190610045150.GJ9160@vkoul-mobl.Dlink>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Vinod Koul <vkoul@kernel.org>
@@ -19,35 +19,75 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 10/06/2019 05:34, Vinod Koul wrote:
+On 10/06/2019 05:51, Vinod Koul wrote:
 > On 07-06-19, 09:56, Srinivas Kandagatla wrote:
->> On platforms which have smart speaker amplifiers connected via
->> soundwire and modeled as aux devices in ASoC, in such usecases machine
->> driver should be able to get sdw master stream from dai so that it can
->> use the runtime stream to setup slave streams.
+>> This patch adds bindings for Qualcomm soundwire controller.
 >>
->> soundwire already as a set function, get function would provide more
->> flexibility to above configurations.
+>> Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
+>> either integrated as part of WCD audio codecs via slimbus or
+>> as part of SOC I/O.
 >>
 >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >> ---
->>   include/sound/soc-dai.h | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->> index f5d70041108f..9f90b936fd9a 100644
->> --- a/include/sound/soc-dai.h
->> +++ b/include/sound/soc-dai.h
->> @@ -177,6 +177,7 @@ struct snd_soc_dai_ops {
->>   
->>   	int (*set_sdw_stream)(struct snd_soc_dai *dai,
->>   			void *stream, int direction);
->> +	void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
+>>   .../bindings/soundwire/qcom,swr.txt           | 62 +++++++++++++++++++
 > 
-> So who would be calling this API? Machine or someone else?
+> So I was expecting to see bus support patches for OF first. I think you
+> have missed those changes. Please do include those in v2 with bindings
+> and OF support for bus.
 
- From Machine driver in my case where smart speaker amplifiers are 
-modeled as aux device which is also dai less.
+I was planning to post bus bindings along with soundwire slave bindings 
+of WSA881x driver!
+I will be sending this soon!
+
+> 
+>>   1 file changed, 62 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,swr.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/soundwire/qcom,swr.txt b/Documentation/devicetree/bindings/soundwire/qcom,swr.txt
+>> new file mode 100644
+>> index 000000000000..eb84d0f4f36f
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/soundwire/qcom,swr.txt
+>> @@ -0,0 +1,62 @@
+>> +Qualcomm SoundWire Controller
+>> +
+>> +This binding describes the Qualcomm SoundWire Controller Bindings.
+>> +
+>> +Required properties:
+>> +
+>> +- compatible:		Must be "qcom,soundwire-v<MAJOR>.<MINOR>.<STEP>",
+>> +	 		example:
+>> +			"qcom,soundwire-v1.3.0"
+>> +			"qcom,soundwire-v1.5.0"
+>> +			"qcom,soundwire-v1.6.0"
+>> +- reg:			SoundWire controller address space.
+>> +- interrupts:		SoundWire controller interrupt.
+>> +- clock-names:		Must contain "iface".
+>> +- clocks:		Interface clocks needed for controller.
+>> +- #sound-dai-cells:	Must be 1 for digital audio interfaces on the controllers.
+>> +- #address-cells:	Must be 1 for SoundWire devices;
+>> +- #size-cells:		Must be <0> as SoundWire addresses have no size component.
+>> +- qcom,dout-ports: 	Must be count of data out ports
+>> +- qcom,din-ports: 	Must be count of data in ports
+> 
+> On these I think we should have specified dpn properties as specified in
+> DisCo, but then looking at spec we do not define that for master, but
+> bus seems to have it.
+> 
+> Pierre do you why master does not have dpn properties in DisCo?
+> 
+>> +- qcom,ports-offset1:	Must be frame offset1 of each data port.
+>> +			Out followed by In. Used for Block size calculation.
+>> +- qcom,ports-offset2: 	Must be frame offset2 of each data port.
+>> +			Out followed by In. Used for Block size calculation.
+>> +- qcom,ports-sinterval-low: Must be sample interval low of each data port.
+>> +			Out followed by In. Used for Sample Interval calculation.
+> 
+> These are software so do not belong here
+These are board-specfic properties w.r.t this controller ports 
+configuration.
+I don't see any other option to specify this?
+Do you have any alternative suggestions?
 
 --srini
 > 
