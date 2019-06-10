@@ -1,80 +1,316 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: [GIT PULL] Immutable branch between MFD and Cros due for the v5.3
- merge window
-Date: Mon, 10 Jun 2019 09:20:12 +0100
-Message-ID: <20190610082012.GK4797@dell>
-References: <20190603183401.151408-1-gwendal@chromium.org>
- <20190604055908.GA4797@dell>
- <CAFqH_51gMu81f=VFQaF4u9-tAWDMocGAwM_fOPT3Cctv6KWniw@mail.gmail.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [RFC PATCH 6/6] soundwire: qcom: add support for SoundWire
+ controller
+Date: Mon, 10 Jun 2019 09:27:37 +0100
+Message-ID: <2938660d-81e1-d6b2-4179-9f32c6ca1644@linaro.org>
+References: <20190607085643.932-1-srinivas.kandagatla@linaro.org>
+ <20190607085643.932-7-srinivas.kandagatla@linaro.org>
+ <20190610064025.GK9160@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAFqH_51gMu81f=VFQaF4u9-tAWDMocGAwM_fOPT3Cctv6KWniw@mail.gmail.com>
+In-Reply-To: <20190610064025.GK9160@vkoul-mobl.Dlink>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Enric Balletbo Serra <eballetbo@gmail.com>
-Cc: Gwendal Grignou <gwendal@chromium.org>, alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, fabien.lahoudere@collabora.com, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Benson Leung <bleung@chromium.org>, Jonathan Cameron <jic23@kernel.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-As requested.
+Thanks for taking time to review!
 
-Enjoy!
 
-The following changes since commit a188339ca5a396acc588e5851ed7e19f66b0ebd9:
+On 10/06/2019 07:40, Vinod Koul wrote:
+> On 07-06-19, 09:56, Srinivas Kandagatla wrote:
+>> Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
+>> either integrated as part of WCD audio codecs via slimbus or
+>> as part of SOC I/O.
+>>
+>> This patchset adds support to a very basic controller which has been
+>> tested with WCD934x SoundWire controller connected to WSA881x smart
+>> speaker amplifiers.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/soundwire/Kconfig  |   9 +
+>>   drivers/soundwire/Makefile |   4 +
+>>   drivers/soundwire/qcom.c   | 983 +++++++++++++++++++++++++++++++++++++
+> 
+> Can you split this to two patches (at least), master driver followed by
+> DAI driver
 
-  Linux 5.2-rc1 (2019-05-19 15:47:09 -0700)
+Sure.
 
-are available in the Git repository at:
+> 
+>> +
+>> +#define SWRM_COMP_HW_VERSION					0x00
+> 
+> What does COMP stand for?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-cros-v5.3
+Controller splits registers into "Component(core configuration 
+registers)", "Interrupt" "Command Fifo" and so on...
 
-for you to fetch changes up to 3aa6be30da899619c44aa654313ba66eb44e7291:
+> 
+>> +#define SWRM_COMP_CFG_ADDR					0x04
+>> +#define SWRM_COMP_CFG_IRQ_LEVEL_OR_PULSE_MSK			BIT(1)
+>> +#define SWRM_COMP_CFG_ENABLE_MSK				BIT(0)
+>> +#define SWRM_COMP_PARAMS					0x100
+>> +#define SWRM_COMP_PARAMS_DOUT_PORTS_MASK			GENMASK(4, 0)
+>> +#define SWRM_COMP_PARAMS_DIN_PORTS_MASK				GENMASK(9, 5)
+>> +#define SWRM_COMP_PARAMS_WR_FIFO_DEPTH				GENMASK(14, 10)
+>> +#define SWRM_COMP_PARAMS_RD_FIFO_DEPTH				GENMASK(19, 15)
+>> +#define SWRM_COMP_PARAMS_AUTO_ENUM_SLAVES			GENMASK(32. 20)
+> 
+> Thats a lot of text, So as others have said we need to rethink the
+> naming conventions, perhaps QC_SDW_PARAM_AUTO_ENUM (feel free to drop
+> SDW as well from here as it QC specific!
+> 
+> Also move common ones to core..
+> 
+>> +#define SWRM_INTERRUPT_STATUS					0x200
+>> +#define SWRM_INTERRUPT_STATUS_RMSK				GENMASK(16, 0)
+>> +#define SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ			BIT(0)
+>> +#define SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED		BIT(1)
+>> +#define SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS		BIT(2)
+>> +#define SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET			BIT(3)
+>> +#define SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW			BIT(4)
+>> +#define SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW			BIT(5)
+>> +#define SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW		BIT(6)
+>> +#define SWRM_INTERRUPT_STATUS_CMD_ERROR				BIT(7)
+>> +#define SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION		BIT(8)
+>> +#define SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH		BIT(9)
+>> +#define SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED		BIT(10)
+>> +#define SWRM_INTERRUPT_STATUS_NEW_SLAVE_AUTO_ENUM_FINISHED	BIT(11)
+>> +#define SWRM_INTERRUPT_STATUS_AUTO_ENUM_FAILED			BIT(12)
+>> +#define SWRM_INTERRUPT_STATUS_AUTO_ENUM_TABLE_IS_FULL		BIT(13)
+>> +#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED		BIT(14)
+>> +#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED			BIT(15)
+>> +#define SWRM_INTERRUPT_STATUS_ERROR_PORT_TEST			BIT(16)
+>> +#define SWRM_INTERRUPT_MASK_ADDR				0x204
+>> +#define SWRM_INTERRUPT_CLEAR					0x208
+>> +#define SWRM_CMD_FIFO_WR_CMD					0x300
+>> +#define SWRM_CMD_FIFO_RD_CMD					0x304
+>> +#define SWRM_CMD_FIFO_CMD					0x308
+>> +#define SWRM_CMD_FIFO_STATUS					0x30C
+>> +#define SWRM_CMD_FIFO_CFG_ADDR					0x314
+>> +#define SWRM_CMD_FIFO_CFG_NUM_OF_CMD_RETRY_SHFT			0x0
+>> +#define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
+>> +#define SWRM_ENUMERATOR_CFG_ADDR				0x500
+>> +#define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
+>> +#define SWRM_MCP_FRAME_CTRL_BANK_SSP_PERIOD_SHFT		16
+>> +#define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT			3
+>> +#define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
+>> +#define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT			0
+>> +#define SWRM_MCP_CFG_ADDR					0x1048
+>> +#define SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK		GENMASK(21, 17)
+>> +#define SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_SHFT		0x11
+>> +#define SWRM_MCP_STATUS						0x104C
+>> +#define SWRM_MCP_STATUS_BANK_NUM_MASK				BIT(0)
+>> +#define SWRM_MCP_SLV_STATUS					0x1090
+>> +#define SWRM_MCP_SLV_STATUS_MASK				GENMASK(1, 0)
+>> +#define SWRM_DP_PORT_CTRL_BANK(n, m)	(0x1124 + 0x100 * (n - 1) + 0x40 * m)
+>> +#define SWRM_DP_PORT_CTRL2_BANK(n, m)	(0x1126 + 0x100 * (n - 1) + 0x40 * m)
+>> +#define SWRM_DP_PORT_CTRL_EN_CHAN_SHFT				0x18
+>> +#define SWRM_DP_PORT_CTRL_OFFSET2_SHFT				0x10
+>> +#define SWRM_DP_PORT_CTRL_OFFSET1_SHFT				0x08
+>> +#define SWRM_AHB_BRIDGE_WR_DATA_0				0xc885
+>> +#define SWRM_AHB_BRIDGE_WR_ADDR_0				0xc889
+>> +#define SWRM_AHB_BRIDGE_RD_ADDR_0				0xc88d
+>> +#define SWRM_AHB_BRIDGE_RD_DATA_0				0xc891
+>> +
+>> +#define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
+>> +			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
+>> +
+>> +#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
+>> +#define SWRM_DEFAULT_ROWS	48
+>> +#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
+>> +#define SWRM_DEFAULT_COL	16
+>> +#define SWRM_SPECIAL_CMD_ID	0xF
+>> +#define MAX_FREQ_NUM		1
+>> +#define TIMEOUT_MS		1000
+>> +#define QCOM_SWRM_MAX_RD_LEN	0xf
+>> +#define DEFAULT_CLK_FREQ	9600000
+>> +#define SWRM_MAX_DAIS		0xF
+> 
+> I was thinking it would make sense to move this to DT, DAI is after all
+> a hw property!
 
-  mfd: cros_ec: Update I2S API (2019-06-10 09:15:08 +0100)
+I will give that a try before sending out next version.
+> 
+>> +static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
+>> +				     u8 dev_addr, u16 reg_addr)
+>> +{
+>> +	int ret = 0;
+>> +	u8 cmd_id;
+>> +	u32 val;
+>> +
+>> +	mutex_lock(&ctrl->lock);
+>> +	if (dev_addr == SDW_BROADCAST_DEV_NUM) {
+>> +		cmd_id = SWRM_SPECIAL_CMD_ID;
+>> +	} else {
+>> +		if (++ctrl->wr_cmd_id == SWRM_SPECIAL_CMD_ID)
+>> +			ctrl->wr_cmd_id = 0;
+>> +
+>> +		cmd_id = ctrl->wr_cmd_id;
+>> +	}
+>> +
+>> +	val = SWRM_REG_VAL_PACK(cmd_data, dev_addr, cmd_id, reg_addr);
+>> +	ret = ctrl->reg_write(ctrl, SWRM_CMD_FIFO_WR_CMD, val);
+>> +	if (ret < 0) {
+>> +		dev_err(ctrl->dev, "%s: reg 0x%x write failed, err:%d\n",
+>> +			__func__, val, ret);
+>> +		goto err;
+>> +	}
+>> +
+>> +	if (dev_addr == SDW_BROADCAST_DEV_NUM) {
+>> +		ctrl->fifo_status = 0;
+>> +		ret = wait_for_completion_timeout(&ctrl->sp_cmd_comp,
+>> +						  msecs_to_jiffies(TIMEOUT_MS));
+> 
+> why not wait for completion on non broadcast?
+> 
 
-----------------------------------------------------------------
-Immutable branch between MFD and Cros due for the v5.3 merge window
+This could lead to dead-lock if we endup reading registers from 
+interrupt handler.
 
-----------------------------------------------------------------
-Gwendal Grignou (30):
-      mfd: cros_ec: Update license term
-      mfd: cros_ec: Zero BUILD_ macro
-      mfd: cros_ec: set comments properly
-      mfd: cros_ec: add ec_align macros
-      mfd: cros_ec: Define commands as 4-digit UPPER CASE hex values
-      mfd: cros_ec: use BIT macro
-      mfd: cros_ec: Update ACPI interface definition
-      mfd: cros_ec: move HDMI CEC API definition
-      mfd: cros_ec: Remove zero-size structs
-      mfd: cros_ec: Add Flash V2 commands API
-      mfd: cros_ec: Add PWM_SET_DUTY API
-      mfd: cros_ec: Add lightbar v2 API
-      mfd: cros_ec: Expand hash API
-      mfd: cros_ec: Add EC transport protocol v4
-      mfd: cros_ec: Complete MEMS sensor API
-      mfd: cros_ec: Fix event processing API
-      mfd: cros_ec: Add fingerprint API
-      mfd: cros_ec: Fix temperature API
-      mfd: cros_ec: Complete Power and USB PD API
-      mfd: cros_ec: Add API for keyboard testing
-      mfd: cros_ec: Add Hibernate API
-      mfd: cros_ec: Add Smart Battery Firmware update API
-      mfd: cros_ec: Add I2C passthru protection API
-      mfd: cros_ec: Add API for EC-EC communication
-      mfd: cros_ec: Add API for Touchpad support
-      mfd: cros_ec: Add API for Fingerprint support
-      mfd: cros_ec: Add API for rwsig
-      mfd: cros_ec: Add SKU ID and Secure storage API
-      mfd: cros_ec: Add Management API entry points
-      mfd: cros_ec: Update I2S API
+>> +static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *ctrl,
+>> +				     u8 dev_addr, u16 reg_addr,
+>> +				     u32 len, u8 *rval)
+>> +{
+>> +	int i, ret = 0;
+> 
+> Superfluous initialization of ret
+> 
+I agree.
+>> +static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>> +{
+>> +	struct qcom_swrm_ctrl *ctrl = dev_id;
+>> +	u32 sts, value;
+>> +
+>> +	sts = ctrl->reg_read(ctrl, SWRM_INTERRUPT_STATUS);
+>> +
+>> +	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED)
+>> +		complete(&ctrl->sp_cmd_comp);
+>> +
+>> +	if (sts & SWRM_INTERRUPT_STATUS_CMD_ERROR) {
+>> +		value = ctrl->reg_read(ctrl, SWRM_CMD_FIFO_STATUS);
+>> +		dev_err_ratelimited(ctrl->dev,
+>> +				    "CMD error, fifo status 0x%x\n",
+>> +				     value);
+>> +		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CMD, 0x1);
+>> +		if ((value & 0xF) == 0xF) {
+>> +			ctrl->fifo_status = -ENODATA;
+>> +			complete(&ctrl->sp_cmd_comp);
+>> +		}
+>> +	}
+>> +
+>> +	if ((sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED) ||
+>> +	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS) {
+>> +		if (sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED)
+>> +			ctrl->status[0] = SDW_SLAVE_ATTACHED;
+>> +
+>> +		schedule_work(&ctrl->slave_work);
+> 
+> So why are we scheduling work, you are the thread handler so I think it
+> should be okay and better to invoke bus for status update.
 
- include/linux/mfd/cros_ec_commands.h | 3658 +++++++++++++++++++++++++++-------
- sound/soc/codecs/cros_ec_codec.c     |    8 +-
- 2 files changed, 2915 insertions(+), 751 deletions(-)
+I had seen lockup issues as this would trigger broadcast messages which 
+would wait on completion interrupt!
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 
+>> +	}
+>> +
+>> +	if (sts & SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ)
+>> +		dev_dbg(ctrl->dev, "Slave pend irq\n");
+>> +
+>> +	if (sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED)
+>> +		dev_dbg(ctrl->dev, "New slave attached\n");
+> 
+> No updating bus on the status?
+> 
+Its done down below this function! These are debug messages only!
+looks redundant, will remove it.
+
+>> +static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+>> +						    struct sdw_msg *msg)
+>> +{
+>> +	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>> +	int ret, i, len;
+>> +
+>> +	if (msg->flags == SDW_MSG_FLAG_READ) {
+>> +		for (i = 0; i < msg->len;) {
+>> +			if ((msg->len - i) < QCOM_SWRM_MAX_RD_LEN)
+>> +				len = msg->len - i;
+>> +			else
+>> +				len = QCOM_SWRM_MAX_RD_LEN;
+>> +
+>> +			ret = qcom_swrm_cmd_fifo_rd_cmd(ctrl, msg->dev_num,
+>> +							msg->addr + i, len,
+>> +						       &msg->buf[i]);
+>> +			if (ret < 0) {
+>> +				if (ret == -ENODATA)
+>> +					return SDW_CMD_IGNORED;
+>> +
+>> +				return ret;
+>> +			}
+>> +
+>> +			i = i + len;
+>> +		}
+>> +	} else if (msg->flags == SDW_MSG_FLAG_WRITE) {
+>> +		for (i = 0; i < msg->len; i++) {
+>> +			ret = qcom_swrm_cmd_fifo_wr_cmd(ctrl, msg->buf[i],
+>> +							msg->dev_num,
+>> +						       msg->addr + i);
+>> +			if (ret < 0) {
+>> +				if (ret == -ENODATA)
+>> +					return SDW_CMD_IGNORED;
+>> +
+>> +				return ret;
+> 
+> So we need to convert this to sdw_command_response before returning.
+> 
+Sure!
+
+>> +static int qcom_swrm_prepare(struct snd_pcm_substream *substream,
+>> +			     struct snd_soc_dai *dai)
+>> +{
+>> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dai->dev);
+>> +
+>> +	if (!ctrl->sruntime[dai->id])
+>> +		return -EINVAL;
+>> +
+>> +	return sdw_enable_stream(ctrl->sruntime[dai->id]);
+> 
+> Hmm you need to handle dai prepare being called for multiple times.
+> Thanks for pointing this out, Will fix this.
+
+>> +static int qcom_pdm_set_sdw_stream(struct snd_soc_dai *dai,
+>> +				   void *stream, int direction)
+>> +{
+>> +	return 0;
+>> +}
+> 
+> lets remove if we dont intend to do anything!
+> 
+Hm, not sure how I missed this one!
+
+>> +static int qcom_swrm_runtime_suspend(struct device *device)
+>> +{
+>> +	/* TBD */
+>> +	return 0;
+>> +}
+>> +
+>> +static int qcom_swrm_runtime_resume(struct device *device)
+>> +{
+>> +	/* TBD */
+>> +	return 0;
+>> +}
+> 
+> Again, lets remove these, add when we have the functionality
+We have issues without this, as soundwire bus would return error on 
+runtime pm get/set. For RFC, I had to make this dummy, I will be able to 
+add and test some code in next 1/2 spins.
+
+Thanks,
+srini
+> 
