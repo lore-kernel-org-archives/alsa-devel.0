@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 1/5] dt-bindings: soundwire: add slave bindings
-Date: Tue, 11 Jun 2019 11:40:39 +0100
-Message-ID: <20190611104043.22181-2-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 3/5] soundwire: add module_sdw_driver helper macro
+Date: Tue, 11 Jun 2019 11:40:41 +0100
+Message-ID: <20190611104043.22181-4-srinivas.kandagatla@linaro.org>
 References: <20190611104043.22181-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,69 +12,34 @@ To: broonie@kernel.org, vkoul@kernel.org
 Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, bgoswami@quicinc.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for Soundwire Slave devices which includes how
-SoundWire enumeration address is represented in SoundWire slave device
-tree nodes.
+This Helper macro is for SoundWire drivers which do not do anything special in
+module init/exit. This eliminates a lot of boilerplate. Each module may only
+use this macro once, and calling it replaces module_init() and module_exit()
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/soundwire/bus.txt     | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soundwire/bus.txt
+ include/linux/soundwire/sdw_type.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soundwire/bus.txt b/Documentation/devicetree/bindings/soundwire/bus.txt
-new file mode 100644
-index 000000000000..19a672b0d528
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soundwire/bus.txt
-@@ -0,0 +1,48 @@
-+SoundWire bus bindings.
-+
-+SoundWire is a 2-pin multi-drop interface with data and clock line.
-+It facilitates development of low cost, efficient, high performance systems.
-+
-+SoundWire controller bindings are very much specific to vendor.
-+
-+Child nodes(SLAVE devices):
-+Every SoundWire controller node can contain zero or more child nodes
-+representing slave devices on the bus. Every SoundWire slave device is
-+uniquely determined by the enumeration address containing 5 fields:
-+SoundWire Version, Instance ID, Manufacturer ID, Part ID and Class ID
-+for a device. Addition to below required properties, child nodes can
-+have device specific bindings.
-+
-+Required property for SoundWire child node if it is present:
-+- compatible:	 "sdwVER,MFD,PID,CID". The textual representation of
-+		  SoundWire Enumeration address comprising SoundWire
-+		  Version, Manufacturer ID, Part ID and Class ID,
-+		  shall be in lower-case hexadecimal with leading
-+		  zeroes suppressed.
-+		  Version number '0x10' represents SoundWire 1.0
-+		  Version number '0x11' represents SoundWire 1.1
-+		  ex: "sdw10,0217,2010,0"
-+
-+- sdw-instance-id: Should be ('Instance ID') from SoundWire
-+		  Enumeration Address. Instance ID is for the cases
-+		  where multiple Devices of the same type or Class
-+		  are attached to the bus.
-+
-+SoundWire example for Qualcomm's SoundWire controller:
-+
-+soundwire@c2d0000 {
-+	compatible = "qcom,soundwire-v1.5.0"
-+	reg = <0x0c2d0000 0x2000>;
-+
-+	spkr_left:wsa8810-left{
-+		compatible = "sdw10,0217,2010,0";
-+		sdw-instance-id = <1>;
-+		...
-+	};
-+
-+	spkr_right:wsa8810-right{
-+		compatible = "sdw10,0217,2010,0";
-+		sdw-instance-id = <2>;
-+		...
-+	};
-+};
+diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
+index 9c756b5a0dfe..aaa7f4267c14 100644
+--- a/include/linux/soundwire/sdw_type.h
++++ b/include/linux/soundwire/sdw_type.h
+@@ -16,4 +16,15 @@ void sdw_unregister_driver(struct sdw_driver *drv);
+ 
+ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
+ 
++/**
++ * module_sdw_driver() - Helper macro for registering a Soundwire driver
++ * @__sdw_driver: soundwire slave driver struct
++ *
++ * Helper macro for Soundwire drivers which do not do anything special in
++ * module init/exit. This eliminates a lot of boilerplate. Each module may only
++ * use this macro once, and calling it replaces module_init() and module_exit()
++ */
++#define module_sdw_driver(__sdw_driver) \
++	module_driver(__sdw_driver, sdw_register_driver, \
++			sdw_unregister_driver)
+ #endif /* __SOUNDWIRE_TYPES_H */
 -- 
 2.21.0
