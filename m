@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/12] ALSA: firewire-digi00x: update
-	isochronous resources when starting packet streaming after bus-reset
-Date: Tue, 11 Jun 2019 22:21:12 +0900
-Message-ID: <20190611132118.8378-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/12] ALSA: firewire-digi00x: code refactoring
+	for pcm.hw_params/hw_free callbacks
+Date: Tue, 11 Jun 2019 22:21:13 +0900
+Message-ID: <20190611132118.8378-8-o-takashi@sakamocchi.jp>
 References: <20190611132118.8378-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A7C5F89730
- for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2019 15:21:35 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5585F89733
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2019 15:21:36 +0200 (CEST)
 In-Reply-To: <20190611132118.8378-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,54 +28,102 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After bus reset, isochronous resource manager releases all of allocated
-isochronous resources. The nodes to transfer isochronous packet should
-request reallocation of the resources.
+The pairs of pcm.hw_params callbacks and .hw_free callbacks for both
+direction have no differences.
 
-However, between the bus-reset and invocation of 'struct fw_driver.update'
-handler, ALSA PCM application can detect this situation by XRUN because
-the target device cancelled to transmit packets once bus-reset occurs.
-
-Due to the above mechanism, ALSA fireface driver just stops packet
-streaming in the update handler, thus pcm.prepare handler should
-request the reallocation.
-
-This commit requests the reallocation in pcm.prepare callback when
-bus generation is changed.
+This commit unifies the pairs.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-stream.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/firewire/digi00x/digi00x-pcm.c | 55 ++++------------------------
+ 1 file changed, 7 insertions(+), 48 deletions(-)
 
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 3b903e42d29a..3c5e1c5a2e11 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -303,6 +303,7 @@ void snd_dg00x_stream_release_duplex(struct snd_dg00x *dg00x)
+diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
+index 1c04747f4fcc..9ed2ebdcf23a 100644
+--- a/sound/firewire/digi00x/digi00x-pcm.c
++++ b/sound/firewire/digi00x/digi00x-pcm.c
+@@ -155,8 +155,8 @@ static int pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
  
- int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
+-static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+-				 struct snd_pcm_hw_params *hw_params)
++static int pcm_hw_params(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *hw_params)
  {
-+	unsigned int generation = dg00x->rx_resources.generation;
- 	int err = 0;
+ 	struct snd_dg00x *dg00x = substream->private_data;
+ 	int err;
+@@ -179,48 +179,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 	return err;
+ }
  
- 	if (dg00x->substreams_counter == 0)
-@@ -312,6 +313,16 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
- 	    amdtp_streaming_error(&dg00x->rx_stream))
- 		finish_session(dg00x);
+-static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
+-				  struct snd_pcm_hw_params *hw_params)
+-{
+-	struct snd_dg00x *dg00x = substream->private_data;
+-	int err;
+-
+-	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-					       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		return err;
+-
+-	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+-		unsigned int rate = params_rate(hw_params);
+-
+-		mutex_lock(&dg00x->mutex);
+-		err = snd_dg00x_stream_reserve_duplex(dg00x, rate);
+-		if (err >= 0)
+-			++dg00x->substreams_counter;
+-		mutex_unlock(&dg00x->mutex);
+-	}
+-
+-	return err;
+-}
+-
+-static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_dg00x *dg00x = substream->private_data;
+-
+-	mutex_lock(&dg00x->mutex);
+-
+-	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		--dg00x->substreams_counter;
+-
+-	snd_dg00x_stream_stop_duplex(dg00x);
+-	snd_dg00x_stream_release_duplex(dg00x);
+-
+-	mutex_unlock(&dg00x->mutex);
+-
+-	return snd_pcm_lib_free_vmalloc_buffer(substream);
+-}
+-
+-static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++static int pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dg00x *dg00x = substream->private_data;
  
-+	if (generation != fw_parent_device(dg00x->unit)->card->generation) {
-+		err = fw_iso_resources_update(&dg00x->tx_resources);
-+		if (err < 0)
-+			goto error;
-+
-+		err = fw_iso_resources_update(&dg00x->rx_resources);
-+		if (err < 0)
-+			goto error;
-+	}
-+
- 	/*
- 	 * No packets are transmitted without receiving packets, reagardless of
- 	 * which source of clock is used.
+@@ -341,8 +300,8 @@ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
+ 		.open		= pcm_open,
+ 		.close		= pcm_close,
+ 		.ioctl		= snd_pcm_lib_ioctl,
+-		.hw_params	= pcm_capture_hw_params,
+-		.hw_free	= pcm_capture_hw_free,
++		.hw_params	= pcm_hw_params,
++		.hw_free	= pcm_hw_free,
+ 		.prepare	= pcm_capture_prepare,
+ 		.trigger	= pcm_capture_trigger,
+ 		.pointer	= pcm_capture_pointer,
+@@ -353,8 +312,8 @@ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
+ 		.open		= pcm_open,
+ 		.close		= pcm_close,
+ 		.ioctl		= snd_pcm_lib_ioctl,
+-		.hw_params	= pcm_playback_hw_params,
+-		.hw_free	= pcm_playback_hw_free,
++		.hw_params	= pcm_hw_params,
++		.hw_free	= pcm_hw_free,
+ 		.prepare	= pcm_playback_prepare,
+ 		.trigger	= pcm_playback_trigger,
+ 		.pointer	= pcm_playback_pointer,
 -- 
 2.20.1
