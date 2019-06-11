@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 3/5] soundwire: add module_sdw_driver helper macro
-Date: Tue, 11 Jun 2019 11:40:41 +0100
-Message-ID: <20190611104043.22181-4-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 4/5] dt-bindings: ASoC: Add WSA881x bindings
+Date: Tue, 11 Jun 2019 11:40:42 +0100
+Message-ID: <20190611104043.22181-5-srinivas.kandagatla@linaro.org>
 References: <20190611104043.22181-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,34 +12,48 @@ To: broonie@kernel.org, vkoul@kernel.org
 Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, bgoswami@quicinc.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This Helper macro is for SoundWire drivers which do not do anything special in
-module init/exit. This eliminates a lot of boilerplate. Each module may only
-use this macro once, and calling it replaces module_init() and module_exit()
+This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
+Amplifier. This Amplifier also has a simple thermal sensor for
+over temperature and speaker protection.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/linux/soundwire/sdw_type.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ .../bindings/sound/qcom,wsa881x.txt           | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.txt
 
-diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
-index 9c756b5a0dfe..aaa7f4267c14 100644
---- a/include/linux/soundwire/sdw_type.h
-+++ b/include/linux/soundwire/sdw_type.h
-@@ -16,4 +16,15 @@ void sdw_unregister_driver(struct sdw_driver *drv);
- 
- int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
- 
-+/**
-+ * module_sdw_driver() - Helper macro for registering a Soundwire driver
-+ * @__sdw_driver: soundwire slave driver struct
-+ *
-+ * Helper macro for Soundwire drivers which do not do anything special in
-+ * module init/exit. This eliminates a lot of boilerplate. Each module may only
-+ * use this macro once, and calling it replaces module_init() and module_exit()
-+ */
-+#define module_sdw_driver(__sdw_driver) \
-+	module_driver(__sdw_driver, sdw_register_driver, \
-+			sdw_unregister_driver)
- #endif /* __SOUNDWIRE_TYPES_H */
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.txt b/Documentation/devicetree/bindings/sound/qcom,wsa881x.txt
+new file mode 100644
+index 000000000000..582db402a482
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.txt
+@@ -0,0 +1,27 @@
++Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
++
++WSA8810 is a class-D smart speaker amplifier and WSA8815 is a high-output
++power class-D smart speaker amplifier. This amplifier uses SoundWire
++digital audio as primary interface.
++
++Required properties with SoundWire Interface:
++
++- compatible:		Should be textual representation of SoundWire Enumeration
++			address.
++			Refer to soundwire/bus.txt for details.
++			Should be "sdw10,0217,2010,0" for WSA8810
++- sdw-instance-id:	Should be ('Instance ID') from SoundWire Enumeration
++		    	address.
++			Refer to soundwire/bus.txt for details.
++- pd-gpios: 		Should be phandle and gpio pair for
++			Powerdown/Shutdown pin.
++- #thermal-sensor-cells: Should be 0 
++
++Example:
++
++spkr_left:wsa8810-left{
++	compatible = "sdw10,0217,2010,0";
++	sdw-instance-id = <1>;
++	#thermal-sensor-cells = <0>;
++	...
++};
 -- 
 2.21.0
