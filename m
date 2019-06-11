@@ -1,7 +1,7 @@
-From: Cheng-yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+From: Cheng-yi Chiang <cychiang@chromium.org>
 Subject: Re: [PATCH 1/7] video: add HDMI state notifier support
 Date: Tue, 11 Jun 2019 20:10:38 +0800
-Message-ID: <CAFv8NwKL9ZL=gNpDmdRV+R9eq22+Da_1kzuYBv8kMMyV3Hq14g__19896.9090519071$1560255100$gmane$org@mail.gmail.com>
+Message-ID: <CAFv8NwKL9ZL=gNpDmdRV+R9eq22+Da_1kzuYBv8kMMyV3Hq14g__44844.7234275349$1560255132$gmane$org@mail.gmail.com>
 References: <20190603043251.226549-1-cychiang@chromium.org>
  <20190603043251.226549-2-cychiang@chromium.org>
  <41e7052b-a58c-5a8c-5d94-37237e0c2070@xs4all.nl>
@@ -11,29 +11,37 @@ References: <20190603043251.226549-1-cychiang@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20190604072411.GP21222-dv86pmgwkMBes7Z6vYuT8azUEOm+Xw19@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Cheng-yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Russell King <rmk+kernel-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Andrzej Hajda <a.hajda-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Laurent Pinchart <Laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, tzungbi-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, dri-devel-PD4FTy7X32k@public.gmane.org
-Cc: Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com
+ [IPv6:2607:f8b0:4864:20::e44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA4C9F8961D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2019 14:11:07 +0200 (CEST)
+Received: by mail-vs1-xe44.google.com with SMTP id 190so4141241vsf.9
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2019 05:11:06 -0700 (PDT)
+In-Reply-To: <20190604072411.GP21222@phenom.ffwll.local>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Cheng-yi Chiang <cychiang@chromium.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel <linux-kernel@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philipp Zabel <p.zabel@pengutronix.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Doug Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, linux-media@vger.kernel.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, dri-devel@lists.fr
+Cc: Daniel Vetter <daniel@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 4, 2019 at 3:24 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
+On Tue, Jun 4, 2019 at 3:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
 > On Tue, Jun 04, 2019 at 10:32:50AM +0800, Cheng-yi Chiang wrote:
-> > On Mon, Jun 3, 2019 at 4:09 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
+> > On Mon, Jun 3, 2019 at 4:09 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 > > >
 > > > On Mon, Jun 03, 2019 at 09:45:49AM +0200, Hans Verkuil wrote:
 > > > > On 6/3/19 6:32 AM, Cheng-Yi Chiang wrote:
-> > > > > From: Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>
+> > > > > From: Hans Verkuil <hans.verkuil@cisco.com>
 > > > > >
 > > > > > Add support for HDMI hotplug and EDID notifiers, which is used to convey
 > > > > > information from HDMI drivers to their CEC and audio counterparts.
@@ -185,12 +193,12 @@ Thanks a lot!
 > > > > >  - Changes connected and has_eld to bitfield of unsigned int.
 > > > > >  - Other minor fixes to pass checkpatch.pl --strict checks.
 > > > > >
-> > > > > Signed-off-by: Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>
-> > > > > Acked-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-> > > > > Signed-off-by: Cheng-Yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+> > > > > Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> > > > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 > > > > > ---
 > > > > > The original patch is at
-> > > > > https://lore.kernel.org/linux-arm-kernel/20161213150813.37966-2-hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org
+> > > > > https://lore.kernel.org/linux-arm-kernel/20161213150813.37966-2-hverkuil@xs4all.nl
 > > > > >
 > > > > >  MAINTAINERS                   |   6 ++
 > > > > >  drivers/video/Kconfig         |   3 +
@@ -210,14 +218,14 @@ Thanks a lot!
 > > > > >  F: drivers/media/platform/vicodec/*
 > > > > >
 > > > > > +VIDEO FRAMEWORK
-> > > > > +M: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-> > > > > +L: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> > > > > +M: Hans Verkuil <hverkuil@xs4all.nl>
+> > > > > +L: linux-media@vger.kernel.org
 > > > > > +F: drivers/video/hdmi-notifier.*
 > > > > > +S: Maintained
 > > > > > +
 > > > > >  VIDEO MULTIPLEXER DRIVER
-> > > > >  M: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-> > > > >  L: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> > > > >  M: Philipp Zabel <p.zabel@pengutronix.de>
+> > > > >  L: linux-media@vger.kernel.org
 > > > > > diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
 > > > > > index 83d3d271ca15..000ba9bc0ae7 100644
 > > > > > --- a/drivers/video/Kconfig
@@ -254,7 +262,7 @@ Thanks a lot!
 > > > > > +/* hdmi-notifier.c - notify interested parties of (dis)connect and EDID
 > > > > > + * events
 > > > > > + *
-> > > > > + * Copyright 2016 Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+> > > > > + * Copyright 2016 Russell King <rmk+kernel@arm.linux.org.uk>
 > > > > > + * Copyright 2016 Cisco Systems, Inc. and/or its affiliates.
 > > > > > + * All rights reserved.
 > > > > > + */
@@ -405,7 +413,7 @@ Thanks a lot!
 > > > > > + * hdmi-notifier.h - notify interested parties of (dis)connect and EDID
 > > > > > + * events
 > > > > > + *
-> > > > > + * Copyright 2016 Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+> > > > > + * Copyright 2016 Russell King <rmk+kernel@arm.linux.org.uk>
 > > > > > + * Copyright 2016 Cisco Systems, Inc. and/or its affiliates.
 > > > > > + * All rights reserved.
 > > > > > + */
