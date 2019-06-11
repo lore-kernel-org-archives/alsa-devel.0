@@ -1,59 +1,42 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 6/6] soundwire: qcom: add support for
- SoundWire controller
-Date: Tue, 11 Jun 2019 07:21:20 -0500
-Message-ID: <0e836692-2297-4cb7-d681-76692db78a56@linux.intel.com>
-References: <20190607085643.932-1-srinivas.kandagatla@linaro.org>
- <20190607085643.932-7-srinivas.kandagatla@linaro.org>
- <249f9647-94d0-41d7-3b95-64c36d90f8e8@linux.intel.com>
- <40ea774c-8aa8-295d-e91e-71423b03c88d@linaro.org>
- <7269521a-ac89-3856-c18c-ffaaf64c0806@linux.intel.com>
- <462620fc-ac91-6a36-46c7-7af0080f06cb@linaro.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 1/2] bindings: sound: davinci-mcasp: Add support for optional auxclk-fs-ratio
+Date: Tue, 11 Jun 2019 15:29:40 +0300
+Message-ID: <20190611122941.10708-2-peter.ujfalusi@ti.com>
+References: <20190611122941.10708-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <462620fc-ac91-6a36-46c7-7af0080f06cb@linaro.org>
-Content-Language: en-US
+In-Reply-To: <20190611122941.10708-1-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, vkoul@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, jsarha@ti.com, devicetree@vger.kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+When McASP is bus master it's reference clock (AUXCLK) might not be a
+static clock, but running at a specific FS ratio.
 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ .../devicetree/bindings/sound/davinci-mcasp-audio.txt          | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On 6/11/19 5:29 AM, Srinivas Kandagatla wrote:
-> 
-> 
-> On 10/06/2019 15:12, Pierre-Louis Bossart wrote:
->>>>> +
->>>>> +    if (dev_addr == SDW_BROADCAST_DEV_NUM) {
->>>>> +        ctrl->fifo_status = 0;
->>>>> +        ret = wait_for_completion_timeout(&ctrl->sp_cmd_comp,
->>>>> +                          msecs_to_jiffies(TIMEOUT_MS));
->>>>
->>>> This is odd. The SoundWire spec does not handle writes to a single 
->>>> device or broadcast writes differently. I don't see a clear reason 
->>>> why you would only timeout for a broadcast write.
->>>>
->>>
->>> There is danger of blocking here without timeout.
->>
->> Right, and it's fine to add a timeout. The question is why add a 
->> timeout *only* for a broadcast operation? It should be added for every 
->> transaction IMO, unless you have a reason not to do so.
->>
-> 
-> I did try this before, the issue is when we read/write registers from 
-> interrupt handler, these can be deadlocked as we will be interrupt 
-> handler waiting for another completion interrupt, which will never 
-> happen unless we return from the first interrupt.
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+index a58f79f5345c..c483dcec01f8 100644
+--- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
++++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+@@ -44,6 +44,9 @@ Optional properties:
+   		 please refer to pinctrl-bindings.txt
+ - fck_parent : Should contain a valid clock name which will be used as parent
+ 	       for the McASP fck
++- auxclk-fs-ratio: When McASP is bus master indicates the ratio between AUCLK
++		   and FS rate if applicable:
++		   AUCLK rate = auxclk-fs-ratio * FS rate
+ 
+ Optional GPIO support:
+ If any McASP pin need to be used as GPIO then the McASP node must have:
+-- 
+Peter
 
-I don't quite get the issue. With the Intel hardware we only deal with 
-Master registers (some of which mirror the bus state) in the handler and 
-will only modify Slave registers in the thread. All changes to Slave 
-registers will be subject to a timeout as well as a check for no 
-response or NAK. Not sure what is specific about your solution that 
-requires a different handling of commands depending on which device 
-number is used. It could very well be that you've uncovered a flaw in 
-the bus design but I still don't see how it would be Qualcomm-specific?
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
