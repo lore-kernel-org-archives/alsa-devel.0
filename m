@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/12] ALSA: firewire-digi00x: code refactoring
-	for pcm.hw_params/hw_free callbacks
-Date: Tue, 11 Jun 2019 22:21:13 +0900
-Message-ID: <20190611132118.8378-8-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/12] ALSA: dice: code refactoring to stop
+	packet streaming
+Date: Tue, 11 Jun 2019 22:21:14 +0900
+Message-ID: <20190611132118.8378-9-o-takashi@sakamocchi.jp>
 References: <20190611132118.8378-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5585F89733
- for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2019 15:21:36 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54077F89736
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2019 15:21:38 +0200 (CEST)
 In-Reply-To: <20190611132118.8378-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,102 +28,76 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The pairs of pcm.hw_params callbacks and .hw_free callbacks for both
-direction have no differences.
+This commit is a part of preparation to perform allocation/release
+of isochronous resources in pcm.hw_params/hw_free callbacks.
 
-This commit unifies the pairs.
+There're three points to finish packet streaming but no helper
+functions for common operations for it. This commit adds a helper
+function for operations to finish packet streaming.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-pcm.c | 55 ++++------------------------
- 1 file changed, 7 insertions(+), 48 deletions(-)
+ sound/firewire/dice/dice-stream.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
-index 1c04747f4fcc..9ed2ebdcf23a 100644
---- a/sound/firewire/digi00x/digi00x-pcm.c
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -155,8 +155,8 @@ static int pcm_close(struct snd_pcm_substream *substream)
- 	return 0;
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index c3c892c5c7ff..8bce923dc4bd 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -230,6 +230,15 @@ static int keep_resources(struct snd_dice *dice,
+ 				fw_parent_device(dice->unit)->max_speed);
  }
  
--static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *hw_params)
-+static int pcm_hw_params(struct snd_pcm_substream *substream,
-+			 struct snd_pcm_hw_params *hw_params)
++static void finish_session(struct snd_dice *dice, struct reg_params *tx_params,
++			   struct reg_params *rx_params)
++{
++	stop_streams(dice, AMDTP_IN_STREAM, tx_params);
++	stop_streams(dice, AMDTP_OUT_STREAM, rx_params);
++
++	snd_dice_transaction_clear_enable(dice);
++}
++
+ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
+ 			 unsigned int rate, struct reg_params *params)
  {
- 	struct snd_dg00x *dg00x = substream->private_data;
- 	int err;
-@@ -179,48 +179,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+@@ -328,10 +337,8 @@ static int start_duplex_streams(struct snd_dice *dice, unsigned int rate)
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* Stop transmission. */
+-	stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
+-	stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+-	snd_dice_transaction_clear_enable(dice);
++	// Stop transmission.
++	finish_session(dice, &tx_params, &rx_params);
+ 	release_resources(dice);
+ 
+ 	err = ensure_phase_lock(dice, rate);
+@@ -373,9 +380,7 @@ static int start_duplex_streams(struct snd_dice *dice, unsigned int rate)
+ 
+ 	return 0;
+ error:
+-	stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
+-	stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
+-	snd_dice_transaction_clear_enable(dice);
++	finish_session(dice, &tx_params, &rx_params);
+ 	release_resources(dice);
  	return err;
  }
+@@ -449,12 +454,8 @@ void snd_dice_stream_stop_duplex(struct snd_dice *dice)
+ 	if (dice->substreams_counter > 0)
+ 		return;
  
--static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
--				  struct snd_pcm_hw_params *hw_params)
--{
--	struct snd_dg00x *dg00x = substream->private_data;
--	int err;
+-	snd_dice_transaction_clear_enable(dice);
 -
--	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
--					       params_buffer_bytes(hw_params));
--	if (err < 0)
--		return err;
--
--	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
--		unsigned int rate = params_rate(hw_params);
--
--		mutex_lock(&dg00x->mutex);
--		err = snd_dg00x_stream_reserve_duplex(dg00x, rate);
--		if (err >= 0)
--			++dg00x->substreams_counter;
--		mutex_unlock(&dg00x->mutex);
+-	if (get_register_params(dice, &tx_params, &rx_params) == 0) {
+-		stop_streams(dice, AMDTP_IN_STREAM, &tx_params);
+-		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
 -	}
--
--	return err;
--}
--
--static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_dg00x *dg00x = substream->private_data;
--
--	mutex_lock(&dg00x->mutex);
--
--	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
--		--dg00x->substreams_counter;
--
--	snd_dg00x_stream_stop_duplex(dg00x);
--	snd_dg00x_stream_release_duplex(dg00x);
--
--	mutex_unlock(&dg00x->mutex);
--
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
--}
--
--static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
-+static int pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_dg00x *dg00x = substream->private_data;
++	if (get_register_params(dice, &tx_params, &rx_params) >= 0)
++		finish_session(dice, &tx_params, &rx_params);
  
-@@ -341,8 +300,8 @@ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
- 		.open		= pcm_open,
- 		.close		= pcm_close,
- 		.ioctl		= snd_pcm_lib_ioctl,
--		.hw_params	= pcm_capture_hw_params,
--		.hw_free	= pcm_capture_hw_free,
-+		.hw_params	= pcm_hw_params,
-+		.hw_free	= pcm_hw_free,
- 		.prepare	= pcm_capture_prepare,
- 		.trigger	= pcm_capture_trigger,
- 		.pointer	= pcm_capture_pointer,
-@@ -353,8 +312,8 @@ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
- 		.open		= pcm_open,
- 		.close		= pcm_close,
- 		.ioctl		= snd_pcm_lib_ioctl,
--		.hw_params	= pcm_playback_hw_params,
--		.hw_free	= pcm_playback_hw_free,
-+		.hw_params	= pcm_hw_params,
-+		.hw_free	= pcm_hw_free,
- 		.prepare	= pcm_playback_prepare,
- 		.trigger	= pcm_playback_trigger,
- 		.pointer	= pcm_playback_pointer,
+ 	release_resources(dice);
+ }
 -- 
 2.20.1
