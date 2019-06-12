@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/19] ALSA: oxfw: rename helper functions for
-	duplex streams
-Date: Wed, 12 Jun 2019 17:44:19 +0900
-Message-ID: <20190612084422.5344-17-o-takashi@sakamocchi.jp>
+Subject: [PATCH 17/19] ALSA: oxfw: unify substreams counter
+Date: Wed, 12 Jun 2019 17:44:20 +0900
+Message-ID: <20190612084422.5344-18-o-takashi@sakamocchi.jp>
 References: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +11,8 @@ Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89C94F89754
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:53 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D33FDF89759
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:54 +0200 (CEST)
 In-Reply-To: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,288 +27,132 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, ALSA oxfw driver handles two isochronous contexts
-at the same time, except for some devices which supports one endpoint
-of isochronous packet stream.
-
-This commit renames some helper functions so that they handles duplex
-streams.
+In former commits, two isochronous contexts are handles at the same
+time. This commit unifies stream counters to obsolete them.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-midi.c   |  8 ++---
- sound/firewire/oxfw/oxfw-pcm.c    | 12 +++----
- sound/firewire/oxfw/oxfw-stream.c | 60 ++++++++++++++++++++-----------
- sound/firewire/oxfw/oxfw.c        | 17 ++-------
- sound/firewire/oxfw/oxfw.h        | 14 +++-----
- 5 files changed, 58 insertions(+), 53 deletions(-)
+ sound/firewire/oxfw/oxfw-midi.c   | 8 ++++----
+ sound/firewire/oxfw/oxfw-pcm.c    | 8 ++++----
+ sound/firewire/oxfw/oxfw-stream.c | 4 ++--
+ sound/firewire/oxfw/oxfw.h        | 3 +--
+ 4 files changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/sound/firewire/oxfw/oxfw-midi.c b/sound/firewire/oxfw/oxfw-midi.c
-index b7bbd77dfff1..31352cebdfe9 100644
+index 31352cebdfe9..092493497f1a 100644
 --- a/sound/firewire/oxfw/oxfw-midi.c
 +++ b/sound/firewire/oxfw/oxfw-midi.c
-@@ -20,7 +20,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+@@ -19,7 +19,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 
  	mutex_lock(&oxfw->mutex);
  
- 	oxfw->capture_substreams++;
--	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream, 0, 0);
-+	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->tx_stream, 0, 0);
+-	oxfw->capture_substreams++;
++	++oxfw->substreams_count;
+ 	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->tx_stream, 0, 0);
  
  	mutex_unlock(&oxfw->mutex);
+@@ -41,7 +41,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
  
-@@ -42,7 +42,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
  	mutex_lock(&oxfw->mutex);
  
- 	oxfw->playback_substreams++;
--	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->rx_stream, 0, 0);
-+	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->rx_stream, 0, 0);
+-	oxfw->playback_substreams++;
++	++oxfw->substreams_count;
+ 	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->rx_stream, 0, 0);
  
  	mutex_unlock(&oxfw->mutex);
+@@ -58,7 +58,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
  
-@@ -59,7 +59,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
  	mutex_lock(&oxfw->mutex);
  
- 	oxfw->capture_substreams--;
--	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->tx_stream);
-+	snd_oxfw_stream_stop_duplex(oxfw);
+-	oxfw->capture_substreams--;
++	--oxfw->substreams_count;
+ 	snd_oxfw_stream_stop_duplex(oxfw);
  
  	mutex_unlock(&oxfw->mutex);
+@@ -73,7 +73,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
  
-@@ -74,7 +74,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
  	mutex_lock(&oxfw->mutex);
  
- 	oxfw->playback_substreams--;
--	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->rx_stream);
-+	snd_oxfw_stream_stop_duplex(oxfw);
+-	oxfw->playback_substreams--;
++	--oxfw->substreams_count;
+ 	snd_oxfw_stream_stop_duplex(oxfw);
  
  	mutex_unlock(&oxfw->mutex);
- 
 diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index b3f6503dd34d..253d79607bdf 100644
+index 253d79607bdf..79c8e514bed9 100644
 --- a/sound/firewire/oxfw/oxfw-pcm.c
 +++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -255,7 +255,7 @@ static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
- 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
- 		oxfw->capture_substreams--;
+@@ -220,7 +220,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
  
--	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->tx_stream);
-+	snd_oxfw_stream_stop_duplex(oxfw);
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&oxfw->mutex);
+-		oxfw->capture_substreams++;
++		++oxfw->substreams_count;
+ 		mutex_unlock(&oxfw->mutex);
+ 	}
  
- 	mutex_unlock(&oxfw->mutex);
+@@ -239,7 +239,7 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
  
-@@ -270,7 +270,7 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
- 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
- 		oxfw->playback_substreams--;
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&oxfw->mutex);
+-		oxfw->playback_substreams++;
++		++oxfw->substreams_count;
+ 		mutex_unlock(&oxfw->mutex);
+ 	}
  
--	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->rx_stream);
-+	snd_oxfw_stream_stop_duplex(oxfw);
- 
- 	mutex_unlock(&oxfw->mutex);
- 
-@@ -284,8 +284,8 @@ static int pcm_capture_prepare(struct snd_pcm_substream *substream)
- 	int err;
- 
+@@ -253,7 +253,7 @@ static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
  	mutex_lock(&oxfw->mutex);
--	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream,
--					    runtime->rate, runtime->channels);
-+	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->tx_stream,
-+					   runtime->rate, runtime->channels);
- 	mutex_unlock(&oxfw->mutex);
- 	if (err < 0)
- 		goto end;
-@@ -301,8 +301,8 @@ static int pcm_playback_prepare(struct snd_pcm_substream *substream)
- 	int err;
  
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		oxfw->capture_substreams--;
++		--oxfw->substreams_count;
+ 
+ 	snd_oxfw_stream_stop_duplex(oxfw);
+ 
+@@ -268,7 +268,7 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
  	mutex_lock(&oxfw->mutex);
--	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->rx_stream,
--					    runtime->rate, runtime->channels);
-+	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->rx_stream,
-+					   runtime->rate, runtime->channels);
- 	mutex_unlock(&oxfw->mutex);
- 	if (err < 0)
- 		goto end;
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		oxfw->playback_substreams--;
++		--oxfw->substreams_count;
+ 
+ 	snd_oxfw_stream_stop_duplex(oxfw);
+ 
 diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index 561ceb09d927..52cf815c27f7 100644
+index 52cf815c27f7..ebfe0777773b 100644
 --- a/sound/firewire/oxfw/oxfw-stream.c
 +++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -194,8 +194,7 @@ static int check_connection_used_by_others(struct snd_oxfw *oxfw,
- 	return err;
- }
- 
--int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
--				 struct amdtp_stream *stream)
-+static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
- {
- 	struct cmp_connection *conn;
- 	enum cmp_direction c_dir;
-@@ -214,13 +213,12 @@ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
- 
- 	err = cmp_connection_init(conn, oxfw->unit, c_dir, 0);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
- 	err = amdtp_am824_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
- 	if (err < 0) {
--		amdtp_stream_destroy(stream);
- 		cmp_connection_destroy(conn);
--		goto end;
-+		return err;
- 	}
- 
- 	/*
-@@ -234,13 +232,13 @@ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
- 		if (oxfw->wrong_dbs)
- 			oxfw->tx_stream.flags |= CIP_WRONG_DBS;
- 	}
--end:
--	return err;
-+
-+	return 0;
- }
- 
--int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
--				  struct amdtp_stream *stream,
--				  unsigned int rate, unsigned int pcm_channels)
-+int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
-+				 struct amdtp_stream *stream,
-+				 unsigned int rate, unsigned int pcm_channels)
- {
- 	struct snd_oxfw_stream_formation formation;
+@@ -244,7 +244,7 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
  	enum avc_general_plug_dir dir;
-@@ -323,8 +321,7 @@ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
- 	return err;
- }
+ 	int err = 0;
  
--void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
--				  struct amdtp_stream *stream)
-+void snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw)
+-	if (oxfw->capture_substreams == 0 && oxfw->playback_substreams == 0)
++	if (oxfw->substreams_count == 0)
+ 		return -EIO;
+ 
+ 	// Considering JACK/FFADO streaming:
+@@ -323,7 +323,7 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
+ 
+ void snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw)
  {
- 	if (oxfw->capture_substreams == 0 && oxfw->playback_substreams == 0) {
+-	if (oxfw->capture_substreams == 0 && oxfw->playback_substreams == 0) {
++	if (oxfw->substreams_count == 0) {
  		amdtp_stream_stop(&oxfw->rx_stream);
-@@ -337,12 +334,7 @@ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
- 	}
- }
+ 		cmp_connection_break(&oxfw->in_conn);
  
--/*
-- * This function should be called before starting the stream or after stopping
-- * the streams.
-- */
--void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
--				     struct amdtp_stream *stream)
-+static void destroy_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
- {
- 	struct cmp_connection *conn;
- 
-@@ -355,8 +347,36 @@ void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
- 	cmp_connection_destroy(conn);
- }
- 
--void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw,
--				    struct amdtp_stream *stream)
-+int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	err = init_stream(oxfw, &oxfw->rx_stream);
-+	if (err < 0)
-+		return err;
-+
-+	if (oxfw->has_output) {
-+		err = init_stream(oxfw, &oxfw->tx_stream);
-+		if (err < 0) {
-+			destroy_stream(oxfw, &oxfw->rx_stream);
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+// This function should be called before starting the stream or after stopping
-+// the streams.
-+void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw)
-+{
-+	destroy_stream(oxfw, &oxfw->rx_stream);
-+
-+	if (oxfw->has_output)
-+		destroy_stream(oxfw, &oxfw->tx_stream);
-+}
-+
-+void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw)
- {
- 	amdtp_stream_stop(&oxfw->rx_stream);
- 	cmp_connection_break(&oxfw->in_conn);
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 3d27f3378d5d..2de26a9987f8 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -118,9 +118,7 @@ static void oxfw_card_free(struct snd_card *card)
- {
- 	struct snd_oxfw *oxfw = card->private_data;
- 
--	snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
--	if (oxfw->has_output)
--		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
-+	snd_oxfw_stream_destroy_duplex(oxfw);
- }
- 
- static int detect_quirks(struct snd_oxfw *oxfw)
-@@ -211,14 +209,9 @@ static void do_registration(struct work_struct *work)
- 	if (err < 0)
- 		goto error;
- 
--	err = snd_oxfw_stream_init_simplex(oxfw, &oxfw->rx_stream);
-+	err = snd_oxfw_stream_init_duplex(oxfw);
- 	if (err < 0)
- 		goto error;
--	if (oxfw->has_output) {
--		err = snd_oxfw_stream_init_simplex(oxfw, &oxfw->tx_stream);
--		if (err < 0)
--			goto error;
--	}
- 
- 	err = snd_oxfw_create_pcm(oxfw);
- 	if (err < 0)
-@@ -285,11 +278,7 @@ static void oxfw_bus_reset(struct fw_unit *unit)
- 
- 	if (oxfw->registered) {
- 		mutex_lock(&oxfw->mutex);
--
--		snd_oxfw_stream_update_simplex(oxfw, &oxfw->rx_stream);
--		if (oxfw->has_output)
--			snd_oxfw_stream_update_simplex(oxfw, &oxfw->tx_stream);
--
-+		snd_oxfw_stream_update_duplex(oxfw);
- 		mutex_unlock(&oxfw->mutex);
- 
- 		if (oxfw->entry->vendor_id == OUI_STANTON)
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index d54d4a9ac4a1..911a452f94db 100644
+index 911a452f94db..e0c825288a24 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -99,17 +99,13 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
- 				enum avc_general_plug_dir dir,
- 				unsigned short pid);
+@@ -52,8 +52,7 @@ struct snd_oxfw {
+ 	struct cmp_connection in_conn;
+ 	struct amdtp_stream tx_stream;
+ 	struct amdtp_stream rx_stream;
+-	unsigned int capture_substreams;
+-	unsigned int playback_substreams;
++	unsigned int substreams_count;
  
--int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
--				 struct amdtp_stream *stream);
--int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
-+int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw);
-+int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
- 				  struct amdtp_stream *stream,
- 				  unsigned int rate, unsigned int pcm_channels);
--void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
--				  struct amdtp_stream *stream);
--void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
--				     struct amdtp_stream *stream);
--void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw,
--				    struct amdtp_stream *stream);
-+void snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw);
-+void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw);
-+void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw);
- 
- struct snd_oxfw_stream_formation {
- 	unsigned int rate;
+ 	unsigned int midi_input_ports;
+ 	unsigned int midi_output_ports;
 -- 
 2.20.1
