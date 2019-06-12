@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/19] ALSA: fireworks: don't set XRUN in stop
-	streaming
-Date: Wed, 12 Jun 2019 17:44:13 +0900
-Message-ID: <20190612084422.5344-11-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/19] ALSA: oxfw: code refactoring for stop
+	condition of packet streaming
+Date: Wed, 12 Jun 2019 17:44:14 +0900
+Message-ID: <20190612084422.5344-12-o-takashi@sakamocchi.jp>
 References: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12936F8973B
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:44 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7518F89731
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:45 +0200 (CEST)
 In-Reply-To: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,25 +28,38 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When stopping packet streaming, no need to stop PCM substream with XRUN
-state. This commit suppresses it.
+This commit unifies stop condition due to queueing error and unmatched
+state of the target device.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks_stream.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/firewire/oxfw/oxfw-stream.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 1abc15760513..61342c49dc38 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -43,7 +43,6 @@ init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
- static void
- stop_stream(struct snd_efw *efw, struct amdtp_stream *stream)
- {
--	amdtp_stream_pcm_abort(stream);
- 	amdtp_stream_stop(stream);
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index f230a9e44c3c..34ff673e6ff8 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -288,10 +288,6 @@ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
+ 	if (err < 0)
+ 		goto end;
  
- 	if (stream == &efw->tx_stream)
+-	/* packet queueing error */
+-	if (amdtp_streaming_error(stream))
+-		stop_stream(oxfw, stream);
+-
+ 	err = snd_oxfw_stream_get_current_formation(oxfw, dir, &formation);
+ 	if (err < 0)
+ 		goto end;
+@@ -300,7 +296,8 @@ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
+ 	if (pcm_channels == 0)
+ 		pcm_channels = formation.pcm;
+ 
+-	if ((formation.rate != rate) || (formation.pcm != pcm_channels)) {
++	if (formation.rate != rate || formation.pcm != pcm_channels ||
++	    amdtp_streaming_error(stream)) {
+ 		if (opposite != NULL) {
+ 			err = check_connection_used_by_others(oxfw, opposite);
+ 			if (err < 0)
 -- 
 2.20.1
