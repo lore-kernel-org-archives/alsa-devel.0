@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/19] ALSA: bebob: code refactoring to
-	initialize/destroy stream data
-Date: Wed, 12 Jun 2019 17:44:07 +0900
-Message-ID: <20190612084422.5344-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/19] ALSA: fireworks: unify substream counter
+Date: Wed, 12 Jun 2019 17:44:08 +0900
+Message-ID: <20190612084422.5344-6-o-takashi@sakamocchi.jp>
 References: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +11,8 @@ Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CA8EF806F5
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:35 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A050F896CE
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:36 +0200 (CEST)
 In-Reply-To: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,178 +27,184 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit changes helper functions to initialize/destroy stream
-data so that it has an argument for direction.
+This commit is a part of preparation to perform allocation/release
+of isochronous resources in pcm.hw_params/hw_free callbacks.
+
+It's inconvenient to handle two isochronous context separately
+each other. This commit unifies the counters to handle the two
+at the same time.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob_stream.c | 121 ++++++++++++++--------------
- 1 file changed, 61 insertions(+), 60 deletions(-)
+ sound/firewire/fireworks/fireworks.h        |  3 +--
+ sound/firewire/fireworks/fireworks_midi.c   |  8 +++---
+ sound/firewire/fireworks/fireworks_pcm.c    |  8 +++---
+ sound/firewire/fireworks/fireworks_stream.c | 27 ++++++++-------------
+ 4 files changed, 19 insertions(+), 27 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index c3cc31df49e0..6aab3dc99bef 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -376,24 +376,6 @@ map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
- 	return err;
- }
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 9b19c7f05d57..42a73038ba4d 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -89,8 +89,7 @@ struct snd_efw {
+ 	struct amdtp_stream rx_stream;
+ 	struct cmp_connection out_conn;
+ 	struct cmp_connection in_conn;
+-	unsigned int capture_substreams;
+-	unsigned int playback_substreams;
++	unsigned int substreams_counter;
  
--static int
--init_both_connections(struct snd_bebob *bebob)
--{
--	int err;
--
--	err = cmp_connection_init(&bebob->in_conn,
--				  bebob->unit, CMP_INPUT, 0);
--	if (err < 0)
--		goto end;
--
--	err = cmp_connection_init(&bebob->out_conn,
--				  bebob->unit, CMP_OUTPUT, 0);
--	if (err < 0)
--		cmp_connection_destroy(&bebob->in_conn);
--end:
--	return err;
--}
--
- static int
- check_connection_used_by_others(struct snd_bebob *bebob, struct amdtp_stream *s)
- {
-@@ -448,13 +430,6 @@ break_both_connections(struct snd_bebob *bebob)
- 		msleep(200);
- }
+ 	/* hardware metering parameters */
+ 	unsigned int phys_out;
+diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
+index f5da2cd4ce42..7e78cdfe699e 100644
+--- a/sound/firewire/fireworks/fireworks_midi.c
++++ b/sound/firewire/fireworks/fireworks_midi.c
+@@ -18,7 +18,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 		goto end;
  
--static void
--destroy_both_connections(struct snd_bebob *bebob)
--{
--	cmp_connection_destroy(&bebob->in_conn);
--	cmp_connection_destroy(&bebob->out_conn);
--}
--
- static int
- start_stream(struct snd_bebob *bebob, struct amdtp_stream *stream)
- {
-@@ -481,49 +456,77 @@ start_stream(struct snd_bebob *bebob, struct amdtp_stream *stream)
- 	return err;
- }
- 
--int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
-+static int init_stream(struct snd_bebob *bebob, struct amdtp_stream *stream)
- {
-+	enum amdtp_stream_direction dir_stream;
-+	struct cmp_connection *conn;
-+	enum cmp_direction dir_conn;
- 	int err;
- 
--	err = init_both_connections(bebob);
-+	if (stream == &bebob->tx_stream) {
-+		dir_stream = AMDTP_IN_STREAM;
-+		conn = &bebob->out_conn;
-+		dir_conn = CMP_OUTPUT;
-+	} else {
-+		dir_stream = AMDTP_OUT_STREAM;
-+		conn = &bebob->in_conn;
-+		dir_conn = CMP_INPUT;
-+	}
-+
-+	err = cmp_connection_init(conn, bebob->unit, dir_conn, 0);
+ 	mutex_lock(&efw->mutex);
+-	efw->capture_substreams++;
++	++efw->substreams_counter;
+ 	err = snd_efw_stream_start_duplex(efw, 0);
+ 	mutex_unlock(&efw->mutex);
  	if (err < 0)
--		goto end;
-+		return err;
+@@ -38,7 +38,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 		goto end;
  
--	err = amdtp_am824_init(&bebob->tx_stream, bebob->unit,
--			       AMDTP_IN_STREAM, CIP_BLOCKING);
-+	err = amdtp_am824_init(stream, bebob->unit, dir_stream, CIP_BLOCKING);
- 	if (err < 0) {
--		amdtp_stream_destroy(&bebob->tx_stream);
--		destroy_both_connections(bebob);
--		goto end;
-+		cmp_connection_destroy(conn);
-+		return err;
+ 	mutex_lock(&efw->mutex);
+-	efw->playback_substreams++;
++	++efw->substreams_counter;
+ 	err = snd_efw_stream_start_duplex(efw, 0);
+ 	mutex_unlock(&efw->mutex);
+ 	if (err < 0)
+@@ -52,7 +52,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ 	struct snd_efw *efw = substream->rmidi->private_data;
+ 
+ 	mutex_lock(&efw->mutex);
+-	efw->capture_substreams--;
++	--efw->substreams_counter;
+ 	snd_efw_stream_stop_duplex(efw);
+ 	mutex_unlock(&efw->mutex);
+ 
+@@ -65,7 +65,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ 	struct snd_efw *efw = substream->rmidi->private_data;
+ 
+ 	mutex_lock(&efw->mutex);
+-	efw->playback_substreams--;
++	--efw->substreams_counter;
+ 	snd_efw_stream_stop_duplex(efw);
+ 	mutex_unlock(&efw->mutex);
+ 
+diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
+index aed566d82726..a66f6a381dac 100644
+--- a/sound/firewire/fireworks/fireworks_pcm.c
++++ b/sound/firewire/fireworks/fireworks_pcm.c
+@@ -232,7 +232,7 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&efw->mutex);
+-		efw->capture_substreams++;
++		++efw->substreams_counter;
+ 		mutex_unlock(&efw->mutex);
  	}
  
--	/*
--	 * BeBoB v3 transfers packets with these qurks:
--	 *  - In the beginning of streaming, the value of dbc is incremented
--	 *    even if no data blocks are transferred.
--	 *  - The value of dbc is reset suddenly.
--	 */
--	if (bebob->version > 2)
--		bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC |
--					  CIP_SKIP_DBC_ZERO_CHECK;
-+	if (stream == &bebob->tx_stream) {
-+		// BeBoB v3 transfers packets with these qurks:
-+		//  - In the beginning of streaming, the value of dbc is
-+		//    incremented even if no data blocks are transferred.
-+		//  - The value of dbc is reset suddenly.
-+		if (bebob->version > 2)
-+			bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC |
-+						  CIP_SKIP_DBC_ZERO_CHECK;
-+
-+		// At high sampling rate, M-Audio special firmware transmits
-+		// empty packet with the value of dbc incremented by 8 but the
-+		// others are valid to IEC 61883-1.
-+		if (bebob->maudio_special_quirk)
-+			bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC;
-+	}
+@@ -251,7 +251,7 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
  
--	/*
--	 * At high sampling rate, M-Audio special firmware transmits empty
--	 * packet with the value of dbc incremented by 8 but the others are
--	 * valid to IEC 61883-1.
--	 */
--	if (bebob->maudio_special_quirk)
--		bebob->tx_stream.flags |= CIP_EMPTY_HAS_WRONG_DBC;
-+	return 0;
-+}
-+
-+static void destroy_stream(struct snd_bebob *bebob, struct amdtp_stream *stream)
-+{
-+	amdtp_stream_destroy(stream);
-+
-+	if (stream == &bebob->tx_stream)
-+		cmp_connection_destroy(&bebob->out_conn);
-+	else
-+		cmp_connection_destroy(&bebob->in_conn);
-+}
- 
--	err = amdtp_am824_init(&bebob->rx_stream, bebob->unit,
--			       AMDTP_OUT_STREAM, CIP_BLOCKING);
-+int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
-+{
-+	int err;
-+
-+	err = init_stream(bebob, &bebob->tx_stream);
-+	if (err < 0)
-+		return err;
-+
-+	err = init_stream(bebob, &bebob->rx_stream);
- 	if (err < 0) {
--		amdtp_stream_destroy(&bebob->tx_stream);
--		amdtp_stream_destroy(&bebob->rx_stream);
--		destroy_both_connections(bebob);
-+		destroy_stream(bebob, &bebob->tx_stream);
-+		return err;
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&efw->mutex);
+-		efw->playback_substreams++;
++		++efw->substreams_counter;
+ 		mutex_unlock(&efw->mutex);
  	}
--end:
--	return err;
-+
-+	return 0;
- }
  
- static int keep_resources(struct snd_bebob *bebob, struct amdtp_stream *stream,
-@@ -693,10 +696,8 @@ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
-  */
- void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob)
- {
--	amdtp_stream_destroy(&bebob->rx_stream);
--	amdtp_stream_destroy(&bebob->tx_stream);
+@@ -264,7 +264,7 @@ static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&efw->mutex);
+-		efw->capture_substreams--;
++		--efw->substreams_counter;
+ 		mutex_unlock(&efw->mutex);
+ 	}
+ 
+@@ -278,7 +278,7 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&efw->mutex);
+-		efw->playback_substreams--;
++		--efw->substreams_counter;
+ 		mutex_unlock(&efw->mutex);
+ 	}
+ 
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index 74e122e6e68a..2df39befcde0 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -194,9 +194,9 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
+ 	unsigned int curr_rate;
+ 	int err = 0;
+ 
+-	/* Need no substreams */
+-	if (efw->playback_substreams == 0 && efw->capture_substreams  == 0)
+-		goto end;
++	// Need no substreams.
++	if (efw->substreams_counter == 0)
++		return -EIO;
+ 
+ 	/*
+ 	 * Considering JACK/FFADO streaming:
+@@ -206,19 +206,15 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
+ 	if (err < 0)
+ 		goto end;
+ 
+-	/* packet queueing error */
+-	if (amdtp_streaming_error(&efw->tx_stream))
+-		stop_stream(efw, &efw->tx_stream);
+-	if (amdtp_streaming_error(&efw->rx_stream))
+-		stop_stream(efw, &efw->rx_stream);
 -
--	destroy_both_connections(bebob);
-+	destroy_stream(bebob, &bebob->tx_stream);
-+	destroy_stream(bebob, &bebob->rx_stream);
+ 	/* stop streams if rate is different */
+ 	err = snd_efw_command_get_sampling_rate(efw, &curr_rate);
+ 	if (err < 0)
+ 		goto end;
+ 	if (rate == 0)
+ 		rate = curr_rate;
+-	if (rate != curr_rate) {
++	if (rate != curr_rate ||
++	    amdtp_streaming_error(&efw->tx_stream) ||
++	    amdtp_streaming_error(&efw->rx_stream)) {
+ 		stop_stream(efw, &efw->tx_stream);
+ 		stop_stream(efw, &efw->rx_stream);
+ 	}
+@@ -237,13 +233,12 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
+ 		}
+ 	}
+ 
+-	/* start slave if needed */
+-	if (efw->capture_substreams > 0 &&
+-	    !amdtp_stream_running(&efw->tx_stream)) {
++	if (!amdtp_stream_running(&efw->tx_stream)) {
+ 		err = start_stream(efw, &efw->tx_stream, rate);
+ 		if (err < 0) {
+ 			dev_err(&efw->unit->device,
+ 				"fail to start AMDTP slave stream:%d\n", err);
++			stop_stream(efw, &efw->tx_stream);
+ 			stop_stream(efw, &efw->rx_stream);
+ 		}
+ 	}
+@@ -253,11 +248,9 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
+ 
+ void snd_efw_stream_stop_duplex(struct snd_efw *efw)
+ {
+-	if (efw->capture_substreams == 0) {
++	if (efw->substreams_counter == 0) {
+ 		stop_stream(efw, &efw->tx_stream);
+-
+-		if (efw->playback_substreams == 0)
+-			stop_stream(efw, &efw->rx_stream);
++		stop_stream(efw, &efw->rx_stream);
+ 	}
  }
  
- /*
 -- 
 2.20.1
