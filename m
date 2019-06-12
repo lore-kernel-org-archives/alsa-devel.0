@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/4] ASoC: SOF: topology: pass volume min/max
-	linear value to FW
-Date: Wed, 12 Jun 2019 12:01:46 -0500
-Message-ID: <20190612170148.15327-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: SOF: Add DMIC token for unmute gain
+	ramp time
+Date: Wed, 12 Jun 2019 12:01:47 -0500
+Message-ID: <20190612170148.15327-4-pierre-louis.bossart@linux.intel.com>
 References: <20190612170148.15327-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +11,7 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E97D2F806F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24E6BF896E0
  for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 19:02:07 +0200 (CEST)
 In-Reply-To: <20190612170148.15327-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,54 +24,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
+From: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 
-The driver currently passes the volume ramp type and length
-topology tokens to firmware, but the min and max volume are
-not set. This patch provides a correction to convert the
-information from the topology file and pass the linear volume
-min/max value to the firmware to improve transitions.
+The settling time of DMIC DC level is both platform and used
+microphone model specific. The unmute gain ramp is used to conceal
+most of the large DC level seen in beginning of capture. This patch
+adds into the DMIC DAI IPC struct a new field called unmute_ramp_time
+and a new token SOF_TKN_INTEL_DMIC_UNMUTE_RAMP_TIME. The value is the
+ramp length in milliseconds (ms).
 
-Signed-off-by: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
+The ABI minor version is incremented for this backwards compatible
+change.
+
+Signed-off-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/sound/sof/dai-intel.h   | 3 ++-
+ include/uapi/sound/sof/abi.h    | 2 +-
+ include/uapi/sound/sof/tokens.h | 1 +
+ sound/soc/sof/topology.c        | 4 ++++
+ 4 files changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
+index 4bd83f7adddf..4bb8ee138ba7 100644
+--- a/include/sound/sof/dai-intel.h
++++ b/include/sound/sof/dai-intel.h
+@@ -167,9 +167,10 @@ struct sof_ipc_dai_dmic_params {
+ 
+ 	uint32_t wake_up_time;      /**< Time from clock start to data (us) */
+ 	uint32_t min_clock_on_time; /**< Min. time that clk is kept on (us) */
++	uint32_t unmute_ramp_time;  /**< Length of logarithmic gain ramp (ms) */
+ 
+ 	/* reserved for future use */
+-	uint32_t reserved[6];
++	uint32_t reserved[5];
+ 
+ 	/**< variable number of pdm controller config */
+ 	struct sof_ipc_dai_dmic_pdm_ctrl pdm[0];
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index 92eee681bc62..4a9c24434f42 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -26,7 +26,7 @@
+ 
+ /* SOF ABI version major, minor and patch numbers */
+ #define SOF_ABI_MAJOR 3
+-#define SOF_ABI_MINOR 7
++#define SOF_ABI_MINOR 8
+ #define SOF_ABI_PATCH 0
+ 
+ /* SOF ABI version number. Format within 32bit word is MMmmmppp */
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index 53ea94bf1c08..dc1b27daaac6 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -85,6 +85,7 @@
+ #define SOF_TKN_INTEL_DMIC_NUM_PDM_ACTIVE	605
+ #define SOF_TKN_INTEL_DMIC_SAMPLE_RATE		608
+ #define SOF_TKN_INTEL_DMIC_FIFO_WORD_LENGTH	609
++#define SOF_TKN_INTEL_DMIC_UNMUTE_RAMP_TIME_MS  610
+ 
+ /* DMIC PDM */
+ #define SOF_TKN_INTEL_DMIC_PDM_CTRL_ID		700
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 1c661dec8dd4..bbad8053b1bc 100644
+index bbad8053b1bc..8e00f829bfdb 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1552,6 +1552,9 @@ static int sof_widget_load_pga(struct snd_soc_component *scomp, int index,
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &tw->priv;
- 	struct sof_ipc_comp_volume *volume;
-+	struct snd_sof_control *scontrol;
-+	int min_step;
-+	int max_step;
- 	int ret;
- 
- 	volume = kzalloc(sizeof(*volume), GFP_KERNEL);
-@@ -1594,6 +1597,17 @@ static int sof_widget_load_pga(struct snd_soc_component *scomp, int index,
- 
- 	swidget->private = volume;
- 
-+	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
-+		if (scontrol->comp_id == swidget->comp_id) {
-+			min_step = scontrol->min_volume_step;
-+			max_step = scontrol->max_volume_step;
-+			volume->min_value = scontrol->volume_table[min_step];
-+			volume->max_value = scontrol->volume_table[max_step];
-+			volume->channels = scontrol->num_channels;
-+			break;
-+		}
-+	}
+@@ -779,6 +779,10 @@ static const struct sof_topology_token dmic_tokens[] = {
+ 	{SOF_TKN_INTEL_DMIC_FIFO_WORD_LENGTH,
+ 		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
+ 		offsetof(struct sof_ipc_dai_dmic_params, fifo_bits), 0},
++	{SOF_TKN_INTEL_DMIC_UNMUTE_RAMP_TIME_MS,
++		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_dai_dmic_params, unmute_ramp_time), 0},
 +
- 	ret = sof_ipc_tx_message(sdev->ipc, volume->comp.hdr.cmd, volume,
- 				 sizeof(*volume), r, sizeof(*r));
- 	if (ret >= 0)
+ };
+ 
+ /*
 -- 
 2.20.1
