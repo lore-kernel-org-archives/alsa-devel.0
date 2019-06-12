@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/19] ALSA: oxfw: configure packet format in
-	pcm.hw_params callback
-Date: Wed, 12 Jun 2019 17:44:21 +0900
-Message-ID: <20190612084422.5344-19-o-takashi@sakamocchi.jp>
+Subject: [PATCH 19/19] ALSA: oxfw: configure stream parameter
+	in pcm.hw_params callback
+Date: Wed, 12 Jun 2019 17:44:22 +0900
+Message-ID: <20190612084422.5344-20-o-takashi@sakamocchi.jp>
 References: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 826AAF89754
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:56 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E7CEF89761
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:58 +0200 (CEST)
 In-Reply-To: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,218 +31,141 @@ List-Id: alsa-devel@alsa-project.org
 This commit is a part of preparation to perform allocation/release
 of isochronous resources in pcm.hw_params/hw_free callbacks.
 
-At present, several operations are done in pcm.prepare callback. To
-reduce load of the callback, This commit splits out an operation to
-set packet format in pcm.hw_params callback.
+This commit splits out an operation to configure stream parameters into
+pcm.hw_params callback. In pcm.prepare callback, establishing
+connections and start isochronous contexts.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-midi.c   | 14 +++++++---
- sound/firewire/oxfw/oxfw-pcm.c    | 26 +++++++++++-------
- sound/firewire/oxfw/oxfw-stream.c | 44 ++++++++++++++++++++++---------
- sound/firewire/oxfw/oxfw.h        |  7 ++---
- 4 files changed, 62 insertions(+), 29 deletions(-)
+ sound/firewire/oxfw/oxfw-stream.c | 97 ++++++++++++++++++-------------
+ 1 file changed, 57 insertions(+), 40 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw-midi.c b/sound/firewire/oxfw/oxfw-midi.c
-index 092493497f1a..9ba62778add2 100644
---- a/sound/firewire/oxfw/oxfw-midi.c
-+++ b/sound/firewire/oxfw/oxfw-midi.c
-@@ -19,8 +19,11 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_lock(&oxfw->mutex);
- 
--	++oxfw->substreams_count;
--	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->tx_stream, 0, 0);
-+	err = snd_oxfw_stream_reserve_duplex(oxfw, &oxfw->tx_stream, 0, 0);
-+	if (err >= 0) {
-+		++oxfw->substreams_count;
-+		err = snd_oxfw_stream_start_duplex(oxfw);
-+	}
- 
- 	mutex_unlock(&oxfw->mutex);
- 
-@@ -41,8 +44,11 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_lock(&oxfw->mutex);
- 
--	++oxfw->substreams_count;
--	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->rx_stream, 0, 0);
-+	err = snd_oxfw_stream_reserve_duplex(oxfw, &oxfw->rx_stream, 0, 0);
-+	if (err >= 0) {
-+		++oxfw->substreams_count;
-+		err = snd_oxfw_stream_start_duplex(oxfw);
-+	}
- 
- 	mutex_unlock(&oxfw->mutex);
- 
-diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index 79c8e514bed9..b08b850d53ea 100644
---- a/sound/firewire/oxfw/oxfw-pcm.c
-+++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -219,12 +219,18 @@ static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
- 		return err;
- 
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		unsigned int rate = params_rate(hw_params);
-+		unsigned int channels = params_channels(hw_params);
-+
- 		mutex_lock(&oxfw->mutex);
--		++oxfw->substreams_count;
-+		err = snd_oxfw_stream_reserve_duplex(oxfw, &oxfw->tx_stream,
-+						     rate, channels);
-+		if (err >= 0)
-+			++oxfw->substreams_count;
- 		mutex_unlock(&oxfw->mutex);
- 	}
- 
--	return 0;
-+	return err;
- }
- static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *hw_params)
-@@ -238,8 +244,14 @@ static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
- 		return err;
- 
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		unsigned int rate = params_rate(hw_params);
-+		unsigned int channels = params_channels(hw_params);
-+
- 		mutex_lock(&oxfw->mutex);
--		++oxfw->substreams_count;
-+		err = snd_oxfw_stream_reserve_duplex(oxfw, &oxfw->tx_stream,
-+						     rate, channels);
-+		if (err >= 0)
-+			++oxfw->substreams_count;
- 		mutex_unlock(&oxfw->mutex);
- 	}
- 
-@@ -280,12 +292,10 @@ static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
- static int pcm_capture_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 
- 	mutex_lock(&oxfw->mutex);
--	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->tx_stream,
--					   runtime->rate, runtime->channels);
-+	err = snd_oxfw_stream_start_duplex(oxfw);
- 	mutex_unlock(&oxfw->mutex);
- 	if (err < 0)
- 		goto end;
-@@ -297,12 +307,10 @@ static int pcm_capture_prepare(struct snd_pcm_substream *substream)
- static int pcm_playback_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 
- 	mutex_lock(&oxfw->mutex);
--	err = snd_oxfw_stream_start_duplex(oxfw, &oxfw->rx_stream,
--					   runtime->rate, runtime->channels);
-+	err = snd_oxfw_stream_start_duplex(oxfw);
- 	mutex_unlock(&oxfw->mutex);
- 	if (err < 0)
- 		goto end;
 diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index ebfe0777773b..373154d8ee0e 100644
+index 373154d8ee0e..837733f10736 100644
 --- a/sound/firewire/oxfw/oxfw-stream.c
 +++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -236,16 +236,13 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+@@ -103,51 +103,13 @@ static int set_stream_format(struct snd_oxfw *oxfw, struct amdtp_stream *s,
+ 
+ static int start_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+ {
+-	u8 **formats;
+-	enum avc_general_plug_dir dir;
+ 	struct cmp_connection *conn;
+-	struct snd_oxfw_stream_formation formation;
+-	int i;
+ 	int err;
+ 
+-	if (stream == &oxfw->rx_stream) {
+-		dir = AVC_GENERAL_PLUG_DIR_IN;
+-		formats = oxfw->rx_stream_formats;
++	if (stream == &oxfw->rx_stream)
+ 		conn = &oxfw->in_conn;
+-	} else {
+-		dir = AVC_GENERAL_PLUG_DIR_OUT;
+-		formats = oxfw->tx_stream_formats;
++	else
+ 		conn = &oxfw->out_conn;
+-	}
+-
+-	err = snd_oxfw_stream_get_current_formation(oxfw, dir, &formation);
+-	if (err < 0)
+-		return err;
+-
+-	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
+-		struct snd_oxfw_stream_formation fmt;
+-
+-		if (formats[i] == NULL)
+-			break;
+-
+-		err = snd_oxfw_stream_parse_format(formats[i], &fmt);
+-		if (err < 0)
+-			return err;
+-		if (fmt.rate == formation.rate && fmt.pcm == formation.pcm &&
+-		    fmt.midi == formation.midi)
+-			break;
+-	}
+-	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES)
+-		return -EINVAL;
+-
+-	// The stream should have one pcm channels at least.
+-	if (formation.pcm == 0)
+-		return -EINVAL;
+-
+-	err = amdtp_am824_set_parameters(stream, formation.rate, formation.pcm,
+-					 formation.midi * 8, false);
+-	if (err < 0)
+-		return err;
+ 
+ 	err = cmp_connection_establish(conn,
+ 				       amdtp_stream_get_max_payload(stream));
+@@ -236,6 +198,51 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
  	return 0;
  }
  
--int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
--				 struct amdtp_stream *stream,
--				 unsigned int rate, unsigned int pcm_channels)
-+int snd_oxfw_stream_reserve_duplex(struct snd_oxfw *oxfw,
-+				   struct amdtp_stream *stream,
-+				   unsigned int rate, unsigned int pcm_channels)
- {
- 	struct snd_oxfw_stream_formation formation;
- 	enum avc_general_plug_dir dir;
--	int err = 0;
--
--	if (oxfw->substreams_count == 0)
--		return -EIO;
++static int keep_resources(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
++{
++	enum avc_general_plug_dir dir;
++	u8 **formats;
++	struct snd_oxfw_stream_formation formation;
++	int i;
 +	int err;
- 
- 	// Considering JACK/FFADO streaming:
- 	// TODO: This can be removed hwdep functionality becomes popular.
-@@ -266,14 +263,11 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
- 	err = snd_oxfw_stream_get_current_formation(oxfw, dir, &formation);
- 	if (err < 0)
- 		return err;
--	if (rate == 0)
-+	if (rate == 0) {
- 		rate = formation.rate;
--	if (pcm_channels == 0)
- 		pcm_channels = formation.pcm;
--
--	if (formation.rate != rate || formation.pcm != pcm_channels ||
--	    amdtp_streaming_error(&oxfw->rx_stream) ||
--	    amdtp_streaming_error(&oxfw->tx_stream)) {
++
++	if (stream == &oxfw->rx_stream) {
++		dir = AVC_GENERAL_PLUG_DIR_IN;
++		formats = oxfw->rx_stream_formats;
++	} else {
++		dir = AVC_GENERAL_PLUG_DIR_OUT;
++		formats = oxfw->tx_stream_formats;
 +	}
-+	if (formation.rate != rate || formation.pcm != pcm_channels) {
- 		amdtp_stream_stop(&oxfw->rx_stream);
- 		cmp_connection_break(&oxfw->in_conn);
- 
-@@ -281,7 +275,10 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
- 			amdtp_stream_stop(&oxfw->tx_stream);
- 			cmp_connection_break(&oxfw->out_conn);
- 		}
++
++	err = snd_oxfw_stream_get_current_formation(oxfw, dir, &formation);
++	if (err < 0)
++		return err;
++
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		struct snd_oxfw_stream_formation fmt;
++
++		if (formats[i] == NULL)
++			break;
++
++		err = snd_oxfw_stream_parse_format(formats[i], &fmt);
++		if (err < 0)
++			return err;
++
++		if (fmt.rate == formation.rate && fmt.pcm == formation.pcm &&
++		    fmt.midi == formation.midi)
++			break;
 +	}
- 
-+	if (oxfw->substreams_count == 0 ||
-+	    formation.rate != rate || formation.pcm != pcm_channels) {
- 		err = set_stream_format(oxfw, stream, rate, pcm_channels);
- 		if (err < 0) {
- 			dev_err(&oxfw->unit->device,
-@@ -290,6 +287,27 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
- 		}
- 	}
- 
-+	return 0;
++	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES)
++		return -EINVAL;
++
++	// The stream should have one pcm channels at least.
++	if (formation.pcm == 0)
++		return -EINVAL;
++
++	return amdtp_am824_set_parameters(stream, formation.rate, formation.pcm,
++					 formation.midi * 8, false);
 +}
 +
-+int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
-+{
-+	int err;
+ int snd_oxfw_stream_reserve_duplex(struct snd_oxfw *oxfw,
+ 				   struct amdtp_stream *stream,
+ 				   unsigned int rate, unsigned int pcm_channels)
+@@ -285,6 +292,16 @@ int snd_oxfw_stream_reserve_duplex(struct snd_oxfw *oxfw,
+ 				"fail to set stream format: %d\n", err);
+ 			return err;
+ 		}
 +
-+	if (oxfw->substreams_count == 0)
-+		return -EIO;
-+
-+	if (amdtp_streaming_error(&oxfw->rx_stream) ||
-+	    amdtp_streaming_error(&oxfw->tx_stream)) {
-+		amdtp_stream_stop(&oxfw->rx_stream);
-+		cmp_connection_break(&oxfw->in_conn);
++		err = keep_resources(oxfw, &oxfw->rx_stream);
++		if (err < 0)
++			return err;
 +
 +		if (oxfw->has_output) {
-+			amdtp_stream_stop(&oxfw->tx_stream);
-+			cmp_connection_break(&oxfw->out_conn);
++			err = keep_resources(oxfw, &oxfw->tx_stream);
++			if (err < 0)
++				return err;
 +		}
-+	}
-+
- 	if (!amdtp_stream_running(&oxfw->rx_stream)) {
- 		err = start_stream(oxfw, &oxfw->rx_stream);
- 		if (err < 0) {
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index e0c825288a24..d4d4926c28cf 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -99,9 +99,10 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
- 				unsigned short pid);
+ 	}
  
- int snd_oxfw_stream_init_duplex(struct snd_oxfw *oxfw);
--int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw,
--				  struct amdtp_stream *stream,
--				  unsigned int rate, unsigned int pcm_channels);
-+int snd_oxfw_stream_reserve_duplex(struct snd_oxfw *oxfw,
-+				   struct amdtp_stream *stream,
-+				   unsigned int rate, unsigned int pcm_channels);
-+int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_stop_duplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_destroy_duplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_update_duplex(struct snd_oxfw *oxfw);
+ 	return 0;
 -- 
 2.20.1
