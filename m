@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/15] ASoC: SOF: Intel: hda: make sure DMA is
-	start/stop by read the RUN bit
-Date: Wed, 12 Jun 2019 12:23:46 -0500
-Message-ID: <20190612172347.22338-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 12/15] ASoC: SOF: Intel: hda: use the defined
+	stop chip in suspend
+Date: Wed, 12 Jun 2019 12:23:44 -0500
+Message-ID: <20190612172347.22338-13-pierre-louis.bossart@linux.intel.com>
 References: <20190612172347.22338-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C447F89736
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 19:24:04 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A12E0F896CE
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 19:24:02 +0200 (CEST)
 In-Reply-To: <20190612172347.22338-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,81 +29,37 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
 
-As per the HW recommendation, after setting the RUN bit
-(start as 1, stop as 0), software must read the bit back
-to make sure the bit is set right, before modifying related
-control registers/re-starting the DMA engine.
+Unify suspend code by using SOF common function
+hda_dsp_ctrl_stop_chip() which can handle both HDA
+and non-HDA cases.
 
 Signed-off-by: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-stream.c | 22 ++++++++++++++++++++++
- sound/soc/sof/intel/hda.h        |  6 ++++++
- 2 files changed, 28 insertions(+)
+ sound/soc/sof/intel/hda-dsp.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index 23cff5aca007..13d114993f96 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -217,6 +217,9 @@ int hda_dsp_stream_trigger(struct snd_sof_dev *sdev,
- {
- 	struct hdac_stream *hstream = &stream->hstream;
- 	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
-+	u32 dma_start = SOF_HDA_SD_CTL_DMA_START;
-+	int ret;
-+	u32 run;
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 883134d535b3..f2c5a12db930 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -311,15 +311,8 @@ static int hda_suspend(struct snd_sof_dev *sdev, int state)
+ 	hda_dsp_ctrl_ppcap_enable(sdev, false);
+ 	hda_dsp_ctrl_ppcap_int_enable(sdev, false);
  
- 	/* cmd must be for audio stream */
- 	switch (cmd) {
-@@ -234,6 +237,16 @@ int hda_dsp_stream_trigger(struct snd_sof_dev *sdev,
- 					SOF_HDA_SD_CTL_DMA_START |
- 					SOF_HDA_CL_DMA_SD_INT_MASK);
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	/* disable hda bus irq and i/o */
+-	snd_hdac_bus_stop_chip(bus);
+-#else
+-	/* disable hda bus irq */
+-	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
+-				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
+-				0);
+-#endif
++	/* disable hda bus irq and streams */
++	hda_dsp_ctrl_stop_chip(sdev);
  
-+		ret = snd_sof_dsp_read_poll_timeout(sdev,
-+					HDA_DSP_HDA_BAR,
-+					sd_offset, run,
-+					((run &	dma_start) == dma_start),
-+					HDA_DSP_REG_POLL_INTERVAL_US,
-+					HDA_DSP_STREAM_RUN_TIMEOUT);
-+
-+		if (ret)
-+			return ret;
-+
- 		hstream->running = true;
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-@@ -244,6 +257,15 @@ int hda_dsp_stream_trigger(struct snd_sof_dev *sdev,
- 					SOF_HDA_SD_CTL_DMA_START |
- 					SOF_HDA_CL_DMA_SD_INT_MASK, 0x0);
- 
-+		ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_HDA_BAR,
-+						sd_offset, run,
-+						!(run &	dma_start),
-+						HDA_DSP_REG_POLL_INTERVAL_US,
-+						HDA_DSP_STREAM_RUN_TIMEOUT);
-+
-+		if (ret)
-+			return ret;
-+
- 		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, sd_offset +
- 				  SOF_HDA_ADSP_REG_CL_SD_STS,
- 				  SOF_HDA_CL_DMA_SD_INT_MASK);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 50653859e0a0..73d7cc08afc2 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -159,6 +159,12 @@
- #define HDA_DSP_MBOX_UPLINK_OFFSET		0x81000
- 
- #define HDA_DSP_STREAM_RESET_TIMEOUT		300
-+/*
-+ * Timeout in us, for setting the stream RUN bit, during
-+ * start/stop the stream. The timeout expires if new RUN bit
-+ * value cannot be read back within the specified time.
-+ */
-+#define HDA_DSP_STREAM_RUN_TIMEOUT		300
- #define HDA_DSP_CL_TRIGGER_TIMEOUT		300
- 
- #define HDA_DSP_SPIB_ENABLE			1
+ 	/* disable LP retention mode */
+ 	snd_sof_pci_update_bits(sdev, PCI_PGCTL,
 -- 
 2.20.1
