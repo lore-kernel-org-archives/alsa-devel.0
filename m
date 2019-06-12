@@ -1,131 +1,85 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v1 3/4] ASoC: tda7802: Add enable device attribute
-Date: Wed, 12 Jun 2019 19:14:57 +0200
-Message-ID: <1546f318-2b34-b42c-7aa3-a51429020bca@intel.com>
-References: <20190611174909.12162-1-thomas.preston@codethink.co.uk>
- <20190611174909.12162-4-thomas.preston@codethink.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/15] ASoC: SOF: Intel: HDaudio fixes and
+	improvements
+Date: Wed, 12 Jun 2019 12:23:32 -0500
+Message-ID: <20190612172347.22338-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190611174909.12162-4-thomas.preston@codethink.co.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Thomas Preston <thomas.preston@codethink.co.uk>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, Jerome Brunet <jbrunet@baylibre.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Marco Felsch <m.felsch@pengutronix.de>, Paul Cercueil <paul@crapouillou.net>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vkoul@kernel.org>, Annaliese McDermond <nh6z@nh6z.net>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7802BF806F5
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 19:23:53 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-06-11 19:49, Thomas Preston wrote:
-> Add a device attribute to control the enable regulator. Write 1 to
-> enable, 0 to disable (ref-count minus one), or -1 to force disable the
-> physical pin.
-> 
-> To disable a set of amplifiers wired to the same enable gpio, each
-> device must be disabled. For example:
-> 
-> 	echo 0 > /sys/devices/.../device:00/enable
-> 	echo 0 > /sys/devices/.../device:01/enable
-> 
-> In an emergency, we can force disable from any device:
-> 
-> 	echo -1 > /sys/devices/.../device:00/enable
-> 
-> Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
-> Cc: Patrick Glaser <pglaser@tesla.com>
-> Cc: Rob Duncan <rduncan@tesla.com>
-> Cc: Nate Case <ncase@tesla.com>
-> ---
->   sound/soc/codecs/tda7802.c | 65 +++++++++++++++++++++++++++++++++++++++++++++-
->   1 file changed, 64 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/tda7802.c b/sound/soc/codecs/tda7802.c
-> index 38ca52de85f0..62aae011d9f1 100644
-> --- a/sound/soc/codecs/tda7802.c
-> +++ b/sound/soc/codecs/tda7802.c
-> @@ -458,6 +458,42 @@ static struct snd_soc_dai_driver tda7802_dai_driver = {
->   	.ops = &tda7802_dai_ops,
->   };
->   
-> +static ssize_t enable_show(struct device *dev, struct device_attribute *attr,
-> +		char *buf)
-> +{
-> +	struct tda7802_priv *tda7802 = dev_get_drvdata(dev);
-> +	int enabled = regulator_is_enabled(tda7802->enable_reg) ? 1 : 0;
-> +
-> +	return scnprintf(buf, PAGE_SIZE, "%d\n", enabled);
-> +}
-> +
-> +static ssize_t enable_store(struct device *dev, struct device_attribute *attr,
-> +		const char *buf, size_t count)
-> +{
-> +	struct tda7802_priv *tda7802 = dev_get_drvdata(dev);
-> +	int err;
-> +
-> +	if (sysfs_streq(buf, "1")) {
-> +		err = regulator_enable(tda7802->enable_reg);
-> +		if (err < 0)
-> +			dev_err(dev, "Could not enable (sysfs)\n");
-> +	} else if (sysfs_streq(buf, "0")) {
-> +		err = regulator_disable(tda7802->enable_reg);
-> +		if (err < 0)
-> +			dev_err(dev, "Could not disable (sysfs)\n");
-> +	} else if (sysfs_streq(buf, "-1")) {
-> +		err = regulator_force_disable(tda7802->enable_reg);
-> +		if (err < 0)
-> +			dev_err(dev, "Could not force disable (sysfs)\n");
-> +	} else {
-> +		return -EINVAL;
-> +	}
-> +
-> +	return count;
-> +}
-> +
-> +static DEVICE_ATTR_RW(enable);
-> +
->   /* read device tree or ACPI properties from device */
->   static int tda7802_read_properties(struct tda7802_priv *tda7802)
->   {
-> @@ -493,7 +529,34 @@ static int tda7802_read_properties(struct tda7802_priv *tda7802)
->   	return err;
->   }
->   
-> -static const struct snd_soc_component_driver tda7802_component_driver;
-> +static int tda7802_probe(struct snd_soc_component *component)
-> +{
-> +	struct tda7802_priv *tda7802 = snd_soc_component_get_drvdata(component);
-> +	struct device *dev = &tda7802->i2c->dev;
-> +	int err;
-> +
-> +	dev_dbg(dev, "%s\n", __func__);
+This is unfortunately a rather large patchset tied to hardware
+enablement. While productizing HDAudio+DMIC-based platforms, which is
+a common design starting with CoffeLake platforms, the SOF team
+encountered a combination of issues with host/link DMA coupling,
+interrupt handling and other bits not getting properly cleared. The
+patches in this series provide significant reliability and usage
+improvements. They are viewed as mandatory for any product based on
+HDaudio.
 
-Function name alone ain't very informational. Is this intended?
+There will be a smaller series to fix HDaudio wake. It's almost ready
+but didn't make the cut for this week and there's no reason to delay
+reviews on the main changes further.
 
-> +
-> +	err = device_create_file(dev, &dev_attr_enable);
-> +	if (err < 0) {
-> +		dev_err(dev, "Could not create enable attr\n");
-> +		return err;
-> +	}
+The remaining topics to complete are autodetection of the number of
+microphones, for which an ACPI-based solution exists, and
+autodetection of which platforms need to rely on a signed firmware,
+for which DMI quirks will be required. This will be provided later in
+July (after travel+vacation break for a number of contributors).
 
-Regardless of outcome, you'll be returning err here. Consider leaving 
-error message alone within if-statement. Remove redundant brackets if 
-you decide to do so.
+Keyon Jie (1):
+  ASoC: SOF: Intel: hda-stream: fix a deadlock with bus->reg_lock
 
-> +
-> +	return err;
-> +}
-> +
-> +static void tda7802_remove(struct snd_soc_component *component)
-> +{
-> +	struct tda7802_priv *tda7802 = snd_soc_component_get_drvdata(component);
-> +
-> +	device_remove_file(&tda7802->i2c->dev, &dev_attr_enable);
-> +}
-> +
-> +static const struct snd_soc_component_driver tda7802_component_driver = {
-> +	.probe = tda7802_probe,
-> +	.remove = tda7802_remove,
-> +};
->   
->   static int tda7802_i2c_probe(struct i2c_client *i2c,
->   			     const struct i2c_device_id *id)
-> 
+Ranjani Sridharan (9):
+  ASoC: SOF: Intel: hda: save handle to sdev in sof_intel_hda_stream
+  ASoC: SOF: Intel: hda: add new macro hstream_to_sof_hda_stream()
+  ASoC: SOF: topology: add cpu_dai_name for DAIs
+  ASoC: SOF: Intel: hda: assign link DMA channel at run-time
+  ASoC: SOF: Intel: hda: reserve host DMA channel for hostless streams
+  ASoC: SOF: Intel: hda: release link DMA for paused streams during
+    suspend
+  ASoC: SOF: Intel: hda: couple host and link DMA during FE hw_free
+  ASoC: SOF: Intel: hda: modify stream interrupt handler
+  ASoC: SOF: Intel: hda: clear stream status and wakests properly
+
+Zhu Yingjiang (5):
+  ASoC: SOF: Intel: hda: use the SOF defined ppcap functions
+  ASoC: SOF: Intel: hda: add function for hda stop chip
+  ASoC: SOF: Intel: hda: use the defined stop chip in suspend
+  ASoC: SOF: Intel: hda: make sure DMA is start/stop by read the RUN bit
+  ASoC: SOF: Intel: hda: make sure RUN bit setting to 0 during clear
+    stream status
+
+ sound/soc/sof/intel/apl.c        |   1 +
+ sound/soc/sof/intel/cnl.c        |   1 +
+ sound/soc/sof/intel/hda-ctrl.c   |  77 +++++++-
+ sound/soc/sof/intel/hda-dai.c    | 293 ++++++++++++++++++++-----------
+ sound/soc/sof/intel/hda-dsp.c    |  50 ++++--
+ sound/soc/sof/intel/hda-stream.c | 157 ++++++++++++++---
+ sound/soc/sof/intel/hda.h        |  17 +-
+ sound/soc/sof/ops.h              |  16 +-
+ sound/soc/sof/pcm.c              |   7 +
+ sound/soc/sof/pm.c               |  24 ++-
+ sound/soc/sof/sof-priv.h         |   9 +-
+ sound/soc/sof/topology.c         |  56 +-----
+ 12 files changed, 495 insertions(+), 213 deletions(-)
+
+-- 
+2.20.1
