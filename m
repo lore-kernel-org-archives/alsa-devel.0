@@ -1,21 +1,21 @@
 From: Gen Zhang <blackgod016574@gmail.com>
 Subject: Re: [PATCH] Revert "wcd9335: fix a incorrect use of
 	kstrndup()"
-Date: Wed, 12 Jun 2019 21:34:53 +0800
-Message-ID: <20190612133453.GA3922@zhanggen-UX430UQ>
+Date: Wed, 12 Jun 2019 22:05:11 +0800
+Message-ID: <20190612140511.GA4412@zhanggen-UX430UQ>
 References: <20190612133040.5kgtio7gidxx64gh@xylophone.i.decadent.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81089F806F5
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 15:35:00 +0200 (CEST)
-Received: by mail-wr1-x443.google.com with SMTP id n4so16987075wrs.3
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 06:35:00 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30AABF80791
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 16:05:21 +0200 (CEST)
+Received: by mail-wm1-x344.google.com with SMTP id w9so4374825wmd.1
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 07:05:21 -0700 (PDT)
 Content-Disposition: inline
 In-Reply-To: <20190612133040.5kgtio7gidxx64gh@xylophone.i.decadent.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -59,5 +59,9 @@ On Wed, Jun 12, 2019 at 02:30:40PM +0100, Ben Hutchings wrote:
 > https://www.codethink.co.uk/                 Dale House, 35 Dale Street
 >                                      Manchester, M1 2HF, United Kingdom
 > 
-OMG! There is someone following what I was doing these days...
-Kind of peculiar
+BTW, why don't you use ben@decadent.org.uk this time...
+I am just curious:-)
+No need to reply
+
+Thanks
+Gen
