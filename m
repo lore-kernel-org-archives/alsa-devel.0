@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/19] ALSA: fireworks: configure sampling
-	transfer frequency in pcm.hw_params callback
-Date: Wed, 12 Jun 2019 17:44:11 +0900
-Message-ID: <20190612084422.5344-9-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/19] ALSA: fireworks: configure stream
+	parameters in pcm.hw_params callback
+Date: Wed, 12 Jun 2019 17:44:12 +0900
+Message-ID: <20190612084422.5344-10-o-takashi@sakamocchi.jp>
 References: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45CFDF89737
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:41 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9815EF89731
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 10:44:42 +0200 (CEST)
 In-Reply-To: <20190612084422.5344-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,202 +31,139 @@ List-Id: alsa-devel@alsa-project.org
 This commit is a part of preparation to perform allocation/release
 of isochronous resources in pcm.hw_params/hw_free callbacks.
 
-At present, several operations are done in pcm.prepare callback. To
-reduce load of the callback, This commit splits out an operation to
-set sampling transfer frequency in pcm.hw_params callback.
+This commit splits out an operation to configure stream parameters into
+pcm.hw_params callback. In pcm.prepare callback, establishing
+connections and start isochronous contexts.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks.h        |  3 +-
- sound/firewire/fireworks/fireworks_midi.c   |  7 ++-
- sound/firewire/fireworks/fireworks_pcm.c    | 14 +++--
- sound/firewire/fireworks/fireworks_stream.c | 65 +++++++++++++--------
- 4 files changed, 57 insertions(+), 32 deletions(-)
+ sound/firewire/fireworks/fireworks_stream.c | 82 ++++++++++++---------
+ 1 file changed, 49 insertions(+), 33 deletions(-)
 
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 42a73038ba4d..0c1802aa7923 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -206,7 +206,8 @@ int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate);
- int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate);
- 
- int snd_efw_stream_init_duplex(struct snd_efw *efw);
--int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate);
-+int snd_efw_stream_reserve_duplex(struct snd_efw *efw, unsigned int rate);
-+int snd_efw_stream_start_duplex(struct snd_efw *efw);
- void snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index ee5dc7be70b6..6d3d942e2dce 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -18,8 +18,11 @@ static int midi_open(struct snd_rawmidi_substream *substream)
- 		goto end;
- 
- 	mutex_lock(&efw->mutex);
--	++efw->substreams_counter;
--	err = snd_efw_stream_start_duplex(efw, 0);
-+	err = snd_efw_stream_reserve_duplex(efw, 0);
-+	if (err >= 0) {
-+		++efw->substreams_counter;
-+		err = snd_efw_stream_start_duplex(efw);
-+	}
- 	mutex_unlock(&efw->mutex);
- 	if (err < 0)
- 		snd_efw_stream_lock_release(efw);
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 398a6ad04c5f..287fc05d5917 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -231,12 +231,16 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
- 		return err;
- 
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		unsigned int rate = params_rate(hw_params);
-+
- 		mutex_lock(&efw->mutex);
--		++efw->substreams_counter;
-+		err = snd_efw_stream_reserve_duplex(efw, rate);
-+		if (err >= 0)
-+			++efw->substreams_counter;
- 		mutex_unlock(&efw->mutex);
- 	}
- 
--	return 0;
-+	return err;
- }
- 
- static int pcm_hw_free(struct snd_pcm_substream *substream)
-@@ -257,10 +261,9 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
- static int pcm_capture_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_efw *efw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 
--	err = snd_efw_stream_start_duplex(efw, runtime->rate);
-+	err = snd_efw_stream_start_duplex(efw);
- 	if (err >= 0)
- 		amdtp_stream_pcm_prepare(&efw->tx_stream);
- 
-@@ -269,10 +272,9 @@ static int pcm_capture_prepare(struct snd_pcm_substream *substream)
- static int pcm_playback_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_efw *efw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 
--	err = snd_efw_stream_start_duplex(efw, runtime->rate);
-+	err = snd_efw_stream_start_duplex(efw);
- 	if (err >= 0)
- 		amdtp_stream_pcm_prepare(&efw->rx_stream);
- 
 diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 2df39befcde0..e1ebead583e9 100644
+index e1ebead583e9..1abc15760513 100644
 --- a/sound/firewire/fireworks/fireworks_stream.c
 +++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -189,47 +189,63 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
- 	return err;
+@@ -52,54 +52,38 @@ stop_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ 		cmp_connection_break(&efw->in_conn);
  }
  
--int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
-+int snd_efw_stream_reserve_duplex(struct snd_efw *efw, unsigned int rate)
+-static int
+-start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
+-	     unsigned int sampling_rate)
++static int start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
++			unsigned int rate)
  {
- 	unsigned int curr_rate;
--	int err = 0;
+ 	struct cmp_connection *conn;
+-	unsigned int mode, pcm_channels, midi_ports;
+ 	int err;
+ 
+-	err = snd_efw_get_multiplier_mode(sampling_rate, &mode);
+-	if (err < 0)
+-		goto end;
+-	if (stream == &efw->tx_stream) {
++	if (stream == &efw->tx_stream)
+ 		conn = &efw->out_conn;
+-		pcm_channels = efw->pcm_capture_channels[mode];
+-		midi_ports = efw->midi_out_ports;
+-	} else {
++	else
+ 		conn = &efw->in_conn;
+-		pcm_channels = efw->pcm_playback_channels[mode];
+-		midi_ports = efw->midi_in_ports;
+-	}
+ 
+-	err = amdtp_am824_set_parameters(stream, sampling_rate,
+-					 pcm_channels, midi_ports, false);
+-	if (err < 0)
+-		goto end;
 -
--	// Need no substreams.
--	if (efw->substreams_counter == 0)
--		return -EIO;
-+	int err;
- 
--	/*
--	 * Considering JACK/FFADO streaming:
--	 * TODO: This can be removed hwdep functionality becomes popular.
--	 */
-+	// Considering JACK/FFADO streaming:
-+	// TODO: This can be removed hwdep functionality becomes popular.
- 	err = check_connection_used_by_others(efw, &efw->rx_stream);
+-	/*  establish connection via CMP */
++	// Establish connection via CMP.
+ 	err = cmp_connection_establish(conn,
+-				amdtp_stream_get_max_payload(stream));
++				       amdtp_stream_get_max_payload(stream));
  	if (err < 0)
 -		goto end;
 +		return err;
  
--	/* stop streams if rate is different */
-+	// stop streams if rate is different.
- 	err = snd_efw_command_get_sampling_rate(efw, &curr_rate);
- 	if (err < 0)
+-	/* start amdtp stream */
+-	err = amdtp_stream_start(stream,
+-				 conn->resources.channel,
+-				 conn->speed);
++	// Start amdtp stream.
++	err = amdtp_stream_start(stream, conn->resources.channel, conn->speed);
+ 	if (err < 0) {
+-		stop_stream(efw, stream);
 -		goto end;
++		cmp_connection_break(conn);
 +		return err;
- 	if (rate == 0)
- 		rate = curr_rate;
--	if (rate != curr_rate ||
--	    amdtp_streaming_error(&efw->tx_stream) ||
--	    amdtp_streaming_error(&efw->rx_stream)) {
-+	if (rate != curr_rate) {
- 		stop_stream(efw, &efw->tx_stream);
- 		stop_stream(efw, &efw->rx_stream);
  	}
  
--	/* master should be always running */
--	if (!amdtp_stream_running(&efw->rx_stream)) {
-+	if (efw->substreams_counter == 0 || rate != curr_rate) {
- 		err = snd_efw_command_set_sampling_rate(efw, rate);
- 		if (err < 0)
--			goto end;
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int snd_efw_stream_start_duplex(struct snd_efw *efw)
-+{
-+	unsigned int rate;
-+	int err = 0;
-+
-+	// Need no substreams.
-+	if (efw->substreams_counter == 0)
-+		return -EIO;
-+
-+	err = snd_efw_command_get_sampling_rate(efw, &rate);
-+	if (err < 0)
-+		return err;
- 
-+	if (amdtp_streaming_error(&efw->rx_stream) ||
-+	    amdtp_streaming_error(&efw->tx_stream)) {
-+		stop_stream(efw, &efw->rx_stream);
-+		stop_stream(efw, &efw->tx_stream);
-+	}
-+
-+	/* master should be always running */
-+	if (!amdtp_stream_running(&efw->rx_stream)) {
- 		err = start_stream(efw, &efw->rx_stream, rate);
- 		if (err < 0) {
- 			dev_err(&efw->unit->device,
- 				"fail to start AMDTP master stream:%d\n", err);
--			goto end;
-+			goto error;
- 		}
- 	}
- 
-@@ -238,11 +254,14 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- 		if (err < 0) {
- 			dev_err(&efw->unit->device,
- 				"fail to start AMDTP slave stream:%d\n", err);
--			stop_stream(efw, &efw->tx_stream);
--			stop_stream(efw, &efw->rx_stream);
-+			goto error;
- 		}
+-	/* wait first callback */
++	// Wait first callback.
+ 	if (!amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT)) {
+-		stop_stream(efw, stream);
+-		err = -ETIMEDOUT;
++		amdtp_stream_stop(stream);
++		cmp_connection_break(conn);
++		return -ETIMEDOUT;
  	}
 -end:
+-	return err;
 +
 +	return 0;
-+error:
-+	stop_stream(efw, &efw->rx_stream);
-+	stop_stream(efw, &efw->tx_stream);
+ }
+ 
+ /*
+@@ -189,6 +173,24 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
  	return err;
  }
  
++static int keep_resources(struct snd_efw *efw, struct amdtp_stream *stream,
++			  unsigned int rate, unsigned int mode)
++{
++	unsigned int pcm_channels;
++	unsigned int midi_ports;
++
++	if (stream == &efw->tx_stream) {
++		pcm_channels = efw->pcm_capture_channels[mode];
++		midi_ports = efw->midi_out_ports;
++	} else {
++		pcm_channels = efw->pcm_playback_channels[mode];
++		midi_ports = efw->midi_in_ports;
++	}
++
++	return amdtp_am824_set_parameters(stream, rate, pcm_channels,
++					  midi_ports, false);
++}
++
+ int snd_efw_stream_reserve_duplex(struct snd_efw *efw, unsigned int rate)
+ {
+ 	unsigned int curr_rate;
+@@ -212,9 +214,23 @@ int snd_efw_stream_reserve_duplex(struct snd_efw *efw, unsigned int rate)
+ 	}
+ 
+ 	if (efw->substreams_counter == 0 || rate != curr_rate) {
++		unsigned int mode;
++
+ 		err = snd_efw_command_set_sampling_rate(efw, rate);
+ 		if (err < 0)
+ 			return err;
++
++		err = snd_efw_get_multiplier_mode(rate, &mode);
++		if (err < 0)
++			return err;
++
++		err = keep_resources(efw, &efw->tx_stream, rate, mode);
++		if (err < 0)
++			return err;
++
++		err = keep_resources(efw, &efw->rx_stream, rate, mode);
++		if (err < 0)
++			return err;
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
