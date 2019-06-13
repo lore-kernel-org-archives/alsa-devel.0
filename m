@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: topology: pass volume min/max
-	linear value to FW" to the asoc tree
-Date: Thu, 13 Jun 2019 20:05:59 +0100 (BST)
-Message-ID: <20190613190559.7B02E440046@finisterre.sirena.org.uk>
-References: <20190612170148.15327-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: topology: add min/max step for
+	volume_table" to the asoc tree
+Date: Thu, 13 Jun 2019 20:06:00 +0100 (BST)
+Message-ID: <20190613190600.19E58440046@finisterre.sirena.org.uk>
+References: <20190612170148.15327-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0197EF89757
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:06:00 +0200 (CEST)
-In-Reply-To: <20190612170148.15327-3-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4046F8975D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:06:05 +0200 (CEST)
+In-Reply-To: <20190612170148.15327-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: topology: pass volume min/max linear value to FW
+   ASoC: SOF: topology: add min/max step for volume_table
 
 has been applied to the asoc tree at
 
@@ -55,55 +55,47 @@ to this mail.
 Thanks,
 Mark
 
->From 65a18a46b274e64012fcf19d79ac62c8fb2a12e9 Mon Sep 17 00:00:00 2001
+>From aa66fd80e0813fab0146e001b8bef8c4ffe0ba3a Mon Sep 17 00:00:00 2001
 From: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
-Date: Wed, 12 Jun 2019 12:01:46 -0500
-Subject: [PATCH] ASoC: SOF: topology: pass volume min/max linear value to FW
+Date: Wed, 12 Jun 2019 12:01:45 -0500
+Subject: [PATCH] ASoC: SOF: topology: add min/max step for volume_table
 
-The driver currently passes the volume ramp type and length
-topology tokens to firmware, but the min and max volume are
-not set. This patch provides a correction to convert the
-information from the topology file and pass the linear volume
-min/max value to the firmware to improve transitions.
+add two units min_volume_step and max_volume_step to the snd_sof_control
+struct, for the min and max step of the volume_table.
 
 Signed-off-by: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/soc/sof/sof-priv.h | 2 ++
+ sound/soc/sof/topology.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 17f3d2a5a701..8760a4694d8f 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -297,6 +297,8 @@ struct snd_sof_pcm {
+ struct snd_sof_control {
+ 	struct snd_sof_dev *sdev;
+ 	int comp_id;
++	int min_volume_step; /* min volume step for volume_table */
++	int max_volume_step; /* max volume step for volume_table */
+ 	int num_channels;
+ 	u32 readback_offset; /* offset to mmaped data if used */
+ 	struct sof_ipc_ctrl_data *control_data;
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 1c661dec8dd4..bbad8053b1bc 100644
+index a13233ae6d0e..1c661dec8dd4 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1552,6 +1552,9 @@ static int sof_widget_load_pga(struct snd_soc_component *scomp, int index,
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_private *private = &tw->priv;
- 	struct sof_ipc_comp_volume *volume;
-+	struct snd_sof_control *scontrol;
-+	int min_step;
-+	int max_step;
- 	int ret;
+@@ -451,6 +451,8 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 		return -ENOMEM;
  
- 	volume = kzalloc(sizeof(*volume), GFP_KERNEL);
-@@ -1594,6 +1597,17 @@ static int sof_widget_load_pga(struct snd_soc_component *scomp, int index,
+ 	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->min_volume_step = le32_to_cpu(mc->min);
++	scontrol->max_volume_step = le32_to_cpu(mc->max);
+ 	scontrol->num_channels = le32_to_cpu(mc->num_channels);
  
- 	swidget->private = volume;
- 
-+	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
-+		if (scontrol->comp_id == swidget->comp_id) {
-+			min_step = scontrol->min_volume_step;
-+			max_step = scontrol->max_volume_step;
-+			volume->min_value = scontrol->volume_table[min_step];
-+			volume->max_value = scontrol->volume_table[max_step];
-+			volume->channels = scontrol->num_channels;
-+			break;
-+		}
-+	}
-+
- 	ret = sof_ipc_tx_message(sdev->ipc, volume->comp.hdr.cmd, volume,
- 				 sizeof(*volume), r, sizeof(*r));
- 	if (ret >= 0)
+ 	/* set cmd for mixer control */
 -- 
 2.20.1
