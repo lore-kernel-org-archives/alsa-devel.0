@@ -1,62 +1,80 @@
-From: cezary.rojewski@intel.com
-Subject: [PATCH 0/7] ASoC: Intel: Skylake: Critical IPC fixes
-	and flow adjustments
-Date: Thu, 13 Jun 2019 21:04:29 +0200
-Message-ID: <20190613190436.20156-1-cezary.rojewski@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3B24F896F1
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:25 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tas571x: Fix -Wunused-const-variable" to the asoc tree
+Date: Thu, 13 Jun 2019 20:06:09 +0100 (BST)
+Message-ID: <20190613190609.6F9F5440046@finisterre.sirena.org.uk>
+References: <20190612232502.256846-1-nhuck@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190612232502.256846-1-nhuck@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nathan Huckleberry <nhuck@google.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, cernekee@chromium.org, clang-built-linux@googlegroups.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQ2V6YXJ5IFJvamV3c2tpIDxjZXphcnkucm9qZXdza2lAaW50ZWwuY29tPgoKVGhpcyBz
-ZXQgb2YgY2hhbmdlcyBjb250YWlucyBjcml0aWNhbCBJUEMgZml4ZXM6Ci0gQVNvQzogSW50ZWw6
-IFNreWxha2U6IFJlYWQgSElQQ1QgZXh0ZW5zaW9uIGJlZm9yZSBjbGVhcmluZyBET05FIGJpdAot
-IEFTb0M6IEludGVsOiBGaXggcmFjZSBjb25kaXRpb24gaW4gSVBDIHJ4IGxpc3QKCmFzIHdlbGwg
-YXMgdXBkYXRlcyB0byBjb21tb24gbWVjaGFuaXNtcyB0byB1c2UgcmVjb21tZW5kZWQgZmxvd3Ms
-IG1vc3QKbm90YWJseToKLSBBU29DOiBJbnRlbDogU2t5bGFrZTogVXNlIHJlY29tbWVuZGVkIFNE
-eEZNVCBwcm9ncmFtbWluZyBzZXF1ZW5jZQotIEFTb0M6IEludGVsOiBTa3lsYWtlOiBGaXggaW5j
-b3JyZWN0IGNhcHR1cmUgcG9zaXRpb24gcmVwb3J0aW5nCgpXaGlsZSBmbG93IGFkanVzdG1lbnRz
-IGZpeCBpc3N1ZXMgd2l0aCAxMDAlIHJlcHJvZHVjdGlvbiByYXRlLCB0aGUgbW9zdApjcnVjaWFs
-IGNoYW5nZXMgYWRkcmVzcyBpc3N1ZXMgb2NjdXJyaW5nIHJhcmVseSAtIHVzdWFsbHkgb25seSB1
-bmRlcgpzdHJlc3MgY29uZGl0aW9ucy4gVGhlc2UsIGhvd2V2ZXIsIGNhbiBlYXNpbHkgY2F1c2Ug
-dW5leHBlY3RlZCBiZWhhdmlvcgpvbiBEU1AgbGV2ZWwuCgpBbWFkZXVzeiBTxYJhd2nFhHNraSAo
-MSk6CiAgQVNvQzogSW50ZWw6IFNreWxha2U6IFJlc2V0IHBpcGVsaW5lIGJlZm9yZSBpdHMgZGVs
-ZXRpb24KCkNlemFyeSBSb2pld3NraSAoMyk6CiAgQVNvQzogSW50ZWw6IFNreWxha2U6IEZpeCBp
-bmNvcnJlY3QgY2FwdHVyZSBwb3NpdGlvbiByZXBvcnRpbmcKICBBU29DOiBJbnRlbDogU2t5bGFr
-ZTogUmVhZCBISVBDVCBleHRlbnNpb24gYmVmb3JlIGNsZWFyaW5nIERPTkUgYml0CiAgQVNvQzog
-SW50ZWw6IENvbW1vbjogRml4IE5VTEwgZGVyZWZlcmVuY2UgaW4gdHhfd2FpdF9kb25lCgpHdXN0
-YXcgTGV3YW5kb3dza2kgKDEpOgogIEFTb0M6IEludGVsOiBGaXggcmFjZSBjb25kaXRpb24gaW4g
-SVBDIHJ4IGxpc3QKCkthbWlsIEx1bGtvICgxKToKICBBU29DOiBJbnRlbDogU2t5bGFrZTogU3Ry
-aXAgVCBhbmQgTCBmcm9tIFRMViBJUENzCgpQYXdlxYIgSGFyxYJvemnFhHNraSAoMSk6CiAgQVNv
-QzogSW50ZWw6IFNreWxha2U6IFVzZSByZWNvbW1lbmRlZCBTRHhGTVQgcHJvZ3JhbW1pbmcgc2Vx
-dWVuY2UKCiBpbmNsdWRlL3NvdW5kL2hkYV9jb2RlYy5oICAgICAgICAgICAgICB8ICAzICsrKwog
-c291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyAgICAgICAgICAgICAgfCAgMyAtLS0KIHNvdW5kL3Nv
-Yy9pbnRlbC9jb21tb24vc3N0LWlwYy5jICAgICAgIHwgIDIgKy0KIHNvdW5kL3NvYy9pbnRlbC9z
-a3lsYWtlL2NubC1zc3QuYyAgICAgIHwgIDIgKy0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3Nr
-bC1tZXNzYWdlcy5jIHwgMjMgKysrKysrKysrKysrKysrKy0tLS0tLS0KIHNvdW5kL3NvYy9pbnRl
-bC9za3lsYWtlL3NrbC1wY20uYyAgICAgIHwgMTQgKysrKysrKysrKysrKy0KIHNvdW5kL3NvYy9p
-bnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMgIHwgIDQgKystLQogc291bmQvc29jL2ludGVsL3Nr
-eWxha2Uvc2tsLXRvcG9sb2d5LmMgfCAyMiArKysrKysrKystLS0tLS0tLS0tLS0tCiBzb3VuZC9z
-b2MvaW50ZWwvc2t5bGFrZS9za2wuYyAgICAgICAgICB8IDIxICsrKysrKysrKysrKysrKysrKysr
-Kwogc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLmggICAgICAgICAgfCAgMSArCiAxMCBmaWxl
-cyBjaGFuZ2VkLCA2NyBpbnNlcnRpb25zKCspLCAyOCBkZWxldGlvbnMoLSkKCi0tIAoyLjE3LjEK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: tas571x: Fix -Wunused-const-variable
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 2f7e015c1f20cfdbe97df25868abbfa8b7514778 Mon Sep 17 00:00:00 2001
+From: Nathan Huckleberry <nhuck@google.com>
+Date: Wed, 12 Jun 2019 16:25:02 -0700
+Subject: [PATCH] ASoC: tas571x: Fix -Wunused-const-variable
+
+Clang produces the following warning
+
+sound/soc/codecs/tas571x.c:666:38: warning: unused variable
+'tas5721_controls' [-Wunused-const-variable]
+
+In the chip struct definition tas5711_controls is used rather than
+tac5712_controls. Looks like a typo was made in the original commit.
+
+Since tac5711_controls is identical to tas5721_controls we can just swap
+them
+
+Cc: clang-built-linux@googlegroups.com
+Link: https://github.com/ClangBuiltLinux/linux/issues/522
+Signed-off-by: Nathan Huckleberry <nhuck@google.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tas571x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index ca2dfe12344e..684b7afa9252 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -725,8 +725,8 @@ static const struct regmap_config tas5721_regmap_config = {
+ static const struct tas571x_chip tas5721_chip = {
+ 	.supply_names			= tas5721_supply_names,
+ 	.num_supply_names		= ARRAY_SIZE(tas5721_supply_names),
+-	.controls			= tas5711_controls,
+-	.num_controls			= ARRAY_SIZE(tas5711_controls),
++	.controls			= tas5721_controls,
++	.num_controls			= ARRAY_SIZE(tas5721_controls),
+ 	.regmap_config			= &tas5721_regmap_config,
+ 	.vol_reg_size			= 1,
+ };
+-- 
+2.20.1
