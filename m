@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: fix fake interruption when
-	booting
-Date: Thu, 13 Jun 2019 12:20:42 +0100
-Message-ID: <20190613112042.GJ5316@sirena.org.uk>
-References: <20190610024029.12193-1-KCHSU0@nuvoton.com>
- <20190610034040.12629-1-KCHSU0@nuvoton.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 0/4] ASoC: meson: axg-tdm: i2s format fixups
+Date: Thu, 13 Jun 2019 13:42:29 +0200
+Message-ID: <20190613114233.21130-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3410610475068703505=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FF1DF80791
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 13:20:46 +0200 (CEST)
-In-Reply-To: <20190610034040.12629-1-KCHSU0@nuvoton.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20F18F80794
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 13:42:39 +0200 (CEST)
+Received: by mail-wr1-x436.google.com with SMTP id r16so1268980wrl.11
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 04:42:39 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,52 +23,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, WTLI@nuvoton.com, lgirdwood@gmail.com, yuhsuan@google.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Cheng-Yi Chiang <cychiang@chromium.org>, mhkuo@nuvoton.com
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patchset fixes a few mistakes regarding the format on the i2s bus
+on the Amlogic axg tdm drivers.
 
---===============3410610475068703505==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KjX7LgAomYr70Ka9"
-Content-Disposition: inline
+Jerome Brunet (4):
+  ASoC: meson: axg-tdmin: right_j is not supported
+  ASoC: meson: axg-tdmout: right_j is not supported
+  ASoC: meson: axg-tdm: fix sample clock inversion
+  ASoC: meson: axg-tdm: consistently use SND_SOC_DAIFMT defines
 
+ sound/soc/meson/axg-tdm-interface.c | 4 ++--
+ sound/soc/meson/axg-tdm.h           | 2 +-
+ sound/soc/meson/axg-tdmin.c         | 1 -
+ sound/soc/meson/axg-tdmout.c        | 1 -
+ 4 files changed, 3 insertions(+), 5 deletions(-)
 
---KjX7LgAomYr70Ka9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 10, 2019 at 11:40:40AM +0800, John Hsu wrote:
-> There is no pull-up resistor at IRQ line where it connects from
-> the codec to SoC. When booting, the signal of IRQ pin will keep low
-
-On some specific system?
-
-Please don't send new patches in the middle of old threads, it makes it
-hard to spot them and work out what the current version is.
-
---KjX7LgAomYr70Ka9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0CMYoACgkQJNaLcl1U
-h9BCTAf+Mjb6YCp4CTitdaG9w5US+Xpm8f5gKjJxQYAlSzwm721Yd8d6uEYHUvJe
-jwZmsPyWSyVD8BgnElrfqzW+8i8JjwWgBjbuUMy5nMvT+5aldnWUvFaUvVT9eBuh
-Ce8oQPd3OtRkjGlSeOhTbBLmNb4qnWJ1I0G2uXnEnTWKdZ7P+may3cZXCP0S/2DD
-VS7E6oSF948Ny3dxI/eFzwPIBvOqdUQdUHau/f99DfuyrGnwjSmLTBmte5smq44b
-2Aja3m8do+SL1Z6MjZbHgB2gU3BJGWLmbvngkrUT78Oc0KeQ3AdPGbxVuIKEbiOe
-PECljUe44PsQ1hcVA3TD76nG1k7Z9A==
-=CDGm
------END PGP SIGNATURE-----
-
---KjX7LgAomYr70Ka9--
-
---===============3410610475068703505==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3410610475068703505==--
+-- 
+2.20.1
