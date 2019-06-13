@@ -1,16 +1,21 @@
-From: "Ralf Beck" <musical_snake@gmx.de>
-Subject: Re: (no subject)
-Date: Thu, 13 Jun 2019 07:54:31 +0200
-Message-ID: <trinity-bf4e0eb4-e575-4dfc-9315-bc322b7b7f19-1560405271802@3c-app-gmx-bs72>
+From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH 01/15] ASoC: SOF: Intel: hda: save handle
+ to sdev in sof_intel_hda_stream
+Date: Thu, 13 Jun 2019 10:00:50 +0200
+Message-ID: <20190613092001.2027f42a@xxx>
+References: <20190612172347.22338-1-pierre-louis.bossart@linux.intel.com>
+ <20190612172347.22338-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DC6CF80791
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 07:54:35 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE7C5F80791
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 09:57:04 +0200 (CEST)
+In-Reply-To: <20190612172347.22338-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +25,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ckphcm9zbGF2IEt5c2VsYSB3cm90ZToKPkkganVzdCBkb24ndCB0aGluayB0aGF0IHRoZSBtbWFw
-IHRyYW5zZmVyIG1vZGUgaXMgdGhlIGN1bHByaXQgb2YgdGhlIHByb2JsZW1zLgo+VGhlIHByb2Js
-ZW0gaXMgdGhhdCB0aGUgUENJIGNhcmRzIG9mZi1sb2FkcyB0aGUgRE1BIHRyYW5zZmVycyBjb21w
-bGV0ZWx5Cj53aXRob3V0IHRoZSBleHRyYSBmcmFtaW5nIHJlcXVpcmVkIGZvciB0aG9zZSBzZXJp
-YWwgaGFyZHdhcmUgaW50ZXJmYWNlcyB3aGljaAo+YXJlIGhhbmRsZWQgaW4gdGhlIGF1ZGlvIGRy
-aXZlciBhbmQgdGhlIG90aGVyIGtlcm5lbCBzdGFja3MgKFVTQiBldGMuKS4KClRoZSBzb3VyY2Ug
-b2YgYWxsIGV2aWwgaXMgdGhlIHJpbmcgYnVmZmVyLgpJdCBwcmV2ZW50cyBhbGwgZGV2aWNlcyB0
-aGF0IHJlcXVpcmUgcGFja2V0IGhlYWRlcnMgKEZpcmV3aXJlL25ldHdvcmsgYmFzZWQgc29sdXRp
-b25zKSBvciB0aGF0CnVzZSBhIHZhcmlhYmxlIGFtb3VudCBvZiBmcmFtZXMgcGVyIHBhY2tldCAo
-YWxsIGFzeW5jaHJvbm91cyBkZXZpY2VzLCBlc3BlY2lhbGx5IGFzeW5jaHJvbm91cyBVU0IgSVNP
-IGVuZHBvaW50cykKZnJvbSBtYXBwaW5nIHRoZWlyIGRhdGEgZGlyZWN0bHkgaW50byB1c2Vyc3Bh
-cyBtZW1vcnkgd2l0aG91dCBldmVyIHRvdWNoaW5nIHRoZSBhdWRpbyBkYXRhIGluIGl0LgoKV2hp
-bGUgdGhpcyBkb2Vzbid0IGh1cnQgcGVyZm9ybWFuY2UgdG8gbXVjaCB3aXRoIGRldmljZXMgdGhh
-dCBvZmZlciBvbmx5IGEgZmV3IGNoYW5uZWxzLAppdCBoYXMgYSBtYXNzaXZlIGVmZmVjdCBvbiBu
-ZXR3b3JrIGJhc2VkIGRldmljZXMgd2l0aCBwb3NzaWJseSBodW5kcmVkcyBvZiBjaGFubmVscyBv
-ZiB3aGljaCBvbmx5CmEgc21hbGwgbnVtYmVyIGlzIHVzZWQgKGUuZy4gcmVjb3JkIGVuYWJsZWQp
-IGF0IGEgdGltZS4KClRoZSByaW5nYnVmZmVyIHNob3VsZCBiZSByZXBsYWNlZCBieSBhIGJ1ZmZl
-ciB0aGF0IGhvbGRzIHRoZSBwYWNrZXRzIGFuZCBhIGRlc2NyaXB0b3IgZm9yIGhvdyB0byBmaW5k
-IHRoZSBkYXRhIGluIGl0LiBCdHcsIGFsc2EgdXNlcyBzb21ldGhpbmcgc2ltaWxhciBhbHJlYWR5
-IGZvciB0aGUgbW1hcCBoYW5kbGluZy4KClRoZSBkZXNjcmlwdG9yIHNob3VsZCBjb25zaXN0IG9m
-CnggcGVyaW9kcywgY29udGFpbmluZyB5IGNodW5rcyB3aXRoIGEgbWF4IHNpemUsIGNvbnRhaW5p
-bmcgeiBjaGFubmVscywgZWFjaCBvZiB0aGUgY2hhbm5lbCBkZXNjcmliZWQgYnkgYSBzdGFydCBh
-ZGRyZXNzIGFuZCBzdGVwIHZhbHVlIHdpdGhpbiB0aGF0IGNodW5rLgoKRXhhbXBsZXM6ClBDSSBk
-ZXZpY2U7IDIgcGVyaW9kcywgMSBjaHVua3MgcGVyIHBlcmlvZCwgbWF4IHNpemUgNjQgZnJhbWVz
-IHBlciBjaHVuaywgMiBjaGFubmVscyBwZXIgY2h1bmsKVVNCIGRldmljZTogMiBwZXJpb2RzLCA4
-IGNodW5rcyAobWljcm9mcmFtZXMpIG1heCBzaXplIDggZnJhbWVzIChpZiBhdCA0NC4xLzQ4a0h6
-KSwgMiBjaGFubmVscyBwZXIgY2h1bmssClNhbWUgZm9yIEZpcmV3aXJlLCBBVkIgKGVhY2ggY2h1
-bmsgcG9zc2libHkgY29udGFpbmluZyBzZXZlcmFsIEFWQiBzdHJlYW1zLCBpLmUuIGV0aGVybmV0
-IHBhY2tldHMpLCBldGMuCgpQZXJpb2QgZWxhcHNlZCA9PiB0aGUgbnVtYmVyIG9mIGNodW5rcyBm
-b3JtaW5nIGEgcGVyaW9kIGhhdmUgYmVlbiByZWNlaXZlZAoKc25kX3BjbV9hdmFpbChfdXBkYXRl
-KSA9PiByZXR1cm4gdGhlIHN1bSBvZiBhY3R1YWwgZnJhbWVzIG9mIHRoZSBwZXJpb2QKCnNuZF9w
-Y21fbW1hcF9jb21taXQgPT4gcmV0dXJuIHRoZSBkZXNjcmlwdG9yIGZvciBvbmUgY2h1bmssIHRo
-ZSBudW1iZXIgb2YgZnJhbWVzIG9mIHRoZSBjaHVuayBhbmQgYSBjaGFubmVsIG1hcCBmb3IgdGhl
-IGNodW5rLiBUaGUgcmVhc29uIGZvciB0aGUgbGF0dGVyIGlzIHRoYXQgb24gZXRoZXJuZXQgYmFz
-ZWQgZGV2aWNlcyAoQVZCKSB0aGVyZSBpcyBibyBndWFyYW50ZWUgdGhhdCBzdHJlYW1zIG9mIGRp
-ZmZlcmVudCBlbmRwb2ludHMgYXJlIHJlY2VpdmVkIGluIHRoZSBzYW1lIG9yZGVyIChidXQgaW4g
-dGhlIHNhbWUgaW50ZXJ2YWwgd2luZG93KS4KQWxzYSBjbGllbnRzIHNob3VsZCB0aGVuIGxvb3Ag
-dW50aWwgdGhleSBoYXZlIHByb2Nlc3NlZCBhbGwgZnJhbWVzIHRoYXIgaGF2ZSBiZWVuIHJlcG9y
-dGVkIGJ5IHNuZF9wY21fYXZhaWwgKGluc3RlYWQgb2YgYSBwZXJpb2Qgc2l6ZSBudW1iZXIgb2Yg
-ZnJhbWVzKS4KCkFoLCBhbmQgQU04MjQgcmF3IGF1ZGlvIGZvcm1hdCwgdXNlZCBieSBmaXJld2ly
-ZSBhbmQgQVZCLCBzaG91bGQgYnkgYWRkZWQgdG8gdGhlIGxpc3Qgb2YgYXVkaW8gZm9ybWF0cywg
-c28gY29udmVyc2lvbiBjYW4gYmUgZG9uZSBpbiB1c2Vyc3BhY2UuCgpSYWxmCgoKwqAKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, 12 Jun 2019 12:23:33 -0500
+Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
+
+> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> 
+> Add a snd_sof_dev member to sof_intel_hda_stream. This will be
+> used to access the snd_sof_dev during link hw_params callback.
+> 
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> ---
+>  sound/soc/sof/intel/hda-stream.c | 4 ++++
+>  sound/soc/sof/intel/hda.h        | 1 +
+>  2 files changed, 5 insertions(+)
+> 
+> diff --git a/sound/soc/sof/intel/hda-stream.c
+> b/sound/soc/sof/intel/hda-stream.c index c92006f89499..1cd94e7631a8
+> 100644 --- a/sound/soc/sof/intel/hda-stream.c
+> +++ b/sound/soc/sof/intel/hda-stream.c
+> @@ -564,6 +564,8 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
+>  		if (!hda_stream)
+>  			return -ENOMEM;
+>  
+> +		hda_stream->sdev = sdev;
+> +
+>  		stream = &hda_stream->hda_stream;
+>  
+>  		stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
+> @@ -617,6 +619,8 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
+>  		if (!hda_stream)
+>  			return -ENOMEM;
+>  
+> +		hda_stream->sdev = sdev;
+> +
+>  		stream = &hda_stream->hda_stream;
+>  
+
+Just one thing, you have two rather big for loops here, one for capture
+and other for playback, they are almost identical apart for ~2 lines.
+Maybe share this code and only put the differences into ifs?
+
+>  		/* we always have DSP support */
+> diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+> index 6c7dee2627d0..502b0a3c2e3c 100644
+> --- a/sound/soc/sof/intel/hda.h
+> +++ b/sound/soc/sof/intel/hda.h
+> @@ -409,6 +409,7 @@ static inline struct hda_bus *sof_to_hbus(struct
+> snd_sof_dev *s) }
+>  
+>  struct sof_intel_hda_stream {
+> +	struct snd_sof_dev *sdev;
+>  	struct hdac_ext_stream hda_stream;
+>  	struct sof_intel_stream stream;
+>  	int hw_params_upon_resume; /* set up hw_params upon resume */
