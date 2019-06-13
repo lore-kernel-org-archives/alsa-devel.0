@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-tdmout: right_j is not supported" to the asoc tree
+Subject: Applied "ASoC: meson: axg-tdm: fix sample clock inversion" to the asoc tree
 Date: Thu, 13 Jun 2019 20:06:11 +0100 (BST)
-Message-ID: <20190613190611.CED1D440046@finisterre.sirena.org.uk>
-References: <20190613114233.21130-3-jbrunet@baylibre.com>
+Message-ID: <20190613190611.3AA0B440046@finisterre.sirena.org.uk>
+References: <20190613114233.21130-4-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190613114233.21130-3-jbrunet@baylibre.com>
+In-Reply-To: <20190613114233.21130-4-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-tdmout: right_j is not supported
+   ASoC: meson: axg-tdm: fix sample clock inversion
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From 7e0d7d0fbd06af0507611f85dba8daf24832abd9 Mon Sep 17 00:00:00 2001
+>From cb36ff785e868992e96e8b9e5a0c2822b680a9e2 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 13 Jun 2019 13:42:31 +0200
-Subject: [PATCH] ASoC: meson: axg-tdmout: right_j is not supported
+Date: Thu, 13 Jun 2019 13:42:32 +0200
+Subject: [PATCH] ASoC: meson: axg-tdm: fix sample clock inversion
 
-Right justified format is actually not supported by the amlogic tdm output
-encoder.
+The content of SND_SOC_DAIFMT_FORMAT_MASK is a number, not a bitfield,
+so the test to check if the format is i2s is wrong. Because of this the
+clock setting may be wrong. For example, the sample clock gets inverted
+in DSP B mode, when it should not.
 
-Fixes: c41c2a355b86 ("ASoC: meson: add tdm output driver")
+Fix the lrclk invert helper function
+
+Fixes: 1a11d88f499c ("ASoC: meson: add tdm formatter base driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-tdmout.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/meson/axg-tdm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdmout.c b/sound/soc/meson/axg-tdmout.c
-index 527bfc4487e0..86537fc0ecb5 100644
---- a/sound/soc/meson/axg-tdmout.c
-+++ b/sound/soc/meson/axg-tdmout.c
-@@ -137,7 +137,6 @@ static int axg_tdmout_prepare(struct regmap *map,
- 		break;
+diff --git a/sound/soc/meson/axg-tdm.h b/sound/soc/meson/axg-tdm.h
+index e578b6f40a07..5774ce0916d4 100644
+--- a/sound/soc/meson/axg-tdm.h
++++ b/sound/soc/meson/axg-tdm.h
+@@ -40,7 +40,7 @@ struct axg_tdm_iface {
  
- 	case SND_SOC_DAIFMT_LEFT_J:
--	case SND_SOC_DAIFMT_RIGHT_J:
- 	case SND_SOC_DAIFMT_DSP_B:
- 		skew += 1;
- 		break;
+ static inline bool axg_tdm_lrclk_invert(unsigned int fmt)
+ {
+-	return (fmt & SND_SOC_DAIFMT_I2S) ^
++	return ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S) ^
+ 		!!(fmt & (SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_NB_IF));
+ }
+ 
 -- 
 2.20.1
