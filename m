@@ -1,18 +1,18 @@
 From: cezary.rojewski@intel.com
-Subject: [PATCH 6/7] ASoC: Intel: Skylake: Reset pipeline
-	before its deletion
-Date: Thu, 13 Jun 2019 21:04:35 +0200
-Message-ID: <20190613190436.20156-7-cezary.rojewski@intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: Skylake: Strip T and L from
+	TLV IPCs
+Date: Thu, 13 Jun 2019 21:04:36 +0200
+Message-ID: <20190613190436.20156-8-cezary.rojewski@intel.com>
 References: <20190613190436.20156-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FF6AF89733
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:34 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6FEBDF89711
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:36 +0200 (CEST)
 In-Reply-To: <20190613190436.20156-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,51 +24,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: pierre-louis.bossart@linux.intel.com, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@intel.com>
+Cc: pierre-louis.bossart@linux.intel.com, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, Kamil Lulko <kamilx.lulko@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQW1hZGV1c3ogU8WCYXdpxYRza2kgPGFtYWRldXN6eC5zbGF3aW5za2lAaW50ZWwuY29t
-PgoKQmVmb3JlIGFjdHVhbCBkZWxldGlvbiwgcGlwZWxpbmUgc2hvdWxkIGVudGVyIFJFU0VUIHN0
-YXRlLiBDdXJyZW50bHksCnBpcGUgc2tpcHMgdGhpcyBjaGVja3BvaW50IGFuZCBnb2VzIHN0cmFp
-Z2h0IHRvIHRoZSBmaW5pc2ggbGluZS4KVGhpcyBpcyBub3QgdGhlIGV4cGVjdGVkIHBhdGggYnkg
-dGhlIEZXLCBzbyBjb3JyZWN0IGl0LgoKU2lnbmVkLW9mZi1ieTogQW1hZGV1c3ogU8WCYXdpxYRz
-a2kgPGFtYWRldXN6eC5zbGF3aW5za2lAaW50ZWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBDZXphcnkg
-Um9qZXdza2kgPGNlemFyeS5yb2pld3NraUBpbnRlbC5jb20+Ci0tLQogc291bmQvc29jL2ludGVs
-L3NreWxha2Uvc2tsLW1lc3NhZ2VzLmMgfCAyMyArKysrKysrKysrKysrKysrLS0tLS0tLQogMSBm
-aWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLW1lc3NhZ2VzLmMgYi9zb3VuZC9zb2MvaW50
-ZWwvc2t5bGFrZS9za2wtbWVzc2FnZXMuYwppbmRleCBkZjAxZGM5NTI1MjEuLjc5YmFmOTBlNjEx
-NiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLW1lc3NhZ2VzLmMKKysr
-IGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLW1lc3NhZ2VzLmMKQEAgLTEyNjUsMTAgKzEy
-NjUsMTAgQEAgaW50IHNrbF9jcmVhdGVfcGlwZWxpbmUoc3RydWN0IHNrbF9zc3QgKmN0eCwgc3Ry
-dWN0IHNrbF9waXBlICpwaXBlKQogfQogCiAvKgotICogQSBwaXBlbGluZSBuZWVkcyB0byBiZSBk
-ZWxldGVkIG9uIGNsZWFudXAuIElmIGEgcGlwZWxpbmUgaXMgcnVubmluZywgdGhlbgotICogcGF1
-c2UgdGhlIHBpcGVsaW5lIGZpcnN0IGFuZCB0aGVuIGRlbGV0ZSBpdAotICogVGhlIHBpcGUgZGVs
-ZXRlIGlzIGRvbmUgYnkgc2VuZGluZyBkZWxldGUgcGlwZWxpbmUgSVBDLiBEU1Agd2lsbCBzdG9w
-IHRoZQotICogRE1BIGVuZ2luZXMgYW5kIHJlbGVhc2VzIHJlc291cmNlcworICogQSBwaXBlbGlu
-ZSBuZWVkcyB0byBiZSBkZWxldGVkIG9uIGNsZWFudXAuIElmIGEgcGlwZWxpbmUgaXMgcnVubmlu
-ZywKKyAqIHRoZW4gcGF1c2UgaXQgZmlyc3QuIEJlZm9yZSBhY3R1YWwgZGVsZXRpb24sIHBpcGVs
-aW5lIHNob3VsZCBlbnRlcgorICogcmVzZXQgc3RhdGUuIEZpbmlzaCB0aGUgcHJvY2VkdXJlIGJ5
-IHNlbmRpbmcgZGVsZXRlIHBpcGVsaW5lIElQQy4KKyAqIERTUCB3aWxsIHN0b3AgdGhlIERNQSBl
-bmdpbmVzIGFuZCByZWxlYXNlIHJlc291cmNlcwogICovCiBpbnQgc2tsX2RlbGV0ZV9waXBlKHN0
-cnVjdCBza2xfc3N0ICpjdHgsIHN0cnVjdCBza2xfcGlwZSAqcGlwZSkKIHsKQEAgLTEyNzYsNiAr
-MTI3NiwxMCBAQCBpbnQgc2tsX2RlbGV0ZV9waXBlKHN0cnVjdCBza2xfc3N0ICpjdHgsIHN0cnVj
-dCBza2xfcGlwZSAqcGlwZSkKIAogCWRldl9kYmcoY3R4LT5kZXYsICIlczogcGlwZSA9ICVkXG4i
-LCBfX2Z1bmNfXywgcGlwZS0+cHBsX2lkKTsKIAorCS8qIElmIHBpcGUgd2FzIG5vdCBjcmVhdGVk
-IGluIEZXLCBkbyBub3QgdHJ5IHRvIGRlbGV0ZSBpdCAqLworCWlmIChwaXBlLT5zdGF0ZSA8IFNL
-TF9QSVBFX0NSRUFURUQpCisJCXJldHVybiAwOworCiAJLyogSWYgcGlwZSBpcyBzdGFydGVkLCBk
-byBzdG9wIHRoZSBwaXBlIGluIEZXLiAqLwogCWlmIChwaXBlLT5zdGF0ZSA+PSBTS0xfUElQRV9T
-VEFSVEVEKSB7CiAJCXJldCA9IHNrbF9zZXRfcGlwZV9zdGF0ZShjdHgsIHBpcGUsIFBQTF9QQVVT
-RUQpOwpAQCAtMTI4Nyw5ICsxMjkxLDE0IEBAIGludCBza2xfZGVsZXRlX3BpcGUoc3RydWN0IHNr
-bF9zc3QgKmN0eCwgc3RydWN0IHNrbF9waXBlICpwaXBlKQogCQlwaXBlLT5zdGF0ZSA9IFNLTF9Q
-SVBFX1BBVVNFRDsKIAl9CiAKLQkvKiBJZiBwaXBlIHdhcyBub3QgY3JlYXRlZCBpbiBGVywgZG8g
-bm90IHRyeSB0byBkZWxldGUgaXQgKi8KLQlpZiAocGlwZS0+c3RhdGUgPCBTS0xfUElQRV9DUkVB
-VEVEKQotCQlyZXR1cm4gMDsKKwkvKiByZXNldCBwaXBlIHN0YXRlIGJlZm9yZSBkZWxldGlvbiAq
-LworCXJldCA9IHNrbF9zZXRfcGlwZV9zdGF0ZShjdHgsIHBpcGUsIFBQTF9SRVNFVCk7CisJaWYg
-KHJldCA8IDApIHsKKwkJZGV2X2VycihjdHgtPmRldiwgIkZhaWxlZCB0byByZXNldCBwaXBlIHJl
-dD0lZFxuIiwgcmV0KTsKKwkJcmV0dXJuIHJldDsKKwl9CisKKwlwaXBlLT5zdGF0ZSA9IFNLTF9Q
-SVBFX1JFU0VUOwogCiAJcmV0ID0gc2tsX2lwY19kZWxldGVfcGlwZWxpbmUoJmN0eC0+aXBjLCBw
-aXBlLT5wcGxfaWQpOwogCWlmIChyZXQgPCAwKSB7Ci0tIAoyLjE3LjEKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Kamil Lulko <kamilx.lulko@intel.com>
+
+cAVS modules do not require Type and Length header within the
+set_module_params IPC. This is also true for Vendor modules. The
+userspace (like tinymix) always appends this header to TLV controls
+which are used for set_module_params. Simply assume this header is
+always present in the payload and omit it from the IPC.
+
+Signed-off-by: Kamil Lulko <kamilx.lulko@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/skylake/skl-topology.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index c69d999d7bf1..76e971b8536a 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1492,22 +1492,18 @@ static int skl_tplg_tlv_control_set(struct snd_kcontrol *kcontrol,
+ 	struct skl *skl = get_skl_ctx(w->dapm->dev);
+ 
+ 	if (ac->params) {
++		/*
++		 * Widget data is expected to be stripped of T and L
++		 */
++		size -= 2 * sizeof(unsigned int);
++		data += 2;
++
+ 		if (size > ac->max)
+ 			return -EINVAL;
+-
+ 		ac->size = size;
+-		/*
+-		 * if the param_is is of type Vendor, firmware expects actual
+-		 * parameter id and size from the control.
+-		 */
+-		if (ac->param_id == SKL_PARAM_VENDOR_ID) {
+-			if (copy_from_user(ac->params, data, size))
+-				return -EFAULT;
+-		} else {
+-			if (copy_from_user(ac->params,
+-					   data + 2, size))
+-				return -EFAULT;
+-		}
++
++		if (copy_from_user(ac->params, data, size))
++			return -EFAULT;
+ 
+ 		if (w->power)
+ 			return skl_set_module_params(skl->skl_sst,
+-- 
+2.17.1
