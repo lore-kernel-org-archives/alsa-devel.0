@@ -1,73 +1,102 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-tdm: fix sample clock inversion" to the asoc tree
-Date: Thu, 13 Jun 2019 20:06:11 +0100 (BST)
-Message-ID: <20190613190611.3AA0B440046@finisterre.sirena.org.uk>
-References: <20190613114233.21130-4-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190613114233.21130-4-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+From: cezary.rojewski@intel.com
+Subject: [PATCH 1/7] ASoC: Intel: Skylake: Fix incorrect
+	capture position reporting
+Date: Thu, 13 Jun 2019 21:04:30 +0200
+Message-ID: <20190613190436.20156-2-cezary.rojewski@intel.com>
+References: <20190613190436.20156-1-cezary.rojewski@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56B16F80791
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:26 +0200 (CEST)
+In-Reply-To: <20190613190436.20156-1-cezary.rojewski@intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Leoni Prodduvaka <leoni.prodduvaka@intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-   ASoC: meson: axg-tdm: fix sample clock inversion
+HW recommends to set DUM bit on device power up, so that DPIB write
+request occurs every frame regardless of whether DPIB has changed or
+not. This addresses incorrect position reporting for capture streams.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From cb36ff785e868992e96e8b9e5a0c2822b680a9e2 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 13 Jun 2019 13:42:32 +0200
-Subject: [PATCH] ASoC: meson: axg-tdm: fix sample clock inversion
-
-The content of SND_SOC_DAIFMT_FORMAT_MASK is a number, not a bitfield,
-so the test to check if the format is i2s is wrong. Because of this the
-clock setting may be wrong. For example, the sample clock gets inverted
-in DSP B mode, when it should not.
-
-Fix the lrclk invert helper function
-
-Fixes: 1a11d88f499c ("ASoC: meson: add tdm formatter base driver")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Leoni Prodduvaka <leoni.prodduvaka@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/meson/axg-tdm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl.c | 21 +++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/meson/axg-tdm.h b/sound/soc/meson/axg-tdm.h
-index e578b6f40a07..5774ce0916d4 100644
---- a/sound/soc/meson/axg-tdm.h
-+++ b/sound/soc/meson/axg-tdm.h
-@@ -40,7 +40,7 @@ struct axg_tdm_iface {
- 
- static inline bool axg_tdm_lrclk_invert(unsigned int fmt)
- {
--	return (fmt & SND_SOC_DAIFMT_I2S) ^
-+	return ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S) ^
- 		!!(fmt & (SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_NB_IF));
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index f864f7b3df3a..7174b5da4099 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -192,6 +192,25 @@ void skl_update_d0i3c(struct device *dev, bool enable)
+ 			snd_hdac_chip_readb(bus, VS_D0I3C));
  }
  
++/**
++ * skl_dum_set - set DUM bit in EM2 register
++ * @bus: HD-audio core bus
++ *
++ * Addresses incorrect position reporting for capture streams.
++ * Used on device power up.
++ */
++static void skl_dum_set(struct hdac_bus *bus)
++{
++	/* For the DUM bit to be set, CRST needs to be out of reset state */
++	if (!(snd_hdac_chip_readb(bus, GCTL) & AZX_GCTL_RESET)) {
++		skl_enable_miscbdcge(bus->dev, false);
++		snd_hdac_bus_exit_link_reset(bus);
++		skl_enable_miscbdcge(bus->dev, true);
++	}
++
++	snd_hdac_chip_updatel(bus, VS_EM2, AZX_VS_EM2_DUM, AZX_VS_EM2_DUM);
++}
++
+ /* called from IRQ */
+ static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
+ {
+@@ -299,6 +318,7 @@ static int _skl_resume(struct hdac_bus *bus)
+ 	struct skl *skl = bus_to_skl(bus);
+ 
+ 	skl_init_pci(skl);
++	skl_dum_set(bus);
+ 	skl_init_chip(bus, true);
+ 
+ 	return skl_resume_dsp(skl);
+@@ -956,6 +976,7 @@ static int skl_first_init(struct hdac_bus *bus)
+ 
+ 	/* initialize chip */
+ 	skl_init_pci(skl);
++	skl_dum_set(bus);
+ 
+ 	return skl_init_chip(bus, true);
+ }
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 85f8bb6687dc..b92a7f8fe675 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -46,6 +46,7 @@
+ #define DMA_TRANSMITION_START	2
+ #define DMA_TRANSMITION_STOP	3
+ 
++#define AZX_VS_EM2_DUM			BIT(23)
+ #define AZX_REG_VS_EM2_L1SEN		BIT(13)
+ 
+ struct skl_dsp_resource {
 -- 
-2.20.1
+2.17.1
