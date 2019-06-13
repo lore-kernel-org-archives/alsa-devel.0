@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: uapi: align comments with firmware
-	files" to the asoc tree
-Date: Thu, 13 Jun 2019 20:06:07 +0100 (BST)
-Message-ID: <20190613190607.A5CF7440046@finisterre.sirena.org.uk>
-References: <20190612165705.1858-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: ignore unrecoverable CTX_SAVE IPC
+	errors at suspend" to the asoc tree
+Date: Thu, 13 Jun 2019 20:06:06 +0100 (BST)
+Message-ID: <20190613190606.69A68440046@finisterre.sirena.org.uk>
+References: <20190612165705.1858-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57C8AF8975D
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:06:08 +0200 (CEST)
-In-Reply-To: <20190612165705.1858-3-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F645F89766
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:06:07 +0200 (CEST)
+In-Reply-To: <20190612165705.1858-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: uapi: align comments with firmware files
+   ASoC: SOF: ignore unrecoverable CTX_SAVE IPC errors at suspend
 
 has been applied to the asoc tree at
 
@@ -55,50 +55,58 @@ to this mail.
 Thanks,
 Mark
 
->From b943f798011346589bd9ae994e5755e776756a31 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 12 Jun 2019 11:57:02 -0500
-Subject: [PATCH] ASoC: SOF: uapi: align comments with firmware files
+>From e2eba551d2f4226400a6bb7871fef439ad1318dd Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Wed, 12 Jun 2019 11:57:04 -0500
+Subject: [PATCH] ASoC: SOF: ignore unrecoverable CTX_SAVE IPC errors at
+ suspend
 
-No functional change, just mirror firmware comment changes
+As part of the suspend flow, a context save IPC message is
+sent to the firmware before powering down the DSP. If errors
+are met, the suspend flow is aborted with current code.
 
+Change the behaviour such that if firmware returns -EBUSY or
+-EAGAIN, return the error codes to PM core as before. The device
+is left in active state in this case.
+
+If other errors are reported, print a warning but do not block the
+suspend flow. As per interface specification, no valid error can be
+returned in this scenario. If the hardware has hit a fatal error and
+is not able to respond successfully, best recovery method is to
+proceed with suspend and power off the DSP.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof/topology.h | 4 ++--
- include/sound/sof/trace.h    | 4 +++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/sof/pm.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
-index 4978999fd362..41dcabf89899 100644
---- a/include/sound/sof/topology.h
-+++ b/include/sound/sof/topology.h
-@@ -84,9 +84,9 @@ struct sof_ipc_buffer {
- struct sof_ipc_comp_config {
- 	struct sof_ipc_cmd_hdr hdr;
- 	uint32_t periods_sink;	/**< 0 means variable */
--	uint32_t periods_source;	/**< 0 means variable */
-+	uint32_t periods_source;/**< 0 means variable */
- 	uint32_t reserved1;	/**< reserved */
--	uint32_t frame_fmt;		/**< SOF_IPC_FRAME_ */
-+	uint32_t frame_fmt;	/**< SOF_IPC_FRAME_ */
- 	uint32_t xrun_action;
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 8ef1d51025d8..b7843f02ef67 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -343,11 +343,20 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ #endif
+ 	/* notify DSP of upcoming power down */
+ 	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
+-	if (ret < 0) {
++	if (ret == -EBUSY || ret == -EAGAIN) {
++		/*
++		 * runtime PM has logic to handle -EBUSY/-EAGAIN so
++		 * pass these errors up
++		 */
+ 		dev_err(sdev->dev,
+ 			"error: ctx_save ipc error during suspend %d\n",
+ 			ret);
+ 		return ret;
++	} else if (ret < 0) {
++		/* FW in unexpected state, continue to power down */
++		dev_warn(sdev->dev,
++			 "ctx_save ipc error %d, proceeding with suspend\n",
++			 ret);
+ 	}
  
- 	/* reserved for future use */
-diff --git a/include/sound/sof/trace.h b/include/sound/sof/trace.h
-index 2187ff7d07ce..9257d5473d97 100644
---- a/include/sound/sof/trace.h
-+++ b/include/sound/sof/trace.h
-@@ -66,7 +66,9 @@ struct sof_ipc_dma_trace_posn {
- #define SOF_IPC_PANIC_WFI			(SOF_IPC_PANIC_MAGIC | 0xa)
- #define SOF_IPC_PANIC_ASSERT			(SOF_IPC_PANIC_MAGIC | 0xb)
- 
--/* panic info include filename and line number */
-+/* panic info include filename and line number
-+ * filename array will not include null terminator if fully filled
-+ */
- struct sof_ipc_panic_info {
- 	struct sof_ipc_hdr hdr;
- 	uint32_t code;			/* SOF_IPC_PANIC_ */
+ 	/* power down all DSP cores */
 -- 
 2.20.1
