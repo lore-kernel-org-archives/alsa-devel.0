@@ -1,8 +1,8 @@
 From: cezary.rojewski@intel.com
-Subject: [PATCH 4/7] ASoC: Intel: Fix race condition in IPC rx
-	list
-Date: Thu, 13 Jun 2019 21:04:33 +0200
-Message-ID: <20190613190436.20156-5-cezary.rojewski@intel.com>
+Subject: [PATCH 5/7] ASoC: Intel: Common: Fix NULL dereference
+	in tx_wait_done
+Date: Thu, 13 Jun 2019 21:04:34 +0200
+Message-ID: <20190613190436.20156-6-cezary.rojewski@intel.com>
 References: <20190613190436.20156-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C0B5F89714
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:31 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D95E1F89711
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:32 +0200 (CEST)
 In-Reply-To: <20190613190436.20156-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,44 +24,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Since there are multiple IPCs being sent in a short span of time, there
-is a possibility of more than one message being on the Rx list after
-receiving response from firmware. In such cases, when the first
-notification of interrupt from firmware is received, driver retrieves
-the message from the Rx list but does not delete it from the list till
-the next lock. In the meantime, when another interrupt is received from
-the firmware, driver is reading the previous message again since the
-previous message has not been removed from the list.
+rx_data and rx_bytes present for tx_wait_done are optional parameters.
+If not provided, function should not attempt to copy received data.
+This change fixes memcpy NULL pointer dereference issue occurring when
+optional rx_data is NULL while received message size is non-zero.
 
-Signed-off-by: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 2 +-
+ sound/soc/intel/common/sst-ipc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 5c9206dc7932..5094205a243f 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -344,6 +344,7 @@ static struct ipc_message *skl_ipc_reply_get_msg(struct sst_generic_ipc *ipc,
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index dcff13802c00..fc3340f1da3a 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -71,7 +71,7 @@ static int tx_wait_done(struct sst_generic_ipc *ipc,
+ 	} else {
  
- 	msg = list_first_entry(&ipc->rx_list, struct ipc_message, list);
- 
-+	list_del(&msg->list);
- out:
- 	return msg;
- 
-@@ -488,7 +489,6 @@ void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
+ 		/* copy the data returned from DSP */
+-		if (msg->rx_size)
++		if (rx_data)
+ 			memcpy(rx_data, msg->rx_data, msg->rx_size);
+ 		ret = msg->errno;
  	}
- 
- 	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
--	list_del(&msg->list);
- 	sst_ipc_tx_msg_reply_complete(ipc, msg);
- 	spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
- }
 -- 
 2.17.1
