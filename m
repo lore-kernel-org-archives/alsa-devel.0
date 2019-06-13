@@ -1,18 +1,18 @@
 From: cezary.rojewski@intel.com
-Subject: [PATCH 1/7] ASoC: Intel: Skylake: Fix incorrect
-	capture position reporting
-Date: Thu, 13 Jun 2019 21:04:30 +0200
-Message-ID: <20190613190436.20156-2-cezary.rojewski@intel.com>
+Subject: [PATCH 2/7] ASoC: Intel: Skylake: Use recommended
+	SDxFMT programming sequence
+Date: Thu, 13 Jun 2019 21:04:31 +0200
+Message-ID: <20190613190436.20156-3-cezary.rojewski@intel.com>
 References: <20190613190436.20156-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56B16F80791
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:26 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E681EF89703
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:05:27 +0200 (CEST)
 In-Reply-To: <20190613190436.20156-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,79 +24,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: Leoni Prodduvaka <leoni.prodduvaka@intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+Cc: pierre-louis.bossart@linux.intel.com, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, =?UTF-8?q?Pawe=C5=82=20Har=C5=82ozi=C5=84ski?= <pawel.harlozinski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-
-HW recommends to set DUM bit on device power up, so that DPIB write
-request occurs every frame regardless of whether DPIB has changed or
-not. This addresses incorrect position reporting for capture streams.
-
-Signed-off-by: Leoni Prodduvaka <leoni.prodduvaka@intel.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/skylake/skl.c | 21 +++++++++++++++++++++
- sound/soc/intel/skylake/skl.h |  1 +
- 2 files changed, 22 insertions(+)
-
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index f864f7b3df3a..7174b5da4099 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -192,6 +192,25 @@ void skl_update_d0i3c(struct device *dev, bool enable)
- 			snd_hdac_chip_readb(bus, VS_D0I3C));
- }
- 
-+/**
-+ * skl_dum_set - set DUM bit in EM2 register
-+ * @bus: HD-audio core bus
-+ *
-+ * Addresses incorrect position reporting for capture streams.
-+ * Used on device power up.
-+ */
-+static void skl_dum_set(struct hdac_bus *bus)
-+{
-+	/* For the DUM bit to be set, CRST needs to be out of reset state */
-+	if (!(snd_hdac_chip_readb(bus, GCTL) & AZX_GCTL_RESET)) {
-+		skl_enable_miscbdcge(bus->dev, false);
-+		snd_hdac_bus_exit_link_reset(bus);
-+		skl_enable_miscbdcge(bus->dev, true);
-+	}
-+
-+	snd_hdac_chip_updatel(bus, VS_EM2, AZX_VS_EM2_DUM, AZX_VS_EM2_DUM);
-+}
-+
- /* called from IRQ */
- static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
- {
-@@ -299,6 +318,7 @@ static int _skl_resume(struct hdac_bus *bus)
- 	struct skl *skl = bus_to_skl(bus);
- 
- 	skl_init_pci(skl);
-+	skl_dum_set(bus);
- 	skl_init_chip(bus, true);
- 
- 	return skl_resume_dsp(skl);
-@@ -956,6 +976,7 @@ static int skl_first_init(struct hdac_bus *bus)
- 
- 	/* initialize chip */
- 	skl_init_pci(skl);
-+	skl_dum_set(bus);
- 
- 	return skl_init_chip(bus, true);
- }
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 85f8bb6687dc..b92a7f8fe675 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -46,6 +46,7 @@
- #define DMA_TRANSMITION_START	2
- #define DMA_TRANSMITION_STOP	3
- 
-+#define AZX_VS_EM2_DUM			BIT(23)
- #define AZX_REG_VS_EM2_L1SEN		BIT(13)
- 
- struct skl_dsp_resource {
--- 
-2.17.1
+RnJvbTogUGF3ZcWCIEhhcsWCb3ppxYRza2kgPHBhd2VsLmhhcmxvemluc2tpQGludGVsLmNvbT4K
+CkZvciBCWFQgcGxhdGZvcm1zLCB0aGUgcmVjb21tZW5kZWQgc2VxdWVuY2UgdG8gcHJvZ3JhbSB0
+aGUgU0R4Rk1UIGlzIHRvCmZpcnN0IGNvdXBsZSB0aGUgc3RyZWFtLCB3cml0ZSB0aGUgZm9ybWF0
+IGFuZCBkZWNvdXBsZSBhZ2Fpbi4KRm9yIGFsbCBvdGhlciBwbGF0Zm9ybXMgc2FpZCBzZXF1ZW5j
+ZSByZW1haW5zIHVuY2hhbmdlZC4KClRvIHByZXZlbnQgY29kZSBkdXBsaWNhdGlvbiwgSVNfQlhU
+IChhbmQgY29uc2VxdWVudGx5IElTX0NGTCkgbWFjcm8gaXMKcmVsb2NhdGVkIHRvIGhkYV9jb2Rl
+Yy5oIGZpbGUgc28gaXQgY2FuIGJlIGFjY2Vzc2VkIGJ5IFNLTCBkcml2ZXIuCgpTaWduZWQtb2Zm
+LWJ5OiBQYXdlxYIgSGFyxYJvemnFhHNraSA8cGF3ZWwuaGFybG96aW5za2lAaW50ZWwuY29tPgpT
+aWduZWQtb2ZmLWJ5OiBDZXphcnkgUm9qZXdza2kgPGNlemFyeS5yb2pld3NraUBpbnRlbC5jb20+
+Ci0tLQogaW5jbHVkZS9zb3VuZC9oZGFfY29kZWMuaCAgICAgICAgIHwgIDMgKysrCiBzb3VuZC9w
+Y2kvaGRhL2hkYV9pbnRlbC5jICAgICAgICAgfCAgMyAtLS0KIHNvdW5kL3NvYy9pbnRlbC9za3ls
+YWtlL3NrbC1wY20uYyB8IDE0ICsrKysrKysrKysrKystCiAzIGZpbGVzIGNoYW5nZWQsIDE2IGlu
+c2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9o
+ZGFfY29kZWMuaCBiL2luY2x1ZGUvc291bmQvaGRhX2NvZGVjLmgKaW5kZXggY2M3YzhkNDJkNGZk
+Li5hZDQ2YTA4MmIwMGYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvc291bmQvaGRhX2NvZGVjLmgKKysr
+IGIvaW5jbHVkZS9zb3VuZC9oZGFfY29kZWMuaApAQCAtMzEsNiArMzEsOSBAQAogI2luY2x1ZGUg
+PHNvdW5kL2hkYV92ZXJicy5oPgogI2luY2x1ZGUgPHNvdW5kL2hkYV9yZWdtYXAuaD4KIAorI2Rl
+ZmluZSBJU19CWFQocGNpKSAoKHBjaSktPnZlbmRvciA9PSAweDgwODYgJiYgKHBjaSktPmRldmlj
+ZSA9PSAweDVhOTgpCisjZGVmaW5lIElTX0NGTChwY2kpICgocGNpKS0+dmVuZG9yID09IDB4ODA4
+NiAmJiAocGNpKS0+ZGV2aWNlID09IDB4YTM0OCkKKwogLyoKICAqIFN0cnVjdHVyZXMKICAqLwpk
+aWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyBiL3NvdW5kL3BjaS9oZGEvaGRh
+X2ludGVsLmMKaW5kZXggMDc0MWVhZTIzZjEwLi4wNzE0NGJjYzcwNTkgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKKysrIGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwpA
+QCAtMzczLDkgKzM3Myw2IEBAIGVudW0gewogCQkJCQkoKHBjaSktPmRldmljZSA9PSAweDBkMGMp
+IHx8IFwKIAkJCQkJKChwY2kpLT5kZXZpY2UgPT0gMHgxNjBjKSkKIAotI2RlZmluZSBJU19CWFQo
+cGNpKSAoKHBjaSktPnZlbmRvciA9PSAweDgwODYgJiYgKHBjaSktPmRldmljZSA9PSAweDVhOTgp
+Ci0jZGVmaW5lIElTX0NGTChwY2kpICgocGNpKS0+dmVuZG9yID09IDB4ODA4NiAmJiAocGNpKS0+
+ZGV2aWNlID09IDB4YTM0OCkKLQogc3RhdGljIGNoYXIgKmRyaXZlcl9zaG9ydF9uYW1lc1tdID0g
+ewogCVtBWlhfRFJJVkVSX0lDSF0gPSAiSERBIEludGVsIiwKIAlbQVpYX0RSSVZFUl9QQ0hdID0g
+IkhEQSBJbnRlbCBQQ0giLApkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2ts
+LXBjbS5jIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXBjbS5jCmluZGV4IGVkYzVlY2Zj
+MGI1NS4uY2QyNTQ4MjM4MTNhIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9z
+a2wtcGNtLmMKKysrIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXBjbS5jCkBAIC0xNDEs
+NiArMTQxLDcgQEAgc3RhdGljIHZvaWQgc2tsX3NldF9zdXNwZW5kX2FjdGl2ZShzdHJ1Y3Qgc25k
+X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIGludCBza2xfcGNtX2hvc3RfZG1hX3ByZXBhcmUo
+c3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3Qgc2tsX3BpcGVfcGFyYW1zICpwYXJhbXMpCiB7CiAJ
+c3RydWN0IGhkYWNfYnVzICpidXMgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKKwlzdHJ1Y3Qgc2ts
+ICpza2wgPSBidXNfdG9fc2tsKGJ1cyk7CiAJdW5zaWduZWQgaW50IGZvcm1hdF92YWw7CiAJc3Ry
+dWN0IGhkYWNfc3RyZWFtICpoc3RyZWFtOwogCXN0cnVjdCBoZGFjX2V4dF9zdHJlYW0gKnN0cmVh
+bTsKQEAgLTE2NSw3ICsxNjYsMTggQEAgaW50IHNrbF9wY21faG9zdF9kbWFfcHJlcGFyZShzdHJ1
+Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBza2xfcGlwZV9wYXJhbXMgKnBhcmFtcykKIAlpZiAoZXJy
+IDwgMCkKIAkJcmV0dXJuIGVycjsKIAotCWVyciA9IHNuZF9oZGFjX3N0cmVhbV9zZXR1cChoZGFj
+X3N0cmVhbShzdHJlYW0pKTsKKwkvKgorCSAqIFRoZSByZWNvbW1lbmRlZCBTRHhGTVQgcHJvZ3Jh
+bW1pbmcgc2VxdWVuY2UgZm9yIEJYVAorCSAqIHBsYXRmb3JtcyBpcyB0byBjb3VwbGUgdGhlIHN0
+cmVhbSBiZWZvcmUgd3JpdGluZyB0aGUgZm9ybWF0CisJICovCisJaWYgKElTX0JYVChza2wtPnBj
+aSkpIHsKKwkJc25kX2hkYWNfZXh0X3N0cmVhbV9kZWNvdXBsZShidXMsIHN0cmVhbSwgZmFsc2Up
+OworCQllcnIgPSBzbmRfaGRhY19zdHJlYW1fc2V0dXAoaGRhY19zdHJlYW0oc3RyZWFtKSk7CisJ
+CXNuZF9oZGFjX2V4dF9zdHJlYW1fZGVjb3VwbGUoYnVzLCBzdHJlYW0sIHRydWUpOworCX0gZWxz
+ZSB7CisJCWVyciA9IHNuZF9oZGFjX3N0cmVhbV9zZXR1cChoZGFjX3N0cmVhbShzdHJlYW0pKTsK
+Kwl9CisKIAlpZiAoZXJyIDwgMCkKIAkJcmV0dXJuIGVycjsKIAotLSAKMi4xNy4xCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
