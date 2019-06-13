@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: Fix -Wunused-const-variable" to the asoc tree
-Date: Thu, 13 Jun 2019 20:06:09 +0100 (BST)
-Message-ID: <20190613190609.6F9F5440046@finisterre.sirena.org.uk>
-References: <20190612232502.256846-1-nhuck@google.com>
+Subject: Applied "ASoC: meson: axg-tdmin: right_j is not supported" to the asoc tree
+Date: Thu, 13 Jun 2019 20:06:12 +0100 (BST)
+Message-ID: <20190613190612.671D7440046@finisterre.sirena.org.uk>
+References: <20190613114233.21130-2-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190612232502.256846-1-nhuck@google.com>
+In-Reply-To: <20190613114233.21130-2-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nathan Huckleberry <nhuck@google.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, cernekee@chromium.org, clang-built-linux@googlegroups.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas571x: Fix -Wunused-const-variable
+   ASoC: meson: axg-tdmin: right_j is not supported
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,44 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 2f7e015c1f20cfdbe97df25868abbfa8b7514778 Mon Sep 17 00:00:00 2001
-From: Nathan Huckleberry <nhuck@google.com>
-Date: Wed, 12 Jun 2019 16:25:02 -0700
-Subject: [PATCH] ASoC: tas571x: Fix -Wunused-const-variable
+>From 47c317b786b6c1efc2cb3cdb894fd323422fe5ea Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 13 Jun 2019 13:42:30 +0200
+Subject: [PATCH] ASoC: meson: axg-tdmin: right_j is not supported
 
-Clang produces the following warning
+Right justified format is actually not supported by the amlogic tdm input
+decoder.
 
-sound/soc/codecs/tas571x.c:666:38: warning: unused variable
-'tas5721_controls' [-Wunused-const-variable]
-
-In the chip struct definition tas5711_controls is used rather than
-tac5712_controls. Looks like a typo was made in the original commit.
-
-Since tac5711_controls is identical to tas5721_controls we can just swap
-them
-
-Cc: clang-built-linux@googlegroups.com
-Link: https://github.com/ClangBuiltLinux/linux/issues/522
-Signed-off-by: Nathan Huckleberry <nhuck@google.com>
+Fixes: 13a22e6a98f8 ("ASoC: meson: add tdm input driver")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/meson/axg-tdmin.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index ca2dfe12344e..684b7afa9252 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -725,8 +725,8 @@ static const struct regmap_config tas5721_regmap_config = {
- static const struct tas571x_chip tas5721_chip = {
- 	.supply_names			= tas5721_supply_names,
- 	.num_supply_names		= ARRAY_SIZE(tas5721_supply_names),
--	.controls			= tas5711_controls,
--	.num_controls			= ARRAY_SIZE(tas5711_controls),
-+	.controls			= tas5721_controls,
-+	.num_controls			= ARRAY_SIZE(tas5721_controls),
- 	.regmap_config			= &tas5721_regmap_config,
- 	.vol_reg_size			= 1,
- };
+diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
+index a790f925a4ef..cb87f17f3e95 100644
+--- a/sound/soc/meson/axg-tdmin.c
++++ b/sound/soc/meson/axg-tdmin.c
+@@ -121,7 +121,6 @@ static int axg_tdmin_prepare(struct regmap *map,
+ 		break;
+ 
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-	case SND_SOC_DAIFMT_RIGHT_J:
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		break;
+ 
 -- 
 2.20.1
