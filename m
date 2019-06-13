@@ -1,21 +1,21 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 1/4] ASoC: meson: axg-tdmin: right_j is not
+Subject: [PATCH 2/4] ASoC: meson: axg-tdmout: right_j is not
 	supported
-Date: Thu, 13 Jun 2019 13:42:30 +0200
-Message-ID: <20190613114233.21130-2-jbrunet@baylibre.com>
+Date: Thu, 13 Jun 2019 13:42:31 +0200
+Message-ID: <20190613114233.21130-3-jbrunet@baylibre.com>
 References: <20190613114233.21130-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE138F80791
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 13:42:40 +0200 (CEST)
-Received: by mail-wm1-x341.google.com with SMTP id u8so9778899wmm.1
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 04:42:40 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF4C6F89703
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 13:42:41 +0200 (CEST)
+Received: by mail-wm1-x342.google.com with SMTP id u8so9778963wmm.1
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 04:42:41 -0700 (PDT)
 In-Reply-To: <20190613114233.21130-1-jbrunet@baylibre.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,26 +30,26 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Right justified format is actually not supported by the amlogic tdm input
-decoder.
+Right justified format is actually not supported by the amlogic tdm output
+encoder.
 
-Fixes: 13a22e6a98f8 ("ASoC: meson: add tdm input driver")
+Fixes: c41c2a355b86 ("ASoC: meson: add tdm output driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-tdmin.c | 1 -
+ sound/soc/meson/axg-tdmout.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
-index a790f925a4ef..cb87f17f3e95 100644
---- a/sound/soc/meson/axg-tdmin.c
-+++ b/sound/soc/meson/axg-tdmin.c
-@@ -121,7 +121,6 @@ static int axg_tdmin_prepare(struct regmap *map,
+diff --git a/sound/soc/meson/axg-tdmout.c b/sound/soc/meson/axg-tdmout.c
+index 527bfc4487e0..86537fc0ecb5 100644
+--- a/sound/soc/meson/axg-tdmout.c
++++ b/sound/soc/meson/axg-tdmout.c
+@@ -137,7 +137,6 @@ static int axg_tdmout_prepare(struct regmap *map,
  		break;
  
  	case SND_SOC_DAIFMT_LEFT_J:
 -	case SND_SOC_DAIFMT_RIGHT_J:
  	case SND_SOC_DAIFMT_DSP_B:
+ 		skew += 1;
  		break;
- 
 -- 
 2.20.1
