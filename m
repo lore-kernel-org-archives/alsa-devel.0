@@ -1,21 +1,23 @@
-From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH 01/15] ASoC: SOF: Intel: hda: save handle
- to sdev in sof_intel_hda_stream
-Date: Thu, 13 Jun 2019 10:00:50 +0200
-Message-ID: <20190613092001.2027f42a@xxx>
-References: <20190612172347.22338-1-pierre-louis.bossart@linux.intel.com>
- <20190612172347.22338-2-pierre-louis.bossart@linux.intel.com>
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Subject: Re: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of
+	VAG Ramp Control
+Date: Thu, 13 Jun 2019 09:05:09 +0000
+Message-ID: <79fa1a0855bfcc1abad348aa047e7a69fffb8225.camel@toradex.com>
+References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
+ <20190521103619.4707-2-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50118.outbound.protection.outlook.com [40.107.5.118])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE7C5F80791
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 09:57:04 +0200 (CEST)
-In-Reply-To: <20190612172347.22338-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAD70F80794
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 11:05:13 +0200 (CEST)
+In-Reply-To: <20190521103619.4707-2-oleksandr.suvorov@toradex.com>
+Content-Language: en-US
+Content-ID: <076A28A3E55D844EA3B5769359C1B9E2@eurprd05.prod.outlook.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +27,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: "festevam@gmail.com" <festevam@gmail.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Cc: Igor Opaniuk <igor.opaniuk@toradex.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 12 Jun 2019 12:23:33 -0500
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
-
-> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On Tue, 2019-05-21 at 13:36 +0300, Oleksandr Suvorov wrote:
+> SGTL5000_SMALL_POP is a bit mask, not a value. Usage of
+> correct definition makes device probing code more clear.
 > 
-> Add a snd_sof_dev member to sof_intel_hda_stream. This will be
-> used to access the snd_sof_dev during link hw_params callback.
-> 
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> ---
->  sound/soc/sof/intel/hda-stream.c | 4 ++++
->  sound/soc/sof/intel/hda.h        | 1 +
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/sound/soc/sof/intel/hda-stream.c
-> b/sound/soc/sof/intel/hda-stream.c index c92006f89499..1cd94e7631a8
-> 100644 --- a/sound/soc/sof/intel/hda-stream.c
-> +++ b/sound/soc/sof/intel/hda-stream.c
-> @@ -564,6 +564,8 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
->  		if (!hda_stream)
->  			return -ENOMEM;
->  
-> +		hda_stream->sdev = sdev;
-> +
->  		stream = &hda_stream->hda_stream;
->  
->  		stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
-> @@ -617,6 +619,8 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
->  		if (!hda_stream)
->  			return -ENOMEM;
->  
-> +		hda_stream->sdev = sdev;
-> +
->  		stream = &hda_stream->hda_stream;
->  
+> Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 
-Just one thing, you have two rather big for loops here, one for capture
-and other for playback, they are almost identical apart for ~2 lines.
-Maybe share this code and only put the differences into ifs?
+Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
->  		/* we always have DSP support */
-> diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-> index 6c7dee2627d0..502b0a3c2e3c 100644
-> --- a/sound/soc/sof/intel/hda.h
-> +++ b/sound/soc/sof/intel/hda.h
-> @@ -409,6 +409,7 @@ static inline struct hda_bus *sof_to_hbus(struct
-> snd_sof_dev *s) }
+> ---
+> 
+>  sound/soc/codecs/sgtl5000.c | 2 +-
+>  sound/soc/codecs/sgtl5000.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c
+
+I'm not sure how exactly you generated this patch set but usually git
+format-patch inserts an additional folder level called a/b which is
+what git am accepts by default e.g.
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+
+> index a6a4748c97f9..5e49523ee0b6 100644
+> --- sound/soc/codecs/sgtl5000.c
+> +++ sound/soc/codecs/sgtl5000.c
+
+Of course, the same a/b stuff applies here:
+
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+
+> @@ -1296,7 +1296,7 @@ static int sgtl5000_probe(struct
+> snd_soc_component *component)
 >  
->  struct sof_intel_hda_stream {
-> +	struct snd_sof_dev *sdev;
->  	struct hdac_ext_stream hda_stream;
->  	struct sof_intel_stream stream;
->  	int hw_params_upon_resume; /* set up hw_params upon resume */
+>  	/* enable small pop, introduce 400ms delay in turning off */
+>  	snd_soc_component_update_bits(component,
+> SGTL5000_CHIP_REF_CTRL,
+> -				SGTL5000_SMALL_POP, 1);
+> +				SGTL5000_SMALL_POP,
+> SGTL5000_SMALL_POP);
+>  
+>  	/* disable short cut detector */
+>  	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL,
+> 0);
+> diff --git sound/soc/codecs/sgtl5000.h sound/soc/codecs/sgtl5000.h
+> index 18cae08bbd3a..a4bf4bca95bf 100644
+> --- sound/soc/codecs/sgtl5000.h
+> +++ sound/soc/codecs/sgtl5000.h
+> @@ -273,7 +273,7 @@
+>  #define SGTL5000_BIAS_CTRL_MASK			0x000e
+>  #define SGTL5000_BIAS_CTRL_SHIFT		1
+>  #define SGTL5000_BIAS_CTRL_WIDTH		3
+> -#define SGTL5000_SMALL_POP			1
+> +#define SGTL5000_SMALL_POP			0x0001
+>  
+>  /*
+>   * SGTL5000_CHIP_MIC_CTRL
+> -- 
+> 2.20.1
