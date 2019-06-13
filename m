@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: intel: extend IPC dump
-	information" to the asoc tree
-Date: Thu, 13 Jun 2019 20:06:06 +0100 (BST)
-Message-ID: <20190613190607.115DF440046@finisterre.sirena.org.uk>
-References: <20190612165705.1858-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: uapi: align comments with firmware
+	files" to the asoc tree
+Date: Thu, 13 Jun 2019 20:06:07 +0100 (BST)
+Message-ID: <20190613190607.A5CF7440046@finisterre.sirena.org.uk>
+References: <20190612165705.1858-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC54FF89761
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:06:07 +0200 (CEST)
-In-Reply-To: <20190612165705.1858-4-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57C8AF8975D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 21:06:08 +0200 (CEST)
+In-Reply-To: <20190612165705.1858-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: intel: extend IPC dump information
+   ASoC: SOF: uapi: align comments with firmware files
 
 has been applied to the asoc tree at
 
@@ -55,109 +55,50 @@ to this mail.
 Thanks,
 Mark
 
->From f1fd9d0e6dbae9c7cdd7e82fe3055ec7b790abb6 Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Wed, 12 Jun 2019 11:57:03 -0500
-Subject: [PATCH] ASoC: SOF: intel: extend IPC dump information
+>From b943f798011346589bd9ae994e5755e776756a31 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 12 Jun 2019 11:57:02 -0500
+Subject: [PATCH] ASoC: SOF: uapi: align comments with firmware files
 
-Extend the HDA IPC dump implementation with status of key IRQ
-registers. This is useful to debug IPC timeouts and similar
-issues.
+No functional change, just mirror firmware comment changes
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/cnl.c |  2 ++
- sound/soc/sof/intel/hda.c | 29 +++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h |  2 ++
- 3 files changed, 33 insertions(+)
+ include/sound/sof/topology.h | 4 ++--
+ include/sound/sof/trace.h    | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 9a4927b6b6ae..d59305787fc3 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -168,6 +168,8 @@ static void cnl_ipc_dump(struct snd_sof_dev *sdev)
- 	u32 hipcida;
- 	u32 hipctdr;
+diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
+index 4978999fd362..41dcabf89899 100644
+--- a/include/sound/sof/topology.h
++++ b/include/sound/sof/topology.h
+@@ -84,9 +84,9 @@ struct sof_ipc_buffer {
+ struct sof_ipc_comp_config {
+ 	struct sof_ipc_cmd_hdr hdr;
+ 	uint32_t periods_sink;	/**< 0 means variable */
+-	uint32_t periods_source;	/**< 0 means variable */
++	uint32_t periods_source;/**< 0 means variable */
+ 	uint32_t reserved1;	/**< reserved */
+-	uint32_t frame_fmt;		/**< SOF_IPC_FRAME_ */
++	uint32_t frame_fmt;	/**< SOF_IPC_FRAME_ */
+ 	uint32_t xrun_action;
  
-+	hda_ipc_irq_dump(sdev);
-+
- 	/* read IPC status */
- 	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
- 	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 47b508463218..af546e42e1d9 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -15,6 +15,9 @@
-  * Hardware interface for generic Intel audio DSP HDA IP
-  */
+ 	/* reserved for future use */
+diff --git a/include/sound/sof/trace.h b/include/sound/sof/trace.h
+index 2187ff7d07ce..9257d5473d97 100644
+--- a/include/sound/sof/trace.h
++++ b/include/sound/sof/trace.h
+@@ -66,7 +66,9 @@ struct sof_ipc_dma_trace_posn {
+ #define SOF_IPC_PANIC_WFI			(SOF_IPC_PANIC_MAGIC | 0xa)
+ #define SOF_IPC_PANIC_ASSERT			(SOF_IPC_PANIC_MAGIC | 0xb)
  
-+#include <sound/hdaudio_ext.h>
-+#include <sound/hda_register.h>
-+
- #include <linux/module.h>
- #include <sound/hdaudio_ext.h>
- #include <sound/sof.h>
-@@ -183,12 +186,38 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
- 	}
- }
- 
-+void hda_ipc_irq_dump(struct snd_sof_dev *sdev)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	u32 adspis;
-+	u32 intsts;
-+	u32 intctl;
-+	u32 ppsts;
-+	u8 rirbsts;
-+
-+	/* read key IRQ stats and config registers */
-+	adspis = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIS);
-+	intsts = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTSTS);
-+	intctl = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL);
-+	ppsts = snd_sof_dsp_read(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPSTS);
-+	rirbsts = snd_hdac_chip_readb(bus, RIRBSTS);
-+
-+	dev_err(sdev->dev,
-+		"error: hda irq intsts 0x%8.8x intlctl 0x%8.8x rirb %2.2x\n",
-+		intsts, intctl, rirbsts);
-+	dev_err(sdev->dev,
-+		"error: dsp irq ppsts 0x%8.8x adspis 0x%8.8x\n",
-+		ppsts, adspis);
-+}
-+
- void hda_ipc_dump(struct snd_sof_dev *sdev)
- {
- 	u32 hipcie;
- 	u32 hipct;
- 	u32 hipcctl;
- 
-+	hda_ipc_irq_dump(sdev);
-+
- 	/* read IPC status */
- 	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCIE);
- 	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 455046612b94..6c7dee2627d0 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -61,6 +61,7 @@
- #define SOF_HDA_PP_CAP_ID		0x3
- #define SOF_HDA_REG_PP_PPCH		0x10
- #define SOF_HDA_REG_PP_PPCTL		0x04
-+#define SOF_HDA_REG_PP_PPSTS		0x08
- #define SOF_HDA_PPCTL_PIE		BIT(31)
- #define SOF_HDA_PPCTL_GPROCEN		BIT(30)
- 
-@@ -449,6 +450,7 @@ void hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
- void hda_dsp_dump_skl(struct snd_sof_dev *sdev, u32 flags);
- void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
- void hda_ipc_dump(struct snd_sof_dev *sdev);
-+void hda_ipc_irq_dump(struct snd_sof_dev *sdev);
- 
- /*
-  * DSP PCM Operations.
+-/* panic info include filename and line number */
++/* panic info include filename and line number
++ * filename array will not include null terminator if fully filled
++ */
+ struct sof_ipc_panic_info {
+ 	struct sof_ipc_hdr hdr;
+ 	uint32_t code;			/* SOF_IPC_PANIC_ */
 -- 
 2.20.1
