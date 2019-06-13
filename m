@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-tdmin: right_j is not supported" to the asoc tree
-Date: Thu, 13 Jun 2019 20:06:12 +0100 (BST)
-Message-ID: <20190613190612.671D7440046@finisterre.sirena.org.uk>
-References: <20190613114233.21130-2-jbrunet@baylibre.com>
+Subject: Applied "ASoC: meson: axg-tdmout: right_j is not supported" to the asoc tree
+Date: Thu, 13 Jun 2019 20:06:11 +0100 (BST)
+Message-ID: <20190613190611.CED1D440046@finisterre.sirena.org.uk>
+References: <20190613114233.21130-3-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190613114233.21130-2-jbrunet@baylibre.com>
+In-Reply-To: <20190613114233.21130-3-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-tdmin: right_j is not supported
+   ASoC: meson: axg-tdmout: right_j is not supported
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 47c317b786b6c1efc2cb3cdb894fd323422fe5ea Mon Sep 17 00:00:00 2001
+>From 7e0d7d0fbd06af0507611f85dba8daf24832abd9 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 13 Jun 2019 13:42:30 +0200
-Subject: [PATCH] ASoC: meson: axg-tdmin: right_j is not supported
+Date: Thu, 13 Jun 2019 13:42:31 +0200
+Subject: [PATCH] ASoC: meson: axg-tdmout: right_j is not supported
 
-Right justified format is actually not supported by the amlogic tdm input
-decoder.
+Right justified format is actually not supported by the amlogic tdm output
+encoder.
 
-Fixes: 13a22e6a98f8 ("ASoC: meson: add tdm input driver")
+Fixes: c41c2a355b86 ("ASoC: meson: add tdm output driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-tdmin.c | 1 -
+ sound/soc/meson/axg-tdmout.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
-index a790f925a4ef..cb87f17f3e95 100644
---- a/sound/soc/meson/axg-tdmin.c
-+++ b/sound/soc/meson/axg-tdmin.c
-@@ -121,7 +121,6 @@ static int axg_tdmin_prepare(struct regmap *map,
+diff --git a/sound/soc/meson/axg-tdmout.c b/sound/soc/meson/axg-tdmout.c
+index 527bfc4487e0..86537fc0ecb5 100644
+--- a/sound/soc/meson/axg-tdmout.c
++++ b/sound/soc/meson/axg-tdmout.c
+@@ -137,7 +137,6 @@ static int axg_tdmout_prepare(struct regmap *map,
  		break;
  
  	case SND_SOC_DAIFMT_LEFT_J:
 -	case SND_SOC_DAIFMT_RIGHT_J:
  	case SND_SOC_DAIFMT_DSP_B:
+ 		skew += 1;
  		break;
- 
 -- 
 2.20.1
