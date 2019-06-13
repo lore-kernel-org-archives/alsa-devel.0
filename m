@@ -1,21 +1,19 @@
-From: Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] ASoC: tas571x: Fix -Wunused-const-variable
-Date: Wed, 12 Jun 2019 16:55:18 -0700
-Message-ID: <CAKwvOdkPQyK3oJk0qPQyfwVcvtdBSF6oN83VOW8kcy3zWyBkgA@mail.gmail.com>
-References: <20190612232502.256846-1-nhuck@google.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [RFC/RFT PATCH v2] ASoC: fsl_esai: Revert "ETDR
+ and TX0~5 registers are non volatile"
+Date: Thu, 13 Jun 2019 03:00:58 +0000
+Message-ID: <VE1PR04MB6479D4B1D5F00B07C5CECC5BE3EF0@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-eopbgr80051.outbound.protection.outlook.com [40.107.8.51])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4BD9F80791
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 01:55:32 +0200 (CEST)
-Received: by mail-pg1-x542.google.com with SMTP id k187so9299460pga.0
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2019 16:55:32 -0700 (PDT)
-In-Reply-To: <20190612232502.256846-1-nhuck@google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F699F80794
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 05:01:00 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +23,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Nathan Huckleberry <nhuck@google.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, clang-built-linux <clang-built-linux@googlegroups.com>, cernekee@chromium.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 12, 2019 at 4:25 PM 'Nathan Huckleberry' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
-> Since tac5711_controls is identical to tas5721_controls we can just swap
-> them
+Hi
+> 
+> Commit 8973112aa41b ("ASoC: fsl_esai: ETDR and TX0~5 registers are non
+> volatile") removed TX data registers from the volatile_reg list and appended
+> default values for them. However, being data registers of TX, they should
+> not have been removed from the list because they should not be cached --
+> see the following reason.
+> 
+> When doing regcache_sync(), this operation might accidentally write some
+> dirty data to these registers, in case that cached data happen to be
+> different from the default ones, which might also result in a channel shift or
+> swap situation, since the number of write-via-sync operations at ETDR
+> would very unlikely match the channel number.
+> 
+> So this patch reverts the original commit to keep TX data registers in
+> volatile_reg list in order to prevent them from being written by
+> regcache_sync().
+> 
+> Note: this revert is not a complete revert as it keeps those macros of
+> registers remaining in the default value list while the original commit also
+> changed other entries in the list. And this patch isn't very necessary to Cc
+> stable tree since there has been always a FIFO reset operation around the
+> regcache_sync() call, even prior to this reverted commit.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+> Hi Mark,
+> In case there's no objection against the patch, I'd still like to wait for a
+> Tested-by from NXP folks before submitting it. Thanks!
 
-380 static const struct snd_kcontrol_new tas5711_controls[] = {
-381   SOC_SINGLE_TLV("Master Volume",
-382            TAS571X_MVOL_REG,
-383            0, 0xff, 1, tas5711_volume_tlv),
-384   SOC_DOUBLE_R_TLV("Speaker Volume",
-385        TAS571X_CH1_VOL_REG,
-386        TAS571X_CH2_VOL_REG,
-387        0, 0xff, 1, tas5711_volume_tlv),
-388   SOC_DOUBLE("Speaker Switch",
-389        TAS571X_SOFT_MUTE_REG,
-390        TAS571X_SOFT_MUTE_CH1_SHIFT, TAS571X_SOFT_MUTE_CH2_SHIFT,
-391        1, 1),
-392 };
+bool regmap_volatile(struct regmap *map, unsigned int reg)
+{
+        if (!map->format.format_write && !regmap_readable(map, reg))
+                return false;
 
-vs
 
-666 static const struct snd_kcontrol_new tas5721_controls[] = {
-667   SOC_SINGLE_TLV("Master Volume",
-668            TAS571X_MVOL_REG,
-669            0, 0xff, 1, tas5711_volume_tlv),
-670   SOC_DOUBLE_R_TLV("Speaker Volume",
-671        TAS571X_CH1_VOL_REG,
-672        TAS571X_CH2_VOL_REG,
-673        0, 0xff, 1, tas5711_volume_tlv),
-674   SOC_DOUBLE("Speaker Switch",
-675        TAS571X_SOFT_MUTE_REG,
-676        TAS571X_SOFT_MUTE_CH1_SHIFT, TAS571X_SOFT_MUTE_CH2_SHIFT,
-677        1, 1),
-678 };
+Actually with this patch, the regcache_sync will write the 0 to ETDR, even
+It is declared volatile, the reason is that in regmap_volatile(), the first
+condition
 
-Thanks for the patch!
+(!map->format.format_write && !regmap_readable(map, reg))  is true.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+So the regmap_volatile will return false.
 
-Alternatively, we could make 2 variables w/ the same variable, 1
-variable.  It seems there's at least 4 `_control` variables:
-tas5711_controls
-tas5707_controls
-tas5717_controls
-tas5721_controls
+And in regcache_reg_needs_sync(), because there is no default value
+It will return true, then the ETDR need be synced, and be written 0.
 
-so maybe `tas57X1_controls` would be appropriate?  Not sure if the
-maintainers have a preference here?
+Here is the code for regcache_default_sync()
 
-(Looks like L669 also refers to tas5711, but it seems there no tas5721
-equivalent for `_volume_tlv`.)
--- 
-Thanks,
-~Nick Desaulniers
+static int regcache_default_sync(struct regmap *map, unsigned int min,
+                                 unsigned int max)
+{
+        unsigned int reg;
+
+        for (reg = min; reg <= max; reg += map->reg_stride) {
+                unsigned int val;
+                int ret;
+
+                if (regmap_volatile(map, reg) ||
+                    !regmap_writeable(map, reg))
+                        continue;
+
+                ret = regcache_read(map, reg, &val);
+                if (ret)
+                        return ret;
+
+                if (!regcache_reg_needs_sync(map, reg, val))
+                        continue;
+
+                map->cache_bypass = true;
+                ret = _regmap_write(map, reg, val);
+                map->cache_bypass = false;
+
+Best regards
+Wang shengjiu
