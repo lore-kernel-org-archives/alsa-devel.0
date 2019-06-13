@@ -1,21 +1,21 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 2/4] ASoC: meson: axg-tdmout: right_j is not
-	supported
-Date: Thu, 13 Jun 2019 13:42:31 +0200
-Message-ID: <20190613114233.21130-3-jbrunet@baylibre.com>
+Subject: [PATCH 3/4] ASoC: meson: axg-tdm: fix sample clock
+	inversion
+Date: Thu, 13 Jun 2019 13:42:32 +0200
+Message-ID: <20190613114233.21130-4-jbrunet@baylibre.com>
 References: <20190613114233.21130-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
- [IPv6:2a00:1450:4864:20::342])
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF4C6F89703
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 13:42:41 +0200 (CEST)
-Received: by mail-wm1-x342.google.com with SMTP id u8so9778963wmm.1
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 04:42:41 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1213F80794
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 13:42:42 +0200 (CEST)
+Received: by mail-wr1-x443.google.com with SMTP id f9so20373141wre.12
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 04:42:42 -0700 (PDT)
 In-Reply-To: <20190613114233.21130-1-jbrunet@baylibre.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,26 +30,31 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Right justified format is actually not supported by the amlogic tdm output
-encoder.
+The content of SND_SOC_DAIFMT_FORMAT_MASK is a number, not a bitfield,
+so the test to check if the format is i2s is wrong. Because of this the
+clock setting may be wrong. For example, the sample clock gets inverted
+in DSP B mode, when it should not.
 
-Fixes: c41c2a355b86 ("ASoC: meson: add tdm output driver")
+Fix the lrclk invert helper function
+
+Fixes: 1a11d88f499c ("ASoC: meson: add tdm formatter base driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-tdmout.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/meson/axg-tdm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdmout.c b/sound/soc/meson/axg-tdmout.c
-index 527bfc4487e0..86537fc0ecb5 100644
---- a/sound/soc/meson/axg-tdmout.c
-+++ b/sound/soc/meson/axg-tdmout.c
-@@ -137,7 +137,6 @@ static int axg_tdmout_prepare(struct regmap *map,
- 		break;
+diff --git a/sound/soc/meson/axg-tdm.h b/sound/soc/meson/axg-tdm.h
+index e578b6f40a07..5774ce0916d4 100644
+--- a/sound/soc/meson/axg-tdm.h
++++ b/sound/soc/meson/axg-tdm.h
+@@ -40,7 +40,7 @@ struct axg_tdm_iface {
  
- 	case SND_SOC_DAIFMT_LEFT_J:
--	case SND_SOC_DAIFMT_RIGHT_J:
- 	case SND_SOC_DAIFMT_DSP_B:
- 		skew += 1;
- 		break;
+ static inline bool axg_tdm_lrclk_invert(unsigned int fmt)
+ {
+-	return (fmt & SND_SOC_DAIFMT_I2S) ^
++	return ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S) ^
+ 		!!(fmt & (SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_NB_IF));
+ }
+ 
 -- 
 2.20.1
