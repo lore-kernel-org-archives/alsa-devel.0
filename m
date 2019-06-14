@@ -1,7 +1,7 @@
 From: Fletcher Woodruff <fletcherw@chromium.org>
-Subject: [PATCH v6 2/4] ASoC: rt5677: move jack-detect init to i2c probe
-Date: Fri, 14 Jun 2019 12:43:13 -0600
-Message-ID: <20190614184315.252945-3-fletcherw@chromium.org>
+Subject: [PATCH v6 4/4] ASoC: rt5677: handle concurrent interrupts
+Date: Fri, 14 Jun 2019 12:43:15 -0600
+Message-ID: <20190614184315.252945-5-fletcherw@chromium.org>
 References: <20190614184315.252945-1-fletcherw@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,129 +9,111 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190614184315.252945-1-fletcherw@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Fletcher Woodruff <fletcherw@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, alsa-devel@alsa-project.org, Ben Zhang <benzh@chromium.org>
+Cc: Ben Zhang <benzh@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, alsa-devel@alsa-project.org, Fletcher Woodruff <fletcherw@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch moves the code to select the gpios for jack detection
-from rt5677_probe to rt5677_init_irq (called from rt5677_i2c_probe).
+From: Ben Zhang <benzh@chromium.org>
 
-It also sets some registers to fix bugs related to jack detection, and
-adds some constants and comments to make it easier to understand what
-certain register settings are controlling.
+The rt5677 driver writes to the IRQ control register within the IRQ
+handler in order to flip the polarity of the interrupts that have been
+signalled.  If an interrupt fires in the interval between the
+regmap_read and the regmap_write, it will not trigger a new call to
+rt5677_irq.
+
+Add a bounded loop to rt5677_irq that keeps checking interrupts until
+none are seen, so that any interrupts that are signalled in that
+interval are correctly handled.
 
 Signed-off-by: Ben Zhang <benzh@chromium.org>
 Signed-off-by: Fletcher Woodruff <fletcherw@chromium.org>
 ---
- sound/soc/codecs/rt5677.c | 60 ++++++++++++++++++++++-----------------
- sound/soc/codecs/rt5677.h |  6 ++++
- 2 files changed, 40 insertions(+), 26 deletions(-)
+ sound/soc/codecs/rt5677.c | 67 ++++++++++++++++++++++++---------------
+ 1 file changed, 42 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 63e28eaf1f40ba..b508fd9b7d4536 100644
+index a136ed0d82e36b..44d51b350b8860 100644
 --- a/sound/soc/codecs/rt5677.c
 +++ b/sound/soc/codecs/rt5677.c
-@@ -4716,37 +4716,13 @@ static int rt5677_probe(struct snd_soc_component *component)
- 
- 	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_OFF);
- 
--	regmap_write(rt5677->regmap, RT5677_DIG_MISC, 0x0020);
-+	regmap_update_bits(rt5677->regmap, RT5677_DIG_MISC,
-+			~RT5677_IRQ_DEBOUNCE_SEL_MASK, 0x0020);
- 	regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x0c00);
- 
- 	for (i = 0; i < RT5677_GPIO_NUM; i++)
- 		rt5677_gpio_config(rt5677, i, rt5677->pdata.gpio_config[i]);
- 
--	if (rt5677->irq_data) {
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL1, 0x8000,
--			0x8000);
--		regmap_update_bits(rt5677->regmap, RT5677_DIG_MISC, 0x0018,
--			0x0008);
--
--		if (rt5677->pdata.jd1_gpio)
--			regmap_update_bits(rt5677->regmap, RT5677_JD_CTRL1,
--				RT5677_SEL_GPIO_JD1_MASK,
--				rt5677->pdata.jd1_gpio <<
--				RT5677_SEL_GPIO_JD1_SFT);
--
--		if (rt5677->pdata.jd2_gpio)
--			regmap_update_bits(rt5677->regmap, RT5677_JD_CTRL1,
--				RT5677_SEL_GPIO_JD2_MASK,
--				rt5677->pdata.jd2_gpio <<
--				RT5677_SEL_GPIO_JD2_SFT);
--
--		if (rt5677->pdata.jd3_gpio)
--			regmap_update_bits(rt5677->regmap, RT5677_JD_CTRL1,
--				RT5677_SEL_GPIO_JD3_MASK,
--				rt5677->pdata.jd3_gpio <<
--				RT5677_SEL_GPIO_JD3_SFT);
--	}
--
- 	mutex_init(&rt5677->dsp_cmd_lock);
- 	mutex_init(&rt5677->dsp_pri_lock);
- 
-@@ -5095,6 +5071,7 @@ static int rt5677_init_irq(struct i2c_client *i2c)
+@@ -5071,38 +5071,55 @@ static const struct rt5677_irq_desc rt5677_irq_descs[] = {
+ static irqreturn_t rt5677_irq(int unused, void *data)
  {
- 	int ret;
- 	struct rt5677_priv *rt5677 = i2c_get_clientdata(i2c);
-+	unsigned int jd_mask = 0, jd_val = 0;
+ 	struct rt5677_priv *rt5677 = data;
+-	int ret = 0, i, reg_irq, virq;
++	int ret = 0, loop, i, reg_irq, virq;
+ 	bool irq_fired = false;
  
- 	if (!rt5677->pdata.jd1_gpio &&
- 		!rt5677->pdata.jd2_gpio &&
-@@ -5106,6 +5083,37 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 		return -EINVAL;
- 	}
+ 	mutex_lock(&rt5677->irq_lock);
+-	/* Read interrupt status */
+-	ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
+-	if (ret) {
+-		pr_err("rt5677: failed reading IRQ status: %d\n", ret);
+-		goto exit;
+-	}
  
+-	for (i = 0; i < RT5677_IRQ_NUM; i++) {
+-		if (reg_irq & rt5677_irq_descs[i].status_mask) {
+-			irq_fired = true;
+-			virq = irq_find_mapping(rt5677->domain, i);
+-			if (virq)
+-				handle_nested_irq(virq);
+-
+-			/* Clear the interrupt by flipping the polarity of the
+-			 * interrupt source line that fired
+-			 */
+-			reg_irq ^= rt5677_irq_descs[i].polarity_mask;
 +	/*
-+	 * Select RC as the debounce clock so that GPIO works even when
-+	 * MCLK is gated which happens when there is no audio stream
-+	 * (SND_SOC_BIAS_OFF).
++	 * Loop to handle interrupts until the last i2c read shows no pending
++	 * irqs. The interrupt line is shared by multiple interrupt sources.
++	 * After the regmap_read() below, a new interrupt source line may
++	 * become high before the regmap_write() finishes, so there isn't a
++	 * rising edge on the shared interrupt line for the new interrupt. Thus,
++	 * the loop is needed to avoid missing irqs.
++	 *
++	 * A safeguard of 20 loops is used to avoid hanging in the irq handler
++	 * if there is something wrong with the interrupt status update. The
++	 * interrupt sources here are audio jack plug/unplug events which
++	 * shouldn't happen at a high frequency for a long period of time.
++	 * Empirically, more than 3 loops have never been seen.
 +	 */
-+	regmap_update_bits(rt5677->regmap, RT5677_DIG_MISC,
-+			RT5677_IRQ_DEBOUNCE_SEL_MASK,
-+			RT5677_IRQ_DEBOUNCE_SEL_RC);
-+
-+	/* Enable auto power on RC when GPIO states are changed */
-+	regmap_update_bits(rt5677->regmap, RT5677_GEN_CTRL1, 0xff, 0xff);
-+
-+	/* Select and enable jack detection sources per platform data */
-+	if (rt5677->pdata.jd1_gpio) {
-+		jd_mask	|= RT5677_SEL_GPIO_JD1_MASK;
-+		jd_val	|= rt5677->pdata.jd1_gpio << RT5677_SEL_GPIO_JD1_SFT;
-+	}
-+	if (rt5677->pdata.jd2_gpio) {
-+		jd_mask	|= RT5677_SEL_GPIO_JD2_MASK;
-+		jd_val	|= rt5677->pdata.jd2_gpio << RT5677_SEL_GPIO_JD2_SFT;
-+	}
-+	if (rt5677->pdata.jd3_gpio) {
-+		jd_mask	|= RT5677_SEL_GPIO_JD3_MASK;
-+		jd_val	|= rt5677->pdata.jd3_gpio << RT5677_SEL_GPIO_JD3_SFT;
-+	}
-+	regmap_update_bits(rt5677->regmap, RT5677_JD_CTRL1, jd_mask, jd_val);
-+
-+	/* Set GPIO1 pin to be IRQ output */
-+	regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL1,
-+			RT5677_GPIO1_PIN_MASK, RT5677_GPIO1_PIN_IRQ);
-+
- 	ret = regmap_add_irq_chip(rt5677->regmap, i2c->irq,
- 		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT, 0,
- 		&rt5677_irq_chip, &rt5677->irq_data);
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 183d92b030459f..7a89bfa95dc0bf 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1636,6 +1636,12 @@
- #define RT5677_GPIO6_P_NOR			(0x0 << 0)
- #define RT5677_GPIO6_P_INV			(0x1 << 0)
++	for (loop = 0; loop < 20; loop++) {
++		/* Read interrupt status */
++		ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
++		if (ret) {
++			pr_err("rt5677: failed reading IRQ status: %d\n", ret);
++			goto exit;
+ 		}
+-	}
  
-+/* General Control (0xfa) */
-+#define RT5677_IRQ_DEBOUNCE_SEL_MASK		(0x3 << 3)
-+#define RT5677_IRQ_DEBOUNCE_SEL_MCLK		(0x0 << 3)
-+#define RT5677_IRQ_DEBOUNCE_SEL_RC		(0x1 << 3)
-+#define RT5677_IRQ_DEBOUNCE_SEL_SLIM		(0x2 << 3)
+-	if (!irq_fired)
+-		goto exit;
++		irq_fired = false;
++		for (i = 0; i < RT5677_IRQ_NUM; i++) {
++			if (reg_irq & rt5677_irq_descs[i].status_mask) {
++				irq_fired = true;
++				virq = irq_find_mapping(rt5677->domain, i);
++				if (virq)
++					handle_nested_irq(virq);
 +
- /* Virtual DSP Mixer Control (0xf7 0xf8 0xf9) */
- #define RT5677_DSP_IB_01_H			(0x1 << 15)
- #define RT5677_DSP_IB_01_H_SFT			15
++				/* Clear the interrupt by flipping the polarity
++				 * of the interrupt source line that fired
++				 */
++				reg_irq ^= rt5677_irq_descs[i].polarity_mask;
++			}
++		}
++		if (!irq_fired)
++			goto exit;
+ 
+-	ret = regmap_write(rt5677->regmap, RT5677_IRQ_CTRL1, reg_irq);
+-	if (ret) {
+-		pr_err("rt5677: failed updating IRQ status: %d\n", ret);
+-		goto exit;
++		ret = regmap_write(rt5677->regmap, RT5677_IRQ_CTRL1, reg_irq);
++		if (ret) {
++			pr_err("rt5677: failed updating IRQ status: %d\n", ret);
++			goto exit;
++		}
+ 	}
+ exit:
+ 	mutex_unlock(&rt5677->irq_lock);
 -- 
 2.22.0.410.gd8fdbe21b5-goog
