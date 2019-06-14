@@ -1,318 +1,60 @@
 From: Fletcher Woodruff <fletcherw@chromium.org>
-Subject: [PATCH v6 3/4] ASoC: rt5677: clear interrupts by polarity flip
-Date: Fri, 14 Jun 2019 12:43:14 -0600
-Message-ID: <20190614184315.252945-4-fletcherw@chromium.org>
-References: <20190614184315.252945-1-fletcherw@chromium.org>
+Subject: [PATCH v7 0/4] Fix jack detection for Chromebook Pixel
+Date: Fri, 14 Jun 2019 13:48:50 -0600
+Message-ID: <20190614194854.208436-1-fletcherw@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190614184315.252945-1-fletcherw@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Ben Zhang <benzh@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, alsa-devel@alsa-project.org, Fletcher Woodruff <fletcherw@chromium.org>
+Cc: Fletcher Woodruff <fletcherw@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Ben Zhang <benzh@chromium.org>
+Headphone/mic jack detection doesn't work on the Chromebook Pixel 2015.
 
-The rt5677 jack detection function has a requirement that the polarity
-of an interrupt be flipped after it fires in order to clear the
-interrupt.
+This patch changes the irq implementation to support polarity flipping
+and fixes the configuration code so that correct GPIO pins are read
+from ACPI.
 
-This patch implements an irq_chip with irq_domain directly instead of
-using regmap-irq, so that interrupt source line polarities can be
-flipped in the irq handler.
+With this series, plugging and unplugging the headphone jack switches
+between headphones and speakers automatically, and headset microphones 
+are also detected.
 
-The reason that this patch does not add this feature within regmap-irq
-is that future patches will add hotword detection support to this irq
-handler. Those patches will require adding additional logic that would
-not make sense to have in regmap-irq.
+v7:
+  - Rebase onto for-next branch of broonie/sound.git 
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
-Signed-off-by: Fletcher Woodruff <fletcherw@chromium.org>
----
- sound/soc/codecs/rt5677.c | 170 ++++++++++++++++++++++++++++++--------
- sound/soc/codecs/rt5677.h |   7 +-
- 2 files changed, 143 insertions(+), 34 deletions(-)
+v6:
+  - Move refactoring into its own patch
+  - Reorder patches so that DT property names patch is first
+  - Clarify commit message for patch which implements irq handler
+  - Remove unused work struct 
+  - Make IRQ function return IRQ_HANDLED only if IRQs actually fire
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index b508fd9b7d4536..a136ed0d82e36b 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -23,6 +23,10 @@
- #include <linux/firmware.h>
- #include <linux/of_device.h>
- #include <linux/property.h>
-+#include <linux/irq.h>
-+#include <linux/interrupt.h>
-+#include <linux/irqdomain.h>
-+#include <linux/workqueue.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -4620,7 +4624,6 @@ static void rt5677_gpio_config(struct rt5677_priv *rt5677, unsigned offset,
- static int rt5677_to_irq(struct gpio_chip *chip, unsigned offset)
- {
- 	struct rt5677_priv *rt5677 = gpiochip_get_data(chip);
--	struct regmap_irq_chip_data *data = rt5677->irq_data;
- 	int irq;
- 
- 	if ((rt5677->pdata.jd1_gpio == 1 && offset == RT5677_GPIO1) ||
-@@ -4646,7 +4649,7 @@ static int rt5677_to_irq(struct gpio_chip *chip, unsigned offset)
- 		return -ENXIO;
- 	}
- 
--	return regmap_irq_get_virq(data, irq);
-+	return irq_create_mapping(rt5677->domain, irq);
- }
- 
- static const struct gpio_chip rt5677_template_chip = {
-@@ -5041,30 +5044,130 @@ static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
- 		rt5677->pdata.jd3_gpio = val;
- }
- 
--static struct regmap_irq rt5677_irqs[] = {
-+struct rt5677_irq_desc {
-+	unsigned int enable_mask;
-+	unsigned int status_mask;
-+	unsigned int polarity_mask;
-+};
-+
-+static const struct rt5677_irq_desc rt5677_irq_descs[] = {
- 	[RT5677_IRQ_JD1] = {
--		.reg_offset = 0,
--		.mask = RT5677_EN_IRQ_GPIO_JD1,
-+		.enable_mask = RT5677_EN_IRQ_GPIO_JD1,
-+		.status_mask = RT5677_STA_GPIO_JD1,
-+		.polarity_mask = RT5677_INV_GPIO_JD1,
- 	},
- 	[RT5677_IRQ_JD2] = {
--		.reg_offset = 0,
--		.mask = RT5677_EN_IRQ_GPIO_JD2,
-+		.enable_mask = RT5677_EN_IRQ_GPIO_JD2,
-+		.status_mask = RT5677_STA_GPIO_JD2,
-+		.polarity_mask = RT5677_INV_GPIO_JD2,
- 	},
- 	[RT5677_IRQ_JD3] = {
--		.reg_offset = 0,
--		.mask = RT5677_EN_IRQ_GPIO_JD3,
-+		.enable_mask = RT5677_EN_IRQ_GPIO_JD3,
-+		.status_mask = RT5677_STA_GPIO_JD3,
-+		.polarity_mask = RT5677_INV_GPIO_JD3,
- 	},
- };
- 
--static struct regmap_irq_chip rt5677_irq_chip = {
--	.name = "rt5677",
--	.irqs = rt5677_irqs,
--	.num_irqs = ARRAY_SIZE(rt5677_irqs),
-+static irqreturn_t rt5677_irq(int unused, void *data)
-+{
-+	struct rt5677_priv *rt5677 = data;
-+	int ret = 0, i, reg_irq, virq;
-+	bool irq_fired = false;
-+
-+	mutex_lock(&rt5677->irq_lock);
-+	/* Read interrupt status */
-+	ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
-+	if (ret) {
-+		pr_err("rt5677: failed reading IRQ status: %d\n", ret);
-+		goto exit;
-+	}
-+
-+	for (i = 0; i < RT5677_IRQ_NUM; i++) {
-+		if (reg_irq & rt5677_irq_descs[i].status_mask) {
-+			irq_fired = true;
-+			virq = irq_find_mapping(rt5677->domain, i);
-+			if (virq)
-+				handle_nested_irq(virq);
-+
-+			/* Clear the interrupt by flipping the polarity of the
-+			 * interrupt source line that fired
-+			 */
-+			reg_irq ^= rt5677_irq_descs[i].polarity_mask;
-+		}
-+	}
-+
-+	if (!irq_fired)
-+		goto exit;
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_IRQ_CTRL1, reg_irq);
-+	if (ret) {
-+		pr_err("rt5677: failed updating IRQ status: %d\n", ret);
-+		goto exit;
-+	}
-+exit:
-+	mutex_unlock(&rt5677->irq_lock);
-+	if (irq_fired)
-+		return IRQ_HANDLED;
-+	else
-+		return IRQ_NONE;
-+}
- 
--	.num_regs = 1,
--	.status_base = RT5677_IRQ_CTRL1,
--	.mask_base = RT5677_IRQ_CTRL1,
--	.mask_invert = 1,
-+static void rt5677_irq_bus_lock(struct irq_data *data)
-+{
-+	struct rt5677_priv *rt5677 = irq_data_get_irq_chip_data(data);
-+
-+	mutex_lock(&rt5677->irq_lock);
-+}
-+
-+static void rt5677_irq_bus_sync_unlock(struct irq_data *data)
-+{
-+	struct rt5677_priv *rt5677 = irq_data_get_irq_chip_data(data);
-+
-+	// Set the enable/disable bits for the jack detect IRQs.
-+	regmap_update_bits(rt5677->regmap, RT5677_IRQ_CTRL1,
-+			RT5677_EN_IRQ_GPIO_JD1 | RT5677_EN_IRQ_GPIO_JD2 |
-+			RT5677_EN_IRQ_GPIO_JD3, rt5677->irq_en);
-+	mutex_unlock(&rt5677->irq_lock);
-+}
-+
-+static void rt5677_irq_enable(struct irq_data *data)
-+{
-+	struct rt5677_priv *rt5677 = irq_data_get_irq_chip_data(data);
-+
-+	rt5677->irq_en |= rt5677_irq_descs[data->hwirq].enable_mask;
-+}
-+
-+static void rt5677_irq_disable(struct irq_data *data)
-+{
-+	struct rt5677_priv *rt5677 = irq_data_get_irq_chip_data(data);
-+
-+	rt5677->irq_en &= ~rt5677_irq_descs[data->hwirq].enable_mask;
-+}
-+
-+static struct irq_chip rt5677_irq_chip = {
-+	.name			= "rt5677_irq_chip",
-+	.irq_bus_lock		= rt5677_irq_bus_lock,
-+	.irq_bus_sync_unlock	= rt5677_irq_bus_sync_unlock,
-+	.irq_disable		= rt5677_irq_disable,
-+	.irq_enable		= rt5677_irq_enable,
-+};
-+
-+static int rt5677_irq_map(struct irq_domain *h, unsigned int virq,
-+			  irq_hw_number_t hw)
-+{
-+	struct rt5677_priv *rt5677 = h->host_data;
-+
-+	irq_set_chip_data(virq, rt5677);
-+	irq_set_chip(virq, &rt5677_irq_chip);
-+	irq_set_nested_thread(virq, 1);
-+	irq_set_noprobe(virq);
-+	return 0;
-+}
-+
-+
-+static const struct irq_domain_ops rt5677_domain_ops = {
-+	.map	= rt5677_irq_map,
-+	.xlate	= irq_domain_xlate_twocell,
- };
- 
- static int rt5677_init_irq(struct i2c_client *i2c)
-@@ -5083,6 +5186,8 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 		return -EINVAL;
- 	}
- 
-+	mutex_init(&rt5677->irq_lock);
-+
- 	/*
- 	 * Select RC as the debounce clock so that GPIO works even when
- 	 * MCLK is gated which happens when there is no audio stream
-@@ -5091,7 +5196,6 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 	regmap_update_bits(rt5677->regmap, RT5677_DIG_MISC,
- 			RT5677_IRQ_DEBOUNCE_SEL_MASK,
- 			RT5677_IRQ_DEBOUNCE_SEL_RC);
--
- 	/* Enable auto power on RC when GPIO states are changed */
- 	regmap_update_bits(rt5677->regmap, RT5677_GEN_CTRL1, 0xff, 0xff);
- 
-@@ -5114,26 +5218,25 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 	regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL1,
- 			RT5677_GPIO1_PIN_MASK, RT5677_GPIO1_PIN_IRQ);
- 
--	ret = regmap_add_irq_chip(rt5677->regmap, i2c->irq,
--		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT, 0,
--		&rt5677_irq_chip, &rt5677->irq_data);
-+	/* Ready to listen for interrupts */
-+	rt5677->domain = irq_domain_add_linear(i2c->dev.of_node,
-+			RT5677_IRQ_NUM, &rt5677_domain_ops, rt5677);
-+	if (!rt5677->domain) {
-+		dev_err(&i2c->dev, "Failed to create IRQ domain\n");
-+		return -ENOMEM;
-+	}
- 
--	if (ret != 0) {
--		dev_err(&i2c->dev, "Failed to register IRQ chip: %d\n", ret);
-+	ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL, rt5677_irq,
-+			IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-+			"rt5677", rt5677);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
- 		return ret;
- 	}
- 
- 	return 0;
- }
- 
--static void rt5677_free_irq(struct i2c_client *i2c)
--{
--	struct rt5677_priv *rt5677 = i2c_get_clientdata(i2c);
--
--	if (rt5677->irq_data)
--		regmap_del_irq_chip(i2c->irq, rt5677->irq_data);
--}
--
- static int rt5677_i2c_probe(struct i2c_client *i2c)
- {
- 	struct rt5677_priv *rt5677;
-@@ -5258,7 +5361,9 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 			RT5677_MICBIAS1_CTRL_VDD_3_3V);
- 
- 	rt5677_init_gpio(i2c);
--	rt5677_init_irq(i2c);
-+	ret = rt5677_init_irq(i2c);
-+	if (ret)
-+		dev_err(&i2c->dev, "Failed to initialize irq: %d\n", ret);
- 
- 	return devm_snd_soc_register_component(&i2c->dev,
- 				      &soc_component_dev_rt5677,
-@@ -5267,7 +5372,6 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 
- static int rt5677_i2c_remove(struct i2c_client *i2c)
- {
--	rt5677_free_irq(i2c);
- 	rt5677_free_gpio(i2c);
- 
- 	return 0;
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 7a89bfa95dc0bf..a891a9b9eba3e6 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1719,6 +1719,7 @@ enum {
- 	RT5677_IRQ_JD1,
- 	RT5677_IRQ_JD2,
- 	RT5677_IRQ_JD3,
-+	RT5677_IRQ_NUM,
- };
- 
- enum rt5677_type {
-@@ -1817,9 +1818,13 @@ struct rt5677_priv {
- 	struct gpio_chip gpio_chip;
- #endif
- 	bool dsp_vad_en;
--	struct regmap_irq_chip_data *irq_data;
- 	bool is_dsp_mode;
- 	bool is_vref_slow;
-+
-+	/* Interrupt handling */
-+	struct irq_domain *domain;
-+	struct mutex irq_lock;
-+	unsigned int irq_en;
- };
- 
- int rt5677_sel_asrc_clk_src(struct snd_soc_component *component,
+v5:
+  - Fix void* parameter to devm_request_threaded_irq
+
+v4:
+  - Fix incorrect void* cast in rt5677_irq() 
+
+v3:
+  - Update commit message for patch 1/3 to clarify why we implement
+    our own irq_chip.
+
+v2:
+  - Split IRQ change into two patches: adding and fixing potential race
+  - Change config reading code to try both DT and ACPI style names
+
+Ben Zhang (2):
+  ASoC: rt5677: clear interrupts by polarity flip
+  ASoC: rt5677: handle concurrent interrupts
+
+Fletcher Woodruff (2):
+  ASoC: rt5677: fall back to DT prop names on error
+  ASoC: rt5677: move jack-detect init to i2c probe
+
+ sound/soc/codecs/rt5677.c | 319 ++++++++++++++++++++++++++------------
+ sound/soc/codecs/rt5677.h |  13 +-
+ 2 files changed, 236 insertions(+), 96 deletions(-)
+
 -- 
 2.22.0.410.gd8fdbe21b5-goog
