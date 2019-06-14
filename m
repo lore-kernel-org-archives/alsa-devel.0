@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: no need to check return value of
-	debugfs_create functions" to the asoc tree
-Date: Fri, 14 Jun 2019 16:43:17 +0100 (BST)
-Message-ID: <20190614154318.0B8A7440046@finisterre.sirena.org.uk>
-References: <20190614094756.2965-4-gregkh@linuxfoundation.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 5/5] sound: soc: core: no need to check
+ return value of debugfs_create functions
+Date: Fri, 14 Jun 2019 18:13:39 +0200
+Message-ID: <20190614161339.GB22607@kroah.com>
+References: <20190614094756.2965-1-gregkh@linuxfoundation.org>
+ <20190614094756.2965-5-gregkh@linuxfoundation.org>
+ <20190614153405.GD5316@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53206F89719
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 17:43:19 +0200 (CEST)
-In-Reply-To: <20190614094756.2965-4-gregkh@linuxfoundation.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C766F80794
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 18:13:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190614153405.GD5316@sirena.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,162 +26,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Jun 14, 2019 at 04:34:05PM +0100, Mark Brown wrote:
+> On Fri, Jun 14, 2019 at 11:47:56AM +0200, Greg Kroah-Hartman wrote:
+> 
+> > Note, the soc-pcm "state" file has now moved to a subdirectory, as it is
+> > only a good idea to save the dentries for debugfs directories, not
+> > individual files, as the individual file debugfs functions are changing
+> > to not return a dentry.
+> 
+> It'd be better to split this out into a separate change for ease of
+> review.
+> 
+> > -	d = debugfs_create_file(w->name, 0444,
+> > -				dapm->debugfs_dapm, w,
+> > -				&dapm_widget_power_fops);
+> > -	if (!d)
+> > -		dev_warn(w->dapm->dev,
+> > -			"ASoC: Failed to create %s debugfs file\n",
+> > -			w->name);
+> > +	debugfs_create_file(w->name, 0444, dapm->debugfs_dapm, w,
+> > +			    &dapm_widget_power_fops);
+> 
+> The majority of this is removing error prints rather than code that
+> actively does something different.  If this was like kmalloc() where the
+> API is itself reported errors then this wouldn't be an issue but unless
+> I'm missing something debugfs fails silently so this means that if
+> something goes wrong it's going to be harder for the user to figure out
+> where the debugfs files they wanted to check went to.  I'm guessing you
+> don't want to add error prints in debugfs itself so I'd rather they
+> stayed here.
+> 
+> Yes, the error check is looking for NULL not an error pointer - it was
+> correct when written but I see that the debugfs API changed earlier this
+> year to return error pointers so we ought to fix that up.
 
-   ASoC: fsl: no need to check return value of debugfs_create functions
+No, the long-term goal is for debugfs_create_file() to just return void.
+I have already done enough cleanups in my local tree to do that already
+for many of the helper functions.
 
-has been applied to the asoc tree at
+No one should care one bit if a debugfs file succeeds or not, no logic
+should ever change, nor should it matter.  debugfs is for debugging
+kernel code, not for anything that anyone should ever rely on.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+So yes, this patch does remove a bunch of error messages (that as you
+point out can never be triggered), but the main goal here is to not
+check the return value of the function at all, which is what this patch
+does.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+thanks,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 227ab8baa15bdd7a48acfb7b61c52a7a5eb87e72 Mon Sep 17 00:00:00 2001
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Fri, 14 Jun 2019 11:47:55 +0200
-Subject: [PATCH] ASoC: fsl: no need to check return value of debugfs_create
- functions
-
-When calling debugfs functions, there is no need to ever check the
-return value.  The function can work or not, but the code logic should
-never do something different based on this.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_ssi.c     |  4 +---
- sound/soc/fsl/fsl_ssi.h     |  8 +++-----
- sound/soc/fsl/fsl_ssi_dbg.c | 18 ++++--------------
- sound/soc/fsl/imx-audmux.c  | 10 ++--------
- 4 files changed, 10 insertions(+), 30 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 09b2967befd9..fa862af25c1a 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1582,9 +1582,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ret = fsl_ssi_debugfs_create(&ssi->dbg_stats, dev);
--	if (ret)
--		goto error_asoc_register;
-+	fsl_ssi_debugfs_create(&ssi->dbg_stats, dev);
- 
- 	/* Initially configures SSI registers */
- 	fsl_ssi_hw_init(ssi);
-diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
-index 0bdda608d414..db57cad80449 100644
---- a/sound/soc/fsl/fsl_ssi.h
-+++ b/sound/soc/fsl/fsl_ssi.h
-@@ -270,7 +270,6 @@ struct device;
- 
- struct fsl_ssi_dbg {
- 	struct dentry *dbg_dir;
--	struct dentry *dbg_stats;
- 
- 	struct {
- 		unsigned int rfrc;
-@@ -299,7 +298,7 @@ struct fsl_ssi_dbg {
- 
- void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *ssi_dbg, u32 sisr);
- 
--int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev);
-+void fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev);
- 
- void fsl_ssi_debugfs_remove(struct fsl_ssi_dbg *ssi_dbg);
- 
-@@ -312,10 +311,9 @@ static inline void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *stats, u32 sisr)
- {
- }
- 
--static inline int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg,
--					 struct device *dev)
-+static inline void fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg,
-+					  struct device *dev)
- {
--	return 0;
- }
- 
- static inline void fsl_ssi_debugfs_remove(struct fsl_ssi_dbg *ssi_dbg)
-diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
-index 6f6294149476..2a20ee23dc52 100644
---- a/sound/soc/fsl/fsl_ssi_dbg.c
-+++ b/sound/soc/fsl/fsl_ssi_dbg.c
-@@ -126,25 +126,15 @@ static int fsl_ssi_stats_show(struct seq_file *s, void *unused)
- 
- DEFINE_SHOW_ATTRIBUTE(fsl_ssi_stats);
- 
--int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev)
-+void fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev)
- {
- 	ssi_dbg->dbg_dir = debugfs_create_dir(dev_name(dev), NULL);
--	if (!ssi_dbg->dbg_dir)
--		return -ENOMEM;
- 
--	ssi_dbg->dbg_stats = debugfs_create_file("stats", 0444,
--						 ssi_dbg->dbg_dir, ssi_dbg,
--						 &fsl_ssi_stats_fops);
--	if (!ssi_dbg->dbg_stats) {
--		debugfs_remove(ssi_dbg->dbg_dir);
--		return -ENOMEM;
--	}
--
--	return 0;
-+	debugfs_create_file("stats", 0444, ssi_dbg->dbg_dir, ssi_dbg,
-+			    &fsl_ssi_stats_fops);
- }
- 
- void fsl_ssi_debugfs_remove(struct fsl_ssi_dbg *ssi_dbg)
- {
--	debugfs_remove(ssi_dbg->dbg_stats);
--	debugfs_remove(ssi_dbg->dbg_dir);
-+	debugfs_remove_recursive(ssi_dbg->dbg_dir);
- }
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 04e59e66711d..b2351cd33b0f 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -141,17 +141,11 @@ static void audmux_debugfs_init(void)
- 	char buf[20];
- 
- 	audmux_debugfs_root = debugfs_create_dir("audmux", NULL);
--	if (!audmux_debugfs_root) {
--		pr_warning("Failed to create AUDMUX debugfs root\n");
--		return;
--	}
- 
- 	for (i = 0; i < MX31_AUDMUX_PORT7_SSI_PINS_7 + 1; i++) {
- 		snprintf(buf, sizeof(buf), "ssi%lu", i);
--		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
--					 (void *)i, &audmux_debugfs_fops))
--			pr_warning("Failed to create AUDMUX port %lu debugfs file\n",
--				   i);
-+		debugfs_create_file(buf, 0444, audmux_debugfs_root,
-+				    (void *)i, &audmux_debugfs_fops);
- 	}
- }
- 
--- 
-2.20.1
+greg k-h
