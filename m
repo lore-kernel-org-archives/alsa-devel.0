@@ -1,21 +1,20 @@
-From: Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH v2] ucm: Dell WD15 set lineout controls
-Date: Thu, 13 Jun 2019 18:15:31 -0700
-Message-ID: <20190614011530.33465-1-cujomalainey@chromium.org>
-References: <20190613235309.30984-1-cujomalainey@chromium.org>
+From: AS50 KCHsu0 <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8825: fix fake interruption when
+	booting
+Date: Fri, 14 Jun 2019 10:02:04 +0800
+Message-ID: <cb856871-aa10-d67d-4900-823578f2f40e@nuvoton.com>
+References: <20190610024029.12193-1-KCHSU0@nuvoton.com>
+ <20190610034040.12629-1-KCHSU0@nuvoton.com>
+ <20190613112042.GJ5316@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
- [IPv6:2607:f8b0:4864:20::642])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CD71F8076F
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 03:15:54 +0200 (CEST)
-Received: by mail-pl1-x642.google.com with SMTP id a93so263253pla.7
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2019 18:15:54 -0700 (PDT)
-In-Reply-To: <20190613235309.30984-1-cujomalainey@chromium.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa1.perex.cz (Postfix) with ESMTP id 846ABF80764
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 04:02:10 +0200 (CEST)
+In-Reply-To: <20190613112042.GJ5316@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,40 +24,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Curtis Malainey <cujomalainey@chromium.org>, Crag Wang <crag.wang@dell.com>, Dylan Reid <dgreid@chromium.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, WTLI@nuvoton.com, lgirdwood@gmail.com, yuhsuan@google.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Cheng-Yi Chiang <cychiang@chromium.org>, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-The lineout playback switch should be enabled and disabled when enabling
-and disabling the device.
 
-This commit needs to be tested by dell.
+On 6/13/2019 7:20 PM, Mark Brown wrote:
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Dylan Reid <dgreid@chromium.org>
-Cc: Crag Wang <crag.wang@dell.com>
----
- src/conf/ucm/Dell-WD15-Dock/HiFi.conf | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On Mon, Jun 10, 2019 at 11:40:40AM +0800, John Hsu wrote:
 
-diff --git a/src/conf/ucm/Dell-WD15-Dock/HiFi.conf b/src/conf/ucm/Dell-WD15-Dock/HiFi.conf
-index 1b6bd212..8e8c0140 100644
---- a/src/conf/ucm/Dell-WD15-Dock/HiFi.conf
-+++ b/src/conf/ucm/Dell-WD15-Dock/HiFi.conf
-@@ -14,6 +14,14 @@ SectionDevice."LineOut" {
- 		PlaybackChannels "2"
- 		PlaybackPCM "hw:Dock,1"
- 	}
-+	EnableSequence [
-+		cdev "hw:Dock"
-+		cset "name='Line Playback Switch' on"
-+	]
-+	DisableSequence [
-+		cdev "hw:Dock"
-+		cset "name='Line Playback Switch' off"
-+	]
- }
- 
- SectionDevice."Mic" {
--- 
-2.22.0.rc2.383.gf4fbbf30c2-goog
+
+There is no pull-up resistor at IRQ line where it connects from
+the codec to SoC. When booting, the signal of IRQ pin will keep low
+
+
+
+On some specific system?
+
+
+No, not really.
+The ISR is made for active low. The setup decreases the risk of
+system damage, in case the hardware has no pull-up resistor.
+
+
+
+Please don't send new patches in the middle of old threads, it makes it
+hard to spot them and work out what the current version is.
+
+
+I understand. Thanks for reminding. Sorry for a little pushy.
+
+
+
+
+
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
