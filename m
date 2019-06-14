@@ -1,59 +1,141 @@
 From: Fletcher Woodruff <fletcherw@chromium.org>
-Subject: [PATCH v6 0/4] Fix jack detection for Chromebook Pixel
-Date: Fri, 14 Jun 2019 12:43:11 -0600
-Message-ID: <20190614184315.252945-1-fletcherw@chromium.org>
+Subject: [PATCH v6 1/4] ASoC: rt5677: fall back to DT prop names on error
+Date: Fri, 14 Jun 2019 12:43:12 -0600
+Message-ID: <20190614184315.252945-2-fletcherw@chromium.org>
+References: <20190614184315.252945-1-fletcherw@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190614184315.252945-1-fletcherw@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
 Cc: Fletcher Woodruff <fletcherw@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-** resending due to corrupted patch **
+The rt5677 driver uses ACPI-style property names to read from the
+device API. However, these do not match the property names in _DSD
+used on the Chromebook Pixel 2015, which are closer to the Device Tree
+style.  Unify the two functions for reading from the device API so that
+they try ACPI-style names first and fall back to the DT names on error.
 
-Headphone/mic jack detection doesn't work on the Chromebook Pixel 2015.
+With this patch, plugging and unplugging the headphone jack switches
+between headphones and speakers automatically.
 
-This patch changes the irq implementation to support polarity flipping
-and fixes the configuration code so that correct GPIO pins are read
-from ACPI.
+Signed-off-by: Fletcher Woodruff <fletcherw@chromium.org>
+---
+ sound/soc/codecs/rt5677.c | 74 +++++++++++++++++++--------------------
+ 1 file changed, 37 insertions(+), 37 deletions(-)
 
-With this series, plugging and unplugging the headphone jack switches
-between headphones and speakers automatically, and headset microphones 
-are also detected.
-
-v6:
-  - Move refactoring into its own patch
-  - Reorder patches so that DT property names patch is first
-  - Clarify commit message for patch which implements irq handler
-  - Remove unused work struct 
-  - Make IRQ function return IRQ_HANDLED only if IRQs actually fire
-
-v5:
-  - Fix void* parameter to devm_request_threaded_irq
-
-v4:
-  - Fix incorrect void* cast in rt5677_irq() 
-
-v3:
-  - Update commit message for patch 1/3 to clarify why we implement
-    our own irq_chip.
-
-v2:
-  - Split IRQ change into two patches: adding and fixing potential race
-  - Change config reading code to try both DT and ACPI style names
-
-Ben Zhang (2):
-  ASoC: rt5677: clear interrupts by polarity flip
-  ASoC: rt5677: handle concurrent interrupts
-
-Fletcher Woodruff (2):
-  ASoC: rt5677: fall back to DT prop names on error
-  ASoC: rt5677: move jack-detect init to i2c probe
-
- sound/soc/codecs/rt5677.c | 319 ++++++++++++++++++++++++++------------
- sound/soc/codecs/rt5677.h |  13 +-
- 2 files changed, 236 insertions(+), 96 deletions(-)
-
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 6fc70e441458de..63e28eaf1f40ba 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5019,48 +5019,50 @@ static const struct acpi_device_id rt5677_acpi_match[] = {
+ };
+ MODULE_DEVICE_TABLE(acpi, rt5677_acpi_match);
+ 
+-static void rt5677_read_acpi_properties(struct rt5677_priv *rt5677,
++static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
+ 		struct device *dev)
+ {
+ 	u32 val;
+ 
+-	if (!device_property_read_u32(dev, "DCLK", &val))
+-		rt5677->pdata.dmic2_clk_pin = val;
++	rt5677->pdata.in1_diff =
++		device_property_read_bool(dev, "IN1") ||
++		device_property_read_bool(dev, "realtek,in1-differential");
+ 
+-	rt5677->pdata.in1_diff = device_property_read_bool(dev, "IN1");
+-	rt5677->pdata.in2_diff = device_property_read_bool(dev, "IN2");
+-	rt5677->pdata.lout1_diff = device_property_read_bool(dev, "OUT1");
+-	rt5677->pdata.lout2_diff = device_property_read_bool(dev, "OUT2");
+-	rt5677->pdata.lout3_diff = device_property_read_bool(dev, "OUT3");
++	rt5677->pdata.in2_diff =
++		device_property_read_bool(dev, "IN2") ||
++		device_property_read_bool(dev, "realtek,in2-differential");
+ 
+-	device_property_read_u32(dev, "JD1", &rt5677->pdata.jd1_gpio);
+-	device_property_read_u32(dev, "JD2", &rt5677->pdata.jd2_gpio);
+-	device_property_read_u32(dev, "JD3", &rt5677->pdata.jd3_gpio);
+-}
++	rt5677->pdata.lout1_diff =
++		device_property_read_bool(dev, "OUT1") ||
++		device_property_read_bool(dev, "realtek,lout1-differential");
+ 
+-static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
+-		struct device *dev)
+-{
+-	rt5677->pdata.in1_diff = device_property_read_bool(dev,
+-			"realtek,in1-differential");
+-	rt5677->pdata.in2_diff = device_property_read_bool(dev,
+-			"realtek,in2-differential");
+-	rt5677->pdata.lout1_diff = device_property_read_bool(dev,
+-			"realtek,lout1-differential");
+-	rt5677->pdata.lout2_diff = device_property_read_bool(dev,
+-			"realtek,lout2-differential");
+-	rt5677->pdata.lout3_diff = device_property_read_bool(dev,
+-			"realtek,lout3-differential");
++	rt5677->pdata.lout2_diff =
++		device_property_read_bool(dev, "OUT2") ||
++		device_property_read_bool(dev, "realtek,lout2-differential");
++
++	rt5677->pdata.lout3_diff =
++		device_property_read_bool(dev, "OUT3") ||
++		device_property_read_bool(dev, "realtek,lout3-differential");
+ 
+ 	device_property_read_u8_array(dev, "realtek,gpio-config",
+-			rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
+-
+-	device_property_read_u32(dev, "realtek,jd1-gpio",
+-			&rt5677->pdata.jd1_gpio);
+-	device_property_read_u32(dev, "realtek,jd2-gpio",
+-			&rt5677->pdata.jd2_gpio);
+-	device_property_read_u32(dev, "realtek,jd3-gpio",
+-			&rt5677->pdata.jd3_gpio);
++				      rt5677->pdata.gpio_config,
++				      RT5677_GPIO_NUM);
++
++	if (!device_property_read_u32(dev, "DCLK", &val) ||
++	    !device_property_read_u32(dev, "realtek,dmic2_clk_pin", &val))
++		rt5677->pdata.dmic2_clk_pin = val;
++
++	if (!device_property_read_u32(dev, "JD1", &val) ||
++	    !device_property_read_u32(dev, "realtek,jd1-gpio", &val))
++		rt5677->pdata.jd1_gpio = val;
++
++	if (!device_property_read_u32(dev, "JD2", &val) ||
++	    !device_property_read_u32(dev, "realtek,jd2-gpio", &val))
++		rt5677->pdata.jd2_gpio = val;
++
++	if (!device_property_read_u32(dev, "JD3", &val) ||
++	    !device_property_read_u32(dev, "realtek,jd3-gpio", &val))
++		rt5677->pdata.jd3_gpio = val;
+ }
+ 
+ static struct regmap_irq rt5677_irqs[] = {
+@@ -5143,20 +5145,18 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
+ 		match_id = of_match_device(rt5677_of_match, &i2c->dev);
+ 		if (match_id)
+ 			rt5677->type = (enum rt5677_type)match_id->data;
+-
+-		rt5677_read_device_properties(rt5677, &i2c->dev);
+ 	} else if (ACPI_HANDLE(&i2c->dev)) {
+ 		const struct acpi_device_id *acpi_id;
+ 
+ 		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
+ 		if (acpi_id)
+ 			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
+-
+-		rt5677_read_acpi_properties(rt5677, &i2c->dev);
+ 	} else {
+ 		return -EINVAL;
+ 	}
+ 
++	rt5677_read_device_properties(rt5677, &i2c->dev);
++
+ 	/* pow-ldo2 and reset are optional. The codec pins may be statically
+ 	 * connected on the board without gpios. If the gpio device property
+ 	 * isn't specified, devm_gpiod_get_optional returns NULL.
 -- 
 2.22.0.410.gd8fdbe21b5-goog
