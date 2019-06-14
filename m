@@ -1,22 +1,19 @@
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH 3/5] sound: soc: codecs: wm_adsp: no need
- to check return value of debugfs_create functions
-Date: Fri, 14 Jun 2019 11:24:39 +0100
-Message-ID: <acbebcc1-810a-c16e-0413-84bb1c5417ca@opensource.cirrus.com>
-References: <20190614094756.2965-1-gregkh@linuxfoundation.org>
- <20190614094756.2965-3-gregkh@linuxfoundation.org>
+From: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 2/2] ASoC: adau1761: Add ALC controls
+Date: Fri, 14 Jun 2019 13:55:13 +0300
+Message-ID: <20190614105513.6894-2-alexandru.ardelean@analog.com>
+References: <20190614105513.6894-1-alexandru.ardelean@analog.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-eopbgr740074.outbound.protection.outlook.com [40.107.74.74])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE755F896EA
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 12:24:42 +0200 (CEST)
-In-Reply-To: <20190614094756.2965-3-gregkh@linuxfoundation.org>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58BD4F80764
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 12:55:24 +0200 (CEST)
+In-Reply-To: <20190614105513.6894-1-alexandru.ardelean@analog.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,79 +23,179 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 14/06/19 10:47, Greg Kroah-Hartman wrote:
-> When calling debugfs functions, there is no need to ever check the
-> return value.  The function can work or not, but the code logic should
-> never do something different based on this.
-> 
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: <patches@opensource.cirrus.com>
-> Cc: <alsa-devel@alsa-project.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->   sound/soc/codecs/wm_adsp.c | 37 +++++++------------------------------
->   1 file changed, 7 insertions(+), 30 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-> index b26e6b825a90..8f301cb07745 100644
-> --- a/sound/soc/codecs/wm_adsp.c
-> +++ b/sound/soc/codecs/wm_adsp.c
-> @@ -731,41 +731,18 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
->   	struct dentry *root = NULL;
->   	int i;
->   
-> -	if (!component->debugfs_root) {
-> -		adsp_err(dsp, "No codec debugfs root\n");
-> -		goto err;
-> -	}
-> -
->   	root = debugfs_create_dir(dsp->name, component->debugfs_root);
->   
-> -	if (!root)
-> -		goto err;
-> -
-> -	if (!debugfs_create_bool("booted", 0444, root, &dsp->booted))
-> -		goto err;
-> +	debugfs_create_bool("booted", 0444, root, &dsp->booted);
-> +	debugfs_create_bool("running", 0444, root, &dsp->running);
-> +	debugfs_create_x32("fw_id", 0444, root, &dsp->fw_id);
-> +	debugfs_create_x32("fw_version", 0444, root, &dsp->fw_id_version);
->   
-> -	if (!debugfs_create_bool("running", 0444, root, &dsp->running))
-> -		goto err;
-> -
-> -	if (!debugfs_create_x32("fw_id", 0444, root, &dsp->fw_id))
-> -		goto err;
-> -
-> -	if (!debugfs_create_x32("fw_version", 0444, root, &dsp->fw_id_version))
-> -		goto err;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(wm_adsp_debugfs_fops); ++i) {
-> -		if (!debugfs_create_file(wm_adsp_debugfs_fops[i].name,
-> -					 0444, root, dsp,
-> -					 &wm_adsp_debugfs_fops[i].fops))
-> -			goto err;
-> -	}
-> +	for (i = 0; i < ARRAY_SIZE(wm_adsp_debugfs_fops); ++i)
-> +		debugfs_create_file(wm_adsp_debugfs_fops[i].name, 0444, root,
-> +				    dsp, &wm_adsp_debugfs_fops[i].fops);
->   
->   	dsp->debugfs_root = root;
-> -	return;
-> -
-> -err:
-> -	debugfs_remove_recursive(root);
-> -	adsp_err(dsp, "Failed to create debugfs\n");
->   }
->   
->   static void wm_adsp2_cleanup_debugfs(struct wm_adsp *dsp)
-> 
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+The adau1761 has a automatic level control block that can adjust the gain
+for the differential input PGA. This patch adds ALSA controls for enabling
+and changing the parameter settings for the ALC.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ sound/soc/codecs/adau1761.c | 109 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 428bf95ea648..133d32dd913a 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -30,6 +30,9 @@
+ #define ADAU1761_LEFT_DIFF_INPUT_VOL	0x400e
+ #define ADAU1761_RIGHT_DIFF_INPUT_VOL	0x400f
+ #define ADAU1761_ALC_CTRL0		0x4011
++#define ADAU1761_ALC_CTRL1		0x4012
++#define ADAU1761_ALC_CTRL2		0x4013
++#define ADAU1761_ALC_CTRL3		0x4014
+ #define ADAU1761_PLAY_LR_MIXER_LEFT	0x4020
+ #define ADAU1761_PLAY_MIXER_LEFT0	0x401c
+ #define ADAU1761_PLAY_MIXER_LEFT1	0x401d
+@@ -74,6 +77,9 @@ static const struct reg_default adau1761_reg_defaults[] = {
+ 	{ ADAU1761_REC_MIXER_RIGHT1,		0x00 },
+ 	{ ADAU1761_LEFT_DIFF_INPUT_VOL,		0x00 },
+ 	{ ADAU1761_ALC_CTRL0,			0x00 },
++	{ ADAU1761_ALC_CTRL1,			0x00 },
++	{ ADAU1761_ALC_CTRL2,			0x00 },
++	{ ADAU1761_ALC_CTRL3,			0x00 },
+ 	{ ADAU1761_RIGHT_DIFF_INPUT_VOL,	0x00 },
+ 	{ ADAU1761_PLAY_LR_MIXER_LEFT,		0x00 },
+ 	{ ADAU1761_PLAY_MIXER_LEFT0,		0x00 },
+@@ -124,6 +130,10 @@ static const DECLARE_TLV_DB_SCALE(adau1761_sidetone_tlv, -1800, 300, 1);
+ static const DECLARE_TLV_DB_SCALE(adau1761_boost_tlv, -600, 600, 1);
+ static const DECLARE_TLV_DB_SCALE(adau1761_pga_boost_tlv, -2000, 2000, 1);
+ 
++static const DECLARE_TLV_DB_SCALE(adau1761_alc_max_gain_tlv, -1200, 600, 0);
++static const DECLARE_TLV_DB_SCALE(adau1761_alc_target_tlv, -2850, 150, 0);
++static const DECLARE_TLV_DB_SCALE(adau1761_alc_ng_threshold_tlv, -7650, 150, 0);
++
+ static const unsigned int adau1761_bias_select_values[] = {
+ 	0, 2, 3,
+ };
+@@ -161,9 +171,91 @@ static const char * const adau1761_pga_slew_time_text[] = {
+ 	"96 ms",
+ };
+ 
++static const char * const adau1761_alc_function_text[] = {
++	"Off",
++	"Right",
++	"Left",
++	"Stereo",
++	"DSP control",
++};
++
++static const char * const adau1761_alc_hold_time_text[] = {
++	"2.67 ms",
++	"5.34 ms",
++	"10.68 ms",
++	"21.36 ms",
++	"42.72 ms",
++	"85.44 ms",
++	"170.88 ms",
++	"341.76 ms",
++	"683.52 ms",
++	"1367 ms",
++	"2734.1 ms",
++	"5468.2 ms",
++	"10936 ms",
++	"21873 ms",
++	"43745 ms",
++	"87491 ms",
++};
++
++static const char * const adau1761_alc_attack_time_text[] = {
++	"6 ms",
++	"12 ms",
++	"24 ms",
++	"48 ms",
++	"96 ms",
++	"192 ms",
++	"384 ms",
++	"768 ms",
++	"1540 ms",
++	"3070 ms",
++	"6140 ms",
++	"12290 ms",
++	"24580 ms",
++	"49150 ms",
++	"98300 ms",
++	"196610 ms",
++};
++
++static const char * const adau1761_alc_decay_time_text[] = {
++	"24 ms",
++	"48 ms",
++	"96 ms",
++	"192 ms",
++	"384 ms",
++	"768 ms",
++	"15400 ms",
++	"30700 ms",
++	"61400 ms",
++	"12290 ms",
++	"24580 ms",
++	"49150 ms",
++	"98300 ms",
++	"196610 ms",
++	"393220 ms",
++	"786430 ms",
++};
++
++static const char * const adau1761_alc_ng_type_text[] = {
++	"Hold",
++	"Mute",
++	"Fade",
++	"Fade + Mute",
++};
++
+ static SOC_VALUE_ENUM_SINGLE_DECL(adau1761_pga_slew_time_enum,
+ 		ADAU1761_ALC_CTRL0, 6, 0x3, adau1761_pga_slew_time_text,
+ 		adau1761_pga_slew_time_values);
++static SOC_ENUM_SINGLE_DECL(adau1761_alc_function_enum,
++		ADAU1761_ALC_CTRL0, 0, adau1761_alc_function_text);
++static SOC_ENUM_SINGLE_DECL(adau1761_alc_hold_time_enum,
++		ADAU1761_ALC_CTRL1, 4, adau1761_alc_hold_time_text);
++static SOC_ENUM_SINGLE_DECL(adau1761_alc_attack_time_enum,
++		ADAU1761_ALC_CTRL2, 4, adau1761_alc_attack_time_text);
++static SOC_ENUM_SINGLE_DECL(adau1761_alc_decay_time_enum,
++		ADAU1761_ALC_CTRL2, 0, adau1761_alc_decay_time_text);
++static SOC_ENUM_SINGLE_DECL(adau1761_alc_ng_type_enum,
++		ADAU1761_ALC_CTRL3, 6, adau1761_alc_ng_type_text);
+ 
+ static const struct snd_kcontrol_new adau1761_jack_detect_controls[] = {
+ 	SOC_SINGLE("Speaker Auto-mute Switch", ADAU1761_DIGMIC_JACKDETECT,
+@@ -181,6 +273,20 @@ static const struct snd_kcontrol_new adau1761_differential_mode_controls[] = {
+ 		ADAU1761_REC_MIXER_RIGHT1, 3, 2, 0, adau1761_pga_boost_tlv),
+ 
+ 	SOC_ENUM("PGA Capture Slew Time", adau1761_pga_slew_time_enum),
++
++	SOC_SINGLE_TLV("ALC Capture Max Gain Volume", ADAU1761_ALC_CTRL0,
++		3, 7, 0, adau1761_alc_max_gain_tlv),
++	SOC_ENUM("ALC Capture Function", adau1761_alc_function_enum),
++	SOC_ENUM("ALC Capture Hold Time", adau1761_alc_hold_time_enum),
++	SOC_SINGLE_TLV("ALC Capture Target Volume", ADAU1761_ALC_CTRL1,
++		0, 15, 0, adau1761_alc_target_tlv),
++	SOC_ENUM("ALC Capture Attack Time", adau1761_alc_decay_time_enum),
++	SOC_ENUM("ALC Capture Decay Time", adau1761_alc_attack_time_enum),
++	SOC_ENUM("ALC Capture Noise Gate Type", adau1761_alc_ng_type_enum),
++	SOC_SINGLE("ALC Capture Noise Gate Switch",
++		ADAU1761_ALC_CTRL3, 5, 1, 0),
++	SOC_SINGLE_TLV("ALC Capture Noise Gate Threshold Volume",
++		ADAU1761_ALC_CTRL3, 0, 31, 0, adau1761_alc_ng_threshold_tlv),
+ };
+ 
+ static const struct snd_kcontrol_new adau1761_single_mode_controls[] = {
+@@ -653,6 +759,9 @@ static bool adau1761_readable_register(struct device *dev, unsigned int reg)
+ 	case ADAU1761_CLK_ENABLE0:
+ 	case ADAU1761_CLK_ENABLE1:
+ 	case ADAU1761_ALC_CTRL0:
++	case ADAU1761_ALC_CTRL1:
++	case ADAU1761_ALC_CTRL2:
++	case ADAU1761_ALC_CTRL3:
+ 		return true;
+ 	default:
+ 		break;
+-- 
+2.20.1
