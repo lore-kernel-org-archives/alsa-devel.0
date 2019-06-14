@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] sound: soc: core: no need to check
- return value of debugfs_create functions
-Date: Fri, 14 Jun 2019 16:34:05 +0100
-Message-ID: <20190614153405.GD5316@sirena.org.uk>
-References: <20190614094756.2965-1-gregkh@linuxfoundation.org>
- <20190614094756.2965-5-gregkh@linuxfoundation.org>
+Subject: Applied "ASoC: wm_adsp: no need to check return value
+	of debugfs_create functions" to the asoc tree
+Date: Fri, 14 Jun 2019 16:43:18 +0100 (BST)
+Message-ID: <20190614154318.94311440049@finisterre.sirena.org.uk>
+References: <20190614094756.2965-3-gregkh@linuxfoundation.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0326700869374457899=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A15DCF80794
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 17:34:08 +0200 (CEST)
-In-Reply-To: <20190614094756.2965-5-gregkh@linuxfoundation.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64D46F80794
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 17:43:19 +0200 (CEST)
+In-Reply-To: <20190614094756.2965-3-gregkh@linuxfoundation.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,75 +25,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0326700869374457899==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YgGp9RfepglW4nsE"
-Content-Disposition: inline
+   ASoC: wm_adsp: no need to check return value of debugfs_create functions
 
+has been applied to the asoc tree at
 
---YgGp9RfepglW4nsE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
-On Fri, Jun 14, 2019 at 11:47:56AM +0200, Greg Kroah-Hartman wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Note, the soc-pcm "state" file has now moved to a subdirectory, as it is
-> only a good idea to save the dentries for debugfs directories, not
-> individual files, as the individual file debugfs functions are changing
-> to not return a dentry.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-It'd be better to split this out into a separate change for ease of
-review.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> -	d = debugfs_create_file(w->name, 0444,
-> -				dapm->debugfs_dapm, w,
-> -				&dapm_widget_power_fops);
-> -	if (!d)
-> -		dev_warn(w->dapm->dev,
-> -			"ASoC: Failed to create %s debugfs file\n",
-> -			w->name);
-> +	debugfs_create_file(w->name, 0444, dapm->debugfs_dapm, w,
-> +			    &dapm_widget_power_fops);
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-The majority of this is removing error prints rather than code that
-actively does something different.  If this was like kmalloc() where the
-API is itself reported errors then this wouldn't be an issue but unless
-I'm missing something debugfs fails silently so this means that if
-something goes wrong it's going to be harder for the user to figure out
-where the debugfs files they wanted to check went to.  I'm guessing you
-don't want to add error prints in debugfs itself so I'd rather they
-stayed here.
+Thanks,
+Mark
 
-Yes, the error check is looking for NULL not an error pointer - it was
-correct when written but I see that the debugfs API changed earlier this
-year to return error pointers so we ought to fix that up.
+>From 7f807f280964e31fb32fe6aaa263cfa2488236d8 Mon Sep 17 00:00:00 2001
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Fri, 14 Jun 2019 11:47:54 +0200
+Subject: [PATCH] ASoC: wm_adsp: no need to check return value of
+ debugfs_create functions
 
---YgGp9RfepglW4nsE
-Content-Type: application/pgp-signature; name="signature.asc"
+When calling debugfs functions, there is no need to ever check the
+return value.  The function can work or not, but the code logic should
+never do something different based on this.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm_adsp.c | 37 +++++++------------------------------
+ 1 file changed, 7 insertions(+), 30 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0DvmkACgkQJNaLcl1U
-h9C10Af/WWWQ0hXp7Kjf67OffaL0vmLFaq46sMjEYEyBCtiv7o+GusnMCNhRIlEG
-4+tQgsu7wbGxclJaerAzGCzlaBAvjS9yCYbqrFZJzSETGZ0VaKjrw7MlepYUPB94
-CBkKwCHoFTQpRm/b36BJd8hV5o8uhTlsf/gpbUFXJjPjH/20UWVCmi7Gonh8rTBU
-L1It2817gidMIhiFg4Hc86WUGGK+JGM3ekyTvXd5zQix9tx1fmsiqmJs9Pr9s09F
-HEnX9c4xmQLVtXNQOgD72KI7zCIrcAsTtcZd09rl+qOIN1DzCuEDemtqKN2/r8c6
-7IQIKP/GluG2A/b9VhRgrXb41zS3Cw==
-=ATS+
------END PGP SIGNATURE-----
-
---YgGp9RfepglW4nsE--
-
---===============0326700869374457899==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0326700869374457899==--
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index b26e6b825a90..8f301cb07745 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -731,41 +731,18 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
+ 	struct dentry *root = NULL;
+ 	int i;
+ 
+-	if (!component->debugfs_root) {
+-		adsp_err(dsp, "No codec debugfs root\n");
+-		goto err;
+-	}
+-
+ 	root = debugfs_create_dir(dsp->name, component->debugfs_root);
+ 
+-	if (!root)
+-		goto err;
+-
+-	if (!debugfs_create_bool("booted", 0444, root, &dsp->booted))
+-		goto err;
++	debugfs_create_bool("booted", 0444, root, &dsp->booted);
++	debugfs_create_bool("running", 0444, root, &dsp->running);
++	debugfs_create_x32("fw_id", 0444, root, &dsp->fw_id);
++	debugfs_create_x32("fw_version", 0444, root, &dsp->fw_id_version);
+ 
+-	if (!debugfs_create_bool("running", 0444, root, &dsp->running))
+-		goto err;
+-
+-	if (!debugfs_create_x32("fw_id", 0444, root, &dsp->fw_id))
+-		goto err;
+-
+-	if (!debugfs_create_x32("fw_version", 0444, root, &dsp->fw_id_version))
+-		goto err;
+-
+-	for (i = 0; i < ARRAY_SIZE(wm_adsp_debugfs_fops); ++i) {
+-		if (!debugfs_create_file(wm_adsp_debugfs_fops[i].name,
+-					 0444, root, dsp,
+-					 &wm_adsp_debugfs_fops[i].fops))
+-			goto err;
+-	}
++	for (i = 0; i < ARRAY_SIZE(wm_adsp_debugfs_fops); ++i)
++		debugfs_create_file(wm_adsp_debugfs_fops[i].name, 0444, root,
++				    dsp, &wm_adsp_debugfs_fops[i].fops);
+ 
+ 	dsp->debugfs_root = root;
+-	return;
+-
+-err:
+-	debugfs_remove_recursive(root);
+-	adsp_err(dsp, "Failed to create debugfs\n");
+ }
+ 
+ static void wm_adsp2_cleanup_debugfs(struct wm_adsp *dsp)
+-- 
+2.20.1
