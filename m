@@ -1,79 +1,60 @@
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Subject: Re: [PATCH v4 0/7] Allwinner H6 SPDIF support
-Date: Fri, 14 Jun 2019 10:29:57 +0200
-Message-ID: <CAJiuCcfUhBxEr=o7VVpPROQZadQh7z1QC0SkWSYt-53Sj3H2qw@mail.gmail.com>
-References: <20190527200627.8635-1-peron.clem@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190527200627.8635-1-peron.clem@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jagan Teki <jagan@amarulasolutions.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-sunxi <linux-sunxi@googlegroups.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] Revert "ALSA: hda/realtek - Improve the headset mic for Acer Aspire laptops"
+Date: Fri, 14 Jun 2019 16:44:12 +0800
+Message-ID: <20190614084412.9834-1-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This reverts commit 9cb40eb184c4220d244a532bd940c6345ad9dbd9.
 
-On Mon, 27 May 2019 at 22:10, Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com=
-> wrote:
->
-> *H6 DMA support IS REQUIRED*
+This patch introduces noise and headphone playback issue after
+rebooting or suspending/resuming. Let us revert it.
 
-DMA has been merged, so this series can be merge when ASoC maintainers
-have reviewed it.
+https://bugzilla.kernel.org/show_bug.cgi?id=203831
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
-Regards,
-Cl=C3=A9ment
-
->
-> Allwinner H6 SoC has a SPDIF controller called One Wire Audio (OWA) which
-> is different from the previous H3 generation and not compatible.
->
-> Difference are an increase of fifo sizes, some memory mapping are differe=
-nt
-> and there is now the possibility to output the master clock on a pin.
->
-> Actually all these features are unused and only a bit for flushing the TX
-> fifo is required.
->
-> Also this series requires the DMA working on H6, a first version has been
-> submitted by Jernej =C5=A0krabec[1] but has not been accepted yet.
->
-> [1] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=3D=
-89011
->
-> Changes since v3:
->  - rename reg_fctl_ftx to val_fctl_ftx
->  - rebase this series on sound-next
->  - fix dt-bindings due to change in sound-next
->  - change node name sound_spdif to sound-spdif
->
-> Changes since v2:
->  - Split quirks and H6 support patch
->  - Add specific section for quirks comment
->
-> Changes since v1:
->  - Remove H3 compatible
->  - Add TX fifo bit flush quirks
->  - Add H6 bindings in SPDIF driver
->
-> Cl=C3=A9ment P=C3=A9ron (7):
->   dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible
->   ASoC: sun4i-spdif: Move quirks to the top
->   ASoC: sun4i-spdif: Add TX fifo bit flush quirks
->   ASoC: sun4i-spdif: Add support for H6 SoC
->   arm64: dts: allwinner: Add SPDIF node for Allwinner H6
->   arm64: dts: allwinner: h6: Enable SPDIF for Beelink GS1
->   arm64: defconfig: Enable Sun4i SPDIF module
->
->  .../sound/allwinner,sun4i-a10-spdif.yaml      |  1 +
->  .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  4 ++
->  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 38 ++++++++++++++
->  arch/arm64/configs/defconfig                  |  1 +
->  sound/soc/sunxi/sun4i-spdif.c                 | 49 ++++++++++++++++---
->  5 files changed, 87 insertions(+), 6 deletions(-)
->
-> --
-> 2.20.1
->
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1afb268f3da0..179e4be1f747 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6268,15 +6268,13 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
+ 	[ALC255_FIXUP_ACER_MIC_NO_PRESENCE] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = (const struct hda_verb[]) {
+-			/* Enable the Mic */
+-			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x45 },
+-			{ 0x20, AC_VERB_SET_PROC_COEF, 0x5089 },
+-			{}
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
+ 		},
+ 		.chained = true,
+-		.chain_id = ALC269_FIXUP_LIFEBOOK_EXTMIC
++		.chain_id = ALC255_FIXUP_HEADSET_MODE
+ 	},
+ 	[ALC255_FIXUP_ASUS_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -7320,10 +7318,6 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x18, 0x02a11030},
+ 		{0x19, 0x0181303F},
+ 		{0x21, 0x0221102f}),
+-	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1025, "Acer", ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+-		{0x12, 0x90a60140},
+-		{0x14, 0x90170120},
+-		{0x21, 0x02211030}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1025, "Acer", ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a601c0},
+ 		{0x14, 0x90171120},
+-- 
+2.17.1
