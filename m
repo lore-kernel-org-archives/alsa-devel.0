@@ -1,20 +1,18 @@
-From: AS50 KCHsu0 <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8825: fix fake interruption when
-	booting
-Date: Fri, 14 Jun 2019 10:02:04 +0800
-Message-ID: <cb856871-aa10-d67d-4900-823578f2f40e@nuvoton.com>
-References: <20190610024029.12193-1-KCHSU0@nuvoton.com>
- <20190610034040.12629-1-KCHSU0@nuvoton.com>
- <20190613112042.GJ5316@sirena.org.uk>
+From: Mark Moreno <mark_c_moreno@yahoo.com>
+Subject: PortAudio/Alsa devices question on linux
+Date: Fri, 14 Jun 2019 04:22:44 +0000 (UTC)
+Message-ID: <301632265.1084254.1560486164482@mail.yahoo.com>
+References: <301632265.1084254.1560486164482.ref@mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 846ABF80764
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 04:02:10 +0200 (CEST)
-In-Reply-To: <20190613112042.GJ5316@sirena.org.uk>
-Content-Language: en-US
+Received: from sonic317-21.consmr.mail.gq1.yahoo.com
+ (sonic317-21.consmr.mail.gq1.yahoo.com [98.137.66.147])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0572F80764
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 06:22:52 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +22,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, WTLI@nuvoton.com, lgirdwood@gmail.com, yuhsuan@google.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, Cheng-Yi Chiang <cychiang@chromium.org>, mhkuo@nuvoton.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 6/13/2019 7:20 PM, Mark Brown wrote:
-
-On Mon, Jun 10, 2019 at 11:40:40AM +0800, John Hsu wrote:
-
-
-There is no pull-up resistor at IRQ line where it connects from
-the codec to SoC. When booting, the signal of IRQ pin will keep low
-
-
-
-On some specific system?
-
-
-No, not really.
-The ISR is made for active low. The setup decreases the risk of
-system damage, in case the hardware has no pull-up resistor.
-
-
-
-Please don't send new patches in the middle of old threads, it makes it
-hard to spot them and work out what the current version is.
-
-
-I understand. Thanks for reminding. Sorry for a little pushy.
-
-
-
-
-
-===========================================================================================
-The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
+SSBidWlsdCBwb3J0YXVkaW8gb24gcmg3NSBpbiBpdHMgbm9ybWFsIDY0IGJpdCBtb2RlIGFuZCB3
+aGVuIEkgcnVuIGl0cyB0ZXN0IHByb2dyYW0gcGFfZGV2cyB3aGljaCBsaXN0cyB0aGUgYXVkaW8g
+ZGV2aWNlcyBhdmFpbGFibGUsIG15IHVzYiBzb3VuZCBjYXJkIGRldmljZSBpcyBsaXN0ZWQgYW5k
+IG15IGFwcGxpY2F0aW9uIHRoYXQgdXNlcyBwb3J0YXVkaW8gd29ya3MgZmluZS4KSSBidWlsdCBw
+b3J0YXVkaW8gb24gcmg3NSBpbiAzMiBiaXQgZm9ybSBhbmQgd2hlbiBJIHJ1biBpdHMgdGVzdCBw
+cm9ncmFtIHBhX2RldnMgdG8gbGlzdCB0aGUgZGV2aWNlcywgaXQgZG9lc24ndCBsaXN0IG15IHVz
+YiBzb3VuZCBjYXJkIGFuZCBzbyBteSBhcHBsaWNhdGlvbiBkb2Vzbid0IHdvcmsuCldoeSB3b3Vs
+ZCBhIHVzYiBhdWRpbyBzb3VuZCBjYXJkIGJlIHNlZW4gYnkgYSA2NGJpdCB2ZXJzaW9uIG9mIHBv
+cnRhdWRpbyBhbmQgbm90IGJ5IGEgMzJiaXQgdmVyc2lvbsKgIG9mIHBvcnRhdWRpbz8gSSBhc3N1
+bWUgaXQncyB1c2luZyBhbHNhIHVuZGVyIHRoZSBob29kIHNvIG5vdCBzdXJlIHdoeSB0aGVyZSB3
+b3VsZCBiZSBhbnkgZGlmZmVyZW5jZS4gQW0gSSBtaXNzaW5nIHNvbWV0aGluZyBvbiBteSBSSDc1
+IGxpbnV4IGluc3RhbGwgb3IgPz8/CnRoYW5rc01hcmsgTW9yZW5vCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
