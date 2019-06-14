@@ -1,21 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] sound: SoC: sof: no need to check
+Subject: Re: [PATCH 5/5] sound: soc: core: no need to check
  return value of debugfs_create functions
-Date: Fri, 14 Jun 2019 17:37:35 +0100
-Message-ID: <20190614163735.GE5316@sirena.org.uk>
+Date: Fri, 14 Jun 2019 18:41:10 +0100
+Message-ID: <20190614174110.GF5316@sirena.org.uk>
 References: <20190614094756.2965-1-gregkh@linuxfoundation.org>
- <20190614151410.GC5316@sirena.org.uk>
- <20190614152704.GB18049@kroah.com>
+ <20190614094756.2965-5-gregkh@linuxfoundation.org>
+ <20190614153405.GD5316@sirena.org.uk>
+ <20190614161339.GB22607@kroah.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3011803621628023914=="
+Content-Type: multipart/mixed; boundary="===============0748235503313558562=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB505F80794
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 18:37:38 +0200 (CEST)
-In-Reply-To: <20190614152704.GB18049@kroah.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB502F8076F
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2019 19:41:12 +0200 (CEST)
+In-Reply-To: <20190614161339.GB22607@kroah.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,96 +27,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3011803621628023914==
+--===============0748235503313558562==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xnH/NIbSm9ew9GxF"
+	protocol="application/pgp-signature"; boundary="oPYnW2SrAqZUvu4n"
 Content-Disposition: inline
 
 
---xnH/NIbSm9ew9GxF
+--oPYnW2SrAqZUvu4n
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 14, 2019 at 05:27:04PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jun 14, 2019 at 04:14:10PM +0100, Mark Brown wrote:
-> > On Fri, Jun 14, 2019 at 11:47:52AM +0200, Greg Kroah-Hartman wrote:
+On Fri, Jun 14, 2019 at 06:13:39PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Jun 14, 2019 at 04:34:05PM +0100, Mark Brown wrote:
+> > On Fri, Jun 14, 2019 at 11:47:56AM +0200, Greg Kroah-Hartman wrote:
 
-> > >  			dev_err(sdev->dev,
-> > > -				"error: debugfs entry %s cannot be read in DSP D3\n",
-> > > -				dfse->dfsentry->d_name.name);
-> > > +				"error: debugfs entry cannot be read in DSP D3\n");
+> > The majority of this is removing error prints rather than code that
+> > actively does something different.  If this was like kmalloc() where the
+> > API is itself reported errors then this wouldn't be an issue but unless
 
-> > This appears to be an unrelated change with no description in the
-> > changelog, please split it out into a separate change with a description
-> > of the change.
+> No, the long-term goal is for debugfs_create_file() to just return void.
+> I have already done enough cleanups in my local tree to do that already
+> for many of the helper functions.
 
-> The whole "dfsentry" variable is now gone, so it is very related.  Why
-> split this out?
+> No one should care one bit if a debugfs file succeeds or not, no logic
+> should ever change, nor should it matter.  debugfs is for debugging
+> kernel code, not for anything that anyone should ever rely on.
 
-The removal of the variable isn't mentioned in the changelog at all or
-otherwise explained in what *should* be a mostly mechanical change.
-When a patch is doing something that doesn't match the changelog that
-sets off alarm bells, and when there's something that's mostly lots of
-repetitive mechanical changes with some more other reorganization
-mixed in it's a lot easier to review if those other changes are split
-out.
+I don't think this would be a helpful change.  Nobody should care about
+debugfs file creation for *production* use but that doesn't mean that
+people using it for debugging shouldn't care about it.  Debugging tools
+that are fragile can be very misleading for developers and hence
+intensely frustrating; it's never fun to be building on quicksand.  This
+is particularly true for code like here where the core is providing a
+bunch of internal data that is hopefully useful to people developing
+drivers or system integrations, the users have a hopefully more black
+box view of the core than someone directly working on the core would.
+If that view of the data ends up being corrupted because some of the
+files or directories don't get created that is something we should be
+flagging up to people to try to help them avoid being mislead by what
+they are seeing.  Developers need to be able to trust their debugging
+tools.
 
-> > I might be missing something but I can't see any error logging in
-> > debugfs_create_file() so this isn't equivalent (though the current code
-> > is broken, it should be using IS_ERR()).  Logging creation failures is
-> > helpful to developers trying to figure out what happened to the trace
-> > files they're trying to use.
+> So yes, this patch does remove a bunch of error messages (that as you
+> point out can never be triggered), but the main goal here is to not
+> check the return value of the function at all, which is what this patch
+> does.
 
-> There is no need to log anything in in-kernel, working code.  If a
-> developer wants to do this on their own when writing the code the first
-> time and debugging it, great, but for stuff we know works, there's no
-> need for being noisy.
+Like I said in reply to the other patch the error checking here did the
+right thing up until January when debugfs was changed to return error
+pointers instead of NULL.  I know that I've found this error checking to
+be helpful in the past, not having it would be a loss. =20
 
-If it helps maintainability for people to get diagnostics I'm all for
-it; it's not like this is a hot path or anything.
+If there were some visible error reporting in debugfs I'd not be
+bothered about this quite so much (though it'd still be less clear) but
+there isn't so it really feels like a step back.
 
-> Also, the check is incorrect, there's no way for this function to return
-> NULL, so that code today, will never trigger.  So obviously no one
-> counted on this message anyway :)
-
-I went and checked into this having seen that the core code (which I
-definitely know used to trigger) also checks for NULL and discovered
-that the reason this happens is that in January you applied a commit
-which changed the return value from NULL to an error pointer which broke
-any caller doing error checking.  That's not exactly the same thing as
-nobody ever finding something useful.
-
-> Just call the function and move on, like the rest of the kernel is being
-> converted over to do.
-
-This is something you've unilaterally decided to do.
-
---xnH/NIbSm9ew9GxF
+--oPYnW2SrAqZUvu4n
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0DzU4ACgkQJNaLcl1U
-h9DyXwf/YZPRQKYmpAxv9K/g5bazQeVf93sBE2bjR67odekWDPeg60MhIe45VABA
-AYpn2tuwfxIbNM0lkJB8vYKk0HN9q7rW/zUt0HdVKShIU3nG303zUXO5sCTkmvGb
-J9eqW3OnWAL0EVYv9cO0rq4Rxn+I8lRZZ2mLVZEJE5RgdsWWz6AzKkG/IakbZlD7
-oCY3M/HJg2dwsgLfCarEinIIQ2vf34A8C34VMfdVTdYYXBcOROOc3sPdmcTsf4wN
-s6QdWzWkYhim8OVz2kSpQM8mP+iMK8i5GtM5ph7+6mCGrq1n4DWXz8ZrcF2aDhTa
-BnAtfVALq76cTgJ36szcCic/wrh1Pw==
-=rmtG
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0D3DUACgkQJNaLcl1U
+h9DGugf/VjddJN07Dw5OwzeXNhOminW+TBjidBE5IWx9QgY7OPws+Ik+7lupKhAA
+84kP4UkJWZKrfWHbROHYFsguYBTlH6zy5YihulH6rnbuuqMBzUsN1xLOKKmGrzYh
+VChAKLknRb5Vrr1Ltk7ZzwH0UIVjzZ6IZDhm4HEgYjrqeFhMj46s2GTg+ldOLetG
+QfMjrJ/qakXExhnDaYekVsGCO4DGt65L35CwN0FdGqB7Q1CvcHs+1srYMwX1icQQ
+5QDJ37c6T4bXE0iYYurQ8yZfuBwOUQXaGR3fv/mZH4tlvKZ9lGuI9Vx02Xq41g2D
++59zT8mJUTAjIb9NuFXiqlK5S0JxTA==
+=FiYq
 -----END PGP SIGNATURE-----
 
---xnH/NIbSm9ew9GxF--
+--oPYnW2SrAqZUvu4n--
 
---===============3011803621628023914==
+--===============0748235503313558562==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3011803621628023914==--
+--===============0748235503313558562==--
