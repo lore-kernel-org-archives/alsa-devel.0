@@ -1,51 +1,70 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: disallow building without
- CONFIG_PCI again
-Date: Mon, 17 Jun 2019 15:57:50 +0200
-Message-ID: <CAK8P3a381XbG8BGOPo3tN6+q2EzFU+9R9Q=q-uv=Mbf931bt=g@mail.gmail.com>
-References: <20190617124632.1176809-1-arnd@arndb.de> <6103cc84-6af3-7b82-4cac-aea500934dd1@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] dt-bindings: Add missing newline at end of file
+Date: Mon, 17 Jun 2019 16:33:22 +0200
+Message-ID: <20190617143322.4332-1-geert+renesas@glider.be>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6103cc84-6af3-7b82-4cac-aea500934dd1@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: openbmc@lists.ozlabs.org, openipmi-developer@lists.sourceforge.net, devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 17, 2019 at 3:52 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> On 6/17/19 2:45 PM, Arnd Bergmann wrote:
-> > Compile-testing without PCI just causes warnings:
-> >
-> > sound/soc/sof/sof-pci-dev.c:330:13: error: 'sof_pci_remove' defined but not used [-Werror=unused-function]
-> >   static void sof_pci_remove(struct pci_dev *pci)
-> >               ^~~~~~~~~~~~~~
-> > sound/soc/sof/sof-pci-dev.c:230:12: error: 'sof_pci_probe' defined but not used [-Werror=unused-function]
-> >   static int sof_pci_probe(struct pci_dev *pci,
-> >              ^~~~~~~~~~~~~
-> >
-> > I tried to fix this in a way that would still allow compile
-> > tests, but it got too ugly, so this just reverts the patch
-> > that allowed it in the first place.
-> >
-> > Most architectures do allow enabling PCI, so the value of the
-> > COMPILE_TEST alternative was not very high to start with.
->
-> I think COMPILE_TEST has value in that it exposed issues in the PCI
-> headers, and in general COMPILE_TEST exposes code that can be
-> simplified/refactored. That said I don't have the time to suggest an
-> alternative at the moment so it's fine with me if you want to revert. If
-> you don't mind sharing your config it'd help me work on this when I get
-> a chance.
+"git diff" says:
 
-I agree that fixing this in the pci headers would be best. Ideally we would
-be able to compile-test PCI drivers without any #ifdef in the sources,
-while ending up with an empty .o file as the compiler can discard all
-local functions starting with an unused pci_driver.
+    \ No newline at end of file
 
-I saw the error in a randconfig build, uploaded the .config to
-https://pastebin.com/zBeyM41R now.
+after modifying the files.
 
-        Arnd
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ Documentation/devicetree/bindings/ipmi/npcm7xx-kcs-bmc.txt      | 2 +-
+ .../devicetree/bindings/pinctrl/nuvoton,npcm7xx-pinctrl.txt     | 2 +-
+ Documentation/devicetree/bindings/regulator/pv88060.txt         | 2 +-
+ Documentation/devicetree/bindings/sound/cs42l73.txt             | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/ipmi/npcm7xx-kcs-bmc.txt b/Documentation/devicetree/bindings/ipmi/npcm7xx-kcs-bmc.txt
+index 3538a214fff156d4..352f5e9c759bc3f5 100644
+--- a/Documentation/devicetree/bindings/ipmi/npcm7xx-kcs-bmc.txt
++++ b/Documentation/devicetree/bindings/ipmi/npcm7xx-kcs-bmc.txt
+@@ -36,4 +36,4 @@ Example:
+             kcs_chan = <2>;
+             status = "disabled";
+         };
+-    };
+\ No newline at end of file
++    };
+diff --git a/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm7xx-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm7xx-pinctrl.txt
+index 83f4bbac94bb19db..a1264cc8660dcd59 100644
+--- a/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm7xx-pinctrl.txt
++++ b/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm7xx-pinctrl.txt
+@@ -213,4 +213,4 @@ pinctrl: pinctrl@f0800000 {
+ 		groups = "clkreq";
+ 		function = "clkreq";
+ 	};
+-};
+\ No newline at end of file
++};
+diff --git a/Documentation/devicetree/bindings/regulator/pv88060.txt b/Documentation/devicetree/bindings/regulator/pv88060.txt
+index 10a6dadc008eb38d..6a7c8a92fdb0bf1c 100644
+--- a/Documentation/devicetree/bindings/regulator/pv88060.txt
++++ b/Documentation/devicetree/bindings/regulator/pv88060.txt
+@@ -121,4 +121,4 @@ Example
+ 				regulator-max-microvolt = <5000000>;
+ 			};
+ 		};
+-	};
+\ No newline at end of file
++	};
+diff --git a/Documentation/devicetree/bindings/sound/cs42l73.txt b/Documentation/devicetree/bindings/sound/cs42l73.txt
+index 80ae910dbf6c3880..47b868b5ab011470 100644
+--- a/Documentation/devicetree/bindings/sound/cs42l73.txt
++++ b/Documentation/devicetree/bindings/sound/cs42l73.txt
+@@ -19,4 +19,4 @@ codec: cs42l73@4a {
+ 	reg = <0x4a>;
+ 	reset_gpio = <&gpio 10 0>;
+ 	chgfreq = <0x05>;
+-};
+\ No newline at end of file
++};
+-- 
+2.17.1
