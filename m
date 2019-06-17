@@ -1,147 +1,139 @@
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
-        <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v2 10/11] ASoC: topology: Consolidate how dtexts and dvalues are freed
-Date: Mon, 17 Jun 2019 13:36:43 +0200
-Message-ID: <20190617113644.25621-11-amadeuszx.slawinski@linux.intel.com>
-References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: SOF: disallow building without CONFIG_PCI again
+Date: Mon, 17 Jun 2019 14:45:49 +0200
+Message-ID: <20190617124632.1176809-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Provide helper functions and use them to free dtexts and dvalues in
-topology. This is followup cleanup after related changes in this area as
-suggested in:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
+Compile-testing without PCI just causes warnings:
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+sound/soc/sof/sof-pci-dev.c:330:13: error: 'sof_pci_remove' defined but not used [-Werror=unused-function]
+ static void sof_pci_remove(struct pci_dev *pci)
+             ^~~~~~~~~~~~~~
+sound/soc/sof/sof-pci-dev.c:230:12: error: 'sof_pci_probe' defined but not used [-Werror=unused-function]
+ static int sof_pci_probe(struct pci_dev *pci,
+            ^~~~~~~~~~~~~
+
+I tried to fix this in a way that would still allow compile
+tests, but it got too ugly, so this just reverts the patch
+that allowed it in the first place.
+
+Most architectures do allow enabling PCI, so the value of the
+COMPILE_TEST alternative was not very high to start with.
+
+Fixes: e13ef82a9ab8 ("ASoC: SOF: add COMPILE_TEST for PCI options")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/soc-topology.c | 41 +++++++++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 17 deletions(-)
+ sound/soc/sof/Kconfig       |  2 +-
+ sound/soc/sof/intel/hda.c   | 13 ++-----------
+ sound/soc/sof/sof-pci-dev.c |  4 ----
+ 3 files changed, 3 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index b538412e4bcf..a926c2afbe05 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -86,6 +86,8 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- struct snd_soc_dapm_widget *
- snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 			 const struct snd_soc_dapm_widget *widget);
-+static void soc_tplg_denum_remove_texts(struct soc_enum *se);
-+static void soc_tplg_denum_remove_values(struct soc_enum *se);
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 41f79cdcbf47..fb01f0ca6027 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -11,7 +11,7 @@ if SND_SOC_SOF_TOPLEVEL
  
- /* check we dont overflow the data for this control chunk */
- static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
-@@ -398,7 +400,6 @@ static void remove_enum(struct snd_soc_component *comp,
+ config SND_SOC_SOF_PCI
+ 	tristate "SOF PCI enumeration support"
+-	depends on PCI || COMPILE_TEST
++	depends on PCI
+ 	select SND_SOC_SOF
+ 	select SND_SOC_ACPI if ACPI
+ 	select SND_SOC_SOF_OPTIONS
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 140b1424f291..51c1c1787de7 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -533,9 +533,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	 * TODO: support interrupt mode selection with kernel parameter
+ 	 *       support msi multiple vectors
+ 	 */
+-#if IS_ENABLED(CONFIG_PCI)
+ 	ret = pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_MSI);
+-#endif
+ 	if (ret < 0) {
+ 		dev_info(sdev->dev, "use legacy interrupt mode\n");
+ 		/*
+@@ -547,9 +545,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 		sdev->msi_enabled = 0;
+ 	} else {
+ 		dev_info(sdev->dev, "use msi interrupt mode\n");
+-#if IS_ENABLED(CONFIG_PCI)
+ 		hdev->irq = pci_irq_vector(pci, 0);
+-#endif
+ 		/* ipc irq number is the same of hda irq */
+ 		sdev->ipc_irq = hdev->irq;
+ 		sdev->msi_enabled = 1;
+@@ -606,10 +602,8 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ free_hda_irq:
+ 	free_irq(hdev->irq, bus);
+ free_irq_vector:
+-#if IS_ENABLED(CONFIG_PCI)
+ 	if (sdev->msi_enabled)
+ 		pci_free_irq_vectors(pci);
+-#endif
+ free_streams:
+ 	hda_dsp_stream_free(sdev);
+ /* dsp_unmap: not currently used */
+@@ -624,6 +618,7 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
  {
- 	struct snd_card *card = comp->card->snd_card;
- 	struct soc_enum *se = container_of(dobj, struct soc_enum, dobj);
--	int i;
+ 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
  
- 	if (pass != SOC_TPLG_PASS_MIXER)
- 		return;
-@@ -409,10 +410,8 @@ static void remove_enum(struct snd_soc_component *comp,
- 	snd_ctl_remove(card, dobj->control.kcontrol);
- 	list_del(&dobj->list);
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+@@ -652,12 +647,8 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
  
--	kfree(dobj->control.dvalues);
--	for (i = 0; i < se->items; i++)
--		kfree(dobj->control.dtexts[i]);
--	kfree(dobj->control.dtexts);
-+	soc_tplg_denum_remove_values(se);
-+	soc_tplg_denum_remove_texts(se);
- 	kfree(se);
- }
+ 	free_irq(sdev->ipc_irq, sdev);
+ 	free_irq(hda->irq, bus);
+-#if IS_ENABLED(CONFIG_PCI)
+-	if (sdev->msi_enabled) {
+-		struct pci_dev *pci = to_pci_dev(sdev->dev);
++	if (sdev->msi_enabled)
+ 		pci_free_irq_vectors(pci);
+-	}
+-#endif
  
-@@ -480,15 +479,12 @@ static void remove_widget(struct snd_soc_component *comp,
- 			struct snd_kcontrol *kcontrol = w->kcontrols[i];
- 			struct soc_enum *se =
- 				(struct soc_enum *)kcontrol->private_value;
--			int j;
+ 	hda_dsp_stream_free(sdev);
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index ab58d4f9119f..e2b19782f01a 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -251,11 +251,9 @@ static int sof_pci_probe(struct pci_dev *pci,
+ 	if (!sof_pdata)
+ 		return -ENOMEM;
  
- 			snd_ctl_remove(card, kcontrol);
+-#if IS_ENABLED(CONFIG_PCI)
+ 	ret = pcim_enable_device(pci);
+ 	if (ret < 0)
+ 		return ret;
+-#endif
  
- 			/* free enum kcontrol's dvalues and dtexts */
--			kfree(se->dobj.control.dvalues);
--			for (j = 0; j < se->items; j++)
--				kfree(se->dobj.control.dtexts[j]);
--			kfree(se->dobj.control.dtexts);
-+			soc_tplg_denum_remove_values(se);
-+			soc_tplg_denum_remove_texts(se);
+ 	ret = pci_request_regions(pci, "Audio DSP");
+ 	if (ret < 0)
+@@ -388,7 +386,6 @@ static const struct pci_device_id sof_pci_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
  
- 			kfree(se);
- 			kfree(w->kcontrol_news[i].name);
-@@ -956,14 +952,23 @@ static int soc_tplg_denum_create_texts(struct soc_enum *se,
- 		}
- 	}
+-#if IS_ENABLED(CONFIG_PCI)
+ /* pci_driver definition */
+ static struct pci_driver snd_sof_pci_driver = {
+ 	.name = "sof-audio-pci",
+@@ -400,6 +397,5 @@ static struct pci_driver snd_sof_pci_driver = {
+ 	},
+ };
+ module_pci_driver(snd_sof_pci_driver);
+-#endif
  
-+	se->items = le32_to_cpu(ec->items);
- 	se->texts = (const char * const *)se->dobj.control.dtexts;
- 	return 0;
- 
- err:
-+	se->items = i;
-+	soc_tplg_denum_remove_texts(se);
-+	return ret;
-+}
-+
-+static inline void soc_tplg_denum_remove_texts(struct soc_enum *se)
-+{
-+	int i = se->items;
-+
- 	for (--i; i >= 0; i--)
- 		kfree(se->dobj.control.dtexts[i]);
- 	kfree(se->dobj.control.dtexts);
--	return ret;
- }
- 
- static int soc_tplg_denum_create_values(struct soc_enum *se,
-@@ -988,6 +993,11 @@ static int soc_tplg_denum_create_values(struct soc_enum *se,
- 	return 0;
- }
- 
-+static inline void soc_tplg_denum_remove_values(struct soc_enum *se)
-+{
-+	kfree(se->dobj.control.dvalues);
-+}
-+
- static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 	size_t size)
- {
-@@ -1035,7 +1045,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 		se->shift_r = tplc_chan_get_shift(tplg, ec->channel,
- 			SNDRV_CHMAP_FL);
- 
--		se->items = le32_to_cpu(ec->items);
- 		se->mask = le32_to_cpu(ec->mask);
- 		se->dobj.index = tplg->index;
- 		se->dobj.type = SND_SOC_DOBJ_ENUM;
-@@ -1381,7 +1390,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 	struct snd_kcontrol_new *kc;
- 	struct snd_soc_tplg_enum_control *ec;
- 	struct soc_enum *se;
--	int i, j, err;
-+	int i, err;
- 
- 	kc = kcalloc(num_kcontrols, sizeof(*kc), GFP_KERNEL);
- 	if (kc == NULL)
-@@ -1476,10 +1485,8 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 		if (!se)
- 			continue;
- 
--		kfree(se->dobj.control.dvalues);
--		for (j = 0; j < ec->items; j++)
--			kfree(se->dobj.control.dtexts[j]);
--		kfree(se->dobj.control.dtexts);
-+		soc_tplg_denum_remove_values(se);
-+		soc_tplg_denum_remove_texts(se);
- 
- 		kfree(se);
- 		kfree(kc[i].name);
+ MODULE_LICENSE("Dual BSD/GPL");
 -- 
-2.17.1
+2.20.0
