@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda: add function for hda
-	stop chip" to the asoc tree
+Subject: Applied "ASoC: SOF: Intel: hda: use the SOF defined
+	ppcap functions" to the asoc tree
 Date: Mon, 17 Jun 2019 16:24:21 +0100 (BST)
-Message-ID: <20190617152421.298A1440046@finisterre.sirena.org.uk>
-References: <20190612172347.22338-12-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190617152421.BFDFE440049@finisterre.sirena.org.uk>
+References: <20190612172347.22338-11-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BED4F896DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAFD9F89732
  for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 17:24:22 +0200 (CEST)
-In-Reply-To: <20190612172347.22338-12-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190612172347.22338-11-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: hda: add function for hda stop chip
+   ASoC: SOF: Intel: hda: use the SOF defined ppcap functions
 
 has been applied to the asoc tree at
 
@@ -55,111 +55,70 @@ to this mail.
 Thanks,
 Mark
 
->From 13063a2ccf79d232889491105a7bd9d552e417fc Mon Sep 17 00:00:00 2001
+>From 24b6ff686fce808346c129bce52836c3339733bf Mon Sep 17 00:00:00 2001
 From: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
-Date: Wed, 12 Jun 2019 12:23:43 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: add function for hda stop chip
+Date: Wed, 12 Jun 2019 12:23:42 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: use the SOF defined ppcap functions
 
-Add common hda_dsp_ctrl_stop_chip() function to stop controller with
-the same function handling both HDA and non-HDA cases. This function
-disables IRQs and clears status masks. When CONFIG_SND_SOC_SOF_HDA
-is defined, also disables the CORB/RIRB, and stops i/o.
+Unify ppcap function setup by using SOF common functions
+for both HDA and non-HDA cases.
 
 Signed-off-by: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 67 ++++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h      |  2 +-
- 2 files changed, 68 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-dsp.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index 07bc123112c9..688ab8d895a9 100644
---- a/sound/soc/sof/intel/hda-ctrl.c
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -263,3 +263,70 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index c6eea3079ab7..883134d535b3 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -307,18 +307,14 @@ static int hda_suspend(struct snd_sof_dev *sdev, int state)
+ 		return ret;
+ 	}
  
- 	return ret;
- }
-+
-+void hda_dsp_ctrl_stop_chip(struct snd_sof_dev *sdev)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct hdac_stream *stream;
-+	int sd_offset;
-+
-+	if (!bus->chip_init)
-+		return;
-+
-+	/* disable interrupts in stream descriptor */
-+	list_for_each_entry(stream, &bus->stream_list, list) {
-+		sd_offset = SOF_STREAM_SD_OFFSET(stream);
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
-+					sd_offset +
-+					SOF_HDA_ADSP_REG_CL_SD_CTL,
-+					SOF_HDA_CL_DMA_SD_INT_MASK,
-+					0);
-+	}
-+
-+	/* disable SIE for all streams */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
-+				SOF_HDA_INT_ALL_STREAM,	0);
-+
-+	/* disable controller CIE and GIE */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
-+				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
-+				0);
-+
-+	/* clear stream status */
-+	list_for_each_entry(stream, &bus->stream_list, list) {
-+		sd_offset = SOF_STREAM_SD_OFFSET(stream);
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
-+					sd_offset +
-+					SOF_HDA_ADSP_REG_CL_SD_STS,
-+					SOF_HDA_CL_DMA_SD_INT_MASK,
-+					SOF_HDA_CL_DMA_SD_INT_MASK);
-+	}
-+
-+	/* clear WAKESTS */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_WAKESTS,
-+				SOF_HDA_WAKESTS_INT_MASK,
-+				SOF_HDA_WAKESTS_INT_MASK);
-+
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ 	/* disable ppcap interrupt */
+-	snd_hdac_ext_bus_ppcap_int_enable(bus, false);
+-	snd_hdac_ext_bus_ppcap_enable(bus, false);
++	hda_dsp_ctrl_ppcap_enable(sdev, false);
++	hda_dsp_ctrl_ppcap_int_enable(sdev, false);
+ 
 +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* clear rirb status */
-+	snd_hdac_chip_writeb(bus, RIRBSTS, RIRB_INT_MASK);
-+#endif
-+
-+	/* clear interrupt status register */
-+	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTSTS,
-+			  SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_ALL_STREAM);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* disable CORB/RIRB */
-+	snd_hdac_bus_stop_cmd_io(bus);
-+#endif
-+	/* disable position buffer */
-+	if (bus->posbuf.addr) {
-+		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
-+				  SOF_HDA_ADSP_DPLBASE, 0);
-+		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
-+				  SOF_HDA_ADSP_DPUBASE, 0);
-+	}
-+
-+	bus->chip_init = false;
-+}
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 8812dae9cf7a..50653859e0a0 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -538,7 +538,7 @@ int hda_dsp_ctrl_link_reset(struct snd_sof_dev *sdev, bool reset);
- void hda_dsp_ctrl_misc_clock_gating(struct snd_sof_dev *sdev, bool enable);
- int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable);
- int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset);
+ 	/* disable hda bus irq and i/o */
+ 	snd_hdac_bus_stop_chip(bus);
+ #else
+-	/* disable ppcap interrupt */
+-	hda_dsp_ctrl_ppcap_enable(sdev, false);
+-	hda_dsp_ctrl_ppcap_int_enable(sdev, false);
 -
-+void hda_dsp_ctrl_stop_chip(struct snd_sof_dev *sdev);
- /*
-  * HDA bus operations.
-  */
+ 	/* disable hda bus irq */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
+ 				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
+@@ -370,10 +366,6 @@ static int hda_resume(struct snd_sof_dev *sdev)
+ 		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
+ 
+ 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
+-
+-	/* enable ppcap interrupt */
+-	snd_hdac_ext_bus_ppcap_enable(bus, true);
+-	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
+ #else
+ 
+ 	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+@@ -400,11 +392,11 @@ static int hda_resume(struct snd_sof_dev *sdev)
+ 				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN);
+ 
+ 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
++#endif
+ 
+ 	/* enable ppcap interrupt */
+ 	hda_dsp_ctrl_ppcap_enable(sdev, true);
+ 	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
+-#endif
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ 	/* turn off the links that were off before suspend */
 -- 
 2.20.1
