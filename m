@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda-stream: fix a deadlock
-	with bus->reg_lock" to the asoc tree
-Date: Mon, 17 Jun 2019 16:24:22 +0100 (BST)
-Message-ID: <20190617152422.636CE440046@finisterre.sirena.org.uk>
-References: <20190612172347.22338-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: hda: release link DMA for
+	paused streams during suspend" to the asoc tree
+Date: Mon, 17 Jun 2019 16:24:24 +0100 (BST)
+Message-ID: <20190617152424.5C143440046@finisterre.sirena.org.uk>
+References: <20190612172347.22338-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D159BF896DA
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 17:24:26 +0200 (CEST)
-In-Reply-To: <20190612172347.22338-10-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54D92F89717
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 17:24:25 +0200 (CEST)
+In-Reply-To: <20190612172347.22338-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Keyon Jie <yang.jie@linux.intel.com>
-Cc: tiwai@suse.de, Xun Zhang <xun2.zhang@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: hda-stream: fix a deadlock with bus->reg_lock
+   ASoC: SOF: Intel: hda: release link DMA for paused streams during suspend
 
 has been applied to the asoc tree at
 
@@ -55,60 +55,180 @@ to this mail.
 Thanks,
 Mark
 
->From 7fd572e7d317fa51049d623badb8b2874bfd0119 Mon Sep 17 00:00:00 2001
-From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Wed, 12 Jun 2019 12:23:41 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda-stream: fix a deadlock with
- bus->reg_lock
+>From 7077a07a72d38a78040873bbc13a77d1e45f8aa0 Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Wed, 12 Jun 2019 12:23:38 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: release link DMA for paused streams
+ during suspend
 
-We should use irq disabled mode when read/write hda registers from
-thread context, as we need to hold the same bus->reg_lock in interrupt
-context hda_dsp_stream_interrupt(), otherwise, when we are holding the
-lock in hda_dsp_stream_hw_free() and the interrupt arrives, we will get
-deadlock in the interrupt handler.
+Paused streams do not get suspended when the system enters S3.
+So, clear and release link DMA channel for such streams in the
+hda_dsp_set_hw_params_upon_resume() callback. Also, invalidate
+the link DMA channel in the DAI config before restoring the
+dai config upon resume. Also, modify the signature for the
+set_hw_params_upon_resume() op to return an int.
 
-Error logs like this:
-
-[    5.603606]        CPU0
-[    5.603606]        ----
-[    5.603607]   lock(&(&bus->reg_lock)->rlock);
-[    5.603608]   <Interrupt>
-[    5.603609]     lock(&(&bus->reg_lock)->rlock);
-[    5.603610]
-                *** DEADLOCK ***
-
-[    5.603611] 2 locks held by pulseaudio/2329:
-[    5.603612]  #0: 000000005fcf26c6 (&card->mutex/1){+.+.}, at: dpcm_fe_dai_hw_free+0x2b/0x110 [snd_soc_core]
-[    5.603619]  #1: 00000000ef369faf (&rtd->pcm_mutex){+.+.}, at: soc_pcm_hw_free+0x2e/0x1c0 [snd_soc_core]
-
-The fix is simple, let's switch to use spin_lock/unlock_irq().
-
-Reported-by: Xun Zhang <xun2.zhang@intel.com>
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-stream.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-dsp.c | 29 ++++++++++++++++++++++++++++-
+ sound/soc/sof/intel/hda.h     |  2 +-
+ sound/soc/sof/ops.h           |  5 +++--
+ sound/soc/sof/pm.c            | 24 ++++++++++++++++++++----
+ sound/soc/sof/sof-priv.h      |  2 +-
+ 5 files changed, 53 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index d44318040948..23cff5aca007 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -448,12 +448,12 @@ int hda_dsp_stream_hw_free(struct snd_sof_dev *sdev,
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	u32 mask = 0x1 << stream->index;
- 
--	spin_lock(&bus->reg_lock);
-+	spin_lock_irq(&bus->reg_lock);
- 	/* couple host and link DMA if link DMA channel is idle */
- 	if (!link_dev->link_locked)
- 		snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR,
- 					SOF_HDA_REG_PP_PPCTL, mask, 0);
--	spin_unlock(&bus->reg_lock);
-+	spin_unlock_irq(&bus->reg_lock);
- 
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 5b73115a0b78..c6eea3079ab7 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -454,18 +454,45 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, int state)
  	return 0;
  }
+ 
+-void hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
++int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	struct sof_intel_hda_stream *hda_stream;
+ 	struct hdac_ext_stream *stream;
+ 	struct hdac_stream *s;
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	struct snd_soc_pcm_runtime *rtd;
++	struct hdac_ext_link *link;
++	const char *name;
++	int stream_tag;
++#endif
++
+ 	/* set internal flag for BE */
+ 	list_for_each_entry(s, &bus->stream_list, list) {
+ 		stream = stream_to_hdac_ext_stream(s);
+ 		hda_stream = container_of(stream, struct sof_intel_hda_stream,
+ 					  hda_stream);
+ 		hda_stream->hw_params_upon_resume = 1;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++		/*
++		 * clear and release stream. This should already be taken care
++		 * for running streams when the SUSPEND trigger is called.
++		 * But paused streams do not get suspended, so this needs to be
++		 * done explicitly during suspend.
++		 */
++		if (stream->link_substream) {
++			rtd = snd_pcm_substream_chip(stream->link_substream);
++			name = rtd->codec_dai->component->name;
++			link = snd_hdac_ext_bus_get_link(bus, name);
++			if (!link)
++				return -EINVAL;
++			stream_tag = hdac_stream(stream)->stream_tag;
++			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++			snd_hdac_ext_stream_release(stream,
++						    HDAC_EXT_STREAM_TYPE_LINK);
++		}
++#endif
+ 	}
++	return 0;
+ }
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 2862b4b3b07c..327621ef5cf3 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -451,7 +451,7 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, int state);
+ int hda_dsp_resume(struct snd_sof_dev *sdev);
+ int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev, int state);
+ int hda_dsp_runtime_resume(struct snd_sof_dev *sdev);
+-void hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
++int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
+ void hda_dsp_dump_skl(struct snd_sof_dev *sdev, u32 flags);
+ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
+ void hda_ipc_dump(struct snd_sof_dev *sdev);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index 80fc3b374c2b..a23297353750 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -134,10 +134,11 @@ static inline int snd_sof_dsp_runtime_suspend(struct snd_sof_dev *sdev,
+ 	return 0;
+ }
+ 
+-static inline void snd_sof_dsp_hw_params_upon_resume(struct snd_sof_dev *sdev)
++static inline int snd_sof_dsp_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ {
+ 	if (sof_ops(sdev)->set_hw_params_upon_resume)
+-		sof_ops(sdev)->set_hw_params_upon_resume(sdev);
++		return sof_ops(sdev)->set_hw_params_upon_resume(sdev);
++	return 0;
+ }
+ 
+ static inline int snd_sof_dsp_set_clk(struct snd_sof_dev *sdev, u32 freq)
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index b7843f02ef67..8eeb3a1029f2 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -153,6 +153,15 @@ static int sof_restore_pipelines(struct snd_sof_dev *sdev)
+ 			continue;
+ 		}
+ 
++		/*
++		 * The link DMA channel would be invalidated for running
++		 * streams but not for streams that were in the PAUSED
++		 * state during suspend. So invalidate it here before setting
++		 * the dai config in the DSP.
++		 */
++		if (config->type == SOF_DAI_INTEL_HDA)
++			config->hda.link_dma_ch = DMA_CHAN_INVALID;
++
+ 		ret = sof_ipc_tx_message(sdev->ipc,
+ 					 config->hdr.cmd, config,
+ 					 config->hdr.size,
+@@ -204,7 +213,7 @@ static int sof_send_pm_ipc(struct snd_sof_dev *sdev, int cmd)
+ 				 sizeof(pm_ctx), &reply, sizeof(reply));
+ }
+ 
+-static void sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
++static int sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_sof_pcm *spcm;
+@@ -229,7 +238,7 @@ static void sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	/* set internal flag for BE */
+-	snd_sof_dsp_hw_params_upon_resume(sdev);
++	return snd_sof_dsp_hw_params_upon_resume(sdev);
+ }
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
+@@ -333,8 +342,15 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 	snd_sof_release_trace(sdev);
+ 
+ 	/* set restore_stream for all streams during system suspend */
+-	if (!runtime_suspend)
+-		sof_set_hw_params_upon_resume(sdev);
++	if (!runtime_suspend) {
++		ret = sof_set_hw_params_upon_resume(sdev);
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: setting hw_params flag during suspend %d\n",
++				ret);
++			return ret;
++		}
++	}
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
+ 	/* cache debugfs contents during runtime suspend */
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index b80d93e5df2f..cf1b047f8cb6 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -172,7 +172,7 @@ struct snd_sof_dsp_ops {
+ 	int (*runtime_suspend)(struct snd_sof_dev *sof_dev,
+ 			       int state); /* optional */
+ 	int (*runtime_resume)(struct snd_sof_dev *sof_dev); /* optional */
+-	void (*set_hw_params_upon_resume)(struct snd_sof_dev *sdev); /* optional */
++	int (*set_hw_params_upon_resume)(struct snd_sof_dev *sdev); /* optional */
+ 
+ 	/* DSP clocking */
+ 	int (*set_clk)(struct snd_sof_dev *sof_dev, u32 freq); /* optional */
 -- 
 2.20.1
