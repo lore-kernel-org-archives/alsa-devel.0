@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v2 11/11] ASoC: topology: Consolidate and fix asoc_tplg_dapm_widget_*_create flow
-Date: Mon, 17 Jun 2019 13:36:44 +0200
-Message-ID: <20190617113644.25621-12-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 07/11] ASoC: Intel: Skylake: Properly cleanup on component removal
+Date: Mon, 17 Jun 2019 13:36:40 +0200
+Message-ID: <20190617113644.25621-8-amadeuszx.slawinski@linux.intel.com>
 References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -14,215 +14,94 @@ To: alsa-devel@alsa-project.org
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-There are a few soc_tplg_dapm_widget_*_create functions with similar
-content, but slightly different flow, unify their flow and make sure
-that we go to error handler and free memory in case of failure.
+When we remove component we need to reverse things which were done on
+init, this consists of topology cleanup, lists cleanup and releasing
+firmware.
+
+Currently cleanup handlers are put in wrong places or otherwise missing.
+So add proper component cleanup function and perform cleanups in it.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 77 ++++++++++++++++++----------------------
- 1 file changed, 35 insertions(+), 42 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c      |  8 ++++++--
+ sound/soc/intel/skylake/skl-topology.c | 15 +++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  2 ++
+ sound/soc/intel/skylake/skl.c          |  2 --
+ 4 files changed, 23 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index a926c2afbe05..fc1f1d6f9e92 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1310,14 +1310,15 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 5e3421cc0feb..af479e9c8d0b 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1450,8 +1450,12 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
  
- 	for (i = 0; i < num_kcontrols; i++) {
- 		mc = (struct snd_soc_tplg_mixer_control *)tplg->pos;
--		sm = kzalloc(sizeof(*sm), GFP_KERNEL);
--		if (sm == NULL)
--			goto err;
- 
- 		/* validate kcontrol */
- 		if (strnlen(mc->hdr.name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
- 			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
--			goto err_str;
-+			goto err_sm;
-+
-+		sm = kzalloc(sizeof(*sm), GFP_KERNEL);
-+		if (sm == NULL)
-+			goto err_sm;
- 
- 		tplg->pos += (sizeof(struct snd_soc_tplg_mixer_control) +
- 			      le32_to_cpu(mc->priv.size));
-@@ -1327,7 +1328,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 
- 		kc[i].name = kstrdup(mc->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
--			goto err_str;
-+			goto err_sm;
- 		kc[i].private_value = (long)sm;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = mc->hdr.access;
-@@ -1353,8 +1354,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 		err = soc_tplg_kcontrol_bind_io(&mc->hdr, &kc[i], tplg);
- 		if (err) {
- 			soc_control_err(tplg, &mc->hdr, mc->hdr.name);
--			kfree(sm);
--			continue;
-+			goto err_sm;
- 		}
- 
- 		/* create any TLV data */
-@@ -1367,20 +1367,19 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
- 				mc->hdr.name);
- 			soc_tplg_free_tlv(tplg, &kc[i]);
--			kfree(sm);
--			continue;
-+			goto err_sm;
- 		}
- 	}
- 	return kc;
- 
--err_str:
--	kfree(sm);
--err:
--	for (--i; i >= 0; i--) {
--		kfree((void *)kc[i].private_value);
-+err_sm:
-+	for (; i >= 0; i--) {
-+		sm = (struct soc_mixer_control *)kc[i].private_value;
-+		kfree(sm);
- 		kfree(kc[i].name);
- 	}
- 	kfree(kc);
-+
- 	return NULL;
- }
- 
-@@ -1401,11 +1400,11 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 		/* validate kcontrol */
- 		if (strnlen(ec->hdr.name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
- 			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
--			goto err;
-+			goto err_se;
- 
- 		se = kzalloc(sizeof(*se), GFP_KERNEL);
- 		if (se == NULL)
--			goto err;
-+			goto err_se;
- 
- 		tplg->pos += (sizeof(struct snd_soc_tplg_enum_control) +
- 				ec->priv.size);
-@@ -1414,10 +1413,8 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 			ec->hdr.name);
- 
- 		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
--		if (kc[i].name == NULL) {
--			kfree(se);
-+		if (kc[i].name == NULL)
- 			goto err_se;
--		}
- 		kc[i].private_value = (long)se;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = ec->hdr.access;
-@@ -1482,44 +1479,43 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 	for (; i >= 0; i--) {
- 		/* free values and texts */
- 		se = (struct soc_enum *)kc[i].private_value;
--		if (!se)
--			continue;
- 
--		soc_tplg_denum_remove_values(se);
--		soc_tplg_denum_remove_texts(se);
-+		if (se) {
-+			soc_tplg_denum_remove_values(se);
-+			soc_tplg_denum_remove_texts(se);
-+		}
- 
- 		kfree(se);
- 		kfree(kc[i].name);
- 	}
--err:
- 	kfree(kc);
- 
- 	return NULL;
- }
- 
- static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
--	struct soc_tplg *tplg, int count)
-+	struct soc_tplg *tplg, int num_kcontrols)
+ static void skl_pcm_remove(struct snd_soc_component *component)
  {
- 	struct snd_soc_tplg_bytes_control *be;
--	struct soc_bytes_ext  *sbe;
-+	struct soc_bytes_ext *sbe;
- 	struct snd_kcontrol_new *kc;
- 	int i, err;
- 
--	kc = kcalloc(count, sizeof(*kc), GFP_KERNEL);
-+	kc = kcalloc(num_kcontrols, sizeof(*kc), GFP_KERNEL);
- 	if (!kc)
- 		return NULL;
- 
--	for (i = 0; i < count; i++) {
-+	for (i = 0; i < num_kcontrols; i++) {
- 		be = (struct snd_soc_tplg_bytes_control *)tplg->pos;
- 
- 		/* validate kcontrol */
- 		if (strnlen(be->hdr.name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
- 			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
--			goto err;
-+			goto err_sbe;
- 
- 		sbe = kzalloc(sizeof(*sbe), GFP_KERNEL);
- 		if (sbe == NULL)
--			goto err;
-+			goto err_sbe;
- 
- 		tplg->pos += (sizeof(struct snd_soc_tplg_bytes_control) +
- 			      le32_to_cpu(be->priv.size));
-@@ -1529,10 +1525,8 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 			be->hdr.name, be->hdr.access);
- 
- 		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
--		if (kc[i].name == NULL) {
--			kfree(sbe);
--			goto err;
--		}
-+		if (kc[i].name == NULL)
-+			goto err_sbe;
- 		kc[i].private_value = (long)sbe;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = be->hdr.access;
-@@ -1544,8 +1538,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 		err = soc_tplg_kcontrol_bind_io(&be->hdr, &kc[i], tplg);
- 		if (err) {
- 			soc_control_err(tplg, &be->hdr, be->hdr.name);
--			kfree(sbe);
--			continue;
-+			goto err_sbe;
- 		}
- 
- 		/* pass control to driver for optional further init */
-@@ -1554,20 +1547,20 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 		if (err < 0) {
- 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
- 				be->hdr.name);
--			kfree(sbe);
--			continue;
-+			goto err_sbe;
- 		}
- 	}
- 
- 	return kc;
- 
--err:
--	for (--i; i >= 0; i--) {
--		kfree((void *)kc[i].private_value);
-+err_sbe:
-+	for (; i >= 0; i--) {
-+		sbe = (struct soc_bytes_ext *)kc[i].private_value;
-+		kfree(sbe);
- 		kfree(kc[i].name);
- 	}
--
- 	kfree(kc);
+-	/* remove topology */
+-	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++	struct hdac_bus *bus = dev_get_drvdata(component->dev);
++	struct skl *skl = bus_to_skl(bus);
 +
- 	return NULL;
++	skl_tplg_exit(component, bus);
++
++	skl_debugfs_exit(skl);
  }
  
+ static const struct snd_soc_component_driver skl_component  = {
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 44f3b29a7210..3964262109ac 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3748,3 +3748,18 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ 
+ 	return 0;
+ }
++
++void skl_tplg_exit(struct snd_soc_component *component, struct hdac_bus *bus)
++{
++	struct skl *skl = bus_to_skl(bus);
++	struct skl_pipeline *ppl, *tmp;
++
++	if (!list_empty(&skl->ppl_list))
++		list_for_each_entry_safe(ppl, tmp, &skl->ppl_list, node)
++			list_del(&ppl->node);
++
++	/* clean up topology */
++	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++
++	release_firmware(skl->tplg);
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index b66e3a728853..a8ecb615d24b 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -462,6 +462,8 @@ void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
+ 	struct skl_pipe_params *params, int stream);
+ int skl_tplg_init(struct snd_soc_component *component,
+ 				struct hdac_bus *ebus);
++void skl_tplg_exit(struct snd_soc_component *component,
++				struct hdac_bus *bus);
+ struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
+ 		struct snd_soc_dai *dai, int stream);
+ int skl_tplg_update_pipe_params(struct device *dev,
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index cae97c65eef8..7e093fb13c92 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1111,14 +1111,12 @@ static void skl_remove(struct pci_dev *pci)
+ 	struct skl *skl = bus_to_skl(bus);
+ 
+ 	cancel_work_sync(&skl->probe_work);
+-	release_firmware(skl->tplg);
+ 
+ 	pm_runtime_get_noresume(&pci->dev);
+ 
+ 	/* codec removal, invoke bus_device_remove */
+ 	snd_hdac_ext_bus_device_remove(bus);
+ 
+-	skl->debugfs = NULL;
+ 	skl_platform_unregister(&pci->dev);
+ 	skl_free_dsp(skl);
+ 	skl_machine_device_unregister(skl);
 -- 
 2.17.1
