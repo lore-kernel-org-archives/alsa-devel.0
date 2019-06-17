@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: topology: add cpu_dai_name for
-	DAIs" to the asoc tree
-Date: Mon, 17 Jun 2019 16:24:28 +0100 (BST)
-Message-ID: <20190617152428.27304440046@finisterre.sirena.org.uk>
-References: <20190612172347.22338-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: hda: save handle to sdev in
+	sof_intel_hda_stream" to the asoc tree
+Date: Mon, 17 Jun 2019 16:24:29 +0100 (BST)
+Message-ID: <20190617152429.6281A440046@finisterre.sirena.org.uk>
+References: <20190612172347.22338-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9E0DF8973F
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 17:24:28 +0200 (CEST)
-In-Reply-To: <20190612172347.22338-4-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35825F8972F
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 17:24:30 +0200 (CEST)
+In-Reply-To: <20190612172347.22338-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: topology: add cpu_dai_name for DAIs
+   ASoC: SOF: Intel: hda: save handle to sdev in sof_intel_hda_stream
 
 has been applied to the asoc tree at
 
@@ -55,59 +55,56 @@ to this mail.
 Thanks,
 Mark
 
->From 1b7e1956860d7566325502651c6bf14f115cd91d Mon Sep 17 00:00:00 2001
+>From 7623ae793c28cc0928c5d1292542dbb92fc2e9e2 Mon Sep 17 00:00:00 2001
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 12 Jun 2019 12:23:35 -0500
-Subject: [PATCH] ASoC: SOF: topology: add cpu_dai_name for DAIs
+Date: Wed, 12 Jun 2019 12:23:33 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: save handle to sdev in
+ sof_intel_hda_stream
 
-Add the cpu_dai_name member to snd_sof_dai and save the
-cpu_dai_name while setting the DAI config.
-
-The internal SOF representation will have to change at a later point
-as well when we have multiple CPU dais.
+Add a snd_sof_dev member to sof_intel_hda_stream. This will be
+used to access the snd_sof_dev during link hw_params callback.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-priv.h | 1 +
- sound/soc/sof/topology.c | 5 +++++
- 2 files changed, 6 insertions(+)
+ sound/soc/sof/intel/hda-stream.c | 4 ++++
+ sound/soc/sof/intel/hda.h        | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 8760a4694d8f..8c3ac149bbb9 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -337,6 +337,7 @@ struct snd_sof_route {
- struct snd_sof_dai {
- 	struct snd_sof_dev *sdev;
- 	const char *name;
-+	const char *cpu_dai_name;
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index c92006f89499..1cd94e7631a8 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -564,6 +564,8 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
+ 		if (!hda_stream)
+ 			return -ENOMEM;
  
- 	struct sof_ipc_comp_dai comp_dai;
- 	struct sof_ipc_dai_config *dai_config;
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index aaf459af89d0..178256e338b1 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2360,6 +2360,9 @@ static int sof_set_dai_config(struct snd_sof_dev *sdev, u32 size,
- 			if (!dai->dai_config)
- 				return -ENOMEM;
- 
-+			/* set cpu_dai_name */
-+			dai->cpu_dai_name = link->cpus->dai_name;
++		hda_stream->sdev = sdev;
 +
- 			found = 1;
- 		}
- 	}
-@@ -2624,6 +2627,8 @@ static int sof_link_hda_process(struct snd_sof_dev *sdev,
- 			if (!sof_dai->dai_config)
- 				return -ENOMEM;
+ 		stream = &hda_stream->hda_stream;
  
-+			sof_dai->cpu_dai_name = link->cpus->dai_name;
+ 		stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
+@@ -617,6 +619,8 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
+ 		if (!hda_stream)
+ 			return -ENOMEM;
+ 
++		hda_stream->sdev = sdev;
 +
- 			/* send message to DSP */
- 			ret = sof_ipc_tx_message(sdev->ipc,
- 						 config->hdr.cmd, config, size,
+ 		stream = &hda_stream->hda_stream;
+ 
+ 		/* we always have DSP support */
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 6c7dee2627d0..502b0a3c2e3c 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -409,6 +409,7 @@ static inline struct hda_bus *sof_to_hbus(struct snd_sof_dev *s)
+ }
+ 
+ struct sof_intel_hda_stream {
++	struct snd_sof_dev *sdev;
+ 	struct hdac_ext_stream hda_stream;
+ 	struct sof_intel_stream stream;
+ 	int hw_params_upon_resume; /* set up hw_params upon resume */
 -- 
 2.20.1
