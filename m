@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v2 07/11] ASoC: Intel: Skylake: Properly cleanup on component removal
-Date: Mon, 17 Jun 2019 13:36:40 +0200
-Message-ID: <20190617113644.25621-8-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 10/11] ASoC: topology: Consolidate how dtexts and dvalues are freed
+Date: Mon, 17 Jun 2019 13:36:43 +0200
+Message-ID: <20190617113644.25621-11-amadeuszx.slawinski@linux.intel.com>
 References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -14,94 +14,134 @@ To: alsa-devel@alsa-project.org
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-When we remove component we need to reverse things which were done on
-init, this consists of topology cleanup, lists cleanup and releasing
-firmware.
-
-Currently cleanup handlers are put in wrong places or otherwise missing.
-So add proper component cleanup function and perform cleanups in it.
+Provide helper functions and use them to free dtexts and dvalues in
+topology. This is followup cleanup after related changes in this area as
+suggested in:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c      |  8 ++++++--
- sound/soc/intel/skylake/skl-topology.c | 15 +++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |  2 ++
- sound/soc/intel/skylake/skl.c          |  2 --
- 4 files changed, 23 insertions(+), 4 deletions(-)
+ sound/soc/soc-topology.c | 41 +++++++++++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 5e3421cc0feb..af479e9c8d0b 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1450,8 +1450,12 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index b538412e4bcf..a926c2afbe05 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -86,6 +86,8 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ struct snd_soc_dapm_widget *
+ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 			 const struct snd_soc_dapm_widget *widget);
++static void soc_tplg_denum_remove_texts(struct soc_enum *se);
++static void soc_tplg_denum_remove_values(struct soc_enum *se);
  
- static void skl_pcm_remove(struct snd_soc_component *component)
+ /* check we dont overflow the data for this control chunk */
+ static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
+@@ -398,7 +400,6 @@ static void remove_enum(struct snd_soc_component *comp,
  {
--	/* remove topology */
--	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
-+	struct hdac_bus *bus = dev_get_drvdata(component->dev);
-+	struct skl *skl = bus_to_skl(bus);
-+
-+	skl_tplg_exit(component, bus);
-+
-+	skl_debugfs_exit(skl);
+ 	struct snd_card *card = comp->card->snd_card;
+ 	struct soc_enum *se = container_of(dobj, struct soc_enum, dobj);
+-	int i;
+ 
+ 	if (pass != SOC_TPLG_PASS_MIXER)
+ 		return;
+@@ -409,10 +410,8 @@ static void remove_enum(struct snd_soc_component *comp,
+ 	snd_ctl_remove(card, dobj->control.kcontrol);
+ 	list_del(&dobj->list);
+ 
+-	kfree(dobj->control.dvalues);
+-	for (i = 0; i < se->items; i++)
+-		kfree(dobj->control.dtexts[i]);
+-	kfree(dobj->control.dtexts);
++	soc_tplg_denum_remove_values(se);
++	soc_tplg_denum_remove_texts(se);
+ 	kfree(se);
  }
  
- static const struct snd_soc_component_driver skl_component  = {
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 44f3b29a7210..3964262109ac 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3748,3 +3748,18 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+@@ -480,15 +479,12 @@ static void remove_widget(struct snd_soc_component *comp,
+ 			struct snd_kcontrol *kcontrol = w->kcontrols[i];
+ 			struct soc_enum *se =
+ 				(struct soc_enum *)kcontrol->private_value;
+-			int j;
  
+ 			snd_ctl_remove(card, kcontrol);
+ 
+ 			/* free enum kcontrol's dvalues and dtexts */
+-			kfree(se->dobj.control.dvalues);
+-			for (j = 0; j < se->items; j++)
+-				kfree(se->dobj.control.dtexts[j]);
+-			kfree(se->dobj.control.dtexts);
++			soc_tplg_denum_remove_values(se);
++			soc_tplg_denum_remove_texts(se);
+ 
+ 			kfree(se);
+ 			kfree(w->kcontrol_news[i].name);
+@@ -956,14 +952,23 @@ static int soc_tplg_denum_create_texts(struct soc_enum *se,
+ 		}
+ 	}
+ 
++	se->items = le32_to_cpu(ec->items);
+ 	se->texts = (const char * const *)se->dobj.control.dtexts;
+ 	return 0;
+ 
+ err:
++	se->items = i;
++	soc_tplg_denum_remove_texts(se);
++	return ret;
++}
++
++static inline void soc_tplg_denum_remove_texts(struct soc_enum *se)
++{
++	int i = se->items;
++
+ 	for (--i; i >= 0; i--)
+ 		kfree(se->dobj.control.dtexts[i]);
+ 	kfree(se->dobj.control.dtexts);
+-	return ret;
+ }
+ 
+ static int soc_tplg_denum_create_values(struct soc_enum *se,
+@@ -988,6 +993,11 @@ static int soc_tplg_denum_create_values(struct soc_enum *se,
  	return 0;
  }
-+
-+void skl_tplg_exit(struct snd_soc_component *component, struct hdac_bus *bus)
+ 
++static inline void soc_tplg_denum_remove_values(struct soc_enum *se)
 +{
-+	struct skl *skl = bus_to_skl(bus);
-+	struct skl_pipeline *ppl, *tmp;
-+
-+	if (!list_empty(&skl->ppl_list))
-+		list_for_each_entry_safe(ppl, tmp, &skl->ppl_list, node)
-+			list_del(&ppl->node);
-+
-+	/* clean up topology */
-+	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
-+
-+	release_firmware(skl->tplg);
++	kfree(se->dobj.control.dvalues);
 +}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index b66e3a728853..a8ecb615d24b 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -462,6 +462,8 @@ void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
- 	struct skl_pipe_params *params, int stream);
- int skl_tplg_init(struct snd_soc_component *component,
- 				struct hdac_bus *ebus);
-+void skl_tplg_exit(struct snd_soc_component *component,
-+				struct hdac_bus *bus);
- struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
- 		struct snd_soc_dai *dai, int stream);
- int skl_tplg_update_pipe_params(struct device *dev,
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index cae97c65eef8..7e093fb13c92 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1111,14 +1111,12 @@ static void skl_remove(struct pci_dev *pci)
- 	struct skl *skl = bus_to_skl(bus);
++
+ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
+ 	size_t size)
+ {
+@@ -1035,7 +1045,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
+ 		se->shift_r = tplc_chan_get_shift(tplg, ec->channel,
+ 			SNDRV_CHMAP_FL);
  
- 	cancel_work_sync(&skl->probe_work);
--	release_firmware(skl->tplg);
+-		se->items = le32_to_cpu(ec->items);
+ 		se->mask = le32_to_cpu(ec->mask);
+ 		se->dobj.index = tplg->index;
+ 		se->dobj.type = SND_SOC_DOBJ_ENUM;
+@@ -1381,7 +1390,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 	struct snd_kcontrol_new *kc;
+ 	struct snd_soc_tplg_enum_control *ec;
+ 	struct soc_enum *se;
+-	int i, j, err;
++	int i, err;
  
- 	pm_runtime_get_noresume(&pci->dev);
+ 	kc = kcalloc(num_kcontrols, sizeof(*kc), GFP_KERNEL);
+ 	if (kc == NULL)
+@@ -1476,10 +1485,8 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 		if (!se)
+ 			continue;
  
- 	/* codec removal, invoke bus_device_remove */
- 	snd_hdac_ext_bus_device_remove(bus);
+-		kfree(se->dobj.control.dvalues);
+-		for (j = 0; j < ec->items; j++)
+-			kfree(se->dobj.control.dtexts[j]);
+-		kfree(se->dobj.control.dtexts);
++		soc_tplg_denum_remove_values(se);
++		soc_tplg_denum_remove_texts(se);
  
--	skl->debugfs = NULL;
- 	skl_platform_unregister(&pci->dev);
- 	skl_free_dsp(skl);
- 	skl_machine_device_unregister(skl);
+ 		kfree(se);
+ 		kfree(kc[i].name);
 -- 
 2.17.1
