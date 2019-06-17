@@ -1,66 +1,79 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v2 00/11] Fix driver reload issues
-Date: Mon, 17 Jun 2019 13:36:33 +0200
-Message-ID: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 01/11] ASoC: Intel: Skylake: Initialize lists before access so they are safe to use
+Date: Mon, 17 Jun 2019 13:36:34 +0200
+Message-ID: <20190617113644.25621-2-amadeuszx.slawinski@linux.intel.com>
+References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+If skl_probe_work() was not run driver ends up dereferencing NULL
+pointer when operating on lists in skl_platform_unregister().
+To fix this initialize lists in skl_create(). Also run
+cancel_work_sync() before all cleanup functions, so we don't end up
+unnecessarily running probe work.
 
-This series of patches introduces fixes to various issues found while
-trying to unload all snd* modules and then loading them again. This
-allows for modules to be really _modules_ and be unloaded and loaded on
-demand, making it easier to develop and test them without constant
-system reboots.
+Easily reproducible with:
+while true; do modprobe snd_soc_skl; rmmod snd_soc_skl; done
+(with the assumption that relevant drivers are added to blacklist on
+system boot)
 
-There are some fixes in flow, either we don't initialize things before
-cleaning them up, clean up in wrong places or don't clean up at all.
-Other patches fix memory management problems, mostly things are not
-being freed. And finally there is few miscellaneous patches, please
-refer to specific patches to see what they do.
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 3 ---
+ sound/soc/intel/skylake/skl.c     | 5 ++++-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-This series was tested on SKL, BXT, GLK & KBL.
-
-Changes from previous patchset:
-  * followed suggetion by Pierre in "ALSA: hdac: Fix codec name after
-machine driver is unloaded and reloaded"
-  * dropped patches which were merged
-
-Amadeusz Sławiński (11):
-  ASoC: Intel: Skylake: Initialize lists before access so they are safe
-    to use
-  ALSA: hdac: Fix codec name after machine driver is unloaded and
-    reloaded
-  ASoC: compress: Fix memory leak from snd_soc_new_compress
-  ASoC: Intel: Skylake: Don't return failure on machine driver reload
-  ASoC: Intel: Skylake: Remove static table index when parsing topology
-  ASoC: Intel: Skylake: Add function to cleanup debugfs interface
-  ASoC: Intel: Skylake: Properly cleanup on component removal
-  ASoC: Intel: Skylake: Fix NULL ptr dereference when unloading clk dev
-  ASoC: Intel: hdac_hdmi: Set ops to NULL on remove
-  ASoC: topology: Consolidate how dtexts and dvalues are freed
-  ASoC: topology: Consolidate and fix asoc_tplg_dapm_widget_*_create
-    flow
-
- sound/hda/ext/hdac_ext_bus.c           |   8 +-
- sound/soc/codecs/hdac_hdmi.c           |   6 ++
- sound/soc/intel/skylake/skl-debug.c    |   9 ++
- sound/soc/intel/skylake/skl-pcm.c      |  16 ++--
- sound/soc/intel/skylake/skl-ssp-clk.c  |  16 ++--
- sound/soc/intel/skylake/skl-topology.c |  50 ++++++-----
- sound/soc/intel/skylake/skl-topology.h |   2 +
- sound/soc/intel/skylake/skl.c          |   7 +-
- sound/soc/intel/skylake/skl.h          |   5 ++
- sound/soc/soc-compress.c               |  17 ++--
- sound/soc/soc-topology.c               | 114 ++++++++++++-------------
- 11 files changed, 136 insertions(+), 114 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 8b7232d3ffee..489ecef311ad 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1477,9 +1477,6 @@ int skl_platform_register(struct device *dev)
+ 	struct hdac_bus *bus = dev_get_drvdata(dev);
+ 	struct skl *skl = bus_to_skl(bus);
+ 
+-	INIT_LIST_HEAD(&skl->ppl_list);
+-	INIT_LIST_HEAD(&skl->bind_list);
+-
+ 	skl->dais = kmemdup(skl_platform_dai, sizeof(skl_platform_dai),
+ 			    GFP_KERNEL);
+ 	if (!skl->dais) {
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index fc79401cd474..cae97c65eef8 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -430,7 +430,6 @@ static int skl_free(struct hdac_bus *bus)
+ 
+ 	snd_hdac_ext_bus_exit(bus);
+ 
+-	cancel_work_sync(&skl->probe_work);
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+ 		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+ 		snd_hdac_i915_exit(bus);
+@@ -859,6 +858,9 @@ static int skl_create(struct pci_dev *pci,
+ 	hbus = skl_to_hbus(skl);
+ 	bus = skl_to_bus(skl);
+ 
++	INIT_LIST_HEAD(&skl->ppl_list);
++	INIT_LIST_HEAD(&skl->bind_list);
++
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
+ 	ext_ops = snd_soc_hdac_hda_get_ops();
+ #endif
+@@ -1108,6 +1110,7 @@ static void skl_remove(struct pci_dev *pci)
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct skl *skl = bus_to_skl(bus);
+ 
++	cancel_work_sync(&skl->probe_work);
+ 	release_firmware(skl->tplg);
+ 
+ 	pm_runtime_get_noresume(&pci->dev);
 -- 
 2.17.1
