@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/10] ALSA: firewire-motu: unify midi callback
-	function
-Date: Mon, 17 Jun 2019 17:15:02 +0900
-Message-ID: <20190617081510.11025-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/10] ALSA: firewire-motu: add helper function
+	to keep isochronous resources
+Date: Mon, 17 Jun 2019 17:15:03 +0900
+Message-ID: <20190617081510.11025-4-o-takashi@sakamocchi.jp>
 References: <20190617081510.11025-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
  [64.147.123.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41E6BF896C7
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 10:15:20 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69644F8075C
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 10:15:22 +0200 (CEST)
 In-Reply-To: <20190617081510.11025-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,90 +28,100 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Two sets of callbacks for rawmidi.open/close but they have the same
-codes. This commit unifies each of the callbacks.
+This commit is a part of preparation to perform allocation/release
+of isochronous resources in pcm.hw_params/hw_free callbacks.
+
+This commit adds a helper function to allocate isochronous resources.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-midi.c | 49 ++++-----------------------------
- 1 file changed, 6 insertions(+), 43 deletions(-)
+ sound/firewire/motu/motu-stream.c | 57 +++++++++++++++++--------------
+ 1 file changed, 32 insertions(+), 25 deletions(-)
 
-diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
-index b2d339a8ef3f..3b205386ed24 100644
---- a/sound/firewire/motu/motu-midi.c
-+++ b/sound/firewire/motu/motu-midi.c
-@@ -7,7 +7,7 @@
-  */
- #include "motu.h"
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index c136d7f8c49c..35b4e0f72fe2 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -26,48 +26,55 @@
+ #define  RX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS	0x00000040
+ #define  TX_PACKET_TRANSMISSION_SPEED_MASK	0x0000000f
  
--static int midi_capture_open(struct snd_rawmidi_substream *substream)
-+static int midi_open(struct snd_rawmidi_substream *substream)
+-static int start_both_streams(struct snd_motu *motu, unsigned int rate)
++static int keep_resources(struct snd_motu *motu, unsigned int rate,
++			  struct amdtp_stream *stream)
  {
- 	struct snd_motu *motu = substream->rmidi->private_data;
++	struct fw_iso_resources *resources;
++	struct snd_motu_packet_format *packet_format;
+ 	unsigned int midi_ports = 0;
+-	__be32 reg;
+-	u32 data;
  	int err;
-@@ -29,44 +29,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 	return err;
- }
  
--static int midi_playback_open(struct snd_rawmidi_substream *substream)
--{
--	struct snd_motu *motu = substream->rmidi->private_data;
--	int err;
--
--	err = snd_motu_stream_lock_try(motu);
+-	if ((motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) ||
+-	    (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q))
+-		midi_ports = 1;
++	if (stream == &motu->rx_stream) {
++		resources = &motu->rx_resources;
++		packet_format = &motu->rx_packet_formats;
+ 
+-	/* Set packet formation to our packet streaming engine. */
+-	err = amdtp_motu_set_parameters(&motu->rx_stream, rate, midi_ports,
+-					&motu->rx_packet_formats);
 -	if (err < 0)
 -		return err;
--
--	mutex_lock(&motu->mutex);
--
--	motu->substreams_counter++;
--	err = snd_motu_stream_start_duplex(motu, 0);
--
--	mutex_unlock(&motu->mutex);
--
--	if (err < 0)
--		snd_motu_stream_lock_release(motu);
--
--	return err;
--}
--
--static int midi_capture_close(struct snd_rawmidi_substream *substream)
--{
--	struct snd_motu *motu = substream->rmidi->private_data;
--
--	mutex_lock(&motu->mutex);
--
--	motu->substreams_counter--;
--	snd_motu_stream_stop_duplex(motu);
--
--	mutex_unlock(&motu->mutex);
--
--	snd_motu_stream_lock_release(motu);
--	return 0;
--}
--
--static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+static int midi_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_motu *motu = substream->rmidi->private_data;
++		if ((motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) ||
++		    (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q))
++			midi_ports = 1;
++	} else {
++		resources = &motu->tx_resources;
++		packet_format = &motu->tx_packet_formats;
  
-@@ -129,13 +92,13 @@ static void set_midi_substream_names(struct snd_motu *motu,
- int snd_motu_create_midi_devices(struct snd_motu *motu)
- {
- 	static const struct snd_rawmidi_ops capture_ops = {
--		.open		= midi_capture_open,
--		.close		= midi_capture_close,
-+		.open		= midi_open,
-+		.close		= midi_close,
- 		.trigger	= midi_capture_trigger,
- 	};
- 	static const struct snd_rawmidi_ops playback_ops = {
--		.open		= midi_playback_open,
--		.close		= midi_playback_close,
-+		.open		= midi_open,
-+		.close		= midi_close,
- 		.trigger	= midi_playback_trigger,
- 	};
- 	struct snd_rawmidi *rmidi;
+-	if ((motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) ||
+-	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q))
+-		midi_ports = 1;
+-	else
+-		midi_ports = 0;
++		if ((motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) ||
++		    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q))
++			midi_ports = 1;
++	}
+ 
+-	err = amdtp_motu_set_parameters(&motu->tx_stream, rate, midi_ports,
+-					&motu->tx_packet_formats);
++	err = amdtp_motu_set_parameters(stream, rate, midi_ports,
++					packet_format);
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* Get isochronous resources on the bus. */
+-	err = fw_iso_resources_allocate(&motu->rx_resources,
+-				amdtp_stream_get_max_payload(&motu->rx_stream),
++	return fw_iso_resources_allocate(resources,
++				amdtp_stream_get_max_payload(stream),
+ 				fw_parent_device(motu->unit)->max_speed);
++}
++
++static int start_both_streams(struct snd_motu *motu, unsigned int rate)
++{
++	__be32 reg;
++	u32 data;
++	int err;
++
++	err = keep_resources(motu, rate, &motu->tx_stream);
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = fw_iso_resources_allocate(&motu->tx_resources,
+-				amdtp_stream_get_max_payload(&motu->tx_stream),
+-				fw_parent_device(motu->unit)->max_speed);
++	err = keep_resources(motu, rate, &motu->rx_stream);
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* Configure the unit to start isochronous communication. */
++	// Configure the unit to start isochronous communication.
+ 	err = snd_motu_transaction_read(motu, ISOC_COMM_CONTROL_OFFSET, &reg,
+ 					sizeof(reg));
+ 	if (err < 0)
 -- 
 2.20.1
