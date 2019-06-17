@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/10] ALSA: firewire-motu: code refactoring
-	for pcm.hw_params/hw_free callbacks
-Date: Mon, 17 Jun 2019 17:15:10 +0900
-Message-ID: <20190617081510.11025-11-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/10] ALSA: firewire-motu: update isochronous
+	resources when starting packet streaming after bus-reset
+Date: Mon, 17 Jun 2019 17:15:09 +0900
+Message-ID: <20190617081510.11025-10-o-takashi@sakamocchi.jp>
 References: <20190617081510.11025-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
  [64.147.123.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB153F89739
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 10:15:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44AD6F896F9
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 10:15:31 +0200 (CEST)
 In-Reply-To: <20190617081510.11025-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,102 +28,54 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The pairs of pcm.hw_params callbacks and .hw_free callbacks for both
-direction have no differences.
+After bus reset, isochronous resource manager releases all of allocated
+isochronous resources. The nodes to transfer isochronous packet should
+request reallocation of the resources.
 
-This commit unifies the pairs.
+However, between the bus-reset and invocation of 'struct fw_driver.update'
+handler, ALSA PCM application can detect this situation by XRUN because
+the target device cancelled to transmit packets once bus-reset occurs.
+
+Due to the above mechanism, ALSA fireface driver just stops packet
+streaming in the update handler, thus pcm.prepare handler should
+request the reallocation.
+
+This commit requests the reallocation in pcm.prepare callback when
+bus generation is changed.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-pcm.c | 54 +++++-----------------------------
- 1 file changed, 7 insertions(+), 47 deletions(-)
+ sound/firewire/motu/motu-stream.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
-index d4e75d3ee928..b9852c911b98 100644
---- a/sound/firewire/motu/motu-pcm.c
-+++ b/sound/firewire/motu/motu-pcm.c
-@@ -190,8 +190,8 @@ static int pcm_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index 5630a8f1f2f1..82891583b736 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -236,6 +236,7 @@ static int ensure_packet_formats(struct snd_motu *motu)
  
--static int capture_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *hw_params)
-+static int pcm_hw_params(struct snd_pcm_substream *substream,
-+			 struct snd_pcm_hw_params *hw_params)
+ int snd_motu_stream_start_duplex(struct snd_motu *motu)
  {
- 	struct snd_motu *motu = substream->private_data;
- 	int err;
-@@ -213,48 +213,8 @@ static int capture_hw_params(struct snd_pcm_substream *substream,
++	unsigned int generation = motu->rx_resources.generation;
+ 	int err = 0;
  
- 	return err;
- }
--static int playback_hw_params(struct snd_pcm_substream *substream,
--			      struct snd_pcm_hw_params *hw_params)
--{
--	struct snd_motu *motu = substream->private_data;
--	int err;
--
--	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
--					       params_buffer_bytes(hw_params));
--	if (err < 0)
--		return err;
--
--	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
--		unsigned int rate = params_rate(hw_params);
--
--		mutex_lock(&motu->mutex);
--		err = snd_motu_stream_reserve_duplex(motu, rate);
--		if (err >= 0)
--			++motu->substreams_counter;
--		mutex_unlock(&motu->mutex);
--	}
--
--	return err;
--}
--
--static int capture_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_motu *motu = substream->private_data;
--
--	mutex_lock(&motu->mutex);
--
--	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
--		--motu->substreams_counter;
--
--	snd_motu_stream_stop_duplex(motu);
--	snd_motu_stream_release_duplex(motu);
--
--	mutex_unlock(&motu->mutex);
--
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
--}
+ 	if (motu->substreams_counter == 0)
+@@ -245,6 +246,16 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
+ 	    amdtp_streaming_error(&motu->tx_stream))
+ 		finish_session(motu);
  
--static int playback_hw_free(struct snd_pcm_substream *substream)
-+static int pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_motu *motu = substream->private_data;
- 
-@@ -366,8 +326,8 @@ int snd_motu_create_pcm_devices(struct snd_motu *motu)
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
--		.hw_params = capture_hw_params,
--		.hw_free   = capture_hw_free,
-+		.hw_params = pcm_hw_params,
-+		.hw_free   = pcm_hw_free,
- 		.prepare   = capture_prepare,
- 		.trigger   = capture_trigger,
- 		.pointer   = capture_pointer,
-@@ -378,8 +338,8 @@ int snd_motu_create_pcm_devices(struct snd_motu *motu)
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
--		.hw_params = playback_hw_params,
--		.hw_free   = playback_hw_free,
-+		.hw_params = pcm_hw_params,
-+		.hw_free   = pcm_hw_free,
- 		.prepare   = playback_prepare,
- 		.trigger   = playback_trigger,
- 		.pointer   = playback_pointer,
++	if (generation != fw_parent_device(motu->unit)->card->generation) {
++		err = fw_iso_resources_update(&motu->rx_resources);
++		if (err < 0)
++			return err;
++
++		err = fw_iso_resources_update(&motu->tx_resources);
++		if (err < 0)
++			return err;
++	}
++
+ 	if (!amdtp_stream_running(&motu->rx_stream)) {
+ 		err = ensure_packet_formats(motu);
+ 		if (err < 0)
 -- 
 2.20.1
