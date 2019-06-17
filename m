@@ -1,139 +1,57 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: SOF: disallow building without CONFIG_PCI again
-Date: Mon, 17 Jun 2019 14:45:49 +0200
-Message-ID: <20190617124632.1176809-1-arnd@arndb.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: udev: Access permission of fw character device
+ in which fw node includes unit handled by ALSA
+Date: Mon, 17 Jun 2019 15:26:42 +0200
+Message-ID: <20190617132642.GA25074@gardel-login>
+References: <20190520122724.GA14864@workstation>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <systemd-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20190520122724.GA14864@workstation>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/systemd-devel>,
+ <mailto:systemd-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/systemd-devel>
+List-Post: <mailto:systemd-devel@lists.freedesktop.org>
+List-Help: <mailto:systemd-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/systemd-devel>,
+ <mailto:systemd-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: systemd-devel-bounces@lists.freedesktop.org
+Sender: "systemd-devel" <systemd-devel-bounces@lists.freedesktop.org>
+To: systemd-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Compile-testing without PCI just causes warnings:
-
-sound/soc/sof/sof-pci-dev.c:330:13: error: 'sof_pci_remove' defined but not used [-Werror=unused-function]
- static void sof_pci_remove(struct pci_dev *pci)
-             ^~~~~~~~~~~~~~
-sound/soc/sof/sof-pci-dev.c:230:12: error: 'sof_pci_probe' defined but not used [-Werror=unused-function]
- static int sof_pci_probe(struct pci_dev *pci,
-            ^~~~~~~~~~~~~
-
-I tried to fix this in a way that would still allow compile
-tests, but it got too ugly, so this just reverts the patch
-that allowed it in the first place.
-
-Most architectures do allow enabling PCI, so the value of the
-COMPILE_TEST alternative was not very high to start with.
-
-Fixes: e13ef82a9ab8 ("ASoC: SOF: add COMPILE_TEST for PCI options")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/sof/Kconfig       |  2 +-
- sound/soc/sof/intel/hda.c   | 13 ++-----------
- sound/soc/sof/sof-pci-dev.c |  4 ----
- 3 files changed, 3 insertions(+), 16 deletions(-)
-
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 41f79cdcbf47..fb01f0ca6027 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -11,7 +11,7 @@ if SND_SOC_SOF_TOPLEVEL
- 
- config SND_SOC_SOF_PCI
- 	tristate "SOF PCI enumeration support"
--	depends on PCI || COMPILE_TEST
-+	depends on PCI
- 	select SND_SOC_SOF
- 	select SND_SOC_ACPI if ACPI
- 	select SND_SOC_SOF_OPTIONS
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 140b1424f291..51c1c1787de7 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -533,9 +533,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 	 * TODO: support interrupt mode selection with kernel parameter
- 	 *       support msi multiple vectors
- 	 */
--#if IS_ENABLED(CONFIG_PCI)
- 	ret = pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_MSI);
--#endif
- 	if (ret < 0) {
- 		dev_info(sdev->dev, "use legacy interrupt mode\n");
- 		/*
-@@ -547,9 +545,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 		sdev->msi_enabled = 0;
- 	} else {
- 		dev_info(sdev->dev, "use msi interrupt mode\n");
--#if IS_ENABLED(CONFIG_PCI)
- 		hdev->irq = pci_irq_vector(pci, 0);
--#endif
- 		/* ipc irq number is the same of hda irq */
- 		sdev->ipc_irq = hdev->irq;
- 		sdev->msi_enabled = 1;
-@@ -606,10 +602,8 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- free_hda_irq:
- 	free_irq(hdev->irq, bus);
- free_irq_vector:
--#if IS_ENABLED(CONFIG_PCI)
- 	if (sdev->msi_enabled)
- 		pci_free_irq_vectors(pci);
--#endif
- free_streams:
- 	hda_dsp_stream_free(sdev);
- /* dsp_unmap: not currently used */
-@@ -624,6 +618,7 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- {
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
- 	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct pci_dev *pci = to_pci_dev(sdev->dev);
- 	const struct sof_intel_dsp_desc *chip = hda->desc;
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-@@ -652,12 +647,8 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 
- 	free_irq(sdev->ipc_irq, sdev);
- 	free_irq(hda->irq, bus);
--#if IS_ENABLED(CONFIG_PCI)
--	if (sdev->msi_enabled) {
--		struct pci_dev *pci = to_pci_dev(sdev->dev);
-+	if (sdev->msi_enabled)
- 		pci_free_irq_vectors(pci);
--	}
--#endif
- 
- 	hda_dsp_stream_free(sdev);
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index ab58d4f9119f..e2b19782f01a 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -251,11 +251,9 @@ static int sof_pci_probe(struct pci_dev *pci,
- 	if (!sof_pdata)
- 		return -ENOMEM;
- 
--#if IS_ENABLED(CONFIG_PCI)
- 	ret = pcim_enable_device(pci);
- 	if (ret < 0)
- 		return ret;
--#endif
- 
- 	ret = pci_request_regions(pci, "Audio DSP");
- 	if (ret < 0)
-@@ -388,7 +386,6 @@ static const struct pci_device_id sof_pci_ids[] = {
- };
- MODULE_DEVICE_TABLE(pci, sof_pci_ids);
- 
--#if IS_ENABLED(CONFIG_PCI)
- /* pci_driver definition */
- static struct pci_driver snd_sof_pci_driver = {
- 	.name = "sof-audio-pci",
-@@ -400,6 +397,5 @@ static struct pci_driver snd_sof_pci_driver = {
- 	},
- };
- module_pci_driver(snd_sof_pci_driver);
--#endif
- 
- MODULE_LICENSE("Dual BSD/GPL");
--- 
-2.20.0
+T24gTW8sIDIwLjA1LjE5IDIxOjI3LCBUYWthc2hpIFNha2Ftb3RvIChvLXRha2FzaGlAc2FrYW1v
+Y2NoaS5qcCkgd3JvdGU6Cgo+IEhpIGFsbCwKPgo+IEknbSBhbiBBTFNBIGRldmVsb3BlciwgbWFp
+bmx5IGNvbW1pdHRpbmcgdG8gZHJpdmVycyBmb3IgYXVkaW8gYW5kCj4gbXVzaWMgdW5pdHMgb24g
+SUVFRSAxMzk0IGJ1cyAoeWVzLCBpdCdzIGxlZ2FjeSBGaXJlV2lyZSkuIEkgaGF2ZSBhCj4gY29u
+Y2VybiBhYm91dCBhY2Nlc3MgcGVybWlzc2lvbiBmb3IgZncgY2hhcmFjdGVyIGRldmljZS4KCkkg
+YW0gbm90IHN1cmUgSSB1bmRlcnN0YW5kIGZpcmV3aXJlIHdlbGwgZW5vdWdoIHRvIHNheSBzb21l
+dGhpbmcgdG9vCnNtYXJ0LiBCdXQgaWYgSSB1bmRlcnN0YW5kIGNvcnJlY3RseSwgdGhlbiB3ZSAo
+aW4gc3lzdGVtZCB1cHN0cmVhbSkKY3VycmVudGx5IG9ubHkgaGF2ZSB0aGVzZSBmb3VyIGZpcmV3
+aXJlIHNwZWNpZmljIHJ1bGVzIGluIG91ciB0cmVlOgoKICBTVUJTWVNURU09PSJmaXJld2lyZSIs
+IEFUVFJ7dW5pdHN9PT0iKjB4MDBhMDJkOjB4MDAwMTAqIiwgR1JPVVA9InZpZGVvIgogIFNVQlNZ
+U1RFTT09ImZpcmV3aXJlIiwgQVRUUnt1bml0c309PSIqMHgwMGIwOWQ6MHgwMDAxMCoiLCBHUk9V
+UD0idmlkZW8iCiAgU1VCU1lTVEVNPT0iZmlyZXdpcmUiLCBBVFRSe3VuaXRzfT09IioweDAwYTAy
+ZDoweDAxMDAwMSoiLCBHUk9VUD0idmlkZW8iCiAgU1VCU1lTVEVNPT0iZmlyZXdpcmUiLCBBVFRS
+e3VuaXRzfT09IioweDAwYTAyZDoweDAxNDAwMSoiLCBHUk9VUD0idmlkZW8iCgpBbmQgYWxsIG9m
+IHRoZXNlIGFyZSBoYW5kbGVkIGJ5IHNvbWUgZmlyZXdpcmUgY29yZSBkcml2ZXI/IFRoZSBkZXZp
+Y2VzCnlvdSBjYXJlIGFib3V0LCBob3cgd291bGQgdGhlIHJ1bGVzIGxvb2sgbGlrZSBmb3IgdGhp
+cz8KCkluIGdlbmVyYWwsIHdoZW4gaXQgY29tZXMgdG8gYXV0by1sb2FkaW5nIG9mIGRyaXZlcnMg
+d2UgdXN1YWxseSBleHBlY3QKdGhlIGtlcm5lbCB0byBhZGQgbW9kYWxpYXMgbWV0YWRhdGEgdG8g
+LmtvIGZpbGVzLgoKSW4gdGhlIGh3ZGIgdXN1YWxseSBtb3N0bHkgb25seSAiYXV4aWxpYXJ5IiBk
+YXRhIGlzIHN0b3JlZCwgaS5lLiBzdHVmZgp0aGF0IGlzIGdyZWF0IHRvIGhhdmUgYnV0IGlzIG5v
+dCBlc3NlbnRpYWwgZm9yIGEgZGV2aWNlIHRvIHdvcmsKYmFzaWNhbGx5LgoKUnVsZXMgZmlsZXMg
+c2hvdWxkIGdlbmVyYWxseSBiZSBrZXB0IHNob3J0LiBpLmUuIGlmIHlvdSBhZGQgMyBtb3JlCnJ1
+bGVzIGZvciB0aGUgZGV2aWNlcyB5b3UgY2FyZSBhYm91dCwgdGhhdCdkIGJlIGZpbmUg4oCUIGlm
+IHlvdSBhZGQgMTAwLAp0aGVuIHRoYXQncyBub3Qgc28gZ3JlYXQgaG93ZXZlciwgYW5kIGFub3Ro
+ZXIgYXBwcm9hY2ggc2hvdWxkIGJlCmZvdW5kLgoKQW55d2F5LCBnaXZlbiB0aGF0IEkgYW0gbm90
+IGEgZmlyZXdpcmUgcHJvLCBJIGZpZ3VyZSB5b3UgaGF2ZSB0bwpkZWNpZGUgeW91cnNlbGYgd2hh
+dCB0aGUgYmVzdCBhcHByb2FjaCBpcywgYW5kIHRoZW4gcHJlcCBhIFBSIGFuZCB3ZQpjYW4gaGF2
+ZSBhIGxvb2suIFdpdGhvdXQgbG9va2luZyBhdCBhbiAobWF5YmUganVzdCBSRkMpIHBhdGNoIEkg
+YW0gbm90CnN1cmUgSSBncm9rIGVudWdoIHRvIHByb3Blcmx5IGNvbW1lbnQgb24gaXQuCgpMZW5u
+YXJ0CgotLQpMZW5uYXJ0IFBvZXR0ZXJpbmcsIEJlcmxpbgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpzeXN0ZW1kLWRldmVsIG1haWxpbmcgbGlzdApzeXN0
+ZW1kLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9w
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL3N5c3RlbWQtZGV2ZWw=
