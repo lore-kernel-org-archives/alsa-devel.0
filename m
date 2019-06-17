@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: fall back to DT prop names on error" to the asoc tree
-Date: Mon, 17 Jun 2019 16:24:16 +0100 (BST)
-Message-ID: <20190617152417.01C03440049@finisterre.sirena.org.uk>
-References: <20190614194854.208436-2-fletcherw@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190614194854.208436-2-fletcherw@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fletcher Woodruff <fletcherw@chromium.org>
-Cc: alsa-devel@alsa-project.org, Curtis Malainey <cujomalainey@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Ross Zwisler <zwisler@chromium.org>, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: rockchip: pdm: select CONFIG_RATIONAL" to the asoc tree
+Date: Mon, 17 Jun 2019 16:24:30 +0100 (BST)
+Message-ID: <20190617152430.93BA7440046@finisterre.sirena.org.uk>
+References: <20190617110415.2084205-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190617110415.2084205-1-arnd@arndb.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: fall back to DT prop names on error
+   ASoC: rockchip: pdm: select CONFIG_RATIONAL
 
 has been applied to the asoc tree at
 
@@ -37,136 +48,34 @@ to this mail.
 Thanks,
 Mark
 
->From 8893cba2fa6994ac8434cbc616eeddcde211ec45 Mon Sep 17 00:00:00 2001
-From: Fletcher Woodruff <fletcherw@chromium.org>
-Date: Fri, 14 Jun 2019 13:48:51 -0600
-Subject: [PATCH] ASoC: rt5677: fall back to DT prop names on error
+>From 41d92e0c835bff7dec343bf41e79d24b326d94c1 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 17 Jun 2019 13:03:51 +0200
+Subject: [PATCH] ASoC: rockchip: pdm: select CONFIG_RATIONAL
 
-The rt5677 driver uses ACPI-style property names to read from the
-device API. However, these do not match the property names in _DSD
-used on the Chromebook Pixel 2015, which are closer to the Device Tree
-style.  Unify the two functions for reading from the device API so that
-they try ACPI-style names first and fall back to the DT names on error.
+Without this, we get a link error:
 
-With this patch, plugging and unplugging the headphone jack switches
-between headphones and speakers automatically.
+sound/soc/rockchip/rockchip_pdm.o: In function `rockchip_pdm_hw_params':
+rockchip_pdm.c:(.text+0x754): undefined reference to `rational_best_approximation'
 
-Signed-off-by: Fletcher Woodruff <fletcherw@chromium.org>
+Fixes: 624e8e00acaf ("ASoC: rockchip: pdm: fixup pdm fractional div")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 74 +++++++++++++++++++--------------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+ sound/soc/rockchip/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index c49b5c218666..fe000f30b9ad 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5020,48 +5020,50 @@ static const struct acpi_device_id rt5677_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, rt5677_acpi_match);
- 
--static void rt5677_read_acpi_properties(struct rt5677_priv *rt5677,
-+static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
- 		struct device *dev)
- {
- 	u32 val;
- 
--	if (!device_property_read_u32(dev, "DCLK", &val))
--		rt5677->pdata.dmic2_clk_pin = val;
-+	rt5677->pdata.in1_diff =
-+		device_property_read_bool(dev, "IN1") ||
-+		device_property_read_bool(dev, "realtek,in1-differential");
- 
--	rt5677->pdata.in1_diff = device_property_read_bool(dev, "IN1");
--	rt5677->pdata.in2_diff = device_property_read_bool(dev, "IN2");
--	rt5677->pdata.lout1_diff = device_property_read_bool(dev, "OUT1");
--	rt5677->pdata.lout2_diff = device_property_read_bool(dev, "OUT2");
--	rt5677->pdata.lout3_diff = device_property_read_bool(dev, "OUT3");
-+	rt5677->pdata.in2_diff =
-+		device_property_read_bool(dev, "IN2") ||
-+		device_property_read_bool(dev, "realtek,in2-differential");
- 
--	device_property_read_u32(dev, "JD1", &rt5677->pdata.jd1_gpio);
--	device_property_read_u32(dev, "JD2", &rt5677->pdata.jd2_gpio);
--	device_property_read_u32(dev, "JD3", &rt5677->pdata.jd3_gpio);
--}
-+	rt5677->pdata.lout1_diff =
-+		device_property_read_bool(dev, "OUT1") ||
-+		device_property_read_bool(dev, "realtek,lout1-differential");
- 
--static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
--		struct device *dev)
--{
--	rt5677->pdata.in1_diff = device_property_read_bool(dev,
--			"realtek,in1-differential");
--	rt5677->pdata.in2_diff = device_property_read_bool(dev,
--			"realtek,in2-differential");
--	rt5677->pdata.lout1_diff = device_property_read_bool(dev,
--			"realtek,lout1-differential");
--	rt5677->pdata.lout2_diff = device_property_read_bool(dev,
--			"realtek,lout2-differential");
--	rt5677->pdata.lout3_diff = device_property_read_bool(dev,
--			"realtek,lout3-differential");
-+	rt5677->pdata.lout2_diff =
-+		device_property_read_bool(dev, "OUT2") ||
-+		device_property_read_bool(dev, "realtek,lout2-differential");
-+
-+	rt5677->pdata.lout3_diff =
-+		device_property_read_bool(dev, "OUT3") ||
-+		device_property_read_bool(dev, "realtek,lout3-differential");
- 
- 	device_property_read_u8_array(dev, "realtek,gpio-config",
--			rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
--
--	device_property_read_u32(dev, "realtek,jd1-gpio",
--			&rt5677->pdata.jd1_gpio);
--	device_property_read_u32(dev, "realtek,jd2-gpio",
--			&rt5677->pdata.jd2_gpio);
--	device_property_read_u32(dev, "realtek,jd3-gpio",
--			&rt5677->pdata.jd3_gpio);
-+				      rt5677->pdata.gpio_config,
-+				      RT5677_GPIO_NUM);
-+
-+	if (!device_property_read_u32(dev, "DCLK", &val) ||
-+	    !device_property_read_u32(dev, "realtek,dmic2_clk_pin", &val))
-+		rt5677->pdata.dmic2_clk_pin = val;
-+
-+	if (!device_property_read_u32(dev, "JD1", &val) ||
-+	    !device_property_read_u32(dev, "realtek,jd1-gpio", &val))
-+		rt5677->pdata.jd1_gpio = val;
-+
-+	if (!device_property_read_u32(dev, "JD2", &val) ||
-+	    !device_property_read_u32(dev, "realtek,jd2-gpio", &val))
-+		rt5677->pdata.jd2_gpio = val;
-+
-+	if (!device_property_read_u32(dev, "JD3", &val) ||
-+	    !device_property_read_u32(dev, "realtek,jd3-gpio", &val))
-+		rt5677->pdata.jd3_gpio = val;
- }
- 
- static struct regmap_irq rt5677_irqs[] = {
-@@ -5144,20 +5146,18 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 		match_id = of_match_device(rt5677_of_match, &i2c->dev);
- 		if (match_id)
- 			rt5677->type = (enum rt5677_type)match_id->data;
--
--		rt5677_read_device_properties(rt5677, &i2c->dev);
- 	} else if (ACPI_HANDLE(&i2c->dev)) {
- 		const struct acpi_device_id *acpi_id;
- 
- 		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
- 		if (acpi_id)
- 			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
--
--		rt5677_read_acpi_properties(rt5677, &i2c->dev);
- 	} else {
- 		return -EINVAL;
- 	}
- 
-+	rt5677_read_device_properties(rt5677, &i2c->dev);
-+
- 	/* pow-ldo2 and reset are optional. The codec pins may be statically
- 	 * connected on the board without gpios. If the gpio device property
- 	 * isn't specified, devm_gpiod_get_optional returns NULL.
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index 957046ac6c8c..d88555e0c389 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -19,6 +19,7 @@ config SND_SOC_ROCKCHIP_PDM
+ 	tristate "Rockchip PDM Controller Driver"
+ 	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
++	select RATIONAL
+ 	help
+ 	  Say Y or M if you want to add support for PDM driver for
+ 	  Rockchip PDM Controller. The Controller supports up to maximum of
 -- 
 2.20.1
