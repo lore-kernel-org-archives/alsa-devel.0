@@ -1,26 +1,20 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
- memory allocation
-Date: Mon, 17 Jun 2019 07:30:42 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D195289F9C9@SHSMSX103.ccr.corp.intel.com>
-References: <20190522162142.11525-1-pierre-louis.bossart@linux.intel.com>
- <20190522162142.11525-13-pierre-louis.bossart@linux.intel.com>
- <96A12704CE18D347B625EE2D4A099D195284169B@SHSMSX103.ccr.corp.intel.com>
- <s5hr28pfux1.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19528416D3@SHSMSX103.ccr.corp.intel.com>
- <s5ho93tfuea.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D195285B18B@SHSMSX103.ccr.corp.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/10] ALSA: firewire-motu: unify the count of
+	subscriber for packet streaming
+Date: Mon, 17 Jun 2019 17:15:01 +0900
+Message-ID: <20190617081510.11025-2-o-takashi@sakamocchi.jp>
+References: <20190617081510.11025-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81D63F89682
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 09:30:46 +0200 (CEST)
-In-Reply-To: <96A12704CE18D347B625EE2D4A099D195285B18B@SHSMSX103.ccr.corp.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78241F89693
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2019 10:15:18 +0200 (CEST)
+In-Reply-To: <20190617081510.11025-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,141 +24,167 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@kernel.org'" <broonie@kernel.org>, 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Two counters are used to maintain isochronous packet streaming for both
+directions. However, like the other drivers, they can be replaced with
+one counter. This commit unifies them.
 
->-----Original Message-----
->From: Yang, Libin
->Sent: Monday, June 3, 2019 5:10 PM
->To: Takashi Iwai <tiwai@suse.de>
->Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; alsa-
->devel@alsa-project.org; broonie@kernel.org
->Subject: RE: [alsa-devel] [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec: fix
->memory allocation
->
->Hi Takashi,
->
->>-----Original Message-----
->>From: Takashi Iwai [mailto:tiwai@suse.de]
->>Sent: Thursday, May 23, 2019 4:27 PM
->>To: Yang, Libin <libin.yang@intel.com>
->>Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; alsa-
->>devel@alsa-project.org; broonie@kernel.org
->>Subject: Re: [alsa-devel] [PATCH v2 12/12] ASoC: SOF: Intel: hda-codec:
->>fix memory allocation
->>
->>On Thu, 23 May 2019 10:21:20 +0200,
->>Yang, Libin wrote:
->>>
->>> Hi Takashi,
->>>
->>> >-----Original Message-----
->>> >From: Takashi Iwai [mailto:tiwai@suse.de]
->>> >Sent: Thursday, May 23, 2019 4:16 PM
->>> >To: Yang, Libin <libin.yang@intel.com>
->>> >Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>;
->>> >alsa- devel@alsa-project.org; broonie@kernel.org
->>> >Subject: Re: [alsa-devel] [PATCH v2 12/12] ASoC: SOF: Intel:
->>> >hda-codec: fix memory allocation
->>> >
->>> >On Thu, 23 May 2019 10:03:03 +0200,
->>> >Yang, Libin wrote:
->>> >>
->>> >> Please let me describe the issue here.
->>> >>
->>> >> The test case is:
->>> >> 1) Unload module with script "sudo ./sof_remove.sh" ,
->>> >> 2) reload module with script "sudo ./sof_insert.sh"
->>> >>
->>> >> After several rounds of removing and inserting kernel modules,
->>> >> system will complain like below:
->>> >> "BUG: unable to handle kernel paging request at 000000292a282031"
->>> >
->>> >Did you try some kernel debug options?  It might show what went wrong.
->>>
->>> No, I haven't. I'm not sure which options I can use for this case.
->>> Could you please give me some suggestions?
->>
->>You can enable CONFIG_DEBUG_DEVRES and adjust the devres.log option
->for
->>showing each devres allocation and removal.  And I'd try
->>CONFIG_DEBUG_SLAB and CONFIG_DEBUG_KMEMLEAK or whatever
->interesting in
->>CONFIG_DEBUG section, too.
->
->Thanks for your suggestion. After more than 1 week debug, I think maybe I
->have root caused this issue from the devres.log message.
->
->Below is my finding.
->1. When initialing the codecs, snd_hdac_ext_bus_device_init() will be called,
->and it will set hdev->dev.release = default_release.
->However, for analog codec (not hdac_hdmi codec), hdac_hda_codec_probe()
->will be called later. And it will call snd_hda_codec_device_new(), which will
->reset codec->code.dev.release = snd_hda_codec_dev_release; This means
->hdac_hdmi's hdev dev release is default_release() defined in hdac_ext_bus.c,
->and other hda codec's hdev dev release is snd_hda_codec_dev_release().
->
->Both default_release() and snd_hda_codec_dev_release() will call kfree() to
->free the hdac_device (or its container) in the current code.
->
->2. When we run rmmod sof_pci_dev, it will free the sdev. If we use Struct
->hdac_device *hdev = devm_kzalloc(sdev->dev...). This means hdev will also be
->freed automatically.
->
->In the removal, snd_hdac_ext_bus_device_remove() will be called to remove
->the hdev (in this function it is struct hdac_device *codec.
->The name is not aligned in different places).
->However for hdac_hdmi, the hdev->dev is used by other code.
->So calling device.release() (the function default_release()) will be postponed.
->After after sdev is freed, the device.release() will be called. But for devm_xxx,
->hdev will also be freed when sdev is freed. This means hdev.dev after sdev is
->freed is invalid now as hdev has already freed. It will access invalid memory.
->This will cause the bug.
->
->So I think we should not use devm_xxx, and let's free the hdev manually.
->
->At the end of this topic, I still found 2 suspicious code in the current code.
->1. in sound/soc/intel/skylate/skl.c
->it calls hdev = devm_kazlloc() or hda_codec = devm_kzalloc().
->As we will call kfree() in the current code, should we replace it with kzalloc()?
->Maybe we need cavs drivers owner's help on it.
->
->2. in snd_hdac_ext_bus_device_remove()
->It will call snd_hdac_device_unregister() to unregister the hdac_devices and
->put_device(&codec->dev) to release the dev.
->For analog codec, snd_hdac_device_unregister()  will free the codec->dev's
->kobject. And snd_hda_codec_dev_release() will be called to free the
->hdac_device.
->So it is invalid to call put_device(&codec->dev). If you print
->refcound_read(&(codec->dev.kobj.kref.refcount)) for analog codec before
->put_device(), you will find the refcount has already been 0.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/motu/motu-midi.c   |  8 ++++----
+ sound/firewire/motu/motu-pcm.c    |  8 ++++----
+ sound/firewire/motu/motu-stream.c | 17 ++++++-----------
+ sound/firewire/motu/motu.h        |  3 +--
+ 4 files changed, 15 insertions(+), 21 deletions(-)
 
-I tested on the latest code. The behavior on kernel 5.2.0-rc1 is different from
-it on kernel 5.0.0 of https://github.com/thesofproject/linux/. (thesofproject
-kernel has already been upgraded to 5.2.0-rc1 now)
-
-On kernel 5.0.0 (https://github.com/thesofproject/linux/), when removing
-the sof kernel modules, the sequence is:
-1. devm_kazlloc_release() to release hdac_device
-2. snd_hdac_ext_bus_device_exit(): this function will use hdac_device
-
-However, on kernel 5.2.0-rc1, the sequence is:
-1. snd_hdac_ext_bus_device_exit()
-2. devm_kazlloc_release() to release hdac_device
-
-So I think it is safe now to use devm_xxx to allocate the hdac_device.
-Also, Ranjani found a duplicated release of hdac_device. She has
-a patch to fix it.
-
-Regards,
-Libin
-
->
->Regards,
->Libin
->
->>
->>
->>Takashi
+diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
+index e55cab6d79c7..b2d339a8ef3f 100644
+--- a/sound/firewire/motu/motu-midi.c
++++ b/sound/firewire/motu/motu-midi.c
+@@ -18,7 +18,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 
+ 	mutex_lock(&motu->mutex);
+ 
+-	motu->capture_substreams++;
++	motu->substreams_counter++;
+ 	err = snd_motu_stream_start_duplex(motu, 0);
+ 
+ 	mutex_unlock(&motu->mutex);
+@@ -40,7 +40,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 
+ 	mutex_lock(&motu->mutex);
+ 
+-	motu->playback_substreams++;
++	motu->substreams_counter++;
+ 	err = snd_motu_stream_start_duplex(motu, 0);
+ 
+ 	mutex_unlock(&motu->mutex);
+@@ -57,7 +57,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ 
+ 	mutex_lock(&motu->mutex);
+ 
+-	motu->capture_substreams--;
++	motu->substreams_counter--;
+ 	snd_motu_stream_stop_duplex(motu);
+ 
+ 	mutex_unlock(&motu->mutex);
+@@ -72,7 +72,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ 
+ 	mutex_lock(&motu->mutex);
+ 
+-	motu->playback_substreams--;
++	motu->substreams_counter--;
+ 	snd_motu_stream_stop_duplex(motu);
+ 
+ 	mutex_unlock(&motu->mutex);
+diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
+index ab69d7e6ac05..b0e5ebf05bec 100644
+--- a/sound/firewire/motu/motu-pcm.c
++++ b/sound/firewire/motu/motu-pcm.c
+@@ -203,7 +203,7 @@ static int capture_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&motu->mutex);
+-		motu->capture_substreams++;
++		motu->substreams_counter++;
+ 		mutex_unlock(&motu->mutex);
+ 	}
+ 
+@@ -222,7 +222,7 @@ static int playback_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		mutex_lock(&motu->mutex);
+-		motu->playback_substreams++;
++		motu->substreams_counter++;
+ 		mutex_unlock(&motu->mutex);
+ 	}
+ 
+@@ -236,7 +236,7 @@ static int capture_hw_free(struct snd_pcm_substream *substream)
+ 	mutex_lock(&motu->mutex);
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		motu->capture_substreams--;
++		motu->substreams_counter--;
+ 
+ 	snd_motu_stream_stop_duplex(motu);
+ 
+@@ -252,7 +252,7 @@ static int playback_hw_free(struct snd_pcm_substream *substream)
+ 	mutex_lock(&motu->mutex);
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		motu->playback_substreams--;
++		motu->substreams_counter--;
+ 
+ 	snd_motu_stream_stop_duplex(motu);
+ 
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index 73e7a5e527fc..c136d7f8c49c 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -207,7 +207,7 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate)
+ 	unsigned int curr_rate;
+ 	int err = 0;
+ 
+-	if (motu->capture_substreams == 0 && motu->playback_substreams == 0)
++	if (motu->substreams_counter == 0)
+ 		return 0;
+ 
+ 	/* Some packet queueing errors. */
+@@ -271,8 +271,7 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate)
+ 		}
+ 	}
+ 
+-	if (!amdtp_stream_running(&motu->tx_stream) &&
+-	    motu->capture_substreams > 0) {
++	if (!amdtp_stream_running(&motu->tx_stream)) {
+ 		err = start_isoc_ctx(motu, &motu->tx_stream);
+ 		if (err < 0) {
+ 			dev_err(&motu->unit->device,
+@@ -291,15 +290,12 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate)
+ 
+ void snd_motu_stream_stop_duplex(struct snd_motu *motu)
+ {
+-	if (motu->capture_substreams == 0) {
++	if (motu->substreams_counter == 0) {
+ 		if (amdtp_stream_running(&motu->tx_stream))
+ 			stop_isoc_ctx(motu, &motu->tx_stream);
+ 
+-		if (motu->playback_substreams == 0) {
+-			if (amdtp_stream_running(&motu->rx_stream))
+-				stop_isoc_ctx(motu, &motu->rx_stream);
+-			stop_both_streams(motu);
+-		}
++		if (amdtp_stream_running(&motu->rx_stream))
++			stop_isoc_ctx(motu, &motu->rx_stream);
+ 	}
+ }
+ 
+@@ -372,8 +368,7 @@ void snd_motu_stream_destroy_duplex(struct snd_motu *motu)
+ 	destroy_stream(motu, AMDTP_IN_STREAM);
+ 	destroy_stream(motu, AMDTP_OUT_STREAM);
+ 
+-	motu->playback_substreams = 0;
+-	motu->capture_substreams = 0;
++	motu->substreams_counter = 0;
+ }
+ 
+ static void motu_lock_changed(struct snd_motu *motu)
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+index 1cd112be7dad..ae4b37cdfade 100644
+--- a/sound/firewire/motu/motu.h
++++ b/sound/firewire/motu/motu.h
+@@ -60,8 +60,7 @@ struct snd_motu {
+ 	struct amdtp_stream rx_stream;
+ 	struct fw_iso_resources tx_resources;
+ 	struct fw_iso_resources rx_resources;
+-	unsigned int capture_substreams;
+-	unsigned int playback_substreams;
++	unsigned int substreams_counter;
+ 
+ 	/* For notification. */
+ 	struct fw_address_handler async_handler;
+-- 
+2.20.1
