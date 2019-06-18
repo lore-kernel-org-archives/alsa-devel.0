@@ -1,20 +1,20 @@
 From: "scott andrew franco" <samiam@moorecad.com>
 Subject: Re: Serious bug calling ALSA lib functions from .so
  vs. .o file
-Date: Tue, 18 Jun 2019 14:10:48 -0700
-Message-ID: <20190618141048.6c61c97e98fe7bb02193b2d6dca4a85a.fda560ce55.mailapi@email03.godaddy.com>
-References: <s5hd0ja8vpo.wl-tiwai@suse.de>
+Date: Tue, 18 Jun 2019 14:20:23 -0700
+Message-ID: <20190618142023.6c61c97e98fe7bb02193b2d6dca4a85a.66840bb3fa.mailapi@email03.godaddy.com>
+References: <20190618141048.6c61c97e98fe7bb02193b2d6dca4a85a.fda560ce55.mailapi@email03.godaddy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plwbeout03-05.prod.phx3.secureserver.net
- (p3plsmtp03-05-2.prod.phx3.secureserver.net [72.167.218.217])
+Received: from p3plwbeout03-03.prod.phx3.secureserver.net
+ (p3plsmtp03-03-2.prod.phx3.secureserver.net [72.167.218.215])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D5EAF8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 23:11:21 +0200 (CEST)
-In-Reply-To: <s5hd0ja8vpo.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57B3FF8075C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 23:20:55 +0200 (CEST)
+In-Reply-To: <20190618141048.6c61c97e98fe7bb02193b2d6dca4a85a.fda560ce55.mailapi@email03.godaddy.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,21 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ok I see, apologies. Will try that.
+Fixed.
+ 
+Again, apologies for my being dense there.
+ 
+This is *great* it all works now. I don't think I would have figured out that link issue on my own.
+ 
+Scott Franco
+ 
+--------- Original Message --------- Subject: RE: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
+From: "scott andrew franco" <samiam@moorecad.com>
+Date: 6/18/19 2:10 pm
+To: "Takashi Iwai" <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+
+ Ok I see, apologies. Will try that.
  
 Scott
  
