@@ -1,41 +1,64 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: [FFADO-devel] udev: Access permission of fw character device in
- which fw node includes unit handled by ALSA
-Date: Tue, 18 Jun 2019 09:35:58 +0930
-Message-ID: <20190618000558.GB20102@marvin.atrad.com.au>
-References: <20190520122724.GA14864@workstation>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: [PATCH v6] ASoC: max98090: remove 24-bit format support if RJ is 0
+Date: Tue, 18 Jun 2019 10:24:11 +0800
+Message-ID: <20190618022411.208156-1-yuhsuan@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20190520122724.GA14864@workstation>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/linux1394-devel>,
- <mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
- <mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: systemd-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net, clemens@ladisch.de
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jon Hunter <jonathanh@nvidia.com>, Yu-Hsuan Hsu <yuhsuan@chromium.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dgreid@chromium.org, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 20, 2019 at 09:27:27PM +0900, Takashi Sakamoto wrote:
-> I'm an ALSA developer, mainly committing to drivers for audio and
-> music units on IEEE 1394 bus (yes, it's legacy FireWire). I have a
-> concern about access permission for fw character device.
-> :
+The supported formats are S16_LE and S24_LE now. However, S24_LE is
+not supported when TDM is 0 and it is not in the right justified mode.
+We should remove 24-bit format in that situation to avoid triggering
+error.
 
-This was CCed to the FFADO-devel list.  My linux boxes don't use systemd and
-I have only a superficial picture of systemd, so I don't think I can offer
-any suggestions.  Furthermore, FFADO ships a collection of udev rules which
-seem to do the job for FFADO regardless of whether systemd is used or not. 
-Consequently it appears that the above discussion is not directly relevant
-to FFADO.
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+Changed the order of the conditional.
+Remove the snd_pcm_hw_constraint_msbits function.
+Use removing 24 bits format instead of fixing at 16 bits format.
+ sound/soc/codecs/max98090.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-If there are connections I'm not aware of please fill me in and I'll respond
-accordingly.
-
-Regards
-  jonathan
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 7619ea31ab50..9fbb4c31bcf1 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -1909,6 +1909,24 @@ static int max98090_configure_dmic(struct max98090_priv *max98090,
+ 	return 0;
+ }
+ 
++static int max98090_dai_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct max98090_priv *max98090 = snd_soc_component_get_drvdata(component);
++	unsigned int fmt = max98090->dai_fmt;
++
++	/*
++	 * When TDM = 0, remove 24-bit format support if it is not in right
++	 * justified mode.
++	 */
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_RIGHT_J &&
++			!max98090->tdm_slots)
++		substream->runtime->hw.formats &= ~SNDRV_PCM_FMTBIT_S24_LE;
++
++	return 0;
++}
++
+ static int max98090_dai_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params,
+ 				   struct snd_soc_dai *dai)
+@@ -2316,6 +2334,7 @@ EXPORT_SYMBOL_GPL(max98090_mic_detect);
+ #define MAX98090_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ static const struct snd_soc_dai_ops max98090_dai_ops = {
++	.startup = max98090_dai_startup,
+ 	.set_sysclk = max98090_dai_set_sysclk,
+ 	.set_fmt = max98090_dai_set_fmt,
+ 	.set_tdm_slot = max98090_set_tdm_slot,
+-- 
+2.22.0.410.gd8fdbe21b5-goog
