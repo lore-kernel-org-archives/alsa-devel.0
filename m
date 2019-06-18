@@ -1,19 +1,20 @@
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: sof-rt5682: correct naming
-	for dmic16k
-Date: Tue, 18 Jun 2019 08:23:36 +0800
-Message-ID: <20190618002336.5734-2-yung-chuan.liao@linux.intel.com>
-References: <20190618002336.5734-1-yung-chuan.liao@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/8] ALSA: firewire-tascam: unify stop and
+	release method for duplex streams
+Date: Tue, 18 Jun 2019 22:26:15 +0900
+Message-ID: <20190618132622.32659-2-o-takashi@sakamocchi.jp>
+References: <20190618132622.32659-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2332F89682
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 14:22:21 +0200 (CEST)
-In-Reply-To: <20190618002336.5734-1-yung-chuan.liao@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E144F896DB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 15:26:29 +0200 (CEST)
+In-Reply-To: <20190618132622.32659-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,108 +24,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, tiwai@suse.de
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Keyon Jie <yang.jie@linux.intel.com>
+>From callbacks for pcm and rawmidi interfaces, the functions to stop
+and release duplex streams are called at the same time. This commit
+merges the two functions.
 
-Change the link name to be "dmic16k", the cpu_dai_name to be "DMIC16k
-Pin", to be aligned with other machine drivers.
-
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 34 +++++++++++++++--------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
+ sound/firewire/tascam/tascam-pcm.c    |  1 -
+ sound/firewire/tascam/tascam-stream.c | 14 +++++---------
+ sound/firewire/tascam/tascam.h        |  1 -
+ 3 files changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index f3d481b75b15..919cf6fafe75 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -377,7 +377,7 @@ static struct snd_soc_dai_link_component max98357a_component[] = {
- static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 							  int ssp_codec,
- 							  int ssp_amp,
--							  int dmic_num,
-+							  int dmic_be_num,
- 							  int hdmi_num)
- {
- 	struct snd_soc_dai_link_component *idisp_components;
-@@ -437,20 +437,22 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 	id++;
+diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
+index 450711bef508..300683a82c68 100644
+--- a/sound/firewire/tascam/tascam-pcm.c
++++ b/sound/firewire/tascam/tascam-pcm.c
+@@ -118,7 +118,6 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
+ 		--tscm->substreams_counter;
  
- 	/* dmic */
--	for (i = 1; i <= dmic_num; i++) {
--		links[id].name = devm_kasprintf(dev, GFP_KERNEL,
--						"dmic%02d", i);
--		if (!links[id].name)
--			goto devm_err;
-+	if (dmic_be_num > 0) {
-+		/* at least we have dmic01 */
-+		links[id].name = "dmic01";
-+		links[id].cpus->dai_name = "DMIC01 Pin";
-+		if (dmic_be_num > 1) {
-+			/* set up 2 BE links at most */
-+			links[id + 1].name = "dmic16k";
-+			links[id + 1].cpus->dai_name = "DMIC16k Pin";
-+			dmic_be_num = 2;
-+		}
-+	}
+ 	snd_tscm_stream_stop_duplex(tscm);
+-	snd_tscm_stream_release_duplex(tscm);
  
-+	for (i = 0; i < dmic_be_num; i++) {
- 		links[id].id = id;
- 		links[id].cpus = &cpus[id];
- 		links[id].num_cpus = 1;
--		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
--							  "DMIC%02d Pin", i);
--		if (!links[id].cpus->dai_name)
--			goto devm_err;
+ 	mutex_unlock(&tscm->mutex);
+ 
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
+index f572dfc15114..0e515b7be276 100644
+--- a/sound/firewire/tascam/tascam-stream.c
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -380,14 +380,6 @@ int snd_tscm_stream_reserve_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 	return 0;
+ }
+ 
+-void snd_tscm_stream_release_duplex(struct snd_tscm *tscm)
+-{
+-	if (tscm->substreams_counter == 0) {
+-		fw_iso_resources_free(&tscm->tx_resources);
+-		fw_iso_resources_free(&tscm->rx_resources);
+-	}
+-}
 -
- 		links[id].codecs = dmic_component;
- 		links[id].num_codecs = ARRAY_SIZE(dmic_component);
- 		links[id].platforms = platform_component;
-@@ -545,7 +547,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	struct snd_soc_dai_link *dai_links;
- 	struct snd_soc_acpi_mach *mach;
- 	struct sof_card_private *ctx;
--	int dmic_num, hdmi_num;
-+	int dmic_be_num, hdmi_num;
- 	int ret, ssp_amp, ssp_codec;
+ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ {
+ 	unsigned int generation = tscm->rx_resources.generation;
+@@ -455,8 +447,12 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
  
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-@@ -554,14 +556,14 @@ static int sof_audio_probe(struct platform_device *pdev)
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
+ {
+-	if (tscm->substreams_counter == 0)
++	if (tscm->substreams_counter == 0) {
+ 		finish_session(tscm);
++
++		fw_iso_resources_free(&tscm->tx_resources);
++		fw_iso_resources_free(&tscm->rx_resources);
++	}
+ }
  
- 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
- 		is_legacy_cpu = 1;
--		dmic_num = 0;
-+		dmic_be_num = 0;
- 		hdmi_num = 0;
- 		/* default quirk for legacy cpu */
- 		sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
- 						SOF_RT5682_MCLK_BYTCHT_EN |
- 						SOF_RT5682_SSP_CODEC(2);
- 	} else {
--		dmic_num = 1;
-+		dmic_be_num = 2;
- 		hdmi_num = 3;
- 	}
- 
-@@ -586,13 +588,13 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	ssp_codec = sof_rt5682_quirk & SOF_RT5682_SSP_CODEC_MASK;
- 
- 	/* compute number of dai links */
--	sof_audio_card_rt5682.num_links = 1 + dmic_num + hdmi_num;
-+	sof_audio_card_rt5682.num_links = 1 + dmic_be_num + hdmi_num;
- 
- 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
- 		sof_audio_card_rt5682.num_links++;
- 
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
--					      dmic_num, hdmi_num);
-+					      dmic_be_num, hdmi_num);
- 	if (!dai_links)
- 		return -ENOMEM;
+ void snd_tscm_stream_lock_changed(struct snd_tscm *tscm)
+diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
+index 1cb75c374f11..4ed88cceaedb 100644
+--- a/sound/firewire/tascam/tascam.h
++++ b/sound/firewire/tascam/tascam.h
+@@ -148,7 +148,6 @@ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm);
+ void snd_tscm_stream_update_duplex(struct snd_tscm *tscm);
+ void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm);
+ int snd_tscm_stream_reserve_duplex(struct snd_tscm *tscm, unsigned int rate);
+-void snd_tscm_stream_release_duplex(struct snd_tscm *tscm);
+ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
  
 -- 
-2.17.1
+2.20.1
