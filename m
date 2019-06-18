@@ -1,64 +1,50 @@
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Subject: [PATCH v6] ASoC: max98090: remove 24-bit format support if RJ is 0
-Date: Tue, 18 Jun 2019 10:24:11 +0800
-Message-ID: <20190618022411.208156-1-yuhsuan@chromium.org>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH v1 1/1] ASoC: rsnd: fixup mod ID calculation in rsnd_ctu_probe_
+Date: Tue, 18 Jun 2019 11:57:49 +0900
+Message-ID: <20190618025749.12505-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jon Hunter <jonathanh@nvidia.com>, Yu-Hsuan Hsu <yuhsuan@chromium.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dgreid@chromium.org, cychiang@chromium.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc: jiada_wang@mentor.com, anilkanth@jp.adit-jv.com, sudipi@jp.adit-jv.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The supported formats are S16_LE and S24_LE now. However, S24_LE is
-not supported when TDM is 0 and it is not in the right justified mode.
-We should remove 24-bit format in that situation to avoid triggering
-error.
+From: Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+commit 7e4f3419ebfe ("ASoC: rsnd: add .get_id/.get_id_sub")
+introduces rsnd_ctu_id which calcualates and gives
+the main Device id of the CTU by dividing the id by 4.
+rsnd_mod_id uses this interface to get the CTU main
+Device id. But this commit forgets to revert the main
+Device id calcution previously done in rsnd_ctu_probe_
+which also divides the id by 4. This path corrects the
+same to get the correct main Device id.
+
+The issue is observered when rsnd_ctu_probe_ is done for CTU1
+
+Fixes: 7e4f3419ebfe ("ASoC: rsnd: add .get_id/.get_id_sub")
+
+Signed-off-by: Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>
+Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
-Changed the order of the conditional.
-Remove the snd_pcm_hw_constraint_msbits function.
-Use removing 24 bits format instead of fixing at 16 bits format.
- sound/soc/codecs/max98090.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/soc/sh/rcar/ctu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 7619ea31ab50..9fbb4c31bcf1 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1909,6 +1909,24 @@ static int max98090_configure_dmic(struct max98090_priv *max98090,
- 	return 0;
+diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+index 8cb06dab234e..7647b3d4c0ba 100644
+--- a/sound/soc/sh/rcar/ctu.c
++++ b/sound/soc/sh/rcar/ctu.c
+@@ -108,7 +108,7 @@ static int rsnd_ctu_probe_(struct rsnd_mod *mod,
+ 			   struct rsnd_dai_stream *io,
+ 			   struct rsnd_priv *priv)
+ {
+-	return rsnd_cmd_attach(io, rsnd_mod_id(mod) / 4);
++	return rsnd_cmd_attach(io, rsnd_mod_id(mod));
  }
  
-+static int max98090_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98090_priv *max98090 = snd_soc_component_get_drvdata(component);
-+	unsigned int fmt = max98090->dai_fmt;
-+
-+	/*
-+	 * When TDM = 0, remove 24-bit format support if it is not in right
-+	 * justified mode.
-+	 */
-+	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_RIGHT_J &&
-+			!max98090->tdm_slots)
-+		substream->runtime->hw.formats &= ~SNDRV_PCM_FMTBIT_S24_LE;
-+
-+	return 0;
-+}
-+
- static int max98090_dai_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params,
- 				   struct snd_soc_dai *dai)
-@@ -2316,6 +2334,7 @@ EXPORT_SYMBOL_GPL(max98090_mic_detect);
- #define MAX98090_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- 
- static const struct snd_soc_dai_ops max98090_dai_ops = {
-+	.startup = max98090_dai_startup,
- 	.set_sysclk = max98090_dai_set_sysclk,
- 	.set_fmt = max98090_dai_set_fmt,
- 	.set_tdm_slot = max98090_set_tdm_slot,
+ static void rsnd_ctu_value_init(struct rsnd_dai_stream *io,
 -- 
-2.22.0.410.gd8fdbe21b5-goog
+2.19.2
