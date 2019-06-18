@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 7/8] ALSA: fireworks: ensure to release
-	isochronous resources in pcm.hw_params callback
-Date: Tue, 18 Jun 2019 22:26:21 +0900
-Message-ID: <20190618132622.32659-8-o-takashi@sakamocchi.jp>
+Subject: [PATCH 8/8] ALSA: oxfw: ensure to release isochronous
+	resources in pcm.hw_params callback
+Date: Tue, 18 Jun 2019 22:26:22 +0900
+Message-ID: <20190618132622.32659-9-o-takashi@sakamocchi.jp>
 References: <20190618132622.32659-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5D21F8972F
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 15:26:39 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 495B2F89732
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 15:26:41 +0200 (CEST)
 In-Reply-To: <20190618132622.32659-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,22 +34,25 @@ isochronous resources should be released.
 Fixes: 7bc93821a70a ("ALSA: firewire-lib: split allocation of isochronous resources from establishment of connection")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks_stream.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/firewire/oxfw/oxfw-stream.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 81c1bb209a89..16cf635a6f57 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -217,6 +217,9 @@ int snd_efw_stream_reserve_duplex(struct snd_efw *efw, unsigned int rate)
- 	if (rate != curr_rate) {
- 		stop_stream(efw, &efw->tx_stream);
- 		stop_stream(efw, &efw->rx_stream);
-+
-+		cmp_connection_release(&efw->out_conn);
-+		cmp_connection_release(&efw->in_conn);
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index a8bc798731ff..a7502810a3ad 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -283,10 +283,12 @@ int snd_oxfw_stream_reserve_duplex(struct snd_oxfw *oxfw,
+ 	if (formation.rate != rate || formation.pcm != pcm_channels) {
+ 		amdtp_stream_stop(&oxfw->rx_stream);
+ 		cmp_connection_break(&oxfw->in_conn);
++		cmp_connection_release(&oxfw->in_conn);
+ 
+ 		if (oxfw->has_output) {
+ 			amdtp_stream_stop(&oxfw->tx_stream);
+ 			cmp_connection_break(&oxfw->out_conn);
++			cmp_connection_release(&oxfw->out_conn);
+ 		}
  	}
  
- 	if (efw->substreams_counter == 0 || rate != curr_rate) {
 -- 
 2.20.1
