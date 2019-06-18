@@ -1,19 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: skl: extract common function
-Date: Tue, 18 Jun 2019 09:46:24 +0200
-Message-ID: <f3ccd6a2-a9b1-15a6-6b0f-b044a2def5d7@linux.intel.com>
-References: <20190618070503.36310-1-tzungbi@google.com>
+From: bgoswami@codeaurora.org
+Subject: [PATCH] ASoC: soc-core: export function to find
+	components
+Date: Tue, 18 Jun 2019 00:47:38 -0700
+Message-ID: <1560844059-5897-1-git-send-email-bgoswami@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DDBFF80CC4
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 09:46:27 +0200 (CEST)
-In-Reply-To: <20190618070503.36310-1-tzungbi@google.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F8AAF89682
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 09:47:45 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,171 +21,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Tzung-Bi Shih <tzungbi@google.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/18/19 9:05 AM, Tzung-Bi Shih wrote:
-> Extract common logic to a function to avoid duplicate code.
-> 
-> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-> ---
-> Refactor HDMI init to as most Intel machine drivers did, e.g.
-> kbl_da7219_max98357a.c.
+From: Banajit Goswami <bgoswami@codeaurora.org>
 
-HDMI support is a mess for sure, but I am not sure this is the right way 
-to refactor the code. See e.g. bxt_da7219_max98357a, a single init 
-callback was used. you can use dai->id to manage the right offset,
+Drivers may need to use the ASoC core function to
+find out whether a particular component is already
+registered with ASoC core or not.
+Export the function so that drivers can use it outside
+of the file.
 
-pcm->device = SKL_DPCM_AUDIO_HDMI1_PB + dai->id; or
-pcm->device = dai->id;
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+---
+ include/sound/soc.h  |  2 ++
+ sound/soc/soc-core.c | 13 ++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-instead of hard-coding the values in a parameter.
-
-> 
->   .../soc/intel/boards/skl_nau88l25_max98357a.c | 39 +++++-------------
->   sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 40 +++++--------------
->   2 files changed, 18 insertions(+), 61 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> index 3ce8efbeed12..485614c4fa47 100644
-> --- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> +++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> @@ -179,7 +179,7 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
->   	return ret;
->   }
->   
-> -static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
-> +static int skylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
->   {
->   	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
->   	struct snd_soc_dai *dai = rtd->codec_dai;
-> @@ -189,7 +189,7 @@ static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
->   	if (!pcm)
->   		return -ENOMEM;
->   
-> -	pcm->device = SKL_DPCM_AUDIO_HDMI1_PB;
-> +	pcm->device = device;
->   	pcm->codec_dai = dai;
->   
->   	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-> @@ -197,40 +197,19 @@ static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
->   	return 0;
->   }
->   
-> -static int skylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
-> +static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
->   {
-> -	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-> -	struct snd_soc_dai *dai = rtd->codec_dai;
-> -	struct skl_hdmi_pcm *pcm;
-> -
-> -	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-> -	if (!pcm)
-> -		return -ENOMEM;
-> -
-> -	pcm->device = SKL_DPCM_AUDIO_HDMI2_PB;
-> -	pcm->codec_dai = dai;
-> -
-> -	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-> +	return skylake_hdmi_init(rtd, SKL_DPCM_AUDIO_HDMI1_PB);
-> +}
->   
-> -	return 0;
-> +static int skylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	return skylake_hdmi_init(rtd, SKL_DPCM_AUDIO_HDMI2_PB);
->   }
->   
->   static int skylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
->   {
-> -	struct skl_nau8825_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-> -	struct snd_soc_dai *dai = rtd->codec_dai;
-> -	struct skl_hdmi_pcm *pcm;
-> -
-> -	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-> -	if (!pcm)
-> -		return -ENOMEM;
-> -
-> -	pcm->device = SKL_DPCM_AUDIO_HDMI3_PB;
-> -	pcm->codec_dai = dai;
-> -
-> -	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-> -
-> -	return 0;
-> +	return skylake_hdmi_init(rtd, SKL_DPCM_AUDIO_HDMI3_PB);
->   }
->   
->   static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
-> diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-> index 1a7ac8bdf543..772cbd6940db 100644
-> --- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-> +++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-> @@ -198,7 +198,7 @@ static int skylake_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
->   	return ret;
->   }
->   
-> -static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
-> +static int skylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
->   {
->   	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(rtd->card);
->   	struct snd_soc_dai *dai = rtd->codec_dai;
-> @@ -208,7 +208,7 @@ static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
->   	if (!pcm)
->   		return -ENOMEM;
->   
-> -	pcm->device = SKL_DPCM_AUDIO_HDMI1_PB;
-> +	pcm->device = device;
->   	pcm->codec_dai = dai;
->   
->   	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-> @@ -216,41 +216,19 @@ static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
->   	return 0;
->   }
->   
-> -static int skylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
-> +static int skylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
->   {
-> -	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-> -	struct snd_soc_dai *dai = rtd->codec_dai;
-> -	struct skl_hdmi_pcm *pcm;
-> -
-> -	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-> -	if (!pcm)
-> -		return -ENOMEM;
-> -
-> -	pcm->device = SKL_DPCM_AUDIO_HDMI2_PB;
-> -	pcm->codec_dai = dai;
-> -
-> -	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-> -
-> -	return 0;
-> +	return skylake_hdmi_init(rtd, SKL_DPCM_AUDIO_HDMI1_PB);
->   }
->   
-> +static int skylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	return skylake_hdmi_init(rtd, SKL_DPCM_AUDIO_HDMI2_PB);
-> +}
->   
->   static int skylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
->   {
-> -	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-> -	struct snd_soc_dai *dai = rtd->codec_dai;
-> -	struct skl_hdmi_pcm *pcm;
-> -
-> -	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-> -	if (!pcm)
-> -		return -ENOMEM;
-> -
-> -	pcm->device = SKL_DPCM_AUDIO_HDMI3_PB;
-> -	pcm->codec_dai = dai;
-> -
-> -	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-> -
-> -	return 0;
-> +	return skylake_hdmi_init(rtd, SKL_DPCM_AUDIO_HDMI3_PB);
->   }
->   
->   static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
-> 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 482b4ea..def975f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1405,6 +1405,8 @@ int snd_soc_component_update_bits_async(struct snd_soc_component *component,
+ void snd_soc_component_async_complete(struct snd_soc_component *component);
+ int snd_soc_component_test_bits(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int mask, unsigned int value);
++struct snd_soc_component *soc_find_component(
++	const struct device_node *of_node, const char *name);
+ 
+ /* component wide operations */
+ int snd_soc_component_set_sysclk(struct snd_soc_component *component,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 41c0cfa..50a9977 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -741,7 +741,17 @@ int snd_soc_resume(struct device *dev)
+ static const struct snd_soc_dai_ops null_dai_ops = {
+ };
+ 
+-static struct snd_soc_component *soc_find_component(
++/**
++ * soc_find_component: find a component from component_list in ASoC core
++ *
++ * @of_node: of_node of the component to query.
++ * @name: name of the component to query.
++ *
++ * function to find out if a component is already registered with ASoC core.
++ *
++ * Returns component handle for success, else NULL error.
++ */
++struct snd_soc_component *soc_find_component(
+ 	const struct device_node *of_node, const char *name)
+ {
+ 	struct snd_soc_component *component;
+@@ -764,6 +774,7 @@ static struct snd_soc_component *soc_find_component(
+ 
+ 	return NULL;
+ }
++EXPORT_SYMBOL(soc_find_component);
+ 
+ static int snd_soc_is_matching_component(
+ 	const struct snd_soc_dai_link_component *dlc,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
