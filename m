@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/8] ALSA: fireface: unify stop and release
-	method for duplex streams
-Date: Tue, 18 Jun 2019 22:26:16 +0900
-Message-ID: <20190618132622.32659-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/8] ALSA: firewire-motu: unify stop and
+	release method for duplex streams
+Date: Tue, 18 Jun 2019 22:26:17 +0900
+Message-ID: <20190618132622.32659-4-o-takashi@sakamocchi.jp>
 References: <20190618132622.32659-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04BADF896F4
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 15:26:31 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 690C4F8075C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 15:26:33 +0200 (CEST)
 In-Reply-To: <20190618132622.32659-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,67 +34,80 @@ merges the two functions.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-pcm.c    |  1 -
- sound/firewire/fireface/ff-stream.c | 14 +++++---------
- sound/firewire/fireface/ff.h        |  1 -
- 3 files changed, 5 insertions(+), 11 deletions(-)
+ sound/firewire/motu/motu-midi.c   |  1 -
+ sound/firewire/motu/motu-pcm.c    |  1 -
+ sound/firewire/motu/motu-stream.c | 14 +++++---------
+ sound/firewire/motu/motu.h        |  1 -
+ 4 files changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
-index 938985c2d4a8..75228e769687 100644
---- a/sound/firewire/fireface/ff-pcm.c
-+++ b/sound/firewire/fireface/ff-pcm.c
-@@ -233,7 +233,6 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
- 		--ff->substreams_counter;
+diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
+index a463730c72bc..4520c0060b83 100644
+--- a/sound/firewire/motu/motu-midi.c
++++ b/sound/firewire/motu/motu-midi.c
+@@ -40,7 +40,6 @@ static int midi_close(struct snd_rawmidi_substream *substream)
  
- 	snd_ff_stream_stop_duplex(ff);
--	snd_ff_stream_release_duplex(ff);
+ 	--motu->substreams_counter;
+ 	snd_motu_stream_stop_duplex(motu);
+-	snd_motu_stream_release_duplex(motu);
  
- 	mutex_unlock(&ff->mutex);
+ 	mutex_unlock(&motu->mutex);
  
-diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
-index 884705ecf940..049920a6d43e 100644
---- a/sound/firewire/fireface/ff-stream.c
-+++ b/sound/firewire/fireface/ff-stream.c
-@@ -149,14 +149,6 @@ int snd_ff_stream_reserve_duplex(struct snd_ff *ff, unsigned int rate)
+diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
+index b9852c911b98..60c691d18952 100644
+--- a/sound/firewire/motu/motu-pcm.c
++++ b/sound/firewire/motu/motu-pcm.c
+@@ -224,7 +224,6 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
+ 		--motu->substreams_counter;
+ 
+ 	snd_motu_stream_stop_duplex(motu);
+-	snd_motu_stream_release_duplex(motu);
+ 
+ 	mutex_unlock(&motu->mutex);
+ 
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index 82891583b736..8aab5db71c0f 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -200,14 +200,6 @@ int snd_motu_stream_reserve_duplex(struct snd_motu *motu, unsigned int rate)
  	return 0;
  }
  
--void snd_ff_stream_release_duplex(struct snd_ff *ff)
+-void snd_motu_stream_release_duplex(struct snd_motu *motu)
 -{
--	if (ff->substreams_counter == 0) {
--		fw_iso_resources_free(&ff->tx_resources);
--		fw_iso_resources_free(&ff->rx_resources);
+-	if (motu->substreams_counter == 0) {
+-		fw_iso_resources_free(&motu->tx_resources);
+-		fw_iso_resources_free(&motu->rx_resources);
 -	}
 -}
 -
- int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
+ static int ensure_packet_formats(struct snd_motu *motu)
  {
- 	int err;
-@@ -217,8 +209,12 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
+ 	__be32 reg;
+@@ -301,8 +293,12 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
  
- void snd_ff_stream_stop_duplex(struct snd_ff *ff)
+ void snd_motu_stream_stop_duplex(struct snd_motu *motu)
  {
--	if (ff->substreams_counter == 0)
-+	if (ff->substreams_counter == 0) {
- 		finish_session(ff);
+-	if (motu->substreams_counter == 0)
++	if (motu->substreams_counter == 0) {
+ 		finish_session(motu);
 +
-+		fw_iso_resources_free(&ff->tx_resources);
-+		fw_iso_resources_free(&ff->rx_resources);
++		fw_iso_resources_free(&motu->tx_resources);
++		fw_iso_resources_free(&motu->rx_resources);
 +	}
  }
  
- void snd_ff_stream_update_duplex(struct snd_ff *ff)
-diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index fe5739ee1c88..9b52c368f6de 100644
---- a/sound/firewire/fireface/ff.h
-+++ b/sound/firewire/fireface/ff.h
-@@ -139,7 +139,6 @@ int snd_ff_stream_get_multiplier_mode(enum cip_sfc sfc,
- int snd_ff_stream_init_duplex(struct snd_ff *ff);
- void snd_ff_stream_destroy_duplex(struct snd_ff *ff);
- int snd_ff_stream_reserve_duplex(struct snd_ff *ff, unsigned int rate);
--void snd_ff_stream_release_duplex(struct snd_ff *ff);
- int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate);
- void snd_ff_stream_stop_duplex(struct snd_ff *ff);
- void snd_ff_stream_update_duplex(struct snd_ff *ff);
+ static int init_stream(struct snd_motu *motu, enum amdtp_stream_direction dir)
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+index 32cd42873fd0..a4ac320f2c9e 100644
+--- a/sound/firewire/motu/motu.h
++++ b/sound/firewire/motu/motu.h
+@@ -154,7 +154,6 @@ int snd_motu_stream_init_duplex(struct snd_motu *motu);
+ void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
+ int snd_motu_stream_cache_packet_formats(struct snd_motu *motu);
+ int snd_motu_stream_reserve_duplex(struct snd_motu *motu, unsigned int rate);
+-void snd_motu_stream_release_duplex(struct snd_motu *motu);
+ int snd_motu_stream_start_duplex(struct snd_motu *motu);
+ void snd_motu_stream_stop_duplex(struct snd_motu *motu);
+ int snd_motu_stream_lock_try(struct snd_motu *motu);
 -- 
 2.20.1
