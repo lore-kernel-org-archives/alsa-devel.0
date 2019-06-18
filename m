@@ -1,81 +1,171 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup mod ID calculation in rsnd_ctu_probe_" to the asoc tree
-Date: Tue, 18 Jun 2019 19:33:10 +0100 (BST)
-Message-ID: <20190618183310.19CE7440046@finisterre.sirena.org.uk>
-References: <20190618051953.13419-1-jiada_wang@mentor.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190618051953.13419-1-jiada_wang@mentor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Jiada Wang <jiada_wang@mentor.com>jiada_wang@mentor.com, kuninori.morimoto.gx@renesas.comKuninori Morimoto <kuninori.morimoto.gx@renesas.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, sudipi@jp.adit-jv.comSuresh Udipi <sudipi@jp.adit-jv.com>, tiwai@suse.com
+From: "scott andrew franco" <samiam@moorecad.com>
+Subject: Re: Serious bug calling ALSA lib functions from .so
+ vs. .o file
+Date: Tue, 18 Jun 2019 11:33:58 -0700
+Message-ID: <20190618113358.6c61c97e98fe7bb02193b2d6dca4a85a.ed0e6629be.mailapi@email03.godaddy.com>
+References: <3fa68de3-c77e-7c26-b848-416cc1108c9c@perex.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from p3plwbeout03-04.prod.phx3.secureserver.net
+ (p3plsmtp03-04-2.prod.phx3.secureserver.net [72.167.218.216])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2A65F896F4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 20:34:31 +0200 (CEST)
+In-Reply-To: <3fa68de3-c77e-7c26-b848-416cc1108c9c@perex.cz>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rsnd: fixup mod ID calculation in rsnd_ctu_probe_
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ac28ec07ae1c5c1e18ed6855eb105a328418da88 Mon Sep 17 00:00:00 2001
-From: Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>
-Date: Tue, 18 Jun 2019 14:19:53 +0900
-Subject: [PATCH] ASoC: rsnd: fixup mod ID calculation in rsnd_ctu_probe_
-
-commit c16015f36cc1 ("ASoC: rsnd: add .get_id/.get_id_sub")
-introduces rsnd_ctu_id which calcualates and gives
-the main Device id of the CTU by dividing the id by 4.
-rsnd_mod_id uses this interface to get the CTU main
-Device id. But this commit forgets to revert the main
-Device id calcution previously done in rsnd_ctu_probe_
-which also divides the id by 4. This path corrects the
-same to get the correct main Device id.
-
-The issue is observered when rsnd_ctu_probe_ is done for CTU1
-
-Fixes: c16015f36cc1 ("ASoC: rsnd: add .get_id/.get_id_sub")
-
-Signed-off-by: Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>
-Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/ctu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index 8cb06dab234e..7647b3d4c0ba 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -108,7 +108,7 @@ static int rsnd_ctu_probe_(struct rsnd_mod *mod,
- 			   struct rsnd_dai_stream *io,
- 			   struct rsnd_priv *priv)
- {
--	return rsnd_cmd_attach(io, rsnd_mod_id(mod) / 4);
-+	return rsnd_cmd_attach(io, rsnd_mod_id(mod));
- }
+Hi, and thanks for the reply.
  
- static void rsnd_ctu_value_init(struct rsnd_dai_stream *io,
--- 
-2.20.1
+>I think that you must link .so to -lasound, too.
+ 
+This was done and shows in the command line example below, IE,
+ 
+ samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
+> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
+> samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
+> alsaplaywave: rate: 1
+> alsaplaywave: rate: 0
+> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
+> samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
+> alsaplaywave: rate: 1
+> alsaplaywave: rate: 1
+ 
+Note that in both the "succeeds" case and the "fails" case carry the -lasound option. It would not compile
+if not.
+ 
+Scott Franco
+ 
+--------- Original Message --------- Subject: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
+From: "Jaroslav Kysela" <perex@perex.cz>
+Date: 6/18/19 11:18 am
+To: "scott andrew franco" <samiam@moorecad.com>
+Cc: alsa-devel@alsa-project.org
+
+Dne 18. 06. 19 v 17:16 scott andrew franco napsal(a):
+ > Hello,
+ > 
+ > The issue:
+ > 
+ > calling across .so (dynamic linking) produces different behavior in ALSA library calls than normal,
+ > and causes ALSA to malfunction.
+ > 
+ > I have minimized my issue to as small a code section as possible. Note the code is from commonly available
+ > internet examples, including Free Electrons "Audio in embedded linux systems".
+ 
+ It seems like a linker issue. I think that you must link .so to -lasound, too.
+ (add -lasound to the command producing your .so library to satisfy the
+ versioned symbols)
+ 
+ Jaroslav
+ 
+ > 
+ > The run is:
+ > 
+ > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
+ > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
+ > samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
+ > alsaplaywave: rate: 1
+ > alsaplaywave: rate: 0
+ > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
+ > samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
+ > alsaplaywave: rate: 1
+ > alsaplaywave: rate: 1
+ > 
+ > Note the only difference between the two runs of "playwave" is if the second module, test2, is linked as a .so or
+ > linked as a .o.
+ > 
+ > The code is:
+ > =======================================================================================
+ > playwav.c
+ > #include <alsa/asoundlib.h>
+ > #include <stdio.h>
+ > void alsaplaywave1(void)
+ > {
+ > snd_pcm_t *pcm_handle;
+ > snd_pcm_hw_params_t *params;
+ > unsigned int val;
+ > unsigned int rate;
+ > int r;
+ > /* open pcm device */
+ > r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
+ > if (r < 0) printf("Cannot open PCM output device");
+ > snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
+ > snd_pcm_hw_params_any(pcm_handle, params);
+ > r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
+ > if (r < 0) printf("Cannot set interleaved mode");
+ > r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
+ > if (r < 0) printf("Cannot set format");
+ > r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
+ > if (r < 0) printf("Cannot set channels number");
+ > val = 44100;
+ > r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
+ > if (r < 0) printf("Cannot set rate");
+ > snd_pcm_hw_params_get_rate(params, &rate, 0);
+ > printf("alsaplaywave: rate: %d\n", rate);
+ > snd_pcm_close(pcm_handle);
+ > }
+ > extern void alsaplaywave2(void);
+ > int main(int argc, char **argv)
+ > {
+ > alsaplaywave1();
+ > alsaplaywave2();
+ > return 0;
+ > }
+ > 
+ > ==================================================================================
+ > test2.c
+ > #include <alsa/asoundlib.h>
+ > #include <stdio.h>
+ > void alsaplaywave2(void)
+ > {
+ > snd_pcm_t *pcm_handle;
+ > snd_pcm_hw_params_t *params;
+ > unsigned int val;
+ > unsigned int rate;
+ > int r;
+ > /* open pcm device */
+ > r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
+ > if (r < 0) printf("Cannot open PCM output device");
+ > snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
+ > snd_pcm_hw_params_any(pcm_handle, params);
+ > r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
+ > if (r < 0) printf("Cannot set interleaved mode");
+ > r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
+ > if (r < 0) printf("Cannot set format");
+ > r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
+ > if (r < 0) printf("Cannot set channels number");
+ > val = 44100;
+ > r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
+ > if (r < 0) printf("Cannot set rate");
+ > snd_pcm_hw_params_get_rate(params, &rate, 0);
+ > printf("alsaplaywave: rate: %d\n", rate);
+ > snd_pcm_close(pcm_handle);
+ > }
+ > _______________________________________________
+ > Alsa-devel mailing list
+ > Alsa-devel@alsa-project.org
+ > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ > 
+ 
+ 
+ -- 
+ Jaroslav Kysela <perex@perex.cz>
+ Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+ _______________________________________________
+ Alsa-devel mailing list
+ Alsa-devel@alsa-project.org
+ https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
