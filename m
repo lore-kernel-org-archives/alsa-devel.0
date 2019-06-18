@@ -1,140 +1,69 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Serious bug calling ALSA lib functions from .so
- vs. .o file
-Date: Tue, 18 Jun 2019 20:18:49 +0200
-Message-ID: <3fa68de3-c77e-7c26-b848-416cc1108c9c@perex.cz>
-References: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9A36F8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 20:18:52 +0200 (CEST)
-In-Reply-To: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: scott andrew franco <samiam@moorecad.com>
-Cc: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: qcom: common: Mark links as nonatomic" to the asoc tree
+Date: Tue, 18 Jun 2019 19:33:11 +0100 (BST)
+Message-ID: <20190618183311.391D0440046@finisterre.sirena.org.uk>
+References: <20190618052909.32586-1-bjorn.andersson@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190618052909.32586-1-bjorn.andersson@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 18. 06. 19 v 17:16 scott andrew franco napsal(a):
-> Hello,
->  
-> The issue:
->  
-> calling across .so (dynamic linking) produces different behavior in ALSA library calls than normal,
-> and causes ALSA to malfunction.
->  
-> I have minimized my issue to as small a code section as possible. Note the code is from commonly available
-> internet examples, including Free Electrons "Audio in embedded linux systems".
+The patch
 
-It seems like a linker issue. I think that you must link .so to -lasound, too.
-(add -lasound to the command producing your .so library to satisfy the
-versioned symbols)
+   ASoC: qcom: common: Mark links as nonatomic
 
-						Jaroslav
+has been applied to the asoc tree at
 
->  
-> The run is:
->  
-> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
-> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
-> samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
-> alsaplaywave: rate: 1
-> alsaplaywave: rate: 0
-> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
-> samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
-> alsaplaywave: rate: 1
-> alsaplaywave: rate: 1
->   
->  Note the only difference between the two runs of "playwave" is if the second module, test2, is linked as a .so or
->  linked as a .o.
->   
->  The code is:
->  =======================================================================================
->  playwav.c
->  #include <alsa/asoundlib.h>
-> #include <stdio.h>
->  void alsaplaywave1(void)
->  {
->  snd_pcm_t *pcm_handle;
->  snd_pcm_hw_params_t *params;
->  unsigned int val;
->  unsigned int rate;
->  int r;
->  /* open pcm device */
->  r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
->  if (r < 0) printf("Cannot open PCM output device");
->  snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
->  snd_pcm_hw_params_any(pcm_handle, params);
->  r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
->  if (r < 0) printf("Cannot set interleaved mode");
->  r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
->  if (r < 0) printf("Cannot set format");
->  r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
->  if (r < 0) printf("Cannot set channels number");
->  val = 44100;
->  r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
->  if (r < 0) printf("Cannot set rate");
->  snd_pcm_hw_params_get_rate(params, &rate, 0);
->  printf("alsaplaywave: rate: %d\n", rate);
->  snd_pcm_close(pcm_handle);
->  }
->  extern void alsaplaywave2(void);
->  int main(int argc, char **argv)
->  {
->  alsaplaywave1();
->  alsaplaywave2();
->  return 0;
-> }
->   
->  ==================================================================================
->  test2.c
->  #include <alsa/asoundlib.h>
-> #include <stdio.h>
->  void alsaplaywave2(void)
->  {
->  snd_pcm_t *pcm_handle;
->  snd_pcm_hw_params_t *params;
->  unsigned int val;
->  unsigned int rate;
->  int r;
->  /* open pcm device */
->  r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
->  if (r < 0) printf("Cannot open PCM output device");
->  snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
->  snd_pcm_hw_params_any(pcm_handle, params);
->  r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
->  if (r < 0) printf("Cannot set interleaved mode");
->  r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
->  if (r < 0) printf("Cannot set format");
->  r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
->  if (r < 0) printf("Cannot set channels number");
->  val = 44100;
->  r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
->  if (r < 0) printf("Cannot set rate");
->  snd_pcm_hw_params_get_rate(params, &rate, 0);
->  printf("alsaplaywave: rate: %d\n", rate);
->  snd_pcm_close(pcm_handle);
->  }
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c054b41690a44e6534eb2a1beda1b655f3994c5b Mon Sep 17 00:00:00 2001
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Date: Mon, 17 Jun 2019 22:29:09 -0700
+Subject: [PATCH] ASoC: qcom: common: Mark links as nonatomic
+
+The interface used to communicate with the DSP can sleep, so mark the
+links as nonatomic. This prevents various sleep while atomic errors when
+bringing up the audio interface.
+
+Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/common.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 5661025e8cec..a612d860ad26 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -97,6 +97,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			goto err;
+ 		}
+ 
++		link->nonatomic = 1;
+ 		link->dpcm_playback = 1;
+ 		link->dpcm_capture = 1;
+ 		link->stream_name = link->name;
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.20.1
