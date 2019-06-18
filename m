@@ -1,23 +1,18 @@
-From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [RFC PATCH] ASoC: Intel: use common helpers to
- detect CPUs
-Date: Tue, 18 Jun 2019 13:02:06 +0200
-Message-ID: <20190618130206.2c2ad38c@xxx>
-References: <20190528200255.15923-1-pierre-louis.bossart@linux.intel.com>
- <20190617144727.GR5316@sirena.org.uk>
- <29ad7270-9aa4-a002-0f0e-21b7a61fe8a4@linux.intel.com>
- <20190617161827.GH9224@smile.fi.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: meson: axg-card: fix null pointer
+ dereference in clean up
+Date: Tue, 18 Jun 2019 14:07:11 +0300
+Message-ID: <20190618110710.GA14934@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E2D7F80CC4
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 12:58:12 +0200 (CEST)
-In-Reply-To: <20190617161827.GH9224@smile.fi.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 335A0F89682
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 13:07:24 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,56 +22,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: jbrunet@baylibre.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Jun 2019 19:18:27 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Hello Jerome Brunet,
 
-> On Mon, Jun 17, 2019 at 05:31:53PM +0200, Pierre-Louis Bossart wrote:
-> > On 6/17/19 4:47 PM, Mark Brown wrote:  
-> > > On Tue, May 28, 2019 at 03:02:55PM -0500, Pierre-Louis Bossart
-> > > wrote: 
-> > > > 2. is there a better way to do this for all Intel chips or do
-> > > > we keep this in sound/? Andy?  
-> 
-> It's better to discuss with x86 maintainers.
-> 
-> > > ARM has platform detection stuff in the architecture code,
-> > > something similar seems sensible for x86?  
-> > 
-> > Well yes, we already have x86_match_cpu() but that won't work with
-> > COMPILE_TEST (asm/ headers don't exist) and this leads to
-> > duplication of code. All we really need here is a yeah/nay answer
-> > from a help that hides those details away.  
-> 
-> I don't see much advantage here. Without specific driver data it will
-> be degraded to something like:
-> 
-> 	if (bootcpu.model == INTEL_CPU_...)
-> 		...
-> 
-> with slight exception to heterogeneous SoCs.
-> 
-> In order to be compile tested we might introduce a header under
-> include/platform_data/x86 with these inliners like:
-> 
-> static inline bool is_x86_model_XX(void)
-> {
-> 	return bootcpu.model == XX; // it might be done in more
-> generic way? }
-> 
+The patch 960f428ca0a0: "ASoC: meson: axg-card: fix null pointer
+dereference in clean up" from Jun 10, 2019, leads to the following
+static checker warning:
 
-You might also want to look at other drivers that do some kind of
-platform detection.
+	sound/soc/meson/axg-card.c:121 axg_card_clean_references()
+	warn: address of 'link->codecs[j]' is non-NULL
 
-There is:
-tools/power/x86/turbostat/turbostat.c
-which has few is_xxx() functions, and:
-drivers/gpu/drm/i915/i915_drv.h
-which has quite a lot of IS_XXX macros, although they are used to
-detect PCI VGA devices, but maybe some code could be shared, with
-separate device specific ids.
+sound/soc/meson/axg-card.c
+   109  static void axg_card_clean_references(struct axg_card *priv)
+   110  {
+   111          struct snd_soc_card *card = &priv->card;
+   112          struct snd_soc_dai_link *link;
+   113          struct snd_soc_dai_link_component *codec;
+   114          int i, j;
+   115  
+   116          if (card->dai_link) {
+   117                  for_each_card_prelinks(card, i, link) {
+   118                          if (link->cpus)
+   119                                  of_node_put(link->cpus->of_node);
+   120                          for_each_link_codecs(link, j, codec)
+   121                                  if (codec)
+                                            ^^^^^
+"codec" is the list iterator so it can't possibly be NULL.
 
-Amadeusz
+   122                                          of_node_put(codec->of_node);
+   123                  }
+   124          }
+   125  
+   126          if (card->aux_dev) {
+   127                  for (i = 0; i < card->num_aux_devs; i++)
+   128                          of_node_put(card->aux_dev[i].codec_of_node);
+   129          }
+   130  
+   131          kfree(card->dai_link);
+   132          kfree(priv->link_data);
+   133  }
+
+regards,
+dan carpenter
