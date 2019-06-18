@@ -1,59 +1,78 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 09/11] ASoC: Intel: hdac_hdmi: Set ops
- to NULL on remove
-Date: Tue, 18 Jun 2019 08:58:22 -0700
-Message-ID: <bd8855a7ab7a9958113631b76706120fd4427631.camel@linux.intel.com>
-References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
-         <20190617113644.25621-10-amadeuszx.slawinski@linux.intel.com>
-         <75be86354032f4886cbaf7d430de2aa89eaab573.camel@linux.intel.com>
-         <20190618130015.0fc388b4@xxx>
+From: "scott andrew franco" <samiam@moorecad.com>
+Subject: Issues with tip alsa-lib (stable, 1.1.9)
+Date: Tue, 18 Jun 2019 09:14:24 -0700
+Message-ID: <20190618091424.6c61c97e98fe7bb02193b2d6dca4a85a.2b4174f59f.mailapi@email03.godaddy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190618130015.0fc388b4@xxx>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from p3plwbeout03-05.prod.phx3.secureserver.net
+ (p3plsmtp03-05-2.prod.phx3.secureserver.net [72.167.218.217])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 320E8F80CC4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 18:14:56 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2019-06-18 at 13:00 +0200, Amadeusz Sławiński wrote:
-> On Mon, 17 Jun 2019 13:51:42 -0700
-> Ranjani Sridharan <ranjani.sridharan@linux.intel.com> wrote:
-> 
-> > On Mon, 2019-06-17 at 13:36 +0200, Amadeusz Sławiński wrote:
-> > > When we unload Skylake driver we may end up calling
-> > > hdac_component_master_unbind(), it uses acomp->audio_ops, which
-> > > we
-> > > set
-> > > in hdmi_codec_probe(), so we need to set it to NULL in
-> > > hdmi_codec_remove(),
-> > > otherwise we will dereference no longer existing pointer.  
-> > 
-> > Hi Amadeusz,
-> > 
-> > It looks like the audio_ops should be deleted
-> > snd_hdac_acomp_exit().
-> > Also, this doesnt seem to be the case with when the SOF driver is
-> > removed.
-> > Could you please give a bit more context on what error you see when
-> > this happens?
-> 
-> Hi,
-> 
-> I get Oops. This is what happens with all other patches in this
-> series and only this one reverted:
-> 
-> root@APL:~# rmmod snd_soc_sst_bxt_rt298
-> root@APL:~# rmmod snd_soc_hdac_hdmi
-> root@APL:~# rmmod snd_soc_skl
-
-Thanks, Amadeusz. I think the order in which the drivers are removed is
-what's causing the oops in your case. With SOF, the order we remove is
-
-1. rmmod sof_pci_dev
-2. rmmod snd_soc_sst_bxt_rt298
-3. rmmod snd_soc_hdac_hdmi
-
-Thanks,
-Ranjani
+A roundup of my current issues with the alsa-lib repository:
+ 
+1. No apparent .so (dynamic link) file output.
+ 
+The configure and make instructions were followed, and no apparent .so
+resulted:
+ 
+samiam@samiam-home-pc:~/projects/alsa/alsa-lib-1.1.9$ find . -name *.so
+samiam@samiam-home-pc:~/projects/alsa/alsa-lib-1.1.9$ find . -name *.a
+./src/timer/.libs/libtimer.a
+./src/rawmidi/.libs/librawmidi.a
+./src/ucm/.libs/libucm.a
+./src/topology/.libs/libtopology.a
+./src/.libs/libasound.a
+./src/hwdep/.libs/libhwdep.a
+./src/seq/.libs/libseq.a
+./src/mixer/.libs/libmixer.a
+./src/control/.libs/libcontrol.a
+./src/pcm/.libs/libpcm.a
+samiam@samiam-home-pc:~/projects/alsa/alsa-lib-1.1.9$
+ This has made it difficult to debug issues with the library.
+ Using the configure flags does not seem to have an effect on this, IE:
+ ./configure --enable-shared=yes --enable-static=no
+ Linux distributions have libasound.so files in them, so clearly it was
+ possible at some time in the past.
+  
+ 2. Build instructions are conflicting.
+ ./configure
+ make
+ Does work on this version. This is the standard GNU build method, and I 
+ have seen these build instructions around the internet for building alsa.
+ The INSTALL file recommends:
+ ./gitcompile
+ Which also (appears) to work, but no reason appears for why this special
+ file is needed or what it does that is different. I can't get a .so (dynamic library
+ from the build, so I can't check the function of the resulting build.
+ Is there a reason the instructions from ./gitcompile cannot be merged back
+ into the make?
+  
+ 3. make install brings the system down.
+ Executing:
+ make install
+ Brought my ubuntu 18.04 sound system down. I had to reinstall Ubuntu to get
+ it to work again.
+  
+ In summary, ALSA is not a development project anymore. It is the "official sound
+ system of Linux" and is part of the kernel. There is a lot of activity on the ALSA
+ list. Cannot some effort be put into professionalizing the repository?
+  
+ Thank you for your attention,
+ Scott A. Franco
+ San Jose, CA
