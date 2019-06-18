@@ -1,19 +1,20 @@
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [PATCH v2 3/3] ASoC: SOF: Intel: implement runtime
-	idle for CNL/APL
-Date: Tue, 18 Jun 2019 13:18:04 +0300
-Message-ID: <20190618101804.21670-4-kai.vehmanen@linux.intel.com>
-References: <20190618101804.21670-1-kai.vehmanen@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-core: export function to find
+ components
+Date: Tue, 18 Jun 2019 11:46:16 +0100
+Message-ID: <20190618104616.GK5316@sirena.org.uk>
+References: <1560844059-5897-1-git-send-email-bgoswami@codeaurora.org>
+ <s5hsgs7e0wr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4386972750024376590=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 955EEF89729
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 12:17:25 +0200 (CEST)
-In-Reply-To: <20190618101804.21670-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3CC0F80CC4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 12:46:17 +0200 (CEST)
+In-Reply-To: <s5hsgs7e0wr.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +24,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, libin.yang@intel.com, pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, srinivas.kandagatla@linaro.org, plai@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-Implement runtime idle for CNL/APL devices using similar runtime
-PM idle logic as the Intel AZX HDA driver. If any HDA codecs are
-powered when runtime suspend request comes, return -EBUSY. By doing
-this, strict ordering is enforced between HDA codec and the HDA
-controller.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/sof/intel/apl.c     |  1 +
- sound/soc/sof/intel/cnl.c     |  1 +
- sound/soc/sof/intel/hda-dsp.c | 13 +++++++++++++
- 3 files changed, 15 insertions(+)
+--===============4386972750024376590==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="HEgoE9Ku6Eog9oq6"
+Content-Disposition: inline
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 43d1c9f31ec4c..fd2e26d797961 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -93,6 +93,7 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.resume			= hda_dsp_resume,
- 	.runtime_suspend	= hda_dsp_runtime_suspend,
- 	.runtime_resume		= hda_dsp_runtime_resume,
-+	.runtime_idle		= hda_dsp_runtime_idle,
- 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
- };
- EXPORT_SYMBOL(sof_apl_ops);
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 3840f81767fab..f2b392998f20d 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -251,6 +251,7 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.resume			= hda_dsp_resume,
- 	.runtime_suspend	= hda_dsp_runtime_suspend,
- 	.runtime_resume		= hda_dsp_runtime_resume,
-+	.runtime_idle		= hda_dsp_runtime_idle,
- 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
- };
- EXPORT_SYMBOL(sof_cnl_ops);
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index f2c5a12db930a..91de4785b6a3e 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -418,6 +418,19 @@ int hda_dsp_runtime_resume(struct snd_sof_dev *sdev)
- 	return hda_resume(sdev);
- }
- 
-+int hda_dsp_runtime_idle(struct snd_sof_dev *sdev)
-+{
-+	struct hdac_bus *hbus = sof_to_bus(sdev);
-+
-+	if (hbus->codec_powered) {
-+		dev_dbg(sdev->dev, "some codecs still powered (%08X), not idle\n",
-+			(unsigned int)hbus->codec_powered);
-+		return -EBUSY;
-+	}
-+
-+	return 0;
-+}
-+
- int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev, int state)
- {
- 	/* stop hda controller and power dsp off */
--- 
-2.17.1
+
+--HEgoE9Ku6Eog9oq6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 18, 2019 at 10:46:28AM +0200, Takashi Iwai wrote:
+> bgoswami@codeaurora.org wrote:
+
+> > Drivers may need to use the ASoC core function to
+> > find out whether a particular component is already
+> > registered with ASoC core or not.
+> > Export the function so that drivers can use it outside
+> > of the file.
+
+Why might they need to do that?
+
+> Why not EXPORT_SYMBOL_GPL()?
+
+All the other ASoC exports are GPL, any new ones should be too.
+
+--HEgoE9Ku6Eog9oq6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0IwPcACgkQJNaLcl1U
+h9A2Hgf+MLN+CcPHI83z4dawcdkQR9dkXmxPPnBx/+6qohSXV8XhWaclTwZnF3S9
+OlcFavt5pJZrMSjiK8aP5ddu4/YCEUocw2+iz6QfpFTg+FGMKEmqBA/9iQJ4nzOK
+Rni3N11FRaWz8c8pMrGHqZJYfsSBN4x9ujfMGC4Gz+Rfidv39bv/bE5wgEriVtoI
+WfRQwEGqyGPE/caYbtjr6iAm/RecpQdj+TsAjgYrKCnISKFChwXapzOw6zBa+LiF
+Iv8LdXvEAXRJ0ESIDWwK1EDxfjhvB0NfEdfIa9CedUw6Jc5VYxE2iMJgBVWAmgyz
+ZbDyXdWW8qEzyvsU1wPlGPw6tugTrg==
+=bPzC
+-----END PGP SIGNATURE-----
+
+--HEgoE9Ku6Eog9oq6--
+
+--===============4386972750024376590==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4386972750024376590==--
