@@ -1,62 +1,48 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: sof-rt5682: add MCLK
- support for BYT platform
-Date: Tue, 18 Jun 2019 19:49:48 +0200
-Message-ID: <8ee10576-6c07-c532-4142-abded850010f@linux.intel.com>
-References: <20190618002336.5734-1-yung-chuan.liao@linux.intel.com>
+From: Fletcher Woodruff <fletcherw@chromium.org>
+Subject: Re: [PATCH v7 3/4] ASoC: rt5677: clear interrupts by polarity flip
+Date: Tue, 18 Jun 2019 12:00:59 -0600
+Message-ID: <CAN-6NYZzMqwDaw2oDyms4P9uKFPJvuQOtGbqMWLtFV3kDyQHJQ@mail.gmail.com>
+References: <20190614194854.208436-1-fletcherw@chromium.org>
+ <20190614194854.208436-4-fletcherw@chromium.org> <4e560e12-4c20-8d5d-b3f9-587a55da279d@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 602A0F8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 19:49:49 +0200 (CEST)
-In-Reply-To: <20190618002336.5734-1-yung-chuan.liao@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Bard liao <yung-chuan.liao@linux.intel.com>, broonie@kernel.org, tiwai@suse.de
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, bard.liao@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4e560e12-4c20-8d5d-b3f9-587a55da279d@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/18/19 2:23 AM, Bard liao wrote:
-> From: Xun Zhang <xun2.zhang@intel.com>
-> 
-> The sof-rt5682 machine driver currently uses BCLK on BYT/Minnowboard
-> platform. The MCLK signal is available since the Turbot revision, so
-> enable MCLK on BYT/Minnowboard Turbot platform.
+On Sun, Jun 16, 2019 at 10:56 AM Cezary Rojewski
+<cezary.rojewski@intel.com> wrote:
+> On 2019-06-14 21:48, Fletcher Woodruff wrote:
+> > +static irqreturn_t rt5677_irq(int unused, void *data)
+> > +{
+> > +     struct rt5677_priv *rt5677 = data;
+> > +     int ret = 0, i, reg_irq, virq;
+> > +     bool irq_fired = false;
+> > +
+> > +     mutex_lock(&rt5677->irq_lock);
+> > +     /* Read interrupt status */
+> > +     ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
+> > +     if (ret) {
+> > +             pr_err("rt5677: failed reading IRQ status: %d\n", ret);
+>
+> The entire rt5677 makes use of dev_XXX with the exception of.. this very
+> function. Consider reusing "component" field which is already part of
+> struct rt5677_priv and removing pr_XXX.
 
-The commit message is not wrong but for more context the MCLK is enabled 
-on all known BYT/CHT platforms except early MinnowBoards and Up where 
-the MCLK is not available on the low-speed/HAT connector.
+I was using dev_XXX, but I believe Curtis found that 'component' was
+sometimes uninitialized when this function was called, so I switched
+back to pr_XXX. I may be misremembering though, so I'll let Curtis
+comment as well.
 
-> 
-> Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
-> Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+> > +     if (ret) {
+> > +             dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+> >               return ret;
+>
+> You may want to simplify this, similarly to how's it done in your
+> rt5677_i2c_probe - leave message alone and return "ret" explicitly at
+> the end.
 
-
->   	if (sof_rt5682_quirk & SOF_RT5682_MCLK_EN) {
-> +		if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
-> +			ret = clk_prepare_enable(ctx->mclk);
-> +			if (ret < 0) {
-> +				dev_err(rtd->dev,
-> +					"could not configure MCLK state");
-> +				return ret;
-> +			}
-> +		}
-
-Note that we could technically fallback to using the BCLK only in the 
-error case but it's an unlikely scenario which we've never seen, so
-
-Patch 1 and 2
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Good suggestion. I'll update that for the next patch.
