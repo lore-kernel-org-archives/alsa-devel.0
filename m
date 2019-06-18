@@ -1,9 +1,9 @@
 From: "scott andrew franco" <samiam@moorecad.com>
 Subject: Re: Serious bug calling ALSA lib functions from .so
 	vs. .o file
-Date: Tue, 18 Jun 2019 08:16:14 -0700
-Message-ID: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
-References: <20190617232429.6c61c97e98fe7bb02193b2d6dca4a85a.19b5fd637d.mailapi@email03.godaddy.com>
+Date: Tue, 18 Jun 2019 08:54:02 -0700
+Message-ID: <20190618085402.6c61c97e98fe7bb02193b2d6dca4a85a.c62264622a.mailapi@email03.godaddy.com>
+References: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from p3plwbeout03-03.prod.phx3.secureserver.net
  (p3plsmtp03-03-2.prod.phx3.secureserver.net [72.167.218.215])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3A67F8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 17:16:47 +0200 (CEST)
-In-Reply-To: <20190617232429.6c61c97e98fe7bb02193b2d6dca4a85a.19b5fd637d.mailapi@email03.godaddy.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AC93F8075C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 17:54:35 +0200 (CEST)
+In-Reply-To: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,23 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+ uname -a
+Linux samiam-home-pc 4.15.0-51-generic #55-Ubuntu SMP Wed May 15 14:27:21 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+  
+ 
+samiam@samiam-home-pc:/usr/lib/x86_64-linux-gnu$ ls -l libasound*
+lrwxrwxrwx 1 root root 18 Dec 18 20:25 libasound.so -> libasound.so.2.0.0
+lrwxrwxrwx 1 root root 18 Dec 18 20:25 libasound.so.2 -> libasound.so.2.0.0
+-rw-r--r-- 1 root root 1075496 Dec 18 20:25 libasound.so.2.0.0
+samiam@samiam-home-pc:/usr/lib/x86_64-linux-gnu$
+  
+ 
+--------- Original Message --------- Subject: RE: Serious bug calling ALSA lib functions from .so vs. .o file
+From: "scott andrew franco" <samiam@moorecad.com>
+Date: 6/18/19 8:16 am
+To: alsa-devel@alsa-project.org
+
+ Hello,
  
 The issue:
  
