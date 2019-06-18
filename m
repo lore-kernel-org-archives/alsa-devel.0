@@ -1,17 +1,17 @@
-From: mac.chiang@intel.com
-Subject: [PATCH] ASoC: max98357a: avoid speaker pop when
-	playback startup
-Date: Wed, 19 Jun 2019 13:47:28 +0800
-Message-ID: <1560923248-1016-1-git-send-email-mac.chiang@intel.com>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 1/2] ASoC: Intel: sof-rt5682: add MCLK
+	support for BYT platform
+Date: Wed, 19 Jun 2019 02:15:38 +0800
+Message-ID: <20190618181539.9169-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D310AF808AF
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 07:47:30 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F91CF80C87
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 08:14:23 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,126 +21,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: mac.chiang@intel.com, broonie@kernel.org, lgirdwood@gmail.com, liam.r.girdwood@intel.com
+To: broonie@kernel.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
+From: Xun Zhang <xun2.zhang@intel.com>
 
-Loud speaker pop happens during playback even when in slience
-playback. Specify Max98357a amp delay times to make sure
-clocks are always earlier than sdmode on.
+The sof-rt5682 machine driver currently uses BCLK on BYT/Minnowboard
+platform. The MCLK signal is available since the Turbot revision, so
+enable MCLK on BYT/Minnowboard Turbot platform.
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
 ---
- .../devicetree/bindings/sound/max98357a.txt        |  4 ++
- sound/soc/codecs/max98357a.c                       | 50 ++++++++++++++++++----
- 2 files changed, 45 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 65 ++++++++++++++++++++++++++++-
+ 1 file changed, 64 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
-index 28645a2..4bce14c 100644
---- a/Documentation/devicetree/bindings/sound/max98357a.txt
-+++ b/Documentation/devicetree/bindings/sound/max98357a.txt
-@@ -9,6 +9,10 @@ Optional properties:
- - sdmode-gpios : GPIO specifier for the chip's SD_MODE pin.
-         If this option is not specified then driver does not manage
-         the pin state (e.g. chip is always on).
-+- sdmode-delay : specify delay time for SD_MODE pin.
-+        If this option is specified, which means it's required i2s clocks
-+        ready before SD_MODE is unmuted in order to avoid the speaker pop noise.
-+        It's observed that 5ms is sufficient.
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index e2e5f97d9920..f3d481b75b15 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -9,6 +9,7 @@
+ #include <linux/input.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/clk.h>
+ #include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+@@ -32,6 +33,7 @@
+ #define SOF_RT5682_SSP_AMP_MASK                 (GENMASK(8, 6))
+ #define SOF_RT5682_SSP_AMP(quirk)	\
+ 	(((quirk) << SOF_RT5682_SSP_AMP_SHIFT) & SOF_RT5682_SSP_AMP_MASK)
++#define SOF_RT5682_MCLK_BYTCHT_EN		BIT(9)
  
- Example:
+ /* Default: MCLK on, MCLK 19.2M, SSP0  */
+ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+@@ -48,6 +50,7 @@ struct sof_hdmi_pcm {
+ };
  
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index d037a3e..2141fb4 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -27,24 +27,43 @@
- #include <sound/soc-dai.h>
- #include <sound/soc-dapm.h>
- 
-+struct max98357a_priv {
-+	struct delayed_work enable_sdmode_work;
-+	struct gpio_desc *sdmode;
-+	unsigned int sdmode_delay;
-+};
-+
-+static void max98357a_enable_sdmode_work(struct work_struct *work)
-+{
-+	struct max98357a_priv *max98357a =
-+	container_of(work, struct max98357a_priv,
-+			enable_sdmode_work.work);
-+
-+	gpiod_set_value(max98357a->sdmode, 1);
-+}
-+
- static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- 		int cmd, struct snd_soc_dai *dai)
- {
--	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
-+	struct snd_soc_component *component = dai->component;
-+	struct max98357a_priv *max98357a = snd_soc_component_get_drvdata(component);
- 
--	if (!sdmode)
-+	if (!max98357a->sdmode)
- 		return 0;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		gpiod_set_value(sdmode, 1);
-+		queue_delayed_work(system_power_efficient_wq,
-+				&max98357a->enable_sdmode_work,
-+				msecs_to_jiffies(max98357a->sdmode_delay));
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		gpiod_set_value(sdmode, 0);
-+		cancel_delayed_work_sync(&max98357a->enable_sdmode_work);
-+		gpiod_set_value(max98357a->sdmode, 0);
- 		break;
- 	}
- 
-@@ -61,19 +80,32 @@ static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
- 
- static int max98357a_component_probe(struct snd_soc_component *component)
- {
--	struct gpio_desc *sdmode;
-+	struct max98357a_priv *max98357a = snd_soc_component_get_drvdata(component);
-+
-+	max98357a->sdmode = devm_gpiod_get_optional(component->dev,
-+						"sdmode", GPIOD_OUT_LOW);
- 
--	sdmode = devm_gpiod_get_optional(component->dev, "sdmode", GPIOD_OUT_LOW);
--	if (IS_ERR(sdmode))
--		return PTR_ERR(sdmode);
-+	if (IS_ERR(max98357a->sdmode))
-+		return PTR_ERR(max98357a->sdmode);
- 
--	snd_soc_component_set_drvdata(component, sdmode);
-+	snd_soc_component_set_drvdata(component, max98357a);
-+
-+	INIT_DELAYED_WORK(&max98357a->enable_sdmode_work,
-+				max98357a_enable_sdmode_work);
- 
- 	return 0;
+ struct sof_card_private {
++	struct clk *mclk;
+ 	struct snd_soc_jack sof_headset;
+ 	struct list_head hdmi_pcm_list;
+ };
+@@ -59,6 +62,22 @@ static int sof_rt5682_quirk_cb(const struct dmi_system_id *id)
  }
  
-+static void max98357a_component_remove(struct snd_soc_component *component)
-+{
-+	struct max98357a_priv *max98357a = snd_soc_component_get_drvdata(component);
+ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
++	{
++		.callback = sof_rt5682_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max"),
++		},
++		.driver_data = (void *)(SOF_RT5682_SSP_CODEC(2)),
++	},
++	{
++		.callback = sof_rt5682_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "UP-CHT01"),
++		},
++		.driver_data = (void *)(SOF_RT5682_SSP_CODEC(2)),
++	},
+ 	{
+ 		.callback = sof_rt5682_quirk_cb,
+ 		.matches = {
+@@ -127,6 +146,27 @@ static int sof_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 					RT5682_CLK_SEL_I2S1_ASRC);
+ 	}
+ 
++	if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
++		/*
++		 * The firmware might enable the clock at
++		 * boot (this information may or may not
++		 * be reflected in the enable clock register).
++		 * To change the rate we must disable the clock
++		 * first to cover these cases. Due to common
++		 * clock framework restrictions that do not allow
++		 * to disable a clock that has not been enabled,
++		 * we need to enable the clock first.
++		 */
++		ret = clk_prepare_enable(ctx->mclk);
++		if (!ret)
++			clk_disable_unprepare(ctx->mclk);
 +
-+	cancel_delayed_work_sync(&max98357a->enable_sdmode_work);
-+}
++		ret = clk_set_rate(ctx->mclk, 19200000);
 +
- static const struct snd_soc_component_driver max98357a_component_driver = {
- 	.probe			= max98357a_component_probe,
-+	.remove			= max98357a_component_remove,
- 	.dapm_widgets		= max98357a_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
- 	.dapm_routes		= max98357a_dapm_routes,
++		if (ret)
++			dev_err(rtd->dev, "unable to set MCLK rate\n");
++	}
++
+ 	/*
+ 	 * Headset buttons map to the google Reference headset.
+ 	 * These can be configured by userspace.
+@@ -161,10 +201,20 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int clk_id, clk_freq, pll_out, ret;
+ 
+ 	if (sof_rt5682_quirk & SOF_RT5682_MCLK_EN) {
++		if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
++			ret = clk_prepare_enable(ctx->mclk);
++			if (ret < 0) {
++				dev_err(rtd->dev,
++					"could not configure MCLK state");
++				return ret;
++			}
++		}
++
+ 		clk_id = RT5682_PLL1_S_MCLK;
+ 		if (sof_rt5682_quirk & SOF_RT5682_MCLK_24MHZ)
+ 			clk_freq = 24000000;
+@@ -507,7 +557,9 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		dmic_num = 0;
+ 		hdmi_num = 0;
+ 		/* default quirk for legacy cpu */
+-		sof_rt5682_quirk = SOF_RT5682_SSP_CODEC(2);
++		sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
++						SOF_RT5682_MCLK_BYTCHT_EN |
++						SOF_RT5682_SSP_CODEC(2);
+ 	} else {
+ 		dmic_num = 1;
+ 		hdmi_num = 3;
+@@ -515,6 +567,17 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 
+ 	dmi_check_system(sof_rt5682_quirk_table);
+ 
++	/* need to get main clock from pmc */
++	if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
++		ctx->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
++		ret = clk_prepare_enable(ctx->mclk);
++		if (ret < 0) {
++			dev_err(&pdev->dev,
++				"could not configure MCLK state");
++			return ret;
++		}
++	}
++
+ 	dev_dbg(&pdev->dev, "sof_rt5682_quirk = %lx\n", sof_rt5682_quirk);
+ 
+ 	ssp_amp = (sof_rt5682_quirk & SOF_RT5682_SSP_AMP_MASK) >>
 -- 
-2.7.4
+2.17.1
