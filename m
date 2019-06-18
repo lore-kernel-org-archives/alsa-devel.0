@@ -1,137 +1,59 @@
-From: "scott andrew franco" <samiam@moorecad.com>
-Subject: Re: Serious bug calling ALSA lib functions from .so
-	vs. .o file
-Date: Tue, 18 Jun 2019 08:54:02 -0700
-Message-ID: <20190618085402.6c61c97e98fe7bb02193b2d6dca4a85a.c62264622a.mailapi@email03.godaddy.com>
-References: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 09/11] ASoC: Intel: hdac_hdmi: Set ops
+ to NULL on remove
+Date: Tue, 18 Jun 2019 08:58:22 -0700
+Message-ID: <bd8855a7ab7a9958113631b76706120fd4427631.camel@linux.intel.com>
+References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
+         <20190617113644.25621-10-amadeuszx.slawinski@linux.intel.com>
+         <75be86354032f4886cbaf7d430de2aa89eaab573.camel@linux.intel.com>
+         <20190618130015.0fc388b4@xxx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plwbeout03-03.prod.phx3.secureserver.net
- (p3plsmtp03-03-2.prod.phx3.secureserver.net [72.167.218.215])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AC93F8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 17:54:35 +0200 (CEST)
-In-Reply-To: <20190618081614.6c61c97e98fe7bb02193b2d6dca4a85a.a95f05e421.mailapi@email03.godaddy.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190618130015.0fc388b4@xxx>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
- uname -a
-Linux samiam-home-pc 4.15.0-51-generic #55-Ubuntu SMP Wed May 15 14:27:21 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
-  
- 
-samiam@samiam-home-pc:/usr/lib/x86_64-linux-gnu$ ls -l libasound*
-lrwxrwxrwx 1 root root 18 Dec 18 20:25 libasound.so -> libasound.so.2.0.0
-lrwxrwxrwx 1 root root 18 Dec 18 20:25 libasound.so.2 -> libasound.so.2.0.0
--rw-r--r-- 1 root root 1075496 Dec 18 20:25 libasound.so.2.0.0
-samiam@samiam-home-pc:/usr/lib/x86_64-linux-gnu$
-  
- 
---------- Original Message --------- Subject: RE: Serious bug calling ALSA lib functions from .so vs. .o file
-From: "scott andrew franco" <samiam@moorecad.com>
-Date: 6/18/19 8:16 am
-To: alsa-devel@alsa-project.org
+On Tue, 2019-06-18 at 13:00 +0200, Amadeusz Sławiński wrote:
+> On Mon, 17 Jun 2019 13:51:42 -0700
+> Ranjani Sridharan <ranjani.sridharan@linux.intel.com> wrote:
+> 
+> > On Mon, 2019-06-17 at 13:36 +0200, Amadeusz Sławiński wrote:
+> > > When we unload Skylake driver we may end up calling
+> > > hdac_component_master_unbind(), it uses acomp->audio_ops, which
+> > > we
+> > > set
+> > > in hdmi_codec_probe(), so we need to set it to NULL in
+> > > hdmi_codec_remove(),
+> > > otherwise we will dereference no longer existing pointer.  
+> > 
+> > Hi Amadeusz,
+> > 
+> > It looks like the audio_ops should be deleted
+> > snd_hdac_acomp_exit().
+> > Also, this doesnt seem to be the case with when the SOF driver is
+> > removed.
+> > Could you please give a bit more context on what error you see when
+> > this happens?
+> 
+> Hi,
+> 
+> I get Oops. This is what happens with all other patches in this
+> series and only this one reverted:
+> 
+> root@APL:~# rmmod snd_soc_sst_bxt_rt298
+> root@APL:~# rmmod snd_soc_hdac_hdmi
+> root@APL:~# rmmod snd_soc_skl
 
- Hello,
- 
-The issue:
- 
-calling across .so (dynamic linking) produces different behavior in ALSA library calls than normal,
-and causes ALSA to malfunction.
- 
-I have minimized my issue to as small a code section as possible. Note the code is from commonly available
-internet examples, including Free Electrons "Audio in embedded linux systems".
- 
-The run is:
- 
-samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
-samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
-samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
-alsaplaywave: rate: 1
-alsaplaywave: rate: 0
-samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
-samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
-alsaplaywave: rate: 1
-alsaplaywave: rate: 1
-  
- Note the only difference between the two runs of "playwave" is if the second module, test2, is linked as a .so or
- linked as a .o.
-  
- The code is:
- =======================================================================================
- playwav.c
- #include <alsa/asoundlib.h>
-#include <stdio.h>
- void alsaplaywave1(void)
- {
- snd_pcm_t *pcm_handle;
- snd_pcm_hw_params_t *params;
- unsigned int val;
- unsigned int rate;
- int r;
- /* open pcm device */
- r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
- if (r < 0) printf("Cannot open PCM output device");
- snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
- snd_pcm_hw_params_any(pcm_handle, params);
- r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
- if (r < 0) printf("Cannot set interleaved mode");
- r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
- if (r < 0) printf("Cannot set format");
- r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
- if (r < 0) printf("Cannot set channels number");
- val = 44100;
- r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
- if (r < 0) printf("Cannot set rate");
- snd_pcm_hw_params_get_rate(params, &rate, 0);
- printf("alsaplaywave: rate: %d\n", rate);
- snd_pcm_close(pcm_handle);
- }
- extern void alsaplaywave2(void);
- int main(int argc, char **argv)
- {
- alsaplaywave1();
- alsaplaywave2();
- return 0;
-}
-  
- ==================================================================================
- test2.c
- #include <alsa/asoundlib.h>
-#include <stdio.h>
- void alsaplaywave2(void)
- {
- snd_pcm_t *pcm_handle;
- snd_pcm_hw_params_t *params;
- unsigned int val;
- unsigned int rate;
- int r;
- /* open pcm device */
- r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
- if (r < 0) printf("Cannot open PCM output device");
- snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
- snd_pcm_hw_params_any(pcm_handle, params);
- r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
- if (r < 0) printf("Cannot set interleaved mode");
- r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
- if (r < 0) printf("Cannot set format");
- r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
- if (r < 0) printf("Cannot set channels number");
- val = 44100;
- r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
- if (r < 0) printf("Cannot set rate");
- snd_pcm_hw_params_get_rate(params, &rate, 0);
- printf("alsaplaywave: rate: %d\n", rate);
- snd_pcm_close(pcm_handle);
- }
+Thanks, Amadeusz. I think the order in which the drivers are removed is
+what's causing the oops in your case. With SOF, the order we remove is
+
+1. rmmod sof_pci_dev
+2. rmmod snd_soc_sst_bxt_rt298
+3. rmmod snd_soc_hdac_hdmi
+
+Thanks,
+Ranjani
