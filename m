@@ -1,190 +1,45 @@
-From: "scott andrew franco" <samiam@moorecad.com>
-Subject: Re: Serious bug calling ALSA lib functions from .so
- vs. .o file
-Date: Tue, 18 Jun 2019 11:59:19 -0700
-Message-ID: <20190618115919.6c61c97e98fe7bb02193b2d6dca4a85a.e791232afd.mailapi@email03.godaddy.com>
-References: <20190618113358.6c61c97e98fe7bb02193b2d6dca4a85a.ed0e6629be.mailapi@email03.godaddy.com>
+From: Curtis Malainey <cujomalainey@google.com>
+Subject: Re: [PATCH v7 3/4] ASoC: rt5677: clear interrupts by polarity flip
+Date: Tue, 18 Jun 2019 12:10:10 -0700
+Message-ID: <CAOReqxj+9WH70P5oDN12KdDqkX8Kp18NBdTswOZSC8u=AwS_LQ@mail.gmail.com>
+References: <20190614194854.208436-1-fletcherw@chromium.org>
+ <20190614194854.208436-4-fletcherw@chromium.org> <4e560e12-4c20-8d5d-b3f9-587a55da279d@intel.com>
+ <CAN-6NYZzMqwDaw2oDyms4P9uKFPJvuQOtGbqMWLtFV3kDyQHJQ@mail.gmail.com>
+ <CAOReqxhETC9xAojXyDWLMOJ3W22Zn4GNGry44=XC=t_k7SCHqA@mail.gmail.com> <20190618184710.GP5316@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plwbeout03-04.prod.phx3.secureserver.net
- (p3plsmtp03-04-2.prod.phx3.secureserver.net [72.167.218.216])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15B02F80CC4
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 20:59:52 +0200 (CEST)
-In-Reply-To: <20190618113358.6c61c97e98fe7bb02193b2d6dca4a85a.ed0e6629be.mailapi@email03.godaddy.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190618184710.GP5316@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fletcher Woodruff <fletcherw@chromium.org>, Cezary Rojewski <cezary.rojewski@intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@chromium.org>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PS. I really appreciate the help, I have spent more than a week on this, it is a serious blocking issue.
- 
-I've gone over the example I posted quite carefully. I recommend you try the example out. You just need the
-two source files below (test2.c and playwav.c). and execute the commands shown below.
- 
-The fact that it fails only in the .so file can explain why this bug hasn't affected more user code, since most
-people don't call alsa from another library. However, it does not explain everything since I believe there must
-be a few users who do put the calling code in a library.
- 
-Thanks,
- 
-Scott Franco
- 
---------- Original Message --------- Subject: RE: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
-From: "scott andrew franco" <samiam@moorecad.com>
-Date: 6/18/19 11:33 am
-To: "Jaroslav Kysela" <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
-
- Hi, and thanks for the reply.
- 
->I think that you must link .so to -lasound, too.
- 
-This was done and shows in the command line example below, IE,
- 
- samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
-> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
-> samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
-> alsaplaywave: rate: 1
-> alsaplaywave: rate: 0
-> samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
-> samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
-> alsaplaywave: rate: 1
-> alsaplaywave: rate: 1
- 
-Note that in both the "succeeds" case and the "fails" case carry the -lasound option. It would not compile
-if not.
- 
-Scott Franco
- 
---------- Original Message --------- Subject: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
-From: "Jaroslav Kysela" <perex@perex.cz>
-Date: 6/18/19 11:18 am
-To: "scott andrew franco" <samiam@moorecad.com>
-Cc: alsa-devel@alsa-project.org
-
-Dne 18. 06. 19 v 17:16 scott andrew franco napsal(a):
- > Hello,
- > 
- > The issue:
- > 
- > calling across .so (dynamic linking) produces different behavior in ALSA library calls than normal,
- > and causes ALSA to malfunction.
- > 
- > I have minimized my issue to as small a code section as possible. Note the code is from commonly available
- > internet examples, including Free Electrons "Audio in embedded linux systems".
- 
- It seems like a linker issue. I think that you must link .so to -lasound, too.
- (add -lasound to the command producing your .so library to satisfy the
- versioned symbols)
- 
- Jaroslav
- 
- > 
- > The run is:
- > 
- > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
- > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
- > samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
- > alsaplaywave: rate: 1
- > alsaplaywave: rate: 0
- > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
- > samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
- > alsaplaywave: rate: 1
- > alsaplaywave: rate: 1
- > 
- > Note the only difference between the two runs of "playwave" is if the second module, test2, is linked as a .so or
- > linked as a .o.
- > 
- > The code is:
- > =======================================================================================
- > playwav.c
- > #include <alsa/asoundlib.h>
- > #include <stdio.h>
- > void alsaplaywave1(void)
- > {
- > snd_pcm_t *pcm_handle;
- > snd_pcm_hw_params_t *params;
- > unsigned int val;
- > unsigned int rate;
- > int r;
- > /* open pcm device */
- > r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
- > if (r < 0) printf("Cannot open PCM output device");
- > snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
- > snd_pcm_hw_params_any(pcm_handle, params);
- > r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
- > if (r < 0) printf("Cannot set interleaved mode");
- > r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
- > if (r < 0) printf("Cannot set format");
- > r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
- > if (r < 0) printf("Cannot set channels number");
- > val = 44100;
- > r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
- > if (r < 0) printf("Cannot set rate");
- > snd_pcm_hw_params_get_rate(params, &rate, 0);
- > printf("alsaplaywave: rate: %d\n", rate);
- > snd_pcm_close(pcm_handle);
- > }
- > extern void alsaplaywave2(void);
- > int main(int argc, char **argv)
- > {
- > alsaplaywave1();
- > alsaplaywave2();
- > return 0;
- > }
- > 
- > ==================================================================================
- > test2.c
- > #include <alsa/asoundlib.h>
- > #include <stdio.h>
- > void alsaplaywave2(void)
- > {
- > snd_pcm_t *pcm_handle;
- > snd_pcm_hw_params_t *params;
- > unsigned int val;
- > unsigned int rate;
- > int r;
- > /* open pcm device */
- > r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
- > if (r < 0) printf("Cannot open PCM output device");
- > snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
- > snd_pcm_hw_params_any(pcm_handle, params);
- > r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
- > if (r < 0) printf("Cannot set interleaved mode");
- > r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
- > if (r < 0) printf("Cannot set format");
- > r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
- > if (r < 0) printf("Cannot set channels number");
- > val = 44100;
- > r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
- > if (r < 0) printf("Cannot set rate");
- > snd_pcm_hw_params_get_rate(params, &rate, 0);
- > printf("alsaplaywave: rate: %d\n", rate);
- > snd_pcm_close(pcm_handle);
- > }
- > _______________________________________________
- > Alsa-devel mailing list
- > Alsa-devel@alsa-project.org
- > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
- > 
- 
- 
- -- 
- Jaroslav Kysela <perex@perex.cz>
- Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
- _______________________________________________
- Alsa-devel mailing list
- Alsa-devel@alsa-project.org
- https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+On Tue, Jun 18, 2019 at 11:47 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 18, 2019 at 11:12:58AM -0700, Curtis Malainey wrote:
+> > On Tue, Jun 18, 2019 at 11:01 AM Fletcher Woodruff
+> > > On Sun, Jun 16, 2019 at 10:56 AM Cezary Rojewski
+> > > > On 2019-06-14 21:48, Fletcher Woodruff wrote:
+>
+> > > > > +     ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
+> > > > > +     if (ret) {
+> > > > > +             pr_err("rt5677: failed reading IRQ status: %d\n", ret);
+>
+> > > > The entire rt5677 makes use of dev_XXX with the exception of.. this very
+> > > > function. Consider reusing "component" field which is already part of
+> > > > struct rt5677_priv and removing pr_XXX.
+>
+> > > I was using dev_XXX, but I believe Curtis found that 'component' was
+> > > sometimes uninitialized when this function was called, so I switched
+> > > back to pr_XXX. I may be misremembering though, so I'll let Curtis
+> > > comment as well.
+>
+> > The issue here is that the IRQ is setup in the i2c probe and the
+> > component is setup in the codec probe. In theory if the hardware is in
+>
+> The component is not needed for a struct device, you must have a struct
+> device if you have a regmap or have probed at all.
+Ah yes, we could modify the struct and store the i2c device and get
+the device out of that as well. That will likely be simpler. Ok lets
+do that.
