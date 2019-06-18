@@ -1,242 +1,57 @@
-From: "scott andrew franco" <samiam@moorecad.com>
-Subject: Re: Serious bug calling ALSA lib functions from .so
- vs. .o file
-Date: Tue, 18 Jun 2019 14:20:23 -0700
-Message-ID: <20190618142023.6c61c97e98fe7bb02193b2d6dca4a85a.66840bb3fa.mailapi@email03.godaddy.com>
-References: <20190618141048.6c61c97e98fe7bb02193b2d6dca4a85a.fda560ce55.mailapi@email03.godaddy.com>
+From: Tyler Hicks <tyhicks@canonical.com>
+Subject: Re: [PATCH] wcd9335: fix a incorrect use of kstrndup()
+Date: Tue, 18 Jun 2019 18:05:28 -0500
+Message-ID: <20190618230527.GE6248@lindsey>
+References: <20190529015305.GA4700@zhanggen-UX430UQ>
+ <7573d8ce-7160-39b1-8901-be9155c451a1@suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plwbeout03-03.prod.phx3.secureserver.net
- (p3plsmtp03-03-2.prod.phx3.secureserver.net [72.167.218.215])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57B3FF8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 23:20:55 +0200 (CEST)
-In-Reply-To: <20190618141048.6c61c97e98fe7bb02193b2d6dca4a85a.fda560ce55.mailapi@email03.godaddy.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <7573d8ce-7160-39b1-8901-be9155c451a1@suse.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jiri Slaby <jslaby@suse.cz>
+Cc: Gen Zhang <blackgod016574@gmail.com>, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, wen.yang99@zte.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Fixed.
- 
-Again, apologies for my being dense there.
- 
-This is *great* it all works now. I don't think I would have figured out that link issue on my own.
- 
-Scott Franco
- 
---------- Original Message --------- Subject: RE: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
-From: "scott andrew franco" <samiam@moorecad.com>
-Date: 6/18/19 2:10 pm
-To: "Takashi Iwai" <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+On 2019-06-05 06:57:02, Jiri Slaby wrote:
+> On 29. 05. 19, 3:53, Gen Zhang wrote:
+> > In wcd9335_codec_enable_dec(), 'widget_name' is allocated by kstrndup().
+> > However, according to doc: "Note: Use kmemdup_nul() instead if the size
+> > is known exactly."
+> 
+> Except the size is not known exactly. It is at most 15, not 15. Right?
 
- Ok I see, apologies. Will try that.
- 
-Scott
- 
---------- Original Message --------- Subject: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
-From: "Takashi Iwai" <tiwai@suse.de>
-Date: 6/18/19 1:49 pm
-To: "scott andrew franco" <samiam@moorecad.com>
-Cc: alsa-devel@alsa-project.org
+That's my understanding, as well. This change looks incorrect/misguided
+to me.
 
-On Tue, 18 Jun 2019 20:59:19 +0200,
- scott andrew franco wrote:
- > 
- > PS. I really appreciate the help, I have spent more than a week on this, it is a serious blocking issue.
- > 
- > I've gone over the example I posted quite carefully. I recommend you try the example out. You just need the
- > two source files below (test2.c and playwav.c). and execute the commands shown below.
- > 
- > The fact that it fails only in the .so file can explain why this bug hasn't affected more user code, since most
- > people don't call alsa from another library. However, it does not explain everything since I believe there must
- > be a few users who do put the calling code in a library.
- 
- What Jaroslav pointed is to pass -lasound2 at creating the *.so file,
- not at linking to the final binary. That is,
- 
- % gcc -shared test2.o -o test2.so -lasound
- 
- Otherwise the linker won't get the proper versioned symbol, hence an
- incorrect symbol may be taken instead of the expected versioned one.
- 
- Calling ALSA library from a shared object is commonly done,
- e.g. PulseAudio. The tricky part is the versioned symbol handling,
- and it's not specific to ALSA-lib but a generic problem.
- 
- 
- Takashi
- 
- > 
- > Thanks,
- > 
- > Scott Franco
- > 
- > --------- Original Message --------- Subject: RE: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
- > From: "scott andrew franco" <samiam@moorecad.com>
- > Date: 6/18/19 11:33 am
- > To: "Jaroslav Kysela" <perex@perex.cz>
- > Cc: alsa-devel@alsa-project.org
- > 
- > Hi, and thanks for the reply.
- > 
- > >I think that you must link .so to -lasound, too.
- > 
- > This was done and shows in the command line example below, IE,
- > 
- > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
- > > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
- > > samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
- > > alsaplaywave: rate: 1
- > > alsaplaywave: rate: 0
- > > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
- > > samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
- > > alsaplaywave: rate: 1
- > > alsaplaywave: rate: 1
- > 
- > Note that in both the "succeeds" case and the "fails" case carry the -lasound option. It would not compile
- > if not.
- > 
- > Scott Franco
- > 
- > --------- Original Message --------- Subject: Re: [alsa-devel] Serious bug calling ALSA lib functions from .so vs. .o file
- > From: "Jaroslav Kysela" <perex@perex.cz>
- > Date: 6/18/19 11:18 am
- > To: "scott andrew franco" <samiam@moorecad.com>
- > Cc: alsa-devel@alsa-project.org
- > 
- > Dne 18. 06. 19 v 17:16 scott andrew franco napsal(a):
- > > Hello,
- > > 
- > > The issue:
- > > 
- > > calling across .so (dynamic linking) produces different behavior in ALSA library calls than normal,
- > > and causes ALSA to malfunction.
- > > 
- > > I have minimized my issue to as small a code section as possible. Note the code is from commonly available
- > > internet examples, including Free Electrons "Audio in embedded linux systems".
- > 
- > It seems like a linker issue. I think that you must link .so to -lasound, too.
- > (add -lasound to the command producing your .so library to satisfy the
- > versioned symbols)
- > 
- > Jaroslav
- > 
- > > 
- > > The run is:
- > > 
- > > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -fPIC -c test2.c -o test2.o
- > > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.so -lasound -o playwav
- > > samiam@samiam-home-pc:~/projeclufthansa check reservationts/petit_ami$ ./playwav
- > > alsaplaywave: rate: 1
- > > alsaplaywave: rate: 0
- > > samiam@samiam-home-pc:~/projects/petit_ami$ gcc -g3 -Iinclude linux/playwav.c ./test2.o -lasound -o playwav
- > > samiam@samiam-home-pc:~/projects/petit_ami$ ./playwav
- > > alsaplaywave: rate: 1
- > > alsaplaywave: rate: 1
- > > 
- > > Note the only difference between the two runs of "playwave" is if the second module, test2, is linked as a .so or
- > > linked as a .o.
- > > 
- > > The code is:
- > > =======================================================================================
- > > playwav.c
- > > #include <alsa/asoundlib.h>
- > > #include <stdio.h>
- > > void alsaplaywave1(void)
- > > {
- > > snd_pcm_t *pcm_handle;
- > > snd_pcm_hw_params_t *params;
- > > unsigned int val;
- > > unsigned int rate;
- > > int r;
- > > /* open pcm device */
- > > r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
- > > if (r < 0) printf("Cannot open PCM output device");
- > > snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
- > > snd_pcm_hw_params_any(pcm_handle, params);
- > > r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
- > > if (r < 0) printf("Cannot set interleaved mode");
- > > r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
- > > if (r < 0) printf("Cannot set format");
- > > r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
- > > if (r < 0) printf("Cannot set channels number");
- > > val = 44100;
- > > r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
- > > if (r < 0) printf("Cannot set rate");
- > > snd_pcm_hw_params_get_rate(params, &rate, 0);
- > > printf("alsaplaywave: rate: %d\n", rate);
- > > snd_pcm_close(pcm_handle);
- > > }
- > > extern void alsaplaywave2(void);
- > > int main(int argc, char **argv)
- > > {
- > > alsaplaywave1();
- > > alsaplaywave2();
- > > return 0;
- > > }
- > > 
- > > ==================================================================================
- > > test2.c
- > > #include <alsa/asoundlib.h>
- > > #include <stdio.h>
- > > void alsaplaywave2(void)
- > > {
- > > snd_pcm_t *pcm_handle;
- > > snd_pcm_hw_params_t *params;
- > > unsigned int val;
- > > unsigned int rate;
- > > int r;
- > > /* open pcm device */
- > > r = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
- > > if (r < 0) printf("Cannot open PCM output device");
- > > snd_pcm_hw_params_alloca(&params); /* get hw parameter block */
- > > snd_pcm_hw_params_any(pcm_handle, params);
- > > r = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
- > > if (r < 0) printf("Cannot set interleaved mode");
- > > r = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE);
- > > if (r < 0) printf("Cannot set format");
- > > r = snd_pcm_hw_params_set_channels(pcm_handle, params, 2);
- > > if (r < 0) printf("Cannot set channels number");
- > > val = 44100;
- > > r = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0);
- > > if (r < 0) printf("Cannot set rate");
- > > snd_pcm_hw_params_get_rate(params, &rate, 0);
- > > printf("alsaplaywave: rate: %d\n", rate);
- > > snd_pcm_close(pcm_handle);
- > > }
- > > _______________________________________________
- > > Alsa-devel mailing list
- > > Alsa-devel@alsa-project.org
- > > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
- > > 
- > 
- > 
- > -- 
- > Jaroslav Kysela <perex@perex.cz>
- > Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
- > _______________________________________________
- > Alsa-devel mailing list
- > Alsa-devel@alsa-project.org
- > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
- > _______________________________________________
- > Alsa-devel mailing list
- > Alsa-devel@alsa-project.org
- > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
- > 
- _______________________________________________
- Alsa-devel mailing list
- Alsa-devel@alsa-project.org
- https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CVE-2019-12454 was assigned for this but I've requested that MITRE
+reject it as there doesn't seem to be any security impact and possibly
+no reason at all for this change.
+
+Tyler
+
+> 
+> > So we should use kmemdup_nul() here instead of
+> > kstrndup().
+> > 
+> > Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
+> > ---
+> > diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+> > index a04a7ce..85737fe 100644
+> > --- a/sound/soc/codecs/wcd9335.c
+> > +++ b/sound/soc/codecs/wcd9335.c
+> > @@ -2734,7 +2734,7 @@ static int wcd9335_codec_enable_dec(struct snd_soc_dapm_widget *w,
+> >  	char *dec;
+> >  	u8 hpf_coff_freq;
+> >  
+> > -	widget_name = kstrndup(w->name, 15, GFP_KERNEL);
+> > +	widget_name = kmemdup_nul(w->name, 15, GFP_KERNEL);
+> >  	if (!widget_name)
+> >  		return -ENOMEM;
+> >  
+> 
+> thanks,
+> -- 
+> js
+> suse labs
