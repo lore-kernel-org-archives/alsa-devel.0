@@ -1,22 +1,21 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: Re: [PATCH] ASoC: Intel: skl: extract common function
-Date: Tue, 18 Jun 2019 16:36:30 +0800
-Message-ID: <CA+Px+wX+KwV8e9ugoB_pkdvWBJD_A26v4JTNmA0nTC_S8oSs4w@mail.gmail.com>
-References: <20190618070503.36310-1-tzungbi@google.com>
- <f3ccd6a2-a9b1-15a6-6b0f-b044a2def5d7@linux.intel.com>
+From: "Chiang, Mac" <mac.chiang@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: add dmic format
+ constraint
+Date: Tue, 18 Jun 2019 08:41:36 +0000
+Message-ID: <5B37778DAAD9B04DA049B4A421B9B3EE71EB73A9@PGSMSX112.gar.corp.intel.com>
+References: <1560836926-27055-1-git-send-email-mac.chiang@intel.com>
+ <c084b10a-ecb5-19ad-379f-b79e723fe3d5@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com
- [IPv6:2607:f8b0:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 695F9F8075C
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 10:36:44 +0200 (CEST)
-Received: by mail-ot1-x342.google.com with SMTP id i8so13167810oth.10
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 01:36:43 -0700 (PDT)
-In-Reply-To: <f3ccd6a2-a9b1-15a6-6b0f-b044a2def5d7@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8344BF80CC4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2019 10:41:40 +0200 (CEST)
+In-Reply-To: <c084b10a-ecb5-19ad-379f-b79e723fe3d5@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,29 +25,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "N, Harshapriya" <harshapriya.n@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Zhi, Yong" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 18, 2019 at 3:46 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> HDMI support is a mess for sure, but I am not sure this is the right way
-> to refactor the code. See e.g. bxt_da7219_max98357a, a single init
-> callback was used. you can use dai->id to manage the right offset,
->
-> pcm->device = SKL_DPCM_AUDIO_HDMI1_PB + dai->id; or
-> pcm->device = dai->id;
->
-> instead of hard-coding the values in a parameter.
->
-Yeah, I noticed that and I am very confused.
+> Which platforms is this needed for? IIRC this machine driver is shared with SOF-based solutions - which typically sets DMIC configs with topology - and I'd like to make sure there's no impact.
+Hi Pierre, this is for APL platform.
 
-But after following the call sequence, _late_probe() ->
-hdac_hdmi_jack_init() -> hdac_hdmi_get_pcm_from_id(), it seems the ID
-is merely a unique key to perform linear search in
-hdac_hdmi_get_pcm_from_id().  It looks like the follower
-snd_hdac_add_chmap_ctls() does not use the ID too seriously.
+-----Original Message-----
+From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com] 
+Sent: Tuesday, June 18, 2019 2:56 PM
+To: Chiang, Mac <mac.chiang@intel.com>; alsa-devel@alsa-project.org
+Cc: N, Harshapriya <harshapriya.n@intel.com>; broonie@kernel.org; Zhi, Yong <yong.zhi@intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: boards: add dmic format constraint
 
-TBH, I am not very sure either.  But if either way is fine, simpler is
-better (i.e. pcm->device = dai->id;).
+On 6/18/19 7:48 AM, mac.chiang@intel.com wrote:
+> From: Mac Chiang <mac.chiang@intel.com>
+> 
+> platform dmic recording fixup 16bits
+
+Which platforms is this needed for? IIRC this machine driver is shared with SOF-based solutions - which typically sets DMIC configs with topology - and I'd like to make sure there's no impact.
+Thanks!
+
+> 
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+> ---
+>   sound/soc/intel/boards/bxt_da7219_max98357a.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c 
+> b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> index 5cadb7f..ac06408 100644
+> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> @@ -330,6 +330,9 @@ static int broxton_dmic_startup(struct snd_pcm_substream *substream)
+>   	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+>   			&constraints_channels_quad);
+>   
+> +	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
+> +	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
+> +
+>   	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+>   			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+>   }
+> 
