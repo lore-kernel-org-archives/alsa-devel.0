@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: atmel-classd: don't select
-	unnecessary Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:03 +0100 (BST)
-Message-ID: <20190619121203.F29BC440049@finisterre.sirena.org.uk>
-References: <8736k6wf81.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc.h: fixup for_each_card_links()
+	macro" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:04 +0100 (BST)
+Message-ID: <20190619121204.E6E7B44004C@finisterre.sirena.org.uk>
+References: <877e9itlgo.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CAB9F89750
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3C5FF89752
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:05 +0200 (CEST)
-In-Reply-To: <8736k6wf81.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877e9itlgo.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: atmel-classd: don't select unnecessary Platform
+   ASoC: soc.h: fixup for_each_card_links() macro
 
 has been applied to the asoc tree at
 
@@ -55,51 +55,31 @@ to this mail.
 Thanks,
 Mark
 
->From 02602401e53168a66d9c5fbf0b16bae0826f8145 Mon Sep 17 00:00:00 2001
+>From 5f174cf75a8cb14d50c1cecfb3884ae82f754058 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:14:23 +0900
-Subject: [PATCH] ASoC: atmel: atmel-classd: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:27:52 +0900
+Subject: [PATCH] ASoC: soc.h: fixup for_each_card_links() macro
 
-ALSA SoC is now supporting "no Platform". Sound card doesn't need to
-select "CPU component" as "Platform" anymore if it doesn't need
-special Platform.
-This patch removes such settings.
+Macro is using "link", not "dai_link"
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-classd.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index cfebbeb92ef1..06111f27b229 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -506,24 +506,21 @@ static int atmel_classd_asoc_card_init(struct device *dev,
- 	if (!dai_link)
- 		return -ENOMEM;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 055e6d035e04..80c1ca3a62c7 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1230,7 +1230,7 @@ struct snd_soc_card {
+ 	     (i)++)
  
--	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
-+	comp = devm_kzalloc(dev, 2 * sizeof(*comp), GFP_KERNEL);
- 	if (!comp)
- 		return -ENOMEM;
+ #define for_each_card_links(card, link)				\
+-	list_for_each_entry(dai_link, &(card)->dai_link_list, list)
++	list_for_each_entry(link, &(card)->dai_link_list, list)
+ #define for_each_card_links_safe(card, link, _link)			\
+ 	list_for_each_entry_safe(link, _link, &(card)->dai_link_list, list)
  
- 	dai_link->cpus		= &comp[0];
- 	dai_link->codecs	= &comp[1];
--	dai_link->platforms	= &comp[2];
- 
- 	dai_link->num_cpus	= 1;
- 	dai_link->num_codecs	= 1;
--	dai_link->num_platforms	= 1;
- 
- 	dai_link->name			= "CLASSD";
- 	dai_link->stream_name		= "CLASSD PCM";
- 	dai_link->codecs->dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
- 	dai_link->cpus->dai_name	= dev_name(dev);
- 	dai_link->codecs->name		= dev_name(dev);
--	dai_link->platforms->name	= dev_name(dev);
- 
- 	card->dai_link	= dai_link;
- 	card->num_links	= 1;
 -- 
 2.20.1
