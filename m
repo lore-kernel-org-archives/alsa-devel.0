@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-utils: remove dummy Platform" to
-	the asoc tree
+Subject: Applied "ASoC: simple-card-utils: don't select
+	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:11:59 +0100 (BST)
-Message-ID: <20190619121159.089BE440049@finisterre.sirena.org.uk>
-References: <878stytlu8.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121159.5695144004C@finisterre.sirena.org.uk>
+References: <87d0jatlul.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25236F896C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAFD2F808AF
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:00 +0200 (CEST)
-In-Reply-To: <878stytlu8.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87d0jatlul.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-utils: remove dummy Platform
+   ASoC: simple-card-utils: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,72 +55,47 @@ to this mail.
 Thanks,
 Mark
 
->From 64ee5067cf64f948449201579d89829b5c693c16 Mon Sep 17 00:00:00 2001
+>From 6f043744573520095bdee9e532d75574060e62f4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:19:44 +0900
-Subject: [PATCH] ASoC: soc-utils: remove dummy Platform
+Date: Wed, 19 Jun 2019 10:19:31 +0900
+Subject: [PATCH] ASoC: simple-card-utils: don't select unnecessary Platform
 
-ALSA SoC used 2 type of Platform if sound card doesn't need
-Platform.
-
-	1) use Dummy Platform as Platform component
-	2) use CPU component  as Platform component
-
-Now, ALSA SoC allows "no Platform" settings, and it will behave
-same as 2) case selection. And, all sound card which doesn't need
-specific Platform are now not selecting Platform any more.
-
-This means, no sound card is using dummy Platform on ALSA SoC any
-more. This patch removes unused dummy Platform.
+ALSA SoC is now supporting "no Platform". Sound card doesn't need to
+select "CPU component" as "Platform" anymore if it doesn't need
+special Platform.
+This patch removes such settings.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-utils.c | 25 -------------------------
- 1 file changed, 25 deletions(-)
+ sound/soc/generic/simple-card-utils.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index e3b9dd634c6d..f67e715a9f42 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -262,26 +262,6 @@ static const struct snd_pcm_hardware dummy_dma_hardware = {
- 	.periods_max		= 128,
- };
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index ac8678fe55ff..3cf5cb21ea52 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -346,9 +346,18 @@ EXPORT_SYMBOL_GPL(asoc_simple_dai_init);
  
--static int dummy_dma_open(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--
--	/* BE's dont need dummy params */
--	if (!rtd->dai_link->no_pcm)
--		snd_soc_set_runtime_hwparams(substream, &dummy_dma_hardware);
--
--	return 0;
--}
--
--static const struct snd_pcm_ops snd_dummy_dma_ops = {
--	.open		= dummy_dma_open,
--	.ioctl		= snd_pcm_lib_ioctl,
--};
--
--static const struct snd_soc_component_driver dummy_platform = {
--	.ops = &snd_dummy_dma_ops,
--};
--
- static const struct snd_soc_component_driver dummy_codec = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
-@@ -339,11 +319,6 @@ static int snd_soc_dummy_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &dummy_codec, &dummy_dai, 1);
--	if (ret < 0)
--		return ret;
--
--	ret = devm_snd_soc_register_component(&pdev->dev, &dummy_platform,
--					      NULL, 0);
- 
- 	return ret;
+ void asoc_simple_canonicalize_platform(struct snd_soc_dai_link *dai_link)
+ {
+-	/* Assumes platform == cpu */
+-	if (!dai_link->platforms->of_node)
+-		dai_link->platforms->of_node = dai_link->cpus->of_node;
++	/*
++	 * no Platform
++	 *
++	 * It will be waste of memory, but not be memory leak.
++	 * see
++	 *	asoc_simple_init_priv()
++	 *	asoc_simple_priv
++	 */
++	if (!dai_link->platforms->of_node) {
++		dai_link->platforms	= NULL;
++		dai_link->num_platforms	= 0;
++	}
  }
+ EXPORT_SYMBOL_GPL(asoc_simple_canonicalize_platform);
+ 
 -- 
 2.20.1
