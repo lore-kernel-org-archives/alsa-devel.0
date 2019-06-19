@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rk3399_gru_sound: don't
-	select unnecessary Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:11:59 +0100 (BST)
-Message-ID: <20190619121159.24A9D44004A@finisterre.sirena.org.uk>
-References: <87a7eetluc.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tegra: tegra_rt5677: don't select
+	unnecessary Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:00 +0100 (BST)
+Message-ID: <20190619121200.A4DDA44004A@finisterre.sirena.org.uk>
+References: <87tvcmtlvw.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83F2EF89731
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:00 +0200 (CEST)
-In-Reply-To: <87a7eetluc.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF201F89736
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:01 +0200 (CEST)
+In-Reply-To: <87tvcmtlvw.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rk3399_gru_sound: don't select unnecessary Platform
+   ASoC: tegra: tegra_rt5677: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,11 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 961fb3c206dc84febe87cc433ca321eb6587ec66 Mon Sep 17 00:00:00 2001
+>From d035d13b2277ee71babb6a16d31ecdc2f35da189 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:19:40 +0900
-Subject: [PATCH] ASoC: rockchip: rk3399_gru_sound: don't select unnecessary
- Platform
+Date: Wed, 19 Jun 2019 10:18:44 +0900
+Subject: [PATCH] ASoC: tegra: tegra_rt5677: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -69,60 +68,46 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ sound/soc/tegra/tegra_rt5677.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 5e2700283fa8..879069fc0b94 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -278,33 +278,27 @@ enum {
+diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
+index 7edf6c7838f5..db0ea38d3b08 100644
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -171,8 +171,7 @@ static int tegra_rt5677_asoc_init(struct snd_soc_pcm_runtime *rtd)
  
- SND_SOC_DAILINK_DEFS(cdndp,
+ SND_SOC_DAILINK_DEFS(pcm,
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "spdif-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5677-aif1")),
 -	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "spdif-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5677-aif1")));
  
- SND_SOC_DAILINK_DEFS(da7219,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "da7219-hifi")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "da7219-hifi")));
+ static struct snd_soc_dai_link tegra_rt5677_dai = {
+ 	.name = "RT5677",
+@@ -271,7 +270,6 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
+ 		ret = -EINVAL;
+ 		goto err_put_codec_of_node;
+ 	}
+-	tegra_rt5677_dai.platforms->of_node = tegra_rt5677_dai.cpus->of_node;
  
- SND_SOC_DAILINK_DEFS(dmic,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dmic-hifi")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dmic-hifi")));
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
+@@ -291,7 +289,6 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
+ err_put_cpu_of_node:
+ 	of_node_put(tegra_rt5677_dai.cpus->of_node);
+ 	tegra_rt5677_dai.cpus->of_node = NULL;
+-	tegra_rt5677_dai.platforms->of_node = NULL;
+ err_put_codec_of_node:
+ 	of_node_put(tegra_rt5677_dai.codecs->of_node);
+ 	tegra_rt5677_dai.codecs->of_node = NULL;
+@@ -308,7 +305,6 @@ static int tegra_rt5677_remove(struct platform_device *pdev)
  
- SND_SOC_DAILINK_DEFS(max98357a,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")));
+ 	tegra_asoc_utils_fini(&machine->util_data);
  
- SND_SOC_DAILINK_DEFS(rt5514,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5514-aif1")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5514-aif1")));
- 
- SND_SOC_DAILINK_DEFS(rt5514_dsp,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_DUMMY()),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
- 
- static const struct snd_soc_dai_link rockchip_dais[] = {
- 	[DAILINK_CDNDP] = {
-@@ -538,7 +532,6 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 
- 		if (!dai->codecs->name)
- 			dai->codecs->of_node = np_codec;
--		dai->platforms->of_node = np_cpu;
- 		dai->cpus->of_node = np_cpu;
- 
- 		if (card->num_dapm_routes + rockchip_routes[index].num_routes >
+-	tegra_rt5677_dai.platforms->of_node = NULL;
+ 	of_node_put(tegra_rt5677_dai.codecs->of_node);
+ 	tegra_rt5677_dai.codecs->of_node = NULL;
+ 	of_node_put(tegra_rt5677_dai.cpus->of_node);
 -- 
 2.20.1
