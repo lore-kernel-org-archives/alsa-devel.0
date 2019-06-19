@@ -1,21 +1,21 @@
-From: "Liao, Bard" <bard.liao@intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: Intel: sof-rt5682: add MCLK
- support for BYT platform
-Date: Wed, 19 Jun 2019 10:54:32 +0000
-Message-ID: <567A313375B6F043A9BE3A1D9B8C6E7F0B45F65E@SHSMSX101.ccr.corp.intel.com>
-References: <20190618181539.9169-1-yung-chuan.liao@linux.intel.com>
- <20190619104831.GQ5316@sirena.org.uk>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFC PATCH] ASoC: Intel: use common helpers to
+ detect CPUs
+Date: Wed, 19 Jun 2019 14:08:26 +0300
+Message-ID: <20190619110826.GC9224@smile.fi.intel.com>
+References: <20190528200255.15923-1-pierre-louis.bossart@linux.intel.com>
+ <7ceb9ba8-74d9-4985-e760-40003dfbef3e@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECA00F80C87
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 12:54:37 +0200 (CEST)
-In-Reply-To: <20190619104831.GQ5316@sirena.org.uk>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FA96F808AF
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 13:08:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <7ceb9ba8-74d9-4985-e760-40003dfbef3e@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +25,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, Bard liao <yung-chuan.liao@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, June 19, 2019 6:49 PM
-> To: Bard liao <yung-chuan.liao@linux.intel.com>
-> Cc: alsa-devel@alsa-project.org; tiwai@suse.de; 
-> liam.r.girdwood@linux.intel.com; pierre-louis.bossart@linux.intel.com; 
-> Liao, Bard <bard.liao@intel.com>
-> Subject: Re: [PATCH v2 1/2] ASoC: Intel: sof-rt5682: add MCLK support 
-> for BYT platform
-> 
-> On Wed, Jun 19, 2019 at 02:15:38AM +0800, Bard liao wrote:
-> > From: Xun Zhang <xun2.zhang@intel.com>
-> >
-> > The sof-rt5682 machine driver currently uses BCLK on BYT/Minnowboard 
-> > platform. The MCLK signal is available since the Turbot revision, so 
-> > enable MCLK on BYT/Minnowboard Turbot platform.
-> >
-> > Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
-> > Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-> > ---
-> 
-> If you've got an ack or other tag for a patch you should carry that 
-> forward to new postings unless there's some reason to remove it.
+On Tue, Jun 18, 2019 at 09:26:50PM +0200, Cezary Rojewski wrote:
+> On 2019-05-28 22:02, Pierre-Louis Bossart wrote:
+> > We have duplicated code in multiple locations (atom, machine drivers,
+> > SOF) to detect Baytrail, Cherrytrail and other SOCs. This is not very
+> > elegant, and introduces dependencies on CONFIG_X86 that prevent
+> > COMPILE_TEST from working.
+> > 
+> > Add common helpers to provide same functionality in a cleaner
+> > way. This will also help support the DMI-based quirks being introduced
+> > to handle SOF/SST autodetection.
 
-Sure. So
-Patch 1 and 2
+> > +#define ICPU(model)	{ X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, }
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+We have macros for this in intel-family.h.
+
+> > +#define SOC_INTEL_IS_CPU(soc, type)				\
+> > +static inline bool soc_intel_is_##soc(void)			\
+> > +{								\
+> > +	static const struct x86_cpu_id soc##_cpu_ids[] = {	\
+> > +		ICPU(type),					\
+> 
+> I understand there is a separate discussion going on, hope I don't get fried
+> for throwing small code review.
+> 
+> Consider using same arg name for both ICPU and SOC_INTEL_IS_CPU macros,
+> whether it's "model" or "type". It's more readable that way.
+> 
+> > +		{}						\
+> > +	};							\
+> > +	const struct x86_cpu_id *id;				\
+> > +								\
+> > +	id = x86_match_cpu(soc##_cpu_ids);			\
+> > +	if (id)							\
+> > +		return true;					\
+> > +	return false;						\
+> 
+> Tenary operator should prove usefull here.
+
+In this way it is simple
+	return !!x86_match_cpu(...);
+
+No conditional needed at all.
+
+> 
+> > +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
