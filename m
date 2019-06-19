@@ -1,18 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] ALSA: oxfw: configure packet format in
- pcm.hw_params callback
-Date: Wed, 19 Jun 2019 13:16:39 +0300
-Message-ID: <20190619101639.GA29913@mwanda>
+From: mac.chiang@intel.com
+Subject: [v3] ASoC: max98357a: avoid speaker pop when playback
+	startup
+Date: Wed, 19 Jun 2019 18:18:33 +0800
+Message-ID: <1560939513-20601-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65184F808AF
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 12:16:57 +0200 (CEST)
-Content-Disposition: inline
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD204F80CC4
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 12:18:37 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +21,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: o-takashi@sakamocchi.jp
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mac.chiang@intel.com, broonie@kernel.org, lgirdwood@gmail.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi Sakamoto,
+From: Mac Chiang <mac.chiang@intel.com>
 
-The patch 4f380d007052: "ALSA: oxfw: configure packet format in
-pcm.hw_params callback" from Jun 12, 2019, leads to the following
-static checker warning:
+Loud speaker pop happens during playback even when in slience
+playback. Specify Max98357a amp delay times to make sure
+clocks are always earlier than sdmode on.
 
-	sound/firewire/oxfw/oxfw-stream.c:357 snd_oxfw_stream_start_duplex()
-	warn: 'oxfw->rx_stream.buffer.packets' double freed
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+---
+Changelog:
+  v3:
+    - rebase to branch for-next
+  v2:
+    - added device_property_read_u32() func
+---
+---
+ .../devicetree/bindings/sound/max98357a.txt        |  4 ++
+ sound/soc/codecs/max98357a.c                       | 55 ++++++++++++++++++----
+ 2 files changed, 50 insertions(+), 9 deletions(-)
 
-sound/firewire/oxfw/oxfw-stream.c
-   317  int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
-   318  {
-   319          int err;
-   320  
-   321          if (oxfw->substreams_count == 0)
-   322                  return -EIO;
-   323  
-   324          if (amdtp_streaming_error(&oxfw->rx_stream) ||
-   325              amdtp_streaming_error(&oxfw->tx_stream)) {
-   326                  amdtp_stream_stop(&oxfw->rx_stream);
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   327                  cmp_connection_break(&oxfw->in_conn);
-   328  
-   329                  if (oxfw->has_output) {
-   330                          amdtp_stream_stop(&oxfw->tx_stream);
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   331                          cmp_connection_break(&oxfw->out_conn);
-   332                  }
-   333          }
-   334  
-   335          if (!amdtp_stream_running(&oxfw->rx_stream)) {
-   336                  err = start_stream(oxfw, &oxfw->rx_stream);
-   337                  if (err < 0) {
-   338                          dev_err(&oxfw->unit->device,
-   339                                  "fail to start rx stream: %d\n", err);
-   340                          goto error;
-   341                  }
-   342          }
-   343  
-   344          if (oxfw->has_output) {
-   345                  if (!amdtp_stream_running(&oxfw->tx_stream)) {
-   346                          err = start_stream(oxfw, &oxfw->tx_stream);
-   347                          if (err < 0) {
-   348                                  dev_err(&oxfw->unit->device,
-   349                                          "fail to start tx stream: %d\n", err);
-   350                                  goto error;
-   351                          }
-   352                  }
-   353          }
-   354  
-   355          return 0;
-   356  error:
-   357          amdtp_stream_stop(&oxfw->rx_stream);
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Smatch is basically complaining that we call amdtp_stream_stop() and
-it's not clear that we necessarily reset things.  I don't know this code
-very well so I have maybe missed something.
-
-   358          cmp_connection_break(&oxfw->in_conn);
-   359          if (oxfw->has_output) {
-   360                  amdtp_stream_stop(&oxfw->tx_stream);
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   361                  cmp_connection_break(&oxfw->out_conn);
-   362          }
-   363          return err;
-   364  }
-
-regards,
-dan carpenter
+diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
+index 28645a2..4bce14c 100644
+--- a/Documentation/devicetree/bindings/sound/max98357a.txt
++++ b/Documentation/devicetree/bindings/sound/max98357a.txt
+@@ -9,6 +9,10 @@ Optional properties:
+ - sdmode-gpios : GPIO specifier for the chip's SD_MODE pin.
+         If this option is not specified then driver does not manage
+         the pin state (e.g. chip is always on).
++- sdmode-delay : specify delay time for SD_MODE pin.
++        If this option is specified, which means it's required i2s clocks
++        ready before SD_MODE is unmuted in order to avoid the speaker pop noise.
++        It's observed that 5ms is sufficient.
+ 
+ Example:
+ 
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index 6f724c9..6f0e28f 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -19,24 +19,42 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ 
++struct max98357a_priv {
++	struct delayed_work enable_sdmode_work;
++	struct gpio_desc *sdmode;
++	unsigned int sdmode_delay;
++};
++
++static void max98357a_enable_sdmode_work(struct work_struct *work)
++{
++	struct max98357a_priv *max98357a =
++	container_of(work, struct max98357a_priv,
++			enable_sdmode_work.work);
++
++	gpiod_set_value(max98357a->sdmode, 1);
++}
++
+ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+ 		int cmd, struct snd_soc_dai *dai)
+ {
+-	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
++	struct max98357a_priv *max98357a = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (!sdmode)
++	if (!max98357a->sdmode)
+ 		return 0;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		gpiod_set_value(sdmode, 1);
++		queue_delayed_work(system_power_efficient_wq,
++				&max98357a->enable_sdmode_work,
++				msecs_to_jiffies(max98357a->sdmode_delay));
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		gpiod_set_value(sdmode, 0);
++		cancel_delayed_work_sync(&max98357a->enable_sdmode_work);
++		gpiod_set_value(max98357a->sdmode, 0);
+ 		break;
+ 	}
+ 
+@@ -90,14 +108,33 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
+ 
+ static int max98357a_platform_probe(struct platform_device *pdev)
+ {
+-	struct gpio_desc *sdmode;
++	struct max98357a_priv *max98357a;
++	int ret;
+ 
+-	sdmode = devm_gpiod_get_optional(&pdev->dev,
++	max98357a = devm_kzalloc(&pdev->dev, sizeof(*max98357a), GFP_KERNEL);
++
++	if (!max98357a)
++		return -ENOMEM;
++
++	max98357a->sdmode = devm_gpiod_get_optional(&pdev->dev,
+ 				"sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode))
+-		return PTR_ERR(sdmode);
+ 
+-	dev_set_drvdata(&pdev->dev, sdmode);
++	if (IS_ERR(max98357a->sdmode))
++		return PTR_ERR(max98357a->sdmode);
++
++	ret = device_property_read_u32(&pdev->dev, "sdmode-delay",
++					&max98357a->sdmode_delay);
++
++	if (ret) {
++		max98357a->sdmode_delay = 0;
++		dev_dbg(&pdev->dev,
++			"no optional property 'sdmode-delay' found, default: no delay\n");
++	}
++
++	dev_set_drvdata(&pdev->dev, max98357a);
++
++	INIT_DELAYED_WORK(&max98357a->enable_sdmode_work,
++				max98357a_enable_sdmode_work);
+ 
+ 	return devm_snd_soc_register_component(&pdev->dev,
+ 			&max98357a_component_driver,
+-- 
+2.7.4
