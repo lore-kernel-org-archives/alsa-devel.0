@@ -1,78 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: soc.h: dobj is used only when
- SND_SOC_TOPOLOGY" to the asoc tree
-Date: Wed, 19 Jun 2019 20:00:16 +0100
-Message-ID: <20190619190016.GZ5316@sirena.org.uk>
-References: <20190619121158.E355D440046@finisterre.sirena.org.uk>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 09/11] ASoC: Intel: hdac_hdmi: Set ops
+ to NULL on remove
+Date: Wed, 19 Jun 2019 14:09:22 -0700
+Message-ID: <0c939329d17c50c353acacf164583ba259a775c0.camel@linux.intel.com>
+References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
+         <20190617113644.25621-10-amadeuszx.slawinski@linux.intel.com>
+         <75be86354032f4886cbaf7d430de2aa89eaab573.camel@linux.intel.com>
+         <20190618130015.0fc388b4@xxx>
+         <bd8855a7ab7a9958113631b76706120fd4427631.camel@linux.intel.com>
+         <20190619103859.15bf51c5@xxx>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3036874137180364389=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4D01F80C87
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 21:00:18 +0200 (CEST)
-In-Reply-To: <20190619121158.E355D440046@finisterre.sirena.org.uk>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190619103859.15bf51c5@xxx>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2019-06-19 at 10:38 +0200, Amadeusz Sławiński wrote:
+> On Tue, 18 Jun 2019 08:58:22 -0700
+> Ranjani Sridharan <ranjani.sridharan@linux.intel.com> wrote:
+> 
+> > On Tue, 2019-06-18 at 13:00 +0200, Amadeusz Sławiński wrote:
+> > > On Mon, 17 Jun 2019 13:51:42 -0700
+> > > Ranjani Sridharan <ranjani.sridharan@linux.intel.com> wrote:
+> > >   
+> > > > On Mon, 2019-06-17 at 13:36 +0200, Amadeusz Sławiński wrote:  
+> > > > > When we unload Skylake driver we may end up calling
+> > > > > hdac_component_master_unbind(), it uses acomp->audio_ops,
+> > > > > which
+> > > > > we
+> > > > > set
+> > > > > in hdmi_codec_probe(), so we need to set it to NULL in
+> > > > > hdmi_codec_remove(),
+> > > > > otherwise we will dereference no longer existing pointer.    
+> > > > 
+> > > > Hi Amadeusz,
+> > > > 
+> > > > It looks like the audio_ops should be deleted
+> > > > snd_hdac_acomp_exit().
+> > > > Also, this doesnt seem to be the case with when the SOF driver
+> > > > is
+> > > > removed.
+> > > > Could you please give a bit more context on what error you see
+> > > > when this happens?  
+> > > 
+> > > Hi,
+> > > 
+> > > I get Oops. This is what happens with all other patches in this
+> > > series and only this one reverted:
+> > > 
+> > > root@APL:~# rmmod snd_soc_sst_bxt_rt298
+> > > root@APL:~# rmmod snd_soc_hdac_hdmi
+> > > root@APL:~# rmmod snd_soc_skl  
+> > 
+> > Thanks, Amadeusz. I think the order in which the drivers are
+> > removed
+> > is what's causing the oops in your case. With SOF, the order we
+> > remove is
+> > 
+> > 1. rmmod sof_pci_dev
+> > 2. rmmod snd_soc_sst_bxt_rt298
+> > 3. rmmod snd_soc_hdac_hdmi
+> > 
+> 
+> Well, there is nothing enforcing the order in which modules can be
+> unloaded (and I see no reason to force it), as you can see from
+> following excerpt, you can either start unloading from
+> snd_soc_sst_bxt_rt298 or snd_soc_skl, and yes if you start from
+> snd_soc_skl, there is no problem.
+> 
+I am good with this patch. I just wanted to understand why we werent
+seeing this error with SOF. Sure, there's nothing enforcing the order
+in which modules are unloaded  but there must be a logical order for
+testing purposes. 
 
---===============3036874137180364389==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="WSf/+y6apGpKq+5a"
-Content-Disposition: inline
+Pierre, can you please comment on it. I vaguely remember discussing
+this with you last year.
 
-
---WSf/+y6apGpKq+5a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jun 19, 2019 at 01:11:58PM +0100, Mark Brown wrote:
-> The patch
->=20
->    ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
->=20
-> has been applied to the asoc tree at
->=20
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git=20
-
-Dropped this, it breaks the build in a lot of configurations since dobj
-does have some other users.
-
---WSf/+y6apGpKq+5a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0KhkAACgkQJNaLcl1U
-h9BYLgf/fORxqFPisc/41mAvSIrarhLNbulNMBHfx/k+em30kKwFiqESMiqQQRpU
-QVGsqTaYALb05JvPbEtNjLbsWT5P4Su5isY82NyOAlY8hsrfVqIvOXboL6cm03Nx
-OR0HxhDnZDntPuKbfI+MktrnuXWToCJgCI25fUzPW4fHb3ziQzqrACAEnKE0fonx
-8RS2cHRkc+zhoPsKEObKywl5fQxsGdZxcpNhgKZ6VB7Wyti23rBaXAbM3bChPHdQ
-P/Ct2UugeFEla3mdBXCs8jNQr4Nnb4qkHdoJwwk2N/9Hj0vPRmpNDrsAUJ4yQEiY
-BV/wHg37ihUyFQVMbss1WclO8m+K5Q==
-=/Ik5
------END PGP SIGNATURE-----
-
---WSf/+y6apGpKq+5a--
-
---===============3036874137180364389==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3036874137180364389==--
+Thanks,
+Ranjani
