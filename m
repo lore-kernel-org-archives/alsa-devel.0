@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: tse850-pcm5142: don't select
+Subject: Applied "ASoC: fsl: fsl-asoc-card: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:03 +0100 (BST)
-Message-ID: <20190619121203.4575144004A@finisterre.sirena.org.uk>
-References: <87r27qv0jx.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121203.11FCB44004B@finisterre.sirena.org.uk>
+References: <87o92uv0jl.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8BBE9F89748
+ by alsa1.perex.cz (Postfix) with ESMTPS id 695D8F89747
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:04 +0200 (CEST)
-In-Reply-To: <87r27qv0jx.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87o92uv0jl.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: tse850-pcm5142: don't select unnecessary Platform
+   ASoC: fsl: fsl-asoc-card: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,11 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 655368dfc75e86fc69cb8f92260c675c28929bc8 Mon Sep 17 00:00:00 2001
+>From e57a4c2f15df27929303624477b7409405aba0ad Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:16:35 +0900
-Subject: [PATCH] ASoC: atmel: tse850-pcm5142: don't select unnecessary
- Platform
+Date: Wed, 19 Jun 2019 10:16:47 +0900
+Subject: [PATCH] ASoC: fsl: fsl-asoc-card: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -69,30 +68,43 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/tse850-pcm5142.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/fsl/fsl-asoc-card.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
-index 59e2edb22b3a..319acb1676c7 100644
---- a/sound/soc/atmel/tse850-pcm5142.c
-+++ b/sound/soc/atmel/tse850-pcm5142.c
-@@ -296,8 +296,7 @@ static const struct snd_soc_dapm_route tse850_intercon[] = {
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 39ea9bda1394..55a7e09170fb 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -201,14 +201,12 @@ static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ }
  
- SND_SOC_DAILINK_DEFS(pcm,
+ SND_SOC_DAILINK_DEFS(hifi,
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()),
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "pcm512x-hifi")),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
+ SND_SOC_DAILINK_DEFS(hifi_fe,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_DUMMY()),
 -	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "pcm512x-hifi")));
++	DAILINK_COMP_ARRAY(COMP_DUMMY()));
  
- static struct snd_soc_dai_link tse850_dailink = {
- 	.name = "TSE-850",
-@@ -337,7 +336,6 @@ static int tse850_dt_init(struct platform_device *pdev)
- 		return -EINVAL;
+ SND_SOC_DAILINK_DEFS(hifi_be,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+@@ -656,14 +654,12 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		}
  	}
- 	dailink->cpus->of_node = cpu_np;
--	dailink->platforms->of_node = cpu_np;
- 	of_node_put(cpu_np);
  
- 	codec_np = of_parse_phandle(np, "axentia,audio-codec", 0);
+-	priv->dai_link[0].platforms->of_node = cpu_np;
+ 	priv->dai_link[0].dai_fmt = priv->dai_fmt;
+ 	priv->card.num_links = 1;
+ 
+ 	if (asrc_pdev) {
+ 		/* DPCM DAI Links only if ASRC exsits */
+ 		priv->dai_link[1].cpus->of_node = asrc_np;
+-		priv->dai_link[1].platforms->of_node = asrc_np;
+ 		priv->dai_link[2].codecs->dai_name = codec_dai_name;
+ 		priv->dai_link[2].codecs->of_node = codec_np;
+ 		priv->dai_link[2].codecs->name =
 -- 
 2.20.1
