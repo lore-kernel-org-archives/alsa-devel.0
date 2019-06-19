@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: sam9g20_wm8731: don't select
+Subject: Applied "ASoC: atmel: sam9x5_wm8731: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:03 +0100 (BST)
-Message-ID: <20190619121203.7EE8A44004F@finisterre.sirena.org.uk>
-References: <87v9x2v0lu.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121203.5FECD44004C@finisterre.sirena.org.uk>
+References: <87sgs6v0km.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C21B1F8974C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC02EF8974A
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:04 +0200 (CEST)
-In-Reply-To: <87v9x2v0lu.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgs6v0km.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: sam9g20_wm8731: don't select unnecessary Platform
+   ASoC: atmel: sam9x5_wm8731: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,11 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From bfc7938e58142a583a8141f55e453fa1bb68439d Mon Sep 17 00:00:00 2001
+>From ced5b08020cdd4e2bed194dc35dba504221006ae Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:15:26 +0900
-Subject: [PATCH] ASoC: atmel: sam9g20_wm8731: don't select unnecessary
- Platform
+Date: Wed, 19 Jun 2019 10:16:10 +0900
+Subject: [PATCH] ASoC: atmel: sam9x5_wm8731: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -69,37 +68,38 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/sam9g20_wm8731.c | 5 +----
+ sound/soc/atmel/sam9x5_wm8731.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index a5b4c3905ae8..e723153b8437 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -131,8 +131,7 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index 36917acc161f..8e8390d6b778 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -93,7 +93,7 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	dai = devm_kzalloc(&pdev->dev, sizeof(*dai), GFP_KERNEL);
+-	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
++	comp = devm_kzalloc(&pdev->dev, 2 * sizeof(*comp), GFP_KERNEL);
+ 	if (!dai || !card || !priv || !comp) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -112,8 +112,6 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 	dai->num_cpus = 1;
+ 	dai->codecs = &comp[1];
+ 	dai->num_codecs = 1;
+-	dai->platforms = &comp[2];
+-	dai->num_platforms = 1;
  
- SND_SOC_DAILINK_DEFS(pcm,
- 	DAILINK_COMP_ARRAY(COMP_CPU("at91rm9200_ssc.0")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("at91rm9200_ssc.0")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")));
- 
- static struct snd_soc_dai_link at91sam9g20ek_dai = {
- 	.name = "WM8731",
-@@ -223,14 +222,12 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 
- 	/* Parse dai and platform info */
- 	at91sam9g20ek_dai.cpus->dai_name = NULL;
--	at91sam9g20ek_dai.platforms->name = NULL;
- 	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
- 	if (!cpu_np) {
- 		dev_err(&pdev->dev, "dai and pcm info missing\n");
- 		return -EINVAL;
+ 	dai->name = "WM8731";
+ 	dai->stream_name = "WM8731 PCM";
+@@ -150,7 +148,6 @@ static int sam9x5_wm8731_driver_probe(struct platform_device *pdev)
+ 		goto out;
  	}
- 	at91sam9g20ek_dai.cpus->of_node = cpu_np;
--	at91sam9g20ek_dai.platforms->of_node = cpu_np;
+ 	dai->cpus->of_node = cpu_np;
+-	dai->platforms->of_node = cpu_np;
  
- 	of_node_put(codec_np);
- 	of_node_put(cpu_np);
+ 	priv->ssc_id = of_alias_get_id(cpu_np, "ssc");
+ 
 -- 
 2.20.1
