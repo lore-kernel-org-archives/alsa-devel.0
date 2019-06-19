@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: vc4: vc4_hdmi: don't select unnecessary
-	Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:04 +0100 (BST)
-Message-ID: <20190619121204.1929A44004A@finisterre.sirena.org.uk>
-References: <874l4mwf8c.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: atmel: atmel-classd: don't select
+	unnecessary Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:03 +0100 (BST)
+Message-ID: <20190619121203.F29BC440049@finisterre.sirena.org.uk>
+References: <8736k6wf81.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7331DF89751
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CAB9F89750
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:05 +0200 (CEST)
-In-Reply-To: <874l4mwf8c.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8736k6wf81.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: vc4: vc4_hdmi: don't select unnecessary Platform
+   ASoC: atmel: atmel-classd: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6c6de1c9e2bf2a0901ca1f2a169d1a2f9fd27958 Mon Sep 17 00:00:00 2001
+>From 02602401e53168a66d9c5fbf0b16bae0826f8145 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:14:12 +0900
-Subject: [PATCH] ASoC: vc4: vc4_hdmi: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:14:23 +0900
+Subject: [PATCH] ASoC: atmel: atmel-classd: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,39 +68,38 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/atmel/atmel-classd.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 6beac1ca1f27..de05ac8dca12 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -71,7 +71,6 @@ struct vc4_hdmi_audio {
- 	struct snd_soc_dai_link link;
- 	struct snd_soc_dai_link_component cpu;
- 	struct snd_soc_dai_link_component codec;
--	struct snd_soc_dai_link_component platform;
- 	int samplerate;
- 	int channels;
- 	struct snd_dmaengine_dai_dma_data dma_data;
-@@ -1101,18 +1100,15 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *hdmi)
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index cfebbeb92ef1..06111f27b229 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -506,24 +506,21 @@ static int atmel_classd_asoc_card_init(struct device *dev,
+ 	if (!dai_link)
+ 		return -ENOMEM;
  
- 	dai_link->cpus		= &hdmi->audio.cpu;
- 	dai_link->codecs	= &hdmi->audio.codec;
--	dai_link->platforms	= &hdmi->audio.platform;
+-	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
++	comp = devm_kzalloc(dev, 2 * sizeof(*comp), GFP_KERNEL);
+ 	if (!comp)
+ 		return -ENOMEM;
+ 
+ 	dai_link->cpus		= &comp[0];
+ 	dai_link->codecs	= &comp[1];
+-	dai_link->platforms	= &comp[2];
  
  	dai_link->num_cpus	= 1;
  	dai_link->num_codecs	= 1;
 -	dai_link->num_platforms	= 1;
  
- 	dai_link->name = "MAI";
- 	dai_link->stream_name = "MAI PCM";
- 	dai_link->codecs->dai_name = vc4_hdmi_audio_codec_dai_drv.name;
- 	dai_link->cpus->dai_name = dev_name(dev);
- 	dai_link->codecs->name = dev_name(dev);
--	dai_link->platforms->name = dev_name(dev);
+ 	dai_link->name			= "CLASSD";
+ 	dai_link->stream_name		= "CLASSD PCM";
+ 	dai_link->codecs->dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
+ 	dai_link->cpus->dai_name	= dev_name(dev);
+ 	dai_link->codecs->name		= dev_name(dev);
+-	dai_link->platforms->name	= dev_name(dev);
  
- 	card->dai_link = dai_link;
- 	card->num_links = 1;
+ 	card->dai_link	= dai_link;
+ 	card->num_links	= 1;
 -- 
 2.20.1
