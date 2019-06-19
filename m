@@ -1,93 +1,90 @@
-From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
-        <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 09/11] ASoC: Intel: hdac_hdmi: Set ops
- to NULL on remove
-Date: Wed, 19 Jun 2019 10:38:59 +0200
-Message-ID: <20190619103859.15bf51c5@xxx>
-References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
-        <20190617113644.25621-10-amadeuszx.slawinski@linux.intel.com>
-        <75be86354032f4886cbaf7d430de2aa89eaab573.camel@linux.intel.com>
-        <20190618130015.0fc388b4@xxx>
-        <bd8855a7ab7a9958113631b76706120fd4427631.camel@linux.intel.com>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Subject: Re: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
+Date: Wed, 19 Jun 2019 10:00:30 +0000
+Message-ID: <AM6PR05MB65351FF540C6CD22167A6F90F9E50@AM6PR05MB6535.eurprd05.prod.outlook.com>
+References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
+         <20190521103619.4707-2-oleksandr.suvorov@toradex.com>,<79fa1a0855bfcc1abad348aa047e7a69fffb8225.camel@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <bd8855a7ab7a9958113631b76706120fd4427631.camel@linux.intel.com>
+In-Reply-To: <79fa1a0855bfcc1abad348aa047e7a69fffb8225.camel@toradex.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Cezary Rojewski <cezary.rojewski@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Marcel Ziswiler <marcel.ziswiler@toradex.com>, "festevam@gmail.com" <festevam@gmail.com>
+Cc: Igor Opaniuk <igor.opaniuk@toradex.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Jun 2019 08:58:22 -0700
-Ranjani Sridharan <ranjani.sridharan@linux.intel.com> wrote:
-
-> On Tue, 2019-06-18 at 13:00 +0200, Amadeusz Sławiński wrote:
-> > On Mon, 17 Jun 2019 13:51:42 -0700
-> > Ranjani Sridharan <ranjani.sridharan@linux.intel.com> wrote:
-> >   
-> > > On Mon, 2019-06-17 at 13:36 +0200, Amadeusz Sławiński wrote:  
-> > > > When we unload Skylake driver we may end up calling
-> > > > hdac_component_master_unbind(), it uses acomp->audio_ops, which
-> > > > we
-> > > > set
-> > > > in hdmi_codec_probe(), so we need to set it to NULL in
-> > > > hdmi_codec_remove(),
-> > > > otherwise we will dereference no longer existing pointer.    
-> > > 
-> > > Hi Amadeusz,
-> > > 
-> > > It looks like the audio_ops should be deleted
-> > > snd_hdac_acomp_exit().
-> > > Also, this doesnt seem to be the case with when the SOF driver is
-> > > removed.
-> > > Could you please give a bit more context on what error you see
-> > > when this happens?  
-> > 
-> > Hi,
-> > 
-> > I get Oops. This is what happens with all other patches in this
-> > series and only this one reverted:
-> > 
-> > root@APL:~# rmmod snd_soc_sst_bxt_rt298
-> > root@APL:~# rmmod snd_soc_hdac_hdmi
-> > root@APL:~# rmmod snd_soc_skl  
-> 
-> Thanks, Amadeusz. I think the order in which the drivers are removed
-> is what's causing the oops in your case. With SOF, the order we
-> remove is
-> 
-> 1. rmmod sof_pci_dev
-> 2. rmmod snd_soc_sst_bxt_rt298
-> 3. rmmod snd_soc_hdac_hdmi
-> 
-
-Well, there is nothing enforcing the order in which modules can be
-unloaded (and I see no reason to force it), as you can see from
-following excerpt, you can either start unloading from
-snd_soc_sst_bxt_rt298 or snd_soc_skl, and yes if you start from
-snd_soc_skl, there is no problem.
-
-snd_soc_sst_bxt_rt298    40960  0
-snd_soc_hdac_hdmi      45056  1 snd_soc_sst_bxt_rt298
-snd_soc_dmic           16384  1
-snd_soc_rt298          65536  2 snd_soc_sst_bxt_rt298
-snd_soc_rt286          61440  0
-snd_soc_rl6347a        16384  2 snd_soc_rt298,snd_soc_rt286
-snd_soc_skl           372736  0
-snd_soc_sst_ipc        20480  1 snd_soc_skl
-snd_soc_sst_dsp        36864  1 snd_soc_skl
-snd_hda_ext_core       28672  2 snd_soc_hdac_hdmi,snd_soc_skl
-snd_hda_core          139264  3
-snd_hda_ext_core,snd_soc_hdac_hdmi,snd_soc_skl
-snd_soc_acpi_intel_match    53248  1 snd_soc_skl snd_soc_acpi
-16384  2 snd_soc_acpi_intel_match,snd_soc_skl snd_soc_core
-405504  6
-snd_soc_rt298,snd_soc_rt286,snd_soc_hdac_hdmi,snd_soc_skl,snd_soc_dmic,snd_soc_sst_bxt_rt298
-snd_compress           36864  2 snd_soc_core,snd_soc_skl
-snd_pcm_dmaengine      16384  1 snd_soc_core snd_pcm
-163840  10
-snd_soc_rt298,snd_soc_rt286,snd_hda_ext_core,snd_soc_hdac_hdmi,snd_compress,snd_soc_core,snd_soc_skl,snd_hda_core,snd_soc_sst_bxt_rt298,snd_pcm_dmaengine
-snd_timer              53248  1 snd_pcm
-
-Amadeusz
+> ________________________________________=0A=
+> From: Marcel Ziswiler=0A=
+> Sent: Thursday, June 13, 2019 12:05=0A=
+> To: festevam@gmail.com; Oleksandr Suvorov=0A=
+> Cc: Igor Opaniuk; linux-kernel@vger.kernel.org; alsa-devel@alsa-project.o=
+rg=0A=
+> Subject: Re: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Co=
+ntrol=0A=
+> =0A=
+> On Tue, 2019-05-21 at 13:36 +0300, Oleksandr Suvorov wrote:=0A=
+> > SGTL5000_SMALL_POP is a bit mask, not a value. Usage of=0A=
+> > correct definition makes device probing code more clear.=0A=
+> >=0A=
+> > Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>=0A=
+> =0A=
+> Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>=0A=
+> =0A=
+> > ---=0A=
+> >=0A=
+> >  sound/soc/codecs/sgtl5000.c | 2 +-=0A=
+> >  sound/soc/codecs/sgtl5000.h | 2 +-=0A=
+> >  2 files changed, 2 insertions(+), 2 deletions(-)=0A=
+> >=0A=
+> > diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c=0A=
+> =0A=
+> I'm not sure how exactly you generated this patch set but usually git=0A=
+> format-patch inserts an additional folder level called a/b which is=0A=
+> what git am accepts by default e.g.=0A=
+=0A=
+I just used patman to generate this set of patches. But my .gitconfig inclu=
+ded diff option "noprefix".=0A=
+Thanks for pointing me! Fixed. Should I resent regenerated patchset with th=
+e prefix?=0A=
+ =0A=
+> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c=0A=
+> =0A=
+> > index a6a4748c97f9..5e49523ee0b6 100644=0A=
+> > --- sound/soc/codecs/sgtl5000.c=0A=
+> > +++ sound/soc/codecs/sgtl5000.c=0A=
+> =0A=
+> Of course, the same a/b stuff applies here:=0A=
+> =0A=
+> --- a/sound/soc/codecs/sgtl5000.c=0A=
+> +++ b/sound/soc/codecs/sgtl5000.c=0A=
+> =0A=
+> > @@ -1296,7 +1296,7 @@ static int sgtl5000_probe(struct=0A=
+> > snd_soc_component *component)=0A=
+> >=0A=
+> >       /* enable small pop, introduce 400ms delay in turning off */=0A=
+> >       snd_soc_component_update_bits(component,=0A=
+> > SGTL5000_CHIP_REF_CTRL,=0A=
+> > -                             SGTL5000_SMALL_POP, 1);=0A=
+> > +                             SGTL5000_SMALL_POP,=0A=
+> > SGTL5000_SMALL_POP);=0A=
+> >=0A=
+> >       /* disable short cut detector */=0A=
+> >       snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL,=0A=
+> > 0);=0A=
+> > diff --git sound/soc/codecs/sgtl5000.h sound/soc/codecs/sgtl5000.h=0A=
+> > index 18cae08bbd3a..a4bf4bca95bf 100644=0A=
+> > --- sound/soc/codecs/sgtl5000.h=0A=
+> > +++ sound/soc/codecs/sgtl5000.h=0A=
+> > @@ -273,7 +273,7 @@=0A=
+> >  #define SGTL5000_BIAS_CTRL_MASK                      0x000e=0A=
+> >  #define SGTL5000_BIAS_CTRL_SHIFT             1=0A=
+> >  #define SGTL5000_BIAS_CTRL_WIDTH             3=0A=
+> > -#define SGTL5000_SMALL_POP                   1=0A=
+> > +#define SGTL5000_SMALL_POP                   0x0001=0A=
+> >=0A=
+> >  /*=0A=
+> >   * SGTL5000_CHIP_MIC_CTRL=0A=
+> > --=0A=
+> > 2.20.1=
