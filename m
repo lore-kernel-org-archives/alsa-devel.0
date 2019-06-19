@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: tegra_wm9712: don't select
+Subject: Applied "ASoC: tegra: tegra_rt5640: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:00 +0100 (BST)
-Message-ID: <20190619121200.37704440053@finisterre.sirena.org.uk>
-References: <87o92utlvg.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121200.C169144004B@finisterre.sirena.org.uk>
+References: <87v9x2tlw0.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEC0BF89732
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D461F89734
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:01 +0200 (CEST)
-In-Reply-To: <87o92utlvg.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v9x2tlw0.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra: tegra_wm9712: don't select unnecessary Platform
+   ASoC: tegra: tegra_rt5640: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5d62677238e94c0c347b386c3d9787b17d92a4c8 Mon Sep 17 00:00:00 2001
+>From 1d641e1523ca401c7e873684b5b65e362c278119 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:19:00 +0900
-Subject: [PATCH] ASoC: tegra: tegra_wm9712: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:18:40 +0900
+Subject: [PATCH] ASoC: tegra: tegra_rt5640: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,31 +68,31 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_wm9712.c | 5 +----
+ sound/soc/tegra/tegra_rt5640.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
-index 7526aee3a0e3..cac8496697ed 100644
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -51,8 +51,7 @@ static int tegra_wm9712_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index 3f0756132ac4..c6c7ed0f477d 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -128,8 +128,7 @@ static int tegra_rt5640_asoc_init(struct snd_soc_pcm_runtime *rtd)
  
- SND_SOC_DAILINK_DEFS(hifi,
+ SND_SOC_DAILINK_DEFS(aif1,
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5640-aif1")),
 -	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC("wm9712-codec", "wm9712-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5640-aif1")));
  
- static struct snd_soc_dai_link tegra_wm9712_dai = {
- 	.name = "AC97 HiFi",
-@@ -114,8 +113,6 @@ static int tegra_wm9712_driver_probe(struct platform_device *pdev)
- 		goto codec_unregister;
+ static struct snd_soc_dai_link tegra_rt5640_dai = {
+ 	.name = "RT5640",
+@@ -199,8 +198,6 @@ static int tegra_rt5640_probe(struct platform_device *pdev)
+ 		goto err;
  	}
  
--	tegra_wm9712_dai.platforms->of_node = tegra_wm9712_dai.cpus->of_node;
+-	tegra_rt5640_dai.platforms->of_node = tegra_rt5640_dai.cpus->of_node;
 -
  	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
  	if (ret)
- 		goto codec_unregister;
+ 		goto err;
 -- 
 2.20.1
