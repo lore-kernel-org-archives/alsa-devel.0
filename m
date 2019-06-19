@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: don't select
+Subject: Applied "ASoC: tegra: tegra_wm8753: don't select
 	unnecessary Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:11:59 +0100 (BST)
-Message-ID: <20190619121159.5695144004C@finisterre.sirena.org.uk>
-References: <87d0jatlul.wl-kuninori.morimoto.gx@renesas.com>
+Date: Wed, 19 Jun 2019 13:12:00 +0100 (BST)
+Message-ID: <20190619121200.703A9440049@finisterre.sirena.org.uk>
+References: <87r27qtlvp.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAFD2F808AF
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:00 +0200 (CEST)
-In-Reply-To: <87d0jatlul.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4850F89730
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:01 +0200 (CEST)
+In-Reply-To: <87r27qtlvp.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: don't select unnecessary Platform
+   ASoC: tegra: tegra_wm8753: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6f043744573520095bdee9e532d75574060e62f4 Mon Sep 17 00:00:00 2001
+>From 404b229b84afa2ffba14ea83e52d1434d7698520 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:19:31 +0900
-Subject: [PATCH] ASoC: simple-card-utils: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:18:51 +0900
+Subject: [PATCH] ASoC: tegra: tegra_wm8753: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,34 +68,31 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card-utils.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ sound/soc/tegra/tegra_wm8753.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index ac8678fe55ff..3cf5cb21ea52 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -346,9 +346,18 @@ EXPORT_SYMBOL_GPL(asoc_simple_dai_init);
+diff --git a/sound/soc/tegra/tegra_wm8753.c b/sound/soc/tegra/tegra_wm8753.c
+index 8492b3dbb788..bbefad5ec400 100644
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -100,8 +100,7 @@ static const struct snd_soc_dapm_widget tegra_wm8753_dapm_widgets[] = {
  
- void asoc_simple_canonicalize_platform(struct snd_soc_dai_link *dai_link)
- {
--	/* Assumes platform == cpu */
--	if (!dai_link->platforms->of_node)
--		dai_link->platforms->of_node = dai_link->cpus->of_node;
-+	/*
-+	 * no Platform
-+	 *
-+	 * It will be waste of memory, but not be memory leak.
-+	 * see
-+	 *	asoc_simple_init_priv()
-+	 *	asoc_simple_priv
-+	 */
-+	if (!dai_link->platforms->of_node) {
-+		dai_link->platforms	= NULL;
-+		dai_link->num_platforms	= 0;
-+	}
- }
- EXPORT_SYMBOL_GPL(asoc_simple_canonicalize_platform);
+ SND_SOC_DAILINK_DEFS(pcm,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8753-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8753-hifi")));
  
+ static struct snd_soc_dai_link tegra_wm8753_dai = {
+ 	.name = "WM8753",
+@@ -165,8 +164,6 @@ static int tegra_wm8753_driver_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
+-	tegra_wm8753_dai.platforms->of_node = tegra_wm8753_dai.cpus->of_node;
+-
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
+ 		goto err;
 -- 
 2.20.1
