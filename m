@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: snow: don't select unnecessary
-	Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:01 +0100 (BST)
-Message-ID: <20190619121201.72C0B44004B@finisterre.sirena.org.uk>
-References: <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rockchip: rk3288_hdmi_analog: don't
+	select unnecessary Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:02 +0100 (BST)
+Message-ID: <20190619121202.0E4F444004F@finisterre.sirena.org.uk>
+References: <87blyuv0ht.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 291ADF8973B
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD22FF80C87
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:03 +0200 (CEST)
-In-Reply-To: <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87blyuv0ht.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: snow: don't select unnecessary Platform
+   ASoC: rockchip: rk3288_hdmi_analog: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,11 @@ to this mail.
 Thanks,
 Mark
 
->From a555b6a959e6a1539d8a1dc6a48d5c8920d7724e Mon Sep 17 00:00:00 2001
+>From 9c21e82c165c009563928f4c0fe21a579352ae5b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:18:12 +0900
-Subject: [PATCH] ASoC: samsung: snow: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:17:51 +0900
+Subject: [PATCH] ASoC: rockchip: rk3288_hdmi_analog: don't select unnecessary
+ Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,43 +69,31 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/snow.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/rockchip/rk3288_hdmi_analog.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index 8ea7799df028..7d669c42cdad 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -14,9 +14,9 @@
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index 71ee16d7bde6..7e4bf3323fb1 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -154,8 +154,7 @@ static const struct snd_soc_ops rk_ops = {
+ SND_SOC_DAILINK_DEFS(audio,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ 	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, NULL),
+-			   COMP_CODEC("hdmi-audio-codec.2.auto", "i2s-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++			   COMP_CODEC("hdmi-audio-codec.2.auto", "i2s-hifi")));
  
- #define FIN_PLL_RATE		24000000
- 
--SND_SOC_DAILINK_DEFS(links,
--	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+SND_SOC_DAILINK_DEF(links_cpus,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+SND_SOC_DAILINK_DEF(links_codecs,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- struct snow_priv {
-@@ -150,8 +150,6 @@ static int snow_probe(struct platform_device *pdev)
- 	link->num_cpus = ARRAY_SIZE(links_cpus);
- 	link->codecs = links_codecs;
- 	link->num_codecs = ARRAY_SIZE(links_codecs);
--	link->platforms = links_platforms;
--	link->num_platforms = ARRAY_SIZE(links_platforms);
- 
- 	card->dai_link = link;
- 	card->num_links = 1;
-@@ -207,8 +205,6 @@ static int snow_probe(struct platform_device *pdev)
- 		}
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = "Codecs",
+@@ -249,8 +248,6 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
--	link->platforms->of_node = link->cpus->of_node;
+-	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
 -
- 	/* Update card-name if provided through DT, else use default name */
- 	snd_soc_of_parse_card_name(card, "samsung,model");
- 
+ 	ret = snd_soc_of_parse_audio_routing(card, "rockchip,routing");
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
 -- 
 2.20.1
