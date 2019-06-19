@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: omap-twl4030: don't select
+Subject: Applied "ASoC: tegra: tegra_wm8903: don't select
 	unnecessary Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:11:59 +0100 (BST)
-Message-ID: <20190619121159.A27FC440052@finisterre.sirena.org.uk>
-References: <87h88mtluy.wl-kuninori.morimoto.gx@renesas.com>
+Date: Wed, 19 Jun 2019 13:12:00 +0100 (BST)
+Message-ID: <20190619121200.547E444004F@finisterre.sirena.org.uk>
+References: <87pnnatlvl.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8102CF8972F
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:00 +0200 (CEST)
-In-Reply-To: <87h88mtluy.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9EA9F89733
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:01 +0200 (CEST)
+In-Reply-To: <87pnnatlvl.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: omap-twl4030: don't select unnecessary Platform
+   ASoC: tegra: tegra_wm8903: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From bfe1273c65e1c97ed3861fecd4812f2feeb67800 Mon Sep 17 00:00:00 2001
+>From b28d985271578efa4eaefba92f22182820b23930 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:19:18 +0900
-Subject: [PATCH] ASoC: ti: omap-twl4030: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:18:55 +0900
+Subject: [PATCH] ASoC: tegra: tegra_wm8903: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,47 +68,31 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/omap-twl4030.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ sound/soc/tegra/tegra_wm8903.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/ti/omap-twl4030.c b/sound/soc/ti/omap-twl4030.c
-index ddd24b2809b8..266999804cfd 100644
---- a/sound/soc/ti/omap-twl4030.c
-+++ b/sound/soc/ti/omap-twl4030.c
-@@ -211,13 +211,11 @@ static int omap_twl4030_init(struct snd_soc_pcm_runtime *rtd)
- /* Digital audio interface glue - connects codec <--> CPU */
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index 5915bf4cf496..8a802371f3b7 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -211,8 +211,7 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ 
  SND_SOC_DAILINK_DEFS(hifi,
- 	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.2")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.2")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-hifi")));
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8903-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8903-hifi")));
  
- SND_SOC_DAILINK_DEFS(voice,
- 	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.3")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-voice")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.3")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-voice")));
+ static struct snd_soc_dai_link tegra_wm8903_dai = {
+ 	.name = "WM8903",
+@@ -339,8 +338,6 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
  
- static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
- 	{
-@@ -279,18 +277,12 @@ static int omap_twl4030_probe(struct platform_device *pdev)
- 		omap_twl4030_dai_links[0].cpus->dai_name  = NULL;
- 		omap_twl4030_dai_links[0].cpus->of_node = dai_node;
- 
--		omap_twl4030_dai_links[0].platforms->name  = NULL;
--		omap_twl4030_dai_links[0].platforms->of_node = dai_node;
+-	tegra_wm8903_dai.platforms->of_node = tegra_wm8903_dai.cpus->of_node;
 -
- 		dai_node = of_parse_phandle(node, "ti,mcbsp-voice", 0);
- 		if (!dai_node) {
- 			card->num_links = 1;
- 		} else {
- 			omap_twl4030_dai_links[1].cpus->dai_name  = NULL;
- 			omap_twl4030_dai_links[1].cpus->of_node = dai_node;
--
--			omap_twl4030_dai_links[1].platforms->name  = NULL;
--			omap_twl4030_dai_links[1].platforms->of_node = dai_node;
- 		}
- 
- 		priv->jack_detect = of_get_named_gpio(node,
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
+ 		goto err;
 -- 
 2.20.1
