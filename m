@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: tm2_wm5110: don't select
+Subject: Applied "ASoC: rockchip: rockchip_rt5645: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:01 +0100 (BST)
-Message-ID: <20190619121201.56CF944004A@finisterre.sirena.org.uk>
-References: <8736k6v0h3.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121201.C89A7440049@finisterre.sirena.org.uk>
+References: <878styv0hk.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DCEFF896DF
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:07 +0200 (CEST)
-In-Reply-To: <8736k6v0h3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC055F89758
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:03 +0200 (CEST)
+In-Reply-To: <878styv0hk.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: tm2_wm5110: don't select unnecessary Platform
+   ASoC: rockchip: rockchip_rt5645: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,11 @@ to this mail.
 Thanks,
 Mark
 
->From ae7cbcc43b8c275b9f9b2491144110d260cd6b18 Mon Sep 17 00:00:00 2001
+>From 27a37973a6f1d508398f6ef1b140e8433870fe8a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:18:17 +0900
-Subject: [PATCH] ASoC: samsung: tm2_wm5110: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:18:00 +0900
+Subject: [PATCH] ASoC: rockchip: rockchip_rt5645: don't select unnecessary
+ Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,52 +69,31 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/tm2_wm5110.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/rockchip/rockchip_rt5645.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
-index c091033d17ad..a80781031f62 100644
---- a/sound/soc/samsung/tm2_wm5110.c
-+++ b/sound/soc/samsung/tm2_wm5110.c
-@@ -429,21 +429,17 @@ static struct snd_soc_dai_driver tm2_ext_dai[] = {
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index e17f01635bba..771d3c7305a6 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -137,8 +137,7 @@ static const struct snd_soc_ops rk_aif1_ops = {
  
- SND_SOC_DAILINK_DEFS(aif1,
- 	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif1")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif1")));
- 
- SND_SOC_DAILINK_DEFS(voice,
- 	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif2")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif2")));
- 
- SND_SOC_DAILINK_DEFS(bt,
- 	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif3")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif3")));
- 
- SND_SOC_DAILINK_DEFS(hdmi,
--	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ SND_SOC_DAILINK_DEFS(pcm,
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5645-aif1")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5645-aif1")));
  
-@@ -576,14 +572,12 @@ static int tm2_probe(struct platform_device *pdev)
- 		unsigned int dai_index = 0; /* WM5110 */
- 
- 		dai_link->cpus->name = NULL;
--		dai_link->platforms->name = NULL;
- 
- 		if (num_codecs > 1 && i == card->num_links - 1)
- 			dai_index = 1; /* HDMI */
- 
- 		dai_link->codecs->of_node = codec_dai_node[dai_index];
- 		dai_link->cpus->of_node = cpu_dai_node[dai_index];
--		dai_link->platforms->of_node = cpu_dai_node[dai_index];
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = "rt5645",
+@@ -190,8 +189,6 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 		goto put_codec_of_node;
  	}
  
- 	if (num_codecs > 1) {
+-	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
+-
+ 	ret = snd_soc_of_parse_card_name(card, "rockchip,model");
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
 -- 
 2.20.1
