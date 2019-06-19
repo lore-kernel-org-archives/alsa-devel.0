@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc.h: fixup for_each_card_links()
-	macro" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:04 +0100 (BST)
-Message-ID: <20190619121204.E6E7B44004C@finisterre.sirena.org.uk>
-References: <877e9itlgo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: samsung: tm2_wm5110: don't select
+	unnecessary Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:01 +0100 (BST)
+Message-ID: <20190619121201.56CF944004A@finisterre.sirena.org.uk>
+References: <8736k6v0h3.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3C5FF89752
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:05 +0200 (CEST)
-In-Reply-To: <877e9itlgo.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DCEFF896DF
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:07 +0200 (CEST)
+In-Reply-To: <8736k6v0h3.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc.h: fixup for_each_card_links() macro
+   ASoC: samsung: tm2_wm5110: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,31 +55,65 @@ to this mail.
 Thanks,
 Mark
 
->From 5f174cf75a8cb14d50c1cecfb3884ae82f754058 Mon Sep 17 00:00:00 2001
+>From ae7cbcc43b8c275b9f9b2491144110d260cd6b18 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:27:52 +0900
-Subject: [PATCH] ASoC: soc.h: fixup for_each_card_links() macro
+Date: Wed, 19 Jun 2019 10:18:17 +0900
+Subject: [PATCH] ASoC: samsung: tm2_wm5110: don't select unnecessary Platform
 
-Macro is using "link", not "dai_link"
+ALSA SoC is now supporting "no Platform". Sound card doesn't need to
+select "CPU component" as "Platform" anymore if it doesn't need
+special Platform.
+This patch removes such settings.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/tm2_wm5110.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 055e6d035e04..80c1ca3a62c7 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1230,7 +1230,7 @@ struct snd_soc_card {
- 	     (i)++)
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index c091033d17ad..a80781031f62 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -429,21 +429,17 @@ static struct snd_soc_dai_driver tm2_ext_dai[] = {
  
- #define for_each_card_links(card, link)				\
--	list_for_each_entry(dai_link, &(card)->dai_link_list, list)
-+	list_for_each_entry(link, &(card)->dai_link_list, list)
- #define for_each_card_links_safe(card, link, _link)			\
- 	list_for_each_entry_safe(link, _link, &(card)->dai_link_list, list)
+ SND_SOC_DAILINK_DEFS(aif1,
+ 	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif1")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif1")));
  
+ SND_SOC_DAILINK_DEFS(voice,
+ 	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif2")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif2")));
+ 
+ SND_SOC_DAILINK_DEFS(bt,
+ 	DAILINK_COMP_ARRAY(COMP_CPU(SAMSUNG_I2S_DAI)),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif3")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm5110-aif3")));
+ 
+ SND_SOC_DAILINK_DEFS(hdmi,
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
+@@ -576,14 +572,12 @@ static int tm2_probe(struct platform_device *pdev)
+ 		unsigned int dai_index = 0; /* WM5110 */
+ 
+ 		dai_link->cpus->name = NULL;
+-		dai_link->platforms->name = NULL;
+ 
+ 		if (num_codecs > 1 && i == card->num_links - 1)
+ 			dai_index = 1; /* HDMI */
+ 
+ 		dai_link->codecs->of_node = codec_dai_node[dai_index];
+ 		dai_link->cpus->of_node = cpu_dai_node[dai_index];
+-		dai_link->platforms->of_node = cpu_dai_node[dai_index];
+ 	}
+ 
+ 	if (num_codecs > 1) {
 -- 
 2.20.1
