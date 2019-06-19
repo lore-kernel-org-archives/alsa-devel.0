@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc.h: dobj is used only when
-	SND_SOC_TOPOLOGY" to the asoc tree
-Date: Wed, 19 Jun 2019 13:11:58 +0100 (BST)
-Message-ID: <20190619121158.E355D440046@finisterre.sirena.org.uk>
+Subject: Applied "ASoC: ux500: mop500: don't select unnecessary
+	Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:11:59 +0100 (BST)
+Message-ID: <20190619121159.73C5C44004F@finisterre.sirena.org.uk>
+References: <87ef3qtluo.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3B2BF80C87
+ by alsa1.perex.cz (Postfix) with ESMTPS id F13DFF80CC4
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:00 +0200 (CEST)
+In-Reply-To: <87ef3qtluo.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,16 +25,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
+   ASoC: ux500: mop500: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -53,64 +55,50 @@ to this mail.
 Thanks,
 Mark
 
->From 9b3941a8fcdd77d9f17f36f48d84bf6f1ba1a0fb Mon Sep 17 00:00:00 2001
+>From 9ae6cdb184b651bf48b9feed4f947468ff1c3c1f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:28:02 +0900
-Subject: [PATCH] ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
+Date: Wed, 19 Jun 2019 10:19:28 +0900
+Subject: [PATCH] ASoC: ux500: mop500: don't select unnecessary Platform
 
-snd_soc_dobj is used only when SND_SOC_TOPOLOGY was selected.
-Let's enable it under SND_SOC_TOPOLOGY.
+ALSA SoC is now supporting "no Platform". Sound card doesn't need to
+select "CPU component" as "Platform" anymore if it doesn't need
+special Platform.
+This patch removes such settings.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/ux500/mop500.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 64405cdab8bb..4dbfb21c14cf 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -990,7 +990,9 @@ struct snd_soc_dai_link {
- 	unsigned int ignore:1;
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 20552e9d9217..12b2260efaf4 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -29,13 +29,11 @@
+ /* Define the whole MOP500 soundcard, linking platform to the codec-drivers  */
+ SND_SOC_DAILINK_DEFS(link1,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("ux500-msp-i2s.1")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("ab8500-codec.0", "ab8500-codec-dai.0")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("ux500-msp-i2s.1")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("ab8500-codec.0", "ab8500-codec-dai.0")));
  
- 	struct list_head list; /* DAI link list of the soc card */
-+#ifdef CONFIG_SND_SOC_TOPOLOGY
- 	struct snd_soc_dobj dobj; /* For topology */
-+#endif
- };
- #define for_each_link_codecs(link, i, codec)				\
- 	for ((i) = 0;							\
-@@ -1297,7 +1299,9 @@ struct soc_mixer_control {
- 	unsigned int sign_bit;
- 	unsigned int invert:1;
- 	unsigned int autodisable:1;
-+#ifdef CONFIG_SND_SOC_TOPOLOGY
- 	struct snd_soc_dobj dobj;
-+#endif
- };
+ SND_SOC_DAILINK_DEFS(link2,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("ux500-msp-i2s.3")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("ab8500-codec.0", "ab8500-codec-dai.1")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("ux500-msp-i2s.3")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("ab8500-codec.0", "ab8500-codec-dai.1")));
  
- struct soc_bytes {
-@@ -1308,8 +1312,9 @@ struct soc_bytes {
- 
- struct soc_bytes_ext {
- 	int max;
-+#ifdef CONFIG_SND_SOC_TOPOLOGY
- 	struct snd_soc_dobj dobj;
--
-+#endif
- 	/* used for TLV byte control */
- 	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
- 			unsigned int size);
-@@ -1333,7 +1338,9 @@ struct soc_enum {
- 	const char * const *texts;
- 	const unsigned int *values;
- 	unsigned int autodisable:1;
-+#ifdef CONFIG_SND_SOC_TOPOLOGY
- 	struct snd_soc_dobj dobj;
-+#endif
- };
- 
- /**
+ static struct snd_soc_dai_link mop500_dai_links[] = {
+ 	{
+@@ -91,8 +89,6 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 	for (i = 0; i < 2; i++) {
+ 		mop500_dai_links[i].cpus->of_node = msp_np[i];
+ 		mop500_dai_links[i].cpus->dai_name = NULL;
+-		mop500_dai_links[i].platforms->of_node = msp_np[i];
+-		mop500_dai_links[i].platforms->name = NULL;
+ 		mop500_dai_links[i].codecs->of_node = codec_np;
+ 		mop500_dai_links[i].codecs->name = NULL;
+ 	}
 -- 
 2.20.1
