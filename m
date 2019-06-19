@@ -1,17 +1,19 @@
-From: mac.chiang@intel.com
-Subject: [v3] ASoC: max98357a: avoid speaker pop when playback
-	startup
-Date: Wed, 19 Jun 2019 18:18:33 +0800
-Message-ID: <1560939513-20601-1-git-send-email-mac.chiang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] ASoC: Intel: sof-rt5682: add MCLK
+ support for BYT platform
+Date: Wed, 19 Jun 2019 11:48:31 +0100
+Message-ID: <20190619104831.GQ5316@sirena.org.uk>
+References: <20190618181539.9169-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3474689786432206818=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD204F80CC4
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 12:18:37 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F3D8F808AF
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 12:48:37 +0200 (CEST)
+In-Reply-To: <20190618181539.9169-1-yung-chuan.liao@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,133 +23,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: mac.chiang@intel.com, broonie@kernel.org, lgirdwood@gmail.com, liam.r.girdwood@intel.com
+To: Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
 
-Loud speaker pop happens during playback even when in slience
-playback. Specify Max98357a amp delay times to make sure
-clocks are always earlier than sdmode on.
+--===============3474689786432206818==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SLvi8k+ew82wFfnH"
+Content-Disposition: inline
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
----
-Changelog:
-  v3:
-    - rebase to branch for-next
-  v2:
-    - added device_property_read_u32() func
----
----
- .../devicetree/bindings/sound/max98357a.txt        |  4 ++
- sound/soc/codecs/max98357a.c                       | 55 ++++++++++++++++++----
- 2 files changed, 50 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
-index 28645a2..4bce14c 100644
---- a/Documentation/devicetree/bindings/sound/max98357a.txt
-+++ b/Documentation/devicetree/bindings/sound/max98357a.txt
-@@ -9,6 +9,10 @@ Optional properties:
- - sdmode-gpios : GPIO specifier for the chip's SD_MODE pin.
-         If this option is not specified then driver does not manage
-         the pin state (e.g. chip is always on).
-+- sdmode-delay : specify delay time for SD_MODE pin.
-+        If this option is specified, which means it's required i2s clocks
-+        ready before SD_MODE is unmuted in order to avoid the speaker pop noise.
-+        It's observed that 5ms is sufficient.
- 
- Example:
- 
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index 6f724c9..6f0e28f 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -19,24 +19,42 @@
- #include <sound/soc-dai.h>
- #include <sound/soc-dapm.h>
- 
-+struct max98357a_priv {
-+	struct delayed_work enable_sdmode_work;
-+	struct gpio_desc *sdmode;
-+	unsigned int sdmode_delay;
-+};
-+
-+static void max98357a_enable_sdmode_work(struct work_struct *work)
-+{
-+	struct max98357a_priv *max98357a =
-+	container_of(work, struct max98357a_priv,
-+			enable_sdmode_work.work);
-+
-+	gpiod_set_value(max98357a->sdmode, 1);
-+}
-+
- static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- 		int cmd, struct snd_soc_dai *dai)
- {
--	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
-+	struct max98357a_priv *max98357a = snd_soc_dai_get_drvdata(dai);
- 
--	if (!sdmode)
-+	if (!max98357a->sdmode)
- 		return 0;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		gpiod_set_value(sdmode, 1);
-+		queue_delayed_work(system_power_efficient_wq,
-+				&max98357a->enable_sdmode_work,
-+				msecs_to_jiffies(max98357a->sdmode_delay));
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		gpiod_set_value(sdmode, 0);
-+		cancel_delayed_work_sync(&max98357a->enable_sdmode_work);
-+		gpiod_set_value(max98357a->sdmode, 0);
- 		break;
- 	}
- 
-@@ -90,14 +108,33 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
- 
- static int max98357a_platform_probe(struct platform_device *pdev)
- {
--	struct gpio_desc *sdmode;
-+	struct max98357a_priv *max98357a;
-+	int ret;
- 
--	sdmode = devm_gpiod_get_optional(&pdev->dev,
-+	max98357a = devm_kzalloc(&pdev->dev, sizeof(*max98357a), GFP_KERNEL);
-+
-+	if (!max98357a)
-+		return -ENOMEM;
-+
-+	max98357a->sdmode = devm_gpiod_get_optional(&pdev->dev,
- 				"sdmode", GPIOD_OUT_LOW);
--	if (IS_ERR(sdmode))
--		return PTR_ERR(sdmode);
- 
--	dev_set_drvdata(&pdev->dev, sdmode);
-+	if (IS_ERR(max98357a->sdmode))
-+		return PTR_ERR(max98357a->sdmode);
-+
-+	ret = device_property_read_u32(&pdev->dev, "sdmode-delay",
-+					&max98357a->sdmode_delay);
-+
-+	if (ret) {
-+		max98357a->sdmode_delay = 0;
-+		dev_dbg(&pdev->dev,
-+			"no optional property 'sdmode-delay' found, default: no delay\n");
-+	}
-+
-+	dev_set_drvdata(&pdev->dev, max98357a);
-+
-+	INIT_DELAYED_WORK(&max98357a->enable_sdmode_work,
-+				max98357a_enable_sdmode_work);
- 
- 	return devm_snd_soc_register_component(&pdev->dev,
- 			&max98357a_component_driver,
--- 
-2.7.4
+--SLvi8k+ew82wFfnH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 19, 2019 at 02:15:38AM +0800, Bard liao wrote:
+> From: Xun Zhang <xun2.zhang@intel.com>
+>=20
+> The sof-rt5682 machine driver currently uses BCLK on BYT/Minnowboard
+> platform. The MCLK signal is available since the Turbot revision, so
+> enable MCLK on BYT/Minnowboard Turbot platform.
+>=20
+> Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
+> Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+> ---
+
+If you've got an ack or other tag for a patch you should carry that
+forward to new postings unless there's some reason to remove it.
+
+--SLvi8k+ew82wFfnH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0KEv4ACgkQJNaLcl1U
+h9BekAf+Kdpq1fuCR3RmHbadwWkKbu1kEwnn3loLqguUmgjSf3hFieDhoBX36VPI
+ByM1pyv66P5nZri7y6WlQkPVcu0wwh9akqYN9wPQHJW8WQx6M8i55ghkiy3M/Mz8
+2fhQuMFIat8RR6uKXxOuHfHiIfF6fl1m03uc2vj7tymVivpq653vgOo5cY6N69AH
++dAOLAscubwfaY0g5OhOwvP/uMkx7Mauvr1qVim3zGScTuIO30jFDyAe8ulFiK34
+Ykn68uxHdXVmt/7QaRN4w7Rbp/lXnMnAyp2Ksqdb+23mbDoLH3oYSVcYctvgt7h6
+C0uKHhY/a3W91CYjI8R7WiX9j8bUDQ==
+=vLU/
+-----END PGP SIGNATURE-----
+
+--SLvi8k+ew82wFfnH--
+
+--===============3474689786432206818==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3474689786432206818==--
