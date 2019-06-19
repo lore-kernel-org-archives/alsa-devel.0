@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: apq8016_sbc: don't select
-	unnecessary Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:02 +0100 (BST)
-Message-ID: <20190619121202.4393444004B@finisterre.sirena.org.uk>
-References: <87ef3qv0im.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rockchip: rockchip_max98090: don't
+	select unnecessary Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:01 +0100 (BST)
+Message-ID: <20190619121201.E97B544004A@finisterre.sirena.org.uk>
+References: <87a7eev0hp.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4D0EF89741
+ by alsa1.perex.cz (Postfix) with ESMTPS id E71B3F89742
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:03 +0200 (CEST)
-In-Reply-To: <87ef3qv0im.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a7eev0hp.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: apq8016_sbc: don't select unnecessary Platform
+   ASoC: rockchip: rockchip_max98090: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,11 @@ to this mail.
 Thanks,
 Mark
 
->From 5646843879699a8774c560126b4da4ced97d9b9c Mon Sep 17 00:00:00 2001
+>From 7df405ae58953a6e880921d1948c33cd357c6ed4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:17:22 +0900
-Subject: [PATCH] ASoC: qcom: apq8016_sbc: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:17:55 +0900
+Subject: [PATCH] ASoC: rockchip: rockchip_max98090: don't select unnecessary
+ Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,39 +69,31 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/apq8016_sbc.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/rockchip/rockchip_max98090.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 717542c61d04..9ac7c9d03ca5 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -159,15 +159,12 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index fcb5c06a0fe2..6b58f3b97ded 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -125,8 +125,7 @@ static const struct snd_soc_ops rk_aif1_ops = {
  
- 	link = data->dai_link;
+ SND_SOC_DAILINK_DEFS(hifi,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")));
  
--	dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
-+	dlc = devm_kzalloc(dev, sizeof(*dlc), GFP_KERNEL);
- 	if (!dlc)
- 		return ERR_PTR(-ENOMEM);
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = "max98090",
+@@ -205,8 +204,6 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
  
--	link->cpus	= &dlc[0];
--	link->platforms	= &dlc[1];
+-	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
 -
--	link->num_cpus		= 1;
--	link->num_platforms	= 1;
-+	link->cpus	= dlc;
-+	link->num_cpus	= 1;
- 
- 	for_each_child_of_node(node, np) {
- 		cpu = of_get_child_by_name(np, "cpu");
-@@ -199,7 +196,6 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
- 			goto error;
- 		}
- 
--		link->platforms->of_node = link->cpus->of_node;
- 		ret = of_property_read_string(np, "link-name", &link->name);
- 		if (ret) {
- 			dev_err(card->dev, "error getting codec dai_link name\n");
+ 	rk_98090_headset_dev.codec_of_node = of_parse_phandle(np,
+ 			"rockchip,headset-codec", 0);
+ 	if (!rk_98090_headset_dev.codec_of_node) {
 -- 
 2.20.1
