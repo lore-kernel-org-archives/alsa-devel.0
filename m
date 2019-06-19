@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: arndale_rt5631: don't select
+Subject: Applied "ASoC: samsung: smdk_wm8994: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:01 +0100 (BST)
-Message-ID: <20190619121201.B171D440046@finisterre.sirena.org.uk>
-References: <877e9iv0hg.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121201.90DA844004C@finisterre.sirena.org.uk>
+References: <875zp2v0hc.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AFFDF8973E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DCB4F8973D
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:03 +0200 (CEST)
-In-Reply-To: <877e9iv0hg.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zp2v0hc.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: arndale_rt5631: don't select unnecessary Platform
+   ASoC: samsung: smdk_wm8994: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,11 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 33949eb5019d4b319e89eb6469a622ebbba30cd5 Mon Sep 17 00:00:00 2001
+>From d815e0f08fdd6259c9fff9eb4dc1834454526e98 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:18:04 +0900
-Subject: [PATCH] ASoC: samsung: arndale_rt5631: don't select unnecessary
- Platform
+Date: Wed, 19 Jun 2019 10:18:09 +0900
+Subject: [PATCH] ASoC: samsung: smdk_wm8994: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -69,32 +68,38 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/arndale_rt5631.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/samsung/smdk_wm8994.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
-index c213913eb984..e36c140400b7 100644
---- a/sound/soc/samsung/arndale_rt5631.c
-+++ b/sound/soc/samsung/arndale_rt5631.c
-@@ -52,8 +52,7 @@ static struct snd_soc_ops arndale_ops = {
+diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+index 28f8be000aa1..99aa1620a17d 100644
+--- a/sound/soc/samsung/smdk_wm8994.c
++++ b/sound/soc/samsung/smdk_wm8994.c
+@@ -102,13 +102,11 @@ static int smdk_wm8994_init_paiftx(struct snd_soc_pcm_runtime *rtd)
  
- SND_SOC_DAILINK_DEFS(rt5631_hifi,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")));
+ SND_SOC_DAILINK_DEFS(aif1,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s.0")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s.0")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")));
  
- static struct snd_soc_dai_link arndale_rt5631_dai[] = {
- 	{
-@@ -93,9 +92,6 @@ static int arndale_audio_probe(struct platform_device *pdev)
- 				return -EINVAL;
- 			}
+ SND_SOC_DAILINK_DEFS(fifo_tx,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("samsung-i2s-sec")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("samsung-i2s-sec")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8994-codec", "wm8994-aif1")));
+ 
+ static struct snd_soc_dai_link smdk_dai[] = {
+ 	{ /* Primary DAI i/f */
+@@ -165,9 +163,6 @@ static int smdk_audio_probe(struct platform_device *pdev)
+ 			   "Property 'samsung,i2s-controller' missing or invalid\n");
+ 			ret = -EINVAL;
  		}
--		if (!arndale_rt5631_dai[n].platforms->name)
--			arndale_rt5631_dai[n].platforms->of_node =
--					arndale_rt5631_dai[n].cpus->of_node;
+-
+-		smdk_dai[0].platforms->name = NULL;
+-		smdk_dai[0].platforms->of_node = smdk_dai[0].cpus->of_node;
+ 	}
  
- 		arndale_rt5631_dai[n].codecs->name = NULL;
- 		arndale_rt5631_dai[n].codecs->of_node = of_parse_phandle(np,
+ 	id = of_match_device(of_match_ptr(samsung_wm8994_of_match), &pdev->dev);
 -- 
 2.20.1
