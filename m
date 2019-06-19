@@ -1,22 +1,38 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: handle concurrent interrupts" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:04 +0100 (BST)
-Message-ID: <20190619121204.5633D440046@finisterre.sirena.org.uk>
-References: <20190618234555.188955-3-fletcherw@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190618234555.188955-3-fletcherw@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ben Zhang <benzh@chromium.org>
-Cc: alsa-devel@alsa-project.org, Curtis Malainey <cujomalainey@chromium.org>, Fletcher Woodruff <fletcherw@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Ross Zwisler <zwisler@chromium.org>, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: soc.h: dobj is used only when
+	SND_SOC_TOPOLOGY" to the asoc tree
+Date: Wed, 19 Jun 2019 13:11:58 +0100 (BST)
+Message-ID: <20190619121158.E355D440046@finisterre.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3B2BF80C87
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:00 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: handle concurrent interrupts
+   ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,115 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From df9091e9d3f4500bc6fb15f5d2a1c2614f67004c Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Tue, 18 Jun 2019 17:45:55 -0600
-Subject: [PATCH] ASoC: rt5677: handle concurrent interrupts
+>From 9b3941a8fcdd77d9f17f36f48d84bf6f1ba1a0fb Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 19 Jun 2019 10:28:02 +0900
+Subject: [PATCH] ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
 
-The rt5677 driver writes to the IRQ control register within the IRQ
-handler in order to flip the polarity of the interrupts that have been
-signalled.  If an interrupt fires in the interval between the
-regmap_read and the regmap_write, it will not trigger a new call to
-rt5677_irq.
+snd_soc_dobj is used only when SND_SOC_TOPOLOGY was selected.
+Let's enable it under SND_SOC_TOPOLOGY.
 
-Add a bounded loop to rt5677_irq that keeps checking interrupts until
-none are seen, so that any interrupts that are signalled in that
-interval are correctly handled.
-
-Signed-off-by: Ben Zhang <benzh@chromium.org>
-Signed-off-by: Fletcher Woodruff <fletcherw@chromium.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 71 +++++++++++++++++++++++++--------------
- 1 file changed, 45 insertions(+), 26 deletions(-)
+ include/sound/soc.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index b5ae61ff87af..202af7135f07 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5072,38 +5072,57 @@ static const struct rt5677_irq_desc rt5677_irq_descs[] = {
- static irqreturn_t rt5677_irq(int unused, void *data)
- {
- 	struct rt5677_priv *rt5677 = data;
--	int ret = 0, i, reg_irq, virq;
-+	int ret = 0, loop, i, reg_irq, virq;
- 	bool irq_fired = false;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 64405cdab8bb..4dbfb21c14cf 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -990,7 +990,9 @@ struct snd_soc_dai_link {
+ 	unsigned int ignore:1;
  
- 	mutex_lock(&rt5677->irq_lock);
--	/* Read interrupt status */
--	ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
--	if (ret) {
--		dev_err(rt5677->dev, "failed reading IRQ status: %d\n", ret);
--		goto exit;
--	}
+ 	struct list_head list; /* DAI link list of the soc card */
++#ifdef CONFIG_SND_SOC_TOPOLOGY
+ 	struct snd_soc_dobj dobj; /* For topology */
++#endif
+ };
+ #define for_each_link_codecs(link, i, codec)				\
+ 	for ((i) = 0;							\
+@@ -1297,7 +1299,9 @@ struct soc_mixer_control {
+ 	unsigned int sign_bit;
+ 	unsigned int invert:1;
+ 	unsigned int autodisable:1;
++#ifdef CONFIG_SND_SOC_TOPOLOGY
+ 	struct snd_soc_dobj dobj;
++#endif
+ };
  
--	for (i = 0; i < RT5677_IRQ_NUM; i++) {
--		if (reg_irq & rt5677_irq_descs[i].status_mask) {
--			irq_fired = true;
--			virq = irq_find_mapping(rt5677->domain, i);
--			if (virq)
--				handle_nested_irq(virq);
+ struct soc_bytes {
+@@ -1308,8 +1312,9 @@ struct soc_bytes {
+ 
+ struct soc_bytes_ext {
+ 	int max;
++#ifdef CONFIG_SND_SOC_TOPOLOGY
+ 	struct snd_soc_dobj dobj;
 -
--			/* Clear the interrupt by flipping the polarity of the
--			 * interrupt source line that fired
--			 */
--			reg_irq ^= rt5677_irq_descs[i].polarity_mask;
-+	/*
-+	 * Loop to handle interrupts until the last i2c read shows no pending
-+	 * irqs. The interrupt line is shared by multiple interrupt sources.
-+	 * After the regmap_read() below, a new interrupt source line may
-+	 * become high before the regmap_write() finishes, so there isn't a
-+	 * rising edge on the shared interrupt line for the new interrupt. Thus,
-+	 * the loop is needed to avoid missing irqs.
-+	 *
-+	 * A safeguard of 20 loops is used to avoid hanging in the irq handler
-+	 * if there is something wrong with the interrupt status update. The
-+	 * interrupt sources here are audio jack plug/unplug events which
-+	 * shouldn't happen at a high frequency for a long period of time.
-+	 * Empirically, more than 3 loops have never been seen.
-+	 */
-+	for (loop = 0; loop < 20; loop++) {
-+		/* Read interrupt status */
-+		ret = regmap_read(rt5677->regmap, RT5677_IRQ_CTRL1, &reg_irq);
-+		if (ret) {
-+			dev_err(rt5677->dev, "failed reading IRQ status: %d\n",
-+				ret);
-+			goto exit;
- 		}
--	}
++#endif
+ 	/* used for TLV byte control */
+ 	int (*get)(struct snd_kcontrol *kcontrol, unsigned int __user *bytes,
+ 			unsigned int size);
+@@ -1333,7 +1338,9 @@ struct soc_enum {
+ 	const char * const *texts;
+ 	const unsigned int *values;
+ 	unsigned int autodisable:1;
++#ifdef CONFIG_SND_SOC_TOPOLOGY
+ 	struct snd_soc_dobj dobj;
++#endif
+ };
  
--	if (!irq_fired)
--		goto exit;
--
--	ret = regmap_write(rt5677->regmap, RT5677_IRQ_CTRL1, reg_irq);
--	if (ret) {
--		dev_err(rt5677->dev, "failed updating IRQ status: %d\n", ret);
--		goto exit;
-+		irq_fired = false;
-+		for (i = 0; i < RT5677_IRQ_NUM; i++) {
-+			if (reg_irq & rt5677_irq_descs[i].status_mask) {
-+				irq_fired = true;
-+				virq = irq_find_mapping(rt5677->domain, i);
-+				if (virq)
-+					handle_nested_irq(virq);
-+
-+				/* Clear the interrupt by flipping the polarity
-+				 * of the interrupt source line that fired
-+				 */
-+				reg_irq ^= rt5677_irq_descs[i].polarity_mask;
-+			}
-+		}
-+		if (!irq_fired)
-+			goto exit;
-+
-+		ret = regmap_write(rt5677->regmap, RT5677_IRQ_CTRL1, reg_irq);
-+		if (ret) {
-+			dev_err(rt5677->dev, "failed updating IRQ status: %d\n",
-+				ret);
-+			goto exit;
-+		}
- 	}
- exit:
- 	mutex_unlock(&rt5677->irq_lock);
+ /**
 -- 
 2.20.1
