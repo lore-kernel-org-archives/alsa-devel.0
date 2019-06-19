@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: mikroe-proto: don't select
+Subject: Applied "ASoC: atmel: atmel_wm8904: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:03 +0100 (BST)
-Message-ID: <20190619121203.9BB31440046@finisterre.sirena.org.uk>
-References: <87wohiv0mg.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121203.B97CF440050@finisterre.sirena.org.uk>
+References: <87zhmev0mw.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFB7CF8974D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4320EF8974E
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:04 +0200 (CEST)
-In-Reply-To: <87wohiv0mg.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zhmev0mw.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: mikroe-proto: don't select unnecessary Platform
+   ASoC: atmel: atmel_wm8904: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 318ebbe8060d9664370c844029246f0588263fe4 Mon Sep 17 00:00:00 2001
+>From 3609750e9d4ba9db7027866827a0e462fbe86866 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:15:05 +0900
-Subject: [PATCH] ASoC: atmel: mikroe-proto: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:14:48 +0900
+Subject: [PATCH] ASoC: atmel: atmel_wm8904: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,40 +68,30 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/mikroe-proto.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/atmel/atmel_wm8904.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/atmel/mikroe-proto.c b/sound/soc/atmel/mikroe-proto.c
-index 255168a9df5b..5335ca0ee086 100644
---- a/sound/soc/atmel/mikroe-proto.c
-+++ b/sound/soc/atmel/mikroe-proto.c
-@@ -88,8 +88,8 @@ static int snd_proto_probe(struct platform_device *pdev)
- 	if (!dai)
- 		return -ENOMEM;
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+index 084788ed328c..df5268939331 100644
+--- a/sound/soc/atmel/atmel_wm8904.c
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -59,8 +59,7 @@ static const struct snd_soc_ops atmel_asoc_wm8904_ops = {
  
--	/* for cpus/codecs/platforms */
--	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
-+	/* for cpus/codecs */
-+	comp = devm_kzalloc(&pdev->dev, 2 * sizeof(*comp), GFP_KERNEL);
- 	if (!comp)
- 		return -ENOMEM;
+ SND_SOC_DAILINK_DEFS(pcm,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8904-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8904-hifi")));
  
-@@ -100,8 +100,6 @@ static int snd_proto_probe(struct platform_device *pdev)
- 	dai->num_cpus = 1;
- 	dai->codecs = &comp[1];
- 	dai->num_codecs = 1;
--	dai->platforms = &comp[2];
--	dai->num_platforms = 1;
- 
- 	dai->name = "WM8731";
- 	dai->stream_name = "WM8731 HiFi";
-@@ -121,7 +119,6 @@ static int snd_proto_probe(struct platform_device *pdev)
- 		return -EINVAL;
+ static struct snd_soc_dai_link atmel_asoc_wm8904_dailink = {
+ 	.name = "WM8904",
+@@ -114,7 +113,6 @@ static int atmel_asoc_wm8904_dt_init(struct platform_device *pdev)
+ 		return ret;
  	}
- 	dai->cpus->of_node = cpu_np;
--	dai->platforms->of_node = cpu_np;
+ 	dailink->cpus->of_node = cpu_np;
+-	dailink->platforms->of_node = cpu_np;
+ 	of_node_put(cpu_np);
  
- 	dai_fmt = snd_soc_of_parse_daifmt(np, NULL,
- 					  &bitclkmaster, &framemaster);
+ 	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
 -- 
 2.20.1
