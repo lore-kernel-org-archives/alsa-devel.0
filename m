@@ -1,90 +1,101 @@
-From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: Re: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
-Date: Wed, 19 Jun 2019 10:00:30 +0000
-Message-ID: <AM6PR05MB65351FF540C6CD22167A6F90F9E50@AM6PR05MB6535.eurprd05.prod.outlook.com>
-References: <20190521103619.4707-1-oleksandr.suvorov@toradex.com>
-         <20190521103619.4707-2-oleksandr.suvorov@toradex.com>,<79fa1a0855bfcc1abad348aa047e7a69fffb8225.camel@toradex.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ALSA: oxfw: configure packet format in
+ pcm.hw_params callback
+Date: Wed, 19 Jun 2019 13:16:39 +0300
+Message-ID: <20190619101639.GA29913@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <79fa1a0855bfcc1abad348aa047e7a69fffb8225.camel@toradex.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>, "festevam@gmail.com" <festevam@gmail.com>
-Cc: Igor Opaniuk <igor.opaniuk@toradex.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65184F808AF
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 12:16:57 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: o-takashi@sakamocchi.jp
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> ________________________________________=0A=
-> From: Marcel Ziswiler=0A=
-> Sent: Thursday, June 13, 2019 12:05=0A=
-> To: festevam@gmail.com; Oleksandr Suvorov=0A=
-> Cc: Igor Opaniuk; linux-kernel@vger.kernel.org; alsa-devel@alsa-project.o=
-rg=0A=
-> Subject: Re: [PATCH v1 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Co=
-ntrol=0A=
-> =0A=
-> On Tue, 2019-05-21 at 13:36 +0300, Oleksandr Suvorov wrote:=0A=
-> > SGTL5000_SMALL_POP is a bit mask, not a value. Usage of=0A=
-> > correct definition makes device probing code more clear.=0A=
-> >=0A=
-> > Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>=0A=
-> =0A=
-> Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>=0A=
-> =0A=
-> > ---=0A=
-> >=0A=
-> >  sound/soc/codecs/sgtl5000.c | 2 +-=0A=
-> >  sound/soc/codecs/sgtl5000.h | 2 +-=0A=
-> >  2 files changed, 2 insertions(+), 2 deletions(-)=0A=
-> >=0A=
-> > diff --git sound/soc/codecs/sgtl5000.c sound/soc/codecs/sgtl5000.c=0A=
-> =0A=
-> I'm not sure how exactly you generated this patch set but usually git=0A=
-> format-patch inserts an additional folder level called a/b which is=0A=
-> what git am accepts by default e.g.=0A=
-=0A=
-I just used patman to generate this set of patches. But my .gitconfig inclu=
-ded diff option "noprefix".=0A=
-Thanks for pointing me! Fixed. Should I resent regenerated patchset with th=
-e prefix?=0A=
- =0A=
-> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c=0A=
-> =0A=
-> > index a6a4748c97f9..5e49523ee0b6 100644=0A=
-> > --- sound/soc/codecs/sgtl5000.c=0A=
-> > +++ sound/soc/codecs/sgtl5000.c=0A=
-> =0A=
-> Of course, the same a/b stuff applies here:=0A=
-> =0A=
-> --- a/sound/soc/codecs/sgtl5000.c=0A=
-> +++ b/sound/soc/codecs/sgtl5000.c=0A=
-> =0A=
-> > @@ -1296,7 +1296,7 @@ static int sgtl5000_probe(struct=0A=
-> > snd_soc_component *component)=0A=
-> >=0A=
-> >       /* enable small pop, introduce 400ms delay in turning off */=0A=
-> >       snd_soc_component_update_bits(component,=0A=
-> > SGTL5000_CHIP_REF_CTRL,=0A=
-> > -                             SGTL5000_SMALL_POP, 1);=0A=
-> > +                             SGTL5000_SMALL_POP,=0A=
-> > SGTL5000_SMALL_POP);=0A=
-> >=0A=
-> >       /* disable short cut detector */=0A=
-> >       snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL,=0A=
-> > 0);=0A=
-> > diff --git sound/soc/codecs/sgtl5000.h sound/soc/codecs/sgtl5000.h=0A=
-> > index 18cae08bbd3a..a4bf4bca95bf 100644=0A=
-> > --- sound/soc/codecs/sgtl5000.h=0A=
-> > +++ sound/soc/codecs/sgtl5000.h=0A=
-> > @@ -273,7 +273,7 @@=0A=
-> >  #define SGTL5000_BIAS_CTRL_MASK                      0x000e=0A=
-> >  #define SGTL5000_BIAS_CTRL_SHIFT             1=0A=
-> >  #define SGTL5000_BIAS_CTRL_WIDTH             3=0A=
-> > -#define SGTL5000_SMALL_POP                   1=0A=
-> > +#define SGTL5000_SMALL_POP                   0x0001=0A=
-> >=0A=
-> >  /*=0A=
-> >   * SGTL5000_CHIP_MIC_CTRL=0A=
-> > --=0A=
-> > 2.20.1=
+Hello Takashi Sakamoto,
+
+The patch 4f380d007052: "ALSA: oxfw: configure packet format in
+pcm.hw_params callback" from Jun 12, 2019, leads to the following
+static checker warning:
+
+	sound/firewire/oxfw/oxfw-stream.c:357 snd_oxfw_stream_start_duplex()
+	warn: 'oxfw->rx_stream.buffer.packets' double freed
+
+sound/firewire/oxfw/oxfw-stream.c
+   317  int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
+   318  {
+   319          int err;
+   320  
+   321          if (oxfw->substreams_count == 0)
+   322                  return -EIO;
+   323  
+   324          if (amdtp_streaming_error(&oxfw->rx_stream) ||
+   325              amdtp_streaming_error(&oxfw->tx_stream)) {
+   326                  amdtp_stream_stop(&oxfw->rx_stream);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   327                  cmp_connection_break(&oxfw->in_conn);
+   328  
+   329                  if (oxfw->has_output) {
+   330                          amdtp_stream_stop(&oxfw->tx_stream);
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   331                          cmp_connection_break(&oxfw->out_conn);
+   332                  }
+   333          }
+   334  
+   335          if (!amdtp_stream_running(&oxfw->rx_stream)) {
+   336                  err = start_stream(oxfw, &oxfw->rx_stream);
+   337                  if (err < 0) {
+   338                          dev_err(&oxfw->unit->device,
+   339                                  "fail to start rx stream: %d\n", err);
+   340                          goto error;
+   341                  }
+   342          }
+   343  
+   344          if (oxfw->has_output) {
+   345                  if (!amdtp_stream_running(&oxfw->tx_stream)) {
+   346                          err = start_stream(oxfw, &oxfw->tx_stream);
+   347                          if (err < 0) {
+   348                                  dev_err(&oxfw->unit->device,
+   349                                          "fail to start tx stream: %d\n", err);
+   350                                  goto error;
+   351                          }
+   352                  }
+   353          }
+   354  
+   355          return 0;
+   356  error:
+   357          amdtp_stream_stop(&oxfw->rx_stream);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Smatch is basically complaining that we call amdtp_stream_stop() and
+it's not clear that we necessarily reset things.  I don't know this code
+very well so I have maybe missed something.
+
+   358          cmp_connection_break(&oxfw->in_conn);
+   359          if (oxfw->has_output) {
+   360                  amdtp_stream_stop(&oxfw->tx_stream);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   361                  cmp_connection_break(&oxfw->out_conn);
+   362          }
+   363          return err;
+   364  }
+
+regards,
+dan carpenter
