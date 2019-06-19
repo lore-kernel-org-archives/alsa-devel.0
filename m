@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rockchip_max98090: don't
-	select unnecessary Platform" to the asoc tree
-Date: Wed, 19 Jun 2019 13:12:01 +0100 (BST)
-Message-ID: <20190619121201.E97B544004A@finisterre.sirena.org.uk>
-References: <87a7eev0hp.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: mxs: mxs-sgtl5000: don't select
+	unnecessary Platform" to the asoc tree
+Date: Wed, 19 Jun 2019 13:12:02 +0100 (BST)
+Message-ID: <20190619121202.5C81A440046@finisterre.sirena.org.uk>
+References: <87fto6v0iq.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E71B3F89742
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25B40F89744
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:03 +0200 (CEST)
-In-Reply-To: <87a7eev0hp.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87fto6v0iq.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rockchip_max98090: don't select unnecessary Platform
+   ASoC: mxs: mxs-sgtl5000: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,11 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From 7df405ae58953a6e880921d1948c33cd357c6ed4 Mon Sep 17 00:00:00 2001
+>From 5f92229d184b80712a8b94d098318960171ae749 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:17:55 +0900
-Subject: [PATCH] ASoC: rockchip: rockchip_max98090: don't select unnecessary
- Platform
+Date: Wed, 19 Jun 2019 10:17:18 +0900
+Subject: [PATCH] ASoC: mxs: mxs-sgtl5000: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -69,31 +68,37 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/mxs/mxs-sgtl5000.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index fcb5c06a0fe2..6b58f3b97ded 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -125,8 +125,7 @@ static const struct snd_soc_ops rk_aif1_ops = {
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index 459fced603b0..088b14a7f8ac 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -78,13 +78,11 @@ static const struct snd_soc_ops mxs_sgtl5000_hifi_ops = {
  
- SND_SOC_DAILINK_DEFS(hifi,
+ SND_SOC_DAILINK_DEFS(hifi_tx,
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")),
 -	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")));
  
- static struct snd_soc_dai_link rk_dailink = {
- 	.name = "max98090",
-@@ -205,8 +204,6 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
- 		return -EINVAL;
+ SND_SOC_DAILINK_DEFS(hifi_rx,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")),
+-	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")));
+ 
+ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+ 	{
+@@ -139,8 +137,6 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
+ 		mxs_sgtl5000_dai[i].codecs->of_node = codec_np;
+ 		mxs_sgtl5000_dai[i].cpus->dai_name = NULL;
+ 		mxs_sgtl5000_dai[i].cpus->of_node = saif_np[i];
+-		mxs_sgtl5000_dai[i].platforms->name = NULL;
+-		mxs_sgtl5000_dai[i].platforms->of_node = saif_np[i];
  	}
  
--	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
--
- 	rk_98090_headset_dev.codec_of_node = of_parse_phandle(np,
- 			"rockchip,headset-codec", 0);
- 	if (!rk_98090_headset_dev.codec_of_node) {
+ 	of_node_put(codec_np);
 -- 
 2.20.1
