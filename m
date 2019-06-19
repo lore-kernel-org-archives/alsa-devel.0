@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: imx-audmix: don't select
+Subject: Applied "ASoC: fsl: imx-spdif: don't select
 	unnecessary Platform" to the asoc tree
 Date: Wed, 19 Jun 2019 13:12:02 +0100 (BST)
-Message-ID: <20190619121202.969B0440049@finisterre.sirena.org.uk>
-References: <87imt2v0iy.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190619121202.B0E9B44004A@finisterre.sirena.org.uk>
+References: <87k1div0j2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3074DF8973F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76F8EF89746
  for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 14:12:04 +0200 (CEST)
-In-Reply-To: <87imt2v0iy.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k1div0j2.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: imx-audmix: don't select unnecessary Platform
+   ASoC: fsl: imx-spdif: don't select unnecessary Platform
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From d8893261a7d327302520eb9bebb72c5040c2219f Mon Sep 17 00:00:00 2001
+>From 014f07ca1cb12947aea7c9132efe920c5b003b29 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:17:10 +0900
-Subject: [PATCH] ASoC: fsl: imx-audmix: don't select unnecessary Platform
+Date: Wed, 19 Jun 2019 10:17:06 +0900
+Subject: [PATCH] ASoC: fsl: imx-spdif: don't select unnecessary Platform
 
 ALSA SoC is now supporting "no Platform". Sound card doesn't need to
 select "CPU component" as "Platform" anymore if it doesn't need
@@ -68,66 +68,40 @@ This patch removes such settings.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-audmix.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/fsl/imx-spdif.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 9e1cb18859ce..9d41266a5264 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -207,8 +207,8 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 	for (i = 0; i < num_dai; i++) {
- 		struct snd_soc_dai_link_component *dlc;
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index 6c4dadf60355..393c5a31f494 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -26,7 +26,7 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 	}
  
--		/* for CPU/Codec/Platform x 2 */
--		dlc = devm_kzalloc(&pdev->dev, 6 * sizeof(*dlc), GFP_KERNEL);
-+		/* for CPU/Codec x 2 */
-+		dlc = devm_kzalloc(&pdev->dev, 4 * sizeof(*dlc), GFP_KERNEL);
- 		if (!dlc) {
- 			dev_err(&pdev->dev, "failed to allocate dai_link\n");
- 			return -ENOMEM;
-@@ -242,11 +242,9 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+-	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
++	comp = devm_kzalloc(&pdev->dev, 2 * sizeof(*comp), GFP_KERNEL);
+ 	if (!data || !comp) {
+ 		ret = -ENOMEM;
+ 		goto end;
+@@ -34,18 +34,15 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
  
- 		priv->dai[i].cpus = &dlc[0];
- 		priv->dai[i].codecs = &dlc[1];
--		priv->dai[i].platforms = &dlc[2];
+ 	data->dai.cpus		= &comp[0];
+ 	data->dai.codecs	= &comp[1];
+-	data->dai.platforms	= &comp[2];
  
- 		priv->dai[i].num_cpus = 1;
- 		priv->dai[i].num_codecs = 1;
--		priv->dai[i].num_platforms = 1;
+ 	data->dai.num_cpus	= 1;
+ 	data->dai.num_codecs	= 1;
+-	data->dai.num_platforms	= 1;
  
- 		priv->dai[i].name = dai_name;
- 		priv->dai[i].stream_name = "HiFi-AUDMIX-FE";
-@@ -254,7 +252,6 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		priv->dai[i].codecs->name = "snd-soc-dummy";
- 		priv->dai[i].cpus->of_node = args.np;
- 		priv->dai[i].cpus->dai_name = dev_name(&cpu_pdev->dev);
--		priv->dai[i].platforms->of_node = args.np;
- 		priv->dai[i].dynamic = 1;
- 		priv->dai[i].dpcm_playback = 1;
- 		priv->dai[i].dpcm_capture = (i == 0 ? 1 : 0);
-@@ -269,20 +266,17 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		be_cp = devm_kasprintf(&pdev->dev, GFP_KERNEL,
- 				       "AUDMIX-Capture-%d", i);
+ 	data->dai.name = "S/PDIF PCM";
+ 	data->dai.stream_name = "S/PDIF PCM";
+ 	data->dai.codecs->dai_name = "snd-soc-dummy-dai";
+ 	data->dai.codecs->name = "snd-soc-dummy";
+ 	data->dai.cpus->of_node = spdif_np;
+-	data->dai.platforms->of_node = spdif_np;
+ 	data->dai.playback_only = true;
+ 	data->dai.capture_only = true;
  
--		priv->dai[num_dai + i].cpus = &dlc[3];
--		priv->dai[num_dai + i].codecs = &dlc[4];
--		priv->dai[num_dai + i].platforms = &dlc[5];
-+		priv->dai[num_dai + i].cpus = &dlc[2];
-+		priv->dai[num_dai + i].codecs = &dlc[3];
- 
- 		priv->dai[num_dai + i].num_cpus = 1;
- 		priv->dai[num_dai + i].num_codecs = 1;
--		priv->dai[num_dai + i].num_platforms = 1;
- 
- 		priv->dai[num_dai + i].name = be_name;
- 		priv->dai[num_dai + i].codecs->dai_name = "snd-soc-dummy-dai";
- 		priv->dai[num_dai + i].codecs->name = "snd-soc-dummy";
- 		priv->dai[num_dai + i].cpus->of_node = audmix_np;
- 		priv->dai[num_dai + i].cpus->dai_name = be_name;
--		priv->dai[num_dai + i].platforms->name = "snd-soc-dummy";
- 		priv->dai[num_dai + i].no_pcm = 1;
- 		priv->dai[num_dai + i].dpcm_playback = 1;
- 		priv->dai[num_dai + i].dpcm_capture  = 1;
 -- 
 2.20.1
