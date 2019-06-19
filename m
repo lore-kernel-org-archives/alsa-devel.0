@@ -1,22 +1,19 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [bug report] ASoC: codecs: ad193x: Fix frame
- polarity for DSP_A format
-Date: Wed, 19 Jun 2019 16:39:53 +0000
-Message-ID: <71a9a03f-f5a2-f682-4742-c8d37a301961@microchip.com>
-References: <20190619143414.GA26033@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ASoC: soc.h: dobj is used only when
+ SND_SOC_TOPOLOGY" to the asoc tree
+Date: Wed, 19 Jun 2019 20:00:16 +0100
+Message-ID: <20190619190016.GZ5316@sirena.org.uk>
+References: <20190619121158.E355D440046@finisterre.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3036874137180364389=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
- [68.232.149.84])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CF4EF80CC4
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 18:40:00 +0200 (CEST)
-In-Reply-To: <20190619143414.GA26033@mwanda>
-Content-Language: en-US
-Content-ID: <3C4F83D60CAB3F43AD18AD900CB3EFA8@namprd11.prod.outlook.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4D01F80C87
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 21:00:18 +0200 (CEST)
+In-Reply-To: <20190619121158.E355D440046@finisterre.sirena.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,94 +23,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: dan.carpenter@oracle.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19.06.2019 17:34, Dan Carpenter wrote:
-> External E-Mail
-> 
-> 
-> Hi Codrin,
-> 
-> Linus recently corrected me on one of my patches and I said I would
-> look through the kernel and fix similar bugs as well.  The problem I
-> realized is that I'm really stupid and I have forgot how to do math...
-> 
-> The patch 90f6e6803139: "ASoC: codecs: ad193x: Fix frame polarity for
-> DSP_A format" from Feb 18, 2019, leads to the following static
-> checker warning:
-> 
-> 	sound/soc/codecs/ad193x.c:244 ad193x_set_dai_fmt()
-> 	warn: passing casted pointer '&dac_fmt' to 'change_bit()' 32 vs 64.
-> 
-> sound/soc/codecs/ad193x.c
->     194  static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
->     195                  unsigned int fmt)
->     196  {
->     197          struct ad193x_priv *ad193x = snd_soc_component_get_drvdata(codec_dai->component);
->     198          unsigned int adc_serfmt = 0;
->     199          unsigned int dac_serfmt = 0;
->     200          unsigned int adc_fmt = 0;
->     201          unsigned int dac_fmt = 0;
->                  ^^^^^^^^^^^^^^^^^^^^^^^^
-> This is a u32.
-> 
->     202
->     203          /* At present, the driver only support AUX ADC mode(SND_SOC_DAIFMT_I2S
->     204           * with TDM), ADC&DAC TDM mode(SND_SOC_DAIFMT_DSP_A) and DAC I2S mode
->     205           * (SND_SOC_DAIFMT_I2S)
->     206           */
->     207          switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->     208          case SND_SOC_DAIFMT_I2S:
->     209                  adc_serfmt |= AD193X_ADC_SERFMT_TDM;
->     210                  dac_serfmt |= AD193X_DAC_SERFMT_STEREO;
->     211                  break;
->     212          case SND_SOC_DAIFMT_DSP_A:
->     213                  adc_serfmt |= AD193X_ADC_SERFMT_AUX;
->     214                  dac_serfmt |= AD193X_DAC_SERFMT_TDM;
->     215                  break;
->     216          default:
->     217                  if (ad193x_has_adc(ad193x))
->     218                          return -EINVAL;
->     219          }
->     220
->     221          switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
->     222          case SND_SOC_DAIFMT_NB_NF: /* normal bit clock + frame */
->     223                  break;
->     224          case SND_SOC_DAIFMT_NB_IF: /* normal bclk + invert frm */
->     225                  adc_fmt |= AD193X_ADC_LEFT_HIGH;
->     226                  dac_fmt |= AD193X_DAC_LEFT_HIGH;
->     227                  break;
->     228          case SND_SOC_DAIFMT_IB_NF: /* invert bclk + normal frm */
->     229                  adc_fmt |= AD193X_ADC_BCLK_INV;
->     230                  dac_fmt |= AD193X_DAC_BCLK_INV;
->     231                  break;
->     232          case SND_SOC_DAIFMT_IB_IF: /* invert bclk + frm */
->     233                  adc_fmt |= AD193X_ADC_LEFT_HIGH;
->     234                  adc_fmt |= AD193X_ADC_BCLK_INV;
->     235                  dac_fmt |= AD193X_DAC_LEFT_HIGH;
->     236                  dac_fmt |= AD193X_DAC_BCLK_INV;
->     237                  break;
->     238          default:
->     239                  return -EINVAL;
->     240          }
->     241
->     242          /* For DSP_*, LRCLK's polarity must be inverted */
->     243          if (fmt & SND_SOC_DAIFMT_DSP_A) {
->     244                  change_bit(ffs(AD193X_DAC_LEFT_HIGH) - 1,
->     245                             (unsigned long *)&dac_fmt);
->                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> This change_bit() will work on little endian systems but on 64 bit big
-> endian systems it will corrupt memory.  I *think* the correct code looks
-> like this, but again, I'm feeling dumb so I might be wrong:
-> 
-> 			dac_fmt ^= 1 << (ffs(AD193X_DAC_LEFT_HIGH) - 1);
 
-or just:
-dac_fmt ^= AD193X_DAC_LEFT_HIGH;
+--===============3036874137180364389==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WSf/+y6apGpKq+5a"
+Content-Disposition: inline
 
-Thank you for reporting this. I will send a patch to fix it.
 
-Best regards,
-Codrin
+--WSf/+y6apGpKq+5a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 19, 2019 at 01:11:58PM +0100, Mark Brown wrote:
+> The patch
+>=20
+>    ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
+>=20
+> has been applied to the asoc tree at
+>=20
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git=20
+
+Dropped this, it breaks the build in a lot of configurations since dobj
+does have some other users.
+
+--WSf/+y6apGpKq+5a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0KhkAACgkQJNaLcl1U
+h9BYLgf/fORxqFPisc/41mAvSIrarhLNbulNMBHfx/k+em30kKwFiqESMiqQQRpU
+QVGsqTaYALb05JvPbEtNjLbsWT5P4Su5isY82NyOAlY8hsrfVqIvOXboL6cm03Nx
+OR0HxhDnZDntPuKbfI+MktrnuXWToCJgCI25fUzPW4fHb3ziQzqrACAEnKE0fonx
+8RS2cHRkc+zhoPsKEObKywl5fQxsGdZxcpNhgKZ6VB7Wyti23rBaXAbM3bChPHdQ
+P/Ct2UugeFEla3mdBXCs8jNQr4Nnb4qkHdoJwwk2N/9Hj0vPRmpNDrsAUJ4yQEiY
+BV/wHg37ihUyFQVMbss1WclO8m+K5Q==
+=/Ik5
+-----END PGP SIGNATURE-----
+
+--WSf/+y6apGpKq+5a--
+
+--===============3036874137180364389==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3036874137180364389==--
