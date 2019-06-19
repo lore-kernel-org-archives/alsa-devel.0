@@ -1,67 +1,121 @@
-From: Richard Sailer <rs@tuxedocomputers.com>
-Subject: [PATCH v2] ALSA: hda/realtek: Add quirks for several
-	Clevo notebook barebones
-Date: Wed, 19 Jun 2019 13:33:11 +0200
-Message-ID: <20190619113311.31656-1-rs@tuxedocomputers.com>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [PATCH] ASoC: stm32: dfsdm: add 16 bits audio record support
+Date: Wed, 19 Jun 2019 13:40:02 +0200
+Message-ID: <1560944402-8115-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from srv6.fidu.org (srv6.fidu.org [159.69.62.71])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57A64F808AF
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2019 13:33:18 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.com
-Cc: jeremy@system76.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com
+Cc: benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-This adds 4 SND_PCI_QUIRK(...) lines for several barebone models of the ODM
-Clevo. The model names are written in regex syntax to describe/match all clevo
-models that are similar enough and use the same PCI SSID that this fixup works
-for them.
+Add support of audio 16 bits format record to STM32
+DFSDM driver.
 
-Additionally the lines regarding SSID 0x96e1 and 0x97e1 didn't fix audio for the
-all our Clevo notebooks using these SSIDs (models Clevo P960* and P970*) since
-ALC1220_FIXP_CLEVO_PB51ED_PINS swapped pins that are not necesarry to be
-swapped. This patch initiates ALC1220_FIXUP_CLEVO_P950 instead for these model
-and fixes the audio.
-
-This is strange since the System76 Oryx Pro also seems to be a P960 and
-P970 barebone, so the original fixup should also not have worked for
-them. @Jeremy: What's your take on this?
-
-Signed-off-by: Richard Sailer <rs@tuxedocomputers.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- sound/pci/hda/patch_realtek.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/stm/stm32_adfsdm.c | 49 +++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 39 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1afb268f3da0..61dcd293afb1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2461,9 +2461,10 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x95e1, "Clevo P95xER", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x95e2, "Clevo P950ER", ALC1220_FIXUP_CLEVO_P950),
--	SND_PCI_QUIRK(0x1558, 0x96e1, "System76 Oryx Pro (oryp5)", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
--	SND_PCI_QUIRK(0x1558, 0x97e1, "System76 Oryx Pro (oryp5)", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
--	SND_PCI_QUIRK(0x1558, 0x65d1, "Tuxedo Book XC1509", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x96e1, "Clevo P960[ER][CDFN]-K", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1558, 0x97e1, "Clevo P970[ER][CDFN]", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1558, 0x65d1, "Clevo PB51[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Y530", ALC882_FIXUP_LENOVO_Y530),
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index cc517e007039..3c9a9deec9af 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -45,7 +45,7 @@ struct stm32_adfsdm_priv {
+ static const struct snd_pcm_hardware stm32_adfsdm_pcm_hw = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_PAUSE,
+-	.formats = SNDRV_PCM_FMTBIT_S32_LE,
++	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+ 
+ 	.rate_min = 8000,
+ 	.rate_max = 32000,
+@@ -141,7 +141,8 @@ static const struct snd_soc_dai_driver stm32_adfsdm_dai = {
+ 	.capture = {
+ 		    .channels_min = 1,
+ 		    .channels_max = 1,
+-		    .formats = SNDRV_PCM_FMTBIT_S32_LE,
++		    .formats = SNDRV_PCM_FMTBIT_S16_LE |
++			       SNDRV_PCM_FMTBIT_S32_LE,
+ 		    .rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+ 			      SNDRV_PCM_RATE_32000),
+ 		    },
+@@ -152,30 +153,58 @@ static const struct snd_soc_component_driver stm32_adfsdm_dai_component = {
+ 	.name = "stm32_dfsdm_audio",
+ };
+ 
++static void memcpy_32to16(void *dest, const void *src, size_t n)
++{
++	unsigned int i = 0;
++	u16 *d = (u16 *)dest, *s = (u16 *)src;
++
++	s++;
++	for (i = n; i > 0; i--) {
++		*d++ = *s++;
++		s++;
++	}
++}
++
+ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
+ {
+ 	struct stm32_adfsdm_priv *priv = private;
+ 	struct snd_soc_pcm_runtime *rtd = priv->substream->private_data;
+ 	u8 *pcm_buff = priv->pcm_buff;
+ 	u8 *src_buff = (u8 *)data;
+-	unsigned int buff_size = snd_pcm_lib_buffer_bytes(priv->substream);
+-	unsigned int period_size = snd_pcm_lib_period_bytes(priv->substream);
+ 	unsigned int old_pos = priv->pos;
+-	unsigned int cur_size = size;
++	size_t buff_size = snd_pcm_lib_buffer_bytes(priv->substream);
++	size_t period_size = snd_pcm_lib_period_bytes(priv->substream);
++	size_t cur_size, src_size = size;
++	snd_pcm_format_t format = priv->substream->runtime->format;
++
++	if (format == SNDRV_PCM_FORMAT_S16_LE)
++		src_size >>= 1;
++	cur_size = src_size;
+ 
+ 	dev_dbg(rtd->dev, "%s: buff_add :%pK, pos = %d, size = %zu\n",
+-		__func__, &pcm_buff[priv->pos], priv->pos, size);
++		__func__, &pcm_buff[priv->pos], priv->pos, src_size);
+ 
+-	if ((priv->pos + size) > buff_size) {
+-		memcpy(&pcm_buff[priv->pos], src_buff, buff_size - priv->pos);
++	if ((priv->pos + src_size) > buff_size) {
++		if (format == SNDRV_PCM_FORMAT_S16_LE)
++			memcpy_32to16(&pcm_buff[priv->pos], src_buff,
++				      buff_size - priv->pos);
++		else
++			memcpy(&pcm_buff[priv->pos], src_buff,
++			       buff_size - priv->pos);
+ 		cur_size -= buff_size - priv->pos;
+ 		priv->pos = 0;
+ 	}
+ 
+-	memcpy(&pcm_buff[priv->pos], &src_buff[size - cur_size], cur_size);
++	if (format == SNDRV_PCM_FORMAT_S16_LE)
++		memcpy_32to16(&pcm_buff[priv->pos],
++			      &src_buff[src_size - cur_size], cur_size);
++	else
++		memcpy(&pcm_buff[priv->pos], &src_buff[src_size - cur_size],
++		       cur_size);
++
+ 	priv->pos = (priv->pos + cur_size) % buff_size;
+ 
+-	if (cur_size != size || (old_pos && (old_pos % period_size < size)))
++	if (cur_size != src_size || (old_pos && (old_pos % period_size < size)))
+ 		snd_pcm_period_elapsed(priv->substream);
+ 
+ 	return 0;
 -- 
-2.20.1
+2.7.4
