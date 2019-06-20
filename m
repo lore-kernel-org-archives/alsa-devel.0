@@ -1,7 +1,7 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
+From: Cheng-yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 Subject: Re: [PATCH 1/7] video: add HDMI state notifier support
 Date: Thu, 20 Jun 2019 21:23:23 +0800
-Message-ID: <CAFv8NwLbS_f4cfeorzqtmRzQSY0u1tgM7fitAokg_QfViPvq=Q__34744.876255148$1561037060$gmane$org@mail.gmail.com>
+Message-ID: <CAFv8NwLbS_f4cfeorzqtmRzQSY0u1tgM7fitAokg_QfViPvq=Q__37690.9854168602$1561037073$gmane$org@mail.gmail.com>
 References: <20190603043251.226549-2-cychiang@chromium.org>
  <41e7052b-a58c-5a8c-5d94-37237e0c2070@xs4all.nl>
  <20190603080931.GG21222@phenom.ffwll.local>
@@ -16,38 +16,38 @@ References: <20190603043251.226549-2-cychiang@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190620092506.GP12905@phenom.ffwll.local>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Cheng-yi Chiang <cychiang@chromium.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel <linux-kernel@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philipp Zabel <p.zabel@pengutronix.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Doug Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, linux-media@vger.kernel.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, dri-devel@lists.fr
-Cc: Daniel Vetter <daniel@ffwll.ch>
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20190620092506.GP12905-dv86pmgwkMBes7Z6vYuT8azUEOm+Xw19@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Cheng-yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Russell King <rmk+kernel-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Andrzej Hajda <a.hajda-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Laurent Pinchart <Laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, tzungbi-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, dri-devel-PD4FTy7X32k@public.gmane.org
+Cc: Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 20, 2019 at 5:25 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Thu, Jun 20, 2019 at 5:25 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
 >
 > On Wed, Jun 19, 2019 at 07:48:11PM +0800, Cheng-yi Chiang wrote:
-> > On Tue, Jun 18, 2019 at 8:12 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > On Tue, Jun 18, 2019 at 8:12 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
 > > >
 > > > On Tue, Jun 18, 2019 at 07:48:06PM +0800, Cheng-yi Chiang wrote:
-> > > > On Tue, Jun 11, 2019 at 8:35 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > On Tue, Jun 11, 2019 at 8:35 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
 > > > > >
 > > > > > On Tue, Jun 11, 2019 at 08:10:38PM +0800, Cheng-yi Chiang wrote:
-> > > > > > On Tue, Jun 4, 2019 at 3:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > > On Tue, Jun 4, 2019 at 3:24 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
 > > > > > > >
 > > > > > > > On Tue, Jun 04, 2019 at 10:32:50AM +0800, Cheng-yi Chiang wrote:
-> > > > > > > > On Mon, Jun 3, 2019 at 4:09 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > > > > On Mon, Jun 3, 2019 at 4:09 PM Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org> wrote:
 > > > > > > > > >
 > > > > > > > > > On Mon, Jun 03, 2019 at 09:45:49AM +0200, Hans Verkuil wrote:
 > > > > > > > > > > On 6/3/19 6:32 AM, Cheng-Yi Chiang wrote:
-> > > > > > > > > > > From: Hans Verkuil <hans.verkuil@cisco.com>
+> > > > > > > > > > > From: Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>
 > > > > > > > > > > >
 > > > > > > > > > > > Add support for HDMI hotplug and EDID notifiers, which is used to convey
 > > > > > > > > > > > information from HDMI drivers to their CEC and audio counterparts.
@@ -440,12 +440,12 @@ Thanks again!
 > > > > > > > > > > >  - Changes connected and has_eld to bitfield of unsigned int.
 > > > > > > > > > > >  - Other minor fixes to pass checkpatch.pl --strict checks.
 > > > > > > > > > > >
-> > > > > > > > > > > Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-> > > > > > > > > > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > > > > > > > > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > > > > > > > > > > Signed-off-by: Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>
+> > > > > > > > > > > Acked-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> > > > > > > > > > > Signed-off-by: Cheng-Yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 > > > > > > > > > > > ---
 > > > > > > > > > > > The original patch is at
-> > > > > > > > > > > https://lore.kernel.org/linux-arm-kernel/20161213150813.37966-2-hverkuil@xs4all.nl
+> > > > > > > > > > > https://lore.kernel.org/linux-arm-kernel/20161213150813.37966-2-hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org
 > > > > > > > > > > >
 > > > > > > > > > > >  MAINTAINERS                   |   6 ++
 > > > > > > > > > > >  drivers/video/Kconfig         |   3 +
@@ -465,14 +465,14 @@ Thanks again!
 > > > > > > > > > > >  F: drivers/media/platform/vicodec/*
 > > > > > > > > > > >
 > > > > > > > > > > > +VIDEO FRAMEWORK
-> > > > > > > > > > > +M: Hans Verkuil <hverkuil@xs4all.nl>
-> > > > > > > > > > > +L: linux-media@vger.kernel.org
+> > > > > > > > > > > +M: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+> > > > > > > > > > > +L: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 > > > > > > > > > > > +F: drivers/video/hdmi-notifier.*
 > > > > > > > > > > > +S: Maintained
 > > > > > > > > > > > +
 > > > > > > > > > > >  VIDEO MULTIPLEXER DRIVER
-> > > > > > > > > > >  M: Philipp Zabel <p.zabel@pengutronix.de>
-> > > > > > > > > > >  L: linux-media@vger.kernel.org
+> > > > > > > > > > >  M: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> > > > > > > > > > >  L: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 > > > > > > > > > > > diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
 > > > > > > > > > > > index 83d3d271ca15..000ba9bc0ae7 100644
 > > > > > > > > > > > --- a/drivers/video/Kconfig
@@ -509,7 +509,7 @@ Thanks again!
 > > > > > > > > > > > +/* hdmi-notifier.c - notify interested parties of (dis)connect and EDID
 > > > > > > > > > > > + * events
 > > > > > > > > > > > + *
-> > > > > > > > > > > + * Copyright 2016 Russell King <rmk+kernel@arm.linux.org.uk>
+> > > > > > > > > > > + * Copyright 2016 Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
 > > > > > > > > > > > + * Copyright 2016 Cisco Systems, Inc. and/or its affiliates.
 > > > > > > > > > > > + * All rights reserved.
 > > > > > > > > > > > + */
@@ -660,7 +660,7 @@ Thanks again!
 > > > > > > > > > > > + * hdmi-notifier.h - notify interested parties of (dis)connect and EDID
 > > > > > > > > > > > + * events
 > > > > > > > > > > > + *
-> > > > > > > > > > > + * Copyright 2016 Russell King <rmk+kernel@arm.linux.org.uk>
+> > > > > > > > > > > + * Copyright 2016 Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
 > > > > > > > > > > > + * Copyright 2016 Cisco Systems, Inc. and/or its affiliates.
 > > > > > > > > > > > + * All rights reserved.
 > > > > > > > > > > > + */
