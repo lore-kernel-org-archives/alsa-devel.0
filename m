@@ -1,17 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: dfsdm: add 16 bits audio record support" to the asoc tree
-Date: Thu, 20 Jun 2019 14:32:26 +0100 (BST)
-Message-ID: <20190620133226.587E544004B@finisterre.sirena.org.uk>
-References: <1560944402-8115-1-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1560944402-8115-1-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: alexandre.torgue@st.com, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, broonie@kernel.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.comMark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, olivier.moysan@st.com, perex@perex.cz, tiwai@suse.com
+Subject: Applied "ASoC: ti: davinci-mcasp: Set unused
+	serializers as INACTIVE" to the asoc tree
+Date: Thu, 20 Jun 2019 14:32:24 +0100 (BST)
+Message-ID: <20190620133224.AB9CF44004C@finisterre.sirena.org.uk>
+References: <20190620092002.13766-2-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9200CF896F4
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2019 15:32:25 +0200 (CEST)
+In-Reply-To: <20190620092002.13766-2-peter.ujfalusi@ti.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, jsarha@ti.com, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: dfsdm: add 16 bits audio record support
+   ASoC: ti: davinci-mcasp: Set unused serializers as INACTIVE
 
 has been applied to the asoc tree at
 
@@ -36,109 +55,54 @@ to this mail.
 Thanks,
 Mark
 
->From 1e7f6e1c69f0ff35c90878f9b44adcff77995eb9 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 19 Jun 2019 13:40:02 +0200
-Subject: [PATCH] ASoC: stm32: dfsdm: add 16 bits audio record support
+>From 5dd17a3c3ed545f73b8bf7754efd5f6125bf7531 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 20 Jun 2019 12:20:01 +0300
+Subject: [PATCH] ASoC: ti: davinci-mcasp: Set unused serializers as INACTIVE
 
-Add support of audio 16 bits format record to STM32
-DFSDM driver.
+Unused serializers needs to be configured as INACTIVE, otherwise they will
+underflow/overflow when multiple serializers are connected, but some are
+not needed for the given stream.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_adfsdm.c | 49 ++++++++++++++++++++++++++++--------
- 1 file changed, 39 insertions(+), 10 deletions(-)
+ sound/soc/ti/davinci-mcasp.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index cc517e007039..3c9a9deec9af 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -45,7 +45,7 @@ struct stm32_adfsdm_priv {
- static const struct snd_pcm_hardware stm32_adfsdm_pcm_hw = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_PAUSE,
--	.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
- 
- 	.rate_min = 8000,
- 	.rate_max = 32000,
-@@ -141,7 +141,8 @@ static const struct snd_soc_dai_driver stm32_adfsdm_dai = {
- 	.capture = {
- 		    .channels_min = 1,
- 		    .channels_max = 1,
--		    .formats = SNDRV_PCM_FMTBIT_S32_LE,
-+		    .formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			       SNDRV_PCM_FMTBIT_S32_LE,
- 		    .rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
- 			      SNDRV_PCM_RATE_32000),
- 		    },
-@@ -152,30 +153,58 @@ static const struct snd_soc_component_driver stm32_adfsdm_dai_component = {
- 	.name = "stm32_dfsdm_audio",
- };
- 
-+static void memcpy_32to16(void *dest, const void *src, size_t n)
-+{
-+	unsigned int i = 0;
-+	u16 *d = (u16 *)dest, *s = (u16 *)src;
-+
-+	s++;
-+	for (i = n; i > 0; i--) {
-+		*d++ = *s++;
-+		s++;
-+	}
-+}
-+
- static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- {
- 	struct stm32_adfsdm_priv *priv = private;
- 	struct snd_soc_pcm_runtime *rtd = priv->substream->private_data;
- 	u8 *pcm_buff = priv->pcm_buff;
- 	u8 *src_buff = (u8 *)data;
--	unsigned int buff_size = snd_pcm_lib_buffer_bytes(priv->substream);
--	unsigned int period_size = snd_pcm_lib_period_bytes(priv->substream);
- 	unsigned int old_pos = priv->pos;
--	unsigned int cur_size = size;
-+	size_t buff_size = snd_pcm_lib_buffer_bytes(priv->substream);
-+	size_t period_size = snd_pcm_lib_period_bytes(priv->substream);
-+	size_t cur_size, src_size = size;
-+	snd_pcm_format_t format = priv->substream->runtime->format;
-+
-+	if (format == SNDRV_PCM_FORMAT_S16_LE)
-+		src_size >>= 1;
-+	cur_size = src_size;
- 
- 	dev_dbg(rtd->dev, "%s: buff_add :%pK, pos = %d, size = %zu\n",
--		__func__, &pcm_buff[priv->pos], priv->pos, size);
-+		__func__, &pcm_buff[priv->pos], priv->pos, src_size);
- 
--	if ((priv->pos + size) > buff_size) {
--		memcpy(&pcm_buff[priv->pos], src_buff, buff_size - priv->pos);
-+	if ((priv->pos + src_size) > buff_size) {
-+		if (format == SNDRV_PCM_FORMAT_S16_LE)
-+			memcpy_32to16(&pcm_buff[priv->pos], src_buff,
-+				      buff_size - priv->pos);
-+		else
-+			memcpy(&pcm_buff[priv->pos], src_buff,
-+			       buff_size - priv->pos);
- 		cur_size -= buff_size - priv->pos;
- 		priv->pos = 0;
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index a8378d223a9e..8bec0dc4f754 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -848,14 +848,15 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 					rx_ser < max_active_serializers) {
+ 			clear_bit(PIN_BIT_AXR(i), &mcasp->pdir);
+ 			rx_ser++;
+-		} else if (mcasp->serial_dir[i] == INACTIVE_MODE) {
++		} else {
++			/* Inactive or unused pin, set it to inactive */
+ 			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
+ 				       SRMOD_INACTIVE, SRMOD_MASK);
+-			clear_bit(PIN_BIT_AXR(i), &mcasp->pdir);
+-		} else if (mcasp->serial_dir[i] == TX_MODE) {
+-			/* Unused TX pins, clear PDIR  */
+-			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
+-				       mcasp->dismod, DISMOD_MASK);
++			/* If unused, set DISMOD for the pin */
++			if (mcasp->serial_dir[i] != INACTIVE_MODE)
++				mcasp_mod_bits(mcasp,
++					       DAVINCI_MCASP_XRSRCTL_REG(i),
++					       mcasp->dismod, DISMOD_MASK);
+ 			clear_bit(PIN_BIT_AXR(i), &mcasp->pdir);
+ 		}
  	}
- 
--	memcpy(&pcm_buff[priv->pos], &src_buff[size - cur_size], cur_size);
-+	if (format == SNDRV_PCM_FORMAT_S16_LE)
-+		memcpy_32to16(&pcm_buff[priv->pos],
-+			      &src_buff[src_size - cur_size], cur_size);
-+	else
-+		memcpy(&pcm_buff[priv->pos], &src_buff[src_size - cur_size],
-+		       cur_size);
+@@ -965,6 +966,7 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 		for (i = 0; i < active_slots; i++)
+ 			mask |= (1 << i);
+ 	}
 +
- 	priv->pos = (priv->pos + cur_size) % buff_size;
+ 	mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, TX_ASYNC);
  
--	if (cur_size != size || (old_pos && (old_pos % period_size < size)))
-+	if (cur_size != src_size || (old_pos && (old_pos % period_size < size)))
- 		snd_pcm_period_elapsed(priv->substream);
- 
- 	return 0;
+ 	if (!mcasp->dat_port)
 -- 
 2.20.1
