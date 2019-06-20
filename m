@@ -1,69 +1,50 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1] ASoC: Intel: Skylake: Switch to modern
- UUID API
-Date: Thu, 20 Jun 2019 18:09:07 +0300
-Message-ID: <20190620150907.GG9224@smile.fi.intel.com>
-References: <20190619150213.87691-1-andriy.shevchenko@linux.intel.com>
- <a987bd54-5364-f046-a928-44a97ed0307f@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rk3399_gru_sound: Support 32, 44.1 and 88.2 kHz
+ sample rates
+Date: Thu, 20 Jun 2019 16:41:50 +0100
+Message-ID: <20190620154150.GE5316@sirena.org.uk>
+References: <20190620134708.28311-1-enric.balletbo@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D295BF80C15
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2019 17:09:12 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rOnZ5ITIX7GHaQD9"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <a987bd54-5364-f046-a928-44a97ed0307f@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
+In-Reply-To: <20190620134708.28311-1-enric.balletbo@collabora.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: linux-kernel@vger.kernel.org, Collabora Kernel ML <kernel@collabora.com>, Xing Zheng <zhengxing@rock-chips.com>, Benson Leung <bleung@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 19, 2019 at 05:46:34PM +0200, Pierre-Louis Bossart wrote:
-> On 6/19/19 5:02 PM, Andy Shevchenko wrote:
-> > Switch the driver to use modern UUID API, i.e. guid_t type and
-> > accompanying functions, such as guid_equal().
-> > 
-> > Cc: Liam Girdwood <lgirdwood@gmail.com>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Looks good to me - couple of nit-picks below on unrelated indentation
-> changes.
-> 
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Thanks for review!
+--rOnZ5ITIX7GHaQD9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >   	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
-> > -	uuid_le *uuid_mod;
-> > -	uuid_mod = (uuid_le *)guid;
-> >   	snprintf(mod_name, sizeof(mod_name), "%s%pUL%s",
-> > -				"intel/dsp_fw_", uuid_mod, ".bin");
-> > +					     "intel/dsp_fw_", guid, ".bin");
-> 
-> indentation looks off, not sure if this is a diff effect.
+On Thu, Jun 20, 2019 at 03:47:08PM +0200, Enric Balletbo i Serra wrote:
+> According to the datasheet the max98357a also supports 32, 44.1 and
+> 88.2 kHz sample rate. This support was also introduced recently by
+> commit fdf34366d324 ("ASoC: max98357a: add missing supported rates").
+> This patch adds support for these rates also for the machine driver so
+> we get rid of the errors like the below and we are able to play files
+> using these sample rates.
 
-Ah, this can be modified to the below (by a separate patch, since Mark applied
-this one already):
+Does the machine actually need to validate this at all?  The component
+drivers can all apply whatever constraints are needed and do their own
+validation, the machine driver is just getting in the way here.
 
-	snprintf(mod_name, sizeof(mod_name), "intel/dsp_fw_%pUL.bin", guid);
+--rOnZ5ITIX7GHaQD9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-What do you think?
+-----BEGIN PGP SIGNATURE-----
 
-P.S. And it will take only one line.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0LqT0ACgkQJNaLcl1U
+h9Aomwf+IWYRVucBBZvhsm/gdBVe/B8CpBjmp/2qlcOTbdBRiwV3TGlwjFiWqyNF
+a/7criDs2zMUCDb4Ad2Xh7FoRj24dC+1QikkP64iwyN/Y5wJLwQhRRDuM60vjRGp
+waQP/rQ86h14cWtTi/+IE8Rm3nFcs/0J0S+87SVuW8kIifVcEAzUGYH8fhTwgkki
+SerVWbkR+weSZLJVq/cvR2CKQvt4qPaQ2AT2V7W9pCRzBJRza8CLIg+t7jaFUuLP
+EefouE+9/aOgtVf4NT+BPfcy7pptkMZwAsbX0Obcm6+1dmIpjffWRdRzki4AVnJD
+wUUi0N6O0HWIkSLhMnqzgBaOrZBMjg==
+=cr78
+-----END PGP SIGNATURE-----
 
--- 
-With Best Regards,
-Andy Shevchenko
+--rOnZ5ITIX7GHaQD9--
