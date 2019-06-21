@@ -1,79 +1,68 @@
-From: Greg KH <greg@kroah.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/2] ASoC: dapm: Adapt for debugfs API change
-Date: Fri, 21 Jun 2019 15:22:22 +0200
-Message-ID: <20190621132222.GB10459@kroah.com>
+Date: Fri, 21 Jun 2019 15:30:53 +0100
+Message-ID: <20190621143053.GH5316@sirena.org.uk>
 References: <20190621113357.8264-1-broonie@kernel.org>
  <20190621113357.8264-2-broonie@kernel.org>
+ <20190621132222.GB10459@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GyBFFrpYHGV4SYp0"
 Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190621113357.8264-2-broonie@kernel.org>
+In-Reply-To: <20190621132222.GB10459@kroah.com>
 Sender: stable-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Greg KH <greg@kroah.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 21, 2019 at 12:33:57PM +0100, Mark Brown wrote:
-> Back in ff9fb72bc07705c (debugfs: return error values, not NULL) the
-> debugfs APIs were changed to return error pointers rather than NULL
-> pointers on error, breaking the error checking in ASoC. Update the
-> code to use IS_ERR() and log the codes that are returned as part of
-> the error messages.
-> 
-> Fixes: ff9fb72bc07705c (debugfs: return error values, not NULL)
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Cc: stable@vger.kernel.org
-> ---
->  sound/soc/soc-dapm.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index 6b44b4a78b8e..f013b24c050a 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -2156,23 +2156,25 @@ void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
->  {
->  	struct dentry *d;
->  
-> -	if (!parent)
-> +	if (!parent || IS_ERR(parent))
->  		return;
 
-How can parent be NULL?
+--GyBFFrpYHGV4SYp0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  
->  	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
->  
-> -	if (!dapm->debugfs_dapm) {
-> +	if (IS_ERR(dapm->debugfs_dapm)) {
->  		dev_warn(dapm->dev,
-> -		       "ASoC: Failed to create DAPM debugfs directory\n");
-> +			 "ASoC: Failed to create DAPM debugfs directory %ld\n",
-> +			 PTR_ERR(dapm->debugfs_dapm));
+On Fri, Jun 21, 2019 at 03:22:22PM +0200, Greg KH wrote:
+> On Fri, Jun 21, 2019 at 12:33:57PM +0100, Mark Brown wrote:
 
-Same comment as before, no need to print anything.
+> >  	struct dentry *d;
+> > =20
+> > -	if (!parent)
+> > +	if (!parent || IS_ERR(parent))
+> >  		return;
 
->  		return;
->  	}
->  
->  	d = debugfs_create_file("bias_level", 0444,
->  				dapm->debugfs_dapm, dapm,
->  				&dapm_bias_fops);
-> -	if (!d)
-> +	if (IS_ERR(d))
->  		dev_warn(dapm->dev,
-> -			 "ASoC: Failed to create bias level debugfs file\n");
-> +			 "ASoC: Failed to create bias level debugfs file: %ld\n",
-> +			 PTR_ERR(d));
+> How can parent be NULL?
 
-Again, no need to warn, no one will see it :)
+It was more effort than it was worth to check to see if it could
+actually be NULL through default initialization or something and fix it
+than just not delete the check so I just left it there.  I'll probably
+go back and clean it up more thorougly at some point.
 
-I am trying to make it so that debugfs doesn't return anything for when
-a file is created.  Now if that will ever be possible or not, I don't
-know, but I am pretty close in one of the branches in my driver-core
-tree...
+> I am trying to make it so that debugfs doesn't return anything for when
+> a file is created.  Now if that will ever be possible or not, I don't
+> know, but I am pretty close in one of the branches in my driver-core
+> tree...
 
-thanks,
+You mentioned this in a mail last week, I then replied pointing out that
+this is not helpful as it reduces the robustness and quality of our
+debugging tools and you then did not respond.  This is a view I still
+hold and in any case debugfs as it stands (and was in the kernel
+versions since this was broken) is still capable of reporting errors so
+we should fix that.
 
-greg k-h
+--GyBFFrpYHGV4SYp0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0M6hwACgkQJNaLcl1U
+h9CVfgf/Zvf50vTJSnV4Ifjlc60r5s/W7eTpQGayjvn9PD0gkjA4+G5hVAEjeV5u
+qRvkDMZwgld9zIa08UvfBb7J7Cr+HV5RgQGnYBjcwXJwQ2bDecBUUhXjlNgcMRos
+NwA99IiRefpwluCcD4Tc7jom/y/XyuIh07rvZyvGcrObNVytaRWToAjumnIT/tM0
+DINLjqjXAHQNeNs3cpNea2HvjTxk524bEMm075hc87KWaqYZqfjL+PNyJthE9Psc
+tVee93MX3iLcNfxeJe0XXhKZ4fNJh1KgREynpzNfKm3j+EPGS75BR66uimNtoS6J
+4LLlg1ZRASBNPaIeHXVCk1u9MCpVGQ==
+=27li
+-----END PGP SIGNATURE-----
+
+--GyBFFrpYHGV4SYp0--
