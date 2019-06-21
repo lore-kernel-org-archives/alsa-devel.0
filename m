@@ -1,54 +1,70 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] ASoC: Intel: Skylake: Print constant
-	literals from format specifier
-Date: Fri, 21 Jun 2019 14:31:16 +0300
-Message-ID: <20190621113116.47525-1-andriy.shevchenko@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: core: Adapt for debugfs API change
+Date: Fri, 21 Jun 2019 12:33:56 +0100
+Message-ID: <20190621113357.8264-1-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF24CF808AF
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2019 13:31:23 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of using two additional "%s" specifiers, put the constant string
-literals directly to the format specifier.
+Back in ff9fb72bc07705c (debugfs: return error values, not NULL) the
+debugfs APIs were changed to return error pointers rather than NULL
+pointers on error, breaking the error checking in ASoC. Update the
+code to use IS_ERR() and log the codes that are returned as part of
+the error messages.
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: ff9fb72bc07705c (debugfs: return error values, not NULL)
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/intel/skylake/skl-sst.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/soc-core.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 13c636dece56..f3e1399450db 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -421,8 +421,7 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, u8 *guid)
- 	int ret = 0;
- 	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c510da2d4af6..6d5c09493f4b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -165,9 +165,10 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
+ 				component->card->debugfs_card_root);
+ 	}
  
--	snprintf(mod_name, sizeof(mod_name), "%s%pUL%s",
--					     "intel/dsp_fw_", guid, ".bin");
-+	snprintf(mod_name, sizeof(mod_name), "intel/dsp_fw_%pUL.bin", guid);
+-	if (!component->debugfs_root) {
++	if (IS_ERR(component->debugfs_root)) {
+ 		dev_warn(component->dev,
+-			"ASoC: Failed to create component debugfs directory\n");
++			"ASoC: Failed to create component debugfs directory: %ld\n",
++			PTR_ERR(component->debugfs_root));
+ 		return;
+ 	}
  
- 	module_entry = skl_module_get_from_id(ctx, mod_id);
- 	if (module_entry == NULL) {
+@@ -219,18 +220,21 @@ static void soc_init_card_debugfs(struct snd_soc_card *card)
+ 
+ 	card->debugfs_card_root = debugfs_create_dir(card->name,
+ 						     snd_soc_debugfs_root);
+-	if (!card->debugfs_card_root) {
++	if (IS_ERR(card->debugfs_card_root)) {
+ 		dev_warn(card->dev,
+-			 "ASoC: Failed to create card debugfs directory\n");
++			 "ASoC: Failed to create card debugfs directory: %ld\n",
++			 PTR_ERR(card->debugfs_card_root));
++		card->debugfs_card_root = NULL;
+ 		return;
+ 	}
+ 
+ 	card->debugfs_pop_time = debugfs_create_u32("dapm_pop_time", 0644,
+ 						    card->debugfs_card_root,
+ 						    &card->pop_time);
+-	if (!card->debugfs_pop_time)
++	if (IS_ERR(card->debugfs_pop_time))
+ 		dev_warn(card->dev,
+-			 "ASoC: Failed to create pop time debugfs file\n");
++			 "ASoC: Failed to create pop time debugfs file: %ld\n",
++			 PTR_ERR(card->debugfs_pop_time));
+ }
+ 
+ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
 -- 
 2.20.1
