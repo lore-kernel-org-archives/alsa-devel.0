@@ -1,20 +1,21 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-core: call snd_soc_unbind_card()
- under mutex_lock;
-Date: Fri, 21 Jun 2019 14:19:59 -0700
-Message-ID: <c137f6ce9cc8d4ffb26f0ca432845b41d5f5acae.camel@linux.intel.com>
-References: <878stywfjt.wl-kuninori.morimoto.gx@renesas.com>
- <87o92r92p6.wl-kuninori.morimoto.gx@renesas.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [bug report] ALSA: oxfw: configure packet format
+ in pcm.hw_params callback
+Date: Sat, 22 Jun 2019 10:35:23 +0900
+Message-ID: <20190622013522.GA14635@workstation>
+References: <20190619101639.GA29913@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61B2AF8070D
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2019 23:20:09 +0200 (CEST)
-In-Reply-To: <87o92r92p6.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53D08F8071F
+ for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2019 03:35:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190619101639.GA29913@mwanda>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,97 +25,121 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > commit 34ac3c3eb8f0c07 ("ASoC: core: lock client_mutex while
-> > removing
-> > link components") added mutex_lock() at
-> > soc_remove_link_components().
-> > 
-> > Is is called from snd_soc_unbind_card()
-> > 
-> > 	snd_soc_unbind_card()
-> > =>		soc_remove_link_components()
-> > 		soc_cleanup_card_resources()
-> > 			soc_remove_dai_links()
-> > =>				soc_remove_link_components()
-> > 
-> > And, there are 2 way to call it.
-> > 
-> > (1)
-> > 	snd_soc_unregister_component()
-> > **		mutex_lock()
-> > 			snd_soc_component_del_unlocked()
-> > =>				snd_soc_unbind_card()
-> > **		mutex_unlock()
-> > 
-> > (2)
-> > 	snd_soc_unregister_card()
-> > =>		snd_soc_unbind_card()
-> > 
-> > (1) case is already using mutex_lock() when it calles
-> > snd_soc_unbind_card(), thus, we will get lockdep warning.
+Hi,
 
-Thanks, morimoto-san. You are correct. Case 1 will result in a lockdep
-warning. This patch looks good. 
+On Wed, Jun 19, 2019 at 01:16:39PM +0300, Dan Carpenter wrote:
+> Hello Takashi Sakamoto,
+> 
+> The patch 4f380d007052: "ALSA: oxfw: configure packet format in
+> pcm.hw_params callback" from Jun 12, 2019, leads to the following
+> static checker warning:
+> 
+> 	sound/firewire/oxfw/oxfw-stream.c:357 snd_oxfw_stream_start_duplex()
+> 	warn: 'oxfw->rx_stream.buffer.packets' double freed
+> 
+> sound/firewire/oxfw/oxfw-stream.c
+>    317  int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
+>    318  {
+>    319          int err;
+>    320  
+>    321          if (oxfw->substreams_count == 0)
+>    322                  return -EIO;
+>    323  
+>    324          if (amdtp_streaming_error(&oxfw->rx_stream) ||
+>    325              amdtp_streaming_error(&oxfw->tx_stream)) {
+>    326                  amdtp_stream_stop(&oxfw->rx_stream);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+>    327                  cmp_connection_break(&oxfw->in_conn);
+>    328  
+>    329                  if (oxfw->has_output) {
+>    330                          amdtp_stream_stop(&oxfw->tx_stream);
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+>    331                          cmp_connection_break(&oxfw->out_conn);
+>    332                  }
+>    333          }
+>    334  
+>    335          if (!amdtp_stream_running(&oxfw->rx_stream)) {
+>    336                  err = start_stream(oxfw, &oxfw->rx_stream);
+>    337                  if (err < 0) {
+>    338                          dev_err(&oxfw->unit->device,
+>    339                                  "fail to start rx stream: %d\n", err);
+>    340                          goto error;
+>    341                  }
+>    342          }
+>    343  
+>    344          if (oxfw->has_output) {
+>    345                  if (!amdtp_stream_running(&oxfw->tx_stream)) {
+>    346                          err = start_stream(oxfw, &oxfw->tx_stream);
+>    347                          if (err < 0) {
+>    348                                  dev_err(&oxfw->unit->device,
+>    349                                          "fail to start tx stream: %d\n", err);
+>    350                                  goto error;
+>    351                          }
+>    352                  }
+>    353          }
+>    354  
+>    355          return 0;
+>    356  error:
+>    357          amdtp_stream_stop(&oxfw->rx_stream);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> Smatch is basically complaining that we call amdtp_stream_stop() and
+> it's not clear that we necessarily reset things.  I don't know this code
+> very well so I have maybe missed something.
+> 
+>    358          cmp_connection_break(&oxfw->in_conn);
+>    359          if (oxfw->has_output) {
+>    360                  amdtp_stream_stop(&oxfw->tx_stream);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+>    361                  cmp_connection_break(&oxfw->out_conn);
+>    362          }
+>    363          return err;
+>    364  }
+> 
+> regards,
+> dan carpenter
 
-Thanks,
-Ranjani
-> > 
-> > commit 495f926c68ddb90 ("ASoC: core: Fix deadlock in
-> > snd_soc_instantiate_card()") tried to fixup it, but still not
-> > enough. We still have lockdep warning when we try unbind/bind.
-> > 
-> > We need mutex_lock() under snd_soc_unregister_card()
-> > instead of snd_remove_link_components()/snd_soc_unbind_card().
-> > 
-> > Fixes: 34ac3c3eb8f0c07 ("ASoC: core: lock client_mutex while
-> > removing link components")
-> > Fixes: 495f926c68ddb90 ("ASoC: core: Fix deadlock in
-> > snd_soc_instantiate_card()")
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-> >  sound/soc/soc-core.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> > index 2353886..2a408cc 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -2747,14 +2747,12 @@ static void snd_soc_unbind_card(struct
-> > snd_soc_card *card, bool unregister)
-> >  		snd_soc_dapm_shutdown(card);
-> >  		snd_soc_flush_all_delayed_work(card);
-> >  
-> > -		mutex_lock(&client_mutex);
-> >  		/* remove all components used by DAI links on this card
-> > */
-> >  		for_each_comp_order(order) {
-> >  			for_each_card_rtds(card, rtd) {
-> >  				soc_remove_link_components(card, rtd,
-> > order);
-> >  			}
-> >  		}
-> > -		mutex_unlock(&client_mutex);
-> >  
-> >  		soc_cleanup_card_resources(card);
-> >  		if (!unregister)
-> > @@ -2773,7 +2771,9 @@ static void snd_soc_unbind_card(struct
-> > snd_soc_card *card, bool unregister)
-> >   */
-> >  int snd_soc_unregister_card(struct snd_soc_card *card)
-> >  {
-> > +	mutex_lock(&client_mutex);
-> >  	snd_soc_unbind_card(card, true);
-> > +	mutex_unlock(&client_mutex);
-> >  	dev_dbg(card->dev, "ASoC: Unregistered card '%s'\n", card-
-> > >name);
-> >  
-> >  	return 0;
-> > -- 
-> > 2.7.4
-> > 
+Thanks for you report, however the double-free doesn't occur because the
+data of 'struct amdtp_stream' is protected by mutex and 'context' member
+is a flag to call kernel APIs for 'struct iso_packets_buffer'. The kernel
+API, amdtp_stream_stop()' can be called several times with no corruption.
+
+```
+(sound/firewire/amdtp-stream.c)
+void amdtp_stream_stop(struct amdtp_stream *s)
+{
+    mutex_lock(&s->mutex);
+
+    if (!amdtp_stream_running(s)) {
+    	mutex_unlock(&s->mutex);
+    	return;
+    }
+    ...
+    fw_iso_context_destroy(s->context);
+    s->context = ERR_PTR(-1);
+    iso_packets_buffer_destroy(&s->buffer, s->unit);
+    ...
+    mutex_unlock(&s->mutex);
+}
+EXPORT_SYMBOL(amdtp_stream_stop);
+```
+
+``
+(sound/firewire/amdtp-stream.h)
+static inline bool amdtp_stream_running(struct amdtp_stream *s)
+{
+	return !IS_ERR(s->context);
+}
+``
+
+
+Regards
+
+Takashi Sakamoto
