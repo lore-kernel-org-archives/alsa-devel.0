@@ -1,31 +1,18 @@
-From: Stefan Sauer <ensonic@hora-obscura.de>
-Subject: Re: focusrite scarlett 18i20 : Mixer controls with
- corrupted names for
-Date: Sat, 22 Jun 2019 23:17:00 +0200
-Message-ID: <b6d20ef6-c7ed-8969-1778-b27894f028df@hora-obscura.de>
-References: <65ad9ddb-bb67-2dc0-d5f5-e0c518641db2@hora-obscura.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] Revert "ALSA: firewire-lib: fix inverted node
+	IDs for amdtp_packet events"
+Date: Sun, 23 Jun 2019 10:23:33 +0900
+Message-ID: <20190623012333.12056-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.hora-obscura.de (hora-obscura.de [213.133.109.209])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28D2EF8071F
- for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2019 23:17:01 +0200 (CEST)
-Received: from smtp.hora-obscura.de (localhost [127.0.0.1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by smtp.hora-obscura.de (Postfix) with ESMTPS id 71E46AF8081
- for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2019 23:17:01 +0200 (CEST)
-Received: from ada.local (ipbcc14466.dynamic.kabel-deutschland.de
- [188.193.68.102])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by smtp.hora-obscura.de (Postfix) with ESMTPSA id 4AABEAF8027
- for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2019 23:17:01 +0200 (CEST)
-In-Reply-To: <65ad9ddb-bb67-2dc0-d5f5-e0c518641db2@hora-obscura.de>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45492F8070D
+ for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2019 03:23:40 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,64 +22,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UXVpY2sgZm9sbG93dXAuIEhlcmUgaXMgdGhlIGxzdXNiIC12IG91dHB1dCBmb3IgdGhlIGRldmlj
-ZToKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vZW5zb25pYy8yZDI4NmE4NWJiZjRhY2EyNWU2ZjM2
-YjM1Njk4NDljMwoKSSBub3RpY2VkIHR3byB3YXJuaW5nczoKV2FybmluZzogSnVuayBhdCBlbmQg
-b2YgZGVzY3JpcHRvciAoMTcgYnl0ZXMpOgogICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIDAwIDAwCkNvdWxkIHRob3NlIGJlIHRoZSBjYXVzZT8gSSBk
-b24ndCBub3cgaG93IHRvIG1hcCB0aGUgJ25hbWVpZCcgaW5kZXggdG8gYW55dGhpbmcKaW4gdGhl
-IGxzdWIgb3V0cHV0IHRob3VnaC4KCkFtIDIyLjA2LjE5IHVtIDIyOjU1IHNjaHJpZWIgU3RlZmFu
-IFNhdWVyOgo+IEhpLAo+IAo+IHdoZW4gSSBydW4KPiBhbWl4ZXIgLUQgaHc6NCBjb250cm9scyB8
-IHNvcnQgLW4gLXQgPSAtazIKPiAKPiBJIGdldCB0aGUgb3V0cHV0IGJlbG93Cj4gCj4gbnVtaWQ9
-MSxpZmFjZT1NSVhFUixuYW1lPSdLS0tLS0tLS0tLS0tLw4PDg8ODw4PDg8ODw4PDg8ODw4PDgyBT
-d2l0Y2gnCj4gbnVtaWQ9MixpZmFjZT1DQVJELG5hbWU9J0ludGVybmFsIFZhbGlkaXR5Jwo+IG51
-bWlkPTMsaWZhY2U9Q0FSRCxuYW1lPSdTL1BESUYgVmFsaWRpdHknCj4gbnVtaWQ9NCxpZmFjZT1D
-QVJELG5hbWU9J0FEQVQgVmFsaWRpdHknCj4gbnVtaWQ9NSxpZmFjZT1NSVhFUixuYW1lPSdTY2Fy
-bGV0dCAxOGkyMCBVU0ItU3luYyBDbG9jayBTb3VyY2UnCj4gbnVtaWQ9NixpZmFjZT1NSVhFUixu
-YW1lPScgU3dpdGNoJwo+IG51bWlkPTcsaWZhY2U9Q0FSRCxuYW1lPSdLZWVwIEludGVyZmFjZScK
-PiBudW1pZD04LGlmYWNlPU1JWEVSLG5hbWU9J01hc3RlciBQbGF5YmFjayBTd2l0Y2gnCj4gbnVt
-aWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdNYXN0ZXIgUGxheWJhY2sgVm9sdW1lJwo+IG51bWlkPTEw
-LGlmYWNlPU1JWEVSLG5hbWU9J01hc3RlciAxIChNb25pdG9yKSBQbGF5YmFjayBTd2l0Y2gnCj4g
-bnVtaWQ9MTEsaWZhY2U9TUlYRVIsbmFtZT0nTWFzdGVyIDEgKE1vbml0b3IpIFBsYXliYWNrIFZv
-bHVtZScKPiAuLi4gbG90cyBvZiBleHRyYSBsaW5lcyAuLi4KPiAKPiBQbGVhc2Ugbm90ZSB0aGUg
-bGluZXMgZm9yIG51bWlkPTEgYW5kIG51bWlkPTYuIFRoZSBmaXJzdCBvbmUgY29udGFpbnMgc29t
-ZQo+IGdhcmJhZ2UgYW5kIHRoZSAybmQgb25lIGxvb2sgbGlrZSBpdCBzaG91bGQgc3RhcnQgd2l0
-aCBhbm90aGVyIHdvcmQuCj4gCj4gSSBub3cgYWRkZWQgc29tZSBkZWJ1ZyBwcmludGluZyBoZXJl
-Ogo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL21hc3Rlci9zb3VuZC91
-c2IvbWl4ZXJfc2NhcmxldHQuYyNMNTYyCj4gCj4gYW5kIGdldCBvdXRwdXQgaW4gZG1lc2c6Cj4g
-WyAyOTcxLjY0MjEzN10gdXNiIDEtMjogUHJvZHVjdDogU2NhcmxldHQgMThpMjAgVVNCCj4gWyAy
-OTcxLjY0MjE0MV0gdXNiIDEtMjogTWFudWZhY3R1cmVyOiBGb2N1c3JpdGUKPiBbIDI5NzEuNzA5
-NzczXSBuZXcgY3RybDogbmFtZT0nTWFzdGVyIFBsYXliYWNrIFN3aXRjaCcsIGluZGV4PTEwLCBv
-ZmZzZXQ9MSwKPiBudW09MDogbnVtaWQ9OAo+IFsgMjk3MS43MDk3ODFdIG5ldyBjdHJsOiBuYW1l
-PSdNYXN0ZXIgUGxheWJhY2sgVm9sdW1lJywgaW5kZXg9MTAsIG9mZnNldD0yLAo+IG51bT0wOiBu
-dW1pZD05Cj4gWyAyOTcxLjcwOTc4OF0gbmV3IGN0cmw6IG5hbWU9J01hc3RlciAxIChNb25pdG9y
-KSBQbGF5YmFjayBTd2l0Y2gnLCBpbmRleD0xMCwKPiBvZmZzZXQ9MSwgbnVtPTE6IG51bWlkPTEw
-Cj4gCj4gU28gdGhlIGZpcnN0IDggY29udHJvbHMgYXJlIGFkZGVkIHNvbWV3aGVyZSBlbHNlLiBM
-b29rcyBsaWtlIHRoaXMgaXMgZnJvbQo+IG1peGVyLmMgYW5kIGFmdGVyCj4gZWNobyAtbiAnZmls
-ZSBzb3VuZC91c2IvbWl4ZXIuYyArcCcgPi9zeXMva2VybmVsL2RlYnVnL2R5bmFtaWNfZGVidWcv
-Y29udHJvbAo+IEkgZ2V0Cj4gWyA0NDA1Ljg1NTQzMl0gdXNiIDEtMjogWzUxXSBQVSBbS0tLS0tL
-S0tLS0tLS8ODw4PDg8ODw4PDg8ODw4PDg8ODw4MgU3dpdGNoXSBjaCA9IDEsIHZhbCA9IDAvMQo+
-IFsgNDQwNS44NTY0MjNdIHVzYiAxLTI6IFs1Ml0gUFUgWyBTd2l0Y2hdIGNoID0gMSwgdmFsID0g
-MC8xCj4gCj4gSSBub3cgYWRkZWQgbW9yZSBkZWJ1ZyBwcmludHMgaW50bwo+IGh0dHBzOi8vZ2l0
-aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL21hc3Rlci9zb3VuZC91c2IvbWl4ZXIuYyNMMjQz
-MQo+IGFuZCBpdHMgdGhlIGNvZGUgdGhhdCBjYWxscyBzbmRfdXNiX2NvcHlfc3RyaW5nX2Rlc2Mo
-KQo+IFsgNTc1MC4xMjQxMjNdIHVzYiAxLTI6IG5hbWVpZD05MCwgbGVuPTM1Cj4gWyA1NzUwLjEy
-NDE1N10gdXNiIDEtMjogWzUxXSBQVSBbS0tLS0tLS0tLS0tLS8ODw4PDg8ODw4PDg8ODw4PDg8OD
-w4MgU3dpdGNoXSBjaCA9IDEsIHZhbCA9IDAvMQo+IFsgNTc1MC4xMjUyNDFdIHVzYiAxLTI6IG5h
-bWVpZD04MiwgbGVuPTEKPiBbIDU3NTAuMTI1MjYwXSB1c2IgMS0yOiBbNTJdIFBVIFsgU3dpdGNo
-XSBjaCA9IDEsIHZhbCA9IDAvMQo+IAo+IEluIGJvdGggY2FzZXMgdGhlIHJldHVybmVkIGxlbiBz
-ZWVtcyB3cm9uZyBhbmQgdGhlIGZ1bmN0aW9uIGRvZXMgbm90IHNlZW1zIHRvCj4gY29weSBhbnkg
-dXNlZnVsIHN0cmluZyBoZXJlLiBzbmRfdXNiX2NvcHlfc3RyaW5nX2Rlc2MoKSBpcyBqdXN0IGEg
-d3JhcHBlciBhcm91bmQKPiB1c2Jfc3RyaW5nKCkuCj4gCj4gSXMgbXkgaGFyZHdhcmUgcmV0dXJu
-aW5nIGJvZ3VzIGRhdGEgaW4gdXNiIGRlc2NyaXB0b3JzPyBDYW4gdGhpcyBiZSBhZGRyZXNzCj4g
-dGhyb3VnaCBzb21lIHF1aXJrcyB0YWJsZT8gQW55IG90aGVyIGlkZWFzPwo+IAo+IFRoYW5rcyEK
-PiBTdGVmYW4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cj4gaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+This reverts commit e703965a129cdd72ff74e248f8fbf0d617844527.
+
+When creating this patch, I compared the value of src field to the
+value of first byte of cip_header field (SID) in tracing event.
+But in this test I used a device which has a quirk to transfer
+isochronous packet with invalid SID.
+---
+ sound/firewire/amdtp-stream-trace.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+index 5fe0920f04e5..ab708857979f 100644
+--- a/sound/firewire/amdtp-stream-trace.h
++++ b/sound/firewire/amdtp-stream-trace.h
+@@ -35,11 +35,11 @@ TRACE_EVENT(amdtp_packet,
+ 		__entry->cycle = cycles % CYCLES_PER_SECOND;
+ 		__entry->channel = s->context->channel;
+ 		if (s->direction == AMDTP_IN_STREAM) {
+-			__entry->src = fw_parent_device(s->unit)->card->node_id;
+-			__entry->dest = fw_parent_device(s->unit)->node_id;
+-		} else {
+ 			__entry->src = fw_parent_device(s->unit)->node_id;
+ 			__entry->dest = fw_parent_device(s->unit)->card->node_id;
++		} else {
++			__entry->src = fw_parent_device(s->unit)->card->node_id;
++			__entry->dest = fw_parent_device(s->unit)->node_id;
+ 		}
+ 		if (cip_header) {
+ 			memcpy(__get_dynamic_array(cip_header), cip_header,
+-- 
+2.20.1
