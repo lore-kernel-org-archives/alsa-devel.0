@@ -1,27 +1,19 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH resend 25/47] ASoC: samsung: snow: don't
- select unnecessary Platform
-Date: Mon, 24 Jun 2019 15:19:04 +0200
-Message-ID: <9cfc8505-2903-033f-f68b-8ccc1c70132b@samsung.com>
-References: <877e9iwf9f.wl-kuninori.morimoto.gx@renesas.com>
- <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
- <CGME20190624131905eucas1p2cf4335b4d1483b7e62d0c9e7b5223a3c@eucas1p2.samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: rt1308: Add RT1308 amplifier
+	driver
+Date: Mon, 24 Jun 2019 14:27:02 +0100
+Message-ID: <20190624132702.GM5316@sirena.org.uk>
+References: <1561381680-5250-1-git-send-email-derek.fang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5516767230248695233=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
- [210.118.77.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9BA6F8065B
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2019 15:19:09 +0200 (CEST)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
- by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id
- 20190624131906euoutp025e6cee6006d37e8bc15eea7a8e57ce63~rJPjVXILO3094030940euoutp02I
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2019 13:19:06 +0000 (GMT)
-In-Reply-To: <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43BF5F8065B
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2019 15:27:14 +0200 (CEST)
+In-Reply-To: <1561381680-5250-1-git-send-email-derek.fang@realtek.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,62 +23,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+To: derek.fang@realtek.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, bard.liao@intel.com, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkKCk9uIDIwMTktMDYtMTkgMDM6MTgsIEt1bmlub3JpIE1vcmltb3RvIHdyb3RlOgo+IEZyb206
-IEt1bmlub3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KPgo+
-IEFMU0EgU29DIGlzIG5vdyBzdXBwb3J0aW5nICJubyBQbGF0Zm9ybSIuIFNvdW5kIGNhcmQgZG9l
-c24ndCBuZWVkIHRvCj4gc2VsZWN0ICJDUFUgY29tcG9uZW50IiBhcyAiUGxhdGZvcm0iIGFueW1v
-cmUgaWYgaXQgZG9lc24ndCBuZWVkCj4gc3BlY2lhbCBQbGF0Zm9ybS4KPiBUaGlzIHBhdGNoIHJl
-bW92ZXMgc3VjaCBzZXR0aW5ncy4KPgo+IFNpZ25lZC1vZmYtYnk6IEt1bmlub3JpIE1vcmltb3Rv
-IDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KClRoaXMgcGF0Y2ggY2F1c2VzIHJl
-Z3Jlc3Npb24gb24gU2Ftc3VuZyBFeHlub3MtYmFzZWQgYm9hcmRzOiBTbm93LCAKUGVhY2gtUGkg
-YW5kIFBlYWNoLVBpdCAoYWxsIHRoYXQgdXNlIHNub3cgbWFjaGluZSBkcml2ZXIpIHNpbmNlIGxp
-bnV4IApuZXh0LTIwMTkwNjIwLiBBU29DIGRldmljZSBpcyBwcm9wZXJseSByZWdpc3RlcmVkLCBi
-dXQgaXQgaXMgbm90IHVzYWJsZToKClvCoMKgwqAgMy4yMDMwMDZdIHNhbXN1bmctaTJzIDM4MzAw
-MDAuaTJzLXNlYzogRE1BIGNoYW5uZWxzIHNvdXJjZWQgZnJvbSAKZGV2aWNlIDM4MzAwMDAuaTJz
-ClvCoMKgwqAgMy4yMTM0NDBdIHNub3ctYXVkaW8gc291bmQ6IEZhaWxlZCBwYXJzaW5nIGNvZGVj
-IG5vZGUKW8KgwqDCoCAzLjQyMzI0MV0gc25vdy1hdWRpbyBzb3VuZDogbXVsdGljb2RlYyA8LT4g
-c2Ftc3VuZy1pMnMgbWFwcGluZyBvawpbwqDCoMKgIDMuNDI5Nzc2XSBtYXg5ODA5NSA3LTAwMTE6
-IEFTb0M6IG11eCBFeHRlcm5hbCBNSUMgaGFzIG5vIHBhdGhzClvCoMKgwqAgMy40MzQ1MTNdIG1h
-eDk4MDk1IDctMDAxMTogQVNvQzogbXV4IExpbmVpbiBNdXggaGFzIG5vIHBhdGhzClvCoMKgwqAg
-NC4wNDM0ODhdIEFMU0EgZGV2aWNlIGxpc3Q6ClvCoMKgwqAgNC4wNDcxNzFdwqDCoCAjMDogU25v
-dy1JMlMtTUFYOTgwOTUKCiMgc3BlYWtlci10ZXN0IC1sMQoKc3BlYWtlci10ZXN0IDEuMS4zCgpQ
-bGF5YmFjayBkZXZpY2UgaXMgZGVmYXVsdApTdHJlYW0gcGFyYW1ldGVycyBhcmUgNDgwMDBIeiwg
-UzE2X0xFLCAxIGNoYW5uZWxzClVzaW5nIDE2IG9jdGF2ZXMgb2YgcGluayBub2lzZQpQbGF5YmFj
-ayBvcGVuIGVycm9yOiAtMjIsSW52YWxpZCBhcmd1bWVudAoKIwoKVGhlIGtlcm5lbCBsb2dzIGFy
-ZSBleGFjdGx5IHRoZSBzYW1lIHdoZW0gaXQgd29ya2VkIGZpbmUgKGkuZS4gCm5leHQtMjAxOTA2
-MTksIHNvIHRoZSBtZXNzYWdlIGFib3V0IGNvZGVjIG5vZGUgY2FuIGJlIGlnbm9yZWQpLgoKU2lt
-aWxhciBpc3N1ZSBhcHBlYXJzIGFsc28gb24gSGFyZGtlcm5lbCdzIE9kcm9pZFhVIGJvYXJkIAoo
-RXh5bm9zNTQxMC1iYXNlZCwgdXNlcyBzb3VuZC1jYXJkLXNpbXBsZSBBU29DIGRyaXZlcikgYW5k
-IFNhbXN1bmcgVE0yIApib2FyZCAoRXh5bm9zNTQzMywgdXNlcyB0bTJfd201MTEwIGRyaXZlciku
-IEknbSBvcGVuIHRvIHRlc3QgYW55IHBhdGNoIApvciBwcm92aWRlIG1vcmUgbG9ncyBpZiBuZWVk
-ZWQuCgo+IC0tLQo+ICAgc291bmQvc29jL3NhbXN1bmcvc25vdy5jIHwgMTAgKysrLS0tLS0tLQo+
-ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKPgo+IGRp
-ZmYgLS1naXQgYS9zb3VuZC9zb2Mvc2Ftc3VuZy9zbm93LmMgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9z
-bm93LmMKPiBpbmRleCA4ZWE3Nzk5Li43ZDY2OWM0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9z
-YW1zdW5nL3Nub3cuYwo+ICsrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL3Nub3cuYwo+IEBAIC0xNCw5
-ICsxNCw5IEBACj4gICAKPiAgICNkZWZpbmUgRklOX1BMTF9SQVRFCQkyNDAwMDAwMAo+ICAgCj4g
-LVNORF9TT0NfREFJTElOS19ERUZTKGxpbmtzLAo+IC0JREFJTElOS19DT01QX0FSUkFZKENPTVBf
-RU1QVFkoKSksCj4gLQlEQUlMSU5LX0NPTVBfQVJSQVkoQ09NUF9FTVBUWSgpKSwKPiArU05EX1NP
-Q19EQUlMSU5LX0RFRihsaW5rc19jcHVzLAo+ICsJREFJTElOS19DT01QX0FSUkFZKENPTVBfRU1Q
-VFkoKSkpOwo+ICtTTkRfU09DX0RBSUxJTktfREVGKGxpbmtzX2NvZGVjcywKPiAgIAlEQUlMSU5L
-X0NPTVBfQVJSQVkoQ09NUF9FTVBUWSgpKSk7Cj4gICAKPiAgIHN0cnVjdCBzbm93X3ByaXYgewo+
-IEBAIC0xNTAsOCArMTUwLDYgQEAgc3RhdGljIGludCBzbm93X3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCj4gICAJbGluay0+bnVtX2NwdXMgPSBBUlJBWV9TSVpFKGxpbmtzX2Nw
-dXMpOwo+ICAgCWxpbmstPmNvZGVjcyA9IGxpbmtzX2NvZGVjczsKPiAgIAlsaW5rLT5udW1fY29k
-ZWNzID0gQVJSQVlfU0laRShsaW5rc19jb2RlY3MpOwo+IC0JbGluay0+cGxhdGZvcm1zID0gbGlu
-a3NfcGxhdGZvcm1zOwo+IC0JbGluay0+bnVtX3BsYXRmb3JtcyA9IEFSUkFZX1NJWkUobGlua3Nf
-cGxhdGZvcm1zKTsKPiAgIAo+ICAgCWNhcmQtPmRhaV9saW5rID0gbGluazsKPiAgIAljYXJkLT5u
-dW1fbGlua3MgPSAxOwo+IEBAIC0yMDcsOCArMjA1LDYgQEAgc3RhdGljIGludCBzbm93X3Byb2Jl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gICAJCX0KPiAgIAl9Cj4gICAKPiAtCWxp
-bmstPnBsYXRmb3Jtcy0+b2Zfbm9kZSA9IGxpbmstPmNwdXMtPm9mX25vZGU7Cj4gLQo+ICAgCS8q
-IFVwZGF0ZSBjYXJkLW5hbWUgaWYgcHJvdmlkZWQgdGhyb3VnaCBEVCwgZWxzZSB1c2UgZGVmYXVs
-dCBuYW1lICovCj4gICAJc25kX3NvY19vZl9wYXJzZV9jYXJkX25hbWUoY2FyZCwgInNhbXN1bmcs
-bW9kZWwiKTsKPiAgIAoKQmVzdCByZWdhcmRzCi0tIApNYXJlayBTenlwcm93c2tpLCBQaEQKU2Ft
-c3VuZyBSJkQgSW5zdGl0dXRlIFBvbGFuZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+
+--===============5516767230248695233==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tIeJbwHNpP5qezKJ"
+Content-Disposition: inline
+
+
+--tIeJbwHNpP5qezKJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 24, 2019 at 09:08:00PM +0800, derek.fang@realtek.com wrote:
+
+> +static struct i2c_driver rt1308_i2c_driver = {
+> +	.driver = {
+> +		.name = "rt1308",
+> +		.owner = THIS_MODULE,
+> +#if defined(CONFIG_OF)
+> +		.of_match_table = rt1308_of_match,
+> +#endif
+
+As I said last time this should be using of_match_ptr().
+
+--tIeJbwHNpP5qezKJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0Qz6YACgkQJNaLcl1U
+h9BNiwf7Bg7JrAQrr+LiuJIgysAFPBjqs3vwAy/qXb0hUzSyd/rHgdj3FFF/bkU4
+odRFoqQXlLjuimvFZ1x5ygsmCVP25ZYRFg2tR3bs9dUuMMR+KzWs0ZoKBekuIJeH
+PGfKe9oVxAqk2Mii3vuU/1qz7chaTRjQrEDGgyFbce4POY/wvPBwDPz/r6xqTGi2
+mT9zsVIdAJrfDe66QsgIvZOpHxJwCqUZ2DKvbjXmjg6/pCcosJ2UDl7wvm8gklzM
+KtpJzLvnXIPTAic4mCHwKZrVj0UILDfQBoCMnWFq5lxC4YckV55DoEr4VC0wWRZO
+Pl+dYC5KbNPl/M5B5XePwarjTMr8OQ==
+=XXu9
+-----END PGP SIGNATURE-----
+
+--tIeJbwHNpP5qezKJ--
+
+--===============5516767230248695233==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5516767230248695233==--
