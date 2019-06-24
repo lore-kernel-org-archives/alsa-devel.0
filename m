@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Adapt for debugfs API change" to the asoc tree
+Subject: Applied "ASoC: core: Adapt for debugfs API change" to the asoc tree
 Date: Mon, 24 Jun 2019 17:32:14 +0100 (BST)
-Message-ID: <20190624163214.4F0A4440058@finisterre.sirena.org.uk>
-References: <20190621113357.8264-2-broonie@kernel.org>
+Message-ID: <20190624163214.6D18144005B@finisterre.sirena.org.uk>
+References: <20190621113357.8264-1-broonie@kernel.org>
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20190621113357.8264-2-broonie@kernel.org>
+In-Reply-To: <20190621113357.8264-1-broonie@kernel.org>
 Sender: stable-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Adapt for debugfs API change
+   ASoC: core: Adapt for debugfs API change
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From ceaea851b9ea75f9ea2bbefb53ff0d4b27cd5a6e Mon Sep 17 00:00:00 2001
+>From c2c928c93173f220955030e8440517b87ec7df92 Mon Sep 17 00:00:00 2001
 From: Mark Brown <broonie@kernel.org>
-Date: Fri, 21 Jun 2019 12:33:57 +0100
-Subject: [PATCH] ASoC: dapm: Adapt for debugfs API change
+Date: Fri, 21 Jun 2019 12:33:56 +0100
+Subject: [PATCH] ASoC: core: Adapt for debugfs API change
 
 Back in ff9fb72bc07705c (debugfs: return error values, not NULL) the
 debugfs APIs were changed to return error pointers rather than NULL
@@ -53,57 +53,51 @@ Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ sound/soc/soc-core.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5fc57af9cb6f..a248d88b8968 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2154,23 +2154,25 @@ void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
- {
- 	struct dentry *d;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9138fcb15cd3..6aeba0d66ec5 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -158,9 +158,10 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
+ 				component->card->debugfs_card_root);
+ 	}
  
--	if (!parent)
-+	if (!parent || IS_ERR(parent))
- 		return;
- 
- 	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
- 
--	if (!dapm->debugfs_dapm) {
-+	if (IS_ERR(dapm->debugfs_dapm)) {
- 		dev_warn(dapm->dev,
--		       "ASoC: Failed to create DAPM debugfs directory\n");
-+			 "ASoC: Failed to create DAPM debugfs directory %ld\n",
-+			 PTR_ERR(dapm->debugfs_dapm));
+-	if (!component->debugfs_root) {
++	if (IS_ERR(component->debugfs_root)) {
+ 		dev_warn(component->dev,
+-			"ASoC: Failed to create component debugfs directory\n");
++			"ASoC: Failed to create component debugfs directory: %ld\n",
++			PTR_ERR(component->debugfs_root));
  		return;
  	}
  
- 	d = debugfs_create_file("bias_level", 0444,
- 				dapm->debugfs_dapm, dapm,
- 				&dapm_bias_fops);
--	if (!d)
-+	if (IS_ERR(d))
- 		dev_warn(dapm->dev,
--			 "ASoC: Failed to create bias level debugfs file\n");
-+			 "ASoC: Failed to create bias level debugfs file: %ld\n",
-+			 PTR_ERR(d));
+@@ -212,18 +213,21 @@ static void soc_init_card_debugfs(struct snd_soc_card *card)
+ 
+ 	card->debugfs_card_root = debugfs_create_dir(card->name,
+ 						     snd_soc_debugfs_root);
+-	if (!card->debugfs_card_root) {
++	if (IS_ERR(card->debugfs_card_root)) {
+ 		dev_warn(card->dev,
+-			 "ASoC: Failed to create card debugfs directory\n");
++			 "ASoC: Failed to create card debugfs directory: %ld\n",
++			 PTR_ERR(card->debugfs_card_root));
++		card->debugfs_card_root = NULL;
+ 		return;
+ 	}
+ 
+ 	card->debugfs_pop_time = debugfs_create_u32("dapm_pop_time", 0644,
+ 						    card->debugfs_card_root,
+ 						    &card->pop_time);
+-	if (!card->debugfs_pop_time)
++	if (IS_ERR(card->debugfs_pop_time))
+ 		dev_warn(card->dev,
+-			 "ASoC: Failed to create pop time debugfs file\n");
++			 "ASoC: Failed to create pop time debugfs file: %ld\n",
++			 PTR_ERR(card->debugfs_pop_time));
  }
  
- static void dapm_debugfs_add_widget(struct snd_soc_dapm_widget *w)
-@@ -2184,10 +2186,10 @@ static void dapm_debugfs_add_widget(struct snd_soc_dapm_widget *w)
- 	d = debugfs_create_file(w->name, 0444,
- 				dapm->debugfs_dapm, w,
- 				&dapm_widget_power_fops);
--	if (!d)
-+	if (IS_ERR(d))
- 		dev_warn(w->dapm->dev,
--			"ASoC: Failed to create %s debugfs file\n",
--			w->name);
-+			 "ASoC: Failed to create %s debugfs file: %ld\n",
-+			 w->name, PTR_ERR(d));
- }
- 
- static void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
+ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
 -- 
 2.20.1
