@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: use soc_find_component() at
-	snd_soc_find_dai()" to the asoc tree
-Date: Mon, 24 Jun 2019 17:32:13 +0100 (BST)
-Message-ID: <20190624163213.A70C9440041@finisterre.sirena.org.uk>
-References: <87o92trskm.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: move soc_find_component()" to
+	the asoc tree
+Date: Mon, 24 Jun 2019 17:32:14 +0100 (BST)
+Message-ID: <20190624163214.0EB9B440053@finisterre.sirena.org.uk>
+References: <87sgs5rsl2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5274DF896EA
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 11:53:57 +0200 (CEST)
-In-Reply-To: <87o92trskm.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBD61F8071F
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 11:53:58 +0200 (CEST)
+In-Reply-To: <87sgs5rsl2.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: use soc_find_component() at snd_soc_find_dai()
+   ASoC: soc-core: move soc_find_component()
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,75 @@ to this mail.
 Thanks,
 Mark
 
->From b9f2e25c599bbbf0646957e07ebb72b942c286cc Mon Sep 17 00:00:00 2001
+>From 7d7db5d3c3d849c2f877be3b4c9afa7f5b5257c2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 20 Jun 2019 09:49:33 +0900
-Subject: [PATCH] ASoC: soc-core: use soc_find_component() at
- snd_soc_find_dai()
+Date: Thu, 20 Jun 2019 09:49:17 +0900
+Subject: [PATCH] ASoC: soc-core: move soc_find_component()
 
-snd_soc_find_dai() finds component first via specified
-snd_soc_dai_link_component, and find DAI from it.
-
-We already have soc_find_component() to find component,
-but soc_find_dai() has original implementation to find component.
-
-We shouldn't have duplicate implementation to do same things.
-This patch uses soc_find_component() at soc_find_dai()
+move soc_find_component() next to snd_soc_is_matching_component().
+This is prepare for soc_find_component() cleanup
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1749f4af91b6..358f1fbf9a30 100644
+index 4cd77cd6c864..1b94119cfb0d 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -813,9 +813,8 @@ struct snd_soc_dai *snd_soc_find_dai(
- 	lockdep_assert_held(&client_mutex);
+@@ -760,6 +760,25 @@ static struct device_node
+ 	return of_node;
+ }
  
- 	/* Find CPU DAI from registered DAIs */
--	for_each_component(component) {
--		if (!snd_soc_is_matching_component(dlc, component))
--			continue;
-+	component = soc_find_component(dlc);
-+	if (component) {
- 		for_each_component_dais(component, dai) {
- 			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
- 			    && (!dai->driver->name
++static int snd_soc_is_matching_component(
++	const struct snd_soc_dai_link_component *dlc,
++	struct snd_soc_component *component)
++{
++	struct device_node *component_of_node;
++
++	if (!dlc)
++		return 0;
++
++	component_of_node = soc_component_to_node(component);
++
++	if (dlc->of_node && component_of_node != dlc->of_node)
++		return 0;
++	if (dlc->name && strcmp(component->name, dlc->name))
++		return 0;
++
++	return 1;
++}
++
+ static struct snd_soc_component *soc_find_component(
+ 	const struct device_node *of_node, const char *name)
+ {
+@@ -782,25 +801,6 @@ static struct snd_soc_component *soc_find_component(
+ 	return NULL;
+ }
+ 
+-static int snd_soc_is_matching_component(
+-	const struct snd_soc_dai_link_component *dlc,
+-	struct snd_soc_component *component)
+-{
+-	struct device_node *component_of_node;
+-
+-	if (!dlc)
+-		return 0;
+-
+-	component_of_node = soc_component_to_node(component);
+-
+-	if (dlc->of_node && component_of_node != dlc->of_node)
+-		return 0;
+-	if (dlc->name && strcmp(component->name, dlc->name))
+-		return 0;
+-
+-	return 1;
+-}
+-
+ /**
+  * snd_soc_find_dai - Find a registered DAI
+  *
 -- 
 2.20.1
