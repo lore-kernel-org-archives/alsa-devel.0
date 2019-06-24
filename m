@@ -1,24 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/5] sound: soc: skylake: no need to check
- return value of debugfs_create functions
-Date: Mon, 24 Jun 2019 14:33:36 +0100
-Message-ID: <20190624133336.GN5316@sirena.org.uk>
-References: <20190614094756.2965-1-gregkh@linuxfoundation.org>
- <20190614094756.2965-2-gregkh@linuxfoundation.org>
- <f85fe797-f843-bf71-549a-00a169d527dd@intel.com>
- <s5h4l4hwe1c.wl-tiwai@suse.de>
- <20190624105334.GJ5316@sirena.org.uk>
- <s5htvcfxgy9.wl-tiwai@suse.de>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v3] ASoC: rt1308: Add RT1308 amplifier
+	driver
+Date: Mon, 24 Jun 2019 19:49:44 +0200
+Message-ID: <7eee0abc-af2d-d4d3-23b2-d682a285c352@intel.com>
+References: <1561381680-5250-1-git-send-email-derek.fang@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9084037110082583946=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79E0DF8065B
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2019 15:33:47 +0200 (CEST)
-In-Reply-To: <s5htvcfxgy9.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C12EF8071F
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2019 19:49:51 +0200 (CEST)
+In-Reply-To: <1561381680-5250-1-git-send-email-derek.fang@realtek.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,57 +24,220 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+To: derek.fang@realtek.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, flove@realtek.com, shumingf@realtek.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On 2019-06-24 15:08, derek.fang@realtek.com wrote:
 
---===============9084037110082583946==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="02TgiDMAH4DLwn5E"
-Content-Disposition: inline
+> +static int rt1308_reg_init(struct snd_soc_component *component)
+> +{
+> +	struct rt1308_priv *rt1308 = snd_soc_component_get_drvdata(component);
+> +
+> +	regmap_multi_reg_write(rt1308->regmap, init_list, RT1308_INIT_REG_LEN);
+> +	return 0;
 
-
---02TgiDMAH4DLwn5E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 24, 2019 at 03:15:26PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > Currently debugfs doesn't report any errors other than via the return
-> > codes (at least in the common creation stuff) so it's up to the callers
-> > to do that.
-
-> So this should be changed to follow a la sysfs creation error, IMO.
-> At least, the name conflicts etc should be reported more obviously.
-
-Indeed, that'd mitigate the problems with just making everything
-silently fail a lot - so long as we say there's a problem people are a
-lot less likely to be mislead if anything goes wrong.
-
---02TgiDMAH4DLwn5E
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0Q0S8ACgkQJNaLcl1U
-h9BWVQf9E8l2s4xvp6lqiI30M3mbXjCdZiFrDHm1K6g9YJaChL7wzVAezIG9QkJ0
-CsrY3lv3PN9Bsr1SIKssmAT0TDYCkSh8fB2nT8vwuCzM9hait9zNHMMlsStig04s
-D9KFfvui5J6l6H24iNAGpaRnDlfFyGfkDaiWWp20usOTB/hOgPTKkDNmE+a6bsjZ
-AV0sn/FlBt1E1O5GOmuCTU2mbNQYdOGnYFLReRsB6rFJNYSfkwty0UhrY984hv3v
-ekZi/VlW5Di84xs1pLmqnverk1YVp5bWZh7i10bvKsj5JWTNWsHVOZ2pRvqbOgTI
-LkzgIggSD60RvGYVRciMwBQP6g3Haw==
-=1+72
------END PGP SIGNATURE-----
-
---02TgiDMAH4DLwn5E--
-
---===============9084037110082583946==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+s/return 0/return regmap_multi_reg_write/ perhaps?
 
 
---===============9084037110082583946==--
+> +static int rt1308_classd_event(struct snd_soc_dapm_widget *w,
+> +	struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_dapm_to_component(w->dapm);
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		msleep(30);
+> +		snd_soc_component_update_bits(component, RT1308_POWER_STATUS,
+> +			RT1308_POW_PDB_REG_BIT, RT1308_POW_PDB_REG_BIT);
+> +		msleep(40);
+> +		break;
+> +	case SND_SOC_DAPM_PRE_PMD:
+> +		snd_soc_component_update_bits(component, RT1308_POWER_STATUS,
+> +			RT1308_POW_PDB_REG_BIT, 0);
+> +		usleep_range(150000, 200000);
+> +		break;
+> +
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	return 0;
+
+Redundant return.
+
+
+> +static int rt1308_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_component *component = dai->component;
+> +	struct rt1308_priv *rt1308 = snd_soc_component_get_drvdata(component);
+> +	unsigned int val_len = 0, val_clk, mask_clk;
+> +	int pre_div, bclk_ms, frame_size;
+> +
+> +	rt1308->lrck = params_rate(params);
+> +	pre_div = rt1308_get_clk_info(rt1308->sysclk, rt1308->lrck);
+> +	if (pre_div < 0) {
+> +		dev_err(component->dev,
+> +			"Unsupported clock setting %d\n", rt1308->lrck);
+> +		return -EINVAL;
+> +	}
+> +
+> +	frame_size = snd_soc_params_to_frame_size(params);
+> +	if (frame_size < 0) {
+> +		dev_err(component->dev, "Unsupported frame size: %d\n",
+> +			frame_size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	bclk_ms = frame_size > 32;
+> +	rt1308->bclk = rt1308->lrck * (32 << bclk_ms);
+> +
+> +	dev_dbg(component->dev, "bclk_ms is %d and pre_div is %d for iis %d\n",
+> +				bclk_ms, pre_div, dai->id);
+> +
+> +	dev_dbg(component->dev, "lrck is %dHz and pre_div is %d for iis %d\n",
+> +				rt1308->lrck, pre_div, dai->id);
+> +
+> +	switch (params_width(params)) {
+> +	case 16:
+> +		val_len |= RT1308_I2S_DL_SEL_16B;
+> +		break;
+> +	case 20:
+> +		val_len |= RT1308_I2S_DL_SEL_20B;
+> +		break;
+> +	case 24:
+> +		val_len |= RT1308_I2S_DL_SEL_24B;
+> +		break;
+> +	case 8:
+> +		val_len |= RT1308_I2S_DL_SEL_8B;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (dai->id) {
+> +	case RT1308_AIF1:
+> +		mask_clk = RT1308_DIV_FS_SYS_MASK;
+> +		val_clk = pre_div << RT1308_DIV_FS_SYS_SFT;
+> +		snd_soc_component_update_bits(component,
+> +			RT1308_I2S_SET_2, RT1308_I2S_DL_SEL_MASK,
+> +			val_len);
+> +		break;
+> +	default:
+> +		dev_err(component->dev, "Invalid dai->id: %d\n", dai->id);
+> +		return -EINVAL;
+> +	}
+
+So, either id == RT1308_AIF1 -or- func collapses. I'd suggest a refactor:
+if (dai->id != RT1308_AIF1)
+	// collapse
+// do the stuff
+
+Moreover, this block (if-statement) should probably be moved to the top 
+of the func. Why bother with any ops if dai->id does not match.
+
+> +
+> +	snd_soc_component_update_bits(component, RT1308_CLK_1,
+> +		mask_clk, val_clk);
+
+is mask_clk local even needed? It could be simply inlined..
+
+> +
+> +	return 0;
+> +}
+
+
+> +static int rt1308_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +	struct snd_soc_component *component = dai->component;
+> +	struct rt1308_priv *rt1308 = snd_soc_component_get_drvdata(component);
+> +	unsigned int reg_val = 0, reg1_val = 0;
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBS_CFS:
+> +		rt1308->master = 0;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	} > +
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		reg_val |= RT1308_I2S_DF_SEL_LEFT;
+> +		break;
+> +	case SND_SOC_DAIFMT_DSP_A:
+> +		reg_val |= RT1308_I2S_DF_SEL_PCM_A;
+> +		break;
+> +	case SND_SOC_DAIFMT_DSP_B:
+> +		reg_val |= RT1308_I2S_DF_SEL_PCM_B;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> +	case SND_SOC_DAIFMT_NB_NF:
+> +		break;
+> +	case SND_SOC_DAIFMT_IB_NF:
+> +		reg1_val |= RT1308_I2S_BCLK_INV;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (dai->id) {
+> +	case RT1308_AIF1:
+> +		snd_soc_component_update_bits(component,
+> +			RT1308_I2S_SET_1, RT1308_I2S_DF_SEL_MASK,
+> +			reg_val);
+> +		snd_soc_component_update_bits(component,
+> +			RT1308_I2S_SET_2, RT1308_I2S_BCLK_MASK,
+> +			reg1_val);
+> +		break;
+> +	default:
+> +		dev_err(component->dev, "Invalid dai->id: %d\n", dai->id);
+> +		return -EINVAL;
+> +	}
+
+Same treatment as for rt1308_hw_params could be applied.
+
+
+> +static int rt1308_probe(struct snd_soc_component *component)
+> +{
+> +	struct rt1308_priv *rt1308 = snd_soc_component_get_drvdata(component);
+> +
+> +	rt1308->component = component;
+> +
+> +	rt1308_reg_init(component);
+> +
+> +	return 0;
+
+s/return 0/return rt1308_reg_init/ perhaps?
+
+
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id rt1308_of_match[] = {
+> +	{ .compatible = "realtek,rt1308", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, rt1308_of_match);
+> +#endif
+> +
+> +#ifdef CONFIG_ACPI
+> +static struct acpi_device_id rt1308_acpi_match[] = {
+> +	{"10EC1308", 0,},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, rt1308_acpi_match);
+> +#endif
+> +
+> +static const struct i2c_device_id rt1308_i2c_id[] = {
+> +	{ "rt1308", 0 },
+> +	{ }
+> +};
+
+Each of these 3 const arrays above has different spacing of their 
+elements. It would look better if same style was chosen for all of em.
