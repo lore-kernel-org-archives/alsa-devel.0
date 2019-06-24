@@ -1,77 +1,109 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH resend 25/47] ASoC: samsung: snow: don't
- select unnecessary Platform
-Date: Tue, 25 Jun 2019 10:37:35 +0200
-Message-ID: <c4bb4599-e5d5-926b-75d5-d5c349ed8076@samsung.com>
-References: <877e9iwf9f.wl-kuninori.morimoto.gx@renesas.com>
- <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
- <CGME20190624131905eucas1p2cf4335b4d1483b7e62d0c9e7b5223a3c@eucas1p2.samsung.com>
- <9cfc8505-2903-033f-f68b-8ccc1c70132b@samsung.com>
- <87d0j232wg.wl-kuninori.morimoto.gx@renesas.com>
- <80c5c575-6f28-c6a6-91b2-d701bb9fbce8@samsung.com>
- <877e9a2hvn.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
- [210.118.77.11])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 444FBF8075C
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 10:37:40 +0200 (CEST)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
- by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
- 20190625083738euoutp01c61ee6c81170386c5422f8e91ffe71ed~rZDEupiHw2087620876euoutp015
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 08:37:38 +0000 (GMT)
-In-Reply-To: <877e9a2hvn.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dapm: Adapt for debugfs API change" to the asoc tree
+Date: Mon, 24 Jun 2019 17:32:14 +0100 (BST)
+Message-ID: <20190624163214.4F0A4440058@finisterre.sirena.org.uk>
+References: <20190621113357.8264-2-broonie@kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20190621113357.8264-2-broonie@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgS3VuaW5vcmksCgpPbiAyMDE5LTA2LTI1IDEwOjI1LCBLdW5pbm9yaSBNb3JpbW90byB3cm90
-ZToKPj4+IEkgaGF2ZSBubyBpZGVhIHNvIGZhciwgYnV0IG9uZSBjYXBhYmlsaXR5IGlzIHRoYXQg
-aWYgeW91ciBzeXN0ZW0KPj4+IHVzZWQgLyBiYXNlZCBkdW1teSBwbGF0Zm9ybSwgYW5kIGlmIHlv
-dXIgQ1BVIGRyaXZlciBkaWRuJ3QgdXNlL2hhdmUKPj4+IHNuZF9zb2Nfc2V0X3J1bnRpbWVfaHdw
-YXJhbXMoKSAvIHNuZF9wY21fbGliX2lvY3RsLAo+Pj4gaXQgbWlnaHQgYmUgaGFwcGVuLCBidXQg
-dGhpcyBwYXRjaCBzZWVtcyBub3QgcmVsYXRlZCB0byBpdC4uLgo+PiBSZXZlcnRpbmcgdGhpcyBw
-YXRjaCBmaXhlcyB0aGUgaXNzdWUsIHNvIGl0IGlzIGRlZmluaXRlbHkgcmVsYXRlZCBzb21laG93
-Lgo+IEFoaC4uLiBPSyBub3cgSSB0aGluayBJIGNvdWxkIHVuZGVyc3RhbmQgeW91ciBpc3N1ZS4K
-PiBZb3VyIENQVSBpcyB1c2luZyBkZXZtX3NuZF9kbWFlbmdpbmVfcGNtX3JlZ2lzdGVyKCkgd2l0
-aCBzYW1lICpkZXYuCj4gSW4gc3VjaCBjYXNlLCBpbmRlZWQgdGhpcyBwYXRjaCBicmVha3Mgc291
-bmQgY2FyZC4KPgo+IENhbiBJIGNvbmZpcm0gaXQgPwo+IEluIGxvY2FsIGVtYWlsLCBJIGFza2Vk
-IHByaW50aW5nIGNvbXBvbmVudCBuYW1lIGxpc3QuCj4gQ2FuIHlvdSBwbGVhc2UgcmVwbGFjZSBp
-dCB0byBiZWxvdyA/Cj4gSSB0aGluayBkaXNhcHBlYXIgY29tcG9uZW50IGlzICJzbmRfZG1hZW5n
-aW5lX3BjbSIuCj4gSWYgc28sIGFib3ZlIG15IHBhdGNoIGlzIHRoZSBidWcuCj4KPiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1jb3JlLmMg
-Yi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+IGluZGV4IDRjZDc3Y2QuLjRiMWY4YWUgMTAwNjQ0Cj4g
-LS0tIGEvc291bmQvc29jL3NvYy1jb3JlLmMKPiArKysgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+
-IEBAIC0zMTMsNiArMzEzLDcgQEAgc3RhdGljIGludCBzbmRfc29jX3J0ZGNvbV9hZGQoc3RydWN0
-IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCwKPiAgIAluZXdfcnRkY29tLT5jb21wb25lbnQgPSBj
-b21wb25lbnQ7Cj4gICAJSU5JVF9MSVNUX0hFQUQoJm5ld19ydGRjb20tPmxpc3QpOwo+ICAgCj4g
-KwlwcmludGsoIi0tLS0tJXMgOiAlc1xuIiwgY29tcG9uZW50LT5uYW1lLCBjb21wb25lbnQtPmRy
-aXZlci0+bmFtZSk7Cj4gICAJbGlzdF9hZGRfdGFpbCgmbmV3X3J0ZGNvbS0+bGlzdCwgJnJ0ZC0+
-Y29tcG9uZW50X2xpc3QpOwo+ICAgCj4gICAJcmV0dXJuIDA7Cj4gLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCj4KPiBUaGFuayB5b3UgZm9yIHlvdXIgaGVscCAhIQoKcHVyZSBuZXh0LTIwMTkw
-NjI0OgoKW8KgwqDCoCAzLjU0OTcxMl0gLS0tLS0zODMwMDAwLmkycyA6IHNhbXN1bmctaTJzClvC
-oMKgwqAgMy43Njc3MzJdIC0tLS0tbWF4OTgwOTUuNy0wMDExIDogKG51bGwpClvCoMKgwqAgMy45
-ODYzNzBdIC0tLS0taGRtaS1hdWRpby1jb2RlYy4zLmF1dG8gOiAobnVsbCkKCm5leHQtMjAxOTA2
-MjQgKyBSZXZlcnQgIkFTb0M6IHNhbXN1bmc6IHNub3c6IGRvbid0IHNlbGVjdCB1bm5lY2Vzc2Fy
-eSAKUGxhdGZvcm0iOgoKW8KgwqDCoCAzLjUwODM5MV0gLS0tLS0zODMwMDAwLmkycyA6IHNhbXN1
-bmctaTJzClvCoMKgwqAgMy43MjYzMzJdIC0tLS0tbWF4OTgwOTUuNy0wMDExIDogKG51bGwpClvC
-oMKgwqAgMy45NDQ5MDZdIC0tLS0taGRtaS1hdWRpby1jb2RlYy4zLmF1dG8gOiAobnVsbCkKW8Kg
-wqDCoCA0LjM3NjYzOV0gLS0tLS0zODMwMDAwLmkycyA6IHNuZF9kbWFlbmdpbmVfcGNtCgoKQmVz
-dCByZWdhcmRzCi0tIApNYXJlayBTenlwcm93c2tpLCBQaEQKU2Ftc3VuZyBSJkQgSW5zdGl0dXRl
-IFBvbGFuZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBz
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: dapm: Adapt for debugfs API change
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ceaea851b9ea75f9ea2bbefb53ff0d4b27cd5a6e Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Fri, 21 Jun 2019 12:33:57 +0100
+Subject: [PATCH] ASoC: dapm: Adapt for debugfs API change
+
+Back in ff9fb72bc07705c (debugfs: return error values, not NULL) the
+debugfs APIs were changed to return error pointers rather than NULL
+pointers on error, breaking the error checking in ASoC. Update the
+code to use IS_ERR() and log the codes that are returned as part of
+the error messages.
+
+Fixes: ff9fb72bc07705c (debugfs: return error values, not NULL)
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 5fc57af9cb6f..a248d88b8968 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2154,23 +2154,25 @@ void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct dentry *d;
+ 
+-	if (!parent)
++	if (!parent || IS_ERR(parent))
+ 		return;
+ 
+ 	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
+ 
+-	if (!dapm->debugfs_dapm) {
++	if (IS_ERR(dapm->debugfs_dapm)) {
+ 		dev_warn(dapm->dev,
+-		       "ASoC: Failed to create DAPM debugfs directory\n");
++			 "ASoC: Failed to create DAPM debugfs directory %ld\n",
++			 PTR_ERR(dapm->debugfs_dapm));
+ 		return;
+ 	}
+ 
+ 	d = debugfs_create_file("bias_level", 0444,
+ 				dapm->debugfs_dapm, dapm,
+ 				&dapm_bias_fops);
+-	if (!d)
++	if (IS_ERR(d))
+ 		dev_warn(dapm->dev,
+-			 "ASoC: Failed to create bias level debugfs file\n");
++			 "ASoC: Failed to create bias level debugfs file: %ld\n",
++			 PTR_ERR(d));
+ }
+ 
+ static void dapm_debugfs_add_widget(struct snd_soc_dapm_widget *w)
+@@ -2184,10 +2186,10 @@ static void dapm_debugfs_add_widget(struct snd_soc_dapm_widget *w)
+ 	d = debugfs_create_file(w->name, 0444,
+ 				dapm->debugfs_dapm, w,
+ 				&dapm_widget_power_fops);
+-	if (!d)
++	if (IS_ERR(d))
+ 		dev_warn(w->dapm->dev,
+-			"ASoC: Failed to create %s debugfs file\n",
+-			w->name);
++			 "ASoC: Failed to create %s debugfs file: %ld\n",
++			 w->name, PTR_ERR(d));
+ }
+ 
+ static void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
+-- 
+2.20.1
