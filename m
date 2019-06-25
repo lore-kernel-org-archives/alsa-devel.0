@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: call snd_soc_unbind_card()
-	under mutex_lock; " to the asoc tree
-Date: Mon, 24 Jun 2019 17:32:14 +0100 (BST)
-Message-ID: <20190624163214.88A0E44005F@finisterre.sirena.org.uk>
-References: <878stywfjt.wl-kuninori.morimoto.gx@renesas.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Sanity checks for each pipe
+	and EP types
+Date: Tue, 25 Jun 2019 12:51:27 +0200
+Message-ID: <20190625105127.27391-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FD21F89705
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 11:53:59 +0200 (CEST)
-In-Reply-To: <878stywfjt.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0130BF8075C
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 12:51:30 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 075DBAE51
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 10:51:30 +0000 (UTC)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,112 +24,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The recent USB core code performs sanity checks for the given pipe and
+EP types, and it can be hit by manipulated USB descriptors by syzbot.
+For making syzbot happier, this patch introduces a local helper for a
+sanity check in the driver side and calls it at each place before the
+message handling, so that we can avoid the WARNING splats.
 
-   ASoC: soc-core: call snd_soc_unbind_card() under mutex_lock;
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b545542a0b866f7975254e41c595836e9bc0ff2f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Jun 2019 10:07:19 +0900
-Subject: [PATCH] ASoC: soc-core: call snd_soc_unbind_card() under mutex_lock;
-
-commit 34ac3c3eb8f0c07 ("ASoC: core: lock client_mutex while removing
-link components") added mutex_lock() at soc_remove_link_components().
-
-Is is called from snd_soc_unbind_card()
-
-	snd_soc_unbind_card()
-=>		soc_remove_link_components()
-		soc_cleanup_card_resources()
-			soc_remove_dai_links()
-=>				soc_remove_link_components()
-
-And, there are 2 way to call it.
-
-(1)
-	snd_soc_unregister_component()
-**		mutex_lock()
-			snd_soc_component_del_unlocked()
-=>				snd_soc_unbind_card()
-**		mutex_unlock()
-
-(2)
-	snd_soc_unregister_card()
-=>		snd_soc_unbind_card()
-
-(1) case is already using mutex_lock() when it calles
-snd_soc_unbind_card(), thus, we will get lockdep warning.
-
-commit 495f926c68ddb90 ("ASoC: core: Fix deadlock in
-snd_soc_instantiate_card()") tried to fixup it, but still not
-enough. We still have lockdep warning when we try unbind/bind.
-
-We need mutex_lock() under snd_soc_unregister_card()
-instead of snd_remove_link_components()/snd_soc_unbind_card().
-
-Fixes: 34ac3c3eb8f0c07 ("ASoC: core: lock client_mutex while removing link components")
-Fixes: 495f926c68ddb90 ("ASoC: core: Fix deadlock in snd_soc_instantiate_card()")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: syzbot+d952e5e28f5fb7718d23@syzkaller.appspotmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/soc-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/helper.c | 17 +++++++++++++++++
+ sound/usb/helper.h |  1 +
+ sound/usb/quirks.c | 18 +++++++++++++++---
+ 3 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 41c0cfaf2db5..9138fcb15cd3 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2837,14 +2837,12 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- 		snd_soc_dapm_shutdown(card);
- 		snd_soc_flush_all_delayed_work(card);
+diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+index 7712e2b84183..b1cc9499c57e 100644
+--- a/sound/usb/helper.c
++++ b/sound/usb/helper.c
+@@ -76,6 +76,20 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
+ 	return NULL;
+ }
  
--		mutex_lock(&client_mutex);
- 		/* remove all components used by DAI links on this card */
- 		for_each_comp_order(order) {
- 			for_each_card_rtds(card, rtd) {
- 				soc_remove_link_components(card, rtd, order);
- 			}
- 		}
--		mutex_unlock(&client_mutex);
++/* check the validity of pipe and EP types */
++int snd_usb_pipe_sanity_check(struct usb_device *dev, unsigned int pipe)
++{
++	static const int pipetypes[4] = {
++		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
++	};
++	struct usb_host_endpoint *ep;
++
++	ep = usb_pipe_endpoint(dev, pipe);
++	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
++		return -EINVAL;
++	return 0;
++}
++
+ /*
+  * Wrapper for usb_control_msg().
+  * Allocates a temp buffer to prevent dmaing from/to the stack.
+@@ -88,6 +102,9 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
+ 	void *buf = NULL;
+ 	int timeout;
  
- 		soc_cleanup_card_resources(card);
- 		if (!unregister)
-@@ -2863,7 +2861,9 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
-  */
- int snd_soc_unregister_card(struct snd_soc_card *card)
++	if (snd_usb_pipe_sanity_check(dev, pipe))
++		return -EINVAL;
++
+ 	if (size > 0) {
+ 		buf = kmemdup(data, size, GFP_KERNEL);
+ 		if (!buf)
+diff --git a/sound/usb/helper.h b/sound/usb/helper.h
+index d338bd0e0ca6..6afb70156ec4 100644
+--- a/sound/usb/helper.h
++++ b/sound/usb/helper.h
+@@ -7,6 +7,7 @@ unsigned int snd_usb_combine_bytes(unsigned char *bytes, int size);
+ void *snd_usb_find_desc(void *descstart, int desclen, void *after, u8 dtype);
+ void *snd_usb_find_csint_desc(void *descstart, int desclen, void *after, u8 dsubtype);
+ 
++int snd_usb_pipe_sanity_check(struct usb_device *dev, unsigned int pipe);
+ int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe,
+ 		    __u8 request, __u8 requesttype, __u16 value, __u16 index,
+ 		    void *data, __u16 size);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index e6ce1bbe6ca6..057143330a28 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -840,11 +840,13 @@ static int snd_usb_novation_boot_quirk(struct usb_device *dev)
+ static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
  {
-+	mutex_lock(&client_mutex);
- 	snd_soc_unbind_card(card, true);
-+	mutex_unlock(&client_mutex);
- 	dev_dbg(card->dev, "ASoC: Unregistered card '%s'\n", card->name);
+ 	int err, actual_length;
+-
+ 	/* "midi send" enable */
+ 	static const u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 };
++	void *buf;
  
- 	return 0;
+-	void *buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
++	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x05)))
++		return -EINVAL;
++	buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x05), buf,
+@@ -869,7 +871,11 @@ static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
+ 
+ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
+ {
+-	int ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
++	int ret;
++
++	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
++		return -EINVAL;
++	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
+ 				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 				  1, 0, NULL, 0, 1000);
+ 
+@@ -976,6 +982,8 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
+ 
+ 	dev_dbg(&dev->dev, "Waiting for Axe-Fx III to boot up...\n");
+ 
++	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
++		return -EINVAL;
+ 	/* If the Axe-Fx III has not fully booted, it will timeout when trying
+ 	 * to enable the audio streaming interface. A more generous timeout is
+ 	 * used here to detect when the Axe-Fx III has finished booting as the
+@@ -1008,6 +1016,8 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
+ {
+ 	int err, actual_length;
+ 
++	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x01)))
++		return -EINVAL;
+ 	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x01), buf, *length,
+ 				&actual_length, 1000);
+ 	if (err < 0)
+@@ -1018,6 +1028,8 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
+ 
+ 	memset(buf, 0, buf_size);
+ 
++	if (snd_usb_pipe_sanity_check(dev, usb_rcvintpipe(dev, 0x82)))
++		return -EINVAL;
+ 	err = usb_interrupt_msg(dev, usb_rcvintpipe(dev, 0x82), buf, buf_size,
+ 				&actual_length, 1000);
+ 	if (err < 0)
 -- 
-2.20.1
+2.16.4
