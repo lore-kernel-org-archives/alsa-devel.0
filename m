@@ -1,17 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: madera: Update SPDX headers
-Date: Tue, 25 Jun 2019 16:37:27 +0100
-Message-ID: <20190625153727.28060-1-ckeepax@opensource.cirrus.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1] ASoC: Intel: Skylake: Switch to modern
+ UUID API
+Date: Tue, 25 Jun 2019 20:15:19 +0300
+Message-ID: <20190625171519.GE9224@smile.fi.intel.com>
+References: <20190619150213.87691-1-andriy.shevchenko@linux.intel.com>
+ <20190624105157.18a348ce@xxx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8AEBF8071F
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 17:37:33 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0B00F8075C
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 19:15:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190624105157.18a348ce@xxx>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,161 +25,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The madera driver was merged too late to catch Thomas Gleixner's cleanup
-of the SPDX headers tree wide. Update the headers to match what was done
-in that patch.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- include/dt-bindings/sound/madera.h | 6 +-----
- include/sound/madera-pdata.h       | 6 +-----
- sound/soc/codecs/cs47l35.c         | 6 +-----
- sound/soc/codecs/cs47l85.c         | 6 +-----
- sound/soc/codecs/cs47l90.c         | 6 +-----
- sound/soc/codecs/madera.c          | 6 +-----
- sound/soc/codecs/madera.h          | 6 +-----
- 7 files changed, 7 insertions(+), 35 deletions(-)
-
-diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
-index 9ff4eae5259b0..d0096d5eb0dab 100644
---- a/include/dt-bindings/sound/madera.h
-+++ b/include/dt-bindings/sound/madera.h
-@@ -1,13 +1,9 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Device Tree defines for Madera codecs
-  *
-  * Copyright (C) 2016-2017 Cirrus Logic, Inc. and
-  *                         Cirrus Logic International Semiconductor Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
- 
- #ifndef DT_BINDINGS_SOUND_MADERA_H
-diff --git a/include/sound/madera-pdata.h b/include/sound/madera-pdata.h
-index 441decefb7f34..e3060f48f1081 100644
---- a/include/sound/madera-pdata.h
-+++ b/include/sound/madera-pdata.h
-@@ -1,13 +1,9 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Platform data for Madera codec driver
-  *
-  * Copyright (C) 2016-2019 Cirrus Logic, Inc. and
-  *                         Cirrus Logic International Semiconductor Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
- 
- #ifndef MADERA_CODEC_PDATA_H
-diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
-index 02f193dadd41a..511d0d6fa962a 100644
---- a/sound/soc/codecs/cs47l35.c
-+++ b/sound/soc/codecs/cs47l35.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // ALSA SoC Audio driver for CS47L35 codec
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/delay.h>
- #include <linux/device.h>
-diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
-index 4c4bae6e2c57e..32fe7ffb75268 100644
---- a/sound/soc/codecs/cs47l85.c
-+++ b/sound/soc/codecs/cs47l85.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // ALSA SoC Audio driver for CS47L85 codec
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
-index 83c4e4628bdea..c4ecb0e6911af 100644
---- a/sound/soc/codecs/cs47l90.c
-+++ b/sound/soc/codecs/cs47l90.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // ALSA SoC Audio driver for CS47L90 codec
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 6146c7a070cb3..1b1be19a2f991 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // Cirrus Logic Madera class codecs common support
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/delay.h>
- #include <linux/gcd.h>
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-index aa2db156582b9..0af66f2807708 100644
---- a/sound/soc/codecs/madera.h
-+++ b/sound/soc/codecs/madera.h
-@@ -1,13 +1,9 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Cirrus Logic Madera class codecs common support
-  *
-  * Copyright (C) 2015-2018 Cirrus Logic, Inc. and
-  *                         Cirrus Logic International Semiconductor Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by the
-- * Free Software Foundation; version 2.
-  */
- 
- #ifndef ASOC_MADERA_H
--- 
-2.11.0
+T24gTW9uLCBKdW4gMjQsIDIwMTkgYXQgMTA6NTE6NTdBTSArMDIwMCwgQW1hZGV1c3ogU8WCYXdp
+xYRza2kgd3JvdGU6Cj4gT24gV2VkLCAxOSBKdW4gMjAxOSAxODowMjoxMyArMDMwMAo+IEFuZHkg
+U2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPiB3cm90ZToKClRo
+YW5rcyBmb3IgcmV2aWV3LCB0aG91Z2ggdGhpcyBvbmUgd2lsbCBiZSBwYXJ0IG9mIHVwc3RyZWFt
+LgoKPiA+IC1zdHJ1Y3QgVVVJRCB7Cj4gPiAtCXU4IGlkWzE2XTsKPiA+IC19Owo+ID4gLQoKPiA+
+ICBzdHJ1Y3QgYWRzcF9tb2R1bGVfZW50cnkgewo+ID4gIAl1MzIgc3RydWN0X2lkOwo+ID4gIAl1
+OCAgbmFtZVs4XTsKPiA+IC0Jc3RydWN0IFVVSUQgdXVpZDsKPiA+ICsJdTggIHV1aWRbMTZdOwo+
+IAo+IGd1aWRfdCB1dWlkOwoKVGhpcyBzZWVtcyBhIHBhcnQgb2YgQUJJLgpBQkkgZG9lc24ndCBh
+bmQgc2hvdWxkbid0IGtub3cgYW55dGhpbmcgYWJvdXQga2VybmVsIGludGVybmFsIHR5cGVzLgoK
+SWYgSSdtIG1pc3Rha2VuLCBvbmUsIHdobyBrbm93cyBiZXR0ZXIgdGhlIGFyZWEsIGNhbiBzdWJt
+aXQgYSBmb2xsb3d1cC4KCj4gPiAgc3RydWN0IHNrbF9tb2R1bGVfaW5zdF9pZCB7Cj4gPiAtCXV1
+aWRfbGUgbW9kX3V1aWQ7Cj4gPiArCWd1aWRfdCBtb2RfdXVpZDsKPiA+ICAJaW50IG1vZHVsZV9p
+ZDsKPiA+ICAJdTMyIGluc3RhbmNlX2lkOwo+ID4gIAlpbnQgcHZ0X2lkOwo+ID4gQEAgLTM2MCw3
+ICszNjAsNyBAQCBzdHJ1Y3Qgc2tsX21vZHVsZV9yZXMgewo+ID4gIH07Cj4gPiAgCj4gPiAgc3Ry
+dWN0IHNrbF9tb2R1bGUgewo+ID4gLQl1dWlkX2xlIHV1aWQ7Cj4gPiArCWd1aWRfdCB1dWlkOwo+
+ID4gIAl1OCBsb2FkYWJsZTsKPiA+ICAJdTggaW5wdXRfcGluX3R5cGU7Cj4gPiAgCXU4IG91dHB1
+dF9waW5fdHlwZTsKPiAKPiAKPiBJIHdvdWxkIGFsc28gYWRkOgo+IAo+IHN0cnVjdCBza2xfbW9k
+dWxlX2NmZyB7Cj4gLQl1OCBndWlkWzE2XTsKPiArCWd1aWRfdCB1dWlkOwo+IAo+IHNob3VsZCBn
+ZXQgcmlkIG9mIGZldyBjYXN0cyBhYm92ZS4gT3ZlcmFsbCBJIHdvdWxkIGV4cGVjdCBubyBjYXN0
+cyBhdAo+IGFsbC4KClNlZSBhYm92ZS4KCk5ldmVydGhlbGVzcywgdGhlcmUgaXMgYW4gaWRlYSB0
+byBhZGQgc29tZSB3cmFwcGVycyB0byBVVUlEIGZyYW1ld29yayB0byBjb3ZlcgpjYXNlcyB3aGVu
+IHJhdyBidWZmZXIgaXMgY29waWVkIHRvIFVVSUQgdHlwZSBvciBiYWNrIGFuZCBhY2NvbXBhbnlp
+bmcgQVBJLgoKQXQgbGVhc3QgYnRyZnMgZXhwZWN0cyBzdWNoLgoKSSB3aWxsIHRyeSB0byBrZWVw
+IHRoaXMgaW4gbWluZCBhbmQgY29udmVydCBBU29DIHN0dWZmIHRvIHRoZSBuZXcgQVBJIHdoZW4g
+aXQKYXBwZWFycyBpbiB0aGUgdXBzdHJlYW0uCgotLSAKV2l0aCBCZXN0IFJlZ2FyZHMsCkFuZHkg
+U2hldmNoZW5rbwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
