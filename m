@@ -1,21 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/7] ASoC: Intel: Skylake: Critical IPC
- fixes and flow adjustments
-Date: Tue, 25 Jun 2019 08:10:36 -0500
-Message-ID: <d04c8288-9f53-c921-2cab-120f78548e85@linux.intel.com>
-References: <20190613190436.20156-1-cezary.rojewski@intel.com>
- <20190625105335.GO5316@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH] ASoC: madera: Update SPDX headers
+Date: Tue, 25 Jun 2019 16:37:27 +0100
+Message-ID: <20190625153727.28060-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72238F8071F
- for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 15:10:40 +0200 (CEST)
-In-Reply-To: <20190625105335.GO5316@sirena.org.uk>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8AEBF8071F
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 17:37:33 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +21,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, cezary.rojewski@intel.com
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The madera driver was merged too late to catch Thomas Gleixner's cleanup
+of the SPDX headers tree wide. Update the headers to match what was done
+in that patch.
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ include/dt-bindings/sound/madera.h | 6 +-----
+ include/sound/madera-pdata.h       | 6 +-----
+ sound/soc/codecs/cs47l35.c         | 6 +-----
+ sound/soc/codecs/cs47l85.c         | 6 +-----
+ sound/soc/codecs/cs47l90.c         | 6 +-----
+ sound/soc/codecs/madera.c          | 6 +-----
+ sound/soc/codecs/madera.h          | 6 +-----
+ 7 files changed, 7 insertions(+), 35 deletions(-)
 
-On 6/25/19 5:53 AM, Mark Brown wrote:
-> On Thu, Jun 13, 2019 at 09:04:29PM +0200, cezary.rojewski@intel.com wrote:
->> From: Cezary Rojewski <cezary.rojewski@intel.com>
->>
->> This set of changes contains critical IPC fixes:
->> - ASoC: Intel: Skylake: Read HIPCT extension before clearing DONE bit
->> - ASoC: Intel: Fix race condition in IPC rx list
-> 
-> Pierre, any thoughts on this series?
-
-This series I looked at in detail and it was the basis for the recent 
-SOF cleanup on IPC. There are still some improvements being debated on 
-when exactly the IPC interrupts need to be unmasked - Guennadi suggested 
-the interrupt need to be re-enabled at the beginning of the interrupt 
-thread to avoid missing events - but this can come as bullet-proof 
-hardening patches later for both SOF and Skylake. For now this is a good 
-first pass, feel free to take the following tag for the series
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
+index 9ff4eae5259b0..d0096d5eb0dab 100644
+--- a/include/dt-bindings/sound/madera.h
++++ b/include/dt-bindings/sound/madera.h
+@@ -1,13 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Device Tree defines for Madera codecs
+  *
+  * Copyright (C) 2016-2017 Cirrus Logic, Inc. and
+  *                         Cirrus Logic International Semiconductor Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef DT_BINDINGS_SOUND_MADERA_H
+diff --git a/include/sound/madera-pdata.h b/include/sound/madera-pdata.h
+index 441decefb7f34..e3060f48f1081 100644
+--- a/include/sound/madera-pdata.h
++++ b/include/sound/madera-pdata.h
+@@ -1,13 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Platform data for Madera codec driver
+  *
+  * Copyright (C) 2016-2019 Cirrus Logic, Inc. and
+  *                         Cirrus Logic International Semiconductor Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef MADERA_CODEC_PDATA_H
+diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
+index 02f193dadd41a..511d0d6fa962a 100644
+--- a/sound/soc/codecs/cs47l35.c
++++ b/sound/soc/codecs/cs47l35.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // ALSA SoC Audio driver for CS47L35 codec
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/delay.h>
+ #include <linux/device.h>
+diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
+index 4c4bae6e2c57e..32fe7ffb75268 100644
+--- a/sound/soc/codecs/cs47l85.c
++++ b/sound/soc/codecs/cs47l85.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // ALSA SoC Audio driver for CS47L85 codec
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
+index 83c4e4628bdea..c4ecb0e6911af 100644
+--- a/sound/soc/codecs/cs47l90.c
++++ b/sound/soc/codecs/cs47l90.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // ALSA SoC Audio driver for CS47L90 codec
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index 6146c7a070cb3..1b1be19a2f991 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // Cirrus Logic Madera class codecs common support
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/delay.h>
+ #include <linux/gcd.h>
+diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
+index aa2db156582b9..0af66f2807708 100644
+--- a/sound/soc/codecs/madera.h
++++ b/sound/soc/codecs/madera.h
+@@ -1,13 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Cirrus Logic Madera class codecs common support
+  *
+  * Copyright (C) 2015-2018 Cirrus Logic, Inc. and
+  *                         Cirrus Logic International Semiconductor Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by the
+- * Free Software Foundation; version 2.
+  */
+ 
+ #ifndef ASOC_MADERA_H
+-- 
+2.11.0
