@@ -1,255 +1,76 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 11/11] ASoC: topology: Consolidate and
- fix asoc_tplg_dapm_widget_*_create flow
-Date: Mon, 24 Jun 2019 18:17:38 -0700
-Message-ID: <9342daddfcf90e177b9b74aa15484655328b1fb9.camel@linux.intel.com>
-References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
-         <20190617113644.25621-12-amadeuszx.slawinski@linux.intel.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH resend 25/47] ASoC: samsung: snow: don't
+ select unnecessary Platform
+Date: Tue, 25 Jun 2019 07:36:37 +0200
+Message-ID: <80c5c575-6f28-c6a6-91b2-d701bb9fbce8@samsung.com>
+References: <877e9iwf9f.wl-kuninori.morimoto.gx@renesas.com>
+ <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
+ <CGME20190624131905eucas1p2cf4335b4d1483b7e62d0c9e7b5223a3c@eucas1p2.samsung.com>
+ <9cfc8505-2903-033f-f68b-8ccc1c70132b@samsung.com>
+ <87d0j232wg.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190617113644.25621-12-amadeuszx.slawinski@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
+ [210.118.77.11])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 214F4F896EA
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 07:36:41 +0200 (CEST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+ by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
+ 20190625053639euoutp0131a15e9643286538faf91a0c0cfb9c32~rWlDzWznR1835618356euoutp01h
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 05:36:39 +0000 (GMT)
+In-Reply-To: <87d0j232wg.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2019-06-17 at 13:36 +0200, Amadeusz Sławiński wrote:
-> There are a few soc_tplg_dapm_widget_*_create functions with similar
-> content, but slightly different flow, unify their flow and make sure
-> that we go to error handler and free memory in case of failure.
-> 
-> Signed-off-by: Amadeusz Sławiński <
-> amadeuszx.slawinski@linux.intel.com>
-Acked-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-
-I'm good with all the patches in the series.
-
-Thanks,
-Ranjani
-
-> ---
->  sound/soc/soc-topology.c | 77 ++++++++++++++++++------------------
-> ----
->  1 file changed, 35 insertions(+), 42 deletions(-)
-> 
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index a926c2afbe05..fc1f1d6f9e92 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -1310,14 +1310,15 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dmixer_create(
->  
->  	for (i = 0; i < num_kcontrols; i++) {
->  		mc = (struct snd_soc_tplg_mixer_control *)tplg->pos;
-> -		sm = kzalloc(sizeof(*sm), GFP_KERNEL);
-> -		if (sm == NULL)
-> -			goto err;
->  
->  		/* validate kcontrol */
->  		if (strnlen(mc->hdr.name,
-> SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
->  			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-> -			goto err_str;
-> +			goto err_sm;
-> +
-> +		sm = kzalloc(sizeof(*sm), GFP_KERNEL);
-> +		if (sm == NULL)
-> +			goto err_sm;
->  
->  		tplg->pos += (sizeof(struct snd_soc_tplg_mixer_control)
-> +
->  			      le32_to_cpu(mc->priv.size));
-> @@ -1327,7 +1328,7 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dmixer_create(
->  
->  		kc[i].name = kstrdup(mc->hdr.name, GFP_KERNEL);
->  		if (kc[i].name == NULL)
-> -			goto err_str;
-> +			goto err_sm;
->  		kc[i].private_value = (long)sm;
->  		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
->  		kc[i].access = mc->hdr.access;
-> @@ -1353,8 +1354,7 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dmixer_create(
->  		err = soc_tplg_kcontrol_bind_io(&mc->hdr, &kc[i],
-> tplg);
->  		if (err) {
->  			soc_control_err(tplg, &mc->hdr, mc->hdr.name);
-> -			kfree(sm);
-> -			continue;
-> +			goto err_sm;
->  		}
->  
->  		/* create any TLV data */
-> @@ -1367,20 +1367,19 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dmixer_create(
->  			dev_err(tplg->dev, "ASoC: failed to init %s\n",
->  				mc->hdr.name);
->  			soc_tplg_free_tlv(tplg, &kc[i]);
-> -			kfree(sm);
-> -			continue;
-> +			goto err_sm;
->  		}
->  	}
->  	return kc;
->  
-> -err_str:
-> -	kfree(sm);
-> -err:
-> -	for (--i; i >= 0; i--) {
-> -		kfree((void *)kc[i].private_value);
-> +err_sm:
-> +	for (; i >= 0; i--) {
-> +		sm = (struct soc_mixer_control *)kc[i].private_value;
-> +		kfree(sm);
->  		kfree(kc[i].name);
->  	}
->  	kfree(kc);
-> +
->  	return NULL;
->  }
->  
-> @@ -1401,11 +1400,11 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_denum_create(
->  		/* validate kcontrol */
->  		if (strnlen(ec->hdr.name,
-> SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
->  			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-> -			goto err;
-> +			goto err_se;
->  
->  		se = kzalloc(sizeof(*se), GFP_KERNEL);
->  		if (se == NULL)
-> -			goto err;
-> +			goto err_se;
->  
->  		tplg->pos += (sizeof(struct snd_soc_tplg_enum_control)
-> +
->  				ec->priv.size);
-> @@ -1414,10 +1413,8 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_denum_create(
->  			ec->hdr.name);
->  
->  		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
-> -		if (kc[i].name == NULL) {
-> -			kfree(se);
-> +		if (kc[i].name == NULL)
->  			goto err_se;
-> -		}
->  		kc[i].private_value = (long)se;
->  		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
->  		kc[i].access = ec->hdr.access;
-> @@ -1482,44 +1479,43 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_denum_create(
->  	for (; i >= 0; i--) {
->  		/* free values and texts */
->  		se = (struct soc_enum *)kc[i].private_value;
-> -		if (!se)
-> -			continue;
->  
-> -		soc_tplg_denum_remove_values(se);
-> -		soc_tplg_denum_remove_texts(se);
-> +		if (se) {
-> +			soc_tplg_denum_remove_values(se);
-> +			soc_tplg_denum_remove_texts(se);
-> +		}
->  
->  		kfree(se);
->  		kfree(kc[i].name);
->  	}
-> -err:
->  	kfree(kc);
->  
->  	return NULL;
->  }
->  
->  static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
-> -	struct soc_tplg *tplg, int count)
-> +	struct soc_tplg *tplg, int num_kcontrols)
->  {
->  	struct snd_soc_tplg_bytes_control *be;
-> -	struct soc_bytes_ext  *sbe;
-> +	struct soc_bytes_ext *sbe;
->  	struct snd_kcontrol_new *kc;
->  	int i, err;
->  
-> -	kc = kcalloc(count, sizeof(*kc), GFP_KERNEL);
-> +	kc = kcalloc(num_kcontrols, sizeof(*kc), GFP_KERNEL);
->  	if (!kc)
->  		return NULL;
->  
-> -	for (i = 0; i < count; i++) {
-> +	for (i = 0; i < num_kcontrols; i++) {
->  		be = (struct snd_soc_tplg_bytes_control *)tplg->pos;
->  
->  		/* validate kcontrol */
->  		if (strnlen(be->hdr.name,
-> SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
->  			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-> -			goto err;
-> +			goto err_sbe;
->  
->  		sbe = kzalloc(sizeof(*sbe), GFP_KERNEL);
->  		if (sbe == NULL)
-> -			goto err;
-> +			goto err_sbe;
->  
->  		tplg->pos += (sizeof(struct snd_soc_tplg_bytes_control)
-> +
->  			      le32_to_cpu(be->priv.size));
-> @@ -1529,10 +1525,8 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dbytes_create(
->  			be->hdr.name, be->hdr.access);
->  
->  		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
-> -		if (kc[i].name == NULL) {
-> -			kfree(sbe);
-> -			goto err;
-> -		}
-> +		if (kc[i].name == NULL)
-> +			goto err_sbe;
->  		kc[i].private_value = (long)sbe;
->  		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
->  		kc[i].access = be->hdr.access;
-> @@ -1544,8 +1538,7 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dbytes_create(
->  		err = soc_tplg_kcontrol_bind_io(&be->hdr, &kc[i],
-> tplg);
->  		if (err) {
->  			soc_control_err(tplg, &be->hdr, be->hdr.name);
-> -			kfree(sbe);
-> -			continue;
-> +			goto err_sbe;
->  		}
->  
->  		/* pass control to driver for optional further init */
-> @@ -1554,20 +1547,20 @@ static struct snd_kcontrol_new
-> *soc_tplg_dapm_widget_dbytes_create(
->  		if (err < 0) {
->  			dev_err(tplg->dev, "ASoC: failed to init %s\n",
->  				be->hdr.name);
-> -			kfree(sbe);
-> -			continue;
-> +			goto err_sbe;
->  		}
->  	}
->  
->  	return kc;
->  
-> -err:
-> -	for (--i; i >= 0; i--) {
-> -		kfree((void *)kc[i].private_value);
-> +err_sbe:
-> +	for (; i >= 0; i--) {
-> +		sbe = (struct soc_bytes_ext *)kc[i].private_value;
-> +		kfree(sbe);
->  		kfree(kc[i].name);
->  	}
-> -
->  	kfree(kc);
-> +
->  	return NULL;
->  }
->  
+SGkgS3VuaW5vcgoKT24gMjAxOS0wNi0yNSAwMjo1MSwgS3VuaW5vcmkgTW9yaW1vdG8gd3JvdGU6
+Cj4gSGkgTWFyZWsKPgo+IFRoYW5rIHlvdSBmb3IgeW91ciByZXBvcnQuCj4KPj4+IEFMU0EgU29D
+IGlzIG5vdyBzdXBwb3J0aW5nICJubyBQbGF0Zm9ybSIuIFNvdW5kIGNhcmQgZG9lc24ndCBuZWVk
+IHRvCj4+PiBzZWxlY3QgIkNQVSBjb21wb25lbnQiIGFzICJQbGF0Zm9ybSIgYW55bW9yZSBpZiBp
+dCBkb2Vzbid0IG5lZWQKPj4+IHNwZWNpYWwgUGxhdGZvcm0uCj4+PiBUaGlzIHBhdGNoIHJlbW92
+ZXMgc3VjaCBzZXR0aW5ncy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBLdW5pbm9yaSBNb3JpbW90
+byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+Cj4+IFRoaXMgcGF0Y2ggY2F1c2Vz
+IHJlZ3Jlc3Npb24gb24gU2Ftc3VuZyBFeHlub3MtYmFzZWQgYm9hcmRzOiBTbm93LAo+PiBQZWFj
+aC1QaSBhbmQgUGVhY2gtUGl0IChhbGwgdGhhdCB1c2Ugc25vdyBtYWNoaW5lIGRyaXZlcikgc2lu
+Y2UgbGludXgKPj4gbmV4dC0yMDE5MDYyMC4gQVNvQyBkZXZpY2UgaXMgcHJvcGVybHkgcmVnaXN0
+ZXJlZCwgYnV0IGl0IGlzIG5vdCB1c2FibGU6Cj4+Cj4+IFvCoMKgwqAgMy4yMDMwMDZdIHNhbXN1
+bmctaTJzIDM4MzAwMDAuaTJzLXNlYzogRE1BIGNoYW5uZWxzIHNvdXJjZWQgZnJvbQo+PiBkZXZp
+Y2UgMzgzMDAwMC5pMnMKPj4gW8KgwqDCoCAzLjIxMzQ0MF0gc25vdy1hdWRpbyBzb3VuZDogRmFp
+bGVkIHBhcnNpbmcgY29kZWMgbm9kZQo+PiBbwqDCoMKgIDMuNDIzMjQxXSBzbm93LWF1ZGlvIHNv
+dW5kOiBtdWx0aWNvZGVjIDwtPiBzYW1zdW5nLWkycyBtYXBwaW5nIG9rCj4+IFvCoMKgwqAgMy40
+Mjk3NzZdIG1heDk4MDk1IDctMDAxMTogQVNvQzogbXV4IEV4dGVybmFsIE1JQyBoYXMgbm8gcGF0
+aHMKPj4gW8KgwqDCoCAzLjQzNDUxM10gbWF4OTgwOTUgNy0wMDExOiBBU29DOiBtdXggTGluZWlu
+IE11eCBoYXMgbm8gcGF0aHMKPj4gW8KgwqDCoCA0LjA0MzQ4OF0gQUxTQSBkZXZpY2UgbGlzdDoK
+Pj4gW8KgwqDCoCA0LjA0NzE3MV3CoMKgICMwOiBTbm93LUkyUy1NQVg5ODA5NQo+Pgo+PiAjIHNw
+ZWFrZXItdGVzdCAtbDEKPj4KPj4gc3BlYWtlci10ZXN0IDEuMS4zCj4+Cj4+IFBsYXliYWNrIGRl
+dmljZSBpcyBkZWZhdWx0Cj4+IFN0cmVhbSBwYXJhbWV0ZXJzIGFyZSA0ODAwMEh6LCBTMTZfTEUs
+IDEgY2hhbm5lbHMKPj4gVXNpbmcgMTYgb2N0YXZlcyBvZiBwaW5rIG5vaXNlCj4+IFBsYXliYWNr
+IG9wZW4gZXJyb3I6IC0yMixJbnZhbGlkIGFyZ3VtZW50Cj4gSG1tLi4gc3RyYW5nZS4uLgo+IENh
+biB5b3UgdGVzdCBub3JtYWwgYXBsYXkgaGVyZSA/IEknbSBub3QgZmFtaWxpYXIgd2l0aCBzcGVh
+a2VyLXRlc3QuCgpUaGUgc2FtZSBpc3N1ZToKCiMgYXBsYXkgL3Vzci9zaGFyZS9zb3VuZHMvYWxz
+YS9Gcm9udF9DZW50ZXIud2F2CmFwbGF5OiBtYWluOjc4ODogYXVkaW8gb3BlbiBlcnJvcjogSW52
+YWxpZCBhcmd1bWVudAojCgoKPiBJIGhhdmUgbm8gaWRlYSBzbyBmYXIsIGJ1dCBvbmUgY2FwYWJp
+bGl0eSBpcyB0aGF0IGlmIHlvdXIgc3lzdGVtCj4gdXNlZCAvIGJhc2VkIGR1bW15IHBsYXRmb3Jt
+LCBhbmQgaWYgeW91ciBDUFUgZHJpdmVyIGRpZG4ndCB1c2UvaGF2ZQo+IHNuZF9zb2Nfc2V0X3J1
+bnRpbWVfaHdwYXJhbXMoKSAvIHNuZF9wY21fbGliX2lvY3RsLAo+IGl0IG1pZ2h0IGJlIGhhcHBl
+biwgYnV0IHRoaXMgcGF0Y2ggc2VlbXMgbm90IHJlbGF0ZWQgdG8gaXQuLi4KClJldmVydGluZyB0
+aGlzIHBhdGNoIGZpeGVzIHRoZSBpc3N1ZSwgc28gaXQgaXMgZGVmaW5pdGVseSByZWxhdGVkIHNv
+bWVob3cuCgoKQmVzdCByZWdhcmRzCi0tIApNYXJlayBTenlwcm93c2tpLCBQaEQKU2Ftc3VuZyBS
+JkQgSW5zdGl0dXRlIFBvbGFuZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
