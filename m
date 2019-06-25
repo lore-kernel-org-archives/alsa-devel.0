@@ -1,37 +1,52 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 00/11] Fix driver reload issues
-Date: Tue, 25 Jun 2019 08:02:10 -0500
-Message-ID: <f50433de-279a-cbc8-d91f-4e3a04bae450@linux.intel.com>
-References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
- <20190625120450.GR5316@sirena.org.uk>
+Subject: Re: [PATCH 0/7] ASoC: Intel: Skylake: Critical IPC
+ fixes and flow adjustments
+Date: Tue, 25 Jun 2019 08:10:36 -0500
+Message-ID: <d04c8288-9f53-c921-2cab-120f78548e85@linux.intel.com>
+References: <20190613190436.20156-1-cezary.rojewski@intel.com>
+ <20190625105335.GO5316@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190625120450.GR5316@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72238F8071F
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2019 15:10:40 +0200 (CEST)
+In-Reply-To: <20190625105335.GO5316@sirena.org.uk>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, cezary.rojewski@intel.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 6/25/19 7:04 AM, Mark Brown wrote:
-> On Mon, Jun 17, 2019 at 01:36:33PM +0200, Amadeusz Sławiński wrote:
->> Hi,
+On 6/25/19 5:53 AM, Mark Brown wrote:
+> On Thu, Jun 13, 2019 at 09:04:29PM +0200, cezary.rojewski@intel.com wrote:
+>> From: Cezary Rojewski <cezary.rojewski@intel.com>
 >>
->> This series of patches introduces fixes to various issues found while
->> trying to unload all snd* modules and then loading them again. This
->> allows for modules to be really _modules_ and be unloaded and loaded on
->> demand, making it easier to develop and test them without constant
->> system reboots.
+>> This set of changes contains critical IPC fixes:
+>> - ASoC: Intel: Skylake: Read HIPCT extension before clearing DONE bit
+>> - ASoC: Intel: Fix race condition in IPC rx list
 > 
-> Pierre?  You did comment on the general concept in one of the patches
-> but not on any of the patches directly.
+> Pierre, any thoughts on this series?
 
-I did review the patches internally and the v1. For the v2 I could only 
-do an airport lounge review and didn't see any blatant issues, so feel 
-free to take the following tag for the series.
+This series I looked at in detail and it was the basis for the recent 
+SOF cleanup on IPC. There are still some improvements being debated on 
+when exactly the IPC interrupts need to be unmasked - Guennadi suggested 
+the interrupt need to be re-enabled at the beginning of the interrupt 
+thread to avoid missing events - but this can come as bullet-proof 
+hardening patches later for both SOF and Skylake. For now this is a good 
+first pass, feel free to take the following tag for the series
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
