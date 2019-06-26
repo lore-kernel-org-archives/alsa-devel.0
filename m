@@ -1,9 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: madera: Read device tree
-	configuration
-Date: Wed, 26 Jun 2019 16:36:11 +0100
-Message-ID: <20190626153611.10170-2-ckeepax@opensource.cirrus.com>
-References: <20190626153611.10170-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/2] device property: Add new array helper
+Date: Wed, 26 Jun 2019 16:36:10 +0100
+Message-ID: <20190626153611.10170-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +10,8 @@ Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9D95F896B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8AFFF8070C
  for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 17:36:17 +0200 (CEST)
-In-Reply-To: <20190626153611.10170-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,103 +25,95 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, rafael@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com, linux-acpi@vger.kernel.org, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-Read the configuration of the Madera sound driver from device tree using
-the new device tree helper function.
+It is fairly common to want to read an integer array property
+that is composed of an unknown number of fixed size integer
+groups. For example, say each group consists of three values
+which correspond to the settings for one input on the device
+and the driver supports several chips with different numbers
+of inputs.
+
+Add a new helper function to provide this functionality, it
+differs for the existing helpers in that it allows reading a
+smaller number of values than the full array size and checks
+that the number of values read is a multiple of the group size.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
+ drivers/base/property.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/property.h |  2 ++
+ 2 files changed, 50 insertions(+)
 
-Note this patch depends on patches that are currently going through Mark's
-tree so probably best if this one also goes through there.
-
-Thanks,
-Charles
-
- sound/soc/codecs/madera.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
-
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 1b1be19a2f991..8fe16e4e19c7b 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -300,6 +300,68 @@ int madera_free_overheat(struct madera_priv *priv)
- }
- EXPORT_SYMBOL_GPL(madera_free_overheat);
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index 348b37e64944c..656d21e01a648 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -133,6 +133,54 @@ int device_property_read_u32_array(struct device *dev, const char *propname,
+ EXPORT_SYMBOL_GPL(device_property_read_u32_array);
  
-+static void madera_prop_get_inmode(struct madera_priv *priv)
+ /**
++ * device_property_read_u32_2darray - return a 2d u32 array property of a device
++ * @dev: Device to get the property of
++ * @propname: Name of the property
++ * @val: The values are stored here or %NULL to return the number of values
++ * @nval: Size of the @val array
++ * @multiple: Number of entries in each block of data
++ *
++ * Function reads an array of u32 properties split up into fixed size
++ * sub-groups, with @propname from the device firmware description and
++ * stores them to @val if found.
++ *
++ * Return: Number of values read
++ *	   %0 if the property was not found,
++ *	   %-EINVAL if given arguments are not valid,
++ *	   %-ENODATA if the property does not have a value,
++ *	   %-EPROTO if the property is not an array of numbers,
++ *	   %-EOVERFLOW if the size of the property is not as expected.
++ *	   %-ENXIO if no suitable firmware interface is present.
++ */
++int device_property_read_u32_2darray(struct device *dev, const char *propname,
++				     u32 *val, size_t nval, int multiple)
 +{
-+	struct madera *madera = priv->madera;
-+	struct madera_codec_pdata *pdata = &madera->pdata.codec;
-+	u32 tmp[MADERA_MAX_INPUT * MADERA_MAX_MUXED_CHANNELS];
-+	int n, i, in_idx, ch_idx;
++	int n, ret;
 +
-+	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode) != MADERA_MAX_INPUT);
-+	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode[0]) != MADERA_MAX_MUXED_CHANNELS);
-+
-+	n = device_property_read_u32_2darray(madera->dev, "cirrus,inmode",
-+					     tmp, ARRAY_SIZE(tmp),
-+					     MADERA_MAX_MUXED_CHANNELS);
-+	if (n < 0)
-+		return;
-+
-+	in_idx = 0;
-+	ch_idx = 0;
-+	for (i = 0; i < n; ++i) {
-+		pdata->inmode[in_idx][ch_idx] = tmp[i];
-+
-+		if (++ch_idx == MADERA_MAX_MUXED_CHANNELS) {
-+			ch_idx = 0;
-+			++in_idx;
-+		}
++	n = device_property_read_u32_array(dev, propname, NULL, 0);
++	if (n == -EINVAL) {
++		return 0;	/* missing, ignore */
++	} else if (n < 0) {
++		dev_warn(dev, "%s malformed (%d)\n", propname, n);
++		return n;
++	} else if ((n % multiple) != 0) {
++		dev_warn(dev, "%s not a multiple of %d entries\n",
++			 propname, multiple);
++		return -EOVERFLOW;
 +	}
++
++	if (n > nval)
++		n = nval;
++
++	ret = device_property_read_u32_array(dev, propname, val, n);
++	if (ret < 0)
++		return ret;
++	else
++		return n;
 +}
++EXPORT_SYMBOL_GPL(device_property_read_u32_2darray);
 +
-+static void madera_prop_get_pdata(struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+	struct madera_codec_pdata *pdata = &madera->pdata.codec;
-+	u32 out_mono[ARRAY_SIZE(pdata->out_mono)];
-+	int i, n;
-+
-+	madera_prop_get_inmode(priv);
-+
-+	n = device_property_read_u32_2darray(madera->dev, "cirrus,out-mono",
-+					     out_mono, ARRAY_SIZE(out_mono), 1);
-+	if (n > 0)
-+		for (i = 0; i < n; ++i)
-+			pdata->out_mono[i] = !!out_mono[i];
-+
-+	device_property_read_u32_2darray(madera->dev,
-+					 "cirrus,max-channels-clocked",
-+					 pdata->max_channels_clocked,
-+					 ARRAY_SIZE(pdata->max_channels_clocked),
-+					 1);
-+
-+	device_property_read_u32_2darray(madera->dev, "cirrus,pdm-fmt",
-+					 pdata->pdm_fmt,
-+					 ARRAY_SIZE(pdata->pdm_fmt), 1);
-+
-+	device_property_read_u32_2darray(madera->dev, "cirrus,pdm-mute",
-+					 pdata->pdm_mute,
-+					 ARRAY_SIZE(pdata->pdm_mute), 1);
-+
-+	device_property_read_u32_2darray(madera->dev, "cirrus,dmic-ref",
-+					 pdata->dmic_ref,
-+					 ARRAY_SIZE(pdata->dmic_ref), 1);
-+}
-+
- int madera_core_init(struct madera_priv *priv)
- {
- 	int i;
-@@ -308,6 +370,9 @@ int madera_core_init(struct madera_priv *priv)
- 	BUILD_BUG_ON(!madera_mixer_texts[MADERA_NUM_MIXER_INPUTS - 1]);
- 	BUILD_BUG_ON(!madera_mixer_values[MADERA_NUM_MIXER_INPUTS - 1]);
- 
-+	if (!dev_get_platdata(priv->madera->dev))
-+		madera_prop_get_pdata(priv);
-+
- 	mutex_init(&priv->rate_lock);
- 
- 	for (i = 0; i < MADERA_MAX_HP_OUTPUT; i++)
++/**
+  * device_property_read_u64_array - return a u64 array property of a device
+  * @dev: Device to get the property of
+  * @propname: Name of the property
+diff --git a/include/linux/property.h b/include/linux/property.h
+index e9caa290cda52..5ab0b4a7d34a2 100644
+--- a/include/linux/property.h
++++ b/include/linux/property.h
+@@ -40,6 +40,8 @@ int device_property_read_u16_array(struct device *dev, const char *propname,
+ 				   u16 *val, size_t nval);
+ int device_property_read_u32_array(struct device *dev, const char *propname,
+ 				   u32 *val, size_t nval);
++int device_property_read_u32_2darray(struct device *dev, const char *propname,
++				     u32 *val, size_t nval, int multiple);
+ int device_property_read_u64_array(struct device *dev, const char *propname,
+ 				   u64 *val, size_t nval);
+ int device_property_read_string_array(struct device *dev, const char *propname,
 -- 
 2.11.0
