@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Fix race condition in IPC rx
-	list" to the asoc tree
+Subject: Applied "ASoC: Intel: Common: Fix NULL dereference in
+	tx_wait_done" to the asoc tree
 Date: Wed, 26 Jun 2019 12:32:44 +0100 (BST)
-Message-ID: <20190626113244.E543D44004B@finisterre.sirena.org.uk>
-References: <20190613190436.20156-5-cezary.rojewski@intel.com>
+Message-ID: <20190626113244.BF8C3440049@finisterre.sirena.org.uk>
+References: <20190613190436.20156-6-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B10BF896EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AC87F896B7
  for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:48 +0200 (CEST)
-In-Reply-To: <20190613190436.20156-5-cezary.rojewski@intel.com>
+In-Reply-To: <20190613190436.20156-6-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Fix race condition in IPC rx list
+   ASoC: Intel: Common: Fix NULL dereference in tx_wait_done
 
 has been applied to the asoc tree at
 
@@ -55,46 +55,35 @@ to this mail.
 Thanks,
 Mark
 
->From 26ae20490809db30677dfd54f81a73ce77ba2df1 Mon Sep 17 00:00:00 2001
-From: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
-Date: Thu, 13 Jun 2019 21:04:33 +0200
-Subject: [PATCH] ASoC: Intel: Fix race condition in IPC rx list
+>From 9f4f42d710d417745cff05845f93370126f77ff7 Mon Sep 17 00:00:00 2001
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Date: Thu, 13 Jun 2019 21:04:34 +0200
+Subject: [PATCH] ASoC: Intel: Common: Fix NULL dereference in tx_wait_done
 
-Since there are multiple IPCs being sent in a short span of time, there
-is a possibility of more than one message being on the Rx list after
-receiving response from firmware. In such cases, when the first
-notification of interrupt from firmware is received, driver retrieves
-the message from the Rx list but does not delete it from the list till
-the next lock. In the meantime, when another interrupt is received from
-the firmware, driver is reading the previous message again since the
-previous message has not been removed from the list.
+rx_data and rx_bytes present for tx_wait_done are optional parameters.
+If not provided, function should not attempt to copy received data.
+This change fixes memcpy NULL pointer dereference issue occurring when
+optional rx_data is NULL while received message size is non-zero.
 
-Signed-off-by: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 2 +-
+ sound/soc/intel/common/sst-ipc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 5c9206dc7932..5094205a243f 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -344,6 +344,7 @@ static struct ipc_message *skl_ipc_reply_get_msg(struct sst_generic_ipc *ipc,
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index dcff13802c00..fc3340f1da3a 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -71,7 +71,7 @@ static int tx_wait_done(struct sst_generic_ipc *ipc,
+ 	} else {
  
- 	msg = list_first_entry(&ipc->rx_list, struct ipc_message, list);
- 
-+	list_del(&msg->list);
- out:
- 	return msg;
- 
-@@ -488,7 +489,6 @@ void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
+ 		/* copy the data returned from DSP */
+-		if (msg->rx_size)
++		if (rx_data)
+ 			memcpy(rx_data, msg->rx_data, msg->rx_size);
+ 		ret = msg->errno;
  	}
- 
- 	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
--	list_del(&msg->list);
- 	sst_ipc_tx_msg_reply_complete(ipc, msg);
- 	spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
- }
 -- 
 2.20.1
