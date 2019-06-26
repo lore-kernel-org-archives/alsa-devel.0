@@ -1,17 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 1/2] device property: Add new array helper
-Date: Wed, 26 Jun 2019 16:36:10 +0100
-Message-ID: <20190626153611.10170-1-ckeepax@opensource.cirrus.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Recover BXT FW on
+ DSP boot timeout error
+Date: Wed, 26 Jun 2019 20:13:04 +0200
+Message-ID: <d9bd7dcb-4780-1f05-e536-32005f2b0ab6@intel.com>
+References: <20190626093851.18474-1-pawel.harlozinski@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8AFFF8070C
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 17:36:17 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2C53F8071F
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 20:13:13 +0200 (CEST)
+In-Reply-To: <20190626093851.18474-1-pawel.harlozinski@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,99 +24,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, rafael@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com, linux-acpi@vger.kernel.org, patches@opensource.cirrus.com
+To: pawel.harlozinski@linux.intel.com
+Cc: szymonx.mielczarek@intel.com, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-It is fairly common to want to read an integer array property
-that is composed of an unknown number of fixed size integer
-groups. For example, say each group consists of three values
-which correspond to the settings for one input on the device
-and the driver supports several chips with different numbers
-of inputs.
+On 2019-06-26 11:38, Pawel Harlozinski wrote:
+> When DSP boots with timeout error, reinitialize, transfer
+> and boot firmware to recover audio.
+> 
 
-Add a new helper function to provide this functionality, it
-differs for the existing helpers in that it allows reading a
-smaller number of values than the full array size and checks
-that the number of values read is a multiple of the group size.
+This is so called "recovery". Say "why" we do it, not just "what" the 
+sequence is.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/base/property.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/property.h |  2 ++
- 2 files changed, 50 insertions(+)
+> Signed-off-by: Szymon Mielczarek <szymonx.mielczarek@intel.com>
+> ---
+>   sound/soc/intel/skylake/bxt-sst.c | 15 ++++++++++-----
+>   1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+> index 440bca7afbf1..a2844bdca1b8 100644
+> --- a/sound/soc/intel/skylake/bxt-sst.c
+> +++ b/sound/soc/intel/skylake/bxt-sst.c
+> @@ -455,13 +455,18 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 348b37e64944c..656d21e01a648 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -133,6 +133,54 @@ int device_property_read_u32_array(struct device *dev, const char *propname,
- EXPORT_SYMBOL_GPL(device_property_read_u32_array);
- 
- /**
-+ * device_property_read_u32_2darray - return a 2d u32 array property of a device
-+ * @dev: Device to get the property of
-+ * @propname: Name of the property
-+ * @val: The values are stored here or %NULL to return the number of values
-+ * @nval: Size of the @val array
-+ * @multiple: Number of entries in each block of data
-+ *
-+ * Function reads an array of u32 properties split up into fixed size
-+ * sub-groups, with @propname from the device firmware description and
-+ * stores them to @val if found.
-+ *
-+ * Return: Number of values read
-+ *	   %0 if the property was not found,
-+ *	   %-EINVAL if given arguments are not valid,
-+ *	   %-ENODATA if the property does not have a value,
-+ *	   %-EPROTO if the property is not an array of numbers,
-+ *	   %-EOVERFLOW if the size of the property is not as expected.
-+ *	   %-ENXIO if no suitable firmware interface is present.
-+ */
-+int device_property_read_u32_2darray(struct device *dev, const char *propname,
-+				     u32 *val, size_t nval, int multiple)
-+{
-+	int n, ret;
-+
-+	n = device_property_read_u32_array(dev, propname, NULL, 0);
-+	if (n == -EINVAL) {
-+		return 0;	/* missing, ignore */
-+	} else if (n < 0) {
-+		dev_warn(dev, "%s malformed (%d)\n", propname, n);
-+		return n;
-+	} else if ((n % multiple) != 0) {
-+		dev_warn(dev, "%s not a multiple of %d entries\n",
-+			 propname, multiple);
-+		return -EOVERFLOW;
-+	}
-+
-+	if (n > nval)
-+		n = nval;
-+
-+	ret = device_property_read_u32_array(dev, propname, val, n);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return n;
-+}
-+EXPORT_SYMBOL_GPL(device_property_read_u32_2darray);
-+
-+/**
-  * device_property_read_u64_array - return a u64 array property of a device
-  * @dev: Device to get the property of
-  * @propname: Name of the property
-diff --git a/include/linux/property.h b/include/linux/property.h
-index e9caa290cda52..5ab0b4a7d34a2 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -40,6 +40,8 @@ int device_property_read_u16_array(struct device *dev, const char *propname,
- 				   u16 *val, size_t nval);
- int device_property_read_u32_array(struct device *dev, const char *propname,
- 				   u32 *val, size_t nval);
-+int device_property_read_u32_2darray(struct device *dev, const char *propname,
-+				     u32 *val, size_t nval, int multiple);
- int device_property_read_u64_array(struct device *dev, const char *propname,
- 				   u64 *val, size_t nval);
- int device_property_read_string_array(struct device *dev, const char *propname,
--- 
-2.11.0
+What about its neighbour, cnl_set_dsp_D0?
+
+>   	/* If core 1 was turned on for booting core 0, turn it off */
+>   		skl_dsp_core_power_down(ctx, SKL_DSP_CORE_MASK(1));
+>   		if (ret == 0) {
+> -			dev_err(ctx->dev, "%s: DSP boot timeout\n", __func__);
+> -			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
+> +			dev_warn(ctx->dev,
+> +				"DSP boot timeout: Error code=0x%x: FW status=0x%x\n",
+
+Log change (--log_level) without mention in commit msg. Maybe split this 
+into separate commit? The entire log-polish thingy could be a theme for 
+a patchset as this is not the only place where such changes are welcome.
+
+>   				sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
+>   				sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
+> -			dev_err(ctx->dev, "Failed to set core0 to D0 state\n");
+> -			ret = -EIO;
+> -			goto err;
+> +
+> +			ret = bxt_sst_init_fw(skl->dev, skl);
+> +			dev_warn(ctx->dev, "Reload fw status: %d\n", ret);
+> +			if (ret < 0) {
+> +				dev_err(ctx->dev, "Failed to set core0 to D0 state\n");
+> +				ret = -EIO;
+> +				goto err;
+> +			}
+
+Double message is unnecessary, routine is verbose enough. Either leave 
+"always report stuff" and resign from mentioning anything at all on 
+failure -or- do it only on failure explicitly.
+
+>   		}
+>   	}
+>   
+> 
