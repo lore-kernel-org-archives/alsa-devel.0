@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: don't use
-	soc_find_component() at snd_soc_find_dai()" to the asoc tree
-Date: Wed, 26 Jun 2019 12:32:43 +0100 (BST)
-Message-ID: <20190626113243.CFACC440046@finisterre.sirena.org.uk>
-References: <878stpyvky.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Skylake: Read HIPCT extension
+	before clearing DONE bit" to the asoc tree
+Date: Wed, 26 Jun 2019 12:32:45 +0100 (BST)
+Message-ID: <20190626113245.16FC3440050@finisterre.sirena.org.uk>
+References: <20190613190436.20156-4-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8ACBF8070C
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:45 +0200 (CEST)
-In-Reply-To: <878stpyvky.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DFCCF896EC
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:48 +0200 (CEST)
+In-Reply-To: <20190613190436.20156-4-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-tegra@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Dmitry Osipenko <digetx@gmail.com>, Jon Hunter <jonathanh@nvidia.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: don't use soc_find_component() at snd_soc_find_dai()
+   ASoC: Intel: Skylake: Read HIPCT extension before clearing DONE bit
 
 has been applied to the asoc tree at
 
@@ -55,63 +55,67 @@ to this mail.
 Thanks,
 Mark
 
->From e3303268f9cfa4eb7c2217df471417d4327109fd Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 26 Jun 2019 10:40:59 +0900
-Subject: [PATCH] ASoC: soc-core: don't use soc_find_component() at
- snd_soc_find_dai()
+>From 078759399ff74e2e6f5e208c61924d1b7d66e5d8 Mon Sep 17 00:00:00 2001
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Date: Thu, 13 Jun 2019 21:04:32 +0200
+Subject: [PATCH] ASoC: Intel: Skylake: Read HIPCT extension before clearing
+ DONE bit
 
-commit b9f2e25c599bb ("ASoC: soc-core: use soc_find_component() at
-snd_soc_find_dai()") used soc_find_component() at snd_soc_find_dai(),
-but, some CPU driver has CPU component for DAI and Platform component,
-for example generic DMAEngine component.
-In such case, CPU component and Platform component have same
-of_node / name.
+Host clears DONE bit to signal IPC target it has completed the
+operation. Once this is done, IPC target i.e. DSP may proceed with the
+next reply, filling registers with new portion of data.
 
-Here soc_find_component() returns *1st* found component.
-Thus, we shouldn't use soc_find_component() at snd_soc_find_dai().
-This patch fixup this it, and add comment to indicate this limitation.
+Because of this, host should always read all registers prior to clearing
+DONE and BUSY bits to ensure no desynchronization happens the time in
+between clearing bits and reading message data (here, extension).
 
-Fixes: commit b9f2e25c599bb ("ASoC: soc-core: use soc_find_component() at snd_soc_find_dai()")
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Reported-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/cnl-sst.c     | 2 +-
+ sound/soc/intel/skylake/skl-sst-ipc.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 358f1fbf9a30..8ccaf63e428c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -786,6 +786,14 @@ static struct snd_soc_component *soc_find_component(
+diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+index 245df1067ba8..759ea59615ca 100644
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -313,6 +313,7 @@ static irqreturn_t cnl_dsp_irq_thread_handler(int irq, void *context)
  
- 	lockdep_assert_held(&client_mutex);
+ 	hipcida = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCIDA);
+ 	hipctdr = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCTDR);
++	hipctdd = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCTDD);
  
-+	/*
-+	 * NOTE
-+	 *
-+	 * It returns *1st* found component, but some driver
-+	 * has few components by same of_node/name
-+	 * ex)
-+	 *	CPU component and generic DMAEngine component
-+	 */
- 	for_each_component(component)
- 		if (snd_soc_is_matching_component(dlc, component))
- 			return component;
-@@ -813,8 +821,9 @@ struct snd_soc_dai *snd_soc_find_dai(
- 	lockdep_assert_held(&client_mutex);
+ 	/* reply message from dsp */
+ 	if (hipcida & CNL_ADSP_REG_HIPCIDA_DONE) {
+@@ -332,7 +333,6 @@ static irqreturn_t cnl_dsp_irq_thread_handler(int irq, void *context)
  
- 	/* Find CPU DAI from registered DAIs */
--	component = soc_find_component(dlc);
--	if (component) {
-+	for_each_component(component) {
-+		if (!snd_soc_is_matching_component(dlc, component))
-+			continue;
- 		for_each_component_dais(component, dai) {
- 			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
- 			    && (!dai->driver->name
+ 	/* new message from dsp */
+ 	if (hipctdr & CNL_ADSP_REG_HIPCTDR_BUSY) {
+-		hipctdd = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCTDD);
+ 		header.primary = hipctdr;
+ 		header.extension = hipctdd;
+ 		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x",
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 9f3ce73593ae..5c9206dc7932 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -511,6 +511,7 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
+ 
+ 	hipcie = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCIE);
+ 	hipct = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCT);
++	hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
+ 
+ 	/* reply message from DSP */
+ 	if (hipcie & SKL_ADSP_REG_HIPCIE_DONE) {
+@@ -530,7 +531,6 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
+ 
+ 	/* New message from DSP */
+ 	if (hipct & SKL_ADSP_REG_HIPCT_BUSY) {
+-		hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
+ 		header.primary = hipct;
+ 		header.extension = hipcte;
+ 		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x\n",
 -- 
 2.20.1
