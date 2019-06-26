@@ -1,17 +1,34 @@
-From: Rander Wang <rander.wang@linux.intel.com>
-Subject: [RFC] ALSA: hda: Fix a headphone detection issue when
-	using SOF
-Date: Wed, 26 Jun 2019 14:38:24 +0800
-Message-ID: <20190626063824.5378-1-rander.wang@linux.intel.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH resend 25/47] ASoC: samsung: snow: don't
+ select unnecessary Platform
+Date: Wed, 26 Jun 2019 08:41:44 +0200
+Message-ID: <7a96b050-4ad7-0a9f-41a1-adf27704bf61@samsung.com>
+References: <877e9iwf9f.wl-kuninori.morimoto.gx@renesas.com>
+ <874l4mv0h8.wl-kuninori.morimoto.gx@renesas.com>
+ <CGME20190624131905eucas1p2cf4335b4d1483b7e62d0c9e7b5223a3c@eucas1p2.samsung.com>
+ <9cfc8505-2903-033f-f68b-8ccc1c70132b@samsung.com>
+ <87d0j232wg.wl-kuninori.morimoto.gx@renesas.com>
+ <80c5c575-6f28-c6a6-91b2-d701bb9fbce8@samsung.com>
+ <877e9a2hvn.wl-kuninori.morimoto.gx@renesas.com>
+ <c4bb4599-e5d5-926b-75d5-d5c349ed8076@samsung.com>
+ <87ef3hz0yn.wl-kuninori.morimoto.gx@renesas.com>
+ <87a7e5ywqs.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
+ [210.118.77.12])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6D53F806F0
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 08:35:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCD6EF806F0
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 08:41:49 +0200 (CEST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+ by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id
+ 20190626064148euoutp024acfa80469ffc87be49d937472c2ce93~rrHOpVitd2733527335euoutp02a
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 06:41:48 +0000 (GMT)
+In-Reply-To: <87a7e5ywqs.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +38,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: Rander Wang <rander.wang@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-To save power, the hda hdmi driver in ASoC invokes snd_hdac_ext_bus_link_put
-to disable CORB/RIRB buffers DMA if there is no user of bus and invokes
-snd_hdac_ext_bus_link_get to set up CORB/RIRB buffers when it is used.
-Unsolicited responses is disabled in snd_hdac_bus_stop_cmd_io called by
-snd_hdac_ext_bus_link_put , but it is not enabled in snd_hdac_bus_init_cmd_io
-called by snd_hdac_ext_bus_link_get. So for put-get sequence, Unsolicited
-responses is disabled and headphone can't be detected by hda codecs.
-
-Now unsolicited responses is only enabled in snd_hdac_bus_reset_link
-which resets controller. The function is only called for setup of
-controller. This patch enables Unsolicited responses after RIRB is
-initialized in snd_hdac_bus_init_cmd_io which works together with
-snd_hdac_bus_reset_link to set up controller.
-
-Tested legacy hda driver and SOF driver on intel whiskeylake.
-
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
----
- sound/hda/hdac_controller.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index d6a91429c058..c24fc8d266a9 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -78,6 +78,8 @@ void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
- 	snd_hdac_chip_writew(bus, RINTCNT, 1);
- 	/* enable rirb dma and response irq */
- 	snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
-+	/* Accept unsolicited responses */
-+	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
- 	spin_unlock_irq(&bus->reg_lock);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_bus_init_cmd_io);
-@@ -416,9 +418,6 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
- 		return -EBUSY;
- 	}
- 
--	/* Accept unsolicited responses */
--	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
--
- 	/* detect codecs */
- 	if (!bus->codec_mask) {
- 		bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
--- 
-2.14.1
+SGkgS3VuaW5vcmksCgpPbiAyMDE5LTA2LTI2IDAzOjE1LCBLdW5pbm9yaSBNb3JpbW90byB3cm90
+ZToKPiBIaSBNYXJlaywgYWdhaW4KPgo+PiBUaGFuayB5b3UgZm9yIHlvdXIgdGVzdC4KPj4gQW5k
+IHNvIHNvcnJ5IHRvIGJvdGhlciB5b3UuCj4+IEkgd2lsbCBmaXh1cCB0aGlzIGlzc3VlLgo+Pgo+
+Pj4+Pj4gSSBoYXZlIG5vIGlkZWEgc28gZmFyLCBidXQgb25lIGNhcGFiaWxpdHkgaXMgdGhhdCBp
+ZiB5b3VyIHN5c3RlbQo+Pj4+Pj4gdXNlZCAvIGJhc2VkIGR1bW15IHBsYXRmb3JtLCBhbmQgaWYg
+eW91ciBDUFUgZHJpdmVyIGRpZG4ndCB1c2UvaGF2ZQo+Pj4+Pj4gc25kX3NvY19zZXRfcnVudGlt
+ZV9od3BhcmFtcygpIC8gc25kX3BjbV9saWJfaW9jdGwsCj4+Pj4+PiBpdCBtaWdodCBiZSBoYXBw
+ZW4sIGJ1dCB0aGlzIHBhdGNoIHNlZW1zIG5vdCByZWxhdGVkIHRvIGl0Li4uCj4+Pj4+IFJldmVy
+dGluZyB0aGlzIHBhdGNoIGZpeGVzIHRoZSBpc3N1ZSwgc28gaXQgaXMgZGVmaW5pdGVseSByZWxh
+dGVkIHNvbWVob3cuCj4+Pj4gQWhoLi4uIE9LIG5vdyBJIHRoaW5rIEkgY291bGQgdW5kZXJzdGFu
+ZCB5b3VyIGlzc3VlLgo+Pj4+IFlvdXIgQ1BVIGlzIHVzaW5nIGRldm1fc25kX2RtYWVuZ2luZV9w
+Y21fcmVnaXN0ZXIoKSB3aXRoIHNhbWUgKmRldi4KPj4+PiBJbiBzdWNoIGNhc2UsIGluZGVlZCB0
+aGlzIHBhdGNoIGJyZWFrcyBzb3VuZCBjYXJkLgo+IEknbSBub3cgbmVnb3RpYXRpbmcgdG8gTWFy
+ayB0byByZXZlcnRpbmcgaXNzdWUgcGF0Y2hlcy4KPiBCdXQsIGFzIGFsdGVybmF0aXZlIGlkZWEs
+IEkgdGhpbmsgYmVsb3cgcGF0Y2ggY2FuIHNvbHZlIHRoaXMgaXNzdWUuCj4gQ2FuIHlvdSBwbGVh
+c2UgdGVzdCBpdCA/Cj4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gZGlmZiAtLWdpdCBhL3Nv
+dW5kL3NvYy9zb2MtY29yZS5jIGIvc291bmQvc29jL3NvYy1jb3JlLmMKPiBpbmRleCAzNThmMWZi
+Li43OWI5Y2M0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zb2MtY29yZS5jCj4gKysrIGIvc291
+bmQvc29jL3NvYy1jb3JlLmMKPiBAQCAtOTMxLDkgKzkzMSwxMSBAQCBzdGF0aWMgaW50IHNvY19i
+aW5kX2RhaV9saW5rKHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQsCj4gICAJcnRkLT5jb2RlY19k
+YWkgPSBydGQtPmNvZGVjX2RhaXNbMF07Cj4gICAKPiAgIAkvKiBGaW5kIFBMQVRGT1JNIGZyb20g
+cmVnaXN0ZXJlZCBQTEFURk9STXMgKi8KPiArCS8qIENQVSBkcml2ZXIgbWlnaHQgaGFzIGJvdGgg
+REFJIGFuZCBQTEFURk9STSAqLwo+ICAgCWZvcl9lYWNoX2NvbXBvbmVudChjb21wb25lbnQpIHsK
+PiAgIAkJaWYgKCFzbmRfc29jX2lzX21hdGNoaW5nX2NvbXBvbmVudChkYWlfbGluay0+cGxhdGZv
+cm1zLAo+IC0JCQkJCQkgICBjb21wb25lbnQpKQo+ICsJCQkJCQkgICBjb21wb25lbnQpICYmCj4g
+KwkJICAgICFzbmRfc29jX2lzX21hdGNoaW5nX2NvbXBvbmVudChkYWlfbGluay0+Y3B1cywgY29t
+cG9uZW50KSkKPiAgIAkJCWNvbnRpbnVlOwo+ICAgCj4gICAJCXNuZF9zb2NfcnRkY29tX2FkZChy
+dGQsIGNvbXBvbmVudCk7Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKWWVzLCB0aGUgYWJvdmUg
+Y2hhbmdlIGZpeGVzIHRoZSBpc3N1ZSBvbiBTYW1zdW5nIFNub3csIFBlYWNoLVBpdCBhbmQgClBl
+YWNoLVBpIENocm9tZWJvb2tzLCBidXQgY2F1c2VzIHJlZ3Jlc3Npb24gb24gdGhlIG90aGVyIGJv
+YXJkcywgZm9yIApleGFtcGxlIGhlcmUgaXMgdGhlIGxvZyBmcm9tIE9kcm9pZCBVMzoKCm1heDk4
+MDkwIDEtMDAxMDogTUFYOTgwOTAgUkVWSUQ9MHg0MwptYXg5ODA5MCAxLTAwMTA6IHVzZSBkZWZh
+dWx0IDIuOHYgbWljYmlhcwpvZHJvaWQtYXVkaW8gc291bmQ6IHNuZC1zb2MtZHVtbXktZGFpIDwt
+PiBzYW1zdW5nLWkycyBtYXBwaW5nIG9rCm9kcm9pZC1hdWRpbyBzb3VuZDogbXVsdGljb2RlYyA8
+LT4gc25kLXNvYy1kdW1teS1kYWkgbWFwcGluZyBvawotLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0t
+LS0tLS0tLS0tLS0KV0FSTklORzogQ1BVOiAzIFBJRDogODggYXQgZnMvcHJvYy9nZW5lcmljLmM6
+MzYxIHByb2NfcmVnaXN0ZXIrMHhmOC8weDEyYwpwcm9jX2Rpcl9lbnRyeSAnc3ViMC9wcmVhbGxv
+YycgYWxyZWFkeSByZWdpc3RlcmVkCk1vZHVsZXMgbGlua2VkIGluOgpDUFU6IDMgUElEOiA4OCBD
+b21tOiBrd29ya2VyLzM6MSBOb3QgdGFpbnRlZCAKNS4yLjAtcmM2LW5leHQtMjAxOTA2MjQtMDAw
+MDQtZzU2MTFlZGIwNWMzNi1kaXJ0eSAjNjIzMwpIYXJkd2FyZSBuYW1lOiBTQU1TVU5HIEVYWU5P
+UyAoRmxhdHRlbmVkIERldmljZSBUcmVlKQpXb3JrcXVldWU6IGV2ZW50cyBkZWZlcnJlZF9wcm9i
+ZV93b3JrX2Z1bmMKWzxjMDExMjU0OD5dICh1bndpbmRfYmFja3RyYWNlKSBmcm9tIFs8YzAxMGUw
+MDQ+XSAoc2hvd19zdGFjaysweDEwLzB4MTQpCnVzYiAxLTM6IG5ldyBoaWdoLXNwZWVkIFVTQiBk
+ZXZpY2UgbnVtYmVyIDMgdXNpbmcgZXh5bm9zLWVoY2kKWzxjMDEwZTAwND5dIChzaG93X3N0YWNr
+KSBmcm9tIFs8YzBhYTYzYmM+XSAoZHVtcF9zdGFjaysweDk4LzB4YzQpCls8YzBhYTYzYmM+XSAo
+ZHVtcF9zdGFjaykgZnJvbSBbPGMwMTI3NGQ4Pl0gKF9fd2FybisweDEwYy8weDEyNCkKWzxjMDEy
+NzRkOD5dIChfX3dhcm4pIGZyb20gWzxjMDEyNzUzND5dICh3YXJuX3Nsb3dwYXRoX2ZtdCsweDQ0
+LzB4NjgpCls8YzAxMjc1MzQ+XSAod2Fybl9zbG93cGF0aF9mbXQpIGZyb20gWzxjMDMxZjhiOD5d
+IAoocHJvY19yZWdpc3RlcisweGY4LzB4MTJjKQpbPGMwMzFmOGI4Pl0gKHByb2NfcmVnaXN0ZXIp
+IGZyb20gWzxjMDMxZmI4OD5dIChwcm9jX2NyZWF0ZV9kYXRhKzB4MzgvMHg0NCkKWzxjMDMxZmI4
+OD5dIChwcm9jX2NyZWF0ZV9kYXRhKSBmcm9tIFs8YzA3YTg4YTQ+XSAKKHNuZF9pbmZvX3JlZ2lz
+dGVyKzB4ZTQvMHgxM2MpCls8YzA3YTg4YTQ+XSAoc25kX2luZm9fcmVnaXN0ZXIpIGZyb20gWzxj
+MDdhODgwND5dIAooc25kX2luZm9fcmVnaXN0ZXIrMHg0NC8weDEzYykKaXJxIGV2ZW50IHN0YW1w
+OiAxMjkyMwpoYXJkaXJxcyBsYXN0wqAgZW5hYmxlZCBhdCAoMTI5NDEpOiBbPGMwMTk3NmE4Pl0g
+Y29uc29sZV91bmxvY2srMHg0YjgvMHg2YTgKaGFyZGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMTI5
+NTgpOiBbPGMwMTk3MmJjPl0gY29uc29sZV91bmxvY2srMHhjYy8weDZhOApzb2Z0aXJxcyBsYXN0
+wqAgZW5hYmxlZCBhdCAoMTI5NTYpOiBbPGMwMTAyNmQ4Pl0gX19kb19zb2Z0aXJxKzB4NGYwLzB4
+NWUwCnNvZnRpcnFzIGxhc3QgZGlzYWJsZWQgYXQgKDEyOTc3KTogWzxjMDEyZjZmOD5dIGlycV9l
+eGl0KzB4MTYwLzB4MTZjCi0tLVsgZW5kIHRyYWNlIDllMDg2NGQ5MGUyZTA4YWIgXS0tLQpvZHJv
+aWQtYXVkaW8gc291bmQ6IEFTb0M6IGZhaWxlZCB0byByZWdpc3RlciBzb3VuZGNhcmQgLTEyCm9k
+cm9pZC1hdWRpbyBzb3VuZDogc25kX3NvY19yZWdpc3Rlcl9jYXJkKCkgZmFpbGVkOiAtMTIKb2Ry
+b2lkLWF1ZGlvOiBwcm9iZSBvZiBzb3VuZCBmYWlsZWQgd2l0aCBlcnJvciAtMTIKCmhlcmUgaXMg
+dGhlIGNvbXBvbmVudCBsaXN0IHJlcG9ydGVkIGJ5IHlvdXIgcHJldmlvdXMgcGF0Y2ggZm9yIHRo
+YXQgYm9hcmQ6CgpbwqDCoMKgIDMuMDEyNzgxXSAtLS0tLTM4MzAwMDAuaTJzIDogc2Ftc3VuZy1p
+MnMKW8KgwqDCoCAzLjAxNTczNl0gLS0tLS1zbmQtc29jLWR1bW15IDogKG51bGwpClvCoMKgwqAg
+My4wMTk1ODhdIC0tLS0tMzgzMDAwMC5pMnMgOiBzbmRfZG1hZW5naW5lX3BjbQpbwqDCoMKgIDMu
+MDI0MTIyXSAtLS0tLXNuZC1zb2MtZHVtbXkgOiAobnVsbCkKW8KgwqDCoCAzLjAyNzk5MV0gLS0t
+LS1oZG1pLWF1ZGlvLWNvZGVjLjAuYXV0byA6IChudWxsKQpbwqDCoMKgIDMuMDMyNjIwXSAtLS0t
+LW1heDk4MDkwLjEtMDAxMCA6IChudWxsKQpbwqDCoMKgIDMuMDc4ODY1XSBtYXg5ODA5MCAxLTAw
+MTA6IE1BWDk4MDkwIFJFVklEPTB4NDMKW8KgwqDCoCAzLjA4NTAzOF0gbWF4OTgwOTAgMS0wMDEw
+OiB1c2UgZGVmYXVsdCAyLjh2IG1pY2JpYXMKW8KgwqDCoCAzLjExMzQzOF0gb2Ryb2lkLWF1ZGlv
+IHNvdW5kOiBzbmQtc29jLWR1bW15LWRhaSA8LT4gc2Ftc3VuZy1pMnMgCm1hcHBpbmcgb2sKW8Kg
+wqDCoCAzLjEyMzg0OV0gb2Ryb2lkLWF1ZGlvIHNvdW5kOiBtdWx0aWNvZGVjIDwtPiBzbmQtc29j
+LWR1bW15LWRhaSAKbWFwcGluZyBvawpbwqDCoMKgIDMuMjYzMjA4XSBBTFNBIGRldmljZSBsaXN0
+OgpbwqDCoMKgIDMuMjY0MjM0XcKgwqAgIzA6IE9kcm9pZC1VMwoKQmVzdCByZWdhcmRzCi0tIApN
+YXJlayBTenlwcm93c2tpLCBQaEQKU2Ftc3VuZyBSJkQgSW5zdGl0dXRlIFBvbGFuZAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
