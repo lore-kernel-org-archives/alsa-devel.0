@@ -1,22 +1,40 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: ad193x: Fix memory corruption on BE 64b systems" to the asoc tree
+Subject: Applied "ASoC: rsnd: ssiu: tidyup SSI_MODE1/2
+	settings" to the asoc tree
 Date: Wed, 26 Jun 2019 12:32:44 +0100 (BST)
-Message-ID: <20190626113244.65B7144004C@finisterre.sirena.org.uk>
-References: <20190626104947.26547-1-codrin.ciubotariu@microchip.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190626104947.26547-1-codrin.ciubotariu@microchip.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Dan Carpenter <dan.carpenter@oracle.com>, lars@metafoo.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+Message-ID: <20190626113244.2499844004A@finisterre.sirena.org.uk>
+References: <877e99yur2.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8D07F8071F
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:45 +0200 (CEST)
+In-Reply-To: <877e99yur2.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Hien Dang <hien.dang.eb@renesas.com>, Mark Brown <broonie@kernel.org>, Chaoliang Qin <chaoliang.qin.jg@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: ad193x: Fix memory corruption on BE 64b systems
+   ASoC: rsnd: ssiu: tidyup SSI_MODE1/2 settings
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,39 +55,143 @@ to this mail.
 Thanks,
 Mark
 
->From da7260cc8d1dc3564eb4f33550b0525541d71a47 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Wed, 26 Jun 2019 13:49:46 +0300
-Subject: [PATCH] ASoC: codecs: ad193x: Fix memory corruption on BE 64b systems
+>From dfea7b2c5c7eaf657086bb95d61814d7e04d1409 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Jun 2019 10:58:56 +0900
+Subject: [PATCH] ASoC: rsnd: ssiu: tidyup SSI_MODE1/2 settings
 
-Since change_bit() requires unsigned long*, making this cast on an
-unsigned int variable will change a wrong bit on BE platforms, causing
-memory corruption. Replace this function with a simple XOR.
+R-Car Sound can use pin sharing and multi-SSI for
+SSI0/1/2/3/4/9.
+Because complex HW settings and spaghetti code,
+the settings for SSI9 pin sharing with SSI0 doesn't work.
 
-Fixes: 90f6e6803139 ("ASoC: codecs: ad193x: Fix frame polarity for DSP_A format")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+This patch tidyup settings for it.
+
+Reported-by: Hien Dang <hien.dang.eb@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Chaoliang Qin <chaoliang.qin.jg@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/sh/rcar/ssiu.c | 92 +++++++++++++++++++---------------------
+ 1 file changed, 44 insertions(+), 48 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 96d7cb2e4a56..16e2d334bbe0 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -241,10 +241,8 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 2347f3404c06..f35d88211887 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -60,11 +60,11 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
+ 			  struct rsnd_priv *priv)
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+-	u32 multi_ssi_slaves = rsnd_ssi_multi_slaves_runtime(io);
++	u32 ssis = rsnd_ssi_multi_slaves_runtime(io);
+ 	int use_busif = rsnd_ssi_use_busif(io);
+ 	int id = rsnd_mod_id(mod);
+-	u32 mask1, val1;
+-	u32 mask2, val2;
++	int is_clk_master = rsnd_rdai_is_clk_master(rdai);
++	u32 val1, val2;
+ 	int i;
+ 
+ 	/* clear status */
+@@ -89,57 +89,53 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
+ 	rsnd_mod_bset(mod, SSI_MODE0, (1 << id), !use_busif << id);
+ 
+ 	/*
+-	 * SSI_MODE1
++	 * SSI_MODE1 / SSI_MODE2
++	 *
++	 * FIXME
++	 * sharing/multi with SSI0 are mainly supported
+ 	 */
+-	mask1 = (1 << 4) | (1 << 20);	/* mask sync bit */
+-	mask2 = (1 << 4);		/* mask sync bit */
+-	val1  = val2  = 0;
+-	if (id == 8) {
+-		/*
+-		 * SSI8 pin is sharing with SSI7, nothing to do.
+-		 */
+-	} else if (rsnd_ssi_is_pin_sharing(io)) {
+-		int shift = -1;
+-
+-		switch (id) {
+-		case 1:
+-			shift = 0;
+-			break;
+-		case 2:
+-			shift = 2;
+-			break;
+-		case 4:
+-			shift = 16;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+-
+-		mask1 |= 0x3 << shift;
+-		val1 = rsnd_rdai_is_clk_master(rdai) ?
+-			0x2 << shift : 0x1 << shift;
++	val1 = rsnd_mod_read(mod, SSI_MODE1);
++	val2 = rsnd_mod_read(mod, SSI_MODE2);
++	if (rsnd_ssi_is_pin_sharing(io)) {
+ 
+-	} else if (multi_ssi_slaves) {
++		ssis |= (1 << id);
+ 
+-		mask2 |= 0x00000007;
+-		mask1 |= 0x0000000f;
+-
+-		switch (multi_ssi_slaves) {
+-		case 0x0206: /* SSI0/1/2/9 */
+-			val2 = (1 << 4) | /* SSI0129 sync */
+-				(rsnd_rdai_is_clk_master(rdai) ? 0x2 : 0x1);
+-			/* fall through */
+-		case 0x0006: /* SSI0/1/2 */
+-			val1 = rsnd_rdai_is_clk_master(rdai) ?
+-				0xa : 0x5;
++	} else if (ssis) {
++		/*
++		 * Multi SSI
++		 *
++		 * set synchronized bit here
++		 */
+ 
+-			if (!val2)  /* SSI012 sync */
+-				val1 |= (1 << 4);
+-		}
++		/* SSI4 is synchronized with SSI3 */
++		if (ssis & (1 << 4))
++			val1 |= (1 << 20);
++		/* SSI012 are synchronized */
++		if (ssis == 0x0006)
++			val1 |= (1 << 4);
++		/* SSI0129 are synchronized */
++		if (ssis == 0x0206)
++			val2 |= (1 << 4);
  	}
  
- 	/* For DSP_*, LRCLK's polarity must be inverted */
--	if (fmt & SND_SOC_DAIFMT_DSP_A) {
--		change_bit(ffs(AD193X_DAC_LEFT_HIGH) - 1,
--			   (unsigned long *)&dac_fmt);
--	}
-+	if (fmt & SND_SOC_DAIFMT_DSP_A)
-+		dac_fmt ^= AD193X_DAC_LEFT_HIGH;
+-	rsnd_mod_bset(mod, SSI_MODE1, mask1, val1);
+-	rsnd_mod_bset(mod, SSI_MODE2, mask2, val2);
++	/* SSI1 is sharing pin with SSI0 */
++	if (ssis & (1 << 1))
++		val1 |= is_clk_master ? 0x2 : 0x1;
++
++	/* SSI2 is sharing pin with SSI0 */
++	if (ssis & (1 << 2))
++		val1 |= is_clk_master ?	0x2 << 2 :
++					0x1 << 2;
++	/* SSI4 is sharing pin with SSI3 */
++	if (ssis & (1 << 4))
++		val1 |= is_clk_master ? 0x2 << 16 :
++					0x1 << 16;
++	/* SSI9 is sharing pin with SSI0 */
++	if (ssis & (1 << 9))
++		val2 |= is_clk_master ? 0x2 : 0x1;
++
++	rsnd_mod_bset(mod, SSI_MODE1, 0x0013001f, val1);
++	rsnd_mod_bset(mod, SSI_MODE2, 0x00000017, val2);
  
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM: /* codec clk & frm master */
+ 	return 0;
+ }
 -- 
 2.20.1
