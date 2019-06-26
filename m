@@ -1,56 +1,34 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: soc-core: defer card registration
- if codec component is missing
-Date: Wed, 26 Jun 2019 23:20:22 +0200
-Message-ID: <8b4822f7-6671-1c23-572d-37f7e94ea8cc@linux.intel.com>
-References: <20190626133617.25959-1-jbrunet@baylibre.com>
- <20190626133617.25959-2-jbrunet@baylibre.com>
+From: Evan Green <evgreen@chromium.org>
+Subject: [PATCH v2 0/2] ALSA: hda: Widget memory fixes
+Date: Wed, 26 Jun 2019 14:22:18 -0700
+Message-ID: <20190626212220.239897-1-evgreen@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190626133617.25959-2-jbrunet@baylibre.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Evan Green <evgreen@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/26/19 3:36 PM, Jerome Brunet wrote:
-> Like cpus and platforms, defer sound card initialization if the codec
-> component is missing when initializing the dai_link
-> 
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->   sound/soc/soc-core.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 358f1fbf9a30..002ddbf4e5a3 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1064,12 +1064,20 @@ static int soc_init_dai_link(struct snd_soc_card *card,
->   				link->name);
->   			return -EINVAL;
->   		}
-> +
->   		/* Codec DAI name must be specified */
->   		if (!codec->dai_name) {
->   			dev_err(card->dev, "ASoC: codec_dai_name not set for %s\n",
->   				link->name);
->   			return -EINVAL;
->   		}
-> +
-> +		/*
-> +		 * Defer card registartion if codec component is not added to
 
-registration
+This series fixes concurrency issues with the sysfs widget array. The first
+function patches up the locking that was introduced recently to protect more
+of the data structure. The second patch fixes a race between a reinit and the
+initial population of the array which could result in a length and array
+getting out of sync.
 
-> +		 * component list.
-> +		 */
-> +		if (!soc_find_component(codec))
-> +			return -EPROBE_DEFER;
->   	}
->   
->   	/*
-> 
+
+Changes in v2:
+- Introduced widget_mutex relocation
+
+Evan Green (2):
+  ALSA: hda: Fix widget_mutex incomplete protection
+  ALSA: hda: Use correct start/count for sysfs init
+
+ sound/hda/hdac_device.c | 21 ++++++++++++++-------
+ sound/hda/hdac_sysfs.c  | 18 ++++++++++--------
+ sound/hda/local.h       |  3 ++-
+ 3 files changed, 26 insertions(+), 16 deletions(-)
+
+-- 
+2.20.1
