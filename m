@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Read HIPCT extension
-	before clearing DONE bit" to the asoc tree
-Date: Wed, 26 Jun 2019 12:32:45 +0100 (BST)
-Message-ID: <20190626113245.16FC3440050@finisterre.sirena.org.uk>
-References: <20190613190436.20156-4-cezary.rojewski@intel.com>
+Subject: Applied "ASoC: Intel: Fix race condition in IPC rx
+	list" to the asoc tree
+Date: Wed, 26 Jun 2019 12:32:44 +0100 (BST)
+Message-ID: <20190626113244.E543D44004B@finisterre.sirena.org.uk>
+References: <20190613190436.20156-5-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DFCCF896EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B10BF896EA
  for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:48 +0200 (CEST)
-In-Reply-To: <20190613190436.20156-4-cezary.rojewski@intel.com>
+In-Reply-To: <20190613190436.20156-5-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
+To: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Read HIPCT extension before clearing DONE bit
+   ASoC: Intel: Fix race condition in IPC rx list
 
 has been applied to the asoc tree at
 
@@ -55,67 +55,46 @@ to this mail.
 Thanks,
 Mark
 
->From 078759399ff74e2e6f5e208c61924d1b7d66e5d8 Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 13 Jun 2019 21:04:32 +0200
-Subject: [PATCH] ASoC: Intel: Skylake: Read HIPCT extension before clearing
- DONE bit
+>From 26ae20490809db30677dfd54f81a73ce77ba2df1 Mon Sep 17 00:00:00 2001
+From: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Date: Thu, 13 Jun 2019 21:04:33 +0200
+Subject: [PATCH] ASoC: Intel: Fix race condition in IPC rx list
 
-Host clears DONE bit to signal IPC target it has completed the
-operation. Once this is done, IPC target i.e. DSP may proceed with the
-next reply, filling registers with new portion of data.
+Since there are multiple IPCs being sent in a short span of time, there
+is a possibility of more than one message being on the Rx list after
+receiving response from firmware. In such cases, when the first
+notification of interrupt from firmware is received, driver retrieves
+the message from the Rx list but does not delete it from the list till
+the next lock. In the meantime, when another interrupt is received from
+the firmware, driver is reading the previous message again since the
+previous message has not been removed from the list.
 
-Because of this, host should always read all registers prior to clearing
-DONE and BUSY bits to ensure no desynchronization happens the time in
-between clearing bits and reading message data (here, extension).
-
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/cnl-sst.c     | 2 +-
  sound/soc/intel/skylake/skl-sst-ipc.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
-index 245df1067ba8..759ea59615ca 100644
---- a/sound/soc/intel/skylake/cnl-sst.c
-+++ b/sound/soc/intel/skylake/cnl-sst.c
-@@ -313,6 +313,7 @@ static irqreturn_t cnl_dsp_irq_thread_handler(int irq, void *context)
- 
- 	hipcida = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCIDA);
- 	hipctdr = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCTDR);
-+	hipctdd = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCTDD);
- 
- 	/* reply message from dsp */
- 	if (hipcida & CNL_ADSP_REG_HIPCIDA_DONE) {
-@@ -332,7 +333,6 @@ static irqreturn_t cnl_dsp_irq_thread_handler(int irq, void *context)
- 
- 	/* new message from dsp */
- 	if (hipctdr & CNL_ADSP_REG_HIPCTDR_BUSY) {
--		hipctdd = sst_dsp_shim_read_unlocked(dsp, CNL_ADSP_REG_HIPCTDD);
- 		header.primary = hipctdr;
- 		header.extension = hipctdd;
- 		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x",
 diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 9f3ce73593ae..5c9206dc7932 100644
+index 5c9206dc7932..5094205a243f 100644
 --- a/sound/soc/intel/skylake/skl-sst-ipc.c
 +++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -511,6 +511,7 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
+@@ -344,6 +344,7 @@ static struct ipc_message *skl_ipc_reply_get_msg(struct sst_generic_ipc *ipc,
  
- 	hipcie = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCIE);
- 	hipct = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCT);
-+	hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
+ 	msg = list_first_entry(&ipc->rx_list, struct ipc_message, list);
  
- 	/* reply message from DSP */
- 	if (hipcie & SKL_ADSP_REG_HIPCIE_DONE) {
-@@ -530,7 +531,6 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
++	list_del(&msg->list);
+ out:
+ 	return msg;
  
- 	/* New message from DSP */
- 	if (hipct & SKL_ADSP_REG_HIPCT_BUSY) {
--		hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
- 		header.primary = hipct;
- 		header.extension = hipcte;
- 		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x\n",
+@@ -488,7 +489,6 @@ void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
+ 	}
+ 
+ 	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
+-	list_del(&msg->list);
+ 	sst_ipc_tx_msg_reply_complete(ipc, msg);
+ 	spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
+ }
 -- 
 2.20.1
