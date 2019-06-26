@@ -1,33 +1,19 @@
-From: Stefan Sauer <ensonic@hora-obscura.de>
-Subject: Re: focusrite scarlett 18i20 : Mixer controls with
- corrupted names for
-Date: Wed, 26 Jun 2019 22:13:00 +0200
-Message-ID: <2c14e724-4a66-0998-a4a6-a424aee36424@hora-obscura.de>
-References: <65ad9ddb-bb67-2dc0-d5f5-e0c518641db2@hora-obscura.de>
- <s5hwohat80v.wl-tiwai@suse.de>
- <0f7f9e91-2c7e-d292-8ca1-a74b52607aea@hora-obscura.de>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 1/3] ASoC: SOF: Intel: hda: reduce ifdef usage
+	for hda
+Date: Wed, 26 Jun 2019 13:22:27 -0700
+Message-ID: <20190626202229.16312-2-ranjani.sridharan@linux.intel.com>
+References: <20190626202229.16312-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.hora-obscura.de (hora-obscura.de [213.133.109.209])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42E31F806F0
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 22:13:01 +0200 (CEST)
-Received: from smtp.hora-obscura.de (localhost [127.0.0.1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by smtp.hora-obscura.de (Postfix) with ESMTPS id 9FFCBAF8081
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 22:13:01 +0200 (CEST)
-Received: from ada.local (ipbcc14466.dynamic.kabel-deutschland.de
- [188.193.68.102])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by smtp.hora-obscura.de (Postfix) with ESMTPSA id 7104AAF801E
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 22:13:01 +0200 (CEST)
-In-Reply-To: <0f7f9e91-2c7e-d292-8ca1-a74b52607aea@hora-obscura.de>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08C51F896B7
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 22:22:32 +0200 (CEST)
+In-Reply-To: <20190626202229.16312-1-ranjani.sridharan@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,107 +24,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-QW0gMjYuMDYuMTkgdW0gMjI6MDYgc2NocmllYiBTdGVmYW4gU2F1ZXI6Cj4gQW0gMjUuMDYuMTkg
-dW0gMDk6NTQgc2NocmllYiBUYWthc2hpIEl3YWk6Cj4+IE9uIFNhdCwgMjIgSnVuIDIwMTkgMjI6
-NTU6MjUgKzAyMDAsCj4+IFN0ZWZhbiBTYXVlciB3cm90ZToKPj4+Cj4+PiBTbyB0aGUgZmlyc3Qg
-OCBjb250cm9scyBhcmUgYWRkZWQgc29tZXdoZXJlIGVsc2UuIExvb2tzIGxpa2UgdGhpcyBpcyBm
-cm9tCj4+PiBtaXhlci5jIGFuZCBhZnRlcgo+Pj4gZWNobyAtbiAnZmlsZSBzb3VuZC91c2IvbWl4
-ZXIuYyArcCcgPi9zeXMva2VybmVsL2RlYnVnL2R5bmFtaWNfZGVidWcvY29udHJvbAo+Pj4gSSBn
-ZXQKPj4+IFsgNDQwNS44NTU0MzJdIHVzYiAxLTI6IFs1MV0gUFUgW0tLS0tLS0tLS0tLS0vDg8OD
-w4PDg8ODw4PDg8ODw4PDg8ODIFN3aXRjaF0gY2ggPSAxLCB2YWwgPSAwLzEKPj4+IFsgNDQwNS44
-NTY0MjNdIHVzYiAxLTI6IFs1Ml0gUFUgWyBTd2l0Y2hdIGNoID0gMSwgdmFsID0gMC8xCj4+Cj4+
-IFRoaXMgaW5kaWNhdGVzIHRoYXQgdGhlc2Ugd2VpcmQgbmFtZXMgY29tZSBmcm9tIHRoZSB0d28g
-ZXh0ZW5zaW9uCj4+IHVuaXRzIGlkIDUxIGFuZCA1Mi4KPj4gQ291bGQgeW91IHB1dCBzb21lIGRl
-YnVnIHByaW50IGluIGJ1aWxkX2F1ZGlvX3Byb2N1bml0KCkgbGlrZSBiZWxvdz8KPiAKPiBJIHRy
-YWNlZCBpdCBkb3duIHRvIHRoaXMgcGFydCBmcm9tIHNvdW5kL3VzYi9taXhlci5jOgo+IG5hbWVp
-ZCA9IHVhY19wcm9jZXNzaW5nX3VuaXRfaVByb2Nlc3NpbmcoZGVzYywgc3RhdGUtPm1peGVyLT5w
-cm90b2NvbCk7Cj4gdXNiX2F1ZGlvX2RiZyhzdGF0ZS0+Y2hpcCwgImRlc2MtPmJVbml0SUQ9JWQs
-IHByb3RvPSVkLCBuYW1laWQ9JWRcbiIsCj4gIAkgICAgICBkZXNjLT5iVW5pdElELCBzdGF0ZS0+
-bWl4ZXItPnByb3RvY29sLCBuYW1laWQpOwo+IGxlbiA9IDA7Cj4gaWYgKG5hbWVpZCkgewo+IAls
-ZW4gPSBzbmRfdXNiX2NvcHlfc3RyaW5nX2Rlc2Moc3RhdGUtPmNoaXAsCj4gCQkJCSAgICAgICBu
-YW1laWQsCj4gCQkJCSAgICAgICBrY3RsLT5pZC5uYW1lLAo+IAkJCQkgICAgICAgc2l6ZW9mKGtj
-dGwtPmlkLm5hbWUpKTsKPiAJdXNiX2F1ZGlvX2RiZyhzdGF0ZS0+Y2hpcCwgIm5hbWVpZD0lZCwg
-bGVuPSVkLCBmYWxsYmFjayBuYW1lPSclcydcbiIsCj4gIAkJICAgICAgbmFtZWlkLCBsZW4sIG5h
-bWUpOwo+IH0KPiAKPiBbIDYyNDEuMDQ1NzM0XSB1c2IgMS0yOiBkZXNjLT5iVW5pdElEPTUxLCBw
-cm90bz0zMiwgbmFtZWlkPTkwCj4gWyA2MjQxLjA0NTg2MV0gdXNiIDEtMjogbmFtZWlkPTkwLCBs
-ZW49MzUsIGZhbGxiYWNrIG5hbWU9J0V4dGVuc2lvbiBVbml0Jwo+IFsgNjI0MS4wNDU4NjhdIHVz
-YiAxLTI6IFs1MV0gUFUgW0tLS0tLS0tLS0tLS0vDg8ODw4PDg8ODw4PDg8ODw4PDg8ODIFN3aXRj
-aF0gY2ggPSAxLCB2YWwgPSAwLzEKPiBbIDYyNDEuMDQ2NzQ1XSB1c2IgMS0yOiBkZXNjLT5iVW5p
-dElEPTUyLCBwcm90bz0zMiwgbmFtZWlkPTgyCj4gWyA2MjQxLjA0Njg1N10gdXNiIDEtMjogbmFt
-ZWlkPTgyLCBsZW49MSwgZmFsbGJhY2sgbmFtZT0nRXh0ZW5zaW9uIFVuaXQnCj4gWyA2MjQxLjA0
-Njg2Ml0gdXNiIDEtMjogWzUyXSBQVSBbIFN3aXRjaF0gY2ggPSAxLCB2YWwgPSAwLzEKCmFuZCB3
-aXRoIHRoZSBiVW5pdElEIEkgZ2V0IHRvIHRoZXNlIGRlc2NyaXB0b3JzIGZyb20gbHN1c2I6CgpB
-dWRpb0NvbnRyb2wgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgICAgYkxlbmd0aCAgICAgICAg
-ICAgICAgICAxNgogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgMzYKICAgICAgICBiRGVz
-Y3JpcHRvclN1YnR5cGUgICAgICA5IChFWFRFTlNJT05fVU5JVCkKICAgICAgICBiVW5pdElEICAg
-ICAgICAgICAgICAgIDUxCiAgICAgICAgd0V4dGVuc2lvbkNvZGUgICAgIDB4MDAwMAogICAgICAg
-IGJOckluUGlucyAgICAgICAgICAgICAgIDEKICAgICAgICBiYVNvdXJjZUlEKDApICAgICAgICAg
-ICAyCiAgICAgICAgYk5yQ2hhbm5lbHMgICAgICAgICAgICAyMAogICAgICAgIGJtQ2hhbm5lbENv
-bmZpZyAgICAweDAwMDAwMDAwCiAgICAgICAgaUNoYW5uZWxOYW1lcyAgICAgICAgICAgMAogICAg
-ICAgIGJtQ29udHJvbHMgICAgICAgICAgIDB4MDMKICAgICAgICAgIEVuYWJsZSBDb250cm9sIChy
-ZWFkL3dyaXRlKQogICAgICAgIGlFeHRlbnNpb24gICAgICAgICAgICAgIDAKQXVkaW9Db250cm9s
-IEludGVyZmFjZSBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgMTYK
-ICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgIDM2CiAgICAgICAgYkRlc2NyaXB0b3JTdWJ0
-eXBlICAgICAgOSAoRVhURU5TSU9OX1VOSVQpCiAgICAgICAgYlVuaXRJRCAgICAgICAgICAgICAg
-ICA1MgogICAgICAgIHdFeHRlbnNpb25Db2RlICAgICAweDAwMDAKICAgICAgICBiTnJJblBpbnMg
-ICAgICAgICAgICAgICAxCiAgICAgICAgYmFTb3VyY2VJRCgwKSAgICAgICAgICAgMQogICAgICAg
-IGJOckNoYW5uZWxzICAgICAgICAgICAgMjAKICAgICAgICBibUNoYW5uZWxDb25maWcgICAgMHgw
-MDAwMDAwMAogICAgICAgIGlDaGFubmVsTmFtZXMgICAgICAgICAgIDAKICAgICAgICBibUNvbnRy
-b2xzICAgICAgICAgICAweDAzCiAgICAgICAgICBFbmFibGUgQ29udHJvbCAocmVhZC93cml0ZSkK
-ICAgICAgICBpRXh0ZW5zaW9uICAgICAgICAgICAgICAwCgo+IAo+IFRoZSBkZXZpY2UgaXMgdXNp
-bmcgVUFDX1ZFUlNJT05fMi4gVGhlIGNvZGUgaW4gaW5jbHVkZS91YXBpL2xpbnV4L3VzYi9hdWRp
-by5oIGlzCj4gYSBiaXQgaGFyZCB0byByZWFkIHNpbmNlIHVhY19taXhlcl91bml0X2Rlc2NyaXB0
-b3IgaGFzIGEgdmFyaWFibGUgbGVuZ3RoIGFuZCB0aGUKPiBjb2RlIGlzIGFkZGluZyBzZXZlcmFs
-IG9mZnNldCwgSSdsbCBuZWVkIHRvIGFkZCBtb3JlIHByaW50ZnMgdGhlcmUgdG8gY2hlY2sgaWYK
-PiBpdCBpcyBjb3JyZWN0LiBJIGFtIGNvbnN1bHRpbmcKPiBodHRwczovL3d3dy51c2Iub3JnL3Np
-dGVzL2RlZmF1bHQvZmlsZXMvYXVkaW8xMC5wZGYgYnV0IEkgYW0gbm90IHN1cmUgaWYgdGhpcwo+
-IGNvdmVycyBVQUMyLgo+IAo+IFN0ZWZhbgo+IAo+Pgo+Pgo+PiB0aGFua3MsCj4+Cj4+IFRha2Fz
-aGkKPj4KPj4gLS0tIGEvc291bmQvdXNiL21peGVyLmMKPj4gKysrIGIvc291bmQvdXNiL21peGVy
-LmMKPj4gQEAgLTIzNTgsOCArMjM1OCwxMCBAQCBzdGF0aWMgaW50IGJ1aWxkX2F1ZGlvX3Byb2N1
-bml0KHN0cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUsIGludCB1bml0aWQsCj4+ICAJZm9yIChpbmZv
-ID0gbGlzdDsgaW5mbyAmJiBpbmZvLT50eXBlOyBpbmZvKyspCj4+ICAJCWlmIChpbmZvLT50eXBl
-ID09IHR5cGUpCj4+ICAJCQlicmVhazsKPj4gLQlpZiAoIWluZm8gfHwgIWluZm8tPnR5cGUpCj4+
-ICsJaWYgKCFpbmZvIHx8ICFpbmZvLT50eXBlKSB7Cj4+ICsJCXByX2luZm8oIlhYWCB1bml0ICVk
-IHRvIGRlZmF1bHRfaW5mb1xuIiwgdW5pdGlkKTsKPj4gIAkJaW5mbyA9ICZkZWZhdWx0X2luZm87
-Cj4+ICsJfQo+PiAgCj4+ICAJZm9yICh2YWxpbmZvID0gaW5mby0+dmFsdWVzOyB2YWxpbmZvLT5j
-b250cm9sOyB2YWxpbmZvKyspIHsKPj4gIAkJX191OCAqY29udHJvbHMgPSB1YWNfcHJvY2Vzc2lu
-Z191bml0X2JtQ29udHJvbHMoZGVzYywgc3RhdGUtPm1peGVyLT5wcm90b2NvbCk7Cj4+IEBAIC0y
-Mzc1LDggKzIzNzcsMTEgQEAgc3RhdGljIGludCBidWlsZF9hdWRpb19wcm9jdW5pdChzdHJ1Y3Qg
-bWl4ZXJfYnVpbGQgKnN0YXRlLCBpbnQgdW5pdGlkLAo+PiAgCQl9Cj4+ICAKPj4gIAkJbWFwID0g
-ZmluZF9tYXAoc3RhdGUtPm1hcCwgdW5pdGlkLCB2YWxpbmZvLT5jb250cm9sKTsKPj4gKwkJaWYg
-KG1hcCkKPj4gKwkJCXByX2luZm8oIlhYWCBtYXAgZm91bmQgZm9yIHVuaXQgJWRcbiIsIHVuaXRp
-ZCk7Cj4+ICAJCWlmIChjaGVja19pZ25vcmVkX2N0bChtYXApKQo+PiAgCQkJY29udGludWU7Cj4+
-ICsKPj4gIAkJY3ZhbCA9IGt6YWxsb2Moc2l6ZW9mKCpjdmFsKSwgR0ZQX0tFUk5FTCk7Cj4+ICAJ
-CWlmICghY3ZhbCkKPj4gIAkJCXJldHVybiAtRU5PTUVNOwo+PiBAQCAtMjQ0NCwxOSArMjQ0OSwy
-NiBAQCBzdGF0aWMgaW50IGJ1aWxkX2F1ZGlvX3Byb2N1bml0KHN0cnVjdCBtaXhlcl9idWlsZCAq
-c3RhdGUsIGludCB1bml0aWQsCj4+ICAJCWtjdGwtPnByaXZhdGVfZnJlZSA9IHNuZF91c2JfbWl4
-ZXJfZWxlbV9mcmVlOwo+PiAgCj4+ICAJCWlmIChjaGVja19tYXBwZWRfbmFtZShtYXAsIGtjdGwt
-PmlkLm5hbWUsIHNpemVvZihrY3RsLT5pZC5uYW1lKSkpIHsKPj4gKwkJCXByX2luZm8oIlhYWCBu
-YW1lIGNvcGllZCBmcm9tIG1hcDogJyVzJyBmb3IgdW5pdCAlZFxuIiwga2N0bC0+aWQubmFtZSwg
-dW5pdGlkKTsKPj4gIAkJCS8qIG5vdGhpbmcgKi8gOwo+PiAgCQl9IGVsc2UgaWYgKGluZm8tPm5h
-bWUpIHsKPj4gIAkJCXN0cmxjcHkoa2N0bC0+aWQubmFtZSwgaW5mby0+bmFtZSwgc2l6ZW9mKGtj
-dGwtPmlkLm5hbWUpKTsKPj4gKwkJCXByX2luZm8oIlhYWCBuYW1lIGNvcGllZCBmcm9tIGluZm86
-ICclcycgZm9yIHVuaXQgJWRcbiIsIGtjdGwtPmlkLm5hbWUsIHVuaXRpZCk7Cj4+ICAJCX0gZWxz
-ZSB7Cj4+ICAJCQluYW1laWQgPSB1YWNfcHJvY2Vzc2luZ191bml0X2lQcm9jZXNzaW5nKGRlc2Ms
-IHN0YXRlLT5taXhlci0+cHJvdG9jb2wpOwo+PiArCQkJcHJfaW5mbygiWFhYIG5hbWVpZD0lZCwg
-dW5pdCAlZFxuIiwgbmFtZWlkLCB1bml0aWQpOwo+PiAgCQkJbGVuID0gMDsKPj4gLQkJCWlmIChu
-YW1laWQpCj4+ICsJCQlpZiAobmFtZWlkKSB7Cj4+ICAJCQkJbGVuID0gc25kX3VzYl9jb3B5X3N0
-cmluZ19kZXNjKHN0YXRlLT5jaGlwLAo+PiAgCQkJCQkJCSAgICAgICBuYW1laWQsCj4+ICAJCQkJ
-CQkJICAgICAgIGtjdGwtPmlkLm5hbWUsCj4+ICAJCQkJCQkJICAgICAgIHNpemVvZihrY3RsLT5p
-ZC5uYW1lKSk7Cj4+IC0JCQlpZiAoIWxlbikKPj4gKwkJCQlwcl9pbmZvKCJYWFggY29weSBzdHJp
-bmcgZGVzYyAnJXMnXG4iLCBrY3RsLT5pZC5uYW1lKTsKPj4gKwkJCX0KPj4gKwkJCWlmICghbGVu
-KSB7Cj4+ICAJCQkJc3RybGNweShrY3RsLT5pZC5uYW1lLCBuYW1lLCBzaXplb2Yoa2N0bC0+aWQu
-bmFtZSkpOwo+PiArCQkJCXByX2luZm8oIlhYWCBjb3B5IGRlZmF1bHQgbmFtZSAnJXMnXG4iLCBr
-Y3RsLT5pZC5uYW1lKTsKPj4gKwkJCX0KPj4gIAkJfQo+PiAgCQlhcHBlbmRfY3RsX25hbWUoa2N0
-bCwgIiAiKTsKPj4gIAkJYXBwZW5kX2N0bF9uYW1lKGtjdGwsIHZhbGluZm8tPnN1ZmZpeCk7Cj4+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRw
-czovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
-Pj4KPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4g
-aHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Rander Wang <rander.wang@linux.intel.com>
+
+Move the code for hda to one point
+
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/sof/intel/hda-dsp.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index f2c5a12db930..481cfa0b225e 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -359,6 +359,16 @@ static int hda_resume(struct snd_sof_dev *sdev)
+ 		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
+ 
+ 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
++
++	/* turn off the links that were off before suspend */
++	list_for_each_entry(hlink, &bus->hlink_list, list) {
++		if (!hlink->ref_count)
++			snd_hdac_ext_bus_link_power_down(hlink);
++	}
++
++	/* check dma status and clean up CORB/RIRB buffers */
++	if (!bus->cmd_dma_state)
++		snd_hdac_bus_stop_cmd_io(bus);
+ #else
+ 
+ 	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+@@ -391,18 +401,6 @@ static int hda_resume(struct snd_sof_dev *sdev)
+ 	hda_dsp_ctrl_ppcap_enable(sdev, true);
+ 	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	/* turn off the links that were off before suspend */
+-	list_for_each_entry(hlink, &bus->hlink_list, list) {
+-		if (!hlink->ref_count)
+-			snd_hdac_ext_bus_link_power_down(hlink);
+-	}
+-
+-	/* check dma status and clean up CORB/RIRB buffers */
+-	if (!bus->cmd_dma_state)
+-		snd_hdac_bus_stop_cmd_io(bus);
+-#endif
+-
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
