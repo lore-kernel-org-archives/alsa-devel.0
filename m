@@ -1,43 +1,49 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH 2/2] ASoC: codecs: ad193x: Reset DAC Control 1 register at
- probe
-Date: Wed, 26 Jun 2019 12:16:35 +0000
-Message-ID: <60a36381-f2f3-18de-3f7c-4e51fc75445e@microchip.com>
-References: <20190626104947.26547-1-codrin.ciubotariu@microchip.com>
- <20190626104947.26547-2-codrin.ciubotariu@microchip.com>
- <20190626112331.GB5316@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 05/11] ASoC: Intel: Skylake: Remove static table index
+ when parsing topology
+Date: Wed, 26 Jun 2019 13:26:44 +0100
+Message-ID: <20190626122644.GD5316@sirena.org.uk>
+References: <20190617113644.25621-1-amadeuszx.slawinski@linux.intel.com>
+ <20190617113644.25621-6-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="on+I5Kkc+zqLv55g"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190626112331.GB5316@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <56F9F74196D8B244A690BADBF5F0899C@namprd11.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <20190617113644.25621-6-amadeuszx.slawinski@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lars@metafoo.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 26.06.2019 14:23, Mark Brown wrote:
-> On Wed, Jun 26, 2019 at 01:49:47PM +0300, Codrin Ciubotariu wrote:
->> Since the ad193x codecs have no software reset, we have to reinitialize =
-the
->> registers after a hardware reset. For example, if we change the
->> device-tree between these resets, changing the audio format of the DAI l=
-ink
->> from DSP_A with 8 TDM channels to I2S 2 channels, DAC Control 1 register
->> will remain configured for 8 channels. This patch resets this register a=
-t
->> probe to its default value.
->=20
-> Would it not be more robust/complete to have a set of register defaults
-> and write the whole lot out rather than individually going through and
-> adding writes for specific registers as needed?
->=20
 
-It would indeed. I will make two patches, one that implements what you=20
-suggested, for the registers that we touch only, and another one that=20
-will add AD193X_DAC_CTRL1 to these defaults. You can drop this patch.
+--on+I5Kkc+zqLv55g
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks and best regards,
-Codrin
+On Mon, Jun 17, 2019 at 01:36:38PM +0200, Amadeusz S=C5=82awi=C5=84ski wrot=
+e:
+> Currently when we remove and reload driver we use previous ref_count
+> value to start iterating over skl->modules which leads to out of table
+> access. To fix this just inline the function and calculate indexes
+> everytime we parse UUID token.
+
+This doesn't apply against current code, please check and resend.
+
+--on+I5Kkc+zqLv55g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0TZIQACgkQJNaLcl1U
+h9CIkAf/XqlWXek/c2A2wcZGYAvrtlTTQ8sZ/0UuXaQmIjtdEo1DyARVUHh+Qssv
+Fl4RPsk4Bs9kkVhKIpoBbIzonFCi37z9HmzixNEUG8ohCZZ4T5KP4zM/nkhXkrjC
+dv/CrAIRGAL252YrJEaZHjHs15sKRP3vIKB2gdrgIQbDS/7CbQSo4e8kPc4gFzWp
+iL14YeiHxQxadR9Vx3YkF5c0ArkbsCgHeUQB66a51ENNA9d4dA4J/kZHKczYawv6
+lYiqS2cjv+e8KT1CgtPHEaTchKTOfsoxxDahf7uwzxg+MieeSyf8Q8e6YQVX5ZL5
+qLrUTgT38tJxoRIHV1vLTaGIJ1it3w==
+=H7fM
+-----END PGP SIGNATURE-----
+
+--on+I5Kkc+zqLv55g--
