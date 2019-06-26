@@ -1,23 +1,29 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH v2 116/146] ASoC: sof: use modern dai_link
-	style
-Date: Wed, 26 Jun 2019 15:35:11 +0300
-Message-ID: <CAEnQRZBnvfuZDbnvbmqAavh9DAbA_EeRc6OuH6OOiR1WB4zUrg@mail.gmail.com>
-References: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
- <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
+From: gianluca <gianlucarenzi@eurek.it>
+Subject: Re: [PATCH 1/2] ASoC: codecs: ad193x: Fix memory
+ corruption on BE 64b systems
+Date: Wed, 26 Jun 2019 14:45:11 +0200
+Message-ID: <49c769f6-f962-b863-454b-95dd44591ee3@eurek.it>
+References: <20190626104947.26547-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from submit-3.e-mind.com (submit-3.e-mind.com [188.94.192.49])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45C47F8070C
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 14:35:22 +0200 (CEST)
-Received: by mail-wm1-x341.google.com with SMTP id 207so1936666wma.1
- for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 05:35:22 -0700 (PDT)
-In-Reply-To: <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DDADF806F0
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 14:45:12 +0200 (CEST)
+Received: from localhost (unknown [127.0.0.1])
+ by submit-3.e-mind.com (Postfix) with ESMTP id 6491284388E
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 12:45:12 +0000 (UTC)
+Received: from submit-3.e-mind.com ([127.0.0.1])
+ by localhost (submit-3.e-mind.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id GHv38-3RjS9D for <alsa-devel@alsa-project.org>;
+ Wed, 26 Jun 2019 14:45:12 +0200 (CEST)
+Received: from qmail.e-mind.com (qmail34.e-mind.com [188.94.192.34])
+ by submit-3.e-mind.com (Postfix) with SMTP id 1B4A7830F4B
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 14:45:12 +0200 (CEST)
+In-Reply-To: <20190626104947.26547-1-codrin.ciubotariu@microchip.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,111 +33,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
- Ranjani" <ranjani.sridharan@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, paul.olaru@nxp.com, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTW9yaW1vdG8tc2FuLAoKT25lIHF1ZXN0aW9uIGlubGluZToKCk9uIFRodSwgSnVuIDYsIDIw
-MTkgYXQgODoyNiBBTSBLdW5pbm9yaSBNb3JpbW90bwo8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVu
-ZXNhcy5jb20+IHdyb3RlOgo+Cj4KPiBGcm9tOiBLdW5pbm9yaSBNb3JpbW90byA8a3VuaW5vcmku
-bW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+Cj4KPiBBU29DIGlzIG5vdyBzdXBwb3J0aW5nIG1vZGVy
-biBzdHlsZSBkYWlfbGluawo+ICg9IHNuZF9zb2NfZGFpX2xpbmtfY29tcG9uZW50KSBmb3IgQ1BV
-L0NvZGVjL1BsYXRmb3JtLgo+IFRoaXMgcGF0Y2ggc3dpdGNoZXMgdG8gdXNlIGl0Lgo+Cj4gU2ln
-bmVkLW9mZi1ieTogS3VuaW5vcmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVz
-YXMuY29tPgo+IC0tLQo+ICBzb3VuZC9zb2Mvc29mL25vY29kZWMuYyAgfCAyMSArKysrKysrKysr
-KysrKysrKy0tLS0KPiAgc291bmQvc29jL3NvZi90b3BvbG9neS5jIHwgMjAgKysrKysrKysrLS0t
-LS0tLS0tLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlv
-bnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29mL25vY29kZWMuYyBiL3NvdW5kL3Nv
-Yy9zb2Yvbm9jb2RlYy5jCj4gaW5kZXggZjg0YjQzNC4uM2QxMjhlNSAxMDA2NDQKPiAtLS0gYS9z
-b3VuZC9zb2Mvc29mL25vY29kZWMuYwo+ICsrKyBiL3NvdW5kL3NvYy9zb2Yvbm9jb2RlYy5jCj4g
-QEAgLTIxLDYgKzIxLDcgQEAgc3RhdGljIGludCBzb2Zfbm9jb2RlY19iZXNfc2V0dXAoc3RydWN0
-IGRldmljZSAqZGV2LAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBz
-bmRfc29jX2RhaV9saW5rICpsaW5rcywKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBpbnQgbGlua19udW0sIHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQpCj4gIHsKPiArICAgICAg
-IHN0cnVjdCBzbmRfc29jX2RhaV9saW5rX2NvbXBvbmVudCAqZGxjOwo+ICAgICAgICAgaW50IGk7
-Cj4KPiAgICAgICAgIGlmICghb3BzIHx8ICFsaW5rcyB8fCAhY2FyZCkKPiBAQCAtMjgsMTcgKzI5
-LDI5IEBAIHN0YXRpYyBpbnQgc29mX25vY29kZWNfYmVzX3NldHVwKHN0cnVjdCBkZXZpY2UgKmRl
-diwKPgo+ICAgICAgICAgLyogc2V0IHVwIEJFIGRhaV9saW5rcyAqLwo+ICAgICAgICAgZm9yIChp
-ID0gMDsgaSA8IGxpbmtfbnVtOyBpKyspIHsKPiArICAgICAgICAgICAgICAgZGxjID0gZGV2bV9r
-emFsbG9jKGRldiwgMyAqIHNpemVvZigqZGxjKSwgR0ZQX0tFUk5FTCk7Cj4gKyAgICAgICAgICAg
-ICAgIGlmICghZGxjKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRU5PTUVNOwo+
-ICsKPiAgICAgICAgICAgICAgICAgbGlua3NbaV0ubmFtZSA9IGRldm1fa2FzcHJpbnRmKGRldiwg
-R0ZQX0tFUk5FTCwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICJOb0NvZGVjLSVkIiwgaSk7Cj4gICAgICAgICAgICAgICAgIGlmICghbGlua3NbaV0ubmFt
-ZSkKPiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsKPgo+ICsgICAgICAg
-ICAgICAgICBsaW5rc1tpXS5jcHVzID0gJmRsY1swXTsKPiArICAgICAgICAgICAgICAgbGlua3Nb
-aV0uY29kZWNzID0gJmRsY1sxXTsKPiArICAgICAgICAgICAgICAgbGlua3NbaV0ucGxhdGZvcm1z
-ID0gJmRsY1syXTsKPiArCj4gKyAgICAgICAgICAgICAgIGxpbmtzW2ldLm51bV9jcHVzID0gMTsK
-PiArICAgICAgICAgICAgICAgbGlua3NbaV0ubnVtX2NvZGVjcyA9IDE7Cj4gKyAgICAgICAgICAg
-ICAgIGxpbmtzW2ldLm51bV9wbGF0Zm9ybXMgPSAxOwo+ICsKPiAgICAgICAgICAgICAgICAgbGlu
-a3NbaV0uaWQgPSBpOwo+ICAgICAgICAgICAgICAgICBsaW5rc1tpXS5ub19wY20gPSAxOwo+IC0g
-ICAgICAgICAgICAgICBsaW5rc1tpXS5jcHVfZGFpX25hbWUgPSBvcHMtPmRydltpXS5uYW1lOwo+
-IC0gICAgICAgICAgICAgICBsaW5rc1tpXS5wbGF0Zm9ybV9uYW1lID0gZGV2X25hbWUoZGV2KTsK
-PiAtICAgICAgICAgICAgICAgbGlua3NbaV0uY29kZWNfZGFpX25hbWUgPSAic25kLXNvYy1kdW1t
-eS1kYWkiOwo+IC0gICAgICAgICAgICAgICBsaW5rc1tpXS5jb2RlY19uYW1lID0gInNuZC1zb2Mt
-ZHVtbXkiOwo+ICsgICAgICAgICAgICAgICBsaW5rc1tpXS5jcHVzLT5kYWlfbmFtZSA9IG9wcy0+
-ZHJ2W2ldLm5hbWU7Cj4gKyAgICAgICAgICAgICAgIGxpbmtzW2ldLnBsYXRmb3Jtcy0+bmFtZSA9
-IGRldl9uYW1lKGRldik7Cj4gKyAgICAgICAgICAgICAgIGxpbmtzW2ldLmNvZGVjcy0+ZGFpX25h
-bWUgPSAic25kLXNvYy1kdW1teS1kYWkiOwo+ICsgICAgICAgICAgICAgICBsaW5rc1tpXS5jb2Rl
-Y3MtPm5hbWUgPSAic25kLXNvYy1kdW1teSI7Cj4gICAgICAgICAgICAgICAgIGxpbmtzW2ldLmRw
-Y21fcGxheWJhY2sgPSAxOwo+ICAgICAgICAgICAgICAgICBsaW5rc1tpXS5kcGNtX2NhcHR1cmUg
-PSAxOwo+ICAgICAgICAgfQo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29mL3RvcG9sb2d5LmMg
-Yi9zb3VuZC9zb2Mvc29mL3RvcG9sb2d5LmMKPiBpbmRleCBiOTY5Njg2Zi4uYTEzMjMzYSAxMDA2
-NDQKPiAtLS0gYS9zb3VuZC9zb2Mvc29mL3RvcG9sb2d5LmMKPiArKysgYi9zb3VuZC9zb2Mvc29m
-L3RvcG9sb2d5LmMKPiBAQCAtMjYzOSw3ICsyNjM5LDYgQEAgc3RhdGljIGludCBzb2ZfbGlua19o
-ZGFfbG9hZChzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKnNjb21wLCBpbnQgaW5kZXgsCj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc29mX2lwY19kYWlfY29uZmlnICpjb25m
-aWcpCj4gIHsKPiAgICAgICAgIHN0cnVjdCBzbmRfc29mX2RldiAqc2RldiA9IHNuZF9zb2NfY29t
-cG9uZW50X2dldF9kcnZkYXRhKHNjb21wKTsKPiAtICAgICAgIHN0cnVjdCBzbmRfc29jX2RhaV9s
-aW5rX2NvbXBvbmVudCBkYWlfY29tcG9uZW50Owo+ICAgICAgICAgc3RydWN0IHNuZF9zb2NfdHBs
-Z19wcml2YXRlICpwcml2YXRlID0gJmNmZy0+cHJpdjsKPiAgICAgICAgIHN0cnVjdCBzbmRfc29j
-X2RhaSAqZGFpOwo+ICAgICAgICAgdTMyIHNpemUgPSBzaXplb2YoKmNvbmZpZyk7Cj4gQEAgLTI2
-NTAsNyArMjY0OSw2IEBAIHN0YXRpYyBpbnQgc29mX2xpbmtfaGRhX2xvYWQoc3RydWN0IHNuZF9z
-b2NfY29tcG9uZW50ICpzY29tcCwgaW50IGluZGV4LAo+ICAgICAgICAgaW50IHJldDsKPgo+ICAg
-ICAgICAgLyogaW5pdCBJUEMgKi8KPiAtICAgICAgIG1lbXNldCgmZGFpX2NvbXBvbmVudCwgMCwg
-c2l6ZW9mKGRhaV9jb21wb25lbnQpKTsKPiAgICAgICAgIG1lbXNldCgmY29uZmlnLT5oZGEsIDAs
-IHNpemVvZihzdHJ1Y3Qgc29mX2lwY19kYWlfaGRhX3BhcmFtcykpOwo+ICAgICAgICAgY29uZmln
-LT5oZHIuc2l6ZSA9IHNpemU7Cj4KPiBAQCAtMjY2NCwxMSArMjY2MiwxMCBAQCBzdGF0aWMgaW50
-IHNvZl9saW5rX2hkYV9sb2FkKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqc2NvbXAsIGludCBp
-bmRleCwKPiAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKPiAgICAgICAgIH0KPgo+IC0gICAg
-ICAgZGFpX2NvbXBvbmVudC5kYWlfbmFtZSA9IGxpbmstPmNwdV9kYWlfbmFtZTsKPiAtICAgICAg
-IGRhaSA9IHNuZF9zb2NfZmluZF9kYWkoJmRhaV9jb21wb25lbnQpOwo+ICsgICAgICAgZGFpID0g
-c25kX3NvY19maW5kX2RhaShsaW5rLT5jcHVzKTsKPiAgICAgICAgIGlmICghZGFpKSB7Cj4gICAg
-ICAgICAgICAgICAgIGRldl9lcnIoc2Rldi0+ZGV2LCAiZXJyb3I6IGZhaWxlZCB0byBmaW5kIGRh
-aSAlcyBpbiAlcyIsCj4gLSAgICAgICAgICAgICAgICAgICAgICAgZGFpX2NvbXBvbmVudC5kYWlf
-bmFtZSwgX19mdW5jX18pOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIGxpbmstPmNwdXMtPmRh
-aV9uYW1lLCBfX2Z1bmNfXyk7Cj4gICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ICAg
-ICAgICAgfQo+Cj4gQEAgLTI3MDgsNyArMjcwNSwxMSBAQCBzdGF0aWMgaW50IHNvZl9saW5rX2xv
-YWQoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpzY29tcCwgaW50IGluZGV4LAo+ICAgICAgICAg
-aW50IHJldDsKPiAgICAgICAgIGludCBpID0gMDsKPgo+IC0gICAgICAgbGluay0+cGxhdGZvcm1f
-bmFtZSA9IGRldl9uYW1lKHNkZXYtPmRldik7Cj4gKyAgICAgICBpZiAoIWxpbmstPnBsYXRmb3Jt
-cykgewo+ICsgICAgICAgICAgICAgICBkZXZfZXJyKHNkZXYtPmRldiwgImVycm9yOiBubyBwbGF0
-Zm9ybXNcbiIpOwo+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKCldoeSBkbyB3ZSBu
-ZWVkIHRoaXMgY2hlY2s/IFdpdGggbGludXgtbmV4dCB0aGlzIGNoZWNrIGZhaWxzIGZvciBtZS4K
-CkkgZG8gYWxzbyBoYXZlIHNvbWUgbG9jYWwgY2hhbmdlcyBzbyB0YWtlIHRoaXMgcXVlc3Rpb24g
-d2l0aCBhIGdyYWluIG9mIHNhbHQuCgpUaGlzIGNoZWNrIGZhaWxzIGZvciBGRSBsaW5rcyBhcyB0
-aGV5IGFyZSBjcmVhdGVkIGFzIGZvbGxvd3M6CgovKiBjcmVhdGUgdGhlIEZFIERBSSBsaW5rICov
-CnN0YXRpYyBpbnQgc29jX3RwbGdfZmVfbGlua19jcmVhdGUKCj0+ICBsaW5rLT5jcHVzwrsgICAg
-ID0gJmRsY1swXTsKPT4gbGluay0+Y29kZWNzwrsgICA9ICZkbGNbMV07Cj0+IGxpbmstPm51bV9j
-cHVzwrsgID0gMTsKPT4gbGluay0+bnVtX2NvZGVjcyA9IDE7CgpTbywgdGhlcmUgaXMgbm8gcGxh
-dGZvcm1zIHNldCB1cCBmb3IgRkUgbGlua3MuCgpJIGNvdWxkIGdldCByaWQgb2YgdGhlIGZhaWx1
-cmUgd2l0aCB0aGUgZm9sbG93aW5nIHBhdGNoOgoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2Mt
-dG9wb2xvZ3kuYyBiL3NvdW5kL3NvYy9zb2MtdG9wb2xvZ3kuYwppbmRleCBmNDg1ZjdmNzUxYTEu
-LmVlNzMzMTgxMzVmYyAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy10b3BvbG9neS5jCisrKyBi
-L3NvdW5kL3NvYy9zb2MtdG9wb2xvZ3kuYwpAQCAtMTg4Myw3ICsxODgzLDcgQEAgc3RhdGljIGlu
-dCBzb2NfdHBsZ19mZV9saW5rX2NyZWF0ZShzdHJ1Y3Qgc29jX3RwbGcgKnRwbGcsCiAgICAgICAg
-aW50IHJldDsKCiAgICAgICAgLyogbGluayArIGNwdSArIGNvZGVjICovCi0gICAgICAgbGluayA9
-IGt6YWxsb2Moc2l6ZW9mKCpsaW5rKSArICgyICogc2l6ZW9mKCpkbGMpKSwgR0ZQX0tFUk5FTCk7
-CisgICAgICAgbGluayA9IGt6YWxsb2Moc2l6ZW9mKCpsaW5rKSArICgzICogc2l6ZW9mKCpkbGMp
-KSwgR0ZQX0tFUk5FTCk7CiAgICAgICAgaWYgKGxpbmsgPT0gTlVMTCkKICAgICAgICAgICAgICAg
-IHJldHVybiAtRU5PTUVNOwoKQEAgLTE4OTEsOSArMTg5MSwxMSBAQCBzdGF0aWMgaW50IHNvY190
-cGxnX2ZlX2xpbmtfY3JlYXRlKHN0cnVjdCBzb2NfdHBsZyAqdHBsZywKCiAgICAgICAgbGluay0+
-Y3B1cyAgICAgID0gJmRsY1swXTsKICAgICAgICBsaW5rLT5jb2RlY3MgICAgPSAmZGxjWzFdOwor
-ICAgICAgIGxpbmstPnBsYXRmb3JtcyA9ICZkbGNbMl07CgogICAgICAgIGxpbmstPm51bV9jcHVz
-ICAgPSAxOwogICAgICAgIGxpbmstPm51bV9jb2RlY3MgPSAxOworICAgICAgIGxpbmstPm51bV9w
-bGF0Zm9ybXMgPSAxOwoKQ2FuIHlvdSBwbGVhc2UgaGVscCBtZSBmaWd1cmUgdGhpcyBvdXQ/Cgp0
-aGFua3MsCkRhbmllbC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On 06/26/2019 12:49 PM, Codrin Ciubotariu wrote:
+> Since change_bit() requires unsigned long*, making this cast on an
+> unsigned int variable will change a wrong bit on BE platforms, causing
+> memory corruption. Replace this function with a simple XOR.
+>
+> Fixes: 90f6e6803139 ("ASoC: codecs: ad193x: Fix frame polarity for DSP_A format")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> ---
+>  sound/soc/codecs/ad193x.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+> index 05f4514048e2..3ebc0524f4b2 100644
+> --- a/sound/soc/codecs/ad193x.c
+> +++ b/sound/soc/codecs/ad193x.c
+> @@ -240,10 +240,8 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+>  	}
+>
+>  	/* For DSP_*, LRCLK's polarity must be inverted */
+> -	if (fmt & SND_SOC_DAIFMT_DSP_A) {
+> -		change_bit(ffs(AD193X_DAC_LEFT_HIGH) - 1,
+> -			   (unsigned long *)&dac_fmt);
+> -	}
+> +	if (fmt & SND_SOC_DAIFMT_DSP_A)
+> +		dac_fmt ^= AD193X_DAC_LEFT_HIGH;
+>
+
+BigEndian RULEZ! ;-P
+
+
+-- 
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
