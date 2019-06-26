@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add missing pin sharing with
-	SSI9" to the asoc tree
-Date: Wed, 26 Jun 2019 12:32:43 +0100 (BST)
-Message-ID: <20190626113243.EACA6440049@finisterre.sirena.org.uk>
-References: <875zotyup5.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: madera: Update SPDX headers" to the
+	asoc tree
+Date: Wed, 26 Jun 2019 12:32:44 +0100 (BST)
+Message-ID: <20190626113244.47A0444004B@finisterre.sirena.org.uk>
+References: <20190625153727.28060-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFB5CF896B7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 151B3F896B9
  for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:45 +0200 (CEST)
-In-Reply-To: <875zotyup5.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20190625153727.28060-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Hien Dang <hien.dang.eb@renesas.com>, Mark Brown <broonie@kernel.org>, Chaoliang Qin <chaoliang.qin.jg@renesas.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add missing pin sharing with SSI9
+   ASoC: madera: Update SPDX headers
 
 has been applied to the asoc tree at
 
@@ -55,46 +55,163 @@ to this mail.
 Thanks,
 Mark
 
->From 526a6d45b013d45fdddd420860c69fb29fed3d62 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 26 Jun 2019 11:00:05 +0900
-Subject: [PATCH] ASoC: rsnd: add missing pin sharing with SSI9
+>From 472e5df0137e10fbaed0eef38c9bdf99e088ff13 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 25 Jun 2019 16:37:27 +0100
+Subject: [PATCH] ASoC: madera: Update SPDX headers
 
-When SSI9 is sharing pin with SSI0, we need to care about it,
-but is missing. This patch fixup it.
+The madera driver was merged too late to catch Thomas Gleixner's cleanup
+of the SPDX headers tree wide. Update the headers to match what was done
+in that patch.
 
-Reported-by: Hien Dang <hien.dang.eb@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Chaoliang Qin <chaoliang.qin.jg@renesas.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 1 +
- sound/soc/sh/rcar/ssi.c | 1 +
- 2 files changed, 2 insertions(+)
+ include/dt-bindings/sound/madera.h | 6 +-----
+ include/sound/madera-pdata.h       | 6 +-----
+ sound/soc/codecs/cs47l35.c         | 6 +-----
+ sound/soc/codecs/cs47l85.c         | 6 +-----
+ sound/soc/codecs/cs47l90.c         | 6 +-----
+ sound/soc/codecs/madera.c          | 6 +-----
+ sound/soc/codecs/madera.h          | 6 +-----
+ 7 files changed, 7 insertions(+), 35 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index e821ccc70f47..fce4e050a9b7 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -87,6 +87,7 @@ static u32 rsnd_adg_ssi_ws_timing_gen2(struct rsnd_dai_stream *io)
- 		switch (id) {
- 		case 1:
- 		case 2:
-+		case 9:
- 			ws = 0;
- 			break;
- 		case 4:
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 44bda210256e..f6a7466622ea 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -740,6 +740,7 @@ static void rsnd_ssi_parent_attach(struct rsnd_mod *mod,
- 	switch (rsnd_mod_id(mod)) {
- 	case 1:
- 	case 2:
-+	case 9:
- 		rsnd_dai_connect(rsnd_ssi_mod_get(priv, 0), io, RSND_MOD_SSIP);
- 		break;
- 	case 4:
+diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
+index 9ff4eae5259b..d0096d5eb0da 100644
+--- a/include/dt-bindings/sound/madera.h
++++ b/include/dt-bindings/sound/madera.h
+@@ -1,13 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Device Tree defines for Madera codecs
+  *
+  * Copyright (C) 2016-2017 Cirrus Logic, Inc. and
+  *                         Cirrus Logic International Semiconductor Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef DT_BINDINGS_SOUND_MADERA_H
+diff --git a/include/sound/madera-pdata.h b/include/sound/madera-pdata.h
+index 441decefb7f3..e3060f48f108 100644
+--- a/include/sound/madera-pdata.h
++++ b/include/sound/madera-pdata.h
+@@ -1,13 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Platform data for Madera codec driver
+  *
+  * Copyright (C) 2016-2019 Cirrus Logic, Inc. and
+  *                         Cirrus Logic International Semiconductor Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef MADERA_CODEC_PDATA_H
+diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
+index 02f193dadd41..511d0d6fa962 100644
+--- a/sound/soc/codecs/cs47l35.c
++++ b/sound/soc/codecs/cs47l35.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // ALSA SoC Audio driver for CS47L35 codec
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/delay.h>
+ #include <linux/device.h>
+diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
+index 4c4bae6e2c57..32fe7ffb7526 100644
+--- a/sound/soc/codecs/cs47l85.c
++++ b/sound/soc/codecs/cs47l85.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // ALSA SoC Audio driver for CS47L85 codec
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
+index 83c4e4628bde..c4ecb0e6911a 100644
+--- a/sound/soc/codecs/cs47l90.c
++++ b/sound/soc/codecs/cs47l90.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // ALSA SoC Audio driver for CS47L90 codec
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index 6146c7a070cb..1b1be19a2f99 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -1,14 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // Cirrus Logic Madera class codecs common support
+ //
+ // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
+ //                         Cirrus Logic International Semiconductor Ltd.
+ //
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by the
+-// Free Software Foundation; version 2.
+-//
+ 
+ #include <linux/delay.h>
+ #include <linux/gcd.h>
+diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
+index aa2db156582b..0af66f280770 100644
+--- a/sound/soc/codecs/madera.h
++++ b/sound/soc/codecs/madera.h
+@@ -1,13 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Cirrus Logic Madera class codecs common support
+  *
+  * Copyright (C) 2015-2018 Cirrus Logic, Inc. and
+  *                         Cirrus Logic International Semiconductor Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by the
+- * Free Software Foundation; version 2.
+  */
+ 
+ #ifndef ASOC_MADERA_H
 -- 
 2.20.1
