@@ -1,7 +1,7 @@
 From: Evan Green <evgreen@chromium.org>
-Subject: [PATCH v2 2/2] ALSA: hda: Use correct start/count for sysfs init
-Date: Wed, 26 Jun 2019 14:22:20 -0700
-Message-ID: <20190626212220.239897-3-evgreen@chromium.org>
+Subject: [PATCH v2 1/2] ALSA: hda: Fix widget_mutex incomplete protection
+Date: Wed, 26 Jun 2019 14:22:19 -0700
+Message-ID: <20190626212220.239897-2-evgreen@chromium.org>
 References: <20190626212220.239897-1-evgreen@chromium.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,122 +12,111 @@ To: Takashi Iwai <tiwai@suse.com>
 Cc: Evan Green <evgreen@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-The normal flow through the widget sysfs codepath is that
-snd_hdac_refresh_widgets() is called once without the sysfs bool set
-to set up codec->num_nodes and friends, then another time with the
-bool set to actually allocate all the sysfs widgets. However, during
-the first time allocation, hda_widget_sysfs_reinit() ignores the new
-num_nodes passed in via parameter and just calls hda_widget_sysfs_init(),
-using whatever was in codec->num_nodes before the update. This is not
-correct in cases where num_nodes changes. Here's an example:
+The widget_mutex was introduced to serialize callers to
+hda_widget_sysfs_{re}init. However, its protection of the sysfs widget array
+is incomplete. For example, it is acquired around the call to
+hda_widget_sysfs_reinit(), which actually creates the new array, but isn't
+still acquired when codec->num_nodes and codec->start_nid is updated. So
+the lock ensures one thread sets up the new array at a time, but doesn't
+ensure which thread's value will end up in codec->num_nodes. If a larger
+num_nodes wins but a smaller array was set up, the next call to
+refresh_widgets() will touch free memory as it iterates over codec->num_nodes
+that aren't there.
 
-Sometime earlier:
-snd_hdac_refresh_widgets(hdac, false)
-  sets codec->num_nodes to 2, widgets is still not allocated
+The widget_lock really protects both the tree as well as codec->num_nodes,
+start_nid, and end_nid, so make sure it's held across that update. It should
+also be held during snd_hdac_get_sub_nodes(), so that a very old read from that
+function doesn't end up clobbering a later update.
 
-Now:
-snd_hdac_refresh_widgets(hdac, true)
-  hda_widget_sysfs_reinit(num_nodes=7)
-    hda_widget_sysfs_init()
-      widget_tree_create()
-        alloc(codec->num_nodes) // this is still 2
-  codec->num_nodes = 7
+While in there, move the exit mutex call inside the function. This moves the
+mutex closer to the data structure it protects and removes a requirement of
+acquiring the somewhat internal widget_lock before calling sysfs_exit.
 
-Pass num_nodes and start_nid down into widget_tree_create() so that
-the right number of nodes are allocated in all cases.
+Fixes: ed180abba7f1 ("ALSA: hda: Fix race between creating and refreshing sysfs entries")
 
 Signed-off-by: Evan Green <evgreen@chromium.org>
+
 ---
 
-Changes in v2: None
+Changes in v2:
+- Introduced widget_mutex relocation
 
- sound/hda/hdac_device.c |  2 +-
- sound/hda/hdac_sysfs.c  | 14 ++++++++------
- sound/hda/local.h       |  3 ++-
- 3 files changed, 11 insertions(+), 8 deletions(-)
+ sound/hda/hdac_device.c | 19 +++++++++++++------
+ sound/hda/hdac_sysfs.c  |  4 ++--
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index ff3420c5cdc8..b06a698c88a1 100644
+index 6907dbefd08c..ff3420c5cdc8 100644
 --- a/sound/hda/hdac_device.c
 +++ b/sound/hda/hdac_device.c
-@@ -144,7 +144,7 @@ int snd_hdac_device_register(struct hdac_device *codec)
- 	if (err < 0)
- 		return err;
- 	mutex_lock(&codec->widget_lock);
--	err = hda_widget_sysfs_init(codec);
-+	err = hda_widget_sysfs_init(codec, codec->start_nid, codec->num_nodes);
- 	mutex_unlock(&codec->widget_lock);
- 	if (err < 0) {
+@@ -162,9 +162,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_register);
+ void snd_hdac_device_unregister(struct hdac_device *codec)
+ {
+ 	if (device_is_registered(&codec->dev)) {
+-		mutex_lock(&codec->widget_lock);
+ 		hda_widget_sysfs_exit(codec);
+-		mutex_unlock(&codec->widget_lock);
  		device_del(&codec->dev);
+ 		snd_hdac_bus_remove_device(codec->bus, codec);
+ 	}
+@@ -402,25 +400,34 @@ int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs)
+ 	hda_nid_t start_nid;
+ 	int nums, err;
+ 
++	/*
++	 * Serialize against multiple threads trying to update the sysfs
++	 * widgets array.
++	 */
++	mutex_lock(&codec->widget_lock);
+ 	nums = snd_hdac_get_sub_nodes(codec, codec->afg, &start_nid);
+ 	if (!start_nid || nums <= 0 || nums >= 0xff) {
+ 		dev_err(&codec->dev, "cannot read sub nodes for FG 0x%02x\n",
+ 			codec->afg);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock;
+ 	}
+ 
+ 	if (sysfs) {
+-		mutex_lock(&codec->widget_lock);
+ 		err = hda_widget_sysfs_reinit(codec, start_nid, nums);
+-		mutex_unlock(&codec->widget_lock);
+ 		if (err < 0)
+-			return err;
++			goto unlock;
+ 	}
+ 
+ 	codec->num_nodes = nums;
+ 	codec->start_nid = start_nid;
+ 	codec->end_nid = start_nid + nums;
++	mutex_unlock(&codec->widget_lock);
+ 	return 0;
++
++unlock:
++	mutex_unlock(&codec->widget_lock);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_refresh_widgets);
+ 
 diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
-index 400ca262e2f8..41aa4b98162a 100644
+index 909d5ef1179c..400ca262e2f8 100644
 --- a/sound/hda/hdac_sysfs.c
 +++ b/sound/hda/hdac_sysfs.c
-@@ -358,7 +358,8 @@ static int add_widget_node(struct kobject *parent, hda_nid_t nid,
+@@ -412,13 +412,13 @@ int hda_widget_sysfs_init(struct hdac_device *codec)
  	return 0;
  }
  
--static int widget_tree_create(struct hdac_device *codec)
-+static int widget_tree_create(struct hdac_device *codec,
-+			      hda_nid_t start_nid, int num_nodes)
+-/* call with codec->widget_lock held */
+ void hda_widget_sysfs_exit(struct hdac_device *codec)
  {
- 	struct hdac_widget_tree *tree;
- 	int i, err;
-@@ -372,12 +373,12 @@ static int widget_tree_create(struct hdac_device *codec)
- 	if (!tree->root)
- 		return -ENOMEM;
- 
--	tree->nodes = kcalloc(codec->num_nodes + 1, sizeof(*tree->nodes),
-+	tree->nodes = kcalloc(num_nodes + 1, sizeof(*tree->nodes),
- 			      GFP_KERNEL);
- 	if (!tree->nodes)
- 		return -ENOMEM;
- 
--	for (i = 0, nid = codec->start_nid; i < codec->num_nodes; i++, nid++) {
-+	for (i = 0, nid = start_nid; i < num_nodes; i++, nid++) {
- 		err = add_widget_node(tree->root, nid, &widget_node_group,
- 				      &tree->nodes[i]);
- 		if (err < 0)
-@@ -396,14 +397,15 @@ static int widget_tree_create(struct hdac_device *codec)
++	mutex_lock(&codec->widget_lock);
+ 	widget_tree_free(codec);
++	mutex_unlock(&codec->widget_lock);
  }
  
- /* call with codec->widget_lock held */
--int hda_widget_sysfs_init(struct hdac_device *codec)
-+int hda_widget_sysfs_init(struct hdac_device *codec,
-+			  hda_nid_t start_nid, int num_nodes)
+-/* call with codec->widget_lock held */
+ int hda_widget_sysfs_reinit(struct hdac_device *codec,
+ 			    hda_nid_t start_nid, int num_nodes)
  {
- 	int err;
- 
- 	if (codec->widgets)
- 		return 0; /* already created */
- 
--	err = widget_tree_create(codec);
-+	err = widget_tree_create(codec, start_nid, num_nodes);
- 	if (err < 0) {
- 		widget_tree_free(codec);
- 		return err;
-@@ -428,7 +430,7 @@ int hda_widget_sysfs_reinit(struct hdac_device *codec,
- 	int i;
- 
- 	if (!codec->widgets)
--		return hda_widget_sysfs_init(codec);
-+		return hda_widget_sysfs_init(codec, start_nid, num_nodes);
- 
- 	tree = kmemdup(codec->widgets, sizeof(*tree), GFP_KERNEL);
- 	if (!tree)
-diff --git a/sound/hda/local.h b/sound/hda/local.h
-index 877631e39373..8936120ab4d9 100644
---- a/sound/hda/local.h
-+++ b/sound/hda/local.h
-@@ -28,7 +28,8 @@ static inline unsigned int get_wcaps_channels(u32 wcaps)
- }
- 
- extern const struct attribute_group *hdac_dev_attr_groups[];
--int hda_widget_sysfs_init(struct hdac_device *codec);
-+int hda_widget_sysfs_init(struct hdac_device *codec,
-+			  hda_nid_t start_nid, int num_nodes);
- int hda_widget_sysfs_reinit(struct hdac_device *codec, hda_nid_t start_nid,
- 			    int num_nodes);
- void hda_widget_sysfs_exit(struct hdac_device *codec);
 -- 
 2.20.1
