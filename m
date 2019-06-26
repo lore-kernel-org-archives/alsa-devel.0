@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: madera: Update SPDX headers" to the
-	asoc tree
-Date: Wed, 26 Jun 2019 12:32:44 +0100 (BST)
-Message-ID: <20190626113244.47A0444004B@finisterre.sirena.org.uk>
-References: <20190625153727.28060-1-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: soc-core: don't use
+	soc_find_component() at snd_soc_find_dai()" to the asoc tree
+Date: Wed, 26 Jun 2019 12:32:43 +0100 (BST)
+Message-ID: <20190626113243.CFACC440046@finisterre.sirena.org.uk>
+References: <878stpyvky.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 151B3F896B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8ACBF8070C
  for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2019 13:32:45 +0200 (CEST)
-In-Reply-To: <20190625153727.28060-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <878stpyvky.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linux-tegra@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Dmitry Osipenko <digetx@gmail.com>, Jon Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: madera: Update SPDX headers
+   ASoC: soc-core: don't use soc_find_component() at snd_soc_find_dai()
 
 has been applied to the asoc tree at
 
@@ -55,163 +55,63 @@ to this mail.
 Thanks,
 Mark
 
->From 472e5df0137e10fbaed0eef38c9bdf99e088ff13 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 25 Jun 2019 16:37:27 +0100
-Subject: [PATCH] ASoC: madera: Update SPDX headers
+>From e3303268f9cfa4eb7c2217df471417d4327109fd Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Jun 2019 10:40:59 +0900
+Subject: [PATCH] ASoC: soc-core: don't use soc_find_component() at
+ snd_soc_find_dai()
 
-The madera driver was merged too late to catch Thomas Gleixner's cleanup
-of the SPDX headers tree wide. Update the headers to match what was done
-in that patch.
+commit b9f2e25c599bb ("ASoC: soc-core: use soc_find_component() at
+snd_soc_find_dai()") used soc_find_component() at snd_soc_find_dai(),
+but, some CPU driver has CPU component for DAI and Platform component,
+for example generic DMAEngine component.
+In such case, CPU component and Platform component have same
+of_node / name.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Here soc_find_component() returns *1st* found component.
+Thus, we shouldn't use soc_find_component() at snd_soc_find_dai().
+This patch fixup this it, and add comment to indicate this limitation.
+
+Fixes: commit b9f2e25c599bb ("ASoC: soc-core: use soc_find_component() at snd_soc_find_dai()")
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/dt-bindings/sound/madera.h | 6 +-----
- include/sound/madera-pdata.h       | 6 +-----
- sound/soc/codecs/cs47l35.c         | 6 +-----
- sound/soc/codecs/cs47l85.c         | 6 +-----
- sound/soc/codecs/cs47l90.c         | 6 +-----
- sound/soc/codecs/madera.c          | 6 +-----
- sound/soc/codecs/madera.h          | 6 +-----
- 7 files changed, 7 insertions(+), 35 deletions(-)
+ sound/soc/soc-core.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
-index 9ff4eae5259b..d0096d5eb0da 100644
---- a/include/dt-bindings/sound/madera.h
-+++ b/include/dt-bindings/sound/madera.h
-@@ -1,13 +1,9 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Device Tree defines for Madera codecs
-  *
-  * Copyright (C) 2016-2017 Cirrus Logic, Inc. and
-  *                         Cirrus Logic International Semiconductor Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 358f1fbf9a30..8ccaf63e428c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -786,6 +786,14 @@ static struct snd_soc_component *soc_find_component(
  
- #ifndef DT_BINDINGS_SOUND_MADERA_H
-diff --git a/include/sound/madera-pdata.h b/include/sound/madera-pdata.h
-index 441decefb7f3..e3060f48f108 100644
---- a/include/sound/madera-pdata.h
-+++ b/include/sound/madera-pdata.h
-@@ -1,13 +1,9 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Platform data for Madera codec driver
-  *
-  * Copyright (C) 2016-2019 Cirrus Logic, Inc. and
-  *                         Cirrus Logic International Semiconductor Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
+ 	lockdep_assert_held(&client_mutex);
  
- #ifndef MADERA_CODEC_PDATA_H
-diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
-index 02f193dadd41..511d0d6fa962 100644
---- a/sound/soc/codecs/cs47l35.c
-+++ b/sound/soc/codecs/cs47l35.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // ALSA SoC Audio driver for CS47L35 codec
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
++	/*
++	 * NOTE
++	 *
++	 * It returns *1st* found component, but some driver
++	 * has few components by same of_node/name
++	 * ex)
++	 *	CPU component and generic DMAEngine component
++	 */
+ 	for_each_component(component)
+ 		if (snd_soc_is_matching_component(dlc, component))
+ 			return component;
+@@ -813,8 +821,9 @@ struct snd_soc_dai *snd_soc_find_dai(
+ 	lockdep_assert_held(&client_mutex);
  
- #include <linux/delay.h>
- #include <linux/device.h>
-diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
-index 4c4bae6e2c57..32fe7ffb7526 100644
---- a/sound/soc/codecs/cs47l85.c
-+++ b/sound/soc/codecs/cs47l85.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // ALSA SoC Audio driver for CS47L85 codec
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
-index 83c4e4628bde..c4ecb0e6911a 100644
---- a/sound/soc/codecs/cs47l90.c
-+++ b/sound/soc/codecs/cs47l90.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // ALSA SoC Audio driver for CS47L90 codec
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 6146c7a070cb..1b1be19a2f99 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -1,14 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // Cirrus Logic Madera class codecs common support
- //
- // Copyright (C) 2015-2019 Cirrus Logic, Inc. and
- //                         Cirrus Logic International Semiconductor Ltd.
- //
--// This program is free software; you can redistribute it and/or modify
--// it under the terms of the GNU General Public License as published by the
--// Free Software Foundation; version 2.
--//
- 
- #include <linux/delay.h>
- #include <linux/gcd.h>
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-index aa2db156582b..0af66f280770 100644
---- a/sound/soc/codecs/madera.h
-+++ b/sound/soc/codecs/madera.h
-@@ -1,13 +1,9 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Cirrus Logic Madera class codecs common support
-  *
-  * Copyright (C) 2015-2018 Cirrus Logic, Inc. and
-  *                         Cirrus Logic International Semiconductor Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by the
-- * Free Software Foundation; version 2.
-  */
- 
- #ifndef ASOC_MADERA_H
+ 	/* Find CPU DAI from registered DAIs */
+-	component = soc_find_component(dlc);
+-	if (component) {
++	for_each_component(component) {
++		if (!snd_soc_is_matching_component(dlc, component))
++			continue;
+ 		for_each_component_dais(component, dai) {
+ 			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
+ 			    && (!dai->driver->name
 -- 
 2.20.1
