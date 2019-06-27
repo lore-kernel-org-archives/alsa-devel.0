@@ -1,69 +1,41 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: topology: fix memory leaks on sm, se and sbe
-Date: Thu, 27 Jun 2019 14:32:08 +0100
-Message-ID: <20190627133208.9550-1-colin.king@canonical.com>
+From: Colin Ian King <colin.king@canonical.com>
+Subject: static analysis bug report: ALSA: swapped client and port arguments
+ in calls to snd_seq_oss_fill_addr
+Date: Thu, 27 Jun 2019 15:01:40 +0100
+Message-ID: <28c3fc44-0d4c-25e2-c9f4-d240c6d239f0@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi there,
 
-Currently when a kstrdup fails the error exit paths don't free
-the allocations for sm, se and sbe.  This can be fixed by assigning
-kc[i].private_value to these before doing the ksrtdup so that the error
-exit path will be able to free these objects.
+Static analysis with Coverity has picked up two potential issues with
+the call to function snd_seq_oss_fill_addr. The prototype of
+snd_seq_oss_fill_addr is as follows:
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 9f90af3a9952 ("ASoC: topology: Consolidate and fix asoc_tplg_dapm_widget_*_create flow")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+static inline void
+snd_seq_oss_fill_addr(struct seq_oss_devinfo *dp, struct snd_seq_event
+*ev,int dest_client, int dest_port)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index fc1f1d6f9e92..dc463f1a9e24 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1326,10 +1326,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 		dev_dbg(tplg->dev, " adding DAPM widget mixer control %s at %d\n",
- 			mc->hdr.name, i);
- 
-+		kc[i].private_value = (long)sm;
- 		kc[i].name = kstrdup(mc->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
- 			goto err_sm;
--		kc[i].private_value = (long)sm;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = mc->hdr.access;
- 
-@@ -1412,10 +1412,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 		dev_dbg(tplg->dev, " adding DAPM widget enum control %s\n",
- 			ec->hdr.name);
- 
-+		kc[i].private_value = (long)se;
- 		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
- 			goto err_se;
--		kc[i].private_value = (long)se;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = ec->hdr.access;
- 
-@@ -1524,10 +1524,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 			"ASoC: adding bytes kcontrol %s with access 0x%x\n",
- 			be->hdr.name, be->hdr.access);
- 
-+		kc[i].private_value = (long)sbe;
- 		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
- 			goto err_sbe;
--		kc[i].private_value = (long)sbe;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = be->hdr.access;
- 
--- 
-2.20.1
+
+However, in sound/core/seq/oss/seq_oss_ioctl.c in function
+snd_seq_oss_oob_user it is being called as follows:
+
+	 snd_seq_oss_fill_addr(dp, &tmpev, dp->addr.port, dp->addr.client);
+
+and also in sound/core/seq/oss/seq_oss_rw.c in function is it also being
+called as follows:
+
+	snd_seq_oss_fill_addr(dp, &event, dp->addr.port, dp->addr.client);
+
+..as one can see, in both cases the port and client arguments are
+swapped compared to the function prototype.  I doubt this is intentional
+but you never know. Are these bugs?
+
+Colin
