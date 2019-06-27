@@ -1,21 +1,21 @@
-From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH 12/23] ASoC: ak4118: use
- devm_snd_soc_register_component()
-Date: Thu, 27 Jun 2019 09:43:56 +0200
-Message-ID: <20190627094356.51ed48b4@xxx>
-References: <8736jvkcy1.wl-kuninori.morimoto.gx@renesas.com>
- <87lfxniybh.wl-kuninori.morimoto.gx@renesas.com>
+From: nick83ola <nick83ola@gmail.com>
+Subject: [BUG] Line6 Helix / X Stomp:
+ parse_audio_format_rates_v2v3(): unable to retrieve number of sample rates
+ (clock 16)
+Date: Thu, 27 Jun 2019 08:45:27 +0100
+Message-ID: <CABPh3UNCZhssHLmZF2paU4EKOK1WKScbC7Vw=uGfJn7WUeXO3Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 239B9F8973F
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2019 09:40:00 +0200 (CEST)
-In-Reply-To: <87lfxniybh.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0069F80C0B
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2019 09:45:40 +0200 (CEST)
+Received: by mail-lf1-x12b.google.com with SMTP id 136so873695lfa.8
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2019 00:45:40 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +25,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: info@jensverwiebe.de
 List-Id: alsa-devel@alsa-project.org
 
-On 27 Jun 2019 11:00:50 +0900
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+Hi all,
+I just purchased an HX stomp and when I connect to linux I get the
+following error message:
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> We have devm_xxx version of snd_soc_register_component,
-> let's use it.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/codecs/ak4118.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
-> index ce419e8..efbe2d6 100644
-> --- a/sound/soc/codecs/ak4118.c
-> +++ b/sound/soc/codecs/ak4118.c
-> @@ -400,13 +400,12 @@ static int ak4118_i2c_probe(struct i2c_client
-> *i2c, return ret;
->  	}
->  
-> -	return snd_soc_register_component(&i2c->dev,
-> &soc_component_drv_ak4118,
-> -					  &ak4118_dai, 1);
-> +	return devm_snd_soc_register_component(&i2c->dev,
-> +				&soc_component_drv_ak4118,
-> &ak4118_dai, 1); }
->  
->  static int ak4118_i2c_remove(struct i2c_client *i2c)
->  {
-> -	snd_soc_unregister_component(&i2c->dev);
->  	return 0;
->  }
->  
+    [  322.404503] usb 1-6: new high-speed USB device number 13 using xhci_hcd
+    [  322.531804] usb 1-6: New USB device found, idVendor=0e41,
+idProduct=4246, bcdDevice= 2.00
+    [  322.531806] usb 1-6: New USB device strings: Mfr=1, Product=3,
+SerialNumber=2
+    [  322.531806] usb 1-6: Product: HX Stomp
+    [  322.531807] usb 1-6: Manufacturer: LINE 6
+    [  322.531808] usb 1-6: SerialNumber:    3021888
+    [  322.535789] usb 1-6: parse_audio_format_rates_v2v3(): unable to
+retrieve number of sample rates (clock 16)
+    [  322.535907] usb 1-6: parse_audio_format_rates_v2v3(): unable to
+retrieve number of sample rates (clock 16)
 
-Remove whole function.
+I have some kernel development experience but not a lot with usb so
+can someone point me where to start looking?
+
+there was a previous discussion on the mailing list related to this by
+Jens Verwiebe (and other request for help).
+Here are the relevant patches/discussion
+
+    https://www.spinics.net/lists/alsa-devel/msg71459.html
+    https://patchwork.kernel.org/patch/10113121/
+
+If someone can help me I have an HX stomp here and time to do some debugging.
+
+Also if someone from Line6 is listening would be helpful to have some hints.
+
+Cheers
+Nicola Lunghi
