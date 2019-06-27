@@ -1,21 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: SOF: Intel: hda: Enable jack
- detection in sof hda driver
-Date: Thu, 27 Jun 2019 12:33:45 +0100
-Message-ID: <20190627113345.GC5379@sirena.org.uk>
-References: <20190626202229.16312-1-ranjani.sridharan@linux.intel.com>
- <20190626202229.16312-3-ranjani.sridharan@linux.intel.com>
- <388c2dce-a235-c592-b88e-0f6deca76220@intel.com>
+Subject: Re: [PATCH 01/23] ASoC: atmel: atmel-pcm:dma.c: use
+ devm_snd_dmaengine_pcm_register()
+Date: Thu, 27 Jun 2019 12:38:54 +0100
+Message-ID: <20190627113854.GD5379@sirena.org.uk>
+References: <8736jvkcy1.wl-kuninori.morimoto.gx@renesas.com>
+ <871rzfkcxb.wl-kuninori.morimoto.gx@renesas.com>
+ <20190627094316.35057063@xxx>
+ <e6327e0c-a657-4fe5-4513-562835783eb0@microchip.com>
+ <87woh7h1zf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4604518823077565351=="
+Content-Type: multipart/mixed; boundary="===============4581573701875354191=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F24B0F89678
- for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2019 13:33:51 +0200 (CEST)
-In-Reply-To: <388c2dce-a235-c592-b88e-0f6deca76220@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30446F89678
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2019 13:38:55 +0200 (CEST)
+In-Reply-To: <87woh7h1zf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,57 +27,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: tiwai@suse.de, Rander Wang <rander.wang@linux.intel.com>, alsa-devel@alsa-project.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, pierre-louis.bossart@linux.intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Codrin.Ciubotariu@microchip.com, alsa-devel@alsa-project.org, amadeuszx.slawinski@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4604518823077565351==
+--===============4581573701875354191==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/Uq4LBwYP4y1W6pO"
+	protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
 Content-Disposition: inline
 
 
---/Uq4LBwYP4y1W6pO
+--fXStkuK2IQBfcDe+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 26, 2019 at 11:03:14PM +0200, Cezary Rojewski wrote:
-> On 2019-06-26 22:22, Ranjani Sridharan wrote:
-> > From: Rander Wang <rander.wang@linux.intel.com>
-> >=20
-> > In commit 7d4f606c50ff ("ALSA: hda - WAKEEN feature enabling for
-> > runtime pm"), legacy HD-A driver sets hda controller in reset mode after
-> > entering runtime-suspend. And when resuming from suspend mode, it checks
+On Thu, Jun 27, 2019 at 05:24:37PM +0900, Kuninori Morimoto wrote:
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+> I'm asking it to Mark now.
+> pattern1 is I will post v2 which cares empty function.
+> pattern2 is I will post "remove empty function" patch set.
 
---/Uq4LBwYP4y1W6pO
+Removing the empty functions immediately is probably best.
+
+--fXStkuK2IQBfcDe+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0UqZgACgkQJNaLcl1U
-h9BTjgf/aPeGh/th5rmCuiBy824jAqtp8r5DXheNUbL5eIIJBZGEhzlR0z7gLRX1
-UHXYQcjiNDC6m9UXJ0j9sjcnwm15weJwdMaKPaJgxZK6iiO7RmSxvLb2PVyboXYr
-6kuXDaxUMWeTB0ys3ErehSjC+XsOgpIU3U1ldgM/en++pZ5cVi8A5Igz/QAy5gxL
-pBoKUoG6WOe3tS5WBGvHkRonwFYZOyHly/MARdtho6sK2zM1MX7CToJpd1hjWnCK
-cSXDqWoh9nYr9LW4UOsFbHz9il0ozrwFXOb23VLyp8iBZCVAJv/K9UWXMNPHcdz9
-AY7X95ouoY8xj4F0SFeTe2AaMDMkRg==
-=K8H4
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0Uqs0ACgkQJNaLcl1U
+h9DDPgf/ebk4NrkkklKvyewn+pyJmAxjkEjs+xbwNG6QnTCbpRE6HVWdwAvC56qe
+6AAvt2FrZIsfm93Fxp+64iRlxsafPisq9a43pbQw490Iq2z62ITwyJQI66YHCfoU
++OrWsUnDOMHCr8E5iswnNuboQvaKaGtU+acUKwS8KDUUEX4K++p3T0pP0FfIKt+Y
+FrSug9VLd00QQBFWqTKZnU5d34bsEY24NiNeFwp7NTDobsPxbdLeSiBgqIWRGWKH
+lB5w5sGwGczBPA7H/mEaM/JmyEQRu7Roq0DM9FhciC3njU73pC7dN9xCkcruNeAW
+J3g1cqS7cXQNeua3KG3Ta8+fvQYp5A==
+=4Po1
 -----END PGP SIGNATURE-----
 
---/Uq4LBwYP4y1W6pO--
+--fXStkuK2IQBfcDe+--
 
---===============4604518823077565351==
+--===============4581573701875354191==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4604518823077565351==--
+--===============4581573701875354191==--
