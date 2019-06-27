@@ -1,41 +1,51 @@
-From: Colin Ian King <colin.king@canonical.com>
-Subject: static analysis bug report: ALSA: swapped client and port arguments
- in calls to snd_seq_oss_fill_addr
-Date: Thu, 27 Jun 2019 15:01:40 +0100
-Message-ID: <28c3fc44-0d4c-25e2-c9f4-d240c6d239f0@canonical.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: usb-audio: fix sign unintended sign extension on left shifts
+Date: Thu, 27 Jun 2019 17:43:08 +0100
+Message-ID: <20190627164308.21286-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+From: Colin Ian King <colin.king@canonical.com>
 
-Static analysis with Coverity has picked up two potential issues with
-the call to function snd_seq_oss_fill_addr. The prototype of
-snd_seq_oss_fill_addr is as follows:
+There are a couple of left shifts of unsigned 8 bit values that
+first get promoted to signed ints and hence get sign extended
+on the shift if the top bit of the 8 bit values are set. Fix
+this by casting the 8 bit values to unsigned ints to stop the
+unintentional sign extension.
 
-static inline void
-snd_seq_oss_fill_addr(struct seq_oss_devinfo *dp, struct snd_seq_event
-*ev,int dest_client, int dest_port)
+Addresses-Coverity: ("Unintended sign extension")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/usb/mixer_quirks.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-However, in sound/core/seq/oss/seq_oss_ioctl.c in function
-snd_seq_oss_oob_user it is being called as follows:
-
-	 snd_seq_oss_fill_addr(dp, &tmpev, dp->addr.port, dp->addr.client);
-
-and also in sound/core/seq/oss/seq_oss_rw.c in function is it also being
-called as follows:
-
-	snd_seq_oss_fill_addr(dp, &event, dp->addr.port, dp->addr.client);
-
-..as one can see, in both cases the port and client arguments are
-swapped compared to the function prototype.  I doubt this is intentional
-but you never know. Are these bugs?
-
-Colin
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 1f6011f36bb0..199fa157a411 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -741,7 +741,7 @@ static int snd_ni_control_init_val(struct usb_mixer_interface *mixer,
+ 		return err;
+ 	}
+ 
+-	kctl->private_value |= (value << 24);
++	kctl->private_value |= ((unsigned int)value << 24);
+ 	return 0;
+ }
+ 
+@@ -902,7 +902,7 @@ static int snd_ftu_eff_switch_init(struct usb_mixer_interface *mixer,
+ 	if (err < 0)
+ 		return err;
+ 
+-	kctl->private_value |= value[0] << 24;
++	kctl->private_value |= (unsigned int)value[0] << 24;
+ 	return 0;
+ }
+ 
+-- 
+2.20.1
