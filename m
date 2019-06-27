@@ -1,94 +1,50 @@
-From: syzbot <syzbot+219f00fb49874dcaea17@syzkaller.appspotmail.com>
-Subject: KASAN: null-ptr-deref Write in submit_audio_out_urb (2)
-Date: Thu, 27 Jun 2019 09:47:05 -0700
-Message-ID: <0000000000006d7e29058c50e94b@google.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: xen-front: fix unintention integer overflow on left shifts
+Date: Thu, 27 Jun 2019 17:58:53 +0100
+Message-ID: <20190627165853.21864-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: allison@lohutok.net, alsa-devel@alsa-project.org, andreyknvl@google.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tiwai@suse.com
+To: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-syzbot found the following crash on:
+Shifting the integer value 1 is evaluated using 32-bit
+arithmetic and then used in an expression that expects a 64-bit
+value, so there is potentially an integer overflow. Fix this
+by using the BIT_ULL macro to perform the shift.
 
-HEAD commit:    7829a896 usb-fuzzer: main usb gadget fuzzer driver
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f335e9a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f6d4561982f71f63
-dashboard link: https://syzkaller.appspot.com/bug?extid=219f00fb49874dcaea17
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1122b6f3a00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127fc823a00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+219f00fb49874dcaea17@syzkaller.appspotmail.com
-
-snd_usb_toneport 1-1:0.49: write failed (error 0)
-usb 1-1: send failed (error -110)
-usb 1-1: send failed (error -110)
-snd_usb_toneport 1-1:0.49: Line 6 POD Studio UX1 now attached
-==================================================================
-BUG: KASAN: null-ptr-deref in memset include/linux/string.h:344 [inline]
-BUG: KASAN: null-ptr-deref in submit_audio_out_urb+0x919/0x1780  
-sound/usb/line6/playback.c:242
-Write of size 20 at addr 0000000000000010 by task kworker/1:0/17
-
-CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.2.0-rc6+ #13
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: events line6_startup_work
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0xca/0x13e lib/dump_stack.c:113
-  __kasan_report.cold+0x5/0x32 mm/kasan/report.c:321
-  kasan_report+0xe/0x20 mm/kasan/common.c:614
-  memset+0x20/0x40 mm/kasan/common.c:107
-  memset include/linux/string.h:344 [inline]
-  submit_audio_out_urb+0x919/0x1780 sound/usb/line6/playback.c:242
-  line6_submit_audio_out_all_urbs+0xc9/0x120 sound/usb/line6/playback.c:291
-  line6_stream_start+0x156/0x1f0 sound/usb/line6/pcm.c:195
-  line6_pcm_acquire+0x134/0x210 sound/usb/line6/pcm.c:318
-  line6_startup_work+0x42/0x50 sound/usb/line6/driver.c:725
-  process_one_work+0x905/0x1570 kernel/workqueue.c:2269
-  worker_thread+0x96/0xe20 kernel/workqueue.c:2415
-  kthread+0x30b/0x410 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 17 Comm: kworker/1:0 Tainted: G    B             5.2.0-rc6+ #13
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: events line6_startup_work
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0xca/0x13e lib/dump_stack.c:113
-  panic+0x292/0x6c9 kernel/panic.c:219
-  end_report+0x43/0x49 mm/kasan/report.c:95
-  __kasan_report.cold+0xd/0x32 mm/kasan/report.c:324
-  kasan_report+0xe/0x20 mm/kasan/common.c:614
-  memset+0x20/0x40 mm/kasan/common.c:107
-  memset include/linux/string.h:344 [inline]
-  submit_audio_out_urb+0x919/0x1780 sound/usb/line6/playback.c:242
-  line6_submit_audio_out_all_urbs+0xc9/0x120 sound/usb/line6/playback.c:291
-  line6_stream_start+0x156/0x1f0 sound/usb/line6/pcm.c:195
-  line6_pcm_acquire+0x134/0x210 sound/usb/line6/pcm.c:318
-  line6_startup_work+0x42/0x50 sound/usb/line6/driver.c:725
-  process_one_work+0x905/0x1570 kernel/workqueue.c:2269
-  worker_thread+0x96/0xe20 kernel/workqueue.c:2415
-  kthread+0x30b/0x410 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Addresses-Coverity: ("Unintentional integer overflow")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ sound/xen/xen_snd_front_alsa.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+index b14ab512c2ce..e01631959ed8 100644
+--- a/sound/xen/xen_snd_front_alsa.c
++++ b/sound/xen/xen_snd_front_alsa.c
+@@ -196,7 +196,7 @@ static u64 to_sndif_formats_mask(u64 alsa_formats)
+ 	mask = 0;
+ 	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
+ 		if (pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa) & alsa_formats)
+-			mask |= 1 << ALSA_SNDIF_FORMATS[i].sndif;
++			mask |= BIT_ULL(ALSA_SNDIF_FORMATS[i].sndif);
+ 
+ 	return mask;
+ }
+@@ -208,7 +208,7 @@ static u64 to_alsa_formats_mask(u64 sndif_formats)
+ 
+ 	mask = 0;
+ 	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
+-		if (1 << ALSA_SNDIF_FORMATS[i].sndif & sndif_formats)
++		if (BIT_ULL(ALSA_SNDIF_FORMATS[i].sndif) & sndif_formats)
+ 			mask |= pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa);
+ 
+ 	return mask;
+-- 
+2.20.1
