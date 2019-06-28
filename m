@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rockchip_max98090: consider
+Subject: Applied "ASoC: qcom: apq8016_sbc: consider
 	CPU-Platform possibility" to the asoc tree
-Date: Fri, 28 Jun 2019 17:56:25 +0100 (BST)
-Message-ID: <20190628165625.B7492440050@finisterre.sirena.org.uk>
-References: <87h88av5xg.wl-kuninori.morimoto.gx@renesas.com>
+Date: Fri, 28 Jun 2019 17:56:26 +0100 (BST)
+Message-ID: <20190628165626.0D8CB440049@finisterre.sirena.org.uk>
+References: <87lfxmv5xs.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 472F8F89740
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:26 +0200 (CEST)
-In-Reply-To: <87h88av5xg.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DCD1F89743
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:27 +0200 (CEST)
+In-Reply-To: <87lfxmv5xs.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rockchip_max98090: consider CPU-Platform possibility
+   ASoC: qcom: apq8016_sbc: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,14 +55,13 @@ to this mail.
 Thanks,
 Mark
 
->From 5554af40e8d41ed30a619e730ca86e7e98aabe45 Mon Sep 17 00:00:00 2001
+>From 291728a523231f22155610fd595a83bdc91f147b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:47:57 +0900
-Subject: [PATCH] ASoC: rockchip: rockchip_max98090: consider CPU-Platform
- possibility
+Date: Fri, 28 Jun 2019 10:47:46 +0900
+Subject: [PATCH] ASoC: qcom: apq8016_sbc: consider CPU-Platform possibility
 
-commit 7df405ae5895 ("ASoC: rockchip: rockchip_max98090: don't select
-unnecessary Platform")
+commit 564684387969 ("ASoC: qcom: apq8016_sbc: don't select unnecessary
+Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
 and this driver was selecting CPU component as Platform component.
@@ -79,35 +78,43 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit 7df405ae5895 ("ASoC: rockchip: rockchip_max98090: don't select unnecessary Platform")
+Fixes: commit 564684387969 ("ASoC: qcom: apq8016_sbc: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/qcom/apq8016_sbc.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index cc08cd874d44..c5fc24675a33 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -113,7 +113,8 @@ static const struct snd_soc_ops rk_aif1_ops = {
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index c0b0aa8493d3..f60a71990f66 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -150,12 +150,15 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
  
- SND_SOC_DAILINK_DEFS(hifi,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 	link = data->dai_link;
  
- static struct snd_soc_dai_link rk_dailink = {
- 	.name = "max98090",
-@@ -192,6 +193,8 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
+-	dlc = devm_kzalloc(dev, sizeof(*dlc), GFP_KERNEL);
++	dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
+ 	if (!dlc)
+ 		return ERR_PTR(-ENOMEM);
  
-+	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
+-	link->cpus	= dlc;
+-	link->num_cpus	= 1;
++	link->cpus	= &dlc[0];
++	link->platforms	= &dlc[1];
 +
- 	rk_98090_headset_dev.codec_of_node = of_parse_phandle(np,
- 			"rockchip,headset-codec", 0);
- 	if (!rk_98090_headset_dev.codec_of_node) {
++	link->num_cpus		= 1;
++	link->num_platforms	= 1;
+ 
+ 	for_each_child_of_node(node, np) {
+ 		cpu = of_get_child_by_name(np, "cpu");
+@@ -187,6 +190,7 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
+ 			goto error;
+ 		}
+ 
++		link->platforms->of_node = link->cpus->of_node;
+ 		ret = of_property_read_string(np, "link-name", &link->name);
+ 		if (ret) {
+ 			dev_err(card->dev, "error getting codec dai_link name\n");
 -- 
 2.20.1
