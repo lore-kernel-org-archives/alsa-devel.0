@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rk3399_gru_sound: consider
-	CPU-Platform possibility" to the asoc tree
+Subject: Applied "ASoC: soc-utils: respawn dummy Platform" to
+	the asoc tree
 Date: Fri, 28 Jun 2019 17:56:23 +0100 (BST)
-Message-ID: <20190628165623.31F9C44004A@finisterre.sirena.org.uk>
-References: <87h88atr9u.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165623.180A3440049@finisterre.sirena.org.uk>
+References: <87ftnutr9i.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCD3EF896B7
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8B7BF80058
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:24 +0200 (CEST)
-In-Reply-To: <87h88atr9u.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87ftnutr9i.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rk3399_gru_sound: consider CPU-Platform possibility
+   ASoC: soc-utils: respawn dummy Platform
 
 has been applied to the asoc tree at
 
@@ -55,88 +55,63 @@ to this mail.
 Thanks,
 Mark
 
->From 6c10da54f3714afe26a2a205d0713d4841762d12 Mon Sep 17 00:00:00 2001
+>From aff50895269f567d1b30c688ce8d610542991b30 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:49:52 +0900
-Subject: [PATCH] ASoC: rockchip: rk3399_gru_sound: consider CPU-Platform
- possibility
+Date: Fri, 28 Jun 2019 10:50:04 +0900
+Subject: [PATCH] ASoC: soc-utils: respawn dummy Platform
 
-commit 961fb3c206dc ("ASoC: rockchip: rk3399_gru_sound: don't select
-unnecessary Platform")
+commit 64ee5067cf64 ("ASoC: soc-utils: remove dummy Platform") removed
+dummy Platform from ALSA SoC, but it is over-kill.
+This patch respawn it.
 
-Current ALSA SoC avoid to add duplicate component to rtd,
-and this driver was selecting CPU component as Platform component.
-Thus, above patch removed Platform settings from this driver,
-because it assumed these are same component.
-
-But, some CPU driver is using generic DMAEngine, in such case, both
-CPU component and Platform component will have same of_node/name.
-In other words, there are some components which are different but
-have same of_node/name.
-
-In such case, Card driver definitely need to select Platform even
-though it is same as CPU.
-It is depends on CPU driver, but is difficult to know it from Card driver.
-This patch reverts above patch.
-
-Fixes: commit 961fb3c206dc ("ASoC: rockchip: rk3399_gru_sound: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ sound/soc/soc-utils.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 46b6d1443f53..7a3e138594c1 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -255,27 +255,33 @@ enum {
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index f67e715a9f42..e3b9dd634c6d 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -262,6 +262,26 @@ static const struct snd_pcm_hardware dummy_dma_hardware = {
+ 	.periods_max		= 128,
+ };
  
- SND_SOC_DAILINK_DEFS(cdndp,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "spdif-hifi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "spdif-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++static int dummy_dma_open(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	/* BE's dont need dummy params */
++	if (!rtd->dai_link->no_pcm)
++		snd_soc_set_runtime_hwparams(substream, &dummy_dma_hardware);
++
++	return 0;
++}
++
++static const struct snd_pcm_ops snd_dummy_dma_ops = {
++	.open		= dummy_dma_open,
++	.ioctl		= snd_pcm_lib_ioctl,
++};
++
++static const struct snd_soc_component_driver dummy_platform = {
++	.ops = &snd_dummy_dma_ops,
++};
++
+ static const struct snd_soc_component_driver dummy_codec = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+@@ -319,6 +339,11 @@ static int snd_soc_dummy_probe(struct platform_device *pdev)
  
- SND_SOC_DAILINK_DEFS(da7219,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "da7219-hifi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "da7219-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &dummy_codec, &dummy_dai, 1);
++	if (ret < 0)
++		return ret;
++
++	ret = devm_snd_soc_register_component(&pdev->dev, &dummy_platform,
++					      NULL, 0);
  
- SND_SOC_DAILINK_DEFS(dmic,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dmic-hifi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dmic-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(max98357a,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(rt5514,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5514-aif1")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5514-aif1")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(rt5514_dsp,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- static const struct snd_soc_dai_link rockchip_dais[] = {
- 	[DAILINK_CDNDP] = {
-@@ -509,6 +515,7 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 
- 		if (!dai->codecs->name)
- 			dai->codecs->of_node = np_codec;
-+		dai->platforms->of_node = np_cpu;
- 		dai->cpus->of_node = np_cpu;
- 
- 		if (card->num_dapm_routes + rockchip_routes[index].num_routes >
+ 	return ret;
+ }
 -- 
 2.20.1
