@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: ad193x: Reset used registers at probe" to the asoc tree
+Subject: Applied "ASoC: meson: axg-card: remove useless check on codec" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:28 +0100 (BST)
-Message-ID: <20190628165628.5898244004A@finisterre.sirena.org.uk>
-References: <20190627120208.4661-2-codrin.ciubotariu@microchip.com>
+Message-ID: <20190628165628.0CCBA44004B@finisterre.sirena.org.uk>
+References: <20190628081708.22039-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190627120208.4661-2-codrin.ciubotariu@microchip.com>
+In-Reply-To: <20190628081708.22039-1-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Dan Carpenter <dan.carpenter@oracle.com>, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: ad193x: Reset used registers at probe
+   ASoC: meson: axg-card: remove useless check on codec
 
 has been applied to the asoc tree at
 
@@ -37,46 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 8af6b2291e054773e2e58b2e5dbc06e981d14296 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Thu, 27 Jun 2019 15:02:08 +0300
-Subject: [PATCH] ASoC: codecs: ad193x: Reset used registers at probe
+>From 8fc22fa4b2cd983e4c542d1841b3d2212ad18ed4 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Fri, 28 Jun 2019 10:17:08 +0200
+Subject: [PATCH] ASoC: meson: axg-card: remove useless check on codec
 
-Since the ad193x codecs have no software reset, we have to reinitialize the
-registers after a hardware reset to assure no previous values are kept.
+While checking cpus before dereferencing the pointer is required, it is
+not necessary for codecs. 'codec' can't possibly be NULL in the loop
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/meson/axg-card.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index f3bab8fe3579..9615e786d049 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -427,12 +427,22 @@ static void ad193x_reg_default_init(struct ad193x_priv *ad193x)
- 		{  0, 0x99 },	/* PLL_CLK_CTRL0: pll input: mclki/xi 12.288Mhz */
- 		{  1, 0x04 },	/* PLL_CLK_CTRL1: no on-chip Vref */
- 		{  2, 0x40 },	/* DAC_CTRL0: TDM mode */
-+		{  3, 0x00 },	/* DAC_CTRL1: reset */
- 		{  4, 0x1A },	/* DAC_CTRL2: 48kHz de-emphasis, unmute dac */
- 		{  5, 0x00 },	/* DAC_CHNL_MUTE: unmute DAC channels */
-+		{  6, 0x00 },	/* DAC_L1_VOL: no attenuation */
-+		{  7, 0x00 },	/* DAC_R1_VOL: no attenuation */
-+		{  8, 0x00 },	/* DAC_L2_VOL: no attenuation */
-+		{  9, 0x00 },	/* DAC_R2_VOL: no attenuation */
-+		{ 10, 0x00 },	/* DAC_L3_VOL: no attenuation */
-+		{ 11, 0x00 },	/* DAC_R3_VOL: no attenuation */
-+		{ 12, 0x00 },	/* DAC_L4_VOL: no attenuation */
-+		{ 13, 0x00 },	/* DAC_R4_VOL: no attenuation */
- 	};
- 	const struct ad193x_reg_default reg_adc_init[] = {
- 		{ 14, 0x03 },	/* ADC_CTRL0: high-pass filter enable */
- 		{ 15, 0x43 },	/* ADC_CTRL1: sata delay=1, adc aux mode */
-+		{ 16, 0x00 },	/* ADC_CTRL2: reset */
- 	};
- 	int i;
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+index 70bb0cbad233..14a8321744da 100644
+--- a/sound/soc/meson/axg-card.c
++++ b/sound/soc/meson/axg-card.c
+@@ -118,8 +118,7 @@ static void axg_card_clean_references(struct axg_card *priv)
+ 			if (link->cpus)
+ 				of_node_put(link->cpus->of_node);
+ 			for_each_link_codecs(link, j, codec)
+-				if (codec)
+-					of_node_put(codec->of_node);
++				of_node_put(codec->of_node);
+ 		}
+ 	}
  
 -- 
 2.20.1
