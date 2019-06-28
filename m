@@ -1,166 +1,76 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH v2 01/23] ASoC: atmel: atmel-pcm-dma.c: use
- devm_snd_dmaengine_pcm_register()
-Date: Fri, 28 Jun 2019 09:45:10 +0000
-Message-ID: <919a7eda-8b5b-1749-2733-93b3489f4269@microchip.com>
-References: <87blyitky2.wl-kuninori.morimoto.gx@renesas.com>
- <87a7e2tkx5.wl-kuninori.morimoto.gx@renesas.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: Re: [PATCH v2 27/27] sound: ppc: remove unneeded memset after
+ dma_alloc_coherent
+Date: Fri, 28 Jun 2019 11:48:37 +0200
+Message-ID: <ae51454e-68b1-bc82-8d8f-dbc273166dc3@c-s.fr>
+References: <20190628025055.16242-1-huangfq.daxian@gmail.com>
+ <83108dee-72f7-e56f-95f6-26162c9a0ccc@c-s.fr>
+ <CABXRUiT6jSP2xL9JyqngS9KBx_=fZ13x0UGGFPnQPrfh-_N5xQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
- [68.232.149.84])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C747F80058
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 11:45:21 +0200 (CEST)
-In-Reply-To: <87a7e2tkx5.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-Content-ID: <7E71BC3BECDD3B4E87436EB179C191D8@namprd11.prod.outlook.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: kuninori.morimoto.gx@renesas.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CABXRUiT6jSP2xL9JyqngS9KBx_=fZ13x0UGGFPnQPrfh-_N5xQ@mail.gmail.com>
+Content-Language: fr
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fuqian Huang <huangfq.daxian@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Richard Fontana <rfontana@redhat.com>, Paul Mackerras <paulus@samba.org>, Thomas Gleixner <tglx@linutronix.de>, linuxppc-dev@lists.ozlabs.org, Allison Randal <allison@lohutok.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 28.06.2019 07:07, Kuninori Morimoto wrote:
-> External E-Mail
-> 
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> We have devm_xxx version of snd_dmaengine_pcm_register,
-> let's use it.
-> 
-> This patch also removes related empty functions
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
 
-Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-Thanks again!
+Le 28/06/2019 à 11:11, Fuqian Huang a écrit :
+> The merge commit log tells (dma-mapping: zero memory returned from
+> dma_alloc_* and deprecating the dma_zalloc_coherent).
+> I used this commit just want to say that dma_alloc_coherent  has
+> zeroed the allocated memory.
+> Sorry for this mistake.
+> 
+> Maybe this commit 518a2f1925c3("dma-mapping: zero memory returned from
+> dma_alloc_*") is correct.
 
-Best regards,
-Codrin
+Yes that looks appropriate. And it confirms it was already done on 
+powerpc, as that patch doesn't include any change in powerpc arch.
 
-> v1 -> v2
+Christophe
+
 > 
-> 	- remove empty functions
+> Christophe Leroy <christophe.leroy@c-s.fr> 於 2019年6月28日週五 下午4:59寫道：
 > 
->   sound/soc/atmel/atmel-pcm-dma.c |  9 ++-------
->   sound/soc/atmel/atmel-pcm-pdc.c |  5 -----
->   sound/soc/atmel/atmel-pcm.h     |  8 --------
->   sound/soc/atmel/atmel_ssc_dai.c | 11 -----------
->   4 files changed, 2 insertions(+), 31 deletions(-)
-> 
-> diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-> index 042e593..db67f5b 100644
-> --- a/sound/soc/atmel/atmel-pcm-dma.c
-> +++ b/sound/soc/atmel/atmel-pcm-dma.c
-> @@ -111,16 +111,11 @@ static const struct snd_dmaengine_pcm_config atmel_dmaengine_pcm_config = {
->   
->   int atmel_pcm_dma_platform_register(struct device *dev)
->   {
-> -	return snd_dmaengine_pcm_register(dev, &atmel_dmaengine_pcm_config, 0);
-> +	return devm_snd_dmaengine_pcm_register(dev,
-> +					&atmel_dmaengine_pcm_config, 0);
->   }
->   EXPORT_SYMBOL(atmel_pcm_dma_platform_register);
->   
-> -void atmel_pcm_dma_platform_unregister(struct device *dev)
-> -{
-> -	snd_dmaengine_pcm_unregister(dev);
-> -}
-> -EXPORT_SYMBOL(atmel_pcm_dma_platform_unregister);
-> -
->   MODULE_AUTHOR("Bo Shen <voice.shen@atmel.com>");
->   MODULE_DESCRIPTION("Atmel DMA based PCM module");
->   MODULE_LICENSE("GPL");
-> diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
-> index 7e9aa70..ed095af 100644
-> --- a/sound/soc/atmel/atmel-pcm-pdc.c
-> +++ b/sound/soc/atmel/atmel-pcm-pdc.c
-> @@ -393,11 +393,6 @@ int atmel_pcm_pdc_platform_register(struct device *dev)
->   }
->   EXPORT_SYMBOL(atmel_pcm_pdc_platform_register);
->   
-> -void atmel_pcm_pdc_platform_unregister(struct device *dev)
-> -{
-> -}
-> -EXPORT_SYMBOL(atmel_pcm_pdc_platform_unregister);
-> -
->   MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
->   MODULE_DESCRIPTION("Atmel PCM module");
->   MODULE_LICENSE("GPL");
-> diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
-> index 5173c9b..2e64874 100644
-> --- a/sound/soc/atmel/atmel-pcm.h
-> +++ b/sound/soc/atmel/atmel-pcm.h
-> @@ -72,28 +72,20 @@ struct atmel_pcm_dma_params {
->   
->   #if IS_ENABLED(CONFIG_SND_ATMEL_SOC_PDC)
->   int atmel_pcm_pdc_platform_register(struct device *dev);
-> -void atmel_pcm_pdc_platform_unregister(struct device *dev);
->   #else
->   static inline int atmel_pcm_pdc_platform_register(struct device *dev)
->   {
->   	return 0;
->   }
-> -static inline void atmel_pcm_pdc_platform_unregister(struct device *dev)
-> -{
-> -}
->   #endif
->   
->   #if IS_ENABLED(CONFIG_SND_ATMEL_SOC_DMA)
->   int atmel_pcm_dma_platform_register(struct device *dev);
-> -void atmel_pcm_dma_platform_unregister(struct device *dev);
->   #else
->   static inline int atmel_pcm_dma_platform_register(struct device *dev)
->   {
->   	return 0;
->   }
-> -static inline void atmel_pcm_dma_platform_unregister(struct device *dev)
-> -{
-> -}
->   #endif
->   
->   #endif /* _ATMEL_PCM_H */
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index b66c778..6f89483 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -1012,16 +1012,6 @@ static int asoc_ssc_init(struct device *dev)
->   	return 0;
->   }
->   
-> -static void asoc_ssc_exit(struct device *dev)
-> -{
-> -	struct ssc_device *ssc = dev_get_drvdata(dev);
-> -
-> -	if (ssc->pdata->use_dma)
-> -		atmel_pcm_dma_platform_unregister(dev);
-> -	else
-> -		atmel_pcm_pdc_platform_unregister(dev);
-> -}
-> -
->   /**
->    * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
->    */
-> @@ -1050,7 +1040,6 @@ void atmel_ssc_put_audio(int ssc_id)
->   {
->   	struct ssc_device *ssc = ssc_info[ssc_id].ssc;
->   
-> -	asoc_ssc_exit(&ssc->pdev->dev);
->   	ssc_free(ssc);
->   }
->   EXPORT_SYMBOL_GPL(atmel_ssc_put_audio);
-> 
+>>
+>>
+>>
+>> Le 28/06/2019 à 04:50, Fuqian Huang a écrit :
+>>> In commit af7ddd8a627c
+>>> ("Merge tag 'dma-mapping-4.21' of git://git.infradead.org/users/hch/dma-mapping"),
+>>> dma_alloc_coherent has already zeroed the memory.
+>>> So memset is not needed.
+>>
+>> You are refering to a merge commit, is that correct ?
+>>
+>> I can't see anything related in that commit, can you please pinpoint it ?
+>>
+>> As far as I can see, on powerpc the memory has always been zeroized
+>> (since 2005 at least).
+>>
+>> Christophe
+>>
+>>>
+>>> Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+>>> ---
+>>>    sound/ppc/pmac.c | 1 -
+>>>    1 file changed, 1 deletion(-)
+>>>
+>>> diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
+>>> index 1b11e53f6a62..1ab12f4f8631 100644
+>>> --- a/sound/ppc/pmac.c
+>>> +++ b/sound/ppc/pmac.c
+>>> @@ -56,7 +56,6 @@ static int snd_pmac_dbdma_alloc(struct snd_pmac *chip, struct pmac_dbdma *rec, i
+>>>        if (rec->space == NULL)
+>>>                return -ENOMEM;
+>>>        rec->size = size;
+>>> -     memset(rec->space, 0, rsize);
+>>>        rec->cmds = (void __iomem *)DBDMA_ALIGN(rec->space);
+>>>        rec->addr = rec->dma_base + (unsigned long)((char *)rec->cmds - (char *)rec->space);
+>>>
+>>>
