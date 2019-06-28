@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sirf: sirf-audio: consider CPU-Platform
-	possibility" to the asoc tree
-Date: Fri, 28 Jun 2019 17:56:25 +0100 (BST)
-Message-ID: <20190628165625.2312344004B@finisterre.sirena.org.uk>
-References: <878stmv5wj.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tegra: tegra_max98090: consider
+	CPU-Platform possibility" to the asoc tree
+Date: Fri, 28 Jun 2019 17:56:24 +0100 (BST)
+Message-ID: <20190628165624.CD8BA440050@finisterre.sirena.org.uk>
+References: <874l4av5w5.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF7D6F89739
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:26 +0200 (CEST)
-In-Reply-To: <878stmv5wj.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E3C7F89738
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:25 +0200 (CEST)
+In-Reply-To: <874l4av5w5.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sirf: sirf-audio: consider CPU-Platform possibility
+   ASoC: tegra: tegra_max98090: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,12 +55,13 @@ to this mail.
 Thanks,
 Mark
 
->From e22c32e1d41b69501ab04c1ec865eea606f7ebe2 Mon Sep 17 00:00:00 2001
+>From abe4918b94b372a9cfe8863b77a48b7ab83d9dd6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:48:31 +0900
-Subject: [PATCH] ASoC: sirf: sirf-audio: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:48:45 +0900
+Subject: [PATCH] ASoC: tegra: tegra_max98090: consider CPU-Platform
+ possibility
 
-commit e562a5f13c94 ("ASoC: sirf: sirf-audio: don't select unnecessary
+commit 4bfd08540b44 ("ASoC: tegra: tegra_max98090: don't select unnecessary
 Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
@@ -78,35 +79,35 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit e562a5f13c94 ("ASoC: sirf: sirf-audio: don't select unnecessary Platform")
+Fixes: commit 4bfd08540b44 ("ASoC: tegra: tegra_max98090: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sirf/sirf-audio.c | 5 ++++-
+ sound/soc/tegra/tegra_max98090.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sirf/sirf-audio.c b/sound/soc/sirf/sirf-audio.c
-index 45ad23638bdc..c923b6772b22 100644
---- a/sound/soc/sirf/sirf-audio.c
-+++ b/sound/soc/sirf/sirf-audio.c
-@@ -62,7 +62,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- /* Digital audio interface glue - connects codec <--> CPU */
- SND_SOC_DAILINK_DEFS(sirf,
+diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+index 4786baaa1388..4954a33ff46b 100644
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -167,7 +167,8 @@ static int tegra_max98090_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ SND_SOC_DAILINK_DEFS(pcm,
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sirf-audio-codec")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sirf-audio-codec")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "HiFi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- static struct snd_soc_dai_link sirf_audio_dai_link[] = {
- 	{
-@@ -97,6 +98,8 @@ static int sirf_audio_probe(struct platform_device *pdev)
+ static struct snd_soc_dai_link tegra_max98090_dai = {
+ 	.name = "max98090",
+@@ -241,6 +242,8 @@ static int tegra_max98090_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
  
- 	sirf_audio_dai_link[0].cpus->of_node =
- 		of_parse_phandle(pdev->dev.of_node, "sirf,audio-platform", 0);
-+	sirf_audio_dai_link[0].platforms->of_node =
-+		of_parse_phandle(pdev->dev.of_node, "sirf,audio-platform", 0);
- 	sirf_audio_dai_link[0].codecs->of_node =
- 		of_parse_phandle(pdev->dev.of_node, "sirf,audio-codec", 0);
- 	sirf_audio_card->gpio_spk_pa = of_get_named_gpio(pdev->dev.of_node,
++	tegra_max98090_dai.platforms->of_node = tegra_max98090_dai.cpus->of_node;
++
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
+ 		goto err;
 -- 
 2.20.1
