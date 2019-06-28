@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: fsl-asoc-card: consider
+Subject: Applied "ASoC: fsl: imx-sgtl5000: consider
 	CPU-Platform possibility" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:26 +0100 (BST)
-Message-ID: <20190628165626.C091144004C@finisterre.sirena.org.uk>
-References: <87v9wqv5yk.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165626.8CB90440049@finisterre.sirena.org.uk>
+References: <87sgruv5yc.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 379A6F89746
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E3FDF89741
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:27 +0200 (CEST)
-In-Reply-To: <87v9wqv5yk.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgruv5yc.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: fsl-asoc-card: consider CPU-Platform possibility
+   ASoC: fsl: imx-sgtl5000: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,12 +55,12 @@ to this mail.
 Thanks,
 Mark
 
->From 9998d3e2add865723a4dffabaa0a8c12c7ee589b Mon Sep 17 00:00:00 2001
+>From 2b1407c989ec2083fd6aa6d9ae3fa2929e42d471 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:47:18 +0900
-Subject: [PATCH] ASoC: fsl: fsl-asoc-card: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:47:26 +0900
+Subject: [PATCH] ASoC: fsl: imx-sgtl5000: consider CPU-Platform possibility
 
-commit e57a4c2f15df27 ("ASoC: fsl: fsl-asoc-card: don't select unnecessary
+commit 82bf78ca49a3 ("ASoC: fsl: imx-sgtl5000: don't select unnecessary
 Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
@@ -78,47 +78,44 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit e57a4c2f15df27 ("ASoC: fsl: fsl-asoc-card: don't select unnecessary Platform")
+Fixes: commit 82bf78ca49a3 ("ASoC: fsl: imx-sgtl5000: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/fsl/imx-sgtl5000.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 55a7e09170fb..39ea9bda1394 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -201,12 +201,14 @@ static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- }
- 
- SND_SOC_DAILINK_DEFS(hifi,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(hifi_fe,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(hifi_be,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-@@ -654,12 +656,14 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		}
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index c5ebe4950567..15e8b9343c35 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -123,7 +123,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ 		goto fail;
  	}
  
-+	priv->dai_link[0].platforms->of_node = cpu_np;
- 	priv->dai_link[0].dai_fmt = priv->dai_fmt;
- 	priv->card.num_links = 1;
+-	comp = devm_kzalloc(&pdev->dev, 2 * sizeof(*comp), GFP_KERNEL);
++	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
+ 	if (!comp) {
+ 		ret = -ENOMEM;
+ 		goto fail;
+@@ -139,15 +139,18 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
  
- 	if (asrc_pdev) {
- 		/* DPCM DAI Links only if ASRC exsits */
- 		priv->dai_link[1].cpus->of_node = asrc_np;
-+		priv->dai_link[1].platforms->of_node = asrc_np;
- 		priv->dai_link[2].codecs->dai_name = codec_dai_name;
- 		priv->dai_link[2].codecs->of_node = codec_np;
- 		priv->dai_link[2].codecs->name =
+ 	data->dai.cpus		= &comp[0];
+ 	data->dai.codecs	= &comp[1];
++	data->dai.platforms	= &comp[2];
+ 
+ 	data->dai.num_cpus	= 1;
+ 	data->dai.num_codecs	= 1;
++	data->dai.num_platforms	= 1;
+ 
+ 	data->dai.name = "HiFi";
+ 	data->dai.stream_name = "HiFi";
+ 	data->dai.codecs->dai_name = "sgtl5000";
+ 	data->dai.codecs->of_node = codec_np;
+ 	data->dai.cpus->of_node = ssi_np;
++	data->dai.platforms->of_node = ssi_np;
+ 	data->dai.init = &imx_sgtl5000_dai_init;
+ 	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			    SND_SOC_DAIFMT_CBM_CFM;
 -- 
 2.20.1
