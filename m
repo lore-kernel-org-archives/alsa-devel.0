@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: imx-spdif: consider CPU-Platform
-	possibility" to the asoc tree
-Date: Fri, 28 Jun 2019 17:56:26 +0100 (BST)
-Message-ID: <20190628165626.74ACC44004B@finisterre.sirena.org.uk>
-References: <87r27ev5y8.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: atmel: sam9g20_wm8731: consider
+	CPU-Platform possibility" to the asoc tree
+Date: Fri, 28 Jun 2019 17:56:27 +0100 (BST)
+Message-ID: <20190628165627.31ABA440049@finisterre.sirena.org.uk>
+References: <871rzewkjg.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F684F8974A
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:27 +0200 (CEST)
-In-Reply-To: <87r27ev5y8.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1B0EF8974F
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:28 +0200 (CEST)
+In-Reply-To: <871rzewkjg.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: imx-spdif: consider CPU-Platform possibility
+   ASoC: atmel: sam9g20_wm8731: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,13 +55,14 @@ to this mail.
 Thanks,
 Mark
 
->From 9e8f5299c99518e10cb864c2ad62683507d71c21 Mon Sep 17 00:00:00 2001
+>From 0efd1d7cbcc5f5be4025fc6cd2809e50c3030f09 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:47:30 +0900
-Subject: [PATCH] ASoC: fsl: imx-spdif: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:47:02 +0900
+Subject: [PATCH] ASoC: atmel: sam9g20_wm8731: consider CPU-Platform
+ possibility
 
-commit 014f07ca1cb12 ("ASoC: fsl: imx-spdif: don't select unnecessary
-Platform")
+commit bfc7938e58142a5 ("ASoC: atmel: sam9g20_wm8731: don't select
+unnecessary Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
 and this driver was selecting CPU component as Platform component.
@@ -78,44 +79,41 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit 014f07ca1cb12 ("ASoC: fsl: imx-spdif: don't select unnecessary Platform")
+Fixes: commit bfc7938e58142a5 ("ASoC: atmel: sam9g20_wm8731: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-spdif.c | 5 ++++-
+ sound/soc/atmel/sam9g20_wm8731.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-index 393c5a31f494..6c4dadf60355 100644
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -26,7 +26,7 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index df098d3cf844..b1bef2bf142d 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -118,7 +118,8 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ SND_SOC_DAILINK_DEFS(pcm,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("at91rm9200_ssc.0")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC("wm8731.0-001b", "wm8731-hifi")),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("at91rm9200_ssc.0")));
+ 
+ static struct snd_soc_dai_link at91sam9g20ek_dai = {
+ 	.name = "WM8731",
+@@ -209,12 +210,14 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 
+ 	/* Parse dai and platform info */
+ 	at91sam9g20ek_dai.cpus->dai_name = NULL;
++	at91sam9g20ek_dai.platforms->name = NULL;
+ 	cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
+ 	if (!cpu_np) {
+ 		dev_err(&pdev->dev, "dai and pcm info missing\n");
+ 		return -EINVAL;
  	}
+ 	at91sam9g20ek_dai.cpus->of_node = cpu_np;
++	at91sam9g20ek_dai.platforms->of_node = cpu_np;
  
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--	comp = devm_kzalloc(&pdev->dev, 2 * sizeof(*comp), GFP_KERNEL);
-+	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
- 	if (!data || !comp) {
- 		ret = -ENOMEM;
- 		goto end;
-@@ -34,15 +34,18 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
- 
- 	data->dai.cpus		= &comp[0];
- 	data->dai.codecs	= &comp[1];
-+	data->dai.platforms	= &comp[2];
- 
- 	data->dai.num_cpus	= 1;
- 	data->dai.num_codecs	= 1;
-+	data->dai.num_platforms	= 1;
- 
- 	data->dai.name = "S/PDIF PCM";
- 	data->dai.stream_name = "S/PDIF PCM";
- 	data->dai.codecs->dai_name = "snd-soc-dummy-dai";
- 	data->dai.codecs->name = "snd-soc-dummy";
- 	data->dai.cpus->of_node = spdif_np;
-+	data->dai.platforms->of_node = spdif_np;
- 	data->dai.playback_only = true;
- 	data->dai.capture_only = true;
- 
+ 	of_node_put(codec_np);
+ 	of_node_put(cpu_np);
 -- 
 2.20.1
