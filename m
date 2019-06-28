@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: tse850-pcm5142: consider
+Subject: Applied "ASoC: amtel: mikroe-proto: consider
 	CPU-Platform possibility" to the asoc tree
-Date: Fri, 28 Jun 2019 17:56:26 +0100 (BST)
-Message-ID: <20190628165626.F30BF440052@finisterre.sirena.org.uk>
-References: <87y31mv5ys.wl-kuninori.morimoto.gx@renesas.com>
+Date: Fri, 28 Jun 2019 17:56:27 +0100 (BST)
+Message-ID: <20190628165627.4B9FA44004B@finisterre.sirena.org.uk>
+References: <8736juwkjt.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F8A0F89748
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72CD7F8974B
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:28 +0200 (CEST)
-In-Reply-To: <87y31mv5ys.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8736juwkjt.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: tse850-pcm5142: consider CPU-Platform possibility
+   ASoC: amtel: mikroe-proto: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,14 +55,13 @@ to this mail.
 Thanks,
 Mark
 
->From 6910bb935a448f3af64bf4ab7754cc0870590146 Mon Sep 17 00:00:00 2001
+>From 716407ea57fa38fc1b04c699f1b83847cf669872 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:47:10 +0900
-Subject: [PATCH] ASoC: atmel: tse850-pcm5142: consider CPU-Platform
- possibility
+Date: Fri, 28 Jun 2019 10:46:49 +0900
+Subject: [PATCH] ASoC: amtel: mikroe-proto: consider CPU-Platform possibility
 
-commit 655368dfc75e8 ("ASoC: atmel: tse850-pcm5142: don't select
-unnecessary Platform")
+commit 318ebbe8060d96 ("ASoC: atmel: mikroe-proto: don't select unnecessary
+Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
 and this driver was selecting CPU component as Platform component.
@@ -79,34 +78,44 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit 655368dfc75e8 ("ASoC: atmel: tse850-pcm5142: don't select unnecessary Platform")
+Fixes: commit 318ebbe8060d96 ("ASoC: atmel: mikroe-proto: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/tse850-pcm5142.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/atmel/mikroe-proto.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
-index 319acb1676c7..59e2edb22b3a 100644
---- a/sound/soc/atmel/tse850-pcm5142.c
-+++ b/sound/soc/atmel/tse850-pcm5142.c
-@@ -296,7 +296,8 @@ static const struct snd_soc_dapm_route tse850_intercon[] = {
+diff --git a/sound/soc/atmel/mikroe-proto.c b/sound/soc/atmel/mikroe-proto.c
+index 954b24e23730..aa6d0d78566f 100644
+--- a/sound/soc/atmel/mikroe-proto.c
++++ b/sound/soc/atmel/mikroe-proto.c
+@@ -85,8 +85,8 @@ static int snd_proto_probe(struct platform_device *pdev)
+ 	if (!dai)
+ 		return -ENOMEM;
  
- SND_SOC_DAILINK_DEFS(pcm,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "pcm512x-hifi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "pcm512x-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+-	/* for cpus/codecs */
+-	comp = devm_kzalloc(&pdev->dev, 2 * sizeof(*comp), GFP_KERNEL);
++	/* for cpus/codecs/platforms */
++	comp = devm_kzalloc(&pdev->dev, 3 * sizeof(*comp), GFP_KERNEL);
+ 	if (!comp)
+ 		return -ENOMEM;
  
- static struct snd_soc_dai_link tse850_dailink = {
- 	.name = "TSE-850",
-@@ -336,6 +337,7 @@ static int tse850_dt_init(struct platform_device *pdev)
+@@ -97,6 +97,8 @@ static int snd_proto_probe(struct platform_device *pdev)
+ 	dai->num_cpus = 1;
+ 	dai->codecs = &comp[1];
+ 	dai->num_codecs = 1;
++	dai->platforms = &comp[2];
++	dai->num_platforms = 1;
+ 
+ 	dai->name = "WM8731";
+ 	dai->stream_name = "WM8731 HiFi";
+@@ -116,6 +118,7 @@ static int snd_proto_probe(struct platform_device *pdev)
  		return -EINVAL;
  	}
- 	dailink->cpus->of_node = cpu_np;
-+	dailink->platforms->of_node = cpu_np;
- 	of_node_put(cpu_np);
+ 	dai->cpus->of_node = cpu_np;
++	dai->platforms->of_node = cpu_np;
  
- 	codec_np = of_parse_phandle(np, "axentia,audio-codec", 0);
+ 	dai_fmt = snd_soc_of_parse_daifmt(np, NULL,
+ 					  &bitclkmaster, &framemaster);
 -- 
 2.20.1
