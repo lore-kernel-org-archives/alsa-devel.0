@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: rx51: consider CPU-Platform
+Subject: Applied "ASoC: tegra: trimslice: consider CPU-Platform
 	possibility" to the asoc tree
-Date: Fri, 28 Jun 2019 17:56:23 +0100 (BST)
-Message-ID: <20190628165623.9219E440050@finisterre.sirena.org.uk>
-References: <87mui2trac.wl-kuninori.morimoto.gx@renesas.com>
+Date: Fri, 28 Jun 2019 17:56:24 +0100 (BST)
+Message-ID: <20190628165624.19E50440046@finisterre.sirena.org.uk>
+References: <87tvcatraw.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CFDBF896CC
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:24 +0200 (CEST)
-In-Reply-To: <87mui2trac.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4612DF896CB
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:25 +0200 (CEST)
+In-Reply-To: <87tvcatraw.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: rx51: consider CPU-Platform possibility
+   ASoC: tegra: trimslice: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,12 +55,13 @@ to this mail.
 Thanks,
 Mark
 
->From 569440b46baab1f9f696a688de7860a915cebc26 Mon Sep 17 00:00:00 2001
+>From db1572d43ffbbe2d161d3e7a8fd5295667e42107 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:49:34 +0900
-Subject: [PATCH] ASoC: ti: rx51: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:49:14 +0900
+Subject: [PATCH] ASoC: tegra: trimslice: consider CPU-Platform possibility
 
-commit f0edc6c1ee48 ("ASoC: ti: rx51: don't select unnecessary Platform")
+commit 567b374d9973 ("ASoC: tegra: trimslice: don't select unnecessary
+Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
 and this driver was selecting CPU component as Platform component.
@@ -77,36 +78,36 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit f0edc6c1ee48 ("ASoC: ti: rx51: don't select unnecessary Platform")
+Fixes: commit 567b374d9973 ("ASoC: tegra: trimslice: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/rx51.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/tegra/trimslice.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
-index 4270cfb66224..bc6046534fa5 100644
---- a/sound/soc/ti/rx51.c
-+++ b/sound/soc/ti/rx51.c
-@@ -301,7 +301,8 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
- SND_SOC_DAILINK_DEFS(aic34,
- 	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.2")),
- 	DAILINK_COMP_ARRAY(COMP_CODEC("tlv320aic3x-codec.2-0018",
--				      "tlv320aic3x-hifi")));
-+				      "tlv320aic3x-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.2")));
+diff --git a/sound/soc/tegra/trimslice.c b/sound/soc/tegra/trimslice.c
+index 61e04a42eda3..3f67ddd13674 100644
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -79,7 +79,8 @@ static const struct snd_soc_dapm_route trimslice_audio_map[] = {
  
- static struct snd_soc_dai_link rx51_dai[] = {
- 	{
-@@ -378,7 +379,9 @@ static int rx51_soc_probe(struct platform_device *pdev)
- 			return -EINVAL;
- 		}
- 		rx51_dai[0].cpus->dai_name = NULL;
-+		rx51_dai[0].platforms->name = NULL;
- 		rx51_dai[0].cpus->of_node = dai_node;
-+		rx51_dai[0].platforms->of_node = dai_node;
+ SND_SOC_DAILINK_DEFS(single_dsp,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic23-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic23-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- 		dai_node = of_parse_phandle(np, "nokia,audio-codec", 0);
- 		if (!dai_node) {
+ static struct snd_soc_dai_link trimslice_tlv320aic23_dai = {
+ 	.name = "TLV320AIC23",
+@@ -137,6 +138,9 @@ static int tegra_snd_trimslice_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
++	trimslice_tlv320aic23_dai.platforms->of_node =
++			trimslice_tlv320aic23_dai.cpus->of_node;
++
+ 	ret = tegra_asoc_utils_init(&trimslice->util_data, &pdev->dev);
+ 	if (ret)
+ 		goto err;
 -- 
 2.20.1
