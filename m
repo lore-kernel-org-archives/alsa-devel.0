@@ -1,20 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/2] ALSA: firewire-lib: cache next
-	data_block_counter after probing tracepoints event for IR context
-Date: Fri, 28 Jun 2019 14:53:30 +0900
-Message-ID: <20190628055331.1427-2-o-takashi@sakamocchi.jp>
-References: <20190628055331.1427-1-o-takashi@sakamocchi.jp>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 116/146] ASoC: sof: use modern dai_link
+ style
+Date: Fri, 28 Jun 2019 07:56:06 +0200
+Message-ID: <288441e7-eaa7-8005-4026-97c31125375b@linux.intel.com>
+References: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
+ <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
+ <CAEnQRZBnvfuZDbnvbmqAavh9DAbA_EeRc6OuH6OOiR1WB4zUrg@mail.gmail.com>
+ <8761d853-2b3f-7b26-0073-05d0c3ce1362@linux.intel.com>
+ <87d0iytqi8.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 238C0F80058
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 07:53:38 +0200 (CEST)
-In-Reply-To: <20190628055331.1427-1-o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA697F80768
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 07:56:11 +0200 (CEST)
+In-Reply-To: <87d0iytqi8.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,145 +28,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, paul.olaru@nxp.com, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-For debugging purpose, ALSA IEC 61883-1/6 engine has tracepoints event.
-In current implementation, next data block counter is stored as current
-data block counter before probing the event for IR isoc context. It's not
-good to check current packet parameter.
+On 6/28/19 4:06 AM, Kuninori Morimoto wrote:
+> 
+> Hi Pierre-Louis
+> 
+>>> @@ -1883,7 +1883,7 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
+>>>           int ret;
+>>>
+>>>           /* link + cpu + codec */
+>>> -       link = kzalloc(sizeof(*link) + (2 * sizeof(*dlc)), GFP_KERNEL);
+>>> +       link = kzalloc(sizeof(*link) + (3 * sizeof(*dlc)), GFP_KERNEL);
+>>>           if (link == NULL)
+>>>                   return -ENOMEM;
+>>>
+>>> @@ -1891,9 +1891,11 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
+>>>
+>>>           link->cpus      = &dlc[0];
+>>>           link->codecs    = &dlc[1];
+>>> +       link->platforms = &dlc[2];
+>>>
+>>>           link->num_cpus   = 1;
+>>>           link->num_codecs = 1;
+>>> +       link->num_platforms = 1;
+>>>
+>>> Can you please help me figure this out?
+>>
+>> Isn't this fixed by my patch "ASoC: soc-topology: fix modern dai link
+>> style" applied on 6/13? Looks like the same issue to me.
+> 
+> This is very impertinent comment, but it is possible to allow NULL platform
+> instead of dummy platform by this or similar code ?
+> I guess it is nice for SOF future.
+> I can't test and not familiar with SOF thought...
+> 
+> 	if (link->platforms)
+> 		link->platforms->name = dev_name(sdev->dev);
 
-This commit changes to assign the next data block counter after probing
-the event.
-
-Besides, Fireworks devices has a quirk to transfer isoc packet with
-data block counter for the last data block. For this quirk, the
-assignment is done before calling data block processing layer.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 48 +++++++++++++++++++----------------
- 1 file changed, 26 insertions(+), 22 deletions(-)
-
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 3aef6a78a188..b341bd86605e 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -519,13 +519,13 @@ static void build_it_pkt_header(struct amdtp_stream *s, unsigned int cycle,
- 
- static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 			    unsigned int payload_length,
--			    unsigned int *data_blocks, unsigned int *syt)
-+			    unsigned int *data_blocks, unsigned int *dbc,
-+			    unsigned int *syt)
- {
- 	u32 cip_header[2];
- 	unsigned int sph;
- 	unsigned int fmt;
- 	unsigned int fdf;
--	unsigned int data_block_counter;
- 	bool lost;
- 
- 	cip_header[0] = be32_to_cpu(buf[0]);
-@@ -577,17 +577,17 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 	}
- 
- 	/* Check data block counter continuity */
--	data_block_counter = cip_header[0] & CIP_DBC_MASK;
-+	*dbc = cip_header[0] & CIP_DBC_MASK;
- 	if (*data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
- 	    s->data_block_counter != UINT_MAX)
--		data_block_counter = s->data_block_counter;
-+		*dbc = s->data_block_counter;
- 
- 	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) &&
--	     data_block_counter == s->ctx_data.tx.first_dbc) ||
-+	     *dbc == s->ctx_data.tx.first_dbc) ||
- 	    s->data_block_counter == UINT_MAX) {
- 		lost = false;
- 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
--		lost = data_block_counter != s->data_block_counter;
-+		lost = *dbc != s->data_block_counter;
- 	} else {
- 		unsigned int dbc_interval;
- 
-@@ -596,26 +596,18 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 		else
- 			dbc_interval = *data_blocks;
- 
--		lost = data_block_counter !=
--		       ((s->data_block_counter + dbc_interval) & 0xff);
-+		lost = *dbc != ((s->data_block_counter + dbc_interval) & 0xff);
- 	}
- 
- 	if (lost) {
- 		dev_err(&s->unit->device,
- 			"Detect discontinuity of CIP: %02X %02X\n",
--			s->data_block_counter, data_block_counter);
-+			s->data_block_counter, *dbc);
- 		return -EIO;
- 	}
- 
- 	*syt = cip_header[1] & CIP_SYT_MASK;
- 
--	if (s->flags & CIP_DBC_IS_END_EVENT) {
--		s->data_block_counter = data_block_counter;
--	} else {
--		s->data_block_counter =
--				(data_block_counter + *data_blocks) & 0xff;
--	}
--
- 	return 0;
- }
- 
-@@ -626,6 +618,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 			       unsigned int *syt, unsigned int index)
- {
- 	const __be32 *cip_header;
-+	unsigned int dbc;
- 	int err;
- 
- 	*payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
-@@ -640,22 +633,33 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 	if (!(s->flags & CIP_NO_HEADER)) {
- 		cip_header = ctx_header + 2;
- 		err = check_cip_header(s, cip_header, *payload_length,
--				       data_blocks, syt);
--		if (err < 0)
--			return err;
-+				       data_blocks, &dbc, syt);
-+		if (err < 0) {
-+			if (err != -EAGAIN)
-+				return err;
-+
-+			*data_blocks = 0;
-+			dbc = s->data_block_counter;
-+		}
- 	} else {
- 		cip_header = NULL;
-+		err = 0;
- 		*data_blocks = *payload_length / sizeof(__be32) /
- 			       s->data_block_quadlets;
-+		dbc = s->data_block_counter;
- 		*syt = 0;
--		s->data_block_counter =
--				(s->data_block_counter + *data_blocks) & 0xff;
- 	}
- 
-+	if (err >= 0 && s->flags & CIP_DBC_IS_END_EVENT)
-+		s->data_block_counter = dbc;
-+
- 	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
- 			   index);
- 
--	return 0;
-+	if (err >= 0 && !(s->flags & CIP_DBC_IS_END_EVENT))
-+		s->data_block_counter = (dbc + *data_blocks) & 0xff;
-+
-+	return err;
- }
- 
- // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
--- 
-2.20.1
+It's a good question. To be honest I don't fully understand what this 
+'platform' field is needed for... I was just trying to maintain 'as-is' 
+functionality. If anyone has a good explanation on when this field might 
+be required and for what purpose, and when it can be made optional, I am 
+all ears.
