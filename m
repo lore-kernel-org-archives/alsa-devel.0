@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rockchip_rt5645: consider
+Subject: Applied "ASoC: samsung: arndale_rt5631: consider
 	CPU-Platform possibility" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:25 +0100 (BST)
-Message-ID: <20190628165625.9FF5244004A@finisterre.sirena.org.uk>
-References: <87ftnuv5xd.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165625.878B744004F@finisterre.sirena.org.uk>
+References: <87ef3ev5wz.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAEF7F8973C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2CCC4F896B7
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:26 +0200 (CEST)
-In-Reply-To: <87ftnuv5xd.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87ef3ev5wz.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rockchip_rt5645: consider CPU-Platform possibility
+   ASoC: samsung: arndale_rt5631: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,13 +55,13 @@ to this mail.
 Thanks,
 Mark
 
->From f94d7b6e63b7323e89e9797dbdf6e56a3ec5d490 Mon Sep 17 00:00:00 2001
+>From a0e95c4d376d30e50b2b1f4769a6dcc5c7604505 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:48:01 +0900
-Subject: [PATCH] ASoC: rockchip: rockchip_rt5645: consider CPU-Platform
+Date: Fri, 28 Jun 2019 10:48:15 +0900
+Subject: [PATCH] ASoC: samsung: arndale_rt5631: consider CPU-Platform
  possibility
 
-commit 27a37973a6f1 ("ASoC: rockchip: rockchip_rt5645: don't select
+commit 33949eb5019d ("ASoC: samsung: arndale_rt5631: don't select
 unnecessary Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
@@ -79,35 +79,36 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit 27a37973a6f1 ("ASoC: rockchip: rockchip_rt5645: don't select unnecessary Platform")
+Fixes: commit 33949eb5019d ("ASoC: samsung: arndale_rt5631: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_rt5645.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/samsung/arndale_rt5631.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
-index fe533726d288..26b67b245484 100644
---- a/sound/soc/rockchip/rockchip_rt5645.c
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -125,7 +125,8 @@ static const struct snd_soc_ops rk_aif1_ops = {
+diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
+index e36c140400b7..c213913eb984 100644
+--- a/sound/soc/samsung/arndale_rt5631.c
++++ b/sound/soc/samsung/arndale_rt5631.c
+@@ -52,7 +52,8 @@ static struct snd_soc_ops arndale_ops = {
  
- SND_SOC_DAILINK_DEFS(pcm,
+ SND_SOC_DAILINK_DEFS(rt5631_hifi,
  	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5645-aif1")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5645-aif1")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- static struct snd_soc_dai_link rk_dailink = {
- 	.name = "rt5645",
-@@ -177,6 +178,8 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
- 		goto put_codec_of_node;
- 	}
+ static struct snd_soc_dai_link arndale_rt5631_dai[] = {
+ 	{
+@@ -92,6 +93,9 @@ static int arndale_audio_probe(struct platform_device *pdev)
+ 				return -EINVAL;
+ 			}
+ 		}
++		if (!arndale_rt5631_dai[n].platforms->name)
++			arndale_rt5631_dai[n].platforms->of_node =
++					arndale_rt5631_dai[n].cpus->of_node;
  
-+	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
-+
- 	ret = snd_soc_of_parse_card_name(card, "rockchip,model");
- 	if (ret) {
- 		dev_err(&pdev->dev,
+ 		arndale_rt5631_dai[n].codecs->name = NULL;
+ 		arndale_rt5631_dai[n].codecs->of_node = of_parse_phandle(np,
 -- 
 2.20.1
