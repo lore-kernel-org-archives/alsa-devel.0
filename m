@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: omap-twl4030: consider CPU-Platform
+Subject: Applied "ASoC: ti: davinci-evm: consider CPU-Platform
 	possibility" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:23 +0100 (BST)
-Message-ID: <20190628165623.AA1C4440052@finisterre.sirena.org.uk>
-References: <87o92itrag.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165624.00006440049@finisterre.sirena.org.uk>
+References: <87sgrutras.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16D24F80768
+ by alsa1.perex.cz (Postfix) with ESMTPS id 235E4F896B9
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:24 +0200 (CEST)
-In-Reply-To: <87o92itrag.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgrutras.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: omap-twl4030: consider CPU-Platform possibility
+   ASoC: ti: davinci-evm: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,12 +55,12 @@ to this mail.
 Thanks,
 Mark
 
->From eb313e23da8da79cf18dff5ee1dbba3580df83b5 Mon Sep 17 00:00:00 2001
+>From 44e578150f48e9e2517b41cdcababde0b0d0bfa4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:49:30 +0900
-Subject: [PATCH] ASoC: ti: omap-twl4030: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:49:18 +0900
+Subject: [PATCH] ASoC: ti: davinci-evm: consider CPU-Platform possibility
 
-commit bfe1273c65e1 ("ASoC: ti: omap-twl4030: don't select unnecessary
+commit f46da1b9046e ("ASoC: ti: davinci-evm: don't select unnecessary
 Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
@@ -78,51 +78,35 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit bfe1273c65e1 ("ASoC: ti: omap-twl4030: don't select unnecessary Platform")
+Fixes: commit f46da1b9046e ("ASoC: ti: davinci-evm: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/omap-twl4030.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ sound/soc/ti/davinci-evm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/omap-twl4030.c b/sound/soc/ti/omap-twl4030.c
-index 34e79e57f039..92dbe2c67290 100644
---- a/sound/soc/ti/omap-twl4030.c
-+++ b/sound/soc/ti/omap-twl4030.c
-@@ -197,11 +197,13 @@ static int omap_twl4030_init(struct snd_soc_pcm_runtime *rtd)
- /* Digital audio interface glue - connects codec <--> CPU */
- SND_SOC_DAILINK_DEFS(hifi,
- 	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.2")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-hifi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.2")));
+diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
+index 6bac902bacf1..bfd8d1a03ba7 100644
+--- a/sound/soc/ti/davinci-evm.c
++++ b/sound/soc/ti/davinci-evm.c
+@@ -353,7 +353,8 @@ static struct snd_soc_card da850_snd_soc_card = {
+  */
+ SND_SOC_DAILINK_DEFS(evm,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic3x-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic3x-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- SND_SOC_DAILINK_DEFS(voice,
- 	DAILINK_COMP_ARRAY(COMP_CPU("omap-mcbsp.3")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-voice")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC("twl4030-codec", "twl4030-voice")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("omap-mcbsp.3")));
+ static struct snd_soc_dai_link evm_dai_tlv320aic3x = {
+ 	.name		= "TLV320AIC3X",
+@@ -407,6 +408,8 @@ static int davinci_evm_probe(struct platform_device *pdev)
+ 	if (!dai->cpus->of_node)
+ 		return -EINVAL;
  
- static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
- 	{
-@@ -263,12 +265,18 @@ static int omap_twl4030_probe(struct platform_device *pdev)
- 		omap_twl4030_dai_links[0].cpus->dai_name  = NULL;
- 		omap_twl4030_dai_links[0].cpus->of_node = dai_node;
- 
-+		omap_twl4030_dai_links[0].platforms->name  = NULL;
-+		omap_twl4030_dai_links[0].platforms->of_node = dai_node;
++	dai->platforms->of_node = dai->cpus->of_node;
 +
- 		dai_node = of_parse_phandle(node, "ti,mcbsp-voice", 0);
- 		if (!dai_node) {
- 			card->num_links = 1;
- 		} else {
- 			omap_twl4030_dai_links[1].cpus->dai_name  = NULL;
- 			omap_twl4030_dai_links[1].cpus->of_node = dai_node;
-+
-+			omap_twl4030_dai_links[1].platforms->name  = NULL;
-+			omap_twl4030_dai_links[1].platforms->of_node = dai_node;
- 		}
- 
- 		priv->jack_detect = of_get_named_gpio(node,
+ 	evm_soc_card.dev = &pdev->dev;
+ 	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
+ 	if (ret)
 -- 
 2.20.1
