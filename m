@@ -1,52 +1,49 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib/fireworks: fix miss detection of received MIDI messages
-Date: Fri, 28 Jun 2019 14:21:58 +0900
-Message-ID: <20190628052158.27693-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2] ALSA: firewire-lib: fix miss detection
+	from MIDI conformant data channel in AM824 format for IR context
+Date: Fri, 28 Jun 2019 14:53:29 +0900
+Message-ID: <20190628055331.1427-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6172F80768
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 07:53:38 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In IEC 61883-6, 8 MIDI data streams are multiplexed into single
-MIDI conformant data channel. The index of stream is calculated by
-modulo 8 of the value of data block counter.
+Hi,
 
-In fireworks, the value of data block counter in CIP header has a quirk
-with firmware version v5.0.0, v5.7.3 and v5.8.0. This brings ALSA
-IEC 61883-1/6 packet streaming engine to miss detection of MIDI
-messages.
+This patchset is a fix for a case that AM824 format is used with
+non-blocking transmission method in IEC 61883-1/6.
 
-This commit fixes the miss detection to modify the value of data block
-counter for the modulo calculation.
+The recent changes for ALSA IEC 61883-1/6 engine brings a bug to miss
+received MIDI messages in the case due to wrong data block counter for
+calculation of multiplexed MIDI stream index. This bug mainly affects
+ALSA oxfw driver.
 
-For maintainers, this bug exists since a commit 18f5ed365d3f ("ALSA:
-fireworks/firewire-lib: add support for recent firmware quirk") in Linux
-kernel v4.2. There're many changes since the commit.  This fix can be
-backported to Linux kernel v4.4 or later. I tagged a base commit to the
-backport for your convenience.
+Takashi Sakamoto (2):
+  ALSA: firewire-lib: cache next data_block_counter after probing
+    tracepoints event for IR context
+  ALSA: firewire-lib: fix to process MIDI conformant data channel for
+    AM824 format
 
-Fixes: df075feefbd3 ("ALSA: firewire-lib: complete AM824 data block processing layer")
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-am824.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/firewire/amdtp-stream.c | 58 +++++++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 26 deletions(-)
 
-diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
-index 7019a2143581..623d014c0e7e 100644
---- a/sound/firewire/amdtp-am824.c
-+++ b/sound/firewire/amdtp-am824.c
-@@ -321,7 +321,7 @@ static void read_midi_messages(struct amdtp_stream *s,
- 	u8 *b;
- 
- 	for (f = 0; f < frames; f++) {
--		port = (s->data_block_counter + f) % 8;
-+		port = (8 - s->ctx_data.tx.first_dbc + s->data_block_counter + f) % 8;
- 		b = (u8 *)&buffer[p->midi_position];
- 
- 		len = b[0] - 0x80;
 -- 
 2.20.1
