@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mxs: mxs-sgtl5000: consider
+Subject: Applied "ASoC: kirkwood: armada-370-db: consider
 	CPU-Platform possibility" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:26 +0100 (BST)
-Message-ID: <20190628165626.27A3144004C@finisterre.sirena.org.uk>
-References: <87mui2v5xw.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165626.445B444004F@finisterre.sirena.org.uk>
+References: <87o92iv5y0.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EAC5F89742
+ by alsa1.perex.cz (Postfix) with ESMTPS id B23CFF89744
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:27 +0200 (CEST)
-In-Reply-To: <87mui2v5xw.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87o92iv5y0.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mxs: mxs-sgtl5000: consider CPU-Platform possibility
+   ASoC: kirkwood: armada-370-db: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,13 +55,14 @@ to this mail.
 Thanks,
 Mark
 
->From 802e8ed9e912281cbfe4432cf015c82b81e87faa Mon Sep 17 00:00:00 2001
+>From bb6630d153a16e0cde1e849fcf298d8fec0e77bb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:47:42 +0900
-Subject: [PATCH] ASoC: mxs: mxs-sgtl5000: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:47:38 +0900
+Subject: [PATCH] ASoC: kirkwood: armada-370-db: consider CPU-Platform
+ possibility
 
-commit 5f92229d184b ("ASoC: mxs: mxs-sgtl5000: don't select unnecessary
-Platform")
+commit 717f16331712 ("ASoC: kirkwood: armada-370-db: don't select
+unnecessary Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
 and this driver was selecting CPU component as Platform component.
@@ -78,41 +79,60 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit 5f92229d184b ("ASoC: mxs: mxs-sgtl5000: don't select unnecessary Platform")
+Fixes: commit 717f16331712 ("ASoC: kirkwood: armada-370-db: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mxs/mxs-sgtl5000.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/kirkwood/armada-370-db.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index aa24d0d7c2e8..9841e1da9782 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -65,11 +65,13 @@ static const struct snd_soc_ops mxs_sgtl5000_hifi_ops = {
+diff --git a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
+index fcf84a54ad16..8c3c808bda9a 100644
+--- a/sound/soc/kirkwood/armada-370-db.c
++++ b/sound/soc/kirkwood/armada-370-db.c
+@@ -56,15 +56,18 @@ static const struct snd_soc_dapm_route a370db_route[] = {
  
- SND_SOC_DAILINK_DEFS(hifi_tx,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")),
+ SND_SOC_DAILINK_DEFS(analog,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("i2s")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "cs42l51-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "cs42l51-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- SND_SOC_DAILINK_DEFS(hifi_rx,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "sgtl5000")),
+ SND_SOC_DAILINK_DEFS(spdif_out,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("spdif")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dit-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dit-hifi")),
 +	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
- 	{
-@@ -124,6 +126,8 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
- 		mxs_sgtl5000_dai[i].codecs->of_node = codec_np;
- 		mxs_sgtl5000_dai[i].cpus->dai_name = NULL;
- 		mxs_sgtl5000_dai[i].cpus->of_node = saif_np[i];
-+		mxs_sgtl5000_dai[i].platforms->name = NULL;
-+		mxs_sgtl5000_dai[i].platforms->of_node = saif_np[i];
- 	}
+ SND_SOC_DAILINK_DEFS(spdif_in,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("spdif")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dir-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "dir-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- 	of_node_put(codec_np);
+ static struct snd_soc_dai_link a370db_dai[] = {
+ {
+@@ -108,18 +111,21 @@ static int a370db_probe(struct platform_device *pdev)
+ 	a370db_dai[0].cpus->of_node =
+ 		of_parse_phandle(pdev->dev.of_node,
+ 				 "marvell,audio-controller", 0);
++	a370db_dai[0].platforms->of_node = a370db_dai[0].cpus->of_node;
+ 
+ 	a370db_dai[0].codecs->of_node =
+ 		of_parse_phandle(pdev->dev.of_node,
+ 				 "marvell,audio-codec", 0);
+ 
+ 	a370db_dai[1].cpus->of_node = a370db_dai[0].cpus->of_node;
++	a370db_dai[1].platforms->of_node = a370db_dai[0].cpus->of_node;
+ 
+ 	a370db_dai[1].codecs->of_node =
+ 		of_parse_phandle(pdev->dev.of_node,
+ 				 "marvell,audio-codec", 1);
+ 
+ 	a370db_dai[2].cpus->of_node = a370db_dai[0].cpus->of_node;
++	a370db_dai[2].platforms->of_node = a370db_dai[0].cpus->of_node;
+ 
+ 	a370db_dai[2].codecs->of_node =
+ 		of_parse_phandle(pdev->dev.of_node,
 -- 
 2.20.1
