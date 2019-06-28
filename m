@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: imx-audmix: consider CPU-Platform
-	possibility" to the asoc tree
+Subject: Applied "ASoC: fsl: eukrea-tlv320: consider
+	CPU-Platform possibility" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:26 +0100 (BST)
-Message-ID: <20190628165626.5EFBD44004A@finisterre.sirena.org.uk>
-References: <87pnmyv5y3.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165626.D9B59440050@finisterre.sirena.org.uk>
+References: <87woh6v5yo.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7A06F89745
- for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:27 +0200 (CEST)
-In-Reply-To: <87pnmyv5y3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DA86F8973D
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:28 +0200 (CEST)
+In-Reply-To: <87woh6v5yo.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: imx-audmix: consider CPU-Platform possibility
+   ASoC: fsl: eukrea-tlv320: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,12 +55,12 @@ to this mail.
 Thanks,
 Mark
 
->From 9213866ac48fbe1f76211b5e539ef4e0011ddd0d Mon Sep 17 00:00:00 2001
+>From 68707c37017086c51b319098afb2cf6d6853ef57 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:47:35 +0900
-Subject: [PATCH] ASoC: fsl: imx-audmix: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:47:14 +0900
+Subject: [PATCH] ASoC: fsl: eukrea-tlv320: consider CPU-Platform possibility
 
-commit d8893261a7d32 ("ASoC: fsl: imx-audmix: don't select unnecessary
+commit 2058ea1c4f514a ("ASoC: fsl: eukrea-tlv320: don't select unnecessary
 Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
@@ -78,70 +78,37 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit d8893261a7d32 ("ASoC: fsl: imx-audmix: don't select unnecessary Platform")
+Fixes: commit 2058ea1c4f514a ("ASoC: fsl: eukrea-tlv320: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-audmix.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ sound/soc/fsl/eukrea-tlv320.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 9d41266a5264..9e1cb18859ce 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -207,8 +207,8 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 	for (i = 0; i < num_dai; i++) {
- 		struct snd_soc_dai_link_component *dlc;
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 1ed409d423c3..6f3b768489f6 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -63,7 +63,8 @@ static const struct snd_soc_ops eukrea_tlv320_snd_ops = {
  
--		/* for CPU/Codec x 2 */
--		dlc = devm_kzalloc(&pdev->dev, 4 * sizeof(*dlc), GFP_KERNEL);
-+		/* for CPU/Codec/Platform x 2 */
-+		dlc = devm_kzalloc(&pdev->dev, 6 * sizeof(*dlc), GFP_KERNEL);
- 		if (!dlc) {
- 			dev_err(&pdev->dev, "failed to allocate dai_link\n");
- 			return -ENOMEM;
-@@ -242,9 +242,11 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ SND_SOC_DAILINK_DEFS(hifi,
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
+-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic23-hifi")));
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic23-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
  
- 		priv->dai[i].cpus = &dlc[0];
- 		priv->dai[i].codecs = &dlc[1];
-+		priv->dai[i].platforms = &dlc[2];
+ static struct snd_soc_dai_link eukrea_tlv320_dai = {
+ 	.name		= "tlv320aic23",
+@@ -133,8 +134,10 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 		ext_port--;
  
- 		priv->dai[i].num_cpus = 1;
- 		priv->dai[i].num_codecs = 1;
-+		priv->dai[i].num_platforms = 1;
- 
- 		priv->dai[i].name = dai_name;
- 		priv->dai[i].stream_name = "HiFi-AUDMIX-FE";
-@@ -252,6 +254,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		priv->dai[i].codecs->name = "snd-soc-dummy";
- 		priv->dai[i].cpus->of_node = args.np;
- 		priv->dai[i].cpus->dai_name = dev_name(&cpu_pdev->dev);
-+		priv->dai[i].platforms->of_node = args.np;
- 		priv->dai[i].dynamic = 1;
- 		priv->dai[i].dpcm_playback = 1;
- 		priv->dai[i].dpcm_capture = (i == 0 ? 1 : 0);
-@@ -266,17 +269,20 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		be_cp = devm_kasprintf(&pdev->dev, GFP_KERNEL,
- 				       "AUDMIX-Capture-%d", i);
- 
--		priv->dai[num_dai + i].cpus = &dlc[2];
--		priv->dai[num_dai + i].codecs = &dlc[3];
-+		priv->dai[num_dai + i].cpus = &dlc[3];
-+		priv->dai[num_dai + i].codecs = &dlc[4];
-+		priv->dai[num_dai + i].platforms = &dlc[5];
- 
- 		priv->dai[num_dai + i].num_cpus = 1;
- 		priv->dai[num_dai + i].num_codecs = 1;
-+		priv->dai[num_dai + i].num_platforms = 1;
- 
- 		priv->dai[num_dai + i].name = be_name;
- 		priv->dai[num_dai + i].codecs->dai_name = "snd-soc-dummy-dai";
- 		priv->dai[num_dai + i].codecs->name = "snd-soc-dummy";
- 		priv->dai[num_dai + i].cpus->of_node = audmix_np;
- 		priv->dai[num_dai + i].cpus->dai_name = be_name;
-+		priv->dai[num_dai + i].platforms->name = "snd-soc-dummy";
- 		priv->dai[num_dai + i].no_pcm = 1;
- 		priv->dai[num_dai + i].dpcm_playback = 1;
- 		priv->dai[num_dai + i].dpcm_capture  = 1;
+ 		eukrea_tlv320_dai.cpus->of_node = ssi_np;
++		eukrea_tlv320_dai.platforms->of_node = ssi_np;
+ 	} else {
+ 		eukrea_tlv320_dai.cpus->dai_name = "imx-ssi.0";
++		eukrea_tlv320_dai.platforms->name = "imx-ssi.0";
+ 		eukrea_tlv320_dai.codecs->name = "tlv320aic23-codec.0-001a";
+ 		eukrea_tlv320.name = "cpuimx-audio";
+ 	}
 -- 
 2.20.1
