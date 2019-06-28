@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: fix memory leaks on sm, se and sbe" to the asoc tree
-Date: Fri, 28 Jun 2019 17:56:27 +0100 (BST)
-Message-ID: <20190628165627.CAB93440049@finisterre.sirena.org.uk>
-References: <20190627133208.9550-1-colin.king@canonical.com>
+Subject: Applied "ASoC: codecs: ad193x: Group register initialization at probe" to the asoc tree
+Date: Fri, 28 Jun 2019 17:56:28 +0100 (BST)
+Message-ID: <20190628165628.72AE544004F@finisterre.sirena.org.uk>
+References: <20190627120208.4661-1-codrin.ciubotariu@microchip.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190627133208.9550-1-colin.king@canonical.com>
+In-Reply-To: <20190627120208.4661-1-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: fix memory leaks on sm, se and sbe
+   ASoC: codecs: ad193x: Group register initialization at probe
 
 has been applied to the asoc tree at
 
@@ -37,63 +37,89 @@ to this mail.
 Thanks,
 Mark
 
->From 1ad741d0e8e8ecccc16aa9ccb8362575197d91bf Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 27 Jun 2019 14:32:08 +0100
-Subject: [PATCH] ASoC: topology: fix memory leaks on sm, se and sbe
+>From bc0a5f43d7d6ba5258a65cf00fa692845f128d3c Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Thu, 27 Jun 2019 15:02:07 +0300
+Subject: [PATCH] ASoC: codecs: ad193x: Group register initialization at probe
 
-Currently when a kstrdup fails the error exit paths don't free
-the allocations for sm, se and sbe.  This can be fixed by assigning
-kc[i].private_value to these before doing the ksrtdup so that the error
-exit path will be able to free these objects.
+Create a structure with the register initialization values at probe and
+use it to initialize all the registers at once.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 9f90af3a9952 ("ASoC: topology: Consolidate and fix asoc_tplg_dapm_widget_*_create flow")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ad193x.c | 52 +++++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index fc1f1d6f9e92..dc463f1a9e24 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1326,10 +1326,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 		dev_dbg(tplg->dev, " adding DAPM widget mixer control %s at %d\n",
- 			mc->hdr.name, i);
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 05f4514048e2..f3bab8fe3579 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -415,6 +415,38 @@ static struct snd_soc_dai_driver ad193x_no_adc_dai = {
+ 	.ops = &ad193x_dai_ops,
+ };
  
-+		kc[i].private_value = (long)sm;
- 		kc[i].name = kstrdup(mc->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
- 			goto err_sm;
--		kc[i].private_value = (long)sm;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = mc->hdr.access;
++struct ad193x_reg_default {
++	unsigned int reg;
++	unsigned int val;
++};
++
++/* codec register values to set after reset */
++static void ad193x_reg_default_init(struct ad193x_priv *ad193x)
++{
++	const struct ad193x_reg_default reg_init[] = {
++		{  0, 0x99 },	/* PLL_CLK_CTRL0: pll input: mclki/xi 12.288Mhz */
++		{  1, 0x04 },	/* PLL_CLK_CTRL1: no on-chip Vref */
++		{  2, 0x40 },	/* DAC_CTRL0: TDM mode */
++		{  4, 0x1A },	/* DAC_CTRL2: 48kHz de-emphasis, unmute dac */
++		{  5, 0x00 },	/* DAC_CHNL_MUTE: unmute DAC channels */
++	};
++	const struct ad193x_reg_default reg_adc_init[] = {
++		{ 14, 0x03 },	/* ADC_CTRL0: high-pass filter enable */
++		{ 15, 0x43 },	/* ADC_CTRL1: sata delay=1, adc aux mode */
++	};
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(reg_init); i++)
++		regmap_write(ad193x->regmap, reg_init[i].reg, reg_init[i].val);
++
++	if (ad193x_has_adc(ad193x)) {
++		for (i = 0; i < ARRAY_SIZE(reg_adc_init); i++) {
++			regmap_write(ad193x->regmap, reg_adc_init[i].reg,
++				     reg_adc_init[i].val);
++		}
++	}
++}
++
+ static int ad193x_component_probe(struct snd_soc_component *component)
+ {
+ 	struct ad193x_priv *ad193x = snd_soc_component_get_drvdata(component);
+@@ -422,25 +454,7 @@ static int ad193x_component_probe(struct snd_soc_component *component)
+ 	int num, ret;
  
-@@ -1412,10 +1412,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 		dev_dbg(tplg->dev, " adding DAPM widget enum control %s\n",
- 			ec->hdr.name);
+ 	/* default setting for ad193x */
+-
+-	/* unmute dac channels */
+-	regmap_write(ad193x->regmap, AD193X_DAC_CHNL_MUTE, 0x0);
+-	/* de-emphasis: 48kHz, powedown dac */
+-	regmap_write(ad193x->regmap, AD193X_DAC_CTRL2, 0x1A);
+-	/* dac in tdm mode */
+-	regmap_write(ad193x->regmap, AD193X_DAC_CTRL0, 0x40);
+-
+-	/* adc only */
+-	if (ad193x_has_adc(ad193x)) {
+-		/* high-pass filter enable */
+-		regmap_write(ad193x->regmap, AD193X_ADC_CTRL0, 0x3);
+-		/* sata delay=1, adc aux mode */
+-		regmap_write(ad193x->regmap, AD193X_ADC_CTRL1, 0x43);
+-	}
+-
+-	/* pll input: mclki/xi */
+-	regmap_write(ad193x->regmap, AD193X_PLL_CLK_CTRL0, 0x99); /* mclk=24.576Mhz: 0x9D; mclk=12.288Mhz: 0x99 */
+-	regmap_write(ad193x->regmap, AD193X_PLL_CLK_CTRL1, 0x04);
++	ad193x_reg_default_init(ad193x);
  
-+		kc[i].private_value = (long)se;
- 		kc[i].name = kstrdup(ec->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
- 			goto err_se;
--		kc[i].private_value = (long)se;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = ec->hdr.access;
- 
-@@ -1524,10 +1524,10 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 			"ASoC: adding bytes kcontrol %s with access 0x%x\n",
- 			be->hdr.name, be->hdr.access);
- 
-+		kc[i].private_value = (long)sbe;
- 		kc[i].name = kstrdup(be->hdr.name, GFP_KERNEL);
- 		if (kc[i].name == NULL)
- 			goto err_sbe;
--		kc[i].private_value = (long)sbe;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 		kc[i].access = be->hdr.access;
- 
+ 	/* adc only */
+ 	if (ad193x_has_adc(ad193x)) {
 -- 
 2.20.1
