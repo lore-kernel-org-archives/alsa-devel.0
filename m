@@ -1,50 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] sound/soc/codecs/tas5720.c: add ACPI support
-Date: Fri, 28 Jun 2019 15:30:37 +0100
-Message-ID: <20190628143037.GH5379@sirena.org.uk>
-References: <20190628123416.16298-1-nikolaus.voss@loewensteinmedical.de>
+Subject: Re: [PATCH v2 116/146] ASoC: sof: use modern dai_link
+ style
+Date: Fri, 28 Jun 2019 11:52:29 +0100
+Message-ID: <20190628105229.GF5379@sirena.org.uk>
+References: <87h893mkvi.wl-kuninori.morimoto.gx@renesas.com>
+ <87sgsnfjge.wl-kuninori.morimoto.gx@renesas.com>
+ <CAEnQRZBnvfuZDbnvbmqAavh9DAbA_EeRc6OuH6OOiR1WB4zUrg@mail.gmail.com>
+ <8761d853-2b3f-7b26-0073-05d0c3ce1362@linux.intel.com>
+ <87d0iytqi8.wl-kuninori.morimoto.gx@renesas.com>
+ <288441e7-eaa7-8005-4026-97c31125375b@linux.intel.com>
+ <87blyirz3j.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TBNym+cBXeFsS4Vs"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190628123416.16298-1-nikolaus.voss@loewensteinmedical.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andreas Dannenberg <dannenberg@ti.com>, "Andrew F. Davis" <afd@ti.com>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, nv@vosn.de
+Content-Type: multipart/mixed; boundary="===============6233075968095917821=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90957F80768
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:28:16 +0200 (CEST)
+In-Reply-To: <87blyirz3j.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, paul.olaru@nxp.com, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---TBNym+cBXeFsS4Vs
+--===============6233075968095917821==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="R6sEYoIZpp9JErk7"
+Content-Disposition: inline
+
+
+--R6sEYoIZpp9JErk7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 28, 2019 at 02:34:16PM +0200, Nikolaus Voss wrote:
-> Add support for ACPI enumeration for tas5720 and tas5722.
-> Use device_match API to unify access to driver data for DT and ACPI.
-> Aggregate variant stuff into its own struct and directly reference
-> it in variant data for i2c/of/acpi_device_id.
+On Fri, Jun 28, 2019 at 03:43:47PM +0900, Kuninori Morimoto wrote:
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+> Originally "Platform" component is for "DMA" transfer
+> (But I'm not sure detail. It had been exist when I started to work for ALSA SoC...)
+> But in many SoC, "CPU" component is doing it.
+> Some SoC needs special "Platform" in my understanding.
 
-There's a huge amount of refactoring in here as well as the enumeration
-changes, please split this up into a patch series as covered in
-submitting-patches.rst for review.
+Right, most systems needed a separate driver for DMA historically - they
+still do but for a lot of them it's now done less visibly by the
+dmaengine integration.
 
---TBNym+cBXeFsS4Vs
+--R6sEYoIZpp9JErk7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0WJIwACgkQJNaLcl1U
-h9Bvewf+JKdAlitakvrWEvLfVQ1ffjq8q2owD1IJsFcSFOLRl7mlZG1Hoq03PBBZ
-lpYSKn/+9tbAlpNf6WYSCaNX9zvzGX0CJoHuOkVEap6zPFkWlYTqg8AlqEuFhM3c
-di65cqFmifwWxkbRgHnl05I9cJXwCnm49Jkdd3dyNMpBhVtCVVk6W8NRt87/ODpR
-b1iYRsLgSODnRju4Bs7H9NRmUhcNm8u0UFuV/WYfJLQB26Gsw9OrzBtvrjOssLOj
-94HOzJlteXbHSpHKfL4SUliE7E3f+eRMjqTkxyswoJOUuwx/z9aKVlkDk2MiltRG
-Uj9hG/2v/ooD/eenWJWkK082wI0FYg==
-=LAqe
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0V8WsACgkQJNaLcl1U
+h9Cd0gf/T04+KAAwA25BjlRZzu/+apWZ1sB1mUsOgy4LpiuX4E60Z5RNhh1xMZvD
+ax/GTp7n8ZwU0ERND3jTtkyaFhCc1pNNFBdr0MU+2Er3hymrlXnrTK9DcELm05mW
++WXta28oyebItyy5WfI410ym9InuD2P+pkBX3gc+wMOxIYOyQy/c1QJoZWZre0uR
+CbrFpfOr47XXwKGhlDi7RK0tg7rm40NbUbvPEIpXf0STA+zhkYRUeyuMVZIa6fQ0
+KeAFrszGLbgPJM/KY8BbcN19CqZkMcErrg7erJhnmFsLqwQKxDSuKgRUsKybJZWh
+sCV8qMgwLKB2/AefBhX5O2857fEg+w==
+=HwUX
 -----END PGP SIGNATURE-----
 
---TBNym+cBXeFsS4Vs--
+--R6sEYoIZpp9JErk7--
+
+--===============6233075968095917821==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6233075968095917821==--
