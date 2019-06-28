@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: davinci-evm: consider CPU-Platform
+Subject: Applied "ASoC: qcom: consider CPU-Platform
 	possibility" to the asoc tree
 Date: Fri, 28 Jun 2019 17:56:23 +0100 (BST)
-Message-ID: <20190628165624.00006440049@finisterre.sirena.org.uk>
-References: <87sgrutras.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190628165623.4979044004B@finisterre.sirena.org.uk>
+References: <87imsqtr9y.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 235E4F896B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 336A6F896EC
  for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2019 18:56:24 +0200 (CEST)
-In-Reply-To: <87sgrutras.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87imsqtr9y.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: davinci-evm: consider CPU-Platform possibility
+   ASoC: qcom: consider CPU-Platform possibility
 
 has been applied to the asoc tree at
 
@@ -55,13 +55,12 @@ to this mail.
 Thanks,
 Mark
 
->From 44e578150f48e9e2517b41cdcababde0b0d0bfa4 Mon Sep 17 00:00:00 2001
+>From 0751154fda401d76d7ff025a9ca63678bf4ca021 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 10:49:18 +0900
-Subject: [PATCH] ASoC: ti: davinci-evm: consider CPU-Platform possibility
+Date: Fri, 28 Jun 2019 10:49:48 +0900
+Subject: [PATCH] ASoC: qcom: consider CPU-Platform possibility
 
-commit f46da1b9046e ("ASoC: ti: davinci-evm: don't select unnecessary
-Platform")
+commit 0814c6412967 ("ASoC: qcom: don't select unnecessary Platform")
 
 Current ALSA SoC avoid to add duplicate component to rtd,
 and this driver was selecting CPU component as Platform component.
@@ -78,35 +77,27 @@ though it is same as CPU.
 It is depends on CPU driver, but is difficult to know it from Card driver.
 This patch reverts above patch.
 
-Fixes: commit f46da1b9046e ("ASoC: ti: davinci-evm: don't select unnecessary Platform")
+Fixes: commit 0814c6412967 ("ASoC: qcom: don't select unnecessary Platform")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/davinci-evm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/qcom/common.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
-index 6bac902bacf1..bfd8d1a03ba7 100644
---- a/sound/soc/ti/davinci-evm.c
-+++ b/sound/soc/ti/davinci-evm.c
-@@ -353,7 +353,8 @@ static struct snd_soc_card da850_snd_soc_card = {
-  */
- SND_SOC_DAILINK_DEFS(evm,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic3x-hifi")));
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "tlv320aic3x-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index adf49b198754..97488b5cc515 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -103,9 +103,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			link->codecs	 = dlc;
+ 			link->num_codecs = 1;
  
- static struct snd_soc_dai_link evm_dai_tlv320aic3x = {
- 	.name		= "TLV320AIC3X",
-@@ -407,6 +408,8 @@ static int davinci_evm_probe(struct platform_device *pdev)
- 	if (!dai->cpus->of_node)
- 		return -EINVAL;
- 
-+	dai->platforms->of_node = dai->cpus->of_node;
-+
- 	evm_soc_card.dev = &pdev->dev;
- 	ret = snd_soc_of_parse_card_name(&evm_soc_card, "ti,model");
- 	if (ret)
+-			link->platforms = NULL;
+-			link->num_platforms = 0;
+-
++			link->platforms->of_node = link->cpus->of_node;
+ 			link->codecs->dai_name = "snd-soc-dummy-dai";
+ 			link->codecs->name = "snd-soc-dummy";
+ 			link->dynamic = 1;
 -- 
 2.20.1
