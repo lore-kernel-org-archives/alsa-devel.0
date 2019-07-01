@@ -1,74 +1,97 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [Xen-devel] [PATCH] ALSA: xen-front: fix unintention integer
- overflow on left shifts
-Date: Mon, 1 Jul 2019 08:46:02 +0300
-Message-ID: <de93db15-c85f-3108-22c3-75b89a3a2e59@gmail.com>
-References: <20190627165853.21864-1-colin.king@canonical.com>
- <s5hv9wq6qrg.wl-tiwai@suse.de>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [RFC PATCH 1/5] dt-bindings: soundwire: add slave bindings
+Date: Mon, 1 Jul 2019 11:41:55 +0530
+Message-ID: <20190701061155.GJ2911@vkoul-mobl>
+References: <20190611104043.22181-1-srinivas.kandagatla@linaro.org>
+ <20190611104043.22181-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hv9wq6qrg.wl-tiwai@suse.de>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190611104043.22181-2-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Colin King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, xen-devel@lists.xenproject.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, bgoswami@quicinc.com
 List-Id: alsa-devel@alsa-project.org
 
-On 6/28/19 11:46 AM, Takashi Iwai wrote:
-> On Thu, 27 Jun 2019 18:58:53 +0200,
-> Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Shifting the integer value 1 is evaluated using 32-bit
->> arithmetic and then used in an expression that expects a 64-bit
->> value, so there is potentially an integer overflow. Fix this
->> by using the BIT_ULL macro to perform the shift.
->>
->> Addresses-Coverity: ("Unintentional integer overflow")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Thank you for you patch,
-Oleksandr
-> The fix is correct, but luckily we didn't hit the integer overflow, as
-> all passed values are less than 32bit.
->
-> In anyway, applied now.  Thanks.
->
->
-> Takashi
->
->> ---
->>   sound/xen/xen_snd_front_alsa.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
->> index b14ab512c2ce..e01631959ed8 100644
->> --- a/sound/xen/xen_snd_front_alsa.c
->> +++ b/sound/xen/xen_snd_front_alsa.c
->> @@ -196,7 +196,7 @@ static u64 to_sndif_formats_mask(u64 alsa_formats)
->>   	mask = 0;
->>   	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
->>   		if (pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa) & alsa_formats)
->> -			mask |= 1 << ALSA_SNDIF_FORMATS[i].sndif;
->> +			mask |= BIT_ULL(ALSA_SNDIF_FORMATS[i].sndif);
->>   
->>   	return mask;
->>   }
->> @@ -208,7 +208,7 @@ static u64 to_alsa_formats_mask(u64 sndif_formats)
->>   
->>   	mask = 0;
->>   	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
->> -		if (1 << ALSA_SNDIF_FORMATS[i].sndif & sndif_formats)
->> +		if (BIT_ULL(ALSA_SNDIF_FORMATS[i].sndif) & sndif_formats)
->>   			mask |= pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa);
->>   
->>   	return mask;
->> -- 
->> 2.20.1
->>
->>
-> _______________________________________________
-> Xen-devel mailing list
-> Xen-devel@lists.xenproject.org
-> https://lists.xenproject.org/mailman/listinfo/xen-devel
+On 11-06-19, 11:40, Srinivas Kandagatla wrote:
+> This patch adds bindings for Soundwire Slave devices which includes how
+> SoundWire enumeration address is represented in SoundWire slave device
+> tree nodes.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/soundwire/bus.txt     | 48 +++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soundwire/bus.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/soundwire/bus.txt b/Documentation/devicetree/bindings/soundwire/bus.txt
+> new file mode 100644
+> index 000000000000..19a672b0d528
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soundwire/bus.txt
+
+The bindings are for slave right and the file is bus.txt?
+
+> @@ -0,0 +1,48 @@
+> +SoundWire bus bindings.
+> +
+> +SoundWire is a 2-pin multi-drop interface with data and clock line.
+> +It facilitates development of low cost, efficient, high performance systems.
+> +
+> +SoundWire controller bindings are very much specific to vendor.
+> +
+> +Child nodes(SLAVE devices):
+> +Every SoundWire controller node can contain zero or more child nodes
+> +representing slave devices on the bus. Every SoundWire slave device is
+> +uniquely determined by the enumeration address containing 5 fields:
+> +SoundWire Version, Instance ID, Manufacturer ID, Part ID and Class ID
+> +for a device. Addition to below required properties, child nodes can
+> +have device specific bindings.
+> +
+> +Required property for SoundWire child node if it is present:
+> +- compatible:	 "sdwVER,MFD,PID,CID". The textual representation of
+> +		  SoundWire Enumeration address comprising SoundWire
+> +		  Version, Manufacturer ID, Part ID and Class ID,
+> +		  shall be in lower-case hexadecimal with leading
+> +		  zeroes suppressed.
+> +		  Version number '0x10' represents SoundWire 1.0
+> +		  Version number '0x11' represents SoundWire 1.1
+> +		  ex: "sdw10,0217,2010,0"
+
+any reason why we want to code version number and not say sdw,1.0,...
+and so on?
+
+> +
+> +- sdw-instance-id: Should be ('Instance ID') from SoundWire
+> +		  Enumeration Address. Instance ID is for the cases
+> +		  where multiple Devices of the same type or Class
+> +		  are attached to the bus.
+
+instance id is part of the 48bit device id, so wont it make sense to add
+that to compatible as well?
+
+> +
+> +SoundWire example for Qualcomm's SoundWire controller:
+> +
+> +soundwire@c2d0000 {
+> +	compatible = "qcom,soundwire-v1.5.0"
+> +	reg = <0x0c2d0000 0x2000>;
+> +
+> +	spkr_left:wsa8810-left{
+> +		compatible = "sdw10,0217,2010,0";
+> +		sdw-instance-id = <1>;
+> +		...
+> +	};
+> +
+> +	spkr_right:wsa8810-right{
+> +		compatible = "sdw10,0217,2010,0";
+> +		sdw-instance-id = <2>;
+> +		...
+> +	};
+> +};
+> -- 
+> 2.21.0
+
+-- 
+~Vinod
