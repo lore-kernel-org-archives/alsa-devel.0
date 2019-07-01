@@ -1,24 +1,20 @@
-From: nick83ola <nick83ola@gmail.com>
-Subject: Re: [BUG] Line6 Helix / X Stomp:
- parse_audio_format_rates_v2v3(): unable to retrieve number of sample rates
- (clock 16)
-Date: Mon, 1 Jul 2019 12:55:34 +0100
-Message-ID: <CABPh3UN-P4kZY3nYqDvi2-3eMGm3_BCGUPzhHq2iWRpkk196kg@mail.gmail.com>
-References: <CABPh3UNCZhssHLmZF2paU4EKOK1WKScbC7Vw=uGfJn7WUeXO3Q@mail.gmail.com>
- <8fd64743-fc0e-a536-2099-a0e0adbe83d4@jensverwiebe.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: GIT: Regarding the issue we are facing in the
+ commit 37728639ae05de702825d96bd1d42e24ae772248
+Date: Mon, 1 Jul 2019 14:32:37 +0200
+Message-ID: <645a08c3-0e40-6148-3831-4987bf7d0673@perex.cz>
+References: <1561976891-17886-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76490F80CC4
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2019 13:55:46 +0200 (CEST)
-Received: by mail-lj1-x242.google.com with SMTP id v24so12843664ljg.13
- for <alsa-devel@alsa-project.org>; Mon, 01 Jul 2019 04:55:46 -0700 (PDT)
-In-Reply-To: <8fd64743-fc0e-a536-2099-a0e0adbe83d4@jensverwiebe.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6309F89670
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2019 14:32:41 +0200 (CEST)
+In-Reply-To: <1561976891-17886-1-git-send-email-vanitha.channaiah@in.bosch.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,131 +24,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jens Verwiebe <info@jensverwiebe.de>
-Cc: alsa-devel@alsa-project.org
+To: vanitha.channaiah@in.bosch.com
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 27 Jun 2019 at 17:22, Jens Verwiebe <info@jensverwiebe.de> wrote:
->
-> Hi Nick
->
-> This looks like the same hurdle i once had with Helix.
->
-> Imho you should first try my patch to format.c and extend the
-> vendor/model clause to your device:
->
-> diff --git a/sound/usb/format.c b/sound/usb/format.c
-> index 2c44386..1c0107d 100644
-> --- a/sound/usb/format.c
-> +++ b/sound/usb/format.c
-> @@ -298,6 +298,20 @@ static int parse_audio_format_rates_v2(struct
-> snd_usb_audio *chip,
->           goto err;
->       }
->
-> +    /*
-> +    * Line6 HELIX does not respond to sample rate
-> +    * query requests. The only valid rate is 48000.
-> +    */
-> +    if (chip->usb_id == USB_ID(0x0e41, 0x4244)) {
-> +        fp->nr_rates = 1;
-> +            fp->rate_min = 48000;
-> +            fp->rate_max = 48000;
-> +            fp->rates = SNDRV_PCM_RATE_48000;
-> +            fp->rate_table = kmalloc(sizeof(int), GFP_KERNEL);
-> +            fp->rate_table[0] = 48000;
-> +            return 0;
-> +        }
-> +
->       /* get the number of sample rates first by only fetching 2 bytes */
->       ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_RANGE,
->                     USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
->
-
-I can confirm that your patch get the device recognized in kernel 5.2
-(I modfied it a bit).
-I'll work on this a bit and try to submit a patch to alsa to at least
-having the device available.
-Regarding the second part ( get_usb_high_speed_rate(rate + 5);)
-I think I have to debug it better because I don't think it can be
-accepted upstream.
-(maybe someone from the mailing list can help?)
-
-> I personally encountered still slight pops from time to time which i
-> "healed" with an ugly second patch:
->
-> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-> index c90607e..026095a 100644
-> --- a/sound/usb/endpoint.c
-> +++ b/sound/usb/endpoint.c
-> @@ -878,6 +878,8 @@ int snd_usb_endpoint_set_params(struct
-> snd_usb_endpoint *ep,
->
->       if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL)
->           ep->freqn = get_usb_full_speed_rate(rate);
-> +    else if (USB_ID(0x0e41, 0x4244))
-> +        ep->freqn = get_usb_high_speed_rate(rate + 5); // ugly helix hack
->       else
->           ep->freqn = get_usb_high_speed_rate(rate);
->
->
-> I still never could get the Line6 device to really follow the
-> syncadaption in 16.16 format.
->
-> I tried all kinda voodoo like endpoint redirection ( like axe fx needs )
-> to no avail. Perhaps you have better ideas.
->
-> I would be very interested in getting Line6 devices usb-compliant mode
-> working 100 % reliable.
->
-> The dream would be to have all samplerates. Btw:: i have sniffed data
-> from Helix connected to a windows machine,
->
-> ioreg data from helix connected to an OSX(macOS)  machine and even a bit
-> experimented with retdec on the windows drivers ;).
->
-> This for now, 'am just on the jump to the Hamburg Linux Group :)
->
-> Lets stay in contact about this stuff.
->
-> Cheers ... Jens
->
->
-> Am 27.06.19 um 09:45 schrieb nick83ola:
-> > Hi all,
-> > I just purchased an HX stomp and when I connect to linux I get the
-> > following error message:
-> >
-> >      [  322.404503] usb 1-6: new high-speed USB device number 13 using xhci_hcd
-> >      [  322.531804] usb 1-6: New USB device found, idVendor=0e41,
-> > idProduct=4246, bcdDevice= 2.00
-> >      [  322.531806] usb 1-6: New USB device strings: Mfr=1, Product=3,
-> > SerialNumber=2
-> >      [  322.531806] usb 1-6: Product: HX Stomp
-> >      [  322.531807] usb 1-6: Manufacturer: LINE 6
-> >      [  322.531808] usb 1-6: SerialNumber:    3021888
-> >      [  322.535789] usb 1-6: parse_audio_format_rates_v2v3(): unable to
-> > retrieve number of sample rates (clock 16)
-> >      [  322.535907] usb 1-6: parse_audio_format_rates_v2v3(): unable to
-> > retrieve number of sample rates (clock 16)
-> >
-> > I have some kernel development experience but not a lot with usb so
-> > can someone point me where to start looking?
-> >
-> > there was a previous discussion on the mailing list related to this by
-> > Jens Verwiebe (and other request for help).
-> > Here are the relevant patches/discussion
-> >
-> >      https://www.spinics.net/lists/alsa-devel/msg71459.html
-> >      https://patchwork.kernel.org/patch/10113121/
-> >
-> > If someone can help me I have an HX stomp here and time to do some debugging.
-> >
-> > Also if someone from Line6 is listening would be helpful to have some hints.
-> >
-> > Cheers
-> > Nicola Lunghi
-> >
-> --
->
-> Jens Verwiebe
+RG5lIDAxLiAwNy4gMTkgdiAxMjoyOCB2YW5pdGhhLmNoYW5uYWlhaEBpbi5ib3NjaC5jb20gbmFw
+c2FsKGEpOgo+IAo+IFRoaXMgbWFpbCBpcyByZWdhcmRpbmcgdGhlIGZpeCBhdCBiZWxvdzoKPiBj
+b21taXQgMzc3Mjg2MzlhZTA1ZGU3MDI4MjVkOTZiZDFkNDJlMjRhZTc3MjI0OAo+IEF1dGhvcjog
+SmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4KPiBEYXRlOiAgIFNhdCBGZWIgNyAxNTow
+MTozMSAyMDA0ICswMAo+IFRoZSBjb21taXQgaGFzIGZvbGxvd2luZyBjaGFuZ2VzIDoKPiAgCj4g
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiBjb2RlICoqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqCj4gc3RhdGljIGludCBzbmRfcGNtX3JhdGVfaHdfcmVmaW5l
+X2NjaGFuZ2Uoc25kX3BjbV90ICpwY20sIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcmFtcywKPiAJ
+CQkJCSAgc25kX3BjbV9od19wYXJhbXNfdCAqc3BhcmFtcykKPiB7Cj4gCj4gKyAgICAgICBidWZm
+ZXJfc2l6ZSA9IHNuZF9wY21faHdfcGFyYW1fZ2V0X2ludGVydmFsKHBhcmFtcywgU05EX1BDTV9I
+V19QQVJBTV9CVUZGRVJfU0laRSk7Cj4gKyAgICAgICAvKgo+ICsgICAgICAgICogdGhpcyBjb25k
+aXRpb24gcHJvYmFibHkgbmVlZHMgbW9yZSB3b3JrOgo+ICsgICAgICAgICogICBpbiBjYXNlIHdo
+ZW4gdGhlIGJ1ZmZlcl9zaXplIGlzIGtub3duIGFuZCB3ZSBhcmUgbG9va2luZwo+ICsgICAgICAg
+ICogICBmb3IgYmVzdCBwZXJpb2Rfc2l6ZSwgd2Ugc2hvdWxkIHByZWZlciBzaXR1YXRpb24gd2hl
+bgo+ICsgICAgICAgICogICAoYnVmZmVyX3NpemUgLyBwZXJpb2Rfc2l6ZSkgKiBwZXJpb2Rfc2l6
+ZSA9PSBidWZmZXJfc2l6ZQo+ICsgICAgICAgICovCj4gKyAgICAgICBpZiAoc25kX2ludGVydmFs
+X3NpbmdsZShidWZmZXJfc2l6ZSkgJiYgYnVmZmVyX3NpemUtPmludGVnZXIpIHsKPiArICAgICAg
+ICAgICAgICAgc25kX2ludGVydmFsX3QgKnBlcmlvZF9zaXplOwo+ICsgICAgICAgICAgICAgICBw
+ZXJpb2Rfc2l6ZSA9IChzbmRfaW50ZXJ2YWxfdCAqKXNuZF9wY21faHdfcGFyYW1fZ2V0X2ludGVy
+dmFsKHBhcmFtcywgU05EX1BDTV9IV19QQVJBTV9QRVJJT0RfU0laRSk7Cj4gKyAgICAgICAgICAg
+ICAgIGlmICghc25kX2ludGVydmFsX2NoZWNrZW1wdHkocGVyaW9kX3NpemUpICYmCj4gKyAgICAg
+ICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZS0+b3Blbm1pbiAmJiBwZXJpb2Rfc2l6ZS0+b3Blbm1h
+eCAmJgo+ICsgICAgICAgICAgICAgICAgICAgcGVyaW9kX3NpemUtPm1pbiArIDEgPT0gcGVyaW9k
+X3NpemUtPm1heCkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmICgoYnVmZmVyX3NpemUt
+Pm1pbiAvIHBlcmlvZF9zaXplLT5taW4pICogcGVyaW9kX3NpemUtPm1pbiA9PSBidWZmZXJfc2l6
+ZS0+bWluKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzbmRfaW50ZXJ2YWxf
+c2V0X3ZhbHVlKHBlcmlvZF9zaXplLCBwZXJpb2Rfc2l6ZS0+bWluKTsKPiArICAgICAgICAgICAg
+ICAgICAgICAgICB9IGVsc2UgaWYgKChidWZmZXJfc2l6ZS0+bWF4IC8gcGVyaW9kX3NpemUtPm1h
+eCkgKiBwZXJpb2Rfc2l6ZS0+bWF4ID09IGJ1ZmZlcl9zaXplLT5tYXgpIHsKPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHNuZF9pbnRlcnZhbF9zZXRfdmFsdWUocGVyaW9kX3NpemUs
+IHBlcmlvZF9zaXplLT5tYXgpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIH0KPiArICAgICAg
+ICAgICAgICAgfQo+ICsgICAgICAgfQo+IH0KPiAqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqIGNvZGUgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+ICAKPiBV
+cGRhdGUgcmF0ZSBkZXBlbmRpbmcgb24gcGVyaW9kX3NpemUgYW5kIHBlcmlvZF90aW1lLgo+IElz
+c3VlIGZvdW5kIGluIEhhcmR3YXJlIDogCj4gYS4gUkNBUiBzYWx2YXRvci14cyB3aGljaCBzdXBw
+b3J0cyAyIGNoYW5uZWwuCj4gYi4gSU1YIHdoaWNoIHN1cHBvcnRzIDggY2hhbm5lbC4KPiAgCj4g
+MS4gVXNlY2FzZSB3aGljaCBpcyBQQVNTRUQgd2l0aG91dCB0aGUgbWVudGlvbmVkIGNvbW1pdCBh
+bmQgRkFJTEVEIHdpdGggdGhlIGNvbW1pdC4KPiAKPiBGb3IgdGhlIHVzZWNhc2Ugd2l0aCBiZWxv
+dyBjb21tYW5kIDogcmF0ZSA9IDExMDI1IGNoYW5uZWwgPSA2Cj4gIAo+ICRhcGxheSAtRGVudGVy
+dGFpbm1lbnRfbWFpbiAtcjExMDI1IC1jNiAtZlMxNl9MRSAvZGV2L3VyYW5kb20KPiAKPiAKPiBh
+LiBXaXRoIHRoZSBjb21taXQ6Cj4gIAo+IEluIHRoZSBjYWxjdWxhdGlvbiBvZiBSQVRFIGF0IFJ1
+bGUgNzoKPiBSQVRFPTExMDI1Cj4gZGVwZW5kZW50IHBhcmFtZXRlcnMgYXJlOiAKPiBQRVJJT0Rf
+U0laRT04OCBQRVJJT0RfVElNRT04MDAwCj4gIAo+IHBhcmFtZXRlcnMJCW1pbgkJbWF4CQlvcGVu
+X21pbgkJb3Blbl9tYXgJCWludGVydmFsCj4gCj4gUEVSSU9EX1NJWkUJCTg4CQk4OAkJMAkJCTAJ
+CQkwCj4gUEVSSU9fVElNRQkJODAwMAkJODAwMAkJMAkJCTAJCQkwCj4gUkFURQkJCTExMDI1CQkx
+MTAwMAkJMAkJCTAJCQkxCj4gCj4gCj4gUkFURSB2YWx1ZXMgYXJlIGNhbGN1bGF0ZWQgaW4gc25k
+X2ludGVydmFsX3JlZmluZSgpCj4gUmV0dXJuIHZhbHVlOiAgSU5WQUxJRCBhcyByYXRlX21pbiA+
+IHJhdGVfbWF4Cj4gIAo+IFRoaXMgaXMgYmVjYXVzZSwgZGVwZW5kZW50IHBhcmFtZXRlciDigJxw
+ZXJpb2Rfc2l6ZeKAnSBpcyByb3VuZGVkIHRvIDg4IGluIOKAnHJhdGUgcGx1Z2lu4oCdIGluIHNu
+ZF9wY21fcmF0ZV9od19yZWZpbmVfY2NoYW5nZSgpCj4gCj4gU2luY2UsIHRoZSBiZWxvdyBjb25k
+aXRpb24gZ2V0cyBzYXRpc2ZpZWQoYnVmZmVyX3NpemUgPSAzNTIgYWxpZ25lZCB0byBwZXJpb2Rf
+c2l6ZSA9IDg4KSwgcGVyaW9kX3NpemUgZ2V0cyByb3VuZGVkIHRvIDg4Lgo+IGlmICgoYnVmZmVy
+X3NpemUtPm1pbiAvIHBlcmlvZF9zaXplLT5taW4pICogcGVyaW9kX3NpemUtPm1pbiA9PSBidWZm
+ZXJfc2l6ZS0+bWluKSB7Cj4gIAo+IFRoaXMgY29tbWl0IGNoYW5nZXMgY2F1c2luZyB0aGUgaXNz
+dWUgdG8gZ2V0IHJhdGVfbWluID4gcmF0ZV9tYXguCj4gCj4gVGhlIGZsb3cgb2YgY29kZSBleGVj
+dXRpb24gaXMgYXMgZm9sbG93czoKPiAtICAgc25kX3BjbV9od19yZWZpbmVfc2xhdmUoKSAgCj4g
+LQlFbnRlcnMgc25kX3BjbV9yYXRlX2h3X3JlZmluZV9jY2hhbmdlKCksIHJvdW5kaW5nIG9mIHBl
+cmlvZF9zaXplIHRvIDg4Lgo+IC0gICBzbmRfcGNtX3JhdGVfaHdfcmVmaW5lX2NjaGFuZ2UoKSBl
+eGl0Lgo+IC0gICBzbmRfcGNtX2h3X3JlZmluZV9zb2Z0KCkgaXMgY2FsbGVkLCBoZXJlIGV4aXN0
+cyBwYXJhbXMtPnJtYXNrIHRvIGV2YWx1YXRlIGZvciBTQU1QTEVfQklUUywgRlJBTUVfQklUUywg
+UEVSSU9EX0JZVEVTLCBCVUZGRVJfQllURVMKPiAtICAgZXhlY3V0aW9uIG9mIFJVTEVTIGNhbGN1
+bGF0aW9uLgo+IEF0IFJVTEUgNyByYXRlIGNhbGN1bGF0aW9uIElOVkFMSUQgZXJyb3IgaXMgb2Jz
+ZXJ2ZWQuCj4gCj4gYi4gV2l0aG91dCB0aGUgY29tbWl0Ogo+IEluIHRoZSBjYXNlIGlmIHBlcmlv
+ZF9zaXplIGRvZXNu4oCZdCBnZXQgcm91bmRlZCBvZmYgdG8gODgsIHRoZSB1c2VjYXNlIHdvdWxk
+IGdldCBQQVNTRUQuCj4gUmF0ZSBjYWxjdWxhdGlvbiBnb2VzIGZpbmUgd2l0aCBwZXJpb2Rfc2l6
+ZSBvcGVuIGludGVydmFsICg4OCwgODkpCj4gIAo+IHBhcmFtZXRlcnMJCQltaW4JCQltYXgJCQlv
+cGVuX21pbgkJb3Blbl9tYXgJCQlpbnRlcnZhbAo+IAo+IFBFUklPRF9TSVpFCQkJODgJCQk4OQkJ
+CTAJCQkwCQkJCTAKPiBQRVJJT0RfVElNRQkJCTgwMDAJCQk4MDAwCQkJMAkJCTAJCQkJMAo+IFJB
+VEUJCQkJMTEwMjUJCQkxMTAyNQkJCTAJCQkwCQkJCTEKPiAKPiBIZXJlLCB0aGVyZSBpcyBubyBp
+c3N1ZSBvZiByYXRlX21pbiA+IHJhdGVfbWF4Lgo+ICoqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioKPiBOb3csIEkganVzdCBoYXZlIG9uZSBzY2VuYXJpbyB3aGVy
+ZSB3aXRoL3dpdGhvdXQgY29tbWl0LCByYXRlIGNhbGN1bGF0aW9uIGdvZXMgZmluZS4KPiAyLiBV
+c2VjYXNlIHdoaWNoIGlzIFBBU1NFRCB3aXRoIGFuZCB3aXRob3V0IGFib3ZlIGNvbW1pdC4KPiAg
+Cj4gRm9yIHRoZSB1c2VjYXNlIHdpdGggYmVsb3cgY29tbWFuZCA6IHJhdGUgPTExMDI1IGNoYW5u
+ZWw9MiAKPiAkYXBsYXkgLURlbnRlcnRhaW5tZW50X21haW4gLXIxMTAyNSAtYzIgLWZTMTZfTEUg
+L2Rldi91cmFuZG9tIAo+ICAKPiBhLiBJbmNsdWRpbmcgdGhlIGFib3ZlIGNvbW1pdCBjb2RlOgo+
+IEJlbG93IGlzIHRoZSBjYWxjdWxhdGlvbiB0aGF0IGdvZXM6Cj4gCj4gVGhlIGZsb3cgb2YgY29k
+ZSBleGVjdXRpb24gaXMgYXMgZm9sbG93czoKPiAtICAgc25kX3BjbV9od19yZWZpbmVfc2xhdmUo
+KSAgCj4gLQlFbnRlcnMgc25kX3BjbV9yYXRlX2h3X3JlZmluZV9jY2hhbmdlKCkgLCByb3VuZGlu
+ZyBvZiBwZXJpb2Rfc2l6ZSB0byA4OC4KPiAtICAgc25kX3BjbV9yYXRlX2h3X3JlZmluZV9jY2hh
+bmdlKCkgZXhpdC4KPiAtICAgc25kX3BjbV9od19yZWZpbmVfc29mdCgpIGlzIGNhbGxlZCwgaGVy
+ZSBwYXJhbXMtPnJtYXNrIGlzIDAuCj4gLSAgIFJVTEVTIGNhbGN1bGF0aW9uIGRvZXNudCBvY2N1
+ci4KPiAKPiBiLiBXaXRob3V0IHRoZSBjb21taXQ6Cj4gSW4gdGhlIGNhc2UgaWYgcGVyaW9kX3Np
+emUgZG9lc27igJl0IGdldCByb3VuZGVkIG9mZiB0byA4OC4KPiBSYXRlIGNhbGN1bGF0aW9uIGdv
+ZXMgZmluZSB3aXRoIHBlcmlvZF9zaXplIG9wZW4gaW50ZXJ2YWwgKDg4LCA4OSkKPiAKPiBJcyB0
+aGVyZSBhbnkgZGVwZW5kZW5jeSBmb3IgdGhlIGNvbW1pdCA/IElmIHllcywgY2FuIHlvdSBwbGVh
+c2Ugc3VnZ2VzdCB0aGUgY29ybmVyIGNhc2UgCj4gd2hpY2ggZmFpbHMgd2l0aG91dCB0aGUgY29t
+bWl0ID8KPiBDYW4gd2UgcmV2ZXJ0IHRoZSBjaGFuZ2VzID8KCkkgdGhpbmsgdGhhdCBpdCB3b3Vs
+ZCBiZSBwcm9iYWJseSBiZXN0IHRvIGZvcmNlIHRoZSBwYXJhbWV0ZXJzIGZvciB5b3VyCmhhcmR3
+YXJlICgtLXBlcmlvZC1zaXplIGFuZCAtLWJ1ZmZlci1zaXplIGFyZ3VtZW50cyBmb3IgYXBsYXkg
+b3IgdGhlIHRpbWUKY291bnRlcnBhcnRzIC0gLS1wZXJpb2QtdGltZSBhbmQgLS1idWZmZXItdGlt
+ZSkuIFRoZSByZWZpbmluZyBydWxlcyBtaWdodCBub3QKc2VsZWN0IHRoZSBwZXJmZWN0IGNvbmZp
+Z3VyYXRpb24gaW4gc29tZSBjYXNlcy4KCgkJCQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNl
+bGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBTb3VuZCBNYWludGFpbmVyOyBBTFNBIFByb2plY3Q7
+IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
