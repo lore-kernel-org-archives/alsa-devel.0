@@ -1,132 +1,74 @@
-Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com
- [IPv6:2607:f8b0:4864:20::a43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9D4EF80059
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2019 11:40:12 +0200 (CEST)
-Received: by mail-vk1-xa43.google.com with SMTP id b64so1155309vke.13
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2019 02:40:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190603080931.GG21222@phenom.ffwll.local>
- <CAFv8Nw+1sB8i1d87vLeKxRricZOi4gnXFSgOzW9k0sa_Tzybjg@mail.gmail.com>
- <20190604072411.GP21222@phenom.ffwll.local>
- <CAFv8NwKL9ZL=gNpDmdRV+R9eq22+Da_1kzuYBv8kMMyV3Hq14g@mail.gmail.com>
- <20190611123455.GD2458@phenom.ffwll.local>
- <CAFv8NwJxs-R=ehgeqyx=e+T5OmUBsk3uWnUb2t0cC-LDPS7G5w@mail.gmail.com>
- <20190618121220.GU12905@phenom.ffwll.local>
- <CAFv8NwLci2ALi3V-e=8jjatciHWOoOj-FeajwNLWRpWRtqgBdg@mail.gmail.com>
- <20190620092506.GP12905@phenom.ffwll.local>
- <CAFv8NwLbS_f4cfeorzqtmRzQSY0u1tgM7fitAokg_QfViPvq=Q@mail.gmail.com>
- <20190620211204.GW12905@phenom.ffwll.local>
-In-Reply-To: <20190620211204.GW12905@phenom.ffwll.local>
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Date: Fri, 21 Jun 2019 17:39:43 +0800
-Message-ID: <CAFv8Nw+m-+pshD_cxKe4Nc_4wP3ttpAfDU7EFb-e+ZBcYNA51Q@mail.gmail.com>
-Subject: Re: [alsa-devel] [PATCH 1/7] video: add HDMI state notifier support
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel] [PATCH] ALSA: xen-front: fix unintention integer
+ overflow on left shifts
+Date: Mon, 1 Jul 2019 08:46:02 +0300
+Message-ID: <de93db15-c85f-3108-22c3-75b89a3a2e59@gmail.com>
+References: <20190627165853.21864-1-colin.king@canonical.com>
+ <s5hv9wq6qrg.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cheng-yi Chiang <cychiang@chromium.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel <linux-kernel@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philipp Zabel <p.zabel@pengutronix.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Doug Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, linux-media@vger.kernel.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, Dariusz Marcinkiewicz <darekm@google.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-List-ID: <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hv9wq6qrg.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Colin King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, xen-devel@lists.xenproject.org
+List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 21, 2019 at 5:12 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+On 6/28/19 11:46 AM, Takashi Iwai wrote:
+> On Thu, 27 Jun 2019 18:58:53 +0200,
+> Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Shifting the integer value 1 is evaluated using 32-bit
+>> arithmetic and then used in an expression that expects a 64-bit
+>> value, so there is potentially an integer overflow. Fix this
+>> by using the BIT_ULL macro to perform the shift.
+>>
+>> Addresses-Coverity: ("Unintentional integer overflow")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Thank you for you patch,
+Oleksandr
+> The fix is correct, but luckily we didn't hit the integer overflow, as
+> all passed values are less than 32bit.
 >
-> Massively cutting this thread, since halfway through in my previous reply
-> I realized that maybe hdmi_codec is a much better starting point.
+> In anyway, applied now.  Thanks.
 >
-ACK
-> On Thu, Jun 20, 2019 at 09:23:23PM +0800, Cheng-yi Chiang wrote:
-> > On Thu, Jun 20, 2019 at 5:25 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > Yeah fully agreeing that hdmi_audio_code is probably a better starting
-> > > point. Problem is that becuase hdmi_codec is built on top of platform
-> > > device it's quite a bit harder to extend with callbacks and things like
-> > > that, without breaking the driver model.
-> > >
-> > > I need to think about this more, but if all we need to look at is
-> > > hdmi_codec, then I think this becomes a lot easier. And we can ignore
-> > > drm_audio_component.h completely.
-> >
-> >
-> > It is surprising that you think this way.
-> > Maybe the original patch before hdmi-notifier was introduced is the
-> > better way to solve this issue, if we only need to look at hdmi_codec.
-> >
-> > The history of hdmi_codec driver is in this patch series:
-> >
-> > https://lore.kernel.org/patchwork/patch/539656/
 >
-> Hm, this doesn't seem to be the hdmi_codec driver I meant, but another,
-> new one. I was talking about SND_SOC_HDMI_CODEC.
+> Takashi
 >
-Yes you are right. They are different codec drivers.
-Sorry for the confusion. What I meant was that my use case on RK3288
-was using dw-hdmi-audio.c codec driver,
-which was later replaced by a more general version hdmi-codec.c.
-
-> > There was a callback mechanism implemented between dw-hdmi and hdmi
-> > codec driver.
-> > It was later consolidated by Doug in this patch for better jack status
-> > reporting:
-> >
-> > https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/303573/
->
-> Hm that still seems entirely separate hdmi-codec specific to dw-hdmi only
-> ...
->
-Again you are right. Sorry for the confusion. What I meant is that
-this callback mechanism should work on hdmi-codec.c driver as well.
-
-> > I am not sure why the original patch series did not get fully accepted
-> > in the upstream.
-> > It was quite long time ago.
-> >
-> > But if you think this might be the right way to do, then it is even
-> > better for us because the patch series and Doug's patch had been quite
-> > stable
-> > on our RK3288 products for about four years with plenty of users, so
-> > we have much higher confidence in them.
-> > I can rebase and clean up them and post another patch for review.
-> >
-> > Please let me know what approach you feel is better.
-> > Thanks again!
->
-> Not sure we're talking about the same. What I had in mind is to add jack
-> status to the hdmi-codec.c stuff, which is used by multiple soc drm
-> display drivers already. Looking at git grep output, there seems to be
-> already some support for dw-hdmi synopsys drm_bridge driver. I thought of
-> extending that. Does that not work for you?
->
-I think extending current interface will work.
-There is a struct hdmi_codec_pdata to let ALSA codec driver access
-some ops through platform data.
-And after this patch
-
-https://lore.kernel.org/patchwork/patch/692324/
-
-ALSA codec driver can get access to the struct on DRM side.
-Based on this I can add a new ops to register callback function for jack status.
-It will be similar to Doug's chromium patch above.
-I think that is quite a feasible way, and can benefit all boards using
-hdmi-codec.c.
-
-Thanks a lot!!
-
-> Thanks, Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> ---
+>>   sound/xen/xen_snd_front_alsa.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+>> index b14ab512c2ce..e01631959ed8 100644
+>> --- a/sound/xen/xen_snd_front_alsa.c
+>> +++ b/sound/xen/xen_snd_front_alsa.c
+>> @@ -196,7 +196,7 @@ static u64 to_sndif_formats_mask(u64 alsa_formats)
+>>   	mask = 0;
+>>   	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
+>>   		if (pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa) & alsa_formats)
+>> -			mask |= 1 << ALSA_SNDIF_FORMATS[i].sndif;
+>> +			mask |= BIT_ULL(ALSA_SNDIF_FORMATS[i].sndif);
+>>   
+>>   	return mask;
+>>   }
+>> @@ -208,7 +208,7 @@ static u64 to_alsa_formats_mask(u64 sndif_formats)
+>>   
+>>   	mask = 0;
+>>   	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
+>> -		if (1 << ALSA_SNDIF_FORMATS[i].sndif & sndif_formats)
+>> +		if (BIT_ULL(ALSA_SNDIF_FORMATS[i].sndif) & sndif_formats)
+>>   			mask |= pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa);
+>>   
+>>   	return mask;
+>> -- 
+>> 2.20.1
+>>
+>>
+> _______________________________________________
+> Xen-devel mailing list
+> Xen-devel@lists.xenproject.org
+> https://lists.xenproject.org/mailman/listinfo/xen-devel
