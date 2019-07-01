@@ -1,60 +1,32 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: ALSA repos
-Date: Mon, 1 Jul 2019 13:31:21 +0000
-Message-ID: <f9918709be17e4289c0d667b15187f88985a145c.camel@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00082.outbound.protection.outlook.com [40.107.0.82])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02F29F8076A
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2019 15:31:22 +0200 (CEST)
-Content-Language: en-US
-Content-ID: <7F6A40B39097AD4B9A8BA412EF70F20B@eurprd04.prod.outlook.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "perex@perex.cz" <perex@perex.cz>
-Cc: Carol Zhu <carol.zhu@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Jun Zhu <junzhu@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
+Subject: [PATCH v2 0/2] ASoC: tas5720.c: add ACPI enumeration support
+Date: Mon,  1 Jul 2019 15:42:50 +0200
+Message-ID: <cover.1561988282.git.nikolaus.voss@loewensteinmedical.de>
+References: <20190628143037.GH5379@sirena.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190628143037.GH5379@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andreas Dannenberg <dannenberg@ti.com>, "Andrew F. Davis" <afd@ti.com>, Kate Stewart <kstewart@linuxfoundation.org>
+Cc: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, nv@vosn.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+Patch 1 aggregates variant specific stuff in a struct which is
+directly referenced in the id tables (no functional change).
 
-What are trying to understand where are the official ALSA project
-repos.
+Patch 2 actually adds ACPI IDs for the two DAC variants and uses the
+device match API to get the variant in a firmware agnostic manner.
 
-We found:
- - Github: https://github.com/alsa-project
-and
- - alsa-project.org: https://git.alsa-project.org/
+v2:
+- split patch into series as suggested by Mark Brown and Andrew F. Davis.
+- don't integrate variant data into variant struct but reference it
+  (suggested by Andrew F. Davis).
 
-Which one should we use for our daily builds?
+Nikolaus Voss (2):
+  ASoC: tas5720.c: cleanup variant management
+  ASoC: tas5720.c: add ACPI enumeration support
 
-For example we have been using alsa-project.org repo for tinycompress.
-But in the last few days git clone didn't work! Now it seems to be back
+ sound/soc/codecs/tas5720.c | 111 +++++++++++++++----------------------
+ 1 file changed, 46 insertions(+), 65 deletions(-)
 
-online.
-
-Also, we are using Yocto poky recipes:
-
-
-http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-multimedia/alsa/alsa-lib_1.1.8.bb?h=warrior
-
-which use pre-build archives from:
-
-https://www.alsa-project.org/files/pub/
-
-So, any clarifications on the release deliverables for ALSA project
-would be highly appreciated.
-
-thanks,
-Daniel.
+-- 
+2.17.1
