@@ -1,278 +1,148 @@
-From: Nikolaus Voss <nv@vosn.de>
-Subject: Re: [PATCH] sound/soc/codecs/tas5720.c: add ACPI support
-Date: Mon, 1 Jul 2019 10:56:46 +0200 (CEST)
-Message-ID: <alpine.DEB.2.20.1907011056070.2390@fox.voss.local>
-References: <20190628123416.16298-1-nikolaus.voss@loewensteinmedical.de> <ec84d05f-af14-33dd-5f04-6e5525baf138@ti.com>
+From: <vanitha.channaiah@in.bosch.com>
+Subject: GIT: Regarding the issue we are facing in the commit
+	37728639ae05de702825d96bd1d42e24ae772248
+Date: Mon, 1 Jul 2019 15:58:11 +0530
+Message-ID: <1561976891-17886-1-git-send-email-vanitha.channaiah@in.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ec84d05f-af14-33dd-5f04-6e5525baf138@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andreas Dannenberg <dannenberg@ti.com>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5298395794099221481=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: patch@alsa-project.org
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 28 Jun 2019, Andrew F. Davis wrote:
-> On 6/28/19 8:34 AM, Nikolaus Voss wrote:
->> Add support for ACPI enumeration for tas5720 and tas5722.
->> Use device_match API to unify access to driver data for DT and ACPI.
->> Aggregate variant stuff into its own struct and directly reference
->> it in variant data for i2c/of/acpi_device_id.
->>
->> Signed-off-by: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
->> ---
->>  sound/soc/codecs/tas5720.c | 215 +++++++++++++++++--------------------
->>  1 file changed, 99 insertions(+), 116 deletions(-)
->>
->> diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
->> index 37fab8f22800..ea973764c745 100644
->> --- a/sound/soc/codecs/tas5720.c
->> +++ b/sound/soc/codecs/tas5720.c
->> @@ -7,6 +7,7 @@
->>   * Author: Andreas Dannenberg <dannenberg@ti.com>
->>   */
->>
->> +#include <linux/acpi.h>
->>  #include <linux/module.h>
->>  #include <linux/errno.h>
->>  #include <linux/device.h>
->> @@ -28,9 +29,10 @@
->>  /* Define how often to check (and clear) the fault status register (in ms) */
->>  #define TAS5720_FAULT_CHECK_INTERVAL		200
->>
->> -enum tas572x_type {
->> -	TAS5720,
->> -	TAS5722,
->> +struct tas5720_variant {
->> +	const int device_id;
->> +	const struct regmap_config reg_config;
->> +	const struct snd_soc_component_driver comp_drv;
->>  };
->>
->>  static const char * const tas5720_supply_names[] = {
->> @@ -44,7 +46,7 @@ struct tas5720_data {
->>  	struct snd_soc_component *component;
->>  	struct regmap *regmap;
->>  	struct i2c_client *tas5720_client;
->> -	enum tas572x_type devtype;
->> +	const struct tas5720_variant *variant;
->>  	struct regulator_bulk_data supplies[TAS5720_NUM_SUPPLIES];
->>  	struct delayed_work fault_check_work;
->>  	unsigned int last_fault;
->> @@ -179,17 +181,13 @@ static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
->>  		goto error_snd_soc_component_update_bits;
->>
->>  	/* Configure TDM slot width. This is only applicable to TAS5722. */
->> -	switch (tas5720->devtype) {
->> -	case TAS5722:
->> +	if (tas5720->variant->device_id == TAS5722_DEVICE_ID) {
->>  		ret = snd_soc_component_update_bits(component, TAS5722_DIGITAL_CTRL2_REG,
->>  						    TAS5722_TDM_SLOT_16B,
->>  						    slot_width == 16 ?
->>  						    TAS5722_TDM_SLOT_16B : 0);
->>  		if (ret < 0)
->>  			goto error_snd_soc_component_update_bits;
->> -		break;
->> -	default:
->> -		break;
->>  	}
->>
->>  	return 0;
->> @@ -277,7 +275,7 @@ static void tas5720_fault_check_work(struct work_struct *work)
->>  static int tas5720_codec_probe(struct snd_soc_component *component)
->>  {
->>  	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
->> -	unsigned int device_id, expected_device_id;
->> +	unsigned int device_id;
->>  	int ret;
->>
->>  	tas5720->component = component;
->> @@ -301,21 +299,9 @@ static int tas5720_codec_probe(struct snd_soc_component *component)
->>  		goto probe_fail;
->>  	}
->>
->> -	switch (tas5720->devtype) {
->> -	case TAS5720:
->> -		expected_device_id = TAS5720_DEVICE_ID;
->> -		break;
->> -	case TAS5722:
->> -		expected_device_id = TAS5722_DEVICE_ID;
->> -		break;
->> -	default:
->> -		dev_err(component->dev, "unexpected private driver data\n");
->> -		return -EINVAL;
->> -	}
->> -
->> -	if (device_id != expected_device_id)
->> +	if (device_id != tas5720->variant->device_id)
->>  		dev_warn(component->dev, "wrong device ID. expected: %u read: %u\n",
->> -			 expected_device_id, device_id);
->> +			 tas5720->variant->device_id, device_id);
->>
->>  	/* Set device to mute */
->>  	ret = snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL2_REG,
->> @@ -462,24 +448,6 @@ static bool tas5720_is_volatile_reg(struct device *dev, unsigned int reg)
->>  	}
->>  }
->>
->> -static const struct regmap_config tas5720_regmap_config = {
->> -	.reg_bits = 8,
->> -	.val_bits = 8,
->> -
->> -	.max_register = TAS5720_MAX_REG,
->> -	.cache_type = REGCACHE_RBTREE,
->> -	.volatile_reg = tas5720_is_volatile_reg,
->> -};
->> -
->> -static const struct regmap_config tas5722_regmap_config = {
->> -	.reg_bits = 8,
->> -	.val_bits = 8,
->> -
->> -	.max_register = TAS5722_MAX_REG,
->> -	.cache_type = REGCACHE_RBTREE,
->> -	.volatile_reg = tas5720_is_volatile_reg,
->> -};
->> -
->>  /*
->>   * DAC analog gain. There are four discrete values to select from, ranging
->>   * from 19.2 dB to 26.3dB.
->> @@ -558,40 +526,6 @@ static const struct snd_soc_dapm_route tas5720_audio_map[] = {
->>  	{ "OUT", NULL, "DAC" },
->>  };
->>
->> -static const struct snd_soc_component_driver soc_component_dev_tas5720 = {
->> -	.probe			= tas5720_codec_probe,
->> -	.remove			= tas5720_codec_remove,
->> -	.suspend		= tas5720_suspend,
->> -	.resume			= tas5720_resume,
->> -	.controls		= tas5720_snd_controls,
->> -	.num_controls		= ARRAY_SIZE(tas5720_snd_controls),
->> -	.dapm_widgets		= tas5720_dapm_widgets,
->> -	.num_dapm_widgets	= ARRAY_SIZE(tas5720_dapm_widgets),
->> -	.dapm_routes		= tas5720_audio_map,
->> -	.num_dapm_routes	= ARRAY_SIZE(tas5720_audio_map),
->> -	.idle_bias_on		= 1,
->> -	.use_pmdown_time	= 1,
->> -	.endianness		= 1,
->> -	.non_legacy_dai_naming	= 1,
->> -};
->> -
->> -static const struct snd_soc_component_driver soc_component_dev_tas5722 = {
->> -	.probe = tas5720_codec_probe,
->> -	.remove = tas5720_codec_remove,
->> -	.suspend = tas5720_suspend,
->> -	.resume = tas5720_resume,
->> -	.controls = tas5722_snd_controls,
->> -	.num_controls = ARRAY_SIZE(tas5722_snd_controls),
->> -	.dapm_widgets = tas5720_dapm_widgets,
->> -	.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
->> -	.dapm_routes = tas5720_audio_map,
->> -	.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
->> -	.idle_bias_on		= 1,
->> -	.use_pmdown_time	= 1,
->> -	.endianness		= 1,
->> -	.non_legacy_dai_naming	= 1,
->> -};
->> -
->>  /* PCM rates supported by the TAS5720 driver */
->>  #define TAS5720_RATES	(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
->>  			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
->> @@ -637,29 +571,25 @@ static int tas5720_probe(struct i2c_client *client,
->>  {
->>  	struct device *dev = &client->dev;
->>  	struct tas5720_data *data;
->> -	const struct regmap_config *regmap_config;
->> +	const struct tas5720_variant *type;
->>  	int ret;
->>  	int i;
->>
->> +	type = device_get_match_data(&client->dev);
->> +	if (!type && id)
->> +		type = (const struct tas5720_variant *)id->driver_data;
->> +
->> +	if (!type)
->> +		return -EINVAL;
->> +
->>  	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->>  	if (!data)
->>  		return -ENOMEM;
->>
->>  	data->tas5720_client = client;
->> -	data->devtype = id->driver_data;
->> +	data->variant = type;
->>
->> -	switch (id->driver_data) {
->> -	case TAS5720:
->> -		regmap_config = &tas5720_regmap_config;
->> -		break;
->> -	case TAS5722:
->> -		regmap_config = &tas5722_regmap_config;
->> -		break;
->> -	default:
->> -		dev_err(dev, "unexpected private driver data\n");
->> -		return -EINVAL;
->> -	}
->> -	data->regmap = devm_regmap_init_i2c(client, regmap_config);
->> +	data->regmap = devm_regmap_init_i2c(client, &type->reg_config);
->>  	if (IS_ERR(data->regmap)) {
->>  		ret = PTR_ERR(data->regmap);
->>  		dev_err(dev, "failed to allocate register map: %d\n", ret);
->> @@ -678,51 +608,104 @@ static int tas5720_probe(struct i2c_client *client,
->>
->>  	dev_set_drvdata(dev, data);
->>
->> -	switch (id->driver_data) {
->> -	case TAS5720:
->> -		ret = devm_snd_soc_register_component(&client->dev,
->> -					&soc_component_dev_tas5720,
->> -					tas5720_dai,
->> -					ARRAY_SIZE(tas5720_dai));
->> -		break;
->> -	case TAS5722:
->> -		ret = devm_snd_soc_register_component(&client->dev,
->> -					&soc_component_dev_tas5722,
->> -					tas5720_dai,
->> -					ARRAY_SIZE(tas5720_dai));
->> -		break;
->> -	default:
->> -		dev_err(dev, "unexpected private driver data\n");
->> -		return -EINVAL;
->> -	}
->> -	if (ret < 0) {
->> -		dev_err(dev, "failed to register component: %d\n", ret);
->> -		return ret;
->> -	}
->> +	ret = devm_snd_soc_register_component(&client->dev,
->> +					      &type->comp_drv,
->> +					      tas5720_dai,
->> +					      ARRAY_SIZE(tas5720_dai));
->>
->> -	return 0;
->> +	if (ret < 0)
->> +		dev_err(dev, "failed to register component: %d\n", ret);
->> +
->> +	return ret;
->>  }
->>
->> +static const struct tas5720_variant variant[] = {
->> +	{
->> +		.device_id = TAS5720_DEVICE_ID,
->> +		.reg_config = {
->
->
-> This patch would be a lot more simple if you leave the regmap_config and
-> snd_soc_component_driver definitions where they are above and just store
-> a pointer to them down here in this new struct. That also would allow
-> for new devices to use them in this list should they ever match.
->
-> If you really want to move the data down here for some reason, do it in
-> a separate patch at least, this isn't needed as part of adding ACPI support.
+--===============5298395794099221481==
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
 
-Ok, thanks for the feedback, I'll prepare a series.
 
-Nikolaus
+This mail is regarding the fix at below:
+commit 37728639ae05de702825d96bd1d42e24ae772248
+Author: Jaroslav Kysela <perex@perex.cz>
+Date:   Sat Feb 7 15:01:31 2004 +00
+The commit has following changes :
+ 
+******************************* code *****************************************
+static int snd_pcm_rate_hw_refine_cchange(snd_pcm_t *pcm, snd_pcm_hw_params_t *params,
+					  snd_pcm_hw_params_t *sparams)
+{
 
->
-> Andrew
++       buffer_size = snd_pcm_hw_param_get_interval(params, SND_PCM_HW_PARAM_BUFFER_SIZE);
++       /*
++        * this condition probably needs more work:
++        *   in case when the buffer_size is known and we are looking
++        *   for best period_size, we should prefer situation when
++        *   (buffer_size / period_size) * period_size == buffer_size
++        */
++       if (snd_interval_single(buffer_size) && buffer_size->integer) {
++               snd_interval_t *period_size;
++               period_size = (snd_interval_t *)snd_pcm_hw_param_get_interval(params, SND_PCM_HW_PARAM_PERIOD_SIZE);
++               if (!snd_interval_checkempty(period_size) &&
++                   period_size->openmin && period_size->openmax &&
++                   period_size->min + 1 == period_size->max) {
++                       if ((buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
++                               snd_interval_set_value(period_size, period_size->min);
++                       } else if ((buffer_size->max / period_size->max) * period_size->max == buffer_size->max) {
++                               snd_interval_set_value(period_size, period_size->max);
++                       }
++               }
++       }
+}
+******************************* code ****************************************
+ 
+Update rate depending on period_size and period_time.
+Issue found in Hardware : 
+a. RCAR salvator-xs which supports 2 channel.
+b. IMX which supports 8 channel.
+ 
+1. Usecase which is PASSED without the mentioned commit and FAILED with the commit.
 
-[...]
+For the usecase with below command : rate = 11025 channel = 6
+ 
+$aplay -Dentertainment_main -r11025 -c6 -fS16_LE /dev/urandom
+
+
+a. With the commit:
+ 
+In the calculation of RATE at Rule 7:
+RATE=11025
+dependent parameters are: 
+PERIOD_SIZE=88 PERIOD_TIME=8000
+ 
+parameters		min		max		open_min		open_max		interval
+
+PERIOD_SIZE		88		88		0			0			0
+PERIO_TIME		8000		8000		0			0			0
+RATE			11025		11000		0			0			1
+
+
+RATE values are calculated in snd_interval_refine()
+Return value:  INVALID as rate_min > rate_max
+ 
+This is because, dependent parameter “period_size” is rounded to 88 in “rate plugin” in snd_pcm_rate_hw_refine_cchange()
+
+Since, the below condition gets satisfied(buffer_size = 352 aligned to period_size = 88), period_size gets rounded to 88.
+if ((buffer_size->min / period_size->min) * period_size->min == buffer_size->min) {
+ 
+This commit changes causing the issue to get rate_min > rate_max.
+
+The flow of code execution is as follows:
+-   snd_pcm_hw_refine_slave()  
+-	Enters snd_pcm_rate_hw_refine_cchange(), rounding of period_size to 88.
+-   snd_pcm_rate_hw_refine_cchange() exit.
+-   snd_pcm_hw_refine_soft() is called, here exists params->rmask to evaluate for SAMPLE_BITS, FRAME_BITS, PERIOD_BYTES, BUFFER_BYTES
+-   execution of RULES calculation.
+At RULE 7 rate calculation INVALID error is observed.
+
+b. Without the commit:
+In the case if period_size doesn’t get rounded off to 88, the usecase would get PASSED.
+Rate calculation goes fine with period_size open interval (88, 89)
+ 
+parameters			min			max			open_min		open_max			interval
+
+PERIOD_SIZE			88			89			0			0				0
+PERIOD_TIME			8000			8000			0			0				0
+RATE				11025			11025			0			0				1
+
+Here, there is no issue of rate_min > rate_max.
+****************************************************************************************************************************************************************
+Now, I just have one scenario where with/without commit, rate calculation goes fine.
+2. Usecase which is PASSED with and without above commit.
+ 
+For the usecase with below command : rate =11025 channel=2 
+$aplay -Dentertainment_main -r11025 -c2 -fS16_LE /dev/urandom 
+ 
+a. Including the above commit code:
+Below is the calculation that goes:
+
+The flow of code execution is as follows:
+-   snd_pcm_hw_refine_slave()  
+-	Enters snd_pcm_rate_hw_refine_cchange() , rounding of period_size to 88.
+-   snd_pcm_rate_hw_refine_cchange() exit.
+-   snd_pcm_hw_refine_soft() is called, here params->rmask is 0.
+-   RULES calculation doesnt occur.
+
+b. Without the commit:
+In the case if period_size doesn’t get rounded off to 88.
+Rate calculation goes fine with period_size open interval (88, 89)
+
+Is there any dependency for the commit ? If yes, can you please suggest the corner case 
+which fails without the commit ?
+Can we revert the changes ?
+
+--===============5298395794099221481==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5298395794099221481==--
