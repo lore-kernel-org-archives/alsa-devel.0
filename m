@@ -1,20 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: GIT: Regarding the issue we are facing in the
- commit 37728639ae05de702825d96bd1d42e24ae772248
-Date: Mon, 1 Jul 2019 14:32:37 +0200
-Message-ID: <645a08c3-0e40-6148-3831-4987bf7d0673@perex.cz>
-References: <1561976891-17886-1-git-send-email-vanitha.channaiah@in.bosch.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: why error return in
+ sound/soc/codecs/pcm3168a.c::pcm3168a_set_dai_fmt ?
+Date: Mon, 1 Jul 2019 15:06:09 +0200
+Message-ID: <20190701130609.GB3692@piout.net>
+References: <8e4d6674-0a5b-7063-534d-cea4e55056d5@televic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
+ [217.70.183.194])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6309F89670
- for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2019 14:32:41 +0200 (CEST)
-In-Reply-To: <1561976891-17886-1-git-send-email-vanitha.channaiah@in.bosch.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F1DDF8076A
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2019 15:06:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <8e4d6674-0a5b-7063-534d-cea4e55056d5@televic.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,107 +25,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: vanitha.channaiah@in.bosch.com
-Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org
+To: Jurgen Lambrecht <J.Lambrecht@televic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDAxLiAwNy4gMTkgdiAxMjoyOCB2YW5pdGhhLmNoYW5uYWlhaEBpbi5ib3NjaC5jb20gbmFw
-c2FsKGEpOgo+IAo+IFRoaXMgbWFpbCBpcyByZWdhcmRpbmcgdGhlIGZpeCBhdCBiZWxvdzoKPiBj
-b21taXQgMzc3Mjg2MzlhZTA1ZGU3MDI4MjVkOTZiZDFkNDJlMjRhZTc3MjI0OAo+IEF1dGhvcjog
-SmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4KPiBEYXRlOiAgIFNhdCBGZWIgNyAxNTow
-MTozMSAyMDA0ICswMAo+IFRoZSBjb21taXQgaGFzIGZvbGxvd2luZyBjaGFuZ2VzIDoKPiAgCj4g
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiBjb2RlICoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqCj4gc3RhdGljIGludCBzbmRfcGNtX3JhdGVfaHdfcmVmaW5l
-X2NjaGFuZ2Uoc25kX3BjbV90ICpwY20sIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcmFtcywKPiAJ
-CQkJCSAgc25kX3BjbV9od19wYXJhbXNfdCAqc3BhcmFtcykKPiB7Cj4gCj4gKyAgICAgICBidWZm
-ZXJfc2l6ZSA9IHNuZF9wY21faHdfcGFyYW1fZ2V0X2ludGVydmFsKHBhcmFtcywgU05EX1BDTV9I
-V19QQVJBTV9CVUZGRVJfU0laRSk7Cj4gKyAgICAgICAvKgo+ICsgICAgICAgICogdGhpcyBjb25k
-aXRpb24gcHJvYmFibHkgbmVlZHMgbW9yZSB3b3JrOgo+ICsgICAgICAgICogICBpbiBjYXNlIHdo
-ZW4gdGhlIGJ1ZmZlcl9zaXplIGlzIGtub3duIGFuZCB3ZSBhcmUgbG9va2luZwo+ICsgICAgICAg
-ICogICBmb3IgYmVzdCBwZXJpb2Rfc2l6ZSwgd2Ugc2hvdWxkIHByZWZlciBzaXR1YXRpb24gd2hl
-bgo+ICsgICAgICAgICogICAoYnVmZmVyX3NpemUgLyBwZXJpb2Rfc2l6ZSkgKiBwZXJpb2Rfc2l6
-ZSA9PSBidWZmZXJfc2l6ZQo+ICsgICAgICAgICovCj4gKyAgICAgICBpZiAoc25kX2ludGVydmFs
-X3NpbmdsZShidWZmZXJfc2l6ZSkgJiYgYnVmZmVyX3NpemUtPmludGVnZXIpIHsKPiArICAgICAg
-ICAgICAgICAgc25kX2ludGVydmFsX3QgKnBlcmlvZF9zaXplOwo+ICsgICAgICAgICAgICAgICBw
-ZXJpb2Rfc2l6ZSA9IChzbmRfaW50ZXJ2YWxfdCAqKXNuZF9wY21faHdfcGFyYW1fZ2V0X2ludGVy
-dmFsKHBhcmFtcywgU05EX1BDTV9IV19QQVJBTV9QRVJJT0RfU0laRSk7Cj4gKyAgICAgICAgICAg
-ICAgIGlmICghc25kX2ludGVydmFsX2NoZWNrZW1wdHkocGVyaW9kX3NpemUpICYmCj4gKyAgICAg
-ICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZS0+b3Blbm1pbiAmJiBwZXJpb2Rfc2l6ZS0+b3Blbm1h
-eCAmJgo+ICsgICAgICAgICAgICAgICAgICAgcGVyaW9kX3NpemUtPm1pbiArIDEgPT0gcGVyaW9k
-X3NpemUtPm1heCkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmICgoYnVmZmVyX3NpemUt
-Pm1pbiAvIHBlcmlvZF9zaXplLT5taW4pICogcGVyaW9kX3NpemUtPm1pbiA9PSBidWZmZXJfc2l6
-ZS0+bWluKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzbmRfaW50ZXJ2YWxf
-c2V0X3ZhbHVlKHBlcmlvZF9zaXplLCBwZXJpb2Rfc2l6ZS0+bWluKTsKPiArICAgICAgICAgICAg
-ICAgICAgICAgICB9IGVsc2UgaWYgKChidWZmZXJfc2l6ZS0+bWF4IC8gcGVyaW9kX3NpemUtPm1h
-eCkgKiBwZXJpb2Rfc2l6ZS0+bWF4ID09IGJ1ZmZlcl9zaXplLT5tYXgpIHsKPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHNuZF9pbnRlcnZhbF9zZXRfdmFsdWUocGVyaW9kX3NpemUs
-IHBlcmlvZF9zaXplLT5tYXgpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIH0KPiArICAgICAg
-ICAgICAgICAgfQo+ICsgICAgICAgfQo+IH0KPiAqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqIGNvZGUgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+ICAKPiBV
-cGRhdGUgcmF0ZSBkZXBlbmRpbmcgb24gcGVyaW9kX3NpemUgYW5kIHBlcmlvZF90aW1lLgo+IElz
-c3VlIGZvdW5kIGluIEhhcmR3YXJlIDogCj4gYS4gUkNBUiBzYWx2YXRvci14cyB3aGljaCBzdXBw
-b3J0cyAyIGNoYW5uZWwuCj4gYi4gSU1YIHdoaWNoIHN1cHBvcnRzIDggY2hhbm5lbC4KPiAgCj4g
-MS4gVXNlY2FzZSB3aGljaCBpcyBQQVNTRUQgd2l0aG91dCB0aGUgbWVudGlvbmVkIGNvbW1pdCBh
-bmQgRkFJTEVEIHdpdGggdGhlIGNvbW1pdC4KPiAKPiBGb3IgdGhlIHVzZWNhc2Ugd2l0aCBiZWxv
-dyBjb21tYW5kIDogcmF0ZSA9IDExMDI1IGNoYW5uZWwgPSA2Cj4gIAo+ICRhcGxheSAtRGVudGVy
-dGFpbm1lbnRfbWFpbiAtcjExMDI1IC1jNiAtZlMxNl9MRSAvZGV2L3VyYW5kb20KPiAKPiAKPiBh
-LiBXaXRoIHRoZSBjb21taXQ6Cj4gIAo+IEluIHRoZSBjYWxjdWxhdGlvbiBvZiBSQVRFIGF0IFJ1
-bGUgNzoKPiBSQVRFPTExMDI1Cj4gZGVwZW5kZW50IHBhcmFtZXRlcnMgYXJlOiAKPiBQRVJJT0Rf
-U0laRT04OCBQRVJJT0RfVElNRT04MDAwCj4gIAo+IHBhcmFtZXRlcnMJCW1pbgkJbWF4CQlvcGVu
-X21pbgkJb3Blbl9tYXgJCWludGVydmFsCj4gCj4gUEVSSU9EX1NJWkUJCTg4CQk4OAkJMAkJCTAJ
-CQkwCj4gUEVSSU9fVElNRQkJODAwMAkJODAwMAkJMAkJCTAJCQkwCj4gUkFURQkJCTExMDI1CQkx
-MTAwMAkJMAkJCTAJCQkxCj4gCj4gCj4gUkFURSB2YWx1ZXMgYXJlIGNhbGN1bGF0ZWQgaW4gc25k
-X2ludGVydmFsX3JlZmluZSgpCj4gUmV0dXJuIHZhbHVlOiAgSU5WQUxJRCBhcyByYXRlX21pbiA+
-IHJhdGVfbWF4Cj4gIAo+IFRoaXMgaXMgYmVjYXVzZSwgZGVwZW5kZW50IHBhcmFtZXRlciDigJxw
-ZXJpb2Rfc2l6ZeKAnSBpcyByb3VuZGVkIHRvIDg4IGluIOKAnHJhdGUgcGx1Z2lu4oCdIGluIHNu
-ZF9wY21fcmF0ZV9od19yZWZpbmVfY2NoYW5nZSgpCj4gCj4gU2luY2UsIHRoZSBiZWxvdyBjb25k
-aXRpb24gZ2V0cyBzYXRpc2ZpZWQoYnVmZmVyX3NpemUgPSAzNTIgYWxpZ25lZCB0byBwZXJpb2Rf
-c2l6ZSA9IDg4KSwgcGVyaW9kX3NpemUgZ2V0cyByb3VuZGVkIHRvIDg4Lgo+IGlmICgoYnVmZmVy
-X3NpemUtPm1pbiAvIHBlcmlvZF9zaXplLT5taW4pICogcGVyaW9kX3NpemUtPm1pbiA9PSBidWZm
-ZXJfc2l6ZS0+bWluKSB7Cj4gIAo+IFRoaXMgY29tbWl0IGNoYW5nZXMgY2F1c2luZyB0aGUgaXNz
-dWUgdG8gZ2V0IHJhdGVfbWluID4gcmF0ZV9tYXguCj4gCj4gVGhlIGZsb3cgb2YgY29kZSBleGVj
-dXRpb24gaXMgYXMgZm9sbG93czoKPiAtICAgc25kX3BjbV9od19yZWZpbmVfc2xhdmUoKSAgCj4g
-LQlFbnRlcnMgc25kX3BjbV9yYXRlX2h3X3JlZmluZV9jY2hhbmdlKCksIHJvdW5kaW5nIG9mIHBl
-cmlvZF9zaXplIHRvIDg4Lgo+IC0gICBzbmRfcGNtX3JhdGVfaHdfcmVmaW5lX2NjaGFuZ2UoKSBl
-eGl0Lgo+IC0gICBzbmRfcGNtX2h3X3JlZmluZV9zb2Z0KCkgaXMgY2FsbGVkLCBoZXJlIGV4aXN0
-cyBwYXJhbXMtPnJtYXNrIHRvIGV2YWx1YXRlIGZvciBTQU1QTEVfQklUUywgRlJBTUVfQklUUywg
-UEVSSU9EX0JZVEVTLCBCVUZGRVJfQllURVMKPiAtICAgZXhlY3V0aW9uIG9mIFJVTEVTIGNhbGN1
-bGF0aW9uLgo+IEF0IFJVTEUgNyByYXRlIGNhbGN1bGF0aW9uIElOVkFMSUQgZXJyb3IgaXMgb2Jz
-ZXJ2ZWQuCj4gCj4gYi4gV2l0aG91dCB0aGUgY29tbWl0Ogo+IEluIHRoZSBjYXNlIGlmIHBlcmlv
-ZF9zaXplIGRvZXNu4oCZdCBnZXQgcm91bmRlZCBvZmYgdG8gODgsIHRoZSB1c2VjYXNlIHdvdWxk
-IGdldCBQQVNTRUQuCj4gUmF0ZSBjYWxjdWxhdGlvbiBnb2VzIGZpbmUgd2l0aCBwZXJpb2Rfc2l6
-ZSBvcGVuIGludGVydmFsICg4OCwgODkpCj4gIAo+IHBhcmFtZXRlcnMJCQltaW4JCQltYXgJCQlv
-cGVuX21pbgkJb3Blbl9tYXgJCQlpbnRlcnZhbAo+IAo+IFBFUklPRF9TSVpFCQkJODgJCQk4OQkJ
-CTAJCQkwCQkJCTAKPiBQRVJJT0RfVElNRQkJCTgwMDAJCQk4MDAwCQkJMAkJCTAJCQkJMAo+IFJB
-VEUJCQkJMTEwMjUJCQkxMTAyNQkJCTAJCQkwCQkJCTEKPiAKPiBIZXJlLCB0aGVyZSBpcyBubyBp
-c3N1ZSBvZiByYXRlX21pbiA+IHJhdGVfbWF4Lgo+ICoqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioKPiBOb3csIEkganVzdCBoYXZlIG9uZSBzY2VuYXJpbyB3aGVy
-ZSB3aXRoL3dpdGhvdXQgY29tbWl0LCByYXRlIGNhbGN1bGF0aW9uIGdvZXMgZmluZS4KPiAyLiBV
-c2VjYXNlIHdoaWNoIGlzIFBBU1NFRCB3aXRoIGFuZCB3aXRob3V0IGFib3ZlIGNvbW1pdC4KPiAg
-Cj4gRm9yIHRoZSB1c2VjYXNlIHdpdGggYmVsb3cgY29tbWFuZCA6IHJhdGUgPTExMDI1IGNoYW5u
-ZWw9MiAKPiAkYXBsYXkgLURlbnRlcnRhaW5tZW50X21haW4gLXIxMTAyNSAtYzIgLWZTMTZfTEUg
-L2Rldi91cmFuZG9tIAo+ICAKPiBhLiBJbmNsdWRpbmcgdGhlIGFib3ZlIGNvbW1pdCBjb2RlOgo+
-IEJlbG93IGlzIHRoZSBjYWxjdWxhdGlvbiB0aGF0IGdvZXM6Cj4gCj4gVGhlIGZsb3cgb2YgY29k
-ZSBleGVjdXRpb24gaXMgYXMgZm9sbG93czoKPiAtICAgc25kX3BjbV9od19yZWZpbmVfc2xhdmUo
-KSAgCj4gLQlFbnRlcnMgc25kX3BjbV9yYXRlX2h3X3JlZmluZV9jY2hhbmdlKCkgLCByb3VuZGlu
-ZyBvZiBwZXJpb2Rfc2l6ZSB0byA4OC4KPiAtICAgc25kX3BjbV9yYXRlX2h3X3JlZmluZV9jY2hh
-bmdlKCkgZXhpdC4KPiAtICAgc25kX3BjbV9od19yZWZpbmVfc29mdCgpIGlzIGNhbGxlZCwgaGVy
-ZSBwYXJhbXMtPnJtYXNrIGlzIDAuCj4gLSAgIFJVTEVTIGNhbGN1bGF0aW9uIGRvZXNudCBvY2N1
-ci4KPiAKPiBiLiBXaXRob3V0IHRoZSBjb21taXQ6Cj4gSW4gdGhlIGNhc2UgaWYgcGVyaW9kX3Np
-emUgZG9lc27igJl0IGdldCByb3VuZGVkIG9mZiB0byA4OC4KPiBSYXRlIGNhbGN1bGF0aW9uIGdv
-ZXMgZmluZSB3aXRoIHBlcmlvZF9zaXplIG9wZW4gaW50ZXJ2YWwgKDg4LCA4OSkKPiAKPiBJcyB0
-aGVyZSBhbnkgZGVwZW5kZW5jeSBmb3IgdGhlIGNvbW1pdCA/IElmIHllcywgY2FuIHlvdSBwbGVh
-c2Ugc3VnZ2VzdCB0aGUgY29ybmVyIGNhc2UgCj4gd2hpY2ggZmFpbHMgd2l0aG91dCB0aGUgY29t
-bWl0ID8KPiBDYW4gd2UgcmV2ZXJ0IHRoZSBjaGFuZ2VzID8KCkkgdGhpbmsgdGhhdCBpdCB3b3Vs
-ZCBiZSBwcm9iYWJseSBiZXN0IHRvIGZvcmNlIHRoZSBwYXJhbWV0ZXJzIGZvciB5b3VyCmhhcmR3
-YXJlICgtLXBlcmlvZC1zaXplIGFuZCAtLWJ1ZmZlci1zaXplIGFyZ3VtZW50cyBmb3IgYXBsYXkg
-b3IgdGhlIHRpbWUKY291bnRlcnBhcnRzIC0gLS1wZXJpb2QtdGltZSBhbmQgLS1idWZmZXItdGlt
-ZSkuIFRoZSByZWZpbmluZyBydWxlcyBtaWdodCBub3QKc2VsZWN0IHRoZSBwZXJmZWN0IGNvbmZp
-Z3VyYXRpb24gaW4gc29tZSBjYXNlcy4KCgkJCQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNl
-bGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBTb3VuZCBNYWludGFpbmVyOyBBTFNBIFByb2plY3Q7
-IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+Hello,
+
+On 04/06/2019 06:37:48+0000, Jurgen Lambrecht wrote:
+> Hi,
+> =
+
+> When following =
+
+> https://bootlin.com/blog/eight-channels-audio-on-i-mx7-with-pcm3168/ I =
+
+> get this error (from soc_core.c):
+> =
+
+> ... kernel: [=A0=A0=A0 3.059634][=A0=A0 T15] pcm3168a 3-0039: ASoC: Faile=
+d to set =
+
+> DAI format: -22
+> =
+
+> I could propose this patch (I get that printf when applying the patch)
+> (all other errors in that file have a printf):
+> =
+
+> diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+> index 08d3fe192e65..75ccbb919902 100644
+> --- a/sound/soc/codecs/pcm3168a.c
+> +++ b/sound/soc/codecs/pcm3168a.c
+> @@ -353,6 +353,7 @@ static int pcm3168a_set_dai_fmt(struct snd_soc_dai *d=
+ai,
+>  =A0=A0=A0=A0=A0=A0=A0 case SND_SOC_DAIFMT_NB_NF:
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 break;
+>  =A0=A0=A0=A0=A0=A0=A0 default:
+> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err(component->dev, "wron=
+g INV_MASK\n");
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EINVAL;
+>  =A0=A0=A0=A0=A0=A0=A0 }
+> =
+
+> But why does this code returns an error for code that has no effect?
+> OK, it could be because SND_SOC_DAIFMT_INV_MASK must be =
+
+> SND_SOC_DAIFMT_NB_NF. But then Alexandre's blog contains an error, =
+
+> because the dac TDM sets frame-inversion in its dts (and it should not).
+> =
+
+
+While I'm pretty sure what is in the blog is working (it is deployed in
+production), I remember there was something fishy with frame-inversion.
+I unfortunately don't remember the specifics.
+
+Honestly, I would think you can remove frame-inversion safely as the
+codec is only supposed to support NB_NF.
+
+-- =
+
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
