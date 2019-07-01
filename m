@@ -1,95 +1,146 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RFC PATCH 1/5] dt-bindings: soundwire: add slave bindings
-Date: Mon, 1 Jul 2019 11:41:55 +0530
-Message-ID: <20190701061155.GJ2911@vkoul-mobl>
+Subject: Re: [RFC PATCH 2/5] soundwire: core: add device tree support for
+ slave devices
+Date: Mon, 1 Jul 2019 11:47:45 +0530
+Message-ID: <20190701061745.GK2911@vkoul-mobl>
 References: <20190611104043.22181-1-srinivas.kandagatla@linaro.org>
- <20190611104043.22181-2-srinivas.kandagatla@linaro.org>
+ <20190611104043.22181-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190611104043.22181-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190611104043.22181-3-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, bgoswami@quicinc.com
 List-Id: alsa-devel@alsa-project.org
 
 On 11-06-19, 11:40, Srinivas Kandagatla wrote:
-> This patch adds bindings for Soundwire Slave devices which includes how
-> SoundWire enumeration address is represented in SoundWire slave device
-> tree nodes.
+> This patch adds support to parsing device tree based
+> SoundWire slave devices.
 > 
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  .../devicetree/bindings/soundwire/bus.txt     | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soundwire/bus.txt
+>  drivers/soundwire/bus.c   |  2 +-
+>  drivers/soundwire/bus.h   |  1 +
+>  drivers/soundwire/slave.c | 54 ++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 55 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/soundwire/bus.txt b/Documentation/devicetree/bindings/soundwire/bus.txt
-> new file mode 100644
-> index 000000000000..19a672b0d528
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soundwire/bus.txt
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index fe745830a261..20f26cf4ba74 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -78,7 +78,7 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+>  	if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
+>  		ret = sdw_acpi_find_slaves(bus);
+>  	else
+> -		ret = -ENOTSUPP; /* No ACPI/DT so error out */
+> +		ret = sdw_of_find_slaves(bus);
+>  
+>  	if (ret) {
+>  		dev_err(bus->dev, "Finding slaves failed:%d\n", ret);
+> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> index 3048ca153f22..ee46befedbd1 100644
+> --- a/drivers/soundwire/bus.h
+> +++ b/drivers/soundwire/bus.h
+> @@ -15,6 +15,7 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+>  }
+>  #endif
+>  
+> +int sdw_of_find_slaves(struct sdw_bus *bus);
+>  void sdw_extract_slave_id(struct sdw_bus *bus,
+>  			  u64 addr, struct sdw_slave_id *id);
+>  
+> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+> index f39a5815e25d..6e7f5cfeb854 100644
+> --- a/drivers/soundwire/slave.c
+> +++ b/drivers/soundwire/slave.c
+> @@ -2,6 +2,7 @@
+>  // Copyright(c) 2015-17 Intel Corporation.
+>  
+>  #include <linux/acpi.h>
+> +#include <linux/of.h>
+>  #include <linux/soundwire/sdw.h>
+>  #include <linux/soundwire/sdw_type.h>
+>  #include "bus.h"
+> @@ -28,13 +29,14 @@ static int sdw_slave_add(struct sdw_bus *bus,
+>  	slave->dev.parent = bus->dev;
+>  	slave->dev.fwnode = fwnode;
+>  
+> -	/* name shall be sdw:link:mfg:part:class:unique */
+> +	/* name shall be sdw:link:mfg:part:class */
 
-The bindings are for slave right and the file is bus.txt?
+nope we are not changing dev_set_name below so this comment should not
+be modified
 
-> @@ -0,0 +1,48 @@
-> +SoundWire bus bindings.
+>  	dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
+>  		     bus->link_id, id->mfg_id, id->part_id,
+>  		     id->class_id, id->unique_id);
+>  
+>  	slave->dev.release = sdw_slave_release;
+>  	slave->dev.bus = &sdw_bus_type;
+> +	slave->dev.of_node = of_node_get(to_of_node(fwnode));
+>  	slave->bus = bus;
+>  	slave->status = SDW_SLAVE_UNATTACHED;
+>  	slave->dev_num = 0;
+> @@ -112,3 +114,53 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+>  }
+>  
+>  #endif
 > +
-> +SoundWire is a 2-pin multi-drop interface with data and clock line.
-> +It facilitates development of low cost, efficient, high performance systems.
+> +#if IS_ENABLED(CONFIG_OF)
+> +/*
+> + * sdw_of_find_slaves() - Find Slave devices in master device tree node
+> + * @bus: SDW bus instance
+> + *
+> + * Scans Master DT node for SDW child Slave devices and registers it.
+> + */
+> +int sdw_of_find_slaves(struct sdw_bus *bus)
+> +{
+> +	struct device *dev = bus->dev;
+> +	struct device_node *node;
 > +
-> +SoundWire controller bindings are very much specific to vendor.
-> +
-> +Child nodes(SLAVE devices):
-> +Every SoundWire controller node can contain zero or more child nodes
-> +representing slave devices on the bus. Every SoundWire slave device is
-> +uniquely determined by the enumeration address containing 5 fields:
-> +SoundWire Version, Instance ID, Manufacturer ID, Part ID and Class ID
-> +for a device. Addition to below required properties, child nodes can
-> +have device specific bindings.
-> +
-> +Required property for SoundWire child node if it is present:
-> +- compatible:	 "sdwVER,MFD,PID,CID". The textual representation of
-> +		  SoundWire Enumeration address comprising SoundWire
-> +		  Version, Manufacturer ID, Part ID and Class ID,
-> +		  shall be in lower-case hexadecimal with leading
-> +		  zeroes suppressed.
-> +		  Version number '0x10' represents SoundWire 1.0
-> +		  Version number '0x11' represents SoundWire 1.1
-> +		  ex: "sdw10,0217,2010,0"
+> +	if (!bus->dev->of_node)
+> +		return 0;
 
-any reason why we want to code version number and not say sdw,1.0,...
-and so on?
-
-> +
-> +- sdw-instance-id: Should be ('Instance ID') from SoundWire
-> +		  Enumeration Address. Instance ID is for the cases
-> +		  where multiple Devices of the same type or Class
-> +		  are attached to the bus.
-
-instance id is part of the 48bit device id, so wont it make sense to add
-that to compatible as well?
+this should be error, otherwise next condition of checking slaves wont
+be triggered..
 
 > +
-> +SoundWire example for Qualcomm's SoundWire controller:
+> +	for_each_child_of_node(bus->dev->of_node, node) {
+> +		struct sdw_slave_id id;
+> +		const char *compat = NULL;
+> +		int unique_id, ret;
+> +		int ver, mfg_id, part_id, class_id;
+> +		compat = of_get_property(node, "compatible", NULL);
+> +		if (!compat)
+> +			continue;
 > +
-> +soundwire@c2d0000 {
-> +	compatible = "qcom,soundwire-v1.5.0"
-> +	reg = <0x0c2d0000 0x2000>;
+> +		ret = sscanf(compat, "sdw%x,%x,%x,%x",
+> +			     &ver, &mfg_id, &part_id, &class_id);
+> +		if (ret != 4) {
+> +			dev_err(dev, "Manf ID & Product code not found %s\n",
+> +				compat);
+> +			continue;
+> +		}
 > +
-> +	spkr_left:wsa8810-left{
-> +		compatible = "sdw10,0217,2010,0";
-> +		sdw-instance-id = <1>;
-> +		...
-> +	};
+> +		ret = of_property_read_u32(node, "sdw-instance-id", &unique_id);
+> +		if (ret) {
+> +			dev_err(dev, "Instance id not found:%d\n", ret);
+> +			continue;
+> +		}
 > +
-> +	spkr_right:wsa8810-right{
-> +		compatible = "sdw10,0217,2010,0";
-> +		sdw-instance-id = <2>;
-> +		...
-> +	};
-> +};
+> +		id.sdw_version = ver - 0xF;
+> +		id.unique_id = unique_id;
+> +		id.mfg_id = mfg_id;
+> +		id.part_id = part_id;
+> +		id.class_id = class_id;
+> +		sdw_slave_add(bus, &id, of_fwnode_handle(node));
+> +	}
+> +	return 0;
+> +}
+> +
+> +#endif
 > -- 
 > 2.21.0
 
