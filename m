@@ -1,77 +1,271 @@
-From: Evan Green <evgreen@chromium.org>
-Subject: Re: [PATCH v2 1/2] ALSA: hda: Fix widget_mutex incomplete protection
-Date: Mon, 1 Jul 2019 08:57:21 -0700
-Message-ID: <CAE=gft43b6RsLMO9LDSD+uhomr4pV9-WFs5aB1u5Z=q-zsV-hQ@mail.gmail.com>
-References: <20190626212220.239897-1-evgreen@chromium.org> <20190626212220.239897-2-evgreen@chromium.org>
- <s5hlfxh6e4p.wl-tiwai@suse.de>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH v2 1/2] ASoC: tas5720.c: cleanup variant management
+Date: Mon, 1 Jul 2019 12:09:26 -0400
+Message-ID: <074d4df3-51d8-6e20-869d-5f88b46cc172@ti.com>
+References: <20190628143037.GH5379@sirena.org.uk>
+ <cover.1561988282.git.nikolaus.voss@loewensteinmedical.de>
+ <c79df50175d59265a37c5e7c8a0cfbf8119bcf78.1561988282.git.nikolaus.voss@loewensteinmedical.de>
+ <80af3fca-f71b-c118-e5d8-fde8b7d21705@ti.com>
+ <alpine.DEB.2.20.1907011633310.4353@fox.voss.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hlfxh6e4p.wl-tiwai@suse.de>
+In-Reply-To: <alpine.DEB.2.20.1907011633310.4353@fox.voss.local>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, Amadeusz S*awi*ski <amadeuszx.slawinski@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>
+To: Nikolaus Voss <nv@vosn.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andreas Dannenberg <dannenberg@ti.com>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 1, 2019 at 7:09 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Wed, 26 Jun 2019 23:22:19 +0200,
-> Evan Green wrote:
-> >
-> > The widget_mutex was introduced to serialize callers to
-> > hda_widget_sysfs_{re}init. However, its protection of the sysfs widget array
-> > is incomplete. For example, it is acquired around the call to
-> > hda_widget_sysfs_reinit(), which actually creates the new array, but isn't
-> > still acquired when codec->num_nodes and codec->start_nid is updated. So
-> > the lock ensures one thread sets up the new array at a time, but doesn't
-> > ensure which thread's value will end up in codec->num_nodes. If a larger
-> > num_nodes wins but a smaller array was set up, the next call to
-> > refresh_widgets() will touch free memory as it iterates over codec->num_nodes
-> > that aren't there.
-> >
-> > The widget_lock really protects both the tree as well as codec->num_nodes,
-> > start_nid, and end_nid, so make sure it's held across that update. It should
-> > also be held during snd_hdac_get_sub_nodes(), so that a very old read from that
-> > function doesn't end up clobbering a later update.
->
-> OK, right, this fix is needed no matter whether to take my other
-> change to skip hda_widget_sysfs_init() call in
-> hda_widget_sysfs_reinit().
->
-> However...
->
-> > While in there, move the exit mutex call inside the function. This moves the
-> > mutex closer to the data structure it protects and removes a requirement of
-> > acquiring the somewhat internal widget_lock before calling sysfs_exit.
->
-> ... this doesn't look better from consistency POV.  The whole code in
-> hdac_sysfs.c doesn't take any lock in itself.  The protection is
-> supposed to be done in the caller side.  So, let's keep as is now.
+On 7/1/19 11:35 AM, Nikolaus Voss wrote:
+> On Mon, 1 Jul 2019, Andrew F. Davis wrote:
+>> On 7/1/19 9:42 AM, Nikolaus Voss wrote:
+>>> Replace enum tas572x_type with struct tas5720_variant which aggregates
+>>> variant specific stuff and can be directly referenced from an id table.
+>>>
+>>> Signed-off-by: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
+>>> ---
+>>>  sound/soc/codecs/tas5720.c | 98 +++++++++++++-------------------------
+>>>  1 file changed, 33 insertions(+), 65 deletions(-)
+>>>
+>>> diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
+>>> index 37fab8f22800..b2e897f094b4 100644
+>>> --- a/sound/soc/codecs/tas5720.c
+>>> +++ b/sound/soc/codecs/tas5720.c
+>>> @@ -28,9 +28,10 @@
+>>>  /* Define how often to check (and clear) the fault status register
+>>> (in ms) */
+>>>  #define TAS5720_FAULT_CHECK_INTERVAL        200
+>>>
+>>> -enum tas572x_type {
+>>> -    TAS5720,
+>>> -    TAS5722,
+>>> +struct tas5720_variant {
+>>> +    const int device_id;
+>>> +    const struct regmap_config *reg_config;
+>>> +    const struct snd_soc_component_driver *comp_drv;
+>>>  };
+>>>
+>>>  static const char * const tas5720_supply_names[] = {
+>>> @@ -44,7 +45,7 @@ struct tas5720_data {
+>>>      struct snd_soc_component *component;
+>>>      struct regmap *regmap;
+>>>      struct i2c_client *tas5720_client;
+>>> -    enum tas572x_type devtype;
+>>> +    const struct tas5720_variant *variant;
+>>
+>> Why add a new struct? Actually I don't see the need for this patch at
+>> all, the commit message only explains the 'what' not the 'why'. We can
+>> and do already build this info from the tas572x_type.
+> 
+> As the commit message says, the purpose is to aggregate the variant
+> specifics and make it accessible via one pointer. This is a standard
+> approach for of/acpi_device_id tables and thus makes the code simpler
+> and improves readability. This is a maintenance patch to prepare using
+> the device match API in a proper way.
+> 
 
-Ok.
 
->
-> Also...
->
-> >       codec->num_nodes = nums;
-> >       codec->start_nid = start_nid;
-> >       codec->end_nid = start_nid + nums;
-> > +     mutex_unlock(&codec->widget_lock);
-> >       return 0;
-> > +
-> > +unlock:
-> > +     mutex_unlock(&codec->widget_lock);
-> > +     return err;
->
-> There is no need of two mutex_unlock() here.  They can be unified,
->
->         codec->num_nodes = nums;
->         codec->start_nid = start_nid;
->         codec->end_nid = start_nid + nums;
->   unlock:
->         mutex_unlock(&codec->widget_lock);
->         return err;
->
-> Could you refresh this and resubmit?
+"make it accessible via one pointer" is again a "what", the "why" is:
 
-Sure, will do. Thanks for taking a look.
+"This is a standard approach"
+"makes the code simpler and improves readability"
+
+Those are valid reasons and should be what you put in the commit message.
+
+
+>>
+>> Also below are several functional changes, the cover letter says this is
+>> not a functional change, yet the driver behaves differently now.
+> 
+> Can you be a little bit more specific? The code should behave exactly as
+> before.
+> 
+
+
+Sure, for instance the line "unexpected private driver data" is removed,
+this can now never happen, that is a functional change. The phrase "no
+functional change", should be reserved for only changes to spelling,
+formatting, code organizing, etc..
+
+
+> Niko
+> 
+>>
+>> Andrew
+>>
+>>>      struct regulator_bulk_data supplies[TAS5720_NUM_SUPPLIES];
+>>>      struct delayed_work fault_check_work;
+>>>      unsigned int last_fault;
+>>> @@ -179,17 +180,13 @@ static int tas5720_set_dai_tdm_slot(struct
+>>> snd_soc_dai *dai,
+>>>          goto error_snd_soc_component_update_bits;
+>>>
+>>>      /* Configure TDM slot width. This is only applicable to TAS5722. */
+>>> -    switch (tas5720->devtype) {
+>>> -    case TAS5722:
+>>> +    if (tas5720->variant->device_id == TAS5722_DEVICE_ID) {
+
+
+I also don't like this, TAS5722_DEVICE_ID is the expected contents of a
+register, you are using it like the enum tas572x_type that you removed.
+I'd leave that enum, the device ID register itself is not guaranteed to
+be correct or unique, which is why we warn about mismatches below but
+then continue to use the user provided device type anyway.
+
+Andrew
+
+
+>>>          ret = snd_soc_component_update_bits(component,
+>>> TAS5722_DIGITAL_CTRL2_REG,
+>>>                              TAS5722_TDM_SLOT_16B,
+>>>                              slot_width == 16 ?
+>>>                              TAS5722_TDM_SLOT_16B : 0);
+>>>          if (ret < 0)
+>>>              goto error_snd_soc_component_update_bits;
+>>> -        break;
+>>> -    default:
+>>> -        break;
+>>>      }
+>>>
+>>>      return 0;
+>>> @@ -277,7 +274,7 @@ static void tas5720_fault_check_work(struct
+>>> work_struct *work)
+>>>  static int tas5720_codec_probe(struct snd_soc_component *component)
+>>>  {
+>>>      struct tas5720_data *tas5720 =
+>>> snd_soc_component_get_drvdata(component);
+>>> -    unsigned int device_id, expected_device_id;
+>>> +    unsigned int device_id;
+>>>      int ret;
+>>>
+>>>      tas5720->component = component;
+>>> @@ -301,21 +298,9 @@ static int tas5720_codec_probe(struct
+>>> snd_soc_component *component)
+>>>          goto probe_fail;
+>>>      }
+>>>
+>>> -    switch (tas5720->devtype) {
+>>> -    case TAS5720:
+>>> -        expected_device_id = TAS5720_DEVICE_ID;
+>>> -        break;
+>>> -    case TAS5722:
+>>> -        expected_device_id = TAS5722_DEVICE_ID;
+>>> -        break;
+>>> -    default:
+>>> -        dev_err(component->dev, "unexpected private driver data\n");
+>>> -        return -EINVAL;
+>>> -    }
+>>> -
+>>> -    if (device_id != expected_device_id)
+>>> +    if (device_id != tas5720->variant->device_id)
+>>>          dev_warn(component->dev, "wrong device ID. expected: %u
+>>> read: %u\n",
+>>> -             expected_device_id, device_id);
+>>> +             tas5720->variant->device_id, device_id);
+>>>
+>>>      /* Set device to mute */
+>>>      ret = snd_soc_component_update_bits(component,
+>>> TAS5720_DIGITAL_CTRL2_REG,
+>>> @@ -637,7 +622,6 @@ static int tas5720_probe(struct i2c_client *client,
+>>>  {
+>>>      struct device *dev = &client->dev;
+>>>      struct tas5720_data *data;
+>>> -    const struct regmap_config *regmap_config;
+>>>      int ret;
+>>>      int i;
+>>>
+>>> @@ -646,20 +630,10 @@ static int tas5720_probe(struct i2c_client
+>>> *client,
+>>>          return -ENOMEM;
+>>>
+>>>      data->tas5720_client = client;
+>>> -    data->devtype = id->driver_data;
+>>>
+>>> -    switch (id->driver_data) {
+>>> -    case TAS5720:
+>>> -        regmap_config = &tas5720_regmap_config;
+>>> -        break;
+>>> -    case TAS5722:
+>>> -        regmap_config = &tas5722_regmap_config;
+>>> -        break;
+>>> -    default:
+>>> -        dev_err(dev, "unexpected private driver data\n");
+>>> -        return -EINVAL;
+>>> -    }
+>>> -    data->regmap = devm_regmap_init_i2c(client, regmap_config);
+>>> +    data->variant = (const struct tas5720_variant *)id->driver_data;
+>>> +
+>>> +    data->regmap = devm_regmap_init_i2c(client,
+>>> data->variant->reg_config);
+>>>      if (IS_ERR(data->regmap)) {
+>>>          ret = PTR_ERR(data->regmap);
+>>>          dev_err(dev, "failed to allocate register map: %d\n", ret);
+>>> @@ -678,42 +652,36 @@ static int tas5720_probe(struct i2c_client
+>>> *client,
+>>>
+>>>      dev_set_drvdata(dev, data);
+>>>
+>>> -    switch (id->driver_data) {
+>>> -    case TAS5720:
+>>> -        ret = devm_snd_soc_register_component(&client->dev,
+>>> -                    &soc_component_dev_tas5720,
+>>> -                    tas5720_dai,
+>>> -                    ARRAY_SIZE(tas5720_dai));
+>>> -        break;
+>>> -    case TAS5722:
+>>> -        ret = devm_snd_soc_register_component(&client->dev,
+>>> -                    &soc_component_dev_tas5722,
+>>> -                    tas5720_dai,
+>>> -                    ARRAY_SIZE(tas5720_dai));
+>>> -        break;
+>>> -    default:
+>>> -        dev_err(dev, "unexpected private driver data\n");
+>>> -        return -EINVAL;
+>>> -    }
+>>> -    if (ret < 0) {
+>>> -        dev_err(dev, "failed to register component: %d\n", ret);
+>>> -        return ret;
+>>> -    }
+>>> -
+>>> -    return 0;
+>>> +    ret = devm_snd_soc_register_component(&client->dev,
+>>> +                          data->variant->comp_drv,
+>>> +                          tas5720_dai,
+>>> +                          ARRAY_SIZE(tas5720_dai));
+>>> +    return ret;
+>>>  }
+>>>
+>>> +static const struct tas5720_variant tas5720 = {
+>>> +    .device_id = TAS5720_DEVICE_ID,
+>>> +    .reg_config = &tas5720_regmap_config,
+>>> +    .comp_drv = &soc_component_dev_tas5720,
+>>> +};
+>>> +
+>>> +static const struct tas5720_variant tas5722 = {
+>>> +    .device_id = TAS5722_DEVICE_ID,
+>>> +    .reg_config = &tas5722_regmap_config,
+>>> +    .comp_drv = &soc_component_dev_tas5722,
+>>> +};
+>>> +
+>>>  static const struct i2c_device_id tas5720_id[] = {
+>>> -    { "tas5720", TAS5720 },
+>>> -    { "tas5722", TAS5722 },
+>>> +    { "tas5720", (kernel_ulong_t)&tas5720 },
+>>> +    { "tas5722", (kernel_ulong_t)&tas5722 },
+>>>      { }
+>>>  };
+>>>  MODULE_DEVICE_TABLE(i2c, tas5720_id);
+>>>
+>>>  #if IS_ENABLED(CONFIG_OF)
+>>>  static const struct of_device_id tas5720_of_match[] = {
+>>> -    { .compatible = "ti,tas5720", },
+>>> -    { .compatible = "ti,tas5722", },
+>>> +    { .compatible = "ti,tas5720", .data = &tas5720, },
+>>> +    { .compatible = "ti,tas5722", .data = &tas5722, },
+>>>      { },
+>>>  };
+>>>  MODULE_DEVICE_TABLE(of, tas5720_of_match);
+>>>
+>>
