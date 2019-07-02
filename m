@@ -1,95 +1,304 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RFC PATCH 1/5] dt-bindings: soundwire: add slave bindings
-Date: Tue, 2 Jul 2019 15:15:10 +0530
-Message-ID: <20190702094510.GO2911@vkoul-mobl>
-References: <20190611104043.22181-1-srinivas.kandagatla@linaro.org>
- <20190611104043.22181-2-srinivas.kandagatla@linaro.org>
- <20190701061155.GJ2911@vkoul-mobl>
- <ce1e445e-3254-1308-8752-2cb56a7e0cc6@linaro.org>
+From: Nikolaus Voss <nv@vosn.de>
+Subject: Re: [PATCH v2 1/2] ASoC: tas5720.c: cleanup variant management
+Date: Tue, 2 Jul 2019 12:12:26 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1907020855240.10248@fox.voss.local>
+References: <20190628143037.GH5379@sirena.org.uk> <cover.1561988282.git.nikolaus.voss@loewensteinmedical.de> <c79df50175d59265a37c5e7c8a0cfbf8119bcf78.1561988282.git.nikolaus.voss@loewensteinmedical.de> <80af3fca-f71b-c118-e5d8-fde8b7d21705@ti.com>
+ <alpine.DEB.2.20.1907011633310.4353@fox.voss.local> <074d4df3-51d8-6e20-869d-5f88b46cc172@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; BOUNDARY="8323329-910944831-1562061656=:10248"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ce1e445e-3254-1308-8752-2cb56a7e0cc6@linaro.org>
+In-Reply-To: <074d4df3-51d8-6e20-869d-5f88b46cc172@ti.com>
+Content-ID: <alpine.DEB.2.20.1907021201360.11292@fox.voss.local>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org, mark.rutland@arm.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, bgoswami@quicinc.com
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andreas Dannenberg <dannenberg@ti.com>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02-07-19, 09:22, Srinivas Kandagatla wrote:
-> Thanks Vinod for taking time to review,
-> 
-> On 01/07/2019 07:11, Vinod Koul wrote:
-> > On 11-06-19, 11:40, Srinivas Kandagatla wrote:
-> > > This patch adds bindings for Soundwire Slave devices which includes how
-> > > SoundWire enumeration address is represented in SoundWire slave device
-> > > tree nodes.
-> > > 
-> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > ---
-> > >   .../devicetree/bindings/soundwire/bus.txt     | 48 +++++++++++++++++++
-> > >   1 file changed, 48 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/soundwire/bus.txt
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/soundwire/bus.txt b/Documentation/devicetree/bindings/soundwire/bus.txt
-> > > new file mode 100644
-> > > index 000000000000..19a672b0d528
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/soundwire/bus.txt
-> > 
-> > The bindings are for slave right and the file is bus.txt?
-> 
-> I tried to follow what I have done for SLIMBus.
-> Do you prefer them to be documented in slave.txt?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Would that not be better :) We should have a master.txt for bus things
+--8323329-910944831-1562061656=:10248
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8BIT
+Content-ID: <alpine.DEB.2.20.1907021201361.11292@fox.voss.local>
 
-> > > @@ -0,0 +1,48 @@
-> > > +SoundWire bus bindings.
-> > > +
-> > > +SoundWire is a 2-pin multi-drop interface with data and clock line.
-> > > +It facilitates development of low cost, efficient, high performance systems.
-> > > +
-> > > +SoundWire controller bindings are very much specific to vendor.
-> > > +
-> > > +Child nodes(SLAVE devices):
-> > > +Every SoundWire controller node can contain zero or more child nodes
-> > > +representing slave devices on the bus. Every SoundWire slave device is
-> > > +uniquely determined by the enumeration address containing 5 fields:
-> > > +SoundWire Version, Instance ID, Manufacturer ID, Part ID and Class ID
-> > > +for a device. Addition to below required properties, child nodes can
-> > > +have device specific bindings.
-> > > +
-> > > +Required property for SoundWire child node if it is present:
-> > > +- compatible:	 "sdwVER,MFD,PID,CID". The textual representation of
-> > > +		  SoundWire Enumeration address comprising SoundWire
-> > > +		  Version, Manufacturer ID, Part ID and Class ID,
-> > > +		  shall be in lower-case hexadecimal with leading
-> > > +		  zeroes suppressed.
-> > > +		  Version number '0x10' represents SoundWire 1.0
-> > > +		  Version number '0x11' represents SoundWire 1.1
-> > > +		  ex: "sdw10,0217,2010,0"
-> > 
-> > any reason why we want to code version number and not say sdw,1.0,...
-> > and so on?
-> 
-> For consistency reasons, as other info in hex.
-> 
-> > 
-> > > +
-> > > +- sdw-instance-id: Should be ('Instance ID') from SoundWire
-> > > +		  Enumeration Address. Instance ID is for the cases
-> > > +		  where multiple Devices of the same type or Class
-> > > +		  are attached to the bus.
-> > 
-> > instance id is part of the 48bit device id, so wont it make sense to add
-> > that to compatible as well?
-> > 
-> So we could have multiple instance of same IP, so adding this to compatible
-> string does not make sense! As driver has to list all the possible
-> compatible strings.
+On Mon, 1 Jul 2019, Andrew F. Davis wrote:
+> On 7/1/19 11:35 AM, Nikolaus Voss wrote:
+>> On Mon, 1 Jul 2019, Andrew F. Davis wrote:
+>>> On 7/1/19 9:42 AM, Nikolaus Voss wrote:
+>>>> Replace enum tas572x_type with struct tas5720_variant which aggregates
+>>>> variant specific stuff and can be directly referenced from an id table.
+>>>>
+>>>> Signed-off-by: Nikolaus Voss <nikolaus.voss@loewensteinmedical.de>
+>>>> ---
+>>>>  sound/soc/codecs/tas5720.c | 98 +++++++++++++-------------------------
+>>>>  1 file changed, 33 insertions(+), 65 deletions(-)
+>>>>
+>>>> diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
+>>>> index 37fab8f22800..b2e897f094b4 100644
+>>>> --- a/sound/soc/codecs/tas5720.c
+>>>> +++ b/sound/soc/codecs/tas5720.c
+>>>> @@ -28,9 +28,10 @@
+>>>>  /* Define how often to check (and clear) the fault status register
+>>>> (in ms) */
+>>>>  #define TAS5720_FAULT_CHECK_INTERVAL        200
+>>>>
+>>>> -enum tas572x_type {
+>>>> -    TAS5720,
+>>>> -    TAS5722,
+>>>> +struct tas5720_variant {
+>>>> +    const int device_id;
+>>>> +    const struct regmap_config *reg_config;
+>>>> +    const struct snd_soc_component_driver *comp_drv;
+>>>>  };
+>>>>
+>>>>  static const char * const tas5720_supply_names[] = {
+>>>> @@ -44,7 +45,7 @@ struct tas5720_data {
+>>>>      struct snd_soc_component *component;
+>>>>      struct regmap *regmap;
+>>>>      struct i2c_client *tas5720_client;
+>>>> -    enum tas572x_type devtype;
+>>>> +    const struct tas5720_variant *variant;
+>>>
+>>> Why add a new struct? Actually I don't see the need for this patch at
+>>> all, the commit message only explains the 'what' not the 'why'. We can
+>>> and do already build this info from the tas572x_type.
+>>
+>> As the commit message says, the purpose is to aggregate the variant
+>> specifics and make it accessible via one pointer. This is a standard
+>> approach for of/acpi_device_id tables and thus makes the code simpler
+>> and improves readability. This is a maintenance patch to prepare using
+>> the device match API in a proper way.
+>>
+>
+>
+> "make it accessible via one pointer" is again a "what", the "why" is:
+>
+> "This is a standard approach"
+> "makes the code simpler and improves readability"
+>
+> Those are valid reasons and should be what you put in the commit message.
 
-Yes that makes sense.
+ok
 
--- 
-~Vinod
+>
+>
+>>>
+>>> Also below are several functional changes, the cover letter says this is
+>>> not a functional change, yet the driver behaves differently now.
+>>
+>> Can you be a little bit more specific? The code should behave exactly as
+>> before.
+>>
+>
+>
+> Sure, for instance the line "unexpected private driver data" is removed,
+> this can now never happen, that is a functional change. The phrase "no
+> functional change", should be reserved for only changes to spelling,
+> formatting, code organizing, etc..
+
+"unexpected private driver data" was unreachable code before, but you're 
+right, debug output has changed a little, but the functional part is 
+exactly the same.
+
+>
+>
+>> Niko
+>>
+>>>
+>>> Andrew
+>>>
+>>>>      struct regulator_bulk_data supplies[TAS5720_NUM_SUPPLIES];
+>>>>      struct delayed_work fault_check_work;
+>>>>      unsigned int last_fault;
+>>>> @@ -179,17 +180,13 @@ static int tas5720_set_dai_tdm_slot(struct
+>>>> snd_soc_dai *dai,
+>>>>          goto error_snd_soc_component_update_bits;
+>>>>
+>>>>      /* Configure TDM slot width. This is only applicable to TAS5722. */
+>>>> -    switch (tas5720->devtype) {
+>>>> -    case TAS5722:
+>>>> +    if (tas5720->variant->device_id == TAS5722_DEVICE_ID) {
+>
+>
+> I also don't like this, TAS5722_DEVICE_ID is the expected contents of a
+> register, you are using it like the enum tas572x_type that you removed.
+> I'd leave that enum, the device ID register itself is not guaranteed to
+> be correct or unique, which is why we warn about mismatches below but
+> then continue to use the user provided device type anyway.
+
+Strange, with me it's the other way round, I don't like the enum. The 
+mismatch behavior hasn't changed a bit, the same warning is printed. 
+If the device ID is no longer unique in the future (apparently it is 
+for now) the driver should explicitly handle this instead of printing a 
+warning, because warnings should be reserved for an indication of any 
+kind of misconfiguration and not of expected behavior.
+
+That said the variant struct can of course replace the enum in every 
+aspect, even for what you describe above. The enum was an ordinal 
+representation of the user-selected i2c_device_id, the variant struct* is
+a pointer representation of the user-selected i2c/of/acpi_device_id. The 
+only difference is that it directly points to the variant specific parts 
+of the driver instead of resolving those via multiple switch/case 
+statements.
+
+Niko
+
+>
+> Andrew
+>
+>
+>>>>          ret = snd_soc_component_update_bits(component,
+>>>> TAS5722_DIGITAL_CTRL2_REG,
+>>>>                              TAS5722_TDM_SLOT_16B,
+>>>>                              slot_width == 16 ?
+>>>>                              TAS5722_TDM_SLOT_16B : 0);
+>>>>          if (ret < 0)
+>>>>              goto error_snd_soc_component_update_bits;
+>>>> -        break;
+>>>> -    default:
+>>>> -        break;
+>>>>      }
+>>>>
+>>>>      return 0;
+>>>> @@ -277,7 +274,7 @@ static void tas5720_fault_check_work(struct
+>>>> work_struct *work)
+>>>>  static int tas5720_codec_probe(struct snd_soc_component *component)
+>>>>  {
+>>>>      struct tas5720_data *tas5720 =
+>>>> snd_soc_component_get_drvdata(component);
+>>>> -    unsigned int device_id, expected_device_id;
+>>>> +    unsigned int device_id;
+>>>>      int ret;
+>>>>
+>>>>      tas5720->component = component;
+>>>> @@ -301,21 +298,9 @@ static int tas5720_codec_probe(struct
+>>>> snd_soc_component *component)
+>>>>          goto probe_fail;
+>>>>      }
+>>>>
+>>>> -    switch (tas5720->devtype) {
+>>>> -    case TAS5720:
+>>>> -        expected_device_id = TAS5720_DEVICE_ID;
+>>>> -        break;
+>>>> -    case TAS5722:
+>>>> -        expected_device_id = TAS5722_DEVICE_ID;
+>>>> -        break;
+>>>> -    default:
+>>>> -        dev_err(component->dev, "unexpected private driver data\n");
+>>>> -        return -EINVAL;
+>>>> -    }
+>>>> -
+>>>> -    if (device_id != expected_device_id)
+>>>> +    if (device_id != tas5720->variant->device_id)
+>>>>          dev_warn(component->dev, "wrong device ID. expected: %u
+>>>> read: %u\n",
+>>>> -             expected_device_id, device_id);
+>>>> +             tas5720->variant->device_id, device_id);
+>>>>
+>>>>      /* Set device to mute */
+>>>>      ret = snd_soc_component_update_bits(component,
+>>>> TAS5720_DIGITAL_CTRL2_REG,
+>>>> @@ -637,7 +622,6 @@ static int tas5720_probe(struct i2c_client *client,
+>>>>  {
+>>>>      struct device *dev = &client->dev;
+>>>>      struct tas5720_data *data;
+>>>> -    const struct regmap_config *regmap_config;
+>>>>      int ret;
+>>>>      int i;
+>>>>
+>>>> @@ -646,20 +630,10 @@ static int tas5720_probe(struct i2c_client
+>>>> *client,
+>>>>          return -ENOMEM;
+>>>>
+>>>>      data->tas5720_client = client;
+>>>> -    data->devtype = id->driver_data;
+>>>>
+>>>> -    switch (id->driver_data) {
+>>>> -    case TAS5720:
+>>>> -        regmap_config = &tas5720_regmap_config;
+>>>> -        break;
+>>>> -    case TAS5722:
+>>>> -        regmap_config = &tas5722_regmap_config;
+>>>> -        break;
+>>>> -    default:
+>>>> -        dev_err(dev, "unexpected private driver data\n");
+>>>> -        return -EINVAL;
+>>>> -    }
+>>>> -    data->regmap = devm_regmap_init_i2c(client, regmap_config);
+>>>> +    data->variant = (const struct tas5720_variant *)id->driver_data;
+>>>> +
+>>>> +    data->regmap = devm_regmap_init_i2c(client,
+>>>> data->variant->reg_config);
+>>>>      if (IS_ERR(data->regmap)) {
+>>>>          ret = PTR_ERR(data->regmap);
+>>>>          dev_err(dev, "failed to allocate register map: %d\n", ret);
+>>>> @@ -678,42 +652,36 @@ static int tas5720_probe(struct i2c_client
+>>>> *client,
+>>>>
+>>>>      dev_set_drvdata(dev, data);
+>>>>
+>>>> -    switch (id->driver_data) {
+>>>> -    case TAS5720:
+>>>> -        ret = devm_snd_soc_register_component(&client->dev,
+>>>> -                    &soc_component_dev_tas5720,
+>>>> -                    tas5720_dai,
+>>>> -                    ARRAY_SIZE(tas5720_dai));
+>>>> -        break;
+>>>> -    case TAS5722:
+>>>> -        ret = devm_snd_soc_register_component(&client->dev,
+>>>> -                    &soc_component_dev_tas5722,
+>>>> -                    tas5720_dai,
+>>>> -                    ARRAY_SIZE(tas5720_dai));
+>>>> -        break;
+>>>> -    default:
+>>>> -        dev_err(dev, "unexpected private driver data\n");
+>>>> -        return -EINVAL;
+>>>> -    }
+>>>> -    if (ret < 0) {
+>>>> -        dev_err(dev, "failed to register component: %d\n", ret);
+>>>> -        return ret;
+>>>> -    }
+>>>> -
+>>>> -    return 0;
+>>>> +    ret = devm_snd_soc_register_component(&client->dev,
+>>>> +                          data->variant->comp_drv,
+>>>> +                          tas5720_dai,
+>>>> +                          ARRAY_SIZE(tas5720_dai));
+>>>> +    return ret;
+>>>>  }
+>>>>
+>>>> +static const struct tas5720_variant tas5720 = {
+>>>> +    .device_id = TAS5720_DEVICE_ID,
+>>>> +    .reg_config = &tas5720_regmap_config,
+>>>> +    .comp_drv = &soc_component_dev_tas5720,
+>>>> +};
+>>>> +
+>>>> +static const struct tas5720_variant tas5722 = {
+>>>> +    .device_id = TAS5722_DEVICE_ID,
+>>>> +    .reg_config = &tas5722_regmap_config,
+>>>> +    .comp_drv = &soc_component_dev_tas5722,
+>>>> +};
+>>>> +
+>>>>  static const struct i2c_device_id tas5720_id[] = {
+>>>> -    { "tas5720", TAS5720 },
+>>>> -    { "tas5722", TAS5722 },
+>>>> +    { "tas5720", (kernel_ulong_t)&tas5720 },
+>>>> +    { "tas5722", (kernel_ulong_t)&tas5722 },
+>>>>      { }
+>>>>  };
+>>>>  MODULE_DEVICE_TABLE(i2c, tas5720_id);
+>>>>
+>>>>  #if IS_ENABLED(CONFIG_OF)
+>>>>  static const struct of_device_id tas5720_of_match[] = {
+>>>> -    { .compatible = "ti,tas5720", },
+>>>> -    { .compatible = "ti,tas5722", },
+>>>> +    { .compatible = "ti,tas5720", .data = &tas5720, },
+>>>> +    { .compatible = "ti,tas5722", .data = &tas5722, },
+>>>>      { },
+>>>>  };
+>>>>  MODULE_DEVICE_TABLE(of, tas5720_of_match);
+>>>>
+>>>
+>
+--8323329-910944831-1562061656=:10248--
