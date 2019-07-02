@@ -1,127 +1,69 @@
-From: Luca Weiss <luca@z3ntu.xyz>
-Subject: [PATCH] ASoC: sunxi: sun50i-codec-analog: Add earpiece
-Date: Tue,  2 Jul 2019 21:16:09 +0200
-Message-ID: <20190702191613.11084-1-luca@z3ntu.xyz>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: ipc: update
+ sof_ipc_stream_params
+Date: Tue, 02 Jul 2019 16:29:57 -0700
+Message-ID: <a233dfdbb973251d439197d13b69c867667d3f76.camel@linux.intel.com>
+References: <20190702121144.7809-1-yang.jie@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: ~martijnbraam/pmos-upstream@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Vasily Khoruzhick <anarsoul@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20EDCF800C5
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 01:30:08 +0200 (CEST)
+In-Reply-To: <20190702121144.7809-1-yang.jie@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: marcin.rajwa@intel.com, pierre-louis.bossart@linux.intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the necessary registers and audio routes to play audio using
-the Earpiece, that's supported on the A64.
+On Tue, 2019-07-02 at 20:11 +0800, Keyon Jie wrote:
+> From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+> 
+> The host period bytes needs to be passed to firmware.
+> Currently this field is used as notification for host
+> about period copy completion. Therefore we need to split these
+> two informations.
+Keyon/Marcin,
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
-So, first of all: This is my first audio patch and I hope I didn't make
-too many mistakes :) , especially with the routes at the bottom of
-the patch.
+Could you please add a bit more context in the commit message on the
+need to split these two fields ie.. what usecases need this?
 
-What I'm really unsure about, is how the enable & mute registers should
-be handled. Should I put both registers into a SOC_DOUBLE("Earpiece
-Playback Switch",...)?
-
- sound/soc/sunxi/sun50i-codec-analog.c | 51 +++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
-
-diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index d105c90c3706..6c19fea992c5 100644
---- a/sound/soc/sunxi/sun50i-codec-analog.c
-+++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -49,6 +49,15 @@
- #define SUN50I_ADDA_OR_MIX_CTRL_DACR		1
- #define SUN50I_ADDA_OR_MIX_CTRL_DACL		0
- 
-+#define SUN50I_ADDA_EARPIECE_CTRL0	0x03
-+#define SUN50I_ADDA_EARPIECE_CTRL0_EAR_RAMP_TIME	4
-+#define SUN50I_ADDA_EARPIECE_CTRL0_ESPSR		0
-+
-+#define SUN50I_ADDA_EARPIECE_CTRL1	0x04
-+#define SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN	7
-+#define SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE	6
-+#define SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL	0
-+
- #define SUN50I_ADDA_LINEOUT_CTRL0	0x05
- #define SUN50I_ADDA_LINEOUT_CTRL0_LEN		7
- #define SUN50I_ADDA_LINEOUT_CTRL0_REN		6
-@@ -172,6 +181,10 @@ static const DECLARE_TLV_DB_RANGE(sun50i_codec_lineout_vol_scale,
- 	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
- );
- 
-+static const DECLARE_TLV_DB_RANGE(sun50i_codec_earpiece_vol_scale,
-+	0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
-+	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
-+);
- 
- /* volume / mute controls */
- static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
-@@ -225,6 +238,19 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
- 		   SUN50I_ADDA_LINEOUT_CTRL0_LEN,
- 		   SUN50I_ADDA_LINEOUT_CTRL0_REN, 1, 0),
- 
-+	SOC_SINGLE_TLV("Earpiece Playback Volume",
-+		       SUN50I_ADDA_EARPIECE_CTRL1,
-+		       SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL, 0x1f, 0,
-+		       sun50i_codec_earpiece_vol_scale),
-+
-+	SOC_SINGLE("Earpiece Playback Switch (enable)",
-+		   SUN50I_ADDA_EARPIECE_CTRL1,
-+		   SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN, 1, 0),
-+
-+	SOC_SINGLE("Earpiece Playback Switch",
-+		   SUN50I_ADDA_EARPIECE_CTRL1,
-+		   SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0),
-+
- };
- 
- static const char * const sun50i_codec_hp_src_enum_text[] = {
-@@ -257,6 +283,20 @@ static const struct snd_kcontrol_new sun50i_codec_lineout_src[] = {
- 		      sun50i_codec_lineout_src_enum),
- };
- 
-+static const char * const sun50i_codec_earpiece_src_enum_text[] = {
-+	"DACR", "DACL", "Right Analog Mixer", "Left Analog Mixer",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(sun50i_codec_earpiece_src_enum,
-+			    SUN50I_ADDA_EARPIECE_CTRL0,
-+			    SUN50I_ADDA_EARPIECE_CTRL0_ESPSR,
-+			    sun50i_codec_earpiece_src_enum_text);
-+
-+static const struct snd_kcontrol_new sun50i_codec_earpiece_src[] = {
-+	SOC_DAPM_ENUM("Earpiece Source Playback Route",
-+		      sun50i_codec_earpiece_src_enum),
-+};
-+
- static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 	/* DAC */
- 	SND_SOC_DAPM_DAC("Left DAC", NULL, SUN50I_ADDA_MIX_DAC_CTRL,
-@@ -285,6 +325,10 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
- 	SND_SOC_DAPM_OUTPUT("LINEOUT"),
- 
-+	SND_SOC_DAPM_MUX("Earpiece Source Playback Route",
-+			 SND_SOC_NOPM, 0, 0, sun50i_codec_earpiece_src),
-+	SND_SOC_DAPM_OUTPUT("EARPIECE"),
-+
- 	/* Microphone inputs */
- 	SND_SOC_DAPM_INPUT("MIC1"),
- 
-@@ -388,6 +432,13 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	{ "Line Out Source Playback Route", "Mono Differential",
- 		"Right Mixer" },
- 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
-+
-+	/* Earpiece Routes */
-+	{ "Earpiece Source Playback Route", "DACL", "Left DAC" },
-+	{ "Earpiece Source Playback Route", "DACR", "Right DAC" },
-+	{ "Earpiece Source Playback Route", "Left Analog Mixer", "Left Mixer" },
-+	{ "Earpiece Source Playback Route", "Right Analog Mixer", "Right Mixer" },
-+	{ "EARPIECE", NULL, "Earpiece Source Playback Route" },
- };
- 
- static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
--- 
-2.22.0
+Thanks,
+Ranjani
+> 
+> Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+> ---
+>  include/sound/sof/stream.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
+> index 643f175cb479..44acfa62fa69 100644
+> --- a/include/sound/sof/stream.h
+> +++ b/include/sound/sof/stream.h
+> @@ -83,10 +83,10 @@ struct sof_ipc_stream_params {
+>  	uint16_t sample_valid_bytes;
+>  	uint16_t sample_container_bytes;
+>  
+> -	/* for notifying host period has completed - 0 means no period
+> IRQ */
+>  	uint32_t host_period_bytes;
+> +	uint16_t no_period_irq; /* 1 means period IRQ mode OFF */
+>  
+> -	uint32_t reserved[2];
+> +	uint16_t reserved[3];
+>  	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map -
+> SOF_CHMAP_ */
+>  } __packed;
+>  
