@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: au1x: psc-i2s.c: use
+Subject: Applied "ASoC: rt5682: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Tue,  2 Jul 2019 14:04:42 +0100 (BST)
-Message-ID: <20190702130442.6FB67440049@finisterre.sirena.org.uk>
-References: <87zhm2s69u.wl-kuninori.morimoto.gx@renesas.com>
+Date: Tue,  2 Jul 2019 14:04:40 +0100 (BST)
+Message-ID: <20190702130440.57C8244004B@finisterre.sirena.org.uk>
+References: <87v9wqs68q.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A1C1F800DA
- for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2019 15:04:43 +0200 (CEST)
-In-Reply-To: <87zhm2s69u.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D618FF800C9
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2019 15:04:41 +0200 (CEST)
+In-Reply-To: <87v9wqs68q.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: au1x: psc-i2s.c: use devm_snd_soc_register_component()
+   ASoC: rt5682: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,52 @@ to this mail.
 Thanks,
 Mark
 
->From 7422104037773624d2a6cdb9becb68278befbd88 Mon Sep 17 00:00:00 2001
+>From 61c8a7d6ff11a31fc4ea47667c5f33119be7bcd3 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 28 Jun 2019 13:08:48 +0900
-Subject: [PATCH] ASoC: au1x: psc-i2s.c: use devm_snd_soc_register_component()
+Date: Fri, 28 Jun 2019 13:09:28 +0900
+Subject: [PATCH] ASoC: rt5682: use devm_snd_soc_register_component()
 
 We have devm_xxx version of snd_soc_register_component,
 let's use it.
 
+This patch also removes related empty functions
+
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/psc-i2s.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5682.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index 4a5a095076f4..076303f96b8c 100644
---- a/sound/soc/au1x/psc-i2s.c
-+++ b/sound/soc/au1x/psc-i2s.c
-@@ -340,16 +340,14 @@ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 78409dd11488..1ef470700ed5 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2662,15 +2662,9 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
  
- 	platform_set_drvdata(pdev, wd);
+ 	}
  
--	return snd_soc_register_component(&pdev->dev, &au1xpsc_i2s_component,
--					  &wd->dai_drv, 1);
-+	return devm_snd_soc_register_component(&pdev->dev,
-+				&au1xpsc_i2s_component, &wd->dai_drv, 1);
+-	return snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5682,
+-			rt5682_dai, ARRAY_SIZE(rt5682_dai));
+-}
+-
+-static int rt5682_i2c_remove(struct i2c_client *i2c)
+-{
+-	snd_soc_unregister_component(&i2c->dev);
+-
+-	return 0;
++	return devm_snd_soc_register_component(&i2c->dev,
++					&soc_component_dev_rt5682,
++					rt5682_dai, ARRAY_SIZE(rt5682_dai));
  }
  
- static int au1xpsc_i2s_drvremove(struct platform_device *pdev)
- {
- 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
- 
--	snd_soc_unregister_component(&pdev->dev);
--
- 	__raw_writel(0, I2S_CFG(wd));
- 	wmb(); /* drain writebuffer */
- 	__raw_writel(PSC_CTRL_DISABLE, PSC_CTRL(wd));
+ static void rt5682_i2c_shutdown(struct i2c_client *client)
+@@ -2703,7 +2697,6 @@ static struct i2c_driver rt5682_i2c_driver = {
+ 		.acpi_match_table = ACPI_PTR(rt5682_acpi_match),
+ 	},
+ 	.probe = rt5682_i2c_probe,
+-	.remove = rt5682_i2c_remove,
+ 	.shutdown = rt5682_i2c_shutdown,
+ 	.id_table = rt5682_i2c_id,
+ };
 -- 
 2.20.1
