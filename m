@@ -1,55 +1,123 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: codecs: ad193x: Group register
- initialization at probe
-Date: Wed, 3 Jul 2019 16:52:35 +0000
-Message-ID: <e9e653d1-6360-ffaf-6b47-eb33c0d867df@microchip.com>
-References: <20190627120208.4661-1-codrin.ciubotariu@microchip.com>
- <CA+Px+wXBBgeWbjZ5uQmwJgn+d=ZE-N0aehitog7==ak3GDxMsQ@mail.gmail.com>
+From: Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH v2] ASoC: sunxi: sun50i-codec-analog: Add earpiece
+Date: Wed,  3 Jul 2019 20:48:11 +0200
+Message-ID: <20190703184814.27191-1-luca@z3ntu.xyz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+Px+wXBBgeWbjZ5uQmwJgn+d=ZE-N0aehitog7==ak3GDxMsQ@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <106EAF0CF0E83B4CACE6BBC13ECDE279@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: tzungbi@google.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lars@metafoo.de, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: ~martijnbraam/pmos-upstream@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Vasily Khoruzhick <anarsoul@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMuMDcuMjAxOSAxMDozOSwgVHp1bmctQmkgU2hpaCB3cm90ZToNCj4gT24gVGh1LCBKdW4g
-MjcsIDIwMTkgYXQgODowNSBQTSBDb2RyaW4gQ2l1Ym90YXJpdQ0KPiA8Y29kcmluLmNpdWJvdGFy
-aXVAbWljcm9jaGlwLmNvbT4gd3JvdGU6DQo+PiArc3RydWN0IGFkMTkzeF9yZWdfZGVmYXVsdCB7
-DQo+PiArICAgICAgIHVuc2lnbmVkIGludCByZWc7DQo+PiArICAgICAgIHVuc2lnbmVkIGludCB2
-YWw7DQo+PiArfTsNCj4gWW91IHByb2JhYmx5IGRvbid0IG5lZWQgdG8gZGVmaW5lIHRoaXMuICBU
-aGVyZSBpcyBhIHN0cnVjdA0KPiByZWdfc2VxdWVuY2UgaW4gcmVnbWFwLmguDQo+IA0KPj4gKw0K
-Pj4gKy8qIGNvZGVjIHJlZ2lzdGVyIHZhbHVlcyB0byBzZXQgYWZ0ZXIgcmVzZXQgKi8NCj4+ICtz
-dGF0aWMgdm9pZCBhZDE5M3hfcmVnX2RlZmF1bHRfaW5pdChzdHJ1Y3QgYWQxOTN4X3ByaXYgKmFk
-MTkzeCkNCj4+ICt7DQo+PiArICAgICAgIGNvbnN0IHN0cnVjdCBhZDE5M3hfcmVnX2RlZmF1bHQg
-cmVnX2luaXRbXSA9IHsNCj4+ICsgICAgICAgICAgICAgICB7ICAwLCAweDk5IH0sICAgLyogUExM
-X0NMS19DVFJMMDogcGxsIGlucHV0OiBtY2xraS94aSAxMi4yODhNaHogKi8NCj4+ICsgICAgICAg
-ICAgICAgICB7ICAxLCAweDA0IH0sICAgLyogUExMX0NMS19DVFJMMTogbm8gb24tY2hpcCBWcmVm
-ICovDQo+PiArICAgICAgICAgICAgICAgeyAgMiwgMHg0MCB9LCAgIC8qIERBQ19DVFJMMDogVERN
-IG1vZGUgKi8NCj4+ICsgICAgICAgICAgICAgICB7ICA0LCAweDFBIH0sICAgLyogREFDX0NUUkwy
-OiA0OGtIeiBkZS1lbXBoYXNpcywgdW5tdXRlIGRhYyAqLw0KPj4gKyAgICAgICAgICAgICAgIHsg
-IDUsIDB4MDAgfSwgICAvKiBEQUNfQ0hOTF9NVVRFOiB1bm11dGUgREFDIGNoYW5uZWxzICovDQo+
-PiArICAgICAgIH07DQo+PiArICAgICAgIGNvbnN0IHN0cnVjdCBhZDE5M3hfcmVnX2RlZmF1bHQg
-cmVnX2FkY19pbml0W10gPSB7DQo+PiArICAgICAgICAgICAgICAgeyAxNCwgMHgwMyB9LCAgIC8q
-IEFEQ19DVFJMMDogaGlnaC1wYXNzIGZpbHRlciBlbmFibGUgKi8NCj4+ICsgICAgICAgICAgICAg
-ICB7IDE1LCAweDQzIH0sICAgLyogQURDX0NUUkwxOiBzYXRhIGRlbGF5PTEsIGFkYyBhdXggbW9k
-ZSAqLw0KPj4gKyAgICAgICB9Ow0KPj4gKyAgICAgICBpbnQgaTsNCj4+ICsNCj4+ICsgICAgICAg
-Zm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUocmVnX2luaXQpOyBpKyspDQo+PiArICAgICAgICAg
-ICAgICAgcmVnbWFwX3dyaXRlKGFkMTkzeC0+cmVnbWFwLCByZWdfaW5pdFtpXS5yZWcsIHJlZ19p
-bml0W2ldLnZhbCk7DQo+PiArDQo+PiArICAgICAgIGlmIChhZDE5M3hfaGFzX2FkYyhhZDE5M3gp
-KSB7DQo+PiArICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUocmVnX2Fk
-Y19pbml0KTsgaSsrKSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICByZWdtYXBfd3JpdGUo
-YWQxOTN4LT5yZWdtYXAsIHJlZ19hZGNfaW5pdFtpXS5yZWcsDQo+PiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgcmVnX2FkY19pbml0W2ldLnZhbCk7DQo+PiArICAgICAgICAg
-ICAgICAgfQ0KPj4gKyAgICAgICB9DQo+IEFuZCB5b3UgY291bGQgdXNlIHJlZ21hcF9tdWx0aV9y
-ZWdfd3JpdGUoICkgdG8gc3Vic3RpdHV0ZSB0aGUgdHdvIGZvci1sb29wcy4NCj4gDQo+IFNlZSBo
-dHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE5
-LUp1bmUvMTUxMDkwLmh0bWwNCj4gYXMgYW4gZXhhbXBsZS4gIEl0IGFsc28gaGFzIHNvbWUgcmVn
-IGluaXRpYWxpemF0aW9ucyBpbiBjb21wb25lbnQNCj4gcHJvYmUoICkuDQo+IA0KDQpZb3VyIHNv
-bHV0aW9uIGlzIGNlcnRhaW5seSBtb3JlIGVsZWdhbnQuIEkgd2lsbCBtYWtlIGEgcGF0Y2ggYW5k
-IHN3aXRjaCANCnRvIHJlZ21hcF9tdWx0aV9yZWdfd3JpdGUoKS4NCg0KVGhhbmsgeW91IGZvciB5
-b3VyIHJldmlldy4NCg0KQmVzdCByZWdhcmRzLA0KQ29kcmluDQo=
+This adds the necessary registers and audio routes to play audio using
+the Earpiece, that's supported on the A64.
+
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Changes v1 -> v2:
+* Make the earpiece enable register a DAPM widget
+* Adjust the audio routes to include the new Earpiece Amp widget
+* Left/Right Analog Mixer => Left/Right Mixer
+
+ sound/soc/sunxi/sun50i-codec-analog.c | 50 +++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
+index d105c90c3706..6d1de565350e 100644
+--- a/sound/soc/sunxi/sun50i-codec-analog.c
++++ b/sound/soc/sunxi/sun50i-codec-analog.c
+@@ -49,6 +49,15 @@
+ #define SUN50I_ADDA_OR_MIX_CTRL_DACR		1
+ #define SUN50I_ADDA_OR_MIX_CTRL_DACL		0
+ 
++#define SUN50I_ADDA_EARPIECE_CTRL0	0x03
++#define SUN50I_ADDA_EARPIECE_CTRL0_EAR_RAMP_TIME	4
++#define SUN50I_ADDA_EARPIECE_CTRL0_ESPSR		0
++
++#define SUN50I_ADDA_EARPIECE_CTRL1	0x04
++#define SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN	7
++#define SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE	6
++#define SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL	0
++
+ #define SUN50I_ADDA_LINEOUT_CTRL0	0x05
+ #define SUN50I_ADDA_LINEOUT_CTRL0_LEN		7
+ #define SUN50I_ADDA_LINEOUT_CTRL0_REN		6
+@@ -172,6 +181,10 @@ static const DECLARE_TLV_DB_RANGE(sun50i_codec_lineout_vol_scale,
+ 	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
+ );
+ 
++static const DECLARE_TLV_DB_RANGE(sun50i_codec_earpiece_vol_scale,
++	0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
++	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
++);
+ 
+ /* volume / mute controls */
+ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
+@@ -225,6 +238,15 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
+ 		   SUN50I_ADDA_LINEOUT_CTRL0_LEN,
+ 		   SUN50I_ADDA_LINEOUT_CTRL0_REN, 1, 0),
+ 
++	SOC_SINGLE_TLV("Earpiece Playback Volume",
++		       SUN50I_ADDA_EARPIECE_CTRL1,
++		       SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL, 0x1f, 0,
++		       sun50i_codec_earpiece_vol_scale),
++
++	SOC_SINGLE("Earpiece Playback Switch",
++		   SUN50I_ADDA_EARPIECE_CTRL1,
++		   SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0),
++
+ };
+ 
+ static const char * const sun50i_codec_hp_src_enum_text[] = {
+@@ -257,6 +279,20 @@ static const struct snd_kcontrol_new sun50i_codec_lineout_src[] = {
+ 		      sun50i_codec_lineout_src_enum),
+ };
+ 
++static const char * const sun50i_codec_earpiece_src_enum_text[] = {
++	"DACR", "DACL", "Right Mixer", "Left Mixer",
++};
++
++static SOC_ENUM_SINGLE_DECL(sun50i_codec_earpiece_src_enum,
++			    SUN50I_ADDA_EARPIECE_CTRL0,
++			    SUN50I_ADDA_EARPIECE_CTRL0_ESPSR,
++			    sun50i_codec_earpiece_src_enum_text);
++
++static const struct snd_kcontrol_new sun50i_codec_earpiece_src[] = {
++	SOC_DAPM_ENUM("Earpiece Source Playback Route",
++		      sun50i_codec_earpiece_src_enum),
++};
++
+ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 	/* DAC */
+ 	SND_SOC_DAPM_DAC("Left DAC", NULL, SUN50I_ADDA_MIX_DAC_CTRL,
+@@ -285,6 +321,12 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
+ 	SND_SOC_DAPM_OUTPUT("LINEOUT"),
+ 
++	SND_SOC_DAPM_MUX("Earpiece Source Playback Route",
++			 SND_SOC_NOPM, 0, 0, sun50i_codec_earpiece_src),
++	SND_SOC_DAPM_OUT_DRV("Earpiece Amp", SUN50I_ADDA_EARPIECE_CTRL1,
++			     SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("EARPIECE"),
++
+ 	/* Microphone inputs */
+ 	SND_SOC_DAPM_INPUT("MIC1"),
+ 
+@@ -388,6 +430,14 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "Line Out Source Playback Route", "Mono Differential",
+ 		"Right Mixer" },
+ 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
++
++	/* Earpiece Routes */
++	{ "Earpiece Source Playback Route", "DACL", "Left DAC" },
++	{ "Earpiece Source Playback Route", "DACR", "Right DAC" },
++	{ "Earpiece Source Playback Route", "Left Mixer", "Left Mixer" },
++	{ "Earpiece Source Playback Route", "Right Mixer", "Right Mixer" },
++	{ "Earpiece Amp", NULL, "Earpiece Source Playback Route" },
++	{ "EARPIECE", NULL, "Earpiece Amp" },
+ };
+ 
+ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
+-- 
+2.22.0
