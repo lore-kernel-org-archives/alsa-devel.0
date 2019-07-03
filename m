@@ -1,55 +1,39 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] ASoC: wcd9335: remove multiple defines.
-Date: Wed,  3 Jul 2019 13:32:57 +0100
-Message-ID: <20190703123257.27228-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5D45F800C5
- for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 14:33:00 +0200 (CEST)
-Received: by mail-wm1-x343.google.com with SMTP id a15so2020357wmj.5
- for <alsa-devel@alsa-project.org>; Wed, 03 Jul 2019 05:33:00 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lgirdwood@gmail.com
+From: Fuqian Huang <huangfq.daxian@gmail.com>
+Subject: [PATCH 29/30] sound/pci: Use kmemdup rather than duplicating its implementation
+Date: Wed,  3 Jul 2019 21:18:31 +0800
+Message-ID: <20190703131831.26013-1-huangfq.daxian@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Fuqian Huang <huangfq.daxian@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Found during review that there are multiple defines of same constants.
-This patch removes them!
+kmemdup is introduced to duplicate a region of memory in a neat way.
+Rather than kmalloc/kzalloc + memset, which the programmer needs to
+write the size twice (sometimes lead to mistakes), kmemdup improves
+readability, leads to smaller code and also reduce the chances of mistakes.
+Suggestion to use kmemdup rather than using kmalloc/kzalloc + memset.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
 ---
- sound/soc/codecs/wcd9335.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/pci/echoaudio/echoaudio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 6f205638a8b8..da6c50ccecd9 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -87,11 +87,6 @@
- #define WCD9335_DEC_PWR_LVL_HP 0x04
- #define WCD9335_DEC_PWR_LVL_DF 0x00
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index b612a536a5a1..35bd3e7c8ce1 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -2189,11 +2189,10 @@ static int snd_echo_resume(struct device *dev)
+ 	u32 pipe_alloc_mask;
+ 	int err;
  
--#define  TX_HPF_CUT_OFF_FREQ_MASK	0x60
--#define  CF_MIN_3DB_4HZ			0x0
--#define  CF_MIN_3DB_75HZ		0x1
--#define  CF_MIN_3DB_150HZ		0x2
--
- #define WCD9335_MBHC_MAX_BUTTONS	(8)
+-	commpage_bak = kmalloc(sizeof(*commpage), GFP_KERNEL);
++	commpage_bak = kmemdup(commpage, sizeof(*commpage), GFP_KERNEL);
+ 	if (commpage_bak == NULL)
+ 		return -ENOMEM;
+ 	commpage = chip->comm_page;
+-	memcpy(commpage_bak, commpage, sizeof(*commpage));
  
- #define WCD9335_SLIM_RX_CH(p) \
+ 	err = init_hw(chip, chip->pci->device, chip->pci->subsystem_device);
+ 	if (err < 0) {
 -- 
-2.21.0
+2.11.0
