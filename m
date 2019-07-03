@@ -1,50 +1,57 @@
-From: GitHub issues - opened <github@alsa-project.org>
-Subject: when aplaymidi exits the sustained notes are played
-	forever.
-Date: Wed,  3 Jul 2019 22:08:32 +0200 (CEST)
-Message-ID: <20190703200832.7EC66F800EA@alsa1.perex.cz>
-References: <1562184509209604025-webhooks-bot@alsa-project.org>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH V2 2/2] ASoC: fsl_esai: recover the channel swap after
+ xrun
+Date: Wed, 3 Jul 2019 22:56:19 +0200
+Message-ID: <3238f813-ac71-69e2-45bf-badb461dac82@intel.com>
+References: <cover.1562136119.git.shengjiu.wang@nxp.com>
+ <c29639336b6b32fa781bdddad30287f8b76d5e0b.1562136119.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id F3DCEF800C5
- for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 22:08:29 +0200 (CEST)
-In-Reply-To: <1562184509209604025-webhooks-bot@alsa-project.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <c29639336b6b32fa781bdddad30287f8b76d5e0b.1562136119.git.shengjiu.wang@nxp.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: shengjiu.wang@nxp.com
+Cc: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-utils issue #22 was opened from mercuriete:
+On 2019-07-03 08:42, shengjiu.wang@nxp.com wrote:
+> +static void fsl_esai_reset(unsigned long arg)
+> +{
+> +	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
+> +	u32 saisr, tfcr, rfcr;
+> +
+> +	/* save the registers */
+> +	regmap_read(esai_priv->regmap, REG_ESAI_TFCR, &tfcr);
+> +	regmap_read(esai_priv->regmap, REG_ESAI_RFCR, &rfcr);
+> +
+> +	/* stop the tx & rx */
+> +	fsl_esai_trigger_stop(esai_priv, 1);
+> +	fsl_esai_trigger_stop(esai_priv, 0);
+> +
+> +	/* reset the esai, and restore the registers */
+> +	fsl_esai_init(esai_priv);
 
-Transfered from here:
-https://github.com/OpenTTD/OpenTTD/issues/7637
+<comment below applies>
 
-### Expected Result
-All notes are stoped before exit aplaymidi
+> +
+> +	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> +			   ESAI_xCR_xPR_MASK,
+> +			   ESAI_xCR_xPR);
+> +	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
+> +			   ESAI_xCR_xPR_MASK,
+> +			   ESAI_xCR_xPR);
+> +
+> +	/* restore registers by regcache_sync */
+> +	fsl_esai_register_restore(esai_priv);
+> +
 
-### Actual Result
-Notes are sustained forever and I have to press the panic button on Qsynth
+Both _init and _restore may fail given their declaration in 1/2 "ASoC: 
+fsl_esai: Wrap some operations to be functions" yet here you simply 
+ignore the return values.
 
-### Steps to Reproduce
+If failure of said functions is permissive, it might be a good place for 
+a comment.
 
-1. Open Qsynth with fluid-soundfonts
-2. do this: ```aplaymidi --port 128:0 file.mid```
-3. do control+c to kill aplaymidi
-4. Qsynth plays a note forever.
-
-### Possible fix
-
-Capture SIGINT and send midi off messages before exit properly.
-
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/22
-Repository URL: https://github.com/alsa-project/alsa-utils
+Czarek
