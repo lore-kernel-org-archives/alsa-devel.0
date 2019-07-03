@@ -1,95 +1,60 @@
-From: Fuqian Huang <huangfq.daxian@gmail.com>
-Subject: Re: [PATCH 30/30] sound/soc: Use kmemdup rather than duplicating its implementation
-Date: Wed, 3 Jul 2019 22:58:43 +0800
-Message-ID: <CABXRUiQH2c5knAxnegNc1J2uyqy3OVU=qEorcZkUtMoJhvb_8Q@mail.gmail.com>
-References: <20190703131842.26082-1-huangfq.daxian@gmail.com> <547c68b0-f55f-ca1d-c5b3-f6a5f89d93a9@opensource.cirrus.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: [PATCH v2 1/2] ASoC: SOF: add flag for position update
+	ipc
+Date: Wed,  3 Jul 2019 23:10:22 +0800
+Message-ID: <20190703151023.30313-1-yang.jie@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <547c68b0-f55f-ca1d-c5b3-f6a5f89d93a9@opensource.cirrus.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D5DFF800E8
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 17:05:14 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I will separate them into two patches in the v2 patch set. Also,
-there is a typo in the v1(memset should be memcpy).
+From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
 
-Richard Fitzgerald <rf@opensource.cirrus.com> =E6=96=BC 2019=E5=B9=B47=E6=
-=9C=883=E6=97=A5=E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=889:55=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> On 03/07/19 14:18, Fuqian Huang wrote:
-> > kmemdup is introduced to duplicate a region of memory in a neat way.
-> > Rather than kmalloc/kzalloc + memset, which the programmer needs to
-> > write the size twice (sometimes lead to mistakes), kmemdup improves
-> > readability, leads to smaller code and also reduce the chances of mista=
-kes.
-> > Suggestion to use kmemdup rather than using kmalloc/kzalloc + memset.
-> >
-> > Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
-> > ---
-> >   sound/soc/codecs/wm0010.c             | 4 +---
-> >   sound/soc/intel/atom/sst/sst_loader.c | 3 +--
->
-> Should be one patch per file as the drivers are not related to each
-> other at all, and if one needed a revert you couldn't revert this
-> patch because it would revert both drivers.
->
-> But apart from that, for wm0010.c:
-> Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->
-> >   2 files changed, 2 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-> > index 727d6703c905..807826f30f58 100644
-> > --- a/sound/soc/codecs/wm0010.c
-> > +++ b/sound/soc/codecs/wm0010.c
-> > @@ -515,7 +515,7 @@ static int wm0010_stage2_load(struct snd_soc_compon=
-ent *component)
-> >       dev_dbg(component->dev, "Downloading %zu byte stage 2 loader\n", =
-fw->size);
-> >
-> >       /* Copy to local buffer first as vmalloc causes problems for dma =
-*/
-> > -     img =3D kzalloc(fw->size, GFP_KERNEL | GFP_DMA);
-> > +     img =3D kmemdup(&fw->data[0], fw->size, GFP_KERNEL | GFP_DMA);
-> >       if (!img) {
-> >               ret =3D -ENOMEM;
-> >               goto abort2;
-> > @@ -527,8 +527,6 @@ static int wm0010_stage2_load(struct snd_soc_compon=
-ent *component)
-> >               goto abort1;
-> >       }
-> >
-> > -     memcpy(img, &fw->data[0], fw->size);
-> > -
-> >       spi_message_init(&m);
-> >       memset(&t, 0, sizeof(t));
-> >       t.rx_buf =3D out;
-> > diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/at=
-om/sst/sst_loader.c
-> > index ce11c36848c4..cc95af35c060 100644
-> > --- a/sound/soc/intel/atom/sst/sst_loader.c
-> > +++ b/sound/soc/intel/atom/sst/sst_loader.c
-> > @@ -288,14 +288,13 @@ static int sst_cache_and_parse_fw(struct intel_ss=
-t_drv *sst,
-> >   {
-> >       int retval =3D 0;
-> >
-> > -     sst->fw_in_mem =3D kzalloc(fw->size, GFP_KERNEL);
-> > +     sst->fw_in_mem =3D kmemdup(fw->data, fw->size, GFP_KERNEL);
-> >       if (!sst->fw_in_mem) {
-> >               retval =3D -ENOMEM;
-> >               goto end_release;
-> >       }
-> >       dev_dbg(sst->dev, "copied fw to %p", sst->fw_in_mem);
-> >       dev_dbg(sst->dev, "phys: %lx", (unsigned long)virt_to_phys(sst->f=
-w_in_mem));
-> > -     memcpy(sst->fw_in_mem, fw->data, fw->size);
-> >       retval =3D sst_parse_fw_memcpy(sst, fw->size, &sst->memcpy_list);
-> >       if (retval) {
-> >               dev_err(sst->dev, "Failed to parse fw\n");
-> >
->
+In some cases, FW might need use the host_period_bytes even no position
+update ipc reqiured from driver, here add another flag for position update,
+and preserve host_period_bytes for FW to use.
+
+This might require corresponding FW change and ABI alignment.
+
+Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+---
+ include/sound/sof/stream.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
+index 643f175cb479..44acfa62fa69 100644
+--- a/include/sound/sof/stream.h
++++ b/include/sound/sof/stream.h
+@@ -83,10 +83,10 @@ struct sof_ipc_stream_params {
+ 	uint16_t sample_valid_bytes;
+ 	uint16_t sample_container_bytes;
+ 
+-	/* for notifying host period has completed - 0 means no period IRQ */
+ 	uint32_t host_period_bytes;
++	uint16_t no_period_irq; /* 1 means period IRQ mode OFF */
+ 
+-	uint32_t reserved[2];
++	uint16_t reserved[3];
+ 	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map - SOF_CHMAP_ */
+ } __packed;
+ 
+-- 
+2.20.1
