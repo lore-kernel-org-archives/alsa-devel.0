@@ -1,21 +1,23 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: SOF: ipc: update
- sof_ipc_stream_params
-Date: Wed, 3 Jul 2019 09:52:39 +0800
-Message-ID: <8e81bbac-8b5a-9bc0-60ed-115429b07e82@linux.intel.com>
-References: <20190702121144.7809-1-yang.jie@linux.intel.com>
- <a233dfdbb973251d439197d13b69c867667d3f76.camel@linux.intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH 46/46] ASoC: soc-utils: respawn dummy
+	Platform
+Date: Wed, 3 Jul 2019 14:39:13 +0800
+Message-ID: <CA+Px+wVH0ypoeY+CrWTHmQf-LYBTB9gOFwnMY8pQ5Q3K-urCrw@mail.gmail.com>
+References: <87a7e2wkll.wl-kuninori.morimoto.gx@renesas.com>
+ <87ftnutr9i.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com
+ [IPv6:2607:f8b0:4864:20::242])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C59EF800E8
- for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 03:47:22 +0200 (CEST)
-In-Reply-To: <a233dfdbb973251d439197d13b69c867667d3f76.camel@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFBE5F80058
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 08:39:26 +0200 (CEST)
+Received: by mail-oi1-x242.google.com with SMTP id u15so1176133oiv.0
+ for <alsa-devel@alsa-project.org>; Tue, 02 Jul 2019 23:39:26 -0700 (PDT)
+In-Reply-To: <87ftnutr9i.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +27,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: marcin.rajwa@intel.com, "Lin, Mengdong" <mengdong.lin@intel.com>, pierre-louis.bossart@linux.intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE5LzcvMyDkuIrljYg3OjI5LCBSYW5qYW5pIFNyaWRoYXJhbiB3cm90ZToKPiBPbiBU
-dWUsIDIwMTktMDctMDIgYXQgMjA6MTEgKzA4MDAsIEtleW9uIEppZSB3cm90ZToKPj4gRnJvbTog
-TWFyY2luIFJhandhIDxtYXJjaW4ucmFqd2FAbGludXguaW50ZWwuY29tPgo+Pgo+PiBUaGUgaG9z
-dCBwZXJpb2QgYnl0ZXMgbmVlZHMgdG8gYmUgcGFzc2VkIHRvIGZpcm13YXJlLgo+PiBDdXJyZW50
-bHkgdGhpcyBmaWVsZCBpcyB1c2VkIGFzIG5vdGlmaWNhdGlvbiBmb3IgaG9zdAo+PiBhYm91dCBw
-ZXJpb2QgY29weSBjb21wbGV0aW9uLiBUaGVyZWZvcmUgd2UgbmVlZCB0byBzcGxpdCB0aGVzZQo+
-PiB0d28gaW5mb3JtYXRpb25zLgo+IEtleW9uL01hcmNpbiwKPiAKPiBDb3VsZCB5b3UgcGxlYXNl
-IGFkZCBhIGJpdCBtb3JlIGNvbnRleHQgaW4gdGhlIGNvbW1pdCBtZXNzYWdlIG9uIHRoZQo+IG5l
-ZWQgdG8gc3BsaXQgdGhlc2UgdHdvIGZpZWxkcyBpZS4uIHdoYXQgdXNlY2FzZXMgbmVlZCB0aGlz
-PwoKU3VyZSwgcHJldmlvdXNseSBJIHdyb3RlIHRoZSBjb21taXQgbWVzc2FnZSBsaWtlIHRoaXM6
-CgpBU29DOiBTT0Y6IGFkZCBmbGFnIGZvciBwb3NpdGlvbiB1cGRhdGUgaXBjCgpJbiBzb21lIGNh
-c2VzLCBGVyBtaWdodCBuZWVkIHVzZSB0aGUgaG9zdF9wZXJpb2RfYnl0ZXMgZXZlbiBubyBwb3Np
-dGlvbgp1cGRhdGUgaXBjIHJlcWl1cmVkIGZyb20gZHJpdmVyLCBoZXJlIGFkZCBhbm90aGVyIGZs
-YWcgZm9yIHBvc2l0aW9uIHVwZGF0ZSwKYW5kIHByZXNlcnZlIGhvc3RfcGVyaW9kX2J5dGVzIGZv
-ciBGVyB0byB1c2UuCgpUaGlzIG1pZ2h0IHJlcXVpcmUgY29ycmVzcG9uZGluZyBGVyBjaGFuZ2Ug
-YW5kIEFCSSBhbGlnbm1lbnQuCgpUaGFua3MsCn5LZXlvbgoKPiAKPiBUaGFua3MsCj4gUmFuamFu
-aQo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNYXJjaW4gUmFqd2EgPG1hcmNpbi5yYWp3YUBsaW51eC5p
-bnRlbC5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IEtleW9uIEppZSA8eWFuZy5qaWVAbGludXguaW50
-ZWwuY29tPgo+PiAtLS0KPj4gICBpbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaCB8IDQgKystLQo+
-PiAgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+Cj4+
-IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaCBiL2luY2x1ZGUvc291bmQv
-c29mL3N0cmVhbS5oCj4+IGluZGV4IDY0M2YxNzVjYjQ3OS4uNDRhY2ZhNjJmYTY5IDEwMDY0NAo+
-PiAtLS0gYS9pbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaAo+PiArKysgYi9pbmNsdWRlL3NvdW5k
-L3NvZi9zdHJlYW0uaAo+PiBAQCAtODMsMTAgKzgzLDEwIEBAIHN0cnVjdCBzb2ZfaXBjX3N0cmVh
-bV9wYXJhbXMgewo+PiAgIAl1aW50MTZfdCBzYW1wbGVfdmFsaWRfYnl0ZXM7Cj4+ICAgCXVpbnQx
-Nl90IHNhbXBsZV9jb250YWluZXJfYnl0ZXM7Cj4+ICAgCj4+IC0JLyogZm9yIG5vdGlmeWluZyBo
-b3N0IHBlcmlvZCBoYXMgY29tcGxldGVkIC0gMCBtZWFucyBubyBwZXJpb2QKPj4gSVJRICovCj4+
-ICAgCXVpbnQzMl90IGhvc3RfcGVyaW9kX2J5dGVzOwo+PiArCXVpbnQxNl90IG5vX3BlcmlvZF9p
-cnE7IC8qIDEgbWVhbnMgcGVyaW9kIElSUSBtb2RlIE9GRiAqLwo+PiAgIAo+PiAtCXVpbnQzMl90
-IHJlc2VydmVkWzJdOwo+PiArCXVpbnQxNl90IHJlc2VydmVkWzNdOwo+PiAgIAl1aW50MTZfdCBj
-aG1hcFtTT0ZfSVBDX01BWF9DSEFOTkVMU107CS8qKjwgY2hhbm5lbCBtYXAgLQo+PiBTT0ZfQ0hN
-QVBfICovCj4+ICAgfSBfX3BhY2tlZDsKPj4gICAKPiAKPiAKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Fri, Jun 28, 2019 at 10:18 AM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+> commit 64ee5067cf64 ("ASoC: soc-utils: remove dummy Platform") removed
+> dummy Platform from ALSA SoC, but it is over-kill.
+What did you mean by "over-kill"?
