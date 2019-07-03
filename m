@@ -1,123 +1,65 @@
-From: Luca Weiss <luca@z3ntu.xyz>
-Subject: [PATCH v2] ASoC: sunxi: sun50i-codec-analog: Add earpiece
-Date: Wed,  3 Jul 2019 20:48:11 +0200
-Message-ID: <20190703184814.27191-1-luca@z3ntu.xyz>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH v2 2/2] ASoC: SOF: Intel: fix reset of
+ host_period_bytes
+Date: Wed, 03 Jul 2019 12:07:45 -0700
+Message-ID: <ccbba3111f7d49af100db3d2e2fc3884c4212cb1.camel@linux.intel.com>
+References: <20190703151023.30313-1-yang.jie@linux.intel.com>
+ <20190703151023.30313-2-yang.jie@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: ~martijnbraam/pmos-upstream@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Vasily Khoruzhick <anarsoul@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 737DCF80058
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2019 21:07:49 +0200 (CEST)
+In-Reply-To: <20190703151023.30313-2-yang.jie@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: pierre-louis.bossart@linux.intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the necessary registers and audio routes to play audio using
-the Earpiece, that's supported on the A64.
+On Wed, 2019-07-03 at 23:10 +0800, Keyon Jie wrote:
+> From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+> 
+> This patch prevents the reset of host period bytes.
+> The parameter has been used to keep information about
+> completion of period copy. Right now we keep this
+> information in period_irq.
+> 
+> Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
-Changes v1 -> v2:
-* Make the earpiece enable register a DAPM widget
-* Adjust the audio routes to include the new Earpiece Amp widget
-* Left/Right Analog Mixer => Left/Right Mixer
-
- sound/soc/sunxi/sun50i-codec-analog.c | 50 +++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
-
-diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index d105c90c3706..6d1de565350e 100644
---- a/sound/soc/sunxi/sun50i-codec-analog.c
-+++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -49,6 +49,15 @@
- #define SUN50I_ADDA_OR_MIX_CTRL_DACR		1
- #define SUN50I_ADDA_OR_MIX_CTRL_DACL		0
- 
-+#define SUN50I_ADDA_EARPIECE_CTRL0	0x03
-+#define SUN50I_ADDA_EARPIECE_CTRL0_EAR_RAMP_TIME	4
-+#define SUN50I_ADDA_EARPIECE_CTRL0_ESPSR		0
-+
-+#define SUN50I_ADDA_EARPIECE_CTRL1	0x04
-+#define SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN	7
-+#define SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE	6
-+#define SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL	0
-+
- #define SUN50I_ADDA_LINEOUT_CTRL0	0x05
- #define SUN50I_ADDA_LINEOUT_CTRL0_LEN		7
- #define SUN50I_ADDA_LINEOUT_CTRL0_REN		6
-@@ -172,6 +181,10 @@ static const DECLARE_TLV_DB_RANGE(sun50i_codec_lineout_vol_scale,
- 	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
- );
- 
-+static const DECLARE_TLV_DB_RANGE(sun50i_codec_earpiece_vol_scale,
-+	0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
-+	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
-+);
- 
- /* volume / mute controls */
- static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
-@@ -225,6 +238,15 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
- 		   SUN50I_ADDA_LINEOUT_CTRL0_LEN,
- 		   SUN50I_ADDA_LINEOUT_CTRL0_REN, 1, 0),
- 
-+	SOC_SINGLE_TLV("Earpiece Playback Volume",
-+		       SUN50I_ADDA_EARPIECE_CTRL1,
-+		       SUN50I_ADDA_EARPIECE_CTRL1_ESP_VOL, 0x1f, 0,
-+		       sun50i_codec_earpiece_vol_scale),
-+
-+	SOC_SINGLE("Earpiece Playback Switch",
-+		   SUN50I_ADDA_EARPIECE_CTRL1,
-+		   SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_MUTE, 1, 0),
-+
- };
- 
- static const char * const sun50i_codec_hp_src_enum_text[] = {
-@@ -257,6 +279,20 @@ static const struct snd_kcontrol_new sun50i_codec_lineout_src[] = {
- 		      sun50i_codec_lineout_src_enum),
- };
- 
-+static const char * const sun50i_codec_earpiece_src_enum_text[] = {
-+	"DACR", "DACL", "Right Mixer", "Left Mixer",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(sun50i_codec_earpiece_src_enum,
-+			    SUN50I_ADDA_EARPIECE_CTRL0,
-+			    SUN50I_ADDA_EARPIECE_CTRL0_ESPSR,
-+			    sun50i_codec_earpiece_src_enum_text);
-+
-+static const struct snd_kcontrol_new sun50i_codec_earpiece_src[] = {
-+	SOC_DAPM_ENUM("Earpiece Source Playback Route",
-+		      sun50i_codec_earpiece_src_enum),
-+};
-+
- static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 	/* DAC */
- 	SND_SOC_DAPM_DAC("Left DAC", NULL, SUN50I_ADDA_MIX_DAC_CTRL,
-@@ -285,6 +321,12 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
- 	SND_SOC_DAPM_OUTPUT("LINEOUT"),
- 
-+	SND_SOC_DAPM_MUX("Earpiece Source Playback Route",
-+			 SND_SOC_NOPM, 0, 0, sun50i_codec_earpiece_src),
-+	SND_SOC_DAPM_OUT_DRV("Earpiece Amp", SUN50I_ADDA_EARPIECE_CTRL1,
-+			     SUN50I_ADDA_EARPIECE_CTRL1_ESPPA_EN, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("EARPIECE"),
-+
- 	/* Microphone inputs */
- 	SND_SOC_DAPM_INPUT("MIC1"),
- 
-@@ -388,6 +430,14 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	{ "Line Out Source Playback Route", "Mono Differential",
- 		"Right Mixer" },
- 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
-+
-+	/* Earpiece Routes */
-+	{ "Earpiece Source Playback Route", "DACL", "Left DAC" },
-+	{ "Earpiece Source Playback Route", "DACR", "Right DAC" },
-+	{ "Earpiece Source Playback Route", "Left Mixer", "Left Mixer" },
-+	{ "Earpiece Source Playback Route", "Right Mixer", "Right Mixer" },
-+	{ "Earpiece Amp", NULL, "Earpiece Source Playback Route" },
-+	{ "EARPIECE", NULL, "Earpiece Amp" },
- };
- 
- static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
--- 
-2.22.0
+> ---
+>  sound/soc/sof/intel/hda-pcm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-
+> pcm.c
+> index 9b730f183529..c7022346aba0 100644
+> --- a/sound/soc/sof/intel/hda-pcm.c
+> +++ b/sound/soc/sof/intel/hda-pcm.c
+> @@ -116,9 +116,9 @@ int hda_dsp_pcm_hw_params(struct snd_sof_dev
+> *sdev,
+>  	/* disable SPIB, to enable buffer wrap for stream */
+>  	hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE,
+> 0);
+>  
+> -	/* set host_period_bytes to 0 if no IPC position */
+> +	/* update no_period_irq flag for ipc params */
+>  	if (hda && hda->no_ipc_position)
+> -		ipc_params->host_period_bytes = 0;
+> +		ipc_params->no_period_irq = 1;
+>  
+>  	ipc_params->stream_tag = hstream->stream_tag;
+>  
