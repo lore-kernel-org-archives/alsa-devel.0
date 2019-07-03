@@ -1,46 +1,55 @@
-From: Fuqian Huang <huangfq.daxian@gmail.com>
-Subject: [PATCH v2 35/35] sound/soc/intel: Use kmemdup rather than duplicating its implementation
-Date: Thu,  4 Jul 2019 00:32:51 +0800
-Message-ID: <20190703163251.1075-1-huangfq.daxian@gmail.com>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: codecs: ad193x: Group register
+ initialization at probe
+Date: Wed, 3 Jul 2019 16:52:35 +0000
+Message-ID: <e9e653d1-6360-ffaf-6b47-eb33c0d867df@microchip.com>
+References: <20190627120208.4661-1-codrin.ciubotariu@microchip.com>
+ <CA+Px+wXBBgeWbjZ5uQmwJgn+d=ZE-N0aehitog7==ak3GDxMsQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CA+Px+wXBBgeWbjZ5uQmwJgn+d=ZE-N0aehitog7==ak3GDxMsQ@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <106EAF0CF0E83B4CACE6BBC13ECDE279@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Fuqian Huang <huangfq.daxian@gmail.com>
+To: tzungbi@google.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lars@metafoo.de, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-kmemdup is introduced to duplicate a region of memory in a neat way.
-Rather than kmalloc/kzalloc + memcpy, which the programmer needs to
-write the size twice (sometimes lead to mistakes), kmemdup improves
-readability, leads to smaller code and also reduce the chances of mistakes.
-Suggestion to use kmemdup rather than using kmalloc/kzalloc + memcpy.
-
-Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
----
-Changes in v2:
-  - Fix a typo in commit message (memset -> memcpy)
-  - Split into two patches
-
- sound/soc/intel/atom/sst/sst_loader.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
-index ce11c36848c4..cc95af35c060 100644
---- a/sound/soc/intel/atom/sst/sst_loader.c
-+++ b/sound/soc/intel/atom/sst/sst_loader.c
-@@ -288,14 +288,13 @@ static int sst_cache_and_parse_fw(struct intel_sst_drv *sst,
- {
- 	int retval = 0;
- 
--	sst->fw_in_mem = kzalloc(fw->size, GFP_KERNEL);
-+	sst->fw_in_mem = kmemdup(fw->data, fw->size, GFP_KERNEL);
- 	if (!sst->fw_in_mem) {
- 		retval = -ENOMEM;
- 		goto end_release;
- 	}
- 	dev_dbg(sst->dev, "copied fw to %p", sst->fw_in_mem);
- 	dev_dbg(sst->dev, "phys: %lx", (unsigned long)virt_to_phys(sst->fw_in_mem));
--	memcpy(sst->fw_in_mem, fw->data, fw->size);
- 	retval = sst_parse_fw_memcpy(sst, fw->size, &sst->memcpy_list);
- 	if (retval) {
- 		dev_err(sst->dev, "Failed to parse fw\n");
--- 
-2.11.0
+T24gMDMuMDcuMjAxOSAxMDozOSwgVHp1bmctQmkgU2hpaCB3cm90ZToNCj4gT24gVGh1LCBKdW4g
+MjcsIDIwMTkgYXQgODowNSBQTSBDb2RyaW4gQ2l1Ym90YXJpdQ0KPiA8Y29kcmluLmNpdWJvdGFy
+aXVAbWljcm9jaGlwLmNvbT4gd3JvdGU6DQo+PiArc3RydWN0IGFkMTkzeF9yZWdfZGVmYXVsdCB7
+DQo+PiArICAgICAgIHVuc2lnbmVkIGludCByZWc7DQo+PiArICAgICAgIHVuc2lnbmVkIGludCB2
+YWw7DQo+PiArfTsNCj4gWW91IHByb2JhYmx5IGRvbid0IG5lZWQgdG8gZGVmaW5lIHRoaXMuICBU
+aGVyZSBpcyBhIHN0cnVjdA0KPiByZWdfc2VxdWVuY2UgaW4gcmVnbWFwLmguDQo+IA0KPj4gKw0K
+Pj4gKy8qIGNvZGVjIHJlZ2lzdGVyIHZhbHVlcyB0byBzZXQgYWZ0ZXIgcmVzZXQgKi8NCj4+ICtz
+dGF0aWMgdm9pZCBhZDE5M3hfcmVnX2RlZmF1bHRfaW5pdChzdHJ1Y3QgYWQxOTN4X3ByaXYgKmFk
+MTkzeCkNCj4+ICt7DQo+PiArICAgICAgIGNvbnN0IHN0cnVjdCBhZDE5M3hfcmVnX2RlZmF1bHQg
+cmVnX2luaXRbXSA9IHsNCj4+ICsgICAgICAgICAgICAgICB7ICAwLCAweDk5IH0sICAgLyogUExM
+X0NMS19DVFJMMDogcGxsIGlucHV0OiBtY2xraS94aSAxMi4yODhNaHogKi8NCj4+ICsgICAgICAg
+ICAgICAgICB7ICAxLCAweDA0IH0sICAgLyogUExMX0NMS19DVFJMMTogbm8gb24tY2hpcCBWcmVm
+ICovDQo+PiArICAgICAgICAgICAgICAgeyAgMiwgMHg0MCB9LCAgIC8qIERBQ19DVFJMMDogVERN
+IG1vZGUgKi8NCj4+ICsgICAgICAgICAgICAgICB7ICA0LCAweDFBIH0sICAgLyogREFDX0NUUkwy
+OiA0OGtIeiBkZS1lbXBoYXNpcywgdW5tdXRlIGRhYyAqLw0KPj4gKyAgICAgICAgICAgICAgIHsg
+IDUsIDB4MDAgfSwgICAvKiBEQUNfQ0hOTF9NVVRFOiB1bm11dGUgREFDIGNoYW5uZWxzICovDQo+
+PiArICAgICAgIH07DQo+PiArICAgICAgIGNvbnN0IHN0cnVjdCBhZDE5M3hfcmVnX2RlZmF1bHQg
+cmVnX2FkY19pbml0W10gPSB7DQo+PiArICAgICAgICAgICAgICAgeyAxNCwgMHgwMyB9LCAgIC8q
+IEFEQ19DVFJMMDogaGlnaC1wYXNzIGZpbHRlciBlbmFibGUgKi8NCj4+ICsgICAgICAgICAgICAg
+ICB7IDE1LCAweDQzIH0sICAgLyogQURDX0NUUkwxOiBzYXRhIGRlbGF5PTEsIGFkYyBhdXggbW9k
+ZSAqLw0KPj4gKyAgICAgICB9Ow0KPj4gKyAgICAgICBpbnQgaTsNCj4+ICsNCj4+ICsgICAgICAg
+Zm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUocmVnX2luaXQpOyBpKyspDQo+PiArICAgICAgICAg
+ICAgICAgcmVnbWFwX3dyaXRlKGFkMTkzeC0+cmVnbWFwLCByZWdfaW5pdFtpXS5yZWcsIHJlZ19p
+bml0W2ldLnZhbCk7DQo+PiArDQo+PiArICAgICAgIGlmIChhZDE5M3hfaGFzX2FkYyhhZDE5M3gp
+KSB7DQo+PiArICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUocmVnX2Fk
+Y19pbml0KTsgaSsrKSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICByZWdtYXBfd3JpdGUo
+YWQxOTN4LT5yZWdtYXAsIHJlZ19hZGNfaW5pdFtpXS5yZWcsDQo+PiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgcmVnX2FkY19pbml0W2ldLnZhbCk7DQo+PiArICAgICAgICAg
+ICAgICAgfQ0KPj4gKyAgICAgICB9DQo+IEFuZCB5b3UgY291bGQgdXNlIHJlZ21hcF9tdWx0aV9y
+ZWdfd3JpdGUoICkgdG8gc3Vic3RpdHV0ZSB0aGUgdHdvIGZvci1sb29wcy4NCj4gDQo+IFNlZSBo
+dHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE5
+LUp1bmUvMTUxMDkwLmh0bWwNCj4gYXMgYW4gZXhhbXBsZS4gIEl0IGFsc28gaGFzIHNvbWUgcmVn
+IGluaXRpYWxpemF0aW9ucyBpbiBjb21wb25lbnQNCj4gcHJvYmUoICkuDQo+IA0KDQpZb3VyIHNv
+bHV0aW9uIGlzIGNlcnRhaW5seSBtb3JlIGVsZWdhbnQuIEkgd2lsbCBtYWtlIGEgcGF0Y2ggYW5k
+IHN3aXRjaCANCnRvIHJlZ21hcF9tdWx0aV9yZWdfd3JpdGUoKS4NCg0KVGhhbmsgeW91IGZvciB5
+b3VyIHJldmlldy4NCg0KQmVzdCByZWdhcmRzLA0KQ29kcmluDQo=
