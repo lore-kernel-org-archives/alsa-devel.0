@@ -1,22 +1,40 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: fix use-after-free in graph_for_each_link" to the asoc tree
-Date: Thu,  4 Jul 2019 13:24:53 +0100 (BST)
-Message-ID: <20190704122453.A6900274389A@ypsilon.sirena.org.uk>
-References: <1562229530-8121-1-git-send-email-wen.yang99@zte.com.cn>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1562229530-8121-1-git-send-email-wen.yang99@zte.com.cn>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wen Yang <wen.yang99@zte.com.cn>
-Cc: alsa-devel@alsa-project.org, cheng.shengyu@zte.com.cn, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, wang.yi59@zte.com.cn, xue.zhihong@zte.com.cn
+Subject: Applied "ASoC: core: Return -ENOTSUPP from
+	set_channel_map() if no operation provided" to the asoc tree
+Date: Thu,  4 Jul 2019 13:24:54 +0100 (BST)
+Message-ID: <20190704122454.3E05A274388A@ypsilon.sirena.org.uk>
+References: <20190703123002.12427-1-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A1EDF800E7
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 14:24:55 +0200 (CEST)
+In-Reply-To: <20190703123002.12427-1-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: fix use-after-free in graph_for_each_link
+   ASoC: core: Return -ENOTSUPP from set_channel_map() if no operation provided
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,54 +55,35 @@ to this mail.
 Thanks,
 Mark
 
->From 1bcc1fd64e4dd903f4d868a9e053986e3b102713 Mon Sep 17 00:00:00 2001
-From: Wen Yang <wen.yang99@zte.com.cn>
-Date: Thu, 4 Jul 2019 16:38:50 +0800
-Subject: [PATCH] ASoC: audio-graph-card: fix use-after-free in
- graph_for_each_link
+>From 74b35a74f80e02bdd69db9cf96d3f4fe78b67064 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Wed, 3 Jul 2019 13:30:02 +0100
+Subject: [PATCH] ASoC: core: Return -ENOTSUPP from set_channel_map() if no
+ operation provided
 
-After calling of_node_put() on the codec_ep and codec_port variables,
-they are still being used, which may result in use-after-free.
-We fix this issue by calling of_node_put() after the last usage.
+It makes it easier for common code to work with snd_soc_dai_set_channel_map()
+by distinguishing between operation not being supported and an error.
+This is done inline with others snd_soc_dai.* apis.
 
-Fixes: fce9b90c1ab7 ("ASoC: audio-graph-card: cleanup DAI link loop method - step2")
-Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Link: https://lore.kernel.org/r/1562229530-8121-1-git-send-email-wen.yang99@zte.com.cn
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20190703123002.12427-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index ec7e673ba475..70ed28d97d49 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -435,9 +435,6 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 			codec_ep = of_graph_get_remote_endpoint(cpu_ep);
- 			codec_port = of_get_parent(codec_ep);
- 
--			of_node_put(codec_ep);
--			of_node_put(codec_port);
--
- 			/* get convert-xxx property */
- 			memset(&adata, 0, sizeof(adata));
- 			graph_parse_convert(dev, codec_ep, &adata);
-@@ -457,6 +454,9 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- 			else
- 				ret = func_noml(priv, cpu_ep, codec_ep, li);
- 
-+			of_node_put(codec_ep);
-+			of_node_put(codec_port);
-+
- 			if (ret < 0)
- 				return ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b9061cd8d787..c0a774d0a5ff 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2614,7 +2614,7 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
+ 		return dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
+ 			rx_num, rx_slot);
+ 	else
+-		return -EINVAL;
++		return -ENOTSUPP;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
  
 -- 
 2.20.1
