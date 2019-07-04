@@ -1,23 +1,17 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: Re: [PATCH] MLK-22197 sound: asoc: add micfil dc
- remover amixer control
-Date: Thu, 4 Jul 2019 13:22:30 +0000
-Message-ID: <1562246550.22836.17.camel@nxp.com>
-References: <20190704125133.1463-1-ioana-irina.patru@nxp.com>
-Reply-To: Viorel Suman <viorel.suman@nxp.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Fix parse of UAC2 Extension
+	Units
+Date: Thu,  4 Jul 2019 16:48:06 +0200
+Message-ID: <20190704144806.30513-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur02on0620.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe06::620])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 844C8F800E8
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 15:22:32 +0200 (CEST)
-In-Reply-To: <20190704125133.1463-1-ioana-irina.patru@nxp.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06F32F800E7
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 16:48:17 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,115 +21,134 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>, Irina Patru <ioana-irina.patru@nxp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LnxRevLi <LnxRevLi@nxp.com>
+To: alsa-devel@alsa-project.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Stefan Sauer <ensonic@hora-obscura.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Irina,
+Extension Unit (XU) is used to have a compatible layout with
+Processing Unit (PU) on UAC1, and the usb-audio driver code assumed it
+for parsing the descriptors.  Meanwhile, on UAC2, XU became slightly
+incompatible with PU; namely, XU has a one-byte bmControls bitmap
+while PU has two bytes bmControls bitmap.  This incompatibility
+results in the read of a wrong address for the last iExtension field,
+which ended up with an incorrect string for the mixer element name, as
+recently reported for Focusrite Scarlett 18i20 device.
 
-Some nitpicks inline.
+This patch corrects the present misalignment by introducing a couple
+of new macros and calling them depending on the descriptor type.
 
-/Viorel
+Reported-by: Stefan Sauer <ensonic@hora-obscura.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/uapi/linux/usb/audio.h | 37 +++++++++++++++++++++++++++++++++++++
+ sound/usb/mixer.c              | 16 ++++++++++------
+ 2 files changed, 47 insertions(+), 6 deletions(-)
 
-On Jo, 2019-07-04 at 12:52 +0000, Irina Patru wrote:
-
-
-<snip>
-
-
-+static int micfil_put_dc_remover_state(struct snd_kcontrol *kcontrol,
-+                                       struct snd_ctl_elem_value *ucontrol)
+diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
+index ddc5396800aa..76b7c3f6cd0d 100644
+--- a/include/uapi/linux/usb/audio.h
++++ b/include/uapi/linux/usb/audio.h
+@@ -450,6 +450,43 @@ static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_desc
+ 	}
+ }
+ 
++/*
++ * Extension Unit (XU) has almost compatible layout with Processing Unit, but
++ * on UAC2, it has a different bmControls size (bControlSize); it's 1 byte for
++ * XU while 2 bytes for PU.  The last iExtension field is a one-byte index as
++ * well as iProcessing field of PU.
++ */
++static inline __u8 uac_extension_unit_bControlSize(struct uac_processing_unit_descriptor *desc,
++						   int protocol)
 +{
-+       struct snd_soc_component *comp = snd_kcontrol_chip(kcontrol);
-+       struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+       struct fsl_micfil *micfil = snd_soc_component_get_drvdata(comp);
-+       unsigned int *item = ucontrol->value.enumerated.item;
-+       int val = snd_soc_enum_item_to_val(e, item[0]);
-+       int i = 0, ret = 0;
-+       u32 reg_val = 0;
-+
-+       if (val < 0 || val > 3)
-+               return -1;
-
-
-Maybe return -EINVAL here ?
-
-
-+       micfil->dc_remover = val;
-+
-+       /* Calculate total value for all channels */
-+       for (i = 0; i < 8; i++)
-+               reg_val |= MICFIL_DC_MODE(val, i);
-+
-+       /* Update DC Remover mode for all channels */
-+       ret = snd_soc_component_update_bits(comp,
-+                                       REG_MICFIL_DC_CTRL,
-+                                       MICFIL_DC_CTRL_MASK,
-+                                       reg_val);
-
-
-Please check the description of snd_soc_component_update_bits return value:
-==========
- * Return: 1 if the operation was successful and the value of the register
- * changed, 0 if the operation was successful, but the value did not change.
- * Returns a negative error code otherwise.
-==========
-
-We may need to return a non-zero value in case of error only, ie:
-=============
-if (ret < 0)
-return ret;
-
-return 0;
-=============
-
-
-+       return ret;
++	switch (protocol) {
++	case UAC_VERSION_1:
++		return desc->baSourceID[desc->bNrInPins + 4];
++	case UAC_VERSION_2:
++		return 1; /* in UAC2, this value is constant */
++	case UAC_VERSION_3:
++		return 4; /* in UAC3, this value is constant */
++	default:
++		return 1;
++	}
 +}
 +
-+static int micfil_get_dc_remover_state(struct snd_kcontrol *kcontrol,
-+                                       struct snd_ctl_elem_value *ucontrol)
++static inline __u8 uac_extension_unit_iExtension(struct uac_processing_unit_descriptor *desc,
++						 int protocol)
 +{
-+       struct snd_soc_component *comp = snd_kcontrol_chip(kcontrol);
-+       struct fsl_micfil *micfil = snd_soc_component_get_drvdata(comp);
++	__u8 control_size = uac_extension_unit_bControlSize(desc, protocol);
 +
-+       ucontrol->value.enumerated.item[0] = micfil->dc_remover;
-+
-+       return 0;
++	switch (protocol) {
++	case UAC_VERSION_1:
++	case UAC_VERSION_2:
++	default:
++		return *(uac_processing_unit_bmControls(desc, protocol)
++			 + control_size);
++	case UAC_VERSION_3:
++		return 0; /* UAC3 does not have this field */
++	}
 +}
 +
-+
- static int hwvad_put_init_mode(struct snd_kcontrol *kcontrol,
-                               struct snd_ctl_elem_value *ucontrol)
+ /* 4.5.2 Class-Specific AS Interface Descriptor */
+ struct uac1_as_header_descriptor {
+ 	__u8  bLength;			/* in bytes: 7 */
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index e003b5e7b01a..ac121b10c51c 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2318,7 +2318,7 @@ static struct procunit_info extunits[] = {
+  */
+ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 				void *raw_desc, struct procunit_info *list,
+-				char *name)
++				bool extension_unit)
  {
-@@ -676,6 +731,10 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
-        SOC_ENUM_EXT("Clock Source",
-                     fsl_micfil_clk_src_enum,
-                     micfil_get_clk_src, micfil_put_clk_src),
-+       SOC_ENUM_EXT("MICFIL DC Remover Control",
-+                       fsl_micfil_dc_remover_enum,
-+                       micfil_get_dc_remover_state,
-+                       micfil_put_dc_remover_state),
-        {
-                .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-                .name = "HWVAD Input Gain",
-diff --git a/sound/soc/fsl/fsl_micfil.h b/sound/soc/fsl/fsl_micfil.h
-index 792187b717f0..e47dba9b90b8 100644
---- a/sound/soc/fsl/fsl_micfil.h
-+++ b/sound/soc/fsl/fsl_micfil.h
-@@ -278,6 +278,16 @@
- #define MICFIL_HWVAD_HPF_102HZ         3
- #define MICFIL_HWVAD_FRAMET_DEFAULT    10
-
-+/* MICFIL DC Remover Control Register -- REG_MICFIL_DC_CTRL */
-+#define MICFIL_DC_CTRL_SHIFT           0
-+#define MICFIL_DC_CTRL_MASK                    0xFFFF
-+#define MICFIL_DC_CTRL_WIDTH           2
-+#define MICFIL_DC_CHX_SHIFT(v)         (2 * (v))
-+#define MICFIL_DC_CHX_MASK(v)          ((BIT(MICFIL_DC_CTRL_WIDTH) - 1) \
-+                               << MICFIL_DC_CHX_SHIFT(v))
-+#define MICFIL_DC_MODE(v1, v2)         (((v1) << MICFIL_DC_CHX_SHIFT(v2)) \
-+                               & MICFIL_DC_CHX_MASK(v2))
-+
- /* MICFIL Output Control Register */
- #define MICFIL_OUTGAIN_CHX_SHIFT(v)    (4 * (v))
+ 	struct uac_processing_unit_descriptor *desc = raw_desc;
+ 	int num_ins;
+@@ -2335,6 +2335,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 	static struct procunit_info default_info = {
+ 		0, NULL, default_value_info
+ 	};
++	const char *name = extension_unit ?
++		"Extension Unit" : "Processing Unit";
+ 
+ 	if (desc->bLength < 13) {
+ 		usb_audio_err(state->chip, "invalid %s descriptor (id %d)\n", name, unitid);
+@@ -2448,7 +2450,10 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 		} else if (info->name) {
+ 			strlcpy(kctl->id.name, info->name, sizeof(kctl->id.name));
+ 		} else {
+-			nameid = uac_processing_unit_iProcessing(desc, state->mixer->protocol);
++			if (extension_unit)
++				nameid = uac_extension_unit_iExtension(desc, state->mixer->protocol);
++			else
++				nameid = uac_processing_unit_iProcessing(desc, state->mixer->protocol);
+ 			len = 0;
+ 			if (nameid)
+ 				len = snd_usb_copy_string_desc(state->chip,
+@@ -2481,10 +2486,10 @@ static int parse_audio_processing_unit(struct mixer_build *state, int unitid,
+ 	case UAC_VERSION_2:
+ 	default:
+ 		return build_audio_procunit(state, unitid, raw_desc,
+-				procunits, "Processing Unit");
++					    procunits, false);
+ 	case UAC_VERSION_3:
+ 		return build_audio_procunit(state, unitid, raw_desc,
+-				uac3_procunits, "Processing Unit");
++					    uac3_procunits, false);
+ 	}
+ }
+ 
+@@ -2495,8 +2500,7 @@ static int parse_audio_extension_unit(struct mixer_build *state, int unitid,
+ 	 * Note that we parse extension units with processing unit descriptors.
+ 	 * That's ok as the layout is the same.
+ 	 */
+-	return build_audio_procunit(state, unitid, raw_desc,
+-				    extunits, "Extension Unit");
++	return build_audio_procunit(state, unitid, raw_desc, extunits, true);
+ }
+ 
+ /*
+-- 
+2.16.4
