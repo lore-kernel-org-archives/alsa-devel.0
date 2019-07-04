@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: Return -ENOTSUPP from
-	set_channel_map() if no operation provided" to the asoc tree
-Date: Thu,  4 Jul 2019 13:24:54 +0100 (BST)
-Message-ID: <20190704122454.3E05A274388A@ypsilon.sirena.org.uk>
-References: <20190703123002.12427-1-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qdsp6: q6afe-dai: Add missing Slimbus0
+	audio route" to the asoc tree
+Date: Thu,  4 Jul 2019 13:24:53 +0100 (BST)
+Message-ID: <20190704122453.E9C8B2743897@ypsilon.sirena.org.uk>
+References: <20190703123102.12626-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A1EDF800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id E52BEF800E8
  for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 14:24:55 +0200 (CEST)
-In-Reply-To: <20190703123002.12427-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190703123102.12626-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: core: Return -ENOTSUPP from set_channel_map() if no operation provided
+   ASoC: qdsp6: q6afe-dai: Add missing Slimbus0 audio route
 
 has been applied to the asoc tree at
 
@@ -55,35 +55,32 @@ to this mail.
 Thanks,
 Mark
 
->From 74b35a74f80e02bdd69db9cf96d3f4fe78b67064 Mon Sep 17 00:00:00 2001
+>From 9aa0cf79568e7078c32710034b0df8946db6cdad Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 3 Jul 2019 13:30:02 +0100
-Subject: [PATCH] ASoC: core: Return -ENOTSUPP from set_channel_map() if no
- operation provided
+Date: Wed, 3 Jul 2019 13:31:02 +0100
+Subject: [PATCH] ASoC: qdsp6: q6afe-dai: Add missing Slimbus0 audio route
 
-It makes it easier for common code to work with snd_soc_dai_set_channel_map()
-by distinguishing between operation not being supported and an error.
-This is done inline with others snd_soc_dai.* apis.
+For some reason SLIMBus RX0 playback is not added to audio routes.
+This patch adds the missing route.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20190703123002.12427-1-srinivas.kandagatla@linaro.org
+Link: https://lore.kernel.org/r/20190703123102.12626-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b9061cd8d787..c0a774d0a5ff 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2614,7 +2614,7 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
- 		return dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
- 			rx_num, rx_slot);
- 	else
--		return -EINVAL;
-+		return -ENOTSUPP;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
- 
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index dc645ba4d8d0..c1a7624eaf17 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -447,6 +447,7 @@ static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
+ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"HDMI Playback", NULL, "HDMI_RX"},
+ 	{"Display Port Playback", NULL, "DISPLAY_PORT_RX"},
++	{"Slimbus Playback", NULL, "SLIMBUS_0_RX"},
+ 	{"Slimbus1 Playback", NULL, "SLIMBUS_1_RX"},
+ 	{"Slimbus2 Playback", NULL, "SLIMBUS_2_RX"},
+ 	{"Slimbus3 Playback", NULL, "SLIMBUS_3_RX"},
 -- 
 2.20.1
