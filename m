@@ -1,50 +1,75 @@
-From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Subject: [PATCH] sound: soc: codecs: wcd9335: add irqflag IRQF_ONESHOT flag
-Date: Fri, 5 Jul 2019 00:40:26 +0530
-Message-ID: <20190704191026.GA20732@hari-Inspiron-1545>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 0/7] ASoC: Intel: Skylake: Driver fundaments
+	overhaul
+Date: Thu,  4 Jul 2019 22:00:59 +0200
+Message-ID: <20190704200106.11289-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Vinod Koul <vkoul@kernel.org>, Hariprasad Kelam <hariprasad.kelam@gmail.com>, Gen Zhang <blackgod016574@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E711CF800E8
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 22:01:41 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Add IRQF_ONESHOT to ensure "Interrupt is not reenabled after the hardirq
-handler finished".
-
-fixes below issue reported by coccicheck
-
-sound/soc/codecs/wcd9335.c:4068:8-33: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
-
-Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
----
- sound/soc/codecs/wcd9335.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 85737fe..7ab9bf6f 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -4056,6 +4056,9 @@ static struct wcd9335_irq wcd9335_irqs[] = {
- static int wcd9335_setup_irqs(struct wcd9335_codec *wcd)
- {
- 	int irq, ret, i;
-+	unsigned long irqflags;
-+
-+	irqflags = IRQF_TRIGGER_RISING | IRQF_ONESHOT;
- 
- 	for (i = 0; i < ARRAY_SIZE(wcd9335_irqs); i++) {
- 		irq = regmap_irq_get_virq(wcd->irq_data, wcd9335_irqs[i].irq);
-@@ -4067,7 +4070,7 @@ static int wcd9335_setup_irqs(struct wcd9335_codec *wcd)
- 
- 		ret = devm_request_threaded_irq(wcd->dev, irq, NULL,
- 						wcd9335_irqs[i].handler,
--						IRQF_TRIGGER_RISING,
-+						irqflags,
- 						wcd9335_irqs[i].name, wcd);
- 		if (ret) {
- 			dev_err(wcd->dev, "Failed to request %s\n",
--- 
-2.7.4
+U2t5bGFrZSBkcml2ZXIgaXMgZGl2aWRlZCBpbnRvIHR3byBtb2R1bGVzOgotIHNuZF9zb2Nfc2ts
+Ci0gc25kX3NvY19za2xfaXBjCgphbmQgbm90aGluZyB3b3VsZCBiZSB3cm9uZyBpZiBub3QgZm9y
+IHRoZSBmYWN0IHRoYXQgYm90aCBjYW5ub3QgZXhpc3QKd2l0aG91dCBvbmUgYW5vdGhlci4gSVBD
+IG1vZHVsZSBpcyBub3Qgc29tZSBraW5kIG9mIGV4dGVuc2lvbiwgYXMgaXQgaXMKdGhlIGNhc2Ug
+Zm9yIHNuZF9oZGFfZXh0X2NvcmUgd2hpY2ggaXMgc2VwYXJhdGVkIGZyb20gc25kX2hkYV9jb3Jl
+IC0KbGVnYWN5IGhkYSBpbnRlcmZhY2UuIEl0J3MgYXMgbXVjaCBjb3JlIFNreWxha2UgbW9kdWxl
+IGFzIHNuZF9zb2Nfc2tsCmlzLgoKU3RhdGVtZW50IGJhY2t1cCBieSBleGlzdGVuY2Ugb2YgY2ly
+Y3VsYXIgZGVwZW5kZW5jeSBiZXR3ZWVuIHRoaXMgdHdvLgpUbyBlbGltaW5hdGUgc2FpZCBwcm9i
+bGVtLCBzdHJ1Y3Qgc2tsX3NzdCBoYXMgYmVlbiBjcmVhdGVkLiBGcm9tIHRoYXQKbW9tbWVudCwg
+U2t5bGFrZSBoYXMgYmVlbiBwbGFndWVkIGJ5IGhlYWRlciBlcnJvcnMgKGluY29tcGxldGUgc3R1
+cmN0cywKdW5rbm93biByZWZlcmVuY2VzIGV0Yy4pIHdoZW5ldmVyIHNvbWV0aGluZyBuZXcgaXMg
+dG8gYmUgYWRkZWQgb3IgY29kZQppcyBjbGVhbmVkIHVwLgoKRml4IHRoaXMgZmxhd2VkIGRlc2ln
+biBieSBtZXJnaW5nIHNuZF9zb2Nfc2tsIGFuZCBzbmRfc29jX3NrbF9pcGMuCkFsc28sIGRvIG5v
+dCBmb3JnZXQgYWJvdXQgc3RydWN0IHNrbF9zc3QgcmVkdW5kYW5jeS4KRm9sbG93dXAgY2hhbmdl
+cyBhZGRyZXNzIGhhcm1mdWwgYXNzdW1wdGlvbnMgYW5kIGZhbHNlIGxvZ2ljIHdoaWNoCmRyaXZl
+ciBjdXJyZW50bHkgaW1wbGVtZW50cyBlLmcuOiBhdHRlbXB0IHRvIHRha2Ugcm9sZSBvZiBtYXN0
+ZXIgZm9yCkRTUCBzY2hlZHVsaW5nIHdoZW4gaW4gZmFjdCBlbnRpcmUgY29udHJvbCB0YWtlcyBw
+bGFjZSBpbiBEU1AuCgpBbWFkZXVzeiBTxYJhd2nFhHNraSAoMik6CiAgQVNvQzogSW50ZWw6IFNr
+eWxha2U6IENvbWJpbmUgc25kX3NvY19za2xfaXBjIGFuZCBzbmRfc29jX3NrbAogIEFTb0M6IElu
+dGVsOiBTa3lsYWtlOiBEbyBub3QgZGlzYWJsZSBGVyBub3RpZmljYXRpb25zCgpDZXphcnkgUm9q
+ZXdza2kgKDUpOgogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBNZXJnZSBza2xfc3N0IGFuZCBza2wg
+aW50byBza2xfZGV2IHN0cnVjdAogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBSZW1vdmUgTUNQUyBh
+dmFpbGFibGUgY2hlY2sKICBBU29DOiBJbnRlbDogU2t5bGFrZTogUmVtb3ZlIG1lbW9yeSBhdmFp
+bGFibGUgY2hlY2sKICBBU29DOiBJbnRlbDogU2t5bGFrZTogTWFrZSBNQ1BTIGFuZCBDUFMgcGFy
+YW1zIG9ic29sZXRlCiAgQVNvQzogSW50ZWw6IFNreWxha2U6IENsZWFudXAgc2tsX21vZHVsZV9j
+ZmcgZGVjbGFyYXRpb24KCiBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1pcGMuaCAgICAgICAg
+fCAgIDEgKwogc291bmQvc29jL2ludGVsL3NreWxha2UvTWFrZWZpbGUgICAgICAgIHwgIDEyICst
+CiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9ieHQtc3N0LmMgICAgICAgfCAgNTAgKy0tCiBzb3Vu
+ZC9zb2MvaW50ZWwvc2t5bGFrZS9jbmwtc3N0LWRzcC5oICAgfCAgIDcgKy0KIHNvdW5kL3NvYy9p
+bnRlbC9za3lsYWtlL2NubC1zc3QuYyAgICAgICB8ICAzNyArLQogc291bmQvc29jL2ludGVsL3Nr
+eWxha2Uvc2tsLWRlYnVnLmMgICAgIHwgIDE0ICstCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9z
+a2wtbWVzc2FnZXMuYyAgfCAyNDUgKysrKysrLS0tLS0tLQogc291bmQvc29jL2ludGVsL3NreWxh
+a2Uvc2tsLW5obHQuYyAgICAgIHwgIDE4ICstCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wt
+cGNtLmMgICAgICAgfCAgNzQgKystLQogc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzcC1j
+bGsuYyAgIHwgICA0ICstCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWRzcC5jICAg
+fCAgMTAgKy0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtZHNwLmggICB8ICAyOSAr
+LQogc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuYyAgIHwgICA4ICstCiBzb3Vu
+ZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5oICAgfCAgNTIgKy0tCiBzb3VuZC9zb2Mv
+aW50ZWwvc2t5bGFrZS9za2wtc3N0LXV0aWxzLmMgfCAgMzcgKy0KIHNvdW5kL3NvYy9pbnRlbC9z
+a3lsYWtlL3NrbC1zc3QuYyAgICAgICB8ICA1MSArLS0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtl
+L3NrbC10b3BvbG9neS5jICB8IDQ0MSArKysrKysrKy0tLS0tLS0tLS0tLS0tLS0KIHNvdW5kL3Nv
+Yy9pbnRlbC9za3lsYWtlL3NrbC10b3BvbG9neS5oICB8ICA0MyArLS0KIHNvdW5kL3NvYy9pbnRl
+bC9za3lsYWtlL3NrbC5jICAgICAgICAgICB8ICA1NCArLS0KIHNvdW5kL3NvYy9pbnRlbC9za3ls
+YWtlL3NrbC5oICAgICAgICAgICB8IDEwMiArKysrLS0KIDIwIGZpbGVzIGNoYW5nZWQsIDU0NiBp
+bnNlcnRpb25zKCspLCA3NDMgZGVsZXRpb25zKC0pCgotLSAKMi4xNy4xCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
