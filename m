@@ -1,17 +1,21 @@
-From: Julian Bradfield <jalsa-devel@jcbradfield.org>
-Subject: bug in playing 6-channel sound
-Date: Thu, 4 Jul 2019 11:46:20 +0100
-Message-ID: <23837.55548.631053.741245@vis.stevens-bradfield.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: SOF: add flag for position
+ update ipc
+Date: Thu, 4 Jul 2019 14:00:31 +0300 (EEST)
+Message-ID: <alpine.DEB.2.21.1907041344240.4409@eliteleevi>
+References: <20190703151023.30313-1-yang.jie@linux.intel.com>
+ <alpine.DEB.2.21.1907041254100.4409@eliteleevi>
+ <3788800e-7050-d68a-bec6-5b443fd0d563@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bigv.stevens-bradfield.com (bigv.stevens-bradfield.com
- [IPv6:2001:41c9:1:421::187])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9822CF800E8
- for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 12:46:22 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35067F800E7
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2019 12:59:19 +0200 (CEST)
+In-Reply-To: <3788800e-7050-d68a-bec6-5b443fd0d563@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +25,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Marcin Rajwa <marcin.rajwa@linux.intel.com>, ranjani.sridharan@linux.intel.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Some five years ago, the following post
+Hi,
 
-https://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/072265.html
+On Thu, 4 Jul 2019, Keyon Jie wrote:
 
-reported a failure to play six-channel sound, that could be worked
-around by setting the prealloc value for the device to various values
-*other than* the default 64. 
+> Well, to me it is flavor choice, Ranjani suggested to illustrate the use 
+> case where the FW will use this host_period_bytes, and I agreed this 
+> will help people to understand why we need this change.
 
-I have just run into this playing a movie from my laptop (Thinkpad
-Yoga X1, Intel HDA PCH sound card outputting through HDMI) running
-Xubuntu 18.04, up to date as at the time of posting.
+hmm, ok. So maybe add "Allows FW to use 'host_period_bytes' field
+for its original purpose" to my proposed wording..?
 
-I see exactly the same problem as in that post, and the same
-workaround works for me - I tried prealloc values 63,65,32,128, and
-any of them is ok.
+>> This is not helpful -- we know this _is_ a minor ABI change
+>> and needs to be aligned with FW.
+> It is minor change, but the FW change is still required, otherwise, we 
+> will get extra position update IPCs which may confuse the driver, please 
+[...]
+> https://github.com/thesofproject/sof/pull/1592
 
-I'm a bit baffled that such a problem has survived for several years.
-
-If any developer would like me to provide debugging information,
-please get in touch - I have some time available at present, but not
-enough to learn ALSA and debug it myself!
-
-I will remain subscribed to the list for a few weeks to read any
-followups.
+Ack, but we know this already so best to put the accurate 
+description in the commit message. The "might require FW change"
+is a bit scary statement in a patch touching ABI structs. ;)
