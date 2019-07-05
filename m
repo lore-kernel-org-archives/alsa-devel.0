@@ -1,82 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: debug: fix possible memory leak in sof_dfsentry_write()" to the asoc tree
-Date: Fri,  5 Jul 2019 18:19:50 +0100 (BST)
-Message-ID: <20190705171950.730AE2742A10@ypsilon.sirena.org.uk>
-References: <20190705081637.157169-1-weiyongjun1@huawei.com>
+From: Ladislav Michl <ladis@linux-mips.org>
+Subject: Re: [alsa-devel] [PATCH] sound: soc: codecs: wcd9335: add irqflag
+ IRQF_ONESHOT flag
+Date: Fri, 5 Jul 2019 22:10:06 +0200
+Message-ID: <20190705201006.GA22085@lenoch>
+References: <20190704191026.GA20732@hari-Inspiron-1545>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190705081637.157169-1-weiyongjun1@huawei.com>
+Content-Disposition: inline
+In-Reply-To: <20190704191026.GA20732@hari-Inspiron-1545>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+To: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Vinod Koul <vkoul@kernel.org>, Gen Zhang <blackgod016574@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Jul 05, 2019 at 12:40:26AM +0530, Hariprasad Kelam wrote:
+> Add IRQF_ONESHOT to ensure "Interrupt is not reenabled after the hardirq
+> handler finished".
+> 
+> fixes below issue reported by coccicheck
+> 
+> sound/soc/codecs/wcd9335.c:4068:8-33: ERROR: Threaded IRQ with no
+> primary handler requested without IRQF_ONESHOT
+> 
+> Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+> ---
+>  sound/soc/codecs/wcd9335.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+> index 85737fe..7ab9bf6f 100644
+> --- a/sound/soc/codecs/wcd9335.c
+> +++ b/sound/soc/codecs/wcd9335.c
+> @@ -4056,6 +4056,9 @@ static struct wcd9335_irq wcd9335_irqs[] = {
+>  static int wcd9335_setup_irqs(struct wcd9335_codec *wcd)
+>  {
+>  	int irq, ret, i;
+> +	unsigned long irqflags;
+> +
+> +	irqflags = IRQF_TRIGGER_RISING | IRQF_ONESHOT;
 
-   ASoC: SOF: debug: fix possible memory leak in sof_dfsentry_write()
+Why does this change trigger adding a variable?
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b90bab3b1b1b6c56dd6f9d5c960932239f36f6d3 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Fri, 5 Jul 2019 08:16:37 +0000
-Subject: [PATCH] ASoC: SOF: debug: fix possible memory leak in
- sof_dfsentry_write()
-
-'string' is malloced in sof_dfsentry_write() and should be freed
-before leaving from the error handling cases, otherwise it will cause
-memory leak.
-
-Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for IPC flood test")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20190705081637.157169-1-weiyongjun1@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 54bb53bfc81b..2388477a965e 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -162,7 +162,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	else
- 		ret = kstrtoul(string, 0, &ipc_count);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
- 	/* limit max duration/ipc count for flood test */
- 	if (flood_duration_test) {
-@@ -191,7 +191,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 				    "error: debugfs write failed to resume %d\n",
- 				    ret);
- 		pm_runtime_put_noidle(sdev->dev);
--		return ret;
-+		goto out;
- 	}
- 
- 	/* flood test */
--- 
-2.20.1
+>  	for (i = 0; i < ARRAY_SIZE(wcd9335_irqs); i++) {
+>  		irq = regmap_irq_get_virq(wcd->irq_data, wcd9335_irqs[i].irq);
+> @@ -4067,7 +4070,7 @@ static int wcd9335_setup_irqs(struct wcd9335_codec *wcd)
+>  
+>  		ret = devm_request_threaded_irq(wcd->dev, irq, NULL,
+>  						wcd9335_irqs[i].handler,
+> -						IRQF_TRIGGER_RISING,
+> +						irqflags,
+>  						wcd9335_irqs[i].name, wcd);
+>  		if (ret) {
+>  			dev_err(wcd->dev, "Failed to request %s\n",
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
