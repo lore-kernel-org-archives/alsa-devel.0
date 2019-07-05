@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: remove redundant assignment to variable idx" to the asoc tree
+Subject: Applied "ASoC: SOF: debug: fix possible memory leak in sof_dfsentry_write()" to the asoc tree
 Date: Fri,  5 Jul 2019 18:19:50 +0100 (BST)
-Message-ID: <20190705171950.D1D422742B45@ypsilon.sirena.org.uk>
-References: <20190705075303.14692-1-colin.king@canonical.com>
+Message-ID: <20190705171950.730AE2742A10@ypsilon.sirena.org.uk>
+References: <20190705081637.157169-1-weiyongjun1@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190705075303.14692-1-colin.king@canonical.com>
+In-Reply-To: <20190705081637.157169-1-weiyongjun1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: remove redundant assignment to variable idx
+   ASoC: SOF: debug: fix possible memory leak in sof_dfsentry_write()
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From 590eb2f4ef94cb3f3e73345c6db4de97c9cd539e Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 5 Jul 2019 08:53:03 +0100
-Subject: [PATCH] ASoC: rt5665: remove redundant assignment to variable idx
+>From b90bab3b1b1b6c56dd6f9d5c960932239f36f6d3 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Fri, 5 Jul 2019 08:16:37 +0000
+Subject: [PATCH] ASoC: SOF: debug: fix possible memory leak in
+ sof_dfsentry_write()
 
-The variable idx is being initialized with a value that is never
-read and it is being updated later with a new value. The
-initialization is redundant and can be removed.
+'string' is malloced in sof_dfsentry_write() and should be freed
+before leaving from the error handling cases, otherwise it will cause
+memory leak.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20190705075303.14692-1-colin.king@canonical.com
+Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for IPC flood test")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20190705081637.157169-1-weiyongjun1@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 87263317085a..c050d84a6916 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -1478,7 +1478,7 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct rt5665_priv *rt5665 = snd_soc_component_get_drvdata(component);
--	int pd, idx = -EINVAL;
-+	int pd, idx;
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index 54bb53bfc81b..2388477a965e 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -162,7 +162,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 	else
+ 		ret = kstrtoul(string, 0, &ipc_count);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
  
- 	pd = rl6231_get_pre_div(rt5665->regmap,
- 		RT5665_ADDA_CLK_1, RT5665_I2S_PD1_SFT);
+ 	/* limit max duration/ipc count for flood test */
+ 	if (flood_duration_test) {
+@@ -191,7 +191,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 				    "error: debugfs write failed to resume %d\n",
+ 				    ret);
+ 		pm_runtime_put_noidle(sdev->dev);
+-		return ret;
++		goto out;
+ 	}
+ 
+ 	/* flood test */
 -- 
 2.20.1
