@@ -1,56 +1,97 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [alsa-devel] [PATCH 2/4] drm: bridge: dw-hdmi: Report connector
- status using callback
-Date: Sat, 6 Jul 2019 18:17:54 +0800
-Message-ID: <CAFv8NwKhBKaDAzfdRVGzOs0M3quZeZANWQ2EDo210jy9M-c0cQ@mail.gmail.com>
-References: <20190705042623.129541-1-cychiang@chromium.org>
- <20190705042623.129541-3-cychiang@chromium.org> <VI1PR06MB41425D1F24AC653F08AFA463ACF50@VI1PR06MB4142.eurprd06.prod.outlook.com>
- <CAFv8NwJXbJo=z_NDj+JQHD9LOmnbfM8v_N1uHn4sdBzF-FZQfA@mail.gmail.com> <20190705171618.GA35842@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdac_hdmi: report codec link up/down
+	status to bus" to the asoc tree
+Date: Sat,  6 Jul 2019 12:24:57 +0100 (BST)
+Message-ID: <20190706112457.8933F27437ED@ypsilon.sirena.org.uk>
+References: <20190702132428.13129-2-kai.vehmanen@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190705171618.GA35842@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jonas Karlman <jonas@kwiboo.se>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tzungbi@chromium.org" <tzungbi@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "dianders@chromium.org" <dianders@chromium.org>, Hans Verkuil <hverkuil@xs4all.nl>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Daniel Vetter <daniel@ffwll.ch>, "dgreid@chromium.org" <dgreid@chr>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00C2EF800E6
+ for <alsa-devel@alsa-project.org>; Sat,  6 Jul 2019 13:25:01 +0200 (CEST)
+In-Reply-To: <20190702132428.13129-2-kai.vehmanen@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Cc: libin.yang@intel.com, alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 6, 2019 at 1:16 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Jul 05, 2019 at 03:31:24PM +0800, Cheng-yi Chiang wrote:
->
-> > It was a long discussion.
-> > I think the conclusion was that if we are only talking about
-> > hdmi-codec, then we just need to extend the ops exposed in hdmi-codec
-> > and don't need to use
-> > hdmi-notifier or drm_audio_component.
->
-> What I'd picked up from the bits of that discussion that I
-> followed was that there was some desire to come up with a unified
-> approach to ELD notification rather than having to go through
-> this discussion repeatedly?  That would certianly seem more
-> sensible.  Admittedly it was a long thread with lots of enormous
-> mails so I didn't follow the whole thing.
+The patch
 
-Hi Mark, thanks for following the long thread.
-The end of the discussion was at
-https://lkml.org/lkml/2019/6/20/1397
+   ASoC: hdac_hdmi: report codec link up/down status to bus
 
-Quoted from Daniel's suggestion:
-"
-I need to think about this more, but if all we need to look at is
-hdmi_codec, then I think this becomes a lot easier. And we can ignore
-drm_audio_component.h completely.
-"
+has been applied to the asoc tree at
 
-My thought is that the codec driver under ASoC are only these two:
-hdac_hdmi.c and hdmi-codec.c  ( forgive me if I missed others. I just
-grep "hdmi" under sound/soc/codecs/ )
-hdac_hdmi.c is like a wrapper for HDA and drm_audio_components.
-hdmi-codec.c is the only other codec driver that cares HDMI under ASoC.
-So adding the jack/eld support at hdmi-codec driver can cover the
-existing use cases for HDMI codec driver in ASoC.
-That said, adding a new unified approach for Jack/ELD notification
-that will only be used by hdmi-codec seems not a high priority.
-Hope this explanation helps your decision.
-Thanks!
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e62bccf8a5ec47768ae2600dc880b148cce19f1b Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Tue, 2 Jul 2019 16:24:26 +0300
+Subject: [PATCH] ASoC: hdac_hdmi: report codec link up/down status to bus
+
+Report codec power status to the HDA codec bus from runtime pm
+suspend and resume callbacks. This is required to implement
+runtime idle logic that relies on 'codec_powered' field of hdac_bus
+to be maintained for all codecs.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20190702132428.13129-2-kai.vehmanen@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c9f9820968bb..47eee18b66a3 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -2088,6 +2088,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 		return -EIO;
+ 	}
+ 
++	snd_hdac_codec_link_down(hdev);
+ 	snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+ 	snd_hdac_display_power(bus, hdev->addr, false);
+@@ -2114,6 +2115,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 	}
+ 
+ 	snd_hdac_ext_bus_link_get(bus, hlink);
++	snd_hdac_codec_link_up(hdev);
+ 
+ 	snd_hdac_display_power(bus, hdev->addr, true);
+ 
+-- 
+2.20.1
