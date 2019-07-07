@@ -1,9 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/6] ALSA: firewire-digi00x: fix wrong
-	reference count for stream functionality at error path of
-	rawmidi interface
-Date: Sun,  7 Jul 2019 14:20:10 +0900
-Message-ID: <20190707052011.24687-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/6] ALSA: bebob: fix wrong reference count for
+	stream functionality at error path of rawmidi interface
+Date: Sun,  7 Jul 2019 14:20:06 +0900
+Message-ID: <20190707052011.24687-2-o-takashi@sakamocchi.jp>
 References: <20190707052011.24687-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,8 +12,8 @@ Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
  [64.147.123.24])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65960F80228
- for <alsa-devel@alsa-project.org>; Sun,  7 Jul 2019 07:20:29 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 979F7F80213
+ for <alsa-devel@alsa-project.org>; Sun,  7 Jul 2019 07:20:24 +0200 (CEST)
 In-Reply-To: <20190707052011.24687-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,32 +33,32 @@ payload of common isochronous packet (CIP). For typical audio and music
 units, PCM samples and MIDI messages are multiplexed into one packet
 streaming.
 
-ALSA firewire-digi00x driver allows applications of rawmidi interface to
-start packet streaming for transmission of MIDI messages. However at
-error path, the reference count of stream functionality is not operated
+ALSA bebob driver allows applications of rawmidi interface to start
+packet streaming for transmission of MIDI messages. However at error
+path, the reference count of stream functionality is not operated
 correctly. This can brings a bug that packet streaming is not stopped
 when all referrers release the count.
 
 This commit fixes the bug.
 
-Fixes: ae8ffbb26512 ("ALSA: firewire-digi00x: reserve/release isochronous resources in pcm.hw_params/hw_free callbacks")
+Fixes: ac2888b958f2 ("ALSA: bebob: configure sampling transfer frequency in pcm.hw_params callback")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-midi.c | 2 ++
+ sound/firewire/bebob/bebob_midi.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
-index ca06ad318ed6..0563701141b8 100644
---- a/sound/firewire/digi00x/digi00x-midi.c
-+++ b/sound/firewire/digi00x/digi00x-midi.c
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+index f7db1f7bce86..f903271e93d0 100644
+--- a/sound/firewire/bebob/bebob_midi.c
++++ b/sound/firewire/bebob/bebob_midi.c
 @@ -22,6 +22,8 @@ static int midi_open(struct snd_rawmidi_substream *substream)
  	if (err >= 0) {
- 		++dg00x->substreams_counter;
- 		err = snd_dg00x_stream_start_duplex(dg00x);
+ 		++bebob->substreams_counter;
+ 		err = snd_bebob_stream_start_duplex(bebob);
 +		if (err < 0)
-+			--dg00x->substreams_counter;
++			--bebob->substreams_counter;
  	}
- 	mutex_unlock(&dg00x->mutex);
+ 	mutex_unlock(&bebob->mutex);
  	if (err < 0)
 -- 
 2.20.1
