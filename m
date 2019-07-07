@@ -1,64 +1,96 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/6] ALSA: bebob: fix wrong reference count for
-	stream functionality at error path of rawmidi interface
-Date: Sun,  7 Jul 2019 14:20:06 +0900
-Message-ID: <20190707052011.24687-2-o-takashi@sakamocchi.jp>
-References: <20190707052011.24687-1-o-takashi@sakamocchi.jp>
+From: Nicola Lunghi <nick83ola@gmail.com>
+Subject: [PATCH v2] ALSA: usb-audio: fix Line6 Helix audio format rates
+Date: Sun,  7 Jul 2019 09:27:34 +0100
+Message-ID: <20190707082734.25829-1-nick83ola@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
- [64.147.123.24])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 979F7F80213
- for <alsa-devel@alsa-project.org>; Sun,  7 Jul 2019 07:20:24 +0200 (CEST)
-In-Reply-To: <20190707052011.24687-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Nicola Lunghi <nick83ola@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Allison Randal <allison@lohutok.net>, Jussi Laako <jussi@sonarnerd.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In IEC 61883-6, several types of sampling data can be multiplexed into
-payload of common isochronous packet (CIP). For typical audio and music
-units, PCM samples and MIDI messages are multiplexed into one packet
-streaming.
+Line6 Helix and HX stomp devices don't support retrieving
+the number of clock sample rate.
 
-ALSA bebob driver allows applications of rawmidi interface to start
-packet streaming for transmission of MIDI messages. However at error
-path, the reference count of stream functionality is not operated
-correctly. This can brings a bug that packet streaming is not stopped
-when all referrers release the count.
+Add a quirk to set it to 48Khz by default.
 
-This commit fixes the bug.
-
-Fixes: ac2888b958f2 ("ALSA: bebob: configure sampling transfer frequency in pcm.hw_params callback")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Nicola Lunghi <nick83ola@gmail.com>
 ---
- sound/firewire/bebob/bebob_midi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/format.c | 46 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 3 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index f7db1f7bce86..f903271e93d0 100644
---- a/sound/firewire/bebob/bebob_midi.c
-+++ b/sound/firewire/bebob/bebob_midi.c
-@@ -22,6 +22,8 @@ static int midi_open(struct snd_rawmidi_substream *substream)
- 	if (err >= 0) {
- 		++bebob->substreams_counter;
- 		err = snd_bebob_stream_start_duplex(bebob);
-+		if (err < 0)
-+			--bebob->substreams_counter;
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index c02b51a82775..31780dfb8eb9 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -285,6 +285,33 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
+ 	return nr_rates;
+ }
+ 
++/* Line6 Helix series don't support the UAC2_CS_RANGE usb function
++ * call. Return a static table of known clock rates.
++ */
++static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
++						struct audioformat *fp)
++{
++	switch (chip->usb_id) {
++	case USB_ID(0x0E41, 0x4241): /* Line6 Helix */
++	case USB_ID(0x0E41, 0x4242): /* Line6 Helix Rack */
++	case USB_ID(0x0E41, 0x4244): /* Line6 Helix LT */
++	case USB_ID(0x0E41, 0x4246): /* Line6 HX-Stomp */
++		/* supported rates: 48Khz */
++		kfree(fp->rate_table);
++		fp->rate_table = kmalloc(sizeof(int), GFP_KERNEL);
++		if (!fp->rate_table)
++			return -ENOMEM;
++		fp->nr_rates = 1;
++		fp->rate_min = 48000;
++		fp->rate_max = 48000;
++		fp->rates = SNDRV_PCM_RATE_48000;
++		fp->rate_table[0] = 48000;
++		return 0;
++	}
++
++	return -ENODEV;
++}
++
+ /*
+  * parse the format descriptor and stores the possible sample rates
+  * on the audioformat table (audio class v2 and v3).
+@@ -294,7 +321,7 @@ static int parse_audio_format_rates_v2v3(struct snd_usb_audio *chip,
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	unsigned char tmp[2], *data;
+-	int nr_triplets, data_size, ret = 0;
++	int nr_triplets, data_size, ret, ret_l6 = 0;
+ 	int clock = snd_usb_clock_find_source(chip, fp->protocol,
+ 					      fp->clock, false);
+ 
+@@ -313,9 +340,22 @@ static int parse_audio_format_rates_v2v3(struct snd_usb_audio *chip,
+ 			      tmp, sizeof(tmp));
+ 
+ 	if (ret < 0) {
+-		dev_err(&dev->dev,
+-			"%s(): unable to retrieve number of sample rates (clock %d)\n",
++		/* line6 helix devices don't support UAC2_CS_CONTROL_SAM_FREQ call */
++		ret_l6 = line6_parse_audio_format_rates_quirk(chip, fp);
++		if (ret_l6 == -ENODEV) {
++			/* no line6 device found continue showing the error */
++			dev_err(&dev->dev,
++				"%s(): unable to retrieve number of sample rates (clock %d)\n",
++				__func__, clock);
++			goto err;
++		}
++		if (ret_l6 == 0) {
++			dev_info(&dev->dev,
++				"%s(): unable to retrieve number of sample rates: set it to a predefined value (clock %d).\n",
+ 				__func__, clock);
++			return 0;
++		}
++		ret = ret_l6;
+ 		goto err;
  	}
- 	mutex_unlock(&bebob->mutex);
- 	if (err < 0)
+ 
 -- 
-2.20.1
+2.19.1
