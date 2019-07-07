@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 6/7] ALSA: firewire-lib: code refactoring for
-	post operation to data block counter
-Date: Sun,  7 Jul 2019 21:07:58 +0900
-Message-ID: <20190707120759.16371-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/7] ALSA: firewire-lib: code refactoring for
+	local variables
+Date: Sun,  7 Jul 2019 21:07:59 +0900
+Message-ID: <20190707120759.16371-8-o-takashi@sakamocchi.jp>
 References: <20190707120759.16371-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6824F8026F
- for <alsa-devel@alsa-project.org>; Sun,  7 Jul 2019 14:08:15 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C35CF80290
+ for <alsa-devel@alsa-project.org>; Sun,  7 Jul 2019 14:08:17 +0200 (CEST)
 In-Reply-To: <20190707120759.16371-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,87 +28,54 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As a result of former commits, post operation to data block count for
-cases without CIP_DBC_IS_END_EVENT can be done just with
-data_block_counter member of amdtp_stream structure.
-
-This commit adds code refactoring to obsolete local variable for
-data block counter.
+It's better to use int type for loop index. For consistency, the name
+of local variable for the number of data block should be plural.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ sound/firewire/amdtp-stream.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 8c4564a560f6..81af191627db 100644
+index 81af191627db..51f97df81dbf 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -616,9 +616,10 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 			       const __be32 *ctx_header,
- 			       unsigned int *payload_length,
--			       unsigned int *data_blocks, unsigned int *dbc,
--			       unsigned int *syt, unsigned int index)
-+			       unsigned int *data_blocks, unsigned int *syt,
-+			       unsigned int index)
+@@ -700,7 +700,8 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
  {
-+	unsigned int dbc;
- 	const __be32 *cip_header;
- 	int err;
+ 	struct amdtp_stream *s = private_data;
+ 	const __be32 *ctx_header = header;
+-	unsigned int i, packets = header_length / sizeof(*ctx_header);
++	unsigned int packets = header_length / sizeof(*ctx_header);
++	int i;
  
-@@ -634,7 +635,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 	if (!(s->flags & CIP_NO_HEADER)) {
- 		cip_header = ctx_header + 2;
- 		err = check_cip_header(s, cip_header, *payload_length,
--				       data_blocks, dbc, syt);
-+				       data_blocks, &dbc, syt);
- 		if (err < 0)
- 			return err;
- 	} else {
-@@ -645,12 +646,12 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 		*syt = 0;
- 
- 		if (s->data_block_counter != UINT_MAX)
--			*dbc = s->data_block_counter;
-+			dbc = s->data_block_counter;
- 		else
--			*dbc = 0;
-+			dbc = 0;
- 	}
- 
--	s->data_block_counter = *dbc;
-+	s->data_block_counter = dbc;
- 
- 	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
- 			   index);
-@@ -758,7 +759,6 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	if (s->packet_index < 0)
+ 		return;
+@@ -708,7 +709,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	for (i = 0; i < packets; ++i) {
  		u32 cycle;
- 		unsigned int payload_length;
- 		unsigned int data_blocks;
--		unsigned int dbc;
  		unsigned int syt;
+-		unsigned int data_block;
++		unsigned int data_blocks;
  		__be32 *buffer;
- 		unsigned int pcm_frames = 0;
-@@ -768,7 +768,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 		unsigned int pcm_frames;
+ 		struct {
+@@ -719,12 +720,13 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
  
- 		cycle = compute_cycle_count(ctx_header[1]);
- 		err = parse_ir_ctx_header(s, cycle, ctx_header, &payload_length,
--					  &data_blocks, &dbc, &syt, i);
-+					  &data_blocks, &syt, i);
- 		if (err < 0 && err != -EAGAIN)
- 			break;
+ 		cycle = compute_it_cycle(*ctx_header);
+ 		syt = calculate_syt(s, cycle);
+-		data_block = calculate_data_blocks(s, syt);
++		data_blocks = calculate_data_blocks(s, syt);
+ 		buffer = s->buffer.packets[s->packet_index].buffer;
+-		pcm_frames = s->process_data_blocks(s, buffer, data_block, &syt);
++		pcm_frames = s->process_data_blocks(s, buffer, data_blocks,
++						    &syt);
  
-@@ -778,8 +778,8 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 							    data_blocks, &syt);
+-		build_it_pkt_header(s, cycle, &template.params, data_block, syt,
+-				    i);
++		build_it_pkt_header(s, cycle, &template.params, data_blocks,
++				    syt, i);
  
- 			if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
--				s->data_block_counter =
--						(dbc + data_blocks) & 0xff;
-+				s->data_block_counter += data_blocks;
-+				s->data_block_counter &= 0xff;
- 			}
- 		}
- 
+ 		if (queue_out_packet(s, &template.params) < 0) {
+ 			cancel_stream(s);
 -- 
 2.20.1
