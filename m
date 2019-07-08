@@ -1,17 +1,25 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [RESEND PATCH v2] ASoC: SOF: Intel: hda: Make
-	hdac_device device-managed
-Date: Sun,  7 Jul 2019 16:56:33 -0700
-Message-ID: <20190707235633.7114-1-ranjani.sridharan@linux.intel.com>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH 1/4] ASoC: hdmi-codec: Add an op to set
+ callback function for plug event
+Date: Mon, 8 Jul 2019 13:03:53 +0800
+Message-ID: <CAFv8NwLP-hUBW8FZW5kooaggeNRG7LAEd2pd_-70YBrVMY-+CQ@mail.gmail.com>
+References: <20190705042623.129541-1-cychiang@chromium.org>
+ <20190705042623.129541-2-cychiang@chromium.org>
+ <CA+Px+wXtmf9dQQP7ywPLp7Qbbvqau=WnO3qhZ8+qmbJD1gjx+A@mail.gmail.com>
+ <20190705121240.GA20625@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com
+ [IPv6:2607:f8b0:4864:20::e42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6CB9F801A4
- for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2019 01:56:36 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E46C3F800E2
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2019 07:04:23 +0200 (CEST)
+Received: by mail-vs1-xe42.google.com with SMTP id k9so7362481vso.5
+ for <alsa-devel@alsa-project.org>; Sun, 07 Jul 2019 22:04:23 -0700 (PDT)
+In-Reply-To: <20190705121240.GA20625@sirena.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +29,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, libin.yang@intel.com, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Doug Anderson <dianders@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, linux-kernel <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, tzungbi@chromium.org, Hans Verkuil <hverkuil@xs4all.nl>, Tzung-Bi Shih <tzungbi@google.com>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Daniel Vetter <daniel@ffwll.ch>, linux-rockchip@lists.infradead.org, Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_hdac_ext_bus_device_exit() has been recently modified
-to no longer free the hdac device. SOF allocates memory for
-hdac_device and hda_hda_priv with kzalloc. Make them
-device-managed instead so that they will be freed when the
-SOF driver is unloaded.
+On Fri, Jul 5, 2019 at 8:12 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Jul 05, 2019 at 03:08:37PM +0800, Tzung-Bi Shih wrote:
+> > On Fri, Jul 5, 2019 at 12:26 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+>
+> > > +typedef void (*hdmi_codec_plugged_cb)(struct platform_device *dev,
+> > > +                                     bool plugged);
+> > > +
+>
+> > The callback prototype is "weird" by struct platform_device.  Is it
+> > possible to having snd_soc_component instead of platform_device?
+>
+> Or if it's got to be a device why not just a generic device so
+> we're not tied to a particular bus here?
 
-Because of the above change, hda_codec is device-managed and
-it will be freed when the ASoC device is removed. Freeing
-the codec in snd_hda_codec_dev_release() leads to kernel
-panic while unloading and reloading the ASoC driver. So,
-avoid freeing the hda_codec for ASoC driver. This is done in
-the same patch to avoid bisect failure.
+My intention was to invoke the call in dw-hdmi.c like this:
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/pci/hda/hda_codec.c       | 8 +++++++-
- sound/soc/sof/intel/hda-codec.c | 6 ++----
- 2 files changed, 9 insertions(+), 5 deletions(-)
+    hdmi->plugged_cb(hdmi->audio,
+                                   result == connector_status_connected);
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 6c51b8363f8b..a2e23d7e768f 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -846,7 +846,13 @@ static void snd_hda_codec_dev_release(struct device *dev)
- 	snd_hda_sysfs_clear(codec);
- 	kfree(codec->modelname);
- 	kfree(codec->wcaps);
--	kfree(codec);
-+
-+	/*
-+	 * In the case of ASoC HD-audio, hda_codec is device managed.
-+	 * It will be freed when the ASoC device is removed.
-+	 */
-+	if (codec->core.type == HDA_DEV_LEGACY)
-+		kfree(codec);
- }
- 
- #define DEV_NAME_LEN 31
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index b8b37f082309..0d8437b080bf 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -62,8 +62,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 		address, resp);
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
--	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
--	hda_priv = kzalloc(sizeof(*hda_priv), GFP_KERNEL);
-+	hda_priv = devm_kzalloc(sdev->dev, sizeof(*hda_priv), GFP_KERNEL);
- 	if (!hda_priv)
- 		return -ENOMEM;
- 
-@@ -82,8 +81,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 
- 	return 0;
- #else
--	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
--	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	hdev = devm_kzalloc(sdev->dev, sizeof(*hdev), GFP_KERNEL);
- 	if (!hdev)
- 		return -ENOMEM;
- 
--- 
-2.17.1
+Here hdmi->audio is a platform_device.
+I think dw-hdmi can not get  snd_soc_component easily.
+I can use a generic device here so the ops is more general.
+The calling will be like
+    hdmi->plugged_cb(&hdmi->audio->dev,
+                                   result == connector_status_connected);
+I will update this in v2.
+Thanks!
