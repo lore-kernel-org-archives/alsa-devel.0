@@ -1,67 +1,73 @@
-From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Subject: [PATCH] sound: soc: bcm: cygnus-pcm: Unneeded variable: "ret".
-Date: Wed, 10 Jul 2019 00:12:37 +0530
-Message-ID: <20190709184236.GA7873@hari-Inspiron-1545>
+From: Curtis Malainey <cujomalainey@google.com>
+Subject: Re: DW-DMA: Probe failures on broadwell
+Date: Tue, 9 Jul 2019 12:27:49 -0700
+Message-ID: <CAOReqxgnbDJsEcv7vdX3w44rzB=B69sHj95E8yBZ8DnZq0=63Q@mail.gmail.com>
+References: <CAOReqxhxHiJ-4UYC-j4Quuuy5YP9ywohe_JwiLpCxqCvP-7ypg@mail.gmail.com>
+ <20190709131401.GA9224@smile.fi.intel.com>
+ <20190709132943.GB9224@smile.fi.intel.com>
+ <20190709133448.GC9224@smile.fi.intel.com>
+ <20190709133847.GD9224@smile.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Hariprasad Kelam <hariprasad.kelam@gmail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com
+ [IPv6:2a00:1450:4864:20::243])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CED4F800E2
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2019 21:28:06 +0200 (CEST)
+Received: by mail-lj1-x243.google.com with SMTP id x25so13960881ljh.2
+ for <alsa-devel@alsa-project.org>; Tue, 09 Jul 2019 12:28:01 -0700 (PDT)
+In-Reply-To: <20190709133847.GD9224@smile.fi.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Ross Zwisler <zwisler@google.com>, Fletcher Woodruff <fletcherw@google.com>, Liam Girdwood <liam.r.girdwood@intel.com>, dmaengine@vger.kernel.org, Pierre-louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes below issues reported by coccicheck
+Hi Andy,
 
-sound/soc/bcm/cygnus-pcm.c:642:5-8: Unneeded variable: "ret". Return "0"
-on line 650
-sound/soc/bcm/cygnus-pcm.c:671:5-8: Unneeded variable: "ret". Return "0"
-on line 696
+Thanks for the information, we are running a 4.14 kernel so we don't
+have the idma32 driver, I will see if I can backport it and report
+back if the fix works.
 
-We cannot change return type of these functions as they are callback
-functions of snd_pcm_ops
+Thanks.
 
-Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
----
- sound/soc/bcm/cygnus-pcm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/bcm/cygnus-pcm.c b/sound/soc/bcm/cygnus-pcm.c
-index 123ecf5..8966b02 100644
---- a/sound/soc/bcm/cygnus-pcm.c
-+++ b/sound/soc/bcm/cygnus-pcm.c
-@@ -639,7 +639,6 @@ static int cygnus_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
--	int ret = 0;
- 
- 	aio = cygnus_dai_get_dma_data(substream);
- 	dev_dbg(rtd->cpu_dai->dev, "%s  port %d\n", __func__, aio->portnum);
-@@ -647,7 +646,7 @@ static int cygnus_pcm_hw_params(struct snd_pcm_substream *substream,
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 	runtime->dma_bytes = params_buffer_bytes(params);
- 
--	return ret;
-+	return 0;
- }
- 
- static int cygnus_pcm_hw_free(struct snd_pcm_substream *substream)
-@@ -668,7 +667,6 @@ static int cygnus_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
- 	unsigned long bufsize, periodsize;
--	int ret = 0;
- 	bool is_play;
- 	u32 start;
- 	struct ringbuf_regs *p_rbuf = NULL;
-@@ -693,7 +691,7 @@ static int cygnus_pcm_prepare(struct snd_pcm_substream *substream)
- 	ringbuf_set_initial(aio->cygaud->audio, p_rbuf, is_play, start,
- 				periodsize, bufsize);
- 
--	return ret;
-+	return 0;
- }
- 
- static snd_pcm_uframes_t cygnus_pcm_pointer(struct snd_pcm_substream *substream)
--- 
-2.7.4
+On Tue, Jul 9, 2019 at 6:38 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Jul 09, 2019 at 04:34:48PM +0300, Andy Shevchenko wrote:
+> > On Tue, Jul 09, 2019 at 04:29:43PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Jul 09, 2019 at 04:14:01PM +0300, Andy Shevchenko wrote:
+> > > > On Mon, Jul 08, 2019 at 01:50:07PM -0700, Curtis Malainey wrote:
+> > >
+> > > > So, the correct fix is to provide a platform data, like it's done in
+> > > > drivers/dma/dw/pci.c::idma32_pdata, in the sst-firmware.c::dw_probe(), and call
+> > > > idma32_dma_probe() with idma32_dma_remove() respectively on removal stage.
+> > > >
+> > > > (It will require latest patches to be applied, which are material for v5.x)
+> > >
+> > > Below completely untested patch to try
+> >
+> > Also, it might require to set proper request lines (currently it uses 0 AFAICS).
+> > Something like it's done in drivers/spi/spi-pxa2xx-pci.c for Intel Merrifield.
+>
+> And SST_DSP_DMA_MAX_BURST seems encoded while it's should be simple number,
+> like 8 (bytes). Also SPI PXA is an example to look into.
+>
+> I doubt it has been validated with upstream driver (I know about some internal
+> drivers, hacked version of dw one, you may find sources somewhere in public).
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
