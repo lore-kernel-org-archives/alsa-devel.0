@@ -1,52 +1,122 @@
 From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Subject: [PATCH] sound: soc: codecs: mt6358: change return type of
- mt6358_codec_init_reg
-Date: Tue, 9 Jul 2019 23:55:43 +0530
-Message-ID: <20190709182543.GA6611@hari-Inspiron-1545>
+Subject: [PATCH] sound: soc: codecs: wcd9335: fix Unneeded variable: "ret"
+Date: Wed, 10 Jul 2019 00:07:15 +0530
+Message-ID: <20190709183715.GA7634@hari-Inspiron-1545>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>, Tzung-Bi Shih <tzungbi@google.com>, Shunli Wang <shunli.wang@mediatek.com>, Hariprasad Kelam <hariprasad.kelam@gmail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Vinod Koul <vkoul@kernel.org>, Hariprasad Kelam <hariprasad.kelam@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Gen Zhang <blackgod016574@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-As mt6358_codec_init_reg function always returns 0 , change return type
-from int to void.
+this fixes below issues reported  by coccicheck
+sound/soc/codecs/wcd9335.c:3611:5-8: Unneeded variable: "ret". Return
+"0" on line 3625
+sound/soc/codecs/wcd9335.c:3941:5-8: Unneeded variable: "ret". Return
+"0" on line 3971
+sound/soc/codecs/wcd9335.c:3745:5-8: Unneeded variable: "ret". Return
+"0" on line 3784
+sound/soc/codecs/wcd9335.c:3896:5-8: Unneeded variable: "ret". Return
+"0" on line 3934
+sound/soc/codecs/wcd9335.c:3026:5-8: Unneeded variable: "ret". Return
+"0" on line 3038
 
-fixes below issue reported by coccicheck
-sound/soc/codecs/mt6358.c:2260:5-8: Unneeded variable: "ret". Return "0"
-on line 2289
+We cannot change return of these functions as they are callback
+functions.
 
 Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
 ---
- sound/soc/codecs/mt6358.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/codecs/wcd9335.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
-index 50b3fc5..c17250a 100644
---- a/sound/soc/codecs/mt6358.c
-+++ b/sound/soc/codecs/mt6358.c
-@@ -2255,10 +2255,8 @@ static struct snd_soc_dai_driver mt6358_dai_driver[] = {
- 	},
- };
- 
--static int mt6358_codec_init_reg(struct mt6358_priv *priv)
-+static void mt6358_codec_init_reg(struct mt6358_priv *priv)
- {
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index 1bbbe42..e13af36 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -3018,7 +3018,6 @@ static int wcd9335_codec_enable_slim(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+ 	struct wcd9335_codec *wcd = snd_soc_component_get_drvdata(comp);
+ 	struct wcd_slim_codec_dai_data *dai = &wcd->dai[w->shift];
 -	int ret = 0;
--
- 	/* Disable HeadphoneL/HeadphoneR short circuit protection */
- 	regmap_update_bits(priv->regmap, MT6358_AUDDEC_ANA_CON0,
- 			   RG_AUDHPLSCDISABLE_VAUDP15_MASK_SFT,
-@@ -2285,8 +2283,6 @@ static int mt6358_codec_init_reg(struct mt6358_priv *priv)
- 	/* set gpio */
- 	playback_gpio_reset(priv);
- 	capture_gpio_reset(priv);
--
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -3030,7 +3029,7 @@ static int wcd9335_codec_enable_slim(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	}
+ 
 -	return ret;
++	return 0;
  }
  
- static int mt6358_codec_probe(struct snd_soc_component *cmpnt)
+ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
+@@ -3603,7 +3602,6 @@ static int wcd9335_codec_ear_dac_event(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+ 	struct wcd9335_codec *wcd = dev_get_drvdata(comp->dev);
+-	int ret = 0;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+@@ -3617,7 +3615,7 @@ static int wcd9335_codec_ear_dac_event(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	};
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static void wcd9335_codec_hph_post_pa_config(struct wcd9335_codec *wcd,
+@@ -3737,7 +3735,6 @@ static int wcd9335_codec_enable_hphl_pa(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+ 	struct wcd9335_codec *wcd = dev_get_drvdata(comp->dev);
+ 	int hph_mode = wcd->hph_mode;
+-	int ret = 0;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+@@ -3776,7 +3773,7 @@ static int wcd9335_codec_enable_hphl_pa(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	};
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int wcd9335_codec_enable_lineout_pa(struct snd_soc_dapm_widget *w,
+@@ -3888,7 +3885,6 @@ static int wcd9335_codec_enable_hphr_pa(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+ 	struct wcd9335_codec *wcd = dev_get_drvdata(comp->dev);
+ 	int hph_mode = wcd->hph_mode;
+-	int ret = 0;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+@@ -3926,14 +3922,13 @@ static int wcd9335_codec_enable_hphr_pa(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	};
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int wcd9335_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
+ 				       struct snd_kcontrol *kc, int event)
+ {
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+-	int ret = 0;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -3963,7 +3958,7 @@ static int wcd9335_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	};
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static irqreturn_t wcd9335_slimbus_irq(int irq, void *data)
 -- 
 2.7.4
