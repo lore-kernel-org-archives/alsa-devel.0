@@ -1,97 +1,101 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 3/4] ALSA: compress: Don't allow drain
- operations on capture streams
-Date: Tue, 9 Jul 2019 17:06:33 +0530
-Message-ID: <20190709113633.GL2911@vkoul-mobl>
-References: <20190709105211.11741-1-ckeepax@opensource.cirrus.com>
- <20190709105211.11741-3-ckeepax@opensource.cirrus.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Atom: read timestamp moved to period_elapsed
+Date: Tue, 9 Jul 2019 14:45:19 +0300
+Message-ID: <20190709114519.GW9224@smile.fi.intel.com>
+References: <20190709040147.111927-1-levinale@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 250C6F800E0
- for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2019 13:39:46 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190709105211.11741-3-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, tiwai@suse.com
+In-Reply-To: <20190709040147.111927-1-levinale@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alex Levin <levinale@chromium.org>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, benzh@chromium.org, cujomalainey@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09-07-19, 11:52, Charles Keepax wrote:
-> Partial drain and next track are intended for gapless playback and
-> don't really have an obvious interpretation for a capture stream, so
-> makes sense to not allow those operations on capture streams. Drain
+On Mon, Jul 08, 2019 at 09:01:47PM -0700, Alex Levin wrote:
+> sst_platform_pcm_pointer is called from both snd_pcm_period_elapsed and
+> from snd_pcm_ioctl. Calling read timestamp results in recalculating
+> pcm_delay and buffer_ptr (sst_calc_tstamp) which consumes buffers in a
+> faster rate than intended.
+> In a tested BSW system with chtrt5650, for a rate of 48000, the
+> measured rate was sometimes 10 times more than that.
+> After moving the timestamp read to period elapsed, buffer consumption is
+> as expected.
 
-Sounds right
+>From code prospective it looks good. You may take mine
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> would make sense on a capture stream but currently the implementation
-> of drain involves the kernel waiting for the DSP to consume its
-> available data, whereas a capture drain would involve waiting for
-> user-space to consume the data available on the DSP. Disallow drain
-> on capture streams until that is implemented.
-
-Well it in unclear to me about the support required in kernel! Kernel
-issues drain request to DSP and waits for that to be done. When DSP has
-encoded and copied the data the notification should make drain complete.
-So I dont see anything in kernel required for that
+Though I'm not an expert in the area, Pierre and / or Liam should give
+their blessing.
 
 > 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Alex Levin <levinale@chromium.org>
 > ---
->  sound/core/compress_offload.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  sound/soc/intel/atom/sst-mfld-platform-pcm.c | 23 +++++++++++++-------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
 > 
-> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> index e1a216fd832f9..c7d56cee0d510 100644
-> --- a/sound/core/compress_offload.c
-> +++ b/sound/core/compress_offload.c
-> @@ -829,6 +829,10 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
->  		break;
->  	}
+> diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> index 0e8b1c5eec88..196af0b30b41 100644
+> --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> @@ -265,16 +265,28 @@ static void sst_period_elapsed(void *arg)
+>  {
+>  	struct snd_pcm_substream *substream = arg;
+>  	struct sst_runtime_stream *stream;
+> -	int status;
+> +	struct snd_soc_pcm_runtime *rtd;
+> +	int status, ret_val;
 >  
-> +	/* drain not implemented for capture streams yet */
-> +	if (stream->direction == SND_COMPRESS_CAPTURE)
-> +		return -EPERM;
+>  	if (!substream || !substream->runtime)
+>  		return;
+>  	stream = substream->runtime->private_data;
+>  	if (!stream)
+>  		return;
 > +
->  	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
->  	if (retval) {
->  		pr_debug("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
-> @@ -847,6 +851,10 @@ static int snd_compr_next_track(struct snd_compr_stream *stream)
->  	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
->  		return -EPERM;
+> +	rtd = substream->private_data;
+> +	if (!rtd)
+> +		return;
+> +
+>  	status = sst_get_stream_status(stream);
+>  	if (status != SST_PLATFORM_RUNNING)
+>  		return;
+> +
+> +	ret_val = stream->ops->stream_read_tstamp(sst->dev, &stream->stream_info);
+> +	if (ret_val) {
+> +		dev_err(rtd->dev, "stream_read_tstamp err code = %d\n", ret_val);
+> +		return;
+> +	}
+>  	snd_pcm_period_elapsed(substream);
+>  }
 >  
-> +	/* next track doesn't have any meaning for capture streams */
-> +	if (stream->direction == SND_COMPRESS_CAPTURE)
-> +		return -EPERM;
-> +
->  	/* you can signal next track if this is intended to be a gapless stream
->  	 * and current track metadata is set
->  	 */
-> @@ -874,6 +882,10 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
->  		break;
->  	}
+> @@ -658,20 +670,15 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+>  			(struct snd_pcm_substream *substream)
+>  {
+>  	struct sst_runtime_stream *stream;
+> -	int ret_val, status;
+> +	int status;
+>  	struct pcm_stream_info *str_info;
+> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 >  
-> +	/* partial drain doesn't have any meaning for capture streams */
-> +	if (stream->direction == SND_COMPRESS_CAPTURE)
-> +		return -EPERM;
+>  	stream = substream->runtime->private_data;
+>  	status = sst_get_stream_status(stream);
+>  	if (status == SST_PLATFORM_INIT)
+>  		return 0;
 > +
->  	/* stream can be drained only when next track has been signalled */
->  	if (stream->next_track == false)
->  		return -EPERM;
+>  	str_info = &stream->stream_info;
+> -	ret_val = stream->ops->stream_read_tstamp(sst->dev, str_info);
+> -	if (ret_val) {
+> -		dev_err(rtd->dev, "sst: error code = %d\n", ret_val);
+> -		return ret_val;
+> -	}
+>  	substream->runtime->delay = str_info->pcm_delay;
+>  	return str_info->buffer_ptr;
+>  }
 > -- 
-> 2.11.0
+> 2.22.0.410.gd8fdbe21b5-goog
+> 
 
 -- 
-~Vinod
+With Best Regards,
+Andy Shevchenko
