@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 4/4] ALSA: compress: Be more restrictive about
-	when a drain is allowed
-Date: Tue, 9 Jul 2019 11:52:11 +0100
-Message-ID: <20190709105211.11741-4-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 3/4] ALSA: compress: Don't allow drain
+	operations on capture streams
+Date: Tue, 9 Jul 2019 11:52:10 +0100
+Message-ID: <20190709105211.11741-3-ckeepax@opensource.cirrus.com>
 References: <20190709105211.11741-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,7 @@ Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3609DF80274
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BFD5F80275
  for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2019 12:52:16 +0200 (CEST)
 In-Reply-To: <20190709105211.11741-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,41 +28,56 @@ To: vkoul@kernel.org, tiwai@suse.com
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Draining makes little sense in the situation of hardware overrun, as the
-hardware will have consumed all its available samples. Additionally,
-draining whilst the stream is paused would presumably get stuck as no
-data is being consumed on the DSP side.
+Partial drain and next track are intended for gapless playback and
+don't really have an obvious interpretation for a capture stream, so
+makes sense to not allow those operations on capture streams. Drain
+would make sense on a capture stream but currently the implementation
+of drain involves the kernel waiting for the DSP to consume its
+available data, whereas a capture drain would involve waiting for
+user-space to consume the data available on the DSP. Disallow drain
+on capture streams until that is implemented.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/core/compress_offload.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/core/compress_offload.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index c7d56cee0d510..9fcd06395a046 100644
+index e1a216fd832f9..c7d56cee0d510 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -824,7 +824,10 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
- 	case SNDRV_PCM_STATE_OPEN:
- 	case SNDRV_PCM_STATE_SETUP:
- 	case SNDRV_PCM_STATE_PREPARED:
-+	case SNDRV_PCM_STATE_PAUSED:
- 		return -EPERM;
-+	case SNDRV_PCM_STATE_XRUN:
-+		return -EPIPE;
- 	default:
+@@ -829,6 +829,10 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
  		break;
  	}
-@@ -877,7 +880,10 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
- 	case SNDRV_PCM_STATE_OPEN:
- 	case SNDRV_PCM_STATE_SETUP:
- 	case SNDRV_PCM_STATE_PREPARED:
-+	case SNDRV_PCM_STATE_PAUSED:
+ 
++	/* drain not implemented for capture streams yet */
++	if (stream->direction == SND_COMPRESS_CAPTURE)
++		return -EPERM;
++
+ 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+ 	if (retval) {
+ 		pr_debug("SND_COMPR_TRIGGER_DRAIN failed %d\n", retval);
+@@ -847,6 +851,10 @@ static int snd_compr_next_track(struct snd_compr_stream *stream)
+ 	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
  		return -EPERM;
-+	case SNDRV_PCM_STATE_XRUN:
-+		return -EPIPE;
- 	default:
+ 
++	/* next track doesn't have any meaning for capture streams */
++	if (stream->direction == SND_COMPRESS_CAPTURE)
++		return -EPERM;
++
+ 	/* you can signal next track if this is intended to be a gapless stream
+ 	 * and current track metadata is set
+ 	 */
+@@ -874,6 +882,10 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
  		break;
  	}
+ 
++	/* partial drain doesn't have any meaning for capture streams */
++	if (stream->direction == SND_COMPRESS_CAPTURE)
++		return -EPERM;
++
+ 	/* stream can be drained only when next track has been signalled */
+ 	if (stream->next_track == false)
+ 		return -EPERM;
 -- 
 2.11.0
