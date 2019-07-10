@@ -1,34 +1,28 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 12/12] ASoC: wcd9335: Fix misuse of GENMASK macro
-Date: Tue,  9 Jul 2019 22:04:25 -0700
-Message-ID: <92e31a9f321fe731d428ec3ec9d4654ea8a16d1b.1562734889.git.joe@perches.com>
-References: <cover.1562734889.git.joe@perches.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH] sound: soc: codecs: mt6358: change return type of mt6358_codec_init_reg
+Date: Wed, 10 Jul 2019 13:24:45 +0800
+Message-ID: <CA+Px+wVMn-wZ_aoAV2OMEg4zE7aoYG__my2EJM_PP5ghaXjoFw@mail.gmail.com>
+References: <20190709182543.GA6611@hari-Inspiron-1545>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1562734889.git.joe@perches.com>
+In-Reply-To: <20190709182543.GA6611@hari-Inspiron-1545>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>, Shunli Wang <shunli.wang@mediatek.com>, ALSA development <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Arguments are supposed to be ordered high then low.
+On Wed, Jul 10, 2019 at 2:25 AM Hariprasad Kelam
+<hariprasad.kelam@gmail.com> wrote:
+>
+> As mt6358_codec_init_reg function always returns 0 , change return type
+> from int to void.
+>
+> fixes below issue reported by coccicheck
+> sound/soc/codecs/mt6358.c:2260:5-8: Unneeded variable: "ret". Return "0"
+> on line 2289
+>
+> Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Acked-by: Tzung-Bi Shih <tzungbi@google.com>
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/codecs/wcd-clsh-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wcd-clsh-v2.c b/sound/soc/codecs/wcd-clsh-v2.c
-index c397d713f01a..cc5a9c9b918b 100644
---- a/sound/soc/codecs/wcd-clsh-v2.c
-+++ b/sound/soc/codecs/wcd-clsh-v2.c
-@@ -65,7 +65,7 @@ struct wcd_clsh_ctrl {
- #define WCD9XXX_FLYBACK_EN_PWDN_WITH_DELAY			0
- #define WCD9XXX_RX_BIAS_FLYB_BUFF			WCD9335_REG(0x6, 0xC7)
- #define WCD9XXX_RX_BIAS_FLYB_VNEG_5_UA_MASK		GENMASK(7, 4)
--#define WCD9XXX_RX_BIAS_FLYB_VPOS_5_UA_MASK		GENMASK(0, 3)
-+#define WCD9XXX_RX_BIAS_FLYB_VPOS_5_UA_MASK		GENMASK(3, 0)
- #define WCD9XXX_HPH_L_EN				WCD9335_REG(0x6, 0xD3)
- #define WCD9XXX_HPH_CONST_SEL_L_MASK			GENMASK(7, 3)
- #define WCD9XXX_HPH_CONST_SEL_BYPASS			0
--- 
-2.15.0
+Thanks for cleaning this up.
