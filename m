@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98357a: use mdelay for sdmode-delay"
-	to the asoc tree
+Subject: Applied "ASoC: simple_card_utils.h: care NULL dai at
+	asoc_simple_debug_dai()" to the asoc tree
 Date: Wed, 10 Jul 2019 16:34:49 +0100 (BST)
-Message-ID: <20190710153449.71C0BD02D7C@fitzroy.sirena.org.uk>
-References: <20190708141901.68797-1-tzungbi@google.com>
+Message-ID: <20190710153449.3C6F5D02D8E@fitzroy.sirena.org.uk>
+References: <87o922gw4u.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A76BF80307
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDAE5F80321
  for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2019 17:34:50 +0200 (CEST)
-In-Reply-To: <20190708141901.68797-1-tzungbi@google.com>
+In-Reply-To: <87o922gw4u.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,12 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98357a: use mdelay for sdmode-delay
+   ASoC: simple_card_utils.h: care NULL dai at asoc_simple_debug_dai()
 
 has been applied to the asoc tree at
 
@@ -54,106 +55,37 @@ to this mail.
 Thanks,
 Mark
 
->From 6cd249cfad68a231336983e2216d75b3ddfde1d6 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 8 Jul 2019 22:19:01 +0800
-Subject: [PATCH] ASoC: max98357a: use mdelay for sdmode-delay
+>From 52db6685932e326ed607644ab7ebdae8c194adda Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 10 Jul 2019 16:59:55 +0900
+Subject: [PATCH] ASoC: simple_card_utils.h: care NULL dai at
+ asoc_simple_debug_dai()
 
-max98357a_daiops_trigger() is possible to be called in atomic context if
-the .nonatomic flag is equal to 0 in the DAI links.
+props->xxx_dai might be NULL when DPCM.
+This patch cares it for debug.
 
-When cancel_delayed_work_sync() in max98357a_daiops_trigger() is called
-in atomic context, kernel emits the following message: "BUG: sleeping
-function called from invalid context".
-
-According to the DT binding document, value less than or equal to 5ms of
-sdmod-delay should be sufficient to avoid the pop noise.  Use mdelay
-(i.e. busy loop) for such low delay should be acceptable.
-
-Fixes: cec5b01f8f1c ("ASoC: max98357a: avoid speaker pop when playback
-startup")
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20190708141901.68797-1-tzungbi@google.com
+Fixes: commit 0580dde59438 ("ASoC: simple-card-utils: add asoc_simple_debug_info()")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87o922gw4u.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98357a.c | 25 ++++---------------------
- 1 file changed, 4 insertions(+), 21 deletions(-)
+ include/sound/simple_card_utils.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index 6f0e28f903bf..16313b973eaa 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -20,20 +20,10 @@
- #include <sound/soc-dapm.h>
- 
- struct max98357a_priv {
--	struct delayed_work enable_sdmode_work;
- 	struct gpio_desc *sdmode;
- 	unsigned int sdmode_delay;
- };
- 
--static void max98357a_enable_sdmode_work(struct work_struct *work)
--{
--	struct max98357a_priv *max98357a =
--	container_of(work, struct max98357a_priv,
--			enable_sdmode_work.work);
--
--	gpiod_set_value(max98357a->sdmode, 1);
--}
--
- static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- 		int cmd, struct snd_soc_dai *dai)
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 954563ee2277..985a5f583de4 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -141,6 +141,10 @@ inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
  {
-@@ -46,14 +36,12 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		queue_delayed_work(system_power_efficient_wq,
--				&max98357a->enable_sdmode_work,
--				msecs_to_jiffies(max98357a->sdmode_delay));
-+		mdelay(max98357a->sdmode_delay);
-+		gpiod_set_value(max98357a->sdmode, 1);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		cancel_delayed_work_sync(&max98357a->enable_sdmode_work);
- 		gpiod_set_value(max98357a->sdmode, 0);
- 		break;
- 	}
-@@ -112,30 +100,25 @@ static int max98357a_platform_probe(struct platform_device *pdev)
- 	int ret;
+ 	struct device *dev = simple_priv_to_dev(priv);
  
- 	max98357a = devm_kzalloc(&pdev->dev, sizeof(*max98357a), GFP_KERNEL);
--
- 	if (!max98357a)
- 		return -ENOMEM;
- 
- 	max98357a->sdmode = devm_gpiod_get_optional(&pdev->dev,
- 				"sdmode", GPIOD_OUT_LOW);
--
- 	if (IS_ERR(max98357a->sdmode))
- 		return PTR_ERR(max98357a->sdmode);
- 
- 	ret = device_property_read_u32(&pdev->dev, "sdmode-delay",
- 					&max98357a->sdmode_delay);
--
- 	if (ret) {
- 		max98357a->sdmode_delay = 0;
- 		dev_dbg(&pdev->dev,
--			"no optional property 'sdmode-delay' found, default: no delay\n");
-+			"no optional property 'sdmode-delay' found, "
-+			"default: no delay\n");
- 	}
- 
- 	dev_set_drvdata(&pdev->dev, max98357a);
- 
--	INIT_DELAYED_WORK(&max98357a->enable_sdmode_work,
--				max98357a_enable_sdmode_work);
--
- 	return devm_snd_soc_register_component(&pdev->dev,
- 			&max98357a_component_driver,
- 			&max98357a_dai_driver, 1);
++	/* dai might be NULL */
++	if (!dai)
++		return;
++
+ 	if (dai->name)
+ 		dev_dbg(dev, "%s dai name = %s\n",
+ 			name, dai->name);
 -- 
 2.20.1
