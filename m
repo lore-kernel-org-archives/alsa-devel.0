@@ -1,99 +1,29 @@
-From: Timo Wischer <twischer@de.adit-jv.com>
-Subject: Re: [ALSA patch] [PATCH] ALSA: pcm: Enable MMAP status and control
- for ARMv7 and ARMv8
-Date: Wed, 10 Jul 2019 10:42:35 +0200
-Message-ID: <750ee44c-e28e-7711-2f07-a40fd3a87b38@de.adit-jv.com>
-References: <1555490771-13242-1-git-send-email-twischer@de.adit-jv.com>
- <s5hlg093s2b.wl-tiwai@suse.de>
- <5946b2b4-ecf7-8266-2998-a19b7d9a2d2c@de.adit-jv.com>
- <s5hftqh3r6t.wl-tiwai@suse.de>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH 00/12] treewide: Fix GENMASK misuses
+Date: Wed, 10 Jul 2019 11:17:31 +0200
+Message-ID: <5fa1fa6998332642c49e2d5209193ffe2713f333.camel@sipsolutions.net>
+References: <cover.1562734889.git.joe@perches.com>
+         (sfid-20190710_070546_627944_047EEDD0)
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hftqh3r6t.wl-tiwai@suse.de>
-Content-Language: en-US
+In-Reply-To: <cover.1562734889.git.joe@perches.com> (sfid-20190710_070546_627944_047EEDD0)
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, kuninori.morimoto.gx@renesas.com, hiroyuki.yokoyama.vx@renesas.com, colin.king@canonical.com, gregkh@linuxfoundation.org, chanho.min@lge.com
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>, Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>, Andrew Jeffery <andrew@aj.id.au>, openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+On Tue, 2019-07-09 at 22:04 -0700, Joe Perches wrote:
+> These GENMASK uses are inverted argument order and the
+> actual masks produced are incorrect.  Fix them.
+> 
+> Add checkpatch tests to help avoid more misuses too.
+> 
+> Joe Perches (12):
+>   checkpatch: Add GENMASK tests
 
-it would be great if someone from Renesas or someone else could 
-acknowledge the patch.
-I think it is a good improvement especially when using ALSA plugins like 
-dmix.
+IMHO this doesn't make a lot of sense as a checkpatch test - just throw
+in a BUILD_BUG_ON()?
 
-Feel free to forward if you know someone who is aware of the cache 
-coherency of ARM architectures.
-
-Best regards
-*Timo Wischer*
-Engineering Software Multimedia (ADITG/ESM)
-
-Tel. +49 5121 49 6938
-On 4/17/19 11:40 AM, Takashi Iwai wrote:
-> On Wed, 17 Apr 2019 11:30:10 +0200,
-> Timo Wischer wrote:
->> On 4/17/19 11:21, Takashi Iwai wrote:
->>> On Wed, 17 Apr 2019 10:46:11 +0200,
->>> <twischer@de.adit-jv.com> wrote:
->>>> From: Timo Wischer <twischer@de.adit-jv.com>
->>>>
->>>> Since ARMv7 hardware cache coherence is supported.
->>>> "The SCU maintains coherency between the individual data caches in the
->>>> Cortex-A5 MPCore processor using a variation of the MOESI protocol" [1].
->>>>
->>>> Therefore this patch enables the MMAP access to the status and control
->>>> structures. This avoids HWSYYNC ioctl calls and therefore lowers the CPU
->>>> usage.
->>>>
->>>> [1] http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0434c/
->>>> BABJECBF.html
->>> Interesting...  I thought it would never work properly on ARM.
->>> If it really works like that, I'd happily apply the change.
->>> But I'd like to hear a confirmation from ARM people before merging
->>> such an intensive change.
->> Hi Takashi,
->>
->> do I need to send this patch to any other mailing list or do you think
->> some corresponding guy is already on the lists I have used?
-> Well, maybe we need to ping ARM people if no one on the lists you
-> Cc'ed give comments.  Let's see.
->
->
-> Takashi
->
->>>
->>> thanks,
->>>
->>> Takashi
->>>
->>>> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
->>>> ---
->>>>    sound/core/pcm_native.c | 3 ++-
->>>>    1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
->>>> index 1d84529..b8019ef 100644
->>>> --- a/sound/core/pcm_native.c
->>>> +++ b/sound/core/pcm_native.c
->>>> @@ -3225,7 +3225,8 @@ static __poll_t snd_pcm_poll(struct file *file, poll_table *wait)
->>>>     * Only on coherent architectures, we can mmap the status and the control records
->>>>     * for effcient data transfer.  On others, we have to use HWSYNC ioctl...
->>>>     */
->>>> -#if defined(CONFIG_X86) || defined(CONFIG_PPC) || defined(CONFIG_ALPHA)
->>>> +#if defined(CONFIG_X86) || defined(CONFIG_PPC) || defined(CONFIG_ALPHA) || \
->>>> +	(defined(CONFIG_ARM) && defined(CONFIG_CPU_V7)) || defined(CONFIG_ARM64)
->>>>    /*
->>>>     * mmap status record
->>>>     */
->>>> -- 
->>>> 2.7.4
->>>>
->>>> _______________________________________________
->>>> Patch mailing list
->>>> Patch@alsa-project.org
->>>> https://mailman.alsa-project.org/mailman/listinfo/patch
->>>>
+johannes
