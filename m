@@ -1,91 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple_card_utils.h: care NULL dai at
-	asoc_simple_debug_dai()" to the asoc tree
-Date: Wed, 10 Jul 2019 16:34:49 +0100 (BST)
-Message-ID: <20190710153449.3C6F5D02D8E@fitzroy.sirena.org.uk>
-References: <87o922gw4u.wl-kuninori.morimoto.gx@renesas.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 00/12] treewide: Fix GENMASK misuses
+Date: Wed, 10 Jul 2019 08:45:53 -0700
+Message-ID: <b9c3b83c9be50286062ae8cefd5d38e2baa0fb22.camel@perches.com>
+References: <cover.1562734889.git.joe@perches.com>
+         <5fa1fa6998332642c49e2d5209193ffe2713f333.camel@sipsolutions.net>
+         <20190710094337.wf2lftxzfjq2etro@shell.armlinux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BDAE5F80321
- for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2019 17:34:50 +0200 (CEST)
-In-Reply-To: <87o922gw4u.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20190710094337.wf2lftxzfjq2etro@shell.armlinux.org.uk>
+Sender: netdev-owner@vger.kernel.org
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>, Johannes Berg <johannes@sipsolutions.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>, Andrew Jeffery <andrew@aj.id.au>, openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, linux-iio@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, 2019-07-10 at 10:43 +0100, Russell King - ARM Linux admin wrote:
+> On Wed, Jul 10, 2019 at 11:17:31AM +0200, Johannes Berg wrote:
+> > On Tue, 2019-07-09 at 22:04 -0700, Joe Perches wrote:
+> > > These GENMASK uses are inverted argument order and the
+> > > actual masks produced are incorrect.  Fix them.
+> > > 
+> > > Add checkpatch tests to help avoid more misuses too.
+> > > 
+> > > Joe Perches (12):
+> > >   checkpatch: Add GENMASK tests
+> > 
+> > IMHO this doesn't make a lot of sense as a checkpatch test - just throw
+> > in a BUILD_BUG_ON()?
 
-   ASoC: simple_card_utils.h: care NULL dai at asoc_simple_debug_dai()
+I tried that.
 
-has been applied to the asoc tree at
+It'd can't be done as it's used in declarations
+and included in asm files and it uses the UL()
+macro.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+I also tried just making it do the right thing
+whatever the argument order.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Oh well.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> My personal take on this is that GENMASK() is really not useful, it's
+> just pure obfuscation and leads to exactly these kinds of mistakes.
+> 
+> Yes, I fully understand the argument that you can just specify the
+> start and end bits, and it _in theory_ makes the code more readable.
+> 
+> However, the problem is when writing code.  GENMASK(a, b).  Is a the
+> starting bit or ending bit?  Is b the number of bits?  It's confusing
+> and causes mistakes resulting in incorrect code.  A BUILD_BUG_ON()
+> can catch some of the cases, but not all of them.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+It's a horrid little macro and I agree with Russell.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I also think if it existed at all it should have been
+GENMASK(low, high) not GENMASK(high, low).
 
-Thanks,
-Mark
-
->From 52db6685932e326ed607644ab7ebdae8c194adda Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 10 Jul 2019 16:59:55 +0900
-Subject: [PATCH] ASoC: simple_card_utils.h: care NULL dai at
- asoc_simple_debug_dai()
-
-props->xxx_dai might be NULL when DPCM.
-This patch cares it for debug.
-
-Fixes: commit 0580dde59438 ("ASoC: simple-card-utils: add asoc_simple_debug_info()")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87o922gw4u.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/simple_card_utils.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 954563ee2277..985a5f583de4 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -141,6 +141,10 @@ inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
- {
- 	struct device *dev = simple_priv_to_dev(priv);
- 
-+	/* dai might be NULL */
-+	if (!dai)
-+		return;
-+
- 	if (dai->name)
- 		dev_dbg(dev, "%s dai name = %s\n",
- 			name, dai->name);
--- 
-2.20.1
+I
