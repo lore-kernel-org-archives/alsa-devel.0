@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: fix an use-after-free in simple_dai_link_of_dpcm()" to the asoc tree
-Date: Wed, 10 Jul 2019 16:34:49 +0100 (BST)
-Message-ID: <20190710153449.1B853D02D7C@fitzroy.sirena.org.uk>
-References: <1562743509-30496-2-git-send-email-wen.yang99@zte.com.cn>
+Subject: Applied "ASoC: simple-card: fix an use-after-free in simple_for_each_link()" to the asoc tree
+Date: Wed, 10 Jul 2019 16:34:44 +0100 (BST)
+Message-ID: <20190710153444.3A14AD02D7C@fitzroy.sirena.org.uk>
+References: <1562743509-30496-3-git-send-email-wen.yang99@zte.com.cn>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1562743509-30496-2-git-send-email-wen.yang99@zte.com.cn>
+In-Reply-To: <1562743509-30496-3-git-send-email-wen.yang99@zte.com.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Wen Yang <wen.yang99@zte.com.cn>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, cheng.shengyu@zte.com.cn, jonathanh@nvidia.com, kuninori.morimoto.gx@renesas.comKuninori Morimoto <kuninori.morimoto.gx@renesas.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, tiwai@suse.com, wang.yi59@zte.com.cn, xue.zhihong@zte.com.cn
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: fix an use-after-free in simple_dai_link_of_dpcm()
+   ASoC: simple-card: fix an use-after-free in simple_for_each_link()
 
 has been applied to the asoc tree at
 
@@ -37,103 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 724808ad556c15e9473418d082f8aae81dd267f6 Mon Sep 17 00:00:00 2001
+>From 27862d5a3325bc531ec15e3c607e44aa0fd57f6f Mon Sep 17 00:00:00 2001
 From: Wen Yang <wen.yang99@zte.com.cn>
-Date: Wed, 10 Jul 2019 15:25:06 +0800
+Date: Wed, 10 Jul 2019 15:25:07 +0800
 Subject: [PATCH] ASoC: simple-card: fix an use-after-free in
- simple_dai_link_of_dpcm()
+ simple_for_each_link()
 
-The node variable is still being used after the of_node_put() call,
+The codec variable is still being used after the of_node_put() call,
 which may result in use-after-free.
 
-Fixes: cfc652a73331 ("ASoC: simple-card: tidyup prefix for snd_soc_codec_conf")
-Link: https://lore.kernel.org/r/1562743509-30496-2-git-send-email-wen.yang99@zte.com.cn
+Fixes: d947cdfd4be2 ("ASoC: simple-card: cleanup DAI link loop method - step1")
+Link: https://lore.kernel.org/r/1562743509-30496-3-git-send-email-wen.yang99@zte.com.cn
 Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
 Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ sound/soc/generic/simple-card.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index e5cde0d5e63c..4117e54884e5 100644
+index 4117e54884e5..ef849151ba56 100644
 --- a/sound/soc/generic/simple-card.c
 +++ b/sound/soc/generic/simple-card.c
-@@ -124,8 +124,6 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+@@ -364,8 +364,6 @@ static int simple_for_each_link(struct asoc_simple_priv *priv,
+ 			goto error;
+ 		}
  
- 	li->link++;
- 
--	of_node_put(node);
+-		of_node_put(codec);
 -
- 	/* For single DAI link & old style of DT node */
- 	if (is_top)
- 		prefix = PREFIX;
-@@ -147,17 +145,17 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		/* get convert-xxx property */
+ 		memset(&adata, 0, sizeof(adata));
+ 		for_each_child_of_node(node, np)
+@@ -387,11 +385,13 @@ static int simple_for_each_link(struct asoc_simple_priv *priv,
+ 				ret = func_noml(priv, np, codec, li, is_top);
  
- 		ret = asoc_simple_parse_cpu(np, dai_link, &is_single_links);
- 		if (ret)
--			return ret;
-+			goto out_put_node;
+ 			if (ret < 0) {
++				of_node_put(codec);
+ 				of_node_put(np);
+ 				goto error;
+ 			}
+ 		}
  
- 		ret = asoc_simple_parse_clk_cpu(dev, np, dai_link, dai);
- 		if (ret < 0)
--			return ret;
-+			goto out_put_node;
++		of_node_put(codec);
+ 		node = of_get_next_child(top, node);
+ 	} while (!is_top && node);
  
- 		ret = asoc_simple_set_dailink_name(dev, dai_link,
- 						   "fe.%s",
- 						   cpus->dai_name);
- 		if (ret < 0)
--			return ret;
-+			goto out_put_node;
- 
- 		asoc_simple_canonicalize_cpu(dai_link, is_single_links);
- 	} else {
-@@ -180,17 +178,17 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 
- 		ret = asoc_simple_parse_codec(np, dai_link);
- 		if (ret < 0)
--			return ret;
-+			goto out_put_node;
- 
- 		ret = asoc_simple_parse_clk_codec(dev, np, dai_link, dai);
- 		if (ret < 0)
--			return ret;
-+			goto out_put_node;
- 
- 		ret = asoc_simple_set_dailink_name(dev, dai_link,
- 						   "be.%s",
- 						   codecs->dai_name);
- 		if (ret < 0)
--			return ret;
-+			goto out_put_node;
- 
- 		/* check "prefix" from top node */
- 		snd_soc_of_parse_node_prefix(top, cconf, codecs->of_node,
-@@ -208,19 +206,21 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 
- 	ret = asoc_simple_parse_tdm(np, dai);
- 	if (ret)
--		return ret;
-+		goto out_put_node;
- 
- 	ret = asoc_simple_parse_daifmt(dev, node, codec,
- 				       prefix, &dai_link->dai_fmt);
- 	if (ret < 0)
--		return ret;
-+		goto out_put_node;
- 
- 	dai_link->dpcm_playback		= 1;
- 	dai_link->dpcm_capture		= 1;
- 	dai_link->ops			= &simple_ops;
- 	dai_link->init			= asoc_simple_dai_init;
- 
--	return 0;
-+out_put_node:
-+	of_node_put(node);
-+	return ret;
- }
- 
- static int simple_dai_link_of(struct asoc_simple_priv *priv,
 -- 
 2.20.1
