@@ -1,41 +1,33 @@
-From: Igor Opaniuk <igor.opaniuk@toradex.com>
-Subject: Re: [PATCH v2 5/6] ASoC: Define a set of DAPM pre/post-up events
-Date: Thu, 11 Jul 2019 10:26:15 +0000
-Message-ID: <CAByghJY-338xh8srU-PetjqER-kt6TwuULffqVeZ8cLLGyaubA@mail.gmail.com>
-References: <20190625074937.2621-1-oleksandr.suvorov@toradex.com>
- <20190625074937.2621-6-oleksandr.suvorov@toradex.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: shengjiu.wang@nxp.com
+Subject: [PATCH V4 0/2] recover the channel swap after xrun
+Date: Thu, 11 Jul 2019 18:49:44 +0800
+Message-ID: <cover.1562842206.git.shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190625074937.2621-6-oleksandr.suvorov@toradex.com>
-Content-Language: en-US
-Content-ID: <EF89F7C3DA1EDE459AAB3064D5160AB4@eurprd05.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKdW4gMjUsIDIwMTkgYXQgMTA6NTUgQU0gT2xla3NhbmRyIFN1dm9yb3YNCjxvbGVr
-c2FuZHIuc3V2b3JvdkB0b3JhZGV4LmNvbT4gd3JvdGU6DQo+DQo+IFByZXBhcmUgdG8gdXNlIFNO
-RF9TT0NfREFQTV9QUkVfUE9TVF9QTVUgZGVmaW5pdGlvbiB0bw0KPiByZWR1Y2UgY29taW5nIGNv
-ZGUgc2l6ZSBhbmQgbWFrZSBpdCBtb3JlIHJlYWRhYmxlLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBP
-bGVrc2FuZHIgU3V2b3JvdiA8b2xla3NhbmRyLnN1dm9yb3ZAdG9yYWRleC5jb20+DQo+IC0tLQ0K
-Pg0KPiAgaW5jbHVkZS9zb3VuZC9zb2MtZGFwbS5oIHwgMiArKw0KPiAgMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9zb2MtZGFw
-bS5oIGIvaW5jbHVkZS9zb3VuZC9zb2MtZGFwbS5oDQo+IGluZGV4IGMwMGEwYjhhZGUwODYuLjZj
-NjY5NDE2MDEzMDcgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvc291bmQvc29jLWRhcG0uaA0KPiAr
-KysgYi9pbmNsdWRlL3NvdW5kL3NvYy1kYXBtLmgNCj4gQEAgLTM1Myw2ICszNTMsOCBAQCBzdHJ1
-Y3QgZGV2aWNlOw0KPiAgI2RlZmluZSBTTkRfU09DX0RBUE1fV0lMTF9QTUQgICAweDgwICAgIC8q
-IGNhbGxlZCBhdCBzdGFydCBvZiBzZXF1ZW5jZSAqLw0KPiAgI2RlZmluZSBTTkRfU09DX0RBUE1f
-UFJFX1BPU1RfUE1EIFwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoU05EX1NP
-Q19EQVBNX1BSRV9QTUQgfCBTTkRfU09DX0RBUE1fUE9TVF9QTUQpDQo+ICsjZGVmaW5lIFNORF9T
-T0NfREFQTV9QUkVfUE9TVF9QTVUgXA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IChTTkRfU09DX0RBUE1fUFJFX1BNVSB8IFNORF9TT0NfREFQTV9QT1NUX1BNVSkNCj4NCj4gIC8q
-IGNvbnZlbmllbmNlIGV2ZW50IHR5cGUgZGV0ZWN0aW9uICovDQo+ICAjZGVmaW5lIFNORF9TT0Nf
-REFQTV9FVkVOVF9PTihlKSAgICAgICBcDQo+IC0tDQo+IDIuMjAuMQ0KPg0KDQpSZXZpZXdlZC1i
-eTogSWdvciBPcGFuaXVrIDxpZ29yLm9wYW5pdWtAdG9yYWRleC5jb20+DQoNCi0tIA0KQmVzdCBy
-ZWdhcmRzIC0gRnJldW5kbGljaGUgR3LDvHNzZSAtIE1laWxsZXVyZXMgc2FsdXRhdGlvbnMNCg0K
-U2VuaW9yIERldmVsb3BtZW50IEVuZ2luZWVyLA0KSWdvciBPcGFuaXVrDQoNClRvcmFkZXggQUcN
-CkFsdHNhZ2Vuc3RyYXNzZSA1IHwgNjA0OCBIb3J3L0x1emVybiB8IFN3aXR6ZXJsYW5kIHwgVDog
-KzQxIDQxIDUwMCA0OA0KMDAgKG1haW4gbGluZSkNCg==
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+
+recover the channel swap after xrun
+
+Shengjiu Wang (2):
+  ASoC: fsl_esai: Wrap some operations to be functions
+  ASoC: fsl_esai: recover the channel swap after xrun
+
+ sound/soc/fsl/fsl_esai.c | 266 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 193 insertions(+), 73 deletions(-)
+
+Changes in v4
+-add more comments and remove read saisr
+
+Changes in V3
+- update code sytle.
+
+Changes in v2
+- add one patch for wrap operations to functions.
+- fix some coding style issue
+
+-- 
+2.21.0
