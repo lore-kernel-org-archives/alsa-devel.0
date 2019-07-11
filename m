@@ -1,88 +1,53 @@
-From: <shumingf@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt1011: Add R0 temperature and TDM1
-	ADC2DAT Swap control
-Date: Thu, 11 Jul 2019 16:22:47 +0800
-Message-ID: <20190711082247.8192-1-shumingf@realtek.com>
+From: Igor Opaniuk <igor.opaniuk@toradex.com>
+Subject: Re: [PATCH v2 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
+Date: Thu, 11 Jul 2019 10:16:59 +0000
+Message-ID: <CAByghJazsgcSCi_ucgRBN2a4yfVT2_9Gk_DfOPEz-YtNw1u+yg@mail.gmail.com>
+References: <20190625074937.2621-1-oleksandr.suvorov@toradex.com>
+ <20190625074937.2621-2-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AAA0F801A4
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 10:22:54 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, Shuming Fan <shumingf@realtek.com>, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, naveen.m@intel.com, mingjane_hsieh@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190625074937.2621-2-oleksandr.suvorov@toradex.com>
+Content-Language: en-US
+Content-ID: <D8E6F5BC411E4D40AE04DCAB5726E982@eurprd05.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Shuming Fan <shumingf@realtek.com>
-
-- The user level application could set the R0 temperature after booting system.
-  The degree Celsius of R0 temperature store in the non-volatile space
-  when doing R0 calibration.
-- TDM1 ADC2DAT Swap controls use to control TDM slot2/3 data
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt1011.c | 9 ++++++++-
- sound/soc/codecs/rt1011.h | 1 +
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 0a6ff13d76e1..b25b4c1127ca 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -1029,6 +1029,8 @@ static const char * const rt1011_tdm_adc_swap_select[] = {
- 
- static SOC_ENUM_SINGLE_DECL(rt1011_tdm_adc1_1_enum,	RT1011_TDM1_SET_3, 6,
- 	rt1011_tdm_adc_swap_select);
-+static SOC_ENUM_SINGLE_DECL(rt1011_tdm_adc2_1_enum,	RT1011_TDM1_SET_3, 4,
-+	rt1011_tdm_adc_swap_select);
- 
- static void rt1011_reset(struct regmap *regmap)
- {
-@@ -1333,7 +1335,8 @@ static const struct snd_kcontrol_new rt1011_snd_controls[] = {
- 	/* TDM1 Data Out Selection */
- 	SOC_ENUM("TDM1 DOUT Source", rt1011_tdm1_adc1_dat_enum),
- 	SOC_ENUM("TDM1 DOUT Location", rt1011_tdm1_adc1_loc_enum),
--	SOC_ENUM("TDM1 ADCDAT Swap Select", rt1011_tdm_adc1_1_enum),
-+	SOC_ENUM("TDM1 ADC1DAT Swap Select", rt1011_tdm_adc1_1_enum),
-+	SOC_ENUM("TDM1 ADC2DAT Swap Select", rt1011_tdm_adc2_1_enum),
- 
- 	/* Data Out Mode */
- 	SOC_ENUM("I2S ADC DOUT Mode", rt1011_adc_dout_mode_enum),
-@@ -1355,6 +1358,10 @@ static const struct snd_kcontrol_new rt1011_snd_controls[] = {
- 	SOC_SINGLE_EXT("R0 Calibration", SND_SOC_NOPM, 0, 1, 0,
- 		rt1011_r0_cali_get, rt1011_r0_cali_put),
- 	RT1011_R0_LOAD("R0 Load Mode"),
-+
-+	/* R0 temperature */
-+	SOC_SINGLE("R0 Temperature", RT1011_STP_INITIAL_RESISTANCE_TEMP,
-+		2, 255, 0),
- };
- 
- static int rt1011_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
-diff --git a/sound/soc/codecs/rt1011.h b/sound/soc/codecs/rt1011.h
-index 98a38800c4df..5d431d7f1d16 100644
---- a/sound/soc/codecs/rt1011.h
-+++ b/sound/soc/codecs/rt1011.h
-@@ -227,6 +227,7 @@
- #define RT1011_STP_CALIB_RS_TEMP			0x152a
- #define RT1011_INIT_RECIPROCAL_REG_24_16				0x1538
- #define RT1011_INIT_RECIPROCAL_REG_15_0				0x1539
-+#define RT1011_STP_INITIAL_RESISTANCE_TEMP				0x153c
- #define RT1011_STP_ALPHA_RECIPROCAL_MSB				0x153e
- #define RT1011_SPK_RESISTANCE_1				0x1544
- #define RT1011_SPK_RESISTANCE_2				0x1546
--- 
-2.22.0
+T24gVHVlLCBKdW4gMjUsIDIwMTkgYXQgMTA6NTUgQU0gT2xla3NhbmRyIFN1dm9yb3YNCjxvbGVr
+c2FuZHIuc3V2b3JvdkB0b3JhZGV4LmNvbT4gd3JvdGU6DQo+DQo+IFNHVEw1MDAwX1NNQUxMX1BP
+UCBpcyBhIGJpdCBtYXNrLCBub3QgYSB2YWx1ZS4gVXNhZ2Ugb2YNCj4gY29ycmVjdCBkZWZpbml0
+aW9uIG1ha2VzIGRldmljZSBwcm9iaW5nIGNvZGUgbW9yZSBjbGVhci4NCj4NCj4gU2lnbmVkLW9m
+Zi1ieTogT2xla3NhbmRyIFN1dm9yb3YgPG9sZWtzYW5kci5zdXZvcm92QHRvcmFkZXguY29tPg0K
+PiAtLS0NCj4NCj4gIHNvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYyB8IDIgKy0NCj4gIHNvdW5k
+L3NvYy9jb2RlY3Mvc2d0bDUwMDAuaCB8IDIgKy0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2Nv
+ZGVjcy9zZ3RsNTAwMC5jIGIvc291bmQvc29jL2NvZGVjcy9zZ3RsNTAwMC5jDQo+IGluZGV4IGE2
+YTQ3NDhjOTdmOWQuLjVlNDk1MjNlZTBiNjcgMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3NvYy9jb2Rl
+Y3Mvc2d0bDUwMDAuYw0KPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMNCj4gQEAg
+LTEyOTYsNyArMTI5Niw3IEBAIHN0YXRpYyBpbnQgc2d0bDUwMDBfcHJvYmUoc3RydWN0IHNuZF9z
+b2NfY29tcG9uZW50ICpjb21wb25lbnQpDQo+DQo+ICAgICAgICAgLyogZW5hYmxlIHNtYWxsIHBv
+cCwgaW50cm9kdWNlIDQwMG1zIGRlbGF5IGluIHR1cm5pbmcgb2ZmICovDQo+ICAgICAgICAgc25k
+X3NvY19jb21wb25lbnRfdXBkYXRlX2JpdHMoY29tcG9uZW50LCBTR1RMNTAwMF9DSElQX1JFRl9D
+VFJMLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNHVEw1MDAwX1NNQUxMX1BP
+UCwgMSk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU0dUTDUwMDBfU01BTExf
+UE9QLCBTR1RMNTAwMF9TTUFMTF9QT1ApOw0KPg0KPiAgICAgICAgIC8qIGRpc2FibGUgc2hvcnQg
+Y3V0IGRldGVjdG9yICovDQo+ICAgICAgICAgc25kX3NvY19jb21wb25lbnRfd3JpdGUoY29tcG9u
+ZW50LCBTR1RMNTAwMF9DSElQX1NIT1JUX0NUUkwsIDApOw0KPiBkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL2NvZGVjcy9zZ3RsNTAwMC5oIGIvc291bmQvc29jL2NvZGVjcy9zZ3RsNTAwMC5oDQo+IGlu
+ZGV4IDE4Y2FlMDhiYmQzYTYuLmE0YmY0YmNhOTViZjcgMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3Nv
+Yy9jb2RlY3Mvc2d0bDUwMDAuaA0KPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmgN
+Cj4gQEAgLTI3Myw3ICsyNzMsNyBAQA0KPiAgI2RlZmluZSBTR1RMNTAwMF9CSUFTX0NUUkxfTUFT
+SyAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAwZQ0KPiAgI2RlZmluZSBTR1RMNTAwMF9CSUFT
+X0NUUkxfU0hJRlQgICAgICAgICAgICAgICAxDQo+ICAjZGVmaW5lIFNHVEw1MDAwX0JJQVNfQ1RS
+TF9XSURUSCAgICAgICAgICAgICAgIDMNCj4gLSNkZWZpbmUgU0dUTDUwMDBfU01BTExfUE9QICAg
+ICAgICAgICAgICAgICAgICAgMQ0KPiArI2RlZmluZSBTR1RMNTAwMF9TTUFMTF9QT1AgICAgICAg
+ICAgICAgICAgICAgICAweDAwMDENCj4NCj4gIC8qDQo+ICAgKiBTR1RMNTAwMF9DSElQX01JQ19D
+VFJMDQo+IC0tDQo+IDIuMjAuMQ0KPg0KDQpSZXZpZXdlZC1ieTogSWdvciBPcGFuaXVrIDxpZ29y
+Lm9wYW5pdWtAdG9yYWRleC5jb20+DQoNCi0tIA0KQmVzdCByZWdhcmRzIC0gRnJldW5kbGljaGUg
+R3LDvHNzZSAtIE1laWxsZXVyZXMgc2FsdXRhdGlvbnMNCg0KU2VuaW9yIERldmVsb3BtZW50IEVu
+Z2luZWVyLA0KSWdvciBPcGFuaXVrDQoNClRvcmFkZXggQUcNCkFsdHNhZ2Vuc3RyYXNzZSA1IHwg
+NjA0OCBIb3J3L0x1emVybiB8IFN3aXR6ZXJsYW5kIHwgVDogKzQxIDQxIDUwMCA0OA0KMDAgKG1h
+aW4gbGluZSkNCg==
