@@ -1,73 +1,62 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH V3 2/2] ASoC: fsl_esai: recover the channel swap after
- xrun
-Date: Thu, 11 Jul 2019 06:09:53 +0000
-Message-ID: <VE1PR04MB64798D6D1D9AD9EC206EDCE1E3F30@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: <shumingf@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt1011: fix DC calibration offset
+	not applying
+Date: Thu, 11 Jul 2019 16:22:14 +0800
+Message-ID: <20190711082214.8142-1-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16CCEF800D8
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 10:22:44 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, Shuming Fan <shumingf@realtek.com>, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, naveen.m@intel.com, mingjane_hsieh@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Shuming Fan <shumingf@realtek.com>
 
->=20
-> Hi Shengjiu,
->=20
-> Mostly looks good to me, just some small comments.
->=20
-> On Mon, Jul 08, 2019 at 02:38:52PM +0800, shengjiu.wang@nxp.com wrote:
->=20
-> > +static void fsl_esai_hw_reset(unsigned long arg) {
-> > +     struct fsl_esai *esai_priv =3D (struct fsl_esai *)arg;
-> > +     u32 saisr, tfcr, rfcr;
-> > +     bool tx =3D true, rx =3D false, enabled[2];
->=20
-> Could we swap the lines of u32 and bool? It'd look better.
->=20
-> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-> > +                        ESAI_xCR_xPR_MASK, ESAI_xCR_xPR);
-> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
-> > +                        ESAI_xCR_xPR_MASK, ESAI_xCR_xPR);
->=20
-> Let's add a line of comments for these two:
->         /* Enforce ESAI personal resets for both TX and RX */
->=20
-> > +     /*
-> > +      * Restore registers by regcache_sync, and ignore
-> > +      * return value
-> > +      */
->=20
-> Could fit into single-line?
->=20
-> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-> > +                        ESAI_xCR_xPR_MASK, 0);
-> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
-> > +                        ESAI_xCR_xPR_MASK, 0);
-> > +
-> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_PRRC,
-> > +                        ESAI_PRRC_PDC_MASK, ESAI_PRRC_PDC(ESAI_GPIO));
-> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_PCRC,
-> > +                        ESAI_PCRC_PC_MASK, ESAI_PCRC_PC(ESAI_GPIO));
->=20
-> Could remove the blank line and add a line of comments:
->         /* Remove ESAI personal resets by configuring PCRC and PRRC also =
-*/
->=20
-> Btw, I still feel this personal reset can be stuffed into one of the wrap=
-per
-> functions. But let's keep this simple for now.
->=20
-> > +     regmap_read(esai_priv->regmap, REG_ESAI_SAISR, &saisr);
->=20
-> Why do we read saisr here? All its bits would get cleared by the hardware
-> reset. If it's a must to clear again, we should add a line of comments to
-> emphasize it.
+There are two issues to fix:
+- DC offset calibration data will be reset after stopping playback.
+- DC offset calibration data should be applied in the initial setting.
 
-This line can be removed.=20
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt1011.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards
-Wang Shengjiu
+diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
+index 5605b660f4bf..0a6ff13d76e1 100644
+--- a/sound/soc/codecs/rt1011.c
++++ b/sound/soc/codecs/rt1011.c
+@@ -39,7 +39,7 @@ static const struct reg_sequence init_list[] = {
+ 	{ RT1011_POWER_9, 0xa840 },
+ 
+ 	{ RT1011_ADC_SET_5, 0x0a20 },
+-	{ RT1011_DAC_SET_2, 0xa232 },
++	{ RT1011_DAC_SET_2, 0xa032 },
+ 	{ RT1011_ADC_SET_1, 0x2925 },
+ 
+ 	{ RT1011_SPK_PRO_DC_DET_1, 0xb00c },
+@@ -1917,7 +1917,7 @@ static int rt1011_set_bias_level(struct snd_soc_component *component,
+ 		snd_soc_component_write(component,
+ 			RT1011_SYSTEM_RESET_2, 0x0000);
+ 		snd_soc_component_write(component,
+-			RT1011_SYSTEM_RESET_3, 0x0000);
++			RT1011_SYSTEM_RESET_3, 0x0001);
+ 		snd_soc_component_write(component,
+ 			RT1011_SYSTEM_RESET_1, 0x003f);
+ 		snd_soc_component_write(component,
+-- 
+2.22.0
