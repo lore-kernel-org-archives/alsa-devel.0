@@ -1,72 +1,73 @@
-From: <wen.yang99@zte.com.cn>
-Subject: Re:
-	=?utf-8?q?=5BPATCH=5D_ASoC=3A_audio-graph-card=3A_ad?=
-	=?utf-8?q?d_missing_const_at_graph=5Fget=5Fdai=5Fid=28=29?=
-Date: Thu, 11 Jul 2019 12:34:39 +0800 (CST)
-Message-ID: <201907111234393553279@zte.com.cn>
-References: <87sgrd43ja.wl-kuninori.morimoto.gx@renesas.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH V3 2/2] ASoC: fsl_esai: recover the channel swap after
+ xrun
+Date: Thu, 11 Jul 2019 06:09:53 +0000
+Message-ID: <VE1PR04MB64798D6D1D9AD9EC206EDCE1E3F30@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxct.zte.com.cn (out1.zte.com.cn [202.103.147.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C9C1F800D8
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 06:35:13 +0200 (CEST)
-In-Reply-To: <87sgrd43ja.wl-kuninori.morimoto.gx@renesas.com>
-References: 87sgrd43ja.wl-kuninori.morimoto.gx@renesas.com
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: kuninori.morimoto.gx@renesas.com
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> commit c152f8491a8d9 ("ASoC: audio-graph-card: fix an use-after-free in
-> graph_get_dai_id()") fixups use-after-free issue,
-> but, it need to use "const" for reg. This patch adds it.
-> 
-> We will have below without this patch
-> 
-> LINUX/sound/soc/generic/audio-graph-card.c: In function 'graph_get_dai_id':
-> LINUX/sound/soc/generic/audio-graph-card.c:87:7: warning: assignment discards\
-> 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-> reg = of_get_property(node, "reg", NULL);
-> 
-> Fixes: c152f8491a8d9 ("ASoC: audio-graph-card: fix an use-after-free in graph_get_dai_id()")
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> sound/soc/generic/audio-graph-card.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-> index 343ede8..ebf2ca3 100644
-> --- a/sound/soc/generic/audio-graph-card.c
-> +++ b/sound/soc/generic/audio-graph-card.c
-> @@ -63,7 +63,7 @@ static int graph_get_dai_id(struct device_node *ep)
-> struct device_node *endpoint;
-> struct of_endpoint info;
-> int i, id;
-> -    u32 *reg;
-> +    const u32 *reg;
-> int ret;
-> 
-> /* use driver specified DAI ID if exist */
-> --
-> 2.7.4
 
-Thanks.
-Acked-by: Wen Yang <wen.yang99@zte.com.cn>
+>=20
+> Hi Shengjiu,
+>=20
+> Mostly looks good to me, just some small comments.
+>=20
+> On Mon, Jul 08, 2019 at 02:38:52PM +0800, shengjiu.wang@nxp.com wrote:
+>=20
+> > +static void fsl_esai_hw_reset(unsigned long arg) {
+> > +     struct fsl_esai *esai_priv =3D (struct fsl_esai *)arg;
+> > +     u32 saisr, tfcr, rfcr;
+> > +     bool tx =3D true, rx =3D false, enabled[2];
+>=20
+> Could we swap the lines of u32 and bool? It'd look better.
+>=20
+> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> > +                        ESAI_xCR_xPR_MASK, ESAI_xCR_xPR);
+> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
+> > +                        ESAI_xCR_xPR_MASK, ESAI_xCR_xPR);
+>=20
+> Let's add a line of comments for these two:
+>         /* Enforce ESAI personal resets for both TX and RX */
+>=20
+> > +     /*
+> > +      * Restore registers by regcache_sync, and ignore
+> > +      * return value
+> > +      */
+>=20
+> Could fit into single-line?
+>=20
+> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> > +                        ESAI_xCR_xPR_MASK, 0);
+> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
+> > +                        ESAI_xCR_xPR_MASK, 0);
+> > +
+> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_PRRC,
+> > +                        ESAI_PRRC_PDC_MASK, ESAI_PRRC_PDC(ESAI_GPIO));
+> > +     regmap_update_bits(esai_priv->regmap, REG_ESAI_PCRC,
+> > +                        ESAI_PCRC_PC_MASK, ESAI_PCRC_PC(ESAI_GPIO));
+>=20
+> Could remove the blank line and add a line of comments:
+>         /* Remove ESAI personal resets by configuring PCRC and PRRC also =
+*/
+>=20
+> Btw, I still feel this personal reset can be stuffed into one of the wrap=
+per
+> functions. But let's keep this simple for now.
+>=20
+> > +     regmap_read(esai_priv->regmap, REG_ESAI_SAISR, &saisr);
+>=20
+> Why do we read saisr here? All its bits would get cleared by the hardware
+> reset. If it's a must to clear again, we should add a line of comments to
+> emphasize it.
 
----
+This line can be removed.=20
+
 Best regards
-Wen
+Wang Shengjiu
