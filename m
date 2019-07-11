@@ -1,45 +1,105 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: How to treat old style platform components
-Date: Thu, 11 Jul 2019 19:55:31 +0300
-Message-ID: <CAEnQRZB2SnyzdZw_qEn+gofDi293m2d8nq5gmMBkyn52v2GRkw@mail.gmail.com>
+From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Subject: [PATCH] sound: pci: au88x0: Remove unneeded variable: "changed"
+Date: Thu, 11 Jul 2019 22:43:02 +0530
+Message-ID: <20190711171302.GA3445@hari-Inspiron-1545>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB3D1F800D8
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 18:55:43 +0200 (CEST)
-Received: by mail-wr1-x443.google.com with SMTP id j8so2983882wrj.9
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 09:55:43 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Armijn Hemel <armijn@tjaldur.nl>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hariprasad Kelam <hariprasad.kelam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SEkgTW9yaW1vdG8tc2FuLAoKSSdtIHVzaW5nIHNpbXBsZS1jYXJkIHdpdGggYW4gb3V0IG9mIHRy
-ZWUgUENNIERNQSBkcml2ZXIgd2hpY2gKYmFzaWNhbGx5IGp1c3QgZG9lcyB0aGlzOgoKCnN0YXRp
-YyBzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnRfZHJpdmVyIGlteF9zb2NfcGxhdGZvcm0gPSB7Ci5v
-cHPCuyAgIMK7ICAgICAgID0gJmlteF9wY21fb3BzLAogLnBjbV9uZXfCuyAgICAgICA9IGlteF9w
-Y21fbmV3LAp9OwoKVGhlbiBzb21ld2hlcmUgaW4gdGhlIERBSSBkcml2ZXIgd2UgY2FsbDoKCmRl
-dm1fc25kX3NvY19yZWdpc3Rlcl9jb21wb25lbnQoZGV2LCAmaW14X3NvY19wbGF0Zm9ybSwgTlVM
-TCwgMCk7CgpJJ20gdXNpbmcgc2ltcGxlLWNhcmQgd2l0aCB0aGUgZm9sbG93aW5nIGNvbmZpZ3Vy
-YXRpb246CgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9u
-ZXh0L2xpbnV4LW5leHQuZ2l0L3RyZWUvYXJjaC9hcm02NC9ib290L2R0cy9mcmVlc2NhbGUvaW14
-OG1tLWV2ay5kdHMjbjQxCgpBZnRlciBsYXRlc3QgY2hhbmdlcyBpdCBzZWVtcyB0aGF0IGlteF9w
-Y21fb3BzLT5vcGVuKCkgZnVuY3Rpb24gaXMgbm8KbG9uZ2VyIGNhbGxlZC4KCkFueSBpZGVhPwoK
-UGxlYXNlIGZlZWwgZnJlZSB0byBub3Qgd2FzdGUgYW55IHRpbWUgb24gdGhpcywgYXMgd2UgYXJl
-IHVzaW5nIGFuIG91dApvZiB0cmVlIGRyaXZlci4KCnRoYW5rcywKRGFuaWVsLgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Fix below issues reported by coccicheck
+
+sound/pci/au88x0/au88x0_a3d.c:821:8-15: Unneeded variable: "changed".
+Return "1" on line 834
+sound/pci/au88x0/au88x0_a3d.c:768:5-12: Unneeded variable: "changed".
+Return "1" on line 777
+sound/pci/au88x0/au88x0_a3d.c:804:5-12: Unneeded variable: "changed".
+Return "1" on line 813
+sound/pci/au88x0/au88x0_a3d.c:786:8-15: Unneeded variable: "changed".
+Return "1" on line 796
+
+Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+---
+ sound/pci/au88x0/au88x0_a3d.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/au88x0/au88x0_a3d.c b/sound/pci/au88x0/au88x0_a3d.c
+index 7347103..2db183f 100644
+--- a/sound/pci/au88x0/au88x0_a3d.c
++++ b/sound/pci/au88x0/au88x0_a3d.c
+@@ -765,7 +765,7 @@ snd_vortex_a3d_hrtf_put(struct snd_kcontrol *kcontrol,
+ 			struct snd_ctl_elem_value *ucontrol)
+ {
+ 	a3dsrc_t *a = kcontrol->private_data;
+-	int changed = 1, i;
++	int i;
+ 	int coord[6];
+ 	for (i = 0; i < 6; i++)
+ 		coord[i] = ucontrol->value.integer.value[i];
+@@ -774,7 +774,7 @@ snd_vortex_a3d_hrtf_put(struct snd_kcontrol *kcontrol,
+ 	vortex_a3d_coord2hrtf(a->hrtf[1], coord);
+ 	a3dsrc_SetHrtfTarget(a, a->hrtf[0], a->hrtf[1]);
+ 	a3dsrc_SetHrtfCurrent(a, a->hrtf[0], a->hrtf[1]);
+-	return changed;
++	return 1;
+ }
+ 
+ static int
+@@ -783,7 +783,7 @@ snd_vortex_a3d_itd_put(struct snd_kcontrol *kcontrol,
+ {
+ 	a3dsrc_t *a = kcontrol->private_data;
+ 	int coord[6];
+-	int i, changed = 1;
++	int i;
+ 	for (i = 0; i < 6; i++)
+ 		coord[i] = ucontrol->value.integer.value[i];
+ 	/* Translate orientation coordinates to a3d params. */
+@@ -793,7 +793,7 @@ snd_vortex_a3d_itd_put(struct snd_kcontrol *kcontrol,
+ 	a3dsrc_SetItdTarget(a, a->itd[0], a->itd[1]);
+ 	a3dsrc_SetItdCurrent(a, a->itd[0], a->itd[1]);
+ 	a3dsrc_SetItdDline(a, a->dline);
+-	return changed;
++	return 1;
+ }
+ 
+ static int
+@@ -801,7 +801,6 @@ snd_vortex_a3d_ild_put(struct snd_kcontrol *kcontrol,
+ 		       struct snd_ctl_elem_value *ucontrol)
+ {
+ 	a3dsrc_t *a = kcontrol->private_data;
+-	int changed = 1;
+ 	int l, r;
+ 	/* There may be some scale tranlation needed here. */
+ 	l = ucontrol->value.integer.value[0];
+@@ -810,7 +809,7 @@ snd_vortex_a3d_ild_put(struct snd_kcontrol *kcontrol,
+ 	/* Left Right panning. */
+ 	a3dsrc_SetGainTarget(a, l, r);
+ 	a3dsrc_SetGainCurrent(a, l, r);
+-	return changed;
++	return 1;
+ }
+ 
+ static int
+@@ -818,7 +817,7 @@ snd_vortex_a3d_filter_put(struct snd_kcontrol *kcontrol,
+ 			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	a3dsrc_t *a = kcontrol->private_data;
+-	int i, changed = 1;
++	int i;
+ 	int params[6];
+ 	for (i = 0; i < 6; i++)
+ 		params[i] = ucontrol->value.integer.value[i];
+@@ -831,7 +830,7 @@ snd_vortex_a3d_filter_put(struct snd_kcontrol *kcontrol,
+ 	a3dsrc_SetAtmosCurrent(a, a->filter[0],
+ 			       a->filter[1], a->filter[2],
+ 			       a->filter[3], a->filter[4]);
+-	return changed;
++	return 1;
+ }
+ 
+ static const struct snd_kcontrol_new vortex_a3d_kcontrol = {
+-- 
+2.7.4
