@@ -1,20 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1011: fix DC calibration offset not
-	applying" to the asoc tree
-Date: Thu, 11 Jul 2019 12:58:07 +0100 (BST)
-Message-ID: <20190711115807.4ABB3D02DA9@fitzroy.sirena.org.uk>
-References: <20190711082214.8142-1-shumingf@realtek.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: DW-DMA: Probe failures on broadwell
+Date: Thu, 11 Jul 2019 16:12:32 +0300
+Message-ID: <20190711131232.GS9224@smile.fi.intel.com>
+References: <CAOReqxhxHiJ-4UYC-j4Quuuy5YP9ywohe_JwiLpCxqCvP-7ypg@mail.gmail.com>
+ <20190709131401.GA9224@smile.fi.intel.com>
+ <20190709132943.GB9224@smile.fi.intel.com>
+ <20190709133448.GC9224@smile.fi.intel.com>
+ <20190709133847.GD9224@smile.fi.intel.com>
+ <CAOReqxgnbDJsEcv7vdX3w44rzB=B69sHj95E8yBZ8DnZq0=63Q@mail.gmail.com>
+ <20190710164346.GP9224@smile.fi.intel.com>
+ <CAOReqxgnUp2tTp__YCjF_QH4166FAA1CE8Yq_VdE9jLW6Q4s3A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F4039F800D8
- for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 13:58:12 +0200 (CEST)
-In-Reply-To: <20190711082214.8142-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9516FF801A4
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2019 15:12:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAOReqxgnUp2tTp__YCjF_QH4166FAA1CE8Yq_VdE9jLW6Q4s3A@mail.gmail.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,74 +30,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, naveen.m@intel.com, mingjane_hsieh@realtek.com, flove@realtek.com
+To: Curtis Malainey <cujomalainey@google.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Ross Zwisler <zwisler@google.com>, Fletcher Woodruff <fletcherw@google.com>, Liam Girdwood <liam.r.girdwood@intel.com>, dmaengine@vger.kernel.org, Pierre-louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Jul 10, 2019 at 02:24:48PM -0700, Curtis Malainey wrote:
+> On Wed, Jul 10, 2019 at 9:43 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Jul 09, 2019 at 12:27:49PM -0700, Curtis Malainey wrote:
 
-   ASoC: rt1011: fix DC calibration offset not applying
+> > > Thanks for the information, we are running a 4.14 kernel so we don't
+> > > have the idma32 driver, I will see if I can backport it and report
+> > > back if the fix works.
+> >
+> > Driver is supporting iDMA 32-bit in v4.14 AFAICS.
+> > The missed stuff is a split and some fixes here and there.
+> > Here is the list of patches I have in a range v4.14..v5.2
+> > (I deliberately dropped the insignificant ones)
+> >
+> > 934891b0a16c dmaengine: dw: Don't pollute CTL_LO on iDMA 32-bit
+> > 91f0ff883e9a dmaengine: dw: Reset DRAIN bit when resume the channel
+> > 69da8be90d5e dmaengine: dw: Split DW and iDMA 32-bit operations
+> > 87fe9ae84d7b dmaengine: dw: Add missed multi-block support for iDMA 32-bit
+> > ffe843b18211 dmaengine: dw: Fix FIFO size for Intel Merrifield
+> > 7b0c03ecc42f dmaengine: dw-dmac: implement dma protection control setting
+> >
+> > For me sounds like fairly easy to backport.
+> >
+> I got the code integrated, and ran some tests. The test device
+> regularly hits a BUG_ON in the dw/core.c, debug is turned on in dw
+> core
 
-has been applied to the asoc tree at
+I see. We need ASoC guys to shed a light here. I don't know that part at all.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+Only last suggestion I have is to try remove multi-block setting from the
+platform data (it will be emulated in software if needed). But I don't believe
+the DMA for audio has no such feature enabled.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> We have only been able to consistently reproduce the DMA boot issue on
+> our original code consistently on 1 device and sporadically on another
+> handful of devices.
+> When the device did finally booted after 2-3 device crashes the device
+> failed to load the DSP.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Yeah, it has something to do with this firmware loader code...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> [    3.709573] sst-acpi INT3438:00: DesignWare DMA Controller, 8 channels
+> [    3.959027] haswell-pcm-audio haswell-pcm-audio: error: audio DSP
+> boot timeout IPCD 0x0 IPCX 0x0
+> [    3.970336] bdw-rt5677 bdw-rt5677: ASoC: failed to init link System PCM
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 09297c2f7a5428776369ba3b9904718a358e5559 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Thu, 11 Jul 2019 16:22:14 +0800
-Subject: [PATCH] ASoC: rt1011: fix DC calibration offset not applying
-
-There are two issues to fix:
-- DC offset calibration data will be reset after stopping playback.
-- DC offset calibration data should be applied in the initial setting.
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20190711082214.8142-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt1011.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 5605b660f4bf..0a6ff13d76e1 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -39,7 +39,7 @@ static const struct reg_sequence init_list[] = {
- 	{ RT1011_POWER_9, 0xa840 },
- 
- 	{ RT1011_ADC_SET_5, 0x0a20 },
--	{ RT1011_DAC_SET_2, 0xa232 },
-+	{ RT1011_DAC_SET_2, 0xa032 },
- 	{ RT1011_ADC_SET_1, 0x2925 },
- 
- 	{ RT1011_SPK_PRO_DC_DET_1, 0xb00c },
-@@ -1917,7 +1917,7 @@ static int rt1011_set_bias_level(struct snd_soc_component *component,
- 		snd_soc_component_write(component,
- 			RT1011_SYSTEM_RESET_2, 0x0000);
- 		snd_soc_component_write(component,
--			RT1011_SYSTEM_RESET_3, 0x0000);
-+			RT1011_SYSTEM_RESET_3, 0x0001);
- 		snd_soc_component_write(component,
- 			RT1011_SYSTEM_RESET_1, 0x003f);
- 		snd_soc_component_write(component,
 -- 
-2.20.1
+With Best Regards,
+Andy Shevchenko
