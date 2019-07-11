@@ -1,25 +1,45 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 00/12] treewide: Fix GENMASK misuses
-Date: Thu, 11 Jul 2019 14:30:52 -0700 (PDT)
-Message-ID: <20190711.143052.1773408891723438773.davem@davemloft.net>
-References: <cover.1562734889.git.joe@perches.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] sound: soc: codecs: wcd9335: fix "conversion to bool
+ not needed here"
+Date: Thu, 11 Jul 2019 15:00:00 -0700
+Message-ID: <eeeb09518c8967ffd48606c3d1222553752e895d.camel@perches.com>
+References: <20190711174906.GA10867@hari-Inspiron-1545>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1562734889.git.joe@perches.com>
+In-Reply-To: <20190711174906.GA10867@hari-Inspiron-1545>
 Sender: linux-kernel-owner@vger.kernel.org
-To: joe@perches.com
-Cc: akpm@linux-foundation.org, venture@google.com, yuenn@google.com, benjaminfair@google.com, andrew@aj.id.au, openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-wireless@vger.kernel.org, linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+To: Hariprasad Kelam <hariprasad.kelam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Vinod Koul <vkoul@kernel.org>, Wen Yang <wen.yang99@zte.com.cn>, Gen Zhang <blackgod016574@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Joe Perches <joe@perches.com>
-Date: Tue,  9 Jul 2019 22:04:13 -0700
-
-> These GENMASK uses are inverted argument order and the
-> actual masks produced are incorrect.  Fix them.
+On Thu, 2019-07-11 at 23:19 +0530, Hariprasad Kelam wrote:
+> Fix below issue reported by coccicheck
+> sound/soc/codecs/wcd9335.c:3991:25-30: WARNING: conversion to bool not
+> needed here
 > 
-> Add checkpatch tests to help avoid more misuses too.
+> Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+> ---
+>  sound/soc/codecs/wcd9335.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+> index 1bbbe42..85a8d10 100644
+> --- a/sound/soc/codecs/wcd9335.c
+> +++ b/sound/soc/codecs/wcd9335.c
+> @@ -3988,12 +3988,7 @@ static irqreturn_t wcd9335_slimbus_irq(int irq, void *data)
+>  		regmap_read(wcd->if_regmap,
+>  				WCD9335_SLIM_PGD_PORT_INT_RX_SOURCE0 + j, &val);
+>  		if (val) {
+> -			if (!tx)
+> -				reg = WCD9335_SLIM_PGD_PORT_INT_EN0 +
+> -					(port_id / 8);
+> -			else
+> -				reg = WCD9335_SLIM_PGD_PORT_INT_TX_EN0 +
+> -					(port_id / 8);
+> +			reg = WCD9335_SLIM_PGD_PORT_INT_TX_EN0 + (port_id / 8);
+>  			regmap_read(
+>  				wcd->if_regmap, reg, &int_val);
+>  			/*
 
-Patches #7 and #8 applied to 'net', with appropriate Fixes tags
-added to #8.
+This change makes no sense and doesn't match the commit message.
