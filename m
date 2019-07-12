@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v3 5/6] ASoC: Define a set of DAPM pre/post-up events
-Date: Fri, 12 Jul 2019 14:56:06 +0000
-Message-ID: <20190712145550.27500-6-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v3 4/6] ASoC: sgtl5000: Fix charge pump source assignment
+Date: Fri, 12 Jul 2019 14:56:04 +0000
+Message-ID: <20190712145550.27500-5-oleksandr.suvorov@toradex.com>
 References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,8 +14,10 @@ To: Fabio Estevam <festevam@gmail.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Prepare to use SND_SOC_DAPM_PRE_POST_PMU definition to
-reduce coming code size and make it more readable.
+If VDDA !=3D VDDIO and any of them is greater than 3.1V, charge pump
+source can be assigned automatically [1].
+
+[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
@@ -23,25 +25,43 @@ Reviewed-by: Igor Opaniuk <igor.opaniuk@toradex.com>
 
 ---
 
-Changes in v3: None
+Changes in v3:
+- Add the reference to NXP SGTL5000 data sheet to commit message
+- Fix multi-line comment format
+
 Changes in v2:
 - Fix patch formatting
 
- include/sound/soc-dapm.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/sgtl5000.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index c00a0b8ade086..6c66941601307 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -353,6 +353,8 @@ struct device;
- #define SND_SOC_DAPM_WILL_PMD   0x80    /* called at start of sequence */
- #define SND_SOC_DAPM_PRE_POST_PMD \
- 				(SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD)
-+#define SND_SOC_DAPM_PRE_POST_PMU \
-+				(SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU)
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index e813a37910af4..c256162750d16 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1174,12 +1174,17 @@ static int sgtl5000_set_power_regs(struct snd_soc_c=
+omponent *component)
+ 					SGTL5000_INT_OSC_EN);
+ 		/* Enable VDDC charge pump */
+ 		ana_pwr |=3D SGTL5000_VDDC_CHRGPMP_POWERUP;
+-	} else if (vddio >=3D 3100 && vdda >=3D 3100) {
++	} else {
+ 		ana_pwr &=3D ~SGTL5000_VDDC_CHRGPMP_POWERUP;
+-		/* VDDC use VDDIO rail */
+-		lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
+-		lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
+-			    SGTL5000_VDDC_MAN_ASSN_SHIFT;
++		/*
++		 * if vddio =3D=3D vdda the source of charge pump should be
++		 * assigned manually to VDDIO
++		 */
++		if (vddio =3D=3D vdda) {
++			lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
++			lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
++				    SGTL5000_VDDC_MAN_ASSN_SHIFT;
++		}
+ 	}
 =20
- /* convenience event type detection */
- #define SND_SOC_DAPM_EVENT_ON(e)	\
+ 	snd_soc_component_write(component, SGTL5000_CHIP_LINREG_CTRL, lreg_ctrl);
 --=20
 2.20.1
