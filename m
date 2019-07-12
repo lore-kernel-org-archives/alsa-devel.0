@@ -1,10 +1,12 @@
 From: Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] ASoC: audio-graph-card: Constify reg in graph_get_dai_id
-Date: Thu, 11 Jul 2019 18:43:57 -0700
-Message-ID: <20190712014357.84245-1-natechancellor@gmail.com>
+Subject: [PATCH v2] ASoC: audio-graph-card: Constify reg in graph_get_dai_id
+Date: Thu, 11 Jul 2019 18:45:55 -0700
+Message-ID: <20190712014554.62465-1-natechancellor@gmail.com>
+References: <20190712014357.84245-1-natechancellor@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190712014357.84245-1-natechancellor@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Wen Yang <wen.yang99@zte.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com, Nathan Chancellor <natechancellor@gmail.com>
@@ -22,9 +24,16 @@ sound/soc/generic/audio-graph-card.c:87:7: error: assigning to 'u32 *'
 Move the declaration up a bit to keep the reverse christmas tree look.
 
 Fixes: c152f8491a8d ("ASoC: audio-graph-card: fix an use-after-free in graph_get_dai_id()")
-Link: https://github.com/ClangBuiltLinux/linux/issues/599
+Link: https://github.com/ClangBuiltLinux/linux/issues/600
 Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
+
+v1 -> v2:
+
+* Update link in commit message (sorry, I create the commit message and
+  send the patch first then create the issue and I forgot to check the
+  closed ones for the correct number)
+
  sound/soc/generic/audio-graph-card.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
