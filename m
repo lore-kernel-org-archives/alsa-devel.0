@@ -1,59 +1,62 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v3 0/6] VAG power control improvement for sgtl5000 codec
-Date: Fri, 12 Jul 2019 14:55:58 +0000
-Message-ID: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v3 1/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
+Date: Fri, 12 Jul 2019 14:56:00 +0000
+Message-ID: <20190712145550.27500-2-oleksandr.suvorov@toradex.com>
+References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Fabio Estevam <festevam@gmail.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+SGTL5000_SMALL_POP is a bit mask, not a value. Usage of
+correct definition makes device probing code more clear.
 
-VAG power control is improved to fit the manual [1]. This patchset fixes as
-minimum one bug: if customer muxes Headphone to Line-In right after boot,
-the VAG power remains off that leads to poor sound quality from line-in.
+Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Reviewed-by: Igor Opaniuk <igor.opaniuk@toradex.com>
 
-I.e. after boot:
-- Connect sound source to Line-In jack;
-- Connect headphone to HP jack;
-- Run following commands:
-$ amixer set 'Headphone' 80%
-$ amixer set 'Headphone Mux' LINE_IN
+---
 
-Also this series includes fixes of non-important bugs in sgtl5000 codec
-driver.
-
-[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
-
-Changes in v3:
-- Add the reference to NXP SGTL5000 data sheet to commit message
-- Fix multi-line comment format
-- Add the reference to NXP SGTL5000 data sheet to commit message
-
+Changes in v3: None
 Changes in v2:
 - Fix patch formatting
-- Fix patch formatting
-- Fix patch formatting
-- Fix patch formatting
-- Fix patch formatting
-- Fix patch formatting
 
-Oleksandr Suvorov (6):
-  ASoC: sgtl5000: Fix definition of VAG Ramp Control
-  ASoC: sgtl5000: add ADC mute control
-  ASoC: sgtl5000: Fix of unmute outputs on probe
-  ASoC: sgtl5000: Fix charge pump source assignment
-  ASoC: Define a set of DAPM pre/post-up events
-  ASoC: sgtl5000: Improve VAG power and mute control
+ sound/soc/codecs/sgtl5000.c | 2 +-
+ sound/soc/codecs/sgtl5000.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- include/sound/soc-dapm.h    |   2 +
- sound/soc/codecs/sgtl5000.c | 251 ++++++++++++++++++++++++++++++------
- sound/soc/codecs/sgtl5000.h |   2 +-
- 3 files changed, 213 insertions(+), 42 deletions(-)
-
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index a6a4748c97f9d..5e49523ee0b67 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1296,7 +1296,7 @@ static int sgtl5000_probe(struct snd_soc_component *c=
+omponent)
+=20
+ 	/* enable small pop, introduce 400ms delay in turning off */
+ 	snd_soc_component_update_bits(component, SGTL5000_CHIP_REF_CTRL,
+-				SGTL5000_SMALL_POP, 1);
++				SGTL5000_SMALL_POP, SGTL5000_SMALL_POP);
+=20
+ 	/* disable short cut detector */
+ 	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL, 0);
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index 18cae08bbd3a6..a4bf4bca95bf7 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -273,7 +273,7 @@
+ #define SGTL5000_BIAS_CTRL_MASK			0x000e
+ #define SGTL5000_BIAS_CTRL_SHIFT		1
+ #define SGTL5000_BIAS_CTRL_WIDTH		3
+-#define SGTL5000_SMALL_POP			1
++#define SGTL5000_SMALL_POP			0x0001
+=20
+ /*
+  * SGTL5000_CHIP_MIC_CTRL
 --=20
 2.20.1
