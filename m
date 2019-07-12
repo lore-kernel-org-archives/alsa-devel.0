@@ -1,82 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: audio-graph-card: add missing const
- at graph_get_dai_id()" to the asoc tree
-Date: Fri, 12 Jul 2019 11:51:43 +0100
-Message-ID: <20190712105143.GK14859@sirena.co.uk>
-References: <87sgrd43ja.wl-kuninori.morimoto.gx@renesas.com>
- <20190711115807.34F58D02DA8@fitzroy.sirena.org.uk>
- <87ftnb66na.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] sound: soc: codecs: mt6358: change return type of
+ mt6358_codec_init_reg
+Date: Fri, 12 Jul 2019 11:56:19 +0100
+Message-ID: <20190712105619.GL14859@sirena.co.uk>
+References: <20190709182543.GA6611@hari-Inspiron-1545>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8306428139368744638=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 832E9F800D8
- for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2019 12:51:45 +0200 (CEST)
-In-Reply-To: <87ftnb66na.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============8401874863308806493=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190709182543.GA6611@hari-Inspiron-1545>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Tzung-Bi Shih <tzungbi@google.com>, linux-mediatek@lists.infradead.org, Shunli Wang <shunli.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8306428139368744638==
+--===============8401874863308806493==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uuKVzAmB+c+zQlhu"
+	protocol="application/pgp-signature"; boundary="bPg9NdpM9EETxvqt"
 Content-Disposition: inline
 
 
---uuKVzAmB+c+zQlhu
+--bPg9NdpM9EETxvqt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 12, 2019 at 04:45:10PM +0900, Kuninori Morimoto wrote:
-> > Fixes: c152f8491a8d9 ("ASoC: audio-graph-card: fix an use-after-free in graph_get_dai_id()")
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > Acked-by: Wen Yang <wen.yang99@zte.com.cn>
-> > Link: https://lore.kernel.org/r/87sgrd43ja.wl-kuninori.morimoto.gx@renesas.com
-> > Signed-off-by: Mark Brown <broonie@kernel.org>
+On Tue, Jul 09, 2019 at 11:55:43PM +0530, Hariprasad Kelam wrote:
+> As mt6358_codec_init_reg function always returns 0 , change return type
+> from int to void.
 
-> I noticed that latest commit has "Link" line,
-> but, it will be "404 Not Found" for me.
-> Is this bug ?
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
-It's because alsa-devel isn't archived by lore and you didn't CC
-to any list that is.  I guess we should look at getting the list
-archived on lore.
-
---uuKVzAmB+c+zQlhu
+--bPg9NdpM9EETxvqt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0oZj4ACgkQJNaLcl1U
-h9B1GwgAgWjrvCyKy91QXTm+WiJbfwG4EoOoAxlXs05YRlF7zYkKP8Wuj5/a4Ok6
-ujpIq9Xe76bWgDltQeR/IJ94M+xcsB/tcD2ytB3PNZl6uSZS4zcZiZgXnlwzmWVX
-zUFbkd6RHKqlZDUsieRbeM4Ctu5gtvOO5nuZmyoluqNMVysnBva869YKMihcY6QX
-3LDQw7HEb0Q9VvGgJM4CAXfPgNboRIYxwjA6OuVPjHnO285txqf23ubSn82ryecb
-UVUUPVTtizFBpNUvlQaH0bk0zjJdArzmR8tv8TuGgT9uPin/ZtAcpOoKGC2ZE2aq
-s2yDq1gmMwno1LG/4NqBkQUnRI1Uxw==
-=MZuw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0oZ1IACgkQJNaLcl1U
+h9DBvQf/bEOPmabOAkiJN59jKdo0Gi0w05y+5JDO15GfjfCufMDcc4Ul9bl0aH0X
+sBwwlklO0yJM4Szsx4dy8rVPtdU6GldTUUIprkzTyzb+e2jO63BxyTzR85GKXwkt
+0UFKK8ZOp74xrpxkc3ViFRwnfKNQ8qm2eqcoszNwUH8xrqPOFYhrmIjBrmlikuEB
++ojxODhzc18uqCo8YUHrqFHW85L/bxomSFWVP5Uyv+R1STDaZHJC/8uXlBdNu8C/
+B+DDhV8hBV8YLAS8fYeNTARUhBf/IX9Yukc4h6hECKdK80l4mhqK/mOVeMXvtSUW
+E+3CB4XK/4FDzc1nlg01L9omlgrGAw==
+=pELE
 -----END PGP SIGNATURE-----
 
---uuKVzAmB+c+zQlhu--
+--bPg9NdpM9EETxvqt--
 
---===============8306428139368744638==
+
+--===============8401874863308806493==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8306428139368744638==--
+--===============8401874863308806493==--
