@@ -1,74 +1,58 @@
-From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Subject: Re: [PATCH v3 1/5] ASoC: hdmi-codec: Add an op to set callback
- function for plug event
-Date: Fri, 12 Jul 2019 11:57:45 +0100
-Message-ID: <20190712105745.xr7jxc626lwoaajx@shell.armlinux.org.uk>
-References: <20190712100443.221322-1-cychiang@chromium.org>
- <20190712100443.221322-2-cychiang@chromium.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Add quirk for
+	Irbis NB41 netbook
+Date: Fri, 12 Jul 2019 13:27:08 +0200
+Message-ID: <20190712112708.25327-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190712100443.221322-2-cychiang@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dianders@chromium.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, tzungbi@chromium.org, Jaroslav Kysela <perex@perex.cz>, Hans Verkuil <hverkuil@xs4all.nl>, Andrzej Hajda <a.hajda@samsung.com>, Mark Brown <broonie@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Daniel Vetter <daniel@ffwll.ch>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B78FAF800D2
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jul 2019 13:27:14 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, russianneuromancer@ya.ru
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 12, 2019 at 06:04:39PM +0800, Cheng-Yi Chiang wrote:
-> Add an op in hdmi_codec_ops so codec driver can register callback
-> function to handle plug event.
-> 
-> Driver in DRM can use this callback function to report connector status.
-> 
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> ---
->  include/sound/hdmi-codec.h    | 16 +++++++++++++
->  sound/soc/codecs/hdmi-codec.c | 45 +++++++++++++++++++++++++++++++++++
->  2 files changed, 61 insertions(+)
-> 
-> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-> index 7fea496f1f34..9a8661680256 100644
-> --- a/include/sound/hdmi-codec.h
-> +++ b/include/sound/hdmi-codec.h
-> @@ -47,6 +47,9 @@ struct hdmi_codec_params {
->  	int channels;
->  };
->  
-> +typedef void (*hdmi_codec_plugged_cb)(struct device *dev,
-> +				      bool plugged);
-> +
+The Irbis NB41 netbook has its internal mic on IN2, inverted jack-detect
+and stereo speakers, add a quirk for this.
 
-I'd like to pose a question for people to think about.
+Cc: russianneuromancer@ya.ru
+Reported-and-tested-by: russianneuromancer@ya.ru
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Firstly, typedefs are generally shunned in the kernel.  However, for
-these cases it seems to make sense.
-
-However, should the "pointer"-ness be part of the typedef or not?  To
-see what I mean, consider:
-
-	typedef void (*hdmi_foo)(void);
-
-	int register_foo(hdmi_foo foo);
-
-vs
-
-	typedef void hdmi_foo(void);
-
-	int register_foo(hdmi_foo *foo);
-
-which is more in keeping with how we code non-typedef'd code - it's
-obvious that foo is a pointer while reading the code.
-
-It seems to me that the latter better matches what is in the kernel's
-coding style, which states:
-
-  In general, a pointer, or a struct that has elements that can
-  reasonably be directly accessed should **never** be a typedef.
-
-or maybe Documentation/process/coding-style.rst needs updating?
-
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 2fe1ce879123..c360ebc3ccc7 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -436,6 +436,14 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+ 
+ /* Please keep this list alphabetically sorted */
+ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
++	{	/* Irbis NB41 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "IRBIS"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "NB41"),
++		},
++		.driver_data = (void *)(BYT_CHT_ES8316_INTMIC_IN2_MAP
++					| BYT_CHT_ES8316_JD_INVERTED),
++	},
+ 	{	/* Teclast X98 Plus II */
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+2.21.0
