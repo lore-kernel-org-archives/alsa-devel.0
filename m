@@ -1,67 +1,41 @@
-From: Wen Yang <wen.yang99@zte.com.cn>
-Subject: [PATCH 2/2] ASoC: samsung: odroid: fix a double-free issue for cpu_dai
-Date: Sat, 13 Jul 2019 11:46:15 +0800
-Message-ID: <1562989575-33785-3-git-send-email-wen.yang99@zte.com.cn>
-References: <1562989575-33785-1-git-send-email-wen.yang99@zte.com.cn>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Subject: Re: [PATCH] ASoC: audio-graph-card: fix type mismatch warning
+Date: Sat, 13 Jul 2019 12:49:51 +0000
+Message-ID: <CAGgjyvHBfyviNofKay47TGG7EGBHQDSiq78y+=FGtZc3eZKpOw@mail.gmail.com>
+References: <20190712085605.4062896-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1562989575-33785-1-git-send-email-wen.yang99@zte.com.cn>
+In-Reply-To: <20190712085605.4062896-1-arnd@arndb.de>
+Content-Language: en-US
+Content-ID: <4865FEF536F5FE408CD1F45B19749744@eurprd05.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: krzk@kernel.org
-Cc: sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn, cheng.shengyu@zte.com.cn, Wen Yang <wen.yang99@zte.com.cn>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Wen Yang <wen.yang99@zte.com.cn>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The cpu_dai variable is still being used after the of_node_put() call,
-which may result in double-free:
-
-        of_node_put(cpu_dai);            ---> released here
-
-        ret = devm_snd_soc_register_card(dev, card);
-        if (ret < 0) {
-...
-                goto err_put_clk_i2s;    --> jump to err_put_clk_i2s
-...
-
-err_put_clk_i2s:
-        clk_put(priv->clk_i2s_bus);
-err_put_sclk:
-        clk_put(priv->sclk_i2s);
-err_put_cpu_dai:
-        of_node_put(cpu_dai);            --> double-free here
-
-Fixes: d832d2b246c5 ("ASoC: samsung: odroid: Fix of_node refcount unbalance")
-Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
----
- sound/soc/samsung/odroid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index 64ebe89..f0f5fa9 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -308,7 +308,6 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 		ret = PTR_ERR(priv->clk_i2s_bus);
- 		goto err_put_sclk;
- 	}
--	of_node_put(cpu_dai);
- 
- 	ret = devm_snd_soc_register_card(dev, card);
- 	if (ret < 0) {
-@@ -316,6 +315,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 		goto err_put_clk_i2s;
- 	}
- 
-+	of_node_put(cpu_dai);
- 	of_node_put(codec);
- 	return 0;
- 
--- 
-2.9.5
+T24gRnJpLCAxMiBKdWwgMjAxOSBhdCAxMTo1NywgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5k
+ZT4gd3JvdGU6DQo+DQo+IFRoZSBuZXcgdGVtcG9yYXJ5IHZhcmlhYmxlIGlzIGxhY2tzIGEgJ2Nv
+bnN0JyBhbm5vdGF0aW9uOg0KPg0KPiBzb3VuZC9zb2MvZ2VuZXJpYy9hdWRpby1ncmFwaC1jYXJk
+LmM6ODc6NzogZXJyb3I6IGFzc2lnbmluZyB0byAndTMyIConIChha2EgJ3Vuc2lnbmVkIGludCAq
+JykgZnJvbSAnY29uc3Qgdm9pZCAqJyBkaXNjYXJkcyBxdWFsaWZpZXJzIFstV2Vycm9yLC1XaW5j
+b21wYXRpYmxlLXBvaW50ZXItdHlwZXMtZGlzY2FyZHMtcXVhbGlmaWVyc10NCj4NCj4gRml4ZXM6
+IGMxNTJmODQ5MWE4ZCAoIkFTb0M6IGF1ZGlvLWdyYXBoLWNhcmQ6IGZpeCBhbiB1c2UtYWZ0ZXIt
+ZnJlZSBpbiBncmFwaF9nZXRfZGFpX2lkKCkiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdt
+YW5uIDxhcm5kQGFybmRiLmRlPg0KDQpSZXZpZXdlZC1ieTogT2xla3NhbmRyIFN1dm9yb3YgPG9s
+ZWtzYW5kci5zdXZvcm92QHRvcmFkZXguY29tPg0KDQo+IC0tLQ0KPiAgc291bmQvc29jL2dlbmVy
+aWMvYXVkaW8tZ3JhcGgtY2FyZC5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
+aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZ2VuZXJp
+Yy9hdWRpby1ncmFwaC1jYXJkLmMgYi9zb3VuZC9zb2MvZ2VuZXJpYy9hdWRpby1ncmFwaC1jYXJk
+LmMNCj4gaW5kZXggYzhhYmI4NmFmZWZhLi4yODhkZjI0NWIyZjAgMTAwNjQ0DQo+IC0tLSBhL3Nv
+dW5kL3NvYy9nZW5lcmljL2F1ZGlvLWdyYXBoLWNhcmQuYw0KPiArKysgYi9zb3VuZC9zb2MvZ2Vu
+ZXJpYy9hdWRpby1ncmFwaC1jYXJkLmMNCj4gQEAgLTYzLDcgKzYzLDcgQEAgc3RhdGljIGludCBn
+cmFwaF9nZXRfZGFpX2lkKHN0cnVjdCBkZXZpY2Vfbm9kZSAqZXApDQo+ICAgICAgICAgc3RydWN0
+IGRldmljZV9ub2RlICplbmRwb2ludDsNCj4gICAgICAgICBzdHJ1Y3Qgb2ZfZW5kcG9pbnQgaW5m
+bzsNCj4gICAgICAgICBpbnQgaSwgaWQ7DQo+IC0gICAgICAgdTMyICpyZWc7DQo+ICsgICAgICAg
+Y29uc3QgdTMyICpyZWc7DQo+ICAgICAgICAgaW50IHJldDsNCj4NCj4gICAgICAgICAvKiB1c2Ug
+ZHJpdmVyIHNwZWNpZmllZCBEQUkgSUQgaWYgZXhpc3QgKi8NCj4gLS0NCj4gMi4yMC4wDQo+DQoN
+Cg0KLS0gDQpCZXN0IHJlZ2FyZHMNCk9sZWtzYW5kciBTdXZvcm92DQoNClRvcmFkZXggQUcNCkFs
+dHNhZ2Vuc3RyYXNzZSA1IHwgNjA0OCBIb3J3L0x1emVybiB8IFN3aXR6ZXJsYW5kIHwgVDogKzQx
+IDQxIDUwMA0KNDgwMCAobWFpbiBsaW5lKQ0K
