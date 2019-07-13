@@ -1,41 +1,51 @@
-From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: Re: [PATCH] ASoC: audio-graph-card: fix type mismatch warning
-Date: Sat, 13 Jul 2019 12:49:51 +0000
-Message-ID: <CAGgjyvHBfyviNofKay47TGG7EGBHQDSiq78y+=FGtZc3eZKpOw@mail.gmail.com>
-References: <20190712085605.4062896-1-arnd@arndb.de>
+From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+Subject: Re: [PATCH] sound: soc: codecs: wcd9335: fix "conversion to bool not
+ needed here"
+Date: Sat, 13 Jul 2019 19:16:34 +0530
+Message-ID: <20190713134633.GA9749@hari-Inspiron-1545>
+References: <20190711174906.GA10867@hari-Inspiron-1545>
+ <eeeb09518c8967ffd48606c3d1222553752e895d.camel@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190712085605.4062896-1-arnd@arndb.de>
-Content-Language: en-US
-Content-ID: <4865FEF536F5FE408CD1F45B19749744@eurprd05.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <eeeb09518c8967ffd48606c3d1222553752e895d.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Wen Yang <wen.yang99@zte.com.cn>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Joe Perches <joe@perches.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Vinod Koul <vkoul@kernel.org>, Wen Yang <wen.yang99@zte.com.cn>, Gen Zhang <blackgod016574@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAxMiBKdWwgMjAxOSBhdCAxMTo1NywgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5k
-ZT4gd3JvdGU6DQo+DQo+IFRoZSBuZXcgdGVtcG9yYXJ5IHZhcmlhYmxlIGlzIGxhY2tzIGEgJ2Nv
-bnN0JyBhbm5vdGF0aW9uOg0KPg0KPiBzb3VuZC9zb2MvZ2VuZXJpYy9hdWRpby1ncmFwaC1jYXJk
-LmM6ODc6NzogZXJyb3I6IGFzc2lnbmluZyB0byAndTMyIConIChha2EgJ3Vuc2lnbmVkIGludCAq
-JykgZnJvbSAnY29uc3Qgdm9pZCAqJyBkaXNjYXJkcyBxdWFsaWZpZXJzIFstV2Vycm9yLC1XaW5j
-b21wYXRpYmxlLXBvaW50ZXItdHlwZXMtZGlzY2FyZHMtcXVhbGlmaWVyc10NCj4NCj4gRml4ZXM6
-IGMxNTJmODQ5MWE4ZCAoIkFTb0M6IGF1ZGlvLWdyYXBoLWNhcmQ6IGZpeCBhbiB1c2UtYWZ0ZXIt
-ZnJlZSBpbiBncmFwaF9nZXRfZGFpX2lkKCkiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdt
-YW5uIDxhcm5kQGFybmRiLmRlPg0KDQpSZXZpZXdlZC1ieTogT2xla3NhbmRyIFN1dm9yb3YgPG9s
-ZWtzYW5kci5zdXZvcm92QHRvcmFkZXguY29tPg0KDQo+IC0tLQ0KPiAgc291bmQvc29jL2dlbmVy
-aWMvYXVkaW8tZ3JhcGgtY2FyZC5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZ2VuZXJp
-Yy9hdWRpby1ncmFwaC1jYXJkLmMgYi9zb3VuZC9zb2MvZ2VuZXJpYy9hdWRpby1ncmFwaC1jYXJk
-LmMNCj4gaW5kZXggYzhhYmI4NmFmZWZhLi4yODhkZjI0NWIyZjAgMTAwNjQ0DQo+IC0tLSBhL3Nv
-dW5kL3NvYy9nZW5lcmljL2F1ZGlvLWdyYXBoLWNhcmQuYw0KPiArKysgYi9zb3VuZC9zb2MvZ2Vu
-ZXJpYy9hdWRpby1ncmFwaC1jYXJkLmMNCj4gQEAgLTYzLDcgKzYzLDcgQEAgc3RhdGljIGludCBn
-cmFwaF9nZXRfZGFpX2lkKHN0cnVjdCBkZXZpY2Vfbm9kZSAqZXApDQo+ICAgICAgICAgc3RydWN0
-IGRldmljZV9ub2RlICplbmRwb2ludDsNCj4gICAgICAgICBzdHJ1Y3Qgb2ZfZW5kcG9pbnQgaW5m
-bzsNCj4gICAgICAgICBpbnQgaSwgaWQ7DQo+IC0gICAgICAgdTMyICpyZWc7DQo+ICsgICAgICAg
-Y29uc3QgdTMyICpyZWc7DQo+ICAgICAgICAgaW50IHJldDsNCj4NCj4gICAgICAgICAvKiB1c2Ug
-ZHJpdmVyIHNwZWNpZmllZCBEQUkgSUQgaWYgZXhpc3QgKi8NCj4gLS0NCj4gMi4yMC4wDQo+DQoN
-Cg0KLS0gDQpCZXN0IHJlZ2FyZHMNCk9sZWtzYW5kciBTdXZvcm92DQoNClRvcmFkZXggQUcNCkFs
-dHNhZ2Vuc3RyYXNzZSA1IHwgNjA0OCBIb3J3L0x1emVybiB8IFN3aXR6ZXJsYW5kIHwgVDogKzQx
-IDQxIDUwMA0KNDgwMCAobWFpbiBsaW5lKQ0K
+On Thu, Jul 11, 2019 at 03:00:00PM -0700, Joe Perches wrote:
+> On Thu, 2019-07-11 at 23:19 +0530, Hariprasad Kelam wrote:
+> > Fix below issue reported by coccicheck
+> > sound/soc/codecs/wcd9335.c:3991:25-30: WARNING: conversion to bool not
+> > needed here
+> > 
+> > Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
+> > ---
+> >  sound/soc/codecs/wcd9335.c | 7 +------
+> >  1 file changed, 1 insertion(+), 6 deletions(-)
+> > 
+> > diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+> > index 1bbbe42..85a8d10 100644
+> > --- a/sound/soc/codecs/wcd9335.c
+> > +++ b/sound/soc/codecs/wcd9335.c
+> > @@ -3988,12 +3988,7 @@ static irqreturn_t wcd9335_slimbus_irq(int irq, void *data)
+> >  		regmap_read(wcd->if_regmap,
+> >  				WCD9335_SLIM_PGD_PORT_INT_RX_SOURCE0 + j, &val);
+> >  		if (val) {
+> > -			if (!tx)
+> > -				reg = WCD9335_SLIM_PGD_PORT_INT_EN0 +
+> > -					(port_id / 8);
+> > -			else
+> > -				reg = WCD9335_SLIM_PGD_PORT_INT_TX_EN0 +
+> > -					(port_id / 8);
+> > +			reg = WCD9335_SLIM_PGD_PORT_INT_TX_EN0 + (port_id / 8);
+> >  			regmap_read(
+> >  				wcd->if_regmap, reg, &int_val);
+> >  			/*
+> 
+> This change makes no sense and doesn't match the commit message.
+> 
+> Please ignore this patch. 
+> Both statments in if/else loop looked
+> similar to me but they are different.
