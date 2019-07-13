@@ -1,8 +1,8 @@
 From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
 Subject: Re: [PATCH] sound: soc: codecs: wcd9335: fix "conversion to bool not
  needed here"
-Date: Sat, 13 Jul 2019 19:16:34 +0530
-Message-ID: <20190713134633.GA9749@hari-Inspiron-1545>
+Date: Sat, 13 Jul 2019 19:20:46 +0530
+Message-ID: <20190713135045.GA15087@hari-Inspiron-1545>
 References: <20190711174906.GA10867@hari-Inspiron-1545>
  <eeeb09518c8967ffd48606c3d1222553752e895d.camel@perches.com>
 Mime-Version: 1.0
@@ -46,6 +46,5 @@ On Thu, Jul 11, 2019 at 03:00:00PM -0700, Joe Perches wrote:
 > 
 > This change makes no sense and doesn't match the commit message.
 > 
-> Please ignore this patch. 
-> Both statments in if/else loop looked
-> similar to me but they are different.
+>Please ignore this patch. Both the statments in if/else look similar to
+>me but they are not.
