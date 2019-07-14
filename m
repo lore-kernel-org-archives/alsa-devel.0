@@ -1,143 +1,170 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 0/8] docs: some improvements when producing PDF files
-Date: Sun, 14 Jul 2019 12:10:05 -0300
-Message-ID: <cover.1563115732.git.mchehab+samsung@kernel.org>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v3 6/6] ASoC: sgtl5000: Improve VAG power and mute control
+Date: Sun, 14 Jul 2019 19:17:43 +0200
+Message-ID: <e9f0f7c7-4c11-36ad-679c-503f6160b83f@intel.com>
+References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
+ <20190712145550.27500-7-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190712145550.27500-7-oleksandr.suvorov@toradex.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, netdev@vger.kernel.org, Sean Paul <sean@poorly.run>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Rich Felker <dalias@libc.org>, Takashi Iwai <tiwai@suse.com>, Daniel Vetter <daniel@ffwll.ch>, x86@kernel.org, alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, linux-sh@vger.kernel.org, David Airlie <airlied@linux.ie>, linux-crypto@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, dri-devel@lists.freedesktop.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "David S. Miller" <davem@davemloft.net>
+To: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jon,
+On 2019-07-12 16:56, Oleksandr Suvorov wrote:
+>   
+> +enum {
+> +	HP_POWER_EVENT,
+> +	DAC_POWER_EVENT,
+> +	ADC_POWER_EVENT
+> +};
+> +
+> +struct sgtl5000_mute_state {
+> +	u16 hp_event;
+> +	u16 dac_event;
+> +	u16 adc_event;
+> +};
+> +
+>   /* sgtl5000 private structure in codec */
+>   struct sgtl5000_priv {
+>   	int sysclk;	/* sysclk rate */
+> @@ -137,8 +156,109 @@ struct sgtl5000_priv {
+>   	u8 micbias_voltage;
+>   	u8 lrclk_strength;
+>   	u8 sclk_strength;
+> +	struct sgtl5000_mute_state mute_state;
 
-This series addresses your concerns related to CJK fonts that are
-needed for translations.pdf.
+Why not array instead?
+u16 mute_state[ADC_POWER_EVENT+1];
+-or-
+u16 mute_state[LAST_POWER_EVENT+1]; (if you choose to add explicit LAST 
+enum constant).
 
-It touches only the documentation build system, not the docs
-themselves.
+Enables simplification, see below.
 
-It ended to be bigger than I originally foreseen, as I found several issues
-when running "make pdfdocs" for the distros that are recognized by
-the  scripts/sphinx-pre-install script.
+> @@ -170,40 +290,79 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+>   	return 0;
+>   }
+>   
+> -/*
+> - * As manual described, ADC/DAC only works when VAG powerup,
+> - * So enabled VAG before ADC/DAC up.
+> - * In power down case, we need wait 400ms when vag fully ramped down.
+> - */
+> -static int power_vag_event(struct snd_soc_dapm_widget *w,
+> -	struct snd_kcontrol *kcontrol, int event)
+> +static void vag_and_mute_control(struct snd_soc_component *component,
+> +				 int event, int event_source,
+> +				 u16 mute_mask, u16 *mute_reg)
+>   {
+> -	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+> -	const u32 mask = SGTL5000_DAC_POWERUP | SGTL5000_ADC_POWERUP;
+> -
+>   	switch (event) {
+> -	case SND_SOC_DAPM_POST_PMU:
+> -		snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
+> -			SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+> -		msleep(400);
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		*mute_reg = mute_output(component, mute_mask);
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		vag_power_on(component, event_source);
+> +		restore_output(component, mute_mask, *mute_reg);
+>   		break;
+> -
+>   	case SND_SOC_DAPM_PRE_PMD:
+> -		/*
+> -		 * Don't clear VAG_POWERUP, when both DAC and ADC are
+> -		 * operational to prevent inadvertently starving the
+> -		 * other one of them.
+> -		 */
+> -		if ((snd_soc_component_read32(component, SGTL5000_CHIP_ANA_POWER) &
+> -				mask) != mask) {
+> -			snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
+> -				SGTL5000_VAG_POWERUP, 0);
+> -			msleep(400);
+> -		}
+> +		*mute_reg = mute_output(component, mute_mask);
+> +		vag_power_off(component, event_source);
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		restore_output(component, mute_mask, *mute_reg);
+>   		break;
+>   	default:
+>   		break;
+>   	}
+> +}
+> +
+> +/*
+> + * Mute Headphone when power it up/down.
+> + * Control VAG power on HP power path.
+> + */
+> +static int headphone_pga_event(struct snd_soc_dapm_widget *w,
+> +	struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_dapm_to_component(w->dapm);
+> +	struct sgtl5000_priv *sgtl5000 =
+> +		snd_soc_component_get_drvdata(component);
+> +
+> +	vag_and_mute_control(component, event, HP_POWER_EVENT,
+> +			     SGTL5000_HP_MUTE,
+> +			     &sgtl5000->mute_state.hp_event);
+> +
+> +	return 0;
+> +}
+> +
+> +/* As manual describes, ADC/DAC powering up/down requires
+> + * to mute outputs to avoid pops.
+> + * Control VAG power on ADC/DAC power path.
+> + */
+> +static int adc_updown_depop(struct snd_soc_dapm_widget *w,
+> +	struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_dapm_to_component(w->dapm);
+> +	struct sgtl5000_priv *sgtl5000 =
+> +		snd_soc_component_get_drvdata(component);
+> +
+> +	vag_and_mute_control(component, event, ADC_POWER_EVENT,
+> +			     SGTL5000_OUTPUTS_MUTE,
+> +			     &sgtl5000->mute_state.adc_event);
+> +
+> +	return 0;
+> +}
+> +
+> +static int dac_updown_depop(struct snd_soc_dapm_widget *w,
+> +	struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_dapm_to_component(w->dapm);
+> +	struct sgtl5000_priv *sgtl5000 =
+> +		snd_soc_component_get_drvdata(component);
+> +
+> +	vag_and_mute_control(component, event, DAC_POWER_EVENT,
+> +			     SGTL5000_OUTPUTS_MUTE,
+> +			     &sgtl5000->mute_state.dac_event);
+>   
+>   	return 0;
+>   }
 
-It also took a lot of time, as I tested it with several VMs (each
-one updated to latest packages):
+With array approach you can simplify these 3 callbacks:
+- remove local declaration of sgtl5000
+- remove the need for "u16 *mute_reg" param for vag_and_mute_control
+(you always provide the xxx_event field of mute_state corresponding to 
+given XXX_POWER_EVENT anyway)
 
-- Fedora 30, CentOS 7, Mageia 7, ArchLinux, Ubuntu 18.04, Gentoo, 
-  OpenSuse Tumbleweed.
+The sgtl5000 local ptr would be declared within common handler, which 
+vag_and_mute_control clearly is. Said handler declaration could be 
+updated to again require widget rather than component.
 
-Patch 1 addresses an issue that could be related to the fact that I
-don't use openSUSE. Basically, I was unable to find the right package
-for texlive to use CJK fonts on openSUSE. [1]. So, the first patch on this
-series adds a workaround: if the needed CJK font is not found on a
-system, conf.py won't use xeCjk extension. That sounds a good
-thing to have, as other distros may not package it, or maybe the
-one building the doc is not that interested on translations.pdf file;
+Cherry on top: relocation of "return 0;" directly to 
+vag_and_mute_control. Leaving it void (as it is), however, might also be 
+appropriate (explicit).
 
-[1] I actually found some, but they are not recognized with the
-    font name conf.py is expecting ("Noto Sans CJK SC"). Perhaps
-    SUSE uses a different name for those fonts?
-
-Patch 2 fixes the logic with recognizes CentOS/RHEL;
-
-Patch 3 is another workaround: CentOS 7 (and similar distros) don't
-package all texlive packages we need. So, it just ignores PDF when
-recommending packages on such distros, and point to a URL with
-explains how to install TexLive outside distro-specific package
-management (for the brave enough people);
-
-Patch 4 fixes latexmk dependency on a few distros;
-
-Patch 5 suppreses a Gentoo specific instruction if the user already
-followed in the past;
-
-Patch 6 is the one that actually does what you requested.
-
-Patch 7 solves an issue when SPHINXDIRS is used with make pdfdocs:
-right now, using it will produce a lot of warnings and won't do anything,
-if a dir-specific conf.py file is not found. With the patch, latex_documents
-are now properly updated when SPHINXDIRS is used.
-
-Patch 8 is a cleanup: with patch 7 applied, we don't need to have anymore
-any conf.py file due to pdfdocs. 
-
-With regard to the load_config.py extension, It keeps accepting custom
-configuration. That's helpful if someone wants, for example, to have
-something like:
-
-	Documentation/media/conf_nitpick.py
-
-with would enable extra nitpick options if one wants that.
-
--
-
-Jon,
-
-Please let me know if you prefer if I submit those together with the big
-pile of doc files I have, or if you prefer adding (some of?) them on your
-tree after the merge window.
-
-Regards,
-Mauro
-
-Mauro Carvalho Chehab (8):
-  docs: conf.py: only use CJK if the font is available
-  scripts/sphinx-pre-install: fix script for RHEL/CentOS
-  scripts/sphinx-pre-install: don't use LaTeX with CentOS 7
-  scripts/sphinx-pre-install: fix latexmk dependencies
-  scripts/sphinx-pre-install: cleanup Gentoo checks
-  scripts/sphinx-pre-install: seek for Noto CJK fonts for pdf output
-  docs: load_config.py: avoid needing a conf.py just due to LaTeX docs
-  docs: remove extra conf.py files
-
- Documentation/admin-guide/conf.py      |  10 ---
- Documentation/conf.py                  |  13 ++-
- Documentation/core-api/conf.py         |  10 ---
- Documentation/crypto/conf.py           |  10 ---
- Documentation/dev-tools/conf.py        |  10 ---
- Documentation/doc-guide/conf.py        |  10 ---
- Documentation/driver-api/80211/conf.py |  10 ---
- Documentation/driver-api/conf.py       |  10 ---
- Documentation/driver-api/pm/conf.py    |  10 ---
- Documentation/filesystems/conf.py      |  10 ---
- Documentation/gpu/conf.py              |  10 ---
- Documentation/input/conf.py            |  10 ---
- Documentation/kernel-hacking/conf.py   |  10 ---
- Documentation/maintainer/conf.py       |  10 ---
- Documentation/media/conf.py            |  12 ---
- Documentation/networking/conf.py       |  10 ---
- Documentation/process/conf.py          |  10 ---
- Documentation/sh/conf.py               |  10 ---
- Documentation/sound/conf.py            |  10 ---
- Documentation/sphinx/load_config.py    |  25 +++++-
- Documentation/userspace-api/conf.py    |  10 ---
- Documentation/vm/conf.py               |  10 ---
- Documentation/x86/conf.py              |  10 ---
- scripts/sphinx-pre-install             | 118 ++++++++++++++++++++-----
- 24 files changed, 131 insertions(+), 237 deletions(-)
- delete mode 100644 Documentation/admin-guide/conf.py
- delete mode 100644 Documentation/core-api/conf.py
- delete mode 100644 Documentation/crypto/conf.py
- delete mode 100644 Documentation/dev-tools/conf.py
- delete mode 100644 Documentation/doc-guide/conf.py
- delete mode 100644 Documentation/driver-api/80211/conf.py
- delete mode 100644 Documentation/driver-api/conf.py
- delete mode 100644 Documentation/driver-api/pm/conf.py
- delete mode 100644 Documentation/filesystems/conf.py
- delete mode 100644 Documentation/gpu/conf.py
- delete mode 100644 Documentation/input/conf.py
- delete mode 100644 Documentation/kernel-hacking/conf.py
- delete mode 100644 Documentation/maintainer/conf.py
- delete mode 100644 Documentation/media/conf.py
- delete mode 100644 Documentation/networking/conf.py
- delete mode 100644 Documentation/process/conf.py
- delete mode 100644 Documentation/sh/conf.py
- delete mode 100644 Documentation/sound/conf.py
- delete mode 100644 Documentation/userspace-api/conf.py
- delete mode 100644 Documentation/vm/conf.py
- delete mode 100644 Documentation/x86/conf.py
-
--- 
-2.21.0
+Czarek
