@@ -1,55 +1,117 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: Re: [PATCH 8/8] docs: remove extra conf.py files
-Date: Mon, 15 Jul 2019 04:57:02 -0300
-Message-ID: <20190715045702.1e2b569b@coco.lan>
-References: <cover.1563115732.git.mchehab+samsung@kernel.org>
-        <12a160afc9e70156f671010bd4ccff9311acdc5e.1563115732.git.mchehab+samsung@kernel.org>
-        <e3ff0a8a-6956-3855-07be-9c126df2da2d@darmarit.de>
+From: chunguo feng <chunguo.feng@amlogic.com>
+Subject: [PATCH] ASoC: max98383: fix i2c probe failure
+Date: Mon, 15 Jul 2019 17:55:56 +0800
+Message-ID: <20190715095556.1614-1-chunguo.feng@amlogic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <e3ff0a8a-6956-3855-07be-9c126df2da2d@darmarit.de>
-Sender: netdev-owner@vger.kernel.org
-To: Markus Heiser <markus.heiser@darmarit.de>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Sean Paul <sean@poorly.run>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, RyanS.Lee@maximintegrated.com, bleung@chromium.org, pierre-louis.bossart@linux.intel.com, grundler@chromium.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chunguo.feng@amlogic.com
 List-Id: alsa-devel@alsa-project.org
 
-Em Mon, 15 Jul 2019 08:16:54 +0200
-Markus Heiser <markus.heiser@darmarit.de> escreveu:
+From: fengchunguo <chunguo.feng@amlogic.com>
 
-> Hi Mauro,
-> 
-> sorry, I havn't tested your patch, but one question ...
-> 
-> Am 14.07.19 um 17:10 schrieb Mauro Carvalho Chehab:
-> > Now that the latex_documents are handled automatically, we can
-> > remove those extra conf.py files.  
-> 
-> We need these conf.py also for compiling books' into HTML.  For this
-> the tags.add("subproject") is needed.  Should we realy drop this feature?
-> 
-> -- Markus --
+Added reset_gpio configuration for i2c probe successfully.
+If not,i2c address can't be found rightly.
 
-You're right: adding "subproject" tags is needed for html. Folding this
-to patch 7/8 makes both htmldocs and pdfdocs to work with SPHINXDIRS
-without the need of a per-subdir conf.py.
+Error information:
+max98373 3-0031: Failed to read: 0x21FF
 
-Regards,
-Mauro
+Fixed:
+[3.761299@3] max98373 3-0031: MAX98373 revisionID: 0x43
+[3.828911@3] asoc-aml-card auge_sound: max98373-aif1 <-> TDM-B mapping ok
 
-diff --git a/Documentation/sphinx/load_config.py b/Documentation/sphinx/load_config.py
-index 75f527ff4c95..e4a04f367b41 100644
---- a/Documentation/sphinx/load_config.py
-+++ b/Documentation/sphinx/load_config.py
-@@ -51,3 +51,7 @@ def loadConfig(namespace):
-             execfile_(config_file, config)
-             del config['__file__']
-             namespace.update(config)
-+        else:
-+            config = namespace.copy()
-+            config['tags'].add("subproject")
-+            namespace.update(config)
+Signed-off-by: fengchunguo <chunguo.feng@amlogic.com>
+---
+ sound/soc/codecs/max98373.c | 34 ++++++++++++++++++++++++++++++----
+ sound/soc/codecs/max98373.h |  1 +
+ 2 files changed, 31 insertions(+), 4 deletions(-)
 
-Thanks,
-Mauro
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 528695cd6a1c..9a1eb7222357 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -12,6 +12,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <linux/gpio.h>
++#include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <sound/tlv.h>
+ #include "max98373.h"
+@@ -895,6 +896,17 @@ static void max98373_slot_config(struct i2c_client *i2c,
+ 	else
+ 		max98373->i_slot = 1;
+ 
++	max98373->reset_gpio = of_get_named_gpio(dev->of_node,
++						"maxim,reset-gpio", 0);
++	if (!gpio_is_valid(max98373->reset_gpio)) {
++		dev_err(dev, "Looking up %s property in node %s failed %d\n",
++			"maxim,reset-gpio", dev->of_node->full_name,
++			max98373->reset_gpio);
++	} else {
++		dev_dbg(dev, "maxim,reset-gpio=%d",
++			max98373->reset_gpio);
++	}
++
+ 	if (!device_property_read_u32(dev, "maxim,spkfb-slot-no", &value))
+ 		max98373->spkfb_slot = value & 0xF;
+ 	else
+@@ -923,7 +935,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 	else
+ 		max98373->interleave_mode = false;
+ 
+-
+ 	/* regmap initialization */
+ 	max98373->regmap
+ 		= devm_regmap_init_i2c(i2c, &max98373_regmap);
+@@ -934,6 +945,24 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	/* voltage/current slot & gpio configuration */
++	max98373_slot_config(i2c, max98373);
++
++	/* Power on device */
++	if (gpio_is_valid(max98373->reset_gpio)) {
++		ret = gpio_request(max98373->reset_gpio, "MAX98373_RESET");
++		if (ret) {
++			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
++				__func__, max98373->reset_gpio);
++			gpio_free(max98373->reset_gpio);
++			return -EINVAL;
++		}
++		gpio_direction_output(max98373->reset_gpio, 0);
++		msleep(50);
++		gpio_direction_output(max98373->reset_gpio, 1);
++		msleep(20);
++	}
++
+ 	/* Check Revision ID */
+ 	ret = regmap_read(max98373->regmap,
+ 		MAX98373_R21FF_REV_ID, &reg);
+@@ -944,9 +973,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 	dev_info(&i2c->dev, "MAX98373 revisionID: 0x%02X\n", reg);
+ 
+-	/* voltage/current slot configuration */
+-	max98373_slot_config(i2c, max98373);
+-
+ 	/* codec registeration */
+ 	ret = devm_snd_soc_register_component(&i2c->dev, &soc_codec_dev_max98373,
+ 		max98373_dai, ARRAY_SIZE(max98373_dai));
+diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
+index f6a37aa02f26..533d2053f608 100644
+--- a/sound/soc/codecs/max98373.h
++++ b/sound/soc/codecs/max98373.h
+@@ -203,6 +203,7 @@
+ 
+ struct max98373_priv {
+ 	struct regmap *regmap;
++	int reset_gpio;
+ 	unsigned int v_slot;
+ 	unsigned int i_slot;
+ 	unsigned int spkfb_slot;
+-- 
+2.18.0
