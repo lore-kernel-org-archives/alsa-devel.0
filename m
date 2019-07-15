@@ -1,79 +1,29 @@
-From: Kailang <kailang@realtek.com>
-Subject: Dell ALC295 Headphone Mic can't record
-Date: Mon, 15 Jul 2019 02:50:20 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1D769F1A@RTITMBSVM07.realtek.com.tw>
+From: Markus Heiser <markus.heiser@darmarit.de>
+Subject: Re: [PATCH 8/8] docs: remove extra conf.py files
+Date: Mon, 15 Jul 2019 08:16:54 +0200
+Message-ID: <e3ff0a8a-6956-3855-07be-9c126df2da2d@darmarit.de>
+References: <cover.1563115732.git.mchehab+samsung@kernel.org>
+ <12a160afc9e70156f671010bd4ccff9311acdc5e.1563115732.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_004_6FAB7C47BCF00940BB0999A99BE3547A1D769F1ARTITMBSVM07real_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC200F800D8
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2019 04:50:30 +0200 (CEST)
-Content-Language: zh-TW
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <12a160afc9e70156f671010bd4ccff9311acdc5e.1563115732.git.mchehab+samsung@kernel.org>
+Content-Language: de-DE
+Sender: netdev-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Sean Paul <sean@poorly.run>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-crypto@vger.kernel.org, dri-d
 List-Id: alsa-devel@alsa-project.org
 
---_004_6FAB7C47BCF00940BB0999A99BE3547A1D769F1ARTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi Mauro,
 
-Hi Takashi,
+sorry, I havn't tested your patch, but one question ...
 
-Attach patch was for Dell ALC295 Headphone Mic can't record.
-Thanks.
+Am 14.07.19 um 17:10 schrieb Mauro Carvalho Chehab:
+> Now that the latex_documents are handled automatically, we can
+> remove those extra conf.py files.
 
-BR,
-Kailang
+We need these conf.py also for compiling books' into HTML.  For this
+the tags.add("subproject") is needed.  Should we realy drop this feature?
 
---_004_6FAB7C47BCF00940BB0999A99BE3547A1D769F1ARTITMBSVM07real_
-Content-Type: application/octet-stream;
-	name="0000-dell-alc295-HP-Mic-fail.patch"
-Content-Description: 0000-dell-alc295-HP-Mic-fail.patch
-Content-Disposition: attachment;
-	filename="0000-dell-alc295-HP-Mic-fail.patch"; size=1176;
-	creation-date="Mon, 15 Jul 2019 02:48:01 GMT";
-	modification-date="Mon, 15 Jul 2019 02:47:06 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAxODJmOWI0ZjEzYmQyNzNhMmM5ZTg2ZTMwMjZmYzZhMjEwMmY1YWY5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IE1vbiwgMTUgSnVsIDIwMTkgMTA6NDE6NTAgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIEZpeGVkIEhlYWRwaG9uZSBNaWMgY2FuJ3QgcmVjb3JkIG9uIERlbGwK
-IHBsYXRmb3JtCgpJdCBhc3NpZ25lZCB0byB3cm9uZyBtb2RlbC4gU28sIFRoZSBoZWFkcGhvbmUg
-TWljIGNhbid0IHdvcmsuCgpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVh
-bHRlay5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9z
-b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCAwZjc3NjQ0NGFiODYuLjE5NmRlNTFm
-OGRjNiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTc2NzAsOSArNzY3MCwxMiBAQCBzdGF0aWMg
-Y29uc3Qgc3RydWN0IHNuZF9oZGFfcGluX3F1aXJrIGFsYzI2OV9waW5fZml4dXBfdGJsW10gPSB7
-CiAJCXsweDEyLCAweDkwYTYwMTMwfSwKIAkJezB4MTcsIDB4OTAxNzAxMTB9LAogCQl7MHgyMSwg
-MHgwMzIxMTAyMH0pLAotCVNORF9IREFfUElOX1FVSVJLKDB4MTBlYzAyOTUsIDB4MTAyOCwgIkRl
-bGwiLCBBTEMyNjlfRklYVVBfREVMTDFfTUlDX05PX1BSRVNFTkNFLAorCVNORF9IREFfUElOX1FV
-SVJLKDB4MTBlYzAyOTUsIDB4MTAyOCwgIkRlbGwiLCBBTEMyNjlfRklYVVBfREVMTDRfTUlDX05P
-X1BSRVNFTkNFLAogCQl7MHgxNCwgMHg5MDE3MDExMH0sCiAJCXsweDIxLCAweDA0MjExMDIwfSks
-CisJU05EX0hEQV9QSU5fUVVJUksoMHgxMGVjMDI5NSwgMHgxMDI4LCAiRGVsbCIsIEFMQzI2OV9G
-SVhVUF9ERUxMNF9NSUNfTk9fUFJFU0VOQ0UsCisJCXsweDE0LCAweDkwMTcwMTEwfSwKKwkJezB4
-MjEsIDB4MDQyMTEwMzB9KSwKIAlTTkRfSERBX1BJTl9RVUlSSygweDEwZWMwMjk1LCAweDEwMjgs
-ICJEZWxsIiwgQUxDMjY5X0ZJWFVQX0RFTEwxX01JQ19OT19QUkVTRU5DRSwKIAkJQUxDMjk1X1NU
-QU5EQVJEX1BJTlMsCiAJCXsweDE3LCAweDIxMDE0MDIwfSwK
-
---_004_6FAB7C47BCF00940BB0999A99BE3547A1D769F1ARTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_004_6FAB7C47BCF00940BB0999A99BE3547A1D769F1ARTITMBSVM07real_--
+-- Markus --
