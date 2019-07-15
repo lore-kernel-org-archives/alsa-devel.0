@@ -1,170 +1,73 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v3 6/6] ASoC: sgtl5000: Improve VAG power and mute control
-Date: Sun, 14 Jul 2019 19:17:43 +0200
-Message-ID: <e9f0f7c7-4c11-36ad-679c-503f6160b83f@intel.com>
-References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
- <20190712145550.27500-7-oleksandr.suvorov@toradex.com>
+From: <wen.yang99@zte.com.cn>
+Subject: Re:
+	=?utf-8?q?=5B2/2=5D_ASoC=3A_samsung=3A_odroid=3A_fix?=
+	=?utf-8?q?_a_double-free_issue_for_cpu=5Fdai?=
+Date: Mon, 15 Jul 2019 09:49:13 +0800 (CST)
+Message-ID: <201907150949139435825@zte.com.cn>
+References: <4545ce50-493c-8faa-fdcd-5aee3ca30792@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190712145550.27500-7-oleksandr.suvorov@toradex.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mxct.zte.com.cn (mx7.zte.com.cn [202.103.147.169])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7ED09F800C6
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2019 03:49:37 +0200 (CEST)
+In-Reply-To: <4545ce50-493c-8faa-fdcd-5aee3ca30792@web.de>
+References: 1562989575-33785-3-git-send-email-wen.yang99@zte.com.cn,
+ 4545ce50-493c-8faa-fdcd-5aee3ca30792@web.de
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Markus.Elfring@web.de
+Cc: wang.yi59@zte.com.cn, alsa-devel@alsa-project.org, xue.zhihong@zte.com.cn, lgirdwood@gmail.com, sbkim73@samsung.com, tiwai@suse.com, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, krzk@kernel.org, broonie@kernel.org, s.nawrocki@samsung.com, cheng.shengyu@zte.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-12 16:56, Oleksandr Suvorov wrote:
->   
-> +enum {
-> +	HP_POWER_EVENT,
-> +	DAC_POWER_EVENT,
-> +	ADC_POWER_EVENT
-> +};
-> +
-> +struct sgtl5000_mute_state {
-> +	u16 hp_event;
-> +	u16 dac_event;
-> +	u16 adc_event;
-> +};
-> +
->   /* sgtl5000 private structure in codec */
->   struct sgtl5000_priv {
->   	int sysclk;	/* sysclk rate */
-> @@ -137,8 +156,109 @@ struct sgtl5000_priv {
->   	u8 micbias_voltage;
->   	u8 lrclk_strength;
->   	u8 sclk_strength;
-> +	struct sgtl5000_mute_state mute_state;
+> > The cpu_dai variable is still being used after the of_node_put() call,
+> 
+> Such an implementation detail is questionable.
+> https://wiki.sei.cmu.edu/confluence/display/c/MEM30-C.+Do+not+access+freed+memory
+> 
+> 
+> > which may result in double-free:
+> 
+> This consequence is also undesirable.
+> https://cwe.mitre.org/data/definitions/415.html
+> 
+> 
+> Now I wonder if two update steps are really appropriate as a fix
+> instead of using a single update step for the desired correction
+> in this software module.
+> Should a commit (including previous ones) usually be correct by itself?
 
-Why not array instead?
-u16 mute_state[ADC_POWER_EVENT+1];
--or-
-u16 mute_state[LAST_POWER_EVENT+1]; (if you choose to add explicit LAST 
-enum constant).
+Thanks.
+These two updates fix two different bugs.
 
-Enables simplification, see below.
+One of them is the use-after-free issue introduced by bc3cf17b575a:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=bc3cf17b575a7a97b4af7ddcf86133175da7a582
 
-> @@ -170,40 +290,79 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
->   	return 0;
->   }
->   
-> -/*
-> - * As manual described, ADC/DAC only works when VAG powerup,
-> - * So enabled VAG before ADC/DAC up.
-> - * In power down case, we need wait 400ms when vag fully ramped down.
-> - */
-> -static int power_vag_event(struct snd_soc_dapm_widget *w,
-> -	struct snd_kcontrol *kcontrol, int event)
-> +static void vag_and_mute_control(struct snd_soc_component *component,
-> +				 int event, int event_source,
-> +				 u16 mute_mask, u16 *mute_reg)
->   {
-> -	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-> -	const u32 mask = SGTL5000_DAC_POWERUP | SGTL5000_ADC_POWERUP;
-> -
->   	switch (event) {
-> -	case SND_SOC_DAPM_POST_PMU:
-> -		snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
-> -			SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
-> -		msleep(400);
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		*mute_reg = mute_output(component, mute_mask);
-> +		break;
-> +	case SND_SOC_DAPM_POST_PMU:
-> +		vag_power_on(component, event_source);
-> +		restore_output(component, mute_mask, *mute_reg);
->   		break;
-> -
->   	case SND_SOC_DAPM_PRE_PMD:
-> -		/*
-> -		 * Don't clear VAG_POWERUP, when both DAC and ADC are
-> -		 * operational to prevent inadvertently starving the
-> -		 * other one of them.
-> -		 */
-> -		if ((snd_soc_component_read32(component, SGTL5000_CHIP_ANA_POWER) &
-> -				mask) != mask) {
-> -			snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_POWER,
-> -				SGTL5000_VAG_POWERUP, 0);
-> -			msleep(400);
-> -		}
-> +		*mute_reg = mute_output(component, mute_mask);
-> +		vag_power_off(component, event_source);
-> +		break;
-> +	case SND_SOC_DAPM_POST_PMD:
-> +		restore_output(component, mute_mask, *mute_reg);
->   		break;
->   	default:
->   		break;
->   	}
-> +}
-> +
-> +/*
-> + * Mute Headphone when power it up/down.
-> + * Control VAG power on HP power path.
-> + */
-> +static int headphone_pga_event(struct snd_soc_dapm_widget *w,
-> +	struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_dapm_to_component(w->dapm);
-> +	struct sgtl5000_priv *sgtl5000 =
-> +		snd_soc_component_get_drvdata(component);
-> +
-> +	vag_and_mute_control(component, event, HP_POWER_EVENT,
-> +			     SGTL5000_HP_MUTE,
-> +			     &sgtl5000->mute_state.hp_event);
-> +
-> +	return 0;
-> +}
-> +
-> +/* As manual describes, ADC/DAC powering up/down requires
-> + * to mute outputs to avoid pops.
-> + * Control VAG power on ADC/DAC power path.
-> + */
-> +static int adc_updown_depop(struct snd_soc_dapm_widget *w,
-> +	struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_dapm_to_component(w->dapm);
-> +	struct sgtl5000_priv *sgtl5000 =
-> +		snd_soc_component_get_drvdata(component);
-> +
-> +	vag_and_mute_control(component, event, ADC_POWER_EVENT,
-> +			     SGTL5000_OUTPUTS_MUTE,
-> +			     &sgtl5000->mute_state.adc_event);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dac_updown_depop(struct snd_soc_dapm_widget *w,
-> +	struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_dapm_to_component(w->dapm);
-> +	struct sgtl5000_priv *sgtl5000 =
-> +		snd_soc_component_get_drvdata(component);
-> +
-> +	vag_and_mute_control(component, event, DAC_POWER_EVENT,
-> +			     SGTL5000_OUTPUTS_MUTE,
-> +			     &sgtl5000->mute_state.dac_event);
->   
->   	return 0;
->   }
+-       ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++       cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
++       of_node_put(cpu);
++       of_node_put(codec);
++
++       ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
+        if (ret < 0)
+                goto err_put_codec_n;
 
-With array approach you can simplify these 3 callbacks:
-- remove local declaration of sgtl5000
-- remove the need for "u16 *mute_reg" param for vag_and_mute_control
-(you always provide the xxx_event field of mute_state corresponding to 
-given XXX_POWER_EVENT anyway)
+and the other is the double-free issue introduced by d832d2b246c5:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/sound/soc/samsung/odroid.c?id=d832d2b246c516eacb2d0ba53ec17ed59c3cd62b#n318
+and n303, n308.
 
-The sgtl5000 local ptr would be declared within common handler, which 
-vag_and_mute_control clearly is. Said handler declaration could be 
-updated to again require widget rather than component.
+So we sent two patches to fix them separately.
 
-Cherry on top: relocation of "return 0;" directly to 
-vag_and_mute_control. Leaving it void (as it is), however, might also be 
-appropriate (explicit).
-
-Czarek
+--
+Regards,
+Wen
