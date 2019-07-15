@@ -1,95 +1,85 @@
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Subject: Re: [PATCH v4 0/7] Allwinner H6 SPDIF support
-Date: Mon, 15 Jul 2019 21:21:01 +0200
-Message-ID: <CAJiuCcc3_1jZWV7G3+fFQYRZ8b6qcAbnH+K6pkRvww6_D=OMAw@mail.gmail.com>
-References: <20190527200627.8635-1-peron.clem@gmail.com> <CAJiuCcfUhBxEr=o7VVpPROQZadQh7z1QC0SkWSYt-53Sj3H2qw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH v2] ASoC: SOF: Intel: hda: Make
+ hdac_device device-managed
+Date: Mon, 15 Jul 2019 20:35:25 +0100
+Message-ID: <20190715193525.GB4503@sirena.org.uk>
+References: <20190707235633.7114-1-ranjani.sridharan@linux.intel.com>
+ <7fc6fdf3461c8faff4d853f80e282f3830a04724.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJiuCcfUhBxEr=o7VVpPROQZadQh7z1QC0SkWSYt-53Sj3H2qw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Jagan Teki <jagan@amarulasolutions.com>
+Content-Type: multipart/mixed; boundary="===============1972974111910854007=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2D76F800C6
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2019 21:35:37 +0200 (CEST)
+In-Reply-To: <7fc6fdf3461c8faff4d853f80e282f3830a04724.camel@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: tiwai@suse.de, libin.yang@intel.com, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I'm missing ACK from ASoC Maintainers patch 2-3-4.
-
-It's really small paches, if you could have a look at it.
-Many thanks,
-Cl=C3=A9ment
+--===============1972974111910854007==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="i0/AhcQY5QxfSsSZ"
+Content-Disposition: inline
 
 
+--i0/AhcQY5QxfSsSZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 14 Jun 2019 at 10:29, Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com=
-> wrote:
->
-> Hi,
->
-> On Mon, 27 May 2019 at 22:10, Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.c=
-om> wrote:
-> >
-> > *H6 DMA support IS REQUIRED*
->
-> DMA has been merged, so this series can be merge when ASoC maintainers
-> have reviewed it.
->
-> Regards,
-> Cl=C3=A9ment
->
-> >
-> > Allwinner H6 SoC has a SPDIF controller called One Wire Audio (OWA) whi=
-ch
-> > is different from the previous H3 generation and not compatible.
-> >
-> > Difference are an increase of fifo sizes, some memory mapping are diffe=
-rent
-> > and there is now the possibility to output the master clock on a pin.
-> >
-> > Actually all these features are unused and only a bit for flushing the =
-TX
-> > fifo is required.
-> >
-> > Also this series requires the DMA working on H6, a first version has be=
-en
-> > submitted by Jernej =C5=A0krabec[1] but has not been accepted yet.
-> >
-> > [1] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=
-=3D89011
-> >
-> > Changes since v3:
-> >  - rename reg_fctl_ftx to val_fctl_ftx
-> >  - rebase this series on sound-next
-> >  - fix dt-bindings due to change in sound-next
-> >  - change node name sound_spdif to sound-spdif
-> >
-> > Changes since v2:
-> >  - Split quirks and H6 support patch
-> >  - Add specific section for quirks comment
-> >
-> > Changes since v1:
-> >  - Remove H3 compatible
-> >  - Add TX fifo bit flush quirks
-> >  - Add H6 bindings in SPDIF driver
-> >
-> > Cl=C3=A9ment P=C3=A9ron (7):
-> >   dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible
-> >   ASoC: sun4i-spdif: Move quirks to the top
-> >   ASoC: sun4i-spdif: Add TX fifo bit flush quirks
-> >   ASoC: sun4i-spdif: Add support for H6 SoC
-> >   arm64: dts: allwinner: Add SPDIF node for Allwinner H6
-> >   arm64: dts: allwinner: h6: Enable SPDIF for Beelink GS1
-> >   arm64: defconfig: Enable Sun4i SPDIF module
-> >
-> >  .../sound/allwinner,sun4i-a10-spdif.yaml      |  1 +
-> >  .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  4 ++
-> >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 38 ++++++++++++++
-> >  arch/arm64/configs/defconfig                  |  1 +
-> >  sound/soc/sunxi/sun4i-spdif.c                 | 49 ++++++++++++++++---
-> >  5 files changed, 87 insertions(+), 6 deletions(-)
-> >
-> > --
-> > 2.20.1
-> >
+On Mon, Jul 15, 2019 at 08:27:55AM -0700, Ranjani Sridharan wrote:
+
+> This patch is needed for the module load/unload stress tests for the
+> Intel platforms with SOF. Could you please help review it?
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
+
+--i0/AhcQY5QxfSsSZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0s1XwACgkQJNaLcl1U
+h9B2dAf/d81W9qjuyvaXzR/iy0mjye0GkYW5M0RY9uteDwAq4XHwBRSb5rK19z4X
+2Q5KMX2a0A+tSR36Pl4pEXnzGN8lWrh/IeSUgdgfi/SV1fXnqaHhFi11Fk8HdtAt
+TeX5AtAj9l0c8Sel+H6TcSQGVk6+ucuiz6NZTLPEeyhiLp1N4E1GFPZNjN8Iorop
+PzNJz6vKpFlgrGtaw85F52mrq8Q910RJxIJsBGz8LpOkGHRopkVEFJLQ8UZUMoCS
+m5x91YrHfuJvZsm9rALHyotlO+5u5B6N+R8cb2vrO9RykNjuwW4tuAFBIHf1Gauc
+E8TCkIs0wlUWesoqMfdZX3Q24xw1Ww==
+=Vn42
+-----END PGP SIGNATURE-----
+
+--i0/AhcQY5QxfSsSZ--
+
+--===============1972974111910854007==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1972974111910854007==--
