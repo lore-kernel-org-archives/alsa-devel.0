@@ -1,111 +1,86 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [RESEND PATCH v2] ASoC: SOF: Intel: hda: Make
- hdac_device device-managed
-Date: Mon, 15 Jul 2019 08:27:55 -0700
-Message-ID: <7fc6fdf3461c8faff4d853f80e282f3830a04724.camel@linux.intel.com>
-References: <20190707235633.7114-1-ranjani.sridharan@linux.intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH v3 1/5] ASoC: hdmi-codec: Add an op to set callback
+ function for plug event
+Date: Mon, 15 Jul 2019 23:56:19 +0800
+Message-ID: <CA+Px+wWbmUemETY3OMk1T9XS2w8ZXvZUhVEGzw_w6AxtU8R0rw@mail.gmail.com>
+References: <20190712100443.221322-1-cychiang@chromium.org>
+ <20190712100443.221322-2-cychiang@chromium.org>
+ <20190712105745.xr7jxc626lwoaajx@shell.armlinux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB47AF800C6
- for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2019 17:27:58 +0200 (CEST)
-In-Reply-To: <20190707235633.7114-1-ranjani.sridharan@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, libin.yang@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190712105745.xr7jxc626lwoaajx@shell.armlinux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>, tzungbi@chromium.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-rockchip@lists.infradead.org, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Daniel Vetter <daniel@ffwll.ch>, dgreid@chromium.org, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2019-07-07 at 16:56 -0700, Ranjani Sridharan wrote:
-> snd_hdac_ext_bus_device_exit() has been recently modified
-> to no longer free the hdac device. SOF allocates memory for
-> hdac_device and hda_hda_priv with kzalloc. Make them
-> device-managed instead so that they will be freed when the
-> SOF driver is unloaded.
-> 
-> Because of the above change, hda_codec is device-managed and
-> it will be freed when the ASoC device is removed. Freeing
-> the codec in snd_hda_codec_dev_release() leads to kernel
-> panic while unloading and reloading the ASoC driver. So,
-> avoid freeing the hda_codec for ASoC driver. This is done in
-> the same patch to avoid bisect failure.
-Hi Mark,
+On Fri, Jul 12, 2019 at 6:58 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Fri, Jul 12, 2019 at 06:04:39PM +0800, Cheng-Yi Chiang wrote:
+> > Add an op in hdmi_codec_ops so codec driver can register callback
+> > function to handle plug event.
+> >
+> > Driver in DRM can use this callback function to report connector status.
+> >
+> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > ---
+> >  include/sound/hdmi-codec.h    | 16 +++++++++++++
+> >  sound/soc/codecs/hdmi-codec.c | 45 +++++++++++++++++++++++++++++++++++
+> >  2 files changed, 61 insertions(+)
+> >
+> > diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+> > index 7fea496f1f34..9a8661680256 100644
+> > --- a/include/sound/hdmi-codec.h
+> > +++ b/include/sound/hdmi-codec.h
+> > @@ -47,6 +47,9 @@ struct hdmi_codec_params {
+> >       int channels;
+> >  };
+> >
+> > +typedef void (*hdmi_codec_plugged_cb)(struct device *dev,
+> > +                                   bool plugged);
+> > +
+>
+> I'd like to pose a question for people to think about.
+>
+> Firstly, typedefs are generally shunned in the kernel.  However, for
+> these cases it seems to make sense.
+>
+> However, should the "pointer"-ness be part of the typedef or not?  To
+> see what I mean, consider:
+>
+>         typedef void (*hdmi_foo)(void);
+>
+>         int register_foo(hdmi_foo foo);
+>
+> vs
+>
+>         typedef void hdmi_foo(void);
+>
+>         int register_foo(hdmi_foo *foo);
+>
+> which is more in keeping with how we code non-typedef'd code - it's
+> obvious that foo is a pointer while reading the code.
+I have a different opinion.  Its suffix "_cb" self-described it is a
+callback function.  Since function and function pointer are equivalent
+in the language, I think we don't need to emphasize that it is a
+function "pointer".
 
-This patch is needed for the module load/unload stress tests for the
-Intel platforms with SOF. Could you please help review it?
- 
-The details of the issue can be found here: 
-https://github.com/thesofproject/linux/issues/966
 
-Thanks,
-Ranjani
-> 
-> Signed-off-by: Libin Yang <libin.yang@intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> Reviewed-by: Pierre-Louis Bossart <
-> pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/pci/hda/hda_codec.c       | 8 +++++++-
->  sound/soc/sof/intel/hda-codec.c | 6 ++----
->  2 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index 6c51b8363f8b..a2e23d7e768f 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -846,7 +846,13 @@ static void snd_hda_codec_dev_release(struct
-> device *dev)
->  	snd_hda_sysfs_clear(codec);
->  	kfree(codec->modelname);
->  	kfree(codec->wcaps);
-> -	kfree(codec);
-> +
-> +	/*
-> +	 * In the case of ASoC HD-audio, hda_codec is device managed.
-> +	 * It will be freed when the ASoC device is removed.
-> +	 */
-> +	if (codec->core.type == HDA_DEV_LEGACY)
-> +		kfree(codec);
->  }
->  
->  #define DEV_NAME_LEN 31
-> diff --git a/sound/soc/sof/intel/hda-codec.c
-> b/sound/soc/sof/intel/hda-codec.c
-> index b8b37f082309..0d8437b080bf 100644
-> --- a/sound/soc/sof/intel/hda-codec.c
-> +++ b/sound/soc/sof/intel/hda-codec.c
-> @@ -62,8 +62,7 @@ static int hda_codec_probe(struct snd_sof_dev
-> *sdev, int address)
->  		address, resp);
->  
->  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-> -	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
-> -	hda_priv = kzalloc(sizeof(*hda_priv), GFP_KERNEL);
-> +	hda_priv = devm_kzalloc(sdev->dev, sizeof(*hda_priv),
-> GFP_KERNEL);
->  	if (!hda_priv)
->  		return -ENOMEM;
->  
-> @@ -82,8 +81,7 @@ static int hda_codec_probe(struct snd_sof_dev
-> *sdev, int address)
->  
->  	return 0;
->  #else
-> -	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
-> -	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-> +	hdev = devm_kzalloc(sdev->dev, sizeof(*hdev), GFP_KERNEL);
->  	if (!hdev)
->  		return -ENOMEM;
->  
+> It seems to me that the latter better matches what is in the kernel's
+> coding style, which states:
+>
+>   In general, a pointer, or a struct that has elements that can
+>   reasonably be directly accessed should **never** be a typedef.
+>
+> or maybe Documentation/process/coding-style.rst needs updating?
