@@ -1,245 +1,185 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH v3 2/5] drm: bridge: dw-hdmi: Report connector status
- using callback
-Date: Tue, 16 Jul 2019 20:04:28 +0800
-Message-ID: <CAFv8NwLBr+USzOJvSZzMt_EzxA=07-NTGzuKdusaMxbFyrBjFQ@mail.gmail.com>
-References: <20190712100443.221322-1-cychiang@chromium.org>
- <20190712100443.221322-3-cychiang@chromium.org> <20190712104748.zlgxgdjbtj2gw4yz@shell.armlinux.org.uk>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH 00/14] pending doc patches for 5.3-rc
+Date: Tue, 16 Jul 2019 09:10:39 -0300
+Message-ID: <cover.1563277838.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190712104748.zlgxgdjbtj2gw4yz@shell.armlinux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Doug Anderson <dianders@chromium.org>, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, tzungbi@chromium.org, Jaroslav Kysela <perex@perex.cz>, Hans Verkuil <hverkuil@xs4all.nl>, Andrzej Hajda <a.hajda@samsung.com>, Mark Brown <broonie@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Daniel Vetter <daniel@ffwll.ch>, Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com, linuxppc-dev@lists.ozlabs.org, Jonathan Corbet <corbet@lwn.net>, alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-i2c@vger.kernel.org, rcu@vger.kernel.org, linux-pm@vger.kernel.org, linux-doc@vger.kernel.org, devicetree@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-watchdog@vger.kernel.org, x86@kernel.org, dri-devel@lists.freedesktop.org, netdev@vger.kernel.org, linux-crypto@vger.kernel.org, linux-sh@vger.kernel.org, linux-input@vger.kernel.org, linux-pci@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 12, 2019 at 6:48 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Fri, Jul 12, 2019 at 06:04:40PM +0800, Cheng-Yi Chiang wrote:
-> > Allow codec driver register callback function for plug event.
-> >
-> > The callback registration flow:
-> > dw-hdmi <--- hw-hdmi-i2s-audio <--- hdmi-codec
-> >
-> > dw-hdmi-i2s-audio implements hook_plugged_cb op
-> > so codec driver can register the callback.
-> >
-> > dw-hdmi implements set_plugged_cb op so platform device can register the
-> > callback.
-> >
-> > When connector plug/unplug event happens, report this event using the
-> > callback.
-> >
-> > Make sure that audio and drm are using the single source of truth for
-> > connector status.
-> >
-> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > ---
-> >  .../gpu/drm/bridge/synopsys/dw-hdmi-audio.h   |  3 +
-> >  .../drm/bridge/synopsys/dw-hdmi-i2s-audio.c   | 10 ++++
-> >  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     | 55 ++++++++++++++++++-
-> >  3 files changed, 67 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h
-> > index 63b5756f463b..f523c590984e 100644
-> > --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h
-> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-audio.h
-> > @@ -2,6 +2,8 @@
-> >  #ifndef DW_HDMI_AUDIO_H
-> >  #define DW_HDMI_AUDIO_H
-> >
-> > +#include <sound/hdmi-codec.h>
-> > +
-> >  struct dw_hdmi;
-> >
-> >  struct dw_hdmi_audio_data {
-> > @@ -17,6 +19,7 @@ struct dw_hdmi_i2s_audio_data {
-> >
-> >       void (*write)(struct dw_hdmi *hdmi, u8 val, int offset);
-> >       u8 (*read)(struct dw_hdmi *hdmi, int offset);
-> > +     int (*set_plugged_cb)(struct dw_hdmi *hdmi, hdmi_codec_plugged_cb fn);
-> >  };
-> >
-> >  #endif
-> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-> > index 5cbb71a866d5..7b93cf05c985 100644
-> > --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-> > @@ -104,10 +104,20 @@ static int dw_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
-> >       return -EINVAL;
-> >  }
-> >
-> > +static int dw_hdmi_i2s_hook_plugged_cb(struct device *dev, void *data,
-> > +                                    hdmi_codec_plugged_cb fn)
-> > +{
-> > +     struct dw_hdmi_i2s_audio_data *audio = data;
-> > +     struct dw_hdmi *hdmi = audio->hdmi;
-> > +
-> > +     return audio->set_plugged_cb(hdmi, fn);
-> > +}
-> > +
-> >  static struct hdmi_codec_ops dw_hdmi_i2s_ops = {
-> >       .hw_params      = dw_hdmi_i2s_hw_params,
-> >       .audio_shutdown = dw_hdmi_i2s_audio_shutdown,
-> >       .get_dai_id     = dw_hdmi_i2s_get_dai_id,
-> > +     .hook_plugged_cb = dw_hdmi_i2s_hook_plugged_cb,
-> >  };
-> >
-> >  static int snd_dw_hdmi_probe(struct platform_device *pdev)
-> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> > index 045b1b13fd0e..ce6646067472 100644
-> > --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> > @@ -26,6 +26,8 @@
-> >  #include <drm/drm_probe_helper.h>
-> >  #include <drm/bridge/dw_hdmi.h>
-> >
-> > +#include <sound/hdmi-codec.h>
-> > +
-> >  #include <uapi/linux/media-bus-format.h>
-> >  #include <uapi/linux/videodev2.h>
-> >
-> > @@ -185,6 +187,9 @@ struct dw_hdmi {
-> >       void (*disable_audio)(struct dw_hdmi *hdmi);
-> >
-> >       struct cec_notifier *cec_notifier;
-> > +
-> > +     hdmi_codec_plugged_cb plugged_cb;
-> > +     enum drm_connector_status last_connector_result;
-> >  };
-> >
-> >  #define HDMI_IH_PHY_STAT0_RX_SENSE \
-> > @@ -209,6 +214,40 @@ static inline u8 hdmi_readb(struct dw_hdmi *hdmi, int offset)
-> >       return val;
-> >  }
-> >
-> > +static void handle_plugged_change(struct dw_hdmi *hdmi, bool plugged)
-> > +{
-> > +     struct platform_device *codec_pdev;
-> > +
-> > +     if (!hdmi->audio || IS_ERR(hdmi->audio))
-> > +             return;
-> > +     codec_pdev = platform_get_drvdata(hdmi->audio);
-> > +     if (!codec_pdev || IS_ERR(codec_pdev))
-> > +             return;
->
-> This looks fragile to me, poking about in another device's driver data
-> from another driver is really not a good design decision.  I think this
-> can be simplified if the registration function took the function
-> pointer and the struct device pointer, and then you only need one test
-> below:
->
-Hi Russell, Thank you for the detailed review.
-ACK to this suggestion.
-I have updated the registration function following your suggestion in v4.
-It looks much cleaner.
+Those are the pending documentation patches after my pull request
+for this branch:
 
-> > +     if (!hdmi->plugged_cb)
-> > +             return;
-> > +
-> > +     hdmi->plugged_cb(&codec_pdev->dev, plugged);
-> > +}
-> > +
-> > +static int hdmi_set_plugged_cb(struct dw_hdmi *hdmi, hdmi_codec_plugged_cb fn)
-> > +{
-> > +     bool plugged;
-> > +     struct platform_device *codec_pdev;
-> > +
-> > +     if (!hdmi->audio || IS_ERR(hdmi->audio))
-> > +             return -EINVAL;
->
-> Given the current code structure, how can this ever be true when the
-> function is called?
->
-ACK
-Removed in v4.
-> > +     codec_pdev = platform_get_drvdata(hdmi->audio);
-> > +     if (!codec_pdev || IS_ERR(codec_pdev))
-> > +             return -EINVAL;
->
-> This doesn't seem like a good idea as I've pointed out above.
->
-ACK
-Fixed in v4.
-> > +
-> > +     mutex_lock(&hdmi->mutex);
-> > +     hdmi->plugged_cb = fn;
-> > +     plugged = hdmi->last_connector_result == connector_status_connected;
-> > +     handle_plugged_change(hdmi, plugged);
-> > +     mutex_unlock(&hdmi->mutex);
->
-> Should be a blank line here for readability.
->
-ACK
-Fixed in v4.
-> > +     return 0;
-> > +}
-> > +
-> >  static void hdmi_modb(struct dw_hdmi *hdmi, u8 data, u8 mask, unsigned reg)
-> >  {
-> >       regmap_update_bits(hdmi->regm, reg << hdmi->reg_shift, mask, data);
-> > @@ -2044,6 +2083,7 @@ dw_hdmi_connector_detect(struct drm_connector *connector, bool force)
-> >  {
-> >       struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
-> >                                            connector);
-> > +     enum drm_connector_status result;
-> >
-> >       mutex_lock(&hdmi->mutex);
-> >       hdmi->force = DRM_FORCE_UNSPECIFIED;
-> > @@ -2051,7 +2091,18 @@ dw_hdmi_connector_detect(struct drm_connector *connector, bool force)
-> >       dw_hdmi_update_phy_mask(hdmi);
-> >       mutex_unlock(&hdmi->mutex);
-> >
-> > -     return hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
-> > +     result = hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
-> > +
-> > +     mutex_lock(&hdmi->mutex);
-> > +     if (result != hdmi->last_connector_result) {
-> > +             dev_dbg(hdmi->dev, "read_hpd result: %d", result);
-> > +             handle_plugged_change(hdmi,
-> > +                                   result == connector_status_connected);
-> > +             hdmi->last_connector_result = result;
-> > +     }
-> > +     mutex_unlock(&hdmi->mutex);
-> > +
-> > +     return result;
-> >  }
-> >
-> >  static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
-> > @@ -2460,6 +2511,7 @@ __dw_hdmi_probe(struct platform_device *pdev,
-> >       hdmi->rxsense = true;
-> >       hdmi->phy_mask = (u8)~(HDMI_PHY_HPD | HDMI_PHY_RX_SENSE);
-> >       hdmi->mc_clkdis = 0x7f;
-> > +     hdmi->last_connector_result = connector_status_disconnected;
-> >
-> >       mutex_init(&hdmi->mutex);
-> >       mutex_init(&hdmi->audio_mutex);
-> > @@ -2653,6 +2705,7 @@ __dw_hdmi_probe(struct platform_device *pdev,
-> >               audio.hdmi      = hdmi;
-> >               audio.write     = hdmi_writeb;
-> >               audio.read      = hdmi_readb;
-> > +             audio.set_plugged_cb = hdmi_set_plugged_cb;
->
-> Why is this necessary?
->
-> The I2S audio driver already depends on the dw-hdmi module through its
-> use of functions already exported.  Indirecting this through the
-> platform data makes no sense.
->
-> Just rename hdmi_set_plugged_cb to dw_hdmi_set_plugged_cb() and export
-> it for dw-hdmi-i2s-audio.c to use.
-ACK.
-Your suggestion makes sense.
-Removed in v4.
+    git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media.git tags/docs/v5.3-1
 
->
-> Thanks.
-Thanks so much!
+Patches 1 to 13 were already submitted, but got rebased. Patch 14
+is a new fixup one.
 
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-> According to speedtest.net: 11.9Mbps down 500kbps up
+Patches 1 and 2 weren't submitted before due to merge conflicts
+that are now solved upstream;
+
+Patch 3 fixes a series of random Documentation/* references that
+are pointing to the wrong places.
+
+Patch 4 fix a longstanding issue: every time a new book is added,
+conf.py need changes, in order to allow generating a PDF file.
+After the patch, conf.py will automatically recognize new books,
+saving the trouble of keeping adding documents to it.
+
+Patches 5 to 11 are due to fonts support when building translations.pdf.
+The main focus is to add xeCJK support. While doing it, I discovered
+some bugs at sphinx-pre-install script after running it with 7 different
+distributions.
+
+Patch 12 improves support for partial doc building. Currently, each
+subdir needs to have its own conf.py, in order to support partial
+doc build. After it, any Documentation subdir can be used to 
+roduce html/pdf docs with:
+
+	make SPHINXDIRS="foo bar" htmldocs
+	(or pdfdocs, latexdocs, epubdocs, ...)
+
+Patch 13 is a cleanup patch: it simply get rid of all those extra
+conf.py files that  aren't needed anymore. The only extra config
+file after it is this one:
+
+	Documentation/media/conf_nitpick.py
+
+With enables some extra optional Sphinx features.
+
+Patch 14 adds Documentation/virtual to the main index.rst file
+and add a new *.rst file that was orphaned there.
+
+-
+
+After this series, there's just one more patch meant to be applied
+for 5.3, with is still waiting for some patches to be merged from
+linux-next:
+
+    https://git.linuxtv.org/mchehab/experimental.git/commit/?id=b1b5dc7d7bbfbbfdace2a248c6458301c6e34100
+
+
+Mauro Carvalho Chehab (14):
+  docs: powerpc: convert docs to ReST and rename to *.rst
+  docs: power: add it to to the main documentation index
+  docs: fix broken doc references due to renames
+  docs: pdf: add all Documentation/*/index.rst to PDF output
+  docs: conf.py: add CJK package needed by translations
+  docs: conf.py: only use CJK if the font is available
+  scripts/sphinx-pre-install: fix script for RHEL/CentOS
+  scripts/sphinx-pre-install: don't use LaTeX with CentOS 7
+  scripts/sphinx-pre-install: fix latexmk dependencies
+  scripts/sphinx-pre-install: cleanup Gentoo checks
+  scripts/sphinx-pre-install: seek for Noto CJK fonts for pdf output
+  docs: load_config.py: avoid needing a conf.py just due to LaTeX docs
+  docs: remove extra conf.py files
+  docs: virtual: add it to the documentation body
+
+ Documentation/PCI/pci-error-recovery.rst      |   5 +-
+ Documentation/RCU/rculist_nulls.txt           |   2 +-
+ Documentation/admin-guide/conf.py             |  10 --
+ Documentation/conf.py                         |  30 +++-
+ Documentation/core-api/conf.py                |  10 --
+ Documentation/crypto/conf.py                  |  10 --
+ Documentation/dev-tools/conf.py               |  10 --
+ .../devicetree/bindings/arm/idle-states.txt   |   2 +-
+ Documentation/doc-guide/conf.py               |  10 --
+ Documentation/driver-api/80211/conf.py        |  10 --
+ Documentation/driver-api/conf.py              |  10 --
+ Documentation/driver-api/pm/conf.py           |  10 --
+ Documentation/filesystems/conf.py             |  10 --
+ Documentation/gpu/conf.py                     |  10 --
+ Documentation/index.rst                       |   3 +
+ Documentation/input/conf.py                   |  10 --
+ Documentation/kernel-hacking/conf.py          |  10 --
+ Documentation/locking/spinlocks.rst           |   4 +-
+ Documentation/maintainer/conf.py              |  10 --
+ Documentation/media/conf.py                   |  12 --
+ Documentation/memory-barriers.txt             |   2 +-
+ Documentation/networking/conf.py              |  10 --
+ Documentation/power/index.rst                 |   2 +-
+ .../{bootwrapper.txt => bootwrapper.rst}      |  28 +++-
+ .../{cpu_families.txt => cpu_families.rst}    |  23 +--
+ .../{cpu_features.txt => cpu_features.rst}    |   6 +-
+ Documentation/powerpc/{cxl.txt => cxl.rst}    |  46 ++++--
+ .../powerpc/{cxlflash.txt => cxlflash.rst}    |  10 +-
+ .../{DAWR-POWER9.txt => dawr-power9.rst}      |  15 +-
+ Documentation/powerpc/{dscr.txt => dscr.rst}  |  18 +-
+ ...ecovery.txt => eeh-pci-error-recovery.rst} | 108 ++++++------
+ ...ed-dump.txt => firmware-assisted-dump.rst} | 117 +++++++------
+ Documentation/powerpc/{hvcs.txt => hvcs.rst}  | 108 ++++++------
+ Documentation/powerpc/index.rst               |  34 ++++
+ Documentation/powerpc/isa-versions.rst        |  15 +-
+ .../powerpc/{mpc52xx.txt => mpc52xx.rst}      |  12 +-
+ ...nv.txt => pci_iov_resource_on_powernv.rst} |  15 +-
+ .../powerpc/{pmu-ebb.txt => pmu-ebb.rst}      |   1 +
+ Documentation/powerpc/ptrace.rst              | 156 ++++++++++++++++++
+ Documentation/powerpc/ptrace.txt              | 151 -----------------
+ .../{qe_firmware.txt => qe_firmware.rst}      |  37 +++--
+ .../{syscall64-abi.txt => syscall64-abi.rst}  |  29 ++--
+ ...al_memory.txt => transactional_memory.rst} |  45 ++---
+ Documentation/process/conf.py                 |  10 --
+ Documentation/sh/conf.py                      |  10 --
+ Documentation/sound/conf.py                   |  10 --
+ Documentation/sphinx/load_config.py           |  27 ++-
+ .../translations/ko_KR/memory-barriers.txt    |   2 +-
+ Documentation/userspace-api/conf.py           |  10 --
+ Documentation/virtual/kvm/index.rst           |   1 +
+ Documentation/vm/conf.py                      |  10 --
+ Documentation/watchdog/hpwdt.rst              |   2 +-
+ Documentation/x86/conf.py                     |  10 --
+ MAINTAINERS                                   |  14 +-
+ arch/powerpc/kernel/exceptions-64s.S          |   2 +-
+ drivers/gpu/drm/drm_modes.c                   |   2 +-
+ drivers/i2c/busses/i2c-nvidia-gpu.c           |   2 +-
+ drivers/scsi/hpsa.c                           |   4 +-
+ drivers/soc/fsl/qe/qe.c                       |   2 +-
+ drivers/tty/hvc/hvcs.c                        |   2 +-
+ include/soc/fsl/qe/qe.h                       |   2 +-
+ scripts/sphinx-pre-install                    | 118 ++++++++++---
+ 62 files changed, 738 insertions(+), 678 deletions(-)
+ delete mode 100644 Documentation/admin-guide/conf.py
+ delete mode 100644 Documentation/core-api/conf.py
+ delete mode 100644 Documentation/crypto/conf.py
+ delete mode 100644 Documentation/dev-tools/conf.py
+ delete mode 100644 Documentation/doc-guide/conf.py
+ delete mode 100644 Documentation/driver-api/80211/conf.py
+ delete mode 100644 Documentation/driver-api/conf.py
+ delete mode 100644 Documentation/driver-api/pm/conf.py
+ delete mode 100644 Documentation/filesystems/conf.py
+ delete mode 100644 Documentation/gpu/conf.py
+ delete mode 100644 Documentation/input/conf.py
+ delete mode 100644 Documentation/kernel-hacking/conf.py
+ delete mode 100644 Documentation/maintainer/conf.py
+ delete mode 100644 Documentation/media/conf.py
+ delete mode 100644 Documentation/networking/conf.py
+ rename Documentation/powerpc/{bootwrapper.txt => bootwrapper.rst} (93%)
+ rename Documentation/powerpc/{cpu_families.txt => cpu_families.rst} (95%)
+ rename Documentation/powerpc/{cpu_features.txt => cpu_features.rst} (97%)
+ rename Documentation/powerpc/{cxl.txt => cxl.rst} (95%)
+ rename Documentation/powerpc/{cxlflash.txt => cxlflash.rst} (98%)
+ rename Documentation/powerpc/{DAWR-POWER9.txt => dawr-power9.rst} (95%)
+ rename Documentation/powerpc/{dscr.txt => dscr.rst} (91%)
+ rename Documentation/powerpc/{eeh-pci-error-recovery.txt => eeh-pci-error-recovery.rst} (82%)
+ rename Documentation/powerpc/{firmware-assisted-dump.txt => firmware-assisted-dump.rst} (80%)
+ rename Documentation/powerpc/{hvcs.txt => hvcs.rst} (91%)
+ create mode 100644 Documentation/powerpc/index.rst
+ rename Documentation/powerpc/{mpc52xx.txt => mpc52xx.rst} (91%)
+ rename Documentation/powerpc/{pci_iov_resource_on_powernv.txt => pci_iov_resource_on_powernv.rst} (97%)
+ rename Documentation/powerpc/{pmu-ebb.txt => pmu-ebb.rst} (99%)
+ create mode 100644 Documentation/powerpc/ptrace.rst
+ delete mode 100644 Documentation/powerpc/ptrace.txt
+ rename Documentation/powerpc/{qe_firmware.txt => qe_firmware.rst} (95%)
+ rename Documentation/powerpc/{syscall64-abi.txt => syscall64-abi.rst} (82%)
+ rename Documentation/powerpc/{transactional_memory.txt => transactional_memory.rst} (93%)
+ delete mode 100644 Documentation/process/conf.py
+ delete mode 100644 Documentation/sh/conf.py
+ delete mode 100644 Documentation/sound/conf.py
+ delete mode 100644 Documentation/userspace-api/conf.py
+ delete mode 100644 Documentation/vm/conf.py
+ delete mode 100644 Documentation/x86/conf.py
+
+-- 
+2.21.0
