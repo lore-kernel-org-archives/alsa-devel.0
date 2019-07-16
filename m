@@ -1,89 +1,98 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda/hdmi - Fix i915 reverse port/pin
-	mapping
-Date: Tue, 16 Jul 2019 09:42:55 +0200
-Message-ID: <20190716074255.14267-2-tiwai@suse.de>
-References: <20190716074255.14267-1-tiwai@suse.de>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v3 1/5] ASoC: hdmi-codec: Add an op to set callback
+ function for plug event
+Date: Tue, 16 Jul 2019 15:59:36 +0800
+Message-ID: <CAFv8NwKwd8Yf4UmqUhcaP1pL2K_d_FSZm9JyY_Azy13017RWgg@mail.gmail.com>
+References: <20190712100443.221322-1-cychiang@chromium.org>
+ <20190712100443.221322-2-cychiang@chromium.org> <20190712105745.xr7jxc626lwoaajx@shell.armlinux.org.uk>
+ <CA+Px+wWbmUemETY3OMk1T9XS2w8ZXvZUhVEGzw_w6AxtU8R0rw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42EEAF8038F
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2019 09:43:05 +0200 (CEST)
-In-Reply-To: <20190716074255.14267-1-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Hui Wang <hui.wang@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CA+Px+wWbmUemETY3OMk1T9XS2w8ZXvZUhVEGzw_w6AxtU8R0rw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: Russell King - ARM Linux admin <linux@armlinux.org.uk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Douglas Anderson <dianders@chromium.org>, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, tzungbi@chromium.org, Jaroslav Kysela <perex@perex.cz>, Hans Verkuil <hverkuil@xs4all.nl>, Andrzej Hajda <a.hajda@samsung.com>, Mark Brown <broonie@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Daniel Vetter <daniel@ffwll.ch>, Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The recent fix for Icelake HDMI codec introduced the mapping from pin
-NID to the i915 gfx port number.  However, it forgot the reverse
-mapping from the port number to the pin NID that is used in the ELD
-notifier callback.  As a result, it's processed to a wrong widget and
-gives a warning like
-  snd_hda_codec_hdmi hdaudioC0D2: HDMI: pin nid 5 not registered
+On Mon, Jul 15, 2019 at 11:56 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Fri, Jul 12, 2019 at 6:58 PM Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Fri, Jul 12, 2019 at 06:04:39PM +0800, Cheng-Yi Chiang wrote:
+> > > Add an op in hdmi_codec_ops so codec driver can register callback
+> > > function to handle plug event.
+> > >
+> > > Driver in DRM can use this callback function to report connector status.
+> > >
+> > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > > ---
+> > >  include/sound/hdmi-codec.h    | 16 +++++++++++++
+> > >  sound/soc/codecs/hdmi-codec.c | 45 +++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 61 insertions(+)
+> > >
+> > > diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+> > > index 7fea496f1f34..9a8661680256 100644
+> > > --- a/include/sound/hdmi-codec.h
+> > > +++ b/include/sound/hdmi-codec.h
+> > > @@ -47,6 +47,9 @@ struct hdmi_codec_params {
+> > >       int channels;
+> > >  };
+> > >
+> > > +typedef void (*hdmi_codec_plugged_cb)(struct device *dev,
+> > > +                                   bool plugged);
+> > > +
+> >
+> > I'd like to pose a question for people to think about.
+> >
+> > Firstly, typedefs are generally shunned in the kernel.  However, for
+> > these cases it seems to make sense.
+> >
+> > However, should the "pointer"-ness be part of the typedef or not?  To
+> > see what I mean, consider:
+> >
+> >         typedef void (*hdmi_foo)(void);
+> >
+> >         int register_foo(hdmi_foo foo);
+> >
+> > vs
+> >
+> >         typedef void hdmi_foo(void);
+> >
+> >         int register_foo(hdmi_foo *foo);
+> >
+> > which is more in keeping with how we code non-typedef'd code - it's
+> > obvious that foo is a pointer while reading the code.
+> I have a different opinion.  Its suffix "_cb" self-described it is a
+> callback function.  Since function and function pointer are equivalent
+> in the language, I think we don't need to emphasize that it is a
+> function "pointer".
+>
+>
 
-This patch corrects it with a proper reverse mapping function.
+Hi Russell and Tzungbi, thank you for the review.
+Regarding this typedef of callback function, I found a thread
+discussing this very long time ago:
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204133
-Fixes: b0d8bc50b9f2 ("ALSA: hda: hdmi - add Icelake support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+https://yarchive.net/comp/linux/typedefs.html
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 1e6c489bca15..664c81cf5ffb 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2524,18 +2524,29 @@ static int intel_pin2port(void *audio_ptr, int pin_nid)
- 	return -1;
- }
- 
-+static int intel_port2pin(struct hda_codec *codec, int port)
-+{
-+	struct hdmi_spec *spec = codec->spec;
-+
-+	if (!spec->port_num) {
-+		/* we assume only from port-B to port-D */
-+		if (port < 1 || port > 3)
-+			return 0;
-+		/* intel port is 1-based */
-+		return port + intel_base_nid(codec) - 1;
-+	}
-+
-+	if (port < 1 || port > spec->port_num)
-+		return 0;
-+	return spec->port_map[port - 1];
-+}
-+
- static void intel_pin_eld_notify(void *audio_ptr, int port, int pipe)
- {
- 	struct hda_codec *codec = audio_ptr;
--	int pin_nid;
-+	int pin_nid = intel_port2pin(codec, port);
- 	int dev_id = pipe;
- 
--	/* we assume only from port-B to port-D */
--	if (port < 1 || port > 3)
--		return;
--
--	pin_nid = port + intel_base_nid(codec) - 1; /* intel port is 1-based */
--
- 	/* skip notification during system suspend (but not in runtime PM);
- 	 * the state will be updated at resume
- 	 */
--- 
-2.16.4
+>From that thread, Linus gave an example of using typedef for function
+pointer that is following to this pattern.
+I also looked around how other driver use it:
+$ git grep typedef | grep _cb | less | wc -l
+138
+$ git grep typedef | grep _cb | grep "(\*" | wc -l
+115
+Most of the typedef of callback function use this pattern.
+So I think this should be fine.
+Thanks!
+
+
+> > It seems to me that the latter better matches what is in the kernel's
+> > coding style, which states:
+> >
+> >   In general, a pointer, or a struct that has elements that can
+> >   reasonably be directly accessed should **never** be a typedef.
+> >
+> > or maybe Documentation/process/coding-style.rst needs updating?
