@@ -1,92 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Is there a way to support TX master mode and RX
- slave mode?
-Date: Wed, 17 Jul 2019 19:02:04 +0100
-Message-ID: <20190717180204.GF4459@sirena.org.uk>
-References: <VE1PR04MB6479C4D2CD4B9D486209102FE3CE0@VE1PR04MB6479.eurprd04.prod.outlook.com>
- <548bda36-b81f-1811-7969-e80e698ecfa3@linux.intel.com>
+From: Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH v4 2/6] ASoC: sgtl5000: Improve VAG power and mute control
+Date: Wed, 17 Jul 2019 19:31:28 -0400
+Message-ID: <20190717233128.GB3079@sasha-vm>
+References: <20190717163014.429-1-oleksandr.suvorov@toradex.com>
+ <20190717163014.429-3-oleksandr.suvorov@toradex.com>
+ <CAOMZO5AgCqH+8W36vh4n3tCFvqUE=H+4Zp0jG1NQi5UFOsSSAQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6532329951749856262=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63F10F800C2
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 20:02:13 +0200 (CEST)
-In-Reply-To: <548bda36-b81f-1811-7969-e80e698ecfa3@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5AgCqH+8W36vh4n3tCFvqUE=H+4Zp0jG1NQi5UFOsSSAQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jul 17, 2019 at 01:48:43PM -0300, Fabio Estevam wrote:
+>On Wed, Jul 17, 2019 at 1:30 PM Oleksandr Suvorov
+><oleksandr.suvorov@toradex.com> wrote:
+>>
+>> Change VAG power on/off control according to the following algorithm:
+>> - turn VAG power ON on the 1st incoming event.
+>> - keep it ON if there is any active VAG consumer (ADC/DAC/HP/Line-In).
+>> - turn VAG power OFF when there is the latest consumer's pre-down event
+>>   come.
+>> - always delay after VAG power OFF to avoid pop.
+>> - delay after VAG power ON if the initiative consumer is Line-In, this
+>>   prevents pop during line-in muxing.
+>>
+>> Also, according to the data sheet [1], to avoid any pops/clicks,
+>> the outputs should be muted during input/output
+>> routing changes.
+>>
+>> [1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+>>
+>> Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+>> Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+>> Fixes: 9b34e6cc3bc2 ("ASoC: Add Freescale SGTL5000 codec support")
+>
+>Reviewed-by: Fabio Estevam <festevam@gmail.com>
+>
+>By the way, I prefer the description you put in the cover letter as it
+>explicitly talks about a bug being fixed.
 
---===============6532329951749856262==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TeJTyD9hb8KJN2Jy"
-Content-Disposition: inline
+Yes. This patch describes itself as an improvement rather than a fix.
 
+You need to add an explicit stable tag, rather than just cc us.
+Something like:
 
---TeJTyD9hb8KJN2Jy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	Cc: stable@kernel.org
 
-On Wed, Jul 17, 2019 at 11:02:05AM -0500, Pierre-Louis Bossart wrote:
-> On 7/16/19 3:35 AM, S.j. Wang wrote:
-
-> > Is there a way to support TX master mode but RX slave mode?  It seems c=
-urrent .set_fmt only set same mode for TX and RX.
-
-> good question if you are thinking of supporting the 6-pin versions of I2S
-> interfaces with independent bit clock and frame sync on RX and TX
-> Looking at the topology definition it could be that this mode needs to be
-> handled with separate dailinks. Adding Mark in case he didn't see this
-> question.
-
-If the TX and RX sides are completly disconnected then they're just two
-separate interfaces.
-
-As documented in SubmittingPatches please send patches to the=20
-maintainers for the code you would like to change.  The normal kernel
-workflow is that people apply patches from their inboxes, if they aren't
-copied they are likely to not see the patch at all and it is much more
-difficult to apply patches.
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
---TeJTyD9hb8KJN2Jy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0vYpsACgkQJNaLcl1U
-h9CgAgf8CszPBMJzgRhyN/HYeSk0VXQ907/XEEF6Y6t/FwJdSGDhEwRUHuIEPz2U
-3ybKAe1S1qcaNQ83/h0ZbBDcsJYk2FMRdSIP/j5C7O2jgcFRSOg6PGE6QD78KwBm
-fnu6d0L6pZ7E+gN5Y7ZU1DIZHh1Y7mrfy3c9Nd4X7ug1s6fh02R5ZSTCkUehMMxx
-HLpkyf9aK+7fUFiIFwYhBlYsKGFagztf33dF44eXSZ8p+xvo/Swhm6C4x2AMubRV
-2zFK7mYK67JyLMLhfF7RjViRPY5USR20zcFK/6Evijs2bq9Ha4fXmZ3+n5dfRwD5
-wJdp3jwk8wt5a7p82sJbNdDn/MILJw==
-=WqPe
------END PGP SIGNATURE-----
-
---TeJTyD9hb8KJN2Jy--
-
---===============6532329951749856262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6532329951749856262==--
+--
+Thanks,
+Sasha
