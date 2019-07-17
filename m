@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v4 5/6] ASoC: sgtl5000: Fix of unmute outputs on probe
-Date: Wed, 17 Jul 2019 16:30:53 +0000
-Message-ID: <20190717163014.429-6-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v4 6/6] ASoC: sgtl5000: Fix charge pump source assignment
+Date: Wed, 17 Jul 2019 16:30:54 +0000
+Message-ID: <20190717163014.429-7-oleksandr.suvorov@toradex.com>
 References: <20190717163014.429-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,50 +14,54 @@ To: Fabio Estevam <festevam@gmail.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-To enable "zero cross detect" for ADC/HP, change
-HP_ZCD_EN/ADC_ZCD_EN bits only instead of writing the whole
-CHIP_ANA_CTRL register.
+If VDDA !=3D VDDIO and any of them is greater than 3.1V, charge pump
+source can be assigned automatically [1].
+
+[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 Reviewed-by: Igor Opaniuk <igor.opaniuk@toradex.com>
-
 ---
 
 Changes in v4: None
-Changes in v3: None
+Changes in v3:
+- Add the reference to NXP SGTL5000 data sheet to commit message
+- Fix multi-line comment format
+
 Changes in v2:
 - Fix patch formatting
 
- sound/soc/codecs/sgtl5000.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 0123d9cfcb473..31d546abde717 100644
+index 31d546abde717..a04cba66615de 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -1443,6 +1443,7 @@ static int sgtl5000_probe(struct snd_soc_component *c=
-omponent)
- 	int ret;
- 	u16 reg;
- 	struct sgtl5000_priv *sgtl5000 =3D snd_soc_component_get_drvdata(componen=
-t);
-+	unsigned int zcd_mask =3D SGTL5000_HP_ZCD_EN | SGTL5000_ADC_ZCD_EN;
+@@ -1328,12 +1328,17 @@ static int sgtl5000_set_power_regs(struct snd_soc_c=
+omponent *component)
+ 					SGTL5000_INT_OSC_EN);
+ 		/* Enable VDDC charge pump */
+ 		ana_pwr |=3D SGTL5000_VDDC_CHRGPMP_POWERUP;
+-	} else if (vddio >=3D 3100 && vdda >=3D 3100) {
++	} else {
+ 		ana_pwr &=3D ~SGTL5000_VDDC_CHRGPMP_POWERUP;
+-		/* VDDC use VDDIO rail */
+-		lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
+-		lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
+-			    SGTL5000_VDDC_MAN_ASSN_SHIFT;
++		/*
++		 * if vddio =3D=3D vdda the source of charge pump should be
++		 * assigned manually to VDDIO
++		 */
++		if (vddio =3D=3D vdda) {
++			lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
++			lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
++				    SGTL5000_VDDC_MAN_ASSN_SHIFT;
++		}
+ 	}
 =20
- 	/* power up sgtl5000 */
- 	ret =3D sgtl5000_set_power_regs(component);
-@@ -1470,9 +1471,8 @@ static int sgtl5000_probe(struct snd_soc_component *c=
-omponent)
- 	       0x1f);
- 	snd_soc_component_write(component, SGTL5000_CHIP_PAD_STRENGTH, reg);
-=20
--	snd_soc_component_write(component, SGTL5000_CHIP_ANA_CTRL,
--			SGTL5000_HP_ZCD_EN |
--			SGTL5000_ADC_ZCD_EN);
-+	snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_CTRL,
-+		zcd_mask, zcd_mask);
-=20
- 	snd_soc_component_update_bits(component, SGTL5000_CHIP_MIC_CTRL,
- 			SGTL5000_BIAS_R_MASK,
+ 	snd_soc_component_write(component, SGTL5000_CHIP_LINREG_CTRL, lreg_ctrl);
 --=20
 2.20.1
