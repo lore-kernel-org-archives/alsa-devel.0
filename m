@@ -1,55 +1,37 @@
 From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH v4 2/5] drm: bridge: dw-hdmi: Report connector status
- using callback
-Date: Wed, 17 Jul 2019 10:17:25 +0800
-Message-ID: <CAFv8NwKVEpnUi=+Hvi1_2vdYqWFd49zu8eoQbMwnjg6i_PGhcA@mail.gmail.com>
-References: <20190716115725.66558-1-cychiang@chromium.org> <20190716115725.66558-3-cychiang@chromium.org>
- <CA+Px+wWuCBvWra8+=szQOrvr3iv2YPMeoHHVtJ1vmaZWEEQ44A@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] ASoC: rockchip_max98090: Add dai_link for HDMI
+Date: Wed, 17 Jul 2019 16:12:48 +0800
+Message-ID: <CAFv8NwJu14XEDLE3Y+GTU2foFH3b5iBQ-q=tehjBYQ51m2LiCQ@mail.gmail.com>
+References: <20190716115725.66558-1-cychiang@chromium.org> <20190716115725.66558-5-cychiang@chromium.org>
+ <CA+Px+wV6RSfv4GL8+EJzXGq2nqzKtH9p23VTo2s30h0To2rQtg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+Px+wWuCBvWra8+=szQOrvr3iv2YPMeoHHVtJ1vmaZWEEQ44A@mail.gmail.com>
+In-Reply-To: <CA+Px+wV6RSfv4GL8+EJzXGq2nqzKtH9p23VTo2s30h0To2rQtg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Tzung-Bi Shih <tzungbi@google.com>
 Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner <heiko@sntech.de>, Douglas Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, ALSA development <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 16, 2019 at 10:13 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+On Tue, Jul 16, 2019 at 10:14 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
 >
-> On Tue, Jul 16, 2019 at 7:57 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+> On Tue, Jul 16, 2019 at 7:58 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
 > >
-> > Change the Kconfig of DRM_DW_HDMI so it selects SND_SOC_HDMI_CODEC.
-> > This is for the typedef of hdmi_codec_plugged_cb to be used in dw-hdmi.c.
-> Not sure why you select SND_SOC_HDMI_CODEC in this patch.  To have
-> definition of hdmi_codec_plugged_cb, include hdmi-codec.h should be
-> sufficient.
->
-Thank you for the review!
-I misunderstood when to change Kconfig.
-Will fix in v5.
-> >
-> > diff --git a/drivers/gpu/drm/bridge/synopsys/Kconfig b/drivers/gpu/drm/bridge/synopsys/Kconfig
-> > index 21a1be3ced0f..309da052db97 100644
-> > --- a/drivers/gpu/drm/bridge/synopsys/Kconfig
-> > +++ b/drivers/gpu/drm/bridge/synopsys/Kconfig
-> > @@ -4,6 +4,7 @@ config DRM_DW_HDMI
-> >         select DRM_KMS_HELPER
-> >         select REGMAP_MMIO
-> >         select CEC_CORE if CEC_NOTIFIER
+> > diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+> > index b43657e6e655..d610b553ea3b 100644
+> > --- a/sound/soc/rockchip/Kconfig
+> > +++ b/sound/soc/rockchip/Kconfig
+> > @@ -40,9 +40,10 @@ config SND_SOC_ROCKCHIP_MAX98090
+> >         select SND_SOC_ROCKCHIP_I2S
+> >         select SND_SOC_MAX98090
+> >         select SND_SOC_TS3A227E
 > > +       select SND_SOC_HDMI_CODEC
-> So that it is weird to select this option.
->
-Will be removed in v5.
-Thanks!
-> >
-> >  config DRM_DW_HDMI_AHB_AUDIO
-> >         tristate "Synopsys Designware AHB Audio interface"
-> > @@ -20,7 +21,6 @@ config DRM_DW_HDMI_I2S_AUDIO
-> >         tristate "Synopsys Designware I2S Audio interface"
-> >         depends on SND_SOC
-> >         depends on DRM_DW_HDMI
-> > -       select SND_SOC_HDMI_CODEC
-> Also strange for deselecting the option.  Should be in another commit
-> for another reason?
-Will be removed in v5.
-Thanks!
+> >         help
+> >           Say Y or M here if you want to add support for SoC audio on Rockchip
+> > -         boards using the MAX98090 codec, such as Veyron.
+> > +         boards using the MAX98090 codec and HDMI codec, such as Veyron.
+> You should not need to select the option in this patch (but in next
+> patch), because this patch does not depend on anything from
+> hdmi-codec.c.
+Thanks for the explanation.
+I'll fix in v5.
