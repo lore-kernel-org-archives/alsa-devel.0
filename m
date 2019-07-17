@@ -1,48 +1,62 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v4 4/6] ASoC: sgtl5000: add ADC mute control
-Date: Wed, 17 Jul 2019 16:30:51 +0000
-Message-ID: <20190717163014.429-5-oleksandr.suvorov@toradex.com>
-References: <20190717163014.429-1-oleksandr.suvorov@toradex.com>
+Subject: Re: [PATCH v3 0/6] VAG power control improvement for sgtl5000 codec
+Date: Wed, 17 Jul 2019 16:34:09 +0000
+Message-ID: <AM6PR05MB6535DC29316E859AFF3699C4F9C90@AM6PR05MB6535.eurprd05.prod.outlook.com>
+References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>,<CAOMZO5B00XRb5GqtYhyg==sVek_uWhLRDQeSStN1AzfKRnV+Dw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190717163014.429-1-oleksandr.suvorov@toradex.com>
+In-Reply-To: <CAOMZO5B00XRb5GqtYhyg==sVek_uWhLRDQeSStN1AzfKRnV+Dw@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Fabio Estevam <festevam@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This control mute/unmute the ADC input of SGTL5000
-using its CHIP_ANA_CTRL register.
 
-Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Reviewed-by: Igor Opaniuk <igor.opaniuk@toradex.com>
+Hello Fabio,
 
----
+Thank you for your feedback! I've prepared and sent a fixed patchset v4.
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-- Fix patch formatting
+--
+R&D Engineer
+Oleksandr Suvorov
 
- sound/soc/codecs/sgtl5000.c | 1 +
- 1 file changed, 1 insertion(+)
+Toradex AG
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index a8d55c21a5f2d..0123d9cfcb473 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -710,6 +710,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_contr=
-ols[] =3D {
- 			SGTL5000_CHIP_ANA_ADC_CTRL,
- 			8, 1, 0, capture_6db_attenuate),
- 	SOC_SINGLE("Capture ZC Switch", SGTL5000_CHIP_ANA_CTRL, 1, 1, 0),
-+	SOC_SINGLE("Capture Switch", SGTL5000_CHIP_ANA_CTRL, 0, 1, 1),
-=20
- 	SOC_DOUBLE_TLV("Headphone Playback Volume",
- 			SGTL5000_CHIP_ANA_HP_CTRL,
---=20
-2.20.1
+________________________________________
+From: Fabio Estevam <festevam@gmail.com>
+Sent: Monday, July 15, 2019 10:06:57 PM
+To: Oleksandr Suvorov
+Cc: linux-kernel@vger.kernel.org; alsa-devel@alsa-project.org; Marcel Ziswi=
+ler; Igor Opaniuk; Jaroslav Kysela; Mark Brown; Takashi Iwai; Liam Girdwood
+Subject: Re: [PATCH v3 0/6] VAG power control improvement for sgtl5000 code=
+c
+
+Hi Oleksandr,
+
+Your series looks good, thanks.
+
+I only have one suggestion.
+
+On Fri, Jul 12, 2019 at 11:56 AM Oleksandr Suvorov
+<oleksandr.suvorov@toradex.com> wrote:
+>
+>
+> VAG power control is improved to fit the manual [1]. This patchset fixes =
+as
+> minimum one bug: if customer muxes Headphone to Line-In right after boot,
+> the VAG power remains off that leads to poor sound quality from line-in.
+>
+> I.e. after boot:
+> - Connect sound source to Line-In jack;
+> - Connect headphone to HP jack;
+> - Run following commands:
+> $ amixer set 'Headphone' 80%
+> $ amixer set 'Headphone Mux' LINE_IN
+
+Could you please make the bug fix patch to appear as the first one in
+the series with a Fixes tag and Cc stable?
+
+This way the bug fix can be applied to the linux stable tree.
