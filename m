@@ -1,9 +1,10 @@
 From: Angus Ainslie <angus@akkea.ca>
-Subject: Re: [PATCH 1/3] ASoC: fsl_sai: add of_match data
-Date: Wed, 17 Jul 2019 07:42:52 -0600
-Message-ID: <aed115b1fce5cc3e7a81b60efbc01536@akkea.ca>
+Subject: Re: [PATCH 2/3] ASoC: fsl_sai: derive TX FIFO
+ watermark from FIFO depth
+Date: Wed, 17 Jul 2019 07:43:18 -0600
+Message-ID: <6cc95da1373307eb2bace8b4af3c884d@akkea.ca>
 References: <20190717105635.18514-1-l.stach@pengutronix.de>
- <20190717105635.18514-2-l.stach@pengutronix.de>
+ <20190717105635.18514-3-l.stach@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +12,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF194F8015B
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 15:42:55 +0200 (CEST)
-In-Reply-To: <20190717105635.18514-2-l.stach@pengutronix.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 074A2F8015B
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 15:43:21 +0200 (CEST)
+In-Reply-To: <20190717105635.18514-3-l.stach@pengutronix.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,10 +29,10 @@ Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.
 List-Id: alsa-devel@alsa-project.org
 
 On 2019-07-17 04:56, Lucas Stach wrote:
-> New revisions of the SAI IP block have even more differences that need
-> be taken into account by the driver. To avoid sprinking compatible
-> checks all over the driver move the current differences into 
-> of_match_data.
+> The DMA request schould be triggered as soon as the FIFO has space
+> for another burst. As different versions of the SAI block have
+> different FIFO sizes, the watrmark level needs to be derived from
+> version specific data.
 > 
 > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 
@@ -39,96 +40,47 @@ Tested-by: Angus Ainslie <angus@akkea.ca>
 Reviewed-by: Angus Ainslie <angus@akkea.ca>
 
 > ---
->  sound/soc/fsl/fsl_sai.c | 22 ++++++++++++++--------
->  sound/soc/fsl/fsl_sai.h |  6 +++++-
->  2 files changed, 19 insertions(+), 9 deletions(-)
+>  sound/soc/fsl/fsl_sai.c | 4 +++-
+>  sound/soc/fsl/fsl_sai.h | 1 +
+>  2 files changed, 4 insertions(+), 1 deletion(-)
 > 
 > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 812c94fbb160..3a1ed8b857d6 100644
+> index 3a1ed8b857d6..b3cd055a61c7 100644
 > --- a/sound/soc/fsl/fsl_sai.c
 > +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -9,6 +9,7 @@
->  #include <linux/dmaengine.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> @@ -798,10 +799,7 @@ static int fsl_sai_probe(struct platform_device 
+> @@ -649,7 +649,7 @@ static int fsl_sai_dai_probe(struct snd_soc_dai 
+> *cpu_dai)
+>  	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
+> 
+>  	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
+> -			   FSL_SAI_MAXBURST_TX * 2);
+> +			   sai->soc_data->fifo_depth - FSL_SAI_MAXBURST_TX);
+>  	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
+>  			   FSL_SAI_MAXBURST_RX - 1);
+> 
+> @@ -923,10 +923,12 @@ static int fsl_sai_remove(struct platform_device 
 > *pdev)
->  		return -ENOMEM;
 > 
->  	sai->pdev = pdev;
-> -
-> -	if (of_device_is_compatible(np, "fsl,imx6sx-sai") ||
-> -	    of_device_is_compatible(np, "fsl,imx6ul-sai"))
-> -		sai->sai_on_imx = true;
-> +	sai->soc_data = of_device_get_match_data(&pdev->dev);
-> 
->  	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
-> 
-> @@ -910,7 +908,7 @@ static int fsl_sai_probe(struct platform_device 
-> *pdev)
->  	if (ret)
->  		return ret;
-> 
-> -	if (sai->sai_on_imx)
-> +	if (sai->soc_data->use_imx_pcm)
->  		return imx_pcm_dma_init(pdev, IMX_SAI_DMABUF_SIZE);
->  	else
->  		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-> @@ -923,10 +921,18 @@ static int fsl_sai_remove(struct platform_device 
-> *pdev)
->  	return 0;
->  }
-> 
-> +static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
-> +	.use_imx_pcm = false,
-> +};
-> +
-> +static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
-> +	.use_imx_pcm = true,
-> +};
-> +
->  static const struct of_device_id fsl_sai_ids[] = {
-> -	{ .compatible = "fsl,vf610-sai", },
-> -	{ .compatible = "fsl,imx6sx-sai", },
-> -	{ .compatible = "fsl,imx6ul-sai", },
-> +	{ .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
-> +	{ .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
-> +	{ .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
->  	{ /* sentinel */ }
+>  static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
+>  	.use_imx_pcm = false,
+> +	.fifo_depth = 32,
 >  };
->  MODULE_DEVICE_TABLE(of, fsl_sai_ids);
+> 
+>  static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
+>  	.use_imx_pcm = true,
+> +	.fifo_depth = 32,
+>  };
+> 
+>  static const struct of_device_id fsl_sai_ids[] = {
 > diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-> index 24cb156bf995..83e2bfe05b1b 100644
+> index 83e2bfe05b1b..7c1ef671da28 100644
 > --- a/sound/soc/fsl/fsl_sai.h
 > +++ b/sound/soc/fsl/fsl_sai.h
-> @@ -126,6 +126,10 @@
->  #define FSL_SAI_MAXBURST_TX 6
->  #define FSL_SAI_MAXBURST_RX 6
+> @@ -128,6 +128,7 @@
 > 
-> +struct fsl_sai_soc_data {
-> +	bool use_imx_pcm;
-> +};
-> +
->  struct fsl_sai {
->  	struct platform_device *pdev;
->  	struct regmap *regmap;
-> @@ -135,7 +139,6 @@ struct fsl_sai {
->  	bool is_slave_mode;
->  	bool is_lsb_first;
->  	bool is_dsp_mode;
-> -	bool sai_on_imx;
->  	bool synchronous[2];
-> 
->  	unsigned int mclk_id[2];
-> @@ -143,6 +146,7 @@ struct fsl_sai {
->  	unsigned int slots;
->  	unsigned int slot_width;
-> 
-> +	const struct fsl_sai_soc_data *soc_data;
->  	struct snd_dmaengine_dai_dma_data dma_params_rx;
->  	struct snd_dmaengine_dai_dma_data dma_params_tx;
+>  struct fsl_sai_soc_data {
+>  	bool use_imx_pcm;
+> +	unsigned int fifo_depth;
 >  };
+> 
+>  struct fsl_sai {
