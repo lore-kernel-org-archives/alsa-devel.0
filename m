@@ -1,194 +1,125 @@
-From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: Re: [PATCH v3 6/6] ASoC: sgtl5000: Improve VAG power and mute control
-Date: Wed, 17 Jul 2019 14:24:12 +0000
-Message-ID: <AM6PR05MB6535E442AF37B7B079761DB2F9C90@AM6PR05MB6535.eurprd05.prod.outlook.com>
-References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
- <20190712145550.27500-7-oleksandr.suvorov@toradex.com>,<e9f0f7c7-4c11-36ad-679c-503f6160b83f@intel.com>
+From: Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH 3/3] ASoC: fsl_sai: add i.MX8M support
+Date: Wed, 17 Jul 2019 16:33:47 +0200
+Message-ID: <1563374027.2676.18.camel@pengutronix.de>
+References: <20190717105635.18514-1-l.stach@pengutronix.de>
+ <20190717105635.18514-4-l.stach@pengutronix.de>
+ <CAEnQRZCCTwMJKQnvP2mSQPcKNwtoAaMdXmQt_H+CGro=zVLsNA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e9f0f7c7-4c11-36ad-679c-503f6160b83f@intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60515F800C4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 16:33:52 +0200 (CEST)
+In-Reply-To: <CAEnQRZCCTwMJKQnvP2mSQPcKNwtoAaMdXmQt_H+CGro=zVLsNA@mail.gmail.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Angus Ainslie <angus@akkea.ca>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you, Cezary!
-
-This is a good idea, I'll rework my patch accordingly.
-
-R&D Engineer
-Oleksandr Suvorov
-
-Toradex AG
-
-________________________________________
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Sent: Sunday, July 14, 2019 8:17:43 PM
-To: Oleksandr Suvorov
-Cc: Fabio Estevam; linux-kernel@vger.kernel.org; alsa-devel@alsa-project.or=
-g; Marcel Ziswiler; Igor Opaniuk; Jaroslav Kysela; Mark Brown; Takashi Iwai=
-; Liam Girdwood
-Subject: Re: [PATCH v3 6/6] ASoC: sgtl5000: Improve VAG power and mute cont=
-rol
-
-On 2019-07-12 16:56, Oleksandr Suvorov wrote:
->
-> +enum {
-> +     HP_POWER_EVENT,
-> +     DAC_POWER_EVENT,
-> +     ADC_POWER_EVENT
-> +};
-> +
-> +struct sgtl5000_mute_state {
-> +     u16 hp_event;
-> +     u16 dac_event;
-> +     u16 adc_event;
-> +};
-> +
->   /* sgtl5000 private structure in codec */
->   struct sgtl5000_priv {
->       int sysclk;     /* sysclk rate */
-> @@ -137,8 +156,109 @@ struct sgtl5000_priv {
->       u8 micbias_voltage;
->       u8 lrclk_strength;
->       u8 sclk_strength;
-> +     struct sgtl5000_mute_state mute_state;
-
-Why not array instead?
-u16 mute_state[ADC_POWER_EVENT+1];
--or-
-u16 mute_state[LAST_POWER_EVENT+1]; (if you choose to add explicit LAST
-enum constant).
-
-Enables simplification, see below.
-
-> @@ -170,40 +290,79 @@ static int mic_bias_event(struct snd_soc_dapm_widge=
-t *w,
->       return 0;
->   }
->
-> -/*
-> - * As manual described, ADC/DAC only works when VAG powerup,
-> - * So enabled VAG before ADC/DAC up.
-> - * In power down case, we need wait 400ms when vag fully ramped down.
-> - */
-> -static int power_vag_event(struct snd_soc_dapm_widget *w,
-> -     struct snd_kcontrol *kcontrol, int event)
-> +static void vag_and_mute_control(struct snd_soc_component *component,
-> +                              int event, int event_source,
-> +                              u16 mute_mask, u16 *mute_reg)
->   {
-> -     struct snd_soc_component *component =3D snd_soc_dapm_to_component(w=
-->dapm);
-> -     const u32 mask =3D SGTL5000_DAC_POWERUP | SGTL5000_ADC_POWERUP;
-> -
->       switch (event) {
-> -     case SND_SOC_DAPM_POST_PMU:
-> -             snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_=
-POWER,
-> -                     SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
-> -             msleep(400);
-> +     case SND_SOC_DAPM_PRE_PMU:
-> +             *mute_reg =3D mute_output(component, mute_mask);
-> +             break;
-> +     case SND_SOC_DAPM_POST_PMU:
-> +             vag_power_on(component, event_source);
-> +             restore_output(component, mute_mask, *mute_reg);
->               break;
-> -
->       case SND_SOC_DAPM_PRE_PMD:
-> -             /*
-> -              * Don't clear VAG_POWERUP, when both DAC and ADC are
-> -              * operational to prevent inadvertently starving the
-> -              * other one of them.
-> -              */
-> -             if ((snd_soc_component_read32(component, SGTL5000_CHIP_ANA_=
-POWER) &
-> -                             mask) !=3D mask) {
-> -                     snd_soc_component_update_bits(component, SGTL5000_C=
-HIP_ANA_POWER,
-> -                             SGTL5000_VAG_POWERUP, 0);
-> -                     msleep(400);
-> -             }
-> +             *mute_reg =3D mute_output(component, mute_mask);
-> +             vag_power_off(component, event_source);
-> +             break;
-> +     case SND_SOC_DAPM_POST_PMD:
-> +             restore_output(component, mute_mask, *mute_reg);
->               break;
->       default:
->               break;
->       }
-> +}
-> +
-> +/*
-> + * Mute Headphone when power it up/down.
-> + * Control VAG power on HP power path.
-> + */
-> +static int headphone_pga_event(struct snd_soc_dapm_widget *w,
-> +     struct snd_kcontrol *kcontrol, int event)
-> +{
-> +     struct snd_soc_component *component =3D
-> +             snd_soc_dapm_to_component(w->dapm);
-> +     struct sgtl5000_priv *sgtl5000 =3D
-> +             snd_soc_component_get_drvdata(component);
-> +
-> +     vag_and_mute_control(component, event, HP_POWER_EVENT,
-> +                          SGTL5000_HP_MUTE,
-> +                          &sgtl5000->mute_state.hp_event);
-> +
-> +     return 0;
-> +}
-> +
-> +/* As manual describes, ADC/DAC powering up/down requires
-> + * to mute outputs to avoid pops.
-> + * Control VAG power on ADC/DAC power path.
-> + */
-> +static int adc_updown_depop(struct snd_soc_dapm_widget *w,
-> +     struct snd_kcontrol *kcontrol, int event)
-> +{
-> +     struct snd_soc_component *component =3D
-> +             snd_soc_dapm_to_component(w->dapm);
-> +     struct sgtl5000_priv *sgtl5000 =3D
-> +             snd_soc_component_get_drvdata(component);
-> +
-> +     vag_and_mute_control(component, event, ADC_POWER_EVENT,
-> +                          SGTL5000_OUTPUTS_MUTE,
-> +                          &sgtl5000->mute_state.adc_event);
-> +
-> +     return 0;
-> +}
-> +
-> +static int dac_updown_depop(struct snd_soc_dapm_widget *w,
-> +     struct snd_kcontrol *kcontrol, int event)
-> +{
-> +     struct snd_soc_component *component =3D
-> +             snd_soc_dapm_to_component(w->dapm);
-> +     struct sgtl5000_priv *sgtl5000 =3D
-> +             snd_soc_component_get_drvdata(component);
-> +
-> +     vag_and_mute_control(component, event, DAC_POWER_EVENT,
-> +                          SGTL5000_OUTPUTS_MUTE,
-> +                          &sgtl5000->mute_state.dac_event);
->
->       return 0;
->   }
-
-With array approach you can simplify these 3 callbacks:
-- remove local declaration of sgtl5000
-- remove the need for "u16 *mute_reg" param for vag_and_mute_control
-(you always provide the xxx_event field of mute_state corresponding to
-given XXX_POWER_EVENT anyway)
-
-The sgtl5000 local ptr would be declared within common handler, which
-vag_and_mute_control clearly is. Said handler declaration could be
-updated to again require widget rather than component.
-
-Cherry on top: relocation of "return 0;" directly to
-vag_and_mute_control. Leaving it void (as it is), however, might also be
-appropriate (explicit).
-
-Czarek
+SGkgRGFuaWVsLAoKQW0gTWl0dHdvY2gsIGRlbiAxNy4wNy4yMDE5LCAxNzoxNiArMDMwMCBzY2hy
+aWViIERhbmllbCBCYWx1dGE6Cj4gPiBPbiBXZWQsIEp1bCAxNywgMjAxOSBhdCAxOjU5IFBNIEx1
+Y2FzIFN0YWNoIDxsLnN0YWNoQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPiA+IAo+ID4gVGhlIFNB
+SSBibG9jayBvbiB0aGUgaS5NWDhNIG1vdmVkIHRoZSByZWdpc3RlciBsYXlvdXQsIGFzIDIgdmVy
+c2lvbgo+ID4gcmVnaXN0ZXJzIHdlcmUgYWRkZWQgYXQgdGhlIHN0YXJ0IG9mIHRoZSByZWdpc3Rl
+ciBtYXAuIFdlIGRlYWwgd2l0aAo+ID4gdGhpcyBieSBtb3ZpbmcgdGhlIHN0YXJ0IG9mIHRoZSBy
+ZWdtYXAsIHNvIGJvdGggcmVnaXN0ZXIgbGF5b3V0cwo+ID4gbG9vayB0aGUgc2FtZSB0byBhY2Nl
+c3NlcyBnb2luZyB0aHJvdWdoIHRoZSByZWdtYXAuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IEx1
+Y2FzIFN0YWNoIDxsLnN0YWNoQHBlbmd1dHJvbml4LmRlPgo+IAo+IFRoaXMgaXMgYSBsaXR0bGUg
+Yml0IHRyaWNreS4gV2UgbmVlZCB0aGUgdmVyaWQgcmVnaXN0ZXIgaW4gb3JkZXIKPiB0byBkaWZm
+ZXJlbnRpYXRlIElQcyB3aGljaCBjYW4gc3VwcG9ydCAxOjEgcmF0aW8gZm9yIGJjbGs6bWNsawoK
+QW5kIHRoaXMgcGF0Y2ggZG9lc24ndCBwcmV2ZW50IHRoaXMgdXNhZ2UuIElmIG5lZWRlZCB3ZSBj
+YW4ganVzdCByZWFkCnRoZSB2ZXJpZCB2aWEgYSBwbGFpbiByZWFkbCBvbiB0aGUgYmFzZSBtYXBw
+aW5nIGluIHRoZSBwcm9iZSBmdW5jdGlvbgphbmQgY2FjaGUgaXQgaW4gc3RydWN0IGZzbF9zYWku
+IFRoaXMgc2VlbXMgd2F5IGxlc3MgaW50cnVzaXZlIHRoYW4KY2FycnlpbmcgYSByZWdpc3RlciBv
+ZmZzZXQgdGhyb3VnaCBhbGwgb2YgdGhlIHJlZ21hcCBhY2Nlc3NvcnMgYW5kCnZhbGlkYXRpb24g
+ZnVuY3Rpb25zLiBJIHNpbXBseSBoYXZlbid0IGltcGxlbWVudGVkIGl0IGluIHRoaXMgcGF0Y2gs
+IGFzCkkgaGFkIG5vIG5lZWQgZm9yIGl0IHJpZ2h0IG5vdy4KClJlZ2FyZHMsCkx1Y2FzCgo+IEkg
+YW0gd29ya2luZyBub3cgZm9yIHVwc3RyZWFtaW5nIGFsbCBTQUkgcGF0Y2hlcyB0aGF0IHdlIGhh
+dmUKPiBpbiBvdXIgaW50ZXJuYWwgdHJlZS4KPiAKPiA+IC0tLQo+ID4gwqAuLi4vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9zb3VuZC9mc2wtc2FpLnR4dMKgwqDCoMKgwqB8wqDCoDIgKy0KPiA+IMKgc291
+bmQvc29jL2ZzbC9mc2xfc2FpLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgfCAxOSArKysrKysrKysrKysrKysrKysrCj4gPiDCoHNvdW5kL3NvYy9mc2wvZnNs
+X3NhaS5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHzCoMKg
+MSArCj4gPiDCoDMgZmlsZXMgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L3NvdW5kL2ZzbC1zYWkudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Nv
+dW5kL2ZzbC1zYWkudHh0Cj4gPiBpbmRleCAyZTcyNmI5ODM4NDUuLjAzNzg3MWQyZjUwNSAxMDA2
+NDQKPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2wt
+c2FpLnR4dAo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
+L2ZzbC1zYWkudHh0Cj4gPiBAQCAtOCw3ICs4LDcgQEAgY29kZWMvRFNQIGludGVyZmFjZXMuCj4g
+PiDCoFJlcXVpcmVkIHByb3BlcnRpZXM6Cj4gPiAKPiA+IMKgwqDCoC0gY29tcGF0aWJsZcKgwqDC
+oMKgwqDCoMKgwqDCoDogQ29tcGF0aWJsZSBsaXN0LCBjb250YWlucyAiZnNsLHZmNjEwLXNhaSIs
+Cj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAi
+ZnNsLGlteDZzeC1zYWkiIG9yICJmc2wsaW14NnVsLXNhaSIKPiA+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCJmc2wsaW14NnN4LXNhaSIsICJmc2ws
+aW14NnVsLXNhaSIgb3IgImZzbCxpbXg4bXEtc2FpIgo+ID4gCj4gPiDCoMKgwqAtIHJlZ8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoDogT2Zmc2V0IGFuZCBs
+ZW5ndGggb2YgdGhlIHJlZ2lzdGVyIHNldCBmb3IgdGhlIGRldmljZS4KPiA+IAo+ID4gZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMK
+PiA+IGluZGV4IGIzY2QwNTVhNjFjNy4uYTEwMjAxMDc4ZTQwIDEwMDY0NAo+ID4gLS0tIGEvc291
+bmQvc29jL2ZzbC9mc2xfc2FpLmMKPiA+ICsrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jCj4g
+PiBAQCAtODA4LDYgKzgwOCwxNiBAQCBzdGF0aWMgaW50IGZzbF9zYWlfcHJvYmUoc3RydWN0IHBs
+YXRmb3JtX2RldmljZSAqcGRldikKPiA+IMKgwqDCoMKgwqDCoMKgwqBpZiAoSVNfRVJSKGJhc2Up
+KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gUFRSX0VSUihiYXNl
+KTsKPiA+IAo+ID4gK8KgwqDCoMKgwqDCoMKgLyoKPiA+ICvCoMKgwqDCoMKgwqDCoMKgKiBOZXcg
+dmVyc2lvbnMgb2YgdGhlIFNBSSBoYXZlIDIgMzJiaXQgdmVyc2lvbiByZWdpc3RlcnMgYWRkZWQg
+YXQgdGhlCj4gPiArwqDCoMKgwqDCoMKgwqDCoCogc3RhcnQgb2YgdGhlIHJlZ2lzdGVyIG1hcC4g
+VG8gYXZvaWQgZGVhbGluZyB3aXRoIHRoaXMgc2hpZnQgYWxsIG92ZXIKPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgKiB0aGUgZHJpdmVyLCB3ZSBtb3ZlIHRoZSBzdGFydCBvZiB0aGUgcmVnbWFwIHRvIG1h
+a2UgYm90aCByZWdpc3Rlcgo+ID4gK8KgwqDCoMKgwqDCoMKgwqAqIGxheW91dHMgbG9vayB0aGUg
+c2FtZSB0byB0aGUgcmVnbWFwLiBUaGlzIG1lYW5zIHdlIGNhbid0IHJlYWQgdGhlCj4gPiArwqDC
+oMKgwqDCoMKgwqDCoCogdmVyc2lvbiByZWdpc3RlcnMgdGhyb3VnaCB0aGUgcmVnbWFwLCBidXQg
+dGhpcyBpcyBzbWFsbCBwcmljZSB0byBwYXkuCj4gPiArwqDCoMKgwqDCoMKgwqDCoCovCj4gPiAr
+wqDCoMKgwqDCoMKgwqBpZiAoc2FpLT5zb2NfZGF0YS0+aGFzX3ZlcnNpb25fcmVnaXN0ZXJzKQo+
+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJhc2UgKz0gODsKPiA+ICsKPiA+IMKg
+wqDCoMKgwqDCoMKgwqBzYWktPnJlZ21hcCA9IGRldm1fcmVnbWFwX2luaXRfbW1pb19jbGsoJnBk
+ZXYtPmRldiwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCJidXMiLCBiYXNlLCAmZnNsX3NhaV9yZWdtYXBfY29uZmlnKTsKPiA+IAo+ID4gQEAgLTky
+MywxOCArOTMzLDI3IEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9yZW1vdmUoc3RydWN0IHBsYXRmb3Jt
+X2RldmljZSAqcGRldikKPiA+IAo+ID4gwqBzdGF0aWMgY29uc3Qgc3RydWN0IGZzbF9zYWlfc29j
+X2RhdGEgZnNsX3NhaV92ZjYxMF9kYXRhID0gewo+ID4gwqDCoMKgwqDCoMKgwqDCoC51c2VfaW14
+X3BjbSA9IGZhbHNlLAo+ID4gK8KgwqDCoMKgwqDCoMKgLmhhc192ZXJzaW9uX3JlZ2lzdGVycyA9
+IGZhbHNlLAo+ID4gwqDCoMKgwqDCoMKgwqDCoC5maWZvX2RlcHRoID0gMzIsCj4gPiDCoH07Cj4g
+PiAKPiA+IMKgc3RhdGljIGNvbnN0IHN0cnVjdCBmc2xfc2FpX3NvY19kYXRhIGZzbF9zYWlfaW14
+NnN4X2RhdGEgPSB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgLnVzZV9pbXhfcGNtID0gdHJ1ZSwKPiA+
+ICvCoMKgwqDCoMKgwqDCoC5oYXNfdmVyc2lvbl9yZWdpc3RlcnMgPSBmYWxzZSwKPiA+IMKgwqDC
+oMKgwqDCoMKgwqAuZmlmb19kZXB0aCA9IDMyLAo+ID4gwqB9Owo+ID4gCj4gPiArc3RhdGljIGNv
+bnN0IHN0cnVjdCBmc2xfc2FpX3NvY19kYXRhIGZzbF9zYWlfaW14OG1fZGF0YSA9IHsKPiA+ICvC
+oMKgwqDCoMKgwqDCoC51c2VfaW14X3BjbSA9IHRydWUsCj4gPiArwqDCoMKgwqDCoMKgwqAuaGFz
+X3ZlcnNpb25fcmVnaXN0ZXJzID0gdHJ1ZSwKPiA+ICvCoMKgwqDCoMKgwqDCoC5maWZvX2RlcHRo
+ID0gMTI4LAo+ID4gK307Cj4gPiArCj4gPiDCoHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNl
+X2lkIGZzbF9zYWlfaWRzW10gPSB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgeyAuY29tcGF0aWJsZSA9
+ICJmc2wsdmY2MTAtc2FpIiwgLmRhdGEgPSAmZnNsX3NhaV92ZjYxMF9kYXRhIH0sCj4gPiDCoMKg
+wqDCoMKgwqDCoMKgeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14NnN4LXNhaSIsIC5kYXRhID0gJmZz
+bF9zYWlfaW14NnN4X2RhdGEgfSwKPiA+IMKgwqDCoMKgwqDCoMKgwqB7IC5jb21wYXRpYmxlID0g
+ImZzbCxpbXg2dWwtc2FpIiwgLmRhdGEgPSAmZnNsX3NhaV9pbXg2c3hfZGF0YSB9LAo+ID4gK8Kg
+wqDCoMKgwqDCoMKgeyAuY29tcGF0aWJsZSA9ICJmc2wsaW14OG1xLXNhaSIsIC5kYXRhID0gJmZz
+bF9zYWlfaW14OG1fZGF0YSB9LAo+ID4gwqDCoMKgwqDCoMKgwqDCoHsgLyogc2VudGluZWwgKi8g
+fQo+ID4gwqB9Owo+ID4gwqBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBmc2xfc2FpX2lkcyk7Cj4g
+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ZzbC9mc2xfc2FpLmggYi9zb3VuZC9zb2MvZnNsL2Zz
+bF9zYWkuaAo+ID4gaW5kZXggN2MxZWY2NzFkYTI4Li5iNmE5MDUzZWQ0MDAgMTAwNjQ0Cj4gPiAt
+LS0gYS9zb3VuZC9zb2MvZnNsL2ZzbF9zYWkuaAo+ID4gKysrIGIvc291bmQvc29jL2ZzbC9mc2xf
+c2FpLmgKPiA+IEBAIC0xMjgsNiArMTI4LDcgQEAKPiA+IAo+ID4gwqBzdHJ1Y3QgZnNsX3NhaV9z
+b2NfZGF0YSB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgYm9vbCB1c2VfaW14X3BjbTsKPiA+ICvCoMKg
+wqDCoMKgwqDCoGJvb2wgaGFzX3ZlcnNpb25fcmVnaXN0ZXJzOwo+ID4gwqDCoMKgwqDCoMKgwqDC
+oHVuc2lnbmVkIGludCBmaWZvX2RlcHRoOwo+ID4gwqB9Owo+ID4gCj4gPiAtLQo+ID4gMi4yMC4x
+Cj4gPiAKPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCj4gPiBodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
