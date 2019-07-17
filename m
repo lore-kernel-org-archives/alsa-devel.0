@@ -1,54 +1,55 @@
-From: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH] ALSA: hda/realtek: apply ALC891 headset
-	fixup to one Dell machine
-Date: Tue, 16 Jul 2019 23:03:06 +0000
-Message-ID: <20190716230307.E581D21743__13944.3055073329$1563318253$gmane$org@mail.kernel.org>
-References: <20190716072134.10009-1-hui.wang@canonical.com>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v4 2/5] drm: bridge: dw-hdmi: Report connector status
+ using callback
+Date: Wed, 17 Jul 2019 10:17:25 +0800
+Message-ID: <CAFv8NwKVEpnUi=+Hvi1_2vdYqWFd49zu8eoQbMwnjg6i_PGhcA@mail.gmail.com>
+References: <20190716115725.66558-1-cychiang@chromium.org> <20190716115725.66558-3-cychiang@chromium.org>
+ <CA+Px+wWuCBvWra8+=szQOrvr3iv2YPMeoHHVtJ1vmaZWEEQ44A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B9F8F800C6
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 01:03:10 +0200 (CEST)
-In-Reply-To: <20190716072134.10009-1-hui.wang@canonical.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sasha Levin <sashal@kernel.org>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CA+Px+wWuCBvWra8+=szQOrvr3iv2YPMeoHHVtJ1vmaZWEEQ44A@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner <heiko@sntech.de>, Douglas Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, ALSA development <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-[This is an automated email]
-
-This commit has been processed because it contains a -stable tag.
-The stable tag indicates that it's relevant for the following trees: all
-
-The bot has tested the following trees: v5.2.1, v5.1.18, v4.19.59, v4.14.133, v4.9.185, v4.4.185.
-
-v5.2.1: Build OK!
-v5.1.18: Build OK!
-v4.19.59: Build OK!
-v4.14.133: Build OK!
-v4.9.185: Build OK!
-v4.4.185: Failed to apply! Possible dependencies:
-    78f4f7c2341f ("ALSA: hda/realtek - ALC891 headset mode for Dell")
-
-
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
-
---
-Thanks,
-Sasha
+On Tue, Jul 16, 2019 at 10:13 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Tue, Jul 16, 2019 at 7:57 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+> >
+> > Change the Kconfig of DRM_DW_HDMI so it selects SND_SOC_HDMI_CODEC.
+> > This is for the typedef of hdmi_codec_plugged_cb to be used in dw-hdmi.c.
+> Not sure why you select SND_SOC_HDMI_CODEC in this patch.  To have
+> definition of hdmi_codec_plugged_cb, include hdmi-codec.h should be
+> sufficient.
+>
+Thank you for the review!
+I misunderstood when to change Kconfig.
+Will fix in v5.
+> >
+> > diff --git a/drivers/gpu/drm/bridge/synopsys/Kconfig b/drivers/gpu/drm/bridge/synopsys/Kconfig
+> > index 21a1be3ced0f..309da052db97 100644
+> > --- a/drivers/gpu/drm/bridge/synopsys/Kconfig
+> > +++ b/drivers/gpu/drm/bridge/synopsys/Kconfig
+> > @@ -4,6 +4,7 @@ config DRM_DW_HDMI
+> >         select DRM_KMS_HELPER
+> >         select REGMAP_MMIO
+> >         select CEC_CORE if CEC_NOTIFIER
+> > +       select SND_SOC_HDMI_CODEC
+> So that it is weird to select this option.
+>
+Will be removed in v5.
+Thanks!
+> >
+> >  config DRM_DW_HDMI_AHB_AUDIO
+> >         tristate "Synopsys Designware AHB Audio interface"
+> > @@ -20,7 +21,6 @@ config DRM_DW_HDMI_I2S_AUDIO
+> >         tristate "Synopsys Designware I2S Audio interface"
+> >         depends on SND_SOC
+> >         depends on DRM_DW_HDMI
+> > -       select SND_SOC_HDMI_CODEC
+> Also strange for deselecting the option.  Should be in another commit
+> for another reason?
+Will be removed in v5.
+Thanks!
