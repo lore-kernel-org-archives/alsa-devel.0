@@ -1,94 +1,135 @@
-From: Angus Ainslie <angus@akkea.ca>
-Subject: Re: [PATCH 3/3] ASoC: fsl_sai: add i.MX8M support
-Date: Wed, 17 Jul 2019 09:15:00 -0600
-Message-ID: <ee809845f1a5fd5af3f73b35eaa79314@akkea.ca>
-References: <20190717105635.18514-1-l.stach@pengutronix.de>
- <20190717105635.18514-4-l.stach@pengutronix.de>
- <CAEnQRZCCTwMJKQnvP2mSQPcKNwtoAaMdXmQt_H+CGro=zVLsNA@mail.gmail.com>
- <1563374027.2676.18.camel@pengutronix.de>
- <CAEnQRZB96Q4stM4JsJskMhdH-7ktbc-QxPeibNOLHEXghtS-1w@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: Atom: read timestamp moved to
+ period_elapsed
+Date: Wed, 17 Jul 2019 10:30:26 -0500
+Message-ID: <029bc013-608b-031b-780e-c48486fd9c15@linux.intel.com>
+References: <20190709040147.111927-1-levinale@chromium.org>
+ <20190709114519.GW9224@smile.fi.intel.com>
+ <CAOReqxirZdKJQ59Z4789wT5Cxh2fyQrUcuB1pm9AidYLiPEs1A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37350F800C2
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 17:15:02 +0200 (CEST)
-In-Reply-To: <CAEnQRZB96Q4stM4JsJskMhdH-7ktbc-QxPeibNOLHEXghtS-1w@mail.gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Lucas Stach <l.stach@pengutronix.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOReqxirZdKJQ59Z4789wT5Cxh2fyQrUcuB1pm9AidYLiPEs1A@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Curtis Malainey <cujomalainey@google.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@chromium.org>, Alex Levin <levinale@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-17 09:06, Daniel Baluta wrote:
-> On Wed, Jul 17, 2019 at 5:33 PM Lucas Stach <l.stach@pengutronix.de> 
-> wrote:
->> 
->> Hi Daniel,
->> 
->> Am Mittwoch, den 17.07.2019, 17:16 +0300 schrieb Daniel Baluta:
->> > > On Wed, Jul 17, 2019 at 1:59 PM Lucas Stach <l.stach@pengutronix.de> wrote:
->> > >
->> > > The SAI block on the i.MX8M moved the register layout, as 2 version
->> > > registers were added at the start of the register map. We deal with
->> > > this by moving the start of the regmap, so both register layouts
->> > > look the same to accesses going through the regmap.
->> > >
->> > > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
->> >
->> > This is a little bit tricky. We need the verid register in order
->> > to differentiate IPs which can support 1:1 ratio for bclk:mclk
->> 
->> And this patch doesn't prevent this usage. If needed we can just read
->> the verid via a plain readl on the base mapping in the probe function
->> and cache it in struct fsl_sai. This seems way less intrusive than
->> carrying a register offset through all of the regmap accessors and
->> validation functions. I simply haven't implemented it in this patch, 
->> as
->> I had no need for it right now.
-> 
-> I must admit this is a very clever idea! Anyhow, I'm having some 
-> concerns
-> because unfortunately not all registers were shifted by 8 bytes.
-> 
-> See: imx6sx [1] (page 3575)  and imx8X [2] (page 5512) RMs.
-> 
-> We have something like this:
-> 
-> i.mx6 SX:
-> 
-> 00: TCSR
-> 04: TCR1
-> 08: TCR2
-> 0C: TCR3
-> ....
-> 60: TMR
-> 80: RCSR
-> 
-> i.mx 8X
-> 
-> 00: VERID
-> 04: PARAM
-> 08: TCSR
-> 0C: TCR1
-> ...
-> 60: TMR
-> 88: RCSR
-> 
 
-We could split it into an upper and a lower regmap. Only the lower would 
-need the version register offset.
 
-> [1]
-> https://cache.nxp.com/secured/assets/documents/en/reference-manual/IMX6SXRM.pdf?__gda__=1563382650_d60ad6189b2431a35a0757ffc87cfb3f&fileExt=.pdf
-> [2] https://www.nxp.com/docs/en/reference-manual/IMX8DQXPRM.pdf
+On 7/10/19 6:15 PM, Curtis Malainey wrote:
+> On Tue, Jul 9, 2019 at 4:45 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+>>
+>> On Mon, Jul 08, 2019 at 09:01:47PM -0700, Alex Levin wrote:
+>>> sst_platform_pcm_pointer is called from both snd_pcm_period_elapsed and
+>>> from snd_pcm_ioctl. Calling read timestamp results in recalculating
+>>> pcm_delay and buffer_ptr (sst_calc_tstamp) which consumes buffers in a
+>>> faster rate than intended.
+>>> In a tested BSW system with chtrt5650, for a rate of 48000, the
+>>> measured rate was sometimes 10 times more than that.
+>>> After moving the timestamp read to period elapsed, buffer consumption is
+>>> as expected.
+>>
+>>  From code prospective it looks good. You may take mine
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>
+>> Though I'm not an expert in the area, Pierre and / or Liam should give
+>> their blessing.
+>>
+> Agreed, Liam or Pierre should also give their ok since this is one of
+> the closed source firmware drivers.
+> 
+> Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
+
+Humm, this first review after my Summer break isn't straightforward.
+
+By moving the timestamp update to the period elapsed event, don't you 
+prevent the use of this driver in no-interrupt mode - which I understood 
+as the baseline for Chrome?
+
+And I also don't get how this timestamp might lead to 10x speed issues, 
+this driver has been around for a number of years and that specific 
+error was never seen. What is different in this platform and can this be 
+seen e.g. on a Cyan device?
+
+
+>>>
+>>> Signed-off-by: Alex Levin <levinale@chromium.org>
+>>> ---
+>>>   sound/soc/intel/atom/sst-mfld-platform-pcm.c | 23 +++++++++++++-------
+>>>   1 file changed, 15 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+>>> index 0e8b1c5eec88..196af0b30b41 100644
+>>> --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+>>> +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+>>> @@ -265,16 +265,28 @@ static void sst_period_elapsed(void *arg)
+>>>   {
+>>>        struct snd_pcm_substream *substream = arg;
+>>>        struct sst_runtime_stream *stream;
+>>> -     int status;
+>>> +     struct snd_soc_pcm_runtime *rtd;
+>>> +     int status, ret_val;
+>>>
+>>>        if (!substream || !substream->runtime)
+>>>                return;
+>>>        stream = substream->runtime->private_data;
+>>>        if (!stream)
+>>>                return;
+>>> +
+>>> +     rtd = substream->private_data;
+>>> +     if (!rtd)
+>>> +             return;
+>>> +
+>>>        status = sst_get_stream_status(stream);
+>>>        if (status != SST_PLATFORM_RUNNING)
+>>>                return;
+>>> +
+>>> +     ret_val = stream->ops->stream_read_tstamp(sst->dev, &stream->stream_info);
+>>> +     if (ret_val) {
+>>> +             dev_err(rtd->dev, "stream_read_tstamp err code = %d\n", ret_val);
+>>> +             return;
+>>> +     }
+>>>        snd_pcm_period_elapsed(substream);
+>>>   }
+>>>
+>>> @@ -658,20 +670,15 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+>>>                        (struct snd_pcm_substream *substream)
+>>>   {
+>>>        struct sst_runtime_stream *stream;
+>>> -     int ret_val, status;
+>>> +     int status;
+>>>        struct pcm_stream_info *str_info;
+>>> -     struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>>>
+>>>        stream = substream->runtime->private_data;
+>>>        status = sst_get_stream_status(stream);
+>>>        if (status == SST_PLATFORM_INIT)
+>>>                return 0;
+>>> +
+>>>        str_info = &stream->stream_info;
+>>> -     ret_val = stream->ops->stream_read_tstamp(sst->dev, str_info);
+>>> -     if (ret_val) {
+>>> -             dev_err(rtd->dev, "sst: error code = %d\n", ret_val);
+>>> -             return ret_val;
+>>> -     }
+>>>        substream->runtime->delay = str_info->pcm_delay;
+>>>        return str_info->buffer_ptr;
+>>>   }
+>>> --
+>>> 2.22.0.410.gd8fdbe21b5-goog
+>>>
+>>
+>> --
+>> With Best Regards,
+>> Andy Shevchenko
+>>
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
