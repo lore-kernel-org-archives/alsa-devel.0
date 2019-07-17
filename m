@@ -1,142 +1,194 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: fsl_sai: add of_match data
-Date: Wed, 17 Jul 2019 17:17:56 +0300
-Message-ID: <CAEnQRZArHbjnmJnR-cNRJ9tixuA5CeU0WV7kt=7_FGx4HpdsDQ@mail.gmail.com>
-References: <20190717105635.18514-1-l.stach@pengutronix.de>
- <20190717105635.18514-2-l.stach@pengutronix.de>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Subject: Re: [PATCH v3 6/6] ASoC: sgtl5000: Improve VAG power and mute control
+Date: Wed, 17 Jul 2019 14:24:12 +0000
+Message-ID: <AM6PR05MB6535E442AF37B7B079761DB2F9C90@AM6PR05MB6535.eurprd05.prod.outlook.com>
+References: <20190712145550.27500-1-oleksandr.suvorov@toradex.com>
+ <20190712145550.27500-7-oleksandr.suvorov@toradex.com>,<e9f0f7c7-4c11-36ad-679c-503f6160b83f@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77967F800C2
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 16:18:08 +0200 (CEST)
-Received: by mail-wm1-x341.google.com with SMTP id l2so22372856wmg.0
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 07:18:08 -0700 (PDT)
-In-Reply-To: <20190717105635.18514-2-l.stach@pengutronix.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Lucas Stach <l.stach@pengutronix.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Angus Ainslie <angus@akkea.ca>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <e9f0f7c7-4c11-36ad-679c-503f6160b83f@intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Igor Opaniuk <igor.opaniuk@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 17, 2019 at 1:58 PM Lucas Stach <l.stach@pengutronix.de> wrote:
->
-> New revisions of the SAI IP block have even more differences that need
-> be taken into account by the driver. To avoid sprinking compatible
-> checks all over the driver move the current differences into of_match_data.
->
-> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Thank you, Cezary!
 
-This is the way I handled in my patch series too. So,
+This is a good idea, I'll rework my patch accordingly.
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+R&D Engineer
+Oleksandr Suvorov
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 22 ++++++++++++++--------
->  sound/soc/fsl/fsl_sai.h |  6 +++++-
->  2 files changed, 19 insertions(+), 9 deletions(-)
+Toradex AG
+
+________________________________________
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Sent: Sunday, July 14, 2019 8:17:43 PM
+To: Oleksandr Suvorov
+Cc: Fabio Estevam; linux-kernel@vger.kernel.org; alsa-devel@alsa-project.or=
+g; Marcel Ziswiler; Igor Opaniuk; Jaroslav Kysela; Mark Brown; Takashi Iwai=
+; Liam Girdwood
+Subject: Re: [PATCH v3 6/6] ASoC: sgtl5000: Improve VAG power and mute cont=
+rol
+
+On 2019-07-12 16:56, Oleksandr Suvorov wrote:
 >
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 812c94fbb160..3a1ed8b857d6 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -9,6 +9,7 @@
->  #include <linux/dmaengine.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> @@ -798,10 +799,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
->                 return -ENOMEM;
+> +enum {
+> +     HP_POWER_EVENT,
+> +     DAC_POWER_EVENT,
+> +     ADC_POWER_EVENT
+> +};
+> +
+> +struct sgtl5000_mute_state {
+> +     u16 hp_event;
+> +     u16 dac_event;
+> +     u16 adc_event;
+> +};
+> +
+>   /* sgtl5000 private structure in codec */
+>   struct sgtl5000_priv {
+>       int sysclk;     /* sysclk rate */
+> @@ -137,8 +156,109 @@ struct sgtl5000_priv {
+>       u8 micbias_voltage;
+>       u8 lrclk_strength;
+>       u8 sclk_strength;
+> +     struct sgtl5000_mute_state mute_state;
+
+Why not array instead?
+u16 mute_state[ADC_POWER_EVENT+1];
+-or-
+u16 mute_state[LAST_POWER_EVENT+1]; (if you choose to add explicit LAST
+enum constant).
+
+Enables simplification, see below.
+
+> @@ -170,40 +290,79 @@ static int mic_bias_event(struct snd_soc_dapm_widge=
+t *w,
+>       return 0;
+>   }
 >
->         sai->pdev = pdev;
+> -/*
+> - * As manual described, ADC/DAC only works when VAG powerup,
+> - * So enabled VAG before ADC/DAC up.
+> - * In power down case, we need wait 400ms when vag fully ramped down.
+> - */
+> -static int power_vag_event(struct snd_soc_dapm_widget *w,
+> -     struct snd_kcontrol *kcontrol, int event)
+> +static void vag_and_mute_control(struct snd_soc_component *component,
+> +                              int event, int event_source,
+> +                              u16 mute_mask, u16 *mute_reg)
+>   {
+> -     struct snd_soc_component *component =3D snd_soc_dapm_to_component(w=
+->dapm);
+> -     const u32 mask =3D SGTL5000_DAC_POWERUP | SGTL5000_ADC_POWERUP;
 > -
-> -       if (of_device_is_compatible(np, "fsl,imx6sx-sai") ||
-> -           of_device_is_compatible(np, "fsl,imx6ul-sai"))
-> -               sai->sai_on_imx = true;
-> +       sai->soc_data = of_device_get_match_data(&pdev->dev);
->
->         sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
->
-> @@ -910,7 +908,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
->         if (ret)
->                 return ret;
->
-> -       if (sai->sai_on_imx)
-> +       if (sai->soc_data->use_imx_pcm)
->                 return imx_pcm_dma_init(pdev, IMX_SAI_DMABUF_SIZE);
->         else
->                 return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-> @@ -923,10 +921,18 @@ static int fsl_sai_remove(struct platform_device *pdev)
->         return 0;
->  }
->
-> +static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
-> +       .use_imx_pcm = false,
-> +};
+>       switch (event) {
+> -     case SND_SOC_DAPM_POST_PMU:
+> -             snd_soc_component_update_bits(component, SGTL5000_CHIP_ANA_=
+POWER,
+> -                     SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+> -             msleep(400);
+> +     case SND_SOC_DAPM_PRE_PMU:
+> +             *mute_reg =3D mute_output(component, mute_mask);
+> +             break;
+> +     case SND_SOC_DAPM_POST_PMU:
+> +             vag_power_on(component, event_source);
+> +             restore_output(component, mute_mask, *mute_reg);
+>               break;
+> -
+>       case SND_SOC_DAPM_PRE_PMD:
+> -             /*
+> -              * Don't clear VAG_POWERUP, when both DAC and ADC are
+> -              * operational to prevent inadvertently starving the
+> -              * other one of them.
+> -              */
+> -             if ((snd_soc_component_read32(component, SGTL5000_CHIP_ANA_=
+POWER) &
+> -                             mask) !=3D mask) {
+> -                     snd_soc_component_update_bits(component, SGTL5000_C=
+HIP_ANA_POWER,
+> -                             SGTL5000_VAG_POWERUP, 0);
+> -                     msleep(400);
+> -             }
+> +             *mute_reg =3D mute_output(component, mute_mask);
+> +             vag_power_off(component, event_source);
+> +             break;
+> +     case SND_SOC_DAPM_POST_PMD:
+> +             restore_output(component, mute_mask, *mute_reg);
+>               break;
+>       default:
+>               break;
+>       }
+> +}
 > +
-> +static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
-> +       .use_imx_pcm = true,
-> +};
+> +/*
+> + * Mute Headphone when power it up/down.
+> + * Control VAG power on HP power path.
+> + */
+> +static int headphone_pga_event(struct snd_soc_dapm_widget *w,
+> +     struct snd_kcontrol *kcontrol, int event)
+> +{
+> +     struct snd_soc_component *component =3D
+> +             snd_soc_dapm_to_component(w->dapm);
+> +     struct sgtl5000_priv *sgtl5000 =3D
+> +             snd_soc_component_get_drvdata(component);
 > +
->  static const struct of_device_id fsl_sai_ids[] = {
-> -       { .compatible = "fsl,vf610-sai", },
-> -       { .compatible = "fsl,imx6sx-sai", },
-> -       { .compatible = "fsl,imx6ul-sai", },
-> +       { .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
-> +       { .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
-> +       { .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
->         { /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, fsl_sai_ids);
-> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-> index 24cb156bf995..83e2bfe05b1b 100644
-> --- a/sound/soc/fsl/fsl_sai.h
-> +++ b/sound/soc/fsl/fsl_sai.h
-> @@ -126,6 +126,10 @@
->  #define FSL_SAI_MAXBURST_TX 6
->  #define FSL_SAI_MAXBURST_RX 6
->
-> +struct fsl_sai_soc_data {
-> +       bool use_imx_pcm;
-> +};
+> +     vag_and_mute_control(component, event, HP_POWER_EVENT,
+> +                          SGTL5000_HP_MUTE,
+> +                          &sgtl5000->mute_state.hp_event);
 > +
->  struct fsl_sai {
->         struct platform_device *pdev;
->         struct regmap *regmap;
-> @@ -135,7 +139,6 @@ struct fsl_sai {
->         bool is_slave_mode;
->         bool is_lsb_first;
->         bool is_dsp_mode;
-> -       bool sai_on_imx;
->         bool synchronous[2];
+> +     return 0;
+> +}
+> +
+> +/* As manual describes, ADC/DAC powering up/down requires
+> + * to mute outputs to avoid pops.
+> + * Control VAG power on ADC/DAC power path.
+> + */
+> +static int adc_updown_depop(struct snd_soc_dapm_widget *w,
+> +     struct snd_kcontrol *kcontrol, int event)
+> +{
+> +     struct snd_soc_component *component =3D
+> +             snd_soc_dapm_to_component(w->dapm);
+> +     struct sgtl5000_priv *sgtl5000 =3D
+> +             snd_soc_component_get_drvdata(component);
+> +
+> +     vag_and_mute_control(component, event, ADC_POWER_EVENT,
+> +                          SGTL5000_OUTPUTS_MUTE,
+> +                          &sgtl5000->mute_state.adc_event);
+> +
+> +     return 0;
+> +}
+> +
+> +static int dac_updown_depop(struct snd_soc_dapm_widget *w,
+> +     struct snd_kcontrol *kcontrol, int event)
+> +{
+> +     struct snd_soc_component *component =3D
+> +             snd_soc_dapm_to_component(w->dapm);
+> +     struct sgtl5000_priv *sgtl5000 =3D
+> +             snd_soc_component_get_drvdata(component);
+> +
+> +     vag_and_mute_control(component, event, DAC_POWER_EVENT,
+> +                          SGTL5000_OUTPUTS_MUTE,
+> +                          &sgtl5000->mute_state.dac_event);
 >
->         unsigned int mclk_id[2];
-> @@ -143,6 +146,7 @@ struct fsl_sai {
->         unsigned int slots;
->         unsigned int slot_width;
->
-> +       const struct fsl_sai_soc_data *soc_data;
->         struct snd_dmaengine_dai_dma_data dma_params_rx;
->         struct snd_dmaengine_dai_dma_data dma_params_tx;
->  };
-> --
-> 2.20.1
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>       return 0;
+>   }
+
+With array approach you can simplify these 3 callbacks:
+- remove local declaration of sgtl5000
+- remove the need for "u16 *mute_reg" param for vag_and_mute_control
+(you always provide the xxx_event field of mute_state corresponding to
+given XXX_POWER_EVENT anyway)
+
+The sgtl5000 local ptr would be declared within common handler, which
+vag_and_mute_control clearly is. Said handler declaration could be
+updated to again require widget rather than component.
+
+Cherry on top: relocation of "return 0;" directly to
+vag_and_mute_control. Leaving it void (as it is), however, might also be
+appropriate (explicit).
+
+Czarek
