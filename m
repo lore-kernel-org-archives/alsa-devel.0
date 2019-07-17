@@ -1,41 +1,66 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Is there a way to support TX master mode and RX
- slave mode?
-Date: Wed, 17 Jul 2019 11:02:05 -0500
-Message-ID: <548bda36-b81f-1811-7969-e80e698ecfa3@linux.intel.com>
-References: <VE1PR04MB6479C4D2CD4B9D486209102FE3CE0@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Subject: [PATCH v4 0/6] VAG power control improvement for sgtl5000 codec
+Date: Wed, 17 Jul 2019 16:30:38 +0000
+Message-ID: <20190717163014.429-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F7F6F800C2
- for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2019 18:02:10 +0200 (CEST)
-In-Reply-To: <VE1PR04MB6479C4D2CD4B9D486209102FE3CE0@VE1PR04MB6479.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <stable-owner@vger.kernel.org>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+VAG power control is improved to fit the manual [1]. This patchset fixes as
+minimum one bug: if customer muxes Headphone to Line-In right after boot,
+the VAG power remains off that leads to poor sound quality from line-in.
 
-On 7/16/19 3:35 AM, S.j. Wang wrote:
-> Hi  Experts
-> 
-> Is there a way to support TX master mode but RX slave mode?  It seems current .set_fmt only set same mode for TX and RX.
+I.e. after boot:
+- Connect sound source to Line-In jack;
+- Connect headphone to HP jack;
+- Run following commands:
+$ amixer set 'Headphone' 80%
+$ amixer set 'Headphone Mux' LINE_IN
 
-good question if you are thinking of supporting the 6-pin versions of 
-I2S interfaces with independent bit clock and frame sync on RX and TX
-Looking at the topology definition it could be that this mode needs to 
-be handled with separate dailinks. Adding Mark in case he didn't see 
-this question.
+Also this series includes fixes of non-important bugs in sgtl5000 codec
+driver.
+
+[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+
+Changes in v4:
+- CC the patch to kernel-stable
+- Code optimization, simplify function signature
+  (thanks to Cezary Rojewski <cezary.rojewski@intel.com> for an idea)
+- CC the patch to kernel-stable
+- Add a Fixes tag
+
+Changes in v3:
+- Add the reference to NXP SGTL5000 data sheet to commit message
+- Add the reference to NXP SGTL5000 data sheet to commit message
+- Fix multi-line comment format
+
+Changes in v2:
+- Fix patch formatting
+- Fix patch formatting
+- Fix patch formatting
+- Fix patch formatting
+- Fix patch formatting
+- Fix patch formatting
+
+Oleksandr Suvorov (6):
+  ASoC: Define a set of DAPM pre/post-up events
+  ASoC: sgtl5000: Improve VAG power and mute control
+  ASoC: sgtl5000: Fix definition of VAG Ramp Control
+  ASoC: sgtl5000: add ADC mute control
+  ASoC: sgtl5000: Fix of unmute outputs on probe
+  ASoC: sgtl5000: Fix charge pump source assignment
+
+ include/sound/soc-dapm.h    |   2 +
+ sound/soc/codecs/sgtl5000.c | 240 ++++++++++++++++++++++++++++++------
+ sound/soc/codecs/sgtl5000.h |   2 +-
+ 3 files changed, 203 insertions(+), 41 deletions(-)
+
+--=20
+2.20.1
