@@ -1,89 +1,91 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 3/3] ASoC: fsl_sai: add i.MX8M support
-Date: Thu, 18 Jul 2019 22:19:08 +0200
-Message-ID: <a7eabb9d-6600-6b50-3f12-71fe19d971ae@intel.com>
-References: <20190717105635.18514-1-l.stach@pengutronix.de>
- <20190717105635.18514-4-l.stach@pengutronix.de>
- <9ebe242b-ceac-6064-5b8b-698068fa11f0@intel.com>
- <CAEnQRZDk-O9B2iyjO=cnmqff6praf-SqNFsR=SM2Et-5Xxui5Q@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] soundwire: fix regmap dependencies and align with other serial links
+Date: Thu, 18 Jul 2019 18:02:15 -0500
+Message-ID: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8057CF8015B
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 22:19:16 +0200 (CEST)
-In-Reply-To: <CAEnQRZDk-O9B2iyjO=cnmqff6praf-SqNFsR=SM2Et-5Xxui5Q@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Angus Ainslie <angus@akkea.ca>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Lucas Stach <l.stach@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-18 21:22, Daniel Baluta wrote:
-> On Thu, Jul 18, 2019 at 10:12 PM Cezary Rojewski
-> <cezary.rojewski@intel.com> wrote:
->>
->> On 2019-07-17 12:56, Lucas Stach wrote:
->>>    static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
->>>        .use_imx_pcm = false,
->>> +     .has_version_registers = false,
->>>        .fifo_depth = 32,
->>>    };
->>>
->>>    static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
->>>        .use_imx_pcm = true,
->>> +     .has_version_registers = false,
->>>        .fifo_depth = 32,
->>>    };
->>>
->>> +static const struct fsl_sai_soc_data fsl_sai_imx8m_data = {
->>> +     .use_imx_pcm = true,
->>> +     .has_version_registers = true,
->>> +     .fifo_depth = 128,
->>> +};
->>> +
->>>    static const struct of_device_id fsl_sai_ids[] = {
->>>        { .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
->>>        { .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
->>>        { .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
->>> +     { .compatible = "fsl,imx8mq-sai", .data = &fsl_sai_imx8m_data },
->>>        { /* sentinel */ }
->>>    };
->>
-> 
-> Hi Czarek,
-> 
->> These datas are populating quite rapidly. If you're planning for adding
->> more (and/ or appending additional fields), declaring helper macro could
->> prove useful.
-> 
-> There would be definitely more fields inside *_data structures. Anyhow,
-> not sure what do you mean by declaring a helper macro.
-> 
-> Can you provide an example and how would that be helpful?
-> 
-> thanks,
-> Daniel.
-> 
+The existing code has a mixed select/depend usage which makes no sense.
 
-Hello Daniel,
+config SOUNDWIRE_BUS
+       tristate
+       select REGMAP_SOUNDWIRE
 
-My suggestion was rather straight-forward - examples of such can be 
-found in soc-dapm.h header file. Instead of stating everything 
-explicitly, there are e.g.: SND_SOC_DAPM_SPK or SND_SOC_DAPM_PGA 
-declared to help me out.
+config REGMAP_SOUNDWIRE
+        tristate
+        depends on SOUNDWIRE_BUS
 
-Nothing fancy, just space savers if your structs populate like rabbits.
+Let's remove one layer of Kconfig definitions and align with the
+solutions used by all other serial links.
 
-Czarek
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/base/regmap/Kconfig | 2 +-
+ drivers/soundwire/Kconfig   | 7 +------
+ drivers/soundwire/Makefile  | 2 +-
+ 3 files changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+index 6ad5ef48b61e..8cd2ac650b50 100644
+--- a/drivers/base/regmap/Kconfig
++++ b/drivers/base/regmap/Kconfig
+@@ -44,7 +44,7 @@ config REGMAP_IRQ
+ 
+ config REGMAP_SOUNDWIRE
+ 	tristate
+-	depends on SOUNDWIRE_BUS
++	depends on SOUNDWIRE
+ 
+ config REGMAP_SCCB
+ 	tristate
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 3a01cfd70fdc..f518273cfbe3 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -4,7 +4,7 @@
+ #
+ 
+ menuconfig SOUNDWIRE
+-	bool "SoundWire support"
++	tristate "SoundWire support"
+ 	help
+ 	  SoundWire is a 2-Pin interface with data and clock line ratified
+ 	  by the MIPI Alliance. SoundWire is used for transporting data
+@@ -17,17 +17,12 @@ if SOUNDWIRE
+ 
+ comment "SoundWire Devices"
+ 
+-config SOUNDWIRE_BUS
+-	tristate
+-	select REGMAP_SOUNDWIRE
+-
+ config SOUNDWIRE_CADENCE
+ 	tristate
+ 
+ config SOUNDWIRE_INTEL
+ 	tristate "Intel SoundWire Master driver"
+ 	select SOUNDWIRE_CADENCE
+-	select SOUNDWIRE_BUS
+ 	depends on X86 && ACPI && SND_SOC
+ 	help
+ 	  SoundWire Intel Master driver.
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index fd99a831b92a..45b7e5001653 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -5,7 +5,7 @@
+ 
+ #Bus Objs
+ soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
+-obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
++obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+ 
+ #Cadence Objs
+ soundwire-cadence-objs := cadence_master.o
+-- 
+2.20.1
