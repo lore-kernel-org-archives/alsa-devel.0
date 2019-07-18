@@ -1,21 +1,26 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: [PATCH v3 1/2] ASoC: SOF: add flag for position
-	update ipc
-Date: Thu, 18 Jul 2019 13:06:57 +0800
-Message-ID: <a1a676aa-e1da-0f6a-4dbd-972b4973553d@linux.intel.com>
-References: <20190718031113.25040-1-yang.jie@linux.intel.com>
- <94753e7c-931b-2b24-b92b-283e7abbb9ac@linux.intel.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: fsl_sai: add i.MX8M support
+Date: Thu, 18 Jul 2019 11:35:37 +0300
+Message-ID: <CAEnQRZDZ11LSK62qCYq9VuDRBtWrbgbooDFa6A7DV=Z2ftTq-g@mail.gmail.com>
+References: <20190717105635.18514-1-l.stach@pengutronix.de>
+ <20190717105635.18514-4-l.stach@pengutronix.de>
+ <CAEnQRZCCTwMJKQnvP2mSQPcKNwtoAaMdXmQt_H+CGro=zVLsNA@mail.gmail.com>
+ <1563374027.2676.18.camel@pengutronix.de>
+ <CAEnQRZB96Q4stM4JsJskMhdH-7ktbc-QxPeibNOLHEXghtS-1w@mail.gmail.com>
+ <ee809845f1a5fd5af3f73b35eaa79314@akkea.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6512CF8015B
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 07:01:32 +0200 (CEST)
-In-Reply-To: <94753e7c-931b-2b24-b92b-283e7abbb9ac@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 092E4F800C0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 10:35:49 +0200 (CEST)
+Received: by mail-wr1-x444.google.com with SMTP id x1so12690598wrr.9
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 01:35:49 -0700 (PDT)
+In-Reply-To: <ee809845f1a5fd5af3f73b35eaa79314@akkea.ca>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +30,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: marcin.rajwa@intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>, ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+To: Angus Ainslie <angus@akkea.ca>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Lucas Stach <l.stach@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE5LzcvMTgg5LiK5Y2IMTE6MzUsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+
-IAo+IAo+IE9uIDcvMTcvMTkgMTA6MTEgUE0sIEtleW9uIEppZSB3cm90ZToKPj4gRnJvbTogTWFy
-Y2luIFJhandhIDxtYXJjaW4ucmFqd2FAbGludXguaW50ZWwuY29tPgo+Pgo+PiBJbiBzb21lIGNh
-c2VzLCBGVyBtaWdodCBuZWVkIHRvIHVzZSB0aGUgaG9zdF9wZXJpb2RfYnl0ZXMgZmllbGQgdG8K
-Pj4gc3luY2hyb25pemUgdGhlIERNQSBjb3B5aW5nICh3aXRoIGhvc3Qgc2lkZSkgYnV0IHRoZSBk
-cml2ZXIgZG9lcyBub3QKPiAKPiBpdCdzIHlvdXIgcmlnaHQgdG8gZWRpdCBteSBzdWdnZXN0ZWQg
-d29yZGluZywgYnV0IHRoZSBub3Rpb24gb2YgCj4gJ3N5bmNocm9uaXphdGlvbicgaXMgZmFyIGZy
-b20gY2xlYXIuIGl0J3MgbXkgdW5kZXJzdGFuZGluZyB0aGF0IHRoZSAKPiBob3N0X3BlcmlvZF9i
-eXRlcyBkZWZpbmVzIHRoZSBETUEgdHJhbnNmZXIgc2l6ZSByZXF1ZXN0ZWQgYnkgdGhlIAo+IGZp
-cm13YXJlLCB3aGljaCBpc24ndCBhIHZhbHVlIHRoYXQgbWF0dGVycyB0byB0aGUgaG9zdCBleGNl
-cHQgZm9yIHJld2luZCAKPiB1c2FnZXMuCgpIaSBQaWVycmUsIGhlcmUgdGhlIGhvc3RfcGVyaW9k
-X2J5dGVzIGlzIHJlcXVlc3RlZCBieSBob3N0LCBGVyBoYXMgaXRzIApvd24gcGVyaW9kIHNpemUs
-IGFuZCBETUEgd2lsbCB0cmFuc2ZlciBkYXRhIGluIEZXIGJ1ZmZlciBwZXJpb2Qgc2l6ZS4gSXQg
-CndvcmtzIGxpa2UgdGhpczoKCkZXIGJ1ZmZlcltwZXJpb2QgMCwgcGVyaW9kIDEsIC4uLl0gPD09
-PiBETUEgPD09PiBob3N0L2Fsc2EgCmJ1ZmZlcltob3N0X3BlcmlvZCAwLCBob3N0X3ByaW9kIDEs
-IC4uLl0KCldlIG5lZWQgdGhpcyBob3N0X3ByZWlvZF9ieXRlcyBpbmZvcm1hdGlvbiBpbiBGVyB0
-byBkbyBmYXN0IApkcmFpbmluZyhlLmcuIHJlY29yZCAyIHNlY29uZHMgZGF0YSB3aXRoaW4gMTBt
-cykgaW4gbW1hcCBjYXB0dXJlLCB3ZSBhcmUgCnNsb3dpbmcgZG93biB0aGUgZHJhaW5pbmcgaW4g
-c21hbGxlciBob3N0X3BlcmlvZF9ieXRlcyBjYXNlcywgb3RoZXJ3aXNlLCAKYXJlY29yZCBjYW4n
-dCByZWFkIHRoZSBidWZmZXIgaW4gdGltZSBhbmQgb3ZlcnJ1biB3aWxsIGhhcHBlbi4KCk1heWJl
-IHRoZSB3b3JkaW5nICJzeW5jaHJvbml6ZSIgaGVyZSBpcyBpbmFjY3VyYXRlLCBob3cgYWJvdXQg
-c29tZXRoaW5nIApsaWtlIHRoaXM6CgoiRlcgbWlnaHQgbmVlZCB0byB1c2UgdGhlIGhvc3RfcGVy
-aW9kX2J5dGVzIGZpZWxkIHRvIGNvbmZpZ3VyZSBhbmQgCmNvbnRyb2wgdGhlIERNQSBjb3B5aW5n
-IHNwZWVkIGJ1dCB0aGUgZHJpdmVyIGRvZXMgbm90Li4uIgoKPiAKPj4gbmVlZCBhbnkgcG9zaXRp
-b24gaW5mb3JtYXRpb24gcmV0dXJuZWQgb3ZlciB0aGUgSVBDIGNoYW5uZWwgYnkgdGhlCj4+IGZp
-cm13YXJlLiBUaGUgY3VycmVudCBJUEMgZGVmaW5pdGlvbiBwcmV2ZW50cyB0aGlzIGNhcGFiaWxp
-dHksIHNvIGFkZAo+PiBuZXcgZmllbGQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hcmNpbiBSYWp3
-YSA8bWFyY2luLnJhandhQGxpbnV4LmludGVsLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogS2V5b24g
-SmllIDx5YW5nLmppZUBsaW51eC5pbnRlbC5jb20+Cj4+IFJldmlld2VkLWJ5OiBSYW5qYW5pIFNy
-aWRoYXJhbiA8cmFuamFuaS5zcmlkaGFyYW5AbGludXguaW50ZWwuY29tPgo+PiAtLS0KPj4gwqAg
-aW5jbHVkZS9zb3VuZC9zb2Yvc3RyZWFtLmggfCA0ICsrLS0KPj4gwqAgMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvc291bmQvc29mL3N0cmVhbS5oIGIvaW5jbHVkZS9zb3VuZC9zb2Yvc3RyZWFtLmgKPj4gaW5k
-ZXggNjQzZjE3NWNiNDc5Li4wNmFmNGVjYjI1ODQgMTAwNjQ0Cj4+IC0tLSBhL2luY2x1ZGUvc291
-bmQvc29mL3N0cmVhbS5oCj4+ICsrKyBiL2luY2x1ZGUvc291bmQvc29mL3N0cmVhbS5oCj4+IEBA
-IC04MywxMCArODMsMTAgQEAgc3RydWN0IHNvZl9pcGNfc3RyZWFtX3BhcmFtcyB7Cj4+IMKgwqDC
-oMKgwqAgdWludDE2X3Qgc2FtcGxlX3ZhbGlkX2J5dGVzOwo+PiDCoMKgwqDCoMKgIHVpbnQxNl90
-IHNhbXBsZV9jb250YWluZXJfYnl0ZXM7Cj4+IC3CoMKgwqAgLyogZm9yIG5vdGlmeWluZyBob3N0
-IHBlcmlvZCBoYXMgY29tcGxldGVkIC0gMCBtZWFucyBubyBwZXJpb2QgCj4+IElSUSAqLwo+PiDC
-oMKgwqDCoMKgIHVpbnQzMl90IGhvc3RfcGVyaW9kX2J5dGVzOwo+PiArwqDCoMKgIHVpbnQzMl90
-IG5vX3Bvc2l0aW9uX2lwYzsgLyogMSBtZWFucyBubyBJUEMgZm9yIHBvc2l0aW9uIHVwYWR0ZSAq
-Lwo+IAo+IHR5cG86IHVwZGF0ZQoKT0ssIHRoYW5rcywgYW5vdGhlciB1cGRhdGUgdmVyc2lvbiBu
-ZWVkZWQgZm9yIGl0LgoKVGhhbmtzLAp+S2V5b24KCj4gCj4+IC3CoMKgwqAgdWludDMyX3QgcmVz
-ZXJ2ZWRbMl07Cj4+ICvCoMKgwqAgdWludDE2X3QgcmVzZXJ2ZWRbM107Cj4+IMKgwqDCoMKgwqAg
-dWludDE2X3QgY2htYXBbU09GX0lQQ19NQVhfQ0hBTk5FTFNdO8KgwqDCoCAvKio8IGNoYW5uZWwg
-bWFwIC0gCj4+IFNPRl9DSE1BUF8gKi8KPj4gwqAgfSBfX3BhY2tlZDsKPj4KPiAKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Jul 17, 2019 at 6:15 PM Angus Ainslie <angus@akkea.ca> wrote:
+>
+> On 2019-07-17 09:06, Daniel Baluta wrote:
+> > On Wed, Jul 17, 2019 at 5:33 PM Lucas Stach <l.stach@pengutronix.de>
+> > wrote:
+> >>
+> >> Hi Daniel,
+> >>
+> >> Am Mittwoch, den 17.07.2019, 17:16 +0300 schrieb Daniel Baluta:
+> >> > > On Wed, Jul 17, 2019 at 1:59 PM Lucas Stach <l.stach@pengutronix.de> wrote:
+> >> > >
+> >> > > The SAI block on the i.MX8M moved the register layout, as 2 version
+> >> > > registers were added at the start of the register map. We deal with
+> >> > > this by moving the start of the regmap, so both register layouts
+> >> > > look the same to accesses going through the regmap.
+> >> > >
+> >> > > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> >> >
+> >> > This is a little bit tricky. We need the verid register in order
+> >> > to differentiate IPs which can support 1:1 ratio for bclk:mclk
+> >>
+> >> And this patch doesn't prevent this usage. If needed we can just read
+> >> the verid via a plain readl on the base mapping in the probe function
+> >> and cache it in struct fsl_sai. This seems way less intrusive than
+> >> carrying a register offset through all of the regmap accessors and
+> >> validation functions. I simply haven't implemented it in this patch,
+> >> as
+> >> I had no need for it right now.
+> >
+> > I must admit this is a very clever idea! Anyhow, I'm having some
+> > concerns
+> > because unfortunately not all registers were shifted by 8 bytes.
+> >
+> > See: imx6sx [1] (page 3575)  and imx8X [2] (page 5512) RMs.
+> >
+> > We have something like this:
+> >
+> > i.mx6 SX:
+> >
+> > 00: TCSR
+> > 04: TCR1
+> > 08: TCR2
+> > 0C: TCR3
+> > ....
+> > 60: TMR
+> > 80: RCSR
+> >
+> > i.mx 8X
+> >
+> > 00: VERID
+> > 04: PARAM
+> > 08: TCSR
+> > 0C: TCR1
+> > ...
+> > 60: TMR
+> > 88: RCSR
+> >
+>
+> We could split it into an upper and a lower regmap. Only the lower would
+> need the version register offset.
+
+That would work but will be unnecessary complicated. Let me send the
+imx8M support
+as we implemented in our tree by Friday.
+
+It has the disadvantage that we've wrapped all shifted register with a
+macro but I don't
+see other solution.
