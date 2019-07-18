@@ -1,19 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
 Subject: Re: [PATCH v3 1/2] ASoC: SOF: add flag for position
 	update ipc
-Date: Wed, 17 Jul 2019 22:35:52 -0500
-Message-ID: <94753e7c-931b-2b24-b92b-283e7abbb9ac@linux.intel.com>
+Date: Thu, 18 Jul 2019 13:06:57 +0800
+Message-ID: <a1a676aa-e1da-0f6a-4dbd-972b4973553d@linux.intel.com>
 References: <20190718031113.25040-1-yang.jie@linux.intel.com>
+ <94753e7c-931b-2b24-b92b-283e7abbb9ac@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8ACCFF800C0
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 05:35:55 +0200 (CEST)
-In-Reply-To: <20190718031113.25040-1-yang.jie@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6512CF8015B
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 07:01:32 +0200 (CEST)
+In-Reply-To: <94753e7c-931b-2b24-b92b-283e7abbb9ac@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,53 +25,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
 Cc: marcin.rajwa@intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>, ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 7/17/19 10:11 PM, Keyon Jie wrote:
-> From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
-> 
-> In some cases, FW might need to use the host_period_bytes field to
-> synchronize the DMA copying (with host side) but the driver does not
-
-it's your right to edit my suggested wording, but the notion of 
-'synchronization' is far from clear. it's my understanding that the 
-host_period_bytes defines the DMA transfer size requested by the 
-firmware, which isn't a value that matters to the host except for rewind 
-usages.
-
-> need any position information returned over the IPC channel by the
-> firmware. The current IPC definition prevents this capability, so add
-> new field.
-> 
-> Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
-> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> ---
->   include/sound/sof/stream.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
-> index 643f175cb479..06af4ecb2584 100644
-> --- a/include/sound/sof/stream.h
-> +++ b/include/sound/sof/stream.h
-> @@ -83,10 +83,10 @@ struct sof_ipc_stream_params {
->   	uint16_t sample_valid_bytes;
->   	uint16_t sample_container_bytes;
->   
-> -	/* for notifying host period has completed - 0 means no period IRQ */
->   	uint32_t host_period_bytes;
-> +	uint32_t no_position_ipc; /* 1 means no IPC for position upadte */
-
-typo: update
-
->   
-> -	uint32_t reserved[2];
-> +	uint16_t reserved[3];
->   	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map - SOF_CHMAP_ */
->   } __packed;
->   
-> 
+CgpPbiAyMDE5LzcvMTgg5LiK5Y2IMTE6MzUsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+
+IAo+IAo+IE9uIDcvMTcvMTkgMTA6MTEgUE0sIEtleW9uIEppZSB3cm90ZToKPj4gRnJvbTogTWFy
+Y2luIFJhandhIDxtYXJjaW4ucmFqd2FAbGludXguaW50ZWwuY29tPgo+Pgo+PiBJbiBzb21lIGNh
+c2VzLCBGVyBtaWdodCBuZWVkIHRvIHVzZSB0aGUgaG9zdF9wZXJpb2RfYnl0ZXMgZmllbGQgdG8K
+Pj4gc3luY2hyb25pemUgdGhlIERNQSBjb3B5aW5nICh3aXRoIGhvc3Qgc2lkZSkgYnV0IHRoZSBk
+cml2ZXIgZG9lcyBub3QKPiAKPiBpdCdzIHlvdXIgcmlnaHQgdG8gZWRpdCBteSBzdWdnZXN0ZWQg
+d29yZGluZywgYnV0IHRoZSBub3Rpb24gb2YgCj4gJ3N5bmNocm9uaXphdGlvbicgaXMgZmFyIGZy
+b20gY2xlYXIuIGl0J3MgbXkgdW5kZXJzdGFuZGluZyB0aGF0IHRoZSAKPiBob3N0X3BlcmlvZF9i
+eXRlcyBkZWZpbmVzIHRoZSBETUEgdHJhbnNmZXIgc2l6ZSByZXF1ZXN0ZWQgYnkgdGhlIAo+IGZp
+cm13YXJlLCB3aGljaCBpc24ndCBhIHZhbHVlIHRoYXQgbWF0dGVycyB0byB0aGUgaG9zdCBleGNl
+cHQgZm9yIHJld2luZCAKPiB1c2FnZXMuCgpIaSBQaWVycmUsIGhlcmUgdGhlIGhvc3RfcGVyaW9k
+X2J5dGVzIGlzIHJlcXVlc3RlZCBieSBob3N0LCBGVyBoYXMgaXRzIApvd24gcGVyaW9kIHNpemUs
+IGFuZCBETUEgd2lsbCB0cmFuc2ZlciBkYXRhIGluIEZXIGJ1ZmZlciBwZXJpb2Qgc2l6ZS4gSXQg
+CndvcmtzIGxpa2UgdGhpczoKCkZXIGJ1ZmZlcltwZXJpb2QgMCwgcGVyaW9kIDEsIC4uLl0gPD09
+PiBETUEgPD09PiBob3N0L2Fsc2EgCmJ1ZmZlcltob3N0X3BlcmlvZCAwLCBob3N0X3ByaW9kIDEs
+IC4uLl0KCldlIG5lZWQgdGhpcyBob3N0X3ByZWlvZF9ieXRlcyBpbmZvcm1hdGlvbiBpbiBGVyB0
+byBkbyBmYXN0IApkcmFpbmluZyhlLmcuIHJlY29yZCAyIHNlY29uZHMgZGF0YSB3aXRoaW4gMTBt
+cykgaW4gbW1hcCBjYXB0dXJlLCB3ZSBhcmUgCnNsb3dpbmcgZG93biB0aGUgZHJhaW5pbmcgaW4g
+c21hbGxlciBob3N0X3BlcmlvZF9ieXRlcyBjYXNlcywgb3RoZXJ3aXNlLCAKYXJlY29yZCBjYW4n
+dCByZWFkIHRoZSBidWZmZXIgaW4gdGltZSBhbmQgb3ZlcnJ1biB3aWxsIGhhcHBlbi4KCk1heWJl
+IHRoZSB3b3JkaW5nICJzeW5jaHJvbml6ZSIgaGVyZSBpcyBpbmFjY3VyYXRlLCBob3cgYWJvdXQg
+c29tZXRoaW5nIApsaWtlIHRoaXM6CgoiRlcgbWlnaHQgbmVlZCB0byB1c2UgdGhlIGhvc3RfcGVy
+aW9kX2J5dGVzIGZpZWxkIHRvIGNvbmZpZ3VyZSBhbmQgCmNvbnRyb2wgdGhlIERNQSBjb3B5aW5n
+IHNwZWVkIGJ1dCB0aGUgZHJpdmVyIGRvZXMgbm90Li4uIgoKPiAKPj4gbmVlZCBhbnkgcG9zaXRp
+b24gaW5mb3JtYXRpb24gcmV0dXJuZWQgb3ZlciB0aGUgSVBDIGNoYW5uZWwgYnkgdGhlCj4+IGZp
+cm13YXJlLiBUaGUgY3VycmVudCBJUEMgZGVmaW5pdGlvbiBwcmV2ZW50cyB0aGlzIGNhcGFiaWxp
+dHksIHNvIGFkZAo+PiBuZXcgZmllbGQuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hcmNpbiBSYWp3
+YSA8bWFyY2luLnJhandhQGxpbnV4LmludGVsLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogS2V5b24g
+SmllIDx5YW5nLmppZUBsaW51eC5pbnRlbC5jb20+Cj4+IFJldmlld2VkLWJ5OiBSYW5qYW5pIFNy
+aWRoYXJhbiA8cmFuamFuaS5zcmlkaGFyYW5AbGludXguaW50ZWwuY29tPgo+PiAtLS0KPj4gwqAg
+aW5jbHVkZS9zb3VuZC9zb2Yvc3RyZWFtLmggfCA0ICsrLS0KPj4gwqAgMSBmaWxlIGNoYW5nZWQs
+IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvc291bmQvc29mL3N0cmVhbS5oIGIvaW5jbHVkZS9zb3VuZC9zb2Yvc3RyZWFtLmgKPj4gaW5k
+ZXggNjQzZjE3NWNiNDc5Li4wNmFmNGVjYjI1ODQgMTAwNjQ0Cj4+IC0tLSBhL2luY2x1ZGUvc291
+bmQvc29mL3N0cmVhbS5oCj4+ICsrKyBiL2luY2x1ZGUvc291bmQvc29mL3N0cmVhbS5oCj4+IEBA
+IC04MywxMCArODMsMTAgQEAgc3RydWN0IHNvZl9pcGNfc3RyZWFtX3BhcmFtcyB7Cj4+IMKgwqDC
+oMKgwqAgdWludDE2X3Qgc2FtcGxlX3ZhbGlkX2J5dGVzOwo+PiDCoMKgwqDCoMKgIHVpbnQxNl90
+IHNhbXBsZV9jb250YWluZXJfYnl0ZXM7Cj4+IC3CoMKgwqAgLyogZm9yIG5vdGlmeWluZyBob3N0
+IHBlcmlvZCBoYXMgY29tcGxldGVkIC0gMCBtZWFucyBubyBwZXJpb2QgCj4+IElSUSAqLwo+PiDC
+oMKgwqDCoMKgIHVpbnQzMl90IGhvc3RfcGVyaW9kX2J5dGVzOwo+PiArwqDCoMKgIHVpbnQzMl90
+IG5vX3Bvc2l0aW9uX2lwYzsgLyogMSBtZWFucyBubyBJUEMgZm9yIHBvc2l0aW9uIHVwYWR0ZSAq
+Lwo+IAo+IHR5cG86IHVwZGF0ZQoKT0ssIHRoYW5rcywgYW5vdGhlciB1cGRhdGUgdmVyc2lvbiBu
+ZWVkZWQgZm9yIGl0LgoKVGhhbmtzLAp+S2V5b24KCj4gCj4+IC3CoMKgwqAgdWludDMyX3QgcmVz
+ZXJ2ZWRbMl07Cj4+ICvCoMKgwqAgdWludDE2X3QgcmVzZXJ2ZWRbM107Cj4+IMKgwqDCoMKgwqAg
+dWludDE2X3QgY2htYXBbU09GX0lQQ19NQVhfQ0hBTk5FTFNdO8KgwqDCoCAvKio8IGNoYW5uZWwg
+bWFwIC0gCj4+IFNPRl9DSE1BUF8gKi8KPj4gwqAgfSBfX3BhY2tlZDsKPj4KPiAKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
