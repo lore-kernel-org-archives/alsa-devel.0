@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v5 6/6] ASoC: sgtl5000: Fix charge pump source assignment
-Date: Thu, 18 Jul 2019 09:02:54 +0000
-Message-ID: <20190718090240.18432-7-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v5 4/6] ASoC: sgtl5000: add ADC mute control
+Date: Thu, 18 Jul 2019 09:02:51 +0000
+Message-ID: <20190718090240.18432-5-oleksandr.suvorov@toradex.com>
 References: <20190718090240.18432-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,10 +14,8 @@ To: Fabio Estevam <festevam@gmail.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If VDDA !=3D VDDIO and any of them is greater than 3.1V, charge pump
-source can be assigned automatically [1].
-
-[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+This control mute/unmute the ADC input of SGTL5000
+using its CHIP_ANA_CTRL register.
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
@@ -28,43 +26,25 @@ Reviewed-by: Fabio Estevam <festevam@gmail.com>
 
 Changes in v5: None
 Changes in v4: None
-Changes in v3:
-- Add the reference to NXP SGTL5000 data sheet to commit message
-- Fix multi-line comment format
-
+Changes in v3: None
 Changes in v2:
 - Fix patch formatting
 
- sound/soc/codecs/sgtl5000.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 31d546abde717..a04cba66615de 100644
+index a8d55c21a5f2d..0123d9cfcb473 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -1328,12 +1328,17 @@ static int sgtl5000_set_power_regs(struct snd_soc_c=
-omponent *component)
- 					SGTL5000_INT_OSC_EN);
- 		/* Enable VDDC charge pump */
- 		ana_pwr |=3D SGTL5000_VDDC_CHRGPMP_POWERUP;
--	} else if (vddio >=3D 3100 && vdda >=3D 3100) {
-+	} else {
- 		ana_pwr &=3D ~SGTL5000_VDDC_CHRGPMP_POWERUP;
--		/* VDDC use VDDIO rail */
--		lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
--		lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
--			    SGTL5000_VDDC_MAN_ASSN_SHIFT;
-+		/*
-+		 * if vddio =3D=3D vdda the source of charge pump should be
-+		 * assigned manually to VDDIO
-+		 */
-+		if (vddio =3D=3D vdda) {
-+			lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
-+			lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
-+				    SGTL5000_VDDC_MAN_ASSN_SHIFT;
-+		}
- 	}
+@@ -710,6 +710,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_contr=
+ols[] =3D {
+ 			SGTL5000_CHIP_ANA_ADC_CTRL,
+ 			8, 1, 0, capture_6db_attenuate),
+ 	SOC_SINGLE("Capture ZC Switch", SGTL5000_CHIP_ANA_CTRL, 1, 1, 0),
++	SOC_SINGLE("Capture Switch", SGTL5000_CHIP_ANA_CTRL, 0, 1, 1),
 =20
- 	snd_soc_component_write(component, SGTL5000_CHIP_LINREG_CTRL, lreg_ctrl);
+ 	SOC_DOUBLE_TLV("Headphone Playback Volume",
+ 			SGTL5000_CHIP_ANA_HP_CTRL,
 --=20
 2.20.1
