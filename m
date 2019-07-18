@@ -1,37 +1,43 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH] ALSA: line6: Fix wrong altsetting for LINE6_PODHD500_1
-Date: Thu, 18 Jul 2019 17:53:13 +0800
-Message-ID: <20190718095313.19498-1-kai.heng.feng@canonical.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] ASoC: samsung: odroid: Use common code in
+ odroid_audio_probe()
+Date: Thu, 18 Jul 2019 11:55:55 +0200
+Message-ID: <c4c10934-f06f-24a8-1162-b023e4ab4066@web.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.com, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>, Wen Yang <wen.yang99@zte.com.cn>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 7b9584fa1c0b ("staging: line6: Move altsetting to properties")
-set a wrong altsetting for LINE6_PODHD500_1 during refactoring.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 18 Jul 2019 11:42:29 +0200
 
-Set the correct altsetting number to fix the issue.
+Replace a function call and a return statement by a goto statement so that
+a bit of common code will be reused at the end of this function.
 
-BugLink: https://bugs.launchpad.net/bugs/1790595
-Fixes: 7b9584fa1c0b ("staging: line6: Move altsetting to properties")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/usb/line6/podhd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ sound/soc/samsung/odroid.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index f0662bd4e50f..27bf61c177c0 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -368,7 +368,7 @@ static const struct line6_properties podhd_properties_table[] = {
- 		.name = "POD HD500",
- 		.capabilities	= LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
--		.altsetting = 1,
-+		.altsetting = 0,
- 		.ep_ctrl_r = 0x81,
- 		.ep_ctrl_w = 0x01,
- 		.ep_audio_r = 0x86,
--- 
-2.17.1
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index f0f5fa9c27d3..d152ef8dfea3 100644
+=2D-- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -316,8 +316,7 @@ static int odroid_audio_probe(struct platform_device *=
+pdev)
+ 	}
+
+ 	of_node_put(cpu_dai);
+-	of_node_put(codec);
+-	return 0;
++	goto err_put_node;
+
+ err_put_clk_i2s:
+ 	clk_put(priv->clk_i2s_bus);
+=2D-
+2.22.0
