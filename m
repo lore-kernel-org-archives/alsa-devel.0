@@ -1,19 +1,20 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: [PATCH v3 2/2] ASoC: SOF: Intel: fix reset of
-	host_period_bytes
-Date: Thu, 18 Jul 2019 11:11:13 +0800
-Message-ID: <20190718031113.25040-2-yang.jie@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] ASoC: SOF: add flag for position
+	update ipc
+Date: Wed, 17 Jul 2019 22:35:52 -0500
+Message-ID: <94753e7c-931b-2b24-b92b-283e7abbb9ac@linux.intel.com>
 References: <20190718031113.25040-1-yang.jie@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E16E0F800C4
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 05:05:53 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8ACCFF800C0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 05:35:55 +0200 (CEST)
 In-Reply-To: <20190718031113.25040-1-yang.jie@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +24,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: kai.vehmanen@linux.intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>, marcin.rajwa@intel.com, Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
+To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: marcin.rajwa@intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>, ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
 
-This patch prevents the reset of host period bytes.
-The parameter has been used to keep information about
-completion of period copy. Right now we keep this
-information in no_position_ipc.
 
-Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/sof/intel/hda-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 7/17/19 10:11 PM, Keyon Jie wrote:
+> From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+> 
+> In some cases, FW might need to use the host_period_bytes field to
+> synchronize the DMA copying (with host side) but the driver does not
 
-diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
-index 9b730f183529..956407cf59ea 100644
---- a/sound/soc/sof/intel/hda-pcm.c
-+++ b/sound/soc/sof/intel/hda-pcm.c
-@@ -116,9 +116,9 @@ int hda_dsp_pcm_hw_params(struct snd_sof_dev *sdev,
- 	/* disable SPIB, to enable buffer wrap for stream */
- 	hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE, 0);
- 
--	/* set host_period_bytes to 0 if no IPC position */
-+	/* update no_position_ipc flag for ipc params */
- 	if (hda && hda->no_ipc_position)
--		ipc_params->host_period_bytes = 0;
-+		ipc_params->no_position_ipc = 1;
- 
- 	ipc_params->stream_tag = hstream->stream_tag;
- 
--- 
-2.20.1
+it's your right to edit my suggested wording, but the notion of 
+'synchronization' is far from clear. it's my understanding that the 
+host_period_bytes defines the DMA transfer size requested by the 
+firmware, which isn't a value that matters to the host except for rewind 
+usages.
+
+> need any position information returned over the IPC channel by the
+> firmware. The current IPC definition prevents this capability, so add
+> new field.
+> 
+> Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> ---
+>   include/sound/sof/stream.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
+> index 643f175cb479..06af4ecb2584 100644
+> --- a/include/sound/sof/stream.h
+> +++ b/include/sound/sof/stream.h
+> @@ -83,10 +83,10 @@ struct sof_ipc_stream_params {
+>   	uint16_t sample_valid_bytes;
+>   	uint16_t sample_container_bytes;
+>   
+> -	/* for notifying host period has completed - 0 means no period IRQ */
+>   	uint32_t host_period_bytes;
+> +	uint32_t no_position_ipc; /* 1 means no IPC for position upadte */
+
+typo: update
+
+>   
+> -	uint32_t reserved[2];
+> +	uint16_t reserved[3];
+>   	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map - SOF_CHMAP_ */
+>   } __packed;
+>   
+> 
