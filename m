@@ -1,21 +1,17 @@
 From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: SOF: add flag for position
- update ipc
-Date: Thu, 18 Jul 2019 10:47:59 +0800
-Message-ID: <4e5e5e16-a452-9a86-823b-22471e72f770@linux.intel.com>
-References: <20190703151023.30313-1-yang.jie@linux.intel.com>
- <323bbf08-c6dd-a95c-761d-c464ddf7275f@linux.intel.com>
+Subject: [PATCH v3 1/2] ASoC: SOF: add flag for position update
+	ipc
+Date: Thu, 18 Jul 2019 11:11:12 +0800
+Message-ID: <20190718031113.25040-1-yang.jie@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5DFFF800C4
- for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 04:42:32 +0200 (CEST)
-In-Reply-To: <323bbf08-c6dd-a95c-761d-c464ddf7275f@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4A3DF802BC
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2019 05:05:51 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +22,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
+Cc: kai.vehmanen@linux.intel.com, Marcin Rajwa <marcin.rajwa@linux.intel.com>, marcin.rajwa@intel.com, Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE5LzcvMTcg5LiL5Y2IMTE6NDgsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+
-IAo+IAo+IE9uIDcvMy8xOSAxMDoxMCBBTSwgS2V5b24gSmllIHdyb3RlOgo+PiBGcm9tOiBNYXJj
-aW4gUmFqd2EgPG1hcmNpbi5yYWp3YUBsaW51eC5pbnRlbC5jb20+Cj4+Cj4+IEluIHNvbWUgY2Fz
-ZXMsIEZXIG1pZ2h0IG5lZWQgdXNlIHRoZSBob3N0X3BlcmlvZF9ieXRlcyBldmVuIG5vIHBvc2l0
-aW9uCj4+IHVwZGF0ZSBpcGMgcmVxaXVyZWQgZnJvbSBkcml2ZXIsIGhlcmUgYWRkIGFub3RoZXIg
-ZmxhZyBmb3IgcG9zaXRpb24gCj4+IHVwZGF0ZSwKPj4gYW5kIHByZXNlcnZlIGhvc3RfcGVyaW9k
-X2J5dGVzIGZvciBGVyB0byB1c2UuCj4gCj4gcGxlYXNlIGZpeCB0aGUgY29tbWl0IG1lc3NhZ2Us
-IGUuZy4gd2l0aCB0aGUgc3VnZ2VzdGVkIGVkaXQgYmVsb3cKPiAKPiBJbiBzb21lIGNhc2VzLCBG
-VyBtaWdodCBuZWVkIHRvIHVzZSB0aGUgaG9zdF9wZXJpb2RfYnl0ZXMgZmllbGQgdG8gZmV0Y2gg
-Cj4gZGF0YSBvdmVyIERNQSBidXQgdGhlIGRyaXZlciBkb2VzIG5vdCBuZWVkIGFueSBwb3NpdGlv
-biBpbmZvcm1hdGlvbiAKPiByZXR1cm5lZCBvdmVyIHRoZSBJUEMgY2hhbm5lbCBieSB0aGUgZmly
-bXdhcmUuIFRoZSBjdXJyZW50IElQQyAKPiBkZWZpbml0aW9uIHByZXZlbnRzIHRoaXMgY2FwYWJp
-bGl0eSwgc28gYWRkIG5ldyBmaWVsZC4KCkdvb2QsIHRoYW5rcyBmb3IgdGhlIGRldGFpbCBzdWdn
-ZXN0aW9uLgoKPiAKPj4KPj4gVGhpcyBtaWdodCByZXF1aXJlIGNvcnJlc3BvbmRpbmcgRlcgY2hh
-bmdlIGFuZCBBQkkgYWxpZ25tZW50Lgo+IAo+IHJlbW92ZSB0aGlzIHN0YXRlbWVudCwgdGhpcyBp
-cyBhbHJlYWR5IGhhbmRsZWQgaW4gYmFja3dhcmRzIGNvbXBhdGlibGUgCj4gbW9kZS4KCk9LLgoK
-PiAKPj4KPj4gU2lnbmVkLW9mZi1ieTogTWFyY2luIFJhandhIDxtYXJjaW4ucmFqd2FAbGludXgu
-aW50ZWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBLZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4Lmlu
-dGVsLmNvbT4KPj4gLS0tCj4+IMKgIGluY2x1ZGUvc291bmQvc29mL3N0cmVhbS5oIHwgNCArKy0t
-Cj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+
-Cj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaCBiL2luY2x1ZGUvc291
-bmQvc29mL3N0cmVhbS5oCj4+IGluZGV4IDY0M2YxNzVjYjQ3OS4uNDRhY2ZhNjJmYTY5IDEwMDY0
-NAo+PiAtLS0gYS9pbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaAo+PiArKysgYi9pbmNsdWRlL3Nv
-dW5kL3NvZi9zdHJlYW0uaAo+PiBAQCAtODMsMTAgKzgzLDEwIEBAIHN0cnVjdCBzb2ZfaXBjX3N0
-cmVhbV9wYXJhbXMgewo+PiDCoMKgwqDCoMKgIHVpbnQxNl90IHNhbXBsZV92YWxpZF9ieXRlczsK
-Pj4gwqDCoMKgwqDCoCB1aW50MTZfdCBzYW1wbGVfY29udGFpbmVyX2J5dGVzOwo+PiAtwqDCoMKg
-IC8qIGZvciBub3RpZnlpbmcgaG9zdCBwZXJpb2QgaGFzIGNvbXBsZXRlZCAtIDAgbWVhbnMgbm8g
-cGVyaW9kIAo+PiBJUlEgKi8KPj4gwqDCoMKgwqDCoCB1aW50MzJfdCBob3N0X3BlcmlvZF9ieXRl
-czsKPj4gK8KgwqDCoCB1aW50MTZfdCBub19wZXJpb2RfaXJxOyAvKiAxIG1lYW5zIHBlcmlvZCBJ
-UlEgbW9kZSBPRkYgKi8KPiAKPiBJJ2QgbGlrZSB0aGlzIGZpZWxkIHRvIGJlIHJlbmFtZWQgYXMg
-J25vX3Bvc2l0aW9uX3VwZGF0ZScuIFRoaXMgcmVhbGx5IAo+IGhhcyBub3RoaW5nIHRvIGRvIHdp
-dGggbm8gcGVyaW9kX2lycSBpbiBnZW5lcmFsLCBldmVuIHdoZW4geW91IGRvIHVzZSAKPiB0aGUg
-bm9faXJxIG1vZGUgeW91IGNhbiBzdGlsbCByZXRyaWV2ZSB0aGUgcG9zaXRpb24gaW5mb3JtYXRp
-b24gZnJvbSB0aGUgCj4gSERhdWRpbyBETUEgcmVnaXN0ZXJzLgoKQWdyZWUsIHRoYXQncyBhY3R1
-YWxseSBteSBvcmlnaW5hbCB2ZXJzaW9uLCB3aWxsIGNoYW5nZSBpbiBuZXh0IHZlcnNpb24sIAp0
-aGFua3MuCgpUaGFua3MsCn5LZXlvbgoKPiAKPj4gLcKgwqDCoCB1aW50MzJfdCByZXNlcnZlZFsy
-XTsKPj4gK8KgwqDCoCB1aW50MTZfdCByZXNlcnZlZFszXTsKPj4gwqDCoMKgwqDCoCB1aW50MTZf
-dCBjaG1hcFtTT0ZfSVBDX01BWF9DSEFOTkVMU107wqDCoMKgIC8qKjwgY2hhbm5lbCBtYXAgLSAK
-Pj4gU09GX0NITUFQXyAqLwo+PiDCoCB9IF9fcGFja2VkOwo+Pgo+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwczovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiAKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+
+In some cases, FW might need to use the host_period_bytes field to
+synchronize the DMA copying (with host side) but the driver does not
+need any position information returned over the IPC channel by the
+firmware. The current IPC definition prevents this capability, so add
+new field.
+
+Signed-off-by: Marcin Rajwa <marcin.rajwa@linux.intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ include/sound/sof/stream.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
+index 643f175cb479..06af4ecb2584 100644
+--- a/include/sound/sof/stream.h
++++ b/include/sound/sof/stream.h
+@@ -83,10 +83,10 @@ struct sof_ipc_stream_params {
+ 	uint16_t sample_valid_bytes;
+ 	uint16_t sample_container_bytes;
+ 
+-	/* for notifying host period has completed - 0 means no period IRQ */
+ 	uint32_t host_period_bytes;
++	uint32_t no_position_ipc; /* 1 means no IPC for position upadte */
+ 
+-	uint32_t reserved[2];
++	uint16_t reserved[3];
+ 	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map - SOF_CHMAP_ */
+ } __packed;
+ 
+-- 
+2.20.1
