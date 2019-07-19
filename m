@@ -1,14 +1,15 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69576F802BC
- for <alsa-devel@alsa-project.org>; Tue, 16 Jul 2019 09:05:51 +0200 (CEST)
-From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 16 Jul 2019 09:05:39 +0200
-Message-Id: <20190716070539.10424-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH] ALSA: hda - Don't resume forcibly i915 HDMI/DP
-	codec
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBED5F800B2
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 08:32:56 +0200 (CEST)
+From: <shumingf@realtek.com>
+Date: Fri, 19 Jul 2019 14:32:49 +0800
+Message-ID: <20190719063249.18806-1-shumingf@realtek.com>
+MIME-Version: 1.0
+Subject: [alsa-devel] [PATCH 2/3] ASoC: rt1308: add silence detection and
+	manual PDB control
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,104 +17,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Todd Brandt <todd.e.brandt@linux.intel.com>, Len Brown <lenb@kernel.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, derek.fang@realtek.com, Shuming Fan <shumingf@realtek.com>, flove@realtek.com
 List-ID: <alsa-devel@alsa-project.org>
 
-We apply the codec resume forcibly at system resume callback for
-updating and syncing the jack detection state that may have changed
-during sleeping.  This is, however, superfluous for the codec like
-Intel HDMI/DP, where the jack detection is managed via the audio
-component notification; i.e. the jack state change shall be reported
-sooner or later from the graphics side at mode change.
+From: Shuming Fan <shumingf@realtek.com>
 
-This patch changes the codec resume callback to avoid the forcible
-resume conditionally with a new flag, codec->relaxed_resume, for
-reducing the resume time.  The flag is set in the codec probe.
+We enable the silence detection function in initial settings.
+PDB control changes to manual mode, hence the driver could
+fully control the AMP output on/off.
 
-Although this doesn't fix the entire bug mentioned in the bugzilla
-entry below, it's still a good optimization and some improvements are
-seen.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201901
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- include/sound/hda_codec.h  | 2 ++
- sound/pci/hda/hda_codec.c  | 8 ++++++--
- sound/pci/hda/patch_hdmi.c | 6 +++++-
- 3 files changed, 13 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt1308.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-index 8f46ff3449d5..871993696c5f 100644
---- a/include/sound/hda_codec.h
-+++ b/include/sound/hda_codec.h
-@@ -252,6 +252,8 @@ struct hda_codec {
- 	unsigned int auto_runtime_pm:1; /* enable automatic codec runtime pm */
- 	unsigned int force_pin_prefix:1; /* Add location prefix */
- 	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
-+	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
-+
- #ifdef CONFIG_PM
- 	unsigned long power_on_acct;
- 	unsigned long power_off_acct;
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 5346631df1ec..e30e86ca6b72 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2941,15 +2941,19 @@ static int hda_codec_runtime_resume(struct device *dev)
- #ifdef CONFIG_PM_SLEEP
- static int hda_codec_force_resume(struct device *dev)
- {
-+	struct hda_codec *codec = dev_to_hda_codec(dev);
-+	bool forced_resume = !codec->relaxed_resume;
- 	int ret;
+diff --git a/sound/soc/codecs/rt1308.c b/sound/soc/codecs/rt1308.c
+index 19d255e01827..cf3d72f99705 100644
+--- a/sound/soc/codecs/rt1308.c
++++ b/sound/soc/codecs/rt1308.c
+@@ -40,10 +40,10 @@ static const struct reg_sequence init_list[] = {
+ 	{ RT1308_VREF,			0x18100000 },
+ 	{ RT1308_IV_SENSE,		0x87010000 },
+ 	{ RT1308_DUMMY_REG,		0x00000200 },
+-	{ RT1308_SIL_DET,		0x61c30000 },
++	{ RT1308_SIL_DET,		0xe1c30000 },
+ 	{ RT1308_DC_CAL_2,		0x00ffff00 },
+ 	{ RT1308_CLK_DET,		0x01000000 },
+-	{ RT1308_POWER_STATUS,		0x00800000 },
++	{ RT1308_POWER_STATUS,		0x08800000 },
+ 	{ RT1308_DAC_SET,		0xafaf0700 },
  
- 	/* The get/put pair below enforces the runtime resume even if the
- 	 * device hasn't been used at suspend time.  This trick is needed to
- 	 * update the jack state change during the sleep.
- 	 */
--	pm_runtime_get_noresume(dev);
-+	if (forced_resume)
-+		pm_runtime_get_noresume(dev);
- 	ret = pm_runtime_force_resume(dev);
--	pm_runtime_put(dev);
-+	if (forced_resume)
-+		pm_runtime_put(dev);
- 	return ret;
- }
+ };
+@@ -308,12 +308,13 @@ static int rt1308_classd_event(struct snd_soc_dapm_widget *w,
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		msleep(30);
+ 		snd_soc_component_update_bits(component, RT1308_POWER_STATUS,
+-			RT1308_POW_PDB_REG_BIT, RT1308_POW_PDB_REG_BIT);
++			RT1308_POW_PDB_REG_BIT | RT1308_POW_PDB_MN_BIT,
++			RT1308_POW_PDB_REG_BIT | RT1308_POW_PDB_MN_BIT);
+ 		msleep(40);
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+ 		snd_soc_component_update_bits(component, RT1308_POWER_STATUS,
+-			RT1308_POW_PDB_REG_BIT, 0);
++			RT1308_POW_PDB_REG_BIT | RT1308_POW_PDB_MN_BIT, 0);
+ 		usleep_range(150000, 200000);
+ 		break;
  
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 40323d91f9e4..72000f6fedca 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2292,8 +2292,10 @@ static void generic_hdmi_free(struct hda_codec *codec)
- 	struct hdmi_spec *spec = codec->spec;
- 	int pin_idx, pcm_idx;
- 
--	if (codec_has_acomp(codec))
-+	if (codec_has_acomp(codec)) {
- 		snd_hdac_acomp_register_notifier(&codec->bus->core, NULL);
-+		codec->relaxed_resume = 0;
-+	}
- 
- 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
- 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-@@ -2566,6 +2568,8 @@ static void register_i915_notifier(struct hda_codec *codec)
- 	spec->drm_audio_ops.pin_eld_notify = intel_pin_eld_notify;
- 	snd_hdac_acomp_register_notifier(&codec->bus->core,
- 					&spec->drm_audio_ops);
-+	/* no need for forcible resume for jack check thanks to notifier */
-+	codec->relaxed_resume = 1;
- }
- 
- /* setup_stream ops override for HSW+ */
 -- 
-2.16.4
+2.22.0
 
 _______________________________________________
 Alsa-devel mailing list
