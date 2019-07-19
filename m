@@ -1,75 +1,65 @@
-From: <shumingf@realtek.com>
-Subject: [PATCH 3/3] ASoC: rt1308: Convert headers to SPDX
-Date: Fri, 19 Jul 2019 14:33:02 +0800
-Message-ID: <20190719063302.18858-1-shumingf@realtek.com>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Subject: Re: [PATCH v5 2/6] ASoC: sgtl5000: Improve VAG power and mute control
+Date: Fri, 19 Jul 2019 07:09:38 +0000
+Message-ID: <CAGgjyvGboMPx5wKJ_1DaeYZazSHmQUGwDZHoCBt5vhpVq3Q_bA@mail.gmail.com>
+References: <20190718090240.18432-1-oleksandr.suvorov@toradex.com>
+ <20190718090240.18432-3-oleksandr.suvorov@toradex.com>
+ <9c9ee47c-48bd-7109-9870-8f73be1f1cfa@intel.com>
+ <a86e4d6b-ed2c-d2f2-2974-6f00dc6ef68a@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E2DCF803F3
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 08:33:10 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, derek.fang@realtek.com, Shuming Fan <shumingf@realtek.com>, flove@realtek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <a86e4d6b-ed2c-d2f2-2974-6f00dc6ef68a@intel.com>
+Content-Language: en-US
+Content-ID: <4F6B8E281CE3234E8133B89150BEC622@eurprd05.prod.outlook.com>
+Sender: stable-owner@vger.kernel.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, Sasha Levin <sashal@kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Shuming Fan <shumingf@realtek.com>
-
-Convert include and source files to SPDX.
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt1308.c | 4 +---
- sound/soc/codecs/rt1308.h | 6 ++----
- 2 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/codecs/rt1308.c b/sound/soc/codecs/rt1308.c
-index cf3d72f99705..694ea22f25a8 100644
---- a/sound/soc/codecs/rt1308.c
-+++ b/sound/soc/codecs/rt1308.c
-@@ -1,12 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * rt1308.c  --  RT1308 ALSA SoC amplifier component driver
-  *
-  * Copyright 2019 Realtek Semiconductor Corp.
-  * Author: Derek Fang <derek.fang@realtek.com>
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
- 
- #include <linux/module.h>
-diff --git a/sound/soc/codecs/rt1308.h b/sound/soc/codecs/rt1308.h
-index c330aae1d527..ff7c423e879e 100644
---- a/sound/soc/codecs/rt1308.h
-+++ b/sound/soc/codecs/rt1308.h
-@@ -1,12 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * RT1308.h  --  RT1308 ALSA SoC amplifier component driver
-+ * rt1308.h  --  RT1308 ALSA SoC amplifier component driver
-  *
-  * Copyright 2019 Realtek Semiconductor Corp.
-  * Author: Derek Fang <derek.fang@realtek.com>
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
- 
- #ifndef _RT1308_H_
--- 
-2.22.0
+T24gVGh1LCAxOCBKdWwgMjAxOSBhdCAyMTo0OSwgQ2V6YXJ5IFJvamV3c2tpIDxjZXphcnkucm9q
+ZXdza2lAaW50ZWwuY29tPiB3cm90ZToNCj4NCj4gT24gMjAxOS0wNy0xOCAyMDo0MiwgQ2V6YXJ5
+IFJvamV3c2tpIHdyb3RlOg0KPiA+IE9uIDIwMTktMDctMTggMTE6MDIsIE9sZWtzYW5kciBTdXZv
+cm92IHdyb3RlOg0KPiA+PiArZW51bSB7DQo+ID4+ICsgICAgSFBfUE9XRVJfRVZFTlQsDQo+ID4+
+ICsgICAgREFDX1BPV0VSX0VWRU5ULA0KPiA+PiArICAgIEFEQ19QT1dFUl9FVkVOVCwNCj4gPj4g
+KyAgICBMQVNUX1BPV0VSX0VWRU5UDQo+ID4+ICt9Ow0KPiA+PiArDQo+ID4+ICtzdGF0aWMgdTE2
+IG11dGVfbWFza1tdID0gew0KPiA+PiArICAgIFNHVEw1MDAwX0hQX01VVEUsDQo+ID4+ICsgICAg
+U0dUTDUwMDBfT1VUUFVUU19NVVRFLA0KPiA+PiArICAgIFNHVEw1MDAwX09VVFBVVFNfTVVURQ0K
+PiA+PiArfTsNCj4gPg0KPiA+IElmIG11dGVfbWFza1tdIGlzIG9ubHkgdXNlZCB3aXRoaW4gY29t
+bW9uIGhhbmRsZXIsIHlvdSBtYXkgY29uc2lkZXINCj4gPiBkZWNsYXJpbmcgY29uc3QgYXJyYXkg
+d2l0aGluIHNhaWQgaGFuZGxlciBpbnN0ZWFkIChkaWQgbm90IGNoZWNrIHRoYXQNCj4gPiBteXNl
+bGYpLg0KPiA+IE90aGVyd2lzZSwgc2ltcGxlIGNvbW1lbnQgZm9yIHRoZSBzZWNvbmQgX09VVFBV
+VFNfTVVURSBzaG91bGQgc3VmZmljZSAtDQo+ID4gaXRzIG5vdCBzZWxmIGV4cGxhbmF0b3J5IHdo
+eSB5b3UgZG91YmxlZCB0aGF0IG1hc2suDQoNCk9rLCBJJ2xsIGFkZCBhIGNvbW1lbnQgdG8gZXhw
+bGFpbiBkb3VibGVkIG1hc2suDQoNCj4gPg0KPiA+PiArDQo+ID4+ICAgLyogc2d0bDUwMDAgcHJp
+dmF0ZSBzdHJ1Y3R1cmUgaW4gY29kZWMgKi8NCj4gPj4gICBzdHJ1Y3Qgc2d0bDUwMDBfcHJpdiB7
+DQo+ID4+ICAgICAgIGludCBzeXNjbGs7ICAgIC8qIHN5c2NsayByYXRlICovDQo+ID4+IEBAIC0x
+MzcsOCArMTU3LDEwOSBAQCBzdHJ1Y3Qgc2d0bDUwMDBfcHJpdiB7DQo+ID4+ICAgICAgIHU4IG1p
+Y2JpYXNfdm9sdGFnZTsNCj4gPj4gICAgICAgdTggbHJjbGtfc3RyZW5ndGg7DQo+ID4+ICAgICAg
+IHU4IHNjbGtfc3RyZW5ndGg7DQo+ID4+ICsgICAgdTE2IG11dGVfc3RhdGVbTEFTVF9QT1dFUl9F
+VkVOVF07DQo+ID4+ICAgfTsNCj4gPg0KPiA+IFdoZW4gSSBzcG9rZSBvZiBMQVNUIGVudW0gY29u
+c3RhbnQsIEkgZGlkIG5vdCByZWFsbHkgaGFkIHRoaXMgc3BlY2lmaWMNCj4gPiB1c2FnZSBpbiBt
+aW5kLg0KPiA+DQo+ID4gIEZyb20gZGVzaWduIHBlcnNwZWN0aXZlLCBfTEFTVF8gZG9lcyBub3Qg
+ZXhpc3QgYW5kIHNob3VsZCBuZXZlciBiZQ0KPiA+IHJlZmVycmVkIHRvIGFzICJ0aGUgbmV4dCBv
+cHRpb24iIGkuZS46IG5ldyBlbnVtIGNvbnN0YW50Lg0KDQpCeSBpdHMgbmF0dXJlLCBMQVNUX1BP
+V0VSX0VWRU5UIGlzIGFjdHVhbGx5IGEgc2l6ZSBvZiB0aGUgYXJyYXksIGJ1dCBJDQpjb3VsZG4n
+dCBjb21lIHVwIHdpdGggYSBiZXR0ZXIgbmFtZS4NCg0KPiA+IFRoYXQgaXMgd2F5IHByZWZlcnJl
+ZCB1c2FnZSBpczoNCj4gPiB1MTYgbXV0ZV9zdGF0ZVtBRENfUE9XRVJfRVZFTlQrMTsNCj4gPiAt
+b3ItDQo+ID4gdTE2IG11dGVfc3RhdGVbTEFTVF9QT1dFUl9FVkVOVCsxXTsNCj4gPg0KPiA+IE1h
+eWJlIEknbSBqdXN0IGJlaW5nIHJhZGljYWwgaGVyZSA6KQ0KDQpNYXliZSA6KSAgSSBkb24ndCBs
+aWtlIGZpcnN0IHZhcmlhbnQgKEFEQ19QT1dFUl9FVkVOVCsxKTogc29tZXdoZW4gaW4NCmZ1dHVy
+ZSwgc29tZW9uZSBjYW4gYWRkIGEgbmV3IGV2ZW50IHRvIHRoaXMgZW51bSBhbmQgd2UndmUgZ290
+IGENCnBvc3NpYmxlIHNpdHVhdGlvbiB3aXRoICJvdXQgb2YgYXJyYXkgaW5kZXhpbmciLg0KDQo+
+ID4NCj4gPiBDemFyZWsNCj4NCj4gRm9yZ2l2ZSBtZSBmb3IgZG91YmxlIHBvc3RpbmcuIENvbW1l
+bnQgYWJvdmUgaXMgdGFyZ2V0ZWQgdG93YXJkczoNCj4NCj4gID4+ICtlbnVtIHsNCj4gID4+ICsg
+ICAgSFBfUE9XRVJfRVZFTlQsDQo+ICA+PiArICAgIERBQ19QT1dFUl9FVkVOVCwNCj4gID4+ICsg
+ICAgQURDX1BPV0VSX0VWRU5ULA0KPiAgPj4gKyAgICBMQVNUX1BPV0VSX0VWRU5UDQo+ICA+PiAr
+fTsNCj4NCj4gYXMgTEFTVF9QT1dFUl9FVkVOVCBpcyBub3QgYXNzaWduZWQgZXhwbGljaXRseSB0
+byBBRENfUE9XRVJfRVZFTlQgYW5kDQo+IHRodXMgZ2VuZXJhdGVzIGltcGxpY2l0ICJuZXcgb3B0
+aW9uIiBvZiB2YWx1ZSAzLg0KDQpTbyB3aWxsIHlvdSBiZSBoYXBweSB3aXRoIHRoZSBmb2xsb3dp
+bmcgdmFyaWFudD8NCi4uLg0KICAgIEFEQ19QT1dFUl9FVkVOVCwNCiAgICBMQVNUX1BPV0VSX0VW
+RU5UID0gIEFEQ19QT1dFUl9FVkVOVCwNCi4uLg0KICAgdTE2IG11dGVfc3RhdGVbTEFTVF9QT1dF
+Ul9FVkVOVCsxXTsNCi4uLg0KDQotLSANCkJlc3QgcmVnYXJkcw0KT2xla3NhbmRyIFN1dm9yb3YN
+Cg0KVG9yYWRleCBBRw0KQWx0c2FnZW5zdHJhc3NlIDUgfCA2MDQ4IEhvcncvTHV6ZXJuIHwgU3dp
+dHplcmxhbmQgfCBUOiArNDEgNDEgNTAwDQo0ODAwIChtYWluIGxpbmUpDQo=
