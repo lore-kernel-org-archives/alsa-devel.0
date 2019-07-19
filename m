@@ -1,7 +1,7 @@
 From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Subject: [PATCH v6 6/6] ASoC: sgtl5000: Fix charge pump source assignment
-Date: Fri, 19 Jul 2019 10:05:37 +0000
-Message-ID: <20190719100524.23300-7-oleksandr.suvorov@toradex.com>
+Subject: [PATCH v6 3/6] ASoC: sgtl5000: Fix definition of VAG Ramp Control
+Date: Fri, 19 Jul 2019 10:05:33 +0000
+Message-ID: <20190719100524.23300-4-oleksandr.suvorov@toradex.com>
 References: <20190719100524.23300-1-oleksandr.suvorov@toradex.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,10 +14,8 @@ To: Fabio Estevam <festevam@gmail.com>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If VDDA !=3D VDDIO and any of them is greater than 3.1V, charge pump
-source can be assigned automatically [1].
-
-[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+SGTL5000_SMALL_POP is a bit mask, not a value. Usage of
+correct definition makes device probing code more clear.
 
 Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 Reviewed-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
@@ -29,43 +27,40 @@ Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Changes in v6: None
 Changes in v5: None
 Changes in v4: None
-Changes in v3:
-- Add the reference to NXP SGTL5000 data sheet to commit message
-- Fix multi-line comment format
-
+Changes in v3: None
 Changes in v2:
 - Fix patch formatting
 
- sound/soc/codecs/sgtl5000.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 2 +-
+ sound/soc/codecs/sgtl5000.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 23f4ae2f0723..aa1f9637d895 100644
+index 34cc85e49003..3f28e7862b5b 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -1338,12 +1338,17 @@ static int sgtl5000_set_power_regs(struct snd_soc_c=
-omponent *component)
- 					SGTL5000_INT_OSC_EN);
- 		/* Enable VDDC charge pump */
- 		ana_pwr |=3D SGTL5000_VDDC_CHRGPMP_POWERUP;
--	} else if (vddio >=3D 3100 && vdda >=3D 3100) {
-+	} else {
- 		ana_pwr &=3D ~SGTL5000_VDDC_CHRGPMP_POWERUP;
--		/* VDDC use VDDIO rail */
--		lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
--		lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
--			    SGTL5000_VDDC_MAN_ASSN_SHIFT;
-+		/*
-+		 * if vddio =3D=3D vdda the source of charge pump should be
-+		 * assigned manually to VDDIO
-+		 */
-+		if (vddio =3D=3D vdda) {
-+			lreg_ctrl |=3D SGTL5000_VDDC_ASSN_OVRD;
-+			lreg_ctrl |=3D SGTL5000_VDDC_MAN_ASSN_VDDIO <<
-+				    SGTL5000_VDDC_MAN_ASSN_SHIFT;
-+		}
- 	}
+@@ -1460,7 +1460,7 @@ static int sgtl5000_probe(struct snd_soc_component *c=
+omponent)
 =20
- 	snd_soc_component_write(component, SGTL5000_CHIP_LINREG_CTRL, lreg_ctrl);
+ 	/* enable small pop, introduce 400ms delay in turning off */
+ 	snd_soc_component_update_bits(component, SGTL5000_CHIP_REF_CTRL,
+-				SGTL5000_SMALL_POP, 1);
++				SGTL5000_SMALL_POP, SGTL5000_SMALL_POP);
+=20
+ 	/* disable short cut detector */
+ 	snd_soc_component_write(component, SGTL5000_CHIP_SHORT_CTRL, 0);
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index 18cae08bbd3a..a4bf4bca95bf 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -273,7 +273,7 @@
+ #define SGTL5000_BIAS_CTRL_MASK			0x000e
+ #define SGTL5000_BIAS_CTRL_SHIFT		1
+ #define SGTL5000_BIAS_CTRL_WIDTH		3
+-#define SGTL5000_SMALL_POP			1
++#define SGTL5000_SMALL_POP			0x0001
+=20
+ /*
+  * SGTL5000_CHIP_MIC_CTRL
 --=20
 2.20.1
