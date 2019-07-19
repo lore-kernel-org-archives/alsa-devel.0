@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/6] ASoC: Intel: Skylake: use common NHLT
-	module
-Date: Fri, 19 Jul 2019 12:06:09 -0500
-Message-ID: <20190719170610.17610-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/6] ALSA: hda/intel: stop probe if DMICS are
+	detected on Skylake+ platforms
+Date: Fri, 19 Jul 2019 12:06:10 -0500
+Message-ID: <20190719170610.17610-7-pierre-louis.bossart@linux.intel.com>
 References: <20190719170610.17610-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 765F6F80368
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 19:06:23 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05FA0F803CF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 19:06:24 +0200 (CEST)
 In-Reply-To: <20190719170610.17610-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,207 +27,131 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-No functionality change, only use common functions now.
+The legacy HD-Audio driver cannot handle Skylake+ platforms with
+digital microphones. For those platforms, the SOF or SST drivers need
+to be used.
+
+This patch provides an automatic way of detecting the presence of
+DMICs using NHTL information reported by the BIOS. A kernel kconfig
+option or a kernel module parameter provide an opt-in means of
+stopping the probe. The kernel would then look for an alternate driver
+registered for the same PCI ID to probe.
+
+With this capability, distros no longer have to blacklist
+snd-hda-intel, but still need to make sure the SOF/SST drivers are
+functional by providing the relevant firmware and topology files in
+/lib/firmware/intel
+
+The coexistence between SOF and SST drivers and their dynamic
+detection is not addressed by this patch, different mechanisms need to
+be used, e.g. DMI-based quirks.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/Kconfig            |  1 +
- sound/soc/intel/skylake/skl-nhlt.c | 90 ------------------------------
- sound/soc/intel/skylake/skl.c      | 12 ++--
- sound/soc/intel/skylake/skl.h      |  3 -
- 4 files changed, 9 insertions(+), 97 deletions(-)
+ sound/pci/hda/Kconfig     | 10 ++++++++++
+ sound/pci/hda/hda_intel.c | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 96a00a9d4cf8..a3ec17fd63cd 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -215,6 +215,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
- 	select SND_SOC_ACPI_INTEL_MATCH
-+	select SND_INTEL_NHLT
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 35d934309cb2..b5966014b5f7 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -12,6 +12,7 @@ config SND_HDA_INTEL
+ 	tristate "HD Audio PCI"
+ 	depends on SND_PCI
+ 	select SND_HDA
++	select SND_INTEL_NHLT if ACPI
  	help
- 	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
- 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index aabc5d71650e..6f57ceb9efb7 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -13,54 +13,6 @@
- #include "skl.h"
- #include "skl-i2s.h"
+ 	  Say Y here to include support for Intel "High Definition
+ 	  Audio" (Azalia) and its compatible devices.
+@@ -22,6 +23,15 @@ config SND_HDA_INTEL
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-hda-intel.
  
--#define NHLT_ACPI_HEADER_SIG	"NHLT"
--
--/* Unique identification for getting NHLT blobs */
--static guid_t osc_guid =
--	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
--		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
--
--
--struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
--{
--	acpi_handle handle;
--	union acpi_object *obj;
--	struct nhlt_resource_desc  *nhlt_ptr = NULL;
--	struct nhlt_acpi_table *nhlt_table = NULL;
--
--	handle = ACPI_HANDLE(dev);
--	if (!handle) {
--		dev_err(dev, "Didn't find ACPI_HANDLE\n");
--		return NULL;
--	}
--
--	obj = acpi_evaluate_dsm(handle, &osc_guid, 1, 1, NULL);
--	if (obj && obj->type == ACPI_TYPE_BUFFER) {
--		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
--		if (nhlt_ptr->length)
--			nhlt_table = (struct nhlt_acpi_table *)
--				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
--				MEMREMAP_WB);
--		ACPI_FREE(obj);
--		if (nhlt_table && (strncmp(nhlt_table->header.signature,
--					NHLT_ACPI_HEADER_SIG,
--					strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
--			memunmap(nhlt_table);
--			dev_err(dev, "NHLT ACPI header signature incorrect\n");
--			return NULL;
--		}
--		return nhlt_table;
--	}
--
--	dev_err(dev, "device specific method to extract NHLT blob failed\n");
--	return NULL;
--}
--
--void skl_nhlt_free(struct nhlt_acpi_table *nhlt)
--{
--	memunmap((void *) nhlt);
--}
--
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
- 		struct device *dev, struct nhlt_fmt *fmt,
- 		u8 no_ch, u32 rate, u16 bps, u8 linktype)
-@@ -163,48 +115,6 @@ struct nhlt_specific_cfg
- 	return NULL;
- }
- 
--int skl_get_dmic_geo(struct skl *skl)
--{
--	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
--	struct nhlt_endpoint *epnt;
--	struct nhlt_dmic_array_config *cfg;
--	struct device *dev = &skl->pci->dev;
--	unsigned int dmic_geo = 0;
--	u8 j;
--
--	if (!nhlt)
--		return 0;
--
--	epnt = (struct nhlt_endpoint *)nhlt->desc;
--
--	for (j = 0; j < nhlt->endpoint_count; j++) {
--		if (epnt->linktype == NHLT_LINK_DMIC) {
--			cfg = (struct nhlt_dmic_array_config  *)
--					(epnt->config.caps);
--			switch (cfg->array_type) {
--			case NHLT_MIC_ARRAY_2CH_SMALL:
--			case NHLT_MIC_ARRAY_2CH_BIG:
--				dmic_geo |= MIC_ARRAY_2CH;
--				break;
--
--			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
--			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
--			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
--				dmic_geo |= MIC_ARRAY_4CH;
--				break;
--
--			default:
--				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
--						cfg->array_type);
--
--			}
--		}
--		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
--	}
--
--	return dmic_geo;
--}
--
- static void skl_nhlt_trim_space(char *trim)
- {
- 	char *s = trim;
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 3362e71b4563..2b5159890a57 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -26,9 +26,11 @@
++config SND_HDA_INTEL_DETECT_DMIC
++	bool "DMIC detection and probe abort"
++	depends on SND_HDA_INTEL
++	help
++	  Say Y to detect digital microphones on SKL+ devices. DMICs
++	  cannot be handled by the HDaudio legacy driver and are
++	  currently only supported by the SOF driver.
++	  If unsure say N.
++
+ config SND_HDA_TEGRA
+ 	tristate "NVIDIA Tegra HD Audio"
+ 	depends on ARCH_TEGRA
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index cb8b0945547c..15244a06f634 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -46,6 +46,7 @@
+ #include <sound/initval.h>
  #include <sound/hdaudio.h>
  #include <sound/hda_i915.h>
- #include <sound/hda_codec.h>
 +#include <sound/intel-nhlt.h>
- #include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
- #include "../../../soc/codecs/hdac_hda.h"
+ #include <linux/vgaarb.h>
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+@@ -124,6 +125,7 @@ static char *patch[SNDRV_CARDS];
+ static bool beep_mode[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] =
+ 					CONFIG_SND_HDA_INPUT_BEEP_MODE};
  #endif
-@@ -516,7 +518,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
++static int dmic_detect = -1;
  
- 	if (pdata) {
- 		skl->use_tplg_pcm = pdata->use_tplg_pcm;
--		mach->mach_params.dmic_num = skl_get_dmic_geo(skl);
-+		mach->mach_params.dmic_num =
-+			intel_nhlt_get_dmic_geo(&skl->pci->dev,
-+						skl->nhlt);
- 	}
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
+@@ -158,6 +160,8 @@ module_param_array(beep_mode, bool, NULL, 0444);
+ MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
+ 			    "(0=off, 1=on) (default=1).");
+ #endif
++module_param(dmic_detect, bint, 0444);
++MODULE_PARM_DESC(dmic_detect, "DMIC detect on SKL+ platforms");
  
- 	return 0;
-@@ -1029,7 +1033,7 @@ static int skl_probe(struct pci_dev *pci,
+ #ifdef CONFIG_PM
+ static int param_set_xint(const char *val, const struct kernel_param *kp);
+@@ -2025,6 +2029,25 @@ static const struct hda_controller_ops pci_hda_ops = {
+ 	.position_check = azx_position_check,
+ };
  
- 	device_disable_async_suspend(bus->dev);
++static int azx_check_dmic(struct pci_dev *pci, struct azx *chip)
++{
++	struct nhlt_acpi_table *nhlt;
++	int ret = 0;
++
++	if (chip->driver_type == AZX_DRIVER_SKL &&
++	    pci->class != 0x040300) {
++		nhlt = intel_nhlt_init(&pci->dev);
++		if (nhlt) {
++			if (intel_nhlt_get_dmic_geo(&pci->dev, nhlt)) {
++				ret = -ENODEV;
++				dev_dbg(&pci->dev, "Digital mics found on Skylake+ platform, aborting probe\n");
++			}
++			intel_nhlt_free(nhlt);
++		}
++	}
++	return ret;
++}
++
+ static int azx_probe(struct pci_dev *pci,
+ 		     const struct pci_device_id *pci_id)
+ {
+@@ -2055,6 +2078,17 @@ static int azx_probe(struct pci_dev *pci,
+ 	card->private_data = chip;
+ 	hda = container_of(chip, struct hda_intel, chip);
  
--	skl->nhlt = skl_nhlt_init(bus->dev);
-+	skl->nhlt = intel_nhlt_init(bus->dev);
++	/*
++	 * stop probe if digital microphones detected on Skylake+ platform
++	 * with the DSP enabled. This is an opt-in behavior defined at build
++	 * time or at run-time with a module parameter
++	 */
++	if (IS_ENABLED(CONFIG_SND_HDA_INTEL_DETECT_DMIC) || dmic_detect >= 0) {
++		err = azx_check_dmic(pci, chip);
++		if (err < 0)
++			goto out_free;
++	}
++
+ 	pci_set_drvdata(pci, card);
  
- 	if (skl->nhlt == NULL) {
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
-@@ -1095,7 +1099,7 @@ static int skl_probe(struct pci_dev *pci,
- out_clk_free:
- 	skl_clock_device_unregister(skl);
- out_nhlt_free:
--	skl_nhlt_free(skl->nhlt);
-+	intel_nhlt_free(skl->nhlt);
- out_free:
- 	skl_free(bus);
- 
-@@ -1144,7 +1148,7 @@ static void skl_remove(struct pci_dev *pci)
- 	skl_dmic_device_unregister(skl);
- 	skl_clock_device_unregister(skl);
- 	skl_nhlt_remove_sysfs(skl);
--	skl_nhlt_free(skl->nhlt);
-+	intel_nhlt_free(skl->nhlt);
- 	skl_free(bus);
- 	dev_set_drvdata(&pci->dev, NULL);
- }
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 928e8115a1a7..f4dd6c767993 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -128,13 +128,10 @@ struct skl_dsp_ops {
- int skl_platform_unregister(struct device *dev);
- int skl_platform_register(struct device *dev);
- 
--struct nhlt_acpi_table *skl_nhlt_init(struct device *dev);
--void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 					u8 link_type, u8 s_fmt, u8 no_ch,
- 					u32 s_rate, u8 dirn, u8 dev_type);
- 
--int skl_get_dmic_geo(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
+ 	err = register_vga_switcheroo(chip);
 -- 
 2.20.1
