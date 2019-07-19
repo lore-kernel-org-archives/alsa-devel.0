@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt1308: Convert headers to SPDX
-Date: Fri, 19 Jul 2019 17:46:23 +0100
-Message-ID: <20190719164623.GA14800@sirena.org.uk>
-References: <20190719063302.18858-1-shumingf@realtek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/6] ALSA/HDA: abort probe when DMICs are
+	detected
+Date: Fri, 19 Jul 2019 12:06:04 -0500
+Message-ID: <20190719170610.17610-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1864013101081493516=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAEADF800B2
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 18:46:26 +0200 (CEST)
-In-Reply-To: <20190719063302.18858-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 833ECF800B2
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 19:06:18 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +21,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: shumingf@realtek.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, derek.fang@realtek.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This is the second take on same problem of detecting when the HDaudio
+legacy driver can be used and when the SST or SOF drivers are
+required.
 
---===============1864013101081493516==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
-Content-Disposition: inline
+The previous attempt based on a the PCI Class information was a
+resounding failure and broke audio on Linus' laptop, so we need
+additional information to avoid enabling a DSP-based driver without a
+good reason to do so.
 
+This patchset suggests the use of the NHLT information which *in
+theory* exposes DMIC endpoints. The legacy HDaudio driver cannot
+handle DMICs and will not provide any capture capabilities. Since it's
+typically the first one to probe due to the Makefile order, aborting
+the probe will let the PCI subsystem look for the next driver which
+hopefully will support this capability.
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I tested this patch on 5 devices (SKL, KBL, APL, GLK, WHL), three
+without DMICs and two with, and the detection seems to work as
+planned. Additional testing by Canonical and Endless folks did not
+expose any issues.
 
-On Fri, Jul 19, 2019 at 02:33:02PM +0800, shumingf@realtek.com wrote:
+Changes since RFC:
+Cosmetic code improvements
+Moved intel-nhlt.h to include/sound
+Moved intel-nhlt.c to sound/hda
+Removed SOC prefixes
+Added full-support for vendor-defined geometries
+Added Kconfig and kernel module parameter to opt-in
 
-> @@ -1,12 +1,10 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * rt1308.c  --  RT1308 ALSA SoC amplifier component driver
->   *
+Pierre-Louis Bossart (6):
+  ASoC: Intel: Skylake: move NHLT header to common directory
+  ALSA: hda: move parts of NHLT code to new module
+  ALSA: hda: intel-nhlt: remove useless OR operation
+  ALSA: hda: intel-nhlt: handle NHLT VENDOR_DEFINED DMIC geometry
+  ASoC: Intel: Skylake: use common NHLT module
+  ALSA: hda/intel: stop probe if DMICS are detected on Skylake+
+    platforms
 
-Please convert the entire comment block to a C++ one so this looks more
-intentional.
+ .../skl-nhlt.h => include/sound/intel-nhlt.h  |  51 +++++++--
+ sound/hda/Kconfig                             |   3 +
+ sound/hda/Makefile                            |   3 +
+ sound/hda/intel-nhlt.c                        | 102 ++++++++++++++++++
+ sound/pci/hda/Kconfig                         |  10 ++
+ sound/pci/hda/hda_intel.c                     |  34 ++++++
+ sound/soc/intel/Kconfig                       |   1 +
+ sound/soc/intel/skylake/skl-nhlt.c            |  91 +---------------
+ sound/soc/intel/skylake/skl-ssp-clk.c         |   1 +
+ sound/soc/intel/skylake/skl-topology.c        |   1 +
+ sound/soc/intel/skylake/skl.c                 |  12 ++-
+ sound/soc/intel/skylake/skl.h                 |   4 -
+ 12 files changed, 205 insertions(+), 108 deletions(-)
+ rename sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h (65%)
+ create mode 100644 sound/hda/intel-nhlt.c
 
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl0x89wACgkQJNaLcl1U
-h9B+AAf9E9BZcbSfTKdxzyf7U+gjcQSaWg2uf7g1ap+OsTkiRMcxzywh5/mUuE1g
-e5VpDIbswG5vepQ6zmPhnuWogz/iq60G10FDXCPdORI3zZbEVm7vpk8DwbiHzpUZ
-TclouP43BaUTT09mXnYuJlsWQAgpSh6e7T83CN3sMuiLae0ZP38eeIWIpDximNaL
-qgGy88/auxbXHzPRzb2+au43tgRcGRpMu1Jx1Yzvlrme/QRktbzMFjeEfWVWpgQm
-Rt3VA1Kx0xlTL2MRuG8Pl3Byj38uQIc3clt4gHTKrV/wM45L6CAUbhEiN/mipBXI
-zUHo3L9ZRhpiXkfSaQi7tCjojxXSqg==
-=HupK
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
-
---===============1864013101081493516==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1864013101081493516==--
+-- 
+2.20.1
