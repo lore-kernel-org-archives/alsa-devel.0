@@ -1,8 +1,9 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/6] ALSA/HDA: abort probe when DMICs are
-	detected
-Date: Fri, 19 Jul 2019 12:06:04 -0500
-Message-ID: <20190719170610.17610-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/6] ASoC: Intel: Skylake: move NHLT header to
+	common directory
+Date: Fri, 19 Jul 2019 12:06:05 -0500
+Message-ID: <20190719170610.17610-2-pierre-louis.bossart@linux.intel.com>
+References: <20190719170610.17610-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 833ECF800B2
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 19:06:18 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1ACA6F800C4
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 19:06:20 +0200 (CEST)
+In-Reply-To: <20190719170610.17610-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,59 +27,69 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is the second take on same problem of detecting when the HDaudio
-legacy driver can be used and when the SST or SOF drivers are
-required.
+Prepare move from NHLT code to common directory, starting with header.
 
-The previous attempt based on a the PCI Class information was a
-resounding failure and broke audio on Linus' laptop, so we need
-additional information to avoid enabling a DSP-based driver without a
-good reason to do so.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h | 0
+ sound/soc/intel/skylake/skl-nhlt.c                               | 1 +
+ sound/soc/intel/skylake/skl-ssp-clk.c                            | 1 +
+ sound/soc/intel/skylake/skl-topology.c                           | 1 +
+ sound/soc/intel/skylake/skl.h                                    | 1 -
+ 5 files changed, 3 insertions(+), 1 deletion(-)
+ rename sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h (100%)
 
-This patchset suggests the use of the NHLT information which *in
-theory* exposes DMIC endpoints. The legacy HDaudio driver cannot
-handle DMICs and will not provide any capture capabilities. Since it's
-typically the first one to probe due to the Makefile order, aborting
-the probe will let the PCI subsystem look for the next driver which
-hopefully will support this capability.
-
-I tested this patch on 5 devices (SKL, KBL, APL, GLK, WHL), three
-without DMICs and two with, and the detection seems to work as
-planned. Additional testing by Canonical and Endless folks did not
-expose any issues.
-
-Changes since RFC:
-Cosmetic code improvements
-Moved intel-nhlt.h to include/sound
-Moved intel-nhlt.c to sound/hda
-Removed SOC prefixes
-Added full-support for vendor-defined geometries
-Added Kconfig and kernel module parameter to opt-in
-
-Pierre-Louis Bossart (6):
-  ASoC: Intel: Skylake: move NHLT header to common directory
-  ALSA: hda: move parts of NHLT code to new module
-  ALSA: hda: intel-nhlt: remove useless OR operation
-  ALSA: hda: intel-nhlt: handle NHLT VENDOR_DEFINED DMIC geometry
-  ASoC: Intel: Skylake: use common NHLT module
-  ALSA: hda/intel: stop probe if DMICS are detected on Skylake+
-    platforms
-
- .../skl-nhlt.h => include/sound/intel-nhlt.h  |  51 +++++++--
- sound/hda/Kconfig                             |   3 +
- sound/hda/Makefile                            |   3 +
- sound/hda/intel-nhlt.c                        | 102 ++++++++++++++++++
- sound/pci/hda/Kconfig                         |  10 ++
- sound/pci/hda/hda_intel.c                     |  34 ++++++
- sound/soc/intel/Kconfig                       |   1 +
- sound/soc/intel/skylake/skl-nhlt.c            |  91 +---------------
- sound/soc/intel/skylake/skl-ssp-clk.c         |   1 +
- sound/soc/intel/skylake/skl-topology.c        |   1 +
- sound/soc/intel/skylake/skl.c                 |  12 ++-
- sound/soc/intel/skylake/skl.h                 |   4 -
- 12 files changed, 205 insertions(+), 108 deletions(-)
- rename sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h (65%)
- create mode 100644 sound/hda/intel-nhlt.c
-
+diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/include/sound/intel-nhlt.h
+similarity index 100%
+rename from sound/soc/intel/skylake/skl-nhlt.h
+rename to include/sound/intel-nhlt.h
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 1132109cb992..aabc5d71650e 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -9,6 +9,7 @@
+  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
+ #include <linux/pci.h>
++#include <sound/intel-nhlt.h>
+ #include "skl.h"
+ #include "skl-i2s.h"
+ 
+diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+index 5bb6e40d4d3e..5bfcd46452f9 100644
+--- a/sound/soc/intel/skylake/skl-ssp-clk.c
++++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+@@ -11,6 +11,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/clk-provider.h>
+ #include <linux/clkdev.h>
++#include <sound/intel-nhlt.h>
+ #include "skl.h"
+ #include "skl-ssp-clk.h"
+ #include "skl-topology.h"
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 6241e35213af..f8a501cf5fbd 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <linux/firmware.h>
+ #include <linux/uuid.h>
++#include <sound/intel-nhlt.h>
+ #include <sound/soc.h>
+ #include <sound/soc-topology.h>
+ #include <uapi/sound/snd_sst_tokens.h>
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 6070666a6392..928e8115a1a7 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -16,7 +16,6 @@
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_codec.h>
+ #include <sound/soc.h>
+-#include "skl-nhlt.h"
+ #include "skl-ssp-clk.h"
+ 
+ #define SKL_SUSPEND_DELAY 2000
 -- 
 2.20.1
