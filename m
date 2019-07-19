@@ -1,109 +1,103 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v5 2/6] ASoC: sgtl5000: Improve VAG power and mute control
-Date: Fri, 19 Jul 2019 09:19:10 +0200
-Message-ID: <3c153dcc-e656-2959-6281-15cc895660e0@intel.com>
-References: <20190718090240.18432-1-oleksandr.suvorov@toradex.com>
- <20190718090240.18432-3-oleksandr.suvorov@toradex.com>
- <9c9ee47c-48bd-7109-9870-8f73be1f1cfa@intel.com>
- <a86e4d6b-ed2c-d2f2-2974-6f00dc6ef68a@intel.com>
- <CAGgjyvGboMPx5wKJ_1DaeYZazSHmQUGwDZHoCBt5vhpVq3Q_bA@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] soundwire: fix regmap dependencies and align with other
+ serial links
+Date: Fri, 19 Jul 2019 11:04:43 +0200
+Message-ID: <CAJZ5v0g5Hk9JYLvRXfLk5-o=n_RVPKtWD=QONpiimCWyQOFELQ@mail.gmail.com>
+References: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <CAGgjyvGboMPx5wKJ_1DaeYZazSHmQUGwDZHoCBt5vhpVq3Q_bA@mail.gmail.com>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-Cc: Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Igor Opaniuk <igor.opaniuk@toradex.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, Sasha Levin <sashal@kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jank@cadence.com, Srini Kandagatla <srinivas.kandagatla@linaro.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-19 09:09, Oleksandr Suvorov wrote:
-> On Thu, 18 Jul 2019 at 21:49, Cezary Rojewski <cezary.rojewski@intel.com> wrote:
->>
->> On 2019-07-18 20:42, Cezary Rojewski wrote:
->>> On 2019-07-18 11:02, Oleksandr Suvorov wrote:
->>>> +enum {
->>>> +    HP_POWER_EVENT,
->>>> +    DAC_POWER_EVENT,
->>>> +    ADC_POWER_EVENT,
->>>> +    LAST_POWER_EVENT
->>>> +};
->>>> +
->>>> +static u16 mute_mask[] = {
->>>> +    SGTL5000_HP_MUTE,
->>>> +    SGTL5000_OUTPUTS_MUTE,
->>>> +    SGTL5000_OUTPUTS_MUTE
->>>> +};
->>>
->>> If mute_mask[] is only used within common handler, you may consider
->>> declaring const array within said handler instead (did not check that
->>> myself).
->>> Otherwise, simple comment for the second _OUTPUTS_MUTE should suffice -
->>> its not self explanatory why you doubled that mask.
-> 
-> Ok, I'll add a comment to explain doubled mask.
-> 
->>>
->>>> +
->>>>    /* sgtl5000 private structure in codec */
->>>>    struct sgtl5000_priv {
->>>>        int sysclk;    /* sysclk rate */
->>>> @@ -137,8 +157,109 @@ struct sgtl5000_priv {
->>>>        u8 micbias_voltage;
->>>>        u8 lrclk_strength;
->>>>        u8 sclk_strength;
->>>> +    u16 mute_state[LAST_POWER_EVENT];
->>>>    };
->>>
->>> When I spoke of LAST enum constant, I did not really had this specific
->>> usage in mind.
->>>
->>>   From design perspective, _LAST_ does not exist and should never be
->>> referred to as "the next option" i.e.: new enum constant.
-> 
-> By its nature, LAST_POWER_EVENT is actually a size of the array, but I
-> couldn't come up with a better name.
-> 
->>> That is way preferred usage is:
->>> u16 mute_state[ADC_POWER_EVENT+1;
->>> -or-
->>> u16 mute_state[LAST_POWER_EVENT+1];
->>>
->>> Maybe I'm just being radical here :)
-> 
-> Maybe :)  I don't like first variant (ADC_POWER_EVENT+1): somewhen in
-> future, someone can add a new event to this enum and we've got a
-> possible situation with "out of array indexing".
-> 
->>>
->>> Czarek
->>
->> Forgive me for double posting. Comment above is targeted towards:
->>
->>   >> +enum {
->>   >> +    HP_POWER_EVENT,
->>   >> +    DAC_POWER_EVENT,
->>   >> +    ADC_POWER_EVENT,
->>   >> +    LAST_POWER_EVENT
->>   >> +};
->>
->> as LAST_POWER_EVENT is not assigned explicitly to ADC_POWER_EVENT and
->> thus generates implicit "new option" of value 3.
-> 
-> So will you be happy with the following variant?
-> ...
->      ADC_POWER_EVENT,
->      LAST_POWER_EVENT =  ADC_POWER_EVENT,
-> ...
->     u16 mute_state[LAST_POWER_EVENT+1];
-> ...
-> 
+On Fri, Jul 19, 2019 at 1:02 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+> The existing code has a mixed select/depend usage which makes no sense.
+>
+> config SOUNDWIRE_BUS
+>        tristate
+>        select REGMAP_SOUNDWIRE
+>
+> config REGMAP_SOUNDWIRE
+>         tristate
+>         depends on SOUNDWIRE_BUS
+>
+> Let's remove one layer of Kconfig definitions and align with the
+> solutions used by all other serial links.
+>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-It's not about being happy - I'm a happy man in general ;p
+No issues found:
 
-As stated already, declaring _LAST_ as the "new option" is misleading 
-and not advised.
-And yeah, [_LAST_ + 1] is usually the one you should go with.
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Czarek
+> ---
+>  drivers/base/regmap/Kconfig | 2 +-
+>  drivers/soundwire/Kconfig   | 7 +------
+>  drivers/soundwire/Makefile  | 2 +-
+>  3 files changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+> index 6ad5ef48b61e..8cd2ac650b50 100644
+> --- a/drivers/base/regmap/Kconfig
+> +++ b/drivers/base/regmap/Kconfig
+> @@ -44,7 +44,7 @@ config REGMAP_IRQ
+>
+>  config REGMAP_SOUNDWIRE
+>         tristate
+> -       depends on SOUNDWIRE_BUS
+> +       depends on SOUNDWIRE
+>
+>  config REGMAP_SCCB
+>         tristate
+> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+> index 3a01cfd70fdc..f518273cfbe3 100644
+> --- a/drivers/soundwire/Kconfig
+> +++ b/drivers/soundwire/Kconfig
+> @@ -4,7 +4,7 @@
+>  #
+>
+>  menuconfig SOUNDWIRE
+> -       bool "SoundWire support"
+> +       tristate "SoundWire support"
+>         help
+>           SoundWire is a 2-Pin interface with data and clock line ratified
+>           by the MIPI Alliance. SoundWire is used for transporting data
+> @@ -17,17 +17,12 @@ if SOUNDWIRE
+>
+>  comment "SoundWire Devices"
+>
+> -config SOUNDWIRE_BUS
+> -       tristate
+> -       select REGMAP_SOUNDWIRE
+> -
+>  config SOUNDWIRE_CADENCE
+>         tristate
+>
+>  config SOUNDWIRE_INTEL
+>         tristate "Intel SoundWire Master driver"
+>         select SOUNDWIRE_CADENCE
+> -       select SOUNDWIRE_BUS
+>         depends on X86 && ACPI && SND_SOC
+>         help
+>           SoundWire Intel Master driver.
+> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> index fd99a831b92a..45b7e5001653 100644
+> --- a/drivers/soundwire/Makefile
+> +++ b/drivers/soundwire/Makefile
+> @@ -5,7 +5,7 @@
+>
+>  #Bus Objs
+>  soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
+> -obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+> +obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+>
+>  #Cadence Objs
+>  soundwire-cadence-objs := cadence_master.o
+> --
+> 2.20.1
+>
