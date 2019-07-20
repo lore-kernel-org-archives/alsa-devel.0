@@ -1,19 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 4/5] ASoC: Intel: Skylake: use common NHLT
-	module
-Date: Fri, 19 Jul 2019 15:37:51 -0500
-Message-ID: <20190719203752.11151-5-pierre-louis.bossart@linux.intel.com>
-References: <20190719203752.11151-1-pierre-louis.bossart@linux.intel.com>
+From: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
+Subject: Re: Surround speaker connection on Acer 8951G
+Date: Sat, 20 Jul 2019 18:54:35 +0200
+Message-ID: <20190720165435.GA5855@xn--80adja5bqm.su>
+References: <20190404192430.GA24729@xn--80adja5bqm.su>
+ <20190719111231.GA26592@xn--80adja5bqm.su>
+ <s5hzhla9j8b.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 115E1F8015B
- for <alsa-devel@alsa-project.org>; Fri, 19 Jul 2019 22:38:00 +0200 (CEST)
-In-Reply-To: <20190719203752.11151-1-pierre-louis.bossart@linux.intel.com>
+Received: from mail1.xn--80adja5bqm.su (xn--80adja5bqm.su [45.62.210.217])
+ by alsa1.perex.cz (Postfix) with ESMTP id AAAC1F8015B
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2019 18:54:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hzhla9j8b.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,211 +23,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-No functionality change, only use common functions now.
+Hi Takashi,
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/Kconfig            |  1 +
- sound/soc/intel/skylake/skl-nhlt.c | 90 ------------------------------
- sound/soc/intel/skylake/skl.c      | 12 ++--
- sound/soc/intel/skylake/skl.h      |  3 -
- 4 files changed, 9 insertions(+), 97 deletions(-)
+On Fri, Jul 19, 2019 at 04:44:52PM +0200, Takashi Iwai wrote:
+> It might be some other external stuff like an external amp that is
+> missing.  Often it's managed via GPIO or EAPD (that is controlled by
+> HD-audio itself), but sometimes via a vendor-specific verb, or even
+> over a completely different i2c...
+> 
+> In the case of vendor verbs, you can take a look at other quirks for
+> similar models that touches lots of COEF stuff.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 96a00a9d4cf8..a3ec17fd63cd 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -215,6 +215,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
- 	select SND_SOC_ACPI_INTEL_MATCH
-+	select SND_INTEL_NHLT
- 	help
- 	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
- 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index aabc5d71650e..6f57ceb9efb7 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -13,54 +13,6 @@
- #include "skl.h"
- #include "skl-i2s.h"
+thanks for the pointers, does not sound simple, let's see if I get anywhere,
+I will for sure try.
+
+Odd that only one speaker would require such a special handling, but I guess
+it is what it is.
+
+In the meantime I found a more pressing issue where I also failed to find a
+solution:
+
+Pin 0x1b is resposible for rear speakers and at the same time for external
+headphones. If I set the pin to "headphones" in hdajackretask, then
+I "lose" the speaker and can't select a 5.1 profile. If I set it to internal
+"speaker", the way I have it set up now, then sound comes out of speakers and 
+headphones at the same time. 
+
+"hdajacksensetest -a" will detect presence even if sensing is disabled in
+hdajackretask, so I assume that this could be somehow used to mute
+the speakers, but I was not able to figure out how to approach this.
+
+This is quite an issue for audio conferencing, so I'd like to tackle this 
+first and leave the LFE problem for later.
+
+What would be the best way to solve this, how should this pin be configured?
+
+Kind regards,
+Jin
  
--#define NHLT_ACPI_HEADER_SIG	"NHLT"
--
--/* Unique identification for getting NHLT blobs */
--static guid_t osc_guid =
--	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
--		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
--
--
--struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
--{
--	acpi_handle handle;
--	union acpi_object *obj;
--	struct nhlt_resource_desc  *nhlt_ptr = NULL;
--	struct nhlt_acpi_table *nhlt_table = NULL;
--
--	handle = ACPI_HANDLE(dev);
--	if (!handle) {
--		dev_err(dev, "Didn't find ACPI_HANDLE\n");
--		return NULL;
--	}
--
--	obj = acpi_evaluate_dsm(handle, &osc_guid, 1, 1, NULL);
--	if (obj && obj->type == ACPI_TYPE_BUFFER) {
--		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
--		if (nhlt_ptr->length)
--			nhlt_table = (struct nhlt_acpi_table *)
--				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
--				MEMREMAP_WB);
--		ACPI_FREE(obj);
--		if (nhlt_table && (strncmp(nhlt_table->header.signature,
--					NHLT_ACPI_HEADER_SIG,
--					strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
--			memunmap(nhlt_table);
--			dev_err(dev, "NHLT ACPI header signature incorrect\n");
--			return NULL;
--		}
--		return nhlt_table;
--	}
--
--	dev_err(dev, "device specific method to extract NHLT blob failed\n");
--	return NULL;
--}
--
--void skl_nhlt_free(struct nhlt_acpi_table *nhlt)
--{
--	memunmap((void *) nhlt);
--}
--
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
- 		struct device *dev, struct nhlt_fmt *fmt,
- 		u8 no_ch, u32 rate, u16 bps, u8 linktype)
-@@ -163,48 +115,6 @@ struct nhlt_specific_cfg
- 	return NULL;
- }
- 
--int skl_get_dmic_geo(struct skl *skl)
--{
--	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
--	struct nhlt_endpoint *epnt;
--	struct nhlt_dmic_array_config *cfg;
--	struct device *dev = &skl->pci->dev;
--	unsigned int dmic_geo = 0;
--	u8 j;
--
--	if (!nhlt)
--		return 0;
--
--	epnt = (struct nhlt_endpoint *)nhlt->desc;
--
--	for (j = 0; j < nhlt->endpoint_count; j++) {
--		if (epnt->linktype == NHLT_LINK_DMIC) {
--			cfg = (struct nhlt_dmic_array_config  *)
--					(epnt->config.caps);
--			switch (cfg->array_type) {
--			case NHLT_MIC_ARRAY_2CH_SMALL:
--			case NHLT_MIC_ARRAY_2CH_BIG:
--				dmic_geo |= MIC_ARRAY_2CH;
--				break;
--
--			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
--			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
--			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
--				dmic_geo |= MIC_ARRAY_4CH;
--				break;
--
--			default:
--				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
--						cfg->array_type);
--
--			}
--		}
--		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
--	}
--
--	return dmic_geo;
--}
--
- static void skl_nhlt_trim_space(char *trim)
- {
- 	char *s = trim;
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 3362e71b4563..2b5159890a57 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -26,9 +26,11 @@
- #include <sound/hdaudio.h>
- #include <sound/hda_i915.h>
- #include <sound/hda_codec.h>
-+#include <sound/intel-nhlt.h>
- #include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
- #include "../../../soc/codecs/hdac_hda.h"
- #endif
-@@ -516,7 +518,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
- 
- 	if (pdata) {
- 		skl->use_tplg_pcm = pdata->use_tplg_pcm;
--		mach->mach_params.dmic_num = skl_get_dmic_geo(skl);
-+		mach->mach_params.dmic_num =
-+			intel_nhlt_get_dmic_geo(&skl->pci->dev,
-+						skl->nhlt);
- 	}
- 
- 	return 0;
-@@ -1029,7 +1033,7 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	device_disable_async_suspend(bus->dev);
- 
--	skl->nhlt = skl_nhlt_init(bus->dev);
-+	skl->nhlt = intel_nhlt_init(bus->dev);
- 
- 	if (skl->nhlt == NULL) {
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
-@@ -1095,7 +1099,7 @@ static int skl_probe(struct pci_dev *pci,
- out_clk_free:
- 	skl_clock_device_unregister(skl);
- out_nhlt_free:
--	skl_nhlt_free(skl->nhlt);
-+	intel_nhlt_free(skl->nhlt);
- out_free:
- 	skl_free(bus);
- 
-@@ -1144,7 +1148,7 @@ static void skl_remove(struct pci_dev *pci)
- 	skl_dmic_device_unregister(skl);
- 	skl_clock_device_unregister(skl);
- 	skl_nhlt_remove_sysfs(skl);
--	skl_nhlt_free(skl->nhlt);
-+	intel_nhlt_free(skl->nhlt);
- 	skl_free(bus);
- 	dev_set_drvdata(&pci->dev, NULL);
- }
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 928e8115a1a7..f4dd6c767993 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -128,13 +128,10 @@ struct skl_dsp_ops {
- int skl_platform_unregister(struct device *dev);
- int skl_platform_register(struct device *dev);
- 
--struct nhlt_acpi_table *skl_nhlt_init(struct device *dev);
--void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 					u8 link_type, u8 s_fmt, u8 no_ch,
- 					u32 s_rate, u8 dirn, u8 dev_type);
- 
--int skl_get_dmic_geo(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
--- 
-2.20.1
