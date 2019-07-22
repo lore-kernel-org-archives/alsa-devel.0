@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 20/21] ASoC: SOF: Intel: hda: remove misleading
-	error trace from IRQ thread
-Date: Mon, 22 Jul 2019 09:14:01 -0500
-Message-ID: <20190722141402.7194-21-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 19/21] ASoC: SOF: Intel: hda: fix stream id
+	setting
+Date: Mon, 22 Jul 2019 09:14:00 -0500
+Message-ID: <20190722141402.7194-20-pierre-louis.bossart@linux.intel.com>
 References: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +11,7 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7BADF803D6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45E68F804CC
  for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:25 +0200 (CEST)
 In-Reply-To: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,55 +24,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Rander Wang <rander.wang@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Rander Wang <rander.wang@linux.intel.com>
 
-Downgrade "nothing to do in IRQ thread" message from error to a debug
-message in the IPC interrupt handler thread.
+snd_hdac_ext_link_clear_stream_id maps stream id to
+link output, which is for playback, not capture.
 
-The spurious wake-up can happen if a HDA stream interrupt is
-raised while the IPC interrupt thread is running. IPC functionality
-is not impacted by this condition, so debug is a more appropriate
-trace level.
+Tested on Whiskey Lake platform.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/cnl.c     | 4 ++--
- sound/soc/sof/intel/hda-ipc.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 15 +++++++++++----
+ sound/soc/sof/intel/hda-dsp.c |  8 +++++++-
+ 2 files changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index f2b392998f20..ffd8d4394537 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -101,8 +101,8 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- 		/*
- 		 * This interrupt is not shared so no need to return IRQ_NONE.
- 		 */
--		dev_err_ratelimited(sdev->dev,
--				    "error: nothing to do in IRQ thread\n");
-+		dev_dbg_ratelimited(sdev->dev,
-+				    "nothing to do in IPC IRQ thread\n");
- 	}
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 2b5e2b8c69c2..8796f385be76 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -327,8 +327,12 @@ static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
+ 					  DMA_CHAN_INVALID, substream->stream);
+ 		if (ret < 0)
+ 			return ret;
+-		stream_tag = hdac_stream(link_dev)->stream_tag;
+-		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			stream_tag = hdac_stream(link_dev)->stream_tag;
++			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++		}
++
+ 		link_dev->link_prepared = 0;
  
- 	/* re-enable IPC interrupt */
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 50244b82600c..2ecba91f5219 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -224,8 +224,8 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 		/*
- 		 * This interrupt is not shared so no need to return IRQ_NONE.
- 		 */
--		dev_err_ratelimited(sdev->dev,
--				    "error: nothing to do in IRQ thread\n");
-+		dev_dbg_ratelimited(sdev->dev,
-+				    "nothing to do in IPC IRQ thread\n");
- 	}
+ 		/* fallthrough */
+@@ -369,8 +373,11 @@ static int hda_link_hw_free(struct snd_pcm_substream *substream,
+ 	if (!link)
+ 		return -EINVAL;
  
- 	/* re-enable IPC interrupt */
+-	stream_tag = hdac_stream(link_dev)->stream_tag;
+-	snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		stream_tag = hdac_stream(link_dev)->stream_tag;
++		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++	}
++
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
+ 	link_dev->link_prepared = 0;
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index e38008194574..fb55a3c5afd0 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -450,9 +450,15 @@ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ 			link = snd_hdac_ext_bus_get_link(bus, name);
+ 			if (!link)
+ 				return -EINVAL;
++
++			stream->link_prepared = 0;
++
++			if (hdac_stream(stream)->direction ==
++				SNDRV_PCM_STREAM_CAPTURE)
++				continue;
++
+ 			stream_tag = hdac_stream(stream)->stream_tag;
+ 			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
+-			stream->link_prepared = 0;
+ 		}
+ 	}
+ #endif
 -- 
 2.20.1
