@@ -1,19 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 5/5] ALSA: hda/intel: stop probe if DMICS
-	are detected on Skylake+ platforms
-Date: Mon, 22 Jul 2019 08:44:10 -0500
-Message-ID: <20190722134410.9602-6-pierre-louis.bossart@linux.intel.com>
-References: <20190722134410.9602-1-pierre-louis.bossart@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2] ASoC: madera: Read device tree configuration
+Date: Mon, 22 Jul 2019 14:52:09 +0100
+Message-ID: <20190722135209.30302-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F95DF804CA
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 15:44:53 +0200 (CEST)
-In-Reply-To: <20190722134410.9602-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A596F800E8
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 15:52:14 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,135 +21,142 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The legacy HD-Audio driver cannot handle Skylake+ platforms with
-digital microphones. For those platforms, the SOF or SST drivers need
-to be used.
+Read the configuration of the Madera ASoC driver from device tree.
 
-This patch provides an automatic way of detecting the presence of
-DMICs using NHTL information reported by the BIOS. A kernel kconfig
-option or a kernel module parameter provide an opt-in means of
-stopping the probe. The kernel would then look for an alternate driver
-registered for the same PCI ID to probe.
-
-With this capability, distros no longer have to blacklist
-snd-hda-intel, but still need to make sure the SOF/SST drivers are
-functional by providing the relevant firmware and topology files in
-/lib/firmware/intel
-
-The coexistence between SOF and SST drivers and their dynamic
-detection is not addressed by this patch, different mechanisms need to
-be used, e.g. DMI-based quirks.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/pci/hda/Kconfig     | 10 ++++++++++
- sound/pci/hda/hda_intel.c | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 35d934309cb2..b5966014b5f7 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -12,6 +12,7 @@ config SND_HDA_INTEL
- 	tristate "HD Audio PCI"
- 	depends on SND_PCI
- 	select SND_HDA
-+	select SND_INTEL_NHLT if ACPI
- 	help
- 	  Say Y here to include support for Intel "High Definition
- 	  Audio" (Azalia) and its compatible devices.
-@@ -22,6 +23,15 @@ config SND_HDA_INTEL
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-hda-intel.
+Changes since v1:
+ - Returned to using a helping in the madera driver itself,
+   discussions around adding a generic helper indicated that all the
+   error reporting would still need to be contained in the driver which
+   constitutes the vast majority of the code in the helper anyway.
+ - Updated the code to use the new device_property_count_u32 helper.
+
+Thanks,
+Charles
+
+ sound/soc/codecs/madera.c | 97 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 97 insertions(+)
+
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index 1b1be19a2f991..5f1e32a5a8556 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -300,6 +300,100 @@ int madera_free_overheat(struct madera_priv *priv)
+ }
+ EXPORT_SYMBOL_GPL(madera_free_overheat);
  
-+config SND_HDA_INTEL_DETECT_DMIC
-+	bool "DMIC detection and probe abort"
-+	depends on SND_HDA_INTEL
-+	help
-+	  Say Y to detect digital microphones on SKL+ devices. DMICs
-+	  cannot be handled by the HDaudio legacy driver and are
-+	  currently only supported by the SOF driver.
-+	  If unsure say N.
-+
- config SND_HDA_TEGRA
- 	tristate "NVIDIA Tegra HD Audio"
- 	depends on ARCH_TEGRA
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index cb8b0945547c..ae9c13248a1d 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -46,6 +46,7 @@
- #include <sound/initval.h>
- #include <sound/hdaudio.h>
- #include <sound/hda_i915.h>
-+#include <sound/intel-nhlt.h>
- #include <linux/vgaarb.h>
- #include <linux/vga_switcheroo.h>
- #include <linux/firmware.h>
-@@ -124,6 +125,7 @@ static char *patch[SNDRV_CARDS];
- static bool beep_mode[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] =
- 					CONFIG_SND_HDA_INPUT_BEEP_MODE};
- #endif
-+static bool dmic_detect = IS_ENABLED(CONFIG_SND_HDA_INTEL_DETECT_DMIC);
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
-@@ -158,6 +160,8 @@ module_param_array(beep_mode, bool, NULL, 0444);
- MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
- 			    "(0=off, 1=on) (default=1).");
- #endif
-+module_param(dmic_detect, bool, 0444);
-+MODULE_PARM_DESC(dmic_detect, "DMIC detect on SKL+ platforms");
- 
- #ifdef CONFIG_PM
- static int param_set_xint(const char *val, const struct kernel_param *kp);
-@@ -2025,6 +2029,25 @@ static const struct hda_controller_ops pci_hda_ops = {
- 	.position_check = azx_position_check,
- };
- 
-+static int azx_check_dmic(struct pci_dev *pci, struct azx *chip)
++static int madera_get_variable_u32_array(struct device *dev,
++					 const char *propname,
++					 u32 *dest, int n_max,
++					 int multiple)
 +{
-+	struct nhlt_acpi_table *nhlt;
-+	int ret = 0;
++	int n, ret;
 +
-+	if (chip->driver_type == AZX_DRIVER_SKL &&
-+	    pci->class != 0x040300) {
-+		nhlt = intel_nhlt_init(&pci->dev);
-+		if (nhlt) {
-+			if (intel_nhlt_get_dmic_geo(&pci->dev, nhlt)) {
-+				ret = -ENODEV;
-+				dev_info(&pci->dev, "Digital mics found on Skylake+ platform, aborting probe\n");
-+			}
-+			intel_nhlt_free(nhlt);
-+		}
++	n = device_property_count_u32(dev, propname);
++	if (n < 0) {
++		if (n == -EINVAL)
++			return 0;	/* missing, ignore */
++
++		dev_warn(dev, "%s malformed (%d)\n", propname, n);
++
++		return n;
++	} else if ((n % multiple) != 0) {
++		dev_warn(dev, "%s not a multiple of %d entries\n",
++			 propname, multiple);
++
++		return -EINVAL;
 +	}
-+	return ret;
++
++	if (n > n_max)
++		n = n_max;
++
++	ret = device_property_read_u32_array(dev, propname, dest, n);
++	if (ret < 0)
++		return ret;
++
++	return n;
 +}
 +
- static int azx_probe(struct pci_dev *pci,
- 		     const struct pci_device_id *pci_id)
- {
-@@ -2055,6 +2078,17 @@ static int azx_probe(struct pci_dev *pci,
- 	card->private_data = chip;
- 	hda = container_of(chip, struct hda_intel, chip);
- 
-+	/*
-+	 * stop probe if digital microphones detected on Skylake+ platform
-+	 * with the DSP enabled. This is an opt-in behavior defined at build
-+	 * time or at run-time with a module parameter
-+	 */
-+	if (dmic_detect) {
-+		err = azx_check_dmic(pci, chip);
-+		if (err < 0)
-+			goto out_free;
-+	}
++static void madera_prop_get_inmode(struct madera_priv *priv)
++{
++	struct madera *madera = priv->madera;
++	struct madera_codec_pdata *pdata = &madera->pdata.codec;
++	u32 tmp[MADERA_MAX_INPUT * MADERA_MAX_MUXED_CHANNELS];
++	int n, i, in_idx, ch_idx;
 +
- 	pci_set_drvdata(pci, card);
++	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode) != MADERA_MAX_INPUT);
++	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode[0]) != MADERA_MAX_MUXED_CHANNELS);
++
++	n = madera_get_variable_u32_array(madera->dev, "cirrus,inmode",
++					  tmp, ARRAY_SIZE(tmp),
++					  MADERA_MAX_MUXED_CHANNELS);
++	if (n < 0)
++		return;
++
++	in_idx = 0;
++	ch_idx = 0;
++	for (i = 0; i < n; ++i) {
++		pdata->inmode[in_idx][ch_idx] = tmp[i];
++
++		if (++ch_idx == MADERA_MAX_MUXED_CHANNELS) {
++			ch_idx = 0;
++			++in_idx;
++		}
++	}
++}
++
++static void madera_prop_get_pdata(struct madera_priv *priv)
++{
++	struct madera *madera = priv->madera;
++	struct madera_codec_pdata *pdata = &madera->pdata.codec;
++	u32 out_mono[ARRAY_SIZE(pdata->out_mono)];
++	int i, n;
++
++	madera_prop_get_inmode(priv);
++
++	n = madera_get_variable_u32_array(madera->dev, "cirrus,out-mono",
++					  out_mono, ARRAY_SIZE(out_mono), 1);
++	if (n > 0)
++		for (i = 0; i < n; ++i)
++			pdata->out_mono[i] = !!out_mono[i];
++
++	madera_get_variable_u32_array(madera->dev,
++				      "cirrus,max-channels-clocked",
++				      pdata->max_channels_clocked,
++				      ARRAY_SIZE(pdata->max_channels_clocked),
++				      1);
++
++	madera_get_variable_u32_array(madera->dev, "cirrus,pdm-fmt",
++				      pdata->pdm_fmt,
++				      ARRAY_SIZE(pdata->pdm_fmt), 1);
++
++	madera_get_variable_u32_array(madera->dev, "cirrus,pdm-mute",
++				      pdata->pdm_mute,
++				      ARRAY_SIZE(pdata->pdm_mute), 1);
++
++	madera_get_variable_u32_array(madera->dev, "cirrus,dmic-ref",
++				      pdata->dmic_ref,
++				      ARRAY_SIZE(pdata->dmic_ref), 1);
++}
++
+ int madera_core_init(struct madera_priv *priv)
+ {
+ 	int i;
+@@ -308,6 +402,9 @@ int madera_core_init(struct madera_priv *priv)
+ 	BUILD_BUG_ON(!madera_mixer_texts[MADERA_NUM_MIXER_INPUTS - 1]);
+ 	BUILD_BUG_ON(!madera_mixer_values[MADERA_NUM_MIXER_INPUTS - 1]);
  
- 	err = register_vga_switcheroo(chip);
++	if (!dev_get_platdata(priv->madera->dev))
++		madera_prop_get_pdata(priv);
++
+ 	mutex_init(&priv->rate_lock);
+ 
+ 	for (i = 0; i < MADERA_MAX_HP_OUTPUT; i++)
 -- 
-2.20.1
+2.11.0
