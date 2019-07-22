@@ -1,112 +1,63 @@
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH 01/10] ASoC: fsl_sai: add of_match data
-Date: Mon, 22 Jul 2019 15:48:24 +0300
-Message-ID: <20190722124833.28757-2-daniel.baluta@nxp.com>
+Subject: [PATCH 04/10] ASoC: fsl_sai: Update Tx/Rx channel enable mask
+Date: Mon, 22 Jul 2019 15:48:27 +0300
+Message-ID: <20190722124833.28757-5-daniel.baluta@nxp.com>
 References: <20190722124833.28757-1-daniel.baluta@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190722124833.28757-1-daniel.baluta@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: festevam@gmail.com, perex@perex.cz, tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, shengjiu.wang@nxp.com, angus@akkea.ca, kernel@pengutronix.de, l.stach@pengutronix.de, viorel.suman@nxp.com
+Cc: festevam@gmail.com, perex@perex.cz, tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, shengjiu.wang@nxp.com, angus@akkea.ca, kernel@pengutronix.de, l.stach@pengutronix.de, viorel.suman@nxp.com, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
+Tx channel enable (TCE) / Rx channel enable (RCE) bits
+enable corresponding data channel for Tx/Rx operation.
 
-New revisions of the SAI IP block have even more differences that need
-be taken into account by the driver. To avoid sprinking compatible
-checks all over the driver move the current differences into of_match_data.
+Because SAI supports up the 8 channels TCE/RCE occupy
+up the 8 bits inside TCR3/RCR3 registers we need to extend
+the mask to reflect this.
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/fsl/fsl_sai.c | 22 ++++++++++++++--------
- sound/soc/fsl/fsl_sai.h |  6 +++++-
- 2 files changed, 19 insertions(+), 9 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 6 ++++--
+ sound/soc/fsl/fsl_sai.h | 1 +
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index d58cc3ae90d8..ed0432e7327a 100644
+index 7f8823fe4b90..768341608695 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -9,6 +9,7 @@
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-@@ -788,10 +789,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+@@ -599,7 +599,8 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	int ret;
  
- 	sai->pdev = pdev;
--
--	if (of_device_is_compatible(np, "fsl,imx6sx-sai") ||
--	    of_device_is_compatible(np, "fsl,imx6ul-sai"))
--		sai->sai_on_imx = true;
-+	sai->soc_data = of_device_get_match_data(&pdev->dev);
+-	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx), FSL_SAI_CR3_TRCE,
++	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx),
++			   FSL_SAI_CR3_TRCE_MASK,
+ 			   FSL_SAI_CR3_TRCE);
  
- 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
+ 	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
+@@ -614,7 +615,8 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
  
-@@ -900,7 +898,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	if (sai->sai_on_imx)
-+	if (sai->soc_data->use_imx_pcm)
- 		return imx_pcm_dma_init(pdev, IMX_SAI_DMABUF_SIZE);
- 	else
- 		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-@@ -913,10 +911,18 @@ static int fsl_sai_remove(struct platform_device *pdev)
- 	return 0;
+-	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx), FSL_SAI_CR3_TRCE, 0);
++	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx),
++			   FSL_SAI_CR3_TRCE_MASK, 0);
  }
  
-+static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
-+	.use_imx_pcm = false,
-+};
-+
-+static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
-+	.use_imx_pcm = true,
-+};
-+
- static const struct of_device_id fsl_sai_ids[] = {
--	{ .compatible = "fsl,vf610-sai", },
--	{ .compatible = "fsl,imx6sx-sai", },
--	{ .compatible = "fsl,imx6ul-sai", },
-+	{ .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
-+	{ .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
-+	{ .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, fsl_sai_ids);
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
 diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 24cb156bf995..83e2bfe05b1b 100644
+index 4bb478041d67..b1abeed2f78e 100644
 --- a/sound/soc/fsl/fsl_sai.h
 +++ b/sound/soc/fsl/fsl_sai.h
-@@ -126,6 +126,10 @@
- #define FSL_SAI_MAXBURST_TX 6
- #define FSL_SAI_MAXBURST_RX 6
+@@ -110,6 +110,7 @@
  
-+struct fsl_sai_soc_data {
-+	bool use_imx_pcm;
-+};
-+
- struct fsl_sai {
- 	struct platform_device *pdev;
- 	struct regmap *regmap;
-@@ -135,7 +139,6 @@ struct fsl_sai {
- 	bool is_slave_mode;
- 	bool is_lsb_first;
- 	bool is_dsp_mode;
--	bool sai_on_imx;
- 	bool synchronous[2];
+ /* SAI Transmit and Receive Configuration 3 Register */
+ #define FSL_SAI_CR3_TRCE	BIT(16)
++#define FSL_SAI_CR3_TRCE_MASK	GENMASK(16, 23)
+ #define FSL_SAI_CR3_WDFL(x)	(x)
+ #define FSL_SAI_CR3_WDFL_MASK	0x1f
  
- 	unsigned int mclk_id[2];
-@@ -143,6 +146,7 @@ struct fsl_sai {
- 	unsigned int slots;
- 	unsigned int slot_width;
- 
-+	const struct fsl_sai_soc_data *soc_data;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- };
 -- 
 2.17.1
