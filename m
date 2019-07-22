@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda: Make hdac_device
-	device-managed" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:09 +0100 (BST)
-Message-ID: <20190722122209.A60BC274046A@ypsilon.sirena.org.uk>
-References: <20190626070450.7229-1-ranjani.sridharan@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 2/5] ALSA: hda: move parts of NHLT code
+ to new module
+Date: Mon, 22 Jul 2019 07:14:28 -0500
+Message-ID: <97359d3a-a3a0-696a-3d3f-64bd608eea5f@linux.intel.com>
+References: <20190719203752.11151-1-pierre-louis.bossart@linux.intel.com>
+ <20190719203752.11151-3-pierre-louis.bossart@linux.intel.com>
+ <daaa01dc-d963-f215-90b1-132fde8e489a@intel.com>
+ <s5h7e8aa1qs.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7315CF80446
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:22:15 +0200 (CEST)
-In-Reply-To: <20190626070450.7229-1-ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 360A3F8049C
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:23:26 +0200 (CEST)
+In-Reply-To: <s5h7e8aa1qs.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,107 +27,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Libin Yang <libin.yang@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>, Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, alsa-devel@alsa-project.org, broonie@kernel.org, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: SOF: Intel: hda: Make hdac_device device-managed
 
-has been applied to the asoc tree at
+On 7/22/19 3:54 AM, Takashi Iwai wrote:
+> On Sat, 20 Jul 2019 23:06:46 +0200,
+> Cezary Rojewski wrote:
+>>
+>>> --- a/sound/hda/Kconfig
+>>> +++ b/sound/hda/Kconfig
+>>> @@ -29,3 +29,6 @@ config SND_HDA_PREALLOC_SIZE
+>>>      	  Note that the pre-allocation size can be changed dynamically
+>>>    	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
+>>> +
+>>> +config SND_INTEL_NHLT
+>>> +	tristate
+>>
+>> If above is true, "depends on ACPI" would be expected.
+> 
+> This won't fix things in practice as the Kconfig reverse selection
+> ignores the dependencies of the selected item.  It'd be as a help for
+> readers, though.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ef9bec27485fefb6b93168fea73fda0dc9638046 Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 26 Jun 2019 00:04:50 -0700
-Subject: [PATCH] ASoC: SOF: Intel: hda: Make hdac_device device-managed
-
-snd_hdac_ext_bus_device_exit() has been recently modified
-to no longer free the hdac device. SOF allocates memory for
-hdac_device and hda_hda_priv with kzalloc. Make them
-device-managed instead so that they will be freed when the
-SOF driver is unloaded.
-
-Because of the above change, hda_codec is device-managed and
-it will be freed when the ASoC device is removed. Freeing
-the codec in snd_hda_codec_dev_release() leads to kernel
-panic while unloading and reloading the ASoC driver. So,
-avoid freeing the hda_codec for ASoC driver. This is done in
-the same patch to avoid bisect failure.
-
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20190626070450.7229-1-ranjani.sridharan@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/pci/hda/hda_codec.c       | 8 +++++++-
- sound/soc/sof/intel/hda-codec.c | 6 ++----
- 2 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index e30e86ca6b72..133200d31170 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -846,7 +846,13 @@ static void snd_hda_codec_dev_release(struct device *dev)
- 	snd_hda_sysfs_clear(codec);
- 	kfree(codec->modelname);
- 	kfree(codec->wcaps);
--	kfree(codec);
-+
-+	/*
-+	 * In the case of ASoC HD-audio, hda_codec is device managed.
-+	 * It will be freed when the ASoC device is removed.
-+	 */
-+	if (codec->core.type == HDA_DEV_LEGACY)
-+		kfree(codec);
- }
- 
- #define DEV_NAME_LEN 31
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index b8b37f082309..0d8437b080bf 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -62,8 +62,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 		address, resp);
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
--	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
--	hda_priv = kzalloc(sizeof(*hda_priv), GFP_KERNEL);
-+	hda_priv = devm_kzalloc(sdev->dev, sizeof(*hda_priv), GFP_KERNEL);
- 	if (!hda_priv)
- 		return -ENOMEM;
- 
-@@ -82,8 +81,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 
- 	return 0;
- #else
--	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
--	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	hdev = devm_kzalloc(sdev->dev, sizeof(*hdev), GFP_KERNEL);
- 	if (!hdev)
- 		return -ENOMEM;
- 
--- 
-2.20.1
+There is a fallback if ACPI is not defined, so the code would always 
+compile. Configurations which select SND_INTEL_NHLT already depend on ACPI.
