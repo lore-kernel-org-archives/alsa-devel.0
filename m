@@ -1,8 +1,9 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 00/20] ALSA: firewire-lib: use packet
-	descriptor to represent sequence of packet
-Date: Mon, 22 Jul 2019 12:36:50 +0900
-Message-ID: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/20] ALSA: firewire-lib: obsolete
+	ctx_data.tx.first_dbc with CIP_UNALIGHED_DBC flag
+Date: Mon, 22 Jul 2019 12:36:51 +0900
+Message-ID: <20190722033710.28107-2-o-takashi@sakamocchi.jp>
+References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5E28F803D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC7C4F800E8
  for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:18 +0200 (CEST)
+In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,115 +28,109 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Recent firmware for Fireworks board module have a quirk to start
+transmission of CIP with non-zero value for its data block counter.
+In current implementation of ALSA firewire stack, the quirk is handled
+by 'struct amdtp_stream.ctx_data.tx.first_dbc' with value 0x02. However,
+the value comes from reverse engineering. It's better to handle this
+quirk without the explicit value.
 
-This patchset is for Linux kernel v5.4.
+In a process to parse CIP header, the quirk of data block counter
+affects decision of sequence index in sequence-multiplexed data channel;
+i.e. MIDI conformant data channel. In Fireworks, the index is decided
+by the number of data blocks from top of the same CIP, thus the value
+of data block counter is useless.
 
-In current implementation of ALSA IEC 61883-1/6 packet streaming
-engine, one callback of isochronous context consists three steps
-to process an isochronous packet:
+This commit adds CIP_UNALIGHED_DBC flag and obsoletes the explicit
+value for this quirk.
 
-Callback of isochronous context
- - For each of packets
-  1.parse context header and decide the amount of PCM frames
-  2.process data blocks (in each unit driver)
-  3.queue packet
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-am824.c                | 8 ++++++--
+ sound/firewire/amdtp-stream.c               | 3 +--
+ sound/firewire/amdtp-stream.h               | 5 +++--
+ sound/firewire/fireworks/fireworks_stream.c | 2 +-
+ 4 files changed, 11 insertions(+), 7 deletions(-)
 
-The result of step 1 affects the rest, thus the above steps can be
-changed for below process:
-
-Callback of isochronous context
- 1.parse context header and decide the amount of PCM frames
-  - For each of packets
- 2.process data blocks (in each unit driver)
-  - For each of packets
- 3.queue packet
-  - For each of packets
-
-Especially it's convenient to decide the amount of PCM frames
-multiplexed into each packet as batch calculation before processing
-payloads of these packets.  Additionally it allows each unit driver
-to process data blocks for these packet by one call.
-
-This patchset uses list of 'struct pkt_desc' as an intermediate
-representation of packet parameters between these three steps.
-
-
-Here, I note my future plan for ALSA firewire stack for your motivation
-to review this patchset:
-
- * v5.4
-  * Handle several IT/IR context in one callback of IT context. This
-    idea will introduce AMDTP domain structure with relationship of IRQ
-    master/slave between the IT/IR contexts.
-  * As a result, both of playback/capture PCM substreams run on the
-    same hardware interrupt. Thus the drivers just support batch PCM
-    operation and irq-based programming model[1].
- * v5.5
-  * Some (p.s. not all) supported devices don't follow packet sequences
-    transferred by the drivers. They require clock recovery in driver
-    side to reduce playback noise.  Enhance the AMDTP domain structure
-    to have clock recovery target and fill list of 'struct pkt_desc'
-    according to the result of clock recovery.
-
-My work for libhinoko[2] allows me to sniff actual packet transmission
-between devices and drivers in Windows/Mac OS for long period (e.g. 1
-hour). Then I can classify some cases and some devices for the
-requirement of clock recovery.
-
-(I note that no specification describes this mechanism as long as I know.
-In the specification, clock recovery is one-way from transmitter to
-receivers, thus recovered clock is not necessarily used for transmission
-from the receiver to the transmitter.)
-
-[1] https://git.alsa-project.org/?p=alsa-utils.git;a=blob;f=axfer/axfer-transfer.1;hb=HEAD#l675
-[2] https://github.com/takaswie/libhinoko
-
-Takashi Sakamoto (20):
-  ALSA: firewire-lib: obsolete ctx_data.tx.first_dbc with
-    CIP_UNALIGHED_DBC flag
-  ALSA: firewire-lib: pass data block count as an argument to
-    tracepoints event
-  ALSA: firewire-lib: pass data block counter to data block processing
-    layer
-  ALSA: firewire-lib: operate data block counter in top level of
-    processing for IT context
-  ALSA: firewire-lib: operate data block counter in top level of
-    processing for IR context
-  ALSA: firewire-lib: add syt_override member for some protocols
-  ALSA: firewire-lib: pass no syt information to data block processing
-    layer
-  ALSA: firewire-lib: add list of packet descriptor
-  ALSA: firewire-lib: use packet descriptor for IT context
-  ALSA: firewire-lib: use packet descriptor for IR context
-  ALSA: firewire-lib: code refactoring to process PCM substream
-  ALSA: firewire-lib: code refactoring to process context payloads
-  ALSA: firewire-lib: pass packet descriptor to data block processing
-    layer
-  ALSA: firewire-lib: code refactoring for AM824 data block processing
-    layer
-  ALSA: firewire-digi00x: code refactoring for DOT data block processing
-    layer
-  ALSA: firewire-tascam: code refactoring for TASCAM data block
-    processing layer
-  ALSA: firewire-motu: code refactoring for MOTU data block processing
-    layer
-  ALSA: fireface: code refactoring for FF data block processing layer
-  ALSA: firewire-lib: process payload of isoc context according to
-    packet descriptors
-  ALSA: firewire-motu: more code refactoring for MOTU data block
-    processing layer
-
- sound/firewire/amdtp-am824.c                | 134 ++++++----
- sound/firewire/amdtp-stream-trace.h         |   6 +-
- sound/firewire/amdtp-stream.c               | 264 ++++++++++++--------
- sound/firewire/amdtp-stream.h               |  27 +-
- sound/firewire/digi00x/amdtp-dot.c          | 112 +++++----
- sound/firewire/fireface/amdtp-ff.c          | 105 ++++----
- sound/firewire/fireworks/fireworks_stream.c |   2 +-
- sound/firewire/motu/amdtp-motu.c            | 155 ++++++++----
- sound/firewire/tascam/amdtp-tascam.c        | 115 +++++----
- 9 files changed, 570 insertions(+), 350 deletions(-)
-
+diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
+index fd5d6b8ac557..99c567ded7a3 100644
+--- a/sound/firewire/amdtp-am824.c
++++ b/sound/firewire/amdtp-am824.c
+@@ -315,12 +315,16 @@ static void read_midi_messages(struct amdtp_stream *s,
+ 			       __be32 *buffer, unsigned int frames)
+ {
+ 	struct amdtp_am824 *p = s->protocol;
+-	unsigned int f, port;
+ 	int len;
+ 	u8 *b;
++	int f;
+ 
+ 	for (f = 0; f < frames; f++) {
+-		port = (8 - s->ctx_data.tx.first_dbc + s->data_block_counter + f) % 8;
++		unsigned int port = f;
++
++		if (!(s->flags & CIP_UNALIGHED_DBC))
++			port += s->data_block_counter;
++		port %= 8;
+ 		b = (u8 *)&buffer[p->midi_position];
+ 
+ 		len = b[0] - 0x80;
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 4d71d74707cf..fc1e8e5b9429 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -584,8 +584,7 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
+ 	    s->data_block_counter != UINT_MAX)
+ 		*dbc = s->data_block_counter;
+ 
+-	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) &&
+-	     *dbc == s->ctx_data.tx.first_dbc) ||
++	if ((*dbc == 0x00 && (s->flags & CIP_SKIP_DBC_ZERO_CHECK)) ||
+ 	    s->data_block_counter == UINT_MAX) {
+ 		lost = false;
+ 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 3942894c11ac..5d611122312b 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -33,6 +33,8 @@
+  * @CIP_HEADER_WITHOUT_EOH: Only for in-stream. CIP Header doesn't include
+  *	valid EOH.
+  * @CIP_NO_HEADERS: a lack of headers in packets
++ * @CIP_UNALIGHED_DBC: Only for in-stream. The value of dbc is not alighed to
++ *	the value of current SYT_INTERVAL; e.g. initial value is not zero.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -45,6 +47,7 @@ enum cip_flags {
+ 	CIP_JUMBO_PAYLOAD	= 0x40,
+ 	CIP_HEADER_WITHOUT_EOH	= 0x80,
+ 	CIP_NO_HEADER		= 0x100,
++	CIP_UNALIGHED_DBC	= 0x200,
+ };
+ 
+ /**
+@@ -119,8 +122,6 @@ struct amdtp_stream {
+ 			// Fixed interval of dbc between previos/current
+ 			// packets.
+ 			unsigned int dbc_interval;
+-			// Indicate the value of dbc field in a first packet.
+-			unsigned int first_dbc;
+ 		} tx;
+ 		struct {
+ 			// To calculate CIP data blocks and tstamp.
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index e659a0b89ba5..385fc9686365 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -146,7 +146,7 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 	    (efw->firmware_version == 0x5070000 ||
+ 	     efw->firmware_version == 0x5070300 ||
+ 	     efw->firmware_version == 0x5080000))
+-		efw->tx_stream.ctx_data.tx.first_dbc = 0x02;
++		efw->tx_stream.flags |= CIP_UNALIGHED_DBC;
+ 	/* AudioFire9 always reports wrong dbs. */
+ 	if (efw->is_af9)
+ 		efw->tx_stream.flags |= CIP_WRONG_DBS;
 -- 
 2.20.1
