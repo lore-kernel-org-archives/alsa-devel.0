@@ -1,106 +1,57 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 15/22] docs: index.rst: don't use genindex for pdf output
-Date: Mon, 22 Jul 2019 08:07:42 -0300
-Message-ID: <45d57666e5738a0b85e948b0e94151fe1b1f9274.1563792334.git.mchehab+samsung@kernel.org>
-References: <cover.1563792333.git.mchehab+samsung@kernel.org>
+From: =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>
+Subject: Re: [PATCH 3/3] ASoC: rt1308: Convert headers to SPDX
+Date: Mon, 22 Jul 2019 11:48:52 +0000
+Message-ID: <10317AB43303BA4884D7AF9C2EBCFF4002BBEA77@RTITMBSVM07.realtek.com.tw>
+References: <20190719063302.18858-1-shumingf@realtek.com>
+ <20190719164623.GA14800@sirena.org.uk>
+ <10317AB43303BA4884D7AF9C2EBCFF4002BBE03D@RTITMBSVM07.realtek.com.tw>
+ <20190722105821.GA4756@sirena.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <cover.1563792333.git.mchehab+samsung@kernel.org>
-Sender: netdev-owner@vger.kernel.org
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-doc@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB09DF8015B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 13:49:01 +0200 (CEST)
+In-Reply-To: <20190722105821.GA4756@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, =?utf-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The genindex logic is meant to be used only for html output, as
-pdf build has its own way to generate indexes.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/core-api/index.rst                  | 2 +-
- Documentation/driver-api/dmaengine/index.rst      | 2 +-
- Documentation/driver-api/soundwire/index.rst      | 2 +-
- Documentation/networking/device_drivers/index.rst | 2 +-
- Documentation/networking/index.rst                | 2 +-
- Documentation/sound/index.rst                     | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index dfd8fad1e1ec..fa16a0538dcb 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -49,7 +49,7 @@ Interfaces for kernel debugging
-    debug-objects
-    tracepoint
- 
--.. only::  subproject
-+.. only:: subproject and html
- 
-    Indices
-    =======
-diff --git a/Documentation/driver-api/dmaengine/index.rst b/Documentation/driver-api/dmaengine/index.rst
-index 3026fa975937..b9df904d0a79 100644
---- a/Documentation/driver-api/dmaengine/index.rst
-+++ b/Documentation/driver-api/dmaengine/index.rst
-@@ -47,7 +47,7 @@ This book adds some notes about PXA DMA
- 
-    pxa_dma
- 
--.. only::  subproject
-+.. only::  subproject and html
- 
-    Indices
-    =======
-diff --git a/Documentation/driver-api/soundwire/index.rst b/Documentation/driver-api/soundwire/index.rst
-index 6db026028f27..234911a0db99 100644
---- a/Documentation/driver-api/soundwire/index.rst
-+++ b/Documentation/driver-api/soundwire/index.rst
-@@ -10,7 +10,7 @@ SoundWire Documentation
-    error_handling
-    locking
- 
--.. only::  subproject
-+.. only::  subproject and html
- 
-    Indices
-    =======
-diff --git a/Documentation/networking/device_drivers/index.rst b/Documentation/networking/device_drivers/index.rst
-index 2b7fefe72351..f724b7c69b9e 100644
---- a/Documentation/networking/device_drivers/index.rst
-+++ b/Documentation/networking/device_drivers/index.rst
-@@ -24,7 +24,7 @@ Contents:
-    google/gve
-    mellanox/mlx5
- 
--.. only::  subproject
-+.. only::  subproject and html
- 
-    Indices
-    =======
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index a46fca264bee..6739066acadb 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -31,7 +31,7 @@ Contents:
-    tls
-    tls-offload
- 
--.. only::  subproject
-+.. only::  subproject and html
- 
-    Indices
-    =======
-diff --git a/Documentation/sound/index.rst b/Documentation/sound/index.rst
-index 47b89f014e69..4d7d42acf6df 100644
---- a/Documentation/sound/index.rst
-+++ b/Documentation/sound/index.rst
-@@ -12,7 +12,7 @@ Linux Sound Subsystem Documentation
-    hd-audio/index
-    cards/index
- 
--.. only::  subproject
-+.. only::  subproject and html
- 
-    Indices
-    =======
--- 
-2.21.0
+PiBPbiBNb24sIEp1bCAyMiwgMjAxOSBhdCAwMjowNzo0N0FNICswMDAwLCBTaHVtaW5nIFvojIPm
+m7jpiphdIHdyb3RlOg0KPiA+ID4gT24gRnJpLCBKdWwgMTksIDIwMTkgYXQgMDI6MzM6MDJQTSAr
+MDgwMCwgc2h1bWluZ2ZAcmVhbHRlay5jb20gd3JvdGU6DQo+IA0KPiA+ID4gPiBAQCAtMSwxMiAr
+MSwxMCBAQA0KPiA+ID4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4g
+PiA+ID4gIC8qDQo+ID4gPiA+ICAgKiBydDEzMDguYyAgLS0gIFJUMTMwOCBBTFNBIFNvQyBhbXBs
+aWZpZXIgY29tcG9uZW50IGRyaXZlcg0KPiA+ID4gPiAgICoNCj4gDQo+ID4gPiBQbGVhc2UgY29u
+dmVydCB0aGUgZW50aXJlIGNvbW1lbnQgYmxvY2sgdG8gYSBDKysgb25lIHNvIHRoaXMgbG9va3MN
+Cj4gPiA+IG1vcmUgaW50ZW50aW9uYWwuDQo+IA0KPiA+IEkgY29udmVydCB0aGUgY29tbWVudCBs
+aWtlIGJlbG93Lg0KPiA+IC0vLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiA+
+ICsvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLw0KPiANCj4gVGhhdCdzIGEg
+QyBjb21tZW50LCBub3QgYSBDKysgY29tbWVudC4gIEknbSBzYXlpbmcgY29udmVydCB0aGUgd2hv
+bGUgYmxvY2sNCj4gdGhlcmUgdG8gQysrIHJhdGhlciB0aGFuIGFkZCBvbmUgcmFuZG9tIGxpbmUg
+dGhhdCdzIEMrKyBuZXh0IHRvIHNvbWUgQw0KPiBjb21tZW50cy4NCj4gDQoNCk1heSBJIGNvbmZp
+cm0gd2hhdCB5b3VyIHBvaW50Pw0KSSBjb252ZXJ0IHRoZSBlbnRpcmUgY29tbWVudCBibG9jayB0
+byBhIEMrKyBvbmUgbGlrZSBiZWxvdy4NCi8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
+Mi4wDQotLyoNCi0gKiBydDEzMDguYyAgLS0gIFJUMTMwOCBBTFNBIFNvQyBhbXBsaWZpZXIgY29t
+cG9uZW50IGRyaXZlcg0KLSAqDQotICogQ29weXJpZ2h0IDIwMTkgUmVhbHRlayBTZW1pY29uZHVj
+dG9yIENvcnAuDQotICogQXV0aG9yOiBEZXJlayBGYW5nIDxkZXJlay5mYW5nQHJlYWx0ZWsuY29t
+Pg0KLSAqDQotICovDQorLy8NCisvLyBydDEzMDguYyAgLS0gIFJUMTMwOCBBTFNBIFNvQyBhbXBs
+aWZpZXIgY29tcG9uZW50IGRyaXZlcg0KKy8vDQorLy8gQ29weXJpZ2h0IDIwMTkgUmVhbHRlayBT
+ZW1pY29uZHVjdG9yIENvcnAuDQorLy8gQXV0aG9yOiBEZXJlayBGYW5nIDxkZXJlay5mYW5nQHJl
+YWx0ZWsuY29tPg0KKy8vDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
