@@ -1,22 +1,40 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: use __u32 instead of uint32_t in uapi headers" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:09 +0100 (BST)
-Message-ID: <20190722122209.DB22327416CB@ypsilon.sirena.org.uk>
-References: <20190721142308.30306-1-yamada.masahiro@socionext.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190721142308.30306-1-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: cs47l35: Use define for DSPCLK enable
+	bit" to the asoc tree
+Date: Mon, 22 Jul 2019 13:22:05 +0100 (BST)
+Message-ID: <20190722122205.DB4322742C08@ypsilon.sirena.org.uk>
+References: <20190722093516.12906-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98677F800E8
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:22:08 +0200 (CEST)
+In-Reply-To: <20190722093516.12906-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: use __u32 instead of uint32_t in uapi headers
+   ASoC: cs47l35: Use define for DSPCLK enable bit
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,159 +55,30 @@ to this mail.
 Thanks,
 Mark
 
->From 62ec3d13601bd626ca7a0edef6d45dbb753d94e8 Mon Sep 17 00:00:00 2001
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Sun, 21 Jul 2019 23:23:08 +0900
-Subject: [PATCH] ASoC: SOF: use __u32 instead of uint32_t in uapi headers
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From fc3136e7e11f8e9a3cb8d6c880a5732013935661 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Mon, 22 Jul 2019 10:35:16 +0100
+Subject: [PATCH] ASoC: cs47l35: Use define for DSPCLK enable bit
 
-When CONFIG_UAPI_HEADER_TEST=y, exported headers are compile-tested to
-make sure they can be included from user-space.
-
-Currently, header.h and fw.h are excluded from the test coverage.
-To make them join the compile-test, we need to fix the build errors
-attached below.
-
-For a case like this, we decided to use __u{8,16,32,64} variable types
-in this discussion:
-
-  https://lkml.org/lkml/2019/6/5/18
-
-Build log:
-
-  CC      usr/include/sound/sof/header.h.s
-  CC      usr/include/sound/sof/fw.h.s
-In file included from <command-line>:32:0:
-./usr/include/sound/sof/header.h:19:2: error: unknown type name ‘uint32_t’
-  uint32_t magic;  /**< 'S', 'O', 'F', '\0' */
-  ^~~~~~~~
-./usr/include/sound/sof/header.h:20:2: error: unknown type name ‘uint32_t’
-  uint32_t type;  /**< component specific type */
-  ^~~~~~~~
-./usr/include/sound/sof/header.h:21:2: error: unknown type name ‘uint32_t’
-  uint32_t size;  /**< size in bytes of data excl. this struct */
-  ^~~~~~~~
-./usr/include/sound/sof/header.h:22:2: error: unknown type name ‘uint32_t’
-  uint32_t abi;  /**< SOF ABI version */
-  ^~~~~~~~
-./usr/include/sound/sof/header.h:23:2: error: unknown type name ‘uint32_t’
-  uint32_t reserved[4]; /**< reserved for future use */
-  ^~~~~~~~
-./usr/include/sound/sof/header.h:24:2: error: unknown type name ‘uint32_t’
-  uint32_t data[0]; /**< Component data - opaque to core */
-  ^~~~~~~~
-In file included from <command-line>:32:0:
-./usr/include/sound/sof/fw.h:49:2: error: unknown type name ‘uint32_t’
-  uint32_t size;  /* bytes minus this header */
-  ^~~~~~~~
-./usr/include/sound/sof/fw.h:50:2: error: unknown type name ‘uint32_t’
-  uint32_t offset; /* offset from base */
-  ^~~~~~~~
-./usr/include/sound/sof/fw.h:64:2: error: unknown type name ‘uint32_t’
-  uint32_t size;  /* bytes minus this header */
-  ^~~~~~~~
-./usr/include/sound/sof/fw.h:65:2: error: unknown type name ‘uint32_t’
-  uint32_t num_blocks; /* number of blocks */
-  ^~~~~~~~
-./usr/include/sound/sof/fw.h:73:2: error: unknown type name ‘uint32_t’
-  uint32_t file_size; /* size of file minus this header */
-  ^~~~~~~~
-./usr/include/sound/sof/fw.h:74:2: error: unknown type name ‘uint32_t’
-  uint32_t num_modules; /* number of modules */
-  ^~~~~~~~
-./usr/include/sound/sof/fw.h:75:2: error: unknown type name ‘uint32_t’
-  uint32_t abi;  /* version of header format */
-  ^~~~~~~~
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Link: https://lore.kernel.org/r/20190721142308.30306-1-yamada.masahiro@socionext.com
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20190722093516.12906-1-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/sof/fw.h     | 16 +++++++++-------
- include/uapi/sound/sof/header.h | 14 ++++++++------
- 2 files changed, 17 insertions(+), 13 deletions(-)
+ sound/soc/codecs/cs47l35.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/sound/sof/fw.h b/include/uapi/sound/sof/fw.h
-index 1afca973eb09..e9f697467a86 100644
---- a/include/uapi/sound/sof/fw.h
-+++ b/include/uapi/sound/sof/fw.h
-@@ -13,6 +13,8 @@
- #ifndef __INCLUDE_UAPI_SOF_FW_H__
- #define __INCLUDE_UAPI_SOF_FW_H__
+diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
+index e3585c1dab3d..d396a8545d51 100644
+--- a/sound/soc/codecs/cs47l35.c
++++ b/sound/soc/codecs/cs47l35.c
+@@ -524,7 +524,7 @@ SND_SOC_DAPM_SUPPLY("SYSCLK", MADERA_SYSTEM_CLOCK_1, MADERA_SYSCLK_ENA_SHIFT,
+ 		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+ SND_SOC_DAPM_SUPPLY("OPCLK", MADERA_OUTPUT_SYSTEM_CLOCK,
+ 		    MADERA_OPCLK_ENA_SHIFT, 0, NULL, 0),
+-SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, 6,
++SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, MADERA_DSP_CLK_ENA_SHIFT,
+ 		    0, NULL, 0),
  
-+#include <linux/types.h>
-+
- #define SND_SOF_FW_SIG_SIZE	4
- #define SND_SOF_FW_ABI		1
- #define SND_SOF_FW_SIG		"Reef"
-@@ -46,8 +48,8 @@ enum snd_sof_fw_blk_type {
- 
- struct snd_sof_blk_hdr {
- 	enum snd_sof_fw_blk_type type;
--	uint32_t size;		/* bytes minus this header */
--	uint32_t offset;	/* offset from base */
-+	__u32 size;		/* bytes minus this header */
-+	__u32 offset;		/* offset from base */
- } __packed;
- 
- /*
-@@ -61,8 +63,8 @@ enum snd_sof_fw_mod_type {
- 
- struct snd_sof_mod_hdr {
- 	enum snd_sof_fw_mod_type type;
--	uint32_t size;		/* bytes minus this header */
--	uint32_t num_blocks;	/* number of blocks */
-+	__u32 size;		/* bytes minus this header */
-+	__u32 num_blocks;	/* number of blocks */
- } __packed;
- 
- /*
-@@ -70,9 +72,9 @@ struct snd_sof_mod_hdr {
-  */
- struct snd_sof_fw_header {
- 	unsigned char sig[SND_SOF_FW_SIG_SIZE]; /* "Reef" */
--	uint32_t file_size;	/* size of file minus this header */
--	uint32_t num_modules;	/* number of modules */
--	uint32_t abi;		/* version of header format */
-+	__u32 file_size;	/* size of file minus this header */
-+	__u32 num_modules;	/* number of modules */
-+	__u32 abi;		/* version of header format */
- } __packed;
- 
- #endif
-diff --git a/include/uapi/sound/sof/header.h b/include/uapi/sound/sof/header.h
-index 7868990b0d6f..5f4518e7a972 100644
---- a/include/uapi/sound/sof/header.h
-+++ b/include/uapi/sound/sof/header.h
-@@ -9,6 +9,8 @@
- #ifndef __INCLUDE_UAPI_SOUND_SOF_USER_HEADER_H__
- #define __INCLUDE_UAPI_SOUND_SOF_USER_HEADER_H__
- 
-+#include <linux/types.h>
-+
- /*
-  * Header for all non IPC ABI data.
-  *
-@@ -16,12 +18,12 @@
-  * Used by any bespoke component data structures or binary blobs.
-  */
- struct sof_abi_hdr {
--	uint32_t magic;		/**< 'S', 'O', 'F', '\0' */
--	uint32_t type;		/**< component specific type */
--	uint32_t size;		/**< size in bytes of data excl. this struct */
--	uint32_t abi;		/**< SOF ABI version */
--	uint32_t reserved[4];	/**< reserved for future use */
--	uint32_t data[0];	/**< Component data - opaque to core */
-+	__u32 magic;		/**< 'S', 'O', 'F', '\0' */
-+	__u32 type;		/**< component specific type */
-+	__u32 size;		/**< size in bytes of data excl. this struct */
-+	__u32 abi;		/**< SOF ABI version */
-+	__u32 reserved[4];	/**< reserved for future use */
-+	__u32 data[0];		/**< Component data - opaque to core */
- }  __packed;
- 
- #endif
+ SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD2", 0, 0),
 -- 
 2.20.1
