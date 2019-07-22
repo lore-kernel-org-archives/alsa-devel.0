@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/20] ALSA: firewire-lib: code refactoring for
-	AM824 data block processing layer
-Date: Mon, 22 Jul 2019 12:37:04 +0900
-Message-ID: <20190722033710.28107-15-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/20] ALSA: firewire-lib: pass packet
+	descriptor to data block processing layer
+Date: Mon, 22 Jul 2019 12:37:03 +0900
+Message-ID: <20190722033710.28107-14-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66873F80507
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:38 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7902F804FE
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:36 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,116 +28,379 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is code refactoring for AM824 data block processing layer so that
-it can receive list of packet descriptor.
+This commit changes signature of callback function to call data block
+processing layer with packet descriptor. At present, the layer is called
+per packet.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-am824.c | 51 +++++++++++++++++++++---------------
- 1 file changed, 30 insertions(+), 21 deletions(-)
+ sound/firewire/amdtp-am824.c         | 32 +++++++++--------
+ sound/firewire/amdtp-stream.c        |  6 ++--
+ sound/firewire/amdtp-stream.h        |  5 ++-
+ sound/firewire/digi00x/amdtp-dot.c   | 27 +++++++-------
+ sound/firewire/fireface/amdtp-ff.c   | 23 ++++++------
+ sound/firewire/motu/amdtp-motu.c     | 53 ++++++++++++++++------------
+ sound/firewire/tascam/amdtp-tascam.c | 39 +++++++++++---------
+ 7 files changed, 97 insertions(+), 88 deletions(-)
 
 diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
-index ff089ffa3374..5d2952a1a9b2 100644
+index 21068b23d528..ff089ffa3374 100644
 --- a/sound/firewire/amdtp-am824.c
 +++ b/sound/firewire/amdtp-am824.c
-@@ -146,19 +146,24 @@ void amdtp_am824_set_midi_position(struct amdtp_stream *s,
- }
- EXPORT_SYMBOL_GPL(amdtp_am824_set_midi_position);
- 
--static void write_pcm_s32(struct amdtp_stream *s,
--			  struct snd_pcm_substream *pcm,
--			  __be32 *buffer, unsigned int frames)
-+static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
-+			  __be32 *buffer, unsigned int frames,
-+			  unsigned int pcm_frames)
- {
- 	struct amdtp_am824 *p = s->protocol;
-+	unsigned int channels = p->pcm_channels;
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
-+	unsigned int pcm_buffer_pointer;
-+	int remaining_frames;
- 	const u32 *src;
-+	int i, c;
-+
-+	pcm_buffer_pointer = s->pcm_buffer_pointer + pcm_frames;
-+	pcm_buffer_pointer %= runtime->buffer_size;
- 
--	channels = p->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+				frames_to_bytes(runtime, pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - pcm_buffer_pointer;
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
-@@ -172,19 +177,24 @@ static void write_pcm_s32(struct amdtp_stream *s,
- 	}
+@@ -336,44 +336,46 @@ static void read_midi_messages(struct amdtp_stream *s, __be32 *buffer,
  }
  
--static void read_pcm_s32(struct amdtp_stream *s,
--			 struct snd_pcm_substream *pcm,
--			 __be32 *buffer, unsigned int frames)
-+static void read_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
-+			 __be32 *buffer, unsigned int frames,
-+			 unsigned int pcm_frames)
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
  {
  	struct amdtp_am824 *p = s->protocol;
-+	unsigned int channels = p->pcm_channels;
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
-+	unsigned int pcm_buffer_pointer;
-+	int remaining_frames;
- 	u32 *dst;
-+	int i, c;
-+
-+	pcm_buffer_pointer = s->pcm_buffer_pointer + pcm_frames;
-+	pcm_buffer_pointer %= runtime->buffer_size;
- 
--	channels = p->pcm_channels;
- 	dst  = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+				frames_to_bytes(runtime, pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - pcm_buffer_pointer;
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
-@@ -340,14 +350,14 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
- 					   struct snd_pcm_substream *pcm)
- {
- 	struct amdtp_am824 *p = s->protocol;
--	unsigned int pcm_frames;
-+	unsigned int pcm_frames = 0;
+-	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 	unsigned int pcm_frames;
  
  	if (pcm) {
--		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
-+		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks,
-+			      pcm_frames);
- 		pcm_frames = desc->data_blocks * p->frame_multiplier;
+-		write_pcm_s32(s, pcm, buffer, data_blocks);
+-		pcm_frames = data_blocks * p->frame_multiplier;
++		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = desc->data_blocks * p->frame_multiplier;
  	} else {
- 		write_pcm_silence(s, desc->ctx_payload, desc->data_blocks);
--		pcm_frames = 0;
+-		write_pcm_silence(s, buffer, data_blocks);
++		write_pcm_silence(s, desc->ctx_payload, desc->data_blocks);
+ 		pcm_frames = 0;
  	}
  
- 	if (p->midi_ports) {
-@@ -363,13 +373,12 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
- 					   struct snd_pcm_substream *pcm)
+-	if (p->midi_ports)
+-		write_midi_messages(s, buffer, data_blocks, data_block_counter);
++	if (p->midi_ports) {
++		write_midi_messages(s, desc->ctx_payload, desc->data_blocks,
++				    desc->data_block_counter);
++	}
+ 
+ 	return pcm_frames;
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
  {
  	struct amdtp_am824 *p = s->protocol;
--	unsigned int pcm_frames;
-+	unsigned int pcm_frames = 0;
+-	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 	unsigned int pcm_frames;
  
  	if (pcm) {
--		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
-+		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks,
-+			     pcm_frames);
- 		pcm_frames = desc->data_blocks * p->frame_multiplier;
--	} else {
--		pcm_frames = 0;
+-		read_pcm_s32(s, pcm, buffer, data_blocks);
+-		pcm_frames = data_blocks * p->frame_multiplier;
++		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = desc->data_blocks * p->frame_multiplier;
+ 	} else {
+ 		pcm_frames = 0;
  	}
  
- 	if (p->midi_ports) {
+-	if (p->midi_ports)
+-		read_midi_messages(s, buffer, data_blocks, data_block_counter);
++	if (p->midi_ports) {
++		read_midi_messages(s, desc->ctx_payload, desc->data_blocks,
++				   desc->data_block_counter);
++	}
+ 
+ 	return pcm_frames;
+ }
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 573265113a6f..db2feb68105c 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -768,13 +768,11 @@ static void process_ctx_payloads(struct amdtp_stream *s,
+ 
+ 	for (i = 0; i < packets; ++i) {
+ 		const struct pkt_desc *desc = descs + i;
+-		struct snd_pcm_substream *pcm;
++		struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 		unsigned int pcm_frames;
+ 
+-		pcm_frames = s->process_data_blocks(s, desc->ctx_payload,
+-				desc->data_blocks, desc->data_block_counter);
++		pcm_frames = s->process_data_blocks(s, desc, pcm);
+ 
+-		pcm = READ_ONCE(s->pcm);
+ 		if (pcm && pcm_frames > 0)
+ 			update_pcm_pointers(s, pcm, pcm_frames);
+ 	}
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 73c492c9a5d5..0e5b85100a04 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -105,9 +105,8 @@ struct pkt_desc {
+ struct amdtp_stream;
+ typedef unsigned int (*amdtp_stream_process_data_blocks_t)(
+ 						struct amdtp_stream *s,
+-						__be32 *buffer,
+-						unsigned int data_blocks,
+-						unsigned int data_block_counter);
++						const struct pkt_desc *desc,
++						struct snd_pcm_substream *pcm);
+ struct amdtp_stream {
+ 	struct fw_unit *unit;
+ 	enum cip_flags flags;
+diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
+index c296d1017ed3..83ac4b37f26d 100644
+--- a/sound/firewire/digi00x/amdtp-dot.c
++++ b/sound/firewire/digi00x/amdtp-dot.c
+@@ -330,42 +330,39 @@ void amdtp_dot_midi_trigger(struct amdtp_stream *s, unsigned int port,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+-	struct snd_pcm_substream *pcm;
+ 	unsigned int pcm_frames;
+ 
+-	pcm = READ_ONCE(s->pcm);
+ 	if (pcm) {
+-		read_pcm_s32(s, pcm, buffer, data_blocks);
+-		pcm_frames = data_blocks;
++		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = desc->data_blocks;
+ 	} else {
+ 		pcm_frames = 0;
+ 	}
+ 
+-	read_midi_messages(s, buffer, data_blocks);
++	read_midi_messages(s, desc->ctx_payload, desc->data_blocks);
+ 
+ 	return pcm_frames;
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+-	struct snd_pcm_substream *pcm;
+ 	unsigned int pcm_frames;
+ 
+-	pcm = READ_ONCE(s->pcm);
+ 	if (pcm) {
+-		write_pcm_s32(s, pcm, buffer, data_blocks);
+-		pcm_frames = data_blocks;
++		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = desc->data_blocks;
+ 	} else {
+-		write_pcm_silence(s, buffer, data_blocks);
++		write_pcm_silence(s, desc->ctx_payload, desc->data_blocks);
+ 		pcm_frames = 0;
+ 	}
+ 
+-	write_midi_messages(s, buffer, data_blocks, data_block_counter);
++	write_midi_messages(s, desc->ctx_payload, desc->data_blocks,
++			    desc->data_block_counter);
+ 
+ 	return pcm_frames;
+ }
+diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
+index 31a60dff94ac..c36232fc4d3e 100644
+--- a/sound/firewire/fireface/amdtp-ff.c
++++ b/sound/firewire/fireface/amdtp-ff.c
+@@ -103,17 +103,18 @@ int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+-	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 	unsigned int pcm_frames;
+ 
+ 	if (pcm) {
+-		write_pcm_s32(s, pcm, (__le32 *)buffer, data_blocks);
+-		pcm_frames = data_blocks;
++		write_pcm_s32(s, pcm, (__le32 *)desc->ctx_payload,
++			      desc->data_blocks);
++		pcm_frames = desc->data_blocks;
+ 	} else {
+-		write_pcm_silence(s, (__le32 *)buffer, data_blocks);
++		write_pcm_silence(s, (__le32 *)desc->ctx_payload,
++				  desc->data_blocks);
+ 		pcm_frames = 0;
+ 	}
+ 
+@@ -121,15 +122,15 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+-	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 	unsigned int pcm_frames;
+ 
+ 	if (pcm) {
+-		read_pcm_s32(s, pcm, (__le32 *)buffer, data_blocks);
+-		pcm_frames = data_blocks;
++		read_pcm_s32(s, pcm, (__le32 *)desc->ctx_payload,
++			     desc->data_blocks);
++		pcm_frames = desc->data_blocks;
+ 	} else {
+ 		pcm_frames = 0;
+ 	}
+diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
+index 30d5f87119cc..36ee2c1dd667 100644
+--- a/sound/firewire/motu/amdtp-motu.c
++++ b/sound/firewire/motu/amdtp-motu.c
+@@ -299,23 +299,27 @@ static void __maybe_unused copy_message(u64 *frames, __be32 *buffer,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+ 	struct amdtp_motu *p = s->protocol;
+-	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
+ 
+-	trace_data_block_sph(s, data_blocks, buffer);
+-	trace_data_block_message(s, data_blocks, buffer);
++	trace_data_block_sph(s, desc->data_blocks, desc->ctx_payload);
++	trace_data_block_message(s, desc->data_blocks, desc->ctx_payload);
+ 
+ 	if (p->midi_ports)
+-		read_midi_messages(s, buffer, data_blocks);
++		read_midi_messages(s, desc->ctx_payload, desc->data_blocks);
+ 
+-	pcm = READ_ONCE(s->pcm);
+-	if (data_blocks > 0 && pcm)
+-		read_pcm_s32(s, pcm->runtime, buffer, data_blocks);
++	if (pcm) {
++		read_pcm_s32(s, pcm->runtime, desc->ctx_payload,
++			     desc->data_blocks);
++		pcm_frames = desc->data_blocks;
++	} else {
++		pcm_frames = 0;
++	}
+ 
+-	return data_blocks;
++	return pcm_frames;
+ }
+ 
+ static inline void compute_next_elapse_from_start(struct amdtp_motu *p)
+@@ -361,29 +365,32 @@ static void write_sph(struct amdtp_stream *s, __be32 *buffer,
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+ 	struct amdtp_motu *p = (struct amdtp_motu *)s->protocol;
+-	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
+ 
+ 	/* TODO: how to interact control messages between userspace? */
+ 
+ 	if (p->midi_ports)
+-		write_midi_messages(s, buffer, data_blocks);
++		write_midi_messages(s, desc->ctx_payload, desc->data_blocks);
+ 
+-	pcm = READ_ONCE(s->pcm);
+-	if (pcm)
+-		write_pcm_s32(s, pcm->runtime, buffer, data_blocks);
+-	else
+-		write_pcm_silence(s, buffer, data_blocks);
++	if (pcm) {
++		write_pcm_s32(s, pcm->runtime, desc->ctx_payload,
++			      desc->data_blocks);
++		pcm_frames = desc->data_blocks;
++	} else {
++		write_pcm_silence(s, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = 0;
++	}
+ 
+-	write_sph(s, buffer, data_blocks);
++	write_sph(s, desc->ctx_payload, desc->data_blocks);
+ 
+-	trace_data_block_sph(s, data_blocks, buffer);
+-	trace_data_block_message(s, data_blocks, buffer);
++	trace_data_block_sph(s, desc->data_blocks, desc->ctx_payload);
++	trace_data_block_message(s, desc->data_blocks, desc->ctx_payload);
+ 
+-	return data_blocks;
++	return pcm_frames;
+ }
+ 
+ int amdtp_motu_init(struct amdtp_stream *s, struct fw_unit *unit,
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+index bc1f2d2120b4..970b1c4a8ea6 100644
+--- a/sound/firewire/tascam/amdtp-tascam.c
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -166,33 +166,38 @@ static void read_status_messages(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+-	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
+ 
+-	pcm = READ_ONCE(s->pcm);
+-	if (data_blocks > 0 && pcm)
+-		read_pcm_s32(s, pcm, buffer, data_blocks);
++	if (pcm) {
++		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = desc->data_blocks;
++	} else {
++		pcm_frames = 0;
++	}
+ 
+-	read_status_messages(s, buffer, data_blocks);
++	read_status_messages(s, desc->ctx_payload, desc->data_blocks);
+ 
+-	return data_blocks;
++	return pcm_frames;
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int data_block_counter)
++					   const struct pkt_desc *desc,
++					   struct snd_pcm_substream *pcm)
+ {
+-	struct snd_pcm_substream *pcm;
++	unsigned int pcm_frames;
+ 
+-	pcm = READ_ONCE(s->pcm);
+-	if (pcm)
+-		write_pcm_s32(s, pcm, buffer, data_blocks);
+-	else
+-		write_pcm_silence(s, buffer, data_blocks);
++	if (pcm) {
++		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = desc->data_blocks;
++	} else {
++		write_pcm_silence(s, desc->ctx_payload, desc->data_blocks);
++		pcm_frames = 0;
++	}
+ 
+-	return data_blocks;
++	return pcm_frames;
+ }
+ 
+ int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
 -- 
 2.20.1
