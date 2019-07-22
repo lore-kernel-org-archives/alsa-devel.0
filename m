@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: suppress error message
-	for EPROBE_DEFER" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:06 +0100 (BST)
-Message-ID: <20190722122206.B62D427429D9@ypsilon.sirena.org.uk>
-References: <20190719143637.2018-1-l.stach@pengutronix.de>
+Subject: Applied "ASoC: fsl_sai: mark regmap as fast_io" to the
+	asoc tree
+Date: Mon, 22 Jul 2019 13:22:07 +0100 (BST)
+Message-ID: <20190722122207.33C7E2742C1A@ypsilon.sirena.org.uk>
+References: <20190717105156.15721-1-l.stach@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1461F803F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id F20C7F803F4
  for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:22:08 +0200 (CEST)
-In-Reply-To: <20190719143637.2018-1-l.stach@pengutronix.de>
+In-Reply-To: <20190717105156.15721-1-l.stach@pengutronix.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Lucas Stach <l.stach@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, "Andrew F. Davis" <afd@ti.com>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: suppress error message for EPROBE_DEFER
+   ASoC: fsl_sai: mark regmap as fast_io
 
 has been applied to the asoc tree at
 
@@ -55,47 +55,32 @@ to this mail.
 Thanks,
 Mark
 
->From 907256f4aa6761f3830bf2ca06434778ab5f5596 Mon Sep 17 00:00:00 2001
+>From 41b59054dcccbc72fc17e3d6021a2bd650daf5c8 Mon Sep 17 00:00:00 2001
 From: Lucas Stach <l.stach@pengutronix.de>
-Date: Fri, 19 Jul 2019 16:36:37 +0200
-Subject: [PATCH] ASoC: tlv320aic31xx: suppress error message for EPROBE_DEFER
+Date: Wed, 17 Jul 2019 12:51:56 +0200
+Subject: [PATCH] ASoC: fsl_sai: mark regmap as fast_io
 
-Both the supplies and reset GPIO might need a probe deferral for the
-resource to be available. Don't print a error message in that case, as
-it is a normal operating condition.
+The regmap is only ever used to access MMIO registers, so it's fair
+to say that register access is fast.
 
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Acked-by: Andrew F. Davis <afd@ti.com>
-Link: https://lore.kernel.org/r/20190719143637.2018-1-l.stach@pengutronix.de
+Link: https://lore.kernel.org/r/20190717105156.15721-1-l.stach@pengutronix.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 9b37e98da0db..26a4f6cd3288 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1553,7 +1553,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 	aic31xx->gpio_reset = devm_gpiod_get_optional(aic31xx->dev, "reset",
- 						      GPIOD_OUT_LOW);
- 	if (IS_ERR(aic31xx->gpio_reset)) {
--		dev_err(aic31xx->dev, "not able to acquire gpio\n");
-+		if (PTR_ERR(aic31xx->gpio_reset) != -EPROBE_DEFER)
-+			dev_err(aic31xx->dev, "not able to acquire gpio\n");
- 		return PTR_ERR(aic31xx->gpio_reset);
- 	}
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 1d1a447163e3..6d3c6c8d50ce 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -763,6 +763,7 @@ static const struct regmap_config fsl_sai_regmap_config = {
+ 	.reg_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_bits = 32,
++	.fast_io = true,
  
-@@ -1564,7 +1565,9 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 				      ARRAY_SIZE(aic31xx->supplies),
- 				      aic31xx->supplies);
- 	if (ret) {
--		dev_err(aic31xx->dev, "Failed to request supplies: %d\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(aic31xx->dev,
-+				"Failed to request supplies: %d\n", ret);
- 		return ret;
- 	}
- 
+ 	.max_register = FSL_SAI_RMR,
+ 	.reg_defaults = fsl_sai_reg_defaults,
 -- 
 2.20.1
