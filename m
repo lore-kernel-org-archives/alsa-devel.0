@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/20] ALSA: fireface: code refactoring for FF
-	data block processing layer
-Date: Mon, 22 Jul 2019 12:37:08 +0900
-Message-ID: <20190722033710.28107-19-o-takashi@sakamocchi.jp>
+Subject: [PATCH 20/20] ALSA: firewire-motu: more code
+	refactoring for MOTU data block processing layer
+Date: Mon, 22 Jul 2019 12:37:10 +0900
+Message-ID: <20190722033710.28107-21-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51A79F80533
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:44 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAEEDF805A1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:47 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,117 +28,115 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is code refactoring for FF data block processing layer so that
-it can receive list of packet descriptor.
+MOTU data block processing layer has some tracepoints events. This
+commit is code refactoring to split probing the events from processing
+data blocks.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/amdtp-ff.c | 49 +++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 21 deletions(-)
+ sound/firewire/motu/amdtp-motu.c | 50 +++++++++++++++++++++++---------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
-diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
-index c36232fc4d3e..cb2073cf146b 100644
---- a/sound/firewire/fireface/amdtp-ff.c
-+++ b/sound/firewire/fireface/amdtp-ff.c
-@@ -27,19 +27,24 @@ int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	return amdtp_stream_set_parameters(s, rate, data_channels);
- }
- 
--static void write_pcm_s32(struct amdtp_stream *s,
--			  struct snd_pcm_substream *pcm,
--			  __le32 *buffer, unsigned int frames)
-+static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
-+			  __le32 *buffer, unsigned int frames,
-+			  unsigned int pcm_frames)
- {
- 	struct amdtp_ff *p = s->protocol;
-+	unsigned int channels = p->pcm_channels;
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
-+	unsigned int pcm_buffer_pointer;
-+	int remaining_frames;
- 	const u32 *src;
-+	int i, c;
-+
-+	pcm_buffer_pointer = s->pcm_buffer_pointer + pcm_frames;
-+	pcm_buffer_pointer %= runtime->buffer_size;
- 
--	channels = p->pcm_channels;
- 	src = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+				frames_to_bytes(runtime, pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - pcm_buffer_pointer;
- 
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
-@@ -52,19 +57,24 @@ static void write_pcm_s32(struct amdtp_stream *s,
+diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
+index 05a6e218b0ad..0fd36e469ad0 100644
+--- a/sound/firewire/motu/amdtp-motu.c
++++ b/sound/firewire/motu/amdtp-motu.c
+@@ -310,6 +310,22 @@ static void __maybe_unused copy_message(u64 *frames, __be32 *buffer,
  	}
  }
  
--static void read_pcm_s32(struct amdtp_stream *s,
--			 struct snd_pcm_substream *pcm,
--			 __le32 *buffer, unsigned int frames)
-+static void read_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
-+			 __le32 *buffer, unsigned int frames,
-+			 unsigned int pcm_frames)
- {
- 	struct amdtp_ff *p = s->protocol;
-+	unsigned int channels = p->pcm_channels;
- 	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
-+	unsigned int pcm_buffer_pointer;
-+	int remaining_frames;
- 	u32 *dst;
-+	int i, c;
++static void probe_tracepoints_events(struct amdtp_stream *s,
++				     const struct pkt_desc *descs,
++				     unsigned int packets)
++{
++	int i;
 +
-+	pcm_buffer_pointer = s->pcm_buffer_pointer + pcm_frames;
-+	pcm_buffer_pointer %= runtime->buffer_size;
++	for (i = 0; i < packets; ++i) {
++		const struct pkt_desc *desc = descs + i;
++		__be32 *buf = desc->ctx_payload;
++		unsigned int data_blocks = desc->data_blocks;
++
++		trace_data_block_sph(s, data_blocks, buf);
++		trace_data_block_message(s, data_blocks, buf);
++	}
++}
++
+ static unsigned int process_ir_ctx_payloads(struct amdtp_stream *s,
+ 					    const struct pkt_desc *descs,
+ 					    unsigned int packets,
+@@ -319,23 +335,26 @@ static unsigned int process_ir_ctx_payloads(struct amdtp_stream *s,
+ 	unsigned int pcm_frames = 0;
+ 	int i;
  
--	channels = p->pcm_channels;
- 	dst  = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+				frames_to_bytes(runtime, pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - pcm_buffer_pointer;
++	// For data block processing.
+ 	for (i = 0; i < packets; ++i) {
+ 		const struct pkt_desc *desc = descs + i;
+ 		__be32 *buf = desc->ctx_payload;
+ 		unsigned int data_blocks = desc->data_blocks;
  
- 	for (i = 0; i < frames; ++i) {
- 		for (c = 0; c < channels; ++c) {
-@@ -106,16 +116,15 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
- 					   const struct pkt_desc *desc,
- 					   struct snd_pcm_substream *pcm)
- {
--	unsigned int pcm_frames;
-+	unsigned int pcm_frames = 0;
- 
- 	if (pcm) {
- 		write_pcm_s32(s, pcm, (__le32 *)desc->ctx_payload,
--			      desc->data_blocks);
-+			      desc->data_blocks, pcm_frames);
- 		pcm_frames = desc->data_blocks;
- 	} else {
- 		write_pcm_silence(s, (__le32 *)desc->ctx_payload,
- 				  desc->data_blocks);
--		pcm_frames = 0;
+-		trace_data_block_sph(s, data_blocks, buf);
+-		trace_data_block_message(s, data_blocks, buf);
+-
+-		if (p->midi_ports)
+-			read_midi_messages(s, buf, data_blocks);
+-
+ 		if (pcm) {
+ 			read_pcm_s32(s, pcm, buf, data_blocks, pcm_frames);
+ 			pcm_frames += data_blocks;
+ 		}
++
++		if (p->midi_ports)
++			read_midi_messages(s, buf, data_blocks);
  	}
  
++	// For tracepoints.
++	if (trace_data_block_sph_enabled() ||
++	    trace_data_block_message_enabled())
++		probe_tracepoints_events(s, descs, packets);
++
  	return pcm_frames;
-@@ -125,14 +134,12 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
- 					   const struct pkt_desc *desc,
- 					   struct snd_pcm_substream *pcm)
- {
--	unsigned int pcm_frames;
-+	unsigned int pcm_frames = 0;
+ }
  
- 	if (pcm) {
- 		read_pcm_s32(s, pcm, (__le32 *)desc->ctx_payload,
--			     desc->data_blocks);
-+			     desc->data_blocks, pcm_frames);
- 		pcm_frames = desc->data_blocks;
--	} else {
--		pcm_frames = 0;
+@@ -390,16 +409,12 @@ static unsigned int process_it_ctx_payloads(struct amdtp_stream *s,
+ 	unsigned int pcm_frames = 0;
+ 	int i;
+ 
++	// For data block processing.
+ 	for (i = 0; i < packets; ++i) {
+ 		const struct pkt_desc *desc = descs + i;
+ 		__be32 *buf = desc->ctx_payload;
+ 		unsigned int data_blocks = desc->data_blocks;
+ 
+-		// TODO: how to interact control messages between userspace?
+-
+-		if (p->midi_ports)
+-			write_midi_messages(s, buf, data_blocks);
+-
+ 		if (pcm) {
+ 			write_pcm_s32(s, pcm, buf, data_blocks, pcm_frames);
+ 			pcm_frames += data_blocks;
+@@ -407,12 +422,19 @@ static unsigned int process_it_ctx_payloads(struct amdtp_stream *s,
+ 			write_pcm_silence(s, buf, data_blocks);
+ 		}
+ 
+-		write_sph(s, buf, data_blocks);
++		if (p->midi_ports)
++			write_midi_messages(s, buf, data_blocks);
+ 
+-		trace_data_block_sph(s, data_blocks, buf);
+-		trace_data_block_message(s, data_blocks, buf);
++		// TODO: how to interact control messages between userspace?
++
++		write_sph(s, buf, data_blocks);
  	}
  
++	// For tracepoints.
++	if (trace_data_block_sph_enabled() ||
++	    trace_data_block_message_enabled())
++		probe_tracepoints_events(s, descs, packets);
++
  	return pcm_frames;
+ }
+ 
 -- 
 2.20.1
