@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 18/21] ASoC: SOF: Intel: hda: fix link DMA
-	config
-Date: Mon, 22 Jul 2019 09:13:59 -0500
-Message-ID: <20190722141402.7194-19-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 20/21] ASoC: SOF: Intel: hda: remove misleading
+	error trace from IRQ thread
+Date: Mon, 22 Jul 2019 09:14:01 -0500
+Message-ID: <20190722141402.7194-21-pierre-louis.bossart@linux.intel.com>
 References: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 794A2F8049B
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:24 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7BADF803D6
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:25 +0200 (CEST)
 In-Reply-To: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,110 +24,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Rander Wang <rander.wang@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rander Wang <rander.wang@linux.intel.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-For this bug, there are two capture pcm streams active, with one
-stream and its related stream tag released before suspend. Later
-when system suspend is done, the stream tag for the remaining
-active stream is released by SOF driver. After system resume, hda
-codec driver restores the stream tag for the active pcm stream,
-but SOF goes to assign a new one, which now doesn't match with the
-stream tag used by codec driver, and this causes DMA to fail
-receiving data, leading to unrecoverable XRUN condition in FW.
+Downgrade "nothing to do in IRQ thread" message from error to a debug
+message in the IPC interrupt handler thread.
 
-For stream tag is stored in both hda codec and SOF driver, it
-shouldn't be released only in SOF driver. This patch just keeps the
-stream information in dma data and checks whether there is a stored
-DMA data for stream resuming from S3 and restores it. And it also
-removes DMA data when the stream is released.
+The spurious wake-up can happen if a HDA stream interrupt is
+raised while the IPC interrupt thread is running. IPC functionality
+is not impacted by this condition, so debug is a more appropriate
+trace level.
 
-Tested on Whiskey Lake platform.
-
-GitHub issue: https://github.com/thesofproject/sof/issues/1594
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 15 +++++++++------
- sound/soc/sof/intel/hda-dsp.c | 10 ++++------
- 2 files changed, 13 insertions(+), 12 deletions(-)
+ sound/soc/sof/intel/cnl.c     | 4 ++--
+ sound/soc/sof/intel/hda-ipc.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index a448be60f6dd..2b5e2b8c69c2 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -210,9 +210,13 @@ static int hda_link_hw_params(struct snd_pcm_substream *substream,
- 	int stream_tag;
- 	int ret;
- 
--	link_dev = hda_link_stream_assign(bus, substream);
--	if (!link_dev)
--		return -EBUSY;
-+	/* get stored dma data if resuming from system suspend */
-+	link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+	if (!link_dev) {
-+		link_dev = hda_link_stream_assign(bus, substream);
-+		if (!link_dev)
-+			return -EBUSY;
-+	}
- 
- 	stream_tag = hdac_stream(link_dev)->stream_tag;
- 
-@@ -316,7 +320,7 @@ static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index f2b392998f20..ffd8d4394537 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -101,8 +101,8 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
  		/*
--		 * clear and release link DMA channel. It will be assigned when
-+		 * clear link DMA channel. It will be assigned when
- 		 * hw_params is set up again after resume.
+ 		 * This interrupt is not shared so no need to return IRQ_NONE.
  		 */
- 		ret = hda_link_config_ipc(hda_stream, dai->name,
-@@ -325,8 +329,6 @@ static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
- 			return ret;
- 		stream_tag = hdac_stream(link_dev)->stream_tag;
- 		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
--		snd_hdac_ext_stream_release(link_dev,
--					    HDAC_EXT_STREAM_TYPE_LINK);
- 		link_dev->link_prepared = 0;
- 
- 		/* fallthrough */
-@@ -369,6 +371,7 @@ static int hda_link_hw_free(struct snd_pcm_substream *substream,
- 
- 	stream_tag = hdac_stream(link_dev)->stream_tag;
- 	snd_hdac_ext_link_clear_stream_id(link, stream_tag);
-+	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
- 	link_dev->link_prepared = 0;
- 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index e82ecaad1763..e38008194574 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -439,10 +439,10 @@ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
- 		stream = stream_to_hdac_ext_stream(s);
- 
- 		/*
--		 * clear and release stream. This should already be taken care
--		 * for running streams when the SUSPEND trigger is called.
--		 * But paused streams do not get suspended, so this needs to be
--		 * done explicitly during suspend.
-+		 * clear stream. This should already be taken care for running
-+		 * streams when the SUSPEND trigger is called. But paused
-+		 * streams do not get suspended, so this needs to be done
-+		 * explicitly during suspend.
- 		 */
- 		if (stream->link_substream) {
- 			rtd = snd_pcm_substream_chip(stream->link_substream);
-@@ -452,8 +452,6 @@ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
- 				return -EINVAL;
- 			stream_tag = hdac_stream(stream)->stream_tag;
- 			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
--			snd_hdac_ext_stream_release(stream,
--						    HDAC_EXT_STREAM_TYPE_LINK);
- 			stream->link_prepared = 0;
- 		}
+-		dev_err_ratelimited(sdev->dev,
+-				    "error: nothing to do in IRQ thread\n");
++		dev_dbg_ratelimited(sdev->dev,
++				    "nothing to do in IPC IRQ thread\n");
  	}
+ 
+ 	/* re-enable IPC interrupt */
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index 50244b82600c..2ecba91f5219 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -224,8 +224,8 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 		/*
+ 		 * This interrupt is not shared so no need to return IRQ_NONE.
+ 		 */
+-		dev_err_ratelimited(sdev->dev,
+-				    "error: nothing to do in IRQ thread\n");
++		dev_dbg_ratelimited(sdev->dev,
++				    "nothing to do in IPC IRQ thread\n");
+ 	}
+ 
+ 	/* re-enable IPC interrupt */
 -- 
 2.20.1
