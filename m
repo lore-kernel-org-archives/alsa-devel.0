@@ -1,103 +1,142 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/5] ALSA: hda: move parts of NHLT code
- to new module
-Date: Mon, 22 Jul 2019 07:58:44 -0500
-Message-ID: <a82b57ba-b606-3e2c-476e-95ecea66e030@linux.intel.com>
-References: <20190719203752.11151-1-pierre-louis.bossart@linux.intel.com>
- <20190719203752.11151-3-pierre-louis.bossart@linux.intel.com>
- <daaa01dc-d963-f215-90b1-132fde8e489a@intel.com>
- <s5h7e8aa1qs.wl-tiwai@suse.de>
- <97359d3a-a3a0-696a-3d3f-64bd608eea5f@linux.intel.com>
- <s5hsgqy8dc2.wl-tiwai@suse.de>
+From: Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH 07/10] ASoC: fsl_sai: Add support for FIFO combine mode
+Date: Mon, 22 Jul 2019 15:01:17 +0200
+Message-ID: <1563800477.2311.12.camel@pengutronix.de>
+References: <20190722124833.28757-1-daniel.baluta@nxp.com>
+         <20190722124833.28757-8-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4799F803D6
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:58:47 +0200 (CEST)
-In-Reply-To: <s5hsgqy8dc2.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Curtis Malainey <cujomalainey@google.com>, alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190722124833.28757-8-daniel.baluta@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@nxp.com>, broonie@kernel.org
+Cc: festevam@gmail.com, perex@perex.cz, tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, shengjiu.wang@nxp.com, angus@akkea.ca, kernel@pengutronix.de, viorel.suman@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
+Am Montag, den 22.07.2019, 15:48 +0300 schrieb Daniel Baluta:
+> FIFO combining mode allows the separate FIFOs for multiple data
+> channels
+> to be used as a single FIFO for either software accesses or a single
+> data
+> channel or both.
+> 
+> FIFO combined mode is described in chapter 13.10.3.5.4 from i.MX8MQ
+> reference manual [1].
+> 
+> For each direction (RX/TX) fifo combine mode is read from fsl,fcomb-
+> mode
+> DT property. By default, if no property is specified fifo combine
+> mode
+> is disabled.
+> 
+> [1]https://cache.nxp.com/secured/assets/documents/en/reference-manual
+> /IMX8MDQLQRM.pdf?__gda__=1563728701_38bea7f0f726472cc675cb141b91bec7&
+> fileExt=.pdf
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
+>  sound/soc/fsl/fsl_sai.c | 37 +++++++++++++++++++++++++++++++++++++
+>  sound/soc/fsl/fsl_sai.h |  9 +++++++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index d0fa02188b7c..140014901fce 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -475,6 +475,35 @@ static int fsl_sai_hw_params(struct
+> snd_pcm_substream *substream,
+>  		}
+>  	}
+>  
+> +	switch (sai->soc_data->fcomb_mode[tx]) {
+> +	case FSL_SAI_FCOMB_NONE:
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+> +				   FSL_SAI_CR4_FCOMB_SOFT |
+> +				   FSL_SAI_CR4_FCOMB_SHIFT, 0);
+> +		break;
+> +	case FSL_SAI_FCOMB_SHIFT:
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+> +				   FSL_SAI_CR4_FCOMB_SOFT |
+> +				   FSL_SAI_CR4_FCOMB_SHIFT,
+> +				   FSL_SAI_CR4_FCOMB_SHIFT);
+> +		break;
+> +	case FSL_SAI_FCOMB_SOFT:
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+> +				   FSL_SAI_CR4_FCOMB_SOFT |
+> +				   FSL_SAI_CR4_FCOMB_SHIFT,
+> +				   FSL_SAI_CR4_FCOMB_SOFT);
+> +		break;
+> +	case FSL_SAI_FCOMB_BOTH:
+> +		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+> +				   FSL_SAI_CR4_FCOMB_SOFT |
+> +				   FSL_SAI_CR4_FCOMB_SHIFT,
+> +				   FSL_SAI_CR4_FCOMB_SOFT |
+> +				   FSL_SAI_CR4_FCOMB_SHIFT);
+> +		break;
+> +	default:
+> +		break;
+> +	}
 
+This would probably look less redundant if you only select the bits to
+set in the switch statement and move the regmap_update_bits after the
+switch.
 
-On 7/22/19 7:26 AM, Takashi Iwai wrote:
-> On Mon, 22 Jul 2019 14:14:28 +0200,
-> Pierre-Louis Bossart wrote:
->>
->>
->>
->> On 7/22/19 3:54 AM, Takashi Iwai wrote:
->>> On Sat, 20 Jul 2019 23:06:46 +0200,
->>> Cezary Rojewski wrote:
->>>>
->>>>> --- a/sound/hda/Kconfig
->>>>> +++ b/sound/hda/Kconfig
->>>>> @@ -29,3 +29,6 @@ config SND_HDA_PREALLOC_SIZE
->>>>>       	  Note that the pre-allocation size can be changed dynamically
->>>>>     	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
->>>>> +
->>>>> +config SND_INTEL_NHLT
->>>>> +	tristate
->>>>
->>>> If above is true, "depends on ACPI" would be expected.
->>>
->>> This won't fix things in practice as the Kconfig reverse selection
->>> ignores the dependencies of the selected item.  It'd be as a help for
->>> readers, though.
->>
->> There is a fallback if ACPI is not defined, so the code would always
->> compile. Configurations which select SND_INTEL_NHLT already depend on
->> ACPI.
-> 
-> IIUC, the question above came from the point:
-> 
->   #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
->   ....
->   #else
->   ....
->   #endif
-> 
-> and here Cezary suggested to drop IS_ENABLED(CONFIG_ACPI) *iff* the
-> dependency can be assured in Kconfig side.  But for that assurance,
-> putting "depends on ACPI" in config SND_INTEL_NHLT block won't
-> suffice; that was my followup.
-> 
-> So, as of the current code, we can drop IS_ENABLED(CONFIG_ACPI) from
-> the ifdef above, yes.  But the dependency is no rock solid at this
-> point, so either some comments or keeping the extra ifdef like the
-> above would be needed, IMO.
+Regards,
+Lucas
 
-this extra ifdef is a bit overkill, I added it to make sure that the 
-fallbacks are used in nonsensical configurations w/ randconfig. In 
-practice, all Intel drivers already depend on ACPI and for the legacy we 
-already have:
-
-select SND_INTEL_NHLT if ACPI
-
-Not sure if we need to do anything more.
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+>  	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+>  			   FSL_SAI_CR4_SYWD_MASK |
+> FSL_SAI_CR4_FRSZ_MASK,
+>  			   val_cr4);
+> @@ -887,6 +916,14 @@ static int fsl_sai_probe(struct platform_device
+> *pdev)
+>  		}
+>  	}
+>  
+> +	/* FIFO combine mode for TX/RX, defaults to disabled */
+> +	sai->fcomb_mode[RX] = FSL_SAI_FCOMB_NONE;
+> +	sai->fcomb_mode[TX] = FSL_SAI_FCOMB_NONE;
+> +	of_property_read_u32_index(np, "fsl,fcomb-mode", RX,
+> +				   &sai->fcomb_mode[RX]);
+> +	of_property_read_u32_index(np, "fsl,fcomb-mode", TX,
+> +				   &sai->fcomb_mode[TX]);
+> +
+>  	/* active data lines mask for TX/RX, defaults to 1 (only the
+> first
+>  	 * data line is enabled
+>  	 */
+> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+> index 6d32f0950ec5..abf140951187 100644
+> --- a/sound/soc/fsl/fsl_sai.h
+> +++ b/sound/soc/fsl/fsl_sai.h
+> @@ -115,6 +115,8 @@
+>  #define FSL_SAI_CR3_WDFL_MASK	0x1f
+>  
+>  /* SAI Transmit and Receive Configuration 4 Register */
+> +#define FSL_SAI_CR4_FCOMB_SHIFT BIT(26)
+> +#define FSL_SAI_CR4_FCOMB_SOFT  BIT(27)
+>  #define FSL_SAI_CR4_FRSZ(x)	(((x) - 1) << 16)
+>  #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
+>  #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
+> @@ -155,6 +157,12 @@
+>  #define FSL_SAI_MAXBURST_TX 6
+>  #define FSL_SAI_MAXBURST_RX 6
+>  
+> +/* FIFO combine modes */
+> +#define FSL_SAI_FCOMB_NONE     0
+> +#define FSL_SAI_FCOMB_SHIFT    1
+> +#define FSL_SAI_FCOMB_SOFT     2
+> +#define FSL_SAI_FCOMB_BOTH     3
+> +
+>  struct fsl_sai_soc_data {
+>  	bool use_imx_pcm;
+>  	unsigned int fifo_depth;
+> @@ -177,6 +185,7 @@ struct fsl_sai {
+>  	unsigned int slot_width;
+>  
+>  	unsigned int dl_mask[2];
+> +	unsigned int fcomb_mode[2];
+>  
+>  	const struct fsl_sai_soc_data *soc_data;
+>  	struct snd_dmaengine_dai_dma_data dma_params_rx;
