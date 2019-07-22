@@ -1,45 +1,103 @@
-From: Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH 06/10] ASoC: dt-bindings: Document dl_mask property
-Date: Mon, 22 Jul 2019 14:56:49 +0200
-Message-ID: <1563800209.2311.10.camel@pengutronix.de>
-References: <20190722124833.28757-1-daniel.baluta@nxp.com>
-         <20190722124833.28757-7-daniel.baluta@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 2/5] ALSA: hda: move parts of NHLT code
+ to new module
+Date: Mon, 22 Jul 2019 07:58:44 -0500
+Message-ID: <a82b57ba-b606-3e2c-476e-95ecea66e030@linux.intel.com>
+References: <20190719203752.11151-1-pierre-louis.bossart@linux.intel.com>
+ <20190719203752.11151-3-pierre-louis.bossart@linux.intel.com>
+ <daaa01dc-d963-f215-90b1-132fde8e489a@intel.com>
+ <s5h7e8aa1qs.wl-tiwai@suse.de>
+ <97359d3a-a3a0-696a-3d3f-64bd608eea5f@linux.intel.com>
+ <s5hsgqy8dc2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190722124833.28757-7-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>, broonie@kernel.org
-Cc: festevam@gmail.com, perex@perex.cz, tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, shengjiu.wang@nxp.com, angus@akkea.ca, kernel@pengutronix.de, viorel.suman@nxp.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4799F803D6
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:58:47 +0200 (CEST)
+In-Reply-To: <s5hsgqy8dc2.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Curtis Malainey <cujomalainey@google.com>, alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Montag, den 22.07.2019, 15:48 +0300 schrieb Daniel Baluta:
-> SAI supports up to 8 data lines. This property let the user
-> configure how many data lines should be used per transfer
-> direction (Tx/Rx).
-> 
-> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  Documentation/devicetree/bindings/sound/fsl-sai.txt | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> index 2e726b983845..59f4d965a5fb 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> +++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> @@ -49,6 +49,11 @@ Optional properties:
->  
-> >    - big-endian		: Boolean property, required if all the SAI
-> >  			  registers are big-endian rather than little-endian.
-> > +  - fsl,dl_mask		: list of two integers (bitmask, first for RX, second
-> > +			  for TX) representing enabled datalines. Bit 0
-> > +			  represents first data line, bit 1 represents second
-> > +			  data line and so on. Data line is enabled if
-> > +			  corresponding bit is set to 1.
 
-No underscores in property names, please. Also this should document the
-default value used by the driver when the property is absent.
 
-Regards,
-Lucas
+On 7/22/19 7:26 AM, Takashi Iwai wrote:
+> On Mon, 22 Jul 2019 14:14:28 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>>
+>>
+>> On 7/22/19 3:54 AM, Takashi Iwai wrote:
+>>> On Sat, 20 Jul 2019 23:06:46 +0200,
+>>> Cezary Rojewski wrote:
+>>>>
+>>>>> --- a/sound/hda/Kconfig
+>>>>> +++ b/sound/hda/Kconfig
+>>>>> @@ -29,3 +29,6 @@ config SND_HDA_PREALLOC_SIZE
+>>>>>       	  Note that the pre-allocation size can be changed dynamically
+>>>>>     	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
+>>>>> +
+>>>>> +config SND_INTEL_NHLT
+>>>>> +	tristate
+>>>>
+>>>> If above is true, "depends on ACPI" would be expected.
+>>>
+>>> This won't fix things in practice as the Kconfig reverse selection
+>>> ignores the dependencies of the selected item.  It'd be as a help for
+>>> readers, though.
+>>
+>> There is a fallback if ACPI is not defined, so the code would always
+>> compile. Configurations which select SND_INTEL_NHLT already depend on
+>> ACPI.
+> 
+> IIUC, the question above came from the point:
+> 
+>   #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
+>   ....
+>   #else
+>   ....
+>   #endif
+> 
+> and here Cezary suggested to drop IS_ENABLED(CONFIG_ACPI) *iff* the
+> dependency can be assured in Kconfig side.  But for that assurance,
+> putting "depends on ACPI" in config SND_INTEL_NHLT block won't
+> suffice; that was my followup.
+> 
+> So, as of the current code, we can drop IS_ENABLED(CONFIG_ACPI) from
+> the ifdef above, yes.  But the dependency is no rock solid at this
+> point, so either some comments or keeping the extra ifdef like the
+> above would be needed, IMO.
+
+this extra ifdef is a bit overkill, I added it to make sure that the 
+fallbacks are used in nonsensical configurations w/ randconfig. In 
+practice, all Intel drivers already depend on ACPI and for the legacy we 
+already have:
+
+select SND_INTEL_NHLT if ACPI
+
+Not sure if we need to do anything more.
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
