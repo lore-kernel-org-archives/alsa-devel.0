@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/21] ASoC: SOF: ipc: use timeout configured
-	at probe
-Date: Mon, 22 Jul 2019 09:13:45 -0500
-Message-ID: <20190722141402.7194-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/21] ASoC: SOF: pci: mark last_busy value at
+	runtime PM init
+Date: Mon, 22 Jul 2019 09:13:42 -0500
+Message-ID: <20190722141402.7194-2-pierre-louis.bossart@linux.intel.com>
 References: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8391F803F4
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:14 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFBD5F8045F
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:12 +0200 (CEST)
 In-Reply-To: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,47 +24,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pan Xiuli <xiuli.pan@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-Do not hardcode IPC timeout value in ipc.c, but rather use the timeout
-value configured during device probe. For platforms that do not override
-the IPC timeout, default value TIMEOUT_DEFAULT_IPC_MS has already been
-defined in core.c.
+If last_busy value is not set at runtime PM enable, the device will be
+suspend immediately after usage counter is 0. Set the last_busy value to
+make sure delay is working at first boot up.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ sound/soc/sof/sof-pci-dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 20dfca9c93b7..b2f359d2f7e5 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -17,12 +17,6 @@
- #include "sof-priv.h"
- #include "ops.h"
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 65d1bac4c6b8..6fd3df7c57a3 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -223,6 +223,9 @@ static void sof_pci_probe_complete(struct device *dev)
+ 	 */
+ 	pm_runtime_allow(dev);
  
--/*
-- * IPC message default size and timeout (ms).
-- * TODO: allow platforms to set size and timeout.
-- */
--#define IPC_TIMEOUT_MS		300
--
- static void ipc_trace_message(struct snd_sof_dev *sdev, u32 msg_id);
- static void ipc_stream_message(struct snd_sof_dev *sdev, u32 msg_cmd);
- 
-@@ -211,7 +205,7 @@ static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
- 
- 	/* wait for DSP IPC completion */
- 	ret = wait_event_timeout(msg->waitq, msg->ipc_complete,
--				 msecs_to_jiffies(IPC_TIMEOUT_MS));
-+				 msecs_to_jiffies(sdev->ipc_timeout));
- 
- 	if (ret == 0) {
- 		dev_err(sdev->dev, "error: ipc timed out for 0x%x size %d\n",
++	/* mark last_busy for pm_runtime to make sure not suspend immediately */
++	pm_runtime_mark_last_busy(dev);
++
+ 	/* follow recommendation in pci-driver.c to decrement usage counter */
+ 	pm_runtime_put_noidle(dev);
+ }
 -- 
 2.20.1
