@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/20] ALSA: firewire-digi00x: code refactoring
-	for DOT data block processing layer
-Date: Mon, 22 Jul 2019 12:37:05 +0900
-Message-ID: <20190722033710.28107-16-o-takashi@sakamocchi.jp>
+Subject: [PATCH 16/20] ALSA: firewire-tascam: code refactoring
+	for TASCAM data block processing layer
+Date: Mon, 22 Jul 2019 12:37:06 +0900
+Message-ID: <20190722033710.28107-17-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E58AFF8015B
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:39 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E464F80529
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:41 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,27 +28,30 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is code refactoring for DOT data block processing layer so that
+This is code refactoring for TASCAM data block processing layer so that
 it can receive list of packet descriptor.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/amdtp-dot.c | 45 +++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 17 deletions(-)
+ sound/firewire/tascam/amdtp-tascam.c | 55 ++++++++++++++++------------
+ 1 file changed, 32 insertions(+), 23 deletions(-)
 
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index 83ac4b37f26d..cef5caf97236 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -143,17 +143,23 @@ int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+index 970b1c4a8ea6..3c9abf422f24 100644
+--- a/sound/firewire/tascam/amdtp-tascam.c
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -32,19 +32,24 @@ int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
+ 	return amdtp_stream_set_parameters(s, rate, data_channels);
  }
  
- static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
+-static void write_pcm_s32(struct amdtp_stream *s,
+-			  struct snd_pcm_substream *pcm,
 -			  __be32 *buffer, unsigned int frames)
++static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
 +			  __be32 *buffer, unsigned int frames,
 +			  unsigned int pcm_frames)
  {
- 	struct amdtp_dot *p = s->protocol;
+ 	struct amdtp_tscm *p = s->protocol;
 +	unsigned int channels = p->pcm_channels;
  	struct snd_pcm_runtime *runtime = pcm->runtime;
 -	unsigned int channels, remaining_frames, i, c;
@@ -67,17 +70,20 @@ index 83ac4b37f26d..cef5caf97236 100644
 +				frames_to_bytes(runtime, pcm_buffer_pointer);
 +	remaining_frames = runtime->buffer_size - pcm_buffer_pointer;
  
- 	buffer++;
  	for (i = 0; i < frames; ++i) {
-@@ -169,17 +175,23 @@ static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
+ 		for (c = 0; c < channels; ++c) {
+@@ -57,19 +62,24 @@ static void write_pcm_s32(struct amdtp_stream *s,
+ 	}
  }
  
- static void read_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
+-static void read_pcm_s32(struct amdtp_stream *s,
+-			 struct snd_pcm_substream *pcm,
 -			 __be32 *buffer, unsigned int frames)
++static void read_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
 +			 __be32 *buffer, unsigned int frames,
 +			 unsigned int pcm_frames)
  {
- 	struct amdtp_dot *p = s->protocol;
+ 	struct amdtp_tscm *p = s->protocol;
 +	unsigned int channels = p->pcm_channels;
  	struct snd_pcm_runtime *runtime = pcm->runtime;
 -	unsigned int channels, remaining_frames, i, c;
@@ -96,9 +102,9 @@ index 83ac4b37f26d..cef5caf97236 100644
 +				frames_to_bytes(runtime, pcm_buffer_pointer);
 +	remaining_frames = runtime->buffer_size - pcm_buffer_pointer;
  
- 	buffer++;
- 	for (i = 0; i < frames; ++i) {
-@@ -333,13 +345,12 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+ 	/* The first data channel is for event counter. */
+ 	buffer += 1;
+@@ -169,13 +179,12 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
  					   const struct pkt_desc *desc,
  					   struct snd_pcm_substream *pcm)
  {
@@ -107,15 +113,16 @@ index 83ac4b37f26d..cef5caf97236 100644
  
  	if (pcm) {
 -		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
-+		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks,
-+			     pcm_frames);
- 		pcm_frames = desc->data_blocks;
+-		pcm_frames = desc->data_blocks;
 -	} else {
 -		pcm_frames = 0;
++		read_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks,
++			     pcm_frames);
++		pcm_frames += desc->data_blocks;
  	}
  
- 	read_midi_messages(s, desc->ctx_payload, desc->data_blocks);
-@@ -351,14 +362,14 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ 	read_status_messages(s, desc->ctx_payload, desc->data_blocks);
+@@ -187,14 +196,14 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
  					   const struct pkt_desc *desc,
  					   struct snd_pcm_substream *pcm)
  {
@@ -124,14 +131,15 @@ index 83ac4b37f26d..cef5caf97236 100644
  
  	if (pcm) {
 -		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks);
+-		pcm_frames = desc->data_blocks;
 +		write_pcm_s32(s, pcm, desc->ctx_payload, desc->data_blocks,
 +			      pcm_frames);
- 		pcm_frames = desc->data_blocks;
++		pcm_frames += desc->data_blocks;
  	} else {
  		write_pcm_silence(s, desc->ctx_payload, desc->data_blocks);
 -		pcm_frames = 0;
  	}
  
- 	write_midi_messages(s, desc->ctx_payload, desc->data_blocks,
+ 	return pcm_frames;
 -- 
 2.20.1
