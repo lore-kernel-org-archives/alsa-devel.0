@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wcd9335: Fix misuse of GENMASK macro" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:09 +0100 (BST)
-Message-ID: <20190722122209.6CBB02740463@ypsilon.sirena.org.uk>
-References: <92e31a9f321fe731d428ec3ec9d4654ea8a16d1b.1562734889.git.joe@perches.com>
+Subject: Applied "SoC: rockchip-max98090: Remove MICBIAS as supply of input pin IN34" to the asoc tree
+Date: Mon, 22 Jul 2019 13:22:05 +0100 (BST)
+Message-ID: <20190722122205.95EA72742C1A@ypsilon.sirena.org.uk>
+References: <20190719180558.11459-1-enric.balletbo@collabora.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <92e31a9f321fe731d428ec3ec9d4654ea8a16d1b.1562734889.git.joe@perches.com>
+In-Reply-To: <20190719180558.11459-1-enric.balletbo@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: alsa-devel@alsa-project.org, Collabora Kernel ML <kernel@collabora.com>, cychiang@chromium.org, dianders@chromium.org, Heiko Stuebner <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wcd9335: Fix misuse of GENMASK macro
+   SoC: rockchip-max98090: Remove MICBIAS as supply of input pin IN34
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From f7408a3d5b5fd10571a653d1a81ce9167c62727f Mon Sep 17 00:00:00 2001
-From: Joe Perches <joe@perches.com>
-Date: Tue, 9 Jul 2019 22:04:25 -0700
-Subject: [PATCH] ASoC: wcd9335: Fix misuse of GENMASK macro
+>From 03cc2c22a711080790c5dcb546dd073fe38add05 Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Fri, 19 Jul 2019 20:05:58 +0200
+Subject: [PATCH] SoC: rockchip-max98090: Remove MICBIAS as supply of input pin
+ IN34
 
-Arguments are supposed to be ordered high then low.
+Commit ec0d23b295b9 ("ASoC: rockchip-max98090: Fix the Headset Mic
+route.") moved the MICBIAS widget to supply Headset Mic but forget to
+remove the MICBIAS widget to supply IN34 which is not really needed, so
+remove that path so we have:
 
-Signed-off-by: Joe Perches <joe@perches.com>
-Link: https://lore.kernel.org/r/92e31a9f321fe731d428ec3ec9d4654ea8a16d1b.1562734889.git.joe@perches.com
+   IN34 <==== Headset MIC <==== MICBIAS
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: https://lore.kernel.org/r/20190719180558.11459-1-enric.balletbo@collabora.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wcd-clsh-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_max98090.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd-clsh-v2.c b/sound/soc/codecs/wcd-clsh-v2.c
-index c397d713f01a..cc5a9c9b918b 100644
---- a/sound/soc/codecs/wcd-clsh-v2.c
-+++ b/sound/soc/codecs/wcd-clsh-v2.c
-@@ -65,7 +65,7 @@ struct wcd_clsh_ctrl {
- #define WCD9XXX_FLYBACK_EN_PWDN_WITH_DELAY			0
- #define WCD9XXX_RX_BIAS_FLYB_BUFF			WCD9335_REG(0x6, 0xC7)
- #define WCD9XXX_RX_BIAS_FLYB_VNEG_5_UA_MASK		GENMASK(7, 4)
--#define WCD9XXX_RX_BIAS_FLYB_VPOS_5_UA_MASK		GENMASK(0, 3)
-+#define WCD9XXX_RX_BIAS_FLYB_VPOS_5_UA_MASK		GENMASK(3, 0)
- #define WCD9XXX_HPH_L_EN				WCD9335_REG(0x6, 0xD3)
- #define WCD9XXX_HPH_CONST_SEL_L_MASK			GENMASK(7, 3)
- #define WCD9XXX_HPH_CONST_SEL_BYPASS			0
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index c5fc24675a33..d1c907631c2d 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -45,7 +45,6 @@ static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
+ 
+ static const struct snd_soc_dapm_route rk_audio_map[] = {
+ 	{"IN34", NULL, "Headset Mic"},
+-	{"IN34", NULL, "MICBIAS"},
+ 	{"Headset Mic", NULL, "MICBIAS"},
+ 	{"DMICL", NULL, "Int Mic"},
+ 	{"Headphone", NULL, "HPL"},
 -- 
 2.20.1
