@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/20] ALSA: firewire-lib: use packet
-	descriptor for IR context
-Date: Mon, 22 Jul 2019 12:37:00 +0900
-Message-ID: <20190722033710.28107-11-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/20] ALSA: firewire-lib: code refactoring to
+	process PCM substream
+Date: Mon, 22 Jul 2019 12:37:01 +0900
+Message-ID: <20190722033710.28107-12-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CDCFF803F4
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94005F8015B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:33 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,152 +28,97 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit uses packet descriptor to parse headers of IR context and
-parse timing information for sequence transferred by target device.
+This is code refactoring to separate PCM substream processing from packet
+queueing.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 96 +++++++++++++++++++++++------------
- 1 file changed, 63 insertions(+), 33 deletions(-)
+ sound/firewire/amdtp-stream.c | 45 +++++++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 20 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 463c7a340a45..68502a8864b9 100644
+index 68502a8864b9..99b89bd70bc5 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -602,6 +602,8 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 		return -EIO;
- 	}
+@@ -776,16 +776,24 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
  
-+	*data_block_counter = dbc;
+ 	for (i = 0; i < packets; ++i) {
+ 		const struct pkt_desc *desc = s->pkt_descs + i;
++		struct snd_pcm_substream *pcm;
+ 		unsigned int pcm_frames;
 +
- 	*syt = cip_header[1] & CIP_SYT_MASK;
- 
- 	return 0;
-@@ -676,6 +678,48 @@ static inline u32 compute_it_cycle(const __be32 ctx_header_tstamp)
- 	return increment_cycle_count(cycle, QUEUE_LENGTH);
- }
- 
-+static int generate_device_pkt_descs(struct amdtp_stream *s,
-+				     struct pkt_desc *descs,
-+				     const __be32 *ctx_header,
-+				     unsigned int packets)
-+{
-+	unsigned int dbc = s->data_block_counter;
-+	int i;
-+	int err;
++		pcm_frames = s->process_data_blocks(s, desc->ctx_payload,
++				desc->data_blocks, desc->data_block_counter);
++
++		pcm = READ_ONCE(s->pcm);
++		if (pcm && pcm_frames > 0)
++			update_pcm_pointers(s, pcm, pcm_frames);
++	}
 +
 +	for (i = 0; i < packets; ++i) {
-+		struct pkt_desc *desc = descs + i;
-+		unsigned int index = (s->packet_index + i) % QUEUE_LENGTH;
-+		unsigned int cycle;
-+		unsigned int payload_length;
-+		unsigned int data_blocks;
-+		unsigned int syt;
-+
-+		cycle = compute_cycle_count(ctx_header[1]);
-+
-+		err = parse_ir_ctx_header(s, cycle, ctx_header, &payload_length,
-+					  &data_blocks, &dbc, &syt, i);
-+		if (err < 0)
-+			return err;
-+
-+		desc->cycle = cycle;
-+		desc->syt = syt;
-+		desc->data_blocks = data_blocks;
-+		desc->data_block_counter = dbc;
-+		desc->ctx_payload = s->buffer.packets[index].buffer;
-+
-+		if (!(s->flags & CIP_DBC_IS_END_EVENT))
-+			dbc = (dbc + desc->data_blocks) & 0xff;
-+
-+		ctx_header +=
-+			s->ctx_data.tx.ctx_header_size / sizeof(*ctx_header);
-+	}
-+
-+	s->data_block_counter = dbc;
-+
-+	return 0;
-+}
-+
- static void generate_ideal_pkt_descs(struct amdtp_stream *s,
- 				     struct pkt_desc *descs,
- 				     const __be32 *ctx_header,
-@@ -770,8 +814,10 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 			       void *private_data)
- {
- 	struct amdtp_stream *s = private_data;
--	unsigned int i, packets;
-+	unsigned int packets;
- 	__be32 *ctx_header = header;
-+	int i;
-+	int err;
- 
- 	if (s->packet_index < 0)
- 		return;
-@@ -779,50 +825,34 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 	// The number of packets in buffer.
- 	packets = header_length / s->ctx_data.tx.ctx_header_size;
- 
-+	err = generate_device_pkt_descs(s, s->pkt_descs, ctx_header, packets);
-+	if (err < 0) {
-+		if (err != -EAGAIN) {
-+			cancel_stream(s);
-+			return;
-+		}
-+	}
-+
- 	for (i = 0; i < packets; i++) {
--		u32 cycle;
--		unsigned int payload_length;
--		unsigned int data_blocks;
--		unsigned int dbc;
--		unsigned int syt;
--		__be32 *buffer;
-+		const struct pkt_desc *desc = s->pkt_descs;
- 		unsigned int pcm_frames = 0;
- 		struct fw_iso_packet params = {0};
- 		struct snd_pcm_substream *pcm;
--		int err;
++		const struct pkt_desc *desc = s->pkt_descs + i;
+ 		unsigned int syt;
+ 		struct {
+ 			struct fw_iso_packet params;
+ 			__be32 header[IT_PKT_HEADER_SIZE_CIP / sizeof(__be32)];
+ 		} template = { {0}, {0} };
+-		struct snd_pcm_substream *pcm;
 -
--		cycle = compute_cycle_count(ctx_header[1]);
--		dbc = s->data_block_counter;
--		err = parse_ir_ctx_header(s, cycle, ctx_header, &payload_length,
--					  &data_blocks, &dbc, &syt, i);
--		if (err < 0 && err != -EAGAIN)
--			break;
+-		pcm_frames = s->process_data_blocks(s, desc->ctx_payload,
+-				desc->data_blocks, desc->data_block_counter);
  
- 		if (err >= 0) {
--			buffer = s->buffer.packets[s->packet_index].buffer;
--			pcm_frames = s->process_data_blocks(s, buffer,
--							    data_blocks, dbc);
--
--			if (!(s->flags & CIP_DBC_IS_END_EVENT))
--				dbc = (dbc + data_blocks) & 0xff;
-+			pcm_frames = s->process_data_blocks(s,
-+					desc->ctx_payload, desc->data_blocks,
-+					desc->data_block_counter);
+ 		if (s->ctx_data.rx.syt_override < 0)
+ 			syt = desc->syt;
+@@ -800,10 +808,6 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 			cancel_stream(s);
+ 			return;
  		}
- 
--		s->data_block_counter = dbc;
 -
--		if (queue_in_packet(s, &params) < 0)
--			break;
-+		if (queue_in_packet(s, &params) < 0) {
-+			cancel_stream(s);
-+			return;
-+		}
+-		pcm = READ_ONCE(s->pcm);
+-		if (pcm && pcm_frames > 0)
+-			update_pcm_pointers(s, pcm, pcm_frames);
+ 	}
  
- 		pcm = READ_ONCE(s->pcm);
- 		if (pcm && pcm_frames > 0)
- 			update_pcm_pointers(s, pcm, pcm_frames);
--
--		ctx_header += s->ctx_data.tx.ctx_header_size / sizeof(*ctx_header);
+ 	fw_iso_context_queue_flush(s->context);
+@@ -831,28 +835,29 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 			cancel_stream(s);
+ 			return;
+ 		}
 -	}
 -
--	/* Queueing error or detecting invalid payload. */
--	if (i < packets) {
--		cancel_stream(s);
--		return;
+-	for (i = 0; i < packets; i++) {
+-		const struct pkt_desc *desc = s->pkt_descs;
+-		unsigned int pcm_frames = 0;
+-		struct fw_iso_packet params = {0};
+-		struct snd_pcm_substream *pcm;
++	} else {
++		for (i = 0; i < packets; ++i) {
++			const struct pkt_desc *desc = s->pkt_descs;
++			struct snd_pcm_substream *pcm;
++			unsigned int pcm_frames;
+ 
+-		if (err >= 0) {
+ 			pcm_frames = s->process_data_blocks(s,
+ 					desc->ctx_payload, desc->data_blocks,
+ 					desc->data_block_counter);
++
++			pcm = READ_ONCE(s->pcm);
++			if (pcm && pcm_frames > 0)
++				update_pcm_pointers(s, pcm, pcm_frames);
+ 		}
++	}
++
++	for (i = 0; i < packets; ++i) {
++		struct fw_iso_packet params = {0};
+ 
+ 		if (queue_in_packet(s, &params) < 0) {
+ 			cancel_stream(s);
+ 			return;
+ 		}
+-
+-		pcm = READ_ONCE(s->pcm);
+-		if (pcm && pcm_frames > 0)
+-			update_pcm_pointers(s, pcm, pcm_frames);
  	}
  
  	fw_iso_context_queue_flush(s->context);
