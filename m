@@ -1,59 +1,81 @@
-From: Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH 10/10] ASoC: fsl_sai: Add support for imx7ulp/imx8mq
-Date: Mon, 22 Jul 2019 15:04:07 +0200
-Message-ID: <1563800647.2311.13.camel@pengutronix.de>
-References: <20190722124833.28757-1-daniel.baluta@nxp.com>
-         <20190722124833.28757-11-daniel.baluta@nxp.com>
+From: Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH] ASoC: qcom: apq8016_sbc: Fix oops with
+	multiple DAI links
+Date: Mon, 22 Jul 2019 15:03:52 +0200
+Message-ID: <20190722130352.95874-1-stephan@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190722124833.28757-11-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>, broonie@kernel.org
-Cc: festevam@gmail.com, perex@perex.cz, tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, shengjiu.wang@nxp.com, angus@akkea.ca, kernel@pengutronix.de, viorel.suman@nxp.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5301::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07637F800E8
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 15:05:36 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Stephan Gerhold <stephan@gerhold.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Montag, den 22.07.2019, 15:48 +0300 schrieb Daniel Baluta:
-> SAI module on imx7ulp/imx8m features 2 new registers (VERID and PARAM)
-> at the beginning of register address space.
-> 
-> On imx7ulp FIFOs can held up to 16 x 32 bit samples.
-> On imx8mq FIFOs can held up to 128 x 32 bit samples.
-> 
-> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/fsl/fsl_sai.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index f2441b84877e..b05837465b5a 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -1065,10 +1065,24 @@ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
-> >  	.reg_offset = 0,
->  };
->  
-> +static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
-> > +	.use_imx_pcm = true,
-> > +	.fifo_depth = 16,
-> > +	.reg_offset = 8,
-> +};
-> +
-> +static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
-> > +	.use_imx_pcm = true,
-> > +	.fifo_depth = 128,
-> > +	.reg_offset = 8,
-> +};
-> +
->  static const struct of_device_id fsl_sai_ids[] = {
-> >  	{ .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
-> >  	{ .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
-> >  	{ .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
-> > +	{ .compatible = "fsl,imx7ulp-sai", .data = &fsl_sai_imx7ulp_data },
-> > +	{ .compatible = "fsl,imx8mq-sai", .data = &fsl_sai_imx8mq_data },
-> > 
-Those two new compatibles need to be documented in the DT bindings.
+apq8016_sbc_parse_of() sets up multiple DAI links, depending on the
+number of nodes in the device tree. However, at the moment
+CPU and platform components are only allocated for the first link.
+This causes an oops when more than one link is defined:
 
-Regards,
-Lucas
+	Internal error: Oops: 96000044 [#1] SMP
+	CPU: 0 PID: 1015 Comm: kworker/0:2 Not tainted 5.3.0-rc1 #4
+	Call trace:
+	 apq8016_sbc_platform_probe+0x1a8/0x3f0
+	 platform_drv_probe+0x50/0xa0
+	...
+
+Move the allocation inside the loop to ensure that each link is
+properly initialized.
+
+Fixes: 98b232ca9e0e ("ASoC: qcom: apq8016_sbc: use modern dai_link style")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ sound/soc/qcom/apq8016_sbc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index f60a71990f66..ac75838bbfab 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -150,17 +150,17 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
+ 
+ 	link = data->dai_link;
+ 
+-	dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
+-	if (!dlc)
+-		return ERR_PTR(-ENOMEM);
++	for_each_child_of_node(node, np) {
++		dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
++		if (!dlc)
++			return ERR_PTR(-ENOMEM);
+ 
+-	link->cpus	= &dlc[0];
+-	link->platforms	= &dlc[1];
++		link->cpus	= &dlc[0];
++		link->platforms	= &dlc[1];
+ 
+-	link->num_cpus		= 1;
+-	link->num_platforms	= 1;
++		link->num_cpus		= 1;
++		link->num_platforms	= 1;
+ 
+-	for_each_child_of_node(node, np) {
+ 		cpu = of_get_child_by_name(np, "cpu");
+ 		codec = of_get_child_by_name(np, "codec");
+ 
+-- 
+2.22.0
