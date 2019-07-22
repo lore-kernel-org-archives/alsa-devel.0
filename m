@@ -1,105 +1,77 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/5] ALSA: hda: move parts of NHLT code
- to new module
-Date: Mon, 22 Jul 2019 08:17:47 -0500
-Message-ID: <09f3e8c5-e3d2-1c68-20f5-50280e20765e@linux.intel.com>
-References: <20190719203752.11151-1-pierre-louis.bossart@linux.intel.com>
- <20190719203752.11151-3-pierre-louis.bossart@linux.intel.com>
- <daaa01dc-d963-f215-90b1-132fde8e489a@intel.com>
- <s5h7e8aa1qs.wl-tiwai@suse.de>
- <97359d3a-a3a0-696a-3d3f-64bd608eea5f@linux.intel.com>
- <s5hsgqy8dc2.wl-tiwai@suse.de>
- <a82b57ba-b606-3e2c-476e-95ecea66e030@linux.intel.com>
- <s5hd0i28bpi.wl-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: use __u32 instead of uint32_t in
+ uapi headers
+Date: Mon, 22 Jul 2019 15:34:04 +0200
+Message-ID: <CAK8P3a2tLuqu+upt0nW8dUzXc+t_kEJwVhLcqY8TXydHLb_nCw@mail.gmail.com>
+References: <20190721142308.30306-1-yamada.masahiro@socionext.com>
+ <de9e94ee-9c01-1c0c-4359-b637319a298f@linux.intel.com> <s5hftmy8byl.wl-tiwai@suse.de>
+ <ec306745-052d-f52c-2cce-d8915822d4ff@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A090EF800E8
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 15:18:30 +0200 (CEST)
-In-Reply-To: <s5hd0i28bpi.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Curtis Malainey <cujomalainey@google.com>, alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ec306745-052d-f52c-2cce-d8915822d4ff@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 22, 2019 at 3:16 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 7/22/19 7:56 AM, Takashi Iwai wrote:
+> > On Mon, 22 Jul 2019 14:49:34 +0200,
+> > Pierre-Louis Bossart wrote:
+> >>
+> >>
+> >>
+> >> On 7/21/19 9:23 AM, Masahiro Yamada wrote:
+> >>> When CONFIG_UAPI_HEADER_TEST=y, exported headers are compile-tested to
+> >>> make sure they can be included from user-space.
+> >>>
+> >>> Currently, header.h and fw.h are excluded from the test coverage.
+> >>> To make them join the compile-test, we need to fix the build errors
+> >>> attached below.
+> >>>
+> >>> For a case like this, we decided to use __u{8,16,32,64} variable types
+> >>> in this discussion:
+> >>>
+> >>>     https://lkml.org/lkml/2019/6/5/18
+> >>
+> >> these files are shared with the SOF project and used as is (with minor
+> >> formatting) for the firmware compilation. I am not sure I understand
+> >> the ask here, are you really asking SOF to use linux-specific type
+> >> definitions?
+> >
+> > Actually this is linux-kernel UAPI header files, so yes, we should
+> > follow the convention there as much as possible.
+> >
+> > So far we haven't been strict about these types.  But now we have a
+> > unit test for checking it, so it's a good opportunity to address the
+> > issues.
+>
+> Maybe a bit of background. For SOF we split the includes in 4 directories
+>
+> https://github.com/thesofproject/sof/tree/master/src/include
+>
+> - sof: internal includes for firmware only
+> - ipc: definitions of the structures for information exchanged over the
+> IPC channel. This directory is used as is by the Linux kernel and
+> mirrored in include/sound/sof
+> - user: definitions needed for firmware tools, e.g. to generate the
+> image or parse the trace. this directory is not used by the Linux kernel.
+> - kernel: definitions for the firmware format, needed for the loader to
+> parse the firmware files. This is not directly used by applications
+> running on the target, it really defines the content passed to the
+> kernel with request_firmware. This directory is mirrored in the Linux
+> include/uapi/sound/sof directory.
+>
+> Our goal is to minimize the differences and allow deltas e.g. for
+> license or comments. We could add a definition for __u32 when linux is
+> not used, I am just not sure if these two files really fall in the UAPI
+> category and if the checks make sense.
 
+If you can build all the SOF user space without these headers being
+installed to /usr/include/sound/sof/, you can move them from
+include/uapi/sound/sof to include/sounds/sof and leave the types
+unchanged.
 
-On 7/22/19 8:01 AM, Takashi Iwai wrote:
-> On Mon, 22 Jul 2019 14:58:44 +0200,
-> Pierre-Louis Bossart wrote:
->>
->>
->>
->> On 7/22/19 7:26 AM, Takashi Iwai wrote:
->>> On Mon, 22 Jul 2019 14:14:28 +0200,
->>> Pierre-Louis Bossart wrote:
->>>>
->>>>
->>>>
->>>> On 7/22/19 3:54 AM, Takashi Iwai wrote:
->>>>> On Sat, 20 Jul 2019 23:06:46 +0200,
->>>>> Cezary Rojewski wrote:
->>>>>>
->>>>>>> --- a/sound/hda/Kconfig
->>>>>>> +++ b/sound/hda/Kconfig
->>>>>>> @@ -29,3 +29,6 @@ config SND_HDA_PREALLOC_SIZE
->>>>>>>        	  Note that the pre-allocation size can be changed dynamically
->>>>>>>      	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
->>>>>>> +
->>>>>>> +config SND_INTEL_NHLT
->>>>>>> +	tristate
->>>>>>
->>>>>> If above is true, "depends on ACPI" would be expected.
->>>>>
->>>>> This won't fix things in practice as the Kconfig reverse selection
->>>>> ignores the dependencies of the selected item.  It'd be as a help for
->>>>> readers, though.
->>>>
->>>> There is a fallback if ACPI is not defined, so the code would always
->>>> compile. Configurations which select SND_INTEL_NHLT already depend on
->>>> ACPI.
->>>
->>> IIUC, the question above came from the point:
->>>
->>>    #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
->>>    ....
->>>    #else
->>>    ....
->>>    #endif
->>>
->>> and here Cezary suggested to drop IS_ENABLED(CONFIG_ACPI) *iff* the
->>> dependency can be assured in Kconfig side.  But for that assurance,
->>> putting "depends on ACPI" in config SND_INTEL_NHLT block won't
->>> suffice; that was my followup.
->>>
->>> So, as of the current code, we can drop IS_ENABLED(CONFIG_ACPI) from
->>> the ifdef above, yes.  But the dependency is no rock solid at this
->>> point, so either some comments or keeping the extra ifdef like the
->>> above would be needed, IMO.
->>
->> this extra ifdef is a bit overkill, I added it to make sure that the
->> fallbacks are used in nonsensical configurations w/ randconfig. In
->> practice, all Intel drivers already depend on ACPI and for the legacy
->> we already have:
->>
->> select SND_INTEL_NHLT if ACPI
->>
->> Not sure if we need to do anything more.
-> 
-> The missing piece is this implicit dependency information.
-> You can just put some comments somewhere mentioning it.
-
-ok, will do. thanks for the guidance.
+         Arnd
