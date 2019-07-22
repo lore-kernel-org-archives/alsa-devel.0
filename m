@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "sound: soc: bcm: cygnus-pcm: Unneeded variable: "ret"." to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:08 +0100 (BST)
-Message-ID: <20190722122208.514A1274046A@ypsilon.sirena.org.uk>
-References: <20190709184236.GA7873@hari-Inspiron-1545>
+Subject: Applied "ASoC: codecs: ad193x: Use regmap_multi_reg_write() when initializing" to the asoc tree
+Date: Mon, 22 Jul 2019 13:22:09 +0100 (BST)
+Message-ID: <20190722122209.3392127429FC@ypsilon.sirena.org.uk>
+References: <20190710105119.22987-1-codrin.ciubotariu@microchip.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190709184236.GA7873@hari-Inspiron-1545>
+In-Reply-To: <20190710105119.22987-1-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Cc: alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, Tzung-Bi Shih <tzungbi@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   sound: soc: bcm: cygnus-pcm: Unneeded variable: "ret".
+   ASoC: codecs: ad193x: Use regmap_multi_reg_write() when initializing
 
 has been applied to the asoc tree at
 
@@ -37,65 +37,70 @@ to this mail.
 Thanks,
 Mark
 
->From a08c1037c2c04bd0ba691c109e3af51817707fe0 Mon Sep 17 00:00:00 2001
-From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Date: Wed, 10 Jul 2019 00:12:37 +0530
-Subject: [PATCH] sound: soc: bcm: cygnus-pcm: Unneeded variable: "ret".
+>From eaba5585944e6d692828bca701c9362f60172b8a Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Wed, 10 Jul 2019 13:51:19 +0300
+Subject: [PATCH] ASoC: codecs: ad193x: Use regmap_multi_reg_write() when
+ initializing
 
-This patch fixes below issues reported by coccicheck
+Using regmap_multi_reg_write() when we set the default values for our
+registers makes the code smaller and easier to read.
 
-sound/soc/bcm/cygnus-pcm.c:642:5-8: Unneeded variable: "ret". Return "0"
-on line 650
-sound/soc/bcm/cygnus-pcm.c:671:5-8: Unneeded variable: "ret". Return "0"
-on line 696
-
-We cannot change return type of these functions as they are callback
-functions of snd_pcm_ops
-
-Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Link: https://lore.kernel.org/r/20190709184236.GA7873@hari-Inspiron-1545
+Suggested-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20190710105119.22987-1-codrin.ciubotariu@microchip.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/bcm/cygnus-pcm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ad193x.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/bcm/cygnus-pcm.c b/sound/soc/bcm/cygnus-pcm.c
-index 123ecf5479d7..8966b02844dc 100644
---- a/sound/soc/bcm/cygnus-pcm.c
-+++ b/sound/soc/bcm/cygnus-pcm.c
-@@ -639,7 +639,6 @@ static int cygnus_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
--	int ret = 0;
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 80dab5df9633..fb04c9379b71 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -413,15 +413,10 @@ static struct snd_soc_dai_driver ad193x_no_adc_dai = {
+ 	.ops = &ad193x_dai_ops,
+ };
  
- 	aio = cygnus_dai_get_dma_data(substream);
- 	dev_dbg(rtd->cpu_dai->dev, "%s  port %d\n", __func__, aio->portnum);
-@@ -647,7 +646,7 @@ static int cygnus_pcm_hw_params(struct snd_pcm_substream *substream,
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 	runtime->dma_bytes = params_buffer_bytes(params);
+-struct ad193x_reg_default {
+-	unsigned int reg;
+-	unsigned int val;
+-};
+-
+ /* codec register values to set after reset */
+ static void ad193x_reg_default_init(struct ad193x_priv *ad193x)
+ {
+-	const struct ad193x_reg_default reg_init[] = {
++	const struct reg_sequence reg_init[] = {
+ 		{  0, 0x99 },	/* PLL_CLK_CTRL0: pll input: mclki/xi 12.288Mhz */
+ 		{  1, 0x04 },	/* PLL_CLK_CTRL1: no on-chip Vref */
+ 		{  2, 0x40 },	/* DAC_CTRL0: TDM mode */
+@@ -437,21 +432,17 @@ static void ad193x_reg_default_init(struct ad193x_priv *ad193x)
+ 		{ 12, 0x00 },	/* DAC_L4_VOL: no attenuation */
+ 		{ 13, 0x00 },	/* DAC_R4_VOL: no attenuation */
+ 	};
+-	const struct ad193x_reg_default reg_adc_init[] = {
++	const struct reg_sequence reg_adc_init[] = {
+ 		{ 14, 0x03 },	/* ADC_CTRL0: high-pass filter enable */
+ 		{ 15, 0x43 },	/* ADC_CTRL1: sata delay=1, adc aux mode */
+ 		{ 16, 0x00 },	/* ADC_CTRL2: reset */
+ 	};
+-	int i;
  
--	return ret;
-+	return 0;
+-	for (i = 0; i < ARRAY_SIZE(reg_init); i++)
+-		regmap_write(ad193x->regmap, reg_init[i].reg, reg_init[i].val);
++	regmap_multi_reg_write(ad193x->regmap, reg_init, ARRAY_SIZE(reg_init));
+ 
+ 	if (ad193x_has_adc(ad193x)) {
+-		for (i = 0; i < ARRAY_SIZE(reg_adc_init); i++) {
+-			regmap_write(ad193x->regmap, reg_adc_init[i].reg,
+-				     reg_adc_init[i].val);
+-		}
++		regmap_multi_reg_write(ad193x->regmap, reg_adc_init,
++				       ARRAY_SIZE(reg_adc_init));
+ 	}
  }
  
- static int cygnus_pcm_hw_free(struct snd_pcm_substream *substream)
-@@ -668,7 +667,6 @@ static int cygnus_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct cygnus_aio_port *aio;
- 	unsigned long bufsize, periodsize;
--	int ret = 0;
- 	bool is_play;
- 	u32 start;
- 	struct ringbuf_regs *p_rbuf = NULL;
-@@ -693,7 +691,7 @@ static int cygnus_pcm_prepare(struct snd_pcm_substream *substream)
- 	ringbuf_set_initial(aio->cygaud->audio, p_rbuf, is_play, start,
- 				periodsize, bufsize);
- 
--	return ret;
-+	return 0;
- }
- 
- static snd_pcm_uframes_t cygnus_pcm_pointer(struct snd_pcm_substream *substream)
 -- 
 2.20.1
