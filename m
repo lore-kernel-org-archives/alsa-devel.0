@@ -1,49 +1,39 @@
 From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 0/5] ASoC: atmel: extend SSC support
-Date: Mon, 22 Jul 2019 20:27:17 +0200
-Message-ID: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 1/5] ASoC: atmel: enable SSC_PCM_DMA in Kconfig
+Date: Mon, 22 Jul 2019 20:27:20 +0200
+Message-ID: <ee65cc7b889b2a8d1139d1d25977842c956d1cf4.1563819483.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89B2CF800F5
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 20:27:21 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, linux-arm-kernel@lists.infradead.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBzZXJpZXMgaW1wcm92ZXMgc3VwcG9ydCBmb3IgdmFyaW91cyBjb25maWd1cmF0aW9ucyB1
-c2luZyBTU0MgbW9kdWxlCmFzIGltcGxlbWVudGVkIGluIEF0bWVsIFNBTUE1RHggU29Dcy4gUGF0
-Y2hlcyBhcmU6CgoxLiBlbmFibGUgU1NDIGluIEtjb25maWcgZm9yIGF1ZGlvLWdyYXBoLWNhcmQg
-c3VwcG9ydAoyLTMuIGltcGxlbWVudCBsZWZ0LWp1c3RpZmllZCBkYXRhIG1vZGUKNC01LiBmaXgg
-c2hhcmVkIEZTWU5DIHNvdXJjZSBmb3Igc2xhdmUgbW9kZQoKUGF0Y2hlcyBhZ2FpbnN0IHRpd2Fp
-L3NvdW5kL2Zvci1uZXh0IHRyZWUuIFlvdSBjYW4gYWxzbyBwdWxsIGZyb20KICAgaHR0cHM6Ly9y
-ZXJlLnFtcW0ucGwvZ2l0L2xpbnV4CmJyYW5jaDoKICAgYXRtZWwtc3NjCgpNaWNoYcWCIE1pcm9z
-xYJhdyAoNSk6CiAgQVNvQzogYXRtZWw6IGVuYWJsZSBTU0NfUENNX0RNQSBpbiBLY29uZmlnCiAg
-QVNvQzogYXRtZWxfc3NjX2RhaTogcmV3b3JrIERBSSBmb3JtYXQgY29uZmlndXJhdGlvbgogIEFT
-b0M6IGF0bWVsX3NzY19kYWk6IGltcGxlbWVudCBsZWZ0LWp1c3RpZmllZCBkYXRhIG1vZGUKICBB
-U29DOiBhdG1lbF9zc2NfZGFpOiBzcGxpdCBUWC9SWCBGUyBjb25zdGFudHMKICBBU29DOiBhdG1l
-bF9zc2NfZGFpOiBFbmFibGUgc2hhcmVkIEZTWU5DIHNvdXJjZSBpbiBmcmFtZS1zbGF2ZSBtb2Rl
-CgogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbWlzYy9hdG1lbC1zc2MudHh0ICAgIHwgICA0ICsK
-IGRyaXZlcnMvbWlzYy9hdG1lbC1zc2MuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiBp
-bmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwogc291
-bmQvc29jL2F0bWVsL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBzb3Vu
-ZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jICAgICAgICAgICAgICAgfCAzMDYgKysrKysrLS0t
-LS0tLS0tLS0tCiBzb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5oICAgICAgICAgICAgICAg
-fCAgIDkgKy0KIDYgZmlsZXMgY2hhbmdlZCwgMTIwIGluc2VydGlvbnMoKyksIDIwNCBkZWxldGlv
-bnMoLSkKCi0tIAoyLjIwLjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+QWxsb3cgU1NDIHRvIGJlIHVzZWQgb24gcGxhdGZvcm1zIGRlc2NyaWJlZCB1c2luZyBhdWRpby1n
+cmFwaC1jYXJkCmluIERldmljZSBUcmVlLgoKU2lnbmVkLW9mZi1ieTogTWljaGHFgiBNaXJvc8WC
+YXcgPG1pcnEtbGludXhAcmVyZS5xbXFtLnBsPgotLS0KIHNvdW5kL3NvYy9hdG1lbC9LY29uZmln
+IHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpk
+aWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVsL0tjb25maWcgYi9zb3VuZC9zb2MvYXRtZWwvS2Nv
+bmZpZwppbmRleCAwNmMxZDVjZTY0MmMuLjllZjlkMjViYjUxNyAxMDA2NDQKLS0tIGEvc291bmQv
+c29jL2F0bWVsL0tjb25maWcKKysrIGIvc291bmQvc29jL2F0bWVsL0tjb25maWcKQEAgLTI1LDcg
+KzI1LDcgQEAgY29uZmlnIFNORF9BVE1FTF9TT0NfRE1BCiAJZGVmYXVsdCB5IGlmIFNORF9BVE1F
+TF9TT0NfU1NDX0RNQT15IHx8IChTTkRfQVRNRUxfU09DX1NTQ19ETUE9bSAmJiBTTkRfQVRNRUxf
+U09DX1NTQz15KQogCiBjb25maWcgU05EX0FUTUVMX1NPQ19TU0NfRE1BCi0JdHJpc3RhdGUKKwl0
+cmlzdGF0ZSAiU29DIFBDTSBEQUkgc3VwcG9ydCBmb3IgQVQ5MSBTU0MgY29udHJvbGxlciB1c2lu
+ZyBETUEiCiAKIGNvbmZpZyBTTkRfQVRNRUxfU09DX1NTQwogCXRyaXN0YXRlCi0tIAoyLjIwLjEK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1h
+cm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0t
+a2VybmVsCg==
