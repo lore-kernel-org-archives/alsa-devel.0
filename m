@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/20] ALSA: firewire-lib: obsolete
-	ctx_data.tx.first_dbc with CIP_UNALIGHED_DBC flag
-Date: Mon, 22 Jul 2019 12:36:51 +0900
-Message-ID: <20190722033710.28107-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/20] ALSA: firewire-lib: pass data block
+	count as an argument to tracepoints event
+Date: Mon, 22 Jul 2019 12:36:52 +0900
+Message-ID: <20190722033710.28107-3-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC7C4F800E8
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:18 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9AEDAF803D1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:19 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,109 +28,61 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Recent firmware for Fireworks board module have a quirk to start
-transmission of CIP with non-zero value for its data block counter.
-In current implementation of ALSA firewire stack, the quirk is handled
-by 'struct amdtp_stream.ctx_data.tx.first_dbc' with value 0x02. However,
-the value comes from reverse engineering. It's better to handle this
-quirk without the explicit value.
-
-In a process to parse CIP header, the quirk of data block counter
-affects decision of sequence index in sequence-multiplexed data channel;
-i.e. MIDI conformant data channel. In Fireworks, the index is decided
-by the number of data blocks from top of the same CIP, thus the value
-of data block counter is useless.
-
-This commit adds CIP_UNALIGHED_DBC flag and obsoletes the explicit
-value for this quirk.
+This is a preparation for future commit that 'struct
+amdtp_stream.data_block_count' does not represent the value of
+data block count for current data block.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-am824.c                | 8 ++++++--
- sound/firewire/amdtp-stream.c               | 3 +--
- sound/firewire/amdtp-stream.h               | 5 +++--
- sound/firewire/fireworks/fireworks_stream.c | 2 +-
- 4 files changed, 11 insertions(+), 7 deletions(-)
+ sound/firewire/amdtp-stream-trace.h | 6 +++---
+ sound/firewire/amdtp-stream.c       | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
-index fd5d6b8ac557..99c567ded7a3 100644
---- a/sound/firewire/amdtp-am824.c
-+++ b/sound/firewire/amdtp-am824.c
-@@ -315,12 +315,16 @@ static void read_midi_messages(struct amdtp_stream *s,
- 			       __be32 *buffer, unsigned int frames)
- {
- 	struct amdtp_am824 *p = s->protocol;
--	unsigned int f, port;
- 	int len;
- 	u8 *b;
-+	int f;
+diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+index 4adbbf789cbe..16c7f6605511 100644
+--- a/sound/firewire/amdtp-stream-trace.h
++++ b/sound/firewire/amdtp-stream-trace.h
+@@ -14,8 +14,8 @@
+ #include <linux/tracepoint.h>
  
- 	for (f = 0; f < frames; f++) {
--		port = (8 - s->ctx_data.tx.first_dbc + s->data_block_counter + f) % 8;
-+		unsigned int port = f;
-+
-+		if (!(s->flags & CIP_UNALIGHED_DBC))
-+			port += s->data_block_counter;
-+		port %= 8;
- 		b = (u8 *)&buffer[p->midi_position];
- 
- 		len = b[0] - 0x80;
+ TRACE_EVENT(amdtp_packet,
+-	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int data_blocks, unsigned int index),
+-	TP_ARGS(s, cycles, cip_header, payload_length, data_blocks, index),
++	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int data_blocks, unsigned int data_block_counter, unsigned int index),
++	TP_ARGS(s, cycles, cip_header, payload_length, data_blocks, data_block_counter, index),
+ 	TP_STRUCT__entry(
+ 		__field(unsigned int, second)
+ 		__field(unsigned int, cycle)
+@@ -47,7 +47,7 @@ TRACE_EVENT(amdtp_packet,
+ 		}
+ 		__entry->payload_quadlets = payload_length / sizeof(__be32);
+ 		__entry->data_blocks = data_blocks;
+-		__entry->data_block_counter = s->data_block_counter,
++		__entry->data_block_counter = data_block_counter,
+ 		__entry->packet_index = s->packet_index;
+ 		__entry->irq = !!in_interrupt();
+ 		__entry->index = index;
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 4d71d74707cf..fc1e8e5b9429 100644
+index fc1e8e5b9429..fe1512905a43 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -584,8 +584,7 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 	    s->data_block_counter != UINT_MAX)
- 		*dbc = s->data_block_counter;
+@@ -511,7 +511,7 @@ static void build_it_pkt_header(struct amdtp_stream *s, unsigned int cycle,
+ 	}
  
--	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) &&
--	     *dbc == s->ctx_data.tx.first_dbc) ||
-+	if ((*dbc == 0x00 && (s->flags & CIP_SKIP_DBC_ZERO_CHECK)) ||
- 	    s->data_block_counter == UINT_MAX) {
- 		lost = false;
- 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 3942894c11ac..5d611122312b 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -33,6 +33,8 @@
-  * @CIP_HEADER_WITHOUT_EOH: Only for in-stream. CIP Header doesn't include
-  *	valid EOH.
-  * @CIP_NO_HEADERS: a lack of headers in packets
-+ * @CIP_UNALIGHED_DBC: Only for in-stream. The value of dbc is not alighed to
-+ *	the value of current SYT_INTERVAL; e.g. initial value is not zero.
-  */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
-@@ -45,6 +47,7 @@ enum cip_flags {
- 	CIP_JUMBO_PAYLOAD	= 0x40,
- 	CIP_HEADER_WITHOUT_EOH	= 0x80,
- 	CIP_NO_HEADER		= 0x100,
-+	CIP_UNALIGHED_DBC	= 0x200,
- };
+ 	trace_amdtp_packet(s, cycle, cip_header, payload_length, data_blocks,
+-			   index);
++			   s->data_block_counter, index);
  
- /**
-@@ -119,8 +122,6 @@ struct amdtp_stream {
- 			// Fixed interval of dbc between previos/current
- 			// packets.
- 			unsigned int dbc_interval;
--			// Indicate the value of dbc field in a first packet.
--			unsigned int first_dbc;
- 		} tx;
- 		struct {
- 			// To calculate CIP data blocks and tstamp.
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index e659a0b89ba5..385fc9686365 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -146,7 +146,7 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
- 	    (efw->firmware_version == 0x5070000 ||
- 	     efw->firmware_version == 0x5070300 ||
- 	     efw->firmware_version == 0x5080000))
--		efw->tx_stream.ctx_data.tx.first_dbc = 0x02;
-+		efw->tx_stream.flags |= CIP_UNALIGHED_DBC;
- 	/* AudioFire9 always reports wrong dbs. */
- 	if (efw->is_af9)
- 		efw->tx_stream.flags |= CIP_WRONG_DBS;
+ 	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 		s->data_block_counter =
+@@ -653,7 +653,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 	s->data_block_counter = dbc;
+ 
+ 	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
+-			   index);
++			   s->data_block_counter, index);
+ 
+ 	return err;
+ }
 -- 
 2.20.1
