@@ -1,49 +1,112 @@
-From: =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>
-Subject: Re: [PATCH 3/3] ASoC: rt1308: Convert headers to SPDX
-Date: Mon, 22 Jul 2019 11:55:19 +0000
-Message-ID: <10317AB43303BA4884D7AF9C2EBCFF4002BBEAAF@RTITMBSVM07.realtek.com.tw>
-References: <20190719063302.18858-1-shumingf@realtek.com>
- <20190719164623.GA14800@sirena.org.uk>
- <10317AB43303BA4884D7AF9C2EBCFF4002BBE03D@RTITMBSVM07.realtek.com.tw>
- <20190722105821.GA4756@sirena.org.uk>
- <10317AB43303BA4884D7AF9C2EBCFF4002BBEA77@RTITMBSVM07.realtek.com.tw>
- <20190722115045.GB4756@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AB5BF800E8
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 13:55:24 +0200 (CEST)
-In-Reply-To: <20190722115045.GB4756@sirena.org.uk>
-Content-Language: zh-TW
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, =?utf-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dapm: Fix handling of custom_stop_condition on DAPM graph walks" to the asoc tree
+Date: Mon, 22 Jul 2019 13:22:10 +0100 (BST)
+Message-ID: <20190722122210.7A072274046A@ypsilon.sirena.org.uk>
+References: <20190718084333.15598-1-ckeepax@opensource.cirrus.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190718084333.15598-1-ckeepax@opensource.cirrus.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-PiBPbiBNb24sIEp1bCAyMiwgMjAxOSBhdCAxMTo0ODo1MkFNICswMDAwLCBTaHVtaW5nIFvojIPm
-m7jpiphdIHdyb3RlOg0KPiANCj4gDQo+ID4gTWF5IEkgY29uZmlybSB3aGF0IHlvdXIgcG9pbnQ/
-DQo+ID4gSSBjb252ZXJ0IHRoZSBlbnRpcmUgY29tbWVudCBibG9jayB0byBhIEMrKyBvbmUgbGlr
-ZSBiZWxvdy4NCj4gPiAvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiA+IC0v
-Kg0KPiA+IC0gKiBydDEzMDguYyAgLS0gIFJUMTMwOCBBTFNBIFNvQyBhbXBsaWZpZXIgY29tcG9u
-ZW50IGRyaXZlcg0KPiA+IC0gKg0KPiA+IC0gKiBDb3B5cmlnaHQgMjAxOSBSZWFsdGVrIFNlbWlj
-b25kdWN0b3IgQ29ycC4NCj4gPiAtICogQXV0aG9yOiBEZXJlayBGYW5nIDxkZXJlay5mYW5nQHJl
-YWx0ZWsuY29tPg0KPiA+IC0gKg0KPiA+IC0gKi8NCj4gPiArLy8NCj4gPiArLy8gcnQxMzA4LmMg
-IC0tICBSVDEzMDggQUxTQSBTb0MgYW1wbGlmaWVyIGNvbXBvbmVudCBkcml2ZXIgLy8gLy8NCj4g
-PiArQ29weXJpZ2h0IDIwMTkgUmVhbHRlayBTZW1pY29uZHVjdG9yIENvcnAuDQo+ID4gKy8vIEF1
-dGhvcjogRGVyZWsgRmFuZyA8ZGVyZWsuZmFuZ0ByZWFsdGVrLmNvbT4gLy8NCj4gDQo+IFllcy4N
-Cj4gDQoNCk9rLCBJIHdpbGwgc2VuZCB0aGUgc2Vjb25kIHZlcnNpb24gZm9yIHRoZXNlIHBhdGNo
-ZXMuDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBz
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: dapm: Fix handling of custom_stop_condition on DAPM graph walks
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 8dd26dff00c0636b1d8621acaeef3f6f3a39dd77 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Thu, 18 Jul 2019 09:43:33 +0100
+Subject: [PATCH] ASoC: dapm: Fix handling of custom_stop_condition on DAPM
+ graph walks
+
+DPCM uses snd_soc_dapm_dai_get_connected_widgets to build a
+list of the widgets connected to a specific front end DAI so it
+can search through this list for available back end DAIs. The
+custom_stop_condition was added to is_connected_ep to facilitate this
+list not containing more widgets than is necessary. Doing so both
+speeds up the DPCM handling as less widgets need to be searched and
+avoids issues with CODEC to CODEC links as these would be confused
+with back end DAIs if they appeared in the list of available widgets.
+
+custom_stop_condition was implemented by aborting the graph walk
+when the condition is triggered, however there is an issue with this
+approach. Whilst walking the graph is_connected_ep should update the
+endpoints cache on each widget, if the walk is aborted the number
+of attached end points is unknown for that sub-graph. When the stop
+condition triggered, the original patch ignored the triggering widget
+and returned zero connected end points; a later patch updated this
+to set the triggering widget's cache to 1 and return that. Both of
+these approaches result in inaccurate values being stored in various
+end point caches as the values propagate back through the graph,
+which can result in later issues with widgets powering/not powering
+unexpectedly.
+
+As the original goal was to reduce the size of the widget list passed
+to the DPCM code, the simplest solution is to limit the functionality
+of the custom_stop_condition to the widget list. This means the rest
+of the graph will still be processed resulting in correct end point
+caches, but only widgets up to the stop condition will be added to the
+returned widget list.
+
+Fixes: 6742064aef7f ("ASoC: dapm: support user-defined stop condition in dai_get_connected_widgets")
+Fixes: 5fdd022c2026 ("ASoC: dpcm: play nice with CODEC<->CODEC links")
+Fixes: 09464974eaa8 ("ASoC: dapm: Fix to return correct path list in is_connected_ep.")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20190718084333.15598-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 6b44b4a78b8e..9cd87e47ee8f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1157,8 +1157,8 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+ 		list_add_tail(&widget->work_list, list);
+ 
+ 	if (custom_stop_condition && custom_stop_condition(widget, dir)) {
+-		widget->endpoints[dir] = 1;
+-		return widget->endpoints[dir];
++		list = NULL;
++		custom_stop_condition = NULL;
+ 	}
+ 
+ 	if ((widget->is_ep & SND_SOC_DAPM_DIR_TO_EP(dir)) && widget->connected) {
+@@ -1195,8 +1195,8 @@ static __always_inline int is_connected_ep(struct snd_soc_dapm_widget *widget,
+  *
+  * Optionally, can be supplied with a function acting as a stopping condition.
+  * This function takes the dapm widget currently being examined and the walk
+- * direction as an arguments, it should return true if the walk should be
+- * stopped and false otherwise.
++ * direction as an arguments, it should return true if widgets from that point
++ * in the graph onwards should not be added to the widget list.
+  */
+ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
+ 	struct list_head *list,
+-- 
+2.20.1
