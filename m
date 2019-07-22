@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/20] ALSA: firewire-lib: add list of packet
-	descriptor
-Date: Mon, 22 Jul 2019 12:36:58 +0900
-Message-ID: <20190722033710.28107-9-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/20] ALSA: firewire-lib: use packet
+	descriptor for IT context
+Date: Mon, 22 Jul 2019 12:36:59 +0900
+Message-ID: <20190722033710.28107-10-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D08CF803F4
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:29 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91CC1F8015B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:30 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,99 +28,117 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation of ALSA IEC 61883-1/6 packet streaming engine,
-16 packets are handled in one interrupt of isochronous context of OHCI
-1394.
-
-Overall packet processing runs for each. However, this is not better in
-a point to split the processing into several parts.
-
-This commit is an attempt to add intermediate representation for
-parameters required for the parts.
+This commit uses packet descriptor to parse headers of IT context and
+generate timing information for ideal sequence.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 15 ++++++++++++---
- sound/firewire/amdtp-stream.h |  9 +++++++++
- 2 files changed, 21 insertions(+), 3 deletions(-)
+ sound/firewire/amdtp-stream.c | 68 ++++++++++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 24 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index c8543cdb3c8c..2bea15151d4a 100644
+index 2bea15151d4a..463c7a340a45 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -936,6 +936,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	else
- 		s->tag = TAG_CIP;
+@@ -676,6 +676,38 @@ static inline u32 compute_it_cycle(const __be32 ctx_header_tstamp)
+ 	return increment_cycle_count(cycle, QUEUE_LENGTH);
+ }
  
-+	s->pkt_descs = kcalloc(INTERRUPT_INTERVAL, sizeof(*s->pkt_descs),
-+			       GFP_KERNEL);
-+	if (!s->pkt_descs) {
-+		err = -ENOMEM;
-+		goto err_context;
++static void generate_ideal_pkt_descs(struct amdtp_stream *s,
++				     struct pkt_desc *descs,
++				     const __be32 *ctx_header,
++				     unsigned int packets)
++{
++	unsigned int dbc = s->data_block_counter;
++	int i;
++
++	for (i = 0; i < packets; ++i) {
++		struct pkt_desc *desc = descs + i;
++		unsigned int index = (s->packet_index + i) % QUEUE_LENGTH;
++
++		desc->cycle = compute_cycle_count(*ctx_header);
++		desc->syt = calculate_syt(s, desc->cycle);
++		desc->data_blocks = calculate_data_blocks(s, desc->syt);
++
++		if (s->flags & CIP_DBC_IS_END_EVENT)
++			dbc = (dbc + desc->data_blocks) & 0xff;
++
++		desc->data_block_counter = dbc;
++
++		if (!(s->flags & CIP_DBC_IS_END_EVENT))
++			dbc = (dbc + desc->data_blocks) & 0xff;
++
++		desc->ctx_payload = s->buffer.packets[index].buffer;
++
++		++ctx_header;
 +	}
 +
- 	s->packet_index = 0;
- 	do {
- 		struct fw_iso_packet params;
-@@ -947,7 +954,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 			err = queue_out_packet(s, &params);
- 		}
- 		if (err < 0)
--			goto err_context;
-+			goto err_pkt_descs;
- 	} while (s->packet_index > 0);
- 
- 	/* NOTE: TAG1 matches CIP. This just affects in stream. */
-@@ -958,12 +965,13 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 	s->callbacked = false;
- 	err = fw_iso_context_start(s->context, -1, 0, tag);
- 	if (err < 0)
--		goto err_context;
-+		goto err_pkt_descs;
- 
- 	mutex_unlock(&s->mutex);
- 
- 	return 0;
--
-+err_pkt_descs:
-+	kfree(s->pkt_descs);
- err_context:
- 	fw_iso_context_destroy(s->context);
- 	s->context = ERR_PTR(-1);
-@@ -1059,6 +1067,7 @@ void amdtp_stream_stop(struct amdtp_stream *s)
- 	fw_iso_context_destroy(s->context);
- 	s->context = ERR_PTR(-1);
- 	iso_packets_buffer_destroy(&s->buffer, s->unit);
-+	kfree(s->pkt_descs);
- 
- 	s->callbacked = false;
- 
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 5996cc60f166..73c492c9a5d5 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -94,6 +94,14 @@ enum amdtp_stream_direction {
- 	AMDTP_IN_STREAM
- };
- 
-+struct pkt_desc {
-+	u32 cycle;
-+	u32 syt;
-+	unsigned int data_blocks;
-+	unsigned int data_block_counter;
-+	__be32 *ctx_payload;
-+};
++	s->data_block_counter = dbc;
++}
 +
- struct amdtp_stream;
- typedef unsigned int (*amdtp_stream_process_data_blocks_t)(
- 						struct amdtp_stream *s,
-@@ -110,6 +118,7 @@ struct amdtp_stream {
- 	struct fw_iso_context *context;
- 	struct iso_packets_buffer buffer;
- 	int packet_index;
-+	struct pkt_desc *pkt_descs;
- 	int tag;
- 	union {
+ static inline void cancel_stream(struct amdtp_stream *s)
+ {
+ 	s->packet_index = -1;
+@@ -696,39 +728,29 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	if (s->packet_index < 0)
+ 		return;
+ 
++	generate_ideal_pkt_descs(s, s->pkt_descs, ctx_header, packets);
++
+ 	for (i = 0; i < packets; ++i) {
+-		u32 cycle;
+-		unsigned int syt;
+-		unsigned int data_blocks;
+-		unsigned int dbc;
+-		__be32 *buffer;
++		const struct pkt_desc *desc = s->pkt_descs + i;
+ 		unsigned int pcm_frames;
++		unsigned int syt;
  		struct {
+ 			struct fw_iso_packet params;
+ 			__be32 header[IT_PKT_HEADER_SIZE_CIP / sizeof(__be32)];
+ 		} template = { {0}, {0} };
+ 		struct snd_pcm_substream *pcm;
+ 
+-		cycle = compute_it_cycle(*ctx_header);
+-		syt = calculate_syt(s, cycle);
+-		data_blocks = calculate_data_blocks(s, syt);
+-		buffer = s->buffer.packets[s->packet_index].buffer;
+-		dbc = s->data_block_counter;
+-		pcm_frames = s->process_data_blocks(s, buffer, data_blocks, dbc);
++		pcm_frames = s->process_data_blocks(s, desc->ctx_payload,
++				desc->data_blocks, desc->data_block_counter);
+ 
+-		if (s->flags & CIP_DBC_IS_END_EVENT)
+-			dbc = (dbc + data_blocks) & 0xff;
+-
+-		if (s->ctx_data.rx.syt_override >= 0)
++		if (s->ctx_data.rx.syt_override < 0)
++			syt = desc->syt;
++		else
+ 			syt = s->ctx_data.rx.syt_override;
+ 
+-		build_it_pkt_header(s, cycle, &template.params, data_blocks,
+-				    dbc, syt, i);
+-
+-		if (!(s->flags & CIP_DBC_IS_END_EVENT))
+-			dbc = (dbc + data_blocks) & 0xff;
+-
+-		s->data_block_counter = dbc;
++		build_it_pkt_header(s, desc->cycle, &template.params,
++				    desc->data_blocks, desc->data_block_counter,
++				    syt, i);
+ 
+ 		if (queue_out_packet(s, &template.params) < 0) {
+ 			cancel_stream(s);
+@@ -738,8 +760,6 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 		pcm = READ_ONCE(s->pcm);
+ 		if (pcm && pcm_frames > 0)
+ 			update_pcm_pointers(s, pcm, pcm_frames);
+-
+-		++ctx_header;
+ 	}
+ 
+ 	fw_iso_context_queue_flush(s->context);
 -- 
 2.20.1
