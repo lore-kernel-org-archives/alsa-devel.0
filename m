@@ -1,19 +1,19 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/5] ASoC: Intel: IPC framework updates
-Date: Mon, 22 Jul 2019 23:37:40 +0200
-Message-ID: <887f681f-a329-6fbc-08be-74ee12f7d59d@intel.com>
-References: <20190720194532.23682-1-cezary.rojewski@intel.com>
- <48015f53-e650-1e77-9217-3a65250673ac@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: madera: Read device tree
+ configuration
+Date: Tue, 23 Jul 2019 00:07:32 +0200
+Message-ID: <7a6ca46b-9ca7-6c91-6aa9-d1be785c64c5@intel.com>
+References: <20190722135209.30302-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 347F0F800F5
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 23:37:47 +0200 (CEST)
-In-Reply-To: <48015f53-e650-1e77-9217-3a65250673ac@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CA17F800F5
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 00:07:39 +0200 (CEST)
+In-Reply-To: <20190722135209.30302-1-ckeepax@opensource.cirrus.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,44 +24,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE5LTA3LTIyIDIzOjEyLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiAKPiAK
-PiBPbiA3LzIwLzE5IDI6NDUgUE0sIENlemFyeSBSb2pld3NraSB3cm90ZToKPj4gRXhpc3Rpbmcg
-SVBDIGZyYW1ld29yayBvbWl0cyBjcnVjaWFsIHBhcnQgb2YgdGhlIGVudGlyZSBjb21tdW5pY2F0
-aW9uOgo+PiByZXBseSBoZWFkZXIuIFNvbWUgSVBDcyBjYW5ub3QgZnVuY3Rpb24gYXQgYWxsIHdp
-dGhvdXQgdGhlIGFjY2VzcyB0bwo+PiBzYWlkIGhlYWRlci4gVXBkYXRlIHRoZSBzc3QtaXBjIHdp
-dGggbmV3IHNzdF9pcGNfbWVzc2FnZSBzdHJ1Y3R1cmUgdG8KPj4gcmVwcmVzZW50IGJvdGggcmVx
-dWVzdCBhbmQgcmVwbHkgYWxsb3dpbmcgcmVwbHktcHJvY2Vzc2luZyBoYW5kbGVycyB0bwo+PiBz
-YXZlIHJlY2VpdmVkIHJlc3BvbnNlcy4KPj4KPj4gRGVzcGl0ZSB0aGUgcmFuZ2Ugb2YgY2hhbmdl
-cyByZXF1aXJlZCBmb3IgbW9kZWwgdG8gYmUgdXBkYXRlZCwgbm8KPj4gZnVuY3Rpb25hbCBjaGFu
-Z2VzIGFyZSBtYWRlIGZvciBjb3JlIGhhbnN3ZWxsLCBiYXl0cmFpbCBhbmQgc2t5bGFrZQo+PiBt
-ZXNzYWdlIGhhbmRsZXJzLiBSZXBseS1wcm9jZXNzaW5nIGhhbmRsZXJzIG5vdyBzYXZlIHJlY2Vp
-dmVkIHJlc3BvbnNlCj4+IGhlYWRlciB5ZXQgbm8gdXNhZ2UgaXMgYWRkZWQgYnkgZGVmYXVsdC4K
-Pj4KPj4gVG8gYWxsb3cgZm9yIGZ1dHVyZSBjaGFuZ2VzLCByaWdoZnVsIGtpbmdzIG9mIElQQyBr
-aW5nZG9tIG5lZWQgdG8gYmUgcHV0Cj4+IGJhY2sgb24gdGhlIHRocm9uZS4gVGhpcyB1cGRhdGUg
-YWRkcmVzc2VzIG9uZSBvZiB0aGVtOiBMQVJHRV9DT05GSUdfR0VULgo+Pgo+PiBDZXphcnkgUm9q
-ZXdza2kgKDUpOgo+PiDCoMKgIEFTb0M6IEludGVsOiBVcGRhdGUgcmVxdWVzdC1yZXBseSBJUEMg
-bW9kZWwKPiAKPiBJIGhhZCBhIGRvdWJ0IG9uIHRoZSBzdHJ1Y3R1cmUgb2YgdGhpcyBwYXRjaHNl
-dCBzaW5jZSB5b3UgZmlyc3QgY2hhbmdlIAo+IHRoZSBzdHJ1Y3R1cmUgZGVmaW5pdGlvbnMvcHJv
-dG90eXBlcyBhbmQgdGhlbiB1c2UgdGhlbSBpbiBmb2xsb3ctdXAgCj4gcGF0Y2hlcywgYW5kIHN1
-cmUgZW5vdWdoIGlmIEkgYXBwbHkgdGhlIGZpcnN0IHBhdGNoIG9ubHkgdGhlIGNvbXBpbGF0aW9u
-IAo+IGlzIGJyb2tlbiwgc2VlIGJlbG93Lgo+IAo+IFRoZSBydWxlIGlzIHRoYXQgd2UgY2FuJ3Qg
-YnJlYWsgZ2l0IGJpc2VjdC4gQW5kIGlmIHlvdSBzcXVhc2ggdGhlIAo+IHBhdGNoZXMgdG9nZXRo
-ZXIsIHRoZW4geW91IGhhdmUgYSByZWFsbHkgY29tcGxpY2F0ZWQgcGF0Y2ggdG8gCj4gcmV2aWV3
-L3Rlc3QsIHNvIGxpa2UgSSBzYWlkIGVhcmxpZXIgc3VjaCBpbnZhc2l2ZSBjaGFuZ2VzIGluIHNo
-YXJlZCAKPiBwcm90b3R5cGVzIGFyZSByZWFsbHkgcGFpbmZ1bC4KClRoYW5rcyBmb3IgeW91ciB0
-aW1lIGFuZCBpbnB1dCwgUGllcnJlIQoKQWdyZWVkIG9uIHRoZSBwYXRjaHNldCBzdHJ1Y3R1cmUu
-IFRoaXMgd2Fzbid0IGEgcmFuZG9tIG1pc3Rha2UsIHRob3VnaC4gCktuZXcgdGhhdCBtZXNoaW5n
-IHRoZW0gYWxsIHRvZ2V0aGVyIGltbWVkaWF0ZWx5ICh2MSkgd291bGQgYmUgdmVyeSBoYXJkIApm
-b3IgcmVhZGVycyB0byByZXZpZXcsIGRlc3BpdGUgdGhlIF9zaW1wbGljaXR5XyBvZiBhY3R1YWwg
-c29sdXRpb246IApleHBsaWNpdCBsaXN0aW5nIG9mIG1lc3NhZ2UgcGFydHMgLT4gY29udGFpbm1l
-bnQgd2l0aGluIHNzdF9pcGNfbWVzc2FnZS4KCkknbGwgY29tYmluZSB0aGVtIHRvZ2V0aGVyIC0g
-ZXhjZXB0IGZvciB0aGUgbGFyZ2VfY29uZmlnX2dldCBvbmUuIEhhZCAKdGhlc2UgaXNzdWVzIGJl
-ZW4gYWRkcmVzc2VkIGVhcmxpZXIsIHBhdGNoZXMgc3VjaCBhcyB0aGlzIHdvdWxkbid0IGhhdmUg
-CmJlZW4gbmVlZGVkIGF0IGFsbCA7LwoKQ3phcmVrCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 2019-07-22 15:52, Charles Keepax wrote:
+> +static void madera_prop_get_inmode(struct madera_priv *priv)
+> +{
+> +	struct madera *madera = priv->madera;
+> +	struct madera_codec_pdata *pdata = &madera->pdata.codec;
+> +	u32 tmp[MADERA_MAX_INPUT * MADERA_MAX_MUXED_CHANNELS];
+> +	int n, i, in_idx, ch_idx;
+> +
+> +	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode) != MADERA_MAX_INPUT);
+> +	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode[0]) != MADERA_MAX_MUXED_CHANNELS);
+> +
+> +	n = madera_get_variable_u32_array(madera->dev, "cirrus,inmode",
+> +					  tmp, ARRAY_SIZE(tmp),
+> +					  MADERA_MAX_MUXED_CHANNELS);
+> +	if (n < 0)
+> +		return;
+> +
+> +	in_idx = 0;
+> +	ch_idx = 0;
+> +	for (i = 0; i < n; ++i) {
+> +		pdata->inmode[in_idx][ch_idx] = tmp[i];
+> +
+> +		if (++ch_idx == MADERA_MAX_MUXED_CHANNELS) {
+> +			ch_idx = 0;
+> +			++in_idx;
+> +		}
+> +	}
+> +}
+> +
+> +static void madera_prop_get_pdata(struct madera_priv *priv)
+> +{
+> +	struct madera *madera = priv->madera;
+> +	struct madera_codec_pdata *pdata = &madera->pdata.codec;
+> +	u32 out_mono[ARRAY_SIZE(pdata->out_mono)];
+> +	int i, n;
+> +
+> +	madera_prop_get_inmode(priv);
+> +
+> +	n = madera_get_variable_u32_array(madera->dev, "cirrus,out-mono",
+> +					  out_mono, ARRAY_SIZE(out_mono), 1);
+> +	if (n > 0)
+> +		for (i = 0; i < n; ++i)
+> +			pdata->out_mono[i] = !!out_mono[i];
+> +
+> +	madera_get_variable_u32_array(madera->dev,
+> +				      "cirrus,max-channels-clocked",
+> +				      pdata->max_channels_clocked,
+> +				      ARRAY_SIZE(pdata->max_channels_clocked),
+> +				      1);
+> +
+> +	madera_get_variable_u32_array(madera->dev, "cirrus,pdm-fmt",
+> +				      pdata->pdm_fmt,
+> +				      ARRAY_SIZE(pdata->pdm_fmt), 1);
+> +
+> +	madera_get_variable_u32_array(madera->dev, "cirrus,pdm-mute",
+> +				      pdata->pdm_mute,
+> +				      ARRAY_SIZE(pdata->pdm_mute), 1);
+> +
+> +	madera_get_variable_u32_array(madera->dev, "cirrus,dmic-ref",
+> +				      pdata->dmic_ref,
+> +				      ARRAY_SIZE(pdata->dmic_ref), 1);
+
+Hmm, madera_get_variable_u32_array calls are not permissive within 
+madera_prop_get_inmode yet here they are. Is this intentional?
+
+> +}
+> +
+>   int madera_core_init(struct madera_priv *priv)
+>   {
+>   	int i;
+> @@ -308,6 +402,9 @@ int madera_core_init(struct madera_priv *priv)
+>   	BUILD_BUG_ON(!madera_mixer_texts[MADERA_NUM_MIXER_INPUTS - 1]);
+>   	BUILD_BUG_ON(!madera_mixer_values[MADERA_NUM_MIXER_INPUTS - 1]);
+>   
+> +	if (!dev_get_platdata(priv->madera->dev))
+> +		madera_prop_get_pdata(priv);
+> +
+>   	mutex_init(&priv->rate_lock);
+>   
+>   	for (i = 0; i < MADERA_MAX_HP_OUTPUT; i++)
+> 
