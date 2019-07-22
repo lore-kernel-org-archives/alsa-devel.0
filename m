@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8183: make headset codec
-	optional" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:07 +0100 (BST)
-Message-ID: <20190722122207.DD56927429FC@ypsilon.sirena.org.uk>
-References: <20190716032417.19015-1-tzungbi@google.com>
+Subject: Applied "ASoC: rt5677: remove superfluous set" to the
+	asoc tree
+Date: Mon, 22 Jul 2019 13:22:08 +0100 (BST)
+Message-ID: <20190722122208.F2A0427429D9@ypsilon.sirena.org.uk>
+References: <20190711002838.35363-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC53CF800F5
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:22:09 +0200 (CEST)
-In-Reply-To: <20190716032417.19015-1-tzungbi@google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49E36F803D7
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 14:22:10 +0200 (CEST)
+In-Reply-To: <20190711002838.35363-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,12 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
+To: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183: make headset codec optional
+   ASoC: rt5677: remove superfluous set
 
 has been applied to the asoc tree at
 
@@ -54,47 +55,31 @@ to this mail.
 Thanks,
 Mark
 
->From 2d7df506d176265d97bece4b55faa60ce7926970 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Tue, 16 Jul 2019 11:24:17 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: make headset codec optional
+>From 4dc057a786dc23fd1ed70e6bcab691c0f26daa1e Mon Sep 17 00:00:00 2001
+From: Curtis Malainey <cujomalainey@chromium.org>
+Date: Wed, 10 Jul 2019 17:28:38 -0700
+Subject: [PATCH] ASoC: rt5677: remove superfluous set
 
-Make headset codec optional because some variant machines may not
-have an audio jack.
+We define this variable with the same value, no need to set it twice
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20190716032417.19015-1-tzungbi@google.com
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+Link: https://lore.kernel.org/r/20190711002838.35363-1-cujomalainey@chromium.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rt5677.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 887c932229d0..4c816c86844b 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -352,8 +352,6 @@ static struct snd_soc_card mt8183_mt6358_ts3a227_max98357_card = {
- 	.owner = THIS_MODULE,
- 	.dai_link = mt8183_mt6358_ts3a227_max98357_dai_links,
- 	.num_links = ARRAY_SIZE(mt8183_mt6358_ts3a227_max98357_dai_links),
--	.aux_dev = &mt8183_mt6358_ts3a227_max98357_headset_dev,
--	.num_aux_devs = 1,
- };
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index c779dc3474f9..deaed5132dc9 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5098,7 +5098,6 @@ static irqreturn_t rt5677_irq(int unused, void *data)
+ 			goto exit;
+ 		}
  
- static int
-@@ -404,10 +402,9 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 	mt8183_mt6358_ts3a227_max98357_headset_dev.codec_of_node =
- 		of_parse_phandle(pdev->dev.of_node,
- 				 "mediatek,headset-codec", 0);
--	if (!mt8183_mt6358_ts3a227_max98357_headset_dev.codec_of_node) {
--		dev_err(&pdev->dev,
--			"Property 'mediatek,headset-codec' missing/invalid\n");
--		return -EINVAL;
-+	if (mt8183_mt6358_ts3a227_max98357_headset_dev.codec_of_node) {
-+		card->aux_dev = &mt8183_mt6358_ts3a227_max98357_headset_dev;
-+		card->num_aux_devs = 1;
- 	}
- 
- 	default_pins =
+-		irq_fired = false;
+ 		for (i = 0; i < RT5677_IRQ_NUM; i++) {
+ 			if (reg_irq & rt5677_irq_descs[i].status_mask) {
+ 				irq_fired = true;
 -- 
 2.20.1
