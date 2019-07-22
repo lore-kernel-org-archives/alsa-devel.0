@@ -1,7 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 00/21] ASoC: SOF: updates for 5.4
-Date: Mon, 22 Jul 2019 09:13:41 -0500
-Message-ID: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 02/21] ASoC: SOF: reset DMA state in prepare
+Date: Mon, 22 Jul 2019 09:13:43 -0500
+Message-ID: <20190722141402.7194-3-pierre-louis.bossart@linux.intel.com>
+References: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -9,8 +10,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33BE7F800E8
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:10 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D770F803D5
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:12 +0200 (CEST)
+In-Reply-To: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,85 +23,157 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Core updates for runtime-pm, loader extensions for i.MX support,
-increased timeouts for QEMU tests and state machine fixes to make
-PulseAudio happy.
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-I included in the same set Intel HDaudio patches, mostly about code
-refactoring, jack detection and robustness improvements for IPC/DMA
-handling. If Mark/Takashi prefer separate patchsets for core and Intel
-stuff I can split the two.
+When application goes through SUSPEND/STOP->PREPARE->START
+cycle, we should always reprogram the SOF device to start
+DMA from a known state so that hw_ptr/appl_ptrs remain valid.
+This is expected by ALSA core as it resets the buffer
+state as part of prepare (see snd_pcm_do_prepare()).
 
-This is a rather large set mostly due to Summer vacations and a peak
-of product validation earlier in Q2, I expect more frequent/smaller
-updates moving forward. We also have quite a few SoundWire-related
-patches but they aren't strictly related to SOF.
+Fix the issue by forcing reconfiguration of the FW with
+STREAM_PCM_PARAMS in prepare(). Use combined logic to handle
+prepare and the existing flow to reprogram hw-params after
+system suspend.
 
-Comments and feedback welcome!
+Without the fix, first call to pcm pointer() will return
+an invalid hw_ptr and application may immediately observe XRUN
+status, unless "start_threshold" SW parameter is set to maximum
+value by the application.
 
-Daniel Baluta (3):
-  ASoC: SOF: Introduce snd_sof_dsp_get_bar_index ops
-  ASoC: SOF: loader: Use the BAR provided by FW
-  ASoC: SOF: loader: Don't ignore SRAM block types
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/pcm.c      | 27 +++++++++++++++------------
+ sound/soc/sof/pm.c       |  2 +-
+ sound/soc/sof/sof-priv.h |  2 +-
+ 3 files changed, 17 insertions(+), 14 deletions(-)
 
-Fred Oh (1):
-  ASoC: SOF: remove unused state variable in suspend function
-
-Guennadi Liakhovetski (1):
-  ASoC: SOF: Intel: hda: add a parameter to disable MSI
-
-Janusz Jankowski (1):
-  ASoC: SOF: Intel: ssp: BCLK delay parameter
-
-Kai Vehmanen (6):
-  ASoC: SOF: reset DMA state in prepare
-  ASoC: SOF: use common code to send PCM_FREE IPC
-  ASoC: SOF: ipc: use timeout configured at probe
-  ASoC: SOF: core: increase default IPC timeouts
-  ASoC: SOF: Intel: hda: reset link DMA state in prepare
-  ASoC: SOF: Intel: hda: remove misleading error trace from IRQ thread
-
-Keyon Jie (1):
-  ASoC: SOF: Intel: hda: correct ROM state mask
-
-Pan Xiuli (1):
-  ASoC: SOF: pci: mark last_busy value at runtime PM init
-
-Rander Wang (4):
-  ASoC: SOF: Intel: hda: reduce ifdef usage for hda
-  ASoC: SOF: Intel: hda: Enable jack detection
-  ASoC: SOF: Intel: hda: fix link DMA config
-  ASoC: SOF: Intel: hda: fix stream id setting
-
-Zhu Yingjiang (3):
-  ASoC: SOF: Intel: hda: set position buffer in init chip
-  ASoC: SOF: Intel: hda: use SOF defined init chip in resume
-  ASoC: SOF: Intel: hda: remove duplicated clear WAKESTS
-
- include/sound/sof/dai-intel.h   |   3 +
- include/uapi/sound/sof/abi.h    |   2 +-
- include/uapi/sound/sof/tokens.h |   1 +
- sound/soc/sof/core.c            |   4 +-
- sound/soc/sof/intel/cnl.c       |   4 +-
- sound/soc/sof/intel/hda-codec.c |  44 +++++++++++++-
- sound/soc/sof/intel/hda-ctrl.c  |  21 ++++---
- sound/soc/sof/intel/hda-dai.c   |  38 +++++++-----
- sound/soc/sof/intel/hda-dsp.c   | 100 +++++++++++---------------------
- sound/soc/sof/intel/hda-ipc.c   |   4 +-
- sound/soc/sof/intel/hda.c       |  28 +++++----
- sound/soc/sof/intel/hda.h       |   9 +--
- sound/soc/sof/ipc.c             |   8 +--
- sound/soc/sof/loader.c          |  14 ++++-
- sound/soc/sof/ops.h             |  28 +++++++--
- sound/soc/sof/pcm.c             |  63 ++++++++++----------
- sound/soc/sof/pm.c              |   6 +-
- sound/soc/sof/sof-pci-dev.c     |   3 +
- sound/soc/sof/sof-priv.h        |  12 ++--
- sound/soc/sof/topology.c        |   3 +
- 20 files changed, 229 insertions(+), 166 deletions(-)
-
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 334e9d59b1ba..3b8955e755b2 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -208,12 +208,11 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
++	spcm->prepared[substream->stream] = true;
++
+ 	/* save pcm hw_params */
+ 	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
+ 
+-	/* clear hw_params_upon_resume flag */
+-	spcm->hw_params_upon_resume[substream->stream] = 0;
+-
+ 	return ret;
+ }
+ 
+@@ -236,6 +235,9 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (!spcm)
+ 		return -EINVAL;
+ 
++	if (!spcm->prepared[substream->stream])
++		return 0;
++
+ 	dev_dbg(sdev->dev, "pcm: free stream %d dir %d\n", spcm->pcm.pcm_id,
+ 		substream->stream);
+ 
+@@ -258,6 +260,8 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		dev_err(sdev->dev, "error: platform hw free failed\n");
+ 
++	spcm->prepared[substream->stream] = false;
++
+ 	return ret;
+ }
+ 
+@@ -278,11 +282,7 @@ static int sof_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (!spcm)
+ 		return -EINVAL;
+ 
+-	/*
+-	 * check if hw_params needs to be set-up again.
+-	 * This is only needed when resuming from system sleep.
+-	 */
+-	if (!spcm->hw_params_upon_resume[substream->stream])
++	if (spcm->prepared[substream->stream])
+ 		return 0;
+ 
+ 	dev_dbg(sdev->dev, "pcm: prepare stream %d dir %d\n", spcm->pcm.pcm_id,
+@@ -311,6 +311,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	struct snd_sof_pcm *spcm;
+ 	struct sof_ipc_stream stream;
+ 	struct sof_ipc_reply reply;
++	bool reset_hw_params = false;
+ 	int ret;
+ 
+ 	/* nothing to do for BE */
+@@ -351,6 +352,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_STOP;
++		reset_hw_params = true;
+ 		break;
+ 	default:
+ 		dev_err(sdev->dev, "error: unhandled trigger cmd %d\n", cmd);
+@@ -363,17 +365,17 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
+ 				 sizeof(stream), &reply, sizeof(reply));
+ 
+-	if (ret < 0 || cmd != SNDRV_PCM_TRIGGER_SUSPEND)
++	if (ret < 0 || !reset_hw_params)
+ 		return ret;
+ 
+ 	/*
+-	 * The hw_free op is usually called when the pcm stream is closed.
+-	 * Since the stream is not closed during suspend, the DSP needs to be
+-	 * notified explicitly to free pcm to prevent errors upon resume.
++	 * In case of stream is stopped, DSP must be reprogrammed upon
++	 * restart, so free PCM here.
+ 	 */
+ 	stream.hdr.size = sizeof(stream);
+ 	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
+ 	stream.comp_id = spcm->stream[substream->stream].comp_id;
++	spcm->prepared[substream->stream] = false;
+ 
+ 	/* send IPC to the DSP */
+ 	return sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
+@@ -481,6 +483,7 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
+ 	spcm->stream[substream->stream].posn.host_posn = 0;
+ 	spcm->stream[substream->stream].posn.dai_posn = 0;
+ 	spcm->stream[substream->stream].substream = substream;
++	spcm->prepared[substream->stream] = false;
+ 
+ 	ret = snd_sof_pcm_platform_open(sdev, substream);
+ 	if (ret < 0)
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 278abfd10490..48c6d78d72e2 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -233,7 +233,7 @@ static int sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ 
+ 			state = substream->runtime->status->state;
+ 			if (state == SNDRV_PCM_STATE_SUSPENDED)
+-				spcm->hw_params_upon_resume[dir] = 1;
++				spcm->prepared[dir] = false;
+ 		}
+ 	}
+ 
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index b8c0b2a22684..fa5cb7d2a660 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -297,7 +297,7 @@ struct snd_sof_pcm {
+ 	struct snd_sof_pcm_stream stream[2];
+ 	struct list_head list;	/* list in sdev pcm list */
+ 	struct snd_pcm_hw_params params[2];
+-	int hw_params_upon_resume[2]; /* set up hw_params upon resume */
++	bool prepared[2]; /* PCM_PARAMS set successfully */
+ };
+ 
+ /* ALSA SOF Kcontrol device */
 -- 
 2.20.1
