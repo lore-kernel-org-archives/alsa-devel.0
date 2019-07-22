@@ -1,117 +1,110 @@
-From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 5/5] ASoC: atmel_ssc_dai: Enable shared FSYNC source in
- frame-slave mode
-Date: Mon, 22 Jul 2019 20:27:21 +0200
-Message-ID: <107e0cfd11a31ce1558e941612e183100022930d.1563819483.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 0/5] ASoC: Intel: IPC framework updates
+Date: Mon, 22 Jul 2019 20:32:37 +0200
+Message-ID: <adf2fdc1-5155-062a-3ad2-c0acd7812707@intel.com>
+References: <20190720194532.23682-1-cezary.rojewski@intel.com>
+ <58061248-786f-37f6-fc9f-cf18db242a75@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BEFCF8015B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 20:32:45 +0200 (CEST)
+In-Reply-To: <58061248-786f-37f6-fc9f-cf18db242a75@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-U1NDIGRyaXZlciBhbGxvd3Mgb25seSBzeW5jaHJvbm91cyBUWCBhbmQgUlguIEluIHNsYXZlIG1v
-ZGUgZm9yIEJDTEsKaXQgdXNlcyBvbmx5IG9uZSBvZiBUSyBvciBSSyBwaW4sIGJ1dCBmb3IgTFJD
-TEsgaXQgY29uZmlndXJlZCBzZXBhcmF0ZQppbnB1dHMgZnJvbSBURiBhbmQgUkYgcGlucy4gQWxs
-b3cgY29uZmlndXJhdGlvbiB3aXRoIGNvbW1vbiBGUyBzaWduYWwuCgpTaWduZWQtb2ZmLWJ5OiBN
-aWNoYcWCIE1pcm9zxYJhdyA8bWlycS1saW51eEByZXJlLnFtcW0ucGw+Ci0tLQogLi4uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvbWlzYy9hdG1lbC1zc2MudHh0ICAgIHwgIDQgKysKIGRyaXZlcnMvbWlz
-Yy9hdG1lbC1zc2MuYyAgICAgICAgICAgICAgICAgICAgICB8ICAyICsKIGluY2x1ZGUvbGludXgv
-YXRtZWwtc3NjLmggICAgICAgICAgICAgICAgICAgICB8ICAxICsKIHNvdW5kL3NvYy9hdG1lbC9h
-dG1lbF9zc2NfZGFpLmMgICAgICAgICAgICAgICB8IDQ4ICsrKysrKysrKysrKy0tLS0tLS0KIDQg
-ZmlsZXMgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21pc2MvYXRtZWwtc3NjLnR4
-dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9taXNjL2F0bWVsLXNzYy50eHQK
-aW5kZXggZjlmYjQxMjY0MmZlLi44OTEzM2M1YjgyY2IgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9taXNjL2F0bWVsLXNzYy50eHQKKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21pc2MvYXRtZWwtc3NjLnR4dApAQCAtMjQsNiArMjQs
-MTAgQEAgT3B0aW9uYWwgcHJvcGVydGllczoKICAgICAgICB0aGlzIHBhcmFtZXRlciB0byBjaG9v
-c2Ugd2hlcmUgdGhlIGNsb2NrIGZyb20uCiAgICAgIC0gQnkgZGVmYXVsdCB0aGUgY2xvY2sgaXMg
-ZnJvbSBUSyBwaW4sIGlmIHRoZSBjbG9jayBmcm9tIFJLIHBpbiwgdGhpcwogICAgICAgIHByb3Bl
-cnR5IGlzIG5lZWRlZC4KKyAgLSBhdG1lbCxzaGFyZWQtZnMtcGluOiBib29sIHByb3BlcnR5Lgor
-ICAgICAtIFdoZW4gU1NDIHdvcmtzIGluIHNsYXZlIG1vZGUsIGJ5IGRlZmF1bHQgaXQgZ2V0cyBz
-ZXBhcmF0ZSBMUkNMSyBzaWduYWxzCisgICAgICAgZnJvbSBSRiBhbmQgVEYuIFRoaXMgcHJvcGVy
-dHkgbWFrZXMgU1NDIHVzZSBhIHNpbmdsZSBwaW4gZm9yIGJvdGgKKyAgICAgICBSWCBhbmQgVFgu
-IFRGIGlzIHVzZWQgdW5sZXNzIGF0bWVsLGNsay1mcm9tLXJrLXBpbiBpcyBhbHNvIHByZXNlbnQu
-CiAgIC0gI3NvdW5kLWRhaS1jZWxsczogU2hvdWxkIGNvbnRhaW4gPDA+LgogICAgICAtIFRoaXMg
-cHJvcGVydHkgbWFrZXMgdGhlIFNTQyBpbnRvIGFuIGF1dG9tYXRpY2FsbHkgcmVnaXN0ZXJlZCBE
-QUkuCiAKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9hdG1lbC1zc2MuYyBiL2RyaXZlcnMvbWlz
-Yy9hdG1lbC1zc2MuYwppbmRleCBhYjQxNDRlYTFmMTEuLmRhNjNlZWUxY2RmNSAxMDA2NDQKLS0t
-IGEvZHJpdmVycy9taXNjL2F0bWVsLXNzYy5jCisrKyBiL2RyaXZlcnMvbWlzYy9hdG1lbC1zc2Mu
-YwpAQCAtMjEwLDYgKzIxMCw4IEBAIHN0YXRpYyBpbnQgc3NjX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCiAJCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBwZGV2LT5kZXYub2Zf
-bm9kZTsKIAkJc3NjLT5jbGtfZnJvbV9ya19waW4gPQogCQkJb2ZfcHJvcGVydHlfcmVhZF9ib29s
-KG5wLCAiYXRtZWwsY2xrLWZyb20tcmstcGluIik7CisJCXNzYy0+c2hhcmVkX2ZzX3BpbiA9CisJ
-CQlvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJhdG1lbCxzaGFyZWQtZnMtcGluIik7CiAJfQog
-CiAJcmVncyA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oIGIvaW5jbHVkZS9saW51eC9h
-dG1lbC1zc2MuaAppbmRleCA2MDkxZDJhYmMxZWIuLjQ2ZmRmZjJkZmJiMCAxMDA2NDQKLS0tIGEv
-aW5jbHVkZS9saW51eC9hdG1lbC1zc2MuaAorKysgYi9pbmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5o
-CkBAIC0yMSw2ICsyMSw3IEBAIHN0cnVjdCBzc2NfZGV2aWNlIHsKIAlpbnQJCQl1c2VyOwogCWlu
-dAkJCWlycTsKIAlib29sCQkJY2xrX2Zyb21fcmtfcGluOworCWJvb2wJCQlzaGFyZWRfZnNfcGlu
-OwogCWJvb2wJCQlzb3VuZF9kYWk7CiB9OwogCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYXRtZWwv
-YXRtZWxfc3NjX2RhaS5jIGIvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYwppbmRleCBj
-ZjJjZmMzNDU2NzYuLjZmNTk1YTc0ODYxOCAxMDA2NDQKLS0tIGEvc291bmQvc29jL2F0bWVsL2F0
-bWVsX3NzY19kYWkuYworKysgYi9zb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jCkBAIC00
-NzEsNyArNDcxLDcgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1zKHN0cnVjdCBzbmRf
-cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCWludCBkaXIsIGNoYW5uZWxzLCBiaXRzOwogCXUz
-MiB0Zm1yLCByZm1yLCB0Y21yLCByY21yOwogCWludCByZXQ7Ci0JaW50IGZzbGVuLCBmc2xlbl9l
-eHQsIGZzX29zeW5jOworCWludCBmc2xlbiwgZnNsZW5fZXh0LCBmc19vc3luYywgZnNfZWRnZTsK
-IAl1MzIgY21yX2RpdjsKIAl1MzIgdGNtcl9wZXJpb2Q7CiAJdTMyIHJjbXJfcGVyaW9kOwpAQCAt
-NTY3LDI0ICs1NjcsMjAgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1zKHN0cnVjdCBz
-bmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCWNhc2UgU05EX1NPQ19EQUlGTVRfTEVGVF9K
-OgogCQkvKiBsZWZ0LWp1c3RpZmllZCBmb3JtYXQgKi8KIAkJZnNfb3N5bmMgPSBTU0NfRlNPU19Q
-T1NJVElWRTsKKwkJZnNfZWRnZSA9IFNTQ19TVEFSVF9SSVNJTkdfVEY7CiAKLQkJcmNtciA9CSAg
-U1NDX0JGKFJDTVJfU1RURExZLCAwKQotCQkJfCBTU0NfQkYoUkNNUl9TVEFSVCwgU1NDX1NUQVJU
-X1JJU0lOR19SRik7Ci0KLQkJdGNtciA9CSAgU1NDX0JGKFRDTVJfU1RURExZLCAwKQotCQkJfCBT
-U0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19URik7CisJCXJjbXIgPQkgIFNTQ19C
-RihSQ01SX1NUVERMWSwgMCk7CisJCXRjbXIgPQkgIFNTQ19CRihUQ01SX1NUVERMWSwgMCk7CiAK
-IAkJYnJlYWs7CiAKIAljYXNlIFNORF9TT0NfREFJRk1UX0kyUzoKIAkJLyogSTJTIGZvcm1hdCA9
-IGxlZnQtanVzdGlmaWVkIHdpdGggc3RhcnQgYml0IGFuZCBpbnZlcnRlZCBMUkNMSyAqLwogCQlm
-c19vc3luYyA9IFNTQ19GU09TX05FR0FUSVZFOworCQlmc19lZGdlID0gU1NDX1NUQVJUX0ZBTExJ
-TkdfVEY7CiAKLQkJcmNtciA9CSAgU1NDX0JGKFJDTVJfU1RURExZLCAxKQotCQkJfCBTU0NfQkYo
-UkNNUl9TVEFSVCwgU1NDX1NUQVJUX0ZBTExJTkdfUkYpOwotCi0JCXRjbXIgPQkgIFNTQ19CRihU
-Q01SX1NUVERMWSwgMSkKLQkJCXwgU1NDX0JGKFRDTVJfU1RBUlQsIFNTQ19TVEFSVF9GQUxMSU5H
-X1RGKTsKKwkJcmNtciA9CSAgU1NDX0JGKFJDTVJfU1RURExZLCAxKTsKKwkJdGNtciA9CSAgU1ND
-X0JGKFRDTVJfU1RURExZLCAxKTsKIAogCQlicmVhazsKIApAQCAtNTk3LDEzICs1OTMsMTEgQEAg
-c3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtLAogCQkgKiB0aGUgbGVmdCBjaGFubmVsIGRhdGEuCiAJCSAqLwogCQlmc19vc3lu
-YyA9IFNTQ19GU09TX1BPU0lUSVZFOworCQlmc19lZGdlID0gU1NDX1NUQVJUX1JJU0lOR19URjsK
-IAkJZnNsZW4gPSBmc2xlbl9leHQgPSAwOwogCi0JCXJjbXIgPQkgIFNTQ19CRihSQ01SX1NUVERM
-WSwgMSkKLQkJCXwgU1NDX0JGKFJDTVJfU1RBUlQsIFNTQ19TVEFSVF9SSVNJTkdfUkYpOwotCi0J
-CXRjbXIgPQkgIFNTQ19CRihUQ01SX1NUVERMWSwgMSkKLQkJCXwgU1NDX0JGKFRDTVJfU1RBUlQs
-IFNTQ19TVEFSVF9SSVNJTkdfVEYpOworCQlyY21yID0JICBTU0NfQkYoUkNNUl9TVFRETFksIDEp
-OworCQl0Y21yID0JICBTU0NfQkYoVENNUl9TVFRETFksIDEpOwogCiAJCWJyZWFrOwogCkBAIC02
-MTMsMTAgKzYwNywzMCBAQCBzdGF0aWMgaW50IGF0bWVsX3NzY19od19wYXJhbXMoc3RydWN0IHNu
-ZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJCXJldHVybiAtRUlOVkFMOwogCX0KIAotCWlm
-ICghYXRtZWxfc3NjX2Nmcyhzc2NfcCkpIHsKKwlpZiAoYXRtZWxfc3NjX2Nmcyhzc2NfcCkpIHsK
-KwkJLyoKKwkJICogU1NDIHByb3ZpZGVzIExSQ0xLCisJCSAqCisJCSAqIEJvdGggVEYgYW5kIFJG
-IGFyZSBnZW5lcmF0ZWQsIHNvIHVzZSB0aGVtIGRpcmVjdGx5LgorCQkgKi8KKwkJcmNtciB8PQkg
-IFNTQ19CRihSQ01SX1NUQVJULCBmc19lZGdlKTsKKwkJdGNtciB8PQkgIFNTQ19CRihUQ01SX1NU
-QVJULCBmc19lZGdlKTsKKwl9IGVsc2UgewogCQlmc2xlbiA9IGZzbGVuX2V4dCA9IDA7CiAJCXJj
-bXJfcGVyaW9kID0gdGNtcl9wZXJpb2QgPSAwOwogCQlmc19vc3luYyA9IFNTQ19GU09TX05PTkU7
-CisJCWlmICghc3NjLT5zaGFyZWRfZnNfcGluKSB7CisJCQlyY21yIHw9CSAgU1NDX0JGKFJDTVJf
-U1RBUlQsIGZzX2VkZ2UpOworCQkJdGNtciB8PQkgIFNTQ19CRihUQ01SX1NUQVJULCBmc19lZGdl
-KTsKKwkJfSBlbHNlIGlmIChzc2MtPmNsa19mcm9tX3JrX3BpbikgeworCQkJLyogYXNzdW1lIFJG
-IGlzIHRvIGJlIHVzZWQgd2hlbiBSSyBpcyB1c2VkIGFzIEJDTEsgaW5wdXQgKi8KKwkJCS8qIE5v
-dGU6IHdvbid0IHdvcmsgY29ycmVjdGx5IG9uIFNBTUE1RDIgZHVlIHRvIGVycmF0YSAqLworCQkJ
-cmNtciB8PQkgIFNTQ19CRihSQ01SX1NUQVJULCBmc19lZGdlKTsKKwkJCXRjbXIgfD0JICBTU0Nf
-QkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX1JFQ0VJVkUpOworCQl9IGVsc2UgeworCQkJcmNtciB8
-PQkgIFNTQ19CRihSQ01SX1NUQVJULCBTU0NfU1RBUlRfVFJBTlNNSVQpOworCQkJdGNtciB8PQkg
-IFNTQ19CRihUQ01SX1NUQVJULCBmc19lZGdlKTsKKwkJfQogCX0KIAogCWlmIChhdG1lbF9zc2Nf
-Y2JzKHNzY19wKSkgewotLSAKMi4yMC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJt
-LWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+On 2019-07-22 18:02, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 7/20/19 2:45 PM, Cezary Rojewski wrote:
+>> Existing IPC framework omits crucial part of the entire communication:
+>> reply header. Some IPCs cannot function at all without the access to
+>> said header. Update the sst-ipc with new sst_ipc_message structure to
+>> represent both request and reply allowing reply-processing handlers to
+>> save received responses.
+> 
+> I don't get the idea at all.
+
+It's not "an idea", this is cAVS design. GET_PIPELINE_STATE, 
+LARGE_CONFIG_GET and such define portion of their essential _payload_ 
+within header instead of actual SRAM window. Some of these contain 
+entire _payload_ within header instead - as already stated.
+
+> the DSP provides rx_data and a size. If there is a header at the start 
+> of the IPC data in some cases, why can't you cast and extract the header 
+> when it's needed for your SKL usages? Why does adding a header make the 
+> IPC work better?
+
+This is cAVS solution we speak of, not an aDSP one. Not all IPCs have 
+constant size defined here.
+Moreover, define "size" - from architectural point of view this is 
+*only* size an application is prepared to handle, it's usually 
+overestimated. The actual size of _get_ is known only after reply is 
+received. If it exceeds frame's window, then it gets more complicated..
+
+"If there is a header at the start of the IPC data in some cases, why 
+can't you cast and extract the header (...)"
+??
+An IPC Header - primary and extension - is found within Host HW 
+registers e.g.: HICPI & HIPCIE what differs from data - payload - which 
+is located in SRAM windows: downlink and uplink - depending on the 
+direction. Saving header does not "make the IPC work better" - it allows 
+them to function in the first place. Again, this is not the case for all 
+IPCs.
+
+Publishing such IPCs (e.g.: _get_large_config found in skl-sst-ipc.c) 
+makes no sense if you do not process them correctly. I know not why 
+dysfunctional code has been upstreamed or why does it not follow cAVS 
+design pattern. All the series being posted currently aim to correct the 
+very fundations of Skylake which are/ were broken, clearly.
+
+> 
+> I have the feeling this is blurring layers between receiving data and 
+> processing it in platform-specific ways, and I am nervous about touching 
+> Baytrail and Broadwell legacy, which are way past maintenance mode and 
+> should be deprecated really.
+
+I'm not nervous at all. Baytrail IPC is deprecated in favor of /atom/sst 
+- God knows why yet another _common_ folder has been created there..
+Haswell with DSP does not really exist.
+Broadwell is the only one left and my changes only _update_ the 
+framework - these do not change its behavior.
+
+Truth be told, it did not age well at all. 99% of Skylake+ IPC 
+communication is done in synchronized fashion yet during initialization 
+there are always 8 messages allocated (times two: tx & rx). In total we 
+are allocating 8 x 2 x PAGE_SIZE memory. These days memory might not be 
+a problem, though does not change the fact it could have been done 
+better. Lot of wasted memory..
+There's certainly more to do, that's the message.
+
+> 
+> And last this patchset does not apply on top of Mark's tree?
+
+I can recheck this, been a week since I did a snapshot of 5.3. Thanks 
+for heads up.
+
+> 
+>>
+>> Despite the range of changes required for model to be updated, no
+>> functional changes are made for core hanswell, baytrail and skylake
+>> message handlers. Reply-processing handlers now save received response
+>> header yet no usage is added by default.
+>>
+>> To allow for future changes, righful kings of IPC kingdom need to be put
+>> back on the throne. This update addresses one of them: LARGE_CONFIG_GET.
