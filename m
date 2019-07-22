@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 01/21] ASoC: SOF: pci: mark last_busy value at
-	runtime PM init
-Date: Mon, 22 Jul 2019 09:13:42 -0500
-Message-ID: <20190722141402.7194-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/21] ASoC: SOF: core: increase default IPC
+	timeouts
+Date: Mon, 22 Jul 2019 09:13:46 -0500
+Message-ID: <20190722141402.7194-6-pierre-louis.bossart@linux.intel.com>
 References: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFBD5F8045F
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:12 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E936AF80483
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 16:14:15 +0200 (CEST)
 In-Reply-To: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,35 +24,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pan Xiuli <xiuli.pan@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-If last_busy value is not set at runtime PM enable, the device will be
-suspend immediately after usage counter is 0. Set the last_busy value to
-make sure delay is working at first boot up.
+Increase the default timeout values for boot (100ms to 2sec) and
+IPC message sending (5ms to 500ms). The values should be overridden
+with values from platform data.
 
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+There is no functional need to have such short timeouts as both boot
+and IPC send errors are considered fatal errors. More relaxed timeouts
+are convenient when running the driver on top of emulation such as QEMU.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-pci-dev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sof/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 65d1bac4c6b8..6fd3df7c57a3 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -223,6 +223,9 @@ static void sof_pci_probe_complete(struct device *dev)
- 	 */
- 	pm_runtime_allow(dev);
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 5beda47cdf9f..81f28f7ff1a0 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -17,8 +17,8 @@
+ #include "ops.h"
  
-+	/* mark last_busy for pm_runtime to make sure not suspend immediately */
-+	pm_runtime_mark_last_busy(dev);
-+
- 	/* follow recommendation in pci-driver.c to decrement usage counter */
- 	pm_runtime_put_noidle(dev);
- }
+ /* SOF defaults if not provided by the platform in ms */
+-#define TIMEOUT_DEFAULT_IPC_MS  5
+-#define TIMEOUT_DEFAULT_BOOT_MS 100
++#define TIMEOUT_DEFAULT_IPC_MS  500
++#define TIMEOUT_DEFAULT_BOOT_MS 2000
+ 
+ /*
+  * Generic object lookup APIs.
 -- 
 2.20.1
