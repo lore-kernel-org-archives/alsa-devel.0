@@ -1,47 +1,80 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: use __u32 instead of uint32_t in
- uapi headers
-Date: Mon, 22 Jul 2019 17:21:30 +0200
-Message-ID: <CAK8P3a29JcyMOfGGSpRCyeS913BSGn5bJT_pZ9e-K3Ds1E0UHw@mail.gmail.com>
-References: <20190721142308.30306-1-yamada.masahiro@socionext.com>
- <de9e94ee-9c01-1c0c-4359-b637319a298f@linux.intel.com> <s5hftmy8byl.wl-tiwai@suse.de>
- <ec306745-052d-f52c-2cce-d8915822d4ff@linux.intel.com> <CAK8P3a2tLuqu+upt0nW8dUzXc+t_kEJwVhLcqY8TXydHLb_nCw@mail.gmail.com>
- <9a56ccdb-397b-3046-4043-49bc20aaa804@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ASoC: rt5677: remove superfluous set" to
+	the asoc tree
+Date: Mon, 22 Jul 2019 16:22:54 +0100
+Message-ID: <20190722152254.GF4756@sirena.org.uk>
+References: <20190711002838.35363-1-cujomalainey@chromium.org>
+ <20190722122208.F2A0427429D9@ypsilon.sirena.org.uk>
+ <CAOReqxjuZW8SP2JaReQNVej5=8qx7J_JfHPUAE9UhhME6_yVrg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9a56ccdb-397b-3046-4043-49bc20aaa804@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============0904676439110807891=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3198F800F5
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 17:25:06 +0200 (CEST)
+In-Reply-To: <CAOReqxjuZW8SP2JaReQNVej5=8qx7J_JfHPUAE9UhhME6_yVrg@mail.gmail.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Curtis Malainey <cujomalainey@google.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 22, 2019 at 5:18 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> On 7/22/19 8:34 AM, Arnd Bergmann wrote:
-> > On Mon, Jul 22, 2019 at 3:16 PM Pierre-Louis Bossart
-> > <pierre-louis.bossart@linux.intel.com> wrote:
-> >> On 7/22/19 7:56 AM, Takashi Iwai wrote:
-> >>> On Mon, 22 Jul 2019 14:49:34 +0200,
-> >> Our goal is to minimize the differences and allow deltas e.g. for
-> >> license or comments. We could add a definition for __u32 when linux is
-> >> not used, I am just not sure if these two files really fall in the UAPI
-> >> category and if the checks make sense.
-> >
-> > If you can build all the SOF user space without these headers being
-> > installed to /usr/include/sound/sof/, you can move them from
-> > include/uapi/sound/sof to include/sounds/sof and leave the types
-> > unchanged.
->
-> yes we don't need those files to build userspace stuff. The idea was
-> that these format definitions establish a contract between userspace
-> (more specifically the files stored in /lib/firmware) and the kernel.
-> IIRC we wanted to make sure that any changes would be tracked as
-> breaking userspace. If the consensus is that the uapi directory is
-> strictly used for builds then we should indeed move those files
 
-I don't see a problem with keeping the files in uapi for practical
-purposes, but then I think it makes sense to apply the same rules as
-for other uapi headers and use user-space clean type names.
+--===============0904676439110807891==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hUH5gZbnpyIv7Mn4"
+Content-Disposition: inline
 
-       Arnd
+
+--hUH5gZbnpyIv7Mn4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 22, 2019 at 07:16:28AM -0600, Curtis Malainey wrote:
+
+> Can you please remove this patch? I made an error in my testing and
+> the patch should not be applied.
+
+As covered in the mail you're replying to:
+
+> > If any updates are required or you are submitting further changes they
+> > should be sent as incremental updates against current git, existing
+> > patches will not be replaced.
+
+So send a revert explaining what the problem is.
+
+--hUH5gZbnpyIv7Mn4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl011M0ACgkQJNaLcl1U
+h9BA/gf9EuLkt2SvEPYRSRoZj/gqyKN4Q9AZkfO1G5QS6Bnt5Wj1NoNyrFx0Ujnj
+0izvRVLg6QoqCrBXxG+cvBZIysjkCPfFLjmVkVSHS2xmc/VH3w3Da2ddgnHAZaTm
+TYMUk9VwZLohyU40eG5+62ZQqyQNsC3THAUZ/JSFvKs5a7qmUQ7BNgIz8iX5lhiD
+Pm4A2v6NeTCjaQoK4+NhJq702tJutQYMbNXlLeGZnAq1y9BCuT1+hcfuD47vw7Jj
+5Ra/dSnzw5z5qsjGTliGy8rgp8HV+RoN+B7G/ObUft4ggVZKE3jL4u6+GFlIbZuD
+OiUuXe+B+ir7sQCqpHEE/ADFyxz3Zw==
+=0s6k
+-----END PGP SIGNATURE-----
+
+--hUH5gZbnpyIv7Mn4--
+
+--===============0904676439110807891==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0904676439110807891==--
