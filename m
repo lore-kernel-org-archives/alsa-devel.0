@@ -1,34 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset
- keypress detection" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:10 +0100 (BST)
-Message-ID: <20190722122210.1A0462740463@ypsilon.sirena.org.uk>
-References: <20190719173929.24065-1-enric.balletbo@collabora.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190719173929.24065-1-enric.balletbo@collabora.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Collabora Kernel ML <kernel@collabora.com>, linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
+Subject: Applied "ASoC: max98383: fix i2c probe failure" to the asoc tree
+Date: Mon, 22 Jul 2019 13:22:06 +0100 (BST)
+Message-ID: <20190722122206.EEFF22742C38@ypsilon.sirena.org.uk>
+References: <20190715095556.1614-1-chunguo.feng@amlogic.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190715095556.1614-1-chunguo.feng@amlogic.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, bleung@chromium.org, broonie@kernel.org, chunguo.feng@amlogic.com, grundler@chromium.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, pierre-louis.bossart@linux.intel.com, RyanS.Lee@maximintegrated.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection
+   ASoC: max98383: fix i2c probe failure
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -49,91 +36,113 @@ to this mail.
 Thanks,
 Mark
 
->From f86621cd6c6f54edfdd62da347b2bbb8d7fddc8d Mon Sep 17 00:00:00 2001
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Date: Fri, 19 Jul 2019 19:39:29 +0200
-Subject: [PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset
- keypress detection
+>From 1eac7bb88ae5a4c45283de1dc1f93e9da9278a7f Mon Sep 17 00:00:00 2001
+From: fengchunguo <chunguo.feng@amlogic.com>
+Date: Mon, 15 Jul 2019 17:55:56 +0800
+Subject: [PATCH] ASoC: max98383: fix i2c probe failure
 
-The TS3A227E says that the headset keypress detection needs the MICBIAS
-power in order to report the key events to ensure proper operation
-The headset keypress detection needs the MICBIAS power in order to report
-the key events all the time as long as MIC is present. So MICBIAS pin
-is forced on when a MICROPHONE is detected.
+Added reset_gpio configuration for i2c probe successfully.
+If not,i2c address can't be found rightly.
 
-On Veyron Minnie I observed that if the MICBIAS power is not present and
-the key press detection is activated (just because it is enabled when you
-insert a headset), it randomly reports a keypress on insert.
-E.g. (KEY_PLAYPAUSE)
+Error information:
+max98373 3-0031: Failed to read: 0x21FF
 
- Event: (SW_HEADPHONE_INSERT), value 1
- Event: (SW_MICROPHONE_INSERT), value 1
- Event: -------------- SYN_REPORT ------------
- Event: (KEY_PLAYPAUSE), value 1
+Fixed:
+[3.761299@3] max98373 3-0031: MAX98373 revisionID: 0x43
+[3.828911@3] asoc-aml-card auge_sound: max98373-aif1 <-> TDM-B mapping ok
 
-Userspace thinks that KEY_PLAYPAUSE is pressed and produces the annoying
-effect that the media player starts a play/pause loop.
-
-Note that, although most of the time the key reported is the one
-associated with BTN_0, not always this is true. On my tests I also saw
-different keys reported
-
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Link: https://lore.kernel.org/r/20190719173929.24065-1-enric.balletbo@collabora.com
+Signed-off-by: fengchunguo <chunguo.feng@amlogic.com>
+Link: https://lore.kernel.org/r/20190715095556.1614-1-chunguo.feng@amlogic.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 32 ++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ sound/soc/codecs/max98373.c | 34 ++++++++++++++++++++++++++++++----
+ sound/soc/codecs/max98373.h |  1 +
+ 2 files changed, 31 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index c5fc24675a33..782e534d4c0d 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -61,6 +61,37 @@ static const struct snd_kcontrol_new rk_mc_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Speaker"),
- };
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 528695cd6a1c..9a1eb7222357 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -12,6 +12,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <linux/gpio.h>
++#include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <sound/tlv.h>
+ #include "max98373.h"
+@@ -895,6 +896,17 @@ static void max98373_slot_config(struct i2c_client *i2c,
+ 	else
+ 		max98373->i_slot = 1;
  
-+static int rk_jack_event(struct notifier_block *nb, unsigned long event,
-+			 void *data)
-+{
-+	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
-+	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
++	max98373->reset_gpio = of_get_named_gpio(dev->of_node,
++						"maxim,reset-gpio", 0);
++	if (!gpio_is_valid(max98373->reset_gpio)) {
++		dev_err(dev, "Looking up %s property in node %s failed %d\n",
++			"maxim,reset-gpio", dev->of_node->full_name,
++			max98373->reset_gpio);
++	} else {
++		dev_dbg(dev, "maxim,reset-gpio=%d",
++			max98373->reset_gpio);
++	}
 +
-+	if (event & SND_JACK_MICROPHONE)
-+		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
-+	else
-+		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
+ 	if (!device_property_read_u32(dev, "maxim,spkfb-slot-no", &value))
+ 		max98373->spkfb_slot = value & 0xF;
+ 	else
+@@ -923,7 +935,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 	else
+ 		max98373->interleave_mode = false;
+ 
+-
+ 	/* regmap initialization */
+ 	max98373->regmap
+ 		= devm_regmap_init_i2c(i2c, &max98373_regmap);
+@@ -934,6 +945,24 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	/* voltage/current slot & gpio configuration */
++	max98373_slot_config(i2c, max98373);
 +
-+	snd_soc_dapm_sync(dapm);
++	/* Power on device */
++	if (gpio_is_valid(max98373->reset_gpio)) {
++		ret = gpio_request(max98373->reset_gpio, "MAX98373_RESET");
++		if (ret) {
++			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
++				__func__, max98373->reset_gpio);
++			gpio_free(max98373->reset_gpio);
++			return -EINVAL;
++		}
++		gpio_direction_output(max98373->reset_gpio, 0);
++		msleep(50);
++		gpio_direction_output(max98373->reset_gpio, 1);
++		msleep(20);
++	}
 +
-+	return 0;
-+}
-+
-+static struct notifier_block rk_jack_nb = {
-+	.notifier_call = rk_jack_event,
-+};
-+
-+static int rk_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	/*
-+	 * The jack has already been created in the rk_98090_headset_init()
-+	 * function.
-+	 */
-+	snd_soc_jack_notifier_register(&headset_jack, &rk_jack_nb);
-+
-+	return 0;
-+}
-+
- static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
-@@ -119,6 +150,7 @@ SND_SOC_DAILINK_DEFS(hifi,
- static struct snd_soc_dai_link rk_dailink = {
- 	.name = "max98090",
- 	.stream_name = "Audio",
-+	.init = rk_init,
- 	.ops = &rk_aif1_ops,
- 	/* set max98090 as slave */
- 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 	/* Check Revision ID */
+ 	ret = regmap_read(max98373->regmap,
+ 		MAX98373_R21FF_REV_ID, &reg);
+@@ -944,9 +973,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 	dev_info(&i2c->dev, "MAX98373 revisionID: 0x%02X\n", reg);
+ 
+-	/* voltage/current slot configuration */
+-	max98373_slot_config(i2c, max98373);
+-
+ 	/* codec registeration */
+ 	ret = devm_snd_soc_register_component(&i2c->dev, &soc_codec_dev_max98373,
+ 		max98373_dai, ARRAY_SIZE(max98373_dai));
+diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
+index f6a37aa02f26..533d2053f608 100644
+--- a/sound/soc/codecs/max98373.h
++++ b/sound/soc/codecs/max98373.h
+@@ -203,6 +203,7 @@
+ 
+ struct max98373_priv {
+ 	struct regmap *regmap;
++	int reset_gpio;
+ 	unsigned int v_slot;
+ 	unsigned int i_slot;
+ 	unsigned int spkfb_slot;
 -- 
 2.20.1
