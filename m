@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/20] ALSA: firewire-lib: operate data block
-	counter in top level of processing for IT context
-Date: Mon, 22 Jul 2019 12:36:54 +0900
-Message-ID: <20190722033710.28107-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/20] ALSA: firewire-lib: pass data block
+	counter to data block processing layer
+Date: Mon, 22 Jul 2019 12:36:53 +0900
+Message-ID: <20190722033710.28107-4-o-takashi@sakamocchi.jp>
 References: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E41BF8015B
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:23 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFB1AF803D5
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 05:37:21 +0200 (CEST)
 In-Reply-To: <20190722033710.28107-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,107 +28,278 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In ALSA IEC 61883-1/6 packet streaming engine, two types of data block
-counter are supported. This commit applies code refactoring to make it
-explicitly for IT context.
+This is a preparation for future commit that 'struct
+amdtp_stream.data_block_count' does not represent the value of
+data block count for current data block.
+
+However, data block count is required for calculation of sequence index
+in sequence-multiplied data channel. Some of data block processing layer
+require it; e.g. for AM824 data block.
+
+This commit passes data block count to the processing layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 39 ++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
+ sound/firewire/amdtp-am824.c         | 24 +++++++++++++-----------
+ sound/firewire/amdtp-stream.c        |  4 ++--
+ sound/firewire/amdtp-stream.h        |  1 +
+ sound/firewire/digi00x/amdtp-dot.c   | 16 +++++++---------
+ sound/firewire/fireface/amdtp-ff.c   | 10 ++++------
+ sound/firewire/motu/amdtp-motu.c     |  8 ++++----
+ sound/firewire/tascam/amdtp-tascam.c | 10 ++++------
+ 7 files changed, 35 insertions(+), 38 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 40de9fc9d751..c89083ccd729 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -473,12 +473,12 @@ static inline int queue_in_packet(struct amdtp_stream *s,
+diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
+index 99c567ded7a3..03a7e0533131 100644
+--- a/sound/firewire/amdtp-am824.c
++++ b/sound/firewire/amdtp-am824.c
+@@ -284,7 +284,7 @@ static void midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
  }
  
- static void generate_cip_header(struct amdtp_stream *s, __be32 cip_header[2],
--				unsigned int syt)
-+			unsigned int data_block_counter, unsigned int syt)
+ static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
+-				unsigned int frames)
++			unsigned int frames, unsigned int data_block_counter)
  {
- 	cip_header[0] = cpu_to_be32(READ_ONCE(s->source_node_id_field) |
- 				(s->data_block_quadlets << CIP_DBS_SHIFT) |
- 				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
--				s->data_block_counter);
-+				data_block_counter);
- 	cip_header[1] = cpu_to_be32(CIP_EOH |
- 			((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
- 			((s->ctx_data.rx.fdf << CIP_FDF_SHIFT) & CIP_FDF_MASK) |
-@@ -487,8 +487,9 @@ static void generate_cip_header(struct amdtp_stream *s, __be32 cip_header[2],
+ 	struct amdtp_am824 *p = s->protocol;
+ 	unsigned int f, port;
+@@ -293,7 +293,7 @@ static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
+ 	for (f = 0; f < frames; f++) {
+ 		b = (u8 *)&buffer[p->midi_position];
  
- static void build_it_pkt_header(struct amdtp_stream *s, unsigned int cycle,
- 				struct fw_iso_packet *params,
--				unsigned int data_blocks, unsigned int syt,
--				unsigned int index)
-+				unsigned int data_blocks,
-+				unsigned int data_block_counter,
-+				unsigned int syt, unsigned int index)
+-		port = (s->data_block_counter + f) % 8;
++		port = (data_block_counter + f) % 8;
+ 		if (f < MAX_MIDI_RX_BLOCKS &&
+ 		    midi_ratelimit_per_packet(s, port) &&
+ 		    p->midi[port] != NULL &&
+@@ -311,8 +311,8 @@ static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
+ 	}
+ }
+ 
+-static void read_midi_messages(struct amdtp_stream *s,
+-			       __be32 *buffer, unsigned int frames)
++static void read_midi_messages(struct amdtp_stream *s, __be32 *buffer,
++			unsigned int frames, unsigned int data_block_counter)
  {
- 	unsigned int payload_length;
- 	__be32 *cip_header;
-@@ -496,14 +497,9 @@ static void build_it_pkt_header(struct amdtp_stream *s, unsigned int cycle,
- 	payload_length = data_blocks * sizeof(__be32) * s->data_block_quadlets;
- 	params->payload_length = payload_length;
+ 	struct amdtp_am824 *p = s->protocol;
+ 	int len;
+@@ -323,7 +323,7 @@ static void read_midi_messages(struct amdtp_stream *s,
+ 		unsigned int port = f;
  
--	if (s->flags & CIP_DBC_IS_END_EVENT) {
--		s->data_block_counter =
--				(s->data_block_counter + data_blocks) & 0xff;
--	}
--
- 	if (!(s->flags & CIP_NO_HEADER)) {
- 		cip_header = (__be32 *)params->header;
--		generate_cip_header(s, cip_header, syt);
-+		generate_cip_header(s, cip_header, data_block_counter, syt);
- 		params->header_length = 2 * sizeof(__be32);
- 		payload_length += params->header_length;
- 	} else {
-@@ -511,12 +507,7 @@ static void build_it_pkt_header(struct amdtp_stream *s, unsigned int cycle,
+ 		if (!(s->flags & CIP_UNALIGHED_DBC))
+-			port += s->data_block_counter;
++			port += data_block_counter;
+ 		port %= 8;
+ 		b = (u8 *)&buffer[p->midi_position];
+ 
+@@ -335,8 +335,9 @@ static void read_midi_messages(struct amdtp_stream *s,
+ 	}
+ }
+ 
+-static unsigned int process_rx_data_blocks(struct amdtp_stream *s, __be32 *buffer,
+-					   unsigned int data_blocks, unsigned int *syt)
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct amdtp_am824 *p = s->protocol;
+ 	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+@@ -351,13 +352,14 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s, __be32 *buffe
  	}
  
- 	trace_amdtp_packet(s, cycle, cip_header, payload_length, data_blocks,
--			   s->data_block_counter, index);
--
--	if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
--		s->data_block_counter =
--				(s->data_block_counter + data_blocks) & 0xff;
--	}
-+			   data_block_counter, index);
+ 	if (p->midi_ports)
+-		write_midi_messages(s, buffer, data_blocks);
++		write_midi_messages(s, buffer, data_blocks, data_block_counter);
+ 
+ 	return pcm_frames;
  }
  
- static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
-@@ -709,6 +700,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 		u32 cycle;
- 		unsigned int syt;
- 		unsigned int data_blocks;
-+		unsigned int dbc;
- 		__be32 *buffer;
- 		unsigned int pcm_frames;
- 		struct {
-@@ -721,11 +713,20 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 		syt = calculate_syt(s, cycle);
+-static unsigned int process_tx_data_blocks(struct amdtp_stream *s, __be32 *buffer,
+-					   unsigned int data_blocks, unsigned int *syt)
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct amdtp_am824 *p = s->protocol;
+ 	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+@@ -371,7 +373,7 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s, __be32 *buffe
+ 	}
+ 
+ 	if (p->midi_ports)
+-		read_midi_messages(s, buffer, data_blocks);
++		read_midi_messages(s, buffer, data_blocks, data_block_counter);
+ 
+ 	return pcm_frames;
+ }
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index fe1512905a43..40de9fc9d751 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -722,7 +722,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
  		data_blocks = calculate_data_blocks(s, syt);
  		buffer = s->buffer.packets[s->packet_index].buffer;
--		pcm_frames = s->process_data_blocks(s, buffer, data_blocks,
--						s->data_block_counter, &syt);
-+		dbc = s->data_block_counter;
-+		pcm_frames = s->process_data_blocks(s, buffer, data_blocks, dbc,
-+						    &syt);
-+
-+		if (s->flags & CIP_DBC_IS_END_EVENT)
-+			dbc = (dbc + data_blocks) & 0xff;
+ 		pcm_frames = s->process_data_blocks(s, buffer, data_blocks,
+-						    &syt);
++						s->data_block_counter, &syt);
  
  		build_it_pkt_header(s, cycle, &template.params, data_blocks,
--				    syt, i);
-+				    dbc, syt, i);
-+
-+		if (!(s->flags & CIP_DBC_IS_END_EVENT))
-+			dbc = (dbc + data_blocks) & 0xff;
-+
-+		s->data_block_counter = dbc;
+ 				    syt, i);
+@@ -776,7 +776,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 		if (err >= 0) {
+ 			buffer = s->buffer.packets[s->packet_index].buffer;
+ 			pcm_frames = s->process_data_blocks(s, buffer,
+-							    data_blocks, &syt);
++				data_blocks, s->data_block_counter, &syt);
  
- 		if (queue_out_packet(s, &template.params) < 0) {
- 			cancel_stream(s);
+ 			if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 				s->data_block_counter += data_blocks;
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 5d611122312b..762ac3c7e902 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -99,6 +99,7 @@ typedef unsigned int (*amdtp_stream_process_data_blocks_t)(
+ 						struct amdtp_stream *s,
+ 						__be32 *buffer,
+ 						unsigned int data_blocks,
++						unsigned int data_block_counter,
+ 						unsigned int *syt);
+ struct amdtp_stream {
+ 	struct fw_unit *unit;
+diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
+index 45ff73d16074..5c12973c2652 100644
+--- a/sound/firewire/digi00x/amdtp-dot.c
++++ b/sound/firewire/digi00x/amdtp-dot.c
+@@ -234,7 +234,7 @@ static inline void midi_use_bytes(struct amdtp_stream *s,
+ }
+ 
+ static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
+-				unsigned int data_blocks)
++		unsigned int data_blocks, unsigned int data_block_counter)
+ {
+ 	struct amdtp_dot *p = s->protocol;
+ 	unsigned int f, port;
+@@ -242,7 +242,7 @@ static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
+ 	u8 *b;
+ 
+ 	for (f = 0; f < data_blocks; f++) {
+-		port = (s->data_block_counter + f) % 8;
++		port = (data_block_counter + f) % 8;
+ 		b = (u8 *)&buffer[0];
+ 
+ 		len = 0;
+@@ -330,9 +330,8 @@ void amdtp_dot_midi_trigger(struct amdtp_stream *s, unsigned int port,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-					   __be32 *buffer,
+-					   unsigned int data_blocks,
+-					   unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct snd_pcm_substream *pcm;
+ 	unsigned int pcm_frames;
+@@ -351,9 +350,8 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-					   __be32 *buffer,
+-					   unsigned int data_blocks,
+-					   unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct snd_pcm_substream *pcm;
+ 	unsigned int pcm_frames;
+@@ -367,7 +365,7 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ 		pcm_frames = 0;
+ 	}
+ 
+-	write_midi_messages(s, buffer, data_blocks);
++	write_midi_messages(s, buffer, data_blocks, data_block_counter);
+ 
+ 	return pcm_frames;
+ }
+diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
+index 2938489740b4..71879922ab39 100644
+--- a/sound/firewire/fireface/amdtp-ff.c
++++ b/sound/firewire/fireface/amdtp-ff.c
+@@ -103,9 +103,8 @@ int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-					   __be32 *buffer,
+-					   unsigned int data_blocks,
+-					   unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 	unsigned int pcm_frames;
+@@ -122,9 +121,8 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-					   __be32 *buffer,
+-					   unsigned int data_blocks,
+-					   unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
+ 	unsigned int pcm_frames;
+diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
+index 7973dedd31ef..9693f37a0032 100644
+--- a/sound/firewire/motu/amdtp-motu.c
++++ b/sound/firewire/motu/amdtp-motu.c
+@@ -299,8 +299,8 @@ static void __maybe_unused copy_message(u64 *frames, __be32 *buffer,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct amdtp_motu *p = s->protocol;
+ 	struct snd_pcm_substream *pcm;
+@@ -361,8 +361,8 @@ static void write_sph(struct amdtp_stream *s, __be32 *buffer,
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-				__be32 *buffer, unsigned int data_blocks,
+-				unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct amdtp_motu *p = (struct amdtp_motu *)s->protocol;
+ 	struct snd_pcm_substream *pcm;
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+index 95fb10b7a737..3a4d1f855f79 100644
+--- a/sound/firewire/tascam/amdtp-tascam.c
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -166,9 +166,8 @@ static void read_status_messages(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+-					   __be32 *buffer,
+-					   unsigned int data_blocks,
+-					   unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct snd_pcm_substream *pcm;
+ 
+@@ -182,9 +181,8 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+ }
+ 
+ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+-					   __be32 *buffer,
+-					   unsigned int data_blocks,
+-					   unsigned int *syt)
++			__be32 *buffer, unsigned int data_blocks,
++			unsigned int data_block_counter, unsigned int *syt)
+ {
+ 	struct snd_pcm_substream *pcm;
+ 
 -- 
 2.20.1
