@@ -1,22 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
+From: =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>
 Subject: Re: [PATCH 3/3] ASoC: rt1308: Convert headers to SPDX
-Date: Mon, 22 Jul 2019 12:50:45 +0100
-Message-ID: <20190722115045.GB4756@sirena.org.uk>
+Date: Mon, 22 Jul 2019 11:55:19 +0000
+Message-ID: <10317AB43303BA4884D7AF9C2EBCFF4002BBEAAF@RTITMBSVM07.realtek.com.tw>
 References: <20190719063302.18858-1-shumingf@realtek.com>
  <20190719164623.GA14800@sirena.org.uk>
  <10317AB43303BA4884D7AF9C2EBCFF4002BBE03D@RTITMBSVM07.realtek.com.tw>
  <20190722105821.GA4756@sirena.org.uk>
  <10317AB43303BA4884D7AF9C2EBCFF4002BBEA77@RTITMBSVM07.realtek.com.tw>
+ <20190722115045.GB4756@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6523262534413179409=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09206F8015B
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 13:50:47 +0200 (CEST)
-In-Reply-To: <10317AB43303BA4884D7AF9C2EBCFF4002BBEA77@RTITMBSVM07.realtek.com.tw>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AB5BF800E8
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 13:55:24 +0200 (CEST)
+In-Reply-To: <20190722115045.GB4756@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +28,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, =?utf-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6523262534413179409==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
-Content-Disposition: inline
-
-
---XOIedfhf+7KOe/yw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 22, 2019 at 11:48:52AM +0000, Shuming [=E8=8C=83=E6=9B=B8=E9=8A=
-=98] wrote:
-
-
-> May I confirm what your point?
-> I convert the entire comment block to a C++ one like below.
-> // SPDX-License-Identifier: GPL-2.0
-> -/*
-> - * rt1308.c  --  RT1308 ALSA SoC amplifier component driver
-> - *
-> - * Copyright 2019 Realtek Semiconductor Corp.
-> - * Author: Derek Fang <derek.fang@realtek.com>
-> - *
-> - */
-> +//
-> +// rt1308.c  --  RT1308 ALSA SoC amplifier component driver
-> +//
-> +// Copyright 2019 Realtek Semiconductor Corp.
-> +// Author: Derek Fang <derek.fang@realtek.com>
-> +//
-
-Yes.
-
---XOIedfhf+7KOe/yw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl01oxQACgkQJNaLcl1U
-h9A51Qf/fCYAmZXAiZVve59JlERuzempdzlMSIUzje2qcdBxBN9MuGl5uxOe0V8q
-YzERB05P1uJP8WDr3VF8NF4rJpUGEPcsqYP0hAxvd+ma0dnN9DwmAEAGecW+QQ8f
-qIJU68aJF3b1yBHaM7o3tRaLI5vRKvidiRMFfSrAUN+MjK+U6lMSqRx98+uMvUu6
-Ym+fzLtT92z8lmHvQVr+Toj7IVJr8r/JSlBEnpEQv6Y5iHwPICRL54CWNC1NEbxI
-qQYi0G/Vi6ySHzhteUnd7WMeuIuGmbRRzv2tKZG+hvqFGg8iAnmbSToJIshMCuny
-Z0mxdx8O9peQnNMFP+I1LSGGqY05Kg==
-=V2Xx
------END PGP SIGNATURE-----
-
---XOIedfhf+7KOe/yw--
-
---===============6523262534413179409==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6523262534413179409==--
+PiBPbiBNb24sIEp1bCAyMiwgMjAxOSBhdCAxMTo0ODo1MkFNICswMDAwLCBTaHVtaW5nIFvojIPm
+m7jpiphdIHdyb3RlOg0KPiANCj4gDQo+ID4gTWF5IEkgY29uZmlybSB3aGF0IHlvdXIgcG9pbnQ/
+DQo+ID4gSSBjb252ZXJ0IHRoZSBlbnRpcmUgY29tbWVudCBibG9jayB0byBhIEMrKyBvbmUgbGlr
+ZSBiZWxvdy4NCj4gPiAvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiA+IC0v
+Kg0KPiA+IC0gKiBydDEzMDguYyAgLS0gIFJUMTMwOCBBTFNBIFNvQyBhbXBsaWZpZXIgY29tcG9u
+ZW50IGRyaXZlcg0KPiA+IC0gKg0KPiA+IC0gKiBDb3B5cmlnaHQgMjAxOSBSZWFsdGVrIFNlbWlj
+b25kdWN0b3IgQ29ycC4NCj4gPiAtICogQXV0aG9yOiBEZXJlayBGYW5nIDxkZXJlay5mYW5nQHJl
+YWx0ZWsuY29tPg0KPiA+IC0gKg0KPiA+IC0gKi8NCj4gPiArLy8NCj4gPiArLy8gcnQxMzA4LmMg
+IC0tICBSVDEzMDggQUxTQSBTb0MgYW1wbGlmaWVyIGNvbXBvbmVudCBkcml2ZXIgLy8gLy8NCj4g
+PiArQ29weXJpZ2h0IDIwMTkgUmVhbHRlayBTZW1pY29uZHVjdG9yIENvcnAuDQo+ID4gKy8vIEF1
+dGhvcjogRGVyZWsgRmFuZyA8ZGVyZWsuZmFuZ0ByZWFsdGVrLmNvbT4gLy8NCj4gDQo+IFllcy4N
+Cj4gDQoNCk9rLCBJIHdpbGwgc2VuZCB0aGUgc2Vjb25kIHZlcnNpb24gZm9yIHRoZXNlIHBhdGNo
+ZXMuDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBz
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
