@@ -1,65 +1,49 @@
 From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 4/5] ASoC: atmel_ssc_dai: split TX/RX FS constants
-Date: Mon, 22 Jul 2019 20:27:21 +0200
-Message-ID: <718983d82091da8cf619010c026dca541af3f4d1.1563819483.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 0/5] ASoC: atmel: extend SSC support
+Date: Mon, 22 Jul 2019 20:27:17 +0200
+Message-ID: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89B2CF800F5
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 20:27:21 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGNvbnN0YW50cyBhcmUgdGhlIHNhbWUsIGJ1dCB0aGUgbmFtZXMgYXJlIG1pc2xlYWRpbmcg
-d2hlbiB1c2VkIGZvcgpUQ01SIGNvbmZpZ3VyYXRpb24uIFVzZSBuYW1lcyBmcm9tIFNBTUE1RDIg
-ZGF0YXNoZWV0LgoKU2lnbmVkLW9mZi1ieTogTWljaGHFgiBNaXJvc8WCYXcgPG1pcnEtbGludXhA
-cmVyZS5xbXFtLnBsPgotLS0KIHNvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMgfCA2ICsr
-Ky0tLQogc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuaCB8IDkgKysrKysrKystCiAyIGZp
-bGVzIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyBiL3NvdW5kL3NvYy9hdG1lbC9hdG1l
-bF9zc2NfZGFpLmMKaW5kZXggMDQ1NDFkN2MzM2ZlLi5jZjJjZmMzNDU2NzYgMTAwNjQ0Ci0tLSBh
-L3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMKKysrIGIvc291bmQvc29jL2F0bWVsL2F0
-bWVsX3NzY19kYWkuYwpAQCAtNTcyLDcgKzU3Miw3IEBAIHN0YXRpYyBpbnQgYXRtZWxfc3NjX2h3
-X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJCXwgU1NDX0JG
-KFJDTVJfU1RBUlQsIFNTQ19TVEFSVF9SSVNJTkdfUkYpOwogCiAJCXRjbXIgPQkgIFNTQ19CRihU
-Q01SX1NUVERMWSwgMCkKLQkJCXwgU1NDX0JGKFRDTVJfU1RBUlQsIFNTQ19TVEFSVF9SSVNJTkdf
-UkYpOworCQkJfCBTU0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19URik7CiAKIAkJ
-YnJlYWs7CiAKQEAgLTU4NCw3ICs1ODQsNyBAQCBzdGF0aWMgaW50IGF0bWVsX3NzY19od19wYXJh
-bXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJCQl8IFNTQ19CRihSQ01S
-X1NUQVJULCBTU0NfU1RBUlRfRkFMTElOR19SRik7CiAKIAkJdGNtciA9CSAgU1NDX0JGKFRDTVJf
-U1RURExZLCAxKQotCQkJfCBTU0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX0ZBTExJTkdfUkYp
-OworCQkJfCBTU0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX0ZBTExJTkdfVEYpOwogCiAJCWJy
-ZWFrOwogCkBAIC02MDMsNyArNjAzLDcgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1z
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCQkJfCBTU0NfQkYoUkNNUl9T
-VEFSVCwgU1NDX1NUQVJUX1JJU0lOR19SRik7CiAKIAkJdGNtciA9CSAgU1NDX0JGKFRDTVJfU1RU
-RExZLCAxKQotCQkJfCBTU0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19SRik7CisJ
-CQl8IFNTQ19CRihUQ01SX1NUQVJULCBTU0NfU1RBUlRfUklTSU5HX1RGKTsKIAogCQlicmVhazsK
-IApkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuaCBiL3NvdW5kL3Nv
-Yy9hdG1lbC9hdG1lbF9zc2NfZGFpLmgKaW5kZXggYWU3NjRjYjU0MWM3Li5lZmI0NThiNmQxODcg
-MTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmgKKysrIGIvc291bmQv
-c29jL2F0bWVsL2F0bWVsX3NzY19kYWkuaApAQCAtNDIsMTMgKzQyLDIwIEBACiAgKi8KIC8qIFNU
-QVJUIGJpdCBmaWVsZCB2YWx1ZXMgKi8KICNkZWZpbmUgU1NDX1NUQVJUX0NPTlRJTlVPVVMJMAot
-I2RlZmluZSBTU0NfU1RBUlRfVFhfUlgJCTEKKyNkZWZpbmUgU1NDX1NUQVJUX1RSQU5TTUlUCTEK
-KyNkZWZpbmUgU1NDX1NUQVJUX1JFQ0VJVkUJMQogI2RlZmluZSBTU0NfU1RBUlRfTE9XX1JGCTIK
-KyNkZWZpbmUgU1NDX1NUQVJUX0xPV19URgkyCiAjZGVmaW5lIFNTQ19TVEFSVF9ISUdIX1JGCTMK
-KyNkZWZpbmUgU1NDX1NUQVJUX0hJR0hfVEYJMwogI2RlZmluZSBTU0NfU1RBUlRfRkFMTElOR19S
-Rgk0CisjZGVmaW5lIFNTQ19TVEFSVF9GQUxMSU5HX1RGCTQKICNkZWZpbmUgU1NDX1NUQVJUX1JJ
-U0lOR19SRgk1CisjZGVmaW5lIFNTQ19TVEFSVF9SSVNJTkdfVEYJNQogI2RlZmluZSBTU0NfU1RB
-UlRfTEVWRUxfUkYJNgorI2RlZmluZSBTU0NfU1RBUlRfTEVWRUxfVEYJNgogI2RlZmluZSBTU0Nf
-U1RBUlRfRURHRV9SRgk3CisjZGVmaW5lIFNTQ19TVEFSVF9FREdFX1RGCTcKICNkZWZpbmUgU1NT
-X1NUQVJUX0NPTVBBUkVfMAk4CiAKIC8qIENLSSBiaXQgZmllbGQgdmFsdWVzICovCi0tIAoyLjIw
-LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51
-eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1h
-cm0ta2VybmVsCg==
+VGhpcyBzZXJpZXMgaW1wcm92ZXMgc3VwcG9ydCBmb3IgdmFyaW91cyBjb25maWd1cmF0aW9ucyB1
+c2luZyBTU0MgbW9kdWxlCmFzIGltcGxlbWVudGVkIGluIEF0bWVsIFNBTUE1RHggU29Dcy4gUGF0
+Y2hlcyBhcmU6CgoxLiBlbmFibGUgU1NDIGluIEtjb25maWcgZm9yIGF1ZGlvLWdyYXBoLWNhcmQg
+c3VwcG9ydAoyLTMuIGltcGxlbWVudCBsZWZ0LWp1c3RpZmllZCBkYXRhIG1vZGUKNC01LiBmaXgg
+c2hhcmVkIEZTWU5DIHNvdXJjZSBmb3Igc2xhdmUgbW9kZQoKUGF0Y2hlcyBhZ2FpbnN0IHRpd2Fp
+L3NvdW5kL2Zvci1uZXh0IHRyZWUuIFlvdSBjYW4gYWxzbyBwdWxsIGZyb20KICAgaHR0cHM6Ly9y
+ZXJlLnFtcW0ucGwvZ2l0L2xpbnV4CmJyYW5jaDoKICAgYXRtZWwtc3NjCgpNaWNoYcWCIE1pcm9z
+xYJhdyAoNSk6CiAgQVNvQzogYXRtZWw6IGVuYWJsZSBTU0NfUENNX0RNQSBpbiBLY29uZmlnCiAg
+QVNvQzogYXRtZWxfc3NjX2RhaTogcmV3b3JrIERBSSBmb3JtYXQgY29uZmlndXJhdGlvbgogIEFT
+b0M6IGF0bWVsX3NzY19kYWk6IGltcGxlbWVudCBsZWZ0LWp1c3RpZmllZCBkYXRhIG1vZGUKICBB
+U29DOiBhdG1lbF9zc2NfZGFpOiBzcGxpdCBUWC9SWCBGUyBjb25zdGFudHMKICBBU29DOiBhdG1l
+bF9zc2NfZGFpOiBFbmFibGUgc2hhcmVkIEZTWU5DIHNvdXJjZSBpbiBmcmFtZS1zbGF2ZSBtb2Rl
+CgogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbWlzYy9hdG1lbC1zc2MudHh0ICAgIHwgICA0ICsK
+IGRyaXZlcnMvbWlzYy9hdG1lbC1zc2MuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiBp
+bmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwogc291
+bmQvc29jL2F0bWVsL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBzb3Vu
+ZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jICAgICAgICAgICAgICAgfCAzMDYgKysrKysrLS0t
+LS0tLS0tLS0tCiBzb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5oICAgICAgICAgICAgICAg
+fCAgIDkgKy0KIDYgZmlsZXMgY2hhbmdlZCwgMTIwIGluc2VydGlvbnMoKyksIDIwNCBkZWxldGlv
+bnMoLSkKCi0tIAoyLjIwLjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
