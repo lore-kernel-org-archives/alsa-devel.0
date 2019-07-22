@@ -1,19 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/5] ASoC: Intel: IPC framework updates
-Date: Mon, 22 Jul 2019 11:02:29 -0500
-Message-ID: <58061248-786f-37f6-fc9f-cf18db242a75@linux.intel.com>
-References: <20190720194532.23682-1-cezary.rojewski@intel.com>
+From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 0/2] wm8904: adapt driver for use with
+	audio-graph-card
+Date: Mon, 22 Jul 2019 19:57:19 +0200
+Message-ID: <cover.1563817201.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 418E1F800F5
- for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 18:02:33 +0200 (CEST)
-In-Reply-To: <20190720194532.23682-1-cezary.rojewski@intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C22EF8015B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2019 19:57:22 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +21,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, patches@opensource.cirrus.com, Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 7/20/19 2:45 PM, Cezary Rojewski wrote:
-> Existing IPC framework omits crucial part of the entire communication:
-> reply header. Some IPCs cannot function at all without the access to
-> said header. Update the sst-ipc with new sst_ipc_message structure to
-> represent both request and reply allowing reply-processing handlers to
-> save received responses.
-
-I don't get the idea at all.
-
-the DSP provides rx_data and a size. If there is a header at the start 
-of the IPC data in some cases, why can't you cast and extract the header 
-when it's needed for your SKL usages? Why does adding a header make the 
-IPC work better?
-
-I have the feeling this is blurring layers between receiving data and 
-processing it in platform-specific ways, and I am nervous about touching 
-Baytrail and Broadwell legacy, which are way past maintenance mode and 
-should be deprecated really.
-
-And last this patchset does not apply on top of Mark's tree?
-
-> 
-> Despite the range of changes required for model to be updated, no
-> functional changes are made for core hanswell, baytrail and skylake
-> message handlers. Reply-processing handlers now save received response
-> header yet no usage is added by default.
-> 
-> To allow for future changes, righful kings of IPC kingdom need to be put
-> back on the throne. This update addresses one of them: LARGE_CONFIG_GET.
-> 
-> Cezary Rojewski (5):
->    ASoC: Intel: Update request-reply IPC model
->    ASoC: Intel: Haswell: Align with updated request-reply model
->    ASoC: Intel: Baytrail: Align with updated request-reply model
->    ASoC: Intel: Skylake: Align with updated request-reply model
->    ASoC: Intel: Skylake: large_config_get overhaul
-> 
->   sound/soc/intel/baytrail/sst-baytrail-ipc.c |  65 ++++----
->   sound/soc/intel/common/sst-ipc.c            |  68 ++++----
->   sound/soc/intel/common/sst-ipc.h            |  27 ++--
->   sound/soc/intel/haswell/sst-haswell-ipc.c   | 164 +++++++++++---------
->   sound/soc/intel/skylake/cnl-sst.c           |   6 +-
->   sound/soc/intel/skylake/skl-messages.c      |   3 +-
->   sound/soc/intel/skylake/skl-sst-ipc.c       | 152 ++++++++++--------
->   sound/soc/intel/skylake/skl-sst-ipc.h       |   3 +-
->   8 files changed, 259 insertions(+), 229 deletions(-)
-> 
+VGhpcyBzZXJpZXMgYWxsb3dzIHRvIHVzZSBXTTg5MDQgY29kZWMgYXMgYXVkaW8tZ3JhcGgtY2Fy
+ZCBjb21wb25lbnQuCkl0IGlzIGEgcmV3cml0ZSBvZiBhbiBlYXJsaWVyIGFwcHJvYWNoIGZyb20K
+aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDczODA5Ny8KClNlcmllcyBiYXNl
+ZCBvbiB0aXdhaS9zb3VuZC9mb3ItbmV4dCB0cmVlLiBZb3UgY2FuIGFsc28gcHVsbCBmcm9tOgog
+ICBodHRwczovL3JlcmUucW1xbS5wbC9naXQvbGludXgKYnJhbmNoOgogICB3bTg5MDQKCkV4YW1w
+bGUgRFRTOgoKLyB7CiAgICAgICAgc291bmQgeyAKICAgICAgICAgICAgICAgIGNvbXBhdGlibGUg
+PSAiYXVkaW8tZ3JhcGgtY2FyZCI7IAoKICAgICAgICAgICAgICAgIHdpZGdldHMgPSAKICAgICAg
+ICAgICAgICAgICAgICAgICAgIlNwZWFrZXIiLCAiTG91ZHNwZWFrZXIiLCAKICAgICAgICAgICAg
+ICAgICAgICAgICAgIkhlYWRwaG9uZSIsICJIZWFkcGhvbmUgSmFjayIsIAogICAgICAgICAgICAg
+ICAgICAgICAgICAiTWljcm9waG9uZSIsICJJbnRlcm5hbCBNaWMiLCAKCiAgICAgICAgICAgICAg
+ICByb3V0aW5nID0gCiAgICAgICAgICAgICAgICAgICAgICAgICJIZWFkcGhvbmUgSmFjayIsICJI
+UE9VVEwiLCAKICAgICAgICAgICAgICAgICAgICAgICAgIkhlYWRwaG9uZSBKYWNrIiwgIkhQT1VU
+UiIsIAogICAgICAgICAgICAgICAgICAgICAgICAiQW1wbGlmaWVyIiwgIkxJTkVPVVRMIiwKICAg
+ICAgICAgICAgICAgICAgICAgICAgIkFtcGxpZmllciIsICJMSU5FT1VUUiIsCiAgICAgICAgICAg
+ICAgICAgICAgICAgICJMb3Vkc3BlYWtlciIsICJBbXBsaWZpZXIiLAogICAgICAgICAgICAgICAg
+ICAgICAgICAiSU4xTCIsICJNSUNCSUFTIiwKICAgICAgICAgICAgICAgICAgICAgICAgIklOMUwi
+LCAiSW50ZXJuYWwgTWljIjsKCiAgICAgICAgICAgICAgICBkYWlzID0gPCZzc2MwX3BvcnQ+Owog
+ICAgICAgIH07Cn07CgomaTJjMSB7CiAgICAgICAgc3RhdHVzID0gIm9rYXkiOwoKICAgICAgICB3
+bTg5MDQ6IGFjb2RlY0AxYSB7CiAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIndsZix3bTg5
+MDQiOwogICAgICAgICAgICAgICAgcmVnID0gPDB4MWE+OwogICAgICAgICAgICAgICAgY2xvY2tz
+ID0gPCZydGNfMzJrPjsKICAgICAgICAgICAgICAgIGNsb2NrLW5hbWVzID0gIm1jbGsiOwogICAg
+ICAgICAgICAgICAgaW50ZXJydXB0cy1leHRlbmRlZCA9IDwmcGlvQSBQSU5fUEIzIElSUV9UWVBF
+X0xFVkVMX0hJR0g+OwoKICAgICAgICAgICAgICAgICNzb3VuZC1kYWktY2VsbHMgPSA8MD47Cgog
+ICAgICAgICAgICAgICAgY29kZWNfcG9ydDogcG9ydCB7ICAgICAgICAgCiAgICAgICAgICAgICAg
+ICAgICAgICAgIGNvZGVjX2VwOiBlbmRwb2ludCB7CiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgcmVtb3RlLWVuZHBvaW50ID0gPCZzc2MwX2VwPjsKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBkYWktZm9ybWF0ID0gImxlZnRfaiI7CiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgYml0Y2xvY2stbWFzdGVyOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGZyYW1lLW1hc3RlcjsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtY2xrLWZzID0g
+PDI1Nj47CiAgICAgICAgICAgICAgICAgICAgICAgIH07CiAgICAgICAgICAgICAgICB9OwogICAg
+ICAgIH07Cn07Cgomc3NjMCB7CiAgICAgICAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsKICAg
+ICAgICBwaW5jdHJsLTAgPSA8JnBpbmN0cmxfc3NjMF9kZWZhdWx0PjsKICAgICAgICBzdGF0dXMg
+PSAib2theSI7CgogICAgICAgIGF0bWVsLHNoYXJlZC1mcy1waW47CiAgICAgICAgI3NvdW5kLWRh
+aS1jZWxscyA9IDwwPjsKCiAgICAgICAgc3NjMF9wb3J0OiBwb3J0IHsKICAgICAgICAgICAgICAg
+IHNzYzBfZXA6IGVuZHBvaW50IHsKICAgICAgICAgICAgICAgICAgICAgICAgcmVtb3RlLWVuZHBv
+aW50ID0gPCZjb2RlY19lcD47CiAgICAgICAgICAgICAgICB9OwogICAgICAgIH07Cn07CgoKTWlj
+aGHFgiBNaXJvc8WCYXcgKDIpOgogIEFTb0M6IHdtODkwNDogcmV3b3JrIEZMTCBoYW5kbGluZwog
+IEFTb0M6IHdtODkwNDogYXV0b21hdGljYWxseSBjaG9vc2UgY2xvY2sgc291cmNlCgogLi4uL2Rl
+dmljZXRyZWUvYmluZGluZ3Mvc291bmQvd204OTA0LnR4dCAgICAgIHwgICA0ICsKIHNvdW5kL3Nv
+Yy9hdG1lbC9hdG1lbF93bTg5MDQuYyAgICAgICAgICAgICAgICB8ICAxMSArLQogc291bmQvc29j
+L2NvZGVjcy9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICsKIHNvdW5kL3NvYy9j
+b2RlY3MvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiBzb3VuZC9zb2MvY29k
+ZWNzL3dtODkwNC5jICAgICAgICAgICAgICAgICAgICAgfCA0OTQgKysrKysrLS0tLS0tLS0tLS0t
+CiBzb3VuZC9zb2MvY29kZWNzL3dtODkwNC5oICAgICAgICAgICAgICAgICAgICAgfCAgIDUgLQog
+c291bmQvc29jL2NvZGVjcy93bV9mbGwuYyAgICAgICAgICAgICAgICAgICAgIHwgMzM5ICsrKysr
+KysrKysrKwogc291bmQvc29jL2NvZGVjcy93bV9mbGwuaCAgICAgICAgICAgICAgICAgICAgIHwg
+IDI2ICsKIDggZmlsZXMgY2hhbmdlZCwgNTMxIGluc2VydGlvbnMoKyksIDM1NCBkZWxldGlvbnMo
+LSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvY29kZWNzL3dtX2ZsbC5jCiBjcmVhdGUg
+bW9kZSAxMDA2NDQgc291bmQvc29jL2NvZGVjcy93bV9mbGwuaAoKLS0gCjIuMjAuMQoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
