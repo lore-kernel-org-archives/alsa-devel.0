@@ -1,22 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "sound: soc: codecs: wcd9335: add irqflag IRQF_ONESHOT flag" to the asoc tree
-Date: Mon, 22 Jul 2019 13:22:08 +0100 (BST)
-Message-ID: <20190722122208.1E4492742B67@ypsilon.sirena.org.uk>
-References: <20190710021627.GA13396@hari-Inspiron-1545>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190710021627.GA13396@hari-Inspiron-1545>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Cc: alsa-devel@alsa-project.org, Dan Carpenter <dan.carpenter@oracle.com>, Gen Zhang <blackgod016574@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>
+Subject: Applied "SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset
+ keypress detection" to the asoc tree
+Date: Mon, 22 Jul 2019 13:22:10 +0100 (BST)
+Message-ID: <20190722122210.1A0462740463@ypsilon.sirena.org.uk>
+References: <20190719173929.24065-1-enric.balletbo@collabora.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190719173929.24065-1-enric.balletbo@collabora.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Collabora Kernel ML <kernel@collabora.com>, linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   sound: soc: codecs: wcd9335: add irqflag IRQF_ONESHOT flag
+   SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,39 +49,91 @@ to this mail.
 Thanks,
 Mark
 
->From 866e55ac49a8be478d89f23c941155721187be9a Mon Sep 17 00:00:00 2001
-From: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Date: Wed, 10 Jul 2019 07:46:27 +0530
-Subject: [PATCH] sound: soc: codecs: wcd9335: add irqflag IRQF_ONESHOT flag
+>From f86621cd6c6f54edfdd62da347b2bbb8d7fddc8d Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Fri, 19 Jul 2019 19:39:29 +0200
+Subject: [PATCH] SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset
+ keypress detection
 
-Add IRQF_ONESHOT to ensure "Interrupt is not reenabled after the hardirq
-handler finished".
+The TS3A227E says that the headset keypress detection needs the MICBIAS
+power in order to report the key events to ensure proper operation
+The headset keypress detection needs the MICBIAS power in order to report
+the key events all the time as long as MIC is present. So MICBIAS pin
+is forced on when a MICROPHONE is detected.
 
-fixes below issue reported by coccicheck
+On Veyron Minnie I observed that if the MICBIAS power is not present and
+the key press detection is activated (just because it is enabled when you
+insert a headset), it randomly reports a keypress on insert.
+E.g. (KEY_PLAYPAUSE)
 
-sound/soc/codecs/wcd9335.c:4068:8-33: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
+ Event: (SW_HEADPHONE_INSERT), value 1
+ Event: (SW_MICROPHONE_INSERT), value 1
+ Event: -------------- SYN_REPORT ------------
+ Event: (KEY_PLAYPAUSE), value 1
 
-Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-Link: https://lore.kernel.org/r/20190710021627.GA13396@hari-Inspiron-1545
+Userspace thinks that KEY_PLAYPAUSE is pressed and produces the annoying
+effect that the media player starts a play/pause loop.
+
+Note that, although most of the time the key reported is the one
+associated with BTN_0, not always this is true. On my tests I also saw
+different keys reported
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: https://lore.kernel.org/r/20190719173929.24065-1-enric.balletbo@collabora.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_max98090.c | 32 ++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 1bbbe421b999..956602788d0e 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -4062,7 +4062,8 @@ static int wcd9335_setup_irqs(struct wcd9335_codec *wcd)
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index c5fc24675a33..782e534d4c0d 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -61,6 +61,37 @@ static const struct snd_kcontrol_new rk_mc_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Speaker"),
+ };
  
- 		ret = devm_request_threaded_irq(wcd->dev, irq, NULL,
- 						wcd9335_irqs[i].handler,
--						IRQF_TRIGGER_RISING,
-+						IRQF_TRIGGER_RISING |
-+						IRQF_ONESHOT,
- 						wcd9335_irqs[i].name, wcd);
- 		if (ret) {
- 			dev_err(wcd->dev, "Failed to request %s\n",
++static int rk_jack_event(struct notifier_block *nb, unsigned long event,
++			 void *data)
++{
++	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
++	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
++
++	if (event & SND_JACK_MICROPHONE)
++		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
++	else
++		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
++
++	snd_soc_dapm_sync(dapm);
++
++	return 0;
++}
++
++static struct notifier_block rk_jack_nb = {
++	.notifier_call = rk_jack_event,
++};
++
++static int rk_init(struct snd_soc_pcm_runtime *runtime)
++{
++	/*
++	 * The jack has already been created in the rk_98090_headset_init()
++	 * function.
++	 */
++	snd_soc_jack_notifier_register(&headset_jack, &rk_jack_nb);
++
++	return 0;
++}
++
+ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+@@ -119,6 +150,7 @@ SND_SOC_DAILINK_DEFS(hifi,
+ static struct snd_soc_dai_link rk_dailink = {
+ 	.name = "max98090",
+ 	.stream_name = "Audio",
++	.init = rk_init,
+ 	.ops = &rk_aif1_ops,
+ 	/* set max98090 as slave */
+ 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 -- 
 2.20.1
