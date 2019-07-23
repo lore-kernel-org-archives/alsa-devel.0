@@ -1,60 +1,100 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 1/5] ASoC: atmel: enable SSC_PCM_DMA in Kconfig
-Date: Tue, 23 Jul 2019 20:39:15 +0200
-Message-ID: <20190723183915.GJ24911@piout.net>
-References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
- <ee65cc7b889b2a8d1139d1d25977842c956d1cf4.1563819483.git.mirq-linux@rere.qmqm.pl>
- <1f3a4256-58de-27a4-8095-54fc6baa6d89@microchip.com>
- <20190723164312.GA4772@qmqm.qmqm.pl>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] soundwire: mipi_disco: Switch to use
+	fwnode_property_count_uXX()
+Date: Tue, 23 Jul 2019 22:42:18 +0300
+Message-ID: <20190723194218.69168-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20190723164312.GA4772@qmqm.qmqm.pl>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: mirq-linux@rere.qmqm.pl
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, Ludovic.Desroches@microchip.com, broonie@kernel.org, Codrin.Ciubotariu@microchip.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A33A9F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 21:42:24 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjMvMDcvMjAxOSAxODo0MzoxMiswMjAwLCBtaXJxLWxpbnV4QHJlcmUucW1xbS5wbCB3cm90
-ZToKPiBPbiBUdWUsIEp1bCAyMywgMjAxOSBhdCAwMTozNjozN1BNICswMDAwLCBDb2RyaW4uQ2l1
-Ym90YXJpdUBtaWNyb2NoaXAuY29tIHdyb3RlOgo+ID4gT24gMjIuMDcuMjAxOSAyMToyNywgTWlj
-aGHFgiBNaXJvc8WCYXcgd3JvdGU6Cj4gPiA+IEFsbG93IFNTQyB0byBiZSB1c2VkIG9uIHBsYXRm
-b3JtcyBkZXNjcmliZWQgdXNpbmcgYXVkaW8tZ3JhcGgtY2FyZAo+ID4gPiBpbiBEZXZpY2UgVHJl
-ZS4KPiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYtYnk6IE1pY2hhxYIgTWlyb3PFgmF3IDxtaXJxLWxp
-bnV4QHJlcmUucW1xbS5wbD4KPiA+ID4gLS0tCj4gPiA+ICAgc291bmQvc29jL2F0bWVsL0tjb25m
-aWcgfCAyICstCj4gPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
-aW9uKC0pCj4gPiA+IAo+ID4gPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVsL0tjb25maWcg
-Yi9zb3VuZC9zb2MvYXRtZWwvS2NvbmZpZwo+ID4gPiBpbmRleCAwNmMxZDVjZTY0MmMuLjllZjlk
-MjViYjUxNyAxMDA2NDQKPiA+ID4gLS0tIGEvc291bmQvc29jL2F0bWVsL0tjb25maWcKPiA+ID4g
-KysrIGIvc291bmQvc29jL2F0bWVsL0tjb25maWcKPiA+ID4gQEAgLTI1LDcgKzI1LDcgQEAgY29u
-ZmlnIFNORF9BVE1FTF9TT0NfRE1BCj4gPiA+ICAgCWRlZmF1bHQgeSBpZiBTTkRfQVRNRUxfU09D
-X1NTQ19ETUE9eSB8fCAoU05EX0FUTUVMX1NPQ19TU0NfRE1BPW0gJiYgU05EX0FUTUVMX1NPQ19T
-U0M9eSkKPiA+ID4gICAKPiA+ID4gICBjb25maWcgU05EX0FUTUVMX1NPQ19TU0NfRE1BCj4gPiA+
-IC0JdHJpc3RhdGUKPiA+ID4gKwl0cmlzdGF0ZSAiU29DIFBDTSBEQUkgc3VwcG9ydCBmb3IgQVQ5
-MSBTU0MgY29udHJvbGxlciB1c2luZyBETUEiCj4gPiAKPiA+IENvdWxkIHlvdSBwbGVhc2UgbWFr
-ZSBzb21ldGhpbmcgc2ltaWxhciBmb3IgU05EX0FUTUVMX1NPQ19TU0NfUERDPyBBbHNvLCAKPiA+
-IEkgdGhpbmsgdGhhdCBpdCBzaG91bGQgc2VsZWN0IEFUTUVMX1NTQywgdG8gYmUgYWJsZSB0byB1
-c2UgCj4gPiBzaW1wbGUvZ3JhcGgtY2FyZCB3aXRoIFNTQy4KPiAKPiBIbW0uIFRoZSBLY29uZmln
-IGRlcGVuZGVuY2llcyBzZWVtcyBvdmVybHkgY29tcGxpY2F0ZWQsIGRvIHlvdSBtaW5kIGlmIEkK
-PiBnZXQgcmlkIG9mIG1vc3Qgb2YgdGhlIGVudHJpZXMgaW4gdGhlIHByb2Nlc3M/Cj4gCgpVbmZv
-cnR1bmF0ZWx5LCBpdCBpcyBqdXN0IGNvbXBsaWNhdGVkIGVub3VnaC4gVGhpcyBpcyBkb25lIHRv
-IHN1cHBvcnQKYWxsIHRoZSBwb3NzaWJsZSBjb25maWd1cmF0aW9ucy4gUmVtb3ZpbmcgdGhlbSB3
-aWxsIGxlYWQgdG8gbGlua2luZwplcnJvcnMuCgpBZnRlciBoYXZpbmcgdGhhdCBkaXNjdXNzaW9u
-IGJhY2sgaW4gTWFyY2gsIEkgaGFkIGEgdmVyeSBxdWljayBsb29rIGFuZApkaWRuJ3Qgc2VuZCBh
-IHBhdGNoIGJlY2F1c2UgSSBzdGlsbCBoYWQgbGlua2luZyBpc3N1ZXMuIEl0IGlzIG5vdAppbXBv
-c3NpYmxlIGJ1dCBpdCByZXF1aXJlZCBtb3JlIHRpbWUgdGhhbiBJIGhhZC4KCi0tIApBbGV4YW5k
-cmUgQmVsbG9uaSwgQm9vdGxpbgpFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVsIGVuZ2luZWVyaW5n
-Cmh0dHBzOi8vYm9vdGxpbi5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4LWFybS1rZXJu
-ZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+Use use fwnode_property_count_uXX() directly, that makes code neater.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/soundwire/mipi_disco.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/soundwire/mipi_disco.c b/drivers/soundwire/mipi_disco.c
+index 79fee1b21ab6..844e6b22974f 100644
+--- a/drivers/soundwire/mipi_disco.c
++++ b/drivers/soundwire/mipi_disco.c
+@@ -60,8 +60,7 @@ int sdw_master_read_prop(struct sdw_bus *bus)
+ 				 "mipi-sdw-max-clock-frequency",
+ 				 &prop->max_clk_freq);
+ 
+-	nval = fwnode_property_read_u32_array(link,
+-			"mipi-sdw-clock-frequencies-supported", NULL, 0);
++	nval = fwnode_property_count_u32(link, "mipi-sdw-clock-frequencies-supported");
+ 	if (nval > 0) {
+ 		prop->num_clk_freq = nval;
+ 		prop->clk_freq = devm_kcalloc(bus->dev, prop->num_clk_freq,
+@@ -87,8 +86,7 @@ int sdw_master_read_prop(struct sdw_bus *bus)
+ 		}
+ 	}
+ 
+-	nval = fwnode_property_read_u32_array(link,
+-			"mipi-sdw-supported-clock-gears", NULL, 0);
++	nval = fwnode_property_count_u32(link, "mipi-sdw-supported-clock-gears");
+ 	if (nval > 0) {
+ 		prop->num_clk_gears = nval;
+ 		prop->clk_gears = devm_kcalloc(bus->dev, prop->num_clk_gears,
+@@ -134,8 +132,7 @@ static int sdw_slave_read_dp0(struct sdw_slave *slave,
+ 	fwnode_property_read_u32(port, "mipi-sdw-port-min-wordlength",
+ 				 &dp0->min_word);
+ 
+-	nval = fwnode_property_read_u32_array(port,
+-			"mipi-sdw-port-wordlength-configs", NULL, 0);
++	nval = fwnode_property_count_u32(port, "mipi-sdw-port-wordlength-configs");
+ 	if (nval > 0) {
+ 
+ 		dp0->num_words = nval;
+@@ -193,8 +190,7 @@ static int sdw_slave_read_dpn(struct sdw_slave *slave,
+ 		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
+ 					 &dpn[i].min_word);
+ 
+-		nval = fwnode_property_read_u32_array(node,
+-				"mipi-sdw-port-wordlength-configs", NULL, 0);
++		nval = fwnode_property_count_u32(node, "mipi-sdw-port-wordlength-configs");
+ 		if (nval > 0) {
+ 			dpn[i].num_words = nval;
+ 			dpn[i].words = devm_kcalloc(&slave->dev,
+@@ -233,8 +229,7 @@ static int sdw_slave_read_dpn(struct sdw_slave *slave,
+ 		fwnode_property_read_u32(node, "mipi-sdw-max-channel-number",
+ 					 &dpn[i].max_ch);
+ 
+-		nval = fwnode_property_read_u32_array(node,
+-				"mipi-sdw-channel-number-list", NULL, 0);
++		nval = fwnode_property_count_u32(node, "mipi-sdw-channel-number-list");
+ 		if (nval > 0) {
+ 			dpn[i].num_ch = nval;
+ 			dpn[i].ch = devm_kcalloc(&slave->dev, dpn[i].num_ch,
+@@ -248,8 +243,7 @@ static int sdw_slave_read_dpn(struct sdw_slave *slave,
+ 					dpn[i].ch, dpn[i].num_ch);
+ 		}
+ 
+-		nval = fwnode_property_read_u32_array(node,
+-				"mipi-sdw-channel-combination-list", NULL, 0);
++		nval = fwnode_property_count_u32(node, "mipi-sdw-channel-combination-list");
+ 		if (nval > 0) {
+ 			dpn[i].num_ch_combinations = nval;
+ 			dpn[i].ch_combinations = devm_kcalloc(&slave->dev,
+-- 
+2.20.1
