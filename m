@@ -1,78 +1,96 @@
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: Re: [PATCH] ALSA: isa: gus: Fix a possible null-pointer dereference
- in snd_gf1_mem_xfree()
-Date: Tue, 23 Jul 2019 21:51:28 +0800
-Message-ID: <57696d77-922b-51d6-0623-5c6f4fe2b972@gmail.com>
-References: <20190723134020.25972-1-baijiaju1990@gmail.com>
- <s5htvbc50cc.wl-tiwai@suse.de>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2] ASoC: madera: Read device tree
+ configuration
+Date: Tue, 23 Jul 2019 16:21:41 +0200
+Message-ID: <026ea350-db7b-d78c-cae5-e03cf735607c@intel.com>
+References: <20190722135209.30302-1-ckeepax@opensource.cirrus.com>
+ <7a6ca46b-9ca7-6c91-6aa9-d1be785c64c5@intel.com>
+ <20190723081706.GL54126@ediswmail.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5htvbc50cc.wl-tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 419DAF800E8
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:21:48 +0200 (CEST)
+In-Reply-To: <20190723081706.GL54126@ediswmail.ad.cirrus.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: huangfq.daxian@gmail.com, tglx@linutronix.de, allison@lohutok.net, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the quick reply :)
-I think you are right, and I did not consider "if (alloc->last == block)"
-Sorry for the false report...
+On 2019-07-23 10:17, Charles Keepax wrote:
+> On Tue, Jul 23, 2019 at 12:07:32AM +0200, Cezary Rojewski wrote:
+>> On 2019-07-22 15:52, Charles Keepax wrote:
+>>> +static void madera_prop_get_inmode(struct madera_priv *priv)
+>>> +{
+>>> +	struct madera *madera = priv->madera;
+>>> +	struct madera_codec_pdata *pdata = &madera->pdata.codec;
+>>> +	u32 tmp[MADERA_MAX_INPUT * MADERA_MAX_MUXED_CHANNELS];
+>>> +	int n, i, in_idx, ch_idx;
+>>> +
+>>> +	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode) != MADERA_MAX_INPUT);
+>>> +	BUILD_BUG_ON(ARRAY_SIZE(pdata->inmode[0]) != MADERA_MAX_MUXED_CHANNELS);
+>>> +
+>>> +	n = madera_get_variable_u32_array(madera->dev, "cirrus,inmode",
+>>> +					  tmp, ARRAY_SIZE(tmp),
+>>> +					  MADERA_MAX_MUXED_CHANNELS);
+>>> +	if (n < 0)
+>>> +		return;
+>>> +
+>>> +	in_idx = 0;
+>>> +	ch_idx = 0;
+>>> +	for (i = 0; i < n; ++i) {
+>>> +		pdata->inmode[in_idx][ch_idx] = tmp[i];
+>>> +
+>>> +		if (++ch_idx == MADERA_MAX_MUXED_CHANNELS) {
+>>> +			ch_idx = 0;
+>>> +			++in_idx;
+>>> +		}
+>>> +	}
+>>> +}
+>>> +
+>>> +static void madera_prop_get_pdata(struct madera_priv *priv)
+>>> +{
+>>> +	struct madera *madera = priv->madera;
+>>> +	struct madera_codec_pdata *pdata = &madera->pdata.codec;
+>>> +	u32 out_mono[ARRAY_SIZE(pdata->out_mono)];
+>>> +	int i, n;
+>>> +
+>>> +	madera_prop_get_inmode(priv);
+>>
+>> Hmm, madera_get_variable_u32_array calls are not permissive within
+>> madera_prop_get_inmode yet here they are. Is this intentional?
+>>
+> 
+> Apologies but could you clarify what you mean by "not
+> permissive"?
+> 
+> I can't see anything that would prevent the function from
+> being called (indeed it builds and works), and the binding
+> documentation does specify that this field can be of variable
+> size.
+> 
+> Thanks,
+> Charles
 
+No worries. By "permissive" I described the usage of 
+_get_variable_u32_array within madera_prop_get_pdata. In 
+madera_prop_get_inmode you do care about the return value. In 
+madera_prop_get_pdata however, you ignore all of them. From 
+_get_variable_u32_array declaration, it seems function may fail.
+Sometimes it's desired to be permissive, simply asking if that's 
+intentional.
 
-Best wishes,
-Jia-Ju Bai
-
-On 2019/7/23 21:47, Takashi Iwai wrote:
-> On Tue, 23 Jul 2019 15:40:20 +0200,
-> Jia-Ju Bai wrote:
->> In snd_gf1_mem_xfree(), there is an if statement on line 72 and line 74
->> to check whether block->next is NULL:
->>      if (block->next)
->>
->> When block->next is NULL, block->next is used on line 84:
->>      block->next->prev = block->prev;
->>
->> Thus, a possible null-pointer dereference may occur in this case.
-> There is already a check beforehand:
->
-> 	if (alloc->last == block) {
->
-> and the code path you're referring to is only after this check fails,
-> i.e. it's no last entry, hence block->next can be never NULL.
->
-> So the current code is OK.
->
->
-> thanks,
->
-> Takashi
->
->> To fix this possible bug, block->next is checked before using it.
->>
->> This bug is found by a static analysis tool STCheck written by us.
->>
->> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
->> ---
->>   sound/isa/gus/gus_mem.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
->> index cb02d18dde60..ed6205b88057 100644
->> --- a/sound/isa/gus/gus_mem.c
->> +++ b/sound/isa/gus/gus_mem.c
->> @@ -81,7 +81,8 @@ int snd_gf1_mem_xfree(struct snd_gf1_mem * alloc, struct snd_gf1_mem_block * blo
->>   		if (block->prev)
->>   			block->prev->next = NULL;
->>   	} else {
->> -		block->next->prev = block->prev;
->> +		if (block->next)
->> +			block->next->prev = block->prev;
->>   		if (block->prev)
->>   			block->prev->next = block->next;
->>   	}
->> -- 
->> 2.17.0
->>
->>
+Czarek
