@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: use existing
-	snd_soc_dai_digital_mute()" to the asoc tree
-Date: Tue, 23 Jul 2019 18:18:50 +0100 (BST)
-Message-ID: <20190723171850.854DA2742B60@ypsilon.sirena.org.uk>
-References: <87ef2ihmzo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-dai: add snd_soc_dai_probe()" to
+	the asoc tree
+Date: Tue, 23 Jul 2019 18:18:51 +0100 (BST)
+Message-ID: <20190723171851.2A6FA2742B60@ypsilon.sirena.org.uk>
+References: <87k1cahn26.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2E3FF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8BCCF8045D
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:52 +0200 (CEST)
-In-Reply-To: <87ef2ihmzo.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k1cahn26.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: use existing snd_soc_dai_digital_mute()
+   ASoC: soc-dai: add snd_soc_dai_probe()
 
 has been applied to the asoc tree at
 
@@ -55,52 +55,80 @@ to this mail.
 Thanks,
 Mark
 
->From 88fdffa2eef45fc9f6009ee590741c44a57c49c7 Mon Sep 17 00:00:00 2001
+>From cfd9b5fbfe1e8763018aea2600aa0d6ff015ebfc Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 22 Jul 2019 10:36:27 +0900
-Subject: [PATCH] ASoC: soc-core: use existing snd_soc_dai_digital_mute()
+Date: Mon, 22 Jul 2019 10:34:56 +0900
+Subject: [PATCH] ASoC: soc-dai: add snd_soc_dai_probe()
 
-ALSA SoC already has snd_soc_dai_digital_mute() for digital_mute,
-let's use it.
+Current ALSA SoC is directly using dai->driver->xxx,
+thus, it has deep nested bracket, and it makes code unreadable.
+This patch adds new snd_soc_dai_probe() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87ef2ihmzo.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87k1cahn26.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ include/sound/soc-dai.h |  1 +
+ sound/soc/soc-core.c    | 15 +++++++--------
+ sound/soc/soc-dai.c     |  7 +++++++
+ 3 files changed, 15 insertions(+), 8 deletions(-)
 
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index ed78e34a814e..da8d8b889089 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -164,6 +164,7 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+ 				    struct snd_pcm_substream *substream);
+ void snd_soc_dai_suspend(struct snd_soc_dai *dai);
+ void snd_soc_dai_resume(struct snd_soc_dai *dai);
++int snd_soc_dai_probe(struct snd_soc_dai *dai);
+ 
+ struct snd_soc_dai_ops {
+ 	/*
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 458b090f026a..7ecfe641ca46 100644
+index 5c02f90cea69..3e73468225f9 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -487,10 +487,9 @@ int snd_soc_suspend(struct device *dev)
- 			continue;
+@@ -1434,18 +1434,17 @@ static int soc_probe_link_components(struct snd_soc_card *card,
  
- 		for_each_rtd_codec_dai(rtd, i, dai) {
--			struct snd_soc_dai_driver *drv = dai->driver;
+ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
+ {
++	int ret;
++
+ 	if (dai->probed ||
+ 	    dai->driver->probe_order != order)
+ 		return 0;
+ 
+-	if (dai->driver->probe) {
+-		int ret = dai->driver->probe(dai);
 -
--			if (drv->ops->digital_mute && dai->playback_active)
--				drv->ops->digital_mute(dai, 1);
-+			if (dai->playback_active)
-+				snd_soc_dai_digital_mute(dai, 1,
-+						SNDRV_PCM_STREAM_PLAYBACK);
- 		}
+-		if (ret < 0) {
+-			dev_err(dai->dev, "ASoC: failed to probe DAI %s: %d\n",
+-				dai->name, ret);
+-			return ret;
+-		}
++	ret = snd_soc_dai_probe(dai);
++	if (ret < 0) {
++		dev_err(dai->dev, "ASoC: failed to probe DAI %s: %d\n",
++			dai->name, ret);
++		return ret;
  	}
  
-@@ -665,10 +664,9 @@ static void soc_resume_deferred(struct work_struct *work)
- 			continue;
- 
- 		for_each_rtd_codec_dai(rtd, i, dai) {
--			struct snd_soc_dai_driver *drv = dai->driver;
--
--			if (drv->ops->digital_mute && dai->playback_active)
--				drv->ops->digital_mute(dai, 0);
-+			if (dai->playback_active)
-+				snd_soc_dai_digital_mute(dai, 0,
-+						SNDRV_PCM_STREAM_PLAYBACK);
- 		}
- 	}
- 
+ 	dai->probed = 1;
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index ddb6f217c0ed..55c1fac99613 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -365,3 +365,10 @@ void snd_soc_dai_resume(struct snd_soc_dai *dai)
+ 	if (dai->driver->resume)
+ 		dai->driver->resume(dai);
+ }
++
++int snd_soc_dai_probe(struct snd_soc_dai *dai)
++{
++	if (dai->driver->probe)
++		return dai->driver->probe(dai);
++	return 0;
++}
 -- 
 2.20.1
