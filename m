@@ -1,82 +1,160 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: atmel: enable SSC_PCM_DMA in Kconfig
-Date: Tue, 23 Jul 2019 18:18:17 +0100
-Message-ID: <20190723171817.GP5365@sirena.org.uk>
-References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
- <ee65cc7b889b2a8d1139d1d25977842c956d1cf4.1563819483.git.mirq-linux@rere.qmqm.pl>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8286793214168287420=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <ee65cc7b889b2a8d1139d1d25977842c956d1cf4.1563819483.git.mirq-linux@rere.qmqm.pl>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Ludovic Desroches <ludovic.desroches@microchip.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: rsnd: Support hw_free() callback at DAI level" to the asoc tree
+Date: Tue, 23 Jul 2019 18:18:53 +0100 (BST)
+Message-ID: <20190723171853.98F9F2742B59@ypsilon.sirena.org.uk>
+References: <20190722072403.11008-2-jiada_wang@mentor.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190722072403.11008-2-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Jiada Wang <jiada_wang@mentor.com>jiada_wang@mentor.com, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, twischer@de.adit-jv.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8286793214168287420==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bvgsfYmVhxWy/2TA"
-Content-Disposition: inline
+   ASoC: rsnd: Support hw_free() callback at DAI level
 
+has been applied to the asoc tree at
 
---bvgsfYmVhxWy/2TA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-On Mon, Jul 22, 2019 at 08:27:20PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
->  config SND_ATMEL_SOC_SSC_DMA
-> -	tristate
-> +	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This breaks the build for me:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-ld: sound/soc/atmel/atmel_ssc_dai.o: in function `atmel_ssc_set_audio':
-atmel_ssc_dai.c:(.text+0xbd9): undefined reference to `ssc_request'
-ld: sound/soc/atmel/atmel_ssc_dai.o: in function `atmel_ssc_put_audio':
-atmel_ssc_dai.c:(.text+0xc74): undefined reference to `ssc_free'
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-It's not selecting the SSC comon code.  It also looks like it'd be
-sensible to add a dependency on the platform (or at least architecture),
-with a || COMPILE_TEST to help with build coverage.
+Thanks,
+Mark
 
---bvgsfYmVhxWy/2TA
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 859fd6cbf1fb32b5428c26f837215c085b8a822e Mon Sep 17 00:00:00 2001
+From: Timo Wischer <twischer@de.adit-jv.com>
+Date: Mon, 22 Jul 2019 16:24:01 +0900
+Subject: [PATCH] ASoC: rsnd: Support hw_free() callback at DAI level
 
------BEGIN PGP SIGNATURE-----
+This patch provides the needed infrastructure to support calling hw_free()
+at the DAI level. This is for example required to free resources allocated
+in hw_params() callback.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl03QVgACgkQJNaLcl1U
-h9DBZQf+JgxSye18m4nNkKnsgjUuG28GzeGRZgauDTClvkb/W5198CjJg1y7Xxbd
-gEMn+eyBP2iwXez0dYeRw0mye4Zbl9VJfhCwN31JslTIlXwpNZxSH1TF/tgYnoXn
-hkM3zfs7b5OdVmZKVY5Y7+27JkL105jf5yf7V6oj+8s+hVSmuwZZqodwy0LF+NsM
-A0CDfSaTFQuM5NV6FmA4xoqju935Eo7pWauKRhJr4zsSCk5R+R5SbHzNtcBO24Kk
-Rcbb+/BoLFdhySnAf1+FhvsNNNiHSTC8PM6sCmDU2sTI8NXj9F6BbP7DFq+NoqsG
-qEFuuCbXXLuFYmtHWHII3zEkqcAPHg==
-=pVk3
------END PGP SIGNATURE-----
+The modification of __rsnd_mod_add_hw_params does not have any side
+effects because rsnd_mod_ops::hw_params callback is not used by anyone
+until now.
 
---bvgsfYmVhxWy/2TA--
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Link: https://lore.kernel.org/r/20190722072403.11008-2-jiada_wang@mentor.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 16 +++++++++++++++-
+ sound/soc/sh/rcar/rsnd.h | 12 +++++++++---
+ 2 files changed, 24 insertions(+), 4 deletions(-)
 
-
---===============8286793214168287420==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============8286793214168287420==--
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 56e8dae9a15c..bda5b958d0dc 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1421,6 +1421,20 @@ static int rsnd_hw_params(struct snd_pcm_substream *substream,
+ 					params_buffer_bytes(hw_params));
+ }
+ 
++static int rsnd_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
++	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
++	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++	int ret;
++
++	ret = rsnd_dai_call(hw_free, io, substream);
++	if (ret)
++		return ret;
++
++	return snd_pcm_lib_free_pages(substream);
++}
++
+ static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
+@@ -1436,7 +1450,7 @@ static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops rsnd_pcm_ops = {
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= rsnd_hw_params,
+-	.hw_free	= snd_pcm_lib_free_pages,
++	.hw_free	= rsnd_hw_free,
+ 	.pointer	= rsnd_pointer,
+ };
+ 
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 7727add3eb1a..ea6cbaa9743e 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -327,6 +327,9 @@ struct rsnd_mod_ops {
+ 	int (*cleanup)(struct rsnd_mod *mod,
+ 		       struct rsnd_dai_stream *io,
+ 		       struct rsnd_priv *priv);
++	int (*hw_free)(struct rsnd_mod *mod,
++		       struct rsnd_dai_stream *io,
++		       struct snd_pcm_substream *substream);
+ 	u32 *(*get_status)(struct rsnd_mod *mod,
+ 			   struct rsnd_dai_stream *io,
+ 			   enum rsnd_mod_type type);
+@@ -351,12 +354,12 @@ struct rsnd_mod {
+  *
+  * B	0: init		1: quit
+  * C	0: start	1: stop
++ * D	0: hw_params	1: hw_free
+  *
+  * H is always called (see __rsnd_mod_call)
+  * H	0: probe	1: remove
+  * H	0: pcm_new
+  * H	0: fallback
+- * H	0: hw_params
+  * H	0: pointer
+  * H	0: prepare
+  * H	0: cleanup
+@@ -365,12 +368,13 @@ struct rsnd_mod {
+ #define __rsnd_mod_shift_quit		4
+ #define __rsnd_mod_shift_start		8
+ #define __rsnd_mod_shift_stop		8
++#define __rsnd_mod_shift_hw_params	12
++#define __rsnd_mod_shift_hw_free	12
+ #define __rsnd_mod_shift_probe		28 /* always called */
+ #define __rsnd_mod_shift_remove		28 /* always called */
+ #define __rsnd_mod_shift_irq		28 /* always called */
+ #define __rsnd_mod_shift_pcm_new	28 /* always called */
+ #define __rsnd_mod_shift_fallback	28 /* always called */
+-#define __rsnd_mod_shift_hw_params	28 /* always called */
+ #define __rsnd_mod_shift_pointer	28 /* always called */
+ #define __rsnd_mod_shift_prepare	28 /* always called */
+ #define __rsnd_mod_shift_cleanup	28 /* always called */
+@@ -383,10 +387,11 @@ struct rsnd_mod {
+ #define __rsnd_mod_add_quit		-1
+ #define __rsnd_mod_add_start		 1
+ #define __rsnd_mod_add_stop		-1
++#define __rsnd_mod_add_hw_params	1
++#define __rsnd_mod_add_hw_free		-1
+ #define __rsnd_mod_add_irq		0
+ #define __rsnd_mod_add_pcm_new		0
+ #define __rsnd_mod_add_fallback		0
+-#define __rsnd_mod_add_hw_params	0
+ #define __rsnd_mod_add_pointer		0
+ 
+ #define __rsnd_mod_call_probe		0
+@@ -402,6 +407,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_fallback	0
+ #define __rsnd_mod_call_hw_params	0
+ #define __rsnd_mod_call_pointer		0
++#define __rsnd_mod_call_hw_free		1
+ 
+ #define rsnd_mod_to_priv(mod)	((mod)->priv)
+ #define rsnd_mod_power_on(mod)	clk_enable((mod)->clk)
+-- 
+2.20.1
