@@ -1,109 +1,143 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1] soundwire: mipi_disco: Switch to use
- fwnode_property_count_uXX()
-Date: Tue, 23 Jul 2019 15:09:25 -0500
-Message-ID: <4fb9a23c-3875-33d6-95fd-af384e8b5360@linux.intel.com>
-References: <20190723194218.69168-1-andriy.shevchenko@linux.intel.com>
+From: mirq-linux@rere.qmqm.pl
+Subject: Re: [PATCH 1/5] ASoC: atmel: enable SSC_PCM_DMA in Kconfig
+Date: Wed, 24 Jul 2019 01:25:05 +0200
+Message-ID: <20190723232505.GA21811@qmqm.qmqm.pl>
+References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
+ <ee65cc7b889b2a8d1139d1d25977842c956d1cf4.1563819483.git.mirq-linux@rere.qmqm.pl>
+ <1f3a4256-58de-27a4-8095-54fc6baa6d89@microchip.com>
+ <20190723164312.GA4772@qmqm.qmqm.pl>
+ <20190723183915.GJ24911@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7721EF800E8
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 22:09:28 +0200 (CEST)
-In-Reply-To: <20190723194218.69168-1-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20190723183915.GJ24911@piout.net>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, Ludovic.Desroches@microchip.com, broonie@kernel.org, Codrin.Ciubotariu@microchip.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jul 23, 2019 at 08:39:15PM +0200, Alexandre Belloni wrote:
+> On 23/07/2019 18:43:12+0200, mirq-linux@rere.qmqm.pl wrote:
+> > On Tue, Jul 23, 2019 at 01:36:37PM +0000, Codrin.Ciubotariu@microchip.c=
+om wrote:
+> > > On 22.07.2019 21:27, Micha=B3 Miros=B3aw wrote:
+> > > > Allow SSC to be used on platforms described using audio-graph-card
+> > > > in Device Tree.
+> > > > =
+
+> > > > Signed-off-by: Micha=B3 Miros=B3aw <mirq-linux@rere.qmqm.pl>
+> > > > ---
+> > > >   sound/soc/atmel/Kconfig | 2 +-
+> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > =
+
+> > > > diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+> > > > index 06c1d5ce642c..9ef9d25bb517 100644
+> > > > --- a/sound/soc/atmel/Kconfig
+> > > > +++ b/sound/soc/atmel/Kconfig
+> > > > @@ -25,7 +25,7 @@ config SND_ATMEL_SOC_DMA
+> > > >   	default y if SND_ATMEL_SOC_SSC_DMA=3Dy || (SND_ATMEL_SOC_SSC_DMA=
+=3Dm && SND_ATMEL_SOC_SSC=3Dy)
+> > > >   =
+
+> > > >   config SND_ATMEL_SOC_SSC_DMA
+> > > > -	tristate
+> > > > +	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
+> > > =
+
+> > > Could you please make something similar for SND_ATMEL_SOC_SSC_PDC? Al=
+so, =
+
+> > > I think that it should select ATMEL_SSC, to be able to use =
+
+> > > simple/graph-card with SSC.
+> > =
+
+> > Hmm. The Kconfig dependencies seems overly complicated, do you mind if I
+> > get rid of most of the entries in the process?
+> > =
+
+> =
+
+> Unfortunately, it is just complicated enough. This is done to support
+> all the possible configurations. Removing them will lead to linking
+> errors.
+> =
+
+> After having that discussion back in March, I had a very quick look and
+> didn't send a patch because I still had linking issues. It is not
+> impossible but it required more time than I had.
+
+Can you try patch below if it covers the configurations you mention?
+This uses Kconfig's m/y resolution instead of open-coded defaults.
+
+Best Regards,
+Micha=B3 Miros=B3aw
 
 
-On 7/23/19 2:42 PM, Andy Shevchenko wrote:
-> Use use fwnode_property_count_uXX() directly, that makes code neater.
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 06c1d5ce642c..f118c229ed82 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -12,25 +12,31 @@ if SND_ATMEL_SOC
+ config SND_ATMEL_SOC_PDC
+ 	tristate
+ 	depends on HAS_DMA
+-	default m if SND_ATMEL_SOC_SSC_PDC=3Dm && SND_ATMEL_SOC_SSC=3Dm
+-	default y if SND_ATMEL_SOC_SSC_PDC=3Dy || (SND_ATMEL_SOC_SSC_PDC=3Dm && S=
+ND_ATMEL_SOC_SSC=3Dy)
+-
+-config SND_ATMEL_SOC_SSC_PDC
+-	tristate
+ =
 
-Yes indeed, thanks!
+ config SND_ATMEL_SOC_DMA
+ 	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	default m if SND_ATMEL_SOC_SSC_DMA=3Dm && SND_ATMEL_SOC_SSC=3Dm
+-	default y if SND_ATMEL_SOC_SSC_DMA=3Dy || (SND_ATMEL_SOC_SSC_DMA=3Dm && S=
+ND_ATMEL_SOC_SSC=3Dy)
+-
+-config SND_ATMEL_SOC_SSC_DMA
+-	tristate
+ =
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ config SND_ATMEL_SOC_SSC
+ 	tristate
+-	default y if SND_ATMEL_SOC_SSC_DMA=3Dy || SND_ATMEL_SOC_SSC_PDC=3Dy
+-	default m if SND_ATMEL_SOC_SSC_DMA=3Dm || SND_ATMEL_SOC_SSC_PDC=3Dm
++
++config SND_ATMEL_SOC_SSC_PDC
++	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
++	depends on ATMEL_SSC
++	select SND_ATMEL_SOC_PDC
++	select SND_ATMEL_SOC_SSC
++	help
++	  Say Y or M if you want to add support for Atmel SSC interface
++	  in PDC mode configured using audio-graph-card in device-tree.
++
++config SND_ATMEL_SOC_SSC_DMA
++	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
++	depends on ATMEL_SSC
++	select SND_ATMEL_SOC_DMA
++	select SND_ATMEL_SOC_SSC
++	help
++	  Say Y or M if you want to add support for Atmel SSC interface
++	  in DMA mode configured using audio-graph-card in device-tree.
+ =
 
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   drivers/soundwire/mipi_disco.c | 18 ++++++------------
->   1 file changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/soundwire/mipi_disco.c b/drivers/soundwire/mipi_disco.c
-> index 79fee1b21ab6..844e6b22974f 100644
-> --- a/drivers/soundwire/mipi_disco.c
-> +++ b/drivers/soundwire/mipi_disco.c
-> @@ -60,8 +60,7 @@ int sdw_master_read_prop(struct sdw_bus *bus)
->   				 "mipi-sdw-max-clock-frequency",
->   				 &prop->max_clk_freq);
->   
-> -	nval = fwnode_property_read_u32_array(link,
-> -			"mipi-sdw-clock-frequencies-supported", NULL, 0);
-> +	nval = fwnode_property_count_u32(link, "mipi-sdw-clock-frequencies-supported");
->   	if (nval > 0) {
->   		prop->num_clk_freq = nval;
->   		prop->clk_freq = devm_kcalloc(bus->dev, prop->num_clk_freq,
-> @@ -87,8 +86,7 @@ int sdw_master_read_prop(struct sdw_bus *bus)
->   		}
->   	}
->   
-> -	nval = fwnode_property_read_u32_array(link,
-> -			"mipi-sdw-supported-clock-gears", NULL, 0);
-> +	nval = fwnode_property_count_u32(link, "mipi-sdw-supported-clock-gears");
->   	if (nval > 0) {
->   		prop->num_clk_gears = nval;
->   		prop->clk_gears = devm_kcalloc(bus->dev, prop->num_clk_gears,
-> @@ -134,8 +132,7 @@ static int sdw_slave_read_dp0(struct sdw_slave *slave,
->   	fwnode_property_read_u32(port, "mipi-sdw-port-min-wordlength",
->   				 &dp0->min_word);
->   
-> -	nval = fwnode_property_read_u32_array(port,
-> -			"mipi-sdw-port-wordlength-configs", NULL, 0);
-> +	nval = fwnode_property_count_u32(port, "mipi-sdw-port-wordlength-configs");
->   	if (nval > 0) {
->   
->   		dp0->num_words = nval;
-> @@ -193,8 +190,7 @@ static int sdw_slave_read_dpn(struct sdw_slave *slave,
->   		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
->   					 &dpn[i].min_word);
->   
-> -		nval = fwnode_property_read_u32_array(node,
-> -				"mipi-sdw-port-wordlength-configs", NULL, 0);
-> +		nval = fwnode_property_count_u32(node, "mipi-sdw-port-wordlength-configs");
->   		if (nval > 0) {
->   			dpn[i].num_words = nval;
->   			dpn[i].words = devm_kcalloc(&slave->dev,
-> @@ -233,8 +229,7 @@ static int sdw_slave_read_dpn(struct sdw_slave *slave,
->   		fwnode_property_read_u32(node, "mipi-sdw-max-channel-number",
->   					 &dpn[i].max_ch);
->   
-> -		nval = fwnode_property_read_u32_array(node,
-> -				"mipi-sdw-channel-number-list", NULL, 0);
-> +		nval = fwnode_property_count_u32(node, "mipi-sdw-channel-number-list");
->   		if (nval > 0) {
->   			dpn[i].num_ch = nval;
->   			dpn[i].ch = devm_kcalloc(&slave->dev, dpn[i].num_ch,
-> @@ -248,8 +243,7 @@ static int sdw_slave_read_dpn(struct sdw_slave *slave,
->   					dpn[i].ch, dpn[i].num_ch);
->   		}
->   
-> -		nval = fwnode_property_read_u32_array(node,
-> -				"mipi-sdw-channel-combination-list", NULL, 0);
-> +		nval = fwnode_property_count_u32(node, "mipi-sdw-channel-combination-list");
->   		if (nval > 0) {
->   			dpn[i].num_ch_combinations = nval;
->   			dpn[i].ch_combinations = devm_kcalloc(&slave->dev,
-> 
+ config SND_AT91_SOC_SAM9G20_WM8731
+ 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+-- =
+
+2.20.1
