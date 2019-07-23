@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-dai: add snd_soc_dai_hw_free()" to
-	the asoc tree
-Date: Tue, 23 Jul 2019 18:18:52 +0100 (BST)
-Message-ID: <20190723171853.035302742B60@ypsilon.sirena.org.uk>
-References: <87y30qhn4w.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-dai: mv soc_dai_hw_params() to
+	soc-dai" to the asoc tree
+Date: Tue, 23 Jul 2019 18:18:53 +0100 (BST)
+Message-ID: <20190723171853.345132742BAC@ypsilon.sirena.org.uk>
+References: <87zhl6hn5b.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A37FF8049A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 496D3F8044A
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:54 +0200 (CEST)
-In-Reply-To: <87y30qhn4w.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zhl6hn5b.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-dai: add snd_soc_dai_hw_free()
+   ASoC: soc-dai: mv soc_dai_hw_params() to soc-dai
 
 has been applied to the asoc tree at
 
@@ -55,116 +55,177 @@ to this mail.
 Thanks,
 Mark
 
->From 846faaed9df7899e74311db3aec0a41a2f6bc345 Mon Sep 17 00:00:00 2001
+>From aa6166c2ac28392d64f2d8b3acfb56c8fe657147 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 22 Jul 2019 10:33:19 +0900
-Subject: [PATCH] ASoC: soc-dai: add snd_soc_dai_hw_free()
+Date: Mon, 22 Jul 2019 10:33:04 +0900
+Subject: [PATCH] ASoC: soc-dai: mv soc_dai_hw_params() to soc-dai
 
-Current ALSA SoC is directly using dai->driver->ops->xxx,
-thus, it has deep nested bracket, and it makes code unreadable.
-This patch adds new snd_soc_dai_hw_free() and use it.
+Sometimes ALSA SoC naming is very random.
+Current soc_dai_hw_params() should use snd_soc_dai_xxx() style.
+And then, 1st parameter should be dai. Otherwise it is confusable.
+ - soc_dai_hw_params(..., dai);
+ + snd_soc_dai_hw_params(dai, ...);
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87y30qhn4w.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87zhl6hn5b.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dai.h |  2 ++
- sound/soc/soc-dai.c     |  7 +++++++
- sound/soc/soc-dapm.c    |  7 ++-----
- sound/soc/soc-pcm.c     | 12 ++++--------
- 4 files changed, 15 insertions(+), 13 deletions(-)
+ include/sound/soc-dai.h |  4 ++++
+ include/sound/soc.h     |  4 ----
+ sound/soc/soc-dai.c     | 30 ++++++++++++++++++++++++++++++
+ sound/soc/soc-dapm.c    |  4 ++--
+ sound/soc/soc-pcm.c     | 35 +++--------------------------------
+ 5 files changed, 39 insertions(+), 38 deletions(-)
 
 diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 3773262a1b77..5222b6a758f2 100644
+index f5d70041108f..3773262a1b77 100644
 --- a/include/sound/soc-dai.h
 +++ b/include/sound/soc-dai.h
-@@ -148,6 +148,8 @@ int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
- int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
- 			  struct snd_pcm_substream *substream,
- 			  struct snd_pcm_hw_params *params);
-+void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
-+			 struct snd_pcm_substream *substream);
+@@ -145,6 +145,10 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
  
+ int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
+ 
++int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
++			  struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params);
++
  struct snd_soc_dai_ops {
  	/*
+ 	 * DAI clocking configuration, all optional.
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4e8071269639..d770606732cd 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -505,10 +505,6 @@ int snd_soc_params_to_bclk(struct snd_pcm_hw_params *parms);
+ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
+ 	const struct snd_pcm_hardware *hw);
+ 
+-int soc_dai_hw_params(struct snd_pcm_substream *substream,
+-		      struct snd_pcm_hw_params *params,
+-		      struct snd_soc_dai *dai);
+-
+ /* Jack reporting */
+ int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
+ 	struct snd_soc_jack *jack, struct snd_soc_jack_pin *pins,
 diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index f883d27d136f..39a685e6acd5 100644
+index a1009ead40de..f883d27d136f 100644
 --- a/sound/soc/soc-dai.c
 +++ b/sound/soc/soc-dai.c
-@@ -282,3 +282,10 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
- 
- 	return 0;
+@@ -252,3 +252,33 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ 		return -ENOTSUPP;
  }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
 +
-+void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
-+			 struct snd_pcm_substream *substream)
++int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
++			  struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params)
 +{
-+	if (dai->driver->ops->hw_free)
-+		dai->driver->ops->hw_free(substream, dai);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	int ret;
++
++	/* perform any topology hw_params fixups before DAI  */
++	if (rtd->dai_link->be_hw_params_fixup) {
++		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
++		if (ret < 0) {
++			dev_err(rtd->dev,
++				"ASoC: hw_params topology fixup failed %d\n",
++				ret);
++			return ret;
++		}
++	}
++
++	if (dai->driver->ops->hw_params) {
++		ret = dai->driver->ops->hw_params(substream, params, dai);
++		if (ret < 0) {
++			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
++				dai->name, ret);
++			return ret;
++		}
++	}
++
++	return 0;
 +}
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8fc6a01f5d8b..0783b05133ad 100644
+index f013b24c050a..8fc6a01f5d8b 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3898,9 +3898,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		snd_soc_dapm_widget_for_each_source_path(w, path) {
- 			source = path->source->priv;
+@@ -3839,7 +3839,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 				}
+ 			}
+ 			source->active++;
+-			ret = soc_dai_hw_params(&substream, params, source);
++			ret = snd_soc_dai_hw_params(source, &substream, params);
+ 			if (ret < 0)
+ 				goto out;
  
--			if (source->driver->ops->hw_free)
--				source->driver->ops->hw_free(&substream,
--							     source);
-+			snd_soc_dai_hw_free(source, &substream);
+@@ -3861,7 +3861,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 				}
+ 			}
+ 			sink->active++;
+-			ret = soc_dai_hw_params(&substream, params, sink);
++			ret = snd_soc_dai_hw_params(sink, &substream, params);
+ 			if (ret < 0)
+ 				goto out;
  
- 			source->active--;
- 			if (source->driver->ops->shutdown)
-@@ -3912,8 +3910,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
- 			sink = path->sink->priv;
- 
--			if (sink->driver->ops->hw_free)
--				sink->driver->ops->hw_free(&substream, sink);
-+			snd_soc_dai_hw_free(sink, &substream);
- 
- 			sink->active--;
- 			if (sink->driver->ops->shutdown)
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 420cc94e0a46..58fc4e98ab59 100644
+index 4878d22ebd8c..420cc94e0a46 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1011,8 +1011,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- component_err:
- 	soc_pcm_components_hw_free(substream, component);
+@@ -877,36 +877,6 @@ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
+ 	interval->max = channels;
+ }
  
--	if (cpu_dai->driver->ops->hw_free)
--		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
-+	snd_soc_dai_hw_free(cpu_dai, substream);
- 	cpu_dai->rate = 0;
+-int soc_dai_hw_params(struct snd_pcm_substream *substream,
+-		      struct snd_pcm_hw_params *params,
+-		      struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int ret;
+-
+-	/* perform any topology hw_params fixups before DAI  */
+-	if (rtd->dai_link->be_hw_params_fixup) {
+-		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
+-		if (ret < 0) {
+-			dev_err(rtd->dev,
+-				"ASoC: hw_params topology fixup failed %d\n",
+-				ret);
+-			return ret;
+-		}
+-	}
+-
+-	if (dai->driver->ops->hw_params) {
+-		ret = dai->driver->ops->hw_params(substream, params, dai);
+-		if (ret < 0) {
+-			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
+-				dai->name, ret);
+-			return ret;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+ static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
+ 				      struct snd_soc_component *last)
+ {
+@@ -989,7 +959,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			soc_pcm_codec_params_fixup(&codec_params,
+ 						   codec_dai->rx_mask);
  
- interface_err:
-@@ -1023,8 +1022,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
- 			continue;
+-		ret = soc_dai_hw_params(substream, &codec_params, codec_dai);
++		ret = snd_soc_dai_hw_params(codec_dai, substream,
++					    &codec_params);
+ 		if(ret < 0)
+ 			goto codec_err;
  
--		if (codec_dai->driver->ops->hw_free)
--			codec_dai->driver->ops->hw_free(substream, codec_dai);
-+		snd_soc_dai_hw_free(codec_dai, substream);
- 		codec_dai->rate = 0;
+@@ -1001,7 +972,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		snd_soc_dapm_update_dai(substream, &codec_params, codec_dai);
  	}
  
-@@ -1083,12 +1081,10 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
- 			continue;
+-	ret = soc_dai_hw_params(substream, params, cpu_dai);
++	ret = snd_soc_dai_hw_params(cpu_dai, substream, params);
+ 	if (ret < 0)
+ 		goto interface_err;
  
--		if (codec_dai->driver->ops->hw_free)
--			codec_dai->driver->ops->hw_free(substream, codec_dai);
-+		snd_soc_dai_hw_free(codec_dai, substream);
- 	}
- 
--	if (cpu_dai->driver->ops->hw_free)
--		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
-+	snd_soc_dai_hw_free(cpu_dai, substream);
- 
- 	mutex_unlock(&rtd->pcm_mutex);
- 	return 0;
 -- 
 2.20.1
