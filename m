@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda: set position buffer in
-	init chip" to the asoc tree
+Subject: Applied "ASoC: SOF: Intel: hda: use SOF defined init
+	chip in resume" to the asoc tree
 Date: Tue, 23 Jul 2019 12:29:12 +0100 (BST)
-Message-ID: <20190723112912.C28862742BAB@ypsilon.sirena.org.uk>
-References: <20190722141402.7194-14-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190723112912.7919F2742B60@ypsilon.sirena.org.uk>
+References: <20190722141402.7194-15-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2EFDBF8044B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03A12F8044A
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:13 +0200 (CEST)
-In-Reply-To: <20190722141402.7194-14-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190722141402.7194-15-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: hda: set position buffer in init chip
+   ASoC: SOF: Intel: hda: use SOF defined init chip in resume
 
 has been applied to the asoc tree at
 
@@ -55,45 +55,87 @@ to this mail.
 Thanks,
 Mark
 
->From 061edb232505797aee53a955225af23fa30d45b8 Mon Sep 17 00:00:00 2001
+>From d06973515f95ac74d68fb3e1f1fb4b055531296c Mon Sep 17 00:00:00 2001
 From: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
-Date: Mon, 22 Jul 2019 09:13:54 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: set position buffer in init chip
+Date: Mon, 22 Jul 2019 09:13:55 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: use SOF defined init chip in resume
 
-Set the HDA stream position buffer during init chip. The position buffer
-needs to be set in both HDA codec and nocodec cases. Using SOF defined
-function and move it to common code.
+Unify resume code by using SOF common function hda_dsp_ctrl_init_chip()
+which can handle both HDA and non-HDA cases. Move code to reset
+stream-to-link mapping into hda_dsp_ctrl_init_chip().
 
 Signed-off-by: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190722141402.7194-14-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190722141402.7194-15-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/sof/intel/hda-ctrl.c |  9 +++++++++
+ sound/soc/sof/intel/hda-dsp.c  | 26 --------------------------
+ 2 files changed, 9 insertions(+), 26 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index ea63f83a509b..015760284969 100644
+index 015760284969..8b856dc35e20 100644
 --- a/sound/soc/sof/intel/hda-ctrl.c
 +++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -245,14 +245,13 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
- 				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN);
+@@ -164,6 +164,9 @@ int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable)
+ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	struct hdac_ext_link *hlink;
++#endif
+ 	struct hdac_stream *stream;
+ 	int sd_offset, ret = 0;
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 	/* program the position buffer */
- 	if (bus->use_posbuf && bus->posbuf.addr) {
--		snd_hdac_chip_writel(bus, DPLBASE, (u32)bus->posbuf.addr);
--		snd_hdac_chip_writel(bus, DPUBASE,
--				     upper_32_bits(bus->posbuf.addr));
-+		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_ADSP_DPLBASE,
-+				  (u32)bus->posbuf.addr);
-+		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_ADSP_DPUBASE,
-+				  upper_32_bits(bus->posbuf.addr));
+@@ -253,6 +256,12 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
+ 				  upper_32_bits(bus->posbuf.addr));
  	}
--#endif
  
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	/* Reset stream-to-link mapping */
++	list_for_each_entry(hlink, &bus->hlink_list, list)
++		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
++#endif
++
  	bus->chip_init = true;
  
+ 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index f9579edbca68..f08a5d649346 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -368,32 +368,6 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+ 	/* check dma status and clean up CORB/RIRB buffers */
+ 	if (!bus->cmd_dma_state)
+ 		snd_hdac_bus_stop_cmd_io(bus);
+-#else
+-
+-	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+-
+-	/* reset controller */
+-	ret = hda_dsp_ctrl_link_reset(sdev, true);
+-	if (ret < 0) {
+-		dev_err(sdev->dev,
+-			"error: failed to reset controller during resume\n");
+-		return ret;
+-	}
+-
+-	/* take controller out of reset */
+-	ret = hda_dsp_ctrl_link_reset(sdev, false);
+-	if (ret < 0) {
+-		dev_err(sdev->dev,
+-			"error: failed to ready controller during resume\n");
+-		return ret;
+-	}
+-
+-	/* enable hda bus irq */
+-	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
+-				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
+-				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN);
+-
+-	hda_dsp_ctrl_misc_clock_gating(sdev, true);
+ #endif
+ 
+ 	/* enable ppcap interrupt */
 -- 
 2.20.1
