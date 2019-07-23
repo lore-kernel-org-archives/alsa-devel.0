@@ -1,78 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 18/21] ASoC: SOF: Intel: hda: fix link DMA
-	config
-Date: Tue, 23 Jul 2019 12:15:15 +0100
-Message-ID: <20190723111515.GD5365@sirena.org.uk>
-References: <20190722141402.7194-1-pierre-louis.bossart@linux.intel.com>
- <20190722141402.7194-19-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1387984660245432647=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86E6AF80227
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:15:17 +0200 (CEST)
-In-Reply-To: <20190722141402.7194-19-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Rander Wang <rander.wang@linux.intel.com>
+Subject: Applied "ASoC: rt5665: Fix a typo in the name of a function" to the asoc tree
+Date: Tue, 23 Jul 2019 12:29:10 +0100 (BST)
+Message-ID: <20190723112910.E55942742B60@ypsilon.sirena.org.uk>
+References: <20190722212639.26954-1-christophe.jaillet@wanadoo.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190722212639.26954-1-christophe.jaillet@wanadoo.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: alsa-devel@alsa-project.org, bardliao@realtek.com, broonie@kernel.org, chiou@realtek.com, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1387984660245432647==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4zI0WCX1RcnW9Hbu"
-Content-Disposition: inline
+   ASoC: rt5665: Fix a typo in the name of a function
 
+has been applied to the asoc tree at
 
---4zI0WCX1RcnW9Hbu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-On Mon, Jul 22, 2019 at 09:13:59AM -0500, Pierre-Louis Bossart wrote:
-> From: Rander Wang <rander.wang@linux.intel.com>
->=20
-> For this bug, there are two capture pcm streams active, with one
-> stream and its related stream tag released before suspend. Later
-> when system suspend is done, the stream tag for the remaining
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-In general fixes should come at the start of a series so that they can
-be applied as such and sent to Linus without getting caught up with
-dependencies on development work.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---4zI0WCX1RcnW9Hbu
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl027EIACgkQJNaLcl1U
-h9ClRAf8CFImBgkY9i3eGjeByGyWctkrSFYh3EQlp1p3IuU1WaRma7JDnLrIdKOv
-lMrAlzf9+48dMT/lWq2ZfVvZVsiI+9NdND74EX7EstGsxl4lV4Q3QWUYXykkZkwO
-iA86GOEAFXgVJ0UcrePxG5U1amwB99xbTdV3cL19CDn3hBqzTWhCwJ5QoRyOmUGl
-ku/D6aOQyK5kPOc8BNM/Po0Vv31Ie78sb5ngMWjJ84w0OS8KX7fXq/JRxeNDHauw
-aXWIfDTTRwKQOQ50Et+cA+Mvhn5iY7DtohKKtKUeLTs4iYQKBGl07h6+HJrnMA5i
-m37D9RQJm7NRmiwg3Eo/rFnnBnF++w==
-=S8q5
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---4zI0WCX1RcnW9Hbu--
+>From f90aa354be7bffaec2b440eb1831c429ecb1a5e2 Mon Sep 17 00:00:00 2001
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Mon, 22 Jul 2019 23:26:39 +0200
+Subject: [PATCH] ASoC: rt5665: Fix a typo in the name of a function
 
---===============1387984660245432647==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+All function names start with rt5665_, except 'rt5655_set_verf()'.
+It is likely a typo.
 
+Fix it to be consistent.
 
---===============1387984660245432647==--
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20190722212639.26954-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5665.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index c050d84a6916..68299ce26d3e 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -2566,7 +2566,7 @@ static int set_dmic_power(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
+-static int rt5655_set_verf(struct snd_soc_dapm_widget *w,
++static int rt5665_set_verf(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+@@ -2686,11 +2686,11 @@ static const struct snd_soc_dapm_widget rt5665_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("Mic Det Power", RT5665_PWR_VOL,
+ 		RT5665_PWR_MIC_DET_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("Vref1", RT5665_PWR_ANLG_1, RT5665_PWR_VREF1_BIT, 0,
+-		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++		rt5665_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+ 	SND_SOC_DAPM_SUPPLY("Vref2", RT5665_PWR_ANLG_1, RT5665_PWR_VREF2_BIT, 0,
+-		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++		rt5665_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+ 	SND_SOC_DAPM_SUPPLY("Vref3", RT5665_PWR_ANLG_1, RT5665_PWR_VREF3_BIT, 0,
+-		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++		rt5665_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+ 
+ 	/* ASRC */
+ 	SND_SOC_DAPM_SUPPLY_S("I2S1 ASRC", 1, RT5665_ASRC_1,
+-- 
+2.20.1
