@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: use common code to send PCM_FREE
-	IPC" to the asoc tree
+Subject: Applied "ASoC: SOF: ipc: use timeout configured at
+	probe" to the asoc tree
 Date: Tue, 23 Jul 2019 12:29:14 +0100 (BST)
-Message-ID: <20190723112914.CAA912742BAB@ypsilon.sirena.org.uk>
-References: <20190722141402.7194-4-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190723112914.977952742B60@ypsilon.sirena.org.uk>
+References: <20190722141402.7194-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EBFEFF804AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAB0DF8048F
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:15 +0200 (CEST)
-In-Reply-To: <20190722141402.7194-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190722141402.7194-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: use common code to send PCM_FREE IPC
+   ASoC: SOF: ipc: use timeout configured at probe
 
 has been applied to the asoc tree at
 
@@ -55,111 +55,49 @@ to this mail.
 Thanks,
 Mark
 
->From a49b687192752bd373f33551520cc98389460ad0 Mon Sep 17 00:00:00 2001
+>From 6dd78b310b8d4ab5d0b851e369b5b3d46c6a32a9 Mon Sep 17 00:00:00 2001
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Mon, 22 Jul 2019 09:13:44 -0500
-Subject: [PATCH] ASoC: SOF: use common code to send PCM_FREE IPC
+Date: Mon, 22 Jul 2019 09:13:45 -0500
+Subject: [PATCH] ASoC: SOF: ipc: use timeout configured at probe
 
-Remove duplicated code by using a common helper function
-to send the PCM_FREE IPC message to FW.
+Do not hardcode IPC timeout value in ipc.c, but rather use the timeout
+value configured during device probe. For platforms that do not override
+the IPC timeout, default value TIMEOUT_DEFAULT_IPC_MS has already been
+defined in core.c.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190722141402.7194-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190722141402.7194-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pcm.c | 50 ++++++++++++++++++++++-----------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ sound/soc/sof/ipc.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 3b8955e755b2..8612896673a5 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -216,6 +216,27 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 20dfca9c93b7..b2f359d2f7e5 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -17,12 +17,6 @@
+ #include "sof-priv.h"
+ #include "ops.h"
  
-+static int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream,
-+				struct snd_sof_dev *sdev,
-+				struct snd_sof_pcm *spcm)
-+{
-+	struct sof_ipc_stream stream;
-+	struct sof_ipc_reply reply;
-+	int ret;
-+
-+	stream.hdr.size = sizeof(stream);
-+	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
-+	stream.comp_id = spcm->stream[substream->stream].comp_id;
-+
-+	/* send IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
-+				 sizeof(stream), &reply, sizeof(reply));
-+	if (!ret)
-+		spcm->prepared[substream->stream] = false;
-+
-+	return ret;
-+}
-+
- static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -223,8 +244,6 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- 		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
- 	struct snd_sof_pcm *spcm;
--	struct sof_ipc_stream stream;
--	struct sof_ipc_reply reply;
- 	int ret;
- 
- 	/* nothing to do for BE */
-@@ -241,13 +260,7 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- 	dev_dbg(sdev->dev, "pcm: free stream %d dir %d\n", spcm->pcm.pcm_id,
- 		substream->stream);
- 
--	stream.hdr.size = sizeof(stream);
--	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
--	stream.comp_id = spcm->stream[substream->stream].comp_id;
+-/*
+- * IPC message default size and timeout (ms).
+- * TODO: allow platforms to set size and timeout.
+- */
+-#define IPC_TIMEOUT_MS		300
 -
--	/* send IPC to the DSP */
--	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
--				 sizeof(stream), &reply, sizeof(reply));
-+	ret = sof_pcm_dsp_pcm_free(substream, sdev, spcm);
+ static void ipc_trace_message(struct snd_sof_dev *sdev, u32 msg_id);
+ static void ipc_stream_message(struct snd_sof_dev *sdev, u32 msg_cmd);
  
- 	snd_pcm_lib_free_pages(substream);
+@@ -211,7 +205,7 @@ static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
  
-@@ -260,8 +273,6 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- 	if (ret < 0)
- 		dev_err(sdev->dev, "error: platform hw free failed\n");
+ 	/* wait for DSP IPC completion */
+ 	ret = wait_event_timeout(msg->waitq, msg->ipc_complete,
+-				 msecs_to_jiffies(IPC_TIMEOUT_MS));
++				 msecs_to_jiffies(sdev->ipc_timeout));
  
--	spcm->prepared[substream->stream] = false;
--
- 	return ret;
- }
- 
-@@ -365,21 +376,10 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
- 				 sizeof(stream), &reply, sizeof(reply));
- 
--	if (ret < 0 || !reset_hw_params)
--		return ret;
--
--	/*
--	 * In case of stream is stopped, DSP must be reprogrammed upon
--	 * restart, so free PCM here.
--	 */
--	stream.hdr.size = sizeof(stream);
--	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
--	stream.comp_id = spcm->stream[substream->stream].comp_id;
--	spcm->prepared[substream->stream] = false;
-+	if (!ret && reset_hw_params)
-+		ret = sof_pcm_dsp_pcm_free(substream, sdev, spcm);
- 
--	/* send IPC to the DSP */
--	return sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
--				  sizeof(stream), &reply, sizeof(reply));
-+	return ret;
- }
- 
- static snd_pcm_uframes_t sof_pcm_pointer(struct snd_pcm_substream *substream)
+ 	if (ret == 0) {
+ 		dev_err(sdev->dev, "error: ipc timed out for 0x%x size %d\n",
 -- 
 2.20.1
