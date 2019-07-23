@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-dai: move
-	snd_soc_dai_stream_valid() to soc-dai.c" to the asoc tree
-Date: Tue, 23 Jul 2019 18:18:50 +0100 (BST)
-Message-ID: <20190723171850.524B42742B59@ypsilon.sirena.org.uk>
-References: <87ftmyhmzz.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-dai: add snd_soc_dai_suspend()" to
+	the asoc tree
+Date: Tue, 23 Jul 2019 18:18:51 +0100 (BST)
+Message-ID: <20190723171851.928712742BAE@ypsilon.sirena.org.uk>
+References: <87muh6hn2x.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B55F8F8044A
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:51 +0200 (CEST)
-In-Reply-To: <87ftmyhmzz.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94E89F8044B
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:52 +0200 (CEST)
+In-Reply-To: <87muh6hn2x.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c
+   ASoC: soc-dai: add snd_soc_dai_suspend()
 
 has been applied to the asoc tree at
 
@@ -55,170 +55,75 @@ to this mail.
 Thanks,
 Mark
 
->From 467fece8fbc6774a3a3bd0981e1a342fb5022706 Mon Sep 17 00:00:00 2001
+>From e0f2262292d0c8160cfd9a8c40425107fb65ab29 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 22 Jul 2019 10:36:16 +0900
-Subject: [PATCH] ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c
+Date: Mon, 22 Jul 2019 10:34:29 +0900
+Subject: [PATCH] ASoC: soc-dai: add snd_soc_dai_suspend()
 
-snd_soc_dai_stream_valid() is function to check stream validity.
-But, some code is using it, some code are checking stream->channels_min
-directly. Doing samethings by different method is confusable.
-This patch uses same funcntion for same purpose.
+Current ALSA SoC is directly using dai->driver->xxx,
+thus, it has deep nested bracket, and it makes code unreadable.
+This patch adds new snd_soc_dai_suspend() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87ftmyhmzz.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87muh6hn2x.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dai.h  |  1 +
- sound/soc/soc-compress.c |  9 ++++-----
- sound/soc/soc-dai.c      | 18 ++++++++++++++++++
- sound/soc/soc-pcm.c      | 39 ++++++++++-----------------------------
- 4 files changed, 33 insertions(+), 34 deletions(-)
+ include/sound/soc-dai.h | 1 +
+ sound/soc/soc-core.c    | 8 ++++----
+ sound/soc/soc-dai.c     | 6 ++++++
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 0f8b09520020..dc48fe081a20 100644
+index 7cfed3034511..6c5604a7dbc2 100644
 --- a/include/sound/soc-dai.h
 +++ b/include/sound/soc-dai.h
-@@ -168,6 +168,7 @@ int snd_soc_dai_probe(struct snd_soc_dai *dai);
- int snd_soc_dai_remove(struct snd_soc_dai *dai);
- int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
- 			     struct snd_soc_pcm_runtime *rtd, int num);
-+bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream);
+@@ -162,6 +162,7 @@ int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
+ 			struct snd_pcm_substream *substream, int cmd);
+ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+ 				    struct snd_pcm_substream *substream);
++void snd_soc_dai_suspend(struct snd_soc_dai *dai);
  
  struct snd_soc_dai_ops {
  	/*
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index ddef4ff677ce..289211069a1e 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -872,14 +872,13 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6e8c5c8eeaec..7493afb2371c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -511,8 +511,8 @@ int snd_soc_suspend(struct device *dev)
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
+ 
+-		if (cpu_dai->driver->suspend && !cpu_dai->driver->bus_control)
+-			cpu_dai->driver->suspend(cpu_dai);
++		if (!cpu_dai->driver->bus_control)
++			snd_soc_dai_suspend(cpu_dai);
  	}
  
- 	/* check client and interface hw capabilities */
--	if (codec_dai->driver->playback.channels_min)
-+	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
-+	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
- 		playback = 1;
--	if (codec_dai->driver->capture.channels_min)
-+	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
-+	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
- 		capture = 1;
+ 	/* close any waiting streams */
+@@ -584,8 +584,8 @@ int snd_soc_suspend(struct device *dev)
+ 		if (rtd->dai_link->ignore_suspend)
+ 			continue;
  
--	capture = capture && cpu_dai->driver->capture.channels_min;
--	playback = playback && cpu_dai->driver->playback.channels_min;
--
- 	/*
- 	 * Compress devices are unidirectional so only one of the directions
- 	 * should be set, check for that (xor)
+-		if (cpu_dai->driver->suspend && cpu_dai->driver->bus_control)
+-			cpu_dai->driver->suspend(cpu_dai);
++		if (cpu_dai->driver->bus_control)
++			snd_soc_dai_suspend(cpu_dai);
+ 
+ 		/* deactivate pins to sleep state */
+ 		pinctrl_pm_select_sleep_state(cpu_dai->dev);
 diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index e6f161b9f975..1c7f63871c1d 100644
+index 5b5b979cd1f3..3373598e0682 100644
 --- a/sound/soc/soc-dai.c
 +++ b/sound/soc/soc-dai.c
-@@ -387,3 +387,21 @@ int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
- 		return dai->driver->compress_new(rtd, num);
- 	return -ENOTSUPP;
+@@ -353,3 +353,9 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
+ 
+ 	return delay;
  }
 +
-+/*
-+ * snd_soc_dai_stream_valid() - check if a DAI supports the given stream
-+ *
-+ * Returns true if the DAI supports the indicated stream type.
-+ */
-+bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int dir)
++void snd_soc_dai_suspend(struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_pcm_stream *stream;
-+
-+	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+		stream = &dai->driver->playback;
-+	else
-+		stream = &dai->driver->capture;
-+
-+	/* If the codec specifies any channels at all, it supports the stream */
-+	return stream->channels_min;
++	if (dai->driver->suspend)
++		dai->driver->suspend(dai);
 +}
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index f3137723301c..fabeac164a6c 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -29,24 +29,6 @@
- 
- #define DPCM_MAX_BE_USERS	8
- 
--/*
-- * snd_soc_dai_stream_valid() - check if a DAI supports the given stream
-- *
-- * Returns true if the DAI supports the indicated stream type.
-- */
--static bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream)
--{
--	struct snd_soc_pcm_stream *codec_stream;
--
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--		codec_stream = &dai->driver->playback;
--	else
--		codec_stream = &dai->driver->capture;
--
--	/* If the codec specifies any channels at all, it supports the stream */
--	return codec_stream->channels_min;
--}
--
- /**
-  * snd_soc_runtime_activate() - Increment active count for PCM runtime components
-  * @rtd: ASoC PCM runtime that is activated
-@@ -2688,8 +2670,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- 		new ? "new" : "old", fe->dai_link->name);
- 
- 	/* skip if FE doesn't have playback capability */
--	if (!fe->cpu_dai->driver->playback.channels_min ||
--	    !fe->codec_dai->driver->playback.channels_min)
-+	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK) ||
-+	    !snd_soc_dai_stream_valid(fe->codec_dai, SNDRV_PCM_STREAM_PLAYBACK))
- 		goto capture;
- 
- 	/* skip if FE isn't currently playing */
-@@ -2719,8 +2701,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- 
- capture:
- 	/* skip if FE doesn't have capture capability */
--	if (!fe->cpu_dai->driver->capture.channels_min ||
--	    !fe->codec_dai->driver->capture.channels_min)
-+	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_CAPTURE) ||
-+	    !snd_soc_dai_stream_valid(fe->codec_dai, SNDRV_PCM_STREAM_CAPTURE))
- 		return 0;
- 
- 	/* skip if FE isn't currently capturing */
-@@ -3030,14 +3012,13 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		capture = rtd->dai_link->dpcm_capture;
- 	} else {
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
--			if (codec_dai->driver->playback.channels_min)
-+			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
-+			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
- 				playback = 1;
--			if (codec_dai->driver->capture.channels_min)
-+			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
-+			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
- 				capture = 1;
- 		}
--
--		capture = capture && cpu_dai->driver->capture.channels_min;
--		playback = playback && cpu_dai->driver->playback.channels_min;
- 	}
- 
- 	if (rtd->dai_link->playback_only) {
-@@ -3375,11 +3356,11 @@ static ssize_t dpcm_state_read_file(struct file *file, char __user *user_buf,
- 	if (!buf)
- 		return -ENOMEM;
- 
--	if (fe->cpu_dai->driver->playback.channels_min)
-+	if (snd_soc_dai_stream_valid(fe->cpu_dai, SNDRV_PCM_STREAM_PLAYBACK))
- 		offset += dpcm_show_state(fe, SNDRV_PCM_STREAM_PLAYBACK,
- 					buf + offset, out_count - offset);
- 
--	if (fe->cpu_dai->driver->capture.channels_min)
-+	if (snd_soc_dai_stream_valid(fe->cpu_dai, SNDRV_PCM_STREAM_CAPTURE))
- 		offset += dpcm_show_state(fe, SNDRV_PCM_STREAM_CAPTURE,
- 					buf + offset, out_count - offset);
- 
 -- 
 2.20.1
