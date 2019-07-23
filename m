@@ -1,18 +1,18 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [RESEND PATCH v2 2/7] ASoC: Intel: Skylake: Combine
-	snd_soc_skl_ipc and snd_soc_skl
-Date: Tue, 23 Jul 2019 16:58:49 +0200
-Message-ID: <20190723145854.8527-3-cezary.rojewski@intel.com>
+Subject: [RESEND PATCH v2 4/7] ASoC: Intel: Skylake: Remove
+	memory available check
+Date: Tue, 23 Jul 2019 16:58:51 +0200
+Message-ID: <20190723145854.8527-5-cezary.rojewski@intel.com>
 References: <20190723145854.8527-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7288F8011C
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:59:26 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7847EF8044B
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:59:28 +0200 (CEST)
 In-Reply-To: <20190723145854.8527-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,45 +24,168 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: pierre-louis.bossart@linux.intel.com, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@intel.com>
+Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQW1hZGV1c3ogU8WCYXdpxYRza2kgPGFtYWRldXN6eC5zbGF3aW5za2lAaW50ZWwuY29t
-PgoKQXMgYm90aCBtb2R1bGVzIGFyZSBjb3JlIHBhcnQgb2YgU2t5bGFrZSBkcml2ZXIgYW5kIG5v
-bmUgY2FuIGxpdmUKd2l0aG91dCB0aGUgb3RoZXIsIGNvbWJpbmUgc25kX3NvY19za2xfaXBjIGFu
-ZCBzbmRfc29jX3NrbC4KCkl0J3MgaGlnaGx5IHByb2JhYmxlIElQQyBtb2R1bGUgd2FzIHRvIGJl
-IHRyZWF0ZWQgYXMgYW4gaW50ZXJmYWNlIGZvcgpwbGF0Zm9ybSBzcGVjaWZpYyBjb2RlIGltcGxl
-bWVudGF0aW9ucyBlLmcuOiBwb3NzaWJpbGl0eSBvZiBleGlzdGVuY2Ugb2YKQlhUIHNwZWNpZmlj
-IGNvZGUgd2l0aG91dCBTS0wgb25lLiBIb3dldmVyLCBtb3N0IGZ1bnRpb25hbGl0aWVzIGFyZQpi
-ZWluZyBpbmhlcml0ZWQgZnJvbSBvbmUgRFNQIGZpcm13YXJlIHRvIGFub3RoZXIsIGFuZCB0aHVz
-IHRoaXMKYXNzdW1wdGlvbiBmYWlscy4KCnNrbC1zc3QsIGJ4dC1zc3QgYW5kIGNubC1zc3QgYXJl
-IG5vdCBpbmRpdmlkdWFscyBwb2ludGluZyByZXNwZWN0aXZlbHkKdG8gU0tMIChjQVZTIDEuNSks
-IEJYVCAoY0FWUyAxLjUrKSAmIENOTCAoY0FWUyAxLjgpIHN0YW5kYWxvbmUKaW1wbGVtZW50YXRp
-b25zLiBDb2RlIGZvdW5kIHdpdGhpbiB0aGVzZSBpcyBzaGFyZWQgYW1vbmcgYWxsIHBsYXRmb3Jt
-cwp3aGVuZXZlciBuZWNlc3NhcnkgdG8gYXZvaWQgY29kZSBkdXBsaWNhdGlvbiBhbmQgcmVkdWNl
-IGRldmVsb3BtZW50CmJ1cmRlbi4KCk1lcmdlIGFsc28gaGVscHMgaW4gY2xlYW5pbmcgdXAgaW50
-ZXJuYWwgY29kZSBpbiBmdXR1cmUgY2hhbmdlcy4KClNpZ25lZC1vZmYtYnk6IEFtYWRldXN6IFPF
-gmF3acWEc2tpIDxhbWFkZXVzenguc2xhd2luc2tpQGludGVsLmNvbT4KU2lnbmVkLW9mZi1ieTog
-Q2V6YXJ5IFJvamV3c2tpIDxjZXphcnkucm9qZXdza2lAaW50ZWwuY29tPgotLS0KIHNvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL01ha2VmaWxlIHwgMTIgKysrLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdl
-ZCwgMyBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL01ha2VmaWxlIGIvc291bmQvc29jL2ludGVsL3NreWxha2UvTWFrZWZp
-bGUKaW5kZXggODZmNmUxZDgwMWFmLi40ODU0NGZmMWEzZTYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL01ha2VmaWxlCisrKyBiL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL01h
-a2VmaWxlCkBAIC0xLDYgKzEsNyBAQAogIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
-MAotc25kLXNvYy1za2wtb2JqcyA6PSBza2wubyBza2wtcGNtLm8gc2tsLW5obHQubyBza2wtbWVz
-c2FnZXMubyBcCi1za2wtdG9wb2xvZ3kubworc25kLXNvYy1za2wtb2JqcyA6PSBza2wubyBza2wt
-cGNtLm8gc2tsLW5obHQubyBza2wtbWVzc2FnZXMubyBza2wtdG9wb2xvZ3kubyBcCisJCXNrbC1z
-c3QtaXBjLm8gc2tsLXNzdC1kc3AubyBjbmwtc3N0LWRzcC5vIHNrbC1zc3QtY2xkbWEubyBcCisJ
-CXNrbC1zc3QubyBieHQtc3N0Lm8gY25sLXNzdC5vIHNrbC1zc3QtdXRpbHMubwogCiBpZmRlZiBD
-T05GSUdfREVCVUdfRlMKICAgc25kLXNvYy1za2wtb2JqcyArPSBza2wtZGVidWcubwpAQCAtOCwx
-MyArOSw2IEBAIGVuZGlmCiAKIG9iai0kKENPTkZJR19TTkRfU09DX0lOVEVMX1NLWUxBS0UpICs9
-IHNuZC1zb2Mtc2tsLm8KIAotIyBTa3lsYWtlIElQQyBTdXBwb3J0Ci1zbmQtc29jLXNrbC1pcGMt
-b2JqcyA6PSBza2wtc3N0LWlwYy5vIHNrbC1zc3QtZHNwLm8gY25sLXNzdC1kc3AubyBcCi0JCXNr
-bC1zc3QtY2xkbWEubyBza2wtc3N0Lm8gYnh0LXNzdC5vIGNubC1zc3QubyBcCi0JCXNrbC1zc3Qt
-dXRpbHMubwotCi1vYmotJChDT05GSUdfU05EX1NPQ19JTlRFTF9TS1lMQUtFKSArPSBzbmQtc29j
-LXNrbC1pcGMubwotCiAjU2t5bGFrZSBDbG9jayBkZXZpY2Ugc3VwcG9ydAogc25kLXNvYy1za2wt
-c3NwLWNsay1vYmpzIDo9IHNrbC1zc3AtY2xrLm8KIAotLSAKMi4xNy4xCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Current memory availability check is a stub, while actual memory
+management takes place in firmware. Leave this task to firmware entirely
+and remove redundant code.
+
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/skylake/skl-topology.c | 59 --------------------------
+ sound/soc/intel/skylake/skl.h          |  6 ---
+ 2 files changed, 65 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 2af311150543..53a024c0464d 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -109,49 +109,6 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w,
+ 	}
+ }
+ 
+-/*
+- * Each pipelines needs memory to be allocated. Check if we have free memory
+- * from available pool.
+- */
+-static bool skl_is_pipe_mem_avail(struct skl_dev *skl,
+-				struct skl_module_cfg *mconfig)
+-{
+-	if (skl->resource.mem + mconfig->pipe->memory_pages >
+-				skl->resource.max_mem) {
+-		dev_err(skl->dev,
+-				"%s: module_id %d instance %d\n", __func__,
+-				mconfig->id.module_id,
+-				mconfig->id.instance_id);
+-		dev_err(skl->dev,
+-				"exceeds ppl memory available %d mem %d\n",
+-				skl->resource.max_mem, skl->resource.mem);
+-		return false;
+-	} else {
+-		return true;
+-	}
+-}
+-
+-/*
+- * Add the mem to the mem pool. This is freed when pipe is deleted.
+- * Note: DSP does actual memory management we only keep track for complete
+- * pool
+- */
+-static void skl_tplg_alloc_pipe_mem(struct skl_dev *skl,
+-				struct skl_module_cfg *mconfig)
+-{
+-	skl->resource.mem += mconfig->pipe->memory_pages;
+-}
+-
+-/*
+- * Free the memory when tearing down
+- */
+-static void
+-skl_tplg_free_pipe_mem(struct skl_dev *skl, struct skl_module_cfg *mconfig)
+-{
+-	skl->resource.mem -= mconfig->pipe->memory_pages;
+-}
+-
+-
+ static void skl_dump_mconfig(struct skl_dev *skl, struct skl_module_cfg *mcfg)
+ {
+ 	struct skl_module_iface *iface = &mcfg->module->formats[0];
+@@ -681,7 +638,6 @@ skl_tplg_get_pipe_config(struct skl_dev *skl, struct skl_module_cfg *mconfig)
+ /*
+  * Mixer module represents a pipeline. So in the Pre-PMU event of mixer we
+  * need create the pipeline. So we do following:
+- *   - check the resources
+  *   - Create the pipeline
+  *   - Initialize the modules in pipeline
+  *   - finally bind all modules together
+@@ -700,9 +656,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (!skl_is_pipe_mem_avail(skl, mconfig))
+-		return -ENOMEM;
+-
+ 	/*
+ 	 * Create a list of modules for pipe.
+ 	 * This list contains modules from source to sink
+@@ -711,8 +664,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	skl_tplg_alloc_pipe_mem(skl, mconfig);
+-
+ 	/* Init all pipe modules from source to sink */
+ 	ret = skl_tplg_init_pipe_modules(skl, s_pipe);
+ 	if (ret < 0)
+@@ -1207,7 +1158,6 @@ static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
+ 
+ /*
+  * in the Post-PMD event of mixer we need to do following:
+- *   - Free the mem used
+  *   - Unbind the modules within the pipeline
+  *   - Delete the pipeline (modules are not required to be explicitly
+  *     deleted, pipeline delete is enough here
+@@ -1224,8 +1174,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	if (s_pipe->state == SKL_PIPE_INVALID)
+ 		return -EINVAL;
+ 
+-	skl_tplg_free_pipe_mem(skl, mconfig);
+-
+ 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
+ 		if (list_empty(&skl->bind_list))
+ 			break;
+@@ -2921,8 +2869,6 @@ void skl_cleanup_resources(struct skl_dev *skl)
+ 	if (!card || !card->instantiated)
+ 		return;
+ 
+-	skl->resource.mem = 0;
+-
+ 	list_for_each_entry(w, &card->widgets, list) {
+ 		if (is_skl_dsp_widget_type(w, skl->dev) && w->priv != NULL)
+ 			skl_clear_pin_config(soc_component, w);
+@@ -3619,9 +3565,6 @@ static void skl_tplg_set_pipe_type(struct skl_dev *skl, struct skl_pipe *pipe)
+ 		pipe->passthru = false;
+ }
+ 
+-/* This will be read from topology manifest, currently defined here */
+-#define SKL_FW_MAX_MEM 1000000
+-
+ /*
+  * SKL topology init routine
+  */
+@@ -3656,8 +3599,6 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ 		return -EINVAL;
+ 	}
+ 
+-	skl->resource.max_mem = SKL_FW_MAX_MEM;
+-
+ 	skl->tplg = fw;
+ 	ret = skl_tplg_create_pipe_widget_list(component);
+ 	if (ret < 0)
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 21c33c1af934..600a61f79b0a 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -41,11 +41,6 @@
+ #define AZX_VS_EM2_DUM			BIT(23)
+ #define AZX_REG_VS_EM2_L1SEN		BIT(13)
+ 
+-struct skl_dsp_resource {
+-	u32 max_mem;
+-	u32 mem;
+-};
+-
+ struct skl_debug;
+ 
+ struct skl_astate_param {
+@@ -75,7 +70,6 @@ struct skl_dev {
+ 
+ 	struct nhlt_acpi_table *nhlt; /* nhlt ptr */
+ 
+-	struct skl_dsp_resource resource;
+ 	struct list_head ppl_list;
+ 	struct list_head bind_list;
+ 
+-- 
+2.17.1
