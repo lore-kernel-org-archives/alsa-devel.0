@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-dai: add snd_soc_dai_suspend()" to
-	the asoc tree
-Date: Tue, 23 Jul 2019 18:18:51 +0100 (BST)
-Message-ID: <20190723171851.928712742BAE@ypsilon.sirena.org.uk>
-References: <87muh6hn2x.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: use existing
+	snd_soc_dai_digital_mute()" to the asoc tree
+Date: Tue, 23 Jul 2019 18:18:50 +0100 (BST)
+Message-ID: <20190723171850.854DA2742B60@ypsilon.sirena.org.uk>
+References: <87ef2ihmzo.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94E89F8044B
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2E3FF80227
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:52 +0200 (CEST)
-In-Reply-To: <87muh6hn2x.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87ef2ihmzo.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-dai: add snd_soc_dai_suspend()
+   ASoC: soc-core: use existing snd_soc_dai_digital_mute()
 
 has been applied to the asoc tree at
 
@@ -55,75 +55,52 @@ to this mail.
 Thanks,
 Mark
 
->From e0f2262292d0c8160cfd9a8c40425107fb65ab29 Mon Sep 17 00:00:00 2001
+>From 88fdffa2eef45fc9f6009ee590741c44a57c49c7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 22 Jul 2019 10:34:29 +0900
-Subject: [PATCH] ASoC: soc-dai: add snd_soc_dai_suspend()
+Date: Mon, 22 Jul 2019 10:36:27 +0900
+Subject: [PATCH] ASoC: soc-core: use existing snd_soc_dai_digital_mute()
 
-Current ALSA SoC is directly using dai->driver->xxx,
-thus, it has deep nested bracket, and it makes code unreadable.
-This patch adds new snd_soc_dai_suspend() and use it.
+ALSA SoC already has snd_soc_dai_digital_mute() for digital_mute,
+let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87muh6hn2x.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87ef2ihmzo.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dai.h | 1 +
- sound/soc/soc-core.c    | 8 ++++----
- sound/soc/soc-dai.c     | 6 ++++++
- 3 files changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 7cfed3034511..6c5604a7dbc2 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -162,6 +162,7 @@ int snd_soc_dai_bespoke_trigger(struct snd_soc_dai *dai,
- 			struct snd_pcm_substream *substream, int cmd);
- snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
- 				    struct snd_pcm_substream *substream);
-+void snd_soc_dai_suspend(struct snd_soc_dai *dai);
- 
- struct snd_soc_dai_ops {
- 	/*
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6e8c5c8eeaec..7493afb2371c 100644
+index 458b090f026a..7ecfe641ca46 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -511,8 +511,8 @@ int snd_soc_suspend(struct device *dev)
- 		if (rtd->dai_link->ignore_suspend)
+@@ -487,10 +487,9 @@ int snd_soc_suspend(struct device *dev)
  			continue;
  
--		if (cpu_dai->driver->suspend && !cpu_dai->driver->bus_control)
--			cpu_dai->driver->suspend(cpu_dai);
-+		if (!cpu_dai->driver->bus_control)
-+			snd_soc_dai_suspend(cpu_dai);
+ 		for_each_rtd_codec_dai(rtd, i, dai) {
+-			struct snd_soc_dai_driver *drv = dai->driver;
+-
+-			if (drv->ops->digital_mute && dai->playback_active)
+-				drv->ops->digital_mute(dai, 1);
++			if (dai->playback_active)
++				snd_soc_dai_digital_mute(dai, 1,
++						SNDRV_PCM_STREAM_PLAYBACK);
+ 		}
  	}
  
- 	/* close any waiting streams */
-@@ -584,8 +584,8 @@ int snd_soc_suspend(struct device *dev)
- 		if (rtd->dai_link->ignore_suspend)
+@@ -665,10 +664,9 @@ static void soc_resume_deferred(struct work_struct *work)
  			continue;
  
--		if (cpu_dai->driver->suspend && cpu_dai->driver->bus_control)
--			cpu_dai->driver->suspend(cpu_dai);
-+		if (cpu_dai->driver->bus_control)
-+			snd_soc_dai_suspend(cpu_dai);
+ 		for_each_rtd_codec_dai(rtd, i, dai) {
+-			struct snd_soc_dai_driver *drv = dai->driver;
+-
+-			if (drv->ops->digital_mute && dai->playback_active)
+-				drv->ops->digital_mute(dai, 0);
++			if (dai->playback_active)
++				snd_soc_dai_digital_mute(dai, 0,
++						SNDRV_PCM_STREAM_PLAYBACK);
+ 		}
+ 	}
  
- 		/* deactivate pins to sleep state */
- 		pinctrl_pm_select_sleep_state(cpu_dai->dev);
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 5b5b979cd1f3..3373598e0682 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -353,3 +353,9 @@ snd_pcm_sframes_t snd_soc_dai_delay(struct snd_soc_dai *dai,
- 
- 	return delay;
- }
-+
-+void snd_soc_dai_suspend(struct snd_soc_dai *dai)
-+{
-+	if (dai->driver->suspend)
-+		dai->driver->suspend(dai);
-+}
 -- 
 2.20.1
