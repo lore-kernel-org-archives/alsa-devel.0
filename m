@@ -1,17 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Support hw_free() callback at DAI level" to the asoc tree
-Date: Tue, 23 Jul 2019 18:18:53 +0100 (BST)
-Message-ID: <20190723171853.98F9F2742B59@ypsilon.sirena.org.uk>
-References: <20190722072403.11008-2-jiada_wang@mentor.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190722072403.11008-2-jiada_wang@mentor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Jiada Wang <jiada_wang@mentor.com>jiada_wang@mentor.com, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, twischer@de.adit-jv.com
+Subject: Applied "ASoC: soc-dai: move
+	snd_soc_dai_stream_valid() to soc-dai.c" to the asoc tree
+Date: Tue, 23 Jul 2019 18:18:50 +0100 (BST)
+Message-ID: <20190723171850.524B42742B59@ypsilon.sirena.org.uk>
+References: <87ftmyhmzz.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B55F8F8044A
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:51 +0200 (CEST)
+In-Reply-To: <87ftmyhmzz.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Support hw_free() callback at DAI level
+   ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c
 
 has been applied to the asoc tree at
 
@@ -36,125 +55,170 @@ to this mail.
 Thanks,
 Mark
 
->From 859fd6cbf1fb32b5428c26f837215c085b8a822e Mon Sep 17 00:00:00 2001
-From: Timo Wischer <twischer@de.adit-jv.com>
-Date: Mon, 22 Jul 2019 16:24:01 +0900
-Subject: [PATCH] ASoC: rsnd: Support hw_free() callback at DAI level
+>From 467fece8fbc6774a3a3bd0981e1a342fb5022706 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 22 Jul 2019 10:36:16 +0900
+Subject: [PATCH] ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c
 
-This patch provides the needed infrastructure to support calling hw_free()
-at the DAI level. This is for example required to free resources allocated
-in hw_params() callback.
+snd_soc_dai_stream_valid() is function to check stream validity.
+But, some code is using it, some code are checking stream->channels_min
+directly. Doing samethings by different method is confusable.
+This patch uses same funcntion for same purpose.
 
-The modification of __rsnd_mod_add_hw_params does not have any side
-effects because rsnd_mod_ops::hw_params callback is not used by anyone
-until now.
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Link: https://lore.kernel.org/r/20190722072403.11008-2-jiada_wang@mentor.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87ftmyhmzz.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 16 +++++++++++++++-
- sound/soc/sh/rcar/rsnd.h | 12 +++++++++---
- 2 files changed, 24 insertions(+), 4 deletions(-)
+ include/sound/soc-dai.h  |  1 +
+ sound/soc/soc-compress.c |  9 ++++-----
+ sound/soc/soc-dai.c      | 18 ++++++++++++++++++
+ sound/soc/soc-pcm.c      | 39 ++++++++++-----------------------------
+ 4 files changed, 33 insertions(+), 34 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 56e8dae9a15c..bda5b958d0dc 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1421,6 +1421,20 @@ static int rsnd_hw_params(struct snd_pcm_substream *substream,
- 					params_buffer_bytes(hw_params));
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 0f8b09520020..dc48fe081a20 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -168,6 +168,7 @@ int snd_soc_dai_probe(struct snd_soc_dai *dai);
+ int snd_soc_dai_remove(struct snd_soc_dai *dai);
+ int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
+ 			     struct snd_soc_pcm_runtime *rtd, int num);
++bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream);
+ 
+ struct snd_soc_dai_ops {
+ 	/*
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index ddef4ff677ce..289211069a1e 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -872,14 +872,13 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	}
+ 
+ 	/* check client and interface hw capabilities */
+-	if (codec_dai->driver->playback.channels_min)
++	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
++	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
+ 		playback = 1;
+-	if (codec_dai->driver->capture.channels_min)
++	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
++	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
+ 		capture = 1;
+ 
+-	capture = capture && cpu_dai->driver->capture.channels_min;
+-	playback = playback && cpu_dai->driver->playback.channels_min;
+-
+ 	/*
+ 	 * Compress devices are unidirectional so only one of the directions
+ 	 * should be set, check for that (xor)
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index e6f161b9f975..1c7f63871c1d 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -387,3 +387,21 @@ int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
+ 		return dai->driver->compress_new(rtd, num);
+ 	return -ENOTSUPP;
  }
- 
-+static int rsnd_hw_free(struct snd_pcm_substream *substream)
++
++/*
++ * snd_soc_dai_stream_valid() - check if a DAI supports the given stream
++ *
++ * Returns true if the DAI supports the indicated stream type.
++ */
++bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int dir)
 +{
-+	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
-+	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
-+	int ret;
++	struct snd_soc_pcm_stream *stream;
 +
-+	ret = rsnd_dai_call(hw_free, io, substream);
-+	if (ret)
-+		return ret;
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &dai->driver->playback;
++	else
++		stream = &dai->driver->capture;
 +
-+	return snd_pcm_lib_free_pages(substream);
++	/* If the codec specifies any channels at all, it supports the stream */
++	return stream->channels_min;
 +}
-+
- static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
-@@ -1436,7 +1450,7 @@ static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
- static const struct snd_pcm_ops rsnd_pcm_ops = {
- 	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= rsnd_hw_params,
--	.hw_free	= snd_pcm_lib_free_pages,
-+	.hw_free	= rsnd_hw_free,
- 	.pointer	= rsnd_pointer,
- };
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index f3137723301c..fabeac164a6c 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -29,24 +29,6 @@
  
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 7727add3eb1a..ea6cbaa9743e 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -327,6 +327,9 @@ struct rsnd_mod_ops {
- 	int (*cleanup)(struct rsnd_mod *mod,
- 		       struct rsnd_dai_stream *io,
- 		       struct rsnd_priv *priv);
-+	int (*hw_free)(struct rsnd_mod *mod,
-+		       struct rsnd_dai_stream *io,
-+		       struct snd_pcm_substream *substream);
- 	u32 *(*get_status)(struct rsnd_mod *mod,
- 			   struct rsnd_dai_stream *io,
- 			   enum rsnd_mod_type type);
-@@ -351,12 +354,12 @@ struct rsnd_mod {
-  *
-  * B	0: init		1: quit
-  * C	0: start	1: stop
-+ * D	0: hw_params	1: hw_free
-  *
-  * H is always called (see __rsnd_mod_call)
-  * H	0: probe	1: remove
-  * H	0: pcm_new
-  * H	0: fallback
-- * H	0: hw_params
-  * H	0: pointer
-  * H	0: prepare
-  * H	0: cleanup
-@@ -365,12 +368,13 @@ struct rsnd_mod {
- #define __rsnd_mod_shift_quit		4
- #define __rsnd_mod_shift_start		8
- #define __rsnd_mod_shift_stop		8
-+#define __rsnd_mod_shift_hw_params	12
-+#define __rsnd_mod_shift_hw_free	12
- #define __rsnd_mod_shift_probe		28 /* always called */
- #define __rsnd_mod_shift_remove		28 /* always called */
- #define __rsnd_mod_shift_irq		28 /* always called */
- #define __rsnd_mod_shift_pcm_new	28 /* always called */
- #define __rsnd_mod_shift_fallback	28 /* always called */
--#define __rsnd_mod_shift_hw_params	28 /* always called */
- #define __rsnd_mod_shift_pointer	28 /* always called */
- #define __rsnd_mod_shift_prepare	28 /* always called */
- #define __rsnd_mod_shift_cleanup	28 /* always called */
-@@ -383,10 +387,11 @@ struct rsnd_mod {
- #define __rsnd_mod_add_quit		-1
- #define __rsnd_mod_add_start		 1
- #define __rsnd_mod_add_stop		-1
-+#define __rsnd_mod_add_hw_params	1
-+#define __rsnd_mod_add_hw_free		-1
- #define __rsnd_mod_add_irq		0
- #define __rsnd_mod_add_pcm_new		0
- #define __rsnd_mod_add_fallback		0
--#define __rsnd_mod_add_hw_params	0
- #define __rsnd_mod_add_pointer		0
+ #define DPCM_MAX_BE_USERS	8
  
- #define __rsnd_mod_call_probe		0
-@@ -402,6 +407,7 @@ struct rsnd_mod {
- #define __rsnd_mod_call_fallback	0
- #define __rsnd_mod_call_hw_params	0
- #define __rsnd_mod_call_pointer		0
-+#define __rsnd_mod_call_hw_free		1
+-/*
+- * snd_soc_dai_stream_valid() - check if a DAI supports the given stream
+- *
+- * Returns true if the DAI supports the indicated stream type.
+- */
+-static bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream)
+-{
+-	struct snd_soc_pcm_stream *codec_stream;
+-
+-	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		codec_stream = &dai->driver->playback;
+-	else
+-		codec_stream = &dai->driver->capture;
+-
+-	/* If the codec specifies any channels at all, it supports the stream */
+-	return codec_stream->channels_min;
+-}
+-
+ /**
+  * snd_soc_runtime_activate() - Increment active count for PCM runtime components
+  * @rtd: ASoC PCM runtime that is activated
+@@ -2688,8 +2670,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 		new ? "new" : "old", fe->dai_link->name);
  
- #define rsnd_mod_to_priv(mod)	((mod)->priv)
- #define rsnd_mod_power_on(mod)	clk_enable((mod)->clk)
+ 	/* skip if FE doesn't have playback capability */
+-	if (!fe->cpu_dai->driver->playback.channels_min ||
+-	    !fe->codec_dai->driver->playback.channels_min)
++	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK) ||
++	    !snd_soc_dai_stream_valid(fe->codec_dai, SNDRV_PCM_STREAM_PLAYBACK))
+ 		goto capture;
+ 
+ 	/* skip if FE isn't currently playing */
+@@ -2719,8 +2701,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 
+ capture:
+ 	/* skip if FE doesn't have capture capability */
+-	if (!fe->cpu_dai->driver->capture.channels_min ||
+-	    !fe->codec_dai->driver->capture.channels_min)
++	if (!snd_soc_dai_stream_valid(fe->cpu_dai,   SNDRV_PCM_STREAM_CAPTURE) ||
++	    !snd_soc_dai_stream_valid(fe->codec_dai, SNDRV_PCM_STREAM_CAPTURE))
+ 		return 0;
+ 
+ 	/* skip if FE isn't currently capturing */
+@@ -3030,14 +3012,13 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		capture = rtd->dai_link->dpcm_capture;
+ 	} else {
+ 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-			if (codec_dai->driver->playback.channels_min)
++			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
++			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
+ 				playback = 1;
+-			if (codec_dai->driver->capture.channels_min)
++			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
++			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
+ 				capture = 1;
+ 		}
+-
+-		capture = capture && cpu_dai->driver->capture.channels_min;
+-		playback = playback && cpu_dai->driver->playback.channels_min;
+ 	}
+ 
+ 	if (rtd->dai_link->playback_only) {
+@@ -3375,11 +3356,11 @@ static ssize_t dpcm_state_read_file(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	if (fe->cpu_dai->driver->playback.channels_min)
++	if (snd_soc_dai_stream_valid(fe->cpu_dai, SNDRV_PCM_STREAM_PLAYBACK))
+ 		offset += dpcm_show_state(fe, SNDRV_PCM_STREAM_PLAYBACK,
+ 					buf + offset, out_count - offset);
+ 
+-	if (fe->cpu_dai->driver->capture.channels_min)
++	if (snd_soc_dai_stream_valid(fe->cpu_dai, SNDRV_PCM_STREAM_CAPTURE))
+ 		offset += dpcm_show_state(fe, SNDRV_PCM_STREAM_CAPTURE,
+ 					buf + offset, out_count - offset);
+ 
 -- 
 2.20.1
