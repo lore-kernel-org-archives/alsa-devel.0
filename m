@@ -1,18 +1,18 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [RESEND PATCH v2 5/7] ASoC: Intel: Skylake: Do not
-	disable FW notifications
-Date: Tue, 23 Jul 2019 16:58:52 +0200
-Message-ID: <20190723145854.8527-6-cezary.rojewski@intel.com>
+Subject: [RESEND PATCH v2 3/7] ASoC: Intel: Skylake: Remove
+	MCPS available check
+Date: Tue, 23 Jul 2019 16:58:50 +0200
+Message-ID: <20190723145854.8527-4-cezary.rojewski@intel.com>
 References: <20190723145854.8527-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8226F8044C
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:59:29 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7347F8045D
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:59:28 +0200 (CEST)
 In-Reply-To: <20190723145854.8527-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,72 +24,190 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: pierre-louis.bossart@linux.intel.com, Cezary Rojewski <cezary.rojewski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@intel.com>
+Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQW1hZGV1c3ogU8WCYXdpxYRza2kgPGFtYWRldXN6eC5zbGF3aW5za2lAaW50ZWwuY29t
-PgoKQXMgcGVyIEZXIHRlYW0gcmVjb21tZW5kYXRpb24gd2Ugc2hvdWxkIG5vdCBkaXNhYmxlIG5v
-dGlmaWNhdGlvbnMuCkJ5IGRlZmF1bHQsIGFsbCBub3RpZmljYXRpb25zIGFyZSBlbmFibGVkIGlu
-IERTUCBmaXJtd2FyZS4gVGhlc2UKbm90aWZpY2F0aW9ucyBwcm92aWRlIGEgdml0YWwgaW5mb3Jt
-YXRpb24gd2hlbmV2ZXIgYW4gZXJyb3Igb2NjdXJzLgoKQ3VycmVudGx5LCBkcml2ZXIgZGlzYWJs
-ZXMgdGhlbSBkdXJpbmcgYm9vdCBzZXF1ZW5jZXMuIEJ5IGRvaW5nIHNvLApTa3lsYWtlIG1heSBz
-aWxlbnRseSBpZ25vcmUgc2V2ZXJlIHN0cmVhbSBlcnJvcnMuCkNvcnJlY3QgdGhhdCBieSByZW1v
-dmluZyBwZXJtaXNzaXZlIGNvZGUuCgpTaWduZWQtb2ZmLWJ5OiBBbWFkZXVzeiBTxYJhd2nFhHNr
-aSA8YW1hZGV1c3p4LnNsYXdpbnNraUBpbnRlbC5jb20+ClNpZ25lZC1vZmYtYnk6IENlemFyeSBS
-b2pld3NraSA8Y2V6YXJ5LnJvamV3c2tpQGludGVsLmNvbT4KLS0tCiBzb3VuZC9zb2MvaW50ZWwv
-c2t5bGFrZS9za2wtbWVzc2FnZXMuYyB8IDIwIC0tLS0tLS0tLS0tLS0tLS0tLS0tCiBzb3VuZC9z
-b2MvaW50ZWwvc2t5bGFrZS9za2wtcGNtLmMgICAgICB8ICAxIC0KIHNvdW5kL3NvYy9pbnRlbC9z
-a3lsYWtlL3NrbC1zc3QtZHNwLmggIHwgIDEgLQogc291bmQvc29jL2ludGVsL3NreWxha2Uvc2ts
-LXRvcG9sb2d5LmggfCAgNSAtLS0tLQogNCBmaWxlcyBjaGFuZ2VkLCAyNyBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtbWVzc2FnZXMuYyBiL3Nv
-dW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1tZXNzYWdlcy5jCmluZGV4IGY2MDRkOWM2ODI0ZC4u
-MDc3NjI1NDNmYjEzIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtbWVz
-c2FnZXMuYworKysgYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtbWVzc2FnZXMuYwpAQCAt
-NTgsMjQgKzU4LDYgQEAgdm9pZCBza2xfZHNwX3NldF9hc3RhdGVfY2ZnKHN0cnVjdCBza2xfZGV2
-ICpza2wsIHUzMiBjbnQsIHZvaWQgKmRhdGEpCiAJc2tsX2lwY19zZXRfbGFyZ2VfY29uZmlnKCZz
-a2wtPmlwYywgJm1zZywgZGF0YSk7CiB9CiAKLSNkZWZpbmUgTk9USUZJQ0FUSU9OX1BBUkFNX0lE
-IDMKLSNkZWZpbmUgTk9USUZJQ0FUSU9OX01BU0sgMHhmCi0KLS8qIGRpc2FibGUgbm90ZmljYXRp
-b24gZm9yIHVuZGVycnVucy9vdmVycnVucyBmcm9tIGZpcm13YXJlIG1vZHVsZSAqLwotdm9pZCBz
-a2xfZHNwX2VuYWJsZV9ub3RpZmljYXRpb24oc3RydWN0IHNrbF9kZXYgKnNrbCwgYm9vbCBlbmFi
-bGUpCi17Ci0Jc3RydWN0IG5vdGlmaWNhdGlvbl9tYXNrIG1hc2s7Ci0Jc3RydWN0IHNrbF9pcGNf
-bGFyZ2VfY29uZmlnX21zZwltc2cgPSB7MH07Ci0KLQltYXNrLm5vdGlmeSA9IE5PVElGSUNBVElP
-Tl9NQVNLOwotCW1hc2suZW5hYmxlID0gZW5hYmxlOwotCi0JbXNnLmxhcmdlX3BhcmFtX2lkID0g
-Tk9USUZJQ0FUSU9OX1BBUkFNX0lEOwotCW1zZy5wYXJhbV9kYXRhX3NpemUgPSBzaXplb2YobWFz
-ayk7Ci0KLQlza2xfaXBjX3NldF9sYXJnZV9jb25maWcoJnNrbC0+aXBjLCAmbXNnLCAodTMyICop
-Jm1hc2spOwotfQotCiBzdGF0aWMgaW50IHNrbF9kc3Bfc2V0dXBfc3BpYihzdHJ1Y3QgZGV2aWNl
-ICpkZXYsIHVuc2lnbmVkIGludCBzaXplLAogCQkJCWludCBzdHJlYW1fdGFnLCBpbnQgZW5hYmxl
-KQogewpAQCAtNDM2LDggKzQxOCw2IEBAIGludCBza2xfcmVzdW1lX2RzcChzdHJ1Y3Qgc2tsX2Rl
-diAqc2tsKQogCWlmIChyZXQgPCAwKQogCQlyZXR1cm4gcmV0OwogCi0Jc2tsX2RzcF9lbmFibGVf
-bm90aWZpY2F0aW9uKHNrbCwgZmFsc2UpOwotCiAJaWYgKHNrbC0+Y2ZnLmFzdGF0ZV9jZmcgIT0g
-TlVMTCkgewogCQlza2xfZHNwX3NldF9hc3RhdGVfY2ZnKHNrbCwgc2tsLT5jZmcuYXN0YXRlX2Nm
-Zy0+Y291bnQsCiAJCQkJCXNrbC0+Y2ZnLmFzdGF0ZV9jZmcpOwpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2ludGVsL3NreWxha2Uvc2tsLXBjbS5jIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2ts
-LXBjbS5jCmluZGV4IDJhZTVkMDlkNzIyOC4uN2YyODc0MjRhZjliIDEwMDY0NAotLS0gYS9zb3Vu
-ZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtcGNtLmMKKysrIGIvc291bmQvc29jL2ludGVsL3NreWxh
-a2Uvc2tsLXBjbS5jCkBAIC0xNDQ1LDcgKzE0NDUsNiBAQCBzdGF0aWMgaW50IHNrbF9wbGF0Zm9y
-bV9zb2NfcHJvYmUoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQpCiAJCX0KIAkJ
-c2tsX3BvcHVsYXRlX21vZHVsZXMoc2tsKTsKIAkJc2tsLT51cGRhdGVfZDBpM2MgPSBza2xfdXBk
-YXRlX2QwaTNjOwotCQlza2xfZHNwX2VuYWJsZV9ub3RpZmljYXRpb24oc2tsLCBmYWxzZSk7CiAK
-IAkJaWYgKHNrbC0+Y2ZnLmFzdGF0ZV9jZmcgIT0gTlVMTCkgewogCQkJc2tsX2RzcF9zZXRfYXN0
-YXRlX2NmZyhza2wsCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0
-LWRzcC5oIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1kc3AuaAppbmRleCBlZDk2
-OGYxMDQyYzcuLmNkZmVjMGZjYTU3NyAxMDA2NDQKLS0tIGEvc291bmQvc29jL2ludGVsL3NreWxh
-a2Uvc2tsLXNzdC1kc3AuaAorKysgYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWRz
-cC5oCkBAIC0yNDAsNyArMjQwLDYgQEAgaW50IHNrbF9nZXRfcHZ0X2luc3RhbmNlX2lkX21hcChz
-dHJ1Y3Qgc2tsX2RldiAqc2tsLAogdm9pZCBza2xfZnJlZXVwX3V1aWRfbGlzdChzdHJ1Y3Qgc2ts
-X2RldiAqc2tsKTsKIAogaW50IHNrbF9kc3Bfc3RyaXBfZXh0ZW5kZWRfbWFuaWZlc3Qoc3RydWN0
-IGZpcm13YXJlICpmdyk7Ci12b2lkIHNrbF9kc3BfZW5hYmxlX25vdGlmaWNhdGlvbihzdHJ1Y3Qg
-c2tsX2RldiAqc2tsLCBib29sIGVuYWJsZSk7CiAKIHZvaWQgc2tsX2RzcF9zZXRfYXN0YXRlX2Nm
-ZyhzdHJ1Y3Qgc2tsX2RldiAqc2tsLCB1MzIgY250LCB2b2lkICpkYXRhKTsKIApkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXRvcG9sb2d5LmggYi9zb3VuZC9zb2MvaW50
-ZWwvc2t5bGFrZS9za2wtdG9wb2xvZ3kuaAppbmRleCAwYTRkODljZGFhNGMuLmUyYTJmYzVjNTU0
-NSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXRvcG9sb2d5LmgKKysr
-IGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXRvcG9sb2d5LmgKQEAgLTE0MCwxMSArMTQw
-LDYgQEAgc3RydWN0IHNrbF9zcmNfbW9kdWxlX2NmZyB7CiAJZW51bSBza2xfc19mcmVxIHNyY19j
-Zmc7CiB9IF9fcGFja2VkOwogCi1zdHJ1Y3Qgbm90aWZpY2F0aW9uX21hc2sgewotCXUzMiBub3Rp
-Znk7Ci0JdTMyIGVuYWJsZTsKLX0gX19wYWNrZWQ7Ci0KIHN0cnVjdCBza2xfdXBfZG93bl9taXhl
-cl9jZmcgewogCXN0cnVjdCBza2xfYmFzZV9jZmcgYmFzZV9jZmc7CiAJZW51bSBza2xfY2hfY2Zn
-IG91dF9jaF9jZmc7Ci0tIAoyLjE3LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+The entire logic for MCPS calculation and DSP scheduling is found
+within DSP firmware. Currently driver implements simplistic, inaccurate
+logic itself which may prevent pipeline creation despite firmware being
+completely fine its parameters.
+
+Remove that logic and leave the MCPS calculation to DSP alone.
+
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/skylake/skl-topology.c | 67 +-------------------------
+ sound/soc/intel/skylake/skl.h          |  2 -
+ 2 files changed, 1 insertion(+), 68 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index abf860109607..2af311150543 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -142,54 +142,6 @@ static void skl_tplg_alloc_pipe_mem(struct skl_dev *skl,
+ 	skl->resource.mem += mconfig->pipe->memory_pages;
+ }
+ 
+-/*
+- * Pipeline needs needs DSP CPU resources for computation, this is
+- * quantified in MCPS (Million Clocks Per Second) required for module/pipe
+- *
+- * Each pipelines needs mcps to be allocated. Check if we have mcps for this
+- * pipe.
+- */
+-
+-static bool skl_is_pipe_mcps_avail(struct skl_dev *skl,
+-				struct skl_module_cfg *mconfig)
+-{
+-	u8 res_idx = mconfig->res_idx;
+-	struct skl_module_res *res = &mconfig->module->resources[res_idx];
+-
+-	if (skl->resource.mcps + res->cps > skl->resource.max_mcps) {
+-		dev_err(skl->dev,
+-			"%s: module_id %d instance %d\n", __func__,
+-			mconfig->id.module_id, mconfig->id.instance_id);
+-		dev_err(skl->dev,
+-			"exceeds ppl mcps available %d > mem %d\n",
+-			skl->resource.max_mcps, skl->resource.mcps);
+-		return false;
+-	} else {
+-		return true;
+-	}
+-}
+-
+-static void skl_tplg_alloc_pipe_mcps(struct skl_dev *skl,
+-				struct skl_module_cfg *mconfig)
+-{
+-	u8 res_idx = mconfig->res_idx;
+-	struct skl_module_res *res = &mconfig->module->resources[res_idx];
+-
+-	skl->resource.mcps += res->cps;
+-}
+-
+-/*
+- * Free the mcps when tearing down
+- */
+-static void
+-skl_tplg_free_pipe_mcps(struct skl_dev *skl, struct skl_module_cfg *mconfig)
+-{
+-	u8 res_idx = mconfig->res_idx;
+-	struct skl_module_res *res = &mconfig->module->resources[res_idx];
+-
+-	skl->resource.mcps -= res->cps;
+-}
+-
+ /*
+  * Free the memory when tearing down
+  */
+@@ -582,10 +534,6 @@ skl_tplg_init_pipe_modules(struct skl_dev *skl, struct skl_pipe *pipe)
+ 		mconfig->fmt_idx = mconfig->mod_cfg[cfg_idx].fmt_idx;
+ 		mconfig->res_idx = mconfig->mod_cfg[cfg_idx].res_idx;
+ 
+-		/* check resource available */
+-		if (!skl_is_pipe_mcps_avail(skl, mconfig))
+-			return -ENOMEM;
+-
+ 		if (mconfig->module->loadable && skl->dsp->fw_ops.load_mod) {
+ 			ret = skl->dsp->fw_ops.load_mod(skl->dsp,
+ 				mconfig->id.module_id, mconfig->guid);
+@@ -627,7 +575,7 @@ skl_tplg_init_pipe_modules(struct skl_dev *skl, struct skl_pipe *pipe)
+ 			skl_put_pvt_id(skl, uuid_mod, &mconfig->id.pvt_id);
+ 			goto err;
+ 		}
+-		skl_tplg_alloc_pipe_mcps(skl, mconfig);
++
+ 		ret = skl_tplg_set_module_params(w, skl);
+ 		if (ret < 0)
+ 			goto err;
+@@ -752,10 +700,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* check resource available */
+-	if (!skl_is_pipe_mcps_avail(skl, mconfig))
+-		return -EBUSY;
+-
+ 	if (!skl_is_pipe_mem_avail(skl, mconfig))
+ 		return -ENOMEM;
+ 
+@@ -768,7 +712,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 		return ret;
+ 
+ 	skl_tplg_alloc_pipe_mem(skl, mconfig);
+-	skl_tplg_alloc_pipe_mcps(skl, mconfig);
+ 
+ 	/* Init all pipe modules from source to sink */
+ 	ret = skl_tplg_init_pipe_modules(skl, s_pipe);
+@@ -1264,7 +1207,6 @@ static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
+ 
+ /*
+  * in the Post-PMD event of mixer we need to do following:
+- *   - Free the mcps used
+  *   - Free the mem used
+  *   - Unbind the modules within the pipeline
+  *   - Delete the pipeline (modules are not required to be explicitly
+@@ -1282,7 +1224,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	if (s_pipe->state == SKL_PIPE_INVALID)
+ 		return -EINVAL;
+ 
+-	skl_tplg_free_pipe_mcps(skl, mconfig);
+ 	skl_tplg_free_pipe_mem(skl, mconfig);
+ 
+ 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
+@@ -1317,8 +1258,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
+ 		dst_module = w_module->w->priv;
+ 
+-		if (mconfig->m_state >= SKL_MODULE_INIT_DONE)
+-			skl_tplg_free_pipe_mcps(skl, dst_module);
+ 		if (src_module == NULL) {
+ 			src_module = dst_module;
+ 			continue;
+@@ -1340,7 +1279,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 
+ /*
+  * in the Post-PMD event of PGA we need to do following:
+- *   - Free the mcps used
+  *   - Stop the pipeline
+  *   - In source pipe is connected, unbind with source pipelines
+  */
+@@ -2984,7 +2922,6 @@ void skl_cleanup_resources(struct skl_dev *skl)
+ 		return;
+ 
+ 	skl->resource.mem = 0;
+-	skl->resource.mcps = 0;
+ 
+ 	list_for_each_entry(w, &card->widgets, list) {
+ 		if (is_skl_dsp_widget_type(w, skl->dev) && w->priv != NULL)
+@@ -3683,7 +3620,6 @@ static void skl_tplg_set_pipe_type(struct skl_dev *skl, struct skl_pipe *pipe)
+ }
+ 
+ /* This will be read from topology manifest, currently defined here */
+-#define SKL_MAX_MCPS 30000000
+ #define SKL_FW_MAX_MEM 1000000
+ 
+ /*
+@@ -3720,7 +3656,6 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
+ 		return -EINVAL;
+ 	}
+ 
+-	skl->resource.max_mcps = SKL_MAX_MCPS;
+ 	skl->resource.max_mem = SKL_FW_MAX_MEM;
+ 
+ 	skl->tplg = fw;
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index d3d84f4125d9..21c33c1af934 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -42,9 +42,7 @@
+ #define AZX_REG_VS_EM2_L1SEN		BIT(13)
+ 
+ struct skl_dsp_resource {
+-	u32 max_mcps;
+ 	u32 max_mem;
+-	u32 mcps;
+ 	u32 mem;
+ };
+ 
+-- 
+2.17.1
