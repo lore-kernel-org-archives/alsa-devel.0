@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: reset DMA state in prepare" to the
-	asoc tree
+Subject: Applied "ASoC: SOF: pci: mark last_busy value at
+	runtime PM init" to the asoc tree
 Date: Tue, 23 Jul 2019 12:29:15 +0100 (BST)
-Message-ID: <20190723112915.07AFC2742B59@ypsilon.sirena.org.uk>
-References: <20190722141402.7194-3-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190723112915.3EA8F2742BAC@ypsilon.sirena.org.uk>
+References: <20190722141402.7194-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AAB1F804AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47D3AF804CA
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:16 +0200 (CEST)
-In-Reply-To: <20190722141402.7194-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190722141402.7194-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pan Xiuli <xiuli.pan@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: reset DMA state in prepare
+   ASoC: SOF: pci: mark last_busy value at runtime PM init
 
 has been applied to the asoc tree at
 
@@ -55,159 +55,37 @@ to this mail.
 Thanks,
 Mark
 
->From 04c8027764bc82a325d3abc6f39a6a4642a937cb Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Mon, 22 Jul 2019 09:13:43 -0500
-Subject: [PATCH] ASoC: SOF: reset DMA state in prepare
+>From f1b1b9b136827915624136624ff54aba5890a15b Mon Sep 17 00:00:00 2001
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
+Date: Mon, 22 Jul 2019 09:13:42 -0500
+Subject: [PATCH] ASoC: SOF: pci: mark last_busy value at runtime PM init
 
-When application goes through SUSPEND/STOP->PREPARE->START
-cycle, we should always reprogram the SOF device to start
-DMA from a known state so that hw_ptr/appl_ptrs remain valid.
-This is expected by ALSA core as it resets the buffer
-state as part of prepare (see snd_pcm_do_prepare()).
+If last_busy value is not set at runtime PM enable, the device will be
+suspend immediately after usage counter is 0. Set the last_busy value to
+make sure delay is working at first boot up.
 
-Fix the issue by forcing reconfiguration of the FW with
-STREAM_PCM_PARAMS in prepare(). Use combined logic to handle
-prepare and the existing flow to reprogram hw-params after
-system suspend.
-
-Without the fix, first call to pcm pointer() will return
-an invalid hw_ptr and application may immediately observe XRUN
-status, unless "start_threshold" SW parameter is set to maximum
-value by the application.
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190722141402.7194-3-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190722141402.7194-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pcm.c      | 27 +++++++++++++++------------
- sound/soc/sof/pm.c       |  2 +-
- sound/soc/sof/sof-priv.h |  2 +-
- 3 files changed, 17 insertions(+), 14 deletions(-)
+ sound/soc/sof/sof-pci-dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 334e9d59b1ba..3b8955e755b2 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -208,12 +208,11 @@ static int sof_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
-+	spcm->prepared[substream->stream] = true;
-+
- 	/* save pcm hw_params */
- 	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
- 
--	/* clear hw_params_upon_resume flag */
--	spcm->hw_params_upon_resume[substream->stream] = 0;
--
- 	return ret;
- }
- 
-@@ -236,6 +235,9 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- 	if (!spcm)
- 		return -EINVAL;
- 
-+	if (!spcm->prepared[substream->stream])
-+		return 0;
-+
- 	dev_dbg(sdev->dev, "pcm: free stream %d dir %d\n", spcm->pcm.pcm_id,
- 		substream->stream);
- 
-@@ -258,6 +260,8 @@ static int sof_pcm_hw_free(struct snd_pcm_substream *substream)
- 	if (ret < 0)
- 		dev_err(sdev->dev, "error: platform hw free failed\n");
- 
-+	spcm->prepared[substream->stream] = false;
-+
- 	return ret;
- }
- 
-@@ -278,11 +282,7 @@ static int sof_pcm_prepare(struct snd_pcm_substream *substream)
- 	if (!spcm)
- 		return -EINVAL;
- 
--	/*
--	 * check if hw_params needs to be set-up again.
--	 * This is only needed when resuming from system sleep.
--	 */
--	if (!spcm->hw_params_upon_resume[substream->stream])
-+	if (spcm->prepared[substream->stream])
- 		return 0;
- 
- 	dev_dbg(sdev->dev, "pcm: prepare stream %d dir %d\n", spcm->pcm.pcm_id,
-@@ -311,6 +311,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_sof_pcm *spcm;
- 	struct sof_ipc_stream stream;
- 	struct sof_ipc_reply reply;
-+	bool reset_hw_params = false;
- 	int ret;
- 
- 	/* nothing to do for BE */
-@@ -351,6 +352,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_STOP;
-+		reset_hw_params = true;
- 		break;
- 	default:
- 		dev_err(sdev->dev, "error: unhandled trigger cmd %d\n", cmd);
-@@ -363,17 +365,17 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
- 				 sizeof(stream), &reply, sizeof(reply));
- 
--	if (ret < 0 || cmd != SNDRV_PCM_TRIGGER_SUSPEND)
-+	if (ret < 0 || !reset_hw_params)
- 		return ret;
- 
- 	/*
--	 * The hw_free op is usually called when the pcm stream is closed.
--	 * Since the stream is not closed during suspend, the DSP needs to be
--	 * notified explicitly to free pcm to prevent errors upon resume.
-+	 * In case of stream is stopped, DSP must be reprogrammed upon
-+	 * restart, so free PCM here.
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 65d1bac4c6b8..6fd3df7c57a3 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -223,6 +223,9 @@ static void sof_pci_probe_complete(struct device *dev)
  	 */
- 	stream.hdr.size = sizeof(stream);
- 	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
- 	stream.comp_id = spcm->stream[substream->stream].comp_id;
-+	spcm->prepared[substream->stream] = false;
+ 	pm_runtime_allow(dev);
  
- 	/* send IPC to the DSP */
- 	return sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
-@@ -481,6 +483,7 @@ static int sof_pcm_open(struct snd_pcm_substream *substream)
- 	spcm->stream[substream->stream].posn.host_posn = 0;
- 	spcm->stream[substream->stream].posn.dai_posn = 0;
- 	spcm->stream[substream->stream].substream = substream;
-+	spcm->prepared[substream->stream] = false;
- 
- 	ret = snd_sof_pcm_platform_open(sdev, substream);
- 	if (ret < 0)
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 278abfd10490..48c6d78d72e2 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -233,7 +233,7 @@ static int sof_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
- 
- 			state = substream->runtime->status->state;
- 			if (state == SNDRV_PCM_STATE_SUSPENDED)
--				spcm->hw_params_upon_resume[dir] = 1;
-+				spcm->prepared[dir] = false;
- 		}
- 	}
- 
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index b8c0b2a22684..fa5cb7d2a660 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -297,7 +297,7 @@ struct snd_sof_pcm {
- 	struct snd_sof_pcm_stream stream[2];
- 	struct list_head list;	/* list in sdev pcm list */
- 	struct snd_pcm_hw_params params[2];
--	int hw_params_upon_resume[2]; /* set up hw_params upon resume */
-+	bool prepared[2]; /* PCM_PARAMS set successfully */
- };
- 
- /* ALSA SOF Kcontrol device */
++	/* mark last_busy for pm_runtime to make sure not suspend immediately */
++	pm_runtime_mark_last_busy(dev);
++
+ 	/* follow recommendation in pci-driver.c to decrement usage counter */
+ 	pm_runtime_put_noidle(dev);
+ }
 -- 
 2.20.1
