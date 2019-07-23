@@ -1,75 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/5] ASoC: Intel: IPC framework updates
-Date: Tue, 23 Jul 2019 17:59:00 +0100
-Message-ID: <20190723165900.GM5365@sirena.org.uk>
-References: <20190720194532.23682-1-cezary.rojewski@intel.com>
- <48015f53-e650-1e77-9217-3a65250673ac@linux.intel.com>
+Subject: Re: [PATCH 01/10] ASoC: fsl_sai: add of_match data
+Date: Tue, 23 Jul 2019 18:00:35 +0100
+Message-ID: <20190723170035.GO5365@sirena.org.uk>
+References: <20190722124833.28757-1-daniel.baluta@nxp.com>
+ <20190722124833.28757-2-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7493460028597554256=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9052CF800E8
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 18:59:07 +0200 (CEST)
-In-Reply-To: <48015f53-e650-1e77-9217-3a65250673ac@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9DptZICXTlJ7FQ09"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190722124833.28757-2-daniel.baluta@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: festevam@gmail.com, perex@perex.cz, tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, shengjiu.wang@nxp.com, angus@akkea.ca, kernel@pengutronix.de, l.stach@pengutronix.de, viorel.suman@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7493460028597554256==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="dzI2QqkSBOAresgT"
-Content-Disposition: inline
-
-
---dzI2QqkSBOAresgT
+--9DptZICXTlJ7FQ09
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 22, 2019 at 04:12:19PM -0500, Pierre-Louis Bossart wrote:
+On Mon, Jul 22, 2019 at 03:48:24PM +0300, Daniel Baluta wrote:
+> From: Lucas Stach <l.stach@pengutronix.de>
+>=20
+> New revisions of the SAI IP block have even more differences that need
+> be taken into account by the driver. To avoid sprinking compatible
+> checks all over the driver move the current differences into of_match_dat=
+a.
+>=20
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> ---
+>  sound/soc/fsl/fsl_sai.c | 22 ++++++++++++++--------
 
-> The rule is that we can't break git bisect. And if you squash the patches
-> together, then you have a really complicated patch to review/test, so like I
-> said earlier such invasive changes in shared prototypes are really painful.
+You need to supply your own signoff if you're sending someone else's
+patch - see submitting-patches.rst for details on what signoffs mean and
+why they're required.
 
-Yeah, I build test each commit as they get applied (though not
-everything gets covered so things can get missed) and it's generally
-helpful for people doing things like bisection.
-
---dzI2QqkSBOAresgT
+--9DptZICXTlJ7FQ09
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl03PNQACgkQJNaLcl1U
-h9DIugf/VItGBR/q1aSLeIYEatGAGxY34V2ObQlyDtj6eBtJZ1WAKPAtYVUigd/G
-0+L+03cfSBOc6i0PLwE/b4JVRIMGyexNGvAR+FmFau0Iborm3Hjcr6h7TygczpCu
-4Rz1rM1N1NxwoIN5guE/M/yyluROffSb7hOWFmDHn/S8nMXb4lBMugWgPAlxU+YW
-AZ4t4c/HoPXxCPGWSzV9uRI5cuaulDhT0WUP+ug9ViMweAdOss8bM9yVUf3apafr
-5O2nrlHjYrTM/DOvN5LPY81h8ee3ktZBMeun9h6UXbcnEHFHnmKOBYUQAXyJacze
-tnzajqoAnu1H/aEQRfc7vNRgaoOeCQ==
-=uPxN
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl03PTIACgkQJNaLcl1U
+h9Ce4wf9FPwW9YoTZLNQAPLcH2tdxWqllpH3ZIAiKSDjWkeH9SHfV2iiH1AAMTIL
+yM/q6mJxSQPQ4MLekLosnBJXVMkh6/2U8t2pX6YsLFs//vvguPT5XnBZ3VGti2vo
+/jvnayUvKMLs/KhI6EvTT+6UVOBnPos0aFMsLkNbdVzb76jIOPX4kVy/TTiqoSjY
+sAtGZkl3m0hfwBlOxWPRgkuJdsckLcRLAvVV99ZopDdsWDo2m0KLEXDCm/81P0F6
+oVukPsYlmNfOuU5XpKC+/droD+XBK4AO9gy42C4aFkeSsA8eRmFvLlGjEHXlqBU9
+DWoy0wiEwu0NjI5w/kgYiLSufz+TTA==
+=kOOi
 -----END PGP SIGNATURE-----
 
---dzI2QqkSBOAresgT--
-
---===============7493460028597554256==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7493460028597554256==--
+--9DptZICXTlJ7FQ09--
