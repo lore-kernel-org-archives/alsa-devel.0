@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda: remove misleading
-	error trace from IRQ thread" to the asoc tree
+Subject: Applied "ASoC: qcom: apq8016_sbc: Fix oops with
+	multiple DAI links" to the asoc tree
 Date: Tue, 23 Jul 2019 12:29:15 +0100 (BST)
-Message-ID: <20190723112915.A2AE12742BAB@ypsilon.sirena.org.uk>
-References: <20190722141402.7194-21-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190723112915.D9D222742B59@ypsilon.sirena.org.uk>
+References: <20190722130352.95874-1-stephan@gerhold.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2431F803D0
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:16 +0200 (CEST)
-In-Reply-To: <20190722141402.7194-21-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA28BF80448
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:17 +0200 (CEST)
+In-Reply-To: <20190722130352.95874-1-stephan@gerhold.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: hda: remove misleading error trace from IRQ thread
+   ASoC: qcom: apq8016_sbc: Fix oops with multiple DAI links
 
 has been applied to the asoc tree at
 
@@ -55,58 +55,64 @@ to this mail.
 Thanks,
 Mark
 
->From 717dedb1dcee92788b81233aa0a221573c95daff Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Mon, 22 Jul 2019 09:14:01 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: remove misleading error trace from IRQ
- thread
+>From 8201f11a1f75e3aa7d5327d0b1d8cb544aeaa62f Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Mon, 22 Jul 2019 15:03:52 +0200
+Subject: [PATCH] ASoC: qcom: apq8016_sbc: Fix oops with multiple DAI links
 
-Downgrade "nothing to do in IRQ thread" message from error to a debug
-message in the IPC interrupt handler thread.
+apq8016_sbc_parse_of() sets up multiple DAI links, depending on the
+number of nodes in the device tree. However, at the moment
+CPU and platform components are only allocated for the first link.
+This causes an oops when more than one link is defined:
 
-The spurious wake-up can happen if a HDA stream interrupt is
-raised while the IPC interrupt thread is running. IPC functionality
-is not impacted by this condition, so debug is a more appropriate
-trace level.
+	Internal error: Oops: 96000044 [#1] SMP
+	CPU: 0 PID: 1015 Comm: kworker/0:2 Not tainted 5.3.0-rc1 #4
+	Call trace:
+	 apq8016_sbc_platform_probe+0x1a8/0x3f0
+	 platform_drv_probe+0x50/0xa0
+	...
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190722141402.7194-21-pierre-louis.bossart@linux.intel.com
+Move the allocation inside the loop to ensure that each link is
+properly initialized.
+
+Fixes: 98b232ca9e0e ("ASoC: qcom: apq8016_sbc: use modern dai_link style")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20190722130352.95874-1-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/cnl.c     | 4 ++--
- sound/soc/sof/intel/hda-ipc.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/qcom/apq8016_sbc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index f2b392998f20..ffd8d4394537 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -101,8 +101,8 @@ static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- 		/*
- 		 * This interrupt is not shared so no need to return IRQ_NONE.
- 		 */
--		dev_err_ratelimited(sdev->dev,
--				    "error: nothing to do in IRQ thread\n");
-+		dev_dbg_ratelimited(sdev->dev,
-+				    "nothing to do in IPC IRQ thread\n");
- 	}
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index f60a71990f66..ac75838bbfab 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -150,17 +150,17 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
  
- 	/* re-enable IPC interrupt */
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 50244b82600c..2ecba91f5219 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -224,8 +224,8 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 		/*
- 		 * This interrupt is not shared so no need to return IRQ_NONE.
- 		 */
--		dev_err_ratelimited(sdev->dev,
--				    "error: nothing to do in IRQ thread\n");
-+		dev_dbg_ratelimited(sdev->dev,
-+				    "nothing to do in IPC IRQ thread\n");
- 	}
+ 	link = data->dai_link;
  
- 	/* re-enable IPC interrupt */
+-	dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
+-	if (!dlc)
+-		return ERR_PTR(-ENOMEM);
++	for_each_child_of_node(node, np) {
++		dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
++		if (!dlc)
++			return ERR_PTR(-ENOMEM);
+ 
+-	link->cpus	= &dlc[0];
+-	link->platforms	= &dlc[1];
++		link->cpus	= &dlc[0];
++		link->platforms	= &dlc[1];
+ 
+-	link->num_cpus		= 1;
+-	link->num_platforms	= 1;
++		link->num_cpus		= 1;
++		link->num_platforms	= 1;
+ 
+-	for_each_child_of_node(node, np) {
+ 		cpu = of_get_child_by_name(np, "cpu");
+ 		codec = of_get_child_by_name(np, "codec");
+ 
 -- 
 2.20.1
