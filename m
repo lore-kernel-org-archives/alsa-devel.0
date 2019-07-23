@@ -1,20 +1,19 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Skylake: Recover BXT FW on
- DSP boot timeout error
-Date: Tue, 23 Jul 2019 17:14:06 +0200
-Message-ID: <8842953f-32ad-6318-9de0-8410dc1f95e1@intel.com>
-References: <20190708140248.14304-1-pawel.harlozinski@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH v2 0/7] ASoC: Intel: Skylake: Driver
+ fundaments overhaul
+Date: Tue, 23 Jul 2019 16:44:49 +0100
+Message-ID: <20190723154449.GJ5365@sirena.org.uk>
+References: <20190723145854.8527-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6896784038526863184=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11C6EF800E8
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 17:14:14 +0200 (CEST)
-In-Reply-To: <20190708140248.14304-1-pawel.harlozinski@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDA23F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 17:44:53 +0200 (CEST)
+In-Reply-To: <20190723145854.8527-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,74 +23,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Szymon Mielczarek <szymonx.mielczarek@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-08 16:02, Pawel Harlozinski wrote:
-> When DSP boots with timeout error try to reload firmware
-> to keep best user expeirience.
-> 
-> Signed-off-by: Szymon Mielczarek <szymonx.mielczarek@intel.com>
-> Signed-off-by: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-> ---
->   sound/soc/intel/skylake/bxt-sst.c | 17 +++++++++++------
->   1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-> index 440bca7afbf1..dd0260557530 100644
-> --- a/sound/soc/intel/skylake/bxt-sst.c
-> +++ b/sound/soc/intel/skylake/bxt-sst.c
-> @@ -455,13 +455,19 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
->   	/* If core 1 was turned on for booting core 0, turn it off */
->   		skl_dsp_core_power_down(ctx, SKL_DSP_CORE_MASK(1));
->   		if (ret == 0) {
-> -			dev_err(ctx->dev, "%s: DSP boot timeout\n", __func__);
-> -			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
-> +			dev_warn(ctx->dev,
-> +				"DSP boot timeout: Error code=0x%x: FW status=0x%x\n",
->   				sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
->   				sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
-> -			dev_err(ctx->dev, "Failed to set core0 to D0 state\n");
-> -			ret = -EIO;
-> -			goto err;
-> +			dev_warn(ctx->dev,"Reloading FW\n");
-> +
-> +			ret = bxt_sst_init_fw(skl->dev, skl);
-> +			if (ret < 0) {
-> +				dev_err(ctx->dev, "Reload fw failed: %d\n", ret);
-> +				dev_err(ctx->dev, "Failed to set core0 to D0 state\n");
-> +				ret = -EIO;
-> +				goto err;
-> +			}
 
-First, I'm sorry for the delay in response.
+--===============6896784038526863184==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yr/DzoowOgTDcSCF"
+Content-Disposition: inline
 
-Now, where were we..
-I'd combine there dump messages together - that is both dev_warns and 
-both dev_errs. No need to spam 2 lines when there is single a message to 
-communicate on each occasion.
 
-Any reason for ignoring return code of bxt_sst_init_fw and overwriting 
-it with -EIO? If the reason is _good_ then you can skip assignment an do 
-if (bxt_sst_init_fw()) directly.
+--yr/DzoowOgTDcSCF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Apart from that, I'd like to see a FIXME comment or something of that 
-sort. FW preparation is being updated in patches to come and if this fix 
-cannot wait, it's good to mention it targets BXT platforms only, while 
-SKL/ CNL descendants are left alone.
+On Tue, Jul 23, 2019 at 04:58:47PM +0200, Cezary Rojewski wrote:
+> Skylake driver is divided into two modules:
+> - snd_soc_skl
+> - snd_soc_skl_ipc
 
-Czarek
+Pierre?
 
->   		}
->   	}
->   
-> @@ -486,7 +492,6 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
->   	if (core_id == SKL_DSP_CORE0_ID)
->   		core_mask |= SKL_DSP_CORE_MASK(1);
->   	skl_dsp_disable_core(ctx, core_mask);
-> -
->   	return ret;
->   }
->   
-> 
+--yr/DzoowOgTDcSCF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl03K3EACgkQJNaLcl1U
+h9CdCAf7BKyAUWnPsFPU8GxxuQD5YIx6MRzNOGFZI9/UC8Qag/NTnmxtLCYhzkeR
+EkwIeS9yRQhwYWdrLN1omNJs1AdbKH0lPyr/YMuyMewQsdhXrqs/GzvAWuPA/QBO
+pDoAH6KrEtAvd4B2pY790b0v4h1Ppq+6O8NA1rdFzqJs98SHvSDAT9QgGHXfAqtP
+DAfaUW6g+JAT7vnatJb/Q/SJekm0xWxIOE7yniGiz/M1jCsOGHhC539qRNAwPZU0
+IQYPy32tzx528aIFTHcW+65MBKJv6qupLm/IaMLs7CvkQ5dS8DOEREnHEBswYZnU
+WQPhwSHvfHJ9B0BI5GnooPv2dg95ug==
+=PE1Y
+-----END PGP SIGNATURE-----
+
+--yr/DzoowOgTDcSCF--
+
+--===============6896784038526863184==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6896784038526863184==--
