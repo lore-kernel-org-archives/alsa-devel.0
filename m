@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-dai: mv soc_dai_hw_params() to
-	soc-dai" to the asoc tree
-Date: Tue, 23 Jul 2019 18:18:53 +0100 (BST)
-Message-ID: <20190723171853.345132742BAC@ypsilon.sirena.org.uk>
-References: <87zhl6hn5b.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-dai: add snd_soc_dai_startup()" to
+	the asoc tree
+Date: Tue, 23 Jul 2019 18:18:52 +0100 (BST)
+Message-ID: <20190723171852.C67692742B59@ypsilon.sirena.org.uk>
+References: <87wogahn4i.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 496D3F8044A
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:54 +0200 (CEST)
-In-Reply-To: <87zhl6hn5b.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DDECF8049C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 19:18:53 +0200 (CEST)
+In-Reply-To: <87wogahn4i.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-dai: mv soc_dai_hw_params() to soc-dai
+   ASoC: soc-dai: add snd_soc_dai_startup()
 
 has been applied to the asoc tree at
 
@@ -55,177 +55,147 @@ to this mail.
 Thanks,
 Mark
 
->From aa6166c2ac28392d64f2d8b3acfb56c8fe657147 Mon Sep 17 00:00:00 2001
+>From 5a52a04531486e2ab069b7882432c8b266db36e6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 22 Jul 2019 10:33:04 +0900
-Subject: [PATCH] ASoC: soc-dai: mv soc_dai_hw_params() to soc-dai
+Date: Mon, 22 Jul 2019 10:33:32 +0900
+Subject: [PATCH] ASoC: soc-dai: add snd_soc_dai_startup()
 
-Sometimes ALSA SoC naming is very random.
-Current soc_dai_hw_params() should use snd_soc_dai_xxx() style.
-And then, 1st parameter should be dai. Otherwise it is confusable.
- - soc_dai_hw_params(..., dai);
- + snd_soc_dai_hw_params(dai, ...);
+Current ALSA SoC is directly using dai->driver->ops->xxx,
+thus, it has deep nested bracket, and it makes code unreadable.
+This patch adds new snd_soc_dai_startup() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87zhl6hn5b.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87wogahn4i.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dai.h |  4 ++++
- include/sound/soc.h     |  4 ----
- sound/soc/soc-dai.c     | 30 ++++++++++++++++++++++++++++++
- sound/soc/soc-dapm.c    |  4 ++--
- sound/soc/soc-pcm.c     | 35 +++--------------------------------
- 5 files changed, 39 insertions(+), 38 deletions(-)
+ include/sound/soc-dai.h |  2 ++
+ sound/soc/soc-dai.c     | 11 +++++++++++
+ sound/soc/soc-dapm.c    | 28 ++++++++++------------------
+ sound/soc/soc-pcm.c     | 27 +++++++++++----------------
+ 4 files changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index f5d70041108f..3773262a1b77 100644
+index 5222b6a758f2..0d16c5bb20bb 100644
 --- a/include/sound/soc-dai.h
 +++ b/include/sound/soc-dai.h
-@@ -145,6 +145,10 @@ int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
+@@ -150,6 +150,8 @@ int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
+ 			  struct snd_pcm_hw_params *params);
+ void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
+ 			 struct snd_pcm_substream *substream);
++int snd_soc_dai_startup(struct snd_soc_dai *dai,
++			struct snd_pcm_substream *substream);
  
- int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
- 
-+int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
-+			  struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params);
-+
  struct snd_soc_dai_ops {
  	/*
- 	 * DAI clocking configuration, all optional.
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4e8071269639..d770606732cd 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -505,10 +505,6 @@ int snd_soc_params_to_bclk(struct snd_pcm_hw_params *parms);
- int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hardware *hw);
- 
--int soc_dai_hw_params(struct snd_pcm_substream *substream,
--		      struct snd_pcm_hw_params *params,
--		      struct snd_soc_dai *dai);
--
- /* Jack reporting */
- int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
- 	struct snd_soc_jack *jack, struct snd_soc_jack_pin *pins,
 diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index a1009ead40de..f883d27d136f 100644
+index 39a685e6acd5..6e196636e42f 100644
 --- a/sound/soc/soc-dai.c
 +++ b/sound/soc/soc-dai.c
-@@ -252,3 +252,33 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- 		return -ENOTSUPP;
+@@ -289,3 +289,14 @@ void snd_soc_dai_hw_free(struct snd_soc_dai *dai,
+ 	if (dai->driver->ops->hw_free)
+ 		dai->driver->ops->hw_free(substream, dai);
  }
- EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
 +
-+int snd_soc_dai_hw_params(struct snd_soc_dai *dai,
-+			  struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params)
++int snd_soc_dai_startup(struct snd_soc_dai *dai,
++			struct snd_pcm_substream *substream)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int ret;
++	int ret = 0;
 +
-+	/* perform any topology hw_params fixups before DAI  */
-+	if (rtd->dai_link->be_hw_params_fixup) {
-+		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
-+		if (ret < 0) {
-+			dev_err(rtd->dev,
-+				"ASoC: hw_params topology fixup failed %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
++	if (dai->driver->ops->startup)
++		ret = dai->driver->ops->startup(substream, dai);
 +
-+	if (dai->driver->ops->hw_params) {
-+		ret = dai->driver->ops->hw_params(substream, params, dai);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
-+				dai->name, ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
++	return ret;
 +}
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index f013b24c050a..8fc6a01f5d8b 100644
+index 0783b05133ad..71bfd049480a 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3839,7 +3839,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				}
+@@ -3828,15 +3828,11 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_dapm_widget_for_each_source_path(w, path) {
+ 			source = path->source->priv;
+ 
+-			if (source->driver->ops->startup) {
+-				ret = source->driver->ops->startup(&substream,
+-								   source);
+-				if (ret < 0) {
+-					dev_err(source->dev,
+-						"ASoC: startup() failed: %d\n",
+-						ret);
+-					goto out;
+-				}
++			ret = snd_soc_dai_startup(source, &substream);
++			if (ret < 0) {
++				dev_err(source->dev,
++					"ASoC: startup() failed: %d\n", ret);
++				goto out;
  			}
  			source->active++;
--			ret = soc_dai_hw_params(&substream, params, source);
-+			ret = snd_soc_dai_hw_params(source, &substream, params);
- 			if (ret < 0)
- 				goto out;
+ 			ret = snd_soc_dai_hw_params(source, &substream, params);
+@@ -3850,15 +3846,11 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
+ 			sink = path->sink->priv;
  
-@@ -3861,7 +3861,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				}
+-			if (sink->driver->ops->startup) {
+-				ret = sink->driver->ops->startup(&substream,
+-								 sink);
+-				if (ret < 0) {
+-					dev_err(sink->dev,
+-						"ASoC: startup() failed: %d\n",
+-						ret);
+-					goto out;
+-				}
++			ret = snd_soc_dai_startup(sink, &substream);
++			if (ret < 0) {
++				dev_err(sink->dev,
++					"ASoC: startup() failed: %d\n", ret);
++				goto out;
  			}
  			sink->active++;
--			ret = soc_dai_hw_params(&substream, params, sink);
-+			ret = snd_soc_dai_hw_params(sink, &substream, params);
- 			if (ret < 0)
- 				goto out;
- 
+ 			ret = snd_soc_dai_hw_params(sink, &substream, params);
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 4878d22ebd8c..420cc94e0a46 100644
+index 58fc4e98ab59..9c8713a3eef1 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -877,36 +877,6 @@ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
- 	interval->max = channels;
- }
+@@ -535,13 +535,11 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
--int soc_dai_hw_params(struct snd_pcm_substream *substream,
--		      struct snd_pcm_hw_params *params,
--		      struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	int ret;
--
--	/* perform any topology hw_params fixups before DAI  */
--	if (rtd->dai_link->be_hw_params_fixup) {
--		ret = rtd->dai_link->be_hw_params_fixup(rtd, params);
+ 	/* startup the audio subsystem */
+-	if (cpu_dai->driver->ops->startup) {
+-		ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
 -		if (ret < 0) {
--			dev_err(rtd->dev,
--				"ASoC: hw_params topology fixup failed %d\n",
--				ret);
--			return ret;
+-			dev_err(cpu_dai->dev, "ASoC: can't open interface"
+-				" %s: %d\n", cpu_dai->name, ret);
+-			goto out;
 -		}
--	}
--
--	if (dai->driver->ops->hw_params) {
--		ret = dai->driver->ops->hw_params(substream, params, dai);
--		if (ret < 0) {
--			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
--				dai->name, ret);
--			return ret;
--		}
--	}
--
--	return 0;
--}
--
- static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
- 				      struct snd_soc_component *last)
- {
-@@ -989,7 +959,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 			soc_pcm_codec_params_fixup(&codec_params,
- 						   codec_dai->rx_mask);
- 
--		ret = soc_dai_hw_params(substream, &codec_params, codec_dai);
-+		ret = snd_soc_dai_hw_params(codec_dai, substream,
-+					    &codec_params);
- 		if(ret < 0)
- 			goto codec_err;
- 
-@@ -1001,7 +972,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		snd_soc_dapm_update_dai(substream, &codec_params, codec_dai);
++	ret = snd_soc_dai_startup(cpu_dai, substream);
++	if (ret < 0) {
++		dev_err(cpu_dai->dev, "ASoC: can't open interface %s: %d\n",
++			cpu_dai->name, ret);
++		goto out;
  	}
  
--	ret = soc_dai_hw_params(substream, params, cpu_dai);
-+	ret = snd_soc_dai_hw_params(cpu_dai, substream, params);
- 	if (ret < 0)
- 		goto interface_err;
+ 	ret = soc_pcm_components_open(substream, &component);
+@@ -549,15 +547,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		goto component_err;
  
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		if (codec_dai->driver->ops->startup) {
+-			ret = codec_dai->driver->ops->startup(substream,
+-							      codec_dai);
+-			if (ret < 0) {
+-				dev_err(codec_dai->dev,
+-					"ASoC: can't open codec %s: %d\n",
+-					codec_dai->name, ret);
+-				goto codec_dai_err;
+-			}
++		ret = snd_soc_dai_startup(codec_dai, substream);
++		if (ret < 0) {
++			dev_err(codec_dai->dev,
++				"ASoC: can't open codec %s: %d\n",
++				codec_dai->name, ret);
++			goto codec_dai_err;
+ 		}
+ 
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 -- 
 2.20.1
