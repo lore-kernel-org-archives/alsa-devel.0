@@ -1,8 +1,8 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [RESEND PATCH v2 3/7] ASoC: Intel: Skylake: Remove
-	MCPS available check
-Date: Tue, 23 Jul 2019 16:58:50 +0200
-Message-ID: <20190723145854.8527-4-cezary.rojewski@intel.com>
+Subject: [RESEND PATCH v2 6/7] ASoC: Intel: Skylake: Make MCPS
+	and CPS params obsolete
+Date: Tue, 23 Jul 2019 16:58:53 +0200
+Message-ID: <20190723145854.8527-7-cezary.rojewski@intel.com>
 References: <20190723145854.8527-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7347F8045D
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:59:28 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B7D7F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 16:59:30 +0200 (CEST)
 In-Reply-To: <20190723145854.8527-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,187 +27,155 @@ To: alsa-devel@alsa-project.org
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The entire logic for MCPS calculation and DSP scheduling is found
-within DSP firmware. Currently driver implements simplistic, inaccurate
-logic itself which may prevent pipeline creation despite firmware being
-completely fine its parameters.
+As per FW Interface Modules Configuration, init instance IPC request
+requires base initial module configuration. This configuration structure
+is made of:
+- cpc (chunks per cycle)
+- ibs (input buffer size)
+- obs (output buffer size)
+- is_pages (memory pages required)
+- audio_fmt (self explanatory)
 
-Remove that logic and leave the MCPS calculation to DSP alone.
+Skylake topology accepts following tokens: MCPS, CPS and CPC. All of
+these are directly connected. Moreover, assigning one of these allows
+to calculate the remaining two. In simplest scenario and assuming 1ms
+scheduling, following is true:
+
+CPS = CPC times 1000
+MCPS = CPS times 1000 000
+Note: these calculations vary depending on scenario and scheduling
+requirements.
+
+Given the current implementation, userspace is allowed to provide
+different values for all three causing informational chaos. On top of
+that, struct skl_base_cfg which represents base module configuration,
+incorrectly takes CPS param instead of CPC.
+
+This ambiguity may lead to user unintentionally providing improper
+values to DSP firmware and thus impacting module scheduling in
+unexpected fashion. Fix by making MCPS and CPS topology params obsolete
+and relying solely on CPC value.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 67 +-------------------------
- sound/soc/intel/skylake/skl.h          |  2 -
- 2 files changed, 1 insertion(+), 68 deletions(-)
+ sound/soc/intel/skylake/skl-debug.c    |  6 ++++--
+ sound/soc/intel/skylake/skl-messages.c |  2 +-
+ sound/soc/intel/skylake/skl-topology.c | 15 ++++++---------
+ sound/soc/intel/skylake/skl-topology.h |  4 +---
+ 4 files changed, 12 insertions(+), 15 deletions(-)
 
+diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
+index c43aa4081232..fb232428109f 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
++++ b/sound/soc/intel/skylake/skl-debug.c
+@@ -66,6 +66,8 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 			   size_t count, loff_t *ppos)
+ {
+ 	struct skl_module_cfg *mconfig = file->private_data;
++	struct skl_module *module = mconfig->module;
++	struct skl_module_res *res = &module->resources[mconfig->res_idx];
+ 	char *buf;
+ 	ssize_t ret;
+ 
+@@ -79,8 +81,8 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
+ 			mconfig->id.pvt_id);
+ 
+ 	ret += snprintf(buf + ret, MOD_BUF - ret,
+-			"Resources:\n\tMCPS %#x\n\tIBS %#x\n\tOBS %#x\t\n",
+-			mconfig->mcps, mconfig->ibs, mconfig->obs);
++			"Resources:\n\tCPC %#x\n\tIBS %#x\n\tOBS %#x\t\n",
++			res->cpc, res->ibs, res->obs);
+ 
+ 	ret += snprintf(buf + ret, MOD_BUF - ret,
+ 			"Module data:\n\tCore %d\n\tIn queue %d\n\t"
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 07762543fb13..e8cc710f092b 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -477,7 +477,7 @@ static void skl_set_base_module_format(struct skl_dev *skl,
+ 
+ 	base_cfg->audio_fmt.interleaving = format->interleaving_style;
+ 
+-	base_cfg->cps = res->cps;
++	base_cfg->cpc = res->cpc;
+ 	base_cfg->ibs = res->ibs;
+ 	base_cfg->obs = res->obs;
+ 	base_cfg->is_pages = res->is_pages;
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index abf860109607..2af311150543 100644
+index 53a024c0464d..118866cd5075 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -142,54 +142,6 @@ static void skl_tplg_alloc_pipe_mem(struct skl_dev *skl,
- 	skl->resource.mem += mconfig->pipe->memory_pages;
- }
+@@ -2205,10 +2205,6 @@ static int skl_tplg_fill_res_tkn(struct device *dev,
+ 		return -EINVAL;
  
--/*
-- * Pipeline needs needs DSP CPU resources for computation, this is
-- * quantified in MCPS (Million Clocks Per Second) required for module/pipe
-- *
-- * Each pipelines needs mcps to be allocated. Check if we have mcps for this
-- * pipe.
-- */
+ 	switch (tkn_elem->token) {
+-	case SKL_TKN_MM_U32_CPS:
+-		res->cps = tkn_elem->value;
+-		break;
 -
--static bool skl_is_pipe_mcps_avail(struct skl_dev *skl,
--				struct skl_module_cfg *mconfig)
--{
--	u8 res_idx = mconfig->res_idx;
--	struct skl_module_res *res = &mconfig->module->resources[res_idx];
--
--	if (skl->resource.mcps + res->cps > skl->resource.max_mcps) {
--		dev_err(skl->dev,
--			"%s: module_id %d instance %d\n", __func__,
--			mconfig->id.module_id, mconfig->id.instance_id);
--		dev_err(skl->dev,
--			"exceeds ppl mcps available %d > mem %d\n",
--			skl->resource.max_mcps, skl->resource.mcps);
--		return false;
--	} else {
--		return true;
--	}
--}
--
--static void skl_tplg_alloc_pipe_mcps(struct skl_dev *skl,
--				struct skl_module_cfg *mconfig)
--{
--	u8 res_idx = mconfig->res_idx;
--	struct skl_module_res *res = &mconfig->module->resources[res_idx];
--
--	skl->resource.mcps += res->cps;
--}
--
--/*
-- * Free the mcps when tearing down
-- */
--static void
--skl_tplg_free_pipe_mcps(struct skl_dev *skl, struct skl_module_cfg *mconfig)
--{
--	u8 res_idx = mconfig->res_idx;
--	struct skl_module_res *res = &mconfig->module->resources[res_idx];
--
--	skl->resource.mcps -= res->cps;
--}
--
- /*
-  * Free the memory when tearing down
-  */
-@@ -582,10 +534,6 @@ skl_tplg_init_pipe_modules(struct skl_dev *skl, struct skl_pipe *pipe)
- 		mconfig->fmt_idx = mconfig->mod_cfg[cfg_idx].fmt_idx;
- 		mconfig->res_idx = mconfig->mod_cfg[cfg_idx].res_idx;
+ 	case SKL_TKN_MM_U32_DMA_SIZE:
+ 		res->dma_buffer_size = tkn_elem->value;
+ 		break;
+@@ -2229,10 +2225,6 @@ static int skl_tplg_fill_res_tkn(struct device *dev,
+ 		res->ibs = tkn_elem->value;
+ 		break;
  
--		/* check resource available */
--		if (!skl_is_pipe_mcps_avail(skl, mconfig))
--			return -ENOMEM;
+-	case SKL_TKN_U32_MAX_MCPS:
+-		res->cps = tkn_elem->value;
+-		break;
 -
- 		if (mconfig->module->loadable && skl->dsp->fw_ops.load_mod) {
- 			ret = skl->dsp->fw_ops.load_mod(skl->dsp,
- 				mconfig->id.module_id, mconfig->guid);
-@@ -627,7 +575,7 @@ skl_tplg_init_pipe_modules(struct skl_dev *skl, struct skl_pipe *pipe)
- 			skl_put_pvt_id(skl, uuid_mod, &mconfig->id.pvt_id);
- 			goto err;
- 		}
--		skl_tplg_alloc_pipe_mcps(skl, mconfig);
+ 	case SKL_TKN_MM_U32_RES_PIN_ID:
+ 	case SKL_TKN_MM_U32_PIN_BUF:
+ 		ret = skl_tplg_manifest_pin_res_tkn(dev, tkn_elem, res,
+@@ -2241,6 +2233,11 @@ static int skl_tplg_fill_res_tkn(struct device *dev,
+ 			return ret;
+ 		break;
+ 
++	case SKL_TKN_MM_U32_CPS:
++	case SKL_TKN_U32_MAX_MCPS:
++		/* ignore unused tokens */
++		break;
 +
- 		ret = skl_tplg_set_module_params(w, skl);
- 		if (ret < 0)
- 			goto err;
-@@ -752,10 +700,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	if (ret < 0)
- 		return ret;
- 
--	/* check resource available */
--	if (!skl_is_pipe_mcps_avail(skl, mconfig))
--		return -EBUSY;
--
- 	if (!skl_is_pipe_mem_avail(skl, mconfig))
- 		return -ENOMEM;
- 
-@@ -768,7 +712,6 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 		return ret;
- 
- 	skl_tplg_alloc_pipe_mem(skl, mconfig);
--	skl_tplg_alloc_pipe_mcps(skl, mconfig);
- 
- 	/* Init all pipe modules from source to sink */
- 	ret = skl_tplg_init_pipe_modules(skl, s_pipe);
-@@ -1264,7 +1207,6 @@ static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
- 
- /*
-  * in the Post-PMD event of mixer we need to do following:
-- *   - Free the mcps used
-  *   - Free the mem used
-  *   - Unbind the modules within the pipeline
-  *   - Delete the pipeline (modules are not required to be explicitly
-@@ -1282,7 +1224,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 	if (s_pipe->state == SKL_PIPE_INVALID)
+ 	default:
+ 		dev_err(dev, "Not a res type token: %d", tkn_elem->token);
  		return -EINVAL;
+@@ -2693,7 +2690,7 @@ static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget *tplg_w,
+ 		return ret;
+ 	mconfig->id.module_id = -1;
+ 	mconfig->id.instance_id = dfw->instance_id;
+-	mconfig->module->resources[0].cps = dfw->max_mcps;
++	mconfig->module->resources[0].cpc = dfw->max_mcps / 1000;
+ 	mconfig->module->resources[0].ibs = dfw->ibs;
+ 	mconfig->module->resources[0].obs = dfw->obs;
+ 	mconfig->core_id = dfw->core_id;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index e2a2fc5c5545..99a0277191ca 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -101,7 +101,7 @@ struct skl_audio_data_format {
+ } __packed;
  
--	skl_tplg_free_pipe_mcps(skl, mconfig);
- 	skl_tplg_free_pipe_mem(skl, mconfig);
- 
- 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
-@@ -1317,8 +1258,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 	list_for_each_entry(w_module, &s_pipe->w_list, node) {
- 		dst_module = w_module->w->priv;
- 
--		if (mconfig->m_state >= SKL_MODULE_INIT_DONE)
--			skl_tplg_free_pipe_mcps(skl, dst_module);
- 		if (src_module == NULL) {
- 			src_module = dst_module;
- 			continue;
-@@ -1340,7 +1279,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 
- /*
-  * in the Post-PMD event of PGA we need to do following:
-- *   - Free the mcps used
-  *   - Stop the pipeline
-  *   - In source pipe is connected, unbind with source pipelines
-  */
-@@ -2984,7 +2922,6 @@ void skl_cleanup_resources(struct skl_dev *skl)
- 		return;
- 
- 	skl->resource.mem = 0;
--	skl->resource.mcps = 0;
- 
- 	list_for_each_entry(w, &card->widgets, list) {
- 		if (is_skl_dsp_widget_type(w, skl->dev) && w->priv != NULL)
-@@ -3683,7 +3620,6 @@ static void skl_tplg_set_pipe_type(struct skl_dev *skl, struct skl_pipe *pipe)
- }
- 
- /* This will be read from topology manifest, currently defined here */
--#define SKL_MAX_MCPS 30000000
- #define SKL_FW_MAX_MEM 1000000
- 
- /*
-@@ -3720,7 +3656,6 @@ int skl_tplg_init(struct snd_soc_component *component, struct hdac_bus *bus)
- 		return -EINVAL;
- 	}
- 
--	skl->resource.max_mcps = SKL_MAX_MCPS;
- 	skl->resource.max_mem = SKL_FW_MAX_MEM;
- 
- 	skl->tplg = fw;
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index d3d84f4125d9..21c33c1af934 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -42,9 +42,7 @@
- #define AZX_REG_VS_EM2_L1SEN		BIT(13)
- 
- struct skl_dsp_resource {
--	u32 max_mcps;
- 	u32 max_mem;
+ struct skl_base_cfg {
+-	u32 cps;
++	u32 cpc;
+ 	u32 ibs;
+ 	u32 obs;
+ 	u32 is_pages;
+@@ -343,7 +343,6 @@ struct skl_module_pin_resources {
+ struct skl_module_res {
+ 	u8 id;
+ 	u32 is_pages;
+-	u32 cps;
+ 	u32 ibs;
+ 	u32 obs;
+ 	u32 dma_buffer_size;
+@@ -384,7 +383,6 @@ struct skl_module_cfg {
+ 	u8 out_queue_mask;
+ 	u8 in_queue;
+ 	u8 out_queue;
 -	u32 mcps;
- 	u32 mem;
- };
- 
+ 	u32 ibs;
+ 	u32 obs;
+ 	u8 is_loadable;
 -- 
 2.17.1
