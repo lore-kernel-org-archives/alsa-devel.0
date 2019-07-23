@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Intel: hda: reduce ifdef usage for
-	hda" to the asoc tree
+Subject: Applied "ASoC: SOF: Intel: hda: correct ROM state
+	mask" to the asoc tree
 Date: Tue, 23 Jul 2019 12:29:13 +0100 (BST)
-Message-ID: <20190723112913.306E12742B59@ypsilon.sirena.org.uk>
-References: <20190722141402.7194-12-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190723112913.5B55F2742B60@ypsilon.sirena.org.uk>
+References: <20190722141402.7194-11-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95373F80483
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:13 +0200 (CEST)
-In-Reply-To: <20190722141402.7194-12-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C51D8F80481
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:14 +0200 (CEST)
+In-Reply-To: <20190722141402.7194-11-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Rander Wang <rander.wang@linux.intel.com>
+To: Keyon Jie <yang.jie@linux.intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Intel: hda: reduce ifdef usage for hda
+   ASoC: SOF: Intel: hda: correct ROM state mask
 
 has been applied to the asoc tree at
 
@@ -55,60 +55,34 @@ to this mail.
 Thanks,
 Mark
 
->From 6aa232e1ccfcd2b55306b86803dc547c36f8ad15 Mon Sep 17 00:00:00 2001
-From: Rander Wang <rander.wang@linux.intel.com>
-Date: Mon, 22 Jul 2019 09:13:52 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: reduce ifdef usage for hda
+>From 184fdfca4ba63d57a668564639a4dcf188fc9822 Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Mon, 22 Jul 2019 09:13:51 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: correct ROM state mask
 
-Move the code for hda to one point
+The ROM state is represented by the 24 LSB bits in the ROM status
+register, so the mask should be 0xffffff instead of 0xf.
 
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190722141402.7194-12-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190722141402.7194-11-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-dsp.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ sound/soc/sof/intel/hda.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 4315896b3f07..3d711d354fb9 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -359,6 +359,16 @@ static int hda_resume(struct snd_sof_dev *sdev)
- 		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 84d5fd021ccb..70909debfeb5 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -175,7 +175,7 @@
+ #define HDA_DSP_STACK_DUMP_SIZE			32
  
- 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
-+
-+	/* turn off the links that were off before suspend */
-+	list_for_each_entry(hlink, &bus->hlink_list, list) {
-+		if (!hlink->ref_count)
-+			snd_hdac_ext_bus_link_power_down(hlink);
-+	}
-+
-+	/* check dma status and clean up CORB/RIRB buffers */
-+	if (!bus->cmd_dma_state)
-+		snd_hdac_bus_stop_cmd_io(bus);
- #else
- 
- 	hda_dsp_ctrl_misc_clock_gating(sdev, false);
-@@ -391,18 +401,6 @@ static int hda_resume(struct snd_sof_dev *sdev)
- 	hda_dsp_ctrl_ppcap_enable(sdev, true);
- 	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
--	/* turn off the links that were off before suspend */
--	list_for_each_entry(hlink, &bus->hlink_list, list) {
--		if (!hlink->ref_count)
--			snd_hdac_ext_bus_link_power_down(hlink);
--	}
--
--	/* check dma status and clean up CORB/RIRB buffers */
--	if (!bus->cmd_dma_state)
--		snd_hdac_bus_stop_cmd_io(bus);
--#endif
--
- 	return 0;
- }
- 
+ /* ROM  status/error values */
+-#define HDA_DSP_ROM_STS_MASK			0xf
++#define HDA_DSP_ROM_STS_MASK			GENMASK(23, 0)
+ #define HDA_DSP_ROM_INIT			0x1
+ #define HDA_DSP_ROM_FW_MANIFEST_LOADED		0x3
+ #define HDA_DSP_ROM_FW_FW_LOADED		0x4
 -- 
 2.20.1
