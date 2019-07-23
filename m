@@ -1,69 +1,35 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: wm8904: rework FLL handling
-Date: Tue, 23 Jul 2019 09:27:16 +0100
-Message-ID: <20190723082716.GM54126@ediswmail.ad.cirrus.com>
-References: <cover.1563817201.git.mirq-linux@rere.qmqm.pl>
- <3e104cf18cb4e26096f0fe065a2c0e80373f861c.1563817201.git.mirq-linux@rere.qmqm.pl>
+Subject: Re: [alsa-devel] [PATCH] ASoC: dapm: fix a memory leak bug
+Date: Tue, 23 Jul 2019 10:15:05 +0100
+Message-ID: <20190723091505.GN54126@ediswmail.ad.cirrus.com>
+References: <1563803864-2809-1-git-send-email-wang6495@umn.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 963E9F80227
- for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 10:27:21 +0200 (CEST)
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <3e104cf18cb4e26096f0fe065a2c0e80373f861c.1563817201.git.mirq-linux@rere.qmqm.pl>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, patches@opensource.cirrus.com, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+In-Reply-To: <1563803864-2809-1-git-send-email-wang6495@umn.edu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wenwen Wang <wang6495@umn.edu>
+Cc: Wenwen Wang <wenwen@cs.uga.edu>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgMjIsIDIwMTkgYXQgMDc6NTc6MjFQTSArMDIwMCwgTWljaGHFgiBNaXJvc8WC
-YXcgd3JvdGU6Cj4gRXh0cmFjdCBhbmQgcmV3b3JrIEZMTCBoYW5kbGluZy4gVGhpcyBtYWtlcyBp
-dCBwb3NzaWJsZSB0byByZXVzZQo+IHRoZSBjb2RlIGZvciBvdGhlciBXb2xmc29uIGNvZGVjcyBh
-bmQgbWFrZXMgY29kZWMgYWRhcHQgU1lTQ0xLIHRvCj4gZXhhY3RseSBtYXRjaCBmcmVxdWVuY3kg
-cmVxdWlyZWQgZm9yIHVzZWQgc2FtcGxpbmcgcmF0ZS4KPiAKCkRvIHlvdSBoYXZlIHRob3VnaHRz
-IG9uIHdoaWNoIENPREVDcyB5b3Ugd291bGQgYmUgaW5jbHVkaW5nIGluCnRoaXM/IFRoZXNlIG9s
-ZGVyIHBhcnRzIG9mdGVuIGhhdmUgc21hbGwgZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGUKY29uZmln
-dXJhdGlvbiB0aGF0IG1pZ2h0IG1ha2UgdGhpcyBjaGFsbGVuZ2luZyBzbyBpZiB5b3UgaGF2ZQpw
-bGFucyBoZXJlIHdvdWxkIGJlIGdvb2QgdG8gaGF2ZSBhIGxvb2sgZnJvbSB0aGlzIGVuZC4KCj4g
-U2lnbmVkLW9mZi1ieTogTWljaGHFgiBNaXJvc8WCYXcgPG1pcnEtbGludXhAcmVyZS5xbXFtLnBs
-Pgo+IC0tLQo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC93bTg5MDQudHh0ICAgICAg
-fCAgIDQgKwo+ICBzb3VuZC9zb2MvYXRtZWwvYXRtZWxfd204OTA0LmMgICAgICAgICAgICAgICAg
-fCAgMTEgKy0KPiAgc291bmQvc29jL2NvZGVjcy9LY29uZmlnICAgICAgICAgICAgICAgICAgICAg
-IHwgICA0ICsKPiAgc291bmQvc29jL2NvZGVjcy9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAg
-IHwgICAyICsKPiAgc291bmQvc29jL2NvZGVjcy93bTg5MDQuYyAgICAgICAgICAgICAgICAgICAg
-IHwgNDU0ICsrKysrLS0tLS0tLS0tLS0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3dtODkwNC5oICAg
-ICAgICAgICAgICAgICAgICAgfCAgIDUgLQo+ICBzb3VuZC9zb2MvY29kZWNzL3dtX2ZsbC5jICAg
-ICAgICAgICAgICAgICAgICAgfCAzMzkgKysrKysrKysrKysrKwo+ICBzb3VuZC9zb2MvY29kZWNz
-L3dtX2ZsbC5oICAgICAgICAgICAgICAgICAgICAgfCAgMjYgKwo+ICA4IGZpbGVzIGNoYW5nZWQs
-IDQ5MiBpbnNlcnRpb25zKCspLCAzNTMgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC93bTg5MDQudHh0IGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3dtODkwNC50eHQKPiBpbmRleCA2NmJm
-MjYxNDIzYjkuLjZiNTFkODdmNTk4NyAxMDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3Mvc291bmQvd204OTA0LnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9zb3VuZC93bTg5MDQudHh0Cj4gQEAgLTksNiArOSwxMCBAQCBSZXF1
-aXJlZCBwcm9wZXJ0aWVzOgo+ICAgIC0gY2xvY2tzOiByZWZlcmVuY2UgdG8KPiAgICAgIDxEb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svY2xvY2stYmluZGluZ3MudHh0Pgo+
-ICAKPiArT3B0aW9uYWwgcHJvcGVydGllczoKPiArICAtIHdsZixmbGwtaW5wdXQ6IEZMTCBpbnB1
-dCBzaWduYWw6ICJtY2xrIiwgImJjbGsiLCAibHJjbGsiIG9yICJvc2MiCj4gKwkoIm1jbGsiIGJ5
-IGRlZmF1bHQpCj4gKwoKV291bGQgYmUga2VlbiB0byBzZWUgc29tZSBvdGhlciBwZW9wbGVzIHRo
-b3VnaHRzIG9uIHRoaXMgb25lLCBidXQKdGhpcyBmZWVscyBhIGxpdHRsZSBvZmYgdG8gbWUuIFNl
-bGVjdGluZyB0aGUgRkxMIGlucHV0IGlzCmdlbmVyYWxseSBzb21ldGhpbmcgdGhhdCB3b3VsZCBi
-ZSBkb25lIG9uIGEgdXNlLWNhc2UgYnkgdXNlLWNhc2UKYmFzaXMgcmF0aGVyIHRoYW4gYmVpbmcg
-YSBwcm9wZXJ0eSBvZiB0aGUgaGFyZHdhcmUgdGhhdCB3b3VsZApiZWxvbmcgaW4gZGV2aWNlIHRy
-ZWUuCgpUaGFua3MsCkNoYXJsZXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Mon, Jul 22, 2019 at 08:57:44AM -0500, Wenwen Wang wrote:
+> From: Wenwen Wang <wenwen@cs.uga.edu>
+> 
+> In snd_soc_dapm_new_control_unlocked(), a kernel buffer is allocated in
+> dapm_cnew_widget() to hold the new dapm widget. Then, different actions are
+> taken according to the id of the widget, i.e., 'w->id'. If any failure
+> occurs during this process, snd_soc_dapm_new_control_unlocked() should be
+> terminated by going to the 'request_failed' label. However, the allocated
+> kernel buffer is not freed on this code path, leading to a memory leak bug.
+> 
+> To fix the above issue, free the buffer before returning from
+> snd_soc_dapm_new_control_unlocked() through the 'request_failed' label.
+> 
+> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+> ---
+
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
