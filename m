@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1308: Convert headers to SPDX" to the
-	asoc tree
-Date: Tue, 23 Jul 2019 12:29:10 +0100 (BST)
-Message-ID: <20190723112910.B20532742B59@ypsilon.sirena.org.uk>
-References: <20190723101247.19741-1-shumingf@realtek.com>
+Subject: Applied "ASoC: SOF: Intel: hda: fix stream id setting"
+	to the asoc tree
+Date: Tue, 23 Jul 2019 12:29:11 +0100 (BST)
+Message-ID: <20190723112911.223AB2742BAB@ypsilon.sirena.org.uk>
+References: <20190722141402.7194-20-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41305F803D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A181F800E8
  for <alsa-devel@alsa-project.org>; Tue, 23 Jul 2019 13:29:12 +0200 (CEST)
-In-Reply-To: <20190723101247.19741-1-shumingf@realtek.com>
+In-Reply-To: <20190722141402.7194-20-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, flove@realtek.com
+To: Rander Wang <rander.wang@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt1308: Convert headers to SPDX
+   ASoC: SOF: Intel: hda: fix stream id setting
 
 has been applied to the asoc tree at
 
@@ -55,64 +55,78 @@ to this mail.
 Thanks,
 Mark
 
->From a789adae592e3d28ae87902c0012a8b11c96eb79 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Tue, 23 Jul 2019 18:12:47 +0800
-Subject: [PATCH] ASoC: rt1308: Convert headers to SPDX
+>From 810dbea3656912d6ad8db691a9a4b2ad97d4b736 Mon Sep 17 00:00:00 2001
+From: Rander Wang <rander.wang@linux.intel.com>
+Date: Mon, 22 Jul 2019 09:14:00 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: fix stream id setting
 
-Convert include and source files to SPDX.
+snd_hdac_ext_link_clear_stream_id maps stream id to
+link output, which is for playback, not capture.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20190723101247.19741-1-shumingf@realtek.com
+Tested on Whiskey Lake platform.
+
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190722141402.7194-20-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1308.c | 17 +++++++----------
- sound/soc/codecs/rt1308.h |  6 ++----
- 2 files changed, 9 insertions(+), 14 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 15 +++++++++++----
+ sound/soc/sof/intel/hda-dsp.c |  8 +++++++-
+ 2 files changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1308.c b/sound/soc/codecs/rt1308.c
-index cf3d72f99705..6f2ee6809dbb 100755
---- a/sound/soc/codecs/rt1308.c
-+++ b/sound/soc/codecs/rt1308.c
-@@ -1,13 +1,10 @@
--/*
-- * rt1308.c  --  RT1308 ALSA SoC amplifier component driver
-- *
-- * Copyright 2019 Realtek Semiconductor Corp.
-- * Author: Derek Fang <derek.fang@realtek.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// rt1308.c  --  RT1308 ALSA SoC amplifier component driver
-+//
-+// Copyright 2019 Realtek Semiconductor Corp.
-+// Author: Derek Fang <derek.fang@realtek.com>
-+//
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 2b5e2b8c69c2..8796f385be76 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -327,8 +327,12 @@ static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
+ 					  DMA_CHAN_INVALID, substream->stream);
+ 		if (ret < 0)
+ 			return ret;
+-		stream_tag = hdac_stream(link_dev)->stream_tag;
+-		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			stream_tag = hdac_stream(link_dev)->stream_tag;
++			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++		}
++
+ 		link_dev->link_prepared = 0;
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-diff --git a/sound/soc/codecs/rt1308.h b/sound/soc/codecs/rt1308.h
-index c330aae1d527..ff7c423e879e 100755
---- a/sound/soc/codecs/rt1308.h
-+++ b/sound/soc/codecs/rt1308.h
-@@ -1,12 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * RT1308.h  --  RT1308 ALSA SoC amplifier component driver
-+ * rt1308.h  --  RT1308 ALSA SoC amplifier component driver
-  *
-  * Copyright 2019 Realtek Semiconductor Corp.
-  * Author: Derek Fang <derek.fang@realtek.com>
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
+ 		/* fallthrough */
+@@ -369,8 +373,11 @@ static int hda_link_hw_free(struct snd_pcm_substream *substream,
+ 	if (!link)
+ 		return -EINVAL;
  
- #ifndef _RT1308_H_
+-	stream_tag = hdac_stream(link_dev)->stream_tag;
+-	snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		stream_tag = hdac_stream(link_dev)->stream_tag;
++		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++	}
++
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
+ 	link_dev->link_prepared = 0;
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index e38008194574..fb55a3c5afd0 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -450,9 +450,15 @@ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ 			link = snd_hdac_ext_bus_get_link(bus, name);
+ 			if (!link)
+ 				return -EINVAL;
++
++			stream->link_prepared = 0;
++
++			if (hdac_stream(stream)->direction ==
++				SNDRV_PCM_STREAM_CAPTURE)
++				continue;
++
+ 			stream_tag = hdac_stream(stream)->stream_tag;
+ 			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
+-			stream->link_prepared = 0;
+ 		}
+ 	}
+ #endif
 -- 
 2.20.1
