@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Cleanup skl_module_cfg
-	declaration" to the asoc tree
-Date: Wed, 24 Jul 2019 20:17:50 +0100 (BST)
-Message-ID: <20190724191750.96D0E2742B5D@ypsilon.sirena.org.uk>
-References: <20190723145854.8527-8-cezary.rojewski@intel.com>
+Subject: Applied "ASoC: Fail card instantiation if DAI format
+	setup fails" to the asoc tree
+Date: Wed, 24 Jul 2019 20:17:52 +0100 (BST)
+Message-ID: <20190724191752.B671A2742B60@ypsilon.sirena.org.uk>
+References: <alpine.DEB.2.20.1907241132350.6338@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87CCBF803D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id D247DF803D6
  for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2019 21:17:55 +0200 (CEST)
-In-Reply-To: <20190723145854.8527-8-cezary.rojewski@intel.com>
+In-Reply-To: <alpine.DEB.2.20.1907241132350.6338@lnxricardw1.se.axis.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ricard Wanderlof <ricardw@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Cleanup skl_module_cfg declaration
+   ASoC: Fail card instantiation if DAI format setup fails
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,34 +55,39 @@ to this mail.
 Thanks,
 Mark
 
->From bdc873feec900005d52f9afd3a63290531c0c1f4 Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Tue, 23 Jul 2019 16:58:54 +0200
-Subject: [PATCH] ASoC: Intel: Skylake: Cleanup skl_module_cfg declaration
+>From 40aa5383e393d72f6aa3943a4e7b1aae25a1e43b Mon Sep 17 00:00:00 2001
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Wed, 24 Jul 2019 11:38:44 +0200
+Subject: [PATCH] ASoC: Fail card instantiation if DAI format setup fails
 
-With removal of MCPS, CPS and CPC ambiguity, ibs and obs params for
-struct skl_module_cfg have been left unused. Update struct declaration
-by removing these two.
+If the DAI format setup fails, there is no valid communication format
+between CPU and CODEC, so fail card instantiation, rather than continue
+with a card that will most likely not function properly.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190723145854.8527-8-cezary.rojewski@intel.com
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+Link: https://lore.kernel.org/r/alpine.DEB.2.20.1907241132350.6338@lnxricardw1.se.axis.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.h | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/soc-core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 99a0277191ca..e967800dbb62 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -383,8 +383,6 @@ struct skl_module_cfg {
- 	u8 out_queue_mask;
- 	u8 in_queue;
- 	u8 out_queue;
--	u32 ibs;
--	u32 obs;
- 	u8 is_loadable;
- 	u8 core_id;
- 	u8 dev_type;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0a774d0a5ff..1486fb2eb921 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1511,8 +1511,11 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 		}
+ 	}
+ 
+-	if (dai_link->dai_fmt)
+-		snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
++	if (dai_link->dai_fmt) {
++		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
++		if (ret)
++			return ret;
++	}
+ 
+ 	ret = soc_post_component_init(rtd, dai_link->name);
+ 	if (ret)
 -- 
 2.20.1
