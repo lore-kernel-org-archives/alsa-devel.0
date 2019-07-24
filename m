@@ -1,87 +1,59 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RESEND PATCH v2 0/7] ASoC: Intel: Skylake: Driver
- fundaments overhaul
-Date: Wed, 24 Jul 2019 18:12:50 +0530
-Message-ID: <20190724124250.GM12733@vkoul-mobl.Dlink>
-References: <20190723145854.8527-1-cezary.rojewski@intel.com>
+From: Eric Biggers <ebiggers@kernel.org>
+Subject: Re: Reminder: 1 open syzbot bug in sound subsystem
+Date: Wed, 24 Jul 2019 08:56:47 -0700
+Message-ID: <20190724155647.GA673@sol.localdomain>
+References: <20190724024723.GI643@sol.localdomain>
+ <s5hd0hzvrit.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43D93F8026F
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2019 16:01:22 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190723145854.8527-1-cezary.rojewski@intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+In-Reply-To: <s5hd0hzvrit.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjMtMDctMTksIDE2OjU4LCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4gU2t5bGFrZSBkcml2
-ZXIgaXMgZGl2aWRlZCBpbnRvIHR3byBtb2R1bGVzOgo+IC0gc25kX3NvY19za2wKPiAtIHNuZF9z
-b2Nfc2tsX2lwYwo+IAo+IGFuZCBub3RoaW5nIHdvdWxkIGJlIHdyb25nIGlmIG5vdCBmb3IgdGhl
-IGZhY3QgdGhhdCBib3RoIGNhbm5vdCBleGlzdAo+IHdpdGhvdXQgb25lIGFub3RoZXIuIElQQyBt
-b2R1bGUgaXMgbm90IHNvbWUga2luZCBvZiBleHRlbnNpb24sIGFzIGl0IGlzCj4gdGhlIGNhc2Ug
-Zm9yIHNuZF9oZGFfZXh0X2NvcmUgd2hpY2ggaXMgc2VwYXJhdGVkIGZyb20gc25kX2hkYV9jb3Jl
-IC0KPiBsZWdhY3kgaGRhIGludGVyZmFjZS4gSXQncyBhcyBtdWNoIGNvcmUgU2t5bGFrZSBtb2R1
-bGUgYXMgc25kX3NvY19za2wKPiBpcy4KPiAKPiBTdGF0ZW1lbnQgYmFja3VwIGJ5IGV4aXN0ZW5j
-ZSBvZiBjaXJjdWxhciBkZXBlbmRlbmN5IGJldHdlZW4gdGhpcyB0d28uCj4gVG8gZWxpbWluYXRl
-IHNhaWQgcHJvYmxlbSwgc3RydWN0IHNrbF9zc3QgaGFzIGJlZW4gY3JlYXRlZC4gRnJvbSB0aGF0
-Cj4gbW9tbWVudCwgU2t5bGFrZSBoYXMgYmVlbiBwbGFndWVkIGJ5IGhlYWRlciBlcnJvcnMgKGlu
-Y29tcGxldGUgc3R1cmN0cywKPiB1bmtub3duIHJlZmVyZW5jZXMgZXRjLikgd2hlbmV2ZXIgc29t
-ZXRoaW5nIG5ldyBpcyB0byBiZSBhZGRlZCBvciBjb2RlCj4gaXMgY2xlYW5lZCB1cC4KPiAKPiBG
-aXggdGhpcyBmbGF3ZWQgZGVzaWduIGJ5IG1lcmdpbmcgc25kX3NvY19za2wgYW5kIHNuZF9zb2Nf
-c2tsX2lwYy4KPiBBbHNvLCBkbyBub3QgZm9yZ2V0IGFib3V0IHN0cnVjdCBza2xfc3N0IHJlZHVu
-ZGFuY3kuCj4gRm9sbG93dXAgY2hhbmdlcyBhZGRyZXNzIGhhcm1mdWwgYXNzdW1wdGlvbnMgYW5k
-IGZhbHNlIGxvZ2ljIHdoaWNoCj4gZHJpdmVyIGN1cnJlbnRseSBpbXBsZW1lbnRzIGUuZy46IGF0
-dGVtcHQgdG8gdGFrZSByb2xlIG9mIG1hc3RlciBmb3IKPiBEU1Agc2NoZWR1bGluZyB3aGVuIGlu
-IGZhY3QgZW50aXJlIGNvbnRyb2wgdGFrZXMgcGxhY2UgaW4gRFNQLgo+IAo+IENoYW5nZXMgc2lu
-Y2UgdjE6Cj4gLSBSZWJhc2VkIG9udG8gNS40CgpPbiBhIGxpZ2h0ZXIgbm90ZToKCkRpZCB0aGlz
-IHNlcmllcyB0aW1lIHRyYXZlbCBmcm9tIHRoZSBmdXR1cmUhIERpZCB5b3UgY2hhcmdlIHRoZSBm
-bHV4CmNhcGFjaXRvciB0byBnbyBiYWNrPwoKPiAKPiBBbWFkZXVzeiBTxYJhd2nFhHNraSAoMik6
-Cj4gICBBU29DOiBJbnRlbDogU2t5bGFrZTogQ29tYmluZSBzbmRfc29jX3NrbF9pcGMgYW5kIHNu
-ZF9zb2Nfc2tsCj4gICBBU29DOiBJbnRlbDogU2t5bGFrZTogRG8gbm90IGRpc2FibGUgRlcgbm90
-aWZpY2F0aW9ucwo+IAo+IENlemFyeSBSb2pld3NraSAoNSk6Cj4gICBBU29DOiBJbnRlbDogU2t5
-bGFrZTogTWVyZ2Ugc2tsX3NzdCBhbmQgc2tsIGludG8gc2tsX2RldiBzdHJ1Y3QKPiAgIEFTb0M6
-IEludGVsOiBTa3lsYWtlOiBSZW1vdmUgTUNQUyBhdmFpbGFibGUgY2hlY2sKPiAgIEFTb0M6IElu
-dGVsOiBTa3lsYWtlOiBSZW1vdmUgbWVtb3J5IGF2YWlsYWJsZSBjaGVjawo+ICAgQVNvQzogSW50
-ZWw6IFNreWxha2U6IE1ha2UgTUNQUyBhbmQgQ1BTIHBhcmFtcyBvYnNvbGV0ZQo+ICAgQVNvQzog
-SW50ZWw6IFNreWxha2U6IENsZWFudXAgc2tsX21vZHVsZV9jZmcgZGVjbGFyYXRpb24KPiAKPiAg
-c291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtaXBjLmggICAgICAgIHwgICAxICsKPiAgc291bmQv
-c29jL2ludGVsL3NreWxha2UvTWFrZWZpbGUgICAgICAgIHwgIDEyICstCj4gIHNvdW5kL3NvYy9p
-bnRlbC9za3lsYWtlL2J4dC1zc3QuYyAgICAgICB8ICA1MCArLS0KPiAgc291bmQvc29jL2ludGVs
-L3NreWxha2UvY25sLXNzdC1kc3AuaCAgIHwgICA3ICstCj4gIHNvdW5kL3NvYy9pbnRlbC9za3ls
-YWtlL2NubC1zc3QuYyAgICAgICB8ICAzNyArLQo+ICBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9z
-a2wtZGVidWcuYyAgICAgfCAgMTQgKy0KPiAgc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLW1l
-c3NhZ2VzLmMgIHwgMjQ1ICsrKysrKy0tLS0tLS0KPiAgc291bmQvc29jL2ludGVsL3NreWxha2Uv
-c2tsLW5obHQuYyAgICAgIHwgIDE4ICstCj4gIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1w
-Y20uYyAgICAgICB8ICA3NCArKy0tCj4gIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3At
-Y2xrLmMgICB8ICAgNCArLQo+ICBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWRzcC5j
-ICAgfCAgMTAgKy0KPiAgc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1kc3AuaCAgIHwg
-IDI5ICstCj4gIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMgICB8ICAgOCAr
-LQo+ICBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5oICAgfCAgNTIgKy0tCj4g
-IHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtdXRpbHMuYyB8ICAzNyArLQo+ICBzb3Vu
-ZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LmMgICAgICAgfCAgNTEgKy0tCj4gIHNvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL3NrbC10b3BvbG9neS5jICB8IDQ0MSArKysrKysrKy0tLS0tLS0tLS0t
-LS0tLS0KPiAgc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXRvcG9sb2d5LmggIHwgIDQzICst
-LQo+ICBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wuYyAgICAgICAgICAgfCAgNTQgKy0tCj4g
-IHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC5oICAgICAgICAgICB8IDEwMiArKysrLS0KPiAg
-MjAgZmlsZXMgY2hhbmdlZCwgNTQ2IGluc2VydGlvbnMoKyksIDc0MyBkZWxldGlvbnMoLSkKPiAK
-PiAtLSAKPiAyLjE3LjEKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCj4gaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCgotLSAKflZpbm9kCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Jul 24, 2019 at 09:08:26AM +0200, Takashi Iwai wrote:
+> On Wed, 24 Jul 2019 04:47:23 +0200,
+> Eric Biggers wrote:
+> > 
+> > [This email was generated by a script.  Let me know if you have any suggestions
+> > to make it better, or if you want it re-generated with the latest status.]
+> > 
+> > Of the currently open syzbot reports against the upstream kernel, I've manually
+> > marked 1 of them as possibly being a bug in the sound subsystem.
+> > 
+> > If you believe this bug is no longer valid, please close the syzbot report by
+> > sending a '#syz fix', '#syz dup', or '#syz invalid' command in reply to the
+> > original thread, as explained at https://goo.gl/tpsmEJ#status
+> > 
+> > If you believe I misattributed this bug to the sound subsystem, please let me
+> > know, and if possible forward the report to the correct people or mailing list.
+> > 
+> > Here is the bug:
+> > 
+> > --------------------------------------------------------------------------------
+> > Title:              KASAN: use-after-free Read in wake_up_if_idle
+> > Last occurred:      131 days ago
+> > Reported:           267 days ago
+> > Branches:           Mainline and others
+> > Dashboard link:     https://syzkaller.appspot.com/bug?id=b1e300cd7b124fc83dd4199d4d1df26310111b0f
+> > Original thread:    https://lkml.kernel.org/lkml/00000000000066ab7105795f245e@google.com/T/#u
+> 
+> This one doesn't look like a bug that is directly related with the
+> sound stuff.  Although it was triggered from a sound ioctl, UAF is
+> seen rather in a notifier chain of other component.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+
+Okay, I'm not sure what to do with this bug though.  I'll mark it as unknown
+subsystem for now.
+
+By the way, thanks for addressing all the syzbot reports in the sound subsystem!
+
+- Eric
