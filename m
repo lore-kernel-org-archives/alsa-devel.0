@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 6/6] ASoC: codec2codec: fill some of the runtime stream parameters
-Date: Wed, 24 Jul 2019 18:24:05 +0200
-Message-ID: <20190724162405.6574-7-jbrunet@baylibre.com>
+Subject: [PATCH 1/6] ASoC: codec2codec: run callbacks in order
+Date: Wed, 24 Jul 2019 18:24:00 +0200
+Message-ID: <20190724162405.6574-2-jbrunet@baylibre.com>
 References: <20190724162405.6574-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,29 +12,87 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Set the information provided struct snd_soc_pcm_stream in the
-struct snd_pcm_runtime of the codec to codec link.
+When handling dai_link events on codec to codec links, run all .startup()
+callbacks on sinks and sources before running any .hw_params(). Same goes
+for hw_free() and shutdown(). This is closer to the behavior of regular
+dai links
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/soc-dapm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/soc-dapm.c | 38 ++++++++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e0eedff5fe94..a6bc3eda275d 100644
+index 1d04612601ad..5348abda7ce2 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3892,6 +3892,11 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 			dapm_update_dai_unlocked(substream, &params, sink);
+@@ -3835,11 +3835,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 				goto out;
+ 			}
+ 			source->active++;
+-			ret = snd_soc_dai_hw_params(source, &substream, params);
+-			if (ret < 0)
+-				goto out;
+-
+-			dapm_update_dai_unlocked(&substream, params, source);
  		}
  
-+		runtime->format = params_format(&params);
-+		runtime->subformat = params_subformat(&params);
-+		runtime->channels = params_channels(&params);
-+		runtime->rate = params_rate(&params);
+ 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+@@ -3853,7 +3848,24 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 				goto out;
+ 			}
+ 			sink->active++;
+-			ret = snd_soc_dai_hw_params(sink, &substream, params);
++		}
 +
- 		break;
++		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++		snd_soc_dapm_widget_for_each_source_path(w, path) {
++			source = path->source->priv;
++
++			ret = soc_dai_hw_params(&substream, params, source);
++			if (ret < 0)
++				goto out;
++
++			dapm_update_dai_unlocked(&substream, params, source);
++		}
++
++		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
++			sink = path->sink->priv;
++
++			ret = soc_dai_hw_params(&substream, params, sink);
+ 			if (ret < 0)
+ 				goto out;
  
- 	case SND_SOC_DAPM_POST_PMU:
+@@ -3889,9 +3901,18 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
+ 		snd_soc_dapm_widget_for_each_source_path(w, path) {
+ 			source = path->source->priv;
+-
+ 			snd_soc_dai_hw_free(source, &substream);
++		}
+ 
++		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
++			sink = path->sink->priv;
++			snd_soc_dai_hw_free(sink, &substream);
++		}
++
++		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++		snd_soc_dapm_widget_for_each_source_path(w, path) {
++			source = path->source->priv;
+ 			source->active--;
+ 			snd_soc_dai_shutdown(source, &substream);
+ 		}
+@@ -3899,9 +3920,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+ 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
+ 			sink = path->sink->priv;
+-
+-			snd_soc_dai_hw_free(sink, &substream);
+-
+ 			sink->active--;
+ 			snd_soc_dai_shutdown(sink, &substream);
+ 		}
 -- 
 2.21.0
