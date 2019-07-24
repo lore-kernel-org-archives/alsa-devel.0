@@ -1,67 +1,33 @@
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: cs4271: Fix a typo in the
-	CS4171_NR_RATIOS
-Date: Wed, 24 Jul 2019 08:00:23 +0200
-Message-ID: <20190724060023.31302-1-christophe.jaillet@wanadoo.fr>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 01/10] ASoC: fsl_sai: add of_match data
+Date: Wed, 24 Jul 2019 09:42:33 +0300
+Message-ID: <CAEnQRZC_mNnwYkpdiX2d_ccT_L-hivWdxQTMEUojjDWv+NCiQg@mail.gmail.com>
+References: <20190722124833.28757-1-daniel.baluta@nxp.com> <20190722124833.28757-2-daniel.baluta@nxp.com>
+ <20190723170035.GO5365@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp05.smtpout.orange.fr
- [80.12.242.127])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD349F8026F
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2019 08:01:17 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190723170035.GO5365@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Viorel Suman <viorel.suman@nxp.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linuxppc-dev@lists.ozlabs.org, "S.j. Wang" <shengjiu.wang@nxp.com>, "Angus Ainslie (Purism)" <angus@akkea.ca>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Lucas Stach <l.stach@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-This should be CS4271_NR_RATIOS.
-Fix it and use it.
+On Tue, Jul 23, 2019 at 8:01 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Jul 22, 2019 at 03:48:24PM +0300, Daniel Baluta wrote:
+> > From: Lucas Stach <l.stach@pengutronix.de>
+> >
+> > New revisions of the SAI IP block have even more differences that need
+> > be taken into account by the driver. To avoid sprinking compatible
+> > checks all over the driver move the current differences into of_match_data.
+> >
+> > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> > ---
+> >  sound/soc/fsl/fsl_sai.c | 22 ++++++++++++++--------
+>
+> You need to supply your own signoff if you're sending someone else's
+> patch - see submitting-patches.rst for details on what signoffs mean and
+> why they're required.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- sound/soc/codecs/cs4271.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 1d03a1348162..04b86a51e055 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -334,7 +334,7 @@ static struct cs4271_clk_cfg cs4271_clk_tab[] = {
- 	{0, CS4271_MODE1_MODE_4X, 256,  CS4271_MODE1_DIV_2},
- };
- 
--#define CS4171_NR_RATIOS ARRAY_SIZE(cs4271_clk_tab)
-+#define CS4271_NR_RATIOS ARRAY_SIZE(cs4271_clk_tab)
- 
- static int cs4271_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
-@@ -383,13 +383,13 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
- 		val = CS4271_MODE1_MODE_4X;
- 
- 	ratio = cs4271->mclk / cs4271->rate;
--	for (i = 0; i < CS4171_NR_RATIOS; i++)
-+	for (i = 0; i < CS4271_NR_RATIOS; i++)
- 		if ((cs4271_clk_tab[i].master == cs4271->master) &&
- 		    (cs4271_clk_tab[i].speed_mode == val) &&
- 		    (cs4271_clk_tab[i].ratio == ratio))
- 			break;
- 
--	if (i == CS4171_NR_RATIOS) {
-+	if (i == CS4271_NR_RATIOS) {
- 		dev_err(component->dev, "Invalid sample rate\n");
- 		return -EINVAL;
- 	}
--- 
-2.20.1
+Ack. Sorry for missing this.
