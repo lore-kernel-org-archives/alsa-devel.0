@@ -1,82 +1,67 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH] ASoC: Fail card instantiation if DAI format
-	setup fails
-Date: Wed, 24 Jul 2019 11:38:44 +0200
-Message-ID: <alpine.DEB.2.20.1907241132350.6338@lnxricardw1.se.axis.com>
+From: Pavel Machek <pavel@denx.de>
+Subject: [PATCH] sound: line6: sizeof (byte) is always 1, use that fact.
+Date: Wed, 24 Jul 2019 11:52:54 +0200
+Message-ID: <20190724095254.GA6727@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 760BCF800E8
- for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2019 11:38:50 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, gregkh@linuxfoundation.org, allison@lohutok.net, tglx@linutronix.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-If the DAI format setup fails, there is no valid communication format
-between CPU and CODEC, so fail card instantiation, rather than continue
-with a card that will most likely not function properly.
-
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
----
-
-I've had the problem of a sound card coming up even though an incorrect 
-DAI format was selected in the devicetree, apparently caused by not 
-checking the return value of snd_soc_runtime_set_dai_fmt() when the card 
-is instantiated, with the result in this particular case that that the 
-audio data was not transferred correctly (capture data was shifted one bit 
-up).
-
-I'm unsure though if this is intentional, I can't think why it should be, 
-since the DAI format is only set up at this time and not for instance 
-later when a stream is enabled, but perhaps I'm missing something here.
-
-At any rate, with this patch, the card does not come up under these 
-circumstances. The error message from snd_soc_runtime_set_dai_fmt() is 
-still printed to the kernel log so it's possible to see what the reason 
-is.
-
-/Ricard
-
- sound/soc/soc-core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7ecfe641ca46..06697b2d96b1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1511,8 +1511,11 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 		}
- 	}
- 
--	if (dai_link->dai_fmt)
--		snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
-+	if (dai_link->dai_fmt) {
-+		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	ret = soc_post_component_init(rtd, dai_link->name);
- 	if (ret)
--- 
-2.11.0
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+sizeof (byte) is always 1, use that fact and make interesting code explicit.
+
+Signed-off-by: Pavel Machek <pavel@denx.de>
+
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index ab2ec89..387c5c2 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -342,7 +342,7 @@ int line6_read_data(struct usb_line6 *line6, unsigned a=
+ddress, void *data,
+ 	if (address > 0xffff || datalen > 0xff)
+ 		return -EINVAL;
+=20
+-	len =3D kmalloc(sizeof(*len), GFP_KERNEL);
++	len =3D kmalloc(1, GFP_KERNEL);
+ 	if (!len)
+ 		return -ENOMEM;
+=20
+@@ -418,7 +421,7 @@ int line6_write_data(struct usb_line6 *line6, unsigned =
+address, void *data,
+ 	if (address > 0xffff || datalen > 0xffff)
+ 		return -EINVAL;
+=20
+-	status =3D kmalloc(sizeof(*status), GFP_KERNEL);
++	status =3D kmalloc(1, GFP_KERNEL);
+ 	if (!status)
+ 		return -ENOMEM;
+=20
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl04KnYACgkQMOfwapXb+vIvPgCdEcgRySTDEvncHuH1EgY1sF2N
+rwMAoMGO7UVMzt/J19H3d1Huf9YsVeSF
+=2Y4Y
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--
