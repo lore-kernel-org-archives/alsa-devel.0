@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 40/40] soundwire: intel: add delay on restart for enumeration
-Date: Thu, 25 Jul 2019 18:40:32 -0500
-Message-ID: <20190725234032.21152-41-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 33/40] soundwire: intel: Add basic power management support
+Date: Thu, 25 Jul 2019 18:40:25 -0500
+Message-ID: <20190725234032.21152-34-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,31 +12,154 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have a conceptual issue on restart: the interaction with the slaves
-can start before (re) enumeration is complete. Add a delay for now but
-we will need to have an async notification that all devices are back
-on the bus.
+Implement suspend/resume capabilities (not runtime_pm for now)
+
+Credits: this patch is based on an earlier internal contribution by
+Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/soundwire/intel.c | 102 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 102 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 1394a2322553..e4ea430b5a8e 100644
+index 215dc81cdf73..1477c35f616f 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1242,6 +1242,11 @@ static int intel_resume(struct device *dev)
- 
- 	ret = sdw_cdns_exit_reset(&sdw->cdns);
- 
-+	/* add delay to let Slaves re-enumerate */
-+	usleep_range(20000, 30000);
+@@ -12,6 +12,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+ #include <sound/pcm_params.h>
++#include <linux/pm_runtime.h>
+ #include <sound/soc.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+@@ -278,6 +279,35 @@ static void intel_debugfs_exit(struct sdw_intel *sdw)
+ /*
+  * shim ops
+  */
++static int intel_link_power_down(struct sdw_intel *sdw)
++{
++	int link_control, spa_mask, cpa_mask, ret;
++	unsigned int link_id = sdw->instance;
++	void __iomem *shim = sdw->res->shim;
++	u16 ioctl;
 +
-+	dev_dbg(dev, "%s done\n", __func__);
++	/* Glue logic */
++	ioctl = intel_readw(shim, SDW_SHIM_IOCTL(link_id));
++	ioctl |= SDW_SHIM_IOCTL_BKE;
++	ioctl |= SDW_SHIM_IOCTL_COE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
- 	return ret;
++	ioctl &= ~(SDW_SHIM_IOCTL_MIF);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	/* Link power down sequence */
++	link_control = intel_readl(shim, SDW_SHIM_LCTL);
++	spa_mask = ~(SDW_SHIM_LCTL_SPA << link_id);
++	cpa_mask = (SDW_SHIM_LCTL_CPA << link_id);
++	link_control &=  spa_mask;
++
++	ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
++	if (ret < 0)
++		return ret;
++
++	sdw->cdns.link_up = false;
++	return 0;
++}
+ 
+ static int intel_link_power_up(struct sdw_intel *sdw)
+ {
+@@ -300,6 +330,29 @@ static int intel_link_power_up(struct sdw_intel *sdw)
+ 	return 0;
  }
  
++static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
++{
++	void __iomem *shim = sdw->res->shim;
++	unsigned int link_id = sdw->instance;
++	u16 wake_en, wake_sts;
++
++	if (wake_enable) {
++		/* Enable the wakeup */
++		intel_writew(shim, SDW_SHIM_WAKEEN,
++			     (SDW_SHIM_WAKEEN_ENABLE << link_id));
++	} else {
++		/* Disable the wake up interrupt */
++		wake_en = intel_readw(shim, SDW_SHIM_WAKEEN);
++		wake_en &= ~(SDW_SHIM_WAKEEN_ENABLE << link_id);
++		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
++
++		/* Clear wake status */
++		wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
++		wake_sts |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
++		intel_writew(shim, SDW_SHIM_WAKESTS_STATUS, wake_sts);
++	}
++}
++
+ static int intel_shim_init(struct sdw_intel *sdw)
+ {
+ 	void __iomem *shim = sdw->res->shim;
+@@ -1095,11 +1148,60 @@ static int intel_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++/*
++ * PM calls
++ */
++
++#ifdef CONFIG_PM
++
++static int intel_suspend(struct device *dev)
++{
++	struct sdw_intel *sdw;
++	int ret;
++
++	sdw = dev_get_drvdata(dev);
++
++	ret = intel_link_power_down(sdw);
++	if (ret) {
++		dev_err(dev, "Link power down failed: %d", ret);
++		return ret;
++	}
++
++	intel_shim_wake(sdw, false);
++
++	return 0;
++}
++
++static int intel_resume(struct device *dev)
++{
++	struct sdw_intel *sdw;
++	int ret;
++
++	sdw = dev_get_drvdata(dev);
++
++	ret = intel_init(sdw);
++	if (ret) {
++		dev_err(dev, "%s failed: %d", __func__, ret);
++		return ret;
++	}
++
++	sdw_cdns_enable_interrupt(&sdw->cdns);
++
++	return ret;
++}
++
++#endif
++
++static const struct dev_pm_ops intel_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
++};
++
+ static struct platform_driver sdw_intel_drv = {
+ 	.probe = intel_probe,
+ 	.remove = intel_remove,
+ 	.driver = {
+ 		.name = "int-sdw",
++		.pm = &intel_pm,
+ 
+ 	},
+ };
 -- 
 2.20.1
