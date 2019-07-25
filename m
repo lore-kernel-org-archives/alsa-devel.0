@@ -1,61 +1,35 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 05/25] ASoC: soc-component: add
- snd_soc_component_prepare()
-Date: Thu, 25 Jul 2019 21:59:42 +0200
-Message-ID: <2d2e6827-1c57-caf4-88ed-4b61f3b5a990@intel.com>
-References: <8736iwurtc.wl-kuninori.morimoto.gx@renesas.com>
- <87v9vstd7a.wl-kuninori.morimoto.gx@renesas.com>
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 00/11] JZ4740 SoC cleanup
+Date: Thu, 25 Jul 2019 18:02:04 -0400
+Message-ID: <20190725220215.460-1-paul@crapouillou.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EACF5F800E8
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 21:59:48 +0200 (CEST)
-In-Reply-To: <87v9vstd7a.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vinod Koul <vkoul@kernel.org>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Lee Jones <lee.jones@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: od@zcrc.me, devicetree@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-24 03:51, Kuninori Morimoto wrote:> +
-> +int snd_soc_component_prepare(struct snd_soc_component *component,
-> +			      struct snd_pcm_substream *substream)
-> +{
-> +	if (component->driver->ops &&
-> +	    component->driver->ops->prepare)
-> +		return component->driver->ops->prepare(substream);
-> +
-> +	return 0;
-> +}
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 86d2e6b..a77a14c 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -774,11 +774,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
->   	for_each_rtdcom(rtd, rtdcom) {
->   		component = rtdcom->component;
->   
-> -		if (!component->driver->ops ||
-> -		    !component->driver->ops->prepare)
-> -			continue;
-> -
-> -		ret = component->driver->ops->prepare(substream);
-> +		snd_soc_component_prepare(component, substream);
->   		if (ret < 0) {
->   			dev_err(component->dev,
->   				"ASoC: platform prepare error: %d\n", ret);
-> 
+Hi,
 
-Compared to old code, ret gets ignored here. Guess unintended modification?
+This patchset converts the Qi LB60 MIPS board to devicetree and makes it
+use all the shiny new drivers that have been developed or updated
+recently.
+
+All the crappy old drivers and custom code can be dropped since they
+have been replaced by better alternatives.
+
+Some of these alternatives are not yet in 5.3-rc1 but have already been
+accepted by their respective maintainer for inclusion in 5.4-rc1.
+
+To upstream this patchset, I think that as soon as MIPS maintainers
+agree to take patches 01-03/11 and 11/11, the other patches can go
+through their respective maintainer's tree.
+
+Note for MIPS maintainers:
+Patch 11/11 may conflict with the TCU patchset v15, should this one be
+accepted upstream, but the conflict is tiny and easy to fix. Should this
+case appear, don't hesitate to bother me about it.
+
+Thanks,
+-Paul
