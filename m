@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 34/40] soundwire: intel: ignore disabled links for suspend/resume
-Date: Thu, 25 Jul 2019 18:40:26 -0500
-Message-ID: <20190725234032.21152-35-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 32/40] soundwire: intel: add helper for initialization
+Date: Thu, 25 Jul 2019 18:40:24 -0500
+Message-ID: <20190725234032.21152-33-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,40 +12,46 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Move code to helper for reuse in power management routines
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/soundwire/intel.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 1477c35f616f..a976480d6f36 100644
+index c40ab443e723..215dc81cdf73 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1161,6 +1161,12 @@ static int intel_suspend(struct device *dev)
+@@ -984,6 +984,15 @@ static struct sdw_master_ops sdw_intel_ops = {
+ 	.post_bank_switch = intel_post_bank_switch,
+ };
  
- 	sdw = dev_get_drvdata(dev);
- 
-+	if (sdw->cdns.bus.prop.hw_disabled) {
-+		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-+			sdw->cdns.bus.link_id);
-+		return 0;
-+	}
++static int intel_init(struct sdw_intel *sdw)
++{
++	/* Initialize shim and controller */
++	intel_link_power_up(sdw);
++	intel_shim_init(sdw);
 +
- 	ret = intel_link_power_down(sdw);
- 	if (ret) {
- 		dev_err(dev, "Link power down failed: %d", ret);
-@@ -1179,6 +1185,12 @@ static int intel_resume(struct device *dev)
- 
- 	sdw = dev_get_drvdata(dev);
- 
-+	if (sdw->cdns.bus.prop.hw_disabled) {
-+		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-+			sdw->cdns.bus.link_id);
-+		return 0;
-+	}
++	return sdw_cdns_init(&sdw->cdns);
++}
 +
- 	ret = intel_init(sdw);
- 	if (ret) {
- 		dev_err(dev, "%s failed: %d", __func__, ret);
+ /*
+  * probe and init
+  */
+@@ -1026,11 +1035,8 @@ static int intel_probe(struct platform_device *pdev)
+ 		return 0;
+ 	}
+ 
+-	/* Initialize shim and controller */
+-	intel_link_power_up(sdw);
+-	intel_shim_init(sdw);
+-
+-	ret = sdw_cdns_init(&sdw->cdns);
++	/* Initialize shim, controller and Cadence IP */
++	ret = intel_init(sdw);
+ 	if (ret)
+ 		goto err_init;
+ 
 -- 
 2.20.1
