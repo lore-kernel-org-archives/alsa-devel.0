@@ -1,57 +1,88 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: codec2codec: run callbacks in order
-Date: Thu, 25 Jul 2019 14:00:16 +0100
-Message-ID: <20190725130016.GC4213@sirena.org.uk>
-References: <20190724162405.6574-1-jbrunet@baylibre.com>
- <20190724162405.6574-2-jbrunet@baylibre.com>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: Best representation for TDM devices
+Date: Thu, 25 Jul 2019 15:01:12 +0200
+Message-ID: <20190725130112.3j2vi4dyngyr6yh3@flea>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KDt/GgjP6HVcx58l"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190724162405.6574-2-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============5392625376563764073=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---KDt/GgjP6HVcx58l
-Content-Type: text/plain; charset=utf-8
+--===============5392625376563764073==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rddslzkshiyxhiyb"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 24, 2019 at 06:24:00PM +0200, Jerome Brunet wrote:
-> When handling dai_link events on codec to codec links, run all .startup()
-> callbacks on sinks and sources before running any .hw_params(). Same goes
-> for hw_free() and shutdown(). This is closer to the behavior of regular
-> dai links
 
-This looks good but needs rebasing against -next due to Morimoto-san's
-recent DAI changes:
+--rddslzkshiyxhiyb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  CC      sound/soc/soc-dapm.o
-sound/soc/soc-dapm.c: In function =E2=80=98snd_soc_dai_link_event=E2=80=99:
-sound/soc/soc-dapm.c:3857:10: error: implicit declaration of function =E2=
-=80=98soc_dai_hw_params=E2=80=99; did you mean =E2=80=98snd_soc_dai_hw_para=
-ms=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-    ret =3D soc_dai_hw_params(&substream, params, source);
-          ^~~~~~~~~~~~~~~~~
-          snd_soc_dai_hw_params
+Hi,
 
---KDt/GgjP6HVcx58l
+I'm currently working on a device that has two Analog's ADAU7002
+connected to an I2S/TDM Controller (sound/soc/sunxi/sun4i-i2s.c, with
+some modifications), over the slots 1/2 and 3/4.
+
+The capture itself is working fine, however I'm not quite sure about
+the way to expose those streams to the userspace.
+
+Since I have two codecs, I have two links (described through
+simple-card) and thus two subdevices. However, the microphones
+connected are really separate streams, so ideally (I guess?) we should
+have 1 subdevice per microphone.
+
+An alternative would be that we capture the whole 4 channels and use
+dsnoop to demux them, but trying to use the device directly (using
+arecord -D hw:0) results in the ioctl to change the number of channels
+being rejected, I'm assuming because each codec only has 2 channels?
+
+So I'm a bit lost at this point about how I should go and expose
+this. I couldn't really find any similar setup either in the
+kernel. Any preferred way of doing this?
+
+Thanks!
+Maxime
+
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
+--rddslzkshiyxhiyb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl05p+AACgkQJNaLcl1U
-h9AP+gf+KYWXJgB5nW6jPKjIT4VghTppSU3QuuCdZrhY/sNBJSzzMz6wo1IPyz97
-fyMJDcDemoa6wbn2EdzxffFQKt7DlKNs8fNe1TSu6SaQaITcI5iGYaeeQ0U+t1ps
-bydYObp41RlNN66PWCqoObTjwrtmbT4KjZt6VVD/rpUA+TYVaT4lAlC43lYdGOwS
-s1U3cqK0UhnJ2tl7ijvp1GbohlH7hG+STTgSwMVHjnqTvDAnLJrQ7aXO4U39m4mc
-GKQ2VtknUOXH4SmQ/HCyLdKOHXSv2fWdEMSeD65MBUxRnfW9ivMoQabStIA39rk9
-m1xUbylnxDjw8hciPEbmbsQapqiavg==
-=HgG8
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXTmoGAAKCRDj7w1vZxhR
+xTKUAPwPcJzEqkkoUcUYtmz9PUBumusjyVSRBmCPSBM/U/pQ2AD/UQWf6Jlc3JJN
+BX8LFvZSo3fF7enhh05KgQsqvLuhIQo=
+=hz2z
 -----END PGP SIGNATURE-----
 
---KDt/GgjP6HVcx58l--
+--rddslzkshiyxhiyb--
+
+
+--===============5392625376563764073==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============5392625376563764073==--
