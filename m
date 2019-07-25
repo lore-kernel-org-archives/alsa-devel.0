@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ASoC: SOF: Makefile - fix the top-level kernel
-	module names (add snd- prefix)
-Date: Thu, 25 Jul 2019 13:08:08 +0200
-Message-ID: <20190725110808.19938-1-perex@perex.cz>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Use format size instead
+ physical for sample_bits symmetry
+Date: Thu, 25 Jul 2019 14:10:35 +0300
+Message-ID: <6bd26b97-98b3-e5ab-2406-348698aaf71c@ti.com>
+References: <20190725102226.781-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C24EFF800E8
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 13:08:34 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E88CF800E8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 13:10:39 +0200 (CEST)
+In-Reply-To: <20190725102226.781-1-peter.ujfalusi@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +24,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Use the proper module name. The objs assignments are already there.
-
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>0
----
- sound/soc/sof/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index 8f14c9d2950b..d2f7a1bc09a1 100644
---- a/sound/soc/sof/Makefile
-+++ b/sound/soc/sof/Makefile
-@@ -11,8 +11,8 @@ obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
- obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
- 
- 
--obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
--obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
-+obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi-dev.o
-+obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci-dev.o
- 
- obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
- obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
--- 
-2.20.1
+CgpPbiAyNS8wNy8yMDE5IDEzLjIyLCBQZXRlciBVamZhbHVzaSB3cm90ZToKPiBGb3IgREFJcyB0
+aGUgZm9ybWF0IHNpemUgaW4gYml0cyBtYXR0ZXJzIHdoZW4gaXQgY29tZXMgdG8gc3ltbWV0cnku
+Cj4gVGhlIHBoeXNpY2FsIHdpZHRoIGlzIHRoZSBpbi1tZW1vcnkgZm9ybWF0IHNpemUgd2hpY2gg
+bWF0dGVycyBtb3N0bHkgZm9yCj4gdGhlIHBsYXRmb3JtIGRyaXZlcnMuCj4gCj4gSWYgZm9yIGV4
+YW1wbGUgYSBEQUkgcmVxdWVzdHMgc3ltbWV0cmljX3NhbXBsZWJpdHMgYW5kIHRoZSBmaXJzdCBz
+dHJlYW0gaXMKPiB1c2luZyBTMjRfTEUgdGhlbiB0aGUgc2Vjb25kIHN0cmVhbSB3b3VsZCBub3Qg
+YmUgYWxsb3dlZCB0byB1c2UgUzI0XzNMRQo+IGRlc3BpdGUgYm90aCBTMjRfTEUgYW5kIFMyNF8z
+TEUgd291bGQgbmVlZCB0aGUgc2FtZSBjbG9ja2luZyBvbiB0aGUgYnVzLgo+IEJ1dCBTMzJfTEUg
+d291bGQgYmUgYWxsb3dlZCAoUzI0X0xFIGFuZCBTMzJfTEUgaXMgYm90aCBwaHlzaWNhbGx5IDMy
+IGJpdHMKPiBpbiBtZW1vcnkpIHdoaWNoIHdvdWxkIG5vdCBiZSBjb21wYXRpYmxlIHdpdGggUzI0
+X0xFIG9uIHRoZSBidXMuCgpXZWxsLCB0aGlzIGlzIG5vdCBjb3JyZWN0IGVpdGhlciBhcyB0aGUK
+c25kX3BjbV9od19jb25zdHJhaW50X3NpbmdsZShzdWJzdHJlYW0tPnJ1bnRpbWUsCgkJCSAgICAg
+U05EUlZfUENNX0hXX1BBUkFNX1NBTVBMRV9CSVRTLAoJCQkgICAgIHNvY19kYWktPnNhbXBsZV9i
+aXRzKTsKCmFwcGxpZXMgdG8gcGh5c2ljYWwgd2lkdGguCgpBZnRlciBTMjRfTEUgc3RyZWFtIHdp
+dGggdGhpcyBwYXRjaCBvbmx5IFMyNF8zTEUgaXMgYWxsb3dlZCBvcHBvc2VkIHRvClMyNF9MRS9T
+MzJfTEUgd2l0aG91dCBpdC4KCkkgZG9uJ3Qgc2VlIGhvdyB0aGlzIGNhbiBiZSBkb25lIGNvcnJl
+Y3RseS4KClMyNF9MRSBzaG91bGQgaW1wb3NlIGNvbnN0cmFpbnQgUzI0X0xFIHwgUzI0XzNMRSBh
+bmQgbm90IGFsbG93IFMzMl9MRS4KSW4gdGhlb3J5IGFueSBmb3JtYXQgd2l0aCBsZXNzIHRoYW4g
+MjRiaXRzIGNvdWxkIGJlIGFsbG93ZWQgd2l0aApzbG90X3dpZHRoID0gMjQsIGJ1dCB0aGlzIG1p
+Z2h0IGdvIHRvbyBmYXIuCgotIFDDqXRlcgoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBVamZh
+bHVzaSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPgo+IC0tLQo+ICBzb3VuZC9zb2Mvc29jLXBjbS5j
+IHwgNyArKystLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDQgZGVsZXRp
+b25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtcGNtLmMgYi9zb3VuZC9zb2Mv
+c29jLXBjbS5jCj4gaW5kZXggMTQwNmY5MzVhZjIyLi5jNzA3MjJkYzFmNGYgMTAwNjQ0Cj4gLS0t
+IGEvc291bmQvc29jL3NvYy1wY20uYwo+ICsrKyBiL3NvdW5kL3NvYy9zb2MtcGNtLmMKPiBAQCAt
+MjQzLDcgKzI0Myw3IEBAIHN0YXRpYyBpbnQgc29jX3BjbV9wYXJhbXNfc3ltbWV0cnkoc3RydWN0
+IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gIAo+ICAJcmF0ZSA9IHBhcmFtc19yYXRl
+KHBhcmFtcyk7Cj4gIAljaGFubmVscyA9IHBhcmFtc19jaGFubmVscyhwYXJhbXMpOwo+IC0Jc2Ft
+cGxlX2JpdHMgPSBzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aChwYXJhbXNfZm9ybWF0KHBh
+cmFtcykpOwo+ICsJc2FtcGxlX2JpdHMgPSBzbmRfcGNtX2Zvcm1hdF93aWR0aChwYXJhbXNfZm9y
+bWF0KHBhcmFtcykpOwo+ICAKPiAgCS8qIHJlamVjdCB1bm1hdGNoZWQgcGFyYW1ldGVycyB3aGVu
+IGFwcGx5aW5nIHN5bW1ldHJ5ICovCj4gIAlzeW1tZXRyeSA9IGNwdV9kYWktPmRyaXZlci0+c3lt
+bWV0cmljX3JhdGVzIHx8Cj4gQEAgLTkzMiw3ICs5MzIsNyBAQCBzdGF0aWMgaW50IHNvY19wY21f
+aHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+ICAKPiAgCQlj
+b2RlY19kYWktPnJhdGUgPSBwYXJhbXNfcmF0ZSgmY29kZWNfcGFyYW1zKTsKPiAgCQljb2RlY19k
+YWktPmNoYW5uZWxzID0gcGFyYW1zX2NoYW5uZWxzKCZjb2RlY19wYXJhbXMpOwo+IC0JCWNvZGVj
+X2RhaS0+c2FtcGxlX2JpdHMgPSBzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aCgKPiArCQlj
+b2RlY19kYWktPnNhbXBsZV9iaXRzID0gc25kX3BjbV9mb3JtYXRfd2lkdGgoCj4gIAkJCQkJCXBh
+cmFtc19mb3JtYXQoJmNvZGVjX3BhcmFtcykpOwo+ICAKPiAgCQlzbmRfc29jX2RhcG1fdXBkYXRl
+X2RhaShzdWJzdHJlYW0sICZjb2RlY19wYXJhbXMsIGNvZGVjX2RhaSk7Cj4gQEAgLTk0NSw4ICs5
+NDUsNyBAQCBzdGF0aWMgaW50IHNvY19wY21faHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0
+cmVhbSAqc3Vic3RyZWFtLAo+ICAJLyogc3RvcmUgdGhlIHBhcmFtZXRlcnMgZm9yIGVhY2ggREFJ
+cyAqLwo+ICAJY3B1X2RhaS0+cmF0ZSA9IHBhcmFtc19yYXRlKHBhcmFtcyk7Cj4gIAljcHVfZGFp
+LT5jaGFubmVscyA9IHBhcmFtc19jaGFubmVscyhwYXJhbXMpOwo+IC0JY3B1X2RhaS0+c2FtcGxl
+X2JpdHMgPQo+IC0JCXNuZF9wY21fZm9ybWF0X3BoeXNpY2FsX3dpZHRoKHBhcmFtc19mb3JtYXQo
+cGFyYW1zKSk7Cj4gKwljcHVfZGFpLT5zYW1wbGVfYml0cyA9IHNuZF9wY21fZm9ybWF0X3dpZHRo
+KHBhcmFtc19mb3JtYXQocGFyYW1zKSk7Cj4gIAo+ICAJc25kX3NvY19kYXBtX3VwZGF0ZV9kYWko
+c3Vic3RyZWFtLCBwYXJhbXMsIGNwdV9kYWkpOwo+ICAKPiAKClRleGFzIEluc3RydW1lbnRzIEZp
+bmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNp
+bmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
