@@ -1,8 +1,10 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2] ASoC: SOF: Makefile - fix the top-level
-	kernel module names (add snd- prefix)
-Date: Thu, 25 Jul 2019 15:37:43 +0200
-Message-ID: <20190725133743.22145-1-perex@perex.cz>
+Subject: Re: [PATCH] ASoC: SOF: Makefile - fix the top-level
+ kernel module names (add snd- prefix)
+Date: Thu, 25 Jul 2019 15:38:58 +0200
+Message-ID: <29ebff2c-a47a-d0a9-acf5-ee637df26400@perex.cz>
+References: <20190725110808.19938-1-perex@perex.cz>
+ <20190725131908.GE4213@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +12,10 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FE0AF800F5
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:37:58 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 087D7F800F5
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:39:04 +0200 (CEST)
+In-Reply-To: <20190725131908.GE4213@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +25,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA development <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the proper module name. The objs assignments are already there.
+Dne 25. 07. 19 v 15:19 Mark Brown napsal(a):
+> On Thu, Jul 25, 2019 at 01:08:08PM +0200, Jaroslav Kysela wrote:
+>> Use the proper module name. The objs assignments are already there.
+> 
+> This breaks the build for me:
+> 
+>   DESCEND  objtool
+>   CALL    scripts/atomic/check-atomics.sh
+>   CALL    scripts/checksyscalls.sh
+>   CHK     include/generated/compile.h
+> make[3]: *** No rule to make target 'sound/soc/sof/snd-sof-acpi-dev.o', needed by 'sound/soc/sof/built-in.a'.  Stop.
+> 
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>0
----
- sound/soc/sof/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Oops. I sent the v2 of the patch.
 
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index 8f14c9d2950b..585fb6917489 100644
---- a/sound/soc/sof/Makefile
-+++ b/sound/soc/sof/Makefile
-@@ -11,8 +11,8 @@ obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
- obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
- 
- 
--obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
--obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
-+obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi.o
-+obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci.o
- 
- obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
- obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
+				Thanks,
+					Jaroslav
+
 -- 
-2.20.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
