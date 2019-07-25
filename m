@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 13/40] soundwire: cadence_master: fix register definition for SLAVE_STATE
-Date: Thu, 25 Jul 2019 18:40:05 -0500
-Message-ID: <20190725234032.21152-14-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 17/40] soundwire: bus: use runtime_pm_get_sync/pm when enabled
+Date: Thu, 25 Jul 2019 18:40:09 -0500
+Message-ID: <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,27 +12,61 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-wrong prefix and wrong macro.
+Not all platforms support runtime_pm for now, let's use runtime_pm
+only when enabled.
 
+Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soundwire/bus.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 0f3b9c160b01..d9d9e3d964dd 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -85,8 +85,8 @@
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 5ad4109dc72f..0a45dc5713df 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -332,12 +332,16 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 	if (ret < 0)
+ 		return ret;
  
- #define CDNS_MCP_INTSET				0x4C
+-	ret = pm_runtime_get_sync(slave->bus->dev);
+-	if (ret < 0)
+-		return ret;
++	if (pm_runtime_enabled(slave->bus->dev)) {
++		ret = pm_runtime_get_sync(slave->bus->dev);
++		if (ret < 0)
++			return ret;
++	}
  
--#define CDNS_SDW_SLAVE_STAT			0x50
--#define CDNS_MCP_SLAVE_STAT_MASK		BIT(1, 0)
-+#define CDNS_MCP_SLAVE_STAT			0x50
-+#define CDNS_MCP_SLAVE_STAT_MASK		GENMASK(1, 0)
+ 	ret = sdw_transfer(slave->bus, &msg);
+-	pm_runtime_put(slave->bus->dev);
++
++	if (pm_runtime_enabled(slave->bus->dev))
++		pm_runtime_put(slave->bus->dev);
  
- #define CDNS_MCP_SLAVE_INTSTAT0			0x54
- #define CDNS_MCP_SLAVE_INTSTAT1			0x58
+ 	return ret;
+ }
+@@ -359,13 +363,16 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
+ 	if (ret < 0)
+ 		return ret;
+-
+-	ret = pm_runtime_get_sync(slave->bus->dev);
+-	if (ret < 0)
+-		return ret;
++	if (pm_runtime_enabled(slave->bus->dev)) {
++		ret = pm_runtime_get_sync(slave->bus->dev);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	ret = sdw_transfer(slave->bus, &msg);
+-	pm_runtime_put(slave->bus->dev);
++
++	if (pm_runtime_enabled(slave->bus->dev))
++		pm_runtime_put(slave->bus->dev);
+ 
+ 	return ret;
+ }
 -- 
 2.20.1
