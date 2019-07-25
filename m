@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 10/40] soundwire: cadence_master: remove useless wrapper
-Date: Thu, 25 Jul 2019 18:40:02 -0500
-Message-ID: <20190725234032.21152-11-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 08/40] soundwire: intel: remove BIOS work-arounds
+Date: Thu, 25 Jul 2019 18:40:00 -0500
+Message-ID: <20190725234032.21152-9-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,48 +12,35 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now that we've removed the update config, there's no need for a wrapper.
+the values passed by all existing BIOS are fine, let's use them as is.
+The existing code must have been needed only on early prototypes.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ drivers/soundwire/intel.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index eb46cf651d62..e85e49340986 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -749,7 +749,12 @@ EXPORT_SYMBOL(sdw_cdns_thread);
- /*
-  * init routines
-  */
--static int _cdns_enable_interrupt(struct sdw_cdns *cdns)
-+
-+/**
-+ * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
-+ * @cdns: Cadence instance
-+ */
-+int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
- {
- 	u32 mask;
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 51990b192dc0..c718c9c67a37 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -922,17 +922,6 @@ static int intel_prop_read(struct sdw_bus *bus)
+ 	/* Initialize with default handler to read all DisCo properties */
+ 	sdw_master_read_prop(bus);
  
-@@ -767,17 +772,6 @@ static int _cdns_enable_interrupt(struct sdw_cdns *cdns)
- 
+-	/* BIOS is not giving some values correctly. So, lets override them */
+-	bus->prop.num_clk_freq = 1;
+-	bus->prop.clk_freq = devm_kcalloc(bus->dev, bus->prop.num_clk_freq,
+-					  sizeof(*bus->prop.clk_freq),
+-					  GFP_KERNEL);
+-	if (!bus->prop.clk_freq)
+-		return -ENOMEM;
+-
+-	bus->prop.clk_freq[0] = bus->prop.max_clk_freq;
+-	bus->prop.err_threshold = 5;
+-
  	return 0;
  }
--
--/**
-- * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
-- * @cdns: Cadence instance
-- */
--int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
--{
--	_cdns_enable_interrupt(cdns);
--
--	return 0;
--}
- EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
  
- static int cdns_allocate_pdi(struct sdw_cdns *cdns,
 -- 
 2.20.1
