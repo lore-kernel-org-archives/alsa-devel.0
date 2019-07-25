@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: davinci-mcasp: Add support for
-	RIGHT_J format" to the asoc tree
+Subject: Applied "ASoC: ti: davinci-mcasp: Fix clk PDIR
+	handling for i2s master mode" to the asoc tree
 Date: Thu, 25 Jul 2019 14:19:26 +0100 (BST)
-Message-ID: <20190725131926.496612742B63@ypsilon.sirena.org.uk>
-References: <20190725083411.7211-1-peter.ujfalusi@ti.com>
+Message-ID: <20190725131926.B594E2742B5F@ypsilon.sirena.org.uk>
+References: <20190725083423.7321-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 059D7F8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F15EF8044A
  for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:19:27 +0200 (CEST)
-In-Reply-To: <20190725083411.7211-1-peter.ujfalusi@ti.com>
+In-Reply-To: <20190725083423.7321-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,11 +30,11 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: davinci-mcasp: Add support for RIGHT_J format
+   ASoC: ti: davinci-mcasp: Fix clk PDIR handling for i2s master mode
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,87 +55,51 @@ to this mail.
 Thanks,
 Mark
 
->From 816fe206138a7e3895c3a74fbd326a51df003f70 Mon Sep 17 00:00:00 2001
+>From 9fcf9139a2fd06b1ea1b11579371834cfa04bf4c Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 25 Jul 2019 11:34:11 +0300
-Subject: [PATCH] ASoC: ti: davinci-mcasp: Add support for RIGHT_J format
+Date: Thu, 25 Jul 2019 11:34:23 +0300
+Subject: [PATCH] ASoC: ti: davinci-mcasp: Fix clk PDIR handling for i2s master
+ mode
 
-The formater unit's rotation needs to be programmed differently for right
-aligned bus format to have the data moved to the correct place.
+When running McASP as master capture alone will not record any audio unless
+a parallel playback stream is running. As soon as the playback stops the
+captured data is going to be silent again.
 
-Take the opportunity and simplify the formater unit setup code.
+In McASP master mode we need to set the PDIR for the clock pins and fix
+the mcasp_set_axr_pdir() to skip the bits in the PDIR registers above
+AMUTE.
 
+This went unnoticed as most of the boards uses McASP as slave and neither
+of these issues are visible (audible) in those setups.
+
+Fixes: 2302be4126f52 ("ASoC: davinci-mcasp: Update PDIR (pin direction) register handling")
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20190725083411.7211-1-peter.ujfalusi@ti.com
+Link: https://lore.kernel.org/r/20190725083423.7321-1-peter.ujfalusi@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/davinci-mcasp.c | 43 ++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 24 deletions(-)
+ sound/soc/ti/davinci-mcasp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index ac59b509ead5..09ba3d3c70a0 100644
+index 2c518088b64d..4d611565375b 100644
 --- a/sound/soc/ti/davinci-mcasp.c
 +++ b/sound/soc/ti/davinci-mcasp.c
-@@ -465,6 +465,7 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		/* FS need to be inverted */
- 		inv_fs = true;
- 		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		/* configure a full-word SYNC pulse (LRCLK) */
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, FSXDUR);
-@@ -758,34 +759,28 @@ static int davinci_config_channel_size(struct davinci_mcasp *mcasp,
- 				       int sample_width)
+@@ -195,7 +195,7 @@ static inline void mcasp_set_axr_pdir(struct davinci_mcasp *mcasp, bool enable)
  {
- 	u32 fmt;
--	u32 tx_rotate = (sample_width / 4) & 0x7;
-+	u32 tx_rotate, rx_rotate, slot_width;
- 	u32 mask = (1ULL << sample_width) - 1;
--	u32 slot_width = sample_width;
--
--	/*
--	 * For captured data we should not rotate, inversion and masking is
--	 * enoguh to get the data to the right position:
--	 * Format	  data from bus		after reverse (XRBUF)
--	 * S16_LE:	|LSB|MSB|xxx|xxx|	|xxx|xxx|MSB|LSB|
--	 * S24_3LE:	|LSB|DAT|MSB|xxx|	|xxx|MSB|DAT|LSB|
--	 * S24_LE:	|LSB|DAT|MSB|xxx|	|xxx|MSB|DAT|LSB|
--	 * S32_LE:	|LSB|DAT|DAT|MSB|	|MSB|DAT|DAT|LSB|
--	 */
--	u32 rx_rotate = 0;
+ 	u32 bit;
  
-+	if (mcasp->slot_width)
-+		slot_width = mcasp->slot_width;
-+	else
-+		slot_width = sample_width;
- 	/*
--	 * Setting the tdm slot width either with set_clkdiv() or
--	 * set_tdm_slot() allows us to for example send 32 bits per
--	 * channel to the codec, while only 16 of them carry audio
--	 * payload.
-+	 * TX rotation:
-+	 * right aligned formats: rotate w/ slot_width
-+	 * left aligned formats: rotate w/ sample_width
-+	 *
-+	 * RX rotation:
-+	 * right aligned formats: no rotation needed
-+	 * left aligned formats: rotate w/ (slot_width - sample_width)
- 	 */
--	if (mcasp->slot_width) {
--		/*
--		 * When we have more bclk then it is needed for the
--		 * data, we need to use the rotation to move the
--		 * received samples to have correct alignment.
--		 */
--		slot_width = mcasp->slot_width;
-+	if ((mcasp->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
-+	    SND_SOC_DAIFMT_RIGHT_J) {
-+		tx_rotate = (slot_width / 4) & 0x7;
-+		rx_rotate = 0;
-+	} else {
-+		tx_rotate = (sample_width / 4) & 0x7;
- 		rx_rotate = (slot_width - sample_width) / 4;
+-	for_each_set_bit(bit, &mcasp->pdir, PIN_BIT_AFSR) {
++	for_each_set_bit(bit, &mcasp->pdir, PIN_BIT_AMUTE) {
+ 		if (enable)
+ 			mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(bit));
+ 		else
+@@ -223,6 +223,7 @@ static void mcasp_start_rx(struct davinci_mcasp *mcasp)
+ 	if (mcasp_is_synchronous(mcasp)) {
+ 		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXHCLKRST);
+ 		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXCLKRST);
++		mcasp_set_clk_pdir(mcasp, true);
  	}
  
+ 	/* Activate serializer(s) */
 -- 
 2.20.1
