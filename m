@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH v2 1/6] ASoC: codec2codec: run callbacks in order
-Date: Thu, 25 Jul 2019 18:59:44 +0200
-Message-ID: <20190725165949.29699-2-jbrunet@baylibre.com>
+Subject: [PATCH v2 6/6] ASoC: codec2codec: fill some of the runtime stream parameters
+Date: Thu, 25 Jul 2019 18:59:49 +0200
+Message-ID: <20190725165949.29699-7-jbrunet@baylibre.com>
 References: <20190725165949.29699-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,85 +12,29 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-When handling dai_link events on codec to codec links, run all .startup()
-callbacks on sinks and sources before running any .hw_params(). Same goes
-for hw_free() and shutdown(). This is closer to the behavior of regular
-dai links
+Set the information provided struct snd_soc_pcm_stream in the
+struct snd_pcm_runtime of the codec to codec link.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/soc-dapm.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ sound/soc/soc-dapm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1d04612601ad..034b31fd2ecb 100644
+index 3e3b81ae87dd..fadc804be89c 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3835,11 +3835,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				goto out;
- 			}
- 			source->active++;
--			ret = snd_soc_dai_hw_params(source, &substream, params);
--			if (ret < 0)
--				goto out;
--
--			dapm_update_dai_unlocked(&substream, params, source);
- 		}
+@@ -3872,6 +3872,11 @@ snd_soc_dai_link_event_pre_pmu(struct snd_soc_dapm_widget *w,
+ 		dapm_update_dai_unlocked(substream, params, sink);
+ 	}
  
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-@@ -3853,6 +3848,23 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				goto out;
- 			}
- 			sink->active++;
-+		}
++	runtime->format = params_format(params);
++	runtime->subformat = params_subformat(params);
++	runtime->channels = params_channels(params);
++	runtime->rate = params_rate(params);
 +
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		snd_soc_dapm_widget_for_each_source_path(w, path) {
-+			source = path->source->priv;
-+
-+			ret = snd_soc_dai_hw_params(source, &substream, params);
-+			if (ret < 0)
-+				goto out;
-+
-+			dapm_update_dai_unlocked(&substream, params, source);
-+		}
-+
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+
- 			ret = snd_soc_dai_hw_params(sink, &substream, params);
- 			if (ret < 0)
- 				goto out;
-@@ -3889,9 +3901,18 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
- 		snd_soc_dapm_widget_for_each_source_path(w, path) {
- 			source = path->source->priv;
--
- 			snd_soc_dai_hw_free(source, &substream);
-+		}
-+
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+			snd_soc_dai_hw_free(sink, &substream);
-+		}
- 
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		snd_soc_dapm_widget_for_each_source_path(w, path) {
-+			source = path->source->priv;
- 			source->active--;
- 			snd_soc_dai_shutdown(source, &substream);
- 		}
-@@ -3899,9 +3920,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
- 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
- 			sink = path->sink->priv;
--
--			snd_soc_dai_hw_free(sink, &substream);
--
- 			sink->active--;
- 			snd_soc_dai_shutdown(sink, &substream);
- 		}
+ out:
+ 	if (ret < 0)
+ 		kfree(runtime);
 -- 
 2.21.0
