@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec2codec: run callbacks in order" to the asoc tree
+Subject: Applied "ASoC: codec2codec: name link using stream direction" to the asoc tree
 Date: Thu, 25 Jul 2019 18:43:39 +0100 (BST)
-Message-ID: <20190725174339.F005E2742B63@ypsilon.sirena.org.uk>
-References: <20190725165949.29699-2-jbrunet@baylibre.com>
+Message-ID: <20190725174339.BAF9D2742B60@ypsilon.sirena.org.uk>
+References: <20190725165949.29699-3-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725165949.29699-2-jbrunet@baylibre.com>
+In-Reply-To: <20190725165949.29699-3-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec2codec: run callbacks in order
+   ASoC: codec2codec: name link using stream direction
 
 has been applied to the asoc tree at
 
@@ -37,92 +37,75 @@ to this mail.
 Thanks,
 Mark
 
->From 68c907f10cd816cad2287167a1a1d77914a6d466 Mon Sep 17 00:00:00 2001
+>From 054d65004c6a008dfefbdae4fc1b46a3ad4e94c1 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 25 Jul 2019 18:59:44 +0200
-Subject: [PATCH] ASoC: codec2codec: run callbacks in order
+Date: Thu, 25 Jul 2019 18:59:45 +0200
+Subject: [PATCH] ASoC: codec2codec: name link using stream direction
 
-When handling dai_link events on codec to codec links, run all .startup()
-callbacks on sinks and sources before running any .hw_params(). Same goes
-for hw_free() and shutdown(). This is closer to the behavior of regular
-dai links
+At the moment, codec to codec dai link widgets are named after the
+cpu dai and the 1st codec valid on the link. This might be confusing
+if there is multiple valid codecs on the link for one stream
+direction.
+
+Instead, use the dai link name and the stream direction to name the
+the dai link widget
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20190725165949.29699-2-jbrunet@baylibre.com
+Link: https://lore.kernel.org/r/20190725165949.29699-3-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ sound/soc/soc-dapm.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1d04612601ad..034b31fd2ecb 100644
+index 034b31fd2ecb..7db4abd9a0a5 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3835,11 +3835,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				goto out;
- 			}
- 			source->active++;
--			ret = snd_soc_dai_hw_params(source, &substream, params);
--			if (ret < 0)
--				goto out;
--
--			dapm_update_dai_unlocked(&substream, params, source);
- 		}
+@@ -4056,8 +4056,7 @@ snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
  
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-@@ -3853,6 +3848,23 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				goto out;
- 			}
- 			sink->active++;
-+		}
-+
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		snd_soc_dapm_widget_for_each_source_path(w, path) {
-+			source = path->source->priv;
-+
-+			ret = snd_soc_dai_hw_params(source, &substream, params);
-+			if (ret < 0)
-+				goto out;
-+
-+			dapm_update_dai_unlocked(&substream, params, source);
-+		}
-+
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+
- 			ret = snd_soc_dai_hw_params(sink, &substream, params);
- 			if (ret < 0)
- 				goto out;
-@@ -3889,9 +3901,18 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
- 		snd_soc_dapm_widget_for_each_source_path(w, path) {
- 			source = path->source->priv;
--
- 			snd_soc_dai_hw_free(source, &substream);
-+		}
-+
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+			snd_soc_dai_hw_free(sink, &substream);
-+		}
+ static struct snd_soc_dapm_widget *
+ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+-		     struct snd_soc_dapm_widget *source,
+-		     struct snd_soc_dapm_widget *sink)
++		     char *id)
+ {
+ 	struct snd_soc_dapm_widget template;
+ 	struct snd_soc_dapm_widget *w;
+@@ -4067,7 +4066,7 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+ 	int ret;
  
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		snd_soc_dapm_widget_for_each_source_path(w, path) {
-+			source = path->source->priv;
- 			source->active--;
- 			snd_soc_dai_shutdown(source, &substream);
- 		}
-@@ -3899,9 +3920,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
- 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
- 			sink = path->sink->priv;
+ 	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
+-				   source->name, sink->name);
++				   rtd->dai_link->name, id);
+ 	if (!link_name)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -4247,15 +4246,13 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 	}
+ 
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
 -
--			snd_soc_dai_hw_free(sink, &substream);
--
- 			sink->active--;
- 			snd_soc_dai_shutdown(sink, &substream);
- 		}
+ 		/* connect BE DAI playback if widgets are valid */
+ 		codec = codec_dai->playback_widget;
+ 
+ 		if (playback_cpu && codec) {
+ 			if (!playback) {
+ 				playback = snd_soc_dapm_new_dai(card, rtd,
+-								playback_cpu,
+-								codec);
++								"playback");
+ 				if (IS_ERR(playback)) {
+ 					dev_err(rtd->dev,
+ 						"ASoC: Failed to create DAI %s: %ld\n",
+@@ -4284,8 +4281,7 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 		if (codec && capture_cpu) {
+ 			if (!capture) {
+ 				capture = snd_soc_dapm_new_dai(card, rtd,
+-							       codec,
+-							       capture_cpu);
++							       "capture");
+ 				if (IS_ERR(capture)) {
+ 					dev_err(rtd->dev,
+ 						"ASoC: Failed to create DAI %s: %ld\n",
 -- 
 2.20.1
