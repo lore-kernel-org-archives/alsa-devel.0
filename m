@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 08/40] soundwire: intel: remove BIOS work-arounds
-Date: Thu, 25 Jul 2019 18:40:00 -0500
-Message-ID: <20190725234032.21152-9-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 07/40] soundwire: intel: fix channel number reported by hardware
+Date: Thu, 25 Jul 2019 18:39:59 -0500
+Message-ID: <20190725234032.21152-8-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,35 +12,33 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-the values passed by all existing BIOS are fine, let's use them as is.
-The existing code must have been needed only on early prototypes.
+PDI2 reports an invalid count, force the correct hardware-supported
+value
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/soundwire/intel.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 51990b192dc0..c718c9c67a37 100644
+index 497879dd9c0d..51990b192dc0 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -922,17 +922,6 @@ static int intel_prop_read(struct sdw_bus *bus)
- 	/* Initialize with default handler to read all DisCo properties */
- 	sdw_master_read_prop(bus);
+@@ -401,6 +401,15 @@ intel_pdi_get_ch_cap(struct sdw_intel *sdw, unsigned int pdi_num, bool pcm)
  
--	/* BIOS is not giving some values correctly. So, lets override them */
--	bus->prop.num_clk_freq = 1;
--	bus->prop.clk_freq = devm_kcalloc(bus->dev, bus->prop.num_clk_freq,
--					  sizeof(*bus->prop.clk_freq),
--					  GFP_KERNEL);
--	if (!bus->prop.clk_freq)
--		return -ENOMEM;
--
--	bus->prop.clk_freq[0] = bus->prop.max_clk_freq;
--	bus->prop.err_threshold = 5;
--
- 	return 0;
- }
- 
+ 	if (pcm) {
+ 		count = intel_readw(shim, SDW_SHIM_PCMSYCHC(link_id, pdi_num));
++
++		/*
++		 * TODO: pdi number 2 reports channel count as 1 even though
++		 * it supports 8 channel. Performing hardcoding for pdi
++		 * number 2.
++		 */
++		if (pdi_num == 2)
++			count = 7;
++
+ 	} else {
+ 		count = intel_readw(shim, SDW_SHIM_PDMSCAP(link_id));
+ 		count = ((count & SDW_SHIM_PDMSCAP_CPSS) >>
 -- 
 2.20.1
