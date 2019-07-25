@@ -1,20 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Makefile - fix the top-level
- kernel module names (add snd- prefix)
-Date: Thu, 25 Jul 2019 08:07:07 -0500
-Message-ID: <e7e3f5b1-fc5f-8af2-c194-b4e0bd8ff23c@linux.intel.com>
-References: <20190725110808.19938-1-perex@perex.cz>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/2] ASoC: cs47l15: Add codec driver for
+ Cirrus Logic CS47L15
+Date: Thu, 25 Jul 2019 14:10:09 +0100
+Message-ID: <20190725131009.GZ54126@ediswmail.ad.cirrus.com>
+References: <20190725123152.28179-1-ckeepax@opensource.cirrus.com>
+ <20190725124732.GA4213@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24640F8015A
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:07:02 +0200 (CEST)
-In-Reply-To: <20190725110808.19938-1-perex@perex.cz>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9C71F8015A
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:10:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190725124732.GA4213@sirena.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +26,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 7/25/19 6:08 AM, Jaroslav Kysela wrote:
-> Use the proper module name. The objs assignments are already there.
-
-Good catch, I've been using these module names blindly in our test 
-scripts without noticing this.
-Thanks for the correction
-
-
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: Mark Brown <broonie@kernel.org>0
-> ---
->   sound/soc/sof/Makefile | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, Jul 25, 2019 at 01:47:33PM +0100, Mark Brown wrote:
+> On Thu, Jul 25, 2019 at 01:31:51PM +0100, Charles Keepax wrote:
 > 
-> diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-> index 8f14c9d2950b..d2f7a1bc09a1 100644
-> --- a/sound/soc/sof/Makefile
-> +++ b/sound/soc/sof/Makefile
-> @@ -11,8 +11,8 @@ obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
->   obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
->   
->   
-> -obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
-> -obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
-> +obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi-dev.o
-> +obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci-dev.o
->   
->   obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
->   obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
+> >  	select SND_SOC_CS47L24 if MFD_CS47L24
+> > +	select SND_SOC_CS47L15 if MFD_CS47L15
+> >  	select SND_SOC_CS47L35 if MFD_CS47L35
 > 
+> The Makefile and Kconfig sorting is a bit off.  Please send a followup
+> fixing this.
+> 
+
+Can do.
+
+> > +static irqreturn_t cs47l15_adsp2_irq(int irq, void *data)
+> > +{
+> > +	struct cs47l15 *cs47l15 = data;
+> > +	struct madera_priv *priv = &cs47l15->core;
+> > +	struct madera *madera = priv->madera;
+> > +	int ret;
+> > +
+> > +	ret = wm_adsp_compr_handle_irq(&priv->adsp[0]);
+> > +	if (ret == -ENODEV) {
+> > +		dev_err(madera->dev, "Spurious compressed data IRQ\n");
+> > +		return IRQ_NONE;
+> > +	}
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+> > +
+> > +static irqreturn_t cs47l15_dsp_bus_error(int irq, void *data)
+> > +{
+> > +	struct wm_adsp *dsp = (struct wm_adsp *)data;
+> > +
+> > +	return wm_adsp2_bus_error(dsp);
+> > +}
+> 
+> Noticeable difference in pattern between these two interrupt helpers
+> (and makes me wonder why we need the wrappers at all).
+
+Yeah there doesn't seem to be any need for the wrappers.
+
+I will respin the series and fixup these two issues.
+
+Thanks,
+Charles
