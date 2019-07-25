@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH v2 4/6] ASoC: create pcm for codec2codec links as well
-Date: Thu, 25 Jul 2019 18:59:47 +0200
-Message-ID: <20190725165949.29699-5-jbrunet@baylibre.com>
+Subject: [PATCH v2 2/6] ASoC: codec2codec: name link using stream direction
+Date: Thu, 25 Jul 2019 18:59:45 +0200
+Message-ID: <20190725165949.29699-3-jbrunet@baylibre.com>
 References: <20190725165949.29699-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,166 +12,68 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-At the moment, codec to codec links uses an ephemeral variable for
-the struct snd_pcm_substream. Also the struct snd_soc_pcm_runtime
-does not have real struct snd_pcm.
+At the moment, codec to codec dai link widgets are named after the
+cpu dai and the 1st codec valid on the link. This might be confusing
+if there is multiple valid codecs on the link for one stream
+direction.
 
-This might a problem if the functions used by a codec on codec to
-codec link expect these structures to exist, and keep on existing
-during the life of the codec.
-
-For example, it is the case of the hdmi-codec, which uses
-snd_pcm_add_chmap_ctls(). For the controls to works, the pcm and
-substream must to exist.
-
-This change is first step, it create pcm (and substreams) for codec
-to codec links, in the same way as dpcm backend links.
+Instead, use the dai link name and the stream direction to name the
+the dai link widget
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/soc-core.c | 42 ++++++++++++------------------------------
- sound/soc/soc-pcm.c  | 35 ++++++++++++++++++++++++++++++++---
- 2 files changed, 44 insertions(+), 33 deletions(-)
+ sound/soc/soc-dapm.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7ecfe641ca46..9e8eb93c8a3f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -447,16 +447,6 @@ static void snd_soc_flush_all_delayed_work(struct snd_soc_card *card)
- 		flush_delayed_work(&rtd->delayed_work);
- }
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 034b31fd2ecb..7db4abd9a0a5 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4056,8 +4056,7 @@ snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
  
--static void codec2codec_close_delayed_work(struct work_struct *work)
--{
--	/*
--	 * Currently nothing to do for c2c links
--	 * Since c2c links are internal nodes in the DAPM graph and
--	 * don't interface with the outside world or application layer
--	 * we don't have to do any special handling on close.
--	 */
--}
+ static struct snd_soc_dapm_widget *
+ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+-		     struct snd_soc_dapm_widget *source,
+-		     struct snd_soc_dapm_widget *sink)
++		     char *id)
+ {
+ 	struct snd_soc_dapm_widget template;
+ 	struct snd_soc_dapm_widget *w;
+@@ -4067,7 +4066,7 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+ 	int ret;
+ 
+ 	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
+-				   source->name, sink->name);
++				   rtd->dai_link->name, id);
+ 	if (!link_name)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -4247,15 +4246,13 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 	}
+ 
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
 -
- #ifdef CONFIG_PM_SLEEP
- /* powers down audio subsystem for suspend */
- int snd_soc_suspend(struct device *dev)
-@@ -1552,27 +1542,19 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 		return ret;
- 	}
+ 		/* connect BE DAI playback if widgets are valid */
+ 		codec = codec_dai->playback_widget;
  
--	if (!dai_link->params) {
--		/* create the pcm */
--		ret = soc_new_pcm(rtd, num);
--		if (ret < 0) {
--			dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
--				dai_link->stream_name, ret);
--			return ret;
--		}
--		ret = soc_link_dai_pcm_new(&cpu_dai, 1, rtd);
--		if (ret < 0)
--			return ret;
--		ret = soc_link_dai_pcm_new(rtd->codec_dais,
--					   rtd->num_codecs, rtd);
--		if (ret < 0)
--			return ret;
--	} else {
--		INIT_DELAYED_WORK(&rtd->delayed_work,
--				  codec2codec_close_delayed_work);
-+	/* create the pcm */
-+	ret = soc_new_pcm(rtd, num);
-+	if (ret < 0) {
-+		dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
-+			dai_link->stream_name, ret);
-+		return ret;
- 	}
--
--	return 0;
-+	ret = soc_link_dai_pcm_new(&cpu_dai, 1, rtd);
-+	if (ret < 0)
-+		return ret;
-+	ret = soc_link_dai_pcm_new(rtd->codec_dais,
-+				   rtd->num_codecs, rtd);
-+	return ret;
- }
- 
- static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index fabeac164a6c..30264bc592f6 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -678,6 +678,16 @@ static void close_delayed_work(struct work_struct *work)
- 	mutex_unlock(&rtd->pcm_mutex);
- }
- 
-+static void codec2codec_close_delayed_work(struct work_struct *work)
-+{
-+	/*
-+	 * Currently nothing to do for c2c links
-+	 * Since c2c links are internal nodes in the DAPM graph and
-+	 * don't interface with the outside world or application layer
-+	 * we don't have to do any special handling on close.
-+	 */
-+}
-+
- /*
-  * Called by ALSA when a PCM substream is closed. Private data can be
-  * freed here. The cpu DAI, codec DAI, machine and components are also
-@@ -3011,6 +3021,12 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		playback = rtd->dai_link->dpcm_playback;
- 		capture = rtd->dai_link->dpcm_capture;
- 	} else {
-+		/* Adapt stream for codec2codec links */
-+		struct snd_soc_pcm_stream *cpu_capture = rtd->dai_link->params ?
-+			&cpu_dai->driver->playback : &cpu_dai->driver->capture;
-+		struct snd_soc_pcm_stream *cpu_playback = rtd->dai_link->params ?
-+			&cpu_dai->driver->capture : &cpu_dai->driver->playback;
-+
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
- 			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
-@@ -3019,6 +3035,9 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 			    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
- 				capture = 1;
- 		}
-+
-+		capture = capture && cpu_capture->channels_min;
-+		playback = playback && cpu_playback->channels_min;
- 	}
- 
- 	if (rtd->dai_link->playback_only) {
-@@ -3032,7 +3051,13 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	}
- 
- 	/* create the PCM */
--	if (rtd->dai_link->no_pcm) {
-+	if (rtd->dai_link->params) {
-+		snprintf(new_name, sizeof(new_name), "codec2codec(%s)",
-+			 rtd->dai_link->stream_name);
-+
-+		ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
-+					   playback, capture, &pcm);
-+	} else if (rtd->dai_link->no_pcm) {
- 		snprintf(new_name, sizeof(new_name), "(%s)",
- 			rtd->dai_link->stream_name);
- 
-@@ -3059,13 +3084,17 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	dev_dbg(rtd->card->dev, "ASoC: registered pcm #%d %s\n",num, new_name);
- 
- 	/* DAPM dai link stream work */
--	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
-+	if (rtd->dai_link->params)
-+		INIT_DELAYED_WORK(&rtd->delayed_work,
-+				  codec2codec_close_delayed_work);
-+	else
-+		INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
- 
- 	pcm->nonatomic = rtd->dai_link->nonatomic;
- 	rtd->pcm = pcm;
- 	pcm->private_data = rtd;
- 
--	if (rtd->dai_link->no_pcm) {
-+	if (rtd->dai_link->no_pcm || rtd->dai_link->params) {
- 		if (playback)
- 			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
- 		if (capture)
+ 		if (playback_cpu && codec) {
+ 			if (!playback) {
+ 				playback = snd_soc_dapm_new_dai(card, rtd,
+-								playback_cpu,
+-								codec);
++								"playback");
+ 				if (IS_ERR(playback)) {
+ 					dev_err(rtd->dev,
+ 						"ASoC: Failed to create DAI %s: %ld\n",
+@@ -4284,8 +4281,7 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 		if (codec && capture_cpu) {
+ 			if (!capture) {
+ 				capture = snd_soc_dapm_new_dai(card, rtd,
+-							       codec,
+-							       capture_cpu);
++							       "capture");
+ 				if (IS_ERR(capture)) {
+ 					dev_err(rtd->dev,
+ 						"ASoC: Failed to create DAI %s: %ld\n",
 -- 
 2.21.0
