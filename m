@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Allow bus error handler to be
-	called directly" to the asoc tree
+Subject: Applied "ASoC: SOF: Makefile - fix the top-level
+	kernel module names (add snd- prefix)" to the asoc tree
 Date: Thu, 25 Jul 2019 18:43:40 +0100 (BST)
-Message-ID: <20190725174340.C7EC92742BAE@ypsilon.sirena.org.uk>
-References: <20190725163931.24964-1-ckeepax@opensource.cirrus.com>
+Message-ID: <20190725174341.08D862742B5F@ypsilon.sirena.org.uk>
+References: <20190725133743.22145-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97BD5F803D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31BD3F8044A
  for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 19:43:42 +0200 (CEST)
-In-Reply-To: <20190725163931.24964-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20190725133743.22145-1-perex@perex.cz>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, 0@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Allow bus error handler to be called directly
+   ASoC: SOF: Makefile - fix the top-level kernel module names (add snd- prefix)
 
 has been applied to the asoc tree at
 
@@ -55,91 +55,39 @@ to this mail.
 Thanks,
 Mark
 
->From 01ec57a4371e573bfcfa898307af098a8c6f9dcf Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Thu, 25 Jul 2019 17:39:29 +0100
-Subject: [PATCH] ASoC: wm_adsp: Allow bus error handler to be called directly
+>From 5af9e972ac72b1c9f13cd35ccfb4687741c53f3e Mon Sep 17 00:00:00 2001
+From: Jaroslav Kysela <perex@perex.cz>
+Date: Thu, 25 Jul 2019 15:37:43 +0200
+Subject: [PATCH] ASoC: SOF: Makefile - fix the top-level kernel module names
+ (add snd- prefix)
 
-There is no need for end drivers to add helper functions to allow the
-bus error handler to be called, simply update the prototype so it can be
-called directly.
+Use the proper module name. The objs assignments are already there.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20190725163931.24964-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>0
+Link: https://lore.kernel.org/r/20190725133743.22145-1-perex@perex.cz
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs47l90.c | 9 +--------
- sound/soc/codecs/wm_adsp.c | 6 ++++--
- sound/soc/codecs/wm_adsp.h | 4 ++--
- 3 files changed, 7 insertions(+), 12 deletions(-)
+ sound/soc/sof/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
-index c4ecb0e6911a..67cac60a859d 100644
---- a/sound/soc/codecs/cs47l90.c
-+++ b/sound/soc/codecs/cs47l90.c
-@@ -2402,13 +2402,6 @@ static irqreturn_t cs47l90_adsp2_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index 8f14c9d2950b..585fb6917489 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -11,8 +11,8 @@ obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
+ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
  
--static irqreturn_t cs47l90_dsp_bus_error(int irq, void *data)
--{
--	struct wm_adsp *dsp = (struct wm_adsp *)data;
--
--	return wm_adsp2_bus_error(dsp);
--}
--
- static int cs47l90_component_probe(struct snd_soc_component *component)
- {
- 	struct cs47l90 *cs47l90 = snd_soc_component_get_drvdata(component);
-@@ -2558,7 +2551,7 @@ static int cs47l90_probe(struct platform_device *pdev)
  
- 		if (ret == 0) {
- 			ret = madera_init_bus_error_irq(&cs47l90->core, i,
--							cs47l90_dsp_bus_error);
-+							wm_adsp2_bus_error);
- 			if (ret != 0)
- 				wm_adsp2_remove(&cs47l90->core.adsp[i]);
- 		}
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f5fbadc5e7e2..ae28d9907c30 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -4242,8 +4242,9 @@ static void wm_adsp_fatal_error(struct wm_adsp *dsp)
- 	}
- }
+-obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
+-obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
++obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi.o
++obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci.o
  
--irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
-+irqreturn_t wm_adsp2_bus_error(int irq, void *data)
- {
-+	struct wm_adsp *dsp = (struct wm_adsp *)data;
- 	unsigned int val;
- 	struct regmap *regmap = dsp->regmap;
- 	int ret = 0;
-@@ -4307,8 +4308,9 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
- }
- EXPORT_SYMBOL_GPL(wm_adsp2_bus_error);
- 
--irqreturn_t wm_halo_bus_error(struct wm_adsp *dsp)
-+irqreturn_t wm_halo_bus_error(int irq, void *data)
- {
-+	struct wm_adsp *dsp = (struct wm_adsp *)data;
- 	struct regmap *regmap = dsp->regmap;
- 	unsigned int fault[6];
- 	struct reg_sequence clear[] = {
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 3b03d1eb986f..aa634ef6c9f5 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -171,8 +171,8 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
- 			struct snd_kcontrol *kcontrol, int event);
- 
--irqreturn_t wm_adsp2_bus_error(struct wm_adsp *adsp);
--irqreturn_t wm_halo_bus_error(struct wm_adsp *dsp);
-+irqreturn_t wm_adsp2_bus_error(int irq, void *data);
-+irqreturn_t wm_halo_bus_error(int irq, void *data);
- irqreturn_t wm_halo_wdt_expire(int irq, void *data);
- 
- int wm_adsp_event(struct snd_soc_dapm_widget *w,
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+ obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
 -- 
 2.20.1
