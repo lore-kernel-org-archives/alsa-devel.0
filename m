@@ -1,36 +1,30 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: Applied "ASoC: Intel: Fix some acpi vs apci typo in somme
- comments" to the asoc tree
-Date: Thu, 25 Jul 2019 06:44:55 -0700
-Message-ID: <8179fff75f82ac49aaa0c5feb17b53be55f9f2c5.camel@perches.com>
-References: <20190725131925.D36082742B5F@ypsilon.sirena.org.uk>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 15/22] docs: index.rst: don't use genindex for pdf output
+Date: Thu, 25 Jul 2019 19:14:49 +0530
+Message-ID: <20190725134449.GY12733@vkoul-mobl.Dlink>
+References: <cover.1563792333.git.mchehab+samsung@kernel.org>
+ <45d57666e5738a0b85e948b0e94151fe1b1f9274.1563792334.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725131925.D36082742B5F@ypsilon.sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org, perex@perex.cz, pierre-louis.bossart@linux.intel.com, tiwai@suse.com, yang.jie@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <45d57666e5738a0b85e948b0e94151fe1b1f9274.1563792334.git.mchehab+samsung@kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-doc@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2019-07-25 at 14:19 +0100, Mark Brown wrote:
-> The patch
-> 
->    ASoC: Intel: Fix some acpi vs apci typo in somme comments
-[]
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-[]
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * soc-apci-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
-> + * soc-acpi-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
+On 22-07-19, 08:07, Mauro Carvalho Chehab wrote:
+> The genindex logic is meant to be used only for html output, as
+> pdf build has its own way to generate indexes.
 
-Generally, using the current filename in a comment has little value.
 
-This might as well be
+>  Documentation/driver-api/dmaengine/index.rst      | 2 +-
+>  Documentation/driver-api/soundwire/index.rst      | 2 +-
 
- * tables and support for BXT ACPI enumeration
+For dmaengine and soundwire:
 
-etc...
+Acked-by: Vinod Koul <vkoul@kernel.org>
+
+-- 
+~Vinod
