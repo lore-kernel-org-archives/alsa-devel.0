@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 03/40] soundwire: cadence_master: align debugfs to 8 digits
-Date: Thu, 25 Jul 2019 18:39:55 -0500
-Message-ID: <20190725234032.21152-4-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 05/40] soundwire: intel: move interrupt enable after interrupt handler registration
+Date: Thu, 25 Jul 2019 18:39:57 -0500
+Message-ID: <20190725234032.21152-6-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,25 +12,35 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SQUASHME
+Not sure why the existing code would enable interrupts without the
+ability to deal with them.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soundwire/intel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 91e8bacb83e3..9f611a1fff0a 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -234,7 +234,7 @@ static ssize_t cdns_sprintf(struct sdw_cdns *cdns,
- 			    char *buf, size_t pos, unsigned int reg)
- {
- 	return scnprintf(buf + pos, RD_BUF - pos,
--			 "%4x\t%4x\n", reg, cdns_readl(cdns, reg));
-+			 "%4x\t%8x\n", reg, cdns_readl(cdns, reg));
- }
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index aeadc341c0a3..68832e613b1e 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -981,8 +981,6 @@ static int intel_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_init;
  
- static ssize_t cdns_reg_read(struct file *file, char __user *user_buf,
+-	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
+-
+ 	/* Read the PDI config and initialize cadence PDI */
+ 	intel_pdi_init(sdw, &config);
+ 	ret = sdw_cdns_pdi_init(&sdw->cdns, config);
+@@ -1000,6 +998,8 @@ static int intel_probe(struct platform_device *pdev)
+ 		goto err_init;
+ 	}
+ 
++	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
++
+ 	/* Register DAIs */
+ 	ret = intel_register_dai(sdw);
+ 	if (ret) {
 -- 
 2.20.1
