@@ -1,17 +1,19 @@
 From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH 5/5] ASoC: atmel_ssc_dai: Enable shared FSYNC source in
- frame-slave mode
-Date: Thu, 25 Jul 2019 15:02:34 +0000
-Message-ID: <eabb96e7-1567-3ee1-a00e-f241c5f23c1c@microchip.com>
+Subject: Re: [PATCH 1/5] ASoC: atmel: enable SSC_PCM_DMA in Kconfig
+Date: Thu, 25 Jul 2019 15:25:42 +0000
+Message-ID: <ce981aea-0b0d-571b-e072-f18cdc657393@microchip.com>
 References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
- <107e0cfd11a31ce1558e941612e183100022930d.1563819483.git.mirq-linux@rere.qmqm.pl>
+ <ee65cc7b889b2a8d1139d1d25977842c956d1cf4.1563819483.git.mirq-linux@rere.qmqm.pl>
+ <1f3a4256-58de-27a4-8095-54fc6baa6d89@microchip.com>
+ <20190723164312.GA4772@qmqm.qmqm.pl> <20190723183915.GJ24911@piout.net>
+ <20190723232505.GA21811@qmqm.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <107e0cfd11a31ce1558e941612e183100022930d.1563819483.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <20190723232505.GA21811@qmqm.qmqm.pl>
 Content-Language: en-US
-Content-ID: <395E8AB10E444C4797C229A7CE45F668@namprd11.prod.outlook.com>
+Content-ID: <88DA55BDF077AE4C849A75890358C997@namprd11.prod.outlook.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -21,117 +23,127 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: mirq-linux@rere.qmqm.pl, alsa-devel@alsa-project.org
-Cc: alexandre.belloni@bootlin.com, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, Ludovic.Desroches@microchip.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+To: mirq-linux@rere.qmqm.pl, alexandre.belloni@bootlin.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjIuMDcuMjAxOSAyMToyNywgTWljaGHFgiBNaXJvc8WCYXcgd3JvdGU6DQo+IFNTQyBkcml2
-ZXIgYWxsb3dzIG9ubHkgc3luY2hyb25vdXMgVFggYW5kIFJYLiBJbiBzbGF2ZSBtb2RlIGZvciBC
-Q0xLDQo+IGl0IHVzZXMgb25seSBvbmUgb2YgVEsgb3IgUksgcGluLCBidXQgZm9yIExSQ0xLIGl0
-IGNvbmZpZ3VyZWQgc2VwYXJhdGUNCj4gaW5wdXRzIGZyb20gVEYgYW5kIFJGIHBpbnMuIEFsbG93
-IGNvbmZpZ3VyYXRpb24gd2l0aCBjb21tb24gRlMgc2lnbmFsLg0KPiANCj4gU2lnbmVkLW9mZi1i
-eTogTWljaGHFgiBNaXJvc8WCYXcgPG1pcnEtbGludXhAcmVyZS5xbXFtLnBsPg0KPiAtLS0NCj4g
-ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9taXNjL2F0bWVsLXNzYy50eHQgICAgfCAgNCArKw0K
-PiAgIGRyaXZlcnMvbWlzYy9hdG1lbC1zc2MuYyAgICAgICAgICAgICAgICAgICAgICB8ICAyICsN
-Cj4gICBpbmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oICAgICAgICAgICAgICAgICAgICAgfCAgMSAr
-DQo+ICAgc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyAgICAgICAgICAgICAgIHwgNDgg
-KysrKysrKysrKysrLS0tLS0tLQ0KPiAgIDQgZmlsZXMgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygr
-KSwgMTcgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL21pc2MvYXRtZWwtc3NjLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9taXNjL2F0bWVsLXNzYy50eHQNCj4gaW5kZXggZjlmYjQxMjY0MmZlLi44
-OTEzM2M1YjgyY2IgMTAwNjQ0DQo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9taXNjL2F0bWVsLXNzYy50eHQNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL21pc2MvYXRtZWwtc3NjLnR4dA0KPiBAQCAtMjQsNiArMjQsMTAgQEAgT3B0aW9u
-YWwgcHJvcGVydGllczoNCj4gICAgICAgICAgdGhpcyBwYXJhbWV0ZXIgdG8gY2hvb3NlIHdoZXJl
-IHRoZSBjbG9jayBmcm9tLg0KPiAgICAgICAgLSBCeSBkZWZhdWx0IHRoZSBjbG9jayBpcyBmcm9t
-IFRLIHBpbiwgaWYgdGhlIGNsb2NrIGZyb20gUksgcGluLCB0aGlzDQo+ICAgICAgICAgIHByb3Bl
-cnR5IGlzIG5lZWRlZC4NCj4gKyAgLSBhdG1lbCxzaGFyZWQtZnMtcGluOiBib29sIHByb3BlcnR5
-Lg0KPiArICAgICAtIFdoZW4gU1NDIHdvcmtzIGluIHNsYXZlIG1vZGUsIGJ5IGRlZmF1bHQgaXQg
-Z2V0cyBzZXBhcmF0ZSBMUkNMSyBzaWduYWxzDQo+ICsgICAgICAgZnJvbSBSRiBhbmQgVEYuIFRo
-aXMgcHJvcGVydHkgbWFrZXMgU1NDIHVzZSBhIHNpbmdsZSBwaW4gZm9yIGJvdGgNCj4gKyAgICAg
-ICBSWCBhbmQgVFguIFRGIGlzIHVzZWQgdW5sZXNzIGF0bWVsLGNsay1mcm9tLXJrLXBpbiBpcyBh
-bHNvIHByZXNlbnQuDQo+ICAgICAtICNzb3VuZC1kYWktY2VsbHM6IFNob3VsZCBjb250YWluIDww
-Pi4NCj4gICAgICAgIC0gVGhpcyBwcm9wZXJ0eSBtYWtlcyB0aGUgU1NDIGludG8gYW4gYXV0b21h
-dGljYWxseSByZWdpc3RlcmVkIERBSS4NCg0KdGhlIGJpbmRpbmcgY2hhbmdlcyBzaG91bGQgYmUg
-c2VudCBpbiBhIHNlcGFyYXRlIHBhdGNoLCBwbGVhc2Ugc2VlIA0KRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL3N1Ym1pdHRpbmctcGF0Y2hlcy50eHQgZm9yIGRldGFpbHMuDQoNCj4g
-ICANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9hdG1lbC1zc2MuYyBiL2RyaXZlcnMvbWlz
-Yy9hdG1lbC1zc2MuYw0KPiBpbmRleCBhYjQxNDRlYTFmMTEuLmRhNjNlZWUxY2RmNSAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9taXNjL2F0bWVsLXNzYy5jDQo+ICsrKyBiL2RyaXZlcnMvbWlzYy9h
-dG1lbC1zc2MuYw0KPiBAQCAtMjEwLDYgKzIxMCw4IEBAIHN0YXRpYyBpbnQgc3NjX3Byb2JlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAgCQlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5w
-ID0gcGRldi0+ZGV2Lm9mX25vZGU7DQo+ICAgCQlzc2MtPmNsa19mcm9tX3JrX3BpbiA9DQo+ICAg
-CQkJb2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAiYXRtZWwsY2xrLWZyb20tcmstcGluIik7DQo+
-ICsJCXNzYy0+c2hhcmVkX2ZzX3BpbiA9DQo+ICsJCQlvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAs
-ICJhdG1lbCxzaGFyZWQtZnMtcGluIik7DQo+ICAgCX0NCj4gICANCj4gICAJcmVncyA9IHBsYXRm
-b3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7DQo+IGRpZmYgLS1naXQg
-YS9pbmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oIGIvaW5jbHVkZS9saW51eC9hdG1lbC1zc2MuaA0K
-PiBpbmRleCA2MDkxZDJhYmMxZWIuLjQ2ZmRmZjJkZmJiMCAxMDA2NDQNCj4gLS0tIGEvaW5jbHVk
-ZS9saW51eC9hdG1lbC1zc2MuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oDQo+
-IEBAIC0yMSw2ICsyMSw3IEBAIHN0cnVjdCBzc2NfZGV2aWNlIHsNCj4gICAJaW50CQkJdXNlcjsN
-Cj4gICAJaW50CQkJaXJxOw0KPiAgIAlib29sCQkJY2xrX2Zyb21fcmtfcGluOw0KPiArCWJvb2wJ
-CQlzaGFyZWRfZnNfcGluOw0KPiAgIAlib29sCQkJc291bmRfZGFpOw0KPiAgIH07DQoNClRoZXNl
-IGNoYW5nZXMgc2hvdWxkIGFsc28gYmUgaW4gYSBzZXBhcmF0ZSBwYXRjaCwgc2luY2UgZHJpdmVy
-cy9taXNjLyogDQpmaWxlcyBhcmUgaW4gYSBkaWZmZXJlbnQgc3Vic3lzdGVtLCB3aXRoIGRpZmZl
-cmVudCBtYWludGFpbmVycy4NCg0KPiAgIA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVs
-L2F0bWVsX3NzY19kYWkuYyBiL3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMNCj4gaW5k
-ZXggY2YyY2ZjMzQ1Njc2Li42ZjU5NWE3NDg2MTggMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3NvYy9h
-dG1lbC9hdG1lbF9zc2NfZGFpLmMNCj4gKysrIGIvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19k
-YWkuYw0KPiBAQCAtNDcxLDcgKzQ3MSw3IEBAIHN0YXRpYyBpbnQgYXRtZWxfc3NjX2h3X3BhcmFt
-cyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gICAJaW50IGRpciwgY2hh
-bm5lbHMsIGJpdHM7DQo+ICAgCXUzMiB0Zm1yLCByZm1yLCB0Y21yLCByY21yOw0KPiAgIAlpbnQg
-cmV0Ow0KPiAtCWludCBmc2xlbiwgZnNsZW5fZXh0LCBmc19vc3luYzsNCj4gKwlpbnQgZnNsZW4s
-IGZzbGVuX2V4dCwgZnNfb3N5bmMsIGZzX2VkZ2U7DQo+ICAgCXUzMiBjbXJfZGl2Ow0KPiAgIAl1
-MzIgdGNtcl9wZXJpb2Q7DQo+ICAgCXUzMiByY21yX3BlcmlvZDsNCj4gQEAgLTU2NywyNCArNTY3
-LDIwIEBAIHN0YXRpYyBpbnQgYXRtZWxfc3NjX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnN1YnN0cmVhbSwNCj4gICAJY2FzZSBTTkRfU09DX0RBSUZNVF9MRUZUX0o6DQo+ICAg
-CQkvKiBsZWZ0LWp1c3RpZmllZCBmb3JtYXQgKi8NCj4gICAJCWZzX29zeW5jID0gU1NDX0ZTT1Nf
-UE9TSVRJVkU7DQo+ICsJCWZzX2VkZ2UgPSBTU0NfU1RBUlRfUklTSU5HX1RGOw0KPiAgIA0KPiAt
-CQlyY21yID0JICBTU0NfQkYoUkNNUl9TVFRETFksIDApDQo+IC0JCQl8IFNTQ19CRihSQ01SX1NU
-QVJULCBTU0NfU1RBUlRfUklTSU5HX1JGKTsNCj4gLQ0KPiAtCQl0Y21yID0JICBTU0NfQkYoVENN
-Ul9TVFRETFksIDApDQo+IC0JCQl8IFNTQ19CRihUQ01SX1NUQVJULCBTU0NfU1RBUlRfUklTSU5H
-X1RGKTsNCj4gKwkJcmNtciA9CSAgU1NDX0JGKFJDTVJfU1RURExZLCAwKTsNCj4gKwkJdGNtciA9
-CSAgU1NDX0JGKFRDTVJfU1RURExZLCAwKTsNCj4gICANCj4gICAJCWJyZWFrOw0KPiAgIA0KPiAg
-IAljYXNlIFNORF9TT0NfREFJRk1UX0kyUzoNCj4gICAJCS8qIEkyUyBmb3JtYXQgPSBsZWZ0LWp1
-c3RpZmllZCB3aXRoIHN0YXJ0IGJpdCBhbmQgaW52ZXJ0ZWQgTFJDTEsgKi8NCj4gICAJCWZzX29z
-eW5jID0gU1NDX0ZTT1NfTkVHQVRJVkU7DQo+ICsJCWZzX2VkZ2UgPSBTU0NfU1RBUlRfRkFMTElO
-R19URjsNCj4gICANCj4gLQkJcmNtciA9CSAgU1NDX0JGKFJDTVJfU1RURExZLCAxKQ0KPiAtCQkJ
-fCBTU0NfQkYoUkNNUl9TVEFSVCwgU1NDX1NUQVJUX0ZBTExJTkdfUkYpOw0KPiAtDQo+IC0JCXRj
-bXIgPQkgIFNTQ19CRihUQ01SX1NUVERMWSwgMSkNCj4gLQkJCXwgU1NDX0JGKFRDTVJfU1RBUlQs
-IFNTQ19TVEFSVF9GQUxMSU5HX1RGKTsNCj4gKwkJcmNtciA9CSAgU1NDX0JGKFJDTVJfU1RURExZ
-LCAxKTsNCj4gKwkJdGNtciA9CSAgU1NDX0JGKFRDTVJfU1RURExZLCAxKTsNCj4gICANCj4gICAJ
-CWJyZWFrOw0KPiAgIA0KPiBAQCAtNTk3LDEzICs1OTMsMTEgQEAgc3RhdGljIGludCBhdG1lbF9z
-c2NfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLA0KPiAgIAkJ
-ICogdGhlIGxlZnQgY2hhbm5lbCBkYXRhLg0KPiAgIAkJICovDQo+ICAgCQlmc19vc3luYyA9IFNT
-Q19GU09TX1BPU0lUSVZFOw0KPiArCQlmc19lZGdlID0gU1NDX1NUQVJUX1JJU0lOR19URjsNCj4g
-ICAJCWZzbGVuID0gZnNsZW5fZXh0ID0gMDsNCj4gICANCj4gLQkJcmNtciA9CSAgU1NDX0JGKFJD
-TVJfU1RURExZLCAxKQ0KPiAtCQkJfCBTU0NfQkYoUkNNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lO
-R19SRik7DQo+IC0NCj4gLQkJdGNtciA9CSAgU1NDX0JGKFRDTVJfU1RURExZLCAxKQ0KPiAtCQkJ
-fCBTU0NfQkYoVENNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19URik7DQo+ICsJCXJjbXIgPQkg
-IFNTQ19CRihSQ01SX1NUVERMWSwgMSk7DQo+ICsJCXRjbXIgPQkgIFNTQ19CRihUQ01SX1NUVERM
-WSwgMSk7DQo+ICAgDQo+ICAgCQlicmVhazsNCj4gICANCj4gQEAgLTYxMywxMCArNjA3LDMwIEBA
-IHN0YXRpYyBpbnQgYXRtZWxfc3NjX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
-KnN1YnN0cmVhbSwNCj4gICAJCXJldHVybiAtRUlOVkFMOw0KPiAgIAl9DQo+ICAgDQo+IC0JaWYg
-KCFhdG1lbF9zc2NfY2ZzKHNzY19wKSkgew0KPiArCWlmIChhdG1lbF9zc2NfY2ZzKHNzY19wKSkg
-ew0KPiArCQkvKg0KPiArCQkgKiBTU0MgcHJvdmlkZXMgTFJDTEsNCj4gKwkJICoNCj4gKwkJICog
-Qm90aCBURiBhbmQgUkYgYXJlIGdlbmVyYXRlZCwgc28gdXNlIHRoZW0gZGlyZWN0bHkuDQo+ICsJ
-CSAqLw0KPiArCQlyY21yIHw9CSAgU1NDX0JGKFJDTVJfU1RBUlQsIGZzX2VkZ2UpOw0KPiArCQl0
-Y21yIHw9CSAgU1NDX0JGKFRDTVJfU1RBUlQsIGZzX2VkZ2UpOw0KPiArCX0gZWxzZSB7DQo+ICAg
-CQlmc2xlbiA9IGZzbGVuX2V4dCA9IDA7DQo+ICAgCQlyY21yX3BlcmlvZCA9IHRjbXJfcGVyaW9k
-ID0gMDsNCj4gICAJCWZzX29zeW5jID0gU1NDX0ZTT1NfTk9ORTsNCj4gKwkJaWYgKCFzc2MtPnNo
-YXJlZF9mc19waW4pIHsNCj4gKwkJCXJjbXIgfD0JICBTU0NfQkYoUkNNUl9TVEFSVCwgZnNfZWRn
-ZSk7DQo+ICsJCQl0Y21yIHw9CSAgU1NDX0JGKFRDTVJfU1RBUlQsIGZzX2VkZ2UpOw0KPiArCQl9
-IGVsc2UgaWYgKHNzYy0+Y2xrX2Zyb21fcmtfcGluKSB7DQo+ICsJCQkvKiBhc3N1bWUgUkYgaXMg
-dG8gYmUgdXNlZCB3aGVuIFJLIGlzIHVzZWQgYXMgQkNMSyBpbnB1dCAqLw0KPiArCQkJLyogTm90
-ZTogd29uJ3Qgd29yayBjb3JyZWN0bHkgb24gU0FNQTVEMiBkdWUgdG8gZXJyYXRhICovDQo+ICsJ
-CQlyY21yIHw9CSAgU1NDX0JGKFJDTVJfU1RBUlQsIGZzX2VkZ2UpOw0KPiArCQkJdGNtciB8PQkg
-IFNTQ19CRihUQ01SX1NUQVJULCBTU0NfU1RBUlRfUkVDRUlWRSk7DQoNCkRpZCB5b3UgZmluZCBh
-IHBsYXRmb3JtIGluIHdoaWNoIHRoaXMgbW9kZSB3b3Jrcz8NCg0KPiArCQl9IGVsc2Ugew0KPiAr
-CQkJcmNtciB8PQkgIFNTQ19CRihSQ01SX1NUQVJULCBTU0NfU1RBUlRfVFJBTlNNSVQpOw0KPiAr
-CQkJdGNtciB8PQkgIFNTQ19CRihUQ01SX1NUQVJULCBmc19lZGdlKTsNCj4gKwkJfQ0KPiAgIAl9
-DQo+ICAgDQo+ICAgCWlmIChhdG1lbF9zc2NfY2JzKHNzY19wKSkgew0KPiANCg0KSSBsaWtlIHRo
-aXMgZmVhdHVyZSwganVzdCBzZXBhcmF0ZSB0aGUgY2hhbmdlcyBpbiBkaWZmZXJlbnQgcGF0Y2hl
-cy4NCg0KVGhhbmtzIGFuZCBiZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBs
-aXN0CmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+On 24.07.2019 02:25, mirq-linux@rere.qmqm.pl wrote:
+> External E-Mail
+> =
+
+> =
+
+> On Tue, Jul 23, 2019 at 08:39:15PM +0200, Alexandre Belloni wrote:
+>> On 23/07/2019 18:43:12+0200, mirq-linux@rere.qmqm.pl wrote:
+>>> On Tue, Jul 23, 2019 at 01:36:37PM +0000, Codrin.Ciubotariu@microchip.c=
+om wrote:
+>>>> On 22.07.2019 21:27, Micha=B3 Miros=B3aw wrote:
+>>>>> Allow SSC to be used on platforms described using audio-graph-card
+>>>>> in Device Tree.
+>>>>>
+>>>>> Signed-off-by: Micha=B3 Miros=B3aw <mirq-linux@rere.qmqm.pl>
+>>>>> ---
+>>>>>    sound/soc/atmel/Kconfig | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+>>>>> index 06c1d5ce642c..9ef9d25bb517 100644
+>>>>> --- a/sound/soc/atmel/Kconfig
+>>>>> +++ b/sound/soc/atmel/Kconfig
+>>>>> @@ -25,7 +25,7 @@ config SND_ATMEL_SOC_DMA
+>>>>>    	default y if SND_ATMEL_SOC_SSC_DMA=3Dy || (SND_ATMEL_SOC_SSC_DMA=
+=3Dm && SND_ATMEL_SOC_SSC=3Dy)
+>>>>>    =
+
+>>>>>    config SND_ATMEL_SOC_SSC_DMA
+>>>>> -	tristate
+>>>>> +	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
+>>>>
+>>>> Could you please make something similar for SND_ATMEL_SOC_SSC_PDC? Als=
+o,
+>>>> I think that it should select ATMEL_SSC, to be able to use
+>>>> simple/graph-card with SSC.
+>>>
+>>> Hmm. The Kconfig dependencies seems overly complicated, do you mind if I
+>>> get rid of most of the entries in the process?
+>>>
+>>
+>> Unfortunately, it is just complicated enough. This is done to support
+>> all the possible configurations. Removing them will lead to linking
+>> errors.
+>>
+>> After having that discussion back in March, I had a very quick look and
+>> didn't send a patch because I still had linking issues. It is not
+>> impossible but it required more time than I had.
+> =
+
+> Can you try patch below if it covers the configurations you mention?
+> This uses Kconfig's m/y resolution instead of open-coded defaults.
+> =
+
+> Best Regards,
+> Micha=B3 Miros=B3aw
+> =
+
+> =
+
+> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+> index 06c1d5ce642c..f118c229ed82 100644
+> --- a/sound/soc/atmel/Kconfig
+> +++ b/sound/soc/atmel/Kconfig
+> @@ -12,25 +12,31 @@ if SND_ATMEL_SOC
+>   config SND_ATMEL_SOC_PDC
+>   	tristate
+>   	depends on HAS_DMA
+> -	default m if SND_ATMEL_SOC_SSC_PDC=3Dm && SND_ATMEL_SOC_SSC=3Dm
+> -	default y if SND_ATMEL_SOC_SSC_PDC=3Dy || (SND_ATMEL_SOC_SSC_PDC=3Dm &&=
+ SND_ATMEL_SOC_SSC=3Dy)
+> -
+> -config SND_ATMEL_SOC_SSC_PDC
+> -	tristate
+>   =
+
+>   config SND_ATMEL_SOC_DMA
+>   	tristate
+>   	select SND_SOC_GENERIC_DMAENGINE_PCM
+> -	default m if SND_ATMEL_SOC_SSC_DMA=3Dm && SND_ATMEL_SOC_SSC=3Dm
+> -	default y if SND_ATMEL_SOC_SSC_DMA=3Dy || (SND_ATMEL_SOC_SSC_DMA=3Dm &&=
+ SND_ATMEL_SOC_SSC=3Dy)
+> -
+> -config SND_ATMEL_SOC_SSC_DMA
+> -	tristate
+>   =
+
+>   config SND_ATMEL_SOC_SSC
+>   	tristate
+> -	default y if SND_ATMEL_SOC_SSC_DMA=3Dy || SND_ATMEL_SOC_SSC_PDC=3Dy
+> -	default m if SND_ATMEL_SOC_SSC_DMA=3Dm || SND_ATMEL_SOC_SSC_PDC=3Dm
+> +
+> +config SND_ATMEL_SOC_SSC_PDC
+> +	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
+> +	depends on ATMEL_SSC
+> +	select SND_ATMEL_SOC_PDC
+> +	select SND_ATMEL_SOC_SSC
+> +	help
+> +	  Say Y or M if you want to add support for Atmel SSC interface
+> +	  in PDC mode configured using audio-graph-card in device-tree.
+> +
+> +config SND_ATMEL_SOC_SSC_DMA
+> +	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
+> +	depends on ATMEL_SSC
+> +	select SND_ATMEL_SOC_DMA
+> +	select SND_ATMEL_SOC_SSC
+> +	help
+> +	  Say Y or M if you want to add support for Atmel SSC interface
+> +	  in DMA mode configured using audio-graph-card in device-tree.
+>   =
+
+>   config SND_AT91_SOC_SAM9G20_WM8731
+>   	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation bo=
+ard"
+>
+
+Looks fine to me.
+
+Best regards,
+Codrin
