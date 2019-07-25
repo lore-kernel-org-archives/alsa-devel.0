@@ -1,187 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Fix some acpi vs apci typo in somme comments" to the asoc tree
-Date: Thu, 25 Jul 2019 14:19:25 +0100 (BST)
-Message-ID: <20190725131925.D36082742B5F@ypsilon.sirena.org.uk>
-References: <20190725053523.16542-1-christophe.jaillet@wanadoo.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725053523.16542-1-christophe.jaillet@wanadoo.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, kernel-janitors@vger.kernel.org, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, pierre-louis.bossart@linux.intel.com, tiwai@suse.com, yang.jie@linux.intel.com
+Subject: Re: [PATCH] ASoC: SOF: Makefile - fix the top-level
+ kernel module names (add snd- prefix)
+Date: Thu, 25 Jul 2019 14:19:08 +0100
+Message-ID: <20190725131908.GE4213@sirena.org.uk>
+References: <20190725110808.19938-1-perex@perex.cz>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6600274628597735340=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32BCBF800F5
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:19:10 +0200 (CEST)
+In-Reply-To: <20190725110808.19938-1-perex@perex.cz>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA development <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Fix some acpi vs apci typo in somme comments
+--===============6600274628597735340==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ZRyEpB+iJ+qUx0kp"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+--ZRyEpB+iJ+qUx0kp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Jul 25, 2019 at 01:08:08PM +0200, Jaroslav Kysela wrote:
+> Use the proper module name. The objs assignments are already there.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This breaks the build for me:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+  DESCEND  objtool
+  CALL    scripts/atomic/check-atomics.sh
+  CALL    scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+make[3]: *** No rule to make target 'sound/soc/sof/snd-sof-acpi-dev.o', needed by 'sound/soc/sof/built-in.a'.  Stop.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--ZRyEpB+iJ+qUx0kp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 72ea86391cd3249638fbef340b865c4bfa31465b Mon Sep 17 00:00:00 2001
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Thu, 25 Jul 2019 07:35:23 +0200
-Subject: [PATCH] ASoC: Intel: Fix some acpi vs apci typo in somme comments
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl05rEsACgkQJNaLcl1U
+h9Cv5Af/a6c3U+b7B7Csg6lYLOWLFRNOtiIXN1tZ8FUCEkndMwNLTpabr6s1ClwP
+qwcWhoev2hGl2aZCDN7gjcX63iyoZ09Xb5kqkdJ06aMXllDzEoC+d/GDnRwGq3qS
+9NfI6vd5WcqjOnsNxN2SjykvXSYbWJW6zjqX7unhuSyIoxJ8uQQr6zIZj5ZV5zaZ
++QcVxOCVAGfIxwjxe5KIktRScjDNOY29HNK+FtJDqW/t3nQt1xvq2tSDAcIDlQ1X
+nQ4q2tNVU2bJEUyFc8EEjBWV/bvTSCUkJEVJH1dV7Rt2FY1NQRwogc7kBQtetE/y
+jBu6HWl6EhfdpFtFY3BPBkq78GXFag==
+=mEDf
+-----END PGP SIGNATURE-----
 
-Fix some typo to have the filaname given in a comment match the real name
-of the file.
-Some 'acpi' have erroneously been written 'apci'
+--ZRyEpB+iJ+qUx0kp--
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20190725053523.16542-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-byt-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-cht-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-glk-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-hda-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 2 +-
- sound/soc/intel/common/soc-acpi-intel-icl-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-kbl-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-skl-match.c     | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
+--===============6600274628597735340==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index 229e39586868..4a5adae1d785 100644
---- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
-+ * soc-acpi-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-index b94b482ac34f..1cc801ba92eb 100644
---- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * soc-apci-intel-byt-match.c - tables and support for BYT ACPI enumeration.
-+ * soc-acpi-intel-byt-match.c - tables and support for BYT ACPI enumeration.
-  *
-  * Copyright (c) 2017, Intel Corporation.
-  */
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index b7f11f6be1cf..d0fb43c2b9f6 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * soc-apci-intel-cht-match.c - tables and support for CHT ACPI enumeration.
-+ * soc-acpi-intel-cht-match.c - tables and support for CHT ACPI enumeration.
-  *
-  * Copyright (c) 2017, Intel Corporation.
-  */
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index c36c0aa4f683..771b0ef21051 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
-+ * soc-acpi-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index 616eb09e78a0..60dea358fa04 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-glk-match.c - tables and support for GLK ACPI enumeration.
-+ * soc-acpi-intel-glk-match.c - tables and support for GLK ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-index 68ae43f7b4b2..cc972d2ac691 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-@@ -2,7 +2,7 @@
- // Copyright (c) 2018, Intel Corporation.
- 
- /*
-- * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
-+ * soc-acpi-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
-  *
-  */
- 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-index d27853e7a369..34eb0baaa951 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * soc-apci-intel-hsw-bdw-match.c - tables and support for ACPI enumeration.
-+ * soc-acpi-intel-hsw-bdw-match.c - tables and support for ACPI enumeration.
-  *
-  * Copyright (c) 2017, Intel Corporation.
-  */
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-index 0b430b9b3673..38977669b576 100644
---- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-icl-match.c - tables and support for ICL ACPI enumeration.
-+ * soc-acpi-intel-icl-match.c - tables and support for ICL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-index 4b331058e807..e200baa11011 100644
---- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
-+ * soc-acpi-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-index 0c9c0edd35b3..42fa40a8d932 100644
---- a/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-skl-match.c - tables and support for SKL ACPI enumeration.
-+ * soc-acpi-intel-skl-match.c - tables and support for SKL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
--- 
-2.20.1
+
+--===============6600274628597735340==--
