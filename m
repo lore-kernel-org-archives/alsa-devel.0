@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 17/40] soundwire: bus: use runtime_pm_get_sync/pm when enabled
-Date: Thu, 25 Jul 2019 18:40:09 -0500
-Message-ID: <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 16/40] soundwire: cadence_master: improve startup sequence with link hw_reset
+Date: Thu, 25 Jul 2019 18:40:08 -0500
+Message-ID: <20190725234032.21152-17-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,61 +12,85 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Not all platforms support runtime_pm for now, let's use runtime_pm
-only when enabled.
+Enable interrupts first, then engage hardware bus reset with maximum
+duration to make sure the Slave(s) correctly detect the reset pattern
+and to ensure electrical conflicts can be resolved.
 
-Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Without these changes the initialization is randomly corrupted by bus
+clashes, parity errors and Slave attachment does not generate any
+interrupt, despite the status showing them being attached.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ drivers/soundwire/cadence_master.c | 35 +++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 5ad4109dc72f..0a45dc5713df 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -332,12 +332,16 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- 	if (ret < 0)
- 		return ret;
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 25d5c7267c15..442f78c00f09 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -778,6 +778,31 @@ EXPORT_SYMBOL(sdw_cdns_thread);
+  * init routines
+  */
  
--	ret = pm_runtime_get_sync(slave->bus->dev);
--	if (ret < 0)
--		return ret;
-+	if (pm_runtime_enabled(slave->bus->dev)) {
-+		ret = pm_runtime_get_sync(slave->bus->dev);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	ret = sdw_transfer(slave->bus, &msg);
--	pm_runtime_put(slave->bus->dev);
++static int do_reset(struct sdw_cdns *cdns)
++{
++	int ret;
 +
-+	if (pm_runtime_enabled(slave->bus->dev))
-+		pm_runtime_put(slave->bus->dev);
++	/* program maximum length reset to be safe */
++	cdns_updatel(cdns, CDNS_MCP_CONTROL,
++		     CDNS_MCP_CONTROL_RST_DELAY,
++		     CDNS_MCP_CONTROL_RST_DELAY);
++
++	/* use hardware generated reset */
++	cdns_updatel(cdns, CDNS_MCP_CONTROL,
++		     CDNS_MCP_CONTROL_HW_RST,
++		     CDNS_MCP_CONTROL_HW_RST);
++
++	/* enable bus operations with clock and data */
++	cdns_updatel(cdns, CDNS_MCP_CONFIG,
++		     CDNS_MCP_CONFIG_OP,
++		     CDNS_MCP_CONFIG_OP_NORMAL);
++
++	/* commit changes */
++	ret = cdns_update_config(cdns);
++
++	return ret;
++}
++
+ /**
+  * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
+  * @cdns: Cadence instance
+@@ -809,7 +834,7 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
  
- 	return ret;
+ 	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
+ 
+-	return 0;
++	return do_reset(cdns);
  }
-@@ -359,13 +363,16 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- 			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
- 	if (ret < 0)
- 		return ret;
+ EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
+ 
+@@ -958,6 +983,10 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+ 	cdns_writel(cdns, CDNS_MCP_SSP_CTRL0, CDNS_DEFAULT_SSP_INTERVAL);
+ 	cdns_writel(cdns, CDNS_MCP_SSP_CTRL1, CDNS_DEFAULT_SSP_INTERVAL);
+ 
++	/* flush command FIFOs */
++	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_RST,
++		     CDNS_MCP_CONTROL_CMD_RST);
++
+ 	/* Set cmd accept mode */
+ 	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
+ 		     CDNS_MCP_CONTROL_CMD_ACCEPT);
+@@ -980,10 +1009,6 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+ 	/* Set cmd mode for Tx and Rx cmds */
+ 	val &= ~CDNS_MCP_CONFIG_CMD;
+ 
+-	/* Set operation to normal */
+-	val &= ~CDNS_MCP_CONFIG_OP;
+-	val |= CDNS_MCP_CONFIG_OP_NORMAL;
 -
--	ret = pm_runtime_get_sync(slave->bus->dev);
--	if (ret < 0)
--		return ret;
-+	if (pm_runtime_enabled(slave->bus->dev)) {
-+		ret = pm_runtime_get_sync(slave->bus->dev);
-+		if (ret < 0)
-+			return ret;
-+	}
+ 	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
  
- 	ret = sdw_transfer(slave->bus, &msg);
--	pm_runtime_put(slave->bus->dev);
-+
-+	if (pm_runtime_enabled(slave->bus->dev))
-+		pm_runtime_put(slave->bus->dev);
- 
- 	return ret;
- }
+ 	/* commit changes */
 -- 
 2.20.1
