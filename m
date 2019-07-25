@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 07/40] soundwire: intel: fix channel number reported by hardware
-Date: Thu, 25 Jul 2019 18:39:59 -0500
-Message-ID: <20190725234032.21152-8-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 06/40] soundwire: intel: prevent possible dereference in hw_params
+Date: Thu, 25 Jul 2019 18:39:58 -0500
+Message-ID: <20190725234032.21152-7-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,33 +12,26 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-PDI2 reports an invalid count, force the correct hardware-supported
-value
+This should not happen in production systems but we should test for
+all callback arguments before invoking the config_stream callback.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/soundwire/intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 497879dd9c0d..51990b192dc0 100644
+index 68832e613b1e..497879dd9c0d 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -401,6 +401,15 @@ intel_pdi_get_ch_cap(struct sdw_intel *sdw, unsigned int pdi_num, bool pcm)
+@@ -509,7 +509,7 @@ static int intel_config_stream(struct sdw_intel *sdw,
+ 			       struct snd_soc_dai *dai,
+ 			       struct snd_pcm_hw_params *hw_params, int link_id)
+ {
+-	if (sdw->res->ops && sdw->res->ops->config_stream)
++	if (sdw->res->ops && sdw->res->ops->config_stream && sdw->res->arg)
+ 		return sdw->res->ops->config_stream(sdw->res->arg,
+ 				substream, dai, hw_params, link_id);
  
- 	if (pcm) {
- 		count = intel_readw(shim, SDW_SHIM_PCMSYCHC(link_id, pdi_num));
-+
-+		/*
-+		 * TODO: pdi number 2 reports channel count as 1 even though
-+		 * it supports 8 channel. Performing hardcoding for pdi
-+		 * number 2.
-+		 */
-+		if (pdi_num == 2)
-+			count = 7;
-+
- 	} else {
- 		count = intel_readw(shim, SDW_SHIM_PDMSCAP(link_id));
- 		count = ((count & SDW_SHIM_PDMSCAP_CPSS) >>
 -- 
 2.20.1
