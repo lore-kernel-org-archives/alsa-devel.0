@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 21/40] soundwire: export helpers to find row and column values
-Date: Thu, 25 Jul 2019 18:40:13 -0500
-Message-ID: <20190725234032.21152-22-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 26/40] soundwire: cadence_master: fix divider setting in clock register
+Date: Thu, 25 Jul 2019 18:40:18 -0500
+Message-ID: <20190725234032.21152-27-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,85 +9,59 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Rander Wang <rander.wang@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a prefix for common tables and export 2 helpers to set the frame
-shapes based on row/col values.
+From: Rander Wang <rander.wang@linux.intel.com>
 
+The existing code uses an OR operation which would mix the original
+divider setting with the new one, resulting in an invalid
+configuration that can make codecs hang.
+
+Add the mask definition and use cdns_updatel to update divider
+
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.h    |  7 +++++--
- drivers/soundwire/stream.c | 14 ++++++++------
- 2 files changed, 13 insertions(+), 8 deletions(-)
+ drivers/soundwire/cadence_master.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 06ac4adb0074..c57c9c23f6ca 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -73,8 +73,11 @@ struct sdw_msg {
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 10ebcef2e84e..18c6ac026e85 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -57,6 +57,7 @@
+ #define CDNS_MCP_SSP_CTRL1			0x28
+ #define CDNS_MCP_CLK_CTRL0			0x30
+ #define CDNS_MCP_CLK_CTRL1			0x38
++#define CDNS_MCP_CLK_MCLKD_MASK		GENMASK(7, 0)
  
- #define SDW_DOUBLE_RATE_FACTOR		2
+ #define CDNS_MCP_STAT				0x40
  
--extern int rows[SDW_FRAME_ROWS];
--extern int cols[SDW_FRAME_COLS];
-+extern int sdw_rows[SDW_FRAME_ROWS];
-+extern int sdw_cols[SDW_FRAME_COLS];
+@@ -988,9 +989,11 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+ 	/* Set clock divider */
+ 	divider	= (prop->mclk_freq / prop->max_clk_freq) - 1;
+ 	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
+-	val |= divider;
+-	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
+-	cdns_writel(cdns, CDNS_MCP_CLK_CTRL1, val);
 +
-+int sdw_find_row_index(int row);
-+int sdw_find_col_index(int col);
++	cdns_updatel(cdns, CDNS_MCP_CLK_CTRL0,
++		     CDNS_MCP_CLK_MCLKD_MASK, divider);
++	cdns_updatel(cdns, CDNS_MCP_CLK_CTRL1,
++		     CDNS_MCP_CLK_MCLKD_MASK, divider);
  
- /**
-  * sdw_port_runtime: Runtime port parameters for Master or Slave
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index a0476755a459..53f5e790fcd7 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -21,37 +21,39 @@
-  * The rows are arranged as per the array index value programmed
-  * in register. The index 15 has dummy value 0 in order to fill hole.
-  */
--int rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
-+int sdw_rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
- 			96, 100, 120, 128, 150, 160, 250, 0,
- 			192, 200, 240, 256, 72, 144, 90, 180};
+ 	pr_err("plb: mclk %d max_freq %d divider %d register %x\n",
+ 	       prop->mclk_freq,
+@@ -1064,8 +1067,7 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+ 		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL0;
  
--int cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
-+int sdw_cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
+ 	mcp_clkctrl = cdns_readl(cdns, mcp_clkctrl_off);
+-	mcp_clkctrl |= divider;
+-	cdns_writel(cdns, mcp_clkctrl_off, mcp_clkctrl);
++	cdns_updatel(cdns, mcp_clkctrl_off, CDNS_MCP_CLK_MCLKD_MASK, divider);
  
--static int sdw_find_col_index(int col)
-+int sdw_find_col_index(int col)
- {
- 	int i;
- 
- 	for (i = 0; i < SDW_FRAME_COLS; i++) {
--		if (cols[i] == col)
-+		if (sdw_cols[i] == col)
- 			return i;
- 	}
- 
- 	pr_warn("Requested column not found, selecting lowest column no: 2\n");
- 	return 0;
- }
-+EXPORT_SYMBOL(sdw_find_col_index);
- 
--static int sdw_find_row_index(int row)
-+int sdw_find_row_index(int row)
- {
- 	int i;
- 
- 	for (i = 0; i < SDW_FRAME_ROWS; i++) {
--		if (rows[i] == row)
-+		if (sdw_rows[i] == row)
- 			return i;
- 	}
- 
- 	pr_warn("Requested row not found, selecting lowest row no: 48\n");
- 	return 0;
- }
-+EXPORT_SYMBOL(sdw_find_row_index);
- 
- static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 					  struct sdw_slave *slave,
+ 	pr_err("plb: mclk * 2 %d curr_dr_freq %d divider %d register %x\n",
+ 	       prop->mclk_freq * SDW_DOUBLE_RATE_FACTOR,
 -- 
 2.20.1
