@@ -1,52 +1,36 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: SOF: Makefile - fix the top-level
- kernel module names (add snd- prefix)
-Date: Thu, 25 Jul 2019 15:38:58 +0200
-Message-ID: <29ebff2c-a47a-d0a9-acf5-ee637df26400@perex.cz>
-References: <20190725110808.19938-1-perex@perex.cz>
- <20190725131908.GE4213@sirena.org.uk>
+From: Joe Perches <joe@perches.com>
+Subject: Re: Applied "ASoC: Intel: Fix some acpi vs apci typo in somme
+ comments" to the asoc tree
+Date: Thu, 25 Jul 2019 06:44:55 -0700
+Message-ID: <8179fff75f82ac49aaa0c5feb17b53be55f9f2c5.camel@perches.com>
+References: <20190725131925.D36082742B5F@ypsilon.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 087D7F800F5
- for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 15:39:04 +0200 (CEST)
-In-Reply-To: <20190725131908.GE4213@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA development <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190725131925.D36082742B5F@ypsilon.sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org, perex@perex.cz, pierre-louis.bossart@linux.intel.com, tiwai@suse.com, yang.jie@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Dne 25. 07. 19 v 15:19 Mark Brown napsal(a):
-> On Thu, Jul 25, 2019 at 01:08:08PM +0200, Jaroslav Kysela wrote:
->> Use the proper module name. The objs assignments are already there.
+On Thu, 2019-07-25 at 14:19 +0100, Mark Brown wrote:
+> The patch
 > 
-> This breaks the build for me:
-> 
->   DESCEND  objtool
->   CALL    scripts/atomic/check-atomics.sh
->   CALL    scripts/checksyscalls.sh
->   CHK     include/generated/compile.h
-> make[3]: *** No rule to make target 'sound/soc/sof/snd-sof-acpi-dev.o', needed by 'sound/soc/sof/built-in.a'.  Stop.
-> 
+>    ASoC: Intel: Fix some acpi vs apci typo in somme comments
+[]
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+[]
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * soc-apci-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
+> + * soc-acpi-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
 
-Oops. I sent the v2 of the patch.
+Generally, using the current filename in a comment has little value.
 
-				Thanks,
-					Jaroslav
+This might as well be
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+ * tables and support for BXT ACPI enumeration
+
+etc...
