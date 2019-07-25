@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 29/40] soundwire: intel_init: add kernel module parameter to filter out links
-Date: Thu, 25 Jul 2019 18:40:21 -0500
-Message-ID: <20190725234032.21152-30-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 30/40] soundwire: cadence_master: add kernel parameter to override interrupt mask
+Date: Thu, 25 Jul 2019 18:40:22 -0500
+Message-ID: <20190725234032.21152-31-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,61 +12,38 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The hardware and ACPI info may report the presence of links that are
-not physically enabled (e.g. due to pin-muxing or hardware reworks),
-which in turn can result in errors being thrown. This shouldn't be the
-case for production devices but will happen a lot on development
-devices - even more so when they expose a connector.
-
-Add a module parameter to filter out such links, e.g. adding the
-following config to a file in /etc/modprobe.d will select the second
-and third links only.
-
-options soundwire_intel_init sdw_link_mask=0x6
+The code has a set of defaults which may not be relevant in all cases,
+add kernel parameter as a helper - mostly for early board bring-up.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel_init.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/soundwire/cadence_master.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 70637a0383d2..6ae8bb13f907 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -22,6 +22,10 @@
- #define SDW_LINK_BASE		0x30000
- #define SDW_LINK_SIZE		0x10000
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 18c6ac026e85..dede55072191 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -20,6 +20,10 @@
+ #include "bus.h"
+ #include "cadence_master.h"
  
-+static int link_mask;
-+module_param_named(sdw_link_mask, link_mask, int, 0444);
-+MODULE_PARM_DESC(sdw_link_mask, "Intel link mask (one bit per link)");
++static int interrupt_mask;
++module_param_named(cnds_mcp_int_mask, interrupt_mask, int, 0444);
++MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
 +
- struct sdw_link_data {
- 	struct sdw_intel_link_res res;
- 	struct platform_device *pdev;
-@@ -83,6 +87,9 @@ static struct sdw_intel_ctx
- 	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
- 	caps &= GENMASK(2, 0);
+ #define CDNS_MCP_CONFIG				0x0
  
-+	dev_dbg(&adev->dev, "SoundWire links: BIOS count %d hardware caps %d\n",
-+		count, caps);
+ #define CDNS_MCP_CONFIG_MCMD_RETRY		GENMASK(27, 24)
+@@ -830,6 +834,9 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+ 	/* now enable all of the above */
+ 	mask |= CDNS_MCP_INT_IRQ;
+ 
++	if (interrupt_mask) /* parameter override */
++		mask = interrupt_mask;
 +
- 	/* Check HW supported vs property value and use min of two */
- 	count = min_t(u8, caps, count);
+ 	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
  
-@@ -111,6 +118,13 @@ static struct sdw_intel_ctx
- 
- 	/* Create SDW Master devices */
- 	for (i = 0; i < count; i++) {
-+		if (link_mask && !(link_mask & BIT(i))) {
-+			dev_dbg(&adev->dev,
-+				"Link %d masked, will not be enabled\n", i);
-+			link++;
-+			continue;
-+		}
-+
- 		link->res.irq = res->irq;
- 		link->res.registers = res->mmio_base + SDW_LINK_BASE
- 					+ (SDW_LINK_SIZE * i);
+ 	return do_reset(cdns);
 -- 
 2.20.1
