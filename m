@@ -1,70 +1,61 @@
-From: mirq-linux@rere.qmqm.pl
-Subject: Re: [PATCH 5/5] ASoC: atmel_ssc_dai: Enable shared FSYNC source in
- frame-slave mode
-Date: Thu, 25 Jul 2019 20:24:27 +0200
-Message-ID: <20190725182427.GA16245@qmqm.qmqm.pl>
-References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
- <107e0cfd11a31ce1558e941612e183100022930d.1563819483.git.mirq-linux@rere.qmqm.pl>
- <eabb96e7-1567-3ee1-a00e-f241c5f23c1c@microchip.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 05/25] ASoC: soc-component: add
+ snd_soc_component_prepare()
+Date: Thu, 25 Jul 2019 21:59:42 +0200
+Message-ID: <2d2e6827-1c57-caf4-88ed-4b61f3b5a990@intel.com>
+References: <8736iwurtc.wl-kuninori.morimoto.gx@renesas.com>
+ <87v9vstd7a.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <eabb96e7-1567-3ee1-a00e-f241c5f23c1c@microchip.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Codrin.Ciubotariu@microchip.com
-Cc: alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, tiwai@suse.com, lgirdwood@gmail.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EACF5F800E8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 21:59:48 +0200 (CEST)
+In-Reply-To: <87v9vstd7a.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 25, 2019 at 03:02:34PM +0000, Codrin.Ciubotariu@microchip.com w=
-rote:
-> On 22.07.2019 21:27, Micha=B3 Miros=B3aw wrote:
-> > SSC driver allows only synchronous TX and RX. In slave mode for BCLK
-> > it uses only one of TK or RK pin, but for LRCLK it configured separate
-> > inputs from TF and RF pins. Allow configuration with common FS signal.
-[...]
-> > @@ -613,10 +607,30 @@ static int atmel_ssc_hw_params(struct snd_pcm_sub=
-stream *substream,
-> >   		return -EINVAL;
-> >   	}
-> >   =
+On 2019-07-24 03:51, Kuninori Morimoto wrote:> +
+> +int snd_soc_component_prepare(struct snd_soc_component *component,
+> +			      struct snd_pcm_substream *substream)
+> +{
+> +	if (component->driver->ops &&
+> +	    component->driver->ops->prepare)
+> +		return component->driver->ops->prepare(substream);
+> +
+> +	return 0;
+> +}
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 86d2e6b..a77a14c 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -774,11 +774,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		component = rtdcom->component;
+>   
+> -		if (!component->driver->ops ||
+> -		    !component->driver->ops->prepare)
+> -			continue;
+> -
+> -		ret = component->driver->ops->prepare(substream);
+> +		snd_soc_component_prepare(component, substream);
+>   		if (ret < 0) {
+>   			dev_err(component->dev,
+>   				"ASoC: platform prepare error: %d\n", ret);
+> 
 
-> > -	if (!atmel_ssc_cfs(ssc_p)) {
-> > +	if (atmel_ssc_cfs(ssc_p)) {
-> > +		/*
-> > +		 * SSC provides LRCLK
-> > +		 *
-> > +		 * Both TF and RF are generated, so use them directly.
-> > +		 */
-> > +		rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
-> > +		tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
-> > +	} else {
-> >   		fslen =3D fslen_ext =3D 0;
-> >   		rcmr_period =3D tcmr_period =3D 0;
-> >   		fs_osync =3D SSC_FSOS_NONE;
-> > +		if (!ssc->shared_fs_pin) {
-> > +			rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
-> > +			tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
-> > +		} else if (ssc->clk_from_rk_pin) {
-> > +			/* assume RF is to be used when RK is used as BCLK input */
-> > +			/* Note: won't work correctly on SAMA5D2 due to errata */
-> > +			rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
-> > +			tcmr |=3D	  SSC_BF(TCMR_START, SSC_START_RECEIVE);
-> =
-
-> Did you find a platform in which this mode works?
-
-To be exact: according to the errata, TX is delayed improperly. So if you
-use only RX (SSC side receives) direction, you're fine.
-
-Best Regards,
-Micha=B3=A0Miros=B3aw
+Compared to old code, ret gets ignored here. Guess unintended modification?
