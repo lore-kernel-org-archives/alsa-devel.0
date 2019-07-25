@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 05/40] soundwire: intel: move interrupt enable after interrupt handler registration
-Date: Thu, 25 Jul 2019 18:39:57 -0500
-Message-ID: <20190725234032.21152-6-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 11/40] soundwire: cadence_master: simplify bus clash interrupt clear
+Date: Thu, 25 Jul 2019 18:40:03 -0500
+Message-ID: <20190725234032.21152-12-pierre-louis.bossart@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,35 +12,34 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Not sure why the existing code would enable interrupts without the
-ability to deal with them.
+The bus clash interrupts are generated when the status is one, and
+also cleared by writing a one. It's overkill/useless to use an OR when
+the bit is already set.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soundwire/cadence_master.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index aeadc341c0a3..68832e613b1e 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -981,8 +981,6 @@ static int intel_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_init;
- 
--	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
--
- 	/* Read the PDI config and initialize cadence PDI */
- 	intel_pdi_init(sdw, &config);
- 	ret = sdw_cdns_pdi_init(&sdw->cdns, config);
-@@ -1000,6 +998,8 @@ static int intel_probe(struct platform_device *pdev)
- 		goto err_init;
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index e85e49340986..bdc3ed844829 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -692,7 +692,6 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ 	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
+ 		/* Slave is driving bit slot during control word */
+ 		dev_err_ratelimited(cdns->dev, "Bus clash for control word\n");
+-		int_status |= CDNS_MCP_INT_CTRL_CLASH;
  	}
  
-+	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
-+
- 	/* Register DAIs */
- 	ret = intel_register_dai(sdw);
- 	if (ret) {
+ 	if (int_status & CDNS_MCP_INT_DATA_CLASH) {
+@@ -701,7 +700,6 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ 		 * ownership of data bits or Slave gone bonkers
+ 		 */
+ 		dev_err_ratelimited(cdns->dev, "Bus clash for data word\n");
+-		int_status |= CDNS_MCP_INT_DATA_CLASH;
+ 	}
+ 
+ 	if (int_status & CDNS_MCP_INT_SLAVE_MASK) {
 -- 
 2.20.1
