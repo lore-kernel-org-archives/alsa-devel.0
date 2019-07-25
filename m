@@ -1,88 +1,162 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Best representation for TDM devices
-Date: Thu, 25 Jul 2019 15:01:12 +0200
-Message-ID: <20190725130112.3j2vi4dyngyr6yh3@flea>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Fix some acpi vs apci typo in somme comments
+Date: Thu, 25 Jul 2019 08:07:14 -0500
+Message-ID: <bf0899e7-42ff-b2e9-6f51-decc0b0de3ff@linux.intel.com>
+References: <20190725053523.16542-1-christophe.jaillet@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5392625376563764073=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190725053523.16542-1-christophe.jaillet@wanadoo.fr>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 7/25/19 12:35 AM, Christophe JAILLET wrote:
+> Fix some typo to have the filaname given in a comment match the real name
+> of the file.
+> Some 'acpi' have erroneously been written 'apci'
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
---===============5392625376563764073==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rddslzkshiyxhiyb"
-Content-Disposition: inline
+yes, thanks for the corrections.
 
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
---rddslzkshiyxhiyb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
-I'm currently working on a device that has two Analog's ADAU7002
-connected to an I2S/TDM Controller (sound/soc/sunxi/sun4i-i2s.c, with
-some modifications), over the slots 1/2 and 3/4.
-
-The capture itself is working fine, however I'm not quite sure about
-the way to expose those streams to the userspace.
-
-Since I have two codecs, I have two links (described through
-simple-card) and thus two subdevices. However, the microphones
-connected are really separate streams, so ideally (I guess?) we should
-have 1 subdevice per microphone.
-
-An alternative would be that we capture the whole 4 channels and use
-dsnoop to demux them, but trying to use the device directly (using
-arecord -D hw:0) results in the ioctl to change the number of channels
-being rejected, I'm assuming because each codec only has 2 channels?
-
-So I'm a bit lost at this point about how I should go and expose
-this. I couldn't really find any similar setup either in the
-kernel. Any preferred way of doing this?
-
-Thanks!
-Maxime
-
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
---rddslzkshiyxhiyb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXTmoGAAKCRDj7w1vZxhR
-xTKUAPwPcJzEqkkoUcUYtmz9PUBumusjyVSRBmCPSBM/U/pQ2AD/UQWf6Jlc3JJN
-BX8LFvZSo3fF7enhh05KgQsqvLuhIQo=
-=hz2z
------END PGP SIGNATURE-----
-
---rddslzkshiyxhiyb--
-
-
---===============5392625376563764073==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============5392625376563764073==--
+> ---
+>   sound/soc/intel/common/soc-acpi-intel-bxt-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-byt-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-cht-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-cnl-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-glk-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-hda-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-icl-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-kbl-match.c     | 2 +-
+>   sound/soc/intel/common/soc-acpi-intel-skl-match.c     | 2 +-
+>   10 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+> index 229e39586868..4a5adae1d785 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - * soc-apci-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
+> + * soc-acpi-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
+>    *
+>    * Copyright (c) 2018, Intel Corporation.
+>    *
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+> index b94b482ac34f..1cc801ba92eb 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0-only
+>   /*
+> - * soc-apci-intel-byt-match.c - tables and support for BYT ACPI enumeration.
+> + * soc-acpi-intel-byt-match.c - tables and support for BYT ACPI enumeration.
+>    *
+>    * Copyright (c) 2017, Intel Corporation.
+>    */
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+> index b7f11f6be1cf..d0fb43c2b9f6 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0-only
+>   /*
+> - * soc-apci-intel-cht-match.c - tables and support for CHT ACPI enumeration.
+> + * soc-acpi-intel-cht-match.c - tables and support for CHT ACPI enumeration.
+>    *
+>    * Copyright (c) 2017, Intel Corporation.
+>    */
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+> index c36c0aa4f683..771b0ef21051 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - * soc-apci-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
+> + * soc-acpi-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
+>    *
+>    * Copyright (c) 2018, Intel Corporation.
+>    *
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+> index 616eb09e78a0..60dea358fa04 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - * soc-apci-intel-glk-match.c - tables and support for GLK ACPI enumeration.
+> + * soc-acpi-intel-glk-match.c - tables and support for GLK ACPI enumeration.
+>    *
+>    * Copyright (c) 2018, Intel Corporation.
+>    *
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+> index 68ae43f7b4b2..cc972d2ac691 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+> @@ -2,7 +2,7 @@
+>   // Copyright (c) 2018, Intel Corporation.
+>   
+>   /*
+> - * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
+> + * soc-acpi-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
+>    *
+>    */
+>   
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+> index d27853e7a369..34eb0baaa951 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0-only
+>   /*
+> - * soc-apci-intel-hsw-bdw-match.c - tables and support for ACPI enumeration.
+> + * soc-acpi-intel-hsw-bdw-match.c - tables and support for ACPI enumeration.
+>    *
+>    * Copyright (c) 2017, Intel Corporation.
+>    */
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+> index 0b430b9b3673..38977669b576 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - * soc-apci-intel-icl-match.c - tables and support for ICL ACPI enumeration.
+> + * soc-acpi-intel-icl-match.c - tables and support for ICL ACPI enumeration.
+>    *
+>    * Copyright (c) 2018, Intel Corporation.
+>    *
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+> index 4b331058e807..e200baa11011 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - * soc-apci-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
+> + * soc-acpi-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
+>    *
+>    * Copyright (c) 2018, Intel Corporation.
+>    *
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+> index 0c9c0edd35b3..42fa40a8d932 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+> @@ -1,6 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /*
+> - * soc-apci-intel-skl-match.c - tables and support for SKL ACPI enumeration.
+> + * soc-acpi-intel-skl-match.c - tables and support for SKL ACPI enumeration.
+>    *
+>    * Copyright (c) 2018, Intel Corporation.
+>    *
+> 
