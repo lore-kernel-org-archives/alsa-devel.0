@@ -1,153 +1,48 @@
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: Intel: Fix some acpi vs apci typo in somme comments
-Date: Thu, 25 Jul 2019 07:35:23 +0200
-Message-ID: <20190725053523.16542-1-christophe.jaillet@wanadoo.fr>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 01/10] ASoC: fsl_sai: add of_match data
+Date: Thu, 25 Jul 2019 09:00:01 +0300
+Message-ID: <CAEnQRZDtAwAWn+fEWcfiXROc+X5bhwdas=R=JdizcfPjyFSv0A@mail.gmail.com>
+References: <20190722124833.28757-1-daniel.baluta@nxp.com>
+ <20190722124833.28757-2-daniel.baluta@nxp.com>
+ <20190724223422.GA6859@Asurada-Nvidia.nvidia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1A0FF800E8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jul 2019 08:00:13 +0200 (CEST)
+Received: by mail-wr1-x443.google.com with SMTP id g17so49319674wrr.5
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2019 23:00:13 -0700 (PDT)
+In-Reply-To: <20190724223422.GA6859@Asurada-Nvidia.nvidia.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Fabio Estevam <festevam@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "Angus Ainslie (Purism)" <angus@akkea.ca>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@nxp.com>, linuxppc-dev@lists.ozlabs.org, Lucas Stach <l.stach@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Fix some typo to have the filaname given in a comment match the real name
-of the file.
-Some 'acpi' have erroneously been written 'apci'
+On Thu, Jul 25, 2019 at 1:34 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> On Mon, Jul 22, 2019 at 03:48:24PM +0300, Daniel Baluta wrote:
+> > From: Lucas Stach <l.stach@pengutronix.de>
+> >
+> > New revisions of the SAI IP block have even more differences that need
+> > be taken into account by the driver. To avoid sprinking compatible
+> > checks all over the driver move the current differences into of_match_data.
+> >
+> > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+>
+> Looks like Mark has applied this already? If so, should probably
+> drop applied ones and rebase the remaining patches for a resend.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-byt-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-cht-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-glk-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-hda-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 2 +-
- sound/soc/intel/common/soc-acpi-intel-icl-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-kbl-match.c     | 2 +-
- sound/soc/intel/common/soc-acpi-intel-skl-match.c     | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index 229e39586868..4a5adae1d785 100644
---- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
-+ * soc-acpi-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-index b94b482ac34f..1cc801ba92eb 100644
---- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * soc-apci-intel-byt-match.c - tables and support for BYT ACPI enumeration.
-+ * soc-acpi-intel-byt-match.c - tables and support for BYT ACPI enumeration.
-  *
-  * Copyright (c) 2017, Intel Corporation.
-  */
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index b7f11f6be1cf..d0fb43c2b9f6 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * soc-apci-intel-cht-match.c - tables and support for CHT ACPI enumeration.
-+ * soc-acpi-intel-cht-match.c - tables and support for CHT ACPI enumeration.
-  *
-  * Copyright (c) 2017, Intel Corporation.
-  */
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index c36c0aa4f683..771b0ef21051 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
-+ * soc-acpi-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index 616eb09e78a0..60dea358fa04 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-glk-match.c - tables and support for GLK ACPI enumeration.
-+ * soc-acpi-intel-glk-match.c - tables and support for GLK ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-index 68ae43f7b4b2..cc972d2ac691 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-@@ -2,7 +2,7 @@
- // Copyright (c) 2018, Intel Corporation.
- 
- /*
-- * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
-+ * soc-acpi-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
-  *
-  */
- 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-index d27853e7a369..34eb0baaa951 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * soc-apci-intel-hsw-bdw-match.c - tables and support for ACPI enumeration.
-+ * soc-acpi-intel-hsw-bdw-match.c - tables and support for ACPI enumeration.
-  *
-  * Copyright (c) 2017, Intel Corporation.
-  */
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-index 0b430b9b3673..38977669b576 100644
---- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-icl-match.c - tables and support for ICL ACPI enumeration.
-+ * soc-acpi-intel-icl-match.c - tables and support for ICL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-index 4b331058e807..e200baa11011 100644
---- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
-+ * soc-acpi-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
-diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-index 0c9c0edd35b3..42fa40a8d932 100644
---- a/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * soc-apci-intel-skl-match.c - tables and support for SKL ACPI enumeration.
-+ * soc-acpi-intel-skl-match.c - tables and support for SKL ACPI enumeration.
-  *
-  * Copyright (c) 2018, Intel Corporation.
-  *
--- 
-2.20.1
+Yes 1/10 and 2/10 were already applied. Will drop them from next version.
