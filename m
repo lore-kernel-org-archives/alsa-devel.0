@@ -1,26 +1,76 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH 3/6] ASoC: codec2codec: deal with params when necessary
-Date: Thu, 25 Jul 2019 15:25:10 +0200
-Message-ID: <1jimrqxn49.fsf@starbuckisacylon.baylibre.com>
-References: <20190724162405.6574-1-jbrunet@baylibre.com> <20190724162405.6574-4-jbrunet@baylibre.com> <20190725125534.GB4213@sirena.org.uk>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [PATCH 4/5] ASoC: atmel_ssc_dai: split TX/RX FS constants
+Date: Thu, 25 Jul 2019 13:28:38 +0000
+Message-ID: <57d6fb37-7472-e6fc-8cb7-9832ab78a171@microchip.com>
+References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
+ <718983d82091da8cf619010c026dca541af3f4d1.1563819483.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725125534.GB4213@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <718983d82091da8cf619010c026dca541af3f4d1.1563819483.git.mirq-linux@rere.qmqm.pl>
+Content-Language: en-US
+Content-ID: <91900320333BAF4A9358F26125287B60@namprd11.prod.outlook.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: mirq-linux@rere.qmqm.pl, alsa-devel@alsa-project.org
+Cc: alexandre.belloni@bootlin.com, lgirdwood@gmail.com, tiwai@suse.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu 25 Jul 2019 at 13:55, Mark Brown <broonie@kernel.org> wrote:
-
-> On Wed, Jul 24, 2019 at 06:24:02PM +0200, Jerome Brunet wrote:
->
->> Also, params does not need to be dynamically allocated as it does not
->> need to survive the event.
->
-> It's dynamically allocated because it's a pretty large structure and so
-> the limited stack sizes the kernel has make it a bit uncomfortable to
-> put it on the stack.
-
-Ok, I'll revert this in v2
+T24gMjIuMDcuMjAxOSAyMToyNywgTWljaGHFgiBNaXJvc8WCYXcgd3JvdGU6DQo+IEV4dGVybmFs
+IEUtTWFpbA0KPiANCj4gDQo+IFRoZSBjb25zdGFudHMgYXJlIHRoZSBzYW1lLCBidXQgdGhlIG5h
+bWVzIGFyZSBtaXNsZWFkaW5nIHdoZW4gdXNlZCBmb3INCj4gVENNUiBjb25maWd1cmF0aW9uLiBV
+c2UgbmFtZXMgZnJvbSBTQU1BNUQyIGRhdGFzaGVldC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1p
+Y2hhxYIgTWlyb3PFgmF3IDxtaXJxLWxpbnV4QHJlcmUucW1xbS5wbD4NCj4gLS0tDQo+ICAgc291
+bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyB8IDYgKysrLS0tDQo+ICAgc291bmQvc29jL2F0
+bWVsL2F0bWVsX3NzY19kYWkuaCB8IDkgKysrKysrKystDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAx
+MSBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3NvdW5k
+L3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMgYi9zb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2Rh
+aS5jDQo+IGluZGV4IDA0NTQxZDdjMzNmZS4uY2YyY2ZjMzQ1Njc2IDEwMDY0NA0KPiAtLS0gYS9z
+b3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jDQo+ICsrKyBiL3NvdW5kL3NvYy9hdG1lbC9h
+dG1lbF9zc2NfZGFpLmMNCj4gQEAgLTU3Miw3ICs1NzIsNyBAQCBzdGF0aWMgaW50IGF0bWVsX3Nz
+Y19od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQo+ICAgCQkJ
+fCBTU0NfQkYoUkNNUl9TVEFSVCwgU1NDX1NUQVJUX1JJU0lOR19SRik7DQo+ICAgDQo+ICAgCQl0
+Y21yID0JICBTU0NfQkYoVENNUl9TVFRETFksIDApDQo+IC0JCQl8IFNTQ19CRihUQ01SX1NUQVJU
+LCBTU0NfU1RBUlRfUklTSU5HX1JGKTsNCj4gKwkJCXwgU1NDX0JGKFRDTVJfU1RBUlQsIFNTQ19T
+VEFSVF9SSVNJTkdfVEYpOw0KPiAgIA0KPiAgIAkJYnJlYWs7DQo+ICAgDQo+IEBAIC01ODQsNyAr
+NTg0LDcgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1
+YnN0cmVhbSAqc3Vic3RyZWFtLA0KPiAgIAkJCXwgU1NDX0JGKFJDTVJfU1RBUlQsIFNTQ19TVEFS
+VF9GQUxMSU5HX1JGKTsNCj4gICANCj4gICAJCXRjbXIgPQkgIFNTQ19CRihUQ01SX1NUVERMWSwg
+MSkNCj4gLQkJCXwgU1NDX0JGKFRDTVJfU1RBUlQsIFNTQ19TVEFSVF9GQUxMSU5HX1JGKTsNCj4g
+KwkJCXwgU1NDX0JGKFRDTVJfU1RBUlQsIFNTQ19TVEFSVF9GQUxMSU5HX1RGKTsNCj4gICANCj4g
+ICAJCWJyZWFrOw0KPiAgIA0KPiBAQCAtNjAzLDcgKzYwMyw3IEBAIHN0YXRpYyBpbnQgYXRtZWxf
+c3NjX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gICAJ
+CQl8IFNTQ19CRihSQ01SX1NUQVJULCBTU0NfU1RBUlRfUklTSU5HX1JGKTsNCj4gICANCj4gICAJ
+CXRjbXIgPQkgIFNTQ19CRihUQ01SX1NUVERMWSwgMSkNCj4gLQkJCXwgU1NDX0JGKFRDTVJfU1RB
+UlQsIFNTQ19TVEFSVF9SSVNJTkdfUkYpOw0KPiArCQkJfCBTU0NfQkYoVENNUl9TVEFSVCwgU1ND
+X1NUQVJUX1JJU0lOR19URik7DQo+ICAgDQo+ICAgCQlicmVhazsNCj4gICANCj4gZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmggYi9zb3VuZC9zb2MvYXRtZWwvYXRt
+ZWxfc3NjX2RhaS5oDQo+IGluZGV4IGFlNzY0Y2I1NDFjNy4uZWZiNDU4YjZkMTg3IDEwMDY0NA0K
+PiAtLS0gYS9zb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5oDQo+ICsrKyBiL3NvdW5kL3Nv
+Yy9hdG1lbC9hdG1lbF9zc2NfZGFpLmgNCj4gQEAgLTQyLDEzICs0MiwyMCBAQA0KPiAgICAqLw0K
+PiAgIC8qIFNUQVJUIGJpdCBmaWVsZCB2YWx1ZXMgKi8NCj4gICAjZGVmaW5lIFNTQ19TVEFSVF9D
+T05USU5VT1VTCTANCj4gLSNkZWZpbmUgU1NDX1NUQVJUX1RYX1JYCQkxDQo+ICsjZGVmaW5lIFNT
+Q19TVEFSVF9UUkFOU01JVAkxDQo+ICsjZGVmaW5lIFNTQ19TVEFSVF9SRUNFSVZFCTENCj4gICAj
+ZGVmaW5lIFNTQ19TVEFSVF9MT1dfUkYJMg0KPiArI2RlZmluZSBTU0NfU1RBUlRfTE9XX1RGCTIN
+Cj4gICAjZGVmaW5lIFNTQ19TVEFSVF9ISUdIX1JGCTMNCj4gKyNkZWZpbmUgU1NDX1NUQVJUX0hJ
+R0hfVEYJMw0KPiAgICNkZWZpbmUgU1NDX1NUQVJUX0ZBTExJTkdfUkYJNA0KPiArI2RlZmluZSBT
+U0NfU1RBUlRfRkFMTElOR19URgk0DQo+ICAgI2RlZmluZSBTU0NfU1RBUlRfUklTSU5HX1JGCTUN
+Cj4gKyNkZWZpbmUgU1NDX1NUQVJUX1JJU0lOR19URgk1DQo+ICAgI2RlZmluZSBTU0NfU1RBUlRf
+TEVWRUxfUkYJNg0KPiArI2RlZmluZSBTU0NfU1RBUlRfTEVWRUxfVEYJNg0KPiAgICNkZWZpbmUg
+U1NDX1NUQVJUX0VER0VfUkYJNw0KPiArI2RlZmluZSBTU0NfU1RBUlRfRURHRV9URgk3DQo+ICAg
+I2RlZmluZSBTU1NfU1RBUlRfQ09NUEFSRV8wCTgNCj4gICANCj4gICAvKiBDS0kgYml0IGZpZWxk
+IHZhbHVlcyAqLw0KPiANCg0KV291bGRuJ3QgaXQgYmUgZWFzaWVyIHRvIGp1c3QgdXNlIFNTQ19T
+VEFSVCwgU1NDX1NUQVJUX0xPVywgDQpTU0NfU1RBUlRfSElHSCwgZXRjLj8gSWYgbm90Li4uDQoN
+ClJldmlld2VkLWJ5OiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9j
+aGlwLmNvbT4NCg0KVGhhbmtzIGFuZCBiZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFp
+bGluZyBsaXN0CmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
