@@ -1,43 +1,84 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 31/40] soundwire: intel: move shutdown()
- callback and don't export symbol
-Date: Fri, 26 Jul 2019 09:46:34 -0500
-Message-ID: <ee87d4bb-3f35-eb27-0112-e6e64a09a279@linux.intel.com>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 23/40] soundwire: stream: fix disable
+ sequence
+Date: Fri, 26 Jul 2019 16:51:29 +0200
+Message-ID: <20190726145129.GI16003@ubuntu>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-32-pierre-louis.bossart@linux.intel.com>
- <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
+ <20190725234032.21152-24-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190725234032.21152-24-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Unrelated to this specific patch, but I looked at _sdw_disable_stream()
+and I see this there (again, maybe my version is outdated already):
 
+	struct sdw_master_runtime *m_rt = NULL;
+	struct sdw_bus *bus = NULL;
 
-On 7/26/19 5:38 AM, Cezary Rojewski wrote:
-> On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
->> +void intel_shutdown(struct snd_pcm_substream *substream,
->> +            struct snd_soc_dai *dai)
->> +{
->> +    struct sdw_cdns_dma_data *dma;
->> +
->> +    dma = snd_soc_dai_get_dma_data(dai, substream);
->> +    if (!dma)
->> +        return;
->> +
->> +    snd_soc_dai_set_dma_data(dai, substream, NULL);
->> +    kfree(dma);
->> +}
+where both those initialisations are redundant. Moreover:
+
+On Thu, Jul 25, 2019 at 06:40:15PM -0500, Pierre-Louis Bossart wrote:
+> When we disable the stream and then call hw_free, two bank switches
+> will be handled and as a result we re-enable the stream on hw_free.
 > 
-> Correct me if I'm wrong, but do we really need to _get_dma_ here?
-> _set_dma_ seems bulletproof, same for kfree.
+> Make sure the stream is disabled on both banks.
+> 
+> TODO: we need to completely revisit all this and make sure we have a
+> mirroring mechanism between current and alternate banks.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/stream.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index 53f5e790fcd7..75b9ad1fb1a6 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -1637,7 +1637,24 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
+>  		}
+>  	}
+>  
+> -	return do_bank_switch(stream);
+> +	ret = do_bank_switch(stream);
+> +	if (ret < 0) {
+> +		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* make sure alternate bank (previous current) is also disabled */
+> +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> +		bus = m_rt->bus;
 
-I must admit I have no idea why we have a reference to DMAs here, this 
-looks like an abuse to store a dai-specific context, and the initial 
-test looks like copy-paste to detect invalid configs, as done in other 
-callbacks. Vinod and Sanyog might have more history than me here.
+"bus" is only used below, so at least take that line under "if (ret < 0)"
+or even just do "dev_err(m_rt->bus->dev,...)" everywhere in this function
+and remove the variable altogether...
+
+Thanks
+Guennadi
+
+> +		/* Disable port(s) */
+> +		ret = sdw_enable_disable_ports(m_rt, false);
+> +		if (ret < 0) {
+> +			dev_err(bus->dev, "Disable port(s) failed: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  /**
+> -- 
+> 2.20.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
