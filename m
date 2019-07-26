@@ -1,44 +1,53 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 17/40] soundwire: bus: use
- runtime_pm_get_sync/pm when enabled
-Date: Fri, 26 Jul 2019 22:11:08 +0300
-Message-ID: <20190726191108.GE9224@smile.fi.intel.com>
-References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
- <45a912c5-134b-8642-70ef-8c1060389300@linux.intel.com>
- <20190726182534.GO16003@ubuntu>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [PATCHv2] hda: Fix 1-minute detection delay when i915 module is not
+ available
+Date: Fri, 26 Jul 2019 23:47:02 +0200
+Message-ID: <20190726214702.kxi2gavlieiwyf7q@function>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190726182534.GO16003@ubuntu>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de, gregkh@linuxfoundation.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 931507@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 26, 2019 at 08:25:35PM +0200, Guennadi Liakhovetski wrote:
-> On Fri, Jul 26, 2019 at 01:08:57PM -0500, Pierre-Louis Bossart wrote:
-> > On 7/25/19 6:40 PM, Pierre-Louis Bossart wrote:
-> > > Not all platforms support runtime_pm for now, let's use runtime_pm
-> > > only when enabled.
+Distribution installation images such as Debian include different sets
+of modules which can be downloaded dynamically.  Such images may notably
+include the hda sound modules but not the i915 DRM module, even if the
+latter was enabled at build time, as reported on
+https://bugs.debian.org/931507
 
-> > option2 (suggested by Jan Kotas): catch the -EACCESS error code
-> > 
-> >  	ret = pm_runtime_get_sync(slave->bus->dev);
-> > -	if (ret < 0)
-> > +	if (ret < 0 && ret != -EACCES)
-> >  		return ret;
+In such a case hdac_i915 would be linked in and try to load the i915
+module, fail since it is not there, but still wait for a whole minute
+before giving up binding with it.
 
-> Otherwise I'd go with (2), I think, since
-> that's also the official purpose of the -EACCESS return code:
-> 
-> https://lists.linuxfoundation.org/pipermail/linux-pm/2011-June/031930.html
+This fixes such as case by only waiting for the binding if the module
+was properly loaded (or module support is disabled, in which case i915
+is already compiled-in anyway).
 
-And at least we have examples in the kernel
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ sound/hda/hdac_i915.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-drivers/gpu/drm/radeon/radeon_fb.c:57:  if (ret < 0 && ret != -EACCES) {
-
--- 
-With Best Regards,
-Andy Shevchenko
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -136,10 +136,13 @@ int snd_hdac_i915_init(struct hdac_bus *
+ 	if (!acomp)
+ 		return -ENODEV;
+ 	if (!acomp->ops) {
+-		request_module("i915");
+-		/* 60s timeout */
+-		wait_for_completion_timeout(&bind_complete,
+-					    msecs_to_jiffies(60 * 1000));
++		if (!IS_ENABLED(CONFIG_MODULES) ||
++		    !request_module("i915"))
++		{
++			/* 60s timeout */
++			wait_for_completion_timeout(&bind_complete,
++						   msecs_to_jiffies(60 * 1000));
++		}
+ 	}
+ 	if (!acomp->ops) {
+ 		dev_info(bus->dev, "couldn't bind with audio component\n");
