@@ -1,138 +1,147 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 01/40] soundwire: add debugfs support
-Date: Fri, 26 Jul 2019 08:43:26 -0500
-Message-ID: <3a45625f-72a8-cb0c-1467-460000d1d8f7@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 01/40] soundwire: add debugfs support
+Date: Fri, 26 Jul 2019 08:57:29 -0500
+Message-ID: <1e0c8b9c-8e02-2735-df2d-7f82bdbb74a8@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
  <20190725234032.21152-2-pierre-louis.bossart@linux.intel.com>
- <20190725221554.GA16003@ubuntu>
+ <35a3936d-12d5-d301-2c8e-9e90163dd86e@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FF6FF801A4
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2019 15:43:29 +0200 (CEST)
-In-Reply-To: <20190725221554.GA16003@ubuntu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <35a3936d-12d5-d301-2c8e-9e90163dd86e@intel.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for the feedback Cezary.
 
+>> +static ssize_t sdw_slave_reg_read(struct file *file, char __user 
+>> *user_buf,
+>> +                  size_t count, loff_t *ppos)
+>> +{
+>> +    struct sdw_slave *slave = file->private_data;
+>> +    unsigned int reg;
+>> +    char *buf;
+>> +    ssize_t ret;
+>> +    int i, j;
+>> +
+>> +    buf = kzalloc(RD_BUF, GFP_KERNEL);
+>> +    if (!buf)
+>> +        return -ENOMEM;
+>> +
+>> +    ret = scnprintf(buf, RD_BUF, "Register  Value\n");
+>> +    ret += scnprintf(buf + ret, RD_BUF - ret, "\nDP0\n");
+>> +
+>> +    for (i = 0; i < 6; i++)
+>> +        ret += sdw_sprintf(slave, buf, ret, i);
+> 
+> In most cases explicit reg macro is used, here it's implicit. Align with 
+> the rest?
 
-On 7/25/19 5:15 PM, Guennadi Liakhovetski wrote:
-> Hi Pierre,
-> 
-> A couple of nitpicks:
+I don't see what you are referring to, or I need more coffee.
+we use this function sdw_printf in a number of places. Or are you 
+referring to the magic value 6? That should indeed be a macro.
 
-Thanks for the feedback!
+>> +
+>> +    ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
+>> +    ret += sdw_sprintf(slave, buf, ret, SDW_DP0_CHANNELEN);
+>> +    for (i = SDW_DP0_SAMPLECTRL1; i <= SDW_DP0_LANECTRL; i++)
+>> +        ret += sdw_sprintf(slave, buf, ret, i);
+>> +
+>> +    ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
+>> +    ret += sdw_sprintf(slave, buf, ret,
+>> +            SDW_DP0_CHANNELEN + SDW_BANK1_OFFSET);
+>> +    for (i = SDW_DP0_SAMPLECTRL1 + SDW_BANK1_OFFSET;
+>> +            i <= SDW_DP0_LANECTRL + SDW_BANK1_OFFSET; i++)
+>> +        ret += sdw_sprintf(slave, buf, ret, i);
+> 
+> I'd advice to revisit macros declarations first.
+> There should be SDW_DP0_SAMPLECTRL1_B(bank) declared. In general all 
+> macros for SDW should be "bank-less" (name wise). Additionally, 
+> SDW_BANK_OFFSET(bank) could be provided for convenience i.e.: return 0 
+> for bank0.
+> Yeah, there might be some speed loss in terms of operation count but in 
+> most cases it is negligible.
+> 
+> Would simplify this entire reg dump greatly.
+> const array on top with {0, 1} elements and replacing explicit "bank0/1" 
+> strings with "bank%d" gets code size reduced while not losing on 
+> readability.
 
->>   create mode 100644 drivers/soundwire/debugfs.c
-> 
-> [snip]
-> 
->> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
->> index 3048ca153f22..06ac4adb0074 100644
->> --- a/drivers/soundwire/bus.h
->> +++ b/drivers/soundwire/bus.h
->> @@ -18,6 +18,30 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
->>   void sdw_extract_slave_id(struct sdw_bus *bus,
->>   			  u64 addr, struct sdw_slave_id *id);
->>   
->> +#ifdef CONFIG_DEBUG_FS
->> +struct dentry *sdw_bus_debugfs_init(struct sdw_bus *bus);
->> +void sdw_bus_debugfs_exit(struct dentry *d);
->> +struct dentry *sdw_slave_debugfs_init(struct sdw_slave *slave);
->> +void sdw_slave_debugfs_exit(struct dentry *d);
->> +void sdw_debugfs_init(void);
->> +void sdw_debugfs_exit(void);
->> +#else
->> +struct dentry *sdw_bus_debugfs_init(struct sdw_bus *bus)
->> +{ return NULL; }
-> 
-> static?
+This could require a lot of changes in other parts of the code, and I 
+don't want to do this just for debugfs. It's valid point that maybe the 
+code can be simplified, but the changes are an across-the-board change 
+to be done when we don't add new functionality. I'll keep this on the 
+todo list.
+
 > 
 >> +
->> +void sdw_bus_debugfs_exit(struct dentry *d) {}
+>> +    ret += scnprintf(buf + ret, RD_BUF - ret, "\nSCP\n");
+>> +    for (i = SDW_SCP_INT1; i <= SDW_SCP_BANKDELAY; i++)
+>> +        ret += sdw_sprintf(slave, buf, ret, i);
+>> +    for (i = SDW_SCP_DEVID_0; i <= SDW_SCP_DEVID_5; i++)
+>> +        ret += sdw_sprintf(slave, buf, ret, i);
 >> +
+>> +    ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
+>> +    ret += sdw_sprintf(slave, buf, ret, SDW_SCP_FRAMECTRL_B0);
+>> +    ret += sdw_sprintf(slave, buf, ret, SDW_SCP_NEXTFRAME_B0);
+>> +
+>> +    ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
+>> +    ret += sdw_sprintf(slave, buf, ret, SDW_SCP_FRAMECTRL_B1);
+>> +    ret += sdw_sprintf(slave, buf, ret, SDW_SCP_NEXTFRAME_B1);
+>> +
+>> +    for (i = 1; i < 14; i++) {
+> 
+> Explicit valid slave addresses would be preferred.
+
+no, these are ports. we should use a macro instead of the magic 14 but 
+it's fine to try and read all ports. As I explained it's a good way to 
+figure out how many ports the Slave device supports even in the absence 
+of documentation. This also helps figure out if the DisCo properties 
+make sense.
+
+> 
+>> +        ret += scnprintf(buf + ret, RD_BUF - ret, "\nDP%d\n", i);
+>> +        reg = SDW_DPN_INT(i);
+>> +        for (j = 0; j < 6; j++)
+>> +            ret += sdw_sprintf(slave, buf, ret, reg + j);
+>> +
+>> +        ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
+>> +        reg = SDW_DPN_CHANNELEN_B0(i);
+>> +        for (j = 0; j < 9; j++)
+>> +            ret += sdw_sprintf(slave, buf, ret, reg + j);
+>> +
+>> +        ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
+>> +        reg = SDW_DPN_CHANNELEN_B1(i);
+>> +        for (j = 0; j < 9; j++)
+>> +            ret += sdw_sprintf(slave, buf, ret, reg + j);
+> 
+> Some sort of MAX_CHANNELS would be nice here too.
+
+Yes, need to use macros indeed.
+
 >> +struct dentry *sdw_slave_debugfs_init(struct sdw_slave *slave)
->> +{ return NULL; }
->> +
->> +void sdw_slave_debugfs_exit(struct dentry *d) {}
->> +
->> +void sdw_debugfs_init(void) {}
->> +
->> +void sdw_debugfs_exit(void) {}
-> 
-> Same for all the above. You could also declare them inline, but I really hope
-> the compiler will be smart enough to do that itself.
-
-yes, I'll add static inline for all this.
-
->> +struct dentry *sdw_bus_debugfs_init(struct sdw_bus *bus)
 >> +{
->> +	struct dentry *d;
-> 
-> I would remove the above
-> 
->> +	char name[16];
+>> +    struct dentry *master;
+>> +    struct dentry *d;
+>> +    char name[32];
 >> +
->> +	if (!sdw_debugfs_root)
->> +		return NULL;
+>> +    master = slave->bus->debugfs;
 >> +
->> +	/* create the debugfs master-N */
->> +	snprintf(name, sizeof(name), "master-%d", bus->link_id);
->> +	d = debugfs_create_dir(name, sdw_debugfs_root);
+>> +    /* create the debugfs slave-name */
+>> +    snprintf(name, sizeof(name), "%s", dev_name(&slave->dev));
+>> +    d = debugfs_create_dir(name, master);
 >> +
->> +	return d;
+>> +    debugfs_create_file("registers", 0400, d, slave, 
+>> &sdw_slave_reg_fops);
 > 
-> And just do
+> Pointer returned by _create_file gets completely ignored here. At least 
+> dbg msg would be nice if it fails.
 > 
-> +	return debugfs_create_dir(name, sdw_debugfs_root);
+>> +    return d;
 
-yep, will do.
-
->> +static ssize_t sdw_sprintf(struct sdw_slave *slave,
->> +			   char *buf, size_t pos, unsigned int reg)
->> +{
->> +	int value;
->> +
->> +	value = sdw_read(slave, reg);
-> 
-> I personally would join the two lines above, but that's just a personal
-> preference.
-
-I prefer splitting variables and code, I just can't mentally split the two.
-
-> 
->> +
->> +	if (value < 0)
->> +		return scnprintf(buf + pos, RD_BUF - pos, "%3x\tXX\n", reg);
->> +	else
-> 
-> I think it's advised to not use an else in such cases.
-> 
-> Thanks
-> Guennadi
-> 
->> +		return scnprintf(buf + pos, RD_BUF - pos,
->> +				"%3x\t%2x\n", reg, value);
->> +}
-
-The intent was to provide a visual cue that the register is not 
-implemented, which is quite useful. Not all registers are mandatory and 
-not all vendors document the entire set of registers, so it's a good way 
-to figure things out. The value is not used for any functional purpose, 
-it's just a register dump for the integrator to look at. I'll add a note 
-to explain the idea.
+I understood that Greg KH doesn't want us to depend on the result of 
+debugfs calls, but a dev_dbg is likely ok.
