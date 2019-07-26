@@ -1,82 +1,106 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 27/40] soundwire: Add Intel resource
- management algorithm
-Date: Fri, 26 Jul 2019 09:41:02 -0500
-Message-ID: <a1da9937-0e20-d83d-ec90-c3fd9f3fbeca@linux.intel.com>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 21/40] soundwire: export helpers to find
+ row and column values
+Date: Fri, 26 Jul 2019 16:43:25 +0200
+Message-ID: <20190726144325.GH16003@ubuntu>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-28-pierre-louis.bossart@linux.intel.com>
- <869edbf2-1fdd-6b21-818f-20c39c013c11@intel.com>
+ <20190725234032.21152-22-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <869edbf2-1fdd-6b21-818f-20c39c013c11@intel.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190725234032.21152-22-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 7/26/19 6:07 AM, Cezary Rojewski wrote:
-> On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
->> This algorithm computes bus parameters like clock frequency, frame
->> shape and port transport parameters based on active stream(s) running
->> on the bus.
->>
->> This implementation is optimal for Intel platforms. Developers can
->> also implement their own .compute_params() callback for specific
->> resource management algorithm.
->>
->> Credits: this patch is based on an earlier internal contribution by
->> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
->> values were removed from the initial contribution to use BIOS
->> information instead.
->>
->> FIXME: remove checkpatch report
->> WARNING: Reusing the krealloc arg is almost always a bug
->> +            group->rates = krealloc(group->rates,
->>
->> Signed-off-by: Pierre-Louis Bossart 
->> <pierre-louis.bossart@linux.intel.com>
+On Thu, Jul 25, 2019 at 06:40:13PM -0500, Pierre-Louis Bossart wrote:
+> Add a prefix for common tables and export 2 helpers to set the frame
+> shapes based on row/col values.
 > 
-> Could you specify the requirements and limitations for this algorithm? 
-> Last year I written calc for Linux based on Windows (please don't burn 
-> me here) equivalent though said requirements/ limitiations might have 
-> changed and nothing is valid any longer.
-
-The frame shape typically only changes by doubling the number of 
-columns, and the priority is given to PDM streams which use columns. 
-It's hard to document this on a public mailing list, it'd require making 
-references to a spec that's only available to MIPI members.
-
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/bus.h    |  7 +++++--
+>  drivers/soundwire/stream.c | 14 ++++++++------
+>  2 files changed, 13 insertions(+), 8 deletions(-)
 > 
-> I remember that some parts of specification overcomplicated the 
-> calculator and due to actual, realtime usecases it could be greatly 
-> simplified (that's why I mention that my work is probably no longer 
-> valid). However, these details would help me in reviewing your 
-> implementation and providing suggestions.
+> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> index 06ac4adb0074..c57c9c23f6ca 100644
+> --- a/drivers/soundwire/bus.h
+> +++ b/drivers/soundwire/bus.h
+> @@ -73,8 +73,11 @@ struct sdw_msg {
+>  
+>  #define SDW_DOUBLE_RATE_FACTOR		2
+>  
+> -extern int rows[SDW_FRAME_ROWS];
+> -extern int cols[SDW_FRAME_COLS];
+> +extern int sdw_rows[SDW_FRAME_ROWS];
+> +extern int sdw_cols[SDW_FRAME_COLS];
 
-To the best of my knowledge, the algorithm follows a script that is used 
-for both Windows and Linux. The code was initially written by Vinod and 
-team, and I am not aware of simplifications.
-There a simplifications that are possible, e.g. we don't support PDM for 
-now and the notion of grouping is not needed, but we have to carefully 
-balance 'optimization' with 'introducing bugs'. if this algorithm craps 
-out then the entire bus operation is in the weeds.
+So these arrays actually have to be exported? In the current (5.2) sources they
+seem to only be used in stream.c, maybe make them static there?
 
-If we really want people to experiment and get a feel for the 
-performance of the algorithm, we should really provide a UI where the 
-stream parameters can be entered and visually check what the algorithm 
-is doing. I have a solution that shows the bits based on the stream 
-parameters (need to make it available e.g. in Python), if we connected 
-it with the automatic bit allocation it'd be very useful.
-
-> And yes, "Frame shape calculator" probably suits this better.
-> Though this might be just a preference thingy : )
-
-Resource management is indeed a bit vague. But frame shape calculator is 
-not quite right. The algorithm will find the frame shape that is 
-required for the current bandwidth, but will also allocate the bitSlots 
-in that frame. In MIPI circles we talk about bitSlot allocation.
+> +
+> +int sdw_find_row_index(int row);
+> +int sdw_find_col_index(int col);
+>  
+>  /**
+>   * sdw_port_runtime: Runtime port parameters for Master or Slave
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index a0476755a459..53f5e790fcd7 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -21,37 +21,39 @@
+>   * The rows are arranged as per the array index value programmed
+>   * in register. The index 15 has dummy value 0 in order to fill hole.
+>   */
+> -int rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
+> +int sdw_rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
+>  			96, 100, 120, 128, 150, 160, 250, 0,
+>  			192, 200, 240, 256, 72, 144, 90, 180};
+>  
+> -int cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
+> +int sdw_cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
+>  
+> -static int sdw_find_col_index(int col)
+> +int sdw_find_col_index(int col)
+>  {
+>  	int i;
+>  
+>  	for (i = 0; i < SDW_FRAME_COLS; i++) {
+> -		if (cols[i] == col)
+> +		if (sdw_cols[i] == col)
+>  			return i;
+>  	}
+>  
+>  	pr_warn("Requested column not found, selecting lowest column no: 2\n");
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(sdw_find_col_index);
+>  
+> -static int sdw_find_row_index(int row)
+> +int sdw_find_row_index(int row)
+>  {
+>  	int i;
+>  
+>  	for (i = 0; i < SDW_FRAME_ROWS; i++) {
+> -		if (rows[i] == row)
+> +		if (sdw_rows[i] == row)
+>  			return i;
+>  	}
+>  
+>  	pr_warn("Requested row not found, selecting lowest row no: 48\n");
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(sdw_find_row_index);
+>  
+>  static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+>  					  struct sdw_slave *slave,
+> -- 
+> 2.20.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
