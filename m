@@ -1,46 +1,63 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 7/7] docs: dt: fix a sound binding broken reference
-Date: Fri, 26 Jul 2019 08:47:27 -0300
-Message-ID: <9932608f32030c886d906ea656eda8408c544776.1564140865.git.mchehab+samsung@kernel.org>
-References: <cover.1564140865.git.mchehab+samsung@kernel.org>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v2] ASoC: rockchip: i2s: Revert "ASoC: rockchip: i2s: Support mono capture"
+Date: Fri, 26 Jul 2019 20:08:33 +0800
+Message-ID: <20190726120833.186833-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <cover.1564140865.git.mchehab+samsung@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Heiko Stuebner <heiko@sntech.de>, dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, mka@chromium.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Address this rename:
-	Documentation/devicetree/bindings/sound/{sun4i-i2s.txt -> allwinner,sun4i-a10-i2s.yaml}
+This reverts commit db51707b9c9aeedd310ebce60f15d5bb006567e0.
 
-Fixes: 0a0ca8e94ca3 ("dt-bindings: sound: Convert Allwinner I2S binding to YAML")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Commit db51707b9c9a ("ASoC: rockchip: i2s: Support mono capture")
+adds support of mono capture to rockchip_i2s_dai.
+
+However, I2S controller is still generating a 2-channel stream
+because it only supports even number of channels.
+When user space reads the data and assumes it is a mono stream,
+the rate will be slowed down.
+
+Revert the change so the DAI no longer claims that mono capture
+is supported.
+
+Fixes: db51707b9c9a ("ASoC: rockchip: i2s: Support mono capture")
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 ---
- Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_i2s.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-index 2ca3d138528e..7ecf6bd60d27 100644
---- a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-@@ -4,7 +4,7 @@ Allwinner SUN8I audio codec
- On Sun8i-A33 SoCs, the audio is separated in different parts:
- 	  - A DAI driver. It uses the "sun4i-i2s" driver which is
- 	  documented here:
--	  Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+	  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
- 	  - An analog part of the codec which is handled as PRCM registers.
- 	  See Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
- 	  - An digital part of the codec which is documented in this current
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 0a34d0eb8dba..88ebaf6e1880 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -326,7 +326,6 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		val |= I2S_CHN_4;
+ 		break;
+ 	case 2:
+-	case 1:
+ 		val |= I2S_CHN_2;
+ 		break;
+ 	default:
+@@ -459,7 +458,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+-		.channels_min = 1,
++		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = (SNDRV_PCM_FMTBIT_S8 |
+@@ -659,7 +658,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (!of_property_read_u32(node, "rockchip,capture-channels", &val)) {
+-		if (val >= 1 && val <= 8)
++		if (val >= 2 && val <= 8)
+ 			soc_dai->capture.channels_max = val;
+ 	}
+ 
 -- 
-2.21.0
+2.22.0.709.g102302147b-goog
