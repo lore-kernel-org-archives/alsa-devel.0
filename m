@@ -1,49 +1,53 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 16/40] soundwire: cadence_master: improve
- startup sequence with link hw_reset
-Date: Fri, 26 Jul 2019 09:11:03 -0500
-Message-ID: <c91d6e9d-7ad9-64e2-6ed1-3c0be0b6833d@linux.intel.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [alsa-devel] [RFC PATCH 04/40] soundwire: intel: add debugfs
+ register dump
+Date: Fri, 26 Jul 2019 16:11:24 +0200
+Message-ID: <20190726141124.GA4253@kroah.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-17-pierre-louis.bossart@linux.intel.com>
- <20190726072234.GD16003@ubuntu>
+ <20190725234032.21152-5-pierre-louis.bossart@linux.intel.com>
+ <9d5bc940-eadd-4f82-0bac-6a731369436d@intel.com>
+ <d231f6b0-555a-8c45-1a9a-215c73171923@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190726072234.GD16003@ubuntu>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <d231f6b0-555a-8c45-1a9a-215c73171923@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
->> +static int do_reset(struct sdw_cdns *cdns)
->> +{
->> +	int ret;
->> +
->> +	/* program maximum length reset to be safe */
->> +	cdns_updatel(cdns, CDNS_MCP_CONTROL,
->> +		     CDNS_MCP_CONTROL_RST_DELAY,
->> +		     CDNS_MCP_CONTROL_RST_DELAY);
->> +
->> +	/* use hardware generated reset */
->> +	cdns_updatel(cdns, CDNS_MCP_CONTROL,
->> +		     CDNS_MCP_CONTROL_HW_RST,
->> +		     CDNS_MCP_CONTROL_HW_RST);
->> +
->> +	/* enable bus operations with clock and data */
->> +	cdns_updatel(cdns, CDNS_MCP_CONFIG,
->> +		     CDNS_MCP_CONFIG_OP,
->> +		     CDNS_MCP_CONFIG_OP_NORMAL);
->> +
->> +	/* commit changes */
->> +	ret = cdns_update_config(cdns);
->> +
->> +	return ret;
+On Fri, Jul 26, 2019 at 09:00:28AM -0500, Pierre-Louis Bossart wrote:
 > 
-> +	return cdns_update_config(cdns);
 > 
-> and remove the "ret" variable.
+> On 7/26/19 4:35 AM, Cezary Rojewski wrote:
+> > On 2019-07-26 01:39, Pierre-Louis Bossart wrote:
+> > > +static void intel_debugfs_init(struct sdw_intel *sdw)
+> > > +{
+> > > +    struct dentry *root = sdw->cdns.bus.debugfs;
+> > > +
+> > > +    if (!root)
+> > > +        return;
+> > > +
+> > > +    sdw->fs = debugfs_create_dir("intel-sdw", root);
+> > > +    if (IS_ERR_OR_NULL(sdw->fs)) {
+> > > +        dev_err(sdw->cdns.dev, "debugfs root creation failed\n");
+> > > +        sdw->fs = NULL;
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    debugfs_create_file("intel-registers", 0400, sdw->fs, sdw,
+> > > +                &intel_reg_fops);
+> > > +
+> > > +    sdw_cdns_debugfs_init(&sdw->cdns, sdw->fs);
+> > > +}
+> > 
+> > I believe there should be dummy equivalent of _init and _exit if debugfs
+> > is not enabled (if these are defined already and I've missed it, please
+> > ignore).
+> 
+> I think the direction is just to keep going if there is an error or debufs
+> is not enabled.
 
-Yes, it's the same issue as previously reported. will fix.
+You should not care either way :)
