@@ -1,56 +1,39 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] MAINTAINERS: Update Intel ASoC drivers
-	maintainers
-Date: Fri, 26 Jul 2019 13:29:32 -0500
-Message-ID: <280fee13-d00f-22ee-980c-8b5f5edd886c@linux.intel.com>
-References: <20190726181517.27655-1-cezary.rojewski@intel.com>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH 05/11] video/fbdev: Drop JZ4740 driver
+Date: Fri, 26 Jul 2019 20:45:22 +0200
+Message-ID: <20190726184522.GB14981@ravnborg.org>
+References: <20190725220215.460-1-paul@crapouillou.net>
+ <20190725220215.460-6-paul@crapouillou.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44048F800BE
- for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2019 20:29:34 +0200 (CEST)
-In-Reply-To: <20190726181517.27655-1-cezary.rojewski@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20190725220215.460-6-paul@crapouillou.net>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-fbdev@vger.kernel.org, James Hogan <jhogan@kernel.org>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>, od@zcrc.me, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, Lee Jones <lee.jones@linaro.org>, Artur Rojek <contact@artur-rojek.eu>, Richard Weinberger <richard@nod.at>, linux-pm@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org, linux-mips@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>, dmaengine@vger.ker
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 7/26/19 1:15 PM, Cezary Rojewski wrote:
-> Adding myself to Intel ASoC drivers maintainers list.
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->   MAINTAINERS | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 783569e3c4b4..0db421933d0c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8044,6 +8044,7 @@ S:	Maintained
->   F:	drivers/video/fbdev/i810/
->   
->   INTEL ASoC DRIVERS
-> +M:	Cezary Rojewski <cezary.rojewski@intel.com>
->   M:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->   M:	Liam Girdwood <liam.r.girdwood@linux.intel.com>
->   M:	Jie Yang <yang.jie@linux.intel.com>
-> 
+SGkgUGF1bC4KCk9uIFRodSwgSnVsIDI1LCAyMDE5IGF0IDA2OjAyOjA5UE0gLTA0MDAsIFBhdWwg
+Q2VyY3VlaWwgd3JvdGU6Cj4gVGhlIEpaNDc0MCBmYmRldiBkcml2ZXIgaGFzIGJlZW4gcmVwbGFj
+ZWQgd2l0aCB0aGUgaW5nZW5pYy1kcm0gZHJpdmVyLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFBhdWwg
+Q2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0Pgo+IFRlc3RlZC1ieTogQXJ0dXIgUm9qZWsg
+PGNvbnRhY3RAYXJ0dXItcm9qZWsuZXU+Cj4gLS0tCj4gIGRyaXZlcnMvdmlkZW8vZmJkZXYvS2Nv
+bmZpZyAgICAgfCAgIDkgLQo+ICBkcml2ZXJzL3ZpZGVvL2ZiZGV2L01ha2VmaWxlICAgIHwgICAx
+IC0KPiAgZHJpdmVycy92aWRlby9mYmRldi9qejQ3NDBfZmIuYyB8IDY5MCAtLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAzIGZpbGVzIGNoYW5nZWQsIDcwMCBkZWxldGlvbnMoLSkK
+PiAgZGVsZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvdmlkZW8vZmJkZXYvano0NzQwX2ZiLmMKTmlj
+ZSB3b3JrIG9mIHlvdSBhbmQgb3RoZXJzIGludm9sdmVkLgoKQWNrZWQtYnk6IFNhbSBSYXZuYm9y
+ZyA8c2FtQHJhdm5ib3JnLm9yZz4KCglTYW0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
+dGluZm8vZHJpLWRldmVs
