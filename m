@@ -1,58 +1,53 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 37/40] soundwire: cadence_master: add
- hw_reset capability in debugfs
-Date: Fri, 26 Jul 2019 10:01:54 -0500
-Message-ID: <81637203-4a8d-5d6b-26c8-524b8868b015@linux.intel.com>
-References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-38-pierre-louis.bossart@linux.intel.com>
- <20190726140749.GC8767@kroah.com>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: hda: Fix 1-minute detection delay when i915 module is not available
+Date: Fri, 26 Jul 2019 17:05:30 +0200
+Message-ID: <20190726150530.cibwiaohhexl5jdc@function>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190726140749.GC8767@kroah.com>
-Content-Language: en-US
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 931507@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review Greg.
+Distribution installation images such as Debian include different sets
+of modules which can be downloaded dynamically.  Such images may notably
+include the hda sound modules but not the i915 DRM module, even if the
+latter was enabled at build time, as reported on
+https://bugs.debian.org/931507
 
->> +static int cdns_hw_reset(void *data, u64 value)
->> +{
->> +	struct sdw_cdns *cdns = data;
->> +	int ret;
->> +
->> +	if (value != 1)
->> +		return 0;
->> +
->> +	dev_info(cdns->dev, "starting link hw_reset\n");
->> +
->> +	ret = sdw_cdns_exit_reset(cdns);
->> +
->> +	dev_info(cdns->dev, "link hw_reset done\n");
-> 
-> Do not be noisy for when things always go right.  This looks like
-> debuggging code, please remove.
+In such a case hdac_i915 would be linked in and try to load the i915
+module, fail since it is not there, but still wait for a whole minute
+before giving up binding with it.
 
-yes, missed this in the cleanup, will remove.
+This fixes such as case by only waiting for the binding if the module
+was properly loaded (or module support is disabled, in which case i915
+is already compiled-in anyway).
 
->> +DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
->> +
->>   /**
->>    * sdw_cdns_debugfs_init() - Cadence debugfs init
->>    * @cdns: Cadence instance
->> @@ -339,6 +358,9 @@ static const struct file_operations cdns_reg_fops = {
->>   void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
->>   {
->>   	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
->> +
->> +	debugfs_create_file_unsafe("cdns-hw-reset", 0200, root, cdns,
->> +				   &cdns_hw_reset_fops);
-> 
-> Why unsafe?
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ sound/hda/hdac_i915.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Dunno. I followed the documentation and my take-away, along with a 
-number of examples, was to use _unsafe. I really have no idea if this is 
-correct or not, I can remove this qualifier if that's not needed.
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -143,10 +143,14 @@ int snd_hdac_i915_init(struct hdac_bus *
+ 	if (!acomp)
+ 		return -ENODEV;
+ 	if (!acomp->ops) {
+-		request_module("i915");
+-		/* 60s timeout */
+-		wait_for_completion_timeout(&bind_complete,
+-					    msecs_to_jiffies(60 * 1000));
++#ifdef CONFIG_MODULES
++		if (request_module("i915") == 0)
++#endif
++		{
++			/* 60s timeout */
++			wait_for_completion_timeout(&bind_complete,
++						   msecs_to_jiffies(60 * 1000));
++		}
+ 	}
+ 	if (!acomp->ops) {
+ 		dev_info(bus->dev, "couldn't bind with audio component\n");
