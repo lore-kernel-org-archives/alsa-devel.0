@@ -1,56 +1,58 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 33/40] soundwire: intel: Add basic power
- management support
-Date: Fri, 26 Jul 2019 09:57:06 -0500
-Message-ID: <41f71476-4205-7982-9422-5d00e55c24d3@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 37/40] soundwire: cadence_master: add
+ hw_reset capability in debugfs
+Date: Fri, 26 Jul 2019 10:01:54 -0500
+Message-ID: <81637203-4a8d-5d6b-26c8-524b8868b015@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-34-pierre-louis.bossart@linux.intel.com>
- <0e439b41-503d-7ffb-827f-422d63e439eb@intel.com>
+ <20190725234032.21152-38-pierre-louis.bossart@linux.intel.com>
+ <20190726140749.GC8767@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0e439b41-503d-7ffb-827f-422d63e439eb@intel.com>
+In-Reply-To: <20190726140749.GC8767@kroah.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for the review Greg.
 
-
-On 7/26/19 5:50 AM, Cezary Rojewski wrote:
-> On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
->> +static int intel_resume(struct device *dev)
+>> +static int cdns_hw_reset(void *data, u64 value)
 >> +{
->> +    struct sdw_intel *sdw;
->> +    int ret;
+>> +	struct sdw_cdns *cdns = data;
+>> +	int ret;
 >> +
->> +    sdw = dev_get_drvdata(dev);
+>> +	if (value != 1)
+>> +		return 0;
 >> +
->> +    ret = intel_init(sdw);
->> +    if (ret) {
->> +        dev_err(dev, "%s failed: %d", __func__, ret);
->> +        return ret;
->> +    }
+>> +	dev_info(cdns->dev, "starting link hw_reset\n");
 >> +
->> +    sdw_cdns_enable_interrupt(&sdw->cdns);
+>> +	ret = sdw_cdns_exit_reset(cdns);
 >> +
->> +    return ret;
->> +}
->> +
->> +#endif
+>> +	dev_info(cdns->dev, "link hw_reset done\n");
 > 
-> Suggestion: the local declaration + initialization via dev_get_drvdata() 
-> are usually combined.
+> Do not be noisy for when things always go right.  This looks like
+> debuggging code, please remove.
 
-yes, will do.
+yes, missed this in the cleanup, will remove.
 
+>> +DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
+>> +
+>>   /**
+>>    * sdw_cdns_debugfs_init() - Cadence debugfs init
+>>    * @cdns: Cadence instance
+>> @@ -339,6 +358,9 @@ static const struct file_operations cdns_reg_fops = {
+>>   void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+>>   {
+>>   	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
+>> +
+>> +	debugfs_create_file_unsafe("cdns-hw-reset", 0200, root, cdns,
+>> +				   &cdns_hw_reset_fops);
 > 
-> Given the upstream declaration of _enable_interrupt, it does return 
-> error code/ success. Given current flow, if function gets to 
-> _enable_interrupt call, ret is already set to 0. Returning 
-> sdw_cds_enable_interrupt() directly would both simplify the definition 
-> and prevent status loss.
+> Why unsafe?
 
-sounds good, will do, thanks!
+Dunno. I followed the documentation and my take-away, along with a 
+number of examples, was to use _unsafe. I really have no idea if this is 
+correct or not, I can remove this qualifier if that's not needed.
