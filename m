@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 29/40] soundwire: intel_init: add kernel
- module parameter to filter out links
-Date: Fri, 26 Jul 2019 09:43:33 -0500
-Message-ID: <a8ac6b27-ce30-2a76-aeab-d01acbac4265@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 31/40] soundwire: intel: move shutdown()
+ callback and don't export symbol
+Date: Fri, 26 Jul 2019 09:46:34 -0500
+Message-ID: <ee87d4bb-3f35-eb27-0112-e6e64a09a279@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-30-pierre-louis.bossart@linux.intel.com>
- <c1d859dc-3fd6-0be7-2240-c3b1f3240c0a@intel.com>
+ <20190725234032.21152-32-pierre-louis.bossart@linux.intel.com>
+ <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c1d859dc-3fd6-0be7-2240-c3b1f3240c0a@intel.com>
+In-Reply-To: <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Cezary Rojewski <cezary.rojewski@intel.com>
@@ -19,23 +19,25 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 7/26/19 5:30 AM, Cezary Rojewski wrote:
+On 7/26/19 5:38 AM, Cezary Rojewski wrote:
 > On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
->> @@ -83,6 +87,9 @@ static struct sdw_intel_ctx
->>       caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
->>       caps &= GENMASK(2, 0);
->> +    dev_dbg(&adev->dev, "SoundWire links: BIOS count %d hardware caps 
->> %d\n",
->> +        count, caps);
+>> +void intel_shutdown(struct snd_pcm_substream *substream,
+>> +            struct snd_soc_dai *dai)
+>> +{
+>> +    struct sdw_cdns_dma_data *dma;
 >> +
->>       /* Check HW supported vs property value and use min of two */
->>       count = min_t(u8, caps, count);
+>> +    dma = snd_soc_dai_get_dma_data(dai, substream);
+>> +    if (!dma)
+>> +        return;
+>> +
+>> +    snd_soc_dai_set_dma_data(dai, substream, NULL);
+>> +    kfree(dma);
+>> +}
 > 
-> This message does not look like it belongs to current patch - no 
-> link_mask dependency whatsoever. There have been couple "informative" 
-> patches in your series, maybe schedule it with them instead (as a 
-> separate series)?
+> Correct me if I'm wrong, but do we really need to _get_dma_ here?
+> _set_dma_ seems bulletproof, same for kfree.
 
-You're right, this log should be in a different patch. it was added when 
-I was debugging the DisCo properties a couple of months back and should 
-be moved. thanks for noting this.
+I must admit I have no idea why we have a reference to DMAs here, this 
+looks like an abuse to store a dai-specific context, and the initial 
+test looks like copy-paste to detect invalid configs, as done in other 
+callbacks. Vinod and Sanyog might have more history than me here.
