@@ -1,106 +1,162 @@
-From: Jan Kotas <jank@cadence.com>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Subject: Re: [alsa-devel] [RFC PATCH 17/40] soundwire: bus: use
  runtime_pm_get_sync/pm when enabled
-Date: Fri, 26 Jul 2019 08:33:35 +0000
-Message-ID: <F31F0D1F-63E2-4ABF-9B38-10D55E773F11@global.cadence.com>
+Date: Fri, 26 Jul 2019 10:42:40 +0200
+Message-ID: <20190726084239.GG16003@ubuntu>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
  <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
  <20190726073931.GE16003@ubuntu>
  <716D5D19-D494-4F4E-9180-24CB5A575648@global.cadence.com>
  <20190726082258.GF16003@ubuntu>
+ <F31F0D1F-63E2-4ABF-9B38-10D55E773F11@global.cadence.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190726082258.GF16003@ubuntu>
-Content-Language: en-US
-Content-ID: <AFB5D21A50AE594DA87BDB8AAAF75EA7@namprd07.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <F31F0D1F-63E2-4ABF-9B38-10D55E773F11@global.cadence.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: Jan Kotas <jank@cadence.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "slawomir.blauciak@intel.com" <slawomir.blauciak@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Jan Kotas <jank@cadence.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "slawomir.blauciak@intel.com" <slawomir.blauciak@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCj4gT24gMjYgSnVsIDIwMTksIGF0IDEwOjIyLCBHdWVubmFkaSBMaWFraG92ZXRza2kgPGd1
-ZW5uYWRpLmxpYWtob3ZldHNraUBsaW51eC5pbnRlbC5jb20+IHdyb3RlOg0KPiANCj4gRVhURVJO
-QUwgTUFJTA0KPiANCj4gDQo+IEhpIEphbiwNCj4gDQo+IE9uIEZyaSwgSnVsIDI2LCAyMDE5IGF0
-IDA3OjQ3OjA0QU0gKzAwMDAsIEphbiBLb3RhcyB3cm90ZToNCj4+IEhlbGxvLA0KPj4gDQo+PiBJ
-IHdoaWxlIGJhY2sgSSBwcm9wb3NlZCBhIHBhdGNoIGZvciB0aGlzLCBidXQgaXQgd2VudCBub3do
-ZXJlLg0KPj4gDQo+PiBodHRwczovL3VybGRlZmVuc2UucHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9
-aHR0cHMtM0FfX3BhdGNod29yay5rZXJuZWwub3JnX3BhdGNoXzEwODg3NDA1XyZkPUR3SUJBZyZj
-PWFVcTk4M0wycHVlMkZxS0ZvUDZQR0hNSlF5b0o3a2wzczNHWi1faGFYcVkmcj1nN0dBUUVOVlh4
-X1JRZHlYSEluUE1nJm09aV8wUzM1OWhGSVZxTmd2M2ZSNV9NTnpET0hQOTl0cmRYc3paLUZNaVFF
-RSZzPWRka3RGWllsZVBoLWJDN2tYZW9LV3Q0UW9tdXB6SEFUSzRGTFk0b1NXS0EmZT0gDQo+PiBN
-YXliZSBzb21ldGhpbmcgc2ltaWxhciBjYW4gYmUgaW1wbGVtZW50ZWQ/DQo+IA0KPiBZZXMsIEkg
-d2FzIHRoaW5raW5nIGFib3V0IGNoZWNraW50IC1FQUNDRVNTIHRvbywgYnV0IHRoZW4gSSBub3Rp
-Y2VkIHRoaXMgY29kZQ0KPiBpbiBycG1fcmVzdW1lKCk6DQo+IA0KPiAJZWxzZSBpZiAoZGV2LT5w
-b3dlci5kaXNhYmxlX2RlcHRoID09IDEgJiYgZGV2LT5wb3dlci5pc19zdXNwZW5kZWQNCj4gCSAg
-ICAmJiBkZXYtPnBvd2VyLnJ1bnRpbWVfc3RhdHVzID09IFJQTV9BQ1RJVkUpDQo+IAkJcmV0dmFs
-ID0gMTsNCj4gDQo+IGkuZS4gaWYgUlQtUE0gaXMgZGlzYWJsZWQgb24gdGhlIGRldmljZSAoYnV0
-IG9ubHkgZXhhY3RseSBvbmNlPy4uKSBhbmQgaXQncw0KPiBhY3RpdmUgYW5kIHRoZSBkZXZpY2Ug
-aXMgc3VzcGVuZGVkIGZvciBhIHN5c3RlbSBzdXNwZW5kLCB0aGUgZnVuY3Rpb24gd2lsbA0KPiBy
-ZXR1cm4gMS4gSSBkb24ndCB1bmRlcnN0YW5kIHRoZSBsb2dpYyBvZiB0aGlzIGNvZGUsIGJ1dCBp
-dCBzZWVtcyB0byBtZSBpdA0KPiBjb3VsZCBicmVhayB0aGUgLUVBQ0NFU1MgY2hlY2s/DQo+IA0K
-DQpIaSwNCg0KSW4gc3VjaCBjYXNlIHJldCA8IDAgd2lsbCBub3QgYmUgdHJ1ZSwgd2hpY2ggSSB0
-aGluayBpcyBmaW5lLA0KaWYgSeKAmW0gdW5kZXJzdGFuZGluZyB5b3UgY29ycmVjdGx5Lg0KDQpS
-ZWdhcmRzLA0KSmFuDQoNCg0KPiBUaGFua3MNCj4gR3Vlbm5hZGkNCj4gDQo+PiBKYW4NCj4+IA0K
-Pj4+IE9uIDI2IEp1bCAyMDE5LCBhdCAwOTozOSwgR3Vlbm5hZGkgTGlha2hvdmV0c2tpIDxndWVu
-bmFkaS5saWFraG92ZXRza2lAbGludXguaW50ZWwuY29tPiB3cm90ZToNCj4+PiANCj4+PiBFWFRF
-Uk5BTCBNQUlMDQo+Pj4gDQo+Pj4gDQo+Pj4gSGkgUGllcnJlLA0KPj4+IA0KPj4+IEkgbWlnaHQg
-YmUgd3JvbmcgYnV0IHRoaXMgZG9lc24ndCBzZWVtIHJpZ2h0IHRvIG1lLiAoU3VwcG9zZWRseSkg
-YWxsIFJULVBNDQo+Pj4gZnVuY3Rpb25zIGNoZWNrIGZvciAiZW5hYmxlZCIgaW50ZXJuYWxseS4g
-VGhlIG9ubHkgdGhpbmcgdGhhdCBjYW4gaGFwcGVuIGlzDQo+Pj4gdGhhdCBpZiBSVC1QTSBpc24n
-dCBlbmFibGVkIHNvbWUgb2YgdGhvc2UgZnVuY3Rpb25zIHdpbGwgcmV0dXJuIGFuIGVycm9yLg0K
-Pj4+IFNvLCBpbiB0aG9zZSBjYXNlcyB3aGVyZSB0aGUgcmV0dXJuIHZhbHVlIG9mIFJULVBNIGZ1
-bmN0aW9ucyBpc24ndCBjaGVja2VkLA0KPj4+IEkgZG9uJ3QgdGhpbmsgeW91IG5lZWQgdG8gZG8g
-YW55dGhpbmcuIFdoZXJlIGl0IGlzIGNoZWNrZWQgbWF5YmUgZG8NCj4+PiANCj4+PiArCWlmIChy
-ZXQgPCAwICYmIHBtX3J1bnRpbWVfZW5hYmxlZChzbGF2ZS0+YnVzLT5kZXYpKQ0KPj4+IA0KPj4+
-IFRoYW5rcw0KPj4+IEd1ZW5uYWRpDQo+Pj4gDQo+Pj4gT24gVGh1LCBKdWwgMjUsIDIwMTkgYXQg
-MDY6NDA6MDlQTSAtMDUwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6DQo+Pj4+IE5vdCBh
-bGwgcGxhdGZvcm1zIHN1cHBvcnQgcnVudGltZV9wbSBmb3Igbm93LCBsZXQncyB1c2UgcnVudGlt
-ZV9wbQ0KPj4+PiBvbmx5IHdoZW4gZW5hYmxlZC4NCj4+Pj4gDQo+Pj4+IFN1Z2dlc3RlZC1ieTog
-U3Jpbml2YXMgS2FuZGFnYXRsYSA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPg0KPj4+
-PiBTaWduZWQtb2ZmLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3Nh
-cnRAbGludXguaW50ZWwuY29tPg0KPj4+PiAtLS0NCj4+Pj4gZHJpdmVycy9zb3VuZHdpcmUvYnVz
-LmMgfCAyNSArKysrKysrKysrKysrKysrLS0tLS0tLS0tDQo+Pj4+IDEgZmlsZSBjaGFuZ2VkLCAx
-NiBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0KPj4+PiANCj4+Pj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvc291bmR3aXJlL2J1cy5jIGIvZHJpdmVycy9zb3VuZHdpcmUvYnVzLmMNCj4+Pj4g
-aW5kZXggNWFkNDEwOWRjNzJmLi4wYTQ1ZGM1NzEzZGYgMTAwNjQ0DQo+Pj4+IC0tLSBhL2RyaXZl
-cnMvc291bmR3aXJlL2J1cy5jDQo+Pj4+ICsrKyBiL2RyaXZlcnMvc291bmR3aXJlL2J1cy5jDQo+
-Pj4+IEBAIC0zMzIsMTIgKzMzMiwxNiBAQCBpbnQgc2R3X25yZWFkKHN0cnVjdCBzZHdfc2xhdmUg
-KnNsYXZlLCB1MzIgYWRkciwgc2l6ZV90IGNvdW50LCB1OCAqdmFsKQ0KPj4+PiAJaWYgKHJldCA8
-IDApDQo+Pj4+IAkJcmV0dXJuIHJldDsNCj4+Pj4gDQo+Pj4+IC0JcmV0ID0gcG1fcnVudGltZV9n
-ZXRfc3luYyhzbGF2ZS0+YnVzLT5kZXYpOw0KPj4+PiAtCWlmIChyZXQgPCAwKQ0KPj4+PiAtCQly
-ZXR1cm4gcmV0Ow0KPj4+PiArCWlmIChwbV9ydW50aW1lX2VuYWJsZWQoc2xhdmUtPmJ1cy0+ZGV2
-KSkgew0KPj4+PiArCQlyZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKHNsYXZlLT5idXMtPmRldik7
-DQo+Pj4+ICsJCWlmIChyZXQgPCAwKQ0KPj4+PiArCQkJcmV0dXJuIHJldDsNCj4+Pj4gKwl9DQo+
-Pj4+IA0KPj4+PiAJcmV0ID0gc2R3X3RyYW5zZmVyKHNsYXZlLT5idXMsICZtc2cpOw0KPj4+PiAt
-CXBtX3J1bnRpbWVfcHV0KHNsYXZlLT5idXMtPmRldik7DQo+Pj4+ICsNCj4+Pj4gKwlpZiAocG1f
-cnVudGltZV9lbmFibGVkKHNsYXZlLT5idXMtPmRldikpDQo+Pj4+ICsJCXBtX3J1bnRpbWVfcHV0
-KHNsYXZlLT5idXMtPmRldik7DQo+Pj4+IA0KPj4+PiAJcmV0dXJuIHJldDsNCj4+Pj4gfQ0KPj4+
-PiBAQCAtMzU5LDEzICszNjMsMTYgQEAgaW50IHNkd19ud3JpdGUoc3RydWN0IHNkd19zbGF2ZSAq
-c2xhdmUsIHUzMiBhZGRyLCBzaXplX3QgY291bnQsIHU4ICp2YWwpDQo+Pj4+IAkJCSAgIHNsYXZl
-LT5kZXZfbnVtLCBTRFdfTVNHX0ZMQUdfV1JJVEUsIHZhbCk7DQo+Pj4+IAlpZiAocmV0IDwgMCkN
-Cj4+Pj4gCQlyZXR1cm4gcmV0Ow0KPj4+PiAtDQo+Pj4+IC0JcmV0ID0gcG1fcnVudGltZV9nZXRf
-c3luYyhzbGF2ZS0+YnVzLT5kZXYpOw0KPj4+PiAtCWlmIChyZXQgPCAwKQ0KPj4+PiAtCQlyZXR1
-cm4gcmV0Ow0KPj4+PiArCWlmIChwbV9ydW50aW1lX2VuYWJsZWQoc2xhdmUtPmJ1cy0+ZGV2KSkg
-ew0KPj4+PiArCQlyZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKHNsYXZlLT5idXMtPmRldik7DQo+
-Pj4+ICsJCWlmIChyZXQgPCAwKQ0KPj4+PiArCQkJcmV0dXJuIHJldDsNCj4+Pj4gKwl9DQo+Pj4+
-IA0KPj4+PiAJcmV0ID0gc2R3X3RyYW5zZmVyKHNsYXZlLT5idXMsICZtc2cpOw0KPj4+PiAtCXBt
-X3J1bnRpbWVfcHV0KHNsYXZlLT5idXMtPmRldik7DQo+Pj4+ICsNCj4+Pj4gKwlpZiAocG1fcnVu
-dGltZV9lbmFibGVkKHNsYXZlLT5idXMtPmRldikpDQo+Pj4+ICsJCXBtX3J1bnRpbWVfcHV0KHNs
-YXZlLT5idXMtPmRldik7DQo+Pj4+IA0KPj4+PiAJcmV0dXJuIHJldDsNCj4+Pj4gfQ0KPj4+PiAt
-LSANCj4+Pj4gMi4yMC4xDQo+Pj4+IA0KPj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXw0KPj4+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdA0KPj4+PiBB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj4+Pj4gaHR0cHM6Ly91cmxkZWZlbnNlLnByb29m
-cG9pbnQuY29tL3YyL3VybD91PWh0dHBzLTNBX19tYWlsbWFuLmFsc2EtMkRwcm9qZWN0Lm9yZ19t
-YWlsbWFuX2xpc3RpbmZvX2Fsc2EtMkRkZXZlbCZkPUR3SUJBZyZjPWFVcTk4M0wycHVlMkZxS0Zv
-UDZQR0hNSlF5b0o3a2wzczNHWi1faGFYcVkmcj1nN0dBUUVOVlh4X1JRZHlYSEluUE1nJm09dkVU
-R1FMU1BlR2I3S19ac1h2NFRsM1ZGZmRYenl1bW1URGdhOTdvekpjZyZzPUxpVzRTVG9oNVUwemhu
-a294NTRvUmhKMXUzdkZOYkJCOW5telJEdUNEakkmZT0NCj4+IA0KPj4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0DQo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj4+IGh0dHBzOi8vdXJsZGVmZW5z
-ZS5wcm9vZnBvaW50LmNvbS92Mi91cmw/dT1odHRwcy0zQV9fbWFpbG1hbi5hbHNhLTJEcHJvamVj
-dC5vcmdfbWFpbG1hbl9saXN0aW5mb19hbHNhLTJEZGV2ZWwmZD1Ed0lCQWcmYz1hVXE5ODNMMnB1
-ZTJGcUtGb1A2UEdITUpReW9KN2tsM3MzR1otX2hhWHFZJnI9ZzdHQVFFTlZYeF9SUWR5WEhJblBN
-ZyZtPWlfMFMzNTloRklWcU5ndjNmUjVfTU56RE9IUDk5dHJkWHN6Wi1GTWlRRUUmcz1SeFBIeEtm
-STN2NkZraDdxektqcThzTmktNVFNb1k4WGZ5TURTcXVBMzhvJmU9IA0KDQo=
+On Fri, Jul 26, 2019 at 08:33:35AM +0000, Jan Kotas wrote:
+> 
+> 
+> > On 26 Jul 2019, at 10:22, Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com> wrote:
+> > 
+> > EXTERNAL MAIL
+> > 
+> > 
+> > Hi Jan,
+> > 
+> > On Fri, Jul 26, 2019 at 07:47:04AM +0000, Jan Kotas wrote:
+> >> Hello,
+> >> 
+> >> I while back I proposed a patch for this, but it went nowhere.
+> >> 
+> >> https://urldefense.proofpoint.com/v2/url?u=https-3A__patchwork.kernel.org_patch_10887405_&d=DwIBAg&c=aUq983L2pue2FqKFoP6PGHMJQyoJ7kl3s3GZ-_haXqY&r=g7GAQENVXx_RQdyXHInPMg&m=i_0S359hFIVqNgv3fR5_MNzDOHP99trdXszZ-FMiQEE&s=ddktFZYlePh-bC7kXeoKWt4QomupzHATK4FLY4oSWKA&e= 
+> >> Maybe something similar can be implemented?
+> > 
+> > Yes, I was thinking about checkint -EACCESS too, but then I noticed this code
+> > in rpm_resume():
+> > 
+> > 	else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+> > 	    && dev->power.runtime_status == RPM_ACTIVE)
+> > 		retval = 1;
+> > 
+> > i.e. if RT-PM is disabled on the device (but only exactly once?..) and it's
+> > active and the device is suspended for a system suspend, the function will
+> > return 1. I don't understand the logic of this code, but it seems to me it
+> > could break the -EACCESS check?
+> > 
+> 
+> Hi,
+> 
+> In such case ret < 0 will not be true, which I think is fine,
+> if I’m understanding you correctly.
+
+Yes, if we just have to distinguish a single case "RT-PM is enabled and it failed."
+Which is indeed the case here, it seems. However if we want to check whether RT-PM
+is disabled after a call to, say, pm_runtime_get_sync(), then just checking
+-EACCESS isn't always enough - there can be cases when RT-PM is disabled and the
+return code is 1. But yes, just for checking for failures, like here, it should be
+fine.
+
+Thanks
+Guennadi
+
+> >> Jan
+> >> 
+> >>> On 26 Jul 2019, at 09:39, Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com> wrote:
+> >>> 
+> >>> EXTERNAL MAIL
+> >>> 
+> >>> 
+> >>> Hi Pierre,
+> >>> 
+> >>> I might be wrong but this doesn't seem right to me. (Supposedly) all RT-PM
+> >>> functions check for "enabled" internally. The only thing that can happen is
+> >>> that if RT-PM isn't enabled some of those functions will return an error.
+> >>> So, in those cases where the return value of RT-PM functions isn't checked,
+> >>> I don't think you need to do anything. Where it is checked maybe do
+> >>> 
+> >>> +	if (ret < 0 && pm_runtime_enabled(slave->bus->dev))
+> >>> 
+> >>> Thanks
+> >>> Guennadi
+> >>> 
+> >>> On Thu, Jul 25, 2019 at 06:40:09PM -0500, Pierre-Louis Bossart wrote:
+> >>>> Not all platforms support runtime_pm for now, let's use runtime_pm
+> >>>> only when enabled.
+> >>>> 
+> >>>> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> >>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> >>>> ---
+> >>>> drivers/soundwire/bus.c | 25 ++++++++++++++++---------
+> >>>> 1 file changed, 16 insertions(+), 9 deletions(-)
+> >>>> 
+> >>>> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> >>>> index 5ad4109dc72f..0a45dc5713df 100644
+> >>>> --- a/drivers/soundwire/bus.c
+> >>>> +++ b/drivers/soundwire/bus.c
+> >>>> @@ -332,12 +332,16 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+> >>>> 	if (ret < 0)
+> >>>> 		return ret;
+> >>>> 
+> >>>> -	ret = pm_runtime_get_sync(slave->bus->dev);
+> >>>> -	if (ret < 0)
+> >>>> -		return ret;
+> >>>> +	if (pm_runtime_enabled(slave->bus->dev)) {
+> >>>> +		ret = pm_runtime_get_sync(slave->bus->dev);
+> >>>> +		if (ret < 0)
+> >>>> +			return ret;
+> >>>> +	}
+> >>>> 
+> >>>> 	ret = sdw_transfer(slave->bus, &msg);
+> >>>> -	pm_runtime_put(slave->bus->dev);
+> >>>> +
+> >>>> +	if (pm_runtime_enabled(slave->bus->dev))
+> >>>> +		pm_runtime_put(slave->bus->dev);
+> >>>> 
+> >>>> 	return ret;
+> >>>> }
+> >>>> @@ -359,13 +363,16 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+> >>>> 			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
+> >>>> 	if (ret < 0)
+> >>>> 		return ret;
+> >>>> -
+> >>>> -	ret = pm_runtime_get_sync(slave->bus->dev);
+> >>>> -	if (ret < 0)
+> >>>> -		return ret;
+> >>>> +	if (pm_runtime_enabled(slave->bus->dev)) {
+> >>>> +		ret = pm_runtime_get_sync(slave->bus->dev);
+> >>>> +		if (ret < 0)
+> >>>> +			return ret;
+> >>>> +	}
+> >>>> 
+> >>>> 	ret = sdw_transfer(slave->bus, &msg);
+> >>>> -	pm_runtime_put(slave->bus->dev);
+> >>>> +
+> >>>> +	if (pm_runtime_enabled(slave->bus->dev))
+> >>>> +		pm_runtime_put(slave->bus->dev);
+> >>>> 
+> >>>> 	return ret;
+> >>>> }
+> >>>> -- 
+> >>>> 2.20.1
+> >>>> 
+> >>>> _______________________________________________
+> >>>> Alsa-devel mailing list
+> >>>> Alsa-devel@alsa-project.org
+> >>>> https://urldefense.proofpoint.com/v2/url?u=https-3A__mailman.alsa-2Dproject.org_mailman_listinfo_alsa-2Ddevel&d=DwIBAg&c=aUq983L2pue2FqKFoP6PGHMJQyoJ7kl3s3GZ-_haXqY&r=g7GAQENVXx_RQdyXHInPMg&m=vETGQLSPeGb7K_ZsXv4Tl3VFfdXzyummTDga97ozJcg&s=LiW4SToh5U0zhnkox54oRhJ1u3vFNbBB9nmzRDuCDjI&e=
+> >> 
+> >> _______________________________________________
+> >> Alsa-devel mailing list
+> >> Alsa-devel@alsa-project.org
+> >> https://urldefense.proofpoint.com/v2/url?u=https-3A__mailman.alsa-2Dproject.org_mailman_listinfo_alsa-2Ddevel&d=DwIBAg&c=aUq983L2pue2FqKFoP6PGHMJQyoJ7kl3s3GZ-_haXqY&r=g7GAQENVXx_RQdyXHInPMg&m=i_0S359hFIVqNgv3fR5_MNzDOHP99trdXszZ-FMiQEE&s=RxPHxKfI3v6Fkh7qzKjq8sNi-5QMoY8XfyMDSquA38o&e= 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
