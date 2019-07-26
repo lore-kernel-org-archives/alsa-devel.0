@@ -1,109 +1,90 @@
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 16/40] soundwire: cadence_master:
- improve startup sequence with link hw_reset
-Date: Fri, 26 Jul 2019 09:22:34 +0200
-Message-ID: <20190726072234.GD16003@ubuntu>
+Subject: Re: [alsa-devel] [RFC PATCH 17/40] soundwire: bus: use
+ runtime_pm_get_sync/pm when enabled
+Date: Fri, 26 Jul 2019 09:39:32 +0200
+Message-ID: <20190726073931.GE16003@ubuntu>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-17-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190725234032.21152-17-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 25, 2019 at 06:40:08PM -0500, Pierre-Louis Bossart wrote:
-> Enable interrupts first, then engage hardware bus reset with maximum
-> duration to make sure the Slave(s) correctly detect the reset pattern
-> and to ensure electrical conflicts can be resolved.
-> 
-> Without these changes the initialization is randomly corrupted by bus
-> clashes, parity errors and Slave attachment does not generate any
-> interrupt, despite the status showing them being attached.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/cadence_master.c | 35 +++++++++++++++++++++++++-----
->  1 file changed, 30 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 25d5c7267c15..442f78c00f09 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -778,6 +778,31 @@ EXPORT_SYMBOL(sdw_cdns_thread);
->   * init routines
->   */
->  
-> +static int do_reset(struct sdw_cdns *cdns)
-> +{
-> +	int ret;
-> +
-> +	/* program maximum length reset to be safe */
-> +	cdns_updatel(cdns, CDNS_MCP_CONTROL,
-> +		     CDNS_MCP_CONTROL_RST_DELAY,
-> +		     CDNS_MCP_CONTROL_RST_DELAY);
-> +
-> +	/* use hardware generated reset */
-> +	cdns_updatel(cdns, CDNS_MCP_CONTROL,
-> +		     CDNS_MCP_CONTROL_HW_RST,
-> +		     CDNS_MCP_CONTROL_HW_RST);
-> +
-> +	/* enable bus operations with clock and data */
-> +	cdns_updatel(cdns, CDNS_MCP_CONFIG,
-> +		     CDNS_MCP_CONFIG_OP,
-> +		     CDNS_MCP_CONFIG_OP_NORMAL);
-> +
-> +	/* commit changes */
-> +	ret = cdns_update_config(cdns);
-> +
-> +	return ret;
+Hi Pierre,
 
-+	return cdns_update_config(cdns);
+I might be wrong but this doesn't seem right to me. (Supposedly) all RT-PM
+functions check for "enabled" internally. The only thing that can happen is
+that if RT-PM isn't enabled some of those functions will return an error.
+So, in those cases where the return value of RT-PM functions isn't checked,
+I don't think you need to do anything. Where it is checked maybe do
 
-and remove the "ret" variable.
++	if (ret < 0 && pm_runtime_enabled(slave->bus->dev))
 
 Thanks
 Guennadi
 
-> +}
+On Thu, Jul 25, 2019 at 06:40:09PM -0500, Pierre-Louis Bossart wrote:
+> Not all platforms support runtime_pm for now, let's use runtime_pm
+> only when enabled.
+> 
+> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/bus.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 5ad4109dc72f..0a45dc5713df 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -332,12 +332,16 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = pm_runtime_get_sync(slave->bus->dev);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (pm_runtime_enabled(slave->bus->dev)) {
+> +		ret = pm_runtime_get_sync(slave->bus->dev);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>  
+>  	ret = sdw_transfer(slave->bus, &msg);
+> -	pm_runtime_put(slave->bus->dev);
 > +
->  /**
->   * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
->   * @cdns: Cadence instance
-> @@ -809,7 +834,7 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+> +	if (pm_runtime_enabled(slave->bus->dev))
+> +		pm_runtime_put(slave->bus->dev);
 >  
->  	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
->  
-> -	return 0;
-> +	return do_reset(cdns);
+>  	return ret;
 >  }
->  EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
->  
-> @@ -958,6 +983,10 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
->  	cdns_writel(cdns, CDNS_MCP_SSP_CTRL0, CDNS_DEFAULT_SSP_INTERVAL);
->  	cdns_writel(cdns, CDNS_MCP_SSP_CTRL1, CDNS_DEFAULT_SSP_INTERVAL);
->  
-> +	/* flush command FIFOs */
-> +	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_RST,
-> +		     CDNS_MCP_CONTROL_CMD_RST);
-> +
->  	/* Set cmd accept mode */
->  	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
->  		     CDNS_MCP_CONTROL_CMD_ACCEPT);
-> @@ -980,10 +1009,6 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
->  	/* Set cmd mode for Tx and Rx cmds */
->  	val &= ~CDNS_MCP_CONFIG_CMD;
->  
-> -	/* Set operation to normal */
-> -	val &= ~CDNS_MCP_CONFIG_OP;
-> -	val |= CDNS_MCP_CONFIG_OP_NORMAL;
+> @@ -359,13 +363,16 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+>  			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
+>  	if (ret < 0)
+>  		return ret;
 > -
->  	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
+> -	ret = pm_runtime_get_sync(slave->bus->dev);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (pm_runtime_enabled(slave->bus->dev)) {
+> +		ret = pm_runtime_get_sync(slave->bus->dev);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
 >  
->  	/* commit changes */
+>  	ret = sdw_transfer(slave->bus, &msg);
+> -	pm_runtime_put(slave->bus->dev);
+> +
+> +	if (pm_runtime_enabled(slave->bus->dev))
+> +		pm_runtime_put(slave->bus->dev);
+>  
+>  	return ret;
+>  }
 > -- 
 > 2.20.1
 > 
