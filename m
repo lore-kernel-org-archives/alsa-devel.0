@@ -1,167 +1,71 @@
 From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [RFC PATCH 04/40] soundwire: intel: add debugfs register dump
-Date: Fri, 26 Jul 2019 16:06:35 +0200
-Message-ID: <20190726140635.GB8767@kroah.com>
+Subject: Re: [RFC PATCH 37/40] soundwire: cadence_master: add hw_reset
+ capability in debugfs
+Date: Fri, 26 Jul 2019 16:07:49 +0200
+Message-ID: <20190726140749.GC8767@kroah.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-5-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-38-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190725234032.21152-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190725234032.21152-38-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 25, 2019 at 06:39:56PM -0500, Pierre-Louis Bossart wrote:
-> Add debugfs file to dump the Intel SoundWire registers
-> 
-> Credits: this patch is based on an earlier internal contribution by
-> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. The main change
-> is the use of scnprintf to avoid known issues with snprintf.
+On Thu, Jul 25, 2019 at 06:40:29PM -0500, Pierre-Louis Bossart wrote:
+> This is to kick devices into reset and see what software does
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/intel.c | 115 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 115 insertions(+)
+>  drivers/soundwire/cadence_master.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 > 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 317873bc0555..aeadc341c0a3 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -6,6 +6,7 @@
->   */
->  
->  #include <linux/acpi.h>
-> +#include <linux/debugfs.h>
->  #include <linux/delay.h>
->  #include <linux/module.h>
->  #include <linux/interrupt.h>
-> @@ -16,6 +17,7 @@
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_intel.h>
->  #include "cadence_master.h"
-> +#include "bus.h"
->  #include "intel.h"
->  
->  /* Intel SHIM Registers Definition */
-> @@ -98,6 +100,7 @@ struct sdw_intel {
->  	struct sdw_cdns cdns;
->  	int instance;
->  	struct sdw_intel_link_res *res;
-> +	struct dentry *fs;
+> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+> index fa7230b0f200..53278aa2436f 100644
+> --- a/drivers/soundwire/cadence_master.c
+> +++ b/drivers/soundwire/cadence_master.c
+> @@ -331,6 +331,25 @@ static const struct file_operations cdns_reg_fops = {
+>  	.llseek = default_llseek,
 >  };
 >  
->  #define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
-> @@ -161,6 +164,115 @@ static int intel_set_bit(void __iomem *base, int offset, u32 value, u32 mask)
->  	return -EAGAIN;
->  }
->  
-> +/*
-> + * debugfs
-> + */
-> +
-> +#define RD_BUF (2 * PAGE_SIZE)
-> +
-> +static ssize_t intel_sprintf(void __iomem *mem, bool l,
-> +			     char *buf, size_t pos, unsigned int reg)
+> +static int cdns_hw_reset(void *data, u64 value)
 > +{
-> +	int value;
+> +	struct sdw_cdns *cdns = data;
+> +	int ret;
 > +
-> +	if (l)
-> +		value = intel_readl(mem, reg);
-> +	else
-> +		value = intel_readw(mem, reg);
+> +	if (value != 1)
+> +		return 0;
 > +
-> +	return scnprintf(buf + pos, RD_BUF - pos, "%4x\t%4x\n", reg, value);
-> +}
+> +	dev_info(cdns->dev, "starting link hw_reset\n");
 > +
-> +static ssize_t intel_reg_read(struct file *file, char __user *user_buf,
-> +			      size_t count, loff_t *ppos)
-> +{
-> +	struct sdw_intel *sdw = file->private_data;
-> +	void __iomem *s = sdw->res->shim;
-> +	void __iomem *a = sdw->res->alh;
-> +	char *buf;
-> +	ssize_t ret;
-> +	int i, j;
-> +	unsigned int links, reg;
+> +	ret = sdw_cdns_exit_reset(cdns);
 > +
-> +	buf = kzalloc(RD_BUF, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	links = intel_readl(s, SDW_SHIM_LCAP) & GENMASK(2, 0);
-> +
-> +	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
-> +	ret += scnprintf(buf + ret, RD_BUF - ret, "\nShim\n");
-> +
-> +	for (i = 0; i < 4; i++) {
-> +		reg = SDW_SHIM_LCAP + i * 4;
-> +		ret += intel_sprintf(s, true, buf, ret, reg);
-> +	}
-> +
-> +	for (i = 0; i < links; i++) {
-> +		ret += scnprintf(buf + ret, RD_BUF - ret, "\nLink%d\n", i);
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLSCAP(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS0CM(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS1CM(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS2CM(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTLS3CM(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_PCMSCAP(i));
-> +
-> +		for (j = 0; j < 8; j++) {
-> +			ret += intel_sprintf(s, false, buf, ret,
-> +					SDW_SHIM_PCMSYCHM(i, j));
-> +			ret += intel_sprintf(s, false, buf, ret,
-> +					SDW_SHIM_PCMSYCHC(i, j));
-> +		}
-> +
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_PDMSCAP(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_IOCTL(i));
-> +		ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_CTMCTL(i));
-> +	}
-> +
-> +	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_WAKEEN);
-> +	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM_WAKESTS);
-> +
-> +	ret += scnprintf(buf + ret, RD_BUF - ret, "\nALH\n");
-> +	for (i = 0; i < 8; i++)
-> +		ret += intel_sprintf(a, true, buf, ret, SDW_ALH_STRMZCFG(i));
-> +
-> +	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
-> +	kfree(buf);
+> +	dev_info(cdns->dev, "link hw_reset done\n");
+
+Do not be noisy for when things always go right.  This looks like
+debuggging code, please remove.
+
 > +
 > +	return ret;
 > +}
 > +
-> +static const struct file_operations intel_reg_fops = {
-> +	.open = simple_open,
-> +	.read = intel_reg_read,
-> +	.llseek = default_llseek,
-> +};
-
-DEFINE_SIMPLE_ATTRIBUTE()?
-
+> +DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
 > +
-> +static void intel_debugfs_init(struct sdw_intel *sdw)
-> +{
-> +	struct dentry *root = sdw->cdns.bus.debugfs;
+>  /**
+>   * sdw_cdns_debugfs_init() - Cadence debugfs init
+>   * @cdns: Cadence instance
+> @@ -339,6 +358,9 @@ static const struct file_operations cdns_reg_fops = {
+>  void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+>  {
+>  	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
 > +
-> +	if (!root)
-> +		return;
-> +
-> +	sdw->fs = debugfs_create_dir("intel-sdw", root);
-> +	if (IS_ERR_OR_NULL(sdw->fs)) {
-> +		dev_err(sdw->cdns.dev, "debugfs root creation failed\n");
+> +	debugfs_create_file_unsafe("cdns-hw-reset", 0200, root, cdns,
+> +				   &cdns_hw_reset_fops);
 
-No, come on, don't do that.  I've been sweeping the kernel tree to
-remove this anti-pattern.
-
-The debugfs core will print an error if you got something wrong, just
-call the function and move on, you NEVER need to check the return value
-of a debugfs call.
+Why unsafe?
 
 thanks,
 
