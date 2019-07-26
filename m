@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 36/40] soundwire: intel: disable
- interrupts on suspend
-Date: Fri, 26 Jul 2019 12:26:10 -0500
-Message-ID: <e456112b-27a4-d897-6690-3177dd5a8b56@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 37/40] soundwire: cadence_master: add
+ hw_reset capability in debugfs
+Date: Fri, 26 Jul 2019 12:31:53 -0500
+Message-ID: <bd17efe9-04bf-4cf5-6527-8fdba8d39419@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-37-pierre-louis.bossart@linux.intel.com>
- <20190726155520.GL16003@ubuntu>
+ <20190725234032.21152-38-pierre-louis.bossart@linux.intel.com>
+ <20190726155717.GM16003@ubuntu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190726155520.GL16003@ubuntu>
+In-Reply-To: <20190726155717.GM16003@ubuntu>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -18,61 +18,24 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linu
 List-Id: alsa-devel@alsa-project.org
 
 
->> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
->> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
->>   {
->>   	u32 mask;
->>   
->> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
->> -		    CDNS_MCP_SLAVE_INTMASK0_MASK);
->> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
->> -		    CDNS_MCP_SLAVE_INTMASK1_MASK);
->> +	if (state) {
->> +		cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
->> +			    CDNS_MCP_SLAVE_INTMASK0_MASK);
->> +		cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
->> +			    CDNS_MCP_SLAVE_INTMASK1_MASK);
->>   
->> -	/* enable detection of slave state changes */
->> -	mask = CDNS_MCP_INT_SLAVE_RSVD | CDNS_MCP_INT_SLAVE_ALERT |
->> -		CDNS_MCP_INT_SLAVE_ATTACH | CDNS_MCP_INT_SLAVE_NATTACH;
->> +		/* enable detection of slave state changes */
->> +		mask = CDNS_MCP_INT_SLAVE_RSVD | CDNS_MCP_INT_SLAVE_ALERT |
->> +			CDNS_MCP_INT_SLAVE_ATTACH | CDNS_MCP_INT_SLAVE_NATTACH;
->>   
->> -	/* enable detection of bus issues */
->> -	mask |= CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
->> -		CDNS_MCP_INT_PARITY;
->> +		/* enable detection of bus issues */
->> +		mask |= CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
->> +			CDNS_MCP_INT_PARITY;
->>   
->> -	/* no detection of port interrupts for now */
->> +		/* no detection of port interrupts for now */
->>   
->> -	/* enable detection of RX fifo level */
->> -	mask |= CDNS_MCP_INT_RX_WL;
->> +		/* enable detection of RX fifo level */
->> +		mask |= CDNS_MCP_INT_RX_WL;
->>   
->> -	/* now enable all of the above */
->> -	mask |= CDNS_MCP_INT_IRQ;
->> +		/* now enable all of the above */
->> +		mask |= CDNS_MCP_INT_IRQ;
->>   
->> -	if (interrupt_mask) /* parameter override */
->> -		mask = interrupt_mask;
->> +		if (interrupt_mask) /* parameter override */
->> +			mask = interrupt_mask;
->> +	} else {
->> +		cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, 0);
->> +		cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, 0);
->> +		mask = 0;
->> +	}
+>> +static int cdns_hw_reset(void *data, u64 value)
+>> +{
+>> +	struct sdw_cdns *cdns = data;
+>> +	int ret;
+>> +
+>> +	if (value != 1)
+>> +		return 0;
+>> +
+>> +	dev_info(cdns->dev, "starting link hw_reset\n");
+>> +
+>> +	ret = sdw_cdns_exit_reset(cdns);
+>> +
+>> +	dev_info(cdns->dev, "link hw_reset done\n");
 > 
-> Looks like this should be two functions? Especially since "state" is always a constant
-> when it is called. If there is still a lot of common code below, maybe make it a helper
-> function.
+> Both really should be dev_info()? Maybe at least one of them can be dev_dbg()?
 
-Yes, the code is a bit ugly. I could initialize all the masks to zero, 
-have the if(state) block and write the masks.
+I have to walk back on what I explained to Greg. The idea was to have a 
+dmesg trace when this function as called when the user plays with 
+debugfs, otherwise the dmesg log is difficult to interpret (devices can 
+go off the bus on their own). I'll keep the first one only and demote it 
+to dev_dbg.
