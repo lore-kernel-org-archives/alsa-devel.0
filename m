@@ -1,87 +1,34 @@
-From: mirq-linux@rere.qmqm.pl
-Subject: Re: [PATCH 5/5] ASoC: atmel_ssc_dai: Enable shared FSYNC source in
- frame-slave mode
-Date: Fri, 26 Jul 2019 14:08:49 +0200
-Message-ID: <20190726120849.GA1078@qmqm.qmqm.pl>
-References: <cover.1563819483.git.mirq-linux@rere.qmqm.pl>
- <107e0cfd11a31ce1558e941612e183100022930d.1563819483.git.mirq-linux@rere.qmqm.pl>
- <eabb96e7-1567-3ee1-a00e-f241c5f23c1c@microchip.com>
- <20190725182427.GA16245@qmqm.qmqm.pl>
- <6fdbcec1-346f-9ebf-34e7-83b0ceaba404@microchip.com>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH] Revert "ASoC: rockchip: i2s: Support mono capture"
+Date: Fri, 26 Jul 2019 20:10:15 +0800
+Message-ID: <CAFv8NwLyTPXJ0x9F-wcGM-XFcCp+Nb1s96u9=_2xhs+=Q=E+fw@mail.gmail.com>
+References: <20190726044202.26866-1-cychiang@chromium.org> <20190726111717.GB4902@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <6fdbcec1-346f-9ebf-34e7-83b0ceaba404@microchip.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Codrin.Ciubotariu@microchip.com
-Cc: alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, tiwai@suse.com, lgirdwood@gmail.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190726111717.GB4902@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Heiko Stuebner <heiko@sntech.de>, Doug Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, Matthias Kaehlcke <mka@chromium.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 26, 2019 at 10:33:29AM +0000, Codrin.Ciubotariu@microchip.com w=
-rote:
-> On 25.07.2019 21:24, mirq-linux@rere.qmqm.pl wrote:
-> > On Thu, Jul 25, 2019 at 03:02:34PM +0000, Codrin.Ciubotariu@microchip.c=
-om wrote:
-> >> On 22.07.2019 21:27, Micha=B3 Miros=B3aw wrote:
-> >>> SSC driver allows only synchronous TX and RX. In slave mode for BCLK
-> >>> it uses only one of TK or RK pin, but for LRCLK it configured separate
-> >>> inputs from TF and RF pins. Allow configuration with common FS signal.
-> > [...]
-> >>> @@ -613,10 +607,30 @@ static int atmel_ssc_hw_params(struct snd_pcm_s=
-ubstream *substream,
-> >>>    		return -EINVAL;
-> >>>    	}
-> >>>    =
-
-> >>> -	if (!atmel_ssc_cfs(ssc_p)) {
-> >>> +	if (atmel_ssc_cfs(ssc_p)) {
-> >>> +		/*
-> >>> +		 * SSC provides LRCLK
-> >>> +		 *
-> >>> +		 * Both TF and RF are generated, so use them directly.
-> >>> +		 */
-> >>> +		rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
-> >>> +		tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
-> >>> +	} else {
-> >>>    		fslen =3D fslen_ext =3D 0;
-> >>>    		rcmr_period =3D tcmr_period =3D 0;
-> >>>    		fs_osync =3D SSC_FSOS_NONE;
-> >>> +		if (!ssc->shared_fs_pin) {
-> >>> +			rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
-> >>> +			tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
-> >>> +		} else if (ssc->clk_from_rk_pin) {
-> >>> +			/* assume RF is to be used when RK is used as BCLK input */
-> >>> +			/* Note: won't work correctly on SAMA5D2 due to errata */
-> >>> +			rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
-> >>> +			tcmr |=3D	  SSC_BF(TCMR_START, SSC_START_RECEIVE);
-> >>
-> >> Did you find a platform in which this mode works?
-> > =
-
-> > To be exact: according to the errata, TX is delayed improperly. So if y=
-ou
-> > use only RX (SSC side receives) direction, you're fine.
-> =
-
-> I know, but there are other platforms with SSC, which don't have this =
-
-> errata, like sam9x35 or sama5d3. Have you tested this mode, RK input, RF =
-
-> input, RD starts on edge detect, TF input, TD starts synchronously with =
-
-> receiver?
-
-No, I have only SAMA5D2 available to test.
-
-Best Regards,
-Micha=B3=A0Miros=B3aw
+On Fri, Jul 26, 2019 at 7:17 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Jul 26, 2019 at 12:42:02PM +0800, Cheng-Yi Chiang wrote:
+> > This reverts commit db51707b9c9aeedd310ebce60f15d5bb006567e0.
+> >
+> > Previous discussion in
+>
+> Please use subject lines matching the style for the subsystem.  This
+> makes it easier for people to identify relevant patches.
+>
+>
+> Please include human readable descriptions of things like commits and
+> issues being discussed in e-mail in your mails, this makes them much
+> easier for humans to read especially when they have no internet access.
+> I do frequently catch up on my mail on flights or while otherwise
+> travelling so this is even more pressing for me than just being about
+> making things a bit easier to read.
+Hi Mark,
+Thank you for the reply.
+Fixed the title and commit messages in v2.
