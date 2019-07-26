@@ -1,15 +1,14 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [RFC PATCH 31/40] soundwire: intel: move shutdown() callback and
- don't export symbol
-Date: Fri, 26 Jul 2019 12:38:10 +0200
-Message-ID: <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
+Subject: Re: [RFC PATCH 32/40] soundwire: intel: add helper for initialization
+Date: Fri, 26 Jul 2019 12:42:38 +0200
+Message-ID: <b0f7d11d-b9db-af98-3036-ef2a165f7427@intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-32-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-33-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725234032.21152-32-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190725234032.21152-33-pierre-louis.bossart@linux.intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -17,18 +16,31 @@ Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, br
 List-Id: alsa-devel@alsa-project.org
 
 On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
-> +void intel_shutdown(struct snd_pcm_substream *substream,
-> +		    struct snd_soc_dai *dai)
+> Move code to helper for reuse in power management routines
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>   drivers/soundwire/intel.c | 16 +++++++++++-----
+>   1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index c40ab443e723..215dc81cdf73 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -984,6 +984,15 @@ static struct sdw_master_ops sdw_intel_ops = {
+>   	.post_bank_switch = intel_post_bank_switch,
+>   };
+>   
+> +static int intel_init(struct sdw_intel *sdw)
 > +{
-> +	struct sdw_cdns_dma_data *dma;
+> +	/* Initialize shim and controller */
+> +	intel_link_power_up(sdw);
+> +	intel_shim_init(sdw);
 > +
-> +	dma = snd_soc_dai_get_dma_data(dai, substream);
-> +	if (!dma)
-> +		return;
-> +
-> +	snd_soc_dai_set_dma_data(dai, substream, NULL);
-> +	kfree(dma);
+> +	return sdw_cdns_init(&sdw->cdns);
 > +}
 
-Correct me if I'm wrong, but do we really need to _get_dma_ here?
-_set_dma_ seems bulletproof, same for kfree.
+Why don't we check polling status for _link_power_up? I've already met 
+slow starting devices in the past. If polling fails and -EAGAIN is 
+returned, flow of initialization should react appropriately e.g. poll 
+till MAX_TIMEOUT of some sort -or- collapse.
