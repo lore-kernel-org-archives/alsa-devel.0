@@ -1,42 +1,39 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: Re: [PATCH v2 00/26] ReST conversion of text files without .txt
- extension
-Date: Fri, 26 Jul 2019 10:05:33 -0300
-Message-ID: <20190726100521.5d379300@coco.lan>
-References: <cover.1564145354.git.mchehab+samsung@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 09/40] soundwire: cadence_master: fix
+ usage of CONFIG_UPDATE
+Date: Fri, 26 Jul 2019 08:33:06 -0500
+Message-ID: <f3468f5b-3e0a-ee4a-7e7a-734ed23fbdfa@linux.intel.com>
+References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-10-pierre-louis.bossart@linux.intel.com>
+ <3aa182a9-4b8e-96dd-e8f8-f2f5a90401cb@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <cover.1564145354.git.mchehab+samsung@kernel.org>
-Sender: netdev-owner@vger.kernel.org
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-scsi@vger.kernel.org, devicetree@vger.kernel.org, linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org, linux-iio@vger.kernel.org, linux-rtc@vger.kernel.org, netdev@vger.kernel.org, linux-parisc@vger.kernel.org, openrisc@lists.librecores.org, devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, devel@lists.orangefs.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-mips@vger.kernel.org, linux-wireless@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <3aa182a9-4b8e-96dd-e8f8-f2f5a90401cb@linux.intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bard liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Fri, 26 Jul 2019 09:51:10 -0300
-Mauro Carvalho Chehab <mchehab+samsung@kernel.org> escreveu:
 
-> This series converts the text files under Documentation with doesn't end
-> neither .txt or .rst and are not part of ABI or features.
-> 
-> This series is at:
-> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=rst_for_5_4_v3
-> 
-> And it is based on yesterday's upstream tree.
-> 
-> After this series, we have ~320 files left to be converted to ReST.
-> 
-> v2:
->   - Added 3 files submitted for v5.3 that weren't merged yet;
->   - markdown patch broken into two, per Rob's request;
->   - rebased on the top of upstream master branch
-> 
-> Mauro Carvalho Chehab (26):
+>> @@ -758,15 +774,9 @@ static int _cdns_enable_interrupt(struct sdw_cdns 
+>> *cdns)
+>>    */
+>>   int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+>>   {
+>> -    int ret;
+>> -
+>>       _cdns_enable_interrupt(cdns);
+>> -    ret = cdns_clear_bit(cdns, CDNS_MCP_CONFIG_UPDATE,
+>> -                 CDNS_MCP_CONFIG_UPDATE_BIT);
+>> -    if (ret < 0)
+>> -        dev_err(cdns->dev, "Config update timedout\n");
+>> -    return ret;
+> Should we add cdns_update_config() here?
 
->   docs: ABI: remove extension from sysfs-class-mic.txt
-
-    ^ In time: this one was already merged.
-
-Thanks,
-Mauro
+indeed, this would be a good improvement. The code works because we 
+added the exit_reset() sequence which does call cdns_update_config(), 
+but better make this function self-contained. When we enable the 
+clock-stop mode we will not do this reset sequence.
