@@ -1,51 +1,59 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [RFC PATCH 27/40] soundwire: Add Intel resource management
- algorithm
-Date: Fri, 26 Jul 2019 13:07:35 +0200
-Message-ID: <869edbf2-1fdd-6b21-818f-20c39c013c11@intel.com>
+Subject: Re: [RFC PATCH 00/40] soundwire: updates for 5.4
+Date: Fri, 26 Jul 2019 13:14:04 +0200
+Message-ID: <6d268dd6-5f1a-e1f4-b0be-c3b978f89cb1@intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-28-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725234032.21152-28-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
-> This algorithm computes bus parameters like clock frequency, frame
-> shape and port transport parameters based on active stream(s) running
-> on the bus.
+On 2019-07-26 01:39, Pierre-Louis Bossart wrote:
+> The existing upstream code allows for SoundWire devices to be
+> enumerated and managed by the bus, but streaming is not currently
+> supported.
 > 
-> This implementation is optimal for Intel platforms. Developers can
-> also implement their own .compute_params() callback for specific
-> resource management algorithm.
+> Bard Liao, Rander Wang and I did quite a bit of integration/validation
+> work to close this gap and we now have SoundWire streaming + basic
+> power managemement on Intel CometLake and IceLake reference
+> boards. These changes are still preliminary and should not be merged
+> as is, but it's time to start reviews. While the number of patches is
+> quite large, each of the changes is quite small.
 > 
-> Credits: this patch is based on an earlier internal contribution by
-> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
-> values were removed from the initial contribution to use BIOS
-> information instead.
+> SOF driver changes will be submitted shortly as well but are still
+> being validated.
 > 
-> FIXME: remove checkpatch report
-> WARNING: Reusing the krealloc arg is almost always a bug
-> +			group->rates = krealloc(group->rates,
+> ClockStop modes and synchronized playback on
+> multiple links are not supported for now and will likely be part of
+> the next cycle (dependencies on codec drivers and multi-cpu DAI
+> support).
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Acknowledgements: This work would not have been possible without the
+> support of Slawomir Blauciak and Tomasz Lauda on the SOF side,
+> currently being reviewed, see
+> https://github.com/thesofproject/sof/pull/1638
+> 
+> Comments and feedback welcome!
 
-Could you specify the requirements and limitations for this algorithm? 
-Last year I written calc for Linux based on Windows (please don't burn 
-me here) equivalent though said requirements/ limitiations might have 
-changed and nothing is valid any longer.
+Hello Pierre,
 
-I remember that some parts of specification overcomplicated the 
-calculator and due to actual, realtime usecases it could be greatly 
-simplified (that's why I mention that my work is probably no longer 
-valid). However, these details would help me in reviewing your 
-implementation and providing suggestions.
+This patchset is pretty large - I'd suggest dividing next RFC into 
+segments: debugfs, info, power-management, basic flow corrections and 
+frame shape calculator.
+Some commits have no messages and others lack additional info - tried to 
+provide feedback wherever I could, though, especially for the last one, 
+it would be vital to post additional info so in-depth feedback can be 
+provided.
 
-And yes, "Frame shape calculator" probably suits this better.
-Though this might be just a preference thingy : )
+Maybe nothing for calculator will come up, maybe something will. In 
+general I remember it being an essential part of SDW and one where many 
+bugs where found during the initial verification phase.
+
+Thanks for your contribution and have a good day!
+Czarek
