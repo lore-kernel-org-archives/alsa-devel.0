@@ -1,79 +1,69 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 23/40] soundwire: stream: fix disable
- sequence
-Date: Fri, 26 Jul 2019 10:05:54 -0500
-Message-ID: <8ec39464-81f7-e29d-7a2c-b2903a7fbf60@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 00/40] soundwire: updates for 5.4
+Date: Fri, 26 Jul 2019 10:23:01 -0500
+Message-ID: <6db19ecc-3cb0-68f6-537f-be1df4bf2750@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-24-pierre-louis.bossart@linux.intel.com>
- <20190726145129.GI16003@ubuntu>
+ <6d268dd6-5f1a-e1f4-b0be-c3b978f89cb1@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190726145129.GI16003@ubuntu>
+In-Reply-To: <6d268dd6-5f1a-e1f4-b0be-c3b978f89cb1@intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
-> Unrelated to this specific patch, but I looked at _sdw_disable_stream()
-> and I see this there (again, maybe my version is outdated already):
+>> Comments and feedback welcome!
 > 
-> 	struct sdw_master_runtime *m_rt = NULL;
-> 	struct sdw_bus *bus = NULL;
+> Hello Pierre,
 > 
-> where both those initialisations are redundant. Moreover:
+> This patchset is pretty large - I'd suggest dividing next RFC into 
+> segments: debugfs, info, power-management, basic flow corrections and 
+> frame shape calculator.
 
-will look at this, thanks.
+There was an intent to provide a logical progression...
 
-> 
-> On Thu, Jul 25, 2019 at 06:40:15PM -0500, Pierre-Louis Bossart wrote:
->> When we disable the stream and then call hw_free, two bank switches
->> will be handled and as a result we re-enable the stream on hw_free.
->>
->> Make sure the stream is disabled on both banks.
->>
->> TODO: we need to completely revisit all this and make sure we have a
->> mirroring mechanism between current and alternate banks.
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/soundwire/stream.c | 19 ++++++++++++++++++-
->>   1 file changed, 18 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
->> index 53f5e790fcd7..75b9ad1fb1a6 100644
->> --- a/drivers/soundwire/stream.c
->> +++ b/drivers/soundwire/stream.c
->> @@ -1637,7 +1637,24 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
->>   		}
->>   	}
->>   
->> -	return do_bank_switch(stream);
->> +	ret = do_bank_switch(stream);
->> +	if (ret < 0) {
->> +		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	/* make sure alternate bank (previous current) is also disabled */
->> +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
->> +		bus = m_rt->bus;
-> 
-> "bus" is only used below, so at least take that line under "if (ret < 0)"
-> or even just do "dev_err(m_rt->bus->dev,...)" everywhere in this function
-> and remove the variable altogether...
+First debugfs, since I believe it was reviewed before, and I wanted 
+folks like Greg to double-check it without burrying it too deep.
 
-will look at this, thanks Guennadi
+Then all corrections, followed by the allocator.
+
+And last all PM stuff, split by regular suspend/resume and pm_runtime.
+
+The RFC state is precisely to gather feedback, if folks want a different 
+order that's fine. I just wanted to be transparent and share what we have.
+
+> Some commits have no messages and others lack additional info - tried to 
+> provide feedback wherever I could, though, especially for the last one, 
+> it would be vital to post additional info so in-depth feedback can be 
+> provided.
+
+The lack of commits is a miss, I went from 170 debug/integration patches 
+to 40 yesterday and my brain was fried.
+
+> Maybe nothing for calculator will come up, maybe something will. In 
+> general I remember it being an essential part of SDW and one where many 
+> bugs where found during the initial verification phase.
+
+the frame allocation is a critical piece and it does need to be 
+hardened. However we can do so in steps. The current setups we have 
+support 1 Slave per link and a limited amount of bandwidth. The links 
+themselves don't operate at the max frequency.
+Also note that that the streams are 'statically' defined by the 
+dailinks, and the allocation is not fully dynamic with random 
+configurations being request. If you fail you fail fast.
+
+Nevertheless I do plan to recheck the allocator with an additional 
+scripting tool. It'd be very good to e.g. dump the current setup in a 
+debugfs file and show to users what is happening (or not happening). I 
+didn't recall you worked on SoundWire and I can use your practical 
+knowledge to make the code and tools better :-)
 
 > 
-> Thanks
-> Guennadi
-> 
->> +		/* Disable port(s) */
->> +		ret = sdw_enable_disable_ports(m_rt, false);
->> +		if (ret < 0) {
->> +			dev_err(bus->dev, "Disable port(s) failed: %d\n", ret);
->> +			return ret;
+> Thanks for your contribution and have a good day!
+
+Thanks for reviewing this long series and have a nice week-end.
+-Pierre
