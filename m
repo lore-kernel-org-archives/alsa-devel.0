@@ -1,19 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 1/2] ALSA: usb-audio: Unify audioformat
-	release code
-Date: Sat, 27 Jul 2019 11:30:05 +0200
-Message-ID: <20190727093006.9870-2-tiwai@suse.de>
-References: <20190727093006.9870-1-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [alsa-lib][v1.1.19][pcm][multi plug] multi plug
+ stuck in busy loop which caused high cpu loading.
+Date: Sat, 27 Jul 2019 11:38:06 +0200
+Message-ID: <b2634d02-1f09-fb4e-9674-c7932d0b8bc8@perex.cz>
+References: <CAC0dki4GtTUbEBEuVVo0AynfRW13CdAFzc_m6Ss1POq2E3Q7bQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEE1AF80394
- for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2019 11:30:15 +0200 (CEST)
-In-Reply-To: <20190727093006.9870-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FA47F802BD
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2019 11:38:08 +0200 (CEST)
+In-Reply-To: <CAC0dki4GtTUbEBEuVVo0AynfRW13CdAFzc_m6Ss1POq2E3Q7bQ@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,96 +24,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Tanu Kaskinen <tanuk@iki.fi>, Alexander Tsoy <alexander@tsoy.me>
+To: eleven xiang <eleven.xiang@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There are many open code for releasing audioformat object.
-Provide a unified helper and call it from the all places.
+Dne 25. 07. 19 v 11:59 eleven xiang napsal(a):
+> Dear,
+> 
+> Currently, for Audio Echo Cancellation process, we combined both mic signal
+> and reference signal into one pcm with the multi plug.
+> And both the mic and ref signal are hw pcm devices, and they lived in the
+> same sound card in driver.
+> 
+> Here is the issue:
+> 
+> 1. the master slave pcm device is already for read;
+> 2. the second salve pcm is not ready for read, which means no data;
+> 3. under this situation, snd_pcm_read_areas function will be stuck in busy
+> loop as below:
+> 
+>         avail = snd_pcm_avail_update(pcm); * // here always return avail=0,
+> due to the second salve pcm device wasn't ready*
+>         if (avail < 0) {
+>             err = avail;
+>             goto _end;
+>         }
+>         if (avail == 0) {
+>             if (state == SND_PCM_STATE_DRAINING)
+>                 goto _end;
+>             if (pcm->mode & SND_PCM_NONBLOCK) {
+>                 err = -EAGAIN;
+>                 goto _end;
+>             }
+> 
+>             err = snd_pcm_wait(pcm, -1); * // return immediately, due to
+> the master slave pcm was ready for read.*
+>             if (err < 0)
+>                 break;
+>             goto _again; *// stuck in busy loop !! again and again until
+> the second pcm data was ready !!!*
+> 
+>         }
+> 
+> it seemed that the root cause is that the two devices have obvious
+> interrupt period gap , and we also found that this issue can be easily
+> reproduced on our device under low memory case.
+> 
+> Currently we monitor this gap and return error to up layer to
+> close-and-reopen device to fix this issue.
+> So I wonder if there is any good solution ?
 
-Only a cleanup, no functional changes.
+I tried to resolve this sync in my latest pcm_multi updates (all are in 1.1.9
+already). Could you trace, why snd_pcm_wait() does not really wait for the
+slave when avail == 0? There should not be the busy loop. The
+snd_pcm_multi_may_wait_for_avail_min() callback should be called inside the
+multi plugin.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/stream.c | 30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+				Jaroslav
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 7ee9d17d0143..963d425004f8 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -28,6 +28,14 @@
- #include "power.h"
- #include "media.h"
- 
-+static void audioformat_free(struct audioformat *fp)
-+{
-+	list_del(&fp->list); /* unlink for avoiding double-free */
-+	kfree(fp->rate_table);
-+	kfree(fp->chmap);
-+	kfree(fp);
-+}
-+
- /*
-  * free a substream
-  */
-@@ -37,11 +45,8 @@ static void free_substream(struct snd_usb_substream *subs)
- 
- 	if (!subs->num_formats)
- 		return; /* not initialized */
--	list_for_each_entry_safe(fp, n, &subs->fmt_list, list) {
--		kfree(fp->rate_table);
--		kfree(fp->chmap);
--		kfree(fp);
--	}
-+	list_for_each_entry_safe(fp, n, &subs->fmt_list, list)
-+		audioformat_free(fp);
- 	kfree(subs->rate_list.list);
- 	kfree(subs->str_pd);
- 	snd_media_stream_delete(subs);
-@@ -832,8 +837,7 @@ snd_usb_get_audioformat_uac12(struct snd_usb_audio *chip,
- 	/* ok, let's parse further... */
- 	if (snd_usb_parse_audio_format(chip, fp, format,
- 					fmt, stream) < 0) {
--		kfree(fp->rate_table);
--		kfree(fp);
-+		audioformat_free(fp);
- 		return NULL;
- 	}
- 
-@@ -1043,8 +1047,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 
- 		pd = kzalloc(sizeof(*pd), GFP_KERNEL);
- 		if (!pd) {
--			kfree(fp->rate_table);
--			kfree(fp);
-+			audioformat_free(fp);
- 			return NULL;
- 		}
- 		pd->pd_id = (stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-@@ -1063,9 +1066,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 		/* ok, let's parse further... */
- 		if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
- 			kfree(pd);
--			kfree(fp->chmap);
--			kfree(fp->rate_table);
--			kfree(fp);
-+			audioformat_free(fp);
- 			return NULL;
- 		}
- 	}
-@@ -1184,11 +1185,8 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 			err = snd_usb_add_audio_stream(chip, stream, fp);
- 
- 		if (err < 0) {
--			list_del(&fp->list); /* unlink for avoiding double-free */
-+			audioformat_free(fp);
- 			kfree(pd);
--			kfree(fp->rate_table);
--			kfree(fp->chmap);
--			kfree(fp);
- 			return err;
- 		}
- 		/* try to set the interface... */
 -- 
-2.16.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
