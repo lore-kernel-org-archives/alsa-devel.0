@@ -1,7 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 2/2] ALSA: usb-audio: fix PCM device order
-Date: Sat, 27 Jul 2019 11:30:06 +0200
-Message-ID: <20190727093006.9870-3-tiwai@suse.de>
+Subject: [PATCH v2 1/2] ALSA: usb-audio: Unify audioformat
+	release code
+Date: Sat, 27 Jul 2019 11:30:05 +0200
+Message-ID: <20190727093006.9870-2-tiwai@suse.de>
 References: <20190727093006.9870-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +11,7 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9BF9F802BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEE1AF80394
  for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2019 11:30:15 +0200 (CEST)
 In-Reply-To: <20190727093006.9870-1-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,81 +27,92 @@ To: alsa-devel@alsa-project.org
 Cc: Tanu Kaskinen <tanuk@iki.fi>, Alexander Tsoy <alexander@tsoy.me>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Tsoy <alexander@tsoy.me>
+There are many open code for releasing audioformat object.
+Provide a unified helper and call it from the all places.
 
-Some cards have alternate setting with non-PCM format as the first
-altsetting in the interface descriptors. This confuses userspace, since
-alsa-lib uses device 0 by default. So lets parse interfaces in two steps:
- 1. Parse altsettings with PCM formats.
- 2. Parse altsettings with non-PCM formats.
+Only a cleanup, no functional changes.
 
-This fixes at least following cards:
- - Audinst HUD-mx2
- - Audinst HUD-mini
-
-[ Adapted 5.3 kernel by tiwai ]
-
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/stream.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ sound/usb/stream.c | 30 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
 diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 963d425004f8..fc3e9fcfbc38 100644
+index 7ee9d17d0143..963d425004f8 100644
 --- a/sound/usb/stream.c
 +++ b/sound/usb/stream.c
-@@ -1077,7 +1077,9 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 	return fp;
- }
+@@ -28,6 +28,14 @@
+ #include "power.h"
+ #include "media.h"
  
--int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
-+static int __snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
-+					   int iface_no,
-+					   bool *has_non_pcm, bool non_pcm)
- {
- 	struct usb_device *dev;
- 	struct usb_interface *iface;
-@@ -1178,6 +1180,16 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 		else if (IS_ERR(fp))
- 			return PTR_ERR(fp);
- 
-+		if (fp->fmt_type != UAC_FORMAT_TYPE_I)
-+			*has_non_pcm = true;
-+		if ((fp->fmt_type == UAC_FORMAT_TYPE_I) == non_pcm) {
-+			audioformat_free(fp);
-+			kfree(pd);
-+			fp = NULL;
-+			pd = NULL;
-+			continue;
-+		}
-+
- 		dev_dbg(&dev->dev, "%u:%d: add audio endpoint %#x\n", iface_no, altno, fp->endpoint);
- 		if (protocol == UAC_VERSION_3)
- 			err = snd_usb_add_audio_stream_v3(chip, stream, fp, pd);
-@@ -1197,3 +1209,23 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 	return 0;
- }
- 
-+int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
++static void audioformat_free(struct audioformat *fp)
 +{
-+	int err;
-+	bool has_non_pcm = false;
-+
-+	/* parse PCM formats */
-+	err = __snd_usb_parse_audio_interface(chip, iface_no, &has_non_pcm, false);
-+	if (err < 0)
-+		return err;
-+
-+	if (has_non_pcm) {
-+		/* parse non-PCM formats */
-+		err = __snd_usb_parse_audio_interface(chip, iface_no, &has_non_pcm, true);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
++	list_del(&fp->list); /* unlink for avoiding double-free */
++	kfree(fp->rate_table);
++	kfree(fp->chmap);
++	kfree(fp);
 +}
 +
+ /*
+  * free a substream
+  */
+@@ -37,11 +45,8 @@ static void free_substream(struct snd_usb_substream *subs)
+ 
+ 	if (!subs->num_formats)
+ 		return; /* not initialized */
+-	list_for_each_entry_safe(fp, n, &subs->fmt_list, list) {
+-		kfree(fp->rate_table);
+-		kfree(fp->chmap);
+-		kfree(fp);
+-	}
++	list_for_each_entry_safe(fp, n, &subs->fmt_list, list)
++		audioformat_free(fp);
+ 	kfree(subs->rate_list.list);
+ 	kfree(subs->str_pd);
+ 	snd_media_stream_delete(subs);
+@@ -832,8 +837,7 @@ snd_usb_get_audioformat_uac12(struct snd_usb_audio *chip,
+ 	/* ok, let's parse further... */
+ 	if (snd_usb_parse_audio_format(chip, fp, format,
+ 					fmt, stream) < 0) {
+-		kfree(fp->rate_table);
+-		kfree(fp);
++		audioformat_free(fp);
+ 		return NULL;
+ 	}
+ 
+@@ -1043,8 +1047,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
+ 
+ 		pd = kzalloc(sizeof(*pd), GFP_KERNEL);
+ 		if (!pd) {
+-			kfree(fp->rate_table);
+-			kfree(fp);
++			audioformat_free(fp);
+ 			return NULL;
+ 		}
+ 		pd->pd_id = (stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+@@ -1063,9 +1066,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
+ 		/* ok, let's parse further... */
+ 		if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
+ 			kfree(pd);
+-			kfree(fp->chmap);
+-			kfree(fp->rate_table);
+-			kfree(fp);
++			audioformat_free(fp);
+ 			return NULL;
+ 		}
+ 	}
+@@ -1184,11 +1185,8 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 			err = snd_usb_add_audio_stream(chip, stream, fp);
+ 
+ 		if (err < 0) {
+-			list_del(&fp->list); /* unlink for avoiding double-free */
++			audioformat_free(fp);
+ 			kfree(pd);
+-			kfree(fp->rate_table);
+-			kfree(fp->chmap);
+-			kfree(fp);
+ 			return err;
+ 		}
+ 		/* try to set the interface... */
 -- 
 2.16.4
