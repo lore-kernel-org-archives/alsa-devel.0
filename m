@@ -1,7 +1,7 @@
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 7/7] ASoC: dt-bindings: Introduce compatible strings for 7ULP and 8MQ
-Date: Sun, 28 Jul 2019 22:24:29 +0300
-Message-ID: <20190728192429.1514-8-daniel.baluta@nxp.com>
+Subject: [PATCH v2 6/7] ASoC: fsl_sai: Add support for imx7ulp/imx8mq
+Date: Sun, 28 Jul 2019 22:24:28 +0300
+Message-ID: <20190728192429.1514-7-daniel.baluta@nxp.com>
 References: <20190728192429.1514-1-daniel.baluta@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190728192429.1514-1-daniel.baluta@nxp.com>
@@ -10,27 +10,45 @@ To: broonie@kernel.org
 Cc: l.stach@pengutronix.de, mihai.serban@gmail.com, alsa-devel@alsa-project.org, viorel.suman@nxp.com, timur@kernel.org, shengjiu.wang@nxp.com, angus@akkea.ca, tiwai@suse.com, nicoleotsuka@gmail.com, linux-imx@nxp.com, kernel@pengutronix.de, festevam@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, robh@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-For i.MX7ULP and i.MX8MQ register map is changed. Add two new compatbile
-strings to differentiate this.
+SAI module on imx7ulp/imx8m features 2 new registers (VERID and PARAM)
+at the beginning of register address space.
+
+On imx7ulp FIFOs can held up to 16 x 32 bit samples.
+On imx8mq FIFOs can held up to 128 x 32 bit samples.
 
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 2b38036a4883..b008e9cfedc1 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -8,7 +8,8 @@ codec/DSP interfaces.
- Required properties:
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 54e5e9abae01..0fb6750fefd5 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1030,10 +1030,24 @@ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
+ 	.reg_offset = 0,
+ };
  
-   - compatible		: Compatible list, contains "fsl,vf610-sai",
--			  "fsl,imx6sx-sai" or "fsl,imx6ul-sai"
-+			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
-+			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai".
- 
-   - reg			: Offset and length of the register set for the device.
- 
++static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
++	.use_imx_pcm = true,
++	.fifo_depth = 16,
++	.reg_offset = 8,
++};
++
++static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
++	.use_imx_pcm = true,
++	.fifo_depth = 128,
++	.reg_offset = 8,
++};
++
+ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
+ 	{ .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
+ 	{ .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
++	{ .compatible = "fsl,imx7ulp-sai", .data = &fsl_sai_imx7ulp_data },
++	{ .compatible = "fsl,imx8mq-sai", .data = &fsl_sai_imx8mq_data },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_sai_ids);
 -- 
 2.17.1
