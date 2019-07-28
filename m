@@ -1,56 +1,36 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next 04/34] ASoC: ep93xx-i2s: use
- devm_platform_ioremap_resource() to simplify code
-Date: Sat, 27 Jul 2019 23:07:08 +0800
-Message-ID: <20190727150738.54764-5-yuehaibing@huawei.com>
-References: <20190727150738.54764-1-yuehaibing@huawei.com>
+From: GitHub pull_request - opened <github@alsa-project.org>
+Subject: axfer: mapper: fix parameter check for demuxer
+Date: Sun, 28 Jul 2019 09:32:38 +0200 (CEST)
+Message-ID: <20190728073238.A9680F804CB@alsa1.perex.cz>
+References: <1564299154734652996-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190727150738.54764-1-yuehaibing@huawei.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, eric@anholt.net, wahrenst@gmx.net, f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, paul@crapouillou.net, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, matthias.bgg@gmail.com, jbrunet@baylibre.com, khilman@baylibre.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, baohua@kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, mripard@kernel.org, wens@csie.org, thierry.reding@gmail.com, jonathanh@nvidia.com, yamada.masahiro@socionext.com, michal.simek@xilinx.com, jcmvbkbc@gm
-Cc: linux-xtensa@linux-xtensa.org, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id A7F5AF80134
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2019 09:32:35 +0200 (CEST)
+In-Reply-To: <1564299154734652996-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use devm_platform_ioremap_resource() to simplify the code a bit.
-This is detected by coccinelle.
+alsa-project/alsa-utils pull request #24 was opened from takaswie:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/cirrus/ep93xx-i2s.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Each container should be configured to store one saple per frame in
+demuxer case. This commit fixes the bug.
 
-diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index 0b4355e..7d9cf67 100644
---- a/sound/soc/cirrus/ep93xx-i2s.c
-+++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -430,15 +430,13 @@ static const struct snd_soc_component_driver ep93xx_i2s_component = {
- static int ep93xx_i2s_probe(struct platform_device *pdev)
- {
- 	struct ep93xx_i2s_info *info;
--	struct resource *res;
- 	int err;
- 
- 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	info->regs = devm_ioremap_resource(&pdev->dev, res);
-+	info->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(info->regs))
- 		return PTR_ERR(info->regs);
- 
--- 
-2.7.4
+Fixes: 25c8e3bebb53 ('axfer: add support for a mapper for multiple target')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/24
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/24.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
