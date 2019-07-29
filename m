@@ -1,112 +1,58 @@
-From: syzbot <syzbot+d59c4387bfb6eced94e2@syzkaller.appspotmail.com>
-Subject: general protection fault in snd_usb_pipe_sanity_check
-Date: Mon, 29 Jul 2019 09:38:06 -0700
-Message-ID: <0000000000003e112b058ed484c4@google.com>
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 00/11] JZ4740 SoC cleanup
+Date: Mon, 29 Jul 2019 13:05:21 -0400
+Message-ID: <1564419921.1759.1@crapouillou.net>
+References: <20190725220215.460-1-paul@crapouillou.net>
+        <CAFLxGvyi0+0E3M12A7cRoHfEKd8-7Yr8EMG9J=2XcjCxPWY5pA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAFLxGvyi0+0E3M12A7cRoHfEKd8-7Yr8EMG9J=2XcjCxPWY5pA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: allison@lohutok.net, alsa-devel@alsa-project.org, andreyknvl@google.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, perex@perex.cz, rfontana@redhat.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tiwai@suse.com
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vinod Koul <vkoul@kernel.org>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Lee Jones <lee.jones@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>, linux-pm@vger.kernel.org, linux-mips@vger.kernel.orgDRI mailing list <d>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    7f7867ff usb-fuzzer: main usb gadget fuzzer driver
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=12befdc8600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=792eb47789f57810
-dashboard link: https://syzkaller.appspot.com/bug?extid=d59c4387bfb6eced94e2
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16efc49fa00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13245854600000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d59c4387bfb6eced94e2@syzkaller.appspotmail.com
-
-usb 1-1: New USB device found, idVendor=07fd, idProduct=0004,  
-bcdDevice=d5.ac
-usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-usb 1-1: config 0 descriptor??
-usb 1-1: string descriptor 0 read error: -71
-usb 1-1: Waiting for MOTU Microbook II to boot up...
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] SMP KASAN
-CPU: 1 PID: 21 Comm: kworker/1:1 Not tainted 5.3.0-rc2+ #23
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:snd_usb_pipe_sanity_check+0x80/0x130 sound/usb/helper.c:75
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 b3 00 00 00 48 8b 6d 00 c1 eb 1e 48 b8  
-00 00 00 00 00 fc ff df 48 8d 7d 03 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48  
-89 fa 83 e2 07 38 d0 7f 04 84 c0 75 7b 48 b8 00 00
-RSP: 0018:ffff8881da2f7010 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff8484d252
-RDX: 0000000000000000 RSI: ffffffff8484d26c RDI: 0000000000000003
-RBP: 0000000000000000 R08: ffff8881da22e000 R09: ffffed103b665d58
-R10: ffffed103b665d57 R11: ffff8881db32eabf R12: 0000000000000000
-R13: ffff8881d400ba80 R14: 1ffff1103b45ee06 R15: ffff8881c79244a0
-FS:  0000000000000000(0000) GS:ffff8881db300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f31b2a87000 CR3: 00000001d3fd4000 CR4: 00000000001406e0
-Call Trace:
-  snd_usb_motu_microbookii_communicate.constprop.0+0xa0/0x2fb  
-sound/usb/quirks.c:1007
-  snd_usb_motu_microbookii_boot_quirk sound/usb/quirks.c:1051 [inline]
-  snd_usb_apply_boot_quirk.cold+0x163/0x370 sound/usb/quirks.c:1280
-  usb_audio_probe+0x2ec/0x2010 sound/usb/card.c:576
-  usb_probe_interface+0x305/0x7a0 drivers/usb/core/driver.c:361
-  really_probe+0x281/0x650 drivers/base/dd.c:548
-  driver_probe_device+0x101/0x1b0 drivers/base/dd.c:709
-  __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:816
-  bus_for_each_drv+0x15c/0x1e0 drivers/base/bus.c:454
-  __device_attach+0x217/0x360 drivers/base/dd.c:882
-  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:514
-  device_add+0xae6/0x16f0 drivers/base/core.c:2114
-  usb_set_configuration+0xdf6/0x1670 drivers/usb/core/message.c:2023
-  generic_probe+0x9d/0xd5 drivers/usb/core/generic.c:210
-  usb_probe_device+0x99/0x100 drivers/usb/core/driver.c:266
-  really_probe+0x281/0x650 drivers/base/dd.c:548
-  driver_probe_device+0x101/0x1b0 drivers/base/dd.c:709
-  __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:816
-  bus_for_each_drv+0x15c/0x1e0 drivers/base/bus.c:454
-  __device_attach+0x217/0x360 drivers/base/dd.c:882
-  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:514
-  device_add+0xae6/0x16f0 drivers/base/core.c:2114
-  usb_new_device.cold+0x6a4/0xe79 drivers/usb/core/hub.c:2536
-  hub_port_connect drivers/usb/core/hub.c:5098 [inline]
-  hub_port_connect_change drivers/usb/core/hub.c:5213 [inline]
-  port_event drivers/usb/core/hub.c:5359 [inline]
-  hub_event+0x1b5c/0x3640 drivers/usb/core/hub.c:5441
-  process_one_work+0x92b/0x1530 kernel/workqueue.c:2269
-  worker_thread+0x96/0xe20 kernel/workqueue.c:2415
-  kthread+0x318/0x420 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Modules linked in:
----[ end trace 41e8577a8c48635e ]---
-RIP: 0010:snd_usb_pipe_sanity_check+0x80/0x130 sound/usb/helper.c:75
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 b3 00 00 00 48 8b 6d 00 c1 eb 1e 48 b8  
-00 00 00 00 00 fc ff df 48 8d 7d 03 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48  
-89 fa 83 e2 07 38 d0 7f 04 84 c0 75 7b 48 b8 00 00
-RSP: 0018:ffff8881da2f7010 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff8484d252
-RDX: 0000000000000000 RSI: ffffffff8484d26c RDI: 0000000000000003
-RBP: 0000000000000000 R08: ffff8881da22e000 R09: ffffed103b665d58
-R10: ffffed103b665d57 R11: ffff8881db32eabf R12: 0000000000000000
-R13: ffff8881d400ba80 R14: 1ffff1103b45ee06 R15: ffff8881c79244a0
-FS:  0000000000000000(0000) GS:ffff8881db300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f31b2a87000 CR3: 00000001d3fd4000 CR4: 00000000001406e0
+Hi Richard,
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Le lun. 29 juil. 2019 =E0 7:23, Richard Weinberger=20
+<richard.weinberger@gmail.com> a =E9crit :
+> On Fri, Jul 26, 2019 at 12:02 AM Paul Cercueil <paul@crapouillou.net>=20
+> wrote:
+>>=20
+>>  Hi,
+>>=20
+>>  This patchset converts the Qi LB60 MIPS board to devicetree and=20
+>> makes it
+>>  use all the shiny new drivers that have been developed or updated
+>>  recently.
+>>=20
+>>  All the crappy old drivers and custom code can be dropped since they
+>>  have been replaced by better alternatives.
+>>=20
+>>  Some of these alternatives are not yet in 5.3-rc1 but have already=20
+>> been
+>>  accepted by their respective maintainer for inclusion in 5.4-rc1.
+>>=20
+>>  To upstream this patchset, I think that as soon as MIPS maintainers
+>>  agree to take patches 01-03/11 and 11/11, the other patches can go
+>>  through their respective maintainer's tree.
+>=20
+> Was this series tested with the Ben Nanonote device?
+> I have one of these and from time to time I upgrade the kernel on it.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Yes! Artur (Cc'd) tested it.
+
+You can test it yourself, after merging this patchset with:
+https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/slave-dma.git=20
+branch next,
+git://git.freedesktop.org/git/drm-misc branch drm-misc-next.
+
+These will be in 5.4-rc1.
+
+Cheers,
+-Paul
+
+=
