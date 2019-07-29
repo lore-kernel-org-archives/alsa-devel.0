@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 1/5] ASoC: Intel: Skylake: move NHLT header
-	to common directory
-Date: Mon, 29 Jul 2019 10:51:47 -0500
-Message-ID: <20190729155151.14055-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 3/5] ALSA: hda: intel-nhlt: handle NHLT
+	VENDOR_DEFINED DMIC geometry
+Date: Mon, 29 Jul 2019 10:51:49 -0500
+Message-ID: <20190729155151.14055-4-pierre-louis.bossart@linux.intel.com>
 References: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA2ADF800BF
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 17:51:59 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0B06F803D5
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 17:52:01 +0200 (CEST)
 In-Reply-To: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,69 +27,68 @@ To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Prepare move from NHLT code to common directory, starting with header.
+The NHLT spec defines a VENDOR_DEFINED geometry, which requires
+reading additional information to figure out the number of
+microphones.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h | 0
- sound/soc/intel/skylake/skl-nhlt.c                               | 1 +
- sound/soc/intel/skylake/skl-ssp-clk.c                            | 1 +
- sound/soc/intel/skylake/skl-topology.c                           | 1 +
- sound/soc/intel/skylake/skl.h                                    | 1 -
- 5 files changed, 3 insertions(+), 1 deletion(-)
- rename sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h (100%)
+ include/sound/intel-nhlt.h | 10 ++++++++--
+ sound/hda/intel-nhlt.c     |  6 +++++-
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/include/sound/intel-nhlt.h
-similarity index 100%
-rename from sound/soc/intel/skylake/skl-nhlt.h
-rename to include/sound/intel-nhlt.h
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 1132109cb992..aabc5d71650e 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -9,6 +9,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <linux/pci.h>
-+#include <sound/intel-nhlt.h>
- #include "skl.h"
- #include "skl-i2s.h"
+diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
+index 857922f03931..f657fd8fc0ad 100644
+--- a/include/sound/intel-nhlt.h
++++ b/include/sound/intel-nhlt.h
+@@ -96,16 +96,22 @@ struct nhlt_resource_desc  {
+ #define MIC_ARRAY_2CH 2
+ #define MIC_ARRAY_4CH 4
  
-diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
-index 5bb6e40d4d3e..5bfcd46452f9 100644
---- a/sound/soc/intel/skylake/skl-ssp-clk.c
-+++ b/sound/soc/intel/skylake/skl-ssp-clk.c
-@@ -11,6 +11,7 @@
- #include <linux/platform_device.h>
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
-+#include <sound/intel-nhlt.h>
- #include "skl.h"
- #include "skl-ssp-clk.h"
- #include "skl-topology.h"
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 6241e35213af..f8a501cf5fbd 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -12,6 +12,7 @@
- #include <linux/types.h>
- #include <linux/firmware.h>
- #include <linux/uuid.h>
-+#include <sound/intel-nhlt.h>
- #include <sound/soc.h>
- #include <sound/soc-topology.h>
- #include <uapi/sound/snd_sst_tokens.h>
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 6070666a6392..928e8115a1a7 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -16,7 +16,6 @@
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_codec.h>
- #include <sound/soc.h>
--#include "skl-nhlt.h"
- #include "skl-ssp-clk.h"
+-struct nhlt_tdm_config {
++struct nhlt_device_specific_config {
+ 	u8 virtual_slot;
+ 	u8 config_type;
+ } __packed;
  
- #define SKL_SUSPEND_DELAY 2000
+ struct nhlt_dmic_array_config {
+-	struct nhlt_tdm_config tdm_config;
++	struct nhlt_device_specific_config device_config;
+ 	u8 array_type;
+ } __packed;
+ 
++struct nhlt_vendor_dmic_array_config {
++	struct nhlt_dmic_array_config dmic_config;
++	u8 nb_mics;
++	/* TODO add vendor mic config */
++} __packed;
++
+ enum {
+ 	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
+ 	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
+diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
+index 7a62e03ba407..daede96f28ee 100644
+--- a/sound/hda/intel-nhlt.c
++++ b/sound/hda/intel-nhlt.c
+@@ -63,6 +63,7 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
+ {
+ 	struct nhlt_endpoint *epnt;
+ 	struct nhlt_dmic_array_config *cfg;
++	struct nhlt_vendor_dmic_array_config *cfg_vendor;
+ 	unsigned int dmic_geo = 0;
+ 	u8 j;
+ 
+@@ -86,7 +87,10 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
+ 			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
+ 				dmic_geo = MIC_ARRAY_4CH;
+ 				break;
+-
++			case NHLT_MIC_ARRAY_VENDOR_DEFINED:
++				cfg_vendor = (struct nhlt_vendor_dmic_array_config *)cfg;
++				dmic_geo = cfg_vendor->nb_mics;
++				break;
+ 			default:
+ 				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
+ 					 cfg->array_type);
 -- 
 2.20.1
