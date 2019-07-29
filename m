@@ -1,71 +1,66 @@
-From: Jon Flatley <jflat@chromium.org>
-Subject: [BUG] bdw-rt5650 DSP boot timeout
-Date: Mon, 29 Jul 2019 14:53:16 -0700
-Message-ID: <CACJJ=pxPm7dRUE534hDWy2tN3dGYDyrgU8JKqett=wOQx+nWCQ@mail.gmail.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ASoC: ti: Mark expected switch fall-throughs
+Date: Mon, 29 Jul 2019 17:15:34 -0500
+Message-ID: <20190729221534.GA18696@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5B45F800E4
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 23:53:30 +0200 (CEST)
-Received: by mail-lf1-x131.google.com with SMTP id b17so43160635lff.7
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 14:53:30 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com.
- [209.85.167.53])
- by smtp.gmail.com with ESMTPSA id m10sm10768428lfd.32.2019.07.29.14.53.28
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
- Mon, 29 Jul 2019 14:53:28 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id v85so43109282lfa.6
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 14:53:28 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: benzh@chromium.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Kees Cook <keescook@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've been working on upstreaming the bdw-rt5650 machine driver for the
-Acer Chromebase 24 (buddy). There seems to be an issue when first
-setting the hardware controls that appears to be crashing the DSP:
+Mark switch cases where we are expecting to fall through.
 
-[   51.424554] haswell-pcm-audio haswell-pcm-audio: FW loaded, mailbox
-readback FW info: type 01, - version: 00.00, build 77, source commit
-id: 876ac6906f31a43b6772b23c7c983ce9dcb18a19
-...
-[   84.924666] haswell-pcm-audio haswell-pcm-audio: error: audio DSP
-boot timeout IPCD 0x0 IPCX 0x0
-[   85.260655] haswell-pcm-audio haswell-pcm-audio: ipc: --message
-timeout-- ipcx 0x83000000 isr 0x00000000 ipcd 0x00000000 imrx
-0x7fff0000
-[   85.273609] haswell-pcm-audio haswell-pcm-audio: error: stream commit failed
-[   85.279746]  System PCM: error: failed to commit stream -110
-[   85.285388] haswell-pcm-audio haswell-pcm-audio: ASoC:
-haswell-pcm-audio hw params failed: -110
-[   85.293963]  System PCM: ASoC: hw_params FE failed -110
+This patch fixes the following warning (Building: arm):
 
-This happens roughly 50% of the time when first setting hardware
-controls after a reboot. The other 50% of the time the DSP comes up
-just fine and audio works fine thereafter. Adding "#define DEBUG 1" to
-sound/soc/intel/haswell/sst-haswell-ipc.c makes the issue occur much
-less frequently in my testing. Seems like a subtle timing issue.
+sound/soc/ti/n810.c: In function ‘n810_ext_control’:
+sound/soc/ti/n810.c:48:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   line1l = 1;
+   ~~~~~~~^~~
+sound/soc/ti/n810.c:49:2: note: here
+  case N810_JACK_HP:
+  ^~~~
 
-There were timing issues encountered during the bringup of the 2015
-chromebook pixel (samus) which uses the bdw-rt5677 machine driver.
-Those were slightly different, and manifested during repeated
-arecords. Both devices use the same revision of the sst2 firmware.
+sound/soc/ti/rx51.c: In function ‘rx51_ext_control’:
+sound/soc/ti/rx51.c:57:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   hs = 1;
+   ~~~^~~
+sound/soc/ti/rx51.c:58:2: note: here
+  case RX51_JACK_HP:
+  ^~~~
 
-Any ideas for how to debug this?
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/soc/ti/n810.c | 1 +
+ sound/soc/ti/rx51.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-Thanks,
-Jon
+diff --git a/sound/soc/ti/n810.c b/sound/soc/ti/n810.c
+index 2c3f2a4c1700..3ad2b6daf31e 100644
+--- a/sound/soc/ti/n810.c
++++ b/sound/soc/ti/n810.c
+@@ -46,6 +46,7 @@ static void n810_ext_control(struct snd_soc_dapm_context *dapm)
+ 	switch (n810_jack_func) {
+ 	case N810_JACK_HS:
+ 		line1l = 1;
++		/* fall through */
+ 	case N810_JACK_HP:
+ 		hp = 1;
+ 		break;
+diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
+index bc6046534fa5..ccd0e8a07dd1 100644
+--- a/sound/soc/ti/rx51.c
++++ b/sound/soc/ti/rx51.c
+@@ -55,6 +55,7 @@ static void rx51_ext_control(struct snd_soc_dapm_context *dapm)
+ 		break;
+ 	case RX51_JACK_HS:
+ 		hs = 1;
++		/* fall through */
+ 	case RX51_JACK_HP:
+ 		hp = 1;
+ 		break;
+-- 
+2.22.0
