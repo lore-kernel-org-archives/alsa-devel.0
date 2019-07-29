@@ -1,58 +1,72 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH v2 4/7] ASoC: dt-bindings: Document dl-mask property
-Date: Mon, 29 Jul 2019 23:27:17 +0300
-Message-ID: <CAEnQRZCxi9Jo_-MrHaLarX_6uiKaSmJuVgRSA23P+vE305jAuA@mail.gmail.com>
-References: <20190728192429.1514-1-daniel.baluta@nxp.com> <20190728192429.1514-5-daniel.baluta@nxp.com>
- <20190729201508.GB20594@Asurada-Nvidia.nvidia.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v2] sound: dmasound_atari: Mark expected switch fall-through
+Date: Mon, 29 Jul 2019 15:54:54 -0500
+Message-ID: <20190729205454.GA5084@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190729201508.GB20594@Asurada-Nvidia.nvidia.com>
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>, Lucas Stach <l.stach@pengutronix.de>, Mihai Serban <mihai.serban@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Viorel Suman <viorel.suman@nxp.com>, Timur Tabi <timur@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "Angus Ainslie (Purism)" <angus@akkea.ca>, Takashi Iwai <tiwai@suse.com>, dl-linux-imx <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Devicetree List <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <keescook@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 29, 2019 at 11:15 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Sun, Jul 28, 2019 at 10:24:26PM +0300, Daniel Baluta wrote:
-> > SAI supports up to 8 data lines. This property let the user
-> > configure how many data lines should be used per transfer
-> > direction (Tx/Rx).
->
-> This sounds a bit less persuasive to me as we are adding a
-> DT property that's used to describe a hardware connections
-> and it would be probably better to mention that the mapping
-> between the mask and the data lines could be more flexible
-> than consecutive active data lines as you said previously.
->
-> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> > ---
-> >  Documentation/devicetree/bindings/sound/fsl-sai.txt | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> > index 2e726b983845..2b38036a4883 100644
-> > --- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> > +++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> > @@ -49,6 +49,13 @@ Optional properties:
-> >
-> >    - big-endian               : Boolean property, required if all the SAI
-> >                         registers are big-endian rather than little-endian.
-> > +  - fsl,dl-mask              : list of two integers (bitmask, first for RX, second
->
-> I am leaving this naming to DT maintainer.
->
-> > +                       for TX) representing enabled datalines. Bit 0
-> > +                       represents first data line, bit 1 represents second
-> > +                       data line and so on. Data line is enabled if
-> > +                       corresponding bit is set to 1. By default, if property
-> > +                       not present, only dataline 0 is enabled for both
-> > +                       directions.
->
-> To make this patch more convincing, could we add an example
-> as well in the Example section of this binding file? Like:
->         /* RX data lines 0/1 and TX data lines 0/2 are connected */
->         fsl,dl-mask = <0x3 0x5>;
+Mark switch cases where we are expecting to fall through.
 
-Sure, will add an example.
+This patch fixes the following warning (Building: m68k):
+
+sound/oss/dmasound/dmasound_atari.c: warning: this statement may fall
+through [-Wimplicit-fallthrough=]:  => 1449:24
+
+Notice that, in this particular case, the code comment is
+modified in accordance with what GCC is expecting to find.
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+Changes in v2:
+ - Update code so switch and case statements are at the same indent.
+
+ sound/oss/dmasound/dmasound_atari.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
+index 83653683fd68..823ccfa089b2 100644
+--- a/sound/oss/dmasound/dmasound_atari.c
++++ b/sound/oss/dmasound/dmasound_atari.c
+@@ -1432,25 +1432,25 @@ static int FalconMixerIoctl(u_int cmd, u_long arg)
+ {
+ 	int data;
+ 	switch (cmd) {
+-	    case SOUND_MIXER_READ_RECMASK:
++	case SOUND_MIXER_READ_RECMASK:
+ 		return IOCTL_OUT(arg, SOUND_MASK_MIC);
+-	    case SOUND_MIXER_READ_DEVMASK:
++	case SOUND_MIXER_READ_DEVMASK:
+ 		return IOCTL_OUT(arg, SOUND_MASK_VOLUME | SOUND_MASK_MIC | SOUND_MASK_SPEAKER);
+-	    case SOUND_MIXER_READ_STEREODEVS:
++	case SOUND_MIXER_READ_STEREODEVS:
+ 		return IOCTL_OUT(arg, SOUND_MASK_VOLUME | SOUND_MASK_MIC);
+-	    case SOUND_MIXER_READ_VOLUME:
++	case SOUND_MIXER_READ_VOLUME:
+ 		return IOCTL_OUT(arg,
+ 			VOLUME_ATT_TO_VOXWARE(dmasound.volume_left) |
+ 			VOLUME_ATT_TO_VOXWARE(dmasound.volume_right) << 8);
+-	    case SOUND_MIXER_READ_CAPS:
++	case SOUND_MIXER_READ_CAPS:
+ 		return IOCTL_OUT(arg, SOUND_CAP_EXCL_INPUT);
+-	    case SOUND_MIXER_WRITE_MIC:
++	case SOUND_MIXER_WRITE_MIC:
+ 		IOCTL_IN(arg, data);
+ 		tt_dmasnd.input_gain =
+ 			RECLEVEL_VOXWARE_TO_GAIN(data & 0xff) << 4 |
+ 			RECLEVEL_VOXWARE_TO_GAIN(data >> 8 & 0xff);
+-		/* fall thru, return set value */
+-	    case SOUND_MIXER_READ_MIC:
++		/* fall through - return set value */
++	case SOUND_MIXER_READ_MIC:
+ 		return IOCTL_OUT(arg,
+ 			RECLEVEL_GAIN_TO_VOXWARE(tt_dmasnd.input_gain >> 4 & 0xf) |
+ 			RECLEVEL_GAIN_TO_VOXWARE(tt_dmasnd.input_gain & 0xf) << 8);
+-- 
+2.22.0
