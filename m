@@ -1,233 +1,112 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 4/5] ASoC: Intel: Skylake: use common NHLT
-	module
-Date: Mon, 29 Jul 2019 10:51:50 -0500
-Message-ID: <20190729155151.14055-5-pierre-louis.bossart@linux.intel.com>
-References: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
+From: syzbot <syzbot+d59c4387bfb6eced94e2@syzkaller.appspotmail.com>
+Subject: general protection fault in snd_usb_pipe_sanity_check
+Date: Mon, 29 Jul 2019 09:38:06 -0700
+Message-ID: <0000000000003e112b058ed484c4@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBA1EF8049A
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 17:52:02 +0200 (CEST)
-In-Reply-To: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: allison@lohutok.net, alsa-devel@alsa-project.org, andreyknvl@google.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, perex@perex.cz, rfontana@redhat.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-No functionality change, only use common functions now.
+Hello,
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+syzbot found the following crash on:
+
+HEAD commit:    7f7867ff usb-fuzzer: main usb gadget fuzzer driver
+git tree:       https://github.com/google/kasan.git usb-fuzzer
+console output: https://syzkaller.appspot.com/x/log.txt?x=12befdc8600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=792eb47789f57810
+dashboard link: https://syzkaller.appspot.com/bug?extid=d59c4387bfb6eced94e2
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16efc49fa00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13245854600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+d59c4387bfb6eced94e2@syzkaller.appspotmail.com
+
+usb 1-1: New USB device found, idVendor=07fd, idProduct=0004,  
+bcdDevice=d5.ac
+usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+usb 1-1: config 0 descriptor??
+usb 1-1: string descriptor 0 read error: -71
+usb 1-1: Waiting for MOTU Microbook II to boot up...
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] SMP KASAN
+CPU: 1 PID: 21 Comm: kworker/1:1 Not tainted 5.3.0-rc2+ #23
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:snd_usb_pipe_sanity_check+0x80/0x130 sound/usb/helper.c:75
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 b3 00 00 00 48 8b 6d 00 c1 eb 1e 48 b8  
+00 00 00 00 00 fc ff df 48 8d 7d 03 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48  
+89 fa 83 e2 07 38 d0 7f 04 84 c0 75 7b 48 b8 00 00
+RSP: 0018:ffff8881da2f7010 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff8484d252
+RDX: 0000000000000000 RSI: ffffffff8484d26c RDI: 0000000000000003
+RBP: 0000000000000000 R08: ffff8881da22e000 R09: ffffed103b665d58
+R10: ffffed103b665d57 R11: ffff8881db32eabf R12: 0000000000000000
+R13: ffff8881d400ba80 R14: 1ffff1103b45ee06 R15: ffff8881c79244a0
+FS:  0000000000000000(0000) GS:ffff8881db300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f31b2a87000 CR3: 00000001d3fd4000 CR4: 00000000001406e0
+Call Trace:
+  snd_usb_motu_microbookii_communicate.constprop.0+0xa0/0x2fb  
+sound/usb/quirks.c:1007
+  snd_usb_motu_microbookii_boot_quirk sound/usb/quirks.c:1051 [inline]
+  snd_usb_apply_boot_quirk.cold+0x163/0x370 sound/usb/quirks.c:1280
+  usb_audio_probe+0x2ec/0x2010 sound/usb/card.c:576
+  usb_probe_interface+0x305/0x7a0 drivers/usb/core/driver.c:361
+  really_probe+0x281/0x650 drivers/base/dd.c:548
+  driver_probe_device+0x101/0x1b0 drivers/base/dd.c:709
+  __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:816
+  bus_for_each_drv+0x15c/0x1e0 drivers/base/bus.c:454
+  __device_attach+0x217/0x360 drivers/base/dd.c:882
+  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:514
+  device_add+0xae6/0x16f0 drivers/base/core.c:2114
+  usb_set_configuration+0xdf6/0x1670 drivers/usb/core/message.c:2023
+  generic_probe+0x9d/0xd5 drivers/usb/core/generic.c:210
+  usb_probe_device+0x99/0x100 drivers/usb/core/driver.c:266
+  really_probe+0x281/0x650 drivers/base/dd.c:548
+  driver_probe_device+0x101/0x1b0 drivers/base/dd.c:709
+  __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:816
+  bus_for_each_drv+0x15c/0x1e0 drivers/base/bus.c:454
+  __device_attach+0x217/0x360 drivers/base/dd.c:882
+  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:514
+  device_add+0xae6/0x16f0 drivers/base/core.c:2114
+  usb_new_device.cold+0x6a4/0xe79 drivers/usb/core/hub.c:2536
+  hub_port_connect drivers/usb/core/hub.c:5098 [inline]
+  hub_port_connect_change drivers/usb/core/hub.c:5213 [inline]
+  port_event drivers/usb/core/hub.c:5359 [inline]
+  hub_event+0x1b5c/0x3640 drivers/usb/core/hub.c:5441
+  process_one_work+0x92b/0x1530 kernel/workqueue.c:2269
+  worker_thread+0x96/0xe20 kernel/workqueue.c:2415
+  kthread+0x318/0x420 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+Modules linked in:
+---[ end trace 41e8577a8c48635e ]---
+RIP: 0010:snd_usb_pipe_sanity_check+0x80/0x130 sound/usb/helper.c:75
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 b3 00 00 00 48 8b 6d 00 c1 eb 1e 48 b8  
+00 00 00 00 00 fc ff df 48 8d 7d 03 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48  
+89 fa 83 e2 07 38 d0 7f 04 84 c0 75 7b 48 b8 00 00
+RSP: 0018:ffff8881da2f7010 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff8484d252
+RDX: 0000000000000000 RSI: ffffffff8484d26c RDI: 0000000000000003
+RBP: 0000000000000000 R08: ffff8881da22e000 R09: ffffed103b665d58
+R10: ffffed103b665d57 R11: ffff8881db32eabf R12: 0000000000000000
+R13: ffff8881d400ba80 R14: 1ffff1103b45ee06 R15: ffff8881c79244a0
+FS:  0000000000000000(0000) GS:ffff8881db300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f31b2a87000 CR3: 00000001d3fd4000 CR4: 00000000001406e0
+
+
 ---
- sound/soc/intel/Kconfig            |  1 +
- sound/soc/intel/skylake/skl-nhlt.c | 90 ------------------------------
- sound/soc/intel/skylake/skl.c      | 12 ++--
- sound/soc/intel/skylake/skl.h      |  3 -
- 4 files changed, 9 insertions(+), 97 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 96a00a9d4cf8..a3ec17fd63cd 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -215,6 +215,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
- 	select SND_SOC_ACPI_INTEL_MATCH
-+	select SND_INTEL_NHLT
- 	help
- 	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
- 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index aabc5d71650e..6f57ceb9efb7 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -13,54 +13,6 @@
- #include "skl.h"
- #include "skl-i2s.h"
- 
--#define NHLT_ACPI_HEADER_SIG	"NHLT"
--
--/* Unique identification for getting NHLT blobs */
--static guid_t osc_guid =
--	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
--		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
--
--
--struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
--{
--	acpi_handle handle;
--	union acpi_object *obj;
--	struct nhlt_resource_desc  *nhlt_ptr = NULL;
--	struct nhlt_acpi_table *nhlt_table = NULL;
--
--	handle = ACPI_HANDLE(dev);
--	if (!handle) {
--		dev_err(dev, "Didn't find ACPI_HANDLE\n");
--		return NULL;
--	}
--
--	obj = acpi_evaluate_dsm(handle, &osc_guid, 1, 1, NULL);
--	if (obj && obj->type == ACPI_TYPE_BUFFER) {
--		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
--		if (nhlt_ptr->length)
--			nhlt_table = (struct nhlt_acpi_table *)
--				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
--				MEMREMAP_WB);
--		ACPI_FREE(obj);
--		if (nhlt_table && (strncmp(nhlt_table->header.signature,
--					NHLT_ACPI_HEADER_SIG,
--					strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
--			memunmap(nhlt_table);
--			dev_err(dev, "NHLT ACPI header signature incorrect\n");
--			return NULL;
--		}
--		return nhlt_table;
--	}
--
--	dev_err(dev, "device specific method to extract NHLT blob failed\n");
--	return NULL;
--}
--
--void skl_nhlt_free(struct nhlt_acpi_table *nhlt)
--{
--	memunmap((void *) nhlt);
--}
--
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
- 		struct device *dev, struct nhlt_fmt *fmt,
- 		u8 no_ch, u32 rate, u16 bps, u8 linktype)
-@@ -163,48 +115,6 @@ struct nhlt_specific_cfg
- 	return NULL;
- }
- 
--int skl_get_dmic_geo(struct skl *skl)
--{
--	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
--	struct nhlt_endpoint *epnt;
--	struct nhlt_dmic_array_config *cfg;
--	struct device *dev = &skl->pci->dev;
--	unsigned int dmic_geo = 0;
--	u8 j;
--
--	if (!nhlt)
--		return 0;
--
--	epnt = (struct nhlt_endpoint *)nhlt->desc;
--
--	for (j = 0; j < nhlt->endpoint_count; j++) {
--		if (epnt->linktype == NHLT_LINK_DMIC) {
--			cfg = (struct nhlt_dmic_array_config  *)
--					(epnt->config.caps);
--			switch (cfg->array_type) {
--			case NHLT_MIC_ARRAY_2CH_SMALL:
--			case NHLT_MIC_ARRAY_2CH_BIG:
--				dmic_geo |= MIC_ARRAY_2CH;
--				break;
--
--			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
--			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
--			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
--				dmic_geo |= MIC_ARRAY_4CH;
--				break;
--
--			default:
--				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
--						cfg->array_type);
--
--			}
--		}
--		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
--	}
--
--	return dmic_geo;
--}
--
- static void skl_nhlt_trim_space(char *trim)
- {
- 	char *s = trim;
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 3362e71b4563..2b5159890a57 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -26,9 +26,11 @@
- #include <sound/hdaudio.h>
- #include <sound/hda_i915.h>
- #include <sound/hda_codec.h>
-+#include <sound/intel-nhlt.h>
- #include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
- #include "../../../soc/codecs/hdac_hda.h"
- #endif
-@@ -516,7 +518,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
- 
- 	if (pdata) {
- 		skl->use_tplg_pcm = pdata->use_tplg_pcm;
--		mach->mach_params.dmic_num = skl_get_dmic_geo(skl);
-+		mach->mach_params.dmic_num =
-+			intel_nhlt_get_dmic_geo(&skl->pci->dev,
-+						skl->nhlt);
- 	}
- 
- 	return 0;
-@@ -1029,7 +1033,7 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	device_disable_async_suspend(bus->dev);
- 
--	skl->nhlt = skl_nhlt_init(bus->dev);
-+	skl->nhlt = intel_nhlt_init(bus->dev);
- 
- 	if (skl->nhlt == NULL) {
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
-@@ -1095,7 +1099,7 @@ static int skl_probe(struct pci_dev *pci,
- out_clk_free:
- 	skl_clock_device_unregister(skl);
- out_nhlt_free:
--	skl_nhlt_free(skl->nhlt);
-+	intel_nhlt_free(skl->nhlt);
- out_free:
- 	skl_free(bus);
- 
-@@ -1144,7 +1148,7 @@ static void skl_remove(struct pci_dev *pci)
- 	skl_dmic_device_unregister(skl);
- 	skl_clock_device_unregister(skl);
- 	skl_nhlt_remove_sysfs(skl);
--	skl_nhlt_free(skl->nhlt);
-+	intel_nhlt_free(skl->nhlt);
- 	skl_free(bus);
- 	dev_set_drvdata(&pci->dev, NULL);
- }
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 928e8115a1a7..f4dd6c767993 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -128,13 +128,10 @@ struct skl_dsp_ops {
- int skl_platform_unregister(struct device *dev);
- int skl_platform_register(struct device *dev);
- 
--struct nhlt_acpi_table *skl_nhlt_init(struct device *dev);
--void skl_nhlt_free(struct nhlt_acpi_table *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 					u8 link_type, u8 s_fmt, u8 no_ch,
- 					u32 s_rate, u8 dirn, u8 dev_type);
- 
--int skl_get_dmic_geo(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
--- 
-2.20.1
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
