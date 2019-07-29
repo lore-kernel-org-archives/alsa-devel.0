@@ -1,95 +1,96 @@
-From: eleven xiang <eleven.xiang@gmail.com>
-Subject: Re: [alsa-lib][v1.1.19][pcm][multi plug] multi plug
- stuck in busy loop which caused high cpu loading.
-Date: Mon, 29 Jul 2019 15:32:39 +0800
-Message-ID: <CAC0dki5U=e8caLhy+wrRU3Rs6m3qLnBOaOh2t+NvUtJ49+oDQw@mail.gmail.com>
-References: <CAC0dki4GtTUbEBEuVVo0AynfRW13CdAFzc_m6Ss1POq2E3Q7bQ@mail.gmail.com>
- <b2634d02-1f09-fb4e-9674-c7932d0b8bc8@perex.cz>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: meson: g12a-tohdmitx: override codec2codec params
+Date: Mon, 29 Jul 2019 10:01:39 +0200
+Message-ID: <20190729080139.32068-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com
- [IPv6:2607:f8b0:4864:20::331])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89E9AF800BF
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 09:32:52 +0200 (CEST)
-Received: by mail-ot1-x331.google.com with SMTP id o101so61560307ota.8
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 00:32:51 -0700 (PDT)
-In-Reply-To: <b2634d02-1f09-fb4e-9674-c7932d0b8bc8@perex.cz>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-RGVhciBKYXJvc2xhdiwKClNvIGdsYWQgdG8gcmVhZCB5b3VyIG1haWwgfgoKSSBoYXZlIHJlYWQg
-dGhlIG11bHRpIHBsdWcgcGNtJ3MKKnNuZF9wY21fbXVsdGlfbWF5X3dhaXRfZm9yX2F2YWlsX21p
-biooKSBmdW5jdGlvbiwKZnJvbSB5b3VyIHJlcGx5LCB0aGlzIGZ1bmN0aW9uIHdpbGwgd2FpdCBm
-b3IgYXZhaWxfbWluIHJlYWR5ID8KCmFuZCBmcm9tIHRoZSBkZXRhaWwgaW1wbGVtZW50YXRpb24s
-IG11bHRpIHBjbSdzCipzbmRfcGNtX211bHRpX21heV93YWl0X2Zvcl9hdmFpbF9taW4qKCkgIHdp
-bGwgY2FsbCBlYWNoIHBjbSdzCiptYXlfd2FpdF9mb3JfYXZhaWxfbWluKiBmdW5jdGlvbi4KQW5k
-IGhlcmUgaXMgdGhlIHByb2JsZW0sIHRoZSBoYXJkd2FyZSBwY21faHcgZGV2aWNlIGRpZG4ndCBp
-bXBsZW1lbnQgdGhpcwppbnRlcmZhY2UsIHNvIGl0IHdpbGwgbm90IHdhaXQsIGp1c3Qgc2tpcCBp
-dC4KCmFzIGZvciB3aHkgc25kX3BjbV93YWl0KCkgZG9lcyBub3Qgd2FpdCBldmVuIHdoZW4gYXZp
-bD09MCwgd2UgZm91bmQgYmVsb3cKY29kZToKCiovLyBzbmRfcGNtX3dhaXQoKSBvbmx5IHBvbGwg
-bWFzdGVyIHNsYXZlIGZkLioKc3RhdGljIGludCBzbmRfcGNtX211bHRpX3BvbGxfZGVzY3JpcHRv
-cnNfY291bnQoc25kX3BjbV90ICpwY20pCnsKICAgIHNuZF9wY21fbXVsdGlfdCAqbXVsdGkgPSBw
-Y20tPnByaXZhdGVfZGF0YTsKICAgIHNuZF9wY21fdCAqKnNsYXZlXzAqID0gbXVsdGktPnNsYXZl
-c1ttdWx0aS0+bWFzdGVyX3NsYXZlXS5wY207CiAgICByZXR1cm4gc25kX3BjbV9wb2xsX2Rlc2Ny
-aXB0b3JzX2NvdW50KCpzbGF2ZV8wKik7ICAqLy8gb25seSBjaGVjawptYXN0ZXIgc2xhdmUgcGNt
-ID8/Kgp9CgpiYWNrIHRvIG91ciBpc3N1ZSwgdGhlIG1hc3RlciBzbGF2ZSB3YXMgcmVhZHkgdG8g
-cmVhZCwgYnV0IHRoZSBzZWNvbmQgc2xhdmUKcGNtIHdhc24nIHQgcmVhZHksCnNvIHNuZF9wY21f
-d2FpdCgpIHdpbGwgcmV0dXJuIGltbWVkaWF0ZWx5IGR1ZSB0byBtYXN0ZXIgc2xhdmUgcmVhZHku
-CgpUaGFua3MKCkphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+IOS6jjIwMTnlubQ35pyI
-Mjfml6Xlkajlha0g5LiL5Y2INTozOOWGmemBk++8mgoKPiBEbmUgMjUuIDA3LiAxOSB2IDExOjU5
-IGVsZXZlbiB4aWFuZyBuYXBzYWwoYSk6Cj4gPiBEZWFyLAo+ID4KPiA+IEN1cnJlbnRseSwgZm9y
-IEF1ZGlvIEVjaG8gQ2FuY2VsbGF0aW9uIHByb2Nlc3MsIHdlIGNvbWJpbmVkIGJvdGggbWljCj4g
-c2lnbmFsCj4gPiBhbmQgcmVmZXJlbmNlIHNpZ25hbCBpbnRvIG9uZSBwY20gd2l0aCB0aGUgbXVs
-dGkgcGx1Zy4KPiA+IEFuZCBib3RoIHRoZSBtaWMgYW5kIHJlZiBzaWduYWwgYXJlIGh3IHBjbSBk
-ZXZpY2VzLCBhbmQgdGhleSBsaXZlZCBpbiB0aGUKPiA+IHNhbWUgc291bmQgY2FyZCBpbiBkcml2
-ZXIuCj4gPgo+ID4gSGVyZSBpcyB0aGUgaXNzdWU6Cj4gPgo+ID4gMS4gdGhlIG1hc3RlciBzbGF2
-ZSBwY20gZGV2aWNlIGlzIGFscmVhZHkgZm9yIHJlYWQ7Cj4gPiAyLiB0aGUgc2Vjb25kIHNhbHZl
-IHBjbSBpcyBub3QgcmVhZHkgZm9yIHJlYWQsIHdoaWNoIG1lYW5zIG5vIGRhdGE7Cj4gPiAzLiB1
-bmRlciB0aGlzIHNpdHVhdGlvbiwgc25kX3BjbV9yZWFkX2FyZWFzIGZ1bmN0aW9uIHdpbGwgYmUg
-c3R1Y2sgaW4KPiBidXN5Cj4gPiBsb29wIGFzIGJlbG93Ogo+ID4KPiA+ICAgICAgICAgYXZhaWwg
-PSBzbmRfcGNtX2F2YWlsX3VwZGF0ZShwY20pOyAqIC8vIGhlcmUgYWx3YXlzIHJldHVybgo+IGF2
-YWlsPTAsCj4gPiBkdWUgdG8gdGhlIHNlY29uZCBzYWx2ZSBwY20gZGV2aWNlIHdhc24ndCByZWFk
-eSoKPiA+ICAgICAgICAgaWYgKGF2YWlsIDwgMCkgewo+ID4gICAgICAgICAgICAgZXJyID0gYXZh
-aWw7Cj4gPiAgICAgICAgICAgICBnb3RvIF9lbmQ7Cj4gPiAgICAgICAgIH0KPiA+ICAgICAgICAg
-aWYgKGF2YWlsID09IDApIHsKPiA+ICAgICAgICAgICAgIGlmIChzdGF0ZSA9PSBTTkRfUENNX1NU
-QVRFX0RSQUlOSU5HKQo+ID4gICAgICAgICAgICAgICAgIGdvdG8gX2VuZDsKPiA+ICAgICAgICAg
-ICAgIGlmIChwY20tPm1vZGUgJiBTTkRfUENNX05PTkJMT0NLKSB7Cj4gPiAgICAgICAgICAgICAg
-ICAgZXJyID0gLUVBR0FJTjsKPiA+ICAgICAgICAgICAgICAgICBnb3RvIF9lbmQ7Cj4gPiAgICAg
-ICAgICAgICB9Cj4gPgo+ID4gICAgICAgICAgICAgZXJyID0gc25kX3BjbV93YWl0KHBjbSwgLTEp
-OyAqIC8vIHJldHVybiBpbW1lZGlhdGVseSwgZHVlIHRvCj4gPiB0aGUgbWFzdGVyIHNsYXZlIHBj
-bSB3YXMgcmVhZHkgZm9yIHJlYWQuKgo+ID4gICAgICAgICAgICAgaWYgKGVyciA8IDApCj4gPiAg
-ICAgICAgICAgICAgICAgYnJlYWs7Cj4gPiAgICAgICAgICAgICBnb3RvIF9hZ2FpbjsgKi8vIHN0
-dWNrIGluIGJ1c3kgbG9vcCAhISBhZ2FpbiBhbmQgYWdhaW4gdW50aWwKPiA+IHRoZSBzZWNvbmQg
-cGNtIGRhdGEgd2FzIHJlYWR5ICEhISoKPiA+Cj4gPiAgICAgICAgIH0KPiA+Cj4gPiBpdCBzZWVt
-ZWQgdGhhdCB0aGUgcm9vdCBjYXVzZSBpcyB0aGF0IHRoZSB0d28gZGV2aWNlcyBoYXZlIG9idmlv
-dXMKPiA+IGludGVycnVwdCBwZXJpb2QgZ2FwICwgYW5kIHdlIGFsc28gZm91bmQgdGhhdCB0aGlz
-IGlzc3VlIGNhbiBiZSBlYXNpbHkKPiA+IHJlcHJvZHVjZWQgb24gb3VyIGRldmljZSB1bmRlciBs
-b3cgbWVtb3J5IGNhc2UuCj4gPgo+ID4gQ3VycmVudGx5IHdlIG1vbml0b3IgdGhpcyBnYXAgYW5k
-IHJldHVybiBlcnJvciB0byB1cCBsYXllciB0bwo+ID4gY2xvc2UtYW5kLXJlb3BlbiBkZXZpY2Ug
-dG8gZml4IHRoaXMgaXNzdWUuCj4gPiBTbyBJIHdvbmRlciBpZiB0aGVyZSBpcyBhbnkgZ29vZCBz
-b2x1dGlvbiA/Cj4KPiBJIHRyaWVkIHRvIHJlc29sdmUgdGhpcyBzeW5jIGluIG15IGxhdGVzdCBw
-Y21fbXVsdGkgdXBkYXRlcyAoYWxsIGFyZSBpbgo+IDEuMS45Cj4gYWxyZWFkeSkuIENvdWxkIHlv
-dSB0cmFjZSwgd2h5IHNuZF9wY21fd2FpdCgpIGRvZXMgbm90IHJlYWxseSB3YWl0IGZvciB0aGUK
-PiBzbGF2ZSB3aGVuIGF2YWlsID09IDA/IFRoZXJlIHNob3VsZCBub3QgYmUgdGhlIGJ1c3kgbG9v
-cC4gVGhlCj4gc25kX3BjbV9tdWx0aV9tYXlfd2FpdF9mb3JfYXZhaWxfbWluKCkgY2FsbGJhY2sg
-c2hvdWxkIGJlIGNhbGxlZCBpbnNpZGUgdGhlCj4gbXVsdGkgcGx1Z2luLgo+Cj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBKYXJvc2xhdgo+Cj4gLS0KPiBKYXJvc2xhdiBLeXNlbGEg
-PHBlcmV4QHBlcmV4LmN6Pgo+IExpbnV4IFNvdW5kIE1haW50YWluZXI7IEFMU0EgUHJvamVjdDsg
-UmVkIEhhdCwgSW5jLgo+CgoKLS0gCkJSLAoKZWxldmVuX3hpYW5nCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+So far, forwarding the hw_params of the input to output relied on the
+.hw_params() callback of the cpu side of the codec2codec link to be called
+first. This is a bit weak.
+
+Instead, override the stream params of the codec2codec to link to set it up
+correctly.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/meson/g12a-tohdmitx.c | 34 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
+
+diff --git a/sound/soc/meson/g12a-tohdmitx.c b/sound/soc/meson/g12a-tohdmitx.c
+index 707ccb192e4c..9943c807ec5d 100644
+--- a/sound/soc/meson/g12a-tohdmitx.c
++++ b/sound/soc/meson/g12a-tohdmitx.c
+@@ -28,7 +28,7 @@
+ #define  CTRL0_SPDIF_CLK_SEL		BIT(0)
+ 
+ struct g12a_tohdmitx_input {
+-	struct snd_pcm_hw_params params;
++	struct snd_soc_pcm_stream params;
+ 	unsigned int fmt;
+ };
+ 
+@@ -225,26 +225,17 @@ static int g12a_tohdmitx_input_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct g12a_tohdmitx_input *data = dai->playback_dma_data;
+ 
+-	/* Save the stream params for the downstream link */
+-	memcpy(&data->params, params, sizeof(*params));
++	data->params.rates = snd_pcm_rate_to_rate_bit(params_rate(params));
++	data->params.rate_min = params_rate(params);
++	data->params.rate_max = params_rate(params);
++	data->params.formats = 1 << params_format(params);
++	data->params.channels_min = params_channels(params);
++	data->params.channels_max = params_channels(params);
++	data->params.sig_bits = dai->driver->playback.sig_bits;
+ 
+ 	return 0;
+ }
+ 
+-static int g12a_tohdmitx_output_hw_params(struct snd_pcm_substream *substream,
+-					  struct snd_pcm_hw_params *params,
+-					  struct snd_soc_dai *dai)
+-{
+-	struct g12a_tohdmitx_input *in_data =
+-		g12a_tohdmitx_get_input_data(dai->capture_widget);
+-
+-	if (!in_data)
+-		return -ENODEV;
+-
+-	memcpy(params, &in_data->params, sizeof(*params));
+-
+-	return 0;
+-}
+ 
+ static int g12a_tohdmitx_input_set_fmt(struct snd_soc_dai *dai,
+ 				       unsigned int fmt)
+@@ -266,6 +257,14 @@ static int g12a_tohdmitx_output_startup(struct snd_pcm_substream *substream,
+ 	if (!in_data)
+ 		return -ENODEV;
+ 
++	if (WARN_ON(!rtd->dai_link->params)) {
++		dev_warn(dai->dev, "codec2codec link expected\n");
++		return -EINVAL;
++	}
++
++	/* Replace link params with the input params */
++	rtd->dai_link->params = &in_data->params;
++
+ 	if (!in_data->fmt)
+ 		return 0;
+ 
+@@ -278,7 +277,6 @@ static const struct snd_soc_dai_ops g12a_tohdmitx_input_ops = {
+ };
+ 
+ static const struct snd_soc_dai_ops g12a_tohdmitx_output_ops = {
+-	.hw_params	= g12a_tohdmitx_output_hw_params,
+ 	.startup	= g12a_tohdmitx_output_startup,
+ };
+ 
+-- 
+2.21.0
