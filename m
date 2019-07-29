@@ -1,8 +1,9 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 0/5] ALSA/HDA: abort probe when DMICs are
-	detected
-Date: Mon, 29 Jul 2019 10:51:46 -0500
-Message-ID: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 2/5] ALSA: hda: move parts of NHLT code to
+	new module
+Date: Mon, 29 Jul 2019 10:51:48 -0500
+Message-ID: <20190729155151.14055-3-pierre-louis.bossart@linux.intel.com>
+References: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE19DF800BF
- for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 17:51:58 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1869F800E4
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 17:52:00 +0200 (CEST)
+In-Reply-To: <20190729155151.14055-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,71 +27,217 @@ To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Hui Wang <hui.wang@canonical.com>, Curtis Malainey <cujomalainey@google.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is the second take on same problem of detecting when the HDaudio
-legacy driver can be used and when the SST or SOF drivers are
-required.
+Move parts of the code outside of the Skylake driver to help detect
+the presence of DMICs (which are not supported by the HDaudio legacy
+driver).
 
-The previous attempt based on a the PCI Class information was a
-resounding failure and broke audio on Linus' laptop, so we need
-additional information to avoid enabling a DSP-based driver without a
-good reason to do so.
+No functionality change (except for the removal of useless OR
+operations), only indentation and checkpatch fixes, making sure
+that the code compiles without ACPI and fixing an ACPI leak
 
-This patchset suggests the use of the NHLT information which *in
-theory* exposes DMIC endpoints. The legacy HDaudio driver cannot
-handle DMICs and will not provide any capture capabilities. Since it's
-typically the first one to probe due to the Makefile order, aborting
-the probe will let the PCI subsystem look for the next driver which
-hopefully will support this capability.
-
-I tested this patch on 5 devices (SKL, KBL, APL, GLK, WHL), three
-without DMICs and two with, and the detection seems to work as
-planned. Additional testing by Canonical and Endless folks did not
-expose any issues.
-
-Changes since v3 (Feedback from Cezary)
-Code cleanups (spaces and unnecessary inits)
-Flipped test statement to return on errors and reduce indentation
-Removed ACPI leak by adding missing ACPI_FREE()
-
-Changes since v2 (Feedback from Takahi and Cezary)
-Added comment in Kconfig to alert the user to the dependency on ACPI
-
-Changes since v1 (Feedback from Takashi):
-Squashed patch3 in patch2
-Changed log to dbg_info
-Fixed module parameter handling
-
-Changes since RFC:
-Cosmetic code improvements
-Moved intel-nhlt.h to include/sound
-Moved intel-nhlt.c to sound/hda
-Removed SOC prefixes
-Added full-support for vendor-defined geometries
-Added Kconfig and kernel module parameter to opt-in
-
-Pierre-Louis Bossart (5):
-  ASoC: Intel: Skylake: move NHLT header to common directory
-  ALSA: hda: move parts of NHLT code to new module
-  ALSA: hda: intel-nhlt: handle NHLT VENDOR_DEFINED DMIC geometry
-  ASoC: Intel: Skylake: use common NHLT module
-  ALSA: hda/intel: stop probe if DMICS are detected on Skylake+
-    platforms
-
- .../skl-nhlt.h => include/sound/intel-nhlt.h  |  51 +++++++--
- sound/hda/Kconfig                             |   5 +
- sound/hda/Makefile                            |   3 +
- sound/hda/intel-nhlt.c                        | 107 ++++++++++++++++++
- sound/pci/hda/Kconfig                         |  10 ++
- sound/pci/hda/hda_intel.c                     |  34 ++++++
- sound/soc/intel/Kconfig                       |   1 +
- sound/soc/intel/skylake/skl-nhlt.c            |  91 +--------------
- sound/soc/intel/skylake/skl-ssp-clk.c         |   1 +
- sound/soc/intel/skylake/skl-topology.c        |   1 +
- sound/soc/intel/skylake/skl.c                 |  12 +-
- sound/soc/intel/skylake/skl.h                 |   4 -
- 12 files changed, 212 insertions(+), 108 deletions(-)
- rename sound/soc/intel/skylake/skl-nhlt.h => include/sound/intel-nhlt.h (65%)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/intel-nhlt.h |  41 ++++++++++++---
+ sound/hda/Kconfig          |   5 ++
+ sound/hda/Makefile         |   3 ++
+ sound/hda/intel-nhlt.c     | 103 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 144 insertions(+), 8 deletions(-)
  create mode 100644 sound/hda/intel-nhlt.c
 
+diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
+index f85fbf9c7ce4..857922f03931 100644
+--- a/include/sound/intel-nhlt.h
++++ b/include/sound/intel-nhlt.h
+@@ -1,18 +1,17 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- *  skl-nhlt.h - Intel HDA Platform NHLT header
++ *  intel-nhlt.h - Intel HDA Platform NHLT header
+  *
+- *  Copyright (C) 2015 Intel Corp
+- *  Author: Sanjiv Kumar <sanjiv.kumar@intel.com>
+- *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *  Copyright (c) 2015-2019 Intel Corporation
+  */
+-#ifndef __SKL_NHLT_H__
+-#define __SKL_NHLT_H__
++
++#ifndef __INTEL_NHLT_H__
++#define __INTEL_NHLT_H__
+ 
+ #include <linux/acpi.h>
+ 
++#if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
++
+ struct wav_fmt {
+ 	u16 fmt_tag;
+ 	u16 channels;
+@@ -116,4 +115,30 @@ enum {
+ 	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
+ };
+ 
++struct nhlt_acpi_table *intel_nhlt_init(struct device *dev);
++
++void intel_nhlt_free(struct nhlt_acpi_table *addr);
++
++int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
++
++#else
++
++struct nhlt_acpi_table;
++
++static inline struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
++{
++	return NULL;
++}
++
++static inline void intel_nhlt_free(struct nhlt_acpi_table *addr)
++{
++}
++
++static inline int intel_nhlt_get_dmic_geo(struct device *dev,
++					  struct nhlt_acpi_table *nhlt)
++{
++	return 0;
++}
++#endif
++
+ #endif
+diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
+index f6feced15f17..9ccbcb5a06bd 100644
+--- a/sound/hda/Kconfig
++++ b/sound/hda/Kconfig
+@@ -29,3 +29,8 @@ config SND_HDA_PREALLOC_SIZE
+ 
+ 	  Note that the pre-allocation size can be changed dynamically
+ 	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
++
++config SND_INTEL_NHLT
++	tristate
++	# this config should be selected only for Intel ACPI platforms.
++	# A fallback is provided so that the code compiles in all cases.
+\ No newline at end of file
+diff --git a/sound/hda/Makefile b/sound/hda/Makefile
+index 2160202e2dc1..8560f6ef1b19 100644
+--- a/sound/hda/Makefile
++++ b/sound/hda/Makefile
+@@ -13,3 +13,6 @@ obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
+ 
+ #extended hda
+ obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
++
++snd-intel-nhlt-objs := intel-nhlt.o
++obj-$(CONFIG_SND_INTEL_NHLT) += snd-intel-nhlt.o
+diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
+new file mode 100644
+index 000000000000..7a62e03ba407
+--- /dev/null
++++ b/sound/hda/intel-nhlt.c
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2015-2019 Intel Corporation
++
++#include <linux/acpi.h>
++#include <sound/intel-nhlt.h>
++
++#define NHLT_ACPI_HEADER_SIG	"NHLT"
++
++/* Unique identification for getting NHLT blobs */
++static guid_t osc_guid =
++	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
++		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
++
++struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
++{
++	acpi_handle handle;
++	union acpi_object *obj;
++	struct nhlt_resource_desc *nhlt_ptr;
++	struct nhlt_acpi_table *nhlt_table = NULL;
++
++	handle = ACPI_HANDLE(dev);
++	if (!handle) {
++		dev_err(dev, "Didn't find ACPI_HANDLE\n");
++		return NULL;
++	}
++
++	obj = acpi_evaluate_dsm(handle, &osc_guid, 1, 1, NULL);
++
++	if (!obj)
++		return NULL;
++
++	if (obj->type != ACPI_TYPE_BUFFER) {
++		dev_dbg(dev, "No NHLT table found\n");
++		ACPI_FREE(obj);
++		return NULL;
++	}
++
++	nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
++	if (nhlt_ptr->length)
++		nhlt_table = (struct nhlt_acpi_table *)
++			memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
++				 MEMREMAP_WB);
++	ACPI_FREE(obj);
++	if (nhlt_table &&
++	    (strncmp(nhlt_table->header.signature,
++		     NHLT_ACPI_HEADER_SIG,
++		     strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
++		memunmap(nhlt_table);
++		dev_err(dev, "NHLT ACPI header signature incorrect\n");
++		return NULL;
++	}
++	return nhlt_table;
++}
++EXPORT_SYMBOL_GPL(intel_nhlt_init);
++
++void intel_nhlt_free(struct nhlt_acpi_table *nhlt)
++{
++	memunmap((void *)nhlt);
++}
++EXPORT_SYMBOL_GPL(intel_nhlt_free);
++
++int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
++{
++	struct nhlt_endpoint *epnt;
++	struct nhlt_dmic_array_config *cfg;
++	unsigned int dmic_geo = 0;
++	u8 j;
++
++	if (!nhlt)
++		return 0;
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++
++	for (j = 0; j < nhlt->endpoint_count; j++) {
++		if (epnt->linktype == NHLT_LINK_DMIC) {
++			cfg = (struct nhlt_dmic_array_config  *)
++					(epnt->config.caps);
++			switch (cfg->array_type) {
++			case NHLT_MIC_ARRAY_2CH_SMALL:
++			case NHLT_MIC_ARRAY_2CH_BIG:
++				dmic_geo = MIC_ARRAY_2CH;
++				break;
++
++			case NHLT_MIC_ARRAY_4CH_1ST_GEOM:
++			case NHLT_MIC_ARRAY_4CH_L_SHAPED:
++			case NHLT_MIC_ARRAY_4CH_2ND_GEOM:
++				dmic_geo = MIC_ARRAY_4CH;
++				break;
++
++			default:
++				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
++					 cfg->array_type);
++			}
++		}
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return dmic_geo;
++}
++EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel NHLT driver");
 -- 
 2.20.1
