@@ -1,85 +1,71 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2] sound: dmasound_atari: Mark expected switch
- fall-through
-Date: Mon, 29 Jul 2019 14:48:31 -0700
-Message-ID: <201907291448.E375AA59F@keescook>
-References: <20190729205454.GA5084@embeddedor>
+From: Jon Flatley <jflat@chromium.org>
+Subject: [BUG] bdw-rt5650 DSP boot timeout
+Date: Mon, 29 Jul 2019 14:53:16 -0700
+Message-ID: <CACJJ=pxPm7dRUE534hDWy2tN3dGYDyrgU8JKqett=wOQx+nWCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190729205454.GA5084@embeddedor>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5B45F800E4
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 23:53:30 +0200 (CEST)
+Received: by mail-lf1-x131.google.com with SMTP id b17so43160635lff.7
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 14:53:30 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com.
+ [209.85.167.53])
+ by smtp.gmail.com with ESMTPSA id m10sm10768428lfd.32.2019.07.29.14.53.28
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+ Mon, 29 Jul 2019 14:53:28 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id v85so43109282lfa.6
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2019 14:53:28 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: benzh@chromium.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 29, 2019 at 03:54:54PM -0500, Gustavo A. R. Silva wrote:
-> Mark switch cases where we are expecting to fall through.
-> 
-> This patch fixes the following warning (Building: m68k):
-> 
-> sound/oss/dmasound/dmasound_atari.c: warning: this statement may fall
-> through [-Wimplicit-fallthrough=]:  => 1449:24
-> 
-> Notice that, in this particular case, the code comment is
-> modified in accordance with what GCC is expecting to find.
-> 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+I've been working on upstreaming the bdw-rt5650 machine driver for the
+Acer Chromebase 24 (buddy). There seems to be an issue when first
+setting the hardware controls that appears to be crashing the DSP:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+[   51.424554] haswell-pcm-audio haswell-pcm-audio: FW loaded, mailbox
+readback FW info: type 01, - version: 00.00, build 77, source commit
+id: 876ac6906f31a43b6772b23c7c983ce9dcb18a19
+...
+[   84.924666] haswell-pcm-audio haswell-pcm-audio: error: audio DSP
+boot timeout IPCD 0x0 IPCX 0x0
+[   85.260655] haswell-pcm-audio haswell-pcm-audio: ipc: --message
+timeout-- ipcx 0x83000000 isr 0x00000000 ipcd 0x00000000 imrx
+0x7fff0000
+[   85.273609] haswell-pcm-audio haswell-pcm-audio: error: stream commit failed
+[   85.279746]  System PCM: error: failed to commit stream -110
+[   85.285388] haswell-pcm-audio haswell-pcm-audio: ASoC:
+haswell-pcm-audio hw params failed: -110
+[   85.293963]  System PCM: ASoC: hw_params FE failed -110
 
--Kees
+This happens roughly 50% of the time when first setting hardware
+controls after a reboot. The other 50% of the time the DSP comes up
+just fine and audio works fine thereafter. Adding "#define DEBUG 1" to
+sound/soc/intel/haswell/sst-haswell-ipc.c makes the issue occur much
+less frequently in my testing. Seems like a subtle timing issue.
 
-> ---
-> Changes in v2:
->  - Update code so switch and case statements are at the same indent.
-> 
->  sound/oss/dmasound/dmasound_atari.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
-> index 83653683fd68..823ccfa089b2 100644
-> --- a/sound/oss/dmasound/dmasound_atari.c
-> +++ b/sound/oss/dmasound/dmasound_atari.c
-> @@ -1432,25 +1432,25 @@ static int FalconMixerIoctl(u_int cmd, u_long arg)
->  {
->  	int data;
->  	switch (cmd) {
-> -	    case SOUND_MIXER_READ_RECMASK:
-> +	case SOUND_MIXER_READ_RECMASK:
->  		return IOCTL_OUT(arg, SOUND_MASK_MIC);
-> -	    case SOUND_MIXER_READ_DEVMASK:
-> +	case SOUND_MIXER_READ_DEVMASK:
->  		return IOCTL_OUT(arg, SOUND_MASK_VOLUME | SOUND_MASK_MIC | SOUND_MASK_SPEAKER);
-> -	    case SOUND_MIXER_READ_STEREODEVS:
-> +	case SOUND_MIXER_READ_STEREODEVS:
->  		return IOCTL_OUT(arg, SOUND_MASK_VOLUME | SOUND_MASK_MIC);
-> -	    case SOUND_MIXER_READ_VOLUME:
-> +	case SOUND_MIXER_READ_VOLUME:
->  		return IOCTL_OUT(arg,
->  			VOLUME_ATT_TO_VOXWARE(dmasound.volume_left) |
->  			VOLUME_ATT_TO_VOXWARE(dmasound.volume_right) << 8);
-> -	    case SOUND_MIXER_READ_CAPS:
-> +	case SOUND_MIXER_READ_CAPS:
->  		return IOCTL_OUT(arg, SOUND_CAP_EXCL_INPUT);
-> -	    case SOUND_MIXER_WRITE_MIC:
-> +	case SOUND_MIXER_WRITE_MIC:
->  		IOCTL_IN(arg, data);
->  		tt_dmasnd.input_gain =
->  			RECLEVEL_VOXWARE_TO_GAIN(data & 0xff) << 4 |
->  			RECLEVEL_VOXWARE_TO_GAIN(data >> 8 & 0xff);
-> -		/* fall thru, return set value */
-> -	    case SOUND_MIXER_READ_MIC:
-> +		/* fall through - return set value */
-> +	case SOUND_MIXER_READ_MIC:
->  		return IOCTL_OUT(arg,
->  			RECLEVEL_GAIN_TO_VOXWARE(tt_dmasnd.input_gain >> 4 & 0xf) |
->  			RECLEVEL_GAIN_TO_VOXWARE(tt_dmasnd.input_gain & 0xf) << 8);
-> -- 
-> 2.22.0
-> 
+There were timing issues encountered during the bringup of the 2015
+chromebook pixel (samus) which uses the bdw-rt5677 machine driver.
+Those were slightly different, and manifested during repeated
+arecords. Both devices use the same revision of the sst2 firmware.
 
--- 
-Kees Cook
+Any ideas for how to debug this?
+
+Thanks,
+Jon
