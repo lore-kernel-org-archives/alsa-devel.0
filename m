@@ -1,96 +1,53 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: meson: g12a-tohdmitx: override codec2codec params
-Date: Mon, 29 Jul 2019 10:01:39 +0200
-Message-ID: <20190729080139.32068-1-jbrunet@baylibre.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [alsa-devel] [PATCH] [ASoC][soc-dapm] : memory leak in the func
+ snd_soc_dapm_new_dai
+Date: Mon, 29 Jul 2019 09:18:35 +0100
+Message-ID: <20190729081835.GE54126@ediswmail.ad.cirrus.com>
+References: <20190725161335.4162-1-thakursatendra2003@yahoo.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190725161335.4162-1-thakursatendra2003@yahoo.co.in>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+To: Satendra Singh Thakur <thakursatendra2003@yahoo.co.in>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-So far, forwarding the hw_params of the input to output relied on the
-.hw_params() callback of the cpu side of the codec2codec link to be called
-first. This is a bit weak.
+On Thu, Jul 25, 2019 at 09:43:35PM +0530, Satendra Singh Thakur wrote:
+> In the func snd_soc_dapm_new_dai, if the inner func
+> snd_soc_dapm_alloc_kcontrol fails, there will be memory leak.
+> The label param_fail wont free memory which is allocated by
+> the func devm_kcalloc. Hence new label is created for this purpose.
+> 
+> Signed-off-by: Satendra Singh Thakur <thakursatendra2003@yahoo.co.in>
+> ---
+>  sound/soc/soc-dapm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index f013b24c050a..f62d41ee6d68 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -4095,7 +4095,7 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+>  						w_param_text, &private_value);
+>  		if (!template.kcontrol_news) {
+>  			ret = -ENOMEM;
+> -			goto param_fail;
+> +			goto outfree_w_param;
+>  		}
+>  	} else {
+>  		w_param_text = NULL;
+> @@ -4114,6 +4114,7 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+>  
+>  outfree_kcontrol_news:
+>  	devm_kfree(card->dev, (void *)template.kcontrol_news);
+> +outfree_w_param:
+>  	snd_soc_dapm_free_kcontrol(card, &private_value,
+>  				   rtd->dai_link->num_params, w_param_text);
 
-Instead, override the stream params of the codec2codec to link to set it up
-correctly.
+This is not necessary snd_soc_dapm_alloc_kcontrol calls
+snd_soc_dapm_free_kcontrol on its internal error path.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/g12a-tohdmitx.c | 34 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
-
-diff --git a/sound/soc/meson/g12a-tohdmitx.c b/sound/soc/meson/g12a-tohdmitx.c
-index 707ccb192e4c..9943c807ec5d 100644
---- a/sound/soc/meson/g12a-tohdmitx.c
-+++ b/sound/soc/meson/g12a-tohdmitx.c
-@@ -28,7 +28,7 @@
- #define  CTRL0_SPDIF_CLK_SEL		BIT(0)
- 
- struct g12a_tohdmitx_input {
--	struct snd_pcm_hw_params params;
-+	struct snd_soc_pcm_stream params;
- 	unsigned int fmt;
- };
- 
-@@ -225,26 +225,17 @@ static int g12a_tohdmitx_input_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct g12a_tohdmitx_input *data = dai->playback_dma_data;
- 
--	/* Save the stream params for the downstream link */
--	memcpy(&data->params, params, sizeof(*params));
-+	data->params.rates = snd_pcm_rate_to_rate_bit(params_rate(params));
-+	data->params.rate_min = params_rate(params);
-+	data->params.rate_max = params_rate(params);
-+	data->params.formats = 1 << params_format(params);
-+	data->params.channels_min = params_channels(params);
-+	data->params.channels_max = params_channels(params);
-+	data->params.sig_bits = dai->driver->playback.sig_bits;
- 
- 	return 0;
- }
- 
--static int g12a_tohdmitx_output_hw_params(struct snd_pcm_substream *substream,
--					  struct snd_pcm_hw_params *params,
--					  struct snd_soc_dai *dai)
--{
--	struct g12a_tohdmitx_input *in_data =
--		g12a_tohdmitx_get_input_data(dai->capture_widget);
--
--	if (!in_data)
--		return -ENODEV;
--
--	memcpy(params, &in_data->params, sizeof(*params));
--
--	return 0;
--}
- 
- static int g12a_tohdmitx_input_set_fmt(struct snd_soc_dai *dai,
- 				       unsigned int fmt)
-@@ -266,6 +257,14 @@ static int g12a_tohdmitx_output_startup(struct snd_pcm_substream *substream,
- 	if (!in_data)
- 		return -ENODEV;
- 
-+	if (WARN_ON(!rtd->dai_link->params)) {
-+		dev_warn(dai->dev, "codec2codec link expected\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Replace link params with the input params */
-+	rtd->dai_link->params = &in_data->params;
-+
- 	if (!in_data->fmt)
- 		return 0;
- 
-@@ -278,7 +277,6 @@ static const struct snd_soc_dai_ops g12a_tohdmitx_input_ops = {
- };
- 
- static const struct snd_soc_dai_ops g12a_tohdmitx_output_ops = {
--	.hw_params	= g12a_tohdmitx_output_hw_params,
- 	.startup	= g12a_tohdmitx_output_startup,
- };
- 
--- 
-2.21.0
+Thanks,
+Charles
