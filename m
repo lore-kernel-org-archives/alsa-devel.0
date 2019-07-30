@@ -1,50 +1,41 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] ASoC: ti: Mark expected switch
-	fall-throughs
-Date: Tue, 30 Jul 2019 13:55:28 +0300
-Message-ID: <20190730105528.GA27548@bitmer.com>
-References: <20190729221534.GA18696@embeddedor>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 17/40] soundwire: bus: use
+ runtime_pm_get_sync/pm when enabled
+Date: Tue, 30 Jul 2019 14:21:57 +0300
+Message-ID: <20190730112157.GM23480@smile.fi.intel.com>
+References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
+ <45a912c5-134b-8642-70ef-8c1060389300@linux.intel.com>
+ <20190726190823.GD9224@smile.fi.intel.com>
+ <5a16d9e6-0a9c-a0a8-3b11-d046247f3879@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5569EF800BF
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 12:55:51 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190729221534.GA18696@embeddedor>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+In-Reply-To: <5a16d9e6-0a9c-a0a8-3b11-d046247f3879@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de, gregkh@linuxfoundation.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgMjksIDIwMTkgYXQgMDU6MTU6MzRQTSAtMDUwMCwgR3VzdGF2byBBLiBSLiBT
-aWx2YSB3cm90ZToKPiBNYXJrIHN3aXRjaCBjYXNlcyB3aGVyZSB3ZSBhcmUgZXhwZWN0aW5nIHRv
-IGZhbGwgdGhyb3VnaC4KPiAKPiBUaGlzIHBhdGNoIGZpeGVzIHRoZSBmb2xsb3dpbmcgd2Fybmlu
-ZyAoQnVpbGRpbmc6IGFybSk6Cj4gCj4gc291bmQvc29jL3RpL244MTAuYzogSW4gZnVuY3Rpb24g
-4oCYbjgxMF9leHRfY29udHJvbOKAmToKPiBzb3VuZC9zb2MvdGkvbjgxMC5jOjQ4OjEwOiB3YXJu
-aW5nOiB0aGlzIHN0YXRlbWVudCBtYXkgZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJv
-dWdoPV0KPiAgICBsaW5lMWwgPSAxOwo+ICAgIH5+fn5+fn5efn4KPiBzb3VuZC9zb2MvdGkvbjgx
-MC5jOjQ5OjI6IG5vdGU6IGhlcmUKPiAgIGNhc2UgTjgxMF9KQUNLX0hQOgo+ICAgXn5+fgo+IAo+
-IHNvdW5kL3NvYy90aS9yeDUxLmM6IEluIGZ1bmN0aW9uIOKAmHJ4NTFfZXh0X2NvbnRyb2zigJk6
-Cj4gc291bmQvc29jL3RpL3J4NTEuYzo1Nzo2OiB3YXJuaW5nOiB0aGlzIHN0YXRlbWVudCBtYXkg
-ZmFsbCB0aHJvdWdoIFstV2ltcGxpY2l0LWZhbGx0aHJvdWdoPV0KPiAgICBocyA9IDE7Cj4gICAg
-fn5+Xn5+Cj4gc291bmQvc29jL3RpL3J4NTEuYzo1ODoyOiBub3RlOiBoZXJlCj4gICBjYXNlIFJY
-NTFfSkFDS19IUDoKPiAgIF5+fn4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBHdXN0YXZvIEEuIFIuIFNp
-bHZhIDxndXN0YXZvQGVtYmVkZGVkb3IuY29tPgo+IC0tLQo+ICBzb3VuZC9zb2MvdGkvbjgxMC5j
-IHwgMSArCj4gIHNvdW5kL3NvYy90aS9yeDUxLmMgfCAxICsKPiAgMiBmaWxlcyBjaGFuZ2VkLCAy
-IGluc2VydGlvbnMoKykKPiAKQWNrZWQtYnk6IEphcmtrbyBOaWt1bGEgPGphcmtrby5uaWt1bGFA
-Yml0bWVyLmNvbT4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Mon, Jul 29, 2019 at 05:07:39PM -0500, Pierre-Louis Bossart wrote:
+> On 7/26/19 2:08 PM, Andy Shevchenko wrote:
+> > On Fri, Jul 26, 2019 at 01:08:57PM -0500, Pierre-Louis Bossart wrote:
+
+> > > -	if (ret < 0)
+> > > +	if (ret < 0 && ret != -EACCES)
+> > 
+> > ...and here, the pm_runtime_put_noidle() call is missed.
+> 
+> yes but in the example you provided, they actually do more work than just
+> decrement the device usage counter:
+
+In their case they would like to do that. You decide what is appropriate call
+in your case.
+
+My point is, that reference counter in case of error handling should be
+returned back to its value.
+
+-- 
+With Best Regards,
+Andy Shevchenko
