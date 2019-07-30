@@ -1,135 +1,32 @@
-From: Thomas Preston <thomas.preston@codethink.co.uk>
-Subject: Re: [alsa-devel] [PATCH v2 2/3] ASoC: Add codec driver for ST TDA7802
-Date: Tue, 30 Jul 2019 18:26:04 +0100
-Message-ID: <fe11c806-2285-558c-e35c-d8f61de00784@codethink.co.uk>
-References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-3-thomas.preston@codethink.co.uk>
- <20190730145844.GI4264@sirena.org.uk>
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH 01/11] MIPS: DTS: jz4740: Add missing nodes
+Date: Tue, 30 Jul 2019 17:43:39 +0000
+Message-ID: <MWHPR2201MB127769D32FAA4944F9A791CDC1DC0@MWHPR2201MB1277.namprd22.prod.outlook.com>
+References: <20190725220215.460-2-paul@crapouillou.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190730145844.GI4264@sirena.org.uk>
+In-Reply-To: <20190725220215.460-2-paul@crapouillou.net>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Marco Felsch <m.felsch@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Annaliese McDermond <nh6z@nh6z.net>, Liam Girdwood <lgirdwood@gmail.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Nate Case <ncase@tesla.com>, Rob Duncan <rduncan@tesla.com>, Patrick Glaser <pglaser@tesla.com>, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <pburton@wavecomp.com>, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vinod Koul <vkoul@kernel.org>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Lee Jones <lee.jones@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "od@zcrc.me" <od@zcrc.me>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 30/07/2019 15:58, Mark Brown wrote:
-> On Tue, Jul 30, 2019 at 01:09:36PM +0100, Thomas Preston wrote:
-> 
->> index 000000000000..0f82a88bc1a4
->> --- /dev/null
->> +++ b/sound/soc/codecs/tda7802.c
->> @@ -0,0 +1,509 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * tda7802.c  --  codec driver for ST TDA7802
-> 
-> Please make the entire comment a C++ one so this looks intentional.
-> 
+Hello,
 
-Ok thanks.
+Paul Cercueil wrote:
+> Add nodes for the MMC, AIC, ADC, CODEC, MUSB, LCD, memory,
+> and BCH controllers.
+>=20
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Tested-by: Artur Rojek <contact@artur-rojek.eu>
 
->> +static int tda7802_digital_mute(struct snd_soc_dai *dai, int mute)
->> +{
->> +	const u8 mute_disabled = mute ? 0 : IB2_DIGITAL_MUTE_DISABLED;
-> 
-> Please write normal conditional statements to make the code easier to
-> read.
-> 
+Applied to mips-next.
 
-On it.
+Thanks,
+    Paul
 
->> +	case SND_SOC_BIAS_STANDBY:
->> +		err = regulator_enable(tda7802->enable_reg);
->> +		if (err < 0) {
->> +			dev_err(component->dev, "Could not enable.\n");
->> +			return err;
->> +		}
->> +		dev_dbg(component->dev, "Regulator enabled\n");
->> +		msleep(ENABLE_DELAY_MS);
-> 
-> Is this delay needed by the device or is it for the regulator to ramp?
-> If it's for the regulator to ramp then the regulator should be doing it.
-> 
-
-According to the datasheet the device itself takes 10ms to rise from 0V
-after PLLen is enabled. There are additional rise times but they are
-negligible with default capacitor configuration (which we have).
-
-Good to know about the regulator rising configuration though. Thanks.
-
->> +	case SND_SOC_BIAS_OFF:
->> +		regcache_mark_dirty(component->regmap);
-> 
-> If the regulator is going off you should really be marking the device as
-> cache only.
-> 
-
-Got it, thanks.
-
->> +		err = regulator_disable(tda7802->enable_reg);
->> +		if (err < 0)
->> +			dev_err(component->dev, "Could not disable.\n");
-> 
-> Any non-zero value from regulator_disable() is an error, there's similar
-> error checking issues in other places.
-> 
-
-I return the error at the end of the function, but I'll bring it back here
-for consistency.
-
->> +static const struct snd_kcontrol_new tda7802_snd_controls[] = {
->> +	SOC_SINGLE("Channel 4 Tristate", TDA7802_IB0, 7, 1, 0),
->> +	SOC_SINGLE("Channel 3 Tristate", TDA7802_IB0, 6, 1, 0),
->> +	SOC_SINGLE("Channel 2 Tristate", TDA7802_IB0, 5, 1, 0),
->> +	SOC_SINGLE("Channel 1 Tristate", TDA7802_IB0, 4, 1, 0),
-> 
-> These look like simple on/off switches so should have Switch at the end
-> of the control name.  It's also not clear to me why this is exported to
-> userspace - why would this change at runtime and won't any changes need
-> to be coordinated with whatever else is connected to the signal?
-> 
->> +	SOC_ENUM("Mute time", mute_time),
->> +	SOC_SINGLE("Unmute channels 1 & 3", TDA7802_IB2, 4, 1, 0),
->> +	SOC_SINGLE("Unmute channels 2 & 4", TDA7802_IB2, 3, 1, 0),
-> 
-> These are also Switch controls.  There are *lots* of problems with
-> control names, see control-names.rst.
-> 
-
-Ok thanks, I didn't know about the "Switch" suffix, I will read
-control-names.rst.
-
-I will move Tristate to DT properties. I was also unsure about the
-Impedance Efficiency Optimiser but the datasheet doesn't go into much
-detail about this so I left it exposed.
-
-They both seemed like user configurable options in the context of a
-test rig, but I agree - who knows what this output might be connected
-to in other systems. I will lock them down in DT. Thanks.
-
->> +static const struct snd_soc_component_driver tda7802_component_driver = {
->> +	.set_bias_level = tda7802_set_bias_level,
->> +	.idle_bias_on = 1,
-> 
-> Any reason to keep the device powered up?  It looks like the power on
-> process is just powering things up and writing the register cache out
-> and there's not that many registers so the delay is trivial.
-> 
-
-Ah no, I think that's a mistake. I want the PLLen to switch off in
-idle/suspend and the device should restore on wake.
-
->> +	tda7802->enable_reg = devm_regulator_get(dev, "enable");
->> +	if (IS_ERR(tda7802->enable_reg)) {
->> +		dev_err(dev, "Failed to get enable regulator\n");
-> 
-> It's better to print error codes if you have them and are printing a
-> diagnostic so people have more to go on when debugging problems.
-
-Yep on it.
-
-Many thanks, I appreciate the feedback.
+[ This message was auto-generated; if you believe anything is incorrect
+  then please email paul.burton@mips.com to report it. ]
