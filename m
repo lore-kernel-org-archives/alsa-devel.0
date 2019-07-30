@@ -1,21 +1,17 @@
-From: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>
-Subject: Re: [PATCH v4 1/2] ASoC: SOF: introduce
- no_stream_position so host_period_bytes preserves its data
-Date: Tue, 30 Jul 2019 23:50:39 +0200
-Message-ID: <5fda90f9-c387-440a-9ea8-648b22dda9b0@linux.intel.com>
-References: <9d92551a-fa10-4ecd-47f1-5b3b67824a12@linux.intel.com>
- <0b20cfe6-064b-a4ce-ce9d-2634f3f23d7c@linux.intel.com>
+From: Josh Boyer <jwboyer@kernel.org>
+Subject: Re: [Sound-open-firmware] [GIT PULL] SOF v1.3 firmware
+	binaries
+Date: Tue, 30 Jul 2019 17:19:31 -0400
+Message-ID: <CA+5PVA6L=tcRthh+5n7PBhnqGsztaRhOujSvegykOu4vCWtfAQ@mail.gmail.com>
+References: <af2d45578f7cdf908eb83cad3371b41315b7b5c4.camel@linux.intel.com>
+ <69af4cd7-f9c2-3b2b-2774-4da1063395b2@linux.intel.com>
+ <82019862aec57d5d8803fdd4270f88da409fe924.camel@linux.intel.com>
+ <2f700356-1b5e-94cf-4586-f8f473dc5a85@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A3E7F80214
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 23:50:43 +0200 (CEST)
-In-Reply-To: <0b20cfe6-064b-a4ce-ce9d-2634f3f23d7c@linux.intel.com>
-Content-Language: en-US
+In-Reply-To: <2f700356-1b5e-94cf-4586-f8f473dc5a85@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +21,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, marcin.rajwa@intel.com, Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linux Firmware <linux-firmware@kernel.org>, SOF <sound-open-firmware@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gNy8zMC8yMDE5IDI6NTEgUE0sIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgoKPgo+Cj4g
-T24gNy8zMC8xOSA1OjE2IEFNLCBSYWp3YSwgTWFyY2luIHdyb3RlOgo+PiBGcm9tOiBNYXJjaW4g
-UmFqd2EgPG1hcmNpbi5yYWp3YUBsaW51eC5pbnRlbC5jb20+Cj4+Cj4+IENoYW5nZSB0aGUgdXNl
-IG9mIGhvc3RfcGVyaW9kX2J5dGVzLiBTbyBmYXIgdGhpcyBmaWVsZCB3YXMgdXNlZAo+PiBhcyBh
-biBib29sIHZhbHVlIGluZGljYXRpbmcgd2hldGhlciBGVyBzaG91bGQgc2VuZCBzdHJlYW0gcG9z
-aXRpb24KPj4gdXBkYXRlLiBXaXRoIHRoaXMgcGF0Y2ggd2UgdXNlIGhvc3RfcGVyaW9kX2J5dGVz
-IHRvIHByb3ZpZGUgZmlybXdhcmUKPj4gaW5mb3JtYXRpb24gYWJvdXQgdGhlIGZyZXF1ZW5jeSBv
-ZiBob3N0IGludGVycnVwdHMgYWltZWQgdG8gcmVhZAo+PiBpdHMgaW5wdXQgYnVmZmVyLiBUaGlz
-IGlzIGFjY29yaW5nIHRvIEFMU0EgZGVmaW5pdGlvbiBvZiAnRnJhbWVQZXJpb2QnLgo+Cj4gYWNj
-b3JkaW5nIHRvIHRoZQo+Cj4+IEtub3dpbmcgdGhpcyBmaXJtd2FyZSBjYW4gc2FmZWx5IGNvcHkg
-bGFyZ2UvaXJyZWd1bGFyIGNodW5rcyBvZiBkYXRhCj4KPiB3aHkgaXJyZWd1bGFyPyBBTFNBIHBl
-cmlvZHMgYXJlIHByZXR0eSByZWd1bGFyIGFuZCBwcmVkaWN0YWJsZS4KCkkgZGlkIG5vdCBzYXkg
-QUxTQSBwZXJpb2RzIGFyZSBpcnJlZ3VsYXIgSSBzYWlkIHRoYXQgc29tZXRpbWVzIChsaWtlIGlu
-IApjYXNlIG9mIGRyYWluaW5nKSBmaXJtd2FyZSBuZWVkcyB0byBjb3B5IGlycmVndWxhciBhbW91
-bnQgb2YgdGhhdC4KCldoYXQgSSBtZWFuIGJ5ICJpcnJlZ3VsYXIiIGlzIG5vdCBlcXVhbCB0byBB
-TFNBIHBlcmlvZCBvciBtdWx0aXBsZSBvZiAKcGVyaW9kcy4KCj4KPj4gKGxpa2UgZGF0YSBjb21t
-aW5nIGZyb20gaS5lIGRyYWluaW5nIHRhc2spIHdpdGhvdXQgdGhlIHJpc2sgb2YgYnVmZmVyCj4K
-PiBjb21pbmcKPgo+IFBsZWFzZSBwcm9vZi1yZWFkIHlvdXIgY29tbWl0IG1lc3NhZ2VzIChhbmQg
-dXNlIGFuIGVkaXRvciB3aGljaCAKPiBzcGVsbC1jaGVja3MgZm9yIHlvdSksIHR5cG9zIGFuZCBt
-aXNsZWFkaW5nIGluZm9ybWF0aW9uIGRvbid0IGV4YWN0bHkgCj4gYm9vc3QgdHJ1c3QgaW4gdGhl
-IHN1Z2dlc3RlZCBwYXRjaCwgcmVnYXJkbGVzcyBvZiBpdHMgbWVyaXRzLgoKClNvcnJ5IGZvciB0
-eXBvcy4gU2hvdWxkIEkgY29ycmVjdCB0aGVtIGFuZCByZXNlbmQgYWdhaW4gb3IgY29ycmVjdCBo
-ZXJlIAphcyB3ZSBkaXNjdXNzPwoKPgo+PiBvdmVyZmxvdy4KPj4KPj4gU2lnbmVkLW9mZi1ieTog
-TWFyY2luIFJhandhIDxtYXJjaW4ucmFqd2FAbGludXguaW50ZWwuY29tPgo+PiBTaWduZWQtb2Zm
-LWJ5OiBLZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4LmludGVsLmNvbT4KPj4gUmV2aWV3ZWQtYnk6
-IFJhbmphbmkgU3JpZGhhcmFuIDxyYW5qYW5pLnNyaWRoYXJhbkBsaW51eC5pbnRlbC5jb20+Cj4+
-Cj4+IC0tLQo+PiDCoMKgaW5jbHVkZS9zb3VuZC9zb2Yvc3RyZWFtLmggfCA0ICsrLS0KPj4gwqDC
-oDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+Cj4+IGRp
-ZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaCBiL2luY2x1ZGUvc291bmQvc29m
-L3N0cmVhbS5oCj4+IGluZGV4IDY0M2YxNzVjYjQ3OS4uMDZhZjRlY2IyNTg0IDEwMDY0NAo+PiAt
-LS0gYS9pbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaAo+PiArKysgYi9pbmNsdWRlL3NvdW5kL3Nv
-Zi9zdHJlYW0uaAo+PiBAQCAtODMsMTAgKzgzLDEwIEBAIHN0cnVjdCBzb2ZfaXBjX3N0cmVhbV9w
-YXJhbXMgewo+PiDCoMKgwqDCoMKgIHVpbnQxNl90IHNhbXBsZV92YWxpZF9ieXRlczsKPj4gwqDC
-oMKgwqDCoCB1aW50MTZfdCBzYW1wbGVfY29udGFpbmVyX2J5dGVzOwo+Pgo+PiAtwqDCoMKgIC8q
-IGZvciBub3RpZnlpbmcgaG9zdCBwZXJpb2QgaGFzIGNvbXBsZXRlZCAtIDAgbWVhbnMgbm8gcGVy
-aW9kIAo+PiBJUlEgKi8KPj4gwqDCoMKgwqDCoCB1aW50MzJfdCBob3N0X3BlcmlvZF9ieXRlczsK
-Pj4gK8KgwqDCoCB1aW50MTZfdCBub19zdHJlYW1fcG9zaXRpb247IC8qIDEgbWVhbnMgbm8gSVBD
-IGZvciBwb3NpdGlvbiAKPj4gdXBkYXRlICovCj4+Cj4+IC3CoMKgwqAgdWludDMyX3QgcmVzZXJ2
-ZWRbMl07Cj4+ICvCoMKgwqAgdWludDE2X3QgcmVzZXJ2ZWRbM107Cj4+IMKgwqDCoMKgwqAgdWlu
-dDE2X3QgY2htYXBbU09GX0lQQ19NQVhfQ0hBTk5FTFNdO8KgwqDCoCAvKio8IGNoYW5uZWwgbWFw
-IC0gCj4+IFNPRl9DSE1BUF8gKi8KPj4gwqDCoH0gX19wYWNrZWQ7Cj4+Cj4+Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Jul 30, 2019 at 5:09 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+> >>> ----------------------------------------------------------------
+> >>> Liam Girdwood (1):
+> >>>         sof: Add Intel SOF V1.3 release firmware binaries.
+> >>>
+> >>>    LICENCE.sof                                  | 1090
+> >>> ++++++++++++++++++++++++++
+> >>
+> >> Humm, that LICENSE file needs to be double-checked. Is there any
+> >> reason
+> >> why the text of this LICENSE.sof is different the usual text, e.g.
+> >> from
+> >> the LICENSE.adsp_sst?
+> >
+> > LICENCE.adsp_sst is for the closed source firmware and LICENCE.sof is
+> > for SOF. The key difference is the removal of Intel binary FW licence
+> > and addition of BSD 3c, MIT, ISC and BSD 2c from SOF LICENCE file. Both
+> > files are the same wrt newlib.
+>
+> I would kindly ask that you run this by legal.
+>
+> The BSD license is provided for the source files, it's a stretch to say
+> that the license extends to binaries without a statement that says that
+> the binary firmware is only made of those source files, unmodified and
+> without proprietary extensions. And to the best of my knowledge the
+> newlib dependencies do not apply when compiling with XCC.
+>
+> >> *    No reverse engineering, decompilation, or disassembly of this
+> >> software is
+> >>        permitted.
+> >
+> > I'm not following why we need the reverse engineering conditions for
+> > opensource binaries.
+>
+> me neither, that's why I stated that the model has to be different from SST.
+>
+>
+> >> and the DISCLAIMER part, both of which seem pretty important to me.
+> >
+> > Disclaimer is in BSD 3 clause and MIT licence - exact same as the
+> > sources.
+>
+> Maybe I am splitting hair, but I'd like a professional opinion on that
+> license file. Better safe than sorry. I had GKH tell me on Friday to fix
+> a (c) 2017-19 and use (c) 2017-2019...
+>
+> >>
+> >> IANAL, but seeing only a patent clause looks odd. There should be a
+> >> mention of redistribution and a clear disclaimer (not sure about the
+> >> reverse engineering parts since the code is available it makes no
+> >> sense).
+> >
+> > Patent clause is exactly the same as SST FW.
+> >
+> >>
+> >>>    WHENCE                                       |   33 +
+> >>>    intel/sof/apl/intel/sof-apl-v1.3.ri          |  Bin 0 -> 270336
+> >>> bytes
+> >>>    intel/sof/bdw/sof-bdw-v1.3.ri                |  Bin 0 -> 100144
+> >>> bytes
+> >>>    intel/sof/byt/sof-byt-v1.3.ri                |  Bin 0 -> 89668
+> >>> bytes
+> >>>    intel/sof/cht/sof-cht-v1.3.ri                |  Bin 0 -> 90484
+> >>> bytes
+> >>>    intel/sof/cnl/intel/sof-cnl-v1.3-6cc8da10.ri |  Bin 0 -> 274432
+> >>> bytes
+> >>>    intel/sof/icl/intel/sof-icl-v1.3.ri          |  Bin 0 -> 278528
+> >>> bytes
+> >>
+> >> There are two types of platforms, the ones which require the Intel
+> >> firmware to be signed with a private production key and the ones
+> >> that
+> >> are signed with the SOF community key.
+> >>
+> >> if we have a single directory, then how do we deal with the two
+> >> cases?
+> >
+> > I've not yet upstreamed the community signed versions yet so everything
+> > is in the intel/sof/platform/key/ directory structure.
+> >
+> >> It's not even clear to me which of the two cases are handled here.
+> >>
+> >
+> > Intel signed binaries, since they are in intel/sof/platform/intel
+> > directory. Community signed will go in intel/sof/platform/community/
+> > dir.
+>
+> I don't understand what you're suggesting nor how it would work with the
+> way the kernel deals with directories. I tried to explain that we need
+> an intel/sof-production and intel/sof directories, each with generic
+> names that are symlinked to another location. This helps if you want to
+> build quirks that select one or the other capabilities by just changing
+> the firmware directory prefix. Pointers below.
+>
+> https://github.com/thesofproject/linux/blob/9d7da69a1e85db2cdbbaae78dd7eda4eeaa1eb1c/sound/soc/sof/sof-pci-dev.c#L24
+>
+> https://github.com/thesofproject/linux/blob/9d7da69a1e85db2cdbbaae78dd7eda4eeaa1eb1c/sound/soc/sof/loader.c#L269
+>
+> https://github.com/thesofproject/linux/blob/9d7da69a1e85db2cdbbaae78dd7eda4eeaa1eb1c/sound/soc/sof/sof-pci-dev.c#L149
+>
+> I guess we need to talk off-line since we are evidently not on the same
+> page or something is missing for people to use this pull request.
+
+I suggest you guys do that.  At the moment, I'm not pulling anything
+related to this until it has a signoff from both you and Liam in the
+commit logs at a minimum.
+
+josh
+
+> >>>    intel/sof/sof-apl.ri                         |    1 +
+> >>>    intel/sof/sof-bdw.ri                         |    1 +
+> >>>    intel/sof/sof-byt.ri                         |    1 +
+> >>>    intel/sof/sof-cht.ri                         |    1 +
+> >>>    intel/sof/sof-cml.ri                         |    1 +
+> >>>    intel/sof/sof-cnl.ri                         |    1 +
+> >>>    intel/sof/sof-glk.ri                         |    1 +
+> >>>    intel/sof/sof-icl.ri                         |    1 +
+> >>>    intel/sof/sof-whl.ri                         |    1 +
+> >>
+> >> unless I am missing something, we don't have any tables in the Linux
+> >> kernel for the WHL and CML configurations, and IIRC we only generate
+> >> sof-cnl.ri. Is there actually a user for sof-whl.ri and sof-cml.ri?
+> >>
+> >
+> > There are glk users hence the addition of whl and cml.
+>
+> glk has nothing to do with whl and cml. Not sure if there is a typo or
+> something I missed in your reply?
