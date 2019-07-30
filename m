@@ -1,66 +1,115 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] dt-bindings: ASoC: Add TDA7802
- amplifier
-Date: Tue, 30 Jul 2019 15:33:39 +0100
-Message-ID: <20190730143339.GH4264@sirena.org.uk>
+Subject: Re: [PATCH v2 2/3] ASoC: Add codec driver for ST TDA7802
+Date: Tue, 30 Jul 2019 15:58:44 +0100
+Message-ID: <20190730145844.GI4264@sirena.org.uk>
 References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-2-thomas.preston@codethink.co.uk>
- <20190730122748.GF54126@ediswmail.ad.cirrus.com>
- <20190730131209.rdv2kdlrpfeouh66@pengutronix.de>
- <16a99e45-fd5a-2878-acf9-63518f9ca527@codethink.co.uk>
+ <20190730120937.16271-3-thomas.preston@codethink.co.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+QwZB9vYiNIzNXIj"
+        protocol="application/pgp-signature"; boundary="poJSiGMzRSvrLGLs"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <16a99e45-fd5a-2878-acf9-63518f9ca527@codethink.co.uk>
+In-Reply-To: <20190730120937.16271-3-thomas.preston@codethink.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Thomas Preston <thomas.preston@codethink.co.uk>
-Cc: Marco Felsch <m.felsch@pengutronix.de>, Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Rob Duncan <rduncan@tesla.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Annaliese McDermond <nh6z@nh6z.net>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Nate Case <ncase@tesla.com>, Cheng-Yi Chiang <cychiang@chromium.org>, Patrick Glaser <pglaser@tesla.com>, Jerome Brunet <jbrunet@baylibre.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, Jerome Brunet <jbrunet@baylibre.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Marco Felsch <m.felsch@pengutronix.de>, Paul Cercueil <paul@crapouillou.net>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vkoul@kernel.org>, Annaliese McDermond <nh6z@nh6z.net>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Patrick Glaser <pglaser@tesla.com>, Rob Duncan <rduncan@tesla.com>, Nate
 List-Id: alsa-devel@alsa-project.org
 
 
---+QwZB9vYiNIzNXIj
+--poJSiGMzRSvrLGLs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 30, 2019 at 03:12:21PM +0100, Thomas Preston wrote:
-> On 30/07/2019 14:12, Marco Felsch wrote:
+On Tue, Jul 30, 2019 at 01:09:36PM +0100, Thomas Preston wrote:
 
-> >>> +- compatible : "st,tda7802"
-> >>> +- reg : the I2C address of the device
-> >>> +- enable-supply : a regulator spec for the PLLen pin
+> index 000000000000..0f82a88bc1a4
+> --- /dev/null
+> +++ b/sound/soc/codecs/tda7802.c
+> @@ -0,0 +1,509 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * tda7802.c  --  codec driver for ST TDA7802
 
-> > Shouldn't that be a pin called 'pllen-gpios'? IMHO I would not use a
-> > regulator for that.
+Please make the entire comment a C++ one so this looks intentional.
 
-> Hi Marco,
-> We have multiple amplifiers hooked up in a chain, and all the PLLens
-> are connected to one GPIO. So we need to use a regulator so that
-> i2c-TDA7802:00 doesn't turn off the PLLen which i2c-TDA7802:01 still
-> requires.
+> +static int tda7802_digital_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	const u8 mute_disabled = mute ? 0 : IB2_DIGITAL_MUTE_DISABLED;
 
-> This is why we use a regulator. Is there GPIO support for this?
+Please write normal conditional statements to make the code easier to
+read.
 
-If it's a GPIO not a regulator then it should be a GPIO not a regulator
-in the device tree.  The device tree describes the hardware.  There was
-some work on helping share GPIOs in the GPIO framework to accomodate
-GPIOs for regulator enables, you should be able to do something similar
-to what the regulator framework does.
+> +	case SND_SOC_BIAS_STANDBY:
+> +		err = regulator_enable(tda7802->enable_reg);
+> +		if (err < 0) {
+> +			dev_err(component->dev, "Could not enable.\n");
+> +			return err;
+> +		}
+> +		dev_dbg(component->dev, "Regulator enabled\n");
+> +		msleep(ENABLE_DELAY_MS);
 
---+QwZB9vYiNIzNXIj
+Is this delay needed by the device or is it for the regulator to ramp?
+If it's for the regulator to ramp then the regulator should be doing it.
+
+> +	case SND_SOC_BIAS_OFF:
+> +		regcache_mark_dirty(component->regmap);
+
+If the regulator is going off you should really be marking the device as
+cache only.
+
+> +		err = regulator_disable(tda7802->enable_reg);
+> +		if (err < 0)
+> +			dev_err(component->dev, "Could not disable.\n");
+
+Any non-zero value from regulator_disable() is an error, there's similar
+error checking issues in other places.
+
+> +static const struct snd_kcontrol_new tda7802_snd_controls[] = {
+> +	SOC_SINGLE("Channel 4 Tristate", TDA7802_IB0, 7, 1, 0),
+> +	SOC_SINGLE("Channel 3 Tristate", TDA7802_IB0, 6, 1, 0),
+> +	SOC_SINGLE("Channel 2 Tristate", TDA7802_IB0, 5, 1, 0),
+> +	SOC_SINGLE("Channel 1 Tristate", TDA7802_IB0, 4, 1, 0),
+
+These look like simple on/off switches so should have Switch at the end
+of the control name.  It's also not clear to me why this is exported to
+userspace - why would this change at runtime and won't any changes need
+to be coordinated with whatever else is connected to the signal?
+
+> +	SOC_ENUM("Mute time", mute_time),
+> +	SOC_SINGLE("Unmute channels 1 & 3", TDA7802_IB2, 4, 1, 0),
+> +	SOC_SINGLE("Unmute channels 2 & 4", TDA7802_IB2, 3, 1, 0),
+
+These are also Switch controls.  There are *lots* of problems with
+control names, see control-names.rst.
+
+> +static const struct snd_soc_component_driver tda7802_component_driver = {
+> +	.set_bias_level = tda7802_set_bias_level,
+> +	.idle_bias_on = 1,
+
+Any reason to keep the device powered up?  It looks like the power on
+process is just powering things up and writing the register cache out
+and there's not that many registers so the delay is trivial.
+
+> +	tda7802->enable_reg = devm_regulator_get(dev, "enable");
+> +	if (IS_ERR(tda7802->enable_reg)) {
+> +		dev_err(dev, "Failed to get enable regulator\n");
+
+It's better to print error codes if you have them and are printing a
+diagnostic so people have more to go on when debugging problems.
+
+--poJSiGMzRSvrLGLs
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1AVUMACgkQJNaLcl1U
-h9Cu4Qf+OOSeubUr69q1X65qxycxElWJauRAa8zN5ZCS6Corf1z/+hgxkei5GI7D
-p242D+7O5/QHuGlsws3pHfiD3BUJbV+/D05v8DDX1GOEf54+8wv+dnX/1AZKtYzS
-IU/5aki3+oYGj76dQKpAhuTJFnJGGmkMg+O5SWXocr3KZO5P740PKZG0+wVX+yQp
-OdZbJOEfztfQ8AfQQ4vtSjun2grcmxeEyxPo7LiL+iNs2ifAOZW6TWNIl7Y/Xftg
-UNGdYVAtOL9s9G364+UmdAbLbQtKDtLLnotRd98S8NGElOoOGoLss6/pwrW2BHd4
-CgdgNotIdcr1q2Me8acJM2d8pxjKWA==
-=aDlD
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1AWyMACgkQJNaLcl1U
+h9CSRAf+JnRHblFvE8wz05/KmaqsoJ72DsJH6tOksd0/ifd52UjtRhoB3jIhVaR2
+lJtx2+K9jHM8Q/tEBDNGXlzFt7MoUcvfgHfvAZ0Mfbkfvoox60KTJnh2C1B+Yr7i
+TIVNSQJSN+NtdtSYs2BaFkk/Zrj7Q9kDj7BHHOBeK7fDkq8PTRdLHU1YjB+HlrTT
+nRXLv1mXRa1cI+caoQRIXcQEOmW+VLlMasEFiSNS/0I3UtHgn2UHezS3Z+MHUJ4F
+TOmV2MyA/S4wW70Cus6iZs7BO0aCYLQFJmFgtd0t+C3nMKvSILwBWidIzK9WYuc6
+CeQAgukY5VCt+NmFvl4l2irCODm7Bg==
+=Gl9u
 -----END PGP SIGNATURE-----
 
---+QwZB9vYiNIzNXIj--
+--poJSiGMzRSvrLGLs--
