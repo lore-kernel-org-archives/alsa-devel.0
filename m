@@ -1,32 +1,57 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2 7/7] ASoC: dt-bindings: Introduce
- compatible strings for 7ULP and 8MQ
-Date: Tue, 30 Jul 2019 15:10:10 +0300
-Message-ID: <CAEnQRZAfsQBjKcJm9e7VJ7aOLSBzgOQC+HWNs0XSLAT2L-GudA@mail.gmail.com>
-References: <20190728192429.1514-1-daniel.baluta@nxp.com> <20190728192429.1514-8-daniel.baluta@nxp.com>
- <20190730080135.GB5892@Asurada> <CAEnQRZAUOzmP2yPb4utyDTnYUDNyqesXJPb5-Ms0tfPy8TMBig@mail.gmail.com>
- <20190730120455.GA4264@sirena.org.uk>
+From: Thomas Preston <thomas.preston@codethink.co.uk>
+Subject: [PATCH v2 1/3] dt-bindings: ASoC: Add TDA7802 amplifier
+Date: Tue, 30 Jul 2019 13:09:35 +0100
+Message-ID: <20190730120937.16271-2-thomas.preston@codethink.co.uk>
+References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190730120455.GA4264@sirena.org.uk>
+In-Reply-To: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>, Devicetree List <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Pengutronix Kernel Team <kernel@pengutronix.de>, Timur Tabi <timur@kernel.org>, Rob Herring <robh@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "Angus Ainslie (Purism)" <angus@akkea.ca>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@nxp.com>, Fabio Estevam <festevam@gmail.com>, Mihai Serban <mihai.serban@gmail.com>, Lucas Stach <l.stach@pengutronix.de>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, Jerome Brunet <jbrunet@baylibre.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Marco Felsch <m.felsch@pengutronix.de>, Paul Cercueil <paul@crapouillou.net>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vkoul@kernel.org>, Annaliese McDermond <nh6z@nh6z.net>, Thomas Preston <thomas.preston@codethink.co.uk>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel
+Cc: Patrick Glaser <pglaser@tesla.com>, Rob Duncan <rduncan@tesla.com>, Nate Case <ncase@tesla.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 30, 2019 at 3:05 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Jul 30, 2019 at 03:02:30PM +0300, Daniel Baluta wrote:
->
-> > I removed the 'or' on purpose because I don't want to move it
-> > around each time we add a new compatible.
->
-> > Anyhow, I can put it back if this is the convention.
->
-> You could convert to the YAML binding format and sidestep the problem a
-> different way!
+Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
+Cc: Patrick Glaser <pglaser@tesla.com>
+Cc: Rob Duncan <rduncan@tesla.com>
+Cc: Nate Case <ncase@tesla.com>
+---
+ .../devicetree/bindings/sound/tda7802.txt     | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tda7802.txt
 
-Someone needs to do that in the end, so will try to change to yaml
-with the next version
-of the patch series.
+diff --git a/Documentation/devicetree/bindings/sound/tda7802.txt b/Documentation/devicetree/bindings/sound/tda7802.txt
+new file mode 100644
+index 000000000000..f80aaf4f1ba0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tda7802.txt
+@@ -0,0 +1,26 @@
++ST TDA7802 audio processor
++
++This device supports I2C only.
++
++Required properties:
++
++- compatible : "st,tda7802"
++- reg : the I2C address of the device
++- enable-supply : a regulator spec for the PLLen pin
++
++Optional properties:
++
++- st,gain-ch13 : gain for channels 1 and 3 (range: 1-4)
++- st,gain-ch24 : gain for channels 2 and 3 (range: 1-4)
++- st,diagnostic-mode-ch13 : diagnotic mode for channels 1 and 3
++                            values: "Speaker" (default), "Booster"
++- st,diagnostic-mode-ch24 : diagnotic mode for channels 2 and 4
++                            values: "Speaker" (default), "Booster"
++
++Example:
++
++amp: tda7802@6c {
++	compatible = "st,tda7802";
++	reg = <0x6c>;
++	enable-supply = <&amp_enable_reg>;
++};
+-- 
+2.21.0
