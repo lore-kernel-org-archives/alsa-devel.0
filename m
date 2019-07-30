@@ -1,157 +1,276 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [BUG] bdw-rt5650 DSP boot timeout
-Date: Tue, 30 Jul 2019 14:04:00 -0500
-Message-ID: <7e08e45d-7cec-9fdd-36c5-5e82632968f8@linux.intel.com>
-References: <CACJJ=pxPm7dRUE534hDWy2tN3dGYDyrgU8JKqett=wOQx+nWCQ@mail.gmail.com>
- <39533fe5-c060-7a07-c910-74b83eee53c4@linux.intel.com>
- <ac7bcb42e40ac12d9924fd65c3e2c68b9b11b093.camel@linux.intel.com>
- <37ede7ea-e760-eac9-a1d5-0eb8e3bff3cb@linux.intel.com>
- <CACJJ=pyb==xWqKMB-gAzW7-FCFgEU7Rm+b-CL-ANO-eorDKy=A@mail.gmail.com>
- <356b3f4eacb43f23c40c4cd8e3c54ae9514a34c6.camel@linux.intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v5 22/29] compat_ioctl: remove translation for sound ioctls
+Date: Tue, 30 Jul 2019 22:01:27 +0200
+Message-ID: <20190730200145.1081541-3-arnd@arndb.de>
+References: <20190730192552.4014288-1-arnd@arndb.de>
+ <20190730200145.1081541-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A8F0F800BF
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 21:04:00 +0200 (CEST)
-In-Reply-To: <356b3f4eacb43f23c40c4cd8e3c54ae9514a34c6.camel@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Jon Flatley <jflat@chromium.org>
-Cc: benzh@chromium.org, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190730200145.1081541-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/30/19 1:47 PM, Ranjani Sridharan wrote:
-> On Tue, 2019-07-30 at 10:45 -0700, Jon Flatley wrote:
->> On Mon, Jul 29, 2019 at 7:23 PM Pierre-Louis Bossart
->> <pierre-louis.bossart@linux.intel.com> wrote:
->>>
->>>
->>>
->>> On 7/29/19 7:53 PM, Ranjani Sridharan wrote:
->>>> On Mon, 2019-07-29 at 18:02 -0500, Pierre-Louis Bossart wrote:
->>>>>
->>>>> On 7/29/19 4:53 PM, Jon Flatley wrote:
->>>>>> I've been working on upstreaming the bdw-rt5650 machine
->>>>>> driver for
->>>>>> the
->>>>>> Acer Chromebase 24 (buddy). There seems to be an issue when
->>>>>> first
->>>>>> setting the hardware controls that appears to be crashing the
->>>>>> DSP:
->>>>>>
->>>>>> [   51.424554] haswell-pcm-audio haswell-pcm-audio: FW
->>>>>> loaded,
->>>>>> mailbox
->>>>>> readback FW info: type 01, - version: 00.00, build 77, source
->>>>>> commit
->>>>>> id: 876ac6906f31a43b6772b23c7c983ce9dcb18a19
->>>>>> ...
->>>>>> [   84.924666] haswell-pcm-audio haswell-pcm-audio: error:
->>>>>> audio
->>>>>> DSP
->>>>>> boot timeout IPCD 0x0 IPCX 0x0
->>>>>> [   85.260655] haswell-pcm-audio haswell-pcm-audio: ipc: --
->>>>>> message
->>>>>> timeout-- ipcx 0x83000000 isr 0x00000000 ipcd 0x00000000 imrx
->>>>>> 0x7fff0000
->>>>>> [   85.273609] haswell-pcm-audio haswell-pcm-audio: error:
->>>>>> stream
->>>>>> commit failed
->>>>>> [   85.279746]  System PCM: error: failed to commit stream
->>>>>> -110
->>>>>> [   85.285388] haswell-pcm-audio haswell-pcm-audio: ASoC:
->>>>>> haswell-pcm-audio hw params failed: -110
->>>>>> [   85.293963]  System PCM: ASoC: hw_params FE failed -110
->>>>>>
->>>>>> This happens roughly 50% of the time when first setting
->>>>>> hardware
->>>>>> controls after a reboot. The other 50% of the time the DSP
->>>>>> comes up
->>>>>> just fine and audio works fine thereafter. Adding "#define
->>>>>> DEBUG 1"
->>>>>> to
->>>>>> sound/soc/intel/haswell/sst-haswell-ipc.c makes the issue
->>>>>> occur
->>>>>> much
->>>>>> less frequently in my testing. Seems like a subtle timing
->>>>>> issue.
->>>>>>
->>>>>> There were timing issues encountered during the bringup of
->>>>>> the 2015
->>>>>> chromebook pixel (samus) which uses the bdw-rt5677 machine
->>>>>> driver.
->>>>>> Those were slightly different, and manifested during repeated
->>>>>> arecords. Both devices use the same revision of the sst2
->>>>>> firmware.
->>>>>>
->>>>>> Any ideas for how to debug this?
->>>>>
->>>>> this could be trying to send an IPC while you are already
->>>>> waiting
->>>>> for
->>>>> one to complete. we've seen this before with SOF, if the IPCs
->>>>> are
->>>>> not
->>>>> strictly serialized then things go in the weeds and timeout.
->>>>
->>>> Pierre/Jon
->>>>
->>>> In this case it looks like the DSP boot failed leading to the IPC
->>>> timeout? WOndering if increasing the boot timeout would help?
->>
->> I did actually try this without success.
->>
->>>
->>> Yes, that too. The boot timeout is typically experimentally
->>> defined, and
->>> never decreasing due to platform variations...
->>> I am still leaning more on the side of an side effect between two
->>> IPCs,
->>> the added DEBUG points to the printk which solves timing issues.
->>> The
->>> boot timeout would typically not be impacted by such changes.
->>
->> I think the real struggle I'm having is finding a good debugging
->> method that doesn't impact the timing of the IPCs significantly (as
->> adding DEBUG seems to). This could maybe be overcome with using a
->> stress test to reproduce. The crash only seems to occur when first
->> booting the DSP, and so far I've been testing this by completely
->> power
->> cycling the machine on every test, which is very slow and tedious. So
->> maybe the issue with DEBUG defined occurs 1 in 20 reboots rather than
->> 1 in 2, I wouldn't know. If there's a way to reboot the DSP and
->> reproduce this crash without rebooting the entire device that would
->> be
->> very helpful to me.
-> Maybe you've already tried this. But, how about blacklisting the audio
-> driver and then trying a modprobe/rmmod to insert and remove themodule. This should attempt to boot the DSP upon every modprobe.
-> But what I am not sure about is whether the rmmod would succeed if the
-> IPC times out because the DSP has crashed.
+The SNDCTL_* and SOUND_* commands are the old OSS user interface.
 
-I don't think we can really reduce the 'Heisenbug' nature of code 
-instrumentations.
-But as Ranjani suggested it increasing the test frequency would make 
-things more observable. I would go for suspend-resume tests, that would 
-also force a DSP reboot without requiring a full reboot.
+I checked all the sound ioctl commands listed in fs/compat_ioctl.c
+to see if we still need the translation handlers. Here is what I
+found:
 
-rtcwake -s 3 -m mem
+- sound/oss/ is (almost) gone from the kernel, this is what actually
+  needed all the translations
+- The ALSA emulation for OSS correctly handles all compat_ioctl
+  commands already.
+- sound/oss/dmasound/ is the last holdout of the original OSS code,
+  this is only used on arch/m68k, which has no 64-bit mode and
+  hence needs no compat handlers
+- arch/um/drivers/hostaudio_kern.c may run in 64-bit mode with
+  32-bit x86 user space underneath it. This rare corner case is
+  the only one that still needs the compat handlers.
 
-I suspect modprobe/rmmod isn't likely to work, those legacy drivers were 
-not exactly written with stress-test in mind. Suspend-resume is likely 
-more reliable - been used in real products but tested with older kernels 
-so your mileage may vary.
+By adding a simple redirect of .compat_ioctl to .unlocked_ioctl in the
+UML driver, we can remove all the COMPATIBLE_IOCTL() annotations without
+a change in functionality. For completeness, I'm adding the same thing
+to the dmasound file, knowing that it makes no difference.
 
-We should really have completed SOF support for Broadwell instead of 
-supporting zombie drivers. Gah.
+The compat_ioctl list contains one comment about SNDCTL_DSP_MAPINBUF and
+SNDCTL_DSP_MAPOUTBUF, which actually would need a translation handler
+if implemented. However, the native implementation just returns -EINVAL,
+so we don't care.
+
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/um/drivers/hostaudio_kern.c   |   1 +
+ fs/compat_ioctl.c                  | 158 -----------------------------
+ sound/core/oss/pcm_oss.c           |   4 +
+ sound/oss/dmasound/dmasound_core.c |   2 +
+ 4 files changed, 7 insertions(+), 158 deletions(-)
+
+diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+index 7f9dbdbc4eb7..1bf139c3727a 100644
+--- a/arch/um/drivers/hostaudio_kern.c
++++ b/arch/um/drivers/hostaudio_kern.c
+@@ -298,6 +298,7 @@ static const struct file_operations hostaudio_fops = {
+ 	.write          = hostaudio_write,
+ 	.poll           = hostaudio_poll,
+ 	.unlocked_ioctl	= hostaudio_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.mmap           = NULL,
+ 	.open           = hostaudio_open,
+ 	.release        = hostaudio_release,
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 03da7934a351..33f732979f45 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -51,8 +51,6 @@
+ #include <linux/uaccess.h>
+ #include <linux/watchdog.h>
+ 
+-#include <linux/soundcard.h>
+-
+ #include <linux/hiddev.h>
+ 
+ 
+@@ -458,162 +456,6 @@ COMPATIBLE_IOCTL(PPPIOCDISCONN)
+ COMPATIBLE_IOCTL(PPPIOCATTCHAN)
+ COMPATIBLE_IOCTL(PPPIOCGCHAN)
+ COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
+-/* Big A */
+-/* sparc only */
+-/* Big Q for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_SYNC)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_INFO)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_CTRLRATE)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETOUTCOUNT)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETINCOUNT)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_PERCMODE)
+-COMPATIBLE_IOCTL(SNDCTL_FM_LOAD_INSTR)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_TESTMIDI)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_RESETSAMPLES)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_NRSYNTHS)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_NRMIDIS)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_INFO)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_THRESHOLD)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_MEMAVL)
+-COMPATIBLE_IOCTL(SNDCTL_FM_4OP_ENABLE)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_PANIC)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_OUTOFBAND)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETTIME)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_ID)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_CONTROL)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_REMOVESAMPLE)
+-/* Big T for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_TMR_TIMEBASE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_START)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_STOP)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_CONTINUE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_TEMPO)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_SOURCE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_METRONOME)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_SELECT)
+-/* Little m for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_PRETIME)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_MPUMODE)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_MPUCMD)
+-/* Big P for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_DSP_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SYNC)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SPEED)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_STEREO)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETBLKSIZE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_CHANNELS)
+-COMPATIBLE_IOCTL(SOUND_PCM_WRITE_FILTER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_POST)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SUBDIVIDE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETFRAGMENT)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETFMTS)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETFMT)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETOSPACE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETISPACE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_NONBLOCK)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETCAPS)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETTRIGGER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETTRIGGER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETIPTR)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETOPTR)
+-/* SNDCTL_DSP_MAPINBUF,  XXX needs translation */
+-/* SNDCTL_DSP_MAPOUTBUF,  XXX needs translation */
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETSYNCRO)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETDUPLEX)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETODELAY)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_PROFILE)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_RATE)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_CHANNELS)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_BITS)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_FILTER)
+-/* Big C for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_LOAD)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RDATA)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RCODE)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_WDATA)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_WCODE)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RUN)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_HALT)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_SENDMSG)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RCVMSG)
+-/* Big M for sound/OSS */
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_VOLUME)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_BASS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_TREBLE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_SYNTH)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_PCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_SPEAKER)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_MIC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_CD)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_IMIX)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_ALTPCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECLEV)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_IGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_OGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE3)
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL1))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL2))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL3))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_PHONEIN))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_PHONEOUT))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_VIDEO))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_RADIO))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_MONITOR))
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_MUTE)
+-/* SOUND_MIXER_READ_ENHANCE,  same value as READ_MUTE */
+-/* SOUND_MIXER_READ_LOUD,  same value as READ_MUTE */
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECSRC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_DEVMASK)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECMASK)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_STEREODEVS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_CAPS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_VOLUME)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_BASS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_TREBLE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_SYNTH)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_PCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_SPEAKER)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_MIC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_CD)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_IMIX)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_ALTPCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_RECLEV)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_IGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_OGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE3)
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL1))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL2))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL3))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_PHONEIN))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_PHONEOUT))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_VIDEO))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_RADIO))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_MONITOR))
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_MUTE)
+-/* SOUND_MIXER_WRITE_ENHANCE,  same value as WRITE_MUTE */
+-/* SOUND_MIXER_WRITE_LOUD,  same value as WRITE_MUTE */
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_RECSRC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_INFO)
+-COMPATIBLE_IOCTL(SOUND_OLD_MIXER_INFO)
+-COMPATIBLE_IOCTL(SOUND_MIXER_ACCESS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_AGC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_3DSE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE3)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE4)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE5)
+-COMPATIBLE_IOCTL(SOUND_MIXER_GETLEVELS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_SETLEVELS)
+-COMPATIBLE_IOCTL(OSS_GETVERSION)
+ /* Raw devices */
+ COMPATIBLE_IOCTL(RAW_SETBIND)
+ COMPATIBLE_IOCTL(RAW_GETBIND)
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index f57c610d7523..13db77771f0f 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2717,6 +2717,10 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
+ static long snd_pcm_oss_ioctl_compat(struct file *file, unsigned int cmd,
+ 				     unsigned long arg)
+ {
++	/*
++	 * Everything is compatbile except SNDCTL_DSP_MAPINBUF/SNDCTL_DSP_MAPOUTBUF,
++	 * which are not implemented for the native case either
++	 */
+ 	return snd_pcm_oss_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+ }
+ #else
+diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+index fc9bcd47d6a4..f802ea331e24 100644
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -384,6 +384,7 @@ static const struct file_operations mixer_fops =
+ 	.owner		= THIS_MODULE,
+ 	.llseek		= no_llseek,
+ 	.unlocked_ioctl	= mixer_unlocked_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open		= mixer_open,
+ 	.release	= mixer_release,
+ };
+@@ -1167,6 +1168,7 @@ static const struct file_operations sq_fops =
+ 	.write		= sq_write,
+ 	.poll		= sq_poll,
+ 	.unlocked_ioctl	= sq_unlocked_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open		= sq_open,
+ 	.release	= sq_release,
+ };
+-- 
+2.20.0
