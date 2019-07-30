@@ -1,19 +1,17 @@
-From: Mr ARM <mrarmdev@gmail.com>
-Subject: Handling a device which zeroes the memory on IO start
-Date: Tue, 30 Jul 2019 23:00:01 +0200
-Message-ID: <CAKSqxP9m2ObY94DumdYcnn2bOT0sj1=Lsow5i8sN1oZPQwZJqg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [GIT PULL] SOF v1.3 firmware
+	binaries
+Date: Tue, 30 Jul 2019 16:09:28 -0500
+Message-ID: <2f700356-1b5e-94cf-4586-f8f473dc5a85@linux.intel.com>
+References: <af2d45578f7cdf908eb83cad3371b41315b7b5c4.camel@linux.intel.com>
+ <69af4cd7-f9c2-3b2b-2774-4da1063395b2@linux.intel.com>
+ <82019862aec57d5d8803fdd4270f88da409fe924.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD6DAF80214
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 23:00:13 +0200 (CEST)
-Received: by mail-ed1-x530.google.com with SMTP id r12so28950369edo.5
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 14:00:13 -0700 (PDT)
+In-Reply-To: <82019862aec57d5d8803fdd4270f88da409fe924.camel@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +21,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-firmware@kernel.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, SOF <sound-open-firmware@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-My issue involves a specific device quirk. The device generally uses a
-mmap'ed memory regions, however sending a StartIO command (from a trigger)
-causes a full buffer erase (which is completed once I get an initial
-UpdateTimestamp several milliseconds later), and it seems that alsa fills
-the DMA buffer before calling the start trigger. I'm unsure how to
-workaround this issue. I have seen the SNDRV_PCM_INFO_DOUBLE flag, however
-it didn't help me in my issue as from what I understand it's merely an
-information that the driver is using double buffering.
+>>> ----------------------------------------------------------------
+>>> Liam Girdwood (1):
+>>>         sof: Add Intel SOF V1.3 release firmware binaries.
+>>>
+>>>    LICENCE.sof                                  | 1090
+>>> ++++++++++++++++++++++++++
+>>
+>> Humm, that LICENSE file needs to be double-checked. Is there any
+>> reason
+>> why the text of this LICENSE.sof is different the usual text, e.g.
+>> from
+>> the LICENSE.adsp_sst?
+> 
+> LICENCE.adsp_sst is for the closed source firmware and LICENCE.sof is
+> for SOF. The key difference is the removal of Intel binary FW licence
+> and addition of BSD 3c, MIT, ISC and BSD 2c from SOF LICENCE file. Both
+> files are the same wrt newlib.
 
-One option is to make the start trigger method copy the buffer, send the
-StartIO command, then do a blocking-wait for initial timestamp and restore
-the buffer. I don't think I can get rid of the blocking wait here if I use
-this temporary-buffer-copy approach as I think that in the time before I
-get the timestamp update, a client could try to update the shared memory
-resulting in that data being lost after I restore the original contents
-later.
-Another idea I had is to do the same, but in the open callback, however
-that seems totally wrong.
+I would kindly ask that you run this by legal.
 
-Any ideas are appreciated. I tried grepping for drivers using the
-SNDRV_PCM_INFO_DOUBLE flag, however I couldn't find any code workarounding
-similar issues.
+The BSD license is provided for the source files, it's a stretch to say 
+that the license extends to binaries without a statement that says that 
+the binary firmware is only made of those source files, unmodified and 
+without proprietary extensions. And to the best of my knowledge the 
+newlib dependencies do not apply when compiling with XCC.
 
-Thank you,
-Paul Pawlowski
+>> *    No reverse engineering, decompilation, or disassembly of this
+>> software is
+>>        permitted.
+> 
+> I'm not following why we need the reverse engineering conditions for
+> opensource binaries.
 
-PS: I wrote an email yesterday to this mailing list from another email
-address, however I have received several SPF failures, so I switched to
-gmail. Regarding the previous mail, I have figured out the looping audio
-was caused by the lack of a snd_pcm_period_elapsed call. I have missed it
-because my device has no proper interrupt handler, and only sends a
-confusingly named UpdateTimestamp message once the buffer has been fully
-processed. I'm however still unsure as for what I should return from the
-_pointer function as the device does not provide a frame pointer.
+me neither, that's why I stated that the model has to be different from SST.
+
+
+>> and the DISCLAIMER part, both of which seem pretty important to me.
+> 
+> Disclaimer is in BSD 3 clause and MIT licence - exact same as the
+> sources.
+
+Maybe I am splitting hair, but I'd like a professional opinion on that 
+license file. Better safe than sorry. I had GKH tell me on Friday to fix 
+a (c) 2017-19 and use (c) 2017-2019...
+
+>>   
+>> IANAL, but seeing only a patent clause looks odd. There should be a
+>> mention of redistribution and a clear disclaimer (not sure about the
+>> reverse engineering parts since the code is available it makes no
+>> sense).
+> 
+> Patent clause is exactly the same as SST FW.
+> 
+>>
+>>>    WHENCE                                       |   33 +
+>>>    intel/sof/apl/intel/sof-apl-v1.3.ri          |  Bin 0 -> 270336
+>>> bytes
+>>>    intel/sof/bdw/sof-bdw-v1.3.ri                |  Bin 0 -> 100144
+>>> bytes
+>>>    intel/sof/byt/sof-byt-v1.3.ri                |  Bin 0 -> 89668
+>>> bytes
+>>>    intel/sof/cht/sof-cht-v1.3.ri                |  Bin 0 -> 90484
+>>> bytes
+>>>    intel/sof/cnl/intel/sof-cnl-v1.3-6cc8da10.ri |  Bin 0 -> 274432
+>>> bytes
+>>>    intel/sof/icl/intel/sof-icl-v1.3.ri          |  Bin 0 -> 278528
+>>> bytes
+>>
+>> There are two types of platforms, the ones which require the Intel
+>> firmware to be signed with a private production key and the ones
+>> that
+>> are signed with the SOF community key.
+>>
+>> if we have a single directory, then how do we deal with the two
+>> cases?
+> 
+> I've not yet upstreamed the community signed versions yet so everything
+> is in the intel/sof/platform/key/ directory structure.
+> 
+>> It's not even clear to me which of the two cases are handled here.
+>>
+> 
+> Intel signed binaries, since they are in intel/sof/platform/intel
+> directory. Community signed will go in intel/sof/platform/community/
+> dir.
+
+I don't understand what you're suggesting nor how it would work with the 
+way the kernel deals with directories. I tried to explain that we need 
+an intel/sof-production and intel/sof directories, each with generic 
+names that are symlinked to another location. This helps if you want to 
+build quirks that select one or the other capabilities by just changing 
+the firmware directory prefix. Pointers below.
+
+https://github.com/thesofproject/linux/blob/9d7da69a1e85db2cdbbaae78dd7eda4eeaa1eb1c/sound/soc/sof/sof-pci-dev.c#L24
+
+https://github.com/thesofproject/linux/blob/9d7da69a1e85db2cdbbaae78dd7eda4eeaa1eb1c/sound/soc/sof/loader.c#L269
+
+https://github.com/thesofproject/linux/blob/9d7da69a1e85db2cdbbaae78dd7eda4eeaa1eb1c/sound/soc/sof/sof-pci-dev.c#L149
+
+I guess we need to talk off-line since we are evidently not on the same 
+page or something is missing for people to use this pull request.
+
+> 
+>>>    intel/sof/sof-apl.ri                         |    1 +
+>>>    intel/sof/sof-bdw.ri                         |    1 +
+>>>    intel/sof/sof-byt.ri                         |    1 +
+>>>    intel/sof/sof-cht.ri                         |    1 +
+>>>    intel/sof/sof-cml.ri                         |    1 +
+>>>    intel/sof/sof-cnl.ri                         |    1 +
+>>>    intel/sof/sof-glk.ri                         |    1 +
+>>>    intel/sof/sof-icl.ri                         |    1 +
+>>>    intel/sof/sof-whl.ri                         |    1 +
+>>
+>> unless I am missing something, we don't have any tables in the Linux
+>> kernel for the WHL and CML configurations, and IIRC we only generate
+>> sof-cnl.ri. Is there actually a user for sof-whl.ri and sof-cml.ri?
+>>
+> 
+> There are glk users hence the addition of whl and cml.
+
+glk has nothing to do with whl and cml. Not sure if there is a typo or 
+something I missed in your reply?
