@@ -1,66 +1,49 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 1/2] ASoC: SOF: introduce
- no_stream_position so host_period_bytes preserves its data
-Date: Tue, 30 Jul 2019 07:51:43 -0500
-Message-ID: <0b20cfe6-064b-a4ce-ce9d-2634f3f23d7c@linux.intel.com>
-References: <9d92551a-fa10-4ecd-47f1-5b3b67824a12@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 17/40] soundwire: bus: use
+ runtime_pm_get_sync/pm when enabled
+Date: Tue, 30 Jul 2019 07:57:46 -0500
+Message-ID: <a1b383b3-7846-3545-38a5-beece3e52849@linux.intel.com>
+References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
+ <45a912c5-134b-8642-70ef-8c1060389300@linux.intel.com>
+ <20190726190823.GD9224@smile.fi.intel.com>
+ <5a16d9e6-0a9c-a0a8-3b11-d046247f3879@linux.intel.com>
+ <20190730112157.GM23480@smile.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 532CAF800BF
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 14:51:47 +0200 (CEST)
-In-Reply-To: <9d92551a-fa10-4ecd-47f1-5b3b67824a12@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190730112157.GM23480@smile.fi.intel.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>, marcin.rajwa@intel.com, Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, tiwai@suse.de, gregkh@linuxfoundation.org, "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiA3LzMwLzE5IDU6MTYgQU0sIFJhandhLCBNYXJjaW4gd3JvdGU6Cj4gRnJvbTogTWFyY2lu
-IFJhandhIDxtYXJjaW4ucmFqd2FAbGludXguaW50ZWwuY29tPgo+IAo+IENoYW5nZSB0aGUgdXNl
-IG9mIGhvc3RfcGVyaW9kX2J5dGVzLiBTbyBmYXIgdGhpcyBmaWVsZCB3YXMgdXNlZAo+IGFzIGFu
-IGJvb2wgdmFsdWUgaW5kaWNhdGluZyB3aGV0aGVyIEZXIHNob3VsZCBzZW5kIHN0cmVhbSBwb3Np
-dGlvbgo+IHVwZGF0ZS4gV2l0aCB0aGlzIHBhdGNoIHdlIHVzZSBob3N0X3BlcmlvZF9ieXRlcyB0
-byBwcm92aWRlIGZpcm13YXJlCj4gaW5mb3JtYXRpb24gYWJvdXQgdGhlIGZyZXF1ZW5jeSBvZiBo
-b3N0IGludGVycnVwdHMgYWltZWQgdG8gcmVhZAo+IGl0cyBpbnB1dCBidWZmZXIuIFRoaXMgaXMg
-YWNjb3JpbmcgdG8gQUxTQSBkZWZpbml0aW9uIG9mICdGcmFtZVBlcmlvZCcuCgphY2NvcmRpbmcg
-dG8gdGhlCgo+IEtub3dpbmcgdGhpcyBmaXJtd2FyZSBjYW4gc2FmZWx5IGNvcHkgbGFyZ2UvaXJy
-ZWd1bGFyIGNodW5rcyBvZiBkYXRhCgp3aHkgaXJyZWd1bGFyPyBBTFNBIHBlcmlvZHMgYXJlIHBy
-ZXR0eSByZWd1bGFyIGFuZCBwcmVkaWN0YWJsZS4KCj4gKGxpa2UgZGF0YSBjb21taW5nIGZyb20g
-aS5lIGRyYWluaW5nIHRhc2spIHdpdGhvdXQgdGhlIHJpc2sgb2YgYnVmZmVyCgpjb21pbmcKClBs
-ZWFzZSBwcm9vZi1yZWFkIHlvdXIgY29tbWl0IG1lc3NhZ2VzIChhbmQgdXNlIGFuIGVkaXRvciB3
-aGljaCAKc3BlbGwtY2hlY2tzIGZvciB5b3UpLCB0eXBvcyBhbmQgbWlzbGVhZGluZyBpbmZvcm1h
-dGlvbiBkb24ndCBleGFjdGx5IApib29zdCB0cnVzdCBpbiB0aGUgc3VnZ2VzdGVkIHBhdGNoLCBy
-ZWdhcmRsZXNzIG9mIGl0cyBtZXJpdHMuCgo+IG92ZXJmbG93Lgo+IAo+IFNpZ25lZC1vZmYtYnk6
-IE1hcmNpbiBSYWp3YSA8bWFyY2luLnJhandhQGxpbnV4LmludGVsLmNvbT4KPiBTaWduZWQtb2Zm
-LWJ5OiBLZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4LmludGVsLmNvbT4KPiBSZXZpZXdlZC1ieTog
-UmFuamFuaSBTcmlkaGFyYW4gPHJhbmphbmkuc3JpZGhhcmFuQGxpbnV4LmludGVsLmNvbT4KPiAK
-PiAtLS0KPiAgwqBpbmNsdWRlL3NvdW5kL3NvZi9zdHJlYW0uaCB8IDQgKystLQo+ICDCoDEgZmls
-ZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdp
-dCBhL2luY2x1ZGUvc291bmQvc29mL3N0cmVhbS5oIGIvaW5jbHVkZS9zb3VuZC9zb2Yvc3RyZWFt
-LmgKPiBpbmRleCA2NDNmMTc1Y2I0NzkuLjA2YWY0ZWNiMjU4NCAxMDA2NDQKPiAtLS0gYS9pbmNs
-dWRlL3NvdW5kL3NvZi9zdHJlYW0uaAo+ICsrKyBiL2luY2x1ZGUvc291bmQvc29mL3N0cmVhbS5o
-Cj4gQEAgLTgzLDEwICs4MywxMCBAQCBzdHJ1Y3Qgc29mX2lwY19zdHJlYW1fcGFyYW1zIHsKPiAg
-wqDCoMKgwqAgdWludDE2X3Qgc2FtcGxlX3ZhbGlkX2J5dGVzOwo+ICDCoMKgwqDCoCB1aW50MTZf
-dCBzYW1wbGVfY29udGFpbmVyX2J5dGVzOwo+IAo+IC3CoMKgwqAgLyogZm9yIG5vdGlmeWluZyBo
-b3N0IHBlcmlvZCBoYXMgY29tcGxldGVkIC0gMCBtZWFucyBubyBwZXJpb2QgSVJRICovCj4gIMKg
-wqDCoMKgIHVpbnQzMl90IGhvc3RfcGVyaW9kX2J5dGVzOwo+ICvCoMKgwqAgdWludDE2X3Qgbm9f
-c3RyZWFtX3Bvc2l0aW9uOyAvKiAxIG1lYW5zIG5vIElQQyBmb3IgcG9zaXRpb24gdXBkYXRlICov
-Cj4gCj4gLcKgwqDCoCB1aW50MzJfdCByZXNlcnZlZFsyXTsKPiArwqDCoMKgIHVpbnQxNl90IHJl
-c2VydmVkWzNdOwo+ICDCoMKgwqDCoCB1aW50MTZfdCBjaG1hcFtTT0ZfSVBDX01BWF9DSEFOTkVM
-U107wqDCoMKgIC8qKjwgY2hhbm5lbCBtYXAgLSAKPiBTT0ZfQ0hNQVBfICovCj4gIMKgfSBfX3Bh
-Y2tlZDsKPiAKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+
+
+On 7/30/19 6:21 AM, Andy Shevchenko wrote:
+> On Mon, Jul 29, 2019 at 05:07:39PM -0500, Pierre-Louis Bossart wrote:
+>> On 7/26/19 2:08 PM, Andy Shevchenko wrote:
+>>> On Fri, Jul 26, 2019 at 01:08:57PM -0500, Pierre-Louis Bossart wrote:
+> 
+>>>> -	if (ret < 0)
+>>>> +	if (ret < 0 && ret != -EACCES)
+>>>
+>>> ...and here, the pm_runtime_put_noidle() call is missed.
+>>
+>> yes but in the example you provided, they actually do more work than just
+>> decrement the device usage counter:
+> 
+> In their case they would like to do that. You decide what is appropriate call
+> in your case.
+> 
+> My point is, that reference counter in case of error handling should be
+> returned back to its value.
+
+Agree on the reference count.
+I am however not clear on the next step and 'what is appropriate'.
+
+If pm_runtime_get_sync() failed, then technically the device was not 
+resumed so marking it as last_busy+autosuspend, or using a plain vanilla 
+put() will not result in any action. I must be missing something here.
