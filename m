@@ -1,88 +1,92 @@
-From: Marco Felsch <m.felsch@pengutronix.de>
-Subject: Re: [PATCH v2 1/3] dt-bindings: ASoC: Add TDA7802 amplifier
-Date: Tue, 30 Jul 2019 15:12:09 +0200
-Message-ID: <20190730131209.rdv2kdlrpfeouh66@pengutronix.de>
+From: Thomas Preston <thomas.preston@codethink.co.uk>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on diagnostic
+ routine
+Date: Tue, 30 Jul 2019 15:04:19 +0100
+Message-ID: <e7a879d3-36c2-2df8-97c0-3c4bbd2e7ea2@codethink.co.uk>
 References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-2-thomas.preston@codethink.co.uk>
- <20190730122748.GF54126@ediswmail.ad.cirrus.com>
+ <20190730120937.16271-4-thomas.preston@codethink.co.uk>
+ <20190730124158.GH54126@ediswmail.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190730122748.GF54126@ediswmail.ad.cirrus.com>
+In-Reply-To: <20190730124158.GH54126@ediswmail.ad.cirrus.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Thomas Preston <thomas.preston@codethink.co.uk>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jerome Brunet <jbrunet@baylibre.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Paul Cercueil <paul@crapouillou.net>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vkoul@kernel.org>, Annaliese McDermond <nh6z@nh6z.net>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Patrick Glaser <pglaser@tesla.com>, Rob Duncan <rduncan@tesla.com>, Nate
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Marco Felsch <m.felsch@pengutronix.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Annaliese McDermond <nh6z@nh6z.net>, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles,
+Hi,
+Thanks for getting back to me so quickly.
 
-sorry for jumping in..
-
-On 19-07-30 13:27, Charles Keepax wrote:
-> On Tue, Jul 30, 2019 at 01:09:35PM +0100, Thomas Preston wrote:
-> > Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
-> > Cc: Patrick Glaser <pglaser@tesla.com>
-> > Cc: Rob Duncan <rduncan@tesla.com>
-> > Cc: Nate Case <ncase@tesla.com>
-> > ---
-> >  .../devicetree/bindings/sound/tda7802.txt     | 26 +++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/tda7802.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/tda7802.txt b/Documentation/devicetree/bindings/sound/tda7802.txt
-> > new file mode 100644
-> > index 000000000000..f80aaf4f1ba0
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/tda7802.txt
-> > @@ -0,0 +1,26 @@
-> > +ST TDA7802 audio processor
-> > +
-> > +This device supports I2C only.
-> > +
-> > +Required properties:
-> > +
-> > +- compatible : "st,tda7802"
-> > +- reg : the I2C address of the device
-> > +- enable-supply : a regulator spec for the PLLen pin
-
-Shouldn't that be a pin called 'pllen-gpios'? IMHO I would not use a
-regulator for that.
-
-Regards,
-  Marco
-
-> > +
-> > +Optional properties:
-> > +
-> > +- st,gain-ch13 : gain for channels 1 and 3 (range: 1-4)
-> > +- st,gain-ch24 : gain for channels 2 and 3 (range: 1-4)
+On 30/07/2019 13:41, Charles Keepax wrote:
+> On Tue, Jul 30, 2019 at 01:09:37PM +0100, Thomas Preston wrote:
+>> Add a debugfs device node which initiates the turn-on diagnostic routine
+>> feature of the TDA7802 amplifier. The four status registers (one per
+>> channel) are returned.
+>>
+>> Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
+>> ---
+>> Changes since v1:
+>> - Rename speaker-test to (turn-on) diagnostics
+>> - Move turn-on diagnostic to debugfs as there is no standard ALSA
+>>   interface for this kind of routine.
+>>
+>>  sound/soc/codecs/tda7802.c | 186 ++++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 185 insertions(+), 1 deletion(-)
+>>
+>> +static int tda7802_bulk_update(struct regmap *map, struct reg_update *update,
+>> +		size_t update_count)
+>> +{
+>> +	int i, err;
+>> +
+>> +	for (i = 0; i < update_count; i++) {
+>> +		err = regmap_update_bits(map, update[i].reg, update[i].mask,
+>> +				update[i].val);
+>> +		if (err < 0)
+>> +			return err;
+>> +	}
+>> +
+>> +	return i;
+>> +}
 > 
-> I wouldn't have expected the gains to be available as a device
-> tree setting.
-> 
-> > +- st,diagnostic-mode-ch13 : diagnotic mode for channels 1 and 3
-> > +                            values: "Speaker" (default), "Booster"
-> > +- st,diagnostic-mode-ch24 : diagnotic mode for channels 2 and 4
-> > +                            values: "Speaker" (default), "Booster"
-> > +
-> > +Example:
-> > +
-> > +amp: tda7802@6c {
-> > +	compatible = "st,tda7802";
-> > +	reg = <0x6c>;
-> > +	enable-supply = <&amp_enable_reg>;
-> > +};
-> > -- 
-> > 2.21.0
-> > 
-> 
-> Thanks,
-> Charles
+> This could probably be removed using regmap_multi_reg_write.
 > 
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+The problem is that I want to retain the state of the other bits in those
+registers. Maybe I should make a copy of the backed up state, set the bits
+I want to off-device, then either:
+
+1. Write the changes with regmap_multi_reg_write
+2. Write all six regs again (if my device doesn't support the multi_reg)
+
+>> +static int tda7802_probe(struct snd_soc_component *component)
+>> +{
+>> +	struct tda7802_priv *tda7802 = snd_soc_component_get_drvdata(component);
+>> +	struct device *dev = &tda7802->i2c->dev;
+>> +	int err;
+>> +
+>> +	tda7802->debugfs = debugfs_create_dir(dev_name(dev), NULL);
+>> +	if (IS_ERR_OR_NULL(tda7802->debugfs)) {
+>> +		dev_info(dev,
+>> +			"Failed to create debugfs node, err %ld\n",
+>> +			PTR_ERR(tda7802->debugfs));
+>> +		return 0;
+>> +	}
+>> +
+>> +	mutex_init(&tda7802->diagnostic_mutex);
+>> +	err = debugfs_create_file("diagnostic", 0444, tda7802->debugfs, tda7802,
+>> +			&tda7802_diagnostic_fops);
+>> +	if (err < 0) {
+>> +		dev_err(dev,
+>> +			"debugfs: Failed to create diagnostic node, err %d\n",
+>> +			err);
+>> +		goto cleanup_diagnostic;
+>> +	}
+> 
+> You shouldn't be failing the driver probe if debugfs fails, it
+> should be purely optional.
+> 
+
+Got it, thanks.
