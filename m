@@ -1,41 +1,72 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 17/40] soundwire: bus: use
- runtime_pm_get_sync/pm when enabled
-Date: Tue, 30 Jul 2019 14:21:57 +0300
-Message-ID: <20190730112157.GM23480@smile.fi.intel.com>
-References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-18-pierre-louis.bossart@linux.intel.com>
- <45a912c5-134b-8642-70ef-8c1060389300@linux.intel.com>
- <20190726190823.GD9224@smile.fi.intel.com>
- <5a16d9e6-0a9c-a0a8-3b11-d046247f3879@linux.intel.com>
+From: Hillf Danton <hdanton@sina.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix gpf in
+	snd_usb_pipe_sanity_check
+Date: Tue, 30 Jul 2019 19:28:56 +0800
+Message-ID: <20190730112856.876-1-hdanton@sina.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5a16d9e6-0a9c-a0a8-3b11-d046247f3879@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de, gregkh@linuxfoundation.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail3-165.sinamail.sina.com.cn (mail3-165.sinamail.sina.com.cn
+ [202.108.3.165]) by alsa1.perex.cz (Postfix) with SMTP id B177AF800BF
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 13:29:13 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrey Konovalov <andreyknvl@google.com>, syzbot <syzbot+d59c4387bfb6eced94e2@syzkaller.appspotmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 29, 2019 at 05:07:39PM -0500, Pierre-Louis Bossart wrote:
-> On 7/26/19 2:08 PM, Andy Shevchenko wrote:
-> > On Fri, Jul 26, 2019 at 01:08:57PM -0500, Pierre-Louis Bossart wrote:
 
-> > > -	if (ret < 0)
-> > > +	if (ret < 0 && ret != -EACCES)
-> > 
-> > ...and here, the pm_runtime_put_noidle() call is missed.
-> 
-> yes but in the example you provided, they actually do more work than just
-> decrement the device usage counter:
+On Tue, 30 Jul 2019 18:08:02 +0800 Takashi Iwai wrote:
+>
+> You don't have to copy the whole these texts at all.
+> In general, it'd suffice to point out the dashboard URL, and if the
+> stack trace is mandatory, drop the useless hex numbers and just show
+> the significant part of the stack trace.
+>
+I am used to give readers as much info as appropriate, and learning that
+an URL is enough in cases like this one. I will send you the pruned
+version next time.
 
-In their case they would like to do that. You decide what is appropriate call
-in your case.
+> > It was introduced in commit 801ebf1043ae for checking pipe and endpoint
+> > types. It is fixed by adding a check of the ep pointer in question.
+> >
+> > Reported-by: syzbot <syzbot+d59c4387bfb6eced94e2@syzkaller.appspotmail.com>
+> > Fixes: commit 801ebf1043ae ("ALSA: usb-audio: Sanity checks for each pipe and EP types")
+>
+> Drop "commit" word.
+>
+Yes, Sir.
 
-My point is, that reference counter in case of error handling should be
-returned back to its value.
+> > Cc: Andrey Konovalov <andreyknvl@google.com>
+> > Signed-off-by: Hillf Danton <dhanton@sina.com>
+> > ---
+There is a typo, s/dhanton/hdanton/, as you pointed out in another mail.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > This is to make syzbot happy for now and in long run we can make
+> > snd_usb_pipe_sanity_check() available outside sound/usb by making
+> > usb_urb_ep_type_check() a wrapper of the former. We will revisit
+> > sound/usb once when things in the usb/core get in place.
+>
+> Actually I expected to apply the "long-term" fix now.
+
+There is change in usb/core included in that fix as you see, and
+according to the rule, one fix a patch, it is better and simpler
+IMO to fix the sound part first.
+
+> The same kind
+> of fix was already submitted from me (<s5hlfwn376e.wl-tiwai@suse.de>),
+> but I didn't merge it because working on the usb core helper would be
+> a saner solution.
+>
+Feel free to merge that, Sir.
+
+Thanks
+Hillf
