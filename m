@@ -1,23 +1,22 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 3/3] gpiolib-acpi: Move
- acpi_dev_add_driver_gpios() et al to consumer.h
-Date: Wed, 31 Jul 2019 01:02:14 +0200
-Message-ID: <CACRpkdZXTRENogogOxrB6F5aXQSd5qehXFP1R3ax0um1XU93Aw@mail.gmail.com>
-References: <20190730104337.21235-1-andriy.shevchenko@linux.intel.com>
- <20190730104337.21235-3-andriy.shevchenko@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 1/2] ASoC: SOF: introduce
+ no_stream_position so host_period_bytes preserves its data
+Date: Tue, 30 Jul 2019 18:03:47 -0500
+Message-ID: <c15cf1db-3858-8694-bcb4-3665c2f0c6b2@linux.intel.com>
+References: <9d92551a-fa10-4ecd-47f1-5b3b67824a12@linux.intel.com>
+ <0b20cfe6-064b-a4ce-ce9d-2634f3f23d7c@linux.intel.com>
+ <5fda90f9-c387-440a-9ea8-648b22dda9b0@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com
- [IPv6:2a00:1450:4864:20::141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E099FF80214
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 01:02:27 +0200 (CEST)
-Received: by mail-lf1-x141.google.com with SMTP id c9so45899411lfh.4
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 16:02:27 -0700 (PDT)
-In-Reply-To: <20190730104337.21235-3-andriy.shevchenko@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB0A0F80482
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 01:03:49 +0200 (CEST)
+In-Reply-To: <5fda90f9-c387-440a-9ea8-648b22dda9b0@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,28 +26,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Jie Yang <yang.jie@linux.intel.com>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Mark Brown <broonie@kernel.org>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>, marcin.rajwa@intel.com, Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKdWwgMzAsIDIwMTkgYXQgMTI6NDMgUE0gQW5keSBTaGV2Y2hlbmtvCjxhbmRyaXku
-c2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+IHdyb3RlOgoKPiBUaGUgQVBJLCB3aGljaCBiZWxv
-bmdzIHRvIEdQSU8gbGlicmFyeSwgaXMgZm9yZWlnbiB0byBBQ1BJIGhlYWRlcnMuIEVhcmxpZXIK
-PiB3ZSBtb3ZlZCBvdXQgScKyQyBvdXQgb2YgdGhlIGxhdHRlciwgYW5kIG5vdyBpdCdzIHRpbWUg
-Zm9yCj4gYWNwaV9kZXZfYWRkX2RyaXZlcl9ncGlvcygpIGV0IGFsLgo+Cj4gRm9yIHRpbWUgYmVp
-bmcgdGhlIGFjcGlfZ3Bpb19nZXRfaXJxX3Jlc291cmNlKCkgYW5kIGFjcGlfZGV2X2dwaW9faXJx
-X2dldCgpCj4gYXJlIGxlZnQgdW50b3VjaGVkIGFzIHRoZXkgbmVlZCBtb3JlIHRob3VnaHQgYWJv
-dXQuCj4KPiBOb3RlLCBpdCByZXF1aXJlcyB1bmlubGluZSBhY3BpX2Rldl9yZW1vdmVfZHJpdmVy
-X2dwaW9zKCkgdG8ga2VlcCBwdXJpdHkgb2YKPiBjb25zdW1lci5oLgo+Cj4gQ2M6IFBpZXJyZS1M
-b3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gQ2M6
-IExpYW0gR2lyZHdvb2QgPGxpYW0uci5naXJkd29vZEBsaW51eC5pbnRlbC5jb20+Cj4gQ2M6IEpp
-ZSBZYW5nIDx5YW5nLmppZUBsaW51eC5pbnRlbC5jb20+Cj4gQ2M6IE1hcmsgQnJvd24gPGJyb29u
-aWVAa2VybmVsLm9yZz4KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnIChtb2RlcmF0
-ZWQgbGlzdDpJTlRFTCBBU29DIERSSVZFUlMpCj4gU2lnbmVkLW9mZi1ieTogQW5keSBTaGV2Y2hl
-bmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+CgpQYXRjaCBhcHBsaWVkIQoK
-SnVzdCBhIGJpdCB3b3JyaWVkIHRoYXQgdGhpcyB3aWxsIGNvbGxpZGUgd2l0aCBNYXNhaGlybydz
-ICNpZmRlZi1yZWR1Y3Rpb24sCmJ1dCBJIHdhbnRlZCB0byBrZWVwIHlvdXIgc2VyaWVzIHRvZ2V0
-aGVyLgoKWW91cnMsCkxpbnVzIFdhbGxlaWoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+
+>>> Change the use of host_period_bytes. So far this field was used
+>>> as an bool value indicating whether FW should send stream position
+>>> update. With this patch we use host_period_bytes to provide firmware
+>>> information about the frequency of host interrupts aimed to read
+>>> its input buffer. This is accoring to ALSA definition of 'FramePeriod'.
+>>
+>> according to the
+>>
+>>> Knowing this firmware can safely copy large/irregular chunks of data
+>>
+>> why irregular? ALSA periods are pretty regular and predictable.
+> 
+> I did not say ALSA periods are irregular I said that sometimes (like in 
+> case of draining) firmware needs to copy irregular amount of that.
+> 
+> What I mean by "irregular" is not equal to ALSA period or multiple of 
+> periods.
+
+Marcin, in the v2 review this is what we discussed. The formatting may 
+be off so please refer to the emails directly should this be difficult 
+to read:
+
+"
+ >>>
+ >>> Before I provide more feedback, can you clarify if the 
+'host_period_bytes' is the same value as the ALSA period size (in 
+bytes)? And what would be the value when the no_irq mode is used?
+ >>
+ >> Yes, this is the same value. It is obtained by 
+*params_period_bytes**()* in kernel.
+ >
+ > ok good. I was afraid this would be a different concept.
+ >
+ > So what you are saying is that the draining happens by bursts whose 
+size is tied to the period defined by the host, yes?
+Yes. We try to fill host buffer as much as we can to gain fast draining 
+but in the same time we give host time to read it.
+"
+
+I cannot reconcile the two threads, is the draining tied to the ALSA 
+period size or not?
+
+Care to clarify?
+
+> 
+>>
+>>> (like data comming from i.e draining task) without the risk of buffer
+>>
+>> coming
+>>
+>> Please proof-read your commit messages (and use an editor which 
+>> spell-checks for you), typos and misleading information don't exactly 
+>> boost trust in the suggested patch, regardless of its merits.
+> 
+> 
+> Sorry for typos. Should I correct them and resend again or correct here 
+> as we discuss?
+
+
+better send a v5 when we've clarified what the 'irregular' wording 
+refers to.
