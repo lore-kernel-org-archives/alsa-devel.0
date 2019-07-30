@@ -1,13 +1,13 @@
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH 04/11] ASoC: jz4740: Drop lb60 board code
-Date: Tue, 30 Jul 2019 17:43:51 +0000
-Message-ID: <MWHPR2201MB12774249834C09DBDE719902C1DC0@MWHPR2201MB1277.namprd22.prod.outlook.com>
-References: <20190725220215.460-5-paul@crapouillou.net>
+Subject: Re: [PATCH 05/11] video/fbdev: Drop JZ4740 driver
+Date: Tue, 30 Jul 2019 17:43:55 +0000
+Message-ID: <MWHPR2201MB1277CBFBCC5B2A7DCE8CF2E6C1DC0@MWHPR2201MB1277.namprd22.prod.outlook.com>
+References: <20190725220215.460-6-paul@crapouillou.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190725220215.460-5-paul@crapouillou.net>
+In-Reply-To: <20190725220215.460-6-paul@crapouillou.net>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Paul Cercueil <paul@crapouillou.net>
@@ -17,11 +17,11 @@ List-Id: alsa-devel@alsa-project.org
 Hello,
 
 Paul Cercueil wrote:
-> The board now uses the simple-audio-card driver.
+> The JZ4740 fbdev driver has been replaced with the ingenic-drm driver.
 >=20
 > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > Tested-by: Artur Rojek <contact@artur-rojek.eu>
-> Acked-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
 Applied to mips-next.
 
