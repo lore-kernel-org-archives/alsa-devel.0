@@ -1,113 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/3] ASoC: TDA7802: Add turn-on
-	diagnostic routine
-Date: Tue, 30 Jul 2019 15:19:35 +0100
-Message-ID: <20190730141935.GF4264@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] dt-bindings: ASoC: Add TDA7802
+ amplifier
+Date: Tue, 30 Jul 2019 15:33:39 +0100
+Message-ID: <20190730143339.GH4264@sirena.org.uk>
 References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-4-thomas.preston@codethink.co.uk>
+ <20190730120937.16271-2-thomas.preston@codethink.co.uk>
+ <20190730122748.GF54126@ediswmail.ad.cirrus.com>
+ <20190730131209.rdv2kdlrpfeouh66@pengutronix.de>
+ <16a99e45-fd5a-2878-acf9-63518f9ca527@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3369682559639835337=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B1BEF80482
- for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2019 16:19:40 +0200 (CEST)
-In-Reply-To: <20190730120937.16271-4-thomas.preston@codethink.co.uk>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+QwZB9vYiNIzNXIj"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <16a99e45-fd5a-2878-acf9-63518f9ca527@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Thomas Preston <thomas.preston@codethink.co.uk>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Marco Felsch <m.felsch@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Annaliese McDermond <nh6z@nh6z.net>, Liam Girdwood <lgirdwood@gmail.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+Cc: Marco Felsch <m.felsch@pengutronix.de>, Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Rob Duncan <rduncan@tesla.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Annaliese McDermond <nh6z@nh6z.net>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Nate Case <ncase@tesla.com>, Cheng-Yi Chiang <cychiang@chromium.org>, Patrick Glaser <pglaser@tesla.com>, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3369682559639835337==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8JPrznbw0YAQ/KXy"
-Content-Disposition: inline
-
-
---8JPrznbw0YAQ/KXy
+--+QwZB9vYiNIzNXIj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 30, 2019 at 01:09:37PM +0100, Thomas Preston wrote:
+On Tue, Jul 30, 2019 at 03:12:21PM +0100, Thomas Preston wrote:
+> On 30/07/2019 14:12, Marco Felsch wrote:
 
-> +	struct dentry *debugfs;
-> +	struct mutex diagnostic_mutex;
-> +};
+> >>> +- compatible : "st,tda7802"
+> >>> +- reg : the I2C address of the device
+> >>> +- enable-supply : a regulator spec for the PLLen pin
 
-It is unclear what this mutex usefully protects, it only gets taken when
-writing to the debugfs file to trigger this diagnostic mode but doesn't
-do anything to control interactions with any other code path in the
-driver.
+> > Shouldn't that be a pin called 'pllen-gpios'? IMHO I would not use a
+> > regulator for that.
 
-> +static int run_turn_on_diagnostic(struct tda7802_priv *tda7802, u8 *status)
-> +{
-> +	struct device *dev = &tda7802->i2c->dev;
-> +	int err_status, err;
-> +	unsigned int val;
-> +	u8 state[NUM_IB];
+> Hi Marco,
+> We have multiple amplifiers hooked up in a chain, and all the PLLens
+> are connected to one GPIO. So we need to use a regulator so that
+> i2c-TDA7802:00 doesn't turn off the PLLen which i2c-TDA7802:01 still
+> requires.
 
-> +	/* We must wait 20ms for device to settle, otherwise diagnostics will
-> +	 * not start and regmap poll will timeout.
-> +	 */
-> +	msleep(DIAGNOSTIC_SETTLE_MS);
+> This is why we use a regulator. Is there GPIO support for this?
 
-The comment and define might go out of sync...
+If it's a GPIO not a regulator then it should be a GPIO not a regulator
+in the device tree.  The device tree describes the hardware.  There was
+some work on helping share GPIOs in the GPIO framework to accomodate
+GPIOs for regulator enables, you should be able to do something similar
+to what the regulator framework does.
 
-> +	err = regmap_bulk_read(tda7802->regmap, TDA7802_DB1, status, 4);
-> +	if (err < 0) {
-> +		dev_err(dev, "Could not read channel status, %d\n", err);
-> +		goto diagnostic_restore;
-> +	}
-
-...but here we use a magic number for the array size :(
-
-> +static int tda7802_diagnostic_show(struct seq_file *f, void *p)
-> +{
-> +	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-
-We neither use nor free buf?
-
-> +static int tda7802_probe(struct snd_soc_component *component)
-> +{
-> +	struct tda7802_priv *tda7802 = snd_soc_component_get_drvdata(component);
-> +	struct device *dev = &tda7802->i2c->dev;
-> +	int err;
-
-Why is this done at the component level?
-
---8JPrznbw0YAQ/KXy
+--+QwZB9vYiNIzNXIj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1AUfYACgkQJNaLcl1U
-h9BW0wf+PaVQnb5XffJ21Ypo9xRgaGWwcL6bpKaVDfNRL94hrZz1wDnFe0ZbKzEY
-hIOheUHZJdsf65s/VqhPR6hprJoLCHtcEcnGVcT0ghx2rkyYEM0DrTZIZ/BzzD8I
-dCbzuqE3Zh3JjiBrLup0wTyeeEFwP9/z9mmVZCfy5jOcErgm+TObJYq/kPsu1bXv
-txX1/W1cPk3+FuPxa2DZC9AFW2Lxv0VnQ0PgBeUwaOI/5ykbFyN51boKVLXFKh6H
-FsEA0Y8qQ2OhufKK4pZnqip4RAgzPa+8DkV1cWaABjlgI+ECI0/sEcXD63MOx3cS
-oovWVqTESFF8RhUnU/HXI7WswbziRg==
-=GUqM
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1AVUMACgkQJNaLcl1U
+h9Cu4Qf+OOSeubUr69q1X65qxycxElWJauRAa8zN5ZCS6Corf1z/+hgxkei5GI7D
+p242D+7O5/QHuGlsws3pHfiD3BUJbV+/D05v8DDX1GOEf54+8wv+dnX/1AZKtYzS
+IU/5aki3+oYGj76dQKpAhuTJFnJGGmkMg+O5SWXocr3KZO5P740PKZG0+wVX+yQp
+OdZbJOEfztfQ8AfQQ4vtSjun2grcmxeEyxPo7LiL+iNs2ifAOZW6TWNIl7Y/Xftg
+UNGdYVAtOL9s9G364+UmdAbLbQtKDtLLnotRd98S8NGElOoOGoLss6/pwrW2BHd4
+CgdgNotIdcr1q2Me8acJM2d8pxjKWA==
+=aDlD
 -----END PGP SIGNATURE-----
 
---8JPrznbw0YAQ/KXy--
-
---===============3369682559639835337==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3369682559639835337==--
+--+QwZB9vYiNIzNXIj--
