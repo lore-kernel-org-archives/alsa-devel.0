@@ -1,55 +1,77 @@
-From: Thomas Preston <thomas.preston@codethink.co.uk>
-Subject: Re: [alsa-devel] [PATCH v2 2/3] ASoC: Add codec driver for ST TDA7802
-Date: Wed, 31 Jul 2019 09:57:12 +0100
-Message-ID: <820e2ea9-14a2-795c-9b78-e8f2a30afdb1@codethink.co.uk>
-References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-3-thomas.preston@codethink.co.uk>
- <20190730145844.GI4264@sirena.org.uk>
- <fe11c806-2285-558c-e35c-d8f61de00784@codethink.co.uk>
- <20190731060644.yrewu2kvrlootyyl@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190731060644.yrewu2kvrlootyyl@pengutronix.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Annaliese McDermond <nh6z@nh6z.net>, Liam Girdwood <lgirdwood@gmail.com>, Paul Cercueil <paul@crapouillou.net>, Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Patrick Glaser <pglaser@tesla.com>, Rob Duncan <rduncan@tesla.com>, Jerome Brunet <jbrunet@baylibre.com>, Nate Case <ncase@tesla.com>, Cheng-Yi Chiang <cychiang@chromium.org>
+From: Andrew Davison <andy@dvsn.net>
+Subject: Re: Patch Update for OpenFrame Sigmatel STAC9202
+Date: Wed, 31 Jul 2019 09:36:13 +0100
+Message-ID: <4EDB552A-AE60-4270-8CE2-33A3CE1F4F5D@dvsn.net>
+References: <CAPk8ziH=P8ST6Ao54NycgiZePDr=T0+L6uVxA=c+pvhjZZCbPA@mail.gmail.com>
+ <s5hwoge9ifo.wl-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13D20F80214
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 10:36:20 +0200 (CEST)
+Received: by mail-wm1-x341.google.com with SMTP id l2so58974153wmg.0
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 01:36:19 -0700 (PDT)
+In-Reply-To: <s5hwoge9ifo.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 31/07/2019 07:06, Marco Felsch wrote:
-> Hi Thomas,
-> 
-> again sorry for jumping in..
-> 
-
-Np!
-
-> On 19-07-30 18:26, Thomas Preston wrote:
->> On 30/07/2019 15:58, Mark Brown wrote:
->>> On Tue, Jul 30, 2019 at 01:09:36PM +0100, Thomas Preston wrote:
->>>> +	case SND_SOC_BIAS_STANDBY:
->>>> +		err = regulator_enable(tda7802->enable_reg);
->>>> +		if (err < 0) {
->>>> +			dev_err(component->dev, "Could not enable.\n");
->>>> +			return err;
->>>> +		}
->>>> +		dev_dbg(component->dev, "Regulator enabled\n");
->>>> +		msleep(ENABLE_DELAY_MS);
->>>
->>> Is this delay needed by the device or is it for the regulator to ramp?
->>> If it's for the regulator to ramp then the regulator should be doing it.
->>>
->>
->> According to the datasheet the device itself takes 10ms to rise from 0V
->> after PLLen is enabled. There are additional rise times but they are
->> negligible with default capacitor configuration (which we have).
->>
->> Good to know about the regulator rising configuration though. Thanks.
-> 
-> Isn't it the regulator we mentioned to not use that because it is a
-> GPIO?
-> 
-
-Yeah it is - I intend to switch PLLen to gpio API.
+SGkgVGFrYXNoaSwKClRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgcmVzcG9uc2UuIFdl4oCZ
+dmUgbWFuYWdlZCB0byB1c2UgdGhpcyBjb25maWd1cmF0aW9uIHZpYSBoZGEtamFjay1yZXRhc2s6
+CgpbY29kZWNdCjB4ODM4NDc2MzIgMHgwMDAwMDEwMCAwCgpbcGluY2ZnXQoweDA3IDB4MDFjNWUx
+NTAKMHgwOCAweDAxNDUxMTMwCjB4MGEgMHg5MDE3MDE1MAoweDBiIDB4MDJhMTkwMjAKMHgwYyAw
+eDAxODEzMDIxCjB4MGQgMHgwMzIxNDAzZgoweDEwIDB4NTAwNzAxZjAKMHgxMSAweDkwMzMwMTIy
+CjB4MTUgMHg1MGEwMDFmMQoKVGhpcyBjb3JyZWN0cyB0aGUgYmVoYXZpb3VyIG9mIHRoZSBIUCBk
+ZXRlY3Rpb24gYW5kIG11dGVzIChhbmQgdW5tdXRlcykgdGhlIGNvcnJlY3Qgb3V0cHV0cywgYnV0
+IGxlYXZlcyB1cyB3aXRoIGEgY3JhY2tsaW5nIHNvdW5kIGZyb20gdGhlIGludGVybmFsIHNwZWFr
+ZXJzIHdoaWNoIHNvdW5kcyBsaWtlIHN5c3RlbSBpbnRlcmZlcmVuY2Ugbm9pc2UuIEl04oCZcyBh
+cyBpZiBzb21ldGhpbmcgaGFzIGJlZW4gbGVmdCBmbG9hdGluZyBhbmQgdGhlIGFtcGxpZmljYXRp
+b24gZm9yIHRoZSBpbnRlcm5hbCBzcGVha2VycyBoYXMgbm90IGJlZW4gc2h1dCBvZmYuIEnigJlt
+IG1ha2luZyB0aGUgYXNzdW1wdGlvbiB0aGF0IHRoaXMgaXMgcmVsYXRlZCB0byB0aGUgMHhmZmJj
+MDEwMCB5b3UgbWVudGlvbi4KCldoYXQgd291bGQgYmUgb3VyIG5leHQgY291cnNlIG9mIGFjdGlv
+biB0byBjb3JyZWN0IHRoZSBjcmFja2xpbmc/CgpUaGFua3MgYWdhaW4sCgogICAgIEFuZHkuCgoK
+Cj4gT24gMTkgSnVsIDIwMTksIGF0IDE2OjAyLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
+IHdyb3RlOgo+IAo+IE9uIFdlZCwgMTkgSnVuIDIwMTkgMTQ6MjU6MzcgKzAyMDAsCj4gQW5keSBE
+YXZpc29uIHdyb3RlOgo+PiAKPj4gSGkgYWxsLAo+PiAKPj4gV291bGQgYW55Ym9keSBvbiB0aGlz
+IGxpc3QgaGF2ZSBhIGxpdHRsZSB0aW1lIHRvIGludmVzdGlnYXRlIHRoaXMgcGF0Y2ggYW5kCj4+
+IGJyaW5nIGl0IHVwIHRvIGRhdGUgZm9yIGFwcGxpY2F0aW9uIGFnYWluc3QgdGhlIGxhdGVzdCA1
+LjEga2VybmVsLCBvcgo+PiBpbmRlZWQgYW55dGhpbmcgYmVpbmcgYWN0aXZlbHkgZGV2ZWxvcGVk
+Pwo+PiAKPj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5keWR2c24vYzBjMTU5Zjk5YmYxOWQ1
+YjMwYjVlNWUxNTZkY2FjM2UKPj4gCj4+IFRoaXMgYXBwbGllcyBjb3JyZWN0bHkgYWdhaW5zdCB0
+aGUgMi42LjMzIGtlcm5lbCwgYnV0IEkgSSBsYWNrIHRoZQo+PiBuZWNlc3NhcnkgQUxTQSBrbm93
+bGVkZ2UgYW5kIHByb2dyYW1taW5nIHNraWxscyB0byBtYWtlIHRoZSBhcHByb3ByaWF0ZQo+PiBj
+b3JyZWN0aW9ucyBmb3IgYW55dGhpbmcgbW9yZSByZWNlbnQuCj4+IAo+PiBBbHRlcm5hdGl2ZWx5
+LCBhbnkgb3RoZXIgYWR2aWNlIG9uIHdoZXJlIEkgY291bGQgc2VlayBoZWxwIHdpdGggdGhpcyB3
+b3VsZAo+PiBiZSBtdWNoIGFwcHJlY2lhdGVkLiBJdCBpcyB0aGUgb25seSBvdXRzdGFuZGluZyBr
+ZXJuZWwgaXNzdWUgZm9yIHRoaXMKPj4gZGV2aWNlIGFuZCB3b3VsZCBsb3ZlIHRvIGhhdmUgaXQg
+Zml4ZWQuCj4gCj4gT2ggd2VsbCwgdGhhdCdzIGEgcGF0Y2ggYWdhaW5zdCB0aGUgcHJldHR5IG9s
+ZCBjb2RlIGJhc2UuLi4KPiAKPiBGaXJzdCBvZiBhbGwsIHlvdSBuZWVkIHRvIGlkZW50aWZ5IHdo
+aWNoIGNoYW5nZXMgYXJlIG1pc3NpbmcuCj4gQmFzaWNhbGx5IHlvdXIgcGF0Y2ggZG9lczoKPiAt
+IFRoZSBwaW4gY29uZmlndXJhdGlvbiBvdmVycmlkZSAob3BlbnBlYWs5MjAyX3Bpbl9jb25maWdz
+W10pCj4gLSBHUElPIHBpbiAjMCAobmVlZHMgY2xlYXI/KQo+IAo+IEJvdGggY291bGQgYmUgZG9u
+ZSBldmVuIHdpdGhvdXQgcGF0Y2hpbmcgdGhlIGtlcm5lbC4gIEknZCBzdGFydCBqdXN0Cj4gc2V0
+dGluZyB1cCB0aGUgcGluIGNvbmZpZ3MgYW5kIGFkanVzdCBHUElPIG1hbnVhbGx5IHZpYSBoZGEt
+dmVyYiB0bwo+IHNlZSB3aGF0IGFjdHVhbGx5IGl0IGRvZXMuCj4gCj4gQSB0cmlja3kgcGFydCBp
+cyB0aGUgc3RyYW5nZSBjb2RlIHRoYXQgaXMgcGVla2luZyB0aGUgMHhmZmJjMDEwMAo+IGFkZHJl
+c3MuICBJIGRvbid0IGtub3cgZXhhY3RseSB3aGF0IGl0IGRldGVjdHMsIGJ1dCBzb21lIHBpbiBj
+b25maWdzCj4gYXJlIGNoYW5nZWQgYWNjb3JkaW5nIHRvIHRoZSB2YWx1ZSByZWFkIHRoZXJlLiAg
+VGhpcyBjYW4ndCBiZQo+IGltcGxlbWVudGVkIGluIHRoZSB1cHN0cmVhbSBjb2RlIGluIHRoYXQg
+d2F5LCBidXQgd2UgbWF5IHByb3ZpZGUgdHdvCj4gZGlmZmVyZW50IG1vZGVscyBzbyB0aGF0IHVz
+ZXIgY2FuIHNpbXBseSBjaG9vc2UsIGZvciBleGFtcGxlLgo+IAo+IAo+IFRha2FzaGkKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
