@@ -1,190 +1,77 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 3/3] ASoC: SOF: no need to check return value of debugfs_create functions
-Date: Wed, 31 Jul 2019 15:17:16 +0200
-Message-ID: <20190731131716.9764-3-gregkh@linuxfoundation.org>
-References: <20190731131716.9764-1-gregkh@linuxfoundation.org>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [Sound-open-firmware] Signed firmware availability
+	for kbl/cnl
+Date: Wed, 31 Jul 2019 14:23:37 +0100
+Message-ID: <0059ed8e8f2fbd7ffbc258ca53ce5efbf1885c5b.camel@linux.intel.com>
+References: <CAD8Lp45Bp1xVC7NjuNaANA7kAEN2Edshw+cViaTF3tRZEumgZA@mail.gmail.com>
+ <cc9fa5b52138daffb09dc5b66ea9248379c9f60e.camel@linux.intel.com>
+ <CAD8Lp46GW8n8K7ttOeSje_au06BsyvCp4seVwj2wNbipei5ssA@mail.gmail.com>
+ <a4b17a75-d4e0-fc6b-a286-aa6b7b281b7d@linux.intel.com>
+ <CAD8Lp444soO1i8mWF73eucT16yAhy2js1byWJCTV5fn=TikHBg@mail.gmail.com>
+ <9e8b667f1aa2333dbcc34b5253372d1a8667551e.camel@linux.intel.com>
+ <ee34f820-0753-dfbe-09c0-7147cf229cc0@perex.cz>
+ <6493f195-eb5a-1a6d-2c31-e3a4123b2ad1@linux.intel.com>
+ <7c940d90-297e-19c0-2f74-1843439d5ccf@perex.cz>
+ <d41b02286db2a827648d1c1ec793bbd0a55e99c1.camel@linux.intel.com>
+ <8dceb60b-35a5-93e9-ce01-1eb852e93f44@perex.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190731131716.9764-1-gregkh@linuxfoundation.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <8dceb60b-35a5-93e9-ce01-1eb852e93f44@perex.cz>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: Jian-Hong Pan <jian-hong@endlessm.com>, ALSA development <alsa-devel@alsa-project.org>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When calling debugfs functions, there is no need to ever check the
-return value.  The function can work or not, but the code logic should
-never do something different based on this.
++ Mengdong
 
-Also, if a debugfs call fails, userspace is notified with an error in
-the log, so no need to log the error again.
+On Wed, 2019-07-24 at 18:23 +0200, Jaroslav Kysela wrote:
+> > Yeah, been thinking about this atm. It may be better to package the
+> > binaries (firmware and topologies) as part of Linux firmware repo
+> > (since the driver expects to load them all from lib/firmware) and
+> > package the sources (firmware and topology) via sof tarball ?
+> 
+> It looks good in my eyes, because topology files are another pieces
+> of the
+> driver from the user space perspective. The unanswered question is
+> the UCM
+> configuration which is linked to the topology configuration (if I
+> understand
+> this correctly). I proposed to place an unique identifier/version to
+> the
+> topology file and propagate this identifier to the user space, so the
+> alsa-lib
+> can pick the right UCM configuration when topology changes. The
+> component
+> string (snd_component_add function / struct snd_ctl_card_info ->
+> components)
+> can be used for this identification.
 
-Because we no longer need to check the return value, there's no need to
-save the dentry returned by debugfs.  Just use the dentry in the file
-pointer if we really need to figure out the "name" of the file being
-opened.
+Apologizes for the delay, Pierre and I have been discussing this
+internally as we have to synchronise the deployment of the topologies
+and UCMs alongside the FW.
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: rebase on 5.3-rc1
-    change Subject line to match the subsystem better
-    rework based on debugfs core now reporting errors.
+Current thinking has changed from shipping FW + tplg via linux-firmware 
+repo to only shipping FW binaries in the FW repo and using alsa-ucm-
+conf.git for UCMs + topologies (since the coupling between UCM and
+topology is tighter than the FW coupling).
 
- sound/soc/sof/debug.c    | 49 +++++++++++++++-------------------------
- sound/soc/sof/sof-priv.h |  1 -
- sound/soc/sof/trace.c    |  9 ++------
- 3 files changed, 20 insertions(+), 39 deletions(-)
+Any objections to using this repo for topologies too ? I know we
+haven't yet used it for UCMs but now is probably a good point to move
+(including moving the older UCMs over too).
+The "make" rule would compile topologies, whilst the "make install"
+rule would install the UCM's and binary topologies in the correct
+places ?
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 2388477a965e..40940b2fe9d5 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -128,6 +128,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	unsigned long ipc_duration_ms = 0;
- 	bool flood_duration_test = false;
- 	unsigned long ipc_count = 0;
-+	struct dentry *dentry;
- 	int err;
- #endif
- 	size_t size;
-@@ -149,11 +150,12 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	 * ipc_duration_ms test floods the DSP for the time specified
- 	 * in the debugfs entry.
- 	 */
--	if (strcmp(dfse->dfsentry->d_name.name, "ipc_flood_count") &&
--	    strcmp(dfse->dfsentry->d_name.name, "ipc_flood_duration_ms"))
-+	dentry = file->f_path.dentry;
-+	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
-+	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
- 		return -EINVAL;
- 
--	if (!strcmp(dfse->dfsentry->d_name.name, "ipc_flood_duration_ms"))
-+	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
- 		flood_duration_test = true;
- 
- 	/* test completion criterion */
-@@ -219,6 +221,7 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- {
- 	struct snd_sof_dfsentry *dfse = file->private_data;
- 	struct snd_sof_dev *sdev = dfse->sdev;
-+	struct dentry *dentry;
- 	loff_t pos = *ppos;
- 	size_t size_ret;
- 	int skip = 0;
-@@ -226,8 +229,9 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- 	u8 *buf;
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	if ((!strcmp(dfse->dfsentry->d_name.name, "ipc_flood_count") ||
--	     !strcmp(dfse->dfsentry->d_name.name, "ipc_flood_duration_ms")) &&
-+	dentry = file->f_path.dentry;
-+	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
-+	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) &&
- 	    dfse->cache_buf) {
- 		if (*ppos)
- 			return 0;
-@@ -290,8 +294,7 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- 		if (!pm_runtime_active(sdev->dev) &&
- 		    dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY) {
- 			dev_err(sdev->dev,
--				"error: debugfs entry %s cannot be read in DSP D3\n",
--				dfse->dfsentry->d_name.name);
-+				"error: debugfs entry cannot be read in DSP D3\n");
- 			kfree(buf);
- 			return -EINVAL;
- 		}
-@@ -356,17 +359,11 @@ int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
- 	}
- #endif
- 
--	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
--					     dfse, &sof_dfs_fops);
--	if (!dfse->dfsentry) {
--		/* can't rely on debugfs, only log error and keep going */
--		dev_err(sdev->dev, "error: cannot create debugfs entry %s\n",
--			name);
--	} else {
--		/* add to dfsentry list */
--		list_add(&dfse->list, &sdev->dfsentry_list);
-+	debugfs_create_file(name, 0444, sdev->debugfs_root, dfse,
-+			    &sof_dfs_fops);
- 
--	}
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
- 
- 	return 0;
- }
-@@ -402,16 +399,10 @@ int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
- 		return -ENOMEM;
- #endif
- 
--	dfse->dfsentry = debugfs_create_file(name, mode, sdev->debugfs_root,
--					     dfse, &sof_dfs_fops);
--	if (!dfse->dfsentry) {
--		/* can't rely on debugfs, only log error and keep going */
--		dev_err(sdev->dev, "error: cannot create debugfs entry %s\n",
--			name);
--	} else {
--		/* add to dfsentry list */
--		list_add(&dfse->list, &sdev->dfsentry_list);
--	}
-+	debugfs_create_file(name, mode, sdev->debugfs_root, dfse,
-+			    &sof_dfs_fops);
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
- 
- 	return 0;
- }
-@@ -426,10 +417,6 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
- 
- 	/* use "sof" as top level debugFS dir */
- 	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
--	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
--		dev_err(sdev->dev, "error: failed to create debugfs directory\n");
--		return 0;
--	}
- 
- 	/* init dfsentry list */
- 	INIT_LIST_HEAD(&sdev->dfsentry_list);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index b8c0b2a22684..79b6709d1874 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -228,7 +228,6 @@ enum sof_debugfs_access_type {
- 
- /* FS entry for debug files that can expose DSP memories, registers */
- struct snd_sof_dfsentry {
--	struct dentry *dfsentry;
- 	size_t size;
- 	enum sof_dfsentry_type type;
- 	/*
-diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
-index befed975161c..4c3cff031fd6 100644
---- a/sound/soc/sof/trace.c
-+++ b/sound/soc/sof/trace.c
-@@ -148,13 +148,8 @@ static int trace_debugfs_create(struct snd_sof_dev *sdev)
- 	dfse->size = sdev->dmatb.bytes;
- 	dfse->sdev = sdev;
- 
--	dfse->dfsentry = debugfs_create_file("trace", 0444, sdev->debugfs_root,
--					     dfse, &sof_dfs_trace_fops);
--	if (!dfse->dfsentry) {
--		/* can't rely on debugfs, only log error and keep going */
--		dev_err(sdev->dev,
--			"error: cannot create debugfs entry for trace\n");
--	}
-+	debugfs_create_file("trace", 0444, sdev->debugfs_root, dfse,
-+			    &sof_dfs_trace_fops);
- 
- 	return 0;
- }
--- 
-2.22.0
+Thanks
+
+Liam
