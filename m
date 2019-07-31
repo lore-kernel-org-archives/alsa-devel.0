@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/6] ReST conversion patches not applied yet
-Date: Wed, 31 Jul 2019 21:37:12 +0100
-Message-ID: <20190731203712.GJ4369@sirena.org.uk>
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+Subject: Re: [PATCH 1/6] docs: fix a couple of new broken references
+Date: Wed, 31 Jul 2019 15:36:55 -0500
+Message-ID: <0fd2f332-891f-b3f8-6d6c-e58358611228@oracle.com>
 References: <cover.1564603513.git.mchehab+samsung@kernel.org>
- <20190731141734.1fa9ce64@lwn.net>
- <20190731202007.GI4369@sirena.org.uk>
- <20190731172613.32d65ad8@coco.lan>
+ <5b4fae5978d309641fa8ba233a9efe2b48201cd6.1564603513.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3714740399510256660=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190731172613.32d65ad8@coco.lan>
+In-Reply-To: <5b4fae5978d309641fa8ba233a9efe2b48201cd6.1564603513.git.mchehab+samsung@kernel.org>
+Content-Language: en-US
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -19,70 +19,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Dave Kleikamp <shaggy@kernel.org>, alsa-devel@alsa-project.org, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Evgeniy Polyakov <zbr@ioremap.net>, linux-cifs@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Jonathan Corbet <corbet@lwn.net>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org, Evgeniy Dushistov <dushistov@mail.ru>, Suzuki K Poulose <suzuki.poulose@arm.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, Mathieu Poirier <mathieu.poirier@linaro.org>, samba-technical@lists.samba.org, Liam Girdwood <lgirdwood@gmail.com>linux
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Dave Kleikamp <shaggy@kernel.org>, alsa-devel@alsa-project.org, Evgeniy Dushistov <dushistov@mail.ru>, Mathieu Poirier <mathieu.poirier@linaro.org>, Jonathan Corbet <corbet@lwn.net>, Maxime Ripard <maxime.ripard@bootlin.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, jfs-discussion@lists.sourceforge.net, Mauro Carvalho Chehab <mchehab@infradead.org>, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3714740399510256660==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XigHxYirkHk2Kxsx"
-Content-Disposition: inline
-
-
---XigHxYirkHk2Kxsx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 31, 2019 at 05:26:13PM -0300, Mauro Carvalho Chehab wrote:
-> Mark Brown <broonie@kernel.org> escreveu:
-
-> > There were outstanding questions about where it was going to get moved
-> > to but if I read the diff correctly it looks like it didn't actually get
-> > moved in the end?
-
-> Yeah, it doesn't have the move. My understanding from our discussions
-> is that we didn't reach a conclusion.
-
-Yes, that was my understanding too which was why I was surprised to see
-this going in.  This is OK then, I'd have acked it.
-
-> In any case, I can send a separate patch with the move part once
-> we reach an agreement about what's the best way to proceed (or you
-> can do it directly, if you prefer so).
-
-I'm not likely to do anything without someone sending patches, I'm not
-clear on the utility of the move with the current division of the
-manuals.  I don't know if it makes sense to have an embedded developer's
-manual as well?
-
---XigHxYirkHk2Kxsx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1B+/cACgkQJNaLcl1U
-h9Ccawf2NvrLW0ujC5HwkDxagYC2dfnUGm4OOyP/LcS7ufD9vxwdAh08IDJFyHJv
-4skkK8AdqWOxNms4e9NRiQE51vul7GMBtbp3YezYEiaaB3tMTrWe2rHSEp10OQmH
-5WnnpB7KKnUS3UBTwvFRzI1mGWz+klXpzy50z3hsX9UXUArVoqyDRtSY0YDF3+7k
-UNhXw0y2taeDMGRzZnOTDxQkejK13T42Oo79xbzylHww8x1vVqV2s4xLTqn2zaN4
-W0DIoJIGec2Ewe6JPUio9xvsURtWmWOet6jFLRZO9oiO6uJqrvQde50F6siwwFgY
-JMTn2OFfPMPUZVF4ugqAE7qxQaHM
-=etK7
------END PGP SIGNATURE-----
-
---XigHxYirkHk2Kxsx--
-
-
---===============3714740399510256660==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============3714740399510256660==--
+On 7/31/19 3:08 PM, Mauro Carvalho Chehab wrote:
+> Those are due to recent changes. Most of the issues
+> can be automatically fixed with:
+> 
+> 	$ ./scripts/documentation-file-ref-check --fix
+> 
+> The only exception was the sound binding with required
+> manual work.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Acked-by: > Dave Kleikamp <dave.kleikamp@oracle.com>
+> ---
+>  Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt | 2 +-
+>  MAINTAINERS                                                 | 4 ++--
+>  drivers/hwtracing/coresight/Kconfig                         | 2 +-
+>  fs/jfs/Kconfig                                              | 2 +-
+>  fs/ufs/Kconfig                                              | 2 +-
+>  5 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+> index 2ca3d138528e..7ecf6bd60d27 100644
+> --- a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+> +++ b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+> @@ -4,7 +4,7 @@ Allwinner SUN8I audio codec
+>  On Sun8i-A33 SoCs, the audio is separated in different parts:
+>  	  - A DAI driver. It uses the "sun4i-i2s" driver which is
+>  	  documented here:
+> -	  Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> +	  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+>  	  - An analog part of the codec which is handled as PRCM registers.
+>  	  See Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
+>  	  - An digital part of the codec which is documented in this current
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6de82f019a52..f109a8bcffda 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8659,7 +8659,7 @@ L:	jfs-discussion@lists.sourceforge.net
+>  W:	http://jfs.sourceforge.net/
+>  T:	git git://github.com/kleikamp/linux-shaggy.git
+>  S:	Maintained
+> -F:	Documentation/filesystems/jfs.txt
+> +F:	Documentation/admin-guide/jfs.rst
+>  F:	fs/jfs/
+>  
+>  JME NETWORK DRIVER
+> @@ -16439,7 +16439,7 @@ F:	drivers/hid/hid-udraw-ps3.c
+>  UFS FILESYSTEM
+>  M:	Evgeniy Dushistov <dushistov@mail.ru>
+>  S:	Maintained
+> -F:	Documentation/filesystems/ufs.txt
+> +F:	Documentation/admin-guide/ufs.rst
+>  F:	fs/ufs/
+>  
+>  UHID USERSPACE HID IO DRIVER:
+> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> index 14638db4991d..7a9f5fb08330 100644
+> --- a/drivers/hwtracing/coresight/Kconfig
+> +++ b/drivers/hwtracing/coresight/Kconfig
+> @@ -106,7 +106,7 @@ config CORESIGHT_CPU_DEBUG
+>  	  can quickly get to know program counter (PC), secure state,
+>  	  exception level, etc. Before use debugging functionality, platform
+>  	  needs to ensure the clock domain and power domain are enabled
+> -	  properly, please refer Documentation/trace/coresight-cpu-debug.txt
+> +	  properly, please refer Documentation/trace/coresight-cpu-debug.rst
+>  	  for detailed description and the example for usage.
+>  
+>  endif
+> diff --git a/fs/jfs/Kconfig b/fs/jfs/Kconfig
+> index 22a273bd4648..05cb0e8e4382 100644
+> --- a/fs/jfs/Kconfig
+> +++ b/fs/jfs/Kconfig
+> @@ -5,7 +5,7 @@ config JFS_FS
+>  	select CRC32
+>  	help
+>  	  This is a port of IBM's Journaled Filesystem .  More information is
+> -	  available in the file <file:Documentation/filesystems/jfs.txt>.
+> +	  available in the file <file:Documentation/admin-guide/jfs.rst>.
+>  
+>  	  If you do not intend to use the JFS filesystem, say N.
+>  
+> diff --git a/fs/ufs/Kconfig b/fs/ufs/Kconfig
+> index fcb41516ea59..6d30adb6b890 100644
+> --- a/fs/ufs/Kconfig
+> +++ b/fs/ufs/Kconfig
+> @@ -9,7 +9,7 @@ config UFS_FS
+>  	  this file system as well. Saying Y here will allow you to read from
+>  	  these partitions; if you also want to write to them, say Y to the
+>  	  experimental "UFS file system write support", below. Please read the
+> -	  file <file:Documentation/filesystems/ufs.txt> for more information.
+> +	  file <file:Documentation/admin-guide/ufs.rst> for more information.
+>  
+>            The recently released UFS2 variant (used in FreeBSD 5.x) is
+>            READ-ONLY supported.
+> 
