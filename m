@@ -1,65 +1,224 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: standard read/write vs event waiting routines
- (poll) in ALSA
-Date: Wed, 31 Jul 2019 19:03:30 +0200
-Message-ID: <6d91a30f-07a0-d5cc-6796-7480ed4e6989@perex.cz>
-References: <CAFwn9n1mL0tE8CaD+tF1vWBQv-E5hidz3B12WiHzxRhvpHs8fQ@mail.gmail.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: SOF: no need to check return
+ value of debugfs_create functions
+Date: Wed, 31 Jul 2019 10:11:03 -0700
+Message-ID: <918f9c287b7ef9efb707d88560a9ccde577c5dbf.camel@linux.intel.com>
+References: <20190731131716.9764-1-gregkh@linuxfoundation.org>
+         <20190731131716.9764-3-gregkh@linuxfoundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D791F800C0
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 19:03:33 +0200 (CEST)
-In-Reply-To: <CAFwn9n1mL0tE8CaD+tF1vWBQv-E5hidz3B12WiHzxRhvpHs8fQ@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Diego Buffa <diego.buffa@gmail.com>, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190731131716.9764-3-gregkh@linuxfoundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 31. 07. 19 v 18:05 Diego Buffa napsal(a):
-> Hi all,
-> I am trying to learn more about ALSA, I always used example found in the
-> howtos but now I would go further.
+On Wed, 2019-07-31 at 15:17 +0200, Greg Kroah-Hartman wrote:
+> When calling debugfs functions, there is no need to ever check the
+> return value.  The function can work or not, but the code logic
+> should
+> never do something different based on this.
 > 
-> I went though ALSA documentation (
-> https://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html) and in the
-> specific the transfer methods.
-> Basically I don't understand the advantages of using poll instead of
-> traditional blocking read/write.
+> Also, if a debugfs call fails, userspace is notified with an error in
+> the log, so no need to log the error again.
 > 
-> Generally I know that using poll I can multiplex I/O on several files, but
-> in ALSA I cannot create the poll descriptor array as I want, as I must use
-> snd_pcm_poll_descriptors() which requires that the poll descriptor array
-> should have the size returned by snd_pcm_poll_descriptors_count().
+> Because we no longer need to check the return value, there's no need
+> to
+> save the dentry returned by debugfs.  Just use the dentry in the file
+> pointer if we really need to figure out the "name" of the file being
+> opened.
 > 
-> Am I supposed to realloc the poll array descriptor once I set it up with
-> ALSA, and add my own files? Should I then always check poll array
-> descriptor with snd_pcm_poll_descriptors_revents() before checking my own
-> files? And in this case it is safe to call
-> snd_pcm_poll_descriptors_revents() with a  poll array descriptor bigger
-> than the size returned by snd_pcm_poll_descriptors_count()?
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> v2: rebase on 5.3-rc1
+>     change Subject line to match the subsystem better
+>     rework based on debugfs core now reporting errors.
 > 
-> Many thanks in advance.
-
-All ALSA poll functions works only with the ALSA file descriptors. Basically,
-allocate your pollfd array as big as you like and get the file descriptors
-from ALSA to this array (using the returned count) and check those descriptors
-through ALSA (revents function). Look to alsa-utils/alsaloop/pcmjob.c for an
-example.
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>  sound/soc/sof/debug.c    | 49 +++++++++++++++-----------------------
+> --
+>  sound/soc/sof/sof-priv.h |  1 -
+>  sound/soc/sof/trace.c    |  9 ++------
+>  3 files changed, 20 insertions(+), 39 deletions(-)
+> 
+> diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+> index 2388477a965e..40940b2fe9d5 100644
+> --- a/sound/soc/sof/debug.c
+> +++ b/sound/soc/sof/debug.c
+> @@ -128,6 +128,7 @@ static ssize_t sof_dfsentry_write(struct file
+> *file, const char __user *buffer,
+>  	unsigned long ipc_duration_ms = 0;
+>  	bool flood_duration_test = false;
+>  	unsigned long ipc_count = 0;
+> +	struct dentry *dentry;
+>  	int err;
+>  #endif
+>  	size_t size;
+> @@ -149,11 +150,12 @@ static ssize_t sof_dfsentry_write(struct file
+> *file, const char __user *buffer,
+>  	 * ipc_duration_ms test floods the DSP for the time specified
+>  	 * in the debugfs entry.
+>  	 */
+> -	if (strcmp(dfse->dfsentry->d_name.name, "ipc_flood_count") &&
+> -	    strcmp(dfse->dfsentry->d_name.name,
+> "ipc_flood_duration_ms"))
+> +	dentry = file->f_path.dentry;
+> +	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
+> +	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
+>  		return -EINVAL;
+>  
+> -	if (!strcmp(dfse->dfsentry->d_name.name,
+> "ipc_flood_duration_ms"))
+> +	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
+>  		flood_duration_test = true;
+>  
+>  	/* test completion criterion */
+> @@ -219,6 +221,7 @@ static ssize_t sof_dfsentry_read(struct file
+> *file, char __user *buffer,
+>  {
+>  	struct snd_sof_dfsentry *dfse = file->private_data;
+>  	struct snd_sof_dev *sdev = dfse->sdev;
+> +	struct dentry *dentry;
+>  	loff_t pos = *ppos;
+>  	size_t size_ret;
+>  	int skip = 0;
+> @@ -226,8 +229,9 @@ static ssize_t sof_dfsentry_read(struct file
+> *file, char __user *buffer,
+>  	u8 *buf;
+>  
+>  #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+> -	if ((!strcmp(dfse->dfsentry->d_name.name, "ipc_flood_count") ||
+> -	     !strcmp(dfse->dfsentry->d_name.name,
+> "ipc_flood_duration_ms")) &&
+> +	dentry = file->f_path.dentry;
+> +	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
+> +	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) &&
+>  	    dfse->cache_buf) {
+>  		if (*ppos)
+>  			return 0;
+> @@ -290,8 +294,7 @@ static ssize_t sof_dfsentry_read(struct file
+> *file, char __user *buffer,
+>  		if (!pm_runtime_active(sdev->dev) &&
+>  		    dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY) {
+>  			dev_err(sdev->dev,
+> -				"error: debugfs entry %s cannot be read
+> in DSP D3\n",
+> -				dfse->dfsentry->d_name.name);
+> +				"error: debugfs entry cannot be read in
+> DSP D3\n");
+>  			kfree(buf);
+>  			return -EINVAL;
+>  		}
+> @@ -356,17 +359,11 @@ int snd_sof_debugfs_io_item(struct snd_sof_dev
+> *sdev,
+>  	}
+>  #endif
+>  
+> -	dfse->dfsentry = debugfs_create_file(name, 0444, sdev-
+> >debugfs_root,
+> -					     dfse, &sof_dfs_fops);
+> -	if (!dfse->dfsentry) {
+> -		/* can't rely on debugfs, only log error and keep going
+> */
+> -		dev_err(sdev->dev, "error: cannot create debugfs entry
+> %s\n",
+> -			name);
+> -	} else {
+> -		/* add to dfsentry list */
+> -		list_add(&dfse->list, &sdev->dfsentry_list);
+> +	debugfs_create_file(name, 0444, sdev->debugfs_root, dfse,
+> +			    &sof_dfs_fops);
+Minor nit-pick but looks good otherwise. This will fit all in one line
+(same with the lines below).
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ 
+>  
+> -	}
+> +	/* add to dfsentry list */
+> +	list_add(&dfse->list, &sdev->dfsentry_list);
+>  
+>  	return 0;
+>  }
+> @@ -402,16 +399,10 @@ int snd_sof_debugfs_buf_item(struct snd_sof_dev
+> *sdev,
+>  		return -ENOMEM;
+>  #endif
+>  
+> -	dfse->dfsentry = debugfs_create_file(name, mode, sdev-
+> >debugfs_root,
+> -					     dfse, &sof_dfs_fops);
+> -	if (!dfse->dfsentry) {
+> -		/* can't rely on debugfs, only log error and keep going
+> */
+> -		dev_err(sdev->dev, "error: cannot create debugfs entry
+> %s\n",
+> -			name);
+> -	} else {
+> -		/* add to dfsentry list */
+> -		list_add(&dfse->list, &sdev->dfsentry_list);
+> -	}
+> +	debugfs_create_file(name, mode, sdev->debugfs_root, dfse,
+> +			    &sof_dfs_fops);
+> +	/* add to dfsentry list */
+> +	list_add(&dfse->list, &sdev->dfsentry_list);
+>  
+>  	return 0;
+>  }
+> @@ -426,10 +417,6 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
+>  
+>  	/* use "sof" as top level debugFS dir */
+>  	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
+> -	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
+> -		dev_err(sdev->dev, "error: failed to create debugfs
+> directory\n");
+> -		return 0;
+> -	}
+>  
+>  	/* init dfsentry list */
+>  	INIT_LIST_HEAD(&sdev->dfsentry_list);
+> diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+> index b8c0b2a22684..79b6709d1874 100644
+> --- a/sound/soc/sof/sof-priv.h
+> +++ b/sound/soc/sof/sof-priv.h
+> @@ -228,7 +228,6 @@ enum sof_debugfs_access_type {
+>  
+>  /* FS entry for debug files that can expose DSP memories, registers
+> */
+>  struct snd_sof_dfsentry {
+> -	struct dentry *dfsentry;
+>  	size_t size;
+>  	enum sof_dfsentry_type type;
+>  	/*
+> diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+> index befed975161c..4c3cff031fd6 100644
+> --- a/sound/soc/sof/trace.c
+> +++ b/sound/soc/sof/trace.c
+> @@ -148,13 +148,8 @@ static int trace_debugfs_create(struct
+> snd_sof_dev *sdev)
+>  	dfse->size = sdev->dmatb.bytes;
+>  	dfse->sdev = sdev;
+>  
+> -	dfse->dfsentry = debugfs_create_file("trace", 0444, sdev-
+> >debugfs_root,
+> -					     dfse,
+> &sof_dfs_trace_fops);
+> -	if (!dfse->dfsentry) {
+> -		/* can't rely on debugfs, only log error and keep going
+> */
+> -		dev_err(sdev->dev,
+> -			"error: cannot create debugfs entry for
+> trace\n");
+> -	}
+> +	debugfs_create_file("trace", 0444, sdev->debugfs_root, dfse,
+> +			    &sof_dfs_trace_fops);
+>  
+>  	return 0;
+>  }
