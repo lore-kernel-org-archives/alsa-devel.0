@@ -1,49 +1,85 @@
-From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 1/2] dt-bindings: sound: Add bindings for UDA1334 codec
-Date: Wed, 31 Jul 2019 14:19:29 +0300
-Message-ID: <20190731111930.20230-2-andradanciu1997@gmail.com>
-References: <20190731111930.20230-1-andradanciu1997@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs4271: Fix a typo in the CS4171_NR_RATIOS" to the asoc tree
+Date: Wed, 31 Jul 2019 12:29:45 +0100 (BST)
+Message-ID: <20190731112945.A62C72742CDE@ypsilon.sirena.org.uk>
+References: <20190724060023.31302-1-christophe.jaillet@wanadoo.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190731111930.20230-1-andradanciu1997@gmail.com>
+In-Reply-To: <20190724060023.31302-1-christophe.jaillet@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, ckeepax@opensource.cirrus.com, rf@opensource.wolfsonmicro.com, srinivas.kandagatla@linaro.org, piotrs@opensource.cirrus.com, paul@crapouillou.net, kmarinushkin@birdec.tech, anders.roxell@linaro.org, jbrunet@baylibre.com, m.felsch@pengutronix.de, vkoul@kernel.org, nh6z@nh6z.net, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.com
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: alsa-devel@alsa-project.org, brian.austin@cirrus.com, broonie@kernel.org, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Paul.Handrigan@cirrus.com, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-The UDA1334 is an NXP audio codec, supports the I2S-bus data format
-and has basic features such as de-emphasis (at 44.1 kHz sampling
-rate) and mute. Product information can be found at:
-https://www.nxp.com/pages/low-power-audio-dac-with-pll:UDA1334
+The patch
 
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+   ASoC: cs4271: Fix a typo in the CS4171_NR_RATIOS
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0c03e37af47efcb8600f95f399783c082fcf2f93 Mon Sep 17 00:00:00 2001
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Wed, 24 Jul 2019 08:00:23 +0200
+Subject: [PATCH] ASoC: cs4271: Fix a typo in the CS4171_NR_RATIOS
+
+This should be CS4271_NR_RATIOS.
+Fix it and use it.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20190724060023.31302-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/uda1334.txt | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/uda1334.txt
+ sound/soc/codecs/cs4271.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/uda1334.txt b/Documentation/devicetree/bindings/sound/uda1334.txt
-new file mode 100644
-index 000000000000..f64071b25e8d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/uda1334.txt
-@@ -0,0 +1,17 @@
-+UDA1334 audio CODEC
-+
-+This device uses simple GPIO pins for controlling codec settings.
-+
-+Required properties:
-+
-+  - compatible : "nxp,uda1334"
-+  - nxp,mute-gpios: a GPIO spec for the MUTE pin.
-+  - nxp,deemph-gpios: a GPIO spec for the De-emphasis pin
-+
-+Example:
-+
-+uda1334: audio-codec {
-+	compatible = "nxp,uda1334";
-+	nxp,mute-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
-+	nxp,deemph-gpios = <&gpio3 3 GPIO_ACTIVE_LOW>;
-+};
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 1d03a1348162..04b86a51e055 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -334,7 +334,7 @@ static struct cs4271_clk_cfg cs4271_clk_tab[] = {
+ 	{0, CS4271_MODE1_MODE_4X, 256,  CS4271_MODE1_DIV_2},
+ };
+ 
+-#define CS4171_NR_RATIOS ARRAY_SIZE(cs4271_clk_tab)
++#define CS4271_NR_RATIOS ARRAY_SIZE(cs4271_clk_tab)
+ 
+ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+@@ -383,13 +383,13 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 		val = CS4271_MODE1_MODE_4X;
+ 
+ 	ratio = cs4271->mclk / cs4271->rate;
+-	for (i = 0; i < CS4171_NR_RATIOS; i++)
++	for (i = 0; i < CS4271_NR_RATIOS; i++)
+ 		if ((cs4271_clk_tab[i].master == cs4271->master) &&
+ 		    (cs4271_clk_tab[i].speed_mode == val) &&
+ 		    (cs4271_clk_tab[i].ratio == ratio))
+ 			break;
+ 
+-	if (i == CS4171_NR_RATIOS) {
++	if (i == CS4271_NR_RATIOS) {
+ 		dev_err(component->dev, "Invalid sample rate\n");
+ 		return -EINVAL;
+ 	}
 -- 
-2.11.0
+2.20.1
