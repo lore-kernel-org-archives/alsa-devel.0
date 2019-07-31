@@ -1,65 +1,153 @@
-From: chunguo feng <chunguo.feng@amlogic.com>
-Subject: [PATCH] ASoC: max98383: add  88200 and 96000 sampling rate support
-Date: Wed, 31 Jul 2019 13:40:03 +0800
-Message-ID: <20190731054003.16076-1-chunguo.feng@amlogic.com>
+From: Marco Felsch <m.felsch@pengutronix.de>
+Subject: Re: [alsa-devel] [PATCH v2 2/3] ASoC: Add codec driver for ST TDA7802
+Date: Wed, 31 Jul 2019 08:06:44 +0200
+Message-ID: <20190731060644.yrewu2kvrlootyyl@pengutronix.de>
+References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
+ <20190730120937.16271-3-thomas.preston@codethink.co.uk>
+ <20190730145844.GI4264@sirena.org.uk>
+ <fe11c806-2285-558c-e35c-d8f61de00784@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <fe11c806-2285-558c-e35c-d8f61de00784@codethink.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, RyanS.Lee@maximintegrated.com, bleung@chromium.org, pierre-louis.bossart@linux.intel.com, grundler@chromium.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chunguo.feng@amlogic.com
+To: Thomas Preston <thomas.preston@codethink.co.uk>
+Cc: Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Cheng-Yi Chiang <cychiang@chromium.org>, Takashi Iwai <tiwai@suse.com>, Annaliese McDermond <nh6z@nh6z.net>, Liam Girdwood <lgirdwood@gmail.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Nate Case <ncase@tesla.com>, Rob Duncan <rduncan@tesla.com>, Patrick Glaser <pglaser@tesla.com>, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: fengchunguo <chunguo.feng@amlogic.com>
+Hi Thomas,
 
-88200 and 96000 sampling rate was not enabled on driver, so can't be played.
+again sorry for jumping in..
 
-The error information:
-max98373 3-0031：rate 96000 not supported
-max98373 3-0031：ASoC: can't set max98373-aif1 hw params: -22
+On 19-07-30 18:26, Thomas Preston wrote:
+> On 30/07/2019 15:58, Mark Brown wrote:
+> > On Tue, Jul 30, 2019 at 01:09:36PM +0100, Thomas Preston wrote:
+> > 
+> >> index 000000000000..0f82a88bc1a4
+> >> --- /dev/null
+> >> +++ b/sound/soc/codecs/tda7802.c
+> >> @@ -0,0 +1,509 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * tda7802.c  --  codec driver for ST TDA7802
+> > 
+> > Please make the entire comment a C++ one so this looks intentional.
+> > 
+> 
+> Ok thanks.
+> 
+> >> +static int tda7802_digital_mute(struct snd_soc_dai *dai, int mute)
+> >> +{
+> >> +	const u8 mute_disabled = mute ? 0 : IB2_DIGITAL_MUTE_DISABLED;
+> > 
+> > Please write normal conditional statements to make the code easier to
+> > read.
+> > 
+> 
+> On it.
+> 
+> >> +	case SND_SOC_BIAS_STANDBY:
+> >> +		err = regulator_enable(tda7802->enable_reg);
+> >> +		if (err < 0) {
+> >> +			dev_err(component->dev, "Could not enable.\n");
+> >> +			return err;
+> >> +		}
+> >> +		dev_dbg(component->dev, "Regulator enabled\n");
+> >> +		msleep(ENABLE_DELAY_MS);
+> > 
+> > Is this delay needed by the device or is it for the regulator to ramp?
+> > If it's for the regulator to ramp then the regulator should be doing it.
+> > 
+> 
+> According to the datasheet the device itself takes 10ms to rise from 0V
+> after PLLen is enabled. There are additional rise times but they are
+> negligible with default capacitor configuration (which we have).
+> 
+> Good to know about the regulator rising configuration though. Thanks.
 
-Signed-off-by: fengchunguo <chunguo.feng@amlogic.com>
----
- sound/soc/codecs/max98373.c | 6 ++++++
- sound/soc/codecs/max98373.h | 2 ++
- 2 files changed, 8 insertions(+)
- mode change 100644 => 100755 sound/soc/codecs/max98373.c
- mode change 100644 => 100755 sound/soc/codecs/max98373.h
+Isn't it the regulator we mentioned to not use that because it is a
+GPIO?
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-old mode 100644
-new mode 100755
-index 528695cd6a1c..8c601a3ebc27
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -267,6 +267,12 @@ static int max98373_dai_hw_params(struct snd_pcm_substream *substream,
- 	case 48000:
- 		sampling_rate = MAX98373_PCM_SR_SET1_SR_48000;
- 		break;
-+	case 88200:
-+		sampling_rate = MAX98373_PCM_SR_SET1_SR_88200;
-+		break;
-+	case 96000:
-+		sampling_rate = MAX98373_PCM_SR_SET1_SR_96000;
-+		break;
- 	default:
- 		dev_err(component->dev, "rate %d not supported\n",
- 			params_rate(params));
-diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
-old mode 100644
-new mode 100755
-index f6a37aa02f26..a59e51355a84
---- a/sound/soc/codecs/max98373.h
-+++ b/sound/soc/codecs/max98373.h
-@@ -130,6 +130,8 @@
- #define MAX98373_PCM_SR_SET1_SR_32000 (0x6 << 0)
- #define MAX98373_PCM_SR_SET1_SR_44100 (0x7 << 0)
- #define MAX98373_PCM_SR_SET1_SR_48000 (0x8 << 0)
-+#define MAX98373_PCM_SR_SET1_SR_88200 (0x9 << 0)
-+#define MAX98373_PCM_SR_SET1_SR_96000 (0xA << 0)
- 
- /* MAX98373_R2028_PCM_SR_SETUP_2 */
- #define MAX98373_PCM_SR_SET2_SR_MASK (0xF << 4)
+Regards,
+  Marco
+
+> >> +	case SND_SOC_BIAS_OFF:
+> >> +		regcache_mark_dirty(component->regmap);
+> > 
+> > If the regulator is going off you should really be marking the device as
+> > cache only.
+> > 
+> 
+> Got it, thanks.
+> 
+> >> +		err = regulator_disable(tda7802->enable_reg);
+> >> +		if (err < 0)
+> >> +			dev_err(component->dev, "Could not disable.\n");
+> > 
+> > Any non-zero value from regulator_disable() is an error, there's similar
+> > error checking issues in other places.
+> > 
+> 
+> I return the error at the end of the function, but I'll bring it back here
+> for consistency.
+> 
+> >> +static const struct snd_kcontrol_new tda7802_snd_controls[] = {
+> >> +	SOC_SINGLE("Channel 4 Tristate", TDA7802_IB0, 7, 1, 0),
+> >> +	SOC_SINGLE("Channel 3 Tristate", TDA7802_IB0, 6, 1, 0),
+> >> +	SOC_SINGLE("Channel 2 Tristate", TDA7802_IB0, 5, 1, 0),
+> >> +	SOC_SINGLE("Channel 1 Tristate", TDA7802_IB0, 4, 1, 0),
+> > 
+> > These look like simple on/off switches so should have Switch at the end
+> > of the control name.  It's also not clear to me why this is exported to
+> > userspace - why would this change at runtime and won't any changes need
+> > to be coordinated with whatever else is connected to the signal?
+> > 
+> >> +	SOC_ENUM("Mute time", mute_time),
+> >> +	SOC_SINGLE("Unmute channels 1 & 3", TDA7802_IB2, 4, 1, 0),
+> >> +	SOC_SINGLE("Unmute channels 2 & 4", TDA7802_IB2, 3, 1, 0),
+> > 
+> > These are also Switch controls.  There are *lots* of problems with
+> > control names, see control-names.rst.
+> > 
+> 
+> Ok thanks, I didn't know about the "Switch" suffix, I will read
+> control-names.rst.
+> 
+> I will move Tristate to DT properties. I was also unsure about the
+> Impedance Efficiency Optimiser but the datasheet doesn't go into much
+> detail about this so I left it exposed.
+> 
+> They both seemed like user configurable options in the context of a
+> test rig, but I agree - who knows what this output might be connected
+> to in other systems. I will lock them down in DT. Thanks.
+> 
+> >> +static const struct snd_soc_component_driver tda7802_component_driver = {
+> >> +	.set_bias_level = tda7802_set_bias_level,
+> >> +	.idle_bias_on = 1,
+> > 
+> > Any reason to keep the device powered up?  It looks like the power on
+> > process is just powering things up and writing the register cache out
+> > and there's not that many registers so the delay is trivial.
+> > 
+> 
+> Ah no, I think that's a mistake. I want the PLLen to switch off in
+> idle/suspend and the device should restore on wake.
+> 
+> >> +	tda7802->enable_reg = devm_regulator_get(dev, "enable");
+> >> +	if (IS_ERR(tda7802->enable_reg)) {
+> >> +		dev_err(dev, "Failed to get enable regulator\n");
+> > 
+> > It's better to print error codes if you have them and are printing a
+> > diagnostic so people have more to go on when debugging problems.
+> 
+> Yep on it.
+> 
+> Many thanks, I appreciate the feedback.
+> 
+
 -- 
-2.22.0
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
