@@ -1,79 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio miniconf + sof meeting at ELCE, Lyon
-Date: Wed, 31 Jul 2019 13:53:37 +0100
-Message-ID: <20190731125337.GC4369@sirena.org.uk>
-References: <CAEnQRZBPnmg6c762+CjXBmsW8=aVfL9iJJgV_7VRjgaNMf-Srw@mail.gmail.com>
- <5c835d3ee9b2dcb4bfcbd0af5b68e09401ee8bf1.camel@linux.intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 1/3] ASoC: Intel: SoC: skylake: no need to check return value of debugfs_create functions
+Date: Wed, 31 Jul 2019 15:17:14 +0200
+Message-ID: <20190731131716.9764-1-gregkh@linuxfoundation.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5464173358881371023=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <5c835d3ee9b2dcb4bfcbd0af5b68e09401ee8bf1.camel@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, "Sridharan,
- Ranjani" <ranjani.sridharan@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
+When calling debugfs functions, there is no need to ever check the
+return value.  The function can work or not, but the code logic should
+never do something different based on this.
 
---===============5464173358881371023==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
-Content-Disposition: inline
+Also, if a debugfs call fails, userspace is notified with an error in
+the log, so no need to log the error again.
 
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Jie Yang <yang.jie@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v2: rebase on 5.3-rc1
+    change Subject line to match the subsystem better
+    rework based on debugfs core now reporting errors.
 
---+nBD6E3TurpgldQp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ sound/soc/intel/skylake/skl-debug.c | 28 +++++-----------------------
+ 1 file changed, 5 insertions(+), 23 deletions(-)
 
-On Wed, Jul 31, 2019 at 10:32:00AM +0100, Liam Girdwood wrote:
-> On Tue, 2019-07-30 at 23:04 +0300, Daniel Baluta wrote:
-
-> > Will you be in Lyon for ELCE this year? I'm very interested in
-> > participating
-> > to an (eventual) audio miniconf meeting. Maybe we can also do a
-> > separate
-> > SOF meeting if they are enough people interested.
-
-> Yes, Mark is planning the audio conf, we are looking at ELCE or
-> gstreamer.
-
-> I'm now getting costs and availability from the Linux Foundation so we
-> should hopefully have an update soon.
-
-Linux Foundation are likely to be an issue as they insist on people
-having a ticket to one of their events to go to anything they're
-hosting and neither Takashi nor I will be going to anything.
-
---+nBD6E3TurpgldQp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1Bj1AACgkQJNaLcl1U
-h9BrNQf/Ts7CFOLBDOm9TNYaMuTHSypEsDu1ST+rwmnyOga5UshbMb55noZ07HXS
-ypBCmSU8cnNg3vogUc99emHPnmzWeyUm+JONxNuMsQZFZoq1lMelE94JoMyerhsm
-eEzv/82+kYv9Bp5HfIUIIdHorPBjKZleaXgjPflf1T/mXbnDM+HbFRkjBvxfoSIv
-5wwK7wzv8tNW80VtP2kOPAZzZY7swhY4GQFRPJeSU72krAVPuPdk5lCjPtZB0Vvp
-cCeEk9MhxudsOt5TIElr7J3lxgN1W6IeKifZEQ40Z9HgyzIMykCBp2sCWpjIsdM+
-hM3DSIuhyX6qz/n1XW8pTFLdUDnJZg==
-=OqfR
------END PGP SIGNATURE-----
-
---+nBD6E3TurpgldQp--
-
---===============5464173358881371023==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5464173358881371023==--
+diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
+index b9b4a72a4334..1d6240ad6112 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
++++ b/sound/soc/intel/skylake/skl-debug.c
+@@ -162,10 +162,8 @@ void skl_debug_init_module(struct skl_debug *d,
+ 			struct snd_soc_dapm_widget *w,
+ 			struct skl_module_cfg *mconfig)
+ {
+-	if (!debugfs_create_file(w->name, 0444,
+-				d->modules, mconfig,
+-				&mcfg_fops))
+-		dev_err(d->dev, "%s: module debugfs init failed\n", w->name);
++	debugfs_create_file(w->name, 0444, d->modules, mconfig,
++			    &mcfg_fops);
+ }
+ 
+ static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
+@@ -222,34 +220,18 @@ struct skl_debug *skl_debugfs_init(struct skl *skl)
+ 		return NULL;
+ 
+ 	/* create the debugfs dir with platform component's debugfs as parent */
+-	d->fs = debugfs_create_dir("dsp",
+-				   skl->component->debugfs_root);
+-	if (IS_ERR(d->fs) || !d->fs) {
+-		dev_err(&skl->pci->dev, "debugfs root creation failed\n");
+-		return NULL;
+-	}
++	d->fs = debugfs_create_dir("dsp", skl->component->debugfs_root);
+ 
+ 	d->skl = skl;
+ 	d->dev = &skl->pci->dev;
+ 
+ 	/* now create the module dir */
+ 	d->modules = debugfs_create_dir("modules", d->fs);
+-	if (IS_ERR(d->modules) || !d->modules) {
+-		dev_err(&skl->pci->dev, "modules debugfs create failed\n");
+-		goto err;
+-	}
+ 
+-	if (!debugfs_create_file("fw_soft_regs_rd", 0444, d->fs, d,
+-				 &soft_regs_ctrl_fops)) {
+-		dev_err(d->dev, "fw soft regs control debugfs init failed\n");
+-		goto err;
+-	}
++	debugfs_create_file("fw_soft_regs_rd", 0444, d->fs, d,
++			    &soft_regs_ctrl_fops);
+ 
+ 	return d;
+-
+-err:
+-	debugfs_remove_recursive(d->fs);
+-	return NULL;
+ }
+ 
+ void skl_debugfs_exit(struct skl *skl)
+-- 
+2.22.0
