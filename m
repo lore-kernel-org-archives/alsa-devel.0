@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: Add bindings for UDA1334 codec" to the asoc tree
-Date: Wed, 31 Jul 2019 12:29:38 +0100 (BST)
-Message-ID: <20190731112938.3BF792742CC3@ypsilon.sirena.org.uk>
-References: <20190731111930.20230-2-andradanciu1997@gmail.com>
+Subject: Applied "ASoC: stm32: sai: use devm_platform_ioremap_resource() to simplify code" to the asoc tree
+Date: Wed, 31 Jul 2019 12:29:42 +0100 (BST)
+Message-ID: <20190731112942.8BDF32742C99@ypsilon.sirena.org.uk>
+References: <20190727150738.54764-16-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190731111930.20230-2-andradanciu1997@gmail.com>
+In-Reply-To: <20190727150738.54764-16-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: alsa-devel@alsa-project.org, anders.roxell@linaro.org, broonie@kernel.org, ckeepax@opensource.cirrus.com, Daniel Baluta <daniel.baluta@nxp.com>daniel.baluta@nxp.com, devicetree@vger.kernel.org, jbrunet@baylibre.com, kmarinushkin@birdec.tech, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, mark.rutland@arm.com, m.felsch@pengutronix.de, nh6z@nh6z.net, paul@crapouillou.net, perex@perex.cz, piotrs@opensource.cirrus.com, rf@opensource.wolfsonmicro.com, robh+dt@kernel.org, srinivas.kandagatla@linaro.org, tiwai@suse.com, vkoul@kernel.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alexandre.torgue@st.com, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, baohua@kernel.org, bcm-kernel-feedback-list@broadcom.com, broonie@kernel.org, daniel@zonque.org, eric@anholt.net, festevam@gmail.com, f.fainelli@gmail.com, gregkh@linuxfoundation.org, haojian.zhuang@gmail.com, Hulk Robot <hulkci@huawei.com>, jbrunet@baylibre.com, jcmvbkbc@gmail.com, jonathanh@nvidia.com, kernel@pengutronix.de, khilman@baylibre.com, lgirdwood@gmail.com, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: Add bindings for UDA1334 codec
+   ASoC: stm32: sai: use devm_platform_ioremap_resource() to simplify code
 
 has been applied to the asoc tree at
 
@@ -37,47 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From d6de65fde51644f6ed6b1c0c05fef6a2da5ff768 Mon Sep 17 00:00:00 2001
-From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Wed, 31 Jul 2019 14:19:29 +0300
-Subject: [PATCH] dt-bindings: sound: Add bindings for UDA1334 codec
+>From 1c63223cda84fb10643938e4e4eb02110f8ae9a2 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Sat, 27 Jul 2019 23:07:19 +0800
+Subject: [PATCH] ASoC: stm32: sai: use devm_platform_ioremap_resource() to
+ simplify code
 
-The UDA1334 is an NXP audio codec, supports the I2S-bus data format
-and has basic features such as de-emphasis (at 44.1 kHz sampling
-rate) and mute. Product information can be found at:
-https://www.nxp.com/pages/low-power-audio-dac-with-pll:UDA1334
+Use devm_platform_ioremap_resource() to simplify the code a bit.
+This is detected by coccinelle.
 
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
-Link: https://lore.kernel.org/r/20190731111930.20230-2-andradanciu1997@gmail.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190727150738.54764-16-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/uda1334.txt       | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/uda1334.txt
+ sound/soc/stm/stm32_sai.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/uda1334.txt b/Documentation/devicetree/bindings/sound/uda1334.txt
-new file mode 100644
-index 000000000000..f64071b25e8d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/uda1334.txt
-@@ -0,0 +1,17 @@
-+UDA1334 audio CODEC
-+
-+This device uses simple GPIO pins for controlling codec settings.
-+
-+Required properties:
-+
-+  - compatible : "nxp,uda1334"
-+  - nxp,mute-gpios: a GPIO spec for the MUTE pin.
-+  - nxp,deemph-gpios: a GPIO spec for the De-emphasis pin
-+
-+Example:
-+
-+uda1334: audio-codec {
-+	compatible = "nxp,uda1334";
-+	nxp,mute-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
-+	nxp,deemph-gpios = <&gpio3 3 GPIO_ACTIVE_LOW>;
-+};
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index 63f68e663676..1ac5103cea78 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -152,7 +152,6 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ {
+ 	struct stm32_sai_data *sai;
+ 	struct reset_control *rst;
+-	struct resource *res;
+ 	const struct of_device_id *of_id;
+ 	u32 val;
+ 	int ret;
+@@ -161,8 +160,7 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 	if (!sai)
+ 		return -ENOMEM;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	sai->base = devm_ioremap_resource(&pdev->dev, res);
++	sai->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(sai->base))
+ 		return PTR_ERR(sai->base);
+ 
 -- 
 2.20.1
