@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: g12a-tohdmitx: override codec2codec params" to the asoc tree
-Date: Wed, 31 Jul 2019 12:29:51 +0100 (BST)
-Message-ID: <20190731112951.41B9A2742CC3@ypsilon.sirena.org.uk>
-References: <20190729080139.32068-1-jbrunet@baylibre.com>
+Subject: Applied "ASoC: codec2codec: fix missing return of error return code" to the asoc tree
+Date: Wed, 31 Jul 2019 12:29:52 +0100 (BST)
+Message-ID: <20190731112952.7BAE72742D57@ypsilon.sirena.org.uk>
+References: <20190726123327.10467-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190729080139.32068-1-jbrunet@baylibre.com>
+In-Reply-To: <20190726123327.10467-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: g12a-tohdmitx: override codec2codec params
+   ASoC: codec2codec: fix missing return of error return code
 
 has been applied to the asoc tree at
 
@@ -37,94 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From 2c4956bc1e9062e5e3c5ea7612294f24e6d4fbdd Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 29 Jul 2019 10:01:39 +0200
-Subject: [PATCH] ASoC: meson: g12a-tohdmitx: override codec2codec params
+>From c8415833ec242b9ddf73bf9e1057e12f9b0fcd16 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 26 Jul 2019 13:33:27 +0100
+Subject: [PATCH] ASoC: codec2codec: fix missing return of error return code
 
-So far, forwarding the hw_params of the input to output relied on the
-.hw_params() callback of the cpu side of the codec2codec link to be called
-first. This is a bit weak.
+Currently in function snd_soc_dai_link_event_pre_pmu the error return
+code in variable err is being set but this is not actually being returned,
+the function just returns zero even when there are failures. Fix this by
+returning the error return code.
 
-Instead, override the stream params of the codec2codec to link to set it up
-correctly.
-
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20190729080139.32068-1-jbrunet@baylibre.com
+Addresses-Coverity: ("Unused value")
+Fixes: 3dcfb397dad2 ("ASoC: codec2codec: deal with params when necessary")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20190726123327.10467-1-colin.king@canonical.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/g12a-tohdmitx.c | 34 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/meson/g12a-tohdmitx.c b/sound/soc/meson/g12a-tohdmitx.c
-index 707ccb192e4c..9943c807ec5d 100644
---- a/sound/soc/meson/g12a-tohdmitx.c
-+++ b/sound/soc/meson/g12a-tohdmitx.c
-@@ -28,7 +28,7 @@
- #define  CTRL0_SPDIF_CLK_SEL		BIT(0)
- 
- struct g12a_tohdmitx_input {
--	struct snd_pcm_hw_params params;
-+	struct snd_soc_pcm_stream params;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index be9bb05b0165..2d183e2d23de 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3776,7 +3776,7 @@ snd_soc_dai_link_event_pre_pmu(struct snd_soc_dapm_widget *w,
+ 	struct snd_pcm_hw_params *params = NULL;
+ 	const struct snd_soc_pcm_stream *config = NULL;
  	unsigned int fmt;
- };
+-	int ret;
++	int ret = 0;
  
-@@ -225,26 +225,17 @@ static int g12a_tohdmitx_input_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct g12a_tohdmitx_input *data = dai->playback_dma_data;
+ 	params = kzalloc(sizeof(*params), GFP_KERNEL);
+ 	if (!params)
+@@ -3865,7 +3865,7 @@ snd_soc_dai_link_event_pre_pmu(struct snd_soc_dapm_widget *w,
  
--	/* Save the stream params for the downstream link */
--	memcpy(&data->params, params, sizeof(*params));
-+	data->params.rates = snd_pcm_rate_to_rate_bit(params_rate(params));
-+	data->params.rate_min = params_rate(params);
-+	data->params.rate_max = params_rate(params);
-+	data->params.formats = 1 << params_format(params);
-+	data->params.channels_min = params_channels(params);
-+	data->params.channels_max = params_channels(params);
-+	data->params.sig_bits = dai->driver->playback.sig_bits;
- 
- 	return 0;
+ out:
+ 	kfree(params);
+-	return 0;
++	return ret;
  }
  
--static int g12a_tohdmitx_output_hw_params(struct snd_pcm_substream *substream,
--					  struct snd_pcm_hw_params *params,
--					  struct snd_soc_dai *dai)
--{
--	struct g12a_tohdmitx_input *in_data =
--		g12a_tohdmitx_get_input_data(dai->capture_widget);
--
--	if (!in_data)
--		return -ENODEV;
--
--	memcpy(params, &in_data->params, sizeof(*params));
--
--	return 0;
--}
- 
- static int g12a_tohdmitx_input_set_fmt(struct snd_soc_dai *dai,
- 				       unsigned int fmt)
-@@ -266,6 +257,14 @@ static int g12a_tohdmitx_output_startup(struct snd_pcm_substream *substream,
- 	if (!in_data)
- 		return -ENODEV;
- 
-+	if (WARN_ON(!rtd->dai_link->params)) {
-+		dev_warn(dai->dev, "codec2codec link expected\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Replace link params with the input params */
-+	rtd->dai_link->params = &in_data->params;
-+
- 	if (!in_data->fmt)
- 		return 0;
- 
-@@ -278,7 +277,6 @@ static const struct snd_soc_dai_ops g12a_tohdmitx_input_ops = {
- };
- 
- static const struct snd_soc_dai_ops g12a_tohdmitx_output_ops = {
--	.hw_params	= g12a_tohdmitx_output_hw_params,
- 	.startup	= g12a_tohdmitx_output_startup,
- };
- 
+ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
 -- 
 2.20.1
