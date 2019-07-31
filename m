@@ -1,72 +1,61 @@
-From: "chunguo.feng@amlogic.com" <chunguo.feng@amlogic.com>
-Subject: Re: [PATCH] ASoC: max98383: add 88200 and 96000
-	sampling rate support
-Date: Wed, 31 Jul 2019 15:47:04 +0800
-Message-ID: <201907311547038935373@amlogic.com>
-References: <20190731054003.16076-1-chunguo.feng@amlogic.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on
+ diagnostic routine
+Date: Wed, 31 Jul 2019 09:03:31 +0100
+Message-ID: <20190731080331.GJ54126@ediswmail.ad.cirrus.com>
+References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
+ <20190730120937.16271-4-thomas.preston@codethink.co.uk>
+ <20190730141935.GF4264@sirena.org.uk>
+ <45156592-a90f-b4f8-4d30-9631c03f1280@codethink.co.uk>
+ <20190730155027.GJ4264@sirena.org.uk>
+ <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-sz.amlogic.com (mail-sz.amlogic.com [211.162.65.117])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5487F800C0
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 09:46:31 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "RyanS.Lee@maximintegrated.com" <RyanS.Lee@maximintegrated.com>, "grundler@chromium.org" <grundler@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "tiwai@suse.com" <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>, "bleung@chromium.org" <bleung@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thomas Preston <thomas.preston@codethink.co.uk>
+Cc: Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>, Annaliese McDermond <nh6z@nh6z.net>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxs77yMDQoNClBsZWFzZSBraW5kbHkgd2FpdmVyIHRoaXMgcGF0Y2gsIGJlY2F1c2UgbWF4
-OTgzODMgd2FzIHdyaXRlZCBpbmNvcnJlY3Rsee+8jCBpdCBzaG91bGQgYmUgbWF4OTgzNzMuDQoN
-CkkgaGF2ZSBtb2RpZmllZCBpdCwgdGhlbiBzdWJtaXQgbmV3IHBhdGNoIGFnYWluLg0KDQpUaGFu
-a3MsDQoNCkJScywNCkdhcnkuDQogDQogDQpGcm9tOiBjaHVuZ3VvIGZlbmcNCkRhdGU6IDIwMTkt
-MDctMzEgMTM6NDANClRvOiBsZ2lyZHdvb2RAZ21haWwuY29tDQpDQzogYnJvb25pZUBrZXJuZWwu
-b3JnOyBwZXJleEBwZXJleC5jejsgdGl3YWlAc3VzZS5jb207IFJ5YW5TLkxlZUBtYXhpbWludGVn
-cmF0ZWQuY29tOyBibGV1bmdAY2hyb21pdW0ub3JnOyBwaWVycmUtbG91aXMuYm9zc2FydEBsaW51
-eC5pbnRlbC5jb207IGdydW5kbGVyQGNocm9taXVtLm9yZzsgYWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBjaHVuZ3VvLmZlbmdAYW1sb2dp
-Yy5jb20NClN1YmplY3Q6IFtQQVRDSF0gQVNvQzogbWF4OTgzODM6IGFkZCA4ODIwMCBhbmQgOTYw
-MDAgc2FtcGxpbmcgcmF0ZSBzdXBwb3J0DQpGcm9tOiBmZW5nY2h1bmd1byA8Y2h1bmd1by5mZW5n
-QGFtbG9naWMuY29tPg0KIA0KODgyMDAgYW5kIDk2MDAwIHNhbXBsaW5nIHJhdGUgd2FzIG5vdCBl
-bmFibGVkIG9uIGRyaXZlciwgc28gY2FuJ3QgYmUgcGxheWVkLg0KIA0KVGhlIGVycm9yIGluZm9y
-bWF0aW9uOg0KbWF4OTgzNzMgMy0wMDMx77yacmF0ZSA5NjAwMCBub3Qgc3VwcG9ydGVkDQptYXg5
-ODM3MyAzLTAwMzHvvJpBU29DOiBjYW4ndCBzZXQgbWF4OTgzNzMtYWlmMSBodyBwYXJhbXM6IC0y
-Mg0KIA0KU2lnbmVkLW9mZi1ieTogZmVuZ2NodW5ndW8gPGNodW5ndW8uZmVuZ0BhbWxvZ2ljLmNv
-bT4NCi0tLQ0Kc291bmQvc29jL2NvZGVjcy9tYXg5ODM3My5jIHwgNiArKysrKysNCnNvdW5kL3Nv
-Yy9jb2RlY3MvbWF4OTgzNzMuaCB8IDIgKysNCjIgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25z
-KCspDQptb2RlIGNoYW5nZSAxMDA2NDQgPT4gMTAwNzU1IHNvdW5kL3NvYy9jb2RlY3MvbWF4OTgz
-NzMuYw0KbW9kZSBjaGFuZ2UgMTAwNjQ0ID0+IDEwMDc1NSBzb3VuZC9zb2MvY29kZWNzL21heDk4
-MzczLmgNCiANCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL21heDk4MzczLmMgYi9zb3Vu
-ZC9zb2MvY29kZWNzL21heDk4MzczLmMNCm9sZCBtb2RlIDEwMDY0NA0KbmV3IG1vZGUgMTAwNzU1
-DQppbmRleCA1Mjg2OTVjZDZhMWMuLjhjNjAxYTNlYmMyNw0KLS0tIGEvc291bmQvc29jL2NvZGVj
-cy9tYXg5ODM3My5jDQorKysgYi9zb3VuZC9zb2MvY29kZWNzL21heDk4MzczLmMNCkBAIC0yNjcs
-NiArMjY3LDEyIEBAIHN0YXRpYyBpbnQgbWF4OTgzNzNfZGFpX2h3X3BhcmFtcyhzdHJ1Y3Qgc25k
-X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCmNhc2UgNDgwMDA6DQpzYW1wbGluZ19yYXRlID0g
-TUFYOTgzNzNfUENNX1NSX1NFVDFfU1JfNDgwMDA7DQpicmVhazsNCisgY2FzZSA4ODIwMDoNCisg
-c2FtcGxpbmdfcmF0ZSA9IE1BWDk4MzczX1BDTV9TUl9TRVQxX1NSXzg4MjAwOw0KKyBicmVhazsN
-CisgY2FzZSA5NjAwMDoNCisgc2FtcGxpbmdfcmF0ZSA9IE1BWDk4MzczX1BDTV9TUl9TRVQxX1NS
-Xzk2MDAwOw0KKyBicmVhazsNCmRlZmF1bHQ6DQpkZXZfZXJyKGNvbXBvbmVudC0+ZGV2LCAicmF0
-ZSAlZCBub3Qgc3VwcG9ydGVkXG4iLA0KcGFyYW1zX3JhdGUocGFyYW1zKSk7DQpkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODM3My5oIGIvc291bmQvc29jL2NvZGVjcy9tYXg5ODM3
-My5oDQpvbGQgbW9kZSAxMDA2NDQNCm5ldyBtb2RlIDEwMDc1NQ0KaW5kZXggZjZhMzdhYTAyZjI2
-Li5hNTllNTEzNTVhODQNCi0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgzNzMuaA0KKysrIGIv
-c291bmQvc29jL2NvZGVjcy9tYXg5ODM3My5oDQpAQCAtMTMwLDYgKzEzMCw4IEBADQojZGVmaW5l
-IE1BWDk4MzczX1BDTV9TUl9TRVQxX1NSXzMyMDAwICgweDYgPDwgMCkNCiNkZWZpbmUgTUFYOTgz
-NzNfUENNX1NSX1NFVDFfU1JfNDQxMDAgKDB4NyA8PCAwKQ0KI2RlZmluZSBNQVg5ODM3M19QQ01f
-U1JfU0VUMV9TUl80ODAwMCAoMHg4IDw8IDApDQorI2RlZmluZSBNQVg5ODM3M19QQ01fU1JfU0VU
-MV9TUl84ODIwMCAoMHg5IDw8IDApDQorI2RlZmluZSBNQVg5ODM3M19QQ01fU1JfU0VUMV9TUl85
-NjAwMCAoMHhBIDw8IDApDQovKiBNQVg5ODM3M19SMjAyOF9QQ01fU1JfU0VUVVBfMiAqLw0KI2Rl
-ZmluZSBNQVg5ODM3M19QQ01fU1JfU0VUMl9TUl9NQVNLICgweEYgPDwgNCkNCi0tIA0KMi4yMi4w
-DQogDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, Jul 30, 2019 at 05:28:11PM +0100, Thomas Preston wrote:
+> On 30/07/2019 16:50, Mark Brown wrote:
+> > On Tue, Jul 30, 2019 at 04:25:56PM +0100, Thomas Preston wrote:
+> >> On 30/07/2019 15:19, Mark Brown wrote:
+> > 
+> >>> It is unclear what this mutex usefully protects, it only gets taken when
+> >>> writing to the debugfs file to trigger this diagnostic mode but doesn't
+> >>> do anything to control interactions with any other code path in the
+> >>> driver.
+> > 
+> >> If another process reads the debugfs node "diagnostic" while the turn-on 
+> >> diagnostic mode is running, this mutex prevents the second process
+> >> restarting the diagnostics.
+> > 
+> >> This is redundant if debugfs reads are atomic, but I don't think they are.
+> > 
+> > Like I say it's not just debugfs though, there's the standard driver
+> > interface too.
+> > 
+> 
+> Ah right, I understand. So if we run the turn-on diagnostics routine, there's
+> nothing stopping anyone from interacting with the device in other ways.
+> 
+> I guess there's no way to share that mutex with ALSA? In that case, it doesn't
+> matter if this mutex is there or not - this feature is incompatible. How
+> compatible do debugfs interfaces have to be? I was under the impression anything
+> goes. I would argue that the debugfs is better off for having the mutex so
+> that no one re-reads "diagnostic" within the 5s poll timeout.
+> 
+> Alternatively, this diagnostic feature could be handled with an external-handler
+> kcontrol SOC_SINGLE_EXT? I'm not sure if this is an atomic interface either.
+> 
+> What would be acceptable?
+
+You could take the DAPM mutex in your debugfs handler that would
+prevent any changes to the cards power state whilst your debug
+stuff is running.
+
+Thanks,
+Charles
