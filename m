@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: Mark expected switch fall-throughs"
-	to the asoc tree
-Date: Wed, 31 Jul 2019 12:29:45 +0100 (BST)
-Message-ID: <20190731112945.E36502742CC3@ypsilon.sirena.org.uk>
-References: <20190729221534.GA18696@embeddedor>
+Subject: Applied "MAINTAINERS: Update Intel ASoC drivers
+	maintainers" to the asoc tree
+Date: Wed, 31 Jul 2019 12:29:51 +0100 (BST)
+Message-ID: <20190731112952.075492742D4F@ypsilon.sirena.org.uk>
+References: <20190726181517.27655-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7324135832987247995=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30D75F80133
- for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 13:29:47 +0200 (CEST)
-In-Reply-To: <20190729221534.GA18696@embeddedor>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 922C9F80507
+ for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2019 13:29:59 +0200 (CEST)
+In-Reply-To: <20190726181517.27655-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Kees Cook <keescook@chromium.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============7324135832987247995==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: ti: Mark expected switch fall-throughs
+   MAINTAINERS: Update Intel ASoC drivers maintainers
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -57,76 +55,32 @@ to this mail.
 Thanks,
 Mark
 
->From 22581e7c51f50fbbadba70499bb5e2d09f830cbb Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Mon, 29 Jul 2019 17:15:34 -0500
-Subject: [PATCH] ASoC: ti: Mark expected switch fall-throughs
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 6963d00bb6e42e91882d2eb36639701aca9fe032 Mon Sep 17 00:00:00 2001
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Date: Fri, 26 Jul 2019 20:15:17 +0200
+Subject: [PATCH] MAINTAINERS: Update Intel ASoC drivers maintainers
 
-Mark switch cases where we are expecting to fall through.
+Adding myself to Intel ASoC drivers maintainers list.
 
-This patch fixes the following warning (Building: arm):
-
-sound/soc/ti/n810.c: In function ‘n810_ext_control’:
-sound/soc/ti/n810.c:48:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   line1l = 1;
-   ~~~~~~~^~~
-sound/soc/ti/n810.c:49:2: note: here
-  case N810_JACK_HP:
-  ^~~~
-
-sound/soc/ti/rx51.c: In function ‘rx51_ext_control’:
-sound/soc/ti/rx51.c:57:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   hs = 1;
-   ~~~^~~
-sound/soc/ti/rx51.c:58:2: note: here
-  case RX51_JACK_HP:
-  ^~~~
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Link: https://lore.kernel.org/r/20190729221534.GA18696@embeddedor
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190726181517.27655-1-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/n810.c | 1 +
- sound/soc/ti/rx51.c | 1 +
- 2 files changed, 2 insertions(+)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/ti/n810.c b/sound/soc/ti/n810.c
-index 2c3f2a4c1700..3ad2b6daf31e 100644
---- a/sound/soc/ti/n810.c
-+++ b/sound/soc/ti/n810.c
-@@ -46,6 +46,7 @@ static void n810_ext_control(struct snd_soc_dapm_context *dapm)
- 	switch (n810_jack_func) {
- 	case N810_JACK_HS:
- 		line1l = 1;
-+		/* fall through */
- 	case N810_JACK_HP:
- 		hp = 1;
- 		break;
-diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
-index bc6046534fa5..ccd0e8a07dd1 100644
---- a/sound/soc/ti/rx51.c
-+++ b/sound/soc/ti/rx51.c
-@@ -55,6 +55,7 @@ static void rx51_ext_control(struct snd_soc_dapm_context *dapm)
- 		break;
- 	case RX51_JACK_HS:
- 		hs = 1;
-+		/* fall through */
- 	case RX51_JACK_HP:
- 		hp = 1;
- 		break;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 11db05b56744..92829ca37459 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7861,6 +7861,7 @@ S:	Maintained
+ F:	drivers/video/fbdev/i810/
+ 
+ INTEL ASoC DRIVERS
++M:	Cezary Rojewski <cezary.rojewski@intel.com>
+ M:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ M:	Liam Girdwood <liam.r.girdwood@linux.intel.com>
+ M:	Jie Yang <yang.jie@linux.intel.com>
 -- 
 2.20.1
-
-
---===============7324135832987247995==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7324135832987247995==--
