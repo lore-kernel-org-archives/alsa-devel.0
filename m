@@ -1,34 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Incorrect SR and WSS computation" to the
- asoc tree
-Date: Wed, 31 Jul 2019 12:29:51 +0100 (BST)
-Message-ID: <20190731112951.BC2C42742C99@ypsilon.sirena.org.uk>
-References: <20190729152130.27955-1-codekipper@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190729152130.27955-1-codekipper@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Marcus Cooper <codekipper@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, wens@csie.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: meson: g12a-tohdmitx: use devm_platform_ioremap_resource() to simplify code" to the asoc tree
+Date: Wed, 31 Jul 2019 12:29:38 +0100 (BST)
+Message-ID: <20190731112939.015D42742CDE@ypsilon.sirena.org.uk>
+References: <20190727150738.54764-26-yuehaibing@huawei.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190727150738.54764-26-yuehaibing@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alexandre.torgue@st.com, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, baohua@kernel.org, bcm-kernel-feedback-list@broadcom.com, broonie@kernel.org, daniel@zonque.org, eric@anholt.net, festevam@gmail.com, f.fainelli@gmail.com, gregkh@linuxfoundation.org, haojian.zhuang@gmail.com, Hulk Robot <hulkci@huawei.com>, jbrunet@baylibre.com, jcmvbkbc@gmail.com, jonathanh@nvidia.com, kernel@pengutronix.de, khilman@baylibre.com, lgirdwood@gmail.com, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Incorrect SR and WSS computation
+   ASoC: meson: g12a-tohdmitx: use devm_platform_ioremap_resource() to simplify code
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -49,36 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 52f87f3ca251f5e43b42e78ab9816b2b07718bfe Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Mon, 29 Jul 2019 17:21:30 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Incorrect SR and WSS computation
+>From a95c901248642d62dc7462a2d2190c8ac183c84f Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Sat, 27 Jul 2019 23:07:29 +0800
+Subject: [PATCH] ASoC: meson: g12a-tohdmitx: use
+ devm_platform_ioremap_resource() to simplify code
 
-The A64 audio codec uses the original I2S block but the SR and
-WSS computation currently assigned is for the newer block.
+Use devm_platform_ioremap_resource() to simplify the code a bit.
+This is detected by coccinelle.
 
-Fixes: 619c15f7fac9 (ASoC: sun4i-i2s: Change SR and WSS computation)
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Link: https://lore.kernel.org/r/20190729152130.27955-1-codekipper@gmail.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190727150738.54764-26-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/meson/g12a-tohdmitx.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 9b2232908b65..7fa5c61169db 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -1002,8 +1002,8 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
- 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
--	.get_sr			= sun8i_i2s_get_sr_wss,
--	.get_wss		= sun8i_i2s_get_sr_wss,
-+	.get_sr			= sun4i_i2s_get_sr,
-+	.get_wss		= sun4i_i2s_get_wss,
- };
+diff --git a/sound/soc/meson/g12a-tohdmitx.c b/sound/soc/meson/g12a-tohdmitx.c
+index 9943c807ec5d..9cfbd343a00c 100644
+--- a/sound/soc/meson/g12a-tohdmitx.c
++++ b/sound/soc/meson/g12a-tohdmitx.c
+@@ -376,12 +376,10 @@ MODULE_DEVICE_TABLE(of, g12a_tohdmitx_of_match);
+ static int g12a_tohdmitx_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct resource *res;
+ 	void __iomem *regs;
+ 	struct regmap *map;
  
- static int sun4i_i2s_init_regmap_fields(struct device *dev,
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	regs = devm_ioremap_resource(dev, res);
++	regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+ 
 -- 
 2.20.1
