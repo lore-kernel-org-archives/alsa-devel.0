@@ -1,72 +1,61 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: [PATCH] topology: add support to parse private data
-	for pcm
-Date: Thu,  1 Aug 2019 17:15:06 +0800
-Message-ID: <20190801091506.19733-1-yang.jie@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: amd: use DMA addr rather than CPU pa for audio
+ buffer
+Date: Thu, 1 Aug 2019 13:59:08 +0100
+Message-ID: <20190801125908.GD5488@sirena.org.uk>
+References: <1564402115-5043-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2ED1DF804CF
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2019 11:09:22 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Keyon Jie <yang.jie@linux.intel.com>, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RYJh/3oyKhIjGcML"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1564402115-5043-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Cc: Alexander.Deucher@amd.com, Vijendar Mukunda <vijendar.mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, YueHaibing <yuehaibing@huawei.com>, Colin Ian King <colin.king@canonical.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-We have private data section in struct snd_soc_tplg_pcm, but alsatplg
-doesn't support handling it yet, here add handling in tplg_parse_pcm()
-to enable it.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
----
- src/topology/data.c | 3 +++
- src/topology/pcm.c  | 8 ++++++++
- 2 files changed, 11 insertions(+)
+--RYJh/3oyKhIjGcML
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/src/topology/data.c b/src/topology/data.c
-index b3f4421f..729ce1f4 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -53,6 +53,9 @@ struct snd_soc_tplg_private *get_priv_data(struct tplg_elem *elem)
- 	case SND_TPLG_TYPE_BE:
- 		priv = &elem->link->priv;
- 		break;
-+	case SND_TPLG_TYPE_PCM:
-+		priv = &elem->pcm->priv;
-+		break;
- 	default:
- 		SNDERR("error: '%s': no support for private data for type %d\n",
- 			elem->id, elem->type);
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 5f586dc1..c533ee68 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -732,6 +732,14 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 				return err;
- 			continue;
- 		}
-+
-+		/* private data */
-+		if (strcmp(id, "data") == 0) {
-+			err = tplg_parse_data_refs(n, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.20.1
+On Mon, Jul 29, 2019 at 05:38:29PM +0530, Ravulapati Vishnu vardhan rao wro=
+te:
+> We shouldn't assume CPU physical address we get from page_to_phys()
+> is same as DMA address we get from dma_alloc_coherent(). On x86_64,
+> we won't run into any problem with the assumption when dma_ops is
+> nommu_dma_ops. However, DMA address is IOVA when IOMMU is enabled.
+> And it's most likely different from CPU physical address when AMD
+> IOMMU is not in passthrough mode.
+
+This doesn't build for me:
+
+sound/soc/amd/raven/acp3x-pcm-dma.c: In function =E2=80=98acp3x_dma_hw_para=
+ms=E2=80=99:
+sound/soc/amd/raven/acp3x-pcm-dma.c:356:2: error: =E2=80=98pg=E2=80=99 unde=
+clared (first use in this function)
+  pg =3D virt_to_page(substream->dma_buffer.area);
+  ^~
+sound/soc/amd/raven/acp3x-pcm-dma.c:356:2: note: each undeclared identifier=
+ is reported only once for each function it appears in
+
+Please check and resend.
+
+--RYJh/3oyKhIjGcML
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1C4hwACgkQJNaLcl1U
+h9C3Fwf7BOfEN4vmffpRJH10Vx7KKitOuorUGoZ4MzdoFmDEvZdkppuWO4WKlp1s
+KoulKALI7savBZjmK+EgHjLCgxfg+hDlXd06YhxKf3RRAA0ocYtbMkjpCbzuu1Oi
++9ov2FjktSCXcGTH2/ozG7EBkUsj4BYcMAHRxrjM9RL25BLY0ZnGdBzNfxQUOId4
+joH3Z68hx0+X32BPAELE9/8aujIOta+AIeDcMc7mHED2g2HjdeK6IaRRGYAr49CU
+pDoQe1N+gw+rzO5IYG4E9q4+ptdLGWxMkeX16vPem/21TWsXZJln0ybieo9XRBI0
+bd//ujEu7ChIeKelc2b+VjO+A++Ojg==
+=BI5i
+-----END PGP SIGNATURE-----
+
+--RYJh/3oyKhIjGcML--
