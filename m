@@ -1,39 +1,49 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ALSA: isa/wavefront: remove redundant assignment to pointer bptr
-Date: Thu,  1 Aug 2019 17:28:24 +0100
-Message-ID: <20190801162824.32217-1-colin.king@canonical.com>
+From: Harry Bloomberg <hbloomb@gmail.com>
+Subject: Possible bug report
+Date: Thu, 1 Aug 2019 17:39:38 -0400
+Message-ID: <CANLVwvSzpUBeLvAysmoV6LG3QCHUm0mee=BYc9UbfWOazPQ_ig@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
+ [IPv6:2607:f8b0:4864:20::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41A1CF800C0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2019 23:39:51 +0200 (CEST)
+Received: by mail-oi1-x229.google.com with SMTP id 65so55155154oid.13
+ for <alsa-devel@alsa-project.org>; Thu, 01 Aug 2019 14:39:51 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+While running an amateur radio application on a Raspberry Pi 3B+ with the
+stretch version of Raspberrian, I see the following in my syslog:
 
-The pointer bptr is being assigned a value that is never read
-and it is being updated in the next statement with a new value.
-The initialization is redundant and can be removed.
+Aug  1 17:31:06 raspberrypi pulseaudio[853]: [alsa-sink-USB Audio]
+alsa-sink.c: ALSA woke us up to write new data to the device, but there was
+actually nothing to write.
+Aug  1 17:31:06 raspberrypi pulseaudio[853]: [alsa-sink-USB Audio]
+alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_usb_audio'.
+Please report this issue to the ALSA developers.
+Aug  1 17:31:06 raspberrypi pulseaudio[853]: [alsa-sink-USB Audio]
+alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent
+snd_pcm_avail() returned 0 or another value < min_avail.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/isa/wavefront/wavefront_synth.c | 1 -
- 1 file changed, 1 deletion(-)
+So...I am reporting this to the developers as instructed by the error
+message.  What additional information do you need?
 
-diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
-index aec1c46e6697..c5b1d5900eed 100644
---- a/sound/isa/wavefront/wavefront_synth.c
-+++ b/sound/isa/wavefront/wavefront_synth.c
-@@ -788,7 +788,6 @@ wavefront_send_patch (snd_wavefront_t *dev, wavefront_patch_info *header)
- 
- 	dev->patch_status[header->number] |= WF_SLOT_FILLED;
- 
--	bptr = buf;
- 	bptr = munge_int32 (header->number, buf, 2);
- 	munge_buf ((unsigned char *)&header->hdr.p, bptr, WF_PATCH_BYTES);
-     
--- 
-2.20.1
+I'm not exactly sure what I was doing to trigger this error.   I may have
+been exiting  the application.
+
+Thanks,
+Harry Bloomberg
