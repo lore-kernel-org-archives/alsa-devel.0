@@ -1,261 +1,261 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: no need to check return value of debugfs_create functions" to the asoc tree
-Date: Thu,  1 Aug 2019 14:10:39 +0100 (BST)
-Message-ID: <20190801131039.AFA0C2742D28@ypsilon.sirena.org.uk>
-References: <20190731131716.9764-2-gregkh@linuxfoundation.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190731131716.9764-2-gregkh@linuxfoundation.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: Add Cometlake Dialog
+ Maxim machine driver
+Date: Thu, 1 Aug 2019 09:55:18 -0500
+Message-ID: <f8641bba-5da0-1bc8-7580-f9514e2ac718@linux.intel.com>
+References: <1564646564-24990-1-git-send-email-mac.chiang@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D2DBF804CB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2019 16:55:23 +0200 (CEST)
+In-Reply-To: <1564646564-24990-1-git-send-email-mac.chiang@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: mac.chiang@intel.com, alsa-devel@alsa-project.org
+Cc: sathya.prakash.m.r@intel.com, broonie@kernel.org, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: core: no need to check return value of debugfs_create functions
+> -config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+> -	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
+> -	depends on I2C && ACPI
+> -	depends on MFD_INTEL_LPSS || COMPILE_TEST
+> -	select SND_SOC_DA7219
+> -	select SND_SOC_MAX98357A
+> -	select SND_SOC_DMIC
+> -	select SND_SOC_HDAC_HDMI
+> -	help
+> -	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+> -	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec.
+> -	  Say Y if you have such a device.
+> -
+>   config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
+>   	tristate "KBL with DA7219 and MAX98927 in I2S Mode"
+>   	depends on I2C && ACPI
+> @@ -363,6 +350,24 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
+>   
+>   endif ## SND_SOC_INTEL_KBL
+>   
+> +if SND_SOC_INTEL_KBL || SND_SOC_SOF_COMETLAKE_LP
+> +
+> +config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+> +	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
+> +	depends on I2C && ACPI
+> +	depends on MFD_INTEL_LPSS || COMPILE_TEST
+> +	select SND_SOC_DA7219
+> +	select SND_SOC_MAX98357A
+> +	select SND_SOC_DMIC
+> +	select SND_SOC_HDAC_HDMI
+> +	help
+> +	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+> +	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec for
+> +	  Kabylake/Cometlake platforms.
+> +	  Say Y if you have such a device.
+> +
+> +endif ## SND_SOC_INTEL_KBL || SND_SOC_SOF_COMETLAKE_LP
 
-has been applied to the asoc tree at
+We should not mix generations and SST/SOF drivers like this, it's not 
+going to be maintainable.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+What you can do is have a common hidden option such as
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
+	tristate
+	select SND_SOC_DA7219
+	select SND_SOC_MAX98357A
+	select SND_SOC_DMIC
+	select SND_SOC_HDAC_HDMI
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+if SND_SOC_INTEL_KBL
+config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
+	depends on I2C && ACPI
+	depends on MFD_INTEL_LPSS || COMPILE_TEST
+	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
+endif
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+if SND_SOC_SOF_COMETLAKE_LP
+config SND_SOC_INTEL_CML_LP_DA7219_MAX98357A_MACH
+	tristate "CML_LP with DA7219 and MAX98357A in I2S Mode"
+	depends on I2C && ACPI
+	depends on MFD_INTEL_LPSS || COMPILE_TEST
+	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
+endif
 
-Thanks,
-Mark
+The other problem I have with this patch is that there are two existing 
+machine drivers with almost the same configuration:
+bxt_da7219_max98357a
+kbl_da7219_max98357a
 
->From fee531d6fc49b9a616525e30955c4cf3b403f632 Mon Sep 17 00:00:00 2001
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Wed, 31 Jul 2019 15:17:15 +0200
-Subject: [PATCH] ASoC: core: no need to check return value of debugfs_create
- functions
+Why did you pick the latter?
+The bxt_da7219_max98357a already supports BXT and GLK, and works with 
+SOF, and it wouldn't be that difficult to extend further. And if you add 
+CML_LP, then we could longer term make the KBL-specific machine driver 
+go away.
 
-When calling debugfs functions, there is no need to ever check the
-return value.  The function can work or not, but the code logic should
-never do something different based on this.
+We really need to stop all this incremental work and reuse machine 
+drivers when the only differences are clock values (24/19.2) and SSP 
+indices.
 
-Also, there is no need to store the individual debugfs file name, just
-remove the whole directory all at once, saving a local variable.
+I stop here, not even looking at code differences until we have an 
+agreed direction on code reuse.
 
-Note, the soc-pcm "state" file has now moved to a subdirectory, as it is
-only a good idea to save the dentries for debugfs directories, not
-individual files, as the individual file debugfs functions are changing
-to not return a dentry.
-
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20190731131716.9764-2-gregkh@linuxfoundation.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h  |  1 -
- sound/soc/soc-core.c | 43 ++++++-------------------------------------
- sound/soc/soc-dapm.c | 30 ++++--------------------------
- sound/soc/soc-pcm.c  | 14 ++++----------
- 4 files changed, 14 insertions(+), 74 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d770606732cd..f0797792dd8d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1220,7 +1220,6 @@ struct snd_soc_card {
- 
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_card_root;
--	struct dentry *debugfs_pop_time;
- #endif
- 	u32 pop_time;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index da11e44b01aa..ed66d2c68d10 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -165,13 +165,6 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
- 				component->card->debugfs_card_root);
- 	}
- 
--	if (IS_ERR(component->debugfs_root)) {
--		dev_warn(component->dev,
--			"ASoC: Failed to create component debugfs directory: %ld\n",
--			PTR_ERR(component->debugfs_root));
--		return;
--	}
--
- 	snd_soc_dapm_debugfs_init(snd_soc_component_get_dapm(component),
- 		component->debugfs_root);
- }
-@@ -215,32 +208,15 @@ DEFINE_SHOW_ATTRIBUTE(component_list);
- 
- static void soc_init_card_debugfs(struct snd_soc_card *card)
- {
--	if (!snd_soc_debugfs_root)
--		return;
--
- 	card->debugfs_card_root = debugfs_create_dir(card->name,
- 						     snd_soc_debugfs_root);
--	if (IS_ERR(card->debugfs_card_root)) {
--		dev_warn(card->dev,
--			 "ASoC: Failed to create card debugfs directory: %ld\n",
--			 PTR_ERR(card->debugfs_card_root));
--		card->debugfs_card_root = NULL;
--		return;
--	}
- 
--	card->debugfs_pop_time = debugfs_create_u32("dapm_pop_time", 0644,
--						    card->debugfs_card_root,
--						    &card->pop_time);
--	if (IS_ERR(card->debugfs_pop_time))
--		dev_warn(card->dev,
--			 "ASoC: Failed to create pop time debugfs file: %ld\n",
--			 PTR_ERR(card->debugfs_pop_time));
-+	debugfs_create_u32("dapm_pop_time", 0644, card->debugfs_card_root,
-+			   &card->pop_time);
- }
- 
- static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- {
--	if (!card->debugfs_card_root)
--		return;
- 	debugfs_remove_recursive(card->debugfs_card_root);
- 	card->debugfs_card_root = NULL;
- }
-@@ -248,19 +224,12 @@ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- static void snd_soc_debugfs_init(void)
- {
- 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
--	if (IS_ERR_OR_NULL(snd_soc_debugfs_root)) {
--		pr_warn("ASoC: Failed to create debugfs directory\n");
--		snd_soc_debugfs_root = NULL;
--		return;
--	}
- 
--	if (!debugfs_create_file("dais", 0444, snd_soc_debugfs_root, NULL,
--				 &dai_list_fops))
--		pr_warn("ASoC: Failed to create DAI list debugfs file\n");
-+	debugfs_create_file("dais", 0444, snd_soc_debugfs_root, NULL,
-+			    &dai_list_fops);
- 
--	if (!debugfs_create_file("components", 0444, snd_soc_debugfs_root, NULL,
--				 &component_list_fops))
--		pr_warn("ASoC: Failed to create component list debugfs file\n");
-+	debugfs_create_file("components", 0444, snd_soc_debugfs_root, NULL,
-+			    &component_list_fops);
- }
- 
- static void snd_soc_debugfs_exit(void)
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e16838e1bda2..d93c1038fab0 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2154,50 +2154,28 @@ static const struct file_operations dapm_bias_fops = {
- void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
- 	struct dentry *parent)
- {
--	struct dentry *d;
--
- 	if (!parent || IS_ERR(parent))
- 		return;
- 
- 	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
- 
--	if (IS_ERR(dapm->debugfs_dapm)) {
--		dev_warn(dapm->dev,
--			 "ASoC: Failed to create DAPM debugfs directory %ld\n",
--			 PTR_ERR(dapm->debugfs_dapm));
--		return;
--	}
--
--	d = debugfs_create_file("bias_level", 0444,
--				dapm->debugfs_dapm, dapm,
--				&dapm_bias_fops);
--	if (IS_ERR(d))
--		dev_warn(dapm->dev,
--			 "ASoC: Failed to create bias level debugfs file: %ld\n",
--			 PTR_ERR(d));
-+	debugfs_create_file("bias_level", 0444, dapm->debugfs_dapm, dapm,
-+			    &dapm_bias_fops);
- }
- 
- static void dapm_debugfs_add_widget(struct snd_soc_dapm_widget *w)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
--	struct dentry *d;
- 
- 	if (!dapm->debugfs_dapm || !w->name)
- 		return;
- 
--	d = debugfs_create_file(w->name, 0444,
--				dapm->debugfs_dapm, w,
--				&dapm_widget_power_fops);
--	if (IS_ERR(d))
--		dev_warn(w->dapm->dev,
--			 "ASoC: Failed to create %s debugfs file: %ld\n",
--			 w->name, PTR_ERR(d));
-+	debugfs_create_file(w->name, 0444, dapm->debugfs_dapm, w,
-+			    &dapm_widget_power_fops);
- }
- 
- static void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
- {
--	if (!dapm->debugfs_dapm)
--		return;
- 	debugfs_remove_recursive(dapm->debugfs_dapm);
- 	dapm->debugfs_dapm = NULL;
- }
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 30264bc592f6..ce7297c37537 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1205,9 +1205,9 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 			stream ? "<-" : "->", be->dai_link->name);
- 
- #ifdef CONFIG_DEBUG_FS
--	if (fe->debugfs_dpcm_root)
--		dpcm->debugfs_state = debugfs_create_u32(be->dai_link->name, 0644,
--				fe->debugfs_dpcm_root, &dpcm->state);
-+	dpcm->debugfs_state = debugfs_create_dir(be->dai_link->name,
-+						 fe->debugfs_dpcm_root);
-+	debugfs_create_u32("state", 0644, dpcm->debugfs_state, &dpcm->state);
- #endif
- 	return 1;
- }
-@@ -1262,7 +1262,7 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
- 		dpcm_be_reparent(fe, dpcm->be, stream);
- 
- #ifdef CONFIG_DEBUG_FS
--		debugfs_remove(dpcm->debugfs_state);
-+		debugfs_remove_recursive(dpcm->debugfs_state);
- #endif
- 		spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 		list_del(&dpcm->list_be);
-@@ -3415,12 +3415,6 @@ void soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd)
- 
- 	rtd->debugfs_dpcm_root = debugfs_create_dir(rtd->dai_link->name,
- 			rtd->card->debugfs_card_root);
--	if (!rtd->debugfs_dpcm_root) {
--		dev_dbg(rtd->dev,
--			 "ASoC: Failed to create dpcm debugfs directory %s\n",
--			 rtd->dai_link->name);
--		return;
--	}
- 
- 	debugfs_create_file("state", 0444, rtd->debugfs_dpcm_root,
- 			    rtd, &dpcm_state_fops);
--- 
-2.20.1
+> +
+>   if SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
+>   
+>   config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> index 537a889..fe3ac70 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> @@ -9,6 +9,7 @@
+>    *   RT5663 codecs
+>    */
+>   
+> +#include <asm/cpu_device_id.h>
+>   #include <linux/input.h>
+>   #include <linux/module.h>
+>   #include <linux/platform_device.h>
+> @@ -17,6 +18,7 @@
+>   #include <sound/pcm.h>
+>   #include <sound/pcm_params.h>
+>   #include <sound/soc.h>
+> +#include <sound/soc-acpi.h>
+>   #include "../../codecs/da7219.h"
+>   #include "../../codecs/hdac_hdmi.h"
+>   #include "../../codecs/da7219-aad.h"
+> @@ -210,7 +212,11 @@ static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
+>   	if (!pcm)
+>   		return -ENOMEM;
+>   
+> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
+> +	pcm->device = dai->id;
+> +#else
+>   	pcm->device = device;
+> +#endif
+>   	pcm->codec_dai = dai;
+>   
+>   	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
+> @@ -587,9 +593,17 @@ static struct snd_soc_card kabylake_audio_card_da7219_m98357a = {
+>   	.late_probe = kabylake_card_late_probe,
+>   };
+>   
+> +static const struct x86_cpu_id cml_ids[] = {
+> +	{ X86_VENDOR_INTEL, 6, 0x8E }, /* Cometlake CPU_ID */
+> +	{}
+> +};
+> +
+>   static int kabylake_audio_probe(struct platform_device *pdev)
+>   {
+>   	struct kbl_codec_private *ctx;
+> +	struct snd_soc_acpi_mach *mach;
+> +	const char *platform_name;
+> +	int ret;
+>   
+>   	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+>   	if (!ctx)
+> @@ -600,17 +614,46 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+>   	kabylake_audio_card =
+>   		(struct snd_soc_card *)pdev->id_entry->driver_data;
+>   
+> +	kabylake_audio_card = &kabylake_audio_card_da7219_m98357a;
+> +
+>   	kabylake_audio_card->dev = &pdev->dev;
+>   	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
+> +
+> +	if (x86_match_cpu(cml_ids)) {
+> +		unsigned int i;
+> +
+> +		kabylake_audio_card->name = "cmlda7219max";
+> +
+> +		for (i = 0; i < ARRAY_SIZE(kabylake_dais); i++) {
+> +			/* MAXIM_CODEC is connected to SSP1. */
+> +			if (!strcmp(kabylake_dais[i].cpus->dai_name,
+> +					KBL_MAXIM_CODEC_DAI)) {
+> +				kabylake_dais[i].name = "SSP1-Codec";
+> +				kabylake_dais[i].cpus->dai_name = "SSP1 Pin";
+> +			}
+> +			/* DIALOG_CODEC is connected to SSP0 */
+> +			else if (!strcmp(kabylake_dais[i].cpus->dai_name,
+> +					KBL_DIALOG_CODEC_DAI)) {
+> +				kabylake_dais[i].name = "SSP0-Codec";
+> +				kabylake_dais[i].cpus->dai_name = "SSP0 Pin";
+> +			}
+> +		}
+> +	}
+> +
+> +	mach = (&pdev->dev)->platform_data;
+> +	platform_name = mach->mach_params.platform;
+> +
+> +	ret = snd_soc_fixup_dai_links_platform_name(kabylake_audio_card,
+> +							platform_name);
+> +	if (ret)
+> +		return ret;
+> +
+>   	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
+>   }
+>   
+>   static const struct platform_device_id kbl_board_ids[] = {
+> -	{
+> -		.name = "kbl_da7219_max98357a",
+> -		.driver_data =
+> -			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
+> -	},
+> +	{.name = "kbl_da7219_max98357a",},
+> +	{.name = "cml_da7219_max98357a",},
+>   	{ }
+>   };
+>   
+> @@ -628,5 +671,7 @@ module_platform_driver(kabylake_audio)
+>   /* Module information */
+>   MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
+>   MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
+> +MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
+>   MODULE_LICENSE("GPL v2");
+>   MODULE_ALIAS("platform:kbl_da7219_max98357a");
+> +MODULE_ALIAS("platform:cml_da7219_max98357a");
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+> index c36c0aa..4ea32b2 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+> @@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs cml_codecs = {
+>   	.codecs = {"10EC5682"}
+>   };
+>   
+> +static struct snd_soc_acpi_codecs cml_spk_codecs = {
+> +	.num_codecs = 1,
+> +	.codecs = {"MX98357A"}
+> +};
+> +
+>   struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+>   	{
+>   		.id = "INT34C2",
+> @@ -29,6 +34,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+>   		.sof_tplg_filename = "sof-cnl-rt274.tplg",
+>   	},
+>   	{
+> +		.id = "DLGS7219",
+> +		.drv_name = "cml_da7219_max98357a",
+> +		.quirk_data = &cml_spk_codecs,
+> +		.sof_fw_filename = "sof-cnl.ri",
+> +		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
+> +	},
+> +	{
+>   		.id = "MX98357A",
+>   		.drv_name = "sof_rt5682",
+>   		.quirk_data = &cml_codecs,
+> 
