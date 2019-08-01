@@ -1,49 +1,78 @@
-From: Harry Bloomberg <hbloomb@gmail.com>
-Subject: Possible bug report
-Date: Thu, 1 Aug 2019 17:39:38 -0400
-Message-ID: <CANLVwvSzpUBeLvAysmoV6LG3QCHUm0mee=BYc9UbfWOazPQ_ig@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on
+ diagnostic routine
+Date: Fri, 2 Aug 2019 00:42:41 +0100
+Message-ID: <20190801234241.GG5488@sirena.org.uk>
+References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
+ <20190730120937.16271-4-thomas.preston@codethink.co.uk>
+ <20190730141935.GF4264@sirena.org.uk>
+ <45156592-a90f-b4f8-4d30-9631c03f1280@codethink.co.uk>
+ <20190730155027.GJ4264@sirena.org.uk>
+ <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
- [IPv6:2607:f8b0:4864:20::229])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41A1CF800C0
- for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2019 23:39:51 +0200 (CEST)
-Received: by mail-oi1-x229.google.com with SMTP id 65so55155154oid.13
- for <alsa-devel@alsa-project.org>; Thu, 01 Aug 2019 14:39:51 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kjpMrWxdCilgNbo1"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thomas Preston <thomas.preston@codethink.co.uk>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>, Annaliese McDermond <nh6z@nh6z.net>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-While running an amateur radio application on a Raspberry Pi 3B+ with the
-stretch version of Raspberrian, I see the following in my syslog:
 
-Aug  1 17:31:06 raspberrypi pulseaudio[853]: [alsa-sink-USB Audio]
-alsa-sink.c: ALSA woke us up to write new data to the device, but there was
-actually nothing to write.
-Aug  1 17:31:06 raspberrypi pulseaudio[853]: [alsa-sink-USB Audio]
-alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_usb_audio'.
-Please report this issue to the ALSA developers.
-Aug  1 17:31:06 raspberrypi pulseaudio[853]: [alsa-sink-USB Audio]
-alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent
-snd_pcm_avail() returned 0 or another value < min_avail.
+--kjpMrWxdCilgNbo1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So...I am reporting this to the developers as instructed by the error
-message.  What additional information do you need?
+On Tue, Jul 30, 2019 at 05:28:11PM +0100, Thomas Preston wrote:
+> On 30/07/2019 16:50, Mark Brown wrote:
 
-I'm not exactly sure what I was doing to trigger this error.   I may have
-been exiting  the application.
+> > Like I say it's not just debugfs though, there's the standard driver
+> > interface too.
 
-Thanks,
-Harry Bloomberg
+> Ah right, I understand. So if we run the turn-on diagnostics routine, the=
+re's
+> nothing stopping anyone from interacting with the device in other ways.
+
+> I guess there's no way to share that mutex with ALSA? In that case, it do=
+esn't
+> matter if this mutex is there or not - this feature is incompatible. How
+> compatible do debugfs interfaces have to be? I was under the impression a=
+nything
+> goes. I would argue that the debugfs is better off for having the mutex so
+> that no one re-reads "diagnostic" within the 5s poll timeout.
+
+It's not really something that's supported; like Charles says the DAPM
+mutex is exposed but if the regular controls would still be able to do
+stuff.  It is kind of a "you broke it, you fix it" thing but on the
+other hand it's better to make things safer if we can since it might not
+be obvious later on why things are broken.
+
+> Alternatively, this diagnostic feature could be handled with an external-=
+handler
+> kcontrol SOC_SINGLE_EXT? I'm not sure if this is an atomic interface eith=
+er.
+>=20
+> What would be acceptable?
+
+Yes, that's definitely doable - we've got some other drivers with
+similar things like calibration triggers exposed that way.
+
+--kjpMrWxdCilgNbo1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1DePAACgkQJNaLcl1U
+h9BbgAf9HMcTl/Pb+iJa1dDcV8qVUzhtY4Qcn3rqBYU+aGzm0J4NOtjtrA70Hdna
+sTNCLx5kaaX9kA5IKWbzwBC1qcf0S8io9cJUgJOYGHitLHliifYiZLX2KpJp/JFf
+GlSodNZf43W45fkhOO5+1xyiI5/KcDbu3U5IBYXVSmCSQsSeZWcydts0VhFTdXGC
+epXFQGet/BGcQ2yfZTuykkV+YepjF07Tk7KOm/4Gdbv7peiwv+dvI2Lef/x8d61y
+cUBhDvFOTToajfBJfwBhZ7dx7OgqLs2/DJdgvRZnE/q1VCq/1YyDl9uUXqvnAgCs
+2XlNTqpd0yH1IjQwz+/8lsGUht5MXA==
+=1ie6
+-----END PGP SIGNATURE-----
+
+--kjpMrWxdCilgNbo1--
