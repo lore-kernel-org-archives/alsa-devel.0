@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: no need to check return value of debugfs_create functions" to the asoc tree
+Subject: Applied "ASoC: Intel: SoC: skylake: no need to check return value of debugfs_create functions" to the asoc tree
 Date: Thu,  1 Aug 2019 14:10:39 +0100 (BST)
-Message-ID: <20190801131039.724622742CFC@ypsilon.sirena.org.uk>
-References: <20190731131716.9764-3-gregkh@linuxfoundation.org>
+Message-ID: <20190801131039.EAD042742D2C@ypsilon.sirena.org.uk>
+References: <20190731131716.9764-1-gregkh@linuxfoundation.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190731131716.9764-3-gregkh@linuxfoundation.org>
+In-Reply-To: <20190731131716.9764-1-gregkh@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: no need to check return value of debugfs_create functions
+   ASoC: Intel: SoC: skylake: no need to check return value of debugfs_create functions
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 3ff3a4f657b3fab2d56247983c2ebed180ef2fbb Mon Sep 17 00:00:00 2001
+>From d8701fae95c0e6cb587b293cb8e01acc96dd1095 Mon Sep 17 00:00:00 2001
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Wed, 31 Jul 2019 15:17:16 +0200
-Subject: [PATCH] ASoC: SOF: no need to check return value of debugfs_create
- functions
+Date: Wed, 31 Jul 2019 15:17:14 +0200
+Subject: [PATCH] ASoC: Intel: SoC: skylake: no need to check return value of
+ debugfs_create functions
 
 When calling debugfs functions, there is no need to ever check the
 return value.  The function can work or not, but the code logic should
@@ -50,171 +50,74 @@ never do something different based on this.
 Also, if a debugfs call fails, userspace is notified with an error in
 the log, so no need to log the error again.
 
-Because we no longer need to check the return value, there's no need to
-save the dentry returned by debugfs.  Just use the dentry in the file
-pointer if we really need to figure out the "name" of the file being
-opened.
-
-Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Jie Yang <yang.jie@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20190731131716.9764-3-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20190731131716.9764-1-gregkh@linuxfoundation.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/debug.c    | 49 +++++++++++++++-------------------------
- sound/soc/sof/sof-priv.h |  1 -
- sound/soc/sof/trace.c    |  9 ++------
- 3 files changed, 20 insertions(+), 39 deletions(-)
+ sound/soc/intel/skylake/skl-debug.c | 28 +++++-----------------------
+ 1 file changed, 5 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 2388477a965e..40940b2fe9d5 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -128,6 +128,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	unsigned long ipc_duration_ms = 0;
- 	bool flood_duration_test = false;
- 	unsigned long ipc_count = 0;
-+	struct dentry *dentry;
- 	int err;
- #endif
- 	size_t size;
-@@ -149,11 +150,12 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	 * ipc_duration_ms test floods the DSP for the time specified
- 	 * in the debugfs entry.
- 	 */
--	if (strcmp(dfse->dfsentry->d_name.name, "ipc_flood_count") &&
--	    strcmp(dfse->dfsentry->d_name.name, "ipc_flood_duration_ms"))
-+	dentry = file->f_path.dentry;
-+	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
-+	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
- 		return -EINVAL;
- 
--	if (!strcmp(dfse->dfsentry->d_name.name, "ipc_flood_duration_ms"))
-+	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
- 		flood_duration_test = true;
- 
- 	/* test completion criterion */
-@@ -219,6 +221,7 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
+diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
+index fb232428109f..212370bf704c 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
++++ b/sound/soc/intel/skylake/skl-debug.c
+@@ -164,10 +164,8 @@ void skl_debug_init_module(struct skl_debug *d,
+ 			struct snd_soc_dapm_widget *w,
+ 			struct skl_module_cfg *mconfig)
  {
- 	struct snd_sof_dfsentry *dfse = file->private_data;
- 	struct snd_sof_dev *sdev = dfse->sdev;
-+	struct dentry *dentry;
- 	loff_t pos = *ppos;
- 	size_t size_ret;
- 	int skip = 0;
-@@ -226,8 +229,9 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- 	u8 *buf;
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
--	if ((!strcmp(dfse->dfsentry->d_name.name, "ipc_flood_count") ||
--	     !strcmp(dfse->dfsentry->d_name.name, "ipc_flood_duration_ms")) &&
-+	dentry = file->f_path.dentry;
-+	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
-+	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) &&
- 	    dfse->cache_buf) {
- 		if (*ppos)
- 			return 0;
-@@ -290,8 +294,7 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- 		if (!pm_runtime_active(sdev->dev) &&
- 		    dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY) {
- 			dev_err(sdev->dev,
--				"error: debugfs entry %s cannot be read in DSP D3\n",
--				dfse->dfsentry->d_name.name);
-+				"error: debugfs entry cannot be read in DSP D3\n");
- 			kfree(buf);
- 			return -EINVAL;
- 		}
-@@ -356,17 +359,11 @@ int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
- 	}
- #endif
- 
--	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
--					     dfse, &sof_dfs_fops);
--	if (!dfse->dfsentry) {
--		/* can't rely on debugfs, only log error and keep going */
--		dev_err(sdev->dev, "error: cannot create debugfs entry %s\n",
--			name);
--	} else {
--		/* add to dfsentry list */
--		list_add(&dfse->list, &sdev->dfsentry_list);
-+	debugfs_create_file(name, 0444, sdev->debugfs_root, dfse,
-+			    &sof_dfs_fops);
- 
--	}
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
- 
- 	return 0;
+-	if (!debugfs_create_file(w->name, 0444,
+-				d->modules, mconfig,
+-				&mcfg_fops))
+-		dev_err(d->dev, "%s: module debugfs init failed\n", w->name);
++	debugfs_create_file(w->name, 0444, d->modules, mconfig,
++			    &mcfg_fops);
  }
-@@ -402,16 +399,10 @@ int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
- 		return -ENOMEM;
- #endif
  
--	dfse->dfsentry = debugfs_create_file(name, mode, sdev->debugfs_root,
--					     dfse, &sof_dfs_fops);
--	if (!dfse->dfsentry) {
--		/* can't rely on debugfs, only log error and keep going */
--		dev_err(sdev->dev, "error: cannot create debugfs entry %s\n",
--			name);
--	} else {
--		/* add to dfsentry list */
--		list_add(&dfse->list, &sdev->dfsentry_list);
+ static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
+@@ -224,34 +222,18 @@ struct skl_debug *skl_debugfs_init(struct skl_dev *skl)
+ 		return NULL;
+ 
+ 	/* create the debugfs dir with platform component's debugfs as parent */
+-	d->fs = debugfs_create_dir("dsp",
+-				   skl->component->debugfs_root);
+-	if (IS_ERR(d->fs) || !d->fs) {
+-		dev_err(&skl->pci->dev, "debugfs root creation failed\n");
+-		return NULL;
 -	}
-+	debugfs_create_file(name, mode, sdev->debugfs_root, dfse,
-+			    &sof_dfs_fops);
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
++	d->fs = debugfs_create_dir("dsp", skl->component->debugfs_root);
  
- 	return 0;
+ 	d->skl = skl;
+ 	d->dev = &skl->pci->dev;
+ 
+ 	/* now create the module dir */
+ 	d->modules = debugfs_create_dir("modules", d->fs);
+-	if (IS_ERR(d->modules) || !d->modules) {
+-		dev_err(&skl->pci->dev, "modules debugfs create failed\n");
+-		goto err;
+-	}
+ 
+-	if (!debugfs_create_file("fw_soft_regs_rd", 0444, d->fs, d,
+-				 &soft_regs_ctrl_fops)) {
+-		dev_err(d->dev, "fw soft regs control debugfs init failed\n");
+-		goto err;
+-	}
++	debugfs_create_file("fw_soft_regs_rd", 0444, d->fs, d,
++			    &soft_regs_ctrl_fops);
+ 
+ 	return d;
+-
+-err:
+-	debugfs_remove_recursive(d->fs);
+-	return NULL;
  }
-@@ -426,10 +417,6 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
  
- 	/* use "sof" as top level debugFS dir */
- 	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
--	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
--		dev_err(sdev->dev, "error: failed to create debugfs directory\n");
--		return 0;
--	}
- 
- 	/* init dfsentry list */
- 	INIT_LIST_HEAD(&sdev->dfsentry_list);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 983eadef4b30..1cec3f23f9cd 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -230,7 +230,6 @@ enum sof_debugfs_access_type {
- 
- /* FS entry for debug files that can expose DSP memories, registers */
- struct snd_sof_dfsentry {
--	struct dentry *dfsentry;
- 	size_t size;
- 	enum sof_dfsentry_type type;
- 	/*
-diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
-index befed975161c..4c3cff031fd6 100644
---- a/sound/soc/sof/trace.c
-+++ b/sound/soc/sof/trace.c
-@@ -148,13 +148,8 @@ static int trace_debugfs_create(struct snd_sof_dev *sdev)
- 	dfse->size = sdev->dmatb.bytes;
- 	dfse->sdev = sdev;
- 
--	dfse->dfsentry = debugfs_create_file("trace", 0444, sdev->debugfs_root,
--					     dfse, &sof_dfs_trace_fops);
--	if (!dfse->dfsentry) {
--		/* can't rely on debugfs, only log error and keep going */
--		dev_err(sdev->dev,
--			"error: cannot create debugfs entry for trace\n");
--	}
-+	debugfs_create_file("trace", 0444, sdev->debugfs_root, dfse,
-+			    &sof_dfs_trace_fops);
- 
- 	return 0;
- }
+ void skl_debugfs_exit(struct skl_dev *skl)
 -- 
 2.20.1
