@@ -1,120 +1,231 @@
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v4 6/9] ASoC: sun4i-i2s: Add multi-lane
- functionality
-Date: Thu, 01 Aug 2019 07:31:55 +0200
-Message-ID: <1589203.0AjJVEASy3@jernej-laptop>
-References: <20190603174735.21002-1-codekipper@gmail.com>
- <2092329.vleAuWJ0xl@jernej-laptop> <20190731122953.2u3iabd6gkn7jv7k@flea>
+From: mac.chiang@intel.com
+Subject: [PATCH] ASoC: Intel: boards: Add Cometlake Dialog
+	Maxim machine driver
+Date: Thu,  1 Aug 2019 16:02:44 +0800
+Message-ID: <1564646564-24990-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190731122953.2u3iabd6gkn7jv7k@flea>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-sunxi@googlegroups.com, maxime.ripard@bootlin.com
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>, Christopher Obbard <chris@64studio.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, codekipper@gmail.com, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBAFFF80214
+ for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2019 10:03:47 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: sathya.prakash.m.r@intel.com, mac.chiang@intel.com, broonie@kernel.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIHNyZWRhLCAzMS4ganVsaWogMjAxOSBvYiAxNDoyOTo1MyBDRVNUIGplIE1heGltZSBSaXBh
-cmQgbmFwaXNhbChhKToKPiBPbiBUdWUsIEp1bCAzMCwgMjAxOSBhdCAwNzo1NzoxMFBNICswMjAw
-LCBKZXJuZWogxaBrcmFiZWMgd3JvdGU6Cj4gPiBEbmUgdG9yZWssIDA0LiBqdW5paiAyMDE5IG9i
-IDExOjM4OjQ0IENFU1QgamUgQ29kZSBLaXBwZXIgbmFwaXNhbChhKToKPiA+ID4gT24gVHVlLCA0
-IEp1biAyMDE5IGF0IDExOjAyLCBDaHJpc3RvcGhlciBPYmJhcmQgPGNocmlzQDY0c3R1ZGlvLmNv
-bT4gCndyb3RlOgo+ID4gPiA+IE9uIFR1ZSwgNCBKdW4gMjAxOSBhdCAwOTo0MywgQ29kZSBLaXBw
-ZXIgPGNvZGVraXBwZXJAZ21haWwuY29tPiB3cm90ZToKPiA+ID4gPiA+IE9uIFR1ZSwgNCBKdW4g
-MjAxOSBhdCAwOTo1OCwgTWF4aW1lIFJpcGFyZAo+ID4gPiA+ID4gPG1heGltZS5yaXBhcmRAYm9v
-dGxpbi5jb20+Cj4gPiAKPiA+IHdyb3RlOgo+ID4gPiA+ID4gPiBPbiBNb24sIEp1biAwMywgMjAx
-OSBhdCAwNzo0NzozMlBNICswMjAwLCBjb2Rla2lwcGVyQGdtYWlsLmNvbSAKd3JvdGU6Cj4gPiA+
-ID4gPiA+ID4gRnJvbTogTWFyY3VzIENvb3BlciA8Y29kZWtpcHBlckBnbWFpbC5jb20+Cj4gPiA+
-ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gVGhlIGkycyBibG9jayBzdXBwb3J0cyBtdWx0aS1sYW5l
-IGkycyBvdXRwdXQgaG93ZXZlciB0aGlzCj4gPiA+ID4gPiA+ID4gZnVuY3Rpb25hbGl0eQo+ID4g
-PiA+ID4gPiA+IGlzIG9ubHkgcG9zc2libGUgaW4gZWFybGllciBTb0NzIHdoZXJlIHRoZSBwaW5z
-IGFyZSBleHBvc2VkIGFuZAo+ID4gPiA+ID4gPiA+IGZvcgo+ID4gPiA+ID4gPiA+IHRoZSBpMnMg
-YmxvY2sgdXNlZCBmb3IgSERNSSBhdWRpbyBvbiB0aGUgbGF0ZXIgU29Dcy4KPiA+ID4gPiA+ID4g
-PiAKPiA+ID4gPiA+ID4gPiBUbyBlbmFibGUgdGhpcyBmdW5jdGlvbmFsaXR5LCBhbiBvcHRpb25h
-bCBwcm9wZXJ0eSBoYXMgYmVlbgo+ID4gPiA+ID4gPiA+IGFkZGVkIHRvCj4gPiA+ID4gPiA+ID4g
-dGhlIGJpbmRpbmdzLgo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6
-IE1hcmN1cyBDb29wZXIgPGNvZGVraXBwZXJAZ21haWwuY29tPgo+ID4gPiA+ID4gPiAKPiA+ID4g
-PiA+ID4gSSdkIGxpa2UgdG8gaGF2ZSBNYXJrJ3MgaW5wdXQgb24gdGhpcywgYnV0IEknbSByZWFs
-bHkgd29ycmllZAo+ID4gPiA+ID4gPiBhYm91dAo+ID4gPiA+ID4gPiB0aGUgaW50ZXJhY3Rpb24g
-d2l0aCB0aGUgcHJvcGVyIFRETSBzdXBwb3J0Lgo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gT3Vy
-IGZ1bmRhbWVudGFsIGlzc3VlIGlzIHRoYXQgdGhlIGNvbnRyb2xsZXIgY2FuIGhhdmUgdXAgdG8g
-OAo+ID4gPiA+ID4gPiBjaGFubmVscywgYnV0IGVpdGhlciBvbiA0IGxpbmVzIChpbnN0ZWFkIG9m
-IDEpLCBvciA4IGNoYW5uZWxzIG9uIDEKPiA+ID4gPiA+ID4gKGxpa2UgcHJvcGVyIFRETSkgKG9y
-IGFueSBjb21iaW5hdGlvbiBiZXR3ZWVuIHRoZSB0d28sIGJ1dCB0aGF0Cj4gPiA+ID4gPiA+IHNo
-b3VsZAo+ID4gPiA+ID4gPiBiZSBwcmV0dHkgcmFyZSkuCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEkg
-dW5kZXJzdGFuZC4uLm1heWJlIHRoZSBURE0gbmVlZHMgdG8gYmUgZXh0ZW5kZWQgdG8gc3VwcG9y
-dCB0aGlzIHRvCj4gPiA+ID4gPiBjb25zaWRlciBjaGFubmVsIG1hcHBpbmcgYW5kIG11bHRpcGxl
-IHRyYW5zZmVyIGxpbmVzLiBJIHdhcyB0aGlua2luZwo+ID4gPiA+ID4gYWJvdXQgdGhlIGxhdGVy
-IHdoZW4gc29tZW9uZSB3YXMgcmVxdWVzdGluZyBzdXBwb3J0IG9uIElJUkMgYSB3aGlsZQo+ID4g
-PiA+ID4gYWdvLCBJIHRob3VnaHQgbWFza2luZyBtaWdodCBvZiBiZWVuIGEgc29sdXRpb24uIFRo
-ZXNlIGNhbiB3YWl0IGFzCj4gPiA+ID4gPiB0aGUKPiA+ID4gPiA+IG9ubHkgY29uc3VtZXIgYXQg
-dGhlIG1vbWVudCBpcyBMaWJyZUVMRUMgYW5kIHdlIGNhbiBwYXRjaCBpdCB0aGVyZS4KPiA+ID4g
-PiAKPiA+ID4gPiBIaSBNYXJjdXMsCj4gPiA+ID4gCj4gPiA+ID4gRldJVywgdGhlIFRJIE1jQVNQ
-IGRyaXZlciBoYXMgc3VwcG9ydCBmb3IgVERNICYgKGkgdGhpbms/KSBtdWx0aXBsZQo+ID4gPiA+
-IHRyYW5zZmVyIGxpbmVzIHdoaWNoIGFyZSBjYWxsZWQgc2VyaWFsaXplcnMuCj4gPiA+ID4gTWF5
-YmUgdGhpcyBjYW4gaGVscCB3aXRoIGluc3BpcmF0aW9uPwo+ID4gPiA+IHNlZQo+ID4gPiA+IGh0
-dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xp
-bnV4LmdpdC90cmUKPiA+ID4gPiBlL3MKPiA+ID4gPiBvdW5kL3NvYy90aS9kYXZpbmNpLW1jYXNw
-LmMgc2FtcGxlIERUUzoKPiA+ID4gPiAKPiA+ID4gPiAmbWNhc3AwIHsKPiA+ID4gPiAKPiA+ID4g
-PiAgICAgI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKPiA+ID4gPiAgICAgc3RhdHVzID0gIm9rYXki
-Owo+ID4gPiA+ICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOwo+ID4gPiA+ICAgICBwaW5j
-dHJsLTAgPSA8Jm1jYXNwMF9waW5zPjsKPiA+ID4gPiAgICAgCj4gPiA+ID4gICAgIG9wLW1vZGUg
-PSA8MD47Cj4gPiA+ID4gICAgIHRkbS1zbG90cyA9IDw4PjsKPiA+ID4gPiAgICAgc2VyaWFsLWRp
-ciA9IDwKPiA+ID4gPiAgICAgCj4gPiA+ID4gICAgICAgICAyIDAgMSAwCj4gPiA+ID4gICAgICAg
-ICAwIDAgMCAwCj4gPiA+ID4gICAgICAgICAwIDAgMCAwCj4gPiA+ID4gICAgICAgICAwIDAgMCAw
-Cj4gPiA+ID4gICAgID4KPiA+ID4gPiAgICAgPjsKPiA+ID4gPiAgICAgCj4gPiA+ID4gICAgIHR4
-LW51bS1ldnQgPSA8MT47Cj4gPiA+ID4gICAgIHJ4LW51bS1ldnQgPSA8MT47Cj4gPiA+ID4gCj4g
-PiA+ID4gfTsKPiA+ID4gPiAKPiA+ID4gPiBDaGVlcnMhCj4gPiA+IAo+ID4gPiBUaGFua3MsIHRo
-aXMgbG9va3MgZ29vZC4KPiA+IAo+ID4gSSB3b3VsZCByZWFsbHkgbGlrZSB0byBzZWUgdGhpcyBp
-c3N1ZSByZXNvbHZlZCwgYmVjYXVzZSBIRE1JIGF1ZGlvIHN1cHBvcnQKPiA+IGluIG1haW5saW5l
-IExpbnV4IGZvciB0aG9zZSBTb0NzIGlzIGxvbmcgb3ZlcmR1ZS4KPiA+IAo+ID4gSG93ZXZlciwg
-dGhlcmUgaXMgYSBwb3NzaWJpbGl0eSB0byBzdGlsbCBhZGQgSERNSSBhdWRpbyBzdXBvcnQgKHN0
-ZXJlbwo+ID4gb25seSkgZXZlbiBpZiB0aGlzIGlzc3VlIGlzIG5vdCBjb21wbGV0ZWx5IHNvbHZl
-ZC4gSWYgd2UgYWdyZWUgdGhhdAo+ID4gY29uZmlndXJhdGlvbiBvZiBjaGFubmVscyB3b3VsZCBi
-ZSBzb2x2ZWQgd2l0aCBhZGRpdGlvbmFsIHByb3BlcnR5IGFzCj4gPiBDaHJpc3RvcGhlciBzdWdn
-ZXN0ZWQsIHN1cHBvcnQgZm9yID4yIGNoYW5uZWxzIGNhbiBiZSBsZWZ0IGZvciBhIGxhdGVyCj4g
-PiB0aW1lIHdoZW4gc3VwcG9ydCBmb3IgdGhhdCBwcm9wZXJ0eSB3b3VsZCBiZSBpbXBsZW1lbnRl
-ZC4gQ3VycmVudGx5LAo+ID4gc3RlcmVvIEhETUkgYXVkaW8gc3VwcG9ydCBjYW4gYmUgYWRkZWQg
-d2l0aCBhIGZldyBwYXRjaGVzLgo+ID4gCj4gPiBJIHRoaW5rIGFsbCBJMlMgY29yZXMgYXJlIHJl
-YWxseSB0aGUgc2FtZSwgbm8gbWF0dGVyIGlmIGludGVybmFsbHkKPiA+IGNvbm5lY3RlZCB0byBI
-RE1JIGNvbnRyb2xsZXIgb3Igcm91dGVkIHRvIHBpbnMsIHNvIGl0IHdvdWxkIG1ha2Ugc2Vuc2Ug
-dG8KPiA+IHVzZSBzYW1lIGNvbXBhdGlibGUgZm9yIGFsbCBvZiB0aGVtLiBJdCdzIGp1c3QgdGhh
-dCB0aG9zZSBJMlMgY29yZXMgd2hpY2gKPiA+IGFyZSByb3V0ZWQgdG8gcGlucyBjYW4gdXNlIG9u
-bHkgb25lIGxhbmUgYW5kID4yIGNoYW5uZWxzIGNhbiBiZSB1c2VkIG9ubHkKPiA+IGluIFRETSBt
-b2RlIG9mIG9wZXJhdGlvbiwgaWYgSSB1bmRlcnN0YW5kIHRoaXMgY29ycmVjdGx5Lgo+ID4gCj4g
-PiBOZXcgcHJvcGVydHkgd291bGQgaGF2ZSB0byBiZSBvcHRpb25hbCwgc28gaXQncyBvbWlzc2lv
-biB3b3VsZCByZXN1bHQgaW4KPiA+IHNhbWUgY2hhbm5lbCBjb25maWd1cmF0aW9uIGFzIGl0IGlz
-IGFscmVhZHkgcHJlc2VudCwgdG8gcHJlc2VydmUKPiA+IGNvbXBhdGliaWxpdHkgd2l0aCBvbGQg
-ZGV2aWNlIHRyZWVzLiBBbmQgdGhpcyBtb2RlIGlzIGFscmVhZHkgc3VmZmljaWVudAo+ID4gZm9y
-IHN0ZXJlbyBIRE1JIGF1ZGlvIHN1cHBvcnQuCj4gCj4gWWVhaCwgaXQgbG9va3MgbGlrZSBhIGdv
-b2QgcGxhbi4KPiAKPiA+IFNpZGUgbm90ZTogSERNSSBhdWRpbyB3aXRoIGN1cnJlbnQgc3VuNGkt
-aTJzIGRyaXZlciBoYXMgYSBkZWxheSAoYWJvdXQgYQo+ID4gc2Vjb25kKSwgc3VwcG9zZWRseSBi
-ZWNhdXNlIERXIEhETUkgY29udHJvbGxlciBhdXRvbWF0aWNhbGx5IGdlbmVyYXRlcyBDVFMKPiA+
-IHZhbHVlIGJhc2VkIG9uIEkyUyBjbG9jayAoYXV0byBDVFMgdmFsdWUgZ2VuZXJhdGlvbiBpcyBl
-bmFibGVkIHBlcgo+ID4gRGVzaWduV2FyZSByZWNvbWVuZGF0aW9uIGZvciBEVyBIRE1JIEkyUyBp
-bnRlcmZhY2UpLgo+IAo+IElzIHRoYXQgYSBjb25zdGFudCBkZWxheSBkdXJpbmcgdGhlIGF1ZGlv
-IHBsYXliYWNrLCBvciBvbmx5IGF0IHN0YXJ0dXA/CgpJIHRoaW5rIGl0J3MganVzdCBhdCBzdGFy
-dHVwLCBlLmcuIGlmIHlvdSdyZSB3YXRjaGluZyBtb3ZpZSwgYXVkaW8gaXMgaW4gc3luYywgCml0
-J3MganVzdCB0aGF0IGZpcnN0IHNlY29uZCBvciBzbyBpcyBzaWxlbnQuCgo+IAo+ID4gSTJTIGRy
-aXZlciBmcm9tIEJTUCBMaW51eCBzb2x2ZXMgdGhhdCBieSBoYXZpbmcgSTJTIGNsb2NrIG91dHB1
-dAo+ID4gZW5hYmxlZCBhbGwgdGhlIHRpbWUuIFNob3VsZCB0aGlzIGJlIGZsYWdnZWQgd2l0aCBz
-b21lIGFkZGl0aW9uYWwKPiA+IHByb3BlcnR5IGluIERUPwo+IAo+IEknZCBzYXkgdGhhdCBpZiB0
-aGUgY29kZWMgaGFzIHRoYXQgcmVxdWlyZW1lbnQsIHRoZW4gaXQgc2hvdWxkIGJlCj4gYmV0d2Vl
-biB0aGUgY29kZWMgYW5kIHRoZSBEQUksIHRoZSBEVCBkb2Vzbid0IHJlYWxseSBoYXZlIGFueXRo
-aW5nIHRvCj4gZG8gd2l0aCB0aGlzLgoKT2ssIGJ1dCBob3cgdG8gY29tbXVuaWNhdGUgdGhhdCBm
-YWN0IHRvIEkyUyBkcml2ZXIgdGhlbj8gQlNQIGRyaXZlciBzb2x2ZXMgCnRoYXQgYnkgdXNpbmcg
-ZGlmZmVyZW50IGNvbXBhdGlibGUsIGJ1dCBhcyBJIHNhaWQgYmVmb3JlLCBJMlMgY29yZXMgYXJl
-IG5vdCAKcmVhbGx5IGRpZmZlcmVudCwgc28gdGhpcyBzZWVtcyB3cm9uZy4KCkJlc3QgcmVnYXJk
-cywKSmVybmVqCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4LWFybS1rZXJuZWxAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LWFybS1rZXJuZWwK
+From: Mac Chiang <mac.chiang@intel.com>
+
+enable Cometlake support with:
+SSP0 for DA7219 headphone codec
+SSP1 for MAX98357a speaker amp codec
+
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+---
+ sound/soc/intel/boards/Kconfig                    | 31 +++++++------
+ sound/soc/intel/boards/kbl_da7219_max98357a.c     | 55 ++++++++++++++++++++---
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c | 12 +++++
+ 3 files changed, 80 insertions(+), 18 deletions(-)
+
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 50bf149..545aef8 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -322,19 +322,6 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+           Say Y or m if you have such a device. This is a recommended option.
+           If unsure select "N".
+ 
+-config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+-	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
+-	depends on I2C && ACPI
+-	depends on MFD_INTEL_LPSS || COMPILE_TEST
+-	select SND_SOC_DA7219
+-	select SND_SOC_MAX98357A
+-	select SND_SOC_DMIC
+-	select SND_SOC_HDAC_HDMI
+-	help
+-	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+-	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec.
+-	  Say Y if you have such a device.
+-
+ config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
+ 	tristate "KBL with DA7219 and MAX98927 in I2S Mode"
+ 	depends on I2C && ACPI
+@@ -363,6 +350,24 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
+ 
+ endif ## SND_SOC_INTEL_KBL
+ 
++if SND_SOC_INTEL_KBL || SND_SOC_SOF_COMETLAKE_LP
++
++config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
++	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
++	select SND_SOC_DA7219
++	select SND_SOC_MAX98357A
++	select SND_SOC_DMIC
++	select SND_SOC_HDAC_HDMI
++	help
++	  This adds support for ASoC Onboard Codec I2S machine driver. This will
++	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec for
++	  Kabylake/Cometlake platforms.
++	  Say Y if you have such a device.
++
++endif ## SND_SOC_INTEL_KBL || SND_SOC_SOF_COMETLAKE_LP
++
+ if SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
+ 
+ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index 537a889..fe3ac70 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -9,6 +9,7 @@
+  *   RT5663 codecs
+  */
+ 
++#include <asm/cpu_device_id.h>
+ #include <linux/input.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -17,6 +18,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include "../../codecs/da7219.h"
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../../codecs/da7219-aad.h"
+@@ -210,7 +212,11 @@ static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
+ 	if (!pcm)
+ 		return -ENOMEM;
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
++	pcm->device = dai->id;
++#else
+ 	pcm->device = device;
++#endif
+ 	pcm->codec_dai = dai;
+ 
+ 	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
+@@ -587,9 +593,17 @@ static struct snd_soc_card kabylake_audio_card_da7219_m98357a = {
+ 	.late_probe = kabylake_card_late_probe,
+ };
+ 
++static const struct x86_cpu_id cml_ids[] = {
++	{ X86_VENDOR_INTEL, 6, 0x8E }, /* Cometlake CPU_ID */
++	{}
++};
++
+ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_codec_private *ctx;
++	struct snd_soc_acpi_mach *mach;
++	const char *platform_name;
++	int ret;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+@@ -600,17 +614,46 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 	kabylake_audio_card =
+ 		(struct snd_soc_card *)pdev->id_entry->driver_data;
+ 
++	kabylake_audio_card = &kabylake_audio_card_da7219_m98357a;
++
+ 	kabylake_audio_card->dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
++
++	if (x86_match_cpu(cml_ids)) {
++		unsigned int i;
++
++		kabylake_audio_card->name = "cmlda7219max";
++
++		for (i = 0; i < ARRAY_SIZE(kabylake_dais); i++) {
++			/* MAXIM_CODEC is connected to SSP1. */
++			if (!strcmp(kabylake_dais[i].cpus->dai_name,
++					KBL_MAXIM_CODEC_DAI)) {
++				kabylake_dais[i].name = "SSP1-Codec";
++				kabylake_dais[i].cpus->dai_name = "SSP1 Pin";
++			}
++			/* DIALOG_CODEC is connected to SSP0 */
++			else if (!strcmp(kabylake_dais[i].cpus->dai_name,
++					KBL_DIALOG_CODEC_DAI)) {
++				kabylake_dais[i].name = "SSP0-Codec";
++				kabylake_dais[i].cpus->dai_name = "SSP0 Pin";
++			}
++		}
++	}
++
++	mach = (&pdev->dev)->platform_data;
++	platform_name = mach->mach_params.platform;
++
++	ret = snd_soc_fixup_dai_links_platform_name(kabylake_audio_card,
++							platform_name);
++	if (ret)
++		return ret;
++
+ 	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
+ }
+ 
+ static const struct platform_device_id kbl_board_ids[] = {
+-	{
+-		.name = "kbl_da7219_max98357a",
+-		.driver_data =
+-			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
+-	},
++	{.name = "kbl_da7219_max98357a",},
++	{.name = "cml_da7219_max98357a",},
+ 	{ }
+ };
+ 
+@@ -628,5 +671,7 @@ module_platform_driver(kabylake_audio)
+ /* Module information */
+ MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
+ MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
++MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:kbl_da7219_max98357a");
++MODULE_ALIAS("platform:cml_da7219_max98357a");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+index c36c0aa..4ea32b2 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs cml_codecs = {
+ 	.codecs = {"10EC5682"}
+ };
+ 
++static struct snd_soc_acpi_codecs cml_spk_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+ 	{
+ 		.id = "INT34C2",
+@@ -29,6 +34,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+ 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
+ 	},
+ 	{
++		.id = "DLGS7219",
++		.drv_name = "cml_da7219_max98357a",
++		.quirk_data = &cml_spk_codecs,
++		.sof_fw_filename = "sof-cnl.ri",
++		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
++	},
++	{
+ 		.id = "MX98357A",
+ 		.drv_name = "sof_rt5682",
+ 		.quirk_data = &cml_codecs,
+-- 
+2.7.4
