@@ -1,90 +1,188 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on
- diagnostic routine
-Date: Fri, 2 Aug 2019 18:27:56 +0100
-Message-ID: <20190802172756.GC5387@sirena.org.uk>
-References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-4-thomas.preston@codethink.co.uk>
- <20190730141935.GF4264@sirena.org.uk>
- <45156592-a90f-b4f8-4d30-9631c03f1280@codethink.co.uk>
- <20190730155027.GJ4264@sirena.org.uk>
- <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
- <20190801234241.GG5488@sirena.org.uk>
- <472cc4ee-2e80-8b08-d842-79c65df572f3@codethink.co.uk>
- <20190802111036.GB5387@sirena.org.uk>
- <ab0a2d14-90c0-6c28-2c80-351fccd85e68@codethink.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 25/40] soundwire: intel: use BIOS information to set
+ clock dividers
+Date: Fri, 2 Aug 2019 12:29:41 -0500
+Message-ID: <9b7fcffd-7f61-79c2-3130-71bc58be408e@linux.intel.com>
+References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-26-pierre-louis.bossart@linux.intel.com>
+ <20190802171711.GA12733@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ab0a2d14-90c0-6c28-2c80-351fccd85e68@codethink.co.uk>
+In-Reply-To: <20190802171711.GA12733@vkoul-mobl.Dlink>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thomas Preston <thomas.preston@codethink.co.uk>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>, Annaliese McDermond <nh6z@nh6z.net>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 8/2/19 12:17 PM, Vinod Koul wrote:
+> On 25-07-19, 18:40, Pierre-Louis Bossart wrote:
+>> The BIOS provides an Intel-specific property, let's use it to avoid
+>> hard-coded clock dividers.
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   drivers/soundwire/cadence_master.c | 26 ++++++++++++++++++++++----
+>>   drivers/soundwire/intel.c          | 26 ++++++++++++++++++++++++++
+>>   include/linux/soundwire/sdw.h      |  2 ++
+> 
+> ah, intel patch touching bunch of things!
 
---2JFBq9zoW8cOFH7v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+not really, it's more removing Intel-specific configs in the Cadence parts.
 
-On Fri, Aug 02, 2019 at 03:51:09PM +0100, Thomas Preston wrote:
-> On 02/08/2019 12:10, Mark Brown wrote:
+> 
+>>   3 files changed, 50 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+>> index d84344e29f71..10ebcef2e84e 100644
+>> --- a/drivers/soundwire/cadence_master.c
+>> +++ b/drivers/soundwire/cadence_master.c
+>> @@ -173,8 +173,6 @@
+>>   #define CDNS_PDI_CONFIG_PORT			GENMASK(4, 0)
+>>   
+>>   /* Driver defaults */
+>> -
+>> -#define CDNS_DEFAULT_CLK_DIVIDER		0
+>>   #define CDNS_DEFAULT_SSP_INTERVAL		0x18
+>>   #define CDNS_TX_TIMEOUT				2000
+>>   
+>> @@ -973,7 +971,10 @@ static u32 cdns_set_default_frame_shape(int n_rows, int n_cols)
+>>    */
+>>   int sdw_cdns_init(struct sdw_cdns *cdns)
+>>   {
+>> +	struct sdw_bus *bus = &cdns->bus;
+>> +	struct sdw_master_prop *prop = &bus->prop;
+>>   	u32 val;
+>> +	int divider;
+>>   	int ret;
+>>   
+>>   	/* Exit clock stop */
+>> @@ -985,9 +986,17 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+>>   	}
+>>   
+>>   	/* Set clock divider */
+>> +	divider	= (prop->mclk_freq / prop->max_clk_freq) - 1;
+>>   	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
+>> -	val |= CDNS_DEFAULT_CLK_DIVIDER;
+>> +	val |= divider;
+>>   	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
+>> +	cdns_writel(cdns, CDNS_MCP_CLK_CTRL1, val);
+>> +
+>> +	pr_err("plb: mclk %d max_freq %d divider %d register %x\n",
+>> +	       prop->mclk_freq,
+>> +	       prop->max_clk_freq,
+>> +	       divider,
+>> +	       val);
+> 
+> I guess you forgot to remove this!
 
-> > You can use a read only control for the readback, or just have it be
-> > triggered by overwriting the readback value.  You can cache the result.
+yes, fixed already
 
-> Keeping the trigger and result together like that would be better I think,
-> although the routine isn't supposed to run mid way through playback. If
-> we're mid playback the debugfs routine has to turn off AMP_ON, take the
-> device back to a known state, run diagnostics, then restore. Which causes
-> a gap in the audible sound.
+> 
+>>   
+>>   	/* Set the default frame shape */
+>>   	val = cdns_set_default_frame_shape(prop->default_row,
+>> @@ -1035,6 +1044,7 @@ EXPORT_SYMBOL(sdw_cdns_init);
+>>   
+>>   int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+>>   {
+>> +	struct sdw_master_prop *prop = &bus->prop;
+>>   	struct sdw_cdns *cdns = bus_to_cdns(bus);
+>>   	int mcp_clkctrl_off, mcp_clkctrl;
+>>   	int divider;
+>> @@ -1044,7 +1054,9 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	divider	= (params->max_dr_freq / params->curr_dr_freq) - 1;
+>> +	divider	= prop->mclk_freq * SDW_DOUBLE_RATE_FACTOR /
+>> +		params->curr_dr_freq;
+>> +	divider--; /* divider is 1/(N+1) */
+>>   
+>>   	if (params->next_bank)
+>>   		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL1;
+>> @@ -1055,6 +1067,12 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+>>   	mcp_clkctrl |= divider;
+>>   	cdns_writel(cdns, mcp_clkctrl_off, mcp_clkctrl);
+>>   
+>> +	pr_err("plb: mclk * 2 %d curr_dr_freq %d divider %d register %x\n",
+>> +	       prop->mclk_freq * SDW_DOUBLE_RATE_FACTOR,
+>> +	       params->curr_dr_freq,
+>> +	       divider,
+>> +	       mcp_clkctrl);
+> 
+> here too!
 
-Whatever method is used to do the triggering can always return -EBUSY
-when you someone tries to do so during playback.
+yep
 
-> >> Kirill Marinushkin mentioned this in the first review [0], it just did=
-n't
-> >> really sink in until now!
+> 
+>> +
+>>   	return 0;
+>>   }
+>>   EXPORT_SYMBOL(cdns_bus_conf);
+>> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+>> index c718c9c67a37..796ac2bc8cea 100644
+>> --- a/drivers/soundwire/intel.c
+>> +++ b/drivers/soundwire/intel.c
+>> @@ -917,11 +917,37 @@ static int intel_register_dai(struct sdw_intel *sdw)
+>>   					  dais, num_dai);
+>>   }
+>>   
+>> +static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+>> +{
+>> +	struct sdw_master_prop *prop = &bus->prop;
+>> +	struct fwnode_handle *link;
+>> +	char name[32];
+>> +	int nval, i;
+>> +
+>> +	/* Find master handle */
+>> +	snprintf(name, sizeof(name),
+>> +		 "mipi-sdw-link-%d-subproperties", bus->link_id);
+>> +
+>> +	link = device_get_named_child_node(bus->dev, name);
+>> +	if (!link) {
+>> +		dev_err(bus->dev, "Master node %s not found\n", name);
+>> +		return -EIO;
+>> +	}
+>> +
+>> +	fwnode_property_read_u32(link,
+>> +				 "intel-sdw-ip-clock",
+>> +				 &prop->mclk_freq);
+>> +	return 0;
+>> +}
+>> +
+>>   static int intel_prop_read(struct sdw_bus *bus)
+>>   {
+>>   	/* Initialize with default handler to read all DisCo properties */
+>>   	sdw_master_read_prop(bus);
+>>   
+>> +	/* read Intel-specific properties */
+>> +	sdw_master_read_intel_prop(bus);
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+>> index 31d1e8acf25b..b6acc436ac80 100644
+>> --- a/include/linux/soundwire/sdw.h
+>> +++ b/include/linux/soundwire/sdw.h
+>> @@ -379,6 +379,7 @@ struct sdw_slave_prop {
+>>    * @dynamic_frame: Dynamic frame shape supported
+>>    * @err_threshold: Number of times that software may retry sending a single
+>>    * command
+>> + * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
+>>    */
+>>   struct sdw_master_prop {
+>>   	u32 revision;
+>> @@ -393,6 +394,7 @@ struct sdw_master_prop {
+>>   	u32 default_col;
+>>   	bool dynamic_frame;
+>>   	u32 err_threshold;
+>> +	u32 mclk_freq;
+> 
+> Other than debug artifacts this looks sane, but can you split up the
+> cadence and intel parts into different patches please
 
-> > You could do that too, yeah.  Depends on what this is diagnosing and if
-> > that'd be useful.
-
-> The diagnostic status bits describe situations such as:
-> - open load (no speaker connected)
-> - short to GND
-> - short to VCC
-> - etc
-
-> The intention is to test if all the speakers are connected. So, one might=
-=20
-> have a self test which runs the diagnostic and verifies it outputs:
-
-=2E..
-
-> I think the module parameter method is more appropriate for a
-> "Turn-on diagnostic", even though I don't really like grepping dmesg
-> for the result. I'll go ahead and implement that unless anyone has a
-> particular preference for the kcontrol-trigger.
-
-Right.  It's not ideal for use in production systems for example but
-perhaps fine for support techs or whoever.  Up to you anyway.
-
---2JFBq9zoW8cOFH7v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1EcpsACgkQJNaLcl1U
-h9APwgf/Q4KWsYkJw+Dyy8wm8pDjOkyVsUY1B9NZLLVp7mVndWT2ywIcipH0hV+Q
-DeDX02ZUjkRup/AwNN/Ptwcy4GHnREbe7g6sJPgAtPFtXcuzUCJdUJsLDt4oXl5f
-Nk2TjjELzuKqFz1E1zkIl8h1CowLDljJRTgCOp7mOhmT+x6kCjvURDzhkcXYPiib
-wj2Rcu4thxX+oVvl7YkOpd0Wv+ZNGyM+8gEpjI22sy2MVjpMLT9SmzMp4OdfgT0h
-dRVXoXKFIDT5zDpQEteTsuJdIS+NlBGM6yfKQ1fRu/+2gSh78+c/4dfT79d/h2ui
-1ZJ5R45/kE4lb4xqQ2+hfM6IeKQQZQ==
-=kN6B
------END PGP SIGNATURE-----
-
---2JFBq9zoW8cOFH7v--
+ok, i'll split in 3. prototype, intel, cadence.
