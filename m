@@ -1,78 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on
- diagnostic routine
-Date: Fri, 2 Aug 2019 00:42:41 +0100
-Message-ID: <20190801234241.GG5488@sirena.org.uk>
-References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-4-thomas.preston@codethink.co.uk>
- <20190730141935.GF4264@sirena.org.uk>
- <45156592-a90f-b4f8-4d30-9631c03f1280@codethink.co.uk>
- <20190730155027.GJ4264@sirena.org.uk>
- <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
+From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Subject: [PATCH] ALSA: hda: Add support of Zhaoxin controller
+Date: Fri, 2 Aug 2019 03:04:08 +0000
+Message-ID: <6a423679a72a4acb88233559fae0507b@zhaoxin.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kjpMrWxdCilgNbo1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
+Content-Language: zh-CN
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thomas Preston <thomas.preston@codethink.co.uk>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>, Annaliese McDermond <nh6z@nh6z.net>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
+To: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "hui.wang@canonical.com" <hui.wang@canonical.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: David Wang <DavidWang@zhaoxin.com>, "Cooper Yan(BJ-RD)" <CooperYan@zhaoxin.com>, "Qiyuan Wang(BJ-RD)" <QiyuanWang@zhaoxin.com>, "Herry Yang(BJ-RD)" <HerryYang@zhaoxin.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add the new PCI ID 0x1d17 0x3288 Zhaoxin controller support
 
---kjpMrWxdCilgNbo1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+---
+ sound/pci/hda/hda_intel.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Tue, Jul 30, 2019 at 05:28:11PM +0100, Thomas Preston wrote:
-> On 30/07/2019 16:50, Mark Brown wrote:
-
-> > Like I say it's not just debugfs though, there's the standard driver
-> > interface too.
-
-> Ah right, I understand. So if we run the turn-on diagnostics routine, the=
-re's
-> nothing stopping anyone from interacting with the device in other ways.
-
-> I guess there's no way to share that mutex with ALSA? In that case, it do=
-esn't
-> matter if this mutex is there or not - this feature is incompatible. How
-> compatible do debugfs interfaces have to be? I was under the impression a=
-nything
-> goes. I would argue that the debugfs is better off for having the mutex so
-> that no one re-reads "diagnostic" within the 5s poll timeout.
-
-It's not really something that's supported; like Charles says the DAPM
-mutex is exposed but if the regular controls would still be able to do
-stuff.  It is kind of a "you broke it, you fix it" thing but on the
-other hand it's better to make things safer if we can since it might not
-be obvious later on why things are broken.
-
-> Alternatively, this diagnostic feature could be handled with an external-=
-handler
-> kcontrol SOC_SINGLE_EXT? I'm not sure if this is an atomic interface eith=
-er.
->=20
-> What would be acceptable?
-
-Yes, that's definitely doable - we've got some other drivers with
-similar things like calibration triggers exposed that way.
-
---kjpMrWxdCilgNbo1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1DePAACgkQJNaLcl1U
-h9BbgAf9HMcTl/Pb+iJa1dDcV8qVUzhtY4Qcn3rqBYU+aGzm0J4NOtjtrA70Hdna
-sTNCLx5kaaX9kA5IKWbzwBC1qcf0S8io9cJUgJOYGHitLHliifYiZLX2KpJp/JFf
-GlSodNZf43W45fkhOO5+1xyiI5/KcDbu3U5IBYXVSmCSQsSeZWcydts0VhFTdXGC
-epXFQGet/BGcQ2yfZTuykkV+YepjF07Tk7KOm/4Gdbv7peiwv+dvI2Lef/x8d61y
-cUBhDvFOTToajfBJfwBhZ7dx7OgqLs2/DJdgvRZnE/q1VCq/1YyDl9uUXqvnAgCs
-2XlNTqpd0yH1IjQwz+/8lsGUht5MXA==
-=1ie6
------END PGP SIGNATURE-----
-
---kjpMrWxdCilgNbo1--
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 324a4b2..d08da0e 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -266,6 +266,7 @@ enum {
+ 	AZX_DRIVER_CTX,
+ 	AZX_DRIVER_CTHDA,
+ 	AZX_DRIVER_CMEDIA,
++	AZX_DRIVER_ZHAOXIN,
+ 	AZX_DRIVER_GENERIC,
+ 	AZX_NUM_DRIVERS, /* keep this as last entry */
+ };
+@@ -379,6 +380,7 @@ static char *driver_short_names[] = {
+ 	[AZX_DRIVER_CTX] = "HDA Creative", 
+ 	[AZX_DRIVER_CTHDA] = "HDA Creative",
+ 	[AZX_DRIVER_CMEDIA] = "HDA C-Media",
++	[AZX_DRIVER_ZHAOXIN] = "HDA Zhaoxin",
+ 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
+ };
+ 
+@@ -2589,6 +2591,8 @@ static const struct pci_device_id azx_ids[] = {
+ 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
+ 	  .class_mask = 0xffffff,
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
++	/* Zhaoxin */
++	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
+-- 
+2.7.4
