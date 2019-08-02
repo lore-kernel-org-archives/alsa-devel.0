@@ -1,8 +1,8 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [Sound-open-firmware] Signed firmware availability
  for kbl/cnl
-Date: Fri, 2 Aug 2019 21:01:29 +0200
-Message-ID: <3834d741-906e-1a6b-d6cb-cccb29f98fb4@perex.cz>
+Date: Fri, 2 Aug 2019 14:24:00 -0500
+Message-ID: <52e5c627-44c0-146b-2652-0e2790bac74b@linux.intel.com>
 References: <CAD8Lp45Bp1xVC7NjuNaANA7kAEN2Edshw+cViaTF3tRZEumgZA@mail.gmail.com>
  <cc9fa5b52138daffb09dc5b66ea9248379c9f60e.camel@linux.intel.com>
  <CAD8Lp46GW8n8K7ttOeSje_au06BsyvCp4seVwj2wNbipei5ssA@mail.gmail.com>
@@ -19,11 +19,12 @@ References: <CAD8Lp45Bp1xVC7NjuNaANA7kAEN2Edshw+cViaTF3tRZEumgZA@mail.gmail.com>
  <1e7adedf-e12a-d409-12cf-9087cf6dbf30@linux.intel.com>
  <b7fae370-de17-f73c-c2a4-852acf6b31bc@perex.cz>
  <e59de17f39d65f0cef1249517ef1fdd374f399dd.camel@linux.intel.com>
+ <3834d741-906e-1a6b-d6cb-cccb29f98fb4@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <e59de17f39d65f0cef1249517ef1fdd374f399dd.camel@linux.intel.com>
+In-Reply-To: <3834d741-906e-1a6b-d6cb-cccb29f98fb4@perex.cz>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,207 +35,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: Jian-Hong Pan <jian-hong@endlessm.com>, ALSA development <alsa-devel@alsa-project.org>, sound-open-firmware@alsa-project.org, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 02. 08. 19 v 16:40 Liam Girdwood napsal(a):
-> On Fri, 2019-08-02 at 10:21 +0200, Jaroslav Kysela wrote:
->> Dne 31. 07. 19 v 20:14 Pierre-Louis Bossart napsal(a):
->>> On 7/31/19 12:29 PM, Jaroslav Kysela wrote:
->>>> Dne 31. 07. 19 v 15:23 Liam Girdwood napsal(a):
->>>>> + Mengdong
->>>>>
->>>>> On Wed, 2019-07-24 at 18:23 +0200, Jaroslav Kysela wrote:
->>>>>>> Yeah, been thinking about this atm. It may be better to
->>>>>>> package the
->>>>>>> binaries (firmware and topologies) as part of Linux
->>>>>>> firmware repo
->>>>>>> (since the driver expects to load them all from
->>>>>>> lib/firmware) and
->>>>>>> package the sources (firmware and topology) via sof tarball
->>>>>>> ?
->>>>>>
->>>>>> It looks good in my eyes, because topology files are another
->>>>>> pieces
->>>>>> of the
->>>>>> driver from the user space perspective. The unanswered
->>>>>> question is
->>>>>> the UCM
->>>>>> configuration which is linked to the topology configuration
->>>>>> (if I
->>>>>> understand
->>>>>> this correctly). I proposed to place an unique
->>>>>> identifier/version to
->>>>>> the
->>>>>> topology file and propagate this identifier to the user
->>>>>> space, so the
->>>>>> alsa-lib
->>>>>> can pick the right UCM configuration when topology changes.
->>>>>> The
->>>>>> component
->>>>>> string (snd_component_add function / struct snd_ctl_card_info
->>>>>> ->
->>>>>> components)
->>>>>> can be used for this identification.
->>>>>
->>>>> Apologizes for the delay, Pierre and I have been discussing
->>>>> this
->>>>> internally as we have to synchronise the deployment of the
->>>>> topologies
->>>>> and UCMs alongside the FW.
->>>>
->>>> My strong point is that the driver with the different firmware
->>>> and the
->>>> topology file behaves differently from the user space
->>>> perspective. It seems
->>>> that there is no way to propagate the firmware (and topology?)
->>>> version to the
->>>> user space at the moment.
->>>
->>> The topology may not be enough, e.g. for all Baytrail devices we
->>> use the 
->>> same simple topology. To pick the right UCM file you really need
->>> the 
->>> card information which may include the DMI info or some quirks 
->>> (mono-speaker, analog mics). The topology is quite static and
->>> doesn't 
->>> expose anything that is board-specific or may vary between skews.
->>
->> Yes, thus we need to use another UCM file (or make some parts
->> conditional in
->> the UCM config) depending on this and I would like to pass the exact
->> hardware/firmware/topology identification which may affect the UCM,
->> through
->> the ALSA API to the user space level (UCM parser). Think from the
->> packaging
->> (Linux distributions) perspective. We have to handle all those
->> situations, so
->> all the configs, pieces to support all hardware variations must be
->> prepared in
->> the packages.
+
+>> Would we also use semantic versioning to align the UCM with the
+>> topology and FW ? Currently we use semantic versioning for topology and
+>> FW.
 > 
-> I think the UCM parser will currently only bail on cdev naming
-> differences, so I agree maybe something at the top level UCM "machine
-> global" level that can be used to check FW, topology (+anything else)
-> so we could bail earlier or warn and attempt to continue.
-> 
->>
->> Also, the blind fw / topology / UCM relationship without any
->> compatibility
->> checks might cause issues when the user upgrades only some parts. The
->> binary
->> topology files might be packaged with the UCM files as proposed, but
->> if an
->> incompatible DSP firmware will be loaded (it's placed in the another
->> package -
->> linux-firmware), it should be reported to the user, too.
->>
->>>>> Current thinking has changed from shipping FW + tplg via linux-
->>>>> firmware
->>>>> repo to only shipping FW binaries in the FW repo and using
->>>>> alsa-ucm-
->>>>> conf.git for UCMs + topologies (since the coupling between UCM
->>>>> and
->>>>> topology is tighter than the FW coupling).
->>>>
->>>> This is fine, but I think that we should have a check
->>>> (compatibility
->>>> verification) in the user space level, too. More precisely, each
->>>> level should
->>>> do a verification if it's compatible with the tied level (driver
->>>> -> firmware
->>>> -> topology -> ucm).
->>>
->>> The SOF driver checks if its supported ABI level is compatible
->>> with 
->>> firmware and topology levels (both files embed the information,
->>> which 
->>> doesn't have to be identical).
->>
->> Ok, but if you add another functionality to the firmware or remove
->> some, it
->> might break the compatibility with the topology (different ALSA
->> controls for
->> example), right? I'm not sure if ABI checks are sufficient. It's more
->> about
->> the overall sound hardware abstraction for the user space (managed
->> ALSA controls).
->>
->>> I don't see how UCM would be checked since there's no direct
->>> interaction 
->>> with the driver, e.g. it's used by PulseAudio or CRAS and the only 
->>> interaction is through the control and PCM APIs. Likewise UCM has
->>> no> knowledge about topology or firmware.
->>
->> The UCM parser code in alsa-lib (not applications) can do the check /
->> configuration selection. This is exactly what I am proposing to do.
->> Actually,
->> for example, the UCM parser looks for sof-skl_hda_card.conf file
->> without any
->> other checks or conditions. You will agree that we cannot support all
->> hardware
->> variants with this, because some vendors might use other GPIOs etc..
->>
->> So my proposal is to pass all necessary information throught the ALSA
->> control
->> API (struct snd_ctl_card_info -> components) so the UCM parser can
->> pick the
->> right config file based on the complete identification. It might
->> fallback to
->> sof-skl_hda_card.conf, but if new hardware variant exist, the file
->> name might
->> look like 'sof-skl_hda_card-TOPOLOGYID-VENDORID-PRODUCTID.conf' etc,
->> etc....
->>
-> 
-> How would we get topology or FW version from the above identification ?
+> If we have the versions exported to ther user space, the UCM configuration
+> loader / parser can use this information to select or verify the right UCM
+> configuration. The semantic versioning in UCM files sounds good to me, too.
 
-It was just an example. We can compose the UCM filename from any other
-additional information passed from the kernel. Example component strings for
-USB and legacy HDA:
+My understanding semantic versioning is that it provides means to handle 
+minor differences where a new capability is ignored in backwards 
+compatible ways. This is what we use for SOF structures between driver 
+and firmware, new fields might be added but used or not depending on 
+versions.
 
-
-  Mixer name	: 'USB Mixer'
-  Components	: 'USB0bda:58fe'
-
-  Mixer name	: 'Realtek ALC298'
-  Components	: 'HDA:10ec0298,17aa222e,00100103'
-
-So we should consider what to export for SOF. Perhaps string like:
-
-  'SOFP01234567:45670123,1:1:0-6cc8d,???TPLGVER???,3:7:0'
-  'SOFP{PCIID}:{PCISUBSYS},FW-VER,TPLG-VER,TPLG-ABI-VER'
-
-It's just a proposal for the discussion.
-
-By the way:
-
-  https://mailman.alsa-project.org/pipermail/alsa-devel/2019-May/149409.html
-
-The component string extensions should be also considered for other Intel SOC
-drivers. It seems that the long_name is misused as the UCM configuration
-selector for other drivers like bytcr_rt5651.c etc. The long_name for the
-soundcard like 'bytcht-es8316-mono-spk-in2-mic' is not really fancy. This
-string is used in GUI.
-
-> Would we also use semantic versioning to align the UCM with the
-> topology and FW ? Currently we use semantic versioning for topology and
-> FW.
-
-If we have the versions exported to ther user space, the UCM configuration
-loader / parser can use this information to select or verify the right UCM
-configuration. The semantic versioning in UCM files sounds good to me, too.
-
-						Jaroslav
-
-> 
-> Thanks
-> 
-> Liam
-> 
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+For UCM, the interaction with other layers is limited to stream numbers 
+and control names, so I am not sure what semantic versioning and 
+backwards compatibility would mean here? I am all for it, but I don't 
+get how it would work.
