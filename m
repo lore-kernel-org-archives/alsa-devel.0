@@ -1,104 +1,79 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 35/40] soundwire: intel: export helper to exit reset
-Date: Fri, 2 Aug 2019 12:44:51 -0500
-Message-ID: <0d76e6ed-1ab3-6a9d-b33c-deb248d5cb9d@linux.intel.com>
-References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-36-pierre-louis.bossart@linux.intel.com>
- <20190802173115.GE12733@vkoul-mobl.Dlink>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: amd: acp3x: use dma_ops of parent device for acp3x dma driver" to the asoc tree
+Date: Fri,  2 Aug 2019 20:00:19 +0100 (BST)
+Message-ID: <20190802190019.6070B2742E86@ypsilon.sirena.org.uk>
+References: <1564753899-17124-1-git-send-email-Vijendar.Mukunda@amd.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190802173115.GE12733@vkoul-mobl.Dlink>
-Content-Language: en-US
+In-Reply-To: <1564753899-17124-1-git-send-email-Vijendar.Mukunda@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Alexander.Deucher@amd.com, alsa-devel@alsa-project.org, "Cc:"@sirena.org.uk"Cc:"@sirena.org.uk, Colin Ian King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, moderated@sirena.org.uk, "list:SOUND"@sirena.org.uk, -@sirena.org.uk, SOC@sirena.org.uk, LAYER@sirena.org.uk, /@sirena.org.uk, DYNAMIC@sirena.org.uk, open list <linux-kernel@vger.kernel.org>, Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>, Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <vijendar.mukunda@amd.com>, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/2/19 12:31 PM, Vinod Koul wrote:
-> On 25-07-19, 18:40, Pierre-Louis Bossart wrote:
-> 
-> Here as well
+The patch
 
-I squashed this with earlier patches to fix the init sequence in one shot
+   ASoC: amd: acp3x: use dma_ops of parent device for acp3x dma driver
 
-> 
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/soundwire/cadence_master.c | 9 +++++++--
->>   drivers/soundwire/cadence_master.h | 1 +
->>   drivers/soundwire/intel.c          | 4 ++++
->>   3 files changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
->> index 4a189e487830..f486fe15fb46 100644
->> --- a/drivers/soundwire/cadence_master.c
->> +++ b/drivers/soundwire/cadence_master.c
->> @@ -780,7 +780,11 @@ EXPORT_SYMBOL(sdw_cdns_thread);
->>    * init routines
->>    */
->>   
->> -static int do_reset(struct sdw_cdns *cdns)
->> +/**
->> + * sdw_cdns_exit_reset() - Program reset parameters and start bus operations
->> + * @cdns: Cadence instance
->> + */
->> +int sdw_cdns_exit_reset(struct sdw_cdns *cdns)
->>   {
->>   	int ret;
->>   
->> @@ -804,6 +808,7 @@ static int do_reset(struct sdw_cdns *cdns)
->>   
->>   	return ret;
->>   }
->> +EXPORT_SYMBOL(sdw_cdns_exit_reset);
->>   
->>   /**
->>    * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
->> @@ -839,7 +844,7 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
->>   
->>   	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
->>   
->> -	return do_reset(cdns);
->> +	return 0;
->>   }
->>   EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
->>   
->> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
->> index de97bc22acb7..2b551f9226f3 100644
->> --- a/drivers/soundwire/cadence_master.h
->> +++ b/drivers/soundwire/cadence_master.h
->> @@ -161,6 +161,7 @@ irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
->>   int sdw_cdns_init(struct sdw_cdns *cdns);
->>   int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
->>   		      struct sdw_cdns_stream_config config);
->> +int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
->>   int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
->>   
->>   void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
->> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
->> index a976480d6f36..9ebe38e4d979 100644
->> --- a/drivers/soundwire/intel.c
->> +++ b/drivers/soundwire/intel.c
->> @@ -1112,6 +1112,8 @@ static int intel_probe(struct platform_device *pdev)
->>   
->>   	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
->>   
->> +	ret = sdw_cdns_exit_reset(&sdw->cdns);
->> +
->>   	/* Register DAIs */
->>   	ret = intel_register_dai(sdw);
->>   	if (ret) {
->> @@ -1199,6 +1201,8 @@ static int intel_resume(struct device *dev)
->>   
->>   	sdw_cdns_enable_interrupt(&sdw->cdns);
->>   
->> +	ret = sdw_cdns_exit_reset(&sdw->cdns);
->> +
->>   	return ret;
->>   }
->>   
->> -- 
->> 2.20.1
-> 
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 88639051017fb61a414b636dd0fc490da2b62b64 Mon Sep 17 00:00:00 2001
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Date: Fri, 2 Aug 2019 19:21:23 +0530
+Subject: [PATCH] ASoC: amd: acp3x: use dma_ops of parent device for acp3x dma
+ driver
+
+AMD platform device acp3x_rv_i2s created by parent PCI device
+driver. Pass struct device of the parent to
+snd_pcm_lib_preallocate_pages() so dma_alloc_coherent() can use
+correct dma_ops. Otherwise, it will use default dma_ops which
+is nommu_dma_ops on x86_64 even when IOMMU is enabled and
+set to non passthrough mode.
+
+Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
+Link: https://lore.kernel.org/r/1564753899-17124-1-git-send-email-Vijendar.Mukunda@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index a4ade6bb5beb..905ed2f1861b 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -385,9 +385,11 @@ static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_pcm_substream *substream)
+ 
+ static int acp3x_dma_new(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
++								    DRV_NAME);
++	struct device *parent = component->dev->parent;
+ 	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
+-					      rtd->pcm->card->dev,
+-					      MIN_BUFFER, MAX_BUFFER);
++					      parent, MIN_BUFFER, MAX_BUFFER);
+ 	return 0;
+ }
+ 
+-- 
+2.20.1
