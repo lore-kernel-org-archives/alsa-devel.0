@@ -1,100 +1,64 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RFC PATCH 35/40] soundwire: intel: export helper to exit reset
-Date: Fri, 2 Aug 2019 23:01:15 +0530
-Message-ID: <20190802173115.GE12733@vkoul-mobl.Dlink>
+Subject: Re: [alsa-devel] [RFC PATCH 06/40] soundwire: intel: prevent
+ possible dereference in hw_params
+Date: Fri, 2 Aug 2019 23:07:32 +0530
+Message-ID: <20190802173732.GF12733@vkoul-mobl.Dlink>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-36-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-7-pierre-louis.bossart@linux.intel.com>
+ <20190802115537.GI12733@vkoul-mobl.Dlink>
+ <6da5aeef-40bf-c9bb-fc18-4ac0b3961857@linux.intel.com>
+ <20190802155738.GR12733@vkoul-mobl.Dlink>
+ <884a13fc-08eb-10c9-de9c-50cf38ff533d@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190725234032.21152-36-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <884a13fc-08eb-10c9-de9c-50cf38ff533d@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 25-07-19, 18:40, Pierre-Louis Bossart wrote:
-
-Here as well
-
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/cadence_master.c | 9 +++++++--
->  drivers/soundwire/cadence_master.h | 1 +
->  drivers/soundwire/intel.c          | 4 ++++
->  3 files changed, 12 insertions(+), 2 deletions(-)
+On 02-08-19, 11:52, Pierre-Louis Bossart wrote:
 > 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 4a189e487830..f486fe15fb46 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -780,7 +780,11 @@ EXPORT_SYMBOL(sdw_cdns_thread);
->   * init routines
->   */
->  
-> -static int do_reset(struct sdw_cdns *cdns)
-> +/**
-> + * sdw_cdns_exit_reset() - Program reset parameters and start bus operations
-> + * @cdns: Cadence instance
-> + */
-> +int sdw_cdns_exit_reset(struct sdw_cdns *cdns)
->  {
->  	int ret;
->  
-> @@ -804,6 +808,7 @@ static int do_reset(struct sdw_cdns *cdns)
->  
->  	return ret;
->  }
-> +EXPORT_SYMBOL(sdw_cdns_exit_reset);
->  
->  /**
->   * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
-> @@ -839,7 +844,7 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
->  
->  	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
->  
-> -	return do_reset(cdns);
-> +	return 0;
->  }
->  EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
->  
-> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-> index de97bc22acb7..2b551f9226f3 100644
-> --- a/drivers/soundwire/cadence_master.h
-> +++ b/drivers/soundwire/cadence_master.h
-> @@ -161,6 +161,7 @@ irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
->  int sdw_cdns_init(struct sdw_cdns *cdns);
->  int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
->  		      struct sdw_cdns_stream_config config);
-> +int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
->  int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
->  
->  void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index a976480d6f36..9ebe38e4d979 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1112,6 +1112,8 @@ static int intel_probe(struct platform_device *pdev)
->  
->  	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
->  
-> +	ret = sdw_cdns_exit_reset(&sdw->cdns);
-> +
->  	/* Register DAIs */
->  	ret = intel_register_dai(sdw);
->  	if (ret) {
-> @@ -1199,6 +1201,8 @@ static int intel_resume(struct device *dev)
->  
->  	sdw_cdns_enable_interrupt(&sdw->cdns);
->  
-> +	ret = sdw_cdns_exit_reset(&sdw->cdns);
-> +
->  	return ret;
->  }
->  
-> -- 
-> 2.20.1
+> 
+> On 8/2/19 10:57 AM, Vinod Koul wrote:
+> > On 02-08-19, 10:16, Pierre-Louis Bossart wrote:
+> > > 
+> > > 
+> > > On 8/2/19 6:55 AM, Vinod Koul wrote:
+> > > > On 25-07-19, 18:39, Pierre-Louis Bossart wrote:
+> > > > > This should not happen in production systems but we should test for
+> > > > > all callback arguments before invoking the config_stream callback.
+> > > > 
+> > > > so you are saying callback arg is mandatory, if so please document that
+> > > > assumption
+> > > 
+> > > no, what this says is that if a config_stream is provided then it needs to
+> > > have a valid argument.
+> > 
+> > well typically args are not mandatory..
+> > 
+> > > I am not sure what you mean by "document that assumption", comment in the
+> > > code (where?) or SoundWire documentation?
+> > 
+> > The callback documentation which in this is in include/linux/soundwire/sdw_intel.h
+> > 
+> 
+> /**
+>  * struct sdw_intel_ops: Intel audio driver callback ops
+>  *
+>  * @config_stream: configure the stream with the hw_params
+>  */
+> struct sdw_intel_ops {
+> 	int (*config_stream)(void *arg, void *substream,
+> 			     void *dai, void *hw_params, int stream_num);
+> };
+> 
+> all parameters are mandatory really, not sure what you are trying to get at.
 
+It would be good to make a note that argument is mandatory!
+
+Thanks
 -- 
 ~Vinod
