@@ -1,83 +1,44 @@
-From: Thomas Preston <thomas.preston@codethink.co.uk>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on diagnostic
- routine
-Date: Fri, 2 Aug 2019 09:32:17 +0100
-Message-ID: <472cc4ee-2e80-8b08-d842-79c65df572f3@codethink.co.uk>
-References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
- <20190730120937.16271-4-thomas.preston@codethink.co.uk>
- <20190730141935.GF4264@sirena.org.uk>
- <45156592-a90f-b4f8-4d30-9631c03f1280@codethink.co.uk>
- <20190730155027.GJ4264@sirena.org.uk>
- <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
- <20190801234241.GG5488@sirena.org.uk>
+From: <lukasbf@tutanota.com>
+Subject: Audio issue with chtnau8824
+Date: Fri, 2 Aug 2019 12:29:52 +0200 (CEST)
+Message-ID: <LlGsDvv--3-1@tutanota.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190801234241.GG5488@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>, Annaliese McDermond <nh6z@nh6z.net>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from w1.tutanota.de (w1.tutanota.de [81.3.6.162])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97230F800F3
+ for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2019 12:29:52 +0200 (CEST)
+Received: from w2.tutanota.de (unknown [192.168.1.163])
+ by w1.tutanota.de (Postfix) with ESMTP id 77367FBF1F0
+ for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2019 10:29:52 +0000 (UTC)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/08/2019 00:42, Mark Brown wrote:
-> On Tue, Jul 30, 2019 at 05:28:11PM +0100, Thomas Preston wrote:
->> On 30/07/2019 16:50, Mark Brown wrote:
-> 
->>> Like I say it's not just debugfs though, there's the standard driver
->>> interface too.
-> 
->> Ah right, I understand. So if we run the turn-on diagnostics routine, there's
->> nothing stopping anyone from interacting with the device in other ways.
-> 
->> I guess there's no way to share that mutex with ALSA? In that case, it doesn't
->> matter if this mutex is there or not - this feature is incompatible. How
->> compatible do debugfs interfaces have to be? I was under the impression anything
->> goes. I would argue that the debugfs is better off for having the mutex so
->> that no one re-reads "diagnostic" within the 5s poll timeout.
-> 
-> It's not really something that's supported; like Charles says the DAPM
-> mutex is exposed but if the regular controls would still be able to do
-> stuff.  It is kind of a "you broke it, you fix it" thing but on the
-> other hand it's better to make things safer if we can since it might not
-> be obvious later on why things are broken.
-> 
->> Alternatively, this diagnostic feature could be handled with an external-handler
->> kcontrol SOC_SINGLE_EXT? I'm not sure if this is an atomic interface either.
->>
->> What would be acceptable?
-> 
-> Yes, that's definitely doable - we've got some other drivers with
-> similar things like calibration triggers exposed that way.
-> 
-
-One problem with using a kcontrol as a trigger for the turn-on diagnostic
-is that the diagnostic routine has a "return value".
-
-It goes like this:
-- Bring device to low-quiescent state
-- Initiate diagnostics
-- Poll for diagnostics-complete bit
-- Read the four channel status registers
-
-The final read clears the status registers, so this isn't something I
-can just do with regmap.
-
-One idea I had was to initiate the turn-on diagnostics using a kcontrol,
-whose handler saves the four channel status registers and an epoch in
-tda7802_priv. Then this can be read from debugfs. But it seems strange
-to have to turn on this control over here, then go over there and read
-this value.
-
-Hm, maybe a better idea is to have the turn on diagnostic only run on
-device probe (as its name suggests!), and print something to dmesg:
-
-	modprobe tda7802 turn_on_diagnostic=1
-
-	tda7802-codec i2c-TDA7802:00: Turn on diagnostic 04 04 04 04
-
-Kirill Marinushkin mentioned this in the first review [0], it just didn't
-really sink in until now!
-
-[0] https://lkml.org/lkml/2019/6/14/1344
+CkhlbGxvIEFMU0EgZGV2cywgCgpJIGFtIHNvcnJ5IHRvIGFubm95IGJ1dCBteSBuZXcgTGFwdG9w
+IHNlZW1zIHRvIG1ha2UgYSBzdHJhbmdlIG5vaXNlIGV2ZXJ5dGltZSBteSBzb3VuZCBzeXN0ZW0g
+dHJpZXMgdG8gZG8gc29tZXRoaW5nLgoKVGhpcyBpcyB0aGUgc291bmQsIFdhcm5pbmcsIHByb2Jh
+Ymx5IGxvdWQhCgoKaHR0cHM6Ly95b3V0dS5iZS9XNzduQm5EYjRkRSA8aHR0cHM6Ly95b3V0dS5i
+ZS9XNzduQm5EYjRkRT4KCgpodHRwczovL3lvdXR1LmJlL2xrcnoyc0RuVWNBIDxodHRwczovL3lv
+dXR1LmJlL2xrcnoyc0RuVWNBPgoKCkkgc3VzcGVjdCBpdCBoYXMgdG8gZG8gc29tZXRoaW5nIHdp
+dGggdGhlIGRyaXZlci9hbHNhLgoKCmkgaGF2ZSB0aGUgd2hvbGUgd2Vla2VuZCBmcmVlIHNvIGkg
+Y2FuIHNlbmQgZGlhZ25vc3RpY3MgbGlrZSB0aGlzLAoKCmh0dHA6Ly9hbHNhLXByb2plY3Qub3Jn
+L2RiLz9mPTRhYWRmZTkyNzVhOWRjNmU0NjY5YzhiZTQzMDFlZWMxMTA2NGI3ZjAgPGh0dHA6Ly9h
+bHNhLXByb2plY3Qub3JnL2RiLz9mPTRhYWRmZTkyNzVhOWRjNmU0NjY5YzhiZTQzMDFlZWMxMTA2
+NGI3ZjA+CgoKSXQgd291bGQgYmUgbmljZSB0byBnZXQgbXkgc291bmRjYXJkIHdvcmtpbmcsIG1h
+eWJlIGkgZm91bmQgc29tZXRoaW5nIGltcG9ydGFudC4KCgoKClRoYW5rIHlvdSBmb3IgeW91ciBX
+b3JrLAoKCkx1a2FzIEZyaWVkcmljaMKgCgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
