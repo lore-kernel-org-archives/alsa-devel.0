@@ -1,48 +1,73 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 20/40] soundwire: prototypes for suspend/resume
-Date: Fri, 2 Aug 2019 12:21:36 -0500
-Message-ID: <6b4857a3-1ea6-c2e3-a3b4-2b24ae456749@linux.intel.com>
+Subject: Re: [RFC PATCH 24/40] soundwire: cadence_master: use BIOS defaults
+ for frame shape
+Date: Fri, 2 Aug 2019 12:24:08 -0500
+Message-ID: <a7b691cc-353f-f052-b25e-edbf7fe21c4a@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-21-pierre-louis.bossart@linux.intel.com>
- <20190802170317.GX12733@vkoul-mobl.Dlink>
+ <20190725234032.21152-25-pierre-louis.bossart@linux.intel.com>
+ <20190802171014.GZ12733@vkoul-mobl.Dlink>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190802170317.GX12733@vkoul-mobl.Dlink>
+In-Reply-To: <20190802171014.GZ12733@vkoul-mobl.Dlink>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Vinod Koul <vkoul@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/2/19 12:03 PM, Vinod Koul wrote:
+On 8/2/19 12:10 PM, Vinod Koul wrote:
 > On 25-07-19, 18:40, Pierre-Louis Bossart wrote:
+>> Remove hard-coding and use BIOS values. If they are wrong use default
 > 
-> Please do provide the changelog on why this change is needed.
+> BIOS :) this is cadence, am sure this can be used outside BIOS :D
+> 
+> It would be better to say firmware (ACPI/DT)
 
-not needed for now, will remove.
+yes
 
 > 
+>> 48x2 frame shape.
+>>
 >> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 >> ---
->>   drivers/soundwire/cadence_master.h | 3 +++
->>   1 file changed, 3 insertions(+)
+>>   drivers/soundwire/cadence_master.c | 19 +++++++++++++++++--
+>>   1 file changed, 17 insertions(+), 2 deletions(-)
 >>
->> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
->> index c0bf6ff00a44..d375bbfead18 100644
->> --- a/drivers/soundwire/cadence_master.h
->> +++ b/drivers/soundwire/cadence_master.h
->> @@ -165,6 +165,9 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
+>> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+>> index 442f78c00f09..d84344e29f71 100644
+>> --- a/drivers/soundwire/cadence_master.c
+>> +++ b/drivers/soundwire/cadence_master.c
+>> @@ -175,7 +175,6 @@
+>>   /* Driver defaults */
 >>   
->>   void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
+>>   #define CDNS_DEFAULT_CLK_DIVIDER		0
+>> -#define CDNS_DEFAULT_FRAME_SHAPE		0x30
+>>   #define CDNS_DEFAULT_SSP_INTERVAL		0x18
+>>   #define CDNS_TX_TIMEOUT				2000
 >>   
->> +int sdw_cdns_suspend(struct sdw_cdns *cdns);
->> +bool sdw_cdns_check_resume_status(struct sdw_cdns *cdns);
->> +
->>   int sdw_cdns_get_stream(struct sdw_cdns *cdns,
->>   			struct sdw_cdns_streams *stream,
->>   			u32 ch, u32 dir);
->> -- 
->> 2.20.1
+>> @@ -954,6 +953,20 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+>>   }
+>>   EXPORT_SYMBOL(sdw_cdns_pdi_init);
+>>   
+>> +static u32 cdns_set_default_frame_shape(int n_rows, int n_cols)
+>> +{
+>> +	u32 val;
+>> +	int c;
+>> +	int r;
 > 
+> This can be in single line!
+
+one line per variable is what I prefer.
+
+> 
+>> +
+>> +	r = sdw_find_row_index(n_rows);
+>> +	c = sdw_find_col_index(n_cols);
+>> +
+>> +	val = (r << 3) | c;
+> 
+> Magic 3?
+
+yes fixed already.
