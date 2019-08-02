@@ -1,54 +1,30 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH 31/40] soundwire: intel: move shutdown()
- callback and don't export symbol
-Date: Fri, 2 Aug 2019 22:58:43 +0530
-Message-ID: <20190802172843.GC12733@vkoul-mobl.Dlink>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 26/40] soundwire: cadence_master: fix divider setting
+ in clock register
+Date: Fri, 2 Aug 2019 12:30:42 -0500
+Message-ID: <e237a872-6371-23a3-a607-99436be11d10@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-32-pierre-louis.bossart@linux.intel.com>
- <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
- <ee87d4bb-3f35-eb27-0112-e6e64a09a279@linux.intel.com>
+ <20190725234032.21152-27-pierre-louis.bossart@linux.intel.com>
+ <20190802171906.GB12733@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ee87d4bb-3f35-eb27-0112-e6e64a09a279@linux.intel.com>
+In-Reply-To: <20190802171906.GB12733@vkoul-mobl.Dlink>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Rander Wang <rander.wang@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 26-07-19, 09:46, Pierre-Louis Bossart wrote:
+On 8/2/19 12:19 PM, Vinod Koul wrote:
+> On 25-07-19, 18:40, Pierre-Louis Bossart wrote:
+>> From: Rander Wang <rander.wang@linux.intel.com>
+>>
+>> The existing code uses an OR operation which would mix the original
+>> divider setting with the new one, resulting in an invalid
+>> configuration that can make codecs hang.
 > 
-> 
-> On 7/26/19 5:38 AM, Cezary Rojewski wrote:
-> > On 2019-07-26 01:40, Pierre-Louis Bossart wrote:
-> > > +void intel_shutdown(struct snd_pcm_substream *substream,
-> > > +            struct snd_soc_dai *dai)
-> > > +{
-> > > +    struct sdw_cdns_dma_data *dma;
-> > > +
-> > > +    dma = snd_soc_dai_get_dma_data(dai, substream);
-> > > +    if (!dma)
-> > > +        return;
-> > > +
-> > > +    snd_soc_dai_set_dma_data(dai, substream, NULL);
-> > > +    kfree(dma);
-> > > +}
-> > 
-> > Correct me if I'm wrong, but do we really need to _get_dma_ here?
-> > _set_dma_ seems bulletproof, same for kfree.
-> 
-> I must admit I have no idea why we have a reference to DMAs here, this looks
-> like an abuse to store a dai-specific context, and the initial test looks
-> like copy-paste to detect invalid configs, as done in other callbacks. Vinod
-> and Sanyog might have more history than me here.
+> This looked fine but fails to apply, feel free to send as a fix
 
-I dont see snd_soc_dai_set_dma_data() call for
-sdw_cdns_dma_data so somthing is missing (at least in upstream code)
-
-IIRC we should have a snd_soc_dai_set_dma_data() in alloc or some
-initialization routine and we free it here.. Sanyog?
-
--- 
-~Vinod
+likely because it's on top of patch 25
