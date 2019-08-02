@@ -1,73 +1,90 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 24/40] soundwire: cadence_master: use BIOS defaults
- for frame shape
-Date: Fri, 2 Aug 2019 12:24:08 -0500
-Message-ID: <a7b691cc-353f-f052-b25e-edbf7fe21c4a@linux.intel.com>
-References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-25-pierre-louis.bossart@linux.intel.com>
- <20190802171014.GZ12733@vkoul-mobl.Dlink>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: TDA7802: Add turn-on
+ diagnostic routine
+Date: Fri, 2 Aug 2019 18:27:56 +0100
+Message-ID: <20190802172756.GC5387@sirena.org.uk>
+References: <20190730120937.16271-1-thomas.preston@codethink.co.uk>
+ <20190730120937.16271-4-thomas.preston@codethink.co.uk>
+ <20190730141935.GF4264@sirena.org.uk>
+ <45156592-a90f-b4f8-4d30-9631c03f1280@codethink.co.uk>
+ <20190730155027.GJ4264@sirena.org.uk>
+ <9b47a360-3b62-b968-b8d5-8639dc4b468d@codethink.co.uk>
+ <20190801234241.GG5488@sirena.org.uk>
+ <472cc4ee-2e80-8b08-d842-79c65df572f3@codethink.co.uk>
+ <20190802111036.GB5387@sirena.org.uk>
+ <ab0a2d14-90c0-6c28-2c80-351fccd85e68@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190802171014.GZ12733@vkoul-mobl.Dlink>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <ab0a2d14-90c0-6c28-2c80-351fccd85e68@codethink.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Thomas Preston <thomas.preston@codethink.co.uk>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>, Annaliese McDermond <nh6z@nh6z.net>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/2/19 12:10 PM, Vinod Koul wrote:
-> On 25-07-19, 18:40, Pierre-Louis Bossart wrote:
->> Remove hard-coding and use BIOS values. If they are wrong use default
-> 
-> BIOS :) this is cadence, am sure this can be used outside BIOS :D
-> 
-> It would be better to say firmware (ACPI/DT)
 
-yes
+--2JFBq9zoW8cOFH7v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> 48x2 frame shape.
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/soundwire/cadence_master.c | 19 +++++++++++++++++--
->>   1 file changed, 17 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
->> index 442f78c00f09..d84344e29f71 100644
->> --- a/drivers/soundwire/cadence_master.c
->> +++ b/drivers/soundwire/cadence_master.c
->> @@ -175,7 +175,6 @@
->>   /* Driver defaults */
->>   
->>   #define CDNS_DEFAULT_CLK_DIVIDER		0
->> -#define CDNS_DEFAULT_FRAME_SHAPE		0x30
->>   #define CDNS_DEFAULT_SSP_INTERVAL		0x18
->>   #define CDNS_TX_TIMEOUT				2000
->>   
->> @@ -954,6 +953,20 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
->>   }
->>   EXPORT_SYMBOL(sdw_cdns_pdi_init);
->>   
->> +static u32 cdns_set_default_frame_shape(int n_rows, int n_cols)
->> +{
->> +	u32 val;
->> +	int c;
->> +	int r;
-> 
-> This can be in single line!
+On Fri, Aug 02, 2019 at 03:51:09PM +0100, Thomas Preston wrote:
+> On 02/08/2019 12:10, Mark Brown wrote:
 
-one line per variable is what I prefer.
+> > You can use a read only control for the readback, or just have it be
+> > triggered by overwriting the readback value.  You can cache the result.
 
-> 
->> +
->> +	r = sdw_find_row_index(n_rows);
->> +	c = sdw_find_col_index(n_cols);
->> +
->> +	val = (r << 3) | c;
-> 
-> Magic 3?
+> Keeping the trigger and result together like that would be better I think,
+> although the routine isn't supposed to run mid way through playback. If
+> we're mid playback the debugfs routine has to turn off AMP_ON, take the
+> device back to a known state, run diagnostics, then restore. Which causes
+> a gap in the audible sound.
 
-yes fixed already.
+Whatever method is used to do the triggering can always return -EBUSY
+when you someone tries to do so during playback.
+
+> >> Kirill Marinushkin mentioned this in the first review [0], it just did=
+n't
+> >> really sink in until now!
+
+> > You could do that too, yeah.  Depends on what this is diagnosing and if
+> > that'd be useful.
+
+> The diagnostic status bits describe situations such as:
+> - open load (no speaker connected)
+> - short to GND
+> - short to VCC
+> - etc
+
+> The intention is to test if all the speakers are connected. So, one might=
+=20
+> have a self test which runs the diagnostic and verifies it outputs:
+
+=2E..
+
+> I think the module parameter method is more appropriate for a
+> "Turn-on diagnostic", even though I don't really like grepping dmesg
+> for the result. I'll go ahead and implement that unless anyone has a
+> particular preference for the kcontrol-trigger.
+
+Right.  It's not ideal for use in production systems for example but
+perhaps fine for support techs or whoever.  Up to you anyway.
+
+--2JFBq9zoW8cOFH7v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1EcpsACgkQJNaLcl1U
+h9APwgf/Q4KWsYkJw+Dyy8wm8pDjOkyVsUY1B9NZLLVp7mVndWT2ywIcipH0hV+Q
+DeDX02ZUjkRup/AwNN/Ptwcy4GHnREbe7g6sJPgAtPFtXcuzUCJdUJsLDt4oXl5f
+Nk2TjjELzuKqFz1E1zkIl8h1CowLDljJRTgCOp7mOhmT+x6kCjvURDzhkcXYPiib
+wj2Rcu4thxX+oVvl7YkOpd0Wv+ZNGyM+8gEpjI22sy2MVjpMLT9SmzMp4OdfgT0h
+dRVXoXKFIDT5zDpQEteTsuJdIS+NlBGM6yfKQ1fRu/+2gSh78+c/4dfT79d/h2ui
+1ZJ5R45/kE4lb4xqQ2+hfM6IeKQQZQ==
+=kN6B
+-----END PGP SIGNATURE-----
+
+--2JFBq9zoW8cOFH7v--
