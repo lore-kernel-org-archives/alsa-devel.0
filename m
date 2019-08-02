@@ -1,57 +1,41 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RFC PATCH 03/40] soundwire: cadence_master: align debugfs to 8
- digits
-Date: Fri, 2 Aug 2019 17:20:13 +0530
-Message-ID: <20190802115013.GG12733@vkoul-mobl.Dlink>
-References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-4-pierre-louis.bossart@linux.intel.com>
+From: Ard van Breemen <ard@kwaak.net>
+Subject: [PATCH 0/2] ALSA snd-usb-audio: Add Pioneer DDJ-SX3
+	PCM support
+Date: Fri,  2 Aug 2019 13:52:13 +0200
+Message-ID: <20190802115215.311-1-ard@kwaak.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190725234032.21152-4-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kwaak.net (gw-fsck-sorbs.kwaak.net [82.197.218.155])
+ (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D537CF80114
+ for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2019 13:52:39 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Ard van Breemen <ard@kwaak.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 25-07-19, 18:39, Pierre-Louis Bossart wrote:
-> SQUASHME
+The Pioneer lacks the UAC descriptors (added to quircks). It also needs
+a fix in synchronisation handling for those cases that
+bSynchAddress == 0
 
-Git trick!
+Ard van Breemen (2):
+  Skip bSynchAddress endpoint check if it is invalid.
+  Add Pioneer DDJ-SX3 PCM quirck.
 
-commit this using:
-git fixup <sha1>
-
-where sha1 is commit where you want this to be squashed into!
-
-then below will suuash them for you!
- 
-git rebase -i --autosquash 
-
-
-
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/cadence_master.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 91e8bacb83e3..9f611a1fff0a 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -234,7 +234,7 @@ static ssize_t cdns_sprintf(struct sdw_cdns *cdns,
->  			    char *buf, size_t pos, unsigned int reg)
->  {
->  	return scnprintf(buf + pos, RD_BUF - pos,
-> -			 "%4x\t%4x\n", reg, cdns_readl(cdns, reg));
-> +			 "%4x\t%8x\n", reg, cdns_readl(cdns, reg));
->  }
->  
->  static ssize_t cdns_reg_read(struct file *file, char __user *user_buf,
-> -- 
-> 2.20.1
+ sound/usb/pcm.c          |  1 +
+ sound/usb/quirks-table.h | 57 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
 -- 
-~Vinod
+2.17.1
