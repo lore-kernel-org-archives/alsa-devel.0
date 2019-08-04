@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/19] ALSA: firewire-digi00x: code refactoring
+Subject: [PATCH 08/19] ALSA: firewire-tascam: code refactoring
 	for initialization/destruction of AMDTP stream
-Date: Sun,  4 Aug 2019 15:21:26 +0900
-Message-ID: <20190804062138.1217-8-o-takashi@sakamocchi.jp>
+Date: Sun,  4 Aug 2019 15:21:27 +0900
+Message-ID: <20190804062138.1217-9-o-takashi@sakamocchi.jp>
 References: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 548BEF804CA
- for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:21:54 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B05FFF800F3
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:21:55 +0200 (CEST)
 In-Reply-To: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,79 +32,94 @@ This commit is a preparation to support AMDTP domain.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-stream.c | 65 ++++++++++++++++---------
- 1 file changed, 42 insertions(+), 23 deletions(-)
+ sound/firewire/tascam/tascam-stream.c | 71 +++++++++++++++++----------
+ 1 file changed, 44 insertions(+), 27 deletions(-)
 
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 3e77dbd3ee22..cff193f00a97 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -218,43 +218,62 @@ static int keep_resources(struct snd_dg00x *dg00x, struct amdtp_stream *stream,
- 				fw_parent_device(dg00x->unit)->max_speed);
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
+index e852e46ebe6f..d5e77036e0ee 100644
+--- a/sound/firewire/tascam/tascam-stream.c
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -287,38 +287,60 @@ static int keep_resources(struct snd_tscm *tscm, unsigned int rate,
+ 				fw_parent_device(tscm->unit)->max_speed);
  }
  
--int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x)
-+static int init_stream(struct snd_dg00x *dg00x, struct amdtp_stream *s)
+-int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
++static int init_stream(struct snd_tscm *tscm, struct amdtp_stream *s)
  {
 +	struct fw_iso_resources *resources;
 +	enum amdtp_stream_direction dir;
+ 	unsigned int pcm_channels;
  	int err;
  
 -	/* For out-stream. */
--	err = fw_iso_resources_init(&dg00x->rx_resources, dg00x->unit);
-+	if (s == &dg00x->tx_stream) {
-+		resources = &dg00x->tx_resources;
+-	err = fw_iso_resources_init(&tscm->rx_resources, tscm->unit);
+-	if (err < 0)
+-		return err;
+-	pcm_channels = tscm->spec->pcm_playback_analog_channels;
++	if (s == &tscm->tx_stream) {
++		resources = &tscm->tx_resources;
 +		dir = AMDTP_IN_STREAM;
++		pcm_channels = tscm->spec->pcm_capture_analog_channels;
 +	} else {
-+		resources = &dg00x->rx_resources;
++		resources = &tscm->rx_resources;
 +		dir = AMDTP_OUT_STREAM;
++		pcm_channels = tscm->spec->pcm_playback_analog_channels;
 +	}
 +
-+	err = fw_iso_resources_init(resources, dg00x->unit);
- 	if (err < 0)
--		goto error;
--	err = amdtp_dot_init(&dg00x->rx_stream, dg00x->unit, AMDTP_OUT_STREAM);
-+		return err;
+ 	if (tscm->spec->has_adat)
+ 		pcm_channels += 8;
+ 	if (tscm->spec->has_spdif)
+ 		pcm_channels += 2;
+-	err = amdtp_tscm_init(&tscm->rx_stream, tscm->unit, AMDTP_OUT_STREAM,
+-			      pcm_channels);
 +
-+	err = amdtp_dot_init(s, dg00x->unit, dir);
++	err = fw_iso_resources_init(resources, tscm->unit);
  	if (err < 0)
--		goto error;
-+		fw_iso_resources_destroy(resources);
+ 		return err;
+ 
+-	/* For in-stream. */
+-	err = fw_iso_resources_init(&tscm->tx_resources, tscm->unit);
++	err = amdtp_tscm_init(s, tscm->unit, dir, pcm_channels);
++	if (err < 0)
++		fw_iso_resources_free(resources);
 +
 +	return err;
 +}
- 
--	/* For in-stream. */
--	err = fw_iso_resources_init(&dg00x->tx_resources, dg00x->unit);
-+static void destroy_stream(struct snd_dg00x *dg00x, struct amdtp_stream *s)
++
++static void destroy_stream(struct snd_tscm *tscm, struct amdtp_stream *s)
 +{
 +	amdtp_stream_destroy(s);
 +
-+	if (s == &dg00x->tx_stream)
-+		fw_iso_resources_destroy(&dg00x->tx_resources);
++	if (s == &tscm->tx_stream)
++		fw_iso_resources_destroy(&tscm->tx_resources);
 +	else
-+		fw_iso_resources_destroy(&dg00x->rx_resources);
++		fw_iso_resources_destroy(&tscm->rx_resources);
 +}
 +
-+int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x)
++int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
 +{
 +	int err;
 +
-+	err = init_stream(dg00x, &dg00x->rx_stream);
++	err = init_stream(tscm, &tscm->tx_stream);
  	if (err < 0)
--		goto error;
--	err = amdtp_dot_init(&dg00x->tx_stream, dg00x->unit, AMDTP_IN_STREAM);
-+		return err;
+ 		return err;
+-	pcm_channels = tscm->spec->pcm_capture_analog_channels;
+-	if (tscm->spec->has_adat)
+-		pcm_channels += 8;
+-	if (tscm->spec->has_spdif)
+-		pcm_channels += 2;
+-	err = amdtp_tscm_init(&tscm->tx_stream, tscm->unit, AMDTP_IN_STREAM,
+-			      pcm_channels);
 +
-+	err = init_stream(dg00x, &dg00x->tx_stream);
++	err = init_stream(tscm, &tscm->rx_stream);
  	if (err < 0)
--		goto error;
-+		destroy_stream(dg00x, &dg00x->rx_stream);
+-		amdtp_stream_destroy(&tscm->rx_stream);
++		destroy_stream(tscm, &tscm->tx_stream);
  
--	return 0;
--error:
--	snd_dg00x_stream_destroy_duplex(dg00x);
  	return err;
+ }
+@@ -333,17 +355,12 @@ void snd_tscm_stream_update_duplex(struct snd_tscm *tscm)
+ 	amdtp_stream_stop(&tscm->rx_stream);
  }
  
 -/*
@@ -113,17 +128,17 @@ index 3e77dbd3ee22..cff193f00a97 100644
 - */
 +// This function should be called before starting streams or after stopping
 +// streams.
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x)
+ void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm)
  {
--	amdtp_stream_destroy(&dg00x->rx_stream);
--	fw_iso_resources_destroy(&dg00x->rx_resources);
+-	amdtp_stream_destroy(&tscm->rx_stream);
+-	amdtp_stream_destroy(&tscm->tx_stream);
 -
--	amdtp_stream_destroy(&dg00x->tx_stream);
--	fw_iso_resources_destroy(&dg00x->tx_resources);
-+	destroy_stream(dg00x, &dg00x->rx_stream);
-+	destroy_stream(dg00x, &dg00x->tx_stream);
+-	fw_iso_resources_destroy(&tscm->rx_resources);
+-	fw_iso_resources_destroy(&tscm->tx_resources);
++	destroy_stream(tscm, &tscm->rx_stream);
++	destroy_stream(tscm, &tscm->tx_stream);
  }
  
- int snd_dg00x_stream_reserve_duplex(struct snd_dg00x *dg00x, unsigned int rate)
+ int snd_tscm_stream_reserve_duplex(struct snd_tscm *tscm, unsigned int rate)
 -- 
 2.20.1
