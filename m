@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/19] ALSA: firewire-digi00x: support AMDTP
+Subject: [PATCH 16/19] ALSA: firewire-tascam: support AMDTP
 	domain
-Date: Sun,  4 Aug 2019 15:21:34 +0900
-Message-ID: <20190804062138.1217-16-o-takashi@sakamocchi.jp>
+Date: Sun,  4 Aug 2019 15:21:35 +0900
+Message-ID: <20190804062138.1217-17-o-takashi@sakamocchi.jp>
 References: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C5DCF805A9
- for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:22:06 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE6DFF804CA
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:22:07 +0200 (CEST)
 In-Reply-To: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,152 +28,164 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds AMDTP domain support for ALSA firewire-digi00x driver.
+This commit adds AMDTP domain support for ALSA firewire-tascam driver.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-stream.c | 55 ++++++++++++++-----------
- sound/firewire/digi00x/digi00x.h        |  2 +
- 2 files changed, 33 insertions(+), 24 deletions(-)
+ sound/firewire/tascam/tascam-stream.c | 54 ++++++++++++++++-----------
+ sound/firewire/tascam/tascam.h        |  2 +
+ 2 files changed, 34 insertions(+), 22 deletions(-)
 
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index cff193f00a97..d6a92460060f 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -126,9 +126,6 @@ static void finish_session(struct snd_dg00x *dg00x)
+diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
+index d5e77036e0ee..9e2dc2fe3271 100644
+--- a/sound/firewire/tascam/tascam-stream.c
++++ b/sound/firewire/tascam/tascam-stream.c
+@@ -180,9 +180,6 @@ static void finish_session(struct snd_tscm *tscm)
  {
- 	__be32 data;
+ 	__be32 reg;
  
--	amdtp_stream_stop(&dg00x->tx_stream);
--	amdtp_stream_stop(&dg00x->rx_stream);
+-	amdtp_stream_stop(&tscm->rx_stream);
+-	amdtp_stream_stop(&tscm->tx_stream);
 -
- 	data = cpu_to_be32(0x00000003);
- 	snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
- 			   DG00X_ADDR_BASE + DG00X_OFFSET_STREAMING_SET,
-@@ -265,13 +262,23 @@ int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x)
- 	if (err < 0)
- 		destroy_stream(dg00x, &dg00x->rx_stream);
+ 	reg = 0;
+ 	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
+ 			   TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
+@@ -339,8 +336,16 @@ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
+ 		return err;
  
-+	err = amdtp_domain_init(&dg00x->domain);
+ 	err = init_stream(tscm, &tscm->rx_stream);
+-	if (err < 0)
 +	if (err < 0) {
-+		destroy_stream(dg00x, &dg00x->rx_stream);
-+		destroy_stream(dg00x, &dg00x->tx_stream);
++		destroy_stream(tscm, &tscm->tx_stream);
++		return err;
 +	}
 +
++	err = amdtp_domain_init(&tscm->domain);
++	if (err < 0) {
+ 		destroy_stream(tscm, &tscm->tx_stream);
++		destroy_stream(tscm, &tscm->rx_stream);
++	}
+ 
  	return err;
  }
- 
--// This function should be called before starting streams or after stopping
--// streams.
-+/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
-+ */
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x)
+@@ -348,17 +353,18 @@ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
+ // At bus reset, streaming is stopped and some registers are clear.
+ void snd_tscm_stream_update_duplex(struct snd_tscm *tscm)
  {
-+	amdtp_domain_destroy(&dg00x->domain);
-+
- 	destroy_stream(dg00x, &dg00x->rx_stream);
- 	destroy_stream(dg00x, &dg00x->tx_stream);
+-	amdtp_stream_pcm_abort(&tscm->tx_stream);
+-	amdtp_stream_stop(&tscm->tx_stream);
++	amdtp_domain_stop(&tscm->domain);
+ 
++	amdtp_stream_pcm_abort(&tscm->tx_stream);
+ 	amdtp_stream_pcm_abort(&tscm->rx_stream);
+-	amdtp_stream_stop(&tscm->rx_stream);
  }
-@@ -288,6 +295,8 @@ int snd_dg00x_stream_reserve_duplex(struct snd_dg00x *dg00x, unsigned int rate)
- 		rate = curr_rate;
  
- 	if (dg00x->substreams_counter == 0 || curr_rate != rate) {
-+		amdtp_domain_stop(&dg00x->domain);
+ // This function should be called before starting streams or after stopping
+ // streams.
+ void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm)
+ {
++	amdtp_domain_destroy(&tscm->domain);
 +
- 		finish_session(dg00x);
+ 	destroy_stream(tscm, &tscm->rx_stream);
+ 	destroy_stream(tscm, &tscm->tx_stream);
+ }
+@@ -373,6 +379,8 @@ int snd_tscm_stream_reserve_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 		return err;
  
- 		fw_iso_resources_free(&dg00x->tx_resources);
-@@ -320,8 +329,10 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
+ 	if (tscm->substreams_counter == 0 || rate != curr_rate) {
++		amdtp_domain_stop(&tscm->domain);
++
+ 		finish_session(tscm);
+ 
+ 		fw_iso_resources_free(&tscm->tx_resources);
+@@ -405,8 +413,10 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
  		return 0;
  
- 	if (amdtp_streaming_error(&dg00x->tx_stream) ||
--	    amdtp_streaming_error(&dg00x->rx_stream))
-+	    amdtp_streaming_error(&dg00x->rx_stream)) {
-+		amdtp_domain_stop(&dg00x->domain);
- 		finish_session(dg00x);
+ 	if (amdtp_streaming_error(&tscm->rx_stream) ||
+-	    amdtp_streaming_error(&tscm->tx_stream))
++	    amdtp_streaming_error(&tscm->tx_stream)) {
++		amdtp_domain_stop(&tscm->domain);
+ 		finish_session(tscm);
 +	}
  
- 	if (generation != fw_parent_device(dg00x->unit)->card->generation) {
- 		err = fw_iso_resources_update(&dg00x->tx_resources);
-@@ -338,36 +349,30 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
- 	 * which source of clock is used.
- 	 */
- 	if (!amdtp_stream_running(&dg00x->rx_stream)) {
-+		int spd = fw_parent_device(dg00x->unit)->max_speed;
+ 	if (generation != fw_parent_device(tscm->unit)->card->generation) {
+ 		err = fw_iso_resources_update(&tscm->tx_resources);
+@@ -419,6 +429,8 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ 	}
+ 
+ 	if (!amdtp_stream_running(&tscm->rx_stream)) {
++		int spd = fw_parent_device(tscm->unit)->max_speed;
 +
- 		err = begin_session(dg00x);
+ 		err = set_stream_formats(tscm, rate);
+ 		if (err < 0)
+ 			goto error;
+@@ -427,27 +439,23 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
  		if (err < 0)
  			goto error;
  
--		err = amdtp_stream_start(&dg00x->rx_stream,
--				dg00x->rx_resources.channel,
--				fw_parent_device(dg00x->unit)->max_speed);
-+		err = amdtp_domain_add_stream(&dg00x->domain, &dg00x->rx_stream,
-+					      dg00x->rx_resources.channel, spd);
+-		err = amdtp_stream_start(&tscm->rx_stream,
+-				tscm->rx_resources.channel,
+-				fw_parent_device(tscm->unit)->max_speed);
++		err = amdtp_domain_add_stream(&tscm->domain, &tscm->rx_stream,
++					      tscm->rx_resources.channel, spd);
  		if (err < 0)
  			goto error;
  
--		if (!amdtp_stream_wait_callback(&dg00x->rx_stream,
--					      CALLBACK_TIMEOUT)) {
+-		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
+-						CALLBACK_TIMEOUT)) {
 -			err = -ETIMEDOUT;
-+		err = amdtp_domain_add_stream(&dg00x->domain, &dg00x->tx_stream,
-+					      dg00x->tx_resources.channel, spd);
++		err = amdtp_domain_add_stream(&tscm->domain, &tscm->tx_stream,
++					      tscm->tx_resources.channel, spd);
 +		if (err < 0)
  			goto error;
 -		}
 -	}
  
--	/*
--	 * The value of SYT field in transmitted packets is always 0x0000. Thus,
--	 * duplex streams with timestamp synchronization cannot be built.
--	 */
--	if (!amdtp_stream_running(&dg00x->tx_stream)) {
--		err = amdtp_stream_start(&dg00x->tx_stream,
--				dg00x->tx_resources.channel,
--				fw_parent_device(dg00x->unit)->max_speed);
-+		err = amdtp_domain_start(&dg00x->domain);
+-	if (!amdtp_stream_running(&tscm->tx_stream)) {
+-		err = amdtp_stream_start(&tscm->tx_stream,
+-				tscm->tx_resources.channel,
+-				fw_parent_device(tscm->unit)->max_speed);
++		err = amdtp_domain_start(&tscm->domain);
  		if (err < 0)
- 			goto error;
+-			goto error;
++			return err;
  
--		if (!amdtp_stream_wait_callback(&dg00x->tx_stream,
--					      CALLBACK_TIMEOUT)) {
-+		if (!amdtp_stream_wait_callback(&dg00x->rx_stream,
+-		if (!amdtp_stream_wait_callback(&tscm->tx_stream,
++		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
 +						CALLBACK_TIMEOUT) ||
-+		    !amdtp_stream_wait_callback(&dg00x->tx_stream,
-+						CALLBACK_TIMEOUT)) {
++		    !amdtp_stream_wait_callback(&tscm->tx_stream,
+ 						CALLBACK_TIMEOUT)) {
  			err = -ETIMEDOUT;
  			goto error;
- 		}
-@@ -375,6 +380,7 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
+@@ -456,6 +464,7 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
  
  	return 0;
  error:
-+	amdtp_domain_stop(&dg00x->domain);
- 	finish_session(dg00x);
++	amdtp_domain_stop(&tscm->domain);
+ 	finish_session(tscm);
  
  	return err;
-@@ -383,6 +389,7 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
- void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x)
+@@ -464,6 +473,7 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
  {
- 	if (dg00x->substreams_counter == 0) {
-+		amdtp_domain_stop(&dg00x->domain);
- 		finish_session(dg00x);
+ 	if (tscm->substreams_counter == 0) {
++		amdtp_domain_stop(&tscm->domain);
+ 		finish_session(tscm);
  
- 		fw_iso_resources_free(&dg00x->tx_resources);
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 0994d191ccda..8041c65f2736 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -59,6 +59,8 @@ struct snd_dg00x {
- 
- 	/* Console models have additional MIDI ports for control surface. */
- 	bool is_console;
+ 		fw_iso_resources_free(&tscm->tx_resources);
+diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
+index 734e5bb9c3da..64a2e4d2bbfe 100644
+--- a/sound/firewire/tascam/tascam.h
++++ b/sound/firewire/tascam/tascam.h
+@@ -97,6 +97,8 @@ struct snd_tscm {
+ 	struct snd_firewire_tascam_change queue[SND_TSCM_QUEUE_COUNT];
+ 	unsigned int pull_pos;
+ 	unsigned int push_pos;
 +
 +	struct amdtp_domain domain;
  };
  
- #define DG00X_ADDR_BASE		0xffffe0000000ull
+ #define TSCM_ADDR_BASE			0xffff00000000ull
 -- 
 2.20.1
