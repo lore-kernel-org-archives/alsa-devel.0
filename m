@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/19] ALSA: bebob: support AMDTP domain
-Date: Sun,  4 Aug 2019 15:21:30 +0900
-Message-ID: <20190804062138.1217-12-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/19] ALSA: fireworks: support AMDTP domain
+Date: Sun,  4 Aug 2019 15:21:31 +0900
+Message-ID: <20190804062138.1217-13-o-takashi@sakamocchi.jp>
 References: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 441DCF805A9
- for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:22:00 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCA5AF805AA
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:22:01 +0200 (CEST)
 In-Reply-To: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,156 +27,197 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds AMDTP domain support for ALSA bebob driver.
+This commit adds AMDTP domain support for ALSA fireworks driver.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.h        |  2 +
- sound/firewire/bebob/bebob_stream.c | 62 +++++++++++++----------------
- 2 files changed, 29 insertions(+), 35 deletions(-)
+ sound/firewire/fireworks/fireworks.h        |  2 +
+ sound/firewire/fireworks/fireworks_stream.c | 92 +++++++++++----------
+ 2 files changed, 51 insertions(+), 43 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 9e0b689fe34a..356d6ba60959 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -115,6 +115,8 @@ struct snd_bebob {
- 
- 	/* For BeBoB version quirk. */
- 	unsigned int version;
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 31efd4b53b4f..4cda297f8438 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -107,6 +107,8 @@ struct snd_efw {
+ 	u8 *resp_buf;
+ 	u8 *pull_ptr;
+ 	u8 *push_ptr;
 +
 +	struct amdtp_domain domain;
  };
  
- static inline int
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 334dc7c96e1d..73fee991bd75 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -445,10 +445,9 @@ start_stream(struct snd_bebob *bebob, struct amdtp_stream *stream)
- 			goto end;
- 	}
- 
--	/* start amdtp stream */
--	err = amdtp_stream_start(stream,
--				 conn->resources.channel,
--				 conn->speed);
-+	// start amdtp stream.
-+	err = amdtp_domain_add_stream(&bebob->domain, stream,
-+				      conn->resources.channel, conn->speed);
- end:
+ int snd_efw_transaction_cmd(struct fw_unit *unit,
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index af340491dc43..f2de304d2f26 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -61,17 +61,6 @@ static int init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
  	return err;
  }
-@@ -523,7 +522,13 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ 
+-static void
+-stop_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+-{
+-	amdtp_stream_stop(stream);
+-
+-	if (stream == &efw->tx_stream)
+-		cmp_connection_break(&efw->out_conn);
+-	else
+-		cmp_connection_break(&efw->in_conn);
+-}
+-
+ static int start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
+ 			unsigned int rate)
+ {
+@@ -89,19 +78,13 @@ static int start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
+ 		return err;
+ 
+ 	// Start amdtp stream.
+-	err = amdtp_stream_start(stream, conn->resources.channel, conn->speed);
++	err = amdtp_domain_add_stream(&efw->domain, stream,
++				      conn->resources.channel, conn->speed);
+ 	if (err < 0) {
+ 		cmp_connection_break(conn);
  		return err;
  	}
  
--	return 0;
-+	err = amdtp_domain_init(&bebob->domain);
-+	if (err < 0) {
-+		destroy_stream(bebob, &bebob->tx_stream);
-+		destroy_stream(bebob, &bebob->rx_stream);
-+	}
-+
-+	return err;
- }
- 
- static int keep_resources(struct snd_bebob *bebob, struct amdtp_stream *stream,
-@@ -566,9 +571,7 @@ int snd_bebob_stream_reserve_duplex(struct snd_bebob *bebob, unsigned int rate)
- 	if (rate == 0)
- 		rate = curr_rate;
- 	if (curr_rate != rate) {
--		amdtp_stream_stop(&bebob->tx_stream);
--		amdtp_stream_stop(&bebob->rx_stream);
--
-+		amdtp_domain_stop(&bebob->domain);
- 		break_both_connections(bebob);
- 
- 		cmp_connection_release(&bebob->out_conn);
-@@ -620,9 +623,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob)
- 	// packet queueing error or detecting discontinuity
- 	if (amdtp_streaming_error(&bebob->rx_stream) ||
- 	    amdtp_streaming_error(&bebob->tx_stream)) {
--		amdtp_stream_stop(&bebob->rx_stream);
--		amdtp_stream_stop(&bebob->tx_stream);
--
-+		amdtp_domain_stop(&bebob->domain);
- 		break_both_connections(bebob);
- 	}
- 
-@@ -640,11 +641,16 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob)
- 			return err;
- 
- 		err = start_stream(bebob, &bebob->rx_stream);
--		if (err < 0) {
--			dev_err(&bebob->unit->device,
--				"fail to run AMDTP master stream:%d\n", err);
-+		if (err < 0)
-+			goto error;
-+
-+		err = start_stream(bebob, &bebob->tx_stream);
-+		if (err < 0)
-+			goto error;
-+
-+		err = amdtp_domain_start(&bebob->domain);
-+		if (err < 0)
- 			goto error;
--		}
- 
- 		// NOTE:
- 		// The firmware customized by M-Audio uses these commands to
-@@ -660,21 +666,8 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob)
- 		}
- 
- 		if (!amdtp_stream_wait_callback(&bebob->rx_stream,
--						CALLBACK_TIMEOUT)) {
--			err = -ETIMEDOUT;
--			goto error;
--		}
+-	// Wait first callback.
+-	if (!amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT)) {
+-		amdtp_stream_stop(stream);
+-		cmp_connection_break(conn);
+-		return -ETIMEDOUT;
 -	}
 -
--	if (!amdtp_stream_running(&bebob->tx_stream)) {
--		err = start_stream(bebob, &bebob->tx_stream);
--		if (err < 0) {
--			dev_err(&bebob->unit->device,
--				"fail to run AMDTP slave stream:%d\n", err);
--			goto error;
--		}
+ 	return 0;
+ }
+ 
+@@ -155,6 +138,13 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 		return err;
+ 	}
+ 
++	err = amdtp_domain_init(&efw->domain);
++	if (err < 0) {
++		destroy_stream(efw, &efw->tx_stream);
++		destroy_stream(efw, &efw->rx_stream);
++		return err;
++	}
++
+ 	// set IEC61883 compliant mode (actually not fully compliant...).
+ 	err = snd_efw_command_set_tx_mode(efw, SND_EFW_TRANSPORT_MODE_IEC61883);
+ 	if (err < 0) {
+@@ -209,8 +199,10 @@ int snd_efw_stream_reserve_duplex(struct snd_efw *efw, unsigned int rate)
+ 	if (rate == 0)
+ 		rate = curr_rate;
+ 	if (rate != curr_rate) {
+-		stop_stream(efw, &efw->tx_stream);
+-		stop_stream(efw, &efw->rx_stream);
++		amdtp_domain_stop(&efw->domain);
++
++		cmp_connection_break(&efw->out_conn);
++		cmp_connection_break(&efw->in_conn);
+ 
+ 		cmp_connection_release(&efw->out_conn);
+ 		cmp_connection_release(&efw->in_conn);
+@@ -250,47 +242,57 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw)
+ 	if (efw->substreams_counter == 0)
+ 		return -EIO;
+ 
+-	err = snd_efw_command_get_sampling_rate(efw, &rate);
+-	if (err < 0)
+-		return err;
 -
--		if (!amdtp_stream_wait_callback(&bebob->tx_stream,
-+						CALLBACK_TIMEOUT) ||
-+		    !amdtp_stream_wait_callback(&bebob->tx_stream,
- 						CALLBACK_TIMEOUT)) {
- 			err = -ETIMEDOUT;
+ 	if (amdtp_streaming_error(&efw->rx_stream) ||
+ 	    amdtp_streaming_error(&efw->tx_stream)) {
+-		stop_stream(efw, &efw->rx_stream);
+-		stop_stream(efw, &efw->tx_stream);
++		amdtp_domain_stop(&efw->domain);
++		cmp_connection_break(&efw->out_conn);
++		cmp_connection_break(&efw->in_conn);
+ 	}
+ 
+-	/* master should be always running */
++	err = snd_efw_command_get_sampling_rate(efw, &rate);
++	if (err < 0)
++		return err;
++
+ 	if (!amdtp_stream_running(&efw->rx_stream)) {
+ 		err = start_stream(efw, &efw->rx_stream, rate);
+-		if (err < 0) {
+-			dev_err(&efw->unit->device,
+-				"fail to start AMDTP master stream:%d\n", err);
++		if (err < 0)
  			goto error;
-@@ -683,8 +676,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob)
+-		}
+-	}
+ 
+-	if (!amdtp_stream_running(&efw->tx_stream)) {
+ 		err = start_stream(efw, &efw->tx_stream, rate);
+-		if (err < 0) {
+-			dev_err(&efw->unit->device,
+-				"fail to start AMDTP slave stream:%d\n", err);
++		if (err < 0)
++			goto error;
++
++		err = amdtp_domain_start(&efw->domain);
++		if (err < 0)
++			goto error;
++
++		// Wait first callback.
++		if (!amdtp_stream_wait_callback(&efw->rx_stream,
++						CALLBACK_TIMEOUT) ||
++		    !amdtp_stream_wait_callback(&efw->tx_stream,
++						CALLBACK_TIMEOUT)) {
++			err = -ETIMEDOUT;
+ 			goto error;
+ 		}
+ 	}
  
  	return 0;
  error:
--	amdtp_stream_stop(&bebob->tx_stream);
--	amdtp_stream_stop(&bebob->rx_stream);
-+	amdtp_domain_stop(&bebob->domain);
- 	break_both_connections(bebob);
+-	stop_stream(efw, &efw->rx_stream);
+-	stop_stream(efw, &efw->tx_stream);
++	amdtp_domain_stop(&efw->domain);
++
++	cmp_connection_break(&efw->out_conn);
++	cmp_connection_break(&efw->in_conn);
++
  	return err;
  }
-@@ -692,9 +684,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob)
- void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
- {
- 	if (bebob->substreams_counter == 0) {
--		amdtp_stream_stop(&bebob->rx_stream);
--		amdtp_stream_stop(&bebob->tx_stream);
--
-+		amdtp_domain_stop(&bebob->domain);
- 		break_both_connections(bebob);
  
- 		cmp_connection_release(&bebob->out_conn);
-@@ -708,6 +698,8 @@ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
-  */
- void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob)
+ void snd_efw_stream_stop_duplex(struct snd_efw *efw)
  {
-+	amdtp_domain_destroy(&bebob->domain);
+ 	if (efw->substreams_counter == 0) {
+-		stop_stream(efw, &efw->tx_stream);
+-		stop_stream(efw, &efw->rx_stream);
++		amdtp_domain_stop(&efw->domain);
 +
- 	destroy_stream(bebob, &bebob->tx_stream);
- 	destroy_stream(bebob, &bebob->rx_stream);
++		cmp_connection_break(&efw->out_conn);
++		cmp_connection_break(&efw->in_conn);
+ 
+ 		cmp_connection_release(&efw->out_conn);
+ 		cmp_connection_release(&efw->in_conn);
+@@ -299,8 +301,10 @@ void snd_efw_stream_stop_duplex(struct snd_efw *efw)
+ 
+ void snd_efw_stream_update_duplex(struct snd_efw *efw)
+ {
+-	stop_stream(efw, &efw->rx_stream);
+-	stop_stream(efw, &efw->tx_stream);
++	amdtp_domain_stop(&efw->domain);
++
++	cmp_connection_break(&efw->out_conn);
++	cmp_connection_break(&efw->in_conn);
+ 
+ 	amdtp_stream_pcm_abort(&efw->rx_stream);
+ 	amdtp_stream_pcm_abort(&efw->tx_stream);
+@@ -308,6 +312,8 @@ void snd_efw_stream_update_duplex(struct snd_efw *efw)
+ 
+ void snd_efw_stream_destroy_duplex(struct snd_efw *efw)
+ {
++	amdtp_domain_destroy(&efw->domain);
++
+ 	destroy_stream(efw, &efw->rx_stream);
+ 	destroy_stream(efw, &efw->tx_stream);
  }
 -- 
 2.20.1
