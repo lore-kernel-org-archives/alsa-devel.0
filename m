@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/19] ALSA: firewire-lib: add a kernel API to
-	start AMDTP streams in AMDTP domain
-Date: Sun,  4 Aug 2019 15:21:23 +0900
-Message-ID: <20190804062138.1217-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/19] ALSA: fireworks: code refactoring for
+	initialization/destruction of AMDTP streams
+Date: Sun,  4 Aug 2019 15:21:24 +0900
+Message-ID: <20190804062138.1217-6-o-takashi@sakamocchi.jp>
 References: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C43DEF804CA
- for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:21:49 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DBA7F800F4
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:21:51 +0200 (CEST)
 In-Reply-To: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,61 +28,142 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a kernel API to start a couple of isochronous contexts
-for some AMDTP streams.
+This commit is a preparation to support AMDTP domain.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 24 ++++++++++++++++++++++++
- sound/firewire/amdtp-stream.h |  1 +
- 2 files changed, 25 insertions(+)
+ sound/firewire/fireworks/fireworks_stream.c | 77 ++++++++++-----------
+ 1 file changed, 36 insertions(+), 41 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index fa7989ee4769..158d210caea7 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -1185,6 +1185,30 @@ int amdtp_domain_add_stream(struct amdtp_domain *d, struct amdtp_stream *s,
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index 385fc9686365..0f62c50055e9 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -8,8 +8,7 @@
+ 
+ #define CALLBACK_TIMEOUT	100
+ 
+-static int
+-init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
++static int init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ {
+ 	struct cmp_connection *conn;
+ 	enum cmp_direction c_dir;
+@@ -28,14 +27,37 @@ init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ 
+ 	err = cmp_connection_init(conn, efw->unit, c_dir, 0);
+ 	if (err < 0)
+-		goto end;
++		return err;
+ 
+ 	err = amdtp_am824_init(stream, efw->unit, s_dir, CIP_BLOCKING);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(stream);
+ 		cmp_connection_destroy(conn);
++		return err;
+ 	}
+-end:
++
++	if (stream == &efw->tx_stream) {
++		// Fireworks transmits NODATA packets with TAG0.
++		efw->tx_stream.flags |= CIP_EMPTY_WITH_TAG0;
++		// Fireworks has its own meaning for dbc.
++		efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
++		// Fireworks reset dbc at bus reset.
++		efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
++		// But Recent firmwares starts packets with non-zero dbc.
++		// Driver version 5.7.6 installs firmware version 5.7.3.
++		if (efw->is_fireworks3 &&
++		    (efw->firmware_version == 0x5070000 ||
++		     efw->firmware_version == 0x5070300 ||
++		     efw->firmware_version == 0x5080000))
++			efw->tx_stream.flags |= CIP_UNALIGHED_DBC;
++		// AudioFire9 always reports wrong dbs.
++		if (efw->is_af9)
++			efw->tx_stream.flags |= CIP_WRONG_DBS;
++		// Firmware version 5.5 reports fixed interval for dbc.
++		if (efw->firmware_version == 0x5050000)
++			efw->tx_stream.ctx_data.tx.dbc_interval = 8;
++	}
++
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(amdtp_domain_add_stream);
  
-+/**
-+ * amdtp_domain_start - start sending packets for isoc context in the domain.
-+ * @d: the AMDTP domain.
-+ */
-+int amdtp_domain_start(struct amdtp_domain *d)
-+{
-+	struct amdtp_stream *s;
-+	int err = 0;
-+
-+	list_for_each_entry(s, &d->streams, list) {
-+		err = amdtp_stream_start(s, s->channel, s->speed);
-+		if (err < 0)
-+			break;
-+	}
-+
-+	if (err < 0) {
-+		list_for_each_entry(s, &d->streams, list)
-+			amdtp_stream_stop(s);
-+	}
-+
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(amdtp_domain_start);
-+
- /**
-  * amdtp_domain_stop - stop sending packets for isoc context in the same domain.
-  * @d: the AMDTP domain to which the isoc contexts belong.
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 4b102fd7529d..15d471660a43 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -282,6 +282,7 @@ void amdtp_domain_destroy(struct amdtp_domain *d);
- int amdtp_domain_add_stream(struct amdtp_domain *d, struct amdtp_stream *s,
- 			    int channel, int speed);
+@@ -83,22 +105,16 @@ static int start_stream(struct snd_efw *efw, struct amdtp_stream *stream,
+ 	return 0;
+ }
  
-+int amdtp_domain_start(struct amdtp_domain *d);
- void amdtp_domain_stop(struct amdtp_domain *d);
+-/*
+- * This function should be called before starting the stream or after stopping
+- * the streams.
+- */
+-static void
+-destroy_stream(struct snd_efw *efw, struct amdtp_stream *stream)
++// This function should be called before starting the stream or after stopping
++// the streams.
++static void destroy_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ {
+-	struct cmp_connection *conn;
++	amdtp_stream_destroy(stream);
  
- #endif
+ 	if (stream == &efw->tx_stream)
+-		conn = &efw->out_conn;
++		cmp_connection_destroy(&efw->out_conn);
+ 	else
+-		conn = &efw->in_conn;
+-
+-	amdtp_stream_destroy(stream);
+-	cmp_connection_destroy(conn);
++		cmp_connection_destroy(&efw->in_conn);
+ }
+ 
+ static int
+@@ -131,42 +147,21 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 
+ 	err = init_stream(efw, &efw->tx_stream);
+ 	if (err < 0)
+-		goto end;
+-	/* Fireworks transmits NODATA packets with TAG0. */
+-	efw->tx_stream.flags |= CIP_EMPTY_WITH_TAG0;
+-	/* Fireworks has its own meaning for dbc. */
+-	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
+-	/* Fireworks reset dbc at bus reset. */
+-	efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
+-	/*
+-	 * But Recent firmwares starts packets with non-zero dbc.
+-	 * Driver version 5.7.6 installs firmware version 5.7.3.
+-	 */
+-	if (efw->is_fireworks3 &&
+-	    (efw->firmware_version == 0x5070000 ||
+-	     efw->firmware_version == 0x5070300 ||
+-	     efw->firmware_version == 0x5080000))
+-		efw->tx_stream.flags |= CIP_UNALIGHED_DBC;
+-	/* AudioFire9 always reports wrong dbs. */
+-	if (efw->is_af9)
+-		efw->tx_stream.flags |= CIP_WRONG_DBS;
+-	/* Firmware version 5.5 reports fixed interval for dbc. */
+-	if (efw->firmware_version == 0x5050000)
+-		efw->tx_stream.ctx_data.tx.dbc_interval = 8;
++		return err;
+ 
+ 	err = init_stream(efw, &efw->rx_stream);
+ 	if (err < 0) {
+ 		destroy_stream(efw, &efw->tx_stream);
+-		goto end;
++		return err;
+ 	}
+ 
+-	/* set IEC61883 compliant mode (actually not fully compliant...) */
++	// set IEC61883 compliant mode (actually not fully compliant...).
+ 	err = snd_efw_command_set_tx_mode(efw, SND_EFW_TRANSPORT_MODE_IEC61883);
+ 	if (err < 0) {
+ 		destroy_stream(efw, &efw->tx_stream);
+ 		destroy_stream(efw, &efw->rx_stream);
+ 	}
+-end:
++
+ 	return err;
+ }
+ 
 -- 
 2.20.1
