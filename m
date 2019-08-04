@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/19] ALSA: firewire-tascam: support AMDTP
-	domain
-Date: Sun,  4 Aug 2019 15:21:35 +0900
-Message-ID: <20190804062138.1217-17-o-takashi@sakamocchi.jp>
+Subject: [PATCH 17/19] ALSA: firewire-motu: support AMDTP domain
+Date: Sun,  4 Aug 2019 15:21:36 +0900
+Message-ID: <20190804062138.1217-18-o-takashi@sakamocchi.jp>
 References: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +11,8 @@ Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE6DFF804CA
- for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:22:07 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B199F805A1
+ for <alsa-devel@alsa-project.org>; Sun,  4 Aug 2019 08:22:09 +0200 (CEST)
 In-Reply-To: <20190804062138.1217-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,164 +27,191 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds AMDTP domain support for ALSA firewire-tascam driver.
+This commit adds AMDTP domain support for ALSA firewire-motu driver.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-stream.c | 54 ++++++++++++++++-----------
- sound/firewire/tascam/tascam.h        |  2 +
- 2 files changed, 34 insertions(+), 22 deletions(-)
+ sound/firewire/motu/motu-stream.c | 83 +++++++++++++++----------------
+ sound/firewire/motu/motu.h        |  2 +
+ 2 files changed, 42 insertions(+), 43 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam-stream.c b/sound/firewire/tascam/tascam-stream.c
-index d5e77036e0ee..9e2dc2fe3271 100644
---- a/sound/firewire/tascam/tascam-stream.c
-+++ b/sound/firewire/tascam/tascam-stream.c
-@@ -180,9 +180,6 @@ static void finish_session(struct snd_tscm *tscm)
- {
- 	__be32 reg;
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index cc9f34426a47..813e38e6a86e 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -92,9 +92,6 @@ static void finish_session(struct snd_motu *motu)
+ 	if (err < 0)
+ 		return;
  
--	amdtp_stream_stop(&tscm->rx_stream);
--	amdtp_stream_stop(&tscm->tx_stream);
+-	amdtp_stream_stop(&motu->tx_stream);
+-	amdtp_stream_stop(&motu->rx_stream);
 -
- 	reg = 0;
- 	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
- 			   TSCM_ADDR_BASE + TSCM_OFFSET_START_STREAMING,
-@@ -339,8 +336,16 @@ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
+ 	err = snd_motu_transaction_read(motu, ISOC_COMM_CONTROL_OFFSET, &reg,
+ 					sizeof(reg));
+ 	if (err < 0)
+@@ -109,27 +106,6 @@ static void finish_session(struct snd_motu *motu)
+ 				   sizeof(reg));
+ }
+ 
+-static int start_isoc_ctx(struct snd_motu *motu, struct amdtp_stream *stream)
+-{
+-	struct fw_iso_resources *resources;
+-	int err;
+-
+-	if (stream == &motu->rx_stream)
+-		resources = &motu->rx_resources;
+-	else
+-		resources = &motu->tx_resources;
+-
+-	err = amdtp_stream_start(stream, resources->channel,
+-				 fw_parent_device(motu->unit)->max_speed);
+-	if (err < 0)
+-		return err;
+-
+-	if (!amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT))
+-		return -ETIMEDOUT;
+-
+-	return 0;
+-}
+-
+ int snd_motu_stream_cache_packet_formats(struct snd_motu *motu)
+ {
+ 	int err;
+@@ -169,6 +145,7 @@ int snd_motu_stream_reserve_duplex(struct snd_motu *motu, unsigned int rate)
+ 		rate = curr_rate;
+ 
+ 	if (motu->substreams_counter == 0 || curr_rate != rate) {
++		amdtp_domain_stop(&motu->domain);
+ 		finish_session(motu);
+ 
+ 		fw_iso_resources_free(&motu->tx_resources);
+@@ -234,8 +211,10 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
+ 		return 0;
+ 
+ 	if (amdtp_streaming_error(&motu->rx_stream) ||
+-	    amdtp_streaming_error(&motu->tx_stream))
++	    amdtp_streaming_error(&motu->tx_stream)) {
++		amdtp_domain_stop(&motu->domain);
+ 		finish_session(motu);
++	}
+ 
+ 	if (generation != fw_parent_device(motu->unit)->card->generation) {
+ 		err = fw_iso_resources_update(&motu->rx_resources);
+@@ -248,6 +227,8 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
+ 	}
+ 
+ 	if (!amdtp_stream_running(&motu->rx_stream)) {
++		int spd = fw_parent_device(motu->unit)->max_speed;
++
+ 		err = ensure_packet_formats(motu);
+ 		if (err < 0)
+ 			return err;
+@@ -259,26 +240,32 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
+ 			goto stop_streams;
+ 		}
+ 
+-		err = start_isoc_ctx(motu, &motu->rx_stream);
+-		if (err < 0) {
+-			dev_err(&motu->unit->device,
+-				"fail to start IT context: %d\n", err);
++		err = amdtp_domain_add_stream(&motu->domain, &motu->tx_stream,
++					      motu->tx_resources.channel, spd);
++		if (err < 0)
+ 			goto stop_streams;
+-		}
+ 
+-		err = motu->spec->protocol->switch_fetching_mode(motu, true);
+-		if (err < 0) {
+-			dev_err(&motu->unit->device,
+-				"fail to enable frame fetching: %d\n", err);
++		err = amdtp_domain_add_stream(&motu->domain, &motu->rx_stream,
++					      motu->rx_resources.channel, spd);
++		if (err < 0)
++			goto stop_streams;
++
++		err = amdtp_domain_start(&motu->domain);
++		if (err < 0)
++			goto stop_streams;
++
++		if (!amdtp_stream_wait_callback(&motu->tx_stream,
++						CALLBACK_TIMEOUT) ||
++		    !amdtp_stream_wait_callback(&motu->rx_stream,
++						CALLBACK_TIMEOUT)) {
++			err = -ETIMEDOUT;
+ 			goto stop_streams;
+ 		}
+-	}
+ 
+-	if (!amdtp_stream_running(&motu->tx_stream)) {
+-		err = start_isoc_ctx(motu, &motu->tx_stream);
++		err = motu->spec->protocol->switch_fetching_mode(motu, true);
+ 		if (err < 0) {
+ 			dev_err(&motu->unit->device,
+-				"fail to start IR context: %d", err);
++				"fail to enable frame fetching: %d\n", err);
+ 			goto stop_streams;
+ 		}
+ 	}
+@@ -286,6 +273,7 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
+ 	return 0;
+ 
+ stop_streams:
++	amdtp_domain_stop(&motu->domain);
+ 	finish_session(motu);
+ 	return err;
+ }
+@@ -293,6 +281,7 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu)
+ void snd_motu_stream_stop_duplex(struct snd_motu *motu)
+ {
+ 	if (motu->substreams_counter == 0) {
++		amdtp_domain_stop(&motu->domain);
+ 		finish_session(motu);
+ 
+ 		fw_iso_resources_free(&motu->tx_resources);
+@@ -344,18 +333,26 @@ int snd_motu_stream_init_duplex(struct snd_motu *motu)
  		return err;
  
- 	err = init_stream(tscm, &tscm->rx_stream);
+ 	err = init_stream(motu, &motu->rx_stream);
 -	if (err < 0)
 +	if (err < 0) {
-+		destroy_stream(tscm, &tscm->tx_stream);
+ 		destroy_stream(motu, &motu->tx_stream);
 +		return err;
 +	}
 +
-+	err = amdtp_domain_init(&tscm->domain);
++	err = amdtp_domain_init(&motu->domain);
 +	if (err < 0) {
- 		destroy_stream(tscm, &tscm->tx_stream);
-+		destroy_stream(tscm, &tscm->rx_stream);
++		destroy_stream(motu, &motu->tx_stream);
++		destroy_stream(motu, &motu->rx_stream);
 +	}
  
  	return err;
  }
-@@ -348,17 +353,18 @@ int snd_tscm_stream_init_duplex(struct snd_tscm *tscm)
- // At bus reset, streaming is stopped and some registers are clear.
- void snd_tscm_stream_update_duplex(struct snd_tscm *tscm)
+ 
+-/*
+- * This function should be called before starting streams or after stopping
+- * streams.
+- */
++// This function should be called before starting streams or after stopping
++// streams.
+ void snd_motu_stream_destroy_duplex(struct snd_motu *motu)
  {
--	amdtp_stream_pcm_abort(&tscm->tx_stream);
--	amdtp_stream_stop(&tscm->tx_stream);
-+	amdtp_domain_stop(&tscm->domain);
- 
-+	amdtp_stream_pcm_abort(&tscm->tx_stream);
- 	amdtp_stream_pcm_abort(&tscm->rx_stream);
--	amdtp_stream_stop(&tscm->rx_stream);
- }
- 
- // This function should be called before starting streams or after stopping
- // streams.
- void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm)
- {
-+	amdtp_domain_destroy(&tscm->domain);
++	amdtp_domain_destroy(&motu->domain);
 +
- 	destroy_stream(tscm, &tscm->rx_stream);
- 	destroy_stream(tscm, &tscm->tx_stream);
- }
-@@ -373,6 +379,8 @@ int snd_tscm_stream_reserve_duplex(struct snd_tscm *tscm, unsigned int rate)
- 		return err;
+ 	destroy_stream(motu, &motu->rx_stream);
+ 	destroy_stream(motu, &motu->tx_stream);
  
- 	if (tscm->substreams_counter == 0 || rate != curr_rate) {
-+		amdtp_domain_stop(&tscm->domain);
-+
- 		finish_session(tscm);
- 
- 		fw_iso_resources_free(&tscm->tx_resources);
-@@ -405,8 +413,10 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- 		return 0;
- 
- 	if (amdtp_streaming_error(&tscm->rx_stream) ||
--	    amdtp_streaming_error(&tscm->tx_stream))
-+	    amdtp_streaming_error(&tscm->tx_stream)) {
-+		amdtp_domain_stop(&tscm->domain);
- 		finish_session(tscm);
-+	}
- 
- 	if (generation != fw_parent_device(tscm->unit)->card->generation) {
- 		err = fw_iso_resources_update(&tscm->tx_resources);
-@@ -419,6 +429,8 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- 	}
- 
- 	if (!amdtp_stream_running(&tscm->rx_stream)) {
-+		int spd = fw_parent_device(tscm->unit)->max_speed;
-+
- 		err = set_stream_formats(tscm, rate);
- 		if (err < 0)
- 			goto error;
-@@ -427,27 +439,23 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- 		if (err < 0)
- 			goto error;
- 
--		err = amdtp_stream_start(&tscm->rx_stream,
--				tscm->rx_resources.channel,
--				fw_parent_device(tscm->unit)->max_speed);
-+		err = amdtp_domain_add_stream(&tscm->domain, &tscm->rx_stream,
-+					      tscm->rx_resources.channel, spd);
- 		if (err < 0)
- 			goto error;
- 
--		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
--						CALLBACK_TIMEOUT)) {
--			err = -ETIMEDOUT;
-+		err = amdtp_domain_add_stream(&tscm->domain, &tscm->tx_stream,
-+					      tscm->tx_resources.channel, spd);
-+		if (err < 0)
- 			goto error;
--		}
--	}
- 
--	if (!amdtp_stream_running(&tscm->tx_stream)) {
--		err = amdtp_stream_start(&tscm->tx_stream,
--				tscm->tx_resources.channel,
--				fw_parent_device(tscm->unit)->max_speed);
-+		err = amdtp_domain_start(&tscm->domain);
- 		if (err < 0)
--			goto error;
-+			return err;
- 
--		if (!amdtp_stream_wait_callback(&tscm->tx_stream,
-+		if (!amdtp_stream_wait_callback(&tscm->rx_stream,
-+						CALLBACK_TIMEOUT) ||
-+		    !amdtp_stream_wait_callback(&tscm->tx_stream,
- 						CALLBACK_TIMEOUT)) {
- 			err = -ETIMEDOUT;
- 			goto error;
-@@ -456,6 +464,7 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- 
- 	return 0;
- error:
-+	amdtp_domain_stop(&tscm->domain);
- 	finish_session(tscm);
- 
- 	return err;
-@@ -464,6 +473,7 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate)
- void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm)
- {
- 	if (tscm->substreams_counter == 0) {
-+		amdtp_domain_stop(&tscm->domain);
- 		finish_session(tscm);
- 
- 		fw_iso_resources_free(&tscm->tx_resources);
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 734e5bb9c3da..64a2e4d2bbfe 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -97,6 +97,8 @@ struct snd_tscm {
- 	struct snd_firewire_tascam_change queue[SND_TSCM_QUEUE_COUNT];
- 	unsigned int pull_pos;
- 	unsigned int push_pos;
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+index 09d1451d7de4..350ee2c16f4a 100644
+--- a/sound/firewire/motu/motu.h
++++ b/sound/firewire/motu/motu.h
+@@ -69,6 +69,8 @@ struct snd_motu {
+ 	int dev_lock_count;
+ 	bool dev_lock_changed;
+ 	wait_queue_head_t hwdep_wait;
 +
 +	struct amdtp_domain domain;
  };
  
- #define TSCM_ADDR_BASE			0xffff00000000ull
+ enum snd_motu_spec_flags {
 -- 
 2.20.1
