@@ -1,105 +1,104 @@
 From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [RFC PATCH 09/40] soundwire: cadence_master: fix usage of
- CONFIG_UPDATE
-Date: Mon, 5 Aug 2019 14:21:53 +0530
-Message-ID: <20190805085153.GB22437@buildpc-HP-Z230>
+Subject: Re: [RFC PATCH 21/40] soundwire: export helpers to find row and
+ column values
+Date: Mon, 5 Aug 2019 15:09:23 +0530
+Message-ID: <20190805093923.GC22437@buildpc-HP-Z230>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-10-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-22-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190725234032.21152-10-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190725234032.21152-22-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 25, 2019 at 06:40:01PM -0500, Pierre-Louis Bossart wrote:
-> Per the hardware documentation, all changes to MCP_CONFIG,
-> MCP_CONTROL, MCP_CMDCTRL and MCP_PHYCTRL need to be validated with a
-> self-clearing write to MCP_CONFIG_UPDATE.
+On Thu, Jul 25, 2019 at 06:40:13PM -0500, Pierre-Louis Bossart wrote:
+> Add a prefix for common tables and export 2 helpers to set the frame
+> shapes based on row/col values.
 > 
-> For some reason, the existing code only does this write to
-> CONFIG_UPDATE when enabling interrupts. Add a helper and do the update
-> when the CONFIG is changed.
->
-
-the sequence of intel_probe is as follows:
-1. intel_link_power_up
-2. intel_shim_init
-3. sdw_cdns_init
-4. sdw_cdns_enable_interrupt
-
-Since we do self-clearing write to MCP_CONFIG_UPDATE in
-sdw_cdns_enable_interrupt once for all the config changes,
-we dont perform it as part of sdw_cdns_init.
-
-It does make sense to seperate it out from sdw_cdns_enable_interrupt so
-that we can use when clockstop is enabled where we dont need to enable
-interrupts.
-
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/cadence_master.c | 29 +++++++++++++++++++++--------
->  1 file changed, 21 insertions(+), 8 deletions(-)
+>  drivers/soundwire/bus.h    |  7 +++++--
+>  drivers/soundwire/stream.c | 14 ++++++++------
+>  2 files changed, 13 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 9f611a1fff0a..eb46cf651d62 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -224,6 +224,22 @@ static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
->  	return -EAGAIN;
->  }
+> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> index 06ac4adb0074..c57c9c23f6ca 100644
+> --- a/drivers/soundwire/bus.h
+> +++ b/drivers/soundwire/bus.h
+> @@ -73,8 +73,11 @@ struct sdw_msg {
 >  
-> +/*
-> + * all changes to the MCP_CONFIG, MCP_CONTROL, MCP_CMDCTRL and MCP_PHYCTRL
-> + * need to be confirmed with a write to MCP_CONFIG_UPDATE
-> + */
-> +static int cdns_update_config(struct sdw_cdns *cdns)
-> +{
-> +	int ret;
+>  #define SDW_DOUBLE_RATE_FACTOR		2
+>  
+> -extern int rows[SDW_FRAME_ROWS];
+> -extern int cols[SDW_FRAME_COLS];
+> +extern int sdw_rows[SDW_FRAME_ROWS];
+> +extern int sdw_cols[SDW_FRAME_COLS];
 > +
-> +	ret = cdns_clear_bit(cdns, CDNS_MCP_CONFIG_UPDATE,
-> +			     CDNS_MCP_CONFIG_UPDATE_BIT);
-> +	if (ret < 0)
-> +		dev_err(cdns->dev, "Config update timedout\n");
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * debugfs
+> +int sdw_find_row_index(int row);
+> +int sdw_find_col_index(int col);
+
+We use index values only in bank switch operations to program registers. Do we
+really need to export sdw_find_row_index & sdw_find_col_index?? If i understand
+correctly the allocation algorithm only needs to know about cols and rows values
+and not index.
+
+>  
+>  /**
+>   * sdw_port_runtime: Runtime port parameters for Master or Slave
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index a0476755a459..53f5e790fcd7 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -21,37 +21,39 @@
+>   * The rows are arranged as per the array index value programmed
+>   * in register. The index 15 has dummy value 0 in order to fill hole.
 >   */
-> @@ -758,15 +774,9 @@ static int _cdns_enable_interrupt(struct sdw_cdns *cdns)
->   */
->  int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+> -int rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
+> +int sdw_rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
+>  			96, 100, 120, 128, 150, 160, 250, 0,
+>  			192, 200, 240, 256, 72, 144, 90, 180};
+>  
+> -int cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
+> +int sdw_cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
+>  
+> -static int sdw_find_col_index(int col)
+> +int sdw_find_col_index(int col)
 >  {
-> -	int ret;
-> -
->  	_cdns_enable_interrupt(cdns);
-> -	ret = cdns_clear_bit(cdns, CDNS_MCP_CONFIG_UPDATE,
-> -			     CDNS_MCP_CONFIG_UPDATE_BIT);
-> -	if (ret < 0)
-> -		dev_err(cdns->dev, "Config update timedout\n");
+>  	int i;
 >  
-> -	return ret;
-> +	return 0;
+>  	for (i = 0; i < SDW_FRAME_COLS; i++) {
+> -		if (cols[i] == col)
+> +		if (sdw_cols[i] == col)
+>  			return i;
+>  	}
+>  
+>  	pr_warn("Requested column not found, selecting lowest column no: 2\n");
+>  	return 0;
 >  }
->  EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
+> +EXPORT_SYMBOL(sdw_find_col_index);
 >  
-> @@ -943,7 +953,10 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+> -static int sdw_find_row_index(int row)
+> +int sdw_find_row_index(int row)
+>  {
+>  	int i;
 >  
->  	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
+>  	for (i = 0; i < SDW_FRAME_ROWS; i++) {
+> -		if (rows[i] == row)
+> +		if (sdw_rows[i] == row)
+>  			return i;
+>  	}
 >  
-> -	return 0;
-> +	/* commit changes */
-> +	ret = cdns_update_config(cdns);
-> +
-> +	return ret;
+>  	pr_warn("Requested row not found, selecting lowest row no: 48\n");
+>  	return 0;
 >  }
->  EXPORT_SYMBOL(sdw_cdns_init);
+> +EXPORT_SYMBOL(sdw_find_row_index);
 >  
+>  static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+>  					  struct sdw_slave *slave,
 > -- 
 > 2.20.1
 > 
