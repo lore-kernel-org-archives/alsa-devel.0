@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 23/40] soundwire: stream: fix disable
- sequence
-Date: Mon, 5 Aug 2019 10:33:25 -0500
-Message-ID: <12799e97-d6e3-5027-a409-0fe37dba86fd@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 25/40] soundwire: intel: use BIOS
+ information to set clock dividers
+Date: Mon, 5 Aug 2019 10:40:13 -0500
+Message-ID: <dc04e596-a16e-257c-ee53-3bc820b7eea0@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-24-pierre-louis.bossart@linux.intel.com>
- <20190805095620.GD22437@buildpc-HP-Z230>
+ <20190725234032.21152-26-pierre-louis.bossart@linux.intel.com>
+ <20190805102828.GF22437@buildpc-HP-Z230>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190805095620.GD22437@buildpc-HP-Z230>
+In-Reply-To: <20190805102828.GF22437@buildpc-HP-Z230>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Sanyog Kale <sanyog.r.kale@intel.com>
@@ -19,72 +19,101 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 8/5/19 4:56 AM, Sanyog Kale wrote:
-> On Thu, Jul 25, 2019 at 06:40:15PM -0500, Pierre-Louis Bossart wrote:
->> When we disable the stream and then call hw_free, two bank switches
->> will be handled and as a result we re-enable the stream on hw_free.
->>
-> 
-> I didnt quite get why there will be two bank switches as part of disable flow
-> which leads to enabling of stream?
-
-You have two bank switches, one to stop streaming and on in de-prepare. 
-It's symmetrical with the start sequence, where we do a bank switch to 
-prepare and another to enable.
-
-Let's assume we are using bank0 when streaming.
-
-Before the first bank switch, the channel_enable is set to false in the 
-alternate bank1. When the bank switch happens, bank1 become active and 
-the streaming stops. But bank0 registers have not been modified so when 
-we do the second bank switch in de-prepare we make bank0 active, and the 
-ch_enable bits are still set so streaming will restart... When we stop 
-streaming, we need to make sure the ch_enable bits are cleared in the 
-two banks.
-
-
-> 
->> Make sure the stream is disabled on both banks.
->>
->> TODO: we need to completely revisit all this and make sure we have a
->> mirroring mechanism between current and alternate banks.
+On 8/5/19 5:28 AM, Sanyog Kale wrote:
+> On Thu, Jul 25, 2019 at 06:40:17PM -0500, Pierre-Louis Bossart wrote:
+>> The BIOS provides an Intel-specific property, let's use it to avoid
+>> hard-coded clock dividers.
 >>
 >> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 >> ---
->>   drivers/soundwire/stream.c | 19 ++++++++++++++++++-
->>   1 file changed, 18 insertions(+), 1 deletion(-)
+>>   drivers/soundwire/cadence_master.c | 26 ++++++++++++++++++++++----
+>>   drivers/soundwire/intel.c          | 26 ++++++++++++++++++++++++++
+>>   include/linux/soundwire/sdw.h      |  2 ++
+>>   3 files changed, 50 insertions(+), 4 deletions(-)
 >>
->> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
->> index 53f5e790fcd7..75b9ad1fb1a6 100644
->> --- a/drivers/soundwire/stream.c
->> +++ b/drivers/soundwire/stream.c
->> @@ -1637,7 +1637,24 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
->>   		}
+>> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+>> index d84344e29f71..10ebcef2e84e 100644
+>> --- a/drivers/soundwire/cadence_master.c
+>> +++ b/drivers/soundwire/cadence_master.c
+>> @@ -173,8 +173,6 @@
+>>   #define CDNS_PDI_CONFIG_PORT			GENMASK(4, 0)
+>>   
+>>   /* Driver defaults */
+>> -
+>> -#define CDNS_DEFAULT_CLK_DIVIDER		0
+>>   #define CDNS_DEFAULT_SSP_INTERVAL		0x18
+>>   #define CDNS_TX_TIMEOUT				2000
+>>   
+>> @@ -973,7 +971,10 @@ static u32 cdns_set_default_frame_shape(int n_rows, int n_cols)
+>>    */
+>>   int sdw_cdns_init(struct sdw_cdns *cdns)
+>>   {
+>> +	struct sdw_bus *bus = &cdns->bus;
+>> +	struct sdw_master_prop *prop = &bus->prop;
+>>   	u32 val;
+>> +	int divider;
+>>   	int ret;
+>>   
+>>   	/* Exit clock stop */
+>> @@ -985,9 +986,17 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
 >>   	}
 >>   
->> -	return do_bank_switch(stream);
->> +	ret = do_bank_switch(stream);
->> +	if (ret < 0) {
->> +		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	/* make sure alternate bank (previous current) is also disabled */
->> +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
->> +		bus = m_rt->bus;
->> +		/* Disable port(s) */
->> +		ret = sdw_enable_disable_ports(m_rt, false);
->> +		if (ret < 0) {
->> +			dev_err(bus->dev, "Disable port(s) failed: %d\n", ret);
->> +			return ret;
->> +		}
->> +	}
->> +
->> +	return 0;
->>   }
->>   
->>   /**
->> -- 
->> 2.20.1
->>
+>>   	/* Set clock divider */
+>> +	divider	= (prop->mclk_freq / prop->max_clk_freq) - 1;
 > 
+> Do you expect mclk_freq and max_clk_freq to be same?
+
+Nope. For Icelake the MCLK is 38.4 MHz and is, but the max_clk needs to 
+be 9.6 max (can't be higher per the SoundWire spec).
+
+The max_clk_freq may even be lower thank 9.6 MHz due to specific 
+topologies where the higher frequencies are problematic if the trace 
+lengths are too long.
+
+For CNL/CML the MCLK is 24 MHz but ironically we run the bus at 12 MHz, 
+so the divider is smaller.
+
+> 
+>>   	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
+>> -	val |= CDNS_DEFAULT_CLK_DIVIDER;
+>> +	val |= divider;
+>>   	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
+>> +	cdns_writel(cdns, CDNS_MCP_CLK_CTRL1, val);
+>> +
+>> +	pr_err("plb: mclk %d max_freq %d divider %d register %x\n",
+>> +	       prop->mclk_freq,
+>> +	       prop->max_clk_freq,
+>> +	       divider,
+>> +	       val);
+> 
+> This can be removed.
+
+yes, done already.
+
+> 
+>>   
+>>   	/* Set the default frame shape */
+>>   	val = cdns_set_default_frame_shape(prop->default_row,
+>> @@ -1035,6 +1044,7 @@ EXPORT_SYMBOL(sdw_cdns_init);
+>>   
+>>   int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+>>   {
+>> +	struct sdw_master_prop *prop = &bus->prop;
+>>   	struct sdw_cdns *cdns = bus_to_cdns(bus);
+>>   	int mcp_clkctrl_off, mcp_clkctrl;
+>>   	int divider;
+>> @@ -1044,7 +1054,9 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	divider	= (params->max_dr_freq / params->curr_dr_freq) - 1;
+>> +	divider	= prop->mclk_freq * SDW_DOUBLE_RATE_FACTOR /
+> 
+> What is the reason for not using max_dr_freq? Its precomputed as
+> prop->max_clk_freq * SDW_DOUBLE_RATE_FACTOR;
+
+no, as explained above the divider needs to start from the clock 
+provided to the IP, which is different from the max frequency clock the 
+bus operates at. the MCLK is a fixed value for all platforms using the 
+same SOC/PCH, the max_clk is platform-dependent and its value is 
+provided by the firmware (BIOS/DT).
