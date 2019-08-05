@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: soc-component: add
-	snd_soc_pcm_component_pcm_free()" to the asoc tree
-Date: Mon,  5 Aug 2019 17:09:55 +0100 (BST)
-Message-ID: <20190805160955.EC6A12742D06@ypsilon.sirena.org.uk>
-References: <87k1c54czu.wl-kuninori.morimoto.gx@renesas.com>
+	snd_soc_pcm_component_page()" to the asoc tree
+Date: Mon,  5 Aug 2019 17:09:56 +0100 (BST)
+Message-ID: <20190805160956.A05B62742EB3@ypsilon.sirena.org.uk>
+References: <87o91h4d06.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECE3CF80529
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:09:57 +0200 (CEST)
-In-Reply-To: <87k1c54czu.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76CF5F800F3
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:09:58 +0200 (CEST)
+In-Reply-To: <87o91h4d06.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-component: add snd_soc_pcm_component_pcm_free()
+   ASoC: soc-component: add snd_soc_pcm_component_page()
 
 has been applied to the asoc tree at
 
@@ -55,12 +55,12 @@ to this mail.
 Thanks,
 Mark
 
->From 79776da0989733a5bac0a1e635e3a284c3f5c745 Mon Sep 17 00:00:00 2001
+>From 9c712e4f57229081e837d593fc1e4183b068a41c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 26 Jul 2019 13:52:12 +0900
-Subject: [PATCH] ASoC: soc-component: add snd_soc_pcm_component_pcm_free()
+Date: Fri, 26 Jul 2019 13:52:00 +0900
+Subject: [PATCH] ASoC: soc-component: add snd_soc_pcm_component_page()
 
-Current ALSA SoC is directly using component->driver->xxx,
+Current ALSA SoC is directly using component->driver->ops->xxx,
 thus, the code nested deeply, and it makes code difficult to read,
 and is not good for encapsulation.
 
@@ -70,72 +70,103 @@ connected component.
 
 Let's call component related function which need to care with
 for_each_rtdcom() loop as snd_soc_pcm_component_xxx().
-This patch adds new snd_soc_pcm_component_pcm_free() and use it.
+This patch adds new snd_soc_pcm_component_page() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87k1c54czu.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87o91h4d06.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-component.h |  1 +
- sound/soc/soc-component.c     | 14 ++++++++++++++
- sound/soc/soc-pcm.c           |  9 +--------
- 3 files changed, 16 insertions(+), 8 deletions(-)
+ include/sound/soc-component.h |  2 ++
+ sound/soc/soc-component.c     | 23 +++++++++++++++++++++++
+ sound/soc/soc-pcm.c           | 26 +-------------------------
+ 3 files changed, 26 insertions(+), 25 deletions(-)
 
 diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index d3048ad06582..5d80b2eef525 100644
+index 6b95d2467053..4cab257962a6 100644
 --- a/include/sound/soc-component.h
 +++ b/include/sound/soc-component.h
-@@ -382,5 +382,6 @@ struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
- int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
- 			       struct vm_area_struct *vma);
- int snd_soc_pcm_component_new(struct snd_pcm *pcm);
-+void snd_soc_pcm_component_free(struct snd_pcm *pcm);
+@@ -377,5 +377,7 @@ int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
+ int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
+ 				    int channel, unsigned long pos,
+ 				    void __user *buf, unsigned long bytes);
++struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
++					unsigned long offset);
  
  #endif /* __SOC_COMPONENT_H */
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index ff13d901bbab..79ffc2820ba9 100644
+index 20897dce1bec..d503bc9b0850 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -545,3 +545,17 @@ int snd_soc_pcm_component_new(struct snd_pcm *pcm)
+@@ -483,3 +483,26 @@ int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
  
- 	return 0;
+ 	return -EINVAL;
  }
 +
-+void snd_soc_pcm_component_free(struct snd_pcm *pcm)
++struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
++					unsigned long offset)
 +{
-+	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_rtdcom_list *rtdcom;
 +	struct snd_soc_component *component;
++	struct page *page;
 +
 +	for_each_rtdcom(rtd, rtdcom) {
 +		component = rtdcom->component;
 +
-+		if (component->driver->pcm_free)
-+			component->driver->pcm_free(pcm);
++		/* FIXME. it returns 1st page now */
++		if (component->driver->ops &&
++		    component->driver->ops->page) {
++			page = component->driver->ops->page(substream, offset);
++			if (page)
++				return page;
++		}
 +	}
++
++	return NULL;
 +}
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 955c49fd3bda..77c986fe08d0 100644
+index b0e6ce89b012..fe34f2e5d75e 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2805,17 +2805,10 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
- static void soc_pcm_private_free(struct snd_pcm *pcm)
- {
- 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+@@ -2818,30 +2818,6 @@ static void soc_pcm_private_free(struct snd_pcm *pcm)
+ 	}
+ }
+ 
+-static struct page *soc_rtdcom_page(struct snd_pcm_substream *substream,
+-				    unsigned long offset)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_rtdcom_list *rtdcom;
 -	struct snd_soc_component *component;
- 
- 	/* need to sync the delayed work before releasing resources */
- 	flush_delayed_work(&rtd->delayed_work);
+-	struct page *page;
+-
 -	for_each_rtdcom(rtd, rtdcom) {
 -		component = rtdcom->component;
 -
--		if (component->driver->pcm_free)
--			component->driver->pcm_free(pcm);
+-		if (!component->driver->ops ||
+-		    !component->driver->ops->page)
+-			continue;
+-
+-		/* FIXME. it returns 1st page now */
+-		page = component->driver->ops->page(substream, offset);
+-		if (page)
+-			return page;
 -	}
-+	snd_soc_pcm_component_free(pcm);
- }
- 
- /* create a new pcm */
+-
+-	return NULL;
+-}
+-
+ static int soc_rtdcom_mmap(struct snd_pcm_substream *substream,
+ 			   struct vm_area_struct *vma)
+ {
+@@ -2990,7 +2966,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		if (ops->copy_user)
+ 			rtd->ops.copy_user	= snd_soc_pcm_component_copy_user;
+ 		if (ops->page)
+-			rtd->ops.page		= soc_rtdcom_page;
++			rtd->ops.page		= snd_soc_pcm_component_page;
+ 		if (ops->mmap)
+ 			rtd->ops.mmap		= soc_rtdcom_mmap;
+ 	}
 -- 
 2.20.1
