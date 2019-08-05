@@ -1,79 +1,115 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 27/40] soundwire: Add Intel resource
- management algorithm
-Date: Mon, 5 Aug 2019 14:08:28 -0500
-Message-ID: <89fe8170-c252-5bea-a565-631e5b682dbb@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 23/40] soundwire: stream: fix disable
+ sequence
+Date: Mon, 5 Aug 2019 14:12:07 -0500
+Message-ID: <078f19d4-5a2f-91bf-43a3-7c92eacd8fc1@linux.intel.com>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-28-pierre-louis.bossart@linux.intel.com>
- <20190805165422.GB24889@buildpc-HP-Z230>
+ <20190725234032.21152-24-pierre-louis.bossart@linux.intel.com>
+ <20190805095620.GD22437@buildpc-HP-Z230>
+ <12799e97-d6e3-5027-a409-0fe37dba86fd@linux.intel.com>
+ <20190805163233.GA24889@buildpc-HP-Z230>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3C20F800F3
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 21:08:32 +0200 (CEST)
-In-Reply-To: <20190805165422.GB24889@buildpc-HP-Z230>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190805163233.GA24889@buildpc-HP-Z230>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
->> +static int sdw_select_row_col(struct sdw_bus *bus, int clk_freq)
->> +{
->> +	struct sdw_master_prop *prop = &bus->prop;
->> +	int frame_int, frame_freq;
->> +	int r, c;
->> +
->> +	for (c = 0; c < SDW_FRAME_COLS; c++) {
->> +		for (r = 0; r < SDW_FRAME_ROWS; r++) {
->> +			if (sdw_rows[r] != prop->default_row ||
->> +			    sdw_cols[c] != prop->default_col)
->> +				continue;
-> 
-> Are we only supporting default rows and cols?
 
-for now yes. Note that the default is defined by firmware and e.g. 
-different for ICL (50x4) and CML (125x2). The firmware itself also 
-provides a single clock value so we'd need to override the DSDT or force 
-the properties to be different to use multiple gears.
-
-This will probably change at some point when we have multiple device per 
-link. SoundWire 1.2 devices also provide a standard means to control the 
-clock, otherwise with SoundWire 1.1 the clock management requires quite 
-a bit of imp-def changes that we have not tested.
-
-> 
->> +
->> +			frame_int = sdw_rows[r] * sdw_cols[c];
->> +			frame_freq = clk_freq / frame_int;
->> +
->> +			if ((clk_freq - (frame_freq * SDW_FRAME_CTRL_BITS)) <
->> +			    bus->params.bandwidth)
->> +				continue;
->> +
->> +			bus->params.row = sdw_rows[r];
->> +			bus->params.col = sdw_cols[c];
->> +			return 0;
->> +		}
->> +	}
->> +
->> +	return -EINVAL;
->> +}
->> +
->> -- 
->> 2.20.1
+On 8/5/19 11:32 AM, Sanyog Kale wrote:
+> On Mon, Aug 05, 2019 at 10:33:25AM -0500, Pierre-Louis Bossart wrote:
 >>
+>>
+>> On 8/5/19 4:56 AM, Sanyog Kale wrote:
+>>> On Thu, Jul 25, 2019 at 06:40:15PM -0500, Pierre-Louis Bossart wrote:
+>>>> When we disable the stream and then call hw_free, two bank switches
+>>>> will be handled and as a result we re-enable the stream on hw_free.
+>>>>
+>>>
+>>> I didnt quite get why there will be two bank switches as part of disable flow
+>>> which leads to enabling of stream?
+>>
+>> You have two bank switches, one to stop streaming and on in de-prepare. It's
+>> symmetrical with the start sequence, where we do a bank switch to prepare
+>> and another to enable.
+> 
+> Got it. I misunderstood it that two bank switches are performed as part of
+> disable_stream.
+> 
+>>
+>> Let's assume we are using bank0 when streaming.
+>>
+>> Before the first bank switch, the channel_enable is set to false in the
+>> alternate bank1. When the bank switch happens, bank1 become active and the
+>> streaming stops. But bank0 registers have not been modified so when we do
+>> the second bank switch in de-prepare we make bank0 active, and the ch_enable
+>> bits are still set so streaming will restart... When we stop streaming, we
+>> need to make sure the ch_enable bits are cleared in the two banks.
+> 
+> This is clear. Even though the channels remains enabled, i believe there
+> won't be any data pushed on lines as stream will be closed.
+
+Actually the link remains active. We tested this by setting the PRBS 
+data mode and the Slave device detects when we artificially inject errors.
+
+There is however no data consumption on the DMA side of the Master IP 
+since the DMA is indeed stopped.
+
+> 
+> Regarding mirroring approach, I assume after bank switch we will take
+> snapshot of active bank and program same in inactive bank.
+
+That should be the approach yes.
+
+> 
+>>
+>>
+>>>
+>>>> Make sure the stream is disabled on both banks.
+>>>>
+>>>> TODO: we need to completely revisit all this and make sure we have a
+>>>> mirroring mechanism between current and alternate banks.
+>>>>
+>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>> ---
+>>>>    drivers/soundwire/stream.c | 19 ++++++++++++++++++-
+>>>>    1 file changed, 18 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+>>>> index 53f5e790fcd7..75b9ad1fb1a6 100644
+>>>> --- a/drivers/soundwire/stream.c
+>>>> +++ b/drivers/soundwire/stream.c
+>>>> @@ -1637,7 +1637,24 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
+>>>>    		}
+>>>>    	}
+>>>> -	return do_bank_switch(stream);
+>>>> +	ret = do_bank_switch(stream);
+>>>> +	if (ret < 0) {
+>>>> +		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
+>>>> +		return ret;
+>>>> +	}
+>>>> +
+>>>> +	/* make sure alternate bank (previous current) is also disabled */
+>>>> +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+>>>> +		bus = m_rt->bus;
+>>>> +		/* Disable port(s) */
+>>>> +		ret = sdw_enable_disable_ports(m_rt, false);
+>>>> +		if (ret < 0) {
+>>>> +			dev_err(bus->dev, "Disable port(s) failed: %d\n", ret);
+>>>> +			return ret;
+>>>> +		}
+>>>> +	}
+>>>> +
+>>>> +	return 0;
+>>>>    }
+>>>>    /**
+>>>> -- 
+>>>> 2.20.1
+>>>>
+>>>
 > 
