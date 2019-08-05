@@ -1,189 +1,124 @@
 From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [RFC PATCH 27/40] soundwire: Add Intel resource
- management algorithm
-Date: Mon, 5 Aug 2019 22:24:22 +0530
-Message-ID: <20190805165422.GB24889@buildpc-HP-Z230>
+Subject: Re: [RFC PATCH 28/40] soundwire: intel: handle disabled links
+Date: Mon, 5 Aug 2019 22:27:29 +0530
+Message-ID: <20190805165729.GC24889@buildpc-HP-Z230>
 References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
- <20190725234032.21152-28-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-29-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BDAEF800F3
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:52:35 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190725234032.21152-28-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20190725234032.21152-29-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 25, 2019 at 06:40:19PM -0500, Pierre-Louis Bossart wrote:
-> This algorithm computes bus parameters like clock frequency, frame
-> shape and port transport parameters based on active stream(s) running
-> on the bus.
+On Thu, Jul 25, 2019 at 06:40:20PM -0500, Pierre-Louis Bossart wrote:
+> On most hardware platforms, SoundWire interfaces are pin-muxed with
+> other interfaces (typically DMIC or I2S) and the status of each link
+> needs to be checked at boot time.
 > 
-> This implementation is optimal for Intel platforms. Developers can
-> also implement their own .compute_params() callback for specific
-> resource management algorithm.
-> 
-> Credits: this patch is based on an earlier internal contribution by
-> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
-> values were removed from the initial contribution to use BIOS
-> information instead.
-> 
-> FIXME: remove checkpatch report
-> WARNING: Reusing the krealloc arg is almost always a bug
-> +			group->rates = krealloc(group->rates,
+> For Intel platforms, the BIOS provides a menu to enable/disable the
+> links separately, and the information is provided to the OS with an
+> Intel-specific _DSD property. The same capability will be added to
+> revisions of the MIPI DisCo specification.
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/Makefile                  |   2 +-
->  drivers/soundwire/algo_dynamic_allocation.c | 403 ++++++++++++++++++++
->  drivers/soundwire/bus.c                     |   3 +
->  drivers/soundwire/bus.h                     |  46 ++-
->  drivers/soundwire/stream.c                  |  20 +
->  include/linux/soundwire/sdw.h               |   5 +
->  6 files changed, 476 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/soundwire/algo_dynamic_allocation.c
+>  drivers/soundwire/intel.c     | 26 ++++++++++++++++++++++----
+>  include/linux/soundwire/sdw.h |  2 ++
+>  2 files changed, 24 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-> index 88990cac48a7..f59a9d4a28fd 100644
-> --- a/drivers/soundwire/Makefile
-> +++ b/drivers/soundwire/Makefile
-> @@ -5,7 +5,7 @@
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index 796ac2bc8cea..5947fa8e840b 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -90,6 +90,8 @@
+>  #define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
+>  #define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
 >  
->  #Bus Objs
->  soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o \
-> -			debugfs.o
-> +			debugfs.o algo_dynamic_allocation.o
+> +#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE	BIT(1)
+> +
+>  enum intel_pdi_type {
+>  	INTEL_PDI_IN = 0,
+>  	INTEL_PDI_OUT = 1,
+> @@ -922,7 +924,7 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+>  	struct sdw_master_prop *prop = &bus->prop;
+>  	struct fwnode_handle *link;
+>  	char name[32];
+> -	int nval, i;
+> +	u32 quirk_mask;
 >  
->  obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+>  	/* Find master handle */
+>  	snprintf(name, sizeof(name),
+> @@ -937,6 +939,14 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+>  	fwnode_property_read_u32(link,
+>  				 "intel-sdw-ip-clock",
+>  				 &prop->mclk_freq);
+> +
+> +	fwnode_property_read_u32(link,
+> +				 "intel-quirk-mask",
+> +				 &quirk_mask);
+> +
+> +	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
+> +		prop->hw_disabled = true;
+> +
+>  	return 0;
+>  }
 >  
-> diff --git a/drivers/soundwire/algo_dynamic_allocation.c b/drivers/soundwire/algo_dynamic_allocation.c
-> new file mode 100644
-> index 000000000000..89edb39162b8
-> --- /dev/null
-> +++ b/drivers/soundwire/algo_dynamic_allocation.c
-> @@ -0,0 +1,403 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +// Copyright(c) 2015-18 Intel Corporation.
-> +
-> +/*
-> + * Bandwidth management algorithm based on 2^n gears
-> + *
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/slab.h>
-> +#include <linux/soundwire/sdw.h>
-> +#include "bus.h"
-> +
-> +#define SDW_STRM_RATE_GROUPING		1
-> +
-> +struct sdw_group_params {
-> +	unsigned int rate;
-> +	int full_bw;
-> +	int payload_bw;
-> +	int hwidth;
-> +};
-> +
-> +struct sdw_group {
-> +	unsigned int count;
-> +	unsigned int max_size;
-> +	unsigned int *rates;
-> +};
-> +
-> +struct sdw_transport_data {
-> +	int hstart;
-> +	int hstop;
-> +	int block_offset;
-> +	int sub_block_offset;
-> +};
-> +
-> +
-> +/**
-> + * sdw_compute_port_params: Compute transport and port parameters
-> + *
-> + * @bus: SDW Bus instance
-> + */
-> +static int sdw_compute_port_params(struct sdw_bus *bus)
-> +{
-> +	struct sdw_group_params *params = NULL;
-> +	struct sdw_group group;
-> +	int ret;
-> +
-> +	ret = sdw_get_group_count(bus, &group);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	if (group.count == 0)
-> +		goto out;
-> +
-> +	params = kcalloc(group.count, sizeof(*params), GFP_KERNEL);
-> +	if (!params) {
-> +		ret = -ENOMEM;
-> +		goto out;
+> @@ -997,6 +1007,12 @@ static int intel_probe(struct platform_device *pdev)
+>  		goto err_master_reg;
+>  	}
+>  
+> +	if (sdw->cdns.bus.prop.hw_disabled) {
+> +		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
+> +			 sdw->cdns.bus.link_id);
+> +		return 0;
 > +	}
 > +
-> +	/* Compute transport parameters for grouped streams */
-> +	ret = sdw_compute_group_params(bus, params,
-> +				       &group.rates[0], group.count);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	_sdw_compute_port_params(bus, params, group.count);
-> +
-> +out:
-> +	kfree(params);
-> +	kfree(group.rates);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sdw_select_row_col(struct sdw_bus *bus, int clk_freq)
-> +{
-> +	struct sdw_master_prop *prop = &bus->prop;
-> +	int frame_int, frame_freq;
-> +	int r, c;
-> +
-> +	for (c = 0; c < SDW_FRAME_COLS; c++) {
-> +		for (r = 0; r < SDW_FRAME_ROWS; r++) {
-> +			if (sdw_rows[r] != prop->default_row ||
-> +			    sdw_cols[c] != prop->default_col)
-> +				continue;
-
-Are we only supporting default rows and cols?
-
-> +
-> +			frame_int = sdw_rows[r] * sdw_cols[c];
-> +			frame_freq = clk_freq / frame_int;
-> +
-> +			if ((clk_freq - (frame_freq * SDW_FRAME_CTRL_BITS)) <
-> +			    bus->params.bandwidth)
-> +				continue;
-> +
-> +			bus->params.row = sdw_rows[r];
-> +			bus->params.col = sdw_cols[c];
-> +			return 0;
-> +		}
+>  	/* Initialize shim and controller */
+>  	intel_link_power_up(sdw);
+>  	intel_shim_init(sdw);
+> @@ -1050,9 +1066,11 @@ static int intel_remove(struct platform_device *pdev)
+>  
+>  	sdw = platform_get_drvdata(pdev);
+>  
+> -	intel_debugfs_exit(sdw);
+> -	free_irq(sdw->res->irq, sdw);
+> -	snd_soc_unregister_component(sdw->cdns.dev);
+> +	if (!sdw->cdns.bus.prop.hw_disabled) {
+> +		intel_debugfs_exit(sdw);
+> +		free_irq(sdw->res->irq, sdw);
+> +		snd_soc_unregister_component(sdw->cdns.dev);
 > +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
+>  	sdw_delete_bus_master(&sdw->cdns.bus);
+>  
+>  	return 0;
+> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> index c7dfc824be80..f78b076a8782 100644
+> --- a/include/linux/soundwire/sdw.h
+> +++ b/include/linux/soundwire/sdw.h
+> @@ -380,6 +380,7 @@ struct sdw_slave_prop {
+>   * @err_threshold: Number of times that software may retry sending a single
+>   * command
+>   * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
+> + * @hw_disabled: if true, the Master is not functional, typically due to pin-mux
+>   */
+>  struct sdw_master_prop {
+>  	u32 revision;
+> @@ -395,6 +396,7 @@ struct sdw_master_prop {
+>  	bool dynamic_frame;
+>  	u32 err_threshold;
+>  	u32 mclk_freq;
+> +	bool hw_disabled;
+
+Do we have such cases where some of SoundWire links are disabled and
+some enabled?
+
+>  };
+>  
+>  int sdw_master_read_prop(struct sdw_bus *bus);
 > -- 
 > 2.20.1
 > 
