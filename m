@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: soc-component: add
-	snd_soc_component_hw_free()" to the asoc tree
+	snd_soc_component_hw_params()" to the asoc tree
 Date: Mon,  5 Aug 2019 17:10:00 +0100 (BST)
-Message-ID: <20190805161000.461F62742EB0@ypsilon.sirena.org.uk>
-References: <87a7d15rna.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190805161000.834A22742E44@ypsilon.sirena.org.uk>
+References: <87blxh5rnf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AD4AF805FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04048F805FC
  for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:10:01 +0200 (CEST)
-In-Reply-To: <87a7d15rna.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87blxh5rnf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-component: add snd_soc_component_hw_free()
+   ASoC: soc-component: add snd_soc_component_hw_params()
 
 has been applied to the asoc tree at
 
@@ -55,83 +55,73 @@ to this mail.
 Thanks,
 Mark
 
->From eae7136aa2083699c69de5890fd6c32c501952b5 Mon Sep 17 00:00:00 2001
+>From 245c539a1206d74e8508a07550fb7c99d0817b8c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 26 Jul 2019 13:50:24 +0900
-Subject: [PATCH] ASoC: soc-component: add snd_soc_component_hw_free()
+Date: Fri, 26 Jul 2019 13:50:19 +0900
+Subject: [PATCH] ASoC: soc-component: add snd_soc_component_hw_params()
 
 Current ALSA SoC is directly using component->driver->ops->xxx,
 thus, it is deep nested, and makes code difficult to read,
 and is not good for encapsulation.
-This patch adds new snd_soc_component_hw_free() and use it.
+This patch adds new snd_soc_component_hw_params() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87a7d15rna.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87blxh5rnf.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-component.h |  2 ++
- sound/soc/soc-component.c     | 10 ++++++++++
- sound/soc/soc-pcm.c           |  9 +++------
- 3 files changed, 15 insertions(+), 6 deletions(-)
+ include/sound/soc-component.h |  3 +++
+ sound/soc/soc-component.c     | 11 +++++++++++
+ sound/soc/soc-pcm.c           |  6 +-----
+ 3 files changed, 15 insertions(+), 5 deletions(-)
 
 diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 778a6e7d352d..fbcd911ac25e 100644
+index ff8233014444..778a6e7d352d 100644
 --- a/include/sound/soc-component.h
 +++ b/include/sound/soc-component.h
-@@ -348,5 +348,7 @@ int snd_soc_component_prepare(struct snd_soc_component *component,
- int snd_soc_component_hw_params(struct snd_soc_component *component,
- 				struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params);
-+int snd_soc_component_hw_free(struct snd_soc_component *component,
-+			      struct snd_pcm_substream *substream);
+@@ -345,5 +345,8 @@ int snd_soc_component_close(struct snd_soc_component *component,
+ 			    struct snd_pcm_substream *substream);
+ int snd_soc_component_prepare(struct snd_soc_component *component,
+ 			      struct snd_pcm_substream *substream);
++int snd_soc_component_hw_params(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params);
  
  #endif /* __SOC_COMPONENT_H */
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 7b6456370da5..e2bc34efe547 100644
+index 733d7139d875..7b6456370da5 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -326,3 +326,13 @@ int snd_soc_component_hw_params(struct snd_soc_component *component,
+@@ -315,3 +315,14 @@ int snd_soc_component_prepare(struct snd_soc_component *component,
  
  	return 0;
  }
 +
-+int snd_soc_component_hw_free(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream)
++int snd_soc_component_hw_params(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
 +{
 +	if (component->driver->ops &&
-+	    component->driver->ops->hw_free)
-+		return component->driver->ops->hw_free(substream);
++	    component->driver->ops->hw_params)
++		return component->driver->ops->hw_params(substream, params);
 +
 +	return 0;
 +}
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 8be1d22dc87a..8c5289904f20 100644
+index c7fee67bc0dc..8be1d22dc87a 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -847,6 +847,7 @@ static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_component *component;
-+	int ret = 0;
- 
+@@ -951,11 +951,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
  	for_each_rtdcom(rtd, rtdcom) {
  		component = rtdcom->component;
-@@ -854,14 +855,10 @@ static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
- 		if (component == last)
- 			break;
  
 -		if (!component->driver->ops ||
--		    !component->driver->ops->hw_free)
+-		    !component->driver->ops->hw_params)
 -			continue;
 -
--		component->driver->ops->hw_free(substream);
-+		ret |= snd_soc_component_hw_free(component, substream);
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- /*
+-		ret = component->driver->ops->hw_params(substream, params);
++		ret = snd_soc_component_hw_params(component, substream, params);
+ 		if (ret < 0) {
+ 			dev_err(component->dev,
+ 				"ASoC: %s hw params failed: %d\n",
 -- 
 2.20.1
