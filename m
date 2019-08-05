@@ -1,8 +1,8 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Subject: Re: [Sound-open-firmware] Signed firmware availability
  for kbl/cnl
-Date: Mon, 05 Aug 2019 15:36:35 +0100
-Message-ID: <3aee07466dcb990ce27551224a4548a8ef37e2bb.camel@linux.intel.com>
+Date: Mon, 05 Aug 2019 15:39:20 +0100
+Message-ID: <ed0c9e8fe9939a8d9a56337ed68802100f049044.camel@linux.intel.com>
 References: <CAD8Lp45Bp1xVC7NjuNaANA7kAEN2Edshw+cViaTF3tRZEumgZA@mail.gmail.com>
  <cc9fa5b52138daffb09dc5b66ea9248379c9f60e.camel@linux.intel.com>
  <CAD8Lp46GW8n8K7ttOeSje_au06BsyvCp4seVwj2wNbipei5ssA@mail.gmail.com>
@@ -20,11 +20,12 @@ References: <CAD8Lp45Bp1xVC7NjuNaANA7kAEN2Edshw+cViaTF3tRZEumgZA@mail.gmail.com>
  <b7fae370-de17-f73c-c2a4-852acf6b31bc@perex.cz>
  <e59de17f39d65f0cef1249517ef1fdd374f399dd.camel@linux.intel.com>
  <3834d741-906e-1a6b-d6cb-cccb29f98fb4@perex.cz>
+ <52e5c627-44c0-146b-2652-0e2790bac74b@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <3834d741-906e-1a6b-d6cb-cccb29f98fb4@perex.cz>
+In-Reply-To: <52e5c627-44c0-146b-2652-0e2790bac74b@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,57 +35,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>
 Cc: Jian-Hong Pan <jian-hong@endlessm.com>, ALSA development <alsa-devel@alsa-project.org>, Daniel Drake <drake@endlessm.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2019-08-02 at 21:01 +0200, Jaroslav Kysela wrote:
-> > How would we get topology or FW version from the above
-> > identification ?
+On Fri, 2019-08-02 at 14:24 -0500, Pierre-Louis Bossart wrote:
+> > > Would we also use semantic versioning to align the UCM with the
+> > > topology and FW ? Currently we use semantic versioning for
+> > > topology and
+> > > FW.
+> > 
+> > If we have the versions exported to ther user space, the UCM
+> > configuration
+> > loader / parser can use this information to select or verify the
+> > right UCM
+> > configuration. The semantic versioning in UCM files sounds good to
+> > me, too.
 > 
-> It was just an example. We can compose the UCM filename from any
-> other
-> additional information passed from the kernel. Example component
-> strings for
-> USB and legacy HDA:
+> My understanding semantic versioning is that it provides means to
+> handle 
+> minor differences where a new capability is ignored in backwards 
+> compatible ways. This is what we use for SOF structures between
+> driver 
+> and firmware, new fields might be added but used or not depending on 
+> versions.
 > 
+> For UCM, the interaction with other layers is limited to stream
+> numbers 
+> and control names, so I am not sure what semantic versioning and 
+> backwards compatibility would mean here? I am all for it, but I
+> don't 
+> get how it would work.
 > 
->   Mixer name    : 'USB Mixer'
->   Components    : 'USB0bda:58fe'
-> 
->   Mixer name    : 'Realtek ALC298'
->   Components    : 'HDA:10ec0298,17aa222e,00100103'
-> 
-> So we should consider what to export for SOF. Perhaps string like:
-> 
->   'SOFP01234567:45670123,1:1:0-6cc8d,???TPLGVER???,3:7:0'
->   'SOFP{PCIID}:{PCISUBSYS},FW-VER,TPLG-VER,TPLG-ABI-VER'
-> 
-> It's just a proposal for the discussion.
 
-Ok, we will probably need TPLG-NAME in here so that we load the correct
-UCM based on TPLG NAME + HW.
-> 
-> By the way:
-> 
->   
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-May/149409.html
-> 
-> The component string extensions should be also considered for other
-> Intel SOC
-> drivers. It seems that the long_name is misused as the UCM
-> configuration
-> selector for other drivers like bytcr_rt5651.c etc. The long_name for
-> the
-> soundcard like 'bytcht-es8316-mono-spk-in2-mic' is not really fancy.
-> This
-> string is used in GUI.
-
-Sorry, do you mean it would be better to include some more encoding
-into the name to make them more unique and so that UI tools and users
-can better understand the UCM file features without reading the UCM
-file source ?
-
-Thanks
+My thinking here was to try and track the FW component kcontrol
+surfaces for UCM. But I thought some more about it and it's better to
+track using the single TPLG + UCM repo method to ensure alignment
+between UCM and TPLGs.
 
 Liam
