@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: soc-component: add
-	snd_soc_component_probe()" to the asoc tree
+	snd_soc_component_is_suspended()" to the asoc tree
 Date: Mon,  5 Aug 2019 17:09:59 +0100 (BST)
-Message-ID: <20190805160959.1034C2742EB0@ypsilon.sirena.org.uk>
-References: <8736it5rlt.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190805160959.4B5E42742D06@ypsilon.sirena.org.uk>
+References: <874l395rlx.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2771EF805DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B79DF805E2
  for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:10:00 +0200 (CEST)
-In-Reply-To: <8736it5rlt.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874l395rlx.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-component: add snd_soc_component_probe()
+   ASoC: soc-component: add snd_soc_component_is_suspended()
 
 has been applied to the asoc tree at
 
@@ -55,74 +55,71 @@ to this mail.
 Thanks,
 Mark
 
->From 08e837dd9e39bd3e25b1fa1a13f6ba44040e3f0d Mon Sep 17 00:00:00 2001
+>From e40fadbcef583808c11d2e86b8ac1c652731468e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 26 Jul 2019 13:51:17 +0900
-Subject: [PATCH] ASoC: soc-component: add snd_soc_component_probe()
+Date: Fri, 26 Jul 2019 13:51:13 +0900
+Subject: [PATCH] ASoC: soc-component: add snd_soc_component_is_suspended()
 
-Current ALSA SoC is directly using component->driver->xxx,
-thus, it is deep nested, and makes code difficult to read,
-and is not good for encapsulation.
-This patch adds new snd_soc_component_probe() and use it.
+Current ALSA SoC is directly using component->xxx,
+But, it is not good for encapsulation.
+This patch adds new snd_soc_component_is_suspended() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/8736it5rlt.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/874l395rlx.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-component.h |  1 +
- sound/soc/soc-component.c     |  8 ++++++++
- sound/soc/soc-core.c          | 12 +++++-------
- 3 files changed, 14 insertions(+), 7 deletions(-)
+ include/sound/soc-component.h | 1 +
+ sound/soc/soc-component.c     | 5 +++++
+ sound/soc/soc-core.c          | 5 ++---
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 9600dc4ca6b4..34e774efcf69 100644
+index 1e3b70855ba7..9600dc4ca6b4 100644
 --- a/include/sound/soc-component.h
 +++ b/include/sound/soc-component.h
-@@ -356,5 +356,6 @@ int snd_soc_component_trigger(struct snd_soc_component *component,
+@@ -355,5 +355,6 @@ int snd_soc_component_trigger(struct snd_soc_component *component,
+ 			      int cmd);
  void snd_soc_component_suspend(struct snd_soc_component *component);
  void snd_soc_component_resume(struct snd_soc_component *component);
- int snd_soc_component_is_suspended(struct snd_soc_component *component);
-+int snd_soc_component_probe(struct snd_soc_component *component);
++int snd_soc_component_is_suspended(struct snd_soc_component *component);
  
  #endif /* __SOC_COMPONENT_H */
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 0a9ca84d7ac6..b2bfc0375193 100644
+index cbae7672b72d..0a9ca84d7ac6 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -366,3 +366,11 @@ int snd_soc_component_is_suspended(struct snd_soc_component *component)
- {
- 	return component->suspended;
+@@ -361,3 +361,8 @@ void snd_soc_component_resume(struct snd_soc_component *component)
+ 		component->driver->resume(component);
+ 	component->suspended = 0;
  }
 +
-+int snd_soc_component_probe(struct snd_soc_component *component)
++int snd_soc_component_is_suspended(struct snd_soc_component *component)
 +{
-+	if (component->driver->probe)
-+		return component->driver->probe(component);
-+
-+	return 0;
++	return component->suspended;
 +}
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ea93edd328a2..6a422ddae130 100644
+index 6cdfe7b2fe06..ea93edd328a2 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1282,13 +1282,11 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		}
+@@ -503,7 +503,7 @@ int snd_soc_suspend(struct device *dev)
+ 		 * If there are paths active then the COMPONENT will be held
+ 		 * with bias _ON and should not be suspended.
+ 		 */
+-		if (!component->suspended) {
++		if (!snd_soc_component_is_suspended(component)) {
+ 			switch (snd_soc_dapm_get_bias_level(dapm)) {
+ 			case SND_SOC_BIAS_STANDBY:
+ 				/*
+@@ -592,9 +592,8 @@ static void soc_resume_deferred(struct work_struct *work)
  	}
  
--	if (component->driver->probe) {
--		ret = component->driver->probe(component);
--		if (ret < 0) {
--			dev_err(component->dev,
--				"ASoC: failed to probe component %d\n", ret);
--			goto err_probe;
+ 	for_each_card_components(card, component) {
+-		if (component->suspended) {
++		if (snd_soc_component_is_suspended(component))
+ 			snd_soc_component_resume(component);
 -		}
-+	ret = snd_soc_component_probe(component);
-+	if (ret < 0) {
-+		dev_err(component->dev,
-+			"ASoC: failed to probe component %d\n", ret);
-+		goto err_probe;
  	}
- 	WARN(dapm->idle_bias_off &&
- 	     dapm->bias_level != SND_SOC_BIAS_OFF,
+ 
+ 	for_each_card_rtds(card, rtd) {
 -- 
 2.20.1
