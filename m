@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: soc-component: add
-	snd_soc_component_of_xlate_dai_name()" to the asoc tree
-Date: Mon,  5 Aug 2019 17:09:58 +0100 (BST)
-Message-ID: <20190805160958.5A8A72742EB0@ypsilon.sirena.org.uk>
-References: <87y30l4d0z.wl-kuninori.morimoto.gx@renesas.com>
+	snd_soc_component_probe()" to the asoc tree
+Date: Mon,  5 Aug 2019 17:09:59 +0100 (BST)
+Message-ID: <20190805160959.1034C2742EB0@ypsilon.sirena.org.uk>
+References: <8736it5rlt.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE946F8059F
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:09:59 +0200 (CEST)
-In-Reply-To: <87y30l4d0z.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2771EF805DF
+ for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 18:10:00 +0200 (CEST)
+In-Reply-To: <8736it5rlt.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-component: add snd_soc_component_of_xlate_dai_name()
+   ASoC: soc-component: add snd_soc_component_probe()
 
 has been applied to the asoc tree at
 
@@ -55,74 +55,74 @@ to this mail.
 Thanks,
 Mark
 
->From a2a341752558cc67d6fe5c8ada7c16f9c3690f89 Mon Sep 17 00:00:00 2001
+>From 08e837dd9e39bd3e25b1fa1a13f6ba44040e3f0d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 26 Jul 2019 13:51:31 +0900
-Subject: [PATCH] ASoC: soc-component: add
- snd_soc_component_of_xlate_dai_name()
+Date: Fri, 26 Jul 2019 13:51:17 +0900
+Subject: [PATCH] ASoC: soc-component: add snd_soc_component_probe()
 
 Current ALSA SoC is directly using component->driver->xxx,
 thus, it is deep nested, and makes code difficult to read,
 and is not good for encapsulation.
-This patch adds new snd_soc_component_of_xlate_dai_name() and use it
+This patch adds new snd_soc_component_probe() and use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87y30l4d0z.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/8736it5rlt.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-component.h |  3 +++
- sound/soc/soc-component.c     | 10 ++++++++++
- sound/soc/soc-core.c          |  7 ++-----
- 3 files changed, 15 insertions(+), 5 deletions(-)
+ include/sound/soc-component.h |  1 +
+ sound/soc/soc-component.c     |  8 ++++++++
+ sound/soc/soc-core.c          | 12 +++++-------
+ 3 files changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 3f4acd337c4a..3ed2c39e45c2 100644
+index 9600dc4ca6b4..34e774efcf69 100644
 --- a/include/sound/soc-component.h
 +++ b/include/sound/soc-component.h
-@@ -360,5 +360,8 @@ int snd_soc_component_probe(struct snd_soc_component *component);
- void snd_soc_component_remove(struct snd_soc_component *component);
- int snd_soc_component_of_xlate_dai_id(struct snd_soc_component *component,
- 				      struct device_node *ep);
-+int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
-+					struct of_phandle_args *args,
-+					const char **dai_name);
+@@ -356,5 +356,6 @@ int snd_soc_component_trigger(struct snd_soc_component *component,
+ void snd_soc_component_suspend(struct snd_soc_component *component);
+ void snd_soc_component_resume(struct snd_soc_component *component);
+ int snd_soc_component_is_suspended(struct snd_soc_component *component);
++int snd_soc_component_probe(struct snd_soc_component *component);
  
  #endif /* __SOC_COMPONENT_H */
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index faf49992f661..de1bc5196f67 100644
+index 0a9ca84d7ac6..b2bfc0375193 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -389,3 +389,13 @@ int snd_soc_component_of_xlate_dai_id(struct snd_soc_component *component,
- 
- 	return -ENOTSUPP;
+@@ -366,3 +366,11 @@ int snd_soc_component_is_suspended(struct snd_soc_component *component)
+ {
+ 	return component->suspended;
  }
 +
-+int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
-+					struct of_phandle_args *args,
-+					const char **dai_name)
++int snd_soc_component_probe(struct snd_soc_component *component)
 +{
-+	if (component->driver->of_xlate_dai_name)
-+		return component->driver->of_xlate_dai_name(component,
-+						     args, dai_name);
-+	return -ENOTSUPP;
++	if (component->driver->probe)
++		return component->driver->probe(component);
++
++	return 0;
 +}
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f63d09dd55f4..2f068c239f34 100644
+index ea93edd328a2..6a422ddae130 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3358,11 +3358,8 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
- 		if (component_of_node != args->np)
- 			continue;
+@@ -1282,13 +1282,11 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		}
+ 	}
  
--		if (pos->driver->of_xlate_dai_name) {
--			ret = pos->driver->of_xlate_dai_name(pos,
--							     args,
--							     dai_name);
--		} else {
-+		ret = snd_soc_component_of_xlate_dai_name(pos, args, dai_name);
-+		if (ret == -ENOTSUPP) {
- 			struct snd_soc_dai *dai;
- 			int id = -1;
- 
+-	if (component->driver->probe) {
+-		ret = component->driver->probe(component);
+-		if (ret < 0) {
+-			dev_err(component->dev,
+-				"ASoC: failed to probe component %d\n", ret);
+-			goto err_probe;
+-		}
++	ret = snd_soc_component_probe(component);
++	if (ret < 0) {
++		dev_err(component->dev,
++			"ASoC: failed to probe component %d\n", ret);
++		goto err_probe;
+ 	}
+ 	WARN(dapm->idle_bias_off &&
+ 	     dapm->bias_level != SND_SOC_BIAS_OFF,
 -- 
 2.20.1
