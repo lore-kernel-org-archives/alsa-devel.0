@@ -1,21 +1,16 @@
-From: "Chiang, Mac" <mac.chiang@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: boards: Add Cometlake Dialog
- Maxim machine driver
-Date: Tue, 6 Aug 2019 09:11:31 +0000
-Message-ID: <5B37778DAAD9B04DA049B4A421B9B3EE71ED27B5@PGSMSX112.gar.corp.intel.com>
-References: <1564646564-24990-1-git-send-email-mac.chiang@intel.com>
- <f8641bba-5da0-1bc8-7580-f9514e2ac718@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v5.3
+Date: Tue, 6 Aug 2019 11:17:07 +0100
+Message-ID: <20190806101707.GA4527@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5530310094021784170=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABCD0F800F3
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2019 11:17:01 +0200 (CEST)
-In-Reply-To: <f8641bba-5da0-1bc8-7580-f9514e2ac718@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84C73F800F3
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2019 12:17:09 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,252 +20,184 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Liao, Bard" <bard.liao@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-> > -config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
-> > -	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
-> > -	depends on I2C && ACPI
-> > -	depends on MFD_INTEL_LPSS || COMPILE_TEST
-> > -	select SND_SOC_DA7219
-> > -	select SND_SOC_MAX98357A
-> > -	select SND_SOC_DMIC
-> > -	select SND_SOC_HDAC_HDMI
-> > -	help
-> > -	  This adds support for ASoC Onboard Codec I2S machine driver. This
-> will
-> > -	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec.
-> > -	  Say Y if you have such a device.
-> > -
-> >   config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
-> >   	tristate "KBL with DA7219 and MAX98927 in I2S Mode"
-> >   	depends on I2C && ACPI
-> > @@ -363,6 +350,24 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
-> >
-> >   endif ## SND_SOC_INTEL_KBL
-> >
-> > +if SND_SOC_INTEL_KBL || SND_SOC_SOF_COMETLAKE_LP
-> > +
-> > +config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
-> > +	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
-> > +	depends on I2C && ACPI
-> > +	depends on MFD_INTEL_LPSS || COMPILE_TEST
-> > +	select SND_SOC_DA7219
-> > +	select SND_SOC_MAX98357A
-> > +	select SND_SOC_DMIC
-> > +	select SND_SOC_HDAC_HDMI
-> > +	help
-> > +	  This adds support for ASoC Onboard Codec I2S machine driver. This
-> will
-> > +	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec
-> for
-> > +	  Kabylake/Cometlake platforms.
-> > +	  Say Y if you have such a device.
-> > +
-> > +endif ## SND_SOC_INTEL_KBL || SND_SOC_SOF_COMETLAKE_LP
-> 
-> We should not mix generations and SST/SOF drivers like this, it's not going
-> to be maintainable.
-> 
-> What you can do is have a common hidden option such as
-> 
-> config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-> 	tristate
-> 	select SND_SOC_DA7219
-> 	select SND_SOC_MAX98357A
-> 	select SND_SOC_DMIC
-> 	select SND_SOC_HDAC_HDMI
-> 
-> if SND_SOC_INTEL_KBL
-> config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
-> 	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
-> 	depends on I2C && ACPI
-> 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-> 	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-> endif
-> 
-> 
-> if SND_SOC_SOF_COMETLAKE_LP
-> config SND_SOC_INTEL_CML_LP_DA7219_MAX98357A_MACH
-> 	tristate "CML_LP with DA7219 and MAX98357A in I2S Mode"
-> 	depends on I2C && ACPI
-> 	depends on MFD_INTEL_LPSS || COMPILE_TEST
-> 	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-> endif
-> 
-> The other problem I have with this patch is that there are two existing
-> machine drivers with almost the same configuration:
-> bxt_da7219_max98357a
-> kbl_da7219_max98357a
-> 
-> Why did you pick the latter?
-> The bxt_da7219_max98357a already supports BXT and GLK, and works with
-> SOF, and it wouldn't be that difficult to extend further. And if you add
-> CML_LP, then we could longer term make the KBL-specific machine driver go
-> away.
-> 
-> We really need to stop all this incremental work and reuse machine drivers
-> when the only differences are clock values (24/19.2) and SSP indices.
-> 
-> I stop here, not even looking at code differences until we have an agreed
-> direction on code reuse.
-> 
-[Chiang, Mac] I agree and will submit the code changes in reusing of bxt_da7219_max98357a.
-One question, when reusing bxt_da7219_max98357a, I found the CML cpu_id using "INTEL_FAM6_KABYLAKE_MOBILE 0x8E"?
-Because we have diff SSP configurations, how to distinguish CML and KBL cpu_id?
-> > +
-> >   if SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  &&
-> > SND_SOC_SOF_HDA_LINK)
-> >
-> >   config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
-> > diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> > b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> > index 537a889..fe3ac70 100644
-> > --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> > +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> > @@ -9,6 +9,7 @@
-> >    *   RT5663 codecs
-> >    */
-> >
-> > +#include <asm/cpu_device_id.h>
-> >   #include <linux/input.h>
-> >   #include <linux/module.h>
-> >   #include <linux/platform_device.h>
-> > @@ -17,6 +18,7 @@
-> >   #include <sound/pcm.h>
-> >   #include <sound/pcm_params.h>
-> >   #include <sound/soc.h>
-> > +#include <sound/soc-acpi.h>
-> >   #include "../../codecs/da7219.h"
-> >   #include "../../codecs/hdac_hdmi.h"
-> >   #include "../../codecs/da7219-aad.h"
-> > @@ -210,7 +212,11 @@ static int kabylake_hdmi_init(struct
-> snd_soc_pcm_runtime *rtd, int device)
-> >   	if (!pcm)
-> >   		return -ENOMEM;
-> >
-> > +#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
-> > +	pcm->device = dai->id;
-> > +#else
-> >   	pcm->device = device;
-> > +#endif
-> >   	pcm->codec_dai = dai;
-> >
-> >   	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list); @@ -587,9
-> +593,17
-> > @@ static struct snd_soc_card kabylake_audio_card_da7219_m98357a = {
-> >   	.late_probe = kabylake_card_late_probe,
-> >   };
-> >
-> > +static const struct x86_cpu_id cml_ids[] = {
-> > +	{ X86_VENDOR_INTEL, 6, 0x8E }, /* Cometlake CPU_ID */
-> > +	{}
-> > +};
-> > +
-> >   static int kabylake_audio_probe(struct platform_device *pdev)
-> >   {
-> >   	struct kbl_codec_private *ctx;
-> > +	struct snd_soc_acpi_mach *mach;
-> > +	const char *platform_name;
-> > +	int ret;
-> >
-> >   	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-> >   	if (!ctx)
-> > @@ -600,17 +614,46 @@ static int kabylake_audio_probe(struct
-> platform_device *pdev)
-> >   	kabylake_audio_card =
-> >   		(struct snd_soc_card *)pdev->id_entry->driver_data;
-> >
-> > +	kabylake_audio_card = &kabylake_audio_card_da7219_m98357a;
-> > +
-> >   	kabylake_audio_card->dev = &pdev->dev;
-> >   	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
-> > +
-> > +	if (x86_match_cpu(cml_ids)) {
-> > +		unsigned int i;
-> > +
-> > +		kabylake_audio_card->name = "cmlda7219max";
-> > +
-> > +		for (i = 0; i < ARRAY_SIZE(kabylake_dais); i++) {
-> > +			/* MAXIM_CODEC is connected to SSP1. */
-> > +			if (!strcmp(kabylake_dais[i].cpus->dai_name,
-> > +					KBL_MAXIM_CODEC_DAI)) {
-> > +				kabylake_dais[i].name = "SSP1-Codec";
-> > +				kabylake_dais[i].cpus->dai_name = "SSP1 Pin";
-> > +			}
-> > +			/* DIALOG_CODEC is connected to SSP0 */
-> > +			else if (!strcmp(kabylake_dais[i].cpus->dai_name,
-> > +					KBL_DIALOG_CODEC_DAI)) {
-> > +				kabylake_dais[i].name = "SSP0-Codec";
-> > +				kabylake_dais[i].cpus->dai_name = "SSP0 Pin";
-> > +			}
-> > +		}
-> > +	}
-> > +
-> > +	mach = (&pdev->dev)->platform_data;
-> > +	platform_name = mach->mach_params.platform;
-> > +
-> > +	ret = snd_soc_fixup_dai_links_platform_name(kabylake_audio_card,
-> > +							platform_name);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >   	return devm_snd_soc_register_card(&pdev->dev,
-> kabylake_audio_card);
-> >   }
-> >
-> >   static const struct platform_device_id kbl_board_ids[] = {
-> > -	{
-> > -		.name = "kbl_da7219_max98357a",
-> > -		.driver_data =
-> > -			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
-> > -	},
-> > +	{.name = "kbl_da7219_max98357a",},
-> > +	{.name = "cml_da7219_max98357a",},
-> >   	{ }
-> >   };
-> >
-> > @@ -628,5 +671,7 @@ module_platform_driver(kabylake_audio)
-> >   /* Module information */
-> >   MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A
-> in I2S mode");
-> >   MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
-> > +MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
-> >   MODULE_LICENSE("GPL v2");
-> >   MODULE_ALIAS("platform:kbl_da7219_max98357a");
-> > +MODULE_ALIAS("platform:cml_da7219_max98357a");
-> > diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> > b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> > index c36c0aa..4ea32b2 100644
-> > --- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> > +++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> > @@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs cml_codecs = {
-> >   	.codecs = {"10EC5682"}
-> >   };
-> >
-> > +static struct snd_soc_acpi_codecs cml_spk_codecs = {
-> > +	.num_codecs = 1,
-> > +	.codecs = {"MX98357A"}
-> > +};
-> > +
-> >   struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
-> >   	{
-> >   		.id = "INT34C2",
-> > @@ -29,6 +34,13 @@ struct snd_soc_acpi_mach
-> snd_soc_acpi_intel_cnl_machines[] = {
-> >   		.sof_tplg_filename = "sof-cnl-rt274.tplg",
-> >   	},
-> >   	{
-> > +		.id = "DLGS7219",
-> > +		.drv_name = "cml_da7219_max98357a",
-> > +		.quirk_data = &cml_spk_codecs,
-> > +		.sof_fw_filename = "sof-cnl.ri",
-> > +		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
-> > +	},
-> > +	{
-> >   		.id = "MX98357A",
-> >   		.drv_name = "sof_rt5682",
-> >   		.quirk_data = &cml_codecs,
-> >
+--===============5530310094021784170==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sm4nu43k4a2Rpi4c"
+Content-Disposition: inline
+
+
+--sm4nu43k4a2Rpi4c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 87a6fe80d56be85bda093c4dd8a3e6535bda7e4a:
+
+  ASoC: SOF: Intel: implement runtime idle for CNL/APL (2019-07-06 12:23:47 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-fix-v5.3-rc3-2
+
+for you to fetch changes up to 7c0767643f3b6b0dd2cda923ae37a18590d431cf:
+
+  ASoC: max98373: Remove executable bits (2019-08-06 11:15:06 +0100)
+
+----------------------------------------------------------------
+ASoC: Fixes for v5.3
+
+Incremental fix removing executable bits added in a prior patch
+accidentally.
+
+----------------------------------------------------------------
+Cezary Rojewski (1):
+      MAINTAINERS: Update Intel ASoC drivers maintainers
+
+Charles Keepax (1):
+      ASoC: dapm: Fix handling of custom_stop_condition on DAPM graph walks
+
+Cheng-Yi Chiang (1):
+      ASoC: rockchip: Fix mono capture
+
+Christophe JAILLET (1):
+      ASoC: Intel: Fix some acpi vs apci typo in somme comments
+
+Enric Balletbo i Serra (1):
+      SoC: rockchip: rockchip_max98090: Enable MICBIAS for headset keypress detection
+
+Hans de Goede (1):
+      ASoC: Intel: bytcht_es8316: Add quirk for Irbis NB41 netbook
+
+Joe Perches (1):
+      ASoC: rt1308: Remove executable attribute from source files
+
+Kai Vehmanen (1):
+      ASoC: SOF: Intel: hda: remove misleading error trace from IRQ thread
+
+Kirill Marinushkin (1):
+      ASoC: Relocate my e-mail to .com domain zone
+
+Kuninori Morimoto (3):
+      ASoC: simple_card_utils.h: care NULL dai at asoc_simple_debug_dai()
+      ASoC: simple-card-utils: care no Platform for DPCM
+      ASoC: audio-graph-card: add missing const at graph_get_dai_id()
+
+Marcus Cooper (1):
+      ASoC: sun4i-i2s: Incorrect SR and WSS computation
+
+Mark Brown (1):
+      ASoC: max98373: Remove executable bits
+
+Masahiro Yamada (1):
+      ASoC: SOF: use __u32 instead of uint32_t in uapi headers
+
+Peter Ujfalusi (2):
+      ASoC: ti: davinci-mcasp: Fix clk PDIR handling for i2s master mode
+      ASoC: ti: davinci-mcasp: Correct slot_width posed constraint
+
+Ricard Wanderlof (1):
+      ASoC: Fail card instantiation if DAI format setup fails
+
+Shengjiu Wang (1):
+      ASoC: cs42xx8: Fix MFREQ selection issue for async mode
+
+Shuming Fan (1):
+      ASoC: rt1011: fix DC calibration offset not applying
+
+Stephan Gerhold (1):
+      ASoC: qcom: apq8016_sbc: Fix oops with multiple DAI links
+
+Tzung-Bi Shih (1):
+      ASoC: max98357a: use mdelay for sdmode-delay
+
+Vijendar Mukunda (2):
+      ASoC: amd: acp3x: use dma_ops of parent device for acp3x dma driver
+      ASoC: amd: acp3x: use dma address for acp3x dma driver
+
+Wen Yang (6):
+      ASoC: simple-card: fix an use-after-free in simple_dai_link_of_dpcm()
+      ASoC: simple-card: fix an use-after-free in simple_for_each_link()
+      ASoC: audio-graph-card: fix use-after-free in graph_dai_link_of_dpcm()
+      ASoC: audio-graph-card: fix an use-after-free in graph_get_dai_id()
+      ASoC: samsung: odroid: fix an use-after-free issue for codec
+      ASoC: samsung: odroid: fix a double-free issue for cpu_dai
+
+Wenwen Wang (1):
+      ASoC: dapm: fix a memory leak bug
+
+fengchunguo (1):
+      ASoC: max98373: add 88200 and 96000 sampling rate support
+
+ MAINTAINERS                                        |   3 +-
+ include/sound/simple_card_utils.h                  |   4 +
+ include/uapi/sound/sof/fw.h                        |  16 +--
+ include/uapi/sound/sof/header.h                    |  14 +--
+ sound/soc/amd/raven/acp3x-pcm-dma.c                |  20 ++--
+ sound/soc/codecs/cs42xx8.c                         | 116 +++++++++++++++++----
+ sound/soc/codecs/max98357a.c                       |  25 +----
+ sound/soc/codecs/max98373.c                        |   6 ++
+ sound/soc/codecs/max98373.h                        |   2 +
+ sound/soc/codecs/pcm3060-i2c.c                     |   4 +-
+ sound/soc/codecs/pcm3060-spi.c                     |   4 +-
+ sound/soc/codecs/pcm3060.c                         |   4 +-
+ sound/soc/codecs/pcm3060.h                         |   2 +-
+ sound/soc/codecs/rt1011.c                          |   4 +-
+ sound/soc/codecs/rt1308.c                          |   0
+ sound/soc/codecs/rt1308.h                          |   0
+ sound/soc/generic/audio-graph-card.c               |  30 +++---
+ sound/soc/generic/simple-card-utils.c              |   7 ++
+ sound/soc/generic/simple-card.c                    |  26 ++---
+ sound/soc/intel/boards/bytcht_es8316.c             |   8 ++
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-byt-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-cht-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-hda-match.c  |   2 +-
+ .../intel/common/soc-acpi-intel-hsw-bdw-match.c    |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c  |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-skl-match.c  |   2 +-
+ sound/soc/qcom/apq8016_sbc.c                       |  16 +--
+ sound/soc/rockchip/rockchip_i2s.c                  |   5 +-
+ sound/soc/rockchip/rockchip_max98090.c             |  32 ++++++
+ sound/soc/samsung/odroid.c                         |   8 +-
+ sound/soc/soc-core.c                               |   7 +-
+ sound/soc/soc-dapm.c                               |  10 +-
+ sound/soc/sof/intel/cnl.c                          |   4 +-
+ sound/soc/sof/intel/hda-ipc.c                      |   4 +-
+ sound/soc/sunxi/sun4i-i2s.c                        |   4 +-
+ sound/soc/ti/davinci-mcasp.c                       |  46 ++++++--
+ 40 files changed, 304 insertions(+), 147 deletions(-)
+ mode change 100755 => 100644 sound/soc/codecs/rt1308.c
+ mode change 100755 => 100644 sound/soc/codecs/rt1308.h
+
+--sm4nu43k4a2Rpi4c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1JU6IACgkQJNaLcl1U
+h9BP/Af/Sx1jb7S6yZZ6zRq+1dIy45salE3OxslZPHv87S6Xm7swaFNOZgnGjIUV
+d725Nnt8vigzcG8W7I+/DN3LIJeCnAozurzGD6FRBPLHTM4uSxhXhb6bVjYp1L2T
+fvGu+dCieliDF82UMAM3dvkMKESL+0YGffBAIuMBmNeJiKIsLSuXj0DQD0MZUMou
+WRr6ad0EhQb8zRMzbFB3DDrQrLv8Rl+vJCuQJVGLOONimPMCdELZVbpS/GimDdIc
+5vSlQA6TD3+XV/Ei1GwmQMcrtgtDeQcRb1N18p27n8u+cS8GUU4xF2N2/16WOwVT
+HD142TMffq7bOnp5CI81mZEoekrRjw==
+=ojtk
+-----END PGP SIGNATURE-----
+
+--sm4nu43k4a2Rpi4c--
+
+--===============5530310094021784170==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5530310094021784170==--
