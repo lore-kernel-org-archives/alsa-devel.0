@@ -1,66 +1,72 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: Alsa-Plugin 1.0.25 License
-Date: Tue, 06 Aug 2019 18:36:06 +0300
-Message-ID: <5509faf2dabd477bb2a5a35f249d6ed689611b8e.camel@iki.fi>
-References: <CAM+cExGffwFD7U--tZqd_PxFwgdy6YA_tZHvw6B3au9KNygEhA@mail.gmail.com>
- <CAM+cExEBpgWctFLKcVej9UnLS2VVx9CoaOigu9y3BvYGNOi1zA@mail.gmail.com>
- <5e969a5245d6922d28d71a7c453dd6e3f5fd2228.camel@iki.fi>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 09/17] soundwire: stream: remove unnecessary variable
+ initializations
+Date: Tue, 6 Aug 2019 10:39:23 -0500
+Message-ID: <346425e0-0001-ecbc-c79a-c1372d0b4fcc@linux.intel.com>
+References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
+ <20190806005522.22642-10-pierre-louis.bossart@linux.intel.com>
+ <a52b4fbd-1d97-d8b8-dd2c-fac30c6add4b@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6E9EF800F4
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2019 17:36:14 +0200 (CEST)
-In-Reply-To: <5e969a5245d6922d28d71a7c453dd6e3f5fd2228.camel@iki.fi>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: karina filer <kafiler0911@gmail.com>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <a52b4fbd-1d97-d8b8-dd2c-fac30c6add4b@intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T25lIG1vcmUgY29tbWVudC4uLgoKT24gVHVlLCAyMDE5LTA4LTA2IGF0IDE2OjIwICswMzAwLCBU
-YW51IEthc2tpbmVuIHdyb3RlOgo+IE9uIE1vbiwgMjAxOS0wOC0wNSBhdCAyMjo0NCArMDUzMCwg
-a2FyaW5hIGZpbGVyIHdyb3RlOgo+ID4gSGkgVGVhbSwKPiA+IAo+ID4gR3JlZXRpbmdzICEhCj4g
-PiAKPiA+IEkgYW0gZmFjaW5nIGRpZmZpY3VsdHkgdG8gdW5kZXJzdGFuZCB0aGUgQWxzYS1QbHVn
-aW4gTGljZW5zaW5nLCBDb3VsZCB5b3UKPiA+IHBsZWFzZSBoZWxwIG1lIHRvIG1ha2UgdW5kZXJz
-dGFuZD8sIElzIGl0IHVuZGVyIEdQTCAyLjAgb3IgTEdQTCAyLjEgYmVjYXVzZQo+ID4gYWZ0ZXIg
-ZXh0cmFjdGluZyB0aGUgZm9sZGVyIEkgY2FuIHNlZSAyIGNvcHlpbmcgZmlsZSBvbmUgZm9yIEdQ
-TCBhbmQgb3RoZXIKPiA+IGZvciBMR1BMLgo+ID4gCj4gPiBodHRwczovL3JlcG9sb2d5Lm9yZy9w
-cm9qZWN0L2Fsc2EtcGx1Z2lucy9wYWNrYWdlcwo+IAo+IGFsc2EtcGx1Z2lucyBzZWVtcyB0byBs
-YWNrIGEgUkVBRE1FIG9yIG90aGVyIG92ZXJ2aWV3IGRvY3VtZW50IGFib3V0Cj4gdGhlIGxpY2Vu
-c2luZy4uLiBhbHNhLXBsdWdpbnMgaXMgcHJpbWFyaWx5IGxpY2Vuc2VkIHVuZGVyIExHUEwgMi4x
-LCBhbmQKPiB0byBteSBrbm93bGVkZ2UgdGhlIG9ubHkgZXhjZXB0aW9uIGlzIHRoZSBsaWJzYW1w
-bGVyYXRlIGJhc2VkIHJhdGUKPiBwbHVnaW4uIFRoZSBsaWNlbnNpbmcgaXMgZXhwbGFpbmVkIGhl
-cmU6Cj4gCj4gaHR0cHM6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXBsdWdpbnMuZ2l0
-O2E9YmxvYjtmPXJhdGUvcmF0ZV9zYW1wbGVyYXRlLmMKPiAKPiBTbyB0aGlzIHBhcnRpY2x1YXIg
-cmF0ZSBwbHVnaW4gaXMgbGljZW5zZWQgdW5kZXIgR1BMIDIuMCAidG8gZm9sbG93IHRoZQo+IGxp
-Y2Vuc2Ugb2YgbGlic2FtcGxlcmF0ZSIsIHVubGVzcyB5b3UgaGF2ZSBhIGNvbW1lcmNpYWwgbGlj
-ZW5zZSB0bwo+IGxpYnNhbXBsZXJhdGUuIEkgZG9uJ3QgdGhpbmsgdGhlIHJhdGlvbmFsZSBmb3Ig
-dGhhdCBleGNlcHRpb24gbWFrZXMKPiBtdWNoIHNlbnNlIChMR1BMIHdvdWxkIGhhdmUgd29ya2Vk
-IGp1c3QgZmluZSwgYXMgZmFyIGFzIEkgY2FuIHRlbGwpLAo+IGJ1dCBhdCB0aGlzIHBvaW50IHJl
-bGljZW5zaW5nIG1heSBiZSB2ZXJ5IGRpZmZpY3VsdCBkdWUgdG8gbWFueQo+IGNvbnRyaWJ1dG9y
-cy4KClJlbGljZW5zaW5nIHNob3VsZG4ndCBiZSB0aGF0IGhhcmQgYWZ0ZXIgYWxsLCBpZiB0aGF0
-J3MgZGVzaXJlZCAoSQp0aGluayBpdCB3b3VsZCBiZSBhIGdvb2QgaWRlYSkuIE5vdyB0aGF0IEkg
-bG9va2VkLCB0aGVyZSBhY3R1YWxseQphcmVuJ3QgbWFueSBjb250cmlidXRvcnMgdG8gdGhhdCBw
-bHVnaW4sIG9ubHkgVGFrYXNoaSBhbmQgSmFyb3NsYXYuCkRpZWdvIEUuICdGbGFtZWV5ZXMnIFBl
-dHRlbsOyIGFsc28gaGFzIGEgY29tbWl0LCBidXQgaXQgb25seSBjaGFuZ2VzIG9uZQpsaW5lIGlu
-IHRoZSBidWlsZCBzeXN0ZW0uCgo+IGxpYnNhbXBsZXJhdGUgd2FzIHJlbGljZW5zZWQgdW5kZXIg
-dGhlIDItY2xhdXNlIEJTRCBsaWNlbnNlIGluIDIwMTZbMV0sCj4gd2hpY2ggbWF5IG9yIG1heSBu
-b3QgYWxsb3cgeW91IHRvIGFwcGx5IExHUEwgdG8gdGhlIHJhdGUgcGx1Z2luIChteQo+IGd1ZXNz
-IHdvdWxkIGJlIHRoYXQgaXQgZG9lc24ndCBhbGxvdyB5b3UgdG8gZG8gdGhhdCwgYnV0IElBTkFM
-KS4KPiAKPiBbMV0gaHR0cDovL3d3dy5tZWdhLW5lcmQuY29tL1NSQy9saWNlbnNlLmh0bWwKCi0t
-IApUYW51CgpodHRwczovL3d3dy5wYXRyZW9uLmNvbS90YW51awpodHRwczovL2xpYmVyYXBheS5j
-b20vdGFudWsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-czovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+
+On 8/6/19 10:31 AM, Cezary Rojewski wrote:
+> On 2019-08-06 02:55, Pierre-Louis Bossart wrote:
+>> @@ -1493,6 +1493,11 @@ static int _sdw_prepare_stream(struct 
+>> sdw_stream_runtime *stream)
+>>           }
+>>       }
+>> +    if (!bus) {
+>> +        pr_err("Configuration error in %s\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+> 
+> This should probably be located in separate path - not at all an 
+> initialization removal.
+
+It's a consequence of the initialization removal: because we are 
+removing the default init, there is a risk that the loop just before do 
+not set it, so it's required to trap the case where the variable in not 
+initialized.
+
+> 
+>> @@ -1573,6 +1578,11 @@ static int _sdw_enable_stream(struct 
+>> sdw_stream_runtime *stream)
+>>           }
+>>       }
+>> +    if (!bus) {
+>> +        pr_err("Configuration error in %s\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+> 
+> Same here.
+
+same reply
+
+> 
+>> @@ -1639,13 +1650,14 @@ static int _sdw_disable_stream(struct 
+>> sdw_stream_runtime *stream)
+>>       ret = do_bank_switch(stream);
+>>       if (ret < 0) {
+>> -        dev_err(bus->dev, "Bank switch failed: %d\n", ret);
+>> +        pr_err("Bank switch failed: %d\n", ret);
+>>           return ret;
+>>       }
+> 
+> Here too.
+
+no, same thing, the bus variable is initialized in loops so tools will 
+report a possible path where bus->dev is an invalid dereference.
+
+> I might have missed something though I bet you got my point.
