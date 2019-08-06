@@ -1,44 +1,38 @@
-From: karina filer <kafiler0911@gmail.com>
-Subject: Alsa-Plugin 1.0.25 License
-Date: Mon, 5 Aug 2019 22:44:25 +0530
-Message-ID: <CAM+cExEBpgWctFLKcVej9UnLS2VVx9CoaOigu9y3BvYGNOi1zA@mail.gmail.com>
-References: <CAM+cExGffwFD7U--tZqd_PxFwgdy6YA_tZHvw6B3au9KNygEhA@mail.gmail.com>
+From: Wenwen Wang <wenwen@cs.uga.edu>
+Subject: [PATCH] ALSA: usb-audio: fix a memory leak bug
+Date: Tue, 6 Aug 2019 03:00:27 -0400
+Message-ID: <CAAa=b7f=SG6QR248JD9_VP89B=D2p3pdYcSAzRLchbJTpdXt_A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA138F800F3
- for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2019 19:14:41 +0200 (CEST)
-Received: by mail-lj1-x235.google.com with SMTP id p17so79943573ljg.1
- for <alsa-devel@alsa-project.org>; Mon, 05 Aug 2019 10:14:41 -0700 (PDT)
-In-Reply-To: <CAM+cExGffwFD7U--tZqd_PxFwgdy6YA_tZHvw6B3au9KNygEhA@mail.gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wenwen Wang <wenwen@cs.uga.edu>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>, Richard Fontana <rfontana@redhat.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Thomas Gleixner <tglx@linutronix.de>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Team,
+In snd_usb_get_audioformat_uac3(), a structure for channel maps 'chmap' is
+allocated through kzalloc() before the execution goto 'found_clock'.
+However, this structure is not deallocated if the memory allocation for
+'pd' fails, leading to a memory leak bug.
 
-Greetings !!
+To fix the above issue, free 'fp->chmap' before returning NULL.
 
-I am facing difficulty to understand the Alsa-Plugin Licensing, Could you
-please help me to make understand?, Is it under GPL 2.0 or LGPL 2.1 because
-after extracting the folder I can see 2 copying file one for GPL and other
-for LGPL.
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+---
+ sound/usb/stream.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-https://repology.org/project/alsa-plugins/packages
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 7ee9d17..e852c7f 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -1043,6 +1043,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
 
-
-Regards
-K. Filer
+                pd = kzalloc(sizeof(*pd), GFP_KERNEL);
+                if (!pd) {
++                       kfree(fp->chmap);
+                        kfree(fp->rate_table);
+                        kfree(fp);
+                        return NULL;
+--
+2.7.4
