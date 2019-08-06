@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 13/17] soundwire: cadence_master: fix divider setting in clock register
-Date: Mon,  5 Aug 2019 19:55:18 -0500
-Message-ID: <20190806005522.22642-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/17] soundwire: intel: handle disabled links
+Date: Mon,  5 Aug 2019 19:55:19 -0500
+Message-ID: <20190806005522.22642-15-pierre-louis.bossart@linux.intel.com>
 References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,70 +9,108 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Rander Wang <rander.wang@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rander Wang <rander.wang@linux.intel.com>
+On most hardware platforms, SoundWire interfaces are pin-muxed with
+other interfaces (typically DMIC or I2S) and the status of each link
+needs to be checked at boot time.
 
-The existing code uses an OR operation which would mix the original
-divider setting with the new one, resulting in an invalid
-configuration that can make codecs hang.
+For Intel platforms, the BIOS provides a menu to enable/disable the
+links separately, and the information is provided to the OS with an
+Intel-specific _DSD property. The same capability will be added to
+revisions of the MIPI DisCo specification.
 
-Add the mask definition and use cdns_updatel to update divider
-
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/soundwire/intel.c     | 26 ++++++++++++++++++++++----
+ include/linux/soundwire/sdw.h |  2 ++
+ 2 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 049ecfad2c00..fb198a806efd 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -59,6 +59,7 @@
- #define CDNS_MCP_SSP_CTRL1			0x28
- #define CDNS_MCP_CLK_CTRL0			0x30
- #define CDNS_MCP_CLK_CTRL1			0x38
-+#define CDNS_MCP_CLK_MCLKD_MASK		GENMASK(7, 0)
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 3f876642cb7f..e702187c0609 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -90,6 +90,8 @@
+ #define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
+ #define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
  
- #define CDNS_MCP_STAT				0x40
- 
-@@ -936,10 +937,11 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- 
- 	/* Set clock divider */
- 	divider	= (prop->mclk_freq / prop->max_clk_freq) - 1;
--	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
--	val |= divider;
--	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
--	cdns_writel(cdns, CDNS_MCP_CLK_CTRL1, val);
++#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE	BIT(1)
 +
-+	cdns_updatel(cdns, CDNS_MCP_CLK_CTRL0,
-+		     CDNS_MCP_CLK_MCLKD_MASK, divider);
-+	cdns_updatel(cdns, CDNS_MCP_CLK_CTRL1,
-+		     CDNS_MCP_CLK_MCLKD_MASK, divider);
- 
- 	/*
- 	 * Frame shape changes after initialization have to be done
-@@ -989,7 +991,7 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
- {
+ enum intel_pdi_type {
+ 	INTEL_PDI_IN = 0,
+ 	INTEL_PDI_OUT = 1,
+@@ -914,7 +916,7 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
  	struct sdw_master_prop *prop = &bus->prop;
- 	struct sdw_cdns *cdns = bus_to_cdns(bus);
--	int mcp_clkctrl_off, mcp_clkctrl;
-+	int mcp_clkctrl_off;
- 	int divider;
+ 	struct fwnode_handle *link;
+ 	char name[32];
+-	int nval, i;
++	u32 quirk_mask;
  
- 	if (!params->curr_dr_freq) {
-@@ -1006,9 +1008,7 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
- 	else
- 		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL0;
- 
--	mcp_clkctrl = cdns_readl(cdns, mcp_clkctrl_off);
--	mcp_clkctrl |= divider;
--	cdns_writel(cdns, mcp_clkctrl_off, mcp_clkctrl);
-+	cdns_updatel(cdns, mcp_clkctrl_off, CDNS_MCP_CLK_MCLKD_MASK, divider);
- 
+ 	/* Find master handle */
+ 	snprintf(name, sizeof(name),
+@@ -929,6 +931,14 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+ 	fwnode_property_read_u32(link,
+ 				 "intel-sdw-ip-clock",
+ 				 &prop->mclk_freq);
++
++	fwnode_property_read_u32(link,
++				 "intel-quirk-mask",
++				 &quirk_mask);
++
++	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
++		prop->hw_disabled = true;
++
  	return 0;
  }
+ 
+@@ -989,6 +999,12 @@ static int intel_probe(struct platform_device *pdev)
+ 		goto err_master_reg;
+ 	}
+ 
++	if (sdw->cdns.bus.prop.hw_disabled) {
++		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
++			 sdw->cdns.bus.link_id);
++		return 0;
++	}
++
+ 	/* Initialize shim and controller */
+ 	intel_link_power_up(sdw);
+ 	intel_shim_init(sdw);
+@@ -1042,9 +1058,11 @@ static int intel_remove(struct platform_device *pdev)
+ 
+ 	sdw = platform_get_drvdata(pdev);
+ 
+-	intel_debugfs_exit(sdw);
+-	free_irq(sdw->res->irq, sdw);
+-	snd_soc_unregister_component(sdw->cdns.dev);
++	if (!sdw->cdns.bus.prop.hw_disabled) {
++		intel_debugfs_exit(sdw);
++		free_irq(sdw->res->irq, sdw);
++		snd_soc_unregister_component(sdw->cdns.dev);
++	}
+ 	sdw_delete_bus_master(&sdw->cdns.bus);
+ 
+ 	return 0;
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index b6acc436ac80..a3c7448d5817 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -380,6 +380,7 @@ struct sdw_slave_prop {
+  * @err_threshold: Number of times that software may retry sending a single
+  * command
+  * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
++ * @hw_disabled: if true, the Master is not functional, typically due to pin-mux
+  */
+ struct sdw_master_prop {
+ 	u32 revision;
+@@ -395,6 +396,7 @@ struct sdw_master_prop {
+ 	bool dynamic_frame;
+ 	u32 err_threshold;
+ 	u32 mclk_freq;
++	bool hw_disabled;
+ };
+ 
+ int sdw_master_read_prop(struct sdw_bus *bus);
 -- 
 2.20.1
