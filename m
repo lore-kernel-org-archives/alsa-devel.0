@@ -1,23 +1,17 @@
-From: sylvain.bertrand@gmail.com
-Subject: Re: Alsa-Plugin 1.0.25 License
-Date: Tue, 6 Aug 2019 18:11:35 +0000
-Message-ID: <20190806181135.GA5625@freedom>
-References: <CAM+cExGffwFD7U--tZqd_PxFwgdy6YA_tZHvw6B3au9KNygEhA@mail.gmail.com>
- <CAM+cExEBpgWctFLKcVej9UnLS2VVx9CoaOigu9y3BvYGNOi1zA@mail.gmail.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH] ASoC: SOF: Intel: hda: Initialize HDA
+	controller after i915 init
+Date: Tue,  6 Aug 2019 15:19:58 -0700
+Message-ID: <20190806221958.19180-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEE61F800F3
- for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2019 20:12:37 +0200 (CEST)
-Received: by mail-wr1-x435.google.com with SMTP id n9so63732015wrr.4
- for <alsa-devel@alsa-project.org>; Tue, 06 Aug 2019 11:12:37 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAM+cExEBpgWctFLKcVej9UnLS2VVx9CoaOigu9y3BvYGNOi1zA@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06F36F8011B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 00:20:01 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,18 +21,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: karina filer <kafiler0911@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 05, 2019 at 10:44:25PM +0530, karina filer wrote:
-> I am facing difficulty to understand the Alsa-Plugin Licensing, Could you
-> please help me to make understand?, Is it under GPL 2.0 or LGPL 2.1 because
-> after extracting the folder I can see 2 copying file one for GPL and other
-> for LGPL.
+On some platforms, sound card registration fails when a HDMI
+monitor is not connected. This is caused by a recent commit
+that switched the order in which the HDA controller and the
+i915 are initialized. Initializing the i915 before initializing
+the HDA controller fixes the problem.
 
-You don't need to care, except if you do use open source code in distributed
-closed source programs (aka windows and macos).
+Fixes: be1b577d01787c ("ASoC: SOF: Intel: hda: fix the hda init chip"
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/intel/hda.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 79cce20666b6..724a494702fa 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -335,10 +335,23 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 	if (bus->ppcap)
+ 		dev_dbg(sdev->dev, "PP capability, will probe DSP later.\n");
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	/* init i915 and HDMI codecs */
++	ret = hda_codec_i915_init(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: init i915 and HDMI codec failed\n");
++		return ret;
++	}
++#endif
++
++	/* Init HDA controller after i915 init */
+ 	ret = hda_dsp_ctrl_init_chip(sdev, true);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "error: init chip failed with ret: %d\n",
+ 			ret);
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++		hda_codec_i915_exit(sdev);
++#endif
+ 		return ret;
+ 	}
+ 
+@@ -346,13 +359,6 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 	if (bus->mlcap)
+ 		snd_hdac_ext_bus_get_ml_capabilities(bus);
+ 
+-	/* init i915 and HDMI codecs */
+-	ret = hda_codec_i915_init(sdev);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: no HDMI audio devices found\n");
+-		return ret;
+-	}
+-
+ 	/* codec detection */
+ 	if (!bus->codec_mask) {
+ 		dev_info(bus->dev, "no hda codecs found!\n");
 -- 
-Sylvain
+2.17.1
