@@ -1,95 +1,66 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 06/17] soundwire: cadence_master: use
- firmware defaults for frame shape
-Date: Tue, 6 Aug 2019 10:36:32 -0500
-Message-ID: <024b4fb4-bdfa-a6dc-48bb-c070f2ed36b2@linux.intel.com>
-References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
- <20190806005522.22642-7-pierre-louis.bossart@linux.intel.com>
- <03b6091b-af41-ac54-43c7-196a3583a731@intel.com>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: Alsa-Plugin 1.0.25 License
+Date: Tue, 06 Aug 2019 18:36:06 +0300
+Message-ID: <5509faf2dabd477bb2a5a35f249d6ed689611b8e.camel@iki.fi>
+References: <CAM+cExGffwFD7U--tZqd_PxFwgdy6YA_tZHvw6B3au9KNygEhA@mail.gmail.com>
+ <CAM+cExEBpgWctFLKcVej9UnLS2VVx9CoaOigu9y3BvYGNOi1zA@mail.gmail.com>
+ <5e969a5245d6922d28d71a7c453dd6e3f5fd2228.camel@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <03b6091b-af41-ac54-43c7-196a3583a731@intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, Blauciak@vger.kernel.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, Slawomir <slawomir.blauciak@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6E9EF800F4
+ for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2019 17:36:14 +0200 (CEST)
+In-Reply-To: <5e969a5245d6922d28d71a7c453dd6e3f5fd2228.camel@iki.fi>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: karina filer <kafiler0911@gmail.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 8/6/19 10:27 AM, Cezary Rojewski wrote:
-> On 2019-08-06 02:55, Pierre-Louis Bossart wrote:
->> diff --git a/drivers/soundwire/cadence_master.c 
->> b/drivers/soundwire/cadence_master.c
->> index 5d9729b4d634..89c55e4bb72c 100644
->> --- a/drivers/soundwire/cadence_master.c
->> +++ b/drivers/soundwire/cadence_master.c
->> @@ -48,6 +48,8 @@
->>   #define CDNS_MCP_SSPSTAT            0xC
->>   #define CDNS_MCP_FRAME_SHAPE            0x10
->>   #define CDNS_MCP_FRAME_SHAPE_INIT        0x14
->> +#define CDNS_MCP_FRAME_SHAPE_COL_MASK        GENMASK(2, 0)
->> +#define CDNS_MCP_FRAME_SHAPE_ROW_OFFSET        3
->>   #define CDNS_MCP_CONFIG_UPDATE            0x18
->>   #define CDNS_MCP_CONFIG_UPDATE_BIT        BIT(0)
->> @@ -175,7 +177,6 @@
->>   /* Driver defaults */
->>   #define CDNS_DEFAULT_CLK_DIVIDER        0
->> -#define CDNS_DEFAULT_FRAME_SHAPE        0x30
->>   #define CDNS_DEFAULT_SSP_INTERVAL        0x18
->>   #define CDNS_TX_TIMEOUT                2000
->> @@ -901,6 +902,20 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
->>   }
->>   EXPORT_SYMBOL(sdw_cdns_pdi_init);
->> +static u32 cdns_set_initial_frame_shape(int n_rows, int n_cols)
->> +{
->> +    u32 val;
->> +    int c;
->> +    int r;
->> +
->> +    r = sdw_find_row_index(n_rows);
->> +    c = sdw_find_col_index(n_cols) & CDNS_MCP_FRAME_SHAPE_COL_MASK;
->> +
->> +    val = (r << CDNS_MCP_FRAME_SHAPE_ROW_OFFSET) | c;
->> +
->> +    return val;
->> +}
->> +
-> 
-> Guess this have been said already, but this function could be simplified 
-> - unless you really want to keep explicit variable declaration. Both "c" 
-> and "r" declarations could be merged into single line while "val" is not 
-> needed at all.
-> 
-> One more thing - is AND bitwise op really needed for cols explicitly? We 
-> know all col values upfront - these are static and declared in global 
-> table nearby. Static declaration takes care of "initial range-check". Is 
-> another one necessary?
-> 
-> Moreover, this is a _get_ and certainly not a _set_ type of function. 
-> I'd even consider renaming it to: "cdns_get_frame_shape" as this is 
-> neither a _set_ nor an explicit initial frame shape setter.
-> 
-> It might be even helpful to split two usages:
-> 
-> #define sdw_frame_shape(col_idx, row_idx) \
->      ((row_idx << CDNS_MCP_FRAME_SHAPE_ROW_OFFSET) | col_idx)
-> 
-> u32 cdns_get_frame_shape(u16 rows, u16 cols)
-> {
->      u16 c, r;
-> 
->      r = sdw_find_row_index(rows);
->      c = sdw_find_col_index(cols);
-> 
->      return sdw_frame_shape(c, r);
-> }
-> 
-> The above may even be simplified into one-liner.
-
-This is a function used once on startup, there is no real need to 
-simplify further. The separate variables help add debug traces as needed 
-and keep the code readable while showing how the values are encoded into 
-a register.
+T25lIG1vcmUgY29tbWVudC4uLgoKT24gVHVlLCAyMDE5LTA4LTA2IGF0IDE2OjIwICswMzAwLCBU
+YW51IEthc2tpbmVuIHdyb3RlOgo+IE9uIE1vbiwgMjAxOS0wOC0wNSBhdCAyMjo0NCArMDUzMCwg
+a2FyaW5hIGZpbGVyIHdyb3RlOgo+ID4gSGkgVGVhbSwKPiA+IAo+ID4gR3JlZXRpbmdzICEhCj4g
+PiAKPiA+IEkgYW0gZmFjaW5nIGRpZmZpY3VsdHkgdG8gdW5kZXJzdGFuZCB0aGUgQWxzYS1QbHVn
+aW4gTGljZW5zaW5nLCBDb3VsZCB5b3UKPiA+IHBsZWFzZSBoZWxwIG1lIHRvIG1ha2UgdW5kZXJz
+dGFuZD8sIElzIGl0IHVuZGVyIEdQTCAyLjAgb3IgTEdQTCAyLjEgYmVjYXVzZQo+ID4gYWZ0ZXIg
+ZXh0cmFjdGluZyB0aGUgZm9sZGVyIEkgY2FuIHNlZSAyIGNvcHlpbmcgZmlsZSBvbmUgZm9yIEdQ
+TCBhbmQgb3RoZXIKPiA+IGZvciBMR1BMLgo+ID4gCj4gPiBodHRwczovL3JlcG9sb2d5Lm9yZy9w
+cm9qZWN0L2Fsc2EtcGx1Z2lucy9wYWNrYWdlcwo+IAo+IGFsc2EtcGx1Z2lucyBzZWVtcyB0byBs
+YWNrIGEgUkVBRE1FIG9yIG90aGVyIG92ZXJ2aWV3IGRvY3VtZW50IGFib3V0Cj4gdGhlIGxpY2Vu
+c2luZy4uLiBhbHNhLXBsdWdpbnMgaXMgcHJpbWFyaWx5IGxpY2Vuc2VkIHVuZGVyIExHUEwgMi4x
+LCBhbmQKPiB0byBteSBrbm93bGVkZ2UgdGhlIG9ubHkgZXhjZXB0aW9uIGlzIHRoZSBsaWJzYW1w
+bGVyYXRlIGJhc2VkIHJhdGUKPiBwbHVnaW4uIFRoZSBsaWNlbnNpbmcgaXMgZXhwbGFpbmVkIGhl
+cmU6Cj4gCj4gaHR0cHM6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXBsdWdpbnMuZ2l0
+O2E9YmxvYjtmPXJhdGUvcmF0ZV9zYW1wbGVyYXRlLmMKPiAKPiBTbyB0aGlzIHBhcnRpY2x1YXIg
+cmF0ZSBwbHVnaW4gaXMgbGljZW5zZWQgdW5kZXIgR1BMIDIuMCAidG8gZm9sbG93IHRoZQo+IGxp
+Y2Vuc2Ugb2YgbGlic2FtcGxlcmF0ZSIsIHVubGVzcyB5b3UgaGF2ZSBhIGNvbW1lcmNpYWwgbGlj
+ZW5zZSB0bwo+IGxpYnNhbXBsZXJhdGUuIEkgZG9uJ3QgdGhpbmsgdGhlIHJhdGlvbmFsZSBmb3Ig
+dGhhdCBleGNlcHRpb24gbWFrZXMKPiBtdWNoIHNlbnNlIChMR1BMIHdvdWxkIGhhdmUgd29ya2Vk
+IGp1c3QgZmluZSwgYXMgZmFyIGFzIEkgY2FuIHRlbGwpLAo+IGJ1dCBhdCB0aGlzIHBvaW50IHJl
+bGljZW5zaW5nIG1heSBiZSB2ZXJ5IGRpZmZpY3VsdCBkdWUgdG8gbWFueQo+IGNvbnRyaWJ1dG9y
+cy4KClJlbGljZW5zaW5nIHNob3VsZG4ndCBiZSB0aGF0IGhhcmQgYWZ0ZXIgYWxsLCBpZiB0aGF0
+J3MgZGVzaXJlZCAoSQp0aGluayBpdCB3b3VsZCBiZSBhIGdvb2QgaWRlYSkuIE5vdyB0aGF0IEkg
+bG9va2VkLCB0aGVyZSBhY3R1YWxseQphcmVuJ3QgbWFueSBjb250cmlidXRvcnMgdG8gdGhhdCBw
+bHVnaW4sIG9ubHkgVGFrYXNoaSBhbmQgSmFyb3NsYXYuCkRpZWdvIEUuICdGbGFtZWV5ZXMnIFBl
+dHRlbsOyIGFsc28gaGFzIGEgY29tbWl0LCBidXQgaXQgb25seSBjaGFuZ2VzIG9uZQpsaW5lIGlu
+IHRoZSBidWlsZCBzeXN0ZW0uCgo+IGxpYnNhbXBsZXJhdGUgd2FzIHJlbGljZW5zZWQgdW5kZXIg
+dGhlIDItY2xhdXNlIEJTRCBsaWNlbnNlIGluIDIwMTZbMV0sCj4gd2hpY2ggbWF5IG9yIG1heSBu
+b3QgYWxsb3cgeW91IHRvIGFwcGx5IExHUEwgdG8gdGhlIHJhdGUgcGx1Z2luIChteQo+IGd1ZXNz
+IHdvdWxkIGJlIHRoYXQgaXQgZG9lc24ndCBhbGxvdyB5b3UgdG8gZG8gdGhhdCwgYnV0IElBTkFM
+KS4KPiAKPiBbMV0gaHR0cDovL3d3dy5tZWdhLW5lcmQuY29tL1NSQy9saWNlbnNlLmh0bWwKCi0t
+IApUYW51CgpodHRwczovL3d3dy5wYXRyZW9uLmNvbS90YW51awpodHRwczovL2xpYmVyYXBheS5j
+b20vdGFudWsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+czovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
