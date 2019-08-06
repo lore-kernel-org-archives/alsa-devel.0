@@ -1,107 +1,59 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 00/17] soundwire: fixes for 5.4
-Date: Mon,  5 Aug 2019 19:55:05 -0500
-Message-ID: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/17] soundwire: intel: prevent possible dereference in hw_params
+Date: Mon,  5 Aug 2019 19:55:06 -0500
+Message-ID: <20190806005522.22642-2-pierre-louis.bossart@linux.intel.com>
+References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series provides an update on the initial RFC. Debugfs and Intel
-updates will be provided in follow-up patches. The order of patches
-was changed since the RFC so detailed change logs are provided below.
+This should not happen in production systems but we should test for
+all callback arguments before invoking the config_stream callback.
 
-Changes since RFC:
+Update the prototype to clarify that the first argument is mandatory.
 
-patch1: feedback from Vinod and Cezary
-use local variable to reduce number of de-references
-document that first argument is mandatory
+Also use local variable instead of multiple dereferences to improve
+readability.
 
-patch2: feedback from Vinod
-document that the work-around is required for all existing controllers
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/soundwire/intel.c           | 6 ++++--
+ include/linux/soundwire/sdw_intel.h | 1 +
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-patch 3: feedback from Vinod
-clarify comment that MCP_INT_IRQ ungates all other settings.
-use MCP_INT_SLAVE_MASK instead of all individual settings ORed.
-
-Patch 4: feedback from Vinod:
-demote dynamic debug log to dev_dbg (was dev_err)
-
-patch5:
-clarify commit message that the helpers will be used in the Cadence
-parts as well.
-
-patch 6: feedback from Vinod
-s/BIOS/firmware
-remove magic numbers, introduce macros
-
-patch 7:
-add kbuild warning message in commit message
-
-patch 8:
-no change
-
-patch 9: feedback from Guennadi
-remove unnecessary initializations
-
-patch 10/11/12: feedback from Vinod
-split initial patch in 3 (prototype, Intel, Cadence)
-add explanations on what mclk_freq is in commit messages
-remove pr_err logs missed in RFC
-
-patch 13: feedback from Bard
-remove unecessary reads before update
-
-patch 14:
-no change
-
-patch 15:
-update commit message
-
-patch 16:
-update commit message
-remove unnecessary dynamic debug log
-
-patch 17:
-no change
-
-Bard liao (1):
-  soundwire: include mod_devicetable.h to avoid compiling warnings
-
-Pierre-Louis Bossart (15):
-  soundwire: intel: prevent possible dereference in hw_params
-  soundwire: intel: fix channel number reported by hardware
-  soundwire: cadence_master: revisit interrupt settings
-  soundwire: bus: improve dynamic debug comments for enumeration
-  soundwire: export helpers to find row and column values
-  soundwire: cadence_master: use firmware defaults for frame shape
-  soundwire: stream: fix disable sequence
-  soundwire: stream: remove unnecessary variable initializations
-  soundwire: add new mclk_freq field for properties
-  soundwire: intel: read mclk_freq property from firmware
-  soundwire: cadence_master: make use of mclk_freq property
-  soundwire: intel: handle disabled links
-  soundwire: intel_init: add kernel module parameter to filter out links
-  soundwire: cadence_master: add kernel parameter to override interrupt
-    mask
-  soundwire: intel: move shutdown() callback and don't export symbol
-
-Rander Wang (1):
-  soundwire: cadence_master: fix divider setting in clock register
-
- drivers/soundwire/bus.c             |   5 +-
- drivers/soundwire/bus.h             |   7 +-
- drivers/soundwire/cadence_master.c  | 102 +++++++++++++++++++---------
- drivers/soundwire/cadence_master.h  |   2 -
- drivers/soundwire/intel.c           |  83 ++++++++++++++++++++--
- drivers/soundwire/intel_init.c      |  11 +++
- drivers/soundwire/stream.c          |  93 ++++++++++++++++---------
- include/linux/soundwire/sdw.h       |   6 ++
- include/linux/soundwire/sdw_intel.h |   1 +
- 9 files changed, 236 insertions(+), 74 deletions(-)
-
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 3d9ca6479e94..a906789c7f78 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -498,8 +498,10 @@ static int intel_config_stream(struct sdw_intel *sdw,
+ 			       struct snd_soc_dai *dai,
+ 			       struct snd_pcm_hw_params *hw_params, int link_id)
+ {
+-	if (sdw->res->ops && sdw->res->ops->config_stream)
+-		return sdw->res->ops->config_stream(sdw->res->arg,
++	struct sdw_intel_link_res *res = sdw->res;
++
++	if (res->ops && res->ops->config_stream && res->arg)
++		return res->ops->config_stream(res->arg,
+ 				substream, dai, hw_params, link_id);
+ 
+ 	return -EIO;
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 4d70da45363d..c9427cb6020b 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -8,6 +8,7 @@
+  * struct sdw_intel_ops: Intel audio driver callback ops
+  *
+  * @config_stream: configure the stream with the hw_params
++ * the first argument containing the context is mandatory
+  */
+ struct sdw_intel_ops {
+ 	int (*config_stream)(void *arg, void *substream,
 -- 
 2.20.1
