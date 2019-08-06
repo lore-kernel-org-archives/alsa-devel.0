@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/17] soundwire: intel: handle disabled links
-Date: Mon,  5 Aug 2019 19:55:19 -0500
-Message-ID: <20190806005522.22642-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 17/17] soundwire: intel: move shutdown() callback and don't export symbol
+Date: Mon,  5 Aug 2019 19:55:22 -0500
+Message-ID: <20190806005522.22642-18-pierre-louis.bossart@linux.intel.com>
 References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,105 +12,93 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On most hardware platforms, SoundWire interfaces are pin-muxed with
-other interfaces (typically DMIC or I2S) and the status of each link
-needs to be checked at boot time.
-
-For Intel platforms, the BIOS provides a menu to enable/disable the
-links separately, and the information is provided to the OS with an
-Intel-specific _DSD property. The same capability will be added to
-revisions of the MIPI DisCo specification.
+All DAI callbacks are in intel.c except for shutdown. Move and remove
+export symbol
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c     | 26 ++++++++++++++++++++++----
- include/linux/soundwire/sdw.h |  2 ++
- 2 files changed, 24 insertions(+), 4 deletions(-)
+ drivers/soundwire/cadence_master.c | 14 --------------
+ drivers/soundwire/cadence_master.h |  2 --
+ drivers/soundwire/intel.c          | 17 +++++++++++++++--
+ 3 files changed, 15 insertions(+), 18 deletions(-)
 
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 4ab3174cbb04..c5891c8a824e 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -1316,19 +1316,5 @@ int sdw_cdns_alloc_stream(struct sdw_cdns *cdns,
+ }
+ EXPORT_SYMBOL(sdw_cdns_alloc_stream);
+ 
+-void sdw_cdns_shutdown(struct snd_pcm_substream *substream,
+-		       struct snd_soc_dai *dai)
+-{
+-	struct sdw_cdns_dma_data *dma;
+-
+-	dma = snd_soc_dai_get_dma_data(dai, substream);
+-	if (!dma)
+-		return;
+-
+-	snd_soc_dai_set_dma_data(dai, substream, NULL);
+-	kfree(dma);
+-}
+-EXPORT_SYMBOL(sdw_cdns_shutdown);
+-
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_DESCRIPTION("Cadence Soundwire Library");
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index c0bf6ff00a44..d1022125f182 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -174,8 +174,6 @@ int sdw_cdns_alloc_stream(struct sdw_cdns *cdns,
+ void sdw_cdns_config_stream(struct sdw_cdns *cdns, struct sdw_cdns_port *port,
+ 			    u32 ch, u32 dir, struct sdw_cdns_pdi *pdi);
+ 
+-void sdw_cdns_shutdown(struct snd_pcm_substream *substream,
+-		       struct snd_soc_dai *dai);
+ int sdw_cdns_pcm_set_stream(struct snd_soc_dai *dai,
+ 			    void *stream, int direction);
+ int sdw_cdns_pdm_set_stream(struct snd_soc_dai *dai,
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 3f876642cb7f..e702187c0609 100644
+index e702187c0609..fe5f21edccfc 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -90,6 +90,8 @@
- #define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
- #define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
- 
-+#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE	BIT(1)
-+
- enum intel_pdi_type {
- 	INTEL_PDI_IN = 0,
- 	INTEL_PDI_OUT = 1,
-@@ -914,7 +916,7 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	struct sdw_master_prop *prop = &bus->prop;
- 	struct fwnode_handle *link;
- 	char name[32];
--	int nval, i;
-+	u32 quirk_mask;
- 
- 	/* Find master handle */
- 	snprintf(name, sizeof(name),
-@@ -929,6 +931,14 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	fwnode_property_read_u32(link,
- 				 "intel-sdw-ip-clock",
- 				 &prop->mclk_freq);
-+
-+	fwnode_property_read_u32(link,
-+				 "intel-quirk-mask",
-+				 &quirk_mask);
-+
-+	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
-+		prop->hw_disabled = true;
-+
- 	return 0;
+@@ -764,6 +764,19 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ 	return ret;
  }
  
-@@ -989,6 +999,12 @@ static int intel_probe(struct platform_device *pdev)
- 		goto err_master_reg;
- 	}
- 
-+	if (sdw->cdns.bus.prop.hw_disabled) {
-+		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
-+			 sdw->cdns.bus.link_id);
-+		return 0;
-+	}
++static void intel_shutdown(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *dai)
++{
++	struct sdw_cdns_dma_data *dma;
 +
- 	/* Initialize shim and controller */
- 	intel_link_power_up(sdw);
- 	intel_shim_init(sdw);
-@@ -1042,9 +1058,11 @@ static int intel_remove(struct platform_device *pdev)
- 
- 	sdw = platform_get_drvdata(pdev);
- 
--	intel_debugfs_exit(sdw);
--	free_irq(sdw->res->irq, sdw);
--	snd_soc_unregister_component(sdw->cdns.dev);
-+	if (!sdw->cdns.bus.prop.hw_disabled) {
-+		intel_debugfs_exit(sdw);
-+		free_irq(sdw->res->irq, sdw);
-+		snd_soc_unregister_component(sdw->cdns.dev);
-+	}
- 	sdw_delete_bus_master(&sdw->cdns.bus);
- 
- 	return 0;
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index b6acc436ac80..a3c7448d5817 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -380,6 +380,7 @@ struct sdw_slave_prop {
-  * @err_threshold: Number of times that software may retry sending a single
-  * command
-  * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
-+ * @hw_disabled: if true, the Master is not functional, typically due to pin-mux
-  */
- struct sdw_master_prop {
- 	u32 revision;
-@@ -395,6 +396,7 @@ struct sdw_master_prop {
- 	bool dynamic_frame;
- 	u32 err_threshold;
- 	u32 mclk_freq;
-+	bool hw_disabled;
++	dma = snd_soc_dai_get_dma_data(dai, substream);
++	if (!dma)
++		return;
++
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
++	kfree(dma);
++}
++
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
+ 				    void *stream, int direction)
+ {
+@@ -779,14 +792,14 @@ static int intel_pdm_set_sdw_stream(struct snd_soc_dai *dai,
+ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ 	.hw_params = intel_hw_params,
+ 	.hw_free = intel_hw_free,
+-	.shutdown = sdw_cdns_shutdown,
++	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pcm_set_sdw_stream,
  };
  
- int sdw_master_read_prop(struct sdw_bus *bus);
+ static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
+ 	.hw_params = intel_hw_params,
+ 	.hw_free = intel_hw_free,
+-	.shutdown = sdw_cdns_shutdown,
++	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pdm_set_sdw_stream,
+ };
+ 
 -- 
 2.20.1
