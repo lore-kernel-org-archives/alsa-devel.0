@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 03/17] soundwire: cadence_master: revisit interrupt settings
-Date: Mon,  5 Aug 2019 19:55:08 -0500
-Message-ID: <20190806005522.22642-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/17] soundwire: cadence_master: use firmware defaults for frame shape
+Date: Mon,  5 Aug 2019 19:55:11 -0500
+Message-ID: <20190806005522.22642-7-pierre-louis.bossart@linux.intel.com>
 References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,74 +9,74 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bard Liao <yung-chuan.liao@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, Blauciak@vger.kernel.org, Slawomir <slawomir.blauciak@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adding missing interrupt masks (parity, etc) and missing checks.
-Clarify which masks are for which usage.
+Remove hard-coding and use firmware (BIOS/DT) values. If they are
+wrong use default 48x2 frame shape.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ drivers/soundwire/cadence_master.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index a1c5f05ef27b..5d9729b4d634 100644
+index 5d9729b4d634..89c55e4bb72c 100644
 --- a/drivers/soundwire/cadence_master.c
 +++ b/drivers/soundwire/cadence_master.c
-@@ -76,9 +76,12 @@
- #define CDNS_MCP_INT_DPINT			BIT(11)
- #define CDNS_MCP_INT_CTRL_CLASH			BIT(10)
- #define CDNS_MCP_INT_DATA_CLASH			BIT(9)
-+#define CDNS_MCP_INT_PARITY			BIT(8)
- #define CDNS_MCP_INT_CMD_ERR			BIT(7)
-+#define CDNS_MCP_INT_RX_NE			BIT(3)
- #define CDNS_MCP_INT_RX_WL			BIT(2)
- #define CDNS_MCP_INT_TXE			BIT(1)
-+#define CDNS_MCP_INT_TXF			BIT(0)
+@@ -48,6 +48,8 @@
+ #define CDNS_MCP_SSPSTAT			0xC
+ #define CDNS_MCP_FRAME_SHAPE			0x10
+ #define CDNS_MCP_FRAME_SHAPE_INIT		0x14
++#define CDNS_MCP_FRAME_SHAPE_COL_MASK		GENMASK(2, 0)
++#define CDNS_MCP_FRAME_SHAPE_ROW_OFFSET		3
  
- #define CDNS_MCP_INTSET				0x4C
+ #define CDNS_MCP_CONFIG_UPDATE			0x18
+ #define CDNS_MCP_CONFIG_UPDATE_BIT		BIT(0)
+@@ -175,7 +177,6 @@
+ /* Driver defaults */
  
-@@ -669,6 +672,11 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- 		}
- 	}
+ #define CDNS_DEFAULT_CLK_DIVIDER		0
+-#define CDNS_DEFAULT_FRAME_SHAPE		0x30
+ #define CDNS_DEFAULT_SSP_INTERVAL		0x18
+ #define CDNS_TX_TIMEOUT				2000
  
-+	if (int_status & CDNS_MCP_INT_PARITY) {
-+		/* Parity error detected by Master */
-+		dev_err_ratelimited(cdns->dev, "Parity error\n");
-+	}
-+
- 	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
- 		/* Slave is driving bit slot during control word */
- 		dev_err_ratelimited(cdns->dev, "Bus clash for control word\n");
-@@ -736,10 +744,23 @@ static int _cdns_enable_interrupt(struct sdw_cdns *cdns)
- 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
- 		    CDNS_MCP_SLAVE_INTMASK1_MASK);
+@@ -901,6 +902,20 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+ }
+ EXPORT_SYMBOL(sdw_cdns_pdi_init);
  
--	mask = CDNS_MCP_INT_SLAVE_RSVD | CDNS_MCP_INT_SLAVE_ALERT |
--		CDNS_MCP_INT_SLAVE_ATTACH | CDNS_MCP_INT_SLAVE_NATTACH |
--		CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
--		CDNS_MCP_INT_RX_WL | CDNS_MCP_INT_IRQ | CDNS_MCP_INT_DPINT;
-+	/* enable detection of all slave state changes */
-+	mask = CDNS_MCP_INT_SLAVE_MASK;
++static u32 cdns_set_initial_frame_shape(int n_rows, int n_cols)
++{
++	u32 val;
++	int c;
++	int r;
 +
-+	/* enable detection of bus issues */
-+	mask |= CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
-+		CDNS_MCP_INT_PARITY;
++	r = sdw_find_row_index(n_rows);
++	c = sdw_find_col_index(n_cols) & CDNS_MCP_FRAME_SHAPE_COL_MASK;
 +
-+	/* no detection of port interrupts for now */
++	val = (r << CDNS_MCP_FRAME_SHAPE_ROW_OFFSET) | c;
 +
-+	/* enable detection of RX fifo level */
-+	mask |= CDNS_MCP_INT_RX_WL;
++	return val;
++}
 +
+ /**
+  * sdw_cdns_init() - Cadence initialization
+  * @cdns: Cadence instance
+@@ -923,8 +938,13 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+ 	val |= CDNS_DEFAULT_CLK_DIVIDER;
+ 	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
+ 
+-	/* Set the default frame shape */
+-	cdns_writel(cdns, CDNS_MCP_FRAME_SHAPE_INIT, CDNS_DEFAULT_FRAME_SHAPE);
 +	/*
-+	 * CDNS_MCP_INT_IRQ needs to be set otherwise all previous
-+	 * settings are irrelevant
++	 * Frame shape changes after initialization have to be done
++	 * with the bank switch mechanism
 +	 */
-+	mask |= CDNS_MCP_INT_IRQ;
++	val = cdns_set_initial_frame_shape(prop->default_row,
++					   prop->default_col);
++	cdns_writel(cdns, CDNS_MCP_FRAME_SHAPE_INIT, val);
  
- 	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
- 
+ 	/* Set SSP interval to default value */
+ 	cdns_writel(cdns, CDNS_MCP_SSP_CTRL0, CDNS_DEFAULT_SSP_INTERVAL);
 -- 
 2.20.1
