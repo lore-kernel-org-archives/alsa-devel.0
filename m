@@ -1,20 +1,23 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RESEND PATCH v3] ASoC: Intel: Skylake:
- large_config_get overhaul
-Date: Wed, 7 Aug 2019 15:00:31 -0500
-Message-ID: <4b0e1051-946b-ea7c-1e09-93e0825e5ac8@linux.intel.com>
-References: <20190807134745.1648-1-cezary.rojewski@intel.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Subject: Re: [PATCH] ASoC: SOF: topology: use set_get_data in
+ process load
+Date: Wed, 7 Aug 2019 13:09:57 -0700
+Message-ID: <CAFQqKeXnSFUDG_72LGhxMD5aAU-DjnnPc9oqcrWBy_NfJNRQLg@mail.gmail.com>
+References: <20190807145227.26216-1-pierre-louis.bossart@linux.intel.com>
+ <07fe0e09-6984-76c9-da7c-a1992e7f7b64@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com
+ [IPv6:2607:f8b0:4864:20::b43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9ACDBF800F3
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 22:00:36 +0200 (CEST)
-In-Reply-To: <20190807134745.1648-1-cezary.rojewski@intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D570F800F3
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 22:10:09 +0200 (CEST)
+Received: by mail-yb1-xb43.google.com with SMTP id b16so1295153ybq.0
+ for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2019 13:10:09 -0700 (PDT)
+In-Reply-To: <07fe0e09-6984-76c9-da7c-a1992e7f7b64@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,164 +27,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: tiwai@suse.de, Linux-ALSA <alsa-devel@alsa-project.org>, Jaska Uimonen <jaska.uimonen@intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I find this patch quite convoluted, so I ordered my comments to make 
-them linear.
+On Wed, Aug 7, 2019 at 12:32 PM Cezary Rojewski <cezary.rojewski@intel.com>
+wrote:
 
-> LARGE_CONFIG_GET is among the most crucial IPCs. Host is expected to
-> send single request first to obtain total payload size from received
-> header's data_off_size. From then on, it loops for each frame exceeding
-> inbox size until entire payload is read. If entire payload is contained
-> within the very first frame, no looping is performed.
+> On 2019-08-07 16:52, Pierre-Louis Bossart wrote:
+> > From: Jaska Uimonen <jaska.uimonen@intel.com>
+>
+> >       process = kzalloc(ipc_size, GFP_KERNEL);
+> > -     if (!process)
+> > +     if (!process) {
+> > +             kfree(wdata);
+> >               return -ENOMEM;
+> > +     }
+> >
+> >       /* configure iir IPC message */
+> >       process->comp.hdr.size = ipc_size;
+> > @@ -1835,7 +1890,9 @@ static int sof_process_load(struct
+> snd_soc_component *scomp, int index,
+> >       if (ret != 0) {
+> >               dev_err(sdev->dev, "error: parse process.cfg tokens failed
+> %d\n",
+> >                       le32_to_cpu(private->size));
+> > -             goto err;
+> > +             kfree(wdata);
+> > +             kfree(process);
+> > +             return ret;
+> >       }
+> >
+>
+> > @@ -1886,10 +1916,36 @@ static int sof_process_load(struct
+> snd_soc_component *scomp, int index,
+> >
+> >       ret = sof_ipc_tx_message(sdev->ipc, process->comp.hdr.cmd, process,
+> >                                ipc_size, r, sizeof(*r));
+> > -     if (ret >= 0)
+> > +
+> > +     if (ret < 0) {
+> > +             dev_err(sdev->dev, "error: create process failed\n");
+> > +             kfree(wdata);
+> > +             kfree(process);
+> >               return ret;
+> > -err:
+> > -     kfree(process);
+> > +     }
+> > +
+> > +     /* we sent the data in single message so return */
+> > +     if (ipc_data_size) {
+> > +             kfree(wdata);
+> > +             return ret;
+> > +     }
+> > +
+> > +     /* send control data with large message supported method */
+> > +     for (i = 0; i < widget->num_kcontrols; i++) {
+> > +             wdata[i].control->readback_offset = 0;
+> > +             ret = snd_sof_ipc_set_get_comp_data(sdev->ipc,
+> wdata[i].control,
+> > +                                                 wdata[i].ipc_cmd,
+> > +                                                 wdata[i].ctrl_type,
+> > +                                                 wdata[i].control->cmd,
+> > +                                                 true);
+> > +             if (ret != 0) {
+> > +                     dev_err(sdev->dev, "error: send control failed\n");
+> > +                     kfree(process);
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     kfree(wdata);
+> >       return ret;
+> >   }
+>
+> On several occasions you've added individual error paths instead of a
+> unified one. Personally I don't find it easier to read and understand
+> function's flow at all.
+>
+> <ifs with goto err>
+>
+> err:
+>         kfree(process);
+>         kfree(wdata);
+>         return ret;
+>
+> doesn't look that bad..
 
-so there's got to be a test that defines if looping is required or not 
-but see [1] below.
+Thanks for pointing out. Perhaps, the error handling can be improved a
+little. We can fix in v2.
 
-> 
-> LARGE_CONFIG_GET is a flexible IPC, it not only receives payload but may
-> carry one with them to provide list of params DSP module should return
-> info for. This behavior is usually reserved for vendors and IPC handler
-> should not touch that content. To achieve that, simply pass provided
-> payload and bytes to sst_ipc_tx_message_wait as a part of request.
+Thanks,
+Ranjani
 
-[2] And this has nothing to do with the loops,  does it?
-
-> In current state, LARGE_CONFIG_GET message handler does nothing of that,
-> in consequence making it dysfunctional. Overhaul said handler allowing
-> rightful king of IPCs to return back on his throne - kingdom he shares
-> with his twin brother: LARGE_CONFIG_SET.
-
-[3] what is dysfunctional? the unnecessary loops or handling data in the 
-IPC that should only be handled in vendor-specific parts. And btw I 
-don't see vendor-specific parts in the Skylake driver, so not sure how 
-those vendor-specific thingies are handled at all.
-
-> The looping has not been added in this update as payloads of such size
-> do not exist in practice. Will need to create custom module specifically
-> for that very case and test against it before that feature can be added.
-
-[1] here you are just saying that the looping is really not required so 
-there are no tests at all...
-
-[4] So shouldn't you split the two parts of this patch and separate 
-looping from not touching the data that's vendor-specific?
-
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->   sound/soc/intel/skylake/skl-messages.c |  3 +-
->   sound/soc/intel/skylake/skl-sst-ipc.c  | 54 +++++++++++---------------
->   sound/soc/intel/skylake/skl-sst-ipc.h  |  3 +-
->   3 files changed, 27 insertions(+), 33 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-> index e8cc710f092b..84f0e6f58eb5 100644
-> --- a/sound/soc/intel/skylake/skl-messages.c
-> +++ b/sound/soc/intel/skylake/skl-messages.c
-> @@ -1379,11 +1379,12 @@ int skl_get_module_params(struct skl_dev *skl, u32 *params, int size,
->   			  u32 param_id, struct skl_module_cfg *mcfg)
->   {
->   	struct skl_ipc_large_config_msg msg;
-> +	size_t bytes = size;
->   
->   	msg.module_id = mcfg->id.module_id;
->   	msg.instance_id = mcfg->id.pvt_id;
->   	msg.param_data_size = size;
->   	msg.large_param_id = param_id;
->   
-> -	return skl_ipc_get_large_config(&skl->ipc, &msg, params);
-> +	return skl_ipc_get_large_config(&skl->ipc, &msg, &params, &bytes);
->   }
-> diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-> index a2b69a02aab2..9d269a5f8bd9 100644
-> --- a/sound/soc/intel/skylake/skl-sst-ipc.c
-> +++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-> @@ -969,12 +969,17 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
->   EXPORT_SYMBOL_GPL(skl_ipc_set_large_config);
->   
->   int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
-> -		struct skl_ipc_large_config_msg *msg, u32 *param)
-> +		struct skl_ipc_large_config_msg *msg,
-> +		unsigned int **payload, size_t *bytes)
->   {
->   	struct skl_ipc_header header = {0};
-> -	struct sst_ipc_message request = {0}, reply = {0};
-> -	int ret = 0;
-> -	size_t sz_remaining, rx_size, data_offset;
-> +	struct sst_ipc_message request, reply = {0};
-> +	unsigned int *buf;
-> +	int ret;
-> +
-> +	reply.data = kzalloc(SKL_ADSP_W1_SZ, GFP_KERNEL);
-> +	if (!reply.data)
-> +		return -ENOMEM;
->   
->   	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
->   	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-> @@ -987,34 +992,21 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
->   	header.extension |= IPC_FINAL_BLOCK(1);
->   	header.extension |= IPC_INITIAL_BLOCK(1);
->   
-> -	sz_remaining = msg->param_data_size;
-> -	data_offset = 0;
-> -
-> -	while (sz_remaining != 0) {
-> -		rx_size = sz_remaining > SKL_ADSP_W1_SZ
-> -				? SKL_ADSP_W1_SZ : sz_remaining;
-> -		if (rx_size == sz_remaining)
-> -			header.extension |= IPC_FINAL_BLOCK(1);
-> -
-> -		request.header = *(u64 *)(&header);
-> -		reply.data = ((char *)param) + data_offset;
-> -		reply.size = msg->param_data_size;
-> -		ret = sst_ipc_tx_message_wait(ipc, request, &reply);
-> -		if (ret < 0) {
-> -			dev_err(ipc->dev,
-> -				"ipc: get large config fail, err: %d\n", ret);
-> -			return ret;
-> -		}
-> -		sz_remaining -= rx_size;
-> -		data_offset = msg->param_data_size - sz_remaining;
-> +	request.header = *(u64 *)&header;
-> +	request.data = *payload;
-> +	request.size = *bytes;
-> +	reply.size = SKL_ADSP_W1_SZ;
->   
-> -		/* clear the fields */
-> -		header.extension &= IPC_INITIAL_BLOCK_CLEAR;
-> -		header.extension &= IPC_DATA_OFFSET_SZ_CLEAR;
-> -		/* fill the fields */
-> -		header.extension |= IPC_INITIAL_BLOCK(1);
-> -		header.extension |= IPC_DATA_OFFSET_SZ(data_offset);
-> -	}
-> +	ret = sst_ipc_tx_message_wait(ipc, request, &reply);
-> +	if (ret < 0)
-> +		dev_err(ipc->dev, "ipc: get large config fail: %d\n", ret);
-> +
-> +	reply.size = (reply.header >> 32) & IPC_DATA_OFFSET_SZ_MASK;
-> +	buf = krealloc(reply.data, reply.size, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +	*payload = buf;
-> +	*bytes = reply.size;
->   
->   	return ret;
->   }
-> diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-> index 93af08cf41d2..a7ab2c589cc5 100644
-> --- a/sound/soc/intel/skylake/skl-sst-ipc.h
-> +++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-> @@ -139,7 +139,8 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
->   		struct skl_ipc_large_config_msg *msg, u32 *param);
->   
->   int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
-> -		struct skl_ipc_large_config_msg *msg, u32 *param);
-> +		struct skl_ipc_large_config_msg *msg,
-> +		unsigned int **payload, size_t *bytes);
->   
->   int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
->   			u8 dma_id, u8 table_id, bool wait);
-> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
