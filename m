@@ -1,38 +1,43 @@
 From: Wenwen Wang <wenwen@cs.uga.edu>
-Subject: Re: [PATCH] ALSA: usb-midi: fix a memory leak bug
-Date: Wed, 7 Aug 2019 01:37:58 -0400
-Message-ID: <CAAa=b7cOAONyFVd=s19d+00gb9_CtECP59ZR_sc6z4z=BOVjEA@mail.gmail.com>
-References: <CAAa=b7ebEkQZhPCbJPK=dVC+cR8_pTE3OOxX+PV+MNx7-Y25Cw@mail.gmail.com>
- <s5hef1xo81o.wl-tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: fix a memory leak bug
+Date: Wed, 7 Aug 2019 02:15:17 -0400
+Message-ID: <CAAa=b7ffFNc4zuQfXEwsS363=kX_ZOx0+jhg4WM3JQ-d7n-LMA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hef1xo81o.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>, Wenwen Wang <wenwen@cs.uga.edu>
+To: Wenwen Wang <wenwen@cs.uga.edu>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Allison Randal <allison@lohutok.net>, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 7, 2019 at 1:31 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Wed, 07 Aug 2019 05:22:09 +0200,
-> Wenwen Wang wrote:
-> >
-> > In __snd_usbmidi_create(), a MIDI streaming interface structure is
-> > allocated through kzalloc() and the pointer is saved to 'umidi'. Later on,
-> > the endpoint structures are created by invoking
-> > snd_usbmidi_create_endpoints_midiman() or snd_usbmidi_create_endpoints(),
-> > depending on the type of the audio quirk type. However, if the creation
-> > fails, the allocated 'umidi' is not deallocated, leading to a memory leak
-> > bug.
-> >
-> > To fix the above issue, free 'umidi' before returning the error.
-> >
-> > Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
->
-> It's again a false-positive report.  The object is released
-> automatically by the destructor of its base snd_rawmidi object.
+In hiface_pcm_init(), 'rt' is firstly allocated through kzalloc(). Later
+on, hiface_pcm_init_urb() is invoked to initialize 'rt->out_urbs[i]'.
+However, if the initialization fails, 'rt' is not deallocated, leading to a
+memory leak bug.
 
-Thanks for your response! Sorry for the false positives. :(
+To fix the above issue, free 'rt' before returning the error.
 
-Wenwen
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+---
+ sound/usb/hiface/pcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
+index 14fc1e1..5dbcd0d 100644
+--- a/sound/usb/hiface/pcm.c
++++ b/sound/usb/hiface/pcm.c
+@@ -599,8 +599,10 @@ int hiface_pcm_init(struct hiface_chip *chip, u8
+extra_freq)
+        for (i = 0; i < PCM_N_URBS; i++) {
+                ret = hiface_pcm_init_urb(&rt->out_urbs[i], chip, OUT_EP,
+                                    hiface_pcm_out_urb_handler);
+-               if (ret < 0)
++               if (ret < 0) {
++                       kfree(rt);
+                        return ret;
++               }
+        }
+
+        ret = snd_pcm_new(chip->card, "USB-SPDIF Audio", 0, 1, 0, &pcm);
+-- 
+2.7.4
