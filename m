@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: set component->debugfs_root
-	NULL" to the asoc tree
+Subject: Applied "ASoC: soc-core: add comment for for_each_xxx"
+	to the asoc tree
 Date: Wed,  7 Aug 2019 14:30:48 +0100 (BST)
-Message-ID: <20190807133049.0350A2742BE8@ypsilon.sirena.org.uk>
-References: <87muglahq0.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190807133048.BE4F2274304E@ypsilon.sirena.org.uk>
+References: <87lfw5ahpj.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3E12F80533
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:50 +0200 (CEST)
-In-Reply-To: <87muglahq0.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CDB3F80483
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:49 +0200 (CEST)
+In-Reply-To: <87lfw5ahpj.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: set component->debugfs_root NULL
+   ASoC: soc-core: add comment for for_each_xxx
 
 has been applied to the asoc tree at
 
@@ -55,36 +55,42 @@ to this mail.
 Thanks,
 Mark
 
->From ad64bfbd09d7b7997a1b1510983350836bcd6ed9 Mon Sep 17 00:00:00 2001
+>From 6634e3d6ea8cd92fce10d1d2da0c8e42ab84da32 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Aug 2019 10:30:13 +0900
-Subject: [PATCH] ASoC: soc-core: set component->debugfs_root NULL
+Date: Wed, 7 Aug 2019 10:30:31 +0900
+Subject: [PATCH] ASoC: soc-core: add comment for for_each_xxx
 
-To be more safety code, let's set NULL to component->debugfs_root
-when it was cleanuped.
+soc-core has many for_each_xxx, but it is a little bit
+difficult to know which list is relead to which for_each_xxx.
+This patch adds missing comment for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87muglahq0.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87lfw5ahpj.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0f75dac4bb26..2f37c4e0974b 100644
+index 2f37c4e0974b..5e6a48a0f79e 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -171,7 +171,10 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
- 
- static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
+@@ -380,6 +380,7 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
+ static void soc_add_pcm_runtime(struct snd_soc_card *card,
+ 		struct snd_soc_pcm_runtime *rtd)
  {
-+	if (!component->debugfs_root)
-+		return;
- 	debugfs_remove_recursive(component->debugfs_root);
-+	component->debugfs_root = NULL;
- }
++	/* see for_each_card_rtds */
+ 	list_add_tail(&rtd->list, &card->rtd_list);
+ 	rtd->num = card->num_rtd;
+ 	card->num_rtd++;
+@@ -1149,6 +1150,7 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 	if (dai_link->dobj.type && card->add_dai_link)
+ 		card->add_dai_link(card, dai_link);
  
- static int dai_list_show(struct seq_file *m, void *v)
++	/* see for_each_card_links */
+ 	list_add_tail(&dai_link->list, &card->dai_link_list);
+ 
+ 	return 0;
 -- 
 2.20.1
