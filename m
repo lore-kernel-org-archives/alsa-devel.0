@@ -1,64 +1,67 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: fix regmap dependencies and align
- with other serial links
-Date: Wed, 7 Aug 2019 13:17:20 -0500
-Message-ID: <5a7473a2-83c0-1a09-0cab-31fcc5b21302@linux.intel.com>
-References: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
- <CAJZ5v0g5Hk9JYLvRXfLk5-o=n_RVPKtWD=QONpiimCWyQOFELQ@mail.gmail.com>
- <52a2cb0c-92a6-59d5-72da-832edd6481f3@linux.intel.com>
- <20190807175646.GK4048@sirena.co.uk>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 19/25] ASoC: soc-core: don't call
+ snd_soc_component_set_jack()
+Date: Wed, 7 Aug 2019 20:49:09 +0200
+Message-ID: <f3ead090-8c2c-6be5-70b8-c6530239302a@intel.com>
+References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
+ <87y305932s.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190807175646.GK4048@sirena.co.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1671F800E4
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 20:49:15 +0200 (CEST)
+In-Reply-To: <87y305932s.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, jank@cadence.com, Sanyog Kale <sanyog.r.kale@intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
+On 2019-08-07 03:31, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
->> Vinod, Mark, any feedback?
+> snd_soc_component_set_jack() is used for both setting/clearing.
+> Setting purpose is used under each driver.
+> Hence, clearing purpose should be used under each driver, not soc-core.
 > 
->> There will be a set of SoundWire codec drivers provided upstream soonish and
->> we'll get a number of kbuild errors without this patch.
+> soc-core shouldn't touch it even though its purpose was for clearing,
+> otherwise, code becomes very confusable.
+> This patch removes snd_soc_component_set_jack() from soc-core.c
 > 
-> I think I'm missing context here, I've basically been zoning out all the
-> soundwire stuff - the patch series are huge and generate a bunch of
-> discusion.  Is the patch below the full thing?  I don't see any obvious
-> problems.
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> v1 -> v2
+> 
+> 	- no change
+> 
+>   sound/soc/soc-core.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 80703618..e708095 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -938,7 +938,6 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+>   
+>   static void soc_cleanup_component(struct snd_soc_component *component)
+>   {
+> -	snd_soc_component_set_jack(component, NULL, NULL);
+>   	list_del(&component->card_list);
+>   	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+>   	soc_cleanup_component_debugfs(component);
+> 
 
-Here's a bit of context:
-
-This patch is really independent from the 40-odd fixes I pushed about 10 
-days ago. I provided an initial version back in April ('[PATCH v2 2/2] 
-regmap: soundwire: fix Kconfig select/depend issue') during the first 
-batch of updates. At the time, the suggested solution for the 
-compilation issues was not agreed on, so the build errors remained - not 
-a big deal they only show-up with codec drivers that were not upstreamed 
-so far. It took me a while to come back to it but that was the first in 
-my TODO list after my Summer break and now that we are almost ready to 
-upstream those codec drivers it's a good time to revisit this issue.
-
-Your initial feedback was:
-
-"This now makes _SOUNDWIRE different to all the other bus types; if this
-is a good change then surely the same thing should be done for all the
-other bus types. "
-
-and
-
-"Alignment is a requirement.  If you want to optimize
-this then it'd be better to optimize all the bus types rather than just
-having the one weird bus type that does something different for no
-documented reason."
-
-I don't have the knowledge or means to test what I suggested initially 
-for the other buses, and the optimization was minimal anyways, so this 
-patch takes the path of least resistance and aligns with others.
-
-if there are no objections it's probably easier to push this patch 
-through the SoundWire tree, with the relevant Acks.
+This has been added lately for a reason - reload/ unload series.
+Amadeusz, could you comment on this change?
