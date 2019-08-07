@@ -1,120 +1,178 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: fix regmap dependencies and align
- with other serial links
-Date: Wed, 7 Aug 2019 10:09:27 -0500
-Message-ID: <52a2cb0c-92a6-59d5-72da-832edd6481f3@linux.intel.com>
-References: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
- <CAJZ5v0g5Hk9JYLvRXfLk5-o=n_RVPKtWD=QONpiimCWyQOFELQ@mail.gmail.com>
+From: Jonas Karlman <jonas@kwiboo.se>
+Subject: [PATCH] ASoC: hdmi-codec: reorder channel allocation list
+Date: Wed, 7 Aug 2019 15:11:23 +0000
+Message-ID: <HE1PR06MB4011885AED9F32B09183B617ACD40@HE1PR06MB4011.eurprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJZ5v0g5Hk9JYLvRXfLk5-o=n_RVPKtWD=QONpiimCWyQOFELQ@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, jank@cadence.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jonas Karlman <jonas@kwiboo.se>
 List-Id: alsa-devel@alsa-project.org
 
+Wrong channel allocation is selected by hdmi_codec_get_ch_alloc_table_idx().
 
+E.g when ELD reports FL|FR|LFE|FC|RL|RR or FL|FR|LFE|FC|RL|RR|RC|RLC|RRC
 
-On 7/19/19 4:04 AM, Rafael J. Wysocki wrote:
-> On Fri, Jul 19, 2019 at 1:02 AM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->>
->> The existing code has a mixed select/depend usage which makes no sense.
->>
->> config SOUNDWIRE_BUS
->>         tristate
->>         select REGMAP_SOUNDWIRE
->>
->> config REGMAP_SOUNDWIRE
->>          tristate
->>          depends on SOUNDWIRE_BUS
->>
->> Let's remove one layer of Kconfig definitions and align with the
->> solutions used by all other serial links.
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> No issues found:
-> 
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+ca_id 0x01 with speaker mask FL|FR|LFE gets selected instead of
+ca_id 0x03 with speaker mask FL|FR|LFE|FC for 4 channels
 
-Vinod, Mark, any feedback?
+and
 
-There will be a set of SoundWire codec drivers provided upstream soonish 
-and we'll get a number of kbuild errors without this patch.
+ca_id 0x04 with speaker mask FL|FR|RC gets selected instead of
+ca_id 0x0b with speaker mask FL|FR|LFE|FC|RL|RR for 6 channels
 
-> 
->> ---
->>   drivers/base/regmap/Kconfig | 2 +-
->>   drivers/soundwire/Kconfig   | 7 +------
->>   drivers/soundwire/Makefile  | 2 +-
->>   3 files changed, 3 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
->> index 6ad5ef48b61e..8cd2ac650b50 100644
->> --- a/drivers/base/regmap/Kconfig
->> +++ b/drivers/base/regmap/Kconfig
->> @@ -44,7 +44,7 @@ config REGMAP_IRQ
->>
->>   config REGMAP_SOUNDWIRE
->>          tristate
->> -       depends on SOUNDWIRE_BUS
->> +       depends on SOUNDWIRE
->>
->>   config REGMAP_SCCB
->>          tristate
->> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
->> index 3a01cfd70fdc..f518273cfbe3 100644
->> --- a/drivers/soundwire/Kconfig
->> +++ b/drivers/soundwire/Kconfig
->> @@ -4,7 +4,7 @@
->>   #
->>
->>   menuconfig SOUNDWIRE
->> -       bool "SoundWire support"
->> +       tristate "SoundWire support"
->>          help
->>            SoundWire is a 2-Pin interface with data and clock line ratified
->>            by the MIPI Alliance. SoundWire is used for transporting data
->> @@ -17,17 +17,12 @@ if SOUNDWIRE
->>
->>   comment "SoundWire Devices"
->>
->> -config SOUNDWIRE_BUS
->> -       tristate
->> -       select REGMAP_SOUNDWIRE
->> -
->>   config SOUNDWIRE_CADENCE
->>          tristate
->>
->>   config SOUNDWIRE_INTEL
->>          tristate "Intel SoundWire Master driver"
->>          select SOUNDWIRE_CADENCE
->> -       select SOUNDWIRE_BUS
->>          depends on X86 && ACPI && SND_SOC
->>          help
->>            SoundWire Intel Master driver.
->> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
->> index fd99a831b92a..45b7e5001653 100644
->> --- a/drivers/soundwire/Makefile
->> +++ b/drivers/soundwire/Makefile
->> @@ -5,7 +5,7 @@
->>
->>   #Bus Objs
->>   soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
->> -obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
->> +obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
->>
->>   #Cadence Objs
->>   soundwire-cadence-objs := cadence_master.o
->> --
->> 2.20.1
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Fix this by reorder the channel allocation list with
+most specific speaker mask at the top.
+
+Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+---
+ sound/soc/codecs/hdmi-codec.c | 115 ++++++++++++++++------------------
+ 1 file changed, 53 insertions(+), 62 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 0bf1c8cad108..9b5a0a419f86 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -188,84 +188,75 @@ static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
+ /*
+  * hdmi_codec_channel_alloc: speaker configuration available for CEA
+  *
+- * This is an ordered list that must match with hdmi_codec_8ch_chmaps struct
++ * This is an ordered list where ca_id must exist in hdmi_codec_8ch_chmaps
+  * The preceding ones have better chances to be selected by
+  * hdmi_codec_get_ch_alloc_table_idx().
+  */
+ static const struct hdmi_codec_cea_spk_alloc hdmi_codec_channel_alloc[] = {
+ 	{ .ca_id = 0x00, .n_ch = 2,
+-	  .mask = FL | FR},
+-	/* 2.1 */
+-	{ .ca_id = 0x01, .n_ch = 4,
+-	  .mask = FL | FR | LFE},
+-	/* Dolby Surround */
++	  .mask = FL | FR },
++	{ .ca_id = 0x03, .n_ch = 4,
++	  .mask = FL | FR | LFE | FC },
+ 	{ .ca_id = 0x02, .n_ch = 4,
+ 	  .mask = FL | FR | FC },
+-	/* surround51 */
++	{ .ca_id = 0x01, .n_ch = 4,
++	  .mask = FL | FR | LFE },
+ 	{ .ca_id = 0x0b, .n_ch = 6,
+-	  .mask = FL | FR | LFE | FC | RL | RR},
+-	/* surround40 */
+-	{ .ca_id = 0x08, .n_ch = 6,
+-	  .mask = FL | FR | RL | RR },
+-	/* surround41 */
+-	{ .ca_id = 0x09, .n_ch = 6,
+-	  .mask = FL | FR | LFE | RL | RR },
+-	/* surround50 */
++	  .mask = FL | FR | LFE | FC | RL | RR },
+ 	{ .ca_id = 0x0a, .n_ch = 6,
+ 	  .mask = FL | FR | FC | RL | RR },
+-	/* 6.1 */
+-	{ .ca_id = 0x0f, .n_ch = 8,
+-	  .mask = FL | FR | LFE | FC | RL | RR | RC },
+-	/* surround71 */
++	{ .ca_id = 0x09, .n_ch = 6,
++	  .mask = FL | FR | LFE | RL | RR },
++	{ .ca_id = 0x08, .n_ch = 6,
++	  .mask = FL | FR | RL | RR },
++	{ .ca_id = 0x07, .n_ch = 6,
++	  .mask = FL | FR | LFE | FC | RC },
++	{ .ca_id = 0x06, .n_ch = 6,
++	  .mask = FL | FR | FC | RC },
++	{ .ca_id = 0x05, .n_ch = 6,
++	  .mask = FL | FR | LFE | RC },
++	{ .ca_id = 0x04, .n_ch = 6,
++	  .mask = FL | FR | RC },
+ 	{ .ca_id = 0x13, .n_ch = 8,
+ 	  .mask = FL | FR | LFE | FC | RL | RR | RLC | RRC },
+-	/* others */
+-	{ .ca_id = 0x03, .n_ch = 8,
+-	  .mask = FL | FR | LFE | FC },
+-	{ .ca_id = 0x04, .n_ch = 8,
+-	  .mask = FL | FR | RC},
+-	{ .ca_id = 0x05, .n_ch = 8,
+-	  .mask = FL | FR | LFE | RC },
+-	{ .ca_id = 0x06, .n_ch = 8,
+-	  .mask = FL | FR | FC | RC },
+-	{ .ca_id = 0x07, .n_ch = 8,
+-	  .mask = FL | FR | LFE | FC | RC },
+-	{ .ca_id = 0x0c, .n_ch = 8,
+-	  .mask = FL | FR | RC | RL | RR },
+-	{ .ca_id = 0x0d, .n_ch = 8,
+-	  .mask = FL | FR | LFE | RL | RR | RC },
+-	{ .ca_id = 0x0e, .n_ch = 8,
+-	  .mask = FL | FR | FC | RL | RR | RC },
+-	{ .ca_id = 0x10, .n_ch = 8,
+-	  .mask = FL | FR | RL | RR | RLC | RRC },
+-	{ .ca_id = 0x11, .n_ch = 8,
+-	  .mask = FL | FR | LFE | RL | RR | RLC | RRC },
++	{ .ca_id = 0x1f, .n_ch = 8,
++	  .mask = FL | FR | LFE | FC | RL | RR | FLC | FRC },
+ 	{ .ca_id = 0x12, .n_ch = 8,
+ 	  .mask = FL | FR | FC | RL | RR | RLC | RRC },
+-	{ .ca_id = 0x14, .n_ch = 8,
+-	  .mask = FL | FR | FLC | FRC },
+-	{ .ca_id = 0x15, .n_ch = 8,
+-	  .mask = FL | FR | LFE | FLC | FRC },
+-	{ .ca_id = 0x16, .n_ch = 8,
+-	  .mask = FL | FR | FC | FLC | FRC },
+-	{ .ca_id = 0x17, .n_ch = 8,
+-	  .mask = FL | FR | LFE | FC | FLC | FRC },
+-	{ .ca_id = 0x18, .n_ch = 8,
+-	  .mask = FL | FR | RC | FLC | FRC },
+-	{ .ca_id = 0x19, .n_ch = 8,
+-	  .mask = FL | FR | LFE | RC | FLC | FRC },
+-	{ .ca_id = 0x1a, .n_ch = 8,
+-	  .mask = FL | FR | RC | FC | FLC | FRC },
+-	{ .ca_id = 0x1b, .n_ch = 8,
+-	  .mask = FL | FR | LFE | RC | FC | FLC | FRC },
+-	{ .ca_id = 0x1c, .n_ch = 8,
+-	  .mask = FL | FR | RL | RR | FLC | FRC },
+-	{ .ca_id = 0x1d, .n_ch = 8,
+-	  .mask = FL | FR | LFE | RL | RR | FLC | FRC },
+ 	{ .ca_id = 0x1e, .n_ch = 8,
+ 	  .mask = FL | FR | FC | RL | RR | FLC | FRC },
+-	{ .ca_id = 0x1f, .n_ch = 8,
+-	  .mask = FL | FR | LFE | FC | RL | RR | FLC | FRC },
++	{ .ca_id = 0x11, .n_ch = 8,
++	  .mask = FL | FR | LFE | RL | RR | RLC | RRC },
++	{ .ca_id = 0x1d, .n_ch = 8,
++	  .mask = FL | FR | LFE | RL | RR | FLC | FRC },
++	{ .ca_id = 0x10, .n_ch = 8,
++	  .mask = FL | FR | RL | RR | RLC | RRC },
++	{ .ca_id = 0x1c, .n_ch = 8,
++	  .mask = FL | FR | RL | RR | FLC | FRC },
++	{ .ca_id = 0x0f, .n_ch = 8,
++	  .mask = FL | FR | LFE | FC | RL | RR | RC },
++	{ .ca_id = 0x1b, .n_ch = 8,
++	  .mask = FL | FR | LFE | RC | FC | FLC | FRC },
++	{ .ca_id = 0x0e, .n_ch = 8,
++	  .mask = FL | FR | FC | RL | RR | RC },
++	{ .ca_id = 0x1a, .n_ch = 8,
++	  .mask = FL | FR | RC | FC | FLC | FRC },
++	{ .ca_id = 0x0d, .n_ch = 8,
++	  .mask = FL | FR | LFE | RL | RR | RC },
++	{ .ca_id = 0x19, .n_ch = 8,
++	  .mask = FL | FR | LFE | RC | FLC | FRC },
++	{ .ca_id = 0x0c, .n_ch = 8,
++	  .mask = FL | FR | RC | RL | RR },
++	{ .ca_id = 0x18, .n_ch = 8,
++	  .mask = FL | FR | RC | FLC | FRC },
++	{ .ca_id = 0x17, .n_ch = 8,
++	  .mask = FL | FR | LFE | FC | FLC | FRC },
++	{ .ca_id = 0x16, .n_ch = 8,
++	  .mask = FL | FR | FC | FLC | FRC },
++	{ .ca_id = 0x15, .n_ch = 8,
++	  .mask = FL | FR | LFE | FLC | FRC },
++	{ .ca_id = 0x14, .n_ch = 8,
++	  .mask = FL | FR | FLC | FRC },
+ };
+ 
+ struct hdmi_codec_priv {
+-- 
+2.17.1
