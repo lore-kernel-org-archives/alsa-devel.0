@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: reuse rtdcom at
-	snd_soc_rtdcom_add()" to the asoc tree
+Subject: Applied "ASoC: soc-core: set component->debugfs_root
+	NULL" to the asoc tree
 Date: Wed,  7 Aug 2019 14:30:48 +0100 (BST)
-Message-ID: <20190807133048.18F042743057@ypsilon.sirena.org.uk>
-References: <87h86tahp2.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190807133049.0350A2742BE8@ypsilon.sirena.org.uk>
+References: <87muglahq0.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2C7BF80227
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:49 +0200 (CEST)
-In-Reply-To: <87h86tahp2.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3E12F80533
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:50 +0200 (CEST)
+In-Reply-To: <87muglahq0.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: reuse rtdcom at snd_soc_rtdcom_add()
+   ASoC: soc-core: set component->debugfs_root NULL
 
 has been applied to the asoc tree at
 
@@ -55,54 +55,36 @@ to this mail.
 Thanks,
 Mark
 
->From 32d2c172fe88705058310635a732259c0a98e89b Mon Sep 17 00:00:00 2001
+>From ad64bfbd09d7b7997a1b1510983350836bcd6ed9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Aug 2019 10:30:47 +0900
-Subject: [PATCH] ASoC: soc-core: reuse rtdcom at snd_soc_rtdcom_add()
+Date: Wed, 7 Aug 2019 10:30:13 +0900
+Subject: [PATCH] ASoC: soc-core: set component->debugfs_root NULL
 
-snd_soc_rtdcom_add() is using both "rtdcom" and "new_rtdcom" as
-variable name, but these are not used at same time.
-Let's reuse rtdcom.
+To be more safety code, let's set NULL to component->debugfs_root
+when it was cleanuped.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87h86tahp2.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87muglahq0.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/soc-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e176b972e4e6..d12054ab8741 100644
+index 0f75dac4bb26..2f37c4e0974b 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -274,7 +274,6 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
- 			      struct snd_soc_component *component)
+@@ -171,7 +171,10 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
+ 
+ static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
  {
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_rtdcom_list *new_rtdcom;
- 
- 	for_each_rtdcom(rtd, rtdcom) {
- 		/* already connected */
-@@ -282,14 +281,14 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
- 			return 0;
- 	}
- 
--	new_rtdcom = kmalloc(sizeof(*new_rtdcom), GFP_KERNEL);
--	if (!new_rtdcom)
-+	rtdcom = kmalloc(sizeof(*rtdcom), GFP_KERNEL);
-+	if (!rtdcom)
- 		return -ENOMEM;
- 
--	new_rtdcom->component = component;
--	INIT_LIST_HEAD(&new_rtdcom->list);
-+	rtdcom->component = component;
-+	INIT_LIST_HEAD(&rtdcom->list);
- 
--	list_add_tail(&new_rtdcom->list, &rtd->component_list);
-+	list_add_tail(&rtdcom->list, &rtd->component_list);
- 
- 	return 0;
++	if (!component->debugfs_root)
++		return;
+ 	debugfs_remove_recursive(component->debugfs_root);
++	component->debugfs_root = NULL;
  }
+ 
+ static int dai_list_show(struct seq_file *m, void *v)
 -- 
 2.20.1
