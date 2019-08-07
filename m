@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: Add registers definition for multiple datalines" to the asoc tree
-Date: Wed,  7 Aug 2019 14:30:47 +0100 (BST)
-Message-ID: <20190807133047.452A7274304E@ypsilon.sirena.org.uk>
-References: <20190806151214.6783-2-daniel.baluta@nxp.com>
+Subject: Applied "ASoC: fsl_sai: Add support for imx7ulp/imx8mq" to the asoc tree
+Date: Wed,  7 Aug 2019 14:30:46 +0100 (BST)
+Message-ID: <20190807133046.605AB2742B9E@ypsilon.sirena.org.uk>
+References: <20190806151214.6783-5-daniel.baluta@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190806151214.6783-2-daniel.baluta@nxp.com>
+In-Reply-To: <20190806151214.6783-5-daniel.baluta@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Daniel Baluta <daniel.baluta@nxp.com>
 Cc: alsa-devel@alsa-project.org, angus@akkea.ca, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com, linux-kernel@vger.kernel.org, l.stach@pengutronix.deMark Brown <broonie@kernel.org>, mihai.serban@gmail.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh@kernel.org, shengjiu.wang@nxp.com, timur@kernel.org, tiwai@suse.com
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_sai: Add registers definition for multiple datalines
+   ASoC: fsl_sai: Add support for imx7ulp/imx8mq
 
 has been applied to the asoc tree at
 
@@ -37,206 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 5f0ac20ed6db1d6da2eea8b862cf3d54fdfb5830 Mon Sep 17 00:00:00 2001
+>From a860fac420971c5a90d4f78959b44ead793aee4f Mon Sep 17 00:00:00 2001
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Tue, 6 Aug 2019 18:12:10 +0300
-Subject: [PATCH] ASoC: fsl_sai: Add registers definition for multiple
- datalines
+Date: Tue, 6 Aug 2019 18:12:13 +0300
+Subject: [PATCH] ASoC: fsl_sai: Add support for imx7ulp/imx8mq
 
-SAI IP supports up to 8 data lines. The configuration of
-supported number of data lines is decided at SoC integration
-time.
+SAI module on imx7ulp/imx8m features 2 new registers (VERID and PARAM)
+at the beginning of register address space.
 
-This patch adds definitions for all related data TX/RX registers:
-	* TDR0..7, Transmit data register
-	* TFR0..7, Transmit FIFO register
-	* RDR0..7, Receive data register
-	* RFR0..7, Receive FIFO register
+On imx7ulp FIFOs can held up to 16 x 32 bit samples.
+On imx8mq FIFOs can held up to 128 x 32 bit samples.
 
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20190806151214.6783-2-daniel.baluta@nxp.com
+Link: https://lore.kernel.org/r/20190806151214.6783-5-daniel.baluta@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_sai.c | 76 +++++++++++++++++++++++++++++++++++------
- sound/soc/fsl/fsl_sai.h | 36 ++++++++++++++++---
- 2 files changed, 98 insertions(+), 14 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 8f4d9fa95599..e4221f2a5ee3 100644
+index 0c5452927c04..4a346fcb5630 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -685,7 +685,14 @@ static struct reg_default fsl_sai_reg_defaults[] = {
- 	{FSL_SAI_TCR3, 0},
- 	{FSL_SAI_TCR4, 0},
- 	{FSL_SAI_TCR5, 0},
--	{FSL_SAI_TDR,  0},
-+	{FSL_SAI_TDR0, 0},
-+	{FSL_SAI_TDR1, 0},
-+	{FSL_SAI_TDR2, 0},
-+	{FSL_SAI_TDR3, 0},
-+	{FSL_SAI_TDR4, 0},
-+	{FSL_SAI_TDR5, 0},
-+	{FSL_SAI_TDR6, 0},
-+	{FSL_SAI_TDR7, 0},
- 	{FSL_SAI_TMR,  0},
- 	{FSL_SAI_RCR1, 0},
- 	{FSL_SAI_RCR2, 0},
-@@ -704,7 +711,14 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
- 	case FSL_SAI_TCR3:
- 	case FSL_SAI_TCR4:
- 	case FSL_SAI_TCR5:
--	case FSL_SAI_TFR:
-+	case FSL_SAI_TFR0:
-+	case FSL_SAI_TFR1:
-+	case FSL_SAI_TFR2:
-+	case FSL_SAI_TFR3:
-+	case FSL_SAI_TFR4:
-+	case FSL_SAI_TFR5:
-+	case FSL_SAI_TFR6:
-+	case FSL_SAI_TFR7:
- 	case FSL_SAI_TMR:
- 	case FSL_SAI_RCSR:
- 	case FSL_SAI_RCR1:
-@@ -712,8 +726,22 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
- 	case FSL_SAI_RCR3:
- 	case FSL_SAI_RCR4:
- 	case FSL_SAI_RCR5:
--	case FSL_SAI_RDR:
--	case FSL_SAI_RFR:
-+	case FSL_SAI_RDR0:
-+	case FSL_SAI_RDR1:
-+	case FSL_SAI_RDR2:
-+	case FSL_SAI_RDR3:
-+	case FSL_SAI_RDR4:
-+	case FSL_SAI_RDR5:
-+	case FSL_SAI_RDR6:
-+	case FSL_SAI_RDR7:
-+	case FSL_SAI_RFR0:
-+	case FSL_SAI_RFR1:
-+	case FSL_SAI_RFR2:
-+	case FSL_SAI_RFR3:
-+	case FSL_SAI_RFR4:
-+	case FSL_SAI_RFR5:
-+	case FSL_SAI_RFR6:
-+	case FSL_SAI_RFR7:
- 	case FSL_SAI_RMR:
- 		return true;
- 	default:
-@@ -726,9 +754,30 @@ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
- 	switch (reg) {
- 	case FSL_SAI_TCSR:
- 	case FSL_SAI_RCSR:
--	case FSL_SAI_TFR:
--	case FSL_SAI_RFR:
--	case FSL_SAI_RDR:
-+	case FSL_SAI_TFR0:
-+	case FSL_SAI_TFR1:
-+	case FSL_SAI_TFR2:
-+	case FSL_SAI_TFR3:
-+	case FSL_SAI_TFR4:
-+	case FSL_SAI_TFR5:
-+	case FSL_SAI_TFR6:
-+	case FSL_SAI_TFR7:
-+	case FSL_SAI_RFR0:
-+	case FSL_SAI_RFR1:
-+	case FSL_SAI_RFR2:
-+	case FSL_SAI_RFR3:
-+	case FSL_SAI_RFR4:
-+	case FSL_SAI_RFR5:
-+	case FSL_SAI_RFR6:
-+	case FSL_SAI_RFR7:
-+	case FSL_SAI_RDR0:
-+	case FSL_SAI_RDR1:
-+	case FSL_SAI_RDR2:
-+	case FSL_SAI_RDR3:
-+	case FSL_SAI_RDR4:
-+	case FSL_SAI_RDR5:
-+	case FSL_SAI_RDR6:
-+	case FSL_SAI_RDR7:
- 		return true;
- 	default:
- 		return false;
-@@ -744,7 +793,14 @@ static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
- 	case FSL_SAI_TCR3:
- 	case FSL_SAI_TCR4:
- 	case FSL_SAI_TCR5:
--	case FSL_SAI_TDR:
-+	case FSL_SAI_TDR0:
-+	case FSL_SAI_TDR1:
-+	case FSL_SAI_TDR2:
-+	case FSL_SAI_TDR3:
-+	case FSL_SAI_TDR4:
-+	case FSL_SAI_TDR5:
-+	case FSL_SAI_TDR6:
-+	case FSL_SAI_TDR7:
- 	case FSL_SAI_TMR:
- 	case FSL_SAI_RCSR:
- 	case FSL_SAI_RCR1:
-@@ -883,8 +939,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 				   MCLK_DIR(index));
- 	}
+@@ -1019,10 +1019,24 @@ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
+ 	.reg_offset = 0,
+ };
  
--	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
--	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR;
-+	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR0;
-+	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR0;
- 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
- 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
- 
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 7c1ef671da28..4bb478041d67 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -20,8 +20,22 @@
- #define FSL_SAI_TCR3	0x0c /* SAI Transmit Configuration 3 */
- #define FSL_SAI_TCR4	0x10 /* SAI Transmit Configuration 4 */
- #define FSL_SAI_TCR5	0x14 /* SAI Transmit Configuration 5 */
--#define FSL_SAI_TDR	0x20 /* SAI Transmit Data */
--#define FSL_SAI_TFR	0x40 /* SAI Transmit FIFO */
-+#define FSL_SAI_TDR0	0x20 /* SAI Transmit Data 0 */
-+#define FSL_SAI_TDR1	0x24 /* SAI Transmit Data 1 */
-+#define FSL_SAI_TDR2	0x28 /* SAI Transmit Data 2 */
-+#define FSL_SAI_TDR3	0x2C /* SAI Transmit Data 3 */
-+#define FSL_SAI_TDR4	0x30 /* SAI Transmit Data 4 */
-+#define FSL_SAI_TDR5	0x34 /* SAI Transmit Data 5 */
-+#define FSL_SAI_TDR6	0x38 /* SAI Transmit Data 6 */
-+#define FSL_SAI_TDR7	0x3C /* SAI Transmit Data 7 */
-+#define FSL_SAI_TFR0	0x40 /* SAI Transmit FIFO 0 */
-+#define FSL_SAI_TFR1	0x44 /* SAI Transmit FIFO 1 */
-+#define FSL_SAI_TFR2	0x48 /* SAI Transmit FIFO 2 */
-+#define FSL_SAI_TFR3	0x4C /* SAI Transmit FIFO 3 */
-+#define FSL_SAI_TFR4	0x50 /* SAI Transmit FIFO 4 */
-+#define FSL_SAI_TFR5	0x54 /* SAI Transmit FIFO 5 */
-+#define FSL_SAI_TFR6	0x58 /* SAI Transmit FIFO 6 */
-+#define FSL_SAI_TFR7	0x5C /* SAI Transmit FIFO 7 */
- #define FSL_SAI_TMR	0x60 /* SAI Transmit Mask */
- #define FSL_SAI_RCSR	0x80 /* SAI Receive Control */
- #define FSL_SAI_RCR1	0x84 /* SAI Receive Configuration 1 */
-@@ -29,8 +43,22 @@
- #define FSL_SAI_RCR3	0x8c /* SAI Receive Configuration 3 */
- #define FSL_SAI_RCR4	0x90 /* SAI Receive Configuration 4 */
- #define FSL_SAI_RCR5	0x94 /* SAI Receive Configuration 5 */
--#define FSL_SAI_RDR	0xa0 /* SAI Receive Data */
--#define FSL_SAI_RFR	0xc0 /* SAI Receive FIFO */
-+#define FSL_SAI_RDR0	0xa0 /* SAI Receive Data 0 */
-+#define FSL_SAI_RDR1	0xa4 /* SAI Receive Data 1 */
-+#define FSL_SAI_RDR2	0xa8 /* SAI Receive Data 2 */
-+#define FSL_SAI_RDR3	0xac /* SAI Receive Data 3 */
-+#define FSL_SAI_RDR4	0xb0 /* SAI Receive Data 4 */
-+#define FSL_SAI_RDR5	0xb4 /* SAI Receive Data 5 */
-+#define FSL_SAI_RDR6	0xb8 /* SAI Receive Data 6 */
-+#define FSL_SAI_RDR7	0xbc /* SAI Receive Data 7 */
-+#define FSL_SAI_RFR0	0xc0 /* SAI Receive FIFO 0 */
-+#define FSL_SAI_RFR1	0xc4 /* SAI Receive FIFO 1 */
-+#define FSL_SAI_RFR2	0xc8 /* SAI Receive FIFO 2 */
-+#define FSL_SAI_RFR3	0xcc /* SAI Receive FIFO 3 */
-+#define FSL_SAI_RFR4	0xd0 /* SAI Receive FIFO 4 */
-+#define FSL_SAI_RFR5	0xd4 /* SAI Receive FIFO 5 */
-+#define FSL_SAI_RFR6	0xd8 /* SAI Receive FIFO 6 */
-+#define FSL_SAI_RFR7	0xdc /* SAI Receive FIFO 7 */
- #define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
- 
- #define FSL_SAI_xCSR(tx)	(tx ? FSL_SAI_TCSR : FSL_SAI_RCSR)
++static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
++	.use_imx_pcm = true,
++	.fifo_depth = 16,
++	.reg_offset = 8,
++};
++
++static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
++	.use_imx_pcm = true,
++	.fifo_depth = 128,
++	.reg_offset = 8,
++};
++
+ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
+ 	{ .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
+ 	{ .compatible = "fsl,imx6ul-sai", .data = &fsl_sai_imx6sx_data },
++	{ .compatible = "fsl,imx7ulp-sai", .data = &fsl_sai_imx7ulp_data },
++	{ .compatible = "fsl,imx8mq-sai", .data = &fsl_sai_imx8mq_data },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_sai_ids);
 -- 
 2.20.1
