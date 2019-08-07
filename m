@@ -1,18 +1,37 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: Update Tx/Rx channel enable mask" to the asoc tree
-Date: Wed,  7 Aug 2019 14:30:46 +0100 (BST)
-Message-ID: <20190807133047.05EA42742B9E@ypsilon.sirena.org.uk>
-References: <20190806151214.6783-3-daniel.baluta@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190806151214.6783-3-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, angus@akkea.ca, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com, linux-kernel@vger.kernel.org, l.stach@pengutronix.deMark Brown <broonie@kernel.org>, mihai.serban@gmail.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh@kernel.org, shengjiu.wang@nxp.com, timur@kernel.org, tiwai@suse.com
+Subject: Applied "ASoC: soc-core: don't use
+	for_each_card_links_safe() at snd_soc_find_dai_link()" to the
+	asoc tree
+Date: Wed,  7 Aug 2019 14:30:48 +0100 (BST)
+Message-ID: <20190807133048.4E0762742BE8@ypsilon.sirena.org.uk>
+References: <87imr9ahp9.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5A43F80290
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:49 +0200 (CEST)
+In-Reply-To: <87imr9ahp9.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_sai: Update Tx/Rx channel enable mask
+   ASoC: soc-core: don't use for_each_card_links_safe() at snd_soc_find_dai_link()
 
 has been applied to the asoc tree at
 
@@ -37,62 +56,40 @@ to this mail.
 Thanks,
 Mark
 
->From b84f50b0fcb497a62068926fca793d2d213c7dbd Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Tue, 6 Aug 2019 18:12:11 +0300
-Subject: [PATCH] ASoC: fsl_sai: Update Tx/Rx channel enable mask
+>From 42849064500b24892e2abfe8679507dfffd585f1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 7 Aug 2019 10:30:41 +0900
+Subject: [PATCH] ASoC: soc-core: don't use for_each_card_links_safe() at
+ snd_soc_find_dai_link()
 
-Tx channel enable (TCE) / Rx channel enable (RCE) bits
-enable corresponding data channel for Tx/Rx operation.
+It doesn't removes list during loop at snd_soc_find_dai_link().
+We don't need to use _safe loop.
 
-Because SAI supports up the 8 channels TCE/RCE occupy
-up the 8 bits inside TCR3/RCR3 registers we need to extend
-the mask to reflect this.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20190806151214.6783-3-daniel.baluta@nxp.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87imr9ahp9.wl-kuninori.morimoto.gx@renesas.com
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_sai.c | 6 ++++--
- sound/soc/fsl/fsl_sai.h | 1 +
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index e4221f2a5ee3..f2698c94c9fe 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -599,7 +599,8 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	int ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 7345679d4903..e176b972e4e6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -817,11 +817,11 @@ struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
+ 					       int id, const char *name,
+ 					       const char *stream_name)
+ {
+-	struct snd_soc_dai_link *link, *_link;
++	struct snd_soc_dai_link *link;
  
--	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx), FSL_SAI_CR3_TRCE,
-+	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx),
-+			   FSL_SAI_CR3_TRCE_MASK,
- 			   FSL_SAI_CR3_TRCE);
+ 	lockdep_assert_held(&client_mutex);
  
- 	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
-@@ -614,7 +615,8 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 
--	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx), FSL_SAI_CR3_TRCE, 0);
-+	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx),
-+			   FSL_SAI_CR3_TRCE_MASK, 0);
- }
- 
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 4bb478041d67..20c5b9b1e8bc 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -110,6 +110,7 @@
- 
- /* SAI Transmit and Receive Configuration 3 Register */
- #define FSL_SAI_CR3_TRCE	BIT(16)
-+#define FSL_SAI_CR3_TRCE_MASK	GENMASK(23, 16)
- #define FSL_SAI_CR3_WDFL(x)	(x)
- #define FSL_SAI_CR3_WDFL_MASK	0x1f
+-	for_each_card_links_safe(card, link, _link) {
++	for_each_card_links(card, link) {
+ 		if (link->id != id)
+ 			continue;
  
 -- 
 2.20.1
