@@ -1,75 +1,242 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: Intel: Skylake:
-	large_config_get overhaul
-Date: Wed, 7 Aug 2019 14:28:59 +0100
-Message-ID: <20190807132859.GE4048@sirena.co.uk>
-References: <20190723144341.21339-1-cezary.rojewski@intel.com>
- <20190723144341.21339-3-cezary.rojewski@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7185630423781472824=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B40BF800F3
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:29:06 +0200 (CEST)
-In-Reply-To: <20190723144341.21339-3-cezary.rojewski@intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+Subject: Applied "ASoC: fsl_sai: Add registers definition for multiple datalines" to the asoc tree
+Date: Wed,  7 Aug 2019 14:30:47 +0100 (BST)
+Message-ID: <20190807133047.452A7274304E@ypsilon.sirena.org.uk>
+References: <20190806151214.6783-2-daniel.baluta@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190806151214.6783-2-daniel.baluta@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, angus@akkea.ca, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com, linux-kernel@vger.kernel.org, l.stach@pengutronix.deMark Brown <broonie@kernel.org>, mihai.serban@gmail.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh@kernel.org, shengjiu.wang@nxp.com, timur@kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7185630423781472824==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/2994txjAzEdQwm5"
-Content-Disposition: inline
+   ASoC: fsl_sai: Add registers definition for multiple datalines
 
+has been applied to the asoc tree at
 
---/2994txjAzEdQwm5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-On Tue, Jul 23, 2019 at 04:43:41PM +0200, Cezary Rojewski wrote:
-> LARGE_CONFIG_GET is among the most crucial IPCs. Host is expected to
-> send single request first to obtain total payload size from received
-> header's data_off_size. From then on, it loops for each frame exceeding
-> inbox size until entire payload is read. If entire payload is contained
-> within the very first frame, no looping is performed.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't apply against current code, please check and resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---/2994txjAzEdQwm5
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1K0hoACgkQJNaLcl1U
-h9D2Qgf+KlTV9j2+wgO4G10ROipBPUMRw24G4bLFMCR+SOUqioAl0Xn8QdCYjZpm
-Y1tse3pfeCO2YVv3Ws8MSOCpJliRE2Jia9qcxx1ELHHp7uOCirN/ZWdKrWOmhdkU
-4PfZNkRAPHofntv/qPqiCPciXD3lbxEqDWgySGHvSLzbj79PCBW/ZbciMgCFdstA
-DWbhyPNELpf4OlqHXYQ2pYD01WmDKf2m+55q7nT74fot5n8lCdVIuQizkzZLZXk0
-LZ8WJypIUtlbM4lJeUMYm3/xVoS8r4cdP/zk+lHTl0/kP8HQLjR55J0PRG600EFx
-CMpF49pYhGNe2ud9FSzAt15CJmET+g==
-=AqUh
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---/2994txjAzEdQwm5--
+>From 5f0ac20ed6db1d6da2eea8b862cf3d54fdfb5830 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Tue, 6 Aug 2019 18:12:10 +0300
+Subject: [PATCH] ASoC: fsl_sai: Add registers definition for multiple
+ datalines
 
---===============7185630423781472824==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+SAI IP supports up to 8 data lines. The configuration of
+supported number of data lines is decided at SoC integration
+time.
 
+This patch adds definitions for all related data TX/RX registers:
+	* TDR0..7, Transmit data register
+	* TFR0..7, Transmit FIFO register
+	* RDR0..7, Receive data register
+	* RFR0..7, Receive FIFO register
 
---===============7185630423781472824==--
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/20190806151214.6783-2-daniel.baluta@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_sai.c | 76 +++++++++++++++++++++++++++++++++++------
+ sound/soc/fsl/fsl_sai.h | 36 ++++++++++++++++---
+ 2 files changed, 98 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 8f4d9fa95599..e4221f2a5ee3 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -685,7 +685,14 @@ static struct reg_default fsl_sai_reg_defaults[] = {
+ 	{FSL_SAI_TCR3, 0},
+ 	{FSL_SAI_TCR4, 0},
+ 	{FSL_SAI_TCR5, 0},
+-	{FSL_SAI_TDR,  0},
++	{FSL_SAI_TDR0, 0},
++	{FSL_SAI_TDR1, 0},
++	{FSL_SAI_TDR2, 0},
++	{FSL_SAI_TDR3, 0},
++	{FSL_SAI_TDR4, 0},
++	{FSL_SAI_TDR5, 0},
++	{FSL_SAI_TDR6, 0},
++	{FSL_SAI_TDR7, 0},
+ 	{FSL_SAI_TMR,  0},
+ 	{FSL_SAI_RCR1, 0},
+ 	{FSL_SAI_RCR2, 0},
+@@ -704,7 +711,14 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+ 	case FSL_SAI_TCR3:
+ 	case FSL_SAI_TCR4:
+ 	case FSL_SAI_TCR5:
+-	case FSL_SAI_TFR:
++	case FSL_SAI_TFR0:
++	case FSL_SAI_TFR1:
++	case FSL_SAI_TFR2:
++	case FSL_SAI_TFR3:
++	case FSL_SAI_TFR4:
++	case FSL_SAI_TFR5:
++	case FSL_SAI_TFR6:
++	case FSL_SAI_TFR7:
+ 	case FSL_SAI_TMR:
+ 	case FSL_SAI_RCSR:
+ 	case FSL_SAI_RCR1:
+@@ -712,8 +726,22 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+ 	case FSL_SAI_RCR3:
+ 	case FSL_SAI_RCR4:
+ 	case FSL_SAI_RCR5:
+-	case FSL_SAI_RDR:
+-	case FSL_SAI_RFR:
++	case FSL_SAI_RDR0:
++	case FSL_SAI_RDR1:
++	case FSL_SAI_RDR2:
++	case FSL_SAI_RDR3:
++	case FSL_SAI_RDR4:
++	case FSL_SAI_RDR5:
++	case FSL_SAI_RDR6:
++	case FSL_SAI_RDR7:
++	case FSL_SAI_RFR0:
++	case FSL_SAI_RFR1:
++	case FSL_SAI_RFR2:
++	case FSL_SAI_RFR3:
++	case FSL_SAI_RFR4:
++	case FSL_SAI_RFR5:
++	case FSL_SAI_RFR6:
++	case FSL_SAI_RFR7:
+ 	case FSL_SAI_RMR:
+ 		return true;
+ 	default:
+@@ -726,9 +754,30 @@ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
+ 	switch (reg) {
+ 	case FSL_SAI_TCSR:
+ 	case FSL_SAI_RCSR:
+-	case FSL_SAI_TFR:
+-	case FSL_SAI_RFR:
+-	case FSL_SAI_RDR:
++	case FSL_SAI_TFR0:
++	case FSL_SAI_TFR1:
++	case FSL_SAI_TFR2:
++	case FSL_SAI_TFR3:
++	case FSL_SAI_TFR4:
++	case FSL_SAI_TFR5:
++	case FSL_SAI_TFR6:
++	case FSL_SAI_TFR7:
++	case FSL_SAI_RFR0:
++	case FSL_SAI_RFR1:
++	case FSL_SAI_RFR2:
++	case FSL_SAI_RFR3:
++	case FSL_SAI_RFR4:
++	case FSL_SAI_RFR5:
++	case FSL_SAI_RFR6:
++	case FSL_SAI_RFR7:
++	case FSL_SAI_RDR0:
++	case FSL_SAI_RDR1:
++	case FSL_SAI_RDR2:
++	case FSL_SAI_RDR3:
++	case FSL_SAI_RDR4:
++	case FSL_SAI_RDR5:
++	case FSL_SAI_RDR6:
++	case FSL_SAI_RDR7:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -744,7 +793,14 @@ static bool fsl_sai_writeable_reg(struct device *dev, unsigned int reg)
+ 	case FSL_SAI_TCR3:
+ 	case FSL_SAI_TCR4:
+ 	case FSL_SAI_TCR5:
+-	case FSL_SAI_TDR:
++	case FSL_SAI_TDR0:
++	case FSL_SAI_TDR1:
++	case FSL_SAI_TDR2:
++	case FSL_SAI_TDR3:
++	case FSL_SAI_TDR4:
++	case FSL_SAI_TDR5:
++	case FSL_SAI_TDR6:
++	case FSL_SAI_TDR7:
+ 	case FSL_SAI_TMR:
+ 	case FSL_SAI_RCSR:
+ 	case FSL_SAI_RCR1:
+@@ -883,8 +939,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 				   MCLK_DIR(index));
+ 	}
+ 
+-	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR;
+-	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR;
++	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR0;
++	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR0;
+ 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
+ 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
+ 
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 7c1ef671da28..4bb478041d67 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -20,8 +20,22 @@
+ #define FSL_SAI_TCR3	0x0c /* SAI Transmit Configuration 3 */
+ #define FSL_SAI_TCR4	0x10 /* SAI Transmit Configuration 4 */
+ #define FSL_SAI_TCR5	0x14 /* SAI Transmit Configuration 5 */
+-#define FSL_SAI_TDR	0x20 /* SAI Transmit Data */
+-#define FSL_SAI_TFR	0x40 /* SAI Transmit FIFO */
++#define FSL_SAI_TDR0	0x20 /* SAI Transmit Data 0 */
++#define FSL_SAI_TDR1	0x24 /* SAI Transmit Data 1 */
++#define FSL_SAI_TDR2	0x28 /* SAI Transmit Data 2 */
++#define FSL_SAI_TDR3	0x2C /* SAI Transmit Data 3 */
++#define FSL_SAI_TDR4	0x30 /* SAI Transmit Data 4 */
++#define FSL_SAI_TDR5	0x34 /* SAI Transmit Data 5 */
++#define FSL_SAI_TDR6	0x38 /* SAI Transmit Data 6 */
++#define FSL_SAI_TDR7	0x3C /* SAI Transmit Data 7 */
++#define FSL_SAI_TFR0	0x40 /* SAI Transmit FIFO 0 */
++#define FSL_SAI_TFR1	0x44 /* SAI Transmit FIFO 1 */
++#define FSL_SAI_TFR2	0x48 /* SAI Transmit FIFO 2 */
++#define FSL_SAI_TFR3	0x4C /* SAI Transmit FIFO 3 */
++#define FSL_SAI_TFR4	0x50 /* SAI Transmit FIFO 4 */
++#define FSL_SAI_TFR5	0x54 /* SAI Transmit FIFO 5 */
++#define FSL_SAI_TFR6	0x58 /* SAI Transmit FIFO 6 */
++#define FSL_SAI_TFR7	0x5C /* SAI Transmit FIFO 7 */
+ #define FSL_SAI_TMR	0x60 /* SAI Transmit Mask */
+ #define FSL_SAI_RCSR	0x80 /* SAI Receive Control */
+ #define FSL_SAI_RCR1	0x84 /* SAI Receive Configuration 1 */
+@@ -29,8 +43,22 @@
+ #define FSL_SAI_RCR3	0x8c /* SAI Receive Configuration 3 */
+ #define FSL_SAI_RCR4	0x90 /* SAI Receive Configuration 4 */
+ #define FSL_SAI_RCR5	0x94 /* SAI Receive Configuration 5 */
+-#define FSL_SAI_RDR	0xa0 /* SAI Receive Data */
+-#define FSL_SAI_RFR	0xc0 /* SAI Receive FIFO */
++#define FSL_SAI_RDR0	0xa0 /* SAI Receive Data 0 */
++#define FSL_SAI_RDR1	0xa4 /* SAI Receive Data 1 */
++#define FSL_SAI_RDR2	0xa8 /* SAI Receive Data 2 */
++#define FSL_SAI_RDR3	0xac /* SAI Receive Data 3 */
++#define FSL_SAI_RDR4	0xb0 /* SAI Receive Data 4 */
++#define FSL_SAI_RDR5	0xb4 /* SAI Receive Data 5 */
++#define FSL_SAI_RDR6	0xb8 /* SAI Receive Data 6 */
++#define FSL_SAI_RDR7	0xbc /* SAI Receive Data 7 */
++#define FSL_SAI_RFR0	0xc0 /* SAI Receive FIFO 0 */
++#define FSL_SAI_RFR1	0xc4 /* SAI Receive FIFO 1 */
++#define FSL_SAI_RFR2	0xc8 /* SAI Receive FIFO 2 */
++#define FSL_SAI_RFR3	0xcc /* SAI Receive FIFO 3 */
++#define FSL_SAI_RFR4	0xd0 /* SAI Receive FIFO 4 */
++#define FSL_SAI_RFR5	0xd4 /* SAI Receive FIFO 5 */
++#define FSL_SAI_RFR6	0xd8 /* SAI Receive FIFO 6 */
++#define FSL_SAI_RFR7	0xdc /* SAI Receive FIFO 7 */
+ #define FSL_SAI_RMR	0xe0 /* SAI Receive Mask */
+ 
+ #define FSL_SAI_xCSR(tx)	(tx ? FSL_SAI_TCSR : FSL_SAI_RCSR)
+-- 
+2.20.1
