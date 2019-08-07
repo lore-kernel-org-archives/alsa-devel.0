@@ -1,36 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: tidyup for
-	snd_soc_dapm_new_controls()" to the asoc tree
-Date: Wed,  7 Aug 2019 14:30:47 +0100 (BST)
-Message-ID: <20190807133047.D3F0B2742B9E@ypsilon.sirena.org.uk>
-References: <87ftmdahow.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB6A8F804CB
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:49 +0200 (CEST)
-In-Reply-To: <87ftmdahow.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dt-bindings: Introduce compatible strings for 7ULP and 8MQ" to the asoc tree
+Date: Wed,  7 Aug 2019 14:30:49 +0100 (BST)
+Message-ID: <20190807133049.4088D2742B9E@ypsilon.sirena.org.uk>
+References: <20190806151214.6783-6-daniel.baluta@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190806151214.6783-6-daniel.baluta@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, angus@akkea.ca, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com, linux-kernel@vger.kernel.org, l.stach@pengutronix.deMark Brown <broonie@kernel.org>, mihai.serban@gmail.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh@kernel.org, shengjiu.wang@nxp.com, timur@kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: tidyup for snd_soc_dapm_new_controls()
+   ASoC: dt-bindings: Introduce compatible strings for 7ULP and 8MQ
 
 has been applied to the asoc tree at
 
@@ -55,71 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From b8ba3b572c70c8559ef76c1e0ca02e7b05126e8c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Aug 2019 10:30:53 +0900
-Subject: [PATCH] ASoC: soc-core: tidyup for snd_soc_dapm_new_controls()
+>From 371be51a925a619f1fb149b8d7707e353d9c9f86 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Tue, 6 Aug 2019 18:12:14 +0300
+Subject: [PATCH] ASoC: dt-bindings: Introduce compatible strings for 7ULP and
+ 8MQ
 
-snd_soc_dapm_new_controls() registers controls by using
-for(... i < num; ...). It means if widget was NULL, num should be zero.
-Thus, we don't need to check about widget pointer.
-This patch also cares missing return value.
+For i.MX7ULP and i.MX8MQ register map is changed. Add two new compatbile
+strings to differentiate this.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87ftmdahow.wl-kuninori.morimoto.gx@renesas.com
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/20190806151214.6783-6-daniel.baluta@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d12054ab8741..bb1e9e2c4ff4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1264,16 +1264,14 @@ static int soc_probe_component(struct snd_soc_card *card,
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 2e726b983845..e61c0dc1fc0b 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -8,7 +8,8 @@ codec/DSP interfaces.
+ Required properties:
  
- 	soc_init_component_debugfs(component);
+   - compatible		: Compatible list, contains "fsl,vf610-sai",
+-			  "fsl,imx6sx-sai" or "fsl,imx6ul-sai"
++			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
++			  "fsl,imx7ulp-sai" or "fsl,imx8mq-sai".
  
--	if (component->driver->dapm_widgets) {
--		ret = snd_soc_dapm_new_controls(dapm,
-+	ret = snd_soc_dapm_new_controls(dapm,
- 					component->driver->dapm_widgets,
- 					component->driver->num_dapm_widgets);
+   - reg			: Offset and length of the register set for the device.
  
--		if (ret != 0) {
--			dev_err(component->dev,
--				"Failed to create new controls %d\n", ret);
--			goto err_probe;
--		}
-+	if (ret != 0) {
-+		dev_err(component->dev,
-+			"Failed to create new controls %d\n", ret);
-+		goto err_probe;
- 	}
- 
- 	for_each_component_dais(component, dai) {
-@@ -1990,13 +1988,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	INIT_WORK(&card->deferred_resume_work, soc_resume_deferred);
- #endif
- 
--	if (card->dapm_widgets)
--		snd_soc_dapm_new_controls(&card->dapm, card->dapm_widgets,
--					  card->num_dapm_widgets);
-+	ret = snd_soc_dapm_new_controls(&card->dapm, card->dapm_widgets,
-+					card->num_dapm_widgets);
-+	if (ret < 0)
-+		goto probe_end;
- 
--	if (card->of_dapm_widgets)
--		snd_soc_dapm_new_controls(&card->dapm, card->of_dapm_widgets,
--					  card->num_of_dapm_widgets);
-+	ret = snd_soc_dapm_new_controls(&card->dapm, card->of_dapm_widgets,
-+					card->num_of_dapm_widgets);
-+	if (ret < 0)
-+		goto probe_end;
- 
- 	/* initialise the sound card only once */
- 	if (card->probe) {
 -- 
 2.20.1
