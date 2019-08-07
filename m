@@ -1,23 +1,22 @@
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH] ASoC: SOF: topology: use set_get_data in
  process load
-Date: Wed, 7 Aug 2019 13:09:57 -0700
-Message-ID: <CAFQqKeXnSFUDG_72LGhxMD5aAU-DjnnPc9oqcrWBy_NfJNRQLg@mail.gmail.com>
+Date: Wed, 7 Aug 2019 15:17:39 -0500
+Message-ID: <922d7056-8347-876f-fd2a-de17344b506e@linux.intel.com>
 References: <20190807145227.26216-1-pierre-louis.bossart@linux.intel.com>
  <07fe0e09-6984-76c9-da7c-a1992e7f7b64@intel.com>
+ <CAFQqKeXnSFUDG_72LGhxMD5aAU-DjnnPc9oqcrWBy_NfJNRQLg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com
- [IPv6:2607:f8b0:4864:20::b43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D570F800F3
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 22:10:09 +0200 (CEST)
-Received: by mail-yb1-xb43.google.com with SMTP id b16so1295153ybq.0
- for <alsa-devel@alsa-project.org>; Wed, 07 Aug 2019 13:10:09 -0700 (PDT)
-In-Reply-To: <07fe0e09-6984-76c9-da7c-a1992e7f7b64@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9907BF800F3
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 22:17:42 +0200 (CEST)
+In-Reply-To: <CAFQqKeXnSFUDG_72LGhxMD5aAU-DjnnPc9oqcrWBy_NfJNRQLg@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,101 +26,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: tiwai@suse.de, Linux-ALSA <alsa-devel@alsa-project.org>, Jaska Uimonen <jaska.uimonen@intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: tiwai@suse.de, Linux-ALSA <alsa-devel@alsa-project.org>, Jaska Uimonen <jaska.uimonen@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 7, 2019 at 12:32 PM Cezary Rojewski <cezary.rojewski@intel.com>
-wrote:
-
-> On 2019-08-07 16:52, Pierre-Louis Bossart wrote:
-> > From: Jaska Uimonen <jaska.uimonen@intel.com>
->
-> >       process = kzalloc(ipc_size, GFP_KERNEL);
-> > -     if (!process)
-> > +     if (!process) {
-> > +             kfree(wdata);
-> >               return -ENOMEM;
-> > +     }
-> >
-> >       /* configure iir IPC message */
-> >       process->comp.hdr.size = ipc_size;
-> > @@ -1835,7 +1890,9 @@ static int sof_process_load(struct
-> snd_soc_component *scomp, int index,
-> >       if (ret != 0) {
-> >               dev_err(sdev->dev, "error: parse process.cfg tokens failed
-> %d\n",
-> >                       le32_to_cpu(private->size));
-> > -             goto err;
-> > +             kfree(wdata);
-> > +             kfree(process);
-> > +             return ret;
-> >       }
-> >
->
-> > @@ -1886,10 +1916,36 @@ static int sof_process_load(struct
-> snd_soc_component *scomp, int index,
-> >
-> >       ret = sof_ipc_tx_message(sdev->ipc, process->comp.hdr.cmd, process,
-> >                                ipc_size, r, sizeof(*r));
-> > -     if (ret >= 0)
-> > +
-> > +     if (ret < 0) {
-> > +             dev_err(sdev->dev, "error: create process failed\n");
-> > +             kfree(wdata);
-> > +             kfree(process);
-> >               return ret;
-> > -err:
-> > -     kfree(process);
-> > +     }
-> > +
-> > +     /* we sent the data in single message so return */
-> > +     if (ipc_data_size) {
-> > +             kfree(wdata);
-> > +             return ret;
-> > +     }
-> > +
-> > +     /* send control data with large message supported method */
-> > +     for (i = 0; i < widget->num_kcontrols; i++) {
-> > +             wdata[i].control->readback_offset = 0;
-> > +             ret = snd_sof_ipc_set_get_comp_data(sdev->ipc,
-> wdata[i].control,
-> > +                                                 wdata[i].ipc_cmd,
-> > +                                                 wdata[i].ctrl_type,
-> > +                                                 wdata[i].control->cmd,
-> > +                                                 true);
-> > +             if (ret != 0) {
-> > +                     dev_err(sdev->dev, "error: send control failed\n");
-> > +                     kfree(process);
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     kfree(wdata);
-> >       return ret;
-> >   }
->
-> On several occasions you've added individual error paths instead of a
-> unified one. Personally I don't find it easier to read and understand
-> function's flow at all.
->
-> <ifs with goto err>
->
-> err:
->         kfree(process);
->         kfree(wdata);
->         return ret;
->
-> doesn't look that bad..
-
-Thanks for pointing out. Perhaps, the error handling can be improved a
-little. We can fix in v2.
-
-Thanks,
-Ranjani
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+T24gOC83LzE5IDM6MDkgUE0sIFNyaWRoYXJhbiwgUmFuamFuaSB3cm90ZToKPiAKPiAKPiBPbiBX
+ZWQsIEF1ZyA3LCAyMDE5IGF0IDEyOjMyIFBNIENlemFyeSBSb2pld3NraSAKPiA8Y2V6YXJ5LnJv
+amV3c2tpQGludGVsLmNvbSA8bWFpbHRvOmNlemFyeS5yb2pld3NraUBpbnRlbC5jb20+PiB3cm90
+ZToKPiAKPiAgICAgT24gMjAxOS0wOC0wNyAxNjo1MiwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3Jv
+dGU6Cj4gICAgICA+IEZyb206IEphc2thIFVpbW9uZW4gPGphc2thLnVpbW9uZW5AaW50ZWwuY29t
+Cj4gICAgIDxtYWlsdG86amFza2EudWltb25lbkBpbnRlbC5jb20+Pgo+IAo+ICAgICAgPsKgIMKg
+IMKgIMKgcHJvY2VzcyA9IGt6YWxsb2MoaXBjX3NpemUsIEdGUF9LRVJORUwpOwo+ICAgICAgPiAt
+wqAgwqAgwqBpZiAoIXByb2Nlc3MpCj4gICAgICA+ICvCoCDCoCDCoGlmICghcHJvY2Vzcykgewo+
+ICAgICAgPiArwqAgwqAgwqAgwqAgwqAgwqAgwqBrZnJlZSh3ZGF0YSk7Cj4gICAgICA+wqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqByZXR1cm4gLUVOT01FTTsKPiAgICAgID4gK8KgIMKgIMKgfQo+ICAg
+ICAgPgo+ICAgICAgPsKgIMKgIMKgIMKgLyogY29uZmlndXJlIGlpciBJUEMgbWVzc2FnZSAqLwo+
+ICAgICAgPsKgIMKgIMKgIMKgcHJvY2Vzcy0+Y29tcC5oZHIuc2l6ZSA9IGlwY19zaXplOwo+ICAg
+ICAgPiBAQCAtMTgzNSw3ICsxODkwLDkgQEAgc3RhdGljIGludCBzb2ZfcHJvY2Vzc19sb2FkKHN0
+cnVjdAo+ICAgICBzbmRfc29jX2NvbXBvbmVudCAqc2NvbXAsIGludCBpbmRleCwKPiAgICAgID7C
+oCDCoCDCoCDCoGlmIChyZXQgIT0gMCkgewo+ICAgICAgPsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+ZGV2X2VycihzZGV2LT5kZXYsICJlcnJvcjogcGFyc2UgcHJvY2Vzcy5jZmcgdG9rZW5zCj4gICAg
+IGZhaWxlZCAlZFxuIiwKPiAgICAgID7CoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oGxlMzJfdG9fY3B1KHByaXZhdGUtPnNpemUpKTsKPiAgICAgID4gLcKgIMKgIMKgIMKgIMKgIMKg
+IMKgZ290byBlcnI7Cj4gICAgICA+ICvCoCDCoCDCoCDCoCDCoCDCoCDCoGtmcmVlKHdkYXRhKTsK
+PiAgICAgID4gK8KgIMKgIMKgIMKgIMKgIMKgIMKga2ZyZWUocHJvY2Vzcyk7Cj4gICAgICA+ICvC
+oCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiByZXQ7Cj4gICAgICA+wqAgwqAgwqAgwqB9Cj4gICAg
+ICA+Cj4gCj4gICAgICA+IEBAIC0xODg2LDEwICsxOTE2LDM2IEBAIHN0YXRpYyBpbnQgc29mX3By
+b2Nlc3NfbG9hZChzdHJ1Y3QKPiAgICAgc25kX3NvY19jb21wb25lbnQgKnNjb21wLCBpbnQgaW5k
+ZXgsCj4gICAgICA+Cj4gICAgICA+wqAgwqAgwqAgwqByZXQgPSBzb2ZfaXBjX3R4X21lc3NhZ2Uo
+c2Rldi0+aXBjLCBwcm9jZXNzLT5jb21wLmhkci5jbWQsCj4gICAgIHByb2Nlc3MsCj4gICAgICA+
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaXBjX3NpemUs
+IHIsIHNpemVvZigqcikpOwo+ICAgICAgPiAtwqAgwqAgwqBpZiAocmV0ID49IDApCj4gICAgICA+
+ICsKPiAgICAgID4gK8KgIMKgIMKgaWYgKHJldCA8IDApIHsKPiAgICAgID4gK8KgIMKgIMKgIMKg
+IMKgIMKgIMKgZGV2X2VycihzZGV2LT5kZXYsICJlcnJvcjogY3JlYXRlIHByb2Nlc3MgZmFpbGVk
+XG4iKTsKPiAgICAgID4gK8KgIMKgIMKgIMKgIMKgIMKgIMKga2ZyZWUod2RhdGEpOwo+ICAgICAg
+PiArwqAgwqAgwqAgwqAgwqAgwqAgwqBrZnJlZShwcm9jZXNzKTsKPiAgICAgID7CoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoHJldHVybiByZXQ7Cj4gICAgICA+IC1lcnI6Cj4gICAgICA+IC3CoCDCoCDC
+oGtmcmVlKHByb2Nlc3MpOwo+ICAgICAgPiArwqAgwqAgwqB9Cj4gICAgICA+ICsKPiAgICAgID4g
+K8KgIMKgIMKgLyogd2Ugc2VudCB0aGUgZGF0YSBpbiBzaW5nbGUgbWVzc2FnZSBzbyByZXR1cm4g
+Ki8KPiAgICAgID4gK8KgIMKgIMKgaWYgKGlwY19kYXRhX3NpemUpIHsKPiAgICAgID4gK8KgIMKg
+IMKgIMKgIMKgIMKgIMKga2ZyZWUod2RhdGEpOwo+ICAgICAgPiArwqAgwqAgwqAgwqAgwqAgwqAg
+wqByZXR1cm4gcmV0Owo+ICAgICAgPiArwqAgwqAgwqB9Cj4gICAgICA+ICsKPiAgICAgID4gK8Kg
+IMKgIMKgLyogc2VuZCBjb250cm9sIGRhdGEgd2l0aCBsYXJnZSBtZXNzYWdlIHN1cHBvcnRlZCBt
+ZXRob2QgKi8KPiAgICAgID4gK8KgIMKgIMKgZm9yIChpID0gMDsgaSA8IHdpZGdldC0+bnVtX2tj
+b250cm9sczsgaSsrKSB7Cj4gICAgICA+ICvCoCDCoCDCoCDCoCDCoCDCoCDCoHdkYXRhW2ldLmNv
+bnRyb2wtPnJlYWRiYWNrX29mZnNldCA9IDA7Cj4gICAgICA+ICvCoCDCoCDCoCDCoCDCoCDCoCDC
+oHJldCA9IHNuZF9zb2ZfaXBjX3NldF9nZXRfY29tcF9kYXRhKHNkZXYtPmlwYywKPiAgICAgd2Rh
+dGFbaV0uY29udHJvbCwKPiAgICAgID4gK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgd2RhdGFbaV0uaXBjX2Nt
+ZCwKPiAgICAgID4gK8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgd2RhdGFbaV0uY3RybF90eXBlLAo+ICAgICAg
+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKPiAgICAg
+IMKgd2RhdGFbaV0uY29udHJvbC0+Y21kLAo+ICAgICAgPiArwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0cnVl
+KTsKPiAgICAgID4gK8KgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKHJldCAhPSAwKSB7Cj4gICAgICA+
+ICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGRldl9lcnIoc2Rldi0+ZGV2LCAiZXJy
+b3I6IHNlbmQgY29udHJvbAo+ICAgICBmYWlsZWRcbiIpOwo+ICAgICAgPiArwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqBrZnJlZShwcm9jZXNzKTsKPiAgICAgID4gK8KgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gICAgICA+ICvCoCDCoCDCoCDCoCDCoCDCoCDC
+oH0KPiAgICAgID4gK8KgIMKgIMKgfQo+ICAgICAgPiArCj4gICAgICA+ICvCoCDCoCDCoGtmcmVl
+KHdkYXRhKTsKPiAgICAgID7CoCDCoCDCoCDCoHJldHVybiByZXQ7Cj4gICAgICA+wqAgwqB9Cj4g
+Cj4gICAgIE9uIHNldmVyYWwgb2NjYXNpb25zIHlvdSd2ZSBhZGRlZCBpbmRpdmlkdWFsIGVycm9y
+IHBhdGhzIGluc3RlYWQgb2YgYQo+ICAgICB1bmlmaWVkIG9uZS4gUGVyc29uYWxseSBJIGRvbid0
+IGZpbmQgaXQgZWFzaWVyIHRvIHJlYWQgYW5kIHVuZGVyc3RhbmQKPiAgICAgZnVuY3Rpb24ncyBm
+bG93IGF0IGFsbC4KPiAKPiAgICAgPGlmcyB3aXRoIGdvdG8gZXJyPgo+IAo+ICAgICBlcnI6Cj4g
+ICAgICDCoCDCoCDCoCDCoCBrZnJlZShwcm9jZXNzKTsKPiAgICAgIMKgIMKgIMKgIMKgIGtmcmVl
+KHdkYXRhKTsKPiAgICAgIMKgIMKgIMKgIMKgIHJldHVybiByZXQ7Cj4gCj4gICAgIGRvZXNuJ3Qg
+bG9vayB0aGF0IGJhZC4uCj4gCj4gVGhhbmtzIGZvciBwb2ludGluZyBvdXQuIFBlcmhhcHMsIHRo
+ZSBlcnJvciBoYW5kbGluZyBjYW4gYmUgaW1wcm92ZWQgYSAKPiBsaXR0bGUuIFdlIGNhbiBmaXgg
+aW4gdjIuCgpJIHRvb2sgYSBsb29rIGF0IHRoaXMgYW5kIHRoZXJlJ3MgcmVhbGx5IG9ubHkgMi8z
+IHBsYWNlcyB3aGVyZSB3ZSBjb3VsZCAKdXNlIGEgZ290bywgYnV0IHdlJ2QgaGF2ZSB0byB1c2Ug
+MiBsYWJlbHMgZGVwZW5kaW5nIG9uIHdoZXRoZXIgd2UgZnJlZSAKcHJvY2Vzcy93ZGF0YSBzbyBu
+b3Qgc3VyZSBpZiB3ZSdkIG1ha2UgdGhlIGNvZGUgbW9yZSBzZWxmLWV4cGxhbmF0b3J5IGluIAp0
+aGUgZW5kLgoKSmFza2EsIGNhbiB5b3UgdGFrZSBhIGxvb2s/Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
