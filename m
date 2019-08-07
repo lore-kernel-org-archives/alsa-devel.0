@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1011: Add a flag for the R0
-	calibration test" to the asoc tree
+Subject: Applied "ASoC: rt1011: Add R0 temperature and TDM1
+	ADC2DAT Swap control" to the asoc tree
 Date: Wed,  7 Aug 2019 14:30:49 +0100 (BST)
-Message-ID: <20190807133049.B70882743057@ypsilon.sirena.org.uk>
-References: <20190806091459.14382-1-shumingf@realtek.com>
+Message-ID: <20190807133049.F02C42742BE8@ypsilon.sirena.org.uk>
+References: <20190806091435.14329-1-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41427F80290
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:53 +0200 (CEST)
-In-Reply-To: <20190806091459.14382-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70DCFF805F9
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:54 +0200 (CEST)
+In-Reply-To: <20190806091435.14329-1-shumingf@realtek.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, cychiang@google.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, frankbozar@google.com, sathya.prakash.m.r@intel.com, flove@realtek.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt1011: Add a flag for the R0 calibration test
+   ASoC: rt1011: Add R0 temperature and TDM1 ADC2DAT Swap control
 
 has been applied to the asoc tree at
 
@@ -55,80 +55,70 @@ to this mail.
 Thanks,
 Mark
 
->From 0922c7a51c775b71a297598623debe9cb6ce3a08 Mon Sep 17 00:00:00 2001
+>From 3403b808a0eb6d25883b72a6c4d2a4a452f8a233 Mon Sep 17 00:00:00 2001
 From: Shuming Fan <shumingf@realtek.com>
-Date: Tue, 6 Aug 2019 17:14:59 +0800
-Subject: [PATCH] ASoC: rt1011: Add a flag for the R0 calibration test
+Date: Tue, 6 Aug 2019 17:14:35 +0800
+Subject: [PATCH] ASoC: rt1011: Add R0 temperature and TDM1 ADC2DAT Swap
+ control
 
-The factory test needs to know whether the calibration completed.
-This flag helps to confirm the calibration completed or not.
+- The user level application could set the R0 temperature after booting system.
+  The degree Celsius of R0 temperature store in the non-volatile space
+  when doing R0 calibration.
+- TDM1 ADC2DAT Swap controls use to control TDM slot2/3 data
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20190806091459.14382-1-shumingf@realtek.com
+Link: https://lore.kernel.org/r/20190806091435.14329-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 14 +++++++++++++-
- sound/soc/codecs/rt1011.h |  2 +-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt1011.c | 9 ++++++++-
+ sound/soc/codecs/rt1011.h | 1 +
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index b25b4c1127ca..638abcaf52b3 100644
+index 0a6ff13d76e1..b25b4c1127ca 100644
 --- a/sound/soc/codecs/rt1011.c
 +++ b/sound/soc/codecs/rt1011.c
-@@ -1225,7 +1225,10 @@ static int rt1011_bq_drc_info(struct snd_kcontrol *kcontrol,
- static int rt1011_r0_cali_get(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
+@@ -1029,6 +1029,8 @@ static const char * const rt1011_tdm_adc_swap_select[] = {
+ 
+ static SOC_ENUM_SINGLE_DECL(rt1011_tdm_adc1_1_enum,	RT1011_TDM1_SET_3, 6,
+ 	rt1011_tdm_adc_swap_select);
++static SOC_ENUM_SINGLE_DECL(rt1011_tdm_adc2_1_enum,	RT1011_TDM1_SET_3, 4,
++	rt1011_tdm_adc_swap_select);
+ 
+ static void rt1011_reset(struct regmap *regmap)
  {
--	ucontrol->value.integer.value[0] = 0;
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt1011_priv *rt1011 = snd_soc_component_get_drvdata(component);
+@@ -1333,7 +1335,8 @@ static const struct snd_kcontrol_new rt1011_snd_controls[] = {
+ 	/* TDM1 Data Out Selection */
+ 	SOC_ENUM("TDM1 DOUT Source", rt1011_tdm1_adc1_dat_enum),
+ 	SOC_ENUM("TDM1 DOUT Location", rt1011_tdm1_adc1_loc_enum),
+-	SOC_ENUM("TDM1 ADCDAT Swap Select", rt1011_tdm_adc1_1_enum),
++	SOC_ENUM("TDM1 ADC1DAT Swap Select", rt1011_tdm_adc1_1_enum),
++	SOC_ENUM("TDM1 ADC2DAT Swap Select", rt1011_tdm_adc2_1_enum),
+ 
+ 	/* Data Out Mode */
+ 	SOC_ENUM("I2S ADC DOUT Mode", rt1011_adc_dout_mode_enum),
+@@ -1355,6 +1358,10 @@ static const struct snd_kcontrol_new rt1011_snd_controls[] = {
+ 	SOC_SINGLE_EXT("R0 Calibration", SND_SOC_NOPM, 0, 1, 0,
+ 		rt1011_r0_cali_get, rt1011_r0_cali_put),
+ 	RT1011_R0_LOAD("R0 Load Mode"),
 +
-+	ucontrol->value.integer.value[0] = rt1011->cali_done;
- 
- 	return 0;
- }
-@@ -1239,6 +1242,7 @@ static int rt1011_r0_cali_put(struct snd_kcontrol *kcontrol,
- 	if (!component->card->instantiated)
- 		return 0;
- 
-+	rt1011->cali_done = 0;
- 	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF &&
- 		ucontrol->value.integer.value[0])
- 		rt1011_calibrate(rt1011, 1);
-@@ -2135,6 +2139,7 @@ static int rt1011_calibrate(struct rt1011_priv *rt1011, unsigned char cali_flag)
- 			r0_factor = ((format / r0[0] * 100) / 128)
- 							- (r0_integer * 100);
- 			rt1011->r0_reg = r0[0];
-+			rt1011->cali_done = 1;
- 			dev_info(dev,	"r0 resistance about %d.%02d ohm, reg=0x%X\n",
- 				r0_integer, r0_factor, r0[0]);
- 		}
-@@ -2185,6 +2190,13 @@ static void rt1011_calibration_work(struct work_struct *work)
- 
- 	rt1011_calibrate(rt1011, 1);
- 
-+	/*
-+	 * This flag should reset after booting.
-+	 * The factory test will do calibration again and use this flag to check
-+	 * whether the calibration completed
-+	 */
-+	rt1011->cali_done = 0;
-+
- 	/* initial */
- 	rt1011_reg_init(component);
- }
-diff --git a/sound/soc/codecs/rt1011.h b/sound/soc/codecs/rt1011.h
-index 5d431d7f1d16..2d65983f3d0f 100644
---- a/sound/soc/codecs/rt1011.h
-+++ b/sound/soc/codecs/rt1011.h
-@@ -666,7 +666,7 @@ struct rt1011_priv {
- 	int pll_out;
- 
- 	int bq_drc_set;
--	unsigned int r0_reg;
-+	unsigned int r0_reg, cali_done;
- 	int recv_spk_mode;
++	/* R0 temperature */
++	SOC_SINGLE("R0 Temperature", RT1011_STP_INITIAL_RESISTANCE_TEMP,
++		2, 255, 0),
  };
  
+ static int rt1011_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
+diff --git a/sound/soc/codecs/rt1011.h b/sound/soc/codecs/rt1011.h
+index 98a38800c4df..5d431d7f1d16 100644
+--- a/sound/soc/codecs/rt1011.h
++++ b/sound/soc/codecs/rt1011.h
+@@ -227,6 +227,7 @@
+ #define RT1011_STP_CALIB_RS_TEMP			0x152a
+ #define RT1011_INIT_RECIPROCAL_REG_24_16				0x1538
+ #define RT1011_INIT_RECIPROCAL_REG_15_0				0x1539
++#define RT1011_STP_INITIAL_RESISTANCE_TEMP				0x153c
+ #define RT1011_STP_ALPHA_RECIPROCAL_MSB				0x153e
+ #define RT1011_SPK_RESISTANCE_1				0x1544
+ #define RT1011_SPK_RESISTANCE_2				0x1546
 -- 
 2.20.1
