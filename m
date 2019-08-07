@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: Introduce compatible strings for 7ULP and 8MQ" to the asoc tree
-Date: Wed,  7 Aug 2019 14:30:49 +0100 (BST)
-Message-ID: <20190807133049.4088D2742B9E@ypsilon.sirena.org.uk>
-References: <20190806151214.6783-6-daniel.baluta@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190806151214.6783-6-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, angus@akkea.ca, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com, linux-kernel@vger.kernel.org, l.stach@pengutronix.deMark Brown <broonie@kernel.org>, mihai.serban@gmail.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh@kernel.org, shengjiu.wang@nxp.com, timur@kernel.org, tiwai@suse.com
+Subject: Applied "ASoC: soc-core: reuse rtdcom at
+	snd_soc_rtdcom_add()" to the asoc tree
+Date: Wed,  7 Aug 2019 14:30:48 +0100 (BST)
+Message-ID: <20190807133048.18F042743057@ypsilon.sirena.org.uk>
+References: <87h86tahp2.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2C7BF80227
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 15:30:49 +0200 (CEST)
+In-Reply-To: <87h86tahp2.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dt-bindings: Introduce compatible strings for 7ULP and 8MQ
+   ASoC: soc-core: reuse rtdcom at snd_soc_rtdcom_add()
 
 has been applied to the asoc tree at
 
@@ -37,36 +55,54 @@ to this mail.
 Thanks,
 Mark
 
->From 371be51a925a619f1fb149b8d7707e353d9c9f86 Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Tue, 6 Aug 2019 18:12:14 +0300
-Subject: [PATCH] ASoC: dt-bindings: Introduce compatible strings for 7ULP and
- 8MQ
+>From 32d2c172fe88705058310635a732259c0a98e89b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 7 Aug 2019 10:30:47 +0900
+Subject: [PATCH] ASoC: soc-core: reuse rtdcom at snd_soc_rtdcom_add()
 
-For i.MX7ULP and i.MX8MQ register map is changed. Add two new compatbile
-strings to differentiate this.
+snd_soc_rtdcom_add() is using both "rtdcom" and "new_rtdcom" as
+variable name, but these are not used at same time.
+Let's reuse rtdcom.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20190806151214.6783-6-daniel.baluta@nxp.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87h86tahp2.wl-kuninori.morimoto.gx@renesas.com
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 2e726b983845..e61c0dc1fc0b 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -8,7 +8,8 @@ codec/DSP interfaces.
- Required properties:
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e176b972e4e6..d12054ab8741 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -274,7 +274,6 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+ 			      struct snd_soc_component *component)
+ {
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	struct snd_soc_rtdcom_list *new_rtdcom;
  
-   - compatible		: Compatible list, contains "fsl,vf610-sai",
--			  "fsl,imx6sx-sai" or "fsl,imx6ul-sai"
-+			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
-+			  "fsl,imx7ulp-sai" or "fsl,imx8mq-sai".
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		/* already connected */
+@@ -282,14 +281,14 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+ 			return 0;
+ 	}
  
-   - reg			: Offset and length of the register set for the device.
+-	new_rtdcom = kmalloc(sizeof(*new_rtdcom), GFP_KERNEL);
+-	if (!new_rtdcom)
++	rtdcom = kmalloc(sizeof(*rtdcom), GFP_KERNEL);
++	if (!rtdcom)
+ 		return -ENOMEM;
  
+-	new_rtdcom->component = component;
+-	INIT_LIST_HEAD(&new_rtdcom->list);
++	rtdcom->component = component;
++	INIT_LIST_HEAD(&rtdcom->list);
+ 
+-	list_add_tail(&new_rtdcom->list, &rtd->component_list);
++	list_add_tail(&rtdcom->list, &rtd->component_list);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
