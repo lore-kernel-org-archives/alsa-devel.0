@@ -1,21 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 4/6] ASoC: SOF: Intel: byt: Refactor fw
- ready / mem windows creation
-Date: Wed, 7 Aug 2019 14:20:20 -0500
-Message-ID: <af12fa5a-89ea-2eb7-a8a2-0ba24b9fa214@linux.intel.com>
-References: <20190807150203.26359-1-pierre-louis.bossart@linux.intel.com>
- <20190807150203.26359-5-pierre-louis.bossart@linux.intel.com>
- <ac41ec50-6484-cce1-2e41-c42e6bb541ef@intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH] ASoC: SOF: topology: use set_get_data in
+ process load
+Date: Wed, 7 Aug 2019 21:30:07 +0200
+Message-ID: <07fe0e09-6984-76c9-da7c-a1992e7f7b64@intel.com>
+References: <20190807145227.26216-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37C48F800F4
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 21:20:23 +0200 (CEST)
-In-Reply-To: <ac41ec50-6484-cce1-2e41-c42e6bb541ef@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9361F800F4
+ for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 21:30:14 +0200 (CEST)
+In-Reply-To: <20190807145227.26216-1-pierre-louis.bossart@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,42 +24,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Jaska Uimonen <jaska.uimonen@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiA4LzcvMTkgMjowNyBQTSwgQ2V6YXJ5IFJvamV3c2tpIHdyb3RlOgo+IE9uIDIwMTktMDgt
-MDcgMTc6MDIsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+PiBGcm9tOiBEYW5pZWwgQmFs
-dXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+Cj4gCj4+IFNvIHdlIGFyZSBiYXNpY2FsbHkgbW92
-aW5nIGNvZGUgZnJvbSBpbnRlbC9ieXQuYyB0byBsb2FkZXIuYyBrZWVwaW5nCj4+IGluIG1pbmQg
-dGhhdCBtYm94X29mZnNldCBpcyBhIHBlciBwbGF0Zm9ybSBjb25zdGFudCBzbyB3ZSBuZWVkIHRv
-Cj4+IHVzZSBuZXdseSBpbnRyb2R1Y2VkIHNuZF9zb2ZfZHNwX2dldF9tYWlsYm94X29mZnNldCAv
-Cj4+IHNuZF9zb2ZfZHNwX2dldF93aW5kb3dfb2Zmc2V0IGluIG9yZGVyIHRvIGdldCB0aGUgY29y
-cmVjdAo+PiBtYm94IG9mZnNldCAvIHdpbmRvdyBvZmZzZXQgdmFsdWUuCj4gCj4gWW91J3ZlIGFs
-cmVhZHkgZXhwbGFpbmVkIHlvdXIgZ29hbC4gVGhlc2UgZGV0YWlscyBhcmUgdW5uZWNlc3Nhcnku
-CgpUaGV5IGRvbid0IGh1cnQgYW5kIGhlbHAgZXhwbGFpbiB0aGUgYXBwcm9hY2guCgo+IAo+Pgo+
-PiBBbHNvLCBiYXIgaXMgYSBwZXIgcGxhdGZvcm0gY29uc3RhbnQgc28gd2UgdXNlIHNuZF9zb2Zf
-ZHNwX2dldF9iYXJfaW5kZXgKPj4gaW5zdGVhZCBvZiB0aGUgaGFyZGNvZGVkIEJZVF9EU1BfQkFS
-Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFsdXRhIDxkYW5pZWwuYmFsdXRhQG54cC5j
-b20+Cj4+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IAo+PiA8cGllcnJlLWxv
-dWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgo+PiAtLS0KPj4gwqAgc291bmQvc29jL3NvZi9p
-bnRlbC9ieXQuYyB8IDE2NCArKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+
-IMKgIHNvdW5kL3NvYy9zb2YvbG9hZGVyLmPCoMKgwqAgfCAxNjggKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysKPj4gwqAgc291bmQvc29jL3NvZi9zb2YtcHJpdi5owqAgfMKg
-wqAgMiArCj4+IMKgIDMgZmlsZXMgY2hhbmdlZCwgMTg5IGluc2VydGlvbnMoKyksIDE0NSBkZWxl
-dGlvbnMoLSkKPiAKPiBIbW0sIGV2ZW4gdGhlIGNvbW1pdCBtZXNzYWdlIG1lbnRpb25zIHR3byBz
-dGVwcywgbm90IG9uZS4gU3BsaXR0aW5nIHRoaXMgCj4gY29tbWl0IGludG8gdHdvIC0gaW50cm9k
-dWN0aW9uIG9mIG5ldyBnZW5lcmljIGZ1bmN0aW9ucyBhbmQgYnl0IAo+IGFsaWdubWVudCB0b3dh
-cmRzIHRoZSBuZXdseSBhZGRlZCBhcHByb2FjaCAtIHNlZW1zIHJlYXNvbmFibGUuIEJkdyAmIGhk
-YSAKPiBmb2xsb3d1cHMgYWxyZWFkeSBtYWtlIGdvb2QgZXhhbXBsZXMuCgpUaGUgbGFzdCB0d28g
-anVzdCByZW1vdmUgdGhlIGR1cGxpY2F0ZSBjb2RlIGFuZCBhbGlnbiBvbiB1c2luZyB0aGUgCmNv
-bW1vbiBoZWxwZXJzLgpJbiB0aGUgaW5pdGlhbCBzdGVwIHdlIHN0aWxsIG5lZWQgdG8gbW92ZSB0
-aGUgY29kZSBmcm9tIGJheXRyYWlsIHRvIHRoZSAKY29tbW9uIGZ1bmN0aW9uLiBEb2luZyBpdCBp
-biB0d28gc3RlcHMgZG9lc24ndCBicmluZyBtdWNoIGFkZGVkIHZhbHVlIApJTU8uIFRvIHByZXNl
-cnZlIGdpdCBiaXNlY3Qgc3VwcG9ydCwgeW91J2QgbmVlZCB0byBhZGQgYSBuZXcgY29tbW9uIApj
-b2RlLCB0aGVuIHJlbW92ZSB0aGUgYmF5dHJhaWwgb25lIGluIGEgZm9sbG93LXVwIHBhdGNoLiBJ
-dCdkIG1ha2UgaXQgCmxlc3Mgc2VsZi1leHBsYW5hdG9yeSB3aGVyZSB0aGlzIG5ldyBjb2RlIGNv
-bWVzIGZyb20uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On 2019-08-07 16:52, Pierre-Louis Bossart wrote:
+> From: Jaska Uimonen <jaska.uimonen@intel.com>
+
+>   	process = kzalloc(ipc_size, GFP_KERNEL);
+> -	if (!process)
+> +	if (!process) {
+> +		kfree(wdata);
+>   		return -ENOMEM;
+> +	}
+>   
+>   	/* configure iir IPC message */
+>   	process->comp.hdr.size = ipc_size;
+> @@ -1835,7 +1890,9 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
+>   	if (ret != 0) {
+>   		dev_err(sdev->dev, "error: parse process.cfg tokens failed %d\n",
+>   			le32_to_cpu(private->size));
+> -		goto err;
+> +		kfree(wdata);
+> +		kfree(process);
+> +		return ret;
+>   	}
+>   
+
+> @@ -1886,10 +1916,36 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
+>   
+>   	ret = sof_ipc_tx_message(sdev->ipc, process->comp.hdr.cmd, process,
+>   				 ipc_size, r, sizeof(*r));
+> -	if (ret >= 0)
+> +
+> +	if (ret < 0) {
+> +		dev_err(sdev->dev, "error: create process failed\n");
+> +		kfree(wdata);
+> +		kfree(process);
+>   		return ret;
+> -err:
+> -	kfree(process);
+> +	}
+> +
+> +	/* we sent the data in single message so return */
+> +	if (ipc_data_size) {
+> +		kfree(wdata);
+> +		return ret;
+> +	}
+> +
+> +	/* send control data with large message supported method */
+> +	for (i = 0; i < widget->num_kcontrols; i++) {
+> +		wdata[i].control->readback_offset = 0;
+> +		ret = snd_sof_ipc_set_get_comp_data(sdev->ipc, wdata[i].control,
+> +						    wdata[i].ipc_cmd,
+> +						    wdata[i].ctrl_type,
+> +						    wdata[i].control->cmd,
+> +						    true);
+> +		if (ret != 0) {
+> +			dev_err(sdev->dev, "error: send control failed\n");
+> +			kfree(process);
+> +			break;
+> +		}
+> +	}
+> +
+> +	kfree(wdata);
+>   	return ret;
+>   }
+
+On several occasions you've added individual error paths instead of a 
+unified one. Personally I don't find it easier to read and understand 
+function's flow at all.
+
+<ifs with goto err>
+
+err:
+	kfree(process);
+	kfree(wdata);
+	return ret;
+
+doesn't look that bad..
