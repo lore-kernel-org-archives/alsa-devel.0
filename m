@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Limit large_config_get
-	to single frame" to the asoc tree
-Date: Thu,  8 Aug 2019 21:33:38 +0100 (BST)
-Message-ID: <20190808203338.C25832742BDD@ypsilon.sirena.org.uk>
-References: <20190808181549.12521-2-cezary.rojewski@intel.com>
+Subject: Applied "ASoC: soc-core: tidyup for
+	snd_soc_dapm_add_routes()" to the asoc tree
+Date: Thu,  8 Aug 2019 21:33:41 +0100 (BST)
+Message-ID: <20190808203341.6EF2127430BD@ypsilon.sirena.org.uk>
+References: <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F092F8059F
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 22:33:43 +0200 (CEST)
-In-Reply-To: <20190808181549.12521-2-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65C34F805A9
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 22:33:42 +0200 (CEST)
+In-Reply-To: <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Limit large_config_get to single frame
+   ASoC: soc-core: tidyup for snd_soc_dapm_add_routes()
 
 has been applied to the asoc tree at
 
@@ -55,79 +55,64 @@ to this mail.
 Thanks,
 Mark
 
->From 63e45324c284d240562a5b435afc4b23ae7d923c Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 8 Aug 2019 20:15:48 +0200
-Subject: [PATCH] ASoC: Intel: Skylake: Limit large_config_get to single frame
+>From daa480bde6b3a9b728965e52efffc329ccee3f77 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 7 Aug 2019 10:31:03 +0900
+Subject: [PATCH] ASoC: soc-core: tidyup for snd_soc_dapm_add_routes()
 
-Reply for the very first LARGE_CONFIG_GET request contains total size of
-payload to be retrieved by host.
->From then on, each subsequent reply carries buffer offset instead. As
-looping is not covered by any real-life example, remove it and cleanup
-the function for followup overhaul.
+snd_soc_dapm_add_routes() registers routes by using
+for(... i < num; ...). If routes was NULL, num should be zero.
+Thus, we don't need to check about route pointer.
+This patch also cares missing return value.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190808181549.12521-2-cezary.rojewski@intel.com
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87d0hhahon.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 37 +++++----------------------
- 1 file changed, 7 insertions(+), 30 deletions(-)
+ sound/soc/soc-core.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index a2b69a02aab2..196c80dadb1f 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -973,8 +973,7 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
- {
- 	struct skl_ipc_header header = {0};
- 	struct sst_ipc_message request = {0}, reply = {0};
--	int ret = 0;
--	size_t sz_remaining, rx_size, data_offset;
-+	int ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e481f9999bfb..de95b68ce9ee 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1310,10 +1310,11 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	if (ret < 0)
+ 		goto err_probe;
  
- 	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
- 	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-@@ -987,34 +986,12 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
- 	header.extension |= IPC_FINAL_BLOCK(1);
- 	header.extension |= IPC_INITIAL_BLOCK(1);
- 
--	sz_remaining = msg->param_data_size;
--	data_offset = 0;
--
--	while (sz_remaining != 0) {
--		rx_size = sz_remaining > SKL_ADSP_W1_SZ
--				? SKL_ADSP_W1_SZ : sz_remaining;
--		if (rx_size == sz_remaining)
--			header.extension |= IPC_FINAL_BLOCK(1);
--
--		request.header = *(u64 *)(&header);
--		reply.data = ((char *)param) + data_offset;
--		reply.size = msg->param_data_size;
--		ret = sst_ipc_tx_message_wait(ipc, request, &reply);
--		if (ret < 0) {
--			dev_err(ipc->dev,
--				"ipc: get large config fail, err: %d\n", ret);
--			return ret;
--		}
--		sz_remaining -= rx_size;
--		data_offset = msg->param_data_size - sz_remaining;
--
--		/* clear the fields */
--		header.extension &= IPC_INITIAL_BLOCK_CLEAR;
--		header.extension &= IPC_DATA_OFFSET_SZ_CLEAR;
--		/* fill the fields */
--		header.extension |= IPC_INITIAL_BLOCK(1);
--		header.extension |= IPC_DATA_OFFSET_SZ(data_offset);
--	}
-+	request.header = *(u64 *)(&header);
-+	reply.data = param;
-+	reply.size = msg->param_data_size;
-+	ret = sst_ipc_tx_message_wait(ipc, request, &reply);
+-	if (component->driver->dapm_routes)
+-		snd_soc_dapm_add_routes(dapm,
+-					component->driver->dapm_routes,
+-					component->driver->num_dapm_routes);
++	ret = snd_soc_dapm_add_routes(dapm,
++				      component->driver->dapm_routes,
++				      component->driver->num_dapm_routes);
 +	if (ret < 0)
-+		dev_err(ipc->dev, "ipc: get large config fail, err: %d\n", ret);
++		goto err_probe;
  
- 	return ret;
- }
+ 	list_add(&dapm->list, &card->dapm_list);
+ 	/* see for_each_card_components */
+@@ -2061,13 +2062,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		snd_soc_add_card_controls(card, card->controls,
+ 					  card->num_controls);
+ 
+-	if (card->dapm_routes)
+-		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+-					card->num_dapm_routes);
++	ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
++				      card->num_dapm_routes);
++	if (ret < 0)
++		goto probe_end;
+ 
+-	if (card->of_dapm_routes)
+-		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+-					card->num_of_dapm_routes);
++	ret = snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
++				      card->num_of_dapm_routes);
++	if (ret < 0)
++		goto probe_end;
+ 
+ 	/* try to set some sane longname if DMI is available */
+ 	snd_soc_set_dmi_name(card, NULL);
 -- 
 2.20.1
