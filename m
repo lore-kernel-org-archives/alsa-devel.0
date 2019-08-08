@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: tidyup for
-	snd_soc_dapm_add_routes()" to the asoc tree
-Date: Thu,  8 Aug 2019 21:33:41 +0100 (BST)
-Message-ID: <20190808203341.6EF2127430BD@ypsilon.sirena.org.uk>
-References: <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: intel: skl_hda_dsp_common: create HDMI
+	jack kctl" to the asoc tree
+Date: Thu,  8 Aug 2019 21:33:38 +0100 (BST)
+Message-ID: <20190808203339.095C32742BE9@ypsilon.sirena.org.uk>
+References: <20190808192734.18286-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65C34F805A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E6E5F805A8
  for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 22:33:42 +0200 (CEST)
-In-Reply-To: <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20190808192734.18286-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Libin Yang <libin.yang@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: tidyup for snd_soc_dapm_add_routes()
+   ASoC: intel: skl_hda_dsp_common: create HDMI jack kctl
 
 has been applied to the asoc tree at
 
@@ -55,64 +55,40 @@ to this mail.
 Thanks,
 Mark
 
->From daa480bde6b3a9b728965e52efffc329ccee3f77 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Aug 2019 10:31:03 +0900
-Subject: [PATCH] ASoC: soc-core: tidyup for snd_soc_dapm_add_routes()
+>From 0e4cc44f5066b22938f384cd57db99d66311de90 Mon Sep 17 00:00:00 2001
+From: Libin Yang <libin.yang@intel.com>
+Date: Thu, 8 Aug 2019 14:27:34 -0500
+Subject: [PATCH] ASoC: intel: skl_hda_dsp_common: create HDMI jack kctl
 
-snd_soc_dapm_add_routes() registers routes by using
-for(... i < num; ...). If routes was NULL, num should be zero.
-Thus, we don't need to check about route pointer.
-This patch also cares missing return value.
+This patch call snd_jack_add_new_kctl() to create the HDMI jack kctls.
+Userspace needs these kctls to detect the hdmi monitor hotplug.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87d0hhahon.wl-kuninori.morimoto.gx@renesas.com
+In /usr/share/alsa/ucm, the config file needs to assign a jack kctl to
+"JackControl" to let PA get the jack hotplug status.
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190808192734.18286-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ sound/soc/intel/boards/skl_hda_dsp_common.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e481f9999bfb..de95b68ce9ee 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1310,10 +1310,11 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	if (ret < 0)
- 		goto err_probe;
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
+index 55fd82e05e2c..58409b6e476e 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
+@@ -147,6 +147,11 @@ int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
+ 		if (err)
+ 			return err;
  
--	if (component->driver->dapm_routes)
--		snd_soc_dapm_add_routes(dapm,
--					component->driver->dapm_routes,
--					component->driver->num_dapm_routes);
-+	ret = snd_soc_dapm_add_routes(dapm,
-+				      component->driver->dapm_routes,
-+				      component->driver->num_dapm_routes);
-+	if (ret < 0)
-+		goto err_probe;
- 
- 	list_add(&dapm->list, &card->dapm_list);
- 	/* see for_each_card_components */
-@@ -2061,13 +2062,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		snd_soc_add_card_controls(card, card->controls,
- 					  card->num_controls);
- 
--	if (card->dapm_routes)
--		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
--					card->num_dapm_routes);
-+	ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
-+				      card->num_dapm_routes);
-+	if (ret < 0)
-+		goto probe_end;
- 
--	if (card->of_dapm_routes)
--		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
--					card->num_of_dapm_routes);
-+	ret = snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
-+				      card->num_of_dapm_routes);
-+	if (ret < 0)
-+		goto probe_end;
- 
- 	/* try to set some sane longname if DMI is available */
- 	snd_soc_set_dmi_name(card, NULL);
++		err = snd_jack_add_new_kctl(pcm->hdmi_jack.jack,
++					    jack_name, SND_JACK_AVOUT);
++		if (err)
++			dev_warn(component->dev, "failed creating Jack kctl\n");
++
+ 		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
+ 					  &pcm->hdmi_jack);
+ 		if (err < 0)
 -- 
 2.20.1
