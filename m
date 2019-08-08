@@ -1,8 +1,9 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH v5 0/2] ASoC: Intel: Skylake: large_config_get
-	overhaul
-Date: Thu,  8 Aug 2019 20:15:47 +0200
-Message-ID: <20190808181549.12521-1-cezary.rojewski@intel.com>
+Subject: [PATCH v5 1/2] ASoC: Intel: Skylake: Limit
+	large_config_get to single frame
+Date: Thu,  8 Aug 2019 20:15:48 +0200
+Message-ID: <20190808181549.12521-2-cezary.rojewski@intel.com>
+References: <20190808181549.12521-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA585F803F3
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 20:16:17 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74102F800E4
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 20:16:18 +0200 (CEST)
+In-Reply-To: <20190808181549.12521-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,49 +27,71 @@ To: alsa-devel@alsa-project.org
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-LARGE_CONFIG_GET is among the most crucial IPCs. Host is expected to
-send single request first to obtain total payload size from received
-header's data_off_size. From then on, it loops for each frame exceeding
-inbox size until entire payload is read. If entire payload is contained
-within the very first frame, no looping is performed.
+Reply for the very first LARGE_CONFIG_GET request contains total size of
+payload to be retrieved by host.
+>From then on, each subsequent reply carries buffer offset instead. As
+looping is not covered by any real-life example, remove it and cleanup
+the function for followup overhaul.
 
-LARGE_CONFIG_GET is a flexible IPC, it not only receives payload but may
-carry one with them to provide list of params DSP module should return
-info for. This behavior is usually reserved for vendors and IPC handler
-should not touch that content. To achieve that, simply pass provided
-payload and bytes to sst_ipc_tx_message_wait as a part of request.
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/skylake/skl-sst-ipc.c | 37 +++++----------------------
+ 1 file changed, 7 insertions(+), 30 deletions(-)
 
-In current state, LARGE_CONFIG_GET message handler does nothing of that,
-in consequence making it dysfunctional. Overhaul said handler allowing
-rightful king of IPCs to return back on his throne - kingdom he shares
-with his twin brother: LARGE_CONFIG_SET.
-
-The looping has not been added in this update as payloads of such size
-do not exist in practice. Will need to create custom module specifically
-for that very case and test against it before that feature can be added.
-
-Changes since v4:
-- Addressed Pierre's review: updated function's declaration and dropped
-  unrelated log changes
-
-Changes since v3:
-- Split "large_config_get overhaul" patch into two segments as suggested
-  by Pierre: first remove looping, then adjust function's behavior
-
-Changes since v2:
-- None, just for-next rebase
-
-Changes since v1:
-- None, just for-next rebase
-
-Cezary Rojewski (2):
-  ASoC: Intel: Skylake: Limit large_config_get to single frame
-  ASoC: Intel: Skylake: large_config_get overhaul
-
- sound/soc/intel/skylake/skl-messages.c |  3 +-
- sound/soc/intel/skylake/skl-sst-ipc.c  | 54 +++++++++++---------------
- sound/soc/intel/skylake/skl-sst-ipc.h  |  3 +-
- 3 files changed, 27 insertions(+), 33 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index a2b69a02aab2..196c80dadb1f 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -973,8 +973,7 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
+ {
+ 	struct skl_ipc_header header = {0};
+ 	struct sst_ipc_message request = {0}, reply = {0};
+-	int ret = 0;
+-	size_t sz_remaining, rx_size, data_offset;
++	int ret;
+ 
+ 	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
+ 	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
+@@ -987,34 +986,12 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
+ 	header.extension |= IPC_FINAL_BLOCK(1);
+ 	header.extension |= IPC_INITIAL_BLOCK(1);
+ 
+-	sz_remaining = msg->param_data_size;
+-	data_offset = 0;
+-
+-	while (sz_remaining != 0) {
+-		rx_size = sz_remaining > SKL_ADSP_W1_SZ
+-				? SKL_ADSP_W1_SZ : sz_remaining;
+-		if (rx_size == sz_remaining)
+-			header.extension |= IPC_FINAL_BLOCK(1);
+-
+-		request.header = *(u64 *)(&header);
+-		reply.data = ((char *)param) + data_offset;
+-		reply.size = msg->param_data_size;
+-		ret = sst_ipc_tx_message_wait(ipc, request, &reply);
+-		if (ret < 0) {
+-			dev_err(ipc->dev,
+-				"ipc: get large config fail, err: %d\n", ret);
+-			return ret;
+-		}
+-		sz_remaining -= rx_size;
+-		data_offset = msg->param_data_size - sz_remaining;
+-
+-		/* clear the fields */
+-		header.extension &= IPC_INITIAL_BLOCK_CLEAR;
+-		header.extension &= IPC_DATA_OFFSET_SZ_CLEAR;
+-		/* fill the fields */
+-		header.extension |= IPC_INITIAL_BLOCK(1);
+-		header.extension |= IPC_DATA_OFFSET_SZ(data_offset);
+-	}
++	request.header = *(u64 *)(&header);
++	reply.data = param;
++	reply.size = msg->param_data_size;
++	ret = sst_ipc_tx_message_wait(ipc, request, &reply);
++	if (ret < 0)
++		dev_err(ipc->dev, "ipc: get large config fail, err: %d\n", ret);
+ 
+ 	return ret;
+ }
 -- 
 2.17.1
