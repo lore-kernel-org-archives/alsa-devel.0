@@ -1,41 +1,81 @@
-From: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-devel] [PATCH] ALSA: firewire: fix a memory leak bug
-Date: Thu, 08 Aug 2019 18:04:03 +0900
-Message-ID: <ce36089b-7061-4cd1-8262-eb3393c753af@www.fastmail.com>
-References: <1565243458-2771-1-git-send-email-wenwen@cs.uga.edu>
+From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH v2 19/25] ASoC: soc-core: don't call
+ snd_soc_component_set_jack()
+Date: Thu, 8 Aug 2019 11:14:17 +0200
+Message-ID: <20190808111417.7033df42@xxx>
+References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
+ <87y305932s.wl-kuninori.morimoto.gx@renesas.com>
+ <f3ead090-8c2c-6be5-70b8-c6530239302a@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1565243458-2771-1-git-send-email-wenwen@cs.uga.edu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wenwen Wang <wenwen@cs.uga.edu>
-Cc: open list <linux-kernel@vger.kernel.org>, "moderated list:FIREWIRE AUDIO DRIVERS" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 712EBF800E3
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 11:09:58 +0200 (CEST)
+In-Reply-To: <f3ead090-8c2c-6be5-70b8-c6530239302a@intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 7 Aug 2019 20:49:09 +0200
+Cezary Rojewski <cezary.rojewski@intel.com> wrote:
 
-On Thu, Aug 8, 2019, at 14:53, Wenwen Wang wrote:
-> In iso_packets_buffer_init(), 'b->packets' is allocated through
-> kmalloc_array(). Then, the aligned packet size is checked. If it is
-> larger than PAGE_SIZE, -EINVAL will be returned to indicate the error.
-> However, the allocated 'b->packets' is not deallocated on this path,
-> leading to a memory leak.
+> On 2019-08-07 03:31, Kuninori Morimoto wrote:
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > snd_soc_component_set_jack() is used for both setting/clearing.
+> > Setting purpose is used under each driver.
+> > Hence, clearing purpose should be used under each driver, not
+> > soc-core.
+> > 
+> > soc-core shouldn't touch it even though its purpose was for
+> > clearing, otherwise, code becomes very confusable.
+> > This patch removes snd_soc_component_set_jack() from soc-core.c
+> > 
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+> > v1 -> v2
+> > 
+> > 	- no change
+> > 
+> >   sound/soc/soc-core.c | 1 -
+> >   1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> > index 80703618..e708095 100644
+> > --- a/sound/soc/soc-core.c
+> > +++ b/sound/soc/soc-core.c
+> > @@ -938,7 +938,6 @@ static int soc_bind_dai_link(struct
+> > snd_soc_card *card, 
+> >   static void soc_cleanup_component(struct snd_soc_component
+> > *component) {
+> > -	snd_soc_component_set_jack(component, NULL, NULL);
+> >   	list_del(&component->card_list);
+> >   	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+> >   	soc_cleanup_component_debugfs(component);
+> >   
 > 
-> To fix the above issue, free 'b->packets' before returning the error code.
-> 
-> Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
-> ---
->  sound/firewire/packets-buffer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This has been added lately for a reason - reload/ unload series.
+> Amadeusz, could you comment on this change?
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+This was done on assumption that we want to always make sure that it is
+cleaned up, independent of if driver author accidentally forgets to do
+this.
 
-And this bug exists till its first commit for v2.6.39.
+We can of course add handler to our driver to do this, first version of
+patch actually did this, before we decided on global option.
 
-Fixes: 31ef9134eb52 ("ALSA: add LaCie FireWire Speakers/Griffin FireWave Surround driver")
-Cc: <stable@vger.kernel.org> # v2.6.39+
-
-
-Thanks
-
-Takashi Sakamoto
+Amadeusz
