@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tscs454: remove unused variable 'PLL_48K_RATE'" to the asoc tree
+Subject: Applied "ASoC: soc-core: dai_link check under
+	soc_dpcm_debugfs_add()" to the asoc tree
 Date: Thu,  8 Aug 2019 21:33:39 +0100 (BST)
-Message-ID: <20190808203339.6ED712742EDC@ypsilon.sirena.org.uk>
-References: <20190808032552.45360-1-yuehaibing@huawei.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190808032552.45360-1-yuehaibing@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, steven.eckhoff.opensource@gmail.com, tiwai@suse.com
+Message-ID: <20190808203339.E3A512742BE9@ypsilon.sirena.org.uk>
+References: <874l2tahnq.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C807DF800E4
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 22:33:41 +0200 (CEST)
+In-Reply-To: <874l2tahnq.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tscs454: remove unused variable 'PLL_48K_RATE'
+   ASoC: soc-core: dai_link check under soc_dpcm_debugfs_add()
 
 has been applied to the asoc tree at
 
@@ -37,32 +55,67 @@ to this mail.
 Thanks,
 Mark
 
->From 8e082d8f42fabf9a4a0708d8012f4995765478fc Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 8 Aug 2019 11:25:52 +0800
-Subject: [PATCH] ASoC: tscs454: remove unused variable 'PLL_48K_RATE'
+>From 596becd3f82a7b7e091b0f5c380bc9a0e6758126 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 7 Aug 2019 10:31:36 +0900
+Subject: [PATCH] ASoC: soc-core: dai_link check under soc_dpcm_debugfs_add()
 
-The global variable 'PLL_48K_RATE' is never used
-so just remove it.
+soc_dpcm_debugfs_add(rtd) is checking rtd->dai_link pointer,
+but, rtd->dai_link->dynamic have been already checked before calling it.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190808032552.45360-1-yuehaibing@huawei.com
+	static int soc_probe_link_dais(...) {
+		dai_link = rtd->dai_link;
+		...
+=>		if (dai_link->dynamic)
+=>			soc_dpcm_debugfs_add(rtd);
+		...
+	}
+
+	void soc_dpcm_debugfs_add(rtd)
+	{
+=>		if (!rtd->dai_link)
+			return;
+		...
+	}
+
+These pointer checks are strange/pointless.
+This patch checks dai_link->dynamic under soc_dpcm_debugfs_add().
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/874l2tahnq.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs454.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/soc-core.c | 3 +--
+ sound/soc/soc-pcm.c  | 3 +++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs454.c b/sound/soc/codecs/tscs454.c
-index 93d84e5ae2d5..c3587af9985c 100644
---- a/sound/soc/codecs/tscs454.c
-+++ b/sound/soc/codecs/tscs454.c
-@@ -22,7 +22,6 @@
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2a75fba31aa4..1fbd525763d5 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1488,8 +1488,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 		return ret;
  
- #include "tscs454.h"
+ 	/* add DPCM sysfs entries */
+-	if (dai_link->dynamic)
+-		soc_dpcm_debugfs_add(rtd);
++	soc_dpcm_debugfs_add(rtd);
  
--static const unsigned int PLL_48K_RATE = (48000 * 256);
- static const unsigned int PLL_44_1K_RATE = (44100 * 256);
+ 	num = rtd->num;
  
- #define COEFF_SIZE 3
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 77c986fe08d0..da657c8179cc 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -3200,6 +3200,9 @@ void soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd)
+ 	if (!rtd->dai_link)
+ 		return;
+ 
++	if (!rtd->dai_link->dynamic)
++		return;
++
+ 	if (!rtd->card->debugfs_card_root)
+ 		return;
+ 
 -- 
 2.20.1
