@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: fix module_put() warning in
-	soc_cleanup_component" to the asoc tree
-Date: Thu,  8 Aug 2019 21:33:39 +0100 (BST)
-Message-ID: <20190808203339.AA8012742B42@ypsilon.sirena.org.uk>
-References: <20190808025131.32482-1-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: soc-core: tidyup for
+	snd_soc_add_card_controls()" to the asoc tree
+Date: Thu,  8 Aug 2019 21:33:41 +0100 (BST)
+Message-ID: <20190808203341.31BC92742BDD@ypsilon.sirena.org.uk>
+References: <87blx1ahoi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9B97F8053B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E922F80535
  for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 22:33:42 +0200 (CEST)
-In-Reply-To: <20190808025131.32482-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87blx1ahoi.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: fix module_put() warning in soc_cleanup_component
+   ASoC: soc-core: tidyup for snd_soc_add_card_controls()
 
 has been applied to the asoc tree at
 
@@ -55,39 +55,40 @@ to this mail.
 Thanks,
 Mark
 
->From 0e36f36b04e7677c6b74349c9d4baea1ed5668f2 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 7 Aug 2019 21:51:31 -0500
-Subject: [PATCH] ASoC: soc-core: fix module_put() warning in
- soc_cleanup_component
+>From 9b98c7c2a0599084c7ed629b5f88f474d2578307 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 7 Aug 2019 10:31:08 +0900
+Subject: [PATCH] ASoC: soc-core: tidyup for snd_soc_add_card_controls()
 
-The recent changes introduce warnings in the SOF load/unload module
-tests. The code does not seem balanced with a confusion between
-_close() and _remove() macros. Using _remove() fixes the issue and
-removes the warning.
+snd_soc_add_card_controls() registers controls by using
+for(... i < num; ...). If controls was NULL, num should be zero.
+Thus, we don't need to check about controls pointer.
+This patch also cares missing return value.
 
-Suggested-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Fixes: 4a81e8f30d0b4 ('ASoC: soc-component: add snd_soc_component_get/put()')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20190808025131.32482-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87blx1ahoi.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1fbd525763d5..bf45e60eb34f 100644
+index de95b68ce9ee..4b9ae867613c 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -935,7 +935,7 @@ static void soc_cleanup_component(struct snd_soc_component *component)
- 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
- 	soc_cleanup_component_debugfs(component);
- 	component->card = NULL;
--	snd_soc_component_module_put_when_close(component);
-+	snd_soc_component_module_put_when_remove(component);
- }
+@@ -2058,9 +2058,10 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	snd_soc_dapm_link_dai_widgets(card);
+ 	snd_soc_dapm_connect_dai_link_widgets(card);
  
- static void soc_remove_component(struct snd_soc_component *component)
+-	if (card->controls)
+-		snd_soc_add_card_controls(card, card->controls,
+-					  card->num_controls);
++	ret = snd_soc_add_card_controls(card, card->controls,
++					card->num_controls);
++	if (ret < 0)
++		goto probe_end;
+ 
+ 	ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 				      card->num_dapm_routes);
 -- 
 2.20.1
