@@ -1,17 +1,18 @@
 From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
-Subject: (no subject)
-Date: Thu, 8 Aug 2019 00:03:02 +0000
-Message-ID: <AM5P192MB01802854296E15A3ED321DF4C5D70@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+Subject: multi pcm plugin issue
+Date: Thu, 8 Aug 2019 00:09:47 +0000
+Message-ID: <AM5P192MB01809959F8AC046FAC258809C5D70@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr150057.outbound.protection.outlook.com [40.107.15.57])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from EUR03-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur03on0626.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe0a::626])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 909A0F800F4
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 02:03:05 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0382F800E4
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 02:09:49 +0200 (CEST)
 Content-Language: it-IT
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
