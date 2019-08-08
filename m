@@ -1,105 +1,130 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: soundwire: add slave bindings
-Date: Thu, 8 Aug 2019 10:58:49 -0500
-Message-ID: <d346b2af-f285-4c53-b706-46a129ab7951@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [PATCH v2 4/4] ASoC: codecs: add wsa881x amplifier
+ support
+Date: Thu, 8 Aug 2019 17:20:10 +0100
+Message-ID: <32516aae-8a43-6a74-c564-92dea8ff6e53@linaro.org>
 References: <20190808144504.24823-1-srinivas.kandagatla@linaro.org>
- <20190808144504.24823-2-srinivas.kandagatla@linaro.org>
+ <20190808144504.24823-5-srinivas.kandagatla@linaro.org>
+ <3ad15652-9d6c-11e4-7cc3-0f076c6841bb@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190808144504.24823-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <3ad15652-9d6c-11e4-7cc3-0f076c6841bb@linux.intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, broonie@kernel.org
-Cc: bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for taking time to review,
 
-> +++ b/Documentation/devicetree/bindings/soundwire/slave.txt
-> @@ -0,0 +1,46 @@
-> +SoundWire slave device bindings.
-> +
-> +SoundWire is a 2-pin multi-drop interface with data and clock line.
-> +It facilitates development of low cost, efficient, high performance systems.
-> +
-> +SoundWire slave devices:
-> +Every SoundWire controller node can contain zero or more child nodes
-> +representing slave devices on the bus. Every SoundWire slave device is
-> +uniquely determined by the enumeration address containing 5 fields:
-> +SoundWire Version, Instance ID, Manufacturer ID, Part ID and Class ID
-> +for a device. Addition to below required properties, child nodes can
-> +have device specific bindings.
-
-In case the controller supports multiple links, what's the encoding then?
-in the MIPI DisCo spec there is a linkId field in the _ADR encoding that 
-helps identify which link the Slave device is connected to
-
-> +
-> +Required property for SoundWire child node if it is present:
-> +- compatible:	 "sdwVER,MFD,PID,CID". The textual representation of
-> +		  SoundWire Enumeration address comprising SoundWire
-> +		  Version, Manufacturer ID, Part ID and Class ID,
-> +		  shall be in lower-case hexadecimal with leading
-> +		  zeroes suppressed.
-> +		  Version number '0x10' represents SoundWire 1.0
-> +		  Version number '0x11' represents SoundWire 1.1
-> +		  ex: "sdw10,0217,2010,0"
-> +
-> +- sdw-instance-id: Should be ('Instance ID') from SoundWire
-> +		  Enumeration Address. Instance ID is for the cases
-> +		  where multiple Devices of the same type or Class
-> +		  are attached to the bus.
-
-so it is actually required if you have a single Slave device? Or is it 
-only required when you have more than 1 device of the same type?
-
-FWIW in the MIPI DisCo spec we kept the instanceID as part of the _ADR, 
-so it's implicitly mandatory (and ignored by the bus if there is only 
-one device of the same time)
-
-> +
-> +SoundWire example for Qualcomm's SoundWire controller:
-> +
-> +soundwire@c2d0000 {
-> +	compatible = "qcom,soundwire-v1.5.0"
-> +	reg = <0x0c2d0000 0x2000>;
-> +
-> +	spkr_left:wsa8810-left{
-> +		compatible = "sdw10,0217,2010,0";
-> +		sdw-instance-id = <1>;
-> +		...
-> +	};
-> +
-> +	spkr_right:wsa8810-right{
-> +		compatible = "sdw10,0217,2010,0";
-> +		sdw-instance-id = <2>;
-
-Isn't the MIPI encoding reported in the Dev_ID0..5 registers 0-based?
-
-> +		...
-> +	};
-> +};
+On 08/08/2019 16:18, Pierre-Louis Bossart wrote:
 > 
+>> +/* 4 ports */
+>> +static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
+>> +    {
+>> +        /* DAC */
+>> +        .num = 1,
+>> +        .type = SDW_DPN_SIMPLE,
+> 
+> IIRC we added the REDUCED type in SoundWire 1.1 to cover the PDM case 
+> with channel packing (or was it grouping) used by Qualcomm. I am not 
+> sure the SIMPLE type works?
+grouping I guess.
 
-And now that I think of it, wouldn't it be simpler for everyone if we 
-aligned on that MIPI DisCo public spec? e.g. you'd have one property 
-with a 64-bit number that follows the MIPI spec. No special encoding 
-necessary for device tree cases, your DT blob would use this:
+This is a simplified data port as there is no DPn_OffsetCtrl2 register 
+implemented.
 
-soundwire@c2d0000 {
-	compatible = "qcom,soundwire-v1.5.0"
-	reg = <0x0c2d0000 0x2000>;
+Having said below channel count looks incorrect, i should fix that.
 
-	spkr_left:wsa8810-left{
-		compatible = "sdw0000100217201000"
-	}
+> 
+>> +        .min_ch = 1,
+>> +        .max_ch = 8,
+>> +        .simple_ch_prep_sm = true,
+>> +    }, {
+>> +        /* COMP */
+>> +        .num = 2,
+>> +        .type = SDW_DPN_SIMPLE,
+>> +        .min_ch = 1,
+>> +        .max_ch = 8,
+>> +        .simple_ch_prep_sm = true,
+>> +    }, {
+>> +        /* BOOST */
+>> +        .num = 3,
+>> +        .type = SDW_DPN_SIMPLE,
+>> +        .min_ch = 1,
+>> +        .max_ch = 8,
+>> +        .simple_ch_prep_sm = true,
+>> +    }, {
+>> +        /* VISENSE */
+>> +        .num = 4,
+>> +        .type = SDW_DPN_SIMPLE,
+>> +        .min_ch = 1,
+>> +        .max_ch = 8,
+>> +        .simple_ch_prep_sm = true,
+>> +    }
+>> +};
+> 
+>> +static int wsa881x_update_status(struct sdw_slave *slave,
+>> +                 enum sdw_slave_status status)
+>> +{
+>> +    struct wsa881x_priv *wsa881x = dev_get_drvdata(&slave->dev);
+>> +
+>> +    if (status == SDW_SLAVE_ATTACHED) {
+> 
+> there is an ambiguity here, the Slave can be attached but as device0 
+> (not enumerated). We should check dev_num > 0
+> 
+Thanks for point that! will add a check!
 
-	spkr_right:wsa8810-right{
-		compatible = "sdw0000100217201100"
-	}
-}
+>> +        if (!wsa881x->regmap) {
+>> +            wsa881x->regmap = devm_regmap_init_sdw(slave,
+>> +                               &wsa881x_regmap_config);
+>> +            if (IS_ERR(wsa881x->regmap)) {
+>> +                dev_err(&slave->dev, "regmap_init failed\n");
+>> +                return PTR_ERR(wsa881x->regmap);
+>> +            }
+>> +        }
+>> +
+>> +        return snd_soc_register_component(&slave->dev,
+>> +                          &wsa881x_component_drv,
+>> +                          NULL, 0);
+>> +    } else if (status == SDW_SLAVE_UNATTACHED) {
+>> +        snd_soc_unregister_component(&slave->dev);
+> 
+> the update_status() is supposed to be called based on bus events, it'd 
+> be very odd to register/unregister the component itself dynamically. In 
+> our existing Realtek-based solutions the register_component() is called 
+> in the probe function (and unregister_component() in remove). We do the 
+> inits when the Slave becomes attached but the component is already 
+> registered.
+> 
+looks less intrusive!  I will give that a try!
 
-We could use parentheses if it makes people happier, but the information 
-from the MIPI DisCo spec can be used as is, and provide a means for spec 
-changes via reserved bits.
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +
+>> +static int wsa881x_remove(struct sdw_slave *sdw)
+>> +{
+>> +    return 0;
+>> +}
+>> +
+>> +static const struct sdw_device_id wsa881x_slave_id[] = {
+>> +    SDW_SLAVE_ENTRY(0x0217, 0x2010, 0),
+>> +    {},
+>> +};
+>> +MODULE_DEVICE_TABLE(sdw, wsa881x_slave_id);
+>> +
+>> +static struct sdw_driver wsa881x_codec_driver = {
+>> +    .probe    = wsa881x_probe,
+>> +    .remove = wsa881x_remove,
+> 
+> is this needed since you do nothing in that function?
+
+yes, it can be removed! will do that in next version.
+
+--srini
