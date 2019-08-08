@@ -1,86 +1,47 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ALSA: hda: bus cleanup
-Date: Thu, 8 Aug 2019 09:23:40 -0500
-Message-ID: <ae7d32fe-a279-8309-2370-1832edcce413@linux.intel.com>
-References: <20190808095715.29713-1-tiwai@suse.de>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: max98926: remove two unused variables
+Date: Thu, 8 Aug 2019 22:32:15 +0800
+Message-ID: <20190808143215.65904-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EB7EF800E3
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 16:23:43 +0200 (CEST)
-In-Reply-To: <20190808095715.29713-1-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Thierry Reding <thierry.reding@gmail.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kstewart@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
+sound/soc/codecs/max98926.c:28:26: warning:
+ max98926_dai_txt defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/max98926.c:23:27: warning:
+ max98926_boost_current_txt defined but not used [-Wunused-const-variable=]
 
+They are never used, so can be removd.
 
-On 8/8/19 4:57 AM, Takashi Iwai wrote:
-> Hi,
-> 
-> this is a few patches to simplify and cleanup the HD-audio bus ops.
-> 
-> The first two patches translate the indirect calls of DMA page
-> allocation and MMIO accesses with the direct ones, as well as
-> eliminating the whole bus->io_ops.
-> 
-> The last one is SOF-specific, and fixes/cleans up by calling the
-> proper hdaudio bus init function, as formerly discussed.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/codecs/max98926.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-This is a good cleanup, thanks Takashi.
-
-For the series
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-One request from me since I am lazy: could we somehow merge branches 
-between you / Mark since at the moment we have two sets of conflicts 
-(NHLT and this one). We test all the upstream changes on hardware as 
-soon as we can, and manual conflict resolution makes it slower/more 
-error prone.
-
-> 
-> 
-> Takashi
-> 
-> ===
-> 
-> Takashi Iwai (3):
->    ALSA: hda: Remove page allocation redirection
->    ALSA: hda: Direct MMIO accesses
->    ASoC: SOF: Intel: Initialize hdaudio bus properly
-> 
->   include/sound/hdaudio.h                | 69 +++++++++++++--------------
->   include/sound/hdaudio_ext.h            |  1 -
->   sound/hda/Kconfig                      |  3 ++
->   sound/hda/ext/hdac_ext_bus.c           | 60 +-----------------------
->   sound/hda/hdac_bus.c                   | 36 ++++++++++++--
->   sound/hda/hdac_controller.c            | 18 +++----
->   sound/hda/hdac_stream.c                |  8 ++--
->   sound/pci/hda/Kconfig                  |  1 +
->   sound/pci/hda/hda_controller.c         |  6 +--
->   sound/pci/hda/hda_controller.h         |  3 +-
->   sound/pci/hda/hda_intel.c              | 71 ++--------------------------
->   sound/pci/hda/hda_tegra.c              | 84 +--------------------------------
->   sound/soc/intel/skylake/skl-messages.c | 15 +-----
->   sound/soc/intel/skylake/skl.c          |  7 ++-
->   sound/soc/sof/intel/hda-bus.c          | 85 ++++------------------------------
->   sound/soc/sof/intel/hda-dsp.c          |  2 +-
->   sound/soc/sof/intel/hda.c              |  6 +--
->   sound/soc/sof/intel/hda.h              |  3 +-
->   18 files changed, 107 insertions(+), 371 deletions(-)
-> 
+diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
+index 818c030..c4dfa8a 100644
+--- a/sound/soc/codecs/max98926.c
++++ b/sound/soc/codecs/max98926.c
+@@ -20,15 +20,6 @@ static const char * const max98926_boost_voltage_txt[] = {
+ 	"6.5V", "6.5V", "6.5V", "6.5V", "6.5V", "6.5V", "6.5V", "6.5V"
+ };
+ 
+-static const char * const max98926_boost_current_txt[] = {
+-	"0.6", "0.8", "1.0", "1.2", "1.4", "1.6", "1.8", "2.0",
+-	"2.2", "2.4", "2.6", "2.8", "3.2", "3.6", "4.0", "4.4"
+-};
+-
+-static const char *const max98926_dai_txt[] = {
+-	"Left", "Right", "LeftRight", "LeftRightDiv2",
+-};
+-
+ static const char *const max98926_pdm_ch_text[] = {
+ 	"Current", "Voltage",
+ };
+-- 
+2.7.4
