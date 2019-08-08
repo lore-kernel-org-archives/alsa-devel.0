@@ -1,22 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 2/2] ASoC: Intel: Skylake:
- large_config_get overhaul
-Date: Thu, 8 Aug 2019 12:01:42 -0500
-Message-ID: <0b46e718-6bf1-b003-3eea-d8c46c10f39f@linux.intel.com>
-References: <20190808102447.16639-1-cezary.rojewski@intel.com>
- <17f3b2a4-35c1-3763-4d7d-7eec09230bfc@linux.intel.com>
- <1c4c546d-e451-7484-1dfe-adb575cfe46f@intel.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: Add Cometlake machine
+ driver support
+Date: Thu, 8 Aug 2019 10:38:33 -0700
+Message-ID: <CAFQqKeXO5XHTrgTvXDRtqPDZZNrb24GB9ps3L=7WYadW0nYuKA@mail.gmail.com>
+References: <1565251120-13082-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com
+ [IPv6:2607:f8b0:4864:20::b43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E60BBF803F3
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 19:01:46 +0200 (CEST)
-In-Reply-To: <1c4c546d-e451-7484-1dfe-adb575cfe46f@intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01821F803F3
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 19:38:45 +0200 (CEST)
+Received: by mail-yb1-xb43.google.com with SMTP id j6so4206979ybm.7
+ for <alsa-devel@alsa-project.org>; Thu, 08 Aug 2019 10:38:45 -0700 (PDT)
+In-Reply-To: <1565251120-13082-1-git-send-email-mac.chiang@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +26,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+To: Chiang Mac <mac.chiang@intel.com>
+Cc: "M R, Sathya Prakash" <sathya.prakash.m.r@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bard Liao <bard.liao@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiA4LzgvMTkgMTE6NTIgQU0sIENlemFyeSBSb2pld3NraSB3cm90ZToKPiBPbiAyMDE5LTA4
-LTA4IDE2OjUwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4gVGhhbmtzIENlemFyeSwg
-dGhlIHNwbGl0IG1ha2VzIGl0IG11Y2ggZWFzaWVyIHRvIHJldmlldy4gSSBoYXZlIGEgCj4+IGNv
-dXBsZSBvZiBtaW5vciBjb21tZW50cyBiZWxvdywgbG9va3MgZ29vZCBvdGhlcndpc2UuCj4+Cj4+
-IE9uIDgvOC8xOSA1OjI0IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+PiBMQVJHRV9DT05G
-SUdfR0VUIGlzIG1haW5seSB1c2VkIHRvIHJldHJpZXZlIHJlcXVlc3RlZCBtb2R1bGUgcGFyYW1l
-dGVycwo+Pj4gYnV0IGl0IG1heSBhbHNvIGNhcnJ5IFRYIHBheWxvYWQgd2l0aCB0aGVtLiBVcGRh
-dGUgaXRzIGltcGxlbWVudGF0aW9uIHRvCj4+PiBhY2NvdW50IGZvciBib3RoIFRYIGFuZCBSWCBk
-YXRhLgo+Pj4gRmlyc3QgcmVwbHkuaGVhZGVyIGNhcnJpZXMgdG90YWwgcGF5bG9hZCBzaXplIHdp
-dGhpbiBkYXRhX29mZl9zaXplZmllbGQuCj4+PiBNYWtlIHVzZSBvZiByZXBseS5oZWFkZXIgdG8g
-cmVhbGxvYyByZXR1cm5lZCBidWZmZXIgd2l0aCBjb3JyZWN0IHNpemUuCj4+Pgo+Pj4gRmFpbHVy
-ZSBvZiBJUEMgcmVxdWVzdCBpcyBwZXJtaXNzaXZlIC0gZXJyb3ItcGF5bG9hZCBtYXkgYmUgcmV0
-dXJuZWQsIGFuCj4+PiBpbmZvcm1hdGl2ZSBkYXRhIHdoeSBHRVQgZm9yIGdpdmVuIHBhcmFtIGZh
-aWxlZCAtIGFuZCB0aHVzIGZ1bmN0aW9uCj4+PiBzaG91bGQgbm90IGNvbGxhcHNlIGJlZm9yZSBl
-bnRpcmUgcHJvY2Vzc2luZyBpcyBmaW5pc2hlZC4gQ2FsbGVyIGlzCj4+PiByZXNwb25zaWJsZSBm
-b3IgY2hlY2tpbmcgcmV0dXJuZWQgcGF5bG9hZCBhbmQgYnl0ZXMgcGFyYW1ldGVycy4KPj4KPj4g
-YnV0IHRoYXQgaXMgdGhlIHNhbWUgYXMgYmVmb3JlLCB5ZXM/IHRoaXMgcGF0Y2ggZG9lcyBub3Qg
-Y2hhbmdlIHRoZSAKPj4gYmVoYXZpb3Igb24gZXJyb3JzPwo+IAo+IFRvIGV2YWx1YXRlIHRoaXMg
-c3RhdGVtZW50IHlvdSBoYXZlIHRvIHRha2UgYSBsb29rIGF0IG9sZCBjb2RlIChiZWZvcmUgCj4g
-YWRkaXRpb24gb2YgcmVwbHkgc2F2aW5nKToKPiAKPiByZXQgPSBzc3RfaXBjX3R4X21lc3NhZ2Vf
-d2FpdChpcGMsICppcGNfaGVhZGVyLCBOVUxMLCAwLAo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAoKGNoYXIgKilwYXJhbSkgKyBkYXRhX29mZnNldCwKPiAgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgbXNnLT5wYXJhbV9kYXRhX3NpemUpOwo+IGlmIChyZXQgPCAwKSB7Cj4gIMKgwqDC
-oMKgZGV2X2VycihpcGMtPmRldiwKPiAgwqDCoMKgwqDCoMKgwqAgImlwYzogZ2V0IGxhcmdlIGNv
-bmZpZyBmYWlsLCBlcnI6ICVkXG4iLCByZXQpOwo+ICDCoMKgwqDCoHJldHVybiByZXQ7Cj4gfQo+
-IAo+IFRoaXJkIGFuZCBmb3VyIHBhcmFtZXRlciBmb3Igc3N0X2lwY190eF9tZXNzYWdlX3dhaXQg
-ZGVub3RlZCB0eF9kYXRhIGFuZCAKPiB0eF9zaXplIGluIG9sZGVyIHZlcnNpb24uIEFzIHlvdSBj
-YW4gc2VlLCB0aGVzZSBhcmUgZW1wdHkgLSBubyBwYXlsb2FkIAo+IGlzIGNhcnJpZWQsIF9nZXRf
-IG9ubHkgYXdhaXRzIHJlcGx5IGFuZCBjb3BpZWQgZGF0YSByZXRyaWV2ZWQgKGJyZWFrcyAKPiB2
-ZW5kb3IgY2FzZSBhcyBkZXNjcmliZWQgZWFybGllcikuCj4gCj4gSW1tZWRpYXRlbHkgYWZ0ZXIg
-ZmFpbHVyZSwgZnVuY3Rpb24gd2FzIGNvbGxhcHNpbmcuIFNvbWUgZGF0YSBtaWdodCBoYXZlIAo+
-IGJlZW4gYXBwZW5kZWQgdG8gInBhcmFtIiBidXQgc2l6ZSBpcyB1bmtub3duLiBIb3dldmVyLCBk
-dWUgdG8gbGFjayBvZiAKPiByZXRyaWV2YWwgb2Ygc2FpZCBzaXplLCBpbmRlZWQgb25lIG1heSBz
-YXkgdGhlIGJlaGF2aW9yIG9uIGVycm9ycyBkaWQgCj4gbm90IHJlYWxseSBjaGFuZ2UuIEl0J3Mg
-dml0YWwgdG8gaGlnaGxpZ2h0IHRoYXQgY2hhbmdlcyBhZGRlZCBoZXJlICgyLzIgCj4gcGF0Y2gp
-IGRvIG5vdCBtYWtlIGZ1bmN0aW9uIHJldHVybiByaWdodCBhZnRlciByZWNlaXZpbmcgZXJyb3Ig
-dGhvdWdoIC0gCj4gYnVmZmVyIGFuZCBzaXplIGFyZSB1cGRhdGVkIGZvciB0aGUgY2FsbGVyIGJl
-Zm9yZSBsZWF2aW5nIHRoZSBzY29wZS4KCm9rLCBnb3QgaXQuIFRoZSBjaGFuZ2UgYWN0dWFsbHkg
-aGFwcGVuZWQgaW4gcGF0Y2gxLCBJIGNvdWxkbid0IHNlZSB0aGUgCmNoYW5nZSBpbiB0aGF0IHNw
-ZWNpZmljIHBhdGNoLgpUaGFua3MgZm9yIHRoZSBwcmVjaXNpb25zLgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, Aug 8, 2019 at 1:00 AM <mac.chiang@intel.com> wrote:
+
+> From: Mac Chiang <mac.chiang@intel.com>
+>
+> reuse and add Cometlake support with:
+> SSP0 for DA7219 headphone codec
+> SSP1 for MAX98357a speaker amp codec
+>
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+> ---
+>  sound/soc/intel/boards/Kconfig                    | 15 +++++++++
+>  sound/soc/intel/boards/bxt_da7219_max98357a.c     | 37
+> ++++++++++++++++++++++-
+>  sound/soc/intel/common/soc-acpi-intel-cnl-match.c | 12 ++++++++
+>  sound/soc/intel/common/soc-intel-quirks.h         |  5 +++
+>  4 files changed, 68 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/intel/boards/Kconfig
+> b/sound/soc/intel/boards/Kconfig
+> index 50bf149..617d63c 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -256,6 +256,21 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+>
+>  endif ## SND_SOC_INTEL_SKL
+>
+> +config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
+> +       tristate
+> +       select SND_SOC_DA7219
+> +       select SND_SOC_MAX98357A
+> +       select SND_SOC_DMIC
+> +       select SND_SOC_HDAC_HDMI
+> +
+> +if SND_SOC_SOF_COMETLAKE_LP
+> +config SND_SOC_INTEL_CML_LP_DA7219_MAX98357A_MACH
+> +       tristate "CML_LP with DA7219 and MAX98357A in I2S Mode"
+> +       depends on I2C && ACPI
+> +       depends on MFD_INTEL_LPSS || COMPILE_TEST
+> +       select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
+> +endif
+> +
+>  if SND_SOC_INTEL_APL
+>
+>  config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> index c0d865a..e5941ff 100644
+> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> @@ -24,6 +24,8 @@
+>
+>  #define BXT_DIALOG_CODEC_DAI   "da7219-hifi"
+>  #define BXT_MAXIM_CODEC_DAI    "HiFi"
+> +#define MCLK_19M       19200000
+> +#define MCLK_24M       24576000
+>  #define DUAL_CHANNEL           2
+>  #define QUAD_CHANNEL           4
+>
+> @@ -181,8 +183,13 @@ static int broxton_da7219_codec_init(struct
+> snd_soc_pcm_runtime *rtd)
+>         struct snd_soc_component *component = rtd->codec_dai->component;
+>
+>         /* Configure sysclk for codec */
+> -       ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK,
+> 19200000,
+> +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
+> +       ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK,
+> MCLK_19M,
+>                                      SND_SOC_CLOCK_IN);
+> +#else
+> +       ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK,
+> MCLK_24M,
+> +                                    SND_SOC_CLOCK_IN);
+> +#endif
+>         if (ret) {
+>                 dev_err(rtd->dev, "can't set codec sysclk
+> configuration\n");
+>                 return ret;
+> @@ -224,7 +231,11 @@ static int broxton_hdmi_init(struct
+> snd_soc_pcm_runtime *rtd)
+>         if (!pcm)
+>                 return -ENOMEM;
+>
+> +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
+>         pcm->device = BXT_DPCM_AUDIO_HDMI1_PB + dai->id;
+> +#else
+> +       pcm->device = dai->id;
+> +#endif
+>         pcm->codec_dai = dai;
+>
+>         list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
+> @@ -683,6 +694,27 @@ static int broxton_audio_probe(struct platform_device
+> *pdev)
+>                                 broxton_dais[i].cpus->dai_name = "SSP2
+> Pin";
+>                         }
+>                 }
+> +       } else if (soc_intel_is_cml()) {
+> +               unsigned int i;
+> +
+> +               broxton_audio_card.name = "cmlda7219max";
+> +
+> +               for (i = 0; i < ARRAY_SIZE(broxton_dais); i++) {
+> +                       /* MAXIM_CODEC is connected to SSP1. */
+> +                       if (!strcmp(broxton_dais[i].codecs->dai_name,
+> +                                       BXT_MAXIM_CODEC_DAI)) {
+> +                               broxton_dais[i].id = 1;
+> +                               broxton_dais[i].name = "SSP1-Codec";
+> +                               broxton_dais[i].cpus->dai_name = "SSP1
+> Pin";
+> +                       }
+> +                       /* DIALOG_CODEC is connected to SSP0 */
+> +                       else if (!strcmp(broxton_dais[i].codecs->dai_name,
+> +                                       BXT_DIALOG_CODEC_DAI)) {
+> +                               broxton_dais[i].id = 0;
+> +                               broxton_dais[i].name = "SSP0-Codec";
+> +                               broxton_dais[i].cpus->dai_name = "SSP0
+> Pin";
+> +                       }
+> +               }
+>         }
+>
+Would it be possible to keep the ID's unchanged? Its quite confusing with
+so many platforms reusing the machine driver so it would help if the
+changes are minimal.
+I understand why you want to change the ID's but it would be simpler to
+just use the existing ID's in topology I think.
+
+Thanks,
+Ranjani
