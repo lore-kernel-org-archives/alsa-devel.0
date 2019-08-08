@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ALSA: hda: bus cleanup
-Date: Thu, 8 Aug 2019 20:03:43 +0100
-Message-ID: <20190808190343.GK3795@sirena.co.uk>
-References: <20190808095715.29713-1-tiwai@suse.de>
- <ae7d32fe-a279-8309-2370-1832edcce413@linux.intel.com>
- <s5hr25vhg22.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: Add Cometlake machine
+ driver support
+Date: Thu, 8 Aug 2019 14:06:47 -0500
+Message-ID: <2ec1119e-cd4c-71a6-1f52-e9a586f1aeaf@linux.intel.com>
+References: <1565251120-13082-1-git-send-email-mac.chiang@intel.com>
+ <334b227c-10fb-ec2e-10d0-68587806eb8c@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2272204297572513692=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B83EF800E3
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 21:03:49 +0200 (CEST)
-In-Reply-To: <s5hr25vhg22.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EB32F803F3
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 21:06:50 +0200 (CEST)
+In-Reply-To: <334b227c-10fb-ec2e-10d0-68587806eb8c@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +25,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Thierry Reding <thierry.reding@gmail.com>
+To: mac.chiang@intel.com, alsa-devel@alsa-project.org
+Cc: sathya.prakash.m.r@intel.com, broonie@kernel.org, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2272204297572513692==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IA03tywDYuoVKXrw"
-Content-Disposition: inline
-
-
---IA03tywDYuoVKXrw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 08, 2019 at 04:45:09PM +0200, Takashi Iwai wrote:
-
-> I don't mind who actually merges.  I'm going to push out my topic
-> branch once after gathering enough Ack's.  Then Mark can pull it into
-> his tree (as well as topic/hda-dmic branch).
-
-I can do that easily enough.
-
-> Or if Mark can give me the branch, I can pull into my for-next
-> branch, too.  Basically my for-next branch is persistent and not
-> rebased, so you can work on it once when set.
-
-> Mark, just let me know your preference.
-
-Well, I don't have topic branches any more since Linus hates them and
-it's always hard to write sensible summaries for the development when
-it's half way through so...
-
---IA03tywDYuoVKXrw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1Mcg4ACgkQJNaLcl1U
-h9Ciswf+LIQHuD1FFpYRf8ibMYcWDcoLna+z8NANkdKoVGcF6vPPVe8KOT8VM8d5
-WorAhIPo3oV38q2LDXH8kjxtZ3O0jSnQ5RWUOzwzCaVMS37FnoEiK11BwVRWZh7J
-MNwMQOorCnv8ZUUlH8ibV47MvevOpT6XBcD9jpaP7ezXA22k4Yeu1RZ9EgYiYppI
-uaK2+8VzOgJzhyGnpU5DGU8BXtzepC8LNY2rNFmswtvjRU3BM9TB/D93fFUGM70l
-R2AEN69YxotoDo12GrEOUjoKynVh2tx47+Y3GlT/PIbPcFm9JciI/8158FxoEOax
-OdQkR3OuHIScR8dPy7d6PHTBMnWz2A==
-=ARRp
------END PGP SIGNATURE-----
-
---IA03tywDYuoVKXrw--
-
---===============2272204297572513692==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2272204297572513692==--
+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NvYy1pbnRlbC1xdWlya3Mu
+aCAKPj4gYi9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NvYy1pbnRlbC1xdWlya3MuaAo+PiBpbmRl
+eCA0NzE4ZmQzLi5lNjM1N2QzIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9u
+L3NvYy1pbnRlbC1xdWlya3MuaAo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NvYy1p
+bnRlbC1xdWlya3MuaAo+PiBAQCAtMzYsNiArMzYsNyBAQCBTT0NfSU5URUxfSVNfQ1BVKGJ5dCwg
+SU5URUxfRkFNNl9BVE9NX1NJTFZFUk1PTlQpOwo+PiDCoCBTT0NfSU5URUxfSVNfQ1BVKGNodCwg
+SU5URUxfRkFNNl9BVE9NX0FJUk1PTlQpOwo+PiDCoCBTT0NfSU5URUxfSVNfQ1BVKGFwbCwgSU5U
+RUxfRkFNNl9BVE9NX0dPTERNT05UKTsKPj4gwqAgU09DX0lOVEVMX0lTX0NQVShnbGssIElOVEVM
+X0ZBTTZfQVRPTV9HT0xETU9OVF9QTFVTKTsKPj4gK1NPQ19JTlRFTF9JU19DUFUoY21sLCBJTlRF
+TF9GQU02X0tBQllMQUtFX01PQklMRSk7Cj4+IMKgIHN0YXRpYyBpbmxpbmUgYm9vbCBzb2NfaW50
+ZWxfaXNfYnl0X2NyKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+IMKgIHsKPj4gQEAg
+LTExMCw2ICsxMTEsMTAgQEAgc3RhdGljIGlubGluZSBib29sIHNvY19pbnRlbF9pc19nbGsodm9p
+ZCkKPj4gwqDCoMKgwqDCoCByZXR1cm4gZmFsc2U7Cj4+IMKgIH0KPj4gK3N0YXRpYyBpbmxpbmUg
+Ym9vbCBzb2NfaW50ZWxfaXNfY21sKHZvaWQpCj4+ICt7Cj4+ICvCoMKgwqAgcmV0dXJuIGZhbHNl
+Owo+PiArfQo+PiDCoCAjZW5kaWYKPj4gwqDCoCAjZW5kaWYgLyogX1NORF9TT0NfSU5URUxfUVVJ
+UktTX0ggKi8KPiAKPiBIdW1tLCB3aGljaCBicmFuY2ggZG9lcyB0aGlzIGFwcGx5IGFnYWluc3Q/
+IEl0J3Mgbm90IGluIE1hcmsncyB0cmVlIG5vciAKPiBpbiB0aGUgU09GIHRyZWUsIHNvIGhvdyBk
+aWQgeW91IHRlc3QgdGhpcz8KPiAKPiBJIHJlbWVtYmVyIHN1Ym1pdHRpbmcgdGhpcyBxdWlyayBz
+dWdnZXN0aW9uIGJ1dCBpdCB3YXMgbm90IGFwcHJvdmVkIAo+IHVwc3RyZWFtLCBvciBuZWVkZWQg
+bW9yZSB3b3JrICh0aGlzIHdhcyBiZWZvcmUgSSBkcm9wcGVkIGV2ZXJ5dGhpbmcgdG8gCj4gd29y
+ayBvbiBTb3VuZFdpcmUpLiBZb3UgbWF5IGhhdmUgdG8gZG8gdGhpcyBtYW51YWxseSBmb3Igbm93
+IHdpdGggdGhlIAo+IGNwdV9pZCBtZXRob2QsIGFuZCB3ZSdsbCByZXBsYWNlIGl0IGxhdGVyIHdp
+dGggYSBiZXR0ZXIgc29sdXRpb24uCgpQbGVhc2UgaWdub3JlIHRoaXMgbGFzdCBjb21tZW50LCBJ
+IG5lZWQgbW9yZSBjb2ZmZWUgYmVmb3JlIHJldmlld2luZy4gClRoZSBjb2RlIHdhcyBpbmRlZWQg
+bWVyZ2VkLi4uCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+czovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
