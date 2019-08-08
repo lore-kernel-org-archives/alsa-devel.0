@@ -1,48 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
+From: Stefan Agner <stefan@agner.ch>
 Subject: Re: [PATCH] ASoC: soc-core: remove error due to probe deferral
-Date: Thu, 8 Aug 2019 13:44:37 +0100
-Message-ID: <20190808124437.GD3795@sirena.co.uk>
+Date: Thu, 08 Aug 2019 14:59:09 +0200
+Message-ID: <83988e57c768513425ed79eac6744ed8@agner.ch>
 References: <20190808123655.31520-1-stefan@agner.ch>
+ <20190808124437.GD3795@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/unnNtmY43mpUSKx"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190808123655.31520-1-stefan@agner.ch>
+In-Reply-To: <20190808124437.GD3795@sirena.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Stefan Agner <stefan@agner.ch>
+To: Mark Brown <broonie@kernel.org>
 Cc: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Agner <stefan.agner@toradex.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 2019-08-08 14:44, Mark Brown wrote:
+> On Thu, Aug 08, 2019 at 02:36:55PM +0200, Stefan Agner wrote:
+>> From: Stefan Agner <stefan.agner@toradex.com>
+>>
+>> Deferred probes shouldn't cause error messages in the boot log. Avoid
+>> printing with dev_err() in case EPROBE_DEFER is the return value.
+> 
+> No, they absolutely should tell the user why they are deferring so the
+> user has some information to go on when they're trying to figure out why
+> their device isn't instantiating.
 
---/unnNtmY43mpUSKx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hm, I see, if the driver defers and does not manage in the end, then the
+messages are indeed helpful.
 
-On Thu, Aug 08, 2019 at 02:36:55PM +0200, Stefan Agner wrote:
-> From: Stefan Agner <stefan.agner@toradex.com>
->=20
-> Deferred probes shouldn't cause error messages in the boot log. Avoid
-> printing with dev_err() in case EPROBE_DEFER is the return value.
+But can we lower severity, e.g. to dev_info? In my case it succeeds in
+the end, just defers about 6 times. I have 3 links which then leads to
+18 error messages which confuse users... From what I can see
+soc_init_dai_link() would print dev_err in case there is an actual
+error.
 
-No, they absolutely should tell the user why they are deferring so the
-user has some information to go on when they're trying to figure out why
-their device isn't instantiating.
-
---/unnNtmY43mpUSKx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1MGTQACgkQJNaLcl1U
-h9AZOgf/ec4pDTD4WicmfgDb6XwsH4eD1aXoxrGSnAB5x5OCvTtls7jFlVUGSmQx
-J9Ymtb5GfHoT9di2uTZimz1Pj8K97ahY3Ov4Tebl6pinVRZh9cH7j0L03gaxRDQP
-EEVUkju6pq09n9JR8B2F6iIvoZb6YPRZcuOlZInlbwuW+S1hk25rmGvenhsryxgD
-JytTBgBlByqutRVIPLSFI1MDLgyGoF5BtgAqqiCP+wccGpa5vSsfpdOY9lPkA/Dz
-1J8RvlsWkcJg4Q/YPBAA96CS5IwlX2Cf2EVOs02vTFIldoZub8j/ZMSfhAJhNph8
-pUWXwAmBMFjCoV9IoS4b5XlmBjq1Vw==
-=Ire8
------END PGP SIGNATURE-----
-
---/unnNtmY43mpUSKx--
+--
+Stefan
