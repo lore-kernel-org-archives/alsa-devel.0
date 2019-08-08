@@ -1,64 +1,64 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: intel: skl_hda_dsp_common: create HDMI
-	jack kctl
-Date: Thu,  8 Aug 2019 14:27:34 -0500
-Message-ID: <20190808192734.18286-1-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: soundwire: add slave bindings
+Date: Thu, 8 Aug 2019 20:52:16 +0100
+Message-ID: <20190808195216.GM3795@sirena.co.uk>
+References: <20190808144504.24823-1-srinivas.kandagatla@linaro.org>
+ <20190808144504.24823-2-srinivas.kandagatla@linaro.org>
+ <d346b2af-f285-4c53-b706-46a129ab7951@linux.intel.com>
+ <cdd2bded-551c-65f5-ca29-d2bb825bdaba@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70EE2F800E3
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 21:27:40 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Libin Yang <libin.yang@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kunpHVz1op/+13PW"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cdd2bded-551c-65f5-ca29-d2bb825bdaba@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
 
-This patch call snd_jack_add_new_kctl() to create the HDMI jack kctls.
-Userspace needs these kctls to detect the hdmi monitor hotplug.
+--kunpHVz1op/+13PW
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In /usr/share/alsa/ucm, the config file needs to assign a jack kctl to
-"JackControl" to let PA get the jack hotplug status.
+On Thu, Aug 08, 2019 at 05:48:56PM +0100, Srinivas Kandagatla wrote:
+> On 08/08/2019 16:58, Pierre-Louis Bossart wrote:
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
+> > > +- sdw-instance-id: Should be ('Instance ID') from SoundWire
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0 Enumeration Address. Instance ID is for =
+the cases
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0 where multiple Devices of the same type =
+or Class
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0 are attached to the bus.
 
-This patch has been used by SOF-based solutions delivered in Q2 but
-due to a confusion on my side was not upstreamed. Both Libin and Kai
-confirmed it's required for PulseAudio to track jack events.
+> > so it is actually required if you have a single Slave device? Or is it
+> > only required when you have more than 1 device of the same type?
 
- sound/soc/intel/boards/skl_hda_dsp_common.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> This is mandatory for any slave device!
 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
-index 55fd82e05e2c..58409b6e476e 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_common.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
-@@ -147,6 +147,11 @@ int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
- 		if (err)
- 			return err;
- 
-+		err = snd_jack_add_new_kctl(pcm->hdmi_jack.jack,
-+					    jack_name, SND_JACK_AVOUT);
-+		if (err)
-+			dev_warn(component->dev, "failed creating Jack kctl\n");
-+
- 		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
- 					  &pcm->hdmi_jack);
- 		if (err < 0)
--- 
-2.20.1
+If it's mandatory the wording is a bit unclear.  How about something
+like:
+
+	Should be ('Instance ID') from the SoundWire Enumeration
+	Address.  This must always be provided, if multiple devices
+	with the same type or class or attached to the bus each
+	instance must have a distinct value.
+
+--kunpHVz1op/+13PW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1MfW8ACgkQJNaLcl1U
+h9BC6Qf+MpoIdX8BiE+fy8vg1a5ZsWCGWK/V6LMgyk7vx2P8oWJylUyIG9xTvecn
+zrFjIwW5t44x8P5ycsmXZCqG8JCU0/qPSQ9Aw4qC1jesy3Ue4Lwtmu0qH5gvFsSg
+CKW/bidKNFSCg3t39fddxeawm+GiutGVwnCgnVtkH9tmcONusdDfnDdOLQiQUQa1
+CsmQIbGs/BEuF6LF11Ho58rf7UHvuu4oF9mrKszQWdZKTkhNPfjgqy4n8/scVObd
+TAbUUo0uixBk2YmmcxrwtF1V9QGPyifPM8LsHlXlxO3ZSH+/fARzkRoBYQlbwRju
+aGWXSh12SOwhelEkD1Q19DG25zsCsQ==
+=Nsvw
+-----END PGP SIGNATURE-----
+
+--kunpHVz1op/+13PW--
