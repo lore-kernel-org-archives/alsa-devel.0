@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove unneeded list_empty()
-	check for snd_soc_try_rebind_card()" to the asoc tree
-Date: Thu,  8 Aug 2019 21:33:40 +0100 (BST)
-Message-ID: <20190808203340.BBB272742BE9@ypsilon.sirena.org.uk>
-References: <878ss5aho6.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: fix module_put() warning in
+	soc_cleanup_component" to the asoc tree
+Date: Thu,  8 Aug 2019 21:33:39 +0100 (BST)
+Message-ID: <20190808203339.AA8012742B42@ypsilon.sirena.org.uk>
+References: <20190808025131.32482-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC55DF80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9B97F8053B
  for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 22:33:42 +0200 (CEST)
-In-Reply-To: <878ss5aho6.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20190808025131.32482-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove unneeded list_empty() check for snd_soc_try_rebind_card()
+   ASoC: soc-core: fix module_put() warning in soc_cleanup_component
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,39 @@ to this mail.
 Thanks,
 Mark
 
->From b245d273cbcd64eeaa93305f99c4ea8a6baf9c89 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Aug 2019 10:31:19 +0900
-Subject: [PATCH] ASoC: soc-core: remove unneeded list_empty() check for
- snd_soc_try_rebind_card()
+>From 0e36f36b04e7677c6b74349c9d4baea1ed5668f2 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 7 Aug 2019 21:51:31 -0500
+Subject: [PATCH] ASoC: soc-core: fix module_put() warning in
+ soc_cleanup_component
 
-list_for_each_entry_safe() will do nothing if it was empty list.
-This patch removes unneeded list_empty() check for
-list_for_each_entry_safe().
+The recent changes introduce warnings in the SOF load/unload module
+tests. The code does not seem balanced with a confusion between
+_close() and _remove() macros. Using _remove() fixes the issue and
+removes the warning.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/878ss5aho6.wl-kuninori.morimoto.gx@renesas.com
+Suggested-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Fixes: 4a81e8f30d0b4 ('ASoC: soc-component: add snd_soc_component_get/put()')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20190808025131.32482-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index cf3d967d731e..6b0042835233 100644
+index 1fbd525763d5..bf45e60eb34f 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2808,12 +2808,9 @@ static void snd_soc_try_rebind_card(void)
- {
- 	struct snd_soc_card *card, *c;
- 
--	if (!list_empty(&unbind_card_list)) {
--		list_for_each_entry_safe(card, c, &unbind_card_list, list) {
--			if (!snd_soc_bind_card(card))
--				list_del(&card->list);
--		}
--	}
-+	list_for_each_entry_safe(card, c, &unbind_card_list, list)
-+		if (!snd_soc_bind_card(card))
-+			list_del(&card->list);
+@@ -935,7 +935,7 @@ static void soc_cleanup_component(struct snd_soc_component *component)
+ 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+ 	soc_cleanup_component_debugfs(component);
+ 	component->card = NULL;
+-	snd_soc_component_module_put_when_close(component);
++	snd_soc_component_module_put_when_remove(component);
  }
  
- int snd_soc_add_component(struct device *dev,
+ static void soc_remove_component(struct snd_soc_component *component)
 -- 
 2.20.1
