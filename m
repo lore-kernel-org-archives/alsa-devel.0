@@ -1,147 +1,93 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 2/2] ASoC: Intel: Skylake:
- large_config_get overhaul
-Date: Thu, 8 Aug 2019 09:50:31 -0500
-Message-ID: <17f3b2a4-35c1-3763-4d7d-7eec09230bfc@linux.intel.com>
-References: <20190808102447.16639-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 2/4] soundwire: core: add device tree support for slave
+ devices
+Date: Thu, 8 Aug 2019 10:00:40 -0500
+Message-ID: <42ca4170-0fa0-6951-f568-89a05c095d5a@linux.intel.com>
+References: <20190808144504.24823-1-srinivas.kandagatla@linaro.org>
+ <20190808144504.24823-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96F92F80534
- for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 16:50:43 +0200 (CEST)
-In-Reply-To: <20190808102447.16639-1-cezary.rojewski@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190808144504.24823-3-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, broonie@kernel.org
+Cc: bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Cezary, the split makes it much easier to review. I have a couple 
-of minor comments below, looks good otherwise.
 
-On 8/8/19 5:24 AM, Cezary Rojewski wrote:
-> LARGE_CONFIG_GET is mainly used to retrieve requested module parameters
-> but it may also carry TX payload with them. Update its implementation to
-> account for both TX and RX data.
-> First reply.header carries total payload size within data_off_sizefield.
-> Make use of reply.header to realloc returned buffer with correct size.
-> 
-> Failure of IPC request is permissive - error-payload may be returned, an
-> informative data why GET for given param failed - and thus function
-> should not collapse before entire processing is finished. Caller is
-> responsible for checking returned payload and bytes parameters.
-
-but that is the same as before, yes? this patch does not change the 
-behavior on errors?
-
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->   sound/soc/intel/skylake/skl-messages.c |  3 ++-
->   sound/soc/intel/skylake/skl-sst-ipc.c  | 27 ++++++++++++++++++++------
->   sound/soc/intel/skylake/skl-sst-ipc.h  |  3 ++-
->   3 files changed, 25 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-> index e8cc710f092b..84f0e6f58eb5 100644
-> --- a/sound/soc/intel/skylake/skl-messages.c
-> +++ b/sound/soc/intel/skylake/skl-messages.c
-> @@ -1379,11 +1379,12 @@ int skl_get_module_params(struct skl_dev *skl, u32 *params, int size,
->   			  u32 param_id, struct skl_module_cfg *mcfg)
->   {
->   	struct skl_ipc_large_config_msg msg;
-> +	size_t bytes = size;
+> @@ -35,6 +36,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
 >   
->   	msg.module_id = mcfg->id.module_id;
->   	msg.instance_id = mcfg->id.pvt_id;
->   	msg.param_data_size = size;
->   	msg.large_param_id = param_id;
->   
-> -	return skl_ipc_get_large_config(&skl->ipc, &msg, params);
-> +	return skl_ipc_get_large_config(&skl->ipc, &msg, &params, &bytes);
+>   	slave->dev.release = sdw_slave_release;
+>   	slave->dev.bus = &sdw_bus_type;
+> +	slave->dev.of_node = of_node_get(to_of_node(fwnode));
+
+shouldn't this protected by
+#if IS_ENABLED(CONFIG_OF) ?
+
+>   	slave->bus = bus;
+>   	slave->status = SDW_SLAVE_UNATTACHED;
+>   	slave->dev_num = 0;
+> @@ -112,3 +114,48 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
 >   }
-> diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-> index 196c80dadb1f..9d269a5f8bd9 100644
-> --- a/sound/soc/intel/skylake/skl-sst-ipc.c
-> +++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-> @@ -969,12 +969,18 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
->   EXPORT_SYMBOL_GPL(skl_ipc_set_large_config);
 >   
->   int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
-> -		struct skl_ipc_large_config_msg *msg, u32 *param)
-> +		struct skl_ipc_large_config_msg *msg,
-> +		unsigned int **payload, size_t *bytes)
-
-is there a specific reason why we don't use e.g. u32 for the payload? 
-u32 and u64 are used everywhere except here, is this intentional?
-
->   {
->   	struct skl_ipc_header header = {0};
-> -	struct sst_ipc_message request = {0}, reply = {0};
-> +	struct sst_ipc_message request, reply = {0};
-> +	unsigned int *buf;
->   	int ret;
->   
-> +	reply.data = kzalloc(SKL_ADSP_W1_SZ, GFP_KERNEL);
-> +	if (!reply.data)
-> +		return -ENOMEM;
+>   #endif
 > +
->   	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
->   	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
->   	header.primary |= IPC_GLB_TYPE(IPC_MOD_LARGE_CONFIG_GET);
-> @@ -986,12 +992,21 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
->   	header.extension |= IPC_FINAL_BLOCK(1);
->   	header.extension |= IPC_INITIAL_BLOCK(1);
->   
-> -	request.header = *(u64 *)(&header);
-> -	reply.data = param;
-> -	reply.size = msg->param_data_size;
-> +	request.header = *(u64 *)&header;
-> +	request.data = *payload;
-> +	request.size = *bytes;
-> +	reply.size = SKL_ADSP_W1_SZ;
+> +/*
+> + * sdw_of_find_slaves() - Find Slave devices in master device tree node
+> + * @bus: SDW bus instance
+> + *
+> + * Scans Master DT node for SDW child Slave devices and registers it.
+> + */
+> +int sdw_of_find_slaves(struct sdw_bus *bus)
+> +{
+> +	struct device *dev = bus->dev;
+> +	struct device_node *node;
 > +
->   	ret = sst_ipc_tx_message_wait(ipc, request, &reply);
->   	if (ret < 0)
-> -		dev_err(ipc->dev, "ipc: get large config fail, err: %d\n", ret);
-> +		dev_err(ipc->dev, "ipc: get large config fail: %d\n", ret);
-
-nit-pick: cosmetic change unrelated to this patch.
-
+> +	for_each_child_of_node(bus->dev->of_node, node) {
+> +		struct sdw_slave_id id;
+> +		const char *compat = NULL;
+> +		int unique_id, ret;
+> +		int ver, mfg_id, part_id, class_id;
 > +
-> +	reply.size = (reply.header >> 32) & IPC_DATA_OFFSET_SZ_MASK;
-> +	buf = krealloc(reply.data, reply.size, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +	*payload = buf;
-> +	*bytes = reply.size;
->   
->   	return ret;
->   }
-> diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-> index 93af08cf41d2..a7ab2c589cc5 100644
-> --- a/sound/soc/intel/skylake/skl-sst-ipc.h
-> +++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-> @@ -139,7 +139,8 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
->   		struct skl_ipc_large_config_msg *msg, u32 *param);
->   
->   int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
-> -		struct skl_ipc_large_config_msg *msg, u32 *param);
-> +		struct skl_ipc_large_config_msg *msg,
-> +		unsigned int **payload, size_t *bytes);
->   
->   int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
->   			u8 dma_id, u8 table_id, bool wait);
+> +		compat = of_get_property(node, "compatible", NULL);
+> +		if (!compat)
+> +			continue;
+> +
+> +		ret = sscanf(compat, "sdw%x,%x,%x,%x",
+> +			     &ver, &mfg_id, &part_id, &class_id);
+> +		if (ret != 4) {
+> +			dev_err(dev, "Manf ID & Product code not found %s\n",
+> +				compat);
+> +			continue;
+> +		}
+> +
+> +		ret = of_property_read_u32(node, "sdw-instance-id", &unique_id);
+> +		if (ret) {
+> +			dev_err(dev, "Instance id not found:%d\n", ret);
+> +			continue;
+
+I am confused here.
+If you have two identical devices on the same link, isn't this property 
+required and that should be a real error instead of a continue?
+
+> +		}
+> +
+> +		id.sdw_version = ver - 0xF;
+
+maybe a comment in the code would help to make the encoding 
+self-explanatory, as you did in the DT bindings
+
+   Version number '0x10' represents SoundWire 1.0
+   Version number '0x11' represents SoundWire 1.1
+
+> +		id.unique_id = unique_id;
+> +		id.mfg_id = mfg_id;
+> +		id.part_id = part_id;
+> +		id.class_id = class_id;
+> +		sdw_slave_add(bus, &id, of_fwnode_handle(node));
+> +	}
+> +	return 0;
+> +}
 > 
