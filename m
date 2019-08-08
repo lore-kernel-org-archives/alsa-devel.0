@@ -1,115 +1,147 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: soundwire: add slave bindings
-Date: Thu, 8 Aug 2019 17:48:56 +0100
-Message-ID: <cdd2bded-551c-65f5-ca29-d2bb825bdaba@linaro.org>
-References: <20190808144504.24823-1-srinivas.kandagatla@linaro.org>
- <20190808144504.24823-2-srinivas.kandagatla@linaro.org>
- <d346b2af-f285-4c53-b706-46a129ab7951@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v4 2/2] ASoC: Intel: Skylake:
+ large_config_get overhaul
+Date: Thu, 8 Aug 2019 18:52:08 +0200
+Message-ID: <1c4c546d-e451-7484-1dfe-adb575cfe46f@intel.com>
+References: <20190808102447.16639-1-cezary.rojewski@intel.com>
+ <17f3b2a4-35c1-3763-4d7d-7eec09230bfc@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d346b2af-f285-4c53-b706-46a129ab7951@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7EA0F800E3
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 18:52:13 +0200 (CEST)
+In-Reply-To: <17f3b2a4-35c1-3763-4d7d-7eec09230bfc@linux.intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org
-Cc: bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
-On 08/08/2019 16:58, Pierre-Louis Bossart wrote:
-> 
->> +++ b/Documentation/devicetree/bindings/soundwire/slave.txt
->> @@ -0,0 +1,46 @@
->> +SoundWire slave device bindings.
->> +
->> +SoundWire is a 2-pin multi-drop interface with data and clock line.
->> +It facilitates development of low cost, efficient, high performance 
->> systems.
->> +
->> +SoundWire slave devices:
->> +Every SoundWire controller node can contain zero or more child nodes
->> +representing slave devices on the bus. Every SoundWire slave device is
->> +uniquely determined by the enumeration address containing 5 fields:
->> +SoundWire Version, Instance ID, Manufacturer ID, Part ID and Class ID
->> +for a device. Addition to below required properties, child nodes can
->> +have device specific bindings.
-> 
-> In case the controller supports multiple links, what's the encoding then?
-> in the MIPI DisCo spec there is a linkId field in the _ADR encoding that 
-> helps identify which link the Slave device is connected to
->  >> +
->> +Required property for SoundWire child node if it is present:
->> +- compatible:     "sdwVER,MFD,PID,CID". The textual representation of
->> +          SoundWire Enumeration address comprising SoundWire
->> +          Version, Manufacturer ID, Part ID and Class ID,
->> +          shall be in lower-case hexadecimal with leading
->> +          zeroes suppressed.
->> +          Version number '0x10' represents SoundWire 1.0
->> +          Version number '0x11' represents SoundWire 1.1
->> +          ex: "sdw10,0217,2010,0"
->> +
->> +- sdw-instance-id: Should be ('Instance ID') from SoundWire
->> +          Enumeration Address. Instance ID is for the cases
->> +          where multiple Devices of the same type or Class
->> +          are attached to the bus.
-> 
-> so it is actually required if you have a single Slave device? Or is it 
-> only required when you have more than 1 device of the same type?
-> 
-
-This is mandatory for any slave device!
-
-> FWIW in the MIPI DisCo spec we kept the instanceID as part of the _ADR, 
-> so it's implicitly mandatory (and ignored by the bus if there is only 
-> one device of the same time)
-> 
->> +
->> +SoundWire example for Qualcomm's SoundWire controller:
->> +
->> +soundwire@c2d0000 {
->> +    compatible = "qcom,soundwire-v1.5.0"
->> +    reg = <0x0c2d0000 0x2000>;
->> +
->> +    spkr_left:wsa8810-left{
->> +        compatible = "sdw10,0217,2010,0";
->> +        sdw-instance-id = <1>;
->> +        ...
->> +    };
->> +
->> +    spkr_right:wsa8810-right{
->> +        compatible = "sdw10,0217,2010,0";
->> +        sdw-instance-id = <2>;
-> 
-> Isn't the MIPI encoding reported in the Dev_ID0..5 registers 0-based?
-> 
->> +        ...
->> +    };
->> +};
->>
-> 
-> And now that I think of it, wouldn't it be simpler for everyone if we 
-> aligned on that MIPI DisCo public spec? e.g. you'd have one property 
-> with a 64-bit number that follows the MIPI spec. No special encoding 
-> necessary for device tree cases, your DT blob would use this:
-
-Thanks for the suggestion, adding 64 device bits as compatible string 
-should take care of linkID too. I will give that a go!
-
-> 
-> soundwire@c2d0000 {
->      compatible = "qcom,soundwire-v1.5.0"
->      reg = <0x0c2d0000 0x2000>;
-> 
->      spkr_left:wsa8810-left{
->          compatible = "sdw00 00 10 02 17 20 10 00"
->      }
-> 
->      spkr_right:wsa8810-right{
->          compatible = "sdw0000100217201100"
->      }
-> }
-> 
-> We could use parentheses if it makes people happier, but the information 
-> from the MIPI DisCo spec can be used as is, and provide a means for spec 
-> changes via reserved bits.
+T24gMjAxOS0wOC0wOCAxNjo1MCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gVGhhbmtz
+IENlemFyeSwgdGhlIHNwbGl0IG1ha2VzIGl0IG11Y2ggZWFzaWVyIHRvIHJldmlldy4gSSBoYXZl
+IGEgY291cGxlIAo+IG9mIG1pbm9yIGNvbW1lbnRzIGJlbG93LCBsb29rcyBnb29kIG90aGVyd2lz
+ZS4KPiAKPiBPbiA4LzgvMTkgNToyNCBBTSwgQ2V6YXJ5IFJvamV3c2tpIHdyb3RlOgo+PiBMQVJH
+RV9DT05GSUdfR0VUIGlzIG1haW5seSB1c2VkIHRvIHJldHJpZXZlIHJlcXVlc3RlZCBtb2R1bGUg
+cGFyYW1ldGVycwo+PiBidXQgaXQgbWF5IGFsc28gY2FycnkgVFggcGF5bG9hZCB3aXRoIHRoZW0u
+IFVwZGF0ZSBpdHMgaW1wbGVtZW50YXRpb24gdG8KPj4gYWNjb3VudCBmb3IgYm90aCBUWCBhbmQg
+UlggZGF0YS4KPj4gRmlyc3QgcmVwbHkuaGVhZGVyIGNhcnJpZXMgdG90YWwgcGF5bG9hZCBzaXpl
+IHdpdGhpbiBkYXRhX29mZl9zaXplZmllbGQuCj4+IE1ha2UgdXNlIG9mIHJlcGx5LmhlYWRlciB0
+byByZWFsbG9jIHJldHVybmVkIGJ1ZmZlciB3aXRoIGNvcnJlY3Qgc2l6ZS4KPj4KPj4gRmFpbHVy
+ZSBvZiBJUEMgcmVxdWVzdCBpcyBwZXJtaXNzaXZlIC0gZXJyb3ItcGF5bG9hZCBtYXkgYmUgcmV0
+dXJuZWQsIGFuCj4+IGluZm9ybWF0aXZlIGRhdGEgd2h5IEdFVCBmb3IgZ2l2ZW4gcGFyYW0gZmFp
+bGVkIC0gYW5kIHRodXMgZnVuY3Rpb24KPj4gc2hvdWxkIG5vdCBjb2xsYXBzZSBiZWZvcmUgZW50
+aXJlIHByb2Nlc3NpbmcgaXMgZmluaXNoZWQuIENhbGxlciBpcwo+PiByZXNwb25zaWJsZSBmb3Ig
+Y2hlY2tpbmcgcmV0dXJuZWQgcGF5bG9hZCBhbmQgYnl0ZXMgcGFyYW1ldGVycy4KPiAKPiBidXQg
+dGhhdCBpcyB0aGUgc2FtZSBhcyBiZWZvcmUsIHllcz8gdGhpcyBwYXRjaCBkb2VzIG5vdCBjaGFu
+Z2UgdGhlIAo+IGJlaGF2aW9yIG9uIGVycm9ycz8KClRvIGV2YWx1YXRlIHRoaXMgc3RhdGVtZW50
+IHlvdSBoYXZlIHRvIHRha2UgYSBsb29rIGF0IG9sZCBjb2RlIChiZWZvcmUgCmFkZGl0aW9uIG9m
+IHJlcGx5IHNhdmluZyk6CgpyZXQgPSBzc3RfaXBjX3R4X21lc3NhZ2Vfd2FpdChpcGMsICppcGNf
+aGVhZGVyLCBOVUxMLCAwLAoJCSAgICAgICgoY2hhciAqKXBhcmFtKSArIGRhdGFfb2Zmc2V0LAoJ
+CSAgICAgIG1zZy0+cGFyYW1fZGF0YV9zaXplKTsKaWYgKHJldCA8IDApIHsKCWRldl9lcnIoaXBj
+LT5kZXYsCgkJImlwYzogZ2V0IGxhcmdlIGNvbmZpZyBmYWlsLCBlcnI6ICVkXG4iLCByZXQpOwoJ
+cmV0dXJuIHJldDsKfQoKVGhpcmQgYW5kIGZvdXIgcGFyYW1ldGVyIGZvciBzc3RfaXBjX3R4X21l
+c3NhZ2Vfd2FpdCBkZW5vdGVkIHR4X2RhdGEgYW5kIAp0eF9zaXplIGluIG9sZGVyIHZlcnNpb24u
+IEFzIHlvdSBjYW4gc2VlLCB0aGVzZSBhcmUgZW1wdHkgLSBubyBwYXlsb2FkIAppcyBjYXJyaWVk
+LCBfZ2V0XyBvbmx5IGF3YWl0cyByZXBseSBhbmQgY29waWVkIGRhdGEgcmV0cmlldmVkIChicmVh
+a3MgCnZlbmRvciBjYXNlIGFzIGRlc2NyaWJlZCBlYXJsaWVyKS4KCkltbWVkaWF0ZWx5IGFmdGVy
+IGZhaWx1cmUsIGZ1bmN0aW9uIHdhcyBjb2xsYXBzaW5nLiBTb21lIGRhdGEgbWlnaHQgaGF2ZSAK
+YmVlbiBhcHBlbmRlZCB0byAicGFyYW0iIGJ1dCBzaXplIGlzIHVua25vd24uIEhvd2V2ZXIsIGR1
+ZSB0byBsYWNrIG9mIApyZXRyaWV2YWwgb2Ygc2FpZCBzaXplLCBpbmRlZWQgb25lIG1heSBzYXkg
+dGhlIGJlaGF2aW9yIG9uIGVycm9ycyBkaWQgCm5vdCByZWFsbHkgY2hhbmdlLiBJdCdzIHZpdGFs
+IHRvIGhpZ2hsaWdodCB0aGF0IGNoYW5nZXMgYWRkZWQgaGVyZSAoMi8yIApwYXRjaCkgZG8gbm90
+IG1ha2UgZnVuY3Rpb24gcmV0dXJuIHJpZ2h0IGFmdGVyIHJlY2VpdmluZyBlcnJvciB0aG91Z2gg
+LSAKYnVmZmVyIGFuZCBzaXplIGFyZSB1cGRhdGVkIGZvciB0aGUgY2FsbGVyIGJlZm9yZSBsZWF2
+aW5nIHRoZSBzY29wZS4KCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IENlemFyeSBSb2pld3NraSA8Y2V6
+YXJ5LnJvamV3c2tpQGludGVsLmNvbT4KPj4gLS0tCj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9za3ls
+YWtlL3NrbC1tZXNzYWdlcy5jIHzCoCAzICsrLQo+PiDCoCBzb3VuZC9zb2MvaW50ZWwvc2t5bGFr
+ZS9za2wtc3N0LWlwYy5jwqAgfCAyNyArKysrKysrKysrKysrKysrKysrKy0tLS0tLQo+PiDCoCBz
+b3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5owqAgfMKgIDMgKystCj4+IMKgIDMg
+ZmlsZXMgY2hhbmdlZCwgMjUgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKPj4KPj4gZGlm
+ZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1tZXNzYWdlcy5jIAo+PiBiL3Nv
+dW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1tZXNzYWdlcy5jCj4+IGluZGV4IGU4Y2M3MTBmMDky
+Yi4uODRmMGU2ZjU4ZWI1IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9z
+a2wtbWVzc2FnZXMuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtbWVzc2Fn
+ZXMuYwo+PiBAQCAtMTM3OSwxMSArMTM3OSwxMiBAQCBpbnQgc2tsX2dldF9tb2R1bGVfcGFyYW1z
+KHN0cnVjdCBza2xfZGV2ICpza2wsIAo+PiB1MzIgKnBhcmFtcywgaW50IHNpemUsCj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1MzIgcGFyYW1faWQsIHN0cnVjdCBza2xfbW9kdWxl
+X2NmZyAqbWNmZykKPj4gwqAgewo+PiDCoMKgwqDCoMKgIHN0cnVjdCBza2xfaXBjX2xhcmdlX2Nv
+bmZpZ19tc2cgbXNnOwo+PiArwqDCoMKgIHNpemVfdCBieXRlcyA9IHNpemU7Cj4+IMKgwqDCoMKg
+wqAgbXNnLm1vZHVsZV9pZCA9IG1jZmctPmlkLm1vZHVsZV9pZDsKPj4gwqDCoMKgwqDCoCBtc2cu
+aW5zdGFuY2VfaWQgPSBtY2ZnLT5pZC5wdnRfaWQ7Cj4+IMKgwqDCoMKgwqAgbXNnLnBhcmFtX2Rh
+dGFfc2l6ZSA9IHNpemU7Cj4+IMKgwqDCoMKgwqAgbXNnLmxhcmdlX3BhcmFtX2lkID0gcGFyYW1f
+aWQ7Cj4+IC3CoMKgwqAgcmV0dXJuIHNrbF9pcGNfZ2V0X2xhcmdlX2NvbmZpZygmc2tsLT5pcGMs
+ICZtc2csIHBhcmFtcyk7Cj4+ICvCoMKgwqAgcmV0dXJuIHNrbF9pcGNfZ2V0X2xhcmdlX2NvbmZp
+Zygmc2tsLT5pcGMsICZtc2csICZwYXJhbXMsICZieXRlcyk7Cj4+IMKgIH0KPj4gZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMgCj4+IGIvc291bmQvc29j
+L2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuYwo+PiBpbmRleCAxOTZjODBkYWRiMWYuLjlkMjY5
+YTVmOGJkOSAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1p
+cGMuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5jCj4+IEBA
+IC05NjksMTIgKzk2OSwxOCBAQCBpbnQgc2tsX2lwY19zZXRfbGFyZ2VfY29uZmlnKHN0cnVjdCAK
+Pj4gc3N0X2dlbmVyaWNfaXBjICppcGMsCj4+IMKgIEVYUE9SVF9TWU1CT0xfR1BMKHNrbF9pcGNf
+c2V0X2xhcmdlX2NvbmZpZyk7Cj4+IMKgIGludCBza2xfaXBjX2dldF9sYXJnZV9jb25maWcoc3Ry
+dWN0IHNzdF9nZW5lcmljX2lwYyAqaXBjLAo+PiAtwqDCoMKgwqDCoMKgwqAgc3RydWN0IHNrbF9p
+cGNfbGFyZ2VfY29uZmlnX21zZyAqbXNnLCB1MzIgKnBhcmFtKQo+PiArwqDCoMKgwqDCoMKgwqAg
+c3RydWN0IHNrbF9pcGNfbGFyZ2VfY29uZmlnX21zZyAqbXNnLAo+PiArwqDCoMKgwqDCoMKgwqAg
+dW5zaWduZWQgaW50ICoqcGF5bG9hZCwgc2l6ZV90ICpieXRlcykKPiAKPiBpcyB0aGVyZSBhIHNw
+ZWNpZmljIHJlYXNvbiB3aHkgd2UgZG9uJ3QgdXNlIGUuZy4gdTMyIGZvciB0aGUgcGF5bG9hZD8g
+Cj4gdTMyIGFuZCB1NjQgYXJlIHVzZWQgZXZlcnl3aGVyZSBleGNlcHQgaGVyZSwgaXMgdGhpcyBp
+bnRlbnRpb25hbD8KCkhtbSwgdGhlIHJlYXNvbiBpcyBwcm9iYWJseSBqdXN0IG1lIC0gdW5pbnRl
+bnRpb25hbC4gQ2FuIHJlcGxhY2Ugd2l0aCAKdTMyLCBzdXJlLgoKPj4gwqAgewo+PiDCoMKgwqDC
+oMKgIHN0cnVjdCBza2xfaXBjX2hlYWRlciBoZWFkZXIgPSB7MH07Cj4+IC3CoMKgwqAgc3RydWN0
+IHNzdF9pcGNfbWVzc2FnZSByZXF1ZXN0ID0gezB9LCByZXBseSA9IHswfTsKPj4gK8KgwqDCoCBz
+dHJ1Y3Qgc3N0X2lwY19tZXNzYWdlIHJlcXVlc3QsIHJlcGx5ID0gezB9Owo+PiArwqDCoMKgIHVu
+c2lnbmVkIGludCAqYnVmOwo+PiDCoMKgwqDCoMKgIGludCByZXQ7Cj4+ICvCoMKgwqAgcmVwbHku
+ZGF0YSA9IGt6YWxsb2MoU0tMX0FEU1BfVzFfU1osIEdGUF9LRVJORUwpOwo+PiArwqDCoMKgIGlm
+ICghcmVwbHkuZGF0YSkKPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiAtRU5PTUVNOwo+PiArCj4+
+IMKgwqDCoMKgwqAgaGVhZGVyLnByaW1hcnkgPSBJUENfTVNHX1RBUkdFVChJUENfTU9EX01TRyk7
+Cj4+IMKgwqDCoMKgwqAgaGVhZGVyLnByaW1hcnkgfD0gSVBDX01TR19ESVIoSVBDX01TR19SRVFV
+RVNUKTsKPj4gwqDCoMKgwqDCoCBoZWFkZXIucHJpbWFyeSB8PSBJUENfR0xCX1RZUEUoSVBDX01P
+RF9MQVJHRV9DT05GSUdfR0VUKTsKPj4gQEAgLTk4NiwxMiArOTkyLDIxIEBAIGludCBza2xfaXBj
+X2dldF9sYXJnZV9jb25maWcoc3RydWN0IAo+PiBzc3RfZ2VuZXJpY19pcGMgKmlwYywKPj4gwqDC
+oMKgwqDCoCBoZWFkZXIuZXh0ZW5zaW9uIHw9IElQQ19GSU5BTF9CTE9DSygxKTsKPj4gwqDCoMKg
+wqDCoCBoZWFkZXIuZXh0ZW5zaW9uIHw9IElQQ19JTklUSUFMX0JMT0NLKDEpOwo+PiAtwqDCoMKg
+IHJlcXVlc3QuaGVhZGVyID0gKih1NjQgKikoJmhlYWRlcik7Cj4+IC3CoMKgwqAgcmVwbHkuZGF0
+YSA9IHBhcmFtOwo+PiAtwqDCoMKgIHJlcGx5LnNpemUgPSBtc2ctPnBhcmFtX2RhdGFfc2l6ZTsK
+Pj4gK8KgwqDCoCByZXF1ZXN0LmhlYWRlciA9ICoodTY0ICopJmhlYWRlcjsKPj4gK8KgwqDCoCBy
+ZXF1ZXN0LmRhdGEgPSAqcGF5bG9hZDsKPj4gK8KgwqDCoCByZXF1ZXN0LnNpemUgPSAqYnl0ZXM7
+Cj4+ICvCoMKgwqAgcmVwbHkuc2l6ZSA9IFNLTF9BRFNQX1cxX1NaOwo+PiArCj4+IMKgwqDCoMKg
+wqAgcmV0ID0gc3N0X2lwY190eF9tZXNzYWdlX3dhaXQoaXBjLCByZXF1ZXN0LCAmcmVwbHkpOwo+
+PiDCoMKgwqDCoMKgIGlmIChyZXQgPCAwKQo+PiAtwqDCoMKgwqDCoMKgwqAgZGV2X2VycihpcGMt
+PmRldiwgImlwYzogZ2V0IGxhcmdlIGNvbmZpZyBmYWlsLCBlcnI6ICVkXG4iLCByZXQpOwo+PiAr
+wqDCoMKgwqDCoMKgwqAgZGV2X2VycihpcGMtPmRldiwgImlwYzogZ2V0IGxhcmdlIGNvbmZpZyBm
+YWlsOiAlZFxuIiwgcmV0KTsKPiAKPiBuaXQtcGljazogY29zbWV0aWMgY2hhbmdlIHVucmVsYXRl
+ZCB0byB0aGlzIHBhdGNoLgo+IAoKRXh0ZXJtaW5hdGluZywgcm9nZXIuCgo+PiArCj4+ICvCoMKg
+wqAgcmVwbHkuc2l6ZSA9IChyZXBseS5oZWFkZXIgPj4gMzIpICYgSVBDX0RBVEFfT0ZGU0VUX1Na
+X01BU0s7Cj4+ICvCoMKgwqAgYnVmID0ga3JlYWxsb2MocmVwbHkuZGF0YSwgcmVwbHkuc2l6ZSwg
+R0ZQX0tFUk5FTCk7Cj4+ICvCoMKgwqAgaWYgKCFidWYpCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1
+cm4gLUVOT01FTTsKPj4gK8KgwqDCoCAqcGF5bG9hZCA9IGJ1ZjsKPj4gK8KgwqDCoCAqYnl0ZXMg
+PSByZXBseS5zaXplOwo+PiDCoMKgwqDCoMKgIHJldHVybiByZXQ7Cj4+IMKgIH0KPj4gZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmggCj4+IGIvc291bmQv
+c29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuaAo+PiBpbmRleCA5M2FmMDhjZjQxZDIuLmE3
+YWIyYzU4OWNjNSAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNz
+dC1pcGMuaAo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5oCj4+
+IEBAIC0xMzksNyArMTM5LDggQEAgaW50IHNrbF9pcGNfc2V0X2xhcmdlX2NvbmZpZyhzdHJ1Y3Qg
+Cj4+IHNzdF9nZW5lcmljX2lwYyAqaXBjLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IHNr
+bF9pcGNfbGFyZ2VfY29uZmlnX21zZyAqbXNnLCB1MzIgKnBhcmFtKTsKPj4gwqAgaW50IHNrbF9p
+cGNfZ2V0X2xhcmdlX2NvbmZpZyhzdHJ1Y3Qgc3N0X2dlbmVyaWNfaXBjICppcGMsCj4+IC3CoMKg
+wqDCoMKgwqDCoCBzdHJ1Y3Qgc2tsX2lwY19sYXJnZV9jb25maWdfbXNnICptc2csIHUzMiAqcGFy
+YW0pOwo+PiArwqDCoMKgwqDCoMKgwqAgc3RydWN0IHNrbF9pcGNfbGFyZ2VfY29uZmlnX21zZyAq
+bXNnLAo+PiArwqDCoMKgwqDCoMKgwqAgdW5zaWduZWQgaW50ICoqcGF5bG9hZCwgc2l6ZV90ICpi
+eXRlcyk7Cj4+IMKgIGludCBza2xfc3N0X2lwY19sb2FkX2xpYnJhcnkoc3RydWN0IHNzdF9nZW5l
+cmljX2lwYyAqaXBjLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1OCBkbWFfaWQsIHU4
+IHRhYmxlX2lkLCBib29sIHdhaXQpOwo+PgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
