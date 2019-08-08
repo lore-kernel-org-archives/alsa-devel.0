@@ -1,21 +1,18 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [RESEND PATCH v3] ASoC: Intel: Skylake:
- large_config_get overhaul
-Date: Wed, 7 Aug 2019 22:51:12 +0200
-Message-ID: <b03e179d-23f8-ae3e-fcd2-996433e44894@intel.com>
-References: <20190807134745.1648-1-cezary.rojewski@intel.com>
- <4b0e1051-946b-ea7c-1e09-93e0825e5ac8@linux.intel.com>
+From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
+Subject: (no subject)
+Date: Thu, 8 Aug 2019 00:03:02 +0000
+Message-ID: <AM5P192MB01802854296E15A3ED321DF4C5D70@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-eopbgr150057.outbound.protection.outlook.com [40.107.15.57])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E964F800F4
- for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2019 22:51:18 +0200 (CEST)
-In-Reply-To: <4b0e1051-946b-ea7c-1e09-93e0825e5ac8@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 909A0F800F4
+ for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2019 02:03:05 +0200 (CEST)
+Content-Language: it-IT
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,183 +22,629 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0wNyAyMjowMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gSSBmaW5k
-IHRoaXMgcGF0Y2ggcXVpdGUgY29udm9sdXRlZCwgc28gSSBvcmRlcmVkIG15IGNvbW1lbnRzIHRv
-IG1ha2UgCj4gdGhlbSBsaW5lYXIuCgpTdXJlIHRoaW5nLCB0aGFua3MgZm9yIGZlZWRiYWNrIQoK
-Pj4gTEFSR0VfQ09ORklHX0dFVCBpcyBhbW9uZyB0aGUgbW9zdCBjcnVjaWFsIElQQ3MuIEhvc3Qg
-aXMgZXhwZWN0ZWQgdG8KPj4gc2VuZCBzaW5nbGUgcmVxdWVzdCBmaXJzdCB0byBvYnRhaW4gdG90
-YWwgcGF5bG9hZCBzaXplIGZyb20gcmVjZWl2ZWQKPj4gaGVhZGVyJ3MgZGF0YV9vZmZfc2l6ZS4g
-RnJvbSB0aGVuIG9uLCBpdCBsb29wcyBmb3IgZWFjaCBmcmFtZSBleGNlZWRpbmcKPj4gaW5ib3gg
-c2l6ZSB1bnRpbCBlbnRpcmUgcGF5bG9hZCBpcyByZWFkLiBJZiBlbnRpcmUgcGF5bG9hZCBpcyBj
-b250YWluZWQKPj4gd2l0aGluIHRoZSB2ZXJ5IGZpcnN0IGZyYW1lLCBubyBsb29waW5nIGlzIHBl
-cmZvcm1lZC4KPiAKPiBzbyB0aGVyZSdzIGdvdCB0byBiZSBhIHRlc3QgdGhhdCBkZWZpbmVzIGlm
-IGxvb3BpbmcgaXMgcmVxdWlyZWQgb3Igbm90IAo+IGJ1dCBzZWUgWzFdIGJlbG93Lgo+IAoKUHJl
-Y2lzZWx5ISBUaGF0IGlzIGFsc28gd2h5IHJlcGx5IGhhbmRsaW5nIHdhcyBuZWVkZWQgKGFscmVh
-ZHkgYXBwbGllZCAKYnkgTWFyaykuIFdpdGhvdXQgImRhdGFfb2ZmX3NpemUiIGZpZWxkIHJldHJp
-ZXZlZCBmcm9tIHJlcGx5J3MgaGVhZGVyIAooZXh0ZW5zaW9uKSwgeW91J3JlIGluIHRoZSBkYXJr
-IHdoZW4gaXQgY29tZXMgdG8gcGF5bG9hZCBzaXplLgoKPj4KPj4gTEFSR0VfQ09ORklHX0dFVCBp
-cyBhIGZsZXhpYmxlIElQQywgaXQgbm90IG9ubHkgcmVjZWl2ZXMgcGF5bG9hZCBidXQgbWF5Cj4+
-IGNhcnJ5IG9uZSB3aXRoIHRoZW0gdG8gcHJvdmlkZSBsaXN0IG9mIHBhcmFtcyBEU1AgbW9kdWxl
-IHNob3VsZCByZXR1cm4KPj4gaW5mbyBmb3IuIFRoaXMgYmVoYXZpb3IgaXMgdXN1YWxseSByZXNl
-cnZlZCBmb3IgdmVuZG9ycyBhbmQgSVBDIGhhbmRsZXIKPj4gc2hvdWxkIG5vdCB0b3VjaCB0aGF0
-IGNvbnRlbnQuIFRvIGFjaGlldmUgdGhhdCwgc2ltcGx5IHBhc3MgcHJvdmlkZWQKPj4gcGF5bG9h
-ZCBhbmQgYnl0ZXMgdG8gc3N0X2lwY190eF9tZXNzYWdlX3dhaXQgYXMgYSBwYXJ0IG9mIHJlcXVl
-c3QuCj4gCj4gWzJdIEFuZCB0aGlzIGhhcyBub3RoaW5nIHRvIGRvIHdpdGggdGhlIGxvb3BzLMKg
-IGRvZXMgaXQ/CgpJZiBJJ20gdG8gZGl2ZSBpbnRvIGRldGFpbHMgc28gYmUgaXQuIF9nZXRfIG9w
-ZXJhdGVzIGluIDMgbW9kZXM6CgoxKSBzaW5nbGUgcmVxdWVzdCA6IHNpbmdsZSByZXBseSAocmVx
-dWVzdHMgZml0cyBpbnRvIHNpbmdsZSBmcmFtZSkKCTEgY29uZmlnIHBhcmFtIHRvIHJldHJpZXZl
-CglmdyBzdGF0dXMvIGZ3IGVycm9yIGNvZGUgd2lsbCBwb2ludCBkaXJlY3RseSB3aGF0J3MgZ29p
-bmcgb24KCShhZnRlciBhbGwgdGhlcmUgaXMganVzdCBvbmUgcGFyYW0gaGVyZS4uKQoJcGFyYW1f
-aWQgPCAweEZGCglkYXRhX29mZl9zaXplIGhhcyBzaW5nbGUgbWVhbmluZyBoZXJlOiBwYXlsb2Fk
-IHNpemUKCjIpIGxhcmdlIHJlcXVlc3QsIHNwYW5uaW5nIG92ZXIgc2V2ZXJhbCBmcmFtZXMgOiBh
-cyBtYW55IHJlcGxpZXMgYXMgCnJlcXVpcmVkIChkc3AgcmVwbHkuaGVhZGVyLmV4dGVuc2lvbi5m
-aW5hbF9ibG9jayA9PSAxKQoJMSBjb25maWcgcGFyYW0gdG8gcmV0cmlldmUKCWZ3IHN0YXR1cy8g
-ZncgZXJyb3IgY29kZSB3aWxsIHBvaW50IGRpcmVjdGx5IHdoYXQncyBnb2luZyBvbgoJKGFmdGVy
-IGFsbCB0aGVyZSBpcyBqdXN0IG9uZSBwYXJhbSBoZXJlLi4pCglwYXJhbV9pZCA8IDB4RkYKCWRh
-dGFfb2ZmX3NpemUgc3dpdGNoZXMgY29udGV4dCBoZXJlOiAKcmVwbHkuaGVhZGVyLmV4dGVuc2lv
-bi5kYXRhX29mZl9zaXplIGZvciB0aGUgdmVyeSBmaXJzdCByZXBseSBjYXJyaWVzIApUT1RBTCBw
-YXlsb2FkIHNpemUuIEZyb20gdGhlbiBvbiwgaXQgbWFya3MgYnVmZmVyIG9mZnNldCBzaXplIC0g
-aG9zdCAKbWFrZXMgdXNlIG9mIHRoaXMgb2Zmc2V0IGFuZCBpbmplY3RzIGRhdGEgaW50byByaWdo
-dCBwb3Mgd2l0aGluIGhpcyBvd24gCmJ1ZmZlci4KCjMpIHZlbmRvciByZXF1ZXN0IDogc2luZ2xl
-IHJlcGx5IChyZXF1ZXN0IE1VU1QgZml0IGludG8gc2luZ2xlIGZyYW1lKQoJWCBjb25maWcgcGFy
-YW1zIHRvIHJldHJpZXZlLCBlYWNoIHJlcHJlc2VudGVkIGJ5IFRMVgoJZncgc3RhdHVzLyBmdyBl
-cnJvciBjb2RlIHByb3ZpZGVzIGdlbmVyaWMgb3V0Y29tZSBvbmx5Cgkob24gZmFpbHVyZSBlcnJv
-ci1wYXlsb2FkIGlzIHJldHVybmVkLiBDYW4gYmUgcGFyc2VkIHRvIGdldCBpZHggb2YgVExWLCAK
-ZnJvbSBzcGVjaWZpZWQgVExWIGFycmF5LCB3aGljaCBjYXVzZWQgdGhlIGZhaWx1cmUgdG8gb2Nj
-dXIpCglwYXJhbV9pZCA9PSAweEZGCglkYXRhX29mZl9zaXplIGhhcyBzaW5nbGUgbWVhbmluZyBo
-ZXJlOiBwYXlsb2FkIHNpemUKCkVycm9yLXBheWxvYWQgaXMgYnkgbm8gbWVhbnMgcmVzdHJpY3Rl
-ZCB0byAzcmQgY2FzZS1vbmx5LCBpdCdzIGp1c3QgCm9wdGlvbmFsIGFuZCBtYXkgbm90IGJlIHBy
-b3ZpZGVkIGJ5IERTUCBkZXBlbmRpbmcgb24gcGFydGljdWxhciByZXF1ZXN0LgoKPiAKPj4gSW4g
-Y3VycmVudCBzdGF0ZSwgTEFSR0VfQ09ORklHX0dFVCBtZXNzYWdlIGhhbmRsZXIgZG9lcyBub3Ro
-aW5nIG9mIHRoYXQsCj4+IGluIGNvbnNlcXVlbmNlIG1ha2luZyBpdCBkeXNmdW5jdGlvbmFsLiBP
-dmVyaGF1bCBzYWlkIGhhbmRsZXIgYWxsb3dpbmcKPj4gcmlnaHRmdWwga2luZyBvZiBJUENzIHRv
-IHJldHVybiBiYWNrIG9uIGhpcyB0aHJvbmUgLSBraW5nZG9tIGhlIHNoYXJlcwo+PiB3aXRoIGhp
-cyB0d2luIGJyb3RoZXI6IExBUkdFX0NPTkZJR19TRVQuCj4gCj4gWzNdIHdoYXQgaXMgZHlzZnVu
-Y3Rpb25hbD8gdGhlIHVubmVjZXNzYXJ5IGxvb3BzIG9yIGhhbmRsaW5nIGRhdGEgaW4gdGhlIAo+
-IElQQyB0aGF0IHNob3VsZCBvbmx5IGJlIGhhbmRsZWQgaW4gdmVuZG9yLXNwZWNpZmljIHBhcnRz
-LiBBbmQgYnR3IEkgCj4gZG9uJ3Qgc2VlIHZlbmRvci1zcGVjaWZpYyBwYXJ0cyBpbiB0aGUgU2t5
-bGFrZSBkcml2ZXIsIHNvIG5vdCBzdXJlIGhvdyAKPiB0aG9zZSB2ZW5kb3Itc3BlY2lmaWMgdGhp
-bmdpZXMgYXJlIGhhbmRsZWQgYXQgYWxsLgoKYSkgcGF5bG9hZCBzaXplIGlzIHNraXBwZWQsIHRo
-aXMgbWV0aG9kIHJ1bnMgaW4gdGhlIGRhcmsKYikgcHJvdmlkZXMgbm8gdmVuZG9yLXJlcXVlc3Qg
-ZnVuY3Rpb25hbGl0eQpjKSBlcnJvci1wYXlsb2FkIGlzIG5ldmVyIHJldHVybmVkCmQpIHdvbmt5
-IHRvZ2dsaW5nIG9mIGluaXRfYmxvY2suIEhvc3QgbmV2ZXIgdG91Y2hlcyBpbml0X2Jsb2NrIGZp
-ZWxkIApvbmNlIGluaXRpYWwgbWVzc2FnZSBoYXMgYmVlbiBjYXJyaWVkIG91dCAtIGEgYm9vayBv
-bmx5IGV2ZXIgaGFzIGEgCnNpbmdsZSBwcm9sb2d1ZSwgYWluJ3QgaXQ/Cgo+IAo+PiBUaGUgbG9v
-cGluZyBoYXMgbm90IGJlZW4gYWRkZWQgaW4gdGhpcyB1cGRhdGUgYXMgcGF5bG9hZHMgb2Ygc3Vj
-aCBzaXplCj4+IGRvIG5vdCBleGlzdCBpbiBwcmFjdGljZS4gV2lsbCBuZWVkIHRvIGNyZWF0ZSBj
-dXN0b20gbW9kdWxlIHNwZWNpZmljYWxseQo+PiBmb3IgdGhhdCB2ZXJ5IGNhc2UgYW5kIHRlc3Qg
-YWdhaW5zdCBpdCBiZWZvcmUgdGhhdCBmZWF0dXJlIGNhbiBiZSBhZGRlZC4KPiAKPiBbMV0gaGVy
-ZSB5b3UgYXJlIGp1c3Qgc2F5aW5nIHRoYXQgdGhlIGxvb3BpbmcgaXMgcmVhbGx5IG5vdCByZXF1
-aXJlZCBzbyAKPiB0aGVyZSBhcmUgbm8gdGVzdHMgYXQgYWxsLi4uCj4gCj4gWzRdIFNvIHNob3Vs
-ZG4ndCB5b3Ugc3BsaXQgdGhlIHR3byBwYXJ0cyBvZiB0aGlzIHBhdGNoIGFuZCBzZXBhcmF0ZSAK
-PiBsb29waW5nIGZyb20gbm90IHRvdWNoaW5nIHRoZSBkYXRhIHRoYXQncyB2ZW5kb3Itc3BlY2lm
-aWM/CgpTbywgbG9vcGluZyBtYWlubHkgZ2V0cyB1c2VkIGluIF9zZXRzXywgZm9yIF9nZXRzXyBJ
-J3ZlIG5vdCBzZWVuIGEgbGl2ZSAKZXhhbXBsZSwgcmVhbGx5IC0gZGVzcGl0ZSBGVyBzdXBwb3J0
-aW5nIHN1Y2ggZmxvdy4gSG93ZXZlciwgSSdkIGxpa2UgdG8gCnZlcmlmeSBiZWZvcmUgYWRkaW5n
-IGFueSBsb29waW5nLCBwb3NzaWJseSBieSBjcmVhdGluZyBhIGN1c3RvbSBtb2R1bGUgCm15c2Vs
-Zi4gRm9sbG93dXAgdG8geW91ciBwb2ludDogZXhpc3RpbmcgbG9vcGluZyB3YXMgbm90IHRlc3Rl
-ZCBlaXRoZXIuCgpUaGVyZSBpcyBvbmx5IG9uZSBfZ2V0XyBJIGNhbiB0aGluayBvZiB3aGljaCBt
-aWdodCByZXBsYWNlIGN1c3RvbSBtb2R1bGUgCmFwcHJvYWNoLi4gdGhlIE1PRFVMRVNfSU5GTyBv
-bmUuIFlvdSBqdXN0IG5lZWQgYSBGVyBiaW5hcnkgd2l0aCBidW5jaCBvZiAKZmVhdHVyZXMgaW5j
-bHVkZWQgOiApIEknbGwgdHJ5IG91dCBUR0wgb25lLgoKVGhhdCdzIHdoeSBJIHByZWZlciBhZGRp
-bmcgbWFqb3IgX2dldF8gZml4IGZpcnN0IGFuZCBvbmx5IHRoZW4gYSAKc2VwYXJhdGUgcGF0Y2gg
-Zm9yIGxvb3BpbmcgLSBvbmNlIHRlc3RlZC4KCj4gCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IENlemFy
-eSBSb2pld3NraSA8Y2V6YXJ5LnJvamV3c2tpQGludGVsLmNvbT4KPj4gLS0tCj4+IMKgIHNvdW5k
-L3NvYy9pbnRlbC9za3lsYWtlL3NrbC1tZXNzYWdlcy5jIHzCoCAzICstCj4+IMKgIHNvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmPCoCB8IDU0ICsrKysrKysrKysrLS0tLS0tLS0t
-LS0tLS0tCj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmjCoCB8wqAg
-MyArLQo+PiDCoCAzIGZpbGVzIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKyksIDMzIGRlbGV0aW9u
-cygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLW1lc3Nh
-Z2VzLmMgCj4+IGIvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLW1lc3NhZ2VzLmMKPj4gaW5k
-ZXggZThjYzcxMGYwOTJiLi44NGYwZTZmNThlYjUgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9p
-bnRlbC9za3lsYWtlL3NrbC1tZXNzYWdlcy5jCj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9za3ls
-YWtlL3NrbC1tZXNzYWdlcy5jCj4+IEBAIC0xMzc5LDExICsxMzc5LDEyIEBAIGludCBza2xfZ2V0
-X21vZHVsZV9wYXJhbXMoc3RydWN0IHNrbF9kZXYgKnNrbCwgCj4+IHUzMiAqcGFyYW1zLCBpbnQg
-c2l6ZSwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHUzMiBwYXJhbV9pZCwgc3Ry
-dWN0IHNrbF9tb2R1bGVfY2ZnICptY2ZnKQo+PiDCoCB7Cj4+IMKgwqDCoMKgwqAgc3RydWN0IHNr
-bF9pcGNfbGFyZ2VfY29uZmlnX21zZyBtc2c7Cj4+ICvCoMKgwqAgc2l6ZV90IGJ5dGVzID0gc2l6
-ZTsKPj4gwqDCoMKgwqDCoCBtc2cubW9kdWxlX2lkID0gbWNmZy0+aWQubW9kdWxlX2lkOwo+PiDC
-oMKgwqDCoMKgIG1zZy5pbnN0YW5jZV9pZCA9IG1jZmctPmlkLnB2dF9pZDsKPj4gwqDCoMKgwqDC
-oCBtc2cucGFyYW1fZGF0YV9zaXplID0gc2l6ZTsKPj4gwqDCoMKgwqDCoCBtc2cubGFyZ2VfcGFy
-YW1faWQgPSBwYXJhbV9pZDsKPj4gLcKgwqDCoCByZXR1cm4gc2tsX2lwY19nZXRfbGFyZ2VfY29u
-ZmlnKCZza2wtPmlwYywgJm1zZywgcGFyYW1zKTsKPj4gK8KgwqDCoCByZXR1cm4gc2tsX2lwY19n
-ZXRfbGFyZ2VfY29uZmlnKCZza2wtPmlwYywgJm1zZywgJnBhcmFtcywgJmJ5dGVzKTsKPj4gwqAg
-fQo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuYyAK
-Pj4gYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5jCj4+IGluZGV4IGEyYjY5
-YTAyYWFiMi4uOWQyNjlhNWY4YmQ5IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5
-bGFrZS9za2wtc3N0LWlwYy5jCj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1z
-c3QtaXBjLmMKPj4gQEAgLTk2OSwxMiArOTY5LDE3IEBAIGludCBza2xfaXBjX3NldF9sYXJnZV9j
-b25maWcoc3RydWN0IAo+PiBzc3RfZ2VuZXJpY19pcGMgKmlwYywKPj4gwqAgRVhQT1JUX1NZTUJP
-TF9HUEwoc2tsX2lwY19zZXRfbGFyZ2VfY29uZmlnKTsKPj4gwqAgaW50IHNrbF9pcGNfZ2V0X2xh
-cmdlX2NvbmZpZyhzdHJ1Y3Qgc3N0X2dlbmVyaWNfaXBjICppcGMsCj4+IC3CoMKgwqDCoMKgwqDC
-oCBzdHJ1Y3Qgc2tsX2lwY19sYXJnZV9jb25maWdfbXNnICptc2csIHUzMiAqcGFyYW0pCj4+ICvC
-oMKgwqDCoMKgwqDCoCBzdHJ1Y3Qgc2tsX2lwY19sYXJnZV9jb25maWdfbXNnICptc2csCj4+ICvC
-oMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBpbnQgKipwYXlsb2FkLCBzaXplX3QgKmJ5dGVzKQo+PiDC
-oCB7Cj4+IMKgwqDCoMKgwqAgc3RydWN0IHNrbF9pcGNfaGVhZGVyIGhlYWRlciA9IHswfTsKPj4g
-LcKgwqDCoCBzdHJ1Y3Qgc3N0X2lwY19tZXNzYWdlIHJlcXVlc3QgPSB7MH0sIHJlcGx5ID0gezB9
-Owo+PiAtwqDCoMKgIGludCByZXQgPSAwOwo+PiAtwqDCoMKgIHNpemVfdCBzel9yZW1haW5pbmcs
-IHJ4X3NpemUsIGRhdGFfb2Zmc2V0Owo+PiArwqDCoMKgIHN0cnVjdCBzc3RfaXBjX21lc3NhZ2Ug
-cmVxdWVzdCwgcmVwbHkgPSB7MH07Cj4+ICvCoMKgwqAgdW5zaWduZWQgaW50ICpidWY7Cj4+ICvC
-oMKgwqAgaW50IHJldDsKPj4gKwo+PiArwqDCoMKgIHJlcGx5LmRhdGEgPSBremFsbG9jKFNLTF9B
-RFNQX1cxX1NaLCBHRlBfS0VSTkVMKTsKPj4gK8KgwqDCoCBpZiAoIXJlcGx5LmRhdGEpCj4+ICvC
-oMKgwqDCoMKgwqDCoCByZXR1cm4gLUVOT01FTTsKPj4gwqDCoMKgwqDCoCBoZWFkZXIucHJpbWFy
-eSA9IElQQ19NU0dfVEFSR0VUKElQQ19NT0RfTVNHKTsKPj4gwqDCoMKgwqDCoCBoZWFkZXIucHJp
-bWFyeSB8PSBJUENfTVNHX0RJUihJUENfTVNHX1JFUVVFU1QpOwo+PiBAQCAtOTg3LDM0ICs5OTIs
-MjEgQEAgaW50IHNrbF9pcGNfZ2V0X2xhcmdlX2NvbmZpZyhzdHJ1Y3QgCj4+IHNzdF9nZW5lcmlj
-X2lwYyAqaXBjLAo+PiDCoMKgwqDCoMKgIGhlYWRlci5leHRlbnNpb24gfD0gSVBDX0ZJTkFMX0JM
-T0NLKDEpOwo+PiDCoMKgwqDCoMKgIGhlYWRlci5leHRlbnNpb24gfD0gSVBDX0lOSVRJQUxfQkxP
-Q0soMSk7Cj4+IC3CoMKgwqAgc3pfcmVtYWluaW5nID0gbXNnLT5wYXJhbV9kYXRhX3NpemU7Cj4+
-IC3CoMKgwqAgZGF0YV9vZmZzZXQgPSAwOwo+PiAtCj4+IC3CoMKgwqAgd2hpbGUgKHN6X3JlbWFp
-bmluZyAhPSAwKSB7Cj4+IC3CoMKgwqDCoMKgwqDCoCByeF9zaXplID0gc3pfcmVtYWluaW5nID4g
-U0tMX0FEU1BfVzFfU1oKPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA/IFNLTF9B
-RFNQX1cxX1NaIDogc3pfcmVtYWluaW5nOwo+PiAtwqDCoMKgwqDCoMKgwqAgaWYgKHJ4X3NpemUg
-PT0gc3pfcmVtYWluaW5nKQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBoZWFkZXIuZXh0ZW5z
-aW9uIHw9IElQQ19GSU5BTF9CTE9DSygxKTsKPj4gLQo+PiAtwqDCoMKgwqDCoMKgwqAgcmVxdWVz
-dC5oZWFkZXIgPSAqKHU2NCAqKSgmaGVhZGVyKTsKPj4gLcKgwqDCoMKgwqDCoMKgIHJlcGx5LmRh
-dGEgPSAoKGNoYXIgKilwYXJhbSkgKyBkYXRhX29mZnNldDsKPj4gLcKgwqDCoMKgwqDCoMKgIHJl
-cGx5LnNpemUgPSBtc2ctPnBhcmFtX2RhdGFfc2l6ZTsKPj4gLcKgwqDCoMKgwqDCoMKgIHJldCA9
-IHNzdF9pcGNfdHhfbWVzc2FnZV93YWl0KGlwYywgcmVxdWVzdCwgJnJlcGx5KTsKPj4gLcKgwqDC
-oMKgwqDCoMKgIGlmIChyZXQgPCAwKSB7Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRldl9l
-cnIoaXBjLT5kZXYsCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgImlwYzogZ2V0
-IGxhcmdlIGNvbmZpZyBmYWlsLCBlcnI6ICVkXG4iLCByZXQpOwo+PiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCByZXR1cm4gcmV0Owo+PiAtwqDCoMKgwqDCoMKgwqAgfQo+PiAtwqDCoMKgwqDCoMKg
-wqAgc3pfcmVtYWluaW5nIC09IHJ4X3NpemU7Cj4+IC3CoMKgwqDCoMKgwqDCoCBkYXRhX29mZnNl
-dCA9IG1zZy0+cGFyYW1fZGF0YV9zaXplIC0gc3pfcmVtYWluaW5nOwo+PiArwqDCoMKgIHJlcXVl
-c3QuaGVhZGVyID0gKih1NjQgKikmaGVhZGVyOwo+PiArwqDCoMKgIHJlcXVlc3QuZGF0YSA9ICpw
-YXlsb2FkOwo+PiArwqDCoMKgIHJlcXVlc3Quc2l6ZSA9ICpieXRlczsKPj4gK8KgwqDCoCByZXBs
-eS5zaXplID0gU0tMX0FEU1BfVzFfU1o7Cj4+IC3CoMKgwqDCoMKgwqDCoCAvKiBjbGVhciB0aGUg
-ZmllbGRzICovCj4+IC3CoMKgwqDCoMKgwqDCoCBoZWFkZXIuZXh0ZW5zaW9uICY9IElQQ19JTklU
-SUFMX0JMT0NLX0NMRUFSOwo+PiAtwqDCoMKgwqDCoMKgwqAgaGVhZGVyLmV4dGVuc2lvbiAmPSBJ
-UENfREFUQV9PRkZTRVRfU1pfQ0xFQVI7Cj4+IC3CoMKgwqDCoMKgwqDCoCAvKiBmaWxsIHRoZSBm
-aWVsZHMgKi8KPj4gLcKgwqDCoMKgwqDCoMKgIGhlYWRlci5leHRlbnNpb24gfD0gSVBDX0lOSVRJ
-QUxfQkxPQ0soMSk7Cj4+IC3CoMKgwqDCoMKgwqDCoCBoZWFkZXIuZXh0ZW5zaW9uIHw9IElQQ19E
-QVRBX09GRlNFVF9TWihkYXRhX29mZnNldCk7Cj4+IC3CoMKgwqAgfQo+PiArwqDCoMKgIHJldCA9
-IHNzdF9pcGNfdHhfbWVzc2FnZV93YWl0KGlwYywgcmVxdWVzdCwgJnJlcGx5KTsKPj4gK8KgwqDC
-oCBpZiAocmV0IDwgMCkKPj4gK8KgwqDCoMKgwqDCoMKgIGRldl9lcnIoaXBjLT5kZXYsICJpcGM6
-IGdldCBsYXJnZSBjb25maWcgZmFpbDogJWRcbiIsIHJldCk7Cj4+ICsKPj4gK8KgwqDCoCByZXBs
-eS5zaXplID0gKHJlcGx5LmhlYWRlciA+PiAzMikgJiBJUENfREFUQV9PRkZTRVRfU1pfTUFTSzsK
-Pj4gK8KgwqDCoCBidWYgPSBrcmVhbGxvYyhyZXBseS5kYXRhLCByZXBseS5zaXplLCBHRlBfS0VS
-TkVMKTsKPj4gK8KgwqDCoCBpZiAoIWJ1ZikKPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiAtRU5P
-TUVNOwo+PiArwqDCoMKgICpwYXlsb2FkID0gYnVmOwo+PiArwqDCoMKgICpieXRlcyA9IHJlcGx5
-LnNpemU7Cj4+IMKgwqDCoMKgwqAgcmV0dXJuIHJldDsKPj4gwqAgfQo+PiBkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuaCAKPj4gYi9zb3VuZC9zb2MvaW50
-ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5oCj4+IGluZGV4IDkzYWYwOGNmNDFkMi4uYTdhYjJjNTg5
-Y2M1IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5o
-Cj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmgKPj4gQEAgLTEz
-OSw3ICsxMzksOCBAQCBpbnQgc2tsX2lwY19zZXRfbGFyZ2VfY29uZmlnKHN0cnVjdCAKPj4gc3N0
-X2dlbmVyaWNfaXBjICppcGMsCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3Qgc2tsX2lwY19s
-YXJnZV9jb25maWdfbXNnICptc2csIHUzMiAqcGFyYW0pOwo+PiDCoCBpbnQgc2tsX2lwY19nZXRf
-bGFyZ2VfY29uZmlnKHN0cnVjdCBzc3RfZ2VuZXJpY19pcGMgKmlwYywKPj4gLcKgwqDCoMKgwqDC
-oMKgIHN0cnVjdCBza2xfaXBjX2xhcmdlX2NvbmZpZ19tc2cgKm1zZywgdTMyICpwYXJhbSk7Cj4+
-ICvCoMKgwqDCoMKgwqDCoCBzdHJ1Y3Qgc2tsX2lwY19sYXJnZV9jb25maWdfbXNnICptc2csCj4+
-ICvCoMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBpbnQgKipwYXlsb2FkLCBzaXplX3QgKmJ5dGVzKTsK
-Pj4gwqAgaW50IHNrbF9zc3RfaXBjX2xvYWRfbGlicmFyeShzdHJ1Y3Qgc3N0X2dlbmVyaWNfaXBj
-ICppcGMsCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHU4IGRtYV9pZCwgdTggdGFibGVf
-aWQsIGJvb2wgd2FpdCk7Cj4+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Hi,
+
+I have a performance related problem using the multi PCM plugin.
+
+
+---------------------------------------------------------------------
+    THE ISSUE
+---------------------------------------------------------------------
+
+The following scenario triggers the issue. The CPU load is up to 90%.
+
+plug - - > upmix - - > multi - - > forward_dmix
+                             - - > loopback_dmix
+
+pcm.giuliano_plug
+{
+  type plug
+  slave.pcm giuliano_upmix
+  slave.channels 2
+}
+
+pcm.giuliano_upmix
+{
+  type route
+  slave.pcm giuliano_multi
+  slave.channels 4
+  ttable.0.0 1
+  ttable.0.1 1
+  ttable.1.2 1
+  ttable.1.3 1
+}
+
+pcm.giuliano_multi
+{
+  type multi
+  slaves
+  {
+    slave0
+    {
+      pcm forward_dmix
+      channels 2
+    }
+    slave1
+    {
+      pcm loopback_dmix
+      channels 2
+    }
+  }
+  bindings
+  {
+    0 {slave slave0 channel 0}
+    1 {slave slave0 channel 1}
+    2 {slave slave1 channel 0}
+    3 {slave slave1 channel 1}
+  }
+  master 0
+}
+
+pcm.forward_dmix
+{
+  type dmix
+  ipc_key 1000
+  ipc_key_add_uid 1
+  ipc_perm 0600
+  slave.period_time 10000
+  slave.period_size 480
+  slave.buffer_size 1920
+  slave.rate 48000
+  slave.pcm "hw:0,0"
+}
+
+pcm.loopback_dmix
+{
+  type dmix
+  ipc_key 1001
+  ipc_key_add_uid 1
+  ipc_perm 0600
+  slave.period_time 10000
+  slave.period_size 480
+  slave.buffer_size 1920
+  slave.rate 48000
+  slave.pcm loopback_out
+}
+
+pcm.loopback_out
+{
+  type hw
+  card Loopback
+  device 0
+  subdevice 0
+}
+
+pcm.loopback_dsnoop
+{
+  type dsnoop
+  ipc_key 1002
+  ipc_key_add_uid 1
+  ipc_perm 0600
+  slave.period_time 10000
+  slave.period_size 480
+  slave.buffer_size 1920
+  slave.rate 48000
+  slave.pcm loopback_in
+}
+
+pcm.loopback_in
+{
+  type hw
+  card Loopback
+  device 1
+  subdevice 0
+}
+
+The following scenario does not trigger the issue. The CPU load is at most 2%.
+
+plug - - > upmix - - > downmix - - > forward_dmix
+
+pcm.giuliano_plug
+{
+  type plug
+  slave.pcm giuliano_upmix
+  slave.channels 2
+}
+
+pcm.giuliano_upmix
+{
+  type route
+  slave.pcm giuliano_downmix
+  slave.channels 4
+  ttable.0.0 1
+  ttable.0.1 1
+  ttable.1.2 1
+  ttable.1.3 1
+}
+
+pcm.giuliano_downmix
+{
+  type route
+  slave.pcm forward_dmix
+  slave.channels 2
+  ttable.0.0 1
+  ttable.1.1 1
+  ttable.2.0 1
+  ttable.3.1 1
+}
+
+
+---------------------------------------------------------------------
+    DEBUG PRINTS IN FUNCTION snd_pcm_write_areas IN FILE pcm.c
+---------------------------------------------------------------------
+
+For each while iteration the log prints the available frames (avail) and the frames
+to be written (size). In the multi scenario the several while iterations decrease the
+performances and the CPU load is high. In the normal scenario i see that at most two iterations
+of the while are needed. In other words, in the multi scenario the avail frames are not enough
+to stop the loop. You can see below the prints: avail < size for 28 iterations. Note that
+this behaviour does not occurs only at startup, but every time during the playback.
+
+snd_pcm_sframes_t snd_pcm_write_areas(snd_pcm_t *pcm, const snd_pcm_channel_area_t *areas,
+                      snd_pcm_uframes_t offset, snd_pcm_uframes_t size,
+                      snd_pcm_xfer_areas_func_t func)
+{
+    snd_pcm_uframes_t xfer = 0;
+    snd_pcm_sframes_t err = 0;
+    snd_pcm_state_t state;
+
+    if (size == 0)
+        return 0;
+
+    int giuliano_i = 0;
+
+    __snd_pcm_lock(pcm); /* forced lock */
+    while (size > 0) {
+        snd_pcm_uframes_t frames;
+        snd_pcm_sframes_t avail;
+    _again:
+        state = __snd_pcm_state(pcm);
+        switch (state) {
+        case SND_PCM_STATE_PREPARED:
+        case SND_PCM_STATE_PAUSED:
+            break;
+        case SND_PCM_STATE_RUNNING:
+            err = __snd_pcm_hwsync(pcm);
+            if (err < 0)
+                goto _end;
+            break;
+        default:
+            err = pcm_state_to_error(state);
+            if (!err)
+                err = -EBADFD;
+            goto _end;
+        }
+        avail = __snd_pcm_avail_update(pcm);
+
+        fprintf(
+            stderr,
+            "giuliano | pcm.c | snd_pcm_write_areas | (%d) avail=%ld, size=%ld\n",
+            giuliano_i, avail, size
+        );
+        giuliano_i ++;
+
+        if (avail < 0) {
+            err = avail;
+            goto _end;
+        }
+        if (state == SND_PCM_STATE_RUNNING &&
+            size > (snd_pcm_uframes_t)avail) {
+            if (snd_pcm_may_wait_for_avail_min(pcm, avail)) {
+                if (pcm->mode & SND_PCM_NONBLOCK) {
+                    err = -EAGAIN;
+                    goto _end;
+                }
+
+                err = snd_pcm_wait_nocheck(pcm, -1);
+
+                if (err < 0)
+                    break;
+
+                goto _again;
+            }
+            /* the snd_pcm_may_wait_for_avail_min may check against the
+             * updated hw.ptr (slaves), get the avail again here
+             */
+            avail = __snd_pcm_avail_update(pcm);
+            if (avail < 0) {
+                err = avail;
+                goto _end;
+            }
+        }
+        frames = size;
+        if (frames > (snd_pcm_uframes_t) avail)
+            frames = avail;
+        if (! frames)
+            break;
+        err = func(pcm, areas, offset, frames);
+        if (err < 0)
+            break;
+        frames = err;
+        if (state == SND_PCM_STATE_PREPARED) {
+            snd_pcm_sframes_t hw_avail = pcm->buffer_size - avail;
+            hw_avail += frames;
+            /* some plugins might automatically start the stream */
+            state = __snd_pcm_state(pcm);
+            if (state == SND_PCM_STATE_PREPARED &&
+                hw_avail >= (snd_pcm_sframes_t) pcm->start_threshold) {
+                err = __snd_pcm_start(pcm);
+                if (err < 0)
+                    goto _end;
+            }
+        }
+        offset += frames;
+        size -= frames;
+        xfer += frames;
+    }
+_end:
+    __snd_pcm_unlock(pcm);
+    return xfer > 0 ? (snd_pcm_sframes_t) xfer : snd_pcm_check_error(pcm, err);
+}
+
+
+---------------------------------------------------------------------
+    DEBUG PRINTS OUTPUT
+---------------------------------------------------------------------
+
+## Multi scenario ##
+
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=1920
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=1920
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=1920, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=1440
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=1440
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=1440, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=960
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=960, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=480, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (2) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (3) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (4) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (5) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (6) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (7) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (8) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (9) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (10) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (11) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (12) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (13) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (14) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+giuliano | pcm.c | snd_pcm_write_areas | (15) avail=0, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=0
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 0
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (16) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (17) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (18) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (19) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (20) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (21) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (22) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (23) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (24) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (25) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (26) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 384
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=384
+giuliano | pcm.c | snd_pcm_write_areas | (27) avail=384, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=1440
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=576
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=1440
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=576
+giuliano | pcm.c | snd_pcm_write_areas | (28) avail=576, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=96
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=96, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=96
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 96
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=96
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=96, size=480
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=0, avail=960
+giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=1, avail=96
+*** snd_pcm_wait() FATAL ERROR!!!
+avail_min = 480, avail_update = 96
+
+## Normal scenario ##
+
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=1920, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=1440, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=960, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (0) avail=0, size=480
+giuliano | pcm.c | snd_pcm_write_areas | (1) avail=480, size=480
+
+
+---------------------------------------------------------------------
+    DEBUG PRINTS IN FUNCTION snd_pcm_wait_nocheck IN FILE pcm.c
+---------------------------------------------------------------------
+
+As you can see in the debug prints above i have enabled the error message
+in the function snd_pcm_wait_nocheck.
+
+That message lead me to think that the issue is a poll related one, may be?
+
+int snd_pcm_wait_nocheck(snd_pcm_t *pcm, int timeout)
+{
+  struct pollfd *pfd;
+  unsigned short revents = 0;
+  int npfds, err, err_poll;
+
+  npfds = __snd_pcm_poll_descriptors_count(pcm);
+  if (npfds <= 0 || npfds >= 16) {
+    SNDERR("Invalid poll_fds %d\n", npfds);
+    return -EIO;
+  }
+  pfd = alloca(sizeof(*pfd) * npfds);
+  err = __snd_pcm_poll_descriptors(pcm, pfd, npfds);
+  if (err < 0)
+    return err;
+  if (err != npfds) {
+    SNDMSG("invalid poll descriptors %d\n", err);
+    return -EIO;
+  }
+  do {
+    __snd_pcm_unlock(pcm);
+    err_poll = poll(pfd, npfds, timeout);
+    __snd_pcm_lock(pcm);
+    if (err_poll < 0) {
+            if (errno == EINTR && !PCMINABORT(pcm))
+                    continue;
+      return -errno;
+                }
+    if (! err_poll)
+      break;
+    err = __snd_pcm_poll_revents(pcm, pfd, npfds, &revents);
+    if (err < 0)
+      return err;
+    if (revents & (POLLERR | POLLNVAL)) {
+      /* check more precisely */
+      err = pcm_state_to_error(__snd_pcm_state(pcm));
+      return err < 0 ? err : -EIO;
+    }
+  } while (!(revents & (POLLIN | POLLOUT)));
+#if 1 /* very useful code to test poll related problems */
+  {
+    snd_pcm_sframes_t avail_update;
+    __snd_pcm_hwsync(pcm);
+    avail_update = __snd_pcm_avail_update(pcm);
+    if (avail_update < (snd_pcm_sframes_t)pcm->avail_min) {
+      printf("*** snd_pcm_wait() FATAL ERROR!!!\n");
+      printf("avail_min = %li, avail_update = %li\n", pcm->avail_min, avail_update);
+    }
+  }
+#endif
+  return err_poll > 0 ? 1 : 0;
+}
+#endif
+
+
+---------------------------------------------------------------------
+    DEBUG PRINTS IN FUNCTION __snd_pcm_avail_update IN pcm_multi.c
+---------------------------------------------------------------------
+
+As you can see in the prints above, i put some debugs logs in the function
+__snd_pcm_avail_update. I can read there the number of avail frames for each slave of
+the multi. I see also that the minimum numbers of frames is taken among the slaves.
+
+static snd_pcm_sframes_t snd_pcm_multi_avail_update(snd_pcm_t *pcm)
+{
+  snd_pcm_multi_t *multi = pcm->private_data;
+  snd_pcm_sframes_t ret = LONG_MAX;
+
+    snd_pcm_sframes_t giuliano_temp = 0;
+
+  unsigned int i;
+  for (i = 0; i < multi->slaves_count; ++i) {
+    snd_pcm_sframes_t avail;
+    avail = snd_pcm_avail_update(multi->slaves[i].pcm);
+        fprintf(
+            stderr,
+            "giuliano | pcm_multi.c | snd_pcm_multi_avail_update | slave=%d, avail=%d\n",
+            i, avail
+        );
+    if (avail < 0)
+      return avail;
+    if (ret > avail)
+      ret = avail;
+  }
+  snd_pcm_multi_hwptr_update(pcm);
+
+    return ret;
+}
+
+
+
+I hope that my debug prints are useful to find the issue.
+
+
+
+Thanks
+
+Giuliano Zannetti
