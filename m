@@ -1,52 +1,46 @@
-From: Stefan Agner <stefan@agner.ch>
-Subject: Re: [PATCH] ASoC: soc-core: remove error due to probe deferral
-Date: Thu, 08 Aug 2019 15:16:53 +0200
-Message-ID: <cd3fd8b9ce6e4f9820197c70dfc42b67@agner.ch>
-References: <20190808123655.31520-1-stefan@agner.ch>
- <20190808124437.GD3795@sirena.co.uk> <s5hlfw3izhl.wl-tiwai@suse.de>
- <20190808130217.GE3795@sirena.co.uk> <s5hftmbiyuc.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] soundwire: fix regmap dependencies and align with other
+ serial links
+Date: Thu, 8 Aug 2019 14:48:28 +0100
+Message-ID: <8529d213-bfbb-780a-092d-3607eeb5e543@linaro.org>
+References: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hftmbiyuc.wl-tiwai@suse.de>
+In-Reply-To: <20190718230215.18675-1-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz, Stefan Agner <stefan.agner@toradex.com>, linux-kernel@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, "Rafael J. Wysocki" <rafael@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-08-08 15:14, Takashi Iwai wrote:
-> On Thu, 08 Aug 2019 15:02:17 +0200,
-> Mark Brown wrote:
->>
->> On Thu, Aug 08, 2019 at 03:00:06PM +0200, Takashi Iwai wrote:
->> > Mark Brown wrote:
->>
->> > > No, they absolutely should tell the user why they are deferring so the
->> > > user has some information to go on when they're trying to figure out why
->> > > their device isn't instantiating.
->>
->> > But it's no real error that *must* be printed on the console, either.
->> > Maybe downgrading the printk level?
->>
->> Yes, downgrading can be OK though it does bloat the code.
+
+
+On 19/07/2019 00:02, Pierre-Louis Bossart wrote:
+> The existing code has a mixed select/depend usage which makes no sense.
 > 
-> I guess we can use dev_printk() with the conditional level choice.
+> config SOUNDWIRE_BUS
+>         tristate
+>         select REGMAP_SOUNDWIRE
 > 
+> config REGMAP_SOUNDWIRE
+>          tristate
+>          depends on SOUNDWIRE_BUS
+> 
+> Let's remove one layer of Kconfig definitions and align with the
+> solutions used by all other serial links.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>   drivers/base/regmap/Kconfig | 2 +-
+>   drivers/soundwire/Kconfig   | 7 +------
+>   drivers/soundwire/Makefile  | 2 +-
+>   3 files changed, 3 insertions(+), 8 deletions(-)
 
-How about use dev_info always? We get a dev_err message from
-soc_init_dai_link in error cases...
+I have been using some thing similar in my setup.
+I did test this with Qualcomm WSA881x codec.
 
-		ret = soc_init_dai_link(card, dai_link);
-		if (ret && ret != -EPROBE_DEFER) {
-			dev_info(card->dev, "ASoC: failed to init link %s: %d\n",
-				 dai_link->name, ret);
-		}
-		if (ret) {
-			soc_cleanup_platform(card);
-			mutex_unlock(&client_mutex);
-			return ret;
-		}
+Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
---
-Stefan
+--srini
