@@ -1,87 +1,60 @@
-From: Yuehaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Add missing include file hdac_hda.h
-Date: Fri, 9 Aug 2019 18:52:37 +0800
-Message-ID: <da80a1fb-e897-e5a4-0809-2349a92279bb@huawei.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH v2] ASoC: SOF: Intel: Add missing include file hdac_hda.h
+Date: Fri, 9 Aug 2019 19:01:00 +0800
+Message-ID: <20190809110100.71236-1-yuehaibing@huawei.com>
 References: <20190809095550.71040-1-yuehaibing@huawei.com>
- <s5hh86qhcyg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hh86qhcyg.wl-tiwai@suse.de>
+In-Reply-To: <20190809095550.71040-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, pierre-louis.bossart@linux.intel.com, yang.jie@linux.intel.com, perex@perex.cz, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, yang.jie@linux.intel.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019/8/9 18:04, Takashi Iwai wrote:
-> On Fri, 09 Aug 2019 11:55:50 +0200,
-> YueHaibing wrote:
->>
->> Building with SND_SOC_SOF_HDA_AUDIO_CODEC fails:
->>
->> sound/soc/sof/intel/hda-bus.c: In function sof_hda_bus_init:
->> sound/soc/sof/intel/hda-bus.c:16:25: error: implicit declaration of function
->>  snd_soc_hdac_hda_get_ops; did you mean snd_soc_jack_add_gpiods? [-Werror=implicit-function-declaration]
->>  #define sof_hda_ext_ops snd_soc_hdac_hda_get_ops()
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Fixes: d4ff1b3917a5 ('ASoC: SOF: Intel: Initialize hdaudio bus properly")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> 
-> Damn, it seems another oversight.
-> 
-> And now the inclusion in sound/soc/sof/intel/hda.c is superfluous,
-> too, so we should just move like
-> 
-> diff --git a/sound/soc/sof/intel/hda-bus.c b/sound/soc/sof/intel/hda-bus.c
-> index 0caec3a070d3..2b384134a3db 100644
-> --- a/sound/soc/sof/intel/hda-bus.c
-> +++ b/sound/soc/sof/intel/hda-bus.c
-> @@ -11,6 +11,9 @@
->  #include <sound/hdaudio.h>
->  #include "../sof-priv.h"
->  #include "hda.h"
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-> +#include "../../codecs/hdac_hda.h"
-> +#endif
->  
->  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
->  #define sof_hda_ext_ops	snd_soc_hdac_hda_get_ops()
-> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> index 7ca27000c34d..dd6c8ad62b3e 100644
-> --- a/sound/soc/sof/intel/hda.c
-> +++ b/sound/soc/sof/intel/hda.c
-> @@ -23,9 +23,6 @@
->  #include <sound/sof/xtensa.h>
->  #include "../ops.h"
->  #include "hda.h"
-> -#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-> -#include "../../codecs/hdac_hda.h"
-> -#endif
->  
->  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
->  #include <sound/soc-acpi-intel-match.h>
-> 
-> 
-> Could you check whether this works instead?
+Building with SND_SOC_SOF_HDA_AUDIO_CODEC fails:
 
-It works well, I can send v2 using this, Thanks!
+sound/soc/sof/intel/hda-bus.c: In function sof_hda_bus_init:
+sound/soc/sof/intel/hda-bus.c:16:25: error: implicit declaration of function
+ snd_soc_hdac_hda_get_ops; did you mean snd_soc_jack_add_gpiods? [-Werror=implicit-function-declaration]
+ #define sof_hda_ext_ops snd_soc_hdac_hda_get_ops()
 
-> 
-> 
-> BTW, the inclusion of "../../codecs/hdac_hdac.h" is very ugly...
-> In general if a header file is referred from another driver, it should
-> be in a more public place under include/sound.  If any, we can create
-> a subdirectory like include/sound/codecs.
-> 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Fixes: d4ff1b3917a5 ('ASoC: SOF: Intel: Initialize hdaudio bus properly")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+v2: remove unused include from hda.c
+---
+ sound/soc/sof/intel/hda-bus.c | 1 +
+ sound/soc/sof/intel/hda.c     | 3 ---
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-Yes, this can be done in another patch.
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-> .
-> 
+diff --git a/sound/soc/sof/intel/hda-bus.c b/sound/soc/sof/intel/hda-bus.c
+index 0caec3a..1d2babd 100644
+--- a/sound/soc/sof/intel/hda-bus.c
++++ b/sound/soc/sof/intel/hda-bus.c
+@@ -13,6 +13,7 @@
+ #include "hda.h"
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
++#include "../../codecs/hdac_hda.h"
+ #define sof_hda_ext_ops	snd_soc_hdac_hda_get_ops()
+ #else
+ #define sof_hda_ext_ops	NULL
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 368254b..ebf2777 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -23,9 +23,6 @@
+ #include <sound/sof/xtensa.h>
+ #include "../ops.h"
+ #include "hda.h"
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+-#include "../../codecs/hdac_hda.h"
+-#endif
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ #include <sound/soc-acpi-intel-match.h>
+-- 
+2.7.4
