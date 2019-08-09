@@ -1,91 +1,41 @@
-From: Szymon Mielczarek <szymonx.mielczarek@linux.intel.com>
-Subject: [RFC PATCH] ASoC: dapm: Invalidate only paths reachable for a given stream
-Date: Fri,  9 Aug 2019 10:40:34 +0200
-Message-ID: <20190809084034.26220-1-szymonx.mielczarek@linux.intel.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ALSA: ac97: remove unused variable 'snd_ac97_controls_master_mono'
+Date: Fri, 9 Aug 2019 17:01:13 +0800
+Message-ID: <20190809090113.65728-1-yuehaibing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Cezary Rojewski <cezary.rojewski@intel.com>, Szymon Mielczarek <szymonx.mielczarek@linux.intel.com>
+To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-By resetting the cached number of endpoints for all card's widgets we may
-overwrite previously cached values for other streams. The situation may
-happen especially when running streams simultaneously.
+sound/pci/ac97/ac97_codec.c:599:38: warning:
+ snd_ac97_controls_master_mono defined but not used [-Wunused-const-variable=]
 
-Signed-off-by: Szymon Mielczarek <szymonx.mielczarek@linux.intel.com>
+It is never used, so can be removed.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/soc-dapm.c | 50 ++++++++++++++++++++++++++++++++------------
- 1 file changed, 37 insertions(+), 13 deletions(-)
+ sound/pci/ac97/ac97_codec.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d09bdca63c62..10819b3e0b98 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1128,6 +1128,34 @@ static int dapm_widget_list_create(struct snd_soc_dapm_widget_list **list,
- 	return 0;
+diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+index 96b4601..66f6c3b 100644
+--- a/sound/pci/ac97/ac97_codec.c
++++ b/sound/pci/ac97/ac97_codec.c
+@@ -596,11 +596,6 @@ static int snd_ac97_put_volsw(struct snd_kcontrol *kcontrol,
+ 	return err;
  }
  
-+/*
-+ * Recursively reset the cached number of inputs or outputs for the specified
-+ * widget and all widgets that can be reached via incoming or outcoming paths
-+ * from the widget.
-+ */
-+static void invalidate_paths_ep(struct snd_soc_dapm_widget *widget,
-+	enum snd_soc_dapm_direction dir)
-+{
-+	enum snd_soc_dapm_direction rdir = SND_SOC_DAPM_DIR_REVERSE(dir);
-+	struct snd_soc_dapm_path *path;
-+
-+	widget->endpoints[dir] = -1;
-+
-+	snd_soc_dapm_widget_for_each_path(widget, rdir, path) {
-+		if (path->weak || path->is_supply)
-+			continue;
-+
-+		if (path->walking)
-+			return;
-+
-+		if (path->connect) {
-+			path->walking = 1;
-+			invalidate_paths_ep(path->node[dir], dir);
-+			path->walking = 0;
-+		}
-+	}
-+}
-+
- /*
-  * Common implementation for is_connected_output_ep() and
-  * is_connected_input_ep(). The function is inlined since the combined size of
-@@ -1257,21 +1285,17 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- 
- 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 
--	/*
--	 * For is_connected_{output,input}_ep fully discover the graph we need
--	 * to reset the cached number of inputs and outputs.
--	 */
--	list_for_each_entry(w, &card->widgets, list) {
--		w->endpoints[SND_SOC_DAPM_DIR_IN] = -1;
--		w->endpoints[SND_SOC_DAPM_DIR_OUT] = -1;
--	}
+-static const struct snd_kcontrol_new snd_ac97_controls_master_mono[2] = {
+-AC97_SINGLE("Master Mono Playback Switch", AC97_MASTER_MONO, 15, 1, 1),
+-AC97_SINGLE("Master Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 1)
+-};
 -
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
--		paths = is_connected_output_ep(dai->playback_widget, &widgets,
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		w = dai->playback_widget;
-+		invalidate_paths_ep(w, SND_SOC_DAPM_DIR_OUT);
-+		paths = is_connected_output_ep(w, &widgets,
- 				custom_stop_condition);
--	else
--		paths = is_connected_input_ep(dai->capture_widget, &widgets,
-+	} else {
-+		w = dai->capture_widget;
-+		invalidate_paths_ep(w, SND_SOC_DAPM_DIR_IN);
-+		paths = is_connected_input_ep(w, &widgets,
- 				custom_stop_condition);
-+	}
- 
- 	/* Drop starting point */
- 	list_del(widgets.next);
+ static const struct snd_kcontrol_new snd_ac97_controls_tone[2] = {
+ AC97_SINGLE("Tone Control - Bass", AC97_MASTER_TONE, 8, 15, 1),
+ AC97_SINGLE("Tone Control - Treble", AC97_MASTER_TONE, 0, 15, 1)
 -- 
-2.17.1
+2.7.4
