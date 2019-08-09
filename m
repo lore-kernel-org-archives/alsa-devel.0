@@ -1,40 +1,60 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] ASoC: SOF: Intel: Add missing include file hdac_hda.h
-Date: Fri, 9 Aug 2019 17:55:50 +0800
-Message-ID: <20190809095550.71040-1-yuehaibing@huawei.com>
+From: Yuehaibing <yuehaibing@huawei.com>
+Subject: Re: [alsa-devel] [PATCH -next] ALSA: Au88x0 - remove some unused
+ const variables
+Date: Fri, 9 Aug 2019 18:00:01 +0800
+Message-ID: <85696583-655b-06dd-d851-c8bfdaab7924@huawei.com>
+References: <20190809090620.70496-1-yuehaibing@huawei.com>
+ <s5hk1bmhe9t.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hk1bmhe9t.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, yang.jie@linux.intel.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, rfontana@redhat.com, kstewart@linuxfoundation.org, allison@lohutok.net, armijn@tjaldur.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Building with SND_SOC_SOF_HDA_AUDIO_CODEC fails:
+On 2019/8/9 17:35, Takashi Iwai wrote:
+> On Fri, 09 Aug 2019 11:06:20 +0200,
+> YueHaibing wrote:
+>>
+>> sound/pci/au88x0/au88x0_xtalk.c:121:28: warning: asXtalkWideCoefsRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:152:28: warning: asXtalkNarrowCoefsRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:175:28: warning: asXtalkCoefsNegPipe defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:183:28: warning: asXtalkCoefsNumTest defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:191:28: warning: asXtalkCoefsDenTest defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:199:28: warning: asXtalkOutStateTest defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:20:20: warning: sXtalkWideKRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:231:28: warning: asDiamondCoefsRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:24:20: warning: sXtalkWideShiftRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:30:20: warning: sXtalkNarrowKRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:34:20: warning: sXtalkNarrowShiftRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:38:28: warning: asXtalkGainsDefault defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:43:28: warning: asXtalkGainsTest defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:48:28: warning: asXtalkGains1Chan defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:67:28: warning: alXtalkDlineTest defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:77:30: warning: asXtalkInStateTest defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:92:20: warning: sDiamondKRightXt defined but not used [-Wunused-const-variable=]
+>> sound/pci/au88x0/au88x0_xtalk.c:96:20: warning: sDiamondShiftRightXt defined but not used [-Wunused-const-variable=]
+> 
+> Some of them are rather a bug, likely the wrong register and data is
+> used (left instead of right).  They have to be fixed instead of
+> removing.
+> 
+> And some are indeed unused, but I'd leave them with ifdef or such.
+> Such magical values do have some meaning (as the driver code was the
+> result from reverse-engineering) and blindly removing it also loses
+> the information -- though, the driver is tad old and likely broken, so
+> practically seen no big impact.
 
-sound/soc/sof/intel/hda-bus.c: In function sof_hda_bus_init:
-sound/soc/sof/intel/hda-bus.c:16:25: error: implicit declaration of function
- snd_soc_hdac_hda_get_ops; did you mean snd_soc_jack_add_gpiods? [-Werror=implicit-function-declaration]
- #define sof_hda_ext_ops snd_soc_hdac_hda_get_ops()
+Agree, just leave them this, Thanks!
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: d4ff1b3917a5 ('ASoC: SOF: Intel: Initialize hdaudio bus properly")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/sof/intel/hda-bus.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/sof/intel/hda-bus.c b/sound/soc/sof/intel/hda-bus.c
-index 0caec3a..e28a9c4 100644
---- a/sound/soc/sof/intel/hda-bus.c
-+++ b/sound/soc/sof/intel/hda-bus.c
-@@ -13,6 +13,7 @@
- #include "hda.h"
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#include "../../../soc/codecs/hdac_hda.h"
- #define sof_hda_ext_ops	snd_soc_hdac_hda_get_ops()
- #else
- #define sof_hda_ext_ops	NULL
--- 
-2.7.4
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> .
+> 
