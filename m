@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/4] ASoC: Intel: boards: Match Product Family
-	instead of product
-Date: Fri,  9 Aug 2019 18:22:33 -0500
-Message-ID: <20190809232236.21182-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/4] ASoC: Intel: sof-rt5682: add dmic dapm
+	widget to support dmic PCM
+Date: Fri,  9 Aug 2019 18:22:34 -0500
+Message-ID: <20190809232236.21182-3-pierre-louis.bossart@linux.intel.com>
 References: <20190809232236.21182-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC5D2F80391
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 01:22:42 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87ACDF800E4
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 01:22:44 +0200 (CEST)
 In-Reply-To: <20190809232236.21182-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,34 +24,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
 
-The generic machine driver of sof_rt5682
-supports more platforms of same product family.
-hence match the product family instead of product name.
+We need add DAPM MIC endpoint widget "SoC DMIC" and route, to enable
+DMIC PCM DAPM support.
 
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index daeaa396d928..c1181bc0119e 100644
+index c1181bc0119e..a437567b8cee 100644
 --- a/sound/soc/intel/boards/sof_rt5682.c
 +++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -91,8 +91,7 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
- 	{
- 		.callback = sof_rt5682_quirk_cb,
- 		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "Hatch"),
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Hatch"),
- 		},
- 		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
- 					SOF_RT5682_MCLK_24MHZ |
+@@ -308,6 +308,7 @@ static const struct snd_soc_dapm_widget sof_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Spk", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ };
+ 
+ static const struct snd_soc_dapm_route sof_map[] = {
+@@ -318,6 +319,9 @@ static const struct snd_soc_dapm_route sof_map[] = {
+ 	/* other jacks */
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 
++	/* digital mics */
++	{"DMic", NULL, "SoC DMIC"},
++
+ };
+ 
+ static const struct snd_soc_dapm_route speaker_map[] = {
 -- 
 2.20.1
