@@ -1,28 +1,20 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 10/15] ASoC: samsung: tm2_wm5110: use
- snd_soc_dai_link_component for aux_dev
-Date: Fri, 9 Aug 2019 11:19:46 +0200
-Message-ID: <CAJKOXPeZcx-yGvCNr=yyB+BW4A_RD+PBp=ofbhy6Nwj1hYw96Q@mail.gmail.com>
-References: <87zhkk6wdy.wl-kuninori.morimoto.gx@renesas.com>
- <87lfw46w9g.wl-kuninori.morimoto.gx@renesas.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Apply workaround for another AMD
+	chip 1022:1487
+Date: Fri,  9 Aug 2019 11:26:33 +0200
+Message-ID: <20190809092633.28535-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34284F800E4
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 11:26:26 +0200 (CEST)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com
- [209.85.208.177])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 93B9121743
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 09:19:59 +0000 (UTC)
-Received: by mail-lj1-f177.google.com with SMTP id y17so66898235ljk.10
- for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2019 02:19:59 -0700 (PDT)
-In-Reply-To: <87lfw46w9g.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF937F801A4
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 11:26:34 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 45C9FAED0
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 09:26:34 +0000 (UTC)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,24 +24,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Heiko Stuebner <heiko@sntech.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Jie Yang <yang.jie@linux.intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Richard Fontana <rfontana@redhat.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Jerome Brunet <jbrunet@baylibre.com>, Anders Roxell <anders.roxell@linaro.org>, Kevin Hilman <khilman@baylibre.com>, YueHaibing <yuehaibing@huawei.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Tzung-Bi Shih <tzungbi@google.com>, Chen-Yu Tsai <wens@csie.org>, Georgii Staroselski i <georgii.staroselskii@emlid.com>, Danny Milosavljevic <dannym@scratchpost.org>, Alexios Zavras <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Hans de Goede <hdeg>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 8 Aug 2019 at 07:54, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> We can use snd_soc_dai_link_component to specify aux_dev.
-> Let's use it.
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/samsung/tm2_wm5110.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+MSI MPG X570 board is with another AMD HD-audio controller (PCI ID
+1022:1487) and it requires the same workaround applied for X370, etc
+(PCI ID 1022:1457).
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Best regards,
-Krzysztof
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index a6d8c0d77b84..99fc0917339b 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2508,6 +2508,9 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* AMD, X370 & co */
+ 	{ PCI_DEVICE(0x1022, 0x1457),
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
++	/* AMD, X570 & co */
++	{ PCI_DEVICE(0x1022, 0x1487),
++	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
+ 	/* AMD Stoney */
+ 	{ PCI_DEVICE(0x1022, 0x157a),
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_SB |
+-- 
+2.16.4
