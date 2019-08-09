@@ -1,54 +1,52 @@
-From: Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH] ASoC: rt5677: Revert remove superfluous set
-Date: Fri,  9 Aug 2019 14:59:51 -0700
-Message-ID: <20190809215952.155660-1-cujomalainey@chromium.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/3] soundwire: debugfs support for 5.4
+Date: Fri,  9 Aug 2019 17:43:38 -0500
+Message-ID: <20190809224341.15726-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C351F800E4
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 00:00:09 +0200 (CEST)
-Received: by mail-pg1-x542.google.com with SMTP id n190so5675827pgn.0
- for <alsa-devel@alsa-project.org>; Fri, 09 Aug 2019 15:00:09 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 4dc057a786dc23 ("ASoC: rt5677: remove superfluous set") was an
-attempted code cleanup but was incorrectly tested before sent and
-actually breaks the interrupt since it never resets the value on each
-loop now. The breakage is most testable when hotwording code is added
-and also uses the interrupt.
+This patchset enables debugfs support and corrects all the feedback
+provided on an earlier RFC ('soundwire: updates for 5.4')
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
----
- sound/soc/codecs/rt5677.c | 1 +
- 1 file changed, 1 insertion(+)
+There is one remaining hard-coded value in intel.c that will need to
+be fixed in a follow-up patchset not specific to debugfs: we need to
+remove hard-coded Intel-specific configurations from cadence_master.c
+(PDI offsets, etc).
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index deaed5132dc95..c779dc3474f9e 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5098,6 +5098,7 @@ static irqreturn_t rt5677_irq(int unused, void *data)
- 			goto exit;
- 		}
- 
-+		irq_fired = false;
- 		for (i = 0; i < RT5677_IRQ_NUM; i++) {
- 			if (reg_irq & rt5677_irq_descs[i].status_mask) {
- 				irq_fired = true;
+Changes since RFC (Feedback from GKH, Vinod, Guennadi, Cezary, Sanyog):
+removed error checks
+used DEFINE_SHOW_ATTRIBUTE and seq_file
+fixed copyright dates
+fixed SPDX license info to use GPL2.0 only
+fixed Makefile to include debugfs only if CONFIG_DEBUG_FS is selected
+used static inlines for fallback compilation
+removed intermediate variables
+removed hard-coded constants in loops (used registers offsets and
+hardware capabilities)
+squashed patch 3
+
+Pierre-Louis Bossart (3):
+  soundwire: add debugfs support
+  soundwire: cadence_master: add debugfs register dump
+  soundwire: intel: add debugfs register dump
+
+ drivers/soundwire/Makefile         |   5 +
+ drivers/soundwire/bus.c            |   6 ++
+ drivers/soundwire/bus.h            |  24 +++++
+ drivers/soundwire/bus_type.c       |   3 +
+ drivers/soundwire/cadence_master.c | 104 ++++++++++++++++++++
+ drivers/soundwire/cadence_master.h |   2 +
+ drivers/soundwire/debugfs.c        | 151 +++++++++++++++++++++++++++++
+ drivers/soundwire/intel.c          | 114 ++++++++++++++++++++++
+ drivers/soundwire/slave.c          |   1 +
+ include/linux/soundwire/sdw.h      |   4 +
+ 10 files changed, 414 insertions(+)
+ create mode 100644 drivers/soundwire/debugfs.c
+
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.20.1
