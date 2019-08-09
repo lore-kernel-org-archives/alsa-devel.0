@@ -1,57 +1,46 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: soundwire: add slave bindings
-Date: Fri, 9 Aug 2019 09:25:00 +0100
-Message-ID: <144f1ed7-c654-eaeb-066e-bf29d6e12d65@linaro.org>
-References: <20190808144504.24823-1-srinivas.kandagatla@linaro.org>
- <20190808144504.24823-2-srinivas.kandagatla@linaro.org>
- <d346b2af-f285-4c53-b706-46a129ab7951@linux.intel.com>
- <cdd2bded-551c-65f5-ca29-d2bb825bdaba@linaro.org>
- <20190808195216.GM3795@sirena.co.uk>
- <20190809045459.GG12733@vkoul-mobl.Dlink>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: ml26124: remove unused variable 'ngth'
+Date: Fri, 9 Aug 2019 16:24:40 +0800
+Message-ID: <20190809082440.67412-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190809045459.GG12733@vkoul-mobl.Dlink>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, gregkh@linuxfoundation.org, rfontana@redhat.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
+In file included from ./include/sound/tlv.h:10:0,
+                 from sound/soc/codecs/ml26124.c:19:
+sound/soc/codecs/ml26124.c:59:35: warning: ngth defined but not used [-Wunused-const-variable=]
+ static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+                                   ^
+./include/uapi/sound/tlv.h:64:15: note: in definition of macro SNDRV_CTL_TLVD_DECLARE_DB_SCALE
+  unsigned int name[] = { \
+               ^~~~
+sound/soc/codecs/ml26124.c:59:14: note: in expansion of macro DECLARE_TLV_DB_SCALE
+ static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+              ^~~~~~~~~~~~~~~~~~~~
 
+It is never used, so can be removed.
 
-On 09/08/2019 05:54, Vinod Koul wrote:
-> On 08-08-19, 20:52, Mark Brown wrote:
->> On Thu, Aug 08, 2019 at 05:48:56PM +0100, Srinivas Kandagatla wrote:
->>> On 08/08/2019 16:58, Pierre-Louis Bossart wrote:
->>
->>>>> +- sdw-instance-id: Should be ('Instance ID') from SoundWire
->>>>> +          Enumeration Address. Instance ID is for the cases
->>>>> +          where multiple Devices of the same type or Class
->>>>> +          are attached to the bus.
->>
->>>> so it is actually required if you have a single Slave device? Or is it
->>>> only required when you have more than 1 device of the same type?
->>
->>> This is mandatory for any slave device!
->>
->> If it's mandatory the wording is a bit unclear.  How about something
->> like:
->>
->> 	Should be ('Instance ID') from the SoundWire Enumeration
->> 	Address.  This must always be provided, if multiple devices
->> 	with the same type or class or attached to the bus each
->> 	instance must have a distinct value.
-> 
-> That helps to make it clear.
-> 
-> Also the section of properties starts with Mandatory property, it should
-> be made Mandatory Properties instead, like in other binding docs to make
-> it clear that properties mentioned in the section are mandatory
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/codecs/ml26124.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Will update as suggested!
-
-thanks,
-srini
-> 
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index 3abd278..55823bc 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -56,7 +56,6 @@ static const DECLARE_TLV_DB_SCALE(alclvl, -2250, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(mingain, -1200, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(maxgain, -675, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(boost_vol, -1200, 75, 0);
+-static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+ 
+ static const char * const ml26124_companding[] = {"16bit PCM", "u-law",
+ 						  "A-law"};
+-- 
+2.7.4
