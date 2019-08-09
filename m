@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: Remove call to
-	snd_sof_dsp_mailbox_init" to the asoc tree
-Date: Fri,  9 Aug 2019 13:31:52 +0100 (BST)
-Message-ID: <20190809123152.2DA1F27430D6@ypsilon.sirena.org.uk>
-References: <20190807150203.26359-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: Intel: hda: Use generic function
+	for fw ready / mem windows creation" to the asoc tree
+Date: Fri,  9 Aug 2019 13:31:51 +0100 (BST)
+Message-ID: <20190809123151.B591727430D0@ypsilon.sirena.org.uk>
+References: <20190807150203.26359-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A210CF805A9
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 14:31:54 +0200 (CEST)
-In-Reply-To: <20190807150203.26359-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12FE1F805A8
+ for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 14:31:53 +0200 (CEST)
+In-Reply-To: <20190807150203.26359-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: Remove call to snd_sof_dsp_mailbox_init
+   ASoC: SOF: Intel: hda: Use generic function for fw ready / mem windows creation
 
 has been applied to the asoc tree at
 
@@ -55,61 +55,236 @@ to this mail.
 Thanks,
 Mark
 
->From 0b76f512c206dd7c3f7761b24826887af80204c6 Mon Sep 17 00:00:00 2001
+>From 6eebd3907527764618ee250e1106b9e809c46143 Mon Sep 17 00:00:00 2001
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 7 Aug 2019 10:01:58 -0500
-Subject: [PATCH] ASoC: SOF: Remove call to snd_sof_dsp_mailbox_init
+Date: Wed, 7 Aug 2019 10:02:03 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: Use generic function for fw ready /
+ mem windows creation
 
-This is reserved for some historical reason, we didn't enable memory
-windows for byt/bdw at the beginning, to make it compatible, we get
-those mailbox offsets from fw_ready struct firstly, and then update them
-if they existed in the following memory windows, to make sure the
-mailbox still can be used if no memory windows are created.
+We can use generic sof_fw_ready function and reduce code duplication.
+Careful here that we need to provide the implementation for
+get_mailbox_offset and get_window_offset.
 
-With this change all platforms have the same implementation for
-xxx_fw_ready function so that we can refactor it in a common file.
-
-Suggested-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190807150203.26359-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190807150203.26359-7-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/bdw.c | 5 -----
- sound/soc/sof/intel/byt.c | 5 -----
- 2 files changed, 10 deletions(-)
+ sound/soc/sof/intel/apl.c     |   4 +-
+ sound/soc/sof/intel/cnl.c     |   4 +-
+ sound/soc/sof/intel/hda-ipc.c | 150 +---------------------------------
+ sound/soc/sof/intel/hda.h     |   4 +-
+ 4 files changed, 13 insertions(+), 149 deletions(-)
 
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 4bb9636da990..94be024a99eb 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -455,11 +455,6 @@ static int bdw_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
- 	sof_block_read(sdev, sdev->mmio_bar, offset, fw_ready,
- 		       sizeof(*fw_ready));
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index fd2e26d79796..8dc7a5558da4 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -46,7 +46,9 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
  
--	snd_sof_dsp_mailbox_init(sdev, fw_ready->dspbox_offset,
--				 fw_ready->dspbox_size,
--				 fw_ready->hostbox_offset,
--				 fw_ready->hostbox_size);
--
- 	/* make sure ABI version is compatible */
- 	ret = snd_sof_ipc_valid(sdev);
- 	if (ret < 0)
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 000d576f6a8d..cb8f02ee09f2 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -237,11 +237,6 @@ static int byt_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
- 	sof_block_read(sdev, sdev->mmio_bar, offset, fw_ready,
- 		       sizeof(*fw_ready));
+ 	/* ipc */
+ 	.send_msg	= hda_dsp_ipc_send_msg,
+-	.fw_ready	= hda_dsp_ipc_fw_ready,
++	.fw_ready	= sof_fw_ready,
++	.get_mailbox_offset = hda_dsp_ipc_get_mailbox_offset,
++	.get_window_offset = hda_dsp_ipc_get_window_offset,
  
--	snd_sof_dsp_mailbox_init(sdev, fw_ready->dspbox_offset,
--				 fw_ready->dspbox_size,
--				 fw_ready->hostbox_offset,
--				 fw_ready->hostbox_size);
+ 	.ipc_msg_data	= hda_ipc_msg_data,
+ 	.ipc_pcm_params	= hda_ipc_pcm_params,
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index ffd8d4394537..6d7d9c93252c 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -204,7 +204,9 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
+ 
+ 	/* ipc */
+ 	.send_msg	= cnl_ipc_send_msg,
+-	.fw_ready	= hda_dsp_ipc_fw_ready,
++	.fw_ready	= sof_fw_ready,
++	.get_mailbox_offset = hda_dsp_ipc_get_mailbox_offset,
++	.get_window_offset = hda_dsp_ipc_get_window_offset,
+ 
+ 	.ipc_msg_data	= hda_ipc_msg_data,
+ 	.ipc_pcm_params	= hda_ipc_pcm_params,
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index 2ecba91f5219..6aae6f18b3dc 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -266,156 +266,14 @@ irqreturn_t hda_dsp_ipc_irq_handler(int irq, void *context)
+ 	return ret;
+ }
+ 
+-/* IPC Firmware ready */
 -
- 	/* make sure ABI version is compatible */
- 	ret = snd_sof_ipc_valid(sdev);
- 	if (ret < 0)
+-static void ipc_get_windows(struct snd_sof_dev *sdev)
++int hda_dsp_ipc_get_mailbox_offset(struct snd_sof_dev *sdev)
+ {
+-	struct sof_ipc_window_elem *elem;
+-	u32 outbox_offset = 0;
+-	u32 stream_offset = 0;
+-	u32 inbox_offset = 0;
+-	u32 outbox_size = 0;
+-	u32 stream_size = 0;
+-	u32 inbox_size = 0;
+-	int i;
+-
+-	if (!sdev->info_window) {
+-		dev_err(sdev->dev, "error: have no window info\n");
+-		return;
+-	}
+-
+-	for (i = 0; i < sdev->info_window->num_windows; i++) {
+-		elem = &sdev->info_window->window[i];
+-
+-		switch (elem->type) {
+-		case SOF_IPC_REGION_UPBOX:
+-			inbox_offset =
+-				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
+-			inbox_size = elem->size;
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						inbox_offset,
+-						elem->size, "inbox",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		case SOF_IPC_REGION_DOWNBOX:
+-			outbox_offset =
+-				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
+-			outbox_size = elem->size;
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						outbox_offset,
+-						elem->size, "outbox",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		case SOF_IPC_REGION_TRACE:
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						elem->offset +
+-						SRAM_WINDOW_OFFSET
+-						(elem->id),
+-						elem->size, "etrace",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		case SOF_IPC_REGION_DEBUG:
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						elem->offset +
+-						SRAM_WINDOW_OFFSET
+-						(elem->id),
+-						elem->size, "debug",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		case SOF_IPC_REGION_STREAM:
+-			stream_offset =
+-				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
+-			stream_size = elem->size;
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						elem->offset +
+-						SRAM_WINDOW_OFFSET
+-						(elem->id),
+-						elem->size, "stream",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		case SOF_IPC_REGION_REGS:
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						elem->offset +
+-						SRAM_WINDOW_OFFSET
+-						(elem->id),
+-						elem->size, "regs",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		case SOF_IPC_REGION_EXCEPTION:
+-			sdev->dsp_oops_offset = elem->offset +
+-						SRAM_WINDOW_OFFSET(elem->id);
+-			snd_sof_debugfs_io_item(sdev,
+-						sdev->bar[HDA_DSP_BAR] +
+-						elem->offset +
+-						SRAM_WINDOW_OFFSET
+-						(elem->id),
+-						elem->size, "exception",
+-						SOF_DEBUGFS_ACCESS_D0_ONLY);
+-			break;
+-		default:
+-			dev_err(sdev->dev, "error: get illegal window info\n");
+-			return;
+-		}
+-	}
+-
+-	if (outbox_size == 0 || inbox_size == 0) {
+-		dev_err(sdev->dev, "error: get illegal mailbox window\n");
+-		return;
+-	}
+-
+-	snd_sof_dsp_mailbox_init(sdev, inbox_offset, inbox_size,
+-				 outbox_offset, outbox_size);
+-	sdev->stream_box.offset = stream_offset;
+-	sdev->stream_box.size = stream_size;
+-
+-	dev_dbg(sdev->dev, " mailbox upstream 0x%x - size 0x%x\n",
+-		inbox_offset, inbox_size);
+-	dev_dbg(sdev->dev, " mailbox downstream 0x%x - size 0x%x\n",
+-		outbox_offset, outbox_size);
+-	dev_dbg(sdev->dev, " stream region 0x%x - size 0x%x\n",
+-		stream_offset, stream_size);
++	return HDA_DSP_MBOX_UPLINK_OFFSET;
+ }
+ 
+-/* check for ABI compatibility and create memory windows on first boot */
+-int hda_dsp_ipc_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
++int hda_dsp_ipc_get_window_offset(struct snd_sof_dev *sdev, u32 id)
+ {
+-	struct sof_ipc_fw_ready *fw_ready = &sdev->fw_ready;
+-	u32 offset;
+-	int ret;
+-
+-	/* mailbox must be on 4k boundary */
+-	offset = HDA_DSP_MBOX_UPLINK_OFFSET;
+-
+-	dev_dbg(sdev->dev, "ipc: DSP is ready 0x%8.8x offset 0x%x\n",
+-		msg_id, offset);
+-
+-	/* no need to re-check version/ABI for subsequent boots */
+-	if (!sdev->first_boot)
+-		return 0;
+-
+-	/* copy data from the DSP FW ready offset */
+-	sof_block_read(sdev, sdev->mmio_bar, offset, fw_ready,
+-		       sizeof(*fw_ready));
+-
+-	/* make sure ABI version is compatible */
+-	ret = snd_sof_ipc_valid(sdev);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* now check for extended data */
+-	snd_sof_fw_parse_ext_data(sdev, sdev->mmio_bar,
+-				  HDA_DSP_MBOX_UPLINK_OFFSET +
+-				  sizeof(struct sof_ipc_fw_ready));
+-
+-	ipc_get_windows(sdev);
+-
+-	return 0;
++	return SRAM_WINDOW_OFFSET(id);
+ }
+ 
+ void hda_ipc_msg_data(struct snd_sof_dev *sdev,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 65904c3511df..6db3dcbab3bd 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -519,7 +519,9 @@ int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
+ int hda_dsp_ipc_send_msg(struct snd_sof_dev *sdev,
+ 			 struct snd_sof_ipc_msg *msg);
+ void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev);
+-int hda_dsp_ipc_fw_ready(struct snd_sof_dev *sdev, u32 msg_id);
++int hda_dsp_ipc_get_mailbox_offset(struct snd_sof_dev *sdev);
++int hda_dsp_ipc_get_window_offset(struct snd_sof_dev *sdev, u32 id);
++
+ irqreturn_t hda_dsp_ipc_irq_handler(int irq, void *context);
+ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context);
+ int hda_dsp_ipc_cmd_done(struct snd_sof_dev *sdev, int dir);
 -- 
 2.20.1
