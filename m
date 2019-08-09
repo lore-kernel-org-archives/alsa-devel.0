@@ -1,82 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ALSA: hda: bus cleanup
-Date: Fri, 9 Aug 2019 12:38:09 +0100
-Message-ID: <20190809113809.GA3963@sirena.co.uk>
-References: <20190808095715.29713-1-tiwai@suse.de>
- <ae7d32fe-a279-8309-2370-1832edcce413@linux.intel.com>
- <s5hr25vhg22.wl-tiwai@suse.de> <20190808190343.GK3795@sirena.co.uk>
- <s5hftmbie9i.wl-tiwai@suse.de> <20190808213311.GN3795@sirena.co.uk>
- <20190808222201.GQ3795@sirena.co.uk> <s5ha7cij2xd.wl-tiwai@suse.de>
+Subject: Re: [PATCH] fix odd_ptr_err.cocci warnings
+Date: Fri, 9 Aug 2019 13:31:12 +0100
+Message-ID: <20190809123112.GC3963@sirena.co.uk>
+References: <alpine.DEB.2.21.1908091229140.2946@hadrien>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5133428738027475751=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16AC2F8036B
- for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2019 13:38:17 +0200 (CEST)
-In-Reply-To: <s5ha7cij2xd.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Thierry Reding <thierry.reding@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eHhjakXzOLJAF9wJ"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1908091229140.2946@hadrien>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, kbuild-all@01.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5133428738027475751==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-
-
---RnlQjJ0d97Da+TV1
+--eHhjakXzOLJAF9wJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 09, 2019 at 07:58:06AM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Fri, Aug 09, 2019 at 12:30:46PM +0200, Julia Lawall wrote:
 
-> > Had to rebuild this since git has a bug with recording merge conflicts,
-> > just pushing out a new version now - c2f16a94a80497e4b28c27f9ca2cd6cd60706fb6.
+> tree:   https://github.com/omap-audio/linux-audio peter/ti-linux-4.19.y/w=
+ip
+> head:   62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a
+> commit: 62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a [34/34] j721e new machin=
+e driver wip
+> :::::: branch date: 20 hours ago
+> :::::: commit date: 20 hours ago
+>=20
+>  j721e-evm.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> --- a/sound/soc/ti/j721e-evm.c
+> +++ b/sound/soc/ti/j721e-evm.c
+> @@ -283,7 +283,7 @@ static int j721e_get_clocks(struct platf
 
-> Thanks, it looks good to me.
+This file isn't upstream, it's only in the TI BSP.
 
-> And Stephen resolved the conflicts in today's linux-next, too, so
-> let's compare later.
-
-My tree didn't get updated in -next because there's some configurations
-that don't build.
-
---RnlQjJ0d97Da+TV1
+--eHhjakXzOLJAF9wJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1NWyAACgkQJNaLcl1U
-h9B//Qf/Us96n2eBGQIi/DGDGnlSethohcl9KG1hdZrIG7bRn8CRinBpmvOfZ56B
-t3IECdQkDOLAeesi1dIAtTGpIr7hHQ3l8TrVm4x/yRhEdNU2bJ6RwhpK/nECzwp+
-bUoC8yCcVl5LBiuQh0KY0F5hgSSvCtrq4uSpq1bcmo3X2prPoikm71LAjEz4Dqq8
-sF/XGRf8MqVDq9aLMYenGNljuMXuWNS4UnOh0VzQjuwsFuQoZQ8fNCCr1c0dWxT2
-uzRBTkxUlYIviAZ3BcqXjWykdFxOAgMx+Vjw+uKmCFdUh8i/08jCVaK0J1pL9tju
-K4hlvjcW2oXlziAADVrdFUAPlLAH6g==
-=TQ0y
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1NZ48ACgkQJNaLcl1U
+h9CcMQf+Km4bvdFc5fXpozUNHkhmiDGf5UtThFctMq6C6MK4tB+cTSjQqpLPip75
+hihD/NMWNNvcxkJxNaK5pDv4yEWI+F9DLhjLePmCOdUjg68CwYF2e5tLEKs7LAzo
+muAywApdJXbOOd+1yGG5lKw0EEoidrU5n9rzBYSbSjKwbtFhf4C1rQ8GO7T15S7U
++0sq47MSOf3Q5fji1RcvGy98RkZbzU9gcheLcTXcQfRZ+eapGu11PmHR+OqgO/GG
+owL2DpqbypT+9iLdfmR9AOxwi3ykOWtU93h8uMh1tmDxfT4Auuj5j8leIEVdoCHP
+KKhhYS2X70ImKlg4SeUrEJQTcWVntw==
+=ykm0
 -----END PGP SIGNATURE-----
 
---RnlQjJ0d97Da+TV1--
-
---===============5133428738027475751==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5133428738027475751==--
+--eHhjakXzOLJAF9wJ--
