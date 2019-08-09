@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ml26124: remove unused variable 'ngth'" to the asoc tree
+Subject: Applied "ASoC: SOF: Intel: Add missing include file hdac_hda.h" to the asoc tree
 Date: Fri,  9 Aug 2019 13:31:52 +0100 (BST)
-Message-ID: <20190809123152.6CEB82743057@ypsilon.sirena.org.uk>
-References: <20190809082440.67412-1-yuehaibing@huawei.com>
+Message-ID: <20190809123152.E96DE27430B7@ypsilon.sirena.org.uk>
+References: <20190809110100.71236-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190809082440.67412-1-yuehaibing@huawei.com>
+In-Reply-To: <20190809110100.71236-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, gregkh@linuxfoundation.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, rfontana@redhat.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, pierre-louis.bossart@linux.intel.com, tiwai@suse.com, yang.jie@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ml26124: remove unused variable 'ngth'
+   ASoC: SOF: Intel: Add missing include file hdac_hda.h
 
 has been applied to the asoc tree at
 
@@ -37,44 +37,54 @@ to this mail.
 Thanks,
 Mark
 
->From 0fd70e22a0ffebd13028bf2c7da6b747070475bf Mon Sep 17 00:00:00 2001
+>From a62bd63893027bfa32fccbba0e0ac067824c362c Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 9 Aug 2019 16:24:40 +0800
-Subject: [PATCH] ASoC: ml26124: remove unused variable 'ngth'
+Date: Fri, 9 Aug 2019 19:01:00 +0800
+Subject: [PATCH] ASoC: SOF: Intel: Add missing include file hdac_hda.h
 
-In file included from ./include/sound/tlv.h:10:0,
-                 from sound/soc/codecs/ml26124.c:19:
-sound/soc/codecs/ml26124.c:59:35: warning: ngth defined but not used [-Wunused-const-variable=]
- static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
-                                   ^
-./include/uapi/sound/tlv.h:64:15: note: in definition of macro SNDRV_CTL_TLVD_DECLARE_DB_SCALE
-  unsigned int name[] = { \
-               ^~~~
-sound/soc/codecs/ml26124.c:59:14: note: in expansion of macro DECLARE_TLV_DB_SCALE
- static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
-              ^~~~~~~~~~~~~~~~~~~~
+Building with SND_SOC_SOF_HDA_AUDIO_CODEC fails:
 
-It is never used, so can be removed.
+sound/soc/sof/intel/hda-bus.c: In function sof_hda_bus_init:
+sound/soc/sof/intel/hda-bus.c:16:25: error: implicit declaration of function
+ snd_soc_hdac_hda_get_ops; did you mean snd_soc_jack_add_gpiods? [-Werror=implicit-function-declaration]
+ #define sof_hda_ext_ops snd_soc_hdac_hda_get_ops()
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Fixes: d4ff1b3917a5 ('ASoC: SOF: Intel: Initialize hdaudio bus properly")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190809082440.67412-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190809110100.71236-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ml26124.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sof/intel/hda-bus.c | 1 +
+ sound/soc/sof/intel/hda.c     | 3 ---
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
-index 3abd27893ce6..55823bc95d06 100644
---- a/sound/soc/codecs/ml26124.c
-+++ b/sound/soc/codecs/ml26124.c
-@@ -56,7 +56,6 @@ static const DECLARE_TLV_DB_SCALE(alclvl, -2250, 150, 0);
- static const DECLARE_TLV_DB_SCALE(mingain, -1200, 600, 0);
- static const DECLARE_TLV_DB_SCALE(maxgain, -675, 600, 0);
- static const DECLARE_TLV_DB_SCALE(boost_vol, -1200, 75, 0);
--static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+diff --git a/sound/soc/sof/intel/hda-bus.c b/sound/soc/sof/intel/hda-bus.c
+index 0caec3a070d3..1d2babdda9dd 100644
+--- a/sound/soc/sof/intel/hda-bus.c
++++ b/sound/soc/sof/intel/hda-bus.c
+@@ -13,6 +13,7 @@
+ #include "hda.h"
  
- static const char * const ml26124_companding[] = {"16bit PCM", "u-law",
- 						  "A-law"};
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
++#include "../../codecs/hdac_hda.h"
+ #define sof_hda_ext_ops	snd_soc_hdac_hda_get_ops()
+ #else
+ #define sof_hda_ext_ops	NULL
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index d04844d6b104..28eb780494aa 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -23,9 +23,6 @@
+ #include <sound/sof/xtensa.h>
+ #include "../ops.h"
+ #include "hda.h"
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+-#include "../../codecs/hdac_hda.h"
+-#endif
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ #include <sound/soc-acpi-intel-match.h>
 -- 
 2.20.1
