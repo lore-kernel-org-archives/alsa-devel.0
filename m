@@ -1,51 +1,41 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [alsa-devel] Regression in next with codec unload and
-        snd_soc_component_get/put
-Date: Fri, 9 Aug 2019 00:46:43 -0700
-Message-ID: <20190809074643.GB52127@atomide.com>
-References: <20190809070003.GA52127@atomide.com>
- <s5hwofmhkbs.wl-tiwai@suse.de>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: mt6351: remove unused variable 'mt_lineout_control'
+Date: Fri, 9 Aug 2019 16:02:34 +0800
+Message-ID: <20190809080234.23332-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hwofmhkbs.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, pierre-louis.bossart@linux.intel.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Takashi Iwai <tiwai@suse.de> [190809 07:25]:
-> On Fri, 09 Aug 2019 09:00:03 +0200,
-> Tony Lindgren wrote:
-> > 
-> > Hi,
-> > 
-> > Looks like commit 4a81e8f30d0b ("ASoC: soc-component: add
-> > snd_soc_component_get/put()") causes a regression where trying
-> > to rmmod a codec driver fails with module is in use error after
-> > rmmod of snd-soc-audio-graph-card for example.
-> > 
-> > Any ideas what goes wrong there?
-> 
-> There is an obvious typo: soc_cleanup_component() should call
-> snd_soc_component_module_put_when_remove() instead of *_close().
+sound/soc/codecs/mt6351.c:1070:38: warning:
+ mt_lineout_control defined but not used [-Wunused-const-variable=]
 
-Making that change locally seems to fix it thanks.
+It is never used, so can be removed.
 
-> And the module_get_upon_open boolean switch is a bit hard to
-> understand.  Maybe using enum would be simpler there.
-> 
-> > BTW, looks like the lore.kernel.org link in that commit also is
-> > unreachable?
-> 
-> It's because alsa-devel ML isn't tracked on lore.kernel.org,
-> unfortunately.
-> 
-> Jaroslav, I asked this already.  Shall we ask lore to track alsa-devel
-> ML?
->   https://korg.wiki.kernel.org/userdoc/lore
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/codecs/mt6351.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Regards,
-
-Tony
+diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
+index 4b3ce01..5c0536e 100644
+--- a/sound/soc/codecs/mt6351.c
++++ b/sound/soc/codecs/mt6351.c
+@@ -1066,11 +1066,6 @@ static int mt_mic_bias_2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
+-/* DAPM Kcontrols */
+-static const struct snd_kcontrol_new mt_lineout_control =
+-	SOC_DAPM_SINGLE("Switch", MT6351_AUDDEC_ANA_CON3,
+-			RG_AUDLOLPWRUP_VAUDP32_BIT, 1, 0);
+-
+ /* DAPM Widgets */
+ static const struct snd_soc_dapm_widget mt6351_dapm_widgets[] = {
+ 	/* Digital Clock */
+-- 
+2.7.4
