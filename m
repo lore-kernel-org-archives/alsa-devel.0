@@ -1,30 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mt6351: remove unused variable 'mt_lineout_control'"
- to the asoc tree
+Subject: Applied "ASoC: ml26124: remove unused variable 'ngth'" to the asoc tree
 Date: Fri,  9 Aug 2019 13:31:52 +0100 (BST)
-Message-ID: <20190809123152.AA2A0274303D@ypsilon.sirena.org.uk>
-References: <20190809080234.23332-1-yuehaibing@huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190809080234.23332-1-yuehaibing@huawei.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Message-ID: <20190809123152.6CEB82743057@ypsilon.sirena.org.uk>
+References: <20190809082440.67412-1-yuehaibing@huawei.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190809082440.67412-1-yuehaibing@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, gregkh@linuxfoundation.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, rfontana@redhat.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mt6351: remove unused variable 'mt_lineout_control'
+   ASoC: ml26124: remove unused variable 'ngth'
 
 has been applied to the asoc tree at
 
@@ -49,39 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From bc8d9f737fc01cce913f1cc215b7e66f01697e52 Mon Sep 17 00:00:00 2001
+>From 0fd70e22a0ffebd13028bf2c7da6b747070475bf Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 9 Aug 2019 16:02:34 +0800
-Subject: [PATCH] ASoC: mt6351: remove unused variable 'mt_lineout_control'
+Date: Fri, 9 Aug 2019 16:24:40 +0800
+Subject: [PATCH] ASoC: ml26124: remove unused variable 'ngth'
 
-sound/soc/codecs/mt6351.c:1070:38: warning:
- mt_lineout_control defined but not used [-Wunused-const-variable=]
+In file included from ./include/sound/tlv.h:10:0,
+                 from sound/soc/codecs/ml26124.c:19:
+sound/soc/codecs/ml26124.c:59:35: warning: ngth defined but not used [-Wunused-const-variable=]
+ static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+                                   ^
+./include/uapi/sound/tlv.h:64:15: note: in definition of macro SNDRV_CTL_TLVD_DECLARE_DB_SCALE
+  unsigned int name[] = { \
+               ^~~~
+sound/soc/codecs/ml26124.c:59:14: note: in expansion of macro DECLARE_TLV_DB_SCALE
+ static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+              ^~~~~~~~~~~~~~~~~~~~
 
 It is never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190809080234.23332-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190809082440.67412-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mt6351.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/codecs/ml26124.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-index 4b3ce01c5a93..5c0536eb1044 100644
---- a/sound/soc/codecs/mt6351.c
-+++ b/sound/soc/codecs/mt6351.c
-@@ -1066,11 +1066,6 @@ static int mt_mic_bias_2_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index 3abd27893ce6..55823bc95d06 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -56,7 +56,6 @@ static const DECLARE_TLV_DB_SCALE(alclvl, -2250, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(mingain, -1200, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(maxgain, -675, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(boost_vol, -1200, 75, 0);
+-static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
  
--/* DAPM Kcontrols */
--static const struct snd_kcontrol_new mt_lineout_control =
--	SOC_DAPM_SINGLE("Switch", MT6351_AUDDEC_ANA_CON3,
--			RG_AUDLOLPWRUP_VAUDP32_BIT, 1, 0);
--
- /* DAPM Widgets */
- static const struct snd_soc_dapm_widget mt6351_dapm_widgets[] = {
- 	/* Digital Clock */
+ static const char * const ml26124_companding[] = {"16bit PCM", "u-law",
+ 						  "A-law"};
 -- 
 2.20.1
