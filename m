@@ -1,63 +1,83 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 0/4] ASoC: codecs: Add WSA881x Smart Speaker amplifier support
-Date: Fri,  9 Aug 2019 14:34:03 +0100
-Message-ID: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
+Date: Fri,  9 Aug 2019 14:34:04 +0100
+Message-ID: <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
+References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: vkoul@kernel.org, broonie@kernel.org
 Cc: bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for reviewing v2 patchset, here is v3 with addressing the comments in v2.
+This patch adds bindings for Soundwire Slave devices that includes how
+SoundWire enumeration address and Link ID are used to represented in
+SoundWire slave device tree nodes.
 
-This patchset adds support to WSA8810/WSA8815 Class-D Smart Speaker
-Amplifier which is SoundWire interfaced.
-This also adds support to some missing bits in SoundWire bus layer like
-Device Tree support.
-
-This patchset along with DB845c machine driver and WCD934x codec driver
-has been tested on SDM845 SoC based DragonBoard DB845c with two
-WSA8810 speakers.
-
-Most of the code in this driver is rework of Qualcomm downstream drivers
-used in Andriod. Credits to Banajit Goswami and Patrick Lai's Team.
-
-TODO:
-	Add thermal sensor support in WSA881x.
-
-Thanks,
-srini
-
-Changes since v2:
-- Updated compatible string to include LinkID.
-- udpdated wsa driver to not register/unregister component in SoundWire
- status callbacks.
-- Updated few minor coding style review comments.
-
-Changes since v1 RFC:
-- bindings document renamed to slave.txt
-- fix error code from dt slave parsing
-
-Srinivas Kandagatla (4):
-  dt-bindings: soundwire: add slave bindings
-  soundwire: core: add device tree support for slave devices
-  dt-bindings: ASoC: Add WSA881x bindings
-  ASoC: codecs: add wsa881x amplifier support
-
- .../bindings/sound/qcom,wsa881x.txt           |   24 +
- .../devicetree/bindings/soundwire/slave.txt   |   51 +
- drivers/soundwire/bus.c                       |    2 +
- drivers/soundwire/bus.h                       |    1 +
- drivers/soundwire/slave.c                     |   44 +
- sound/soc/codecs/Kconfig                      |   10 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/wsa881x.c                    | 1134 +++++++++++++++++
- 8 files changed, 1268 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.txt
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../devicetree/bindings/soundwire/slave.txt   | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/soundwire/slave.txt
- create mode 100644 sound/soc/codecs/wsa881x.c
 
+diff --git a/Documentation/devicetree/bindings/soundwire/slave.txt b/Documentation/devicetree/bindings/soundwire/slave.txt
+new file mode 100644
+index 000000000000..201f65d2fafa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soundwire/slave.txt
+@@ -0,0 +1,51 @@
++SoundWire slave device bindings.
++
++SoundWire is a 2-pin multi-drop interface with data and clock line.
++It facilitates development of low cost, efficient, high performance systems.
++
++SoundWire slave devices:
++Every SoundWire controller node can contain zero or more child nodes
++representing slave devices on the bus. Every SoundWire slave device is
++uniquely determined by the enumeration address containing 5 fields:
++SoundWire Version, Instance ID, Manufacturer ID, Part ID
++and Class ID for a device. Addition to below required properties,
++child nodes can have device specific bindings.
++
++Required properties:
++- compatible:	 "sdw<LinkID><VersionID><InstanceID><MFD><PID><CID>".
++		  Is the textual representation of SoundWire Enumeration
++		  address along with Link ID. compatible string should contain
++		  SoundWire Link ID, SoundWire Version ID, Instance ID,
++		  Manufacturer ID, Part ID and Class ID in order
++		  represented as above and shall be in lower-case hexadecimal
++		  with leading zeroes. Vaild sizes of these fields are
++		  LinkID is 1 nibble,
++		  Version ID is 1 nibble
++		  Instance ID in 1 nibble
++		  MFD in 4 nibbles
++		  PID in 4 nibbles
++		  CID is 2 nibbles
++
++		  Version number '0x1' represents SoundWire 1.0
++		  Version number '0x2' represents SoundWire 1.1
++		  ex: "sdw0110217201000" represents 0 LinkID,
++		  SoundWire 1.0 version slave with Instance ID 1.
++		  More Information on detail of encoding of these fields can be
++		  found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
++
++SoundWire example for Qualcomm's SoundWire controller:
++
++soundwire@c2d0000 {
++	compatible = "qcom,soundwire-v1.5.0"
++	reg = <0x0c2d0000 0x2000>;
++
++	spkr_left:wsa8810-left{
++		compatible = "sdw0110217201000";
++		...
++	};
++
++	spkr_right:wsa8810-right{
++		compatible = "sdw0120217201000";
++		...
++	};
++};
 -- 
 2.21.0
