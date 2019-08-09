@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
-Date: Fri,  9 Aug 2019 14:34:04 +0100
-Message-ID: <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 2/4] soundwire: core: add device tree support for slave devices
+Date: Fri,  9 Aug 2019 14:34:05 +0100
+Message-ID: <20190809133407.25918-3-srinivas.kandagatla@linaro.org>
 References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,72 +12,106 @@ To: vkoul@kernel.org, broonie@kernel.org
 Cc: bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for Soundwire Slave devices that includes how
-SoundWire enumeration address and Link ID are used to represented in
-SoundWire slave device tree nodes.
+This patch adds support to parsing device tree based
+SoundWire slave devices.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/soundwire/slave.txt   | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soundwire/slave.txt
+ drivers/soundwire/bus.c   |  2 ++
+ drivers/soundwire/bus.h   |  1 +
+ drivers/soundwire/slave.c | 44 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soundwire/slave.txt b/Documentation/devicetree/bindings/soundwire/slave.txt
-new file mode 100644
-index 000000000000..201f65d2fafa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soundwire/slave.txt
-@@ -0,0 +1,51 @@
-+SoundWire slave device bindings.
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index fe745830a261..324c54dc52fb 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -77,6 +77,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 	 */
+ 	if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
+ 		ret = sdw_acpi_find_slaves(bus);
++	else if (IS_ENABLED(CONFIG_OF) && bus->dev->of_node)
++		ret = sdw_of_find_slaves(bus);
+ 	else
+ 		ret = -ENOTSUPP; /* No ACPI/DT so error out */
+ 
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 3048ca153f22..ee46befedbd1 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -15,6 +15,7 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ }
+ #endif
+ 
++int sdw_of_find_slaves(struct sdw_bus *bus);
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			  u64 addr, struct sdw_slave_id *id);
+ 
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index f39a5815e25d..c0dd79fc4fc5 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -2,6 +2,7 @@
+ // Copyright(c) 2015-17 Intel Corporation.
+ 
+ #include <linux/acpi.h>
++#include <linux/of.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
+@@ -35,6 +36,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ 
+ 	slave->dev.release = sdw_slave_release;
+ 	slave->dev.bus = &sdw_bus_type;
++	slave->dev.of_node = of_node_get(to_of_node(fwnode));
+ 	slave->bus = bus;
+ 	slave->status = SDW_SLAVE_UNATTACHED;
+ 	slave->dev_num = 0;
+@@ -112,3 +114,45 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ }
+ 
+ #endif
 +
-+SoundWire is a 2-pin multi-drop interface with data and clock line.
-+It facilitates development of low cost, efficient, high performance systems.
++/*
++ * sdw_of_find_slaves() - Find Slave devices in master device tree node
++ * @bus: SDW bus instance
++ *
++ * Scans Master DT node for SDW child Slave devices and registers it.
++ */
++int sdw_of_find_slaves(struct sdw_bus *bus)
++{
++	struct device *dev = bus->dev;
++	struct device_node *node;
 +
-+SoundWire slave devices:
-+Every SoundWire controller node can contain zero or more child nodes
-+representing slave devices on the bus. Every SoundWire slave device is
-+uniquely determined by the enumeration address containing 5 fields:
-+SoundWire Version, Instance ID, Manufacturer ID, Part ID
-+and Class ID for a device. Addition to below required properties,
-+child nodes can have device specific bindings.
++	for_each_child_of_node(bus->dev->of_node, node) {
++		struct sdw_slave_id id;
++		const char *compat = NULL;
++		int unique_id, link_id, sdw_version, ret;
 +
-+Required properties:
-+- compatible:	 "sdw<LinkID><VersionID><InstanceID><MFD><PID><CID>".
-+		  Is the textual representation of SoundWire Enumeration
-+		  address along with Link ID. compatible string should contain
-+		  SoundWire Link ID, SoundWire Version ID, Instance ID,
-+		  Manufacturer ID, Part ID and Class ID in order
-+		  represented as above and shall be in lower-case hexadecimal
-+		  with leading zeroes. Vaild sizes of these fields are
-+		  LinkID is 1 nibble,
-+		  Version ID is 1 nibble
-+		  Instance ID in 1 nibble
-+		  MFD in 4 nibbles
-+		  PID in 4 nibbles
-+		  CID is 2 nibbles
++		compat = of_get_property(node, "compatible", NULL);
++		if (!compat)
++			continue;
 +
-+		  Version number '0x1' represents SoundWire 1.0
-+		  Version number '0x2' represents SoundWire 1.1
-+		  ex: "sdw0110217201000" represents 0 LinkID,
-+		  SoundWire 1.0 version slave with Instance ID 1.
-+		  More Information on detail of encoding of these fields can be
-+		  found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
++		ret = sscanf(compat, "sdw%01x%01x%01x%04hx%04hx%02hhx",
++			     &link_id, &sdw_version, &unique_id, &id.mfg_id,
++			     &id.part_id, &id.class_id);
 +
-+SoundWire example for Qualcomm's SoundWire controller:
++		if (ret != 6) {
++			dev_err(dev, "Invalid compatible string found %s\n",
++				compat);
++			continue;
++		}
 +
-+soundwire@c2d0000 {
-+	compatible = "qcom,soundwire-v1.5.0"
-+	reg = <0x0c2d0000 0x2000>;
++		/* Check for link_id match */
++		if (link_id != bus->link_id)
++			continue;
 +
-+	spkr_left:wsa8810-left{
-+		compatible = "sdw0110217201000";
-+		...
-+	};
++		id.sdw_version = sdw_version;
++		id.unique_id = unique_id;
++		sdw_slave_add(bus, &id, of_fwnode_handle(node));
++	}
 +
-+	spkr_right:wsa8810-right{
-+		compatible = "sdw0120217201000";
-+		...
-+	};
-+};
++	return 0;
++}
 -- 
 2.21.0
