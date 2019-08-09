@@ -1,48 +1,42 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl_esai: Add new compatible string for imx6ull
-Date: Fri, 9 Aug 2019 12:58:13 -0700
-Message-ID: <20190809195812.GA8148@Asurada>
+Subject: Re: [PATCH 1/2] ASoC: fsl_esai: Add compatible string for imx6ull
+Date: Fri, 9 Aug 2019 12:58:46 -0700
+Message-ID: <20190809195845.GB8148@Asurada>
 References: <1565346467-5769-1-git-send-email-shengjiu.wang@nxp.com>
- <1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1565346467-5769-1-git-send-email-shengjiu.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Shengjiu Wang <shengjiu.wang@nxp.com>
 Cc: timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, mark.rutland@arm.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 09, 2019 at 06:27:47PM +0800, Shengjiu Wang wrote:
-> Add new compatible string "fsl,imx6ull-esai" in the binding document.
+On Fri, Aug 09, 2019 at 06:27:46PM +0800, Shengjiu Wang wrote:
+> Add compatible string for imx6ull, from imx6ull platform,
+> the issue of channel swap after xrun is fixed in hardware.
 > 
 > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
 > ---
->  Documentation/devicetree/bindings/sound/fsl,esai.txt | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  sound/soc/fsl/fsl_esai.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> index 5b9914367610..0e6e2166f76c 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> +++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> @@ -7,8 +7,11 @@ other DSPs. It has up to six transmitters and four receivers.
->  
->  Required properties:
->  
-> -  - compatible		: Compatible list, must contain "fsl,imx35-esai" or
-> -			  "fsl,vf610-esai"
-> +  - compatible		: Compatible list, should contain one of the following
-> +			  compatibles:
-> +			  "fsl,imx35-esai",
-> +			  "fsl,vf610-esai",
-> +			  "fsl,imx6ull-esai",
->  
->    - reg			: Offset and length of the register set for the device.
->  
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index 10d2210c91ef..4b4a8e831e9e 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -920,6 +920,7 @@ static int fsl_esai_remove(struct platform_device *pdev)
+>  static const struct of_device_id fsl_esai_dt_ids[] = {
+>  	{ .compatible = "fsl,imx35-esai", },
+>  	{ .compatible = "fsl,vf610-esai", },
+> +	{ .compatible = "fsl,imx6ull-esai", },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
 > -- 
 > 2.21.0
 > 
