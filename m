@@ -1,57 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] fix odd_ptr_err.cocci warnings
-Date: Fri, 9 Aug 2019 13:31:12 +0100
-Message-ID: <20190809123112.GC3963@sirena.co.uk>
-References: <alpine.DEB.2.21.1908091229140.2946@hadrien>
+Subject: Applied "ASoC: mt6351: remove unused variable 'mt_lineout_control'"
+ to the asoc tree
+Date: Fri,  9 Aug 2019 13:31:52 +0100 (BST)
+Message-ID: <20190809123152.AA2A0274303D@ypsilon.sirena.org.uk>
+References: <20190809080234.23332-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eHhjakXzOLJAF9wJ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.1908091229140.2946@hadrien>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, kbuild-all@01.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190809080234.23332-1-yuehaibing@huawei.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---eHhjakXzOLJAF9wJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: mt6351: remove unused variable 'mt_lineout_control'
 
-On Fri, Aug 09, 2019 at 12:30:46PM +0200, Julia Lawall wrote:
+has been applied to the asoc tree at
 
-> tree:   https://github.com/omap-audio/linux-audio peter/ti-linux-4.19.y/w=
-ip
-> head:   62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a
-> commit: 62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a [34/34] j721e new machin=
-e driver wip
-> :::::: branch date: 20 hours ago
-> :::::: commit date: 20 hours ago
->=20
->  j721e-evm.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> --- a/sound/soc/ti/j721e-evm.c
-> +++ b/sound/soc/ti/j721e-evm.c
-> @@ -283,7 +283,7 @@ static int j721e_get_clocks(struct platf
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-This file isn't upstream, it's only in the TI BSP.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---eHhjakXzOLJAF9wJ
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1NZ48ACgkQJNaLcl1U
-h9CcMQf+Km4bvdFc5fXpozUNHkhmiDGf5UtThFctMq6C6MK4tB+cTSjQqpLPip75
-hihD/NMWNNvcxkJxNaK5pDv4yEWI+F9DLhjLePmCOdUjg68CwYF2e5tLEKs7LAzo
-muAywApdJXbOOd+1yGG5lKw0EEoidrU5n9rzBYSbSjKwbtFhf4C1rQ8GO7T15S7U
-+0sq47MSOf3Q5fji1RcvGy98RkZbzU9gcheLcTXcQfRZ+eapGu11PmHR+OqgO/GG
-owL2DpqbypT+9iLdfmR9AOxwi3ykOWtU93h8uMh1tmDxfT4Auuj5j8leIEVdoCHP
-KKhhYS2X70ImKlg4SeUrEJQTcWVntw==
-=ykm0
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---eHhjakXzOLJAF9wJ--
+Thanks,
+Mark
+
+>From bc8d9f737fc01cce913f1cc215b7e66f01697e52 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Fri, 9 Aug 2019 16:02:34 +0800
+Subject: [PATCH] ASoC: mt6351: remove unused variable 'mt_lineout_control'
+
+sound/soc/codecs/mt6351.c:1070:38: warning:
+ mt_lineout_control defined but not used [-Wunused-const-variable=]
+
+It is never used, so can be removed.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190809080234.23332-1-yuehaibing@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/mt6351.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
+index 4b3ce01c5a93..5c0536eb1044 100644
+--- a/sound/soc/codecs/mt6351.c
++++ b/sound/soc/codecs/mt6351.c
+@@ -1066,11 +1066,6 @@ static int mt_mic_bias_2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
+-/* DAPM Kcontrols */
+-static const struct snd_kcontrol_new mt_lineout_control =
+-	SOC_DAPM_SINGLE("Switch", MT6351_AUDDEC_ANA_CON3,
+-			RG_AUDLOLPWRUP_VAUDP32_BIT, 1, 0);
+-
+ /* DAPM Widgets */
+ static const struct snd_soc_dapm_widget mt6351_dapm_widgets[] = {
+ 	/* Digital Clock */
+-- 
+2.20.1
