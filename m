@@ -1,49 +1,27 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/3] soundwire: cadence_master: add debugfs
-	register dump
-Date: Sat, 10 Aug 2019 09:03:08 +0200
-Message-ID: <20190810070308.GB6896@kroah.com>
-References: <20190809224341.15726-1-pierre-louis.bossart@linux.intel.com>
- <20190809224341.15726-3-pierre-louis.bossart@linux.intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 00/16] ARM: remove ks8695 and w90x900 platforms
+Date: Sat, 10 Aug 2019 09:29:00 +0200
+Message-ID: <20190810072900.GA16359@kroah.com>
+References: <20190809202749.742267-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9900F8015B
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 09:03:12 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190809224341.15726-3-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+In-Reply-To: <20190809202749.742267-1-arnd@arndb.de>
+Sender: netdev-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: soc@kernel.org, "Wanzongshun (Vincent)" <wanzongshun@huawei.com>, Greg Ungerer <gerg@kernel.org>, linux-serial@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, linux-fbdev@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 09, 2019 at 05:43:40PM -0500, Pierre-Louis Bossart wrote:
-> +/**
-> + * sdw_cdns_debugfs_init() - Cadence debugfs init
-> + * @cdns: Cadence instance
-> + * @root: debugfs root
-> + */
-> +void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
-> +{
-> +	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
-> +}
-> +EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
+On Fri, Aug 09, 2019 at 10:27:28PM +0200, Arnd Bergmann wrote:
+> As discussed previously, these two ARM platforms have no
+> known remaining users, let's remove them completely.
+> 
+> Subsystem maintainers: feel free to take the driver removals
+> through your respective trees, they are all independent of
+> one another. We can merge any remaining patches through the
+> soc tree.
 
-You create this function but never actually call it.  Don't add apis
-that no one uses :(
-
-thanks,
+Serial and USB host controller driver patches applied, thanks!
 
 greg k-h
