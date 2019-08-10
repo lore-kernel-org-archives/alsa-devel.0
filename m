@@ -1,36 +1,89 @@
-From: Wenwen Wang <wenwen@cs.uga.edu>
-Subject: [PATCH] ALSA: hda - Fix a memory leak bug
-Date: Fri,  9 Aug 2019 23:29:48 -0500
-Message-ID: <1565411390-2684-1-git-send-email-wenwen@cs.uga.edu>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/3] soundwire: add debugfs support
+Date: Sat, 10 Aug 2019 09:01:39 +0200
+Message-ID: <20190810070139.GA6896@kroah.com>
+References: <20190809224341.15726-1-pierre-louis.bossart@linux.intel.com>
+ <20190809224341.15726-2-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190809224341.15726-2-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wenwen Wang <wenwen@cs.uga.edu>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Kate Stewart <kstewart@linuxfoundation.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In snd_hda_parse_generic_codec(), 'spec' is allocated through kzalloc().
-Then, the pin widgets in 'codec' are parsed. However, if the parsing
-process fails, 'spec' is not deallocated, leading to a memory leak.
+On Fri, Aug 09, 2019 at 05:43:39PM -0500, Pierre-Louis Bossart wrote:
+> Add base debugfs mechanism for SoundWire bus by creating soundwire
+> root and master-N and slave-x hierarchy.
+> 
+> Also add SDW Slave SCP, DP0 and DP-N register debug file.
+> 
+> Registers not implemented will print as "XX"
+> 
+> Credits: this patch is based on an earlier internal contribution by
+> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/Makefile    |   5 ++
+>  drivers/soundwire/bus.c       |   6 ++
+>  drivers/soundwire/bus.h       |  24 ++++++
+>  drivers/soundwire/bus_type.c  |   3 +
+>  drivers/soundwire/debugfs.c   | 151 ++++++++++++++++++++++++++++++++++
+>  drivers/soundwire/slave.c     |   1 +
+>  include/linux/soundwire/sdw.h |   4 +
+>  7 files changed, 194 insertions(+)
+>  create mode 100644 drivers/soundwire/debugfs.c
+> 
+> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> index fd99a831b92a..05d4cb9ef7d6 100644
+> --- a/drivers/soundwire/Makefile
+> +++ b/drivers/soundwire/Makefile
+> @@ -5,6 +5,11 @@
+>  
+>  #Bus Objs
+>  soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
+> +
+> +ifdef CONFIG_DEBUG_FS
+> +soundwire-bus-objs += debugfs.o
+> +endif
+> +
+>  obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+>  
+>  #Cadence Objs
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 49f64b2115b9..89d5f1537d9b 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -49,6 +49,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+>  		}
+>  	}
+>  
+> +	bus->debugfs = sdw_bus_debugfs_init(bus);
+> +
 
-To fix the above issue, free 'spec' before returning the error.
+It's "nicer" to just put that assignment into sdw_bus_debugfs_init().
 
-Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
----
- sound/pci/hda/hda_generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That way you just call the function, no need to return anything.
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 485edab..8f2beb1 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -6100,7 +6100,7 @@ static int snd_hda_parse_generic_codec(struct hda_codec *codec)
- 
- 	err = snd_hda_parse_pin_defcfg(codec, &spec->autocfg, NULL, 0);
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	err = snd_hda_gen_parse_auto_config(codec, &spec->autocfg);
- 	if (err < 0)
--- 
-2.7.4
+>  	/*
+>  	 * Device numbers in SoundWire are 0 through 15. Enumeration device
+>  	 * number (0), Broadcast device number (15), Group numbers (12 and
+> @@ -109,6 +111,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+>  	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+>  	struct sdw_bus *bus = slave->bus;
+>  
+> +	sdw_slave_debugfs_exit(slave->debugfs);
+
+Same here, just pass in slave:
+	sdw_slave_debugfs_exit(slave);
+and have that function remove the debugfs entry in the structure.  That
+way, if you are really paranoid about size, you could even drop the
+debugfs structure member from non-debugfs builds without any changes to
+bus.c or other non-debugfs files.
+
+thanks,
+
+greg k-h
