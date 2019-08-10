@@ -1,64 +1,36 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 4/4] ASoC: Intel: skl-hda-dsp-generic: add dmic
-	dapm widget and route
-Date: Fri,  9 Aug 2019 18:22:36 -0500
-Message-ID: <20190809232236.21182-5-pierre-louis.bossart@linux.intel.com>
-References: <20190809232236.21182-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4469DF804AB
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 01:22:45 +0200 (CEST)
-In-Reply-To: <20190809232236.21182-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Wenwen Wang <wenwen@cs.uga.edu>
+Subject: [PATCH] ALSA: hda - Fix a memory leak bug
+Date: Fri,  9 Aug 2019 23:29:48 -0500
+Message-ID: <1565411390-2684-1-git-send-email-wenwen@cs.uga.edu>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wenwen Wang <wenwen@cs.uga.edu>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Kate Stewart <kstewart@linuxfoundation.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Keyon Jie <yang.jie@linux.intel.com>
+In snd_hda_parse_generic_codec(), 'spec' is allocated through kzalloc().
+Then, the pin widgets in 'codec' are parsed. However, if the parsing
+process fails, 'spec' is not deallocated, leading to a memory leak.
 
-Adding DAPM MIC endpoint widget "SoC DMIC" and route, to enable
-DMIC DAPM support with hda generic machine.
+To fix the above issue, free 'spec' before returning the error.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
 ---
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/pci/hda/hda_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index 9ed68eb4f058..1778acdc367c 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -23,6 +23,7 @@ static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
- 	SND_SOC_DAPM_MIC("Alt Analog In", NULL),
- 	SND_SOC_DAPM_SPK("Digital Out", NULL),
- 	SND_SOC_DAPM_MIC("Digital In", NULL),
-+	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
- };
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 485edab..8f2beb1 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -6100,7 +6100,7 @@ static int snd_hda_parse_generic_codec(struct hda_codec *codec)
  
- static const struct snd_soc_dapm_route skl_hda_map[] = {
-@@ -41,6 +42,9 @@ static const struct snd_soc_dapm_route skl_hda_map[] = {
- 	{ "Codec Input Pin2", NULL, "Digital In" },
- 	{ "Codec Input Pin3", NULL, "Alt Analog In" },
+ 	err = snd_hda_parse_pin_defcfg(codec, &spec->autocfg, NULL, 0);
+ 	if (err < 0)
+-		return err;
++		goto error;
  
-+	/* digital mics */
-+	{"DMic", NULL, "SoC DMIC"},
-+
- 	/* CODEC BE connections */
- 	{ "Analog Codec Playback", NULL, "Analog CPU Playback" },
- 	{ "Analog CPU Playback", NULL, "codec0_out" },
+ 	err = snd_hda_gen_parse_auto_config(codec, &spec->autocfg);
+ 	if (err < 0)
 -- 
-2.20.1
+2.7.4
