@@ -1,22 +1,19 @@
-From: Paul Pawlowski <mrarmdev@gmail.com>
-Subject: Re: Writing /usr/share/alsa/cards/ files
-Date: Sat, 10 Aug 2019 14:10:14 +0200
-Message-ID: <CAKSqxP-dJJAFigGgUQRww1va4uAeVQv=hQu2EMaWSmbGE2gLaQ@mail.gmail.com>
-References: <CAKSqxP-f+4KCUU79prHaLi2--3H8jAA9iXYxK-EoA8oQKNv=XA@mail.gmail.com>
- <s5htvaumudc.wl-tiwai@suse.de>
+From: Pavel Hofman <pavhofman@gmail.com>
+Subject: bcm2835.conf for RPi v. 4 incl. HDMI
+Date: Sat, 10 Aug 2019 19:05:46 +0200
+Message-ID: <CA+SWvNw__saBd3udOLgY8ei7ndjmNYy4SFTJnoP202CoknGDgw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
- [IPv6:2a00:1450:4864:20::542])
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
+ [IPv6:2607:f8b0:4864:20::829])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A8A6F801A4
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 14:10:26 +0200 (CEST)
-Received: by mail-ed1-x542.google.com with SMTP id k21so98480957edq.3
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 05:10:26 -0700 (PDT)
-In-Reply-To: <s5htvaumudc.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94694F801A4
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 19:05:58 +0200 (CEST)
+Received: by mail-qt1-x829.google.com with SMTP id y26so98972444qto.4
+ for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 10:05:58 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,41 +23,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I am writing a driver for a device with the following PCM outputs:
-- Speaker
-- Codec Output (Headphone/Jack)
-There's also Loopback, but right now I'm unsure how does it work, I
-don't think it's something I should be concerned with right now. There
-are also two audio inputs (an internal Microphone as well as Codec
-Input).
+Hi, may I ask for help with cards/bcm2835.conf for the new RPi? No
+such config exists yet:
 
-Thank you,
-Paul Pawlowski
+pi@raspberrypi:~ $ strace -f aplay -L 2>&1 | grep -i bcm2835
+access("/usr/share/alsa/cards/bcm2835_alsa.conf", R_OK) = -1 ENOENT
+(No such file or directory)
 
-On Tue, Aug 6, 2019 at 1:00 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Fri, 02 Aug 2019 14:53:52 +0200,
-> Paul Pawlowski wrote:
-> >
-> > Hello,
-> > Is there any documentation on writing /usr/share/alsa/cards/ files?
->
-> No documentation, unfortunately.
->
-> > I painfully tried to create one in order to enable 2 separate audio outputs,
-> > but I ultimately failed to due to the lack of any sort of error reporting.
-> > Is there a way to enable any error reporting when parsing these files? It
-> > seems that the error output when parsing any hooks goes to nowhere.
-> >
-> > Also, is this the correct mailing list to get help regarding alsa driver
-> > development and configuration?
->
-> What kind of "2 separate audio outputs" do you need to create?
->
->
-> Takashi
+I understand the _alsa suffix is handled in aliases (e.g.
+https://www.raspberrypi.org/forums/viewtopic.php?t=221734#p1361104 )
+
+The reason I am looking for this file are Pulseaudio profiles. PA
+requires front:X, surroundX, hdmi:X, etc. PCM devices, yet non of
+these are created due to the missing card config:
+
+pi@raspberrypi:~ $ aplay -L
+default
+    Playback/recording through the PulseAudio sound server
+null
+    Discard all samples (playback) or generate zero samples (capture)
+jack
+    JACK Audio Connection Kit
+pulse
+    PulseAudio Sound Server
+sysdefault:CARD=ALSA
+    bcm2835 ALSA, bcm2835 ALSA
+    Default Audio Device
+dmix:CARD=ALSA,DEV=0
+    bcm2835 ALSA, bcm2835 ALSA
+    Direct sample mixing device
+dmix:CARD=ALSA,DEV=1
+    bcm2835 ALSA, bcm2835 IEC958/HDMI
+    Direct sample mixing device
+dsnoop:CARD=ALSA,DEV=0
+    bcm2835 ALSA, bcm2835 ALSA
+    Direct sample snooping device
+dsnoop:CARD=ALSA,DEV=1
+    bcm2835 ALSA, bcm2835 IEC958/HDMI
+    Direct sample snooping device
+hw:CARD=ALSA,DEV=0
+    bcm2835 ALSA, bcm2835 ALSA
+    Direct hardware device without any conversions
+hw:CARD=ALSA,DEV=1
+    bcm2835 ALSA, bcm2835 IEC958/HDMI
+    Direct hardware device without any conversions
+plughw:CARD=ALSA,DEV=0
+    bcm2835 ALSA, bcm2835 ALSA
+    Hardware device with all software conversions
+plughw:CARD=ALSA,DEV=1
+    bcm2835 ALSA, bcm2835 IEC958/HDMI
+    Hardware device with all software conversions
+usbstream:CARD=ALSA
+    bcm2835 ALSA
+    USB Stream Output
+
+
+As a result, only the Analog Mono PA profile (based on the only
+existing hw:0) is available in PA:
+
+D: [pulseaudio] alsa-mixer.c: Checking for playback on Analog Mono (analog-mono)
+D: [pulseaudio] alsa-util.c: Trying hw:0 with SND_PCM_NO_AUTO_FORMAT ...
+D: [pulseaudio] alsa-util.c: Managed to open hw:0
+...
+D: [pulseaudio] alsa-mixer.c: Checking for playback on Analog Stereo
+(analog-stereo)
+D: [pulseaudio] alsa-util.c: Trying front:0 with SND_PCM_NO_AUTO_FORMAT ...
+I: [pulseaudio] (alsa-lib)conf.c: Unknown parameters 0
+I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM front:0
+---
+D: [pulseaudio] alsa-mixer.c: Checking for playback on Digital Stereo
+(HDMI) (hdmi-stereo)
+D: [pulseaudio] alsa-util.c: Trying hdmi:0 with SND_PCM_NO_AUTO_FORMAT ...
+I: [pulseaudio] (alsa-lib)conf.c: Unknown parameters 0
+I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM hdmi:0
+...
+D: [pulseaudio] alsa-mixer.c: Checking for playback on Digital
+Surround 7.1 (HDMI) (hdmi-surround71)
+D: [pulseaudio] alsa-util.c: Trying hdmi:0 with SND_PCM_NO_AUTO_FORMAT ...
+I: [pulseaudio] (alsa-lib)conf.c: Unknown parameters 0
+I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM hdmi:0
+
+
+RPi v.4 has 2 HDMI outputs:
+
+pi@raspberrypi:~ $ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
+  Subdevices: 6/7
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 IEC958/HDMI [bcm2835 IEC958/HDMI]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: ALSA [bcm2835 ALSA], device 2: bcm2835 IEC958/HDMI1 [bcm2835
+IEC958/HDMI1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+Each is 2 - 8 channel:
+
+pi@raspberrypi:~ $ aplay -v --dump-hw-params -D hw:0,1 /dev/zero
+Playing raw data '/dev/zero' : Unsigned 8 bit, Rate 8000 Hz, Mono
+HW Params of device "hw:0,1":
+--------------------
+ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: [32 128]
+CHANNELS: [2 8]
+RATE: [44100 192000]
+PERIOD_TIME: [10000 743039)
+PERIOD_SIZE: [441 32768]
+PERIOD_BYTES: [1776 524288]
+PERIODS: [1 75)
+BUFFER_TIME: (2296 743039)
+BUFFER_SIZE: [441 32768]
+BUFFER_BYTES: [1764 131072]
+TICK_TIME: ALL
+
+I looked at hdmi section of cards/Intel-HDA.conf but that one is very
+complicated. May I ask for help how the config should look like to
+work both for multichannel PCM and digital formats (i.e. support for
+the AES vars)? I very much appreciate any help.
+
+Best regards,
+
+Pavel.
