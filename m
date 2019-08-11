@@ -1,160 +1,110 @@
-From: Pavel Hofman <pavhofman@gmail.com>
-Subject: bcm2835.conf for RPi v. 4 incl. HDMI
-Date: Sat, 10 Aug 2019 19:05:46 +0200
-Message-ID: <CA+SWvNw__saBd3udOLgY8ei7ndjmNYy4SFTJnoP202CoknGDgw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
- [IPv6:2607:f8b0:4864:20::829])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94694F801A4
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 19:05:58 +0200 (CEST)
-Received: by mail-qt1-x829.google.com with SMTP id y26so98972444qto.4
- for <alsa-devel@alsa-project.org>; Sat, 10 Aug 2019 10:05:58 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH] ASoC: fsl_sai: Handle slave mode per TX/RX direction
+Date: Sun, 11 Aug 2019 22:45:17 +0300
+Message-ID: <20190811194517.19314-1-daniel.baluta@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: nicoleotsuka@gmail.com, broonie@kernel.org
+Cc: festevam@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, Viorel Suman <viorel.suman@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, may I ask for help with cards/bcm2835.conf for the new RPi? No
-such config exists yet:
+From: Viorel Suman <viorel.suman@nxp.com>
 
-pi@raspberrypi:~ $ strace -f aplay -L 2>&1 | grep -i bcm2835
-access("/usr/share/alsa/cards/bcm2835_alsa.conf", R_OK) = -1 ENOENT
-(No such file or directory)
+The SAI interface can be a clock supplier or consumer
+as a function of stream direction. e.g SAI can be master
+for Tx and slave for Rx.
 
-I understand the _alsa suffix is handled in aliases (e.g.
-https://www.raspberrypi.org/forums/viewtopic.php?t=221734#p1361104 )
-
-The reason I am looking for this file are Pulseaudio profiles. PA
-requires front:X, surroundX, hdmi:X, etc. PCM devices, yet non of
-these are created due to the missing card config:
-
-pi@raspberrypi:~ $ aplay -L
-default
-    Playback/recording through the PulseAudio sound server
-null
-    Discard all samples (playback) or generate zero samples (capture)
-jack
-    JACK Audio Connection Kit
-pulse
-    PulseAudio Sound Server
-sysdefault:CARD=ALSA
-    bcm2835 ALSA, bcm2835 ALSA
-    Default Audio Device
-dmix:CARD=ALSA,DEV=0
-    bcm2835 ALSA, bcm2835 ALSA
-    Direct sample mixing device
-dmix:CARD=ALSA,DEV=1
-    bcm2835 ALSA, bcm2835 IEC958/HDMI
-    Direct sample mixing device
-dsnoop:CARD=ALSA,DEV=0
-    bcm2835 ALSA, bcm2835 ALSA
-    Direct sample snooping device
-dsnoop:CARD=ALSA,DEV=1
-    bcm2835 ALSA, bcm2835 IEC958/HDMI
-    Direct sample snooping device
-hw:CARD=ALSA,DEV=0
-    bcm2835 ALSA, bcm2835 ALSA
-    Direct hardware device without any conversions
-hw:CARD=ALSA,DEV=1
-    bcm2835 ALSA, bcm2835 IEC958/HDMI
-    Direct hardware device without any conversions
-plughw:CARD=ALSA,DEV=0
-    bcm2835 ALSA, bcm2835 ALSA
-    Hardware device with all software conversions
-plughw:CARD=ALSA,DEV=1
-    bcm2835 ALSA, bcm2835 IEC958/HDMI
-    Hardware device with all software conversions
-usbstream:CARD=ALSA
-    bcm2835 ALSA
-    USB Stream Output
-
-
-As a result, only the Analog Mono PA profile (based on the only
-existing hw:0) is available in PA:
-
-D: [pulseaudio] alsa-mixer.c: Checking for playback on Analog Mono (analog-mono)
-D: [pulseaudio] alsa-util.c: Trying hw:0 with SND_PCM_NO_AUTO_FORMAT ...
-D: [pulseaudio] alsa-util.c: Managed to open hw:0
-...
-D: [pulseaudio] alsa-mixer.c: Checking for playback on Analog Stereo
-(analog-stereo)
-D: [pulseaudio] alsa-util.c: Trying front:0 with SND_PCM_NO_AUTO_FORMAT ...
-I: [pulseaudio] (alsa-lib)conf.c: Unknown parameters 0
-I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM front:0
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
-D: [pulseaudio] alsa-mixer.c: Checking for playback on Digital Stereo
-(HDMI) (hdmi-stereo)
-D: [pulseaudio] alsa-util.c: Trying hdmi:0 with SND_PCM_NO_AUTO_FORMAT ...
-I: [pulseaudio] (alsa-lib)conf.c: Unknown parameters 0
-I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM hdmi:0
-...
-D: [pulseaudio] alsa-mixer.c: Checking for playback on Digital
-Surround 7.1 (HDMI) (hdmi-surround71)
-D: [pulseaudio] alsa-util.c: Trying hdmi:0 with SND_PCM_NO_AUTO_FORMAT ...
-I: [pulseaudio] (alsa-lib)conf.c: Unknown parameters 0
-I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM hdmi:0
+ sound/soc/fsl/fsl_sai.c | 18 +++++++++---------
+ sound/soc/fsl/fsl_sai.h |  2 +-
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-
-RPi v.4 has 2 HDMI outputs:
-
-pi@raspberrypi:~ $ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
-  Subdevices: 6/7
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-  Subdevice #3: subdevice #3
-  Subdevice #4: subdevice #4
-  Subdevice #5: subdevice #5
-  Subdevice #6: subdevice #6
-card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 IEC958/HDMI [bcm2835 IEC958/HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: ALSA [bcm2835 ALSA], device 2: bcm2835 IEC958/HDMI1 [bcm2835
-IEC958/HDMI1]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Each is 2 - 8 channel:
-
-pi@raspberrypi:~ $ aplay -v --dump-hw-params -D hw:0,1 /dev/zero
-Playing raw data '/dev/zero' : Unsigned 8 bit, Rate 8000 Hz, Mono
-HW Params of device "hw:0,1":
---------------------
-ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: [32 128]
-CHANNELS: [2 8]
-RATE: [44100 192000]
-PERIOD_TIME: [10000 743039)
-PERIOD_SIZE: [441 32768]
-PERIOD_BYTES: [1776 524288]
-PERIODS: [1 75)
-BUFFER_TIME: (2296 743039)
-BUFFER_SIZE: [441 32768]
-BUFFER_BYTES: [1764 131072]
-TICK_TIME: ALL
-
-I looked at hdmi section of cards/Intel-HDA.conf but that one is very
-complicated. May I ask for help how the config should look like to
-work both for multichannel PCM and digital formats (i.e. support for
-the AES vars)? I very much appreciate any help.
-
-Best regards,
-
-Pavel.
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 4a346fcb5630..69cf3678c859 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -273,18 +273,18 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
+ 		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
+-		sai->is_slave_mode = false;
++		sai->is_slave_mode[tx] = false;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		sai->is_slave_mode = true;
++		sai->is_slave_mode[tx] = true;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+ 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
+-		sai->is_slave_mode = false;
++		sai->is_slave_mode[tx] = false;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+ 		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
+-		sai->is_slave_mode = true;
++		sai->is_slave_mode[tx] = true;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -326,7 +326,7 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ 	int ret = 0;
+ 
+ 	/* Don't apply to slave mode */
+-	if (sai->is_slave_mode)
++	if (sai->is_slave_mode[tx])
+ 		return 0;
+ 
+ 	for (id = 0; id < FSL_SAI_MCLK_MAX; id++) {
+@@ -422,7 +422,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	if (sai->slot_width)
+ 		slot_width = sai->slot_width;
+ 
+-	if (!sai->is_slave_mode) {
++	if (!sai->is_slave_mode[tx]) {
+ 		ret = fsl_sai_set_bclk(cpu_dai, tx,
+ 				slots * slot_width * params_rate(params));
+ 		if (ret)
+@@ -458,7 +458,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	 * error.
+ 	 */
+ 
+-	if (!sai->is_slave_mode) {
++	if (!sai->is_slave_mode[tx]) {
+ 		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
+ 			regmap_update_bits(sai->regmap, FSL_SAI_TCR4(ofs),
+ 				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
+@@ -497,7 +497,7 @@ static int fsl_sai_hw_free(struct snd_pcm_substream *substream,
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 
+-	if (!sai->is_slave_mode &&
++	if (!sai->is_slave_mode[tx] &&
+ 			sai->mclk_streams & BIT(substream->stream)) {
+ 		clk_disable_unprepare(sai->mclk_clk[sai->mclk_id[tx]]);
+ 		sai->mclk_streams &= ~BIT(substream->stream);
+@@ -581,7 +581,7 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			 * This is a hardware bug, and will be fix in the
+ 			 * next sai version.
+ 			 */
+-			if (!sai->is_slave_mode) {
++			if (!sai->is_slave_mode[tx]) {
+ 				/* Software Reset for both Tx and Rx */
+ 				regmap_write(sai->regmap, FSL_SAI_TCSR(ofs),
+ 					     FSL_SAI_CSR_SR);
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index b89b0ca26053..c2c43a7d9ba1 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -167,7 +167,7 @@ struct fsl_sai {
+ 	struct clk *bus_clk;
+ 	struct clk *mclk_clk[FSL_SAI_MCLK_MAX];
+ 
+-	bool is_slave_mode;
++	bool is_slave_mode[2];
+ 	bool is_lsb_first;
+ 	bool is_dsp_mode;
+ 	bool synchronous[2];
+-- 
+2.17.1
