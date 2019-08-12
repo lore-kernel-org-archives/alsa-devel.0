@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3168a: Allow reconfiguration of
-	tdm_slots and slot_width" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:47 +0100 (BST)
-Message-ID: <20190812130947.B354D2740CB7@ypsilon.sirena.org.uk>
-References: <20190812095226.18870-3-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: Intel: sof-rt5682: add dmic dapm widget
+	to support dmic PCM" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:52 +0100 (BST)
+Message-ID: <20190812130952.0D2E42740CBD@ypsilon.sirena.org.uk>
+References: <20190809232236.21182-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58EB5F805AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60D46F805E2
  for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:59 +0200 (CEST)
-In-Reply-To: <20190812095226.18870-3-peter.ujfalusi@ti.com>
+In-Reply-To: <20190809232236.21182-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3168a: Allow reconfiguration of tdm_slots and slot_width
+   ASoC: Intel: sof-rt5682: add dmic dapm widget to support dmic PCM
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,48 +55,44 @@ to this mail.
 Thanks,
 Mark
 
->From 6fa4e0cae684d268d309d1b1f929d52e3df5649c Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 12 Aug 2019 12:52:26 +0300
-Subject: [PATCH] ASoC: pcm3168a: Allow reconfiguration of tdm_slots and
- slot_width
+>From 8afd1a99d713ccc7cf1bd509b205c3bb60cf0b90 Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Fri, 9 Aug 2019 18:22:34 -0500
+Subject: [PATCH] ASoC: Intel: sof-rt5682: add dmic dapm widget to support dmic
+ PCM
 
-When using right_j format and the codec is slave it can support 16bit
-format, but only if slot_width == 16, in the same DAI mode the 24 bit
-audio can work with 24 or 32 slot_width.
+We need add DAPM MIC endpoint widget "SoC DMIC" and route, to enable
+DMIC PCM DAPM support.
 
-Because of this, the codec and CPU needs to be reconfigured when the sample
-format changes.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20190812095226.18870-3-peter.ujfalusi@ti.com
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190809232236.21182-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 75fa8e9ee894..50ed86d45c26 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -402,18 +402,6 @@ static int pcm3168a_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 64db00353e18..7285474f7d65 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -309,6 +309,7 @@ static const struct snd_soc_dapm_widget sof_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Spk", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ };
  
--	if (io_params->tdm_slots && io_params->tdm_slots != slots) {
--		dev_err(component->dev, "Not matching slots %d vs %d\n",
--			io_params->tdm_slots, slots);
--		return -EINVAL;
--	}
--
--	if (io_params->slot_width && io_params->slot_width != slot_width) {
--		dev_err(component->dev, "Not matching slot_width %d vs %d\n",
--			io_params->slot_width, slot_width);
--		return -EINVAL;
--	}
--
- 	io_params->tdm_slots = slots;
- 	io_params->slot_width = slot_width;
- 	/* Ignore the not relevant mask for the DAI/direction */
+ static const struct snd_soc_dapm_route sof_map[] = {
+@@ -319,6 +320,9 @@ static const struct snd_soc_dapm_route sof_map[] = {
+ 	/* other jacks */
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 
++	/* digital mics */
++	{"DMic", NULL, "SoC DMIC"},
++
+ };
+ 
+ static const struct snd_soc_dapm_route speaker_map[] = {
 -- 
 2.20.1
