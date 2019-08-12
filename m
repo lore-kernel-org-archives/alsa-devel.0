@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: neo1973_wm8753: use
+Subject: Applied "ASoC: samsung: tm2_wm5110: use
 	snd_soc_dai_link_component for aux_dev" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:55 +0100 (BST)
-Message-ID: <20190812130955.629592740CED@ypsilon.sirena.org.uk>
-References: <87o9106w9p.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Aug 2019 14:09:54 +0100 (BST)
+Message-ID: <20190812130954.AD7932740CB7@ypsilon.sirena.org.uk>
+References: <87lfw46w9g.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8898DF8060E
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:10:03 +0200 (CEST)
-In-Reply-To: <87o9106w9p.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55666F805AA
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:59 +0200 (CEST)
+In-Reply-To: <87lfw46w9g.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: neo1973_wm8753: use snd_soc_dai_link_component for aux_dev
+   ASoC: samsung: tm2_wm5110: use snd_soc_dai_link_component for aux_dev
 
 has been applied to the asoc tree at
 
@@ -55,36 +55,65 @@ to this mail.
 Thanks,
 Mark
 
->From d20bb789d7283bcbacd3b12c60668c473bc1dac0 Mon Sep 17 00:00:00 2001
+>From 124749194ad2e08fbea9c34fa5e2728310bf4486 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 8 Aug 2019 14:54:10 +0900
-Subject: [PATCH] ASoC: samsung: neo1973_wm8753: use snd_soc_dai_link_component
- for aux_dev
+Date: Thu, 8 Aug 2019 14:54:20 +0900
+Subject: [PATCH] ASoC: samsung: tm2_wm5110: use snd_soc_dai_link_component for
+ aux_dev
 
 We can use snd_soc_dai_link_component to specify aux_dev.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/87o9106w9p.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87lfw46w9g.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/neo1973_wm8753.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/samsung/tm2_wm5110.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index 396776ffd670..38f536bafa09 100644
---- a/sound/soc/samsung/neo1973_wm8753.c
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -297,8 +297,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index c091033d17ad..bb9910d4cbe2 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -307,7 +307,6 @@ static struct snd_soc_aux_dev tm2_speaker_amp_dev;
+ static int tm2_late_probe(struct snd_soc_card *card)
+ {
+ 	struct tm2_machine_priv *priv = snd_soc_card_get_drvdata(card);
+-	struct snd_soc_dai_link_component dlc = { 0 };
+ 	unsigned int ch_map[] = { 0, 1 };
+ 	struct snd_soc_dai *amp_pdm_dai;
+ 	struct snd_soc_pcm_runtime *rtd;
+@@ -334,8 +333,7 @@ static int tm2_late_probe(struct snd_soc_card *card)
+ 		return ret;
+ 	}
  
- static struct snd_soc_aux_dev neo1973_aux_devs[] = {
- 	{
--		.name = "dfbmcs320",
--		.codec_name = "dfbmcs320.0",
-+		.dlc = COMP_AUX("dfbmcs320.0"),
- 	},
- };
+-	dlc.of_node = tm2_speaker_amp_dev.codec_of_node;
+-	amp_pdm_dai = snd_soc_find_dai(&dlc);
++	amp_pdm_dai = snd_soc_find_dai(&tm2_speaker_amp_dev.dlc);
+ 	if (!amp_pdm_dai)
+ 		return -ENODEV;
  
+@@ -532,9 +530,9 @@ static int tm2_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	card->aux_dev[0].codec_of_node = of_parse_phandle(dev->of_node,
++	card->aux_dev[0].dlc.of_node = of_parse_phandle(dev->of_node,
+ 							"audio-amplifier", 0);
+-	if (!card->aux_dev[0].codec_of_node) {
++	if (!card->aux_dev[0].dlc.of_node) {
+ 		dev_err(dev, "audio-amplifier property invalid or missing\n");
+ 		return -EINVAL;
+ 	}
+@@ -623,7 +621,7 @@ static int tm2_probe(struct platform_device *pdev)
+ 		of_node_put(cpu_dai_node[i]);
+ 	}
+ 
+-	of_node_put(card->aux_dev[0].codec_of_node);
++	of_node_put(card->aux_dev[0].dlc.of_node);
+ 
+ 	return ret;
+ }
 -- 
 2.20.1
