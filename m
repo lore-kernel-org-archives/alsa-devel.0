@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: sun4i-codec: use
+Subject: Applied "ASoC: intel: cht_bsw_max98090_ti: use
 	snd_soc_dai_link_component for aux_dev" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:54 +0100 (BST)
-Message-ID: <20190812130954.4FB372740CED@ypsilon.sirena.org.uk>
-References: <87k1bo6w9b.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Aug 2019 14:09:56 +0100 (BST)
+Message-ID: <20190812130956.DD9332740CBD@ypsilon.sirena.org.uk>
+References: <87v9v86war.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42CAEF805FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCB1CF805FB
  for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:10:03 +0200 (CEST)
-In-Reply-To: <87k1bo6w9b.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v9v86war.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: sun4i-codec: use snd_soc_dai_link_component for aux_dev
+   ASoC: intel: cht_bsw_max98090_ti: use snd_soc_dai_link_component for aux_dev
 
 has been applied to the asoc tree at
 
@@ -55,73 +55,36 @@ to this mail.
 Thanks,
 Mark
 
->From 3d0d2d64b7eb4f2a451fa184829b749851c14f55 Mon Sep 17 00:00:00 2001
+>From aa1afd92f374a895ab74cb96dacd25a3485a08c4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 8 Aug 2019 14:54:25 +0900
-Subject: [PATCH] ASoC: sunxi: sun4i-codec: use snd_soc_dai_link_component for
- aux_dev
+Date: Thu, 8 Aug 2019 14:53:33 +0900
+Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: use
+ snd_soc_dai_link_component for aux_dev
 
 We can use snd_soc_dai_link_component to specify aux_dev.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87k1bo6w9b.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87v9v86war.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 619073e7d972..ee448d5e07a6 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1424,7 +1424,7 @@ static const struct snd_soc_dapm_route sun8i_codec_card_routes[] = {
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 33eb72545be6..1db9a95e6a79 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -324,9 +324,8 @@ static const struct snd_soc_ops cht_be_ssp2_ops = {
  };
  
- static struct snd_soc_aux_dev aux_dev = {
--	.name = "Codec Analog Controls",
-+	.dlc = COMP_EMPTY(),
+ static struct snd_soc_aux_dev cht_max98090_headset_dev = {
+-	.name = "Headset Chip",
++	.dlc = COMP_AUX("i2c-104C227E:00"),
+ 	.init = cht_max98090_headset_init,
+-	.codec_name = "i2c-104C227E:00",
  };
  
- static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
-@@ -1436,10 +1436,10 @@ static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
- 	if (!card)
- 		return ERR_PTR(-ENOMEM);
- 
--	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
-+	aux_dev.dlc.of_node = of_parse_phandle(dev->of_node,
- 						 "allwinner,codec-analog-controls",
- 						 0);
--	if (!aux_dev.codec_of_node) {
-+	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
- 	};
-@@ -1474,10 +1474,10 @@ static struct snd_soc_card *sun8i_h3_codec_create_card(struct device *dev)
- 	if (!card)
- 		return ERR_PTR(-ENOMEM);
- 
--	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
-+	aux_dev.dlc.of_node = of_parse_phandle(dev->of_node,
- 						 "allwinner,codec-analog-controls",
- 						 0);
--	if (!aux_dev.codec_of_node) {
-+	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
- 	};
-@@ -1512,10 +1512,10 @@ static struct snd_soc_card *sun8i_v3s_codec_create_card(struct device *dev)
- 	if (!card)
- 		return ERR_PTR(-ENOMEM);
- 
--	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
-+	aux_dev.dlc.of_node = of_parse_phandle(dev->of_node,
- 						 "allwinner,codec-analog-controls",
- 						 0);
--	if (!aux_dev.codec_of_node) {
-+	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
- 	};
+ SND_SOC_DAILINK_DEF(dummy,
 -- 
 2.20.1
