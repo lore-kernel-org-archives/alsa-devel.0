@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3168a: Retain the independence of
-	DAC and ADC side of the codec" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:49 +0100 (BST)
-Message-ID: <20190812130949.64AF82740CB7@ypsilon.sirena.org.uk>
+Subject: Applied "ASoC: ti: rx51: use
+	snd_soc_dai_link_component for aux_dev" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:53 +0100 (BST)
+Message-ID: <20190812130954.064072740CBD@ypsilon.sirena.org.uk>
+References: <87imr86w96.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 521DCF80213
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:58 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 685EEF805F5
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:59 +0200 (CEST)
+In-Reply-To: <87imr86w96.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,17 +24,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Richard Fontana <rfontana@redhat.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Jerome Brunet <jbrunet@baylibre.com>, Anders Roxell <anders.roxell@linaro.org>, Kevin Hilman <khilman@baylibre.com>, YueHaibing <yuehaibing@huawei.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Krzysztof Kozlowski <krzk@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>, Chen-Yu Tsai <wens@csie.org>, Hans de Goede <hdegoede@redhat.com>, Danny Milosavljevic <dannym@scratchpost.org>, Georgii Staroselski i <georgii.staroselskii@emlid.com>, Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Thomas Gleixner <tglx@li>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3168a: Retain the independence of DAC and ADC side of the codec
+   ASoC: ti: rx51: use snd_soc_dai_link_component for aux_dev
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -53,330 +55,62 @@ to this mail.
 Thanks,
 Mark
 
->From abe51c351827e0086dad079dfe02918fecdf4830 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 12 Aug 2019 12:52:25 +0300
-Subject: [PATCH] ASoC: pcm3168a: Retain the independence of DAC and ADC side
- of the codec
+>From 77b21d2822fdbfad19170516256c4c7f236054a9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 8 Aug 2019 14:54:30 +0900
+Subject: [PATCH] ASoC: ti: rx51: use snd_soc_dai_link_component for aux_dev
 
-The DAC and ADC path of the codec is independent, have dedicated LRCK (FS)
-and BCK for DAC/ADC.
+We can use snd_soc_dai_link_component to specify aux_dev.
+Let's use it.
 
-They can be configured to use different format, TDM slots and slot_width if
-needed.
-
-Move these parameters under dedicated io_params structure and manage them
-independently based on the dai.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20190812095226.18870-2-peter.ujfalusi@ti.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/87imr86w96.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 125 ++++++++++++++++--------------------
- 1 file changed, 54 insertions(+), 71 deletions(-)
+ sound/soc/ti/rx51.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index e84a1509fe65..75fa8e9ee894 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -44,18 +44,25 @@ static const char *const pcm3168a_supply_names[PCM3168A_NUM_SUPPLIES] = {
- 	"VCCDA2"
- };
+diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
+index ccd0e8a07dd1..588f680a9c24 100644
+--- a/sound/soc/ti/rx51.c
++++ b/sound/soc/ti/rx51.c
+@@ -319,12 +319,10 @@ static struct snd_soc_dai_link rx51_dai[] = {
  
-+#define PCM3168A_DAI_DAC		0
-+#define PCM3168A_DAI_ADC		1
-+
-+/* ADC/DAC side parameters */
-+struct pcm3168a_io_params {
-+	bool master_mode;
-+	unsigned int fmt;
-+	int tdm_slots;
-+	u32 tdm_mask;
-+	int slot_width;
-+};
-+
- struct pcm3168a_priv {
- 	struct regulator_bulk_data supplies[PCM3168A_NUM_SUPPLIES];
- 	struct regmap *regmap;
- 	struct clk *scki;
--	bool adc_master_mode;
--	bool dac_master_mode;
- 	unsigned long sysclk;
--	unsigned int adc_fmt;
--	unsigned int dac_fmt;
--	int tdm_slots;
--	u32 tdm_mask[2];
--	int slot_width;
-+
-+	struct pcm3168a_io_params io_params[2];
- };
- 
- static const char *const pcm3168a_roll_off[] = { "Sharp", "Slow" };
-@@ -308,8 +315,7 @@ static int pcm3168a_set_dai_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai,
--			       unsigned int format, bool dac)
-+static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(component);
-@@ -356,43 +362,31 @@ static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
- 
--	if (dac) {
-+	if (dai->id == PCM3168A_DAI_DAC) {
- 		reg = PCM3168A_DAC_PWR_MST_FMT;
- 		mask = PCM3168A_DAC_FMT_MASK;
- 		shift = PCM3168A_DAC_FMT_SHIFT;
--		pcm3168a->dac_master_mode = master_mode;
--		pcm3168a->dac_fmt = fmt;
- 	} else {
- 		reg = PCM3168A_ADC_MST_FMT;
- 		mask = PCM3168A_ADC_FMTAD_MASK;
- 		shift = PCM3168A_ADC_FMTAD_SHIFT;
--		pcm3168a->adc_master_mode = master_mode;
--		pcm3168a->adc_fmt = fmt;
- 	}
- 
-+	pcm3168a->io_params[dai->id].master_mode = master_mode;
-+	pcm3168a->io_params[dai->id].fmt = fmt;
-+
- 	regmap_update_bits(pcm3168a->regmap, reg, mask, fmt << shift);
- 
- 	return 0;
- }
- 
--static int pcm3168a_set_dai_fmt_dac(struct snd_soc_dai *dai,
--			       unsigned int format)
--{
--	return pcm3168a_set_dai_fmt(dai, format, true);
--}
--
--static int pcm3168a_set_dai_fmt_adc(struct snd_soc_dai *dai,
--			       unsigned int format)
--{
--	return pcm3168a_set_dai_fmt(dai, format, false);
--}
--
- static int pcm3168a_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 				 unsigned int rx_mask, int slots,
- 				 int slot_width)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(component);
-+	struct pcm3168a_io_params *io_params = &pcm3168a->io_params[dai->id];
- 
- 	if (tx_mask >= (1<<slots) || rx_mask >= (1<<slots)) {
- 		dev_err(component->dev,
-@@ -408,22 +402,25 @@ static int pcm3168a_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		return -EINVAL;
- 	}
- 
--	if (pcm3168a->tdm_slots && pcm3168a->tdm_slots != slots) {
-+	if (io_params->tdm_slots && io_params->tdm_slots != slots) {
- 		dev_err(component->dev, "Not matching slots %d vs %d\n",
--			pcm3168a->tdm_slots, slots);
-+			io_params->tdm_slots, slots);
- 		return -EINVAL;
- 	}
- 
--	if (pcm3168a->slot_width && pcm3168a->slot_width != slot_width) {
-+	if (io_params->slot_width && io_params->slot_width != slot_width) {
- 		dev_err(component->dev, "Not matching slot_width %d vs %d\n",
--			pcm3168a->slot_width, slot_width);
-+			io_params->slot_width, slot_width);
- 		return -EINVAL;
- 	}
- 
--	pcm3168a->tdm_slots = slots;
--	pcm3168a->slot_width = slot_width;
--	pcm3168a->tdm_mask[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
--	pcm3168a->tdm_mask[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
-+	io_params->tdm_slots = slots;
-+	io_params->slot_width = slot_width;
-+	/* Ignore the not relevant mask for the DAI/direction */
-+	if (dai->id == PCM3168A_DAI_DAC)
-+		io_params->tdm_mask = tx_mask;
-+	else
-+		io_params->tdm_mask = rx_mask;
- 
- 	return 0;
- }
-@@ -434,7 +431,8 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(component);
--	bool tx, master_mode;
-+	struct pcm3168a_io_params *io_params = &pcm3168a->io_params[dai->id];
-+	bool master_mode;
- 	u32 val, mask, shift, reg;
- 	unsigned int rate, fmt, ratio, max_ratio;
- 	unsigned int tdm_slots;
-@@ -444,23 +442,21 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 
- 	ratio = pcm3168a->sysclk / rate;
- 
--	tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
--	if (tx) {
-+	if (dai->id == PCM3168A_DAI_DAC) {
- 		max_ratio = PCM3168A_NUM_SCKI_RATIOS_DAC;
- 		reg = PCM3168A_DAC_PWR_MST_FMT;
- 		mask = PCM3168A_DAC_MSDA_MASK;
- 		shift = PCM3168A_DAC_MSDA_SHIFT;
--		master_mode = pcm3168a->dac_master_mode;
--		fmt = pcm3168a->dac_fmt;
- 	} else {
- 		max_ratio = PCM3168A_NUM_SCKI_RATIOS_ADC;
- 		reg = PCM3168A_ADC_MST_FMT;
- 		mask = PCM3168A_ADC_MSAD_MASK;
- 		shift = PCM3168A_ADC_MSAD_SHIFT;
--		master_mode = pcm3168a->adc_master_mode;
--		fmt = pcm3168a->adc_fmt;
- 	}
- 
-+	master_mode = io_params->master_mode;
-+	fmt = io_params->fmt;
-+
- 	for (i = 0; i < max_ratio; i++) {
- 		if (pcm3168a_scki_ratios[i] == ratio)
- 			break;
-@@ -471,8 +467,8 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	if (pcm3168a->slot_width)
--		slot_width = pcm3168a->slot_width;
-+	if (io_params->slot_width)
-+		slot_width = io_params->slot_width;
- 	else
- 		slot_width = params_width(params);
- 
-@@ -497,8 +493,8 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	if (pcm3168a->tdm_slots)
--		tdm_slots = pcm3168a->tdm_slots;
-+	if (io_params->tdm_slots)
-+		tdm_slots = io_params->tdm_slots;
- 	else
- 		tdm_slots = params_channels(params);
- 
-@@ -534,7 +530,7 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 
- 	regmap_update_bits(pcm3168a->regmap, reg, mask, val);
- 
--	if (tx) {
-+	if (dai->id == PCM3168A_DAI_DAC) {
- 		mask = PCM3168A_DAC_FMT_MASK;
- 		shift = PCM3168A_DAC_FMT_SHIFT;
- 	} else {
-@@ -552,20 +548,13 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(component);
--	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
--	unsigned int fmt;
- 	unsigned int sample_min;
- 	unsigned int channel_max;
- 	unsigned int channel_maxs[] = {
--		6, /* rx */
--		8  /* tx */
-+		8, /* DAC */
-+		6  /* ADC */
- 	};
- 
--	if (tx)
--		fmt = pcm3168a->dac_fmt;
--	else
--		fmt = pcm3168a->adc_fmt;
--
- 	/*
- 	 * Available Data Bits
- 	 *
-@@ -578,7 +567,7 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 	 * I2S
- 	 * LEFT_J
- 	 */
--	switch (fmt) {
-+	switch (pcm3168a->io_params[dai->id].fmt) {
- 	case PCM3168A_FMT_RIGHT_J:
- 		sample_min  = 16;
- 		channel_max =  2;
-@@ -588,7 +577,7 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 	case PCM3168A_FMT_DSP_A:
- 	case PCM3168A_FMT_DSP_B:
- 		sample_min  = 24;
--		channel_max = channel_maxs[tx];
-+		channel_max = channel_maxs[dai->id];
- 		break;
- 	default:
- 		sample_min  = 24;
-@@ -600,8 +589,8 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 				     sample_min, 32);
- 
- 	/* Allow all channels in multi DIN/DOUT mode */
--	if (pcm3168a->tdm_slots == 2)
--		channel_max = channel_maxs[tx];
-+	if (pcm3168a->io_params[dai->id].tdm_slots == 2)
-+		channel_max = channel_maxs[dai->id];
- 
- 	snd_pcm_hw_constraint_minmax(substream->runtime,
- 				     SNDRV_PCM_HW_PARAM_CHANNELS,
-@@ -609,26 +598,19 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 
- 	return 0;
- }
--static const struct snd_soc_dai_ops pcm3168a_dac_dai_ops = {
-+static const struct snd_soc_dai_ops pcm3168a_dai_ops = {
- 	.startup	= pcm3168a_startup,
--	.set_fmt	= pcm3168a_set_dai_fmt_dac,
-+	.set_fmt	= pcm3168a_set_dai_fmt,
- 	.set_sysclk	= pcm3168a_set_dai_sysclk,
- 	.hw_params	= pcm3168a_hw_params,
- 	.digital_mute	= pcm3168a_digital_mute,
- 	.set_tdm_slot	= pcm3168a_set_tdm_slot,
- };
- 
--static const struct snd_soc_dai_ops pcm3168a_adc_dai_ops = {
--	.startup	= pcm3168a_startup,
--	.set_fmt	= pcm3168a_set_dai_fmt_adc,
--	.set_sysclk	= pcm3168a_set_dai_sysclk,
--	.hw_params	= pcm3168a_hw_params,
--	.set_tdm_slot	= pcm3168a_set_tdm_slot,
--};
--
- static struct snd_soc_dai_driver pcm3168a_dais[] = {
+ static struct snd_soc_aux_dev rx51_aux_dev[] = {
  	{
- 		.name = "pcm3168a-dac",
-+		.id = PCM3168A_DAI_DAC,
- 		.playback = {
- 			.stream_name = "Playback",
- 			.channels_min = 1,
-@@ -636,10 +618,11 @@ static struct snd_soc_dai_driver pcm3168a_dais[] = {
- 			.rates = SNDRV_PCM_RATE_8000_192000,
- 			.formats = PCM3168A_FORMATS
- 		},
--		.ops = &pcm3168a_dac_dai_ops
-+		.ops = &pcm3168a_dai_ops
+-		.name = "TLV320AIC34b",
+-		.codec_name = "tlv320aic3x-codec.2-0019",
++		.dlc = COMP_AUX("tlv320aic3x-codec.2-0019"),
  	},
  	{
- 		.name = "pcm3168a-adc",
-+		.id = PCM3168A_DAI_ADC,
- 		.capture = {
- 			.stream_name = "Capture",
- 			.channels_min = 1,
-@@ -647,7 +630,7 @@ static struct snd_soc_dai_driver pcm3168a_dais[] = {
- 			.rates = SNDRV_PCM_RATE_8000_96000,
- 			.formats = PCM3168A_FORMATS
- 		},
--		.ops = &pcm3168a_adc_dai_ops
-+		.ops = &pcm3168a_dai_ops
+-		.name = "TPA61320A2",
+-		.codec_name = "tpa6130a2.2-0060",
++		.dlc = COMP_AUX("tpa6130a2.2-0060"),
  	},
  };
  
+@@ -397,8 +395,8 @@ static int rx51_soc_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Auxiliary Codec node is not provided\n");
+ 			return -EINVAL;
+ 		}
+-		rx51_aux_dev[0].codec_name = NULL;
+-		rx51_aux_dev[0].codec_of_node = dai_node;
++		rx51_aux_dev[0].dlc.name = NULL;
++		rx51_aux_dev[0].dlc.of_node = dai_node;
+ 		rx51_codec_conf[0].dev_name = NULL;
+ 		rx51_codec_conf[0].of_node = dai_node;
+ 
+@@ -407,8 +405,8 @@ static int rx51_soc_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Headphone amplifier node is not provided\n");
+ 			return -EINVAL;
+ 		}
+-		rx51_aux_dev[1].codec_name = NULL;
+-		rx51_aux_dev[1].codec_of_node = dai_node;
++		rx51_aux_dev[1].dlc.name = NULL;
++		rx51_aux_dev[1].dlc.of_node = dai_node;
+ 		rx51_codec_conf[1].dev_name = NULL;
+ 		rx51_codec_conf[1].of_node = dai_node;
+ 	}
 -- 
 2.20.1
