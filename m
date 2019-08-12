@@ -1,193 +1,232 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: ti: davinci-mcasp: Protect hw_params
-	callback against race
-Date: Mon, 12 Aug 2019 12:53:04 +0300
-Message-ID: <20190812095304.19030-1-peter.ujfalusi@ti.com>
+From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: Re: [PATCH v4 6/9] ASoC: sun4i-i2s: Add multi-lane functionality
+Date: Mon, 12 Aug 2019 12:02:31 +0200
+Message-ID: <20190812100231.wlxitekfojr4jaki@flea>
+References: <20190603174735.21002-1-codekipper@gmail.com>
+ <2092329.vleAuWJ0xl@jernej-laptop>
+ <20190731122953.2u3iabd6gkn7jv7k@flea>
+ <1589203.0AjJVEASy3@jernej-laptop>
+ <CAGb2v66D4-QvWYPXE=rf6Zv93X1LjnxUgpk+5wdAL_b7MM3vaA@mail.gmail.com>
+Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D48BF805FB
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 11:52:56 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, jsarha@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4tzqsccmfdz6gxrw"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBOPSYTVAKGQE3MIGI5I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <CAGb2v66D4-QvWYPXE=rf6Zv93X1LjnxUgpk+5wdAL_b7MM3vaA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Christopher Obbard <chris-ljUBoSVpJTpWk0Htik3J/w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-If the playback and capture of the same McASP is connected to different
-dai link (non duplex PCM links, like with pcm3168a codec) then there is
-a high probability of race between the two direction leaving McASP in a
-confused state.
 
-Protect the hw_params() with a mutex to make sure that this is not
-happening.
+--4tzqsccmfdz6gxrw
+Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The concurrent execution of hw_params for capture and playback can be
-easily triggered with custom .asoundrc file (for pcm3168a codec):
+On Tue, Aug 06, 2019 at 02:22:13PM +0800, Chen-Yu Tsai wrote:
+> On Thu, Aug 1, 2019 at 1:32 PM Jernej =C5=A0krabec <jernej.skrabec@gmail.=
+com> wrote:
+> >
+> > Dne sreda, 31. julij 2019 ob 14:29:53 CEST je Maxime Ripard napisal(a):
+> > > On Tue, Jul 30, 2019 at 07:57:10PM +0200, Jernej =C5=A0krabec wrote:
+> > > > Dne torek, 04. junij 2019 ob 11:38:44 CEST je Code Kipper napisal(a=
+):
+> > > > > On Tue, 4 Jun 2019 at 11:02, Christopher Obbard <chris@64studio.c=
+om>
+> > wrote:
+> > > > > > On Tue, 4 Jun 2019 at 09:43, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>=
+ wrote:
+> > > > > > > On Tue, 4 Jun 2019 at 09:58, Maxime Ripard
+> > > > > > > <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+> > > >
+> > > > wrote:
+> > > > > > > > On Mon, Jun 03, 2019 at 07:47:32PM +0200, codekipper@gmail.=
+com
+> > wrote:
+> > > > > > > > > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> > > > > > > > >
+> > > > > > > > > The i2s block supports multi-lane i2s output however this
+> > > > > > > > > functionality
+> > > > > > > > > is only possible in earlier SoCs where the pins are expos=
+ed and
+> > > > > > > > > for
+> > > > > > > > > the i2s block used for HDMI audio on the later SoCs.
+> > > > > > > > >
+> > > > > > > > > To enable this functionality, an optional property has be=
+en
+> > > > > > > > > added to
+> > > > > > > > > the bindings.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> > > > > > > >
+> > > > > > > > I'd like to have Mark's input on this, but I'm really worri=
+ed
+> > > > > > > > about
+> > > > > > > > the interaction with the proper TDM support.
+> > > > > > > >
+> > > > > > > > Our fundamental issue is that the controller can have up to=
+ 8
+> > > > > > > > channels, but either on 4 lines (instead of 1), or 8 channe=
+ls on 1
+> > > > > > > > (like proper TDM) (or any combination between the two, but =
+that
+> > > > > > > > should
+> > > > > > > > be pretty rare).
+> > > > > > >
+> > > > > > > I understand...maybe the TDM needs to be extended to support =
+this to
+> > > > > > > consider channel mapping and multiple transfer lines. I was t=
+hinking
+> > > > > > > about the later when someone was requesting support on IIRC a=
+ while
+> > > > > > > ago, I thought masking might of been a solution. These can wa=
+it as
+> > > > > > > the
+> > > > > > > only consumer at the moment is LibreELEC and we can patch it =
+there.
+> > > > > >
+> > > > > > Hi Marcus,
+> > > > > >
+> > > > > > FWIW, the TI McASP driver has support for TDM & (i think?) mult=
+iple
+> > > > > > transfer lines which are called serializers.
+> > > > > > Maybe this can help with inspiration?
+> > > > > > see
+> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git/tre
+> > > > > > e/s
+> > > > > > ound/soc/ti/davinci-mcasp.c sample DTS:
+> > > > > >
+> > > > > > &mcasp0 {
+> > > > > >
+> > > > > >     #sound-dai-cells =3D <0>;
+> > > > > >     status =3D "okay";
+> > > > > >     pinctrl-names =3D "default";
+> > > > > >     pinctrl-0 =3D <&mcasp0_pins>;
+> > > > > >
+> > > > > >     op-mode =3D <0>;
+> > > > > >     tdm-slots =3D <8>;
+> > > > > >     serial-dir =3D <
+> > > > > >
+> > > > > >         2 0 1 0
+> > > > > >         0 0 0 0
+> > > > > >         0 0 0 0
+> > > > > >         0 0 0 0
+> > > > > >     >
+> > > > > >     >;
+> > > > > >
+> > > > > >     tx-num-evt =3D <1>;
+> > > > > >     rx-num-evt =3D <1>;
+> > > > > >
+> > > > > > };
+> > > > > >
+> > > > > > Cheers!
+> > > > >
+> > > > > Thanks, this looks good.
+> > > >
+> > > > I would really like to see this issue resolved, because HDMI audio =
+support
+> > > > in mainline Linux for those SoCs is long overdue.
+> > > >
+> > > > However, there is a possibility to still add HDMI audio suport (ste=
+reo
+> > > > only) even if this issue is not completely solved. If we agree that
+> > > > configuration of channels would be solved with additional property =
+as
+> > > > Christopher suggested, support for >2 channels can be left for a la=
+ter
+> > > > time when support for that property would be implemented. Currently=
+,
+> > > > stereo HDMI audio support can be added with a few patches.
+> > > >
+> > > > I think all I2S cores are really the same, no matter if internally
+> > > > connected to HDMI controller or routed to pins, so it would make se=
+nse to
+> > > > use same compatible for all of them. It's just that those I2S cores=
+ which
+> > > > are routed to pins can use only one lane and >2 channels can be use=
+d only
+> > > > in TDM mode of operation, if I understand this correctly.
+> > > >
+> > > > New property would have to be optional, so it's omission would resu=
+lt in
+> > > > same channel configuration as it is already present, to preserve
+> > > > compatibility with old device trees. And this mode is already suffi=
+cient
+> > > > for stereo HDMI audio support.
+> > >
+> > > Yeah, it looks like a good plan.
+> > >
+> > > > Side note: HDMI audio with current sun4i-i2s driver has a delay (ab=
+out a
+> > > > second), supposedly because DW HDMI controller automatically genera=
+tes CTS
+> > > > value based on I2S clock (auto CTS value generation is enabled per
+> > > > DesignWare recomendation for DW HDMI I2S interface).
+> > >
+> > > Is that a constant delay during the audio playback, or only at startu=
+p?
+> >
+> > I think it's just at startup, e.g. if you're watching movie, audio is i=
+n sync,
+> > it's just that first second or so is silent.
+> >
+> > >
+> > > > I2S driver from BSP Linux solves that by having I2S clock output
+> > > > enabled all the time. Should this be flagged with some additional
+> > > > property in DT?
+> > >
+> > > I'd say that if the codec has that requirement, then it should be
+> > > between the codec and the DAI, the DT doesn't really have anything to
+> > > do with this.
+> >
+> > Ok, but how to communicate that fact to I2S driver then? BSP driver sol=
+ves
+> > that by using different compatible, but as I said before, I2S cores are=
+ not
+> > really different, so this seems wrong.
+>
+> Maybe we could make the DW-HDMI I2S driver require the I2S clock be on al=
+l
+> the time? You wouldn't need any changes to the DT.
 
-pcm.dmixed8 {
-    type dmix
-    ipc_key 2048
-    ipc_perm 0666
-    slave {
-        pcm "hw:0,0"
-        format S24_LE
-        channels 8
-        rate 96000
-    }
-    bindings {
-        0 0
-        1 1
-        2 2
-        3 3
-        4 4
-        5 5
-        6 6
-        7 7
-    }
-}
+That's an option, but I'd really like to avoid it if possible.
 
-pcm.cpb-headset-1 {
-    type plug
-    slave.pcm dmixed8
+I guess we could also just add a delay in the powerup path in the HDMI
+case? Would it work?
 
-    hint {
-         show on
-         description "Headset 1 jack"
-    }
-    ttable.0.0 1
-    ttable.1.4 1
-}
+maxime
 
-pcm.dsnooped6 {
-    type dsnoop
-    ipc_key 2049
-    ipc_perm 0666
-    slave {
-        pcm "hw:0,1"
-        format S24_LE
-        channels 6
-        rate 96000
-    }
-    bindings {
-        0 0
-        1 1
-        2 2
-        3 3
-        4 4
-        5 5
-    }
-}
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-pcm.cpb-mic-1 {
-    type plug
-    slave.pcm "dsnooped6"
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+To view this discussion on the web, visit https://groups.google.com/d/msgid=
+/linux-sunxi/20190812100231.wlxitekfojr4jaki%40flea.
 
-    hint {
-         show on
-         description "Microphone 1 jack"
-    }
-    ttable.0.0 1
-    ttable.1.3 1
-}
+--4tzqsccmfdz6gxrw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Then running:
-arecord -D cpb-mic-1 -f S24_LE -c2 -r48000 | aplay -D cpb-headset-1 -f S24_LE -c2 -r48000
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/ti/davinci-mcasp.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXVE5NwAKCRDj7w1vZxhR
+xaLkAP9Dau8CFZaqjfYlG8eEMwwmDGnmJ3Qb+OfrtRI9IxfL8AEA9pf3QqqQHWty
+49bPYoHYZSaMSKd3MPMDdPL5aONO1Q8=
+=l/Kl
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index 7aa3c32e4a49..fe7a0b3572e2 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -111,6 +111,7 @@ struct davinci_mcasp {
- 	u32	channels;
- 	int	max_format_width;
- 	u8	active_serializers[2];
-+	struct mutex mutex;
- 
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip gpio_chip;
-@@ -1169,6 +1170,8 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 	int period_size = params_period_size(params);
- 	int ret;
- 
-+	mutex_lock(&mcasp->mutex);
-+
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_U8:
- 	case SNDRV_PCM_FORMAT_S8:
-@@ -1197,12 +1200,13 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 
- 	default:
- 		printk(KERN_WARNING "davinci-mcasp: unsupported PCM format");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 
- 	ret = davinci_mcasp_set_dai_fmt(cpu_dai, mcasp->dai_fmt);
- 	if (ret)
--		return ret;
-+		goto out;
- 
- 	/*
- 	 * If mcasp is BCLK master, and a BCLK divider was not provided by
-@@ -1223,7 +1227,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 	ret = mcasp_common_hw_param(mcasp, substream->stream,
- 				    period_size * channels, channels);
- 	if (ret)
--		return ret;
-+		goto out;
- 
- 	if (mcasp->op_mode == DAVINCI_MCASP_DIT_MODE)
- 		ret = mcasp_dit_hw_param(mcasp, params_rate(params));
-@@ -1232,7 +1236,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 					 channels);
- 
- 	if (ret)
--		return ret;
-+		goto out;
- 
- 	davinci_config_channel_size(mcasp, word_length);
- 
-@@ -1242,7 +1246,10 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 			mcasp->max_format_width = word_length;
- 	}
- 
--	return 0;
-+out:
-+	mutex_unlock(&mcasp->mutex);
-+
-+	return ret;
- }
- 
- static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
-@@ -2335,6 +2342,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	if (ret)
- 		return -EINVAL;
- 
-+	mutex_init(&mcasp->mutex);
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					&davinci_mcasp_component,
- 					&davinci_mcasp_dai[pdata->op_mode], 1);
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--4tzqsccmfdz6gxrw--
