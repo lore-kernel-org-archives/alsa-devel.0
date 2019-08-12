@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rockchip_max98090: use
+Subject: Applied "ASoC: sunxi: sun4i-codec: use
 	snd_soc_dai_link_component for aux_dev" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:55 +0100 (BST)
-Message-ID: <20190812130955.AE36E2740CB7@ypsilon.sirena.org.uk>
-References: <87pnlg6w9v.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Aug 2019 14:09:54 +0100 (BST)
+Message-ID: <20190812130954.4FB372740CED@ypsilon.sirena.org.uk>
+References: <87k1bo6w9b.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53F69F805FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42CAEF805FC
  for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:10:03 +0200 (CEST)
-In-Reply-To: <87pnlg6w9v.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k1bo6w9b.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rockchip_max98090: use snd_soc_dai_link_component for aux_dev
+   ASoC: sunxi: sun4i-codec: use snd_soc_dai_link_component for aux_dev
 
 has been applied to the asoc tree at
 
@@ -55,46 +55,73 @@ to this mail.
 Thanks,
 Mark
 
->From 70a6b7bfba9bfd781b8c137f059487017dd385d8 Mon Sep 17 00:00:00 2001
+>From 3d0d2d64b7eb4f2a451fa184829b749851c14f55 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 8 Aug 2019 14:54:05 +0900
-Subject: [PATCH] ASoC: rockchip: rockchip_max98090: use
- snd_soc_dai_link_component for aux_dev
+Date: Thu, 8 Aug 2019 14:54:25 +0900
+Subject: [PATCH] ASoC: sunxi: sun4i-codec: use snd_soc_dai_link_component for
+ aux_dev
 
 We can use snd_soc_dai_link_component to specify aux_dev.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87pnlg6w9v.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87k1bo6w9b.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 1af1147c3da3..7b0c21fa6dca 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -160,7 +160,7 @@ static struct snd_soc_dai_link rk_dailink = {
- static int rk_98090_headset_init(struct snd_soc_component *component);
- 
- static struct snd_soc_aux_dev rk_98090_headset_dev = {
--	.name = "Headset Chip",
-+	.dlc = COMP_EMPTY(),
- 	.init = rk_98090_headset_init,
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 619073e7d972..ee448d5e07a6 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1424,7 +1424,7 @@ static const struct snd_soc_dapm_route sun8i_codec_card_routes[] = {
  };
  
-@@ -226,9 +226,9 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ static struct snd_soc_aux_dev aux_dev = {
+-	.name = "Codec Analog Controls",
++	.dlc = COMP_EMPTY(),
+ };
  
- 	rk_dailink.platforms->of_node = rk_dailink.cpus->of_node;
+ static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
+@@ -1436,10 +1436,10 @@ static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
+ 	if (!card)
+ 		return ERR_PTR(-ENOMEM);
  
--	rk_98090_headset_dev.codec_of_node = of_parse_phandle(np,
-+	rk_98090_headset_dev.dlc.of_node = of_parse_phandle(np,
- 			"rockchip,headset-codec", 0);
--	if (!rk_98090_headset_dev.codec_of_node) {
-+	if (!rk_98090_headset_dev.dlc.of_node) {
- 		dev_err(&pdev->dev,
- 			"Property 'rockchip,headset-codec' missing/invalid\n");
- 		return -EINVAL;
+-	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
++	aux_dev.dlc.of_node = of_parse_phandle(dev->of_node,
+ 						 "allwinner,codec-analog-controls",
+ 						 0);
+-	if (!aux_dev.codec_of_node) {
++	if (!aux_dev.dlc.of_node) {
+ 		dev_err(dev, "Can't find analog controls for codec.\n");
+ 		return ERR_PTR(-EINVAL);
+ 	};
+@@ -1474,10 +1474,10 @@ static struct snd_soc_card *sun8i_h3_codec_create_card(struct device *dev)
+ 	if (!card)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
++	aux_dev.dlc.of_node = of_parse_phandle(dev->of_node,
+ 						 "allwinner,codec-analog-controls",
+ 						 0);
+-	if (!aux_dev.codec_of_node) {
++	if (!aux_dev.dlc.of_node) {
+ 		dev_err(dev, "Can't find analog controls for codec.\n");
+ 		return ERR_PTR(-EINVAL);
+ 	};
+@@ -1512,10 +1512,10 @@ static struct snd_soc_card *sun8i_v3s_codec_create_card(struct device *dev)
+ 	if (!card)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
++	aux_dev.dlc.of_node = of_parse_phandle(dev->of_node,
+ 						 "allwinner,codec-analog-controls",
+ 						 0);
+-	if (!aux_dev.codec_of_node) {
++	if (!aux_dev.dlc.of_node) {
+ 		dev_err(dev, "Can't find analog controls for codec.\n");
+ 		return ERR_PTR(-EINVAL);
+ 	};
 -- 
 2.20.1
