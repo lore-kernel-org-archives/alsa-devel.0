@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9850: remove unused variable 'max9850_reg'" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:52 +0100 (BST)
-Message-ID: <20190812130952.E77BF2740CBD@ypsilon.sirena.org.uk>
-References: <20190808143507.66788-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: fsl_esai: Add new compatible string for imx6ull" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:50 +0100 (BST)
+Message-ID: <20190812130950.DBD082740CB7@ypsilon.sirena.org.uk>
+References: <1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190808143507.66788-1-yuehaibing@huawei.com>
+In-Reply-To: <1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: allison@lohutok.net, alsa-devel@alsa-project.org, broonie@kernel.org, gregkh@linuxfoundation.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, mark.rutland@arm.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9850: remove unused variable 'max9850_reg'
+   ASoC: fsl_esai: Add new compatible string for imx6ull
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From c86102a333f77dcd0f7ef20ba836c6f13f1a077a Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 8 Aug 2019 22:35:07 +0800
-Subject: [PATCH] ASoC: max9850: remove unused variable 'max9850_reg'
+>From 9ea08f2a6d27b6a26d33dae5c58e4099672d6bb3 Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Fri, 9 Aug 2019 18:27:47 +0800
+Subject: [PATCH] ASoC: fsl_esai: Add new compatible string for imx6ull
 
-sound/soc/codecs/max9850.c:31:33: warning:
- max9850_reg defined but not used [-Wunused-const-variable=]
+Add new compatible string "fsl,imx6ull-esai" in the binding document.
 
-It is not used since commit 068416620c0d ("ASoC:
-max9850: Convert to direct regmap API usage")
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190808143507.66788-1-yuehaibing@huawei.com
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9850.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,esai.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
-index f50ee8f5fe93..6f43748f9239 100644
---- a/sound/soc/codecs/max9850.c
-+++ b/sound/soc/codecs/max9850.c
-@@ -27,19 +27,6 @@ struct max9850_priv {
- 	unsigned int sysclk;
- };
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index 5b9914367610..0e6e2166f76c 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -7,8 +7,11 @@ other DSPs. It has up to six transmitters and four receivers.
  
--/* max9850 register cache */
--static const struct reg_default max9850_reg[] = {
--	{  2, 0x0c },
--	{  3, 0x00 },
--	{  4, 0x00 },
--	{  5, 0x00 },
--	{  6, 0x00 },
--	{  7, 0x00 },
--	{  8, 0x00 },
--	{  9, 0x00 },
--	{ 10, 0x00 },
--};
--
- /* these registers are not used at the moment but provided for the sake of
-  * completeness */
- static bool max9850_volatile_register(struct device *dev, unsigned int reg)
+ Required properties:
+ 
+-  - compatible		: Compatible list, must contain "fsl,imx35-esai" or
+-			  "fsl,vf610-esai"
++  - compatible		: Compatible list, should contain one of the following
++			  compatibles:
++			  "fsl,imx35-esai",
++			  "fsl,vf610-esai",
++			  "fsl,imx6ull-esai",
+ 
+   - reg			: Offset and length of the register set for the device.
+ 
 -- 
 2.20.1
