@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_esai: Add compatible string for imx6ull" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:51 +0100 (BST)
-Message-ID: <20190812130951.2CA162740CBD@ypsilon.sirena.org.uk>
-References: <1565346467-5769-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Applied "ASoC: max9850: remove unused variable 'max9850_reg'" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:52 +0100 (BST)
+Message-ID: <20190812130952.E77BF2740CBD@ypsilon.sirena.org.uk>
+References: <20190808143507.66788-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1565346467-5769-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20190808143507.66788-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, mark.rutland@arm.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: allison@lohutok.net, alsa-devel@alsa-project.org, broonie@kernel.org, gregkh@linuxfoundation.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_esai: Add compatible string for imx6ull
+   ASoC: max9850: remove unused variable 'max9850_reg'
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From 9c2806c4941641a6c75736f8c4303c89d2013cc4 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Fri, 9 Aug 2019 18:27:46 +0800
-Subject: [PATCH] ASoC: fsl_esai: Add compatible string for imx6ull
+>From c86102a333f77dcd0f7ef20ba836c6f13f1a077a Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 8 Aug 2019 22:35:07 +0800
+Subject: [PATCH] ASoC: max9850: remove unused variable 'max9850_reg'
 
-Add compatible string for imx6ull, from imx6ull platform,
-the issue of channel swap after xrun is fixed in hardware.
+sound/soc/codecs/max9850.c:31:33: warning:
+ max9850_reg defined but not used [-Wunused-const-variable=]
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/1565346467-5769-1-git-send-email-shengjiu.wang@nxp.com
+It is not used since commit 068416620c0d ("ASoC:
+max9850: Convert to direct regmap API usage")
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190808143507.66788-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/max9850.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 5832144beb9f..a78e4ab478df 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -1049,6 +1049,7 @@ static int fsl_esai_remove(struct platform_device *pdev)
- static const struct of_device_id fsl_esai_dt_ids[] = {
- 	{ .compatible = "fsl,imx35-esai", },
- 	{ .compatible = "fsl,vf610-esai", },
-+	{ .compatible = "fsl,imx6ull-esai", },
- 	{}
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index f50ee8f5fe93..6f43748f9239 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -27,19 +27,6 @@ struct max9850_priv {
+ 	unsigned int sysclk;
  };
- MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
+ 
+-/* max9850 register cache */
+-static const struct reg_default max9850_reg[] = {
+-	{  2, 0x0c },
+-	{  3, 0x00 },
+-	{  4, 0x00 },
+-	{  5, 0x00 },
+-	{  6, 0x00 },
+-	{  7, 0x00 },
+-	{  8, 0x00 },
+-	{  9, 0x00 },
+-	{ 10, 0x00 },
+-};
+-
+ /* these registers are not used at the moment but provided for the sake of
+  * completeness */
+ static bool max9850_volatile_register(struct device *dev, unsigned int reg)
 -- 
 2.20.1
