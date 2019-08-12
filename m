@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8183-da7219-max98357: use
-	snd_soc_dai_link_component for aux_dev" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:56 +0100 (BST)
-Message-ID: <20190812130956.614A12740CB7@ypsilon.sirena.org.uk>
-References: <87tvas6waf.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: boards: Match Product Family
+	instead of product" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:50 +0100 (BST)
+Message-ID: <20190812130950.241962740CB7@ypsilon.sirena.org.uk>
+References: <20190809232236.21182-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 864C0F805F7
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:59 +0200 (CEST)
-In-Reply-To: <87tvas6waf.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 526A2F805A9
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:58 +0200 (CEST)
+In-Reply-To: <20190809232236.21182-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Richard Fontana <rfontana@redhat.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Jerome Brunet <jbrunet@baylibre.com>, Anders Roxell <anders.roxell@linaro.org>, Kevin Hilman <khilman@baylibre.com>, YueHaibing <yuehaibing@huawei.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Krzysztof Kozlowski <krzk@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>, Chen-Yu Tsai <wens@csie.org>, Hans de Goede <hdegoede@redhat.com>, Danny Milosavljevic <dannym@scratchpost.org>, Georgii Staroselski i <georgii.staroselskii@emlid.com>, Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Thomas Gleixner <tglx@li>
+To: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183-da7219-max98357: use snd_soc_dai_link_component for aux_dev
+   ASoC: Intel: boards: Match Product Family instead of product
 
 has been applied to the asoc tree at
 
@@ -55,47 +55,36 @@ to this mail.
 Thanks,
 Mark
 
->From 5c9e38cb57ce07d780dc05d34ae140271c2da159 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 8 Aug 2019 14:53:45 +0900
-Subject: [PATCH] ASoC: mediatek: mt8183-da7219-max98357: use
- snd_soc_dai_link_component for aux_dev
+>From 1a3fb5d3f420d5f022768fcff091e5a9862f5877 Mon Sep 17 00:00:00 2001
+From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Date: Fri, 9 Aug 2019 18:22:33 -0500
+Subject: [PATCH] ASoC: Intel: boards: Match Product Family instead of product
 
-We can use snd_soc_dai_link_component to specify aux_dev.
-Let's use it.
+The generic machine driver of sof_rt5682
+supports more platforms of same product family.
+hence match the product family instead of product name.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87tvas6waf.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190809232236.21182-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 59076e21cb47..2a6097174614 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -370,7 +370,7 @@ static int
- mt8183_da7219_max98357_headset_init(struct snd_soc_component *component);
- 
- static struct snd_soc_aux_dev mt8183_da7219_max98357_headset_dev = {
--	.name = "Headset Chip",
-+	.dlc = COMP_EMPTY(),
- 	.init = mt8183_da7219_max98357_headset_init,
- };
- 
-@@ -436,10 +436,10 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
- 		dai_link->platforms->of_node = platform_node;
- 	}
- 
--	mt8183_da7219_max98357_headset_dev.codec_of_node =
-+	mt8183_da7219_max98357_headset_dev.dlc.of_node =
- 		of_parse_phandle(pdev->dev.of_node,
- 				 "mediatek,headset-codec", 0);
--	if (!mt8183_da7219_max98357_headset_dev.codec_of_node) {
-+	if (!mt8183_da7219_max98357_headset_dev.dlc.of_node) {
- 		dev_err(&pdev->dev,
- 			"Property 'mediatek,headset-codec' missing/invalid\n");
- 		return -EINVAL;
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index daeaa396d928..c1181bc0119e 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -91,8 +91,7 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+ 	{
+ 		.callback = sof_rt5682_quirk_cb,
+ 		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Hatch"),
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Hatch"),
+ 		},
+ 		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_MCLK_24MHZ |
 -- 
 2.20.1
