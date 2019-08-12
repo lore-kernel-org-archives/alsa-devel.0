@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: rx51: use
+Subject: Applied "ASoC: samsung: speyside: use
 	snd_soc_dai_link_component for aux_dev" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:53 +0100 (BST)
-Message-ID: <20190812130954.064072740CBD@ypsilon.sirena.org.uk>
-References: <87imr86w96.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 12 Aug 2019 14:09:54 +0100 (BST)
+Message-ID: <20190812130955.00BEB2740CBD@ypsilon.sirena.org.uk>
+References: <87mugk6w9l.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 685EEF805F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BEB7F805F6
  for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:59 +0200 (CEST)
-In-Reply-To: <87imr86w96.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87mugk6w9l.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: rx51: use snd_soc_dai_link_component for aux_dev
+   ASoC: samsung: speyside: use snd_soc_dai_link_component for aux_dev
 
 has been applied to the asoc tree at
 
@@ -55,62 +55,36 @@ to this mail.
 Thanks,
 Mark
 
->From 77b21d2822fdbfad19170516256c4c7f236054a9 Mon Sep 17 00:00:00 2001
+>From 2d946aaa80c79452c700381b4c1f06f11dfd2bdd Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 8 Aug 2019 14:54:30 +0900
-Subject: [PATCH] ASoC: ti: rx51: use snd_soc_dai_link_component for aux_dev
+Date: Thu, 8 Aug 2019 14:54:15 +0900
+Subject: [PATCH] ASoC: samsung: speyside: use snd_soc_dai_link_component for
+ aux_dev
 
 We can use snd_soc_dai_link_component to specify aux_dev.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/87imr86w96.wl-kuninori.morimoto.gx@renesas.com
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/87mugk6w9l.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/rx51.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/samsung/speyside.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/ti/rx51.c b/sound/soc/ti/rx51.c
-index ccd0e8a07dd1..588f680a9c24 100644
---- a/sound/soc/ti/rx51.c
-+++ b/sound/soc/ti/rx51.c
-@@ -319,12 +319,10 @@ static struct snd_soc_dai_link rx51_dai[] = {
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index 51e4c976c8be..9e58cbed942a 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -240,8 +240,7 @@ static int speyside_wm9081_init(struct snd_soc_component *component)
  
- static struct snd_soc_aux_dev rx51_aux_dev[] = {
+ static struct snd_soc_aux_dev speyside_aux_dev[] = {
  	{
--		.name = "TLV320AIC34b",
--		.codec_name = "tlv320aic3x-codec.2-0019",
-+		.dlc = COMP_AUX("tlv320aic3x-codec.2-0019"),
- 	},
- 	{
--		.name = "TPA61320A2",
--		.codec_name = "tpa6130a2.2-0060",
-+		.dlc = COMP_AUX("tpa6130a2.2-0060"),
+-		.name = "wm9081",
+-		.codec_name = "wm9081.1-006c",
++		.dlc = COMP_AUX("wm9081.1-006c"),
+ 		.init = speyside_wm9081_init,
  	},
  };
- 
-@@ -397,8 +395,8 @@ static int rx51_soc_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "Auxiliary Codec node is not provided\n");
- 			return -EINVAL;
- 		}
--		rx51_aux_dev[0].codec_name = NULL;
--		rx51_aux_dev[0].codec_of_node = dai_node;
-+		rx51_aux_dev[0].dlc.name = NULL;
-+		rx51_aux_dev[0].dlc.of_node = dai_node;
- 		rx51_codec_conf[0].dev_name = NULL;
- 		rx51_codec_conf[0].of_node = dai_node;
- 
-@@ -407,8 +405,8 @@ static int rx51_soc_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "Headphone amplifier node is not provided\n");
- 			return -EINVAL;
- 		}
--		rx51_aux_dev[1].codec_name = NULL;
--		rx51_aux_dev[1].codec_of_node = dai_node;
-+		rx51_aux_dev[1].dlc.name = NULL;
-+		rx51_aux_dev[1].dlc.of_node = dai_node;
- 		rx51_codec_conf[1].dev_name = NULL;
- 		rx51_codec_conf[1].of_node = dai_node;
- 	}
 -- 
 2.20.1
