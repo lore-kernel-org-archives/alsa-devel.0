@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: Match Product Family
-	instead of product" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:50 +0100 (BST)
-Message-ID: <20190812130950.241962740CB7@ypsilon.sirena.org.uk>
-References: <20190809232236.21182-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rt5677: Revert remove superfluous set"
+	to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:51 +0100 (BST)
+Message-ID: <20190812130951.683732740CED@ypsilon.sirena.org.uk>
+References: <20190809215952.155660-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 526A2F805A9
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:58 +0200 (CEST)
-In-Reply-To: <20190809232236.21182-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D2D6F805F9
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:59 +0200 (CEST)
+In-Reply-To: <20190809215952.155660-1-cujomalainey@chromium.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: Match Product Family instead of product
+   ASoC: rt5677: Revert remove superfluous set
 
 has been applied to the asoc tree at
 
@@ -55,36 +55,35 @@ to this mail.
 Thanks,
 Mark
 
->From 1a3fb5d3f420d5f022768fcff091e5a9862f5877 Mon Sep 17 00:00:00 2001
-From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Date: Fri, 9 Aug 2019 18:22:33 -0500
-Subject: [PATCH] ASoC: Intel: boards: Match Product Family instead of product
+>From ae032156ec4142b7a1d644eba652806785de1777 Mon Sep 17 00:00:00 2001
+From: Curtis Malainey <cujomalainey@chromium.org>
+Date: Fri, 9 Aug 2019 14:59:51 -0700
+Subject: [PATCH] ASoC: rt5677: Revert remove superfluous set
 
-The generic machine driver of sof_rt5682
-supports more platforms of same product family.
-hence match the product family instead of product name.
+Commit 4dc057a786dc23 ("ASoC: rt5677: remove superfluous set") was an
+attempted code cleanup but was incorrectly tested before sent and
+actually breaks the interrupt since it never resets the value on each
+loop now. The breakage is most testable when hotwording code is added
+and also uses the interrupt.
 
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190809232236.21182-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+Link: https://lore.kernel.org/r/20190809215952.155660-1-cujomalainey@chromium.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/rt5677.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index daeaa396d928..c1181bc0119e 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -91,8 +91,7 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
- 	{
- 		.callback = sof_rt5682_quirk_cb,
- 		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "Hatch"),
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Hatch"),
- 		},
- 		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
- 					SOF_RT5682_MCLK_24MHZ |
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index deaed5132dc9..c779dc3474f9 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5098,6 +5098,7 @@ static irqreturn_t rt5677_irq(int unused, void *data)
+ 			goto exit;
+ 		}
+ 
++		irq_fired = false;
+ 		for (i = 0; i < RT5677_IRQ_NUM; i++) {
+ 			if (reg_irq & rt5677_irq_descs[i].status_mask) {
+ 				irq_fired = true;
 -- 
 2.20.1
