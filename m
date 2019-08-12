@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_esai: Add new compatible string for imx6ull" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:50 +0100 (BST)
-Message-ID: <20190812130950.DBD082740CB7@ypsilon.sirena.org.uk>
-References: <1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, mark.rutland@arm.com, nicoleotsuka@gmail.comNicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com
+Subject: Applied "ASoC: Intel: skl-hda-dsp-generic: add dmic
+	dapm widget and route" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:49 +0100 (BST)
+Message-ID: <20190812130949.A1E202740CBD@ypsilon.sirena.org.uk>
+References: <20190809232236.21182-5-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C840F805E1
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:58 +0200 (CEST)
+In-Reply-To: <20190809232236.21182-5-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_esai: Add new compatible string for imx6ull
+   ASoC: Intel: skl-hda-dsp-generic: add dmic dapm widget and route
 
 has been applied to the asoc tree at
 
@@ -37,38 +55,44 @@ to this mail.
 Thanks,
 Mark
 
->From 9ea08f2a6d27b6a26d33dae5c58e4099672d6bb3 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Fri, 9 Aug 2019 18:27:47 +0800
-Subject: [PATCH] ASoC: fsl_esai: Add new compatible string for imx6ull
+>From 79631210fc413546d0ed73632ff904ded5192cc9 Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Fri, 9 Aug 2019 18:22:36 -0500
+Subject: [PATCH] ASoC: Intel: skl-hda-dsp-generic: add dmic dapm widget and
+ route
 
-Add new compatible string "fsl,imx6ull-esai" in the binding document.
+Adding DAPM MIC endpoint widget "SoC DMIC" and route, to enable
+DMIC DAPM support with hda generic machine.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/1565346467-5769-2-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190809232236.21182-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl,esai.txt | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-index 5b9914367610..0e6e2166f76c 100644
---- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-@@ -7,8 +7,11 @@ other DSPs. It has up to six transmitters and four receivers.
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index 9ed68eb4f058..1778acdc367c 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -23,6 +23,7 @@ static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Alt Analog In", NULL),
+ 	SND_SOC_DAPM_SPK("Digital Out", NULL),
+ 	SND_SOC_DAPM_MIC("Digital In", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ };
  
- Required properties:
+ static const struct snd_soc_dapm_route skl_hda_map[] = {
+@@ -41,6 +42,9 @@ static const struct snd_soc_dapm_route skl_hda_map[] = {
+ 	{ "Codec Input Pin2", NULL, "Digital In" },
+ 	{ "Codec Input Pin3", NULL, "Alt Analog In" },
  
--  - compatible		: Compatible list, must contain "fsl,imx35-esai" or
--			  "fsl,vf610-esai"
-+  - compatible		: Compatible list, should contain one of the following
-+			  compatibles:
-+			  "fsl,imx35-esai",
-+			  "fsl,vf610-esai",
-+			  "fsl,imx6ull-esai",
- 
-   - reg			: Offset and length of the register set for the device.
- 
++	/* digital mics */
++	{"DMic", NULL, "SoC DMIC"},
++
+ 	/* CODEC BE connections */
+ 	{ "Analog Codec Playback", NULL, "Analog CPU Playback" },
+ 	{ "Analog CPU Playback", NULL, "codec0_out" },
 -- 
 2.20.1
