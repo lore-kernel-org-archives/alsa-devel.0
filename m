@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-card: use
-	snd_soc_dai_link_component for aux_dev" to the asoc tree
-Date: Mon, 12 Aug 2019 14:09:55 +0100 (BST)
-Message-ID: <20190812130956.058832740CBD@ypsilon.sirena.org.uk>
-References: <87r25w6wa1.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: skl-hda-dsp-generic: add
+	dependency to dmic driver" to the asoc tree
+Date: Mon, 12 Aug 2019 14:09:49 +0100 (BST)
+Message-ID: <20190812130949.D8FCC2740CED@ypsilon.sirena.org.uk>
+References: <20190809232236.21182-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F18D4F805FA
- for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:10:03 +0200 (CEST)
-In-Reply-To: <87r25w6wa1.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5259CF80518
+ for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2019 15:09:58 +0200 (CEST)
+In-Reply-To: <20190809232236.21182-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Jie Yang <yang.jie@linux.intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Richard Fontana <rfontana@redhat.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Jerome Brunet <jbrunet@baylibre.com>, Anders Roxell <anders.roxell@linaro.org>, Kevin Hilman <khilman@baylibre.com>, YueHaibing <yuehaibing@huawei.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Krzysztof Kozlowski <krzk@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>, Chen-Yu Tsai <wens@csie.org>, Hans de Goede <hdegoede@redhat.com>, Danny Milosavljevic <dannym@scratchpost.org>, Georgii Staroselski i <georgii.staroselskii@emlid.com>, Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Thomas Gleixner <tglx@li>
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-card: use snd_soc_dai_link_component for aux_dev
+   ASoC: Intel: skl-hda-dsp-generic: add dependency to dmic driver
 
 has been applied to the asoc tree at
 
@@ -55,46 +55,34 @@ to this mail.
 Thanks,
 Mark
 
->From a73b522d4b570ee41754990e81f6f4e849af1af9 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 8 Aug 2019 14:53:59 +0900
-Subject: [PATCH] ASoC: meson: axg-card: use snd_soc_dai_link_component for
- aux_dev
+>From 0181d2853126db0717de6bd5b3287f1c87faf7c3 Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Fri, 9 Aug 2019 18:22:35 -0500
+Subject: [PATCH] ASoC: Intel: skl-hda-dsp-generic: add dependency to dmic
+ driver
 
-We can use snd_soc_dai_link_component to specify aux_dev.
-Let's use it.
+The hda generic machine actually has dependency on the dmic driver,
+select SND_SOC_DMIC at the machine selected to fix it.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87r25w6wa1.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190809232236.21182-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 14a8321744da..6283e5025548 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -124,7 +124,7 @@ static void axg_card_clean_references(struct axg_card *priv)
- 
- 	if (card->aux_dev) {
- 		for (i = 0; i < card->num_aux_devs; i++)
--			of_node_put(card->aux_dev[i].codec_of_node);
-+			of_node_put(card->aux_dev[i].dlc.of_node);
- 	}
- 
- 	kfree(card->dai_link);
-@@ -158,9 +158,9 @@ static int axg_card_add_aux_devices(struct snd_soc_card *card)
- 	card->num_aux_devs = num;
- 
- 	for (i = 0; i < card->num_aux_devs; i++, aux++) {
--		aux->codec_of_node =
-+		aux->dlc.of_node =
- 			of_parse_phandle(node, "audio-aux-devs", i);
--		if (!aux->codec_of_node)
-+		if (!aux->dlc.of_node)
- 			return -EINVAL;
- 	}
- 
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 50bf149818b5..4a529cea0190 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -387,6 +387,7 @@ if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
+ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+ 	tristate "SKL/KBL/BXT/APL with HDA Codecs"
+ 	select SND_SOC_HDAC_HDMI
++	select SND_SOC_DMIC
+ 	# SND_SOC_HDAC_HDA is already selected
+ 	help
+ 	  This adds support for ASoC machine driver for Intel platforms
 -- 
 2.20.1
