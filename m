@@ -1,33 +1,37 @@
-From: Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v2] soundwire: Make slave.o depend on ACPI and rename to acpi_slave.o
-Date: Tue, 13 Aug 2019 13:37:13 -0700
-Message-ID: <CAKwvOdnOtR6s2KQVEZ2MRS1HE3W7L3B3ymsLmToJdzN_L2Nz-A@mail.gmail.com>
-References: <20190813061014.45015-1-natechancellor@gmail.com> <20190813180929.22497-1-natechancellor@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2] soundwire: Make slave.o depend on ACPI
+ and rename to acpi_slave.o
+Date: Tue, 13 Aug 2019 15:41:58 -0500
+Message-ID: <4961bd17-c053-f630-423d-f6a945c8d92c@linux.intel.com>
+References: <20190813061014.45015-1-natechancellor@gmail.com>
+ <20190813180929.22497-1-natechancellor@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190813180929.22497-1-natechancellor@gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, clang-built-linux <clang-built-linux@googlegroups.com>
+To: Nathan Chancellor <natechancellor@gmail.com>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: clang-built-linux@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 13, 2019 at 11:12 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
+
+
+On 8/13/19 1:09 PM, Nathan Chancellor wrote:
 > clang warns when CONFIG_ACPI is unset:
->
+> 
 > ../drivers/soundwire/slave.c:16:12: warning: unused function
 > 'sdw_slave_add' [-Wunused-function]
 > static int sdw_slave_add(struct sdw_bus *bus,
->            ^
+>             ^
 > 1 warning generated.
->
+> 
 > Before commit 8676b3ca4673 ("soundwire: fix regmap dependencies and
 > align with other serial links"), this code would only be compiled when
 > ACPI was set because it was only selected by SOUNDWIRE_INTEL, which
 > depends on ACPI.
->
+> 
 > Now, this code can be compiled without CONFIG_ACPI, which causes the
 > above warning. The IS_ENABLED(CONFIG_ACPI) guard could be moved to avoid
 > compiling the function; however, slave.c only contains three functions,
@@ -36,48 +40,49 @@ On Tue, Aug 13, 2019 at 11:12 AM Nathan Chancellor
 > is set so sdw_acpi_find_slaves will actually be used. bus.h contains
 > a stub for sdw_acpi_find_slaves so there will be no issues with an
 > undefined function.
->
+> 
 > This has been build tested with CONFIG_ACPI set and unset in combination
 > with CONFIG_SOUNDWIRE unset, built in, and a module.
->
+> 
 > Fixes: 8676b3ca4673 ("soundwire: fix regmap dependencies and align with other serial links")
 > Link: https://github.com/ClangBuiltLinux/linux/issues/637
 > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Looks good, thanks Nathan.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Sounds good, thanks for the fix.
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 > ---
->
+> 
 > v1 -> v2:
->
+> 
 > * Rename slave.o to acpi_slave.o
 > * Reword commit message to reflect this
->
->  drivers/soundwire/Makefile                  | 6 +++++-
->  drivers/soundwire/{slave.c => acpi_slave.c} | 3 ---
->  2 files changed, 5 insertions(+), 4 deletions(-)
->  rename drivers/soundwire/{slave.c => acpi_slave.c} (98%)
->
+> 
+>   drivers/soundwire/Makefile                  | 6 +++++-
+>   drivers/soundwire/{slave.c => acpi_slave.c} | 3 ---
+>   2 files changed, 5 insertions(+), 4 deletions(-)
+>   rename drivers/soundwire/{slave.c => acpi_slave.c} (98%)
+> 
 > diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
 > index 45b7e5001653..718d8dd0ac79 100644
 > --- a/drivers/soundwire/Makefile
 > +++ b/drivers/soundwire/Makefile
 > @@ -4,9 +4,13 @@
->  #
->
->  #Bus Objs
+>   #
+>   
+>   #Bus Objs
 > -soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
 > +soundwire-bus-objs := bus_type.o bus.o mipi_disco.o stream.o
->  obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
->
+>   obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+>   
 > +ifdef CONFIG_ACPI
 > +soundwire-bus-objs += acpi_slave.o
 > +endif
 > +
->  #Cadence Objs
->  soundwire-cadence-objs := cadence_master.o
->  obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+>   #Cadence Objs
+>   soundwire-cadence-objs := cadence_master.o
+>   obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
 > diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/acpi_slave.c
 > similarity index 98%
 > rename from drivers/soundwire/slave.c
@@ -86,29 +91,17 @@ Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 > --- a/drivers/soundwire/slave.c
 > +++ b/drivers/soundwire/acpi_slave.c
 > @@ -60,7 +60,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
->         return ret;
->  }
->
+>   	return ret;
+>   }
+>   
 > -#if IS_ENABLED(CONFIG_ACPI)
->  /*
->   * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
->   * @bus: SDW bus instance
+>   /*
+>    * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
+>    * @bus: SDW bus instance
 > @@ -110,5 +109,3 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
->
->         return 0;
->  }
+>   
+>   	return 0;
+>   }
 > -
 > -#endif
-> --
-> 2.23.0.rc2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20190813180929.22497-1-natechancellor%40gmail.com.
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> 
