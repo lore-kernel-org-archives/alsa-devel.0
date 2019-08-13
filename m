@@ -1,43 +1,33 @@
-From: Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH] ASoC: ti: Fix typos in ti/Kconfig
-Date: Tue, 13 Aug 2019 12:42:35 +0900
-Message-ID: <20190813034235.30673-1-standby24x7@gmail.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 0/3] soundwire: debugfs support for 5.4
+Date: Tue, 13 Aug 2019 08:06:55 +0200
+Message-ID: <20190813060655.GF6670@kroah.com>
+References: <20190812235942.7120-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190812235942.7120-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org
-Cc: Masanari Iida <standby24x7@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes some spelling typo in Kconfig.
+On Mon, Aug 12, 2019 at 06:59:39PM -0500, Pierre-Louis Bossart wrote:
+> This patchset enables debugfs support and corrects all the feedback
+> provided on an earlier RFC ('soundwire: updates for 5.4')
+> 
+> There is one remaining hard-coded value in intel.c that will need to
+> be fixed in a follow-up patchset not specific to debugfs: we need to
+> remove hard-coded Intel-specific configurations from cadence_master.c
+> (PDI offsets, etc).
+> 
+> Changes since v1 (Feedback from GKH)
+> Handle debugfs in a more self-contained way (no dentry as return or parameter)
+> Used CONFIG_DEBUG_FS in structures and code to make it easier to
+> remove if need be.
+> No functional change for register dumps.
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
----
- sound/soc/ti/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Looks much better:
 
-diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-index 2197f3e1eaed..87a9b9dd4e98 100644
---- a/sound/soc/ti/Kconfig
-+++ b/sound/soc/ti/Kconfig
-@@ -12,7 +12,7 @@ config SND_SOC_TI_SDMA_PCM
- 
- comment "Texas Instruments DAI support for:"
- config SND_SOC_DAVINCI_ASP
--	tristate "daVinci Audio Serial Port (ASP) or McBSP suport"
-+	tristate "daVinci Audio Serial Port (ASP) or McBSP support"
- 	depends on ARCH_DAVINCI || COMPILE_TEST
- 	select SND_SOC_TI_EDMA_PCM
- 	help
-@@ -33,7 +33,7 @@ config SND_SOC_DAVINCI_MCASP
- 	  - Keystone devices
- 
- config SND_SOC_DAVINCI_VCIF
--	tristate "daVinci Voice Interface (VCIF) suport"
-+	tristate "daVinci Voice Interface (VCIF) support"
- 	depends on ARCH_DAVINCI || COMPILE_TEST
- 	select SND_SOC_TI_EDMA_PCM
- 	help
--- 
-2.23.0.rc2
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
