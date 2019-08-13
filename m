@@ -1,7 +1,7 @@
 From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: mt2701: remove unused variables
-Date: Tue, 13 Aug 2019 22:38:11 +0800
-Message-ID: <20190813143811.31456-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: mediatek: mt8183-da7219-max98357: remove unused variable
+Date: Tue, 13 Aug 2019 22:39:52 +0800
+Message-ID: <20190813143952.29232-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -10,51 +10,38 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.c, tiwai@suse.com, matt
 Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:799:38: warning:
- mt2701_afe_o23_mix defined but not used [-Wunused-const-variable=]
-sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:803:38: warning:
- mt2701_afe_o24_mix defined but not used [-Wunused-const-variable=]
-sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:835:38: warning:
- mt2701_afe_multi_ch_out_i2s4 defined but not used [-Wunused-const-variable=]
+sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:120:1: warning:
+ mt8183_da7219_max98357_dapm_widgets defined but not used [-Wunused-const-variable=]
+sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:124:40: warning:
+ mt8183_da7219_max98357_dapm_routes defined but not used [-Wunused-const-variable=]
 
 They are never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 9af76ae..d7f5def 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -796,14 +796,6 @@ static const struct snd_kcontrol_new mt2701_afe_o22_mix[] = {
- 	SOC_DAPM_SINGLE_AUTODISABLE("I19 Switch", AFE_CONN22, 19, 1, 0),
- };
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 59076e2..b0db8a5 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -116,15 +116,6 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
  
--static const struct snd_kcontrol_new mt2701_afe_o23_mix[] = {
--	SOC_DAPM_SINGLE_AUTODISABLE("I20 Switch", AFE_CONN23, 20, 1, 0),
+-static const struct snd_soc_dapm_widget
+-mt8183_da7219_max98357_dapm_widgets[] = {
+-	SND_SOC_DAPM_OUTPUT("IT6505_8CH"),
 -};
 -
--static const struct snd_kcontrol_new mt2701_afe_o24_mix[] = {
--	SOC_DAPM_SINGLE_AUTODISABLE("I21 Switch", AFE_CONN24, 21, 1, 0),
+-static const struct snd_soc_dapm_route mt8183_da7219_max98357_dapm_routes[] = {
+-	{"IT6505_8CH", NULL, "TDM"},
 -};
 -
- static const struct snd_kcontrol_new mt2701_afe_o31_mix[] = {
- 	SOC_DAPM_SINGLE_AUTODISABLE("I35 Switch", AFE_CONN41, 9, 1, 0),
- };
-@@ -832,11 +824,6 @@ static const struct snd_kcontrol_new mt2701_afe_multi_ch_out_i2s3[] = {
- 				    PWR2_TOP_CON, 18, 1, 0),
- };
- 
--static const struct snd_kcontrol_new mt2701_afe_multi_ch_out_i2s4[] = {
--	SOC_DAPM_SINGLE_AUTODISABLE("Multich I2S4 Out Switch",
--				    PWR2_TOP_CON, 19, 1, 0),
--};
--
- static const struct snd_soc_dapm_widget mt2701_afe_pcm_widgets[] = {
- 	/* inter-connections */
- 	SND_SOC_DAPM_MIXER("I00", SND_SOC_NOPM, 0, 0, NULL, 0),
+ /* FE */
+ SND_SOC_DAILINK_DEFS(playback1,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
 -- 
 2.7.4
