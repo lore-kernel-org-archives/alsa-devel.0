@@ -1,47 +1,60 @@
 From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: soc-core: Fix -Wunused-const-variable warning
-Date: Tue, 13 Aug 2019 22:25:01 +0800
-Message-ID: <20190813142501.13080-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: mt2701: remove unused variables
+Date: Tue, 13 Aug 2019 22:38:11 +0800
+Message-ID: <20190813143811.31456-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.c, tiwai@suse.com, matthias.bgg@gmail.com
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-If CONFIG_DMI is not set, gcc warns:
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:799:38: warning:
+ mt2701_afe_o23_mix defined but not used [-Wunused-const-variable=]
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:803:38: warning:
+ mt2701_afe_o24_mix defined but not used [-Wunused-const-variable=]
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:835:38: warning:
+ mt2701_afe_multi_ch_out_i2s4 defined but not used [-Wunused-const-variable=]
 
-sound/soc/soc-core.c:81:27: warning:
- dmi_blacklist defined but not used [-Wunused-const-variable=]
-
-Add #ifdef guard around it.
+They are never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/soc-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bb1e9e2..dcf39eb 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -73,6 +73,7 @@ static int pmdown_time = 5000;
- module_param(pmdown_time, int, 0);
- MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
- 
-+#ifdef CONFIG_DMI
- /*
-  * If a DMI filed contain strings in this blacklist (e.g.
-  * "Type2 - Board Manufacturer" or "Type1 - TBD by OEM"), it will be taken
-@@ -87,6 +88,7 @@ static const char * const dmi_blacklist[] = {
- 	"Board Product Name",
- 	NULL,	/* terminator */
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index 9af76ae..d7f5def 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -796,14 +796,6 @@ static const struct snd_kcontrol_new mt2701_afe_o22_mix[] = {
+ 	SOC_DAPM_SINGLE_AUTODISABLE("I19 Switch", AFE_CONN22, 19, 1, 0),
  };
-+#endif
  
- static ssize_t pmdown_time_show(struct device *dev,
- 				struct device_attribute *attr, char *buf)
+-static const struct snd_kcontrol_new mt2701_afe_o23_mix[] = {
+-	SOC_DAPM_SINGLE_AUTODISABLE("I20 Switch", AFE_CONN23, 20, 1, 0),
+-};
+-
+-static const struct snd_kcontrol_new mt2701_afe_o24_mix[] = {
+-	SOC_DAPM_SINGLE_AUTODISABLE("I21 Switch", AFE_CONN24, 21, 1, 0),
+-};
+-
+ static const struct snd_kcontrol_new mt2701_afe_o31_mix[] = {
+ 	SOC_DAPM_SINGLE_AUTODISABLE("I35 Switch", AFE_CONN41, 9, 1, 0),
+ };
+@@ -832,11 +824,6 @@ static const struct snd_kcontrol_new mt2701_afe_multi_ch_out_i2s3[] = {
+ 				    PWR2_TOP_CON, 18, 1, 0),
+ };
+ 
+-static const struct snd_kcontrol_new mt2701_afe_multi_ch_out_i2s4[] = {
+-	SOC_DAPM_SINGLE_AUTODISABLE("Multich I2S4 Out Switch",
+-				    PWR2_TOP_CON, 19, 1, 0),
+-};
+-
+ static const struct snd_soc_dapm_widget mt2701_afe_pcm_widgets[] = {
+ 	/* inter-connections */
+ 	SND_SOC_DAPM_MIXER("I00", SND_SOC_NOPM, 0, 0, NULL, 0),
 -- 
 2.7.4
