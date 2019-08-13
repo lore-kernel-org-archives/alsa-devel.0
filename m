@@ -1,40 +1,104 @@
-From: GitHub issues - opened <github@alsa-project.org>
-Subject: Sound Blaster RX does not play sound in side channels
-Date: Tue, 13 Aug 2019 19:45:08 +0200 (CEST)
-Message-ID: <20190813174508.1C924F80273@alsa1.perex.cz>
-References: <1565718304886940956-webhooks-bot@alsa-project.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
+ snd_soc_dai_get_sdw_stream()
+Date: Tue, 13 Aug 2019 12:51:49 -0500
+Message-ID: <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
+References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
+ <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
+ <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
+ <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A5B69F80120
- for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2019 19:45:05 +0200 (CEST)
-In-Reply-To: <1565718304886940956-webhooks-bot@alsa-project.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-lib issue #9 was opened from logan001:
+On 8/13/19 11:50 AM, Srinivas Kandagatla wrote:
+> Thanks for the review,
+> 
+> On 13/08/2019 15:44, Pierre-Louis Bossart wrote:
+>> On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
+>>> On platforms which have smart speaker amplifiers connected via
+>>> soundwire and modeled as aux devices in ASoC, in such usecases machine
+>>> driver should be able to get sdw master stream from dai so that it can
+>>> use the runtime stream to setup slave streams.
+>>
+>> using the _set_sdw_stream? I don't fully get the sequence with the 
+>> wording above.
+> 
+> Yes, using set_sdw_stream().
 
-I don't have the card anymore but maybe someone else have it and can provide some help cause i like the card bass/treble control and if the bug is fixed i will buy it.
-The card does not output side channels at all. 5.1 works but 7.1 side channels gives no sound with speaker-test -c 8
-pulseaudio also gives no sound for side channels in speaker tests.
-i don't know if its the right place to report this bug but i've tried on kernel bugzilla and there is no movement there.
-the kernels i've tried 1 month ago are 4.18 and 5.1.15
-here is the [alsainfo](https://bugzilla.kernel.org/attachment.cgi?id=283467) at that time
+Maybe I am missing something here, but I don't see where the 
+set_sdw_stream() is called.
 
-what i found strange is that alsamixer when i change the sound card had the side channels volume set at 0. its like by default was build intentionally without side channels support.
+Also I don't fully get the rule. set_sdw_stream() looks required, 
+get_sdw_stream() is optional, is this what you are suggesting?
 
-and yes i have that special cable with 3 jacks (sound card) to 4 jack (for speakers). i have it from an old audigy 2 zs if i remeber corectly. and the cable works since i tested 7.1 in windows without any issues.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/9
-Repository URL: https://github.com/alsa-project/alsa-lib
+>>
+>>>
+>>> soundwire already as a set function, get function would provide more
+>>> flexibility to above configurations.
+>>
+>> I am not clear if you are asking for both to be used, or get only or 
+>> set only?
+> 
+> It depends on the usecase, in db845c usecase  [1] as Aux device is dai 
+> less, machine driver is using get function to get hold of master stream 
+> so that it can setup slave port config.
+> 
+> 
+> Looks like there is a typo in above like
+> 
+> This was supposed to be "soundwire already has a set function, get 
+> function would provide more flexibility to above configurations"
+> 
+> [1] 
+> https://git.linaro.org/landing-teams/working/qualcomm/kernel.git/tree/sound/soc/qcom/db845c.c?h=integration-linux-qcomlt 
+> 
+> 
+> thanks,
+> srini
+> 
+>>
+>>>
+>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> ---
+>>>   include/sound/soc-dai.h | 10 ++++++++++
+>>>   1 file changed, 10 insertions(+)
+>>>
+>>> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+>>> index dc48fe081a20..1e01f4a302e0 100644
+>>> --- a/include/sound/soc-dai.h
+>>> +++ b/include/sound/soc-dai.h
+>>> @@ -202,6 +202,7 @@ struct snd_soc_dai_ops {
+>>>       int (*set_sdw_stream)(struct snd_soc_dai *dai,
+>>>               void *stream, int direction);
+>>> +    void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
+>>>       /*
+>>>        * DAI digital mute - optional.
+>>>        * Called by soc-core to minimise any pops.
+>>> @@ -410,4 +411,13 @@ static inline int 
+>>> snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
+>>>           return -ENOTSUPP;
+>>>   }
+>>> +static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai,
+>>> +                           int direction)
+>>> +{
+>>> +    if (dai->driver->ops->get_sdw_stream)
+>>> +        return dai->driver->ops->get_sdw_stream(dai, direction);
+>>> +    else
+>>> +        return ERR_PTR(-ENOTSUPP);
+>>> +}
+>>> +
+>>>   #endif
+>>>
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
