@@ -1,59 +1,114 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
- snd_soc_dai_get_sdw_stream()
-Date: Tue, 13 Aug 2019 20:58:04 +0100
-Message-ID: <20190813195804.GL5093@sirena.co.uk>
-References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
- <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
- <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
- <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
- <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
- <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
- <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
- <20190813191827.GI5093@sirena.co.uk>
- <cc360858-571a-6a46-1789-1020bcbe4bca@linux.intel.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2] soundwire: Make slave.o depend on ACPI and rename to acpi_slave.o
+Date: Tue, 13 Aug 2019 13:37:13 -0700
+Message-ID: <CAKwvOdnOtR6s2KQVEZ2MRS1HE3W7L3B3ymsLmToJdzN_L2Nz-A@mail.gmail.com>
+References: <20190813061014.45015-1-natechancellor@gmail.com> <20190813180929.22497-1-natechancellor@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k1BdFSKqAqVdu8k/"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cc360858-571a-6a46-1789-1020bcbe4bca@linux.intel.com>
+In-Reply-To: <20190813180929.22497-1-natechancellor@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
+To: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, clang-built-linux <clang-built-linux@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Aug 13, 2019 at 11:12 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> clang warns when CONFIG_ACPI is unset:
+>
+> ../drivers/soundwire/slave.c:16:12: warning: unused function
+> 'sdw_slave_add' [-Wunused-function]
+> static int sdw_slave_add(struct sdw_bus *bus,
+>            ^
+> 1 warning generated.
+>
+> Before commit 8676b3ca4673 ("soundwire: fix regmap dependencies and
+> align with other serial links"), this code would only be compiled when
+> ACPI was set because it was only selected by SOUNDWIRE_INTEL, which
+> depends on ACPI.
+>
+> Now, this code can be compiled without CONFIG_ACPI, which causes the
+> above warning. The IS_ENABLED(CONFIG_ACPI) guard could be moved to avoid
+> compiling the function; however, slave.c only contains three functions,
+> two of which are static. Since slave.c is completetely dependent on
+> ACPI, rename it to acpi_slave.c and only compile it when CONFIG_ACPI
+> is set so sdw_acpi_find_slaves will actually be used. bus.h contains
+> a stub for sdw_acpi_find_slaves so there will be no issues with an
+> undefined function.
+>
+> This has been build tested with CONFIG_ACPI set and unset in combination
+> with CONFIG_SOUNDWIRE unset, built in, and a module.
+>
+> Fixes: 8676b3ca4673 ("soundwire: fix regmap dependencies and align with other serial links")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/637
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
---k1BdFSKqAqVdu8k/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Looks good, thanks Nathan.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-On Tue, Aug 13, 2019 at 02:38:53PM -0500, Pierre-Louis Bossart wrote:
+> ---
+>
+> v1 -> v2:
+>
+> * Rename slave.o to acpi_slave.o
+> * Reword commit message to reflect this
+>
+>  drivers/soundwire/Makefile                  | 6 +++++-
+>  drivers/soundwire/{slave.c => acpi_slave.c} | 3 ---
+>  2 files changed, 5 insertions(+), 4 deletions(-)
+>  rename drivers/soundwire/{slave.c => acpi_slave.c} (98%)
+>
+> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> index 45b7e5001653..718d8dd0ac79 100644
+> --- a/drivers/soundwire/Makefile
+> +++ b/drivers/soundwire/Makefile
+> @@ -4,9 +4,13 @@
+>  #
+>
+>  #Bus Objs
+> -soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
+> +soundwire-bus-objs := bus_type.o bus.o mipi_disco.o stream.o
+>  obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+>
+> +ifdef CONFIG_ACPI
+> +soundwire-bus-objs += acpi_slave.o
+> +endif
+> +
+>  #Cadence Objs
+>  soundwire-cadence-objs := cadence_master.o
+>  obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/acpi_slave.c
+> similarity index 98%
+> rename from drivers/soundwire/slave.c
+> rename to drivers/soundwire/acpi_slave.c
+> index f39a5815e25d..0dc188e6873b 100644
+> --- a/drivers/soundwire/slave.c
+> +++ b/drivers/soundwire/acpi_slave.c
+> @@ -60,7 +60,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
+>         return ret;
+>  }
+>
+> -#if IS_ENABLED(CONFIG_ACPI)
+>  /*
+>   * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
+>   * @bus: SDW bus instance
+> @@ -110,5 +109,3 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+>
+>         return 0;
+>  }
+> -
+> -#endif
+> --
+> 2.23.0.rc2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20190813180929.22497-1-natechancellor%40gmail.com.
 
-> Indeed. I don't have a full understanding of that part to be honest, nor why
-> we need something SoundWire-specific. We already abused the set_tdm_slot API
-> to store an HDaudio stream, now we have a rather confusing stream
-> information for SoundWire and I have about 3 other 'stream' contexts in
-> SOF... I am still doing basic cleanups but this has been on my radar for a
-> while.
 
-There is something to be said for not abusing the TDM slot API if it can
-make things clearer by using bus-idiomatic mechanisms, but it does mean
-everything needs to know about each individual bus :/ .
 
---k1BdFSKqAqVdu8k/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1TFksACgkQJNaLcl1U
-h9BHfQgAhhh0D7Hg5E7dHFAw9gfqCTOCQFEV16Tm0f23eAZ2yPanGpNNC0hohDnH
-y77jzS/Zh0WxkcN5gH7rQI0bTrbDVeZpQd0+Wo1egQK9eqfVkjZi+gE2O8v/VjCW
-Hcou9+7P7205uP/LB7vuMzVbhKpTF4fPpbhIuJ44MV39BO+sQ+nptMl4ialTd/Y2
-kjLdoCl/v6TIAY3GztKKmOvUo58xPak85st45COal2f5bUIBbKxs1Ss/x8VMSPlE
-OvPxl5aUzKuFFiVXGekHr+hR/INMri9LWuBQpqrTatdyS0P2p/Sc/r9oNzrl8z+7
-PKRpKAk3EYaOsSo49DWaJw3wREGyqQ==
-=REil
------END PGP SIGNATURE-----
-
---k1BdFSKqAqVdu8k/--
+-- 
+Thanks,
+~Nick Desaulniers
