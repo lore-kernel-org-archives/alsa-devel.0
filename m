@@ -1,67 +1,68 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
- snd_soc_dai_get_sdw_stream()
-Date: Tue, 13 Aug 2019 09:44:01 -0500
-Message-ID: <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
-References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
- <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v1] ASoC: Intel: Skylake: Print constant
+ literals from format specifier
+Date: Tue, 13 Aug 2019 09:52:52 -0500
+Message-ID: <39ce9fc6-c3e8-e7ed-af1c-6f612b831180@linux.intel.com>
+References: <20190621113116.47525-1-andriy.shevchenko@linux.intel.com>
+ <20190813144253.GG30120@smile.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54FE4F8015A
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2019 16:52:36 +0200 (CEST)
+In-Reply-To: <20190813144253.GG30120@smile.fi.intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, broonie@kernel.org
-Cc: bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, "Rojewski, Cezary" <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
-> On platforms which have smart speaker amplifiers connected via
-> soundwire and modeled as aux devices in ASoC, in such usecases machine
-> driver should be able to get sdw master stream from dai so that it can
-> use the runtime stream to setup slave streams.
+On 8/13/19 9:42 AM, Andy Shevchenko wrote:
+> On Fri, Jun 21, 2019 at 02:31:16PM +0300, Andy Shevchenko wrote:
+>> Instead of using two additional "%s" specifiers, put the constant string
+>> literals directly to the format specifier.
+>>
+> 
+> Pierre, does it look good to you?
 
-using the _set_sdw_stream? I don't fully get the sequence with the 
-wording above.
+LGTM but Cezary should chime in for changes to the Skylake driver.
 
 > 
-> soundwire already as a set function, get function would provide more
-> flexibility to above configurations.
-
-I am not clear if you are asking for both to be used, or get only or set 
-only?
-
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   include/sound/soc-dai.h | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index dc48fe081a20..1e01f4a302e0 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -202,6 +202,7 @@ struct snd_soc_dai_ops {
->   
->   	int (*set_sdw_stream)(struct snd_soc_dai *dai,
->   			void *stream, int direction);
-> +	void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
->   	/*
->   	 * DAI digital mute - optional.
->   	 * Called by soc-core to minimise any pops.
-> @@ -410,4 +411,13 @@ static inline int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
->   		return -ENOTSUPP;
->   }
->   
-> +static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai,
-> +					       int direction)
-> +{
-> +	if (dai->driver->ops->get_sdw_stream)
-> +		return dai->driver->ops->get_sdw_stream(dai, direction);
-> +	else
-> +		return ERR_PTR(-ENOTSUPP);
-> +}
-> +
->   #endif
+>> Cc: Liam Girdwood <lgirdwood@gmail.com>
+>> Cc: Mark Brown <broonie@kernel.org>
+>> Cc: Vinod Koul <vkoul@kernel.org>
+>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> ---
+>>   sound/soc/intel/skylake/skl-sst.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+>> index 13c636dece56..f3e1399450db 100644
+>> --- a/sound/soc/intel/skylake/skl-sst.c
+>> +++ b/sound/soc/intel/skylake/skl-sst.c
+>> @@ -421,8 +421,7 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, u8 *guid)
+>>   	int ret = 0;
+>>   	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
+>>   
+>> -	snprintf(mod_name, sizeof(mod_name), "%s%pUL%s",
+>> -					     "intel/dsp_fw_", guid, ".bin");
+>> +	snprintf(mod_name, sizeof(mod_name), "intel/dsp_fw_%pUL.bin", guid);
+>>   
+>>   	module_entry = skl_module_get_from_id(ctx, mod_id);
+>>   	if (module_entry == NULL) {
+>> -- 
+>> 2.20.1
+>>
 > 
