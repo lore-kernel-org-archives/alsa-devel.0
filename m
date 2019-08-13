@@ -1,56 +1,55 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH] ASoC: rockchip: rockchip_max98090: Set period size to 240
-Date: Tue, 13 Aug 2019 15:44:30 +0800
-Message-ID: <20190813074430.191791-1-cychiang@chromium.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 3/5] ASoC: core: add support to snd_soc_dai_get_sdw_stream()
+Date: Tue, 13 Aug 2019 09:35:48 +0100
+Message-ID: <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
+References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Heiko Stuebner <heiko@sntech.de>, dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, zhengxing@rock-chips.com, cain.cai@rock-chips.com, eddie.cai@rock-chips.com, jeffy.chen@rock-chips.com, enric.balletbo@collabora.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, Cheng-Yi Chiang <cychiang@chromium.org>
+To: vkoul@kernel.org, broonie@kernel.org
+Cc: bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
->From stress testing of arecord, we found that period size
-greater than ~900 will bring pl330 to DYING state and
-can not recover within 100 iterations.
-The result is that arecord will stuck and get I/O error,
-and issue can not be recovered until reboot.
+On platforms which have smart speaker amplifiers connected via
+soundwire and modeled as aux devices in ASoC, in such usecases machine
+driver should be able to get sdw master stream from dai so that it can
+use the runtime stream to setup slave streams.
 
-This issue does not happen when period size is small.
-Set constraint of period size to 240 to prevent such issue.
-With the constraint, there will be no issue after 2000 iterations.
+soundwire already as a set function, get function would provide more
+flexibility to above configurations.
 
-We can revert this patch once the root cause is found
-in rockchip's pl330 implementation.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ include/sound/soc-dai.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 7b0c21fa6dca..0097df1fae66 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -137,8 +137,19 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index dc48fe081a20..1e01f4a302e0 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -202,6 +202,7 @@ struct snd_soc_dai_ops {
+ 
+ 	int (*set_sdw_stream)(struct snd_soc_dai *dai,
+ 			void *stream, int direction);
++	void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
+ 	/*
+ 	 * DAI digital mute - optional.
+ 	 * Called by soc-core to minimise any pops.
+@@ -410,4 +411,13 @@ static inline int snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
+ 		return -ENOTSUPP;
  }
  
-+static int rk_aif1_startup(struct snd_pcm_substream *substream)
++static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai *dai,
++					       int direction)
 +{
-+	/*
-+	 * Set period size to 240 because pl330 has issue
-+	 * dealing with larger period in stress testing.
-+	 */
-+	return snd_pcm_hw_constraint_minmax(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 240, 240);
++	if (dai->driver->ops->get_sdw_stream)
++		return dai->driver->ops->get_sdw_stream(dai, direction);
++	else
++		return ERR_PTR(-ENOTSUPP);
 +}
 +
- static const struct snd_soc_ops rk_aif1_ops = {
- 	.hw_params = rk_aif1_hw_params,
-+	.startup = rk_aif1_startup,
- };
- 
- SND_SOC_DAILINK_DEFS(hifi,
+ #endif
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.21.0
