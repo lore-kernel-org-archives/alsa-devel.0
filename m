@@ -1,48 +1,66 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: mediatek: mt8183-mt6358-ts3a227-max98357: remove unused variables
-Date: Tue, 13 Aug 2019 22:41:22 +0800
-Message-ID: <20190813144122.67676-1-yuehaibing@huawei.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1] ASoC: Intel: Skylake: Print constant
+ literals from format specifier
+Date: Tue, 13 Aug 2019 17:42:53 +0300
+Message-ID: <20190813144253.GG30120@smile.fi.intel.com>
+References: <20190621113116.47525-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.c, tiwai@suse.com, matthias.bgg@gmail.com
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6646EF8015B
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2019 16:42:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190621113116.47525-1-andriy.shevchenko@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c:50:1: warning:
- mt8183_mt6358_ts3a227_max98357_dapm_widgets defined but not used [-Wunused-const-variable=]
-sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c:55:1: warning:
- mt8183_mt6358_ts3a227_max98357_dapm_routes defined but not used [-Wunused-const-variable=]
+On Fri, Jun 21, 2019 at 02:31:16PM +0300, Andy Shevchenko wrote:
+> Instead of using two additional "%s" specifiers, put the constant string
+> literals directly to the format specifier.
+> 
 
-They are never used, so can be removed.
+Pierre, does it look good to you?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 10 ----------
- 1 file changed, 10 deletions(-)
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  sound/soc/intel/skylake/skl-sst.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+> index 13c636dece56..f3e1399450db 100644
+> --- a/sound/soc/intel/skylake/skl-sst.c
+> +++ b/sound/soc/intel/skylake/skl-sst.c
+> @@ -421,8 +421,7 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, u8 *guid)
+>  	int ret = 0;
+>  	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
+>  
+> -	snprintf(mod_name, sizeof(mod_name), "%s%pUL%s",
+> -					     "intel/dsp_fw_", guid, ".bin");
+> +	snprintf(mod_name, sizeof(mod_name), "intel/dsp_fw_%pUL.bin", guid);
+>  
+>  	module_entry = skl_module_get_from_id(ctx, mod_id);
+>  	if (module_entry == NULL) {
+> -- 
+> 2.20.1
+> 
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 4c816c8..dcd47b9 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -46,16 +46,6 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
--static const struct snd_soc_dapm_widget
--mt8183_mt6358_ts3a227_max98357_dapm_widgets[] = {
--	SND_SOC_DAPM_OUTPUT("IT6505_8CH"),
--};
--
--static const struct snd_soc_dapm_route
--mt8183_mt6358_ts3a227_max98357_dapm_routes[] = {
--	{"IT6505_8CH", NULL, "TDM"},
--};
--
- static int
- mt8183_mt6358_ts3a227_max98357_bt_sco_startup(
- 	struct snd_pcm_substream *substream)
 -- 
-2.7.4
+With Best Regards,
+Andy Shevchenko
