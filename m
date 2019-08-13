@@ -1,45 +1,82 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ALSA: hda/sigmatel - remove unused variable 'stac9200_core_init'
-Date: Tue, 13 Aug 2019 22:43:23 +0800
-Message-ID: <20190813144323.50624-1-yuehaibing@huawei.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/5] soundwire: Add compute_params callback
+Date: Tue, 13 Aug 2019 09:34:37 -0500
+Message-ID: <7e462330-a357-698a-b259-5ff136963a57@linux.intel.com>
+References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
+ <20190813083550.5877-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190813083550.5877-2-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-sound/pci/hda/patch_sigmatel.c:981:30: warning:
- stac9200_core_init defined but not used [-Wunused-const-variable=]
+On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
+> From: Vinod Koul <vkoul@kernel.org>
+> 
+> This callback allows masters to compute the bus parameters required.
 
-It is never used, so can be removed.
+This looks like a partial use of the patch ('soundwire: Add Intel 
+resource management algorithm')? see comments below
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/pci/hda/patch_sigmatel.c | 9 ---------
- 1 file changed, 9 deletions(-)
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   drivers/soundwire/stream.c    | 10 ++++++++++
+>   include/linux/soundwire/sdw.h |  2 ++
+>   2 files changed, 12 insertions(+)
+> 
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index a0476755a459..60bc2fe42928 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -1483,6 +1483,16 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+>   		bus->params.bandwidth += m_rt->stream->params.rate *
+>   			m_rt->ch_count * m_rt->stream->params.bps;
+>   
+> +		/* Compute params */
+> +		if (bus->compute_params) {
+> +			ret = bus->compute_params(bus);
+> +			if (ret < 0) {
+> +				dev_err(bus->dev, "Compute params failed: %d",
+> +					ret);
+> +				return ret;
+> +			}
+> +		}
+> +
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 0d9b627..894f3f5 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -975,15 +975,6 @@ static int stac_create_spdif_mux_ctls(struct hda_codec *codec)
- 	return 0;
- }
- 
--/*
-- */
--
--static const struct hda_verb stac9200_core_init[] = {
--	/* set dac0mux for dac converter */
--	{ 0x07, AC_VERB_SET_CONNECT_SEL, 0x00},
--	{}
--};
--
- static const struct hda_verb stac9200_eapd_init[] = {
- 	/* set dac0mux for dac converter */
- 	{0x07, AC_VERB_SET_CONNECT_SEL, 0x00},
--- 
-2.7.4
+This would need to be duplicated for deprepare (as was done in the Intel 
+patch).
+
+>   		/* Program params */
+>   		ret = sdw_program_params(bus);
+>   		if (ret < 0) {
+> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> index bea46bd8b6ce..aac68e879fae 100644
+> --- a/include/linux/soundwire/sdw.h
+> +++ b/include/linux/soundwire/sdw.h
+> @@ -718,6 +718,7 @@ struct sdw_master_ops {
+>    * Bit set implies used number, bit clear implies unused number.
+>    * @bus_lock: bus lock
+>    * @msg_lock: message lock
+> + * @compute_params: points to Bus resource management implementation
+>    * @ops: Master callback ops
+>    * @port_ops: Master port callback ops
+>    * @params: Current bus parameters
+> @@ -739,6 +740,7 @@ struct sdw_bus {
+>   	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+>   	struct mutex bus_lock;
+>   	struct mutex msg_lock;
+> +	int (*compute_params)(struct sdw_bus *bus);
+
+not sure I understand how it's set? We have a default in the Intel patch.
+
+>   	const struct sdw_master_ops *ops;
+>   	const struct sdw_master_port_ops *port_ops;
+>   	struct sdw_bus_params params;
+> 
