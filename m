@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/6] soundwire: cadence_master: make clock stop exit configurable on init
-Date: Tue, 13 Aug 2019 16:32:25 -0500
-Message-ID: <20190813213227.5163-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/6] soundwire: intel: add pm_runtime support
+Date: Tue, 13 Aug 2019 16:32:26 -0500
+Message-ID: <20190813213227.5163-7-pierre-louis.bossart@linux.intel.com>
 References: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,78 +12,107 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The use of clock stop is not a requirement, the IP can e.g. be
-completely power gated and not detect any wakes while in s2idle/deep
-sleep.
+Add basic hooks in DAI .startup and .shutdown callbacks. The SoundWire
+IP should be powered between those two calls.
 
-For now clock-stop is not supported anyways so the control parameter
-is always false. This will be revisited when we add clock stop.
+By default the platform_device is in SUSPENDED mode, it is required to
+call pm_runtime_set_active() before _enable()
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 15 ++++++++-------
- drivers/soundwire/cadence_master.h |  2 +-
- drivers/soundwire/intel.c          |  2 +-
- 3 files changed, 10 insertions(+), 9 deletions(-)
+ drivers/soundwire/intel.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index fdf9eec7cde1..17ac2ecd8d5c 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -1000,7 +1000,7 @@ static u32 cdns_set_initial_frame_shape(int n_rows, int n_cols)
-  * sdw_cdns_init() - Cadence initialization
-  * @cdns: Cadence instance
-  */
--int sdw_cdns_init(struct sdw_cdns *cdns)
-+int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit)
- {
- 	struct sdw_bus *bus = &cdns->bus;
- 	struct sdw_master_prop *prop = &bus->prop;
-@@ -1008,12 +1008,13 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- 	int divider;
- 	int ret;
- 
--	/* Exit clock stop */
--	ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
--			     CDNS_MCP_CONTROL_CLK_STOP_CLR);
--	if (ret < 0) {
--		dev_err(cdns->dev, "Couldn't exit from clock stop\n");
--		return ret;
-+	if (clock_stop_exit) {
-+		ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
-+				     CDNS_MCP_CONTROL_CLK_STOP_CLR);
-+		if (ret < 0) {
-+			dev_err(cdns->dev, "Couldn't exit from clock stop\n");
-+			return ret;
-+		}
- 	}
- 
- 	/* Set clock divider */
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index 302351808098..9d7a48ac6fc4 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -158,7 +158,7 @@ extern struct sdw_master_ops sdw_cdns_master_ops;
- irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
- irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
- 
--int sdw_cdns_init(struct sdw_cdns *cdns);
-+int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit);
- int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
- 		      struct sdw_cdns_stream_config config);
- int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 42bdc870c3ee..fd2d0a9ccb00 100644
+index fd2d0a9ccb00..c95222f18c75 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1052,7 +1052,7 @@ static int intel_init(struct sdw_intel *sdw)
- 	intel_link_power_up(sdw);
- 	intel_shim_init(sdw);
- 
--	return sdw_cdns_init(&sdw->cdns);
-+	return sdw_cdns_init(&sdw->cdns, false);
+@@ -716,6 +716,23 @@ static void intel_port_cleanup(struct sdw_cdns_dma_data *dma)
+ 	}
  }
  
- /*
++static int intel_startup(struct snd_pcm_substream *substream,
++			 struct snd_soc_dai *dai)
++{
++	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = pm_runtime_get_sync(cdns->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(cdns->dev,
++				    "pm_runtime_get_sync failed in %s, ret %d\n",
++				    __func__, ret);
++		pm_runtime_put_noidle(cdns->dev);
++	}
++
++	return ret;
++}
++
+ static int intel_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params,
+ 			   struct snd_soc_dai *dai)
+@@ -838,6 +855,8 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+ 	struct sdw_cdns_dma_data *dma;
++	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
++	int ret;
+ 
+ 	dma = snd_soc_dai_get_dma_data(dai, substream);
+ 	if (!dma)
+@@ -845,6 +864,13 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 	kfree(dma);
++
++	pm_runtime_mark_last_busy(cdns->dev);
++	ret = pm_runtime_put_autosuspend(cdns->dev);
++	if (ret < 0)
++		dev_err_ratelimited(cdns->dev,
++				    "pm_runtime_put_autosuspend failed in %s:, ret %d\n",
++				    __func__, ret);
+ }
+ 
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
+@@ -860,6 +886,7 @@ static int intel_pdm_set_sdw_stream(struct snd_soc_dai *dai,
+ }
+ 
+ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
++	.startup = intel_startup,
+ 	.hw_params = intel_hw_params,
+ 	.hw_free = intel_hw_free,
+ 	.shutdown = intel_shutdown,
+@@ -1141,6 +1168,15 @@ static int intel_probe(struct platform_device *pdev)
+ 
+ 	intel_debugfs_init(sdw);
+ 
++	/* Enable PM */
++	pm_runtime_set_autosuspend_delay(&pdev->dev, 3000);
++	pm_runtime_use_autosuspend(&pdev->dev);
++
++	pm_runtime_mark_last_busy(&pdev->dev);
++
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
+ 	return 0;
+ 
+ err_dai:
+@@ -1158,6 +1194,7 @@ static int intel_remove(struct platform_device *pdev)
+ 	sdw = platform_get_drvdata(pdev);
+ 
+ 	if (!sdw->cdns.bus.prop.hw_disabled) {
++		pm_runtime_disable(&pdev->dev);
+ 		intel_debugfs_exit(sdw);
+ 		free_irq(sdw->res->irq, sdw);
+ 		snd_soc_unregister_component(sdw->cdns.dev);
+@@ -1237,6 +1274,7 @@ static int intel_resume(struct device *dev)
+ 
+ static const struct dev_pm_ops intel_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
++	SET_RUNTIME_PM_OPS(intel_suspend, intel_resume, NULL)
+ };
+ 
+ static struct platform_driver sdw_intel_drv = {
 -- 
 2.20.1
