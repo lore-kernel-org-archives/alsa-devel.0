@@ -1,61 +1,33 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
+Subject: Re: [PATCH v2 3/5] ASoC: core: add support to
  snd_soc_dai_get_sdw_stream()
-Date: Tue, 13 Aug 2019 17:50:28 +0100
-Message-ID: <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
+Date: Tue, 13 Aug 2019 17:52:21 +0100
+Message-ID: <71fb21d0-3083-e590-db83-dbe489a4357e@linaro.org>
 References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
  <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
- <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
+ <95c517ab-7c63-5d13-a03a-1db01812bb69@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
+In-Reply-To: <95c517ab-7c63-5d13-a03a-1db01812bb69@intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org
-Cc: bgoswami@codeaurora.org, plai@codeaurora.org, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: vkoul@kernel.org, broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 Thanks for the review,
 
-On 13/08/2019 15:44, Pierre-Louis Bossart wrote:
-> On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
+On 13/08/2019 17:03, Cezary Rojewski wrote:
+> On 2019-08-13 10:35, Srinivas Kandagatla wrote:
 >> On platforms which have smart speaker amplifiers connected via
 >> soundwire and modeled as aux devices in ASoC, in such usecases machine
 >> driver should be able to get sdw master stream from dai so that it can
 >> use the runtime stream to setup slave streams.
-> 
-> using the _set_sdw_stream? I don't fully get the sequence with the 
-> wording above.
-
-Yes, using set_sdw_stream().
-
-> 
 >>
 >> soundwire already as a set function, get function would provide more
 >> flexibility to above configurations.
-> 
-> I am not clear if you are asking for both to be used, or get only or set 
-> only?
-
-It depends on the usecase, in db845c usecase  [1] as Aux device is dai 
-less, machine driver is using get function to get hold of master stream 
-so that it can setup slave port config.
-
-
-Looks like there is a typo in above like
-
-This was supposed to be "soundwire already has a set function, get 
-function would provide more flexibility to above configurations"
-
-[1] 
-https://git.linaro.org/landing-teams/working/qualcomm/kernel.git/tree/sound/soc/qcom/db845c.c?h=integration-linux-qcomlt
-
-thanks,
-srini
-
-> 
 >>
 >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >> ---
@@ -85,7 +57,10 @@ srini
 >> +    else
 >> +        return ERR_PTR(-ENOTSUPP);
 >> +}
->> +
->>   #endif
->>
+> 
+> Drop redundant else.
+Not all the dai drivers would implement this function, I guess else is 
+not redundant here!
+
+--srini
 > 
