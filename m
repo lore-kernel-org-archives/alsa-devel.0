@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/6] soundwire: intel: add helper for initialization
-Date: Tue, 13 Aug 2019 16:32:23 -0500
-Message-ID: <20190813213227.5163-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/6] soundwire: cadence_master: add hw_reset capability in debugfs
+Date: Tue, 13 Aug 2019 16:32:22 -0500
+Message-ID: <20190813213227.5163-3-pierre-louis.bossart@linux.intel.com>
 References: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,46 +12,53 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Move code to helper for reuse in power management routines
+Provide debugfs capability to kick link and devices into hard-reset
+(as defined by MIPI). This capability is really useful when some
+devices are no longer responsive and/or to check the software handling
+of resynchronization.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/soundwire/cadence_master.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 5f14c6acce80..3d22c9023a9b 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -993,6 +993,15 @@ static struct sdw_master_ops sdw_intel_ops = {
- 	.post_bank_switch = intel_post_bank_switch,
- };
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 046622e4b264..bd58d80ff636 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -340,6 +340,23 @@ static int cdns_reg_show(struct seq_file *s, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(cdns_reg);
  
-+static int intel_init(struct sdw_intel *sdw)
++static int cdns_hw_reset(void *data, u64 value)
 +{
-+	/* Initialize shim and controller */
-+	intel_link_power_up(sdw);
-+	intel_shim_init(sdw);
++	struct sdw_cdns *cdns = data;
++	int ret;
 +
-+	return sdw_cdns_init(&sdw->cdns);
++	if (value != 1)
++		return 0;
++
++	ret = sdw_cdns_exit_reset(cdns);
++
++	dev_dbg(cdns->dev, "link hw_reset done: %d\n", ret);
++
++	return ret;
 +}
 +
- /*
-  * probe and init
-  */
-@@ -1035,11 +1044,8 @@ static int intel_probe(struct platform_device *pdev)
- 		return 0;
- 	}
- 
--	/* Initialize shim and controller */
--	intel_link_power_up(sdw);
--	intel_shim_init(sdw);
--
--	ret = sdw_cdns_init(&sdw->cdns);
-+	/* Initialize shim, controller and Cadence IP */
-+	ret = intel_init(sdw);
- 	if (ret)
- 		goto err_init;
++DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
++
+ /**
+  * sdw_cdns_debugfs_init() - Cadence debugfs init
+  * @cdns: Cadence instance
+@@ -348,6 +365,9 @@ DEFINE_SHOW_ATTRIBUTE(cdns_reg);
+ void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+ {
+ 	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
++
++	debugfs_create_file("cdns-hw-reset", 0200, root, cdns,
++			    &cdns_hw_reset_fops);
+ }
+ EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
  
 -- 
 2.20.1
