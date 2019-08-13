@@ -1,102 +1,40 @@
-From: Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: Don't build sound.o without
- CONFIG_ACPI
-Date: Tue, 13 Aug 2019 10:39:57 -0700
-Message-ID: <20190813173957.GA96879@archlinux-threadripper>
-References: <20190813061014.45015-1-natechancellor@gmail.com>
- <445d16e1-6b00-6797-82df-42a49a5e79e3@linux.intel.com>
+From: GitHub issues - opened <github@alsa-project.org>
+Subject: Sound Blaster RX does not play sound in side channels
+Date: Tue, 13 Aug 2019 19:45:08 +0200 (CEST)
+Message-ID: <20190813174508.1C924F80273@alsa1.perex.cz>
+References: <1565718304886940956-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <445d16e1-6b00-6797-82df-42a49a5e79e3@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, clang-built-linux@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id A5B69F80120
+ for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2019 19:45:05 +0200 (CEST)
+In-Reply-To: <1565718304886940956-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 13, 2019 at 09:22:29AM -0500, Pierre-Louis Bossart wrote:
-> On 8/13/19 1:10 AM, Nathan Chancellor wrote:
-> > clang warns when CONFIG_ACPI is unset:
-> > 
-> > ../drivers/soundwire/slave.c:16:12: warning: unused function
-> > 'sdw_slave_add' [-Wunused-function]
-> > static int sdw_slave_add(struct sdw_bus *bus,
-> >             ^
-> > 1 warning generated.
-> > 
-> > Before commit 8676b3ca4673 ("soundwire: fix regmap dependencies and
-> > align with other serial links"), this code would only be compiled when
-> > ACPI was set because it was only selected by SOUNDWIRE_INTEL, which
-> > depends on ACPI.
-> > 
-> > Now, this code can be compiled without CONFIG_ACPI, which causes the
-> > above warning. The IS_ENABLED(CONFIG_ACPI) guard could be moved to avoid
-> > compiling the function; however, slave.c only contains three functions,
-> > two of which are static. Only compile slave.o when CONFIG_ACPI is set,
-> > where it will actually be used. bus.h contains a stub for
-> > sdw_acpi_find_slaves so there will be no issues with an undefined
-> > function.
-> > 
-> > This has been build tested with CONFIG_ACPI set and unset in combination
-> > with CONFIG_SOUNDWIRE unset, built in, and a module.
-> 
-> Thanks for the patch. Do you have a .config you can share offline so that we
-> add it to our tests?
+alsa-project/alsa-lib issue #9 was opened from logan001:
 
-I just took the arm64 defconfig and deleted CONFIG_ACPI and added
-CONFIG_SOUNDWIRE=y or =m to produce this warning. I initially found this
-on an arm64 allyesconfig build.
+I don't have the card anymore but maybe someone else have it and can provide some help cause i like the card bass/treble control and if the bug is fixed i will buy it.
+The card does not output side channels at all. 5.1 works but 7.1 side channels gives no sound with speaker-test -c 8
+pulseaudio also gives no sound for side channels in speaker tests.
+i don't know if its the right place to report this bug but i've tried on kernel bugzilla and there is no movement there.
+the kernels i've tried 1 month ago are 4.18 and 5.1.15
+here is the [alsainfo](https://bugzilla.kernel.org/attachment.cgi?id=283467) at that time
 
-> 
-> > 
-> > Fixes: 8676b3ca4673 ("soundwire: fix regmap dependencies and align with other serial links")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/637
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >   drivers/soundwire/Makefile | 6 +++++-
-> >   drivers/soundwire/slave.c  | 3 ---
-> >   2 files changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-> > index 45b7e5001653..226090902716 100644
-> > --- a/drivers/soundwire/Makefile
-> > +++ b/drivers/soundwire/Makefile
-> > @@ -4,9 +4,13 @@
-> >   #
-> >   #Bus Objs
-> > -soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
-> > +soundwire-bus-objs := bus_type.o bus.o mipi_disco.o stream.o
-> >   obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
-> > +ifdef CONFIG_ACPI
-> > +soundwire-bus-objs += slave.o
-> > +endif
-> 
-> I am fine with the change, but we might as well rename the file acpi_slave.c
-> then?
+what i found strange is that alsamixer when i change the sound card had the side channels volume set at 0. its like by default was build intentionally without side channels support.
 
-Sure, I can do that rename and send a v2.
+and yes i have that special cable with 3 jacks (sound card) to 4 jack (for speakers). i have it from an old audigy 2 zs if i remeber corectly. and the cable works since i tested 7.1 in windows without any issues.
 
-> 
-> > +
-> >   #Cadence Objs
-> >   soundwire-cadence-objs := cadence_master.o
-> >   obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
-> > diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-> > index f39a5815e25d..0dc188e6873b 100644
-> > --- a/drivers/soundwire/slave.c
-> > +++ b/drivers/soundwire/slave.c
-> > @@ -60,7 +60,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
-> >   	return ret;
-> >   }
-> > -#if IS_ENABLED(CONFIG_ACPI)
-> >   /*
-> >    * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
-> >    * @bus: SDW bus instance
-> > @@ -110,5 +109,3 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
-> >   	return 0;
-> >   }
-> > -
-> > -#endif
-> > 
-> 
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/9
+Repository URL: https://github.com/alsa-project/alsa-lib
