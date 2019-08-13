@@ -1,135 +1,58 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
  snd_soc_dai_get_sdw_stream()
-Date: Tue, 13 Aug 2019 14:15:18 -0500
-Message-ID: <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
+Date: Tue, 13 Aug 2019 20:18:27 +0100
+Message-ID: <20190813191827.GI5093@sirena.co.uk>
 References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
  <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
  <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
  <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
  <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
  <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
+ <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9Iq5ULCa7nGtWwZS"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/13/19 1:06 PM, Srinivas Kandagatla wrote:
-> 
-> 
-> On 13/08/2019 18:51, Pierre-Louis Bossart wrote:
->> On 8/13/19 11:50 AM, Srinivas Kandagatla wrote:
->>> Thanks for the review,
->>>
->>> On 13/08/2019 15:44, Pierre-Louis Bossart wrote:
->>>> On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
->>>>> On platforms which have smart speaker amplifiers connected via
->>>>> soundwire and modeled as aux devices in ASoC, in such usecases machine
->>>>> driver should be able to get sdw master stream from dai so that it can
->>>>> use the runtime stream to setup slave streams.
->>>>
->>>> using the _set_sdw_stream? I don't fully get the sequence with the 
->>>> wording above.
->>>
->>> Yes, using set_sdw_stream().
->>
->> Maybe I am missing something here, but I don't see where the 
->> set_sdw_stream() is called.
-> 
-> sorry for the confusion. It was too quick reply. :-)
-> I was suppose to say sdw_stream_add_slave() instead of set_sdw_stream().
 
-ok, so get_sdw_stream() and set_sdw_stream() are not meant to be mirrors 
-or both implemented. It's just a helper to respectively get a context or 
-set a context but a get-modify-set type of operation is not expected.
+--9Iq5ULCa7nGtWwZS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Do I get this right?
+On Tue, Aug 13, 2019 at 02:15:18PM -0500, Pierre-Louis Bossart wrote:
+> On 8/13/19 1:06 PM, Srinivas Kandagatla wrote:
 
-> 
-> As Aux device is dailess there is no way to get hold of sdw stream 
-> runtime for slave device associated with it.
-> 
-> Having snd_soc_dai_get_sdw_stream() would help machine driver to get 
-> hold of sdw_stream_runtime from controller dai and setup slave streams 
-> using sdw_stream_add_slave().
-> 
-> 
-> thanks,
-> srini
-> 
-> 
->>
->> Also I don't fully get the rule. set_sdw_stream() looks required, 
->> get_sdw_stream() is optional, is this what you are suggesting?
->>
->>>>
->>>>>
->>>>> soundwire already as a set function, get function would provide more
->>>>> flexibility to above configurations.
->>>>
->>>> I am not clear if you are asking for both to be used, or get only or 
->>>> set only?
->>>
->>> It depends on the usecase, in db845c usecase  [1] as Aux device is 
->>> dai less, machine driver is using get function to get hold of master 
->>> stream so that it can setup slave port config.
->>>
->>>
->>> Looks like there is a typo in above like
->>>
->>> This was supposed to be "soundwire already has a set function, get 
->>> function would provide more flexibility to above configurations"
->>>
->>> [1] 
->>> https://git.linaro.org/landing-teams/working/qualcomm/kernel.git/tree/sound/soc/qcom/db845c.c?h=integration-linux-qcomlt 
->>>
->>>
->>> thanks,
->>> srini
->>>
->>>>
->>>>>
->>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>> ---
->>>>>   include/sound/soc-dai.h | 10 ++++++++++
->>>>>   1 file changed, 10 insertions(+)
->>>>>
->>>>> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->>>>> index dc48fe081a20..1e01f4a302e0 100644
->>>>> --- a/include/sound/soc-dai.h
->>>>> +++ b/include/sound/soc-dai.h
->>>>> @@ -202,6 +202,7 @@ struct snd_soc_dai_ops {
->>>>>       int (*set_sdw_stream)(struct snd_soc_dai *dai,
->>>>>               void *stream, int direction);
->>>>> +    void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
->>>>>       /*
->>>>>        * DAI digital mute - optional.
->>>>>        * Called by soc-core to minimise any pops.
->>>>> @@ -410,4 +411,13 @@ static inline int 
->>>>> snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
->>>>>           return -ENOTSUPP;
->>>>>   }
->>>>> +static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai 
->>>>> *dai,
->>>>> +                           int direction)
->>>>> +{
->>>>> +    if (dai->driver->ops->get_sdw_stream)
->>>>> +        return dai->driver->ops->get_sdw_stream(dai, direction);
->>>>> +    else
->>>>> +        return ERR_PTR(-ENOTSUPP);
->>>>> +}
->>>>> +
->>>>>   #endif
->>>>>
->>>>
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+> > sorry for the confusion. It was too quick reply. :-)
+> > I was suppose to say sdw_stream_add_slave() instead of set_sdw_stream().
+
+> ok, so get_sdw_stream() and set_sdw_stream() are not meant to be mirrors or
+> both implemented. It's just a helper to respectively get a context or set a
+> context but a get-modify-set type of operation is not expected.
+
+> Do I get this right?
+
+This seems like it's going to be confusing...
+
+--9Iq5ULCa7nGtWwZS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1TDQIACgkQJNaLcl1U
+h9CEJgf/WNOBdWoFpepTAzRC/SOiL/VJjBnXIPHLxH3lof4Yx/1pbBvUPjYOwCHy
+bBVUntfQnRhu7zgAjp1M5uC97VkFZbrj9s+32Tvcb43ye0dto5d63K3c3edekkjQ
+ngfPnOA+yWL1BcfMLOAGY3OmTBIuUknyiMWfiLUVIDozt5dTHB0f9W02Qclp7J5I
+BtoyMIUdvCVbUMc0KnQkZ19K/IZqBvqNQ6ca9T8gn3K50X30ab0jBgsbm1IXckpH
+zmV/b4T553l8j47i/CyXS6K4trYVQ06tUcqyIRWzJZrPHQ/Ji/N62kTq2SOQV56w
+nL8ZqN1yL7MUwJM3Qu7yx1MpwPJYYA==
+=Xi1X
+-----END PGP SIGNATURE-----
+
+--9Iq5ULCa7nGtWwZS--
