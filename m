@@ -1,56 +1,50 @@
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 10/11] mfd: Drop obsolete JZ4740 driver
-Date: Tue, 13 Aug 2019 12:01:48 +0200
-Message-ID: <1565690508.1856.0@crapouillou.net>
-References: <20190725220215.460-1-paul@crapouillou.net>
-        <20190725220215.460-11-paul@crapouillou.net> <20190812081640.GA26727@dell>
-        <4b48e597-951e-45fd-dfb2-4a1292a8b067@amsat.org>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [alsa-devel] Regression in next with codec unload and
+        snd_soc_component_get/put
+Date: Tue, 13 Aug 2019 03:24:51 -0700
+Message-ID: <20190813102451.GJ52127@atomide.com>
+References: <20190809070003.GA52127@atomide.com>
+ <s5hwofmhkbs.wl-tiwai@suse.de>
+ <20190809074643.GB52127@atomide.com>
+ <s5hv9v6hhm9.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4b48e597-951e-45fd-dfb2-4a1292a8b067@amsat.org>
+Content-Disposition: inline
+In-Reply-To: <s5hv9v6hhm9.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Philippe =?iso-8859-1?q?Mathieu-Daud=E9?= <f4bug@amsat.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vinod Koul <vkoul@kernel.org>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, od@zcrc.me, devicetree@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pm@vger.ke
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Philippe,
+* Takashi Iwai <tiwai@suse.de> [190809 08:24]:
+> On Fri, 09 Aug 2019 09:46:43 +0200,
+> Tony Lindgren wrote:
+> > 
+> > * Takashi Iwai <tiwai@suse.de> [190809 07:25]:
+> > > On Fri, 09 Aug 2019 09:00:03 +0200,
+> > > Tony Lindgren wrote:
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > Looks like commit 4a81e8f30d0b ("ASoC: soc-component: add
+> > > > snd_soc_component_get/put()") causes a regression where trying
+> > > > to rmmod a codec driver fails with module is in use error after
+> > > > rmmod of snd-soc-audio-graph-card for example.
+> > > > 
+> > > > Any ideas what goes wrong there?
+> > > 
+> > > There is an obvious typo: soc_cleanup_component() should call
+> > > snd_soc_component_module_put_when_remove() instead of *_close().
+> > 
+> > Making that change locally seems to fix it thanks.
+> 
+> ... and it was already fixed in the later commit 0e36f36b04e7
+> "ASoC: soc-core: fix module_put() warning in soc_cleanup_component".
 
+Mark, looks like this commit is still not in Linux next, forgot
+to push out something?
 
-Le mar. 13 ao=FBt 2019 =E0 10:44, Philippe=20
-=3D?iso-8859-1?q?Mathieu-Daud=3DE9?=3D <f4bug@amsat.org> a =E9crit :
-> Hi Lee,
->=20
-> On 8/12/19 10:16 AM, Lee Jones wrote:
->>  On Thu, 25 Jul 2019, Paul Cercueil wrote:
->>=20
->>>  It has been replaced with the ingenic-iio driver for the ADC.
->>>=20
->>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>>  Tested-by: Artur Rojek <contact@artur-rojek.eu>
->>>  ---
->>>   drivers/mfd/Kconfig      |   9 --
->>>   drivers/mfd/Makefile     |   1 -
->>>   drivers/mfd/jz4740-adc.c | 324=20
->>> ---------------------------------------
->>>   3 files changed, 334 deletions(-)
->>>   delete mode 100644 drivers/mfd/jz4740-adc.c
->>=20
->>  Applied, thanks.
->=20
-> It seems the replacement is done in "MIPS: qi_lb60: Migrate to
-> devicetree" which is not yet merged.
+Regards,
 
-It's merged in the MIPS tree, though, so it'll blend together just
-fine in linux-next.
-
->=20
-> Probably easier if this patch goes thru the MIPS tree as part of the
-> "JZ4740 SoC cleanup" series.
->=20
-> Regards,
->=20
-> Phil.
-
-=
+Tony
