@@ -1,58 +1,64 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
+Subject: Re: [PATCH v2 3/5] ASoC: core: add support to
  snd_soc_dai_get_sdw_stream()
-Date: Tue, 13 Aug 2019 20:18:27 +0100
-Message-ID: <20190813191827.GI5093@sirena.co.uk>
+Date: Tue, 13 Aug 2019 20:19:55 +0100
+Message-ID: <20190813191955.GJ5093@sirena.co.uk>
 References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
  <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
- <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
- <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
- <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
- <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
- <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
+ <95c517ab-7c63-5d13-a03a-1db01812bb69@intel.com>
+ <71fb21d0-3083-e590-db83-dbe489a4357e@linaro.org>
+ <34a1a317-ac6b-bb1e-6b1b-08209f0d1923@intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9Iq5ULCa7nGtWwZS"
+        protocol="application/pgp-signature"; boundary="fmEUq8M7S0s+Fl0V"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
+In-Reply-To: <34a1a317-ac6b-bb1e-6b1b-08209f0d1923@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 
---9Iq5ULCa7nGtWwZS
-Content-Type: text/plain; charset=us-ascii
+--fmEUq8M7S0s+Fl0V
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 13, 2019 at 02:15:18PM -0500, Pierre-Louis Bossart wrote:
-> On 8/13/19 1:06 PM, Srinivas Kandagatla wrote:
+On Tue, Aug 13, 2019 at 07:29:50PM +0200, Cezary Rojewski wrote:
+> On 2019-08-13 18:52, Srinivas Kandagatla wrote:
+> > On 13/08/2019 17:03, Cezary Rojewski wrote:
+> > > On 2019-08-13 10:35, Srinivas Kandagatla wrote:
 
-> > sorry for the confusion. It was too quick reply. :-)
-> > I was suppose to say sdw_stream_add_slave() instead of set_sdw_stream().
+> > > > +=A0=A0=A0 if (dai->driver->ops->get_sdw_stream)
+> > > > +=A0=A0=A0=A0=A0=A0=A0 return dai->driver->ops->get_sdw_stream(dai,=
+ direction);
+> > > > +=A0=A0=A0 else
+> > > > +=A0=A0=A0=A0=A0=A0=A0 return ERR_PTR(-ENOTSUPP);
 
-> ok, so get_sdw_stream() and set_sdw_stream() are not meant to be mirrors or
-> both implemented. It's just a helper to respectively get a context or set a
-> context but a get-modify-set type of operation is not expected.
+> > > Drop redundant else.
 
-> Do I get this right?
+> > Not all the dai drivers would implement this function, I guess else is
+> > not redundant here!
 
-This seems like it's going to be confusing...
+> Eh. By that I meant dropping "else" keyword and reducing indentation for
+> "return ERR_PTR(-ENOTSUPP);"
 
---9Iq5ULCa7nGtWwZS
+The above is the idiom used throughout the rest of the file.
+
+--fmEUq8M7S0s+Fl0V
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1TDQIACgkQJNaLcl1U
-h9CEJgf/WNOBdWoFpepTAzRC/SOiL/VJjBnXIPHLxH3lof4Yx/1pbBvUPjYOwCHy
-bBVUntfQnRhu7zgAjp1M5uC97VkFZbrj9s+32Tvcb43ye0dto5d63K3c3edekkjQ
-ngfPnOA+yWL1BcfMLOAGY3OmTBIuUknyiMWfiLUVIDozt5dTHB0f9W02Qclp7J5I
-BtoyMIUdvCVbUMc0KnQkZ19K/IZqBvqNQ6ca9T8gn3K50X30ab0jBgsbm1IXckpH
-zmV/b4T553l8j47i/CyXS6K4trYVQ06tUcqyIRWzJZrPHQ/Ji/N62kTq2SOQV56w
-nL8ZqN1yL7MUwJM3Qu7yx1MpwPJYYA==
-=Xi1X
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1TDVoACgkQJNaLcl1U
+h9Bc/Qf+N4icKyyTDGlB5i1IOi6wDoQsSE1SgcAlrHFKoE0fOmNhKrhSQvskWPhS
+4k6/x6JLxBu8CH9ZJAq8njVhSJ6BdfPkPM7H6Nd0tA29DaUCwHR4IDeZ9iIuAMOi
+pX+z060wwGKdMbQUbYMOR4P1eLL1LYlxVZx1zWjXSxsDoYQYvhg8lMkeNDc6xLFI
+smVcoYd0fRYsLRZtZXfSRQORdKdlYh34z7uLXkSTQpQIJtLH3Okb3U6pdOhkD1fu
+steqUnEf89sHiHNuXZ506xZP8iUlLK13pzSfizTyI/Zl6Qp9PrQuMtN3KW5P2ZBT
+kdXtRZSolgTjhJT5CgVHQUA8yneXgQ==
+=vuyE
 -----END PGP SIGNATURE-----
 
---9Iq5ULCa7nGtWwZS--
+--fmEUq8M7S0s+Fl0V--
