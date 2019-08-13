@@ -1,56 +1,56 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: ti: Fix typos in ti/Kconfig
-Date: Tue, 13 Aug 2019 12:35:11 +0300
-Message-ID: <9674e996-ef05-5da3-9d20-1ad5c44a6176@ti.com>
-References: <20190813034235.30673-1-standby24x7@gmail.com>
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 10/11] mfd: Drop obsolete JZ4740 driver
+Date: Tue, 13 Aug 2019 12:01:48 +0200
+Message-ID: <1565690508.1856.0@crapouillou.net>
+References: <20190725220215.460-1-paul@crapouillou.net>
+        <20190725220215.460-11-paul@crapouillou.net> <20190812081640.GA26727@dell>
+        <4b48e597-951e-45fd-dfb2-4a1292a8b067@amsat.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190813034235.30673-1-standby24x7@gmail.com>
-Content-Language: en-US
+In-Reply-To: <4b48e597-951e-45fd-dfb2-4a1292a8b067@amsat.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Masanari Iida <standby24x7@gmail.com>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org
+To: Philippe =?iso-8859-1?q?Mathieu-Daud=E9?= <f4bug@amsat.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vinod Koul <vkoul@kernel.org>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, od@zcrc.me, devicetree@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pm@vger.ke
 List-Id: alsa-devel@alsa-project.org
 
+Hi Philippe,
 
 
-On 13/08/2019 6.42, Masanari Iida wrote:
-> This patch fixes some spelling typo in Kconfig.
-> 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+Le mar. 13 ao=FBt 2019 =E0 10:44, Philippe=20
+=3D?iso-8859-1?q?Mathieu-Daud=3DE9?=3D <f4bug@amsat.org> a =E9crit :
+> Hi Lee,
+>=20
+> On 8/12/19 10:16 AM, Lee Jones wrote:
+>>  On Thu, 25 Jul 2019, Paul Cercueil wrote:
+>>=20
+>>>  It has been replaced with the ingenic-iio driver for the ADC.
+>>>=20
+>>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>>  Tested-by: Artur Rojek <contact@artur-rojek.eu>
+>>>  ---
+>>>   drivers/mfd/Kconfig      |   9 --
+>>>   drivers/mfd/Makefile     |   1 -
+>>>   drivers/mfd/jz4740-adc.c | 324=20
+>>> ---------------------------------------
+>>>   3 files changed, 334 deletions(-)
+>>>   delete mode 100644 drivers/mfd/jz4740-adc.c
+>>=20
+>>  Applied, thanks.
+>=20
+> It seems the replacement is done in "MIPS: qi_lb60: Migrate to
+> devicetree" which is not yet merged.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+It's merged in the MIPS tree, though, so it'll blend together just
+fine in linux-next.
 
-> ---
->  sound/soc/ti/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-> index 2197f3e1eaed..87a9b9dd4e98 100644
-> --- a/sound/soc/ti/Kconfig
-> +++ b/sound/soc/ti/Kconfig
-> @@ -12,7 +12,7 @@ config SND_SOC_TI_SDMA_PCM
->  
->  comment "Texas Instruments DAI support for:"
->  config SND_SOC_DAVINCI_ASP
-> -	tristate "daVinci Audio Serial Port (ASP) or McBSP suport"
-> +	tristate "daVinci Audio Serial Port (ASP) or McBSP support"
->  	depends on ARCH_DAVINCI || COMPILE_TEST
->  	select SND_SOC_TI_EDMA_PCM
->  	help
-> @@ -33,7 +33,7 @@ config SND_SOC_DAVINCI_MCASP
->  	  - Keystone devices
->  
->  config SND_SOC_DAVINCI_VCIF
-> -	tristate "daVinci Voice Interface (VCIF) suport"
-> +	tristate "daVinci Voice Interface (VCIF) support"
->  	depends on ARCH_DAVINCI || COMPILE_TEST
->  	select SND_SOC_TI_EDMA_PCM
->  	help
-> 
+>=20
+> Probably easier if this patch goes thru the MIPS tree as part of the
+> "JZ4740 SoC cleanup" series.
+>=20
+> Regards,
+>=20
+> Phil.
 
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+=
