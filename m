@@ -1,59 +1,44 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 2/5] soundwire: stream: make stream name a const pointer
-Date: Tue, 13 Aug 2019 09:35:47 +0100
-Message-ID: <20190813083550.5877-3-srinivas.kandagatla@linaro.org>
-References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
+Subject: Re: [PATCH 10/11] mfd: Drop obsolete JZ4740 driver
+Date: Tue, 13 Aug 2019 10:44:30 +0200
+Message-ID: <4b48e597-951e-45fd-dfb2-4a1292a8b067@amsat.org>
+References: <20190725220215.460-1-paul@crapouillou.net>
+ <20190725220215.460-11-paul@crapouillou.net> <20190812081640.GA26727@dell>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190812081640.GA26727@dell>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: vkoul@kernel.org, broonie@kernel.org
-Cc: bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, robh+dt@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Lee Jones <lee.jones@linaro.org>, Paul Cercueil <paul@crapouillou.net>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vinod Koul <vkoul@kernel.org>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, od@zcrc.me, devicetree@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Make stream name const pointer
+Hi Lee,
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/stream.c    | 2 +-
- include/linux/soundwire/sdw.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+On 8/12/19 10:16 AM, Lee Jones wrote:
+> On Thu, 25 Jul 2019, Paul Cercueil wrote:
+> 
+>> It has been replaced with the ingenic-iio driver for the ADC.
+>>
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> Tested-by: Artur Rojek <contact@artur-rojek.eu>
+>> ---
+>>  drivers/mfd/Kconfig      |   9 --
+>>  drivers/mfd/Makefile     |   1 -
+>>  drivers/mfd/jz4740-adc.c | 324 ---------------------------------------
+>>  3 files changed, 334 deletions(-)
+>>  delete mode 100644 drivers/mfd/jz4740-adc.c
+> 
+> Applied, thanks.
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 60bc2fe42928..49ce21320f52 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -863,7 +863,7 @@ EXPORT_SYMBOL(sdw_release_stream);
-  * sdw_alloc_stream should be called only once per stream. Typically
-  * invoked from ALSA/ASoC machine/platform driver.
-  */
--struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name)
-+struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name)
- {
- 	struct sdw_stream_runtime *stream;
- 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index aac68e879fae..5e61ad065d32 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -830,7 +830,7 @@ struct sdw_stream_params {
-  * @m_rt_count: Count of Master runtime(s) in this stream
-  */
- struct sdw_stream_runtime {
--	char *name;
-+	const char *name;
- 	struct sdw_stream_params params;
- 	enum sdw_stream_state state;
- 	enum sdw_stream_type type;
-@@ -838,7 +838,7 @@ struct sdw_stream_runtime {
- 	int m_rt_count;
- };
- 
--struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name);
-+struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name);
- void sdw_release_stream(struct sdw_stream_runtime *stream);
- int sdw_stream_add_master(struct sdw_bus *bus,
- 		struct sdw_stream_config *stream_config,
--- 
-2.21.0
+It seems the replacement is done in "MIPS: qi_lb60: Migrate to
+devicetree" which is not yet merged.
+
+Probably easier if this patch goes thru the MIPS tree as part of the
+"JZ4740 SoC cleanup" series.
+
+Regards,
+
+Phil.
