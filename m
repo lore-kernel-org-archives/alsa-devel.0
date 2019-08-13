@@ -1,126 +1,96 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
- snd_soc_dai_get_sdw_stream()
-Date: Tue, 13 Aug 2019 19:06:45 +0100
-Message-ID: <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
-References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
- <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
- <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
- <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
- <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH v2] soundwire: Make slave.o depend on ACPI and rename to acpi_slave.o
+Date: Tue, 13 Aug 2019 11:09:30 -0700
+Message-ID: <20190813180929.22497-1-natechancellor@gmail.com>
+References: <20190813061014.45015-1-natechancellor@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
-Content-Language: en-US
+In-Reply-To: <20190813061014.45015-1-natechancellor@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
+To: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com, Nathan Chancellor <natechancellor@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+clang warns when CONFIG_ACPI is unset:
 
+../drivers/soundwire/slave.c:16:12: warning: unused function
+'sdw_slave_add' [-Wunused-function]
+static int sdw_slave_add(struct sdw_bus *bus,
+           ^
+1 warning generated.
 
-On 13/08/2019 18:51, Pierre-Louis Bossart wrote:
-> On 8/13/19 11:50 AM, Srinivas Kandagatla wrote:
->> Thanks for the review,
->>
->> On 13/08/2019 15:44, Pierre-Louis Bossart wrote:
->>> On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
->>>> On platforms which have smart speaker amplifiers connected via
->>>> soundwire and modeled as aux devices in ASoC, in such usecases machine
->>>> driver should be able to get sdw master stream from dai so that it can
->>>> use the runtime stream to setup slave streams.
->>>
->>> using the _set_sdw_stream? I don't fully get the sequence with the 
->>> wording above.
->>
->> Yes, using set_sdw_stream().
-> 
-> Maybe I am missing something here, but I don't see where the 
-> set_sdw_stream() is called.
+Before commit 8676b3ca4673 ("soundwire: fix regmap dependencies and
+align with other serial links"), this code would only be compiled when
+ACPI was set because it was only selected by SOUNDWIRE_INTEL, which
+depends on ACPI.
 
-sorry for the confusion. It was too quick reply. :-)
-I was suppose to say sdw_stream_add_slave() instead of set_sdw_stream().
+Now, this code can be compiled without CONFIG_ACPI, which causes the
+above warning. The IS_ENABLED(CONFIG_ACPI) guard could be moved to avoid
+compiling the function; however, slave.c only contains three functions,
+two of which are static. Since slave.c is completetely dependent on
+ACPI, rename it to acpi_slave.c and only compile it when CONFIG_ACPI
+is set so sdw_acpi_find_slaves will actually be used. bus.h contains
+a stub for sdw_acpi_find_slaves so there will be no issues with an
+undefined function.
 
-As Aux device is dailess there is no way to get hold of sdw stream 
-runtime for slave device associated with it.
+This has been build tested with CONFIG_ACPI set and unset in combination
+with CONFIG_SOUNDWIRE unset, built in, and a module.
 
-Having snd_soc_dai_get_sdw_stream() would help machine driver to get 
-hold of sdw_stream_runtime from controller dai and setup slave streams 
-using sdw_stream_add_slave().
+Fixes: 8676b3ca4673 ("soundwire: fix regmap dependencies and align with other serial links")
+Link: https://github.com/ClangBuiltLinux/linux/issues/637
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
 
+v1 -> v2:
 
-thanks,
-srini
+* Rename slave.o to acpi_slave.o
+* Reword commit message to reflect this
 
+ drivers/soundwire/Makefile                  | 6 +++++-
+ drivers/soundwire/{slave.c => acpi_slave.c} | 3 ---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+ rename drivers/soundwire/{slave.c => acpi_slave.c} (98%)
 
-> 
-> Also I don't fully get the rule. set_sdw_stream() looks required, 
-> get_sdw_stream() is optional, is this what you are suggesting?
-> 
->>>
->>>>
->>>> soundwire already as a set function, get function would provide more
->>>> flexibility to above configurations.
->>>
->>> I am not clear if you are asking for both to be used, or get only or 
->>> set only?
->>
->> It depends on the usecase, in db845c usecase  [1] as Aux device is dai 
->> less, machine driver is using get function to get hold of master 
->> stream so that it can setup slave port config.
->>
->>
->> Looks like there is a typo in above like
->>
->> This was supposed to be "soundwire already has a set function, get 
->> function would provide more flexibility to above configurations"
->>
->> [1] 
->> https://git.linaro.org/landing-teams/working/qualcomm/kernel.git/tree/sound/soc/qcom/db845c.c?h=integration-linux-qcomlt 
->>
->>
->> thanks,
->> srini
->>
->>>
->>>>
->>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>> ---
->>>>   include/sound/soc-dai.h | 10 ++++++++++
->>>>   1 file changed, 10 insertions(+)
->>>>
->>>> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->>>> index dc48fe081a20..1e01f4a302e0 100644
->>>> --- a/include/sound/soc-dai.h
->>>> +++ b/include/sound/soc-dai.h
->>>> @@ -202,6 +202,7 @@ struct snd_soc_dai_ops {
->>>>       int (*set_sdw_stream)(struct snd_soc_dai *dai,
->>>>               void *stream, int direction);
->>>> +    void *(*get_sdw_stream)(struct snd_soc_dai *dai, int direction);
->>>>       /*
->>>>        * DAI digital mute - optional.
->>>>        * Called by soc-core to minimise any pops.
->>>> @@ -410,4 +411,13 @@ static inline int 
->>>> snd_soc_dai_set_sdw_stream(struct snd_soc_dai *dai,
->>>>           return -ENOTSUPP;
->>>>   }
->>>> +static inline void *snd_soc_dai_get_sdw_stream(struct snd_soc_dai 
->>>> *dai,
->>>> +                           int direction)
->>>> +{
->>>> +    if (dai->driver->ops->get_sdw_stream)
->>>> +        return dai->driver->ops->get_sdw_stream(dai, direction);
->>>> +    else
->>>> +        return ERR_PTR(-ENOTSUPP);
->>>> +}
->>>> +
->>>>   #endif
->>>>
->>>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index 45b7e5001653..718d8dd0ac79 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -4,9 +4,13 @@
+ #
+ 
+ #Bus Objs
+-soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
++soundwire-bus-objs := bus_type.o bus.o mipi_disco.o stream.o
+ obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+ 
++ifdef CONFIG_ACPI
++soundwire-bus-objs += acpi_slave.o
++endif
++
+ #Cadence Objs
+ soundwire-cadence-objs := cadence_master.o
+ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/acpi_slave.c
+similarity index 98%
+rename from drivers/soundwire/slave.c
+rename to drivers/soundwire/acpi_slave.c
+index f39a5815e25d..0dc188e6873b 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/acpi_slave.c
+@@ -60,7 +60,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ 	return ret;
+ }
+ 
+-#if IS_ENABLED(CONFIG_ACPI)
+ /*
+  * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
+  * @bus: SDW bus instance
+@@ -110,5 +109,3 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ 
+ 	return 0;
+ }
+-
+-#endif
+-- 
+2.23.0.rc2
