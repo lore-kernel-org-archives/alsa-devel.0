@@ -1,40 +1,56 @@
-From: Eric Desjardins <desjare@gmail.com>
-Subject: snd_pcm_start question
-Date: Sun, 11 Aug 2019 14:15:12 -0400
-Message-ID: <CADsNRHu__S2EU0BNqrUs=OZzx_B2-rnt3DrmrtbLE3twDH=L7g@mail.gmail.com>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH] ASoC: rockchip: rockchip_max98090: Set period size to 240
+Date: Tue, 13 Aug 2019 15:44:30 +0800
+Message-ID: <20190813074430.191791-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
- [IPv6:2a00:1450:4864:20::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21034F8015B
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2019 20:15:24 +0200 (CEST)
-Received: by mail-lf1-x133.google.com with SMTP id 62so67935847lfa.8
- for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2019 11:15:24 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Heiko Stuebner <heiko@sntech.de>, dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, zhengxing@rock-chips.com, cain.cai@rock-chips.com, eddie.cai@rock-chips.com, jeffy.chen@rock-chips.com, enric.balletbo@collabora.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>From stress testing of arecord, we found that period size
+greater than ~900 will bring pl330 to DYING state and
+can not recover within 100 iterations.
+The result is that arecord will stuck and get I/O error,
+and issue can not be recovered until reboot.
 
-This is a simple question. I call:
-snd_pcm_prepare
-snd_pcm_writei
+This issue does not happen when period size is small.
+Set constraint of period size to 240 to prevent such issue.
+With the constraint, there will be no issue after 2000 iterations.
 
-and it works fine but I would like to delay playback start. There is
-snd_pcm_start for that. There is a method that is deprecated to specify a
-start mode but I was wondering what was the correct new way to do that?
+We can revert this patch once the root cause is found
+in rockchip's pl330 implementation.
 
-Thanks,
-Eric
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+ sound/soc/rockchip/rockchip_max98090.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 7b0c21fa6dca..0097df1fae66 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -137,8 +137,19 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int rk_aif1_startup(struct snd_pcm_substream *substream)
++{
++	/*
++	 * Set period size to 240 because pl330 has issue
++	 * dealing with larger period in stress testing.
++	 */
++	return snd_pcm_hw_constraint_minmax(substream->runtime,
++			SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 240, 240);
++}
++
+ static const struct snd_soc_ops rk_aif1_ops = {
+ 	.hw_params = rk_aif1_hw_params,
++	.startup = rk_aif1_startup,
+ };
+ 
+ SND_SOC_DAILINK_DEFS(hifi,
+-- 
+2.23.0.rc1.153.gdeed80330f-goog
