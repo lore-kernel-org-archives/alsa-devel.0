@@ -1,18 +1,17 @@
 From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v5 04/15] ASoC: sun4i-i2s: Support more
- formats on newer SoCs
-Date: Wed, 14 Aug 2019 09:16:45 +0200
-Message-ID: <20190814071645.33qe7bvwpbakjg2e@flea>
+Subject: Re: [PATCH v5 12/15] ASoC: sun4i-i2s: Add multi-lane functionality
+Date: Wed, 14 Aug 2019 09:20:46 +0200
+Message-ID: <20190814072046.metavychqvhuohwy@flea>
 References: <20190814060854.26345-1-codekipper@gmail.com>
- <20190814060854.26345-5-codekipper@gmail.com>
+ <20190814060854.26345-13-codekipper@gmail.com>
 Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nwzjgr7m2im3tclk"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBOOXZ7VAKGQEJ2Q6VBQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="qyuby3czmo42ymqj"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBO6XZ7VAKGQER6SACAQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20190814060854.26345-5-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <20190814060854.26345-13-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,156 +23,29 @@ Cc: wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public
 List-Id: alsa-devel@alsa-project.org
 
 
---nwzjgr7m2im3tclk
+--qyuby3czmo42ymqj
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
-On Wed, Aug 14, 2019 at 08:08:43AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+On Wed, Aug 14, 2019 at 08:08:51AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
 > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 >
-> There is a need to support more formats on the newer SoCs(H3 and later).
-> Extend the formats supported to include DSP_A and DSP_B modes.
+> The i2s block supports multi-lane i2s output however this functionality
+> is only possible in earlier SoCs where the pins are exposed and for
+> the i2s block used for HDMI audio on the later SoCs.
+>
+> To enable this functionality, an optional property has been added to
+> the bindings.
 >
 > Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
->  sound/soc/sunxi/sun4i-i2s.c | 87 +++++++++++++++++++++++++++----------
->  1 file changed, 63 insertions(+), 24 deletions(-)
->
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index 34f31439ae7b..3553c17318b0 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -27,6 +27,8 @@
->  #define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
->  #define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
->  #define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
-> +#define SUN4I_I2S_CTRL_PCM			BIT(4)
-> +#define SUN4I_I2S_CTRL_LOOP			BIT(3)
->  #define SUN4I_I2S_CTRL_TX_EN			BIT(2)
->  #define SUN4I_I2S_CTRL_RX_EN			BIT(1)
->  #define SUN4I_I2S_CTRL_GL_EN			BIT(0)
-> @@ -91,6 +93,9 @@
->  /* Defines required for sun8i-h3 support */
->  #define SUN8I_I2S_CTRL_BCLK_OUT			BIT(18)
->  #define SUN8I_I2S_CTRL_LRCK_OUT			BIT(17)
-> +#define SUN8I_I2S_CTRL_MODE_RIGHT_J			(2 << 0)
-> +#define SUN8I_I2S_CTRL_MODE_I2S_LEFT_J			(1 << 0)
-> +#define SUN8I_I2S_CTRL_MODE_PCM				(0 << 0)
->
->  #define SUN8I_I2S_FMT0_LRCK_PERIOD_MASK		GENMASK(17, 8)
->  #define SUN8I_I2S_FMT0_LRCK_PERIOD(period)	((period - 1) << 8)
-> @@ -164,6 +169,7 @@ struct sun4i_i2s_quirks {
->
->  	s8	(*get_sr)(const struct sun4i_i2s *, int);
->  	s8	(*get_wss)(const struct sun4i_i2s *, int);
-> +	int	(*set_format)(struct sun4i_i2s *, unsigned int);
->  };
->
->  struct sun4i_i2s {
-> @@ -194,6 +200,7 @@ struct sun4i_i2s {
->
->  	unsigned int	tdm_slots;
->  	unsigned int	slot_width;
-> +	unsigned int	offset;
->  };
->
->  struct sun4i_i2s_clk_div {
-> @@ -484,19 +491,14 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->  				      i2s->slot_width : params_width(params));
->  }
->
-> -static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-> +static int sun4i_i2s_set_format(struct sun4i_i2s *i2s, unsigned int fmt)
->  {
-> -	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
->  	u32 val;
-> -	u32 offset = 0;
-> -	u32 bclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
-> -	u32 lrclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
->
->  	/* DAI Mode */
->  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->  	case SND_SOC_DAIFMT_I2S:
->  		val = SUN4I_I2S_FMT0_FMT_I2S;
-> -		offset = 1;
->  		break;
->  	case SND_SOC_DAIFMT_LEFT_J:
->  		val = SUN4I_I2S_FMT0_FMT_LEFT_J;
-> @@ -505,32 +507,64 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
->  		break;
->  	default:
-> -		dev_err(dai->dev, "Unsupported format: %d\n",
-> -			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
->  		return -EINVAL;
->  	}
->
-> -	if (i2s->variant->has_chsel_offset) {
-> -		/*
-> -		 * offset being set indicates that we're connected to an i2s
-> -		 * device, however offset is only used on the sun8i block and
-> -		 * i2s shares the same setting with the LJ format. Increment
-> -		 * val so that the bit to value to write is correct.
-> -		 */
-> -		if (offset > 0)
-> -			val++;
-> -		/* blck offset determines whether i2s or LJ */
-> -		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
-> -				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
-> -				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
-> +	regmap_field_write(i2s->field_fmt_mode, val);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sun8i_i2s_set_format(struct sun4i_i2s *i2s, unsigned int fmt)
-> +{
-> +	u32 val;
->
-> -		regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
-> -				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
-> -				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
-> +	/* DAI Mode */
-> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_I2S:
-> +		i2s->offset = 1;
-> +	case SND_SOC_DAIFMT_LEFT_J:
-> +		val = SUN8I_I2S_CTRL_MODE_I2S_LEFT_J;
-> +		break;
-> +	case SND_SOC_DAIFMT_RIGHT_J:
-> +		val = SUN8I_I2S_CTRL_MODE_RIGHT_J;
-> +		break;
-> +	case SND_SOC_DAIFMT_DSP_A:
-> +		i2s->offset = 1;
-> +	case SND_SOC_DAIFMT_DSP_B:
-> +		val = SUN8I_I2S_CTRL_MODE_PCM;
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
->  	}
->
-> +	/*
-> +	 * bclk offset determines whether i2s or LJ if in i2s mode and
-> +	 * DSP_A or DSP_B if in PCM mode.
-> +	 */
-> +	i2s->variant->set_txchanoffset(i2s, 0);
-> +	i2s->variant->set_rxchanoffset(i2s);
-> +
->  	regmap_field_write(i2s->field_fmt_mode, val);
 
-It's a bit more complicated in the sun8i case. The LRCK period also
-needs to be changed when in PCM / DSP_* mode since it changes from a
-number of periods for one channel to a number of periods for all the
-channels.
+Wasn't the plan to support only stereo for now?
 
-I have patches that still need a bit of rework and take care of all of
-that, I'll try to post them by the end of the week
+Either way, that property should be documented.
 
 Maxime
-
 --
 Maxime Ripard, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
---nwzjgr7m2im3tclk--
+--qyuby3czmo42ymqj--
