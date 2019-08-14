@@ -1,107 +1,48 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] soundwire: Don't build sound.o without
- CONFIG_ACPI
-Date: Wed, 14 Aug 2019 09:29:47 +0530
-Message-ID: <20190814035947.GS12733@vkoul-mobl.Dlink>
-References: <20190813061014.45015-1-natechancellor@gmail.com>
- <445d16e1-6b00-6797-82df-42a49a5e79e3@linux.intel.com>
+Subject: Re: [PATCH v2 1/5] soundwire: Add compute_params callback
+Date: Wed, 14 Aug 2019 09:35:58 +0530
+Message-ID: <20190814040558.GT12733@vkoul-mobl.Dlink>
+References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
+ <20190813083550.5877-2-srinivas.kandagatla@linaro.org>
+ <7e462330-a357-698a-b259-5ff136963a57@linux.intel.com>
+ <1a02f190-0aab-d512-ceb0-4a21014705e8@linaro.org>
+ <3fd3c98c-eb25-7040-3089-f5e5bc9d24ee@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <445d16e1-6b00-6797-82df-42a49a5e79e3@linux.intel.com>
+In-Reply-To: <3fd3c98c-eb25-7040-3089-f5e5bc9d24ee@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Nathan Chancellor <natechancellor@gmail.com>, Sanyog Kale <sanyog.r.kale@intel.com>, clang-built-linux@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13-08-19, 09:22, Pierre-Louis Bossart wrote:
-> On 8/13/19 1:10 AM, Nathan Chancellor wrote:
-> > clang warns when CONFIG_ACPI is unset:
+On 13-08-19, 14:08, Pierre-Louis Bossart wrote:
+> On 8/13/19 1:17 PM, Srinivas Kandagatla wrote:
 > > 
-> > ../drivers/soundwire/slave.c:16:12: warning: unused function
-> > 'sdw_slave_add' [-Wunused-function]
-> > static int sdw_slave_add(struct sdw_bus *bus,
-> >             ^
-> > 1 warning generated.
 > > 
-> > Before commit 8676b3ca4673 ("soundwire: fix regmap dependencies and
-> > align with other serial links"), this code would only be compiled when
-> > ACPI was set because it was only selected by SOUNDWIRE_INTEL, which
-> > depends on ACPI.
+> > On 13/08/2019 15:34, Pierre-Louis Bossart wrote:
+> > > On 8/13/19 3:35 AM, Srinivas Kandagatla wrote:
+> > > > From: Vinod Koul <vkoul@kernel.org>
+> > > > 
+> > > > This callback allows masters to compute the bus parameters required.
+> > > 
+> > > This looks like a partial use of the patch ('soundwire: Add Intel
+> > > resource management algorithm')? see comments below
+> > > 
 > > 
-> > Now, this code can be compiled without CONFIG_ACPI, which causes the
-> > above warning. The IS_ENABLED(CONFIG_ACPI) guard could be moved to avoid
-> > compiling the function; however, slave.c only contains three functions,
-> > two of which are static. Only compile slave.o when CONFIG_ACPI is set,
-> > where it will actually be used. bus.h contains a stub for
-> > sdw_acpi_find_slaves so there will be no issues with an undefined
-> > function.
+> > Yes it duplicate indeed!
 > > 
-> > This has been build tested with CONFIG_ACPI set and unset in combination
-> > with CONFIG_SOUNDWIRE unset, built in, and a module.
+> > I will use that patch!
 > 
-> Thanks for the patch. Do you have a .config you can share offline so that we
-> add it to our tests?
-> 
-> > 
-> > Fixes: 8676b3ca4673 ("soundwire: fix regmap dependencies and align with other serial links")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/637
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >   drivers/soundwire/Makefile | 6 +++++-
-> >   drivers/soundwire/slave.c  | 3 ---
-> >   2 files changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-> > index 45b7e5001653..226090902716 100644
-> > --- a/drivers/soundwire/Makefile
-> > +++ b/drivers/soundwire/Makefile
-> > @@ -4,9 +4,13 @@
-> >   #
-> >   #Bus Objs
-> > -soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
-> > +soundwire-bus-objs := bus_type.o bus.o mipi_disco.o stream.o
-> >   obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
-> > +ifdef CONFIG_ACPI
-> > +soundwire-bus-objs += slave.o
-> > +endif
-> 
-> I am fine with the change, but we might as well rename the file acpi_slave.c
-> then?
+> Actually please don't...
+> we found issues with the Intel allocation so I'd rather have the big Intel
+> patch split into two parts, with callbacks+prepare/deprepare changes going
+> in first. It'll be much faster/nicer for everyone.
 
-Srini's change add support for DT for the same file, so It does not make
-sense to rename. Yes this patch tries to fix a warn which is there due
-to DT being not supported but with Srini's patches this warn should go
-away as sdw_slave_add() will be invoked by the DT counterpart
-
-Sorry Nathan, we would have to live with the warn for few more days till
-I apply Srini's changes. So I am not taking this (or v2) patch
-
-Thanks
-
-> 
-> > +
-> >   #Cadence Objs
-> >   soundwire-cadence-objs := cadence_master.o
-> >   obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
-> > diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-> > index f39a5815e25d..0dc188e6873b 100644
-> > --- a/drivers/soundwire/slave.c
-> > +++ b/drivers/soundwire/slave.c
-> > @@ -60,7 +60,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
-> >   	return ret;
-> >   }
-> > -#if IS_ENABLED(CONFIG_ACPI)
-> >   /*
-> >    * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
-> >    * @bus: SDW bus instance
-> > @@ -110,5 +109,3 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
-> >   	return 0;
-> >   }
-> > -
-> > -#endif
-> > 
+I was about to say that as well. I think lets take this as is and Intel
+algo can be on top of this. That seems easier for everyone to sort
+dependencies
 
 -- 
 ~Vinod
