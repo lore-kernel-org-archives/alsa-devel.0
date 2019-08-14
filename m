@@ -1,12 +1,13 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v5 03/15] ASoC: sun4i-i2s: Correct divider calculations
-Date: Wed, 14 Aug 2019 08:08:42 +0200
-Message-ID: <20190814060854.26345-4-codekipper@gmail.com>
+Subject: [PATCH v5 06/15] ASoC: sun4i-i2s: Add functions for RX
+ and TX channel enables
+Date: Wed, 14 Aug 2019 08:08:45 +0200
+Message-ID: <20190814060854.26345-7-codekipper@gmail.com>
 References: <20190814060854.26345-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBAGLZ3VAKGQENLDKKEI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBBOLZ3VAKGQEHNREJUA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20190814060854.26345-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -21,165 +22,79 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-The clock division circuitry is different on the H3 and later SoCs.
-The division of bclk is now based on pll2.
+Newer SoCs like the H6 have the channel enable bits in a different
+position to what is on the H3. As we will eventually add multi-
+channel support then create function calls as opposed to regmap
+fields to add support for different devices.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 73 +++++++++++++++++++++++++------------
- 1 file changed, 49 insertions(+), 24 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 7c37b6291df0..34f31439ae7b 100644
+index 4a748747ccd7..ad2ff83deeb7 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -127,8 +127,6 @@ struct sun4i_i2s;
-  * @has_chsel_offset: SoC uses offset for selecting dai operational mode.
-  * @reg_offset_txdata: offset of the tx fifo.
-  * @sun4i_i2s_regmap: regmap config to use.
-- * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-- * @bclk_offset: Value by which bclkdiv needs to be adjusted.
-  * @field_clkdiv_mclk_en: regmap field to enable mclk output.
-  * @field_fmt_wss: regmap field to set word select size.
-  * @field_fmt_sr: regmap field to set sample resolution.
-@@ -150,8 +148,6 @@ struct sun4i_i2s_quirks {
- 	bool				has_chsel_offset;
- 	unsigned int			reg_offset_txdata;	/* TX FIFO */
- 	const struct regmap_config	*sun4i_i2s_regmap;
--	unsigned int			mclk_offset;
--	unsigned int			bclk_offset;
+@@ -172,6 +172,8 @@ struct sun4i_i2s_quirks {
+ 	int	(*set_format)(struct sun4i_i2s *, unsigned int);
+ 	void	(*set_txchanoffset)(const struct sun4i_i2s *, int);
+ 	void	(*set_rxchanoffset)(const struct sun4i_i2s *);
++	void	(*set_txchanen)(const struct sun4i_i2s *, int, int);
++	void	(*set_rxchanen)(const struct sun4i_i2s *, int);
+ };
  
- 	/* Register fields for i2s */
- 	struct reg_field		field_clkdiv_mclk_en;
-@@ -212,7 +208,25 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_bclk_div[] = {
- 	{ .div = 8, .val = 3 },
- 	{ .div = 12, .val = 4 },
- 	{ .div = 16, .val = 5 },
--	/* TODO - extend divide ratio supported by newer SoCs */
-+};
+ struct sun4i_i2s {
+@@ -444,6 +446,25 @@ static void sun8i_i2s_set_rxchanoffset(const struct sun4i_i2s *i2s)
+ 			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
+ }
+ 
++static void sun8i_i2s_set_txchanen(const struct sun4i_i2s *i2s, int output,
++				   int channel)
++{
++	if (output >= 0 && output < 4) {
++		regmap_update_bits(i2s->regmap,
++				   SUN8I_I2S_TX_CHAN_SEL_REG + (output * 4),
++				   SUN8I_I2S_TX_CHAN_EN_MASK,
++				   SUN8I_I2S_TX_CHAN_EN(channel));
++	}
++}
 +
-+static const struct sun4i_i2s_clk_div sun8i_i2s_clk_div[] = {
-+	{ .div = 0, .val = 0 },
-+	{ .div = 1, .val = 1 },
-+	{ .div = 2, .val = 2 },
-+	{ .div = 4, .val = 3 },
-+	{ .div = 6, .val = 4 },
-+	{ .div = 8, .val = 5 },
-+	{ .div = 12, .val = 6 },
-+	{ .div = 16, .val = 7 },
-+	{ .div = 24, .val = 8 },
-+	{ .div = 32, .val = 9 },
-+	{ .div = 48, .val = 10 },
-+	{ .div = 64, .val = 11 },
-+	{ .div = 96, .val = 12 },
-+	{ .div = 128, .val = 13 },
-+	{ .div = 176, .val = 14 },
-+	{ .div = 192, .val = 15 },
++static void sun8i_i2s_set_rxchanen(const struct sun4i_i2s *i2s, int channel)
++{
++	regmap_update_bits(i2s->regmap,
++			   SUN8I_I2S_RX_CHAN_SEL_REG,
++			   SUN8I_I2S_TX_CHAN_EN_MASK,
++			   SUN8I_I2S_TX_CHAN_EN(channel));
++}
++
+ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params,
+ 			       struct snd_soc_dai *dai)
+@@ -479,10 +500,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_field_write(i2s->field_rxchansel,
+ 			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
+ 
+-	if (i2s->variant->has_chsel_tx_chen)
+-		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+-				   SUN8I_I2S_TX_CHAN_EN_MASK,
+-				   SUN8I_I2S_TX_CHAN_EN(channels));
++	if (i2s->variant->set_txchanen)
++		i2s->variant->set_txchanen(i2s, 0, channels);
++
++	if (i2s->variant->set_rxchanen)
++		i2s->variant->set_rxchanen(i2s, channels);
+ 
+ 	switch (params_physical_width(params)) {
+ 	case 16:
+@@ -1098,6 +1120,8 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.set_format		= sun8i_i2s_set_format,
+ 	.set_txchanoffset	= sun8i_i2s_set_txchanoffset,
+ 	.set_rxchanoffset	= sun8i_i2s_set_rxchanoffset,
++	.set_txchanen		= sun8i_i2s_set_txchanen,
++	.set_rxchanen		= sun8i_i2s_set_rxchanen,
  };
  
- static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
-@@ -224,21 +238,21 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
- 	{ .div = 12, .val = 5 },
- 	{ .div = 16, .val = 6 },
- 	{ .div = 24, .val = 7 },
--	/* TODO - extend divide ratio supported by newer SoCs */
- };
- 
- static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
- 				  unsigned int oversample_rate,
--				  unsigned int word_size)
-+				  unsigned int word_size,
-+				  const struct sun4i_i2s_clk_div *bdiv,
-+				  unsigned int size)
- {
- 	int div = oversample_rate / word_size / 2;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_bclk_div); i++) {
--		const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
--
-+	for (i = 0; i < size; i++) {
- 		if (bdiv->div == div)
- 			return bdiv->val;
-+		bdiv++;
- 	}
- 
- 	return -EINVAL;
-@@ -247,16 +261,17 @@ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
- static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
- 				  unsigned int oversample_rate,
- 				  unsigned int module_rate,
--				  unsigned int sampling_rate)
-+				  unsigned int sampling_rate,
-+				  const struct sun4i_i2s_clk_div *mdiv,
-+				  unsigned int size)
- {
- 	int div = module_rate / sampling_rate / oversample_rate;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_mclk_div); i++) {
--		const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
--
-+	for (i = 0; i < size; i++) {
- 		if (mdiv->div == div)
- 			return mdiv->val;
-+		mdiv++;
- 	}
- 
- 	return -EINVAL;
-@@ -321,24 +336,36 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
- 
--	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
--					  word_size);
-+	if (i2s->variant->has_fmt_set_lrck_period)
-+		bclk_div = sun4i_i2s_get_bclk_div(i2s, clk_rate / rate,
-+						  word_size,
-+						  sun8i_i2s_clk_div,
-+						  ARRAY_SIZE(sun8i_i2s_clk_div));
-+	else
-+		bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
-+						  word_size,
-+						  sun4i_i2s_bclk_div,
-+						  ARRAY_SIZE(sun4i_i2s_bclk_div));
- 	if (bclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
- 		return -EINVAL;
- 	}
- 
--	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
--					  clk_rate, rate);
-+	if (i2s->variant->has_fmt_set_lrck_period)
-+		mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
-+						  clk_rate, rate,
-+						  sun8i_i2s_clk_div,
-+						  ARRAY_SIZE(sun8i_i2s_clk_div));
-+	else
-+		mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
-+						  clk_rate, rate,
-+						  sun4i_i2s_mclk_div,
-+						  ARRAY_SIZE(sun4i_i2s_mclk_div));
- 	if (mclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported MCLK divider: %d\n", mclk_div);
- 		return -EINVAL;
- 	}
- 
--	/* Adjust the clock division values if needed */
--	bclk_div += i2s->variant->bclk_offset;
--	mclk_div += i2s->variant->mclk_offset;
--
- 	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
- 		     SUN4I_I2S_CLK_DIV_BCLK(bclk_div) |
- 		     SUN4I_I2S_CLK_DIV_MCLK(mclk_div));
-@@ -994,8 +1021,6 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.has_reset		= true,
- 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
- 	.sun4i_i2s_regmap	= &sun8i_i2s_regmap_config,
--	.mclk_offset		= 1,
--	.bclk_offset		= 2,
- 	.has_fmt_set_lrck_period = true,
- 	.has_chcfg		= true,
- 	.has_chsel_tx_chen	= true,
+ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
 -- 
 2.22.0
