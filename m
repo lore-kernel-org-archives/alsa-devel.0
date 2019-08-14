@@ -1,118 +1,84 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH v5 01/15] ASoC: sun4i-i2s: Add regmap field to sign
- extend sample
-Date: Wed, 14 Aug 2019 08:43:39 +0200
-Message-ID: <20190814064339.lgfngdkiaalygolk@flea>
+From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH v5 02/15] ASoC: sun4i-i2s: Add set_tdm_slot functionality
+Date: Wed, 14 Aug 2019 09:09:23 +0200
+Message-ID: <20190814070923.wwkw7hybjvy3p4br@flea>
 References: <20190814060854.26345-1-codekipper@gmail.com>
- <20190814060854.26345-2-codekipper@gmail.com>
+ <20190814060854.26345-3-codekipper@gmail.com>
+Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ugsoeifrlfa7kjoi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="mpw4oztj7vyrpshs"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBNOXZ7VAKGQEKQ4ZLOI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20190814060854.26345-2-codekipper@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: codekipper@gmail.com
-Cc: wens@csie.org, linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it
+In-Reply-To: <20190814060854.26345-3-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ugsoeifrlfa7kjoi
-Content-Type: text/plain; charset=us-ascii
+--mpw4oztj7vyrpshs
+Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
 Hi,
 
-On Wed, Aug 14, 2019 at 08:08:40AM +0200, codekipper@gmail.com wrote:
-> From: Marcus Cooper <codekipper@gmail.com>
+On Wed, Aug 14, 2019 at 08:08:41AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 >
-> On the newer SoCs such as the H3 and A64 this is set by default
-> to transfer a 0 after each sample in each slot. However the A10
-> and A20 SoCs that this driver was developed on had a default
-> setting where it padded the audio gain with zeros.
+> Codecs without a control connection such as i2s based HDMI audio and
+> the Pine64 DAC require a different amount of bit clocks per frame than
+> what is calculated by the sample width. Use the tdm slot bindings to
+> provide this mechanism.
 >
-> This isn't a problem whilst we have only support for 16bit audio
-> but with larger sample resolution rates in the pipeline then SEXT
-> bits should be cleared so that they also pad at the LSB. Without
-> this the audio gets distorted.
->
-> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 > ---
->  sound/soc/sunxi/sun4i-i2s.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  sound/soc/sunxi/sun4i-i2s.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
 >
 > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index 793457394efe..8201334a059b 100644
+> index 8201334a059b..7c37b6291df0 100644
 > --- a/sound/soc/sunxi/sun4i-i2s.c
 > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -135,6 +135,7 @@ struct sun4i_i2s;
->   * @field_fmt_bclk: regmap field to set clk polarity.
->   * @field_fmt_lrclk: regmap field to set frame polarity.
->   * @field_fmt_mode: regmap field to set the operational mode.
-> + * @field_fmt_sext: regmap field to set the sign extension.
->   * @field_txchanmap: location of the tx channel mapping register.
->   * @field_rxchanmap: location of the rx channel mapping register.
->   * @field_txchansel: location of the tx channel select bit fields.
-> @@ -159,6 +160,7 @@ struct sun4i_i2s_quirks {
->  	struct reg_field		field_fmt_bclk;
->  	struct reg_field		field_fmt_lrclk;
->  	struct reg_field		field_fmt_mode;
-> +	struct reg_field		field_fmt_sext;
->  	struct reg_field		field_txchanmap;
->  	struct reg_field		field_rxchanmap;
->  	struct reg_field		field_txchansel;
-> @@ -186,6 +188,7 @@ struct sun4i_i2s {
->  	struct regmap_field	*field_fmt_bclk;
->  	struct regmap_field	*field_fmt_lrclk;
->  	struct regmap_field	*field_fmt_mode;
-> +	struct regmap_field	*field_fmt_sext;
->  	struct regmap_field	*field_txchanmap;
->  	struct regmap_field	*field_rxchanmap;
->  	struct regmap_field	*field_txchansel;
-> @@ -345,6 +348,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
->  				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
->  				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
+> @@ -195,6 +195,9 @@ struct sun4i_i2s {
+>  	struct regmap_field	*field_rxchansel;
 >
-> +	/* Set sign extension to pad out LSB with 0 */
-> +	regmap_field_write(i2s->field_fmt_sext, 0);
+>  	const struct sun4i_i2s_quirks	*variant;
 > +
->  	return 0;
->  }
+> +	unsigned int	tdm_slots;
+> +	unsigned int	slot_width;
+>  };
 >
-> @@ -917,6 +923,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
->  	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
->  	.has_slave_select_bit	= true,
->  	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-> +	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
->  	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
->  	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
->  	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> @@ -936,6 +943,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
->  	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
->  	.has_slave_select_bit	= true,
->  	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-> +	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
->  	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
->  	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
->  	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> @@ -979,6 +987,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
->  	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
->  	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
->  	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
-> +	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
->  	.field_txchanmap	= REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
->  	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
->  	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> @@ -998,6 +1007,7 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
->  	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
->  	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
->  	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-> +	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
->  	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
->  	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
->  	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+>  struct sun4i_i2s_clk_div {
+> @@ -346,7 +349,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+>  	if (i2s->variant->has_fmt_set_lrck_period)
+>  		regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+>  				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+> -				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
+> +				   SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
+>
+>
+>  	/* Set sign extension to pad out LSB with 0 */
+>  	regmap_field_write(i2s->field_fmt_sext, 0);
+> @@ -450,7 +453,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+>  	regmap_field_write(i2s->field_fmt_sr, sr);
+>
+>  	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+> -				      params_width(params));
+> +				      i2s->tdm_slots ?
+> +				      i2s->slot_width : params_width(params));
 
-You're missing the A83t here
+This is slightly more complicated than that.
+
+On the H3 (and all related ones), the CHAN_CFG_TX_SLOT_NUM and
+_RX_SLOT_NUM fields in the CHAN_CFG register need to be set to the
+number of slots as well.
 
 Maxime
 
@@ -120,16 +86,4 @@ Maxime
 Maxime Ripard, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
-
---ugsoeifrlfa7kjoi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXVOtmwAKCRDj7w1vZxhR
-xcCaAQCLwFdvV53x9Yf+SMO3VeB7L/1aAbTd+ecpVTv4DxfHDgD9FhXhMdejlsae
-OHzDPbZlEVI+vhB6L3a/niBTANthQwM=
-=cwV3
------END PGP SIGNATURE-----
-
---ugsoeifrlfa7kjoi--
+--mpw4oztj7vyrpshs--
