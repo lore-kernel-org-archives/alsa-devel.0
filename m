@@ -1,117 +1,62 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] Fix an OOB bug in parse_audio_mixer_unit
-Date: Wed, 14 Aug 2019 12:09:21 +0300
-Message-ID: <20190814090921.GO1935@kadam>
-References: <20190814023625.21683-1-benquike@gmail.com>
- <s5hzhkcb6dh.wl-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 02/15] ASoC: sun4i-i2s: Add set_tdm_slot functionality
+Date: Wed, 14 Aug 2019 10:30:11 +0100
+Message-ID: <20190814093011.GD4640@sirena.co.uk>
+References: <20190814060854.26345-1-codekipper@gmail.com>
+ <20190814060854.26345-3-codekipper@gmail.com>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C416F803F4
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2019 11:09:44 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBJNJZ7VAKGQE5BO6OUY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <s5hzhkcb6dh.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mathias Payer <mathias.payer@nebelwelt.net>, security@kernel.org, Wenwen Wang <wang6495@umn.edu>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, Hui Peng <benquike@gmail.com>, Allison Randal <allison@lohutok.net>
+In-Reply-To: <20190814060854.26345-3-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 14, 2019 at 08:36:42AM +0200, Takashi Iwai wrote:
-> On Wed, 14 Aug 2019 04:36:24 +0200,
-> Hui Peng wrote:
-> > 
-> > The `uac_mixer_unit_descriptor` shown as below is read from the
-> > device side. In `parse_audio_mixer_unit`, `baSourceID` field is
-> > accessed from index 0 to `bNrInPins` - 1, the current implementation
-> > assumes that descriptor is always valid (the length  of descriptor
-> > is no shorter than 5 + `bNrInPins`). If a descriptor read from
-> > the device side is invalid, it may trigger out-of-bound memory
-> > access.
-> > 
-> > ```
-> > struct uac_mixer_unit_descriptor {
-> > 	__u8 bLength;
-> > 	__u8 bDescriptorType;
-> > 	__u8 bDescriptorSubtype;
-> > 	__u8 bUnitID;
-> > 	__u8 bNrInPins;
-> > 	__u8 baSourceID[];
-> > }
-> > ```
-> > 
-> > This patch fixes the bug by add a sanity check on the length of
-> > the descriptor.
-> > 
-> > Signed-off-by: Hui Peng <benquike@gmail.com>
-> > Reported-by: Hui Peng <benquike@gmail.com>
-> > Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> > ---
-> >  sound/usb/mixer.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> > index 7498b5191b68..38202ce67237 100644
-> > --- a/sound/usb/mixer.c
-> > +++ b/sound/usb/mixer.c
-> > @@ -2091,6 +2091,15 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
-> >  	struct usb_audio_term iterm;
-> >  	int input_pins, num_ins, num_outs;
-> >  	int pin, ich, err;
-> > +	int desc_len = (int) ((unsigned long) state->buffer +
-> > +			state->buflen - (unsigned long) raw_desc);
-> > +
-> > +	if (desc_len < sizeof(*desc) + desc->bNrInPins) {
-> > +		usb_audio_err(state->chip,
-> > +			      "descriptor %d too short\n",
-> > +			      unitid);
-> > +		return -EINVAL;
-> > +	}
-> >  
-> >  	err = uac_mixer_unit_get_channels(state, desc);
-> >  	if (err < 0) {
-> 
-> Hm, what is the desc->bLength value in the error case?
-> 
-> Basically the buffer boundary is already checked against bLength in
-> snd_usb_find_desc() which is called from obtaining the raw_desc in the
-> caller of this function (parse_audio_unit()).
-> 
-> So, if any, we need to check bLength for the possible overflow like
-> below.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -744,6 +744,8 @@ static int uac_mixer_unit_get_channels(struct mixer_build *state,
->  		return -EINVAL;
->  	if (!desc->bNrInPins)
->  		return -EINVAL;
-> +	if (desc->bLength < sizeof(*desc) + desc->bNrInPins)
-> +		return -EINVAL;
 
-VERSION 1 and 2 already have a different check:
+--/3yNEOqWowh/8j+e
+Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
 
-	if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 1)
-		return 0; /* no bmControls -> skip */
+On Wed, Aug 14, 2019 at 08:08:41AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> 
+> Codecs without a control connection such as i2s based HDMI audio and
+> the Pine64 DAC require a different amount of bit clocks per frame than
 
-So something is possibly off by one.  It's just version 3 which doesn't
-have a check.
+This isn't a universal property of CODECs without a control, and it's
+something that CODECs with control can require too.
 
-regards,
-dan carpenter
+>  	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+> -				      params_width(params));
+> +				      i2s->tdm_slots ?
+> +				      i2s->slot_width : params_width(params));
+
+Please write normal conditional statements unless there's a strong
+reason to do otherwise, it makes things more legible.
+
+> +static int sun4i_i2s_set_dai_tdm_slot(struct snd_soc_dai *dai,
+> +				      unsigned int tx_mask,
+> +				      unsigned int rx_mask,
+> +				      int slots, int width)
+> +{
+> +	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> +
+> +	i2s->tdm_slots = slots;
+> +
+> +	i2s->slot_width = width;
+> +
+> +	return 0;
+> +}
+
+No validation of the parameters here?
+--/3yNEOqWowh/8j+e--
