@@ -1,23 +1,20 @@
-From: =?UTF-8?B?5b2t6L6J?= <benquike@gmail.com>
-Subject: Re: [PATCH] Fix an OOB bug in parse_audio_mixer_unit
-Date: Wed, 14 Aug 2019 12:52:07 -0400
-Message-ID: <CAKpmkkVzT5H0RTAu_Fa=9_gjf5v7k3qzPnnJvPpBp3BaP7G0ag@mail.gmail.com>
-References: <20190814023625.21683-1-benquike@gmail.com>
- <s5hzhkcb6dh.wl-tiwai@suse.de>
- <CAKpmkkUv=arsdJiexaM-UVhXEwfGN=zreny9P_kDNhQUij8=FQ@mail.gmail.com>
- <s5hmugbbtc2.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: core: Move pcm_mutex up to card
+ level from snd_soc_pcm_runtime
+Date: Wed, 14 Aug 2019 13:14:07 -0500
+Message-ID: <1968e008-5311-e624-c997-9433ac624341@linux.intel.com>
+References: <20190813104532.16669-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0000000000008b7f79059016947b"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com
- [IPv6:2607:f8b0:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8672BF8015B
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2019 18:52:21 +0200 (CEST)
-Received: by mail-oi1-x242.google.com with SMTP id 16so4687483oiq.6
- for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2019 09:52:20 -0700 (PDT)
-In-Reply-To: <s5hmugbbtc2.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34F31F8015B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2019 20:14:10 +0200 (CEST)
+In-Reply-To: <20190813104532.16669-1-peter.ujfalusi@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,181 +24,488 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mathias Payer <mathias.payer@nebelwelt.net>, security@kernel.org, Wenwen Wang <wang6495@umn.edu>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
---0000000000008b7f79059016947b
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi, Takashi:
-
-Thanks for the guide.
-The new patch is confirmed and attached.
-
-On Wed, Aug 14, 2019 at 12:33 PM Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Wed, 14 Aug 2019 18:28:39 +0200,
-> =E5=BD=AD=E8=BE=89 wrote:
-> >
-> > Hi, Takashi:
-> > Here the problem is that `desc->bLength` is controlled by the device
-> side,
-> > so  `desc->bLength` may not represent the real length of the descriptor=
-.
-> > That is why I use pointer arithmetic operations to derive the real size
-> of the
-> > buffer
-> > in my patch.
->
-> But bLength is checked before calling this, i.e. it's already assured
-> that bLength fits within the buffer limit.  So, the result calls don't
-> have to care about the buffer limit itself, and they can just
-> concentrate on overflow over bLength.
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > On Wed, Aug 14, 2019 at 2:36 AM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> >     On Wed, 14 Aug 2019 04:36:24 +0200,
-> >     Hui Peng wrote:
-> >     >
-> >     > The `uac_mixer_unit_descriptor` shown as below is read from the
-> >     > device side. In `parse_audio_mixer_unit`, `baSourceID` field is
-> >     > accessed from index 0 to `bNrInPins` - 1, the current
-> implementation
-> >     > assumes that descriptor is always valid (the length  of descripto=
-r
-> >     > is no shorter than 5 + `bNrInPins`). If a descriptor read from
-> >     > the device side is invalid, it may trigger out-of-bound memory
-> >     > access.
-> >     >
-> >     > ```
-> >     > struct uac_mixer_unit_descriptor {
-> >     >       __u8 bLength;
-> >     >       __u8 bDescriptorType;
-> >     >       __u8 bDescriptorSubtype;
-> >     >       __u8 bUnitID;
-> >     >       __u8 bNrInPins;
-> >     >       __u8 baSourceID[];
-> >     > }
-> >     > ```
-> >     >
-> >     > This patch fixes the bug by add a sanity check on the length of
-> >     > the descriptor.
-> >     >
-> >     > Signed-off-by: Hui Peng <benquike@gmail.com>
-> >     > Reported-by: Hui Peng <benquike@gmail.com>
-> >     > Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> >     > ---
-> >     >  sound/usb/mixer.c | 9 +++++++++
-> >     >  1 file changed, 9 insertions(+)
-> >     >
-> >     > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> >     > index 7498b5191b68..38202ce67237 100644
-> >     > --- a/sound/usb/mixer.c
-> >     > +++ b/sound/usb/mixer.c
-> >     > @@ -2091,6 +2091,15 @@ static int parse_audio_mixer_unit(struct
-> >     mixer_build *state, int unitid,
-> >     >       struct usb_audio_term iterm;
-> >     >       int input_pins, num_ins, num_outs;
-> >     >       int pin, ich, err;
-> >     > +     int desc_len =3D (int) ((unsigned long) state->buffer +
-> >     > +                     state->buflen - (unsigned long) raw_desc);
-> >     > +
-> >     > +     if (desc_len < sizeof(*desc) + desc->bNrInPins) {
-> >     > +             usb_audio_err(state->chip,
-> >     > +                           "descriptor %d too short\n",
-> >     > +                           unitid);
-> >     > +             return -EINVAL;
-> >     > +     }
-> >     >
-> >     >       err =3D uac_mixer_unit_get_channels(state, desc);
-> >     >       if (err < 0) {
-> >
-> >     Hm, what is the desc->bLength value in the error case?
-> >
-> >     Basically the buffer boundary is already checked against bLength in
-> >     snd_usb_find_desc() which is called from obtaining the raw_desc in
-> the
-> >     caller of this function (parse_audio_unit()).
-> >
-> >     So, if any, we need to check bLength for the possible overflow like
-> >     below.
-> >
-> >     thanks,
-> >
-> >     Takashi
-> >
-> >     --- a/sound/usb/mixer.c
-> >     +++ b/sound/usb/mixer.c
-> >     @@ -744,6 +744,8 @@ static int uac_mixer_unit_get_channels(struct
-> >     mixer_build *state,
-> >                     return -EINVAL;
-> >             if (!desc->bNrInPins)
-> >                     return -EINVAL;
-> >     +       if (desc->bLength < sizeof(*desc) + desc->bNrInPins)
-> >     +               return -EINVAL;
-> >
-> >             switch (state->mixer->protocol) {
-> >             case UAC_VERSION_1:
-> >
-> > --
-> > May the Lord Richly Bless you and yours !
-> >
-> >
->
 
 
---=20
-May the *Lord* Richly Bless you and yours !
+On 8/13/19 5:45 AM, Peter Ujfalusi wrote:
+> The pcm_mutex is used to prevent concurrent execution of snd_pcm_ops
+> callbacks. This works fine most of the cases but it can not handle setups
+> when the same DAI is used by different rtd, for example:
+> pcm3168a have two DAIs: one for Playback and one for Capture.
+> If the codec is connected to a single CPU DAI we need to have two dai_link
+> to support both playback and capture.
+> 
+> In this case the snd_pcm_ops callbacks can be executed in parallel causing
+> unexpected races in DAI drivers.
+> 
+> By moving the pcm_mutex up to card level this can be solved
+> while - hopefully - not breaking other setups.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi,
+> 
+> I have tested the patch on several boards. it fixes the issue with single card
+> with multiple dai_links where the CPU side (mcasp) is the same.
+> 
+> However I can not test with anything which use DPCM. It would be great if the
+> patch would gather few tested-by from folks having access to more complicated
+> setups.
 
---0000000000008b7f79059016947b
-Content-Type: text/x-patch; charset="US-ASCII";
-	name="0001-Fix-an-OOB-bug-in-parse_audio_mixer_unit.patch"
-Content-Disposition: attachment;
-	filename="0001-Fix-an-OOB-bug-in-parse_audio_mixer_unit.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jzbhs3jz0>
-X-Attachment-Id: f_jzbhs3jz0
+Actually you *can* test by submitting a PR for SOF, it'll trigger some 
+tests on Intel platforms using DPCM. It's not going to test anything 
+related to the compressed API but it's better than nothing.
 
-RnJvbSBkYTE3ZTJkYjA0ZDI5ZDM5ZjMyOTg3MzhiYWRkMDM2Y2YzZjI1NmQyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBIdWkgUGVuZyA8YmVucXVpa2VAZ21haWwuY29tPgpEYXRlOiBU
-dWUsIDEzIEF1ZyAyMDE5IDIyOjM0OjA0IC0wNDAwClN1YmplY3Q6IFtQQVRDSF0gRml4IGFuIE9P
-QiBidWcgaW4gcGFyc2VfYXVkaW9fbWl4ZXJfdW5pdAoKVGhlIGB1YWNfbWl4ZXJfdW5pdF9kZXNj
-cmlwdG9yYCBzaG93biBhcyBiZWxvdyBpcyByZWFkIGZyb20gdGhlCmRldmljZSBzaWRlLiBJbiBg
-cGFyc2VfYXVkaW9fbWl4ZXJfdW5pdGAsIGBiYVNvdXJjZUlEYCBmaWVsZCBpcwphY2Nlc3NlZCBm
-cm9tIGluZGV4IDAgdG8gYGJOckluUGluc2AgLSAxLCB0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlv
-bgphc3N1bWVzIHRoYXQgZGVzY3JpcHRvciBpcyBhbHdheXMgdmFsaWQgKHRoZSBsZW5ndGggIG9m
-IGRlc2NyaXB0b3IKaXMgbm8gc2hvcnRlciB0aGFuIDUgKyBgYk5ySW5QaW5zYCkuIElmIGEgZGVz
-Y3JpcHRvciByZWFkIGZyb20KdGhlIGRldmljZSBzaWRlIGlzIGludmFsaWQsIGl0IG1heSB0cmln
-Z2VyIG91dC1vZi1ib3VuZCBtZW1vcnkKYWNjZXNzLgoKYGBgCnN0cnVjdCB1YWNfbWl4ZXJfdW5p
-dF9kZXNjcmlwdG9yIHsKCV9fdTggYkxlbmd0aDsKCV9fdTggYkRlc2NyaXB0b3JUeXBlOwoJX191
-OCBiRGVzY3JpcHRvclN1YnR5cGU7CglfX3U4IGJVbml0SUQ7CglfX3U4IGJOckluUGluczsKCV9f
-dTggYmFTb3VyY2VJRFtdOwp9CmBgYAoKVGhpcyBwYXRjaCBmaXhlcyB0aGUgYnVnIGJ5IGFkZCBh
-IHNhbml0eSBjaGVjayBvbiB0aGUgbGVuZ3RoIG9mCnRoZSBkZXNjcmlwdG9yLgoKU2lnbmVkLW9m
-Zi1ieTogSHVpIFBlbmcgPGJlbnF1aWtlQGdtYWlsLmNvbT4KUmVwb3J0ZWQtYnk6IEh1aSBQZW5n
-IDxiZW5xdWlrZUBnbWFpbC5jb20+ClJlcG9ydGVkLWJ5OiBNYXRoaWFzIFBheWVyIDxtYXRoaWFz
-LnBheWVyQG5lYmVsd2VsdC5uZXQ+Ci0tLQogc291bmQvdXNiL21peGVyLmMgfCAyICsrCiAxIGZp
-bGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVy
-LmMgYi9zb3VuZC91c2IvbWl4ZXIuYwppbmRleCA3NDk4YjUxOTFiNjguLmVhNDg3Mzc4YmUxNyAx
-MDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVyLmMKKysrIGIvc291bmQvdXNiL21peGVyLmMKQEAg
-LTc0NCw2ICs3NDQsOCBAQCBzdGF0aWMgaW50IHVhY19taXhlcl91bml0X2dldF9jaGFubmVscyhz
-dHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0YXRlLAogCQlyZXR1cm4gLUVJTlZBTDsKIAlpZiAoIWRlc2Mt
-PmJOckluUGlucykKIAkJcmV0dXJuIC1FSU5WQUw7CisJaWYgKGRlc2MtPmJMZW5ndGggPCBzaXpl
-b2YoKmRlc2MpICsgZGVzYy0+Yk5ySW5QaW5zKQorCQlyZXR1cm4gLUVJTlZBTDsKIAogCXN3aXRj
-aCAoc3RhdGUtPm1peGVyLT5wcm90b2NvbCkgewogCWNhc2UgVUFDX1ZFUlNJT05fMToKLS0gCjIu
-MjIuMQoK
---0000000000008b7f79059016947b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I took this patch and created one PR as an example
+https://github.com/thesofproject/linux/pull/1132
+
+Will share results when I have them.
+-Pierre
 
 
---0000000000008b7f79059016947b--
+> 
+> The backround of this patch:
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-August/153864.html
+> 
+> Regards,
+> Peter
+> 
+>   include/sound/soc.h      |  6 +++--
+>   sound/soc/soc-compress.c | 48 ++++++++++++++++++++--------------------
+>   sound/soc/soc-core.c     |  2 +-
+>   sound/soc/soc-pcm.c      | 36 +++++++++++++++---------------
+>   4 files changed, 47 insertions(+), 45 deletions(-)
+> 
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index 6ac6481b4882..ec2dbe0ac2aa 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -990,6 +990,10 @@ struct snd_soc_card {
+>   	struct mutex mutex;
+>   	struct mutex dapm_mutex;
+>   
+> +	/* Mutex for PCM operations */
+> +	struct mutex pcm_mutex;
+> +	enum snd_soc_pcm_subclass pcm_subclass;
+> +
+>   	spinlock_t dpcm_lock;
+>   
+>   	bool instantiated;
+> @@ -1107,8 +1111,6 @@ struct snd_soc_pcm_runtime {
+>   	struct device *dev;
+>   	struct snd_soc_card *card;
+>   	struct snd_soc_dai_link *dai_link;
+> -	struct mutex pcm_mutex;
+> -	enum snd_soc_pcm_subclass pcm_subclass;
+>   	struct snd_pcm_ops ops;
+>   
+>   	unsigned int params_select; /* currently selected param for dai link */
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 289211069a1e..9e54d8ae6d2c 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -80,7 +80,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	int ret;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	if (cpu_dai->driver->cops && cpu_dai->driver->cops->startup) {
+>   		ret = cpu_dai->driver->cops->startup(cstream, cpu_dai);
+> @@ -108,7 +108,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+>   
+>   	snd_soc_runtime_activate(rtd, cstream->direction);
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   
+>   	return 0;
+>   
+> @@ -118,7 +118,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+>   	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
+>   		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
+>   out:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -224,7 +224,7 @@ static void close_delayed_work(struct work_struct *work)
+>   			container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
+>   	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	dev_dbg(rtd->dev,
+>   		"Compress ASoC: pop wq checking: %s status: %s waiting: %s\n",
+> @@ -239,7 +239,7 @@ static void close_delayed_work(struct work_struct *work)
+>   					  SND_SOC_DAPM_STREAM_STOP);
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   }
+>   
+>   static int soc_compr_free(struct snd_compr_stream *cstream)
+> @@ -249,7 +249,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+>   	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>   	int stream;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	if (cstream->direction == SND_COMPRESS_PLAYBACK)
+>   		stream = SNDRV_PCM_STREAM_PLAYBACK;
+> @@ -292,7 +292,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+>   					  SND_SOC_DAPM_STREAM_STOP);
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return 0;
+>   }
+>   
+> @@ -375,7 +375,7 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	int ret;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	ret = soc_compr_components_trigger(cstream, cmd);
+>   	if (ret < 0)
+> @@ -394,7 +394,7 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+>   	}
+>   
+>   out:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -480,7 +480,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	int ret;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	/*
+>   	 * First we call set_params for the CPU DAI, then the component
+> @@ -514,14 +514,14 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+>   
+>   	/* cancel any delayed stream shutdown that is pending */
+>   	rtd->pop_wait = 0;
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   
+>   	cancel_delayed_work_sync(&rtd->delayed_work);
+>   
+>   	return 0;
+>   
+>   err:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -593,7 +593,7 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	int ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	if (cpu_dai->driver->cops && cpu_dai->driver->cops->get_params) {
+>   		ret = cpu_dai->driver->cops->get_params(cstream, params, cpu_dai);
+> @@ -613,7 +613,7 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+>   	}
+>   
+>   err:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -625,7 +625,7 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+>   	struct snd_soc_rtdcom_list *rtdcom;
+>   	int ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		component = rtdcom->component;
+> @@ -638,7 +638,7 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+>   		break;
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -650,7 +650,7 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+>   	struct snd_soc_rtdcom_list *rtdcom;
+>   	int ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		component = rtdcom->component;
+> @@ -664,7 +664,7 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+>   		break;
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -676,7 +676,7 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	int ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	if (cpu_dai->driver->cops && cpu_dai->driver->cops->ack) {
+>   		ret = cpu_dai->driver->cops->ack(cstream, bytes, cpu_dai);
+> @@ -697,7 +697,7 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+>   	}
+>   
+>   err:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -710,7 +710,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+>   	int ret = 0;
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	if (cpu_dai->driver->cops && cpu_dai->driver->cops->pointer)
+>   		cpu_dai->driver->cops->pointer(cstream, tstamp, cpu_dai);
+> @@ -726,7 +726,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+>   		break;
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -738,7 +738,7 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+>   	struct snd_soc_rtdcom_list *rtdcom;
+>   	int ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		component = rtdcom->component;
+> @@ -751,7 +751,7 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+>   		break;
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index bb1e9e2c4ff4..7f2064889a23 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1344,7 +1344,6 @@ static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
+>   	rtd->dev->groups = soc_dev_attr_groups;
+>   	dev_set_name(rtd->dev, "%s", name);
+>   	dev_set_drvdata(rtd->dev, rtd);
+> -	mutex_init(&rtd->pcm_mutex);
+>   	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
+>   	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
+>   	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
+> @@ -2395,6 +2394,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
+>   	card->instantiated = 0;
+>   	mutex_init(&card->mutex);
+>   	mutex_init(&card->dapm_mutex);
+> +	mutex_init(&card->pcm_mutex);
+>   	spin_lock_init(&card->dpcm_lock);
+>   
+>   	return snd_soc_bind_card(card);
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 77c986fe08d0..93bb4a347779 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -36,7 +36,7 @@
+>    * Increments the active count for all the DAIs and components attached to a PCM
+>    * runtime. Should typically be called when a stream is opened.
+>    *
+> - * Must be called with the rtd->pcm_mutex being held
+> + * Must be called with the rtd->card->pcm_mutex being held
+>    */
+>   void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+>   {
+> @@ -44,7 +44,7 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+>   	struct snd_soc_dai *codec_dai;
+>   	int i;
+>   
+> -	lockdep_assert_held(&rtd->pcm_mutex);
+> +	lockdep_assert_held(&rtd->card->pcm_mutex);
+>   
+>   	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>   		cpu_dai->playback_active++;
+> @@ -72,7 +72,7 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
+>    * Decrements the active count for all the DAIs and components attached to a PCM
+>    * runtime. Should typically be called when a stream is closed.
+>    *
+> - * Must be called with the rtd->pcm_mutex being held
+> + * Must be called with the rtd->card->pcm_mutex being held
+>    */
+>   void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
+>   {
+> @@ -80,7 +80,7 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
+>   	struct snd_soc_dai *codec_dai;
+>   	int i;
+>   
+> -	lockdep_assert_held(&rtd->pcm_mutex);
+> +	lockdep_assert_held(&rtd->card->pcm_mutex);
+>   
+>   	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>   		cpu_dai->playback_active--;
+> @@ -506,7 +506,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+>   		pm_runtime_get_sync(component->dev);
+>   	}
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	/* startup the audio subsystem */
+>   	ret = snd_soc_dai_startup(cpu_dai, substream);
+> @@ -604,7 +604,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+>   
+>   	snd_soc_runtime_activate(rtd, substream->stream);
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return 0;
+>   
+>   config_err:
+> @@ -623,7 +623,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+>   
+>   	snd_soc_dai_shutdown(cpu_dai, substream);
+>   out:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		component = rtdcom->component;
+> @@ -653,7 +653,7 @@ static void close_delayed_work(struct work_struct *work)
+>   			container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
+>   	struct snd_soc_dai *codec_dai = rtd->codec_dais[0];
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	dev_dbg(rtd->dev, "ASoC: pop wq checking: %s status: %s waiting: %s\n",
+>   		 codec_dai->driver->playback.stream_name,
+> @@ -667,7 +667,7 @@ static void close_delayed_work(struct work_struct *work)
+>   					  SND_SOC_DAPM_STREAM_STOP);
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   }
+>   
+>   static void codec2codec_close_delayed_work(struct work_struct *work)
+> @@ -694,7 +694,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+>   	struct snd_soc_dai *codec_dai;
+>   	int i;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	snd_soc_runtime_deactivate(rtd, substream->stream);
+>   
+> @@ -738,7 +738,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+>   					  SND_SOC_DAPM_STREAM_STOP);
+>   	}
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		component = rtdcom->component;
+> @@ -771,7 +771,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+>   	struct snd_soc_dai *codec_dai;
+>   	int i, ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	if (rtd->dai_link->ops->prepare) {
+>   		ret = rtd->dai_link->ops->prepare(substream);
+> @@ -826,7 +826,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+>   	snd_soc_dai_digital_mute(cpu_dai, 0, substream->stream);
+>   
+>   out:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -876,7 +876,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+>   	struct snd_soc_dai *codec_dai;
+>   	int i, ret = 0;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   	if (rtd->dai_link->ops->hw_params) {
+>   		ret = rtd->dai_link->ops->hw_params(substream, params);
+>   		if (ret < 0) {
+> @@ -962,7 +962,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+>           if (ret)
+>   		goto component_err;
+>   out:
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   
+>   component_err:
+> @@ -986,7 +986,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+>   	if (rtd->dai_link->ops->hw_free)
+>   		rtd->dai_link->ops->hw_free(substream);
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return ret;
+>   }
+>   
+> @@ -1001,7 +1001,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+>   	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+>   	int i;
+>   
+> -	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+>   
+>   	/* clear the corresponding DAIs parameters when going to be inactive */
+>   	if (cpu_dai->active == 1) {
+> @@ -1043,7 +1043,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+>   
+>   	snd_soc_dai_hw_free(cpu_dai, substream);
+>   
+> -	mutex_unlock(&rtd->pcm_mutex);
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+>   	return 0;
+>   }
+>   
+> 
