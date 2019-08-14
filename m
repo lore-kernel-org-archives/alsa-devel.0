@@ -1,17 +1,17 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 02/15] ASoC: sun4i-i2s: Add set_tdm_slot functionality
-Date: Wed, 14 Aug 2019 10:30:11 +0100
-Message-ID: <20190814093011.GD4640@sirena.co.uk>
+Subject: Re: [PATCH v5 03/15] ASoC: sun4i-i2s: Correct divider calculations
+Date: Wed, 14 Aug 2019 10:31:17 +0100
+Message-ID: <20190814093117.GE4640@sirena.co.uk>
 References: <20190814060854.26345-1-codekipper@gmail.com>
- <20190814060854.26345-3-codekipper@gmail.com>
+ <20190814060854.26345-4-codekipper@gmail.com>
 Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBJNJZ7VAKGQE5BO6OUY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="uCPdOCrL+PnN2Vxy"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBZ5JZ7VAKGQE73F6SBI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20190814060854.26345-3-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <20190814060854.26345-4-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -23,40 +23,23 @@ Cc: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2F
 List-Id: alsa-devel@alsa-project.org
 
 
---/3yNEOqWowh/8j+e
+--uCPdOCrL+PnN2Vxy
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
-On Wed, Aug 14, 2019 at 08:08:41AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> 
-> Codecs without a control connection such as i2s based HDMI audio and
-> the Pine64 DAC require a different amount of bit clocks per frame than
+On Wed, Aug 14, 2019 at 08:08:42AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
 
-This isn't a universal property of CODECs without a control, and it's
-something that CODECs with control can require too.
+> +	if (i2s->variant->has_fmt_set_lrck_period)
+> +		bclk_div = sun4i_i2s_get_bclk_div(i2s, clk_rate / rate,
+> +						  word_size,
+> +						  sun8i_i2s_clk_div,
+> +						  ARRAY_SIZE(sun8i_i2s_clk_div));
+> +	else
+> +		bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
+> +						  word_size,
+> +						  sun4i_i2s_bclk_div,
+> +						  ARRAY_SIZE(sun4i_i2s_bclk_div));
 
->  	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
-> -				      params_width(params));
-> +				      i2s->tdm_slots ?
-> +				      i2s->slot_width : params_width(params));
-
-Please write normal conditional statements unless there's a strong
-reason to do otherwise, it makes things more legible.
-
-> +static int sun4i_i2s_set_dai_tdm_slot(struct snd_soc_dai *dai,
-> +				      unsigned int tx_mask,
-> +				      unsigned int rx_mask,
-> +				      int slots, int width)
-> +{
-> +	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> +
-> +	i2s->tdm_slots = slots;
-> +
-> +	i2s->slot_width = width;
-> +
-> +	return 0;
-> +}
-
-No validation of the parameters here?
---/3yNEOqWowh/8j+e--
+Are we sure there'll never be any new variants which would make a switch
+statement for the variant work better?
+--uCPdOCrL+PnN2Vxy--
