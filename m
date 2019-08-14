@@ -1,13 +1,13 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v5 06/15] ASoC: sun4i-i2s: Add functions for RX
- and TX channel enables
-Date: Wed, 14 Aug 2019 08:08:45 +0200
-Message-ID: <20190814060854.26345-7-codekipper@gmail.com>
+Subject: [PATCH v5 05/15] ASoC: sun4i-i2s: Add functions for RX
+ and TX channel offsets
+Date: Wed, 14 Aug 2019 08:08:44 +0200
+Message-ID: <20190814060854.26345-6-codekipper@gmail.com>
 References: <20190814060854.26345-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBBOLZ3VAKGQEHNREJUA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBA6LZ3VAKGQEYFJJ6CI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20190814060854.26345-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -22,77 +22,69 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Newer SoCs like the H6 have the channel enable bits in a different
+Newer SoCs like the H6 have the channel offset bits in a different
 position to what is on the H3. As we will eventually add multi-
 channel support then create function calls as opposed to regmap
 fields to add support for different devices.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 4a748747ccd7..ad2ff83deeb7 100644
+index 3553c17318b0..4a748747ccd7 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -172,6 +172,8 @@ struct sun4i_i2s_quirks {
+@@ -112,7 +112,7 @@
+ #define SUN8I_I2S_TX_CHAN_MAP_REG	0x44
+ #define SUN8I_I2S_TX_CHAN_SEL_REG	0x34
+ #define SUN8I_I2S_TX_CHAN_OFFSET_MASK		GENMASK(13, 12)
+-#define SUN8I_I2S_TX_CHAN_OFFSET(offset)	(offset << 12)
++#define SUN8I_I2S_TX_CHAN_OFFSET(offset)	((offset) << 12)
+ #define SUN8I_I2S_TX_CHAN_EN_MASK		GENMASK(11, 4)
+ #define SUN8I_I2S_TX_CHAN_EN(num_chan)		(((1 << num_chan) - 1) << 4)
+ 
+@@ -170,6 +170,8 @@ struct sun4i_i2s_quirks {
+ 	s8	(*get_sr)(const struct sun4i_i2s *, int);
+ 	s8	(*get_wss)(const struct sun4i_i2s *, int);
  	int	(*set_format)(struct sun4i_i2s *, unsigned int);
- 	void	(*set_txchanoffset)(const struct sun4i_i2s *, int);
- 	void	(*set_rxchanoffset)(const struct sun4i_i2s *);
-+	void	(*set_txchanen)(const struct sun4i_i2s *, int, int);
-+	void	(*set_rxchanen)(const struct sun4i_i2s *, int);
++	void	(*set_txchanoffset)(const struct sun4i_i2s *, int);
++	void	(*set_rxchanoffset)(const struct sun4i_i2s *);
  };
  
  struct sun4i_i2s {
-@@ -444,6 +446,25 @@ static void sun8i_i2s_set_rxchanoffset(const struct sun4i_i2s *i2s)
- 			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
+@@ -424,6 +426,24 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
+ 	return (width - 8) / 4 + 1;
  }
  
-+static void sun8i_i2s_set_txchanen(const struct sun4i_i2s *i2s, int output,
-+				   int channel)
++static void sun8i_i2s_set_txchanoffset(const struct sun4i_i2s *i2s, int output)
 +{
 +	if (output >= 0 && output < 4) {
 +		regmap_update_bits(i2s->regmap,
 +				   SUN8I_I2S_TX_CHAN_SEL_REG + (output * 4),
-+				   SUN8I_I2S_TX_CHAN_EN_MASK,
-+				   SUN8I_I2S_TX_CHAN_EN(channel));
++				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
++				   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
 +	}
 +}
 +
-+static void sun8i_i2s_set_rxchanen(const struct sun4i_i2s *i2s, int channel)
++static void sun8i_i2s_set_rxchanoffset(const struct sun4i_i2s *i2s)
 +{
 +	regmap_update_bits(i2s->regmap,
 +			   SUN8I_I2S_RX_CHAN_SEL_REG,
-+			   SUN8I_I2S_TX_CHAN_EN_MASK,
-+			   SUN8I_I2S_TX_CHAN_EN(channel));
++			   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
++			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
 +}
 +
  static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_pcm_hw_params *params,
  			       struct snd_soc_dai *dai)
-@@ -479,10 +500,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	regmap_field_write(i2s->field_rxchansel,
- 			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
- 
--	if (i2s->variant->has_chsel_tx_chen)
--		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
--				   SUN8I_I2S_TX_CHAN_EN_MASK,
--				   SUN8I_I2S_TX_CHAN_EN(channels));
-+	if (i2s->variant->set_txchanen)
-+		i2s->variant->set_txchanen(i2s, 0, channels);
-+
-+	if (i2s->variant->set_rxchanen)
-+		i2s->variant->set_rxchanen(i2s, channels);
- 
- 	switch (params_physical_width(params)) {
- 	case 16:
-@@ -1098,6 +1120,8 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+@@ -1076,6 +1096,8 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.get_sr			= sun8i_i2s_get_sr_wss,
+ 	.get_wss		= sun8i_i2s_get_sr_wss,
  	.set_format		= sun8i_i2s_set_format,
- 	.set_txchanoffset	= sun8i_i2s_set_txchanoffset,
- 	.set_rxchanoffset	= sun8i_i2s_set_rxchanoffset,
-+	.set_txchanen		= sun8i_i2s_set_txchanen,
-+	.set_rxchanen		= sun8i_i2s_set_rxchanen,
++	.set_txchanoffset	= sun8i_i2s_set_txchanoffset,
++	.set_rxchanoffset	= sun8i_i2s_set_rxchanoffset,
  };
  
  static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
