@@ -1,130 +1,67 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 14/15] ASoc: sun4i-i2s: Add 20, 24 and 32
- bit support
-Date: Wed, 14 Aug 2019 11:03:39 +0200
-Message-ID: <CAEKpxBmsLKt_mKFC3=wR9n+hK9njhh7drLV2EMrzKahv=s4dTw@mail.gmail.com>
-References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-15-codekipper@gmail.com>
- <4297791.2mJM636zur@jernej-laptop>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
+ snd_soc_dai_get_sdw_stream()
+Date: Wed, 14 Aug 2019 10:08:56 +0100
+Message-ID: <20190814090856.GA4640@sirena.co.uk>
+References: <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
+ <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
+ <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
+ <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
+ <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
+ <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
+ <20190813191827.GI5093@sirena.co.uk>
+ <cc360858-571a-6a46-1789-1020bcbe4bca@linux.intel.com>
+ <20190813195804.GL5093@sirena.co.uk>
+ <20190814041142.GU12733@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBB544Z7VAKGQEJZ6VKNY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <4297791.2mJM636zur@jernej-laptop>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190814041142.GU12733@vkoul-mobl.Dlink>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Aug 2019 at 10:28, Jernej =C5=A0krabec <jernej.skrabec-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org=
-> wrote:
->
-> Hi!
->
-> Dne sreda, 14. avgust 2019 ob 08:08:53 CEST je codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-> napisal(a):
-> > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> >
-> > Extend the functionality of the driver to include support of 20 and
-> > 24 bits per sample for the earlier SoCs.
-> >
-> > Newer SoCs can also handle 32bit samples.
-> >
-> > Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> > ---
-> >  sound/soc/sunxi/sun4i-i2s.c | 21 +++++++++++++++++++--
-> >  1 file changed, 19 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > index a71969167053..d3c8789f70bb 100644
-> > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > @@ -690,6 +690,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_subs=
-tream
-> > *substream, case 16:
-> >               width =3D DMA_SLAVE_BUSWIDTH_2_BYTES;
-> >               break;
-> > +     case 20:
-> > +     case 24:
-> > +     case 32:
->
-> params_physical_width() returns 32 also for 20 and 24-bit formats, so dro=
-p 20
-> and 24.
-ACK
->
-> Best regards,
-> Jernej
->
-> > +             width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-> > +             break;
-> >       default:
-> >               dev_err(dai->dev, "Unsupported physical sample width:
-> %d\n",
-> >                       params_physical_width(params));
-> > @@ -1015,6 +1020,13 @@ static int sun4i_i2s_dai_probe(struct snd_soc_da=
-i
-> > *dai) return 0;
-> >  }
-> >
-> > +#define SUN4I_FORMATS        (SNDRV_PCM_FMTBIT_S16_LE | \
-> > +                      SNDRV_PCM_FMTBIT_S20_LE | \
-> > +                      SNDRV_PCM_FMTBIT_S24_LE)
-> > +
-> > +#define SUN8I_FORMATS        (SUN4I_FORMATS | \
-> > +                      SNDRV_PCM_FMTBIT_S32_LE)
-> > +
-> >  static struct snd_soc_dai_driver sun4i_i2s_dai =3D {
-> >       .probe =3D sun4i_i2s_dai_probe,
-> >       .capture =3D {
-> > @@ -1022,14 +1034,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai =
-=3D {
-> >               .channels_min =3D 2,
-> >               .channels_max =3D 2,
-> >               .rates =3D SNDRV_PCM_RATE_8000_192000,
-> > -             .formats =3D SNDRV_PCM_FMTBIT_S16_LE,
-> > +             .formats =3D SUN4I_FORMATS,
-> >       },
-> >       .playback =3D {
-> >               .stream_name =3D "Playback",
-> >               .channels_min =3D 2,
-> >               .channels_max =3D 2,
-> >               .rates =3D SNDRV_PCM_RATE_8000_192000,
-> > -             .formats =3D SNDRV_PCM_FMTBIT_S16_LE,
-> > +             .formats =3D SUN4I_FORMATS,
-> >       },
-> >       .ops =3D &sun4i_i2s_dai_ops,
-> >       .symmetric_rates =3D 1,
-> > @@ -1505,6 +1517,11 @@ static int sun4i_i2s_probe(struct platform_devic=
-e
-> > *pdev) goto err_pm_disable;
-> >       }
-> >
-> > +     if (i2s->variant->has_fmt_set_lrck_period) {
-> > +             soc_dai->playback.formats =3D SUN8I_FORMATS;
-> > +             soc_dai->capture.formats =3D SUN8I_FORMATS;
-> > +     }
-> > +
-> >       if (!of_property_read_u32(pdev->dev.of_node,
-> >                                 "allwinner,playback-channels",
-> &val)) {
-> >               if (val >=3D 2 && val <=3D 8)
->
->
->
->
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-To view this discussion on the web, visit https://groups.google.com/d/msgid=
-/linux-sunxi/CAEKpxBmsLKt_mKFC3%3DwR9n%2BhK9njhh7drLV2EMrzKahv%3Ds4dTw%40ma=
-il.gmail.com.
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 14, 2019 at 09:41:42AM +0530, Vinod Koul wrote:
+> On 13-08-19, 20:58, Mark Brown wrote:
+
+> > There is something to be said for not abusing the TDM slot API if it can
+> > make things clearer by using bus-idiomatic mechanisms, but it does mean
+> > everything needs to know about each individual bus :/ .
+
+> Here ASoC doesn't need to know about sdw bus. As Srini explained, this
+> helps in the case for him to get the stream context and set the stream
+> context from the machine driver.
+
+Other drivers interoperating with the Soundwire DAI might want to do
+something, it looks like that's the case for SOF.
+
+> Nothing else is expected to be done from this API. We already do a set
+> using snd_soc_dai_set_sdw_stream(). Here we add the snd_soc_dai_get_sdw_stream() to query
+
+Well, if the API is not expected to do anything we can optimize it and
+just remove it!
+
+--SUOF0GtieIMvvwua
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1Tz6UACgkQJNaLcl1U
+h9B7fgf+PvYlFGtuBj37wZOpu/dVlS5vmQbNkNVdhUbDbjO5oYTemRTIB5PukA4R
+tO6idhVUsIlMWCvN6MZKJXPGgZfB7Heu84YAn3GvBmIFmY3J4c3QwsD1pIf1gmGH
+X+xV//bbiewRLrA7LvbQalQanUpCVVlCrjsJ8FeDg+PFs4wPO9gE2N7pevVhzknu
+tIaB6HO88+eAx0FfUUvXjWKo5qov/1LjhsI8Z2DJuKfpi9zfBatUz+/Q75d2WEJS
+0G8ATi/5aZueU+YB1T6xdQtkS/lPIFRYN7dyMZrLyidtwkttiii8UzStBh64F6QO
+MSoasP9IToaTUPdzqxcH3bIYBg2R3Q==
+=pxWA
+-----END PGP SIGNATURE-----
+
+--SUOF0GtieIMvvwua--
