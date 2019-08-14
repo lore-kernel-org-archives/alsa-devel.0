@@ -1,13 +1,13 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v5 01/15] ASoC: sun4i-i2s: Add regmap field to
- sign extend sample
-Date: Wed, 14 Aug 2019 08:08:40 +0200
-Message-ID: <20190814060854.26345-2-codekipper@gmail.com>
+Subject: [PATCH v5 04/15] ASoC: sun4i-i2s: Support more formats
+ on newer SoCs
+Date: Wed, 14 Aug 2019 08:08:43 +0200
+Message-ID: <20190814060854.26345-5-codekipper@gmail.com>
 References: <20190814060854.26345-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBB66KZ3VAKGQEIEKIVXI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBAWLZ3VAKGQE3WZ4MMI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20190814060854.26345-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -22,103 +22,196 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On the newer SoCs such as the H3 and A64 this is set by default
-to transfer a 0 after each sample in each slot. However the A10
-and A20 SoCs that this driver was developed on had a default
-setting where it padded the audio gain with zeros.
-
-This isn't a problem whilst we have only support for 16bit audio
-but with larger sample resolution rates in the pipeline then SEXT
-bits should be cleared so that they also pad at the LSB. Without
-this the audio gets distorted.
+There is a need to support more formats on the newer SoCs(H3 and later).
+Extend the formats supported to include DSP_A and DSP_B modes.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 87 +++++++++++++++++++++++++++----------
+ 1 file changed, 63 insertions(+), 24 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 793457394efe..8201334a059b 100644
+index 34f31439ae7b..3553c17318b0 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -135,6 +135,7 @@ struct sun4i_i2s;
-  * @field_fmt_bclk: regmap field to set clk polarity.
-  * @field_fmt_lrclk: regmap field to set frame polarity.
-  * @field_fmt_mode: regmap field to set the operational mode.
-+ * @field_fmt_sext: regmap field to set the sign extension.
-  * @field_txchanmap: location of the tx channel mapping register.
-  * @field_rxchanmap: location of the rx channel mapping register.
-  * @field_txchansel: location of the tx channel select bit fields.
-@@ -159,6 +160,7 @@ struct sun4i_i2s_quirks {
- 	struct reg_field		field_fmt_bclk;
- 	struct reg_field		field_fmt_lrclk;
- 	struct reg_field		field_fmt_mode;
-+	struct reg_field		field_fmt_sext;
- 	struct reg_field		field_txchanmap;
- 	struct reg_field		field_rxchanmap;
- 	struct reg_field		field_txchansel;
-@@ -186,6 +188,7 @@ struct sun4i_i2s {
- 	struct regmap_field	*field_fmt_bclk;
- 	struct regmap_field	*field_fmt_lrclk;
- 	struct regmap_field	*field_fmt_mode;
-+	struct regmap_field	*field_fmt_sext;
- 	struct regmap_field	*field_txchanmap;
- 	struct regmap_field	*field_rxchanmap;
- 	struct regmap_field	*field_txchansel;
-@@ -345,6 +348,9 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
- 				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
+@@ -27,6 +27,8 @@
+ #define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
+ #define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
+ #define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
++#define SUN4I_I2S_CTRL_PCM			BIT(4)
++#define SUN4I_I2S_CTRL_LOOP			BIT(3)
+ #define SUN4I_I2S_CTRL_TX_EN			BIT(2)
+ #define SUN4I_I2S_CTRL_RX_EN			BIT(1)
+ #define SUN4I_I2S_CTRL_GL_EN			BIT(0)
+@@ -91,6 +93,9 @@
+ /* Defines required for sun8i-h3 support */
+ #define SUN8I_I2S_CTRL_BCLK_OUT			BIT(18)
+ #define SUN8I_I2S_CTRL_LRCK_OUT			BIT(17)
++#define SUN8I_I2S_CTRL_MODE_RIGHT_J			(2 << 0)
++#define SUN8I_I2S_CTRL_MODE_I2S_LEFT_J			(1 << 0)
++#define SUN8I_I2S_CTRL_MODE_PCM				(0 << 0)
  
-+	/* Set sign extension to pad out LSB with 0 */
-+	regmap_field_write(i2s->field_fmt_sext, 0);
-+
- 	return 0;
+ #define SUN8I_I2S_FMT0_LRCK_PERIOD_MASK		GENMASK(17, 8)
+ #define SUN8I_I2S_FMT0_LRCK_PERIOD(period)	((period - 1) << 8)
+@@ -164,6 +169,7 @@ struct sun4i_i2s_quirks {
+ 
+ 	s8	(*get_sr)(const struct sun4i_i2s *, int);
+ 	s8	(*get_wss)(const struct sun4i_i2s *, int);
++	int	(*set_format)(struct sun4i_i2s *, unsigned int);
+ };
+ 
+ struct sun4i_i2s {
+@@ -194,6 +200,7 @@ struct sun4i_i2s {
+ 
+ 	unsigned int	tdm_slots;
+ 	unsigned int	slot_width;
++	unsigned int	offset;
+ };
+ 
+ struct sun4i_i2s_clk_div {
+@@ -484,19 +491,14 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				      i2s->slot_width : params_width(params));
  }
  
-@@ -917,6 +923,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.has_slave_select_bit	= true,
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -936,6 +943,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.has_slave_select_bit	= true,
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -979,6 +987,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_CTRL_REG, 4, 5),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 4, 5),
- 	.field_txchanmap	= REG_FIELD(SUN8I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN8I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN8I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -998,6 +1007,7 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_fmt_sext		= REG_FIELD(SUN4I_I2S_FMT1_REG, 8, 8),
- 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
- 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
- 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -1045,6 +1055,12 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
- 	if (IS_ERR(i2s->field_fmt_mode))
- 		return PTR_ERR(i2s->field_fmt_mode);
+-static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++static int sun4i_i2s_set_format(struct sun4i_i2s *i2s, unsigned int fmt)
+ {
+-	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	u32 val;
+-	u32 offset = 0;
+-	u32 bclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
+-	u32 lrclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
  
-+	i2s->field_fmt_sext =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_fmt_sext);
-+	if (IS_ERR(i2s->field_fmt_sext))
-+		return PTR_ERR(i2s->field_fmt_sext);
+ 	/* DAI Mode */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		val = SUN4I_I2S_FMT0_FMT_I2S;
+-		offset = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 		val = SUN4I_I2S_FMT0_FMT_LEFT_J;
+@@ -505,32 +507,64 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
+ 		break;
+ 	default:
+-		dev_err(dai->dev, "Unsupported format: %d\n",
+-			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (i2s->variant->has_chsel_offset) {
+-		/*
+-		 * offset being set indicates that we're connected to an i2s
+-		 * device, however offset is only used on the sun8i block and
+-		 * i2s shares the same setting with the LJ format. Increment
+-		 * val so that the bit to value to write is correct.
+-		 */
+-		if (offset > 0)
+-			val++;
+-		/* blck offset determines whether i2s or LJ */
+-		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+-				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
+-				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
++	regmap_field_write(i2s->field_fmt_mode, val);
 +
- 	i2s->field_txchanmap =
- 			devm_regmap_field_alloc(dev, i2s->regmap,
- 						i2s->variant->field_txchanmap);
++	return 0;
++}
++
++static int sun8i_i2s_set_format(struct sun4i_i2s *i2s, unsigned int fmt)
++{
++	u32 val;
+ 
+-		regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
+-				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
+-				   SUN8I_I2S_TX_CHAN_OFFSET(offset));
++	/* DAI Mode */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		i2s->offset = 1;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val = SUN8I_I2S_CTRL_MODE_I2S_LEFT_J;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val = SUN8I_I2S_CTRL_MODE_RIGHT_J;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		i2s->offset = 1;
++	case SND_SOC_DAIFMT_DSP_B:
++		val = SUN8I_I2S_CTRL_MODE_PCM;
++		break;
++
++	default:
++		return -EINVAL;
+ 	}
+ 
++	/*
++	 * bclk offset determines whether i2s or LJ if in i2s mode and
++	 * DSP_A or DSP_B if in PCM mode.
++	 */
++	i2s->variant->set_txchanoffset(i2s, 0);
++	i2s->variant->set_rxchanoffset(i2s);
++
+ 	regmap_field_write(i2s->field_fmt_mode, val);
+ 
++	return 0;
++}
++
++static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	u32 val;
++	u32 bclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
++	u32 lrclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
++
++	/* Set DAI Mode */
++	if (i2s->variant->set_format(i2s, fmt) != 0) {
++		dev_err(dai->dev, "Unsupported format: %d\n",
++			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
++		return -EINVAL;
++	}
++
+ 	/* DAI clock polarity */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_IB_IF:
+@@ -976,6 +1010,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ 	.get_sr			= sun4i_i2s_get_sr,
+ 	.get_wss		= sun4i_i2s_get_wss,
++	.set_format		= sun4i_i2s_set_format,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+@@ -996,6 +1031,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ 	.get_sr			= sun4i_i2s_get_sr,
+ 	.get_wss		= sun4i_i2s_get_wss,
++	.set_format		= sun4i_i2s_set_format,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+@@ -1015,6 +1051,7 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+ 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ 	.get_sr			= sun8i_i2s_get_sr_wss,
+ 	.get_wss		= sun8i_i2s_get_sr_wss,
++	.set_format		= sun4i_i2s_set_format,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+@@ -1038,6 +1075,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.field_rxchansel	= REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ 	.get_sr			= sun8i_i2s_get_sr_wss,
+ 	.get_wss		= sun8i_i2s_get_sr_wss,
++	.set_format		= sun8i_i2s_set_format,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
+@@ -1058,6 +1096,7 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
+ 	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ 	.get_sr			= sun4i_i2s_get_sr,
+ 	.get_wss		= sun4i_i2s_get_wss,
++	.set_format		= sun4i_i2s_set_format,
+ };
+ 
+ static int sun4i_i2s_init_regmap_fields(struct device *dev,
 -- 
 2.22.0
