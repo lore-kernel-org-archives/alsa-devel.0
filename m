@@ -1,67 +1,117 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
- snd_soc_dai_get_sdw_stream()
-Date: Wed, 14 Aug 2019 10:08:56 +0100
-Message-ID: <20190814090856.GA4640@sirena.co.uk>
-References: <20190813083550.5877-4-srinivas.kandagatla@linaro.org>
- <ba88e0f9-ae7d-c26e-d2dc-83bf910c2c01@linux.intel.com>
- <c2eecd44-f06a-7287-2862-0382bf697f8d@linaro.org>
- <d2b7773b-d52a-7769-aa5b-ef8c8845d447@linux.intel.com>
- <d7c1fdb2-602f-ecb1-9b32-91b893e7f408@linaro.org>
- <f0228cb4-0a6f-17f3-fe03-9be7f5f2e59d@linux.intel.com>
- <20190813191827.GI5093@sirena.co.uk>
- <cc360858-571a-6a46-1789-1020bcbe4bca@linux.intel.com>
- <20190813195804.GL5093@sirena.co.uk>
- <20190814041142.GU12733@vkoul-mobl.Dlink>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] Fix an OOB bug in parse_audio_mixer_unit
+Date: Wed, 14 Aug 2019 12:09:21 +0300
+Message-ID: <20190814090921.GO1935@kadam>
+References: <20190814023625.21683-1-benquike@gmail.com>
+ <s5hzhkcb6dh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C416F803F4
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2019 11:09:44 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20190814041142.GU12733@vkoul-mobl.Dlink>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, spapothi@codeaurora.org
+In-Reply-To: <s5hzhkcb6dh.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mathias Payer <mathias.payer@nebelwelt.net>, security@kernel.org, Wenwen Wang <wang6495@umn.edu>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, Hui Peng <benquike@gmail.com>, Allison Randal <allison@lohutok.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Aug 14, 2019 at 08:36:42AM +0200, Takashi Iwai wrote:
+> On Wed, 14 Aug 2019 04:36:24 +0200,
+> Hui Peng wrote:
+> > 
+> > The `uac_mixer_unit_descriptor` shown as below is read from the
+> > device side. In `parse_audio_mixer_unit`, `baSourceID` field is
+> > accessed from index 0 to `bNrInPins` - 1, the current implementation
+> > assumes that descriptor is always valid (the length  of descriptor
+> > is no shorter than 5 + `bNrInPins`). If a descriptor read from
+> > the device side is invalid, it may trigger out-of-bound memory
+> > access.
+> > 
+> > ```
+> > struct uac_mixer_unit_descriptor {
+> > 	__u8 bLength;
+> > 	__u8 bDescriptorType;
+> > 	__u8 bDescriptorSubtype;
+> > 	__u8 bUnitID;
+> > 	__u8 bNrInPins;
+> > 	__u8 baSourceID[];
+> > }
+> > ```
+> > 
+> > This patch fixes the bug by add a sanity check on the length of
+> > the descriptor.
+> > 
+> > Signed-off-by: Hui Peng <benquike@gmail.com>
+> > Reported-by: Hui Peng <benquike@gmail.com>
+> > Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+> > ---
+> >  sound/usb/mixer.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> > index 7498b5191b68..38202ce67237 100644
+> > --- a/sound/usb/mixer.c
+> > +++ b/sound/usb/mixer.c
+> > @@ -2091,6 +2091,15 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
+> >  	struct usb_audio_term iterm;
+> >  	int input_pins, num_ins, num_outs;
+> >  	int pin, ich, err;
+> > +	int desc_len = (int) ((unsigned long) state->buffer +
+> > +			state->buflen - (unsigned long) raw_desc);
+> > +
+> > +	if (desc_len < sizeof(*desc) + desc->bNrInPins) {
+> > +		usb_audio_err(state->chip,
+> > +			      "descriptor %d too short\n",
+> > +			      unitid);
+> > +		return -EINVAL;
+> > +	}
+> >  
+> >  	err = uac_mixer_unit_get_channels(state, desc);
+> >  	if (err < 0) {
+> 
+> Hm, what is the desc->bLength value in the error case?
+> 
+> Basically the buffer boundary is already checked against bLength in
+> snd_usb_find_desc() which is called from obtaining the raw_desc in the
+> caller of this function (parse_audio_unit()).
+> 
+> So, if any, we need to check bLength for the possible overflow like
+> below.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -744,6 +744,8 @@ static int uac_mixer_unit_get_channels(struct mixer_build *state,
+>  		return -EINVAL;
+>  	if (!desc->bNrInPins)
+>  		return -EINVAL;
+> +	if (desc->bLength < sizeof(*desc) + desc->bNrInPins)
+> +		return -EINVAL;
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+VERSION 1 and 2 already have a different check:
 
-On Wed, Aug 14, 2019 at 09:41:42AM +0530, Vinod Koul wrote:
-> On 13-08-19, 20:58, Mark Brown wrote:
+	if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 1)
+		return 0; /* no bmControls -> skip */
 
-> > There is something to be said for not abusing the TDM slot API if it can
-> > make things clearer by using bus-idiomatic mechanisms, but it does mean
-> > everything needs to know about each individual bus :/ .
+So something is possibly off by one.  It's just version 3 which doesn't
+have a check.
 
-> Here ASoC doesn't need to know about sdw bus. As Srini explained, this
-> helps in the case for him to get the stream context and set the stream
-> context from the machine driver.
-
-Other drivers interoperating with the Soundwire DAI might want to do
-something, it looks like that's the case for SOF.
-
-> Nothing else is expected to be done from this API. We already do a set
-> using snd_soc_dai_set_sdw_stream(). Here we add the snd_soc_dai_get_sdw_stream() to query
-
-Well, if the API is not expected to do anything we can optimize it and
-just remove it!
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1Tz6UACgkQJNaLcl1U
-h9B7fgf+PvYlFGtuBj37wZOpu/dVlS5vmQbNkNVdhUbDbjO5oYTemRTIB5PukA4R
-tO6idhVUsIlMWCvN6MZKJXPGgZfB7Heu84YAn3GvBmIFmY3J4c3QwsD1pIf1gmGH
-X+xV//bbiewRLrA7LvbQalQanUpCVVlCrjsJ8FeDg+PFs4wPO9gE2N7pevVhzknu
-tIaB6HO88+eAx0FfUUvXjWKo5qov/1LjhsI8Z2DJuKfpi9zfBatUz+/Q75d2WEJS
-0G8ATi/5aZueU+YB1T6xdQtkS/lPIFRYN7dyMZrLyidtwkttiii8UzStBh64F6QO
-MSoasP9IToaTUPdzqxcH3bIYBg2R3Q==
-=pxWA
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
+regards,
+dan carpenter
