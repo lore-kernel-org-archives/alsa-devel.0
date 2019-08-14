@@ -1,61 +1,73 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [RFC PATCH] ASoC: fsl_sai: Enable data lines based on input
- channels
-Date: Tue, 13 Aug 2019 18:39:16 -0700
-Message-ID: <20190814013916.GB13398@Asurada-Nvidia.nvidia.com>
-References: <20190811195545.32606-1-daniel.baluta@nxp.com>
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 013/123] ASoC: samsung: odroid: fix an use-after-free issue for codec
+Date: Tue, 13 Aug 2019 22:08:57 -0400
+Message-ID: <20190814021047.14828-13-sashal@kernel.org>
+References: <20190814021047.14828-1-sashal@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190811195545.32606-1-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linux-imx@nxp.com, tiwai@suse.com, alsa-devel@alsa-project.org, festevam@gmail.com
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20190814021047.14828-1-sashal@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Wen Yang <wen.yang99@zte.com.cn>, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 11, 2019 at 10:55:45PM +0300, Daniel Baluta wrote:
-> An audio data frame consists of a number of slots one for each
-> channel. In the case of I2S there are 2 data slots / frame.
-> 
-> The maximum number of SAI slots / frame is configurable at
-> IP integration time. This affects the width of Mask Register.
-> SAI supports up to 32 slots per frame.
-> 
-> The number of datalines is also configurable (up to 8 datalines)
-> and affects TCE/RCE and the number of data/FIFO registers.
-> 
-> The number of needed data lines (pins) is computed as follows:
-> 
-> * pins = channels / slots.
-> 
-> This can be computed in hw_params function so lets move TRCE bits
-> seting from startup to hw_params.
-> 
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/fsl/fsl_sai.c | 34 +++++++++++++---------------------
->  sound/soc/fsl/fsl_sai.h |  2 +-
->  2 files changed, 14 insertions(+), 22 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 69cf3678c859..b70032c82fe2 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
+From: Wen Yang <wen.yang99@zte.com.cn>
 
-> @@ -480,13 +483,17 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+[ Upstream commit 9b6d104a6b150bd4d3e5b039340e1f6b20c2e3c1 ]
 
-> -	regmap_write(sai->regmap, FSL_SAI_xMR(tx), ~0UL - ((1 << channels) - 1));
-> +	regmap_write(sai->regmap, FSL_SAI_xMR(tx), ~0UL - ((1 << slots) - 1));
+The codec variable is still being used after the of_node_put() call,
+which may result in use-after-free.
 
-Would this break mono channel audio?
+Fixes: bc3cf17b575a ("ASoC: samsung: odroid: Add support for secondary CPU DAI")
+Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Link: https://lore.kernel.org/r/1562989575-33785-2-git-send-email-wen.yang99@zte.com.cn
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/samsung/odroid.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
->  static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
-
-> @@ -881,6 +872,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	sai->pdev = pdev;
-> +
-
-Seemly unnecessary
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index e688169ff12ab..95c35e3ff3303 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -275,9 +275,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	of_node_put(cpu);
+-	of_node_put(codec);
+ 	if (ret < 0)
+-		return ret;
++		goto err_put_node;
+ 
+ 	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
+ 	if (ret < 0)
+@@ -308,6 +307,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 		goto err_put_clk_i2s;
+ 	}
+ 
++	of_node_put(codec);
+ 	return 0;
+ 
+ err_put_clk_i2s:
+@@ -317,6 +317,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ err_put_cpu_dai:
+ 	of_node_put(cpu_dai);
+ 	snd_soc_of_put_dai_link_codecs(codec_link);
++err_put_node:
++	of_node_put(codec);
+ 	return ret;
+ }
+ 
+-- 
+2.20.1
