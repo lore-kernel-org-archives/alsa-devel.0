@@ -1,25 +1,55 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.2 013/123] ASoC: samsung: odroid: fix an use-after-free issue for codec
-Date: Tue, 13 Aug 2019 22:08:57 -0400
-Message-ID: <20190814021047.14828-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 014/123] ASoC: samsung: odroid: fix
+	a double-free issue for cpu_dai
+Date: Tue, 13 Aug 2019 22:08:58 -0400
+Message-ID: <20190814021047.14828-14-sashal@kernel.org>
 References: <20190814021047.14828-1-sashal@kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5619F8015B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2019 04:11:15 +0200 (CEST)
 In-Reply-To: <20190814021047.14828-1-sashal@kernel.org>
-Sender: stable-owner@vger.kernel.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Wen Yang <wen.yang99@zte.com.cn>, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Wen Yang <wen.yang99@zte.com.cn>
 List-Id: alsa-devel@alsa-project.org
 
 From: Wen Yang <wen.yang99@zte.com.cn>
 
-[ Upstream commit 9b6d104a6b150bd4d3e5b039340e1f6b20c2e3c1 ]
+[ Upstream commit 2abee12c0ab1924a69993d2c063a39a952e7d836 ]
 
-The codec variable is still being used after the of_node_put() call,
-which may result in use-after-free.
+The cpu_dai variable is still being used after the of_node_put() call,
+which may result in double-free:
 
-Fixes: bc3cf17b575a ("ASoC: samsung: odroid: Add support for secondary CPU DAI")
+        of_node_put(cpu_dai);            ---> released here
+
+        ret = devm_snd_soc_register_card(dev, card);
+        if (ret < 0) {
+...
+                goto err_put_clk_i2s;    --> jump to err_put_clk_i2s
+...
+
+err_put_clk_i2s:
+        clk_put(priv->clk_i2s_bus);
+err_put_sclk:
+        clk_put(priv->sclk_i2s);
+err_put_cpu_dai:
+        of_node_put(cpu_dai);            --> double-free here
+
+Fixes: d832d2b246c5 ("ASoC: samsung: odroid: Fix of_node refcount unbalance")
 Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Sangbeom Kim <sbkim73@samsung.com>
@@ -30,44 +60,32 @@ Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
 Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Link: https://lore.kernel.org/r/1562989575-33785-2-git-send-email-wen.yang99@zte.com.cn
+Link: https://lore.kernel.org/r/1562989575-33785-3-git-send-email-wen.yang99@zte.com.cn
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/samsung/odroid.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/samsung/odroid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index e688169ff12ab..95c35e3ff3303 100644
+index 95c35e3ff3303..d606e48fe551a 100644
 --- a/sound/soc/samsung/odroid.c
 +++ b/sound/soc/samsung/odroid.c
-@@ -275,9 +275,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
+@@ -299,7 +299,6 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(priv->clk_i2s_bus);
+ 		goto err_put_sclk;
  	}
+-	of_node_put(cpu_dai);
  
- 	of_node_put(cpu);
--	of_node_put(codec);
- 	if (ret < 0)
--		return ret;
-+		goto err_put_node;
- 
- 	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
- 	if (ret < 0)
-@@ -308,6 +307,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_card(dev, card);
+ 	if (ret < 0) {
+@@ -307,6 +306,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
  		goto err_put_clk_i2s;
  	}
  
-+	of_node_put(codec);
++	of_node_put(cpu_dai);
+ 	of_node_put(codec);
  	return 0;
- 
- err_put_clk_i2s:
-@@ -317,6 +317,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
- err_put_cpu_dai:
- 	of_node_put(cpu_dai);
- 	snd_soc_of_put_dai_link_codecs(codec_link);
-+err_put_node:
-+	of_node_put(codec);
- 	return ret;
- }
  
 -- 
 2.20.1
