@@ -1,79 +1,173 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: Intel: common: add ACPI matching
-	tables for EHL
-Date: Thu, 15 Aug 2019 18:11:43 +0100
-Message-ID: <20190815171142.GE4841@sirena.co.uk>
-References: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
- <20190815155749.29304-4-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8644267491024884258=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f100.google.com (mail-wm1-f100.google.com
- [209.85.128.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3676DF8044C
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:11:44 +0200 (CEST)
-Received: by mail-wm1-f100.google.com with SMTP id o4so1868146wmh.2
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:11:44 -0700 (PDT)
-In-Reply-To: <20190815155749.29304-4-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Pan Xiuli <xiuli.pan@linux.intel.com>
+From: Daniel Stuart <daniel.stuart14@gmail.com>
+Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add all Chromebooks that need pmc_plt_clk_0 quirk
+Date: Thu, 15 Aug 2019 14:12:55 -0300
+Message-ID: <20190815171300.30126-1-daniel.stuart14@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: cezary.rojewski@intel.com, Daniel Stuart <daniel.stuart14@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Daniel Stuart <daniel.stuart@pucpr.edu.br>, Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Every single baytrail chromebook sets PMC to 0, as can be seeing
+below by searching through coreboot source code:
+	$ grep -rl "PMC_PLT_CLK\[0\]" .
+	./rambi/variants/glimmer/devicetree.cb
+	./rambi/variants/clapper/devicetree.cb
+	./rambi/variants/swanky/devicetree.cb
+	./rambi/variants/enguarde/devicetree.cb
+	./rambi/variants/winky/devicetree.cb
+	./rambi/variants/kip/devicetree.cb
+	./rambi/variants/squawks/devicetree.cb
+	./rambi/variants/orco/devicetree.cb
+	./rambi/variants/ninja/devicetree.cb
+	./rambi/variants/heli/devicetree.cb
+	./rambi/variants/sumo/devicetree.cb
+	./rambi/variants/banjo/devicetree.cb
+	./rambi/variants/candy/devicetree.cb
+	./rambi/variants/gnawty/devicetree.cb
+	./rambi/variants/rambi/devicetree.cb
+	./rambi/variants/quawks/devicetree.cb
 
---===============8644267491024884258==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Lb0e7rgc7IsuDeGj"
-Content-Disposition: inline
+Plus, Cyan (only non-baytrail chromebook with max98090) also needs
+this patch for audio to work.
 
+Thus, this commit adds all the missing devices to bsw_max98090 quirk
+table, implemented by commit a182ecd3809c ("ASoC: intel:
+cht_bsw_max98090_ti: Add quirk for boards using pmc_plt_clk_0").
 
---Lb0e7rgc7IsuDeGj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Daniel Stuart <daniel.stuart14@gmail.com>
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 98 ++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
-On Thu, Aug 15, 2019 at 10:57:48AM -0500, Pierre-Louis Bossart wrote:
-
-> +++ b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * soc-apci-intel-ehl-match.c - tables and support for EHL ACPI enumeration.
-
-Please make the entire comment a C++ one so things look more
-intentional.
-
---Lb0e7rgc7IsuDeGj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1Vkk4ACgkQJNaLcl1U
-h9Bbqgf/fqY55m8s21S5MoWeRbo6n4iwlfQd9dR013fM5S5SZQDYdrpMRqfowv+C
-M7iKzDiuxiQ2nL95NYbk0EqEh5EB75sQowFH/uor7Pmx5QqNXJQbdqJhbJSob3We
-Ytvmojpw5JhF9EPDA3gzPDcEgWYWab80NvmEaTJYVG2Rt+/EaN0WmDMTh/+ChD9T
-bwOSJH9Y6wR5Nw6OLGvtML/0+l1yf0IllMqpYMPIgTa0wwmipaMuChBdy52J4ICR
-jiLPJ8CNvZatk+VMbPU4Yc3RC/qaWcqVpj+UM9lBJA2Vt490CqSELdzE51pwA5ih
-6zkSwHrWd4prbbRAoBFrwwoytGwzng==
-=Yx++
------END PGP SIGNATURE-----
-
---Lb0e7rgc7IsuDeGj--
-
---===============8644267491024884258==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8644267491024884258==--
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 33eb72545be6..83b978e7b4c4 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -399,6 +399,20 @@ static struct snd_soc_card snd_soc_card_cht = {
+ };
+ 
+ static const struct dmi_system_id cht_max98090_quirk_table[] = {
++	{
++		/* Banjo model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Banjo"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Candy model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Candy"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
+ 	{
+ 		/* Clapper model Chromebook */
+ 		.matches = {
+@@ -406,6 +420,27 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
+ 	},
++	{
++		/* Cyan model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Cyan"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Enguarde model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Enguarde"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Glimmer model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Glimmer"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
+ 	{
+ 		/* Gnawty model Chromebook (Acer Chromebook CB3-111) */
+ 		.matches = {
+@@ -413,6 +448,62 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
+ 	},
++	{
++		/* Heli model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Heli"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Kip model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Kip"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Ninja model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Ninja"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Orco model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Orco"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Quawks model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Quawks"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Rambi model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Rambi"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Squawks model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Squawks"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
++	{
++		/* Sumo model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Sumo"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
+ 	{
+ 		/* Swanky model Chromebook (Toshiba Chromebook 2) */
+ 		.matches = {
+@@ -420,6 +511,13 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
+ 	},
++	{
++		/* Winky model Chromebook */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Winky"),
++		},
++		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
++	},
+ 	{}
+ };
+ 
+-- 
+2.17.1
