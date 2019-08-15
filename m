@@ -1,21 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: SOF: rename SOUNDWIRE to ALH
-Date: Thu, 15 Aug 2019 18:08:53 +0100
-Message-ID: <20190815170853.GC4841@sirena.co.uk>
-References: <20190815155032.29181-1-pierre-louis.bossart@linux.intel.com>
- <20190815155032.29181-2-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/4] ASoC: Intel: common: add ACPI matching
+ tables for Tiger Lake
+Date: Thu, 15 Aug 2019 18:10:53 +0100
+Message-ID: <20190815171053.GD4841@sirena.co.uk>
+References: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
+ <20190815155749.29304-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0355219525309326055=="
+Content-Type: multipart/mixed; boundary="===============6939487625575443314=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f100.google.com (mail-wr1-f100.google.com
- [209.85.221.100])
+Received: from mail-wm1-f99.google.com (mail-wm1-f99.google.com
+ [209.85.128.99])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC316F8015B
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:08:56 +0200 (CEST)
-Received: by mail-wr1-f100.google.com with SMTP id b16so2833641wrq.9
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:08:56 -0700 (PDT)
-In-Reply-To: <20190815155032.29181-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F248F8015B
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:10:54 +0200 (CEST)
+Received: by mail-wm1-f99.google.com with SMTP id z23so1859379wmf.2
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:10:54 -0700 (PDT)
+In-Reply-To: <20190815155749.29304-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,55 +27,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Pan Xiuli <xiuli.pan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0355219525309326055==
+--===============6939487625575443314==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8NvZYKFJsRX2Djef"
+	protocol="application/pgp-signature"; boundary="cQXOx3fnlpmgJsTP"
 Content-Disposition: inline
 
 
---8NvZYKFJsRX2Djef
+--cQXOx3fnlpmgJsTP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 15, 2019 at 10:50:29AM -0500, Pierre-Louis Bossart wrote:
-> From: Bard liao <yung-chuan.liao@linux.intel.com>
->
-> Rename SOUNDWIRE to ALH.
+On Thu, Aug 15, 2019 at 10:57:46AM -0500, Pierre-Louis Bossart wrote:
 
-What's this patch based on, it doesn't seem to be something upstream?
+> index 000000000000..57a6298d6dca
+> --- /dev/null
+> +++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * soc-apci-intel-tgl-match.c - tables and support for ICL ACPI enumeration.
 
-Description: [1/4] ASoC: SOF: rename SOUNDWIRE to ALH
-Applying: ASoC: SOF: rename SOUNDWIRE to ALH
-error: sha1 information is lacking or useless (include/sound/sof/dai.h).
-error: could not build fake ancestor
-Patch failed at 0001 ASoC: SOF: rename SOUNDWIRE to ALH
+Please make the whole header C++ style so things look more intentional.
 
---8NvZYKFJsRX2Djef
+--cQXOx3fnlpmgJsTP
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1VkaQACgkQJNaLcl1U
-h9DCVgf+NRUcYcZywwXLS+/YMSupeE/kUfB0wbha/4pQl7AN2DWniGOyHrRJGSOf
-Vu2ioEB0MP2L7p6emFqCryOjFBJHBafVGqhib01E7cO3NDz51al2kNSKQ7i3bN2A
-EMhzN1Y7h47fqj6ulgVcVccozAM+IFqL7swkWqST1147KVFv6hBi/n1DI9IzyfXc
-jZbkkXGKezSCQ9Ppx3CI7ZT3WgMQF2sThiO5WDztrtfogVvfZWCzDBb3yqS6qvsj
-8QWPjXWs04Ocify9F5j/Ecbn4hu0LvSYxad8gnnrAEGgArXg94X/gd2V45X1mlrx
-AAH4xUnTtWvnmetH2+1F9v++Wkcoww==
-=Wh7r
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1VkhwACgkQJNaLcl1U
+h9D+lgf/bmvFEadeRHofdgz9IIPVyh7dxAWUifXB34T0APOjfF9a8s7BzSttSq+6
+VSV3rucaL7vSDKmliAd9OqV38nUWGLX33HJWuNt2aYa6EQT07qwHIGoqVzJeNbTl
+wdeUrl+FtkXcMZTE0Mm6MOsYLgNx2lmcBPFR/wGkqmOGqRXmqqiJMmsKv+XZ4aXO
+Lf4a2o7BcZlbZCvjsNce5jdDihXD55muU+SAbcEdvO0C8LSwPbZfnaXwOs9GYTmK
+kj/pOamrEITAIsRzxNX0b/9zZFcCGKfEGXF2BxplXMEV1CrEO5fb6Hn9LwYmxdA9
+PRybyiv/43gmgv3+2IpWpDAN/PfRNA==
+=y2oE
 -----END PGP SIGNATURE-----
 
---8NvZYKFJsRX2Djef--
+--cQXOx3fnlpmgJsTP--
 
---===============0355219525309326055==
+--===============6939487625575443314==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0355219525309326055==--
+--===============6939487625575443314==--
