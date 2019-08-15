@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Print constant literals
-	from format specifier" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:25 +0100 (BST)
-Message-ID: <20190815171425.0E5042742B9E@ypsilon.sirena.org.uk>
-References: <20190621113116.47525-1-andriy.shevchenko@linux.intel.com>
+Subject: Applied "ASoC: SOF: fix HDA direct MMIO access" to the
+	asoc tree
+Date: Thu, 15 Aug 2019 18:14:27 +0100 (BST)
+Message-ID: <20190815171427.574622742B9E@ypsilon.sirena.org.uk>
+References: <20190812190502.30729-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f99.google.com (mail-wr1-f99.google.com
- [209.85.221.99])
+Received: from mail-wr1-f98.google.com (mail-wr1-f98.google.com
+ [209.85.221.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED0BFF805F6
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:14:26 +0200 (CEST)
-Received: by mail-wr1-f99.google.com with SMTP id u16so2890517wrr.0
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:14:26 -0700 (PDT)
-In-Reply-To: <20190621113116.47525-1-andriy.shevchenko@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71CC5F8060E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:14:28 +0200 (CEST)
+Received: by mail-wr1-f98.google.com with SMTP id t16so2862226wra.6
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:14:28 -0700 (PDT)
+In-Reply-To: <20190812190502.30729-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,13 +26,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild test robot <lkp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Print constant literals from format specifier
+   ASoC: SOF: fix HDA direct MMIO access
 
 has been applied to the asoc tree at
 
@@ -57,38 +57,92 @@ to this mail.
 Thanks,
 Mark
 
->From ff30779bd50eb823e2e75cfc7cc8a3373bfa3fd9 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Fri, 21 Jun 2019 14:31:16 +0300
-Subject: [PATCH] ASoC: Intel: Skylake: Print constant literals from format
- specifier
+>From 9c6c417d95d83999c16965186f6e755ad8a8b658 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 12 Aug 2019 14:05:02 -0500
+Subject: [PATCH] ASoC: SOF: fix HDA direct MMIO access
 
-Instead of using two additional "%s" specifiers, put the constant string
-literals directly to the format specifier.
+The recent change to remove the bus->io_ops callbacks used an older
+version of the SOF code base, and when merged into Mark's for-next it
+invalidated changes, resulting in broken compilation identified by
+kbuild and reproduced during the weekly SOF rebase.
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20190621113116.47525-1-andriy.shevchenko@linux.intel.com
+Restore SOF code overridden by git merge and apply Takashi's intended
+change in the 'right' location.
+
+Fixes: c2f16a94a8049 ("Merge branch 'topic/hda-bus-ops-cleanup'")
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190812190502.30729-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-ctrl.c |  2 +-
+ sound/soc/sof/intel/hda-dsp.c  | 39 ----------------------------------
+ 2 files changed, 1 insertion(+), 40 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 8af7546def1f..61a8e4756a2b 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -413,8 +413,7 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, u8 *guid)
- 	int ret = 0;
- 	char mod_name[64]; /* guid str = 32 chars + 4 hyphens */
+diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+index a7fee403cb90..bc41028a7a01 100644
+--- a/sound/soc/sof/intel/hda-ctrl.c
++++ b/sound/soc/sof/intel/hda-ctrl.c
+@@ -254,7 +254,7 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ 	/* Reset stream-to-link mapping */
+ 	list_for_each_entry(hlink, &bus->hlink_list, list)
+-		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
++		writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
+ #endif
  
--	snprintf(mod_name, sizeof(mod_name), "%s%pUL%s",
--					     "intel/dsp_fw_", guid, ".bin");
-+	snprintf(mod_name, sizeof(mod_name), "intel/dsp_fw_%pUL.bin", guid);
+ 	bus->chip_init = true;
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 097727cda5cb..fb55a3c5afd0 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -354,45 +354,6 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+ 		return ret;
+ 	}
  
- 	module_entry = skl_module_get_from_id(ctx, mod_id);
- 	if (module_entry == NULL) {
+-	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+-
+-	/* Reset stream-to-link mapping */
+-	list_for_each_entry(hlink, &bus->hlink_list, list)
+-		writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
+-
+-	hda_dsp_ctrl_misc_clock_gating(sdev, true);
+-#else
+-
+-	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+-
+-	/* reset controller */
+-	ret = hda_dsp_ctrl_link_reset(sdev, true);
+-	if (ret < 0) {
+-		dev_err(sdev->dev,
+-			"error: failed to reset controller during resume\n");
+-		return ret;
+-	}
+-
+-	/* take controller out of reset */
+-	ret = hda_dsp_ctrl_link_reset(sdev, false);
+-	if (ret < 0) {
+-		dev_err(sdev->dev,
+-			"error: failed to ready controller during resume\n");
+-		return ret;
+-	}
+-
+-	/* enable hda bus irq */
+-	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
+-				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
+-				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN);
+-
+-	hda_dsp_ctrl_misc_clock_gating(sdev, true);
+-#endif
+-
+-	/* enable ppcap interrupt */
+-	hda_dsp_ctrl_ppcap_enable(sdev, true);
+-	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
+-
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ 	/* check jack status */
+ 	if (runtime_resume)
 -- 
 2.20.1
