@@ -1,8 +1,9 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/4] ASoC: SOF: i.MX8 SAI and Intel
-	ALH/SoundWire DAI support
-Date: Thu, 15 Aug 2019 14:20:14 -0500
-Message-ID: <20190815192018.30570-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: SOF: topology: initial support for
+	Intel ALH DAI type
+Date: Thu, 15 Aug 2019 14:20:17 -0500
+Message-ID: <20190815192018.30570-4-pierre-louis.bossart@linux.intel.com>
+References: <20190815192018.30570-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC325F80274
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 21:22:49 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7C55F80273
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 21:22:51 +0200 (CEST)
+In-Reply-To: <20190815192018.30570-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +27,88 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds the basic functionality to extract DAI information
-from the topology and send the information to firmware.
+The Audio Link Hub DAI does not require any static configuration from
+topology for now. We still need to pass the frame rate and format to
+firmware.
 
-The i.MX8 SAI/ESAI definitions are minimal placeholders for now, they
-are included to keep the alignment with the firmware/topology.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/topology.c | 42 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-For the Intel ALH, there is no specific configuration in topology
-file, all the programming takes place based on the dai index and the
-related ALH stream ID. The renaming from SoundWire to ALH (Audio Link
-Hub) is a better representation of the hardware, the ALH acts as a
-proxy between the DMA transfers and the Cadence IP.
-
-Bard liao (1):
-  ASoC: SOF: rename SOUNDWIRE to ALH
-
-Daniel Baluta (1):
-  ASoC: SOF: topology: Add dummy support for i.MX8 DAIs
-
-Pierre-Louis Bossart (2):
-  ASoC: SOF: topology: initial support for Intel ALH DAI type
-  ASoC: SOF: pcm: add ALH support
-
- include/sound/sof/dai.h         |  4 +-
- include/uapi/sound/sof/tokens.h |  8 ++++
- sound/soc/sof/pcm.c             |  3 ++
- sound/soc/sof/topology.c        | 72 ++++++++++++++++++++++++++++++++-
- 4 files changed, 85 insertions(+), 2 deletions(-)
-
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index a215bf58b138..28a7a6e06a53 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -346,6 +346,7 @@ static const struct sof_dai_types sof_dais[] = {
+ 	{"SSP", SOF_DAI_INTEL_SSP},
+ 	{"HDA", SOF_DAI_INTEL_HDA},
+ 	{"DMIC", SOF_DAI_INTEL_DMIC},
++	{"ALH", SOF_DAI_INTEL_ALH},
+ 	{"SAI", SOF_DAI_IMX_SAI},
+ 	{"ESAI", SOF_DAI_IMX_ESAI},
+ };
+@@ -2763,6 +2764,40 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
+ 	return ret;
+ }
+ 
++static int sof_link_alh_load(struct snd_soc_component *scomp, int index,
++			     struct snd_soc_dai_link *link,
++			     struct snd_soc_tplg_link_config *cfg,
++			     struct snd_soc_tplg_hw_config *hw_config,
++			     struct sof_ipc_dai_config *config)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
++	int ret;
++
++	/* init IPC */
++	config->hdr.size = size;
++
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 config->hdr.cmd, config, size, &reply,
++				 sizeof(reply));
++
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to set DAI config for ALH %d\n",
++			config->dai_index);
++		return ret;
++	}
++
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, config);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to save DAI config for ALH %d\n",
++			config->dai_index);
++
++	return ret;
++}
++
+ /* DAI link - used for any driver specific init */
+ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 			 struct snd_soc_dai_link *link,
+@@ -2859,6 +2894,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+ 		break;
++	case SOF_DAI_INTEL_ALH:
++		ret = sof_link_alh_load(scomp, index, link, cfg, hw_config,
++					&config);
++		break;
+ 	case SOF_DAI_IMX_SAI:
+ 		ret = sof_link_sai_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+@@ -2924,7 +2963,8 @@ static int sof_link_unload(struct snd_soc_component *scomp,
+ 	switch (sof_dai->dai_config->type) {
+ 	case SOF_DAI_INTEL_SSP:
+ 	case SOF_DAI_INTEL_DMIC:
+-		/* no resource needs to be released for SSP and DMIC */
++	case SOF_DAI_INTEL_ALH:
++		/* no resource needs to be released for SSP, DMIC and ALH */
+ 		break;
+ 	case SOF_DAI_INTEL_HDA:
+ 		ret = sof_link_hda_unload(sdev, link);
 -- 
 2.20.1
