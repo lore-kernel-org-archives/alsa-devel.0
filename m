@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l56: remove unused variable 'adc_swap_enum'" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:22 +0100 (BST)
-Message-ID: <20190815171422.AB4402742B9E@ypsilon.sirena.org.uk>
-References: <20190815092436.34632-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: es8328: remove unused variable 'pga_tlv'" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:23 +0100 (BST)
+Message-ID: <20190815171423.318EC2742BD6@ypsilon.sirena.org.uk>
+References: <20190815092056.28724-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815092436.34632-1-yuehaibing@huawei.com>
+In-Reply-To: <20190815092056.28724-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, brian.austin@cirrus.com, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Paul.Handrigan@cirrus.com, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, gustavo@embeddedor.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l56: remove unused variable 'adc_swap_enum'
+   ASoC: es8328: remove unused variable 'pga_tlv'
 
 has been applied to the asoc tree at
 
@@ -37,42 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From e33d565795930d0341bb946aec457a814ccd53e6 Mon Sep 17 00:00:00 2001
+>From 97d39be9ce5befc2e36f15d0df33832e0f633565 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:24:36 +0800
-Subject: [PATCH] ASoC: cs42l56: remove unused variable 'adc_swap_enum'
+Date: Thu, 15 Aug 2019 17:20:56 +0800
+Subject: [PATCH] ASoC: es8328: remove unused variable 'pga_tlv'
 
-sound/soc/codecs/cs42l56.c:206:30: warning:
- adc_swap_enum defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/es8328.c:102:35: warning:
+ pga_tlv defined but not used [-Wunused-const-variable=]
 
-It is never used, so can be removed.
+They are never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815092436.34632-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190815092056.28724-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l56.c | 8 --------
- 1 file changed, 8 deletions(-)
+ sound/soc/codecs/es8328.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index b4d7627525f9..ac569ab3d30f 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -199,14 +199,6 @@ static const struct soc_enum beep_bass_enum =
- 	SOC_ENUM_SINGLE(CS42L56_BEEP_TONE_CFG, 1,
- 			ARRAY_SIZE(beep_bass_text), beep_bass_text);
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 822a25a8f53c..4a3d303fedfb 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -99,7 +99,6 @@ static SOC_ENUM_SINGLE_DECL(adcpol,
  
--static const char * const adc_swap_text[] = {
--	"None", "A+B/2", "A-B/2", "Swap"
--};
--
--static const struct soc_enum adc_swap_enum =
--	SOC_ENUM_SINGLE(CS42L56_MISC_ADC_CTL, 3,
--			ARRAY_SIZE(adc_swap_text), adc_swap_text);
--
- static const char * const pgaa_mux_text[] = {
- 	"AIN1A", "AIN2A", "AIN3A"};
+ static const DECLARE_TLV_DB_SCALE(play_tlv, -3000, 100, 0);
+ static const DECLARE_TLV_DB_SCALE(dac_adc_tlv, -9600, 50, 0);
+-static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
  
 -- 
 2.20.1
