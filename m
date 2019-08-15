@@ -1,60 +1,46 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: 88pm860x: remove unused variables 'pcm_switch_controls' and 'aif1_mux'
-Date: Thu, 15 Aug 2019 17:25:47 +0800
-Message-ID: <20190815092547.29564-1-yuehaibing@huawei.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH -next] ASoC: wm8737: Fix copy-paste error
+ in wm8737_snd_controls
+Date: Thu, 15 Aug 2019 11:08:11 +0100
+Message-ID: <20190815100811.GO54126@ediswmail.ad.cirrus.com>
+References: <20190815091920.64480-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, tglx@linutronix.de, kstewart@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7F4AF801DF
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 12:08:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20190815091920.64480-1-yuehaibing@huawei.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, patches@opensource.cirrus.com, tglx@linutronix.de, info@metux.net
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/codecs/88pm860x-codec.c:533:38: warning:
- pcm_switch_controls defined but not used [-Wunused-const-variable=]
-sound/soc/codecs/88pm860x-codec.c:560:38: warning:
- aif1_mux defined but not used [-Wunused-const-variable=]
+On Thu, Aug 15, 2019 at 05:19:20PM +0800, YueHaibing wrote:
+> sound/soc/codecs/wm8737.c:112:29: warning:
+>  high_3d defined but not used [-Wunused-const-variable=]
+> 
+> 'high_3d' should be used for 3D High Cut-off.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: 2a9ae13a2641 ("ASoC: Add initial WM8737 driver")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
 
-They are never used, so can be removed.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/codecs/88pm860x-codec.c | 15 ---------------
- 1 file changed, 15 deletions(-)
-
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index e982722..00b2c43 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -529,10 +529,6 @@ static const struct snd_kcontrol_new pm860x_snd_controls[] = {
-  * DAPM Controls
-  */
- 
--/* PCM Switch / PCM Interface */
--static const struct snd_kcontrol_new pcm_switch_controls =
--	SOC_DAPM_SINGLE("Switch", PM860X_ADC_EN_2, 0, 1, 0);
--
- /* AUX1 Switch */
- static const struct snd_kcontrol_new aux1_switch_controls =
- 	SOC_DAPM_SINGLE("Switch", PM860X_ANA_TO_ANA, 4, 1, 0);
-@@ -549,17 +545,6 @@ static const struct snd_kcontrol_new lepa_switch_controls =
- static const struct snd_kcontrol_new repa_switch_controls =
- 	SOC_DAPM_SINGLE("Switch", PM860X_DAC_EN_2, 1, 1, 0);
- 
--/* PCM Mux / Mux7 */
--static const char *aif1_text[] = {
--	"PCM L", "PCM R",
--};
--
--static SOC_ENUM_SINGLE_DECL(aif1_enum,
--			    PM860X_PCM_IFACE_3, 6, aif1_text);
--
--static const struct snd_kcontrol_new aif1_mux =
--	SOC_DAPM_ENUM("PCM Mux", aif1_enum);
--
- /* I2S Mux / Mux9 */
- static const char *i2s_din_text[] = {
- 	"DIN", "DIN1",
--- 
-2.7.4
+Thanks,
+Charles
