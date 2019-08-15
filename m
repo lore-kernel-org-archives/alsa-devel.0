@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/4] ASoC: SOF: Intel: initial support for
-	Tiger Lake.
-Date: Thu, 15 Aug 2019 10:57:47 -0500
-Message-ID: <20190815155749.29304-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: Intel: common: add ACPI matching
+	tables for EHL
+Date: Thu, 15 Aug 2019 10:57:48 -0500
+Message-ID: <20190815155749.29304-4-pierre-louis.bossart@linux.intel.com>
 References: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CA01F801DF
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 18:01:17 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7915F8015B
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 18:01:18 +0200 (CEST)
 In-Reply-To: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,129 +29,66 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-Add Kconfig, PCI ID and chip info for Tiger Lake platform.
-
-Note that the core mask is different from previous platforms, only
-Core0 can be controlled by the host. Additional patches will be
-required for multi-core functionality.
+There are no upstream machine drivers just yet so just add dummy table
+for compilation in nocodec-mode.
 
 Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/Kconfig | 16 ++++++++++++++++
- sound/soc/sof/intel/cnl.c   | 16 ++++++++++++++++
- sound/soc/sof/intel/hda.h   |  1 +
- sound/soc/sof/sof-pci-dev.c | 22 ++++++++++++++++++++++
- 4 files changed, 55 insertions(+)
+ include/sound/soc-acpi-intel-match.h           |  1 +
+ sound/soc/intel/common/Makefile                |  2 +-
+ .../intel/common/soc-acpi-intel-ehl-match.c    | 18 ++++++++++++++++++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-ehl-match.c
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 545071afbe18..0dc5da661b61 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -27,6 +27,7 @@ config SND_SOC_SOF_INTEL_PCI
- 	select SND_SOC_SOF_ICELAKE     if SND_SOC_SOF_ICELAKE_SUPPORT
- 	select SND_SOC_SOF_COMETLAKE_LP if SND_SOC_SOF_COMETLAKE_LP_SUPPORT
- 	select SND_SOC_SOF_COMETLAKE_H if SND_SOC_SOF_COMETLAKE_H_SUPPORT
-+	select SND_SOC_SOF_TIGERLAKE   if SND_SOC_SOF_TIGERLAKE_SUPPORT
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
-@@ -212,6 +213,21 @@ config SND_SOC_SOF_COMETLAKE_H_SUPPORT
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index ce6c4a970939..6c9929abd90b 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -26,6 +26,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[];
  
-+config SND_SOC_SOF_TIGERLAKE_SUPPORT
-+	bool "SOF support for Tigerlake"
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Tigerlake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
+ /*
+  * generic table used for HDA codec-based platforms, possibly with
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index a14aca62ff96..18d9630ae9a2 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -8,7 +8,7 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
+ 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
+ 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
+ 	soc-acpi-intel-cnl-match.o soc-acpi-intel-icl-match.o \
+-	soc-acpi-intel-tgl-match.o \
++	soc-acpi-intel-tgl-match.o soc-acpi-intel-ehl-match.o \
+ 	soc-acpi-intel-hda-match.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+diff --git a/sound/soc/intel/common/soc-acpi-intel-ehl-match.c b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
+new file mode 100644
+index 000000000000..a1290c3fa99f
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-ehl-match.c - tables and support for EHL ACPI enumeration.
++ *
++ * Copyright (c) 2019, Intel Corporation.
++ *
++ */
 +
-+config SND_SOC_SOF_TIGERLAKE
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
 +
- config SND_SOC_SOF_HDA_COMMON
- 	tristate
- 	select SND_SOC_SOF_INTEL_COMMON
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 6d7d9c93252c..5de281fcc122 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -295,3 +295,19 @@ const struct sof_intel_dsp_desc icl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- };
- EXPORT_SYMBOL(icl_chip_info);
-+
-+const struct sof_intel_dsp_desc tgl_chip_info = {
-+	/* Tigerlake */
-+	.cores_num = 4,
-+	.init_core_mask = 1,
-+	.cores_mask = HDA_DSP_CORE_MASK(0),
-+	.ipc_req = CNL_DSP_REG_HIPCIDR,
-+	.ipc_req_mask = CNL_DSP_REG_HIPCIDR_BUSY,
-+	.ipc_ack = CNL_DSP_REG_HIPCIDA,
-+	.ipc_ack_mask = CNL_DSP_REG_HIPCIDA_DONE,
-+	.ipc_ctl = CNL_DSP_REG_HIPCCTL,
-+	.rom_init_timeout	= 300,
-+	.ssp_count = ICL_SSP_COUNT,
-+	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
++struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[] = {
++	{},
 +};
-+EXPORT_SYMBOL(tgl_chip_info);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 6db3dcbab3bd..cbb431f7835d 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -599,5 +599,6 @@ extern const struct sof_intel_dsp_desc apl_chip_info;
- extern const struct sof_intel_dsp_desc cnl_chip_info;
- extern const struct sof_intel_dsp_desc skl_chip_info;
- extern const struct sof_intel_dsp_desc icl_chip_info;
-+extern const struct sof_intel_dsp_desc tgl_chip_info;
- 
- #endif
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 6fd3df7c57a3..9f92504ad5b4 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -203,6 +203,24 @@ static const struct sof_dev_desc kbl_desc = {
- };
- #endif
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
-+static const struct sof_dev_desc tgl_desc = {
-+	.machines               = snd_soc_acpi_intel_tgl_machines,
-+	.resindex_lpe_base      = 0,
-+	.resindex_pcicfg_base   = -1,
-+	.resindex_imr_base      = -1,
-+	.irqindex_host_ipc      = -1,
-+	.resindex_dma_base      = -1,
-+	.chip_info = &tgl_chip_info,
-+	.default_fw_path = "intel/sof",
-+	.default_tplg_path = "intel/sof-tplg",
-+	.nocodec_fw_filename = "sof-tgl.ri",
-+	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
-+	.ops = &sof_cnl_ops,
-+	.arch_ops = &sof_xtensa_arch_ops
-+};
-+#endif
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_ehl_machines);
 +
- static const struct dev_pm_ops sof_pci_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
- 	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
-@@ -384,6 +402,10 @@ static const struct pci_device_id sof_pci_ids[] = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
- 	{ PCI_DEVICE(0x8086, 0x06c8),
- 		.driver_data = (unsigned long)&cml_desc},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
-+	{ PCI_DEVICE(0x8086, 0xa0c8),
-+		.driver_data = (unsigned long)&tgl_desc},
- #endif
- 	{ 0, }
- };
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
 -- 
 2.20.1
