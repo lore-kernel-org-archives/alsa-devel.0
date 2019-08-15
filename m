@@ -1,22 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: hsw: remove i386 build warning
-	w/ size_t argument" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:27 +0100 (BST)
-Message-ID: <20190815171427.927662742BC7@ypsilon.sirena.org.uk>
-References: <20190812140305.17570-1-pierre-louis.bossart@linux.intel.com>
+From: Hui Peng <benquike@gmail.com>
+Subject: Re: [PATCH] Fix a stack buffer overflow bug
+	check_input_term
+Date: Thu, 15 Aug 2019 13:19:10 -0400
+Message-ID: <CAKpmkkWCaLOctG44fD=arD-=oogRVCSxe5rz2UNUAms5q=2pYw@mail.gmail.com>
+References: <20190815043554.16623-1-benquike@gmail.com>
+ <s5htvaj9cre.wl-tiwai@suse.de> <s5hk1beapab.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f98.google.com (mail-ed1-f98.google.com
- [209.85.208.98])
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com
+ [IPv6:2607:f8b0:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E054F80600
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:14:28 +0200 (CEST)
-Received: by mail-ed1-f98.google.com with SMTP id p28so2709439edi.3
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:14:28 -0700 (PDT)
-In-Reply-To: <20190812140305.17570-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AFB0F80290
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:19:22 +0200 (CEST)
+Received: by mail-ot1-x342.google.com with SMTP id r20so7142849ota.5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:19:22 -0700 (PDT)
+In-Reply-To: <s5hk1beapab.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,78 +27,219 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Cezary Rojewski <cezary.rojewski@intel.com>, kbuild test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mathias Payer <mathias.payer@nebelwelt.net>, security@kernel.org, Wenwen Wang <wang6495@umn.edu>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi, Takashi:
 
-   ASoC: Intel: hsw: remove i386 build warning w/ size_t argument
+One point I want to be clear: if an endless recursive loop is detected,
+should we return 0, or a negative error code?
 
-has been applied to the asoc tree at
+On Thu, Aug 15, 2019 at 2:58 AM Takashi Iwai <tiwai@suse.de> wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8da2d74c10fd71cc04e2585fe8bb3ced325f8e25 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 12 Aug 2019 09:03:05 -0500
-Subject: [PATCH] ASoC: Intel: hsw: remove i386 build warning w/ size_t
- argument
-
-Recent changes in the common IPC code introduced a build warning with
-size_t fields, use the correct %zu format.
-
-include/linux/dynamic_debug.h:82:16: warning: format '%lu' expects
-argument of type 'long unsigned int', but argument 4 has type 'size_t'
-[-Wformat=]
-
-Fixes: abf31feea26c0 ('ASoC: Intel: Update request-reply IPC model')
-Reported-by: kbuild test robot <lkp@intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-By: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190812140305.17570-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/haswell/sst-haswell-ipc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index 5c73b11375e3..0ff89ea96ccf 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -2015,11 +2015,11 @@ int sst_hsw_module_set_param(struct sst_hsw *hsw,
- 
- 	if (payload_size <= SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE) {
- 		/* short parameter, mailbox can contain data */
--		dev_dbg(dev, "transfer parameter size : %lu\n",
-+		dev_dbg(dev, "transfer parameter size : %zu\n",
- 			request.size);
- 
- 		request.size = ALIGN(payload_size, 4);
--		dev_dbg(dev, "transfer parameter aligned size : %lu\n",
-+		dev_dbg(dev, "transfer parameter aligned size : %zu\n",
- 			request.size);
- 
- 		parameter = kzalloc(request.size, GFP_KERNEL);
--- 
-2.20.1
+> On Thu, 15 Aug 2019 08:13:57 +0200,
+> Takashi Iwai wrote:
+> >
+> > On Thu, 15 Aug 2019 06:35:49 +0200,
+> > Hui Peng wrote:
+> > >
+> > > `check_input_term` recursively calls itself with input
+> > > from device side (e.g., uac_input_terminal_descriptor.bCSourceID)
+> > > as argument (id). In `check_input_term`, if `check_input_term`
+> > > is called with the same `id` argument as the caller, it triggers
+> > > endless recursive call, resulting kernel space stack overflow.
+> > >
+> > > This patch fixes the bug by adding a bitmap to `struct mixer_build`
+> > > to keep track of the checked ids by `check_input_term` and stop
+> > > the execution if some id has been checked (similar to how
+> > > parse_audio_unit handles unitid argument).
+> > >
+> > > Reported-by: Hui Peng <benquike@gmail.com>
+> > > Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+> > > Signed-off-by: Hui Peng <benquike@gmail.com>
+> >
+> > The fix looks almost good, but we need to be careful about the
+> > bitmap check.  In theory, it's possible that multiple nodes point to
+> > the same input terminal, and your patch would break that scenario.
+> > For fixing that, we need to zero-clear the termbitmap at each first
+> > invocation of check_input_term(), something like below.
+> >
+> > Could you check whether this works?
+>
+> Thinking of this further, there is another possible infinite loop.
+> Namely, when the feature unit in the input terminal chain points to
+> itself as the source, it'll loop endlessly without the stack
+> overflow.
+>
+> So the check of the termbitmap should be inside the loop.
+> The revised patch is below.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> -- 8< --
+> From: Hui Peng <benquike@gmail.com>
+> Subject: [PATCH] ALSA: usb-audio: Fix a stack buffer overflow bug
+>  check_input_term
+>
+> `check_input_term` recursively calls itself with input
+> from device side (e.g., uac_input_terminal_descriptor.bCSourceID)
+> as argument (id). In `check_input_term`, if `check_input_term`
+> is called with the same `id` argument as the caller, it triggers
+> endless recursive call, resulting kernel space stack overflow.
+>
+> This patch fixes the bug by adding a bitmap to `struct mixer_build`
+> to keep track of the checked ids by `check_input_term` and stop
+> the execution if some id has been checked (similar to how
+> parse_audio_unit handles unitid argument).
+>
+> [ The termbitmap needs to be cleared at each first check of the input
+>   terminal, so the function got split now.  Also, for catching another
+>   endless loop in the input terminal chain -- where the feature unit
+>   points to itself as its source -- the termbitmap check is moved
+>   inside the parser loop. -- tiwai ]
+>
+> Reported-by: Hui Peng <benquike@gmail.com>
+> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+> Signed-off-by: Hui Peng <benquike@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/mixer.c | 36 ++++++++++++++++++++++++++----------
+>  1 file changed, 26 insertions(+), 10 deletions(-)
+>
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index ea487378be17..aa8b046aa91f 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -68,6 +68,7 @@ struct mixer_build {
+>         unsigned char *buffer;
+>         unsigned int buflen;
+>         DECLARE_BITMAP(unitbitmap, MAX_ID_ELEMS);
+> +       DECLARE_BITMAP(termbitmap, MAX_ID_ELEMS);
+>         struct usb_audio_term oterm;
+>         const struct usbmix_name_map *map;
+>         const struct usbmix_selector_map *selector_map;
+> @@ -775,16 +776,23 @@ static int uac_mixer_unit_get_channels(struct
+> mixer_build *state,
+>   * parse the source unit recursively until it reaches to a terminal
+>   * or a branched unit.
+>   */
+> -static int check_input_term(struct mixer_build *state, int id,
+> -                           struct usb_audio_term *term)
+> +static int __check_input_term(struct mixer_build *state, int id,
+> +                             struct usb_audio_term *term)
+>  {
+>         int protocol = state->mixer->protocol;
+>         int err;
+>         void *p1;
+> +       unsigned char *hdr;
+>
+> -       memset(term, 0, sizeof(*term));
+> -       while ((p1 = find_audio_control_unit(state, id)) != NULL) {
+> -               unsigned char *hdr = p1;
+> +       for (;;) {
+> +               /* a loop in the terminal chain? */
+> +               if (test_and_set_bit(id, state->termbitmap))
+> +                       break;
+> +
+> +               p1 = find_audio_control_unit(state, id);
+> +               if (!p1)
+> +                       break;
+> +               hdr = p1;
+>                 term->id = id;
+>
+>                 if (protocol == UAC_VERSION_1 || protocol ==
+> UAC_VERSION_2) {
+> @@ -802,7 +810,7 @@ static int check_input_term(struct mixer_build *state,
+> int id,
+>
+>                                         /* call recursively to verify that
+> the
+>                                          * referenced clock entity is
+> valid */
+> -                                       err = check_input_term(state,
+> d->bCSourceID, term);
+> +                                       err = __check_input_term(state,
+> d->bCSourceID, term);
+>                                         if (err < 0)
+>                                                 return err;
+>
+> @@ -836,7 +844,7 @@ static int check_input_term(struct mixer_build *state,
+> int id,
+>                         case UAC2_CLOCK_SELECTOR: {
+>                                 struct uac_selector_unit_descriptor *d =
+> p1;
+>                                 /* call recursively to retrieve the
+> channel info */
+> -                               err = check_input_term(state,
+> d->baSourceID[0], term);
+> +                               err = __check_input_term(state,
+> d->baSourceID[0], term);
+>                                 if (err < 0)
+>                                         return err;
+>                                 term->type = UAC3_SELECTOR_UNIT << 16; /*
+> virtual type */
+> @@ -899,7 +907,7 @@ static int check_input_term(struct mixer_build *state,
+> int id,
+>
+>                                 /* call recursively to verify that the
+>                                  * referenced clock entity is valid */
+> -                               err = check_input_term(state,
+> d->bCSourceID, term);
+> +                               err = __check_input_term(state,
+> d->bCSourceID, term);
+>                                 if (err < 0)
+>                                         return err;
+>
+> @@ -950,7 +958,7 @@ static int check_input_term(struct mixer_build *state,
+> int id,
+>                         case UAC3_CLOCK_SELECTOR: {
+>                                 struct uac_selector_unit_descriptor *d =
+> p1;
+>                                 /* call recursively to retrieve the
+> channel info */
+> -                               err = check_input_term(state,
+> d->baSourceID[0], term);
+> +                               err = __check_input_term(state,
+> d->baSourceID[0], term);
+>                                 if (err < 0)
+>                                         return err;
+>                                 term->type = UAC3_SELECTOR_UNIT << 16; /*
+> virtual type */
+> @@ -966,7 +974,7 @@ static int check_input_term(struct mixer_build *state,
+> int id,
+>                                         return -EINVAL;
+>
+>                                 /* call recursively to retrieve the
+> channel info */
+> -                               err = check_input_term(state,
+> d->baSourceID[0], term);
+> +                               err = __check_input_term(state,
+> d->baSourceID[0], term);
+>                                 if (err < 0)
+>                                         return err;
+>
+> @@ -984,6 +992,14 @@ static int check_input_term(struct mixer_build
+> *state, int id,
+>         return -ENODEV;
+>  }
+>
+> +static int check_input_term(struct mixer_build *state, int id,
+> +                           struct usb_audio_term *term)
+> +{
+> +       memset(term, 0, sizeof(*term));
+> +       memset(state->termbitmap, 0, sizeof(state->termbitmap));
+> +       return __check_input_term(state, id, term);
+> +}
+> +
+>  /*
+>   * Feature Unit
+>   */
+> --
+> 2.16.4
+>
+>
