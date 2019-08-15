@@ -1,8 +1,9 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/4] ASoC: Intel/SOF: add initial support for
-	Tiger Lake and Elhkart Lake
-Date: Thu, 15 Aug 2019 10:57:45 -0500
-Message-ID: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/4] ASoC: SOF: Intel: initial support for
+	Tiger Lake.
+Date: Thu, 15 Aug 2019 10:57:47 -0500
+Message-ID: <20190815155749.29304-3-pierre-louis.bossart@linux.intel.com>
+References: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD92FF80273
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 18:01:16 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CA01F801DF
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 18:01:17 +0200 (CEST)
+In-Reply-To: <20190815155749.29304-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +24,134 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add initial/minimal support for PCI enumeration, hardware descriptions
-and ACPI match tables.
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-Follow-up patches will be provided to enable multi-core support
-(requires new IPC calls). Machine drivers will be provided at a later
-point as well when there are fewer configurations. And last HDMI work
-is required to handle the 4 converters (which may be combined with the
-transition from hdac_hdmi to patch_hdmi already mentioned by Kai).
+Add Kconfig, PCI ID and chip info for Tiger Lake platform.
 
-Pan Xiuli (4):
-  ASoC: Intel: common: add ACPI matching tables for Tiger Lake
-  ASoC: SOF: Intel: initial support for Tiger Lake.
-  ASoC: Intel: common: add ACPI matching tables for EHL
-  ASoC: SOF: Intel: initial support for Elkhart Lake
+Note that the core mask is different from previous platforms, only
+Core0 can be controlled by the host. Additional patches will be
+required for multi-core functionality.
 
- include/sound/soc-acpi-intel-match.h          |  2 +
- sound/soc/intel/common/Makefile               |  1 +
- .../intel/common/soc-acpi-intel-ehl-match.c   | 18 ++++++++
- .../intel/common/soc-acpi-intel-tgl-match.c   | 24 ++++++++++
- sound/soc/sof/intel/Kconfig                   | 32 ++++++++++++++
- sound/soc/sof/intel/cnl.c                     | 32 ++++++++++++++
- sound/soc/sof/intel/hda.h                     |  2 +
- sound/soc/sof/sof-pci-dev.c                   | 44 +++++++++++++++++++
- 8 files changed, 155 insertions(+)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-ehl-match.c
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/intel/Kconfig | 16 ++++++++++++++++
+ sound/soc/sof/intel/cnl.c   | 16 ++++++++++++++++
+ sound/soc/sof/intel/hda.h   |  1 +
+ sound/soc/sof/sof-pci-dev.c | 22 ++++++++++++++++++++++
+ 4 files changed, 55 insertions(+)
 
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 545071afbe18..0dc5da661b61 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -27,6 +27,7 @@ config SND_SOC_SOF_INTEL_PCI
+ 	select SND_SOC_SOF_ICELAKE     if SND_SOC_SOF_ICELAKE_SUPPORT
+ 	select SND_SOC_SOF_COMETLAKE_LP if SND_SOC_SOF_COMETLAKE_LP_SUPPORT
+ 	select SND_SOC_SOF_COMETLAKE_H if SND_SOC_SOF_COMETLAKE_H_SUPPORT
++	select SND_SOC_SOF_TIGERLAKE   if SND_SOC_SOF_TIGERLAKE_SUPPORT
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+@@ -212,6 +213,21 @@ config SND_SOC_SOF_COMETLAKE_H_SUPPORT
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
++config SND_SOC_SOF_TIGERLAKE_SUPPORT
++	bool "SOF support for Tigerlake"
++	help
++          This adds support for Sound Open Firmware for Intel(R) platforms
++          using the Tigerlake processors.
++          Say Y if you have such a device.
++          If unsure select "N".
++
++config SND_SOC_SOF_TIGERLAKE
++	tristate
++	select SND_SOC_SOF_HDA_COMMON
++	help
++          This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level
++
+ config SND_SOC_SOF_HDA_COMMON
+ 	tristate
+ 	select SND_SOC_SOF_INTEL_COMMON
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 6d7d9c93252c..5de281fcc122 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -295,3 +295,19 @@ const struct sof_intel_dsp_desc icl_chip_info = {
+ 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
+ };
+ EXPORT_SYMBOL(icl_chip_info);
++
++const struct sof_intel_dsp_desc tgl_chip_info = {
++	/* Tigerlake */
++	.cores_num = 4,
++	.init_core_mask = 1,
++	.cores_mask = HDA_DSP_CORE_MASK(0),
++	.ipc_req = CNL_DSP_REG_HIPCIDR,
++	.ipc_req_mask = CNL_DSP_REG_HIPCIDR_BUSY,
++	.ipc_ack = CNL_DSP_REG_HIPCIDA,
++	.ipc_ack_mask = CNL_DSP_REG_HIPCIDA_DONE,
++	.ipc_ctl = CNL_DSP_REG_HIPCCTL,
++	.rom_init_timeout	= 300,
++	.ssp_count = ICL_SSP_COUNT,
++	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
++};
++EXPORT_SYMBOL(tgl_chip_info);
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 6db3dcbab3bd..cbb431f7835d 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -599,5 +599,6 @@ extern const struct sof_intel_dsp_desc apl_chip_info;
+ extern const struct sof_intel_dsp_desc cnl_chip_info;
+ extern const struct sof_intel_dsp_desc skl_chip_info;
+ extern const struct sof_intel_dsp_desc icl_chip_info;
++extern const struct sof_intel_dsp_desc tgl_chip_info;
+ 
+ #endif
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 6fd3df7c57a3..9f92504ad5b4 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -203,6 +203,24 @@ static const struct sof_dev_desc kbl_desc = {
+ };
+ #endif
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
++static const struct sof_dev_desc tgl_desc = {
++	.machines               = snd_soc_acpi_intel_tgl_machines,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &tgl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-tgl.ri",
++	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
++	.ops = &sof_cnl_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++#endif
++
+ static const struct dev_pm_ops sof_pci_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
+ 	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
+@@ -384,6 +402,10 @@ static const struct pci_device_id sof_pci_ids[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
+ 	{ PCI_DEVICE(0x8086, 0x06c8),
+ 		.driver_data = (unsigned long)&cml_desc},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
++	{ PCI_DEVICE(0x8086, 0xa0c8),
++		.driver_data = (unsigned long)&tgl_desc},
+ #endif
+ 	{ 0, }
+ };
 -- 
 2.20.1
