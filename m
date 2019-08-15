@@ -1,30 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8183-da7219-max98357: remove unused
- variable" to the asoc tree
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: mt6358: add delay after dmic clock on" to
+ the asoc tree
 Date: Thu, 15 Aug 2019 18:14:25 +0100 (BST)
-Message-ID: <20190815171425.C800A2742B9E@ypsilon.sirena.org.uk>
-References: <20190813143952.29232-1-yuehaibing@huawei.com>
+Message-ID: <20190815171425.51A822742BC7@ypsilon.sirena.org.uk>
+References: <1564980997-11359-1-git-send-email-jiaxin.yu@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190813143952.29232-1-yuehaibing@huawei.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, perex@perex.c, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1564980997-11359-1-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183-da7219-max98357: remove unused variable
+   ASoC: mediatek: mt6358: add delay after dmic clock on
 
 has been applied to the asoc tree at
 
@@ -49,46 +48,39 @@ to this mail.
 Thanks,
 Mark
 
->From 57c3ed42f52cdc51f416c93b19708ef6ceb4a00b Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Tue, 13 Aug 2019 22:39:52 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183-da7219-max98357: remove unused
- variable
+>From ccb1fa21ef58a2ac15519bb878470762e967e8b3 Mon Sep 17 00:00:00 2001
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Mon, 5 Aug 2019 12:56:37 +0800
+Subject: [PATCH] ASoC: mediatek: mt6358: add delay after dmic clock on
 
-sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:120:1: warning:
- mt8183_da7219_max98357_dapm_widgets defined but not used [-Wunused-const-variable=]
-sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:124:40: warning:
- mt8183_da7219_max98357_dapm_routes defined but not used [-Wunused-const-variable=]
+Most dmics produce a high level when they receive clock. The difference
+between power-on and memory record time is about 10ms, but the dmic
+needs 50ms to output normal data.
 
-They are never used, so can be removed.
+This commit add 100ms delay after SoC output clock so that we can cut
+off the pop noise at the beginning.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190813143952.29232-1-yuehaibing@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Link: https://lore.kernel.org/r/1564980997-11359-1-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ sound/soc/codecs/mt6358.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 2a6097174614..43f99e59a078 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -116,15 +116,6 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
+index c17250aab2d0..bb737fd678cc 100644
+--- a/sound/soc/codecs/mt6358.c
++++ b/sound/soc/codecs/mt6358.c
+@@ -1730,6 +1730,10 @@ static int mt6358_dmic_enable(struct mt6358_priv *priv)
+ 
+ 	/* UL turn on */
+ 	regmap_write(priv->regmap, MT6358_AFE_UL_SRC_CON0_L, 0x0003);
++
++	/* Prevent pop noise form dmic hw */
++	msleep(100);
++
  	return 0;
  }
  
--static const struct snd_soc_dapm_widget
--mt8183_da7219_max98357_dapm_widgets[] = {
--	SND_SOC_DAPM_OUTPUT("IT6505_8CH"),
--};
--
--static const struct snd_soc_dapm_route mt8183_da7219_max98357_dapm_routes[] = {
--	{"IT6505_8CH", NULL, "TDM"},
--};
--
- /* FE */
- SND_SOC_DAILINK_DEFS(playback1,
- 	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
 -- 
 2.20.1
