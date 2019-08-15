@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: remove unused variable 'cm_m_enum'" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:23 +0100 (BST)
-Message-ID: <20190815171423.74DB42742B9E@ypsilon.sirena.org.uk>
-References: <20190815091738.21680-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: 88pm860x: remove unused variables 'pcm_switch_controls' and 'aif1_mux'" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:22 +0100 (BST)
+Message-ID: <20190815171422.69F812742BD6@ypsilon.sirena.org.uk>
+References: <20190815092547.29564-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815091738.21680-1-yuehaibing@huawei.com>
+In-Reply-To: <20190815092547.29564-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: afd@ti.com, alsa-devel@alsa-project.org, broonie@kernel.org, colin.king@canonical.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, kstewart@linuxfoundation.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tglx@linutronix.de, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: remove unused variable 'cm_m_enum'
+   ASoC: 88pm860x: remove unused variables 'pcm_switch_controls' and 'aif1_mux'
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,59 @@ to this mail.
 Thanks,
 Mark
 
->From 6d6376b143d59ab1b8635807c78d224d03580418 Mon Sep 17 00:00:00 2001
+>From 12f0bfadf69bb154052722e7e4e5cd1639044c76 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:17:38 +0800
-Subject: [PATCH] ASoC: tlv320aic31xx: remove unused variable 'cm_m_enum'
+Date: Thu, 15 Aug 2019 17:25:47 +0800
+Subject: [PATCH] ASoC: 88pm860x: remove unused variables 'pcm_switch_controls'
+ and 'aif1_mux'
 
-sound/soc/codecs/tlv320aic31xx.c:261:29: warning:
- cm_m_enum defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/88pm860x-codec.c:533:38: warning:
+ pcm_switch_controls defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/88pm860x-codec.c:560:38: warning:
+ aif1_mux defined but not used [-Wunused-const-variable=]
 
-It is never used, so can be removed.
+They are never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815091738.21680-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190815092547.29564-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/88pm860x-codec.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 26a4f6cd3288..df627a08def9 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -258,7 +258,6 @@ static SOC_ENUM_SINGLE_DECL(mic1rp_p_enum, AIC31XX_MICPGAPI, 4,
- static SOC_ENUM_SINGLE_DECL(mic1lm_p_enum, AIC31XX_MICPGAPI, 2,
- 	mic_select_text);
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index e982722b448e..00b2c43d28a1 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -529,10 +529,6 @@ static const struct snd_kcontrol_new pm860x_snd_controls[] = {
+  * DAPM Controls
+  */
  
--static SOC_ENUM_SINGLE_DECL(cm_m_enum, AIC31XX_MICPGAMI, 6, mic_select_text);
- static SOC_ENUM_SINGLE_DECL(mic1lm_m_enum, AIC31XX_MICPGAMI, 4,
- 	mic_select_text);
+-/* PCM Switch / PCM Interface */
+-static const struct snd_kcontrol_new pcm_switch_controls =
+-	SOC_DAPM_SINGLE("Switch", PM860X_ADC_EN_2, 0, 1, 0);
+-
+ /* AUX1 Switch */
+ static const struct snd_kcontrol_new aux1_switch_controls =
+ 	SOC_DAPM_SINGLE("Switch", PM860X_ANA_TO_ANA, 4, 1, 0);
+@@ -549,17 +545,6 @@ static const struct snd_kcontrol_new lepa_switch_controls =
+ static const struct snd_kcontrol_new repa_switch_controls =
+ 	SOC_DAPM_SINGLE("Switch", PM860X_DAC_EN_2, 1, 1, 0);
  
+-/* PCM Mux / Mux7 */
+-static const char *aif1_text[] = {
+-	"PCM L", "PCM R",
+-};
+-
+-static SOC_ENUM_SINGLE_DECL(aif1_enum,
+-			    PM860X_PCM_IFACE_3, 6, aif1_text);
+-
+-static const struct snd_kcontrol_new aif1_mux =
+-	SOC_DAPM_ENUM("PCM Mux", aif1_enum);
+-
+ /* I2S Mux / Mux9 */
+ static const char *i2s_din_text[] = {
+ 	"DIN", "DIN1",
 -- 
 2.20.1
