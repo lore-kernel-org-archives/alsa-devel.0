@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: add ACPI matching tables
-	for EHL" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:20 +0100 (BST)
-Message-ID: <20190815171420.DEBD62742BC7@ypsilon.sirena.org.uk>
-References: <20190815155749.29304-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: SOF: ipc: add ALH parameters" to the
+	asoc tree
+Date: Thu, 15 Aug 2019 18:14:21 +0100 (BST)
+Message-ID: <20190815171421.9C3B12742BE9@ypsilon.sirena.org.uk>
+References: <20190815155032.29181-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f100.google.com (mail-wm1-f100.google.com
- [209.85.128.100])
+Received: from mail-ed1-f97.google.com (mail-ed1-f97.google.com
+ [209.85.208.97])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 603CDF80273
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:14:22 +0200 (CEST)
-Received: by mail-wm1-f100.google.com with SMTP id 10so1879427wmp.3
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:14:22 -0700 (PDT)
-In-Reply-To: <20190815155749.29304-4-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 465D0F8049A
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 19:14:23 +0200 (CEST)
+Received: by mail-ed1-f97.google.com with SMTP id z51so2672850edz.13
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 10:14:23 -0700 (PDT)
+In-Reply-To: <20190815155032.29181-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,13 +26,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pan Xiuli <xiuli.pan@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: add ACPI matching tables for EHL
+   ASoC: SOF: ipc: add ALH parameters
 
 has been applied to the asoc tree at
 
@@ -57,73 +57,68 @@ to this mail.
 Thanks,
 Mark
 
->From f4ead53241c7dcd2f3130e059cb3dfdec0ec9871 Mon Sep 17 00:00:00 2001
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
-Date: Thu, 15 Aug 2019 10:57:48 -0500
-Subject: [PATCH] ASoC: Intel: common: add ACPI matching tables for EHL
+>From 3a9477a06c6acb4234407b59999835a6f12f889d Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 15 Aug 2019 10:50:30 -0500
+Subject: [PATCH] ASoC: SOF: ipc: add ALH parameters
 
-There are no upstream machine drivers just yet so just add dummy table
-for compilation in nocodec-mode.
+The only configuration parameter is the ALH stream ID. No range
+checking is done by the driver, the firmware should check that the
+stream is valid for a specific hardware.
 
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Bump the ABI Minor number to keep the alignment with SOF firmware
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190815155749.29304-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190815155032.29181-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-acpi-intel-match.h           |  1 +
- sound/soc/intel/common/Makefile                |  2 +-
- .../intel/common/soc-acpi-intel-ehl-match.c    | 18 ++++++++++++++++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-ehl-match.c
+ include/sound/sof/dai-intel.h | 9 +++++++++
+ include/sound/sof/dai.h       | 1 +
+ include/uapi/sound/sof/abi.h  | 2 +-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index ce6c4a970939..6c9929abd90b 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -26,6 +26,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[];
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[];
+diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
+index a81afd3fbd41..b03e2ec08694 100644
+--- a/include/sound/sof/dai-intel.h
++++ b/include/sound/sof/dai-intel.h
+@@ -179,4 +179,13 @@ struct sof_ipc_dai_dmic_params {
+ 	struct sof_ipc_dai_dmic_pdm_ctrl pdm[0];
+ } __packed;
  
- /*
-  * generic table used for HDA codec-based platforms, possibly with
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index a14aca62ff96..18d9630ae9a2 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -8,7 +8,7 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
- 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
- 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
- 	soc-acpi-intel-cnl-match.o soc-acpi-intel-icl-match.o \
--	soc-acpi-intel-tgl-match.o \
-+	soc-acpi-intel-tgl-match.o soc-acpi-intel-ehl-match.o \
- 	soc-acpi-intel-hda-match.o
++/* ALH Configuration Request - SOF_IPC_DAI_ALH_CONFIG */
++struct sof_ipc_dai_alh_params {
++	struct sof_ipc_hdr hdr;
++	uint32_t stream_id;
++
++	/* reserved for future use */
++	uint32_t reserved[15];
++} __packed;
++
+ #endif
+diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
+index 3d174e20aa53..da9825ad41d4 100644
+--- a/include/sound/sof/dai.h
++++ b/include/sound/sof/dai.h
+@@ -70,6 +70,7 @@ struct sof_ipc_dai_config {
+ 		struct sof_ipc_dai_ssp_params ssp;
+ 		struct sof_ipc_dai_dmic_params dmic;
+ 		struct sof_ipc_dai_hda_params hda;
++		struct sof_ipc_dai_alh_params alh;
+ 	};
+ } __packed;
  
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
-diff --git a/sound/soc/intel/common/soc-acpi-intel-ehl-match.c b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
-new file mode 100644
-index 000000000000..a1290c3fa99f
---- /dev/null
-+++ b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * soc-apci-intel-ehl-match.c - tables and support for EHL ACPI enumeration.
-+ *
-+ * Copyright (c) 2019, Intel Corporation.
-+ *
-+ */
-+
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[] = {
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_ehl_machines);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Intel Common ACPI Match module");
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index dff70a42445a..a0fe0d4c4b66 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -26,7 +26,7 @@
+ 
+ /* SOF ABI version major, minor and patch numbers */
+ #define SOF_ABI_MAJOR 3
+-#define SOF_ABI_MINOR 9
++#define SOF_ABI_MINOR 10
+ #define SOF_ABI_PATCH 0
+ 
+ /* SOF ABI version number. Format within 32bit word is MMmmmppp */
 -- 
 2.20.1
