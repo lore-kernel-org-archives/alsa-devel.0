@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic23: remove unused variable 'tlv320aic23_rec_src'" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:23 +0100 (BST)
-Message-ID: <20190815171423.BA3862742BC7@ypsilon.sirena.org.uk>
-References: <20190815091534.57780-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: cs42l56: remove unused variable 'adc_swap_enum'" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:22 +0100 (BST)
+Message-ID: <20190815171422.AB4402742B9E@ypsilon.sirena.org.uk>
+References: <20190815092436.34632-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815091534.57780-1-yuehaibing@huawei.com>
+In-Reply-To: <20190815092436.34632-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: allison@lohutok.net, alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, kstewart@linuxfoundation.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, brian.austin@cirrus.com, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Paul.Handrigan@cirrus.com, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic23: remove unused variable 'tlv320aic23_rec_src'
+   ASoC: cs42l56: remove unused variable 'adc_swap_enum'
 
 has been applied to the asoc tree at
 
@@ -37,37 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From ab0ac2707784a966927c229752849c343bd1dbbf Mon Sep 17 00:00:00 2001
+>From e33d565795930d0341bb946aec457a814ccd53e6 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:15:34 +0800
-Subject: [PATCH] ASoC: tlv320aic23: remove unused variable
- 'tlv320aic23_rec_src'
+Date: Thu, 15 Aug 2019 17:24:36 +0800
+Subject: [PATCH] ASoC: cs42l56: remove unused variable 'adc_swap_enum'
 
-sound/soc/codecs/tlv320aic23.c:70:29: warning:
- tlv320aic23_rec_src defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/cs42l56.c:206:30: warning:
+ adc_swap_enum defined but not used [-Wunused-const-variable=]
 
 It is never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815091534.57780-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190815092436.34632-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic23.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/cs42l56.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 080a840c987a..f8e2f4b74db3 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -67,8 +67,6 @@ static SOC_ENUM_SINGLE_DECL(rec_src_enum,
- static const struct snd_kcontrol_new tlv320aic23_rec_src_mux_controls =
- SOC_DAPM_ENUM("Input Select", rec_src_enum);
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index b4d7627525f9..ac569ab3d30f 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -199,14 +199,6 @@ static const struct soc_enum beep_bass_enum =
+ 	SOC_ENUM_SINGLE(CS42L56_BEEP_TONE_CFG, 1,
+ 			ARRAY_SIZE(beep_bass_text), beep_bass_text);
  
--static SOC_ENUM_SINGLE_DECL(tlv320aic23_rec_src,
--			    TLV320AIC23_ANLG, 2, rec_src_text);
- static SOC_ENUM_SINGLE_DECL(tlv320aic23_deemph,
- 			    TLV320AIC23_DIGT, 1, deemph_text);
+-static const char * const adc_swap_text[] = {
+-	"None", "A+B/2", "A-B/2", "Swap"
+-};
+-
+-static const struct soc_enum adc_swap_enum =
+-	SOC_ENUM_SINGLE(CS42L56_MISC_ADC_CTL, 3,
+-			ARRAY_SIZE(adc_swap_text), adc_swap_text);
+-
+ static const char * const pgaa_mux_text[] = {
+ 	"AIN1A", "AIN2A", "AIN3A"};
  
 -- 
 2.20.1
