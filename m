@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8328: remove unused variable 'pga_tlv'" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:23 +0100 (BST)
-Message-ID: <20190815171423.318EC2742BD6@ypsilon.sirena.org.uk>
-References: <20190815092056.28724-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: max98371: remove unused variable 'max98371_noload_gain_tlv'" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:24 +0100 (BST)
+Message-ID: <20190815171424.409CF2742B9E@ypsilon.sirena.org.uk>
+References: <20190815090404.72752-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815092056.28724-1-yuehaibing@huawei.com>
+In-Reply-To: <20190815090404.72752-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, gustavo@embeddedor.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, info@metux.net, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8328: remove unused variable 'pga_tlv'
+   ASoC: max98371: remove unused variable 'max98371_noload_gain_tlv'
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 97d39be9ce5befc2e36f15d0df33832e0f633565 Mon Sep 17 00:00:00 2001
+>From 9d22142c9b1ec8612b880121dd0bc27311cbb2b5 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:20:56 +0800
-Subject: [PATCH] ASoC: es8328: remove unused variable 'pga_tlv'
+Date: Thu, 15 Aug 2019 17:04:04 +0800
+Subject: [PATCH] ASoC: max98371: remove unused variable
+ 'max98371_noload_gain_tlv'
 
-sound/soc/codecs/es8328.c:102:35: warning:
- pga_tlv defined but not used [-Wunused-const-variable=]
+sound/soc/codecs/max98371.c:157:35: warning:
+ max98371_noload_gain_tlv defined but not used [-Wunused-const-variable=]
 
-They are never used, so can be removed.
+It is never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815092056.28724-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190815090404.72752-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8328.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/max98371.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 822a25a8f53c..4a3d303fedfb 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -99,7 +99,6 @@ static SOC_ENUM_SINGLE_DECL(adcpol,
+diff --git a/sound/soc/codecs/max98371.c b/sound/soc/codecs/max98371.c
+index ce801489a86d..dfee05f985bd 100644
+--- a/sound/soc/codecs/max98371.c
++++ b/sound/soc/codecs/max98371.c
+@@ -154,10 +154,6 @@ static const DECLARE_TLV_DB_RANGE(max98371_gain_tlv,
+ 	8, 10, TLV_DB_SCALE_ITEM(400, 100, 0)
+ );
  
- static const DECLARE_TLV_DB_SCALE(play_tlv, -3000, 100, 0);
- static const DECLARE_TLV_DB_SCALE(dac_adc_tlv, -9600, 50, 0);
--static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
- static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
- static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
+-static const DECLARE_TLV_DB_RANGE(max98371_noload_gain_tlv,
+-	0, 11, TLV_DB_SCALE_ITEM(950, 100, 0),
+-);
+-
+ static const DECLARE_TLV_DB_SCALE(digital_tlv, -6300, 50, 1);
  
+ static const struct snd_kcontrol_new max98371_snd_controls[] = {
 -- 
 2.20.1
