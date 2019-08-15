@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1011: remove unused variable 'dac_vol_tlv' and 'adc_vol_tlv'" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:23 +0100 (BST)
-Message-ID: <20190815171424.034DC2742BD6@ypsilon.sirena.org.uk>
-References: <20190815090602.9000-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: soc-core: Fix -Wunused-const-variable warning" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:26 +0100 (BST)
+Message-ID: <20190815171426.567272742BD6@ypsilon.sirena.org.uk>
+References: <20190813142501.13080-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815090602.9000-1-yuehaibing@huawei.com>
+In-Reply-To: <20190813142501.13080-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, bardliao@realtek.com, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt1011: remove unused variable 'dac_vol_tlv' and 'adc_vol_tlv'
+   ASoC: soc-core: Fix -Wunused-const-variable warning
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From 5b366753c1c12feead0ae53b45482f569ed5399c Mon Sep 17 00:00:00 2001
+>From 0faf1237c60a3791d7ff32035d3097d3e022e68f Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:06:02 +0800
-Subject: [PATCH] ASoC: rt1011: remove unused variable 'dac_vol_tlv' and
- 'adc_vol_tlv'
+Date: Tue, 13 Aug 2019 22:25:01 +0800
+Subject: [PATCH] ASoC: soc-core: Fix -Wunused-const-variable warning
 
-sound/soc/codecs/rt1011.c:981:35: warning:
- dac_vol_tlv defined but not used [-Wunused-const-variable=]
-sound/soc/codecs/rt1011.c:982:35: warning:
- adc_vol_tlv defined but not used [-Wunused-const-variable=]
+If CONFIG_DMI is not set, gcc warns:
 
-They are never used, so can be removed.
+sound/soc/soc-core.c:81:27: warning:
+ dmi_blacklist defined but not used [-Wunused-const-variable=]
 
+Add #ifdef guard around it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815090602.9000-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190813142501.13080-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 638abcaf52b3..fa34565a3938 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -978,9 +978,6 @@ static bool rt1011_readable_register(struct device *dev, unsigned int reg)
- 	}
- }
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e9f44505cc3e..abe2f47cee6e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -73,6 +73,7 @@ static int pmdown_time = 5000;
+ module_param(pmdown_time, int, 0);
+ MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
  
--static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -9435, 37, 0);
--static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1739, 37, 0);
--
- static const char * const rt1011_din_source_select[] = {
- 	"Left",
- 	"Right",
++#ifdef CONFIG_DMI
+ /*
+  * If a DMI filed contain strings in this blacklist (e.g.
+  * "Type2 - Board Manufacturer" or "Type1 - TBD by OEM"), it will be taken
+@@ -87,6 +88,7 @@ static const char * const dmi_blacklist[] = {
+ 	"Board Product Name",
+ 	NULL,	/* terminator */
+ };
++#endif
+ 
+ static ssize_t pmdown_time_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
 -- 
 2.20.1
