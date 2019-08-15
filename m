@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: rockchip_max98090: Set period size to 240" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:28 +0100 (BST)
-Message-ID: <20190815171428.16A862742B9E@ypsilon.sirena.org.uk>
-References: <20190813074430.191791-1-cychiang@chromium.org>
+Subject: Applied "ASoC: ti: Fix typos in ti/Kconfig" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:27 +0100 (BST)
+Message-ID: <20190815171427.D1B542742BD6@ypsilon.sirena.org.uk>
+References: <20190813034235.30673-1-standby24x7@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190813074430.191791-1-cychiang@chromium.org>
+In-Reply-To: <20190813034235.30673-1-standby24x7@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: alsa-devel@alsa-project.org, cain.cai@rock-chips.com, dgreid@chromium.org, dianders@chromium.org, eddie.cai@rock-chips.com, enric.balletbo@collabora.com, Heiko Stuebner <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>, jeffy.chen@rock-chips.com, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, tzungbi@chromium.org, zhengxing@rock-chips.com
+To: Masanari Iida <standby24x7@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, Peter Ujfalusi <peter.ujfalusi@ti.com>peter.ujfalusi@ti.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: rockchip_max98090: Set period size to 240
+   ASoC: ti: Fix typos in ti/Kconfig
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,54 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 7188f656cdf762d4ea8ce16b6aaf4c6b06e119ec Mon Sep 17 00:00:00 2001
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Date: Tue, 13 Aug 2019 15:44:30 +0800
-Subject: [PATCH] ASoC: rockchip: rockchip_max98090: Set period size to 240
+>From ae3a5901dde2ab136ec0cebda2fccc48e810d2ec Mon Sep 17 00:00:00 2001
+From: Masanari Iida <standby24x7@gmail.com>
+Date: Tue, 13 Aug 2019 12:42:35 +0900
+Subject: [PATCH] ASoC: ti: Fix typos in ti/Kconfig
 
->From stress testing of arecord, we found that period size
-greater than ~900 will bring pl330 to DYING state and
-can not recover within 100 iterations.
-The result is that arecord will stuck and get I/O error,
-and issue can not be recovered until reboot.
+This patch fixes some spelling typo in Kconfig.
 
-This issue does not happen when period size is small.
-Set constraint of period size to 240 to prevent such issue.
-With the constraint, there will be no issue after 2000 iterations.
-
-We can revert this patch once the root cause is found
-in rockchip's pl330 implementation.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Link: https://lore.kernel.org/r/20190813074430.191791-1-cychiang@chromium.org
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20190813034235.30673-1-standby24x7@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_max98090.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/ti/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 782e534d4c0d..d54f672d38d8 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -138,8 +138,19 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
+diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
+index 2197f3e1eaed..87a9b9dd4e98 100644
+--- a/sound/soc/ti/Kconfig
++++ b/sound/soc/ti/Kconfig
+@@ -12,7 +12,7 @@ config SND_SOC_TI_SDMA_PCM
  
-+static int rk_aif1_startup(struct snd_pcm_substream *substream)
-+{
-+	/*
-+	 * Set period size to 240 because pl330 has issue
-+	 * dealing with larger period in stress testing.
-+	 */
-+	return snd_pcm_hw_constraint_minmax(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 240, 240);
-+}
-+
- static const struct snd_soc_ops rk_aif1_ops = {
- 	.hw_params = rk_aif1_hw_params,
-+	.startup = rk_aif1_startup,
- };
+ comment "Texas Instruments DAI support for:"
+ config SND_SOC_DAVINCI_ASP
+-	tristate "daVinci Audio Serial Port (ASP) or McBSP suport"
++	tristate "daVinci Audio Serial Port (ASP) or McBSP support"
+ 	depends on ARCH_DAVINCI || COMPILE_TEST
+ 	select SND_SOC_TI_EDMA_PCM
+ 	help
+@@ -33,7 +33,7 @@ config SND_SOC_DAVINCI_MCASP
+ 	  - Keystone devices
  
- SND_SOC_DAILINK_DEFS(hifi,
+ config SND_SOC_DAVINCI_VCIF
+-	tristate "daVinci Voice Interface (VCIF) suport"
++	tristate "daVinci Voice Interface (VCIF) support"
+ 	depends on ARCH_DAVINCI || COMPILE_TEST
+ 	select SND_SOC_TI_EDMA_PCM
+ 	help
 -- 
 2.20.1
