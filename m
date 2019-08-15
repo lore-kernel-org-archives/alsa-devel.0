@@ -1,7 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/4] ASoC: SOF: ipc: add ALH parameters
-Date: Thu, 15 Aug 2019 10:50:30 -0500
-Message-ID: <20190815155032.29181-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: SOF: topology: initial support for
+	Intel ALH DAI type
+Date: Thu, 15 Aug 2019 10:50:31 -0500
+Message-ID: <20190815155032.29181-4-pierre-louis.bossart@linux.intel.com>
 References: <20190815155032.29181-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 591ADF80290
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 17:55:39 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D680F805F5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 17:55:59 +0200 (CEST)
 In-Reply-To: <20190815155032.29181-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,61 +27,88 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The only configuration parameter is the ALH stream ID. No range
-checking is done by the driver, the firmware should check that the
-stream is valid for a specific hardware.
-
-Bump the ABI Minor number to keep the alignment with SOF firmware
+The Audio Link Hub DAI does not require any static configuration from
+topology for now. We still need to pass the frame rate and format to
+firmware.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/dai-intel.h | 9 +++++++++
- include/sound/sof/dai.h       | 1 +
- include/uapi/sound/sof/abi.h  | 2 +-
- 3 files changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/sof/topology.c | 42 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
-index 1ab52fd63ceb..5f1ef5565be6 100644
---- a/include/sound/sof/dai-intel.h
-+++ b/include/sound/sof/dai-intel.h
-@@ -179,4 +179,13 @@ struct sof_ipc_dai_dmic_params {
- 	struct sof_ipc_dai_dmic_pdm_ctrl pdm[0];
- } __packed;
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index a215bf58b138..28a7a6e06a53 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -346,6 +346,7 @@ static const struct sof_dai_types sof_dais[] = {
+ 	{"SSP", SOF_DAI_INTEL_SSP},
+ 	{"HDA", SOF_DAI_INTEL_HDA},
+ 	{"DMIC", SOF_DAI_INTEL_DMIC},
++	{"ALH", SOF_DAI_INTEL_ALH},
+ 	{"SAI", SOF_DAI_IMX_SAI},
+ 	{"ESAI", SOF_DAI_IMX_ESAI},
+ };
+@@ -2763,6 +2764,40 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
+ 	return ret;
+ }
  
-+/* ALH Configuration Request - SOF_IPC_DAI_ALH_CONFIG */
-+struct sof_ipc_dai_alh_params {
-+	struct sof_ipc_hdr hdr;
-+	uint32_t stream_id;
++static int sof_link_alh_load(struct snd_soc_component *scomp, int index,
++			     struct snd_soc_dai_link *link,
++			     struct snd_soc_tplg_link_config *cfg,
++			     struct snd_soc_tplg_hw_config *hw_config,
++			     struct sof_ipc_dai_config *config)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
++	int ret;
 +
-+	/* reserved for future use */
-+	uint32_t reserved[15];
-+} __packed;
++	/* init IPC */
++	config->hdr.size = size;
 +
- #endif
-diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
-index 6b296df242bd..0f1235022146 100644
---- a/include/sound/sof/dai.h
-+++ b/include/sound/sof/dai.h
-@@ -72,6 +72,7 @@ struct sof_ipc_dai_config {
- 		struct sof_ipc_dai_ssp_params ssp;
- 		struct sof_ipc_dai_dmic_params dmic;
- 		struct sof_ipc_dai_hda_params hda;
-+		struct sof_ipc_dai_alh_params alh;
- 	};
- } __packed;
- 
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
-index dff70a42445a..a0fe0d4c4b66 100644
---- a/include/uapi/sound/sof/abi.h
-+++ b/include/uapi/sound/sof/abi.h
-@@ -26,7 +26,7 @@
- 
- /* SOF ABI version major, minor and patch numbers */
- #define SOF_ABI_MAJOR 3
--#define SOF_ABI_MINOR 9
-+#define SOF_ABI_MINOR 10
- #define SOF_ABI_PATCH 0
- 
- /* SOF ABI version number. Format within 32bit word is MMmmmppp */
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 config->hdr.cmd, config, size, &reply,
++				 sizeof(reply));
++
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to set DAI config for ALH %d\n",
++			config->dai_index);
++		return ret;
++	}
++
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, config);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to save DAI config for ALH %d\n",
++			config->dai_index);
++
++	return ret;
++}
++
+ /* DAI link - used for any driver specific init */
+ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 			 struct snd_soc_dai_link *link,
+@@ -2859,6 +2894,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+ 		break;
++	case SOF_DAI_INTEL_ALH:
++		ret = sof_link_alh_load(scomp, index, link, cfg, hw_config,
++					&config);
++		break;
+ 	case SOF_DAI_IMX_SAI:
+ 		ret = sof_link_sai_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+@@ -2924,7 +2963,8 @@ static int sof_link_unload(struct snd_soc_component *scomp,
+ 	switch (sof_dai->dai_config->type) {
+ 	case SOF_DAI_INTEL_SSP:
+ 	case SOF_DAI_INTEL_DMIC:
+-		/* no resource needs to be released for SSP and DMIC */
++	case SOF_DAI_INTEL_ALH:
++		/* no resource needs to be released for SSP, DMIC and ALH */
+ 		break;
+ 	case SOF_DAI_INTEL_HDA:
+ 		ret = sof_link_hda_unload(sdev, link);
 -- 
 2.20.1
