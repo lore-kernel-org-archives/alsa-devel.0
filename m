@@ -1,7 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/3] ASoC: SOF: Add OF DSP device support
-Date: Thu, 15 Aug 2019 10:44:58 -0500
-Message-ID: <20190815154500.29090-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: topology: Add dummy support for
+	i.MX8 DAIs
+Date: Thu, 15 Aug 2019 10:45:00 -0500
+Message-ID: <20190815154500.29090-4-pierre-louis.bossart@linux.intel.com>
 References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 684B7F8015B
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 17:45:20 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F01BF80274
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 17:45:21 +0200 (CEST)
 In-Reply-To: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,207 +29,101 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Daniel Baluta <daniel.baluta@nxp.com>
 
-Add support for device tree based SOF DSP devices.
+Add dummy support for SAI/ESAI digital audio interface
+IPs found on i.MX8 boards.
 
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/Kconfig      |  10 +++
- sound/soc/sof/Makefile     |   3 +
- sound/soc/sof/sof-of-dev.c | 143 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 156 insertions(+)
- create mode 100644 sound/soc/sof/sof-of-dev.c
+ include/sound/sof/dai.h         |  2 ++
+ include/uapi/sound/sof/tokens.h |  8 ++++++++
+ sound/soc/sof/topology.c        | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 40 insertions(+)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index fb01f0ca6027..01acb580b817 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -36,6 +36,16 @@ config SND_SOC_SOF_ACPI
- 	  Say Y if you need this option
- 	  If unsure select "N".
+diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
+index 5b8de1b1983c..7a84f7fb460a 100644
+--- a/include/sound/sof/dai.h
++++ b/include/sound/sof/dai.h
+@@ -50,6 +50,8 @@ enum sof_ipc_dai_type {
+ 	SOF_DAI_INTEL_DMIC,		/**< Intel DMIC */
+ 	SOF_DAI_INTEL_HDA,		/**< Intel HD/A */
+ 	SOF_DAI_INTEL_SOUNDWIRE,	/**< Intel SoundWire */
++	SOF_DAI_IMX_SAI,		/**< i.MX SAI */
++	SOF_DAI_IMX_ESAI,		/**< i.MX ESAI */
+ };
  
-+config SND_SOC_SOF_OF
-+	tristate "SOF OF enumeration support"
-+	depends on OF || COMPILE_TEST
-+	select SND_SOC_SOF
-+	select SND_SOC_SOF_OPTIONS
-+	help
-+	  This adds support for Device Tree enumeration. This option is
-+	  required to enable i.MX8 devices.
-+	  Say Y if you need this option. If unsure select "N".
-+
- config SND_SOC_SOF_OPTIONS
- 	tristate
- 	help
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index 585fb6917489..772c452d1ae2 100644
---- a/sound/soc/sof/Makefile
-+++ b/sound/soc/sof/Makefile
-@@ -5,6 +5,8 @@ snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
+ /* general purpose DAI configuration */
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index 6435240cef13..8f996857fb24 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -106,4 +106,12 @@
+ /* for backward compatibility */
+ #define SOF_TKN_EFFECT_TYPE	SOF_TKN_PROCESS_TYPE
  
- snd-sof-pci-objs := sof-pci-dev.o
- snd-sof-acpi-objs := sof-acpi-dev.o
-+snd-sof-of-objs := sof-of-dev.o
++/* SAI */
++#define SOF_TKN_IMX_SAI_FIRST_TOKEN		1000
++/* TODO: Add SAI tokens */
 +
- snd-sof-nocodec-objs := nocodec.o
++/* ESAI */
++#define SOF_TKN_IMX_ESAI_FIRST_TOKEN		1100
++/* TODO: Add ESAI tokens */
++
+ #endif
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 9cffea142395..a215bf58b138 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -346,6 +346,8 @@ static const struct sof_dai_types sof_dais[] = {
+ 	{"SSP", SOF_DAI_INTEL_SSP},
+ 	{"HDA", SOF_DAI_INTEL_HDA},
+ 	{"DMIC", SOF_DAI_INTEL_DMIC},
++	{"SAI", SOF_DAI_IMX_SAI},
++	{"ESAI", SOF_DAI_IMX_ESAI},
+ };
  
- obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
-@@ -12,6 +14,7 @@ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
+ static enum sof_ipc_dai_type find_dai(const char *name)
+@@ -2513,6 +2515,26 @@ static int sof_link_ssp_load(struct snd_soc_component *scomp, int index,
+ 	return ret;
+ }
  
- 
- obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi.o
-+obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
- obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci.o
- 
- obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
-diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
-new file mode 100644
-index 000000000000..28a9692974e5
---- /dev/null
-+++ b/sound/soc/sof/sof-of-dev.c
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+//
-+// Copyright 2019 NXP
-+//
-+// Author: Daniel Baluta <daniel.baluta@nxp.com>
-+//
-+
-+#include <linux/firmware.h>
-+#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <sound/sof.h>
-+
-+#include "ops.h"
-+
-+extern struct snd_sof_dsp_ops sof_imx8_ops;
-+
-+/* platform specific devices */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_IMX8)
-+static struct sof_dev_desc sof_of_imx8qxp_desc = {
-+	.default_fw_path = "imx/sof",
-+	.default_tplg_path = "imx/sof-tplg",
-+	.nocodec_fw_filename = "sof-imx8.ri",
-+	.nocodec_tplg_filename = "sof-imx8-nocodec.tplg",
-+	.ops = &sof_imx8_ops,
-+};
-+#endif
-+
-+static const struct dev_pm_ops sof_of_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
-+	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
-+			   NULL)
-+};
-+
-+static void sof_of_probe_complete(struct device *dev)
++static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
++			     struct snd_soc_dai_link *link,
++			     struct snd_soc_tplg_link_config *cfg,
++			     struct snd_soc_tplg_hw_config *hw_config,
++			     struct sof_ipc_dai_config *config)
 +{
-+	/* allow runtime_pm */
-+	pm_runtime_set_autosuspend_delay(dev, SND_SOF_SUSPEND_DELAY_MS);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_enable(dev);
-+}
-+
-+static int sof_of_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const struct sof_dev_desc *desc;
-+	/*TODO: create a generic snd_soc_xxx_mach */
-+	struct snd_soc_acpi_mach *mach;
-+	struct snd_sof_pdata *sof_pdata;
-+	const struct snd_sof_dsp_ops *ops;
-+	int ret;
-+
-+	dev_info(&pdev->dev, "DT DSP detected");
-+
-+	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
-+	if (!sof_pdata)
-+		return -ENOMEM;
-+
-+	desc = device_get_match_data(dev);
-+	if (!desc)
-+		return -ENODEV;
-+
-+	/* get ops for platform */
-+	ops = desc->ops;
-+	if (!ops) {
-+		dev_err(dev, "error: no matching DT descriptor ops\n");
-+		return -ENODEV;
-+	}
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_FORCE_NOCODEC_MODE)
-+	/* force nocodec mode */
-+	dev_warn(dev, "Force to use nocodec mode\n");
-+	mach = devm_kzalloc(dev, sizeof(*mach), GFP_KERNEL);
-+	if (!mach)
-+		return -ENOMEM;
-+	ret = sof_nocodec_setup(dev, sof_pdata, mach, desc, ops);
-+	if (ret < 0)
-+		return ret;
-+#else
-+	/* TODO: implement case where we actually have a codec */
-+	return -ENODEV;
-+#endif
-+
-+	if (mach)
-+		mach->mach_params.platform = dev_name(dev);
-+
-+	sof_pdata->machine = mach;
-+	sof_pdata->desc = desc;
-+	sof_pdata->dev = &pdev->dev;
-+	sof_pdata->platform = dev_name(dev);
-+
-+	/* TODO: read alternate fw and tplg filenames from DT */
-+	sof_pdata->fw_filename_prefix = sof_pdata->desc->default_fw_path;
-+	sof_pdata->tplg_filename_prefix = sof_pdata->desc->default_tplg_path;
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
-+	/* set callback to enable runtime_pm */
-+	sof_pdata->sof_probe_complete = sof_of_probe_complete;
-+#endif
-+	 /* call sof helper for DSP hardware probe */
-+	ret = snd_sof_device_probe(dev, sof_pdata);
-+	if (ret) {
-+		dev_err(dev, "error: failed to probe DSP hardware\n");
-+		return ret;
-+	}
-+
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
-+	sof_of_probe_complete(dev);
-+#endif
-+
-+	return ret;
-+}
-+
-+static int sof_of_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	/* call sof helper for DSP hardware remove */
-+	snd_sof_device_remove(&pdev->dev);
-+
++	/*TODO: Add implementation */
 +	return 0;
 +}
 +
-+static const struct of_device_id sof_of_ids[] = {
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_IMX8)
-+	{ .compatible = "fsl,imx8qxp-dsp", .data = &sof_of_imx8qxp_desc},
-+#endif
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, sof_of_ids);
++static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
++			      struct snd_soc_dai_link *link,
++			      struct snd_soc_tplg_link_config *cfg,
++			      struct snd_soc_tplg_hw_config *hw_config,
++			      struct sof_ipc_dai_config *config)
++{
++	/*TODO: Add implementation */
++	return 0;
++}
 +
-+/* DT driver definition */
-+static struct platform_driver snd_sof_of_driver = {
-+	.probe = sof_of_probe,
-+	.remove = sof_of_remove,
-+	.driver = {
-+		.name = "sof-audio-of",
-+		.pm = &sof_of_pm,
-+		.of_match_table = sof_of_ids,
-+	},
-+};
-+module_platform_driver(snd_sof_of_driver);
-+
-+MODULE_LICENSE("Dual BSD/GPL");
+ static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
+ 			      struct snd_soc_dai_link *link,
+ 			      struct snd_soc_tplg_link_config *cfg,
+@@ -2837,6 +2859,14 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+ 		break;
++	case SOF_DAI_IMX_SAI:
++		ret = sof_link_sai_load(scomp, index, link, cfg, hw_config,
++					&config);
++		break;
++	case SOF_DAI_IMX_ESAI:
++		ret = sof_link_esai_load(scomp, index, link, cfg, hw_config,
++					 &config);
++		break;
+ 	default:
+ 		dev_err(sdev->dev, "error: invalid DAI type %d\n", config.type);
+ 		ret = -EINVAL;
 -- 
 2.20.1
