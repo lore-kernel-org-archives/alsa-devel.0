@@ -1,8 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/4] ASoC: SOF: topology: initial support for
-	Intel ALH DAI type
-Date: Thu, 15 Aug 2019 14:20:17 -0500
-Message-ID: <20190815192018.30570-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: SOF: pcm: add ALH support
+Date: Thu, 15 Aug 2019 14:20:18 -0500
+Message-ID: <20190815192018.30570-5-pierre-louis.bossart@linux.intel.com>
 References: <20190815192018.30570-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +10,7 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7C55F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14A56F8015B
  for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 21:22:51 +0200 (CEST)
 In-Reply-To: <20190815192018.30570-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,88 +26,27 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Audio Link Hub DAI does not require any static configuration from
-topology for now. We still need to pass the frame rate and format to
-firmware.
+Even if ALH has no specific configuration, we still need to handle the
+common parameters for all DAIs
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 42 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+ sound/soc/sof/pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index a215bf58b138..28a7a6e06a53 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -346,6 +346,7 @@ static const struct sof_dai_types sof_dais[] = {
- 	{"SSP", SOF_DAI_INTEL_SSP},
- 	{"HDA", SOF_DAI_INTEL_HDA},
- 	{"DMIC", SOF_DAI_INTEL_DMIC},
-+	{"ALH", SOF_DAI_INTEL_ALH},
- 	{"SAI", SOF_DAI_IMX_SAI},
- 	{"ESAI", SOF_DAI_IMX_ESAI},
- };
-@@ -2763,6 +2764,40 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
- 	return ret;
- }
- 
-+static int sof_link_alh_load(struct snd_soc_component *scomp, int index,
-+			     struct snd_soc_dai_link *link,
-+			     struct snd_soc_tplg_link_config *cfg,
-+			     struct snd_soc_tplg_hw_config *hw_config,
-+			     struct sof_ipc_dai_config *config)
-+{
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct sof_ipc_reply reply;
-+	u32 size = sizeof(*config);
-+	int ret;
-+
-+	/* init IPC */
-+	config->hdr.size = size;
-+
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config->hdr.cmd, config, size, &reply,
-+				 sizeof(reply));
-+
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to set DAI config for ALH %d\n",
-+			config->dai_index);
-+		return ret;
-+	}
-+
-+	/* set config for all DAI's with name matching the link name */
-+	ret = sof_set_dai_config(sdev, size, link, config);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: failed to save DAI config for ALH %d\n",
-+			config->dai_index);
-+
-+	return ret;
-+}
-+
- /* DAI link - used for any driver specific init */
- static int sof_link_load(struct snd_soc_component *scomp, int index,
- 			 struct snd_soc_dai_link *link,
-@@ -2859,6 +2894,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
- 		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
- 					&config);
- 		break;
-+	case SOF_DAI_INTEL_ALH:
-+		ret = sof_link_alh_load(scomp, index, link, cfg, hw_config,
-+					&config);
-+		break;
- 	case SOF_DAI_IMX_SAI:
- 		ret = sof_link_sai_load(scomp, index, link, cfg, hw_config,
- 					&config);
-@@ -2924,7 +2963,8 @@ static int sof_link_unload(struct snd_soc_component *scomp,
- 	switch (sof_dai->dai_config->type) {
- 	case SOF_DAI_INTEL_SSP:
- 	case SOF_DAI_INTEL_DMIC:
--		/* no resource needs to be released for SSP and DMIC */
-+	case SOF_DAI_INTEL_ALH:
-+		/* no resource needs to be released for SSP, DMIC and ALH */
- 		break;
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 8612896673a5..e3f6a6dc0f36 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -675,6 +675,9 @@ static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
  	case SOF_DAI_INTEL_HDA:
- 		ret = sof_link_hda_unload(sdev, link);
+ 		/* do nothing for HDA dai_link */
+ 		break;
++	case SOF_DAI_INTEL_ALH:
++		/* do nothing for ALH dai_link */
++		break;
+ 	default:
+ 		dev_err(sdev->dev, "error: invalid DAI type %d\n",
+ 			dai->dai_config->type);
 -- 
 2.20.1
