@@ -1,22 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8737: Fix copy-paste error in wm8737_snd_controls" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:26 +0100 (BST)
-Message-ID: <20190815171426.93A0C2742B9E@ypsilon.sirena.org.uk>
-References: <20190815091920.64480-1-yuehaibing@huawei.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815091920.64480-1-yuehaibing@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: mediatek: mt8183-da7219-max98357: remove unused
+ variable" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:25 +0100 (BST)
+Message-ID: <20190815171425.C800A2742B9E@ypsilon.sirena.org.uk>
+References: <20190813143952.29232-1-yuehaibing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190813143952.29232-1-yuehaibing@huawei.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Hulk Robot <hulkci@huawei.com>, info@metux.net, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, patches@opensource.cirrus.com, perex@perex.cz, tglx@linutronix.de, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, perex@perex.c, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8737: Fix copy-paste error in wm8737_snd_controls
+   ASoC: mediatek: mt8183-da7219-max98357: remove unused variable
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,38 +49,46 @@ to this mail.
 Thanks,
 Mark
 
->From 554b75bde64bcad9662530726d1483f7ef012069 Mon Sep 17 00:00:00 2001
+>From 57c3ed42f52cdc51f416c93b19708ef6ceb4a00b Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:19:20 +0800
-Subject: [PATCH] ASoC: wm8737: Fix copy-paste error in wm8737_snd_controls
+Date: Tue, 13 Aug 2019 22:39:52 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183-da7219-max98357: remove unused
+ variable
 
-sound/soc/codecs/wm8737.c:112:29: warning:
- high_3d defined but not used [-Wunused-const-variable=]
+sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:120:1: warning:
+ mt8183_da7219_max98357_dapm_widgets defined but not used [-Wunused-const-variable=]
+sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:124:40: warning:
+ mt8183_da7219_max98357_dapm_routes defined but not used [-Wunused-const-variable=]
 
-'high_3d' should be used for 3D High Cut-off.
+They are never used, so can be removed.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 2a9ae13a2641 ("ASoC: Add initial WM8737 driver")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20190815091920.64480-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190813143952.29232-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8737.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index 0c246fb5e5ac..7a3f9fbe8d53 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -167,7 +167,7 @@ SOC_DOUBLE("Polarity Invert Switch", WM8737_ADC_CONTROL, 5, 6, 1, 0),
- SOC_SINGLE("3D Switch", WM8737_3D_ENHANCE, 0, 1, 0),
- SOC_SINGLE("3D Depth", WM8737_3D_ENHANCE, 1, 15, 0),
- SOC_ENUM("3D Low Cut-off", low_3d),
--SOC_ENUM("3D High Cut-off", low_3d),
-+SOC_ENUM("3D High Cut-off", high_3d),
- SOC_SINGLE_TLV("3D ADC Volume", WM8737_3D_ENHANCE, 7, 1, 1, adc_tlv),
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 2a6097174614..43f99e59a078 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -116,15 +116,6 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
  
- SOC_SINGLE("Noise Gate Switch", WM8737_NOISE_GATE, 0, 1, 0),
+-static const struct snd_soc_dapm_widget
+-mt8183_da7219_max98357_dapm_widgets[] = {
+-	SND_SOC_DAPM_OUTPUT("IT6505_8CH"),
+-};
+-
+-static const struct snd_soc_dapm_route mt8183_da7219_max98357_dapm_routes[] = {
+-	{"IT6505_8CH", NULL, "TDM"},
+-};
+-
+ /* FE */
+ SND_SOC_DAILINK_DEFS(playback1,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
 -- 
 2.20.1
