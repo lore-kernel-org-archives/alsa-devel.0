@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: Fix typos in ti/Kconfig" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:27 +0100 (BST)
-Message-ID: <20190815171427.D1B542742BD6@ypsilon.sirena.org.uk>
-References: <20190813034235.30673-1-standby24x7@gmail.com>
+Subject: Applied "ASoC: cs4349: Use PM ops 'cs4349_runtime_pm'" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:26 +0100 (BST)
+Message-ID: <20190815171426.CED5D2742BC7@ypsilon.sirena.org.uk>
+References: <20190815090157.70036-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190813034235.30673-1-standby24x7@gmail.com>
+In-Reply-To: <20190815090157.70036-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Masanari Iida <standby24x7@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, Peter Ujfalusi <peter.ujfalusi@ti.com>peter.ujfalusi@ti.com, tiwai@suse.com
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, brian.austin@cirrus.com, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Paul.Handrigan@cirrus.com, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: Fix typos in ti/Kconfig
+   ASoC: cs4349: Use PM ops 'cs4349_runtime_pm'
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,42 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From ae3a5901dde2ab136ec0cebda2fccc48e810d2ec Mon Sep 17 00:00:00 2001
-From: Masanari Iida <standby24x7@gmail.com>
-Date: Tue, 13 Aug 2019 12:42:35 +0900
-Subject: [PATCH] ASoC: ti: Fix typos in ti/Kconfig
+>From 9b4275c415acca6264a3d7f1182589959c93d530 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 15 Aug 2019 17:01:57 +0800
+Subject: [PATCH] ASoC: cs4349: Use PM ops 'cs4349_runtime_pm'
 
-This patch fixes some spelling typo in Kconfig.
+sound/soc/codecs/cs4349.c:358:32: warning:
+ cs4349_runtime_pm defined but not used [-Wunused-const-variable=]
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20190813034235.30673-1-standby24x7@gmail.com
+cs4349_runtime_pm ops already defined, it seems
+we should enable it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: e40da86 ("ASoC: cs4349: Add support for Cirrus Logic CS4349")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190815090157.70036-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs4349.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-index 2197f3e1eaed..87a9b9dd4e98 100644
---- a/sound/soc/ti/Kconfig
-+++ b/sound/soc/ti/Kconfig
-@@ -12,7 +12,7 @@ config SND_SOC_TI_SDMA_PCM
- 
- comment "Texas Instruments DAI support for:"
- config SND_SOC_DAVINCI_ASP
--	tristate "daVinci Audio Serial Port (ASP) or McBSP suport"
-+	tristate "daVinci Audio Serial Port (ASP) or McBSP support"
- 	depends on ARCH_DAVINCI || COMPILE_TEST
- 	select SND_SOC_TI_EDMA_PCM
- 	help
-@@ -33,7 +33,7 @@ config SND_SOC_DAVINCI_MCASP
- 	  - Keystone devices
- 
- config SND_SOC_DAVINCI_VCIF
--	tristate "daVinci Voice Interface (VCIF) suport"
-+	tristate "daVinci Voice Interface (VCIF) support"
- 	depends on ARCH_DAVINCI || COMPILE_TEST
- 	select SND_SOC_TI_EDMA_PCM
- 	help
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index 09716fab1e26..3381209a882d 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -378,6 +378,7 @@ static struct i2c_driver cs4349_i2c_driver = {
+ 	.driver = {
+ 		.name		= "cs4349",
+ 		.of_match_table	= cs4349_of_match,
++		.pm = &cs4349_runtime_pm,
+ 	},
+ 	.id_table	= cs4349_i2c_id,
+ 	.probe		= cs4349_i2c_probe,
 -- 
 2.20.1
