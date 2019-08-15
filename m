@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98371: remove unused variable 'max98371_noload_gain_tlv'" to the asoc tree
-Date: Thu, 15 Aug 2019 18:14:24 +0100 (BST)
-Message-ID: <20190815171424.409CF2742B9E@ypsilon.sirena.org.uk>
-References: <20190815090404.72752-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: es8328: Fix copy-paste error in es8328_right_line_controls" to the asoc tree
+Date: Thu, 15 Aug 2019 18:14:22 +0100 (BST)
+Message-ID: <20190815171422.EA7D62742BC7@ypsilon.sirena.org.uk>
+References: <20190815092300.68712-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815090404.72752-1-yuehaibing@huawei.com>
+In-Reply-To: <20190815092300.68712-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, info@metux.net, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, info@metux.net, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98371: remove unused variable 'max98371_noload_gain_tlv'
+   ASoC: es8328: Fix copy-paste error in es8328_right_line_controls
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 9d22142c9b1ec8612b880121dd0bc27311cbb2b5 Mon Sep 17 00:00:00 2001
+>From d63887bc4f50fede7013bda7c733d58ecc43efc1 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Aug 2019 17:04:04 +0800
-Subject: [PATCH] ASoC: max98371: remove unused variable
- 'max98371_noload_gain_tlv'
+Date: Thu, 15 Aug 2019 17:23:00 +0800
+Subject: [PATCH] ASoC: es8328: Fix copy-paste error in
+ es8328_right_line_controls
 
-sound/soc/codecs/max98371.c:157:35: warning:
- max98371_noload_gain_tlv defined but not used [-Wunused-const-variable=]
+It seems 'es8328_rline_enum' should be used
+in es8328_right_line_controls
 
-It is never used, so can be removed.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 567e4f98922c ("ASoC: add es8328 codec driver")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815090404.72752-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190815092300.68712-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98371.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/es8328.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98371.c b/sound/soc/codecs/max98371.c
-index ce801489a86d..dfee05f985bd 100644
---- a/sound/soc/codecs/max98371.c
-+++ b/sound/soc/codecs/max98371.c
-@@ -154,10 +154,6 @@ static const DECLARE_TLV_DB_RANGE(max98371_gain_tlv,
- 	8, 10, TLV_DB_SCALE_ITEM(400, 100, 0)
- );
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 4a3d303fedfb..fdf64c29f563 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -227,7 +227,7 @@ static const struct soc_enum es8328_rline_enum =
+ 			      ARRAY_SIZE(es8328_line_texts),
+ 			      es8328_line_texts);
+ static const struct snd_kcontrol_new es8328_right_line_controls =
+-	SOC_DAPM_ENUM("Route", es8328_lline_enum);
++	SOC_DAPM_ENUM("Route", es8328_rline_enum);
  
--static const DECLARE_TLV_DB_RANGE(max98371_noload_gain_tlv,
--	0, 11, TLV_DB_SCALE_ITEM(950, 100, 0),
--);
--
- static const DECLARE_TLV_DB_SCALE(digital_tlv, -6300, 50, 1);
- 
- static const struct snd_kcontrol_new max98371_snd_controls[] = {
+ /* Left Mixer */
+ static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
 -- 
 2.20.1
