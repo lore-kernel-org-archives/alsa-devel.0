@@ -1,23 +1,21 @@
-From: =?UTF-8?Q?Jer=C3=B3nimo_Borque?= <jeronimo@borque.com.ar>
-Subject: Re: [PATCH] ALSA: hda - Fixes inverted Conexant GPIO
-	mic mute led
-Date: Thu, 15 Aug 2019 13:33:50 -0300
-Message-ID: <CAHNnQd+B5UGKJBq+ikDBYa20vzL=Fj9tDGNeRZGp5qxcSiEDhQ@mail.gmail.com>
-References: <20190815013824.13373-1-jeronimo@borque.com.ar>
- <s5hv9uz9dh3.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: SOF: Add OF DSP device support
+Date: Thu, 15 Aug 2019 17:49:42 +0100
+Message-ID: <20190815164942.GB4841@sirena.co.uk>
+References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
+ <20190815154500.29090-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5864071999345727624=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk1-f196.google.com (mail-vk1-f196.google.com
- [209.85.221.196])
+Received: from mail-wr1-f98.google.com (mail-wr1-f98.google.com
+ [209.85.221.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 709ABF8015B
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 18:34:08 +0200 (CEST)
-Received: by mail-vk1-f196.google.com with SMTP id x20so504305vkd.6
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 09:34:08 -0700 (PDT)
-In-Reply-To: <s5hv9uz9dh3.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 892DBF8011F
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 18:49:44 +0200 (CEST)
+Received: by mail-wr1-f98.google.com with SMTP id b16so2780613wrq.9
+ for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 09:49:44 -0700 (PDT)
+In-Reply-To: <20190815154500.29090-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +25,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKTW9kaWZ5aW5nIE1pYyBNdXRlLUxFRCBNb2RlIGRvZXMgaW5kZWVkIGFsdGVy
-IHRoZSBiZWhhdmlvci4gVGhlIHRoaW5nIGlzCnRoYXQgdGhpcyBlbmRzIGJlaW5nIGNvbmZ1c2lu
-ZyBhcyBpbiBhbGwgbWFjaGluZXMgSSd2ZSBiZWVuIHRlc3RpbmcgdGhpcwpzZXR0aW5nIE1pYyBN
-dXRlLUxFRCBNb2RlIHRvICJGb2xsb3cgQ2FwdHVyZSIgYWN0dWFsbHkgbWFrZXMgaXQgZm9sbG93
-Cm11dGUsIGFzIHNldHRpbmcgaXQgdG8gIk9uIiB0dXJucyB0aGUgTEVEIG9mZi4KVGhlcmUgaXMg
-b3RoZXIgc2V0dGluZyBjYWxsZWQgIm11dGVfbGVkX3BvbGFyaXR5IiBidXQgdGhpcyBkb2VzIG5v
-dCB3b3JrLAphcyBjdXJyZW50bHkgbWljIG11dGUgTEVEIGFuZCBtdXRlIExFRCBkbyBub3QgZm9s
-bG93IHRoZSBzYW1lIGxvZ2ljLgpXaGF0IEkgdGhpbmsgbWF5IGJlIGNhdXNpbmcgY29uZnVzaW9u
-IGlzICJjeHRfdXBkYXRlX2dwaW9fbGVkIiAiZW5hYmxlZCIKcGFyYW1ldGVyLiBTZXR0aW5nICJl
-bmFibGVkIiB0byAidHJ1ZSIgc2V0cyB0aGUgR1BJTyBwaW4gdG8gMCBjYXVzaW5nIHRoZQpsZWQg
-dG8gYmUgdHVybmVkIG9mZi4gSSB0aGluayAiZW5hYmxlZCIgdXNlZCB0byByZWZlciB0byB0aGUg
-aW5wdXQgY2FwdHVyZQpvciBvdXRwdXQgc3RhdHVzIGFuZCBub3QgdG8gdGhlIExFRCBiZWluZyBs
-aXQgb3Igbm90LiBPdXRwdXQgb3IgaW5wdXQgbm90CmVuYWJsZWQgKGVuYWJsZWQ9PWZhbHNlKSBj
-YXVzZWQgdGhlIExFRCB0byBiZSB0dXJuZWQgb24uClRoaXMgbG9naWMgaW4gdGhlIGZ1bmN0aW9u
-IG5lZ2F0ZXMgaXQgb24gdGhlIEdQSU8gb3V0cHV0LgoKaWYgKGVuYWJsZWQpCiAgICBzcGVjLT5n
-cGlvX2xlZCAmPSB+bWFzazsKZWxzZQogICAgc3BlYy0+Z3Bpb19sZWQgfD0gbWFzazsKCk1heSBi
-ZSBJIGNhbiBkbyBhIG1vcmUgY29tcHJlaGVuc2l2ZSBmaXgsIHJldmVyc2luZyB0aGUgYmVoYXZp
-b3Igb2YKImN4dF91cGRhdGVfZ3Bpb19sZWQiICJlbmFibGVkIiBwYXJhbWV0ZXIgdG8gcmVmZXIg
-dGhlIEdQSU8gb3V0cHV0IHZhbHVlICgKZW5hYmxlZD09dHJ1ZSA9PiBHUElPIHBpbiBvdXRwdXQg
-aGlnaCApClRoZW4gYWxzbyBtb2RpZnkgdGhlIGNhbGwgdG8gImN4dF91cGRhdGVfZ3Bpb19sZWQi
-IGluCiJjeHRfZml4dXBfZ3Bpb19tdXRlX2hvb2siIHRvIG1ha2UgaXQgd29yayBjb25zaXN0ZW50
-bHkuCgpUaGFua3MsCkplcsOzbmltbwoKCkVsIGp1ZS4sIDE1IGRlIGFnby4gZGUgMjAxOSBhIGxh
-KHMpIDAyOjU4LCBUYWthc2hpIEl3YWkgKHRpd2FpQHN1c2UuZGUpCmVzY3JpYmnDszoKCj4gT24g
-VGh1LCAxNSBBdWcgMjAxOSAwMzozODoyNCArMDIwMCwKPiA8amVyb25pbW9AYm9ycXVlLmNvbS5h
-cj4gd3JvdGU6Cj4gPgo+ID4gRnJvbTogSmVyb25pbW8gQm9ycXVlIDxqZXJvbmltb0Bib3JxdWUu
-Y29tLmFyPgo+ID4KPiA+ICJlbmFibGVkIiBwYXJhbWV0ZXIgaGlzdG9yaWNhbGx5IHJlZmVycmVk
-IHRvIHRoZSBkZXZpY2UgaW5wdXQgb3IKPiA+IG91dHB1dCwgbm90IHRvIHRoZSBsZWQgaW5kaWNh
-dG9yLiBBZnRlciB0aGUgY2hhbmdlcyBhZGRlZCB3aXRoIHRoZQo+ID4gbGVkIGhlbHBlciBmdW5j
-dGlvbnMgdGhlIG1pYyBtdXRlIGxlZCBsb2dpYyByZWZlcnMgdG8gdGhlIGxlZCBhbmQgbm90Cj4g
-PiB0byB0aGUgbWljIGlucHV0IHdoaWNoIGNhdXNlZCBsZWQgaW5kaWNhdG9yIHRvIGJlIG5lZ2F0
-ZWQgKE1pYyBtdXRlCj4gPiBsZWQgd2FzIG9uIHdoZW4gdGhlIGlucHV0IGVuYWJsZWQpIEZpeGlu
-ZyBpdCBpbiB0aGUgY2FsbCB0bwo+ID4gY3h0X3VwZGF0ZV9ncGlvX2xlZCBhdCB0aGUgY3h0X2dw
-aW9fbWljbXV0ZV91cGRhdGUgaG9vay4KPiA+IE1heWJlIG1vcmUgY2hhbmdlcyBhcmUgcmVxdWly
-ZWQgdG8gYmUgY29uc2lzdGVudCBldmVyeXdoZXJlLgo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IEpl
-cm9uaW1vIEJvcnF1ZSA8amVyb25pbW9AYm9ycXVlLmNvbS5hcj4KPgo+IENvdWxkIHlvdSBjaGVj
-ayB3aGljaCB2YWx1ZSB5b3UgaGF2ZSBpbiAiTWljIE11dGUtTEVEIE1vZGUiIG1peGVyCj4gZWxl
-bWVudD8gIEkgZ3Vlc3MgaXQncyAiRm9sbG93IE11dGUiLiAgSWYgc28sIGNoYW5nZSBpdCB0byAi
-Rm9sbG93Cj4gQ2FwdHVyZSIuCj4KPiBJZiB0aGlzIHdvcmtzLCBpdCBtZWFucyB0aGF0IHRoZSBk
-cml2ZXIgd29ya3MgYXMgZXhwZWN0ZWQgYnV0IHRoZQo+IHByb2JsZW0gaXMgb25seSBhYm91dCB0
-aGUgZGVmYXVsdCB2YWx1ZS4gIFRoZSBkZWZhdWx0IHZhbHVlIHNldCBpbiB0aGUKPiBnZW5lcmlj
-IHBhcnNlciBpcyBiYXNlZCBvbiBvdGhlciBtYWNoaW5lJ3Mgc3RhbmRhcmQgKExFRCBvbiBhdCBt
-aWMKPiBvZmYpLCB3aGlsZSBzb21lIG1hY2hpbmVzIG1pZ2h0IGV4cGVjdCBkaWZmZXJlbnRseS4g
-IE9uIHN1Y2ggbWFjaGluZXMsCj4gd2UgbmVlZCB0byBzZXQgdGhlIGRpZmZlcmVudCB2YWx1ZSBp
-bml0aWFsbHkgaW4gdGhlIHF1aXJrIGZpeHVwLgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============5864071999345727624==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
+Content-Disposition: inline
+
+
+--EuxKj2iCbKjpUGkD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Aug 15, 2019 at 10:44:58AM -0500, Pierre-Louis Bossart wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
+>=20
+> Add support for device tree based SOF DSP devices.
+
+I'm not seeing any binding documentation here.  Binding documentation is
+required for any new device tree bindings supported in code.
+
+--EuxKj2iCbKjpUGkD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1VjSUACgkQJNaLcl1U
+h9C9ogf/azqPJo43SmwR3YnM0sdSvQEQHwfDsGNdMofxB5q4EvmkGrkamUZCew65
+FNOC7HDmnb4FqsXDUJuXyE3h45cvExWvFMsYr2t5umAMWSg8E4Ak2/O8hmlhfnVS
+tWHNAXSQN2TRdVTLs+uD0FlOiSUw6LZtoJ+wvc2DfxpbHlZLWDMwXQ9V5ZqMywwU
+l/n0IEuJajcNIFeGuGxFiChVOGD9xl52qslU5H5EvprV0WjTjinT9O3dQFULjFxQ
+78/GgAkMbxt0Q2DZD8bunviqy2ikKLqzURoS1qo0M00Hqwr5PhHz+trIlliXtGpZ
+K50KGKtmcYho1CWfLFJNGinGFhmoeA==
+=MXcA
+-----END PGP SIGNATURE-----
+
+--EuxKj2iCbKjpUGkD--
+
+--===============5864071999345727624==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5864071999345727624==--
