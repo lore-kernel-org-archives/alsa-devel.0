@@ -1,22 +1,42 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-audmux: Add driver suspend and resume to support MEGA Fast" to the asoc tree
-Date: Fri, 16 Aug 2019 13:14:53 +0100 (BST)
-Message-ID: <20190816121453.184B12743134@ypsilon.sirena.org.uk>
-References: <1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, festevam@gmail.com, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, s.hauer@pengutronix.de, shawnguo@kernel.org, timur@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
+Subject: Applied "ASoC: SOF: topology: initial support for
+	Intel ALH DAI type" to the asoc tree
+Date: Fri, 16 Aug 2019 13:14:52 +0100 (BST)
+Message-ID: <20190816121452.7971627430F0@ypsilon.sirena.org.uk>
+References: <20190815192018.30570-4-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f100.google.com (mail-ed1-f100.google.com
+ [209.85.208.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74266F8011F
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 14:14:53 +0200 (CEST)
+Received: by mail-ed1-f100.google.com with SMTP id s15so4973711edx.0
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 05:14:53 -0700 (PDT)
+In-Reply-To: <20190815192018.30570-4-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-audmux: Add driver suspend and resume to support MEGA Fast
+   ASoC: SOF: topology: initial support for Intel ALH DAI type
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,109 +57,95 @@ to this mail.
 Thanks,
 Mark
 
->From 8661ab5b23d6d30d8687fc05bc1dba8f9a64b444 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Fri, 16 Aug 2019 01:03:14 -0400
-Subject: [PATCH] ASoC: imx-audmux: Add driver suspend and resume to support
- MEGA Fast
+>From 4d6bbf1a015c84ba05af9d8c59dd9c55cad4e668 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 15 Aug 2019 14:20:17 -0500
+Subject: [PATCH] ASoC: SOF: topology: initial support for Intel ALH DAI type
 
-For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
-source of modules during system suspend and resume procedure.
-Thus, AUDMUX needs to save all the values of registers before the
-system suspend and restore them after the system resume.
+The Audio Link Hub DAI does not require any static configuration from
+topology for now. We still need to pass the frame rate and format to
+firmware.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Link: https://lore.kernel.org/r/1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190815192018.30570-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-audmux.c | 54 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 53 insertions(+), 1 deletion(-)
+ sound/soc/sof/topology.c | 42 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index b2351cd33b0f..16ede3b5cb32 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -23,6 +23,8 @@
- 
- static struct clk *audmux_clk;
- static void __iomem *audmux_base;
-+static u32 *regcache;
-+static u32 reg_max;
- 
- #define IMX_AUDMUX_V2_PTCR(x)		((x) * 8)
- #define IMX_AUDMUX_V2_PDCR(x)		((x) * 8 + 4)
-@@ -317,8 +319,23 @@ static int imx_audmux_probe(struct platform_device *pdev)
- 	if (of_id)
- 		pdev->id_entry = of_id->data;
- 	audmux_type = pdev->id_entry->driver_data;
--	if (audmux_type == IMX31_AUDMUX)
-+
-+	switch (audmux_type) {
-+	case IMX31_AUDMUX:
- 		audmux_debugfs_init();
-+		reg_max = 14;
-+		break;
-+	case IMX21_AUDMUX:
-+		reg_max = 6;
-+		break;
-+	default:
-+		dev_err(&pdev->dev, "unsupported version!\n");
-+		return -EINVAL;
-+	}
-+
-+	regcache = devm_kzalloc(&pdev->dev, sizeof(u32) * reg_max, GFP_KERNEL);
-+	if (!regcache)
-+		return -ENOMEM;
- 
- 	if (of_id)
- 		imx_audmux_parse_dt_defaults(pdev, pdev->dev.of_node);
-@@ -334,12 +351,47 @@ static int imx_audmux_remove(struct platform_device *pdev)
- 	return 0;
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index a215bf58b138..28a7a6e06a53 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -346,6 +346,7 @@ static const struct sof_dai_types sof_dais[] = {
+ 	{"SSP", SOF_DAI_INTEL_SSP},
+ 	{"HDA", SOF_DAI_INTEL_HDA},
+ 	{"DMIC", SOF_DAI_INTEL_DMIC},
++	{"ALH", SOF_DAI_INTEL_ALH},
+ 	{"SAI", SOF_DAI_IMX_SAI},
+ 	{"ESAI", SOF_DAI_IMX_ESAI},
+ };
+@@ -2763,6 +2764,40 @@ static int sof_link_hda_load(struct snd_soc_component *scomp, int index,
+ 	return ret;
  }
  
-+#ifdef CONFIG_PM_SLEEP
-+static int imx_audmux_suspend(struct device *dev)
++static int sof_link_alh_load(struct snd_soc_component *scomp, int index,
++			     struct snd_soc_dai_link *link,
++			     struct snd_soc_tplg_link_config *cfg,
++			     struct snd_soc_tplg_hw_config *hw_config,
++			     struct sof_ipc_dai_config *config)
 +{
-+	int i;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
++	int ret;
 +
-+	clk_prepare_enable(audmux_clk);
++	/* init IPC */
++	config->hdr.size = size;
 +
-+	for (i = 0; i < reg_max; i++)
-+		regcache[i] = readl(audmux_base + i * 4);
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 config->hdr.cmd, config, size, &reply,
++				 sizeof(reply));
 +
-+	clk_disable_unprepare(audmux_clk);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to set DAI config for ALH %d\n",
++			config->dai_index);
++		return ret;
++	}
 +
-+	return 0;
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, config);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to save DAI config for ALH %d\n",
++			config->dai_index);
++
++	return ret;
 +}
 +
-+static int imx_audmux_resume(struct device *dev)
-+{
-+	int i;
-+
-+	clk_prepare_enable(audmux_clk);
-+
-+	for (i = 0; i < reg_max; i++)
-+		writel(regcache[i], audmux_base + i * 4);
-+
-+	clk_disable_unprepare(audmux_clk);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops imx_audmux_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(imx_audmux_suspend, imx_audmux_resume)
-+};
-+
- static struct platform_driver imx_audmux_driver = {
- 	.probe		= imx_audmux_probe,
- 	.remove		= imx_audmux_remove,
- 	.id_table	= imx_audmux_ids,
- 	.driver	= {
- 		.name	= DRIVER_NAME,
-+		.pm = &imx_audmux_pm,
- 		.of_match_table = imx_audmux_dt_ids,
- 	}
- };
+ /* DAI link - used for any driver specific init */
+ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 			 struct snd_soc_dai_link *link,
+@@ -2859,6 +2894,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+ 		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+ 		break;
++	case SOF_DAI_INTEL_ALH:
++		ret = sof_link_alh_load(scomp, index, link, cfg, hw_config,
++					&config);
++		break;
+ 	case SOF_DAI_IMX_SAI:
+ 		ret = sof_link_sai_load(scomp, index, link, cfg, hw_config,
+ 					&config);
+@@ -2924,7 +2963,8 @@ static int sof_link_unload(struct snd_soc_component *scomp,
+ 	switch (sof_dai->dai_config->type) {
+ 	case SOF_DAI_INTEL_SSP:
+ 	case SOF_DAI_INTEL_DMIC:
+-		/* no resource needs to be released for SSP and DMIC */
++	case SOF_DAI_INTEL_ALH:
++		/* no resource needs to be released for SSP, DMIC and ALH */
+ 		break;
+ 	case SOF_DAI_INTEL_HDA:
+ 		ret = sof_link_hda_unload(sdev, link);
 -- 
 2.20.1
