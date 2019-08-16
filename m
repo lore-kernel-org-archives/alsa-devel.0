@@ -1,101 +1,34 @@
-From: =?UTF-8?Q?Jer=C3=B3nimo_Borque?= <jeronimo@borque.com.ar>
-Subject: Re: [PATCH] ALSA: hda - Fixes inverted Conexant GPIO
-	mic mute led
-Date: Thu, 15 Aug 2019 20:08:34 -0300
-Message-ID: <CAHNnQdJayqx51EGwh0g9WHpcSi2poQv47-NpZPq=Crrm8p9mvg@mail.gmail.com>
-References: <20190815013824.13373-1-jeronimo@borque.com.ar>
- <s5hv9uz9dh3.wl-tiwai@suse.de>
- <CAHNnQd+B5UGKJBq+ikDBYa20vzL=Fj9tDGNeRZGp5qxcSiEDhQ@mail.gmail.com>
- <s5ha7ca9x4x.wl-tiwai@suse.de>
+From: syzbot <syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com>
+Subject: Re: INFO: rcu detected stall in __do_softirq
+Date: Thu, 15 Aug 2019 17:10:01 -0700
+Message-ID: <000000000000b4126c059030cfb6@google.com>
+References: <000000000000d3c7e0058f605a53@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua1-f66.google.com (mail-ua1-f66.google.com
- [209.85.222.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 754C9F8011F
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 01:08:47 +0200 (CEST)
-Received: by mail-ua1-f66.google.com with SMTP id m23so1405830uaq.11
- for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2019 16:08:47 -0700 (PDT)
-In-Reply-To: <s5ha7ca9x4x.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <000000000000d3c7e0058f605a53@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, bp@alien8.de, gregkh@linuxfoundation.org, hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com, nstange@suse.de, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com, srinivas.kandagatla@linaro.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, vkoul@kernel.org, x86@kernel.org, yakui.zhao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-RWwganVlLiwgMTUgZGUgYWdvLiBkZSAyMDE5IGEgbGEocykgMTQ6MDYsIFRha2FzaGkgSXdhaSAo
-dGl3YWlAc3VzZS5kZSkKZXNjcmliacOzOgoKPiBPbiBUaHUsIDE1IEF1ZyAyMDE5IDE4OjMzOjUw
-ICswMjAwLAo+IEplcsOzbmltbyBCb3JxdWUgd3JvdGU6Cj4gPgo+ID4gSGkgVGFrYXNoaSwKPiA+
-IE1vZGlmeWluZyBNaWMgTXV0ZS1MRUQgTW9kZSBkb2VzIGluZGVlZCBhbHRlciB0aGUgYmVoYXZp
-b3IuIFRoZSB0aGluZyBpcwo+IHRoYXQKPiA+IHRoaXMgZW5kcyBiZWluZyBjb25mdXNpbmcgYXMg
-aW4gYWxsIG1hY2hpbmVzIEkndmUgYmVlbiB0ZXN0aW5nIHRoaXMKPiBzZXR0aW5nCj4gPiBNaWMg
-TXV0ZS1MRUQgTW9kZSB0byAiRm9sbG93IENhcHR1cmUiIGFjdHVhbGx5IG1ha2VzIGl0IGZvbGxv
-dyBtdXRlLCBhcwo+ID4gc2V0dGluZyBpdCB0byAiT24iIHR1cm5zIHRoZSBMRUQgb2ZmLgo+ID4g
-VGhlcmUgaXMgb3RoZXIgc2V0dGluZyBjYWxsZWQgIm11dGVfbGVkX3BvbGFyaXR5IiBidXQgdGhp
-cyBkb2VzIG5vdAo+IHdvcmssIGFzCj4gPiBjdXJyZW50bHkgbWljIG11dGUgTEVEIGFuZCBtdXRl
-IExFRCBkbyBub3QgZm9sbG93IHRoZSBzYW1lIGxvZ2ljLgo+ID4gV2hhdCBJIHRoaW5rIG1heSBi
-ZSBjYXVzaW5nIGNvbmZ1c2lvbiBpcyAiY3h0X3VwZGF0ZV9ncGlvX2xlZCIgImVuYWJsZWQiCj4g
-PiBwYXJhbWV0ZXIuIFNldHRpbmcgImVuYWJsZWQiIHRvICJ0cnVlIiBzZXRzIHRoZSBHUElPIHBp
-biB0byAwIGNhdXNpbmcKPiB0aGUgbGVkCj4gPiB0byBiZSB0dXJuZWQgb2ZmLiBJIHRoaW5rICJl
-bmFibGVkIiB1c2VkIHRvIHJlZmVyIHRvIHRoZSBpbnB1dCBjYXB0dXJlIG9yCj4gPiBvdXRwdXQg
-c3RhdHVzIGFuZCBub3QgdG8gdGhlIExFRCBiZWluZyBsaXQgb3Igbm90LiBPdXRwdXQgb3IgaW5w
-dXQgbm90Cj4gZW5hYmxlZAo+ID4gKGVuYWJsZWQ9PWZhbHNlKSBjYXVzZWQgdGhlIExFRCB0byBi
-ZSB0dXJuZWQgb24uCj4gPiBUaGlzIGxvZ2ljIGluIHRoZSBmdW5jdGlvbiBuZWdhdGVzIGl0IG9u
-IHRoZSBHUElPIG91dHB1dC4KPiA+Cj4gPiBpZiAoZW5hYmxlZCkKPiA+ICAgICBzcGVjLT5ncGlv
-X2xlZCAmPSB+bWFzazsKPiA+IGVsc2UKPiA+ICAgICBzcGVjLT5ncGlvX2xlZCB8PSBtYXNrOwo+
-ID4KPiA+IE1heSBiZSBJIGNhbiBkbyBhIG1vcmUgY29tcHJlaGVuc2l2ZSBmaXgsIHJldmVyc2lu
-ZyB0aGUgYmVoYXZpb3Igb2YKPiA+ICJjeHRfdXBkYXRlX2dwaW9fbGVkIiAiZW5hYmxlZCIgcGFy
-YW1ldGVyIHRvIHJlZmVyIHRoZSBHUElPIG91dHB1dCB2YWx1ZQo+ICgKPiA+IGVuYWJsZWQ9PXRy
-dWUgPT4gR1BJTyBwaW4gb3V0cHV0IGhpZ2ggKQo+ID4gVGhlbiBhbHNvIG1vZGlmeSB0aGUgY2Fs
-bCB0byAiY3h0X3VwZGF0ZV9ncGlvX2xlZCIgaW4KPiA+ICJjeHRfZml4dXBfZ3Bpb19tdXRlX2hv
-b2siIHRvIG1ha2UgaXQgd29yayBjb25zaXN0ZW50bHkuCj4KPiBPSywgaWYgdGhlICJPbiIgdHVy
-bnMgdGhlIExFRCBvZmYsIGl0J3MgaW5kZWVkIGludmVydGVkLgo+IFRoZW4gd2UnZCBuZWVkIHRv
-IGNvbnNpZGVyIGJvdGggZml4aW5nIHRoZSBpbnZlcnRlZCBiZWhhdmlvciBhbmQgdGhlCj4gZGVm
-YXVsdCBtaWMtbXV0ZSBtb2RlLgo+Cj4gQ291bGQgeW91IGNvbmZpcm0gdGhlIGZvbGxvd2luZz8K
-Pgo+IC0gV2hpY2ggbW9kZWxzIGFuZCBjb2RlY3MgYXJlIGNoZWNrZWQ/Cj4KCkkndmUgdGVzdGVk
-IG9uIEhQIFpCb29rIDE1VSBHMyAoQ29uZXhhbnQgQ1gyMDcyNCkgYW5kIEhQIFByb2Jvb2sgNDQw
-IEc0CihDb25leGFudCBDWDgyMDApCgoKPiAtIEdQSU8gcGluIGhpZ2ggPSBtaWMgTEVEIG9uIG9y
-IG9mZj8KPgoKIEdQSU8gcGluIGhpZ2ggPSBtaWMgTEVEIG9uCgoKPiAtIEhvdyBpcyB0aGUgZXhw
-ZWN0ZWQgYmVoYXZpb3Igb24gV2luZG93cz8KPiAgICBNdXRlIGlzIG9uIHdoZW4gbWljIGlzIG11
-dGVkLCBvciBtdXRlLW9uIHdoZW4gbWljIGlzIHJlYWR5PwoKCk11dGUgbGVkIGlzIG9uIHdoZW4g
-bWljIGlzIG11dGVkLgoKClRoYW5rcywKSmVyw7NuaW1vCgoKPgo+IHRoYW5rcywKPgo+IFRha2Fz
-aGkKPgo+ID4KPiA+IFRoYW5rcywKPiA+IEplcsOzbmltbwo+ID4KPiA+IEVsIGp1ZS4sIDE1IGRl
-IGFnby4gZGUgMjAxOSBhIGxhKHMpIDAyOjU4LCBUYWthc2hpIEl3YWkgKHRpd2FpQHN1c2UuZGUp
-Cj4gPiBlc2NyaWJpw7M6Cj4gPgo+ID4gICAgIE9uIFRodSwgMTUgQXVnIDIwMTkgMDM6Mzg6MjQg
-KzAyMDAsCj4gPiAgICAgPGplcm9uaW1vQGJvcnF1ZS5jb20uYXI+IHdyb3RlOgo+ID4gICAgID4K
-PiA+ICAgICA+IEZyb206IEplcm9uaW1vIEJvcnF1ZSA8amVyb25pbW9AYm9ycXVlLmNvbS5hcj4K
-PiA+ICAgICA+Cj4gPiAgICAgPiAiZW5hYmxlZCIgcGFyYW1ldGVyIGhpc3RvcmljYWxseSByZWZl
-cnJlZCB0byB0aGUgZGV2aWNlIGlucHV0IG9yCj4gPiAgICAgPiBvdXRwdXQsIG5vdCB0byB0aGUg
-bGVkIGluZGljYXRvci4gQWZ0ZXIgdGhlIGNoYW5nZXMgYWRkZWQgd2l0aCB0aGUKPiA+ICAgICA+
-IGxlZCBoZWxwZXIgZnVuY3Rpb25zIHRoZSBtaWMgbXV0ZSBsZWQgbG9naWMgcmVmZXJzIHRvIHRo
-ZSBsZWQgYW5kCj4gbm90Cj4gPiAgICAgPiB0byB0aGUgbWljIGlucHV0IHdoaWNoIGNhdXNlZCBs
-ZWQgaW5kaWNhdG9yIHRvIGJlIG5lZ2F0ZWQgKE1pYyBtdXRlCj4gPiAgICAgPiBsZWQgd2FzIG9u
-IHdoZW4gdGhlIGlucHV0IGVuYWJsZWQpIEZpeGluZyBpdCBpbiB0aGUgY2FsbCB0bwo+ID4gICAg
-ID4gY3h0X3VwZGF0ZV9ncGlvX2xlZCBhdCB0aGUgY3h0X2dwaW9fbWljbXV0ZV91cGRhdGUgaG9v
-ay4KPiA+ICAgICA+IE1heWJlIG1vcmUgY2hhbmdlcyBhcmUgcmVxdWlyZWQgdG8gYmUgY29uc2lz
-dGVudCBldmVyeXdoZXJlLgo+ID4gICAgID4KPiA+ICAgICA+IFNpZ25lZC1vZmYtYnk6IEplcm9u
-aW1vIEJvcnF1ZSA8amVyb25pbW9AYm9ycXVlLmNvbS5hcj4KPiA+Cj4gPiAgICAgQ291bGQgeW91
-IGNoZWNrIHdoaWNoIHZhbHVlIHlvdSBoYXZlIGluICJNaWMgTXV0ZS1MRUQgTW9kZSIgbWl4ZXIK
-PiA+ICAgICBlbGVtZW50PyAgSSBndWVzcyBpdCdzICJGb2xsb3cgTXV0ZSIuICBJZiBzbywgY2hh
-bmdlIGl0IHRvICJGb2xsb3cKPiA+ICAgICBDYXB0dXJlIi4KPiA+Cj4gPiAgICAgSWYgdGhpcyB3
-b3JrcywgaXQgbWVhbnMgdGhhdCB0aGUgZHJpdmVyIHdvcmtzIGFzIGV4cGVjdGVkIGJ1dCB0aGUK
-PiA+ICAgICBwcm9ibGVtIGlzIG9ubHkgYWJvdXQgdGhlIGRlZmF1bHQgdmFsdWUuICBUaGUgZGVm
-YXVsdCB2YWx1ZSBzZXQgaW4KPiB0aGUKPiA+ICAgICBnZW5lcmljIHBhcnNlciBpcyBiYXNlZCBv
-biBvdGhlciBtYWNoaW5lJ3Mgc3RhbmRhcmQgKExFRCBvbiBhdCBtaWMKPiA+ICAgICBvZmYpLCB3
-aGlsZSBzb21lIG1hY2hpbmVzIG1pZ2h0IGV4cGVjdCBkaWZmZXJlbnRseS4gIE9uIHN1Y2gKPiBt
-YWNoaW5lcywKPiA+ICAgICB3ZSBuZWVkIHRvIHNldCB0aGUgZGlmZmVyZW50IHZhbHVlIGluaXRp
-YWxseSBpbiB0aGUgcXVpcmsgZml4dXAuCj4gPgo+ID4gICAgIHRoYW5rcywKPiA+Cj4gPiAgICAg
-VGFrYXNoaQo+ID4KPiA+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+syzbot has bisected this bug to:
+
+commit 2aeac95d1a4cc85aae57ab842d5c3340df0f817f
+Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date:   Tue Jun 11 10:40:41 2019 +0000
+
+     soundwire: add module_sdw_driver helper macro
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114b45ee600000
+start commit:   882e8691 Add linux-next specific files for 20190801
+git tree:       linux-next
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=134b45ee600000
+console output: https://syzkaller.appspot.com/x/log.txt?x=154b45ee600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=466b331af3f34e94
+dashboard link: https://syzkaller.appspot.com/bug?extid=6593c6b8c8b66a07cd98
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b216b2600000
+
+Reported-by: syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com
+Fixes: 2aeac95d1a4c ("soundwire: add module_sdw_driver helper macro")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
