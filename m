@@ -1,64 +1,145 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 0/3] soundwire: debugfs support for 5.4
-Date: Fri, 16 Aug 2019 06:13:46 -0500
-Message-ID: <9f4789b2-66bd-4b17-2b13-934348a18691@linux.intel.com>
-References: <20190812235942.7120-1-pierre-louis.bossart@linux.intel.com>
- <20190816094308.GA12733@vkoul-mobl.Dlink>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: imx-audmux: Add driver suspend and resume to support MEGA Fast" to the asoc tree
+Date: Fri, 16 Aug 2019 13:14:53 +0100 (BST)
+Message-ID: <20190816121453.184B12743134@ypsilon.sirena.org.uk>
+References: <1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190816094308.GA12733@vkoul-mobl.Dlink>
-Content-Language: en-US
+In-Reply-To: <1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, festevam@gmail.com, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, s.hauer@pengutronix.de, shawnguo@kernel.org, timur@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: imx-audmux: Add driver suspend and resume to support MEGA Fast
 
-On 8/16/19 4:43 AM, Vinod Koul wrote:
-> On 12-08-19, 18:59, Pierre-Louis Bossart wrote:
->> This patchset enables debugfs support and corrects all the feedback
->> provided on an earlier RFC ('soundwire: updates for 5.4')
->>
->> There is one remaining hard-coded value in intel.c that will need to
->> be fixed in a follow-up patchset not specific to debugfs: we need to
->> remove hard-coded Intel-specific configurations from cadence_master.c
->> (PDI offsets, etc).
->>
->> Changes since v1 (Feedback from GKH)
->> Handle debugfs in a more self-contained way (no dentry as return or parameter)
->> Used CONFIG_DEBUG_FS in structures and code to make it easier to
->> remove if need be.
->> No functional change for register dumps.
->>
->> Changes since RFC (Feedback from GKH, Vinod, Guennadi, Cezary, Sanyog):
->> removed error checks
->> used DEFINE_SHOW_ATTRIBUTE and seq_file
->> fixed copyright dates
->> fixed SPDX license info to use GPL2.0 only
->> fixed Makefile to include debugfs only if CONFIG_DEBUG_FS is selected
->> used static inlines for fallback compilation
->> removed intermediate variables
->> removed hard-coded constants in loops (used registers offsets and
->> hardware capabilities)
->> squashed patch 3
-> 
-> These looks good but failed to apply. Please rebase on soundwire-next
-> and resend
+has been applied to the asoc tree at
 
-Could you do us a favor and make sure your soundwire/fixes branch is 
-actually merged in soundwire/next? in this case the Makefile is changed 
-in soundwire/fixes and not in next.
-If you use git am --3way things work fine and the conflict is resolved.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
-Applying: soundwire: add debugfs support
-Using index info to reconstruct a base tree...
-M	drivers/soundwire/Makefile
-M	include/linux/soundwire/sdw.h
-Falling back to patching base and 3-way merge...
-Auto-merging include/linux/soundwire/sdw.h
-Auto-merging drivers/soundwire/Makefile
-Applying: soundwire: cadence_master: add debugfs register dump
-Applying: soundwire: intel: add debugfs register dump
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 8661ab5b23d6d30d8687fc05bc1dba8f9a64b444 Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Fri, 16 Aug 2019 01:03:14 -0400
+Subject: [PATCH] ASoC: imx-audmux: Add driver suspend and resume to support
+ MEGA Fast
+
+For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
+source of modules during system suspend and resume procedure.
+Thus, AUDMUX needs to save all the values of registers before the
+system suspend and restore them after the system resume.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/imx-audmux.c | 54 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index b2351cd33b0f..16ede3b5cb32 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -23,6 +23,8 @@
+ 
+ static struct clk *audmux_clk;
+ static void __iomem *audmux_base;
++static u32 *regcache;
++static u32 reg_max;
+ 
+ #define IMX_AUDMUX_V2_PTCR(x)		((x) * 8)
+ #define IMX_AUDMUX_V2_PDCR(x)		((x) * 8 + 4)
+@@ -317,8 +319,23 @@ static int imx_audmux_probe(struct platform_device *pdev)
+ 	if (of_id)
+ 		pdev->id_entry = of_id->data;
+ 	audmux_type = pdev->id_entry->driver_data;
+-	if (audmux_type == IMX31_AUDMUX)
++
++	switch (audmux_type) {
++	case IMX31_AUDMUX:
+ 		audmux_debugfs_init();
++		reg_max = 14;
++		break;
++	case IMX21_AUDMUX:
++		reg_max = 6;
++		break;
++	default:
++		dev_err(&pdev->dev, "unsupported version!\n");
++		return -EINVAL;
++	}
++
++	regcache = devm_kzalloc(&pdev->dev, sizeof(u32) * reg_max, GFP_KERNEL);
++	if (!regcache)
++		return -ENOMEM;
+ 
+ 	if (of_id)
+ 		imx_audmux_parse_dt_defaults(pdev, pdev->dev.of_node);
+@@ -334,12 +351,47 @@ static int imx_audmux_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int imx_audmux_suspend(struct device *dev)
++{
++	int i;
++
++	clk_prepare_enable(audmux_clk);
++
++	for (i = 0; i < reg_max; i++)
++		regcache[i] = readl(audmux_base + i * 4);
++
++	clk_disable_unprepare(audmux_clk);
++
++	return 0;
++}
++
++static int imx_audmux_resume(struct device *dev)
++{
++	int i;
++
++	clk_prepare_enable(audmux_clk);
++
++	for (i = 0; i < reg_max; i++)
++		writel(regcache[i], audmux_base + i * 4);
++
++	clk_disable_unprepare(audmux_clk);
++
++	return 0;
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops imx_audmux_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(imx_audmux_suspend, imx_audmux_resume)
++};
++
+ static struct platform_driver imx_audmux_driver = {
+ 	.probe		= imx_audmux_probe,
+ 	.remove		= imx_audmux_remove,
+ 	.id_table	= imx_audmux_ids,
+ 	.driver	= {
+ 		.name	= DRIVER_NAME,
++		.pm = &imx_audmux_pm,
+ 		.of_match_table = imx_audmux_dt_ids,
+ 	}
+ };
+-- 
+2.20.1
