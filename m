@@ -1,48 +1,49 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: INFO: rcu detected stall in __do_softirq
-Date: Fri, 16 Aug 2019 09:55:49 +0100
-Message-ID: <63c0dc1e-323d-d46e-2d4a-b5b6d6916042@linaro.org>
-References: <000000000000b4126c059030cfb6@google.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 0/3] soundwire: debugfs support for 5.4
+Date: Fri, 16 Aug 2019 15:13:08 +0530
+Message-ID: <20190816094308.GA12733@vkoul-mobl.Dlink>
+References: <20190812235942.7120-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000b4126c059030cfb6@google.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190812235942.7120-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: syzbot <syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, bp@alien8.de, gregkh@linuxfoundation.org, hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com, nstange@suse.de, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, vkoul@kernel.org, x86@kernel.org, yakui.zhao@intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 16/08/2019 01:10, syzbot wrote:
-> syzbot has bisected this bug to:
+On 12-08-19, 18:59, Pierre-Louis Bossart wrote:
+> This patchset enables debugfs support and corrects all the feedback
+> provided on an earlier RFC ('soundwire: updates for 5.4')
 > 
-> commit 2aeac95d1a4cc85aae57ab842d5c3340df0f817f
-> Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Date:   Tue Jun 11 10:40:41 2019 +0000
+> There is one remaining hard-coded value in intel.c that will need to
+> be fixed in a follow-up patchset not specific to debugfs: we need to
+> remove hard-coded Intel-specific configurations from cadence_master.c
+> (PDI offsets, etc).
 > 
->      soundwire: add module_sdw_driver helper macro
-
-Not sure how adding a macro with no users triggers this rcu stall.
-
-BTW this was in mainline since rc1.
-
---srini
-
+> Changes since v1 (Feedback from GKH)
+> Handle debugfs in a more self-contained way (no dentry as return or parameter)
+> Used CONFIG_DEBUG_FS in structures and code to make it easier to
+> remove if need be.
+> No functional change for register dumps.
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114b45ee600000
-> start commit:   882e8691 Add linux-next specific files for 20190801
-> git tree:       linux-next
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=134b45ee600000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=154b45ee600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=466b331af3f34e94
-> dashboard link: 
-> https://syzkaller.appspot.com/bug?extid=6593c6b8c8b66a07cd98
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b216b2600000
-> 
-> Reported-by: syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com
-> Fixes: 2aeac95d1a4c ("soundwire: add module_sdw_driver helper macro")
-> 
-> For information about bisection process see: 
-> https://goo.gl/tpsmEJ#bisection
+> Changes since RFC (Feedback from GKH, Vinod, Guennadi, Cezary, Sanyog):
+> removed error checks
+> used DEFINE_SHOW_ATTRIBUTE and seq_file
+> fixed copyright dates
+> fixed SPDX license info to use GPL2.0 only
+> fixed Makefile to include debugfs only if CONFIG_DEBUG_FS is selected
+> used static inlines for fallback compilation
+> removed intermediate variables
+> removed hard-coded constants in loops (used registers offsets and
+> hardware capabilities)
+> squashed patch 3
+
+These looks good but failed to apply. Please rebase on soundwire-next
+and resend
+
+Thanks
+
+-- 
+~Vinod
