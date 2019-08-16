@@ -1,57 +1,48 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: SOF: Add OF DSP device support
-Date: Fri, 16 Aug 2019 11:43:13 +0300
-Message-ID: <CAEnQRZAM6VkCewfVYysz-NmPNEz-CSe763Cv-kz9kyNjx8uMtQ@mail.gmail.com>
-References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
- <20190815154500.29090-2-pierre-louis.bossart@linux.intel.com>
- <20190815164942.GB4841@sirena.co.uk>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: INFO: rcu detected stall in __do_softirq
+Date: Fri, 16 Aug 2019 09:55:49 +0100
+Message-ID: <63c0dc1e-323d-d46e-2d4a-b5b6d6916042@linaro.org>
+References: <000000000000b4126c059030cfb6@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63C4CF8011F
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 10:43:24 +0200 (CEST)
-Received: by mail-wr1-x442.google.com with SMTP id r3so790505wrt.3
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 01:43:24 -0700 (PDT)
-In-Reply-To: <20190815164942.GB4841@sirena.co.uk>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <000000000000b4126c059030cfb6@google.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: syzbot <syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, bp@alien8.de, gregkh@linuxfoundation.org, hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com, nstange@suse.de, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, vkoul@kernel.org, x86@kernel.org, yakui.zhao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Thu, Aug 15, 2019 at 7:50 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Aug 15, 2019 at 10:44:58AM -0500, Pierre-Louis Bossart wrote:
-> > From: Daniel Baluta <daniel.baluta@nxp.com>
-> >
-> > Add support for device tree based SOF DSP devices.
->
-> I'm not seeing any binding documentation here.  Binding documentation is
-> required for any new device tree bindings supported in code.
 
-Binding documentation together with the actual dts nodes were sent
-to Shawn.
+On 16/08/2019 01:10, syzbot wrote:
+> syzbot has bisected this bug to:
+> 
+> commit 2aeac95d1a4cc85aae57ab842d5c3340df0f817f
+> Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Date:   Tue Jun 11 10:40:41 2019 +0000
+> 
+>      soundwire: add module_sdw_driver helper macro
 
-https://lkml.org/lkml/2019/8/7/682
+Not sure how adding a macro with no users triggers this rcu stall.
 
-Shawn,
+BTW this was in mainline since rc1.
 
-Can you pick 4/5 and 5/5 patches from series above? 1-3 are sent to
-Mark to go through to alsa tree.
+--srini
 
-thanks,
-Daniel.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114b45ee600000
+> start commit:   882e8691 Add linux-next specific files for 20190801
+> git tree:       linux-next
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=134b45ee600000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=154b45ee600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=466b331af3f34e94
+> dashboard link: 
+> https://syzkaller.appspot.com/bug?extid=6593c6b8c8b66a07cd98
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b216b2600000
+> 
+> Reported-by: syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com
+> Fixes: 2aeac95d1a4c ("soundwire: add module_sdw_driver helper macro")
+> 
+> For information about bisection process see: 
+> https://goo.gl/tpsmEJ#bisection
