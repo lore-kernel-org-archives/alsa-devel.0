@@ -1,34 +1,108 @@
-From: syzbot <syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com>
-Subject: Re: INFO: rcu detected stall in __do_softirq
-Date: Thu, 15 Aug 2019 17:10:01 -0700
-Message-ID: <000000000000b4126c059030cfb6@google.com>
-References: <000000000000d3c7e0058f605a53@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: [PATCH] ASoC: imx-audmux: Add driver suspend and resume to support MEGA Fast
+Date: Fri, 16 Aug 2019 01:03:14 -0400
+Message-ID: <1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000d3c7e0058f605a53@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, bp@alien8.de, gregkh@linuxfoundation.org, hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com, nstange@suse.de, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com, srinivas.kandagatla@linaro.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, vkoul@kernel.org, x86@kernel.org, yakui.zhao@intel.com
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, alsa-devel@alsa-project.org
+Cc: linux-imx@nxp.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-syzbot has bisected this bug to:
+For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
+source of modules during system suspend and resume procedure.
+Thus, AUDMUX needs to save all the values of registers before the
+system suspend and restore them after the system resume.
 
-commit 2aeac95d1a4cc85aae57ab842d5c3340df0f817f
-Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date:   Tue Jun 11 10:40:41 2019 +0000
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/imx-audmux.c | 54 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 1 deletion(-)
 
-     soundwire: add module_sdw_driver helper macro
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114b45ee600000
-start commit:   882e8691 Add linux-next specific files for 20190801
-git tree:       linux-next
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=134b45ee600000
-console output: https://syzkaller.appspot.com/x/log.txt?x=154b45ee600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=466b331af3f34e94
-dashboard link: https://syzkaller.appspot.com/bug?extid=6593c6b8c8b66a07cd98
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b216b2600000
-
-Reported-by: syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com
-Fixes: 2aeac95d1a4c ("soundwire: add module_sdw_driver helper macro")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 7595f24a006e..3ce85a43e08f 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -23,6 +23,8 @@
+ 
+ static struct clk *audmux_clk;
+ static void __iomem *audmux_base;
++static u32 *regcache;
++static u32 reg_max;
+ 
+ #define IMX_AUDMUX_V2_PTCR(x)		((x) * 8)
+ #define IMX_AUDMUX_V2_PDCR(x)		((x) * 8 + 4)
+@@ -315,8 +317,23 @@ static int imx_audmux_probe(struct platform_device *pdev)
+ 	if (of_id)
+ 		pdev->id_entry = of_id->data;
+ 	audmux_type = pdev->id_entry->driver_data;
+-	if (audmux_type == IMX31_AUDMUX)
++
++	switch (audmux_type) {
++	case IMX31_AUDMUX:
+ 		audmux_debugfs_init();
++		reg_max = 14;
++		break;
++	case IMX21_AUDMUX:
++		reg_max = 6;
++		break;
++	default:
++		dev_err(&pdev->dev, "unsupported version!\n");
++		return -EINVAL;
++	}
++
++	regcache = devm_kzalloc(&pdev->dev, sizeof(u32) * reg_max, GFP_KERNEL);
++	if (!regcache)
++		return -ENOMEM;
+ 
+ 	if (of_id)
+ 		imx_audmux_parse_dt_defaults(pdev, pdev->dev.of_node);
+@@ -332,12 +349,47 @@ static int imx_audmux_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int imx_audmux_suspend(struct device *dev)
++{
++	int i;
++
++	clk_prepare_enable(audmux_clk);
++
++	for (i = 0; i < reg_max; i++)
++		regcache[i] = readl(audmux_base + i * 4);
++
++	clk_disable_unprepare(audmux_clk);
++
++	return 0;
++}
++
++static int imx_audmux_resume(struct device *dev)
++{
++	int i;
++
++	clk_prepare_enable(audmux_clk);
++
++	for (i = 0; i < reg_max; i++)
++		writel(regcache[i], audmux_base + i * 4);
++
++	clk_disable_unprepare(audmux_clk);
++
++	return 0;
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops imx_audmux_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(imx_audmux_suspend, imx_audmux_resume)
++};
++
+ static struct platform_driver imx_audmux_driver = {
+ 	.probe		= imx_audmux_probe,
+ 	.remove		= imx_audmux_remove,
+ 	.id_table	= imx_audmux_ids,
+ 	.driver	= {
+ 		.name	= DRIVER_NAME,
++		.pm = &imx_audmux_pm,
+ 		.of_match_table = imx_audmux_dt_ids,
+ 	}
+ };
+-- 
+2.21.0
