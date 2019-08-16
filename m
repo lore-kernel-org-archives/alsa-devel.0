@@ -1,22 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: topology: Add dummy support for
-	i.MX8 DAIs" to the asoc tree
-Date: Fri, 16 Aug 2019 13:14:52 +0100 (BST)
-Message-ID: <20190816121452.D96402743123@ypsilon.sirena.org.uk>
-References: <20190815192018.30570-2-pierre-louis.bossart@linux.intel.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] soundwire: Fix -Wunused-function warning
+Date: Fri, 16 Aug 2019 22:14:09 +0800
+Message-ID: <20190816141409.49940-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f100.google.com (mail-ed1-f100.google.com
- [209.85.208.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB579F80213
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 14:14:54 +0200 (CEST)
-Received: by mail-ed1-f100.google.com with SMTP id r12so4960059edo.5
- for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 05:14:54 -0700 (PDT)
-In-Reply-To: <20190815192018.30570-2-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 466C8F80110
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 16:15:26 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,139 +20,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: vkoul@kernel.org, sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+If CONFIG_ACPI is not set, gcc warning this:
 
-   ASoC: SOF: topology: Add dummy support for i.MX8 DAIs
+drivers/soundwire/slave.c:16:12: warning:
+ 'sdw_slave_add' defined but not used [-Wunused-function]
 
-has been applied to the asoc tree at
+move them to #ifdef CONFIG_ACPI block.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f59b16ef4ccea1b52f1c4e4c60ce507dc0bcc0ad Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Thu, 15 Aug 2019 14:20:15 -0500
-Subject: [PATCH] ASoC: SOF: topology: Add dummy support for i.MX8 DAIs
-
-Add dummy support for SAI/ESAI digital audio interface
-IPs found on i.MX8 boards.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190815192018.30570-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- include/sound/sof/dai.h         |  2 ++
- include/uapi/sound/sof/tokens.h |  8 ++++++++
- sound/soc/sof/topology.c        | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 40 insertions(+)
+ drivers/soundwire/slave.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
-index da9825ad41d4..86494294274e 100644
---- a/include/sound/sof/dai.h
-+++ b/include/sound/sof/dai.h
-@@ -50,6 +50,8 @@ enum sof_ipc_dai_type {
- 	SOF_DAI_INTEL_DMIC,		/**< Intel DMIC */
- 	SOF_DAI_INTEL_HDA,		/**< Intel HD/A */
- 	SOF_DAI_INTEL_SOUNDWIRE,	/**< Intel SoundWire */
-+	SOF_DAI_IMX_SAI,		/**< i.MX SAI */
-+	SOF_DAI_IMX_ESAI,		/**< i.MX ESAI */
- };
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index f39a581..34c7e65 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -6,6 +6,7 @@
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
  
- /* general purpose DAI configuration */
-diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
-index 6435240cef13..8f996857fb24 100644
---- a/include/uapi/sound/sof/tokens.h
-+++ b/include/uapi/sound/sof/tokens.h
-@@ -106,4 +106,12 @@
- /* for backward compatibility */
- #define SOF_TKN_EFFECT_TYPE	SOF_TKN_PROCESS_TYPE
- 
-+/* SAI */
-+#define SOF_TKN_IMX_SAI_FIRST_TOKEN		1000
-+/* TODO: Add SAI tokens */
-+
-+/* ESAI */
-+#define SOF_TKN_IMX_ESAI_FIRST_TOKEN		1100
-+/* TODO: Add ESAI tokens */
-+
- #endif
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 9cffea142395..a215bf58b138 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -346,6 +346,8 @@ static const struct sof_dai_types sof_dais[] = {
- 	{"SSP", SOF_DAI_INTEL_SSP},
- 	{"HDA", SOF_DAI_INTEL_HDA},
- 	{"DMIC", SOF_DAI_INTEL_DMIC},
-+	{"SAI", SOF_DAI_IMX_SAI},
-+	{"ESAI", SOF_DAI_IMX_ESAI},
- };
- 
- static enum sof_ipc_dai_type find_dai(const char *name)
-@@ -2513,6 +2515,26 @@ static int sof_link_ssp_load(struct snd_soc_component *scomp, int index,
++#if IS_ENABLED(CONFIG_ACPI)
+ static void sdw_slave_release(struct device *dev)
+ {
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+@@ -60,7 +61,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
  	return ret;
  }
  
-+static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
-+			     struct snd_soc_dai_link *link,
-+			     struct snd_soc_tplg_link_config *cfg,
-+			     struct snd_soc_tplg_hw_config *hw_config,
-+			     struct sof_ipc_dai_config *config)
-+{
-+	/*TODO: Add implementation */
-+	return 0;
-+}
-+
-+static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
-+			      struct snd_soc_dai_link *link,
-+			      struct snd_soc_tplg_link_config *cfg,
-+			      struct snd_soc_tplg_hw_config *hw_config,
-+			      struct sof_ipc_dai_config *config)
-+{
-+	/*TODO: Add implementation */
-+	return 0;
-+}
-+
- static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
- 			      struct snd_soc_dai_link *link,
- 			      struct snd_soc_tplg_link_config *cfg,
-@@ -2837,6 +2859,14 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
- 		ret = sof_link_hda_load(scomp, index, link, cfg, hw_config,
- 					&config);
- 		break;
-+	case SOF_DAI_IMX_SAI:
-+		ret = sof_link_sai_load(scomp, index, link, cfg, hw_config,
-+					&config);
-+		break;
-+	case SOF_DAI_IMX_ESAI:
-+		ret = sof_link_esai_load(scomp, index, link, cfg, hw_config,
-+					 &config);
-+		break;
- 	default:
- 		dev_err(sdev->dev, "error: invalid DAI type %d\n", config.type);
- 		ret = -EINVAL;
+-#if IS_ENABLED(CONFIG_ACPI)
+ /*
+  * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
+  * @bus: SDW bus instance
 -- 
-2.20.1
+2.7.4
