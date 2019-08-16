@@ -1,92 +1,85 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 02/15] ASoC: sun4i-i2s: Add set_tdm_slot functionality
-Date: Fri, 16 Aug 2019 08:27:05 +0200
-Message-ID: <CAEKpxBkOu0+zek9f=4grNEhyPS=Ly3nweCUCgaz6y8M61xvpaQ@mail.gmail.com>
-References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-3-codekipper@gmail.com>
- <20190814070923.wwkw7hybjvy3p4br@flea>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH v3 2/2] ALSA: hda - Define a
+	fallback_pin_fixup_tbl for alc269 family
+Date: Fri, 16 Aug 2019 14:27:40 +0800
+Message-ID: <20190816062740.5059-2-hui.wang@canonical.com>
+References: <20190816062740.5059-1-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBRMZ3HVAKGQE3OYC4DQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20190814070923.wwkw7hybjvy3p4br@flea>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03FDBF803F4
+ for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2019 08:28:05 +0200 (CEST)
+In-Reply-To: <20190816062740.5059-1-hui.wang@canonical.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Aug 2019 at 13:08, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
->
-> Hi,
->
-> On Wed, Aug 14, 2019 at 08:08:41AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> >
-> > Codecs without a control connection such as i2s based HDMI audio and
-> > the Pine64 DAC require a different amount of bit clocks per frame than
-> > what is calculated by the sample width. Use the tdm slot bindings to
-> > provide this mechanism.
-> >
-> > Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> > ---
-> >  sound/soc/sunxi/sun4i-i2s.c | 23 +++++++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > index 8201334a059b..7c37b6291df0 100644
-> > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > @@ -195,6 +195,9 @@ struct sun4i_i2s {
-> >       struct regmap_field     *field_rxchansel;
-> >
-> >       const struct sun4i_i2s_quirks   *variant;
-> > +
-> > +     unsigned int    tdm_slots;
-> > +     unsigned int    slot_width;
-> >  };
-> >
-> >  struct sun4i_i2s_clk_div {
-> > @@ -346,7 +349,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
-> >       if (i2s->variant->has_fmt_set_lrck_period)
-> >               regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-> >                                  SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
-> > -                                SUN8I_I2S_FMT0_LRCK_PERIOD(32));
-> > +                                SUN8I_I2S_FMT0_LRCK_PERIOD(word_size));
-> >
-> >
-> >       /* Set sign extension to pad out LSB with 0 */
-> >       regmap_field_write(i2s->field_fmt_sext, 0);
-> > @@ -450,7 +453,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
-> >       regmap_field_write(i2s->field_fmt_sr, sr);
-> >
-> >       return sun4i_i2s_set_clk_rate(dai, params_rate(params),
-> > -                                   params_width(params));
-> > +                                   i2s->tdm_slots ?
-> > +                                   i2s->slot_width : params_width(params));
->
-> This is slightly more complicated than that.
+We have another Dell laptop which needs the DELL4_MIC_NO_PRESENCE,
+and this laptop has different pincfg definitions from existing
+ones in the pintbl, rather adding a new entry, let us define
+a tbl in the fallback_pin_fixup_tbl and this tbl will match
+all dell machines with alc289 codec and the pins of 0x19 and 0x1b
+are undef by default.
 
-At this point we're only supporting 2 channels with fixed slot
-settings. I've added a comment to state
-that we're using the tdm_slot at the moment as an indicator to
-override the slot width. Do you think
-that is enough for now?.
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-Thanks,
-CK
->
-> On the H3 (and all related ones), the CHAN_CFG_TX_SLOT_NUM and
-> _RX_SLOT_NUM fields in the CHAN_CFG register need to be set to the
-> number of slots as well.
->
-> Maxime
->
-> --
-> Maxime Ripard, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2fa03fb6bd9e..e62672877597 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7648,10 +7648,6 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x12, 0x90a60120},
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x0321101f}),
+-	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+-		{0x12, 0xb7a60130},
+-		{0x14, 0x90170110},
+-		{0x21, 0x04211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0290, 0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1,
+ 		ALC290_STANDARD_PINS,
+ 		{0x15, 0x04211040},
+@@ -7761,6 +7757,19 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 	{}
+ };
+ 
++/* This is the fallback pin_fixup_tbl for alc269 family, to make the tbl match
++ * more machines, don't need to match all valid pins, just need to match
++ * all the pins defined in the tbl. Just because of this reason, it is possible
++ * that a single machine matches multiple tbls, so there is one limitation:
++ *   at most one tbl is allowed to define for the same vendor and same codec
++ */
++static const struct snd_hda_pin_quirk alc269_fallback_pin_fixup_tbl[] = {
++	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
++		{0x19, 0x40000000},
++		{0x1b, 0x40000000}),
++	{}
++};
++
+ static void alc269_fill_coef(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+@@ -7951,6 +7960,7 @@ static int patch_alc269(struct hda_codec *codec)
+ 	snd_hda_pick_fixup(codec, alc269_fixup_models,
+ 		       alc269_fixup_tbl, alc269_fixups);
+ 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups, true);
++	snd_hda_pick_pin_fixup(codec, alc269_fallback_pin_fixup_tbl, alc269_fixups, false);
+ 	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
+ 			   alc269_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+-- 
+2.17.1
