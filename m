@@ -1,108 +1,62 @@
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: [PATCH] ASoC: imx-audmux: Add driver suspend and resume to support MEGA Fast
-Date: Fri, 16 Aug 2019 01:03:14 -0400
-Message-ID: <1565931794-7218-1-git-send-email-shengjiu.wang@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, alsa-devel@alsa-project.org
-Cc: linux-imx@nxp.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v5 02/15] ASoC: sun4i-i2s: Add set_tdm_slot functionality
+Date: Fri, 16 Aug 2019 08:22:20 +0200
+Message-ID: <CAEKpxBkbuQZ9-XLCOcWxV5gzyXPbASmBgYVJ6fL5yj98GE0f9w@mail.gmail.com>
+References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-3-codekipper@gmail.com>
+ <20190814093011.GD4640@sirena.co.uk>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBKEX3HVAKGQEINNSEFA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20190814093011.GD4640-7j8lgAiuQgnQXOPxS62xeg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
-source of modules during system suspend and resume procedure.
-Thus, AUDMUX needs to save all the values of registers before the
-system suspend and restore them after the system resume.
+On Wed, 14 Aug 2019 at 11:30, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+>
+> On Wed, Aug 14, 2019 at 08:08:41AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> >
+> > Codecs without a control connection such as i2s based HDMI audio and
+> > the Pine64 DAC require a different amount of bit clocks per frame than
+>
+> This isn't a universal property of CODECs without a control, and it's
+> something that CODECs with control can require too.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/imx-audmux.c | 54 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 53 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 7595f24a006e..3ce85a43e08f 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -23,6 +23,8 @@
- 
- static struct clk *audmux_clk;
- static void __iomem *audmux_base;
-+static u32 *regcache;
-+static u32 reg_max;
- 
- #define IMX_AUDMUX_V2_PTCR(x)		((x) * 8)
- #define IMX_AUDMUX_V2_PDCR(x)		((x) * 8 + 4)
-@@ -315,8 +317,23 @@ static int imx_audmux_probe(struct platform_device *pdev)
- 	if (of_id)
- 		pdev->id_entry = of_id->data;
- 	audmux_type = pdev->id_entry->driver_data;
--	if (audmux_type == IMX31_AUDMUX)
-+
-+	switch (audmux_type) {
-+	case IMX31_AUDMUX:
- 		audmux_debugfs_init();
-+		reg_max = 14;
-+		break;
-+	case IMX21_AUDMUX:
-+		reg_max = 6;
-+		break;
-+	default:
-+		dev_err(&pdev->dev, "unsupported version!\n");
-+		return -EINVAL;
-+	}
-+
-+	regcache = devm_kzalloc(&pdev->dev, sizeof(u32) * reg_max, GFP_KERNEL);
-+	if (!regcache)
-+		return -ENOMEM;
- 
- 	if (of_id)
- 		imx_audmux_parse_dt_defaults(pdev, pdev->dev.of_node);
-@@ -332,12 +349,47 @@ static int imx_audmux_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int imx_audmux_suspend(struct device *dev)
-+{
-+	int i;
-+
-+	clk_prepare_enable(audmux_clk);
-+
-+	for (i = 0; i < reg_max; i++)
-+		regcache[i] = readl(audmux_base + i * 4);
-+
-+	clk_disable_unprepare(audmux_clk);
-+
-+	return 0;
-+}
-+
-+static int imx_audmux_resume(struct device *dev)
-+{
-+	int i;
-+
-+	clk_prepare_enable(audmux_clk);
-+
-+	for (i = 0; i < reg_max; i++)
-+		writel(regcache[i], audmux_base + i * 4);
-+
-+	clk_disable_unprepare(audmux_clk);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops imx_audmux_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(imx_audmux_suspend, imx_audmux_resume)
-+};
-+
- static struct platform_driver imx_audmux_driver = {
- 	.probe		= imx_audmux_probe,
- 	.remove		= imx_audmux_remove,
- 	.id_table	= imx_audmux_ids,
- 	.driver	= {
- 		.name	= DRIVER_NAME,
-+		.pm = &imx_audmux_pm,
- 		.of_match_table = imx_audmux_dt_ids,
- 	}
- };
--- 
-2.21.0
+ACK
+>
+> >       return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+> > -                                   params_width(params));
+> > +                                   i2s->tdm_slots ?
+> > +                                   i2s->slot_width : params_width(params));
+>
+> Please write normal conditional statements unless there's a strong
+> reason to do otherwise, it makes things more legible.
+ACK
+>
+> > +static int sun4i_i2s_set_dai_tdm_slot(struct snd_soc_dai *dai,
+> > +                                   unsigned int tx_mask,
+> > +                                   unsigned int rx_mask,
+> > +                                   int slots, int width)
+> > +{
+> > +     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > +
+> > +     i2s->tdm_slots = slots;
+> > +
+> > +     i2s->slot_width = width;
+> > +
+> > +     return 0;
+> > +}
+>
+> No validation of the parameters here?
+ACK
+Thanks,
+CK
