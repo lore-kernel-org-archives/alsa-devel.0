@@ -1,22 +1,78 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-audmux: Add driver suspend and resume to
- support MEGA Fast
-Date: Sat, 17 Aug 2019 02:20:38 +0000
-Message-ID: <VE1PR04MB64791EC6FADFB2655D8074D0E3AE0@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: Hui Peng <benquike@gmail.com>
+Subject: [PATCH] Fix an OOB bug in uac_mixer_unit_bmControls
+Date: Sat, 17 Aug 2019 00:32:07 -0400
+Message-ID: <20190817043208.12433-1-benquike@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, dl-linux-imx <linux-imx@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: security@kernel.org
+Cc: Hui Peng <benquike@gmail.com>, Mathias Payer <mathias.payer@nebelwelt.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Wenwen Wang <wang6495@umn.edu>, Thomas Gleixner <tglx@linutronix.de>, YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaw0KDQo+IA0KPiBPbiBGcmksIEF1ZyAxNiwgMjAxOSBhdCAwMTowMzoxNEFNIC0wNDAw
-LCBTaGVuZ2ppdSBXYW5nIHdyb3RlOg0KPiANCj4gPiArCWZvciAoaSA9IDA7IGkgPCByZWdfbWF4
-OyBpKyspDQo+ID4gKwkJcmVnY2FjaGVbaV0gPSByZWFkbChhdWRtdXhfYmFzZSArIGkgKiA0KTsN
-Cj4gDQo+IElmIG9ubHkgdGhlcmUgd2VyZSBzb21lIGZyYW1ld29yayB3aGljaCBwcm92aWRlZCBh
-IHJlZ2lzdGVyIGNhY2hlISAg8J+YnQ0KDQpZZXMsIG5leHQgc3RlcCBJIGNhbiByZWZpbmUgdGhp
-cyBkcml2ZXIgdG8gdXNlIHRoZSByZWdtYXAuDQoNCkJlc3QgcmVnYXJkcw0KV2FuZyBzaGVuZ2pp
-dQ0K
+`uac_mixer_unit_get_channels` calls `uac_mixer_unit_bmControls`
+to get pointer to bmControls field. The current implementation of
+`uac_mixer_unit_get_channels` does properly check the size of
+uac_mixer_unit_descriptor descriptor and may allow OOB access
+in `uac_mixer_unit_bmControls`.
+
+Reported-by: Hui Peng <benquike@gmail.com>
+Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+Signed-off-by: Hui Peng <benquike@gmail.com>
+---
+ sound/usb/mixer.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b5927c3d5bc0..00e6274a63c3 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -738,28 +738,39 @@ static int get_cluster_channels_v3(struct mixer_build *state, unsigned int clust
+ static int uac_mixer_unit_get_channels(struct mixer_build *state,
+ 				       struct uac_mixer_unit_descriptor *desc)
+ {
+-	int mu_channels;
++	int mu_channels = 0;
+ 	void *c;
+ 
+-	if (desc->bLength < sizeof(*desc))
+-		return -EINVAL;
+ 	if (!desc->bNrInPins)
+ 		return -EINVAL;
+-	if (desc->bLength < sizeof(*desc) + desc->bNrInPins)
+-		return -EINVAL;
+ 
+ 	switch (state->mixer->protocol) {
+ 	case UAC_VERSION_1:
++		// limit derived from uac_mixer_unit_bmControls
++		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 4)
++			return 0;
++
++		mu_channels = uac_mixer_unit_bNrChannels(desc);
++		break;
++
+ 	case UAC_VERSION_2:
+-	default:
+-		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 1)
++		// limit derived from uac_mixer_unit_bmControls
++		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 6)
+ 			return 0; /* no bmControls -> skip */
++
+ 		mu_channels = uac_mixer_unit_bNrChannels(desc);
+ 		break;
+ 	case UAC_VERSION_3:
++		// limit derived from uac_mixer_unit_bmControls
++		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 2)
++			return 0; /* no bmControls -> skip */
++
+ 		mu_channels = get_cluster_channels_v3(state,
+ 				uac3_mixer_unit_wClusterDescrID(desc));
+ 		break;
++
++	default:
++		break;
+ 	}
+ 
+ 	if (!mu_channels)
+-- 
+2.22.1
