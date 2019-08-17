@@ -1,59 +1,82 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: INFO: rcu detected stall in __do_softirq
-Date: Sat, 17 Aug 2019 12:44:40 +0530
-Message-ID: <20190817071440.GD12733@vkoul-mobl.Dlink>
-References: <000000000000b4126c059030cfb6@google.com>
- <63c0dc1e-323d-d46e-2d4a-b5b6d6916042@linaro.org>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 2/3] ASoC: SOF: imx: Add i.MX8 HW support
+Date: Sat, 17 Aug 2019 17:21:02 +0200
+Message-ID: <c8c78674-7af8-4577-9e18-da85c064b345@intel.com>
+References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
+ <20190815154500.29090-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <63c0dc1e-323d-d46e-2d4a-b5b6d6916042@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: syzbot <syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, bp@alien8.de, gregkh@linuxfoundation.org, hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com, nstange@suse.de, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org, yakui.zhao@intel.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24173F8011F
+ for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2019 17:21:08 +0200 (CEST)
+In-Reply-To: <20190815154500.29090-3-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 16-08-19, 09:55, Srinivas Kandagatla wrote:
+On 2019-08-15 17:44, Pierre-Louis Bossart wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
 > 
+> Add support for the audio DSP hardware found on NXP i.MX8 platform.
 > 
-> On 16/08/2019 01:10, syzbot wrote:
-> > syzbot has bisected this bug to:
-> > 
-> > commit 2aeac95d1a4cc85aae57ab842d5c3340df0f817f
-> > Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Date:   Tue Jun 11 10:40:41 2019 +0000
-> > 
-> >      soundwire: add module_sdw_driver helper macro
-> 
-> Not sure how adding a macro with no users triggers this rcu stall.
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> +static void imx8_get_reply(struct snd_sof_dev *sdev)
+> +{
+> +	struct snd_sof_ipc_msg *msg = sdev->msg;
+> +	struct sof_ipc_reply reply;
+> +	int ret = 0;
+> +
+> +	if (!msg) {
+> +		dev_warn(sdev->dev, "unexpected ipc interrupt\n");
+> +		return;
+> +	}
+> +
+> +	/* get reply */
+> +	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
+> +
+> +	if (reply.error < 0) {
+> +		memcpy(msg->reply_data, &reply, sizeof(reply));
+> +		ret = reply.error;
+> +	} else {
+> +		/* reply has correct size? */
+> +		if (reply.hdr.size != msg->reply_size) {
+> +			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
+> +				msg->reply_size, reply.hdr.size);
+> +			ret = -EINVAL;
+> +		}
+> +
+> +		/* read the message */
+> +		if (msg->reply_size > 0)
+> +			sof_mailbox_read(sdev, sdev->host_box.offset,
+> +					 msg->reply_data, msg->reply_size);
+> +	}
+> +
+> +	msg->reply_error = ret;
+> +}
 
-And config used doesn't have soundwire set :D
-> 
-> BTW this was in mainline since rc1.
+Assuming reply.hdr.size is coming from HW IPC regs, msg object is 
+representing application side - SW, kernel. If so, is msg->reply_size 
+value an estimated size (which can be overestimated since exact size may 
+be unknown by the host) -or- the exact size of incoming IPC reply?
 
-This is caused by something else!
+The estimated-case is usually permissive as long as assumed size is >= 
+reply.hdr.size - dev_err needed. In the exact-case, it should be viewed 
+as a requirement. If such "requirement" fails, is it valid to read 
+mailbox regardless? Is this to extract some error-debug payload sent by FW?
 
-> 
-> --srini
-> 
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114b45ee600000
-> > start commit:   882e8691 Add linux-next specific files for 20190801
-> > git tree:       linux-next
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=134b45ee600000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=154b45ee600000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=466b331af3f34e94
-> > dashboard link:
-> > https://syzkaller.appspot.com/bug?extid=6593c6b8c8b66a07cd98
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b216b2600000
-> > 
-> > Reported-by: syzbot+6593c6b8c8b66a07cd98@syzkaller.appspotmail.com
-> > Fixes: 2aeac95d1a4c ("soundwire: add module_sdw_driver helper macro")
-> > 
-> > For information about bisection process see:
-> > https://goo.gl/tpsmEJ#bisection
-
--- 
-~Vinod
+Just curious, please feel free to correct me here, Pierre.
