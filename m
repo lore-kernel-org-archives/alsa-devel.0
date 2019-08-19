@@ -1,23 +1,18 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: SOF: imx: Add i.MX8 HW support
-Date: Mon, 19 Aug 2019 09:44:48 +0300
-Message-ID: <CAEnQRZAvVs=-pCcNwhWw=wV54jZU5Fu0QAGLnZ8bvK4J3+YRcA@mail.gmail.com>
-References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
- <20190815154500.29090-3-pierre-louis.bossart@linux.intel.com>
- <c8c78674-7af8-4577-9e18-da85c064b345@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: SOF: topology: use set_get_data in
+	process load
+Date: Mon, 19 Aug 2019 14:45:35 +0300
+Message-ID: <20190819114535.GA24323@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 423C7F800AA
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 08:45:00 +0200 (CEST)
-Received: by mail-wm1-x341.google.com with SMTP id 207so549884wma.1
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2019 23:45:00 -0700 (PDT)
-In-Reply-To: <c8c78674-7af8-4577-9e18-da85c064b345@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7E05F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 13:45:50 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,86 +22,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: jaska.uimonen@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Cezary,
+Hello Jaska Uimonen,
 
-On Sat, Aug 17, 2019 at 6:22 PM Cezary Rojewski
-<cezary.rojewski@intel.com> wrote:
->
-> On 2019-08-15 17:44, Pierre-Louis Bossart wrote:
-> > From: Daniel Baluta <daniel.baluta@nxp.com>
-> >
-> > Add support for the audio DSP hardware found on NXP i.MX8 platform.
-> >
-> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > +static void imx8_get_reply(struct snd_sof_dev *sdev)
-> > +{
-> > +     struct snd_sof_ipc_msg *msg = sdev->msg;
-> > +     struct sof_ipc_reply reply;
-> > +     int ret = 0;
-> > +
-> > +     if (!msg) {
-> > +             dev_warn(sdev->dev, "unexpected ipc interrupt\n");
-> > +             return;
-> > +     }
-> > +
-> > +     /* get reply */
-> > +     sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
-> > +
-> > +     if (reply.error < 0) {
-> > +             memcpy(msg->reply_data, &reply, sizeof(reply));
-> > +             ret = reply.error;
-> > +     } else {
-> > +             /* reply has correct size? */
-> > +             if (reply.hdr.size != msg->reply_size) {
-> > +                     dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
-> > +                             msg->reply_size, reply.hdr.size);
-> > +                     ret = -EINVAL;
-> > +             }
-> > +
-> > +             /* read the message */
-> > +             if (msg->reply_size > 0)
-> > +                     sof_mailbox_read(sdev, sdev->host_box.offset,
-> > +                                      msg->reply_data, msg->reply_size);
-> > +     }
-> > +
-> > +     msg->reply_error = ret;
-> > +}
->
-> Assuming reply.hdr.size is coming from HW IPC regs, msg object is
-> representing application side - SW, kernel. If so, is msg->reply_size
-> value an estimated size (which can be overestimated since exact size may
-> be unknown by the host) -or- the exact size of incoming IPC reply?
->
+The patch cac974a51ebb: "ASoC: SOF: topology: use set_get_data in
+process load" from Aug 9, 2019, leads to the following static checker
+warning:
 
-I would say msg->reply_size is the exact size of incoming IPC. At least for this
-example:
+	sound/soc/sof/topology.c:1857 sof_process_load()
+	warn: 'ipc_data_size' unsigned <= 0
 
-Look at sound/soc/sof/pcm.c
+sound/soc/sof/topology.c
+  1825  static int sof_process_load(struct snd_soc_component *scomp, int index,
+  1826                              struct snd_sof_widget *swidget,
+  1827                              struct snd_soc_tplg_dapm_widget *tw,
+  1828                              struct sof_ipc_comp_reply *r,
+  1829                              int type)
+  1830  {
+  1831          struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+  1832          struct snd_soc_dapm_widget *widget = swidget->widget;
+  1833          struct snd_soc_tplg_private *private = &tw->priv;
+  1834          struct sof_ipc_comp_process *process = NULL;
+  1835          struct sof_widget_data *wdata = NULL;
+  1836          size_t ipc_data_size = 0;
+                ^^^^^^^^^^^^^^^^^^^^
+Unsigned.
 
-sof_pcm_trigger
+  1837          size_t ipc_size;
+  1838          int offset = 0;
+  1839          int ret = 0;
+  1840          int i;
+  1841  
+  1842          if (type == SOF_COMP_NONE) {
+  1843                  dev_err(sdev->dev, "error: invalid process comp type %d\n",
+  1844                          type);
+  1845                  return -EINVAL;
+  1846          }
+  1847  
+  1848          /* allocate struct for widget control data sizes and types */
+  1849          if (widget->num_kcontrols) {
+  1850                  wdata = kcalloc(widget->num_kcontrols,
+  1851                                  sizeof(*wdata),
+  1852                                  GFP_KERNEL);
+  1853  
+  1854                  if (!wdata)
+  1855                          return -ENOMEM;
+  1856  
+  1857                  /* get possible component controls and get size of all pdata */
+  1858                  ipc_data_size = sof_get_control_data(sdev, widget, wdata);
+  1859  
+  1860                  if (ipc_data_size <= 0) {
 
--> sof_ipc_tx_message(..,..,&reply, sizeof(reply))
 
-msg->reply_size = sizeof(reply).
+The sof_get_control_data() returns negative error codes, but it's also
+declared as unsigned.  But the main reason I'm reporting this instead of
+fixing it myself (besides laziness) is that I was wondering if it was
+really handling zero returns correctly.  Should we really return success
+in that situation?
 
-On the firmware side:
+  1861                          ret = ipc_data_size;
+  1862                          goto out;
+  1863                  }
+  1864          }
+  1865  
 
-https://github.com/thesofproject/sof/blob/master/src/ipc/handler.c#L912
-reply.rhdr.hdr.size = sizeof(reply);
-
-> The estimated-case is usually permissive as long as assumed size is >=
-> reply.hdr.size - dev_err needed. In the exact-case, it should be viewed
-> as a requirement. If such "requirement" fails, is it valid to read
-> mailbox regardless? Is this to extract some error-debug payload sent by FW?
->
-> Just curious, please feel free to correct me here, Pierre.
-
-If you think an improvement can be done, please send a patch :).
-
-thanks,
-Daniel.
+regards,
+dan carpenter
