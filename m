@@ -1,7 +1,7 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 15/21] ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t
-Date: Mon, 19 Aug 2019 21:25:22 +0200
-Message-ID: <43b07f8cd8e0e280c64ce61d57c307678c923e9b.1566242458.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH 20/21] ASoC: sun4i-i2s: Add support for TDM slots
+Date: Mon, 19 Aug 2019 21:25:27 +0200
+Message-ID: <26392af30b3e7b31ee48d5b867d45be8675db046.1566242458.git-series.maxime.ripard@bootlin.com>
 References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,27 +14,127 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-The A83t, unlike previous SoCs, has the MCLK enable bit at the 8th bit of
-the CLK_DIV register, unlike what is declared in the driver.
+The i2s controller supports TDM, for up to 8 slots. Let's support the TDM
+API.
 
-Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-i2s.c | 40 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 34 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index b5c9774e2f60..5dd742f24a7e 100644
+index 0dac09814b65..4f76daeaaed7 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -1047,7 +1047,7 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
- 	.has_reset		= true,
- 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
- 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
--	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-+	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
- 	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
- 	.bclk_dividers		= sun8i_i2s_clk_div,
+@@ -168,6 +168,8 @@ struct sun4i_i2s {
+ 	struct reset_control *rst;
+ 
+ 	unsigned int	mclk_freq;
++	unsigned int	slots;
++	unsigned int	slot_width;
+ 
+ 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
+@@ -287,7 +289,7 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
+ 
+ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 				  unsigned int rate,
+-				  unsigned int channels,
++				  unsigned int slots,
+ 				  unsigned int word_size)
+ {
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -335,7 +337,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 
+ 	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
+ 	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
+-					  rate, channels, word_size);
++					  rate, slots, word_size);
+ 	if (bclk_div < 0) {
+ 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
+ 		return -EINVAL;
+@@ -419,6 +421,10 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ 				  const struct snd_pcm_hw_params *params)
+ {
+ 	unsigned int channels = params_channels(params);
++	unsigned int slots = channels;
++
++	if (i2s->slots)
++		slots = i2s->slots;
+ 
+ 	/* Map the channels for playback and capture */
+ 	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+@@ -428,7 +434,6 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ 	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+ 			   SUN4I_I2S_CHAN_SEL_MASK,
+ 			   SUN4I_I2S_CHAN_SEL(channels));
+-
+ 	regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
+ 			   SUN4I_I2S_CHAN_SEL_MASK,
+ 			   SUN4I_I2S_CHAN_SEL(channels));
+@@ -452,10 +457,18 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	unsigned int word_size = params_width(params);
+ 	unsigned int channels = params_channels(params);
++	unsigned int slots = channels;
+ 	int ret, sr, wss;
+ 	u32 width;
+ 
++	if (i2s->slots)
++		slots = i2s->slots;
++
++	if (i2s->slot_width)
++		word_size = i2s->slot_width;
++
+ 	ret = i2s->variant->set_chan_cfg(i2s, params);
+ 	if (ret < 0) {
+ 		dev_err(dai->dev, "Invalid channel configuration\n");
+@@ -477,15 +490,14 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	if (sr < 0)
+ 		return -EINVAL;
+ 
+-	wss = i2s->variant->get_wss(i2s, params_width(params));
++	wss = i2s->variant->get_wss(i2s, word_size);
+ 	if (wss < 0)
+ 		return -EINVAL;
+ 
+ 	regmap_field_write(i2s->field_fmt_wss, wss);
+ 	regmap_field_write(i2s->field_fmt_sr, sr);
+ 
+-	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+-				      channels, params_width(params));
++	return sun4i_i2s_set_clk_rate(dai, params_rate(params), slots, word_size);
+ }
+ 
+ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+@@ -785,10 +797,26 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	return 0;
+ }
+ 
++static int sun4i_i2s_set_tdm_slot(struct snd_soc_dai *dai,
++				  unsigned int tx_mask, unsigned int rx_mask,
++				  int slots, int slot_width)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	if (slots > 8)
++		return -EINVAL;
++
++	i2s->slots = slots;
++	i2s->slot_width = slot_width;
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+ 	.hw_params	= sun4i_i2s_hw_params,
+ 	.set_fmt	= sun4i_i2s_set_fmt,
+ 	.set_sysclk	= sun4i_i2s_set_sysclk,
++	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
+ 	.trigger	= sun4i_i2s_trigger,
+ };
+ 
 -- 
 git-series 0.9.1
