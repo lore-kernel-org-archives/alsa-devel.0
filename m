@@ -1,22 +1,28 @@
-From: jeronimo@borque.com.ar
-Subject: [PATCH v3] ALSA: hda - Fixes inverted Conexant GPIO
-	mic mute led
-Date: Sun, 18 Aug 2019 22:35:38 -0300
-Message-ID: <20190819013538.9493-1-jeronimo@borque.com.ar>
-References: <CAHNnQdJMQes-3Goug-W0003M2fKn9wfbS173wAPCyVfedsj7Bg@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [BUG] bdw-rt5650 DSP boot timeout
+Date: Mon, 19 Aug 2019 02:33:27 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9606FC567@SHSMSX106.ccr.corp.intel.com>
+References: <CACJJ=pxPm7dRUE534hDWy2tN3dGYDyrgU8JKqett=wOQx+nWCQ@mail.gmail.com>
+ <39533fe5-c060-7a07-c910-74b83eee53c4@linux.intel.com>
+ <ac7bcb42e40ac12d9924fd65c3e2c68b9b11b093.camel@linux.intel.com>
+ <37ede7ea-e760-eac9-a1d5-0eb8e3bff3cb@linux.intel.com>
+ <CACJJ=pyb==xWqKMB-gAzW7-FCFgEU7Rm+b-CL-ANO-eorDKy=A@mail.gmail.com>
+ <356b3f4eacb43f23c40c4cd8e3c54ae9514a34c6.camel@linux.intel.com>
+ <7e08e45d-7cec-9fdd-36c5-5e82632968f8@linux.intel.com>
+ <CACJJ=pzcMCaOvHMVhmYKKL2Z45-XdrBB9FT8VjSzX_obVtKzyw@mail.gmail.com>
+ <d80c2f4d-b5f4-5bbe-9529-36b9859ab8be@linux.intel.com>
+ <CACJJ=pxokT5z+U=nM9QcUVxCk84998ugM5J89U28k=CVGMjG=w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21AF4F801D9
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 03:40:01 +0200 (CEST)
-Received: by mail-qk1-x741.google.com with SMTP id s14so204466qkm.4
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2019 18:40:01 -0700 (PDT)
-In-Reply-To: <CAHNnQdJMQes-3Goug-W0003M2fKn9wfbS173wAPCyVfedsj7Bg@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCE4DF8011F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 04:33:33 +0200 (CEST)
+In-Reply-To: <CACJJ=pxokT5z+U=nM9QcUVxCk84998ugM5J89U28k=CVGMjG=w@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,74 +32,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Jeronimo Borque <jeronimo@borque.com.ar>, Takashi Iwai <tiwai@suse.com>
+To: Jon Flatley <jflat@chromium.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "benzh@chromium.org" <benzh@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jie Yang <yang.jie@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, "cujomalainey@chromium.org" <cujomalainey@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeronimo Borque <jeronimo@borque.com.ar>
 
-"enabled" parameter historically referred to the device input or
-output, not to the led indicator. After the changes added with the led
-helper functions the mic mute led logic refers to the led and not to
-the mic input which caused led indicator to be negated.
-Fixing logic in cxt_update_gpio_led and updated
-cxt_fixup_gpio_mute_hook
-Also updated debug messages to ease further debugging if necessary.
+>-----Original Message-----
+>From: Jon Flatley [mailto:jflat@chromium.org]
+>Sent: Thursday, August 15, 2019 5:25 AM
+>To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>Cc: Jon Flatley <jflat@chromium.org>; Jie, Yang <yang.jie@intel.com>;
+>benzh@chromium.org; alsa-devel@alsa-project.org; Ranjani Sridharan
+><ranjani.sridharan@linux.intel.com>; cujomalainey@chromium.org; Jie Yang
+><yang.jie@linux.intel.com>
+>Subject: Re: [alsa-devel] [BUG] bdw-rt5650 DSP boot timeout
+>
+>On Wed, Aug 14, 2019 at 1:51 PM Pierre-Louis Bossart <pierre-
+>louis.bossart@linux.intel.com> wrote:
+>>
+>>
+>> > There seems to be an issue when suspending the ALC5650. I think the
+>> > nondeterministic behavior I was seeing just had to do with whether
+>> > or not the DSP had yet suspended.
+>> >
+>> > I reverted commit 0d2135ecadb0 ("ASoC: Intel: Work around to fix HW
+>> > D3 potential crash issue") and things started working, including
+>> > suspend/resume of the DSP. Any ideas for why this may be? I would
+>> > like to resolve this so I can finish upstreaming the bdw-rt5650
+>> > machine driver.
+>>
+>> Copying Keyon in case he remembers the context.
+>>
+>> Reverting a 5yr-old commit with all sorts of clock/power-related fixes
+>> looks brave, and it's not clear why this would work with the rt5677
+>> and not with 5650.
+>
+>No idea, I was just diffing the register writes looking for sources of discrepancy.
+>The Chromium OS 3.14 kernel tree that Buddy uses doesn't have this patch, so
+>I figured what's the worst that could happen?
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Jeronimo Borque <jeronimo@borque.com.ar>
----
- sound/pci/hda/patch_conexant.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+Hi Jon, sorry about just noticing this thread.
+>From the dmesg log, the issue happens at runtime suspend/resume but not in boot, am I right(you can disable runtime PM for the device to confirm that)? 
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 14298ef45b21..968d3caab6ac 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -611,18 +611,20 @@ static void cxt_fixup_hp_gate_mic_jack(struct hda_codec *codec,
- 
- /* update LED status via GPIO */
- static void cxt_update_gpio_led(struct hda_codec *codec, unsigned int mask,
--				bool enabled)
-+				bool led_on)
- {
- 	struct conexant_spec *spec = codec->spec;
- 	unsigned int oldval = spec->gpio_led;
- 
- 	if (spec->mute_led_polarity)
--		enabled = !enabled;
-+		led_on = !led_on;
- 
--	if (enabled)
--		spec->gpio_led &= ~mask;
--	else
-+	if (led_on)
- 		spec->gpio_led |= mask;
-+	else
-+		spec->gpio_led &= ~mask;
-+	codec_dbg(codec, "mask:%d enabled:%d gpio_led:%d\n",
-+			mask, led_on, spec->gpio_led);
- 	if (spec->gpio_led != oldval)
- 		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
- 				    spec->gpio_led);
-@@ -633,8 +635,8 @@ static void cxt_fixup_gpio_mute_hook(void *private_data, int enabled)
- {
- 	struct hda_codec *codec = private_data;
- 	struct conexant_spec *spec = codec->spec;
--
--	cxt_update_gpio_led(codec, spec->gpio_mute_led_mask, enabled);
-+	/* muted -> LED on */
-+	cxt_update_gpio_led(codec, spec->gpio_mute_led_mask, !enabled);
- }
- 
- /* turn on/off mic-mute LED via GPIO per capture hook */
-@@ -656,7 +658,6 @@ static void cxt_fixup_mute_led_gpio(struct hda_codec *codec,
- 		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x03 },
- 		{}
- 	};
--	codec_info(codec, "action: %d gpio_led: %d\n", action, spec->gpio_led);
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = cxt_fixup_gpio_mute_hook;
--- 
-2.21.0
+My points here are:
+1. the commit 0d2135ecadb0 was suggested by FW team to W/A D3 potential crash issue.
+2. it was verified with rt286(Broadwell.c, e.g. Dell XPS) from our side only(and may have been checked with rt5677 by Chrome team).
+3. please follow sequence in broadwell.c if issue happen at boot time.
+If happened at runtime PM from DSP side, we should see it with all kinds of machine driver.
+Could you performing more test and debugging to see what it real happen there?
+4. we have no reason to remove the commit directly, except correcting if some lines are proved wrong. And, as Pierre mentioned, SOF driver is preferred, as there is no new development effort to support SST haswell/Broadwell driver here(no platform, no developer, :-( ).
+
+Thanks,
+~Keyon>
+>>
+>> Are you using the latest upstream firmware btw? Or the one which
+>> shipped with the initial device (which could be an issue if the protocol
+>changed).
+>
+>The firmware I'm loading is: `FW info: type 01, - version: 00.00, build 77,
+>source commit id: 876ac6906f31a43b6772b23c7c983ce9dcb18a1`.
+>Hashes the same as the upstream binary.
