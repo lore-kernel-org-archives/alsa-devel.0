@@ -1,198 +1,87 @@
-From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 09/21] ASoC: sun4i-i2s: Fix the MCLK and BCLK dividers on newer SoCs
-Date: Mon, 19 Aug 2019 21:25:16 +0200
-Message-ID: <0e5b4abf06cd3202354315201c6af44caeb20236.1566242458.git-series.maxime.ripard@bootlin.com>
-References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: SOF: Add OF DSP device support
+Date: Mon, 19 Aug 2019 20:24:06 +0100
+Message-ID: <20190819192406.GC5563@sirena.co.uk>
+References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
+ <20190815154500.29090-2-pierre-louis.bossart@linux.intel.com>
+ <20190815164942.GB4841@sirena.co.uk>
+ <CAEnQRZAM6VkCewfVYysz-NmPNEz-CSe763Cv-kz9kyNjx8uMtQ@mail.gmail.com>
+ <20190819134616.GR5999@X250>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <mripard@kernel.org>, lgirdwood@gmail.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, codekipper@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0805854776173964349=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f99.google.com (mail-wr1-f99.google.com
+ [209.85.221.99])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 728A3F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 21:24:08 +0200 (CEST)
+Received: by mail-wr1-f99.google.com with SMTP id p17so9858708wrf.11
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 12:24:08 -0700 (PDT)
+In-Reply-To: <20190819134616.GR5999@X250>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Shawn Guo <shawnguo@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Daniel Baluta <daniel.baluta@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-From: Marcus Cooper <codekipper@gmail.com>
+--===============0805854776173964349==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t0UkRYy7tHLRMCai"
+Content-Disposition: inline
 
-The clock division dividers have changed between the older (A10/A31) and
-newer (H3, A64, etc) SoCs.
 
-While this was addressed through an offset on some SoCs, it was missing
-some dividers as well, so the support wasn't perfect. Let's introduce a
-pointer in the quirk structure for the divider calculation functions to use
-so we can have the proper range now.
+--t0UkRYy7tHLRMCai
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-[Maxime: Fix the commit log, use a field in the quirk structure]
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
----
- sound/soc/sunxi/sun4i-i2s.c | 63 +++++++++++++++++++++++++++++---------
- 1 file changed, 49 insertions(+), 14 deletions(-)
+On Mon, Aug 19, 2019 at 03:46:17PM +0200, Shawn Guo wrote:
+> On Fri, Aug 16, 2019 at 11:43:13AM +0300, Daniel Baluta wrote:
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 51be395102b2..8d49ee7d2a95 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -129,8 +129,6 @@ struct sun4i_i2s;
-  * @has_fmt_set_lrck_period: SoC requires lrclk period to be set.
-  * @reg_offset_txdata: offset of the tx fifo.
-  * @sun4i_i2s_regmap: regmap config to use.
-- * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-- * @bclk_offset: Value by which bclkdiv needs to be adjusted.
-  * @field_clkdiv_mclk_en: regmap field to enable mclk output.
-  * @field_fmt_wss: regmap field to set word select size.
-  * @field_fmt_sr: regmap field to set sample resolution.
-@@ -142,8 +140,6 @@ struct sun4i_i2s_quirks {
- 	bool				has_fmt_set_lrck_period;
- 	unsigned int			reg_offset_txdata;	/* TX FIFO */
- 	const struct regmap_config	*sun4i_i2s_regmap;
--	unsigned int			mclk_offset;
--	unsigned int			bclk_offset;
- 
- 	/* Register fields for i2s */
- 	struct reg_field		field_clkdiv_mclk_en;
-@@ -152,6 +148,11 @@ struct sun4i_i2s_quirks {
- 	struct reg_field		field_fmt_bclk;
- 	struct reg_field		field_fmt_lrclk;
- 
-+	const struct sun4i_i2s_clk_div	*bclk_dividers;
-+	unsigned int			num_bclk_dividers;
-+	const struct sun4i_i2s_clk_div	*mclk_dividers;
-+	unsigned int			num_mclk_dividers;
-+
- 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
- 	s8	(*get_sr)(const struct sun4i_i2s *, int);
- 	s8	(*get_wss)(const struct sun4i_i2s *, int);
-@@ -208,6 +209,24 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
- 	/* TODO - extend divide ratio supported by newer SoCs */
- };
- 
-+static const struct sun4i_i2s_clk_div sun8i_i2s_clk_div[] = {
-+	{ .div = 1, .val = 1 },
-+	{ .div = 2, .val = 2 },
-+	{ .div = 4, .val = 3 },
-+	{ .div = 6, .val = 4 },
-+	{ .div = 8, .val = 5 },
-+	{ .div = 12, .val = 6 },
-+	{ .div = 16, .val = 7 },
-+	{ .div = 24, .val = 8 },
-+	{ .div = 32, .val = 9 },
-+	{ .div = 48, .val = 10 },
-+	{ .div = 64, .val = 11 },
-+	{ .div = 96, .val = 12 },
-+	{ .div = 128, .val = 13 },
-+	{ .div = 176, .val = 14 },
-+	{ .div = 192, .val = 15 },
-+};
-+
- static unsigned long sun4i_i2s_get_bclk_parent_rate(const struct sun4i_i2s *i2s)
- {
- 	return i2s->mclk_freq;
-@@ -223,11 +242,12 @@ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
- 				  unsigned int sampling_rate,
- 				  unsigned int word_size)
- {
-+	const struct sun4i_i2s_clk_div *dividers = i2s->variant->bclk_dividers;
- 	int div = parent_rate / sampling_rate / word_size / 2;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_bclk_div); i++) {
--		const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
-+	for (i = 0; i < i2s->variant->num_bclk_dividers; i++) {
-+		const struct sun4i_i2s_clk_div *bdiv = &dividers[i];
- 
- 		if (bdiv->div == div)
- 			return bdiv->val;
-@@ -240,11 +260,12 @@ static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
- 				  unsigned long parent_rate,
- 				  unsigned long mclk_rate)
- {
-+	const struct sun4i_i2s_clk_div *dividers = i2s->variant->mclk_dividers;
- 	int div = parent_rate / mclk_rate;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_mclk_div); i++) {
--		const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
-+	for (i = 0; i < i2s->variant->num_mclk_dividers; i++) {
-+		const struct sun4i_i2s_clk_div *mdiv = &dividers[i];
- 
- 		if (mdiv->div == div)
- 			return mdiv->val;
-@@ -326,10 +347,6 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
- 
--	/* Adjust the clock division values if needed */
--	bclk_div += i2s->variant->bclk_offset;
--	mclk_div += i2s->variant->mclk_offset;
--
- 	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
- 		     SUN4I_I2S_CLK_DIV_BCLK(bclk_div) |
- 		     SUN4I_I2S_CLK_DIV_MCLK(mclk_div));
-@@ -969,6 +986,10 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.bclk_dividers		= sun4i_i2s_bclk_div,
-+	.num_bclk_dividers	= ARRAY_SIZE(sun4i_i2s_bclk_div),
-+	.mclk_dividers		= sun4i_i2s_mclk_div,
-+	.num_mclk_dividers	= ARRAY_SIZE(sun4i_i2s_mclk_div),
- 	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun4i_i2s_get_sr,
- 	.get_wss		= sun4i_i2s_get_wss,
-@@ -985,6 +1006,10 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.bclk_dividers		= sun4i_i2s_bclk_div,
-+	.num_bclk_dividers	= ARRAY_SIZE(sun4i_i2s_bclk_div),
-+	.mclk_dividers		= sun4i_i2s_mclk_div,
-+	.num_mclk_dividers	= ARRAY_SIZE(sun4i_i2s_mclk_div),
- 	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun4i_i2s_get_sr,
- 	.get_wss		= sun4i_i2s_get_wss,
-@@ -1001,6 +1026,10 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.bclk_dividers		= sun8i_i2s_clk_div,
-+	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
-+	.mclk_dividers		= sun8i_i2s_clk_div,
-+	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
- 	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun8i_i2s_get_sr_wss,
- 	.get_wss		= sun8i_i2s_get_sr_wss,
-@@ -1012,14 +1041,16 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.has_reset		= true,
- 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
- 	.sun4i_i2s_regmap	= &sun8i_i2s_regmap_config,
--	.mclk_offset		= 1,
--	.bclk_offset		= 2,
- 	.has_fmt_set_lrck_period = true,
- 	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
- 	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
-+	.bclk_dividers		= sun8i_i2s_clk_div,
-+	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
-+	.mclk_dividers		= sun8i_i2s_clk_div,
-+	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
- 	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun8i_i2s_get_sr_wss,
- 	.get_wss		= sun8i_i2s_get_sr_wss,
-@@ -1036,6 +1067,10 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.bclk_dividers		= sun4i_i2s_bclk_div,
-+	.num_bclk_dividers	= ARRAY_SIZE(sun4i_i2s_bclk_div),
-+	.mclk_dividers		= sun4i_i2s_mclk_div,
-+	.num_mclk_dividers	= ARRAY_SIZE(sun4i_i2s_mclk_div),
- 	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun4i_i2s_get_sr,
- 	.get_wss		= sun4i_i2s_get_wss,
--- 
-git-series 0.9.1
+> > Binding documentation together with the actual dts nodes were sent
+> > to Shawn.
+
+> > https://lkml.org/lkml/2019/8/7/682
+
+> > Can you pick 4/5 and 5/5 patches from series above? 1-3 are sent to
+> > Mark to go through to alsa tree.
+
+> I just picked up DTS patch (4/5), but DT bindings should generally go
+> through driver/subsystem tree as preference.
+
+Right, especially so we get domain experts looking at things before they
+are merged.
+
+--t0UkRYy7tHLRMCai
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1a91YACgkQJNaLcl1U
+h9Duhwf+Jun/261NvS0DyKcg4mZ3Us1NgoEMjPfXVxXIlqHD+DSU+kyNcUeAevIi
+geJqCRUpDk/8m7yFbVHuVikAoZwEcSAm41PkRYy+jw02WYiIpI/zKmpucsorv3+S
+/5yV4qHykS94VSInBhxLI9SOwaPBT0cNfQFLKMmE5R5e2nhKNbbAaby/oCottVGj
+nTzSz4wFgDLjwcaopxnxfXYJOwN1l2hg0hK/4+eBTso7+sGqVGfbiVAfmPHAjACY
+j1MWzj5e3NuilCp33tJ3ZODBUZ6Er2/8kOaiY73c4I0OZ1ymI9NCtW82LGqneycG
+CBZq3Whpox7pAry6kx4vSVO6HniTOQ==
+=yP+B
+-----END PGP SIGNATURE-----
+
+--t0UkRYy7tHLRMCai--
+
+--===============0805854776173964349==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0805854776173964349==--
