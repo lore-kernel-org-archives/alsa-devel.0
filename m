@@ -1,7 +1,7 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 20/21] ASoC: sun4i-i2s: Add support for TDM slots
-Date: Mon, 19 Aug 2019 21:25:27 +0200
-Message-ID: <26392af30b3e7b31ee48d5b867d45be8675db046.1566242458.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH 19/21] ASoC: sun4i-i2s: Support more channels
+Date: Mon, 19 Aug 2019 21:25:26 +0200
+Message-ID: <27d9de5cd56f3a544851b8cd8af08bf836d19637.1566242458.git-series.maxime.ripard@bootlin.com>
 References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,127 +14,76 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-The i2s controller supports TDM, for up to 8 slots. Let's support the TDM
-API.
+We've been limited to 2 channels in the driver while the controller
+supports from 1 to 8 channels, in both capture and playback. let's remove
+the hardcoded checks and numbers, and extend the range of channel numbers
+we can use.
 
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 40 ++++++++++++++++++++++++++++++++------
- 1 file changed, 34 insertions(+), 6 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 0dac09814b65..4f76daeaaed7 100644
+index 905e9bd16024..0dac09814b65 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -168,6 +168,8 @@ struct sun4i_i2s {
- 	struct reset_control *rst;
- 
- 	unsigned int	mclk_freq;
-+	unsigned int	slots;
-+	unsigned int	slot_width;
- 
- 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-@@ -287,7 +289,7 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
- 
- static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				  unsigned int rate,
--				  unsigned int channels,
-+				  unsigned int slots,
- 				  unsigned int word_size)
- {
- 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-@@ -335,7 +337,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 
- 	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
- 	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
--					  rate, channels, word_size);
-+					  rate, slots, word_size);
- 	if (bclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
- 		return -EINVAL;
-@@ -419,6 +421,10 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 				  const struct snd_pcm_hw_params *params)
+@@ -400,9 +400,6 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
  {
  	unsigned int channels = params_channels(params);
-+	unsigned int slots = channels;
-+
-+	if (i2s->slots)
-+		slots = i2s->slots;
  
+-	if (channels != 2)
+-		return -EINVAL;
+-
+ 	/* Map the channels for playback and capture */
+ 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+ 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
+@@ -423,9 +420,6 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ {
+ 	unsigned int channels = params_channels(params);
+ 
+-	if (channels != 2)
+-		return -EINVAL;
+-
  	/* Map the channels for playback and capture */
  	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
-@@ -428,7 +434,6 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
- 			   SUN4I_I2S_CHAN_SEL_MASK,
- 			   SUN4I_I2S_CHAN_SEL(channels));
--
- 	regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
- 			   SUN4I_I2S_CHAN_SEL_MASK,
- 			   SUN4I_I2S_CHAN_SEL(channels));
-@@ -452,10 +457,18 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
+@@ -458,6 +452,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
  			       struct snd_soc_dai *dai)
  {
  	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	unsigned int word_size = params_width(params);
- 	unsigned int channels = params_channels(params);
-+	unsigned int slots = channels;
++	unsigned int channels = params_channels(params);
  	int ret, sr, wss;
  	u32 width;
  
-+	if (i2s->slots)
-+		slots = i2s->slots;
-+
-+	if (i2s->slot_width)
-+		word_size = i2s->slot_width;
-+
- 	ret = i2s->variant->set_chan_cfg(i2s, params);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Invalid channel configuration\n");
-@@ -477,15 +490,14 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	if (sr < 0)
- 		return -EINVAL;
- 
--	wss = i2s->variant->get_wss(i2s, params_width(params));
-+	wss = i2s->variant->get_wss(i2s, word_size);
- 	if (wss < 0)
- 		return -EINVAL;
- 
- 	regmap_field_write(i2s->field_fmt_wss, wss);
+@@ -490,7 +485,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
  	regmap_field_write(i2s->field_fmt_sr, sr);
  
--	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
--				      channels, params_width(params));
-+	return sun4i_i2s_set_clk_rate(dai, params_rate(params), slots, word_size);
+ 	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+-				      2, params_width(params));
++				      channels, params_width(params));
  }
  
  static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
-@@ -785,10 +797,26 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	return 0;
- }
- 
-+static int sun4i_i2s_set_tdm_slot(struct snd_soc_dai *dai,
-+				  unsigned int tx_mask, unsigned int rx_mask,
-+				  int slots, int slot_width)
-+{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	if (slots > 8)
-+		return -EINVAL;
-+
-+	i2s->slots = slots;
-+	i2s->slot_width = slot_width;
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
- 	.hw_params	= sun4i_i2s_hw_params,
- 	.set_fmt	= sun4i_i2s_set_fmt,
- 	.set_sysclk	= sun4i_i2s_set_sysclk,
-+	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
- 	.trigger	= sun4i_i2s_trigger,
- };
- 
+@@ -814,15 +809,15 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 	.probe = sun4i_i2s_dai_probe,
+ 	.capture = {
+ 		.stream_name = "Capture",
+-		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_min = 1,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.playback = {
+ 		.stream_name = "Playback",
+-		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_min = 1,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
 -- 
 git-series 0.9.1
