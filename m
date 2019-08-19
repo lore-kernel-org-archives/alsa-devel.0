@@ -1,7 +1,7 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 06/21] ASoC: sun4i-i2s: Rework MCLK divider calculation
-Date: Mon, 19 Aug 2019 21:25:13 +0200
-Message-ID: <dcc5deb2eb650758d268bddd20f60ba58856d024.1566242458.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH 07/21] ASoC: sun4i-i2s: Don't use the oversample to calculate BCLK
+Date: Mon, 19 Aug 2019 21:25:14 +0200
+Message-ID: <c3595e3a9788c2ef2dcc30aa3c8c4953bb5cc249.1566242458.git-series.maxime.ripard@bootlin.com>
 References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,47 +14,62 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-The MCLK divider calculation is currently computing the ideal divider using
-the oversample rate, the sample rate and the parent rate.
+The BCLK divider should be calculated using the parameters that actually
+make the BCLK rate: the number of channels, the sampling rate and the
+sample width.
 
-However, since we have access to the frequency is supposed to be running at
-already, and as it turns out we're using it to compute the oversample rate,
-we can just use the ratio between the parent rate and the MCLK rate to
-simplify a bit the formula.
+We've been using the oversample_rate previously because in the former SoCs,
+the BCLK's parent is MCLK, which in turn is being used to generate the
+oversample rate, so we end up with something like this:
 
+oversample = mclk_rate / sampling_rate
+bclk_div = oversample / word_size / channels
+
+So, bclk_div = mclk_rate / sampling_rate / word_size / channels.
+
+And this is actually better, since the oversampling ratio only plays a role
+because the MCLK is its parent, not because of what BCLK is supposed to be.
+
+Furthermore, that assumption of MCLK being the parent has been broken on
+newer SoCs, so let's use the proper formula, and have the parent rate as an
+argument.
+
+Fixes: 7d2993811a1e ("ASoC: sun4i-i2s: Add support for H3")
+Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
+Fixes: 66ecce332538 ("ASoC: sun4i-i2s: Add compatibility with A64 codec I2S")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c |  9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index fbbedb660cc6..3d7f4a97e0ba 100644
+index 3d7f4a97e0ba..ee8ee3eb2087 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -225,11 +225,10 @@ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
- }
+@@ -208,10 +208,11 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
+ };
  
- static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
+ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
 -				  unsigned int oversample_rate,
--				  unsigned int module_rate,
--				  unsigned int sampling_rate)
 +				  unsigned long parent_rate,
-+				  unsigned long mclk_rate)
++				  unsigned int sampling_rate,
+ 				  unsigned int word_size)
  {
--	int div = module_rate / sampling_rate / oversample_rate;
-+	int div = parent_rate / mclk_rate;
+-	int div = oversample_rate / word_size / 2;
++	int div = parent_rate / sampling_rate / word_size / 2;
  	int i;
  
- 	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_mclk_div); i++) {
-@@ -308,8 +307,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_bclk_div); i++) {
+@@ -300,8 +301,8 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
  		return -EINVAL;
  	}
  
--	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
--					  clk_rate, rate);
-+	mclk_div = sun4i_i2s_get_mclk_div(i2s, clk_rate, i2s->mclk_freq);
- 	if (mclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported MCLK divider: %d\n", mclk_div);
+-	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
+-					  word_size);
++	bclk_div = sun4i_i2s_get_bclk_div(i2s, i2s->mclk_freq,
++					  rate, word_size);
+ 	if (bclk_div < 0) {
+ 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
  		return -EINVAL;
 -- 
 git-series 0.9.1
