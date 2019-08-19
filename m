@@ -1,7 +1,7 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 03/21] ASoC: sun4i-i2s: Replace call to params_channels by local variable
-Date: Mon, 19 Aug 2019 21:25:10 +0200
-Message-ID: <c0faaac69ad40248f24eed3c3b2fa1ccc4a85b70.1566242458.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH 14/21] ASoC: sun4i-i2s: Fix WSS and SR fields for the A83t
+Date: Mon, 19 Aug 2019 21:25:21 +0200
+Message-ID: <d93f0943cc39d880750daf459a0eeab34c63518e.1566242458.git-series.maxime.ripard@bootlin.com>
 References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,31 +14,29 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-The sun4i_i2s_hw_params already has a variable holding the value returned
-by params_channels, so let's just use that variable instead of calling
-params_channels multiple times.
+The A83t has the same bit fields offsets than the A10 and A31, while this
+was the first device with the new layout, fix that.
 
+Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 1ed7670eae9c..ac84c29224eb 100644
+index 9c9061621b15..b5c9774e2f60 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -411,10 +411,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Configure the channels */
- 	regmap_field_write(i2s->field_txchansel,
--			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
--
-+			   SUN4I_I2S_CHAN_SEL(channels));
- 	regmap_field_write(i2s->field_rxchansel,
--			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
-+			   SUN4I_I2S_CHAN_SEL(channels));
- 
- 	if (i2s->variant->has_chsel_tx_chen)
- 		regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+@@ -1048,8 +1048,8 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+ 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
+ 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+ 	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
+-	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
+-	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
+ 	.bclk_dividers		= sun8i_i2s_clk_div,
+ 	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
+ 	.mclk_dividers		= sun8i_i2s_clk_div,
 -- 
 git-series 0.9.1
