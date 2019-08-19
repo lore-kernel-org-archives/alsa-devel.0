@@ -1,88 +1,78 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 2/3] ASoC: SOF: imx: Add i.MX8 HW support
-Date: Mon, 19 Aug 2019 23:16:02 +0200
-Message-ID: <0f089035-c5b5-0af9-2e72-00ec773cd056@intel.com>
-References: <20190815154500.29090-1-pierre-louis.bossart@linux.intel.com>
- <20190815154500.29090-3-pierre-louis.bossart@linux.intel.com>
- <c8c78674-7af8-4577-9e18-da85c064b345@intel.com>
- <4fe0c027-9c6c-1e76-5fb0-7325fbab48a2@linux.intel.com>
+From: Hui Peng <benquike@gmail.com>
+Subject: [PATCH] Fix an OOB bug in uac_mixer_unit_bmControls
+Date: Mon, 19 Aug 2019 18:00:04 -0400
+Message-ID: <20190819220005.10178-1-benquike@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE625F802E0
- for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 23:16:07 +0200 (CEST)
-In-Reply-To: <4fe0c027-9c6c-1e76-5fb0-7325fbab48a2@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: security@kernel.org
+Cc: Hui Peng <benquike@gmail.com>, Mathias Payer <mathias.payer@nebelwelt.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0xOSAxNzoyMSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24gOC8x
-Ny8xOSAxMDoyMSBBTSwgQ2V6YXJ5IFJvamV3c2tpIHdyb3RlOgo+PiBPbiAyMDE5LTA4LTE1IDE3
-OjQ0LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+IEZyb206IERhbmllbCBCYWx1dGEg
-PGRhbmllbC5iYWx1dGFAbnhwLmNvbT4KPj4+Cj4+PiBBZGQgc3VwcG9ydCBmb3IgdGhlIGF1ZGlv
-IERTUCBoYXJkd2FyZSBmb3VuZCBvbiBOWFAgaS5NWDggcGxhdGZvcm0uCj4+Pgo+Pj4gU2lnbmVk
-LW9mZi1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAuY29tPgo+Pj4gU2lnbmVk
-LW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgCj4+PiA8cGllcnJlLWxvdWlzLmJvc3NhcnRA
-bGludXguaW50ZWwuY29tPgo+Pj4gK3N0YXRpYyB2b2lkIGlteDhfZ2V0X3JlcGx5KHN0cnVjdCBz
-bmRfc29mX2RldiAqc2RldikKPj4+ICt7Cj4+PiArwqDCoMKgIHN0cnVjdCBzbmRfc29mX2lwY19t
-c2cgKm1zZyA9IHNkZXYtPm1zZzsKPj4+ICvCoMKgwqAgc3RydWN0IHNvZl9pcGNfcmVwbHkgcmVw
-bHk7Cj4+PiArwqDCoMKgIGludCByZXQgPSAwOwo+Pj4gKwo+Pj4gK8KgwqDCoCBpZiAoIW1zZykg
-ewo+Pj4gK8KgwqDCoMKgwqDCoMKgIGRldl93YXJuKHNkZXYtPmRldiwgInVuZXhwZWN0ZWQgaXBj
-IGludGVycnVwdFxuIik7Cj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuOwo+Pj4gK8KgwqDCoCB9
-Cj4+PiArCj4+PiArwqDCoMKgIC8qIGdldCByZXBseSAqLwo+Pj4gK8KgwqDCoCBzb2ZfbWFpbGJv
-eF9yZWFkKHNkZXYsIHNkZXYtPmhvc3RfYm94Lm9mZnNldCwgJnJlcGx5LCAKPj4+IHNpemVvZihy
-ZXBseSkpOwo+Pj4gKwo+Pj4gK8KgwqDCoCBpZiAocmVwbHkuZXJyb3IgPCAwKSB7Cj4+PiArwqDC
-oMKgwqDCoMKgwqAgbWVtY3B5KG1zZy0+cmVwbHlfZGF0YSwgJnJlcGx5LCBzaXplb2YocmVwbHkp
-KTsKPj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSByZXBseS5lcnJvcjsKPj4+ICvCoMKgwqAgfSBl
-bHNlIHsKPj4+ICvCoMKgwqDCoMKgwqDCoCAvKiByZXBseSBoYXMgY29ycmVjdCBzaXplPyAqLwo+
-Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChyZXBseS5oZHIuc2l6ZSAhPSBtc2ctPnJlcGx5X3NpemUp
-IHsKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRldl9lcnIoc2Rldi0+ZGV2LCAiZXJyb3I6
-IHJlcGx5IGV4cGVjdGVkICV6dSBnb3QgJXUgCj4+PiBieXRlc1xuIiwKPj4+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgbXNnLT5yZXBseV9zaXplLCByZXBseS5oZHIuc2l6ZSk7Cj4+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXQgPSAtRUlOVkFMOwo+Pj4gK8KgwqDCoMKgwqDC
-oMKgIH0KPj4+ICsKPj4+ICvCoMKgwqDCoMKgwqDCoCAvKiByZWFkIHRoZSBtZXNzYWdlICovCj4+
-PiArwqDCoMKgwqDCoMKgwqAgaWYgKG1zZy0+cmVwbHlfc2l6ZSA+IDApCj4+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBzb2ZfbWFpbGJveF9yZWFkKHNkZXYsIHNkZXYtPmhvc3RfYm94Lm9mZnNl
-dCwKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1zZy0+cmVw
-bHlfZGF0YSwgbXNnLT5yZXBseV9zaXplKTsKPj4+ICvCoMKgwqAgfQo+Pj4gKwo+Pj4gK8KgwqDC
-oCBtc2ctPnJlcGx5X2Vycm9yID0gcmV0Owo+Pj4gK30KPj4KPj4gQXNzdW1pbmcgcmVwbHkuaGRy
-LnNpemUgaXMgY29taW5nIGZyb20gSFcgSVBDIHJlZ3MsIG1zZyBvYmplY3QgaXMgCj4+IHJlcHJl
-c2VudGluZyBhcHBsaWNhdGlvbiBzaWRlIC0gU1csIGtlcm5lbC4gSWYgc28sIGlzIG1zZy0+cmVw
-bHlfc2l6ZSAKPj4gdmFsdWUgYW4gZXN0aW1hdGVkIHNpemUgKHdoaWNoIGNhbiBiZSBvdmVyZXN0
-aW1hdGVkIHNpbmNlIGV4YWN0IHNpemUgCj4+IG1heSBiZSB1bmtub3duIGJ5IHRoZSBob3N0KSAt
-b3ItIHRoZSBleGFjdCBzaXplIG9mIGluY29taW5nIElQQyByZXBseT8KPj4KPj4gVGhlIGVzdGlt
-YXRlZC1jYXNlIGlzIHVzdWFsbHkgcGVybWlzc2l2ZSBhcyBsb25nIGFzIGFzc3VtZWQgc2l6ZSBp
-cyA+PSAKPj4gcmVwbHkuaGRyLnNpemUgLSBkZXZfZXJyIG5lZWRlZC4gSW4gdGhlIGV4YWN0LWNh
-c2UsIGl0IHNob3VsZCBiZSAKPj4gdmlld2VkIGFzIGEgcmVxdWlyZW1lbnQuIElmIHN1Y2ggInJl
-cXVpcmVtZW50IiBmYWlscywgaXMgaXQgdmFsaWQgdG8gCj4+IHJlYWQgbWFpbGJveCByZWdhcmRs
-ZXNzPyBJcyB0aGlzIHRvIGV4dHJhY3Qgc29tZSBlcnJvci1kZWJ1ZyBwYXlsb2FkIAo+PiBzZW50
-IGJ5IEZXPwo+Pgo+PiBKdXN0IGN1cmlvdXMsIHBsZWFzZSBmZWVsIGZyZWUgdG8gY29ycmVjdCBt
-ZSBoZXJlLCBQaWVycmUuCj4gCj4gSSBkb24ndCBxdWl0ZSB1bmRlcnN0YW5kIHRoZSBxdWVzdGlv
-bi4gVGhlcmUgaXMgbm8gdXNlIG9mIEhXIElQQyAKPiByZWdpc3RlcnMgKGFzIGRvbmUgaW4gU0tM
-KSBzaW5jZSB0aGlzIGlzIG5vdCBwb3J0YWJsZSBhY3Jvc3MgaGFyZHdhcmUuIAo+IFRoZXJlICpt
-YXkqIGJlIGluZm9ybWF0aW9uIHNlbnQgb3ZlciBJUEMgcmVnaXN0ZXJzIGJ1dCB0aGF0IHdvdWxk
-IGhhdmUgCj4gdG8gYmUgZG9uZSBpbiBwbGF0Zm9ybS1zcGVjaWZpYyB3YXlzIC0gYXMgd2lsbCBi
-ZSBkb25lIGZvciBJbnRlbCB0byBlLmcuIAo+IGF2b2lkIHVzaW5nIG1lbW9yeSB3aW5kb3dzIHRo
-YXQgbWF5IG5vdCBiZSBwb3dlcmVkLgoKVExEUjoKV2FzIHdvbmRlcmluZyBhYm91dCBzb2ZfbWFp
-bGJveF9yZWFkIGJlaW5nIGludm9rZWQgcmVnYXJkbGVzcyBvZiAKc2l6ZS1jaGVjayBvdXRjb21l
-IChkZXZfZXJyIHJlcG9ydHMgc2l6ZSBtaXNtYXRjaCBhZnRlciBhbGwpLgoKR2l2ZW4geW91ciBh
-bnN3ZXIsIGd1ZXNzIHRoZSBlcnJvci1wYXlsb2FkIG1heSBzdGlsbCBiZSBzZW50IGJhY2sgc28g
-Cml0J3MgcHJlZmVyYWJsZSB0byByZWFkIHRoZSB1cGxpbmsgZGVzcGl0ZSB0aGUgdW5leHBlY3Rl
-ZCBjaXJjdW1zdGFuY2VzIAotIHNpemUgbWlzbWF0Y2guCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+`uac_mixer_unit_get_channels` calls `uac_mixer_unit_bmControls`
+to get pointer to bmControls field. The current implementation of
+`uac_mixer_unit_get_channels` does properly check the size of
+uac_mixer_unit_descriptor descriptor and may allow OOB access
+in `uac_mixer_unit_bmControls`.
+
+Reported-by: Hui Peng <benquike@gmail.com>
+Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+Signed-off-by: Hui Peng <benquike@gmail.com>
+---
+ sound/usb/mixer.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b5927c3d5bc0..00e6274a63c3 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -738,28 +738,39 @@ static int get_cluster_channels_v3(struct mixer_build *state, unsigned int clust
+ static int uac_mixer_unit_get_channels(struct mixer_build *state,
+ 				       struct uac_mixer_unit_descriptor *desc)
+ {
+-	int mu_channels;
++	int mu_channels = 0;
+ 	void *c;
+ 
+-	if (desc->bLength < sizeof(*desc))
+-		return -EINVAL;
+ 	if (!desc->bNrInPins)
+ 		return -EINVAL;
+-	if (desc->bLength < sizeof(*desc) + desc->bNrInPins)
+-		return -EINVAL;
+ 
+ 	switch (state->mixer->protocol) {
+ 	case UAC_VERSION_1:
++		// limit derived from uac_mixer_unit_bmControls
++		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 4)
++			return 0;
++
++		mu_channels = uac_mixer_unit_bNrChannels(desc);
++		break;
++
+ 	case UAC_VERSION_2:
+-	default:
+-		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 1)
++		// limit derived from uac_mixer_unit_bmControls
++		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 6)
+ 			return 0; /* no bmControls -> skip */
++
+ 		mu_channels = uac_mixer_unit_bNrChannels(desc);
+ 		break;
+ 	case UAC_VERSION_3:
++		// limit derived from uac_mixer_unit_bmControls
++		if (desc->bLength < sizeof(*desc) + desc->bNrInPins + 2)
++			return 0; /* no bmControls -> skip */
++
+ 		mu_channels = get_cluster_channels_v3(state,
+ 				uac3_mixer_unit_wClusterDescrID(desc));
+ 		break;
++
++	default:
++		break;
+ 	}
+ 
+ 	if (!mu_channels)
+-- 
+2.22.1
