@@ -1,22 +1,23 @@
-From: jeronimo@borque.com.ar
-Subject: [PATCH v2] ALSA: hda - Fixes inverted Conexant GPIO
-	mic mute led
-Date: Sun, 18 Aug 2019 18:23:02 -0300
-Message-ID: <20190818212302.27430-1-jeronimo@borque.com.ar>
+From: =?UTF-8?Q?Jer=C3=B3nimo_Borque?= <jeronimo@borque.com.ar>
+Subject: Re: [PATCH v2] ALSA: hda - Fixes inverted Conexant
+	GPIO mic mute led
+Date: Sun, 18 Aug 2019 21:01:17 -0300
+Message-ID: <CAHNnQdJMQes-3Goug-W0003M2fKn9wfbS173wAPCyVfedsj7Bg@mail.gmail.com>
 References: <s5himqx8tzj.wl-tiwai@suse.de>
+ <20190818212302.27430-1-jeronimo@borque.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
- [IPv6:2607:f8b0:4864:20::841])
+Received: from mail-vk1-f194.google.com (mail-vk1-f194.google.com
+ [209.85.221.194])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC2FBF800B6
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2019 23:23:27 +0200 (CEST)
-Received: by mail-qt1-x841.google.com with SMTP id i4so11983975qtj.8
- for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2019 14:23:27 -0700 (PDT)
-In-Reply-To: <s5himqx8tzj.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9EA49F801D9
+ for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2019 02:01:35 +0200 (CEST)
+Received: by mail-vk1-f194.google.com with SMTP id r13so20181vke.12
+ for <alsa-devel@alsa-project.org>; Sun, 18 Aug 2019 17:01:35 -0700 (PDT)
+In-Reply-To: <20190818212302.27430-1-jeronimo@borque.com.ar>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,73 +28,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Jeronimo Borque <jeronimo@borque.com.ar>, Takashi Iwai <tiwai@suse.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeronimo Borque <jeronimo@borque.com.ar>
-
-"enabled" parameter historically referred to the device input or
-output, not to the led indicator. After the changes added with the led
-helper functions the mic mute led logic refers to the led and not to
-the mic input which caused led indicator to be negated.
-Fixing logic in cxt_update_gpio_led and updated
-cxt_fixup_gpio_mute_hook
-Also updated debug messages to ease further debugging if necessary.
-
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Jeronimo Borque <jeronimo@borque.com.ar>
----
- sound/pci/hda/patch_conexant.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 14298ef45b21..d1c93dfa158b 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -611,18 +611,20 @@ static void cxt_fixup_hp_gate_mic_jack(struct hda_codec *codec,
- 
- /* update LED status via GPIO */
- static void cxt_update_gpio_led(struct hda_codec *codec, unsigned int mask,
--				bool enabled)
-+				bool led_on)
- {
- 	struct conexant_spec *spec = codec->spec;
- 	unsigned int oldval = spec->gpio_led;
- 
- 	if (spec->mute_led_polarity)
--		enabled = !enabled;
-+		led_on = !led_on;
- 
--	if (enabled)
--		spec->gpio_led &= ~mask;
--	else
-+	if (led_on)
- 		spec->gpio_led |= mask;
-+	else
-+		spec->gpio_led &= ~mask;
-+	codec_dbg(codec, "mask:%d enabled:%d gpio_led:%d\n
-+			mask, led_on, spec->gpio_led);
- 	if (spec->gpio_led != oldval)
- 		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
- 				    spec->gpio_led);
-@@ -633,8 +635,8 @@ static void cxt_fixup_gpio_mute_hook(void *private_data, int enabled)
- {
- 	struct hda_codec *codec = private_data;
- 	struct conexant_spec *spec = codec->spec;
--
--	cxt_update_gpio_led(codec, spec->gpio_mute_led_mask, enabled);
-+	/* muted -> LED on */
-+	cxt_update_gpio_led(codec, spec->gpio_mute_led_mask, !enabled);
- }
- 
- /* turn on/off mic-mute LED via GPIO per capture hook */
-@@ -656,7 +658,6 @@ static void cxt_fixup_mute_led_gpio(struct hda_codec *codec,
- 		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x03 },
- 		{}
- 	};
--	codec_info(codec, "action: %d gpio_led: %d\n", action, spec->gpio_led);
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = cxt_fixup_gpio_mute_hook;
--- 
-2.21.0
+SSdtIHNvcnJ5LiBJJ3ZlIHNlbnQgYSB3cm9uZyBwYXRjaCBmaWxlLgpJJ2xsIHJlc3VibWl0IHRo
+ZSByaWdodCBwYXRjaCBzaG9ydGx5LgpUaGFua3MsCkplcsOzbmltbwoKRWwgZG9tLiwgMTggZGUg
+YWdvLiBkZSAyMDE5IGEgbGEocykgMTg6MjMsIDxqZXJvbmltb0Bib3JxdWUuY29tLmFyPgplc2Ny
+aWJpw7M6Cgo+IEZyb206IEplcm9uaW1vIEJvcnF1ZSA8amVyb25pbW9AYm9ycXVlLmNvbS5hcj4K
+Pgo+ICJlbmFibGVkIiBwYXJhbWV0ZXIgaGlzdG9yaWNhbGx5IHJlZmVycmVkIHRvIHRoZSBkZXZp
+Y2UgaW5wdXQgb3IKPiBvdXRwdXQsIG5vdCB0byB0aGUgbGVkIGluZGljYXRvci4gQWZ0ZXIgdGhl
+IGNoYW5nZXMgYWRkZWQgd2l0aCB0aGUgbGVkCj4gaGVscGVyIGZ1bmN0aW9ucyB0aGUgbWljIG11
+dGUgbGVkIGxvZ2ljIHJlZmVycyB0byB0aGUgbGVkIGFuZCBub3QgdG8KPiB0aGUgbWljIGlucHV0
+IHdoaWNoIGNhdXNlZCBsZWQgaW5kaWNhdG9yIHRvIGJlIG5lZ2F0ZWQuCj4gRml4aW5nIGxvZ2lj
+IGluIGN4dF91cGRhdGVfZ3Bpb19sZWQgYW5kIHVwZGF0ZWQKPiBjeHRfZml4dXBfZ3Bpb19tdXRl
+X2hvb2sKPiBBbHNvIHVwZGF0ZWQgZGVidWcgbWVzc2FnZXMgdG8gZWFzZSBmdXJ0aGVyIGRlYnVn
+Z2luZyBpZiBuZWNlc3NhcnkuCj4KPiBTdWdnZXN0ZWQtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlA
+c3VzZS5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBKZXJvbmltbyBCb3JxdWUgPGplcm9uaW1vQGJvcnF1
+ZS5jb20uYXI+Cj4gLS0tCj4gIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8IDE3ICsr
+KysrKysrKy0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDggZGVs
+ZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5j
+Cj4gYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKPiBpbmRleCAxNDI5OGVmNDViMjEu
+LmQxYzkzZGZhMTU4YiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50
+LmMKPiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKPiBAQCAtNjExLDE4ICs2
+MTEsMjAgQEAgc3RhdGljIHZvaWQgY3h0X2ZpeHVwX2hwX2dhdGVfbWljX2phY2soc3RydWN0Cj4g
+aGRhX2NvZGVjICpjb2RlYywKPgo+ICAvKiB1cGRhdGUgTEVEIHN0YXR1cyB2aWEgR1BJTyAqLwo+
+ICBzdGF0aWMgdm9pZCBjeHRfdXBkYXRlX2dwaW9fbGVkKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVj
+LCB1bnNpZ25lZCBpbnQKPiBtYXNrLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Ym9vbCBlbmFibGVkKQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYm9vbCBsZWRf
+b24pCj4gIHsKPiAgICAgICAgIHN0cnVjdCBjb25leGFudF9zcGVjICpzcGVjID0gY29kZWMtPnNw
+ZWM7Cj4gICAgICAgICB1bnNpZ25lZCBpbnQgb2xkdmFsID0gc3BlYy0+Z3Bpb19sZWQ7Cj4KPiAg
+ICAgICAgIGlmIChzcGVjLT5tdXRlX2xlZF9wb2xhcml0eSkKPiAtICAgICAgICAgICAgICAgZW5h
+YmxlZCA9ICFlbmFibGVkOwo+ICsgICAgICAgICAgICAgICBsZWRfb24gPSAhbGVkX29uOwo+Cj4g
+LSAgICAgICBpZiAoZW5hYmxlZCkKPiAtICAgICAgICAgICAgICAgc3BlYy0+Z3Bpb19sZWQgJj0g
+fm1hc2s7Cj4gLSAgICAgICBlbHNlCj4gKyAgICAgICBpZiAobGVkX29uKQo+ICAgICAgICAgICAg
+ICAgICBzcGVjLT5ncGlvX2xlZCB8PSBtYXNrOwo+ICsgICAgICAgZWxzZQo+ICsgICAgICAgICAg
+ICAgICBzcGVjLT5ncGlvX2xlZCAmPSB+bWFzazsKPiArICAgICAgIGNvZGVjX2RiZyhjb2RlYywg
+Im1hc2s6JWQgZW5hYmxlZDolZCBncGlvX2xlZDolZFxuCj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgbWFzaywgbGVkX29uLCBzcGVjLT5ncGlvX2xlZCk7Cj4gICAgICAgICBpZiAoc3BlYy0+Z3Bp
+b19sZWQgIT0gb2xkdmFsKQo+ICAgICAgICAgICAgICAgICBzbmRfaGRhX2NvZGVjX3dyaXRlKGNv
+ZGVjLCAweDAxLCAwLCBBQ19WRVJCX1NFVF9HUElPX0RBVEEsCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgc3BlYy0+Z3Bpb19sZWQpOwo+IEBAIC02MzMsOCArNjM1LDggQEAg
+c3RhdGljIHZvaWQgY3h0X2ZpeHVwX2dwaW9fbXV0ZV9ob29rKHZvaWQKPiAqcHJpdmF0ZV9kYXRh
+LCBpbnQgZW5hYmxlZCkKPiAgewo+ICAgICAgICAgc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBw
+cml2YXRlX2RhdGE7Cj4gICAgICAgICBzdHJ1Y3QgY29uZXhhbnRfc3BlYyAqc3BlYyA9IGNvZGVj
+LT5zcGVjOwo+IC0KPiAtICAgICAgIGN4dF91cGRhdGVfZ3Bpb19sZWQoY29kZWMsIHNwZWMtPmdw
+aW9fbXV0ZV9sZWRfbWFzaywgZW5hYmxlZCk7Cj4gKyAgICAgICAvKiBtdXRlZCAtPiBMRUQgb24g
+Ki8KPiArICAgICAgIGN4dF91cGRhdGVfZ3Bpb19sZWQoY29kZWMsIHNwZWMtPmdwaW9fbXV0ZV9s
+ZWRfbWFzaywgIWVuYWJsZWQpOwo+ICB9Cj4KPiAgLyogdHVybiBvbi9vZmYgbWljLW11dGUgTEVE
+IHZpYSBHUElPIHBlciBjYXB0dXJlIGhvb2sgKi8KPiBAQCAtNjU2LDcgKzY1OCw2IEBAIHN0YXRp
+YyB2b2lkIGN4dF9maXh1cF9tdXRlX2xlZF9ncGlvKHN0cnVjdCBoZGFfY29kZWMKPiAqY29kZWMs
+Cj4gICAgICAgICAgICAgICAgIHsgMHgwMSwgQUNfVkVSQl9TRVRfR1BJT19ESVJFQ1RJT04sIDB4
+MDMgfSwKPiAgICAgICAgICAgICAgICAge30KPiAgICAgICAgIH07Cj4gLSAgICAgICBjb2RlY19p
+bmZvKGNvZGVjLCAiYWN0aW9uOiAlZCBncGlvX2xlZDogJWRcbiIsIGFjdGlvbiwKPiBzcGVjLT5n
+cGlvX2xlZCk7Cj4KPiAgICAgICAgIGlmIChhY3Rpb24gPT0gSERBX0ZJWFVQX0FDVF9QUkVfUFJP
+QkUpIHsKPiAgICAgICAgICAgICAgICAgc3BlYy0+Z2VuLnZtYXN0ZXJfbXV0ZS5ob29rID0gY3h0
+X2ZpeHVwX2dwaW9fbXV0ZV9ob29rOwo+IC0tCj4gMi4yMS4wCj4KPgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
