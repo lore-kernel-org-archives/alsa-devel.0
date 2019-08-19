@@ -1,7 +1,7 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 21/21] ASoC: sun4i-i2s: Add support for DSP formats
-Date: Mon, 19 Aug 2019 21:25:28 +0200
-Message-ID: <74cc9562e056627e14f186089d349022b65f59e7.1566242458.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH 15/21] ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t
+Date: Mon, 19 Aug 2019 21:25:22 +0200
+Message-ID: <43b07f8cd8e0e280c64ce61d57c307678c923e9b.1566242458.git-series.maxime.ripard@bootlin.com>
 References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,131 +14,27 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-In addition to the I2S format, the controller also supports the DSP_*
-formats.
+The A83t, unlike previous SoCs, has the MCLK enable bit at the 8th bit of
+the CLK_DIV register, unlike what is declared in the driver.
 
-This requires some extra care on the LRCK period calculation, since the
-controller, with the PCM formats, require that the value set is no longer
-the periods of LRCK for a single channel, but for all of them.
-
-Let's add the code to deal with this, and support the DSP_A and DSP_B
-formats.
-
+Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 44 ++++++++++++++++++++++++++++++--------
- 1 file changed, 35 insertions(+), 9 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 4f76daeaaed7..198e3c580297 100644
+index b5c9774e2f60..5dd742f24a7e 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -130,7 +130,6 @@ struct sun4i_i2s;
-  * struct sun4i_i2s_quirks - Differences between SoC variants.
-  *
-  * @has_reset: SoC needs reset deasserted.
-- * @has_fmt_set_lrck_period: SoC requires lrclk period to be set.
-  * @reg_offset_txdata: offset of the tx fifo.
-  * @sun4i_i2s_regmap: regmap config to use.
-  * @field_clkdiv_mclk_en: regmap field to enable mclk output.
-@@ -139,7 +138,6 @@ struct sun4i_i2s;
-  */
- struct sun4i_i2s_quirks {
- 	bool				has_reset;
--	bool				has_fmt_set_lrck_period;
- 	unsigned int			reg_offset_txdata;	/* TX FIFO */
- 	const struct regmap_config	*sun4i_i2s_regmap;
- 
-@@ -167,6 +165,7 @@ struct sun4i_i2s {
- 	struct regmap	*regmap;
- 	struct reset_control *rst;
- 
-+	unsigned int	format;
- 	unsigned int	mclk_freq;
- 	unsigned int	slots;
- 	unsigned int	slot_width;
-@@ -355,12 +354,6 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 
- 	regmap_field_write(i2s->field_clkdiv_mclk_en, 1);
- 
--	/* Set sync period */
--	if (i2s->variant->has_fmt_set_lrck_period)
--		regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
--				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
--				   SUN8I_I2S_FMT0_LRCK_PERIOD(params_physical_width(params)));
--
- 	return 0;
- }
- 
-@@ -422,6 +415,7 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- {
- 	unsigned int channels = params_channels(params);
- 	unsigned int slots = channels;
-+	unsigned int lrck_period;
- 
- 	if (i2s->slots)
- 		slots = i2s->slots;
-@@ -445,6 +439,26 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK,
- 			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(channels));
- 
-+	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+	case SND_SOC_DAIFMT_DSP_B:
-+	case SND_SOC_DAIFMT_LEFT_J:
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		lrck_period = params_physical_width(params) * slots;
-+		break;
-+
-+	case SND_SOC_DAIFMT_I2S:
-+		lrck_period = params_physical_width(params);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-+			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
-+			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
-+
- 	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
- 			   SUN8I_I2S_TX_CHAN_EN_MASK,
- 			   SUN8I_I2S_TX_CHAN_EN(channels));
-@@ -614,6 +628,16 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 
- 	/* DAI Mode */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+		mode = SUN8I_I2S_CTRL_MODE_PCM;
-+		offset = 1;
-+		break;
-+
-+	case SND_SOC_DAIFMT_DSP_B:
-+		mode = SUN8I_I2S_CTRL_MODE_PCM;
-+		offset = 0;
-+		break;
-+
- 	case SND_SOC_DAIFMT_I2S:
- 		mode = SUN8I_I2S_CTRL_MODE_LEFT;
- 		offset = 1;
-@@ -682,6 +706,9 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			   SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK,
- 			   SUN4I_I2S_FIFO_CTRL_TX_MODE(1) |
- 			   SUN4I_I2S_FIFO_CTRL_RX_MODE(1));
-+
-+	i2s->format = fmt;
-+
- 	return 0;
- }
- 
-@@ -1072,7 +1099,6 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+@@ -1047,7 +1047,7 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
  	.has_reset		= true,
  	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
--	.has_fmt_set_lrck_period = true,
- 	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
+-	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
++	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
  	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
  	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
+ 	.bclk_dividers		= sun8i_i2s_clk_div,
 -- 
 git-series 0.9.1
