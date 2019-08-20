@@ -1,144 +1,112 @@
-From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 2/2] ASoC: wm8904: implement input mode select as a mux
-Date: Tue, 20 Aug 2019 13:02:37 +0200
-Message-ID: <125cd3c9f298da9b08a4d6002d4c00d70a898950.1566298834.git.mirq-linux@rere.qmqm.pl>
-References: <f95ae1085f9f3c137a122c4d95728711613c15f7.1566298834.git.mirq-linux@rere.qmqm.pl>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 09/25] ASoC: soc-core: tidyup for
+ snd_soc_dapm_add_routes()
+Date: Tue, 20 Aug 2019 13:18:01 +0200
+Message-ID: <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
+References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
+ <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f95ae1085f9f3c137a122c4d95728711613c15f7.1566298834.git.mirq-linux@rere.qmqm.pl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, zhong jiang <zhongjiang@huawei.com>, Enrico Weigelt <info@metux.net>, Thomas Gleixner <tglx@linutronix.de>, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, Kate Stewart <kstewart@linuxfoundation.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DB90F800BF
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 13:18:04 +0200 (CEST)
+In-Reply-To: <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make '* Capture Mode' a mux. This makes DAPM know that in single-ended
-mode only inverting mux paths need to be enabled.
+On 2019-08-07 03:31, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> snd_soc_dapm_add_routes() registers routes by using
+> for(... i < num; ...). If routes was NULL, num should be zero.
+> Thus, we don't need to check about route pointer.
+> This patch also cares missing return value.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> v1 -> v2
+> 
+> 	- check return value
+> 	- change Subject
+> 
+>   sound/soc/soc-core.c | 23 +++++++++++++----------
+>   1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 21cdd3c..ca1b04c 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1310,10 +1310,11 @@ static int soc_probe_component(struct snd_soc_card *card,
+>   	if (ret < 0)
+>   		goto err_probe;
+>   
+> -	if (component->driver->dapm_routes)
+> -		snd_soc_dapm_add_routes(dapm,
+> -					component->driver->dapm_routes,
+> -					component->driver->num_dapm_routes);
+> +	ret = snd_soc_dapm_add_routes(dapm,
+> +				      component->driver->dapm_routes,
+> +				      component->driver->num_dapm_routes);
+> +	if (ret < 0)
+> +		goto err_probe;
+>   
+>   	list_add(&dapm->list, &card->dapm_list);
+>   	/* see for_each_card_components */
+> @@ -2060,13 +2061,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+>   		snd_soc_add_card_controls(card, card->controls,
+>   					  card->num_controls);
+>   
+> -	if (card->dapm_routes)
+> -		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+> -					card->num_dapm_routes);
+> +	ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+> +				      card->num_dapm_routes);
+> +	if (ret < 0)
+> +		goto probe_end;
+>   
+> -	if (card->of_dapm_routes)
+> -		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+> -					card->num_of_dapm_routes);
+> +	ret = snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+> +				      card->num_of_dapm_routes);
+> +	if (ret < 0)
+> +		goto probe_end;
+>   
+>   	/* try to set some sane longname if DMI is available */
+>   	snd_soc_set_dmi_name(card, NULL);
+> 
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
-v2: fixed 'right' to be 'Right'
----
- sound/soc/codecs/wm8904.c | 52 +++++++++++++++++++++++++--------------
- 1 file changed, 33 insertions(+), 19 deletions(-)
+Hello there,
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 525e4ef654a1..bcb3c9d5abf0 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -545,18 +545,6 @@ static const DECLARE_TLV_DB_SCALE(out_tlv, -5700, 100, 0);
- static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
- static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- 
--static const char *input_mode_text[] = {
--	"Single-Ended", "Differential Line", "Differential Mic"
--};
--
--static SOC_ENUM_SINGLE_DECL(lin_mode,
--			    WM8904_ANALOGUE_LEFT_INPUT_1, 0,
--			    input_mode_text);
--
--static SOC_ENUM_SINGLE_DECL(rin_mode,
--			    WM8904_ANALOGUE_RIGHT_INPUT_1, 0,
--			    input_mode_text);
--
- static const char *hpf_mode_text[] = {
- 	"Hi-fi", "Voice 1", "Voice 2", "Voice 3"
- };
-@@ -591,9 +579,6 @@ static const struct snd_kcontrol_new wm8904_adc_snd_controls[] = {
- SOC_DOUBLE_R_TLV("Digital Capture Volume", WM8904_ADC_DIGITAL_VOLUME_LEFT,
- 		 WM8904_ADC_DIGITAL_VOLUME_RIGHT, 1, 119, 0, digital_tlv),
- 
--SOC_ENUM("Left Capture Mode", lin_mode),
--SOC_ENUM("Right Capture Mode", rin_mode),
--
- /* No TLV since it depends on mode */
- SOC_DOUBLE_R("Capture Volume", WM8904_ANALOGUE_LEFT_INPUT_0,
- 	     WM8904_ANALOGUE_RIGHT_INPUT_0, 0, 31, 0),
-@@ -852,6 +837,10 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static const char *input_mode_text[] = {
-+	"Single-Ended", "Differential Line", "Differential Mic"
-+};
-+
- static const char *lin_text[] = {
- 	"IN1L", "IN2L", "IN3L"
- };
-@@ -868,6 +857,13 @@ static SOC_ENUM_SINGLE_DECL(lin_inv_enum, WM8904_ANALOGUE_LEFT_INPUT_1, 4,
- static const struct snd_kcontrol_new lin_inv_mux =
- 	SOC_DAPM_ENUM("Left Capture Inverting Mux", lin_inv_enum);
- 
-+static SOC_ENUM_SINGLE_DECL(lin_mode_enum,
-+			    WM8904_ANALOGUE_LEFT_INPUT_1, 0,
-+			    input_mode_text);
-+
-+static const struct snd_kcontrol_new lin_mode =
-+	SOC_DAPM_ENUM("Left Capture Mode", lin_mode_enum);
-+
- static const char *rin_text[] = {
- 	"IN1R", "IN2R", "IN3R"
- };
-@@ -884,6 +880,13 @@ static SOC_ENUM_SINGLE_DECL(rin_inv_enum, WM8904_ANALOGUE_RIGHT_INPUT_1, 4,
- static const struct snd_kcontrol_new rin_inv_mux =
- 	SOC_DAPM_ENUM("Right Capture Inverting Mux", rin_inv_enum);
- 
-+static SOC_ENUM_SINGLE_DECL(rin_mode_enum,
-+			    WM8904_ANALOGUE_RIGHT_INPUT_1, 0,
-+			    input_mode_text);
-+
-+static const struct snd_kcontrol_new rin_mode =
-+	SOC_DAPM_ENUM("Right Capture Mode", rin_mode_enum);
-+
- static const char *aif_text[] = {
- 	"Left", "Right"
- };
-@@ -932,9 +935,11 @@ SND_SOC_DAPM_SUPPLY("MICBIAS", WM8904_MIC_BIAS_CONTROL_0, 0, 0, NULL, 0),
- SND_SOC_DAPM_MUX("Left Capture Mux", SND_SOC_NOPM, 0, 0, &lin_mux),
- SND_SOC_DAPM_MUX("Left Capture Inverting Mux", SND_SOC_NOPM, 0, 0,
- 		 &lin_inv_mux),
-+SND_SOC_DAPM_MUX("Left Capture Mode", SND_SOC_NOPM, 0, 0, &lin_mode),
- SND_SOC_DAPM_MUX("Right Capture Mux", SND_SOC_NOPM, 0, 0, &rin_mux),
- SND_SOC_DAPM_MUX("Right Capture Inverting Mux", SND_SOC_NOPM, 0, 0,
- 		 &rin_inv_mux),
-+SND_SOC_DAPM_MUX("Right Capture Mode", SND_SOC_NOPM, 0, 0, &rin_mode),
- 
- SND_SOC_DAPM_PGA("Left Capture PGA", WM8904_POWER_MANAGEMENT_0, 1, 0,
- 		 NULL, 0),
-@@ -1057,6 +1062,12 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- 	{ "Left Capture Inverting Mux", "IN2L", "IN2L" },
- 	{ "Left Capture Inverting Mux", "IN3L", "IN3L" },
- 
-+	{ "Left Capture Mode", "Single-Ended", "Left Capture Inverting Mux" },
-+	{ "Left Capture Mode", "Differential Line", "Left Capture Mux" },
-+	{ "Left Capture Mode", "Differential Line", "Left Capture Inverting Mux" },
-+	{ "Left Capture Mode", "Differential Mic", "Left Capture Mux" },
-+	{ "Left Capture Mode", "Differential Mic", "Left Capture Inverting Mux" },
-+
- 	{ "Right Capture Mux", "IN1R", "IN1R" },
- 	{ "Right Capture Mux", "IN2R", "IN2R" },
- 	{ "Right Capture Mux", "IN3R", "IN3R" },
-@@ -1065,11 +1076,14 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- 	{ "Right Capture Inverting Mux", "IN2R", "IN2R" },
- 	{ "Right Capture Inverting Mux", "IN3R", "IN3R" },
- 
--	{ "Left Capture PGA", NULL, "Left Capture Mux" },
--	{ "Left Capture PGA", NULL, "Left Capture Inverting Mux" },
-+	{ "Right Capture Mode", "Single-Ended", "Right Capture Inverting Mux" },
-+	{ "Right Capture Mode", "Differential Line", "Right Capture Mux" },
-+	{ "Right Capture Mode", "Differential Line", "Right Capture Inverting Mux" },
-+	{ "Right Capture Mode", "Differential Mic", "Right Capture Mux" },
-+	{ "Right Capture Mode", "Differential Mic", "Right Capture Inverting Mux" },
- 
--	{ "Right Capture PGA", NULL, "Right Capture Mux" },
--	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
-+	{ "Left Capture PGA", NULL, "Left Capture Mode" },
-+	{ "Right Capture PGA", NULL, "Right Capture Mode" },
- 
- 	{ "AIFOUTL Mux", "Left", "ADCL" },
- 	{ "AIFOUTL Mux", "Right", "ADCR" },
--- 
-2.20.1
+I've run a validation cycle on recent broonie/for-next and this commit 
+caused regression. However, it may be simply an error on board side instead.
+
+Previously, ret from snd_soc_dapm_add_routes has been ignored thus it 
+was permissive for addition of several routes to fail. As long as some 
+routes succeeded, card was working just fine. Now it's no longer the 
+case - behavior of the card initialization has changed: it is required 
+for ALL routes to succeed before card can be fully instantiated.
+
+Must say collapsing snd_soc_instantiate_card is a wonderful way to test 
+your card's removal flow (soc__cleanup_card_resources and friends)..
+
+Question is simple: are we staying with all-for-one/ one-for-all 
+approach or we reverting to permissive behavior?
+
+Czarek
