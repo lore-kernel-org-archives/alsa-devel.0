@@ -1,120 +1,30 @@
-From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH] ASoC: uniphier: Fix double reset assersion when transitioning to suspend state
-Date: Tue, 20 Aug 2019 15:16:04 +0900
-Message-ID: <1566281764-14059-1-git-send-email-hayashi.kunihiko@socionext.com>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: uniphier: Fix double reset assersion when
+ transitioning to suspend state
+Date: Tue, 20 Aug 2019 08:34:31 +0200
+Message-ID: <20190820063431.bveflsr6xtu7637h@pengutronix.de>
+References: <1566281764-14059-1-git-send-email-hayashi.kunihiko@socionext.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1566281764-14059-1-git-send-email-hayashi.kunihiko@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When transitioning to supend state, uniphier_aio_dai_suspend() is called
-and asserts reset lines and disables clocks.
+Hello,
 
-However, if there are two or more DAIs, uniphier_aio_dai_suspend() are
-called multiple times, and double reset assersion will cause.
+just noticed while reading through my linux-arm-kernel folder:
 
-This patch defines the counter that has the number of DAIs at first, and
-whenever uniphier_aio_dai_suspend() are called, it decrements the
-counter. And only if the counter is zero, it asserts reset lines and
-disables clocks.
+$Subject ~= s/assersion/assertion/
 
-In the same way, uniphier_aio_dai_resume() are called, it increments the
-counter after deasserting reset lines and enabling clocks.
+Best regards
+Uwe
 
-Fixes: 139a34200233 ("ASoC: uniphier: add support for UniPhier AIO CPU DAI driver")
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- sound/soc/uniphier/aio-cpu.c | 31 +++++++++++++++++++++----------
- sound/soc/uniphier/aio.h     |  1 +
- 2 files changed, 22 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
-index ee90e6c..2ae582a 100644
---- a/sound/soc/uniphier/aio-cpu.c
-+++ b/sound/soc/uniphier/aio-cpu.c
-@@ -424,8 +424,11 @@ int uniphier_aio_dai_suspend(struct snd_soc_dai *dai)
- {
- 	struct uniphier_aio *aio = uniphier_priv(dai);
- 
--	reset_control_assert(aio->chip->rst);
--	clk_disable_unprepare(aio->chip->clk);
-+	aio->chip->num_wup_aios--;
-+	if (!aio->chip->num_wup_aios) {
-+		reset_control_assert(aio->chip->rst);
-+		clk_disable_unprepare(aio->chip->clk);
-+	}
- 
- 	return 0;
- }
-@@ -439,13 +442,15 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
- 	if (!aio->chip->active)
- 		return 0;
- 
--	ret = clk_prepare_enable(aio->chip->clk);
--	if (ret)
--		return ret;
-+	if (!aio->chip->num_wup_aios) {
-+		ret = clk_prepare_enable(aio->chip->clk);
-+		if (ret)
-+			return ret;
- 
--	ret = reset_control_deassert(aio->chip->rst);
--	if (ret)
--		goto err_out_clock;
-+		ret = reset_control_deassert(aio->chip->rst);
-+		if (ret)
-+			goto err_out_clock;
-+	}
- 
- 	aio_iecout_set_enable(aio->chip, true);
- 	aio_chip_init(aio->chip);
-@@ -458,7 +463,7 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
- 
- 		ret = aio_init(sub);
- 		if (ret)
--			goto err_out_clock;
-+			goto err_out_reset;
- 
- 		if (!sub->setting)
- 			continue;
-@@ -466,11 +471,16 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
- 		aio_port_reset(sub);
- 		aio_src_reset(sub);
- 	}
-+	aio->chip->num_wup_aios++;
- 
- 	return 0;
- 
-+err_out_reset:
-+	if (!aio->chip->num_wup_aios)
-+		reset_control_assert(aio->chip->rst);
- err_out_clock:
--	clk_disable_unprepare(aio->chip->clk);
-+	if (!aio->chip->num_wup_aios)
-+		clk_disable_unprepare(aio->chip->clk);
- 
- 	return ret;
- }
-@@ -619,6 +629,7 @@ int uniphier_aio_probe(struct platform_device *pdev)
- 		return PTR_ERR(chip->rst);
- 
- 	chip->num_aios = chip->chip_spec->num_dais;
-+	chip->num_wup_aios = chip->num_aios;
- 	chip->aios = devm_kcalloc(dev,
- 				  chip->num_aios, sizeof(struct uniphier_aio),
- 				  GFP_KERNEL);
-diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
-index ca6ccba..a7ff7e5 100644
---- a/sound/soc/uniphier/aio.h
-+++ b/sound/soc/uniphier/aio.h
-@@ -285,6 +285,7 @@ struct uniphier_aio_chip {
- 
- 	struct uniphier_aio *aios;
- 	int num_aios;
-+	int num_wup_aios;
- 	struct uniphier_aio_pll *plls;
- 	int num_plls;
- 
 -- 
-2.7.4
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
