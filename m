@@ -1,80 +1,47 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [kbuild-all] [PATCH] fix odd_ptr_err.cocci warnings
-Date: Tue, 20 Aug 2019 13:54:41 +0300
-Message-ID: <c3779fa2-3aab-3ba2-518d-9675591787af@ti.com>
-References: <alpine.DEB.2.21.1908091229140.2946@hadrien>
- <20190809123112.GC3963@sirena.co.uk>
- <88ac4c79-5ce3-3f1a-5f6e-3928a30a1ef5@ti.com>
- <alpine.DEB.2.21.1908091519400.2946@hadrien>
- <297e44a8-e08d-ddf2-e5e8-b532965b4a8d@intel.com>
+From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v2 1/2] ASoC: wm8904: fix typo in DAPM kcontrol name
+Date: Tue, 20 Aug 2019 13:02:35 +0200
+Message-ID: <f95ae1085f9f3c137a122c4d95728711613c15f7.1566298834.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <297e44a8-e08d-ddf2-e5e8-b532965b4a8d@intel.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rong Chen <rong.a.chen@intel.com>
-Cc: Julia Lawall <julia.lawall@lip6.fr>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, Kate Stewart <kstewart@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, zhong jiang <zhongjiang@huawei.com>, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, Enrico Weigelt <info@metux.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Chen,
+Trivial fix for typo in "Capture Inverting Mux"es' name.
 
-On 20/08/2019 11.41, Rong Chen wrote:
-> Hi Peter,
-> 
-> We have updated to only send the reports to you, please see
-> https://github.com/intel/lkp-tests/blob/master/repo/linux/omap-audio
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ v2: no changes
+---
+ sound/soc/codecs/wm8904.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thank you very much!
-
-> 
-> Best Regards,
-> Rong Chen
-> 
-> On 8/9/19 9:21 PM, Julia Lawall wrote:
->>
->> On Fri, 9 Aug 2019, Peter Ujfalusi wrote:
->>
->>>
->>> On 09/08/2019 15.31, Mark Brown wrote:
->>>> On Fri, Aug 09, 2019 at 12:30:46PM +0200, Julia Lawall wrote:
->>>>
->>>>> tree:   https://github.com/omap-audio/linux-audio
->>>>> peter/ti-linux-4.19.y/wip
->>>>> head:   62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a
->>>>> commit: 62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a [34/34] j721e new
->>>>> machine driver wip
->>>>> :::::: branch date: 20 hours ago
->>>>> :::::: commit date: 20 hours ago
->>>>>
->>>>>   j721e-evm.c |    4 ++--
->>>>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>
->>>>> --- a/sound/soc/ti/j721e-evm.c
->>>>> +++ b/sound/soc/ti/j721e-evm.c
->>>>> @@ -283,7 +283,7 @@ static int j721e_get_clocks(struct platf
->>>> This file isn't upstream, it's only in the TI BSP.
->>> Yes, it is not upstream, but the fix is valid.
->>>
->>> Julia: is it possible to direct these notifications only to me from
->>> https://github.com/omap-audio/linux-audio.git ?
->>>
->>> It mostly carries TI BSP stuff and my various for upstream branches
->>> nowdays.
->> Please discuss it with the kbuild people.  They should be able to set it
->> up as you want.
->>
->> You can try lkp@intel.com
->>
->> julia
->> _______________________________________________
->> kbuild-all mailing list
->> kbuild-all@lists.01.org
->> https://lists.01.org/mailman/listinfo/kbuild-all
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 5ebdd1d9afde..525e4ef654a1 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -866,7 +866,7 @@ static SOC_ENUM_SINGLE_DECL(lin_inv_enum, WM8904_ANALOGUE_LEFT_INPUT_1, 4,
+ 			    lin_text);
+ 
+ static const struct snd_kcontrol_new lin_inv_mux =
+-	SOC_DAPM_ENUM("Left Capture Inveting Mux", lin_inv_enum);
++	SOC_DAPM_ENUM("Left Capture Inverting Mux", lin_inv_enum);
+ 
+ static const char *rin_text[] = {
+ 	"IN1R", "IN2R", "IN3R"
+@@ -882,7 +882,7 @@ static SOC_ENUM_SINGLE_DECL(rin_inv_enum, WM8904_ANALOGUE_RIGHT_INPUT_1, 4,
+ 			    rin_text);
+ 
+ static const struct snd_kcontrol_new rin_inv_mux =
+-	SOC_DAPM_ENUM("Right Capture Inveting Mux", rin_inv_enum);
++	SOC_DAPM_ENUM("Right Capture Inverting Mux", rin_inv_enum);
+ 
+ static const char *aif_text[] = {
+ 	"Left", "Right"
+-- 
+2.20.1
