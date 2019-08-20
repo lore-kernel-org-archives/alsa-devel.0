@@ -1,127 +1,36 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 09/25] ASoC: soc-core: tidyup for
- snd_soc_dapm_add_routes()
-Date: Tue, 20 Aug 2019 17:04:22 +0200
-Message-ID: <b3d7dc47-36e9-749f-94be-32854de624be@intel.com>
-References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
- <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
- <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
- <27f25fb3-1d50-2b60-3e3b-da61eef1f6ad@linux.intel.com>
- <1bbf24d4-c6cb-00ee-ffbe-18da53d1f942@intel.com>
- <fc461e37-7363-af5a-63a4-9db7a2b8c1cd@linux.intel.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH 0/3] ASoC: mchp-i2s-mcc: Several fixes
+Date: Tue, 20 Aug 2019 19:24:08 +0300
+Message-ID: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2699F802E0
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 17:04:28 +0200 (CEST)
-In-Reply-To: <fc461e37-7363-af5a-63a4-9db7a2b8c1cd@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0yMCAxNjowNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4gCj4g
-T24gOC8yMC8xOSA4OjM4IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+IE9uIDIwMTktMDgt
-MjAgMTQ6MzYsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pj4KPj4+Cj4+PiBPbiA4LzIw
-LzE5IDY6MTggQU0sIENlemFyeSBSb2pld3NraSB3cm90ZToKPj4+PiBPbiAyMDE5LTA4LTA3IDAz
-OjMxLCBLdW5pbm9yaSBNb3JpbW90byB3cm90ZToKPj4+Pj4KPj4+Pj4gRnJvbTogS3VuaW5vcmkg
-TW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgo+Pj4+Pgo+Pj4+PiBz
-bmRfc29jX2RhcG1fYWRkX3JvdXRlcygpIHJlZ2lzdGVycyByb3V0ZXMgYnkgdXNpbmcKPj4+Pj4g
-Zm9yKC4uLiBpIDwgbnVtOyAuLi4pLiBJZiByb3V0ZXMgd2FzIE5VTEwsIG51bSBzaG91bGQgYmUg
-emVyby4KPj4+Pj4gVGh1cywgd2UgZG9uJ3QgbmVlZCB0byBjaGVjayBhYm91dCByb3V0ZSBwb2lu
-dGVyLgo+Pj4+PiBUaGlzIHBhdGNoIGFsc28gY2FyZXMgbWlzc2luZyByZXR1cm4gdmFsdWUuCj4+
-Pj4+Cj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEt1bmlub3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3Jp
-bW90by5neEByZW5lc2FzLmNvbT4KPj4+Pj4gLS0tCj4+Pj4+IHYxIC0+IHYyCj4+Pj4+Cj4+Pj4+
-IMKgwqDCoMKgLSBjaGVjayByZXR1cm4gdmFsdWUKPj4+Pj4gwqDCoMKgwqAtIGNoYW5nZSBTdWJq
-ZWN0Cj4+Pj4+Cj4+Pj4+IMKgIHNvdW5kL3NvYy9zb2MtY29yZS5jIHwgMjMgKysrKysrKysrKysr
-Ky0tLS0tLS0tLS0KPj4+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyksIDEw
-IGRlbGV0aW9ucygtKQo+Pj4+Pgo+Pj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1jb3Jl
-LmMgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+Pj4+PiBpbmRleCAyMWNkZDNjLi5jYTFiMDRjIDEw
-MDY0NAo+Pj4+PiAtLS0gYS9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+Pj4+PiArKysgYi9zb3VuZC9z
-b2Mvc29jLWNvcmUuYwo+Pj4+PiBAQCAtMTMxMCwxMCArMTMxMCwxMSBAQCBzdGF0aWMgaW50IHNv
-Y19wcm9iZV9jb21wb25lbnQoc3RydWN0IAo+Pj4+PiBzbmRfc29jX2NhcmQgKmNhcmQsCj4+Pj4+
-IMKgwqDCoMKgwqAgaWYgKHJldCA8IDApCj4+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIGVy
-cl9wcm9iZTsKPj4+Pj4gLcKgwqDCoCBpZiAoY29tcG9uZW50LT5kcml2ZXItPmRhcG1fcm91dGVz
-KQo+Pj4+PiAtwqDCoMKgwqDCoMKgwqAgc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFwbSwKPj4+
-Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJp
-dmVyLT5kYXBtX3JvdXRlcywKPj4+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5udW1fZGFwbV9yb3V0ZXMpOwo+Pj4+PiArwqDCoMKg
-IHJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKGRhcG0sCj4+Pj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tcG9uZW50LT5kcml2ZXItPmRhcG1fcm91
-dGVzLAo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNv
-bXBvbmVudC0+ZHJpdmVyLT5udW1fZGFwbV9yb3V0ZXMpOwo+Pj4+PiArwqDCoMKgIGlmIChyZXQg
-PCAwKQo+Pj4+PiArwqDCoMKgwqDCoMKgwqAgZ290byBlcnJfcHJvYmU7Cj4+Pj4+IMKgwqDCoMKg
-wqAgbGlzdF9hZGQoJmRhcG0tPmxpc3QsICZjYXJkLT5kYXBtX2xpc3QpOwo+Pj4+PiDCoMKgwqDC
-oMKgIC8qIHNlZSBmb3JfZWFjaF9jYXJkX2NvbXBvbmVudHMgKi8KPj4+Pj4gQEAgLTIwNjAsMTMg
-KzIwNjEsMTUgQEAgc3RhdGljIGludCBzbmRfc29jX2luc3RhbnRpYXRlX2NhcmQoc3RydWN0IAo+
-Pj4+PiBzbmRfc29jX2NhcmQgKmNhcmQpCj4+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBzbmRfc29j
-X2FkZF9jYXJkX2NvbnRyb2xzKGNhcmQsIGNhcmQtPmNvbnRyb2xzLAo+Pj4+PiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9jb250cm9scyk7
-Cj4+Pj4+IC3CoMKgwqAgaWYgKGNhcmQtPmRhcG1fcm91dGVzKQo+Pj4+PiAtwqDCoMKgwqDCoMKg
-wqAgc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPmRhcG1fcm91dGVz
-LAo+Pj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2FyZC0+bnVt
-X2RhcG1fcm91dGVzKTsKPj4+Pj4gK8KgwqDCoCByZXQgPSBzbmRfc29jX2RhcG1fYWRkX3JvdXRl
-cygmY2FyZC0+ZGFwbSwgY2FyZC0+ZGFwbV9yb3V0ZXMsCj4+Pj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2FyZC0+bnVtX2RhcG1fcm91dGVzKTsKPj4+Pj4g
-K8KgwqDCoCBpZiAocmV0IDwgMCkKPj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gcHJvYmVfZW5k
-Owo+Pj4+PiAtwqDCoMKgIGlmIChjYXJkLT5vZl9kYXBtX3JvdXRlcykKPj4+Pj4gLcKgwqDCoMKg
-wqDCoMKgIHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKCZjYXJkLT5kYXBtLCBjYXJkLT5vZl9kYXBt
-X3JvdXRlcywKPj4+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNh
-cmQtPm51bV9vZl9kYXBtX3JvdXRlcyk7Cj4+Pj4+ICvCoMKgwqAgcmV0ID0gc25kX3NvY19kYXBt
-X2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPm9mX2RhcG1fcm91dGVzLAo+Pj4+PiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9vZl9kYXBt
-X3JvdXRlcyk7Cj4+Pj4+ICvCoMKgwqAgaWYgKHJldCA8IDApCj4+Pj4+ICvCoMKgwqDCoMKgwqDC
-oCBnb3RvIHByb2JlX2VuZDsKPj4+Pj4gwqDCoMKgwqDCoCAvKiB0cnkgdG8gc2V0IHNvbWUgc2Fu
-ZSBsb25nbmFtZSBpZiBETUkgaXMgYXZhaWxhYmxlICovCj4+Pj4+IMKgwqDCoMKgwqAgc25kX3Nv
-Y19zZXRfZG1pX25hbWUoY2FyZCwgTlVMTCk7Cj4+Pj4+Cj4+Pj4KPj4+PiBIZWxsbyB0aGVyZSwK
-Pj4+Pgo+Pj4+IEkndmUgcnVuIGEgdmFsaWRhdGlvbiBjeWNsZSBvbiByZWNlbnQgYnJvb25pZS9m
-b3ItbmV4dCBhbmQgdGhpcyAKPj4+PiBjb21taXQgY2F1c2VkIHJlZ3Jlc3Npb24uIEhvd2V2ZXIs
-IGl0IG1heSBiZSBzaW1wbHkgYW4gZXJyb3Igb24gCj4+Pj4gYm9hcmQgc2lkZSBpbnN0ZWFkLgo+
-Pj4+Cj4+Pj4gUHJldmlvdXNseSwgcmV0IGZyb20gc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMgaGFz
-IGJlZW4gaWdub3JlZCB0aHVzIAo+Pj4+IGl0IHdhcyBwZXJtaXNzaXZlIGZvciBhZGRpdGlvbiBv
-ZiBzZXZlcmFsIHJvdXRlcyB0byBmYWlsLiBBcyBsb25nIGFzIAo+Pj4+IHNvbWUgcm91dGVzIHN1
-Y2NlZWRlZCwgY2FyZCB3YXMgd29ya2luZyBqdXN0IGZpbmUuIE5vdyBpdCdzIG5vIAo+Pj4+IGxv
-bmdlciB0aGUgY2FzZSAtIGJlaGF2aW9yIG9mIHRoZSBjYXJkIGluaXRpYWxpemF0aW9uIGhhcyBj
-aGFuZ2VkOiAKPj4+PiBpdCBpcyByZXF1aXJlZCBmb3IgQUxMIHJvdXRlcyB0byBzdWNjZWVkIGJl
-Zm9yZSBjYXJkIGNhbiBiZSBmdWxseSAKPj4+PiBpbnN0YW50aWF0ZWQuCj4+Pj4KPj4+PiBNdXN0
-IHNheSBjb2xsYXBzaW5nIHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZCBpcyBhIHdvbmRlcmZ1bCB3
-YXkgdG8gCj4+Pj4gdGVzdCB5b3VyIGNhcmQncyByZW1vdmFsIGZsb3cgKHNvY19fY2xlYW51cF9j
-YXJkX3Jlc291cmNlcyBhbmQgCj4+Pj4gZnJpZW5kcykuLgo+Pj4+Cj4+Pj4gUXVlc3Rpb24gaXMg
-c2ltcGxlOiBhcmUgd2Ugc3RheWluZyB3aXRoIGFsbC1mb3Itb25lLyBvbmUtZm9yLWFsbCAKPj4+
-PiBhcHByb2FjaCBvciB3ZSByZXZlcnRpbmcgdG8gcGVybWlzc2l2ZSBiZWhhdmlvcj8KPj4+Cj4+
-PiBDYW4geW91IGVsYWJvcmF0ZSBpbiB3aGljaCB0ZXN0IGNhc2UgdGhpcyBwYXRjaCBjcmVhdGVz
-IGEgcHJvYmxlbT8gCj4+PiBKdXN0IGN1cmlvdXMgd2h5IHRoZSByb3V0ZSBhZGRpdGlvbiBmYWls
-cyBpbiB0aGUgZmlyc3QgcGxhY2UuCj4+Cj4+IElmIHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZCBm
-YWlscyBzbyBkb2VzIGFueSB0ZXN0LCByZWFsbHkuIFJlZCB3YWxsIAo+PiB3YXMgZWFzeSB0byBz
-cG90IGV2ZW4gZm9yIGEgaHVuZ3J5IGRldmVsb3BlciA6ICkKPj4KPj4gT3VyIGNubF9ydDI3NCBi
-b2FyZCBkZWNsYXJlcyBzZXZlcmFsIHJvdXRlcywgeWV0IG91ciB0b3BvbG9neSBkb2VzIG5vdCAK
-Pj4gcHJvdmlkZSBuZWNlc3NhcnkgaW5mbyBmb3IgYWxsIG9mIHRoZW0uIEFuZCB0aHVzLCBhZGRp
-dGlvbiBvZiBzb21lIAo+PiByb3V0ZXMgZmFpbHMuIFRoaXMgd2FzIGZpbmUgdGlsbCBub3cuIFRo
-YXQncyBhbHNvIHdoeSBJJ2QgbWVudGlvbmVkIGluIAo+PiB0aGUgdmVyeSBmaXJzdCBzZW50ZW5j
-ZTogaXQgbWlnaHQgYmUgc2ltcGx5IGEgYm9hcmQgaXNzdWUuIE1heWJlIHdlIAo+PiBzaG91bGQg
-aGF2ZSBuZXZlciBhYnVzZWQgcGVybWlzc2l2ZSBiZWhhdmlvciBpbiB0aGUgZmlyc3QgcGxhY2Uu
-Cj4gCj4gWWVwLCBhbmQgdGhhdCBkcml2ZXIgaXMgbm90IHVwc3RyZWFtIGFzIHdlbGwgc28gSW50
-ZWwgY2FuJ3QgY29tcGxhaW4gCj4gaGVyZS4uLgoKPz8KCkl0J3Mgbm90IGFib3V0IGNvbXBsYWlu
-aW5nLCByYXRoZXIgc3RhcnRpbmcgYSBkaXNjdXNzaW9uLiBJZiBJIHdlcmUgCnVzaW5nIGJvYXJk
-cyB3aXRoIHRvcG9sb2d5IG5vdCBmdWxseSBtYXRjaGluZyBpdHMgYm9hcmQgZXF1aXZhbGVudCAK
-KGJlY2F1c2UgaWYgaGFzIG5ldmVyIGJlZW4gcmVxdWlyZWQgb2YgbWUpIHRoZW4gdGhlcmUgbWF5
-IGJlIG90aGVycyB3aG8gCmRpZCB0aGUgZXhhY3Qgc2FtZSB0cmljay4gWW91ciBjYXJkIHdvbid0
-IGJlIGVudW1lcmF0ZWQgbm93ID09IGNoYW5nZSBvZiAKYmVoYXZpb3IuCgpCb2FyZCBieHRfcnQy
-OTggaXMgdXBzdHJlYW1lZCBhbmQgdGhlIGV4YWN0IHNhbWUgZmFpbHVyZXMgY291bGQgYmUgCnJl
-cHJvZHVjZWQgc2luY2UgdG9wb2xvZ3kgaGFzIHNvbWV0aGluZyB0byBzYXkgaGVyZSB0b28uLgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This pathset fixes some issues detected while testing some more the
+Microchip I2S multichannel controller. The first two patches fix some
+issues that appear mostly when hw_free() and hw_params() callbacks
+are called multiple times. The third patch fixes a problem caused
+when the controller is in master mode and both capture and playback 
+are played at the same time.
+
+All three patches have a "Fixes" tag. Although they are independent,
+some conflicts might appear if they are not applied in the order
+presented in this patchset. If so, please let me know so I can rebase
+them.
+
+Codrin Ciubotariu (3):
+  ASoC: mchp-i2s-mcc: Wait for RX/TX RDY only if controller is running
+  ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
+  ASoC: mchp-i2s-mcc: Fix simultaneous capture and playback in master
+    mode
+
+ sound/soc/atmel/mchp-i2s-mcc.c | 111 +++++++++++++++++++--------------
+ 1 file changed, 64 insertions(+), 47 deletions(-)
+
+-- 
+2.20.1
