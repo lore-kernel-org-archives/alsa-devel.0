@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Don't use the oversample to calculate BCLK" to the asoc tree
-Date: Tue, 20 Aug 2019 18:41:07 +0100 (BST)
-Message-ID: <20190820174107.0F796274314E@ypsilon.sirena.org.uk>
-References: <c3595e3a9788c2ef2dcc30aa3c8c4953bb5cc249.1566242458.git-series.maxime.ripard@bootlin.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c3595e3a9788c2ef2dcc30aa3c8c4953bb5cc249.1566242458.git-series.maxime.ripard@bootlin.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: sun4i-i2s: Remove duplicated quirks structure" to the
+ asoc tree
+Date: Tue, 20 Aug 2019 18:41:04 +0100 (BST)
+Message-ID: <20190820174104.3373B2742B4A@ypsilon.sirena.org.uk>
+References: <5ade5de27d23918c5ef30387c23aead951d5ad64.1566242458.git-series.maxime.ripard@bootlin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <5ade5de27d23918c5ef30387c23aead951d5ad64.1566242458.git-series.maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Chen-Yu Tsai <wens@csie.org>, codekipper@gmail.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Maxime Ripard <mripard@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org, codekipper@gmail.com, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Don't use the oversample to calculate BCLK
+   ASoC: sun4i-i2s: Remove duplicated quirks structure
 
 has been applied to the asoc tree at
 
@@ -37,69 +49,59 @@ to this mail.
 Thanks,
 Mark
 
->From 7df8f9a20196072162d9dc8fe99943f2d35f23d5 Mon Sep 17 00:00:00 2001
+>From 3e9acd7ac6933cdc20c441bbf9a38ed9e42e1490 Mon Sep 17 00:00:00 2001
 From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Mon, 19 Aug 2019 21:25:14 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Don't use the oversample to calculate BCLK
+Date: Mon, 19 Aug 2019 21:25:24 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Remove duplicated quirks structure
 
-The BCLK divider should be calculated using the parameters that actually
-make the BCLK rate: the number of channels, the sampling rate and the
-sample width.
+The A83t and H3 have the same quirks, so it doesn't make sense to duplicate
+the quirks structure.
 
-We've been using the oversample_rate previously because in the former SoCs,
-the BCLK's parent is MCLK, which in turn is being used to generate the
-oversample rate, so we end up with something like this:
-
-oversample = mclk_rate / sampling_rate
-bclk_div = oversample / word_size / channels
-
-So, bclk_div = mclk_rate / sampling_rate / word_size / channels.
-
-And this is actually better, since the oversampling ratio only plays a role
-because the MCLK is its parent, not because of what BCLK is supposed to be.
-
-Furthermore, that assumption of MCLK being the parent has been broken on
-newer SoCs, so let's use the proper formula, and have the parent rate as an
-argument.
-
-Fixes: 7d2993811a1e ("ASoC: sun4i-i2s: Add support for H3")
-Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
-Fixes: 66ecce332538 ("ASoC: sun4i-i2s: Add compatibility with A64 codec I2S")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/c3595e3a9788c2ef2dcc30aa3c8c4953bb5cc249.1566242458.git-series.maxime.ripard@bootlin.com
+Link: https://lore.kernel.org/r/5ade5de27d23918c5ef30387c23aead951d5ad64.1566242458.git-series.maxime.ripard@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 70608fa30bf2..d879db581073 100644
+index 9468584f4eb0..4c636f1cf7dc 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -222,10 +222,11 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
+@@ -1062,25 +1062,6 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+ 	.set_fmt		= sun8i_i2s_set_soc_fmt,
  };
  
- static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
--				  unsigned int oversample_rate,
-+				  unsigned long parent_rate,
-+				  unsigned int sampling_rate,
- 				  unsigned int word_size)
- {
--	int div = oversample_rate / word_size / 2;
-+	int div = parent_rate / sampling_rate / word_size / 2;
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_bclk_div); i++) {
-@@ -315,8 +316,8 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
- 
--	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
--					  word_size);
-+	bclk_div = sun4i_i2s_get_bclk_div(i2s, i2s->mclk_freq,
-+					  rate, word_size);
- 	if (bclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
- 		return -EINVAL;
+-static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+-	.has_reset		= true,
+-	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
+-	.sun4i_i2s_regmap	= &sun8i_i2s_regmap_config,
+-	.has_fmt_set_lrck_period = true,
+-	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
+-	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
+-	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
+-	.bclk_dividers		= sun8i_i2s_clk_div,
+-	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
+-	.mclk_dividers		= sun8i_i2s_clk_div,
+-	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
+-	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
+-	.get_sr			= sun8i_i2s_get_sr_wss,
+-	.get_wss		= sun8i_i2s_get_sr_wss,
+-	.set_chan_cfg		= sun8i_i2s_set_chan_cfg,
+-	.set_fmt		= sun8i_i2s_set_soc_fmt,
+-};
+-
+ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
+ 	.has_reset		= true,
+ 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
+@@ -1262,7 +1243,7 @@ static const struct of_device_id sun4i_i2s_match[] = {
+ 	},
+ 	{
+ 		.compatible = "allwinner,sun8i-h3-i2s",
+-		.data = &sun8i_h3_i2s_quirks,
++		.data = &sun8i_a83t_i2s_quirks,
+ 	},
+ 	{
+ 		.compatible = "allwinner,sun50i-a64-codec-i2s",
 -- 
 2.20.1
