@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: cht_bsw_max98090_ti: Add all
-	Chromebooks that need pmc_plt_clk_0 quirk" to the asoc tree
-Date: Tue, 20 Aug 2019 14:14:20 +0100 (BST)
-Message-ID: <20190820131420.32CFC2742ABD@ypsilon.sirena.org.uk>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 09/25] ASoC: soc-core: tidyup for
+ snd_soc_dapm_add_routes()
+Date: Tue, 20 Aug 2019 15:38:26 +0200
+Message-ID: <1bbf24d4-c6cb-00ee-ffbe-18da53d1f942@intel.com>
+References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
+ <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
+ <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
+ <27f25fb3-1d50-2b60-3e3b-da61eef1f6ad@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f98.google.com (mail-wm1-f98.google.com
- [209.85.128.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4560F805E1
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 15:14:22 +0200 (CEST)
-Received: by mail-wm1-f98.google.com with SMTP id o4so2597739wmh.2
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 06:14:22 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45294F800BF
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 15:38:30 +0200 (CEST)
+In-Reply-To: <27f25fb3-1d50-2b60-3e3b-da61eef1f6ad@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,206 +27,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Daniel Stuart <daniel.stuart14@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: intel: cht_bsw_max98090_ti: Add all Chromebooks that need pmc_plt_clk_0 quirk
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 404be07f4ed27697f5fa69162f67a94555738595 Mon Sep 17 00:00:00 2001
-From: Daniel Stuart <daniel.stuart14@gmail.com>
-Date: Thu, 15 Aug 2019 14:12:55 -0300
-Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add all Chromebooks that
- need pmc_plt_clk_0 quirk
-
-Every single baytrail chromebook sets PMC to 0, as can be seeing
-below by searching through coreboot source code:
-	$ grep -rl "PMC_PLT_CLK\[0\]" .
-	./rambi/variants/glimmer/devicetree.cb
-	./rambi/variants/clapper/devicetree.cb
-	./rambi/variants/swanky/devicetree.cb
-	./rambi/variants/enguarde/devicetree.cb
-	./rambi/variants/winky/devicetree.cb
-	./rambi/variants/kip/devicetree.cb
-	./rambi/variants/squawks/devicetree.cb
-	./rambi/variants/orco/devicetree.cb
-	./rambi/variants/ninja/devicetree.cb
-	./rambi/variants/heli/devicetree.cb
-	./rambi/variants/sumo/devicetree.cb
-	./rambi/variants/banjo/devicetree.cb
-	./rambi/variants/candy/devicetree.cb
-	./rambi/variants/gnawty/devicetree.cb
-	./rambi/variants/rambi/devicetree.cb
-	./rambi/variants/quawks/devicetree.cb
-
-Plus, Cyan (only non-baytrail chromebook with max98090) also needs
-this patch for audio to work.
-
-Thus, this commit adds all the missing devices to bsw_max98090 quirk
-table, implemented by commit a182ecd3809c ("ASoC: intel:
-cht_bsw_max98090_ti: Add quirk for boards using pmc_plt_clk_0").
-
-Signed-off-by: Daniel Stuart <daniel.stuart14@gmail.com>
-Link: https://lore.kernel.org/r/20190815171300.30126-1-daniel.stuart14@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 98 ++++++++++++++++++++
- 1 file changed, 98 insertions(+)
-
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 33eb72545be6..83b978e7b4c4 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -399,6 +399,20 @@ static struct snd_soc_card snd_soc_card_cht = {
- };
- 
- static const struct dmi_system_id cht_max98090_quirk_table[] = {
-+	{
-+		/* Banjo model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Banjo"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Candy model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Candy"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
- 	{
- 		/* Clapper model Chromebook */
- 		.matches = {
-@@ -406,6 +420,27 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
- 		},
- 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
- 	},
-+	{
-+		/* Cyan model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Cyan"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Enguarde model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Enguarde"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Glimmer model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Glimmer"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
- 	{
- 		/* Gnawty model Chromebook (Acer Chromebook CB3-111) */
- 		.matches = {
-@@ -413,6 +448,62 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
- 		},
- 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
- 	},
-+	{
-+		/* Heli model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Heli"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Kip model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Kip"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Ninja model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Ninja"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Orco model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Orco"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Quawks model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Quawks"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Rambi model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Rambi"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Squawks model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Squawks"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{
-+		/* Sumo model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Sumo"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
- 	{
- 		/* Swanky model Chromebook (Toshiba Chromebook 2) */
- 		.matches = {
-@@ -420,6 +511,13 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
- 		},
- 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
- 	},
-+	{
-+		/* Winky model Chromebook */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Winky"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
- 	{}
- };
- 
--- 
-2.20.1
+T24gMjAxOS0wOC0yMCAxNDozNiwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4gCj4g
+T24gOC8yMC8xOSA2OjE4IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+IE9uIDIwMTktMDgt
+MDcgMDM6MzEsIEt1bmlub3JpIE1vcmltb3RvIHdyb3RlOgo+Pj4KPj4+IEZyb206IEt1bmlub3Jp
+IE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KPj4+Cj4+PiBzbmRf
+c29jX2RhcG1fYWRkX3JvdXRlcygpIHJlZ2lzdGVycyByb3V0ZXMgYnkgdXNpbmcKPj4+IGZvcigu
+Li4gaSA8IG51bTsgLi4uKS4gSWYgcm91dGVzIHdhcyBOVUxMLCBudW0gc2hvdWxkIGJlIHplcm8u
+Cj4+PiBUaHVzLCB3ZSBkb24ndCBuZWVkIHRvIGNoZWNrIGFib3V0IHJvdXRlIHBvaW50ZXIuCj4+
+PiBUaGlzIHBhdGNoIGFsc28gY2FyZXMgbWlzc2luZyByZXR1cm4gdmFsdWUuCj4+Pgo+Pj4gU2ln
+bmVkLW9mZi1ieTogS3VuaW5vcmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVz
+YXMuY29tPgo+Pj4gLS0tCj4+PiB2MSAtPiB2Mgo+Pj4KPj4+IMKgwqDCoMKgLSBjaGVjayByZXR1
+cm4gdmFsdWUKPj4+IMKgwqDCoMKgLSBjaGFuZ2UgU3ViamVjdAo+Pj4KPj4+IMKgIHNvdW5kL3Nv
+Yy9zb2MtY29yZS5jIHwgMjMgKysrKysrKysrKysrKy0tLS0tLS0tLS0KPj4+IMKgIDEgZmlsZSBj
+aGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkKPj4+Cj4+PiBkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL3NvYy1jb3JlLmMgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+Pj4gaW5k
+ZXggMjFjZGQzYy4uY2ExYjA0YyAxMDA2NDQKPj4+IC0tLSBhL3NvdW5kL3NvYy9zb2MtY29yZS5j
+Cj4+PiArKysgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+Pj4gQEAgLTEzMTAsMTAgKzEzMTAsMTEg
+QEAgc3RhdGljIGludCBzb2NfcHJvYmVfY29tcG9uZW50KHN0cnVjdCAKPj4+IHNuZF9zb2NfY2Fy
+ZCAqY2FyZCwKPj4+IMKgwqDCoMKgwqAgaWYgKHJldCA8IDApCj4+PiDCoMKgwqDCoMKgwqDCoMKg
+wqAgZ290byBlcnJfcHJvYmU7Cj4+PiAtwqDCoMKgIGlmIChjb21wb25lbnQtPmRyaXZlci0+ZGFw
+bV9yb3V0ZXMpCj4+PiAtwqDCoMKgwqDCoMKgwqAgc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFw
+bSwKPj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wb25lbnQt
+PmRyaXZlci0+ZGFwbV9yb3V0ZXMsCj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgY29tcG9uZW50LT5kcml2ZXItPm51bV9kYXBtX3JvdXRlcyk7Cj4+PiArwqDCoMKg
+IHJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKGRhcG0sCj4+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5kYXBtX3JvdXRl
+cywKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tcG9u
+ZW50LT5kcml2ZXItPm51bV9kYXBtX3JvdXRlcyk7Cj4+PiArwqDCoMKgIGlmIChyZXQgPCAwKQo+
+Pj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gZXJyX3Byb2JlOwo+Pj4gwqDCoMKgwqDCoCBsaXN0X2Fk
+ZCgmZGFwbS0+bGlzdCwgJmNhcmQtPmRhcG1fbGlzdCk7Cj4+PiDCoMKgwqDCoMKgIC8qIHNlZSBm
+b3JfZWFjaF9jYXJkX2NvbXBvbmVudHMgKi8KPj4+IEBAIC0yMDYwLDEzICsyMDYxLDE1IEBAIHN0
+YXRpYyBpbnQgc25kX3NvY19pbnN0YW50aWF0ZV9jYXJkKHN0cnVjdCAKPj4+IHNuZF9zb2NfY2Fy
+ZCAqY2FyZCkKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBzbmRfc29jX2FkZF9jYXJkX2NvbnRyb2xz
+KGNhcmQsIGNhcmQtPmNvbnRyb2xzLAo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBjYXJkLT5udW1fY29udHJvbHMpOwo+Pj4gLcKgwqDCoCBpZiAoY2Fy
+ZC0+ZGFwbV9yb3V0ZXMpCj4+PiAtwqDCoMKgwqDCoMKgwqAgc25kX3NvY19kYXBtX2FkZF9yb3V0
+ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPmRhcG1fcm91dGVzLAo+Pj4gLcKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9kYXBtX3JvdXRlcyk7Cj4+PiArwqDCoMKg
+IHJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKCZjYXJkLT5kYXBtLCBjYXJkLT5kYXBtX3Jv
+dXRlcywKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2Fy
+ZC0+bnVtX2RhcG1fcm91dGVzKTsKPj4+ICvCoMKgwqAgaWYgKHJldCA8IDApCj4+PiArwqDCoMKg
+wqDCoMKgwqAgZ290byBwcm9iZV9lbmQ7Cj4+PiAtwqDCoMKgIGlmIChjYXJkLT5vZl9kYXBtX3Jv
+dXRlcykKPj4+IC3CoMKgwqDCoMKgwqDCoCBzbmRfc29jX2RhcG1fYWRkX3JvdXRlcygmY2FyZC0+
+ZGFwbSwgY2FyZC0+b2ZfZGFwbV9yb3V0ZXMsCj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgY2FyZC0+bnVtX29mX2RhcG1fcm91dGVzKTsKPj4+ICvCoMKgwqAgcmV0
+ID0gc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPm9mX2RhcG1fcm91
+dGVzLAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjYXJk
+LT5udW1fb2ZfZGFwbV9yb3V0ZXMpOwo+Pj4gK8KgwqDCoCBpZiAocmV0IDwgMCkKPj4+ICvCoMKg
+wqDCoMKgwqDCoCBnb3RvIHByb2JlX2VuZDsKPj4+IMKgwqDCoMKgwqAgLyogdHJ5IHRvIHNldCBz
+b21lIHNhbmUgbG9uZ25hbWUgaWYgRE1JIGlzIGF2YWlsYWJsZSAqLwo+Pj4gwqDCoMKgwqDCoCBz
+bmRfc29jX3NldF9kbWlfbmFtZShjYXJkLCBOVUxMKTsKPj4+Cj4+Cj4+IEhlbGxvIHRoZXJlLAo+
+Pgo+PiBJJ3ZlIHJ1biBhIHZhbGlkYXRpb24gY3ljbGUgb24gcmVjZW50IGJyb29uaWUvZm9yLW5l
+eHQgYW5kIHRoaXMgY29tbWl0IAo+PiBjYXVzZWQgcmVncmVzc2lvbi4gSG93ZXZlciwgaXQgbWF5
+IGJlIHNpbXBseSBhbiBlcnJvciBvbiBib2FyZCBzaWRlIAo+PiBpbnN0ZWFkLgo+Pgo+PiBQcmV2
+aW91c2x5LCByZXQgZnJvbSBzbmRfc29jX2RhcG1fYWRkX3JvdXRlcyBoYXMgYmVlbiBpZ25vcmVk
+IHRodXMgaXQgCj4+IHdhcyBwZXJtaXNzaXZlIGZvciBhZGRpdGlvbiBvZiBzZXZlcmFsIHJvdXRl
+cyB0byBmYWlsLiBBcyBsb25nIGFzIHNvbWUgCj4+IHJvdXRlcyBzdWNjZWVkZWQsIGNhcmQgd2Fz
+IHdvcmtpbmcganVzdCBmaW5lLiBOb3cgaXQncyBubyBsb25nZXIgdGhlIAo+PiBjYXNlIC0gYmVo
+YXZpb3Igb2YgdGhlIGNhcmQgaW5pdGlhbGl6YXRpb24gaGFzIGNoYW5nZWQ6IGl0IGlzIHJlcXVp
+cmVkIAo+PiBmb3IgQUxMIHJvdXRlcyB0byBzdWNjZWVkIGJlZm9yZSBjYXJkIGNhbiBiZSBmdWxs
+eSBpbnN0YW50aWF0ZWQuCj4+Cj4+IE11c3Qgc2F5IGNvbGxhcHNpbmcgc25kX3NvY19pbnN0YW50
+aWF0ZV9jYXJkIGlzIGEgd29uZGVyZnVsIHdheSB0byAKPj4gdGVzdCB5b3VyIGNhcmQncyByZW1v
+dmFsIGZsb3cgKHNvY19fY2xlYW51cF9jYXJkX3Jlc291cmNlcyBhbmQgZnJpZW5kcykuLgo+Pgo+
+PiBRdWVzdGlvbiBpcyBzaW1wbGU6IGFyZSB3ZSBzdGF5aW5nIHdpdGggYWxsLWZvci1vbmUvIG9u
+ZS1mb3ItYWxsIAo+PiBhcHByb2FjaCBvciB3ZSByZXZlcnRpbmcgdG8gcGVybWlzc2l2ZSBiZWhh
+dmlvcj8KPiAKPiBDYW4geW91IGVsYWJvcmF0ZSBpbiB3aGljaCB0ZXN0IGNhc2UgdGhpcyBwYXRj
+aCBjcmVhdGVzIGEgcHJvYmxlbT8gSnVzdCAKPiBjdXJpb3VzIHdoeSB0aGUgcm91dGUgYWRkaXRp
+b24gZmFpbHMgaW4gdGhlIGZpcnN0IHBsYWNlLgoKSWYgc25kX3NvY19pbnN0YW50aWF0ZV9jYXJk
+IGZhaWxzIHNvIGRvZXMgYW55IHRlc3QsIHJlYWxseS4gUmVkIHdhbGwgd2FzIAplYXN5IHRvIHNw
+b3QgZXZlbiBmb3IgYSBodW5ncnkgZGV2ZWxvcGVyIDogKQoKT3VyIGNubF9ydDI3NCBib2FyZCBk
+ZWNsYXJlcyBzZXZlcmFsIHJvdXRlcywgeWV0IG91ciB0b3BvbG9neSBkb2VzIG5vdCAKcHJvdmlk
+ZSBuZWNlc3NhcnkgaW5mbyBmb3IgYWxsIG9mIHRoZW0uIEFuZCB0aHVzLCBhZGRpdGlvbiBvZiBz
+b21lIApyb3V0ZXMgZmFpbHMuIFRoaXMgd2FzIGZpbmUgdGlsbCBub3cuIFRoYXQncyBhbHNvIHdo
+eSBJJ2QgbWVudGlvbmVkIGluIAp0aGUgdmVyeSBmaXJzdCBzZW50ZW5jZTogaXQgbWlnaHQgYmUg
+c2ltcGx5IGEgYm9hcmQgaXNzdWUuIE1heWJlIHdlIApzaG91bGQgaGF2ZSBuZXZlciBhYnVzZWQg
+cGVybWlzc2l2ZSBiZWhhdmlvciBpbiB0aGUgZmlyc3QgcGxhY2UuCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
