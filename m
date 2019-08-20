@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: meson: axg-tdm-formatter: free reset on device removal
-Date: Tue, 20 Aug 2019 14:34:13 +0200
-Message-ID: <20190820123413.22249-1-jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: meson: g12a-tohdmitx: require regmap mmio
+Date: Tue, 20 Aug 2019 14:35:10 +0200
+Message-ID: <20190820123510.22491-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -10,27 +10,25 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the devm variant to get the formatter reset so it is properly freed
-on device removal
+The tohdmitx glue uses regmap MMIO so it should require it.
 
-Fixes: 751bd5db5260 ("ASoC: meson: axg-tdm-formatter: add reset")
+Fixes: c8609f3870f7 ("ASoC: meson: add g12a tohdmitx control")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-tdm-formatter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/meson/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
-index 21c735afab35..358c8c0d861c 100644
---- a/sound/soc/meson/axg-tdm-formatter.c
-+++ b/sound/soc/meson/axg-tdm-formatter.c
-@@ -325,7 +325,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
+index 63b38c123103..2e3676147cea 100644
+--- a/sound/soc/meson/Kconfig
++++ b/sound/soc/meson/Kconfig
+@@ -87,6 +87,7 @@ config SND_MESON_AXG_PDM
  
- 	/* Formatter dedicated reset line */
--	formatter->reset = reset_control_get_optional_exclusive(dev, NULL);
-+	formatter->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
- 	if (IS_ERR(formatter->reset)) {
- 		ret = PTR_ERR(formatter->reset);
- 		if (ret != -EPROBE_DEFER)
+ config SND_MESON_G12A_TOHDMITX
+ 	tristate "Amlogic G12A To HDMI TX Control Support"
++	select REGMAP_MMIO
+ 	imply SND_SOC_HDMI_CODEC
+ 	help
+ 	  Select Y or M to add support for HDMI audio on the g12a SoC
 -- 
 2.21.0
