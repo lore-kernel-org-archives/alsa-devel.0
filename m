@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mchp-i2s-mcc: Fix simultaneous capture and playback in master mode" to the asoc tree
+Subject: Applied "ASoC: sun4i-i2s: Pass the channels number as an argument" to the asoc tree
 Date: Tue, 20 Aug 2019 18:41:03 +0100 (BST)
-Message-ID: <20190820174103.225022742B4A@ypsilon.sirena.org.uk>
-References: <20190820162411.24836-4-codrin.ciubotariu@microchip.com>
+Message-ID: <20190820174104.006C12743150@ypsilon.sirena.org.uk>
+References: <48887cf7abfaab6597db233b24d7a088a913e48a.1566242458.git-series.maxime.ripard@bootlin.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190820162411.24836-4-codrin.ciubotariu@microchip.com>
+In-Reply-To: <48887cf7abfaab6597db233b24d7a088a913e48a.1566242458.git-series.maxime.ripard@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, nicolas.ferre@microchip.com, perex@perex.cz, tiwai@suse.com
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Chen-Yu Tsai <wens@csie.org>, codekipper@gmail.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Maxime Ripard <mripard@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mchp-i2s-mcc: Fix simultaneous capture and playback in master mode
+   ASoC: sun4i-i2s: Pass the channels number as an argument
 
 has been applied to the asoc tree at
 
@@ -37,168 +37,67 @@ to this mail.
 Thanks,
 Mark
 
->From c9cff337eab394c4dc8b128dde7308a1dd2e653a Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Tue, 20 Aug 2019 19:24:11 +0300
-Subject: [PATCH] ASoC: mchp-i2s-mcc: Fix simultaneous capture and playback in
- master mode
+>From 0083a507a78fdfa868acc0709408b59e72488a61 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Date: Mon, 19 Aug 2019 21:25:25 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Pass the channels number as an argument
 
-This controller supports capture and playback running at the same time,
-with the limitation that both capture and playback must be configured the
-same way (sample rate, sample format, number of channels, etc). For this,
-we have to assure that the configuration registers look the same when
-capture and playback are initiated.
-This patch fixes a bug in which the controller is in master mode and the
-hw_params() callback fails for the second audio stream. The fail occurs
-because the divisors are calculated after comparing the configuration
-registers for capture and playback. The fix consists in calculating the
-divisors before comparing the configuration registers. BCLK and LRC are
-then configured and started only if the controller is not already running.
+The channels number have been hardcoded to 2 so far, while the controller
+supports more than that.
 
-Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Link: https://lore.kernel.org/r/20190820162411.24836-4-codrin.ciubotariu@microchip.com
+Remove the instance where it has been hardcoded to compute the BCLK
+divider, and pass it through as an argument to ease further support of more
+channels.
+
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Link: https://lore.kernel.org/r/48887cf7abfaab6597db233b24d7a088a913e48a.1566242458.git-series.maxime.ripard@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/mchp-i2s-mcc.c | 70 ++++++++++++++++++----------------
- 1 file changed, 37 insertions(+), 33 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 86495883ca3f..9a406144b18f 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -392,11 +392,11 @@ static int mchp_i2s_mcc_clk_get_rate_diff(struct clk *clk,
- }
- 
- static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
--				    unsigned int bclk, unsigned int *mra)
-+				    unsigned int bclk, unsigned int *mra,
-+				    unsigned long *best_rate)
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 4c636f1cf7dc..6b172dfbc25d 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -238,10 +238,11 @@ static unsigned long sun8i_i2s_get_bclk_parent_rate(const struct sun4i_i2s *i2s)
+ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
+ 				  unsigned long parent_rate,
+ 				  unsigned int sampling_rate,
++				  unsigned int channels,
+ 				  unsigned int word_size)
  {
- 	unsigned long clk_rate;
- 	unsigned long lcm_rate;
--	unsigned long best_rate = 0;
- 	unsigned long best_diff_rate = ~0;
- 	unsigned int sysclk;
- 	struct clk *best_clk = NULL;
-@@ -423,7 +423,7 @@ static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
- 	     (clk_rate == bclk || clk_rate / (bclk * 2) <= GENMASK(5, 0));
- 	     clk_rate += lcm_rate) {
- 		ret = mchp_i2s_mcc_clk_get_rate_diff(dev->gclk, clk_rate,
--						     &best_clk, &best_rate,
-+						     &best_clk, best_rate,
- 						     &best_diff_rate);
- 		if (ret) {
- 			dev_err(dev->dev, "gclk error for rate %lu: %d",
-@@ -437,7 +437,7 @@ static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
- 		}
+ 	const struct sun4i_i2s_clk_div *dividers = i2s->variant->bclk_dividers;
+-	int div = parent_rate / sampling_rate / word_size / 2;
++	int div = parent_rate / sampling_rate / word_size / channels;
+ 	int i;
  
- 		ret = mchp_i2s_mcc_clk_get_rate_diff(dev->pclk, clk_rate,
--						     &best_clk, &best_rate,
-+						     &best_clk, best_rate,
- 						     &best_diff_rate);
- 		if (ret) {
- 			dev_err(dev->dev, "pclk error for rate %lu: %d",
-@@ -459,33 +459,17 @@ static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
+ 	for (i = 0; i < i2s->variant->num_bclk_dividers; i++) {
+@@ -286,6 +287,7 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
  
- 	dev_dbg(dev->dev, "source CLK is %s with rate %lu, diff %lu\n",
- 		best_clk == dev->pclk ? "pclk" : "gclk",
--		best_rate, best_diff_rate);
--
--	/* set the rate */
--	ret = clk_set_rate(best_clk, best_rate);
--	if (ret) {
--		dev_err(dev->dev, "unable to set rate %lu to %s: %d\n",
--			best_rate, best_clk == dev->pclk ? "PCLK" : "GCLK",
--			ret);
--		return ret;
--	}
-+		*best_rate, best_diff_rate);
- 
- 	/* Configure divisors */
- 	if (dev->sysclk)
--		*mra |= MCHP_I2SMCC_MRA_IMCKDIV(best_rate / (2 * sysclk));
--	*mra |= MCHP_I2SMCC_MRA_ISCKDIV(best_rate / (2 * bclk));
-+		*mra |= MCHP_I2SMCC_MRA_IMCKDIV(*best_rate / (2 * sysclk));
-+	*mra |= MCHP_I2SMCC_MRA_ISCKDIV(*best_rate / (2 * bclk));
- 
--	if (best_clk == dev->gclk) {
-+	if (best_clk == dev->gclk)
- 		*mra |= MCHP_I2SMCC_MRA_SRCCLK_GCLK;
--		ret = clk_prepare(dev->gclk);
--		if (ret < 0)
--			dev_err(dev->dev, "unable to prepare GCLK: %d\n", ret);
--		else
--			dev->gclk_use = 1;
--	} else {
-+	else
- 		*mra |= MCHP_I2SMCC_MRA_SRCCLK_PCLK;
--		dev->gclk_use = 0;
--	}
- 
- 	return 0;
- }
-@@ -502,6 +486,7 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
+ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 				  unsigned int rate,
++				  unsigned int channels,
+ 				  unsigned int word_size)
  {
-+	unsigned long rate = 0;
- 	struct mchp_i2s_mcc_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	u32 mra = 0;
- 	u32 mrb = 0;
-@@ -640,6 +625,17 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -333,7 +335,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 
+ 	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
+ 	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
+-					  rate, word_size);
++					  rate, channels, word_size);
+ 	if (bclk_div < 0) {
+ 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
  		return -EINVAL;
- 	}
+@@ -488,7 +490,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_field_write(i2s->field_fmt_sr, sr);
  
-+	if (set_divs) {
-+		bclk_rate = frame_length * params_rate(params);
-+		ret = mchp_i2s_mcc_config_divs(dev, bclk_rate, &mra,
-+					       &rate);
-+		if (ret) {
-+			dev_err(dev->dev,
-+				"unable to configure the divisors: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	/*
- 	 * If we are already running, the wanted setup must be
- 	 * the same with the one that's currently ongoing
-@@ -656,19 +652,27 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
- 	}
+ 	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+-				      params_width(params));
++				      2, params_width(params));
+ }
  
--	/* Save the number of channels to know what interrupts to enable */
--	dev->channels = channels;
--
--	if (set_divs) {
--		bclk_rate = frame_length * params_rate(params);
--		ret = mchp_i2s_mcc_config_divs(dev, bclk_rate, &mra);
-+	if (mra & MCHP_I2SMCC_MRA_SRCCLK_GCLK && !dev->gclk_use) {
-+		/* set the rate */
-+		ret = clk_set_rate(dev->gclk, rate);
- 		if (ret) {
--			dev_err(dev->dev, "unable to configure the divisors: %d\n",
--				ret);
-+			dev_err(dev->dev,
-+				"unable to set rate %lu to GCLK: %d\n",
-+				rate, ret);
-+			return ret;
-+		}
-+
-+		ret = clk_prepare(dev->gclk);
-+		if (ret < 0) {
-+			dev_err(dev->dev, "unable to prepare GCLK: %d\n", ret);
- 			return ret;
- 		}
-+		dev->gclk_use = 1;
- 	}
- 
-+	/* Save the number of channels to know what interrupts to enable */
-+	dev->channels = channels;
-+
- 	ret = regmap_write(dev->regmap, MCHP_I2SMCC_MRA, mra);
- 	if (ret < 0)
- 		return ret;
+ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
 -- 
 2.20.1
