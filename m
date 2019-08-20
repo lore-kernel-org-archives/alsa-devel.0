@@ -1,7 +1,7 @@
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 2/3] ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
-Date: Tue, 20 Aug 2019 19:24:09 +0300
-Message-ID: <20190820162411.24836-2-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 1/3] ASoC: mchp-i2s-mcc: Wait for RX/TX RDY only if controller is running
+Date: Tue, 20 Aug 2019 19:24:10 +0300
+Message-ID: <20190820162411.24836-3-codrin.ciubotariu@microchip.com>
 References: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -13,49 +13,66 @@ To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-ker
 Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-If hw_free() gets called after hw_params(), GCLK remains prepared,
-preventing further use of it. This patch fixes this by unpreparing the
-clock in hw_free() or if hw_params() gets an error.
+Since hw_free() can be called multiple times and not just after a stop
+trigger command, we should check whether the RX or TX ready interrupt was
+truly enabled previously. For this, we assure that the condition of the
+wait event is always true, except when RX/TX interrupts are enabled.
 
 Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- sound/soc/atmel/mchp-i2s-mcc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/atmel/mchp-i2s-mcc.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 8272915fa09b..ab7d5f98e759 100644
+index 86495883ca3f..8272915fa09b 100644
 --- a/sound/soc/atmel/mchp-i2s-mcc.c
 +++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -670,8 +670,13 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+@@ -686,22 +686,24 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		err = wait_event_interruptible_timeout(dev->wq_txrdy,
+ 						       dev->tx_rdy,
+ 						       msecs_to_jiffies(500));
++		if (err == 0) {
++			dev_warn_once(dev->dev,
++				      "Timeout waiting for Tx ready\n");
++			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
++				     MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels));
++			dev->tx_rdy = 1;
++		}
+ 	} else {
+ 		err = wait_event_interruptible_timeout(dev->wq_rxrdy,
+ 						       dev->rx_rdy,
+ 						       msecs_to_jiffies(500));
+-	}
+-
+-	if (err == 0) {
+-		u32 idra;
+-
+-		dev_warn_once(dev->dev, "Timeout waiting for %s\n",
+-			      is_playback ? "Tx ready" : "Rx ready");
+-		if (is_playback)
+-			idra = MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels);
+-		else
+-			idra = MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels);
+-		regmap_write(dev->regmap, MCHP_I2SMCC_IDRA, idra);
++		if (err == 0) {
++			dev_warn_once(dev->dev,
++				      "Timeout waiting for Rx ready\n");
++			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
++				     MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
++			dev->rx_rdy = 1;
++		}
  	}
  
- 	ret = regmap_write(dev->regmap, MCHP_I2SMCC_MRA, mra);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (dev->gclk_use) {
-+			clk_unprepare(dev->gclk);
-+			dev->gclk_use = 0;
-+		}
- 		return ret;
-+	}
- 	return regmap_write(dev->regmap, MCHP_I2SMCC_MRB, mrb);
- }
+ 	if (!mchp_i2s_mcc_is_running(dev)) {
+@@ -809,6 +811,8 @@ static int mchp_i2s_mcc_dai_probe(struct snd_soc_dai *dai)
  
-@@ -710,9 +715,13 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
- 		regmap_write(dev->regmap, MCHP_I2SMCC_CR, MCHP_I2SMCC_CR_CKDIS);
+ 	init_waitqueue_head(&dev->wq_txrdy);
+ 	init_waitqueue_head(&dev->wq_rxrdy);
++	dev->tx_rdy = 1;
++	dev->rx_rdy = 1;
  
- 		if (dev->gclk_running) {
--			clk_disable_unprepare(dev->gclk);
-+			clk_disable(dev->gclk);
- 			dev->gclk_running = 0;
- 		}
-+		if (dev->gclk_use) {
-+			clk_unprepare(dev->gclk);
-+			dev->gclk_use = 0;
-+		}
- 	}
+ 	snd_soc_dai_init_dma_data(dai, &dev->playback, &dev->capture);
  
- 	return 0;
 -- 
 2.20.1
