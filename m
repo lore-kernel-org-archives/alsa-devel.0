@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mchp-i2s-mcc: Fix unprepare of GCLK" to the asoc tree
-Date: Tue, 20 Aug 2019 18:41:03 +0100 (BST)
-Message-ID: <20190820174103.8E819274314E@ypsilon.sirena.org.uk>
-References: <20190820162411.24836-2-codrin.ciubotariu@microchip.com>
+Subject: Applied "ASoC: sun4i-i2s: Register regmap and PCM before our component" to the asoc tree
+Date: Tue, 20 Aug 2019 18:41:07 +0100 (BST)
+Message-ID: <20190820174107.718392742B4A@ypsilon.sirena.org.uk>
+References: <67e303f37f141ef73ce9ed47d7f831b63c694424.1566242458.git-series.maxime.ripard@bootlin.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190820162411.24836-2-codrin.ciubotariu@microchip.com>
+In-Reply-To: <67e303f37f141ef73ce9ed47d7f831b63c694424.1566242458.git-series.maxime.ripard@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, nicolas.ferre@microchip.com, perex@perex.cz, tiwai@suse.com
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Chen-Yu Tsai <wens@csie.org>, codekipper@gmail.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Maxime Ripard <mripard@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
+   ASoC: sun4i-i2s: Register regmap and PCM before our component
 
 has been applied to the asoc tree at
 
@@ -37,56 +37,54 @@ to this mail.
 Thanks,
 Mark
 
->From 988b59467b2b14523a266957affbe9eca3e99fc9 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Tue, 20 Aug 2019 19:24:09 +0300
-Subject: [PATCH] ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
+>From bf283a05c09b58db83afbb1a8a3c6a684c56c1bb Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Date: Mon, 19 Aug 2019 21:25:08 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Register regmap and PCM before our component
 
-If hw_free() gets called after hw_params(), GCLK remains prepared,
-preventing further use of it. This patch fixes this by unpreparing the
-clock in hw_free() or if hw_params() gets an error.
+So far the regmap and the dmaengine PCM are registered after our component
+has been, which means that our driver isn't properly initialised by then.
 
-Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Link: https://lore.kernel.org/r/20190820162411.24836-2-codrin.ciubotariu@microchip.com
+Let's fix that.
+
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Link: https://lore.kernel.org/r/67e303f37f141ef73ce9ed47d7f831b63c694424.1566242458.git-series.maxime.ripard@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/mchp-i2s-mcc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 86495883ca3f..319f975586f1 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -670,8 +670,13 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 7fa5c61169db..85c3b2c8cd77 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -1148,11 +1148,9 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 			goto err_pm_disable;
  	}
  
- 	ret = regmap_write(dev->regmap, MCHP_I2SMCC_MRA, mra);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (dev->gclk_use) {
-+			clk_unprepare(dev->gclk);
-+			dev->gclk_use = 0;
-+		}
- 		return ret;
-+	}
- 	return regmap_write(dev->regmap, MCHP_I2SMCC_MRB, mrb);
- }
- 
-@@ -708,9 +713,13 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
- 		regmap_write(dev->regmap, MCHP_I2SMCC_CR, MCHP_I2SMCC_CR_CKDIS);
- 
- 		if (dev->gclk_running) {
--			clk_disable_unprepare(dev->gclk);
-+			clk_disable(dev->gclk);
- 			dev->gclk_running = 0;
- 		}
-+		if (dev->gclk_use) {
-+			clk_unprepare(dev->gclk);
-+			dev->gclk_use = 0;
-+		}
+-	ret = devm_snd_soc_register_component(&pdev->dev,
+-					      &sun4i_i2s_component,
+-					      &sun4i_i2s_dai, 1);
++	ret = sun4i_i2s_init_regmap_fields(&pdev->dev, i2s);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Could not register DAI\n");
++		dev_err(&pdev->dev, "Could not initialise regmap fields\n");
+ 		goto err_suspend;
  	}
  
- 	return 0;
+@@ -1162,9 +1160,11 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 		goto err_suspend;
+ 	}
+ 
+-	ret = sun4i_i2s_init_regmap_fields(&pdev->dev, i2s);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &sun4i_i2s_component,
++					      &sun4i_i2s_dai, 1);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Could not initialise regmap fields\n");
++		dev_err(&pdev->dev, "Could not register DAI\n");
+ 		goto err_suspend;
+ 	}
+ 
 -- 
 2.20.1
