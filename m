@@ -1,17 +1,17 @@
-From: "=?gb18030?B?wO7Lyb7P?=" <songjulee@foxmail.com>
-Subject: ALSA HW PARAMS GET BUFFER  TIME ERROR
-Date: Sat, 17 Aug 2019 13:28:23 +0800
-Message-ID: <tencent_9E5954F6F34A1DAB3934AE4BEB54D3EBBC09@qq.com>
+From: Jaska Uimonen <jaska.uimonen@intel.com>
+Subject: [PATCH] ASoC: SOF: topology: fix get control data
+	return type and arguments
+Date: Tue, 20 Aug 2019 06:43:31 +0300
+Message-ID: <20190820034331.38171-1-jaska.uimonen@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_5D579077_0BC59820_583FD29D"
-Content-Transfer-Encoding: 8Bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E645F801DB
- for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2019 07:28:35 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08229F802E0
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 05:53:00 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,219 +21,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: =?gb18030?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Jaska Uimonen <jaska.uimonen@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+sof_get_control_data returns negative values even though the return
+value is defined unsigned (size_t). So change the return value type
+to int.
 
-------=_NextPart_5D579077_0BC59820_583FD29D
-Content-Type: text/plain;
-	charset="gb18030"
-Content-Transfer-Encoding: base64
+Add the data size as pointer argument to sof_get_control_data to
+avoid ambiquity in the meaning of the return type. Also make the
+sof_get_control_data to return -EINVAL if data pointer is valid
+but the size is for some reason zero.
 
-SGVsbG8hDQogICAgICAgICBEZWFyIERldmVsb3BlcnMsIEkgYW0gZnJvbSBITlUgVW5pdmVy
-c2l0eSAoQ2hhbmdzaGEsIENoaW5hKSwgYSBmcmVzaCBtYW4gaW4gQUxTQSBzb3VuZCBkZXZl
-bG9waW5nLiBSZWNlbnRseSwgYSBhbHNhIGJ1Zyggc25kX3BjbV9od19wYXJhbXNfZ2V0X2J1
-ZmZlcl90aW1lICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3RpbWUgKSBvY2N1cmVk
-IHRvIG1lIHdoaWNoIG1hZGUgbWUgY29uZnVzZWQhIA0KICAgICAgICAgRmlyc3RseSAoU3Rl
-cCAxKSBJIHNldCBoYXJkd2FyZSBwYXJhbXMgbm9ybWFsbHkocmF0ZTogNDQxMDAsIGNoYW5u
-ZWw6IDIsIGZvcm1hdDogUzE2X0xFLCBhY2Nlc3M6IHJhd19pbnRlcmxlYXZlZCwgcGVyaW9k
-IHNpemU6IG5vdCBzZXQsIGJ1ZmZlciBzaXplOiBub3Qgc2V0KSwgSXQgd2FzIE9LLiBMYXRl
-cmx5IChTdGVwIDIpIEkgZ2V0IGh3X3BhcmFtcyBhbmQgcHJpbnQgaXQsIGl0IHdhcyBub3Qg
-c3VycHJpc2luZyB0aGF0IHRoZXkgd2VyZSB0aGUgc2FtZSBhcyB3aGF0IEkgc2V0IChidWZm
-ZXJfdGltZSA9PSBwZXJpb2RfdGltZSAqIDEwMjQsICBidWZmZXJfc2l6ZSA9PSBwZXJpb2Rf
-c2l6ZSAqIDEwMjQpLiAgQnV0IQ0KICAgICAgICBJbiBhbm90aGVyIGNvZGUgKCBBZGQgU3Rl
-cCAzKUkgdXNlZCAgc25kX3BjbV9mb3JtYXRfbmFtZSgoc25kX3BjbV9mb3JtYXRfdCl2YWwp
-LCBzbmRfcGNtX2Zvcm1hdF9kZXNjcmlwdGlvbiggKHNuZF9wY21fZm9ybWF0X3QpdmFsKSB0
-byBkaXNwbGF5IHRoZSBmb3JtYXQgaW5mb3JtYXRpb24sIEl0IGdvdCB3cm9uZyBidWZmZXIg
-c2l6ZShidWZmZXJfdGltZSA9PSBwZXJpb2RfdGltZSwgYnVmZmVyX3NpemUgPT0gcGVyaW9k
-X3NpemUgKiAxMDI0ICkuIHRoZSBBdHRhY2htZW50cyBhcmUgY29kZSBwY21fc2V0dGluZy5j
-cHAoV2l0aCBTdGVwIDEsIDIpLCBwY21fb3Blbl9zZWV0aW5nLmNwcChXaXRoIFN0ZXAgMSwg
-MiwgMykuIE15IGFsc2EtbGliIHZlcnNpb24gaXMgYWJvdXQgMS4xLjAgLg0KDQoNCg0KDQoN
-Cg0KcGNtX3NldHRpbmcuY3BwIHJ1bm5pbmcgcmVzdWx0Og0KZ2V0IHJhdGU6IDQ0MTAwIGdl
-dCBjaGFubmxlczogMSBwZXJpb2QgdGltZTogNDY0MzkgYnVmZmVyIHRpbWUgaXMgNDc1NTQ0
-NjcgcGVyaW9kIHNpemU6IDIwNDggZnJhbWVzIGJ1ZmZlciBzaXplIGRlZmF1bHQ6IDIwOTcx
-NTIgZnJhbWVzIHBlcmlvZHMgcGVyIGJ1ZmZlciA9IDEwMjQgZnJhbWVzDQoNCg0KcGNtX29w
-ZW5fc2V0dGluZyBydW5uaW5nIHJlc3VsdDoNClBDTSBoYW5kbGUgbmFtZSA9ICdkZWZhdWx0
-JyBQQ00gc3RhdGUgPSBQUkVQQVJFRCBhY2Nlc3MgdHlwZSA9IFJXX0lOVEVSTEVBVkVEIGZv
-cm1hdChsZW5ndGg6IDIpID0gJ1MxNl9MRScgKFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlh
-bikgY2hhbm5lbHMgPSAxIHJhdGUgPSA0NDEwMCBicHMgcGVyaW9kIHRpbWUgPSA0NjQzOCB1
-cyBidWZmZXIgdGltZSA9IDQ2NDM4IHVzIHBlcmlvZCBzaXplID0gMjA0OCBmcmFtZXMgYnVm
-ZmVyIHNpemUgPSAyMDk3MTUyIGZyYW1lcyBwZXJpb2RzIHBlciBidWZmZXIgPSAxMDI0IGZy
-YW1lcw==
+Fixes: cac974a51ebb ("ASoC: SOF: topology: use set_get_data in process load")
+Reported by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
+---
+ sound/soc/sof/topology.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-------=_NextPart_5D579077_0BC59820_583FD29D
-Content-Type: application/octet-stream;
-	charset="gb18030";
-	name="pcm_setting.cpp"
-Content-Disposition: attachment; filename="pcm_setting.cpp"
-Content-Transfer-Encoding: base64
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 28a7a6e06a53..8288b1758542 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1752,15 +1752,15 @@ static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
+ 	return ret;
+ }
+ 
+-static size_t sof_get_control_data(struct snd_sof_dev *sdev,
+-				   struct snd_soc_dapm_widget *widget,
+-				   struct sof_widget_data *wdata)
++static int sof_get_control_data(struct snd_sof_dev *sdev,
++				struct snd_soc_dapm_widget *widget,
++				struct sof_widget_data *wdata,
++				size_t *size)
+ {
+ 	const struct snd_kcontrol_new *kc;
+ 	struct soc_mixer_control *sm;
+ 	struct soc_bytes_ext *sbe;
+ 	struct soc_enum *se;
+-	size_t size = 0;
+ 	int i;
+ 
+ 	for (i = 0; i < widget->num_kcontrols; i++) {
+@@ -1800,7 +1800,11 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
+ 		if (wdata[i].pdata->magic != SOF_ABI_MAGIC)
+ 			return -EINVAL;
+ 
+-		size += wdata[i].pdata->size;
++		/* don't accept 0 size for data */
++		if (!wdata[i].pdata->size)
++			return -EINVAL;
++
++		*size += wdata[i].pdata->size;
+ 
+ 		/* get data type */
+ 		switch (wdata[i].control->cmd) {
+@@ -1819,7 +1823,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
+ 		}
+ 	}
+ 
+-	return size;
++	return 0;
+ }
+ 
+ static int sof_process_load(struct snd_soc_component *scomp, int index,
+@@ -1855,12 +1859,11 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
+ 			return -ENOMEM;
+ 
+ 		/* get possible component controls and get size of all pdata */
+-		ipc_data_size = sof_get_control_data(sdev, widget, wdata);
++		ret = sof_get_control_data(sdev, widget, wdata,
++					   &ipc_data_size);
+ 
+-		if (ipc_data_size <= 0) {
+-			ret = ipc_data_size;
++		if (ret < 0)
+ 			goto out;
+-		}
+ 	}
+ 
+ 	ipc_size = sizeof(struct sof_ipc_comp_process) +
+-- 
+2.13.6
 
-Ly8KLy8gQ3JlYXRlZCBieSBsZWUgb24gMjAxOS84LzE3LgovLwojaW5jbHVkZSAic3RydWN0
-X3dhdmUuaCIKI2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CgppbnQgbWFpbihpbnQgYXJn
-YywgY2hhciogYXJndltdKXsKICAgIGludCByYywgZXJyLCBkaXI7CiAgICB1bnNpZ25lZCBp
-bnQgdmFsOwogICAgc25kX3BjbV90ICpoYW5kbGU7CiAgICBzbmRfcGNtX2Zvcm1hdF90IHBj
-bV9mbXQ7CiAgICBzbmRfcGNtX2h3X3BhcmFtc190ICpwYXJhbXM7CgovLyAgICBDV2F2ZUhl
-YWRlciB3YXZoZWFkZXIsICpjaGVhZGVyOwovLyAgICBjaGVhZGVyID0gJndhdmhlYWRlcjsK
-Ly8gICAgc3RyaW5nIGZpbGUxKCIvaG9tZS9sZWUvQ0xpb25Qcm9qZWN0cy9Bc291bmQvYWxz
-YS8wMV8wMDAwMzgud2F2Iik7Ci8vICAgIFJlYWRDV2F2ZUhlYWRlcihmaWxlMS5jX3N0cigp
-LCAmd2F2aGVhZGVyKTsKLy8KLy8gICAgaWYoY2hlYWRlci0+Qml0c1BlclNhbXBsZSA9PSA4
-KXsKLy8gICAgICAgIHBjbV9mbXQgPSBTTkRfUENNX0ZPUk1BVF9TODsKLy8gICAgfWVsc2Ug
-aWYoY2hlYWRlci0+Qml0c1BlclNhbXBsZSA9PSAxNil7Ci8vICAgICAgICBwY21fZm10ID0g
-U05EX1BDTV9GT1JNQVRfUzE2X0xFOwovLyAgICB9ZWxzZXsKLy8gICAgICAgIHByaW50Zigi
-dUJpdHNQZXJTYW1wbGUgbm90IHN1cHBvcnQhXG4iKTsKLy8gICAgICAgIHJldHVybiAtMTsK
-Ly8gICAgfQoKICAgIC8qIE9wZW4gUENNIGRldmljZSBmb3IgcGxheWJhY2suICovCiAgICBy
-YyA9IHNuZF9wY21fb3BlbigmaGFuZGxlLCAiZGVmYXVsdCIsU05EX1BDTV9TVFJFQU1fUExB
-WUJBQ0ssIDApOwogICAgaWYgKHJjIDwgMCkgewogICAgICAgIGZwcmludGYoc3RkZXJyLCJ1
-bmFibGUgdG8gb3BlbiBwY20gZGV2aWNlOiAlc1xuIixzbmRfc3RyZXJyb3IocmMpKTsKICAg
-ICAgICBleGl0KDEpOwogICAgfQoKLyogQWxsb2NhdGUgYSBoYXJkd2FyZSBwYXJhbWV0ZXJz
-IG9iamVjdC4gKi8KICAgIC8vdmFsID0gc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZwYXJh
-bXMpOwogICAgc25kX3BjbV9od19wYXJhbXNfbWFsbG9jKCZwYXJhbXMpOwoKLyogRmlsbCBp
-dCBpbiB3aXRoIGRlZmF1bHQgdmFsdWVzLiAqLwogICAgc25kX3BjbV9od19wYXJhbXNfYW55
-KGhhbmRsZSwgcGFyYW1zKTsKCi8qIEludGVybGVhdmVkIG1vZGUgKi8KICAgIHNuZF9wY21f
-aHdfcGFyYW1zX3NldF9hY2Nlc3MoaGFuZGxlLCBwYXJhbXMsU05EX1BDTV9BQ0NFU1NfUldf
-SU5URVJMRUFWRUQpOwoKLyogU2lnbmVkIDE2LWJpdCBsaXR0bGUtZW5kaWFuIGZvcm1hdCAq
-LwogICAgZXJyID0gIHNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQoaGFuZGxlLCBwYXJh
-bXMsU05EX1BDTV9GT1JNQVRfUzE2X0xFKTsKCiAgICBpZiggZXJyIDwgMCl7CiAgICAgICAg
-ZnByaW50ZihzdGRlcnIsICJjYW5ub3QgYWxsb2NhdGUgaGFyZHdhcmUgcGFyYW1ldGVyIHN0
-cnVjdHVyZSAoJXMpXG4iLHNuZF9zdHJlcnJvcihlcnIpKTsKICAgICAgICBnb3RvIHBsYXlf
-d2F2X291dDsKICAgIH0KCi8qIDQ0MTAwIGJpdHMvc2Vjb25kIHNhbXBsaW5nIHJhdGUgKENE
-IHF1YWxpdHkpICovCiAgICB2YWwgPSA0NDEwMDsKICAgIHNuZF9wY21faHdfcGFyYW1zX3Nl
-dF9yYXRlX25lYXIoaGFuZGxlLHBhcmFtcywgJnZhbCwgJmRpcik7CgovKiBUd28gY2hhbm5l
-bHMgKHN0ZXJlbykgKi8KICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFubmVscyhoYW5k
-bGUsIHBhcmFtcywgMSk7CgovKiBXcml0ZSB0aGUgcGFyYW1ldGVycyB0byB0aGUgZHJpdmVy
-ICovCiAgICByYyA9IHNuZF9wY21faHdfcGFyYW1zKGhhbmRsZSwgcGFyYW1zKTsKICAgIGlm
-IChyYyA8IDApIHsKICAgICAgICBmcHJpbnRmKHN0ZGVyciwidW5hYmxlIHRvIHNldCBodyBw
-YXJhbWV0ZXJzOiAlc1xuIixzbmRfc3RyZXJyb3IocmMpKTsKICAgICAgICBleGl0KDEpOwog
-ICAgfQoKICAgIC8vc25kX3BjbV9od19wYXJhbXNfc2V0X3AKICAgIHNuZF9wY21faHdfcGFy
-YW1zX2dldF9yYXRlKHBhcmFtcywgKHVuc2lnbmVkIGludCopJnZhbCwgJmRpcik7CiAgICBw
-cmludGYoImdldCByYXRlOiAlZFxuIix2YWwpOwoKICAgIHNuZF9wY21faHdfcGFyYW1zX2dl
-dF9jaGFubmVscyhwYXJhbXMsICh1bnNpZ25lZCBpbnQqKSZ2YWwpOwogICAgcHJpbnRmKCJn
-ZXQgY2hhbm5sZXM6ICVkXG4iLHZhbCk7CgogICAgc25kX3BjbV9od19wYXJhbXNfZ2V0X3Bl
-cmlvZF90aW1lKHBhcmFtcywgKHVuc2lnbmVkIGludCopJnZhbCwgJmRpcik7CiAgICBwcmlu
-dGYoInBlcmlvZCB0aW1lOiAlZFxuIiwgdmFsKTsKCiAgICBzbmRfcGNtX2h3X3BhcmFtc19n
-ZXRfYnVmZmVyX3RpbWUocGFyYW1zLCAmdmFsLCAmZGlyKTsKICAgIHByaW50ZigiYnVmZmVy
-IHRpbWUgaXMgJWRcbiIsIHZhbCk7CiAgICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9k
-X3NpemUocGFyYW1zLCAoc25kX3BjbV91ZnJhbWVzX3QqKSZ2YWwsICZkaXIpOwogICAgcHJp
-bnRmKCJwZXJpb2Qgc2l6ZTogJWQgZnJhbWVzXG4iLCB2YWwpOwoKICAgIHNuZF9wY21faHdf
-cGFyYW1zX2dldF9idWZmZXJfc2l6ZShwYXJhbXMsIChzbmRfcGNtX3VmcmFtZXNfdCopJnZh
-bCk7CiAgICBwcmludGYoImJ1ZmZlciBzaXplIGRlZmF1bHQ6ICVkIGZyYW1lc1xuIiwgdmFs
-KTsKCiAgICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kcyhwYXJhbXMsICZ2YWwsICZk
-aXIpOwogICAgcHJpbnRmKCJwZXJpb2RzIHBlciBidWZmZXIgPSAlZCBmcmFtZXNcbiIsIHZh
-bCk7CgogICAgLy9zbmRfcGNtX2h3X3BhcmFtc19nZXRfYnVmZmVyX3NpemUoaHdfcGFyYW1z
-LCAoc25kX3BjbV91ZnJhbWVzX3QqKSZmcmFtZXMpOwogICAgc25kX3BjbV9od19wYXJhbXNf
-ZnJlZShwYXJhbXMpOwoKICAgIHNuZF9wY21fY2xvc2UoaGFuZGxlKTsKCgogICAgcmV0dXJu
-IDA7CiAgICBwbGF5X3dhdl9vdXQ6CiAgICAgICAgcmV0dXJuIC0xOwoKCn0KCg==
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki 
+Business Identity Code: 0357606 - 4 
+Domiciled in Helsinki 
 
-------=_NextPart_5D579077_0BC59820_583FD29D
-Content-Type: application/octet-stream;
-	charset="gb18030";
-	name="pcm_open_setting.cpp"
-Content-Disposition: attachment; filename="pcm_open_setting.cpp"
-Content-Transfer-Encoding: base64
-
-Ly8KLy8gQ3JlYXRlZCBieSBsZWUgb24gMjAxOS84LzkuCi8vCi8qClRoaXMgZXhhbXBsZSBv
-cGVucyB0aGUgZGVmYXVsdCBQQ00gZGV2aWNlLCBzZXRzCnNvbWUgcGFyYW1ldGVycywgYW5k
-IHRoZW4gZGlzcGxheXMgdGhlIHZhbHVlCm9mIG1vc3Qgb2YgdGhlIGhhcmR3YXJlIHBhcmFt
-ZXRlcnMuIEl0IGRvZXMgbm90CnBlcmZvcm0gYW55IHNvdW5kIHBsYXliYWNrIG9yIHJlY29y
-ZGluZy4KKi8KCi8qIFVzZSB0aGUgbmV3ZXIgQUxTQSBBUEkgKi8KI2RlZmluZSBBTFNBX1BD
-TV9ORVdfSFdfUEFSQU1TX0FQSQoKLyogQWxsIG9mIHRoZSBBTFNBIGxpYnJhcnkgQVBJIGlz
-IGRlZmluZWQKKiBpbiB0aGlzIGhlYWRlciAqLwojaW5jbHVkZSA8YWxzYS9hc291bmRsaWIu
-aD4KCmludCBtYWluKCkgewogICAgaW50IHJjOwogICAgc25kX3BjbV90ICpoYW5kbGU7CiAg
-ICBzbmRfcGNtX2h3X3BhcmFtc190ICpwYXJhbXM7CiAgICB1bnNpZ25lZCBpbnQgdmFsLCB2
-YWwyOwogICAgaW50IGRpcjsKICAgIHNuZF9wY21fdWZyYW1lc190IGZyYW1lczsKCi8qIE9w
-ZW4gUENNIGRldmljZSBmb3IgcGxheWJhY2suICovCiAgICByYyA9IHNuZF9wY21fb3Blbigm
-aGFuZGxlLCAiZGVmYXVsdCIsU05EX1BDTV9TVFJFQU1fUExBWUJBQ0ssIDApOwogICAgaWYg
-KHJjIDwgMCkgewogICAgICAgIGZwcmludGYoc3RkZXJyLCJ1bmFibGUgdG8gb3BlbiBwY20g
-ZGV2aWNlOiAlc1xuIixzbmRfc3RyZXJyb3IocmMpKTsKICAgICAgICBleGl0KDEpOwogICAg
-fQoKLyogQWxsb2NhdGUgYSBoYXJkd2FyZSBwYXJhbWV0ZXJzIG9iamVjdC4gKi8KICAgIC8v
-dmFsID0gc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZwYXJhbXMpOwogICAgc25kX3BjbV9o
-d19wYXJhbXNfbWFsbG9jKCZwYXJhbXMpOwoKLyogRmlsbCBpdCBpbiB3aXRoIGRlZmF1bHQg
-dmFsdWVzLiAqLwogICAgc25kX3BjbV9od19wYXJhbXNfYW55KGhhbmRsZSwgcGFyYW1zKTsK
-Ci8qIFNldCB0aGUgZGVzaXJlZCBoYXJkd2FyZSBwYXJhbWV0ZXJzLiAqLwoKLyogSW50ZXJs
-ZWF2ZWQgbW9kZSAqLwogICAgc25kX3BjbV9od19wYXJhbXNfc2V0X2FjY2VzcyhoYW5kbGUs
-IHBhcmFtcyxTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCk7CgovKiBTaWduZWQgMTYt
-Yml0IGxpdHRsZS1lbmRpYW4gZm9ybWF0ICovCiAgICBzbmRfcGNtX2h3X3BhcmFtc19zZXRf
-Zm9ybWF0KGhhbmRsZSwgcGFyYW1zLFNORF9QQ01fRk9STUFUX1MxNl9MRSk7CgovKiA0NDEw
-MCBiaXRzL3NlY29uZCBzYW1wbGluZyByYXRlIChDRCBxdWFsaXR5KSAqLwogICAgdmFsID0g
-NDQxMDA7CiAgICBzbmRfcGNtX2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyKGhhbmRsZSxwYXJh
-bXMsICZ2YWwsICZkaXIpOwoKLyogVHdvIGNoYW5uZWxzIChzdGVyZW8pICovCiAgICBzbmRf
-cGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMoaGFuZGxlLCBwYXJhbXMsIDEpOwoKLyogV3Jp
-dGUgdGhlIHBhcmFtZXRlcnMgdG8gdGhlIGRyaXZlciAqLwogICAgcmMgPSBzbmRfcGNtX2h3
-X3BhcmFtcyhoYW5kbGUsIHBhcmFtcyk7CiAgICBpZiAocmMgPCAwKSB7CiAgICAgICAgZnBy
-aW50ZihzdGRlcnIsInVuYWJsZSB0byBzZXQgaHcgcGFyYW1ldGVyczogJXNcbiIsc25kX3N0
-cmVycm9yKHJjKSk7CiAgICAgICAgZXhpdCgxKTsKICAgIH0KCi8qIERpc3BsYXkgaW5mb3Jt
-YXRpb24gYWJvdXQgdGhlIFBDTSBpbnRlcmZhY2UgKi8KCiAgICBwcmludGYoIlBDTSBoYW5k
-bGUgbmFtZSA9ICclcydcbiIsc25kX3BjbV9uYW1lKGhhbmRsZSkpOwoKICAgIHByaW50Zigi
-UENNIHN0YXRlID0gJXNcbiIsc25kX3BjbV9zdGF0ZV9uYW1lKHNuZF9wY21fc3RhdGUoaGFu
-ZGxlKSkpOwoKICAgIHNuZF9wY21faHdfcGFyYW1zX2dldF9hY2Nlc3MocGFyYW1zLChzbmRf
-cGNtX2FjY2Vzc190ICopICZ2YWwpOwogICAgcHJpbnRmKCJhY2Nlc3MgdHlwZSA9ICVzXG4i
-LHNuZF9wY21fYWNjZXNzX25hbWUoKHNuZF9wY21fYWNjZXNzX3QpdmFsKSk7CgogICAgc25k
-X3BjbV9od19wYXJhbXNfZ2V0X2Zvcm1hdChwYXJhbXMsIChzbmRfcGNtX2Zvcm1hdF90Kikm
-dmFsKTsKICAgIHByaW50ZigiZm9ybWF0KGxlbmd0aDogJWQpID0gJyVzJ1xuIiwgdmFsLAog
-ICAgICAgICAgIC8vc25kX3BjbV9mb3JtYXRfbmFtZSgoc25kX3BjbV9mb3JtYXRfdCl2YWwp
-LAogICAgICAgICAgIHNuZF9wY21fZm9ybWF0X2Rlc2NyaXB0aW9uKAogICAgICAgICAgICAg
-ICAgICAgKHNuZF9wY21fZm9ybWF0X3QpdmFsKQogICAgICAgICAgICAgICAgICAgKTsKCiAg
-ICAvL3NuZF9wY21faHdfcGFyYW1zX2dldF9zdWJmb3JtYXQocGFyYW1zLChzbmRfcGNtX3N1
-YmZvcm1hdF90ICopJnZhbCk7CiAgICAvL3ByaW50Zigic3ViZm9ybWF0ID0gJyVzJyAoJXMp
-XG4iLAogICAgICAgICAgIC8vc25kX3BjbV9zdWJmb3JtYXRfbmFtZSgoc25kX3BjbV9zdWJm
-b3JtYXRfdCl2YWwpLAogICAgICAgICAgIC8vc25kX3BjbV9zdWJmb3JtYXRfZGVzY3JpcHRp
-b24oCiAgICAgICAgICAgICAgICAgICAvLyhzbmRfcGNtX3N1YmZvcm1hdF90KXZhbCkpOwoK
-CgogICAgc25kX3BjbV9od19wYXJhbXNfZ2V0X2NoYW5uZWxzKHBhcmFtcywgJnZhbCk7CiAg
-ICBwcmludGYoImNoYW5uZWxzID0gJWRcbiIsIHZhbCk7CgogICAgc25kX3BjbV9od19wYXJh
-bXNfZ2V0X3JhdGUocGFyYW1zLCAmdmFsLCAmZGlyKTsKICAgIHByaW50ZigicmF0ZSA9ICVk
-IGJwc1xuIiwgdmFsKTsKCiAgICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3RpbWUo
-cGFyYW1zLCZ2YWwsICZkaXIpOwogICAgcHJpbnRmKCJwZXJpb2QgdGltZSA9ICVkIHVzXG4i
-LCB2YWwpOwoKICAgIHNuZF9wY21faHdfcGFyYW1zX2dldF9idWZmZXJfdGltZShwYXJhbXMs
-ICZ2YWwsICZkaXIpOwogICAgcHJpbnRmKCJidWZmZXIgdGltZSA9ICVkIHVzXG4iLCB2YWwp
-OwoKICAgIHNuZF9wY21faHdfcGFyYW1zX2dldF9wZXJpb2Rfc2l6ZShwYXJhbXMsJmZyYW1l
-cywgJmRpcik7CiAgICBwcmludGYoInBlcmlvZCBzaXplID0gJWQgZnJhbWVzXG4iLCAoaW50
-KWZyYW1lcyk7CgogICAgc25kX3BjbV9od19wYXJhbXNfZ2V0X2J1ZmZlcl9zaXplKHBhcmFt
-cywgJmZyYW1lcyk7CiAgICBwcmludGYoImJ1ZmZlciBzaXplID0gJWQgZnJhbWVzXG4iLCBm
-cmFtZXMpOwoKICAgIHNuZF9wY21faHdfcGFyYW1zX2dldF9wZXJpb2RzKHBhcmFtcywgJnZh
-bCwgJmRpcik7CiAgICBwcmludGYoInBlcmlvZHMgcGVyIGJ1ZmZlciA9ICVkIGZyYW1lc1xu
-IiwgdmFsKTsKCiAgICBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcmF0ZV9udW1kZW4ocGFyYW1z
-LCZ2YWwsICZ2YWwyKTsKICAgIHByaW50ZigiZXhhY3QgcmF0ZSA9ICVkLyVkIGJwc1xuIiwg
-dmFsLCB2YWwyKTsKCiAgICB2YWwgPSBzdGF0aWNfY2FzdDx1bnNpZ25lZCBpbnQ+KHNuZF9w
-Y21faHdfcGFyYW1zX2dldF9zYml0cyhwYXJhbXMpKTsKICAgIHByaW50Zigic2lnbmlmaWNh
-bnQgYml0cyA9ICVkXG4iLCB2YWwpOwoKICAgIHNuZF9wY21faHdfcGFyYW1zX2dldF90aWNr
-X3RpbWUocGFyYW1zLCZ2YWwsICZkaXIpOwogICAgcHJpbnRmKCJ0aWNrIHRpbWUgPSAlZCB1
-c1xuIiwgdmFsKTsKCiAgICB2YWwgPSBzdGF0aWNfY2FzdDx1bnNpZ25lZCBpbnQ+KHNuZF9w
-Y21faHdfcGFyYW1zX2lzX2JhdGNoKHBhcmFtcykpOwogICAgcHJpbnRmKCJpcyBiYXRjaCA9
-ICVkXG4iLCB2YWwpOwoKICAgIHZhbCA9IHN0YXRpY19jYXN0PHVuc2lnbmVkIGludD4oc25k
-X3BjbV9od19wYXJhbXNfaXNfYmxvY2tfdHJhbnNmZXIocGFyYW1zKSk7CiAgICBwcmludGYo
-ImlzIGJsb2NrIHRyYW5zZmVyID0gJWRcbiIsIHZhbCk7CgogICAgdmFsID0gc3RhdGljX2Nh
-c3Q8dW5zaWduZWQgaW50PihzbmRfcGNtX2h3X3BhcmFtc19pc19kb3VibGUocGFyYW1zKSk7
-CiAgICBwcmludGYoImlzIGRvdWJsZSA9ICVkXG4iLCB2YWwpOwoKICAgIHZhbCA9IHN0YXRp
-Y19jYXN0PHVuc2lnbmVkIGludD4oc25kX3BjbV9od19wYXJhbXNfaXNfaGFsZl9kdXBsZXgo
-cGFyYW1zKSk7CiAgICBwcmludGYoImlzIGhhbGYgZHVwbGV4ID0gJWRcbiIsIHZhbCk7Cgog
-ICAgdmFsID0gc3RhdGljX2Nhc3Q8dW5zaWduZWQgaW50PihzbmRfcGNtX2h3X3BhcmFtc19p
-c19qb2ludF9kdXBsZXgocGFyYW1zKSk7CiAgICBwcmludGYoImlzIGpvaW50IGR1cGxleCA9
-ICVkXG4iLCB2YWwpOwoKICAgIHZhbCA9IHN0YXRpY19jYXN0PHVuc2lnbmVkIGludD4oc25k
-X3BjbV9od19wYXJhbXNfY2FuX292ZXJyYW5nZShwYXJhbXMpKTsKICAgIHByaW50ZigiY2Fu
-IG92ZXJyYW5nZSA9ICVkXG4iLCB2YWwpOwoKICAgIHZhbCA9IHN0YXRpY19jYXN0PHVuc2ln
-bmVkIGludD4oc25kX3BjbV9od19wYXJhbXNfY2FuX21tYXBfc2FtcGxlX3Jlc29sdXRpb24o
-cGFyYW1zKSk7CiAgICBwcmludGYoImNhbiBtbWFwID0gJWRcbiIsIHZhbCk7CgogICAgdmFs
-ID0gc3RhdGljX2Nhc3Q8dW5zaWduZWQgaW50PihzbmRfcGNtX2h3X3BhcmFtc19jYW5fcGF1
-c2UocGFyYW1zKSk7CiAgICBwcmludGYoImNhbiBwYXVzZSA9ICVkXG4iLCB2YWwpOwoKICAg
-IHZhbCA9IHN0YXRpY19jYXN0PHVuc2lnbmVkIGludD4oc25kX3BjbV9od19wYXJhbXNfY2Fu
-X3Jlc3VtZShwYXJhbXMpKTsKICAgIHByaW50ZigiY2FuIHJlc3VtZSA9ICVkXG4iLCB2YWwp
-OwoKICAgIHZhbCA9IHN0YXRpY19jYXN0PHVuc2lnbmVkIGludD4oc25kX3BjbV9od19wYXJh
-bXNfY2FuX3N5bmNfc3RhcnQocGFyYW1zKSk7CiAgICBwcmludGYoImNhbiBzeW5jIHN0YXJ0
-ID0gJWRcbiIsIHZhbCk7CgogICAgc25kX3BjbV9od19wYXJhbXNfZnJlZShwYXJhbXMpOwoK
-ICAgIHNuZF9wY21fY2xvc2UoaGFuZGxlKTsKCiAgICBwcmludGYoImFsc2Egc291bmQgdmVy
-c2lvbjogJXNcbiIsc25kX2Fzb3VuZGxpYl92ZXJzaW9uKCkpOwoKLy8gICAgQ1dhdmVIZWFk
-ZXIgd2F2aGVhZGVyOwovLyAgICBzdHJpbmcgZmlsZTEoIi9ob21lL2xlZS9DTGlvblByb2pl
-Y3RzL0Fzb3VuZC9hbHNhLzAxXzAwMDAzOC53YXYiKTsKLy8gICAgUmVhZENXYXZlSGVhZGVy
-KGZpbGUxLmNfc3RyKCksICZ3YXZoZWFkZXIpOwovLwovLyAgICBzbmRfcGFyYW1zX3NldCgm
-aGFuZGxlLCAmd2F2aGVhZGVyKTsKLy8gICAgc25kX3BjbV9jbG9zZShoYW5kbGUpOwoKICAg
-IHJldHVybiAwOwp9Cgo=
-
-------=_NextPart_5D579077_0BC59820_583FD29D
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_NextPart_5D579077_0BC59820_583FD29D--
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
