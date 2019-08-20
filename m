@@ -1,36 +1,61 @@
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 0/3] ASoC: mchp-i2s-mcc: Several fixes
-Date: Tue, 20 Aug 2019 19:24:08 +0300
-Message-ID: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 2/3] ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
+Date: Tue, 20 Aug 2019 19:24:09 +0300
+Message-ID: <20190820162411.24836-2-codrin.ciubotariu@microchip.com>
+References: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-This pathset fixes some issues detected while testing some more the
-Microchip I2S multichannel controller. The first two patches fix some
-issues that appear mostly when hw_free() and hw_params() callbacks
-are called multiple times. The third patch fixes a problem caused
-when the controller is in master mode and both capture and playback 
-are played at the same time.
+If hw_free() gets called after hw_params(), GCLK remains prepared,
+preventing further use of it. This patch fixes this by unpreparing the
+clock in hw_free() or if hw_params() gets an error.
 
-All three patches have a "Fixes" tag. Although they are independent,
-some conflicts might appear if they are not applied in the order
-presented in this patchset. If so, please let me know so I can rebase
-them.
+Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ sound/soc/atmel/mchp-i2s-mcc.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Codrin Ciubotariu (3):
-  ASoC: mchp-i2s-mcc: Wait for RX/TX RDY only if controller is running
-  ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
-  ASoC: mchp-i2s-mcc: Fix simultaneous capture and playback in master
-    mode
-
- sound/soc/atmel/mchp-i2s-mcc.c | 111 +++++++++++++++++++--------------
- 1 file changed, 64 insertions(+), 47 deletions(-)
-
+diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
+index 8272915fa09b..ab7d5f98e759 100644
+--- a/sound/soc/atmel/mchp-i2s-mcc.c
++++ b/sound/soc/atmel/mchp-i2s-mcc.c
+@@ -670,8 +670,13 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	ret = regmap_write(dev->regmap, MCHP_I2SMCC_MRA, mra);
+-	if (ret < 0)
++	if (ret < 0) {
++		if (dev->gclk_use) {
++			clk_unprepare(dev->gclk);
++			dev->gclk_use = 0;
++		}
+ 		return ret;
++	}
+ 	return regmap_write(dev->regmap, MCHP_I2SMCC_MRB, mrb);
+ }
+ 
+@@ -710,9 +715,13 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		regmap_write(dev->regmap, MCHP_I2SMCC_CR, MCHP_I2SMCC_CR_CKDIS);
+ 
+ 		if (dev->gclk_running) {
+-			clk_disable_unprepare(dev->gclk);
++			clk_disable(dev->gclk);
+ 			dev->gclk_running = 0;
+ 		}
++		if (dev->gclk_use) {
++			clk_unprepare(dev->gclk);
++			dev->gclk_use = 0;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
