@@ -1,115 +1,36 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: topology: fix get control data
- return type and arguments
-Date: Tue, 20 Aug 2019 07:30:25 -0500
-Message-ID: <2dc34431-7302-85c7-8215-472c7d994f7f@linux.intel.com>
-References: <20190820034331.38171-1-jaska.uimonen@intel.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: meson: axg-tdm-formatter: free reset on device removal
+Date: Tue, 20 Aug 2019 14:34:13 +0200
+Message-ID: <20190820123413.22249-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 409AEF800D3
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 14:30:29 +0200 (CEST)
-In-Reply-To: <20190820034331.38171-1-jaska.uimonen@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaska Uimonen <jaska.uimonen@intel.com>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Added Mark and Takashi in Cc.
+Use the devm variant to get the formatter reset so it is properly freed
+on device removal
 
-On 8/19/19 10:43 PM, Jaska Uimonen wrote:
-> sof_get_control_data returns negative values even though the return
-> value is defined unsigned (size_t). So change the return value type
-> to int.
-> 
-> Add the data size as pointer argument to sof_get_control_data to
-> avoid ambiquity in the meaning of the return type. Also make the
-> sof_get_control_data to return -EINVAL if data pointer is valid
-> but the size is for some reason zero.
-> 
-> Fixes: cac974a51ebb ("ASoC: SOF: topology: use set_get_data in process load")
-> Reported by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
+Fixes: 751bd5db5260 ("ASoC: meson: axg-tdm-formatter: add reset")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/meson/axg-tdm-formatter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->   sound/soc/sof/topology.c | 23 +++++++++++++----------
->   1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-> index 28a7a6e06a53..8288b1758542 100644
-> --- a/sound/soc/sof/topology.c
-> +++ b/sound/soc/sof/topology.c
-> @@ -1752,15 +1752,15 @@ static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
->   	return ret;
->   }
->   
-> -static size_t sof_get_control_data(struct snd_sof_dev *sdev,
-> -				   struct snd_soc_dapm_widget *widget,
-> -				   struct sof_widget_data *wdata)
-> +static int sof_get_control_data(struct snd_sof_dev *sdev,
-> +				struct snd_soc_dapm_widget *widget,
-> +				struct sof_widget_data *wdata,
-> +				size_t *size)
->   {
->   	const struct snd_kcontrol_new *kc;
->   	struct soc_mixer_control *sm;
->   	struct soc_bytes_ext *sbe;
->   	struct soc_enum *se;
-> -	size_t size = 0;
->   	int i;
->   
->   	for (i = 0; i < widget->num_kcontrols; i++) {
-> @@ -1800,7 +1800,11 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
->   		if (wdata[i].pdata->magic != SOF_ABI_MAGIC)
->   			return -EINVAL;
->   
-> -		size += wdata[i].pdata->size;
-> +		/* don't accept 0 size for data */
-> +		if (!wdata[i].pdata->size)
-> +			return -EINVAL;
-> +
-> +		*size += wdata[i].pdata->size;
->   
->   		/* get data type */
->   		switch (wdata[i].control->cmd) {
-> @@ -1819,7 +1823,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
->   		}
->   	}
->   
-> -	return size;
-> +	return 0;
->   }
->   
->   static int sof_process_load(struct snd_soc_component *scomp, int index,
-> @@ -1855,12 +1859,11 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
->   			return -ENOMEM;
->   
->   		/* get possible component controls and get size of all pdata */
-> -		ipc_data_size = sof_get_control_data(sdev, widget, wdata);
-> +		ret = sof_get_control_data(sdev, widget, wdata,
-> +					   &ipc_data_size);
->   
-> -		if (ipc_data_size <= 0) {
-> -			ret = ipc_data_size;
-> +		if (ret < 0)
->   			goto out;
-> -		}
->   	}
->   
->   	ipc_size = sizeof(struct sof_ipc_comp_process) +
-> 
+diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
+index 21c735afab35..358c8c0d861c 100644
+--- a/sound/soc/meson/axg-tdm-formatter.c
++++ b/sound/soc/meson/axg-tdm-formatter.c
+@@ -325,7 +325,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Formatter dedicated reset line */
+-	formatter->reset = reset_control_get_optional_exclusive(dev, NULL);
++	formatter->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
+ 	if (IS_ERR(formatter->reset)) {
+ 		ret = PTR_ERR(formatter->reset);
+ 		if (ret != -EPROBE_DEFER)
+-- 
+2.21.0
