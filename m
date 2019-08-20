@@ -1,34 +1,99 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: meson: g12a-tohdmitx: require regmap mmio
-Date: Tue, 20 Aug 2019 14:35:10 +0200
-Message-ID: <20190820123510.22491-1-jbrunet@baylibre.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 09/25] ASoC: soc-core: tidyup for
+ snd_soc_dapm_add_routes()
+Date: Tue, 20 Aug 2019 07:36:03 -0500
+Message-ID: <27f25fb3-1d50-2b60-3e3b-da61eef1f6ad@linux.intel.com>
+References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
+ <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
+ <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41F48F8036D
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 14:36:06 +0200 (CEST)
+In-Reply-To: <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The tohdmitx glue uses regmap MMIO so it should require it.
-
-Fixes: c8609f3870f7 ("ASoC: meson: add g12a tohdmitx control")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 63b38c123103..2e3676147cea 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -87,6 +87,7 @@ config SND_MESON_AXG_PDM
- 
- config SND_MESON_G12A_TOHDMITX
- 	tristate "Amlogic G12A To HDMI TX Control Support"
-+	select REGMAP_MMIO
- 	imply SND_SOC_HDMI_CODEC
- 	help
- 	  Select Y or M to add support for HDMI audio on the g12a SoC
--- 
-2.21.0
+CgpPbiA4LzIwLzE5IDY6MTggQU0sIENlemFyeSBSb2pld3NraSB3cm90ZToKPiBPbiAyMDE5LTA4
+LTA3IDAzOjMxLCBLdW5pbm9yaSBNb3JpbW90byB3cm90ZToKPj4KPj4gRnJvbTogS3VuaW5vcmkg
+TW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgo+Pgo+PiBzbmRfc29j
+X2RhcG1fYWRkX3JvdXRlcygpIHJlZ2lzdGVycyByb3V0ZXMgYnkgdXNpbmcKPj4gZm9yKC4uLiBp
+IDwgbnVtOyAuLi4pLiBJZiByb3V0ZXMgd2FzIE5VTEwsIG51bSBzaG91bGQgYmUgemVyby4KPj4g
+VGh1cywgd2UgZG9uJ3QgbmVlZCB0byBjaGVjayBhYm91dCByb3V0ZSBwb2ludGVyLgo+PiBUaGlz
+IHBhdGNoIGFsc28gY2FyZXMgbWlzc2luZyByZXR1cm4gdmFsdWUuCj4+Cj4+IFNpZ25lZC1vZmYt
+Ynk6IEt1bmlub3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4K
+Pj4gLS0tCj4+IHYxIC0+IHYyCj4+Cj4+IMKgwqDCoMKgLSBjaGVjayByZXR1cm4gdmFsdWUKPj4g
+wqDCoMKgwqAtIGNoYW5nZSBTdWJqZWN0Cj4+Cj4+IMKgIHNvdW5kL3NvYy9zb2MtY29yZS5jIHwg
+MjMgKysrKysrKysrKysrKy0tLS0tLS0tLS0KPj4gwqAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2Vy
+dGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3Nv
+Yy1jb3JlLmMgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+PiBpbmRleCAyMWNkZDNjLi5jYTFiMDRj
+IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+PiArKysgYi9zb3VuZC9zb2Mv
+c29jLWNvcmUuYwo+PiBAQCAtMTMxMCwxMCArMTMxMCwxMSBAQCBzdGF0aWMgaW50IHNvY19wcm9i
+ZV9jb21wb25lbnQoc3RydWN0IAo+PiBzbmRfc29jX2NhcmQgKmNhcmQsCj4+IMKgwqDCoMKgwqAg
+aWYgKHJldCA8IDApCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIGVycl9wcm9iZTsKPj4gLcKg
+wqDCoCBpZiAoY29tcG9uZW50LT5kcml2ZXItPmRhcG1fcm91dGVzKQo+PiAtwqDCoMKgwqDCoMKg
+wqAgc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFwbSwKPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5kYXBtX3JvdXRlcywKPj4gLcKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5u
+dW1fZGFwbV9yb3V0ZXMpOwo+PiArwqDCoMKgIHJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVz
+KGRhcG0sCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29t
+cG9uZW50LT5kcml2ZXItPmRhcG1fcm91dGVzLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5udW1fZGFwbV9yb3V0ZXMpOwo+
+PiArwqDCoMKgIGlmIChyZXQgPCAwKQo+PiArwqDCoMKgwqDCoMKgwqAgZ290byBlcnJfcHJvYmU7
+Cj4+IMKgwqDCoMKgwqAgbGlzdF9hZGQoJmRhcG0tPmxpc3QsICZjYXJkLT5kYXBtX2xpc3QpOwo+
+PiDCoMKgwqDCoMKgIC8qIHNlZSBmb3JfZWFjaF9jYXJkX2NvbXBvbmVudHMgKi8KPj4gQEAgLTIw
+NjAsMTMgKzIwNjEsMTUgQEAgc3RhdGljIGludCBzbmRfc29jX2luc3RhbnRpYXRlX2NhcmQoc3Ry
+dWN0IAo+PiBzbmRfc29jX2NhcmQgKmNhcmQpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBzbmRfc29j
+X2FkZF9jYXJkX2NvbnRyb2xzKGNhcmQsIGNhcmQtPmNvbnRyb2xzLAo+PiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9jb250cm9scyk7Cj4+
+IC3CoMKgwqAgaWYgKGNhcmQtPmRhcG1fcm91dGVzKQo+PiAtwqDCoMKgwqDCoMKgwqAgc25kX3Nv
+Y19kYXBtX2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPmRhcG1fcm91dGVzLAo+PiAtwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2FyZC0+bnVtX2RhcG1fcm91dGVz
+KTsKPj4gK8KgwqDCoCByZXQgPSBzbmRfc29jX2RhcG1fYWRkX3JvdXRlcygmY2FyZC0+ZGFwbSwg
+Y2FyZC0+ZGFwbV9yb3V0ZXMsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgY2FyZC0+bnVtX2RhcG1fcm91dGVzKTsKPj4gK8KgwqDCoCBpZiAocmV0IDwgMCkK
+Pj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gcHJvYmVfZW5kOwo+PiAtwqDCoMKgIGlmIChjYXJkLT5v
+Zl9kYXBtX3JvdXRlcykKPj4gLcKgwqDCoMKgwqDCoMKgIHNuZF9zb2NfZGFwbV9hZGRfcm91dGVz
+KCZjYXJkLT5kYXBtLCBjYXJkLT5vZl9kYXBtX3JvdXRlcywKPj4gLcKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9vZl9kYXBtX3JvdXRlcyk7Cj4+ICvCoMKg
+wqAgcmV0ID0gc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPm9mX2Rh
+cG1fcm91dGVzLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGNhcmQtPm51bV9vZl9kYXBtX3JvdXRlcyk7Cj4+ICvCoMKgwqAgaWYgKHJldCA8IDApCj4+ICvC
+oMKgwqDCoMKgwqDCoCBnb3RvIHByb2JlX2VuZDsKPj4gwqDCoMKgwqDCoCAvKiB0cnkgdG8gc2V0
+IHNvbWUgc2FuZSBsb25nbmFtZSBpZiBETUkgaXMgYXZhaWxhYmxlICovCj4+IMKgwqDCoMKgwqAg
+c25kX3NvY19zZXRfZG1pX25hbWUoY2FyZCwgTlVMTCk7Cj4+Cj4gCj4gSGVsbG8gdGhlcmUsCj4g
+Cj4gSSd2ZSBydW4gYSB2YWxpZGF0aW9uIGN5Y2xlIG9uIHJlY2VudCBicm9vbmllL2Zvci1uZXh0
+IGFuZCB0aGlzIGNvbW1pdCAKPiBjYXVzZWQgcmVncmVzc2lvbi4gSG93ZXZlciwgaXQgbWF5IGJl
+IHNpbXBseSBhbiBlcnJvciBvbiBib2FyZCBzaWRlIAo+IGluc3RlYWQuCj4gCj4gUHJldmlvdXNs
+eSwgcmV0IGZyb20gc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMgaGFzIGJlZW4gaWdub3JlZCB0aHVz
+IGl0IAo+IHdhcyBwZXJtaXNzaXZlIGZvciBhZGRpdGlvbiBvZiBzZXZlcmFsIHJvdXRlcyB0byBm
+YWlsLiBBcyBsb25nIGFzIHNvbWUgCj4gcm91dGVzIHN1Y2NlZWRlZCwgY2FyZCB3YXMgd29ya2lu
+ZyBqdXN0IGZpbmUuIE5vdyBpdCdzIG5vIGxvbmdlciB0aGUgCj4gY2FzZSAtIGJlaGF2aW9yIG9m
+IHRoZSBjYXJkIGluaXRpYWxpemF0aW9uIGhhcyBjaGFuZ2VkOiBpdCBpcyByZXF1aXJlZCAKPiBm
+b3IgQUxMIHJvdXRlcyB0byBzdWNjZWVkIGJlZm9yZSBjYXJkIGNhbiBiZSBmdWxseSBpbnN0YW50
+aWF0ZWQuCj4gCj4gTXVzdCBzYXkgY29sbGFwc2luZyBzbmRfc29jX2luc3RhbnRpYXRlX2NhcmQg
+aXMgYSB3b25kZXJmdWwgd2F5IHRvIHRlc3QgCj4geW91ciBjYXJkJ3MgcmVtb3ZhbCBmbG93IChz
+b2NfX2NsZWFudXBfY2FyZF9yZXNvdXJjZXMgYW5kIGZyaWVuZHMpLi4KPiAKPiBRdWVzdGlvbiBp
+cyBzaW1wbGU6IGFyZSB3ZSBzdGF5aW5nIHdpdGggYWxsLWZvci1vbmUvIG9uZS1mb3ItYWxsIAo+
+IGFwcHJvYWNoIG9yIHdlIHJldmVydGluZyB0byBwZXJtaXNzaXZlIGJlaGF2aW9yPwoKQ2FuIHlv
+dSBlbGFib3JhdGUgaW4gd2hpY2ggdGVzdCBjYXNlIHRoaXMgcGF0Y2ggY3JlYXRlcyBhIHByb2Js
+ZW0/IEp1c3QgCmN1cmlvdXMgd2h5IHRoZSByb3V0ZSBhZGRpdGlvbiBmYWlscyBpbiB0aGUgZmly
+c3QgcGxhY2UuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+czovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
