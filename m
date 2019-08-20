@@ -1,44 +1,80 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 2/2] ASoC: wm8904: implement input mode
-	select as a mux
-Date: Tue, 20 Aug 2019 10:50:33 +0000
-Message-ID: <20190820105033.GG10308@ediswmail.ad.cirrus.com>
-References: <f95ae1085f9f3c137a122c4d95728711613c15f7.1566297120.git.mirq-linux@rere.qmqm.pl>
- <17f8556414a0e5352dc570fa16d50bd1bc2b4b0a.1566297120.git.mirq-linux@rere.qmqm.pl>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [kbuild-all] [PATCH] fix odd_ptr_err.cocci warnings
+Date: Tue, 20 Aug 2019 13:54:41 +0300
+Message-ID: <c3779fa2-3aab-3ba2-518d-9675591787af@ti.com>
+References: <alpine.DEB.2.21.1908091229140.2946@hadrien>
+ <20190809123112.GC3963@sirena.co.uk>
+ <88ac4c79-5ce3-3f1a-5f6e-3928a30a1ef5@ti.com>
+ <alpine.DEB.2.21.1908091519400.2946@hadrien>
+ <297e44a8-e08d-ddf2-e5e8-b532965b4a8d@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 281BCF800BF
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 12:50:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <17f8556414a0e5352dc570fa16d50bd1bc2b4b0a.1566297120.git.mirq-linux@rere.qmqm.pl>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Allison Randal <allison@lohutok.net>, patches@opensource.cirrus.com, Thomas Gleixner <tglx@linutronix.de>, zhong jiang <zhongjiang@huawei.com>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <297e44a8-e08d-ddf2-e5e8-b532965b4a8d@intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rong Chen <rong.a.chen@intel.com>
+Cc: Julia Lawall <julia.lawall@lip6.fr>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBdWcgMjAsIDIwMTkgYXQgMTI6MzM6MzNQTSArMDIwMCwgTWljaGHFgiBNaXJvc8WC
-YXcgd3JvdGU6Cj4gTWFrZSAnKiBDYXB0dXJlIE1vZGUnIGEgbXV4LiBUaGlzIG1ha2VzIERBUE0g
-a25vdyB0aGF0IGluIHNpbmdsZS1lbmRlZAo+IG1vZGUgb25seSBpbnZlcnRpbmcgbXV4IHBhdGhz
-IG5lZWQgdG8gYmUgZW5hYmxlZC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYcWCIE1pcm9zxYJh
-dyA8bWlycS1saW51eEByZXJlLnFtcW0ucGw+Cj4gLS0tCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX2tjb250cm9sX25ldyByaW5fbW9kZSA9Cj4gKwlTT0NfREFQTV9FTlVNKCJyaWdodCBDYXB0
-dXJlIE1vZGUiLCByaW5fbW9kZV9lbnVtKTsKCk1pbm9yIG5pdCBtaXNzaW5nIGEgY2FwdGlhbCBv
-biB0aGUgcmlnaHQgaGVyZS4KCk90aGVyd2lzZSBsb29rcyBnb29kOgoKQWNrZWQtYnk6IENoYXJs
-ZXMgS2VlcGF4IDxja2VlcGF4QG9wZW5zb3VyY2UuY2lycnVzLmNvbT4KClRoYW5rcywKQ2hhcmxl
-cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Chen,
+
+On 20/08/2019 11.41, Rong Chen wrote:
+> Hi Peter,
+> 
+> We have updated to only send the reports to you, please see
+> https://github.com/intel/lkp-tests/blob/master/repo/linux/omap-audio
+
+Thank you very much!
+
+> 
+> Best Regards,
+> Rong Chen
+> 
+> On 8/9/19 9:21 PM, Julia Lawall wrote:
+>>
+>> On Fri, 9 Aug 2019, Peter Ujfalusi wrote:
+>>
+>>>
+>>> On 09/08/2019 15.31, Mark Brown wrote:
+>>>> On Fri, Aug 09, 2019 at 12:30:46PM +0200, Julia Lawall wrote:
+>>>>
+>>>>> tree:   https://github.com/omap-audio/linux-audio
+>>>>> peter/ti-linux-4.19.y/wip
+>>>>> head:   62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a
+>>>>> commit: 62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a [34/34] j721e new
+>>>>> machine driver wip
+>>>>> :::::: branch date: 20 hours ago
+>>>>> :::::: commit date: 20 hours ago
+>>>>>
+>>>>>   j721e-evm.c |    4 ++--
+>>>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> --- a/sound/soc/ti/j721e-evm.c
+>>>>> +++ b/sound/soc/ti/j721e-evm.c
+>>>>> @@ -283,7 +283,7 @@ static int j721e_get_clocks(struct platf
+>>>> This file isn't upstream, it's only in the TI BSP.
+>>> Yes, it is not upstream, but the fix is valid.
+>>>
+>>> Julia: is it possible to direct these notifications only to me from
+>>> https://github.com/omap-audio/linux-audio.git ?
+>>>
+>>> It mostly carries TI BSP stuff and my various for upstream branches
+>>> nowdays.
+>> Please discuss it with the kbuild people.  They should be able to set it
+>> up as you want.
+>>
+>> You can try lkp@intel.com
+>>
+>> julia
+>> _______________________________________________
+>> kbuild-all mailing list
+>> kbuild-all@lists.01.org
+>> https://lists.01.org/mailman/listinfo/kbuild-all
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
