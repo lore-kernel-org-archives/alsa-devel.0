@@ -1,172 +1,64 @@
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 3/3] ASoC: mchp-i2s-mcc: Fix simultaneous capture and playback in master mode
-Date: Tue, 20 Aug 2019 19:24:11 +0300
-Message-ID: <20190820162411.24836-4-codrin.ciubotariu@microchip.com>
-References: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 11/21] ASoC: sun4i-i2s: Use the actual format width
+ instead of an hardcoded one
+Date: Tue, 20 Aug 2019 18:39:03 +0100
+Message-ID: <20190820173903.GA5702@sirena.co.uk>
+References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
+ <fcf77b3bee47b54d81d1a3f4f107312f44388f5a.1566242458.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190820162411.24836-1-codrin.ciubotariu@microchip.com>
+Content-Disposition: inline
+In-Reply-To: <fcf77b3bee47b54d81d1a3f4f107312f44388f5a.1566242458.git-series.maxime.ripard@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, codekipper@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This controller supports capture and playback running at the same time,
-with the limitation that both capture and playback must be configured the
-same way (sample rate, sample format, number of channels, etc). For this,
-we have to assure that the configuration registers look the same when
-capture and playback are initiated.
-This patch fixes a bug in which the controller is in master mode and the
-hw_params() callback fails for the second audio stream. The fail occurs
-because the divisors are calculated after comparing the configuration
-registers for capture and playback. The fix consists in calculating the
-divisors before comparing the configuration registers. BCLK and LRC are
-then configured and started only if the controller is not already running.
 
-Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- sound/soc/atmel/mchp-i2s-mcc.c | 70 ++++++++++++++++++----------------
- 1 file changed, 37 insertions(+), 33 deletions(-)
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index ab7d5f98e759..befc2a3a05b0 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -392,11 +392,11 @@ static int mchp_i2s_mcc_clk_get_rate_diff(struct clk *clk,
- }
- 
- static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
--				    unsigned int bclk, unsigned int *mra)
-+				    unsigned int bclk, unsigned int *mra,
-+				    unsigned long *best_rate)
- {
- 	unsigned long clk_rate;
- 	unsigned long lcm_rate;
--	unsigned long best_rate = 0;
- 	unsigned long best_diff_rate = ~0;
- 	unsigned int sysclk;
- 	struct clk *best_clk = NULL;
-@@ -423,7 +423,7 @@ static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
- 	     (clk_rate == bclk || clk_rate / (bclk * 2) <= GENMASK(5, 0));
- 	     clk_rate += lcm_rate) {
- 		ret = mchp_i2s_mcc_clk_get_rate_diff(dev->gclk, clk_rate,
--						     &best_clk, &best_rate,
-+						     &best_clk, best_rate,
- 						     &best_diff_rate);
- 		if (ret) {
- 			dev_err(dev->dev, "gclk error for rate %lu: %d",
-@@ -437,7 +437,7 @@ static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
- 		}
- 
- 		ret = mchp_i2s_mcc_clk_get_rate_diff(dev->pclk, clk_rate,
--						     &best_clk, &best_rate,
-+						     &best_clk, best_rate,
- 						     &best_diff_rate);
- 		if (ret) {
- 			dev_err(dev->dev, "pclk error for rate %lu: %d",
-@@ -459,33 +459,17 @@ static int mchp_i2s_mcc_config_divs(struct mchp_i2s_mcc_dev *dev,
- 
- 	dev_dbg(dev->dev, "source CLK is %s with rate %lu, diff %lu\n",
- 		best_clk == dev->pclk ? "pclk" : "gclk",
--		best_rate, best_diff_rate);
--
--	/* set the rate */
--	ret = clk_set_rate(best_clk, best_rate);
--	if (ret) {
--		dev_err(dev->dev, "unable to set rate %lu to %s: %d\n",
--			best_rate, best_clk == dev->pclk ? "PCLK" : "GCLK",
--			ret);
--		return ret;
--	}
-+		*best_rate, best_diff_rate);
- 
- 	/* Configure divisors */
- 	if (dev->sysclk)
--		*mra |= MCHP_I2SMCC_MRA_IMCKDIV(best_rate / (2 * sysclk));
--	*mra |= MCHP_I2SMCC_MRA_ISCKDIV(best_rate / (2 * bclk));
-+		*mra |= MCHP_I2SMCC_MRA_IMCKDIV(*best_rate / (2 * sysclk));
-+	*mra |= MCHP_I2SMCC_MRA_ISCKDIV(*best_rate / (2 * bclk));
- 
--	if (best_clk == dev->gclk) {
-+	if (best_clk == dev->gclk)
- 		*mra |= MCHP_I2SMCC_MRA_SRCCLK_GCLK;
--		ret = clk_prepare(dev->gclk);
--		if (ret < 0)
--			dev_err(dev->dev, "unable to prepare GCLK: %d\n", ret);
--		else
--			dev->gclk_use = 1;
--	} else {
-+	else
- 		*mra |= MCHP_I2SMCC_MRA_SRCCLK_PCLK;
--		dev->gclk_use = 0;
--	}
- 
- 	return 0;
- }
-@@ -502,6 +486,7 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
- {
-+	unsigned long rate = 0;
- 	struct mchp_i2s_mcc_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	u32 mra = 0;
- 	u32 mrb = 0;
-@@ -640,6 +625,17 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
-+	if (set_divs) {
-+		bclk_rate = frame_length * params_rate(params);
-+		ret = mchp_i2s_mcc_config_divs(dev, bclk_rate, &mra,
-+					       &rate);
-+		if (ret) {
-+			dev_err(dev->dev,
-+				"unable to configure the divisors: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	/*
- 	 * If we are already running, the wanted setup must be
- 	 * the same with the one that's currently ongoing
-@@ -656,19 +652,27 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
- 	}
- 
--	/* Save the number of channels to know what interrupts to enable */
--	dev->channels = channels;
--
--	if (set_divs) {
--		bclk_rate = frame_length * params_rate(params);
--		ret = mchp_i2s_mcc_config_divs(dev, bclk_rate, &mra);
-+	if (mra & MCHP_I2SMCC_MRA_SRCCLK_GCLK && !dev->gclk_use) {
-+		/* set the rate */
-+		ret = clk_set_rate(dev->gclk, rate);
- 		if (ret) {
--			dev_err(dev->dev, "unable to configure the divisors: %d\n",
--				ret);
-+			dev_err(dev->dev,
-+				"unable to set rate %lu to GCLK: %d\n",
-+				rate, ret);
-+			return ret;
-+		}
-+
-+		ret = clk_prepare(dev->gclk);
-+		if (ret < 0) {
-+			dev_err(dev->dev, "unable to prepare GCLK: %d\n", ret);
- 			return ret;
- 		}
-+		dev->gclk_use = 1;
- 	}
- 
-+	/* Save the number of channels to know what interrupts to enable */
-+	dev->channels = channels;
-+
- 	ret = regmap_write(dev->regmap, MCHP_I2SMCC_MRA, mra);
- 	if (ret < 0) {
- 		if (dev->gclk_use) {
--- 
-2.20.1
+On Mon, Aug 19, 2019 at 09:25:18PM +0200, Maxime Ripard wrote:
+
+>  		regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+>  				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+> -				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
+> +				   SUN8I_I2S_FMT0_LRCK_PERIOD(params_physical_width(params)));
+
+This doesn't build for me:
+
+In file included from sound/soc/sunxi/sun4i-i2s.c:16:
+sound/soc/sunxi/sun4i-i2s.c: In function =E2=80=98sun4i_i2s_set_clk_rate=E2=
+=80=99:
+sound/soc/sunxi/sun4i-i2s.c:360:57: error: =E2=80=98params=E2=80=99 undecla=
+red (first use in this function); did you mean =E2=80=98parameq=E2=80=99?
+        SUN8I_I2S_FMT0_LRCK_PERIOD(params_physical_width(params)));
+                                                         ^~~~~~
+=2E/include/linux/regmap.h:75:42: note: in definition of macro =E2=80=98reg=
+map_update_bits=E2=80=99
+  regmap_update_bits_base(map, reg, mask, val, NULL, false, false)
+                                          ^~~
+sound/soc/sunxi/sun4i-i2s.c:360:8: note: in expansion of macro =E2=80=98SUN=
+8I_I2S_FMT0_LRCK_PERIOD=E2=80=99
+        SUN8I_I2S_FMT0_LRCK_PERIOD(params_physical_width(params)));
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1cMDYACgkQJNaLcl1U
+h9A5+wf/R8kszzb6oMjGJWYnQJj4y8zrub+Ef7frMS3FakQtrfpNijxNi57HOXai
+jJvL1rK1E89FeYJlt5rPq9DJGlWe8dS9dMvhuz7JhsYl5cn+8m4o1LoUbH6Inv5k
+95bWW3IC9IBXhd6MiQwBZZpZ79T1UjHu9UfOF5dOEQ059wu8JCYvA0y/PzyH6kq8
+w1MO/wGVaEHT/DMsAs66Mp5/3Ju8DAn9ZaE7ZhrgIsBphf/P+/BZHPU/pQjFEVag
+f0ayDyQwRU1t26KvNeIRQpnUXV/N7ZF7j/uQ2mUQDTPjViBLS0uzUw/5bklcAT24
+w+0X+AVImMFg+yfuBP7oOP25UCjzbQ==
+=C0WO
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
