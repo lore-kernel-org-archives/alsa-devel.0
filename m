@@ -1,118 +1,64 @@
-From: Jaska Uimonen <jaska.uimonen@intel.com>
-Subject: [PATCH] ASoC: SOF: topology: fix get control data
-	return type and arguments
-Date: Tue, 20 Aug 2019 06:43:31 +0300
-Message-ID: <20190820034331.38171-1-jaska.uimonen@intel.com>
+From: Rong Chen <rong.a.chen@intel.com>
+Subject: Re: [kbuild-all] [PATCH] fix odd_ptr_err.cocci warnings
+Date: Tue, 20 Aug 2019 16:41:02 +0800
+Message-ID: <297e44a8-e08d-ddf2-e5e8-b532965b4a8d@intel.com>
+References: <alpine.DEB.2.21.1908091229140.2946@hadrien>
+ <20190809123112.GC3963@sirena.co.uk>
+ <88ac4c79-5ce3-3f1a-5f6e-3928a30a1ef5@ti.com>
+ <alpine.DEB.2.21.1908091519400.2946@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08229F802E0
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 05:53:00 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Jaska Uimonen <jaska.uimonen@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.21.1908091519400.2946@hadrien>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Julia Lawall <julia.lawall@lip6.fr>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-sof_get_control_data returns negative values even though the return
-value is defined unsigned (size_t). So change the return value type
-to int.
+Hi Peter,
 
-Add the data size as pointer argument to sof_get_control_data to
-avoid ambiquity in the meaning of the return type. Also make the
-sof_get_control_data to return -EINVAL if data pointer is valid
-but the size is for some reason zero.
+We have updated to only send the reports to you, please see 
+https://github.com/intel/lkp-tests/blob/master/repo/linux/omap-audio
 
-Fixes: cac974a51ebb ("ASoC: SOF: topology: use set_get_data in process load")
-Reported by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
----
- sound/soc/sof/topology.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+Best Regards,
+Rong Chen
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 28a7a6e06a53..8288b1758542 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1752,15 +1752,15 @@ static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
- 	return ret;
- }
- 
--static size_t sof_get_control_data(struct snd_sof_dev *sdev,
--				   struct snd_soc_dapm_widget *widget,
--				   struct sof_widget_data *wdata)
-+static int sof_get_control_data(struct snd_sof_dev *sdev,
-+				struct snd_soc_dapm_widget *widget,
-+				struct sof_widget_data *wdata,
-+				size_t *size)
- {
- 	const struct snd_kcontrol_new *kc;
- 	struct soc_mixer_control *sm;
- 	struct soc_bytes_ext *sbe;
- 	struct soc_enum *se;
--	size_t size = 0;
- 	int i;
- 
- 	for (i = 0; i < widget->num_kcontrols; i++) {
-@@ -1800,7 +1800,11 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
- 		if (wdata[i].pdata->magic != SOF_ABI_MAGIC)
- 			return -EINVAL;
- 
--		size += wdata[i].pdata->size;
-+		/* don't accept 0 size for data */
-+		if (!wdata[i].pdata->size)
-+			return -EINVAL;
-+
-+		*size += wdata[i].pdata->size;
- 
- 		/* get data type */
- 		switch (wdata[i].control->cmd) {
-@@ -1819,7 +1823,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
- 		}
- 	}
- 
--	return size;
-+	return 0;
- }
- 
- static int sof_process_load(struct snd_soc_component *scomp, int index,
-@@ -1855,12 +1859,11 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
- 			return -ENOMEM;
- 
- 		/* get possible component controls and get size of all pdata */
--		ipc_data_size = sof_get_control_data(sdev, widget, wdata);
-+		ret = sof_get_control_data(sdev, widget, wdata,
-+					   &ipc_data_size);
- 
--		if (ipc_data_size <= 0) {
--			ret = ipc_data_size;
-+		if (ret < 0)
- 			goto out;
--		}
- 	}
- 
- 	ipc_size = sizeof(struct sof_ipc_comp_process) +
--- 
-2.13.6
-
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki 
-Business Identity Code: 0357606 - 4 
-Domiciled in Helsinki 
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+On 8/9/19 9:21 PM, Julia Lawall wrote:
+>
+> On Fri, 9 Aug 2019, Peter Ujfalusi wrote:
+>
+>>
+>> On 09/08/2019 15.31, Mark Brown wrote:
+>>> On Fri, Aug 09, 2019 at 12:30:46PM +0200, Julia Lawall wrote:
+>>>
+>>>> tree:   https://github.com/omap-audio/linux-audio peter/ti-linux-4.19.y/wip
+>>>> head:   62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a
+>>>> commit: 62c9c1442c8f61ca93e62e1a9d8318be0abd9d9a [34/34] j721e new machine driver wip
+>>>> :::::: branch date: 20 hours ago
+>>>> :::::: commit date: 20 hours ago
+>>>>
+>>>>   j721e-evm.c |    4 ++--
+>>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> --- a/sound/soc/ti/j721e-evm.c
+>>>> +++ b/sound/soc/ti/j721e-evm.c
+>>>> @@ -283,7 +283,7 @@ static int j721e_get_clocks(struct platf
+>>> This file isn't upstream, it's only in the TI BSP.
+>> Yes, it is not upstream, but the fix is valid.
+>>
+>> Julia: is it possible to direct these notifications only to me from
+>> https://github.com/omap-audio/linux-audio.git ?
+>>
+>> It mostly carries TI BSP stuff and my various for upstream branches nowdays.
+> Please discuss it with the kbuild people.  They should be able to set it
+> up as you want.
+>
+> You can try lkp@intel.com
+>
+> julia
+> _______________________________________________
+> kbuild-all mailing list
+> kbuild-all@lists.01.org
+> https://lists.01.org/mailman/listinfo/kbuild-all
