@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Use module clock as BCLK parent on newer SoCs" to the asoc tree
-Date: Tue, 20 Aug 2019 18:41:05 +0100 (BST)
-Message-ID: <20190820174105.C997E2742B4A@ypsilon.sirena.org.uk>
-References: <0b6665be216b3bd0e7bc43724818f05f3f8ee881.1566242458.git-series.maxime.ripard@bootlin.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0b6665be216b3bd0e7bc43724818f05f3f8ee881.1566242458.git-series.maxime.ripard@bootlin.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: sun4i-i2s: Support more channels" to the asoc tree
+Date: Tue, 20 Aug 2019 18:41:03 +0100 (BST)
+Message-ID: <20190820174103.C506D274314F@ypsilon.sirena.org.uk>
+References: <27d9de5cd56f3a544851b8cd8af08bf836d19637.1566242458.git-series.maxime.ripard@bootlin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <27d9de5cd56f3a544851b8cd8af08bf836d19637.1566242458.git-series.maxime.ripard@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Chen-Yu Tsai <wens@csie.org>, codekipper@gmail.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Maxime Ripard <mripard@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org, codekipper@gmail.com, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Use module clock as BCLK parent on newer SoCs
+   ASoC: sun4i-i2s: Support more channels
 
 has been applied to the asoc tree at
 
@@ -37,115 +48,83 @@ to this mail.
 Thanks,
 Mark
 
->From fb19739d7f688142b61d0fca476188c4fd9e937a Mon Sep 17 00:00:00 2001
+>From bbf9a127abca4aac5cc75f882bc7efcc398e86ae Mon Sep 17 00:00:00 2001
 From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Mon, 19 Aug 2019 21:25:15 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Use module clock as BCLK parent on newer
- SoCs
+Date: Mon, 19 Aug 2019 21:25:26 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Support more channels
 
-On the first generation of Allwinner SoCs (A10-A31), the i2s controller was
-using the MCLK as BCLK parent. However, this changed since the introduction
-of the A83t and BCLK now uses the module clock as its parent.
+We've been limited to 2 channels in the driver while the controller
+supports from 1 to 8 channels, in both capture and playback. let's remove
+the hardcoded checks and numbers, and extend the range of channel numbers
+we can use.
 
-Let's introduce a hook to get the parent rate and use that in our divider
-calculations.
-
-Fixes: 7d2993811a1e ("ASoC: sun4i-i2s: Add support for H3")
-Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/0b6665be216b3bd0e7bc43724818f05f3f8ee881.1566242458.git-series.maxime.ripard@bootlin.com
+Link: https://lore.kernel.org/r/27d9de5cd56f3a544851b8cd8af08bf836d19637.1566242458.git-series.maxime.ripard@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 93ea627e2f1f..acfcdb26086a 100644
+index 6b172dfbc25d..9e691baee1e8 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -152,6 +152,7 @@ struct sun4i_i2s_quirks {
- 	struct reg_field		field_fmt_bclk;
- 	struct reg_field		field_fmt_lrclk;
+@@ -400,9 +400,6 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ {
+ 	unsigned int channels = params_channels(params);
  
-+	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
- 	s8	(*get_sr)(const struct sun4i_i2s *, int);
- 	s8	(*get_wss)(const struct sun4i_i2s *, int);
- 	int	(*set_chan_cfg)(const struct sun4i_i2s *,
-@@ -207,6 +208,16 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
- 	/* TODO - extend divide ratio supported by newer SoCs */
- };
+-	if (channels != 2)
+-		return -EINVAL;
+-
+ 	/* Map the channels for playback and capture */
+ 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+ 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
+@@ -423,9 +420,6 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ {
+ 	unsigned int channels = params_channels(params);
  
-+static unsigned long sun4i_i2s_get_bclk_parent_rate(const struct sun4i_i2s *i2s)
-+{
-+	return i2s->mclk_freq;
-+}
-+
-+static unsigned long sun8i_i2s_get_bclk_parent_rate(const struct sun4i_i2s *i2s)
-+{
-+	return clk_get_rate(i2s->mod_clk);
-+}
-+
- static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
- 				  unsigned long parent_rate,
- 				  unsigned int sampling_rate,
-@@ -259,7 +270,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				  unsigned int word_size)
+-	if (channels != 2)
+-		return -EINVAL;
+-
+ 	/* Map the channels for playback and capture */
+ 	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+ 	regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
+@@ -458,6 +452,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
  {
  	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--	unsigned int oversample_rate, clk_rate;
-+	unsigned int oversample_rate, clk_rate, bclk_parent_rate;
- 	int bclk_div, mclk_div;
- 	int ret;
++	unsigned int channels = params_channels(params);
+ 	int ret, sr, wss;
+ 	u32 width;
  
-@@ -301,7 +312,8 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
+@@ -490,7 +485,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_field_write(i2s->field_fmt_sr, sr);
  
--	bclk_div = sun4i_i2s_get_bclk_div(i2s, i2s->mclk_freq,
-+	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
-+	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
- 					  rate, word_size);
- 	if (bclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
-@@ -957,6 +969,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun4i_i2s_get_sr,
- 	.get_wss		= sun4i_i2s_get_wss,
- 	.set_chan_cfg		= sun4i_i2s_set_chan_cfg,
-@@ -972,6 +985,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun4i_i2s_get_sr,
- 	.get_wss		= sun4i_i2s_get_wss,
- 	.set_chan_cfg		= sun4i_i2s_set_chan_cfg,
-@@ -987,6 +1001,7 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun8i_i2s_get_sr_wss,
- 	.get_wss		= sun8i_i2s_get_sr_wss,
- 	.set_chan_cfg		= sun8i_i2s_set_chan_cfg,
-@@ -1005,6 +1020,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 19, 19),
-+	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun8i_i2s_get_sr_wss,
- 	.get_wss		= sun8i_i2s_get_sr_wss,
- 	.set_chan_cfg		= sun8i_i2s_set_chan_cfg,
-@@ -1020,6 +1036,7 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
- 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
- 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
- 	.get_sr			= sun4i_i2s_get_sr,
- 	.get_wss		= sun4i_i2s_get_wss,
- 	.set_chan_cfg		= sun4i_i2s_set_chan_cfg,
+ 	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+-				      2, params_width(params));
++				      channels, params_width(params));
+ }
+ 
+ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+@@ -814,15 +809,15 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 	.probe = sun4i_i2s_dai_probe,
+ 	.capture = {
+ 		.stream_name = "Capture",
+-		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_min = 1,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.playback = {
+ 		.stream_name = "Playback",
+-		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_min = 1,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
 -- 
 2.20.1
