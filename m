@@ -1,99 +1,157 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 09/25] ASoC: soc-core: tidyup for
- snd_soc_dapm_add_routes()
-Date: Tue, 20 Aug 2019 07:36:03 -0500
-Message-ID: <27f25fb3-1d50-2b60-3e3b-da61eef1f6ad@linux.intel.com>
-References: <87pnlhahr6.wl-kuninori.morimoto.gx@renesas.com>
- <87d0hhahon.wl-kuninori.morimoto.gx@renesas.com>
- <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41F48F8036D
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 14:36:06 +0200 (CEST)
-In-Reply-To: <928df91b-997f-c1eb-5ab5-bda1fc374c1a@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: uniphier: Fix double reset assersion when transitioning to suspend state" to the asoc tree
+Date: Tue, 20 Aug 2019 13:54:54 +0100 (BST)
+Message-ID: <20190820125454.23AD32742ABD@ypsilon.sirena.org.uk>
+References: <1566281764-14059-1-git-send-email-hayashi.kunihiko@socionext.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1566281764-14059-1-git-send-email-hayashi.kunihiko@socionext.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jaswinder.singh@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Masami Hiramatsu <masami.hiramatsu@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiA4LzIwLzE5IDY6MTggQU0sIENlemFyeSBSb2pld3NraSB3cm90ZToKPiBPbiAyMDE5LTA4
-LTA3IDAzOjMxLCBLdW5pbm9yaSBNb3JpbW90byB3cm90ZToKPj4KPj4gRnJvbTogS3VuaW5vcmkg
-TW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgo+Pgo+PiBzbmRfc29j
-X2RhcG1fYWRkX3JvdXRlcygpIHJlZ2lzdGVycyByb3V0ZXMgYnkgdXNpbmcKPj4gZm9yKC4uLiBp
-IDwgbnVtOyAuLi4pLiBJZiByb3V0ZXMgd2FzIE5VTEwsIG51bSBzaG91bGQgYmUgemVyby4KPj4g
-VGh1cywgd2UgZG9uJ3QgbmVlZCB0byBjaGVjayBhYm91dCByb3V0ZSBwb2ludGVyLgo+PiBUaGlz
-IHBhdGNoIGFsc28gY2FyZXMgbWlzc2luZyByZXR1cm4gdmFsdWUuCj4+Cj4+IFNpZ25lZC1vZmYt
-Ynk6IEt1bmlub3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4K
-Pj4gLS0tCj4+IHYxIC0+IHYyCj4+Cj4+IMKgwqDCoMKgLSBjaGVjayByZXR1cm4gdmFsdWUKPj4g
-wqDCoMKgwqAtIGNoYW5nZSBTdWJqZWN0Cj4+Cj4+IMKgIHNvdW5kL3NvYy9zb2MtY29yZS5jIHwg
-MjMgKysrKysrKysrKysrKy0tLS0tLS0tLS0KPj4gwqAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2Vy
-dGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3Nv
-Yy1jb3JlLmMgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+PiBpbmRleCAyMWNkZDNjLi5jYTFiMDRj
-IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+PiArKysgYi9zb3VuZC9zb2Mv
-c29jLWNvcmUuYwo+PiBAQCAtMTMxMCwxMCArMTMxMCwxMSBAQCBzdGF0aWMgaW50IHNvY19wcm9i
-ZV9jb21wb25lbnQoc3RydWN0IAo+PiBzbmRfc29jX2NhcmQgKmNhcmQsCj4+IMKgwqDCoMKgwqAg
-aWYgKHJldCA8IDApCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIGVycl9wcm9iZTsKPj4gLcKg
-wqDCoCBpZiAoY29tcG9uZW50LT5kcml2ZXItPmRhcG1fcm91dGVzKQo+PiAtwqDCoMKgwqDCoMKg
-wqAgc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFwbSwKPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5kYXBtX3JvdXRlcywKPj4gLcKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5u
-dW1fZGFwbV9yb3V0ZXMpOwo+PiArwqDCoMKgIHJldCA9IHNuZF9zb2NfZGFwbV9hZGRfcm91dGVz
-KGRhcG0sCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29t
-cG9uZW50LT5kcml2ZXItPmRhcG1fcm91dGVzLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBvbmVudC0+ZHJpdmVyLT5udW1fZGFwbV9yb3V0ZXMpOwo+
-PiArwqDCoMKgIGlmIChyZXQgPCAwKQo+PiArwqDCoMKgwqDCoMKgwqAgZ290byBlcnJfcHJvYmU7
-Cj4+IMKgwqDCoMKgwqAgbGlzdF9hZGQoJmRhcG0tPmxpc3QsICZjYXJkLT5kYXBtX2xpc3QpOwo+
-PiDCoMKgwqDCoMKgIC8qIHNlZSBmb3JfZWFjaF9jYXJkX2NvbXBvbmVudHMgKi8KPj4gQEAgLTIw
-NjAsMTMgKzIwNjEsMTUgQEAgc3RhdGljIGludCBzbmRfc29jX2luc3RhbnRpYXRlX2NhcmQoc3Ry
-dWN0IAo+PiBzbmRfc29jX2NhcmQgKmNhcmQpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBzbmRfc29j
-X2FkZF9jYXJkX2NvbnRyb2xzKGNhcmQsIGNhcmQtPmNvbnRyb2xzLAo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9jb250cm9scyk7Cj4+
-IC3CoMKgwqAgaWYgKGNhcmQtPmRhcG1fcm91dGVzKQo+PiAtwqDCoMKgwqDCoMKgwqAgc25kX3Nv
-Y19kYXBtX2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPmRhcG1fcm91dGVzLAo+PiAtwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2FyZC0+bnVtX2RhcG1fcm91dGVz
-KTsKPj4gK8KgwqDCoCByZXQgPSBzbmRfc29jX2RhcG1fYWRkX3JvdXRlcygmY2FyZC0+ZGFwbSwg
-Y2FyZC0+ZGFwbV9yb3V0ZXMsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgY2FyZC0+bnVtX2RhcG1fcm91dGVzKTsKPj4gK8KgwqDCoCBpZiAocmV0IDwgMCkK
-Pj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gcHJvYmVfZW5kOwo+PiAtwqDCoMKgIGlmIChjYXJkLT5v
-Zl9kYXBtX3JvdXRlcykKPj4gLcKgwqDCoMKgwqDCoMKgIHNuZF9zb2NfZGFwbV9hZGRfcm91dGVz
-KCZjYXJkLT5kYXBtLCBjYXJkLT5vZl9kYXBtX3JvdXRlcywKPj4gLcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhcmQtPm51bV9vZl9kYXBtX3JvdXRlcyk7Cj4+ICvCoMKg
-wqAgcmV0ID0gc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoJmNhcmQtPmRhcG0sIGNhcmQtPm9mX2Rh
-cG1fcm91dGVzLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IGNhcmQtPm51bV9vZl9kYXBtX3JvdXRlcyk7Cj4+ICvCoMKgwqAgaWYgKHJldCA8IDApCj4+ICvC
-oMKgwqDCoMKgwqDCoCBnb3RvIHByb2JlX2VuZDsKPj4gwqDCoMKgwqDCoCAvKiB0cnkgdG8gc2V0
-IHNvbWUgc2FuZSBsb25nbmFtZSBpZiBETUkgaXMgYXZhaWxhYmxlICovCj4+IMKgwqDCoMKgwqAg
-c25kX3NvY19zZXRfZG1pX25hbWUoY2FyZCwgTlVMTCk7Cj4+Cj4gCj4gSGVsbG8gdGhlcmUsCj4g
-Cj4gSSd2ZSBydW4gYSB2YWxpZGF0aW9uIGN5Y2xlIG9uIHJlY2VudCBicm9vbmllL2Zvci1uZXh0
-IGFuZCB0aGlzIGNvbW1pdCAKPiBjYXVzZWQgcmVncmVzc2lvbi4gSG93ZXZlciwgaXQgbWF5IGJl
-IHNpbXBseSBhbiBlcnJvciBvbiBib2FyZCBzaWRlIAo+IGluc3RlYWQuCj4gCj4gUHJldmlvdXNs
-eSwgcmV0IGZyb20gc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMgaGFzIGJlZW4gaWdub3JlZCB0aHVz
-IGl0IAo+IHdhcyBwZXJtaXNzaXZlIGZvciBhZGRpdGlvbiBvZiBzZXZlcmFsIHJvdXRlcyB0byBm
-YWlsLiBBcyBsb25nIGFzIHNvbWUgCj4gcm91dGVzIHN1Y2NlZWRlZCwgY2FyZCB3YXMgd29ya2lu
-ZyBqdXN0IGZpbmUuIE5vdyBpdCdzIG5vIGxvbmdlciB0aGUgCj4gY2FzZSAtIGJlaGF2aW9yIG9m
-IHRoZSBjYXJkIGluaXRpYWxpemF0aW9uIGhhcyBjaGFuZ2VkOiBpdCBpcyByZXF1aXJlZCAKPiBm
-b3IgQUxMIHJvdXRlcyB0byBzdWNjZWVkIGJlZm9yZSBjYXJkIGNhbiBiZSBmdWxseSBpbnN0YW50
-aWF0ZWQuCj4gCj4gTXVzdCBzYXkgY29sbGFwc2luZyBzbmRfc29jX2luc3RhbnRpYXRlX2NhcmQg
-aXMgYSB3b25kZXJmdWwgd2F5IHRvIHRlc3QgCj4geW91ciBjYXJkJ3MgcmVtb3ZhbCBmbG93IChz
-b2NfX2NsZWFudXBfY2FyZF9yZXNvdXJjZXMgYW5kIGZyaWVuZHMpLi4KPiAKPiBRdWVzdGlvbiBp
-cyBzaW1wbGU6IGFyZSB3ZSBzdGF5aW5nIHdpdGggYWxsLWZvci1vbmUvIG9uZS1mb3ItYWxsIAo+
-IGFwcHJvYWNoIG9yIHdlIHJldmVydGluZyB0byBwZXJtaXNzaXZlIGJlaGF2aW9yPwoKQ2FuIHlv
-dSBlbGFib3JhdGUgaW4gd2hpY2ggdGVzdCBjYXNlIHRoaXMgcGF0Y2ggY3JlYXRlcyBhIHByb2Js
-ZW0/IEp1c3QgCmN1cmlvdXMgd2h5IHRoZSByb3V0ZSBhZGRpdGlvbiBmYWlscyBpbiB0aGUgZmly
-c3QgcGxhY2UuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-czovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: uniphier: Fix double reset assersion when transitioning to suspend state
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c372a35550c8d60f673b20210eea58a06d6d38cb Mon Sep 17 00:00:00 2001
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Date: Tue, 20 Aug 2019 15:16:04 +0900
+Subject: [PATCH] ASoC: uniphier: Fix double reset assersion when transitioning
+ to suspend state
+
+When transitioning to supend state, uniphier_aio_dai_suspend() is called
+and asserts reset lines and disables clocks.
+
+However, if there are two or more DAIs, uniphier_aio_dai_suspend() are
+called multiple times, and double reset assersion will cause.
+
+This patch defines the counter that has the number of DAIs at first, and
+whenever uniphier_aio_dai_suspend() are called, it decrements the
+counter. And only if the counter is zero, it asserts reset lines and
+disables clocks.
+
+In the same way, uniphier_aio_dai_resume() are called, it increments the
+counter after deasserting reset lines and enabling clocks.
+
+Fixes: 139a34200233 ("ASoC: uniphier: add support for UniPhier AIO CPU DAI driver")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Link: https://lore.kernel.org/r/1566281764-14059-1-git-send-email-hayashi.kunihiko@socionext.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/uniphier/aio-cpu.c | 31 +++++++++++++++++++++----------
+ sound/soc/uniphier/aio.h     |  1 +
+ 2 files changed, 22 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
+index ee90e6c3937c..2ae582a99b63 100644
+--- a/sound/soc/uniphier/aio-cpu.c
++++ b/sound/soc/uniphier/aio-cpu.c
+@@ -424,8 +424,11 @@ int uniphier_aio_dai_suspend(struct snd_soc_dai *dai)
+ {
+ 	struct uniphier_aio *aio = uniphier_priv(dai);
+ 
+-	reset_control_assert(aio->chip->rst);
+-	clk_disable_unprepare(aio->chip->clk);
++	aio->chip->num_wup_aios--;
++	if (!aio->chip->num_wup_aios) {
++		reset_control_assert(aio->chip->rst);
++		clk_disable_unprepare(aio->chip->clk);
++	}
+ 
+ 	return 0;
+ }
+@@ -439,13 +442,15 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
+ 	if (!aio->chip->active)
+ 		return 0;
+ 
+-	ret = clk_prepare_enable(aio->chip->clk);
+-	if (ret)
+-		return ret;
++	if (!aio->chip->num_wup_aios) {
++		ret = clk_prepare_enable(aio->chip->clk);
++		if (ret)
++			return ret;
+ 
+-	ret = reset_control_deassert(aio->chip->rst);
+-	if (ret)
+-		goto err_out_clock;
++		ret = reset_control_deassert(aio->chip->rst);
++		if (ret)
++			goto err_out_clock;
++	}
+ 
+ 	aio_iecout_set_enable(aio->chip, true);
+ 	aio_chip_init(aio->chip);
+@@ -458,7 +463,7 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
+ 
+ 		ret = aio_init(sub);
+ 		if (ret)
+-			goto err_out_clock;
++			goto err_out_reset;
+ 
+ 		if (!sub->setting)
+ 			continue;
+@@ -466,11 +471,16 @@ int uniphier_aio_dai_resume(struct snd_soc_dai *dai)
+ 		aio_port_reset(sub);
+ 		aio_src_reset(sub);
+ 	}
++	aio->chip->num_wup_aios++;
+ 
+ 	return 0;
+ 
++err_out_reset:
++	if (!aio->chip->num_wup_aios)
++		reset_control_assert(aio->chip->rst);
+ err_out_clock:
+-	clk_disable_unprepare(aio->chip->clk);
++	if (!aio->chip->num_wup_aios)
++		clk_disable_unprepare(aio->chip->clk);
+ 
+ 	return ret;
+ }
+@@ -619,6 +629,7 @@ int uniphier_aio_probe(struct platform_device *pdev)
+ 		return PTR_ERR(chip->rst);
+ 
+ 	chip->num_aios = chip->chip_spec->num_dais;
++	chip->num_wup_aios = chip->num_aios;
+ 	chip->aios = devm_kcalloc(dev,
+ 				  chip->num_aios, sizeof(struct uniphier_aio),
+ 				  GFP_KERNEL);
+diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
+index ca6ccbae0ee8..a7ff7e556429 100644
+--- a/sound/soc/uniphier/aio.h
++++ b/sound/soc/uniphier/aio.h
+@@ -285,6 +285,7 @@ struct uniphier_aio_chip {
+ 
+ 	struct uniphier_aio *aios;
+ 	int num_aios;
++	int num_wup_aios;
+ 	struct uniphier_aio_pll *plls;
+ 	int num_plls;
+ 
+-- 
+2.20.1
