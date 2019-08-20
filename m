@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t" to the asoc tree
-Date: Tue, 20 Aug 2019 18:41:04 +0100 (BST)
-Message-ID: <20190820174104.97890274314E@ypsilon.sirena.org.uk>
-References: <43b07f8cd8e0e280c64ce61d57c307678c923e9b.1566242458.git-series.maxime.ripard@bootlin.com>
+Subject: Applied "ASoC: mchp-i2s-mcc: Fix unprepare of GCLK" to the asoc tree
+Date: Tue, 20 Aug 2019 18:41:03 +0100 (BST)
+Message-ID: <20190820174103.8E819274314E@ypsilon.sirena.org.uk>
+References: <20190820162411.24836-2-codrin.ciubotariu@microchip.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <43b07f8cd8e0e280c64ce61d57c307678c923e9b.1566242458.git-series.maxime.ripard@bootlin.com>
+In-Reply-To: <20190820162411.24836-2-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Chen-Yu Tsai <wens@csie.org>, codekipper@gmail.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Maxime Ripard <mripard@kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, nicolas.ferre@microchip.com, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t
+   ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,34 +37,56 @@ to this mail.
 Thanks,
 Mark
 
->From bf943d527987c38f6fb11f9515e0cf2839286eb8 Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Mon, 19 Aug 2019 21:25:22 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t
+>From 988b59467b2b14523a266957affbe9eca3e99fc9 Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Tue, 20 Aug 2019 19:24:09 +0300
+Subject: [PATCH] ASoC: mchp-i2s-mcc: Fix unprepare of GCLK
 
-The A83t, unlike previous SoCs, has the MCLK enable bit at the 8th bit of
-the CLK_DIV register, unlike what is declared in the driver.
+If hw_free() gets called after hw_params(), GCLK remains prepared,
+preventing further use of it. This patch fixes this by unpreparing the
+clock in hw_free() or if hw_params() gets an error.
 
-Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/43b07f8cd8e0e280c64ce61d57c307678c923e9b.1566242458.git-series.maxime.ripard@bootlin.com
+Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Link: https://lore.kernel.org/r/20190820162411.24836-2-codrin.ciubotariu@microchip.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/atmel/mchp-i2s-mcc.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 59d809df8d2a..0fce3c476772 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -1047,7 +1047,7 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
- 	.has_reset		= true,
- 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
- 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
--	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-+	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
- 	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
- 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
- 	.bclk_dividers		= sun8i_i2s_clk_div,
+diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
+index 86495883ca3f..319f975586f1 100644
+--- a/sound/soc/atmel/mchp-i2s-mcc.c
++++ b/sound/soc/atmel/mchp-i2s-mcc.c
+@@ -670,8 +670,13 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	ret = regmap_write(dev->regmap, MCHP_I2SMCC_MRA, mra);
+-	if (ret < 0)
++	if (ret < 0) {
++		if (dev->gclk_use) {
++			clk_unprepare(dev->gclk);
++			dev->gclk_use = 0;
++		}
+ 		return ret;
++	}
+ 	return regmap_write(dev->regmap, MCHP_I2SMCC_MRB, mrb);
+ }
+ 
+@@ -708,9 +713,13 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		regmap_write(dev->regmap, MCHP_I2SMCC_CR, MCHP_I2SMCC_CR_CKDIS);
+ 
+ 		if (dev->gclk_running) {
+-			clk_disable_unprepare(dev->gclk);
++			clk_disable(dev->gclk);
+ 			dev->gclk_running = 0;
+ 		}
++		if (dev->gclk_use) {
++			clk_unprepare(dev->gclk);
++			dev->gclk_use = 0;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
