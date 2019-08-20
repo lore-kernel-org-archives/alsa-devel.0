@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: g12a-tohdmitx: require regmap mmio" to the asoc tree
+Subject: Applied "ASoC: meson: axg-tdm-formatter: free reset on device removal" to the asoc tree
 Date: Tue, 20 Aug 2019 14:14:20 +0100 (BST)
-Message-ID: <20190820131420.5E336274314C@ypsilon.sirena.org.uk>
-References: <20190820123510.22491-1-jbrunet@baylibre.com>
+Message-ID: <20190820131420.8F31F274314E@ypsilon.sirena.org.uk>
+References: <20190820123413.22249-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190820123510.22491-1-jbrunet@baylibre.com>
+In-Reply-To: <20190820123413.22249-1-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: g12a-tohdmitx: require regmap mmio
+   ASoC: meson: axg-tdm-formatter: free reset on device removal
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 351b31002c1853af078ebfffd4b67bfc3d19e3dd Mon Sep 17 00:00:00 2001
+>From 18dd62ae3bc31baa0473e4a09e46c02e0bdc57a0 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 20 Aug 2019 14:35:10 +0200
-Subject: [PATCH] ASoC: meson: g12a-tohdmitx: require regmap mmio
+Date: Tue, 20 Aug 2019 14:34:13 +0200
+Subject: [PATCH] ASoC: meson: axg-tdm-formatter: free reset on device removal
 
-The tohdmitx glue uses regmap MMIO so it should require it.
+Use the devm variant to get the formatter reset so it is properly freed
+on device removal
 
-Fixes: c8609f3870f7 ("ASoC: meson: add g12a tohdmitx control")
+Fixes: 751bd5db5260 ("ASoC: meson: axg-tdm-formatter: add reset")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20190820123510.22491-1-jbrunet@baylibre.com
+Link: https://lore.kernel.org/r/20190820123413.22249-1-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/meson/axg-tdm-formatter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 63b38c123103..2e3676147cea 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -87,6 +87,7 @@ config SND_MESON_AXG_PDM
+diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
+index 2e498201139f..1a0bf9d3836d 100644
+--- a/sound/soc/meson/axg-tdm-formatter.c
++++ b/sound/soc/meson/axg-tdm-formatter.c
+@@ -327,7 +327,7 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
+ 	}
  
- config SND_MESON_G12A_TOHDMITX
- 	tristate "Amlogic G12A To HDMI TX Control Support"
-+	select REGMAP_MMIO
- 	imply SND_SOC_HDMI_CODEC
- 	help
- 	  Select Y or M to add support for HDMI audio on the g12a SoC
+ 	/* Formatter dedicated reset line */
+-	formatter->reset = reset_control_get_optional_exclusive(dev, NULL);
++	formatter->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
+ 	if (IS_ERR(formatter->reset)) {
+ 		ret = PTR_ERR(formatter->reset);
+ 		if (ret != -EPROBE_DEFER)
 -- 
 2.20.1
