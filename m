@@ -1,18 +1,38 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: Introduce compatible string for imx8qm" to the asoc tree
+Subject: Applied "ASoC: soc-core: remove unneeded dai_link
+	check from snd_soc_remove_dai_link()" to the asoc tree
 Date: Wed, 21 Aug 2019 13:15:32 +0100 (BST)
-Message-ID: <20190821121532.B2DC62742FCD@ypsilon.sirena.org.uk>
-References: <20190814082911.665-3-daniel.baluta@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190814082911.665-3-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, linux-imx@nxp.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, robh+dt@kernel.org, shengjiu.wang@nxp.com, viorel.suman@nxp.com, Xiubo.Lee@gmail.com
+Message-ID: <20190821121532.4491A27430D0@ypsilon.sirena.org.uk>
+References: <875zms1ldm.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm1-f98.google.com (mail-wm1-f98.google.com
+ [209.85.128.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2290EF80322
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 14:15:33 +0200 (CEST)
+Received: by mail-wm1-f98.google.com with SMTP id c5so1699969wmb.5
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 05:15:33 -0700 (PDT)
+In-Reply-To: <875zms1ldm.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Sridharan@sirena.co.uk, Ranjani <ranjani.sridharan@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dt-bindings: Introduce compatible string for imx8qm
+   ASoC: soc-core: remove unneeded dai_link check from snd_soc_remove_dai_link()
 
 has been applied to the asoc tree at
 
@@ -37,34 +57,54 @@ to this mail.
 Thanks,
 Mark
 
->From c1fe93581ae9d85c3a783b5fad21912bb88a0f34 Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 14 Aug 2019 11:29:11 +0300
-Subject: [PATCH] ASoC: dt-bindings: Introduce compatible string for imx8qm
+>From c26a8841119826badc8d358a4266880f83359f26 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 20 Aug 2019 14:04:58 +0900
+Subject: [PATCH] ASoC: soc-core: remove unneeded dai_link check from
+ snd_soc_remove_dai_link()
 
-Register map for i.MX8QM is similar with i.MX6 series. Integration
-of SAI IP into i.MX8QM SOC features a FIFO size of 64 X 32 bits samples.
+snd_soc_remove_dai_link() has card connected dai_link check. but
+	1) we need to call list_del() anyway,
+	   because it is "remove" function,
+	2) It is doing many thing for this card / dai_link already
+	   before checking dai_link.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/20190814082911.665-3-daniel.baluta@nxp.com
+This patch removes poinless dai_link check
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/875zms1ldm.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index e61c0dc1fc0b..0dc83cc4a236 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -9,7 +9,8 @@ Required properties:
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d428491d51a7..6df880be1622 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1182,8 +1182,6 @@ EXPORT_SYMBOL_GPL(snd_soc_add_dai_link);
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link)
+ {
+-	struct snd_soc_dai_link *link, *_link;
+-
+ 	if (dai_link->dobj.type
+ 	    && dai_link->dobj.type != SND_SOC_DOBJ_DAI_LINK) {
+ 		dev_err(card->dev, "Invalid dai link type %d\n",
+@@ -1199,12 +1197,7 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 	if (dai_link->dobj.type && card->remove_dai_link)
+ 		card->remove_dai_link(card, dai_link);
  
-   - compatible		: Compatible list, contains "fsl,vf610-sai",
- 			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
--			  "fsl,imx7ulp-sai" or "fsl,imx8mq-sai".
-+			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai" or
-+			  "fsl,imx8qm-sai".
- 
-   - reg			: Offset and length of the register set for the device.
+-	for_each_card_links_safe(card, link, _link) {
+-		if (link == dai_link) {
+-			list_del(&link->list);
+-			return;
+-		}
+-	}
++	list_del(&dai_link->list);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_remove_dai_link);
  
 -- 
 2.20.1
