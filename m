@@ -1,110 +1,36 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mchp-i2s-mcc: Wait for RX/TX RDY only if controller is running" to the asoc tree
-Date: Tue, 20 Aug 2019 18:41:03 +0100 (BST)
-Message-ID: <20190820174103.5B7A3274314C@ypsilon.sirena.org.uk>
-References: <20190820162411.24836-3-codrin.ciubotariu@microchip.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190820162411.24836-3-codrin.ciubotariu@microchip.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, nicolas.ferre@microchip.com, perex@perex.cz, tiwai@suse.com
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v5 09/15] clk: sunxi-ng: h6: Allow I2S to
+ change parent rate
+Date: Wed, 21 Aug 2019 12:07:37 +0800
+Message-ID: <CAGb2v65+-OB4zEyW8f7hcWHkL7DtfEB1YK2B1nOKdgNdNqC0kQ@mail.gmail.com>
+References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-10-codekipper@gmail.com>
+Reply-To: wens-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBGEH6PVAKGQETMFELXQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20190814060854.26345-10-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Aug 14, 2019 at 2:09 PM <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>
+> From: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+>
+> I2S doesn't work if parent rate couldn't be change. Difference between
+> wanted and actual rate is too big.
+>
+> Fix this by adding CLK_SET_RATE_PARENT flag to I2S clocks.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
 
-   ASoC: mchp-i2s-mcc: Wait for RX/TX RDY only if controller is running
+This lacks your SoB. Please reply and I can add it when applying.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0f6fc97501b790c971b11b52a654009d21c45238 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Tue, 20 Aug 2019 19:24:10 +0300
-Subject: [PATCH] ASoC: mchp-i2s-mcc: Wait for RX/TX RDY only if controller is
- running
-
-Since hw_free() can be called multiple times and not just after a stop
-trigger command, we should check whether the RX or TX ready interrupt was
-truly enabled previously. For this, we assure that the condition of the
-wait event is always true, except when RX/TX interrupts are enabled.
-
-Fixes: 7e0cdf545a55 ("ASoC: mchp-i2s-mcc: add driver for I2SC Multi-Channel Controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Link: https://lore.kernel.org/r/20190820162411.24836-3-codrin.ciubotariu@microchip.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/mchp-i2s-mcc.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 319f975586f1..ab7d5f98e759 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -691,22 +691,24 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
- 		err = wait_event_interruptible_timeout(dev->wq_txrdy,
- 						       dev->tx_rdy,
- 						       msecs_to_jiffies(500));
-+		if (err == 0) {
-+			dev_warn_once(dev->dev,
-+				      "Timeout waiting for Tx ready\n");
-+			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
-+				     MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels));
-+			dev->tx_rdy = 1;
-+		}
- 	} else {
- 		err = wait_event_interruptible_timeout(dev->wq_rxrdy,
- 						       dev->rx_rdy,
- 						       msecs_to_jiffies(500));
--	}
--
--	if (err == 0) {
--		u32 idra;
--
--		dev_warn_once(dev->dev, "Timeout waiting for %s\n",
--			      is_playback ? "Tx ready" : "Rx ready");
--		if (is_playback)
--			idra = MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels);
--		else
--			idra = MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels);
--		regmap_write(dev->regmap, MCHP_I2SMCC_IDRA, idra);
-+		if (err == 0) {
-+			dev_warn_once(dev->dev,
-+				      "Timeout waiting for Rx ready\n");
-+			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
-+				     MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
-+			dev->rx_rdy = 1;
-+		}
- 	}
- 
- 	if (!mchp_i2s_mcc_is_running(dev)) {
-@@ -818,6 +820,8 @@ static int mchp_i2s_mcc_dai_probe(struct snd_soc_dai *dai)
- 
- 	init_waitqueue_head(&dev->wq_txrdy);
- 	init_waitqueue_head(&dev->wq_rxrdy);
-+	dev->tx_rdy = 1;
-+	dev->rx_rdy = 1;
- 
- 	snd_soc_dai_init_dma_data(dai, &dev->playback, &dev->capture);
- 
--- 
-2.20.1
+ChenYu
