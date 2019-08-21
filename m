@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 07/11] soundwire: intel: improve .config_stream callback, add .free_stream
-Date: Wed, 21 Aug 2019 15:05:17 -0500
-Message-ID: <20190821200521.17283-8-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 09/11] soundwire: intel: add trigger support in sdw dai driver
+Date: Wed, 21 Aug 2019 15:05:19 -0500
+Message-ID: <20190821200521.17283-10-pierre-louis.bossart@linux.intel.com>
 References: <20190821200521.17283-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,77 +14,77 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rander Wang <rander.wang@linux.intel.com>
 
-We need the link_id as a parameter for the config callback, and we
-also need a matching free callback in case any resources need to be
-released.
+Sdw stream is enabled and disabled in trigger function.
 
 Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c           | 19 +++++++++++++++++--
- include/linux/soundwire/sdw_intel.h |  4 +++-
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ drivers/soundwire/intel.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 0001f433e848..529d7bc693d1 100644
+index b9ce13d01334..f3764f67919e 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -578,17 +578,31 @@ intel_pdi_alh_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
- static int intel_config_stream(struct sdw_intel *sdw,
- 			       struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai,
--			       struct snd_pcm_hw_params *hw_params, int link_id)
-+			       struct snd_pcm_hw_params *hw_params,
-+			       int link_id, int alh_stream_id)
- {
- 	struct sdw_intel_link_res *res = sdw->res;
- 
- 	if (res->ops && res->ops->config_stream && res->arg)
- 		return res->ops->config_stream(res->arg,
--				substream, dai, hw_params, link_id);
-+					       substream, dai, hw_params,
-+					       link_id, alh_stream_id);
- 
- 	return -EIO;
+@@ -784,6 +784,43 @@ static int intel_prepare(struct snd_pcm_substream *substream,
+ 	return sdw_prepare_stream(dma->stream);
  }
  
-+static int intel_free_stream(struct sdw_intel *sdw,
-+			     struct snd_pcm_substream *substream,
-+			     struct snd_soc_dai *dai,
-+			     int link_id)
++static int intel_trigger(struct snd_pcm_substream *substream, int cmd,
++			 struct snd_soc_dai *dai)
 +{
-+	if (sdw->res->ops && sdw->res->ops->free_stream && sdw->res->arg)
-+		return sdw->res->ops->free_stream(sdw->res->arg,
-+						  substream, dai, link_id);
++	struct sdw_cdns_dma_data *dma;
++	int ret;
 +
-+	return 0;
++	dma = snd_soc_dai_get_dma_data(dai, substream);
++	if (!dma) {
++		dev_err(dai->dev, "failed to get dma data in %s", __func__);
++		return -EIO;
++	}
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		ret = sdw_enable_stream(dma->stream);
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		ret = sdw_disable_stream(dma->stream);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	if (ret)
++		dev_err(dai->dev,
++			"%s trigger %d failed: %d",
++			__func__, cmd, ret);
++	return ret;
 +}
 +
- /*
-  * bank switch routines
-  */
-@@ -718,6 +732,7 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Inform DSP about PDI stream number */
- 	ret = intel_config_stream(sdw, substream, dai, params,
-+				  sdw->instance,
- 				  pdi->intel_alh_id);
- 	if (ret)
- 		goto error;
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index c9427cb6020b..c5a2caf3a9d5 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -12,7 +12,9 @@
-  */
- struct sdw_intel_ops {
- 	int (*config_stream)(void *arg, void *substream,
--			     void *dai, void *hw_params, int stream_num);
-+			     void *dai, void *hw_params,
-+			     int link_id, int alh_stream_id);
-+	int (*free_stream)(void *arg, void *substream, void *dai, int link_id);
- };
- 
- /**
+ static int
+ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
+@@ -841,6 +878,7 @@ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ 	.startup = intel_startup,
+ 	.hw_params = intel_hw_params,
+ 	.prepare = intel_prepare,
++	.trigger = intel_trigger,
+ 	.hw_free = intel_hw_free,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pcm_set_sdw_stream,
+@@ -849,6 +887,7 @@ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
+ 	.hw_params = intel_hw_params,
+ 	.prepare = intel_prepare,
++	.trigger = intel_trigger,
+ 	.hw_free = intel_hw_free,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pdm_set_sdw_stream,
 -- 
 2.20.1
