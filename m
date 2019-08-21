@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 2/4] soundwire: cadence_master: add debugfs register dump
-Date: Wed, 21 Aug 2019 13:58:19 -0500
-Message-ID: <20190821185821.12690-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 1/4] soundwire: add debugfs support
+Date: Wed, 21 Aug 2019 13:58:18 -0500
+Message-ID: <20190821185821.12690-2-pierre-louis.bossart@linux.intel.com>
 References: <20190821185821.12690-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,7 +12,12 @@ To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add debugfs file to dump the Cadence master registers.
+Add base debugfs mechanism for SoundWire bus by creating soundwire
+root and master-N and slave-x hierarchy.
+
+Also add SDW Slave SCP, DP0 and DP-N register debug file.
+
+Registers not implemented will print as "XX"
 
 Credits: this patch is based on an earlier internal contribution by
 Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah.
@@ -21,46 +26,172 @@ Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Acked-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 107 +++++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h |   4 ++
- 2 files changed, 111 insertions(+)
+ drivers/soundwire/Makefile    |   4 +
+ drivers/soundwire/bus.c       |   6 ++
+ drivers/soundwire/bus.h       |  16 ++++
+ drivers/soundwire/bus_type.c  |   3 +
+ drivers/soundwire/debugfs.c   | 151 ++++++++++++++++++++++++++++++++++
+ drivers/soundwire/slave.c     |   1 +
+ include/linux/soundwire/sdw.h |   8 ++
+ 7 files changed, 189 insertions(+)
+ create mode 100644 drivers/soundwire/debugfs.c
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 3338269397dd..dcb698e43c48 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -8,6 +8,7 @@
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index fd99a831b92a..34bbd36a9851 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -7,6 +7,10 @@
+ soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
+ obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
  
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/module.h>
-@@ -230,6 +231,112 @@ static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
- 	return -EAGAIN;
++ifdef CONFIG_DEBUG_FS
++soundwire-bus-objs += debugfs.o
++endif
++
+ #Cadence Objs
+ soundwire-cadence-objs := cadence_master.o
+ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 50f9cc5eb5f6..728db3ebad6e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -49,6 +49,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 		}
+ 	}
+ 
++	sdw_bus_debugfs_init(bus);
++
+ 	/*
+ 	 * Device numbers in SoundWire are 0 through 15. Enumeration device
+ 	 * number (0), Broadcast device number (15), Group numbers (12 and
+@@ -109,6 +111,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct sdw_bus *bus = slave->bus;
+ 
++	sdw_slave_debugfs_exit(slave);
++
+ 	mutex_lock(&bus->bus_lock);
+ 
+ 	if (slave->dev_num) /* clear dev_num if assigned */
+@@ -130,6 +134,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ void sdw_delete_bus_master(struct sdw_bus *bus)
+ {
+ 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
++
++	sdw_bus_debugfs_exit(bus);
+ }
+ EXPORT_SYMBOL(sdw_delete_bus_master);
+ 
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 4429c51c5f86..9d6ea7e447ff 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -18,6 +18,22 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			  u64 addr, struct sdw_slave_id *id);
+ 
++#ifdef CONFIG_DEBUG_FS
++void sdw_bus_debugfs_init(struct sdw_bus *bus);
++void sdw_bus_debugfs_exit(struct sdw_bus *bus);
++void sdw_slave_debugfs_init(struct sdw_slave *slave);
++void sdw_slave_debugfs_exit(struct sdw_slave *slave);
++void sdw_debugfs_init(void);
++void sdw_debugfs_exit(void);
++#else
++static inline void sdw_bus_debugfs_init(struct sdw_bus *bus) {}
++static inline void sdw_bus_debugfs_exit(struct sdw_bus *bus) {}
++static inline void sdw_slave_debugfs_init(struct sdw_slave *slave) {}
++static inline void sdw_slave_debugfs_exit(struct sdw_slave *slave) {}
++static inline void sdw_debugfs_init(void) {}
++static inline void sdw_debugfs_exit(void) {}
++#endif
++
+ enum {
+ 	SDW_MSG_FLAG_READ = 0,
+ 	SDW_MSG_FLAG_WRITE,
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index 2655602f0cfb..4a465f55039f 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -6,6 +6,7 @@
+ #include <linux/pm_domain.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
++#include "bus.h"
+ 
+ /**
+  * sdw_get_device_id - find the matching SoundWire device id
+@@ -177,11 +178,13 @@ EXPORT_SYMBOL_GPL(sdw_unregister_driver);
+ 
+ static int __init sdw_bus_init(void)
+ {
++	sdw_debugfs_init();
+ 	return bus_register(&sdw_bus_type);
  }
  
-+/*
-+ * debugfs
-+ */
-+#ifdef CONFIG_DEBUG_FS
+ static void __exit sdw_bus_exit(void)
+ {
++	sdw_debugfs_exit();
+ 	bus_unregister(&sdw_bus_type);
+ }
+ 
+diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+new file mode 100644
+index 000000000000..fb1140e82b86
+--- /dev/null
++++ b/drivers/soundwire/debugfs.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2017-2019 Intel Corporation.
 +
-+#define RD_BUF (2 * PAGE_SIZE)
++#include <linux/device.h>
++#include <linux/debugfs.h>
++#include <linux/mod_devicetable.h>
++#include <linux/slab.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_registers.h>
++#include "bus.h"
 +
-+static ssize_t cdns_sprintf(struct sdw_cdns *cdns,
-+			    char *buf, size_t pos, unsigned int reg)
++static struct dentry *sdw_debugfs_root;
++
++void sdw_bus_debugfs_init(struct sdw_bus *bus)
 +{
-+	return scnprintf(buf + pos, RD_BUF - pos,
-+			 "%4x\t%8x\n", reg, cdns_readl(cdns, reg));
++	char name[16];
++
++	if (!sdw_debugfs_root)
++		return;
++
++	/* create the debugfs master-N */
++	snprintf(name, sizeof(name), "master-%d", bus->link_id);
++	bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
 +}
 +
-+static int cdns_reg_show(struct seq_file *s, void *data)
++void sdw_bus_debugfs_exit(struct sdw_bus *bus)
 +{
-+	struct sdw_cdns *cdns = s->private;
++	debugfs_remove_recursive(bus->debugfs);
++}
++
++#define RD_BUF (3 * PAGE_SIZE)
++
++static ssize_t sdw_sprintf(struct sdw_slave *slave,
++			   char *buf, size_t pos, unsigned int reg)
++{
++	int value;
++
++	value = sdw_read(slave, reg);
++
++	if (value < 0)
++		return scnprintf(buf + pos, RD_BUF - pos, "%3x\tXX\n", reg);
++	else
++		return scnprintf(buf + pos, RD_BUF - pos,
++				"%3x\t%2x\n", reg, value);
++}
++
++static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
++{
++	struct sdw_slave *slave = s_file->private;
 +	char *buf;
 +	ssize_t ret;
-+	int num_ports;
 +	int i, j;
 +
 +	buf = kzalloc(RD_BUF, GFP_KERNEL);
@@ -68,102 +199,150 @@ index 3338269397dd..dcb698e43c48 100644
 +		return -ENOMEM;
 +
 +	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nMCP Registers\n");
-+	/* 8 MCP registers */
-+	for (i = CDNS_MCP_CONFIG; i <= CDNS_MCP_PHYCTRL; i += sizeof(u32))
-+		ret += cdns_sprintf(cdns, buf, ret, i);
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret,
-+			 "\nStatus & Intr Registers\n");
-+	/* 13 Status & Intr registers (offsets 0x70 and 0x74 not defined) */
-+	for (i = CDNS_MCP_STAT; i <=  CDNS_MCP_FIFOSTAT; i += sizeof(u32))
-+		ret += cdns_sprintf(cdns, buf, ret, i);
++	/* DP0 non-banked registers */
++	ret += scnprintf(buf + ret, RD_BUF - ret, "\nDP0\n");
++	for (i = SDW_DP0_INT; i <= SDW_DP0_PREPARECTRL; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret,
-+			 "\nSSP & Clk ctrl Registers\n");
-+	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_SSP_CTRL0);
-+	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_SSP_CTRL1);
-+	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_CLK_CTRL0);
-+	ret += cdns_sprintf(cdns, buf, ret, CDNS_MCP_CLK_CTRL1);
++	/* DP0 Bank 0 registers */
++	ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
++	ret += sdw_sprintf(slave, buf, ret, SDW_DP0_CHANNELEN);
++	for (i = SDW_DP0_SAMPLECTRL1; i <= SDW_DP0_LANECTRL; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret,
-+			 "\nDPn B0 Registers\n");
++	/* DP0 Bank 1 registers */
++	ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
++	ret += sdw_sprintf(slave, buf, ret,
++			SDW_DP0_CHANNELEN + SDW_BANK1_OFFSET);
++	for (i = SDW_DP0_SAMPLECTRL1 + SDW_BANK1_OFFSET;
++			i <= SDW_DP0_LANECTRL + SDW_BANK1_OFFSET; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
++
++	/* SCP registers */
++	ret += scnprintf(buf + ret, RD_BUF - ret, "\nSCP\n");
++	for (i = SDW_SCP_INT1; i <= SDW_SCP_BANKDELAY; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
++	for (i = SDW_SCP_DEVID_0; i <= SDW_SCP_DEVID_5; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
 +
 +	/*
-+	 * in sdw_cdns_pdi_init() we filter out the Bulk PDIs,
-+	 * so the indices need to be corrected again
++	 * SCP Bank 0/1 registers are read-only and cannot be
++	 * retrieved from the Slave. The Master typically keeps track
++	 * of the current frame size so the information can be found
++	 * in other places
 +	 */
-+	num_ports = cdns->num_ports + CDNS_PCM_PDI_OFFSET;
 +
-+	for (i = 0; i < num_ports; i++) {
-+		ret += scnprintf(buf + ret, RD_BUF - ret,
-+				 "\nDP-%d\n", i);
-+		for (j = CDNS_DPN_B0_CONFIG(i);
-+		     j < CDNS_DPN_B0_ASYNC_CTRL(i); j += sizeof(u32))
-+			ret += cdns_sprintf(cdns, buf, ret, j);
++	/* DP1..14 registers */
++	for (i = 1; SDW_VALID_PORT_RANGE(i); i++) {
++
++		/* DPi registers */
++		ret += scnprintf(buf + ret, RD_BUF - ret, "\nDP%d\n", i);
++		for (j = SDW_DPN_INT(i); j <= SDW_DPN_PREPARECTRL(i); j++)
++			ret += sdw_sprintf(slave, buf, ret, j);
++
++		/* DPi Bank0 registers */
++		ret += scnprintf(buf + ret, RD_BUF - ret, "Bank0\n");
++		for (j = SDW_DPN_CHANNELEN_B0(i);
++		     j <= SDW_DPN_LANECTRL_B0(i); j++)
++			ret += sdw_sprintf(slave, buf, ret, j);
++
++		/* DPi Bank1 registers */
++		ret += scnprintf(buf + ret, RD_BUF - ret, "Bank1\n");
++		for (j = SDW_DPN_CHANNELEN_B1(i);
++		     j <= SDW_DPN_LANECTRL_B1(i); j++)
++			ret += sdw_sprintf(slave, buf, ret, j);
 +	}
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret,
-+			 "\nDPn B1 Registers\n");
-+	for (i = 0; i < num_ports; i++) {
-+		ret += scnprintf(buf + ret, RD_BUF - ret,
-+				 "\nDP-%d\n", i);
-+
-+		for (j = CDNS_DPN_B1_CONFIG(i);
-+		     j < CDNS_DPN_B1_ASYNC_CTRL(i); j += sizeof(u32))
-+			ret += cdns_sprintf(cdns, buf, ret, j);
-+	}
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret,
-+			 "\nDPn Control Registers\n");
-+	for (i = 0; i < num_ports; i++)
-+		ret += cdns_sprintf(cdns, buf, ret,
-+				CDNS_PORTCTRL + i * CDNS_PORT_OFFSET);
-+
-+	ret += scnprintf(buf + ret, RD_BUF - ret,
-+			 "\nPDIn Config Registers\n");
-+
-+	/* number of PDI and ports is interchangeable */
-+	for (i = 0; i < num_ports; i++)
-+		ret += cdns_sprintf(cdns, buf, ret, CDNS_PDI_CONFIG(i));
-+
-+	seq_printf(s, "%s", buf);
++	seq_printf(s_file, "%s", buf);
 +	kfree(buf);
 +
 +	return 0;
 +}
-+DEFINE_SHOW_ATTRIBUTE(cdns_reg);
++DEFINE_SHOW_ATTRIBUTE(sdw_slave_reg);
 +
-+/**
-+ * sdw_cdns_debugfs_init() - Cadence debugfs init
-+ * @cdns: Cadence instance
-+ * @root: debugfs root
-+ */
-+void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
++void sdw_slave_debugfs_init(struct sdw_slave *slave)
 +{
-+	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
++	struct dentry *master;
++	struct dentry *d;
++	char name[32];
++
++	master = slave->bus->debugfs;
++
++	/* create the debugfs slave-name */
++	snprintf(name, sizeof(name), "%s", dev_name(&slave->dev));
++	d = debugfs_create_dir(name, master);
++
++	debugfs_create_file("registers", 0400, d, slave, &sdw_slave_reg_fops);
++
++	slave->debugfs = d;
 +}
-+EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
 +
-+#endif /* CONFIG_DEBUG_FS */
++void sdw_slave_debugfs_exit(struct sdw_slave *slave)
++{
++	debugfs_remove_recursive(slave->debugfs);
++}
 +
- /*
-  * IO Calls
-  */
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index 8254a9e8deb4..0b72b7094735 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -163,6 +163,10 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
- 		      struct sdw_cdns_stream_config config);
- int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
++void sdw_debugfs_init(void)
++{
++	sdw_debugfs_root = debugfs_create_dir("soundwire", NULL);
++}
++
++void sdw_debugfs_exit(void)
++{
++	debugfs_remove_recursive(sdw_debugfs_root);
++}
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index f39a5815e25d..4b522f6d1238 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -56,6 +56,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ 		mutex_unlock(&bus->bus_lock);
+ 		put_device(&slave->dev);
+ 	}
++	sdw_slave_debugfs_init(slave);
  
+ 	return ret;
+ }
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 131d49ef1cb4..2028318a4c62 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -542,6 +542,7 @@ struct sdw_slave_ops {
+  * @bus: Bus handle
+  * @ops: Slave callback ops
+  * @prop: Slave properties
++ * @debugfs: Slave debugfs
+  * @node: node for bus list
+  * @port_ready: Port ready completion flag for each Slave port
+  * @dev_num: Device Number assigned by Bus
+@@ -553,6 +554,9 @@ struct sdw_slave {
+ 	struct sdw_bus *bus;
+ 	const struct sdw_slave_ops *ops;
+ 	struct sdw_slave_prop prop;
 +#ifdef CONFIG_DEBUG_FS
-+void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
++	struct dentry *debugfs;
 +#endif
-+
- int sdw_cdns_get_stream(struct sdw_cdns *cdns,
- 			struct sdw_cdns_streams *stream,
- 			u32 ch, u32 dir);
+ 	struct list_head node;
+ 	struct completion *port_ready;
+ 	u16 dev_num;
+@@ -729,6 +733,7 @@ struct sdw_master_ops {
+  * @m_rt_list: List of Master instance of all stream(s) running on Bus. This
+  * is used to compute and program bus bandwidth, clock, frame shape,
+  * transport and port parameters
++ * @debugfs: Bus debugfs
+  * @defer_msg: Defer message
+  * @clk_stop_timeout: Clock stop timeout computed
+  * @bank_switch_timeout: Bank switch timeout computed
+@@ -748,6 +753,9 @@ struct sdw_bus {
+ 	struct sdw_bus_params params;
+ 	struct sdw_master_prop prop;
+ 	struct list_head m_rt_list;
++#ifdef CONFIG_DEBUG_FS
++	struct dentry *debugfs;
++#endif
+ 	struct sdw_defer defer_msg;
+ 	unsigned int clk_stop_timeout;
+ 	u32 bank_switch_timeout;
 -- 
 2.20.1
