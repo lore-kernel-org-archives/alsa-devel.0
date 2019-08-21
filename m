@@ -1,56 +1,63 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v5 09/15] clk: sunxi-ng: h6: Allow I2S to
- change parent rate
-Date: Wed, 21 Aug 2019 14:01:15 +0800
-Message-ID: <CAGb2v65CueHKeZMCsMFjwWA1vo7ne3K8uVu2_yGOsXChY371ew@mail.gmail.com>
-References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-10-codekipper@gmail.com>
- <CAGb2v65+-OB4zEyW8f7hcWHkL7DtfEB1YK2B1nOKdgNdNqC0kQ@mail.gmail.com> <CAEKpxBnxf=iejk887A7qFkzt3BXVxiRS1PeA45aZYR9DsBAU4Q@mail.gmail.com>
-Reply-To: wens-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: =?UTF-8?B?TWFydMOtbiBNYXJ0w61uZXogUml2ZXJh?= <mrtnz.rvr@gmail.com>
+Subject: Master volume not controlling applications' volume.
+Date: Tue, 20 Aug 2019 20:50:35 -0700
+Message-ID: <CAJnWPcZ9C8WY4ihRSBBkOJD7fHLGhfEEmBRhMLimKG+R+h8O2Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBOV46PVAKGQEPGST55Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <CAEKpxBnxf=iejk887A7qFkzt3BXVxiRS1PeA45aZYR9DsBAU4Q-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com
+ [IPv6:2607:f8b0:4864:20::232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78F10F800BF
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 05:50:48 +0200 (CEST)
+Received: by mail-oi1-x232.google.com with SMTP id k22so552886oiw.11
+ for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 20:50:47 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 21, 2019 at 1:52 PM Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->
-> Thanks....I've added to my next patch series but if you could add it
-> when applying that would be great.
+Changing the master volume in pavucontrol (or alsamixer) does not have any
+effect. The only way to change the volume is to go into the playback tab
+and change it for each application. The volume only changes when I set the
+master volume to 0 or when I increase it over 100%. In between there aren't
+any changes.
 
-Please reply with an explicit SoB to put it on the record.
+Running arch on a Lenovo X1 Carbon if that's of any use. I am using the
+arch default configuration files.
 
-ChenYu
+I posted somewhere else and was told to email this list as it could be a
+kernel bug.
 
-> BR,
-> CK
->
-> On Wed, 21 Aug 2019 at 06:07, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
-> >
-> > On Wed, Aug 14, 2019 at 2:09 PM <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> > >
-> > > From: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
-> > >
-> > > I2S doesn't work if parent rate couldn't be change. Difference between
-> > > wanted and actual rate is too big.
-> > >
-> > > Fix this by adding CLK_SET_RATE_PARENT flag to I2S clocks.
-> > >
-> > > Signed-off-by: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
-> >
-> > This lacks your SoB. Please reply and I can add it when applying.
-> >
-> > ChenYu
->
-> --
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/CAEKpxBnxf%3Diejk887A7qFkzt3BXVxiRS1PeA45aZYR9DsBAU4Q%40mail.gmail.com.
+kernel: 5.2.9-arch1-1-ARCH
+pactl info output:
+
+Server String: /run/user/1000/pulse/native
+Library Protocol Version: 32
+Server Protocol Version: 32
+Is Local: yes
+Client Index: 13
+Tile Size: 65472
+User Name: martinmr
+Host Name: martinmr-laptop
+Server Name: pulseaudio
+Server Version: 12.2
+Default Sample Specification: s16le 2ch 44100Hz
+Default Channel Map: front-left,front-right
+Default Sink: alsa_output.pci-0000_00_1f.3.analog-stereo
+Default Source: alsa_output.pci-0000_00_1f.3.analog-stereo.monitor
+Cookie: 1afa:f937
+
+Let me know if the output from some other command is needed.
+Best,
+
+Martin
