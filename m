@@ -1,116 +1,55 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 4/4] soundwire: intel: handle disabled links
-Date: Wed, 21 Aug 2019 13:58:21 -0500
-Message-ID: <20190821185821.12690-5-pierre-louis.bossart@linux.intel.com>
-References: <20190821185821.12690-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 0/6] soundwire: inits and PM additions for
+ 5.4
+Date: Wed, 21 Aug 2019 14:23:10 -0500
+Message-ID: <57e5dab5-2641-7c4b-a05a-fb4f0adccfc7@linux.intel.com>
+References: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190821185821.12690-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On most hardware platforms, SoundWire interfaces are pin-muxed with
-other interfaces (typically DMIC or I2S) and the status of each link
-needs to be checked at boot time.
 
-For Intel platforms, the BIOS provides a menu to enable/disable the
-links separately, and the information is provided to the OS with an
-Intel-specific _DSD property. The same capability will be added to
-revisions of the MIPI DisCo specification.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- drivers/soundwire/intel.c     | 26 ++++++++++++++++++++++----
- include/linux/soundwire/sdw.h |  2 ++
- 2 files changed, 24 insertions(+), 4 deletions(-)
+On 8/13/19 4:32 PM, Pierre-Louis Bossart wrote:
+> This is an update on the RFC, to be applied after the '[PATCH v2 0/3]
+> soundwire: debugfs support for 5.4' and '[PATCH 00/17] soundwire:
+> fixes for 5.4' series.
+> 
+> Total that makes 28 patches submitted for review, broken in 3 sets.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 3faa9678c715..f1e38a293967 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -91,6 +91,8 @@
- #define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
- #define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
- 
-+#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE	BIT(1)
-+
- enum intel_pdi_type {
- 	INTEL_PDI_IN = 0,
- 	INTEL_PDI_OUT = 1,
-@@ -944,7 +946,7 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	struct sdw_master_prop *prop = &bus->prop;
- 	struct fwnode_handle *link;
- 	char name[32];
--	int nval, i;
-+	u32 quirk_mask;
- 
- 	/* Find master handle */
- 	snprintf(name, sizeof(name),
-@@ -959,6 +961,14 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	fwnode_property_read_u32(link,
- 				 "intel-sdw-ip-clock",
- 				 &prop->mclk_freq);
-+
-+	fwnode_property_read_u32(link,
-+				 "intel-quirk-mask",
-+				 &quirk_mask);
-+
-+	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
-+		prop->hw_disabled = true;
-+
- 	return 0;
- }
- 
-@@ -1019,6 +1029,12 @@ static int intel_probe(struct platform_device *pdev)
- 		goto err_master_reg;
- 	}
- 
-+	if (sdw->cdns.bus.prop.hw_disabled) {
-+		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
-+			 sdw->cdns.bus.link_id);
-+		return 0;
-+	}
-+
- 	/* Initialize shim and controller */
- 	intel_link_power_up(sdw);
- 	intel_shim_init(sdw);
-@@ -1072,9 +1088,11 @@ static int intel_remove(struct platform_device *pdev)
- 
- 	sdw = platform_get_drvdata(pdev);
- 
--	intel_debugfs_exit(sdw);
--	free_irq(sdw->res->irq, sdw);
--	snd_soc_unregister_component(sdw->cdns.dev);
-+	if (!sdw->cdns.bus.prop.hw_disabled) {
-+		intel_debugfs_exit(sdw);
-+		free_irq(sdw->res->irq, sdw);
-+		snd_soc_unregister_component(sdw->cdns.dev);
-+	}
- 	sdw_delete_bus_master(&sdw->cdns.bus);
- 
- 	return 0;
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 2028318a4c62..be9fe08d4e9c 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -380,6 +380,7 @@ struct sdw_slave_prop {
-  * @err_threshold: Number of times that software may retry sending a single
-  * command
-  * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
-+ * @hw_disabled: if true, the Master is not functional, typically due to pin-mux
-  */
- struct sdw_master_prop {
- 	u32 revision;
-@@ -395,6 +396,7 @@ struct sdw_master_prop {
- 	bool dynamic_frame;
- 	u32 err_threshold;
- 	u32 mclk_freq;
-+	bool hw_disabled;
- };
- 
- int sdw_master_read_prop(struct sdw_bus *bus);
--- 
-2.20.1
+I double-checked that this patchset does apply on top of soundwire/next 
++ the 4 debugfs patches I just sent earlier.
+
+I will now send the rather big changes needed for SOF integration as an 
+RFC, assuming this set is applied.
+
+> 
+> Changes since RFC (Feedback from GregKH, Vinod, Cezary, Guennadi):
+> Squashed init sequence fixes in one patch, which remains
+> readable. Tested all return values and called update_config() as
+> needed.
+> Fixed hw-reset debugfs (removed -unsafe and noisy dev_info traces)
+> Simplified enable_interrupt() with goto
+> Fixed style, removed typos and FIXMES in pm_runtime code
+> Clarified commit messages
+> 
+> Pierre-Louis Bossart (6):
+>    soundwire: fix startup sequence for Intel/Cadence
+>    soundwire: cadence_master: add hw_reset capability in debugfs
+>    soundwire: intel: add helper for initialization
+>    soundwire: intel: Add basic power management support
+>    soundwire: cadence_master: make clock stop exit configurable on init
+>    soundwire: intel: add pm_runtime support
+> 
+>   drivers/soundwire/cadence_master.c | 135 ++++++++++++++------
+>   drivers/soundwire/cadence_master.h |   5 +-
+>   drivers/soundwire/intel.c          | 194 +++++++++++++++++++++++++++--
+>   3 files changed, 289 insertions(+), 45 deletions(-)
+> 
