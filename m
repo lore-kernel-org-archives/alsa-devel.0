@@ -1,105 +1,98 @@
-From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-Subject: [PATCH v2] ASoC: SOF: topology: fix get control data
-	return type and arguments
-Date: Thu, 22 Aug 2019 00:11:38 +0300
-Message-ID: <20190821211138.14618-1-jaska.uimonen@linux.intel.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
+Date: Wed, 21 Aug 2019 16:44:36 -0500
+Message-ID: <20190821214436.GA13936@bogus>
+References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
+ <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F25E0F802E0
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 23:22:44 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Jaska Uimonen <jaska.uimonen@intel.com>, broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: vkoul@kernel.org, broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jaska Uimonen <jaska.uimonen@intel.com>
+On Fri, Aug 09, 2019 at 02:34:04PM +0100, Srinivas Kandagatla wrote:
+> This patch adds bindings for Soundwire Slave devices that includes how
+> SoundWire enumeration address and Link ID are used to represented in
+> SoundWire slave device tree nodes.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/soundwire/slave.txt   | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soundwire/slave.txt
 
-sof_get_control_data returns negative values even though the return
-value is defined unsigned (size_t). So change the return value type to
-int and add the data size as pointer argument to sof_get_control_data to
-avoid ambiquity in the meaning of the return type.
+Can you convert this to DT schema given it is a common binding.
 
-Fixes: cac974a51ebb ("ASoC: SOF: topology: use set_get_data in process load")
-Reported by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
----
- sound/soc/sof/topology.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+What does the host controller look like? You need to define the node 
+hierarchy. Bus controller schemas should then include the bus schema. 
+See spi-controller.yaml.
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 28a7a6e06a53..fc85efbad378 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1752,17 +1752,19 @@ static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
- 	return ret;
- }
- 
--static size_t sof_get_control_data(struct snd_sof_dev *sdev,
--				   struct snd_soc_dapm_widget *widget,
--				   struct sof_widget_data *wdata)
-+static int sof_get_control_data(struct snd_sof_dev *sdev,
-+				struct snd_soc_dapm_widget *widget,
-+				struct sof_widget_data *wdata,
-+				size_t *size)
- {
- 	const struct snd_kcontrol_new *kc;
- 	struct soc_mixer_control *sm;
- 	struct soc_bytes_ext *sbe;
- 	struct soc_enum *se;
--	size_t size = 0;
- 	int i;
- 
-+	*size = 0;
-+
- 	for (i = 0; i < widget->num_kcontrols; i++) {
- 		kc = &widget->kcontrol_news[i];
- 
-@@ -1800,7 +1802,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
- 		if (wdata[i].pdata->magic != SOF_ABI_MAGIC)
- 			return -EINVAL;
- 
--		size += wdata[i].pdata->size;
-+		*size += wdata[i].pdata->size;
- 
- 		/* get data type */
- 		switch (wdata[i].control->cmd) {
-@@ -1819,7 +1821,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
- 		}
- 	}
- 
--	return size;
-+	return 0;
- }
- 
- static int sof_process_load(struct snd_soc_component *scomp, int index,
-@@ -1855,12 +1857,11 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
- 			return -ENOMEM;
- 
- 		/* get possible component controls and get size of all pdata */
--		ipc_data_size = sof_get_control_data(sdev, widget, wdata);
-+		ret = sof_get_control_data(sdev, widget, wdata,
-+					   &ipc_data_size);
- 
--		if (ipc_data_size <= 0) {
--			ret = ipc_data_size;
-+		if (ret < 0)
- 			goto out;
--		}
- 	}
- 
- 	ipc_size = sizeof(struct sof_ipc_comp_process) +
--- 
-2.13.6
+> 
+> diff --git a/Documentation/devicetree/bindings/soundwire/slave.txt b/Documentation/devicetree/bindings/soundwire/slave.txt
+> new file mode 100644
+> index 000000000000..201f65d2fafa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soundwire/slave.txt
+> @@ -0,0 +1,51 @@
+> +SoundWire slave device bindings.
+> +
+> +SoundWire is a 2-pin multi-drop interface with data and clock line.
+> +It facilitates development of low cost, efficient, high performance systems.
+> +
+> +SoundWire slave devices:
+> +Every SoundWire controller node can contain zero or more child nodes
+> +representing slave devices on the bus. Every SoundWire slave device is
+> +uniquely determined by the enumeration address containing 5 fields:
+> +SoundWire Version, Instance ID, Manufacturer ID, Part ID
+> +and Class ID for a device. Addition to below required properties,
+> +child nodes can have device specific bindings.
+> +
+> +Required properties:
+> +- compatible:	 "sdw<LinkID><VersionID><InstanceID><MFD><PID><CID>".
+> +		  Is the textual representation of SoundWire Enumeration
+> +		  address along with Link ID. compatible string should contain
+> +		  SoundWire Link ID, SoundWire Version ID, Instance ID,
+> +		  Manufacturer ID, Part ID and Class ID in order
+> +		  represented as above and shall be in lower-case hexadecimal
+> +		  with leading zeroes. Vaild sizes of these fields are
+> +		  LinkID is 1 nibble,
+> +		  Version ID is 1 nibble
+> +		  Instance ID in 1 nibble
+> +		  MFD in 4 nibbles
+> +		  PID in 4 nibbles
+> +		  CID is 2 nibbles
+> +
+> +		  Version number '0x1' represents SoundWire 1.0
+> +		  Version number '0x2' represents SoundWire 1.1
+
+This can all be a regex.
+
+> +		  ex: "sdw0110217201000" represents 0 LinkID,
+> +		  SoundWire 1.0 version slave with Instance ID 1.
+> +		  More Information on detail of encoding of these fields can be
+> +		  found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
+> +
+> +SoundWire example for Qualcomm's SoundWire controller:
+> +
+> +soundwire@c2d0000 {
+> +	compatible = "qcom,soundwire-v1.5.0"
+> +	reg = <0x0c2d0000 0x2000>;
+> +
+> +	spkr_left:wsa8810-left{
+> +		compatible = "sdw0110217201000";
+> +		...
+> +	};
+> +
+> +	spkr_right:wsa8810-right{
+> +		compatible = "sdw0120217201000";
+
+The normal way to distinguish instances is with 'reg'. So I think you 
+need 'reg' with Instance ID moved there at least. Just guessing, but 
+perhaps Link ID, too? And for 2 different classes of device is that 
+enough? 
+
+Rob
