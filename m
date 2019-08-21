@@ -1,91 +1,82 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
-Date: Wed, 21 Aug 2019 14:39:09 +0530
-Message-ID: <20190821090909.GJ12733@vkoul-mobl.Dlink>
-References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
- <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v5 09/15] clk: sunxi-ng: h6: Allow I2S to
+ change parent rate
+Date: Wed, 21 Aug 2019 11:19:05 +0200
+Message-ID: <CAEKpxB=9NNoZgZoY_GpcEuDYoMUGzb+ATgZOSM64qy9tirC_MQ@mail.gmail.com>
+References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-10-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBFUZ6TVAKGQE4PF2LWQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20190814060854.26345-10-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09-08-19, 14:34, Srinivas Kandagatla wrote:
-> This patch adds bindings for Soundwire Slave devices that includes how
-> SoundWire enumeration address and Link ID are used to represented in
-> SoundWire slave device tree nodes.
+On Wed, 14 Aug 2019 at 08:09, <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>
+> From: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+>
+> I2S doesn't work if parent rate couldn't be change. Difference between
+> wanted and actual rate is too big.
+>
+> Fix this by adding CLK_SET_RATE_PARENT flag to I2S clocks.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
 
-Rob does this look good to you, I intent to apply the soundwire parts
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  .../devicetree/bindings/soundwire/slave.txt   | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soundwire/slave.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/soundwire/slave.txt b/Documentation/devicetree/bindings/soundwire/slave.txt
-> new file mode 100644
-> index 000000000000..201f65d2fafa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soundwire/slave.txt
-> @@ -0,0 +1,51 @@
-> +SoundWire slave device bindings.
-> +
-> +SoundWire is a 2-pin multi-drop interface with data and clock line.
-> +It facilitates development of low cost, efficient, high performance systems.
-> +
-> +SoundWire slave devices:
-> +Every SoundWire controller node can contain zero or more child nodes
-> +representing slave devices on the bus. Every SoundWire slave device is
-> +uniquely determined by the enumeration address containing 5 fields:
-> +SoundWire Version, Instance ID, Manufacturer ID, Part ID
-> +and Class ID for a device. Addition to below required properties,
-> +child nodes can have device specific bindings.
-> +
-> +Required properties:
-> +- compatible:	 "sdw<LinkID><VersionID><InstanceID><MFD><PID><CID>".
-> +		  Is the textual representation of SoundWire Enumeration
-> +		  address along with Link ID. compatible string should contain
-> +		  SoundWire Link ID, SoundWire Version ID, Instance ID,
-> +		  Manufacturer ID, Part ID and Class ID in order
-> +		  represented as above and shall be in lower-case hexadecimal
-> +		  with leading zeroes. Vaild sizes of these fields are
-> +		  LinkID is 1 nibble,
-> +		  Version ID is 1 nibble
-> +		  Instance ID in 1 nibble
-> +		  MFD in 4 nibbles
-> +		  PID in 4 nibbles
-> +		  CID is 2 nibbles
-> +
-> +		  Version number '0x1' represents SoundWire 1.0
-> +		  Version number '0x2' represents SoundWire 1.1
-> +		  ex: "sdw0110217201000" represents 0 LinkID,
-> +		  SoundWire 1.0 version slave with Instance ID 1.
-> +		  More Information on detail of encoding of these fields can be
-> +		  found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
-> +
-> +SoundWire example for Qualcomm's SoundWire controller:
-> +
-> +soundwire@c2d0000 {
-> +	compatible = "qcom,soundwire-v1.5.0"
-> +	reg = <0x0c2d0000 0x2000>;
-> +
-> +	spkr_left:wsa8810-left{
-> +		compatible = "sdw0110217201000";
-> +		...
-> +	};
-> +
-> +	spkr_right:wsa8810-right{
-> +		compatible = "sdw0120217201000";
-> +		...
-> +	};
-> +};
-> -- 
-> 2.21.0
-
--- 
-~Vinod
+>  drivers/clk/sunxi-ng/ccu-sun50i-h6.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+> index aebef4af9861..d89353a3cdec 100644
+> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+> @@ -505,7 +505,7 @@ static struct ccu_div i2s3_clk = {
+>                 .hw.init        = CLK_HW_INIT_PARENTS("i2s3",
+>                                                       audio_parents,
+>                                                       &ccu_div_ops,
+> -                                                     0),
+> +                                                     CLK_SET_RATE_PARENT),
+>         },
+>  };
+>
+> @@ -518,7 +518,7 @@ static struct ccu_div i2s0_clk = {
+>                 .hw.init        = CLK_HW_INIT_PARENTS("i2s0",
+>                                                       audio_parents,
+>                                                       &ccu_div_ops,
+> -                                                     0),
+> +                                                     CLK_SET_RATE_PARENT),
+>         },
+>  };
+>
+> @@ -531,7 +531,7 @@ static struct ccu_div i2s1_clk = {
+>                 .hw.init        = CLK_HW_INIT_PARENTS("i2s1",
+>                                                       audio_parents,
+>                                                       &ccu_div_ops,
+> -                                                     0),
+> +                                                     CLK_SET_RATE_PARENT),
+>         },
+>  };
+>
+> @@ -544,7 +544,7 @@ static struct ccu_div i2s2_clk = {
+>                 .hw.init        = CLK_HW_INIT_PARENTS("i2s2",
+>                                                       audio_parents,
+>                                                       &ccu_div_ops,
+> -                                                     0),
+> +                                                     CLK_SET_RATE_PARENT),
+>         },
+>  };
+>
+> --
+> 2.22.0
+>
