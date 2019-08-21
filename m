@@ -1,55 +1,56 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 0/6] soundwire: inits and PM additions for
- 5.4
-Date: Wed, 21 Aug 2019 14:23:10 -0500
-Message-ID: <57e5dab5-2641-7c4b-a05a-fb4f0adccfc7@linux.intel.com>
-References: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 01/11] soundwire: intel: fix intel_register_dai PDI offsets and numbers
+Date: Wed, 21 Aug 2019 15:05:11 -0500
+Message-ID: <20190821200521.17283-2-pierre-louis.bossart@linux.intel.com>
+References: <20190821200521.17283-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
-Content-Language: en-US
+In-Reply-To: <20190821200521.17283-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
+There are two issues, likely copy/paste:
 
-On 8/13/19 4:32 PM, Pierre-Louis Bossart wrote:
-> This is an update on the RFC, to be applied after the '[PATCH v2 0/3]
-> soundwire: debugfs support for 5.4' and '[PATCH 00/17] soundwire:
-> fixes for 5.4' series.
-> 
-> Total that makes 28 patches submitted for review, broken in 3 sets.
+1. Use cdns->pcm.num_in instead of stream_num_in for consistency with
+the rest of the code. This was not detected earlier since platforms did
+not have input-only PDIs.
 
-I double-checked that this patchset does apply on top of soundwire/next 
-+ the 4 debugfs patches I just sent earlier.
+2. use the correct offset for bi-dir PDM, based on IN and OUT
+PDIs. Again this was not detected since PDM was not supported earlier.
 
-I will now send the rather big changes needed for SOF integration as an 
-RFC, assuming this set is applied.
+Reported-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/soundwire/intel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> Changes since RFC (Feedback from GregKH, Vinod, Cezary, Guennadi):
-> Squashed init sequence fixes in one patch, which remains
-> readable. Tested all return values and called update_config() as
-> needed.
-> Fixed hw-reset debugfs (removed -unsafe and noisy dev_info traces)
-> Simplified enable_interrupt() with goto
-> Fixed style, removed typos and FIXMES in pm_runtime code
-> Clarified commit messages
-> 
-> Pierre-Louis Bossart (6):
->    soundwire: fix startup sequence for Intel/Cadence
->    soundwire: cadence_master: add hw_reset capability in debugfs
->    soundwire: intel: add helper for initialization
->    soundwire: intel: Add basic power management support
->    soundwire: cadence_master: make clock stop exit configurable on init
->    soundwire: intel: add pm_runtime support
-> 
->   drivers/soundwire/cadence_master.c | 135 ++++++++++++++------
->   drivers/soundwire/cadence_master.h |   5 +-
->   drivers/soundwire/intel.c          | 194 +++++++++++++++++++++++++++--
->   3 files changed, 289 insertions(+), 45 deletions(-)
-> 
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index c02b17a92ac2..c95222f18c75 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -980,7 +980,7 @@ static int intel_register_dai(struct sdw_intel *sdw)
+ 	/* Create PCM DAIs */
+ 	stream = &cdns->pcm;
+ 
+-	ret = intel_create_dai(cdns, dais, INTEL_PDI_IN, stream->num_in,
++	ret = intel_create_dai(cdns, dais, INTEL_PDI_IN, cdns->pcm.num_in,
+ 			       off, stream->num_ch_in, true);
+ 	if (ret)
+ 		return ret;
+@@ -1011,7 +1011,7 @@ static int intel_register_dai(struct sdw_intel *sdw)
+ 	if (ret)
+ 		return ret;
+ 
+-	off += cdns->pdm.num_bd;
++	off += cdns->pdm.num_out;
+ 	ret = intel_create_dai(cdns, dais, INTEL_PDI_BD, cdns->pdm.num_bd,
+ 			       off, stream->num_ch_bd, false);
+ 	if (ret)
+-- 
+2.20.1
