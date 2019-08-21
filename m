@@ -1,66 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 20/21] ASoC: sun4i-i2s: Add support for TDM slots
-Date: Wed, 21 Aug 2019 13:08:07 +0100
-Message-ID: <20190821120807.GG5128@sirena.co.uk>
-References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
- <26392af30b3e7b31ee48d5b867d45be8675db046.1566242458.git-series.maxime.ripard@bootlin.com>
- <c311e88a-fdd2-8a01-275e-675d98dc90ba@orpaltech.com>
- <20190821120551.r4b3h4nnet357wem@flea>
+Subject: Re: [PATCH] ASoC: SOF: topology: fix get control data
+ return type and arguments
+Date: Wed, 21 Aug 2019 13:08:44 +0100
+Message-ID: <20190821120844.GH5128@sirena.co.uk>
+References: <20190820034331.38171-1-jaska.uimonen@intel.com>
+ <2dc34431-7302-85c7-8215-472c7d994f7f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NY6JkbSqL3W9mApi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190821120551.r4b3h4nnet357wem@flea>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sergey Suloev <ssuloev@orpaltech.com>, Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, codekipper@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============6689198127121539000=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm1-f100.google.com (mail-wm1-f100.google.com
+ [209.85.128.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 618B4F802E0
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 14:08:45 +0200 (CEST)
+Received: by mail-wm1-f100.google.com with SMTP id 10so1856980wmp.3
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 05:08:45 -0700 (PDT)
+In-Reply-To: <2dc34431-7302-85c7-8215-472c7d994f7f@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jaska Uimonen <jaska.uimonen@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---NY6JkbSqL3W9mApi
-Content-Type: text/plain; charset=us-ascii
+--===============6689198127121539000==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="v2Uk6McLiE8OV1El"
 Content-Disposition: inline
 
-On Wed, Aug 21, 2019 at 02:05:51PM +0200, Maxime Ripard wrote:
-> On Tue, Aug 20, 2019 at 08:46:30AM +0300, Sergey Suloev wrote:
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+--v2Uk6McLiE8OV1El
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > >   	.set_sysclk	= sun4i_i2s_set_sysclk,
-> > > +	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
-> > >   	.trigger	= sun4i_i2s_trigger,
-> > >   };
+On Tue, Aug 20, 2019 at 07:30:25AM -0500, Pierre-Louis Bossart wrote:
+> Added Mark and Takashi in Cc.
+>=20
+> On 8/19/19 10:43 PM, Jaska Uimonen wrote:
+> > sof_get_control_data returns negative values even though the return
+> > value is defined unsigned (size_t). So change the return value type
+> > to int.
 
-> > it seems like you forgot to implement sun4i_i2s_dai_ops.set_bclk_ratio
-> > because, as I far as I understand, it should alter tdm slots functionality
-> > indirectly.
+Please send me the actual patch, I can't apply quoted material.
 
-> As far as I can see, while this indeed changes a few things on the TDM
-> setup, it's optional, orthogonal and it has a single user in the tree
-> (some intel platform card).
-
-> So I'd say that if someone ever needs it, we can have it, but it's not
-> a blocker.
-
-Yes, that's a compltely orthogonal callback.
-
---NY6JkbSqL3W9mApi
+--v2Uk6McLiE8OV1El
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1dNCcACgkQJNaLcl1U
-h9Bl8Af/Xm2Xa9YOa6VFkbJ3jgkINICtBABTxYvKltNwmT5BP8nOJkVXFq1TtdMz
-N5EyBg9dN2luySAos4G/tu/IoD8MDAenPS9xiljA5EGVzZFq+Alw8RwJLAOhEhip
-0jt3BiI6CIRL286m17Eb2WIvebAqPZVT7gbqVNXzaQsQInq6AQ8xQRGsb6OAYunw
-p7LOLWJ4LAYxGrwgO6dlnyeRyDSbg5lg0jdWYldy8C+2G7q3AZZ1E6KIo4n5+TJd
-JjTrKX9kx5ABzsBJyu/hQ6Zn0MCdC11AJZRBSfYzO+fE/1l49SqVHoD6MxEtWM5g
-Ica+0kC+/XGk7S294y0Hi2hz4cwrOw==
-=B3Db
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1dNEsACgkQJNaLcl1U
+h9AOMQf+IXUqh+tEdDG3vJ/gD7+IKOUXG6qfezuU4lbM/r2AOc0z8qdM8SEtAnaZ
+TzO3Q8M5qYWzo7zmtM9Fpv6k1FOd4dTylRpYI8QvALg7D0+8zyONEPFp1kHipaph
+3SBkgRf6nIJZi80cZklOaiipCejC6X3Gl/ndDrpNJt86hg8Lj4PMcBuCN+qBRHBt
+f8cyCGDAI6hjGedQtdR+PXiJFdBvMZJnOrbnh5b7fPFVpED5FI0lyAij6JZ2o7Pc
+tw+5kpyfcEj2sogx0vZBkgexZFzP29I/dvDb6aPUFwKryqIlfUmzWAelZgh3d8FB
+NW1SYAP7pCM0N82py/UByzOnkYcvAA==
+=Xssx
 -----END PGP SIGNATURE-----
 
---NY6JkbSqL3W9mApi--
+--v2Uk6McLiE8OV1El--
+
+--===============6689198127121539000==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6689198127121539000==--
