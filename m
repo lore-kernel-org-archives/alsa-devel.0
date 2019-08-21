@@ -1,7 +1,7 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH v2 1/4] ASoC: sun4i-i2s: Use the physical / slot width for the clocks
-Date: Wed, 21 Aug 2019 15:06:53 +0200
-Message-ID: <41a359d9885f397e066816961e5e3236afcbe0a1.1566392800.git-series.maxime.ripard@bootlin.com>
+Subject: [PATCH v2 2/4] ASoC: sun4i-i2s: Use the actual format width instead of an hardcoded one
+Date: Wed, 21 Aug 2019 15:06:54 +0200
+Message-ID: <f08a0c3605cd1d79752b38d704690190183f7865.1566392800.git-series.maxime.ripard@bootlin.com>
 References: <cover.6022d5fe61fb8a11565a71bee24d5280b0259c63.1566392800.git-series.maxime.ripard@bootlin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,76 +14,31 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-The clock dividers function has been using the word size to compute the
-clock rate at which it's supposed to be running, but the proper formula
-would be to use the physical width and / or slot width in TDM.
+The LRCK period field in the FMT0 register holds the number of LRCK period
+for one channel in I2S mode.
 
-It doesn't make any difference at the moment since all the formats
-supported have the same sample width and physical width, but it's not going
-to last forever.
+This has been hardcoded to 32, while it really should be the physical width
+of the format, which creates an improper clock when using a 16bit format,
+with the i2s controller as LRCK master.
 
 Fixes: 7d2993811a1e ("ASoC: sun4i-i2s: Add support for H3")
 Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 8326b8cfa569..cdc3fa60ff33 100644
+index cdc3fa60ff33..9ef784b8867c 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -290,7 +290,7 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
- static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
- 				  unsigned int rate,
- 				  unsigned int slots,
--				  unsigned int word_size)
-+				  unsigned int slot_width)
- {
- 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int oversample_rate, clk_rate, bclk_parent_rate;
-@@ -337,7 +337,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+@@ -359,7 +359,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 	if (i2s->variant->has_fmt_set_lrck_period)
+ 		regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+ 				   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
+-				   SUN8I_I2S_FMT0_LRCK_PERIOD(32));
++				   SUN8I_I2S_FMT0_LRCK_PERIOD(slot_width));
  
- 	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
- 	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
--					  rate, slots, word_size);
-+					  rate, slots, slot_width);
- 	if (bclk_div < 0) {
- 		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
- 		return -EINVAL;
-@@ -458,6 +458,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int word_size = params_width(params);
-+	unsigned int slot_width = params_physical_width(params);
- 	unsigned int channels = params_channels(params);
- 	unsigned int slots = channels;
- 	int ret, sr, wss;
-@@ -467,7 +468,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 		slots = i2s->slots;
- 
- 	if (i2s->slot_width)
--		word_size = i2s->slot_width;
-+		slot_width = i2s->slot_width;
- 
- 	ret = i2s->variant->set_chan_cfg(i2s, params);
- 	if (ret < 0) {
-@@ -490,14 +491,15 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	if (sr < 0)
- 		return -EINVAL;
- 
--	wss = i2s->variant->get_wss(i2s, word_size);
-+	wss = i2s->variant->get_wss(i2s, slot_width);
- 	if (wss < 0)
- 		return -EINVAL;
- 
- 	regmap_field_write(i2s->field_fmt_wss, wss);
- 	regmap_field_write(i2s->field_fmt_sr, sr);
- 
--	return sun4i_i2s_set_clk_rate(dai, params_rate(params), slots, word_size);
-+	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
-+				      slots, slot_width);
+ 	return 0;
  }
- 
- static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
 -- 
 git-series 0.9.1
