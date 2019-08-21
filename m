@@ -1,19 +1,20 @@
-From: =?UTF-8?B?TWFydMOtbiBNYXJ0w61uZXogUml2ZXJh?= <mrtnz.rvr@gmail.com>
-Subject: Master volume not controlling applications' volume.
-Date: Tue, 20 Aug 2019 20:50:35 -0700
-Message-ID: <CAJnWPcZ9C8WY4ihRSBBkOJD7fHLGhfEEmBRhMLimKG+R+h8O2Q@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Fix invalid NULL check in
+	snd_emuusb_set_samplerate()
+Date: Wed, 21 Aug 2019 08:20:13 +0200
+Message-ID: <20190821062013.32014-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com
- [IPv6:2607:f8b0:4864:20::232])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78F10F800BF
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 05:50:48 +0200 (CEST)
-Received: by mail-oi1-x232.google.com with SMTP id k22so552886oiw.11
- for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2019 20:50:47 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 428EDF80157
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 08:20:15 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id BDD2BAF23
+ for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 06:20:14 +0000 (UTC)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,38 +27,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Changing the master volume in pavucontrol (or alsamixer) does not have any
-effect. The only way to change the volume is to go into the playback tab
-and change it for each application. The volume only changes when I set the
-master volume to 0 or when I increase it over 100%. In between there aren't
-any changes.
+The quirk function snd_emuusb_set_samplerate() has a NULL check for
+the mixer element, but this is useless in the current code.  It used
+to be a check against mixer->id_elems[unitid] but it was changed later
+to the value after mixer_eleme_list_to_info() which is always non-NULL
+due to the container_of() usage.
 
-Running arch on a Lenovo X1 Carbon if that's of any use. I am using the
-arch default configuration files.
+This patch fixes the check before the conversion.
 
-I posted somewhere else and was told to email this list as it could be a
-kernel bug.
+While we're at it, correct a typo in the comment in the function,
+too.
 
-kernel: 5.2.9-arch1-1-ARCH
-pactl info output:
+Fixes: 8c558076c740 ("ALSA: usb-audio: Clean up mixer element list traverse")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/mixer_quirks.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Server String: /run/user/1000/pulse/native
-Library Protocol Version: 32
-Server Protocol Version: 32
-Is Local: yes
-Client Index: 13
-Tile Size: 65472
-User Name: martinmr
-Host Name: martinmr-laptop
-Server Name: pulseaudio
-Server Version: 12.2
-Default Sample Specification: s16le 2ch 44100Hz
-Default Channel Map: front-left,front-right
-Default Sink: alsa_output.pci-0000_00_1f.3.analog-stereo
-Default Source: alsa_output.pci-0000_00_1f.3.analog-stereo.monitor
-Cookie: 1afa:f937
-
-Let me know if the output from some other command is needed.
-Best,
-
-Martin
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 199fa157a411..27dcb3743690 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1155,17 +1155,17 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ {
+ 	struct usb_mixer_interface *mixer;
+ 	struct usb_mixer_elem_info *cval;
+-	int unitid = 12; /* SamleRate ExtensionUnit ID */
++	int unitid = 12; /* SampleRate ExtensionUnit ID */
+ 
+ 	list_for_each_entry(mixer, &chip->mixer_list, list) {
+-		cval = mixer_elem_list_to_info(mixer->id_elems[unitid]);
+-		if (cval) {
++		if (mixer->id_elems[unitid]) {
++			cval = mixer_elem_list_to_info(mixer->id_elems[unitid]);
+ 			snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR,
+ 						    cval->control << 8,
+ 						    samplerate_id);
+ 			snd_usb_mixer_notify_id(mixer, unitid);
++			break;
+ 		}
+-		break;
+ 	}
+ }
+ 
+-- 
+2.16.4
