@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove unneeded dai_link
-	check from snd_soc_remove_dai_link()" to the asoc tree
+Subject: Applied "ASoC: soc-core: merge
+	snd_soc_initialize_card_lists()" to the asoc tree
 Date: Wed, 21 Aug 2019 13:15:32 +0100 (BST)
-Message-ID: <20190821121532.4491A27430D0@ypsilon.sirena.org.uk>
-References: <875zms1ldm.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190821121532.7DBB027430D6@ypsilon.sirena.org.uk>
+References: <877e781ldq.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f98.google.com (mail-wm1-f98.google.com
- [209.85.128.98])
+Received: from mail-wr1-f99.google.com (mail-wr1-f99.google.com
+ [209.85.221.99])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2290EF80322
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93125F8036A
  for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 14:15:33 +0200 (CEST)
-Received: by mail-wm1-f98.google.com with SMTP id c5so1699969wmb.5
+Received: by mail-wr1-f99.google.com with SMTP id p17so1796576wrf.11
  for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 05:15:33 -0700 (PDT)
-In-Reply-To: <875zms1ldm.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877e781ldq.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,7 +32,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove unneeded dai_link check from snd_soc_remove_dai_link()
+   ASoC: soc-core: merge snd_soc_initialize_card_lists()
 
 has been applied to the asoc tree at
 
@@ -57,54 +57,73 @@ to this mail.
 Thanks,
 Mark
 
->From c26a8841119826badc8d358a4266880f83359f26 Mon Sep 17 00:00:00 2001
+>From b03bfaec1d52123d5d941488f71e06964535e471 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 20 Aug 2019 14:04:58 +0900
-Subject: [PATCH] ASoC: soc-core: remove unneeded dai_link check from
- snd_soc_remove_dai_link()
+Date: Tue, 20 Aug 2019 14:04:54 +0900
+Subject: [PATCH] ASoC: soc-core: merge snd_soc_initialize_card_lists()
 
-snd_soc_remove_dai_link() has card connected dai_link check. but
-	1) we need to call list_del() anyway,
-	   because it is "remove" function,
-	2) It is doing many thing for this card / dai_link already
-	   before checking dai_link.
-
-This patch removes poinless dai_link check
+snd_soc_initialize_card_lists() is doing card related
+INIT_LIST_HEAD(), but, it is already doing at
+snd_soc_register_card(). We don't need to do it separately.
+This patch merges these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/875zms1ldm.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/877e781ldq.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ include/sound/soc.h  | 10 ----------
+ sound/soc/soc-core.c | 13 ++++++++-----
+ 2 files changed, 8 insertions(+), 15 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 5c841c2ee814..f264c6509f00 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1220,16 +1220,6 @@ static inline void *snd_soc_card_get_drvdata(struct snd_soc_card *card)
+ 	return card->drvdata;
+ }
+ 
+-static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
+-{
+-	INIT_LIST_HEAD(&card->widgets);
+-	INIT_LIST_HEAD(&card->paths);
+-	INIT_LIST_HEAD(&card->dapm_list);
+-	INIT_LIST_HEAD(&card->aux_comp_list);
+-	INIT_LIST_HEAD(&card->component_dev_list);
+-	INIT_LIST_HEAD(&card->list);
+-}
+-
+ static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
+ {
+ 	if (mc->reg == mc->rreg && mc->shift == mc->rshift)
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d428491d51a7..6df880be1622 100644
+index b3f820fb53e6..d428491d51a7 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1182,8 +1182,6 @@ EXPORT_SYMBOL_GPL(snd_soc_add_dai_link);
- void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *dai_link)
- {
--	struct snd_soc_dai_link *link, *_link;
+@@ -2370,15 +2370,18 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 
+ 	dev_set_drvdata(card->dev, card);
+ 
+-	snd_soc_initialize_card_lists(card);
 -
- 	if (dai_link->dobj.type
- 	    && dai_link->dobj.type != SND_SOC_DOBJ_DAI_LINK) {
- 		dev_err(card->dev, "Invalid dai link type %d\n",
-@@ -1199,12 +1197,7 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 	if (dai_link->dobj.type && card->remove_dai_link)
- 		card->remove_dai_link(card, dai_link);
- 
--	for_each_card_links_safe(card, link, _link) {
--		if (link == dai_link) {
--			list_del(&link->list);
--			return;
--		}
--	}
-+	list_del(&dai_link->list);
- }
- EXPORT_SYMBOL_GPL(snd_soc_remove_dai_link);
- 
++	INIT_LIST_HEAD(&card->widgets);
++	INIT_LIST_HEAD(&card->paths);
++	INIT_LIST_HEAD(&card->dapm_list);
++	INIT_LIST_HEAD(&card->aux_comp_list);
++	INIT_LIST_HEAD(&card->component_dev_list);
++	INIT_LIST_HEAD(&card->list);
+ 	INIT_LIST_HEAD(&card->dai_link_list);
+-
+ 	INIT_LIST_HEAD(&card->rtd_list);
+-	card->num_rtd = 0;
+-
+ 	INIT_LIST_HEAD(&card->dapm_dirty);
+ 	INIT_LIST_HEAD(&card->dobj_list);
++
++	card->num_rtd = 0;
+ 	card->instantiated = 0;
+ 	mutex_init(&card->mutex);
+ 	mutex_init(&card->dapm_mutex);
 -- 
 2.20.1
