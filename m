@@ -1,82 +1,39 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 09/15] clk: sunxi-ng: h6: Allow I2S to
- change parent rate
-Date: Wed, 21 Aug 2019 11:19:05 +0200
-Message-ID: <CAEKpxB=9NNoZgZoY_GpcEuDYoMUGzb+ATgZOSM64qy9tirC_MQ@mail.gmail.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: Re: [PATCH v5 09/15] clk: sunxi-ng: h6: Allow I2S
+ to change parent rate
+Date: Wed, 21 Aug 2019 17:35:43 +0800
+Message-ID: <CAGb2v67JfquPoLbUVARSzX3ua22N_3Vg5Ys1JXht4ew_PXto5Q@mail.gmail.com>
 References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-10-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+ <CAEKpxB=9NNoZgZoY_GpcEuDYoMUGzb+ATgZOSM64qy9tirC_MQ@mail.gmail.com>
+Reply-To: wens-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBFUZ6TVAKGQE4PF2LWQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCMILY6JWQBBB75A6TVAKGQEEGIUVCY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20190814060854.26345-10-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <CAEKpxB=9NNoZgZoY_GpcEuDYoMUGzb+ATgZOSM64qy9tirC_MQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
 List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Aug 2019 at 08:09, <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+On Wed, Aug 21, 2019 at 5:19 PM Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
 >
-> From: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+> On Wed, 14 Aug 2019 at 08:09, <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> >
+> > From: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+> >
+> > I2S doesn't work if parent rate couldn't be change. Difference between
+> > wanted and actual rate is too big.
+> >
+> > Fix this by adding CLK_SET_RATE_PARENT flag to I2S clocks.
+> >
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
 >
-> I2S doesn't work if parent rate couldn't be change. Difference between
-> wanted and actual rate is too big.
->
-> Fix this by adding CLK_SET_RATE_PARENT flag to I2S clocks.
->
-> Signed-off-by: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-
-> ---
->  drivers/clk/sunxi-ng/ccu-sun50i-h6.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-> index aebef4af9861..d89353a3cdec 100644
-> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-> @@ -505,7 +505,7 @@ static struct ccu_div i2s3_clk = {
->                 .hw.init        = CLK_HW_INIT_PARENTS("i2s3",
->                                                       audio_parents,
->                                                       &ccu_div_ops,
-> -                                                     0),
-> +                                                     CLK_SET_RATE_PARENT),
->         },
->  };
->
-> @@ -518,7 +518,7 @@ static struct ccu_div i2s0_clk = {
->                 .hw.init        = CLK_HW_INIT_PARENTS("i2s0",
->                                                       audio_parents,
->                                                       &ccu_div_ops,
-> -                                                     0),
-> +                                                     CLK_SET_RATE_PARENT),
->         },
->  };
->
-> @@ -531,7 +531,7 @@ static struct ccu_div i2s1_clk = {
->                 .hw.init        = CLK_HW_INIT_PARENTS("i2s1",
->                                                       audio_parents,
->                                                       &ccu_div_ops,
-> -                                                     0),
-> +                                                     CLK_SET_RATE_PARENT),
->         },
->  };
->
-> @@ -544,7 +544,7 @@ static struct ccu_div i2s2_clk = {
->                 .hw.init        = CLK_HW_INIT_PARENTS("i2s2",
->                                                       audio_parents,
->                                                       &ccu_div_ops,
-> -                                                     0),
-> +                                                     CLK_SET_RATE_PARENT),
->         },
->  };
->
-> --
-> 2.22.0
->
+Applied for 5.4
