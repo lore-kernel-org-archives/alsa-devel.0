@@ -1,66 +1,172 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] ALSA: pcm: add support for 352.8KHz and 384KHz sample rate
-Date: Wed, 21 Aug 2019 11:27:05 +0100
-Message-ID: <20190821102705.18382-1-srinivas.kandagatla@linaro.org>
+From: Maxime Ripard <mripard@kernel.org>
+Subject: Re: [PATCH 20/21] ASoC: sun4i-i2s: Add support for TDM slots
+Date: Wed, 21 Aug 2019 14:05:51 +0200
+Message-ID: <20190821120551.r4b3h4nnet357wem@flea>
+References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
+ <26392af30b3e7b31ee48d5b867d45be8675db046.1566242458.git-series.maxime.ripard@bootlin.com>
+ <c311e88a-fdd2-8a01-275e-675d98dc90ba@orpaltech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hsc5ca3rnlaanrdu"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c311e88a-fdd2-8a01-275e-675d98dc90ba@orpaltech.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, tiwai@suse.de
-Cc: bgoswami@codeaurora.org, plai@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Vidyakumar Athota <vathota@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Sergey Suloev <ssuloev@orpaltech.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, broonie@kernel.org, codekipper@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Vidyakumar Athota <vathota@codeaurora.org>
 
-Most of the modern codecs supports 352.8KHz and 384KHz sample rates.
-Currently HW params fails to set 352.8Kz and 384KHz sample rate
-as these are not in known rates list.
-Add these new rates to known list to allow them.
+--hsc5ca3rnlaanrdu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This patch also adds defines in pcm.h so that drivers can use it.
+Hi,
 
-Signed-off-by: Vidyakumar Athota <vathota@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- include/sound/pcm.h     | 5 +++++
- sound/core/pcm_native.c | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+On Tue, Aug 20, 2019 at 08:46:30AM +0300, Sergey Suloev wrote:
+> Hi, Maxime,
+>
+> On 8/19/19 10:25 PM, Maxime Ripard wrote:
+> > From: Maxime Ripard <maxime.ripard@bootlin.com>
+> >
+> > The i2s controller supports TDM, for up to 8 slots. Let's support the TDM
+> > API.
+> >
+> > Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> > ---
+> >   sound/soc/sunxi/sun4i-i2s.c | 40 ++++++++++++++++++++++++++++++++------
+> >   1 file changed, 34 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > index 0dac09814b65..4f76daeaaed7 100644
+> > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > @@ -168,6 +168,8 @@ struct sun4i_i2s {
+> >   	struct reset_control *rst;
+> >   	unsigned int	mclk_freq;
+> > +	unsigned int	slots;
+> > +	unsigned int	slot_width;
+> >   	struct snd_dmaengine_dai_dma_data	capture_dma_data;
+> >   	struct snd_dmaengine_dai_dma_data	playback_dma_data;
+> > @@ -287,7 +289,7 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
+> >   static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+> >   				  unsigned int rate,
+> > -				  unsigned int channels,
+> > +				  unsigned int slots,
+> >   				  unsigned int word_size)
+> >   {
+> >   	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > @@ -335,7 +337,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+> >   	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
+> >   	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
+> > -					  rate, channels, word_size);
+> > +					  rate, slots, word_size);
+> >   	if (bclk_div < 0) {
+> >   		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
+> >   		return -EINVAL;
+> > @@ -419,6 +421,10 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> >   				  const struct snd_pcm_hw_params *params)
+> >   {
+> >   	unsigned int channels = params_channels(params);
+> > +	unsigned int slots = channels;
+> > +
+> > +	if (i2s->slots)
+> > +		slots = i2s->slots;
+> >   	/* Map the channels for playback and capture */
+> >   	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+> > @@ -428,7 +434,6 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> >   	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+> >   			   SUN4I_I2S_CHAN_SEL_MASK,
+> >   			   SUN4I_I2S_CHAN_SEL(channels));
+> > -
+> >   	regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
+> >   			   SUN4I_I2S_CHAN_SEL_MASK,
+> >   			   SUN4I_I2S_CHAN_SEL(channels));
+> > @@ -452,10 +457,18 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+> >   			       struct snd_soc_dai *dai)
+> >   {
+> >   	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > +	unsigned int word_size = params_width(params);
+> >   	unsigned int channels = params_channels(params);
+> > +	unsigned int slots = channels;
+> >   	int ret, sr, wss;
+> >   	u32 width;
+> > +	if (i2s->slots)
+> > +		slots = i2s->slots;
+> > +
+> > +	if (i2s->slot_width)
+> > +		word_size = i2s->slot_width;
+> > +
+> >   	ret = i2s->variant->set_chan_cfg(i2s, params);
+> >   	if (ret < 0) {
+> >   		dev_err(dai->dev, "Invalid channel configuration\n");
+> > @@ -477,15 +490,14 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+> >   	if (sr < 0)
+> >   		return -EINVAL;
+> > -	wss = i2s->variant->get_wss(i2s, params_width(params));
+> > +	wss = i2s->variant->get_wss(i2s, word_size);
+> >   	if (wss < 0)
+> >   		return -EINVAL;
+> >   	regmap_field_write(i2s->field_fmt_wss, wss);
+> >   	regmap_field_write(i2s->field_fmt_sr, sr);
+> > -	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
+> > -				      channels, params_width(params));
+> > +	return sun4i_i2s_set_clk_rate(dai, params_rate(params), slots, word_size);
+> >   }
+> >   static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+> > @@ -785,10 +797,26 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+> >   	return 0;
+> >   }
+> > +static int sun4i_i2s_set_tdm_slot(struct snd_soc_dai *dai,
+> > +				  unsigned int tx_mask, unsigned int rx_mask,
+> > +				  int slots, int slot_width)
+> > +{
+> > +	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > +
+> > +	if (slots > 8)
+> > +		return -EINVAL;
+> > +
+> > +	i2s->slots = slots;
+> > +	i2s->slot_width = slot_width;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >   static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+> >   	.hw_params	= sun4i_i2s_hw_params,
+> >   	.set_fmt	= sun4i_i2s_set_fmt,
+> >   	.set_sysclk	= sun4i_i2s_set_sysclk,
+> > +	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
+> >   	.trigger	= sun4i_i2s_trigger,
+> >   };
+>
+> it seems like you forgot to implement sun4i_i2s_dai_ops.set_bclk_ratio
+> because, as I far as I understand, it should alter tdm slots functionality
+> indirectly.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 1e9bb1c91770..bbe6eb1ff5d2 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -117,6 +117,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
- #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
- #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
-+#define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
-+#define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
- 
- #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
- #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-@@ -129,6 +131,9 @@ struct snd_pcm_ops {
- 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
- #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
- 					 SNDRV_PCM_RATE_192000)
-+#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
-+					 SNDRV_PCM_RATE_352800|\
-+					 SNDRV_PCM_RATE_384000)
- #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
- #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
- #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 703857aab00f..11e653c8aa0e 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2170,7 +2170,7 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
- 
- static const unsigned int rates[] = {
- 	5512, 8000, 11025, 16000, 22050, 32000, 44100,
--	48000, 64000, 88200, 96000, 176400, 192000
-+	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000
- };
- 
- const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
--- 
-2.21.0
+As far as I can see, while this indeed changes a few things on the TDM
+setup, it's optional, orthogonal and it has a single user in the tree
+(some intel platform card).
+
+So I'd say that if someone ever needs it, we can have it, but it's not
+a blocker.
+
+Maxime
+
+--
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
+--hsc5ca3rnlaanrdu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXV0znwAKCRDj7w1vZxhR
+xRAgAP9EHPMB6Hx7FqcfcszC8f7EF/uLx9RlJGciIrJpOQnKcwEAuaxLthvSNVh/
+RddPDN3sljHZtOQBGhyVmlCuwyQoUAk=
+=iCnK
+-----END PGP SIGNATURE-----
+
+--hsc5ca3rnlaanrdu--
