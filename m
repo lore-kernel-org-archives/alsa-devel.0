@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 11/11] soundwire: intel: free all resources on hw_free()
-Date: Wed, 21 Aug 2019 15:05:21 -0500
-Message-ID: <20190821200521.17283-12-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 08/11] soundwire: intel: add prepare support in sdw dai driver
+Date: Wed, 21 Aug 2019 15:05:18 -0500
+Message-ID: <20190821200521.17283-9-pierre-louis.bossart@linux.intel.com>
 References: <20190821200521.17283-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -14,57 +14,55 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rander Wang <rander.wang@linux.intel.com>
 
-Make sure all calls to the SoundWire stream API are done and involve
-callback
+It gets sdw runtime information from dai to prepare stream.
 
 Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/soundwire/intel.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 336203303480..60bc5f33afbf 100644
+index 529d7bc693d1..b9ce13d01334 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -879,6 +879,7 @@ static int
- intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dma_data *dma;
- 	int ret;
- 
-@@ -886,12 +887,28 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- 	if (!dma)
- 		return -EIO;
- 
-+	ret = sdw_deprepare_stream(dma->stream);
-+	if (ret) {
-+		dev_err(dai->dev, "sdw_deprepare_stream: failed %d", ret);
-+		return ret;
-+	}
-+
- 	ret = sdw_stream_remove_master(&cdns->bus, dma->stream);
--	if (ret < 0)
-+	if (ret < 0) {
- 		dev_err(dai->dev, "remove master from stream %s failed: %d\n",
- 			dma->stream->name, ret);
-+		return ret;
-+	}
- 
--	return ret;
-+	ret = intel_free_stream(sdw, substream, dai, sdw->instance);
-+	if (ret < 0) {
-+		dev_err(dai->dev, "intel_free_stream: failed %d", ret);
-+		return ret;
-+	}
-+
-+	sdw_release_stream(dma->stream);
-+
-+	return 0;
+@@ -769,6 +769,21 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
  }
  
- static void intel_shutdown(struct snd_pcm_substream *substream,
++static int intel_prepare(struct snd_pcm_substream *substream,
++			 struct snd_soc_dai *dai)
++{
++	struct sdw_cdns_dma_data *dma;
++
++	dma = snd_soc_dai_get_dma_data(dai, substream);
++	if (!dma) {
++		dev_err(dai->dev, "failed to get dma data in %s",
++			__func__);
++		return -EIO;
++	}
++
++	return sdw_prepare_stream(dma->stream);
++}
++
+ static int
+ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
+@@ -825,6 +840,7 @@ static int intel_pdm_set_sdw_stream(struct snd_soc_dai *dai,
+ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ 	.startup = intel_startup,
+ 	.hw_params = intel_hw_params,
++	.prepare = intel_prepare,
+ 	.hw_free = intel_hw_free,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pcm_set_sdw_stream,
+@@ -832,6 +848,7 @@ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ 
+ static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
+ 	.hw_params = intel_hw_params,
++	.prepare = intel_prepare,
+ 	.hw_free = intel_hw_free,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pdm_set_sdw_stream,
 -- 
 2.20.1
