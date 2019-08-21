@@ -1,39 +1,50 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: Re: [PATCH v5 09/15] clk: sunxi-ng: h6: Allow I2S
- to change parent rate
-Date: Wed, 21 Aug 2019 17:35:43 +0800
-Message-ID: <CAGb2v67JfquPoLbUVARSzX3ua22N_3Vg5Ys1JXht4ew_PXto5Q@mail.gmail.com>
-References: <20190814060854.26345-1-codekipper@gmail.com> <20190814060854.26345-10-codekipper@gmail.com>
- <CAEKpxB=9NNoZgZoY_GpcEuDYoMUGzb+ATgZOSM64qy9tirC_MQ@mail.gmail.com>
-Reply-To: wens-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] ALSA: usb-audio: Fix the mixer control range limiting issue
+Date: Wed, 21 Aug 2019 11:02:25 +0100
+Message-ID: <20190821100225.9254-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB75A6TVAKGQEEGIUVCY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <CAEKpxB=9NNoZgZoY_GpcEuDYoMUGzb+ATgZOSM64qy9tirC_MQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Deepa Madiregama <dmadireg@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Meng Wang <mwang@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 21, 2019 at 5:19 PM Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->
-> On Wed, 14 Aug 2019 at 08:09, <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> >
-> > From: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
-> >
-> > I2S doesn't work if parent rate couldn't be change. Difference between
-> > wanted and actual rate is too big.
-> >
-> > Fix this by adding CLK_SET_RATE_PARENT flag to I2S clocks.
-> >
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec-gGgVlfcn5nU@public.gmane.org>
->
-> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Deepa Madiregama <dmadireg@codeaurora.org>
 
-Applied for 5.4
+- mixer_ctl_set() function is limiting the volume level
+  to particular range. This results in incorrect initial
+  volume setting for that device.
+- In USB mixer while calculating the dBmin/dBmax values
+  resolution factor is hardcoded to 256 which results in
+  populating the wrong values for dBmin/dBmax.
+- Fix is to use appropriate resolution factor while
+  calculating the dBmin/dBmax values.
+
+Signed-off-by: Deepa Madiregama <dmadireg@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+Signed-off-by: Meng Wang <mwang@codeaurora.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/usb/mixer.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 5070a6a76ab3..a67448327d07 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1248,8 +1248,10 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
+ 	/* USB descriptions contain the dB scale in 1/256 dB unit
+ 	 * while ALSA TLV contains in 1/100 dB unit
+ 	 */
+-	cval->dBmin = (convert_signed_value(cval, cval->min) * 100) / 256;
+-	cval->dBmax = (convert_signed_value(cval, cval->max) * 100) / 256;
++	cval->dBmin =
++		(convert_signed_value(cval, cval->min) * 100) / (cval->res);
++	cval->dBmax =
++		(convert_signed_value(cval, cval->max) * 100) / (cval->res);
+ 	if (cval->dBmin > cval->dBmax) {
+ 		/* something is wrong; assume it's either from/to 0dB */
+ 		if (cval->dBmin < 0)
+-- 
+2.21.0
