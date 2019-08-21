@@ -1,42 +1,220 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 0/3] ASoC: SOF: initial support for i.MX8
-Date: Wed, 21 Aug 2019 11:47:27 -0500
-Message-ID: <20190821164730.7385-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 2/3] ASoC: SOF: Add OF DSP device support
+Date: Wed, 21 Aug 2019 11:47:29 -0500
+Message-ID: <20190821164730.7385-3-pierre-louis.bossart@linux.intel.com>
+References: <20190821164730.7385-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190821164730.7385-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, devicetree@vger.kernel.org, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com, robh+dt@kernel.org, linux-imx@nxp.com, viorel.suman@nxp.com, festevam@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, devicetree@vger.kernel.org, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com, robh+dt@kernel.org, linux-imx@nxp.com, viorel.suman@nxp.com, festevam@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The reviews for these patches took place already on mailing lists and
-GitHub, and the code is already integrated in the SOF tree (along with
-dependencies already accepted in the i.MX tree)
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
-Changes since v1:
-As agreed with Daniel and Mark, this v2 series includes the DT
-bindings (Fixed 'compatible' typo in examples)
-The SAI/ESAI support was merged separately so dropped from this set.
+Add support for device tree based SOF DSP devices.
 
-Daniel Baluta (3):
-  dt-bindings: dsp: fsl: Add DSP core binding support
-  ASoC: SOF: Add OF DSP device support
-  ASoC: SOF: imx: Add i.MX8 HW support
-
- .../devicetree/bindings/dsp/fsl,dsp.yaml      |  88 ++++
- sound/soc/sof/Kconfig                         |  11 +
- sound/soc/sof/Makefile                        |   4 +
- sound/soc/sof/imx/Kconfig                     |  22 +
- sound/soc/sof/imx/Makefile                    |   4 +
- sound/soc/sof/imx/imx8.c                      | 394 ++++++++++++++++++
- sound/soc/sof/sof-of-dev.c                    | 143 +++++++
- 7 files changed, 666 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
- create mode 100644 sound/soc/sof/imx/Kconfig
- create mode 100644 sound/soc/sof/imx/Makefile
- create mode 100644 sound/soc/sof/imx/imx8.c
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/Kconfig      |  10 +++
+ sound/soc/sof/Makefile     |   3 +
+ sound/soc/sof/sof-of-dev.c | 143 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 156 insertions(+)
  create mode 100644 sound/soc/sof/sof-of-dev.c
 
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index fb01f0ca6027..01acb580b817 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -36,6 +36,16 @@ config SND_SOC_SOF_ACPI
+ 	  Say Y if you need this option
+ 	  If unsure select "N".
+ 
++config SND_SOC_SOF_OF
++	tristate "SOF OF enumeration support"
++	depends on OF || COMPILE_TEST
++	select SND_SOC_SOF
++	select SND_SOC_SOF_OPTIONS
++	help
++	  This adds support for Device Tree enumeration. This option is
++	  required to enable i.MX8 devices.
++	  Say Y if you need this option. If unsure select "N".
++
+ config SND_SOC_SOF_OPTIONS
+ 	tristate
+ 	help
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index 585fb6917489..772c452d1ae2 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -5,6 +5,8 @@ snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
+ 
+ snd-sof-pci-objs := sof-pci-dev.o
+ snd-sof-acpi-objs := sof-acpi-dev.o
++snd-sof-of-objs := sof-of-dev.o
++
+ snd-sof-nocodec-objs := nocodec.o
+ 
+ obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
+@@ -12,6 +14,7 @@ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
+ 
+ 
+ obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi.o
++obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
+ obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci.o
+ 
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
+new file mode 100644
+index 000000000000..28a9692974e5
+--- /dev/null
++++ b/sound/soc/sof/sof-of-dev.c
+@@ -0,0 +1,143 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// Copyright 2019 NXP
++//
++// Author: Daniel Baluta <daniel.baluta@nxp.com>
++//
++
++#include <linux/firmware.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
++#include <sound/sof.h>
++
++#include "ops.h"
++
++extern struct snd_sof_dsp_ops sof_imx8_ops;
++
++/* platform specific devices */
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_IMX8)
++static struct sof_dev_desc sof_of_imx8qxp_desc = {
++	.default_fw_path = "imx/sof",
++	.default_tplg_path = "imx/sof-tplg",
++	.nocodec_fw_filename = "sof-imx8.ri",
++	.nocodec_tplg_filename = "sof-imx8-nocodec.tplg",
++	.ops = &sof_imx8_ops,
++};
++#endif
++
++static const struct dev_pm_ops sof_of_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
++	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
++			   NULL)
++};
++
++static void sof_of_probe_complete(struct device *dev)
++{
++	/* allow runtime_pm */
++	pm_runtime_set_autosuspend_delay(dev, SND_SOF_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_enable(dev);
++}
++
++static int sof_of_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	const struct sof_dev_desc *desc;
++	/*TODO: create a generic snd_soc_xxx_mach */
++	struct snd_soc_acpi_mach *mach;
++	struct snd_sof_pdata *sof_pdata;
++	const struct snd_sof_dsp_ops *ops;
++	int ret;
++
++	dev_info(&pdev->dev, "DT DSP detected");
++
++	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
++	if (!sof_pdata)
++		return -ENOMEM;
++
++	desc = device_get_match_data(dev);
++	if (!desc)
++		return -ENODEV;
++
++	/* get ops for platform */
++	ops = desc->ops;
++	if (!ops) {
++		dev_err(dev, "error: no matching DT descriptor ops\n");
++		return -ENODEV;
++	}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_FORCE_NOCODEC_MODE)
++	/* force nocodec mode */
++	dev_warn(dev, "Force to use nocodec mode\n");
++	mach = devm_kzalloc(dev, sizeof(*mach), GFP_KERNEL);
++	if (!mach)
++		return -ENOMEM;
++	ret = sof_nocodec_setup(dev, sof_pdata, mach, desc, ops);
++	if (ret < 0)
++		return ret;
++#else
++	/* TODO: implement case where we actually have a codec */
++	return -ENODEV;
++#endif
++
++	if (mach)
++		mach->mach_params.platform = dev_name(dev);
++
++	sof_pdata->machine = mach;
++	sof_pdata->desc = desc;
++	sof_pdata->dev = &pdev->dev;
++	sof_pdata->platform = dev_name(dev);
++
++	/* TODO: read alternate fw and tplg filenames from DT */
++	sof_pdata->fw_filename_prefix = sof_pdata->desc->default_fw_path;
++	sof_pdata->tplg_filename_prefix = sof_pdata->desc->default_tplg_path;
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++	/* set callback to enable runtime_pm */
++	sof_pdata->sof_probe_complete = sof_of_probe_complete;
++#endif
++	 /* call sof helper for DSP hardware probe */
++	ret = snd_sof_device_probe(dev, sof_pdata);
++	if (ret) {
++		dev_err(dev, "error: failed to probe DSP hardware\n");
++		return ret;
++	}
++
++#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++	sof_of_probe_complete(dev);
++#endif
++
++	return ret;
++}
++
++static int sof_of_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	/* call sof helper for DSP hardware remove */
++	snd_sof_device_remove(&pdev->dev);
++
++	return 0;
++}
++
++static const struct of_device_id sof_of_ids[] = {
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_IMX8)
++	{ .compatible = "fsl,imx8qxp-dsp", .data = &sof_of_imx8qxp_desc},
++#endif
++	{ }
++};
++MODULE_DEVICE_TABLE(of, sof_of_ids);
++
++/* DT driver definition */
++static struct platform_driver snd_sof_of_driver = {
++	.probe = sof_of_probe,
++	.remove = sof_of_remove,
++	.driver = {
++		.name = "sof-audio-of",
++		.pm = &sof_of_pm,
++		.of_match_table = sof_of_ids,
++	},
++};
++module_platform_driver(snd_sof_of_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.20.1
