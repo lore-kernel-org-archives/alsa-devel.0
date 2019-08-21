@@ -1,82 +1,31 @@
-From: "Uimonen, Jaska" <jaska.uimonen@intel.com>
-Subject: Re: [PATCH] ASoC: SOF: topology: fix get control data
- return type and arguments
-Date: Wed, 21 Aug 2019 13:30:02 +0000
-Message-ID: <E2FAA01B96908D4ABFB182B6E1AD75D6A1FC15F7@IRSMSX102.ger.corp.intel.com>
-References: <20190821123252.30920-1-jaska.uimonen@linux.intel.com>
- <20190821125956.GJ5128@sirena.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 00/17] soundwire: fixes for 5.4
+Date: Wed, 21 Aug 2019 09:03:27 -0500
+Message-ID: <8ec1bed6-af4d-4be1-93b6-273ee27ce5e4@linux.intel.com>
+References: <20190806005522.22642-1-pierre-louis.bossart@linux.intel.com>
+ <20190821090742.GI12733@vkoul-mobl.Dlink>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B353FF80157
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 15:30:12 +0200 (CEST)
-In-Reply-To: <20190821125956.GJ5128@sirena.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190821090742.GI12733@vkoul-mobl.Dlink>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, Jaska Uimonen <jaska.uimonen@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, Blauciak@gmail-pop.l.google.com, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, Slawomir <slawomir.blauciak@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, August 21, 2019 4:00 PM
-> To: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-> Cc: alsa-devel@alsa-project.org; Uimonen, Jaska <jaska.uimonen@intel.com>
-> Subject: Re: [PATCH] ASoC: SOF: topology: fix get control data return type and
-> arguments
-> 
-> On Wed, Aug 21, 2019 at 03:32:52PM +0300, Jaska Uimonen wrote:
-> 
-> > +static int sof_get_control_data(struct snd_sof_dev *sdev,
-> > +				struct snd_soc_dapm_widget *widget,
-> > +				struct sof_widget_data *wdata,
-> > +				size_t *size)
-> >  {
-> >  	const struct snd_kcontrol_new *kc;
-> >  	struct soc_mixer_control *sm;
-> >  	struct soc_bytes_ext *sbe;
-> >  	struct soc_enum *se;
-> > -	size_t size = 0;
-> >  	int i;
-> 
-> 
-> > -		size += wdata[i].pdata->size;
-> > +		/* don't accept 0 size for data */
-> > +		if (!wdata[i].pdata->size)
-> > +			return -EINVAL;
-> 
-> This should really be a separate change.
-[Uimonen, Jaska] 
-Ok will remove from this patch.
-> 
-> > +
-> > +		*size += wdata[i].pdata->size;
-> 
-> We appear to be requiring that the size passed in is zero initialized
-> which is a bit unusual and seems likely to break even if it happens to
-> work right now.
-[Uimonen, Jaska] 
-Same comments I got from Pierre, obviously I'm not very good listener.
-Will initialize size to 0.
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki 
-Business Identity Code: 0357606 - 4 
-Domiciled in Helsinki 
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+
+On 8/21/19 4:07 AM, Vinod Koul wrote:
+> On 05-08-19, 19:55, Pierre-Louis Bossart wrote:
+>> This series provides an update on the initial RFC. Debugfs and Intel
+>> updates will be provided in follow-up patches. The order of patches
+>> was changed since the RFC so detailed change logs are provided below.
+> 
+> Applied all except 14, which didnt apply, thanks
+
+yes, that's a miss, there was a debugfs line that created a dependency 
+with the other patches that were not applied because of the lack of 
+alignment between soundwire/fixes and soundwire/next.
+Will resubmit.
