@@ -1,172 +1,66 @@
-From: Maxime Ripard <mripard@kernel.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 20/21] ASoC: sun4i-i2s: Add support for TDM slots
-Date: Wed, 21 Aug 2019 14:05:51 +0200
-Message-ID: <20190821120551.r4b3h4nnet357wem@flea>
+Date: Wed, 21 Aug 2019 13:08:07 +0100
+Message-ID: <20190821120807.GG5128@sirena.co.uk>
 References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
  <26392af30b3e7b31ee48d5b867d45be8675db046.1566242458.git-series.maxime.ripard@bootlin.com>
  <c311e88a-fdd2-8a01-275e-675d98dc90ba@orpaltech.com>
+ <20190821120551.r4b3h4nnet357wem@flea>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hsc5ca3rnlaanrdu"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NY6JkbSqL3W9mApi"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <c311e88a-fdd2-8a01-275e-675d98dc90ba@orpaltech.com>
+In-Reply-To: <20190821120551.r4b3h4nnet357wem@flea>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sergey Suloev <ssuloev@orpaltech.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, broonie@kernel.org, codekipper@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Sergey Suloev <ssuloev@orpaltech.com>, Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, codekipper@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---hsc5ca3rnlaanrdu
+--NY6JkbSqL3W9mApi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi,
+On Wed, Aug 21, 2019 at 02:05:51PM +0200, Maxime Ripard wrote:
+> On Tue, Aug 20, 2019 at 08:46:30AM +0300, Sergey Suloev wrote:
 
-On Tue, Aug 20, 2019 at 08:46:30AM +0300, Sergey Suloev wrote:
-> Hi, Maxime,
->
-> On 8/19/19 10:25 PM, Maxime Ripard wrote:
-> > From: Maxime Ripard <maxime.ripard@bootlin.com>
-> >
-> > The i2s controller supports TDM, for up to 8 slots. Let's support the TDM
-> > API.
-> >
-> > Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-> > ---
-> >   sound/soc/sunxi/sun4i-i2s.c | 40 ++++++++++++++++++++++++++++++++------
-> >   1 file changed, 34 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > index 0dac09814b65..4f76daeaaed7 100644
-> > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > @@ -168,6 +168,8 @@ struct sun4i_i2s {
-> >   	struct reset_control *rst;
-> >   	unsigned int	mclk_freq;
-> > +	unsigned int	slots;
-> > +	unsigned int	slot_width;
-> >   	struct snd_dmaengine_dai_dma_data	capture_dma_data;
-> >   	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-> > @@ -287,7 +289,7 @@ static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
-> >   static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
-> >   				  unsigned int rate,
-> > -				  unsigned int channels,
-> > +				  unsigned int slots,
-> >   				  unsigned int word_size)
-> >   {
-> >   	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> > @@ -335,7 +337,7 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
-> >   	bclk_parent_rate = i2s->variant->get_bclk_parent_rate(i2s);
-> >   	bclk_div = sun4i_i2s_get_bclk_div(i2s, bclk_parent_rate,
-> > -					  rate, channels, word_size);
-> > +					  rate, slots, word_size);
-> >   	if (bclk_div < 0) {
-> >   		dev_err(dai->dev, "Unsupported BCLK divider: %d\n", bclk_div);
-> >   		return -EINVAL;
-> > @@ -419,6 +421,10 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> >   				  const struct snd_pcm_hw_params *params)
-> >   {
-> >   	unsigned int channels = params_channels(params);
-> > +	unsigned int slots = channels;
-> > +
-> > +	if (i2s->slots)
-> > +		slots = i2s->slots;
-> >   	/* Map the channels for playback and capture */
-> >   	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
-> > @@ -428,7 +434,6 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> >   	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
-> >   			   SUN4I_I2S_CHAN_SEL_MASK,
-> >   			   SUN4I_I2S_CHAN_SEL(channels));
-> > -
-> >   	regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
-> >   			   SUN4I_I2S_CHAN_SEL_MASK,
-> >   			   SUN4I_I2S_CHAN_SEL(channels));
-> > @@ -452,10 +457,18 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
-> >   			       struct snd_soc_dai *dai)
-> >   {
-> >   	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> > +	unsigned int word_size = params_width(params);
-> >   	unsigned int channels = params_channels(params);
-> > +	unsigned int slots = channels;
-> >   	int ret, sr, wss;
-> >   	u32 width;
-> > +	if (i2s->slots)
-> > +		slots = i2s->slots;
-> > +
-> > +	if (i2s->slot_width)
-> > +		word_size = i2s->slot_width;
-> > +
-> >   	ret = i2s->variant->set_chan_cfg(i2s, params);
-> >   	if (ret < 0) {
-> >   		dev_err(dai->dev, "Invalid channel configuration\n");
-> > @@ -477,15 +490,14 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
-> >   	if (sr < 0)
-> >   		return -EINVAL;
-> > -	wss = i2s->variant->get_wss(i2s, params_width(params));
-> > +	wss = i2s->variant->get_wss(i2s, word_size);
-> >   	if (wss < 0)
-> >   		return -EINVAL;
-> >   	regmap_field_write(i2s->field_fmt_wss, wss);
-> >   	regmap_field_write(i2s->field_fmt_sr, sr);
-> > -	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
-> > -				      channels, params_width(params));
-> > +	return sun4i_i2s_set_clk_rate(dai, params_rate(params), slots, word_size);
-> >   }
-> >   static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
-> > @@ -785,10 +797,26 @@ static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-> >   	return 0;
-> >   }
-> > +static int sun4i_i2s_set_tdm_slot(struct snd_soc_dai *dai,
-> > +				  unsigned int tx_mask, unsigned int rx_mask,
-> > +				  int slots, int slot_width)
-> > +{
-> > +	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> > +
-> > +	if (slots > 8)
-> > +		return -EINVAL;
-> > +
-> > +	i2s->slots = slots;
-> > +	i2s->slot_width = slot_width;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >   static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
-> >   	.hw_params	= sun4i_i2s_hw_params,
-> >   	.set_fmt	= sun4i_i2s_set_fmt,
-> >   	.set_sysclk	= sun4i_i2s_set_sysclk,
-> > +	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
-> >   	.trigger	= sun4i_i2s_trigger,
-> >   };
->
-> it seems like you forgot to implement sun4i_i2s_dai_ops.set_bclk_ratio
-> because, as I far as I understand, it should alter tdm slots functionality
-> indirectly.
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-As far as I can see, while this indeed changes a few things on the TDM
-setup, it's optional, orthogonal and it has a single user in the tree
-(some intel platform card).
+> > >   	.set_sysclk	= sun4i_i2s_set_sysclk,
+> > > +	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
+> > >   	.trigger	= sun4i_i2s_trigger,
+> > >   };
 
-So I'd say that if someone ever needs it, we can have it, but it's not
-a blocker.
+> > it seems like you forgot to implement sun4i_i2s_dai_ops.set_bclk_ratio
+> > because, as I far as I understand, it should alter tdm slots functionality
+> > indirectly.
 
-Maxime
+> As far as I can see, while this indeed changes a few things on the TDM
+> setup, it's optional, orthogonal and it has a single user in the tree
+> (some intel platform card).
 
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> So I'd say that if someone ever needs it, we can have it, but it's not
+> a blocker.
 
---hsc5ca3rnlaanrdu
+Yes, that's a compltely orthogonal callback.
+
+--NY6JkbSqL3W9mApi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXV0znwAKCRDj7w1vZxhR
-xRAgAP9EHPMB6Hx7FqcfcszC8f7EF/uLx9RlJGciIrJpOQnKcwEAuaxLthvSNVh/
-RddPDN3sljHZtOQBGhyVmlCuwyQoUAk=
-=iCnK
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1dNCcACgkQJNaLcl1U
+h9Bl8Af/Xm2Xa9YOa6VFkbJ3jgkINICtBABTxYvKltNwmT5BP8nOJkVXFq1TtdMz
+N5EyBg9dN2luySAos4G/tu/IoD8MDAenPS9xiljA5EGVzZFq+Alw8RwJLAOhEhip
+0jt3BiI6CIRL286m17Eb2WIvebAqPZVT7gbqVNXzaQsQInq6AQ8xQRGsb6OAYunw
+p7LOLWJ4LAYxGrwgO6dlnyeRyDSbg5lg0jdWYldy8C+2G7q3AZZ1E6KIo4n5+TJd
+JjTrKX9kx5ABzsBJyu/hQ6Zn0MCdC11AJZRBSfYzO+fE/1l49SqVHoD6MxEtWM5g
+Ica+0kC+/XGk7S294y0Hi2hz4cwrOw==
+=B3Db
 -----END PGP SIGNATURE-----
 
---hsc5ca3rnlaanrdu--
+--NY6JkbSqL3W9mApi--
