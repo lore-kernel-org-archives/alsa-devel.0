@@ -1,86 +1,85 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 1/4] ASoC: Intel: Haswell: Adjust machine
- device private context
-Date: Thu, 22 Aug 2019 18:05:29 +0200
-Message-ID: <14962e17-8a86-5a84-0806-26be99c8b73b@intel.com>
-References: <20190822113616.22702-1-cezary.rojewski@intel.com>
- <20190822113616.22702-2-cezary.rojewski@intel.com>
- <76464d4e-a129-99b8-05ab-eff755cc5a1e@linux.intel.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
+Date: Thu, 22 Aug 2019 11:11:08 -0500
+Message-ID: <CAL_JsqLuH5=PLSVvyd=5oOECfcV3mgf8b842Y4ppJKG_NHds-g@mail.gmail.com>
+References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
+ <20190809133407.25918-2-srinivas.kandagatla@linaro.org> <20190821214436.GA13936@bogus>
+ <0272eafd-0aa5-f695-64e4-f6ad7157a3a6@linaro.org> <CAL_JsqJJCJB9obR_Jn3hmn4gq+RQjY-8M+xkdYA185Uaw0MHcw@mail.gmail.com>
+ <90b9fa33-3a49-c414-4352-66e26673a05d@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83946F80112
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 18:05:35 +0200 (CEST)
-In-Reply-To: <76464d4e-a129-99b8-05ab-eff755cc5a1e@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <90b9fa33-3a49-c414-4352-66e26673a05d@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Vinod <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0yMiAxNzo1OCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4gCj4g
-T24gOC8yMi8xOSA2OjM2IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+IEFwYXJ0IGZyb20g
-SGFzd2VsbCBtYWNoaW5lcywgYWxsIG90aGVyIGRldmljZXMgaGF2ZSB0aGVpciBwcml2YXRlIGRh
-dGEKPj4gc2V0IHRvIHNuZF9zb2NfYWNwaV9tYWNoIGluc3RhbmNlLgo+Pgo+PiBDaGFuZ2VzIGZv
-ciBIU1cvIEJEVyBib2FyZHMgaW50cm9kdWNlZCB3aXRoIHNlcmllczoKPj4gaHR0cHM6Ly9wYXRj
-aHdvcmsua2VybmVsLm9yZy9jb3Zlci8xMDc4MjAzNS8KPj4KPj4gYWRkZWQgc3VwcG9ydCBmb3Ig
-ZGFpX2xpbmsgcGxhdGZvcm1fbmFtZSBhZGp1c3RtZW50cyB3aXRoaW4gY2FyZCBwcm9iZQo+PiBy
-b3V0aW5lcy4gVGhlc2UgdGFrZSBmb3IgZ3JhbnRlZCBwcml2YXRlX2RhdGEgcG9pbnRzIHRvCj4+
-IHNuZF9zb2NfYWNwaV9tYWNoIHdoZXJlYXMgZm9yIEhhc3dlbGwsIGl0J3Mgc3N0X3BkYXRhIGlu
-c3RlYWQuIENoYW5nZQo+PiBwcml2YXRlIGNvbnRleHQgb2YgcGxhdGZvcm1fZGV2aWNlIC0gcmVw
-cmVzZW50aW5nIG1hY2hpbmUgYm9hcmQgLSB0bwo+PiBhZGRyZXNzIHRoaXMuCj4+Cj4+IEZpeGVz
-OiBlODcwNTVkNzMyZTMgKCJBU29DOiBJbnRlbDogaGFzd2VsbDogcGxhdGZvcm0gbmFtZSBmaXh1
-cCBzdXBwb3J0IikKPj4gRml4ZXM6IDdlNDBkZGNmOTc0YSAoIkFTb0M6IEludGVsOiBiZHctcnQ1
-Njc3OiBwbGF0Zm9ybSBuYW1lIGZpeHVwIAo+PiBzdXBwb3J0IikKPj4gRml4ZXM6IDJkMDY3YjI4
-MDdmOSAoIkFTb0M6IEludGVsOiBicm9hZHdlbGw6IHBsYXRmb3JtIG5hbWUgZml4dXAgCj4+IHN1
-cHBvcnQiKQo+PiBTaWduZWQtb2ZmLWJ5OiBDZXphcnkgUm9qZXdza2kgPGNlemFyeS5yb2pld3Nr
-aUBpbnRlbC5jb20+Cj4+IC0tLQo+PiDCoCBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1hY3Bp
-LmMgfCAzICsrLQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0
-aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1hY3Bp
-LmMgCj4+IGIvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtYWNwaS5jCj4+IGluZGV4IDE1ZjJi
-MjdlNjQzZi4uYzM0ZjYyOGM3OTg3IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvY29t
-bW9uL3NzdC1hY3BpLmMKPj4gKysrIGIvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtYWNwaS5j
-Cj4+IEBAIC0xMDksMTEgKzEwOSwxMiBAQCBpbnQgc3N0X2FjcGlfcHJvYmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZSAqcGRldikKPj4gwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgcGxhdGZvcm1f
-c2V0X2RydmRhdGEocGRldiwgc3N0X2FjcGkpOwo+PiArwqDCoMKgIG1hY2gtPnBkYXRhID0gc3N0
-X3BkYXRhOwo+PiDCoMKgwqDCoMKgIC8qIHJlZ2lzdGVyIG1hY2hpbmUgZHJpdmVyICovCj4+IMKg
-wqDCoMKgwqAgc3N0X2FjcGktPnBkZXZfbWFjaCA9Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBwbGF0
-Zm9ybV9kZXZpY2VfcmVnaXN0ZXJfZGF0YShkZXYsIG1hY2gtPmRydl9uYW1lLCAtMSwKPj4gLcKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNzdF9wZGF0
-YSwgc2l6ZW9mKCpzc3RfcGRhdGEpKTsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1hY2gsIHNpemVvZigqbWFjaCkpOwo+IAo+IEkgbm93IGFn
-cmVlIHRoYXQgdGhlIGNvZGUgSSBhZGRlZCBpcyBpbmNvcnJlY3QgYW5kIHByb2JhYmx5IGFjY2Vz
-c2VzIAo+IG1lbW9yeSBvZmZzZXRzIHRoYXQgYXJlbid0IHJpZ2h0LiBJIGhhdmUgYWJzb2x1dGVs
-eSBubyBpZGVhIHdoeSBJIGFkZGVkIAo+IHRoaXMgY29tbWVudCB0aGF0ICdsZWdhY3kgZG9lcyBu
-b3QgcGFzcyBwYXJhbWV0ZXJzJyB3aGVuIGl0IG1vc3QgCj4gZGVmaW5pdGl2ZWx5IGRvZXMuIEdv
-b2QgY2F0Y2ggb24geW91ciBzaWRlLgo+IAo+IFRoYXQgc2FpZCwgZG9lc24ndCB0aGUgcHJvcG9z
-ZWQgZml4IGludHJvZHVjZSBhbm90aGVyIGlzc3VlPwo+IAo+IEluIHRoZSBtYWNoaW5lIGRyaXZl
-cnMsIHlvdSBzdGlsbCBnZXQgcGRhdGEgZGlyZWN0bHksIHNvIGFyZW4ndCB5b3UgCj4gbWlzc2lu
-ZyBhbiBpbmRpcmVjdGlvbiB0byBnZXQgYmFjayB0byBwZGF0YSBmcm9tIG1hY2g/Cj4gCj4gc3Rh
-dGljIGludCBiZHdfcnQ1Njc3X3J0ZF9pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpy
-dGQpCj4gewo+ICDCoMKgwqDCoHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50ID0g
-c25kX3NvY19ydGRjb21fbG9va3VwKHJ0ZCwgCj4gRFJWX05BTUUpOwo+ICDCoMKgwqDCoHN0cnVj
-dCBzc3RfcGRhdGEgKnBkYXRhID0gZGV2X2dldF9wbGF0ZGF0YShjb21wb25lbnQtPmRldik7Cj4g
-IMKgwqDCoMKgc3RydWN0IHNzdF9oc3cgKmJyb2Fkd2VsbCA9IHBkYXRhLT5kc3A7Cj4gCj4gPDw8
-IHNvIGhlcmUgeW91IHRvb2sgdGhlIHdyb25nIHBvaW50ZXIsIG5vPwoKQm90aCBCYXl0cmFpbCBh
-bmQgSGFzd2VsbCBhcmUgZW51bWVyYXRlZCBpbiBhIGJpdCBkaWZmZXJlbnQgZmFzaGlvbiB0aGFu
-IApTS0wgZXF1aXZhbGVudHMuCgpUaGVyZSBpcyBhbiBpbi1wbGFjZSByZWdpc3RyYXRpb24gZm9y
-IG1hY2hpbmUgZGV2aWNlIC0gd2hvc2UgCnByaXZhdGVfZGF0YSBnZXRzIHVzZWQgaW4gbWFjaGlu
-ZSBwcm9iZSAtIGFuZCBwY20gZGV2aWNlIHdoaWNoIGhhcHBlbnMgCm9uIGZpcm13YXJlIGxvYWQg
-Y2FsbGJhY2sgKC9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1hY3BpOjYzKS4gCl9ydGRfaW5p
-dCBtYWtlcyB1c2Ugb2YgdGhlIGxhdHRlciBvZiB0d28uCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, Aug 22, 2019 at 7:56 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 22/08/2019 13:36, Rob Herring wrote:
+> >>>> +soundwire@c2d0000 {
+> >>>> +    compatible = "qcom,soundwire-v1.5.0"
+> >>>> +    reg = <0x0c2d0000 0x2000>;
+> >>>> +
+> >>>> +    spkr_left:wsa8810-left{
+> >>>> +            compatible = "sdw0110217201000";
+> >>>> +            ...
+> >>>> +    };
+> >>>> +
+> >>>> +    spkr_right:wsa8810-right{
+> >>>> +            compatible = "sdw0120217201000";
+> >>> The normal way to distinguish instances is with 'reg'. So I think you
+> >>> need 'reg' with Instance ID moved there at least. Just guessing, but
+> >>> perhaps Link ID, too? And for 2 different classes of device is that
+> >>> enough?
+> >> In previous bindings (https://lists.gt.net/linux/kernel/3403276  ) we
+> >> did have instance-id as different property, however Pierre had some good
+> >> suggestion to make it align with _ADR encoding as per MIPI DisCo spec.
+> >>
+> >> Do you still think that we should split the instance id to reg property?
+> > Assuming you could have more than 1 of the same device on the bus,
+> > then you need some way to distinguish them and the way that's done for
+> > DT is unit-address/reg. And compatible strings should be constant for
+> > each instance.
+> That is a good point!
+> Okay that makes more sense keep compatible string constant.
+> Class ID would be constant for given functionality that the driver will
+> provide.
+>
+> So we will end up with some thing like this:
+>
+> soundwire@c2d0000 {
+>         compatible = "qcom,soundwire-v1.5.0"
+>         reg = <0x0c2d0000 0x2000>;
+>          #address-cells = <1>;
+>          #size-cells = <0>;
+>
+>         spkr_left:skpr@1{
+>                 compatible = "sdw10217201000";
+>                 reg = <0x1>
+>                 sdw-link-id = <0>;
+
+Not really sure what Link ID is, but maybe it should be part of reg
+too if it is part of how you address a device.
+
+>                 ...
+>         };
+>
+>         spkr_right:spkr@2{
+>                 compatible = "sdw10217201000";
+>                 reg = <0x2>
+>                 sdw-link-id = <0>;
+>         };
+> };
+>
+> I will spin this in next version!
+>
+> Thanks,
+> srini
+>
+> >
+> > Rob
