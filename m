@@ -1,87 +1,76 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/4] ASoC: Intel: Haswell: Adjust machine
- device private context
-Date: Thu, 22 Aug 2019 10:58:29 -0500
-Message-ID: <76464d4e-a129-99b8-05ab-eff755cc5a1e@linux.intel.com>
-References: <20190822113616.22702-1-cezary.rojewski@intel.com>
- <20190822113616.22702-2-cezary.rojewski@intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 0/5] ASoC: SOF: Intel: SoundWire initial
+ integration
+Date: Thu, 22 Aug 2019 11:00:14 -0500
+Message-ID: <5cf3425a-9b09-dee8-04ab-1bd746d33723@linux.intel.com>
+References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
+ <20190822151928.GB1200@ubuntu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9D49F800BF
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 17:58:32 +0200 (CEST)
-In-Reply-To: <20190822113616.22702-2-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190822151928.GB1200@ubuntu>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 8/22/19 6:36 AM, Cezary Rojewski wrote:
-> Apart from Haswell machines, all other devices have their private data
-> set to snd_soc_acpi_mach instance.
+> In patch 4/5 I forgot to mention superfluous braces around dev_err()
+> in sdw_config_stream() and sdw_free_stream(). Otherwise for the series:
+
+Will fix, thanks for spotting this.
+
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+
+Thanks, I appreciate the overnight review!
+
 > 
-> Changes for HSW/ BDW boards introduced with series:
-> https://patchwork.kernel.org/cover/10782035/
+> Thanks
+> Guennadi
 > 
-> added support for dai_link platform_name adjustments within card probe
-> routines. These take for granted private_data points to
-> snd_soc_acpi_mach whereas for Haswell, it's sst_pdata instead. Change
-> private context of platform_device - representing machine board - to
-> address this.
+> On Wed, Aug 21, 2019 at 03:17:15PM -0500, Pierre-Louis Bossart wrote:
+>> This RFC is the companion of the other RFC 'soundwire: intel: simplify
+>> DAI/PDI handling​'. Our purpose at this point is to gather feedback on
+>> the interfaces between the Intel SOF parts and the SoundWire code.
+>>
+>> The suggested solution is a simple init/release inserted at
+>> probe/remove and resume/suspend, as well as two callbacks for the SOF
+>> driver to generate IPC configurations with the firmware. That level of
+>> separation completely hides the details of the SoundWire DAIs and will
+>> allow for 'transparent' multi-cpu DAI support, which will be handled
+>> in the machine driver and the soundwire DAIs.
+>>
+>> This solution was tested on IceLake and CometLake, and captures the
+>> feedback from SOF contributors on an initial integration that was
+>> deemed too complicated (and rightly so).
+>>
+>> Pierre-Louis Bossart (5):
+>>    ASoC: SOF: IPC: dai-intel: move ALH declarations in header file
+>>    ASoC: SOF: Intel: hda: add helper to initialize SoundWire IP
+>>    ASoC: SOF: Intel: hda: add SoundWire IP support
+>>    ASoC: SOF: Intel: hda: add SoundWire stream config/free callbacks
+>>    ASoC: SOF: Intel: add support for SoundWire suspend/resume
+>>
+>>   include/sound/sof/dai-intel.h |  18 ++--
+>>   sound/soc/sof/intel/hda-dsp.c |  11 +++
+>>   sound/soc/sof/intel/hda.c     | 157 ++++++++++++++++++++++++++++++++++
+>>   sound/soc/sof/intel/hda.h     |  11 +++
+>>   4 files changed, 188 insertions(+), 9 deletions(-)
+>>
+>>
+>> base-commit: 3b3aaa017e8072b1bfddda92be296b3463d870be
+>> -- 
+>> 2.20.1
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > 
-> Fixes: e87055d732e3 ("ASoC: Intel: haswell: platform name fixup support")
-> Fixes: 7e40ddcf974a ("ASoC: Intel: bdw-rt5677: platform name fixup support")
-> Fixes: 2d067b2807f9 ("ASoC: Intel: broadwell: platform name fixup support")
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->   sound/soc/intel/common/sst-acpi.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-> index 15f2b27e643f..c34f628c7987 100644
-> --- a/sound/soc/intel/common/sst-acpi.c
-> +++ b/sound/soc/intel/common/sst-acpi.c
-> @@ -109,11 +109,12 @@ int sst_acpi_probe(struct platform_device *pdev)
->   	}
->   
->   	platform_set_drvdata(pdev, sst_acpi);
-> +	mach->pdata = sst_pdata;
->   
->   	/* register machine driver */
->   	sst_acpi->pdev_mach =
->   		platform_device_register_data(dev, mach->drv_name, -1,
-> -					      sst_pdata, sizeof(*sst_pdata));
-> +					      mach, sizeof(*mach));
-
-I now agree that the code I added is incorrect and probably accesses 
-memory offsets that aren't right. I have absolutely no idea why I added 
-this comment that 'legacy does not pass parameters' when it most 
-definitively does. Good catch on your side.
-
-That said, doesn't the proposed fix introduce another issue?
-
-In the machine drivers, you still get pdata directly, so aren't you 
-missing an indirection to get back to pdata from mach?
-
-static int bdw_rt5677_rtd_init(struct snd_soc_pcm_runtime *rtd)
-{
-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-	struct sst_pdata *pdata = dev_get_platdata(component->dev);
-	struct sst_hsw *broadwell = pdata->dsp;
-
-<<< so here you took the wrong pointer, no?
