@@ -1,16 +1,19 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 00/35] ASoC: Intel: Clenaup SST initialization
-Date: Thu, 22 Aug 2019 21:03:50 +0200
-Message-ID: <20190822190425.23001-1-cezary.rojewski@intel.com>
+Subject: [PATCH 02/35] ASoC: Intel: Skylake: Add
+	FIRMWARE_CONFIG IPC request
+Date: Thu, 22 Aug 2019 21:03:52 +0200
+Message-ID: <20190822190425.23001-3-cezary.rojewski@intel.com>
+References: <20190822190425.23001-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4040F800BF
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:04:41 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18DEEF803F3
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:04:45 +0200 (CEST)
+In-Reply-To: <20190822190425.23001-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,142 +27,263 @@ To: alsa-devel@alsa-project.org
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBzZWdtZW50IHRhcmdldHMgaW5pdGlhbGl6YXRpb24gcHJvY2VkdXJlcyBmb3IgYWxsIFNT
-VCBkcml2ZXJzLgpGb3IgbGVnYWN5OgotIGl0IGNvbmNlbnRyYXRlcyBvbiB1cGRhdGluZyBBQ1BJ
-IGxvYWRlciBzbyBnZW5lcmljIERTUCBmcmFtZXdvcmsgaXMKICBub3QgZmVkIGFueSBwbGF0Zm9y
-bSBzcGVjaWZpYyBkYXRhLiBzc3QtYWNwaSBtb2R1bGUgY2Vhc2VzIHRvIGV4aXN0CiAgYW5kIGlz
-IHJlcGxhY2VkIGJ5IGhzdy1hY3BpIGFuZCBieXQtYWNwaQoKRm9yIGNBVlMgKFNreWxha2UrKToK
-LSBSZXBhaXJzIHdoYXQgaXMgY3VycmVudGx5IGFuIGluaXRpYWxpemF0aW9uIG1lc3MsIGdpdmVu
-IHRoZSBvcmRlciBvZgogIGludm9jYXRpb24gb2YgZW5nYWdlZCBoYW5kbGVycyBhbmQgc2hlZXIg
-YW1vdW50IG9mIHRoZW0uCi0gcHJvdmlkZXMgaW50ZXJmYWNlIHRvIG9mZmxvYWQgaGFyZHdhcmUt
-c3BlY2lmaWNzIGF3YXkgZnJvbSBkcml2ZXIKCkZvbGxvd2luZyBpcyB0aGUgb3JkZXIgb2YgU2t5
-bGFrZSBpbml0aWFsaXphdGlvbiBjdXJyZW50bHk6Ci0gc2tsX3Byb2JlCiAgIC0+IHNjaGVkdWxl
-IHNrbF9wcm9iZV93b3JrCi0gc2tsX2ZpcnN0X2luaXQKLSBza2xfY3JlYXRlCgotPiBza2xfaW5p
-dF9kc3AKLS0+IHNrbC8gYnh0LyBjbmxfc3N0X2RzcF9pbml0Ci0tLT4gc2tsX3NzdF9jdHhfaW5p
-dAotLS0tPiBza2xfZHNwX2N0eF9pbml0Ci0tLS0tPiBzc3RfZHNwX25ldwotLS0tLS0+IHNzdF9v
-cHM6OmluaXQgKGludm9rZWQgYnV0IHVuaW1wbGVtZW50ZWQhKQoKTGlzdGluZyBhbGwgdGhlIHR5
-cGVzIGVuZ2FnZWQgdG9nZXRoZXIgd2l0aCB0aGUgbmFtaW5nIGNob3NlbiBmb3IgdGhlCmFib3Zl
-IHBhaW50cyBhbiBldmVuIGRhcmtlciBwaWN0dXJlLiBDb2RlIGlzIHVucmVhZGFibGUgYW5kIGhp
-ZGVzCmluaXRpYWxpemF0aW9uIGZvciBkaWZmZW5yZXQgbWVtYmVycyBpcyB2YXJpb3VzIGhhbmRs
-ZXJzLiBNb3Jlb3ZlciwgZHVlCnRvIGV4aXN0aW5nIGlsbCByZWxhdGlvbnNoaXAgYmV0d2VlbiBz
-a2xfZGV2LCBzc3RfZHNwIGFuZApzc3RfZ2VuZXJpY19pcGMsIG9uZSBtdXN0IGJlIGV4dHJhIGNh
-cmVmdWwgd2hlbiBhY2Nlc3Npbmcgc28gY2FsbGVkCiJkc3AvIHRocmVhZF9jb250ZXh0IiBhcyB0
-aGV5IGFsbCBkb24ndCBnZXQgaW5pdGlhbGl6ZWQgaW1tZWRpYXRlbHkKYmVmb3JlIG9iamVjdCBp
-cyB5aWVsZCBmb3IgZnVydGhlciBwcm9jZXNzaW5nLiBIb3dldmVyLCAxMDAvMTAwIHNlcmllcwpp
-cyBub25zZW5zZSBhbmQgdGh1cyBjbGVhbnVwcyBoYXZlIGJlZW4gZGl2aWRlZCBpbnRvIGNodW5r
-cyBhbmQKcHJpb3JpdGl6ZWQuCgpDb2RlIHNlZW4gaGVyZSBpcyBwYXJ0IG9mIG5ldyBTa3lsYWtl
-IGZ1bmRhbWVudCwgbG9jYXRlZCBhdCB0aGUgdmVyeQpib3R0b20gb2YgaW50ZXJuYWwgbWFpbmxp
-bmUuIFNhaWQgbWFpbmxpbmUgaXMgdGVzdGVkIGNvbnN0YW50bHkgb24gYXQKbGVhc3Qgc2lnbGUg
-cGxhdGZvcm0gZnJvbSBldmVyeSBjQVZTIGJ1Y2tldCAoZGVzY3JpcHRpb24gYmVsb3cpLiBUaGlz
-CndlZWssIEJEVyBoYXMgYmVlbiBhZGRlZCB0byB0aGUgQ0kgZmFtaWx5IGFuZCB3YXMgZXNzZW50
-aWFsIGluCnZhbGlkYXRpbmcgbGVnYWN5IGNoYW5nZXMuIEJheXRyYWlsIHBsYXRmb3JtIGlzIHN0
-aWxsIG1pc3NpbmcuIENoYW5nZXMKZm9yIEJZVCBkaXJlY3RseSBtaXJyb3IgSFNXLyBCRFcgYnV0
-IGR1ZSB0byBjdXJyZW50IGxhY2sgb2YgcGxhdGZvcm0Kd2VyZSB1bnRlc3RlZC4KQm9hcmRzIGVu
-Z2FnZWQgaW4gdGVzdGluZzogcnQyODYsIHJ0Mjk4LCBydDI3NC4KCiEhISBJTVBPUlRBTlQgISEh
-CgpTb21lIHVwc3RyZWFtIEZXIGJpbmFyaWVzIGFyZSBub3QgY29tcGF0aWJsZSB3aXRoIGV4aXN0
-aW5nIC9za3lsYWtlCmRyaXZlciB3aGlsZSBjaGFuZ2VzIGZvdW5kIGhlcmUgKEhBUkRXQVJFX0NP
-TkZJRy8gRklSTVdBUkVfQ09ORklHKSBtYWtlCnVzZSBvZiBmaXJtd2FyZSBhYmlsaXR5IHRvIG9m
-ZmxvYWQgaGFyZHdhcmUtc3BlY2lmaWNzIGF3YXkgZnJvbSBkcml2ZXIuClRoZXNlIGFuZCBtb3Jl
-IGFyZSBjb3JlIHBhcnQgb2YgYW55IGNBVlMgZGVzaWduIGFuZCBhcmUgdG8gYmUKaW1wbGVtZW50
-ZWQgYW5kIHVzZWQgYnkgaG9zdC4gVGhpcyB0b28gaXMgbWlzc2luZyBvbiBMaW51eCB1cHN0cmVh
-bS4KCkFzIGV4cGxhbmluZWQgb25jZSwgZml2ZSBtYWluIEZXIGJyYW5jaGVzIGFyZSBhdmFpbGFi
-bGU6Ci0ga2JsLCAxLjUgY0FWUyAoc3VwcG9ydHMgU0tMLCBLQkwsIEtCTC1SLCBBQkwsIG1vcmUu
-LikKLSBhcGxfYXV0bywgMS41KyBjQVZTIChzdXBwb3J0cyBBUEwsIEdMSykKLSBjbmwsIDEuOCBj
-QVZTIChzdXBwb3J0cyBDTkwsIENGTCwgV0hMLCBDTUwpCi0gaWNsLCAyLjAgY0FWUyAoc3VwcG9y
-dHMgSUNMLCBMS0YpCi0gbWFzdGVyLCAyLjUgY0FWUyAoc3VwcG9ydHMgVEdMLCBFSEwgYW5kIGV2
-ZXJ5dGhpbmcgYWJvdmUpCgpTS0wgRlcgYmluYXJ5IGV4aXN0aW5nIG9uIHVwc3RyZWFtIGlzIGEg
-ZGVzY2VuZGFudCBvZiBvbGQgc3B0IGJyYW5jaCwKb2Jzb2xldGVkIGZvciA0LTUgeWVhcnMgbm93
-LiBUaGF0IEZXIGlzIGEgc3R1YiwgcXVpY2tseSByZXBsYWNlZCBieQprYmwgd2hpY2ggaXMgdG8g
-YmUgdXNlZCBvbiBhbGwgMS41IGNBVlMgcGxhdGZvcm1zLgoKVGhlIHNhbWUgc3RvcnkgZ29lcyB3
-aXRoIGJ4dG4gYmluYXJ5LCBhIGRlc2NlbmRhbnQgb2YgYXBsIGJyYW5jaCwKcmVwbGFjZWQgYnkg
-YXBsX2F1dG8gMi0zIHllYXJzIGFnby4gQWxsIHZlbmRvcnMsIGVudGlyZSB2YWxpZGF0aW9uIGFu
-ZApkZXZlbG9wbWVudCBpcyBsb2NhdGVkIG9uIGFwbF9hdXRvLgoKTWVzc2FnZTogYWxsIEZXIGJp
-bmFyaWVzIGFyZSB0byBiZSB1cGRhdGVkIGFzIHdlIGNhbm5vdCBndWFyYW50ZWUgdGhlc2UKYXJl
-IHN0aWxsIGZ1bmN0aW9uYWwuIEdpdmVuIHRoZSBmYWN0IHRoYXQgYWxsIHZlbmRvcnMgYXJlIGZl
-ZCB3aXRoIG5ldwpiaW5hcmllcyBvbiByZWd1bGFyIGJhc2lzIGZyb20gYWxsIG1haW4gYnJhbmNo
-ZXMsIGl0J3MgaGlnaGx5IHByb2JhYmxlCnNvbWUgc2NlbmFyaW9zIGZhaWwgd2l0aCBleGlzdGlu
-ZyBGV3MuIEluIGNvbnNlcXVlbmNlLCBsaW51eC1maXJtd2FyZQpwYXRjaCB3aWxsIGJlIHByb3Zp
-ZGVkIHdpdGggZnJlc2gsIHVwZGF0ZWQgYmluYXJpZXMsIHNvb24uCk9uY2UgbW9yZSwgcGxlYXNl
-IG5vdGUsIHdlIGRvIG5vdCBzdXBwb3J0LCBub3IgdGVzdCBwbGF0Zm9ybXMgdXNpbmcKb2Jzb2xl
-dGUgRlcgYmluYXJpZXMuIFRoYXQgaW5jbHVkZXMgYWxsIHBsYXRmb3Jtcywgbm90IGp1c3QgU0tM
-IG9yIEFQTC4KCkFtYWRldXN6IFPFgmF3acWEc2tpICgxKToKICBBU29DOiBJbnRlbDogU2t5bGFr
-ZTogUHV0IEZXIHJ1bnRpbWUgcGFyYW1zIGRlZnMgaW4gb25lIHBsYWNlCgpDZXphcnkgUm9qZXdz
-a2kgKDM0KToKICBBU29DOiBJbnRlbDogU2t5bGFrZTogQWRkIEZJUk1XQVJFX0NPTkZJRyBJUEMg
-cmVxdWVzdAogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBBZGQgSEFSRFdBUkVfQ09ORklHIElQQyBy
-ZXF1ZXN0CiAgQVNvQzogSW50ZWw6IFNreWxha2U6IFVuaWZ5IGZpcm13YXJlIGxvYWRpbmcgbWVj
-aGFuaXNtCiAgQVNvQzogSW50ZWw6IFNreWxha2U6IFJlbG9hZCBsaWJyYXJpZXMgb24gRDAgZW50
-cnkgZm9yIENOTAogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBVbmhhcmRjb2RlIGRzcCBjb3JlcyBu
-dW1iZXIKICBBU29DOiBJbnRlbDogU2t5bGFrZTogVXBkYXRlIGludGVycnVwdCBkaXNhYmxpbmcg
-cm91dGluZQogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBJbmxpbmUgaXBjIGZyZWUgb3BlcmF0aW9u
-cwogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBVbmlmeSBkcml2ZXIgY2xlYW51cCBtZWNoYW5pc20K
-ICBBU29DOiBJbnRlbDogUmVsb2NhdGUgaXJxIHRocmVhZCBoZWFkZXIgdG8gc3N0X29wcwogIEFT
-b0M6IEludGVsOiBNZXJnZSBzc3RfZHNwX2RldmljZSBpbnRvIHNzdF9wZGF0YQogIEFTb0M6IElu
-dGVsOiBTa3lsYWtlOiBSZXVzZSBzc3RfZHNwX2ZyZWUKICBBU29DOiBJbnRlbDogU2t5bGFrZTog
-UmV1c2Ugc3N0X2RzcF9uZXcKICBBU29DOiBJbnRlbDogU2t5bGFrZTogUmVtb3ZlIHNrbF9kc3Bf
-YWNxdWlyZV9pcnEKICBBU29DOiBJbnRlbDogU2t5bGFrZTogVXNlIGRzcCBsb2FkaW5nIGZ1bmN0
-aW9ucyBkaXJlY3RseQogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBNYWtlIGRzcF9vcHM6OnN0cmVh
-bV90YWcgb2Jzb2xldGUKICBBU29DOiBJbnRlbDogU2t5bGFrZTogUmVtb3ZlIHNrbF9kc3BfbG9h
-ZGVyX29wcwogIEFTb0M6IEludGVsOiBTa3lsYWtlOiBSZW1vdmUgd2luZG93MCBzc3RfYWRkciBm
-aWVsZHMKICBBU29DOiBJbnRlbDogU2t5bGFrZTogUmVtb3ZlIHJlZHVuZGFudCBXMCBhbmQgVzEg
-bWFjcm9zCiAgQVNvQzogSW50ZWw6IFNreWxha2U6IFJlbW92ZSByZWR1bmRhbnQgU1JBTSBmaWVs
-ZHMKICBBU29DOiBJbnRlbDogRXhwb3NlIEFDUEkgbG9hZGluZyBtZW1iZXJzCiAgQVNvQzogSW50
-ZWw6IEhhc3dlbGw6IERlZmluZSBzZXBhcmF0ZSBBQ1BJIGxvYWRlcgogIEFTb0M6IEludGVsOiBC
-YXl0cmFpbDogRGVmaW5lIHNlcGFyYXRlIEFDUEkgbG9hZGVyCiAgQVNvQzogSW50ZWw6IFJlZmFj
-dG9yIHByb2Jpbmcgb2YgQUNQSSBkZXZpY2VzCiAgQVNvQzogSW50ZWw6IFNreWxha2U6IFNpbXBs
-aWZ5IHNrbF9zc3RfY3R4X2luaXQgZGVjbGFyYXRpb24KICBBU29DOiBJbnRlbDogU2t5bGFrZTog
-U2ltcGxpZnkgYWxsIHNzdF9kc3BfaW5pdCBkZWNsYXJhdGlvbnMKICBBU29DOiBJbnRlbDogU2t5
-bGFrZTogRGVmaW5lIHBsYXRmb3JtIGRlc2NyaXB0b3JzCiAgQVNvQzogSW50ZWw6IFNreWxha2U6
-IFVwZGF0ZSBza2xfaWRzIHRhYmxlCiAgQVNvQzogSW50ZWw6IFNreWxha2U6IEZsaXAgU1NUIGlu
-aXRpYWxpemF0aW9uIG9yZGVyCiAgQVNvQzogSW50ZWw6IFJldXNlIHNzdF9wZGF0YTo6ZndfbmFt
-ZSBmaWVsZAogIEFTb0M6IEludGVsOiBSZXVzZSBzc3RfcGRhdGE6OmZ3IGZpZWxkCiAgQVNvQzog
-SW50ZWw6IFNreWxha2U6IFJlbW92ZSBza2xfZHNwX29wcwogIEFTb0M6IEludGVsOiBTa3lsYWtl
-OiBQcml2YXRpemUgU1NUIGluaXQgaGFuZGxlcnMKICBBU29DOiBJbnRlbDogU2t5bGFrZTogTWVy
-Z2Ugc2tsX3NzdF9jdHhfaW5pdCBpbnRvIHNrbF9pbml0X2RzcAogIEFTb0M6IEludGVsOiBSZW1v
-dmUgb2Jzb2xldGUgZmlybXdhcmUgZmllbGRzCgogc291bmQvc29jL2ludGVsL0tjb25maWcgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDE0ICstCiBzb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwvTWFr
-ZWZpbGUgICAgICAgICAgICAgfCAgIDIgKwogc291bmQvc29jL2ludGVsL2JheXRyYWlsL2FjcGku
-YyAgICAgICAgICAgICAgIHwgIDY0ICsrKysrCiBzb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwvc3N0
-LWJheXRyYWlsLWRzcC5jICAgfCAgIDIgKy0KIHNvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3Qt
-YmF5dHJhaWwtaXBjLmMgICB8ICAxMyArLQogc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1i
-YXl0cmFpbC1pcGMuaCAgIHwgICAyICsKIHNvdW5kL3NvYy9pbnRlbC9jb21tb24vTWFrZWZpbGUg
-ICAgICAgICAgICAgICB8ICAgNCArLQogLi4uL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1i
-eHQtbWF0Y2guYyAgIHwgICAyIC0KIC4uLi9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtYnl0
-LW1hdGNoLmMgICB8ICAgMiAtCiAuLi4vaW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWNubC1t
-YXRjaC5jICAgfCAgIDEgLQogLi4uL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1nbGstbWF0
-Y2guYyAgIHwgICAzIC0KIC4uLi9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtaGRhLW1hdGNo
-LmMgICB8ICAgMiAtCiAuLi4vY29tbW9uL3NvYy1hY3BpLWludGVsLWhzdy1iZHctbWF0Y2guYyAg
-ICAgfCAgIDQgLQogLi4uL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1pY2wtbWF0Y2guYyAg
-IHwgICAxIC0KIC4uLi9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwta2JsLW1hdGNoLmMgICB8
-ICAxMiAtCiAuLi4vaW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLXNrbC1tYXRjaC5jICAgfCAg
-IDMgLQogc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtYWNwaS5jICAgICAgICAgICAgIHwgMTE3
-ICstLS0tLS0tLQogc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZHNwLXByaXYuaCAgICAgICAg
-IHwgICA4ICstCiBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1kc3AuaCAgICAgICAgICAgICAg
-fCAgMzcgKy0tCiBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1maXJtd2FyZS5jICAgICAgICAg
-fCAgMTMgKy0KIHNvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL01ha2VmaWxlICAgICAgICAgICAgICB8
-ICAgMiArCiBzb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9hY3BpLmMgICAgICAgICAgICAgICAgfCAg
-NzggKysrKysrCiBzb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1kc3AuYyAgICAg
-fCAgIDEgKwogc291bmQvc29jL2ludGVsL2hhc3dlbGwvc3N0LWhhc3dlbGwtaXBjLmMgICAgIHwg
-IDEzICstCiBzb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1pcGMuaCAgICAgfCAg
-IDIgKwogc291bmQvc29jL2ludGVsL3NreWxha2UvYnh0LXNzdC5jICAgICAgICAgICAgIHwgMTQz
-ICsrKystLS0tLS0tCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9jbmwtc3N0LWRzcC5jICAgICAg
-ICAgfCAgMTMgKy0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL2NubC1zc3QtZHNwLmggICAgICAg
-ICB8ICAxNSArLQogc291bmQvc29jL2ludGVsL3NreWxha2UvY25sLXNzdC5jICAgICAgICAgICAg
-IHwgMTQyICsrKystLS0tLS0tCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtZGVidWcuYyAg
-ICAgICAgICAgfCAgIDIgKy0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1tZXNzYWdlcy5j
-ICAgICAgICB8IDE5NCArKy0tLS0tLS0tLS0tLQogc291bmQvc29jL2ludGVsL3NreWxha2Uvc2ts
-LXBjbS5jICAgICAgICAgICAgIHwgIDIyICstCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wt
-c3N0LWNsZG1hLmMgICAgICAgfCAgMTAgKy0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1z
-c3QtZHNwLmMgICAgICAgICB8ICA3OSArKy0tLS0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3Nr
-bC1zc3QtZHNwLmggICAgICAgICB8ICA1NSArKy0tCiBzb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9z
-a2wtc3N0LWlwYy5jICAgICAgICAgfCAyMzggKysrKysrKysrKysrKysrKy0tCiBzb3VuZC9zb2Mv
-aW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5oICAgICAgICAgfCAxMjQgKysrKysrKystCiBzb3Vu
-ZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LXV0aWxzLmMgICAgICAgfCAgMjggKy0tCiBzb3Vu
-ZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LmMgICAgICAgICAgICAgfCAxNTAgKysrKysrLS0t
-LS0KIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC5jICAgICAgICAgICAgICAgICB8ICA2NSAr
-KystLQogc291bmQvc29jL2ludGVsL3NreWxha2Uvc2tsLmggICAgICAgICAgICAgICAgIHwgIDI2
-ICstCiA0MSBmaWxlcyBjaGFuZ2VkLCA4NzcgaW5zZXJ0aW9ucygrKSwgODMxIGRlbGV0aW9ucygt
-KQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9hY3BpLmMKIGNy
-ZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9hY3BpLmMKCi0tIAoyLjE3
-LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Implement interface for retrieving firmware configuration. Skylake
+driver will use this data instead of hardcoded values in updates to
+come.
+
+Most params are currently unused. In time driver dependency on fw config
+will increase, and with it, more parsing will be unveiled.
+
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/skylake/skl-sst-ipc.c | 122 ++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h |  72 +++++++++++++++
+ sound/soc/intel/skylake/skl.h         |   1 +
+ 3 files changed, 195 insertions(+)
+
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 667cdddc289f..e9e11ec4c97b 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -11,6 +11,7 @@
+ #include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
++#include "skl-topology.h"
+ #include "sound/hdaudio_ext.h"
+ 
+ 
+@@ -1067,3 +1068,124 @@ int skl_ipc_set_d0ix(struct sst_generic_ipc *ipc, struct skl_ipc_d0ix_msg *msg)
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(skl_ipc_set_d0ix);
++
++int skl_ipc_fw_cfg_get(struct sst_generic_ipc *ipc, struct skl_fw_cfg *cfg)
++{
++	struct skl_ipc_large_config_msg msg = {0};
++	struct skl_tlv *tlv;
++	size_t bytes = 0, offset = 0;
++	u8 *payload = NULL;
++	int ret;
++
++	msg.module_id = 0;
++	msg.instance_id = 0;
++	msg.large_param_id = SKL_BASEFW_FIRMWARE_CONFIG;
++
++	ret = skl_ipc_get_large_config(ipc, &msg, (u32 **)&payload, &bytes);
++	if (ret)
++		goto exit;
++
++	while (offset < bytes) {
++		tlv = (struct skl_tlv *)(payload + offset);
++
++		switch (tlv->type) {
++		case SKL_FW_CFG_FW_VERSION:
++			memcpy(&cfg->fw_version, tlv->value,
++				sizeof(cfg->fw_version));
++			break;
++
++		case SKL_FW_CFG_MEMORY_RECLAIMED:
++			cfg->memory_reclaimed = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_SLOW_CLOCK_FREQ_HZ:
++			cfg->slow_clock_freq_hz = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_FAST_CLOCK_FREQ_HZ:
++			cfg->fast_clock_freq_hz = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_ALH_SUPPORT_LEVEL:
++			cfg->alh_support = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_IPC_DL_MAILBOX_BYTES:
++			cfg->ipc_dl_mailbox_bytes = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_IPC_UL_MAILBOX_BYTES:
++			cfg->ipc_ul_mailbox_bytes = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_TRACE_LOG_BYTES:
++			cfg->trace_log_bytes = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_PPL_COUNT:
++			cfg->max_ppl_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_ASTATE_COUNT:
++			cfg->max_astate_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_MODULE_PIN_COUNT:
++			cfg->max_module_pin_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MODULES_COUNT:
++			cfg->modules_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_MOD_INST_COUNT:
++			cfg->max_mod_inst_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_LL_TASKS_PER_PRI_COUNT:
++			cfg->max_ll_tasks_per_pri_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_LL_PRI_COUNT:
++			cfg->ll_pri_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_DP_TASKS_COUNT:
++			cfg->max_dp_tasks_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_MAX_LIBS_COUNT:
++			cfg->max_libs_count = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_XTAL_FREQ_HZ:
++			cfg->xtal_freq_hz = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_UAOL_SUPPORT:
++			cfg->uaol_support = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_POWER_GATING_POLICY:
++			cfg->power_gating_policy = *tlv->value;
++			break;
++
++		case SKL_FW_CFG_DMA_BUFFER_CONFIG:
++		case SKL_FW_CFG_SCHEDULER_CONFIG:
++		case SKL_FW_CFG_CLOCKS_CONFIG:
++			break;
++
++		default:
++			dev_info(ipc->dev, "Unrecognized fw param: %d\n",
++				tlv->type);
++			break;
++		}
++
++		offset += sizeof(*tlv) + tlv->length;
++	}
++
++exit:
++	kfree(payload);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(skl_ipc_fw_cfg_get);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 0058d82bd5a4..ebc5852e15d0 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -15,6 +15,12 @@
+ struct sst_dsp;
+ struct sst_generic_ipc;
+ 
++struct skl_tlv {
++	u32 type;
++	u32 length;
++	u8 value[0];
++};
++
+ enum skl_ipc_pipeline_state {
+ 	PPL_INVALID_STATE =	0,
+ 	PPL_UNINITIALIZED =	1,
+@@ -70,6 +76,69 @@ struct skl_lib_info {
+ enum skl_basefw_runtime_param {
+ 	SKL_BASEFW_ASTATE_TABLE = 4,
+ 	SKL_BASEFW_DMA_CONTROL = 5,
++	SKL_BASEFW_FIRMWARE_CONFIG = 7,
++};
++
++enum skl_fw_cfg_params {
++	SKL_FW_CFG_FW_VERSION = 0,
++	SKL_FW_CFG_MEMORY_RECLAIMED,
++	SKL_FW_CFG_SLOW_CLOCK_FREQ_HZ,
++	SKL_FW_CFG_FAST_CLOCK_FREQ_HZ,
++	SKL_FW_CFG_DMA_BUFFER_CONFIG,
++	SKL_FW_CFG_ALH_SUPPORT_LEVEL,
++	SKL_FW_CFG_IPC_DL_MAILBOX_BYTES,
++	SKL_FW_CFG_IPC_UL_MAILBOX_BYTES,
++	SKL_FW_CFG_TRACE_LOG_BYTES,
++	SKL_FW_CFG_MAX_PPL_COUNT,
++	SKL_FW_CFG_MAX_ASTATE_COUNT,
++	SKL_FW_CFG_MAX_MODULE_PIN_COUNT,
++	SKL_FW_CFG_MODULES_COUNT,
++	SKL_FW_CFG_MAX_MOD_INST_COUNT,
++	SKL_FW_CFG_MAX_LL_TASKS_PER_PRI_COUNT,
++	SKL_FW_CFG_LL_PRI_COUNT,
++	SKL_FW_CFG_MAX_DP_TASKS_COUNT,
++	SKL_FW_CFG_MAX_LIBS_COUNT,
++	SKL_FW_CFG_SCHEDULER_CONFIG,
++	SKL_FW_CFG_XTAL_FREQ_HZ,
++	SKL_FW_CFG_CLOCKS_CONFIG,
++	SKL_FW_CFG_UAOL_SUPPORT,
++	SKL_FW_CFG_POWER_GATING_POLICY,
++	SKL_FW_CFG_ASSERT_MODE,
++};
++
++struct skl_fw_version {
++	u16 major;
++	u16 minor;
++	u16 hotfix;
++	u16 build;
++};
++
++enum skl_alh_support_level {
++	ALH_NO_SUPPORT = 0x00000,
++	ALH_CAVS_1_8_CNL = 0x10000,
++};
++
++struct skl_fw_cfg {
++	struct skl_fw_version fw_version;
++	u32 memory_reclaimed;
++	u32 slow_clock_freq_hz;
++	u32 fast_clock_freq_hz;
++	enum skl_alh_support_level alh_support;
++	u32 ipc_dl_mailbox_bytes;
++	u32 ipc_ul_mailbox_bytes;
++	u32 trace_log_bytes;
++	u32 max_ppl_count;
++	u32 max_astate_count;
++	u32 max_module_pin_count;
++	u32 modules_count;
++	u32 max_mod_inst_count;
++	u32 max_ll_tasks_per_pri_count;
++	u32 ll_pri_count;
++	u32 max_dp_tasks_count;
++	u32 max_libs_count;
++	u32 xtal_freq_hz;
++	u32 uaol_support;
++	u32 power_gating_policy;
+ };
+ 
+ struct skl_ipc_init_instance_msg {
+@@ -171,4 +240,7 @@ int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
+ 		struct skl_ipc_header header);
+ void skl_ipc_tx_data_copy(struct ipc_message *msg, char *tx_data,
+ 		size_t tx_size);
++
++int skl_ipc_fw_cfg_get(struct sst_generic_ipc *ipc, struct skl_fw_cfg *cfg);
++
+ #endif /* __SKL_IPC_H */
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index f8c714153610..0d1c820e11cd 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -110,6 +110,7 @@ struct skl_dev {
+ 
+ 	/* Populate module information */
+ 	struct list_head uuid_list;
++	struct skl_fw_cfg fw_cfg;
+ 
+ 	/* Is firmware loaded */
+ 	bool fw_loaded;
+-- 
+2.17.1
