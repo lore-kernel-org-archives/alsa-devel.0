@@ -1,8 +1,9 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/4] ALSA: usb-audio: More strict validation
-	and cleanups
-Date: Thu, 22 Aug 2019 09:32:02 +0200
-Message-ID: <20190822073207.8696-1-tiwai@suse.de>
+Subject: [PATCH 3/4] ALSA: usb-audio: Unify the release of
+	usb_mixer_elem_info objects
+Date: Thu, 22 Aug 2019 09:32:06 +0200
+Message-ID: <20190822073207.8696-5-tiwai@suse.de>
+References: <20190822073207.8696-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,11 +11,12 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB720F80391
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B57CF8036D
  for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 09:32:10 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 00799AFA9
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 07:32:08 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 2B218AFFE
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 07:32:09 +0000 (UTC)
+In-Reply-To: <20190822073207.8696-1-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,34 +29,157 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Instead of the direct kfree() calls, introduce a new local helper to
+release the usb_mixer_elem_info object.  This will be extended to do
+more than a single kfree() in the later patches.
 
-this patchset introduces a more comprehensive validation code for
-USB-audio descriptor units, mainly for mixer stuff, for yet more
-hardening against the malformed descriptors.  The rest are rather
-cleanups.
+Also, use the standard goto instead of multiple calls in
+parse_audio_selector_unit() error paths.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/mixer.c | 48 ++++++++++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 20 deletions(-)
 
-Takashi
-
-===
-
-Takashi Iwai (4):
-  ALSA: usb-audio: More validations of descriptor units
-  ALSA: usb-audio: Simplify parse_audio_unit()
-  ALSA: usb-audio: Unify the release of usb_mixer_elem_info objects
-  ALSA: usb-audio: Remove superfluous bLength checks
-
- sound/usb/Makefile   |   3 +-
- sound/usb/clock.c    |  14 +--
- sound/usb/helper.h   |   4 +
- sound/usb/mixer.c    | 237 ++++++++++++------------------------
- sound/usb/power.c    |   2 +
- sound/usb/quirks.c   |   3 +
- sound/usb/stream.c   |  25 ++--
- sound/usb/validate.c | 332 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 8 files changed, 439 insertions(+), 181 deletions(-)
- create mode 100644 sound/usb/validate.c
-
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 2628697353bb..7f498528be48 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1026,10 +1026,15 @@ static struct usb_feature_control_info audio_feature_info[] = {
+ 	{ UAC2_FU_PHASE_INVERTER,	 "Phase Inverter Control", USB_MIXER_BOOLEAN, -1 },
+ };
+ 
++static void usb_mixer_elem_info_free(struct usb_mixer_elem_info *cval)
++{
++	kfree(cval);
++}
++
+ /* private_free callback */
+ void snd_usb_mixer_elem_free(struct snd_kcontrol *kctl)
+ {
+-	kfree(kctl->private_data);
++	usb_mixer_elem_info_free(kctl->private_data);
+ 	kctl->private_data = NULL;
+ }
+ 
+@@ -1552,7 +1557,7 @@ static void __build_feature_ctl(struct usb_mixer_interface *mixer,
+ 
+ 	ctl_info = get_feature_control_info(control);
+ 	if (!ctl_info) {
+-		kfree(cval);
++		usb_mixer_elem_info_free(cval);
+ 		return;
+ 	}
+ 	if (mixer->protocol == UAC_VERSION_1)
+@@ -1585,7 +1590,7 @@ static void __build_feature_ctl(struct usb_mixer_interface *mixer,
+ 
+ 	if (!kctl) {
+ 		usb_audio_err(mixer->chip, "cannot malloc kcontrol\n");
+-		kfree(cval);
++		usb_mixer_elem_info_free(cval);
+ 		return;
+ 	}
+ 	kctl->private_free = snd_usb_mixer_elem_free;
+@@ -1755,7 +1760,7 @@ static void build_connector_control(struct usb_mixer_interface *mixer,
+ 	kctl = snd_ctl_new1(&usb_connector_ctl_ro, cval);
+ 	if (!kctl) {
+ 		usb_audio_err(mixer->chip, "cannot malloc kcontrol\n");
+-		kfree(cval);
++		usb_mixer_elem_info_free(cval);
+ 		return;
+ 	}
+ 	get_connector_control_name(mixer, term, is_input, kctl->id.name,
+@@ -1808,7 +1813,7 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
+ 	kctl = snd_ctl_new1(&usb_bool_master_control_ctl_ro, cval);
+ 
+ 	if (!kctl) {
+-		kfree(cval);
++		usb_mixer_elem_info_free(cval);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -2068,7 +2073,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 	kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
+ 	if (!kctl) {
+ 		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+-		kfree(cval);
++		usb_mixer_elem_info_free(cval);
+ 		return;
+ 	}
+ 	kctl->private_free = snd_usb_mixer_elem_free;
+@@ -2466,7 +2471,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 
+ 		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
+ 		if (!kctl) {
+-			kfree(cval);
++			usb_mixer_elem_info_free(cval);
+ 			return -ENOMEM;
+ 		}
+ 		kctl->private_free = snd_usb_mixer_elem_free;
+@@ -2604,7 +2609,7 @@ static void usb_mixer_selector_elem_free(struct snd_kcontrol *kctl)
+ 	if (kctl->private_data) {
+ 		struct usb_mixer_elem_info *cval = kctl->private_data;
+ 		num_ins = cval->max;
+-		kfree(cval);
++		usb_mixer_elem_info_free(cval);
+ 		kctl->private_data = NULL;
+ 	}
+ 	if (kctl->private_value) {
+@@ -2676,10 +2681,10 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		break;
+ 	}
+ 
+-	namelist = kmalloc_array(desc->bNrInPins, sizeof(char *), GFP_KERNEL);
++	namelist = kcalloc(desc->bNrInPins, sizeof(char *), GFP_KERNEL);
+ 	if (!namelist) {
+-		kfree(cval);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto error_cval;
+ 	}
+ #define MAX_ITEM_NAME_LEN	64
+ 	for (i = 0; i < desc->bNrInPins; i++) {
+@@ -2687,11 +2692,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		len = 0;
+ 		namelist[i] = kmalloc(MAX_ITEM_NAME_LEN, GFP_KERNEL);
+ 		if (!namelist[i]) {
+-			while (i--)
+-				kfree(namelist[i]);
+-			kfree(namelist);
+-			kfree(cval);
+-			return -ENOMEM;
++			err = -ENOMEM;
++			goto error_name;
+ 		}
+ 		len = check_mapped_selector_name(state, unitid, i, namelist[i],
+ 						 MAX_ITEM_NAME_LEN);
+@@ -2705,10 +2707,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 	kctl = snd_ctl_new1(&mixer_selectunit_ctl, cval);
+ 	if (! kctl) {
+ 		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+-		for (i = 0; i < desc->bNrInPins; i++)
+-			kfree(namelist[i]);
+-		kfree(namelist);
+-		kfree(cval);
++		err = -ENOMEM;
++		goto error_name;
+ 		return -ENOMEM;
+ 	}
+ 	kctl->private_value = (unsigned long)namelist;
+@@ -2755,6 +2755,14 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 	usb_audio_dbg(state->chip, "[%d] SU [%s] items = %d\n",
+ 		    cval->head.id, kctl->id.name, desc->bNrInPins);
+ 	return snd_usb_mixer_add_control(&cval->head, kctl);
++
++ error_name:
++	for (i = 0; i < desc->bNrInPins; i++)
++		kfree(namelist[i]);
++	kfree(namelist);
++ error_cval:
++	usb_mixer_elem_info_free(cval);
++	return err;
+ }
+ 
+ /*
 -- 
 2.16.4
