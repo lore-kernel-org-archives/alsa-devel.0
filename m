@@ -1,8 +1,8 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 06/35] ASoC: Intel: Skylake: Unhardcode dsp
-	cores number
-Date: Thu, 22 Aug 2019 21:03:56 +0200
-Message-ID: <20190822190425.23001-7-cezary.rojewski@intel.com>
+Subject: [PATCH 05/35] ASoC: Intel: Skylake: Reload libraries
+	on D0 entry for CNL
+Date: Thu, 22 Aug 2019 21:03:55 +0200
+Message-ID: <20190822190425.23001-6-cezary.rojewski@intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69244F80112
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:04:50 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9405F804CB
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:04:49 +0200 (CEST)
 In-Reply-To: <20190822190425.23001-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,209 +27,79 @@ To: alsa-devel@alsa-project.org
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-While on the quest for unhardcoding the driver, use skl hw_cfg property
-instead of hardcoded value to retrieve number of supported dsp cores.
+As libraries are lost in D3, they need to be reloaded on D0 entry.
+Cannonlake's library load process is equivalent to Broxton's, thus reuse
+the existing one.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 28 -------------------------
- sound/soc/intel/skylake/skl-sst-dsp.c  | 29 +++++++++++++++++++-------
- sound/soc/intel/skylake/skl-sst-dsp.h  |  2 +-
- sound/soc/intel/skylake/skl-sst.c      |  4 +++-
- sound/soc/intel/skylake/skl.h          |  1 -
- 5 files changed, 26 insertions(+), 38 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     |  3 ++-
+ sound/soc/intel/skylake/cnl-sst.c     | 11 +++++++++++
+ sound/soc/intel/skylake/skl-sst-dsp.h |  2 ++
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index cc949904717e..e4ac1ae777e0 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -170,56 +170,48 @@ static struct skl_dsp_loader_ops bxt_get_loader_ops(void)
- static const struct skl_dsp_ops dsp_ops[] = {
- 	{
- 		.id = 0x9d70,
--		.num_cores = 2,
- 		.loader_ops = skl_get_loader_ops,
- 		.init = skl_sst_dsp_init,
- 		.cleanup = skl_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0x9d71,
--		.num_cores = 2,
- 		.loader_ops = skl_get_loader_ops,
- 		.init = skl_sst_dsp_init,
- 		.cleanup = skl_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0x5a98,
--		.num_cores = 2,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = bxt_sst_dsp_init,
- 		.cleanup = bxt_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0x3198,
--		.num_cores = 2,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = bxt_sst_dsp_init,
- 		.cleanup = bxt_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0x9dc8,
--		.num_cores = 4,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = cnl_sst_dsp_init,
- 		.cleanup = cnl_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0xa348,
--		.num_cores = 4,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = cnl_sst_dsp_init,
- 		.cleanup = cnl_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0x02c8,
--		.num_cores = 4,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = cnl_sst_dsp_init,
- 		.cleanup = cnl_sst_dsp_cleanup
- 	},
- 	{
- 		.id = 0x06c8,
--		.num_cores = 4,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = cnl_sst_dsp_init,
- 		.cleanup = cnl_sst_dsp_cleanup
-@@ -245,7 +237,6 @@ int skl_init_dsp(struct skl_dev *skl)
- 	struct skl_dsp_loader_ops loader_ops;
- 	int irq = bus->irq;
- 	const struct skl_dsp_ops *ops;
--	struct skl_dsp_cores *cores;
- 	int ret;
- 
- 	/* enable ppcap interrupt */
-@@ -274,29 +265,10 @@ int skl_init_dsp(struct skl_dev *skl)
- 		goto unmap_mmio;
- 
- 	skl->dsp_ops = ops;
--	cores = &skl->cores;
--	cores->count = ops->num_cores;
--
--	cores->state = kcalloc(cores->count, sizeof(*cores->state), GFP_KERNEL);
--	if (!cores->state) {
--		ret = -ENOMEM;
--		goto unmap_mmio;
--	}
--
--	cores->usage_count = kcalloc(cores->count, sizeof(*cores->usage_count),
--				     GFP_KERNEL);
--	if (!cores->usage_count) {
--		ret = -ENOMEM;
--		goto free_core_state;
--	}
--
- 	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
- 
- 	return 0;
- 
--free_core_state:
--	kfree(cores->state);
--
- unmap_mmio:
- 	iounmap(mmio_base);
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 0eecf26986f9..15acbe80711e 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -8,7 +8,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <sound/pcm.h>
--
-+#include <linux/slab.h>
- #include "../common/sst-dsp.h"
- #include "../common/sst-ipc.h"
- #include "../common/sst-dsp-priv.h"
-@@ -31,18 +31,33 @@ void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state)
-  * successful first boot. Hence core 0 will be running and other cores
-  * will be reset
-  */
--void skl_dsp_init_core_state(struct sst_dsp *ctx)
-+int skl_dsp_init_core_state(struct sst_dsp *ctx)
- {
- 	struct skl_dev *skl = ctx->thread_context;
-+	struct skl_dsp_cores *cores = &skl->cores;
- 	int i;
- 
--	skl->cores.state[SKL_DSP_CORE0_ID] = SKL_DSP_RUNNING;
--	skl->cores.usage_count[SKL_DSP_CORE0_ID] = 1;
-+	cores->count = skl->hw_cfg.dsp_cores;
-+	cores->state = kcalloc(cores->count,
-+			sizeof(*cores->state), GFP_KERNEL);
-+	if (!cores->state)
-+		return -ENOMEM;
-+
-+	cores->usage_count = kcalloc(cores->count,
-+			sizeof(*cores->usage_count), GFP_KERNEL);
-+	if (!cores->usage_count) {
-+		kfree(cores->state);
-+		return -ENOMEM;
-+	}
-+
-+	cores->state[SKL_DSP_CORE0_ID] = SKL_DSP_RUNNING;
-+	cores->usage_count[SKL_DSP_CORE0_ID] = 1;
- 
--	for (i = SKL_DSP_CORE0_ID + 1; i < skl->cores.count; i++) {
--		skl->cores.state[i] = SKL_DSP_RESET;
--		skl->cores.usage_count[i] = 0;
-+	for (i = SKL_DSP_CORE0_ID + 1; i < cores->count; i++) {
-+		cores->state[i] = SKL_DSP_RESET;
-+		cores->usage_count[i] = 0;
- 	}
-+	return 0;
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 5bece3a6d741..cc9507d4702b 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -45,7 +45,7 @@ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
+ 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
  }
- EXPORT_SYMBOL_GPL(skl_dsp_init_core_state);
  
+-static int
++int
+ bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
+ {
+ 	struct snd_dma_buffer dmab;
+@@ -88,6 +88,7 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
+ 	skl_release_library(linfo, lib_count);
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(bxt_load_library);
+ 
+ /*
+  * First boot sequence has some extra steps. Core 0 waits for power
+diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+index 8984653d925d..a2b3bce631fc 100644
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -179,6 +179,16 @@ static int cnl_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
+ 			return ret;
+ 		}
+ 
++		if (cnl->lib_count > 1) {
++			ret = ctx->fw_ops.load_library(ctx, cnl->lib_info,
++						cnl->lib_count);
++			if (ret < 0) {
++				dev_err(ctx->dev,
++					"reload libs failed: %d\n", ret);
++				return ret;
++			}
++		}
++
+ 		cnl->cores.state[core_id] = SKL_DSP_RUNNING;
+ 		return ret;
+ 	}
+@@ -273,6 +283,7 @@ static const struct skl_dsp_fw_ops cnl_fw_ops = {
+ 	.set_state_D3 = cnl_set_dsp_D3,
+ 	.load_fw = cnl_load_base_firmware,
+ 	.get_fw_errcode = cnl_get_errno,
++	.load_library = bxt_load_library,
+ };
+ 
+ static struct sst_ops cnl_ops = {
 diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 06979652985c..2129627e6255 100644
+index 4da240582454..06979652985c 100644
 --- a/sound/soc/intel/skylake/skl-sst-dsp.h
 +++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -202,7 +202,7 @@ int skl_dsp_acquire_irq(struct sst_dsp *sst);
- bool is_skl_dsp_running(struct sst_dsp *ctx);
+@@ -228,6 +228,8 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 		struct skl_dev **dsp);
+ void skl_sst_dsp_cleanup(struct device *dev, struct skl_dev *skl);
+ void bxt_sst_dsp_cleanup(struct device *dev, struct skl_dev *skl);
++int bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo,
++		int lib_count);
  
- unsigned int skl_dsp_get_enabled_cores(struct sst_dsp *ctx);
--void skl_dsp_init_core_state(struct sst_dsp *ctx);
-+int skl_dsp_init_core_state(struct sst_dsp *ctx);
- int skl_dsp_enable_core(struct sst_dsp *ctx, unsigned int core_mask);
- int skl_dsp_disable_core(struct sst_dsp *ctx, unsigned int core_mask);
- int skl_dsp_core_power_up(struct sst_dsp *ctx, unsigned int core_mask);
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 8a8ecb9a4fc6..163590682e1a 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -589,7 +589,9 @@ int skl_sst_init_fw(struct skl_dev *skl)
- 		goto exit;
- 	}
- 
--	skl_dsp_init_core_state(sst);
-+	ret = skl_dsp_init_core_state(sst);
-+	if (ret < 0)
-+		goto exit;
- 
- library_load:
- 	if (skl->lib_count > 1) {
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 1f86543fe954..71e69f52b7ab 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -155,7 +155,6 @@ struct skl_machine_pdata {
- 
- struct skl_dsp_ops {
- 	int id;
--	unsigned int num_cores;
- 	struct skl_dsp_loader_ops (*loader_ops)(void);
- 	int (*init)(struct device *dev, void __iomem *mmio_base,
- 			int irq, const char *fw_name,
+ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+ 				unsigned int offset, int index);
 -- 
 2.17.1
