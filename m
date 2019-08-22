@@ -1,8 +1,8 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 26/35] ASoC: Intel: Skylake: Simplify all
-	sst_dsp_init declarations
-Date: Thu, 22 Aug 2019 21:04:16 +0200
-Message-ID: <20190822190425.23001-27-cezary.rojewski@intel.com>
+Subject: [PATCH 27/35] ASoC: Intel: Skylake: Define platform
+	descriptors
+Date: Thu, 22 Aug 2019 21:04:17 +0200
+Message-ID: <20190822190425.23001-28-cezary.rojewski@intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35BADF8065B
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:05:24 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17329F8036D
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:05:25 +0200 (CEST)
 In-Reply-To: <20190822190425.23001-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,267 +27,161 @@ To: alsa-devel@alsa-project.org
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SST initializers for Skylake, Apollolake and Cannonlake descendants have
-many redundant parameters within their declaration. Simplify them.
-Currently, this involves duplication the PCI ioremap code. This will be
-addresses on a later note, but is needed to keep SSTs sane during
-initialization overhaul.
+Make use of sst_pdata and declare platform descriptors for all existing
+cAVS platforms. Each carries information about base_fw filename,
+platform specific operations and boards supported.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/bxt-sst.c      | 19 +++++++++----------
- sound/soc/intel/skylake/cnl-sst-dsp.h  |  3 +--
- sound/soc/intel/skylake/cnl-sst.c      | 19 +++++++++----------
- sound/soc/intel/skylake/skl-messages.c | 26 ++++----------------------
- sound/soc/intel/skylake/skl-sst-dsp.h  |  6 ++----
- sound/soc/intel/skylake/skl-sst.c      | 22 ++++++++++------------
- sound/soc/intel/skylake/skl.h          |  5 ++---
- 7 files changed, 37 insertions(+), 63 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c |  4 ++--
+ sound/soc/intel/skylake/cnl-sst.c |  4 ++--
+ sound/soc/intel/skylake/skl-sst.c |  4 ++--
+ sound/soc/intel/skylake/skl.c     | 38 ++++++++++++++++++++++++++++++-
+ sound/soc/intel/skylake/skl.h     |  3 +++
+ 5 files changed, 46 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index e72cd63eb113..a547fb84eee9 100644
+index a547fb84eee9..06da822790a5 100644
 --- a/sound/soc/intel/skylake/bxt-sst.c
 +++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -545,30 +545,29 @@ static struct sst_pdata skl_dev = {
- 	.ops = &skl_ops,
+@@ -531,7 +531,7 @@ static const struct skl_dsp_fw_ops bxt_fw_ops = {
+ 	.load_library = bxt_load_library,
  };
  
--int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
--			const char *fw_name, struct skl_dev **dsp)
-+int bxt_sst_dsp_init(struct skl_dev *skl, const char *fw_name)
- {
--	struct skl_dev *skl;
- 	struct sst_dsp *sst;
-+	void __iomem *mmio;
- 	int ret;
+-static struct sst_ops skl_ops = {
++struct sst_ops apl_sst_ops = {
+ 	.irq_handler = skl_dsp_sst_interrupt,
+ 	.thread_fn = skl_dsp_irq_thread_handler,
+ 	.write = sst_shim32_write,
+@@ -542,7 +542,7 @@ static struct sst_ops skl_ops = {
+ };
  
--	skl = *dsp;
- 	ret = skl_sst_ctx_init(skl, fw_name, &skl_dev);
--	if (ret < 0) {
--		dev_err(dev, "%s: no device\n", __func__);
-+	if (ret)
- 		return ret;
--	}
+ static struct sst_pdata skl_dev = {
+-	.ops = &skl_ops,
++	.ops = &apl_sst_ops,
+ };
  
- 	sst = skl->dsp;
- 	sst->fw_ops = bxt_fw_ops;
--	sst->addr.lpe = mmio_base;
--	sst->addr.shim = mmio_base;
-+	mmio = pci_ioremap_bar(skl->pci, 4);
-+	if (!mmio)
-+		return -ENXIO;
-+	sst->addr.lpe = mmio;
-+	sst->addr.shim = mmio;
- 
- 	sst_dsp_mailbox_init(sst,
- 		(BXT_ADSP_SRAM0_BASE + SKL_FW_REGS_SIZE), SKL_MAILBOX_SIZE,
- 		BXT_ADSP_SRAM1_BASE, SKL_MAILBOX_SIZE);
- 
--	ret = skl_ipc_init(dev, skl);
-+	ret = skl_ipc_init(skl->dev, skl);
- 	if (ret) {
- 		skl_dsp_free(sst);
- 		return ret;
-diff --git a/sound/soc/intel/skylake/cnl-sst-dsp.h b/sound/soc/intel/skylake/cnl-sst-dsp.h
-index a465cc42b7e8..02e070fae2ce 100644
---- a/sound/soc/intel/skylake/cnl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/cnl-sst-dsp.h
-@@ -87,7 +87,6 @@ void cnl_ipc_op_int_enable(struct sst_dsp *ctx);
- void cnl_ipc_op_int_disable(struct sst_dsp *ctx);
- bool cnl_ipc_int_status(struct sst_dsp *ctx);
- 
--int cnl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
--		     const char *fw_name, struct skl_dev **dsp);
-+int cnl_sst_dsp_init(struct skl_dev *skl, const char *fw_name);
- 
- #endif /*__CNL_SST_DSP_H__*/
+ int bxt_sst_dsp_init(struct skl_dev *skl, const char *fw_name)
 diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
-index 93b98281083c..5be0a8eb154d 100644
+index 5be0a8eb154d..c4dbf6655097 100644
 --- a/sound/soc/intel/skylake/cnl-sst.c
 +++ b/sound/soc/intel/skylake/cnl-sst.c
-@@ -422,30 +422,29 @@ static struct sst_pdata cnl_dev = {
- 	.ops = &cnl_ops,
- };
- 
--int cnl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
--		     const char *fw_name, struct skl_dev **dsp)
-+int cnl_sst_dsp_init(struct skl_dev *cnl, const char *fw_name)
- {
--	struct skl_dev *cnl;
- 	struct sst_dsp *sst;
-+	void __iomem *mmio;
- 	int ret;
- 
--	cnl = *dsp;
- 	ret = skl_sst_ctx_init(cnl, fw_name, &cnl_dev);
--	if (ret < 0) {
--		dev_err(dev, "%s: no device\n", __func__);
-+	if (ret < 0)
- 		return ret;
--	}
- 
- 	sst = cnl->dsp;
- 	sst->fw_ops = cnl_fw_ops;
--	sst->addr.lpe = mmio_base;
--	sst->addr.shim = mmio_base;
-+	mmio = pci_ioremap_bar(cnl->pci, 4);
-+	if (!mmio)
-+		return -ENXIO;
-+	sst->addr.lpe = mmio;
-+	sst->addr.shim = mmio;
- 
- 	sst_dsp_mailbox_init(sst,
- 		(CNL_ADSP_SRAM0_BASE + SKL_FW_REGS_SIZE), SKL_MAILBOX_SIZE,
- 		CNL_ADSP_SRAM1_BASE, SKL_MAILBOX_SIZE);
- 
--	ret = cnl_ipc_init(dev, cnl);
-+	ret = cnl_ipc_init(cnl->dev, cnl);
- 	if (ret) {
- 		skl_dsp_free(sst);
- 		return ret;
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 6fbceec67b53..8c352255ff45 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -189,9 +189,7 @@ const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
- 
- int skl_init_dsp(struct skl_dev *skl)
- {
--	void __iomem *mmio_base;
- 	struct hdac_bus *bus = skl_to_bus(skl);
--	int irq = bus->irq;
- 	const struct skl_dsp_ops *ops;
- 	int ret;
- 
-@@ -199,34 +197,18 @@ int skl_init_dsp(struct skl_dev *skl)
- 	snd_hdac_ext_bus_ppcap_enable(bus, true);
- 	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
- 
--	/* read the BAR of the ADSP MMIO */
--	mmio_base = pci_ioremap_bar(skl->pci, 4);
--	if (mmio_base == NULL) {
--		dev_err(bus->dev, "ioremap error\n");
--		return -ENXIO;
--	}
--
- 	ops = skl_get_dsp_ops(skl->pci->device);
--	if (!ops) {
--		ret = -EIO;
--		goto unmap_mmio;
--	}
--
--	ret = ops->init(bus->dev, mmio_base, irq,
--				skl->fw_name, &skl);
-+	if (!ops)
-+		return -EIO;
- 
-+	ret = ops->init(skl, skl->fw_name);
- 	if (ret < 0)
--		goto unmap_mmio;
-+		return ret;
- 
- 	skl->dsp_ops = ops;
- 	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
- 
+@@ -408,7 +408,7 @@ static int cnl_ipc_init(struct device *dev, struct skl_dev *cnl)
  	return 0;
--
--unmap_mmio:
--	iounmap(mmio_base);
--
--	return ret;
  }
  
- int skl_free_dsp(struct skl_dev *skl)
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index e14d76ed0100..b647e60d7a6d 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -206,10 +206,8 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id);
- int skl_dsp_put_core(struct sst_dsp *ctx, unsigned int core_id);
+-static struct sst_ops cnl_ops = {
++struct sst_ops cnl_sst_ops = {
+ 	.irq_handler = cnl_dsp_sst_interrupt,
+ 	.thread_fn = cnl_dsp_irq_thread_handler,
+ 	.write = sst_shim32_write,
+@@ -419,7 +419,7 @@ static struct sst_ops cnl_ops = {
+ };
  
- int skl_dsp_boot(struct sst_dsp *ctx);
--int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
--		const char *fw_name, struct skl_dev **dsp);
--int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
--		const char *fw_name, struct skl_dev **dsp);
-+int skl_sst_dsp_init(struct skl_dev *skl, const char *fw_name);
-+int bxt_sst_dsp_init(struct skl_dev *skl, const char *fw_name);
- int bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo,
- 		int lib_count);
+ static struct sst_pdata cnl_dev = {
+-	.ops = &cnl_ops,
++	.ops = &cnl_sst_ops,
+ };
  
+ int cnl_sst_dsp_init(struct skl_dev *cnl, const char *fw_name)
 diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index f8aecd2ca8bb..8ae7fe73534e 100644
+index 8ae7fe73534e..122c07290440 100644
 --- a/sound/soc/intel/skylake/skl-sst.c
 +++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -516,36 +516,34 @@ static struct sst_pdata skl_dev = {
- 	.ops = &skl_ops,
+@@ -503,7 +503,7 @@ static const struct skl_dsp_fw_ops skl_fw_ops = {
+ 	.unload_mod = skl_unload_module,
  };
  
--int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
--		const char *fw_name, struct skl_dev **dsp)
-+int skl_sst_dsp_init(struct skl_dev *skl, const char *fw_name)
- {
--	struct skl_dev *skl;
- 	struct sst_dsp *sst;
-+	void __iomem *mmio;
- 	int ret;
+-static struct sst_ops skl_ops = {
++struct sst_ops skl_sst_ops = {
+ 	.irq_handler = skl_dsp_sst_interrupt,
+ 	.write = sst_shim32_write,
+ 	.read = sst_shim32_read,
+@@ -513,7 +513,7 @@ static struct sst_ops skl_ops = {
+ };
  
--	skl = *dsp;
- 	ret = skl_sst_ctx_init(skl, fw_name, &skl_dev);
--	if (ret < 0) {
--		dev_err(dev, "%s: no device\n", __func__);
-+	if (ret < 0)
- 		return ret;
--	}
+ static struct sst_pdata skl_dev = {
+-	.ops = &skl_ops,
++	.ops = &skl_sst_ops,
+ };
  
- 	sst = skl->dsp;
--	sst->addr.lpe = mmio_base;
--	sst->addr.shim = mmio_base;
-+	sst->fw_ops = skl_fw_ops;
-+	mmio = pci_ioremap_bar(skl->pci, 4);
-+	if (!mmio)
-+		return -ENXIO;
-+	sst->addr.lpe = mmio;
-+	sst->addr.shim = mmio;
+ int skl_sst_dsp_init(struct skl_dev *skl, const char *fw_name)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 54e1f957121d..d6d099aba834 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -27,6 +27,7 @@
+ #include <sound/hda_i915.h>
+ #include <sound/hda_codec.h>
+ #include <sound/intel-nhlt.h>
++#include "../common/sst-dsp.h"
+ #include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+@@ -1063,7 +1064,6 @@ static int skl_probe(struct pci_dev *pci,
  
- 	sst_dsp_mailbox_init(sst,
- 		(SKL_ADSP_SRAM0_BASE + SKL_FW_REGS_SIZE), SKL_MAILBOX_SIZE,
- 		SKL_ADSP_SRAM1_BASE, SKL_MAILBOX_SIZE);
+ 	pci_set_drvdata(skl->pci, bus);
  
--	ret = skl_ipc_init(dev, skl);
-+	ret = skl_ipc_init(skl->dev, skl);
- 	if (ret) {
- 		skl_dsp_free(sst);
- 		return ret;
- 	}
- 
--	sst->fw_ops = skl_fw_ops;
 -
- 	return 0;
+ 	err = skl_find_machine(skl, (void *)pci_id->driver_data);
+ 	if (err < 0) {
+ 		dev_err(bus->dev, "skl_find_machine failed with err: %d\n", err);
+@@ -1153,6 +1153,42 @@ static void skl_remove(struct pci_dev *pci)
+ 	dev_set_drvdata(&pci->dev, NULL);
  }
- EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ 
++static struct sst_pdata skl_desc = {
++	.fw_name = "intel/dsp_fw_release.bin",
++	.ops = &skl_sst_ops,
++	.boards = snd_soc_acpi_intel_skl_machines,
++};
++
++static struct sst_pdata kbl_desc = {
++	.fw_name = "intel/dsp_fw_kbl.bin",
++	.ops = &skl_sst_ops,
++	.boards = snd_soc_acpi_intel_kbl_machines,
++};
++
++static struct sst_pdata apl_desc = {
++	.fw_name = "intel/dsp_fw_bxtn.bin",
++	.ops = &apl_sst_ops,
++	.boards = snd_soc_acpi_intel_bxt_machines,
++};
++
++static struct sst_pdata glk_desc = {
++	.fw_name = "intel/dsp_fw_glk.bin",
++	.ops = &apl_sst_ops,
++	.boards = snd_soc_acpi_intel_glk_machines,
++};
++
++static struct sst_pdata cnl_desc = {
++	.fw_name = "intel/dsp_fw_cnl.bin",
++	.ops = &cnl_sst_ops,
++	.boards = snd_soc_acpi_intel_cnl_machines,
++};
++
++static struct sst_pdata icl_desc = {
++	.fw_name = "intel/dsp_fw_icl.bin",
++	.ops = &cnl_sst_ops,
++	.boards = snd_soc_acpi_intel_icl_machines,
++};
++
+ /* PCI IDs */
+ static const struct pci_device_id skl_ids[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
 diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index beeef67cb55f..9f5aa53df9f8 100644
+index 9f5aa53df9f8..2f2b5a141abf 100644
 --- a/sound/soc/intel/skylake/skl.h
 +++ b/sound/soc/intel/skylake/skl.h
-@@ -12,6 +12,7 @@
- #ifndef __SOUND_SOC_SKL_H
- #define __SOUND_SOC_SKL_H
+@@ -42,6 +42,9 @@
+ #define AZX_REG_VS_EM2_L1SEN		BIT(13)
  
-+#include <linux/pci.h>
- #include <sound/hda_register.h>
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_codec.h>
-@@ -155,9 +156,7 @@ struct skl_machine_pdata {
+ struct skl_debug;
++extern struct sst_ops skl_sst_ops;
++extern struct sst_ops apl_sst_ops;
++extern struct sst_ops cnl_sst_ops;
  
- struct skl_dsp_ops {
- 	int id;
--	int (*init)(struct device *dev, void __iomem *mmio_base,
--			int irq, const char *fw_name,
--			struct skl_dev **skl_sst);
-+	int (*init)(struct skl_dev *skl, const char *fw_name);
- };
- 
- int skl_platform_unregister(struct device *dev);
+ struct skl_astate_param {
+ 	u32 kcps;
 -- 
 2.17.1
