@@ -1,128 +1,37 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
-Date: Thu, 22 Aug 2019 07:36:32 -0500
-Message-ID: <CAL_JsqJJCJB9obR_Jn3hmn4gq+RQjY-8M+xkdYA185Uaw0MHcw@mail.gmail.com>
-References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
- <20190809133407.25918-2-srinivas.kandagatla@linaro.org> <20190821214436.GA13936@bogus>
- <0272eafd-0aa5-f695-64e4-f6ad7157a3a6@linaro.org>
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 0/2] ASoC: MediaTek: fix mt8183-mt6358 tdm out issues
+Date: Thu, 22 Aug 2019 20:50:59 +0800
+Message-ID: <1566478261-13464-1-git-send-email-jiaxin.yu@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0272eafd-0aa5-f695-64e4-f6ad7157a3a6@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Vinod <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ck.hu-c+3QU6Y0cdFWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 22, 2019 at 5:12 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 21/08/2019 22:44, Rob Herring wrote:
-> > On Fri, Aug 09, 2019 at 02:34:04PM +0100, Srinivas Kandagatla wrote:
-> >> This patch adds bindings for Soundwire Slave devices that includes how
-> >> SoundWire enumeration address and Link ID are used to represented in
-> >> SoundWire slave device tree nodes.
-> >>
-> >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> >> ---
-> >>   .../devicetree/bindings/soundwire/slave.txt   | 51 +++++++++++++++++++
-> >>   1 file changed, 51 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/soundwire/slave.txt
-> >
-> > Can you convert this to DT schema given it is a common binding.
-> >
->
-> I will give that a go in next version!
->
-> > What does the host controller look like? You need to define the node
-> > hierarchy. Bus controller schemas should then include the bus schema.
-> > See spi-controller.yaml.
->
-> Host controller is always parent of these devices which is represented
-> in the example.
->
-> In my previous patches, i did put this slave bindings in bus.txt, but
-> Vinod suggested to move it to slave.txt.
->
-> Are you suggesting to add two yamls here, one for slave and one for bus
-> Or just document this in one bus bindings?
+These two patches are used to fix several issues related to TDM OUT.
+The patches are based on broonie tre "for-next" branch.
 
-One. Like I said, see spi-controller.yaml.
+Jiaxin Yu (2):
+  ASoC: mediatek: mt8183: switch tdm pins gpio function when playback on
+    or off
+  ASoC: mediatek: mt8183: fix tdm out issue
 
-> >> diff --git a/Documentation/devicetree/bindings/soundwire/slave.txt b/Documentation/devicetree/bindings/soundwire/slave.txt
-> >> new file mode 100644
-> >> index 000000000000..201f65d2fafa
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/soundwire/slave.txt
-> >> @@ -0,0 +1,51 @@
-> >> +SoundWire slave device bindings.
-> >> +
-> >> +SoundWire is a 2-pin multi-drop interface with data and clock line.
-> >> +It facilitates development of low cost, efficient, high performance systems.
-> >> +
-> >> +SoundWire slave devices:
-> >> +Every SoundWire controller node can contain zero or more child nodes
-> >> +representing slave devices on the bus. Every SoundWire slave device is
-> >> +uniquely determined by the enumeration address containing 5 fields:
-> >> +SoundWire Version, Instance ID, Manufacturer ID, Part ID
-> >> +and Class ID for a device. Addition to below required properties,
-> >> +child nodes can have device specific bindings.
-> >> +
-> >> +Required properties:
-> >> +- compatible:        "sdw<LinkID><VersionID><InstanceID><MFD><PID><CID>".
-> >> +              Is the textual representation of SoundWire Enumeration
-> >> +              address along with Link ID. compatible string should contain
-> >> +              SoundWire Link ID, SoundWire Version ID, Instance ID,
-> >> +              Manufacturer ID, Part ID and Class ID in order
-> >> +              represented as above and shall be in lower-case hexadecimal
-> >> +              with leading zeroes. Vaild sizes of these fields are
-> >> +              LinkID is 1 nibble,
-> >> +              Version ID is 1 nibble
-> >> +              Instance ID in 1 nibble
-> >> +              MFD in 4 nibbles
-> >> +              PID in 4 nibbles
-> >> +              CID is 2 nibbles
-> >> +
-> >> +              Version number '0x1' represents SoundWire 1.0
-> >> +              Version number '0x2' represents SoundWire 1.1
-> >
-> > This can all be a regex.
-> >
-> >> +              ex: "sdw0110217201000" represents 0 LinkID,
-> >> +              SoundWire 1.0 version slave with Instance ID 1.
-> >> +              More Information on detail of encoding of these fields can be
-> >> +              found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
-> >> +
-> >> +SoundWire example for Qualcomm's SoundWire controller:
-> >> +
-> >> +soundwire@c2d0000 {
-> >> +    compatible = "qcom,soundwire-v1.5.0"
-> >> +    reg = <0x0c2d0000 0x2000>;
-> >> +
-> >> +    spkr_left:wsa8810-left{
-> >> +            compatible = "sdw0110217201000";
-> >> +            ...
-> >> +    };
-> >> +
-> >> +    spkr_right:wsa8810-right{
-> >> +            compatible = "sdw0120217201000";
-> >
-> > The normal way to distinguish instances is with 'reg'. So I think you
-> > need 'reg' with Instance ID moved there at least. Just guessing, but
-> > perhaps Link ID, too? And for 2 different classes of device is that
-> > enough?
->
-> In previous bindings ( https://lists.gt.net/linux/kernel/3403276 ) we
-> did have instance-id as different property, however Pierre had some good
-> suggestion to make it align with _ADR encoding as per MIPI DisCo spec.
->
-> Do you still think that we should split the instance id to reg property?
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c         |   3 +-
+ sound/soc/mediatek/mt8183/mt8183-dai-tdm.c         | 177 +++++++++++++++++----
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c        | 118 +++++++++++++-
+ sound/soc/mediatek/mt8183/mt8183-reg.h             |   8 +-
+ 4 files changed, 261 insertions(+), 45 deletions(-)
 
-Assuming you could have more than 1 of the same device on the bus,
-then you need some way to distinguish them and the way that's done for
-DT is unit-address/reg. And compatible strings should be constant for
-each instance.
-
-Rob
+-- 
+1.8.1.1.dirty
