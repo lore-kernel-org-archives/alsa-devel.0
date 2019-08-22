@@ -1,53 +1,80 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH 2/3] input: Add SW_UNSUPPORT_INSERT define
-Date: Thu, 22 Aug 2019 11:16:19 -0700
-Message-ID: <20190822181619.GH76194@dtor-ws>
-References: <1558730438-16524-1-git-send-email-bgoswami@codeaurora.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: mediatek: mt8183: fix tdm out issue
+Date: Thu, 22 Aug 2019 17:13:35 +0100
+Message-ID: <20190822161335.GA23391@sirena.co.uk>
+References: <1566478261-13464-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1566478261-13464-3-git-send-email-jiaxin.yu@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com
- [IPv6:2607:f8b0:4864:20::529])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8D6CF80112
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 20:16:26 +0200 (CEST)
-Received: by mail-pg1-x529.google.com with SMTP id w10so4126389pgj.7
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 11:16:26 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1558730438-16524-1-git-send-email-bgoswami@codeaurora.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: bgoswami@codeaurora.org
-Cc: alsa-devel@alsa-project.org, plai@codeaurora.org, tiwai@suse.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, linux-input@vger.kernel.org, Gopikrishnaiah Anandan <agopik@codeaurora.org>
+Content-Type: multipart/mixed; boundary="===============1068978944860435447=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Resent-Message-ID: <20190822181847.GD23391@sirena.co.uk>
+Resent-To: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org,
+ perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org,
+ linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org,
+ ck.hu-c+3QU6Y0cdFWk0Htik3J/w@public.gmane.org
+In-Reply-To: <1566478261-13464-3-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ck.hu-c+3QU6Y0cdFWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Banajit,
 
-On Fri, May 24, 2019 at 01:40:38PM -0700, bgoswami@codeaurora.org wrote:
-> From: Banajit Goswami <bgoswami@codeaurora.org>
-> 
-> Some devices may not support specific type of input devices. For example,
-> when a headset or extension cable with GND/MIC swap is plugged into a
-> headset jack that does not support the headset/cable, it needs to be
-> reported with a corresponding input event. Also, increase the max values
-> for INPUT_DEVICE_ID_SW_MAX and SW_MAX, to accommodate future extension of
-> the number of event.
+--===============1068978944860435447==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
 
-I do not think that adding this switch is a good idea as it will not
-allow you to easily extend the reporting and to convey to the user why
-something is not supported. I would look into alternate mechanism to
-signal when and why a headset/peripheral was rejected.
 
-Thanks.
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Dmitry
+On Thu, Aug 22, 2019 at 08:51:01PM +0800, Jiaxin Yu wrote:
+> This patch fix two tdm out issues.
+> 1. TDM out support S16_LE/S24_LE/S32_LE formats .When output S32_LE, we
+>    need set hd_align so that memif can output MSB 24bits correctly.
+> 2. Fix TDM out hw_params as SNDRV_PCM_FORMAT_S32_LE.
+> 3. Fix TDM out data is valid on rising edge.
+
+These should really be split up into separate patches, each
+fixing a single issue.  Ideally the changelog should describe
+how the issue is fixed like that for 1 does.
+
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1evy0ACgkQJNaLcl1U
+h9CZ3gf9E5RTE4sV5sm2rd7vBY7Z3ZWn19T1laGFpztTqI44AkYc8yA/L9dnts7b
+ERliT5kmt7nrnpBLnr76jxaEwHtegzBiEJwU099BRikGNHvrcL4kZLS7wkWluw++
+yPgkcGzZyNW+Nqa+AA27xzVbjoWJT3ZfDTQMmaF82/VPsPn/1fQ6fS0d4W0ugDiV
+GoEP+2UHDZLB9CSZP+l4KnqaEG+A4yJrDoauxX38aw8JpUrpduXEXpGd4t2TTYRN
+LFh4r985iErQR1K3IOCzzSpxf9eOa0WyvPdpmId3+MoWNVdcxRcKnMzj53fmBxgZ
+kD8P3Y919BFO6vCHunpaD0l+qS5Gfw==
+=URP9
+-----END PGP SIGNATURE-----
+
+--LQksG6bCIzRHxTLp--
+
+
+--===============1068978944860435447==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+--===============1068978944860435447==--
