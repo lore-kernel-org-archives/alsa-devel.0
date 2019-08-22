@@ -1,55 +1,57 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
-Date: Thu, 22 Aug 2019 16:36:38 +0530
-Message-ID: <20190822110638.GN12733@vkoul-mobl.Dlink>
-References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
- <20190809133407.25918-2-srinivas.kandagatla@linaro.org>
- <20190821214436.GA13936@bogus>
- <0272eafd-0aa5-f695-64e4-f6ad7157a3a6@linaro.org>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 0/4] ASoC: Intel: Haswell: Adjust machine
+	device private
+Date: Thu, 22 Aug 2019 13:36:12 +0200
+Message-ID: <20190822113616.22702-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0272eafd-0aa5-f695-64e4-f6ad7157a3a6@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2532F80112
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 13:36:50 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 22-08-19, 11:12, Srinivas Kandagatla wrote:
-> 
-> 
-> On 21/08/2019 22:44, Rob Herring wrote:
-> > On Fri, Aug 09, 2019 at 02:34:04PM +0100, Srinivas Kandagatla wrote:
-> > > This patch adds bindings for Soundwire Slave devices that includes how
-> > > SoundWire enumeration address and Link ID are used to represented in
-> > > SoundWire slave device tree nodes.
-> > > 
-> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > ---
-> > >   .../devicetree/bindings/soundwire/slave.txt   | 51 +++++++++++++++++++
-> > >   1 file changed, 51 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/soundwire/slave.txt
-> > 
-> > Can you convert this to DT schema given it is a common binding.
-> > 
-> 
-> I will give that a go in next version!
-> 
-> > What does the host controller look like? You need to define the node
-> > hierarchy. Bus controller schemas should then include the bus schema.
-> > See spi-controller.yaml.
-> 
-> Host controller is always parent of these devices which is represented in
-> the example.
-> 
-> In my previous patches, i did put this slave bindings in bus.txt, but Vinod
-> suggested to move it to slave.txt.
-> 
-> Are you suggesting to add two yamls here, one for slave and one for bus
-> Or just document this in one bus bindings?
+Apart from Haswell machines, all other devices have their private data
+set to snd_soc_acpi_mach instance.
 
-That would be fine by me :-)
+Changes for HSW/ BDW boards introduced with series:
+https://patchwork.kernel.org/cover/10782035/
+
+added support for dai_link platform_name adjustments within card probe
+routines. These take for granted private_data points to
+snd_soc_acpi_mach whereas for Haswell, it's sst_pdata instead. Change
+private context of platform_device - representing machine board - to
+address this.
+
+Caught by recent cleanups where content of sst_pdata was moved.
+Currently, despite the incorrect cast, dereferenced field points happily
+to NULL (uninitialized field), so no panics were observed.
+
+Cezary Rojewski (4):
+  ASoC: Intel: Haswell: Adjust machine device private context
+  ASoC: Intel: haswell: Simplify device probe
+  ASoC: Intel: bdw-rt5677: Simplify device probe
+  ASoC: Intel: broadwell: Simplify device probe
+
+ sound/soc/intel/boards/bdw-rt5677.c | 6 +-----
+ sound/soc/intel/boards/broadwell.c  | 6 +-----
+ sound/soc/intel/boards/haswell.c    | 6 +-----
+ sound/soc/intel/common/sst-acpi.c   | 3 ++-
+ 4 files changed, 5 insertions(+), 16 deletions(-)
 
 -- 
-~Vinod
+2.17.1
