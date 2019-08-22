@@ -1,67 +1,71 @@
 From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 -next] soundwire: Fix -Wunused-function warning
-Date: Thu, 22 Aug 2019 22:54:08 +0800
-Message-ID: <20190822145408.76272-1-yuehaibing@huawei.com>
-References: <20190816141409.49940-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] ALSA: line6: Fix -Wunused-const-variable warnings
+Date: Thu, 22 Aug 2019 22:57:41 +0800
+Message-ID: <20190822145741.9592-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190816141409.49940-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: vkoul@kernel.org, sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com, ladis@linux-mips.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+To: perex@perex.cz, tiwai@suse.com, gregkh@linuxfoundation.org, pavel@denx.de, allison@lohutok.net, tglx@linutronix.de, yuehaibing@huawei.com, pakki001@umn.edu
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If CONFIG_ACPI is not set, gcc warning this:
+sound/usb/line6/driver.h:69:18: warning:
+ SYSEX_DATA_OFS defined but not used [-Wunused-const-variable=]
+sound/usb/line6/driver.h:70:18: warning:
+ SYSEX_EXTRA_SIZE defined but not used [-Wunused-const-variable=]
 
-drivers/soundwire/slave.c:16:12: warning:
- 'sdw_slave_add' defined but not used [-Wunused-function]
-
-Now all code in slave.c is only used on ACPI enabled,
-so compiles it while CONFIG_ACPI is set.
+SYSEX_EXTRA_SIZE is only used in driver.c and
+SYSEX_DATA_OFS in pod.c, so move them to .c fix
+this warning.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Ladislav Michl <ladis@linux-mips.org>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
-v2: use obj-$(CONFIG_ACPI) += slave.o
----
- drivers/soundwire/Makefile | 3 ++-
- drivers/soundwire/slave.c  | 3 ---
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ sound/usb/line6/driver.c | 2 ++
+ sound/usb/line6/driver.h | 3 ---
+ sound/usb/line6/pod.c    | 2 ++
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index 45b7e50..a28bf3e 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -4,8 +4,9 @@
- #
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index b5a3f75..8027da8 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -31,6 +31,8 @@ const unsigned char line6_midi_id[3] = {
+ };
+ EXPORT_SYMBOL_GPL(line6_midi_id);
  
- #Bus Objs
--soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
-+soundwire-bus-objs := bus_type.o bus.o mipi_disco.o stream.o
- obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
-+obj-$(CONFIG_ACPI) += slave.o
- 
- #Cadence Objs
- soundwire-cadence-objs := cadence_master.o
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index f39a581..0dc188e 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -60,7 +60,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 	return ret;
- }
- 
--#if IS_ENABLED(CONFIG_ACPI)
++static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
++
  /*
-  * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
-  * @bus: SDW bus instance
-@@ -110,5 +109,3 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ 	Code to request version of POD, Variax interface
+ 	(and maybe other devices).
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index e5e572e..c57633a 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -66,9 +66,6 @@
  
- 	return 0;
- }
+ extern const unsigned char line6_midi_id[3];
+ 
+-static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
+-static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
 -
--#endif
+ /*
+ 	 Common properties of Line 6 devices.
+ */
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index ee4c9d2..24ad337 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -110,6 +110,8 @@ enum {
+ 	POD_BUSY_MIDISEND
+ };
+ 
++static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
++
+ static struct snd_ratden pod_ratden = {
+ 	.num_min = 78125,
+ 	.num_max = 78125,
 -- 
 2.7.4
