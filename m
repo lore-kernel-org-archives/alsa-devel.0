@@ -1,59 +1,107 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RESEND PATCH v4 0/4] ASoC: codecs: Add WSA881x Smart Speaker amplifier support
-Date: Fri, 23 Aug 2019 00:37:55 +0100
-Message-ID: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
+Subject: [RESEND PATCH v4 1/4] dt-bindings: soundwire: add slave bindings
+Date: Fri, 23 Aug 2019 00:37:56 +0100
+Message-ID: <20190822233759.12663-2-srinivas.kandagatla@linaro.org>
+References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
 Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Resending this series due to a typo in yaml filename!
+This patch adds bindings for Soundwire Slave devices that includes how
+SoundWire enumeration address and Link ID are used to represented in
+SoundWire slave device tree nodes.
 
-Thanks for reviewing v3 patchset, here is v4 with addressing the comments in v3
-
-This patchset adds support to WSA8810/WSA8815 Class-D Smart Speaker
-Amplifier which is SoundWire interfaced.
-This also adds support to some missing bits in SoundWire bus layer like
-Device Tree support.
-
-This patchset along with DB845c machine driver and WCD934x codec driver
-has been tested on SDM845 SoC based DragonBoard DB845c with two
-WSA8810 speakers.
-
-Most of the code in this driver is rework of Qualcomm downstream drivers
-used in Andriod. Credits to Banajit Goswami and Patrick Lai's Team.
-
-TODO:
-	Add thermal sensor support in WSA881x.
-
-Thanks,
-srini
-
-Changes since v3:
- - updated slave bindings according to Rob's Suggestion.
- - moved bindings to yaml
-
-Srinivas Kandagatla (4):
-  dt-bindings: soundwire: add slave bindings
-  soundwire: core: add device tree support for slave devices
-  dt-bindings: ASoC: Add WSA881x bindings
-  ASoC: codecs: add wsa881x amplifier support
-
- .../bindings/sound/qcom,wsa881x.yaml          |   44 +
- .../soundwire/soundwire-controller.yaml       |   75 ++
- drivers/soundwire/bus.c                       |    2 +
- drivers/soundwire/bus.h                       |    1 +
- drivers/soundwire/slave.c                     |   52 +
- sound/soc/codecs/Kconfig                      |   10 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/wsa881x.c                    | 1134 +++++++++++++++++
- 8 files changed, 1320 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../soundwire/soundwire-controller.yaml       | 75 +++++++++++++++++++
+ 1 file changed, 75 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
- create mode 100644 sound/soc/codecs/wsa881x.c
 
+diff --git a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+new file mode 100644
+index 000000000000..91aa6c6d6266
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/soundwire/soundwire-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SoundWire Controller Generic Binding
++
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  SoundWire busses can be described with a node for the SoundWire controller
++  device and a set of child nodes for each SoundWire slave on the bus.
++
++properties:
++  $nodename:
++    pattern: "^soundwire(@.*|-[0-9a-f])*$"
++
++  "#address-cells":
++    const: 2
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    type: object
++
++    properties:
++      compatible:
++      pattern: "^sdw[0-9][0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{2}$"
++      description:
++	  Is the textual representation of SoundWire Enumeration
++	  address. compatible string should contain SoundWire Version ID,
++	  Manufacturer ID, Part ID and Class ID in order and shall be in
++	  lower-case hexadecimal with leading zeroes.
++	  Valid sizes of these fields are
++	  Version ID is 1 nibble, number '0x1' represents SoundWire 1.0
++	  and '0x2' represents SoundWire 1.1 and so on.
++	  MFD is 4 nibbles
++	  PID is 4 nibbles
++	  CID is 2 nibbles
++	  More Information on detail of encoding of these fields can be
++	  found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
++
++      reg:
++        maxItems: 1
++        description:
++          Instance ID and Link ID of SoundWire Device Address.
++
++    required:
++      - compatible
++      - reg
++
++examples:
++  - |
++    soundwire@c2d0000 {
++        #address-cells = <2>;
++        #size-cells = <0>;
++        compatible = "qcom,soundwire-v1.5.0";
++        reg = <0x0c2d0000 0x2000>;
++
++        speaker@1 {
++            compatible = "sdw10217201000";
++            reg = <1 0>;
++        };
++
++        speaker@2 {
++            compatible = "sdw10217201000";
++            reg = <2 0>;
++        };
++    };
++
++...
 -- 
 2.21.0
