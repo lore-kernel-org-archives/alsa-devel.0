@@ -1,21 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Fix Kconfig warning without GPIOLIB" to the asoc tree
+Subject: Applied "ASoC: wm8988: fix typo in wm8988_right_line_controls" to the asoc tree
 Date: Thu, 22 Aug 2019 19:32:57 +0100 (BST)
-Message-ID: <20190822183257.9C0E4D02CEB@fitzroy.sirena.org.uk>
-References: <20190822143007.73644-1-yuehaibing@huawei.com>
+Message-ID: <20190822183257.4E189D02CE7@fitzroy.sirena.org.uk>
+References: <20190822143608.59824-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190822143007.73644-1-yuehaibing@huawei.com>
+In-Reply-To: <20190822143608.59824-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, gregkh@linuxfoundation.org, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, maruthi.bayyavarapu@amd.com, perex@perex.cz, tglx@linutronix.de, tiwai@suse.com, Vijendar.Mukunda@amd.com, yuehaibing@huawei.com
+Cc: allison@lohutok.net, alsa-devel@alsa-project.org, broonie@kernel.org, gregkh@linuxfoundation.org, Hulk Robot <hulkci@huawei.com>, info@metux.net, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, patches@opensource.cirrus.com, perex@perex.cz, tglx@linutronix.de, tiwai@suse.com, yuehaibing@huawei.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Fix Kconfig warning without GPIOLIB
+   ASoC: wm8988: fix typo in wm8988_right_line_controls
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -36,40 +36,37 @@ to this mail.
 Thanks,
 Mark
 
->From 0ce6a624473e7e5752a84416f85f73d082308edd Mon Sep 17 00:00:00 2001
+>From c101fb29737f4558bf589d0d66371d9e21040568 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 22 Aug 2019 22:30:07 +0800
-Subject: [PATCH] ASoC: AMD: Fix Kconfig warning without GPIOLIB
+Date: Thu, 22 Aug 2019 22:36:08 +0800
+Subject: [PATCH] ASoC: wm8988: fix typo in wm8988_right_line_controls
 
-While do rand build without GPIOLIB, we get Kconfig warning:\
+sound/soc/codecs/wm8988.c:270:30: warning:
+ wm8988_rline_enum defined but not used [-Wunused-const-variable=]
 
-WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
-  Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && GPIOLIB [=n]
-  Selected by [m]:
-  - SND_SOC_AMD_CZ_DA7219MX98357_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AMD_ACP [=m] && I2C [=y]
-
-Add GPIOLIB dependency to fix this.
+wm8988_rline_enum should be used in wm8988_right_line_controls.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 5409fb4e327a ("ASoC: Add WM8988 CODEC driver")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190822143007.73644-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190822143608.59824-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/Kconfig | 2 +-
+ sound/soc/codecs/wm8988.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 9ca9214cb7fb..5f40517717c4 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -10,7 +10,7 @@ config SND_SOC_AMD_CZ_DA7219MX98357_MACH
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_ADAU7002
- 	select REGULATOR
--	depends on SND_SOC_AMD_ACP && I2C
-+	depends on SND_SOC_AMD_ACP && I2C && GPIOLIB
- 	help
- 	 This option enables machine driver for DA7219 and MAX9835.
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 25e74cf0666a..85bfd041d546 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -273,7 +273,7 @@ static const struct soc_enum wm8988_rline_enum =
+ 			      wm8988_line_texts,
+ 			      wm8988_line_values);
+ static const struct snd_kcontrol_new wm8988_right_line_controls =
+-	SOC_DAPM_ENUM("Route", wm8988_lline_enum);
++	SOC_DAPM_ENUM("Route", wm8988_rline_enum);
  
+ /* Left Mixer */
+ static const struct snd_kcontrol_new wm8988_left_mixer_controls[] = {
 -- 
 2.20.1
