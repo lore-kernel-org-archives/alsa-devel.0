@@ -1,85 +1,95 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: soundwire: add slave bindings
-Date: Thu, 22 Aug 2019 11:11:08 -0500
-Message-ID: <CAL_JsqLuH5=PLSVvyd=5oOECfcV3mgf8b842Y4ppJKG_NHds-g@mail.gmail.com>
-References: <20190809133407.25918-1-srinivas.kandagatla@linaro.org>
- <20190809133407.25918-2-srinivas.kandagatla@linaro.org> <20190821214436.GA13936@bogus>
- <0272eafd-0aa5-f695-64e4-f6ad7157a3a6@linaro.org> <CAL_JsqJJCJB9obR_Jn3hmn4gq+RQjY-8M+xkdYA185Uaw0MHcw@mail.gmail.com>
- <90b9fa33-3a49-c414-4352-66e26673a05d@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/4] ASoC: Intel: Haswell: Adjust machine
+ device private context
+Date: Thu, 22 Aug 2019 11:42:45 -0500
+Message-ID: <3ea7a8a8-932b-4ae3-07d5-27e70208ad0b@linux.intel.com>
+References: <20190822113616.22702-1-cezary.rojewski@intel.com>
+ <20190822113616.22702-2-cezary.rojewski@intel.com>
+ <76464d4e-a129-99b8-05ab-eff755cc5a1e@linux.intel.com>
+ <14962e17-8a86-5a84-0806-26be99c8b73b@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <90b9fa33-3a49-c414-4352-66e26673a05d@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Vinod <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BBDCF800BF
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 18:42:49 +0200 (CEST)
+In-Reply-To: <14962e17-8a86-5a84-0806-26be99c8b73b@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 22, 2019 at 7:56 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 22/08/2019 13:36, Rob Herring wrote:
-> >>>> +soundwire@c2d0000 {
-> >>>> +    compatible = "qcom,soundwire-v1.5.0"
-> >>>> +    reg = <0x0c2d0000 0x2000>;
-> >>>> +
-> >>>> +    spkr_left:wsa8810-left{
-> >>>> +            compatible = "sdw0110217201000";
-> >>>> +            ...
-> >>>> +    };
-> >>>> +
-> >>>> +    spkr_right:wsa8810-right{
-> >>>> +            compatible = "sdw0120217201000";
-> >>> The normal way to distinguish instances is with 'reg'. So I think you
-> >>> need 'reg' with Instance ID moved there at least. Just guessing, but
-> >>> perhaps Link ID, too? And for 2 different classes of device is that
-> >>> enough?
-> >> In previous bindings (https://lists.gt.net/linux/kernel/3403276  ) we
-> >> did have instance-id as different property, however Pierre had some good
-> >> suggestion to make it align with _ADR encoding as per MIPI DisCo spec.
-> >>
-> >> Do you still think that we should split the instance id to reg property?
-> > Assuming you could have more than 1 of the same device on the bus,
-> > then you need some way to distinguish them and the way that's done for
-> > DT is unit-address/reg. And compatible strings should be constant for
-> > each instance.
-> That is a good point!
-> Okay that makes more sense keep compatible string constant.
-> Class ID would be constant for given functionality that the driver will
-> provide.
->
-> So we will end up with some thing like this:
->
-> soundwire@c2d0000 {
->         compatible = "qcom,soundwire-v1.5.0"
->         reg = <0x0c2d0000 0x2000>;
->          #address-cells = <1>;
->          #size-cells = <0>;
->
->         spkr_left:skpr@1{
->                 compatible = "sdw10217201000";
->                 reg = <0x1>
->                 sdw-link-id = <0>;
-
-Not really sure what Link ID is, but maybe it should be part of reg
-too if it is part of how you address a device.
-
->                 ...
->         };
->
->         spkr_right:spkr@2{
->                 compatible = "sdw10217201000";
->                 reg = <0x2>
->                 sdw-link-id = <0>;
->         };
-> };
->
-> I will spin this in next version!
->
-> Thanks,
-> srini
->
-> >
-> > Rob
+CgpPbiA4LzIyLzE5IDExOjA1IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4gT24gMjAxOS0w
+OC0yMiAxNzo1OCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Cj4+Cj4+IE9uIDgvMjIv
+MTkgNjozNiBBTSwgQ2V6YXJ5IFJvamV3c2tpIHdyb3RlOgo+Pj4gQXBhcnQgZnJvbSBIYXN3ZWxs
+IG1hY2hpbmVzLCBhbGwgb3RoZXIgZGV2aWNlcyBoYXZlIHRoZWlyIHByaXZhdGUgZGF0YQo+Pj4g
+c2V0IHRvIHNuZF9zb2NfYWNwaV9tYWNoIGluc3RhbmNlLgo+Pj4KPj4+IENoYW5nZXMgZm9yIEhT
+Vy8gQkRXIGJvYXJkcyBpbnRyb2R1Y2VkIHdpdGggc2VyaWVzOgo+Pj4gaHR0cHM6Ly9wYXRjaHdv
+cmsua2VybmVsLm9yZy9jb3Zlci8xMDc4MjAzNS8KPj4+Cj4+PiBhZGRlZCBzdXBwb3J0IGZvciBk
+YWlfbGluayBwbGF0Zm9ybV9uYW1lIGFkanVzdG1lbnRzIHdpdGhpbiBjYXJkIHByb2JlCj4+PiBy
+b3V0aW5lcy4gVGhlc2UgdGFrZSBmb3IgZ3JhbnRlZCBwcml2YXRlX2RhdGEgcG9pbnRzIHRvCj4+
+PiBzbmRfc29jX2FjcGlfbWFjaCB3aGVyZWFzIGZvciBIYXN3ZWxsLCBpdCdzIHNzdF9wZGF0YSBp
+bnN0ZWFkLiBDaGFuZ2UKPj4+IHByaXZhdGUgY29udGV4dCBvZiBwbGF0Zm9ybV9kZXZpY2UgLSBy
+ZXByZXNlbnRpbmcgbWFjaGluZSBib2FyZCAtIHRvCj4+PiBhZGRyZXNzIHRoaXMuCj4+Pgo+Pj4g
+Rml4ZXM6IGU4NzA1NWQ3MzJlMyAoIkFTb0M6IEludGVsOiBoYXN3ZWxsOiBwbGF0Zm9ybSBuYW1l
+IGZpeHVwIAo+Pj4gc3VwcG9ydCIpCj4+PiBGaXhlczogN2U0MGRkY2Y5NzRhICgiQVNvQzogSW50
+ZWw6IGJkdy1ydDU2Nzc6IHBsYXRmb3JtIG5hbWUgZml4dXAgCj4+PiBzdXBwb3J0IikKPj4+IEZp
+eGVzOiAyZDA2N2IyODA3ZjkgKCJBU29DOiBJbnRlbDogYnJvYWR3ZWxsOiBwbGF0Zm9ybSBuYW1l
+IGZpeHVwIAo+Pj4gc3VwcG9ydCIpCj4+PiBTaWduZWQtb2ZmLWJ5OiBDZXphcnkgUm9qZXdza2kg
+PGNlemFyeS5yb2pld3NraUBpbnRlbC5jb20+Cj4+PiAtLS0KPj4+IMKgIHNvdW5kL3NvYy9pbnRl
+bC9jb21tb24vc3N0LWFjcGkuYyB8IDMgKystCj4+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9p
+bnRlbC9jb21tb24vc3N0LWFjcGkuYyAKPj4+IGIvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3Qt
+YWNwaS5jCj4+PiBpbmRleCAxNWYyYjI3ZTY0M2YuLmMzNGY2MjhjNzk4NyAxMDA2NDQKPj4+IC0t
+LSBhL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWFjcGkuYwo+Pj4gKysrIGIvc291bmQvc29j
+L2ludGVsL2NvbW1vbi9zc3QtYWNwaS5jCj4+PiBAQCAtMTA5LDExICsxMDksMTIgQEAgaW50IHNz
+dF9hY3BpX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+PiDCoMKgwqDCoMKg
+IH0KPj4+IMKgwqDCoMKgwqAgcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgc3N0X2FjcGkpOwo+
+Pj4gK8KgwqDCoCBtYWNoLT5wZGF0YSA9IHNzdF9wZGF0YTsKPj4+IMKgwqDCoMKgwqAgLyogcmVn
+aXN0ZXIgbWFjaGluZSBkcml2ZXIgKi8KPj4+IMKgwqDCoMKgwqAgc3N0X2FjcGktPnBkZXZfbWFj
+aCA9Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcGxhdGZvcm1fZGV2aWNlX3JlZ2lzdGVyX2RhdGEo
+ZGV2LCBtYWNoLT5kcnZfbmFtZSwgLTEsCj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3N0X3BkYXRhLCBzaXplb2YoKnNzdF9wZGF0YSkpOwo+
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1h
+Y2gsIHNpemVvZigqbWFjaCkpOwo+Pgo+PiBJIG5vdyBhZ3JlZSB0aGF0IHRoZSBjb2RlIEkgYWRk
+ZWQgaXMgaW5jb3JyZWN0IGFuZCBwcm9iYWJseSBhY2Nlc3NlcyAKPj4gbWVtb3J5IG9mZnNldHMg
+dGhhdCBhcmVuJ3QgcmlnaHQuIEkgaGF2ZSBhYnNvbHV0ZWx5IG5vIGlkZWEgd2h5IEkgCj4+IGFk
+ZGVkIHRoaXMgY29tbWVudCB0aGF0ICdsZWdhY3kgZG9lcyBub3QgcGFzcyBwYXJhbWV0ZXJzJyB3
+aGVuIGl0IG1vc3QgCj4+IGRlZmluaXRpdmVseSBkb2VzLiBHb29kIGNhdGNoIG9uIHlvdXIgc2lk
+ZS4KPj4KPj4gVGhhdCBzYWlkLCBkb2Vzbid0IHRoZSBwcm9wb3NlZCBmaXggaW50cm9kdWNlIGFu
+b3RoZXIgaXNzdWU/Cj4+Cj4+IEluIHRoZSBtYWNoaW5lIGRyaXZlcnMsIHlvdSBzdGlsbCBnZXQg
+cGRhdGEgZGlyZWN0bHksIHNvIGFyZW4ndCB5b3UgCj4+IG1pc3NpbmcgYW4gaW5kaXJlY3Rpb24g
+dG8gZ2V0IGJhY2sgdG8gcGRhdGEgZnJvbSBtYWNoPwo+Pgo+PiBzdGF0aWMgaW50IGJkd19ydDU2
+NzdfcnRkX2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCkKPj4gewo+PiDCoMKg
+wqDCoMKgc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQgPSBzbmRfc29jX3J0ZGNv
+bV9sb29rdXAocnRkLCAKPj4gRFJWX05BTUUpOwo+PiDCoMKgwqDCoMKgc3RydWN0IHNzdF9wZGF0
+YSAqcGRhdGEgPSBkZXZfZ2V0X3BsYXRkYXRhKGNvbXBvbmVudC0+ZGV2KTsKPj4gwqDCoMKgwqDC
+oHN0cnVjdCBzc3RfaHN3ICpicm9hZHdlbGwgPSBwZGF0YS0+ZHNwOwo+Pgo+PiA8PDwgc28gaGVy
+ZSB5b3UgdG9vayB0aGUgd3JvbmcgcG9pbnRlciwgbm8/Cj4gCj4gQm90aCBCYXl0cmFpbCBhbmQg
+SGFzd2VsbCBhcmUgZW51bWVyYXRlZCBpbiBhIGJpdCBkaWZmZXJlbnQgZmFzaGlvbiB0aGFuIAo+
+IFNLTCBlcXVpdmFsZW50cy4KPiAKPiBUaGVyZSBpcyBhbiBpbi1wbGFjZSByZWdpc3RyYXRpb24g
+Zm9yIG1hY2hpbmUgZGV2aWNlIC0gd2hvc2UgCj4gcHJpdmF0ZV9kYXRhIGdldHMgdXNlZCBpbiBt
+YWNoaW5lIHByb2JlIC0gYW5kIHBjbSBkZXZpY2Ugd2hpY2ggaGFwcGVucyAKPiBvbiBmaXJtd2Fy
+ZSBsb2FkIGNhbGxiYWNrICgvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtYWNwaTo2MykuIAo+
+IF9ydGRfaW5pdCBtYWtlcyB1c2Ugb2YgdGhlIGxhdHRlciBvZiB0d28uCgpJIGRvbid0IGdldCB5
+b3VyIGV4cGxhbmF0aW9ucy4gY2FuIHlvdSBlbGFib3JhdGUgb24gd2hhdCB0aGlzIGRvZXMgbm93
+IAp0aGF0IHBkYXRhIGlzIG5vIGxvbmdlciBwYXNzZWQgYXMgYW4gYXJndW1lbnQgdG8gdGhlIG1h
+Y2hpbmUgZHJpdmVyOgoKc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQgPSBzbmRf
+c29jX3J0ZGNvbV9sb29rdXAocnRkLCBEUlZfTkFNRSk7CnN0cnVjdCBzc3RfcGRhdGEgKnBkYXRh
+ID0gZGV2X2dldF9wbGF0ZGF0YShjb21wb25lbnQtPmRldik7Cgp0aGUgJ2NvbXBvbmVudCcgaGVy
+ZSBpcyBub3QgdGhlIFBDTSBvbmUsIGlzIGl0PwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
