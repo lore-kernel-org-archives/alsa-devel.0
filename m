@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: add NOTE to
-	snd_soc_rtdcom_lookup()" to the asoc tree
+Subject: Applied "ASoC: soc-core: use device_register()" to the
+	asoc tree
 Date: Thu, 22 Aug 2019 19:32:57 +0100 (BST)
-Message-ID: <20190822183257.02AD2D02CD3@fitzroy.sirena.org.uk>
-References: <874l2c1ldi.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190822183257.14831D02CD4@fitzroy.sirena.org.uk>
+References: <878sro1ldw.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F33E6F803D5
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 20:33:05 +0200 (CEST)
-In-Reply-To: <874l2c1ldi.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAC0AF803F3
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 20:33:06 +0200 (CEST)
+In-Reply-To: <878sro1ldw.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: add NOTE to snd_soc_rtdcom_lookup()
+   ASoC: soc-core: use device_register()
 
 has been applied to the asoc tree at
 
@@ -55,52 +55,60 @@ to this mail.
 Thanks,
 Mark
 
->From a33c0d166cc5bcb3b9718649b84974216709acb1 Mon Sep 17 00:00:00 2001
+>From 4168ddabb480bef818c93f378428632fb681b500 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 20 Aug 2019 14:05:02 +0900
-Subject: [PATCH] ASoC: soc-core: add NOTE to snd_soc_rtdcom_lookup()
+Date: Tue, 20 Aug 2019 14:04:49 +0900
+Subject: [PATCH] ASoC: soc-core: use device_register()
 
-We can find specified name component via snd_soc_rtdcom_lookup().
-But, it is not enough under multi CPU/Codec/Platform, because many
-components which have same driver name might be connected to same rtd.
+It is easy to read code if it is cleanly using paired function/naming,
+like start <-> stop, register <-> unregister, etc, etc.
+But, current ALSA SoC code is very random, unbalance, not paired, etc.
 
-Not using this function as much as possible is best solution,
-but some drivers are already deeply depended to it.
+soc-core.c is using device_unregiser(), but there is no its paired
+device_regiser(). We can find its code at soc_post_component_init()
+which is using device_initialize() and device_add().
+Here, device_initialize() + device_add() = device_register().
 
-We can expand this function, for example having "num" which specifies
-found order at parameter, etc (In such case, it need to have fixed
-probing order).
-Or, use different driver name in such component, etc.
+	-- linux/drivers/base/core.c --
+	int device_register(struct device *dev)
+	{
+		device_initialize(dev);
+		return device_add(dev);
+	}
 
-We will have such issue if multi CPU/Codec/Platform were supported.
-To indicate it, this patch adds NOTE to this function.
+device_initialize() is doing each dev member's initialization only,
+not related to device parent/release/groups.
+Thus, we can postpone it.
+let's use device_register() instead of device_initialize()/device_add().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/874l2c1ldi.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/878sro1ldw.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/soc-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3860d8521734..0ed6576bfef4 100644
+index 6df880be1622..3860d8521734 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -315,6 +315,14 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
- 	if (!driver_name)
- 		return NULL;
- 
-+	/*
-+	 * NOTE
-+	 *
-+	 * snd_soc_rtdcom_lookup() will find component from rtd by using
-+	 * specified driver name.
-+	 * But, if many components which have same driver name are connected
-+	 * to 1 rtd, this function will return 1st found component.
-+	 */
- 	for_each_rtdcom(rtd, rtdcom) {
- 		const char *component_name = rtdcom->component->driver->name;
- 
+@@ -1347,7 +1347,6 @@ static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
+ 	rtd->dev = kzalloc(sizeof(struct device), GFP_KERNEL);
+ 	if (!rtd->dev)
+ 		return -ENOMEM;
+-	device_initialize(rtd->dev);
+ 	rtd->dev->parent = rtd->card->dev;
+ 	rtd->dev->release = rtd_release;
+ 	rtd->dev->groups = soc_dev_attr_groups;
+@@ -1357,7 +1356,7 @@ static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
+ 	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
+ 	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
+ 	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
+-	ret = device_add(rtd->dev);
++	ret = device_register(rtd->dev);
+ 	if (ret < 0) {
+ 		/* calling put_device() here to free the rtd->dev */
+ 		put_device(rtd->dev);
 -- 
 2.20.1
