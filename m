@@ -1,96 +1,94 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 4/5] ASoC: SOF: Intel: hda: add SoundWire stream
- config/free callbacks
-Date: Thu, 22 Aug 2019 08:53:06 -0500
-Message-ID: <f73796d6-fcfa-97c8-69ae-0a183edbbd97@linux.intel.com>
-References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
- <20190821201720.17768-5-pierre-louis.bossart@linux.intel.com>
- <20190822071835.GA30262@ubuntu>
+Subject: Re: [PATCH 1/4] ASoC: Intel: Haswell: Adjust machine
+ device private context
+Date: Thu, 22 Aug 2019 09:07:36 -0500
+Message-ID: <dbde72dc-9b41-f1a8-001a-5674f5af3b61@linux.intel.com>
+References: <20190822113616.22702-1-cezary.rojewski@intel.com>
+ <20190822113616.22702-2-cezary.rojewski@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190822071835.GA30262@ubuntu>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EE77F80112
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 16:07:39 +0200 (CEST)
+In-Reply-To: <20190822113616.22702-2-cezary.rojewski@intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, YueHaibing <yuehaibing@huawei.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review Guennadi
-
->> +static int sdw_config_stream(void *arg, void *s, void *dai,
->> +			     void *params, int link_id, int alh_stream_id)
+On 8/22/19 6:36 AM, Cezary Rojewski wrote:
+> Apart from Haswell machines, all other devices have their private data
+> set to snd_soc_acpi_mach instance.
 > 
-> I realise, that these function prototypes aren't being introduced by these
-> patches, but just wondering whether such overly generic prototype is really
-> a good idea here, whether some of those "void *" pointers could be given
-> real types. The first one could be "struct device *" etc.
-
-In this case the 'arg' parameter is actually a private 'struct 
-snd_sof_dev', as shown below [1]. We probably want to keep this 
-relatively opaque, this is a context that doesn't need to be exposed to 
-the SoundWire code.
-
-The dai and params are indeed cases where we could use stronger types, 
-they are snd_soc_dai and hw_params respectively. I don't recall why the 
-existing code is this way, Vinod and Sanyog may have the history of this.
-
+> Changes for HSW/ BDW boards introduced with series:
+> https://patchwork.kernel.org/cover/10782035/
 > 
->> +{
->> +	struct snd_sof_dev *sdev = arg;
->> +	struct snd_soc_dai *d = dai;
-[1]
+> added support for dai_link platform_name adjustments within card probe
+> routines. These take for granted private_data points to
+> snd_soc_acpi_mach whereas for Haswell, it's sst_pdata instead. Change
+> private context of platform_device - representing machine board - to
+> address this.
 
->> +	struct sof_ipc_dai_config config;
->> +	struct sof_ipc_reply reply;
->> +	int ret;
->> +	u32 size = sizeof(config);
->> +
->> +	memset(&config, 0, size);
->> +	config.hdr.size = size;
->> +	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
->> +	config.type = SOF_DAI_INTEL_ALH;
->> +	config.dai_index = (link_id << 8) | (d->id);
->> +	config.alh.stream_id = alh_stream_id;
-> 
-> Entirely up to you, in such cases I usually do something like
-> 
-> +	struct sof_ipc_dai_config config = {
-> +		.type = SOF_DAI_INTEL_ALH,
-> +		.hre = {
-> +			.size = sizeof(config),
-> +			.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG,
-> +			...
-> 
-> which then also avoids a memset(). But that's mostly a matter of personal
-> preference, since this is on stack, the compiler would probably internally
-> anyway translate the above initialisation to a memset() with all the
-> following assignments.
+Cezary, see the comments of the initial series:
 
-I have no preference, so in this case I will go with consistency with 
-existing code, which uses the suggested style for all IPCs.
+"Note that byt-max98080, byt-rt5640 were not modified since they are
+deprecated. bytcht-nocodec and the Skylake/Kabylake machine drivers
+changes were not changed since SOF does not support them. There may be
+additional changes if and when Skylake/Kabylake are supported by SOF
+(largely a firmware authentication issue, not technical difficulty)."
 
-> 
->> +
->> +	/* send message to DSP */
->> +	ret = sof_ipc_tx_message(sdev->ipc,
->> +				 config.hdr.cmd, &config, size, &reply,
->> +				 sizeof(reply));
->> +	if (ret < 0) {
->> +		dev_err(sdev->dev,
->> +			"error: failed to set DAI hw_params for link %d dai->id %d ALH %d\n",
-> 
-> Are readers really expected to understand what "dai->id" means? Wouldn't
-> "DAI ID" be friendlier, although I understand you - who might not know
-> what "x->y" stands for?.. ;-)
+I intentionally did not touch the Haswell and Baytrail legacy since both 
+drivers do not update the platform name, this is only done for cases 
+where SOF is used.
 
-I was trying to avoid a confusion here, we have config->dai_index which 
-are shared concepts between topology and firmware, and dai->id which is 
-shared between topology and machine driver (which refers to the dai in 
-the dai_link which has its own .id). In topology files we have the three 
-indices and of course after a couple of weeks I can't recall which one 
-maps to what.
-I am afraid DAI ID might be confused with dai_index. If there are 
-suggestions on this I am all ears, all I care about is avoiding 
-ambiguity and having to ask Ranjani what index this really is :-)
+So while I don't mind a change, it's got to come with tests for each 
+variant, and if you do the changes for Haswell then you want to change 
+Baytrail legacy machine drivers as well. And are we going to change the 
+SKL/KBL machine drivers to allow for this platform name rewrite?
+
+Also the information below is misleading: nothing is broken in the 
+current solution and -stable kernels do not need to pick this patchset. 
+This is a code alignment and the behavior is identical.
+
+Or as an alternative we leave the code as is...
+
+> Fixes: e87055d732e3 ("ASoC: Intel: haswell: platform name fixup support")
+> Fixes: 7e40ddcf974a ("ASoC: Intel: bdw-rt5677: platform name fixup support")
+> Fixes: 2d067b2807f9 ("ASoC: Intel: broadwell: platform name fixup support")
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>   sound/soc/intel/common/sst-acpi.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+> index 15f2b27e643f..c34f628c7987 100644
+> --- a/sound/soc/intel/common/sst-acpi.c
+> +++ b/sound/soc/intel/common/sst-acpi.c
+> @@ -109,11 +109,12 @@ int sst_acpi_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	platform_set_drvdata(pdev, sst_acpi);
+> +	mach->pdata = sst_pdata;
+>   
+>   	/* register machine driver */
+>   	sst_acpi->pdev_mach =
+>   		platform_device_register_data(dev, mach->drv_name, -1,
+> -					      sst_pdata, sizeof(*sst_pdata));
+> +					      mach, sizeof(*mach));
+>   	if (IS_ERR(sst_acpi->pdev_mach))
+>   		return PTR_ERR(sst_acpi->pdev_mach);
+>   
+> 
