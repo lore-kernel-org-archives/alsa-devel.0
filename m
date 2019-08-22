@@ -1,73 +1,96 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] soundwire: intel: remove unused variables
-Date: Thu, 22 Aug 2019 08:38:57 -0500
-Message-ID: <05406f83-a799-2110-cf51-c289ae838065@linux.intel.com>
-References: <20190822062555.30216-1-vkoul@kernel.org>
+Subject: Re: [RFC PATCH 4/5] ASoC: SOF: Intel: hda: add SoundWire stream
+ config/free callbacks
+Date: Thu, 22 Aug 2019 08:53:06 -0500
+Message-ID: <f73796d6-fcfa-97c8-69ae-0a183edbbd97@linux.intel.com>
+References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
+ <20190821201720.17768-5-pierre-louis.bossart@linux.intel.com>
+ <20190822071835.GA30262@ubuntu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6638AF80147
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 15:39:01 +0200 (CEST)
-In-Reply-To: <20190822062555.30216-1-vkoul@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190822071835.GA30262@ubuntu>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, YueHaibing <yuehaibing@huawei.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/22/19 1:25 AM, Vinod Koul wrote:
-> Variables 'nval' and 'i' are no longer used sdw_master_read_intel_prop()
-> so remove them.
-> 
-> drivers/soundwire/intel.c: In function 'sdw_master_read_intel_prop':
-> drivers/soundwire/intel.c:829:12: warning: unused variable 'i' [-Wunused-variable]
->    int nval, i;
->              ^
-> drivers/soundwire/intel.c:829:6: warning: unused variable 'nval' [-Wunused-variable]
->    int nval, i;
->        ^~~~
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: 085f4ace103d ("soundwire: intel: read mclk_freq property from firmware")
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Thanks for the review Guennadi
 
-This was fixed in the followup patch to disable hw links:
-
--	int nval, i;
-+	u32 quirk_mask;
-
-which wasn't applied because debugsfs didn't apply, and debugfs didn't 
-apply because of discrepancies between soundwire/fixes and soundwire/next...
-I realize these variables were removed in the wrong patch but I would 
-appreciate it if we could just avoid creating more conflicts for minor 
-changes. Thank you.
-
-> ---
->   drivers/soundwire/intel.c | 1 -
->   1 file changed, 1 deletion(-)
+>> +static int sdw_config_stream(void *arg, void *s, void *dai,
+>> +			     void *params, int link_id, int alh_stream_id)
 > 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 459cc1e6355d..cad378f741c0 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -826,7 +826,6 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
->   	struct sdw_master_prop *prop = &bus->prop;
->   	struct fwnode_handle *link;
->   	char name[32];
-> -	int nval, i;
->   
->   	/* Find master handle */
->   	snprintf(name, sizeof(name),
+> I realise, that these function prototypes aren't being introduced by these
+> patches, but just wondering whether such overly generic prototype is really
+> a good idea here, whether some of those "void *" pointers could be given
+> real types. The first one could be "struct device *" etc.
+
+In this case the 'arg' parameter is actually a private 'struct 
+snd_sof_dev', as shown below [1]. We probably want to keep this 
+relatively opaque, this is a context that doesn't need to be exposed to 
+the SoundWire code.
+
+The dai and params are indeed cases where we could use stronger types, 
+they are snd_soc_dai and hw_params respectively. I don't recall why the 
+existing code is this way, Vinod and Sanyog may have the history of this.
+
 > 
+>> +{
+>> +	struct snd_sof_dev *sdev = arg;
+>> +	struct snd_soc_dai *d = dai;
+[1]
+
+>> +	struct sof_ipc_dai_config config;
+>> +	struct sof_ipc_reply reply;
+>> +	int ret;
+>> +	u32 size = sizeof(config);
+>> +
+>> +	memset(&config, 0, size);
+>> +	config.hdr.size = size;
+>> +	config.hdr.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG;
+>> +	config.type = SOF_DAI_INTEL_ALH;
+>> +	config.dai_index = (link_id << 8) | (d->id);
+>> +	config.alh.stream_id = alh_stream_id;
+> 
+> Entirely up to you, in such cases I usually do something like
+> 
+> +	struct sof_ipc_dai_config config = {
+> +		.type = SOF_DAI_INTEL_ALH,
+> +		.hre = {
+> +			.size = sizeof(config),
+> +			.cmd = SOF_IPC_GLB_DAI_MSG | SOF_IPC_DAI_CONFIG,
+> +			...
+> 
+> which then also avoids a memset(). But that's mostly a matter of personal
+> preference, since this is on stack, the compiler would probably internally
+> anyway translate the above initialisation to a memset() with all the
+> following assignments.
+
+I have no preference, so in this case I will go with consistency with 
+existing code, which uses the suggested style for all IPCs.
+
+> 
+>> +
+>> +	/* send message to DSP */
+>> +	ret = sof_ipc_tx_message(sdev->ipc,
+>> +				 config.hdr.cmd, &config, size, &reply,
+>> +				 sizeof(reply));
+>> +	if (ret < 0) {
+>> +		dev_err(sdev->dev,
+>> +			"error: failed to set DAI hw_params for link %d dai->id %d ALH %d\n",
+> 
+> Are readers really expected to understand what "dai->id" means? Wouldn't
+> "DAI ID" be friendlier, although I understand you - who might not know
+> what "x->y" stands for?.. ;-)
+
+I was trying to avoid a confusion here, we have config->dai_index which 
+are shared concepts between topology and firmware, and dai->id which is 
+shared between topology and machine driver (which refers to the dai in 
+the dai_link which has its own .id). In topology files we have the three 
+indices and of course after a couple of weeks I can't recall which one 
+maps to what.
+I am afraid DAI ID might be confused with dai_index. If there are 
+suggestions on this I am all ears, all I care about is avoiding 
+ambiguity and having to ask Ranjani what index this really is :-)
