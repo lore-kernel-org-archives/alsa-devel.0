@@ -1,18 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: dsp: fsl: Add DSP core binding support" to the asoc tree
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: mt8183: switch tdm pins gpio function when
+ playback on or off" to the asoc tree
 Date: Thu, 22 Aug 2019 19:32:57 +0100 (BST)
-Message-ID: <20190822183257.89AC8D02CEA@fitzroy.sirena.org.uk>
-References: <20190821164730.7385-2-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190821164730.7385-2-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, linux-imx@nxp.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, robh+dt@kernel.org, Rob Herring <robh@kernel.org>, shengjiu.wang@nxp.com, tiwai@suse.de, viorel.suman@nxp.com, Xiubo.Lee@gmail.com
+Message-ID: <20190822183257.27D03D02CD8@fitzroy.sirena.org.uk>
+References: <1566478261-13464-2-git-send-email-jiaxin.yu@mediatek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1566478261-13464-2-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ck.hu-c+3QU6Y0cdFWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: dsp: fsl: Add DSP core binding support
+   ASoC: mediatek: mt8183: switch tdm pins gpio function when playback on or off
 
 has been applied to the asoc tree at
 
@@ -37,116 +48,175 @@ to this mail.
 Thanks,
 Mark
 
->From 7db2f2dfc701f9f903283e830653b02fb6ce823c Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 21 Aug 2019 11:47:28 -0500
-Subject: [PATCH] dt-bindings: dsp: fsl: Add DSP core binding support
+>From 6191cbde5ff02ef5307e7b2e4f5b8f7607c2b1df Mon Sep 17 00:00:00 2001
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Thu, 22 Aug 2019 20:51:00 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: switch tdm pins gpio function when
+ playback on or off
 
-This describes the DSP device tree node.
+Pull TDM pins down when TDM BE shutdown to avoid current leakage.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190821164730.7385-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Link: https://lore.kernel.org/r/1566478261-13464-2-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- .../devicetree/bindings/dsp/fsl,dsp.yaml      | 88 +++++++++++++++++++
- 1 file changed, 88 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 115 +++++++++++++++++-
+ 1 file changed, 109 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-new file mode 100644
-index 000000000000..3248595dc93c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-@@ -0,0 +1,88 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dsp/fsl,dsp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 272766c1b859..fe8a7461ace5 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -46,6 +46,32 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
++static const struct snd_soc_dapm_widget
++mt8183_mt6358_ts3a227_max98357_dapm_widgets[] = {
++	SND_SOC_DAPM_OUTPUT("IT6505_8CH"),
++};
 +
-+title: NXP i.MX8 DSP core
++static const struct snd_soc_dapm_route
++mt8183_mt6358_ts3a227_max98357_dapm_routes[] = {
++	{"IT6505_8CH", NULL, "TDM"},
++};
 +
-+maintainers:
-+  - Daniel Baluta <daniel.baluta@nxp.com>
++enum PINCTRL_PIN_STATE {
++	PIN_STATE_DEFAULT = 0,
++	PIN_TDM_OUT_ON,
++	PIN_TDM_OUT_OFF,
++	PIN_STATE_MAX
++};
 +
-+description: |
-+  Some boards from i.MX8 family contain a DSP core used for
-+  advanced pre- and post- audio processing.
++static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
++	"default", "aud_tdm_out_on", "aud_tdm_out_off",
++};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx8qxp-dsp
++struct mt8183_mt6358_ts3a227_max98357_priv {
++	struct pinctrl *pinctrl;
++	struct pinctrl_state *pin_states[PIN_STATE_MAX];
++};
 +
-+  reg:
-+    description: Should contain register location and length
+ static int
+ mt8183_mt6358_ts3a227_max98357_bt_sco_startup(
+ 	struct snd_pcm_substream *substream)
+@@ -173,6 +199,47 @@ SND_SOC_DAILINK_DEFS(tdm,
+ 	DAILINK_COMP_ARRAY(COMP_DUMMY()),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
++static int mt8183_mt6358_tdm_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
++		snd_soc_card_get_drvdata(rtd->card);
++	int ret;
 +
-+  clocks:
-+    items:
-+      - description: ipg clock
-+      - description: ocram clock
-+      - description: core clock
++	if (IS_ERR(priv->pin_states[PIN_TDM_OUT_ON]))
++		return PTR_ERR(priv->pin_states[PIN_TDM_OUT_ON]);
 +
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: ocram
-+      - const: core
++	ret = pinctrl_select_state(priv->pinctrl,
++				   priv->pin_states[PIN_TDM_OUT_ON]);
++	if (ret)
++		dev_err(rtd->card->dev, "%s failed to select state %d\n",
++			__func__, ret);
 +
-+  power-domains:
-+    description:
-+      List of phandle and PM domain specifier as documented in
-+      Documentation/devicetree/bindings/power/power_domain.txt
-+    maxItems: 4
++	return ret;
++}
 +
-+  mboxes:
-+    description:
-+      List of <&phandle type channel> - 2 channels for TXDB, 2 channels for RXDB
-+      (see mailbox/fsl,mu.txt)
-+    maxItems: 4
++static void mt8183_mt6358_tdm_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
++		snd_soc_card_get_drvdata(rtd->card);
++	int ret;
 +
-+  mbox-names:
-+    items:
-+      - const: txdb0
-+      - const: txdb1
-+      - const: rxdb0
-+      - const: rxdb1
++	if (IS_ERR(priv->pin_states[PIN_TDM_OUT_OFF]))
++		return;
 +
-+  memory-region:
-+    description:
-+       phandle to a node describing reserved memory (System RAM memory)
-+       used by DSP (see bindings/reserved-memory/reserved-memory.txt)
-+    maxItems: 1
++	ret = pinctrl_select_state(priv->pinctrl,
++				   priv->pin_states[PIN_TDM_OUT_OFF]);
++	if (ret)
++		dev_err(rtd->card->dev, "%s failed to select state %d\n",
++			__func__, ret);
++}
 +
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - power-domains
-+  - mboxes
-+  - mbox-names
-+  - memory-region
++static struct snd_soc_ops mt8183_mt6358_tdm_ops = {
++	.startup = mt8183_mt6358_tdm_startup,
++	.shutdown = mt8183_mt6358_tdm_shutdown,
++};
 +
-+examples:
-+  - |
-+    #include <dt-bindings/firmware/imx/rsrc.h>
-+    #include <dt-bindings/clock/imx8-clock.h>
-+    dsp@596e8000 {
-+        compatible = "fsl,imx8qxp-dsp";
-+        reg = <0x596e8000 0x88000>;
-+        clocks = <&adma_lpcg IMX_ADMA_LPCG_DSP_IPG_CLK>,
-+                 <&adma_lpcg IMX_ADMA_LPCG_OCRAM_IPG_CLK>,
-+                 <&adma_lpcg IMX_ADMA_LPCG_DSP_CORE_CLK>;
-+        clock-names = "ipg", "ocram", "core";
-+        power-domains = <&pd IMX_SC_R_MU_13A>,
-+                        <&pd IMX_SC_R_MU_13B>,
-+                        <&pd IMX_SC_R_DSP>,
-+                        <&pd IMX_SC_R_DSP_RAM>;
-+        mbox-names = "txdb0", "txdb1", "rxdb0", "rxdb1";
-+        mboxes = <&lsio_mu13 2 0>, <&lsio_mu13 2 1>, <&lsio_mu13 3 0>, <&lsio_mu13 3 1>;
-+    };
+ static struct snd_soc_dai_link
+ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 	/* FE */
+@@ -325,6 +392,8 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 		.no_pcm = 1,
+ 		.dpcm_playback = 1,
+ 		.ignore_suspend = 1,
++		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
++		.ops = &mt8183_mt6358_tdm_ops,
+ 		SND_SOC_DAILINK_REG(tdm),
+ 	},
+ };
+@@ -371,7 +440,8 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 	struct snd_soc_card *card = &mt8183_mt6358_ts3a227_max98357_card;
+ 	struct device_node *platform_node;
+ 	struct snd_soc_dai_link *dai_link;
+-	struct pinctrl *default_pins;
++	struct mt8183_mt6358_ts3a227_max98357_priv *priv;
++	int ret;
+ 	int i;
+ 
+ 	card->dev = &pdev->dev;
+@@ -397,12 +467,45 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 		card->num_aux_devs = 1;
+ 	}
+ 
+-	default_pins =
+-		devm_pinctrl_get_select(&pdev->dev, PINCTRL_STATE_DEFAULT);
+-	if (IS_ERR(default_pins)) {
+-		dev_err(&pdev->dev, "%s set pins failed\n",
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	snd_soc_card_set_drvdata(card, priv);
++
++	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
++	if (IS_ERR(priv->pinctrl)) {
++		dev_err(&pdev->dev, "%s devm_pinctrl_get failed\n",
+ 			__func__);
+-		return PTR_ERR(default_pins);
++		return PTR_ERR(priv->pinctrl);
++	}
++
++	for (i = 0 ; i < PIN_STATE_MAX ; i++) {
++		priv->pin_states[i] = pinctrl_lookup_state(priv->pinctrl,
++							   mt8183_pin_str[i]);
++		if (IS_ERR(priv->pin_states[i])) {
++			ret = PTR_ERR(priv->pin_states[i]);
++			dev_info(&pdev->dev, "%s Can't find pin state %s %d\n",
++				 __func__, mt8183_pin_str[i], ret);
++		}
++	}
++
++	if (!IS_ERR(priv->pin_states[PIN_TDM_OUT_OFF])) {
++		ret = pinctrl_select_state(priv->pinctrl,
++					   priv->pin_states[PIN_TDM_OUT_OFF]);
++		if (ret)
++			dev_info(&pdev->dev,
++				 "%s failed to select state %d\n",
++				 __func__, ret);
++	}
++
++	if (!IS_ERR(priv->pin_states[PIN_STATE_DEFAULT])) {
++		ret = pinctrl_select_state(priv->pinctrl,
++					   priv->pin_states[PIN_STATE_DEFAULT]);
++		if (ret)
++			dev_info(&pdev->dev,
++				 "%s failed to select state %d\n",
++				 __func__, ret);
+ 	}
+ 
+ 	return devm_snd_soc_register_card(&pdev->dev, card);
 -- 
 2.20.1
