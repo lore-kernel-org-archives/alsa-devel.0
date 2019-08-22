@@ -1,7 +1,7 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 31/35] ASoC: Intel: Reuse sst_pdata::fw field
-Date: Thu, 22 Aug 2019 21:04:21 +0200
-Message-ID: <20190822190425.23001-32-cezary.rojewski@intel.com>
+Subject: [PATCH 32/35] ASoC: Intel: Skylake: Remove skl_dsp_ops
+Date: Thu, 22 Aug 2019 21:04:22 +0200
+Message-ID: <20190822190425.23001-33-cezary.rojewski@intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F182F80679
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:05:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA22DF80677
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 21:05:33 +0200 (CEST)
 In-Reply-To: <20190822190425.23001-1-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,182 +26,126 @@ To: alsa-devel@alsa-project.org
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Similarly to fw_name, sst_pdata::fw can be used to unify usage of
-firmware objects for all SSTs.
-
-This change invalidates sst_dsp::fw field.
+All declaration simplication and addition of FIRMWARE_CONFIG and
+HARDWARE_CONFIG led to ultimate goal of removal of struct skl_dsp_ops.
+Strike it down, struct sst_pdata is more than enough is providing
+description for SST platforms.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 16 +++++++++-------
- sound/soc/intel/skylake/cnl-sst.c | 15 ++++++++-------
- sound/soc/intel/skylake/skl-sst.c | 23 +++++++++++++----------
- 3 files changed, 30 insertions(+), 24 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 53 --------------------------
+ sound/soc/intel/skylake/skl.h          |  8 ----
+ 2 files changed, 61 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 286da9fbc4de..79728e418176 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -185,10 +185,11 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- {
- 	struct firmware stripped_fw;
- 	struct skl_dev *skl = ctx->thread_context;
-+	struct sst_pdata *pdata = ctx->pdata;
- 	int ret, i;
- 
--	if (ctx->fw == NULL) {
--		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
-+	if (!pdata->fw) {
-+		ret = request_firmware(&pdata->fw, ctx->fw_name, ctx->dev);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "Request firmware failed %d\n", ret);
- 			return ret;
-@@ -197,13 +198,14 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 
- 	/* prase uuids on first boot */
- 	if (skl->is_first_boot) {
--		ret = snd_skl_parse_uuids(ctx, ctx->fw, BXT_ADSP_FW_BIN_HDR_OFFSET, 0);
-+		ret = snd_skl_parse_uuids(ctx, pdata->fw,
-+				BXT_ADSP_FW_BIN_HDR_OFFSET, 0);
- 		if (ret < 0)
- 			goto sst_load_base_firmware_failed;
- 	}
- 
--	stripped_fw.data = ctx->fw->data;
--	stripped_fw.size = ctx->fw->size;
-+	stripped_fw.data = pdata->fw->data;
-+	stripped_fw.size = pdata->fw->size;
- 	skl_dsp_strip_extended_manifest(&stripped_fw);
- 
- 	for (i = 0; i < BXT_FW_ROM_INIT_RETRY; i++) {
-@@ -246,8 +248,8 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 	return ret;
- 
- sst_load_base_firmware_failed:
--	release_firmware(ctx->fw);
--	ctx->fw = NULL;
-+	release_firmware(pdata->fw);
-+	pdata->fw = NULL;
- 	return ret;
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index e401edd8d44b..5f63c3052db9 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -140,72 +140,19 @@ int skl_dsp_cleanup(struct device *dev,
+ 	return 0;
  }
  
-diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
-index a6113d8afcbb..58efeb6c8a8a 100644
---- a/sound/soc/intel/skylake/cnl-sst.c
-+++ b/sound/soc/intel/skylake/cnl-sst.c
-@@ -108,10 +108,11 @@ static int cnl_load_base_firmware(struct sst_dsp *ctx)
+-static const struct skl_dsp_ops dsp_ops[] = {
+-	{
+-		.id = 0x9d70,
+-		.init = skl_sst_dsp_init,
+-	},
+-	{
+-		.id = 0x9d71,
+-		.init = skl_sst_dsp_init,
+-	},
+-	{
+-		.id = 0x5a98,
+-		.init = bxt_sst_dsp_init,
+-	},
+-	{
+-		.id = 0x3198,
+-		.init = bxt_sst_dsp_init,
+-	},
+-	{
+-		.id = 0x9dc8,
+-		.init = cnl_sst_dsp_init,
+-	},
+-	{
+-		.id = 0xa348,
+-		.init = cnl_sst_dsp_init,
+-	},
+-	{
+-		.id = 0x02c8,
+-		.init = cnl_sst_dsp_init,
+-	},
+-	{
+-		.id = 0x06c8,
+-		.init = cnl_sst_dsp_init,
+-	},
+-};
+-
+-const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(dsp_ops); i++) {
+-		if (dsp_ops[i].id == pci_id)
+-			return &dsp_ops[i];
+-	}
+-
+-	return NULL;
+-}
+-
+ int skl_init_dsp(struct skl_dev *skl, struct sst_pdata *pdata)
  {
- 	struct firmware stripped_fw;
- 	struct skl_dev *cnl = ctx->thread_context;
-+	struct sst_pdata *pdata = ctx->pdata;
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+-	const struct skl_dsp_ops *ops;
  	int ret;
  
--	if (!ctx->fw) {
--		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
-+	if (!pdata->fw) {
-+		ret = request_firmware(&pdata->fw, ctx->fw_name, ctx->dev);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "request firmware failed: %d\n", ret);
- 			goto cnl_load_base_firmware_failed;
-@@ -120,14 +121,14 @@ static int cnl_load_base_firmware(struct sst_dsp *ctx)
+ 	/* enable ppcap interrupt */
+ 	snd_hdac_ext_bus_ppcap_enable(bus, true);
+ 	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
  
- 	/* parse uuids if first boot */
- 	if (cnl->is_first_boot) {
--		ret = snd_skl_parse_uuids(ctx, ctx->fw,
-+		ret = snd_skl_parse_uuids(ctx, pdata->fw,
- 					  CNL_ADSP_FW_HDR_OFFSET, 0);
- 		if (ret < 0)
- 			goto cnl_load_base_firmware_failed;
- 	}
+-	ops = skl_get_dsp_ops(skl->pci->device);
+-	if (!ops)
+-		return -EIO;
+-
+ 	ret = skl_sst_ctx_init(skl, pdata);
+ 	if (ret < 0)
+ 		return ret;
  
--	stripped_fw.data = ctx->fw->data;
--	stripped_fw.size = ctx->fw->size;
-+	stripped_fw.data = pdata->fw->data;
-+	stripped_fw.size = pdata->fw->size;
- 	skl_dsp_strip_extended_manifest(&stripped_fw);
+-	skl->dsp_ops = ops;
+ 	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
  
- 	ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
-@@ -157,8 +158,8 @@ static int cnl_load_base_firmware(struct sst_dsp *ctx)
  	return 0;
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index f4cd5ccc1ff9..218e8bda6cae 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -135,8 +135,6 @@ struct skl_dev {
  
- cnl_load_base_firmware_failed:
--	release_firmware(ctx->fw);
--	ctx->fw = NULL;
-+	release_firmware(pdata->fw);
-+	pdata->fw = NULL;
+ 	struct skl_d0i3_data d0i3;
  
- 	return ret;
- }
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index e0f2bf828541..8e1d02e29a32 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -67,14 +67,15 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- {
- 	int ret = 0, i;
- 	struct skl_dev *skl = ctx->thread_context;
-+	struct sst_pdata *pdata = ctx->pdata;
- 	struct firmware stripped_fw;
- 	u32 reg;
+-	const struct skl_dsp_ops *dsp_ops;
+-
+ 	/* Callback to update dynamic clock and power gating registers */
+ 	void (*clock_power_gating)(struct device *dev, bool enable);
+ };
+@@ -157,11 +155,6 @@ struct skl_machine_pdata {
+ 	bool use_tplg_pcm; /* use dais and dai links from topology */
+ };
  
- 	skl->boot_complete = false;
- 	init_waitqueue_head(&skl->boot_wait);
+-struct skl_dsp_ops {
+-	int id;
+-	int (*init)(struct sst_dsp *dsp, struct sst_pdata *pdata);
+-};
+-
+ int skl_platform_unregister(struct device *dev);
+ int skl_platform_register(struct device *dev);
  
--	if (ctx->fw == NULL) {
--		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
-+	if (!pdata->fw) {
-+		ret = request_firmware(&pdata->fw, ctx->fw_name, ctx->dev);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "Request firmware failed %d\n", ret);
- 			return -EIO;
-@@ -83,18 +84,19 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- 
- 	/* prase uuids on first boot */
- 	if (skl->is_first_boot) {
--		ret = snd_skl_parse_uuids(ctx, ctx->fw, SKL_ADSP_FW_BIN_HDR_OFFSET, 0);
-+		ret = snd_skl_parse_uuids(ctx, pdata->fw,
-+				SKL_ADSP_FW_BIN_HDR_OFFSET, 0);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "UUID parsing err: %d\n", ret);
--			release_firmware(ctx->fw);
-+			release_firmware(pdata->fw);
- 			skl_dsp_disable_core(ctx, SKL_DSP_CORE0_MASK);
- 			return ret;
- 		}
- 	}
- 
- 	/* check for extended manifest */
--	stripped_fw.data = ctx->fw->data;
--	stripped_fw.size = ctx->fw->size;
-+	stripped_fw.data = pdata->fw->data;
-+	stripped_fw.size = pdata->fw->size;
- 
- 	skl_dsp_strip_extended_manifest(&stripped_fw);
- 
-@@ -152,8 +154,8 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- 	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
- skl_load_base_firmware_failed:
- 	skl_dsp_disable_core(ctx, SKL_DSP_CORE0_MASK);
--	release_firmware(ctx->fw);
--	ctx->fw = NULL;
-+	release_firmware(pdata->fw);
-+	pdata->fw = NULL;
- 	return ret;
- }
- 
-@@ -602,10 +604,11 @@ EXPORT_SYMBOL_GPL(skl_sst_init_fw);
- void skl_sst_dsp_cleanup(struct skl_dev *skl)
- {
- 	struct sst_dsp *dsp = skl->dsp;
-+	struct sst_pdata *pdata = dsp->pdata;
- 
- 	skl_release_library(skl->lib_info, skl->lib_count);
--	if (dsp->fw)
--		release_firmware(dsp->fw);
-+	if (pdata->fw)
-+		release_firmware(pdata->fw);
- 	skl_clear_module_table(dsp);
- 
- 	skl_freeup_uuid_list(skl);
+@@ -178,7 +171,6 @@ int skl_suspend_late_dsp(struct skl_dev *skl);
+ int skl_suspend_dsp(struct skl_dev *skl);
+ int skl_resume_dsp(struct skl_dev *skl);
+ void skl_cleanup_resources(struct skl_dev *skl);
+-const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id);
+ void skl_update_d0i3c(struct device *dev, bool enable);
+ int skl_nhlt_create_sysfs(struct skl_dev *skl);
+ void skl_nhlt_remove_sysfs(struct skl_dev *skl);
 -- 
 2.17.1
