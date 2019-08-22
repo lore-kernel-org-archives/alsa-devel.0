@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: initialize component list" to
-	the asoc tree
+Subject: Applied "ASoC: soc-core: soc_cleanup_card_resources()
+	become void" to the asoc tree
 Date: Thu, 22 Aug 2019 19:32:56 +0100 (BST)
-Message-ID: <20190822183256.AD909D02CCD@fitzroy.sirena.org.uk>
-References: <87zhk4zazt.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <20190822183256.E471BD02CD1@fitzroy.sirena.org.uk>
+References: <871rxg1lda.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00E84F8036E
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 20:33:03 +0200 (CEST)
-In-Reply-To: <87zhk4zazt.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D4CDF804CB
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 20:33:06 +0200 (CEST)
+In-Reply-To: <871rxg1lda.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: initialize component list
+   ASoC: soc-core: soc_cleanup_card_resources() become void
 
 has been applied to the asoc tree at
 
@@ -55,46 +55,43 @@ to this mail.
 Thanks,
 Mark
 
->From 8d92bb516831e80fac916701447ee6e9f0a6f0f2 Mon Sep 17 00:00:00 2001
+>From a4de83a385670c22c31e9bbb726595a447b32ba4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 20 Aug 2019 14:05:16 +0900
-Subject: [PATCH] ASoC: soc-core: initialize component list
+Date: Tue, 20 Aug 2019 14:05:10 +0900
+Subject: [PATCH] ASoC: soc-core: soc_cleanup_card_resources() become void
 
-It might return without initializing in error case.
-In such case, uninitialized variable might be used at error handler.
-This patch initializes all necessary variable before return.
+There is no need to check return value for
+soc_cleanup_card_resources(). Let't makes it as void.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/87zhk4zazt.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/871rxg1lda.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1be069c2ac8d..1a17cb1bc03b 100644
+index 0ed6576bfef4..1be069c2ac8d 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2647,6 +2647,9 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- {
- 	struct snd_soc_dapm_context *dapm;
- 
-+	INIT_LIST_HEAD(&component->dai_list);
-+	mutex_init(&component->io_mutex);
-+
- 	component->name = fmt_single_name(dev, &component->id);
- 	if (!component->name) {
- 		dev_err(dev, "ASoC: Failed to allocate name\n");
-@@ -2663,9 +2666,6 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	dapm->idle_bias_off = !driver->idle_bias_on;
- 	dapm->suspend_bias_off = driver->suspend_bias_off;
- 
--	INIT_LIST_HEAD(&component->dai_list);
--	mutex_init(&component->io_mutex);
--
- 	return 0;
+@@ -1885,7 +1885,7 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 	}
  }
  
+-static int soc_cleanup_card_resources(struct snd_soc_card *card)
++static void soc_cleanup_card_resources(struct snd_soc_card *card)
+ {
+ 	/* free the ALSA card at first; this syncs with pending operations */
+ 	if (card->snd_card) {
+@@ -1906,8 +1906,6 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	/* remove the card */
+ 	if (card->remove)
+ 		card->remove(card);
+-
+-	return 0;
+ }
+ 
+ static int snd_soc_instantiate_card(struct snd_soc_card *card)
 -- 
 2.20.1
