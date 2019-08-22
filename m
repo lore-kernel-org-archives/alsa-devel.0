@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 3/4] ASoC: qdsp6: q6afe-dai: Update max rate for slim and tdm dais
-Date: Thu, 22 Aug 2019 10:56:52 +0100
-Message-ID: <20190822095653.7200-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 1/4] ALSA: pcm: add support for 352.8KHz and 384KHz sample rate
+Date: Thu, 22 Aug 2019 10:56:50 +0100
+Message-ID: <20190822095653.7200-2-srinivas.kandagatla@linaro.org>
 References: <20190822095653.7200-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -9,288 +9,61 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190822095653.7200-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, tiwai@suse.de
-Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, plai@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, plai@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Vidyakumar Athota <vathota@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-QDSP supports up to 384000 rates on SLIM dais and 352800 rate on TDM dais.
-Add this missing rates.
+From: Vidyakumar Athota <vathota@codeaurora.org>
 
+Most of the modern codecs supports 352.8KHz and 384KHz sample rates.
+Currenlty HW params fails to set 352.8Kz and 384KHz sample rate
+as these are not in known rates list.
+Add these new rates to known list to allow them.
+
+This patch also adds defines in pcm.h so that drivers can use it.
+
+Signed-off-by: Vidyakumar Athota <vathota@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 92 +++++++++++---------------------
- 1 file changed, 32 insertions(+), 60 deletions(-)
+ include/sound/pcm.h     | 5 +++++
+ sound/core/pcm_native.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index c1a7624eaf17..ae2baefdb6e2 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -18,14 +18,14 @@
- 			.stream_name = pre" TDM"#num" Playback",	\
- 			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
- 				SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
--				SNDRV_PCM_RATE_176400,			\
-+				SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_352800,\
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
- 				   SNDRV_PCM_FMTBIT_S24_LE |		\
- 				   SNDRV_PCM_FMTBIT_S32_LE,		\
- 			.channels_min = 1,				\
- 			.channels_max = 8,				\
- 			.rate_min = 8000,				\
--			.rate_max = 176400,				\
-+			.rate_max = 352800,				\
- 		},							\
- 		.name = #did,						\
- 		.ops = &q6tdm_ops,					\
-@@ -39,14 +39,14 @@
- 			.stream_name = pre" TDM"#num" Capture",		\
- 			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
- 				SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
--				SNDRV_PCM_RATE_176400,			\
-+				SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_352800,\
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
- 				   SNDRV_PCM_FMTBIT_S24_LE |		\
- 				   SNDRV_PCM_FMTBIT_S32_LE,		\
- 			.channels_min = 1,				\
- 			.channels_max = 8,				\
- 			.rate_min = 8000,				\
--			.rate_max = 176400,				\
-+			.rate_max = 352800,				\
- 		},							\
- 		.name = #did,						\
- 		.ops = &q6tdm_ops,					\
-@@ -646,15 +646,13 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.playback = {
- 			.stream_name = "Slimbus Playback",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.name = "SLIMBUS_0_TX",
-@@ -664,28 +662,24 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
- 			.stream_name = "Slimbus1 Playback",
--			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
--				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 		.name = "SLIMBUS_1_RX",
- 		.ops = &q6slim_ops,
-@@ -700,28 +694,24 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus1 Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
- 			.stream_name = "Slimbus2 Playback",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 		.name = "SLIMBUS_2_RX",
- 		.ops = &q6slim_ops,
-@@ -737,28 +727,24 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus2 Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
- 			.stream_name = "Slimbus3 Playback",
--			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
--				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 		.name = "SLIMBUS_3_RX",
- 		.ops = &q6slim_ops,
-@@ -774,28 +760,24 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus3 Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
- 			.stream_name = "Slimbus4 Playback",
--			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
--				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 		.name = "SLIMBUS_4_RX",
- 		.ops = &q6slim_ops,
-@@ -811,28 +793,24 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus4 Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
- 			.stream_name = "Slimbus5 Playback",
--			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
--				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 		.name = "SLIMBUS_5_RX",
- 		.ops = &q6slim_ops,
-@@ -848,28 +826,24 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus5 Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
- 			.stream_name = "Slimbus6 Playback",
--			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
--				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 		.ops = &q6slim_ops,
- 		.name = "SLIMBUS_6_RX",
-@@ -885,15 +859,13 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 		.remove = msm_dai_q6_dai_remove,
- 		.capture = {
- 			.stream_name = "Slimbus6 Capture",
--			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
--				 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_96000 |
--				 SNDRV_PCM_RATE_192000,
-+			.rates = SNDRV_PCM_RATE_8000_384000,
- 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE,
- 			.channels_min = 1,
- 			.channels_max = 8,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 		},
- 	}, {
- 		.playback = {
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 1e9bb1c91770..bbe6eb1ff5d2 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -117,6 +117,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
+ #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
+ #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
++#define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
++#define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
+ 
+ #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
+ #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
+@@ -129,6 +131,9 @@ struct snd_pcm_ops {
+ 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
+ #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
+ 					 SNDRV_PCM_RATE_192000)
++#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
++					 SNDRV_PCM_RATE_352800|\
++					 SNDRV_PCM_RATE_384000)
+ #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
+ #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
+ #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 703857aab00f..11e653c8aa0e 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2170,7 +2170,7 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
+ 
+ static const unsigned int rates[] = {
+ 	5512, 8000, 11025, 16000, 22050, 32000, 44100,
+-	48000, 64000, 88200, 96000, 176400, 192000
++	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000
+ };
+ 
+ const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
 -- 
 2.21.0
