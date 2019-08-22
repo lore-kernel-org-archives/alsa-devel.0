@@ -1,58 +1,36 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH] soundwire: intel: remove unused variables
-Date: Thu, 22 Aug 2019 11:55:55 +0530
-Message-ID: <20190822062555.30216-1-vkoul@kernel.org>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: sun4i-i2s: Use PTR_ERR_OR_ZERO in sun4i_i2s_init_regmap_fields()
+Date: Thu, 22 Aug 2019 06:52:52 +0000
+Message-ID: <20190822065252.74028-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20251F80147
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 08:27:33 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Shreyas NC <shreyas.nc@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>, Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Variables 'nval' and 'i' are no longer used sdw_master_read_intel_prop()
-so remove them.
+Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
 
-drivers/soundwire/intel.c: In function 'sdw_master_read_intel_prop':
-drivers/soundwire/intel.c:829:12: warning: unused variable 'i' [-Wunused-variable]
-  int nval, i;
-            ^
-drivers/soundwire/intel.c:829:6: warning: unused variable 'nval' [-Wunused-variable]
-  int nval, i;
-      ^~~~
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 085f4ace103d ("soundwire: intel: read mclk_freq property from firmware")
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/soundwire/intel.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sunxi/sun4i-i2s.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 459cc1e6355d..cad378f741c0 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -826,7 +826,6 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	struct sdw_master_prop *prop = &bus->prop;
- 	struct fwnode_handle *link;
- 	char name[32];
--	int nval, i;
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 9e691baee1e8..2071c54265f3 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -1095,10 +1095,7 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 	i2s->field_fmt_sr =
+ 			devm_regmap_field_alloc(dev, i2s->regmap,
+ 						i2s->variant->field_fmt_sr);
+-	if (IS_ERR(i2s->field_fmt_sr))
+-		return PTR_ERR(i2s->field_fmt_sr);
+-
+-	return 0;
++	return PTR_ERR_OR_ZERO(i2s->field_fmt_sr);
+ }
  
- 	/* Find master handle */
- 	snprintf(name, sizeof(name),
--- 
-2.20.1
+ static int sun4i_i2s_probe(struct platform_device *pdev)
