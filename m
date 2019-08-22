@@ -1,125 +1,154 @@
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: [PATCH v2 1/3] ASoC: es8316: judge PCM rate at later timing
-Date: Sun,  1 Sep 2019 01:26:48 +0900
-Message-ID: <20190831162650.19822-1-katsuhiro@katsuster.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <katsuhiro@katsuster.net>
-List-Id: alsa-devel@alsa-project.org
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9390BF8036E
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 09:32:10 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 29F6FAFF4
+ for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 07:32:09 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+Date: Thu, 22 Aug 2019 09:32:05 +0200
+Message-Id: <20190822073207.8696-4-tiwai@suse.de>
+In-Reply-To: <20190822073207.8696-1-tiwai@suse.de>
+References: <20190822073207.8696-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 2/4] ALSA: usb-audio: Simplify
+	parse_audio_unit()
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+List-ID: <alsa-devel@alsa-project.org>
 
-This patch change the judge timing about playing/capturing PCM rate.
+Minor code refactoring by combining the UAC version and the type in
+the switch-case flow, so that we reduce the indentation and
+redundancy.  One good bonus is that the duplicated definition of the
+same type value (e.g. UAC2_EFFECT_UNIT) can be handled more cleanly.
 
-Original code set constraints list of PCM rate limits at set_sysclk.
-This strategy works well if system is using fixed rate clock.
-
-But some boards and SoC (such as RockPro64 and RockChip I2S) has
-connected SoC MCLK out to ES8316 MCLK in. In this case, SoC side I2S
-will choose suitable frequency of MCLK such as fs * mclk-fs when
-user starts playing or capturing.
-
-Bad scenario as follows (mclk-fs = 256):
-  - Initialize sysclk by correct value (Ex. 12.288MHz)
-    - ES8316 set constraints of PCM rate by sysclk
-      48kHz (1/256), 32kHz (1/384), 30.720kHz (1/400),
-      24kHz (1/512), 16kHz (1/768), 12kHz (1/1024)
-  - Play 48kHz sound, it's acceptable
-  - Sysclk is not changed
-
-  - Play 32kHz sound, it's acceptable
-  - Set sysclk by 8.192MHz (= fs * mclk-fs = 32k * 256)
-    - ES8316 set constraints of PCM rate by sysclk
-      32kHz (1/256), 21.33kHz (1/384), 20.48kHz (1/400),
-      16kHz (1/512), 10.66kHz (1/768), 8kHz (1/1024)
-
-  - Play 48kHz again, but it's NOT acceptable because constraints
-    list does not allow 48kHz
-
-Root cause of this strange behavior is changing constraints list at
-set_sysclk timing. It seems that is too early to determine. So this
-patch does not use constraints list and check PCM rate limit more
-later timing at hw_params.
-
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/es8316.c | 37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
+ sound/usb/mixer.c | 95 +++++++++++++++++++++++--------------------------------
+ 1 file changed, 39 insertions(+), 56 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index ed2959dbe1fb..229808fa627c 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -363,27 +363,12 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- {
- 	struct snd_soc_component *component = codec_dai->component;
- 	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
--	int i;
--	int count = 0;
- 
- 	es8316->sysclk = freq;
- 
- 	if (freq == 0)
- 		return 0;
- 
--	/* Limit supported sample rates to ones that can be autodetected
--	 * by the codec running in slave mode.
--	 */
--	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
--		const unsigned int ratio = supported_mclk_lrck_ratios[i];
--
--		if (freq % ratio == 0)
--			es8316->allowed_rates[count++] = freq / ratio;
--	}
--
--	es8316->sysclk_constraints.list = es8316->allowed_rates;
--	es8316->sysclk_constraints.count = count;
--
- 	return 0;
- }
- 
-@@ -449,13 +434,6 @@ static int es8316_pcm_startup(struct snd_pcm_substream *substream,
- 		return -EINVAL;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b4be226e07f3..2628697353bb 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2780,62 +2780,45 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 		return 0; /* skip invalid unit */
  	}
  
--	/* The set of sample rates that can be supported depends on the
--	 * MCLK supplied to the CODEC.
--	 */
--	snd_pcm_hw_constraint_list(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_RATE,
--				   &es8316->sysclk_constraints);
--
- 	return 0;
- }
- 
-@@ -466,12 +444,27 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
- 	u8 wordlen = 0;
-+	int i;
- 
- 	if (!es8316->sysclk) {
- 		dev_err(component->dev, "No MCLK configured\n");
- 		return -EINVAL;
- 	}
- 
-+	/* Limit supported sample rates to ones that can be autodetected
-+	 * by the codec running in slave mode.
-+	 */
-+	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
-+		const unsigned int ratio = supported_mclk_lrck_ratios[i];
-+
-+		if (es8316->sysclk % ratio != 0)
-+			continue;
-+		if (es8316->sysclk / ratio == params_rate(params))
-+			break;
-+	}
-+	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
+-	if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
+-		switch (p1[2]) {
+-		case UAC_INPUT_TERMINAL:
+-			return parse_audio_input_terminal(state, unitid, p1);
+-		case UAC_MIXER_UNIT:
+-			return parse_audio_mixer_unit(state, unitid, p1);
+-		case UAC2_CLOCK_SOURCE:
+-			return parse_clock_source_unit(state, unitid, p1);
+-		case UAC_SELECTOR_UNIT:
+-		case UAC2_CLOCK_SELECTOR:
+-			return parse_audio_selector_unit(state, unitid, p1);
+-		case UAC_FEATURE_UNIT:
+-			return parse_audio_feature_unit(state, unitid, p1);
+-		case UAC1_PROCESSING_UNIT:
+-		/*   UAC2_EFFECT_UNIT has the same value */
+-			if (protocol == UAC_VERSION_1)
+-				return parse_audio_processing_unit(state, unitid, p1);
+-			else
+-				return 0; /* FIXME - effect units not implemented yet */
+-		case UAC1_EXTENSION_UNIT:
+-		/*   UAC2_PROCESSING_UNIT_V2 has the same value */
+-			if (protocol == UAC_VERSION_1)
+-				return parse_audio_extension_unit(state, unitid, p1);
+-			else /* UAC_VERSION_2 */
+-				return parse_audio_processing_unit(state, unitid, p1);
+-		case UAC2_EXTENSION_UNIT_V2:
+-			return parse_audio_extension_unit(state, unitid, p1);
+-		default:
+-			usb_audio_err(state->chip,
+-				"unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
+-			return -EINVAL;
+-		}
+-	} else { /* UAC_VERSION_3 */
+-		switch (p1[2]) {
+-		case UAC_INPUT_TERMINAL:
+-			return parse_audio_input_terminal(state, unitid, p1);
+-		case UAC3_MIXER_UNIT:
+-			return parse_audio_mixer_unit(state, unitid, p1);
+-		case UAC3_CLOCK_SOURCE:
+-			return parse_clock_source_unit(state, unitid, p1);
+-		case UAC3_SELECTOR_UNIT:
+-		case UAC3_CLOCK_SELECTOR:
+-			return parse_audio_selector_unit(state, unitid, p1);
+-		case UAC3_FEATURE_UNIT:
+-			return parse_audio_feature_unit(state, unitid, p1);
+-		case UAC3_EFFECT_UNIT:
+-			return 0; /* FIXME - effect units not implemented yet */
+-		case UAC3_PROCESSING_UNIT:
+-			return parse_audio_processing_unit(state, unitid, p1);
+-		case UAC3_EXTENSION_UNIT:
+-			return parse_audio_extension_unit(state, unitid, p1);
+-		default:
+-			usb_audio_err(state->chip,
+-				"unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
+-			return -EINVAL;
+-		}
++#define PTYPE(a, b)	((a) << 8 | (b))
++	switch (PTYPE(protocol, p1[2])) {
++	case PTYPE(UAC_VERSION_1, UAC_INPUT_TERMINAL):
++	case PTYPE(UAC_VERSION_2, UAC_INPUT_TERMINAL):
++	case PTYPE(UAC_VERSION_3, UAC_INPUT_TERMINAL):
++		return parse_audio_input_terminal(state, unitid, p1);
++	case PTYPE(UAC_VERSION_1, UAC_MIXER_UNIT):
++	case PTYPE(UAC_VERSION_2, UAC_MIXER_UNIT):
++	case PTYPE(UAC_VERSION_3, UAC3_MIXER_UNIT):
++		return parse_audio_mixer_unit(state, unitid, p1);
++	case PTYPE(UAC_VERSION_2, UAC2_CLOCK_SOURCE):
++	case PTYPE(UAC_VERSION_3, UAC3_CLOCK_SOURCE):
++		return parse_clock_source_unit(state, unitid, p1);
++	case PTYPE(UAC_VERSION_1, UAC_SELECTOR_UNIT):
++	case PTYPE(UAC_VERSION_2, UAC_SELECTOR_UNIT):
++	case PTYPE(UAC_VERSION_3, UAC3_SELECTOR_UNIT):
++	case PTYPE(UAC_VERSION_2, UAC2_CLOCK_SELECTOR):
++	case PTYPE(UAC_VERSION_3, UAC3_CLOCK_SELECTOR):
++		return parse_audio_selector_unit(state, unitid, p1);
++	case PTYPE(UAC_VERSION_1, UAC_FEATURE_UNIT):
++	case PTYPE(UAC_VERSION_2, UAC_FEATURE_UNIT):
++	case PTYPE(UAC_VERSION_3, UAC3_FEATURE_UNIT):
++		return parse_audio_feature_unit(state, unitid, p1);
++	case PTYPE(UAC_VERSION_1, UAC1_PROCESSING_UNIT):
++	case PTYPE(UAC_VERSION_2, UAC2_PROCESSING_UNIT_V2):
++	case PTYPE(UAC_VERSION_3, UAC3_PROCESSING_UNIT):
++		return parse_audio_processing_unit(state, unitid, p1);
++	case PTYPE(UAC_VERSION_1, UAC1_EXTENSION_UNIT):
++	case PTYPE(UAC_VERSION_2, UAC2_EXTENSION_UNIT_V2):
++	case PTYPE(UAC_VERSION_3, UAC3_EXTENSION_UNIT):
++		return parse_audio_extension_unit(state, unitid, p1);
++	case PTYPE(UAC_VERSION_2, UAC2_EFFECT_UNIT):
++	case PTYPE(UAC_VERSION_3, UAC3_EFFECT_UNIT):
++		return 0; /* FIXME - effect units not implemented yet */
++	default:
++		usb_audio_err(state->chip,
++			      "unit %u: unexpected type 0x%02x\n",
++			      unitid, p1[2]);
 +		return -EINVAL;
-+
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		wordlen = ES8316_SERDATA2_LEN_16;
+ 	}
+ }
+ 
 -- 
-2.23.0.rc1
+2.16.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
