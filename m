@@ -1,29 +1,29 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: mt8183: switch tdm pins gpio function when
- playback on or off" to the asoc tree
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mediatek: mt2701: Fix -Wunused-const-variable
+ warnings" to the asoc tree
 Date: Thu, 22 Aug 2019 19:32:57 +0100 (BST)
-Message-ID: <20190822183257.27D03D02CD8@fitzroy.sirena.org.uk>
-References: <1566478261-13464-2-git-send-email-jiaxin.yu@mediatek.com>
+Message-ID: <20190822183257.3AE96D02CE6@fitzroy.sirena.org.uk>
+References: <20190822143747.20944-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1566478261-13464-2-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ck.hu-c+3QU6Y0cdFWk0Htik3J/w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190822143747.20944-1-yuehaibing@huawei.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, swboyd@chromium.org, tiwai@suse.com, yuehaibing@huawei.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, pihsun@chromium.org, matthias.bgg@gmail.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183: switch tdm pins gpio function when playback on or off
+   ASoC: mediatek: mt2701: Fix -Wunused-const-variable warnings
 
 has been applied to the asoc tree at
 
@@ -48,175 +48,89 @@ to this mail.
 Thanks,
 Mark
 
->From 6191cbde5ff02ef5307e7b2e4f5b8f7607c2b1df Mon Sep 17 00:00:00 2001
-From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Thu, 22 Aug 2019 20:51:00 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: switch tdm pins gpio function when
- playback on or off
+>From 97aad5ce88164bc5f884b5234f015ac553ea2fe5 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 22 Aug 2019 22:37:47 +0800
+Subject: [PATCH] ASoC: mediatek: mt2701: Fix -Wunused-const-variable warnings
 
-Pull TDM pins down when TDM BE shutdown to avoid current leakage.
+sound/soc/mediatek/mt2701/mt2701-afe-common.h:66:27: warning:
+ mt2701_afe_backup_list defined but not used [-Wunused-const-variable=]
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Link: https://lore.kernel.org/r/1566478261-13464-2-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+mt2701_afe_backup_list is only used in mt2701-afe-pcm.c,
+so just move the definition over there.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190822143747.20944-1-yuehaibing@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 115 +++++++++++++++++-
- 1 file changed, 109 insertions(+), 6 deletions(-)
+ sound/soc/mediatek/mt2701/mt2701-afe-common.h | 21 -------------------
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c    | 21 +++++++++++++++++++
+ 2 files changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 272766c1b859..fe8a7461ace5 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -46,6 +46,32 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
-+static const struct snd_soc_dapm_widget
-+mt8183_mt6358_ts3a227_max98357_dapm_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("IT6505_8CH"),
-+};
-+
-+static const struct snd_soc_dapm_route
-+mt8183_mt6358_ts3a227_max98357_dapm_routes[] = {
-+	{"IT6505_8CH", NULL, "TDM"},
-+};
-+
-+enum PINCTRL_PIN_STATE {
-+	PIN_STATE_DEFAULT = 0,
-+	PIN_TDM_OUT_ON,
-+	PIN_TDM_OUT_OFF,
-+	PIN_STATE_MAX
-+};
-+
-+static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
-+	"default", "aud_tdm_out_on", "aud_tdm_out_off",
-+};
-+
-+struct mt8183_mt6358_ts3a227_max98357_priv {
-+	struct pinctrl *pinctrl;
-+	struct pinctrl_state *pin_states[PIN_STATE_MAX];
-+};
-+
- static int
- mt8183_mt6358_ts3a227_max98357_bt_sco_startup(
- 	struct snd_pcm_substream *substream)
-@@ -173,6 +199,47 @@ SND_SOC_DAILINK_DEFS(tdm,
- 	DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
-+static int mt8183_mt6358_tdm_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
-+		snd_soc_card_get_drvdata(rtd->card);
-+	int ret;
-+
-+	if (IS_ERR(priv->pin_states[PIN_TDM_OUT_ON]))
-+		return PTR_ERR(priv->pin_states[PIN_TDM_OUT_ON]);
-+
-+	ret = pinctrl_select_state(priv->pinctrl,
-+				   priv->pin_states[PIN_TDM_OUT_ON]);
-+	if (ret)
-+		dev_err(rtd->card->dev, "%s failed to select state %d\n",
-+			__func__, ret);
-+
-+	return ret;
-+}
-+
-+static void mt8183_mt6358_tdm_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
-+		snd_soc_card_get_drvdata(rtd->card);
-+	int ret;
-+
-+	if (IS_ERR(priv->pin_states[PIN_TDM_OUT_OFF]))
-+		return;
-+
-+	ret = pinctrl_select_state(priv->pinctrl,
-+				   priv->pin_states[PIN_TDM_OUT_OFF]);
-+	if (ret)
-+		dev_err(rtd->card->dev, "%s failed to select state %d\n",
-+			__func__, ret);
-+}
-+
-+static struct snd_soc_ops mt8183_mt6358_tdm_ops = {
-+	.startup = mt8183_mt6358_tdm_startup,
-+	.shutdown = mt8183_mt6358_tdm_shutdown,
-+};
-+
- static struct snd_soc_dai_link
- mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 	/* FE */
-@@ -325,6 +392,8 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 		.no_pcm = 1,
- 		.dpcm_playback = 1,
- 		.ignore_suspend = 1,
-+		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
-+		.ops = &mt8183_mt6358_tdm_ops,
- 		SND_SOC_DAILINK_REG(tdm),
- 	},
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-common.h b/sound/soc/mediatek/mt2701/mt2701-afe-common.h
+index d44faba27d3c..32bef5e2a56d 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-common.h
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-common.h
+@@ -63,27 +63,6 @@ enum audio_base_clock {
+ 	MT2701_BASE_CLK_NUM,
  };
-@@ -371,7 +440,8 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card = &mt8183_mt6358_ts3a227_max98357_card;
- 	struct device_node *platform_node;
- 	struct snd_soc_dai_link *dai_link;
--	struct pinctrl *default_pins;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv;
-+	int ret;
- 	int i;
  
- 	card->dev = &pdev->dev;
-@@ -397,12 +467,45 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 		card->num_aux_devs = 1;
- 	}
+-static const unsigned int mt2701_afe_backup_list[] = {
+-	AUDIO_TOP_CON0,
+-	AUDIO_TOP_CON4,
+-	AUDIO_TOP_CON5,
+-	ASYS_TOP_CON,
+-	AFE_CONN0,
+-	AFE_CONN1,
+-	AFE_CONN2,
+-	AFE_CONN3,
+-	AFE_CONN15,
+-	AFE_CONN16,
+-	AFE_CONN17,
+-	AFE_CONN18,
+-	AFE_CONN19,
+-	AFE_CONN20,
+-	AFE_CONN21,
+-	AFE_CONN22,
+-	AFE_DAC_CON0,
+-	AFE_MEMIF_PBUF_SIZE,
+-};
+-
+ struct mt2701_i2s_data {
+ 	int i2s_ctrl_reg;
+ 	int i2s_asrc_fs_shift;
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index d7f5defa50c2..76502ba261c8 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -60,6 +60,27 @@ static const struct mt2701_afe_rate mt2701_afe_i2s_rates[] = {
+ 	{ .rate = 352800, .regvalue = 24 },
+ };
  
--	default_pins =
--		devm_pinctrl_get_select(&pdev->dev, PINCTRL_STATE_DEFAULT);
--	if (IS_ERR(default_pins)) {
--		dev_err(&pdev->dev, "%s set pins failed\n",
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
++static const unsigned int mt2701_afe_backup_list[] = {
++	AUDIO_TOP_CON0,
++	AUDIO_TOP_CON4,
++	AUDIO_TOP_CON5,
++	ASYS_TOP_CON,
++	AFE_CONN0,
++	AFE_CONN1,
++	AFE_CONN2,
++	AFE_CONN3,
++	AFE_CONN15,
++	AFE_CONN16,
++	AFE_CONN17,
++	AFE_CONN18,
++	AFE_CONN19,
++	AFE_CONN20,
++	AFE_CONN21,
++	AFE_CONN22,
++	AFE_DAC_CON0,
++	AFE_MEMIF_PBUF_SIZE,
++};
 +
-+	snd_soc_card_set_drvdata(card, priv);
-+
-+	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
-+	if (IS_ERR(priv->pinctrl)) {
-+		dev_err(&pdev->dev, "%s devm_pinctrl_get failed\n",
- 			__func__);
--		return PTR_ERR(default_pins);
-+		return PTR_ERR(priv->pinctrl);
-+	}
-+
-+	for (i = 0 ; i < PIN_STATE_MAX ; i++) {
-+		priv->pin_states[i] = pinctrl_lookup_state(priv->pinctrl,
-+							   mt8183_pin_str[i]);
-+		if (IS_ERR(priv->pin_states[i])) {
-+			ret = PTR_ERR(priv->pin_states[i]);
-+			dev_info(&pdev->dev, "%s Can't find pin state %s %d\n",
-+				 __func__, mt8183_pin_str[i], ret);
-+		}
-+	}
-+
-+	if (!IS_ERR(priv->pin_states[PIN_TDM_OUT_OFF])) {
-+		ret = pinctrl_select_state(priv->pinctrl,
-+					   priv->pin_states[PIN_TDM_OUT_OFF]);
-+		if (ret)
-+			dev_info(&pdev->dev,
-+				 "%s failed to select state %d\n",
-+				 __func__, ret);
-+	}
-+
-+	if (!IS_ERR(priv->pin_states[PIN_STATE_DEFAULT])) {
-+		ret = pinctrl_select_state(priv->pinctrl,
-+					   priv->pin_states[PIN_STATE_DEFAULT]);
-+		if (ret)
-+			dev_info(&pdev->dev,
-+				 "%s failed to select state %d\n",
-+				 __func__, ret);
- 	}
- 
- 	return devm_snd_soc_register_card(&pdev->dev, card);
+ static int mt2701_dai_num_to_i2s(struct mtk_base_afe *afe, int num)
+ {
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
 -- 
 2.20.1
