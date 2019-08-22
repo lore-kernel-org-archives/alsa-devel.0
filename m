@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v4 3/4] dt-bindings: ASoC: Add WSA881x bindings
-Date: Thu, 22 Aug 2019 23:36:05 +0100
-Message-ID: <20190822223606.6775-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 2/4] soundwire: core: add device tree support for slave devices
+Date: Thu, 22 Aug 2019 23:36:04 +0100
+Message-ID: <20190822223606.6775-3-srinivas.kandagatla@linaro.org>
 References: <20190822223606.6775-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,65 +12,114 @@ To: broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
 Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
-Amplifier. This Amplifier also has a simple thermal sensor for
-over temperature and speaker protection.
+This patch adds support to parsing device tree based
+SoundWire slave devices.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,wsa881x.yaml          | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+ drivers/soundwire/bus.c   |  2 ++
+ drivers/soundwire/bus.h   |  1 +
+ drivers/soundwire/slave.c | 52 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 55 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-new file mode 100644
-index 000000000000..ad718d75c660
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,wsa881x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 49f64b2115b9..c2eaeb5c38ed 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -77,6 +77,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 	 */
+ 	if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
+ 		ret = sdw_acpi_find_slaves(bus);
++	else if (IS_ENABLED(CONFIG_OF) && bus->dev->of_node)
++		ret = sdw_of_find_slaves(bus);
+ 	else
+ 		ret = -ENOTSUPP; /* No ACPI/DT so error out */
+ 
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 3048ca153f22..ee46befedbd1 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -15,6 +15,7 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ }
+ #endif
+ 
++int sdw_of_find_slaves(struct sdw_bus *bus);
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			  u64 addr, struct sdw_slave_id *id);
+ 
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index f39a5815e25d..3ef265d2ee89 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -2,6 +2,7 @@
+ // Copyright(c) 2015-17 Intel Corporation.
+ 
+ #include <linux/acpi.h>
++#include <linux/of.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
+@@ -35,6 +36,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ 
+ 	slave->dev.release = sdw_slave_release;
+ 	slave->dev.bus = &sdw_bus_type;
++	slave->dev.of_node = of_node_get(to_of_node(fwnode));
+ 	slave->bus = bus;
+ 	slave->status = SDW_SLAVE_UNATTACHED;
+ 	slave->dev_num = 0;
+@@ -112,3 +114,53 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ }
+ 
+ #endif
 +
-+title: Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
++/*
++ * sdw_of_find_slaves() - Find Slave devices in master device tree node
++ * @bus: SDW bus instance
++ *
++ * Scans Master DT node for SDW child Slave devices and registers it.
++ */
++int sdw_of_find_slaves(struct sdw_bus *bus)
++{
++	struct device *dev = bus->dev;
++	struct device_node *node;
 +
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++	for_each_child_of_node(bus->dev->of_node, node) {
++		int link_id, sdw_version, ret, len;
++		const char *compat = NULL;
++		struct sdw_slave_id id;
++		const __be32 *addr;
 +
-+allOf:
-+  - $ref: "soundwire-controller.yaml#"
++		compat = of_get_property(node, "compatible", NULL);
++		if (!compat)
++			continue;
 +
-+properties:
-+  compatible:
-+    const: sdw10217201000
++		ret = sscanf(compat, "sdw%01x%04hx%04hx%02hhx", &sdw_version,
++			     &id.mfg_id, &id.part_id, &id.class_id);
 +
-+  reg:
-+    maxItems: 1
++		if (ret != 4) {
++			dev_err(dev, "Invalid compatible string found %s\n",
++				compat);
++			continue;
++		}
 +
-+  pd-gpios:
-+    description: GPIO spec for Powerdown/Shutdown line to use
-+    maxItems: 1
++		addr = of_get_property(node, "reg", &len);
++		if (!addr || (len < 2 * sizeof(u32))) {
++			dev_err(dev, "Invalid Instance and Link ID\n");
++			continue;
++		}
 +
-+  "#thermal-sensor-cells":
-+    const: 0
++		id.unique_id = be32_to_cpup(addr++);
++		link_id = be32_to_cpup(addr);
++		id.sdw_version = sdw_version;
 +
-+required:
-+  - compatible
-+  - reg
-+  - pd-gpios
-+  - #thermal-sensor-cells
++		/* Check for link_id match */
++		if (link_id != bus->link_id)
++			continue;
 +
-+examples:
-+  - |
-+    efuse@1c23800 {
-+        compatible = "allwinner,sun4i-a10-sid";
-+        reg = <0x01c23800 0x10>;
-+        pd-gpios = <&wcdpinctrl 2 0>;
-+        #thermal-sensor-cells = <0>;
-+    };
++		sdw_slave_add(bus, &id, of_fwnode_handle(node));
++	}
 +
-+...
++	return 0;
++}
 -- 
 2.21.0
