@@ -1,113 +1,65 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 1/4] ASoC: Intel: Haswell: Adjust machine
- device private context
-Date: Thu, 22 Aug 2019 17:11:02 +0200
-Message-ID: <32051c24-45f7-d4f0-9912-9c93fcf08733@intel.com>
-References: <20190822113616.22702-1-cezary.rojewski@intel.com>
- <20190822113616.22702-2-cezary.rojewski@intel.com>
- <dbde72dc-9b41-f1a8-001a-5674f5af3b61@linux.intel.com>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 0/5] ASoC: SOF: Intel: SoundWire initial
+ integration
+Date: Thu, 22 Aug 2019 17:19:29 +0200
+Message-ID: <20190822151928.GB1200@ubuntu>
+References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4D54F80147
- for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2019 17:11:08 +0200 (CEST)
-In-Reply-To: <dbde72dc-9b41-f1a8-001a-5674f5af3b61@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0yMiAxNjowNywgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24gOC8y
-Mi8xOSA2OjM2IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+IEFwYXJ0IGZyb20gSGFzd2Vs
-bCBtYWNoaW5lcywgYWxsIG90aGVyIGRldmljZXMgaGF2ZSB0aGVpciBwcml2YXRlIGRhdGEKPj4g
-c2V0IHRvIHNuZF9zb2NfYWNwaV9tYWNoIGluc3RhbmNlLgo+Pgo+PiBDaGFuZ2VzIGZvciBIU1cv
-IEJEVyBib2FyZHMgaW50cm9kdWNlZCB3aXRoIHNlcmllczoKPj4gaHR0cHM6Ly9wYXRjaHdvcmsu
-a2VybmVsLm9yZy9jb3Zlci8xMDc4MjAzNS8KPj4KPj4gYWRkZWQgc3VwcG9ydCBmb3IgZGFpX2xp
-bmsgcGxhdGZvcm1fbmFtZSBhZGp1c3RtZW50cyB3aXRoaW4gY2FyZCBwcm9iZQo+PiByb3V0aW5l
-cy4gVGhlc2UgdGFrZSBmb3IgZ3JhbnRlZCBwcml2YXRlX2RhdGEgcG9pbnRzIHRvCj4+IHNuZF9z
-b2NfYWNwaV9tYWNoIHdoZXJlYXMgZm9yIEhhc3dlbGwsIGl0J3Mgc3N0X3BkYXRhIGluc3RlYWQu
-IENoYW5nZQo+PiBwcml2YXRlIGNvbnRleHQgb2YgcGxhdGZvcm1fZGV2aWNlIC0gcmVwcmVzZW50
-aW5nIG1hY2hpbmUgYm9hcmQgLSB0bwo+PiBhZGRyZXNzIHRoaXMuCj4gCj4gQ2V6YXJ5LCBzZWUg
-dGhlIGNvbW1lbnRzIG9mIHRoZSBpbml0aWFsIHNlcmllczoKPiAKPiAiTm90ZSB0aGF0IGJ5dC1t
-YXg5ODA4MCwgYnl0LXJ0NTY0MCB3ZXJlIG5vdCBtb2RpZmllZCBzaW5jZSB0aGV5IGFyZQo+IGRl
-cHJlY2F0ZWQuIGJ5dGNodC1ub2NvZGVjIGFuZCB0aGUgU2t5bGFrZS9LYWJ5bGFrZSBtYWNoaW5l
-IGRyaXZlcnMKPiBjaGFuZ2VzIHdlcmUgbm90IGNoYW5nZWQgc2luY2UgU09GIGRvZXMgbm90IHN1
-cHBvcnQgdGhlbS4gVGhlcmUgbWF5IGJlCj4gYWRkaXRpb25hbCBjaGFuZ2VzIGlmIGFuZCB3aGVu
-IFNreWxha2UvS2FieWxha2UgYXJlIHN1cHBvcnRlZCBieSBTT0YKPiAobGFyZ2VseSBhIGZpcm13
-YXJlIGF1dGhlbnRpY2F0aW9uIGlzc3VlLCBub3QgdGVjaG5pY2FsIGRpZmZpY3VsdHkpLiIKPiAK
-PiBJIGludGVudGlvbmFsbHkgZGlkIG5vdCB0b3VjaCB0aGUgSGFzd2VsbCBhbmQgQmF5dHJhaWwg
-bGVnYWN5IHNpbmNlIGJvdGggCj4gZHJpdmVycyBkbyBub3QgdXBkYXRlIHRoZSBwbGF0Zm9ybSBu
-YW1lLCB0aGlzIGlzIG9ubHkgZG9uZSBmb3IgY2FzZXMgCj4gd2hlcmUgU09GIGlzIHVzZWQuCj4g
-Cj4gU28gd2hpbGUgSSBkb24ndCBtaW5kIGEgY2hhbmdlLCBpdCdzIGdvdCB0byBjb21lIHdpdGgg
-dGVzdHMgZm9yIGVhY2ggCj4gdmFyaWFudCwgYW5kIGlmIHlvdSBkbyB0aGUgY2hhbmdlcyBmb3Ig
-SGFzd2VsbCB0aGVuIHlvdSB3YW50IHRvIGNoYW5nZSAKPiBCYXl0cmFpbCBsZWdhY3kgbWFjaGlu
-ZSBkcml2ZXJzIGFzIHdlbGwuIEFuZCBhcmUgd2UgZ29pbmcgdG8gY2hhbmdlIHRoZSAKPiBTS0wv
-S0JMIG1hY2hpbmUgZHJpdmVycyB0byBhbGxvdyBmb3IgdGhpcyBwbGF0Zm9ybSBuYW1lIHJld3Jp
-dGU/Cj4gCj4gQWxzbyB0aGUgaW5mb3JtYXRpb24gYmVsb3cgaXMgbWlzbGVhZGluZzogbm90aGlu
-ZyBpcyBicm9rZW4gaW4gdGhlIAo+IGN1cnJlbnQgc29sdXRpb24gYW5kIC1zdGFibGUga2VybmVs
-cyBkbyBub3QgbmVlZCB0byBwaWNrIHRoaXMgcGF0Y2hzZXQuIAo+IFRoaXMgaXMgYSBjb2RlIGFs
-aWdubWVudCBhbmQgdGhlIGJlaGF2aW9yIGlzIGlkZW50aWNhbC4KPiAKPiBPciBhcyBhbiBhbHRl
-cm5hdGl2ZSB3ZSBsZWF2ZSB0aGUgY29kZSBhcyBpcy4uLgo+IAoKR3Vlc3MgSSB3YXNuJ3QgY2xl
-YXIgZW5vdWdoOgotIHRoaXMgY29kZSBmaXhlcyBwYW5pYyBnZW5lcmF0ZWQgYnkgc2VyaWVzIGZv
-dW5kIHVuZGVyIGxpbmsgYWJvdmUuCgpGb2xsb3dpbmcgY29kZSBhZGRlZCB3aXRoaW4gbWFjaGlu
-ZSBwcm9iZSBmb3IgYnJvYWR3ZWxsLmM6CgkvKiBvdmVycmlkZSBwbGFmb3JtIG5hbWUsIGlmIHJl
-cXVpcmVkICovCgltYWNoID0gKCZwZGV2LT5kZXYpLT5wbGF0Zm9ybV9kYXRhOwoJcGRhdGEgPSAo
-JnBkZXYtPmRldiktPnBsYXRmb3JtX2RhdGE7CglpZiAobWFjaCkgLyogZXh0cmEgY2hlY2sgc2lu
-Y2UgbGVnYWN5IGRvZXMgbm90IHBhc3MgcGFyYW1ldGVycyAqLyB7CgkJcGxhdGZvcm1fbmFtZSA9
-IG1hY2gtPm1hY2hfcGFyYW1zLnBsYXRmb3JtOwoJCWRldl93YXJuKCZwZGV2LT5kZXYsICJCcm9h
-ZHdlbGwgcGxhdGZvcm1fbmFtZTogJXMsICVzLCAlcywgJXNcbiIsIAptYWNoLT5pZCwgbWFjaC0+
-ZHJ2X25hbWUsIG1hY2gtPmZ3X2ZpbGVuYW1lLCBwbGF0Zm9ybV9uYW1lKTsKCQlkZXZfd2Fybigm
-cGRldi0+ZGV2LCAiQnJvYWR3ZWxsIGlkIGFuZCByZXNfaWR4OiAleCwgJWRcbiIsIHBkYXRhLT5p
-ZCwgCnBkYXRhLT5yZXNpbmRleF9kbWFfYmFzZSk7Cgl9CgoKR2VuZXJhdGVzOgoKWyAgIDI1Ljk4
-MjE1MV0gYnJvYWR3ZWxsLWF1ZGlvIGJyb2Fkd2VsbC1hdWRpbzogQnJvYWR3ZWxsIHBsYXRmb3Jt
-X25hbWU6IAosIChudWxsKSwgKGVmYXVsdCksIChudWxsKQpbICAgMjUuOTgyMTU3XSBicm9hZHdl
-bGwtYXVkaW8gYnJvYWR3ZWxsLWF1ZGlvOiBCcm9hZHdlbGwgaWQgYW5kIApyZXNfaWR4OiAzNDM4
-LCAxMDQwMzg0CgoKQ29uc2x1c2lvbjoKMHgzNDM4ID09IEJEV19JRAoxMDQwMzg0IC0+IDB4MEZF
-MDAwIC0+IFdQVF9EU1BfRE1BX0FERFJfT0ZGU0VUCmNvbmZpcm1zIHRoZSBjbGFpbS4KCkFzIHN0
-YXRlZCwgZHVyaW5nIGNsZWFudXBzIGFuZCBtb3Zpbmcgc3R1ZmYgYXJvdW5kLCBjb2RlIHlvdSd2
-ZSBhZGRlZCAKZ2VuZXJhdGVzIHBhbmljcy4gUmlnaHQgbm93IGl0IHdvcmtzIG9ubHkgYmVjYXVz
-ZSBvZiBvZmZzZXRzIG9mIAptaXNjYXN0ZWQgb2JqZWN0IHBvaW50aW5nIHRvIHVuaW5pdGlhbGl6
-ZWQgdmFyaWFibGUgKGx1Y2tpbHkpLgpwbGF0Zm9ybV9uYW1lIGlzIGluaXRpYWxpemVkIGFzIE5V
-TEwgZm9yIGFsbCBTS0wrIGFuZCBsZWdhY3kgcGxhdGZvcm1zIAphbmQgdGh1cyB0aGUgc25kX3Nv
-Y19maXh1cF9kYWlfbGlua3NfcGxhdGZvcm1fbmFtZSByZXR1cm5zIGltbWVkaWF0ZWx5LiAKU28g
-YnkgYWxsIG1lYW5zLCBjaGFuZ2UgaXMgbm90IG9ubHkgc2F2ZSwgYnV0IHJlcXVpcmVkLgoKQ29k
-ZSBpcyBiZWluZyB0ZXN0ZWQgb24gMnggQkRXLVkgd2hpY2ggbGl2ZSBub3cgYSBoYXBweSBsaXZl
-IGluIG91ciBsYWIgCndpdGggdGhlIHJlc3Qgb2YgdGhlIHBsYXRmb3Jtcy4KCkN6YXJlawoKCj4+
-IEZpeGVzOiBlODcwNTVkNzMyZTMgKCJBU29DOiBJbnRlbDogaGFzd2VsbDogcGxhdGZvcm0gbmFt
-ZSBmaXh1cCBzdXBwb3J0IikKPj4gRml4ZXM6IDdlNDBkZGNmOTc0YSAoIkFTb0M6IEludGVsOiBi
-ZHctcnQ1Njc3OiBwbGF0Zm9ybSBuYW1lIGZpeHVwIAo+PiBzdXBwb3J0IikKPj4gRml4ZXM6IDJk
-MDY3YjI4MDdmOSAoIkFTb0M6IEludGVsOiBicm9hZHdlbGw6IHBsYXRmb3JtIG5hbWUgZml4dXAg
-Cj4+IHN1cHBvcnQiKQo+PiBTaWduZWQtb2ZmLWJ5OiBDZXphcnkgUm9qZXdza2kgPGNlemFyeS5y
-b2pld3NraUBpbnRlbC5jb20+Cj4+IC0tLQo+PiDCoCBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3Nz
-dC1hY3BpLmMgfCAzICsrLQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAx
-IGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3Nz
-dC1hY3BpLmMgCj4+IGIvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtYWNwaS5jCj4+IGluZGV4
-IDE1ZjJiMjdlNjQzZi4uYzM0ZjYyOGM3OTg3IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvaW50
-ZWwvY29tbW9uL3NzdC1hY3BpLmMKPj4gKysrIGIvc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3Qt
-YWNwaS5jCj4+IEBAIC0xMDksMTEgKzEwOSwxMiBAQCBpbnQgc3N0X2FjcGlfcHJvYmUoc3RydWN0
-IHBsYXRmb3JtX2RldmljZSAqcGRldikKPj4gwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgcGxh
-dGZvcm1fc2V0X2RydmRhdGEocGRldiwgc3N0X2FjcGkpOwo+PiArwqDCoMKgIG1hY2gtPnBkYXRh
-ID0gc3N0X3BkYXRhOwo+PiDCoMKgwqDCoMKgIC8qIHJlZ2lzdGVyIG1hY2hpbmUgZHJpdmVyICov
-Cj4+IMKgwqDCoMKgwqAgc3N0X2FjcGktPnBkZXZfbWFjaCA9Cj4+IMKgwqDCoMKgwqDCoMKgwqDC
-oCBwbGF0Zm9ybV9kZXZpY2VfcmVnaXN0ZXJfZGF0YShkZXYsIG1hY2gtPmRydl9uYW1lLCAtMSwK
-Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNz
-dF9wZGF0YSwgc2l6ZW9mKCpzc3RfcGRhdGEpKTsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1hY2gsIHNpemVvZigqbWFjaCkpOwo+PiDCoMKg
-wqDCoMKgIGlmIChJU19FUlIoc3N0X2FjcGktPnBkZXZfbWFjaCkpCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoCByZXR1cm4gUFRSX0VSUihzc3RfYWNwaS0+cGRldl9tYWNoKTsKPj4KPiAKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Pierre,
+
+In patch 4/5 I forgot to mention superfluous braces around dev_err() 
+in sdw_config_stream() and sdw_free_stream(). Otherwise for the series:
+
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+
+Thanks
+Guennadi
+
+On Wed, Aug 21, 2019 at 03:17:15PM -0500, Pierre-Louis Bossart wrote:
+> This RFC is the companion of the other RFC 'soundwire: intel: simplify
+> DAI/PDI handling​'. Our purpose at this point is to gather feedback on
+> the interfaces between the Intel SOF parts and the SoundWire code.
+> 
+> The suggested solution is a simple init/release inserted at
+> probe/remove and resume/suspend, as well as two callbacks for the SOF
+> driver to generate IPC configurations with the firmware. That level of
+> separation completely hides the details of the SoundWire DAIs and will
+> allow for 'transparent' multi-cpu DAI support, which will be handled
+> in the machine driver and the soundwire DAIs.
+> 
+> This solution was tested on IceLake and CometLake, and captures the
+> feedback from SOF contributors on an initial integration that was
+> deemed too complicated (and rightly so).
+> 
+> Pierre-Louis Bossart (5):
+>   ASoC: SOF: IPC: dai-intel: move ALH declarations in header file
+>   ASoC: SOF: Intel: hda: add helper to initialize SoundWire IP
+>   ASoC: SOF: Intel: hda: add SoundWire IP support
+>   ASoC: SOF: Intel: hda: add SoundWire stream config/free callbacks
+>   ASoC: SOF: Intel: add support for SoundWire suspend/resume
+> 
+>  include/sound/sof/dai-intel.h |  18 ++--
+>  sound/soc/sof/intel/hda-dsp.c |  11 +++
+>  sound/soc/sof/intel/hda.c     | 157 ++++++++++++++++++++++++++++++++++
+>  sound/soc/sof/intel/hda.h     |  11 +++
+>  4 files changed, 188 insertions(+), 9 deletions(-)
+> 
+> 
+> base-commit: 3b3aaa017e8072b1bfddda92be296b3463d870be
+> -- 
+> 2.20.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
