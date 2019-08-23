@@ -1,10 +1,10 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 18/35] ASoC: Intel: Skylake: Remove window0
- sst_addr fields
-Date: Fri, 23 Aug 2019 14:26:22 -0500
-Message-ID: <f19e82aa-87bd-75ee-2b56-f7130e73bc86@linux.intel.com>
+Subject: Re: [PATCH 23/35] ASoC: Intel: Baytrail: Define
+ separate ACPI loader
+Date: Fri, 23 Aug 2019 14:36:33 -0500
+Message-ID: <dfae2f58-b955-ae2f-ff66-fd83c9121855@linux.intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-19-cezary.rojewski@intel.com>
+ <20190822190425.23001-24-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D01A6F80147
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:09 +0200 (CEST)
-In-Reply-To: <20190822190425.23001-19-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AC63F805F7
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:16 +0200 (CEST)
+In-Reply-To: <20190822190425.23001-24-cezary.rojewski@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,105 +32,194 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On 8/22/19 2:04 PM, Cezary Rojewski wrote:
-> w0_stat_sz and w0_up_sz are Skylake-specific fields and should not be
-> part of common sst framework. The latter is also completely unused.
-> Remove both while declaring global FW register-area size, shared for all
-> SKL+ platforms.
+> With common acpi code exposed, separate Baytrail specific code from
+> other legacy platforms. To reduce diff delta, it's still loaded with
+> separate module called: byt-acpi. This may be address later, once
+> heavy hitters are gone. Since this is the second of two, separation
+> carries removal of common sst-acpi module with it.
 > 
 > Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 > ---
->   sound/soc/intel/common/sst-dsp-priv.h | 2 --
->   sound/soc/intel/skylake/bxt-sst.c     | 2 --
->   sound/soc/intel/skylake/cnl-sst.c     | 2 --
->   sound/soc/intel/skylake/skl-debug.c   | 2 +-
->   sound/soc/intel/skylake/skl-sst-dsp.h | 1 +
->   sound/soc/intel/skylake/skl-sst.c     | 2 --
->   6 files changed, 2 insertions(+), 9 deletions(-)
+>   sound/soc/intel/Kconfig                     |  8 ++--
+>   sound/soc/intel/baytrail/Makefile           |  2 +
+>   sound/soc/intel/baytrail/acpi.c             | 43 +++++++++++++++++++++
+>   sound/soc/intel/baytrail/sst-baytrail-dsp.c |  1 -
+>   sound/soc/intel/common/Makefile             |  4 +-
+>   sound/soc/intel/common/sst-acpi.c           | 36 -----------------
+>   6 files changed, 49 insertions(+), 45 deletions(-)
+>   create mode 100644 sound/soc/intel/baytrail/acpi.c
 > 
-> diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-> index 0fe9bebcfb38..53dcd87bab44 100644
-> --- a/sound/soc/intel/common/sst-dsp-priv.h
-> +++ b/sound/soc/intel/common/sst-dsp-priv.h
-> @@ -71,8 +71,6 @@ struct sst_addr {
->   	u32 dsp_dram_offset;
->   	u32 sram0_base;
->   	u32 sram1_base;
-> -	u32 w0_stat_sz;
-> -	u32 w0_up_sz;
->   	void __iomem *lpe;
->   	void __iomem *shim;
->   	void __iomem *pci_cfg;
-> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-> index c7961050c2ee..641d5cf4aeb1 100644
-> --- a/sound/soc/intel/skylake/bxt-sst.c
-> +++ b/sound/soc/intel/skylake/bxt-sst.c
-> @@ -565,8 +565,6 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
->   	sst->addr.shim = mmio_base;
->   	sst->addr.sram0_base = BXT_ADSP_SRAM0_BASE;
->   	sst->addr.sram1_base = BXT_ADSP_SRAM1_BASE;
-> -	sst->addr.w0_stat_sz = SKL_ADSP_W0_STAT_SZ;
-> -	sst->addr.w0_up_sz = SKL_ADSP_W0_UP_SZ;
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index 9191773d203c..baab845ea0ef 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -35,11 +35,9 @@ config SND_SOC_INTEL_HASWELL_ACPI
+>   	tristate
+>   	# This option controls the ACPI-based on HSW/BDW platforms
 >   
->   	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
->   			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+> -config SND_SOC_INTEL_SST_ACPI
+> +config SND_SOC_INTEL_BAYTRAIL_ACPI
+>   	tristate
+> -	# This option controls ACPI-based probing on
+> -	# Haswell/Broadwell/Baytrail legacy and will be set
+> -	# when these platforms are enabled
+> +	# This option controls the ACPI-based on BYT platforms
 
-You are still using a SKL specific macro here...
+ACPI-based probe?
 
-> diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
-> index 2f10076cc906..64971966af38 100644
-> --- a/sound/soc/intel/skylake/cnl-sst.c
-> +++ b/sound/soc/intel/skylake/cnl-sst.c
-> @@ -442,8 +442,6 @@ int cnl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
->   	sst->addr.shim = mmio_base;
->   	sst->addr.sram0_base = CNL_ADSP_SRAM0_BASE;
->   	sst->addr.sram1_base = CNL_ADSP_SRAM1_BASE;
-> -	sst->addr.w0_stat_sz = CNL_ADSP_W0_STAT_SZ;
-> -	sst->addr.w0_up_sz = CNL_ADSP_W0_UP_SZ;
 >   
->   	sst_dsp_mailbox_init(sst, (CNL_ADSP_SRAM0_BASE + CNL_ADSP_W0_STAT_SZ),
->   			     CNL_ADSP_W0_UP_SZ, CNL_ADSP_SRAM1_BASE,
-
-...and here...
-
-> diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-> index 212370bf704c..6781eac13232 100644
-> --- a/sound/soc/intel/skylake/skl-debug.c
-> +++ b/sound/soc/intel/skylake/skl-debug.c
-> @@ -173,7 +173,7 @@ static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
->   {
->   	struct skl_debug *d = file->private_data;
->   	struct sst_dsp *sst = d->skl->dsp;
-> -	size_t w0_stat_sz = sst->addr.w0_stat_sz;
-> +	size_t w0_stat_sz = SKL_FW_REGS_SIZE;
-
-but here it's a different macro?
-
->   	void __iomem *in_base = sst->mailbox.in_base;
->   	void __iomem *fw_reg_addr;
->   	unsigned int offset;
-> diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-> index 9f2dae92c1c9..5a0cb7f3d57e 100644
-> --- a/sound/soc/intel/skylake/skl-sst-dsp.h
-> +++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-> @@ -63,6 +63,7 @@ struct skl_dev;
+>   config SND_SOC_INTEL_SST
+>   	tristate
+> @@ -68,7 +66,7 @@ config SND_SOC_INTEL_BAYTRAIL
+>   	tristate "Baytrail (legacy) Platforms"
+>   	depends on DMADEVICES && ACPI && SND_SST_ATOM_HIFI2_PLATFORM=n
+>   	select SND_SOC_INTEL_SST
+> -	select SND_SOC_INTEL_SST_ACPI
+> +	select SND_SOC_INTEL_BAYTRAIL_ACPI
+>   	select SND_SOC_INTEL_SST_FIRMWARE
+>   	select SND_SOC_ACPI_INTEL_MATCH
+>   	help
+> diff --git a/sound/soc/intel/baytrail/Makefile b/sound/soc/intel/baytrail/Makefile
+> index 4d0806aac6bd..b59d4893b46b 100644
+> --- a/sound/soc/intel/baytrail/Makefile
+> +++ b/sound/soc/intel/baytrail/Makefile
+> @@ -1,5 +1,7 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   snd-soc-sst-baytrail-pcm-objs := \
+>   	        sst-baytrail-ipc.o sst-baytrail-pcm.o sst-baytrail-dsp.o
+> +snd-soc-byt-acpi-objs := acpi.o
 >   
->   #define SKL_ADSP_W1_SZ			0x1000
+>   obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += snd-soc-sst-baytrail-pcm.o
+> +obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL_ACPI) += snd-soc-byt-acpi.o
+> diff --git a/sound/soc/intel/baytrail/acpi.c b/sound/soc/intel/baytrail/acpi.c
+> new file mode 100644
+> index 000000000000..57d10a6e3be2
+> --- /dev/null
+> +++ b/sound/soc/intel/baytrail/acpi.c
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Intel BYT loader on ACPI systems
+> + *
+> + * Copyright (C) 2019, Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/soc-acpi.h>
+> +#include <sound/soc-acpi-intel-match.h>
+> +#include "../common/sst-dsp.h"
+> +
+> +static struct sst_acpi_desc byt_acpi_desc = {
+> +	.drv_name = "baytrail-pcm-audio",
+> +	.machines = snd_soc_acpi_intel_baytrail_legacy_machines,
+> +	.resindex_lpe_base = 0,
+> +	.resindex_pcicfg_base = 1,
+> +	.resindex_fw_base = 2,
+> +	.irqindex_host_ipc = 5,
+> +	.sst_id = SST_DEV_ID_BYT,
+> +	.resindex_dma_base = -1,
+> +};
+> +
+> +static const struct acpi_device_id byt_acpi_ids[] = {
+> +	{ "80860F28", (unsigned long)&byt_acpi_desc },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, byt_acpi_ids);
+> +
+> +static struct platform_driver byt_acpi_driver = {
+> +	.probe = sst_acpi_probe,
+> +	.remove = sst_acpi_remove,
+> +	.driver = {
+> +		.name = "byt-acpi",
+> +		.acpi_match_table = ACPI_PTR(byt_acpi_ids),
+> +	},
+> +};
+> +module_platform_driver(byt_acpi_driver);
+> +
+> +MODULE_AUTHOR("Cezary Rojewski <cezary.rojewski@intel.com>");
+> +MODULE_DESCRIPTION("Intel BYT loader on ACPI systems");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/sound/soc/intel/baytrail/sst-baytrail-dsp.c b/sound/soc/intel/baytrail/sst-baytrail-dsp.c
+> index 4869e18116eb..81bc05d62d5d 100644
+> --- a/sound/soc/intel/baytrail/sst-baytrail-dsp.c
+> +++ b/sound/soc/intel/baytrail/sst-baytrail-dsp.c
+> @@ -13,7 +13,6 @@
+>   #include <linux/dma-mapping.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/firmware.h>
+> -
+>   #include "../common/sst-dsp.h"
+>   #include "../common/sst-dsp-priv.h"
+>   #include "sst-baytrail-ipc.h"
+> diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+> index 56c81e20b5bf..65e0e66ab64f 100644
+> --- a/sound/soc/intel/common/Makefile
+> +++ b/sound/soc/intel/common/Makefile
+> @@ -1,6 +1,5 @@
+>   # SPDX-License-Identifier: GPL-2.0
+> -snd-soc-sst-dsp-objs := sst-dsp.o
+> -snd-soc-sst-acpi-objs := sst-acpi.o
+> +snd-soc-sst-dsp-objs := sst-dsp.o sst-acpi.o
+>   snd-soc-sst-ipc-objs := sst-ipc.o
+>   snd-soc-sst-firmware-objs := sst-firmware.o
+>   snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-match.o \
+> @@ -11,6 +10,5 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
+>   	soc-acpi-intel-hda-match.o
 >   
-> +#define SKL_FW_REGS_SIZE		PAGE_SIZE
->   #define SKL_FW_STS_MASK			0xf
+>   obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+> -obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+>   obj-$(CONFIG_SND_SOC_INTEL_SST_FIRMWARE) += snd-soc-sst-firmware.o
+>   obj-$(CONFIG_SND_SOC_ACPI_INTEL_MATCH) += snd-soc-acpi-intel-match.o
+> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+> index 7d2f04ff0479..8e75126106ea 100644
+> --- a/sound/soc/intel/common/sst-acpi.c
+> +++ b/sound/soc/intel/common/sst-acpi.c
+> @@ -13,7 +13,6 @@
 >   
->   #define SKL_FW_INIT			0x1
-> diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-> index e9a7b2509b35..7e63c91cea54 100644
-> --- a/sound/soc/intel/skylake/skl-sst.c
-> +++ b/sound/soc/intel/skylake/skl-sst.c
-> @@ -535,8 +535,6 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
->   	sst->addr.shim = mmio_base;
->   	sst->addr.sram0_base = SKL_ADSP_SRAM0_BASE;
->   	sst->addr.sram1_base = SKL_ADSP_SRAM1_BASE;
-> -	sst->addr.w0_stat_sz = SKL_ADSP_W0_STAT_SZ;
-> -	sst->addr.w0_up_sz = SKL_ADSP_W0_UP_SZ;
+>   #include "sst-dsp.h"
+>   #include <sound/soc-acpi.h>
+> -#include <sound/soc-acpi-intel-match.h>
 >   
->   	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
->   			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+>   struct sst_acpi_priv {
+>   	struct platform_device *pdev_mach;
+> @@ -151,38 +150,3 @@ int sst_acpi_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(sst_acpi_remove);
+> -
+> -#if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
+> -static struct sst_acpi_desc sst_acpi_baytrail_desc = {
+> -	.drv_name = "baytrail-pcm-audio",
+> -	.machines = snd_soc_acpi_intel_baytrail_legacy_machines,
+> -	.resindex_lpe_base = 0,
+> -	.resindex_pcicfg_base = 1,
+> -	.resindex_fw_base = 2,
+> -	.irqindex_host_ipc = 5,
+> -	.sst_id = SST_DEV_ID_BYT,
+> -	.resindex_dma_base = -1,
+> -};
+> -#endif
+> -
+> -static const struct acpi_device_id sst_acpi_match[] = {
+> -#if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
+> -	{ "80860F28", (unsigned long)&sst_acpi_baytrail_desc },
+> -#endif
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(acpi, sst_acpi_match);
+> -
+> -static struct platform_driver sst_acpi_driver = {
+> -	.probe = sst_acpi_probe,
+> -	.remove = sst_acpi_remove,
+> -	.driver = {
+> -		.name = "sst-acpi",
+> -		.acpi_match_table = ACPI_PTR(sst_acpi_match),
+> -	},
+> -};
+> -module_platform_driver(sst_acpi_driver);
+> -
+> -MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@linux.intel.com>");
+> -MODULE_DESCRIPTION("Intel SST loader on ACPI systems");
+> -MODULE_LICENSE("GPL v2");
 > 
