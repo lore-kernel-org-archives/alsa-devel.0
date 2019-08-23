@@ -1,23 +1,20 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 00/35] ASoC: Intel: Clenaup SST
- initialization
-Date: Fri, 23 Aug 2019 12:43:58 +0200
-Message-ID: <c845fda4-c18d-2ca8-7337-6e6af74d239c@intel.com>
-References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <a08b2547-3fe5-5c48-9513-c5ade151c01e@linux.intel.com>
- <50932a9f-2f3e-c150-77c7-f021f84ed4d1@intel.com>
- <20190823102652.GM23391@sirena.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: soc-core: rename
+	soc_post_component_init() to soc_rtd_init()" to the asoc tree
+Date: Fri, 23 Aug 2019 11:46:14 +0100 (BST)
+Message-ID: <20190823104614.2832CD02CD0@fitzroy.sirena.org.uk>
+References: <87v9uo7lc3.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7407F80147
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 12:44:03 +0200 (CEST)
-In-Reply-To: <20190823102652.GM23391@sirena.co.uk>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0C24F80141
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 12:46:15 +0200 (CEST)
+In-Reply-To: <87v9uo7lc3.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,104 +24,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, "Kaczmarski,
- Filip" <filip.kaczmarski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Wasko,
- Michal" <michal.wasko@intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-08-23 12:26, Mark Brown wrote:
-> On Fri, Aug 23, 2019 at 10:29:59AM +0200, Cezary Rojewski wrote:
->> On 2019-08-22 22:55, Pierre-Louis Bossart wrote:
->>> On 8/22/19 2:03 PM, Cezary Rojewski wrote:
-> 
->>>> Code seen here is part of new Skylake fundament, located at the very
->>>> bottom of internal mainline. Said mainline is tested constantly on at
->>>> least sigle platform from every cAVS bucket (description below). This
->>>> week, BDW has been added to the CI family and was essential in
->>>> validating legacy changes. Baytrail platform is still missing. Changes
->>>> for BYT directly mirror HSW/ BDW but due to current lack of platform
->>>> were untested.
->>>> Boards engaged in testing: rt286, rt298, rt274.
-> 
->>> this is not enough, sorry. these are RVPs and you need to check with
->>> commercial devices supported in sound/soc/intel/boards/.
-> 
->> What machine board has to do with FW and host side? If it has, we better
->> notify the owner so he can fix codec's code at once. All boards MUST follow
->> recommended protocol whether its HDA or I2S in communicating with /skylake.
->> This is hardware IP we taking about. I could as well test all platforms with
->> AudioPrecision and say: shipit.
-> 
-> ...
-> 
->> DSP "commercial devices" with 99% of home audio being routed through
->> HD-Audio legacy? I do contact representatives of "commercial devices" daily,
->> you of all should be aware of fact that in almost all cases they are fed
->> neither with upstream code nor upstream binaries.
->> For the first time since eons sound/soc/intel/skylake code is tested before
->> upstreaming, yet you still defend the mistakes of the past?
-> 
-> System vendors don't really matter here, end users with their
-> desktops and laptops do.  If a user has a system and they for
-> whatever reason upgrade their kernel from one upstream version to
-> another and don't touch any other aspect of their system the
-> expectation is that they'll still have everything working after
-> the upgrade.  This means that if there's bugs in how things were
-> deployed in the past the kernel ought to try to work with those
-> bugs.
-> 
+The patch
 
-Noted, see below comments.
+   ASoC: soc-core: rename soc_post_component_init() to soc_rtd_init()
 
->>>> Some upstream FW binaries are not compatible with existing /skylake
->>>> driver while changes found here (HARDWARE_CONFIG/ FIRMWARE_CONFIG) make
->>>> use of firmware ability to offload hardware-specifics away from driver.
->>>> These and more are core part of any cAVS design and are to be
->>>> implemented and used by host. This too is missing on Linux upstream.
-> 
-> This sounds like it might be a problem.
-> 
+has been applied to the asoc tree at
 
-Problem is, HARDWARE/ FIRMWARE_CONFIG (and more upcoming) should be the 
-core part of cAVS driver, implemented before any PCM related code is added.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
->>>> SKL FW binary existing on upstream is a descendant of old spt branch,
->>>> obsoleted for 4-5 years now. That FW is a stub, quickly replaced by
->>>> kbl which is to be used on all 1.5 cAVS platforms.
-> 
-> That's well within the lifespan people will expect from a PC
-> these days, my personal systems are mostly older than that and
-> do fine at most things except for big builds.
-> 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-It's not about age itself. It's about the fact that FW binaries from 
-non-supported or main FW branches ended here and given the date these 
-have been added, it has already been recommended to make use of kbl or 
-apl_auto branches.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
->> If I could, I'd rather prefer the "detect and notify" as it is impossible to
->> repair all the mistakes made in /sound/soc/intel/skylake.
-> 
-> Do we have a sense of how many such systems exist?
-> 
->> However, in practice there isn't any reliable way to verify the actual
->> usability of old FW binary against host site as the interface is volatile
->> and numbers alone don't mean much.
->> Patch with FW binaries would not remove old ones, simply add new versions to
->> the directory.
-> 
-> Can you do things the other way around and positively identify
-> firmwares that meet whatever standards you're interested in here?
-> 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-The only thing that comes to my mind is the following:
-- during boot up sequence, in response to any INVALID_REQUEST or such 
-coming from FW, collapse and dump: "upgrade firmware" message
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-- once boot up sequence is completed, disregard INVALID_REQUEST check as 
-it is also the common response of FW in various scenarios
+Thanks,
+Mark
 
-- user removes existing sym link from /lib/firmware/intel and creates 
-new one, pointing to updated FW binary that should also be present in 
-/lib/firmware/intel
+>From 542694df7511977c3baa6ba855126a0cce883977 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 23 Aug 2019 09:58:32 +0900
+Subject: [PATCH] ASoC: soc-core: rename soc_post_component_init() to
+ soc_rtd_init()
+
+It is easy to read code if it is cleanly using paired function/naming,
+like start <-> stop, register <-> unregister, etc, etc.
+But, current ALSA SoC code is very random, unbalance, not paired, etc.
+It is easy to create bug at the such code, and it will be difficult to
+debug.
+
+>From function name point of view, "soc_post_component_init()" sounds
+like "component initialize function".
+But in reality it is rtd setup function.
+
+This patch renames soc_post_component_init() to soc_rtd_init()
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v9uo7lc3.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0af83963289f..3c087b478398 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1340,13 +1340,12 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	return ret;
+ }
+ 
+-static void rtd_release(struct device *dev)
++static void soc_rtd_release(struct device *dev)
+ {
+ 	kfree(dev);
+ }
+ 
+-static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
+-	const char *name)
++static int soc_rtd_init(struct snd_soc_pcm_runtime *rtd, const char *name)
+ {
+ 	int ret = 0;
+ 
+@@ -1355,7 +1354,7 @@ static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
+ 	if (!rtd->dev)
+ 		return -ENOMEM;
+ 	rtd->dev->parent = rtd->card->dev;
+-	rtd->dev->release = rtd_release;
++	rtd->dev->release = soc_rtd_release;
+ 	rtd->dev->groups = soc_dev_attr_groups;
+ 	dev_set_name(rtd->dev, "%s", name);
+ 	dev_set_drvdata(rtd->dev, rtd);
+@@ -1483,7 +1482,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 			return ret;
+ 	}
+ 
+-	ret = soc_post_component_init(rtd, dai_link->name);
++	ret = soc_rtd_init(rtd, dai_link->name);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.20.1
