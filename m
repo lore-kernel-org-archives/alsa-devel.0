@@ -1,86 +1,28 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] soundwire: intel: remove unused variables
-Date: Fri, 23 Aug 2019 11:58:15 +0530
-Message-ID: <20190823062815.GA2672@vkoul-mobl>
-References: <20190822062555.30216-1-vkoul@kernel.org>
- <05406f83-a799-2110-cf51-c289ae838065@linux.intel.com>
+Subject: Re: [PATCH v3 0/4] soundwire: debugfs support for 5.4
+Date: Fri, 23 Aug 2019 12:04:04 +0530
+Message-ID: <20190823063404.GB2672@vkoul-mobl>
+References: <20190821185821.12690-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C2E4F8014A
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 08:29:29 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <05406f83-a799-2110-cf51-c289ae838065@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20190821185821.12690-1-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com, srinivas.kandagatla@linaro.org, slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 22-08-19, 08:38, Pierre-Louis Bossart wrote:
-> On 8/22/19 1:25 AM, Vinod Koul wrote:
-> > Variables 'nval' and 'i' are no longer used sdw_master_read_intel_prop()
-> > so remove them.
-> > 
-> > drivers/soundwire/intel.c: In function 'sdw_master_read_intel_prop':
-> > drivers/soundwire/intel.c:829:12: warning: unused variable 'i' [-Wunused-variable]
-> >    int nval, i;
-> >              ^
-> > drivers/soundwire/intel.c:829:6: warning: unused variable 'nval' [-Wunused-variable]
-> >    int nval, i;
-> >        ^~~~
-> > 
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Fixes: 085f4ace103d ("soundwire: intel: read mclk_freq property from firmware")
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+On 21-08-19, 13:58, Pierre-Louis Bossart wrote:
+> This patchset enables debugfs support and corrects all the feedback
+> provided on an earlier RFC ('soundwire: updates for 5.4')
 > 
-> This was fixed in the followup patch to disable hw links:
-> 
-> -	int nval, i;
-> +	u32 quirk_mask;
+> There is one remaining hard-coded value in intel.c that will need to
+> be fixed in a follow-up patchset not specific to debugfs: we need to
+> remove hard-coded Intel-specific configurations from cadence_master.c
+> (PDI offsets, etc).
 
-Well it is my mistake, the patch 085f4ace103d should not have kept it
-and I should have pointed it out in the review
-That would be the correct thing to do for a series.
-
-> which wasn't applied because debugsfs didn't apply, and debugfs didn't apply
-
-Changing after is not really desired. I understand that this goes away
-if that patch was merged but the point of a series is that we can find
-issues in patch N but still be able to apply patches N-1.
-
-> because of discrepancies between soundwire/fixes and soundwire/next...
-> I realize these variables were removed in the wrong patch but I would
-> appreciate it if we could just avoid creating more conflicts for minor
-> changes. Thank you.
-> 
-> > ---
-> >   drivers/soundwire/intel.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> > index 459cc1e6355d..cad378f741c0 100644
-> > --- a/drivers/soundwire/intel.c
-> > +++ b/drivers/soundwire/intel.c
-> > @@ -826,7 +826,6 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
-> >   	struct sdw_master_prop *prop = &bus->prop;
-> >   	struct fwnode_handle *link;
-> >   	char name[32];
-> > -	int nval, i;
-> >   	/* Find master handle */
-> >   	snprintf(name, sizeof(name),
-> > 
+Applied all (i did hand edit of patch 4 to resolve dependency), thanks
 
 -- 
 ~Vinod
