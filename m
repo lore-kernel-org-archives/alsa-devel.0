@@ -1,10 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 24/35] ASoC: Intel: Refactor probing of
- ACPI devices
-Date: Fri, 23 Aug 2019 14:43:33 -0500
-Message-ID: <367bfd5c-33da-07c0-74a7-a874787abd99@linux.intel.com>
+Subject: Re: [PATCH 00/35] ASoC: Intel: Clenaup SST
+ initialization
+Date: Fri, 23 Aug 2019 15:12:18 -0500
+Message-ID: <9dfd3a96-f286-34d6-fe57-9b6b8740e424@linux.intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-25-cezary.rojewski@intel.com>
+ <a08b2547-3fe5-5c48-9513-c5ade151c01e@linux.intel.com>
+ <50932a9f-2f3e-c150-77c7-f021f84ed4d1@intel.com>
+ <20190823102652.GM23391@sirena.co.uk>
+ <c845fda4-c18d-2ca8-7337-6e6af74d239c@intel.com>
+ <70222fac-8c4e-5ceb-3c49-7020196b59df@linux.intel.com>
+ <2e2a34b8-2451-01f6-79a1-14f06d1ed059@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +17,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A39F8F805FA
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:17 +0200 (CEST)
-In-Reply-To: <20190822190425.23001-25-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82035F805E1
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:20 +0200 (CEST)
+In-Reply-To: <2e2a34b8-2451-01f6-79a1-14f06d1ed059@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,340 +30,134 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+To: Cezary Rojewski <cezary.rojewski@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: "Wasko, Michal" <michal.wasko@intel.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, "Kaczmarski,
+ Filip" <filip.kaczmarski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 8/22/19 2:04 PM, Cezary Rojewski wrote:
-> Baytrail and Haswell ACPI loading is now separated and no longer
-> clutters common code. Let's improve the loading procedure and remove
-> some superfluous members.
+On 8/23/19 1:44 PM, Cezary Rojewski wrote:
+> On 2019-08-23 18:26, Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 8/23/19 5:43 AM, Cezary Rojewski wrote:
+>>> On 2019-08-23 12:26, Mark Brown wrote:
+>>>> On Fri, Aug 23, 2019 at 10:29:59AM +0200, Cezary Rojewski wrote:
+>>>>> On 2019-08-22 22:55, Pierre-Louis Bossart wrote:
+>>>>>> On 8/22/19 2:03 PM, Cezary Rojewski wrote:
+>>>>
+>>>>>>> Code seen here is part of new Skylake fundament, located at the very
+>>>>>>> bottom of internal mainline. Said mainline is tested constantly 
+>>>>>>> on at
+>>>>>>> least sigle platform from every cAVS bucket (description below). 
+>>>>>>> This
+>>>>>>> week, BDW has been added to the CI family and was essential in
+>>>>>>> validating legacy changes. Baytrail platform is still missing. 
+>>>>>>> Changes
+>>>>>>> for BYT directly mirror HSW/ BDW but due to current lack of platform
+>>>>>>> were untested.
+>>>>>>> Boards engaged in testing: rt286, rt298, rt274.
+>>>>
+>>>>>> this is not enough, sorry. these are RVPs and you need to check with
+>>>>>> commercial devices supported in sound/soc/intel/boards/.
+>>>>
+>>>>> What machine board has to do with FW and host side? If it has, we 
+>>>>> better
+>>>>> notify the owner so he can fix codec's code at once. All boards 
+>>>>> MUST follow
+>>>>> recommended protocol whether its HDA or I2S in communicating with 
+>>>>> /skylake.
+>>>>> This is hardware IP we taking about. I could as well test all 
+>>>>> platforms with
+>>>>> AudioPrecision and say: shipit.
+>>
+>> The machine driver defines how many links are used, and in what mode 
+>> for the older cases where the topology is not used. You have 
+>> configurations with very complicated links, e.g. with amplifiers in 
+>> TDM mode plus IV feedback that will stress the firmware in ways that 
+>> regular RVPs don't. Same for the case where the SSP clock is turned on 
+>> at the request of the machine drivers. That's another case that can't 
+>> be tested on RVPs.
+>>
+>> I am not saying you need to test with every single commercial device, 
+>> but that testing on RVPs is not a representative sample of the 
+>> configurations and actual workloads.
+>>
 > 
-> This change removes sst_pdata::resindex_dma_base as it is a duplication
-> of dma_base. dma_base field has had it's type changed to allow for -1
-> (not used) value.
+> Each and every FW coming from main branch gets tested on both RVP and 
+> production devices what is done with cooperation with integration teams, 
+> PAEs and such. Windows teams alone ensures each binary gets smashed by 
+> ten of thousands tests each week - this is true for any release 
+> candidate, the standards are very high. Moreover, array of platforms is 
+> engaged per target (e.g.: TGL) as single platform alone does not cut it.
 > 
-> ACPI descriptor: sst_acpi_desc loses machines field and sst_id - now
-> accessed via sst_pdata::boards and sst_pdata::id respectively.
-> Cleanup consists mainly of legacy platform-specific probe routines
-> being provided for each descendant. Prevents code duplications,
-> especially for HSW/ BDW case while not losing any readability.
+> So, I'd not worry about FW being vulnerable to any scenario as long as 
+> recommended protocol is followed.
+
+I didn't mean to diss the validation work, but the Chromebook cases and 
+amplifiers over TDM with IV feedback are certainly not configurations 
+tested by Windows folks who are using HDaudio+DMIC only.
+
+>> With the request_firmware() mechanism, the kernel cannot parse the 
+>> file ahead of time, but don't you have a version information reported 
+>> by the firmware post-boot that can be used by the kernel so track that 
+>> the firmware isn't likely to work?
+>>
 > 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->   sound/soc/intel/baytrail/acpi.c         | 43 +++++++++++-----
->   sound/soc/intel/common/sst-acpi.c       | 21 +++-----
->   sound/soc/intel/common/sst-dsp.h        |  8 +--
->   sound/soc/intel/common/sst-firmware.c   |  2 +-
->   sound/soc/intel/haswell/acpi.c          | 65 +++++++++++++++----------
->   sound/soc/intel/skylake/skl-sst-utils.c |  2 +-
->   6 files changed, 82 insertions(+), 59 deletions(-)
+> Wasn't lying about FW version being unreliable. Let's say vendor 
+> receives quick FW drop with new RCR.. such eng drop may carry invalid 
+> numbers such as 0.0.0.0..
+> In general, I try to avoid relying on FW version whenever possible. It 
+> can be dumped for debug reasons, true, but to be relied on? Not really.
+
+Goodness, that's really bad. I didn't realize this.
+
 > 
-> diff --git a/sound/soc/intel/baytrail/acpi.c b/sound/soc/intel/baytrail/acpi.c
-> index 57d10a6e3be2..bf2560a8f3e2 100644
-> --- a/sound/soc/intel/baytrail/acpi.c
-> +++ b/sound/soc/intel/baytrail/acpi.c
-> @@ -11,25 +11,46 @@
->   #include <sound/soc-acpi-intel-match.h>
->   #include "../common/sst-dsp.h"
->   
-> -static struct sst_acpi_desc byt_acpi_desc = {
-> -	.drv_name = "baytrail-pcm-audio",
-> -	.machines = snd_soc_acpi_intel_baytrail_legacy_machines,
-> -	.resindex_lpe_base = 0,
-> -	.resindex_pcicfg_base = 1,
-> -	.resindex_fw_base = 2,
-> -	.irqindex_host_ipc = 5,
-> -	.sst_id = SST_DEV_ID_BYT,
-> -	.resindex_dma_base = -1,
-> +static struct sst_pdata byt_desc = {
-> +	.id = SST_DEV_ID_BYT,
-> +	.fw_name = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-> +	.boards = snd_soc_acpi_intel_baytrail_legacy_machines,
-
-So instead of simplifying you are duplicating the fw_name here.
-
-struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[] = {
-	{
-		.id = "10EC5640",
-		.drv_name = "byt-rt5640",
-		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-	},
-	{
-		.id = "193C9890",
-		.drv_name = "byt-max98090",
-		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-	},
-	{}
-};
-
-What is the value of all this?
-
-> +	.dma_base = -1,
->   };
->   
->   static const struct acpi_device_id byt_acpi_ids[] = {
-> -	{ "80860F28", (unsigned long)&byt_acpi_desc },
-> +	{ "80860F28", (unsigned long)&byt_desc },
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(acpi, byt_acpi_ids);
->   
-> +static int byt_acpi_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct sst_acpi_desc *acpi_desc;
-> +	const struct acpi_device_id *id;
-> +
-> +	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-> +	if (!id)
-> +		return -ENODEV;
-> +
-> +	acpi_desc = devm_kzalloc(dev, sizeof(*acpi_desc), GFP_KERNEL);
-> +	if (!acpi_desc)
-> +		return -ENOMEM;
-> +
-> +	acpi_desc->drv_name = "baytrail-pcm-audio";
-> +	acpi_desc->pdata = (struct sst_pdata *)id->driver_data;
-> +	acpi_desc->resindex_lpe_base = 0;
-> +	acpi_desc->resindex_pcicfg_base = 1;
-> +	acpi_desc->resindex_fw_base = 2;
-> +	acpi_desc->irqindex_host_ipc = 5;
-
-so we had a nice table and now it's inlined in the code. Yuk.
-
-I really don't see the point of these 'simplifications'
-
-And what do they have to do with Skylake anyways, it's PCI enumerated so 
-why should we change this?
-
-
-> +	platform_set_drvdata(pdev, acpi_desc);
-> +
-> +	return sst_acpi_probe(pdev);
-> +}
-> +
->   static struct platform_driver byt_acpi_driver = {
-> -	.probe = sst_acpi_probe,
-> +	.probe = byt_acpi_probe,
->   	.remove = sst_acpi_remove,
->   	.driver = {
->   		.name = "byt-acpi",
-> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-> index 8e75126106ea..53ac23f05966 100644
-> --- a/sound/soc/intel/common/sst-acpi.c
-> +++ b/sound/soc/intel/common/sst-acpi.c
-> @@ -17,7 +17,6 @@
->   struct sst_acpi_priv {
->   	struct platform_device *pdev_mach;
->   	struct platform_device *pdev_pcm;
-> -	struct sst_pdata sst_pdata;
->   	struct sst_acpi_desc *desc;
->   	struct snd_soc_acpi_mach *mach;
->   };
-> @@ -27,8 +26,8 @@ static void sst_acpi_fw_cb(const struct firmware *fw, void *context)
->   	struct platform_device *pdev = context;
->   	struct device *dev = &pdev->dev;
->   	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
-> -	struct sst_pdata *sst_pdata = &sst_acpi->sst_pdata;
->   	struct sst_acpi_desc *desc = sst_acpi->desc;
-> +	struct sst_pdata *sst_pdata = desc->pdata;
->   	struct snd_soc_acpi_mach *mach = sst_acpi->mach;
->   
->   	sst_pdata->fw = fw;
-> @@ -51,7 +50,6 @@ static void sst_acpi_fw_cb(const struct firmware *fw, void *context)
->   
->   int sst_acpi_probe(struct platform_device *pdev)
->   {
-> -	const struct acpi_device_id *id;
->   	struct device *dev = &pdev->dev;
->   	struct sst_acpi_priv *sst_acpi;
->   	struct sst_pdata *sst_pdata;
-> @@ -64,27 +62,20 @@ int sst_acpi_probe(struct platform_device *pdev)
->   	if (sst_acpi == NULL)
->   		return -ENOMEM;
->   
-> -	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-> -	if (!id)
-> -		return -ENODEV;
-> -
-> -	desc = (struct sst_acpi_desc *)id->driver_data;
-> -	mach = snd_soc_acpi_find_machine(desc->machines);
-> +	desc = platform_get_drvdata(pdev);
-> +	sst_pdata = desc->pdata;
-> +	mach = snd_soc_acpi_find_machine(sst_pdata->boards);
->   	if (mach == NULL) {
->   		dev_err(dev, "No matching ASoC machine driver found\n");
->   		return -ENODEV;
->   	}
->   
-> -	sst_pdata = &sst_acpi->sst_pdata;
-> -	sst_pdata->id = desc->sst_id;
->   	sst_pdata->dma_dev = dev;
->   	sst_acpi->desc = desc;
->   	sst_acpi->mach = mach;
->   
-> -	sst_pdata->resindex_dma_base = desc->resindex_dma_base;
-> -	if (desc->resindex_dma_base >= 0) {
-> +	if (sst_pdata->dma_base >= 0) {
->   		sst_pdata->dma_engine = desc->dma_engine;
-> -		sst_pdata->dma_base = desc->resindex_dma_base;
->   		sst_pdata->dma_size = desc->dma_size;
->   	}
->   
-> @@ -140,7 +131,7 @@ EXPORT_SYMBOL_GPL(sst_acpi_probe);
->   int sst_acpi_remove(struct platform_device *pdev)
->   {
->   	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
-> -	struct sst_pdata *sst_pdata = &sst_acpi->sst_pdata;
-> +	struct sst_pdata *sst_pdata = sst_acpi->desc->pdata;
->   
->   	platform_device_unregister(sst_acpi->pdev_mach);
->   	if (!IS_ERR_OR_NULL(sst_acpi->pdev_pcm))
-> diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-> index a2ac7998fbdb..87d39b0e79c0 100644
-> --- a/sound/soc/intel/common/sst-dsp.h
-> +++ b/sound/soc/intel/common/sst-dsp.h
-> @@ -171,16 +171,13 @@ struct platform_device;
->   /* Descriptor for setting up SST platform data */
->   struct sst_acpi_desc {
->   	const char *drv_name;
-> -	struct snd_soc_acpi_mach *machines;
-> +	struct sst_pdata *pdata;
->   	/* Platform resource indexes. Must set to -1 if not used */
->   	int resindex_lpe_base;
->   	int resindex_pcicfg_base;
->   	int resindex_fw_base;
->   	int irqindex_host_ipc;
->   	int resindex_dma_base;
-> -	/* Unique number identifying the SST core on platform */
-> -	int sst_id;
-> -	/* DMA only valid when resindex_dma_base != -1*/
->   	int dma_engine;
->   	int dma_size;
->   };
-> @@ -205,8 +202,7 @@ struct sst_pdata {
->   	const struct firmware *fw;
->   
->   	/* DMA */
-> -	int resindex_dma_base; /* other fields invalid if equals to -1 */
-> -	u32 dma_base;
-> +	int dma_base; /* other fields invalid if equals to -1 */
->   	u32 dma_size;
->   	int dma_engine;
->   	struct device *dma_dev;
-> diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-> index 6b6af11c32c3..61d3e6e46b98 100644
-> --- a/sound/soc/intel/common/sst-firmware.c
-> +++ b/sound/soc/intel/common/sst-firmware.c
-> @@ -268,7 +268,7 @@ static int sst_dma_new(struct sst_dsp *sst)
->   	struct resource mem;
->   	int ret = 0;
->   
-> -	if (sst->pdata->resindex_dma_base == -1)
-> +	if (sst->pdata->dma_base == -1)
->   		/* DMA is not used, return and squelsh error messages */
->   		return 0;
->   
-> diff --git a/sound/soc/intel/haswell/acpi.c b/sound/soc/intel/haswell/acpi.c
-> index 7bd8b03851c4..3c49ec257e56 100644
-> --- a/sound/soc/intel/haswell/acpi.c
-> +++ b/sound/soc/intel/haswell/acpi.c
-> @@ -15,41 +15,56 @@
->   #define SST_WPT_DSP_DMA_ADDR_OFFSET	0x0FE000
->   #define SST_LPT_DSP_DMA_SIZE		(1024 - 1)
->   
-> -static struct sst_acpi_desc hsw_acpi_desc = {
-> -	.drv_name = "haswell-pcm-audio",
-> -	.machines = snd_soc_acpi_intel_haswell_machines,
-> -	.resindex_lpe_base = 0,
-> -	.resindex_pcicfg_base = 1,
-> -	.resindex_fw_base = -1,
-> -	.irqindex_host_ipc = 0,
-> -	.sst_id = SST_DEV_ID_LYNX_POINT,
-> -	.dma_engine = SST_DMA_TYPE_DW,
-> -	.resindex_dma_base = SST_LPT_DSP_DMA_ADDR_OFFSET,
-> -	.dma_size = SST_LPT_DSP_DMA_SIZE,
-> +static struct sst_pdata hsw_desc = {
-> +	.id = SST_DEV_ID_LYNX_POINT,
-> +	.fw_name = "intel/IntcSST1.bin",
-> +	.boards = snd_soc_acpi_intel_haswell_machines,
-> +	.dma_base = SST_LPT_DSP_DMA_ADDR_OFFSET,
->   };
->   
-> -static struct sst_acpi_desc bdw_acpi_desc = {
-> -	.drv_name = "haswell-pcm-audio",
-> -	.machines = snd_soc_acpi_intel_broadwell_machines,
-> -	.resindex_lpe_base = 0,
-> -	.resindex_pcicfg_base = 1,
-> -	.resindex_fw_base = -1,
-> -	.irqindex_host_ipc = 0,
-> -	.sst_id = SST_DEV_ID_WILDCAT_POINT,
-> -	.dma_engine = SST_DMA_TYPE_DW,
-> -	.resindex_dma_base = SST_WPT_DSP_DMA_ADDR_OFFSET,
-> -	.dma_size = SST_LPT_DSP_DMA_SIZE,
-> +static struct sst_pdata bdw_desc = {
-> +	.id = SST_DEV_ID_WILDCAT_POINT,
-> +	.fw_name = "intel/IntcSST2.bin",
-> +	.boards = snd_soc_acpi_intel_broadwell_machines,
-> +	.dma_base = SST_WPT_DSP_DMA_ADDR_OFFSET,
->   };
->   
->   static const struct acpi_device_id hsw_acpi_ids[] = {
-> -	{ "INT33C8", (unsigned long)&hsw_acpi_desc },
-> -	{ "INT3438", (unsigned long)&bdw_acpi_desc },
-> +	{ "INT33C8", (unsigned long)&hsw_desc },
-> +	{ "INT3438", (unsigned long)&bdw_desc },
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(acpi, hsw_acpi_ids);
->   
-> +static int hsw_acpi_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct sst_acpi_desc *acpi_desc;
-> +	const struct acpi_device_id *id;
-> +
-> +	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-> +	if (!id)
-> +		return -ENODEV;
-> +
-> +	acpi_desc = devm_kzalloc(dev, sizeof(*acpi_desc), GFP_KERNEL);
-> +	if (!acpi_desc)
-> +		return -ENOMEM;
-> +
-> +	acpi_desc->drv_name = "haswell-pcm-audio";
-> +	acpi_desc->pdata = (struct sst_pdata *)id->driver_data;
-> +	acpi_desc->resindex_lpe_base = 0;
-> +	acpi_desc->resindex_pcicfg_base = 1;
-> +	acpi_desc->resindex_fw_base = -1;
-> +	acpi_desc->irqindex_host_ipc = 0;
-> +	acpi_desc->dma_engine = SST_DMA_TYPE_DW;
-> +	acpi_desc->dma_size = SST_LPT_DSP_DMA_SIZE;
-> +	platform_set_drvdata(pdev, acpi_desc);
-> +
-> +	return sst_acpi_probe(pdev);
-> +}
-> +
->   static struct platform_driver hsw_acpi_driver = {
-> -	.probe = sst_acpi_probe,
-> +	.probe = hsw_acpi_probe,
->   	.remove = sst_acpi_remove,
->   	.driver = {
->   		.name = "hsw-acpi",
-> diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-> index bbe67e298efe..ac0a0e4c2d68 100644
-> --- a/sound/soc/intel/skylake/skl-sst-utils.c
-> +++ b/sound/soc/intel/skylake/skl-sst-utils.c
-> @@ -363,7 +363,7 @@ int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
->   
->   	pdata->id = skl->pci->device;
->   	pdata->irq = irq;
-> -	pdata->resindex_dma_base = -1;
-> +	pdata->dma_base = -1;
->   	skl->dev = dev;
->   	pdata->dsp = skl;
->   	INIT_LIST_HEAD(&skl->uuid_list);
+>>>
+>>> - user removes existing sym link from /lib/firmware/intel and creates 
+>>> new one, pointing to updated FW binary that should also be present in 
+>>> /lib/firmware/intel
+>>
+>> That's typically handled by distributions updating the linux-firmware 
+>> package. Only advanced users and developers can change these symlinks.
+>>
+>> The other point that comes to my mind is whether we are going to see 
+>> dependencies between firmware and topology files? Can you use an 'old' 
+>> topology with a 'newer' firmware, or is this a 3-way interoperability 
+>> issue?
 > 
+> Precisely! Three-way-tie!
+> It's best FW get updated together with topology as old FW may enforce 
+> different constraints on pipeline modules.
+> 
+> Yay, between rock and hard place. On one side we got old buggy FWs which 
+> should (more like should NOT be even here..) be updated to improve 
+> user's experience but updating these alone won't cut it as host side 
+> needs to be aligned too.
+> On the other we want to align upstream /skylake with actual working 
+> example, which will quickly fail if it encounters obsolete FW binary.
+> And if that wasn't enough, lovely topologies come into picture where 
+> some of these were developed behind FDK's back and thus completely 
+> bypassing deployment process.
+> 
+> First thing we will do now is prioritizing topology refactor so all 
+> initialization/ load oriented thingies will be visible for upstream 
+> review. By doing so, we got all elephants in one room and can discuss 
+> how to handle it in best fashion: seamless transition for end-users.
+> 
+> There aren't many options available: notify user -or- fallback to 
+> defaults (hardcodes)? in case encountered binaries do not meet cAVS 
+> design criteria.
+> 
+> Personally, I'm against all hardcodes and would simply recommend all 
+> user to redirect their symlinks when they do switch kernel - along with 
+> dumping warning/ error message in dmesg. Hardcodes bring problems with 
+> forward compatibility and that's why host should offload them away to FW.
+
+Cezary, I know you are not responsible for all this, but at this point 
+if we (Intel) can't guarantee any sort of interoperability with both 
+firmware and topology we should make it clear that this driver is not 
+recommended unless specific versions of the firmware/topology are used, 
+and as a consequence the typical client distros and desktop/laptop users 
+should use HDaudio legacy or SOF (for DMICs)
