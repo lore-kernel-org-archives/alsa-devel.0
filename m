@@ -1,15 +1,10 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/35] ASoC: Intel: Clenaup SST
- initialization
-Date: Fri, 23 Aug 2019 15:12:18 -0500
-Message-ID: <9dfd3a96-f286-34d6-fe57-9b6b8740e424@linux.intel.com>
+Subject: Re: [PATCH 27/35] ASoC: Intel: Skylake: Define
+ platform descriptors
+Date: Fri, 23 Aug 2019 14:50:38 -0500
+Message-ID: <6369d711-8eb2-2664-412b-3de286bb3ca8@linux.intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <a08b2547-3fe5-5c48-9513-c5ade151c01e@linux.intel.com>
- <50932a9f-2f3e-c150-77c7-f021f84ed4d1@intel.com>
- <20190823102652.GM23391@sirena.co.uk>
- <c845fda4-c18d-2ca8-7337-6e6af74d239c@intel.com>
- <70222fac-8c4e-5ceb-3c49-7020196b59df@linux.intel.com>
- <2e2a34b8-2451-01f6-79a1-14f06d1ed059@intel.com>
+ <20190822190425.23001-28-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -17,9 +12,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82035F805E1
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:20 +0200 (CEST)
-In-Reply-To: <2e2a34b8-2451-01f6-79a1-14f06d1ed059@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07F0CF805F9
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:18 +0200 (CEST)
+In-Reply-To: <20190822190425.23001-28-cezary.rojewski@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,134 +25,177 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: "Wasko, Michal" <michal.wasko@intel.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, "Kaczmarski,
- Filip" <filip.kaczmarski@intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 8/23/19 1:44 PM, Cezary Rojewski wrote:
-> On 2019-08-23 18:26, Pierre-Louis Bossart wrote:
->>
->>
->> On 8/23/19 5:43 AM, Cezary Rojewski wrote:
->>> On 2019-08-23 12:26, Mark Brown wrote:
->>>> On Fri, Aug 23, 2019 at 10:29:59AM +0200, Cezary Rojewski wrote:
->>>>> On 2019-08-22 22:55, Pierre-Louis Bossart wrote:
->>>>>> On 8/22/19 2:03 PM, Cezary Rojewski wrote:
->>>>
->>>>>>> Code seen here is part of new Skylake fundament, located at the very
->>>>>>> bottom of internal mainline. Said mainline is tested constantly 
->>>>>>> on at
->>>>>>> least sigle platform from every cAVS bucket (description below). 
->>>>>>> This
->>>>>>> week, BDW has been added to the CI family and was essential in
->>>>>>> validating legacy changes. Baytrail platform is still missing. 
->>>>>>> Changes
->>>>>>> for BYT directly mirror HSW/ BDW but due to current lack of platform
->>>>>>> were untested.
->>>>>>> Boards engaged in testing: rt286, rt298, rt274.
->>>>
->>>>>> this is not enough, sorry. these are RVPs and you need to check with
->>>>>> commercial devices supported in sound/soc/intel/boards/.
->>>>
->>>>> What machine board has to do with FW and host side? If it has, we 
->>>>> better
->>>>> notify the owner so he can fix codec's code at once. All boards 
->>>>> MUST follow
->>>>> recommended protocol whether its HDA or I2S in communicating with 
->>>>> /skylake.
->>>>> This is hardware IP we taking about. I could as well test all 
->>>>> platforms with
->>>>> AudioPrecision and say: shipit.
->>
->> The machine driver defines how many links are used, and in what mode 
->> for the older cases where the topology is not used. You have 
->> configurations with very complicated links, e.g. with amplifiers in 
->> TDM mode plus IV feedback that will stress the firmware in ways that 
->> regular RVPs don't. Same for the case where the SSP clock is turned on 
->> at the request of the machine drivers. That's another case that can't 
->> be tested on RVPs.
->>
->> I am not saying you need to test with every single commercial device, 
->> but that testing on RVPs is not a representative sample of the 
->> configurations and actual workloads.
->>
-> 
-> Each and every FW coming from main branch gets tested on both RVP and 
-> production devices what is done with cooperation with integration teams, 
-> PAEs and such. Windows teams alone ensures each binary gets smashed by 
-> ten of thousands tests each week - this is true for any release 
-> candidate, the standards are very high. Moreover, array of platforms is 
-> engaged per target (e.g.: TGL) as single platform alone does not cut it.
-> 
-> So, I'd not worry about FW being vulnerable to any scenario as long as 
-> recommended protocol is followed.
+On 8/22/19 2:04 PM, Cezary Rojewski wrote:
+> Make use of sst_pdata and declare platform descriptors for all existing
+> cAVS platforms. Each carries information about base_fw filename,
+> platform specific operations and boards supported.
 
-I didn't mean to diss the validation work, but the Chromebook cases and 
-amplifiers over TDM with IV feedback are certainly not configurations 
-tested by Windows folks who are using HDaudio+DMIC only.
+if you use a constant base_fw name that cannot be made board-specific 
+for specific usages, you will restrict the ability to deal with quirks 
+and custom cases.
 
->> With the request_firmware() mechanism, the kernel cannot parse the 
->> file ahead of time, but don't you have a version information reported 
->> by the firmware post-boot that can be used by the kernel so track that 
->> the firmware isn't likely to work?
->>
-> 
-> Wasn't lying about FW version being unreliable. Let's say vendor 
-> receives quick FW drop with new RCR.. such eng drop may carry invalid 
-> numbers such as 0.0.0.0..
-> In general, I try to avoid relying on FW version whenever possible. It 
-> can be dumped for debug reasons, true, but to be relied on? Not really.
-
-Goodness, that's really bad. I didn't realize this.
+real-life example: not so long ago there were two SST firmwares for 
+'regular' solutions and ultra-low-latency ones, so by having a single 
+name for all APL-based platforms you will generate issues that don't 
+exist today, or you will force users to patch something in the core.
 
 > 
->>>
->>> - user removes existing sym link from /lib/firmware/intel and creates 
->>> new one, pointing to updated FW binary that should also be present in 
->>> /lib/firmware/intel
->>
->> That's typically handled by distributions updating the linux-firmware 
->> package. Only advanced users and developers can change these symlinks.
->>
->> The other point that comes to my mind is whether we are going to see 
->> dependencies between firmware and topology files? Can you use an 'old' 
->> topology with a 'newer' firmware, or is this a 3-way interoperability 
->> issue?
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>   sound/soc/intel/skylake/bxt-sst.c |  4 ++--
+>   sound/soc/intel/skylake/cnl-sst.c |  4 ++--
+>   sound/soc/intel/skylake/skl-sst.c |  4 ++--
+>   sound/soc/intel/skylake/skl.c     | 38 ++++++++++++++++++++++++++++++-
+>   sound/soc/intel/skylake/skl.h     |  3 +++
+>   5 files changed, 46 insertions(+), 7 deletions(-)
 > 
-> Precisely! Three-way-tie!
-> It's best FW get updated together with topology as old FW may enforce 
-> different constraints on pipeline modules.
+> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+> index a547fb84eee9..06da822790a5 100644
+> --- a/sound/soc/intel/skylake/bxt-sst.c
+> +++ b/sound/soc/intel/skylake/bxt-sst.c
+> @@ -531,7 +531,7 @@ static const struct skl_dsp_fw_ops bxt_fw_ops = {
+>   	.load_library = bxt_load_library,
+>   };
+>   
+> -static struct sst_ops skl_ops = {
+> +struct sst_ops apl_sst_ops = {
+>   	.irq_handler = skl_dsp_sst_interrupt,
+>   	.thread_fn = skl_dsp_irq_thread_handler,
+>   	.write = sst_shim32_write,
+> @@ -542,7 +542,7 @@ static struct sst_ops skl_ops = {
+>   };
+>   
+>   static struct sst_pdata skl_dev = {
+> -	.ops = &skl_ops,
+> +	.ops = &apl_sst_ops,
+>   };
+>   
+>   int bxt_sst_dsp_init(struct skl_dev *skl, const char *fw_name)
+> diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+> index 5be0a8eb154d..c4dbf6655097 100644
+> --- a/sound/soc/intel/skylake/cnl-sst.c
+> +++ b/sound/soc/intel/skylake/cnl-sst.c
+> @@ -408,7 +408,7 @@ static int cnl_ipc_init(struct device *dev, struct skl_dev *cnl)
+>   	return 0;
+>   }
+>   
+> -static struct sst_ops cnl_ops = {
+> +struct sst_ops cnl_sst_ops = {
+>   	.irq_handler = cnl_dsp_sst_interrupt,
+>   	.thread_fn = cnl_dsp_irq_thread_handler,
+>   	.write = sst_shim32_write,
+> @@ -419,7 +419,7 @@ static struct sst_ops cnl_ops = {
+>   };
+>   
+>   static struct sst_pdata cnl_dev = {
+> -	.ops = &cnl_ops,
+> +	.ops = &cnl_sst_ops,
+>   };
+>   
+>   int cnl_sst_dsp_init(struct skl_dev *cnl, const char *fw_name)
+> diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+> index 8ae7fe73534e..122c07290440 100644
+> --- a/sound/soc/intel/skylake/skl-sst.c
+> +++ b/sound/soc/intel/skylake/skl-sst.c
+> @@ -503,7 +503,7 @@ static const struct skl_dsp_fw_ops skl_fw_ops = {
+>   	.unload_mod = skl_unload_module,
+>   };
+>   
+> -static struct sst_ops skl_ops = {
+> +struct sst_ops skl_sst_ops = {
+>   	.irq_handler = skl_dsp_sst_interrupt,
+>   	.write = sst_shim32_write,
+>   	.read = sst_shim32_read,
+> @@ -513,7 +513,7 @@ static struct sst_ops skl_ops = {
+>   };
+>   
+>   static struct sst_pdata skl_dev = {
+> -	.ops = &skl_ops,
+> +	.ops = &skl_sst_ops,
+>   };
+>   
+>   int skl_sst_dsp_init(struct skl_dev *skl, const char *fw_name)
+> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+> index 54e1f957121d..d6d099aba834 100644
+> --- a/sound/soc/intel/skylake/skl.c
+> +++ b/sound/soc/intel/skylake/skl.c
+> @@ -27,6 +27,7 @@
+>   #include <sound/hda_i915.h>
+>   #include <sound/hda_codec.h>
+>   #include <sound/intel-nhlt.h>
+> +#include "../common/sst-dsp.h"
+>   #include "skl.h"
+>   #include "skl-sst-dsp.h"
+>   #include "skl-sst-ipc.h"
+> @@ -1063,7 +1064,6 @@ static int skl_probe(struct pci_dev *pci,
+>   
+>   	pci_set_drvdata(skl->pci, bus);
+>   
+> -
+>   	err = skl_find_machine(skl, (void *)pci_id->driver_data);
+>   	if (err < 0) {
+>   		dev_err(bus->dev, "skl_find_machine failed with err: %d\n", err);
+> @@ -1153,6 +1153,42 @@ static void skl_remove(struct pci_dev *pci)
+>   	dev_set_drvdata(&pci->dev, NULL);
+>   }
+>   
+> +static struct sst_pdata skl_desc = {
+> +	.fw_name = "intel/dsp_fw_release.bin",
+> +	.ops = &skl_sst_ops,
+> +	.boards = snd_soc_acpi_intel_skl_machines,
+> +};
+> +
+> +static struct sst_pdata kbl_desc = {
+> +	.fw_name = "intel/dsp_fw_kbl.bin",
+> +	.ops = &skl_sst_ops,
+> +	.boards = snd_soc_acpi_intel_kbl_machines,
+> +};
+> +
+> +static struct sst_pdata apl_desc = {
+> +	.fw_name = "intel/dsp_fw_bxtn.bin",
+> +	.ops = &apl_sst_ops,
+> +	.boards = snd_soc_acpi_intel_bxt_machines,
+> +};
+> +
+> +static struct sst_pdata glk_desc = {
+> +	.fw_name = "intel/dsp_fw_glk.bin",
+> +	.ops = &apl_sst_ops,
+> +	.boards = snd_soc_acpi_intel_glk_machines,
+> +};
+> +
+> +static struct sst_pdata cnl_desc = {
+> +	.fw_name = "intel/dsp_fw_cnl.bin",
+> +	.ops = &cnl_sst_ops,
+> +	.boards = snd_soc_acpi_intel_cnl_machines,
+> +};
+> +
+> +static struct sst_pdata icl_desc = {
+> +	.fw_name = "intel/dsp_fw_icl.bin",
+> +	.ops = &cnl_sst_ops,
+> +	.boards = snd_soc_acpi_intel_icl_machines,
+> +};
+> +
+>   /* PCI IDs */
+>   static const struct pci_device_id skl_ids[] = {
+>   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
+> diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+> index 9f5aa53df9f8..2f2b5a141abf 100644
+> --- a/sound/soc/intel/skylake/skl.h
+> +++ b/sound/soc/intel/skylake/skl.h
+> @@ -42,6 +42,9 @@
+>   #define AZX_REG_VS_EM2_L1SEN		BIT(13)
+>   
+>   struct skl_debug;
+> +extern struct sst_ops skl_sst_ops;
+> +extern struct sst_ops apl_sst_ops;
+> +extern struct sst_ops cnl_sst_ops;
+>   
+>   struct skl_astate_param {
+>   	u32 kcps;
 > 
-> Yay, between rock and hard place. On one side we got old buggy FWs which 
-> should (more like should NOT be even here..) be updated to improve 
-> user's experience but updating these alone won't cut it as host side 
-> needs to be aligned too.
-> On the other we want to align upstream /skylake with actual working 
-> example, which will quickly fail if it encounters obsolete FW binary.
-> And if that wasn't enough, lovely topologies come into picture where 
-> some of these were developed behind FDK's back and thus completely 
-> bypassing deployment process.
-> 
-> First thing we will do now is prioritizing topology refactor so all 
-> initialization/ load oriented thingies will be visible for upstream 
-> review. By doing so, we got all elephants in one room and can discuss 
-> how to handle it in best fashion: seamless transition for end-users.
-> 
-> There aren't many options available: notify user -or- fallback to 
-> defaults (hardcodes)? in case encountered binaries do not meet cAVS 
-> design criteria.
-> 
-> Personally, I'm against all hardcodes and would simply recommend all 
-> user to redirect their symlinks when they do switch kernel - along with 
-> dumping warning/ error message in dmesg. Hardcodes bring problems with 
-> forward compatibility and that's why host should offload them away to FW.
-
-Cezary, I know you are not responsible for all this, but at this point 
-if we (Intel) can't guarantee any sort of interoperability with both 
-firmware and topology we should make it clear that this driver is not 
-recommended unless specific versions of the firmware/topology are used, 
-and as a consequence the typical client distros and desktop/laptop users 
-should use HDaudio legacy or SOF (for DMICs)
