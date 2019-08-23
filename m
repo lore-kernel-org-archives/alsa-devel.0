@@ -1,10 +1,10 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 03/35] ASoC: Intel: Skylake: Add
- HARDWARE_CONFIG IPC request
-Date: Fri, 23 Aug 2019 13:32:12 -0500
-Message-ID: <dd4c705a-1d75-b71c-8cd9-eec020b57c52@linux.intel.com>
+Subject: Re: [PATCH 02/35] ASoC: Intel: Skylake: Add
+ FIRMWARE_CONFIG IPC request
+Date: Fri, 23 Aug 2019 13:24:48 -0500
+Message-ID: <3173be35-0721-a36d-d328-b8e2ad3b5008@linux.intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-4-cezary.rojewski@intel.com>
+ <20190822190425.23001-3-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 792BDF802FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66998F80147
  for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:00 +0200 (CEST)
-In-Reply-To: <20190822190425.23001-4-cezary.rojewski@intel.com>
+In-Reply-To: <20190822190425.23001-3-cezary.rojewski@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,72 +30,153 @@ Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
+
+On 8/22/19 2:03 PM, Cezary Rojewski wrote:
+> Implement interface for retrieving firmware configuration. Skylake
+> driver will use this data instead of hardcoded values in updates to
+> come.
+> 
+> Most params are currently unused. In time driver dependency on fw config
+> will increase, and with it, more parsing will be unveiled.
+> 
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>   sound/soc/intel/skylake/skl-sst-ipc.c | 122 ++++++++++++++++++++++++++
+>   sound/soc/intel/skylake/skl-sst-ipc.h |  72 +++++++++++++++
+>   sound/soc/intel/skylake/skl.h         |   1 +
+>   3 files changed, 195 insertions(+)
+> 
+> diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+> index 667cdddc289f..e9e11ec4c97b 100644
+> --- a/sound/soc/intel/skylake/skl-sst-ipc.c
+> +++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+> @@ -11,6 +11,7 @@
+>   #include "skl.h"
+>   #include "skl-sst-dsp.h"
+>   #include "skl-sst-ipc.h"
+> +#include "skl-topology.h"
+>   #include "sound/hdaudio_ext.h"
+>   
+>   
+> @@ -1067,3 +1068,124 @@ int skl_ipc_set_d0ix(struct sst_generic_ipc *ipc, struct skl_ipc_d0ix_msg *msg)
+>   	return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(skl_ipc_set_d0ix);
+> +
+> +int skl_ipc_fw_cfg_get(struct sst_generic_ipc *ipc, struct skl_fw_cfg *cfg)
+> +{
+> +	struct skl_ipc_large_config_msg msg = {0};
+> +	struct skl_tlv *tlv;
+> +	size_t bytes = 0, offset = 0;
+> +	u8 *payload = NULL;
+> +	int ret;
+> +
+> +	msg.module_id = 0;
+> +	msg.instance_id = 0;
+> +	msg.large_param_id = SKL_BASEFW_FIRMWARE_CONFIG;
+> +
+> +	ret = skl_ipc_get_large_config(ipc, &msg, (u32 **)&payload, &bytes);
+> +	if (ret)
+> +		goto exit;
+> +
 > +	while (offset < bytes) {
 > +		tlv = (struct skl_tlv *)(payload + offset);
 > +
 > +		switch (tlv->type) {
-> +		case SKL_HW_CFG_CAVS_VER:
-> +			cfg->cavs_version = *tlv->value;
+> +		case SKL_FW_CFG_FW_VERSION:
+> +			memcpy(&cfg->fw_version, tlv->value,
+> +				sizeof(cfg->fw_version));
 > +			break;
 > +
-> +		case SKL_HW_CFG_DSP_CORES:
-> +			cfg->dsp_cores = *tlv->value;
+> +		case SKL_FW_CFG_MEMORY_RECLAIMED:
+> +			cfg->memory_reclaimed = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_MEM_PAGE_BYTES:
-> +			cfg->mem_page_bytes = *tlv->value;
+> +		case SKL_FW_CFG_SLOW_CLOCK_FREQ_HZ:
+> +			cfg->slow_clock_freq_hz = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_TOTAL_PHYS_MEM_PAGES:
-> +			cfg->total_phys_mem_pages = *tlv->value;
+> +		case SKL_FW_CFG_FAST_CLOCK_FREQ_HZ:
+> +			cfg->fast_clock_freq_hz = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_I2S_CAPS:
-> +			cfg->i2s_caps.version = tlv->value[0];
-> +			size = tlv->value[1];
-> +			cfg->i2s_caps.ctrl_count = size;
-> +			if (!size)
-> +				break;
-> +
-> +			size *= sizeof(*cfg->i2s_caps.ctrl_base_addr);
-> +			cfg->i2s_caps.ctrl_base_addr =
-> +				kmemdup(&tlv->value[2], size, GFP_KERNEL);
-
-shouldn't the size be that of the source buffer instead of the destination?
-
-> +			if (!cfg->i2s_caps.ctrl_base_addr) {
-> +				ret = -ENOMEM;
-> +				goto exit;
-> +			}
+> +		case SKL_FW_CFG_ALH_SUPPORT_LEVEL:
+> +			cfg->alh_support = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_GATEWAY_COUNT:
-> +			cfg->gateway_count = *tlv->value;
+> +		case SKL_FW_CFG_IPC_DL_MAILBOX_BYTES:
+> +			cfg->ipc_dl_mailbox_bytes = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_HP_EBB_COUNT:
-> +			cfg->hp_ebb_count = *tlv->value;
+> +		case SKL_FW_CFG_IPC_UL_MAILBOX_BYTES:
+> +			cfg->ipc_ul_mailbox_bytes = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_LP_EBB_COUNT:
-> +			cfg->lp_ebb_count = *tlv->value;
+> +		case SKL_FW_CFG_TRACE_LOG_BYTES:
+> +			cfg->trace_log_bytes = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_EBB_SIZE_BYTES:
-> +			cfg->ebb_size_bytes = *tlv->value;
+> +		case SKL_FW_CFG_MAX_PPL_COUNT:
+> +			cfg->max_ppl_count = *tlv->value;
 > +			break;
 > +
-> +		case SKL_HW_CFG_GPDMA_CAPS:
-> +		case SKL_HW_CFG_UAOL_CAPS:
+> +		case SKL_FW_CFG_MAX_ASTATE_COUNT:
+> +			cfg->max_astate_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_MAX_MODULE_PIN_COUNT:
+> +			cfg->max_module_pin_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_MODULES_COUNT:
+> +			cfg->modules_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_MAX_MOD_INST_COUNT:
+> +			cfg->max_mod_inst_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_MAX_LL_TASKS_PER_PRI_COUNT:
+> +			cfg->max_ll_tasks_per_pri_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_LL_PRI_COUNT:
+> +			cfg->ll_pri_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_MAX_DP_TASKS_COUNT:
+> +			cfg->max_dp_tasks_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_MAX_LIBS_COUNT:
+> +			cfg->max_libs_count = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_XTAL_FREQ_HZ:
+> +			cfg->xtal_freq_hz = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_UAOL_SUPPORT:
+> +			cfg->uaol_support = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_POWER_GATING_POLICY:
+> +			cfg->power_gating_policy = *tlv->value;
+> +			break;
+> +
+> +		case SKL_FW_CFG_DMA_BUFFER_CONFIG:
+> +		case SKL_FW_CFG_SCHEDULER_CONFIG:
+> +		case SKL_FW_CFG_CLOCKS_CONFIG:
 > +			break;
 > +
 > +		default:
-> +			dev_info(ipc->dev, "Unrecognized hw param: %d\n",
+> +			dev_info(ipc->dev, "Unrecognized fw param: %d\n",
 > +				tlv->type);
 > +			break;
 
-same feedback, it's usually better to list all values and skip them, and 
-fail big if you see something unexpected.
+Isn't this an error?
+If there are other possible values, why not list them and skip them, as 
+done above?
 
 > +		}
 > +
@@ -106,48 +187,12 @@ fail big if you see something unexpected.
 > +	kfree(payload);
 > +	return ret;
 > +}
-> +EXPORT_SYMBOL_GPL(skl_ipc_hw_cfg_get);
-> diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-> index ebc5852e15d0..eefa52f7f97a 100644
-> --- a/sound/soc/intel/skylake/skl-sst-ipc.h
-> +++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-> @@ -77,6 +77,7 @@ enum skl_basefw_runtime_param {
->   	SKL_BASEFW_ASTATE_TABLE = 4,
->   	SKL_BASEFW_DMA_CONTROL = 5,
->   	SKL_BASEFW_FIRMWARE_CONFIG = 7,
-> +	SKL_BASEFW_HARDWARE_CONFIG = 8,
->   };
->   
->   enum skl_fw_cfg_params {
-> @@ -141,6 +142,50 @@ struct skl_fw_cfg {
->   	u32 power_gating_policy;
->   };
->   
-> +enum skl_hw_cfg_params {
-> +	SKL_HW_CFG_CAVS_VER,
-> +	SKL_HW_CFG_DSP_CORES,
-> +	SKL_HW_CFG_MEM_PAGE_BYTES,
-> +	SKL_HW_CFG_TOTAL_PHYS_MEM_PAGES,
-> +	SKL_HW_CFG_I2S_CAPS,
-> +	SKL_HW_CFG_GPDMA_CAPS,
-> +	SKL_HW_CFG_GATEWAY_COUNT,
-> +	SKL_HW_CFG_HP_EBB_COUNT,
-> +	SKL_HW_CFG_LP_EBB_COUNT,
-> +	SKL_HW_CFG_EBB_SIZE_BYTES,
-> +	SKL_HW_CFG_UAOL_CAPS
-> +};
-> +
-> +enum skl_cavs_version {
-> +	SKL_CAVS_VER_1_5 = 0x10005,
-> +	SKL_CAVS_VER_1_8 = 0x10008,
-> +};
-> +
-> +enum skl_i2s_version {
-> +	SKL_I2S_VER_15_SKYLAKE   = 0x00000,
-> +	SKL_I2S_VER_15_BROXTON   = 0x10000,
-> +	SKL_I2S_VER_15_BROXTON_P = 0x20000,
-> +	SKL_I2S_VER_18_KBL_CNL   = 0x30000,
+> +EXPORT_SYMBOL_GPL(skl_ipc_fw_cfg_get);
+
+> +enum skl_alh_support_level {
+> +	ALH_NO_SUPPORT = 0x00000,
+> +	ALH_CAVS_1_8_CNL = 0x10000,
 > +};
 
-The encoding is odd.
-Do these values mean anything (e.g. tied to firmware definitions?)
+Support for ALH hasn't changed even past 1.8, and references to CNL are 
+probably not needed.
