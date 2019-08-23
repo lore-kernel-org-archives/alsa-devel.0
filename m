@@ -1,139 +1,84 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [RESEND PATCH v4 2/4] soundwire: core: add device
- tree support for slave devices
-Date: Fri, 23 Aug 2019 16:47:05 +0100
-Message-ID: <06fb60b4-72e1-5898-8eb9-d9a46efd3b3a@linaro.org>
-References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
- <20190822233759.12663-3-srinivas.kandagatla@linaro.org>
- <2f1b5e2e-4699-1d06-e28e-708d5ed99b6a@linux.intel.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: sof/hda rework to share more of patch_hdmi.c logic
+Date: Fri, 23 Aug 2019 18:55:05 +0300 (EEST)
+Message-ID: <alpine.DEB.2.21.1908231831310.16459@zeliteleevi>
+References: <alpine.DEB.2.21.1908151641110.16459@zeliteleevi>
+ <s5hr25ma3xs.wl-tiwai@suse.de>
+ <alpine.DEB.2.21.1908231652000.16459@zeliteleevi>
+ <s5h5zmoq6cy.wl-tiwai@suse.de> <s5h36hrrk1j.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2f1b5e2e-4699-1d06-e28e-708d5ed99b6a@linux.intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, spapothi@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 281F3F8014A
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 17:55:09 +0200 (CEST)
+In-Reply-To: <s5h36hrrk1j.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hey,
 
 
-On 23/08/2019 16:44, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 8/22/19 6:37 PM, Srinivas Kandagatla wrote:
->> This patch adds support to parsing device tree based
->> SoundWire slave devices.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   drivers/soundwire/bus.c   |  2 ++
->>   drivers/soundwire/bus.h   |  1 +
->>   drivers/soundwire/slave.c | 52 +++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 55 insertions(+)
->>
->> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
->> index 49f64b2115b9..c2eaeb5c38ed 100644
->> --- a/drivers/soundwire/bus.c
->> +++ b/drivers/soundwire/bus.c
->> @@ -77,6 +77,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
->>        */
->>       if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
->>           ret = sdw_acpi_find_slaves(bus);
->> +    else if (IS_ENABLED(CONFIG_OF) && bus->dev->of_node)
->> +        ret = sdw_of_find_slaves(bus);
->>       else
->>           ret = -ENOTSUPP; /* No ACPI/DT so error out */
->> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
->> index 3048ca153f22..ee46befedbd1 100644
->> --- a/drivers/soundwire/bus.h
->> +++ b/drivers/soundwire/bus.h
->> @@ -15,6 +15,7 @@ static inline int sdw_acpi_find_slaves(struct 
->> sdw_bus *bus)
->>   }
->>   #endif
->> +int sdw_of_find_slaves(struct sdw_bus *bus);
->>   void sdw_extract_slave_id(struct sdw_bus *bus,
->>                 u64 addr, struct sdw_slave_id *id);
->> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
->> index f39a5815e25d..3ef265d2ee89 100644
->> --- a/drivers/soundwire/slave.c
->> +++ b/drivers/soundwire/slave.c
->> @@ -2,6 +2,7 @@
->>   // Copyright(c) 2015-17 Intel Corporation.
->>   #include <linux/acpi.h>
->> +#include <linux/of.h>
->>   #include <linux/soundwire/sdw.h>
->>   #include <linux/soundwire/sdw_type.h>
->>   #include "bus.h"
->> @@ -35,6 +36,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
->>       slave->dev.release = sdw_slave_release;
->>       slave->dev.bus = &sdw_bus_type;
->> +    slave->dev.of_node = of_node_get(to_of_node(fwnode));
->>       slave->bus = bus;
->>       slave->status = SDW_SLAVE_UNATTACHED;
->>       slave->dev_num = 0;
->> @@ -112,3 +114,53 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
->>   }
->>   #endif
->> +
->> +/*
->> + * sdw_of_find_slaves() - Find Slave devices in master device tree node
->> + * @bus: SDW bus instance
->> + *
->> + * Scans Master DT node for SDW child Slave devices and registers it.
->> + */
->> +int sdw_of_find_slaves(struct sdw_bus *bus)
->> +{
->> +    struct device *dev = bus->dev;
->> +    struct device_node *node;
->> +
->> +    for_each_child_of_node(bus->dev->of_node, node) {
->> +        int link_id, sdw_version, ret, len;
->> +        const char *compat = NULL;
->> +        struct sdw_slave_id id;
->> +        const __be32 *addr;
->> +
->> +        compat = of_get_property(node, "compatible", NULL);
->> +        if (!compat)
->> +            continue;
->> +
->> +        ret = sscanf(compat, "sdw%01x%04hx%04hx%02hhx", &sdw_version,
->> +                 &id.mfg_id, &id.part_id, &id.class_id);
->> +
->> +        if (ret != 4) {
->> +            dev_err(dev, "Invalid compatible string found %s\n",
->> +                compat);
->> +            continue;
->> +        }
->> +
->> +        addr = of_get_property(node, "reg", &len);
->> +        if (!addr || (len < 2 * sizeof(u32))) {
->> +            dev_err(dev, "Invalid Instance and Link ID\n");
->> +            continue;
->> +        }
->> +
->> +        id.unique_id = be32_to_cpup(addr++);
->> +        link_id = be32_to_cpup(addr);
-> 
-> So here the link ID is obviously not in the address, so you are not 
-> using the MIPI spec as we discussed initially?
+On Fri, 23 Aug 2019, Takashi Iwai wrote:
+> On Fri, 23 Aug 2019, Takashi Iwai wrote:
+> > The current patch_hdmi.c implementation is based on the theoretical
+> > possibility, and limitation to the reduced PCM streams would work, I
+> > suppose.
+[...]
+> access to the fixed PCM device (e.g. hw:1,1).  But, it's hardly
+> possible to get more than three audio-monitors active in the real
+> scenario, we've almost never seen this necessity.
 
-No, Rob rejected that approach (https://lkml.org/lkml/2019/8/22/490) 
-with the fact that compatible string should be constant for each instance.
+ack. This does feel very unlikely to be a problem. And one could implement 
+a wait list -> delay PCM attach if all audio converters are taken when the 
+new monitor ELD update happens. Upon next disconnect of an already 
+attached audio enabled monitor, one could check the wait list and hook up 
+monitors to the freed converters. But yeah, at least on i915 I don't see 
+the need for this.
 
---srini
+This does raise the question whether we should change the behaviour 
+for the non-DSP HD driver as well...? Tempting, but the risk for breaking 
+apps may be too high.
+
+> The actual behavior can be found in the description of commit
+> a76056f2e57e:
 > 
->> +        id.sdw_version = sdw_version;
->> +
->> +        /* Check for link_id match */
->> +        if (link_id != bus->link_id)
->> +            continue;
->> +
->> +        sdw_slave_add(bus, &id, of_fwnode_handle(node));
->> +    }
->> +
->> +    return 0;
->> +}
->>
+>     When monitor is connected, find a proper PCM for the monitor.
+>     When monitor is disconnected, unbind the PCM from the pin.
+>     
+>     The binding policy (use Intel platform as example) is:
+>     1. Try to use the legacy pin-pcm mapping for the device entry 0
+>        of the pin.
+>     2. If step 1 fails, try to bind pin to the backup PCMs. For example,
+>        on Intel platform, if DP MST is enabled, 5 PCMs will be created.
+>        PCM 3, PCM 7, PCM 8 are supposed to be used by device entry 0 of
+>        pin 5, pin 6 and pin 7. PCM 9 and PCM 10 are the backup PCMs.
+>     3. If step 2 fails, try to find any PCM to bind to the pin.
+>     
+> Removing the backup streams means the removal of step 2, but the
+> driver will keep working in step 3.
+
+Yes, I didn't have to actually change this code at all. I just limit the 
+PCM count to number of converters, and the above code works without 
+modifications (and skips (2)). Only problem left is how to change to 
+toggle the different rules for calculing pcm count. Unless we change the 
+behaviour for non-DSP HD driver as well, there needs to be some dynamic 
+configuration of patch_hdmi. Kconfig/module-param won't do, I assume 
+distros want to enable both options with same kernel.
+
+Thanks for the quick response!
+
+Br, Kai
