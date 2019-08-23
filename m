@@ -1,122 +1,79 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: rename
-	soc_post_component_init() to soc_rtd_init()" to the asoc tree
-Date: Fri, 23 Aug 2019 11:46:14 +0100 (BST)
-Message-ID: <20190823104614.2832CD02CD0@fitzroy.sirena.org.uk>
-References: <87v9uo7lc3.wl-kuninori.morimoto.gx@renesas.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: SOF: imx8: Make some functions static
+Date: Fri, 23 Aug 2019 20:59:39 +0800
+Message-ID: <20190823125939.30012-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0C24F80141
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 12:46:15 +0200 (CEST)
-In-Reply-To: <87v9uo7lc3.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, yuehaibing@huawei.com, daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Fix sparse warnings:
 
-   ASoC: soc-core: rename soc_post_component_init() to soc_rtd_init()
+sound/soc/sof/imx/imx8.c:104:6: warning: symbol 'imx8_dsp_handle_reply' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:115:6: warning: symbol 'imx8_dsp_handle_request' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:336:5: warning: symbol 'imx8_get_bar_index' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:341:6: warning: symbol 'imx8_ipc_msg_data' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:348:5: warning: symbol 'imx8_ipc_pcm_params' was not declared. Should it be static?
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 542694df7511977c3baa6ba855126a0cce883977 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 23 Aug 2019 09:58:32 +0900
-Subject: [PATCH] ASoC: soc-core: rename soc_post_component_init() to
- soc_rtd_init()
-
-It is easy to read code if it is cleanly using paired function/naming,
-like start <-> stop, register <-> unregister, etc, etc.
-But, current ALSA SoC code is very random, unbalance, not paired, etc.
-It is easy to create bug at the such code, and it will be difficult to
-debug.
-
->From function name point of view, "soc_post_component_init()" sounds
-like "component initialize function".
-But in reality it is rtd setup function.
-
-This patch renames soc_post_component_init() to soc_rtd_init()
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87v9uo7lc3.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/soc-core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/sof/imx/imx8.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0af83963289f..3c087b478398 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1340,13 +1340,12 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	return ret;
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index e502f58..6404724 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -101,7 +101,7 @@ static int imx8_get_window_offset(struct snd_sof_dev *sdev, u32 id)
+ 	return MBOX_OFFSET;
  }
  
--static void rtd_release(struct device *dev)
-+static void soc_rtd_release(struct device *dev)
+-void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
++static void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
  {
- 	kfree(dev);
+ 	struct imx8_priv *priv = imx_dsp_get_data(ipc);
+ 	unsigned long flags;
+@@ -112,7 +112,7 @@ void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
+ 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
  }
  
--static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
--	const char *name)
-+static int soc_rtd_init(struct snd_soc_pcm_runtime *rtd, const char *name)
+-void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
++static void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
  {
- 	int ret = 0;
+ 	struct imx8_priv *priv = imx_dsp_get_data(ipc);
  
-@@ -1355,7 +1354,7 @@ static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
- 	if (!rtd->dev)
- 		return -ENOMEM;
- 	rtd->dev->parent = rtd->card->dev;
--	rtd->dev->release = rtd_release;
-+	rtd->dev->release = soc_rtd_release;
- 	rtd->dev->groups = soc_dev_attr_groups;
- 	dev_set_name(rtd->dev, "%s", name);
- 	dev_set_drvdata(rtd->dev, rtd);
-@@ -1483,7 +1482,7 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 			return ret;
- 	}
+@@ -333,21 +333,21 @@ static int imx8_remove(struct snd_sof_dev *sdev)
+ }
  
--	ret = soc_post_component_init(rtd, dai_link->name);
-+	ret = soc_rtd_init(rtd, dai_link->name);
- 	if (ret)
- 		return ret;
+ /* on i.MX8 there is 1 to 1 match between type and BAR idx */
+-int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
++static int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
+ {
+ 	return type;
+ }
  
+-void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
+-		       struct snd_pcm_substream *substream,
+-		       void *p, size_t sz)
++static void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
++			      struct snd_pcm_substream *substream,
++			      void *p, size_t sz)
+ {
+ 	sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
+ }
+ 
+-int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
+-			struct snd_pcm_substream *substream,
+-			const struct sof_ipc_pcm_params_reply *reply)
++static int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
++			       struct snd_pcm_substream *substream,
++			       const struct sof_ipc_pcm_params_reply *reply)
+ {
+ 	return 0;
+ }
 -- 
-2.20.1
+2.7.4
