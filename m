@@ -1,84 +1,144 @@
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: sof/hda rework to share more of patch_hdmi.c logic
-Date: Fri, 23 Aug 2019 18:55:05 +0300 (EEST)
-Message-ID: <alpine.DEB.2.21.1908231831310.16459@zeliteleevi>
-References: <alpine.DEB.2.21.1908151641110.16459@zeliteleevi>
- <s5hr25ma3xs.wl-tiwai@suse.de>
- <alpine.DEB.2.21.1908231652000.16459@zeliteleevi>
- <s5h5zmoq6cy.wl-tiwai@suse.de> <s5h36hrrk1j.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [RESEND PATCH v4 1/4] dt-bindings: soundwire: add
+ slave bindings
+Date: Fri, 23 Aug 2019 16:57:25 +0100
+Message-ID: <37be6b6d-7e7f-2cd6-f9e9-f0cac48791ad@linaro.org>
+References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
+ <20190822233759.12663-2-srinivas.kandagatla@linaro.org>
+ <7da8aa89-2119-21d1-0e29-8894a8d40bf0@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 281F3F8014A
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 17:55:09 +0200 (CEST)
-In-Reply-To: <s5h36hrrk1j.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <7da8aa89-2119-21d1-0e29-8894a8d40bf0@linux.intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, spapothi@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
 
 
-On Fri, 23 Aug 2019, Takashi Iwai wrote:
-> On Fri, 23 Aug 2019, Takashi Iwai wrote:
-> > The current patch_hdmi.c implementation is based on the theoretical
-> > possibility, and limitation to the reduced PCM streams would work, I
-> > suppose.
-[...]
-> access to the fixed PCM device (e.g. hw:1,1).  But, it's hardly
-> possible to get more than three audio-monitors active in the real
-> scenario, we've almost never seen this necessity.
-
-ack. This does feel very unlikely to be a problem. And one could implement 
-a wait list -> delay PCM attach if all audio converters are taken when the 
-new monitor ELD update happens. Upon next disconnect of an already 
-attached audio enabled monitor, one could check the wait list and hook up 
-monitors to the freed converters. But yeah, at least on i915 I don't see 
-the need for this.
-
-This does raise the question whether we should change the behaviour 
-for the non-DSP HD driver as well...? Tempting, but the risk for breaking 
-apps may be too high.
-
-> The actual behavior can be found in the description of commit
-> a76056f2e57e:
+On 23/08/2019 16:41, Pierre-Louis Bossart wrote:
 > 
->     When monitor is connected, find a proper PCM for the monitor.
->     When monitor is disconnected, unbind the PCM from the pin.
->     
->     The binding policy (use Intel platform as example) is:
->     1. Try to use the legacy pin-pcm mapping for the device entry 0
->        of the pin.
->     2. If step 1 fails, try to bind pin to the backup PCMs. For example,
->        on Intel platform, if DP MST is enabled, 5 PCMs will be created.
->        PCM 3, PCM 7, PCM 8 are supposed to be used by device entry 0 of
->        pin 5, pin 6 and pin 7. PCM 9 and PCM 10 are the backup PCMs.
->     3. If step 2 fails, try to find any PCM to bind to the pin.
->     
-> Removing the backup streams means the removal of step 2, but the
-> driver will keep working in step 3.
+> 
+> On 8/22/19 6:37 PM, Srinivas Kandagatla wrote:
+>> This patch adds bindings for Soundwire Slave devices that includes how
+>> SoundWire enumeration address and Link ID are used to represented in
+>> SoundWire slave device tree nodes.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   .../soundwire/soundwire-controller.yaml       | 75 +++++++++++++++++++
+>>   1 file changed, 75 insertions(+)
+>>   create mode 100644 
+>> Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+>>
+>> diff --git 
+>> a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml 
+>>
+>> new file mode 100644
+>> index 000000000000..91aa6c6d6266
+>> --- /dev/null
+>> +++ 
+>> b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+>> @@ -0,0 +1,75 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/soundwire/soundwire-controller.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: SoundWire Controller Generic Binding
+>> +
+>> +maintainers:
+>> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> +
+>> +description: |
+>> +  SoundWire busses can be described with a node for the SoundWire 
+>> controller
+>> +  device and a set of child nodes for each SoundWire slave on the bus.
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    pattern: "^soundwire(@.*|-[0-9a-f])*$"
+>> +
+>> +  "#address-cells":
+>> +    const: 2
+>> +
+>> +  "#size-cells":
+>> +    const: 0
+>> +
+>> +patternProperties:
+>> +  "^.*@[0-9a-f]+$":
+>> +    type: object
+>> +
+>> +    properties:
+>> +      compatible:
+>> +      pattern: "^sdw[0-9][0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{2}$"
+> 
+> So is this a 64-bit value, as in the MIPI spec, or is this part of the 
+> _ADR description?
 
-Yes, I didn't have to actually change this code at all. I just limit the 
-PCM count to number of converters, and the above code works without 
-modifications (and skips (2)). Only problem left is how to change to 
-toggle the different rules for calculing pcm count. Unless we change the 
-behaviour for non-DSP HD driver as well, there needs to be some dynamic 
-configuration of patch_hdmi. Kconfig/module-param won't do, I assume 
-distros want to enable both options with same kernel.
+Rob did not like encoding compatible string exactly like _ADR encoding.
 
-Thanks for the quick response!
+https://lkml.org/lkml/2019/8/22/490
 
-Br, Kai
+> I also don't get why the first item in in base10?
+> 
+
+As this corresponds to Soundwire Version, and I have no visibility of 
+version number encoding after reaching number 9 in this field.
+
+This can be updated once we have more info on how the Version encoding 
+will look like in future.
+
+Idea of limiting regex to [0-9] for version is to enforce some checking!
+
+--srini
+
+> 
+>> +      description:
+>> +      Is the textual representation of SoundWire Enumeration
+>> +      address. compatible string should contain SoundWire Version ID,
+>> +      Manufacturer ID, Part ID and Class ID in order and shall be in
+>> +      lower-case hexadecimal with leading zeroes.
+>> +      Valid sizes of these fields are
+>> +      Version ID is 1 nibble, number '0x1' represents SoundWire 1.0
+>> +      and '0x2' represents SoundWire 1.1 and so on.
+>> +      MFD is 4 nibbles
+>> +      PID is 4 nibbles
+>> +      CID is 2 nibbles
+>> +      More Information on detail of encoding of these fields can be
+>> +      found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
+>> +
+>> +      reg:
+>> +        maxItems: 1
+>> +        description:
+>> +          Instance ID and Link ID of SoundWire Device Address.
+>> +
+>> +    required:
+>> +      - compatible
+>> +      - reg
+>> +
+>> +examples:
+>> +  - |
+>> +    soundwire@c2d0000 {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <0>;
+>> +        compatible = "qcom,soundwire-v1.5.0";
+>> +        reg = <0x0c2d0000 0x2000>;
+>> +
+>> +        speaker@1 {
+>> +            compatible = "sdw10217201000";
+>> +            reg = <1 0>;
+>> +        };
+>> +
+>> +        speaker@2 {
+>> +            compatible = "sdw10217201000";
+>> +            reg = <2 0>;
+>> +        };
+>> +    };
+>> +
+>> +...
+>>
