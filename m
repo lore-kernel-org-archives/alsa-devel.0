@@ -1,211 +1,118 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 4/5] dt-bindings: soundwire: add bindings for Qcom
- controller
-Date: Fri, 23 Aug 2019 12:58:31 +0530
-Message-ID: <20190823072831.GE2672@vkoul-mobl>
-References: <20190813083550.5877-1-srinivas.kandagatla@linaro.org>
- <20190813083550.5877-5-srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [RFC PATCH 31/40] soundwire: intel: move shutdown()
+ callback and don't export symbol
+Date: Fri, 23 Aug 2019 13:04:07 +0530
+Message-ID: <20190823073407.GF2672@vkoul-mobl>
+References: <20190725234032.21152-1-pierre-louis.bossart@linux.intel.com>
+ <20190725234032.21152-32-pierre-louis.bossart@linux.intel.com>
+ <39318aab-b1b4-2cce-c408-792a5cc343dd@intel.com>
+ <ee87d4bb-3f35-eb27-0112-e6e64a09a279@linux.intel.com>
+ <20190802172843.GC12733@vkoul-mobl.Dlink>
+ <7abdb0e8-b9c4-28c7-d9ed-a7db1574e0b2@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190813083550.5877-5-srinivas.kandagatla@linaro.org>
+In-Reply-To: <7abdb0e8-b9c4-28c7-d9ed-a7db1574e0b2@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org
-Cc: broonie@kernel.org, bgoswami@codeaurora.org, plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, spapothi@codeaurora.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 13-08-19, 09:35, Srinivas Kandagatla wrote:
-> This patch adds bindings for Qualcomm soundwire controller.
+On 14-08-19, 14:31, Pierre-Louis Bossart wrote:
 > 
-> Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
-> either integrated as part of WCD audio codecs via slimbus or
-> as part of SOC I/O.
+> 
+> > > > > +void intel_shutdown(struct snd_pcm_substream *substream,
+> > > > > +            struct snd_soc_dai *dai)
+> > > > > +{
+> > > > > +    struct sdw_cdns_dma_data *dma;
+> > > > > +
+> > > > > +    dma = snd_soc_dai_get_dma_data(dai, substream);
+> > > > > +    if (!dma)
+> > > > > +        return;
+> > > > > +
+> > > > > +    snd_soc_dai_set_dma_data(dai, substream, NULL);
+> > > > > +    kfree(dma);
+> > > > > +}
+> > > > 
+> > > > Correct me if I'm wrong, but do we really need to _get_dma_ here?
+> > > > _set_dma_ seems bulletproof, same for kfree.
+> > > 
+> > > I must admit I have no idea why we have a reference to DMAs here, this looks
+> > > like an abuse to store a dai-specific context, and the initial test looks
+> > > like copy-paste to detect invalid configs, as done in other callbacks. Vinod
+> > > and Sanyog might have more history than me here.
+> > 
+> > I dont see snd_soc_dai_set_dma_data() call for
+> > sdw_cdns_dma_data so somthing is missing (at least in upstream code)
+> > 
+> > IIRC we should have a snd_soc_dai_set_dma_data() in alloc or some
+> > initialization routine and we free it here.. Sanyog?
+> 
+> Vinod, I double-checked that we do not indeed have a call to
+> snd_soc_dai_dma_data(), but there is code in cdns_set_stream() that sets the
+> relevant dai->playback/capture_dma_data, see below
+> 
+> I am not a big fan of this code, touching the ASoC core internal fields
+> isn't a good idea in general.
 
-Rob.. ?
+IIRC as long as you stick to single link I do not see this required. The
+question comes into picture when we have multi links as you would need
+to allocate a soundwire stream and set that for all the sdw DAIs
 
+So, what is the current model of soundwire stream, which entity allocates
+that and do you still care about multi-link? is there any machine driver
+with soundwire upstream yet?
+
+> Also not sure why for a DAI we need both _drvdata and _dma_data (especially
+
+_drvdata is global for driver whereas _dma_data is typically used per
+DAI
+
+> for this case where the information stored has absolutely nothing to do with
+> DMAs).
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/soundwire/qcom,sdw.txt           | 167 ++++++++++++++++++
->  1 file changed, 167 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+> If the idea was to keep a context that is direction-dependent, that's likely
+> unnecessary. For the Intel/Cadence case the interfaces can be configured as
+> playback OR capture, not both concurrently, so the "dma" information could
+> have been stored in the generic DAI _drvdata.
 > 
-> diff --git a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-> new file mode 100644
-> index 000000000000..436547f3b155
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-> @@ -0,0 +1,167 @@
-> +Qualcomm SoundWire Controller Bindings
-> +
-> +
-> +This binding describes the Qualcomm SoundWire Controller along with its
-> +board specific bus parameters.
-> +
-> +- compatible:
-> +	Usage: required
-> +	Value type: <stringlist>
-> +	Definition: must be "qcom,soundwire-v<MAJOR>.<MINOR>.<STEP>",
-> +		    Example:
-> +			"qcom,soundwire-v1.3.0"
-> +			"qcom,soundwire-v1.5.0"
-> +			"qcom,soundwire-v1.6.0"
-> +- reg:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: the base address and size of SoundWire controller
-> +		    address space.
-> +
-> +- interrupts:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: should specify the SoundWire Controller IRQ
-> +
-> +- clock-names:
-> +	Usage: required
-> +	Value type: <stringlist>
-> +	Definition: should be "iface" for SoundWire Controller interface clock
-> +
-> +- clocks:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: should specify the SoundWire Controller interface clock
-> +
-> +- #sound-dai-cells:
-> +	Usage: required
-> +	Value type: <u32>
-> +	Definition: must be 1 for digital audio interfaces on the controller.
-> +
-> +- qcom,dout-ports:
-> +	Usage: required
-> +	Value type: <u32>
-> +	Definition: must be count of data out ports
-> +
-> +- qcom,din-ports:
-> +	Usage: required
-> +	Value type: <u32>
-> +	Definition: must be count of data in ports
-> +
-> +- qcom,ports-offset1:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: should specify payload transport window offset1 of each
-> +		    data port. Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-offset2:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: should specify payload transport window offset2 of each
-> +		    data port. Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-sinterval-low:
-> +	Usage: required
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be sample interval low of each data port.
-> +		    Out ports followed by In ports. Used for Sample Interval
-> +		    calculation.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-word-length:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be size of payload channel sample.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-block-pack-mode:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be 0 or 1 to indicate the block packing mode.
-> +		    0 to indicate Blocks are per Channel
-> +		    1 to indicate Blocks are per Port.
-> +		    Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-block-group-count:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be in range 1 to 4 to indicate how many sample
-> +		    intervals are combined into a payload.
-> +		    Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-lane-control:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be in range 0 to 7 to identify which	data lane
-> +		    the data port uses.
-> +		    Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-hstart:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be number identifying lowerst numbered coloum in
-> +		    SoundWire Frame, i.e. left edge of the Transport sub-frame
-> +		    for each port. Values between 0 and 15 are valid.
-> +		    Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,ports-hstop:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be number identifying highest numbered coloum in
-> +		    SoundWire Frame, i.e. the right edge of the Transport
-> +		    sub-frame for each port. Values between 0 and 15 are valid.
-> +		    Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +- qcom,dports-type:
-> +	Usage: optional
-> +	Value type: <prop-encoded-array>
-> +	Definition: should be one of the following types
-> +		    0 for reduced port
-> +		    1 for simple ports
-> +		    2 for full port
-> +		    Out ports followed by In ports.
-> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> +Note:
-> +	More Information on detail of encoding of these fields can be
-> +found in MIPI Alliance SoundWire 1.0 Specifications.
-> +
-> += SoundWire devices
-> +Each subnode of the bus represents SoundWire device attached to it.
-> +The properties of these nodes are defined by the individual bindings.
-> +
-> += EXAMPLE
-> +The following example represents a SoundWire controller on DB845c board
-> +which has controller integrated inside WCD934x codec on SDM845 SoC.
-> +
-> +soundwire: soundwire@c85 {
-> +	compatible = "qcom,soundwire-v1.3.0";
-> +	reg = <0xc85 0x20>;
-> +	interrupts = <20 IRQ_TYPE_EDGE_RISING>;
-> +	clocks = <&wcc>;
-> +	clock-names = "iface";
-> +	#sound-dai-cells = <1>;
-> +	qcom,dports-type = <0>;
-> +	qcom,dout-ports	= <6>;
-> +	qcom,din-ports	= <2>;
-> +	qcom,ports-sinterval-low = /bits/ 8  <0x07 0x1F 0x3F 0x7 0x1F 0x3F 0x0F 0x0F>;
-> +	qcom,ports-offset1 = /bits/ 8 <0x01 0x02 0x0C 0x6 0x12 0x0D 0x07 0x0A >;
-> +	qcom,ports-offset2 = /bits/ 8 <0x00 0x00 0x1F 0x00 0x00 0x1F 0x00 0x00>;
-> +
-> +	/* Left Speaker */
-> +	left{
-> +		....
-> +	};
-> +
-> +	/* Right Speaker */
-> +	right{
-> +		....
-> +	};
-> +};
-> -- 
-> 2.21.0
+> I have other things to look into for now but this code will likely need to
+> be cleaned-up at some point to remove unnecessary parts.
+
+Sure please go ahead and do the cleanup.
+> 
+> int cdns_set_sdw_stream(struct snd_soc_dai *dai,
+> 			void *stream, bool pcm, int direction)
+> {
+> 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
+> 	struct sdw_cdns_dma_data *dma;
+> 
+> 	dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+> 	if (!dma)
+> 		return -ENOMEM;
+> 
+> 	if (pcm)
+> 		dma->stream_type = SDW_STREAM_PCM;
+> 	else
+> 		dma->stream_type = SDW_STREAM_PDM;
+> 
+> 	dma->bus = &cdns->bus;
+> 	dma->link_id = cdns->instance;
+> 
+> 	dma->stream = stream;
+> 
+> >>> this is equivalent to snd_soc_dai_dma_data()
+> 
+> 	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
+> 		dai->playback_dma_data = dma;
+> 	else
+> 		dai->capture_dma_data = dma;
+> <<<<
+> 	return 0;
+> }
+> EXPORT_SYMBOL(cdns_set_sdw_stream);
 
 -- 
 ~Vinod
