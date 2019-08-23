@@ -1,92 +1,81 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [alsa-devel] [PATCH -next] ASoC: SOF: imx8: Make some functions static
-Date: Fri, 23 Aug 2019 16:19:17 +0300
-Message-ID: <CAEnQRZA3reBF=H58596-e1xRLHLz5pVHZVhVgiXEmbV-wwOctg@mail.gmail.com>
-References: <20190823125939.30012-1-yuehaibing@huawei.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: sof/hda rework to share more of patch_hdmi.c logic
+Date: Fri, 23 Aug 2019 17:29:40 +0300 (EEST)
+Message-ID: <alpine.DEB.2.21.1908231652000.16459@zeliteleevi>
+References: <alpine.DEB.2.21.1908151641110.16459@zeliteleevi>
+ <s5hr25ma3xs.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190823125939.30012-1-yuehaibing@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF606F80147
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 16:29:45 +0200 (CEST)
+In-Reply-To: <s5hr25ma3xs.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 23, 2019 at 4:12 PM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> Fix sparse warnings:
->
-> sound/soc/sof/imx/imx8.c:104:6: warning: symbol 'imx8_dsp_handle_reply' was not declared. Should it be static?
-> sound/soc/sof/imx/imx8.c:115:6: warning: symbol 'imx8_dsp_handle_request' was not declared. Should it be static?
-> sound/soc/sof/imx/imx8.c:336:5: warning: symbol 'imx8_get_bar_index' was not declared. Should it be static?
-> sound/soc/sof/imx/imx8.c:341:6: warning: symbol 'imx8_ipc_msg_data' was not declared. Should it be static?
-> sound/soc/sof/imx/imx8.c:348:5: warning: symbol 'imx8_ipc_pcm_params' was not declared. Should it be static?
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Hi,
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+On Thu, 15 Aug 2019, Takashi Iwai wrote:
+> Kai Vehmanen wrote:
+>> into modifying the SOF Intel backend to use 
+>> snd-hda-codec-hdmi/patch_hdmi.c for HDMI/DP audio support, i.e. to be able 
+>> to share this code between snd-hda-intel and SOF Intel (and not using 
+>> hdac-hdmi).
+[..]
+>> This will change how HDMI is exposed to user-space with SOF Intel 
+>> drivers, so we need to be extra careful how this is introduced. But 
 
-> ---
->  sound/soc/sof/imx/imx8.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-> index e502f58..6404724 100644
-> --- a/sound/soc/sof/imx/imx8.c
-> +++ b/sound/soc/sof/imx/imx8.c
-> @@ -101,7 +101,7 @@ static int imx8_get_window_offset(struct snd_sof_dev *sdev, u32 id)
->         return MBOX_OFFSET;
->  }
->
-> -void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
-> +static void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
->  {
->         struct imx8_priv *priv = imx_dsp_get_data(ipc);
->         unsigned long flags;
-> @@ -112,7 +112,7 @@ void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
->         spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
->  }
->
-> -void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
-> +static void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
->  {
->         struct imx8_priv *priv = imx_dsp_get_data(ipc);
->
-> @@ -333,21 +333,21 @@ static int imx8_remove(struct snd_sof_dev *sdev)
->  }
->
->  /* on i.MX8 there is 1 to 1 match between type and BAR idx */
-> -int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
-> +static int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
->  {
->         return type;
->  }
->
-> -void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
-> -                      struct snd_pcm_substream *substream,
-> -                      void *p, size_t sz)
-> +static void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
-> +                             struct snd_pcm_substream *substream,
-> +                             void *p, size_t sz)
->  {
->         sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
->  }
->
-> -int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
-> -                       struct snd_pcm_substream *substream,
-> -                       const struct sof_ipc_pcm_params_reply *reply)
-> +static int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
-> +                              struct snd_pcm_substream *substream,
-> +                              const struct sof_ipc_pcm_params_reply *reply)
->  {
->         return 0;
->  }
-> --
-> 2.7.4
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Agreed.  I guess the biggest difference is the handling of the 
+> DP-MST.  The legacy HD-audio HDMI driver takes a different approach
+> for DP-MST, namely, it chooses dynamically the pin that is connected
+> with a monitor.  It's for keeping the compatibility (more or less)
+> with old behavior; the program just needs to open the device that
+> corresponds to the notification via jack ctl without fiddling with
+> other extra routing.
+
+indeed. I've now got to a point where I have the key functionality
+in place. And after some reworks, the changes to patch_hdmi.c 
+are pretty minimal, which is very nice (I started with a much more 
+evasive patch).
+
+But, but. The DP-MST handling is indeed iffy. I tried a few approaches, 
+but it is hard to reconcile concept of "backup PCMs" of patch_hdmi.c with 
+concepts of ASoC and ALSA topology, where the PCM and DAIs are supposed to 
+be defined in the topology file. This gets worse with SOF (and any similar 
+usage) which allow you to have arbitrary DSP processing between a PCM and 
+the HDMI/DP DAIs. So this seems like a dead-end.
+
+What I ended up doing was to make a new mode to patch_hdmi.c that limits 
+PCM count to actual converter count (and this is aligned with topology), 
+and still supporting DP-MST by always mapping monitors to a free PCM. I've 
+tested some complex DP-MST scenarios and this seems to work pretty well. 
+The jack detection will still be able to tell which of the PCMs have a 
+monitor detected.
+
+I wonder if this would be an acceptable approach, given 
+the reuse benefits we get. Downsides:
+- assignment of monitors to PCMs will depend on ELD update ordering
+- in SOF we need to align PCM numbering scheme in all topologies 
+  we convert over to patch_hdmi.c
+
+I did not yet figure out how to toggle the new DP-MST mode in patch_hdmi.c 
+in a nice way, so didn't sent patches to list yet. I'll do that early next 
+week. If you want a sneak preview, I uploaded the series at:
+
+https://github.com/thesofproject/linux/pull/1155
+
+Br, Kai
