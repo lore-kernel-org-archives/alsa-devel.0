@@ -1,10 +1,10 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 33/35] ASoC: Intel: Skylake: Privatize SST
- init handlers
-Date: Fri, 23 Aug 2019 15:25:30 -0500
-Message-ID: <c90b4fb9-f12b-41f5-2e7d-da556dab880a@linux.intel.com>
+Subject: Re: [PATCH 30/35] ASoC: Intel: Reuse
+ sst_pdata::fw_name field
+Date: Fri, 23 Aug 2019 15:20:34 -0500
+Message-ID: <85506937-61cd-8a30-f731-34cfbd4b3cd7@linux.intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-34-cezary.rojewski@intel.com>
+ <20190822190425.23001-31-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C43EF80610
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:27 +0200 (CEST)
-In-Reply-To: <20190822190425.23001-34-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 176B3F8060F
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:26 +0200 (CEST)
+In-Reply-To: <20190822190425.23001-31-cezary.rojewski@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,174 +32,136 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On 8/22/19 2:04 PM, Cezary Rojewski wrote:
-> With initialization order repaired, sst_ops::init overloads can be
-> privatized for Skylake platofmrs. Let's do so.
+> struct sst_pdata is equipped with fw_name field - a platform specific
+> filename for basefw module. Usage of such allows for suther
+> simplification of declaration of handlers directly involved with Skylake
+> initialization procedure.
+> 
+> This change invalidates mach::fw_filename field and skl::fw_name.
 
-platforms
+Again bad move. While in theory it's true that a single firmware is all 
+you need, you do want to keep the ability to quirk firmware names for 
+specific cases. We've been there before, don't remove this capability 
+please.
 
 > 
 > Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 > ---
->   sound/soc/intel/skylake/bxt-sst.c     | 25 ++++++++++++-------------
->   sound/soc/intel/skylake/cnl-sst-dsp.h |  2 --
->   sound/soc/intel/skylake/cnl-sst.c     | 25 ++++++++++++-------------
->   sound/soc/intel/skylake/skl-sst-dsp.h |  2 --
->   sound/soc/intel/skylake/skl-sst.c     | 23 +++++++++++------------
->   5 files changed, 35 insertions(+), 42 deletions(-)
+>   sound/soc/intel/common/sst-acpi.c       | 5 ++---
+>   sound/soc/intel/common/sst-firmware.c   | 1 +
+>   sound/soc/intel/skylake/skl-messages.c  | 2 +-
+>   sound/soc/intel/skylake/skl-sst-dsp.h   | 3 +--
+>   sound/soc/intel/skylake/skl-sst-utils.c | 4 +---
+>   sound/soc/intel/skylake/skl.c           | 4 ----
+>   6 files changed, 6 insertions(+), 13 deletions(-)
 > 
-> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-> index 79728e418176..1edc38069615 100644
-> --- a/sound/soc/intel/skylake/bxt-sst.c
-> +++ b/sound/soc/intel/skylake/bxt-sst.c
-> @@ -533,18 +533,7 @@ static const struct skl_dsp_fw_ops bxt_fw_ops = {
->   	.load_library = bxt_load_library,
->   };
+> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+> index 53ac23f05966..15f2b27e643f 100644
+> --- a/sound/soc/intel/common/sst-acpi.c
+> +++ b/sound/soc/intel/common/sst-acpi.c
+> @@ -28,11 +28,10 @@ static void sst_acpi_fw_cb(const struct firmware *fw, void *context)
+>   	struct sst_acpi_priv *sst_acpi = platform_get_drvdata(pdev);
+>   	struct sst_acpi_desc *desc = sst_acpi->desc;
+>   	struct sst_pdata *sst_pdata = desc->pdata;
+> -	struct snd_soc_acpi_mach *mach = sst_acpi->mach;
 >   
-> -struct sst_ops apl_sst_ops = {
-> -	.irq_handler = skl_dsp_sst_interrupt,
-> -	.thread_fn = skl_dsp_irq_thread_handler,
-> -	.write = sst_shim32_write,
-> -	.read = sst_shim32_read,
-> -	.ram_read = sst_memcpy_fromio_32,
-> -	.ram_write = sst_memcpy_toio_32,
-> -	.init = bxt_sst_dsp_init,
-> -	.free = skl_dsp_free,
-> -};
-> -
-> -int bxt_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
-> +static int bxt_sst_init(struct sst_dsp *sst, struct sst_pdata *pdata)
->   {
->   	struct skl_dev *skl = sst->thread_context;
->   	void __iomem *mmio;
-> @@ -578,7 +567,17 @@ int bxt_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   	sst_pdata->fw = fw;
+>   	if (!fw) {
+> -		dev_err(dev, "Cannot load firmware %s\n", mach->fw_filename);
+> +		dev_err(dev, "Cannot load firmware %s\n", sst_pdata->fw_name);
+>   		return;
+>   	}
 >   
->   	return 0;
->   }
-> -EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
-> +
-> +struct sst_ops apl_sst_ops = {
-> +	.irq_handler = skl_dsp_sst_interrupt,
-> +	.thread_fn = skl_dsp_irq_thread_handler,
-> +	.write = sst_shim32_write,
-> +	.read = sst_shim32_read,
-> +	.ram_read = sst_memcpy_fromio_32,
-> +	.ram_write = sst_memcpy_toio_32,
-> +	.init = bxt_sst_init,
-> +	.free = skl_dsp_free,
-> +};
-
-should these structures be static if they are not exported?
-sparse should tell you that: make -C 2
-
+> @@ -119,7 +118,7 @@ int sst_acpi_probe(struct platform_device *pdev)
+>   		return PTR_ERR(sst_acpi->pdev_mach);
 >   
->   MODULE_LICENSE("GPL v2");
->   MODULE_DESCRIPTION("Intel Broxton IPC driver");
-> diff --git a/sound/soc/intel/skylake/cnl-sst-dsp.h b/sound/soc/intel/skylake/cnl-sst-dsp.h
-> index 7810ae11954a..a1ea242e9539 100644
-> --- a/sound/soc/intel/skylake/cnl-sst-dsp.h
-> +++ b/sound/soc/intel/skylake/cnl-sst-dsp.h
-> @@ -87,6 +87,4 @@ void cnl_ipc_op_int_enable(struct sst_dsp *ctx);
->   void cnl_ipc_op_int_disable(struct sst_dsp *ctx);
->   bool cnl_ipc_int_status(struct sst_dsp *ctx);
+>   	/* continue SST probing after firmware is loaded */
+> -	ret = request_firmware_nowait(THIS_MODULE, true, mach->fw_filename,
+> +	ret = request_firmware_nowait(THIS_MODULE, true, sst_pdata->fw_name,
+>   				      dev, GFP_KERNEL, pdev, sst_acpi_fw_cb);
+>   	if (ret)
+>   		platform_device_unregister(sst_acpi->pdev_mach);
+> diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+> index 61d3e6e46b98..cc88849eb10f 100644
+> --- a/sound/soc/intel/common/sst-firmware.c
+> +++ b/sound/soc/intel/common/sst-firmware.c
+> @@ -1218,6 +1218,7 @@ struct sst_dsp *sst_dsp_new(struct device *dev, struct sst_pdata *pdata)
+>   	sst->thread_context = pdata->dsp;
+>   	sst->id = pdata->id;
+>   	sst->irq = pdata->irq;
+> +	sst->fw_name = pdata->fw_name;
+>   	sst->ops = pdata->ops;
+>   	sst->pdata = pdata;
+>   	INIT_LIST_HEAD(&sst->used_block_list);
+> diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+> index 372c5fb83ddb..e401edd8d44b 100644
+> --- a/sound/soc/intel/skylake/skl-messages.c
+> +++ b/sound/soc/intel/skylake/skl-messages.c
+> @@ -201,7 +201,7 @@ int skl_init_dsp(struct skl_dev *skl, struct sst_pdata *pdata)
+>   	if (!ops)
+>   		return -EIO;
 >   
-> -int cnl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata);
-> -
->   #endif /*__CNL_SST_DSP_H__*/
-> diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
-> index 58efeb6c8a8a..360e54d3c587 100644
-> --- a/sound/soc/intel/skylake/cnl-sst.c
-> +++ b/sound/soc/intel/skylake/cnl-sst.c
-> @@ -409,18 +409,7 @@ static int cnl_ipc_init(struct device *dev, struct skl_dev *cnl)
->   	return 0;
->   }
+> -	ret = skl_sst_ctx_init(skl, skl->fw_name, pdata);
+> +	ret = skl_sst_ctx_init(skl, pdata);
+>   	if (ret < 0)
+>   		return ret;
 >   
-> -struct sst_ops cnl_sst_ops = {
-> -	.irq_handler = cnl_dsp_sst_interrupt,
-> -	.thread_fn = cnl_dsp_irq_thread_handler,
-> -	.write = sst_shim32_write,
-> -	.read = sst_shim32_read,
-> -	.ram_read = sst_memcpy_fromio_32,
-> -	.ram_write = sst_memcpy_toio_32,
-> -	.init = cnl_sst_dsp_init,
-> -	.free = cnl_dsp_free,
-> -};
-> -
-> -int cnl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
-> +static int cnl_sst_init(struct sst_dsp *sst, struct sst_pdata *pdata)
->   {
->   	struct skl_dev *cnl = sst->thread_context;
->   	void __iomem *mmio;
-> @@ -449,7 +438,17 @@ int cnl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
->   
->   	return 0;
->   }
-> -EXPORT_SYMBOL_GPL(cnl_sst_dsp_init);
-> +
-> +struct sst_ops cnl_sst_ops = {
-> +	.irq_handler = cnl_dsp_sst_interrupt,
-> +	.thread_fn = cnl_dsp_irq_thread_handler,
-> +	.write = sst_shim32_write,
-> +	.read = sst_shim32_read,
-> +	.ram_read = sst_memcpy_fromio_32,
-> +	.ram_write = sst_memcpy_toio_32,
-> +	.init = cnl_sst_init,
-> +	.free = cnl_dsp_free,
-> +};
->   
->   MODULE_LICENSE("GPL v2");
->   MODULE_DESCRIPTION("Intel Cannonlake IPC driver");
 > diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-> index a3714b706b8e..3294826d5cf7 100644
+> index 8483c60f29ba..a3714b706b8e 100644
 > --- a/sound/soc/intel/skylake/skl-sst-dsp.h
 > +++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-> @@ -206,8 +206,6 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id);
->   int skl_dsp_put_core(struct sst_dsp *ctx, unsigned int core_id);
+> @@ -223,8 +223,7 @@ int skl_dsp_strip_extended_manifest(struct firmware *fw);
 >   
->   int skl_dsp_boot(struct sst_dsp *ctx);
-> -int skl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata);
-> -int bxt_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata);
->   int bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo,
->   		int lib_count);
+>   void skl_dsp_set_astate_cfg(struct skl_dev *skl, u32 cnt, void *data);
 >   
-> diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-> index 8e1d02e29a32..209f45e3d5d0 100644
-> --- a/sound/soc/intel/skylake/skl-sst.c
-> +++ b/sound/soc/intel/skylake/skl-sst.c
-> @@ -505,17 +505,7 @@ static const struct skl_dsp_fw_ops skl_fw_ops = {
->   	.unload_mod = skl_unload_module,
->   };
->   
-> -struct sst_ops skl_sst_ops = {
-> -	.irq_handler = skl_dsp_sst_interrupt,
-> -	.write = sst_shim32_write,
-> -	.read = sst_shim32_read,
-> -	.ram_read = sst_memcpy_fromio_32,
-> -	.ram_write = sst_memcpy_toio_32,
-> -	.init = skl_sst_dsp_init,
-> -	.free = skl_dsp_free,
-> -};
-> -
-> -int skl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
-> +static int skl_sst_init(struct sst_dsp *sst, struct sst_pdata *pdata)
->   {
->   	struct skl_dev *skl = sst->thread_context;
->   	void __iomem *mmio;
-> @@ -541,7 +531,16 @@ int skl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
->   
+> -int skl_sst_ctx_init(struct skl_dev *skl, const char *fw_name,
+> -		struct sst_pdata *pdata);
+> +int skl_sst_ctx_init(struct skl_dev *skl, struct sst_pdata *pdata);
+>   int skl_prepare_lib_load(struct skl_dev *skl, struct skl_lib_info *linfo,
+>   			struct firmware *stripped_fw,
+>   			unsigned int hdr_offset, int index);
+> diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+> index a4ad213d34e0..ea5419012312 100644
+> --- a/sound/soc/intel/skylake/skl-sst-utils.c
+> +++ b/sound/soc/intel/skylake/skl-sst-utils.c
+> @@ -354,8 +354,7 @@ int skl_dsp_strip_extended_manifest(struct firmware *fw)
 >   	return 0;
 >   }
-> -EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
-> +
-> +struct sst_ops skl_sst_ops = {
-> +	.irq_handler = skl_dsp_sst_interrupt,
-> +	.write = sst_shim32_write,
-> +	.read = sst_shim32_read,
-> +	.ram_read = sst_memcpy_fromio_32,
-> +	.ram_write = sst_memcpy_toio_32,
-> +	.init = skl_sst_init,
-> +	.free = skl_dsp_free,
-> +};
 >   
->   int skl_sst_init_fw(struct skl_dev *skl)
+> -int skl_sst_ctx_init(struct skl_dev *skl, const char *fw_name,
+> -	struct sst_pdata *pdata)
+> +int skl_sst_ctx_init(struct skl_dev *skl, struct sst_pdata *pdata)
 >   {
+>   	struct sst_dsp *sst;
+>   	struct device *dev = skl->dev;
+> @@ -372,7 +371,6 @@ int skl_sst_ctx_init(struct skl_dev *skl, const char *fw_name,
+>   	}
+>   
+>   	skl->dsp = sst;
+> -	sst->fw_name = fw_name;
+>   	init_waitqueue_head(&skl->mod_load_wait);
+>   	skl->is_first_boot = true;
+>   
+> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+> index 39442c80a179..3225f4f8793e 100644
+> --- a/sound/soc/intel/skylake/skl.c
+> +++ b/sound/soc/intel/skylake/skl.c
+> @@ -491,9 +491,6 @@ static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl_dev *skl,
+>   	/* point to common table */
+>   	mach = snd_soc_acpi_intel_hda_machines;
+>   
+> -	/* all entries in the machine table use the same firmware */
+> -	mach->fw_filename = machines->fw_filename;
+> -
+>   	return mach;
+>   }
+>   
+> @@ -514,7 +511,6 @@ static int skl_find_machine(struct skl_dev *skl, void *driver_data)
+>   	}
+>   
+>   	skl->mach = mach;
+> -	skl->fw_name = mach->fw_filename;
+>   	pdata = mach->pdata;
+>   
+>   	if (pdata) {
 > 
