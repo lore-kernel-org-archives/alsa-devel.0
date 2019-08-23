@@ -1,10 +1,10 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 28/35] ASoC: Intel: Skylake: Update skl_ids
- table
-Date: Fri, 23 Aug 2019 15:15:14 -0500
-Message-ID: <91852fc6-6bef-9a1d-f380-da7a3985b637@linux.intel.com>
+Subject: Re: [PATCH 33/35] ASoC: Intel: Skylake: Privatize SST
+ init handlers
+Date: Fri, 23 Aug 2019 15:25:30 -0500
+Message-ID: <c90b4fb9-f12b-41f5-2e7d-da556dab880a@linux.intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-29-cezary.rojewski@intel.com>
+ <20190822190425.23001-34-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AB54F80141
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:21 +0200 (CEST)
-In-Reply-To: <20190822190425.23001-29-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C43EF80610
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:27 +0200 (CEST)
+In-Reply-To: <20190822190425.23001-34-cezary.rojewski@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,91 +32,174 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On 8/22/19 2:04 PM, Cezary Rojewski wrote:
-> With platform descriptors defined, update PCI ID table together with
-> skl_probe to retrieve supported boards from saved sst_pdata objects
-> instead.
+> With initialization order repaired, sst_ops::init overloads can be
+> privatized for Skylake platofmrs. Let's do so.
 
-I don't get what you are trying to do here. the only 'benefit' seems to 
-duplicate the firmware name, which as I mentioned earlier isn't such a 
-good idea.
+platforms
 
 > 
 > Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 > ---
->   sound/soc/intel/skylake/skl.c | 20 +++++++++++---------
->   1 file changed, 11 insertions(+), 9 deletions(-)
+>   sound/soc/intel/skylake/bxt-sst.c     | 25 ++++++++++++-------------
+>   sound/soc/intel/skylake/cnl-sst-dsp.h |  2 --
+>   sound/soc/intel/skylake/cnl-sst.c     | 25 ++++++++++++-------------
+>   sound/soc/intel/skylake/skl-sst-dsp.h |  2 --
+>   sound/soc/intel/skylake/skl-sst.c     | 23 +++++++++++------------
+>   5 files changed, 35 insertions(+), 42 deletions(-)
 > 
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index d6d099aba834..53a6befd5d68 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -985,6 +985,7 @@ static int skl_probe(struct pci_dev *pci,
->   {
->   	struct skl_dev *skl;
->   	struct hdac_bus *bus = NULL;
-> +	struct sst_pdata *desc;
->   	int err;
->   
->   	switch (skl_pci_binding) {
-> @@ -1064,7 +1065,8 @@ static int skl_probe(struct pci_dev *pci,
->   
->   	pci_set_drvdata(skl->pci, bus);
->   
-> -	err = skl_find_machine(skl, (void *)pci_id->driver_data);
-> +	desc = (struct sst_pdata *)pci_id->driver_data;
-> +	err = skl_find_machine(skl, desc->boards);
->   	if (err < 0) {
->   		dev_err(bus->dev, "skl_find_machine failed with err: %d\n", err);
->   		goto out_nhlt_free;
-> @@ -1194,42 +1196,42 @@ static const struct pci_device_id skl_ids[] = {
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
->   	/* Sunrise Point-LP */
->   	{ PCI_DEVICE(0x8086, 0x9d70),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_skl_machines},
-> +		.driver_data = (unsigned long)&skl_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
->   	/* BXT-P */
->   	{ PCI_DEVICE(0x8086, 0x5a98),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_bxt_machines},
-> +		.driver_data = (unsigned long)&apl_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
->   	/* KBL */
->   	{ PCI_DEVICE(0x8086, 0x9D71),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_kbl_machines},
-> +		.driver_data = (unsigned long)&kbl_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_GLK)
->   	/* GLK */
->   	{ PCI_DEVICE(0x8086, 0x3198),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_glk_machines},
-> +		.driver_data = (unsigned long)&glk_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_CNL)
->   	/* CNL */
->   	{ PCI_DEVICE(0x8086, 0x9dc8),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-> +		.driver_data = (unsigned long)&cnl_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_CFL)
->   	/* CFL */
->   	{ PCI_DEVICE(0x8086, 0xa348),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-> +		.driver_data = (unsigned long)&cnl_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_LP)
->   	/* CML-LP */
->   	{ PCI_DEVICE(0x8086, 0x02c8),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-> +		.driver_data = (unsigned long)&cnl_desc },
->   #endif
->   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_H)
->   	/* CML-H */
->   	{ PCI_DEVICE(0x8086, 0x06c8),
-> -		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-> +		.driver_data = (unsigned long)&cnl_desc },
->   #endif
->   	{ 0, }
+> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+> index 79728e418176..1edc38069615 100644
+> --- a/sound/soc/intel/skylake/bxt-sst.c
+> +++ b/sound/soc/intel/skylake/bxt-sst.c
+> @@ -533,18 +533,7 @@ static const struct skl_dsp_fw_ops bxt_fw_ops = {
+>   	.load_library = bxt_load_library,
 >   };
+>   
+> -struct sst_ops apl_sst_ops = {
+> -	.irq_handler = skl_dsp_sst_interrupt,
+> -	.thread_fn = skl_dsp_irq_thread_handler,
+> -	.write = sst_shim32_write,
+> -	.read = sst_shim32_read,
+> -	.ram_read = sst_memcpy_fromio_32,
+> -	.ram_write = sst_memcpy_toio_32,
+> -	.init = bxt_sst_dsp_init,
+> -	.free = skl_dsp_free,
+> -};
+> -
+> -int bxt_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+> +static int bxt_sst_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   {
+>   	struct skl_dev *skl = sst->thread_context;
+>   	void __iomem *mmio;
+> @@ -578,7 +567,17 @@ int bxt_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   
+>   	return 0;
+>   }
+> -EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
+> +
+> +struct sst_ops apl_sst_ops = {
+> +	.irq_handler = skl_dsp_sst_interrupt,
+> +	.thread_fn = skl_dsp_irq_thread_handler,
+> +	.write = sst_shim32_write,
+> +	.read = sst_shim32_read,
+> +	.ram_read = sst_memcpy_fromio_32,
+> +	.ram_write = sst_memcpy_toio_32,
+> +	.init = bxt_sst_init,
+> +	.free = skl_dsp_free,
+> +};
+
+should these structures be static if they are not exported?
+sparse should tell you that: make -C 2
+
+>   
+>   MODULE_LICENSE("GPL v2");
+>   MODULE_DESCRIPTION("Intel Broxton IPC driver");
+> diff --git a/sound/soc/intel/skylake/cnl-sst-dsp.h b/sound/soc/intel/skylake/cnl-sst-dsp.h
+> index 7810ae11954a..a1ea242e9539 100644
+> --- a/sound/soc/intel/skylake/cnl-sst-dsp.h
+> +++ b/sound/soc/intel/skylake/cnl-sst-dsp.h
+> @@ -87,6 +87,4 @@ void cnl_ipc_op_int_enable(struct sst_dsp *ctx);
+>   void cnl_ipc_op_int_disable(struct sst_dsp *ctx);
+>   bool cnl_ipc_int_status(struct sst_dsp *ctx);
+>   
+> -int cnl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata);
+> -
+>   #endif /*__CNL_SST_DSP_H__*/
+> diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+> index 58efeb6c8a8a..360e54d3c587 100644
+> --- a/sound/soc/intel/skylake/cnl-sst.c
+> +++ b/sound/soc/intel/skylake/cnl-sst.c
+> @@ -409,18 +409,7 @@ static int cnl_ipc_init(struct device *dev, struct skl_dev *cnl)
+>   	return 0;
+>   }
+>   
+> -struct sst_ops cnl_sst_ops = {
+> -	.irq_handler = cnl_dsp_sst_interrupt,
+> -	.thread_fn = cnl_dsp_irq_thread_handler,
+> -	.write = sst_shim32_write,
+> -	.read = sst_shim32_read,
+> -	.ram_read = sst_memcpy_fromio_32,
+> -	.ram_write = sst_memcpy_toio_32,
+> -	.init = cnl_sst_dsp_init,
+> -	.free = cnl_dsp_free,
+> -};
+> -
+> -int cnl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+> +static int cnl_sst_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   {
+>   	struct skl_dev *cnl = sst->thread_context;
+>   	void __iomem *mmio;
+> @@ -449,7 +438,17 @@ int cnl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   
+>   	return 0;
+>   }
+> -EXPORT_SYMBOL_GPL(cnl_sst_dsp_init);
+> +
+> +struct sst_ops cnl_sst_ops = {
+> +	.irq_handler = cnl_dsp_sst_interrupt,
+> +	.thread_fn = cnl_dsp_irq_thread_handler,
+> +	.write = sst_shim32_write,
+> +	.read = sst_shim32_read,
+> +	.ram_read = sst_memcpy_fromio_32,
+> +	.ram_write = sst_memcpy_toio_32,
+> +	.init = cnl_sst_init,
+> +	.free = cnl_dsp_free,
+> +};
+>   
+>   MODULE_LICENSE("GPL v2");
+>   MODULE_DESCRIPTION("Intel Cannonlake IPC driver");
+> diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+> index a3714b706b8e..3294826d5cf7 100644
+> --- a/sound/soc/intel/skylake/skl-sst-dsp.h
+> +++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+> @@ -206,8 +206,6 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id);
+>   int skl_dsp_put_core(struct sst_dsp *ctx, unsigned int core_id);
+>   
+>   int skl_dsp_boot(struct sst_dsp *ctx);
+> -int skl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata);
+> -int bxt_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata);
+>   int bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo,
+>   		int lib_count);
+>   
+> diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+> index 8e1d02e29a32..209f45e3d5d0 100644
+> --- a/sound/soc/intel/skylake/skl-sst.c
+> +++ b/sound/soc/intel/skylake/skl-sst.c
+> @@ -505,17 +505,7 @@ static const struct skl_dsp_fw_ops skl_fw_ops = {
+>   	.unload_mod = skl_unload_module,
+>   };
+>   
+> -struct sst_ops skl_sst_ops = {
+> -	.irq_handler = skl_dsp_sst_interrupt,
+> -	.write = sst_shim32_write,
+> -	.read = sst_shim32_read,
+> -	.ram_read = sst_memcpy_fromio_32,
+> -	.ram_write = sst_memcpy_toio_32,
+> -	.init = skl_sst_dsp_init,
+> -	.free = skl_dsp_free,
+> -};
+> -
+> -int skl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+> +static int skl_sst_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   {
+>   	struct skl_dev *skl = sst->thread_context;
+>   	void __iomem *mmio;
+> @@ -541,7 +531,16 @@ int skl_sst_dsp_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+>   
+>   	return 0;
+>   }
+> -EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+> +
+> +struct sst_ops skl_sst_ops = {
+> +	.irq_handler = skl_dsp_sst_interrupt,
+> +	.write = sst_shim32_write,
+> +	.read = sst_shim32_read,
+> +	.ram_read = sst_memcpy_fromio_32,
+> +	.ram_write = sst_memcpy_toio_32,
+> +	.init = skl_sst_init,
+> +	.free = skl_dsp_free,
+> +};
+>   
+>   int skl_sst_init_fw(struct skl_dev *skl)
+>   {
 > 
