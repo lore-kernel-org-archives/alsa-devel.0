@@ -1,21 +1,26 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 35/35] ASoC: Intel: Remove obsolete
- firmware fields
-Date: Fri, 23 Aug 2019 15:27:24 -0500
-Message-ID: <327db184-f585-4d21-f5c6-01a1ac933715@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/35] ASoC: Intel: Clenaup SST
+ initialization
+Date: Fri, 23 Aug 2019 22:39:20 +0100
+Message-ID: <20190823213920.GW23391@sirena.co.uk>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-36-cezary.rojewski@intel.com>
+ <a08b2547-3fe5-5c48-9513-c5ade151c01e@linux.intel.com>
+ <50932a9f-2f3e-c150-77c7-f021f84ed4d1@intel.com>
+ <20190823102652.GM23391@sirena.co.uk>
+ <c845fda4-c18d-2ca8-7337-6e6af74d239c@intel.com>
+ <70222fac-8c4e-5ceb-3c49-7020196b59df@linux.intel.com>
+ <2e2a34b8-2451-01f6-79a1-14f06d1ed059@intel.com>
+ <9dfd3a96-f286-34d6-fe57-9b6b8740e424@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3652906554290538228=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 024CFF80611
- for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 22:28:28 +0200 (CEST)
-In-Reply-To: <20190822190425.23001-36-cezary.rojewski@intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A896F80141
+ for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2019 23:39:26 +0200 (CEST)
+In-Reply-To: <9dfd3a96-f286-34d6-fe57-9b6b8740e424@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,310 +30,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, "Kaczmarski, Filip" <filip.kaczmarski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, "Wasko, Michal" <michal.wasko@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============3652906554290538228==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="96icqjDFsSi85SgI"
+Content-Disposition: inline
 
-On 8/22/19 2:04 PM, Cezary Rojewski wrote:
-> FW filename fields are now deprecated in favour of ones coming from
-> platform descriptors. This aligns with paradigm of FW being platform
-> specific, not board specific.
 
-I don't agree here. The paradigm does not survive reality where we have 
-different versions of firmware for the same platform. This is not the 
-product of my imagination, the ULL story proves my point.
+--96icqjDFsSi85SgI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-NAK.
+On Fri, Aug 23, 2019 at 03:12:18PM -0500, Pierre-Louis Bossart wrote:
+> On 8/23/19 1:44 PM, Cezary Rojewski wrote:
 
-> Any remaining deprecated survivors of the precedding tidal wave are
-> removed here too.
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->   sound/soc/intel/common/soc-acpi-intel-bxt-match.c    |  2 --
->   sound/soc/intel/common/soc-acpi-intel-byt-match.c    |  2 --
->   sound/soc/intel/common/soc-acpi-intel-cnl-match.c    |  1 -
->   sound/soc/intel/common/soc-acpi-intel-glk-match.c    |  3 ---
->   sound/soc/intel/common/soc-acpi-intel-hda-match.c    |  2 --
->   .../soc/intel/common/soc-acpi-intel-hsw-bdw-match.c  |  4 ----
->   sound/soc/intel/common/soc-acpi-intel-icl-match.c    |  1 -
->   sound/soc/intel/common/soc-acpi-intel-kbl-match.c    | 12 ------------
->   sound/soc/intel/common/soc-acpi-intel-skl-match.c    |  3 ---
->   sound/soc/intel/common/sst-dsp-priv.h                |  1 -
->   sound/soc/intel/skylake/skl.h                        |  1 -
->   11 files changed, 32 deletions(-)
-> 
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-> index 4a5adae1d785..eda799e49113 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-> @@ -50,14 +50,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
->   	{
->   		.id = "INT343A",
->   		.drv_name = "bxt_alc298s_i2s",
-> -		.fw_filename = "intel/dsp_fw_bxtn.bin",
->   		.sof_fw_filename = "sof-apl.ri",
->   		.sof_tplg_filename = "sof-apl-rt298.tplg",
->   	},
->   	{
->   		.id = "DLGS7219",
->   		.drv_name = "bxt_da7219_max98357a",
-> -		.fw_filename = "intel/dsp_fw_bxtn.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &bxt_codecs,
->   		.sof_fw_filename = "sof-apl.ri",
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> index 1cc801ba92eb..4d2ba663ee33 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> @@ -124,12 +124,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[] = {
->   	{
->   		.id = "10EC5640",
->   		.drv_name = "byt-rt5640",
-> -		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
->   	},
->   	{
->   		.id = "193C9890",
->   		.drv_name = "byt-max98090",
-> -		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
->   	},
->   	{}
->   };
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> index 771b0ef21051..edc44a0dc96f 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-> @@ -23,7 +23,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
->   	{
->   		.id = "INT34C2",
->   		.drv_name = "cnl_rt274",
-> -		.fw_filename = "intel/dsp_fw_cnl.bin",
->   		.pdata = &cnl_pdata,
->   		.sof_fw_filename = "sof-cnl.ri",
->   		.sof_tplg_filename = "sof-cnl-rt274.tplg",
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-> index 60dea358fa04..370487d13c85 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-> @@ -18,14 +18,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
->   	{
->   		.id = "INT343A",
->   		.drv_name = "glk_alc298s_i2s",
-> -		.fw_filename = "intel/dsp_fw_glk.bin",
->   		.sof_fw_filename = "sof-glk.ri",
->   		.sof_tplg_filename = "sof-glk-alc298.tplg",
->   	},
->   	{
->   		.id = "DLGS7219",
->   		.drv_name = "glk_da7219_max98357a",
-> -		.fw_filename = "intel/dsp_fw_glk.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &glk_codecs,
->   		.sof_fw_filename = "sof-glk.ri",
-> @@ -34,7 +32,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
->   	{
->   		.id = "10EC5682",
->   		.drv_name = "glk_rt5682_max98357a",
-> -		.fw_filename = "intel/dsp_fw_glk.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &glk_codecs,
->   		.sof_fw_filename = "sof-glk.ri",
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-> index cc972d2ac691..39827d2e8634 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-> @@ -19,8 +19,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
->   		/* .id is not used in this file */
->   		.drv_name = "skl_hda_dsp_generic",
->   
-> -		/* .fw_filename is dynamically set in skylake driver */
-> -
->   		/* .sof_fw_filename is dynamically set in sof/intel driver */
->   
->   		.sof_tplg_filename = "sof-hda-generic.tplg",
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-> index 34eb0baaa951..6b113c32aff0 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-> @@ -13,7 +13,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_haswell_machines[] = {
->   	{
->   		.id = "INT33CA",
->   		.drv_name = "haswell-audio",
-> -		.fw_filename = "intel/IntcSST1.bin",
->   		.sof_fw_filename = "sof-hsw.ri",
->   		.sof_tplg_filename = "sof-hsw.tplg",
->   	},
-> @@ -25,21 +24,18 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
->   	{
->   		.id = "INT343A",
->   		.drv_name = "broadwell-audio",
-> -		.fw_filename =  "intel/IntcSST2.bin",
->   		.sof_fw_filename = "sof-bdw.ri",
->   		.sof_tplg_filename = "sof-bdw-rt286.tplg",
->   	},
->   	{
->   		.id = "RT5677CE",
->   		.drv_name = "bdw-rt5677",
-> -		.fw_filename =  "intel/IntcSST2.bin",
->   		.sof_fw_filename = "sof-bdw.ri",
->   		.sof_tplg_filename = "sof-bdw-rt5677.tplg",
->   	},
->   	{
->   		.id = "INT33CA",
->   		.drv_name = "haswell-audio",
-> -		.fw_filename = "intel/IntcSST2.bin",
->   		.sof_fw_filename = "sof-bdw.ri",
->   		.sof_tplg_filename = "sof-bdw-rt5640.tplg",
->   	},
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-> index 38977669b576..04a17da96f6a 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-> @@ -18,7 +18,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
->   	{
->   		.id = "INT34C2",
->   		.drv_name = "icl_rt274",
-> -		.fw_filename = "intel/dsp_fw_icl.bin",
->   		.pdata = &icl_pdata,
->   		.sof_fw_filename = "sof-icl.ri",
->   		.sof_tplg_filename = "sof-icl-rt274.tplg",
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-> index e200baa11011..fe82d5472aa3 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-> @@ -46,12 +46,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "INT343A",
->   		.drv_name = "kbl_alc286s_i2s",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   	},
->   	{
->   		.id = "INT343B",
->   		.drv_name = "kbl_n88l25_s4567",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_codecs,
->   		.pdata = &skl_dmic_data,
-> @@ -59,7 +57,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "MX98357A",
->   		.drv_name = "kbl_n88l25_m98357a",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_codecs,
->   		.pdata = &skl_dmic_data,
-> @@ -67,7 +64,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "MX98927",
->   		.drv_name = "kbl_r5514_5663_max",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_5663_5514_codecs,
->   		.pdata = &skl_dmic_data,
-> @@ -75,7 +71,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "MX98927",
->   		.drv_name = "kbl_rt5663_m98927",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_poppy_codecs,
->   		.pdata = &skl_dmic_data,
-> @@ -83,12 +78,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "10EC5663",
->   		.drv_name = "kbl_rt5663",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   	},
->   	{
->   		.id = "DLGS7219",
->   		.drv_name = "kbl_da7219_max98357a",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_7219_98357_codecs,
->   		.pdata = &skl_dmic_data,
-> @@ -96,7 +89,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "DLGS7219",
->   		.drv_name = "kbl_da7219_max98927",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_7219_98927_codecs,
->   		.pdata = &skl_dmic_data
-> @@ -104,17 +96,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "10EC5660",
->   		.drv_name = "kbl_rt5660",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   	},
->   	{
->   		.id = "10EC3277",
->   		.drv_name = "kbl_rt5660",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   	},
->   	{
->   		.id = "DLGS7219",
->   		.drv_name = "kbl_da7219_max98373",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &kbl_7219_98373_codecs,
->   		.pdata = &skl_dmic_data
-> @@ -122,7 +111,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->   	{
->   		.id = "MX98373",
->   		.drv_name = "kbl_max98373",
-> -		.fw_filename = "intel/dsp_fw_kbl.bin",
->   		.pdata = &skl_dmic_data
->   	},
->   	{},
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-> index 42fa40a8d932..ec969044706c 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
-> @@ -21,12 +21,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_skl_machines[] = {
->   	{
->   		.id = "INT343A",
->   		.drv_name = "skl_alc286s_i2s",
-> -		.fw_filename = "intel/dsp_fw_release.bin",
->   	},
->   	{
->   		.id = "INT343B",
->   		.drv_name = "skl_n88l25_s4567",
-> -		.fw_filename = "intel/dsp_fw_release.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &skl_codecs,
->   		.pdata = &skl_dmic_data,
-> @@ -34,7 +32,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_skl_machines[] = {
->   	{
->   		.id = "MX98357A",
->   		.drv_name = "skl_n88l25_m98357a",
-> -		.fw_filename = "intel/dsp_fw_release.bin",
->   		.machine_quirk = snd_soc_acpi_codec_list,
->   		.quirk_data = &skl_codecs,
->   		.pdata = &skl_dmic_data,
-> diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-> index a4628a89d47d..1a208ef65fa8 100644
-> --- a/sound/soc/intel/common/sst-dsp-priv.h
-> +++ b/sound/soc/intel/common/sst-dsp-priv.h
-> @@ -306,7 +306,6 @@ struct sst_dsp {
->   	int sst_state;
->   	struct skl_cl_dev cl_dev;
->   	u32 intr_status;
-> -	const struct firmware *fw;
->   	struct snd_dma_buffer dmab;
->   };
->   
-> diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-> index 218e8bda6cae..7b283c2bb7b5 100644
-> --- a/sound/soc/intel/skylake/skl.h
-> +++ b/sound/soc/intel/skylake/skl.h
-> @@ -76,7 +76,6 @@ struct skl_dev {
->   	struct list_head ppl_list;
->   	struct list_head bind_list;
->   
-> -	const char *fw_name;
->   	char tplg_name[64];
->   	unsigned short pci_id;
->   	const struct firmware *tplg;
-> 
+> > Wasn't lying about FW version being unreliable. Let's say vendor
+> > receives quick FW drop with new RCR.. such eng drop may carry invalid
+> > numbers such as 0.0.0.0..
+> > In general, I try to avoid relying on FW version whenever possible. It
+> > can be dumped for debug reasons, true, but to be relied on? Not really.
+
+> Goodness, that's really bad. I didn't realize this.
+
+At a previous employer I modified our build stamping
+infrastructure to also include both a timestamp and a serialized
+build number in the version number since one of my colleagues was
+fond of sending people prereleases of what he was working on to
+other people with identical version numbers on different
+binaries leading to much confusion and checksumming.  You do see
+a lot of things with those serialized version numbers, especially
+SVN based projects.
+
+> > Personally, I'm against all hardcodes and would simply recommend all
+> > user to redirect their symlinks when they do switch kernel - along with
+> > dumping warning/ error message in dmesg. Hardcodes bring problems with
+> > forward compatibility and that's why host should offload them away to
+> > FW.
+
+> Cezary, I know you are not responsible for all this, but at this point if we
+> (Intel) can't guarantee any sort of interoperability with both firmware and
+> topology we should make it clear that this driver is not recommended unless
+> specific versions of the firmware/topology are used, and as a consequence
+> the typical client distros and desktop/laptop users should use HDaudio
+> legacy or SOF (for DMICs)
+
+Not the most elegent solution but I'm wondering if keeping a copy
+of the driver as is around and using new locations for the fixed
+firmware might be the safest way to handle this.  We could have a
+wrapper which tries to load the newer firmware and uses the fixed
+driver code if that's there, otherwise tries the old driver with
+the existing firmware paths.  This is obviously a horror show and
+leaves the old code sitting there but given the mistakes that
+have been made the whole situation looks like a house of cards.
+
+--96icqjDFsSi85SgI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1gXQcACgkQJNaLcl1U
+h9BOXQf/ZU3txwyyuIG8wXXp+yRzT8z6cNlyN/FM/K2tKbTXlzhgkQW+RjuB5lV2
+ocLIrYeUiEH4DoUVynSV0pFYWwMa4/gqVcn4vk2hvBgB454SQhjhU7pSEp9bu/9I
+OEHJq1NpufiyBMcXGzBfTIMFZTxALEHRO2bq+rdnhKvRKyzXP/djfM00Wx8iOMN+
+RxNxQDQVgk13BpwZAEmdc1Oz1c77hDi5WSaJPEAU3/4r/JvoYr+IkCmjpLhLz3c8
+5EqM7wLd6P5pvLN/ka041o42CB+pjBqX7Rg0vfSR8ICwXYQJf6S3f2xbAdC10iM6
+/eJk5AmqCMtbfHjvg2Sc1tUlmeZAUg==
+=2Ej8
+-----END PGP SIGNATURE-----
+
+--96icqjDFsSi85SgI--
+
+--===============3652906554290538228==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3652906554290538228==--
