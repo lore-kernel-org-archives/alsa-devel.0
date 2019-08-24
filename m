@@ -1,7 +1,8 @@
 From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 5/6] misc: atmel-ssc: get LRCLK pin selection from DT
-Date: Sat, 24 Aug 2019 22:26:56 +0200
-Message-ID: <5f1fd1b8f646c5ced1d838c381b6973e5abccd53.1566677788.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v2 4/6] dt-bindings: misc: atmel-ssc: LRCLK from TF/RF pin
+ option
+Date: Sat, 24 Aug 2019 22:26:55 +0200
+Message-ID: <9b85d5a7c7e788e9ed87d020323ad9292e3aeab7.1566677788.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,50 +14,32 @@ To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Arnd Bergmann <arnd@arndb.de>, Chas Williams <3chas3@gmail.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Rob Herring <robh-dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Store LRCLK pin selection for use by ASoC DAI driver.
+Add single-pin LRCLK source options for Atmel SSC module.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
 ---
-  v2: split from ASoC implementation
+  v2: split from implementation patch
 
 ---
- drivers/misc/atmel-ssc.c  | 9 +++++++++
- include/linux/atmel-ssc.h | 2 ++
- 2 files changed, 11 insertions(+)
+ Documentation/devicetree/bindings/misc/atmel-ssc.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index ab4144ea1f11..1322e29bc37a 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -210,6 +210,15 @@ static int ssc_probe(struct platform_device *pdev)
- 		struct device_node *np = pdev->dev.of_node;
- 		ssc->clk_from_rk_pin =
- 			of_property_read_bool(np, "atmel,clk-from-rk-pin");
-+		ssc->lrclk_from_tf_pin =
-+			of_property_read_bool(np, "atmel,lrclk-from-tf-pin");
-+		ssc->lrclk_from_rf_pin =
-+			of_property_read_bool(np, "atmel,lrclk-from-rf-pin");
-+
-+		if (ssc->lrclk_from_tf_pin && ssc->lrclk_from_rf_pin) {
-+			dev_err(&pdev->dev, "both LRCLK from RK/TK options found in DT node");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
-index 6091d2abc1eb..fbe1c2ffaa81 100644
---- a/include/linux/atmel-ssc.h
-+++ b/include/linux/atmel-ssc.h
-@@ -21,6 +21,8 @@ struct ssc_device {
- 	int			user;
- 	int			irq;
- 	bool			clk_from_rk_pin;
-+	bool			lrclk_from_tf_pin;
-+	bool			lrclk_from_rf_pin;
- 	bool			sound_dai;
- };
+diff --git a/Documentation/devicetree/bindings/misc/atmel-ssc.txt b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
+index f9fb412642fe..c98e96dbec3a 100644
+--- a/Documentation/devicetree/bindings/misc/atmel-ssc.txt
++++ b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
+@@ -24,6 +24,11 @@ Optional properties:
+        this parameter to choose where the clock from.
+      - By default the clock is from TK pin, if the clock from RK pin, this
+        property is needed.
++  - atmel,lrclk-from-tf-pin: bool property.
++  - atmel,lrclk-from-rf-pin: bool property.
++     - SSC in slave mode gets LRCLK from RF for receive and TF for transmit
++       data direction. This property makes both use single TF (or RF) pin
++       as LRCLK. At most one can be present.
+   - #sound-dai-cells: Should contain <0>.
+      - This property makes the SSC into an automatically registered DAI.
  
 -- 
 2.20.1
