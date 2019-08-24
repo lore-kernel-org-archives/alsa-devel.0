@@ -1,49 +1,50 @@
-From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 3/6] ASoC: atmel_ssc_dai: implement left-justified data
- mode
-Date: Sat, 24 Aug 2019 22:26:54 +0200
-Message-ID: <44fa6b700421e80778f20ff9ead2b148cf6d2e92.1566677788.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Subject: [PATCH] ASoC: es8316: limit headphone mixer volume
+Date: Sun, 25 Aug 2019 06:04:26 +0900
+Message-ID: <20190824210426.16218-1-katsuhiro@katsuster.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Arnd Bergmann <arnd@arndb.de>, Chas Williams <3chas3@gmail.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Rob Herring <robh-dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDCD3F80147
+ for <alsa-devel@alsa-project.org>; Sat, 24 Aug 2019 23:04:41 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
+Cc: Katsuhiro Suzuki <katsuhiro@katsuster.net>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Enable support for left-justified data mode for SSC-codec link.
+This patch limits Headphone mixer volume to 4 from 7.
+Because output sound suddenly becomes very loudly with many noise if
+set volume over 4.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 ---
- v2: rebased
+ sound/soc/codecs/es8316.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
----
- sound/soc/atmel/atmel_ssc_dai.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 7dc6ec9b8c7a..48e9eef34c0f 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -564,6 +564,15 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
+index 8dfb5dbeebbf..bc4141e1eb7f 100644
+--- a/sound/soc/codecs/es8316.c
++++ b/sound/soc/codecs/es8316.c
+@@ -91,7 +91,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("Headphone Playback Volume", ES8316_CPHP_ICAL_VOL,
+ 		       4, 0, 3, 1, hpout_vol_tlv),
+ 	SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
+-		       0, 4, 7, 0, hpmixer_gain_tlv),
++		       0, 4, 4, 0, hpmixer_gain_tlv),
  
- 	switch (ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		fs_osync = SSC_FSOS_POSITIVE;
-+		fs_edge = SSC_START_RISING_RF;
-+
-+		rcmr =	  SSC_BF(RCMR_STTDLY, 0);
-+		tcmr =	  SSC_BF(TCMR_STTDLY, 0);
-+
-+		break;
-+
- 	case SND_SOC_DAIFMT_I2S:
- 		fs_osync = SSC_FSOS_NEGATIVE;
- 		fs_edge = SSC_START_FALLING_RF;
+ 	SOC_ENUM("Playback Polarity", dacpol),
+ 	SOC_DOUBLE_R_TLV("DAC Playback Volume", ES8316_DAC_VOLL,
 -- 
-2.20.1
+2.23.0.rc1
