@@ -1,155 +1,215 @@
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 02/35] ASoC: Intel: Skylake: Add
- FIRMWARE_CONFIG IPC request
-Date: Sat, 24 Aug 2019 11:17:47 +0200
-Message-ID: <f05b3a3e-db2b-8d07-3531-14e9afd81d1a@intel.com>
-References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-3-cezary.rojewski@intel.com>
- <3173be35-0721-a36d-d328-b8e2ad3b5008@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [RESEND PATCH v4 1/4] dt-bindings: soundwire: add
+ slave bindings
+Date: Sat, 24 Aug 2019 10:28:09 +0100
+Message-ID: <7ee47f26-12f8-6028-cb83-7f59e669979f@linaro.org>
+References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
+ <20190822233759.12663-2-srinivas.kandagatla@linaro.org>
+ <7da8aa89-2119-21d1-0e29-8894a8d40bf0@linux.intel.com>
+ <37be6b6d-7e7f-2cd6-f9e9-f0cac48791ad@linaro.org>
+ <d538238d-25d8-f179-c900-90be50ce814d@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14752F80145
- for <alsa-devel@alsa-project.org>; Sat, 24 Aug 2019 11:17:53 +0200 (CEST)
-In-Reply-To: <3173be35-0721-a36d-d328-b8e2ad3b5008@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d538238d-25d8-f179-c900-90be50ce814d@linux.intel.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, spapothi@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0yMyAyMDoyNCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4gCj4g
-T24gOC8yMi8xOSAyOjAzIFBNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+IEltcGxlbWVudCBp
-bnRlcmZhY2UgZm9yIHJldHJpZXZpbmcgZmlybXdhcmUgY29uZmlndXJhdGlvbi4gU2t5bGFrZQo+
-PiBkcml2ZXIgd2lsbCB1c2UgdGhpcyBkYXRhIGluc3RlYWQgb2YgaGFyZGNvZGVkIHZhbHVlcyBp
-biB1cGRhdGVzIHRvCj4+IGNvbWUuCj4+Cj4+IE1vc3QgcGFyYW1zIGFyZSBjdXJyZW50bHkgdW51
-c2VkLiBJbiB0aW1lIGRyaXZlciBkZXBlbmRlbmN5IG9uIGZ3IGNvbmZpZwo+PiB3aWxsIGluY3Jl
-YXNlLCBhbmQgd2l0aCBpdCwgbW9yZSBwYXJzaW5nIHdpbGwgYmUgdW52ZWlsZWQuCj4+Cj4+IFNp
-Z25lZC1vZmYtYnk6IENlemFyeSBSb2pld3NraSA8Y2V6YXJ5LnJvamV3c2tpQGludGVsLmNvbT4K
-Pj4gLS0tCj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMgfCAxMjIg
-KysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gwqAgc291bmQvc29jL2ludGVsL3NreWxha2Uv
-c2tsLXNzdC1pcGMuaCB8wqAgNzIgKysrKysrKysrKysrKysrCj4+IMKgIHNvdW5kL3NvYy9pbnRl
-bC9za3lsYWtlL3NrbC5owqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAxICsKPj4gwqAgMyBmaWxlcyBj
-aGFuZ2VkLCAxOTUgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2lu
-dGVsL3NreWxha2Uvc2tsLXNzdC1pcGMuYyAKPj4gYi9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9z
-a2wtc3N0LWlwYy5jCj4+IGluZGV4IDY2N2NkZGRjMjg5Zi4uZTllMTFlYzRjOTdiIDEwMDY0NAo+
-PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtc3N0LWlwYy5jCj4+ICsrKyBiL3Nv
-dW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC1zc3QtaXBjLmMKPj4gQEAgLTExLDYgKzExLDcgQEAK
-Pj4gwqAgI2luY2x1ZGUgInNrbC5oIgo+PiDCoCAjaW5jbHVkZSAic2tsLXNzdC1kc3AuaCIKPj4g
-wqAgI2luY2x1ZGUgInNrbC1zc3QtaXBjLmgiCj4+ICsjaW5jbHVkZSAic2tsLXRvcG9sb2d5Lmgi
-Cj4+IMKgICNpbmNsdWRlICJzb3VuZC9oZGF1ZGlvX2V4dC5oIgo+PiBAQCAtMTA2NywzICsxMDY4
-LDEyNCBAQCBpbnQgc2tsX2lwY19zZXRfZDBpeChzdHJ1Y3Qgc3N0X2dlbmVyaWNfaXBjIAo+PiAq
-aXBjLCBzdHJ1Y3Qgc2tsX2lwY19kMGl4X21zZyAqbXNnKQo+PiDCoMKgwqDCoMKgIHJldHVybiBy
-ZXQ7Cj4+IMKgIH0KPj4gwqAgRVhQT1JUX1NZTUJPTF9HUEwoc2tsX2lwY19zZXRfZDBpeCk7Cj4+
-ICsKPj4gK2ludCBza2xfaXBjX2Z3X2NmZ19nZXQoc3RydWN0IHNzdF9nZW5lcmljX2lwYyAqaXBj
-LCBzdHJ1Y3Qgc2tsX2Z3X2NmZyAKPj4gKmNmZykKPj4gK3sKPj4gK8KgwqDCoCBzdHJ1Y3Qgc2ts
-X2lwY19sYXJnZV9jb25maWdfbXNnIG1zZyA9IHswfTsKPj4gK8KgwqDCoCBzdHJ1Y3Qgc2tsX3Rs
-diAqdGx2Owo+PiArwqDCoMKgIHNpemVfdCBieXRlcyA9IDAsIG9mZnNldCA9IDA7Cj4+ICvCoMKg
-wqAgdTggKnBheWxvYWQgPSBOVUxMOwo+PiArwqDCoMKgIGludCByZXQ7Cj4+ICsKPj4gK8KgwqDC
-oCBtc2cubW9kdWxlX2lkID0gMDsKPj4gK8KgwqDCoCBtc2cuaW5zdGFuY2VfaWQgPSAwOwo+PiAr
-wqDCoMKgIG1zZy5sYXJnZV9wYXJhbV9pZCA9IFNLTF9CQVNFRldfRklSTVdBUkVfQ09ORklHOwo+
-PiArCj4+ICvCoMKgwqAgcmV0ID0gc2tsX2lwY19nZXRfbGFyZ2VfY29uZmlnKGlwYywgJm1zZywg
-KHUzMiAqKikmcGF5bG9hZCwgJmJ5dGVzKTsKPj4gK8KgwqDCoCBpZiAocmV0KQo+PiArwqDCoMKg
-wqDCoMKgwqAgZ290byBleGl0Owo+PiArCj4+ICvCoMKgwqAgd2hpbGUgKG9mZnNldCA8IGJ5dGVz
-KSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCB0bHYgPSAoc3RydWN0IHNrbF90bHYgKikocGF5bG9hZCAr
-IG9mZnNldCk7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIHN3aXRjaCAodGx2LT50eXBlKSB7Cj4+
-ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfRldfVkVSU0lPTjoKPj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgbWVtY3B5KCZjZmctPmZ3X3ZlcnNpb24sIHRsdi0+dmFsdWUsCj4+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2l6ZW9mKGNmZy0+ZndfdmVyc2lvbikpOwo+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAg
-Y2FzZSBTS0xfRldfQ0ZHX01FTU9SWV9SRUNMQUlNRUQ6Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGNmZy0+bWVtb3J5X3JlY2xhaW1lZCA9ICp0bHYtPnZhbHVlOwo+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBTS0xfRldfQ0ZH
-X1NMT1dfQ0xPQ0tfRlJFUV9IWjoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2ZnLT5zbG93
-X2Nsb2NrX2ZyZXFfaHogPSAqdGx2LT52YWx1ZTsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-YnJlYWs7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIGNhc2UgU0tMX0ZXX0NGR19GQVNUX0NMT0NL
-X0ZSRVFfSFo6Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNmZy0+ZmFzdF9jbG9ja19mcmVx
-X2h6ID0gKnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+PiAr
-Cj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfQUxIX1NVUFBPUlRfTEVWRUw6Cj4+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNmZy0+YWxoX3N1cHBvcnQgPSAqdGx2LT52YWx1ZTsK
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKg
-IGNhc2UgU0tMX0ZXX0NGR19JUENfRExfTUFJTEJPWF9CWVRFUzoKPj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgY2ZnLT5pcGNfZGxfbWFpbGJveF9ieXRlcyA9ICp0bHYtPnZhbHVlOwo+PiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBT
-S0xfRldfQ0ZHX0lQQ19VTF9NQUlMQk9YX0JZVEVTOgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBjZmctPmlwY191bF9tYWlsYm94X2J5dGVzID0gKnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGJyZWFrOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19D
-RkdfVFJBQ0VfTE9HX0JZVEVTOgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjZmctPnRyYWNl
-X2xvZ19ieXRlcyA9ICp0bHYtPnZhbHVlOwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVh
-azsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBTS0xfRldfQ0ZHX01BWF9QUExfQ09VTlQ6
-Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNmZy0+bWF4X3BwbF9jb3VudCA9ICp0bHYtPnZh
-bHVlOwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDC
-oMKgwqAgY2FzZSBTS0xfRldfQ0ZHX01BWF9BU1RBVEVfQ09VTlQ6Cj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGNmZy0+bWF4X2FzdGF0ZV9jb3VudCA9ICp0bHYtPnZhbHVlOwo+PiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBTS0xf
-RldfQ0ZHX01BWF9NT0RVTEVfUElOX0NPVU5UOgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBj
-ZmctPm1heF9tb2R1bGVfcGluX2NvdW50ID0gKnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGJyZWFrOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdf
-TU9EVUxFU19DT1VOVDoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2ZnLT5tb2R1bGVzX2Nv
-dW50ID0gKnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+PiAr
-Cj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfTUFYX01PRF9JTlNUX0NPVU5UOgo+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjZmctPm1heF9tb2RfaW5zdF9jb3VudCA9ICp0bHYt
-PnZhbHVlOwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKg
-wqDCoMKgwqAgY2FzZSBTS0xfRldfQ0ZHX01BWF9MTF9UQVNLU19QRVJfUFJJX0NPVU5UOgo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjZmctPm1heF9sbF90YXNrc19wZXJfcHJpX2NvdW50ID0g
-KnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+PiArCj4+ICvC
-oMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfTExfUFJJX0NPVU5UOgo+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBjZmctPmxsX3ByaV9jb3VudCA9ICp0bHYtPnZhbHVlOwo+PiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBTS0xf
-RldfQ0ZHX01BWF9EUF9UQVNLU19DT1VOVDoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2Zn
-LT5tYXhfZHBfdGFza3NfY291bnQgPSAqdGx2LT52YWx1ZTsKPj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgYnJlYWs7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIGNhc2UgU0tMX0ZXX0NGR19NQVhf
-TElCU19DT1VOVDoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2ZnLT5tYXhfbGlic19jb3Vu
-dCA9ICp0bHYtPnZhbHVlOwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+
-PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBTS0xfRldfQ0ZHX1hUQUxfRlJFUV9IWjoKPj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgY2ZnLT54dGFsX2ZyZXFfaHogPSAqdGx2LT52YWx1ZTsKPj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIGNhc2Ug
-U0tMX0ZXX0NGR19VQU9MX1NVUFBPUlQ6Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNmZy0+
-dWFvbF9zdXBwb3J0ID0gKnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJy
-ZWFrOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfUE9XRVJfR0FUSU5H
-X1BPTElDWToKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2ZnLT5wb3dlcl9nYXRpbmdfcG9s
-aWN5ID0gKnRsdi0+dmFsdWU7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+PiAr
-Cj4+ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfRE1BX0JVRkZFUl9DT05GSUc6Cj4+
-ICvCoMKgwqDCoMKgwqDCoCBjYXNlIFNLTF9GV19DRkdfU0NIRURVTEVSX0NPTkZJRzoKPj4gK8Kg
-wqDCoMKgwqDCoMKgIGNhc2UgU0tMX0ZXX0NGR19DTE9DS1NfQ09ORklHOgo+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBicmVhazsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgZGVmYXVsdDoKPj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2X2luZm8oaXBjLT5kZXYsICJVbnJlY29nbml6ZWQg
-ZncgcGFyYW06ICVkXG4iLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRsdi0+
-dHlwZSk7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+IAo+IElzbid0IHRoaXMg
-YW4gZXJyb3I/Cj4gSWYgdGhlcmUgYXJlIG90aGVyIHBvc3NpYmxlIHZhbHVlcywgd2h5IG5vdCBs
-aXN0IHRoZW0gYW5kIHNraXAgdGhlbSwgYXMgCj4gZG9uZSBhYm92ZT8KPiAKClByZXR0eSBzdXJl
-IEkgY2Fubm90IHNoYXJlIG5hbWVzIGZvciBhbGwgY2FwYWJpbGl0aWVzIGFzIHRoZXNlIGFyZSAK
-RU1CQVJHT2VkLiBNb3Jlb3ZlciwgYm90aCBGV19DRkcgYW5kIEhXX0NGRyBhbmQgY29uc3RhbnRs
-eSBiZWluZyB1cGRhdGVkIAphbmQgdGh1cyBuZXcgY29uc3RhbnRzIGFyZSBhcHBlbmRlZC4gSSBm
-aW5kIGl0IGJlc3QgdG8gImJyZWFrIiB3aGVuIAplbmNvdW50ZXJpbmcga25vd24gYW5kIHVuLUVN
-QkFSR09FRCBjb25zdGFudCBhbmQgc2ltcGx5IGR1bXAgaW5mbyB2YWx1ZSAKaWYgdGhlIG9wcG9z
-aXRlIGlzIHRydWUuCgpOZXcgY2FwYWJpbGl0aWVzIGFyZSBhbHdheXMgdGllZCB0byBuZXdlciBw
-bGF0Zm9ybXMuIElmIHRoZXJlIHdpbGwgYmUgYSAKbmVlZCBmb3IgYWRkaW5nIHRoZW0sIHRoZXNl
-IHdvbid0IGJlIGV2ZW4gcHJlc2VudCBpbiBTS0wvS0JMIGFuZCBzdWNoIApGV3MuIEF0IHRoZSBz
-YW1lIHRpbWUgaWYgZ2l2ZW4gYmluYXJ5IGRyb3AgY29udGFpbnMgc29tZXRoaW5nIG5ldyBidXQg
-Cm5vdCByZXF1aXJlZCB0byBiZSBoYW5kbGVkIGJ5IGhvc3QgaW4gZ2VuZXJpYyBjYXNlLCBkdW1w
-aW5nIGVycm9yIGlzIApjb3VudGVyLWludHVpdGl2ZS4KCj4+ICvCoMKgwqDCoMKgwqDCoCB9Cj4+
-ICsKPj4gK8KgwqDCoMKgwqDCoMKgIG9mZnNldCArPSBzaXplb2YoKnRsdikgKyB0bHYtPmxlbmd0
-aDsKPj4gK8KgwqDCoCB9Cj4+ICsKPj4gK2V4aXQ6Cj4+ICvCoMKgwqAga2ZyZWUocGF5bG9hZCk7
-Cj4+ICvCoMKgwqAgcmV0dXJuIHJldDsKPj4gK30KPj4gK0VYUE9SVF9TWU1CT0xfR1BMKHNrbF9p
-cGNfZndfY2ZnX2dldCk7Cj4gCj4+ICtlbnVtIHNrbF9hbGhfc3VwcG9ydF9sZXZlbCB7Cj4+ICvC
-oMKgwqAgQUxIX05PX1NVUFBPUlQgPSAweDAwMDAwLAo+PiArwqDCoMKgIEFMSF9DQVZTXzFfOF9D
-TkwgPSAweDEwMDAwLAo+PiArfTsKPiAKPiBTdXBwb3J0IGZvciBBTEggaGFzbid0IGNoYW5nZWQg
-ZXZlbiBwYXN0IDEuOCwgYW5kIHJlZmVyZW5jZXMgdG8gQ05MIGFyZSAKPiBwcm9iYWJseSBub3Qg
-bmVlZGVkLgoKVGhlc2UgYXJlIEZXIHR5cGVzIGFuZCBhcmUgaGVyZSB0byBiZSBsZWZ0IHVudG91
-Y2hlZC4gRW5zdXJlcyBwYXJzZWQgCnZhbHVlcyBvbiBob3N0IHNpZGUgbWF0Y2ggRlcgc2lkZS4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+On 23/08/2019 17:44, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 8/23/19 10:57 AM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 23/08/2019 16:41, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> On 8/22/19 6:37 PM, Srinivas Kandagatla wrote:
+>>>> This patch adds bindings for Soundwire Slave devices that includes how
+>>>> SoundWire enumeration address and Link ID are used to represented in
+>>>> SoundWire slave device tree nodes.
+>>>>
+>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>> ---
+>>>>   .../soundwire/soundwire-controller.yaml       | 75 
+>>>> +++++++++++++++++++
+>>>>   1 file changed, 75 insertions(+)
+>>>>   create mode 100644 
+>>>> Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+>>>>
+>>>> diff --git 
+>>>> a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml 
+>>>> b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+>>>> new file mode 100644
+>>>> index 000000000000..91aa6c6d6266
+>>>> --- /dev/null
+>>>> +++ 
+>>>> b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+>>>> @@ -0,0 +1,75 @@
+>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>> +%YAML 1.2
+>>>> +---
+>>>> +$id: 
+>>>> http://devicetree.org/schemas/soundwire/soundwire-controller.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>> +title: SoundWire Controller Generic Binding
+>>>> +
+>>>> +maintainers:
+>>>> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>> +
+>>>> +description: |
+>>>> +  SoundWire busses can be described with a node for the SoundWire 
+>>>> controller
+>>>> +  device and a set of child nodes for each SoundWire slave on the bus.
+>>>> +
+>>>> +properties:
+>>>> +  $nodename:
+>>>> +    pattern: "^soundwire(@.*|-[0-9a-f])*$"
+> 
+> re-reading this, it looks like you are defining the controller bindings, 
+> but there are no real controller-level properties except for the fact 
+> that they include slave bindings?
+> 
+Yes, Each vendor specific master can have there specific properties 
+here, this is just to represent how slave nodes represented w.r.t to 
+master nodes.
+
+> In MIPI the notion of controller is that it can deal with multiple 
+> links, each of which having specific properties (clock speed, clock stop 
+> properties, etc).
+> 
+>>>> +
+>>>> +  "#address-cells":
+>>>> +    const: 2
+>>>> +
+>>>> +  "#size-cells":
+>>>> +    const: 0
+>>>> +
+>>>> +patternProperties:
+>>>> +  "^.*@[0-9a-f]+$":
+>>>> +    type: object
+>>>> +
+>>>> +    properties:
+>>>> +      compatible:
+>>>> +      pattern: "^sdw[0-9][0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{2}$"
+>>>
+>>> So is this a 64-bit value, as in the MIPI spec, or is this part of 
+>>> the _ADR description?
+>>
+>> Rob did not like encoding compatible string exactly like _ADR encoding.
+>>
+>> https://lkml.org/lkml/2019/8/22/490
+> 
+> Wondering if we are talking about different concepts?
+> 
+> Rob's point was about the InstanceID
+> 
+> "Assuming you could have more than 1 of the same device on the bus,
+> then you need some way to distinguish them and the way that's done for
+> DT is unit-address/reg. And compatible strings should be constant for
+> each instance."
+> 
+> You can use the MIPI encoding *except* for the InstanceID, that'd be 
+> fine. It'll just be a bit weird since the Slave device will report the 
+> 48 bits that include the Instance ID, so you'll have to special case 
+> this field, but if this is a DT requirement then fine.
+> 
+> Rob's point does not apply to the link ID - which is used when you have 
+> multiple masters in your controller. The Slave device is attached in one 
+> location and will never move, so that is a constant value.
+
+Point is that this compatible is for slave device, it should not matter 
+where and how the slave is connected, compatible should be constant 
+irrespective of Link ID.
+Lets say for example if WSA881x slave device is connected to a 
+single-Link Controller and the same device is connected to a 
+MultiLink-controller then we would endup in more than one compatible 
+string for WSA881x driver.
+
+
+ From Disco Specic it clearly says that LinkID values are relative
+to the immediate parent Device. So having LinkID in compatible string is 
+very fragile.
+
+> 
+>>
+>>> I also don't get why the first item in in base10?
+>>>
+>>
+>> As this corresponds to Soundwire Version, and I have no visibility of 
+>> version number encoding after reaching number 9 in this field.
+>>
+>> This can be updated once we have more info on how the Version encoding 
+>> will look like in future.
+>>
+>> Idea of limiting regex to [0-9] for version is to enforce some checking!
+> 
+> the version is a 4 bit value starting at 1 for SoundWire 1.0. There is 
+> nothing in the spec that talks about a limit to 9.
+> 
+> It's unlikely we'll ever reach that but you are interpreting a spec 
+> here. plus just below you mention all fields as being hexadecimal.
+> 
+Am happy to change this to
+
+pattern: "^sdw[0-9a-f][0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{2}$"
+
+if you are okay with rest of the stuff.
+
+thanks,
+srini
+>>
+>> --srini
+>>
+>>>
+>>>> +      description:
+>>>> +      Is the textual representation of SoundWire Enumeration
+>>>> +      address. compatible string should contain SoundWire Version ID,
+>>>> +      Manufacturer ID, Part ID and Class ID in order and shall be in
+>>>> +      lower-case hexadecimal with leading zeroes.
+>>>> +      Valid sizes of these fields are
+>>>> +      Version ID is 1 nibble, number '0x1' represents SoundWire 1.0
+>>>> +      and '0x2' represents SoundWire 1.1 and so on.
+>>>> +      MFD is 4 nibbles
+>>>> +      PID is 4 nibbles
+>>>> +      CID is 2 nibbles
+>>>> +      More Information on detail of encoding of these fields can be
+>>>> +      found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
+>>>> +
+>>>> +      reg:
+>>>> +        maxItems: 1
+>>>> +        description:
+>>>> +          Instance ID and Link ID of SoundWire Device Address.
+>>>> +
+>>>> +    required:
+>>>> +      - compatible
+>>>> +      - reg
+>>>> +
+>>>> +examples:
+>>>> +  - |
+>>>> +    soundwire@c2d0000 {
+>>>> +        #address-cells = <2>;
+>>>> +        #size-cells = <0>;
+>>>> +        compatible = "qcom,soundwire-v1.5.0";
+>>>> +        reg = <0x0c2d0000 0x2000>;
+>>>> +
+>>>> +        speaker@1 {
+>>>> +            compatible = "sdw10217201000";
+>>>> +            reg = <1 0>;
+>>>> +        };
+>>>> +
+>>>> +        speaker@2 {
+>>>> +            compatible = "sdw10217201000";
+>>>> +            reg = <2 0>;
+>>>> +        };
+>>>> +    };
+>>>> +
+>>>> +...
+>>>>
