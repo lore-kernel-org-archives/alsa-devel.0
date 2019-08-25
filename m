@@ -1,17 +1,18 @@
-From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-Subject: [PATCH v2] ASoC: SOF: topology: fix get control data
-	return type and arguments
-Date: Wed, 21 Aug 2019 16:21:15 +0300
-Message-ID: <20190821132115.26578-1-jaska.uimonen@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: allocate additional
+	entries for list of packet descriptor to avoid out-of-bounds access
+Date: Sun, 25 Aug 2019 15:52:47 +0900
+Message-ID: <20190825065247.26840-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E0C6F802FB
- for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2019 15:31:25 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 253C6F801ED
+ for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2019 08:52:54 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,85 +22,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Jaska Uimonen <jaska.uimonen@intel.com>, broonie@kernel.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jaska Uimonen <jaska.uimonen@intel.com>
+This patch is for Linux v5.3-rc7.
 
-sof_get_control_data returns negative values even though the return
-value is defined unsigned (size_t). So change the return value type to
-int and add the data size as pointer argument to sof_get_control_data to
-avoid ambiquity in the meaning of the return type.
+In a case of delay to execute scheduled tasklet for isoc context, it's
+possible to handle queued packets than 16 (=INTERRUPT_INTERVAL). In the
+case, out-of-bounds access occurs because the list of packet descriptor
+is allocated just for 16 packets. This causes any negative effects in
+kernel memory or software IRQ context.
 
-Fixes: cac974a51ebb ("ASoC: SOF: topology: use set_get_data in process load")
-Reported by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
+It's quite rare because current implementation allows user processes to
+flush the queued packet in process context by executing several PCM
+ioctl(2) commands. However, it's good to prevent.
+
+This commit is a prevention against this bug. For safe, the allocation is
+done for 16 plus 12 packets, equivalent to 1.5 msec plus. Furthermore,
+when detecting the case, packet streaming is cancelled and kernel log is
+printed to notice to users and developers.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/sof/topology.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ sound/firewire/amdtp-stream.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 28a7a6e06a53..fc85efbad378 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1752,17 +1752,19 @@ static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
- 	return ret;
- }
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 1a92855c7647..f03321888997 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -56,6 +56,11 @@
+ #define INTERRUPT_INTERVAL	16
+ #define QUEUE_LENGTH		48
  
--static size_t sof_get_control_data(struct snd_sof_dev *sdev,
--				   struct snd_soc_dapm_widget *widget,
--				   struct sof_widget_data *wdata)
-+static int sof_get_control_data(struct snd_sof_dev *sdev,
-+				struct snd_soc_dapm_widget *widget,
-+				struct sof_widget_data *wdata,
-+				size_t *size)
++// For jitter of software IRQ execution, keep more entries for the list
++// of packet descriptor equivalent to 1.5 msec to avoid out-of-bounds
++// access to process queued packets.
++#define DESC_COUNT	(INTERRUPT_INTERVAL + 12)
++
+ // For iso header, tstamp and 2 CIP header.
+ #define IR_CTX_HEADER_SIZE_CIP		16
+ // For iso header and tstamp.
+@@ -779,12 +784,22 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
  {
- 	const struct snd_kcontrol_new *kc;
- 	struct soc_mixer_control *sm;
- 	struct soc_bytes_ext *sbe;
- 	struct soc_enum *se;
--	size_t size = 0;
+ 	struct amdtp_stream *s = private_data;
+ 	const __be32 *ctx_header = header;
+-	unsigned int packets = header_length / sizeof(*ctx_header);
++	unsigned int packets;
  	int i;
  
-+	*size = 0;
+ 	if (s->packet_index < 0)
+ 		return;
+ 
++	// The number of packets in buffer.
++	packets = header_length / sizeof(*ctx_header);
++	if (packets > DESC_COUNT) {
++		cancel_stream(s);
++		dev_info(&s->unit->device,
++			 "out-stream: Unexpected count of packet: %d\n",
++			 packets);
++		return;
++	}
 +
- 	for (i = 0; i < widget->num_kcontrols; i++) {
- 		kc = &widget->kcontrol_news[i];
+ 	generate_ideal_pkt_descs(s, s->pkt_descs, ctx_header, packets);
  
-@@ -1800,7 +1802,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
- 		if (wdata[i].pdata->magic != SOF_ABI_MAGIC)
- 			return -EINVAL;
+ 	process_ctx_payloads(s, s->pkt_descs, packets);
+@@ -830,6 +845,13 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
  
--		size += wdata[i].pdata->size;
-+		*size += wdata[i].pdata->size;
+ 	// The number of packets in buffer.
+ 	packets = header_length / s->ctx_data.tx.ctx_header_size;
++	if (packets > DESC_COUNT) {
++		cancel_stream(s);
++		dev_info(&s->unit->device,
++			 "in-stream: Unexpected count of packet: %d\n",
++			 packets);
++		return;
++	}
  
- 		/* get data type */
- 		switch (wdata[i].control->cmd) {
-@@ -1819,7 +1821,7 @@ static size_t sof_get_control_data(struct snd_sof_dev *sdev,
- 		}
- 	}
+ 	err = generate_device_pkt_descs(s, s->pkt_descs, ctx_header, packets);
+ 	if (err < 0) {
+@@ -981,8 +1003,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	else
+ 		s->tag = TAG_CIP;
  
--	return size;
-+	return 0;
- }
- 
- static int sof_process_load(struct snd_soc_component *scomp, int index,
-@@ -1855,12 +1857,11 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
- 			return -ENOMEM;
- 
- 		/* get possible component controls and get size of all pdata */
--		ipc_data_size = sof_get_control_data(sdev, widget, wdata);
-+		ret = sof_get_control_data(sdev, widget, wdata,
-+					   &ipc_data_size);
- 
--		if (ipc_data_size <= 0) {
--			ret = ipc_data_size;
-+		if (ret < 0)
- 			goto out;
--		}
- 	}
- 
- 	ipc_size = sizeof(struct sof_ipc_comp_process) +
+-	s->pkt_descs = kcalloc(INTERRUPT_INTERVAL, sizeof(*s->pkt_descs),
+-			       GFP_KERNEL);
++	s->pkt_descs = kcalloc(DESC_COUNT, sizeof(*s->pkt_descs), GFP_KERNEL);
+ 	if (!s->pkt_descs) {
+ 		err = -ENOMEM;
+ 		goto err_context;
 -- 
-2.13.6
+2.20.1
