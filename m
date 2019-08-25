@@ -1,19 +1,22 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Clean up check_input_term()
-Date: Sun, 25 Aug 2019 09:35:34 +0200
-Message-ID: <20190825073534.25918-1-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-lib: allocate additional
+ entries for list of packet descriptor to avoid out-of-bounds access
+Date: Sun, 25 Aug 2019 17:41:29 +0900
+Message-ID: <20190825084128.GA28851@workstation>
+References: <20190825065247.26840-1-o-takashi@sakamocchi.jp>
+ <s5hwof14sx1.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CD06F80213
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2019 09:35:38 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 0FDD4AE0C
- for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2019 07:35:38 +0000 (UTC)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E36DF80144
+ for <alsa-devel@alsa-project.org>; Sun, 25 Aug 2019 10:41:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hwof14sx1.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,473 +26,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-The primary changes in this patch are cleanups of __check_input_term()
-and move to a non-nested switch-case block by evaluating the pair of
-UAC version and the unit type, as we've done for parse_audio_unit().
-Also each parser is split into the function for readability.
+Hi,
 
-Now, a slight behavior change by this cleanup is the handling of
-processing and extension units.  Formerly we've dealt with them
-differently between UAC1/2 and UAC3; the latter returns an error if no
-input sources are available, while the former continues to parse.
+On Sun, Aug 25, 2019 at 09:15:38AM +0200, Takashi Iwai wrote:
+> On Sun, 25 Aug 2019 08:52:47 +0200,
+> Takashi Sakamoto wrote:
+> > 
+> > This patch is for Linux v5.3-rc7.
+> 
+> The patch doesn't seem cleanly applicable to for-linus branch (or
+> 5.3-rc6).
 
-In this patch, unify the behavior in all cases: when input sources are
-available, it parses recursively, then override the type and the id,
-as well as channel information if not provided yet.
+Oops. Against the commit comment, I rebased this patch onto your 'for-next'
+branch...
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer.c | 401 ++++++++++++++++++++++++++++--------------------------
- 1 file changed, 209 insertions(+), 192 deletions(-)
+> Care to fix and resend?
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index c9777d8a76f5..5291739cab57 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -758,224 +758,242 @@ static int uac_mixer_unit_get_channels(struct mixer_build *state,
- }
- 
- /*
-- * parse the source unit recursively until it reaches to a terminal
-- * or a branched unit.
-+ * Parse Input Terminal Unit
-  */
- static int __check_input_term(struct mixer_build *state, int id,
--			    struct usb_audio_term *term)
-+			      struct usb_audio_term *term);
-+
-+static int parse_term_uac1_iterm_unit(struct mixer_build *state,
-+				      struct usb_audio_term *term,
-+				      void *p1, int id)
- {
--	int protocol = state->mixer->protocol;
-+	struct uac_input_terminal_descriptor *d = p1;
-+
-+	term->type = le16_to_cpu(d->wTerminalType);
-+	term->channels = d->bNrChannels;
-+	term->chconfig = le16_to_cpu(d->wChannelConfig);
-+	term->name = d->iTerminal;
-+	return 0;
-+}
-+
-+static int parse_term_uac2_iterm_unit(struct mixer_build *state,
-+				      struct usb_audio_term *term,
-+				      void *p1, int id)
-+{
-+	struct uac2_input_terminal_descriptor *d = p1;
- 	int err;
--	void *p1;
--	unsigned char *hdr;
- 
--	memset(term, 0, sizeof(*term));
--	for (;;) {
--		/* a loop in the terminal chain? */
--		if (test_and_set_bit(id, state->termbitmap))
--			return -EINVAL;
-+	/* call recursively to verify the referenced clock entity */
-+	err = __check_input_term(state, d->bCSourceID, term);
-+	if (err < 0)
-+		return err;
- 
--		p1 = find_audio_control_unit(state, id);
--		if (!p1)
--			break;
--		if (!snd_usb_validate_audio_desc(p1, protocol))
--			break; /* bad descriptor */
-+	/* save input term properties after recursion,
-+	 * to ensure they are not overriden by the recursion calls
-+	 */
-+	term->id = id;
-+	term->type = le16_to_cpu(d->wTerminalType);
-+	term->channels = d->bNrChannels;
-+	term->chconfig = le32_to_cpu(d->bmChannelConfig);
-+	term->name = d->iTerminal;
-+	return 0;
-+}
- 
--		hdr = p1;
--		term->id = id;
-+static int parse_term_uac3_iterm_unit(struct mixer_build *state,
-+				      struct usb_audio_term *term,
-+				      void *p1, int id)
-+{
-+	struct uac3_input_terminal_descriptor *d = p1;
-+	int err;
- 
--		if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
--			switch (hdr[2]) {
--			case UAC_INPUT_TERMINAL:
--				if (protocol == UAC_VERSION_1) {
--					struct uac_input_terminal_descriptor *d = p1;
--
--					term->type = le16_to_cpu(d->wTerminalType);
--					term->channels = d->bNrChannels;
--					term->chconfig = le16_to_cpu(d->wChannelConfig);
--					term->name = d->iTerminal;
--				} else { /* UAC_VERSION_2 */
--					struct uac2_input_terminal_descriptor *d = p1;
--
--					/* call recursively to verify that the
--					 * referenced clock entity is valid */
--					err = __check_input_term(state, d->bCSourceID, term);
--					if (err < 0)
--						return err;
-+	/* call recursively to verify the referenced clock entity */
-+	err = __check_input_term(state, d->bCSourceID, term);
-+	if (err < 0)
-+		return err;
- 
--					/* save input term properties after recursion,
--					 * to ensure they are not overriden by the
--					 * recursion calls */
--					term->id = id;
--					term->type = le16_to_cpu(d->wTerminalType);
--					term->channels = d->bNrChannels;
--					term->chconfig = le32_to_cpu(d->bmChannelConfig);
--					term->name = d->iTerminal;
--				}
--				return 0;
--			case UAC_FEATURE_UNIT: {
--				/* the header is the same for v1 and v2 */
--				struct uac_feature_unit_descriptor *d = p1;
-+	/* save input term properties after recursion,
-+	 * to ensure they are not overriden by the recursion calls
-+	 */
-+	term->id = id;
-+	term->type = le16_to_cpu(d->wTerminalType);
- 
--				id = d->bSourceID;
--				break; /* continue to parse */
--			}
--			case UAC_MIXER_UNIT: {
--				struct uac_mixer_unit_descriptor *d = p1;
--
--				term->type = UAC3_MIXER_UNIT << 16; /* virtual type */
--				term->channels = uac_mixer_unit_bNrChannels(d);
--				term->chconfig = uac_mixer_unit_wChannelConfig(d, protocol);
--				term->name = uac_mixer_unit_iMixer(d);
--				return 0;
--			}
--			case UAC_SELECTOR_UNIT:
--			case UAC2_CLOCK_SELECTOR: {
--				struct uac_selector_unit_descriptor *d = p1;
--				/* call recursively to retrieve the channel info */
--				err = __check_input_term(state, d->baSourceID[0], term);
--				if (err < 0)
--					return err;
--				term->type = UAC3_SELECTOR_UNIT << 16; /* virtual type */
--				term->id = id;
--				term->name = uac_selector_unit_iSelector(d);
--				return 0;
--			}
--			case UAC1_PROCESSING_UNIT:
--			/* UAC2_EFFECT_UNIT */
--				if (protocol == UAC_VERSION_1)
--					term->type = UAC3_PROCESSING_UNIT << 16; /* virtual type */
--				else /* UAC_VERSION_2 */
--					term->type = UAC3_EFFECT_UNIT << 16; /* virtual type */
--				/* fall through */
--			case UAC1_EXTENSION_UNIT:
--			/* UAC2_PROCESSING_UNIT_V2 */
--				if (protocol == UAC_VERSION_1 && !term->type)
--					term->type = UAC3_EXTENSION_UNIT << 16; /* virtual type */
--				else if (protocol == UAC_VERSION_2 && !term->type)
--					term->type = UAC3_PROCESSING_UNIT << 16; /* virtual type */
--				/* fall through */
--			case UAC2_EXTENSION_UNIT_V2: {
--				struct uac_processing_unit_descriptor *d = p1;
--
--				if (protocol == UAC_VERSION_2 &&
--					hdr[2] == UAC2_EFFECT_UNIT) {
--					/* UAC2/UAC1 unit IDs overlap here in an
--					 * uncompatible way. Ignore this unit for now.
--					 */
--					return 0;
--				}
-+	err = get_cluster_channels_v3(state, le16_to_cpu(d->wClusterDescrID));
-+	if (err < 0)
-+		return err;
-+	term->channels = err;
- 
--				if (d->bNrInPins) {
--					id = d->baSourceID[0];
--					break; /* continue to parse */
--				}
--				if (!term->type)
--					term->type = UAC3_EXTENSION_UNIT << 16; /* virtual type */
-+	/* REVISIT: UAC3 IT doesn't have channels cfg */
-+	term->chconfig = 0;
- 
--				term->channels = uac_processing_unit_bNrChannels(d);
--				term->chconfig = uac_processing_unit_wChannelConfig(d, protocol);
--				term->name = uac_processing_unit_iProcessing(d, protocol);
--				return 0;
--			}
--			case UAC2_CLOCK_SOURCE: {
--				struct uac_clock_source_descriptor *d = p1;
-+	term->name = le16_to_cpu(d->wTerminalDescrStr);
-+	return 0;
-+}
- 
--				term->type = UAC3_CLOCK_SOURCE << 16; /* virtual type */
--				term->id = id;
--				term->name = d->iClockSource;
--				return 0;
--			}
--			default:
--				return -ENODEV;
--			}
--		} else { /* UAC_VERSION_3 */
--			switch (hdr[2]) {
--			case UAC_INPUT_TERMINAL: {
--				struct uac3_input_terminal_descriptor *d = p1;
--
--				/* call recursively to verify that the
--				 * referenced clock entity is valid */
--				err = __check_input_term(state, d->bCSourceID, term);
--				if (err < 0)
--					return err;
-+static int parse_term_mixer_unit(struct mixer_build *state,
-+				 struct usb_audio_term *term,
-+				 void *p1, int id)
-+{
-+	struct uac_mixer_unit_descriptor *d = p1;
-+	int protocol = state->mixer->protocol;
-+	int err;
- 
--				/* save input term properties after recursion,
--				 * to ensure they are not overriden by the
--				 * recursion calls */
--				term->id = id;
--				term->type = le16_to_cpu(d->wTerminalType);
-+	err = uac_mixer_unit_get_channels(state, d);
-+	if (err <= 0)
-+		return err;
- 
--				err = get_cluster_channels_v3(state, le16_to_cpu(d->wClusterDescrID));
--				if (err < 0)
--					return err;
--				term->channels = err;
-+	term->type = UAC3_MIXER_UNIT << 16; /* virtual type */
-+	term->channels = err;
-+	if (protocol != UAC_VERSION_3) {
-+		term->chconfig = uac_mixer_unit_wChannelConfig(d, protocol);
-+		term->name = uac_mixer_unit_iMixer(d);
-+	}
-+	return 0;
-+}
-+
-+static int parse_term_selector_unit(struct mixer_build *state,
-+				    struct usb_audio_term *term,
-+				    void *p1, int id)
-+{
-+	struct uac_selector_unit_descriptor *d = p1;
-+	int err;
- 
--				/* REVISIT: UAC3 IT doesn't have channels cfg */
--				term->chconfig = 0;
-+	/* call recursively to retrieve the channel info */
-+	err = __check_input_term(state, d->baSourceID[0], term);
-+	if (err < 0)
-+		return err;
-+	term->type = UAC3_SELECTOR_UNIT << 16; /* virtual type */
-+	term->id = id;
-+	if (state->mixer->protocol != UAC_VERSION_3)
-+		term->name = uac_selector_unit_iSelector(d);
-+	return 0;
-+}
- 
--				term->name = le16_to_cpu(d->wTerminalDescrStr);
--				return 0;
--			}
--			case UAC3_FEATURE_UNIT: {
--				struct uac3_feature_unit_descriptor *d = p1;
-+static int parse_term_proc_unit(struct mixer_build *state,
-+				struct usb_audio_term *term,
-+				void *p1, int id, int vtype)
-+{
-+	struct uac_processing_unit_descriptor *d = p1;
-+	int protocol = state->mixer->protocol;
-+	int err;
- 
--				id = d->bSourceID;
--				break; /* continue to parse */
--			}
--			case UAC3_CLOCK_SOURCE: {
--				struct uac3_clock_source_descriptor *d = p1;
-+	if (d->bNrInPins) {
-+		/* call recursively to retrieve the channel info */
-+		err = __check_input_term(state, d->baSourceID[0], term);
-+		if (err < 0)
-+			return err;
-+	}
- 
--				term->type = UAC3_CLOCK_SOURCE << 16; /* virtual type */
--				term->id = id;
--				term->name = le16_to_cpu(d->wClockSourceStr);
--				return 0;
--			}
--			case UAC3_MIXER_UNIT: {
--				struct uac_mixer_unit_descriptor *d = p1;
-+	term->type = vtype << 16; /* virtual type */
-+	term->id = id;
- 
--				err = uac_mixer_unit_get_channels(state, d);
--				if (err <= 0)
--					return err;
-+	if (protocol == UAC_VERSION_3)
-+		return 0;
- 
--				term->channels = err;
--				term->type = UAC3_MIXER_UNIT << 16; /* virtual type */
-+	if (!term->channels) {
-+		term->channels = uac_processing_unit_bNrChannels(d);
-+		term->chconfig = uac_processing_unit_wChannelConfig(d, protocol);
-+	}
-+	term->name = uac_processing_unit_iProcessing(d, protocol);
-+	return 0;
-+}
- 
--				return 0;
--			}
--			case UAC3_SELECTOR_UNIT:
--			case UAC3_CLOCK_SELECTOR: {
--				struct uac_selector_unit_descriptor *d = p1;
--				/* call recursively to retrieve the channel info */
--				err = __check_input_term(state, d->baSourceID[0], term);
--				if (err < 0)
--					return err;
--				term->type = UAC3_SELECTOR_UNIT << 16; /* virtual type */
--				term->id = id;
--				term->name = 0; /* TODO: UAC3 Class-specific strings */
-+static int parse_term_uac2_clock_source(struct mixer_build *state,
-+					struct usb_audio_term *term,
-+					void *p1, int id)
-+{
-+	struct uac_clock_source_descriptor *d = p1;
- 
--				return 0;
--			}
--			case UAC3_PROCESSING_UNIT: {
--				struct uac_processing_unit_descriptor *d = p1;
-+	term->type = UAC3_CLOCK_SOURCE << 16; /* virtual type */
-+	term->id = id;
-+	term->name = d->iClockSource;
-+	return 0;
-+}
- 
--				if (!d->bNrInPins)
--					return -EINVAL;
-+static int parse_term_uac3_clock_source(struct mixer_build *state,
-+					struct usb_audio_term *term,
-+					void *p1, int id)
-+{
-+	struct uac3_clock_source_descriptor *d = p1;
- 
--				/* call recursively to retrieve the channel info */
--				err = __check_input_term(state, d->baSourceID[0], term);
--				if (err < 0)
--					return err;
-+	term->type = UAC3_CLOCK_SOURCE << 16; /* virtual type */
-+	term->id = id;
-+	term->name = le16_to_cpu(d->wClockSourceStr);
-+	return 0;
-+}
- 
--				term->type = UAC3_PROCESSING_UNIT << 16; /* virtual type */
--				term->id = id;
--				term->name = 0; /* TODO: UAC3 Class-specific strings */
-+#define PTYPE(a, b)	((a) << 8 | (b))
- 
--				return 0;
--			}
--			default:
--				return -ENODEV;
--			}
-+/*
-+ * parse the source unit recursively until it reaches to a terminal
-+ * or a branched unit.
-+ */
-+static int __check_input_term(struct mixer_build *state, int id,
-+			      struct usb_audio_term *term)
-+{
-+	int protocol = state->mixer->protocol;
-+	void *p1;
-+	unsigned char *hdr;
-+
-+	for (;;) {
-+		/* a loop in the terminal chain? */
-+		if (test_and_set_bit(id, state->termbitmap))
-+			return -EINVAL;
-+
-+		p1 = find_audio_control_unit(state, id);
-+		if (!p1)
-+			break;
-+		if (!snd_usb_validate_audio_desc(p1, protocol))
-+			break; /* bad descriptor */
-+
-+		hdr = p1;
-+		term->id = id;
-+
-+		switch (PTYPE(protocol, hdr[2])) {
-+		case PTYPE(UAC_VERSION_1, UAC_FEATURE_UNIT):
-+		case PTYPE(UAC_VERSION_2, UAC_FEATURE_UNIT):
-+		case PTYPE(UAC_VERSION_3, UAC3_FEATURE_UNIT): {
-+			/* the header is the same for all versions */
-+			struct uac_feature_unit_descriptor *d = p1;
-+
-+			id = d->bSourceID;
-+			break; /* continue to parse */
-+		}
-+		case PTYPE(UAC_VERSION_1, UAC_INPUT_TERMINAL):
-+			return parse_term_uac1_iterm_unit(state, term, p1, id);
-+		case PTYPE(UAC_VERSION_2, UAC_INPUT_TERMINAL):
-+			return parse_term_uac2_iterm_unit(state, term, p1, id);
-+		case PTYPE(UAC_VERSION_3, UAC_INPUT_TERMINAL):
-+			return parse_term_uac3_iterm_unit(state, term, p1, id);
-+		case PTYPE(UAC_VERSION_1, UAC_MIXER_UNIT):
-+		case PTYPE(UAC_VERSION_2, UAC_MIXER_UNIT):
-+		case PTYPE(UAC_VERSION_3, UAC3_MIXER_UNIT):
-+			return parse_term_mixer_unit(state, term, p1, id);
-+		case PTYPE(UAC_VERSION_1, UAC_SELECTOR_UNIT):
-+		case PTYPE(UAC_VERSION_2, UAC_SELECTOR_UNIT):
-+		case PTYPE(UAC_VERSION_2, UAC2_CLOCK_SELECTOR):
-+		case PTYPE(UAC_VERSION_3, UAC3_SELECTOR_UNIT):
-+		case PTYPE(UAC_VERSION_3, UAC3_CLOCK_SELECTOR):
-+			return parse_term_selector_unit(state, term, p1, id);
-+		case PTYPE(UAC_VERSION_1, UAC1_PROCESSING_UNIT):
-+		case PTYPE(UAC_VERSION_2, UAC2_PROCESSING_UNIT_V2):
-+		case PTYPE(UAC_VERSION_3, UAC3_PROCESSING_UNIT):
-+			return parse_term_proc_unit(state, term, p1, id,
-+						    UAC3_PROCESSING_UNIT);
-+		case PTYPE(UAC_VERSION_2, UAC2_EFFECT_UNIT):
-+		case PTYPE(UAC_VERSION_3, UAC3_EFFECT_UNIT):
-+			return parse_term_proc_unit(state, term, p1, id,
-+						    UAC3_EFFECT_UNIT);
-+		case PTYPE(UAC_VERSION_1, UAC1_EXTENSION_UNIT):
-+		case PTYPE(UAC_VERSION_2, UAC2_EXTENSION_UNIT_V2):
-+		case PTYPE(UAC_VERSION_3, UAC3_EXTENSION_UNIT):
-+			return parse_term_proc_unit(state, term, p1, id,
-+						    UAC3_EXTENSION_UNIT);
-+		case PTYPE(UAC_VERSION_2, UAC2_CLOCK_SOURCE):
-+			return parse_term_uac2_clock_source(state, term, p1, id);
-+		case PTYPE(UAC_VERSION_3, UAC3_CLOCK_SOURCE):
-+			return parse_term_uac3_clock_source(state, term, p1, id);
-+		default:
-+			return -ENODEV;
- 		}
- 	}
- 	return -ENODEV;
-@@ -2712,7 +2730,6 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 		return 0; /* skip invalid unit */
- 	}
- 
--#define PTYPE(a, b)	((a) << 8 | (b))
- 	switch (PTYPE(protocol, p1[2])) {
- 	case PTYPE(UAC_VERSION_1, UAC_INPUT_TERMINAL):
- 	case PTYPE(UAC_VERSION_2, UAC_INPUT_TERMINAL):
--- 
-2.16.4
+Yes, but in this time would you please abandon this patch. With a bit
+consideration after the posting, I concluded that there's another side of
+the out-of-bounds bug. It comes from patchset for AMDTP domain which
+I'm working for v5.4. I'd like to investigate and work further for the bug.
+
+
+Thanks and sorry to bother your work.
+
+Takashi Sakamoto
