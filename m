@@ -1,23 +1,23 @@
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 04/35] ASoC: Intel: Skylake: Unify firmware
- loading mechanism
-Date: Mon, 26 Aug 2019 21:50:48 +0200
-Message-ID: <5e9940ac-7cda-9bca-1fa3-00fff6d51956@intel.com>
+Subject: Re: [PATCH 29/35] ASoC: Intel: Skylake: Flip SST
+ initialization order
+Date: Mon, 26 Aug 2019 22:03:29 +0200
+Message-ID: <58e4a176-3f91-ab5f-1cc8-48a5b4c9bc52@intel.com>
 References: <20190822190425.23001-1-cezary.rojewski@intel.com>
- <20190822190425.23001-5-cezary.rojewski@intel.com>
- <90bbda82-3988-d02d-0d5d-e63890db81dc@linux.intel.com>
- <20fea187-8a0c-c293-bbcb-e8561193bc2f@intel.com>
- <d51a0703-4a1d-e667-e29b-a4017de0a38e@linux.intel.com>
+ <20190822190425.23001-30-cezary.rojewski@intel.com>
+ <f025c4c4-4987-e3c0-302f-1ee47dba60ac@linux.intel.com>
+ <1d289b44-cd68-bee5-498b-953186d99150@intel.com>
+ <19ee20ec-2b29-639b-6181-05f4582a8f18@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 806EBF801ED
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 21:50:55 +0200 (CEST)
-In-Reply-To: <d51a0703-4a1d-e667-e29b-a4017de0a38e@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6923CF801ED
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 22:03:38 +0200 (CEST)
+In-Reply-To: <19ee20ec-2b29-639b-6181-05f4582a8f18@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,50 +32,39 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa
 Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS0wOC0yNiAxODozMSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4gCj4g
-T24gOC8yNC8xOSA0OjM0IEFNLCBDZXphcnkgUm9qZXdza2kgd3JvdGU6Cj4+IE9uIDIwMTktMDgt
-MjMgMjA6NDAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pj4KPj4+PiAtaW50IHNrbF9z
-c3RfaW5pdF9mdyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBza2xfZGV2ICpza2wpCj4+Pj4g
-K2ludCBza2xfc3N0X2luaXRfZncoc3RydWN0IHNrbF9kZXYgKnNrbCkKPj4+PiDCoCB7Cj4+Pj4g
-LcKgwqDCoCBpbnQgcmV0Owo+Pj4+IMKgwqDCoMKgwqAgc3RydWN0IHNzdF9kc3AgKnNzdCA9IHNr
-bC0+ZHNwOwo+Pj4+ICvCoMKgwqAgc3RydWN0IGRldmljZSAqZGV2ID0gc2tsLT5kZXY7Cj4+Pj4g
-K8KgwqDCoCBpbnQgKCpscF9jaGVjaykoc3RydWN0IHNzdF9kc3AgKmRzcCwgYm9vbCBzdGF0ZSk7
-Cj4+Pj4gK8KgwqDCoCBpbnQgcmV0Owo+Pj4+ICsKPj4+PiArwqDCoMKgIGxwX2NoZWNrID0gc2ts
-LT5pcGMub3BzLmNoZWNrX2RzcF9scF9vbjsKPj4+PiArwqDCoMKgIHNrbC0+ZW5hYmxlX21pc2Ni
-ZGNnZShkZXYsIGZhbHNlKTsKPj4+PiArwqDCoMKgIHNrbC0+Y2xvY2tfcG93ZXJfZ2F0aW5nKGRl
-diwgZmFsc2UpOwo+Pj4+IMKgwqDCoMKgwqAgcmV0ID0gc3N0LT5md19vcHMubG9hZF9mdyhzc3Qp
-Owo+Pj4+IMKgwqDCoMKgwqAgaWYgKHJldCA8IDApIHsKPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
-ZGV2X2VycihkZXYsICJMb2FkIGJhc2UgZncgZmFpbGVkIDogJWRcbiIsIHJldCk7Cj4+Pj4gLcKg
-wqDCoMKgwqDCoMKgIHJldHVybiByZXQ7Cj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gZXhpdDsK
-Pj4+PiArwqDCoMKgIH0KPj4+PiArCj4+Pj4gK8KgwqDCoCBpZiAoIXNrbC0+aXNfZmlyc3RfYm9v
-dCkKPj4+PiArwqDCoMKgwqDCoMKgwqAgZ290byBsaWJyYXJ5X2xvYWQ7Cj4+Pj4gK8KgwqDCoCAv
-KiBEaXNhYmxlIHBvd2VyIGNoZWNrIGR1cmluZyBjZmcgc2V0dXAgKi8KPj4+PiArwqDCoMKgIHNr
-bC0+aXBjLm9wcy5jaGVja19kc3BfbHBfb24gPSBOVUxMOwo+Pj4KPj4+IEl0J3MgdmVyeSBvZGQg
-dG8gcGxheSB3aXRoIC5vcHMgY2FsbGJhY2sgZHluYW1pY2FsbHkuIFVzdWFsbHkgb3BzIGFyZSAK
-Pj4+IGNvbnN0YW50LCBhbmQgaWYgeW91IHdhbnQgdG8gZGlzYWJsZSB0aGVtIHlvdSBhZGQgYSBm
-bGFnLgo+Pj4KPj4KPj4gWWV5ZSwga2VlbiBleWUhIENhbid0IGRvIGV2ZXJ5dGhpbmcgYXQgb25j
-ZSB0aG91Z2ggOi8KPj4gVGhlIHBvd2VyIGNoZWNrIGlzIEFQTCsgc3BlY2lmaWMgYW5kIHNob3Vs
-ZCBub3QgYmUgcGFydCBvZiBnZW5lcmljIGlwYyAKPj4gZnJhbWV3b3JrIGF0IGFsbCAoZm91bmQg
-aW4gL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWlwYy5jKS4gCj4+IERpZmZlcmVudCBmYXRl
-IGF3YWl0cyBzYWlkIGNoZWNrLiBGb3Igbm93LCBpbiB0aGlzIHNpbmdsZSBjYXNlIGl0IAo+PiBz
-ZWVtcyBiZXN0IHRvIHNpbXBseSBkaXNhYmxlIHRoZSBjaGVjayBhbmQgcmVhcHBseSBpdCBvbmNl
-IHNldHVwIGlzIGRvbmUuCj4gCj4gV2hhdCdzIHRoZSBkaWZmZXJlbmNlIHdpdGggaGF2aW5nIHRo
-aXMgY2FsbGJhY2sgZG8gbm90aGluZyBmb3IgQVBMLT8KPiAKClRoZSBlbnRpcmUgY2hlY2tfZHNw
-X2xwX29uIGlzIGFjdHVhbGx5IEQwaXggdGhpbmd5LgotLSBUaGUgcG93ZXItbWFuYWdlbWVudCBp
-cyBiZWluZyBhZGRyZXNzZWQgaW4gZm9sbG93aW5nIHNlZ21lbnQuIC0tCgpEMGl4IGlzIGEgcG93
-ZXItb3B0aW1pemF0aW9uIGZlYXR1cmUgYW5kIGltcGxlbWVudGVkIGluIEFQTCBhbmQgb253YXJk
-LiAKU28gZm9yIFNLTC8gS0JMIHRoZXJlIGlzIG5vIGNoZWNrX2RzcF9scF9vbi4gWW91IGNhbiBz
-ZWUgdGhlIGRpZmZlcmVuY2UgCmluIC9za3lsYWtlL3NrbC1zc3QuYzogc3RhdGljIGNvbnN0IHN0
-cnVjdCBza2xfZHNwX2Z3X29wcyBza2xfZndfb3BzIAoobGFjayBvZiBzZXRfc3RhdGVfRDBpeCBo
-YW5kbGVycykKCk9uY2UgZHNwLWhvc3QgaW50ZXJhY3Rpb24gY2FuIGJlIGRlc2NyaWJlZCBhcyBp
-ZGxlIChlLmcuIG9uZ29pbmcgCnBsYXliYWNrIHdpdGggbm8gSVBDIHRyYWZmaWMpLCBob3N0IG1h
-eSBlbmFibGUgRlcgdG8gcG93ZXIgZ2F0ZSBzb21lIApjb21wb25lbnRzIGFuZCB0aHVzIHJlZHVj
-ZSBwb3dlciBjb25zdW1wdGlvbi4KCkQwaXggaXMgYWJicmV2IGZvciBEMGkwIDwtPiBEMGkzIHRy
-YW5zaXRpb25zLiBPbmNlIGRzcCBlbnRlcnMgRDBpMyAKKHBvd2VyIGdhdGVkKSwgbm8gSVBDcyBj
-YW4gYmUgY29uc3VtZWQgYXBhcnQgZnJvbSBvbmUgYW5kIG9ubHkgU2V0RDBpeCAtIAp0byB3YWtl
-IGRzcCBiYWNrIHRvIEQwaTAgc3RhdGUuIEluIGdlbmVyYWwgeW91IGNhbiB0aGluayBvZiBEMGkw
-IGFzIEQwLgpBZ2Fpbiwgc2luY2UgU0tMLyBLQkwgaGF2ZSBubyBEMGl4LCB0aGVyZSBpcyBubyBu
-ZWVkIHRvIHdha2UgYW55dGhpbmcsIApubyBjaGVja3MgYXJlIHJlcXVpcmVkLgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 2019-08-26 18:39, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 8/24/19 5:54 AM, Cezary Rojewski wrote:
+>> On 2019-08-23 22:18, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> On 8/22/19 2:04 PM, Cezary Rojewski wrote:
+>>>> To this date Skylake SST were following ill flow of initialization by
+>>>
+>>> 'ill' as in 'sick'? that's probably a bit strong and judgmental?
+>>> or is this a typo?
+>>>
+>>
+>> ill seems like a perfect opposite of healthy, ain't it? Because 
+>> certainly, the initialization pattern observed in /skylake is 
+>> everything but healthy.
+> 
+> I don't know what 'healthy' means either in this context.
+> 
+> s/ill/incorrect/?
+> 
+
+In essence, most of what is required is actually done even in existing 
+/skylake init. How it is done leaves a lot to be desired, though. 
+Initialization is cleaned up to improve code quality and make it look 
+cohesive - removal of duplications, usage of sst-framework functions and 
+so on.
+
+Followup segments - including but not limited to power-management - 
+touch this stuff quite a bit. With initialization updated, each 
+power-management patch fixes single spot rather than 3 (skl-sst, 
+bxt-sst, cnl-sst). Should probe more readable and easy to review.
+
+That's why I described it via 'ill'.
+Although I do agree, could have chosen a better description.
