@@ -1,61 +1,50 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH v2 1/6] ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in
- Kconfig
-Date: Mon, 26 Aug 2019 13:45:56 +0000
-Message-ID: <2afbf219-9c2d-566a-511c-2bc332479f98@microchip.com>
-References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
- <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ALSA: usb-audio: remove some dead code
+Date: Mon, 26 Aug 2019 16:45:50 +0300
+Message-ID: <20190826134550.GA8842@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
-Content-Language: en-US
-Content-ID: <E0A8CDA29785994B80CF66D3605A800D@namprd11.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mirq-linux@rere.qmqm.pl, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: alexandre.belloni@bootlin.com, arnd@arndb.de, 3chas3@gmail.com, gregkh@linuxfoundation.org, perex@perex.cz, lgirdwood@gmail.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, mark.rutland@arm.com, Nicolas.Ferre@microchip.com, robh-dt@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1F80F801ED
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 15:46:00 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Richard Fontana <rfontana@redhat.com>, alsa-devel@alsa-project.org, Hui Peng <benquike@gmail.com>, kernel-janitors@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjQuMDguMjAxOSAyMzoyNiwgTWljaGHFgiBNaXJvc8WCYXcgd3JvdGU6DQo+IEFsbG93IFNT
-QyB0byBiZSB1c2VkIG9uIHBsYXRmb3JtcyBkZXNjcmliZWQgdXNpbmcgYXVkaW8tZ3JhcGgtY2Fy
-ZA0KPiBpbiBEZXZpY2UgVHJlZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhxYIgTWlyb3PF
-gmF3IDxtaXJxLWxpbnV4QHJlcmUucW1xbS5wbD4NCg0KUmV2aWV3ZWQtYnk6IENvZHJpbiBDaXVi
-b3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29tPg0KDQpUaGFua3MhDQoNCkJl
-c3QgcmVnYXJkcywNCkNvZHJpbg0KDQo+IA0KPiAtLS0NCj4gICB2MjogZXh0ZW5kZWQgdG8gUERD
-IG1vZGUNCj4gICAgICAgcmV3b3JrZWQgYW5kIGZpeGVkIEtjb25maWcgb3B0aW9uIGRlcGVuZGVu
-Y2llcw0KPiANCj4gLS0tDQo+ICAgc291bmQvc29jL2F0bWVsL0tjb25maWcgfCAzMCArKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9u
-cygrKSwgMTIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVs
-L0tjb25maWcgYi9zb3VuZC9zb2MvYXRtZWwvS2NvbmZpZw0KPiBpbmRleCAwNmMxZDVjZTY0MmMu
-LmYxMThjMjI5ZWQ4MiAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL2F0bWVsL0tjb25maWcNCj4g
-KysrIGIvc291bmQvc29jL2F0bWVsL0tjb25maWcNCj4gQEAgLTEyLDI1ICsxMiwzMSBAQCBpZiBT
-TkRfQVRNRUxfU09DDQo+ICAgY29uZmlnIFNORF9BVE1FTF9TT0NfUERDDQo+ICAgCXRyaXN0YXRl
-DQo+ICAgCWRlcGVuZHMgb24gSEFTX0RNQQ0KPiAtCWRlZmF1bHQgbSBpZiBTTkRfQVRNRUxfU09D
-X1NTQ19QREM9bSAmJiBTTkRfQVRNRUxfU09DX1NTQz1tDQo+IC0JZGVmYXVsdCB5IGlmIFNORF9B
-VE1FTF9TT0NfU1NDX1BEQz15IHx8IChTTkRfQVRNRUxfU09DX1NTQ19QREM9bSAmJiBTTkRfQVRN
-RUxfU09DX1NTQz15KQ0KPiAtDQo+IC1jb25maWcgU05EX0FUTUVMX1NPQ19TU0NfUERDDQo+IC0J
-dHJpc3RhdGUNCj4gICANCj4gICBjb25maWcgU05EX0FUTUVMX1NPQ19ETUENCj4gICAJdHJpc3Rh
-dGUNCj4gICAJc2VsZWN0IFNORF9TT0NfR0VORVJJQ19ETUFFTkdJTkVfUENNDQo+IC0JZGVmYXVs
-dCBtIGlmIFNORF9BVE1FTF9TT0NfU1NDX0RNQT1tICYmIFNORF9BVE1FTF9TT0NfU1NDPW0NCj4g
-LQlkZWZhdWx0IHkgaWYgU05EX0FUTUVMX1NPQ19TU0NfRE1BPXkgfHwgKFNORF9BVE1FTF9TT0Nf
-U1NDX0RNQT1tICYmIFNORF9BVE1FTF9TT0NfU1NDPXkpDQo+IC0NCj4gLWNvbmZpZyBTTkRfQVRN
-RUxfU09DX1NTQ19ETUENCj4gLQl0cmlzdGF0ZQ0KPiAgIA0KPiAgIGNvbmZpZyBTTkRfQVRNRUxf
-U09DX1NTQw0KPiAgIAl0cmlzdGF0ZQ0KPiAtCWRlZmF1bHQgeSBpZiBTTkRfQVRNRUxfU09DX1NT
-Q19ETUE9eSB8fCBTTkRfQVRNRUxfU09DX1NTQ19QREM9eQ0KPiAtCWRlZmF1bHQgbSBpZiBTTkRf
-QVRNRUxfU09DX1NTQ19ETUE9bSB8fCBTTkRfQVRNRUxfU09DX1NTQ19QREM9bQ0KPiArDQo+ICtj
-b25maWcgU05EX0FUTUVMX1NPQ19TU0NfUERDDQo+ICsJdHJpc3RhdGUgIlNvQyBQQ00gREFJIHN1
-cHBvcnQgZm9yIEFUOTEgU1NDIGNvbnRyb2xsZXIgdXNpbmcgUERDIg0KPiArCWRlcGVuZHMgb24g
-QVRNRUxfU1NDDQo+ICsJc2VsZWN0IFNORF9BVE1FTF9TT0NfUERDDQo+ICsJc2VsZWN0IFNORF9B
-VE1FTF9TT0NfU1NDDQo+ICsJaGVscA0KPiArCSAgU2F5IFkgb3IgTSBpZiB5b3Ugd2FudCB0byBh
-ZGQgc3VwcG9ydCBmb3IgQXRtZWwgU1NDIGludGVyZmFjZQ0KPiArCSAgaW4gUERDIG1vZGUgY29u
-ZmlndXJlZCB1c2luZyBhdWRpby1ncmFwaC1jYXJkIGluIGRldmljZS10cmVlLg0KPiArDQo+ICtj
-b25maWcgU05EX0FUTUVMX1NPQ19TU0NfRE1BDQo+ICsJdHJpc3RhdGUgIlNvQyBQQ00gREFJIHN1
-cHBvcnQgZm9yIEFUOTEgU1NDIGNvbnRyb2xsZXIgdXNpbmcgRE1BIg0KPiArCWRlcGVuZHMgb24g
-QVRNRUxfU1NDDQo+ICsJc2VsZWN0IFNORF9BVE1FTF9TT0NfRE1BDQo+ICsJc2VsZWN0IFNORF9B
-VE1FTF9TT0NfU1NDDQo+ICsJaGVscA0KPiArCSAgU2F5IFkgb3IgTSBpZiB5b3Ugd2FudCB0byBh
-ZGQgc3VwcG9ydCBmb3IgQXRtZWwgU1NDIGludGVyZmFjZQ0KPiArCSAgaW4gRE1BIG1vZGUgY29u
-ZmlndXJlZCB1c2luZyBhdWRpby1ncmFwaC1jYXJkIGluIGRldmljZS10cmVlLg0KPiAgIA0KPiAg
-IGNvbmZpZyBTTkRfQVQ5MV9TT0NfU0FNOUcyMF9XTTg3MzENCj4gICAJdHJpc3RhdGUgIlNvQyBB
-dWRpbyBzdXBwb3J0IGZvciBXTTg3MzEtYmFzZWQgQXQ5MXNhbTlnMjAgZXZhbHVhdGlvbiBib2Fy
-ZCINCj4gDQoNCg==
+We recently cleaned up the error handling in commit 52c3e317a857 ("ALSA:
+usb-audio: Unify the release of usb_mixer_elem_info objects") but
+accidentally left this stray return.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/usb/mixer.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index a0468c4a6326..a607577f0097 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2633,7 +2633,6 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 		err = -ENOMEM;
+ 		goto error_name;
+-		return -ENOMEM;
+ 	}
+ 	kctl->private_value = (unsigned long)namelist;
+ 	kctl->private_free = usb_mixer_selector_elem_free;
+-- 
+2.20.1
