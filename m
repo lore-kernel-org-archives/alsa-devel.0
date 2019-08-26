@@ -1,17 +1,18 @@
-From: Marcin Pietraszko <marcin.pietraszko@linux.intel.com>
-Subject: [PATCH 1/1] ASoC: topology: Fix variable overflow in
-	split_format
-Date: Mon, 26 Aug 2019 13:51:41 +0200
-Message-ID: <1566820301-18671-1-git-send-email-marcin.pietraszko@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ALSA: usb-audio: More validations of
+	descriptor units
+Date: Mon, 26 Aug 2019 14:48:46 +0300
+Message-ID: <20190826114846.GA16466@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 742A1F801ED
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 12:49:41 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D482FF80143
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 13:49:03 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +22,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: perex@perex.cz
-Cc: alsa-devel@alsa-project.org, Marcin Pietraszko <marcin.pietraszko@linux.intel.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The 1 which was 32-bit long, when left-shifted by more than 31 caused
-an overflow, which resulted in some of the formats being not supported.
+Hello Takashi Iwai,
 
-Signed-off-by: Marcin Pietraszko <marcin.pietraszko@linux.intel.com>
----
- src/topology/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is a semi-automatic email about new static checker warnings.
 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 5f586dc..00a35b9 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -321,7 +321,7 @@ static int split_format(struct snd_soc_tplg_stream_caps *caps, char *str)
- 			return -EINVAL;
- 		}
- 
--		caps->formats |= 1 << format;
-+		caps->formats |= 1ull << format;
- 		s = strtok(NULL, ", ");
- 		i++;
- 	}
--- 
-2.7.4
+The patch 57f8770620e9: "ALSA: usb-audio: More validations of
+descriptor units" from Aug 20, 2019, leads to the following Smatch
+complaint:
+
+    sound/usb/quirks.c:254 create_yamaha_midi_quirk()
+    warn: variable dereferenced before check 'injd' (see line 251)
+
+sound/usb/quirks.c
+   244          /* must have some valid jack descriptors */
+   245          injd = snd_usb_find_csint_desc(alts->extra, alts->extralen,
+   246                                         NULL, USB_MS_MIDI_IN_JACK);
+   247          outjd = snd_usb_find_csint_desc(alts->extra, alts->extralen,
+   248                                          NULL, USB_MS_MIDI_OUT_JACK);
+   249          if (!injd && !outjd)
+                     ^^^^^^^^^^^^^
+At least one must be valid.
+
+   250                  return -ENODEV;
+   250			return -ENODEV;
+   251		if (!snd_usb_validate_midi_desc(injd) ||
+   252		    !snd_usb_validate_midi_desc(outjd))
+
+So this should return true/valid if the pointer is NULL?
+
+   253			return -ENODEV;
+   254		if (injd && (injd->bLength < 5 ||
+   255			     (injd->bJackType != USB_MS_EMBEDDED &&
+   256			      injd->bJackType != USB_MS_EXTERNAL)))
+
+regards,
+dan carpenter
