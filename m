@@ -1,62 +1,61 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH] ASoC: SOF: imx8: Fix an is IS_ERR() vs
-	NULL check
-Date: Mon, 26 Aug 2019 13:23:07 +0000
-Message-ID: <17ba2fb20a06d3e167005db6a225ef68f6b78777.camel@nxp.com>
-References: <20190826131855.GA6840@mwanda>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [PATCH v2 1/6] ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in
+ Kconfig
+Date: Mon, 26 Aug 2019 13:45:56 +0000
+Message-ID: <2afbf219-9c2d-566a-511c-2bc332479f98@microchip.com>
+References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
+ <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-eopbgr80079.outbound.protection.outlook.com [40.107.8.79])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4E7FF801ED
- for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 15:23:09 +0200 (CEST)
-In-Reply-To: <20190826131855.GA6840@mwanda>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
 Content-Language: en-US
-Content-ID: <5C4EB5DE8D1910478CB520EFEE79939D@eurprd04.prod.outlook.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>
+Content-ID: <E0A8CDA29785994B80CF66D3605A800D@namprd11.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mirq-linux@rere.qmqm.pl, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: alexandre.belloni@bootlin.com, arnd@arndb.de, 3chas3@gmail.com, gregkh@linuxfoundation.org, perex@perex.cz, lgirdwood@gmail.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, mark.rutland@arm.com, Nicolas.Ferre@microchip.com, robh-dt@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2019-08-26 at 16:18 +0300, Dan Carpenter wrote:
-> The device_link_add() function only returns NULL on error, it doesn't
-> return error pointers.
-> 
-> Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-Thanks Dan! Nice catch.
-
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-
-> ---
->  sound/soc/sof/imx/imx8.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-> index e502f584207f..41ad3a310808 100644
-> --- a/sound/soc/sof/imx/imx8.c
-> +++ b/sound/soc/sof/imx/imx8.c
-> @@ -227,8 +227,8 @@ static int imx8_probe(struct snd_sof_dev *sdev)
->  						DL_FLAG_STATELESS |
->  						DL_FLAG_PM_RUNTIME |
->  						DL_FLAG_RPM_ACTIVE);
-> -		if (IS_ERR(priv->link[i])) {
-> -			ret = PTR_ERR(priv->link[i]);
-> +		if (!priv->link[i]) {
-> +			ret = -ENOMEM;
->  			dev_pm_domain_detach(priv->pd_dev[i], false);
->  			goto exit_unroll_pm;
->  		}
+T24gMjQuMDguMjAxOSAyMzoyNiwgTWljaGHFgiBNaXJvc8WCYXcgd3JvdGU6DQo+IEFsbG93IFNT
+QyB0byBiZSB1c2VkIG9uIHBsYXRmb3JtcyBkZXNjcmliZWQgdXNpbmcgYXVkaW8tZ3JhcGgtY2Fy
+ZA0KPiBpbiBEZXZpY2UgVHJlZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhxYIgTWlyb3PF
+gmF3IDxtaXJxLWxpbnV4QHJlcmUucW1xbS5wbD4NCg0KUmV2aWV3ZWQtYnk6IENvZHJpbiBDaXVi
+b3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29tPg0KDQpUaGFua3MhDQoNCkJl
+c3QgcmVnYXJkcywNCkNvZHJpbg0KDQo+IA0KPiAtLS0NCj4gICB2MjogZXh0ZW5kZWQgdG8gUERD
+IG1vZGUNCj4gICAgICAgcmV3b3JrZWQgYW5kIGZpeGVkIEtjb25maWcgb3B0aW9uIGRlcGVuZGVu
+Y2llcw0KPiANCj4gLS0tDQo+ICAgc291bmQvc29jL2F0bWVsL0tjb25maWcgfCAzMCArKysrKysr
+KysrKysrKysrKystLS0tLS0tLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9u
+cygrKSwgMTIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVs
+L0tjb25maWcgYi9zb3VuZC9zb2MvYXRtZWwvS2NvbmZpZw0KPiBpbmRleCAwNmMxZDVjZTY0MmMu
+LmYxMThjMjI5ZWQ4MiAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL2F0bWVsL0tjb25maWcNCj4g
+KysrIGIvc291bmQvc29jL2F0bWVsL0tjb25maWcNCj4gQEAgLTEyLDI1ICsxMiwzMSBAQCBpZiBT
+TkRfQVRNRUxfU09DDQo+ICAgY29uZmlnIFNORF9BVE1FTF9TT0NfUERDDQo+ICAgCXRyaXN0YXRl
+DQo+ICAgCWRlcGVuZHMgb24gSEFTX0RNQQ0KPiAtCWRlZmF1bHQgbSBpZiBTTkRfQVRNRUxfU09D
+X1NTQ19QREM9bSAmJiBTTkRfQVRNRUxfU09DX1NTQz1tDQo+IC0JZGVmYXVsdCB5IGlmIFNORF9B
+VE1FTF9TT0NfU1NDX1BEQz15IHx8IChTTkRfQVRNRUxfU09DX1NTQ19QREM9bSAmJiBTTkRfQVRN
+RUxfU09DX1NTQz15KQ0KPiAtDQo+IC1jb25maWcgU05EX0FUTUVMX1NPQ19TU0NfUERDDQo+IC0J
+dHJpc3RhdGUNCj4gICANCj4gICBjb25maWcgU05EX0FUTUVMX1NPQ19ETUENCj4gICAJdHJpc3Rh
+dGUNCj4gICAJc2VsZWN0IFNORF9TT0NfR0VORVJJQ19ETUFFTkdJTkVfUENNDQo+IC0JZGVmYXVs
+dCBtIGlmIFNORF9BVE1FTF9TT0NfU1NDX0RNQT1tICYmIFNORF9BVE1FTF9TT0NfU1NDPW0NCj4g
+LQlkZWZhdWx0IHkgaWYgU05EX0FUTUVMX1NPQ19TU0NfRE1BPXkgfHwgKFNORF9BVE1FTF9TT0Nf
+U1NDX0RNQT1tICYmIFNORF9BVE1FTF9TT0NfU1NDPXkpDQo+IC0NCj4gLWNvbmZpZyBTTkRfQVRN
+RUxfU09DX1NTQ19ETUENCj4gLQl0cmlzdGF0ZQ0KPiAgIA0KPiAgIGNvbmZpZyBTTkRfQVRNRUxf
+U09DX1NTQw0KPiAgIAl0cmlzdGF0ZQ0KPiAtCWRlZmF1bHQgeSBpZiBTTkRfQVRNRUxfU09DX1NT
+Q19ETUE9eSB8fCBTTkRfQVRNRUxfU09DX1NTQ19QREM9eQ0KPiAtCWRlZmF1bHQgbSBpZiBTTkRf
+QVRNRUxfU09DX1NTQ19ETUE9bSB8fCBTTkRfQVRNRUxfU09DX1NTQ19QREM9bQ0KPiArDQo+ICtj
+b25maWcgU05EX0FUTUVMX1NPQ19TU0NfUERDDQo+ICsJdHJpc3RhdGUgIlNvQyBQQ00gREFJIHN1
+cHBvcnQgZm9yIEFUOTEgU1NDIGNvbnRyb2xsZXIgdXNpbmcgUERDIg0KPiArCWRlcGVuZHMgb24g
+QVRNRUxfU1NDDQo+ICsJc2VsZWN0IFNORF9BVE1FTF9TT0NfUERDDQo+ICsJc2VsZWN0IFNORF9B
+VE1FTF9TT0NfU1NDDQo+ICsJaGVscA0KPiArCSAgU2F5IFkgb3IgTSBpZiB5b3Ugd2FudCB0byBh
+ZGQgc3VwcG9ydCBmb3IgQXRtZWwgU1NDIGludGVyZmFjZQ0KPiArCSAgaW4gUERDIG1vZGUgY29u
+ZmlndXJlZCB1c2luZyBhdWRpby1ncmFwaC1jYXJkIGluIGRldmljZS10cmVlLg0KPiArDQo+ICtj
+b25maWcgU05EX0FUTUVMX1NPQ19TU0NfRE1BDQo+ICsJdHJpc3RhdGUgIlNvQyBQQ00gREFJIHN1
+cHBvcnQgZm9yIEFUOTEgU1NDIGNvbnRyb2xsZXIgdXNpbmcgRE1BIg0KPiArCWRlcGVuZHMgb24g
+QVRNRUxfU1NDDQo+ICsJc2VsZWN0IFNORF9BVE1FTF9TT0NfRE1BDQo+ICsJc2VsZWN0IFNORF9B
+VE1FTF9TT0NfU1NDDQo+ICsJaGVscA0KPiArCSAgU2F5IFkgb3IgTSBpZiB5b3Ugd2FudCB0byBh
+ZGQgc3VwcG9ydCBmb3IgQXRtZWwgU1NDIGludGVyZmFjZQ0KPiArCSAgaW4gRE1BIG1vZGUgY29u
+ZmlndXJlZCB1c2luZyBhdWRpby1ncmFwaC1jYXJkIGluIGRldmljZS10cmVlLg0KPiAgIA0KPiAg
+IGNvbmZpZyBTTkRfQVQ5MV9TT0NfU0FNOUcyMF9XTTg3MzENCj4gICAJdHJpc3RhdGUgIlNvQyBB
+dWRpbyBzdXBwb3J0IGZvciBXTTg3MzEtYmFzZWQgQXQ5MXNhbTlnMjAgZXZhbHVhdGlvbiBib2Fy
+ZCINCj4gDQoNCg==
