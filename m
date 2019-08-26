@@ -1,42 +1,90 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH v2 3/6] ASoC: atmel_ssc_dai: implement left-justified data
- mode
-Date: Mon, 26 Aug 2019 14:10:41 +0000
-Message-ID: <bcb80163-e08a-e46c-6632-10cee3255642@microchip.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v2 1/6] ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA
+ in Kconfig
+Date: Mon, 26 Aug 2019 16:23:37 +0200
+Message-ID: <20190826142337.GE21713@piout.net>
 References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
- <44fa6b700421e80778f20ff9ead2b148cf6d2e92.1566677788.git.mirq-linux@rere.qmqm.pl>
+ <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <44fa6b700421e80778f20ff9ead2b148cf6d2e92.1566677788.git.mirq-linux@rere.qmqm.pl>
-Content-Language: en-US
-Content-ID: <409E0DC013CA7F4ABA2EA80681F655D7@namprd11.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: mirq-linux@rere.qmqm.pl, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: alexandre.belloni@bootlin.com, arnd@arndb.de, 3chas3@gmail.com, gregkh@linuxfoundation.org, perex@perex.cz, lgirdwood@gmail.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, mark.rutland@arm.com, Nicolas.Ferre@microchip.com, robh-dt@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Chas Williams <3chas3@gmail.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Rob Herring <robh-dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBFbmFibGUgc3VwcG9ydCBmb3IgbGVmdC1qdXN0aWZpZWQgZGF0YSBtb2RlIGZvciBTU0MtY29k
-ZWMgbGluay4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhxYIgTWlyb3PFgmF3IDxtaXJxLWxp
-bnV4QHJlcmUucW1xbS5wbD4NCj4gDQo+IC0tLQ0KPiAgIHYyOiByZWJhc2VkDQoNCkkgbm90aWNl
-ZCB5b3UgYWxzbyBhZGRlZCBhIGRlc2NyaXB0aW9uIGFuZCB5b3UgcmVtb3ZlZCB0d28gY29tbWVu
-dHMgZnJvbSANCnYxLiBQbGVhc2UgaW5jbHVkZSBhbGwgdGhlIGNoYW5nZXMgaW4gdGhlIGNoYW5n
-ZWxvZy4NCkkgYWxyZWFkeSBhZGRlZCBteSAnUmV2aWV3ZWQtYnknIGluIHYxLCBidXQgc2luY2Ug
-dGhlcmUgYXJlIHNvbWUgbW9yZSANCmNoYW5nZXMgZnJvbSB0aGUgcHJldmlvdXMgdmVyc2lvbjoN
-Cg0KUmV2aWV3ZWQtYnk6IENvZHJpbiBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNy
-b2NoaXAuY29tPg0KDQpUaGFua3MgYW5kIGJlc3QgcmVnYXJkcywNCkNvZHJpbg0KDQo+IA0KPiAt
-LS0NCj4gICBzb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jIHwgOSArKysrKysrKysNCj4g
-ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyBiL3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2Nf
-ZGFpLmMNCj4gaW5kZXggN2RjNmVjOWI4YzdhLi40OGU5ZWVmMzRjMGYgMTAwNjQ0DQo+IC0tLSBh
-L3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMNCj4gKysrIGIvc291bmQvc29jL2F0bWVs
-L2F0bWVsX3NzY19kYWkuYw0KPiBAQCAtNTY0LDYgKzU2NCwxNSBAQCBzdGF0aWMgaW50IGF0bWVs
-X3NzY19od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQo+ICAg
-DQo+ICAgCXN3aXRjaCAoc3NjX3AtPmRhaWZtdCAmIFNORF9TT0NfREFJRk1UX0ZPUk1BVF9NQVNL
-KSB7DQo+ICAgDQo+ICsJY2FzZSBTTkRfU09DX0RBSUZNVF9MRUZUX0o6DQo+ICsJCWZzX29zeW5j
-ID0gU1NDX0ZTT1NfUE9TSVRJVkU7DQo+ICsJCWZzX2VkZ2UgPSBTU0NfU1RBUlRfUklTSU5HX1JG
-Ow0KPiArDQo+ICsJCXJjbXIgPQkgIFNTQ19CRihSQ01SX1NUVERMWSwgMCk7DQo+ICsJCXRjbXIg
-PQkgIFNTQ19CRihUQ01SX1NUVERMWSwgMCk7DQo+ICsNCj4gKwkJYnJlYWs7DQo+ICsNCj4gICAJ
-Y2FzZSBTTkRfU09DX0RBSUZNVF9JMlM6DQo+ICAgCQlmc19vc3luYyA9IFNTQ19GU09TX05FR0FU
-SVZFOw0KPiAgIAkJZnNfZWRnZSA9IFNTQ19TVEFSVF9GQUxMSU5HX1JGOw0KPiANCg0K
+On 24/08/2019 22:26:52+0200, Michał Mirosław wrote:
+> Allow SSC to be used on platforms described using audio-graph-card
+> in Device Tree.
+> 
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+> 
+> ---
+>  v2: extended to PDC mode
+>      reworked and fixed Kconfig option dependencies
+> 
+> ---
+>  sound/soc/atmel/Kconfig | 30 ++++++++++++++++++------------
+>  1 file changed, 18 insertions(+), 12 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+> index 06c1d5ce642c..f118c229ed82 100644
+> --- a/sound/soc/atmel/Kconfig
+> +++ b/sound/soc/atmel/Kconfig
+> @@ -12,25 +12,31 @@ if SND_ATMEL_SOC
+>  config SND_ATMEL_SOC_PDC
+>  	tristate
+>  	depends on HAS_DMA
+> -	default m if SND_ATMEL_SOC_SSC_PDC=m && SND_ATMEL_SOC_SSC=m
+> -	default y if SND_ATMEL_SOC_SSC_PDC=y || (SND_ATMEL_SOC_SSC_PDC=m && SND_ATMEL_SOC_SSC=y)
+> -
+> -config SND_ATMEL_SOC_SSC_PDC
+> -	tristate
+>  
+>  config SND_ATMEL_SOC_DMA
+>  	tristate
+>  	select SND_SOC_GENERIC_DMAENGINE_PCM
+> -	default m if SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=m
+> -	default y if SND_ATMEL_SOC_SSC_DMA=y || (SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=y)
+> -
+> -config SND_ATMEL_SOC_SSC_DMA
+> -	tristate
+>  
+>  config SND_ATMEL_SOC_SSC
+>  	tristate
+> -	default y if SND_ATMEL_SOC_SSC_DMA=y || SND_ATMEL_SOC_SSC_PDC=y
+> -	default m if SND_ATMEL_SOC_SSC_DMA=m || SND_ATMEL_SOC_SSC_PDC=m
+> +
+> +config SND_ATMEL_SOC_SSC_PDC
+> +	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
+> +	depends on ATMEL_SSC
+> +	select SND_ATMEL_SOC_PDC
+> +	select SND_ATMEL_SOC_SSC
+> +	help
+> +	  Say Y or M if you want to add support for Atmel SSC interface
+> +	  in PDC mode configured using audio-graph-card in device-tree.
+> +
+> +config SND_ATMEL_SOC_SSC_DMA
+> +	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
+> +	depends on ATMEL_SSC
+> +	select SND_ATMEL_SOC_DMA
+> +	select SND_ATMEL_SOC_SSC
+> +	help
+> +	  Say Y or M if you want to add support for Atmel SSC interface
+> +	  in DMA mode configured using audio-graph-card in device-tree.
+>  
+>  config SND_AT91_SOC_SAM9G20_WM8731
+>  	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+> -- 
+> 2.20.1
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
