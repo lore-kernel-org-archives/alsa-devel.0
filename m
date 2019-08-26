@@ -1,19 +1,19 @@
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [RFC PATCH 4/7] ALSA: hda/hdmi - allow control
-	creation without a linked pcm
-Date: Thu, 29 Aug 2019 16:53:45 +0300
-Message-ID: <20190829135348.23569-5-kai.vehmanen@linux.intel.com>
-References: <20190829135348.23569-1-kai.vehmanen@linux.intel.com>
+From: Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: Re: [PATCH] ASoC: rsnd: fixup 6ch settings to 8ch
+Date: Mon, 26 Aug 2019 11:30:32 +0200
+Message-ID: <20190826093032.GA24143@vmlxhi-102.adit-jv.com>
+References: <877ebi1v1e.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C55CCF8988E
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 15:54:19 +0200 (CEST)
-In-Reply-To: <20190829135348.23569-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 637BDF8014A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 11:30:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <877ebi1v1e.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +23,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Timo Wischer <twischer@de.adit-jv.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Eugeniu Rosca <erosca@de.adit-jv.com>, Eugeniu Rosca <roscaeugeniu@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the logic in generic_hdmi_build_controls() to identify
-unused hda_pcm entries by searching for SNDRV_PCM_INVALID_DEVICE.
-This matches with logic in snd_hda_codec_build_pcms().
+Hello Morimoto-san,
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/pci/hda/patch_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+We've been reviewing this patch in the context of Renesas-Yocto-v3.21.0
+BSP integration, where it is contained as commit [1].
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 83b8b9d27711..f2022f75afb6 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2174,11 +2174,13 @@ static int generic_hdmi_build_jack(struct hda_codec *codec, int pcm_idx)
- static int generic_hdmi_build_controls(struct hda_codec *codec)
- {
- 	struct hdmi_spec *spec = codec->spec;
-+	struct hda_pcm *hda_pcm;
- 	int dev, err;
- 	int pin_idx, pcm_idx;
- 
- 	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
--		if (!get_pcm_rec(spec, pcm_idx)->pcm) {
-+		hda_pcm = get_pcm_rec(spec, pcm_idx);
-+		if (hda_pcm->device == SNDRV_PCM_INVALID_DEVICE) {
- 			/* no PCM: mark this for skipping permanently */
- 			set_bit(pcm_idx, &spec->pcm_bitmap);
- 			continue;
+On Thu, Apr 25, 2019 at 03:16:58PM +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> rsnd need to use 8ch clock settings for 6ch for TDM.
+> Otherwise, it can't work correctly.
+> This patch fixup it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/sh/rcar/core.c | 18 +++++++++++++-----
+>  sound/soc/sh/rcar/rsnd.h |  1 +
+>  sound/soc/sh/rcar/ssi.c  |  2 ++
+>  3 files changed, 16 insertions(+), 5 deletions(-)
+
+[..]
+
+> diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+> index f5afab6..44bda21 100644
+> --- a/sound/soc/sh/rcar/ssi.c
+> +++ b/sound/soc/sh/rcar/ssi.c
+> @@ -303,6 +303,8 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+>  	if (rsnd_runtime_is_tdm_split(io))
+>  		chan = rsnd_io_converted_chan(io);
+>  
+> +	chan = rsnd_channel_normalization(chan);
+> +
+
+Since the "chan" value is already normalized by calling:
+ => rsnd_ssi_master_clk_start()
+  => chan = rsnd_runtime_channel_for_ssi(io)
+   => rsnd_runtime_channel_for_ssi_with_params()
+    => rsnd_channel_normalization()
+
+I was wondering if it is really required to call
+rsnd_channel_normalization() second time in ssi.c for fixing the issue
+described in this patch?
+
+>  	main_rate = rsnd_ssi_clk_query(rdai, rate, chan, &idx);
+>  	if (!main_rate) {
+>  		dev_err(dev, "unsupported clock rate\n");
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/horms/renesas-bsp.git/commit/?id=54721f595654
+   ("ASoC: rsnd: fixup 6ch settings to 8ch")
+
 -- 
-2.17.1
+Best Regards,
+Eugeniu.
