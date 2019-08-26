@@ -1,90 +1,48 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v2 1/6] ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA
- in Kconfig
-Date: Mon, 26 Aug 2019 16:23:37 +0200
-Message-ID: <20190826142337.GE21713@piout.net>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [PATCH v2 5/6] misc: atmel-ssc: get LRCLK pin selection from DT
+Date: Mon, 26 Aug 2019 14:38:17 +0000
+Message-ID: <5174bac2-294d-177a-b30c-6a7326820bfb@microchip.com>
 References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
- <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
+ <5f1fd1b8f646c5ced1d838c381b6973e5abccd53.1566677788.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <233d5461f4448df151755de7b69a0cd3ad310d5c.1566677788.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <5f1fd1b8f646c5ced1d838c381b6973e5abccd53.1566677788.git.mirq-linux@rere.qmqm.pl>
+Content-Language: en-US
+Content-ID: <22A5BB8587FCE34A9D008F56EDF2B7A0@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Chas Williams <3chas3@gmail.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Rob Herring <robh-dt@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+To: mirq-linux@rere.qmqm.pl, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: alexandre.belloni@bootlin.com, arnd@arndb.de, 3chas3@gmail.com, gregkh@linuxfoundation.org, perex@perex.cz, lgirdwood@gmail.com, Ludovic.Desroches@microchip.com, broonie@kernel.org, mark.rutland@arm.com, Nicolas.Ferre@microchip.com, robh-dt@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 24/08/2019 22:26:52+0200, Michał Mirosław wrote:
-> Allow SSC to be used on platforms described using audio-graph-card
-> in Device Tree.
-> 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
-> 
-> ---
->  v2: extended to PDC mode
->      reworked and fixed Kconfig option dependencies
-> 
-> ---
->  sound/soc/atmel/Kconfig | 30 ++++++++++++++++++------------
->  1 file changed, 18 insertions(+), 12 deletions(-)
-> 
-> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-> index 06c1d5ce642c..f118c229ed82 100644
-> --- a/sound/soc/atmel/Kconfig
-> +++ b/sound/soc/atmel/Kconfig
-> @@ -12,25 +12,31 @@ if SND_ATMEL_SOC
->  config SND_ATMEL_SOC_PDC
->  	tristate
->  	depends on HAS_DMA
-> -	default m if SND_ATMEL_SOC_SSC_PDC=m && SND_ATMEL_SOC_SSC=m
-> -	default y if SND_ATMEL_SOC_SSC_PDC=y || (SND_ATMEL_SOC_SSC_PDC=m && SND_ATMEL_SOC_SSC=y)
-> -
-> -config SND_ATMEL_SOC_SSC_PDC
-> -	tristate
->  
->  config SND_ATMEL_SOC_DMA
->  	tristate
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
-> -	default m if SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=m
-> -	default y if SND_ATMEL_SOC_SSC_DMA=y || (SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=y)
-> -
-> -config SND_ATMEL_SOC_SSC_DMA
-> -	tristate
->  
->  config SND_ATMEL_SOC_SSC
->  	tristate
-> -	default y if SND_ATMEL_SOC_SSC_DMA=y || SND_ATMEL_SOC_SSC_PDC=y
-> -	default m if SND_ATMEL_SOC_SSC_DMA=m || SND_ATMEL_SOC_SSC_PDC=m
-> +
-> +config SND_ATMEL_SOC_SSC_PDC
-> +	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
-> +	depends on ATMEL_SSC
-> +	select SND_ATMEL_SOC_PDC
-> +	select SND_ATMEL_SOC_SSC
-> +	help
-> +	  Say Y or M if you want to add support for Atmel SSC interface
-> +	  in PDC mode configured using audio-graph-card in device-tree.
-> +
-> +config SND_ATMEL_SOC_SSC_DMA
-> +	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
-> +	depends on ATMEL_SSC
-> +	select SND_ATMEL_SOC_DMA
-> +	select SND_ATMEL_SOC_SSC
-> +	help
-> +	  Say Y or M if you want to add support for Atmel SSC interface
-> +	  in DMA mode configured using audio-graph-card in device-tree.
->  
->  config SND_AT91_SOC_SAM9G20_WM8731
->  	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
-> -- 
-> 2.20.1
-> 
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+T24gMjQuMDguMjAxOSAyMzoyNiwgTWljaGHFgiBNaXJvc8WCYXcgd3JvdGU6DQo+IFN0b3JlIExS
+Q0xLIHBpbiBzZWxlY3Rpb24gZm9yIHVzZSBieSBBU29DIERBSSBkcml2ZXIuDQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBNaWNoYcWCIE1pcm9zxYJhdyA8bWlycS1saW51eEByZXJlLnFtcW0ucGw+DQoN
+ClJldmlld2VkLWJ5OiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9j
+aGlwLmNvbT4NCg0KVGhhbmtzIGFuZCBiZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCg0KPiANCj4gLS0t
+DQo+ICAgIHYyOiBzcGxpdCBmcm9tIEFTb0MgaW1wbGVtZW50YXRpb24NCj4gDQo+IC0tLQ0KPiAg
+IGRyaXZlcnMvbWlzYy9hdG1lbC1zc2MuYyAgfCA5ICsrKysrKysrKw0KPiAgIGluY2x1ZGUvbGlu
+dXgvYXRtZWwtc3NjLmggfCAyICsrDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25z
+KCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9taXNjL2F0bWVsLXNzYy5jIGIvZHJpdmVy
+cy9taXNjL2F0bWVsLXNzYy5jDQo+IGluZGV4IGFiNDE0NGVhMWYxMS4uMTMyMmUyOWJjMzdhIDEw
+MDY0NA0KPiAtLS0gYS9kcml2ZXJzL21pc2MvYXRtZWwtc3NjLmMNCj4gKysrIGIvZHJpdmVycy9t
+aXNjL2F0bWVsLXNzYy5jDQo+IEBAIC0yMTAsNiArMjEwLDE1IEBAIHN0YXRpYyBpbnQgc3NjX3By
+b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAgCQlzdHJ1Y3QgZGV2aWNlX25v
+ZGUgKm5wID0gcGRldi0+ZGV2Lm9mX25vZGU7DQo+ICAgCQlzc2MtPmNsa19mcm9tX3JrX3BpbiA9
+DQo+ICAgCQkJb2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAiYXRtZWwsY2xrLWZyb20tcmstcGlu
+Iik7DQo+ICsJCXNzYy0+bHJjbGtfZnJvbV90Zl9waW4gPQ0KPiArCQkJb2ZfcHJvcGVydHlfcmVh
+ZF9ib29sKG5wLCAiYXRtZWwsbHJjbGstZnJvbS10Zi1waW4iKTsNCj4gKwkJc3NjLT5scmNsa19m
+cm9tX3JmX3BpbiA9DQo+ICsJCQlvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJhdG1lbCxscmNs
+ay1mcm9tLXJmLXBpbiIpOw0KPiArDQo+ICsJCWlmIChzc2MtPmxyY2xrX2Zyb21fdGZfcGluICYm
+IHNzYy0+bHJjbGtfZnJvbV9yZl9waW4pIHsNCj4gKwkJCWRldl9lcnIoJnBkZXYtPmRldiwgImJv
+dGggTFJDTEsgZnJvbSBSSy9USyBvcHRpb25zIGZvdW5kIGluIERUIG5vZGUiKTsNCj4gKwkJCXJl
+dHVybiAtRUlOVkFMOw0KPiArCQl9DQo+ICAgCX0NCj4gICANCj4gICAJcmVncyA9IHBsYXRmb3Jt
+X2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7DQo+IGRpZmYgLS1naXQgYS9p
+bmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oIGIvaW5jbHVkZS9saW51eC9hdG1lbC1zc2MuaA0KPiBp
+bmRleCA2MDkxZDJhYmMxZWIuLmZiZTFjMmZmYWE4MSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9s
+aW51eC9hdG1lbC1zc2MuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2F0bWVsLXNzYy5oDQo+IEBA
+IC0yMSw2ICsyMSw4IEBAIHN0cnVjdCBzc2NfZGV2aWNlIHsNCj4gICAJaW50CQkJdXNlcjsNCj4g
+ICAJaW50CQkJaXJxOw0KPiAgIAlib29sCQkJY2xrX2Zyb21fcmtfcGluOw0KPiArCWJvb2wJCQls
+cmNsa19mcm9tX3RmX3BpbjsNCj4gKwlib29sCQkJbHJjbGtfZnJvbV9yZl9waW47DQo+ICAgCWJv
+b2wJCQlzb3VuZF9kYWk7DQo+ICAgfTsNCj4gICANCj4gDQoNCg==
