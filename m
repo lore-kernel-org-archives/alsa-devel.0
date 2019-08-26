@@ -1,56 +1,35 @@
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: [PATCH v2 1/2] ASoC: es8316: fix headphone mixer volume table
-Date: Tue, 27 Aug 2019 00:38:59 +0900
-Message-ID: <20190826153900.25969-1-katsuhiro@katsuster.net>
+Subject: [PATCH v2 2/2] ASoC: es8316: fix inverted L/R of headphone mixer volume
+Date: Tue, 27 Aug 2019 00:39:00 +0900
+Message-ID: <20190826153900.25969-2-katsuhiro@katsuster.net>
+References: <20190826153900.25969-1-katsuhiro@katsuster.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190826153900.25969-1-katsuhiro@katsuster.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <katsuhiro@katsuster.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fix setting table of Headphone mixer volume.
-Current code uses 4 ... 7 values but these values are prohibited.
-
-Correct settings are the following:
-  0000 -12dB
-  0001 -10.5dB
-  0010 -9dB
-  0011 -7.5dB
-  0100 -6dB
-  1000 -4.5dB
-  1001 -3dB
-  1010 -1.5dB
-  1011 0dB
+This patch fixes inverted Left-Right channel of headphone mixer
+volume by wrong shift_left, shift_right values.
 
 Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 ---
- sound/soc/codecs/es8316.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/codecs/es8316.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 8dfb5dbeebbf..f97d9c5210f0 100644
+index f97d9c5210f0..e0da24611800 100644
 --- a/sound/soc/codecs/es8316.c
 +++ b/sound/soc/codecs/es8316.c
-@@ -53,7 +53,10 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(adc_vol_tlv, -9600, 50, 1);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_max_gain_tlv, -650, 150, 0);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_min_gain_tlv, -1200, 150, 0);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_target_tlv, -1650, 150, 0);
--static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(hpmixer_gain_tlv, -1200, 150, 0);
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpmixer_gain_tlv,
-+	0, 4, TLV_DB_SCALE_ITEM(-1200, 150, 0),
-+	8, 11, TLV_DB_SCALE_ITEM(-450, 150, 0),
-+);
- 
- static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(-350, 0, 0),
-@@ -91,7 +94,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
+@@ -94,7 +94,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
  	SOC_DOUBLE_TLV("Headphone Playback Volume", ES8316_CPHP_ICAL_VOL,
  		       4, 0, 3, 1, hpout_vol_tlv),
  	SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
--		       0, 4, 7, 0, hpmixer_gain_tlv),
-+		       0, 4, 11, 0, hpmixer_gain_tlv),
+-		       0, 4, 11, 0, hpmixer_gain_tlv),
++		       4, 0, 11, 0, hpmixer_gain_tlv),
  
  	SOC_ENUM("Playback Polarity", dacpol),
  	SOC_DOUBLE_R_TLV("DAC Playback Volume", ES8316_DAC_VOLL,
