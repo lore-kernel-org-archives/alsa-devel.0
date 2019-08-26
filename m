@@ -1,63 +1,50 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: es8316: limit headphone mixer volume
-Date: Mon, 26 Aug 2019 11:09:24 +0200
-Message-ID: <eeee149c-4d9b-8b2e-780b-a41e2c87ec02@redhat.com>
-References: <20190824210426.16218-1-katsuhiro@katsuster.net>
- <943932bf-2042-2a69-c705-b8e090e96377@redhat.com>
- <CAD8Lp44_uAC4phZ9NbvM_LKNUoiNUqAnFsq4h-bJiQn6byjzGw@mail.gmail.com>
+From: Marcin Pietraszko <marcin.pietraszko@linux.intel.com>
+Subject: [PATCH 1/1] ASoC: topology: Fix variable overflow in
+	split_format
+Date: Mon, 26 Aug 2019 13:51:41 +0200
+Message-ID: <1566820301-18671-1-git-send-email-marcin.pietraszko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAD8Lp44_uAC4phZ9NbvM_LKNUoiNUqAnFsq4h-bJiQn6byjzGw@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Drake <drake@endlessm.com>
-Cc: Katsuhiro Suzuki <katsuhiro@katsuster.net>, Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 742A1F801ED
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 12:49:41 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: perex@perex.cz
+Cc: alsa-devel@alsa-project.org, Marcin Pietraszko <marcin.pietraszko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The 1 which was 32-bit long, when left-shifted by more than 31 caused
+an overflow, which resulted in some of the formats being not supported.
 
-On 26-08-19 04:53, Daniel Drake wrote:
-> On Mon, Aug 26, 2019 at 1:38 AM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 24-08-19 23:04, Katsuhiro Suzuki wrote:
->>> This patch limits Headphone mixer volume to 4 from 7.
->>> Because output sound suddenly becomes very loudly with many noise if
->>> set volume over 4.
-> 
-> That sounds like something that should be limited in UCM.
-> 
->> Higher then 4 not working matches my experience, see this comment from
->> the UCM file: alsa-lib/src/conf/ucm/codecs/es8316/EnableSeq.conf :
->>
->> # Set HP mixer vol to -6 dB (4/7) louder does not work
->> cset "name='Headphone Mixer Volume' 4"
-> 
-> What does "does not work" mean more precisely?
+Signed-off-by: Marcin Pietraszko <marcin.pietraszko@linux.intel.com>
+---
+ src/topology/pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-IIRC garbled sound.
-
-> I checked the spec, there is indeed something wrong in the kernel driver here.
-> The db scale is not a simple scale as the kernel source suggests.
-> 
-> Instead it is:
-> 0000 – -12dB
-> 0001 – -10.5dB
-> 0010 – -9dB
-> 0011 – -7.5dB
-> 0100 – -6dB
-> 1000 – -4.5dB
-> 1001 – -3dB
-> 1010 – -1.5dB
-> 1011 – 0dB
-> 
-> So perhaps we can fix the kernel to follow this table and then use UCM
-> to limit the volume if its too high on a given platform?
-
-Yes that sounds like the right thing to do. Katsuhiro can you confirm that
-using this table allows using the full scale ? note that the full scale now
-has 9 steps rather then 8.
-
-Regards,
-
-Hans
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 5f586dc..00a35b9 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -321,7 +321,7 @@ static int split_format(struct snd_soc_tplg_stream_caps *caps, char *str)
+ 			return -EINVAL;
+ 		}
+ 
+-		caps->formats |= 1 << format;
++		caps->formats |= 1ull << format;
+ 		s = strtok(NULL, ", ");
+ 		i++;
+ 	}
+-- 
+2.7.4
