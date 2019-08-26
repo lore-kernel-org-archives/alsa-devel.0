@@ -1,105 +1,138 @@
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: Re: [PATCH] ASoC: es8316: limit headphone mixer volume
-Date: Mon, 26 Aug 2019 18:00:56 +0900
-Message-ID: <bf9bebb7-9c6d-3a56-d144-3466cd00d5eb@katsuster.net>
-References: <20190824210426.16218-1-katsuhiro@katsuster.net>
- <943932bf-2042-2a69-c705-b8e090e96377@redhat.com>
- <CAD8Lp44_uAC4phZ9NbvM_LKNUoiNUqAnFsq4h-bJiQn6byjzGw@mail.gmail.com>
- <f3096961-6b26-1ccf-47f2-978ae3648031@katsuster.net>
+From: <shumingf@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt1011: add mutex protection to
+	set_fmt/set_tdm_slot
+Date: Mon, 26 Aug 2019 17:00:52 +0800
+Message-ID: <20190826090052.1875-1-shumingf@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f3096961-6b26-1ccf-47f2-978ae3648031@katsuster.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
-Cc: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23F5DF80376
+ for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2019 11:01:19 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, cychiang@google.com, Shuming Fan <shumingf@realtek.com>, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+From: Shuming Fan <shumingf@realtek.com>
 
-Oops... I got mistake,
+The calibration process at booting will reset registers and bypass cache
+to make sure the calibration is done.
+We add mutex protection to avoid unexpected settings while
+the registration process and calibration are interleaved.
 
- >      SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
- >                 0, 4, 15, 0, hpmixer_gain_tlv),
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt1011.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-is wrong,
-
- >      SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
- >                 0, 4, 11, 0, hpmixer_gain_tlv),
-
-is correct.
-
-Best Regards,
-Katsuhiro Suzuki
-
-
-On 2019/08/26 17:41, Katsuhiro Suzuki wrote:
-> Hello Daniel,
-> 
-> On 2019/08/26 11:53, Daniel Drake wrote:
->> On Mon, Aug 26, 2019 at 1:38 AM Hans de Goede <hdegoede@redhat.com> 
->> wrote:
->>> On 24-08-19 23:04, Katsuhiro Suzuki wrote:
->>>> This patch limits Headphone mixer volume to 4 from 7.
->>>> Because output sound suddenly becomes very loudly with many noise if
->>>> set volume over 4.
->>
->> That sounds like something that should be limited in UCM.
->>
->>> Higher then 4 not working matches my experience, see this comment from
->>> the UCM file: alsa-lib/src/conf/ucm/codecs/es8316/EnableSeq.conf :
->>>
->>> # Set HP mixer vol to -6 dB (4/7) louder does not work
->>> cset "name='Headphone Mixer Volume' 4"
->>
->> What does "does not work" mean more precisely?
->>
->> I checked the spec, there is indeed something wrong in the kernel 
->> driver here.
->> The db scale is not a simple scale as the kernel source suggests.
->>
->> Instead it is:
->> 0000 – -12dB
->> 0001 – -10.5dB
->> 0010 – -9dB
->> 0011 – -7.5dB
->> 0100 – -6dB
->> 1000 – -4.5dB
->> 1001 – -3dB
->> 1010 – -1.5dB
->> 1011 – 0dB
->>
->  > So perhaps we can fix the kernel to follow this table and then use UCM
->  > to limit the volume if its too high on a given platform?
->  >
-> 
-> Thank you very important information. So you mean value 5, 6, 7 are
-> illegal settings for ES8316. Correct codes are
-> 
-> static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpmixer_gain_tlv,
->      0, 4, TLV_DB_SCALE_ITEM(-1200, 150, 0),
->      8, 11, TLV_DB_SCALE_ITEM(-450, 150, 0),
-> );
-> 
-> and...
-> 
->      SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
->                 0, 4, 15, 0, hpmixer_gain_tlv),
-> 
-> Is my understanding correct? If so I'll test it on my board
-> (RockPro64) and re-send patch.
-> 
-> BTW, do you know how to get ES8316 I2C registers spec?
-> I want to see it for understanding current code, but I cannot find...
-> 
-> 
->> Thanks
->> Daniel
->>
->>
-> 
-> Best Regards,
-> Katsuhiro Suzuki
-> 
+diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
+index fa34565a3938..f9235764ad32 100644
+--- a/sound/soc/codecs/rt1011.c
++++ b/sound/soc/codecs/rt1011.c
+@@ -1627,14 +1627,18 @@ static int rt1011_hw_params(struct snd_pcm_substream *substream,
+ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct snd_soc_component *component = dai->component;
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
+ 	unsigned int reg_val = 0, reg_bclk_inv = 0;
++	int ret = 0;
+ 
++	snd_soc_dapm_mutex_lock(dapm);
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		reg_val |= RT1011_I2S_TDM_MS_S;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+@@ -1644,7 +1648,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		reg_bclk_inv |= RT1011_TDM_INV_BCLK;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -1660,7 +1664,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		reg_val |= RT1011_I2S_TDM_DF_PCM_B;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+ 
+ 	switch (dai->id) {
+@@ -1675,9 +1679,11 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		break;
+ 	default:
+ 		dev_err(component->dev, "Invalid dai->id: %d\n", dai->id);
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+-	return 0;
++
++	snd_soc_dapm_mutex_unlock(dapm);
++	return ret;
+ }
+ 
+ static int rt1011_set_component_sysclk(struct snd_soc_component *component,
+@@ -1796,8 +1802,12 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
+ {
+ 	struct snd_soc_component *component = dai->component;
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
+ 	unsigned int val = 0, tdm_en = 0;
++	int ret = 0;
+ 
++	snd_soc_dapm_mutex_lock(dapm);
+ 	if (rx_mask || tx_mask)
+ 		tdm_en = RT1011_TDM_I2S_DOCK_EN_1;
+ 
+@@ -1817,7 +1827,7 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 	case 2:
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+ 
+ 	switch (slot_width) {
+@@ -1836,7 +1846,7 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 	case 16:
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+ 
+ 	snd_soc_component_update_bits(component, RT1011_TDM1_SET_1,
+@@ -1853,7 +1863,8 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 		RT1011_ADCDAT1_PIN_CONFIG | RT1011_ADCDAT2_PIN_CONFIG,
+ 		RT1011_ADCDAT1_OUTPUT | RT1011_ADCDAT2_OUTPUT);
+ 
+-	return 0;
++	snd_soc_dapm_mutex_unlock(dapm);
++	return ret;
+ }
+ 
+ static int rt1011_probe(struct snd_soc_component *component)
+-- 
+2.23.0
