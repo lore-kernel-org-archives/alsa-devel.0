@@ -1,37 +1,40 @@
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: [PATCH v2 2/2] ASoC: es8316: fix inverted L/R of headphone mixer volume
-Date: Tue, 27 Aug 2019 00:39:00 +0900
-Message-ID: <20190826153900.25969-2-katsuhiro@katsuster.net>
-References: <20190826153900.25969-1-katsuhiro@katsuster.net>
+From: ilya.pshonkin@netforce.ua
+Subject: [PATCH] ALSA: usb-audio: Add Hiby R3 to quirks for native DSD support
+Date: Mon, 26 Aug 2019 19:09:52 +0300
+Message-ID: <20190826160953.19402-1-ilya.pshonkin@netforce.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190826153900.25969-1-katsuhiro@katsuster.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <katsuhiro@katsuster.net>
+To: ilya.pshonkin@netforce.ua
+Cc: Sudokamikaze <sudokamikaze@protonmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jussi Laako <jussi@sonarnerd.net>, Allison Randal <allison@lohutok.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Richard Fontana <rfontana@redhat.com>, Manuel Reinhardt <manuel.rhdt@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes inverted Left-Right channel of headphone mixer
-volume by wrong shift_left, shift_right values.
+From: Sudokamikaze <sudokamikaze@protonmail.com>
 
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+This patch adds quirk VID/PID IDs for Hiby R3 portable DSD player DSD support
+
+Signed-off-by: Sudokamikaze <sudokamikaze@protonmail.com>
 ---
- sound/soc/codecs/es8316.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index f97d9c5210f0..e0da24611800 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -94,7 +94,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
- 	SOC_DOUBLE_TLV("Headphone Playback Volume", ES8316_CPHP_ICAL_VOL,
- 		       4, 0, 3, 1, hpout_vol_tlv),
- 	SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
--		       0, 4, 11, 0, hpmixer_gain_tlv),
-+		       4, 0, 11, 0, hpmixer_gain_tlv),
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 78858918cbc1..f90418149e4e 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1588,6 +1588,12 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 		if (fp->altsetting == 2)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
++	
++	/* ESS Sabre based USB DACs */
++	case USB_ID(0xc502, 0x0051): /* Hiby R3 */
++		if (fp->altsetting == 4)
++			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
++		break;
  
- 	SOC_ENUM("Playback Polarity", dacpol),
- 	SOC_DOUBLE_R_TLV("DAC Playback Volume", ES8316_DAC_VOLL,
+ 	case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
+ 	case USB_ID(0x10cb, 0x0103): /* The Bit Opus #3; with fp->dsd_raw */
 -- 
-2.23.0.rc1
+2.23.0
