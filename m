@@ -1,66 +1,53 @@
-From: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH 2/2] ALSA: hda: Allow HDA to be runtime suspended when
- dGPU is not bound
-Date: Tue, 27 Aug 2019 17:31:25 -0500
-Message-ID: <20190827223125.GB9987@google.com>
-References: <20190827134756.10807-1-kai.heng.feng@canonical.com>
- <20190827134756.10807-2-kai.heng.feng@canonical.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 4/6] dt-bindings: misc: atmel-ssc: LRCLK from TF/RF
+ pin option
+Date: Tue, 27 Aug 2019 17:37:16 -0500
+Message-ID: <20190827223716.GA31605@bogus>
+References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
+ <9b85d5a7c7e788e9ed87d020323ad9292e3aeab7.1566677788.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190827134756.10807-2-kai.heng.feng@canonical.com>
+In-Reply-To: <9b85d5a7c7e788e9ed87d020323ad9292e3aeab7.1566677788.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: tiwai@suse.com, linux-pci@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, Arnd Bergmann <arnd@arndb.de>, Chas Williams <3chas3@gmail.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 27, 2019 at 09:47:56PM +0800, Kai-Heng Feng wrote:
-> It's a common practice to let dGPU unbound and use PCI port PM to
-> disable its power through _PR3. When the dGPU comes with an HDA
-> function, the HDA won't be suspended if the dGPU is unbound, so the dGPU
-> power can't be disabled.
-
-Just a terminology question:
-
-I thought "using PCI port PM" meant using the PCI Power Management
-Capability in config space to directly change the device's power
-state, e.g., in pci_raw_set_power_state().
-
-And I thought using _PS3, _PR3, etc would be part of "platform power
-management"?
-
-And AFAICT, _PR3 merely returns a list of power resources; it doesn't
-disable power itself.
-
-> Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
-> discrete GPU") only allows HDA to be runtime-suspended once GPU is
-> bound, to keep APU's HDA working.
+On Sat, Aug 24, 2019 at 10:26:55PM +0200, Michał Mirosław wrote:
+> Add single-pin LRCLK source options for Atmel SSC module.
 > 
-> However, HDA on dGPU isn't that useful if dGPU is unbound. So let relax
-> the runtime suspend requirement for dGPU's HDA function, to save lots of
-> power.
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 > 
-> BugLink: https://bugs.launchpad.net/bugs/1840835
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > ---
->  sound/pci/hda/hda_intel.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>   v2: split from implementation patch
 > 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 99fc0917339b..d4ee070e1a29 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1285,7 +1285,8 @@ static void init_vga_switcheroo(struct azx *chip)
->  		dev_info(chip->card->dev,
->  			 "Handle vga_switcheroo audio client\n");
->  		hda->use_vga_switcheroo = 1;
-> -		hda->need_eld_notify_link = 1; /* cleared in gpu_bound op */
-> +		/* cleared in gpu_bound op */
-> +		hda->need_eld_notify_link = !pci_pr3_present(p);
->  		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
->  		pci_dev_put(p);
->  	}
+> ---
+>  Documentation/devicetree/bindings/misc/atmel-ssc.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/atmel-ssc.txt b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
+> index f9fb412642fe..c98e96dbec3a 100644
+> --- a/Documentation/devicetree/bindings/misc/atmel-ssc.txt
+> +++ b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
+> @@ -24,6 +24,11 @@ Optional properties:
+>         this parameter to choose where the clock from.
+>       - By default the clock is from TK pin, if the clock from RK pin, this
+>         property is needed.
+> +  - atmel,lrclk-from-tf-pin: bool property.
+> +  - atmel,lrclk-from-rf-pin: bool property.
+> +     - SSC in slave mode gets LRCLK from RF for receive and TF for transmit
+> +       data direction. This property makes both use single TF (or RF) pin
+> +       as LRCLK. At most one can be present.
+
+A single property taking 1 of possible 2 values would prevent the error 
+of more than 1 property present.
+
+>    - #sound-dai-cells: Should contain <0>.
+>       - This property makes the SSC into an automatically registered DAI.
+>  
 > -- 
-> 2.17.1
+> 2.20.1
 > 
