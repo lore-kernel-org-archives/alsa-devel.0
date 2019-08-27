@@ -1,18 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8316: fix headphone mixer volume table" to the asoc tree
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: mt8183: fix tdm out data align issue" to the
+ asoc tree
 Date: Tue, 27 Aug 2019 20:57:44 +0100 (BST)
-Message-ID: <20190827195744.A0690D02CED@fitzroy.sirena.org.uk>
-References: <20190826153900.25969-1-katsuhiro@katsuster.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190826153900.25969-1-katsuhiro@katsuster.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, David Yang <yangxiaohua@everest-semi.com>, Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Message-ID: <20190827195744.64E50D02CEA@fitzroy.sirena.org.uk>
+References: <1566622726-27113-1-git-send-email-jiaxin.yu@mediatek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1566622726-27113-1-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8316: fix headphone mixer volume table
+   ASoC: mediatek: mt8183: fix tdm out data align issue
 
 has been applied to the asoc tree at
 
@@ -37,57 +48,42 @@ to this mail.
 Thanks,
 Mark
 
->From f972d02fee2496024cfd6f59021c9d89d54922a6 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Tue, 27 Aug 2019 00:38:59 +0900
-Subject: [PATCH] ASoC: es8316: fix headphone mixer volume table
+>From d2ac1fe0342ce2b44621f60d053800e2d94f1d21 Mon Sep 17 00:00:00 2001
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Sat, 24 Aug 2019 12:58:46 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: fix tdm out data align issue
 
-This patch fix setting table of Headphone mixer volume.
-Current code uses 4 ... 7 values but these values are prohibited.
+Mt8183 tdm out support S16_LE/S24_LE/S32_LE formats. When output S32_LE,
+we need set hd_align so that memif can output MSB 24bits. When output
+S24_LE, we need reset hd_align so that memif can output LSB 24bits.
 
-Correct settings are the following:
-  0000 -12dB
-  0001 -10.5dB
-  0010 -9dB
-  0011 -7.5dB
-  0100 -6dB
-  1000 -4.5dB
-  1001 -3dB
-  1010 -1.5dB
-  1011 0dB
-
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Reviewed-by: Daniel Drake <drake@endlessm.com>
-Link: https://lore.kernel.org/r/20190826153900.25969-1-katsuhiro@katsuster.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Link: https://lore.kernel.org/r/1566622726-27113-1-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/es8316.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 6db002cc2058..96d04896193f 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -51,7 +51,10 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(adc_vol_tlv, -9600, 50, 1);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_max_gain_tlv, -650, 150, 0);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_min_gain_tlv, -1200, 150, 0);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_target_tlv, -1650, 150, 0);
--static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(hpmixer_gain_tlv, -1200, 150, 0);
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpmixer_gain_tlv,
-+	0, 4, TLV_DB_SCALE_ITEM(-1200, 150, 0),
-+	8, 11, TLV_DB_SCALE_ITEM(-450, 150, 0),
-+);
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+index d16563408465..10ea4fdbeb1e 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -241,7 +241,7 @@ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
+ 	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
+ 	int hd_audio = 0;
+-	int hd_align = 1;
++	int hd_align = 0;
  
- static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(-350, 0, 0),
-@@ -89,7 +92,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
- 	SOC_DOUBLE_TLV("Headphone Playback Volume", ES8316_CPHP_ICAL_VOL,
- 		       4, 0, 3, 1, hpout_vol_tlv),
- 	SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
--		       0, 4, 7, 0, hpmixer_gain_tlv),
-+		       0, 4, 11, 0, hpmixer_gain_tlv),
- 
- 	SOC_ENUM("Playback Polarity", dacpol),
- 	SOC_DOUBLE_R_TLV("DAC Playback Volume", ES8316_DAC_VOLL,
+ 	/* set hd mode */
+ 	switch (substream->runtime->format) {
+@@ -254,7 +254,6 @@ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S24_LE:
+ 		hd_audio = 1;
+-		hd_align = 0;
+ 		break;
+ 	default:
+ 		dev_err(afe->dev, "%s() error: unsupported format %d\n",
 -- 
 2.20.1
