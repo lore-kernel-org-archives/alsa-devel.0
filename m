@@ -1,33 +1,45 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [PATCH v2 1/2] ASoC: es8316: fix headphone mixer volume table
-Date: Tue, 27 Aug 2019 10:43:58 +0800
-Message-ID: <CAD8Lp44a0i2Z9YV0tOKB=QuoZzU-ALSqTr_X8XaMVrGbw-DfQg@mail.gmail.com>
-References: <20190826153900.25969-1-katsuhiro@katsuster.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: [PATCH] ASoC: imx-audmix: register the card on a proper dev
+Date: Tue, 27 Aug 2019 11:55:15 -0400
+Message-ID: <1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190826153900.25969-1-katsuhiro@katsuster.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, alsa-devel@alsa-project.org, viorel.suman@nxp.com
+Cc: linux-imx@nxp.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 26, 2019 at 11:39 PM Katsuhiro Suzuki
-<katsuhiro@katsuster.net> wrote:
->
-> This patch fix setting table of Headphone mixer volume.
-> Current code uses 4 ... 7 values but these values are prohibited.
->
-> Correct settings are the following:
->   0000 -12dB
->   0001 -10.5dB
->   0010 -9dB
->   0011 -7.5dB
->   0100 -6dB
->   1000 -4.5dB
->   1001 -3dB
->   1010 -1.5dB
->   1011 0dB
->
-> Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Reviewed-by: Daniel Drake <drake@endlessm.com>
+This platform device is registered from "fsl_audmix", which is
+its parent device. If use pdev->dev.parent for the priv->card.dev,
+the value set by dev_set_drvdata in parent device will be covered
+by the value in child device.
+
+Fixes: b86ef5367761 ("ASoC: fsl: Add Audio Mixer machine driver")
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/imx-audmix.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
+index 9e1cb18859ce..71590ca6394b 100644
+--- a/sound/soc/fsl/imx-audmix.c
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -325,14 +325,14 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ 	priv->card.num_configs = priv->num_dai_conf;
+ 	priv->card.dapm_routes = priv->dapm_routes;
+ 	priv->card.num_dapm_routes = priv->num_dapm_routes;
+-	priv->card.dev = pdev->dev.parent;
++	priv->card.dev = &pdev->dev;
+ 	priv->card.owner = THIS_MODULE;
+ 	priv->card.name = "imx-audmix";
+ 
+ 	platform_set_drvdata(pdev, &priv->card);
+ 	snd_soc_card_set_drvdata(&priv->card, priv);
+ 
+-	ret = devm_snd_soc_register_card(pdev->dev.parent, &priv->card);
++	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed\n");
+ 		return ret;
+-- 
+2.21.0
