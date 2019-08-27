@@ -1,45 +1,66 @@
 From: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH 1/2] PCI: Add a helper to check Power Resource
- Requirements _PR3 existence
-Date: Tue, 27 Aug 2019 17:13:21 -0500
-Message-ID: <20190827221321.GA9987@google.com>
+Subject: Re: [PATCH 2/2] ALSA: hda: Allow HDA to be runtime suspended when
+ dGPU is not bound
+Date: Tue, 27 Aug 2019 17:31:25 -0500
+Message-ID: <20190827223125.GB9987@google.com>
 References: <20190827134756.10807-1-kai.heng.feng@canonical.com>
- <s5hr2567hrd.wl-tiwai@suse.de>
- <0379E973-651A-442C-AF74-51702388F55D@canonical.com>
+ <20190827134756.10807-2-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <0379E973-651A-442C-AF74-51702388F55D@canonical.com>
+In-Reply-To: <20190827134756.10807-2-kai.heng.feng@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, Peter Wu <peter@lekensteyn.nl>, Mika Westerberg <mika.westerberg@linux.intel.com>, Dave Airlie <airlied@redhat.com>
+Cc: tiwai@suse.com, linux-pci@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-[+cc Peter, Mika, Dave]
+On Tue, Aug 27, 2019 at 09:47:56PM +0800, Kai-Heng Feng wrote:
+> It's a common practice to let dGPU unbound and use PCI port PM to
+> disable its power through _PR3. When the dGPU comes with an HDA
+> function, the HDA won't be suspended if the dGPU is unbound, so the dGPU
+> power can't be disabled.
 
-https://lore.kernel.org/r/20190827134756.10807-1-kai.heng.feng@canonical.com
+Just a terminology question:
 
-On Wed, Aug 28, 2019 at 12:58:28AM +0800, Kai-Heng Feng wrote:
-> at 23:25, Takashi Iwai <tiwai@suse.de> wrote:
-> > On Tue, 27 Aug 2019 15:47:55 +0200,
-> > Kai-Heng Feng wrote:
-> > > A driver may want to know the existence of _PR3, to choose different
-> > > runtime suspend behavior. A user will be add in next patch.
-> > > 
-> > > This is mostly the same as nouveau_pr3_present().
-> > 
-> > Then it'd be nice to clean up the nouveau part, too?
+I thought "using PCI port PM" meant using the PCI Power Management
+Capability in config space to directly change the device's power
+state, e.g., in pci_raw_set_power_state().
+
+And I thought using _PS3, _PR3, etc would be part of "platform power
+management"?
+
+And AFAICT, _PR3 merely returns a list of power resources; it doesn't
+disable power itself.
+
+> Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
+> discrete GPU") only allows HDA to be runtime-suspended once GPU is
+> bound, to keep APU's HDA working.
 > 
-> nouveau_pr3_present() may call pci_d3cold_disable(), and my intention is to
-> only check the presence of _PR3 (i.e. a dGPU) without touching anything.
-
-It looks like Peter added that code with 279cf3f23870
-("drm/nouveau/acpi: use DSM if bridge does not support D3cold").
-
-I don't understand the larger picture, but it is somewhat surprising
-that nouveau_pr3_present() *looks* like a simple predicate with no
-side-effects, but in fact it disables the use of D3cold in some cases.
-
-If the disable were moved to the caller, Kai-Heng's new interface
-could be used both places.
+> However, HDA on dGPU isn't that useful if dGPU is unbound. So let relax
+> the runtime suspend requirement for dGPU's HDA function, to save lots of
+> power.
+> 
+> BugLink: https://bugs.launchpad.net/bugs/1840835
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  sound/pci/hda/hda_intel.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 99fc0917339b..d4ee070e1a29 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1285,7 +1285,8 @@ static void init_vga_switcheroo(struct azx *chip)
+>  		dev_info(chip->card->dev,
+>  			 "Handle vga_switcheroo audio client\n");
+>  		hda->use_vga_switcheroo = 1;
+> -		hda->need_eld_notify_link = 1; /* cleared in gpu_bound op */
+> +		/* cleared in gpu_bound op */
+> +		hda->need_eld_notify_link = !pci_pr3_present(p);
+>  		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
+>  		pci_dev_put(p);
+>  	}
+> -- 
+> 2.17.1
+> 
