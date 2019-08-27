@@ -1,52 +1,60 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] Revert "ASoC: sun4i-i2s: Remove duplicated quirks
- structure"
-Date: Tue, 27 Aug 2019 11:43:52 +0100
-Message-ID: <20190827104352.GY23391@sirena.co.uk>
-References: <20190827093206.17919-1-mripard@kernel.org>
+Subject: Re: Applied "ASoC: sun4i-i2s: Fix the MCLK and BCLK dividers on
+ newer SoCs" to the asoc tree
+Date: Tue, 27 Aug 2019 11:46:15 +0100
+Message-ID: <20190827104615.GZ23391@sirena.co.uk>
+References: <0e5b4abf06cd3202354315201c6af44caeb20236.1566242458.git-series.maxime.ripard@bootlin.com>
+ <20190820174105.96899274314F@ypsilon.sirena.org.uk>
+ <CAGb2v64vzcZbXqfW27cgobpQ-AXQjb2zanqotAR0ezw+6KCdpw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="15k5Fuw+yLfT1d9X"
+        protocol="application/pgp-signature"; boundary="lIC76ItX9S6XOZ/S"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190827093206.17919-1-mripard@kernel.org>
+In-Reply-To: <CAGb2v64vzcZbXqfW27cgobpQ-AXQjb2zanqotAR0ezw+6KCdpw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, codekipper@gmail.com, linux-kernel@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Maxime Ripard <mripard@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Marcus Cooper <codekipper@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---15k5Fuw+yLfT1d9X
+--lIC76ItX9S6XOZ/S
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 27, 2019 at 11:32:05AM +0200, Maxime Ripard wrote:
-> From: Maxime Ripard <maxime.ripard@bootlin.com>
->=20
-> This reverts commit 3e9acd7ac6933cdc20c441bbf9a38ed9e42e1490.
->=20
-> It turns out that while one I2S controller is described in the A83t
-> datasheet, the driver supports another, undocumented, one that has been
-> inherited from the older SoCs, while the documented one uses the new
-> design.
+On Tue, Aug 27, 2019 at 05:25:21PM +0800, Chen-Yu Tsai wrote:
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+> > From: Marcus Cooper <codekipper@gmail.com>
 
---15k5Fuw+yLfT1d9X
+> The authorship of this patch looks to be wrong. Maybe it's a tooling issue.
+> I imagine it might have happened if Maxime created the patches using
+> `git format-patch` with his @bootlin.com address, then sent them with his
+> @kernel.org address, and `git send-email` swapped out the "From:" header
+> and prepended it to the body.
+
+No idea.  In any case it's kind of hard to fix at this point
+since there's a merge in the way.  This is why I like using
+branches for things but Linus doesn't :/
+
+> Either way the "From:" line looks odd in the commit log.
+
+This is what git format-patch does when sending stuff via e-mail
+if the author is different from the sender, it uses that to
+override things.
+
+--lIC76ItX9S6XOZ/S
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1lCWUACgkQJNaLcl1U
-h9BE5wf/e1I8LfUK6KLnXqxYzxIjCX6f4JtBiqFI99GurXQD/tNK1q7Ldszv3Cwc
-diESenhKUbt+tMgtus6JWeI71/T2BN6A1fewE6n5rhLl/tny4kmlcIlBsZIPV2z6
-WFmdU15AGyRSRBIRkQwGYBxA5ViTMQqeWKXtCenIkxypv06TsBqQr047rvlgFdEf
-anti8BIGziPLJtyCkpU/iCV151N9K5priltDgw0FKN0nogcyUAUWXcaAjbQi0kQe
-FYtUKi/Rl3XQKqGkL4h4Z80VTlXbq60QH1npUmR8Y0WpecEci92PJ3iOmqciwfe9
-sbKc1Q/++txkY4XUgNv+RDvt9Q4/zg==
-=bQV/
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1lCfYACgkQJNaLcl1U
+h9Di7ggAgNoZ8rQn7YvVm4cejhwJBcdMuUs1+pBMAGoZh58gwfOMXjpmjeBhjc/F
+tSA0tLaf56ov+6K+icWnoYNv3uAMWBA1jimgQTS/ZOPTnfNPQ94/StKIHQKDxj+U
+o4MwOkNdSc/ilIGdzRYa9mbTszAjTcB8zylCWd8ONcxTM8RxADVVlVSNXinS7ZnI
+cslI9umNwU7+S8WoO7Q5gdk0cOHWmEjW12kgv6LsT6GyLrdlY08Nylb+uaLX+cQP
+Tfoym0mSqCbh5/yCHO5tffAuvsMTUdWw+Pid75EkdaY/u4zmnn0+4D5n64a/wfmi
+o2fP8Rqk1GMMBWKc42wqfjqulKd53A==
+=onS9
 -----END PGP SIGNATURE-----
 
---15k5Fuw+yLfT1d9X--
+--lIC76ItX9S6XOZ/S--
