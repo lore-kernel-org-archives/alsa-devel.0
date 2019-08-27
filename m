@@ -1,19 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Baytrail: Fix implicit
- fallthrough warning
-Date: Wed, 28 Aug 2019 12:00:14 -0500
-Message-ID: <64773d79-b9ed-f42f-e2b9-4c1c18768348@linux.intel.com>
-References: <20190828095102.15737-1-cezary.rojewski@intel.com>
+From: John Menninger <john@profscience.com>
+Subject: pulse audio problem
+Date: Tue, 27 Aug 2019 09:31:39 -0500
+Message-ID: <09e98941-e416-3a9d-22af-d1eabe7c33f5@profscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+Received: from p3plsmtpa06-09.prod.phx3.secureserver.net
+ (p3plsmtpa06-09.prod.phx3.secureserver.net [173.201.192.110])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57152F8980C
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 01:05:26 +0200 (CEST)
-In-Reply-To: <20190828095102.15737-1-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 026F8F801ED
+ for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2019 16:31:43 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,37 +22,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/28/19 4:51 AM, Cezary Rojewski wrote:
-> Append fallthrough statement to fix warning reported during compilation.
-> 
-> Fixes: b80d19c166c4 ("ASoC: Intel: Restore Baytrail ADSP streams only when ADSP was in reset")
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
-> 
-> Changes from v1:
-> - made use of fallthrough statement as suggested by Pierre
-> - updated commit message
-> 
->   sound/soc/intel/baytrail/sst-baytrail-pcm.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> index 9cbc982d46a9..54f2ee3010ee 100644
-> --- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> +++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> @@ -193,6 +193,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
->   		break;
->   	case SNDRV_PCM_TRIGGER_SUSPEND:
->   		pdata->restore_stream = false;
-> +		/* fallthrough */
->   	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->   		sst_byt_stream_pause(byt, pcm_data->stream);
->   		break;
-> 
+SW4gZ29pbmcgb3ZlciBteSBVYnVudHUgMTYuMDQgKDY0Yml0KSBzeXN0ZW0gbG9nIEkgZm91bmQg
+dGhlIGZvbGxvd2luZzoKCiJBdWcgMjcgMDA6MDI6MjIgRGVza3RvcDY0IHB1bHNlYXVkaW9bMjcy
+Nl06IFthbHNhLXNpbmstQUxDODg5QSBBbmFsb2ddIAphbHNhLXV0aWwuYzogc25kX3BjbV9hdmFp
+bCgpIHJldHVybmVkIGEgdmFsdWUgdGhhdCBpcyBleGNlcHRpb25hbGx5IApsYXJnZTogMjI4NDEy
+MCBieXRlcyAoMTI5NDggbXMpLgoKIkF1ZyAyNyAwMDowMjoyOSBEZXNrdG9wNjQgcHVsc2VhdWRp
+b1syNzI2XTogW2Fsc2Etc2luay1BTEM4ODlBIEFuYWxvZ10gCmFsc2EtdXRpbC5jOiBNb3N0IGxp
+a2VseSB0aGlzIGlzIGEgYnVnIGluIHRoZSBBTFNBIGRyaXZlciAKJ3NuZF9oZGFfaW50ZWwnLiBQ
+bGVhc2UgcmVwb3J0IHRoaXMgaXNzdWUgdG8gdGhlIEFMU0EgZGV2ZWxvcGVycy4iCgpJIGhhdmUg
+bm8gaWRlYSBob3cgdG8gbWFuYWdlIGFueSBwcm9ibGVtIHRoYXQgbWlnaHQgaGF2ZSBjYXVzZWQg
+dGhpcyAKbm90aWZpY2F0aW9uIGFuZCBJIHdvdWxkIGFwcHJlY2lhdGUgYW55IGFkdmljZSB5b3Ug
+bWF5IGhhdmUuCgogwqAgLS0gdGhhbmtzLCBKb2huIE1lbm5pbmdlcgoKLS0gCkpvaG4gTWVubmlu
+Z2VyCjczNSBHZW9yZ2UgU3QuCklvd2EgQ2l0eSwgSW93YSA1MjI0NgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
