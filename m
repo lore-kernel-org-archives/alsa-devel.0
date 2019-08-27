@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-audmix: register the card on a proper dev" to the asoc tree
+Subject: Applied "ASoC: SOF: imx8: Make some functions static" to the asoc tree
 Date: Tue, 27 Aug 2019 20:58:14 +0100 (BST)
-Message-ID: <20190827195814.8D170D02CE8@fitzroy.sirena.org.uk>
-References: <1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com>
+Message-ID: <20190827195814.A25CFD02CE9@fitzroy.sirena.org.uk>
+References: <20190823125939.30012-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20190823125939.30012-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, festevam@gmail.com, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, s.hauer@pengutronix.de, shawnguo@kernel.org, timur@kernel.org, tiwai@suse.com, viorel.suman@nxp.comViorel Suman <viorel.suman@nxp.com>, Xiubo.Lee@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, daniel.baluta@nxp.com, festevam@gmail.com, Hulk Robot <hulkci@huawei.com>, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, pierre-louis.bossart@linux.intel.com, s.hauer@pengutronix.de, shawnguo@kernel.org, tiwai@suse.com, yuehaibing@huawei.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-audmix: register the card on a proper dev
+   ASoC: SOF: imx8: Make some functions static
 
 has been applied to the asoc tree at
 
@@ -37,46 +36,78 @@ to this mail.
 Thanks,
 Mark
 
->From 9573820eb1951e0cb0f329886abcb4153f2ea798 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Tue, 27 Aug 2019 11:55:15 -0400
-Subject: [PATCH] ASoC: imx-audmix: register the card on a proper dev
+>From b9a4805a4ac1200326ee0c78df0ae3faceabad49 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Fri, 23 Aug 2019 20:59:39 +0800
+Subject: [PATCH] ASoC: SOF: imx8: Make some functions static
 
-This platform device is registered from "fsl_audmix", which is
-its parent device. If use pdev->dev.parent for the priv->card.dev,
-the value set by dev_set_drvdata in parent device will be covered
-by the value in child device.
+Fix sparse warnings:
 
-Fixes: b86ef5367761 ("ASoC: fsl: Add Audio Mixer machine driver")
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+sound/soc/sof/imx/imx8.c:104:6: warning: symbol 'imx8_dsp_handle_reply' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:115:6: warning: symbol 'imx8_dsp_handle_request' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:336:5: warning: symbol 'imx8_get_bar_index' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:341:6: warning: symbol 'imx8_ipc_msg_data' was not declared. Should it be static?
+sound/soc/sof/imx/imx8.c:348:5: warning: symbol 'imx8_ipc_pcm_params' was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com
+Link: https://lore.kernel.org/r/20190823125939.30012-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-audmix.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/imx/imx8.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 9e1cb18859ce..71590ca6394b 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -325,14 +325,14 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 	priv->card.num_configs = priv->num_dai_conf;
- 	priv->card.dapm_routes = priv->dapm_routes;
- 	priv->card.num_dapm_routes = priv->num_dapm_routes;
--	priv->card.dev = pdev->dev.parent;
-+	priv->card.dev = &pdev->dev;
- 	priv->card.owner = THIS_MODULE;
- 	priv->card.name = "imx-audmix";
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index e502f584207f..640472491037 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -101,7 +101,7 @@ static int imx8_get_window_offset(struct snd_sof_dev *sdev, u32 id)
+ 	return MBOX_OFFSET;
+ }
  
- 	platform_set_drvdata(pdev, &priv->card);
- 	snd_soc_card_set_drvdata(&priv->card, priv);
+-void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
++static void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
+ {
+ 	struct imx8_priv *priv = imx_dsp_get_data(ipc);
+ 	unsigned long flags;
+@@ -112,7 +112,7 @@ void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
+ 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
+ }
  
--	ret = devm_snd_soc_register_card(pdev->dev.parent, &priv->card);
-+	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed\n");
- 		return ret;
+-void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
++static void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
+ {
+ 	struct imx8_priv *priv = imx_dsp_get_data(ipc);
+ 
+@@ -333,21 +333,21 @@ static int imx8_remove(struct snd_sof_dev *sdev)
+ }
+ 
+ /* on i.MX8 there is 1 to 1 match between type and BAR idx */
+-int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
++static int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
+ {
+ 	return type;
+ }
+ 
+-void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
+-		       struct snd_pcm_substream *substream,
+-		       void *p, size_t sz)
++static void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
++			      struct snd_pcm_substream *substream,
++			      void *p, size_t sz)
+ {
+ 	sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
+ }
+ 
+-int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
+-			struct snd_pcm_substream *substream,
+-			const struct sof_ipc_pcm_params_reply *reply)
++static int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
++			       struct snd_pcm_substream *substream,
++			       const struct sof_ipc_pcm_params_reply *reply)
+ {
+ 	return 0;
+ }
 -- 
 2.20.1
