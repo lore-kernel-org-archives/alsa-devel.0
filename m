@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
         <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 1/6] ASoC: Intel: Skylake: Use correct function to access iomem space
-Date: Tue, 27 Aug 2019 16:17:07 +0200
-Message-ID: <20190827141712.21015-2-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/6] ASoC: Intel: Fix use of potentially uninitialized variable
+Date: Tue, 27 Aug 2019 16:17:08 +0200
+Message-ID: <20190827141712.21015-3-amadeuszx.slawinski@linux.intel.com>
 References: <20190827141712.21015-1-amadeuszx.slawinski@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -16,33 +16,29 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@intel.com>
 
-For copying from __iomem, we should use __ioread32_copy.
+If ipc->ops.reply_msg_match is NULL, we may end up using uninitialized
+mask value.
 
-reported by sparse:
-sound/soc/intel/skylake/skl-debug.c:437:34: warning: incorrect type in argument 1 (different address spaces)
-sound/soc/intel/skylake/skl-debug.c:437:34:    expected void [noderef] <asn:2> *to
-sound/soc/intel/skylake/skl-debug.c:437:34:    got unsigned char *
-sound/soc/intel/skylake/skl-debug.c:437:51: warning: incorrect type in argument 2 (different address spaces)
-sound/soc/intel/skylake/skl-debug.c:437:51:    expected void const *from
-sound/soc/intel/skylake/skl-debug.c:437:51:    got void [noderef] <asn:2> *[assigned] fw_reg_addr
+reported by smatch:
+sound/soc/intel/common/sst-ipc.c:266 sst_ipc_reply_find_msg() error: uninitialized symbol 'mask'.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@intel.com>
 ---
- sound/soc/intel/skylake/skl-debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/common/sst-ipc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-index 212370bf704c..3466675f2678 100644
---- a/sound/soc/intel/skylake/skl-debug.c
-+++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -188,7 +188,7 @@ static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
- 	memset(d->fw_read_buff, 0, FW_REG_BUF);
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index 1186a03a88d6..6068bb697e22 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -223,6 +223,8 @@ struct ipc_message *sst_ipc_reply_find_msg(struct sst_generic_ipc *ipc,
  
- 	if (w0_stat_sz > 0)
--		__iowrite32_copy(d->fw_read_buff, fw_reg_addr, w0_stat_sz >> 2);
-+		__ioread32_copy(d->fw_read_buff, fw_reg_addr, w0_stat_sz >> 2);
+ 	if (ipc->ops.reply_msg_match != NULL)
+ 		header = ipc->ops.reply_msg_match(header, &mask);
++	else
++		mask = (u64)-1;
  
- 	for (offset = 0; offset < FW_REG_SIZE; offset += 16) {
- 		ret += snprintf(tmp + ret, FW_REG_BUF - ret, "%#.4x: ", offset);
+ 	if (list_empty(&ipc->rx_list)) {
+ 		dev_err(ipc->dev, "error: rx list empty but received 0x%llx\n",
 -- 
 2.17.1
