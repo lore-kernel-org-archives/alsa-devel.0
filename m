@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: imx8: Fix return value check in imx8_probe()" to the asoc tree
-Date: Tue, 27 Aug 2019 20:58:10 +0100 (BST)
-Message-ID: <20190827195810.6AED8D02CEA@fitzroy.sirena.org.uk>
-References: <20190826120003.183279-1-weiyongjun1@huawei.com>
+Subject: Applied "ASoC: imx-audmix: register the card on a proper dev" to the asoc tree
+Date: Tue, 27 Aug 2019 20:58:14 +0100 (BST)
+Message-ID: <20190827195814.8D170D02CE8@fitzroy.sirena.org.uk>
+References: <1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190826120003.183279-1-weiyongjun1@huawei.com>
+In-Reply-To: <1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@nxp.com>, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pengutronix@sirena.org.uk, Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, festevam@gmail.com, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, s.hauer@pengutronix.de, shawnguo@kernel.org, timur@kernel.org, tiwai@suse.com, viorel.suman@nxp.comViorel Suman <viorel.suman@nxp.com>, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: SOF: imx8: Fix return value check in imx8_probe()
+   ASoC: imx-audmix: register the card on a proper dev
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From 393151c211006cc5ac6af26ecd9982dd916a8104 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Mon, 26 Aug 2019 12:00:03 +0000
-Subject: [PATCH] ASoC: SOF: imx8: Fix return value check in imx8_probe()
+>From 9573820eb1951e0cb0f329886abcb4153f2ea798 Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Tue, 27 Aug 2019 11:55:15 -0400
+Subject: [PATCH] ASoC: imx-audmix: register the card on a proper dev
 
-In case of error, the function devm_ioremap_wc() returns NULL pointer
-not ERR_PTR(). The IS_ERR() test in the return value check should be
-replaced with NULL test.
+This platform device is registered from "fsl_audmix", which is
+its parent device. If use pdev->dev.parent for the priv->card.dev,
+the value set by dev_set_drvdata in parent device will be covered
+by the value in child device.
 
-Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Fixes: b86ef5367761 ("ASoC: fsl: Add Audio Mixer machine driver")
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/20190826120003.183279-1-weiyongjun1@huawei.com
+Link: https://lore.kernel.org/r/1566921315-23402-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/imx/imx8.c | 4 ++--
+ sound/soc/fsl/imx-audmix.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index 640472491037..c9d849ced54a 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -296,10 +296,10 @@ static int imx8_probe(struct snd_sof_dev *sdev)
- 	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev, res.start,
- 							  res.end - res.start +
- 							  1);
--	if (IS_ERR(sdev->bar[SOF_FW_BLK_TYPE_SRAM])) {
-+	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
- 		dev_err(sdev->dev, "failed to ioremap mem 0x%x size 0x%x\n",
- 			base, size);
--		ret = PTR_ERR(sdev->bar[SOF_FW_BLK_TYPE_SRAM]);
-+		ret = -ENOMEM;
- 		goto exit_pdev_unregister;
- 	}
- 	sdev->mailbox_bar = SOF_FW_BLK_TYPE_SRAM;
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
+index 9e1cb18859ce..71590ca6394b 100644
+--- a/sound/soc/fsl/imx-audmix.c
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -325,14 +325,14 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ 	priv->card.num_configs = priv->num_dai_conf;
+ 	priv->card.dapm_routes = priv->dapm_routes;
+ 	priv->card.num_dapm_routes = priv->num_dapm_routes;
+-	priv->card.dev = pdev->dev.parent;
++	priv->card.dev = &pdev->dev;
+ 	priv->card.owner = THIS_MODULE;
+ 	priv->card.name = "imx-audmix";
+ 
+ 	platform_set_drvdata(pdev, &priv->card);
+ 	snd_soc_card_set_drvdata(&priv->card, priv);
+ 
+-	ret = devm_snd_soc_register_card(pdev->dev.parent, &priv->card);
++	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed\n");
+ 		return ret;
 -- 
 2.20.1
