@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42xx8: Force suspend/resume during system suspend/resume" to the asoc tree
-Date: Tue, 27 Aug 2019 20:57:44 +0100 (BST)
-Message-ID: <20190827195744.50AB0D02CE9@fitzroy.sirena.org.uk>
-References: <1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Applied "ASoC: SOF: imx8: Fix return value check in imx8_probe()" to the asoc tree
+Date: Tue, 27 Aug 2019 20:58:10 +0100 (BST)
+Message-ID: <20190827195810.6AED8D02CEA@fitzroy.sirena.org.uk>
+References: <20190826120003.183279-1-weiyongjun1@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20190826120003.183279-1-weiyongjun1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org, brian.austin@cirrus.com, broonie@kernel.org, Dong Aisheng <aisheng.dong@nxp.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, Paul.Handrigan@cirrus.com, perex@perex.cz, tiwai@suse.com
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@nxp.com>, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Pengutronix@sirena.org.uk, Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42xx8: Force suspend/resume during system suspend/resume
+   ASoC: SOF: imx8: Fix return value check in imx8_probe()
 
 has been applied to the asoc tree at
 
@@ -37,36 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From b429ca49406501e2c48c2a137eab12910c21ad0c Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Tue, 27 Aug 2019 18:13:46 -0400
-Subject: [PATCH] ASoC: cs42xx8: Force suspend/resume during system
- suspend/resume
+>From 393151c211006cc5ac6af26ecd9982dd916a8104 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 26 Aug 2019 12:00:03 +0000
+Subject: [PATCH] ASoC: SOF: imx8: Fix return value check in imx8_probe()
 
-Use force_suspend/resume to make sure clocks are disabled/enabled
-accordingly during system suspend/resume.
+In case of error, the function devm_ioremap_wc() returns NULL pointer
+not ERR_PTR(). The IS_ERR() test in the return value check should be
+replaced with NULL test.
 
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com
+Link: https://lore.kernel.org/r/20190826120003.183279-1-weiyongjun1@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42xx8.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sof/imx/imx8.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index 5b049fcdba20..94b1adb088fd 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -684,6 +684,8 @@ static int cs42xx8_runtime_suspend(struct device *dev)
- #endif
- 
- const struct dev_pm_ops cs42xx8_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- 	SET_RUNTIME_PM_OPS(cs42xx8_runtime_suspend, cs42xx8_runtime_resume, NULL)
- };
- EXPORT_SYMBOL_GPL(cs42xx8_pm);
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index 640472491037..c9d849ced54a 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -296,10 +296,10 @@ static int imx8_probe(struct snd_sof_dev *sdev)
+ 	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev, res.start,
+ 							  res.end - res.start +
+ 							  1);
+-	if (IS_ERR(sdev->bar[SOF_FW_BLK_TYPE_SRAM])) {
++	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
+ 		dev_err(sdev->dev, "failed to ioremap mem 0x%x size 0x%x\n",
+ 			base, size);
+-		ret = PTR_ERR(sdev->bar[SOF_FW_BLK_TYPE_SRAM]);
++		ret = -ENOMEM;
+ 		goto exit_pdev_unregister;
+ 	}
+ 	sdev->mailbox_bar = SOF_FW_BLK_TYPE_SRAM;
 -- 
 2.20.1
