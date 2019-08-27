@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8316: fix inverted L/R of headphone mixer volume" to the asoc tree
+Subject: Applied "ASoC: es8316: fix headphone mixer volume table" to the asoc tree
 Date: Tue, 27 Aug 2019 20:57:44 +0100 (BST)
-Message-ID: <20190827195744.8D301D02CEC@fitzroy.sirena.org.uk>
-References: <20190826153900.25969-2-katsuhiro@katsuster.net>
+Message-ID: <20190827195744.A0690D02CED@fitzroy.sirena.org.uk>
+References: <20190826153900.25969-1-katsuhiro@katsuster.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190826153900.25969-2-katsuhiro@katsuster.net>
+In-Reply-To: <20190826153900.25969-1-katsuhiro@katsuster.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Cc: alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, David Yang <yangxiaohua@everest-semi.com>, Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8316: fix inverted L/R of headphone mixer volume
+   ASoC: es8316: fix headphone mixer volume table
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,55 @@ to this mail.
 Thanks,
 Mark
 
->From f6e77921969003eaf5dbae9c0b5feeb20c6caf50 Mon Sep 17 00:00:00 2001
+>From f972d02fee2496024cfd6f59021c9d89d54922a6 Mon Sep 17 00:00:00 2001
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Tue, 27 Aug 2019 00:39:00 +0900
-Subject: [PATCH] ASoC: es8316: fix inverted L/R of headphone mixer volume
+Date: Tue, 27 Aug 2019 00:38:59 +0900
+Subject: [PATCH] ASoC: es8316: fix headphone mixer volume table
 
-This patch fixes inverted Left-Right channel of headphone mixer
-volume by wrong shift_left, shift_right values.
+This patch fix setting table of Headphone mixer volume.
+Current code uses 4 ... 7 values but these values are prohibited.
+
+Correct settings are the following:
+  0000 -12dB
+  0001 -10.5dB
+  0010 -9dB
+  0011 -7.5dB
+  0100 -6dB
+  1000 -4.5dB
+  1001 -3dB
+  1010 -1.5dB
+  1011 0dB
 
 Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Reviewed-by: Daniel Drake <drake@endlessm.com>
-Link: https://lore.kernel.org/r/20190826153900.25969-2-katsuhiro@katsuster.net
+Link: https://lore.kernel.org/r/20190826153900.25969-1-katsuhiro@katsuster.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/es8316.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 96d04896193f..ed2959dbe1fb 100644
+index 6db002cc2058..96d04896193f 100644
 --- a/sound/soc/codecs/es8316.c
 +++ b/sound/soc/codecs/es8316.c
-@@ -92,7 +92,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
+@@ -51,7 +51,10 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(adc_vol_tlv, -9600, 50, 1);
+ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_max_gain_tlv, -650, 150, 0);
+ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_min_gain_tlv, -1200, 150, 0);
+ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_target_tlv, -1650, 150, 0);
+-static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(hpmixer_gain_tlv, -1200, 150, 0);
++static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpmixer_gain_tlv,
++	0, 4, TLV_DB_SCALE_ITEM(-1200, 150, 0),
++	8, 11, TLV_DB_SCALE_ITEM(-450, 150, 0),
++);
+ 
+ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
+ 	0, 0, TLV_DB_SCALE_ITEM(-350, 0, 0),
+@@ -89,7 +92,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
  	SOC_DOUBLE_TLV("Headphone Playback Volume", ES8316_CPHP_ICAL_VOL,
  		       4, 0, 3, 1, hpout_vol_tlv),
  	SOC_DOUBLE_TLV("Headphone Mixer Volume", ES8316_HPMIX_VOL,
--		       0, 4, 11, 0, hpmixer_gain_tlv),
-+		       4, 0, 11, 0, hpmixer_gain_tlv),
+-		       0, 4, 7, 0, hpmixer_gain_tlv),
++		       0, 4, 11, 0, hpmixer_gain_tlv),
  
  	SOC_ENUM("Playback Polarity", dacpol),
  	SOC_DOUBLE_R_TLV("DAC Playback Volume", ES8316_DAC_VOLL,
