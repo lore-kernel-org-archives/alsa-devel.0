@@ -1,101 +1,89 @@
-From: Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH 00/21] ASoC: sun4i-i2s: Number of fixes and TDM Support
-Date: Tue, 27 Aug 2019 11:35:36 +0200
-Message-ID: <20190827093536.rl6fjuvctjwd33as@flea>
-References: <cover.e08aa7e33afe117e1fa8f017119d465d47c98016.1566242458.git-series.maxime.ripard@bootlin.com>
- <CAGb2v64xOcs3Vi5k3yUwMiUrzZMuJ5vZ3kxp9w1=CQDrkn3cgA@mail.gmail.com>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH 2/2] ASoC: sun4i: Revert A83t description
+Date: Tue, 27 Aug 2019 17:51:59 +0800
+Message-ID: <CAGb2v64u+Q87woZpVbRLfwn=ocbx9QJeANYiALZ7x7rdDFXc=w@mail.gmail.com>
+References: <20190827093206.17919-1-mripard@kernel.org> <20190827093206.17919-2-mripard@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zfutohgftfydg3jy"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGb2v64xOcs3Vi5k3yUwMiUrzZMuJ5vZ3kxp9w1=CQDrkn3cgA@mail.gmail.com>
+In-Reply-To: <20190827093206.17919-2-mripard@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Code Kipper <codekipper@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Code Kipper <codekipper@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---zfutohgftfydg3jy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
-On Tue, Aug 27, 2019 at 04:20:24PM +0800, Chen-Yu Tsai wrote:
-> Hi everyone,
+On Tue, Aug 27, 2019 at 5:32 PM Maxime Ripard <mripard@kernel.org> wrote:
 >
-> On Tue, Aug 20, 2019 at 3:25 AM Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > From: Maxime Ripard <maxime.ripard@bootlin.com>
-> >
-> > Hi,
-> >
-> > This series aims at fixing a number of issues in the current i2s driver,
-> > mostly related to the i2s master support and the A83t support. It also uses
-> > that occasion to cleanup a few things and simplify the driver. Finally, it
-> > builds on those fixes and cleanups to introduce TDM and DSP formats support.
-> >
-> > Let me know what you think,
-> > Maxime
-> >
-> > Marcus Cooper (1):
-> >   ASoC: sun4i-i2s: Fix the MCLK and BCLK dividers on newer SoCs
-> >
-> > Maxime Ripard (20):
-> >   ASoC: sun4i-i2s: Register regmap and PCM before our component
-> >   ASoC: sun4i-i2s: Switch to devm for PCM register
-> >   ASoC: sun4i-i2s: Replace call to params_channels by local variable
-> >   ASoC: sun4i-i2s: Move the channel configuration to a callback
-> >   ASoC: sun4i-i2s: Move the format configuration to a callback
-> >   ASoC: sun4i-i2s: Rework MCLK divider calculation
-> >   ASoC: sun4i-i2s: Don't use the oversample to calculate BCLK
-> >   ASoC: sun4i-i2s: Use module clock as BCLK parent on newer SoCs
-> >   ASoC: sun4i-i2s: RX and TX counter registers are swapped
-> >   ASoC: sun4i-i2s: Use the actual format width instead of an hardcoded one
-> >   ASoC: sun4i-i2s: Fix LRCK and BCLK polarity offsets on newer SoCs
-> >   ASoC: sun4i-i2s: Fix the LRCK polarity
-> >   ASoC: sun4i-i2s: Fix WSS and SR fields for the A83t
-> >   ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t
-> >   ASoC: sun4i-i2s: Fix the LRCK period on A83t
-> >   ASoC: sun4i-i2s: Remove duplicated quirks structure
+> From: Maxime Ripard <maxime.ripard@bootlin.com>
 >
-> Unfortunately the patches that "fix" support on the A83T actually break it.
-> The confusion stems from the user manual not actually documenting the I2S
-> controller. Instead it documents the TDM controller, which is very similar
-> or the same as the I2S controller in the H3. The I2S controller that we
-> actually support in this driver is not the TDM controller, but three other
-> I2S controllers that are only mentioned in the memory map. Support for this
-> was done by referencing the BSP kernel, which has separate driver instances
-> for each controller instance, both I2S and TDM.
+> The last set of reworks included some fixes to change the A83t behaviour
+> and "fix" it.
 >
-> Now to remedy this I could send reverts for all the "A83t" patches, and
-> fixes for all the others that affect the A83t quirks. However the fixes
-> tags existing in the tree would be wrong and confusing. That might be a
-> pain for the stable kernel maintainers.
+> It turns out that the controller described in the datasheet and the one
+> supported here are not the same, yet the A83t has the two of them, and the
+> one supported in the driver wasn't the one described in the datasheet.
 >
-> Any suggestions on how to proceed?
+> Fix this by reintroducing the proper quirks.
+>
+> Fixes: 69e450e50ca6 ("ASoC: sun4i-i2s: Fix the LRCK period on A83t")
+> Fixes: bf943d527987 ("ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t")
+> Fixes: 2e04fc4dbf50 ("ASoC: sun4i-i2s: Fix WSS and SR fields for the A83t")
+> Fixes: 515fcfbc7736 ("ASoC: sun4i-i2s: Fix LRCK and BCLK polarity offsets on newer SoCs")
+> Fixes: c1d3a921d72b ("ASoC: sun4i-i2s: Fix the MCLK and BCLK dividers on newer SoCs")
+> Fixes: fb19739d7f68 ("ASoC: sun4i-i2s: Use module clock as BCLK parent on newer SoCs")
+> Fixes: 71137bcd0a9a ("ASoC: sun4i-i2s: Move the format configuration to a callback")
+> Fixes: d70be625f25a ("ASoC: sun4i-i2s: Move the channel configuration to a callback")
+> Reported-by: Chen-Yu Tsai <wens@csie.org>
+> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index a6a3f772fdf0..498ceebd9135 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -1106,18 +1106,18 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+>         .has_reset              = true,
+>         .reg_offset_txdata      = SUN8I_I2S_FIFO_TX_REG,
+>         .sun4i_i2s_regmap       = &sun4i_i2s_regmap_config,
+> -       .field_clkdiv_mclk_en   = REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
+> -       .field_fmt_wss          = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
+> -       .field_fmt_sr           = REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
+> -       .bclk_dividers          = sun8i_i2s_clk_div,
+> -       .num_bclk_dividers      = ARRAY_SIZE(sun8i_i2s_clk_div),
+> -       .mclk_dividers          = sun8i_i2s_clk_div,
+> -       .num_mclk_dividers      = ARRAY_SIZE(sun8i_i2s_clk_div),
+> -       .get_bclk_parent_rate   = sun8i_i2s_get_bclk_parent_rate,
+> -       .get_sr                 = sun8i_i2s_get_sr_wss,
+> -       .get_wss                = sun8i_i2s_get_sr_wss,
+> -       .set_chan_cfg           = sun8i_i2s_set_chan_cfg,
+> -       .set_fmt                = sun8i_i2s_set_soc_fmt,
+> +       .field_clkdiv_mclk_en   = REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
+> +       .field_fmt_wss          = REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
+> +       .field_fmt_sr           = REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+> +       .bclk_dividers          = sun4i_i2s_bclk_div,
+> +       .num_bclk_dividers      = ARRAY_SIZE(sun4i_i2s_bclk_div),
+> +       .mclk_dividers          = sun4i_i2s_mclk_div,
+> +       .num_mclk_dividers      = ARRAY_SIZE(sun4i_i2s_mclk_div),
+> +       .get_bclk_parent_rate   = sun4i_i2s_get_bclk_parent_rate,
+> +       .get_sr                 = sun4i_i2s_get_sr_wss,
+> +       .get_wss                = sun4i_i2s_get_sr_wss,
 
-I've just sent two patches to address that (adding a comment in the
-process so that hopefully it doesn't happen again).
+You want sun4i_i2s_get_sr and sun4i_i2s_get_wss here.
 
-Let me know if it works, and sorry for the mess :/
-Maxime
+Otherwise, with both patches applied, I2S on the A83T returns to normal.
 
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Tested-by: Chen-Yu Tsai <wens@csie.org>
 
---zfutohgftfydg3jy
-Content-Type: application/pgp-signature; name="signature.asc"
+on the Bananapi-M3 with a PiFi DAC v2.0 (has PCM5122) connected.
+16bit stereo 44.1kHz, 48kHz, and 96kHz samples tested.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXWT5aAAKCRDj7w1vZxhR
-xdWcAP92UC8ohpBC1hEZ+YE9YtL68wqEMKjjgaiRbBPuMCI9tQEAvzYPAtyZtF9A
-o8AofY1070asyuWTmZNoBs4WWZOnHQ4=
-=P/nX
------END PGP SIGNATURE-----
-
---zfutohgftfydg3jy--
+> +       .set_chan_cfg           = sun4i_i2s_set_chan_cfg,
+> +       .set_fmt                = sun4i_i2s_set_soc_fmt,
+>  };
+>
+>  static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+> --
+> 2.21.0
+>
