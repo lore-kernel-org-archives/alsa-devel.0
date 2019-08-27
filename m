@@ -1,52 +1,45 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [RESEND PATCH v4 1/4] dt-bindings: soundwire: add
- slave bindings
-Date: Tue, 27 Aug 2019 22:21:10 +0100
-Message-ID: <aaf1a8f6-9be5-2d42-9f92-4fd75986424d@linaro.org>
-References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
- <20190822233759.12663-2-srinivas.kandagatla@linaro.org>
- <7da8aa89-2119-21d1-0e29-8894a8d40bf0@linux.intel.com>
- <37be6b6d-7e7f-2cd6-f9e9-f0cac48791ad@linaro.org>
- <d538238d-25d8-f179-c900-90be50ce814d@linux.intel.com>
- <7ee47f26-12f8-6028-cb83-7f59e669979f@linaro.org>
- <e5b184be-02f1-faa4-94fa-79bda8936d9d@linux.intel.com>
+From: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH 1/2] PCI: Add a helper to check Power Resource
+ Requirements _PR3 existence
+Date: Tue, 27 Aug 2019 17:13:21 -0500
+Message-ID: <20190827221321.GA9987@google.com>
+References: <20190827134756.10807-1-kai.heng.feng@canonical.com>
+ <s5hr2567hrd.wl-tiwai@suse.de>
+ <0379E973-651A-442C-AF74-51702388F55D@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e5b184be-02f1-faa4-94fa-79bda8936d9d@linux.intel.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <0379E973-651A-442C-AF74-51702388F55D@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, spapothi@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, Peter Wu <peter@lekensteyn.nl>, Mika Westerberg <mika.westerberg@linux.intel.com>, Dave Airlie <airlied@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
+[+cc Peter, Mika, Dave]
 
+https://lore.kernel.org/r/20190827134756.10807-1-kai.heng.feng@canonical.com
 
-On 26/08/2019 17:22, Pierre-Louis Bossart wrote:
->>>>>
->>>>>> +      description:
->>>>>> +      Is the textual representation of SoundWire Enumeration
->>>>>> +      address. compatible string should contain SoundWire Version 
->>>>>> ID,
->>>>>> +      Manufacturer ID, Part ID and Class ID in order and shall be in
->>>>>> +      lower-case hexadecimal with leading zeroes.
->>>>>> +      Valid sizes of these fields are
->>>>>> +      Version ID is 1 nibble, number '0x1' represents SoundWire 1.0
->>>>>> +      and '0x2' represents SoundWire 1.1 and so on.
->>>>>> +      MFD is 4 nibbles
->>>>>> +      PID is 4 nibbles
->>>>>> +      CID is 2 nibbles
->>>>>> +      More Information on detail of encoding of these fields can be
->>>>>> +      found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
->>>>>> +
->>>>>> +      reg:
->>>>>> +        maxItems: 1
->>>>>> +        description:
->>>>>> +          Instance ID and Link ID of SoundWire Device Address.
+On Wed, Aug 28, 2019 at 12:58:28AM +0800, Kai-Heng Feng wrote:
+> at 23:25, Takashi Iwai <tiwai@suse.de> wrote:
+> > On Tue, 27 Aug 2019 15:47:55 +0200,
+> > Kai-Heng Feng wrote:
+> > > A driver may want to know the existence of _PR3, to choose different
+> > > runtime suspend behavior. A user will be add in next patch.
+> > > 
+> > > This is mostly the same as nouveau_pr3_present().
+> > 
+> > Then it'd be nice to clean up the nouveau part, too?
 > 
-> maybe put link first and make it clear that both are required.
-Okay, I will give that a go in next version!
+> nouveau_pr3_present() may call pci_d3cold_disable(), and my intention is to
+> only check the presence of _PR3 (i.e. a dGPU) without touching anything.
 
-thanks,
-srini
+It looks like Peter added that code with 279cf3f23870
+("drm/nouveau/acpi: use DSM if bridge does not support D3cold").
+
+I don't understand the larger picture, but it is somewhat surprising
+that nouveau_pr3_present() *looks* like a simple predicate with no
+side-effects, but in fact it disables the use of D3cold in some cases.
+
+If the disable were moved to the caller, Kai-Heng's new interface
+could be used both places.
