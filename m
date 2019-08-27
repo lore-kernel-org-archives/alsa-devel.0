@@ -1,91 +1,82 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [RESEND PATCH v4 3/4] dt-bindings: ASoC: Add WSA881x bindings
-Date: Tue, 27 Aug 2019 07:20:21 -0500
-Message-ID: <CAL_JsqLjgOy3TKrpuNYYkRxy-Ln+3FOoKVE9KweS0ycTxriWMQ@mail.gmail.com>
-References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org> <20190822233759.12663-4-srinivas.kandagatla@linaro.org>
+From: Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH v2 2/2] ASoC: sun4i: Revert A83t description
+Date: Tue, 27 Aug 2019 14:31:31 +0200
+Message-ID: <20190827123131.29129-2-mripard@kernel.org>
+References: <20190827123131.29129-1-mripard@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190822233759.12663-4-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190827123131.29129-1-mripard@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Vinod <vkoul@kernel.org>, spapothi@codeaurora.org, Banajit Goswami <bgoswami@codeaurora.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <mripard@kernel.org>, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, codekipper@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 22, 2019 at 6:38 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
-> This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
-> Amplifier. This Amplifier also has a simple thermal sensor for
-> over temperature and speaker protection.
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/sound/qcom,wsa881x.yaml          | 44 +++++++++++++++++++
->  1 file changed, 44 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
->
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-> new file mode 100644
-> index 000000000000..ad718d75c660
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-> @@ -0,0 +1,44 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/qcom,wsa881x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +allOf:
-> +  - $ref: "soundwire-controller.yaml#"
+From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-This is not the controller, so this should not be included here. You
-should get lots of warnings from doing so. You did run 'make
-dt_binding_check', right?
+The last set of reworks included some fixes to change the A83t behaviour
+and "fix" it.
 
-> +
-> +properties:
-> +  compatible:
-> +    const: sdw10217201000
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  pd-gpios:
+It turns out that the controller described in the datasheet and the one
+supported here are not the same, yet the A83t has the two of them, and the
+one supported in the driver wasn't the one described in the datasheet.
 
-powerdown-gpios is the standard name.
+Fix this by reintroducing the proper quirks.
 
-> +    description: GPIO spec for Powerdown/Shutdown line to use
-> +    maxItems: 1
-> +
-> +  "#thermal-sensor-cells":
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - pd-gpios
-> +  - #thermal-sensor-cells
-> +
-> +examples:
-> +  - |
-> +    efuse@1c23800 {
-> +        compatible = "allwinner,sun4i-a10-sid";
+Fixes: 69e450e50ca6 ("ASoC: sun4i-i2s: Fix the LRCK period on A83t")
+Fixes: bf943d527987 ("ASoC: sun4i-i2s: Fix MCLK Enable bit offset on A83t")
+Fixes: 2e04fc4dbf50 ("ASoC: sun4i-i2s: Fix WSS and SR fields for the A83t")
+Fixes: 515fcfbc7736 ("ASoC: sun4i-i2s: Fix LRCK and BCLK polarity offsets on newer SoCs")
+Fixes: c1d3a921d72b ("ASoC: sun4i-i2s: Fix the MCLK and BCLK dividers on newer SoCs")
+Fixes: fb19739d7f68 ("ASoC: sun4i-i2s: Use module clock as BCLK parent on newer SoCs")
+Fixes: 71137bcd0a9a ("ASoC: sun4i-i2s: Move the format configuration to a callback")
+Fixes: d70be625f25a ("ASoC: sun4i-i2s: Move the channel configuration to a callback")
+Reported-by: Chen-Yu Tsai <wens@csie.org>
+Tested-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 
-Huh?
+---
 
-> +        reg = <0x01c23800 0x10>;
-> +        pd-gpios = <&wcdpinctrl 2 0>;
-> +        #thermal-sensor-cells = <0>;
-> +    };
-> +
-> +...
-> --
-> 2.21.0
->
+Changes from v1:
+  - Fix function name
+---
+ sound/soc/sunxi/sun4i-i2s.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index a6a3f772fdf0..d0a8d5810c0a 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -1106,18 +1106,18 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
+ 	.has_reset		= true,
+ 	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
+ 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+-	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
+-	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
+-	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
+-	.bclk_dividers		= sun8i_i2s_clk_div,
+-	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
+-	.mclk_dividers		= sun8i_i2s_clk_div,
+-	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
+-	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
+-	.get_sr			= sun8i_i2s_get_sr_wss,
+-	.get_wss		= sun8i_i2s_get_sr_wss,
+-	.set_chan_cfg		= sun8i_i2s_set_chan_cfg,
+-	.set_fmt		= sun8i_i2s_set_soc_fmt,
++	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
++	.bclk_dividers		= sun4i_i2s_bclk_div,
++	.num_bclk_dividers	= ARRAY_SIZE(sun4i_i2s_bclk_div),
++	.mclk_dividers		= sun4i_i2s_mclk_div,
++	.num_mclk_dividers	= ARRAY_SIZE(sun4i_i2s_mclk_div),
++	.get_bclk_parent_rate	= sun4i_i2s_get_bclk_parent_rate,
++	.get_sr			= sun4i_i2s_get_sr,
++	.get_wss		= sun4i_i2s_get_wss,
++	.set_chan_cfg		= sun4i_i2s_set_chan_cfg,
++	.set_fmt		= sun4i_i2s_set_soc_fmt,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+-- 
+2.21.0
