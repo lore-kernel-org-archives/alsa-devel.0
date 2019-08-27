@@ -1,113 +1,142 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: SOF: imx8: Make some functions static" to the asoc tree
-Date: Tue, 27 Aug 2019 20:58:14 +0100 (BST)
-Message-ID: <20190827195814.A25CFD02CE9@fitzroy.sirena.org.uk>
-References: <20190823125939.30012-1-yuehaibing@huawei.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [RESEND PATCH v4 1/4] dt-bindings: soundwire: add slave bindings
+Date: Tue, 27 Aug 2019 15:20:22 -0500
+Message-ID: <20190827202022.GA7783@bogus>
+References: <20190822233759.12663-1-srinivas.kandagatla@linaro.org>
+ <20190822233759.12663-2-srinivas.kandagatla@linaro.org>
+ <20190823065340.GD2672@vkoul-mobl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190823125939.30012-1-yuehaibing@huawei.com>
+Content-Disposition: inline
+In-Reply-To: <20190823065340.GD2672@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, daniel.baluta@nxp.com, festevam@gmail.com, Hulk Robot <hulkci@huawei.com>, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, perex@perex.cz, pierre-louis.bossart@linux.intel.com, s.hauer@pengutronix.de, shawnguo@kernel.org, tiwai@suse.com, yuehaibing@huawei.com
+To: Vinod Koul <vkoul@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, spapothi@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Aug 23, 2019 at 12:23:40PM +0530, Vinod Koul wrote:
+> On 23-08-19, 00:37, Srinivas Kandagatla wrote:
+> > This patch adds bindings for Soundwire Slave devices that includes how
+> > SoundWire enumeration address and Link ID are used to represented in
+> > SoundWire slave device tree nodes.
+> > 
+> > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > ---
+> >  .../soundwire/soundwire-controller.yaml       | 75 +++++++++++++++++++
+> >  1 file changed, 75 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> > new file mode 100644
+> > index 000000000000..91aa6c6d6266
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> > @@ -0,0 +1,75 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/soundwire/soundwire-controller.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: SoundWire Controller Generic Binding
+> 
+> Controller does not make sense here, why not use spec terminology and
+> say "SoundWire Slave Generic Binding"
 
-   ASoC: SOF: imx8: Make some functions static
+It's both IMO. It's describing the structure of child devices of a 
+controller (aka a bus).
 
-has been applied to the asoc tree at
+> 
+> > +
+> > +maintainers:
+> > +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > +
+> > +description: |
+> > +  SoundWire busses can be described with a node for the SoundWire controller
+> > +  device and a set of child nodes for each SoundWire slave on the bus.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "^soundwire(@.*|-[0-9a-f])*$"
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+'-[0-9a-f]' was to handle cases like spi-gpio or i2c-gpio. Would a 
+bit banged interface be possible here?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> > +
+> > +  "#address-cells":
+> > +    const: 2
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +patternProperties:
+> > +  "^.*@[0-9a-f]+$":
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+If there are distinct fields in the address, they are typically comma 
+separated in the unit-address.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > +    type: object
+> > +
+> > +    properties:
+> > +      compatible:
+> > +      pattern: "^sdw[0-9][0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{2}$"
+> > +      description:
+> > +	  Is the textual representation of SoundWire Enumeration
+> > +	  address. compatible string should contain SoundWire Version ID,
+> > +	  Manufacturer ID, Part ID and Class ID in order and shall be in
+> > +	  lower-case hexadecimal with leading zeroes.
+> > +	  Valid sizes of these fields are
+> > +	  Version ID is 1 nibble, number '0x1' represents SoundWire 1.0
+> > +	  and '0x2' represents SoundWire 1.1 and so on.
+> > +	  MFD is 4 nibbles
+> > +	  PID is 4 nibbles
+> > +	  CID is 2 nibbles
+> > +	  More Information on detail of encoding of these fields can be
+> > +	  found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
+> > +
+> > +      reg:
+> > +        maxItems: 1
+> > +        description:
+> > +          Instance ID and Link ID of SoundWire Device Address.
+> 
+> This looks better :) Thanks.
+> 
+> Apart from the minor nit above this looks good to me, I can merge the
+> sdw parts if Rob is fine with them.
+> 
+> Thanks
+> 
+> > +
+> > +    required:
+> > +      - compatible
+> > +      - reg
+> > +
+> > +examples:
+> > +  - |
+> > +    soundwire@c2d0000 {
+> > +        #address-cells = <2>;
+> > +        #size-cells = <0>;
+> > +        compatible = "qcom,soundwire-v1.5.0";
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+This will probably change once I review it. :)
 
-Thanks,
-Mark
-
->From b9a4805a4ac1200326ee0c78df0ae3faceabad49 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 23 Aug 2019 20:59:39 +0800
-Subject: [PATCH] ASoC: SOF: imx8: Make some functions static
-
-Fix sparse warnings:
-
-sound/soc/sof/imx/imx8.c:104:6: warning: symbol 'imx8_dsp_handle_reply' was not declared. Should it be static?
-sound/soc/sof/imx/imx8.c:115:6: warning: symbol 'imx8_dsp_handle_request' was not declared. Should it be static?
-sound/soc/sof/imx/imx8.c:336:5: warning: symbol 'imx8_get_bar_index' was not declared. Should it be static?
-sound/soc/sof/imx/imx8.c:341:6: warning: symbol 'imx8_ipc_msg_data' was not declared. Should it be static?
-sound/soc/sof/imx/imx8.c:348:5: warning: symbol 'imx8_ipc_pcm_params' was not declared. Should it be static?
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/20190823125939.30012-1-yuehaibing@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/imx/imx8.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index e502f584207f..640472491037 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -101,7 +101,7 @@ static int imx8_get_window_offset(struct snd_sof_dev *sdev, u32 id)
- 	return MBOX_OFFSET;
- }
- 
--void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
-+static void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
- {
- 	struct imx8_priv *priv = imx_dsp_get_data(ipc);
- 	unsigned long flags;
-@@ -112,7 +112,7 @@ void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
- 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
- }
- 
--void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
-+static void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
- {
- 	struct imx8_priv *priv = imx_dsp_get_data(ipc);
- 
-@@ -333,21 +333,21 @@ static int imx8_remove(struct snd_sof_dev *sdev)
- }
- 
- /* on i.MX8 there is 1 to 1 match between type and BAR idx */
--int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
-+static int imx8_get_bar_index(struct snd_sof_dev *sdev, u32 type)
- {
- 	return type;
- }
- 
--void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
--		       struct snd_pcm_substream *substream,
--		       void *p, size_t sz)
-+static void imx8_ipc_msg_data(struct snd_sof_dev *sdev,
-+			      struct snd_pcm_substream *substream,
-+			      void *p, size_t sz)
- {
- 	sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
- }
- 
--int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
--			struct snd_pcm_substream *substream,
--			const struct sof_ipc_pcm_params_reply *reply)
-+static int imx8_ipc_pcm_params(struct snd_sof_dev *sdev,
-+			       struct snd_pcm_substream *substream,
-+			       const struct sof_ipc_pcm_params_reply *reply)
- {
- 	return 0;
- }
--- 
-2.20.1
+> > +        reg = <0x0c2d0000 0x2000>;
+> > +
+> > +        speaker@1 {
+> > +            compatible = "sdw10217201000";
+> > +            reg = <1 0>;
+> > +        };
+> > +
+> > +        speaker@2 {
+> > +            compatible = "sdw10217201000";
+> > +            reg = <2 0>;
+> > +        };
+> > +    };
+> > +
+> > +...
+> > -- 
+> > 2.21.0
+> 
+> -- 
+> ~Vinod
