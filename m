@@ -1,60 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: sun4i-i2s: Fix the MCLK and BCLK dividers on
- newer SoCs" to the asoc tree
-Date: Tue, 27 Aug 2019 11:46:15 +0100
-Message-ID: <20190827104615.GZ23391@sirena.co.uk>
-References: <0e5b4abf06cd3202354315201c6af44caeb20236.1566242458.git-series.maxime.ripard@bootlin.com>
- <20190820174105.96899274314F@ypsilon.sirena.org.uk>
- <CAGb2v64vzcZbXqfW27cgobpQ-AXQjb2zanqotAR0ezw+6KCdpw@mail.gmail.com>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v6 2/3] ASoC: sun4i-i2s: Add regmap field to
+ sign extend sample
+Date: Tue, 27 Aug 2019 12:55:46 +0200
+Message-ID: <CAEKpxBmpNk=QPnOqCX7cWCV8qvxqhgEVT2AWhwGUmFMRyoF50g@mail.gmail.com>
+References: <20190826180734.15801-1-codekipper@gmail.com> <20190826180734.15801-3-codekipper@gmail.com>
+ <20190827093429.fkh4cqbygxxyvkk3@flea>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lIC76ItX9S6XOZ/S"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGb2v64vzcZbXqfW27cgobpQ-AXQjb2zanqotAR0ezw+6KCdpw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Maxime Ripard <mripard@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Marcus Cooper <codekipper@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBP4YSTVQKGQEGZB52BY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20190827093429.fkh4cqbygxxyvkk3@flea>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <mripard-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---lIC76ItX9S6XOZ/S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Aug 27, 2019 at 05:25:21PM +0800, Chen-Yu Tsai wrote:
-
-> > From: Marcus Cooper <codekipper@gmail.com>
-
-> The authorship of this patch looks to be wrong. Maybe it's a tooling issue.
-> I imagine it might have happened if Maxime created the patches using
-> `git format-patch` with his @bootlin.com address, then sent them with his
-> @kernel.org address, and `git send-email` swapped out the "From:" header
-> and prepended it to the body.
-
-No idea.  In any case it's kind of hard to fix at this point
-since there's a merge in the way.  This is why I like using
-branches for things but Linus doesn't :/
-
-> Either way the "From:" line looks odd in the commit log.
-
-This is what git format-patch does when sending stuff via e-mail
-if the author is different from the sender, it uses that to
-override things.
-
---lIC76ItX9S6XOZ/S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1lCfYACgkQJNaLcl1U
-h9Di7ggAgNoZ8rQn7YvVm4cejhwJBcdMuUs1+pBMAGoZh58gwfOMXjpmjeBhjc/F
-tSA0tLaf56ov+6K+icWnoYNv3uAMWBA1jimgQTS/ZOPTnfNPQ94/StKIHQKDxj+U
-o4MwOkNdSc/ilIGdzRYa9mbTszAjTcB8zylCWd8ONcxTM8RxADVVlVSNXinS7ZnI
-cslI9umNwU7+S8WoO7Q5gdk0cOHWmEjW12kgv6LsT6GyLrdlY08Nylb+uaLX+cQP
-Tfoym0mSqCbh5/yCHO5tffAuvsMTUdWw+Pid75EkdaY/u4zmnn0+4D5n64a/wfmi
-o2fP8Rqk1GMMBWKc42wqfjqulKd53A==
-=onS9
------END PGP SIGNATURE-----
-
---lIC76ItX9S6XOZ/S--
+On Tue, 27 Aug 2019 at 11:34, Maxime Ripard <mripard-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+>
+> On Mon, Aug 26, 2019 at 08:07:33PM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> >
+> > On the newer SoCs such as the H3 and A64 this is set by default
+> > to transfer a 0 after each sample in each slot. However the A10
+> > and A20 SoCs that this driver was developed on had a default
+> > setting where it padded the audio gain with zeros.
+> >
+> > This isn't a problem whilst we have only support for 16bit audio
+> > but with larger sample resolution rates in the pipeline then SEXT
+> > bits should be cleared so that they also pad at the LSB. Without
+> > this the audio gets distorted.
+> >
+> > Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>
+> If anything, I'd like to have less regmap_fields rather than more of
+> them. This is pretty easy to add to one of the callbacks, especially
+> since the field itself has been completely reworked from one
+> generation to the other.
+>
+ACK
+That's fine....I've been doing that with the patches which follow this.
+CK
+> Maxime
+>
+> --
+> Maxime Ripard, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
