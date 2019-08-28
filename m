@@ -1,24 +1,23 @@
-From: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
-Subject: Re: Surround speaker connection on Acer 8951G
-Date: Thu, 29 Aug 2019 12:38:05 +0200
-Message-ID: <20190829103805.GA1525@xn--80adja5bqm.su>
-References: <20190404192430.GA24729@xn--80adja5bqm.su>
- <20190719111231.GA26592@xn--80adja5bqm.su>
- <s5hzhla9j8b.wl-tiwai@suse.de>
- <20190720165435.GA5855@xn--80adja5bqm.su>
- <20190819195714.GA2737@xn--80adja5bqm.su>
- <s5hef1dthbk.wl-tiwai@suse.de>
- <20190822203031.GA22363@xn--80adja5bqm.su>
- <s5h5zmg48u2.wl-tiwai@suse.de>
+From: Pavel Hofman <pavhofman@gmail.com>
+Subject: Re: Options for ASYNC feedback source in USB-audio
+	gadget (USB OTG)?
+Date: Wed, 28 Aug 2019 18:15:02 +0200
+Message-ID: <CA+SWvNwMVRG5C=pSTDBvmODLkJQ4b4eWv=u-VU0ULOx+C6K8Ew@mail.gmail.com>
+References: <CA+SWvNwqg3Q37BWNpw7C+75Z+CO-zUo2UUYjvz88L3hW1tk=gQ@mail.gmail.com>
+ <CA+SWvNztL5Ykt_LtU+zyv0MjWbM6wqAvM4U+JVcqvcN3AhdGNg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.xn--80adja5bqm.su (xn--80adja5bqm.su [45.62.210.217])
- by alsa1.perex.cz (Postfix) with ESMTP id AE4A0F89847
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 12:38:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h5zmg48u2.wl-tiwai@suse.de>
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com
+ [IPv6:2607:f8b0:4864:20::836])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23E6DF896FE
+ for <Alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 18:15:15 +0200 (CEST)
+Received: by mail-qt1-x836.google.com with SMTP id k13so98582qtm.12
+ for <Alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 09:15:15 -0700 (PDT)
+In-Reply-To: <CA+SWvNztL5Ykt_LtU+zyv0MjWbM6wqAvM4U+JVcqvcN3AhdGNg@mail.gmail.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,131 +27,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-On Thu, Aug 29, 2019 at 11:30:45AM +0200, Takashi Iwai wrote:
-> On Thu, 22 Aug 2019 22:30:31 +0200,
-> Sergey 'Jin' Bostandzhyan wrote:
-> > 
-> > Next thing I am looking at is the problem with automute when HP are plugged in,
-> > I hope you can point me in the right direction here.
-> > 
-> > As described in one of my earlier posts, rear speakers share the pin with 
-> > the headphones jack and they get correctly muted when headphones are plugged in.
-> > 
-> > However, all other speakers (front, center) remain unmuted.
-> 
-> That's an ugly situation, and currently no clean way to deal with such
-> a shared pin for outputs, unfortunately.  The auto-parser can handle
-> the case with input/output switching (e.g. sharing mic and surround),
-> but not about the two outputs.
-> 
-> One possible way with the current code (and your latest patch) would
-> be to create a UCM profile.  The driver should still provide the jack
-> detection on the pin 0x1b as "Surround Jack", and this can be used as
-> the headphone jack detection.
-
-I gogled it up and I did find HDAudio-Gigabyte-ALC1220DualCodecs as an
-example, so basically the solution in this case would be split between
-the driver and alsa-lib?
-
-Are there any disadvantages to muting the other channels directly in the
-driver? Or would it be a viable option to extend the auto-parser to
-handle the remaining channels?
-
-Personally, I would prefer a solution at one place, but I follow your lead here,
-if you say that UCM is the way to go, then so be it.
-
-I played around with jack detection and I had the feeling that it did not work
-reliably, or maybe I misunderstood something?
-
-Who is responsible for setting spec->gen.hp_jack_present? I thought that
-this variable always represents the current presence state of the hp jack?
-
-I tried printing it from my automute hook, but it never changed. My assumption
-is, that due to 0x1b's pin configuration its not treated by the driver
-as an hp_out, its also not added the hp_outs array.
-
-I tried to add the pin to the hp_outs array manually, but I could not
-see any difference.
-
-In the end I configured the 0x1b pin to allow jack sensing, but I noticed that
-the hook will not get triggered during playback, is this a bug or am I missing 
-something?
-
-I tried the following:
-
-static void alc662_aspire_ethos_hp_automute_hook(struct hda_codec *codec,
-                     struct hda_jack_callback *jack)
-{
-    struct alc_spec *spec = codec->spec;
-    unsigned int hp_jack_old_state = spec->gen.hp_jack_present;
-
-    if (snd_hda_jack_detect(codec, 0x1b) == HDA_JACK_PRESENT) {
-        printk("HP AUTOMUTE HOOK: hp plugged in\n");
-        spec->gen.hp_jack_present = 1;
-    } else {
-        printk("HP AUTOMUTE HOOK: hp unplugged\n");
-        spec->gen.hp_jack_present = 0;
-    }
-    if (hp_jack_old_state != spec->gen.hp_jack_present) {
-        printk("Detected state change on pin 0x1b, jack present: %d\n",
-            spec->gen.hp_jack_present);
-    }
-}
-
-I kept watching dmesg, when nothing is playing the plugged in/unplugged
-messages appear correctly, but if I start speaker test and replug during
-the playback, nothing is printed.
- 
-Meanwhile I made progress on the LFE topic:
->> Could someone hint me how to proceed in "finding the LFE"? Where should I be
->> digging? I did also have a look at parser hints documentation and tried some,
->> but this was more a random attempt and did not really help me.
+On Wed, Aug 28, 2019 at 5:17 PM Pavel Hofman <pavhofman@gmail.com> wrote:
+> IMO some common time frame must be used. E.g. kernel time in nanoseconds.
 >
-> It might be some other external stuff like an external amp that is
-> missing.  Often it's managed via GPIO or EAPD (that is controlled by
-> HD-audio itself), but sometimes via a vendor-specific verb, or even
-> over a completely different i2c...
+> How about something like this:
 >
-> In the case of vendor verbs, you can take a look at other quirks for
-> similar models that touches lots of COEF stuff.
+> 1) the core PCM part of alsa driver would keep relative samplerate and
+> present such value in proc/sysfs to userspace.
+> the calculation something like:
+> copied X sample frames in Y kernel nanosecs (for the last e.g. approx.
+> 30 secs ), with nominal samplerate 48kHz. The value would be
+> (10^9 * X frames/Y nanosecs) / 48000 Hz samplerate = e.g. 1.00001
 
-Turned out it was indeed a GPIO, I won't describe all the things I tried, in the
-end it was a lucky click on the dir_out checkbox in hda-analyzer while I was
-debugging the shared pin issue :)
+Perhaps the relative throughput could be calculated in alsa-lib when
+talking to the driver? It has the same information available.
+Turned-on by some environment var, regular output to some /tmp file
+named after the corresponding hw card. Or does please alsa-lib have
+some existing debug output, similar to /proc/asound, apart of stderr?
 
-The below HDA_FIXUP_VERBS does the trick, so I do have all 6 speakers working, 
-finally!
+I very much appreciate any comments. IMO this would be a very useful
+improvement, there are lots of RPi projects which would benefit from
+properly working USB-audio connectivity.
 
-{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02}
+Thanks,
 
-The only thing that is not quite clear to me is - does LFE still have its
-own pin and I was just not able to find it, but managed to unmute it via
-the GPIO? Or is the LFE speaker somehow "intenrally managed"? It works
-correctly though, alsa mixer is also capable of controlling LFE volume
-separately so it's fine, everything is also working with pulseaudio and a 5.1
-profile on top.
-
-So right now muting seems to be indeed the last remaining piece of the puzzle.
-
-> In anyway, could you give alsa-info.sh outputs with and without your
-> patch?
-
-Here is the original output of the unmodified system:
-http://alsa-project.org/db/?f=3adde87164f5fc349c3c78b211ee63e416ebf10b
-
-Here is my current state:
-http://alsa-project.org/db/?f=5f1c8730d3099099b4c7442cb09d475e5618c3c6
-
-I also pushed my code to github:
-https://github.com/jin-eld/hda-intel-alc669x
-
-Thank you very much for not giving up on me :) Your feedback is very valuable!
-
-Kind regards,
-Jin
+Pavel.
