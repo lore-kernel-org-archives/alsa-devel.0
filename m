@@ -1,18 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wcd9335: Fix primary interpolator max rate" to the asoc tree
-Date: Wed, 28 Aug 2019 14:13:06 +0100 (BST)
-Message-ID: <20190828131306.99E842742B61@ypsilon.sirena.org.uk>
-References: <20190822095653.7200-3-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190822095653.7200-3-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, plai@codeaurora.org, spapothi@codeaurora.org, tiwai@suse.de
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: mt8183: fix tdm out data is valid on rising
+ edge" to the asoc tree
+Date: Wed, 28 Aug 2019 14:13:07 +0100 (BST)
+Message-ID: <20190828131307.108A02742C8E@ypsilon.sirena.org.uk>
+References: <1566621445-26989-4-git-send-email-jiaxin.yu@mediatek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1566621445-26989-4-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wcd9335: Fix primary interpolator max rate
+   ASoC: mediatek: mt8183: fix tdm out data is valid on rising edge
 
 has been applied to the asoc tree at
 
@@ -37,79 +48,62 @@ to this mail.
 Thanks,
 Mark
 
->From a8a652bfac7f4a60dfbe07a8c95c65506601b2e1 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 22 Aug 2019 10:56:51 +0100
-Subject: [PATCH] ASoC: wcd9335: Fix primary interpolator max rate
+>From 2c650fd5a53beace2e7507f478562f0dd1885b89 Mon Sep 17 00:00:00 2001
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Sat, 24 Aug 2019 12:37:25 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: fix tdm out data is valid on rising
+ edge
 
-On this codec SLIMBus RX path supports 384000 rate on primary interpolator.
-Add this missing rate as supported rate.
+This patch correct tdm out bck inverse register to AUDIO_TOP_CON3[3].
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20190822095653.7200-3-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Link: https://lore.kernel.org/r/1566621445-26989-4-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/wcd9335.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/mediatek/mt8183/mt8183-dai-tdm.c | 4 +++-
+ sound/soc/mediatek/mt8183/mt8183-reg.h     | 8 +++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 956602788d0e..03f8a94bba2f 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -2071,9 +2071,10 @@ static struct snd_soc_dai_driver wcd9335_slim_dais[] = {
- 		.id = AIF1_PB,
- 		.playback = {
- 			.stream_name = "AIF1 Playback",
--			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK,
-+			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK |
-+				 SNDRV_PCM_RATE_384000,
- 			.formats = WCD9335_FORMATS_S16_S24_LE,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 			.rate_min = 8000,
- 			.channels_min = 1,
- 			.channels_max = 2,
-@@ -2099,10 +2100,11 @@ static struct snd_soc_dai_driver wcd9335_slim_dais[] = {
- 		.id = AIF2_PB,
- 		.playback = {
- 			.stream_name = "AIF2 Playback",
--			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK,
-+			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK |
-+				 SNDRV_PCM_RATE_384000,
- 			.formats = WCD9335_FORMATS_S16_S24_LE,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 		},
-@@ -2127,10 +2129,11 @@ static struct snd_soc_dai_driver wcd9335_slim_dais[] = {
- 		.id = AIF3_PB,
- 		.playback = {
- 			.stream_name = "AIF3 Playback",
--			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK,
-+			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK |
-+				 SNDRV_PCM_RATE_384000,
- 			.formats = WCD9335_FORMATS_S16_S24_LE,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 		},
-@@ -2155,10 +2158,11 @@ static struct snd_soc_dai_driver wcd9335_slim_dais[] = {
- 		.id = AIF4_PB,
- 		.playback = {
- 			.stream_name = "AIF4 Playback",
--			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK,
-+			.rates = WCD9335_RATES_MASK | WCD9335_FRAC_RATES_MASK |
-+				 SNDRV_PCM_RATE_384000,
- 			.formats = WCD9335_FORMATS_S16_S24_LE,
- 			.rate_min = 8000,
--			.rate_max = 192000,
-+			.rate_max = 384000,
- 			.channels_min = 1,
- 			.channels_max = 2,
- 		},
+diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c b/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
+index d34cabdbf889..0d69cf440407 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
+@@ -505,7 +505,9 @@ static int mtk_dai_tdm_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* set tdm */
+ 	if (tdm_priv->bck_invert)
+-		tdm_con |= 1 << BCK_INVERSE_SFT;
++		regmap_update_bits(afe->regmap, AUDIO_TOP_CON3,
++				   BCK_INVERSE_MASK_SFT,
++				   0x1 << BCK_INVERSE_SFT);
+ 
+ 	if (tdm_priv->lck_invert)
+ 		tdm_con |= 1 << LRCK_INVERSE_SFT;
+diff --git a/sound/soc/mediatek/mt8183/mt8183-reg.h b/sound/soc/mediatek/mt8183/mt8183-reg.h
+index e0482f2826da..e544a09e1913 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-reg.h
++++ b/sound/soc/mediatek/mt8183/mt8183-reg.h
+@@ -413,6 +413,11 @@
+ #define AFE_MAX_REGISTER AFE_GENERAL2_ASRC_2CH_CON13
+ #define AFE_IRQ_STATUS_BITS 0x1fff
+ 
++/* AUDIO_TOP_CON3 */
++#define BCK_INVERSE_SFT                              3
++#define BCK_INVERSE_MASK                             0x1
++#define BCK_INVERSE_MASK_SFT                         (0x1 << 3)
++
+ /* AFE_DAC_CON0 */
+ #define AWB2_ON_SFT                                   29
+ #define AWB2_ON_MASK                                  0x1
+@@ -1596,9 +1601,6 @@
+ #define TDM_EN_SFT                                    0
+ #define TDM_EN_MASK                                   0x1
+ #define TDM_EN_MASK_SFT                               (0x1 << 0)
+-#define BCK_INVERSE_SFT                               1
+-#define BCK_INVERSE_MASK                              0x1
+-#define BCK_INVERSE_MASK_SFT                          (0x1 << 1)
+ #define LRCK_INVERSE_SFT                              2
+ #define LRCK_INVERSE_MASK                             0x1
+ #define LRCK_INVERSE_MASK_SFT                         (0x1 << 2)
 -- 
 2.20.1
