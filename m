@@ -1,40 +1,84 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v2 1/2] ASoC: sun4i-i2s: Revert "ASoC: sun4i-i2s: Remove
- duplicated quirks structure"
-Date: Wed, 28 Aug 2019 15:32:26 +0800
-Message-ID: <CAGb2v65d3SjJEU_zqXqEKakTYoOB7tk_fo7OkJ_Gvq5Yok+_=A@mail.gmail.com>
-References: <20190827123131.29129-1-mripard@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH 2/2] ALSA: hda: Allow HDA to be runtime suspended when
+ dGPU is not bound
+Date: Wed, 28 Aug 2019 16:25:08 +0800
+Message-ID: <66C43B81-0A08-437F-B099-1C757A42E912@canonical.com>
+References: <20190827134756.10807-1-kai.heng.feng@canonical.com>
+ <20190827134756.10807-2-kai.heng.feng@canonical.com>
+ <20190827223125.GB9987@google.com>
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Content-Type: text/plain;
+        charset=utf-8;
+        delsp=yes;
+        format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190827123131.29129-1-mripard@kernel.org>
+In-Reply-To: <20190827223125.GB9987@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <mripard@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Code Kipper <codekipper@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: tiwai@suse.com, linux-pci@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Bjorn,
 
-On Tue, Aug 27, 2019 at 8:31 PM Maxime Ripard <mripard@kernel.org> wrote:
+at 06:31, Bjorn Helgaas <helgaas@kernel.org> wrote:
+
+> On Tue, Aug 27, 2019 at 09:47:56PM +0800, Kai-Heng Feng wrote:
+>> It's a common practice to let dGPU unbound and use PCI port PM to
+>> disable its power through _PR3. When the dGPU comes with an HDA
+>> function, the HDA won't be suspended if the dGPU is unbound, so the dGPU
+>> power can't be disabled.
 >
-> From: Maxime Ripard <maxime.ripard@bootlin.com>
+> Just a terminology question:
 >
-> This reverts commit 3e9acd7ac6933cdc20c441bbf9a38ed9e42e1490.
+> I thought "using PCI port PM" meant using the PCI Power Management
+> Capability in config space to directly change the device's power
+> state, e.g., in pci_raw_set_power_state().
+
+What I meant is to use pcieport.ko directly.
+
 >
-> It turns out that while one I2S controller is described in the A83t
-> datasheet, the driver supports another, undocumented, one that has been
-> inherited from the older SoCs, while the documented one uses the new
-> design.
+> And I thought using _PS3, _PR3, etc would be part of "platform power
+> management”?
+
+Ok, will update the wording.
+
 >
-> Fixes: 3e9acd7ac693 ("ASoC: sun4i-i2s: Remove duplicated quirks structure")
-> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> And AFAICT, _PR3 merely returns a list of power resources; it doesn't
+> disable power itself.
 
-This patch got applied as
+Yes, through its _PS3 and _OFF. I’ll update the wording.
 
-    455b1d42e82c ("ASoC: sunxi: Revert initial A83t support")
+Kai-Heng
 
-The new subject is very confusing. If anything it should read
-
-    ASoC: sun4i-i2s: Split H3 and later SoC support from A83T support
-
-ChenYu
+>
+>> Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
+>> discrete GPU") only allows HDA to be runtime-suspended once GPU is
+>> bound, to keep APU's HDA working.
+>>
+>> However, HDA on dGPU isn't that useful if dGPU is unbound. So let relax
+>> the runtime suspend requirement for dGPU's HDA function, to save lots of
+>> power.
+>>
+>> BugLink: https://bugs.launchpad.net/bugs/1840835
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>>  sound/pci/hda/hda_intel.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index 99fc0917339b..d4ee070e1a29 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -1285,7 +1285,8 @@ static void init_vga_switcheroo(struct azx *chip)
+>>  		dev_info(chip->card->dev,
+>>  			 "Handle vga_switcheroo audio client\n");
+>>  		hda->use_vga_switcheroo = 1;
+>> -		hda->need_eld_notify_link = 1; /* cleared in gpu_bound op */
+>> +		/* cleared in gpu_bound op */
+>> +		hda->need_eld_notify_link = !pci_pr3_present(p);
+>>  		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
+>>  		pci_dev_put(p);
+>>  	}
+>> -- 
+>> 2.17.1
