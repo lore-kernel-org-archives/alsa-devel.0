@@ -1,29 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: mt8183: fix tdm out data is valid on rising
- edge" to the asoc tree
-Date: Wed, 28 Aug 2019 14:13:07 +0100 (BST)
-Message-ID: <20190828131307.108A02742C8E@ypsilon.sirena.org.uk>
-References: <1566621445-26989-4-git-send-email-jiaxin.yu@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1566621445-26989-4-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ALSA: pcm: add support for 352.8KHz and 384KHz sample rate" to the asoc tree
+Date: Wed, 28 Aug 2019 14:13:06 +0100 (BST)
+Message-ID: <20190828131306.CD9482742B9F@ypsilon.sirena.org.uk>
+References: <20190822095653.7200-2-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190822095653.7200-2-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vidyakumar Athota <vathota@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>bgoswami@codeaurora.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, plai@codeaurora.org, spapothi@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183: fix tdm out data is valid on rising edge
+   ALSA: pcm: add support for 352.8KHz and 384KHz sample rate
 
 has been applied to the asoc tree at
 
@@ -48,62 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 2c650fd5a53beace2e7507f478562f0dd1885b89 Mon Sep 17 00:00:00 2001
-From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Sat, 24 Aug 2019 12:37:25 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: fix tdm out data is valid on rising
- edge
+>From 4cc4531c310e592cf624148ae59c64f930f12e39 Mon Sep 17 00:00:00 2001
+From: Vidyakumar Athota <vathota@codeaurora.org>
+Date: Thu, 22 Aug 2019 10:56:50 +0100
+Subject: [PATCH] ALSA: pcm: add support for 352.8KHz and 384KHz sample rate
 
-This patch correct tdm out bck inverse register to AUDIO_TOP_CON3[3].
+Most of the modern codecs supports 352.8KHz and 384KHz sample rates.
+Currenlty HW params fails to set 352.8Kz and 384KHz sample rate
+as these are not in known rates list.
+Add these new rates to known list to allow them.
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Link: https://lore.kernel.org/r/1566621445-26989-4-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+This patch also adds defines in pcm.h so that drivers can use it.
+
+Signed-off-by: Vidyakumar Athota <vathota@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20190822095653.7200-2-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-dai-tdm.c | 4 +++-
- sound/soc/mediatek/mt8183/mt8183-reg.h     | 8 +++++---
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ include/sound/pcm.h     | 5 +++++
+ sound/core/pcm_native.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c b/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
-index d34cabdbf889..0d69cf440407 100644
---- a/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
-@@ -505,7 +505,9 @@ static int mtk_dai_tdm_hw_params(struct snd_pcm_substream *substream,
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 1e9bb1c91770..bbe6eb1ff5d2 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -117,6 +117,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
+ #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
+ #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
++#define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
++#define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
  
- 	/* set tdm */
- 	if (tdm_priv->bck_invert)
--		tdm_con |= 1 << BCK_INVERSE_SFT;
-+		regmap_update_bits(afe->regmap, AUDIO_TOP_CON3,
-+				   BCK_INVERSE_MASK_SFT,
-+				   0x1 << BCK_INVERSE_SFT);
+ #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
+ #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
+@@ -129,6 +131,9 @@ struct snd_pcm_ops {
+ 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
+ #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
+ 					 SNDRV_PCM_RATE_192000)
++#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
++					 SNDRV_PCM_RATE_352800|\
++					 SNDRV_PCM_RATE_384000)
+ #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
+ #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
+ #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 860543a4c840..34390be3fb0f 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2168,7 +2168,7 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
  
- 	if (tdm_priv->lck_invert)
- 		tdm_con |= 1 << LRCK_INVERSE_SFT;
-diff --git a/sound/soc/mediatek/mt8183/mt8183-reg.h b/sound/soc/mediatek/mt8183/mt8183-reg.h
-index e0482f2826da..e544a09e1913 100644
---- a/sound/soc/mediatek/mt8183/mt8183-reg.h
-+++ b/sound/soc/mediatek/mt8183/mt8183-reg.h
-@@ -413,6 +413,11 @@
- #define AFE_MAX_REGISTER AFE_GENERAL2_ASRC_2CH_CON13
- #define AFE_IRQ_STATUS_BITS 0x1fff
+ static const unsigned int rates[] = {
+ 	5512, 8000, 11025, 16000, 22050, 32000, 44100,
+-	48000, 64000, 88200, 96000, 176400, 192000
++	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000
+ };
  
-+/* AUDIO_TOP_CON3 */
-+#define BCK_INVERSE_SFT                              3
-+#define BCK_INVERSE_MASK                             0x1
-+#define BCK_INVERSE_MASK_SFT                         (0x1 << 3)
-+
- /* AFE_DAC_CON0 */
- #define AWB2_ON_SFT                                   29
- #define AWB2_ON_MASK                                  0x1
-@@ -1596,9 +1601,6 @@
- #define TDM_EN_SFT                                    0
- #define TDM_EN_MASK                                   0x1
- #define TDM_EN_MASK_SFT                               (0x1 << 0)
--#define BCK_INVERSE_SFT                               1
--#define BCK_INVERSE_MASK                              0x1
--#define BCK_INVERSE_MASK_SFT                          (0x1 << 1)
- #define LRCK_INVERSE_SFT                              2
- #define LRCK_INVERSE_MASK                             0x1
- #define LRCK_INVERSE_MASK_SFT                         (0x1 << 2)
+ const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
 -- 
 2.20.1
