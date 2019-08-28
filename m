@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt1011: ADCDAT pin config
-	modification
-Date: Wed, 28 Aug 2019 11:49:38 +0100
-Message-ID: <20190828104938.GF4298@sirena.co.uk>
-References: <20190826090120.1937-1-shumingf@realtek.com>
+From: Pavel Hofman <pavhofman@gmail.com>
+Subject: Re: Options for ASYNC feedback source in USB-audio
+	gadget (USB OTG)?
+Date: Wed, 28 Aug 2019 17:17:12 +0200
+Message-ID: <CA+SWvNztL5Ykt_LtU+zyv0MjWbM6wqAvM4U+JVcqvcN3AhdGNg@mail.gmail.com>
+References: <CA+SWvNwqg3Q37BWNpw7C+75Z+CO-zUo2UUYjvz88L3hW1tk=gQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6149617110266277293=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com
+ [IPv6:2607:f8b0:4864:20::72f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99F05F8974C
- for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 12:49:44 +0200 (CEST)
-In-Reply-To: <20190826090120.1937-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 824A4F80362
+ for <Alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 17:17:26 +0200 (CEST)
+Received: by mail-qk1-x72f.google.com with SMTP id m2so26602qki.12
+ for <Alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 08:17:25 -0700 (PDT)
+In-Reply-To: <CA+SWvNwqg3Q37BWNpw7C+75Z+CO-zUo2UUYjvz88L3hW1tk=gQ@mail.gmail.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +26,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: shumingf@realtek.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, cychiang@google.com, lgirdwood@gmail.com, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, flove@realtek.com
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Aug 28, 2019 at 1:17 PM Pavel Hofman <pavhofman@gmail.com> wrote:
+>
+> But the feedback EP needs input data. The whole chain behind the
+> virtual capture alsa device defined by the gadget driver is clocked by
+> the playback soundcard. May I ask for your opinions on possible
+> options for
+>
+> 1) gathering the feedback data from the playback chain
+> 2) passing the gathered samplerate-diff data to the gadget module for
+> the feedback EP to send to the USB host
+>
 
---===============6149617110266277293==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SnV5plBeK2Ge1I9g"
-Content-Disposition: inline
+IMO some common time frame must be used. E.g. kernel time in nanoseconds.
 
+How about something like this:
 
---SnV5plBeK2Ge1I9g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1) the core PCM part of alsa driver would keep relative samplerate and
+present such value in proc/sysfs to userspace.
+the calculation something like:
+copied X sample frames in Y kernel nanosecs (for the last e.g. approx.
+30 secs ), with nominal samplerate 48kHz. The value would be
+(10^9 * X frames/Y nanosecs) / 48000 Hz samplerate = e.g. 1.00001
 
-On Mon, Aug 26, 2019 at 05:01:20PM +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
->=20
-> ADCDAT pin config sets to output mode in default.
-> And the driver creates the kcontrol to control ADCDAT pin configuration.
+2) the usb gadget code also creates/uses alsa driver, thus
+measuring/displaying to userspace the same value, e.g. 1.00002 - USB
+data incoming slightly faster than being consumed by the soundcard
 
-Why would this change at runtime?  I'd expect this to be controlled by
-the machine driver or a DT property.
+3) the usb gadget would accept some feedback value via procfs/sysfs
 
---SnV5plBeK2Ge1I9g
-Content-Type: application/pgp-signature; name="signature.asc"
+4) a userspace daemon could monitor the relative samplerates of the
+output and of the usb gadget (both values are relative to the same
+kernel nanosecs clock), could calculate the required adjustment and
+send proper value to the gadget feedback (in some format). Default
+async feedback would be "no change", unless received required value
+from userspace.
 
------BEGIN PGP SIGNATURE-----
+Monitoring the average throughput (samplerate relative to kernel
+clock) could be enabled with a module param for alsa drivers, default
+off.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1mXEEACgkQJNaLcl1U
-h9BARQf7B+igTrQh/wu3MSJ+gfpTm0twpKyaZRXGaeqfKdEvy3t+lvYrdH2sHhJh
-d4FN7QnapUkjMMPJTaeoRwtYjEWPaGfacIUoaYcZxF2k1blvq0q2IA+yXs+GTEh0
-ANXhanQThTLsDTLN1RaagcQuoPDyLb1Sr++5BbEJrZyQq9wtjC3dQwbevmD/U546
-SZB//BJWyljTEGYwaquEFX3IG/WD77aIJ2bw7lk3CoRBNadUb9PEj26sKlVejVUk
-UhgFCivZJwcEsnrEGUYZFirP7yHVA/YG5OYnSCc6aFT3z2jgwmNvI8INfgwa2q2b
-y9rNQu49eXwAiWCvCVhpuducmm6rlQ==
-=M3WZ
------END PGP SIGNATURE-----
+The reason for dividing the "kernel-time samplerate" with nominal
+samplerate is the chain can be resampling (48kHz -> 192kHz), but the
+relative "deviation" should be the same for any samplerate.
 
---SnV5plBeK2Ge1I9g--
+Thanks a lot for any suggestions and comments.
 
---===============6149617110266277293==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6149617110266277293==--
+Pavel.
