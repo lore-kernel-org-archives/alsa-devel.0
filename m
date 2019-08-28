@@ -1,28 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/35] ASoC: Intel: Clenaup SST
- initialization
-Date: Tue, 27 Aug 2019 20:20:36 +0100
-Message-ID: <20190827192036.GM23391@sirena.co.uk>
-References: <330b6be6-21c2-2eb8-9959-7d494841b3d6@linux.intel.com>
- <15484165-d751-b60e-f703-de7c1fa1ad17@linux.intel.com>
- <a95ac4d7-1c6a-ac19-59b3-cfb9ab058520@intel.com>
- <47683473-c177-055b-03fe-2f01feeb4016@linux.intel.com>
- <92ddf26a-f0ca-469d-2ccd-68a3e9cb2e6a@linux.intel.com>
- <49d056e3-e1f6-039b-5265-82a4052af577@linux.intel.com>
- <e91d8bf1-e832-7a4d-f056-a5105648a056@intel.com>
- <c67909a4-aae4-64f2-6e55-d513030fe085@linux.intel.com>
- <d3474fdb-9479-b6f7-07fb-9f7c2d4ccbe3@intel.com>
- <85f46beb-1218-4159-2abd-3ab804247a31@linux.intel.com>
+Subject: Re: [PATCH 2/2] ASoC: rt1011: ADCDAT pin config
+	modification
+Date: Wed, 28 Aug 2019 14:20:55 +0100
+Message-ID: <20190828132055.GJ4298@sirena.co.uk>
+References: <20190826090120.1937-1-shumingf@realtek.com>
+ <20190828104938.GF4298@sirena.co.uk>
+ <10317AB43303BA4884D7AF9C2EBCFF4002BE5727@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3413793217593020614=="
+Content-Type: multipart/mixed; boundary="===============2860059883289927343=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14E6BF80610
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2019 21:20:42 +0200 (CEST)
-In-Reply-To: <85f46beb-1218-4159-2abd-3ab804247a31@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BCF4F89799
+ for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 15:21:02 +0200 (CEST)
+In-Reply-To: <10317AB43303BA4884D7AF9C2EBCFF4002BE5727@RTITMBSVM07.realtek.com.tw>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,66 +25,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, "Kaczmarski, Filip" <filip.kaczmarski@intel.com>, lgirdwood@gmail.com, tiwai@suse.com, "Wasko, Michal" <michal.wasko@linux.intel.com>, "Wasko,
- Michal" <michal.wasko@intel.com>
+To: Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "cychiang@google.com" <cychiang@google.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>, "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3413793217593020614==
+--===============2860059883289927343==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ze9Y2znYQNnn3X7a"
+	protocol="application/pgp-signature"; boundary="Z8yxTSU1mh2gsre7"
 Content-Disposition: inline
 
 
---ze9Y2znYQNnn3X7a
-Content-Type: text/plain; charset=us-ascii
+--Z8yxTSU1mh2gsre7
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 27, 2019 at 12:18:12PM -0500, Pierre-Louis Bossart wrote:
+On Wed, Aug 28, 2019 at 11:01:21AM +0000, Shuming [=E8=8C=83=E6=9B=B8=E9=8A=
+=98] wrote:
 
-> Mark suggested:
-> "We could have a wrapper which tries to load the newer firmware and uses
-> the fixed driver code if that's there, otherwise tries the old driver
-> with the existing firmware paths."
+> > > ADCDAT pin config sets to output mode in default.
+> > > And the driver creates the kcontrol to control ADCDAT pin configurati=
+on.
 
-> Maybe that's too complicated, I had in mind some sort of opt-in Kconfig
-> where you only use the new firmware/topology when the user/distro gives a
-> clear hint than it's fine to use newer stuff.
+> > Why would this change at runtime?  I'd expect this to be controlled by =
+the
+> > machine driver or a DT property.
 
-To be clear I don't think this is a *good* idea, but I'm not sure
-that there are any options that are good ideas.
+> It will not change at runtime in the normal case.=20
+> I think we may use it to test the feedback signal in factory mode.
 
-> I also wonder how you are going to deal with all these topology files with a
-> name derived from the OEM/NHLT. There's just so many of them...For upstream
-> you probably want to provide ONE per platform variant, which limits you to
-> the number of machine drivers supported.
+So really this is setting up a loopback for testing?
 
-Unless the way they're generated is consistent (or often
-consistent) in which case you can just derive it?
-
---ze9Y2znYQNnn3X7a
+--Z8yxTSU1mh2gsre7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1lgoQACgkQJNaLcl1U
-h9AQUAf/WF79J5PutYyTq69omnKk2K+0WC4++54rupZ8YKxbduuw/9L1WMVjIWC4
-QusQXEqu29kX9rsXaeuC4nsfzh6Sbk9xIWWgUfC2DRhvi5dlmVzXuCXq4wpFVfO1
-N+CTV645sGBVJ3gqJCm3Xfs/qZ7enVV9/F4x3cPiq9jnREQdeVHZ/X++4+OJ7MAr
-2CpBNKKjmgyXhhh7HBtzr04G0CfHyfSHQlZMk3+/pqY3rhnOO3Ec9R24vaWKU3jG
-XBU7Hj8X1YHJCzI6w0rpqgO0TpS4rKAoETAFOtmaethfPahYopyyLQjis6TGgwoz
-40bxGpKabIXDqMlEFvPIgFaZPGj/Ag==
-=vSyg
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1mf7YACgkQJNaLcl1U
+h9AAUQgAg5xHDGKt0DtfDS8tjGMoAByXdpxEe61RBJPMNK98EIXTfiwKCU/Wdc3N
+YFuhedwoV7rztRcJ/uPLoQPzxbMGOqNeEYf4NQDTSl4i23m9WwXxqd4wW9alD35k
+AZRup6xUJ4rgle7hstf2EmyQgxCoyZdX9xsY1gg6oAwUddp3RfO9X5ARWKJ0l302
+iP4TWnpQOUkigIwEgTBqvDSQRF3hwsW+C6elmVfzH17wf3sjGxctqosIGAaqWlhK
+u4Qu8z1roX5xI4vxi3XSDoJipu2+gOn4zTmJP2aEIGSvsnuV9I7d62gqnVe/BV3Z
+GPcKEuWPOtGnuGbijBcI2h2upr0Fsg==
+=mpI1
 -----END PGP SIGNATURE-----
 
---ze9Y2znYQNnn3X7a--
+--Z8yxTSU1mh2gsre7--
 
---===============3413793217593020614==
+--===============2860059883289927343==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3413793217593020614==--
+--===============2860059883289927343==--
