@@ -1,89 +1,71 @@
-From: Peter Wu <peter@lekensteyn.nl>
-Subject: Re: [PATCH 1/2] PCI: Add a helper to check Power Resource
- Requirements _PR3 existence
-Date: Tue, 27 Aug 2019 23:39:51 +0100
-Message-ID: <20190827223951.GA27744@al>
-References: <20190827134756.10807-1-kai.heng.feng@canonical.com>
- <s5hr2567hrd.wl-tiwai@suse.de>
- <0379E973-651A-442C-AF74-51702388F55D@canonical.com>
- <20190827221321.GA9987@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: [PATCH] ASoC: fsl_ssi: Fix clock control issue in master mode
+Date: Wed, 28 Aug 2019 13:20:17 -0400
+Message-ID: <1567012817-12625-1-git-send-email-shengjiu.wang@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190827221321.GA9987@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Dave Airlie <airlied@redhat.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 27, 2019 at 05:13:21PM -0500, Bjorn Helgaas wrote:
-> [+cc Peter, Mika, Dave]
-> 
-> https://lore.kernel.org/r/20190827134756.10807-1-kai.heng.feng@canonical.com
-> 
-> On Wed, Aug 28, 2019 at 12:58:28AM +0800, Kai-Heng Feng wrote:
-> > at 23:25, Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Tue, 27 Aug 2019 15:47:55 +0200,
-> > > Kai-Heng Feng wrote:
-> > > > A driver may want to know the existence of _PR3, to choose different
-> > > > runtime suspend behavior. A user will be add in next patch.
-> > > > 
-> > > > This is mostly the same as nouveau_pr3_present().
-> > > 
-> > > Then it'd be nice to clean up the nouveau part, too?
-> > 
-> > nouveau_pr3_present() may call pci_d3cold_disable(), and my intention is to
-> > only check the presence of _PR3 (i.e. a dGPU) without touching anything.
-> 
-> It looks like Peter added that code with 279cf3f23870
-> ("drm/nouveau/acpi: use DSM if bridge does not support D3cold").
-> 
-> I don't understand the larger picture, but it is somewhat surprising
-> that nouveau_pr3_present() *looks* like a simple predicate with no
-> side-effects, but in fact it disables the use of D3cold in some cases.
+The test case is
+arecord -Dhw:0 -d 10 -f S16_LE -r 48000 -c 2 temp.wav &
+aplay -Dhw:0 -d 30 -f S16_LE -r 48000 -c 2 test.wav
 
-The reason for disabling _PR3 from that point on is because mixing the
-ACPI firmware code that uses power resources (_PR3) with the legacy
-_DSM/_PS0/_PS3 methods to manage power states could break as that
-combination is unlikely to be supported nor tested by firmware authors.
+There will be error after end of arecord:
+aplay: pcm_write:2051: write error: Input/output error
 
-If a user sets /sys/bus/pci/devices/.../d3cold_allowed to 0, then the
-pci_d3cold_disable call ensures that this action is remembered and
-prevents power resources from being used again.
+Capture and Playback work in parallel in master mode, one
+substream stops, the other substream is impacted, the
+reason is that clock is disabled wrongly.
 
-For example, compare this power resource _OFF code:
-https://github.com/Lekensteyn/acpi-stuff/blob/b55f6bdb/dsl/Clevo_P651RA/ssdt3.dsl#L454-L471
+The clock's reference count is not increased when second
+substream starts, the hw_param() function returns in the
+beginning because first substream is enabled, then in end
+of first substream, the hw_free() disables the clock.
 
-with this legacy _PS0/_PS3 code:
-https://github.com/Lekensteyn/acpi-stuff/blob/b55f6bdb/dsl/Clevo_P651RA/ssdt7.dsl#L113-L142
+This patch is to move the clock enablement to the place
+before checking of the device enablement in hw_param().
 
-The power resource code checks the "MSD3" variable to check whether a
-transition to OFF is required while the legacy _PS3 checks "DGPS". The
-sequence PG00._OFF followed by _DSM (to to change "OPCE") and _PS3 might
-trigger some device-specific code twice and could lead to lockups
-(infinite loops polling for power state) or worse. I am not sure if I
-have ever tested this scenario however.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-> If the disable were moved to the caller, Kai-Heng's new interface
-> could be used both places.
-
-Moving the pci_d3cold_disable call to the caller looks reasonable to me.
-After the first patch gets merged, nouveau could use something like:
-
-    *has_pr3 = pci_pr3_present(pdev);
-    if (*has_pr3 && !pdev->bridge_d3) {
-        /*
-         * ...
-         */
-        pci_d3cold_disable(pdev);
-        *has_pr3 = false;
-    }
-
-
-For the 1/2 patch,
-Reviewed-by: Peter Wu <peter@lekensteyn.nl>
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index b0a6fead1a6a..537dc69256f0 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -799,15 +799,6 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	u32 wl = SSI_SxCCR_WL(sample_size);
+ 	int ret;
+ 
+-	/*
+-	 * SSI is properly configured if it is enabled and running in
+-	 * the synchronous mode; Note that AC97 mode is an exception
+-	 * that should set separate configurations for STCCR and SRCCR
+-	 * despite running in the synchronous mode.
+-	 */
+-	if (ssi->streams && ssi->synchronous)
+-		return 0;
+-
+ 	if (fsl_ssi_is_i2s_master(ssi)) {
+ 		ret = fsl_ssi_set_bclk(substream, dai, hw_params);
+ 		if (ret)
+@@ -823,6 +814,15 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
++	/*
++	 * SSI is properly configured if it is enabled and running in
++	 * the synchronous mode; Note that AC97 mode is an exception
++	 * that should set separate configurations for STCCR and SRCCR
++	 * despite running in the synchronous mode.
++	 */
++	if (ssi->streams && ssi->synchronous)
++		return 0;
++
+ 	if (!fsl_ssi_is_ac97(ssi)) {
+ 		/*
+ 		 * Keep the ssi->i2s_net intact while having a local variable
 -- 
-Kind regards,
-Peter Wu
-https://lekensteyn.nl
+2.21.0
