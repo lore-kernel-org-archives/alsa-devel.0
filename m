@@ -1,40 +1,59 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Fix clock control issue in master mode
-Date: Wed, 28 Aug 2019 13:02:32 -0300
-Message-ID: <CAOMZO5BF6M4McwGTuNU8jM41+N3jeaJp+U2ST5JY7e+yv8GO_A@mail.gmail.com>
-References: <1567012817-12625-1-git-send-email-shengjiu.wang@nxp.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v2 2/2] ALSA: hda: Allow HDA to be runtime suspended when dGPU is not bound
+Date: Thu, 29 Aug 2019 02:01:28 +0800
+Message-ID: <20190828180128.1732-1-kai.heng.feng@canonical.com>
+References: <20190827134756.10807-2-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1567012817-12625-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20190827134756.10807-2-kai.heng.feng@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
+To: bhelgaas@google.com, tiwai@suse.com
+Cc: linux-pci@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shengjiu,
+It's a common practice to let dGPU unbound and use PCI platform power
+management to disable its power through _OFF method of power resource,
+which is listed by _PR3.
+When the dGPU comes with an HDA function, the HDA won't be suspended if
+the dGPU is unbound, so the power resource can't be turned off.
 
-On Wed, Aug 28, 2019 at 2:21 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> The test case is
-> arecord -Dhw:0 -d 10 -f S16_LE -r 48000 -c 2 temp.wav &
-> aplay -Dhw:0 -d 30 -f S16_LE -r 48000 -c 2 test.wav
->
-> There will be error after end of arecord:
-> aplay: pcm_write:2051: write error: Input/output error
->
-> Capture and Playback work in parallel in master mode, one
-> substream stops, the other substream is impacted, the
-> reason is that clock is disabled wrongly.
->
-> The clock's reference count is not increased when second
-> substream starts, the hw_param() function returns in the
-> beginning because first substream is enabled, then in end
-> of first substream, the hw_free() disables the clock.
->
-> This patch is to move the clock enablement to the place
-> before checking of the device enablement in hw_param().
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
+discrete GPU") only allows HDA to be runtime-suspended once GPU is
+bound, to keep APU's HDA working.
 
-It would be nice if you could add a Fixes tag as well.
+However, HDA on dGPU isn't that useful if dGPU is unbound. So let's
+relax the runtime suspend requirement for dGPU's HDA function, to save
+lots of power.
+
+BugLink: https://bugs.launchpad.net/bugs/1840835
+Fixes: b516ea586d71 ("PCI: Enable NVIDIA HDA controllers”)
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+- Change wording.
+- Rebase to Tiwai's branch.
+
+ sound/pci/hda/hda_intel.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 91e71be42fa4..c3654d22795a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1284,7 +1284,11 @@ static void init_vga_switcheroo(struct azx *chip)
+ 		dev_info(chip->card->dev,
+ 			 "Handle vga_switcheroo audio client\n");
+ 		hda->use_vga_switcheroo = 1;
+-		chip->bus.keep_power = 1; /* cleared in either gpu_bound op or codec probe */
++
++		/* cleared in either gpu_bound op or codec probe, or when its
++		 * root port has _PR3 (i.e. dGPU).
++		 */
++		chip->bus.keep_power = !pci_pr3_present(p);
+ 		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
+ 		pci_dev_put(p);
+ 	}
+-- 
+2.17.1
