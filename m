@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1011: add mutex protection to
-	set_fmt/set_tdm_slot" to the asoc tree
-Date: Tue, 27 Aug 2019 20:57:44 +0100 (BST)
-Message-ID: <20190827195744.7A129D02CEB@fitzroy.sirena.org.uk>
-References: <20190826090052.1875-1-shumingf@realtek.com>
+From: Pavel Hofman <pavhofman@gmail.com>
+Subject: Options for ASYNC feedback source in USB-audio gadget
+	(USB OTG)?
+Date: Wed, 28 Aug 2019 13:17:01 +0200
+Message-ID: <CA+SWvNwqg3Q37BWNpw7C+75Z+CO-zUo2UUYjvz88L3hW1tk=gQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com
+ [IPv6:2607:f8b0:4864:20::72f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1465DF80641
- for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2019 21:57:52 +0200 (CEST)
-In-Reply-To: <20190826090052.1875-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 946ADF89754
+ for <Alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 13:17:15 +0200 (CEST)
+Received: by mail-qk1-x72f.google.com with SMTP id m2so1982965qkd.10
+ for <Alsa-devel@alsa-project.org>; Wed, 28 Aug 2019 04:17:15 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,150 +24,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, cychiang@google.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, sathya.prakash.m.r@intel.com, flove@realtek.com
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: rt1011: add mutex protection to set_fmt/set_tdm_slot
+The existing usb-audio v.2 gadget defines its EP OUT as asynchronous
+https://github.com/torvalds/linux/blob/master/drivers/usb/gadget/function/f_uac2.c#L276
+, but does not define any feedback IN EP (which is against USB audio
+class 2.0 specs).  Windows 10 USB audio class 2 driver requires
+presence of the feedback EP. By changing the EP OUT to adaptive (which
+in fact it is), we could fix the driver issue and windows plays
+through such device (RPi4) correctly now (linux/OSX already worked OK
+before). We will post a patch soon.
 
-has been applied to the asoc tree at
+RPi can now be used as an "intelligent" USB soundcard, allowing
+further processing in linux on RPi, before outputting to some final
+sound device.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+However, there are two clock domains involved - the host USB
+controller sending stream to the USB gadget, and the output soundcard
+of the gadget. While adaptive resampling is possible (jackd, PA do
+that), IMO the correct solution is going back to ASYNC EP OUT in the
+audio gadget and implementing a proper feedback EP.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+But the feedback EP needs input data. The whole chain behind the
+virtual capture alsa device defined by the gadget driver is clocked by
+the playback soundcard. May I ask for your opinions on possible
+options for
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+1) gathering the feedback data from the playback chain
+2) passing the gathered samplerate-diff data to the gadget module for
+the feedback EP to send to the USB host
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+A general solution would be very useful, at best without using
+alsa-lib defined PCM devices (e.g. Java still supports only hardware
+devices (hw:X), not  PCM devices defined by alsa-lib).
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I very much appreciate your suggestions and help.
 
-Thanks,
-Mark
+Best regards,
 
->From e9e897d5fdba9bda3a8c80ea39761413725f198c Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Mon, 26 Aug 2019 17:00:52 +0800
-Subject: [PATCH] ASoC: rt1011: add mutex protection to set_fmt/set_tdm_slot
-
-The calibration process at booting will reset registers and bypass cache
-to make sure the calibration is done.
-We add mutex protection to avoid unexpected settings while
-the registration process and calibration are interleaved.
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20190826090052.1875-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt1011.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 0a6ff13d76e1..ed28250d5e34 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -1619,14 +1619,18 @@ static int rt1011_hw_params(struct snd_pcm_substream *substream,
- static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
- 	unsigned int reg_val = 0, reg_bclk_inv = 0;
-+	int ret = 0;
- 
-+	snd_soc_dapm_mutex_lock(dapm);
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		reg_val |= RT1011_I2S_TDM_MS_S;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
- 
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -1636,7 +1640,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		reg_bclk_inv |= RT1011_TDM_INV_BCLK;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-@@ -1652,7 +1656,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		reg_val |= RT1011_I2S_TDM_DF_PCM_B;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
- 
- 	switch (dai->id) {
-@@ -1667,9 +1671,11 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		break;
- 	default:
- 		dev_err(component->dev, "Invalid dai->id: %d\n", dai->id);
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
--	return 0;
-+
-+	snd_soc_dapm_mutex_unlock(dapm);
-+	return ret;
- }
- 
- static int rt1011_set_component_sysclk(struct snd_soc_component *component,
-@@ -1788,8 +1794,12 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
- 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
- 	unsigned int val = 0, tdm_en = 0;
-+	int ret = 0;
- 
-+	snd_soc_dapm_mutex_lock(dapm);
- 	if (rx_mask || tx_mask)
- 		tdm_en = RT1011_TDM_I2S_DOCK_EN_1;
- 
-@@ -1809,7 +1819,7 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
- 	case 2:
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
- 
- 	switch (slot_width) {
-@@ -1828,7 +1838,7 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
- 	case 16:
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
- 
- 	snd_soc_component_update_bits(component, RT1011_TDM1_SET_1,
-@@ -1845,7 +1855,8 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
- 		RT1011_ADCDAT1_PIN_CONFIG | RT1011_ADCDAT2_PIN_CONFIG,
- 		RT1011_ADCDAT1_OUTPUT | RT1011_ADCDAT2_OUTPUT);
- 
--	return 0;
-+	snd_soc_dapm_mutex_unlock(dapm);
-+	return ret;
- }
- 
- static int rt1011_probe(struct snd_soc_component *component)
--- 
-2.20.1
+Pavel.
