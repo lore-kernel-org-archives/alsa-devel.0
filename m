@@ -1,18 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: pcm: add support for 352.8KHz and 384KHz sample rate" to the asoc tree
-Date: Wed, 28 Aug 2019 14:13:06 +0100 (BST)
-Message-ID: <20190828131306.CD9482742B9F@ypsilon.sirena.org.uk>
-References: <20190822095653.7200-2-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190822095653.7200-2-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vidyakumar Athota <vathota@codeaurora.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>bgoswami@codeaurora.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, plai@codeaurora.org, spapothi@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, tiwai@suse.de
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: mt8183: tdm hw support tdm out and 8ch i2s
+ out" to the asoc tree
+Date: Wed, 28 Aug 2019 14:13:07 +0100 (BST)
+Message-ID: <20190828131307.47A592742CA0@ypsilon.sirena.org.uk>
+References: <1566621445-26989-3-git-send-email-jiaxin.yu@mediatek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1566621445-26989-3-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: pcm: add support for 352.8KHz and 384KHz sample rate
+   ASoC: mediatek: mt8183: tdm hw support tdm out and 8ch i2s out
 
 has been applied to the asoc tree at
 
@@ -37,63 +48,281 @@ to this mail.
 Thanks,
 Mark
 
->From 4cc4531c310e592cf624148ae59c64f930f12e39 Mon Sep 17 00:00:00 2001
-From: Vidyakumar Athota <vathota@codeaurora.org>
-Date: Thu, 22 Aug 2019 10:56:50 +0100
-Subject: [PATCH] ALSA: pcm: add support for 352.8KHz and 384KHz sample rate
+>From 8e58c521bcb823bfd6e81f4a85b76afdce098b1d Mon Sep 17 00:00:00 2001
+From: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Sat, 24 Aug 2019 12:37:24 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: tdm hw support tdm out and 8ch i2s
+ out
 
-Most of the modern codecs supports 352.8KHz and 384KHz sample rates.
-Currenlty HW params fails to set 352.8Kz and 384KHz sample rate
-as these are not in known rates list.
-Add these new rates to known list to allow them.
+This patch refined tdm driver code, and allow tdm hw to support two
+configurations in machine driver to output tdm signal or i2s signal.
 
-This patch also adds defines in pcm.h so that drivers can use it.
-
-Signed-off-by: Vidyakumar Athota <vathota@codeaurora.org>
-Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20190822095653.7200-2-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jiaxin Yu <jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Link: https://lore.kernel.org/r/1566621445-26989-3-git-send-email-jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- include/sound/pcm.h     | 5 +++++
- sound/core/pcm_native.c | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/mt8183/mt8183-dai-tdm.c    | 175 ++++++++++++++----
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   |   3 +
+ 2 files changed, 144 insertions(+), 34 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 1e9bb1c91770..bbe6eb1ff5d2 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -117,6 +117,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
- #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
- #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
-+#define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
-+#define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
- 
- #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
- #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-@@ -129,6 +131,9 @@ struct snd_pcm_ops {
- 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
- #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
- 					 SNDRV_PCM_RATE_192000)
-+#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
-+					 SNDRV_PCM_RATE_352800|\
-+					 SNDRV_PCM_RATE_384000)
- #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
- #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
- #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 860543a4c840..34390be3fb0f 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2168,7 +2168,7 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
- 
- static const unsigned int rates[] = {
- 	5512, 8000, 11025, 16000, 22050, 32000, 44100,
--	48000, 64000, 88200, 96000, 176400, 192000
-+	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000
+diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c b/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
+index 8983d54a9b67..d34cabdbf889 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
+@@ -15,13 +15,30 @@
+ struct mtk_afe_tdm_priv {
+ 	int bck_id;
+ 	int bck_rate;
+-
++	int tdm_out_mode;
++	int bck_invert;
++	int lck_invert;
+ 	int mclk_id;
+ 	int mclk_multiple; /* according to sample rate */
+ 	int mclk_rate;
+ 	int mclk_apll;
  };
  
- const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
++enum {
++	TDM_OUT_I2S = 0,
++	TDM_OUT_TDM = 1,
++};
++
++enum {
++	TDM_BCK_NON_INV = 0,
++	TDM_BCK_INV = 1,
++};
++
++enum {
++	TDM_LCK_NON_INV = 0,
++	TDM_LCK_INV = 1,
++};
++
+ enum {
+ 	TDM_WLEN_16_BIT = 1,
+ 	TDM_WLEN_32_BIT = 2,
+@@ -93,6 +110,25 @@ static unsigned int get_tdm_ch(unsigned int ch)
+ 	}
+ }
+ 
++static unsigned int get_tdm_ch_fixup(unsigned int channels)
++{
++	if (channels > 4)
++		return 8;
++	else if (channels > 2)
++		return 4;
++	else
++		return 2;
++}
++
++static unsigned int get_tdm_ch_per_sdata(unsigned int mode,
++					 unsigned int channels)
++{
++	if (mode == TDM_OUT_TDM)
++		return get_tdm_ch_fixup(channels);
++	else
++		return 2;
++}
++
+ /* interconnection */
+ enum {
+ 	HDMI_CONN_CH0 = 0,
+@@ -433,8 +469,11 @@ static int mtk_dai_tdm_hw_params(struct snd_pcm_substream *substream,
+ 	struct mt8183_afe_private *afe_priv = afe->platform_priv;
+ 	int tdm_id = dai->id;
+ 	struct mtk_afe_tdm_priv *tdm_priv = afe_priv->dai_priv[tdm_id];
++	unsigned int tdm_out_mode = tdm_priv->tdm_out_mode;
+ 	unsigned int rate = params_rate(params);
+ 	unsigned int channels = params_channels(params);
++	unsigned int out_channels_per_sdata =
++		get_tdm_ch_per_sdata(tdm_out_mode, channels);
+ 	snd_pcm_format_t format = params_format(params);
+ 	unsigned int tdm_con = 0;
+ 
+@@ -448,7 +487,7 @@ static int mtk_dai_tdm_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* calculate bck */
+ 	tdm_priv->bck_rate = rate *
+-			     channels *
++			     out_channels_per_sdata *
+ 			     snd_pcm_format_physical_width(format);
+ 
+ 	if (tdm_priv->bck_rate > tdm_priv->mclk_rate)
+@@ -461,50 +500,70 @@ static int mtk_dai_tdm_hw_params(struct snd_pcm_substream *substream,
+ 		 __func__,
+ 		 tdm_id, rate, channels, format,
+ 		 tdm_priv->mclk_rate, tdm_priv->bck_rate);
++	dev_info(afe->dev, "%s(), out_channels_per_sdata = %d\n",
++		 __func__, out_channels_per_sdata);
+ 
+ 	/* set tdm */
+-	tdm_con = 1 << BCK_INVERSE_SFT;
+-	tdm_con |= 1 << LRCK_INVERSE_SFT;
+-	tdm_con |= 1 << DELAY_DATA_SFT;
++	if (tdm_priv->bck_invert)
++		tdm_con |= 1 << BCK_INVERSE_SFT;
++
++	if (tdm_priv->lck_invert)
++		tdm_con |= 1 << LRCK_INVERSE_SFT;
++
++	if (tdm_priv->tdm_out_mode == TDM_OUT_I2S) {
++		tdm_con |= 1 << DELAY_DATA_SFT;
++		tdm_con |= get_tdm_lrck_width(format) << LRCK_TDM_WIDTH_SFT;
++	} else if (tdm_priv->tdm_out_mode == TDM_OUT_TDM) {
++		tdm_con |= 0 << DELAY_DATA_SFT;
++		tdm_con |= 0 << LRCK_TDM_WIDTH_SFT;
++	}
++
+ 	tdm_con |= 1 << LEFT_ALIGN_SFT;
+ 	tdm_con |= get_tdm_wlen(format) << WLEN_SFT;
+-	tdm_con |= get_tdm_ch(channels) << CHANNEL_NUM_SFT;
++	tdm_con |= get_tdm_ch(out_channels_per_sdata) << CHANNEL_NUM_SFT;
+ 	tdm_con |= get_tdm_channel_bck(format) << CHANNEL_BCK_CYCLES_SFT;
+-	tdm_con |= get_tdm_lrck_width(format) << LRCK_TDM_WIDTH_SFT;
+ 	regmap_write(afe->regmap, AFE_TDM_CON1, tdm_con);
+ 
+-	switch (channels) {
+-	case 1:
+-	case 2:
++	if (out_channels_per_sdata == 2) {
++		switch (channels) {
++		case 1:
++		case 2:
++			tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
++			tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT1_SFT;
++			tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT2_SFT;
++			tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT3_SFT;
++			break;
++		case 3:
++		case 4:
++			tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
++			tdm_con |= TDM_CH_START_O32_O33 << ST_CH_PAIR_SOUT1_SFT;
++			tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT2_SFT;
++			tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT3_SFT;
++			break;
++		case 5:
++		case 6:
++			tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
++			tdm_con |= TDM_CH_START_O32_O33 << ST_CH_PAIR_SOUT1_SFT;
++			tdm_con |= TDM_CH_START_O34_O35 << ST_CH_PAIR_SOUT2_SFT;
++			tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT3_SFT;
++			break;
++		case 7:
++		case 8:
++			tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
++			tdm_con |= TDM_CH_START_O32_O33 << ST_CH_PAIR_SOUT1_SFT;
++			tdm_con |= TDM_CH_START_O34_O35 << ST_CH_PAIR_SOUT2_SFT;
++			tdm_con |= TDM_CH_START_O36_O37 << ST_CH_PAIR_SOUT3_SFT;
++			break;
++		default:
++			tdm_con = 0;
++		}
++	} else {
+ 		tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
+ 		tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT1_SFT;
+ 		tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT2_SFT;
+ 		tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT3_SFT;
+-		break;
+-	case 3:
+-	case 4:
+-		tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
+-		tdm_con |= TDM_CH_START_O32_O33 << ST_CH_PAIR_SOUT1_SFT;
+-		tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT2_SFT;
+-		tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT3_SFT;
+-		break;
+-	case 5:
+-	case 6:
+-		tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
+-		tdm_con |= TDM_CH_START_O32_O33 << ST_CH_PAIR_SOUT1_SFT;
+-		tdm_con |= TDM_CH_START_O34_O35 << ST_CH_PAIR_SOUT2_SFT;
+-		tdm_con |= TDM_CH_ZERO << ST_CH_PAIR_SOUT3_SFT;
+-		break;
+-	case 7:
+-	case 8:
+-		tdm_con = TDM_CH_START_O30_O31 << ST_CH_PAIR_SOUT0_SFT;
+-		tdm_con |= TDM_CH_START_O32_O33 << ST_CH_PAIR_SOUT1_SFT;
+-		tdm_con |= TDM_CH_START_O34_O35 << ST_CH_PAIR_SOUT2_SFT;
+-		tdm_con |= TDM_CH_START_O36_O37 << ST_CH_PAIR_SOUT3_SFT;
+-		break;
+-	default:
+-		tdm_con = 0;
+ 	}
++
+ 	regmap_write(afe->regmap, AFE_TDM_CON2, tdm_con);
+ 
+ 	regmap_update_bits(afe->regmap, AFE_HDMI_OUT_CON0,
+@@ -573,10 +632,58 @@ static int mtk_dai_tdm_set_sysclk(struct snd_soc_dai *dai,
+ 	return mtk_dai_tdm_cal_mclk(afe, tdm_priv, freq);
+ }
+ 
++static int mtk_dai_tdm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct mtk_base_afe *afe = dev_get_drvdata(dai->dev);
++	struct mt8183_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_afe_tdm_priv *tdm_priv = afe_priv->dai_priv[dai->id];
++
++	if (!tdm_priv) {
++		dev_warn(afe->dev, "%s(), tdm_priv == NULL", __func__);
++		return -EINVAL;
++	}
++
++	/* DAI mode*/
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		tdm_priv->tdm_out_mode = TDM_OUT_I2S;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		tdm_priv->tdm_out_mode = TDM_OUT_TDM;
++		break;
++	default:
++		tdm_priv->tdm_out_mode = TDM_OUT_I2S;
++	}
++
++	/* DAI clock inversion*/
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		tdm_priv->bck_invert = TDM_BCK_NON_INV;
++		tdm_priv->lck_invert = TDM_LCK_NON_INV;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		tdm_priv->bck_invert = TDM_BCK_NON_INV;
++		tdm_priv->lck_invert = TDM_LCK_INV;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		tdm_priv->bck_invert = TDM_BCK_INV;
++		tdm_priv->lck_invert = TDM_LCK_NON_INV;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++	default:
++		tdm_priv->bck_invert = TDM_BCK_INV;
++		tdm_priv->lck_invert = TDM_LCK_INV;
++		break;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops mtk_dai_tdm_ops = {
+ 	.hw_params = mtk_dai_tdm_hw_params,
+ 	.trigger = mtk_dai_tdm_trigger,
+ 	.set_sysclk = mtk_dai_tdm_set_sysclk,
++	.set_fmt = mtk_dai_tdm_set_fmt,
+ };
+ 
+ /* dai driver */
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 951706fa75fc..560fcc5923a4 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -380,6 +380,9 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 	{
+ 		.name = "TDM",
+ 		.no_pcm = 1,
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			   SND_SOC_DAIFMT_IB_IF |
++			   SND_SOC_DAIFMT_CBM_CFM,
+ 		.dpcm_playback = 1,
+ 		.ignore_suspend = 1,
+ 		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
 -- 
 2.20.1
