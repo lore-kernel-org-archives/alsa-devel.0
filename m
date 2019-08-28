@@ -1,8 +1,8 @@
 From: Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH v2 5/5] ASoC: dt-bindings: Convert Allwinner A64 analog codec
- to a schema
-Date: Wed, 28 Aug 2019 14:52:09 +0200
-Message-ID: <20190828125209.28173-5-mripard@kernel.org>
+Subject: [PATCH v2 3/5] ASoC: dt-bindings: Convert Allwinner A33 codec to a
+ schema
+Date: Wed, 28 Aug 2019 14:52:07 +0200
+Message-ID: <20190828125209.28173-3-mripard@kernel.org>
 References: <20190828125209.28173-1-mripard@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,9 +24,8 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-The Allwinner A64 SoC has an embedded audio codec that uses a separate
-controller to drive its analog part, which is supported in Linux, with a
-matching Device Tree binding.
+The Allwinner A33 SoC have an embedded audio codec that is supported in Linux,
+with a matching Device Tree binding.
 
 Now that we have the DT validation in place, let's convert the device tree
 bindings for that controller over to a YAML schemas.
@@ -38,76 +37,143 @@ Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 Changes from v1:
   - Fix subject prefix
 ---
- .../allwinner,sun50i-a64-codec-analog.yaml    | 39 +++++++++++++++++++
- .../bindings/sound/sun50i-codec-analog.txt    | 14 -------
- 2 files changed, 39 insertions(+), 14 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+ .../sound/allwinner,sun8i-a33-codec.yaml      | 57 +++++++++++++++++
+ .../bindings/sound/sun8i-a33-codec.txt        | 63 -------------------
+ 2 files changed, 57 insertions(+), 63 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
 new file mode 100644
-index 000000000000..f290eb72a878
+index 000000000000..5e7cc05bbff1
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
-@@ -0,0 +1,39 @@
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
+@@ -0,0 +1,57 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun50i-a64-codec-analog.yaml#
++$id: http://devicetree.org/schemas/sound/allwinner,sun8i-a33-codec.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Allwinner A64 Analog Codec Device Tree Bindings
++title: Allwinner A33 Codec Device Tree Bindings
 +
 +maintainers:
 +  - Chen-Yu Tsai <wens@csie.org>
 +  - Maxime Ripard <maxime.ripard@bootlin.com>
 +
 +properties:
++  "#sound-dai-cells":
++    const: 0
++
 +  compatible:
-+    const: allwinner,sun50i-a64-codec-analog
++    const: allwinner,sun8i-a33-codec
 +
 +  reg:
 +    maxItems: 1
 +
-+  cpvdd-supply:
-+    description:
-+      Regulator for the headphone amplifier
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    items:
++      - const: bus
++      - const: mod
 +
 +required:
++  - "#sound-dai-cells"
 +  - compatible
 +  - reg
-+  - cpvdd-supply
++  - interrupts
++  - clocks
++  - clock-names
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    codec_analog: codec-analog@1f015c0 {
-+      compatible = "allwinner,sun50i-a64-codec-analog";
-+      reg = <0x01f015c0 0x4>;
-+      cpvdd-supply = <&reg_eldo1>;
++    audio-codec@1c22e00 {
++      #sound-dai-cells = <0>;
++      compatible = "allwinner,sun8i-a33-codec";
++      reg = <0x01c22e00 0x400>;
++      interrupts = <0 29 4>;
++      clocks = <&ccu 47>, <&ccu 92>;
++      clock-names = "bus", "mod";
 +    };
 +
 +...
-diff --git a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt b/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
 deleted file mode 100644
-index 056a098495cc..000000000000
---- a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+index 7ecf6bd60d27..000000000000
+--- a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
 +++ /dev/null
-@@ -1,14 +0,0 @@
--* Allwinner A64 Codec Analog Controls
+@@ -1,63 +0,0 @@
+-Allwinner SUN8I audio codec
+-------------------------------------
+-
+-On Sun8i-A33 SoCs, the audio is separated in different parts:
+-	  - A DAI driver. It uses the "sun4i-i2s" driver which is
+-	  documented here:
+-	  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+-	  - An analog part of the codec which is handled as PRCM registers.
+-	  See Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
+-	  - An digital part of the codec which is documented in this current
+-	  binding documentation.
+-	  - And finally, an audio card which links all the above components.
+-	  The simple-audio card will be used.
+-	  See Documentation/devicetree/bindings/sound/simple-card.txt
+-
+-This bindings documentation exposes Sun8i codec (digital part).
 -
 -Required properties:
--- compatible: must be one of the following compatibles:
--		- "allwinner,sun50i-a64-codec-analog"
+-- compatible: must be "allwinner,sun8i-a33-codec"
 -- reg: must contain the registers location and length
--- cpvdd-supply: Regulator supply for the headphone amplifier
+-- interrupts: must contain the codec interrupt
+-- clocks: a list of phandle + clock-specifer pairs, one for each entry
+-  in clock-names.
+-- clock-names: should contain followings:
+-   - "bus": the parent APB clock for this controller
+-   - "mod": the parent module clock
 -
--Example:
--	codec_analog: codec-analog@1f015c0 {
--		compatible = "allwinner,sun50i-a64-codec-analog";
--		reg = <0x01f015c0 0x4>;
--		cpvdd-supply = <&reg_eldo1>;
+-Here is an example to add a sound card and the codec binding on sun8i SoCs that
+-are similar to A33 using simple-card:
+-
+-	sound {
+-		compatible = "simple-audio-card";
+-		simple-audio-card,name = "sun8i-a33-audio";
+-		simple-audio-card,format = "i2s";
+-		simple-audio-card,frame-master = <&link_codec>;
+-		simple-audio-card,bitclock-master = <&link_codec>;
+-		simple-audio-card,mclk-fs = <512>;
+-		simple-audio-card,aux-devs = <&codec_analog>;
+-		simple-audio-card,routing =
+-				"Left DAC", "Digital Left DAC",
+-				"Right DAC", "Digital Right DAC";
+-
+-		simple-audio-card,cpu {
+-			sound-dai = <&dai>;
+-		};
+-
+-		link_codec: simple-audio-card,codec {
+-			sound-dai = <&codec>;
+-		};
+-
+-	soc@1c00000 {
+-		[...]
+-
+-		audio-codec@1c22e00 {
+-			#sound-dai-cells = <0>;
+-			compatible = "allwinner,sun8i-a33-codec";
+-			reg = <0x01c22e00 0x400>;
+-			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
+-			clock-names = "bus", "mod";
+-		};
 -	};
+-
 -- 
 2.21.0
