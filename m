@@ -1,75 +1,35 @@
-From: vani.ganji@intel.com
-Subject: [PATCH] [PATCH v2] ALSA: hda: Retry codec read on
-	first time failure
-Date: Fri, 30 Aug 2019 10:53:18 +0530
-Message-ID: <20190830052318.25898-1-vani.ganji@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60C5AF80096
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 07:22:31 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: bus: set initial value to port_status
+Date: Fri, 30 Aug 2019 02:11:35 +0800
+Message-ID: <20190829181135.16049-1-yung-chuan.liao@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: vani.ganji@intel.com
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com, vkoul@kernel.org, gregkh@linuxfoundation.org, Blauciak@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Vani Ganji <vani.ganji@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Sometimes HDMI audio fails while fast switching
-between HDMI and Speaker due to codec Get Power state verb read failure.
+port_status[port_num] are assigned for each port_num in some if
+conditions. So some of the port_status may not be initialized.
 
-Verb is codec driver to access codec HW. Since issue scenario involves
-fast switching between HDMI and speaker, there might be chance to fail
-read from HW and same happened in the error scenario.
-
-Based on Display/Graphics architect suggestion, added a retry mechanism
-for failure on first attempt.
-
-Changes from v1:
--Corrected missing braces.
-
-Signed-off-by: Vani Ganji <vani.ganji@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/hda/hdac_device.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/soundwire/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index b26cc93e7e10..3874d54aa686 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -984,10 +984,17 @@ static unsigned int codec_read(struct hdac_device *hdac, hda_nid_t nid,
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index f6a1e4b4813d..33f41b3e642e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -835,7 +835,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
+ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
  {
- 	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
- 	unsigned int res;
--
--	if (snd_hdac_exec_verb(hdac, cmd, flags, &res))
--		return -1;
--
-+	unsigned int count;
-+
-+	/* Retry verb once more if it fails first time */
-+	/* recommended to retry since it is HW related */
-+	for (count = 0; count <= 1; count++) {
-+		if (snd_hdac_exec_verb(hdac, cmd, flags, &res)) {
-+			if (count == 1)
-+				return -1;
-+		} else
-+			break;
-+	}
- 	return res;
- }
- 
+ 	struct sdw_slave_intr_status slave_intr;
+-	u8 clear = 0, bit, port_status[15];
++	u8 clear = 0, bit, port_status[15] = {0};
+ 	int port_num, stat, ret, count = 0;
+ 	unsigned long port;
+ 	bool slave_notify = false;
 -- 
 2.17.1
