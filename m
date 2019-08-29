@@ -2,65 +2,67 @@ Return-Path: <SRS0=nNdU=W2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDB0C3A5A4
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 05:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94D3EC3A5A3
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 06:10:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D980521721
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 05:39:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B7632186A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 06:10:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y5Vx6ICS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D980521721
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lU73vDr2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B7632186A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5643829;
-	Fri, 30 Aug 2019 07:38:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5643829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 700EF857;
+	Fri, 30 Aug 2019 08:10:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 700EF857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567143585;
-	bh=l1vFu4Vp9cvBsuFhGGV//rirnUetKoOpnbW18fDOPJE=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Y5Vx6ICShJA+IrRJZlA/Fw/dXhxJGyJBhjCXCwDqQRt1BADM3MQjTTMkJapiUufSW
-	 e6jI5wb0PsfRCu3r8bsZ9PLeNtF5Vd1NqmGJN0Ssu4/AGO9K0Iwjdsr7SxdZMAq+UT
-	 zaDtLfVqH76EmoTMpo64P7CSEIV71Yo3EF3efcsg=
+	s=default; t=1567145455;
+	bh=5ofIIf8R1RVTI6psUgSGoEHhWRz7oGRF8iK1FPq4QD4=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lU73vDr2ksGOlNC+pqOteyGIy8BjGRaBAGWHrG2xS4kcHyE33RefHsLnhj7krehG/
+	 dpAamVM0w194wweRWQuBVXZk9I/LAwghldPc22sm2GEeb6EBi3rXmyBkdkfyK2y3F/
+	 iXGYH9KvcVMi0MUCSRKKZC3PYO+/0VmHKO92lDk0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40FB2F800D1;
-	Fri, 30 Aug 2019 07:38:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F23B2F800D1;
+	Fri, 30 Aug 2019 08:10:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DAE2F80369; Fri, 30 Aug 2019 07:38:53 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D0355F80369; Fri, 30 Aug 2019 08:10:03 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB2F8F800D1
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 07:38:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB2F8F800D1
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 0655AAE64;
- Fri, 30 Aug 2019 05:38:50 +0000 (UTC)
-Date: Fri, 30 Aug 2019 07:38:49 +0200
-Message-ID: <s5hwoevkyae.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: vani.ganji@intel.com
-In-Reply-To: <20190830052318.25898-1-vani.ganji@intel.com>
-References: <20190830052318.25898-1-vani.ganji@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] [PATCH v2] ALSA: hda: Retry codec read
-	on	first time failure
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9C7BF800D1;
+ Fri, 30 Aug 2019 08:09:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9C7BF800D1
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 29 Aug 2019 23:09:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,445,1559545200"; d="scan'208";a="172141707"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by orsmga007.jf.intel.com with ESMTP; 29 Aug 2019 23:09:54 -0700
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Fri, 30 Aug 2019 02:11:35 +0800
+Message-Id: <20190829181135.16049-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, Blauciak@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ vkoul@kernel.org, broonie@kernel.org, bard.liao@intel.com
+Subject: [alsa-devel] [PATCH] soundwire: bus: set initial value to
+	port_status
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,81 +75,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Message-ID: <20190829181135.twwNMq9Jw1yuqjrPRRQ3ISUgdA6_uiUkcizZyANXciU@z>
 
-On Fri, 30 Aug 2019 07:23:18 +0200,
-vani.ganji@intel.com wrote:
-> 
-> From: Vani Ganji <vani.ganji@intel.com>
-> 
-> Sometimes HDMI audio fails while fast switching
-> between HDMI and Speaker due to codec Get Power state verb read failure.
-> 
-> Verb is codec driver to access codec HW. Since issue scenario involves
-> fast switching between HDMI and speaker, there might be chance to fail
-> read from HW and same happened in the error scenario.
-> 
-> Based on Display/Graphics architect suggestion, added a retry mechanism
-> for failure on first attempt.
-> 
-> Changes from v1:
-> -Corrected missing braces.
-> 
-> Signed-off-by: Vani Ganji <vani.ganji@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Do you still need this even with the very latest upstream code?
-As mentioned, the recent change to use the sync-write should reduce
-such errors.
+port_status[port_num] are assigned for each port_num in some if
+conditions. So some of the port_status may not be initialized.
 
-If it's about the SOF/SST, you can try to set the hdac_bus.sync_write
-flag in the corresponding drivers, too.
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index f6a1e4b4813d..33f41b3e642e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -835,7 +835,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
+ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_intr_status slave_intr;
+-	u8 clear = 0, bit, port_status[15];
++	u8 clear = 0, bit, port_status[15] = {0};
+ 	int port_num, stat, ret, count = 0;
+ 	unsigned long port;
+ 	bool slave_notify = false;
+-- 
+2.17.1
 
-thanks,
-
-Takashi
-
-> ---
->  sound/hda/hdac_device.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-> index b26cc93e7e10..3874d54aa686 100644
-> --- a/sound/hda/hdac_device.c
-> +++ b/sound/hda/hdac_device.c
-> @@ -984,10 +984,17 @@ static unsigned int codec_read(struct hdac_device *hdac, hda_nid_t nid,
->  {
->  	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
->  	unsigned int res;
-> -
-> -	if (snd_hdac_exec_verb(hdac, cmd, flags, &res))
-> -		return -1;
-> -
-> +	unsigned int count;
-> +
-> +	/* Retry verb once more if it fails first time */
-> +	/* recommended to retry since it is HW related */
-> +	for (count = 0; count <= 1; count++) {
-> +		if (snd_hdac_exec_verb(hdac, cmd, flags, &res)) {
-> +			if (count == 1)
-> +				return -1;
-> +		} else
-> +			break;
-> +	}
->  	return res;
->  }
->  
-> -- 
-> 2.17.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
