@@ -1,34 +1,139 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: cs42xx8: Force suspend/resume during
- system suspend/resume
-Date: Thu, 29 Aug 2019 10:03:34 +0000
-Message-ID: <0b6116bb10c1d94246383b715b89abd9d458a661.camel@nxp.com>
-References: <1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 2/4] ASoC: wm8904: use common FLL code
+Date: Thu, 29 Aug 2019 12:57:27 +0000
+Message-ID: <20190829125340.GH10308@ediswmail.ad.cirrus.com>
+References: <cover.1566734630.git.mirq-linux@rere.qmqm.pl>
+ <1136f2dcc822821afda9f9533f40637647929bdf.1566734630.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com>
-Content-Language: en-US
-Content-ID: <41D1E37C5A1C8C4A8C580A13345026FA@eurprd04.prod.outlook.com>
+Content-Disposition: inline
+In-Reply-To: <1136f2dcc822821afda9f9533f40637647929bdf.1566734630.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE5LTA4LTI3IGF0IDE4OjEzIC0wNDAwLCBTaGVuZ2ppdSBXYW5nIHdyb3RlOg0K
-PiBVc2UgZm9yY2Vfc3VzcGVuZC9yZXN1bWUgdG8gbWFrZSBzdXJlIGNsb2NrcyBhcmUgZGlzYWJs
-ZWQvZW5hYmxlZA0KPiBhY2NvcmRpbmdseSBkdXJpbmcgc3lzdGVtIHN1c3BlbmQvcmVzdW1lLg0K
-PiANCj4gU2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4N
-Cj4gU2lnbmVkLW9mZi1ieTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0K
-DQpSZXZpZXdlZC1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAuY29tPg0KDQo+
-IC0tLQ0KPiAgc291bmQvc29jL2NvZGVjcy9jczQyeHg4LmMgfCAyICsrDQo+ICAxIGZpbGUgY2hh
-bmdlZCwgMiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVj
-cy9jczQyeHg4LmMgYi9zb3VuZC9zb2MvY29kZWNzL2NzNDJ4eDguYw0KPiBpbmRleCA1YjA0OWZj
-ZGJhMjAuLjk0YjFhZGIwODhmZCAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9jczQy
-eHg4LmMNCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9jczQyeHg4LmMNCj4gQEAgLTY4NCw2ICs2
-ODQsOCBAQCBzdGF0aWMgaW50IGNzNDJ4eDhfcnVudGltZV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UN
-Cj4gKmRldikNCj4gICNlbmRpZg0KPiAgDQo+ICBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBjczQy
-eHg4X3BtID0gew0KPiArCVNFVF9TWVNURU1fU0xFRVBfUE1fT1BTKHBtX3J1bnRpbWVfZm9yY2Vf
-c3VzcGVuZCwNCj4gKwkJCQlwbV9ydW50aW1lX2ZvcmNlX3Jlc3VtZSkNCj4gIAlTRVRfUlVOVElN
-RV9QTV9PUFMoY3M0Mnh4OF9ydW50aW1lX3N1c3BlbmQsDQo+IGNzNDJ4eDhfcnVudGltZV9yZXN1
-bWUsIE5VTEwpDQo+ICB9Ow0KPiAgRVhQT1JUX1NZTUJPTF9HUEwoY3M0Mnh4OF9wbSk7DQo=
+On Sun, Aug 25, 2019 at 02:17:35PM +0200, Michał Mirosław wrote:
+> Rework FLL handling to use common code introduced earlier.
+> 
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> ---
+
+Apologies for the slight delay in getting around to looking at
+this one, been quite busy and its a lot to go through.
+
+>  sound/soc/atmel/atmel_wm8904.c |  11 +-
+>  sound/soc/codecs/Kconfig       |   1 +
+>  sound/soc/codecs/wm8904.c      | 476 ++++++++++-----------------------
+>  sound/soc/codecs/wm8904.h      |   5 -
+>  4 files changed, 140 insertions(+), 353 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+> index 776b27d3686e..b77ea2495efe 100644
+> --- a/sound/soc/atmel/atmel_wm8904.c
+> +++ b/sound/soc/atmel/atmel_wm8904.c
+> @@ -30,20 +30,11 @@ static int atmel_asoc_wm8904_hw_params(struct snd_pcm_substream *substream,
+>  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>  	int ret;
+>  
+> -	ret = snd_soc_dai_set_pll(codec_dai, WM8904_FLL_MCLK, WM8904_FLL_MCLK,
+> -		32768, params_rate(params) * 256);
+> -	if (ret < 0) {
+> -		pr_err("%s - failed to set wm8904 codec PLL.", __func__);
+> -		return ret;
+> -	}
+> -
+
+As per my last comment it would be better to move the existing
+functionality of the driver over to the new library, then make
+actual functional changes in a separate patch. Clearly we have
+changed how the driver works here, since we no longer need to set
+the FLL.
+
+This both makes review easier and proves that the new library
+approach can support the existing functionality of the driver.
+
+> +static int wm8904_prepare_sysclk(struct wm8904_priv *priv)
+> +{
+> +	int err;
+> +
+> +	switch (priv->sysclk_src) {
+> +	case WM8904_CLK_MCLK:
+> +		err = clk_set_rate(priv->mclk, priv->mclk_rate);
+> +		if (!err)
+> +			err = clk_prepare_enable(priv->mclk);
+> +		break;
+> +
+> +	case WM8904_CLK_FLL:
+> +		err = wm_fll_enable(&priv->fll);
+> +		break;
+> +
+
+Given the FLL can be sourced from the MCLK pin why is the mclk
+clock never enabled in the FLL case?
+
+> @@ -356,11 +429,18 @@ static int wm8904_configure_clocking(struct snd_soc_component *component)
+>  		wm8904->sysclk_rate = rate;
+>  	}
+>  
+> -	snd_soc_component_update_bits(component, WM8904_CLOCK_RATES_0, WM8904_MCLK_DIV,
+> -			    clock0);
+> -
+> +	snd_soc_component_update_bits(component, WM8904_CLOCK_RATES_0,
+> +				      WM8904_MCLK_DIV, clock0);
+
+Appreciate this is probably a good formatting change but
+with a large hard to review patch its better to keep unrelated
+changes out of it to easy review.
+
+> @@ -1382,8 +1445,8 @@ static int wm8904_hw_params(struct snd_pcm_substream *substream,
+>  		}
+>  	}
+>  	wm8904->bclk = (wm8904->sysclk_rate * 10) / bclk_divs[best].div;
+> -	dev_dbg(component->dev, "Selected BCLK_DIV of %d for %dHz BCLK\n",
+> -		bclk_divs[best].div, wm8904->bclk);
+> +	dev_dbg(component->dev, "Selected BCLK_DIV of %d.%d for %dHz BCLK\n",
+> +		bclk_divs[best].div / 10, bclk_divs[best].div % 10,  wm8904->bclk);
+
+This is a nice tidy up as well but would also be nice to not have
+it in this patch.
+
+> @@ -1937,7 +1715,6 @@ static const struct snd_soc_dai_ops wm8904_dai_ops = {
+>  	.set_sysclk = wm8904_set_sysclk,
+>  	.set_fmt = wm8904_set_fmt,
+>  	.set_tdm_slot = wm8904_set_tdm_slot,
+> -	.set_pll = wm8904_set_fll,
+
+I am not keen on the way we are removing the ability to set the
+FLL source, there may be out of tree users using this and to my
+knowledge it is features that work at the moment so removing it
+seems like a step backwards.
+
+> +static const struct wm_fll_desc wm8904_fll_desc = {
+> +	.ctl_offset = WM8904_FLL_CONTROL_1,
+> +	.int_offset = WM8904_INTERRUPT_STATUS,
+> +	.int_mask = WM8904_FLL_LOCK_EINT_MASK,
+> +	.nco_reg0 = WM8904_FLL_NCO_TEST_0,
+> +	.nco_reg1 = WM8904_FLL_NCO_TEST_1,
+> +	.clk_ref_map = { FLL_REF_MCLK, FLL_REF_BCLK, FLL_REF_FSCLK, /* reserved */ 0 },
+
+Minor nit, but would probably look nice to split this across a
+couple of lines and would keep us under the 80 char line limit.
+
+.clk_ref_map = {
+....
+},
+
+> @@ -2165,6 +1951,19 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
+>  	/* Can leave the device powered off until we need it */
+> +	wm8904_disable_sysclk(wm8904);
+
+How come this is now enabled during probe?
+
+I trimmed down the CC list, for the next version I would suggest
+using a similar list, this one was a little over sized.
+
+Thanks,
+Charles
