@@ -1,55 +1,34 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH] drm: dw-hdmi-i2s: enable audio clock in audio_startup
-Date: Thu, 29 Aug 2019 12:29:57 +0800
-Message-ID: <20190829042957.150929-1-cychiang@chromium.org>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: cs42xx8: Force suspend/resume during
+ system suspend/resume
+Date: Thu, 29 Aug 2019 10:03:34 +0000
+Message-ID: <0b6116bb10c1d94246383b715b89abd9d458a661.camel@nxp.com>
+References: <1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1566944026-18113-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Language: en-US
+Content-ID: <41D1E37C5A1C8C4A8C580A13345026FA@eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, a.hajda@samsung.com, Laurent.pinchart@ideasonboard.com, airlied@linux.ie, daniel@ffwll.ch, kuninori.morimoto.gx@renesas.com, sam@ravnborg.org, cychiang@chromium.org, dianders@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, zhengxing@rock-chips.com, cain.cai@rock-chips.com, eddie.cai@rock-chips.com, jeffy.chen@rock-chips.com, enric.balletbo@collabora.com, dri-devel@lists.freedesktop.org
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "brian.austin@cirrus.com" <brian.austin@cirrus.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-In the designware databook, the sequence of enabling audio clock and
-setting format is not clearly specified.
-Currently, audio clock is enabled in the end of hw_param ops after
-setting format.
-
-On some monitors, there is a possibility that audio does not come out.
-Fix this by enabling audio clock in audio_startup ops
-before hw_param ops setting format.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-index 5cbb71a866d5..08b4adbb1ddc 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-@@ -69,6 +69,14 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
- 	hdmi_write(audio, conf0, HDMI_AUD_CONF0);
- 	hdmi_write(audio, conf1, HDMI_AUD_CONF1);
- 
-+	return 0;
-+}
-+
-+static int dw_hdmi_i2s_audio_startup(struct device *dev, void *data)
-+{
-+	struct dw_hdmi_i2s_audio_data *audio = data;
-+	struct dw_hdmi *hdmi = audio->hdmi;
-+
- 	dw_hdmi_audio_enable(hdmi);
- 
- 	return 0;
-@@ -105,6 +113,7 @@ static int dw_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
- }
- 
- static struct hdmi_codec_ops dw_hdmi_i2s_ops = {
-+	.audio_startup = dw_hdmi_i2s_audio_startup,
- 	.hw_params	= dw_hdmi_i2s_hw_params,
- 	.audio_shutdown	= dw_hdmi_i2s_audio_shutdown,
- 	.get_dai_id	= dw_hdmi_i2s_get_dai_id,
--- 
-2.23.0.187.g17f5b7556c-goog
+T24gVHVlLCAyMDE5LTA4LTI3IGF0IDE4OjEzIC0wNDAwLCBTaGVuZ2ppdSBXYW5nIHdyb3RlOg0K
+PiBVc2UgZm9yY2Vfc3VzcGVuZC9yZXN1bWUgdG8gbWFrZSBzdXJlIGNsb2NrcyBhcmUgZGlzYWJs
+ZWQvZW5hYmxlZA0KPiBhY2NvcmRpbmdseSBkdXJpbmcgc3lzdGVtIHN1c3BlbmQvcmVzdW1lLg0K
+PiANCj4gU2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxhaXNoZW5nLmRvbmdAbnhwLmNvbT4N
+Cj4gU2lnbmVkLW9mZi1ieTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0K
+DQpSZXZpZXdlZC1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAuY29tPg0KDQo+
+IC0tLQ0KPiAgc291bmQvc29jL2NvZGVjcy9jczQyeHg4LmMgfCAyICsrDQo+ICAxIGZpbGUgY2hh
+bmdlZCwgMiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVj
+cy9jczQyeHg4LmMgYi9zb3VuZC9zb2MvY29kZWNzL2NzNDJ4eDguYw0KPiBpbmRleCA1YjA0OWZj
+ZGJhMjAuLjk0YjFhZGIwODhmZCAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9jczQy
+eHg4LmMNCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9jczQyeHg4LmMNCj4gQEAgLTY4NCw2ICs2
+ODQsOCBAQCBzdGF0aWMgaW50IGNzNDJ4eDhfcnVudGltZV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UN
+Cj4gKmRldikNCj4gICNlbmRpZg0KPiAgDQo+ICBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBjczQy
+eHg4X3BtID0gew0KPiArCVNFVF9TWVNURU1fU0xFRVBfUE1fT1BTKHBtX3J1bnRpbWVfZm9yY2Vf
+c3VzcGVuZCwNCj4gKwkJCQlwbV9ydW50aW1lX2ZvcmNlX3Jlc3VtZSkNCj4gIAlTRVRfUlVOVElN
+RV9QTV9PUFMoY3M0Mnh4OF9ydW50aW1lX3N1c3BlbmQsDQo+IGNzNDJ4eDhfcnVudGltZV9yZXN1
+bWUsIE5VTEwpDQo+ICB9Ow0KPiAgRVhQT1JUX1NZTUJPTF9HUEwoY3M0Mnh4OF9wbSk7DQo=
