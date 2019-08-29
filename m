@@ -1,54 +1,125 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v6 0/4] ASoC: codecs: Add WSA881x Smart Speaker amplifier support
-Date: Thu, 29 Aug 2019 17:35:10 +0100
-Message-ID: <20190829163514.11221-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 2/4] soundwire: core: add device tree support for slave devices
+Date: Thu, 29 Aug 2019 17:35:12 +0100
+Message-ID: <20190829163514.11221-3-srinivas.kandagatla@linaro.org>
+References: <20190829163514.11221-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190829163514.11221-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
 Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds support to WSA8810/WSA8815 Class-D Smart Speaker
-Amplifier which is SoundWire interfaced.
-This also adds support to some missing bits in SoundWire bus layer like
-Device Tree support.
+This patch adds support to parsing device tree based
+SoundWire slave devices.
 
-This patchset along with DB845c machine driver and WCD934x codec driver
-has been tested on SDM845 SoC based DragonBoard DB845c with two
-WSA8810 speakers.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/bus.c   |  2 ++
+ drivers/soundwire/bus.h   |  1 +
+ drivers/soundwire/slave.c | 52 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 55 insertions(+)
 
-Most of the code in this driver is rework of Qualcomm downstream drivers
-used in Andriod. Credits to Banajit Goswami and Patrick Lai's Team.
-
-TODO:
-        Add thermal sensor support in WSA881x.
-
-Thanks,
-srini
-
-Changes since v5:
- - updated slave bindings with proper licencing and fixed up examples.
-
-Srinivas Kandagatla (4):
-  dt-bindings: soundwire: add slave bindings
-  soundwire: core: add device tree support for slave devices
-  dt-bindings: ASoC: Add WSA881x bindings
-  ASoC: codecs: add wsa881x amplifier support
-
- .../bindings/sound/qcom,wsa881x.yaml          |   62 +
- .../soundwire/soundwire-controller.yaml       |   82 ++
- drivers/soundwire/bus.c                       |    2 +
- drivers/soundwire/bus.h                       |    1 +
- drivers/soundwire/slave.c                     |   52 +
- sound/soc/codecs/Kconfig                      |   10 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/wsa881x.c                    | 1134 +++++++++++++++++
- 8 files changed, 1345 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
- create mode 100644 Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
- create mode 100644 sound/soc/codecs/wsa881x.c
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 728db3ebad6e..d83d89b3b15a 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -79,6 +79,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 	 */
+ 	if (IS_ENABLED(CONFIG_ACPI) && ACPI_HANDLE(bus->dev))
+ 		ret = sdw_acpi_find_slaves(bus);
++	else if (IS_ENABLED(CONFIG_OF) && bus->dev->of_node)
++		ret = sdw_of_find_slaves(bus);
+ 	else
+ 		ret = -ENOTSUPP; /* No ACPI/DT so error out */
+ 
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 9d6ea7e447ff..cb482da914da 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -15,6 +15,7 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ }
+ #endif
+ 
++int sdw_of_find_slaves(struct sdw_bus *bus);
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			  u64 addr, struct sdw_slave_id *id);
+ 
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index 4b522f6d1238..48a63ca130d2 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -2,6 +2,7 @@
+ // Copyright(c) 2015-17 Intel Corporation.
+ 
+ #include <linux/acpi.h>
++#include <linux/of.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
+@@ -35,6 +36,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ 
+ 	slave->dev.release = sdw_slave_release;
+ 	slave->dev.bus = &sdw_bus_type;
++	slave->dev.of_node = of_node_get(to_of_node(fwnode));
+ 	slave->bus = bus;
+ 	slave->status = SDW_SLAVE_UNATTACHED;
+ 	slave->dev_num = 0;
+@@ -113,3 +115,53 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ }
+ 
+ #endif
++
++/*
++ * sdw_of_find_slaves() - Find Slave devices in master device tree node
++ * @bus: SDW bus instance
++ *
++ * Scans Master DT node for SDW child Slave devices and registers it.
++ */
++int sdw_of_find_slaves(struct sdw_bus *bus)
++{
++	struct device *dev = bus->dev;
++	struct device_node *node;
++
++	for_each_child_of_node(bus->dev->of_node, node) {
++		int link_id, sdw_version, ret, len;
++		const char *compat = NULL;
++		struct sdw_slave_id id;
++		const __be32 *addr;
++
++		compat = of_get_property(node, "compatible", NULL);
++		if (!compat)
++			continue;
++
++		ret = sscanf(compat, "sdw%01x%04hx%04hx%02hhx", &sdw_version,
++			     &id.mfg_id, &id.part_id, &id.class_id);
++
++		if (ret != 4) {
++			dev_err(dev, "Invalid compatible string found %s\n",
++				compat);
++			continue;
++		}
++
++		addr = of_get_property(node, "reg", &len);
++		if (!addr || (len < 2 * sizeof(u32))) {
++			dev_err(dev, "Invalid Link and Instance ID\n");
++			continue;
++		}
++
++		link_id = be32_to_cpup(addr++);
++		id.unique_id = be32_to_cpup(addr);
++		id.sdw_version = sdw_version;
++
++		/* Check for link_id match */
++		if (link_id != bus->link_id)
++			continue;
++
++		sdw_slave_add(bus, &id, of_fwnode_handle(node));
++	}
++
++	return 0;
++}
 -- 
 2.21.0
