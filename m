@@ -1,41 +1,67 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 4/4] ASoC: codecs: add wsa881x amplifier
- support
-Date: Thu, 29 Aug 2019 11:36:52 -0500
-Message-ID: <33e04646-ac7e-3ba1-3e09-a4f27a1b250b@linux.intel.com>
-References: <20190829144442.6210-1-srinivas.kandagatla@linaro.org>
- <20190829144442.6210-5-srinivas.kandagatla@linaro.org>
+From: Curtis Malainey <cujomalainey@google.com>
+Subject: Re: [ANNOUNCE] 2019 Linux Audio miniconference
+Date: Thu, 29 Aug 2019 10:54:29 -0700
+Message-ID: <CAOReqxjCTZosbvv8Q-t5zGdreKnk8nWH2Yq-9soLbOk8FOcsgw@mail.gmail.com>
+References: <20190827202825.GP23391@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190829144442.6210-5-srinivas.kandagatla@linaro.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, spapothi@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7E28F80273
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 19:54:43 +0200 (CEST)
+Received: by mail-qt1-x82d.google.com with SMTP id a13so4691695qtj.1
+ for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 10:54:43 -0700 (PDT)
+In-Reply-To: <20190827202825.GP23391@sirena.co.uk>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Aug 29, 2019 at 7:24 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> Hi,
+>
+> As in previous years we're going to have an audio miniconference so we can
+> get together and talk through issues, especially design decisions, face to
+> face.  This year's event will be held on October 31st in Lyon, France,
+> the day after ELC-E.  This will be held at the Lyon Convention Center (the
+> ELC-E venue), generously sponsored by Intel.
+>
+> As with previous years let's pull together an agenda through a mailing
+> list discussion - if people could reply to this mail with any topics
+> they'd like to discuss we can take it from there.  Of course if we can
+> sort things out more quickly via the mailing list that's even better!
+>
+I may be miss reading this but I'm reading that as 'the mailing list'
+or ' the mailing list'. Is there an alternative such as a google doc?
 
-> +static int wsa881x_ramp_pa_gain(struct snd_soc_component *comp,
-> +				int min_gain, int max_gain, int udelay)
-> +{
-> +	int val;
-> +
-> +	for (val = min_gain; max_gain <= val; val--) {
-> +		snd_soc_component_update_bits(comp, WSA881X_SPKR_DRV_GAIN,
-> +					      0xF0, val << 4);
-> +		/*
-> +		 * 1ms delay is needed for every step change in gain as per
-> +		 * HW requirement.
-> +		 */
-> +		usleep_range(udelay, udelay + 10);
-
-nit-pick: it'd be nicer to have udelay explicitly set here instead of in 
-the caller below for consistency with the comments.
-
-> +			wsa881x_ramp_pa_gain(comp, min_gain, max_gain, 1000);
-
-But apart from that I didn't see anything blatantly wrong, so
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+I am interested in discussing the possibility of upstreaming some of
+the features we have built into our UCMs locally. With the growing
+number of UCMs being maintained by ALSA upstream we think it would be
+beneficial to get those features upstreamed if the community agrees.
+> If you're planning to attend please fill out the form here:
+>
+>     https://docs.google.com/forms/d/e/1FAIpQLSd6FV-tWYZ1fHlCmyzQhG98OtYH9W9GX-1dQ88mnLxVRGyPww/viewform?usp=sf_link
+>
+> This event will be covered by the same code of conduct as ELC-E.
+>
+> Thanks again to Intel for supporting this event.
+>
+> Thanks,
+> Mark
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
