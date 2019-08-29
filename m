@@ -1,89 +1,90 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [ANNOUNCE] 2019 Linux Audio miniconference
-Date: Thu, 29 Aug 2019 19:40:28 +0100
-Message-ID: <20190829184028.GI4118@sirena.co.uk>
-References: <20190827202825.GP23391@sirena.co.uk>
- <CAOReqxjCTZosbvv8Q-t5zGdreKnk8nWH2Yq-9soLbOk8FOcsgw@mail.gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v5 3/4] dt-bindings: ASoC: Add WSA881x bindings
+Date: Thu, 29 Aug 2019 14:30:19 -0500
+Message-ID: <CAL_JsqL9p9fF4KZ4DSfhC0+XTDe0OaR8CZ0mmDNPTxaoi38FFA@mail.gmail.com>
+References: <20190829144442.6210-1-srinivas.kandagatla@linaro.org>
+ <20190829144442.6210-4-srinivas.kandagatla@linaro.org> <CAL_JsqLOHA+r9UCTwyvj+_BzWSrsVDZw5vp-1XhYYvQxncx0sw@mail.gmail.com>
+ <ef01465e-25d6-059c-1f5d-8e8ebd6b887d@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7987020503983961197=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9EFCF80096
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 20:40:31 +0200 (CEST)
-In-Reply-To: <CAOReqxjCTZosbvv8Q-t5zGdreKnk8nWH2Yq-9soLbOk8FOcsgw@mail.gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Curtis Malainey <cujomalainey@google.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ef01465e-25d6-059c-1f5d-8e8ebd6b887d@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Vinod <vkoul@kernel.org>, spapothi@codeaurora.org, Banajit Goswami <bgoswami@codeaurora.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Aug 29, 2019 at 10:52 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Thanks for the review!
+>
+> On 29/08/2019 16:46, Rob Herring wrote:
+> > On Thu, Aug 29, 2019 at 9:45 AM Srinivas Kandagatla
+> > <srinivas.kandagatla@linaro.org> wrote:
+> >>
+> >> This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
+> >> Amplifier. This Amplifier also has a simple thermal sensor for
+> >> over temperature and speaker protection.
+> >>
+> >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> >> ---
+> >>   .../bindings/sound/qcom,wsa881x.yaml          | 41 +++++++++++++++++++
+> >>   1 file changed, 41 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+> >> new file mode 100644
+> >> index 000000000000..7a486c024732
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+> >> @@ -0,0 +1,41 @@
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >
+> > Dual license please.
+> >
+> Will do that!
+>
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/sound/qcom,wsa881x.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
+> >> +
+> >> +maintainers:
+> >> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> >> +
+> >> +description: |
+> >> +  WSA8810 is a class-D smart speaker amplifier and WSA8815
+> >> +  is a high-output power class-D smart speaker amplifier.
+> >> +  Their primary operating mode uses a SoundWire digital audio
+> >> +  interface. This binding is for SoundWire interface.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    const: "sdw10217201000"
+> >
+> > No need for quotes.
+>
+> Did not knew that! Still getting used to yaml stuff :-)
+>
+> >
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +
+> >
+> >> +  powerdown-gpios:
+> >> +    description: GPIO spec for Powerdown/Shutdown line to use
+> >> +    maxItems: 1
+> >> +
+> >> +  '#thermal-sensor-cells':
+> >> +    const: 0
+> >
+> > Either of these required?
+> >
+>
+> "make dt_binding_check" was complaining when I added this! Let me retry it!
 
---===============7987020503983961197==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="HkMjoL2LAeBLhbFV"
-Content-Disposition: inline
-
-
---HkMjoL2LAeBLhbFV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 29, 2019 at 10:54:29AM -0700, Curtis Malainey wrote:
-
-> > As with previous years let's pull together an agenda through a mailing
-> > list discussion - if people could reply to this mail with any topics
-> > they'd like to discuss we can take it from there.  Of course if we can
-> > sort things out more quickly via the mailing list that's even better!
-
-> I may be miss reading this but I'm reading that as 'the mailing list'
-> or ' the mailing list'. Is there an alternative such as a google doc?
-
-It's the same wording I've cut'n'pasted for several years now!  The
-alternatives are that we either put things on the agenda via the mailing
-list or work out what to do before the meeting in which case it doesn't
-need to go on the agenda.
-
-> I am interested in discussing the possibility of upstreaming some of
-> the features we have built into our UCMs locally. With the growing
-> number of UCMs being maintained by ALSA upstream we think it would be
-> beneficial to get those features upstreamed if the community agrees.
-
-This definitely sounds like a good topic, especially for DSP parameters.
-I know there's a few other things out there but as you say nothing
-upstream yet.
-
---HkMjoL2LAeBLhbFV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1oHBwACgkQJNaLcl1U
-h9D9TAf/f4+9pmOsZLggsUZti1X07DYzu7Av9K/NzxZn8DXeHD/K2xffhsuu1+2R
-2A9R/Hg35jmvriNaw0XxEeKn6b4h67SjRbbgah/VL4UgAMwMjFe8QjjDely48GXa
-88ATItKYW8BDfwGsgRGZw5oncl76OPIVE6CK/r94rRnCU5Rm9ObmhTN3Zn1Bylcl
-q4KDoAx9YdjawnFhN+86ANHOKSxb0maThsHWnRTw1oOFlI0CQhMpmxKwrwiA9Y/t
-w9PqkOMArqtEl/NlqT4dN0gVM+D7V7Z8zhedvlN9XADf024uw/q++eDvi02UIXRj
-qC7zoH7hILsLjziD+TTPLkjK2fbl6g==
-=mAxc
------END PGP SIGNATURE-----
-
---HkMjoL2LAeBLhbFV--
-
---===============7987020503983961197==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7987020503983961197==--
+Because the example in soundwire-controller.yaml will no longer be valid... :)
