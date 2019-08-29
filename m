@@ -1,12 +1,12 @@
 From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 1/4] dt-bindings: soundwire: add slave bindings
-Date: Thu, 29 Aug 2019 10:42:37 -0500
-Message-ID: <CAL_JsqLwbz5eiBEw8PmXsJrxzXffNc7rRON-wQ0KviVW8JVv5A@mail.gmail.com>
-References: <20190829144442.6210-1-srinivas.kandagatla@linaro.org> <20190829144442.6210-2-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v5 3/4] dt-bindings: ASoC: Add WSA881x bindings
+Date: Thu, 29 Aug 2019 10:46:30 -0500
+Message-ID: <CAL_JsqLOHA+r9UCTwyvj+_BzWSrsVDZw5vp-1XhYYvQxncx0sw@mail.gmail.com>
+References: <20190829144442.6210-1-srinivas.kandagatla@linaro.org> <20190829144442.6210-4-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190829144442.6210-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190829144442.6210-4-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Mark Brown <broonie@kernel.org>, Vinod <vkoul@kernel.org>, spapothi@codeaurora.org, Banajit Goswami <bgoswami@codeaurora.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org
@@ -15,100 +15,75 @@ List-Id: alsa-devel@alsa-project.org
 On Thu, Aug 29, 2019 at 9:45 AM Srinivas Kandagatla
 <srinivas.kandagatla@linaro.org> wrote:
 >
-> This patch adds bindings for Soundwire Slave devices that includes how
-> SoundWire enumeration address and Link ID are used to represented in
-> SoundWire slave device tree nodes.
+> This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
+> Amplifier. This Amplifier also has a simple thermal sensor for
+> over temperature and speaker protection.
 >
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  .../soundwire/soundwire-controller.yaml       | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+>  .../bindings/sound/qcom,wsa881x.yaml          | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
 >
-> diff --git a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
 > new file mode 100644
-> index 000000000000..449b6130ce63
+> index 000000000000..7a486c024732
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
-> @@ -0,0 +1,72 @@
+> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+> @@ -0,0 +1,41 @@
 > +# SPDX-License-Identifier: GPL-2.0
 
-(GPL-2.0-only OR BSD-2-Clause) for new bindings.
+Dual license please.
 
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/soundwire/soundwire-controller.yaml#
+> +$id: http://devicetree.org/schemas/sound/qcom,wsa881x.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: SoundWire Controller Generic Binding
+> +title: Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
 > +
 > +maintainers:
 > +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +  - Vinod Koul <vkoul@kernel.org>
 > +
 > +description: |
-> +  SoundWire busses can be described with a node for the SoundWire controller
-> +  device and a set of child nodes for each SoundWire slave on the bus.
+> +  WSA8810 is a class-D smart speaker amplifier and WSA8815
+> +  is a high-output power class-D smart speaker amplifier.
+> +  Their primary operating mode uses a SoundWire digital audio
+> +  interface. This binding is for SoundWire interface.
 > +
 > +properties:
-> +  $nodename:
-> +    pattern: "^soundwire(@.*)?$"
+> +  compatible:
+> +    const: "sdw10217201000"
+
+No need for quotes.
+
 > +
-> +  "#address-cells":
-> +    const: 2
+> +  reg:
+> +    maxItems: 1
 > +
-> +  "#size-cells":
+
+> +  powerdown-gpios:
+> +    description: GPIO spec for Powerdown/Shutdown line to use
+> +    maxItems: 1
+> +
+> +  '#thermal-sensor-cells':
 > +    const: 0
-> +
-> +patternProperties:
-> +  "^.*@[0-9a-f],[0-9a-f]$":
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        pattern: "^sdw[0-9a-f]{1}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{2}$"
-> +        description: Is the textual representation of SoundWire Enumeration
-> +          address. compatible string should contain SoundWire Version ID,
-> +          Manufacturer ID, Part ID and Class ID in order and shall be in
-> +          lower-case hexadecimal with leading zeroes.
-> +          Valid sizes of these fields are
-> +          Version ID is 1 nibble, number '0x1' represents SoundWire 1.0
-> +          and '0x2' represents SoundWire 1.1 and so on.
-> +          MFD is 4 nibbles
-> +          PID is 4 nibbles
-> +          CID is 2 nibbles
-> +          More Information on detail of encoding of these fields can be
-> +          found in MIPI Alliance DisCo & SoundWire 1.0 Specifications.
-> +
-> +      reg:
-> +        maxItems: 1
-> +        description:
-> +          Link ID followed by Instance ID of SoundWire Device Address.
-> +
-> +    additionalProperties: false
 
-I'm pretty sure you'll want nodes with other properties. If not, then
-why are they in DT? So drop this.
+Either of these required?
 
-Both the controller and child nodes need to list required properties.
+Here you can put 'additionalProperties: false'
 
 > +
 > +examples:
 > +  - |
-> +    soundwire@c2d0000 {
-> +        #address-cells = <2>;
-> +        #size-cells = <0>;
-> +        reg = <0x0c2d0000 0x2000>;
-> +
-> +        speaker@0,1 {
-> +            compatible = "sdw10217201000";
-> +            reg = <0 1>;
-> +        };
-> +
-> +        speaker@0,2 {
-> +            compatible = "sdw10217201000";
-> +            reg = <0 2>;
-> +        };
+> +    speaker@0,1 {
+
+This should be under a soundwire bus node.
+
+> +        compatible = "sdw10217201000";
+> +        reg = <0 1>;
+> +        powerdown-gpios = <&wcdpinctrl 2 0>;
+> +        #thermal-sensor-cells = <0>;
 > +    };
 > +
 > +...
