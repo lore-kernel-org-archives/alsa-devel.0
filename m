@@ -1,125 +1,41 @@
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: [PATCH 1/3] ASoC: es8316: judge PCM rate at later timing
-Date: Fri, 30 Aug 2019 02:32:03 +0900
-Message-ID: <20190829173205.11805-1-katsuhiro@katsuster.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v5 4/4] ASoC: codecs: add wsa881x amplifier
+ support
+Date: Thu, 29 Aug 2019 11:36:52 -0500
+Message-ID: <33e04646-ac7e-3ba1-3e09-a4f27a1b250b@linux.intel.com>
+References: <20190829144442.6210-1-srinivas.kandagatla@linaro.org>
+ <20190829144442.6210-5-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190829144442.6210-5-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <katsuhiro@katsuster.net>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, spapothi@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch change the judge timing about playing/capturing PCM rate.
 
-Original code set constraints list of PCM rate limits at set_sysclk.
-This strategy works well if system is using fixed rate clock.
+> +static int wsa881x_ramp_pa_gain(struct snd_soc_component *comp,
+> +				int min_gain, int max_gain, int udelay)
+> +{
+> +	int val;
+> +
+> +	for (val = min_gain; max_gain <= val; val--) {
+> +		snd_soc_component_update_bits(comp, WSA881X_SPKR_DRV_GAIN,
+> +					      0xF0, val << 4);
+> +		/*
+> +		 * 1ms delay is needed for every step change in gain as per
+> +		 * HW requirement.
+> +		 */
+> +		usleep_range(udelay, udelay + 10);
 
-But some boards and SoC (such as RockPro64 and RockChip I2S) has
-connected SoC MCLK out to ES8316 MCLK in. In this case, SoC side I2S
-will choose suitable frequency of MCLK such as fs * mclk-fs when
-user starts playing or capturing.
+nit-pick: it'd be nicer to have udelay explicitly set here instead of in 
+the caller below for consistency with the comments.
 
-Bad scenario as follows (mclk-fs = 256):
-  - Initialize sysclk by correct value (Ex. 12.288MHz)
-    - ES8316 set constraints of PCM rate by sysclk
-      48kHz (1/256), 32kHz (1/384), 30.720kHz (1/400),
-      24kHz (1/512), 16kHz (1/768), 12kHz (1/1024)
-  - Play 48kHz sound, it's acceptable
-  - Sysclk is not changed
+> +			wsa881x_ramp_pa_gain(comp, min_gain, max_gain, 1000);
 
-  - Play 32kHz sound, it's acceptable
-  - Set sysclk by 8.192MHz (= fs * mclk-fs = 32k * 256)
-    - ES8316 set constraints of PCM rate by sysclk
-      32kHz (1/256), 21.33kHz (1/384), 20.48kHz (1/400),
-      16kHz (1/512), 10.66kHz (1/768), 8kHz (1/1024)
+But apart from that I didn't see anything blatantly wrong, so
 
-  - Play 48kHz again, but it's NOT acceptable because constraints
-    list does not allow 48kHz
-
-Root cause of this strange behavior is changing constraints list at
-set_sysclk timing. It seems that is too early to determine. So this
-patch does not use constraints list and check PCM rate limit more
-later timing at hw_params.
-
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
----
- sound/soc/codecs/es8316.c | 37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
-
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index ed2959dbe1fb..229808fa627c 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -363,27 +363,12 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- {
- 	struct snd_soc_component *component = codec_dai->component;
- 	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
--	int i;
--	int count = 0;
- 
- 	es8316->sysclk = freq;
- 
- 	if (freq == 0)
- 		return 0;
- 
--	/* Limit supported sample rates to ones that can be autodetected
--	 * by the codec running in slave mode.
--	 */
--	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
--		const unsigned int ratio = supported_mclk_lrck_ratios[i];
--
--		if (freq % ratio == 0)
--			es8316->allowed_rates[count++] = freq / ratio;
--	}
--
--	es8316->sysclk_constraints.list = es8316->allowed_rates;
--	es8316->sysclk_constraints.count = count;
--
- 	return 0;
- }
- 
-@@ -449,13 +434,6 @@ static int es8316_pcm_startup(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	/* The set of sample rates that can be supported depends on the
--	 * MCLK supplied to the CODEC.
--	 */
--	snd_pcm_hw_constraint_list(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_RATE,
--				   &es8316->sysclk_constraints);
--
- 	return 0;
- }
- 
-@@ -466,12 +444,27 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
- 	u8 wordlen = 0;
-+	int i;
- 
- 	if (!es8316->sysclk) {
- 		dev_err(component->dev, "No MCLK configured\n");
- 		return -EINVAL;
- 	}
- 
-+	/* Limit supported sample rates to ones that can be autodetected
-+	 * by the codec running in slave mode.
-+	 */
-+	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
-+		const unsigned int ratio = supported_mclk_lrck_ratios[i];
-+
-+		if (es8316->sysclk % ratio != 0)
-+			continue;
-+		if (es8316->sysclk / ratio == params_rate(params))
-+			break;
-+	}
-+	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
-+		return -EINVAL;
-+
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		wordlen = ES8316_SERDATA2_LEN_16;
--- 
-2.23.0.rc1
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
