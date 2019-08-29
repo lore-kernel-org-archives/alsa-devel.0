@@ -1,94 +1,50 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v6 3/4] dt-bindings: ASoC: Add WSA881x bindings
-Date: Thu, 29 Aug 2019 17:35:13 +0100
-Message-ID: <20190829163514.11221-4-srinivas.kandagatla@linaro.org>
-References: <20190829163514.11221-1-srinivas.kandagatla@linaro.org>
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Subject: [PATCH 3/3] ASoC: es8316: add DT-bindings
+Date: Fri, 30 Aug 2019 02:32:05 +0900
+Message-ID: <20190829173205.11805-3-katsuhiro@katsuster.net>
+References: <20190829173205.11805-1-katsuhiro@katsuster.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190829163514.11221-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20190829173205.11805-1-katsuhiro@katsuster.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
-Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <katsuhiro@katsuster.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
-Amplifier. This Amplifier also has a simple thermal sensor for
-over temperature and speaker protection.
+This patch adds missing DT-bindings document for Everest ES8316.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 ---
- .../bindings/sound/qcom,wsa881x.yaml          | 62 +++++++++++++++++++
- 1 file changed, 62 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+ .../bindings/sound/everest,es8316.txt         | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/everest,es8316.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+diff --git a/Documentation/devicetree/bindings/sound/everest,es8316.txt b/Documentation/devicetree/bindings/sound/everest,es8316.txt
 new file mode 100644
-index 000000000000..faa90966a33a
+index 000000000000..aefcff9c48a2
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,wsa881x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/Documentation/devicetree/bindings/sound/everest,es8316.txt
+@@ -0,0 +1,20 @@
++Everest ES8316 audio CODEC
 +
-+title: Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
++This device supports both I2C and SPI.
 +
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++Required properties:
 +
-+description: |
-+  WSA8810 is a class-D smart speaker amplifier and WSA8815
-+  is a high-output power class-D smart speaker amplifier.
-+  Their primary operating mode uses a SoundWire digital audio
-+  interface. This binding is for SoundWire interface.
++  - compatible  : should be "everest,es8316"
++  - reg : the I2C address of the device for I2C
++  - clocks : a list of phandle, should contain entries for clock-names
++  - clock-names : should include as follows:
++         "mclk" : master clock (MCLK) of the device
 +
-+properties:
-+  compatible:
-+    const: sdw10217201000
++Example:
 +
-+  reg:
-+    maxItems: 1
-+
-+  powerdown-gpios:
-+    description: GPIO spec for Powerdown/Shutdown line to use
-+    maxItems: 1
-+
-+  '#thermal-sensor-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - powerdown-gpios
-+  - "#thermal-sensor-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    soundwire@c2d0000 {
-+        #address-cells = <2>;
-+        #size-cells = <0>;
-+        reg = <0x0c2d0000 0x2000>;
-+
-+        speaker@0,1 {
-+            compatible = "sdw10217201000";
-+            reg = <0 1>;
-+            powerdown-gpios = <&wcdpinctrl 2 0>;
-+            #thermal-sensor-cells = <0>;
-+        };
-+
-+        speaker@0,2 {
-+            compatible = "sdw10217201000";
-+            reg = <0 2>;
-+            powerdown-gpios = <&wcdpinctrl 2 0>;
-+            #thermal-sensor-cells = <0>;
-+        };
-+    };
-+
-+...
++es8316: codec@11 {
++	compatible = "everest,es8316";
++	reg = <0x11>;
++	clocks = <&clks 10>;
++	clock-names = "mclk";
++};
 -- 
-2.21.0
+2.23.0.rc1
