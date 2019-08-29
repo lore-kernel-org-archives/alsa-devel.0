@@ -1,73 +1,89 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: SOF/Intel: fix selection of
-	SND_INTEL_NHTL
-Date: Thu, 29 Aug 2019 16:42:13 -0500
-Message-ID: <20190829214213.11653-1-pierre-louis.bossart@linux.intel.com>
+From: Doug Anderson <dianders@chromium.org>
+Subject: Re: [PATCH] drm: dw-hdmi-i2s: enable audio clock in audio_startup
+Date: Thu, 29 Aug 2019 15:16:36 -0700
+Message-ID: <CAD=FV=Xb_SkUTkVRpOX7B+B0AdT3cOB+JamNyXzq_UQK3mvz1A@mail.gmail.com>
+References: <20190829042957.150929-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F349AF800E7
- for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2019 23:42:28 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190829042957.150929-1-cychiang@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, kuninori.morimoto.gx@renesas.com, Sam Ravnborg <sam@ravnborg.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, =?UTF-8?B?6YOR5YW0?= <zhengxing@rock-chips.com>, =?UTF-8?B?6JSh6Im65Lyf?= <cain.cai@rock-chips.com>, Eddie Cai <eddie.cai@rock-chips.com>, =?UTF-8?B?6ZmI5riQ6aOe?= <jeffy.chen@rock-chips.com>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, dri-devel <dri-devel@lists.fre>
 List-Id: alsa-devel@alsa-project.org
 
-We should only select SND_INTEL_NHLT when ACPI is defined. This was
-done for the legacy HDAudio driver but not for DSP-enabled cases,
-leading to compilation errors with randconfig.
+Hi,
 
-Fix by aligning on the same solution.
+On Wed, Aug 28, 2019 at 9:30 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+>
+> In the designware databook, the sequence of enabling audio clock and
+> setting format is not clearly specified.
+> Currently, audio clock is enabled in the end of hw_param ops after
+> setting format.
+>
+> On some monitors, there is a possibility that audio does not come out.
+> Fix this by enabling audio clock in audio_startup ops
+> before hw_param ops setting format.
+>
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> ---
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+> index 5cbb71a866d5..08b4adbb1ddc 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+> @@ -69,6 +69,14 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
+>         hdmi_write(audio, conf0, HDMI_AUD_CONF0);
+>         hdmi_write(audio, conf1, HDMI_AUD_CONF1);
+>
+> +       return 0;
+> +}
+> +
+> +static int dw_hdmi_i2s_audio_startup(struct device *dev, void *data)
+> +{
+> +       struct dw_hdmi_i2s_audio_data *audio = data;
+> +       struct dw_hdmi *hdmi = audio->hdmi;
+> +
+>         dw_hdmi_audio_enable(hdmi);
+>
+>         return 0;
+> @@ -105,6 +113,7 @@ static int dw_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
+>  }
+>
+>  static struct hdmi_codec_ops dw_hdmi_i2s_ops = {
+> +       .audio_startup = dw_hdmi_i2s_audio_startup,
+>         .hw_params      = dw_hdmi_i2s_hw_params,
+>         .audio_shutdown = dw_hdmi_i2s_audio_shutdown,
+>         .get_dai_id     = dw_hdmi_i2s_get_dai_id,
+> --
 
-For the Skylake driver this is overkill since there is a top-level
-dependency on ACPI, but it doesn't hurt and it's better to have
-consistency.
+I am no expert on audio stuff, but this seems sane to me.  If you
+happened to spin it for another reason, it might seem slightly nicer
+to put the setting of ".audio_startup" adjacent to the setting of
+".audio_shutdown" in the struct.
 
-Fixes: 68b953aeb50d9 ('ASoC: SOF: Intel: hda: fixup HDaudio topology name with DMIC number')
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/Kconfig     | 2 +-
- sound/soc/sof/intel/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I have tested your patch on Chrome OS 4.19 and it definitely fixes the
+problems I saw.  Chrome OS 4.19 is a little different than upstream
+and I'm not setup to test HDMI audio directly on upstream, but I did
+at least confirm that my problem _wasn't_ magically fixed by any of
+these patches that I found upstream (I picked them into my tree and
+still saw the problem):
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index a3ec17fd63cd..01c99750212a 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -215,7 +215,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
- 	select SND_SOC_ACPI_INTEL_MATCH
--	select SND_INTEL_NHLT
-+	select SND_INTEL_NHLT if ACPI
- 	help
- 	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
- 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 889b6202d054..479ba249e219 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -286,7 +286,7 @@ config SND_SOC_SOF_HDA
- 	tristate
- 	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
- 	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
--	select SND_INTEL_NHLT
-+	select SND_INTEL_NHLT if ACPI
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
--- 
-2.20.1
+fc1ca6e01d0a drm/bridge: dw-hdmi-i2s: add .get_eld support
+43e88f670a5e drm/bridge: dw-hdmi-i2s: enable only the required i2s lanes
+46cecde310bb drm/bridge: dw-hdmi-i2s: reset audio fifo before applying
+new params
+0c6098859176 drm/bridge: dw-hdmi-i2s: set the channel allocation
+17a1e555b608 drm/bridge: dw-hdmi-i2s: enable lpcm multi channels
+da5f5bc92f49 drm/bridge: dw-hdmi: set channel count in the infoframes
+2a2a3d2ff799 drm/bridge: dw-hdmi: move audio channel setup out of ahb
+8067f62bccaf drm/bridge: dw-hdmi-i2s: support more i2s format
+
+Thus:
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Douglas Anderson <dianders@chromium.org>
+
+-Doug
