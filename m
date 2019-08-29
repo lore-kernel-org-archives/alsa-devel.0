@@ -1,110 +1,91 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 3/4] dt-bindings: ASoC: Add WSA881x bindings
-Date: Thu, 29 Aug 2019 16:52:12 +0100
-Message-ID: <ef01465e-25d6-059c-1f5d-8e8ebd6b887d@linaro.org>
-References: <20190829144442.6210-1-srinivas.kandagatla@linaro.org>
- <20190829144442.6210-4-srinivas.kandagatla@linaro.org>
- <CAL_JsqLOHA+r9UCTwyvj+_BzWSrsVDZw5vp-1XhYYvQxncx0sw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] mmotm 2019-08-27-20-39 uploaded
+ (sound/hda/intel-nhlt.c)
+Date: Thu, 29 Aug 2019 11:22:29 -0500
+Message-ID: <c7c8fcde-40c7-8025-9fa7-e7e0daa8770c@linux.intel.com>
+References: <20190828034012.sBvm81sYK%akpm@linux-foundation.org>
+ <274054ef-8611-2661-9e67-4aabae5a7728@infradead.org>
+ <5ac8a7a7-a9b4-89a5-e0a6-7c97ec1fabc6@linux.intel.com>
+ <98ada795-4700-7fcc-6d14-fcc1ab25d509@infradead.org>
+ <f0a62b08-cba9-d944-5792-8eac0ea39df1@linux.intel.com>
+ <19edfb9a-f7b3-7a89-db5a-33289559aeef@linux.intel.com>
+ <s5hzhjs102i.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqLOHA+r9UCTwyvj+_BzWSrsVDZw5vp-1XhYYvQxncx0sw@mail.gmail.com>
+In-Reply-To: <s5hzhjs102i.wl-tiwai@suse.de>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, Vinod <vkoul@kernel.org>, spapothi@codeaurora.org, Banajit Goswami <bgoswami@codeaurora.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org, broonie@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz, mm-commits@vger.kernel.org, sfr@canb.auug.org.au, moderated for non-subscribers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review!
 
-On 29/08/2019 16:46, Rob Herring wrote:
-> On Thu, Aug 29, 2019 at 9:45 AM Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org> wrote:
+
+On 8/29/19 10:08 AM, Takashi Iwai wrote:
+> On Thu, 29 Aug 2019 00:45:05 +0200,
+> Pierre-Louis Bossart wrote:
 >>
->> This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
->> Amplifier. This Amplifier also has a simple thermal sensor for
->> over temperature and speaker protection.
 >>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../bindings/sound/qcom,wsa881x.yaml          | 41 +++++++++++++++++++
->>   1 file changed, 41 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+>>>>> I just checked with Mark Brown's for-next tree
+>>>>> 8aceffa09b4b9867153bfe0ff6f40517240cee12
+>>>>> and things are fine in i386 mode, see below.
+>>>>>
+>>>>> next-20190828 also works fine for me in i386 mode.
+>>>>>
+>>>>> if you can point me to a tree and configuration that don't work
+>>>>> I'll look into this, I'd need more info to progress.
+>>>>
+>>>> Please try the attached randconfig file.
+>>>>
+>>>> Thanks for looking.
+>>>
+>>> Ack, I see some errors as well with this config. Likely a missing
+>>> dependency somewhere, working on this now.
 >>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
->> new file mode 100644
->> index 000000000000..7a486c024732
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
->> @@ -0,0 +1,41 @@
->> +# SPDX-License-Identifier: GPL-2.0
+>> My bad, I added a fallback with static inline functions in the .h file
+>> when ACPI is not defined, but the .c file was still compiled.
+>>
+>> The diff below makes next-20190828 compile with Randy's config.
 > 
-> Dual license please.
-> 
-Will do that!
+> IMO, we need to fix the site that enables this config.  i.e.
+> the "select SND_INTEL_NHLT" must be always conditional, e.g.
+> 	select SND_INTEL_NHLT if ACPI
 
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/qcom,wsa881x.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Bindings for Qualcomm WSA8810/WSA8815 Class-D Smart Speaker Amplifier
->> +
->> +maintainers:
->> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> +
->> +description: |
->> +  WSA8810 is a class-D smart speaker amplifier and WSA8815
->> +  is a high-output power class-D smart speaker amplifier.
->> +  Their primary operating mode uses a SoundWire digital audio
->> +  interface. This binding is for SoundWire interface.
->> +
->> +properties:
->> +  compatible:
->> +    const: "sdw10217201000"
-> 
-> No need for quotes.
+that would be nicer indeed, currently we don't have a consistent solution:
+sound/pci/hda/Kconfig:  select SND_INTEL_NHLT if ACPI
+sound/soc/intel/Kconfig:        select SND_INTEL_NHLT
+sound/soc/sof/intel/Kconfig:    select SND_INTEL_NHLT
 
-Did not knew that! Still getting used to yaml stuff :-)
+I can't recall why things are different, will send a patch to align.
+
 
 > 
->> +
->> +  reg:
->> +    maxItems: 1
->> +
+>> It looks like the alsa-devel server is down btw?
 > 
->> +  powerdown-gpios:
->> +    description: GPIO spec for Powerdown/Shutdown line to use
->> +    maxItems: 1
->> +
->> +  '#thermal-sensor-cells':
->> +    const: 0
+> Now it seems starting again.
 > 
-> Either of these required?
 > 
-
-"make dt_binding_check" was complaining when I added this! Let me retry it!
-
-> Here you can put 'additionalProperties: false'
+> thanks,
 > 
->> +
->> +examples:
->> +  - |
->> +    speaker@0,1 {
+> Takashi
 > 
-> This should be under a soundwire bus node.
-
-okay..
-
-> 
->> +        compatible = "sdw10217201000";
->> +        reg = <0 1>;
->> +        powerdown-gpios = <&wcdpinctrl 2 0>;
->> +        #thermal-sensor-cells = <0>;
->> +    };
->> +
->> +...
->> --
->> 2.21.0
+>> diff --git a/sound/hda/Makefile b/sound/hda/Makefile
+>> index 8560f6ef1b19..b3af071ce06b 100644
+>> --- a/sound/hda/Makefile
+>> +++ b/sound/hda/Makefile
+>> @@ -14,5 +14,7 @@ obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
+>>   #extended hda
+>>   obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
+>>
+>> +ifdef CONFIG_ACPI
+>>   snd-intel-nhlt-objs := intel-nhlt.o
+>>   obj-$(CONFIG_SND_INTEL_NHLT) += snd-intel-nhlt.o
+>> +endif
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >>
