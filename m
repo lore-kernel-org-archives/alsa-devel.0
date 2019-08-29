@@ -1,91 +1,54 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] mmotm 2019-08-27-20-39 uploaded
- (sound/hda/intel-nhlt.c)
-Date: Thu, 29 Aug 2019 11:22:29 -0500
-Message-ID: <c7c8fcde-40c7-8025-9fa7-e7e0daa8770c@linux.intel.com>
-References: <20190828034012.sBvm81sYK%akpm@linux-foundation.org>
- <274054ef-8611-2661-9e67-4aabae5a7728@infradead.org>
- <5ac8a7a7-a9b4-89a5-e0a6-7c97ec1fabc6@linux.intel.com>
- <98ada795-4700-7fcc-6d14-fcc1ab25d509@infradead.org>
- <f0a62b08-cba9-d944-5792-8eac0ea39df1@linux.intel.com>
- <19edfb9a-f7b3-7a89-db5a-33289559aeef@linux.intel.com>
- <s5hzhjs102i.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 0/4] ASoC: codecs: Add WSA881x Smart Speaker amplifier support
+Date: Thu, 29 Aug 2019 17:35:10 +0100
+Message-ID: <20190829163514.11221-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hzhjs102i.wl-tiwai@suse.de>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org, broonie@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz, mm-commits@vger.kernel.org, sfr@canb.auug.org.au, moderated for non-subscribers <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, robh+dt@kernel.org, vkoul@kernel.org
+Cc: spapothi@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patchset adds support to WSA8810/WSA8815 Class-D Smart Speaker
+Amplifier which is SoundWire interfaced.
+This also adds support to some missing bits in SoundWire bus layer like
+Device Tree support.
 
+This patchset along with DB845c machine driver and WCD934x codec driver
+has been tested on SDM845 SoC based DragonBoard DB845c with two
+WSA8810 speakers.
 
-On 8/29/19 10:08 AM, Takashi Iwai wrote:
-> On Thu, 29 Aug 2019 00:45:05 +0200,
-> Pierre-Louis Bossart wrote:
->>
->>
->>>>> I just checked with Mark Brown's for-next tree
->>>>> 8aceffa09b4b9867153bfe0ff6f40517240cee12
->>>>> and things are fine in i386 mode, see below.
->>>>>
->>>>> next-20190828 also works fine for me in i386 mode.
->>>>>
->>>>> if you can point me to a tree and configuration that don't work
->>>>> I'll look into this, I'd need more info to progress.
->>>>
->>>> Please try the attached randconfig file.
->>>>
->>>> Thanks for looking.
->>>
->>> Ack, I see some errors as well with this config. Likely a missing
->>> dependency somewhere, working on this now.
->>
->> My bad, I added a fallback with static inline functions in the .h file
->> when ACPI is not defined, but the .c file was still compiled.
->>
->> The diff below makes next-20190828 compile with Randy's config.
-> 
-> IMO, we need to fix the site that enables this config.  i.e.
-> the "select SND_INTEL_NHLT" must be always conditional, e.g.
-> 	select SND_INTEL_NHLT if ACPI
+Most of the code in this driver is rework of Qualcomm downstream drivers
+used in Andriod. Credits to Banajit Goswami and Patrick Lai's Team.
 
-that would be nicer indeed, currently we don't have a consistent solution:
-sound/pci/hda/Kconfig:  select SND_INTEL_NHLT if ACPI
-sound/soc/intel/Kconfig:        select SND_INTEL_NHLT
-sound/soc/sof/intel/Kconfig:    select SND_INTEL_NHLT
+TODO:
+        Add thermal sensor support in WSA881x.
 
-I can't recall why things are different, will send a patch to align.
+Thanks,
+srini
 
+Changes since v5:
+ - updated slave bindings with proper licencing and fixed up examples.
 
-> 
->> It looks like the alsa-devel server is down btw?
-> 
-> Now it seems starting again.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
->> diff --git a/sound/hda/Makefile b/sound/hda/Makefile
->> index 8560f6ef1b19..b3af071ce06b 100644
->> --- a/sound/hda/Makefile
->> +++ b/sound/hda/Makefile
->> @@ -14,5 +14,7 @@ obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
->>   #extended hda
->>   obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
->>
->> +ifdef CONFIG_ACPI
->>   snd-intel-nhlt-objs := intel-nhlt.o
->>   obj-$(CONFIG_SND_INTEL_NHLT) += snd-intel-nhlt.o
->> +endif
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+Srinivas Kandagatla (4):
+  dt-bindings: soundwire: add slave bindings
+  soundwire: core: add device tree support for slave devices
+  dt-bindings: ASoC: Add WSA881x bindings
+  ASoC: codecs: add wsa881x amplifier support
+
+ .../bindings/sound/qcom,wsa881x.yaml          |   62 +
+ .../soundwire/soundwire-controller.yaml       |   82 ++
+ drivers/soundwire/bus.c                       |    2 +
+ drivers/soundwire/bus.h                       |    1 +
+ drivers/soundwire/slave.c                     |   52 +
+ sound/soc/codecs/Kconfig                      |   10 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/wsa881x.c                    | 1134 +++++++++++++++++
+ 8 files changed, 1345 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+ create mode 100644 Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+ create mode 100644 sound/soc/codecs/wsa881x.c
+
+-- 
+2.21.0
