@@ -1,83 +1,96 @@
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: fsl_sai: Implement set_bclk_ratio
-Date: Sat, 31 Aug 2019 00:59:10 +0300
-Message-ID: <20190830215910.31590-1-daniel.baluta@nxp.com>
+Subject: [PATCH] ASoC: fsl_sai: Set SAI Channel Mode to Output Mode
+Date: Sat, 31 Aug 2019 01:55:14 +0300
+Message-ID: <20190830225514.5283-1-daniel.baluta@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: festevam@gmail.com, shengjiu.wang@nxp.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com, timur@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Viorel Suman <viorel.suman@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+Cc: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, gabrielcsmo@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Viorel Suman <viorel.suman@nxp.com>
+>From SAI datasheet:
 
-This is to allow machine drivers to set a certain bitclk rate
-which might not be exactly rate * frame size.
+CHMOD, configures if transmit data pins are configured for TDM mode
+or Output mode.
+	* (0) TDM mode, transmit data pins are tri-stated when slots are
+	masked or channels are disabled.
+	* (1) Output mode, transmit data pins are never tri-stated and
+	will output zero when slots are masked or channels are disabled.
+
+When data pins are tri-stated, there is noise on some channels
+when FS clock value is high and data is read while fsclk is
+transitioning from high to low.
+
+Fix this by setting CHMOD to Output Mode so that pins will output zero
+when slots are masked or channels are disabled.
 
 Cc: NXP Linux Team <linux-imx@nxp.com>
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/fsl/fsl_sai.c | 21 +++++++++++++++++++--
- sound/soc/fsl/fsl_sai.h |  1 +
- 2 files changed, 20 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 15 ++++++++++++---
+ sound/soc/fsl/fsl_sai.h |  2 ++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index fe126029f4e3..e896b577b1f7 100644
+index e896b577b1f7..b9daab0eb6eb 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -137,6 +137,16 @@ static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
- 	return 0;
- }
+@@ -467,6 +467,12 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
  
-+static int fsl_sai_set_dai_bclk_ratio(struct snd_soc_dai *dai,
-+				      unsigned int ratio)
-+{
-+	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
-+
-+	sai->bclk_ratio = ratio;
-+
-+	return 0;
-+}
-+
- static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int fsl_dir)
- {
-@@ -423,8 +433,14 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 		slot_width = sai->slot_width;
+ 	val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
  
++	/*
++	 * set CHMOD to Output Mode so that transmit data pins will
++	 * output zero when slots are masked or channels are disabled
++	 */
++	val_cr4 |= FSL_SAI_CR4_CHMOD;
++
+ 	/*
+ 	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
+ 	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
+@@ -477,7 +483,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
  	if (!sai->is_slave_mode) {
--		ret = fsl_sai_set_bclk(cpu_dai, tx,
--				slots * slot_width * params_rate(params));
-+		if (sai->bclk_ratio)
-+			ret = fsl_sai_set_bclk(cpu_dai, tx,
-+					       sai->bclk_ratio *
-+					       params_rate(params));
-+		else
-+			ret = fsl_sai_set_bclk(cpu_dai, tx,
-+					       slots * slot_width *
-+					       params_rate(params));
- 		if (ret)
- 			return ret;
+ 		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
+ 			regmap_update_bits(sai->regmap, FSL_SAI_TCR4(ofs),
+-				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
++				FSL_SAI_CR4_CHMOD_MASK,
+ 				val_cr4);
+ 			regmap_update_bits(sai->regmap, FSL_SAI_TCR5(ofs),
+ 				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
+@@ -486,7 +493,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 				~0UL - ((1 << channels) - 1));
+ 		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
+ 			regmap_update_bits(sai->regmap, FSL_SAI_RCR4(ofs),
+-				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
++				FSL_SAI_CR4_CHMOD_MASK,
+ 				val_cr4);
+ 			regmap_update_bits(sai->regmap, FSL_SAI_RCR5(ofs),
+ 				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
+@@ -497,7 +505,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
-@@ -640,6 +656,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
- }
- 
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
-+	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
- 	.set_sysclk	= fsl_sai_set_dai_sysclk,
- 	.set_fmt	= fsl_sai_set_dai_fmt,
- 	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
+-			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
++			   FSL_SAI_CR4_CHMOD_MASK,
+ 			   val_cr4);
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
+ 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
 diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 3a3f6f8e5595..f96f8d97489d 100644
+index f96f8d97489d..1e3b4a6889a8 100644
 --- a/sound/soc/fsl/fsl_sai.h
 +++ b/sound/soc/fsl/fsl_sai.h
-@@ -177,6 +177,7 @@ struct fsl_sai {
- 	unsigned int mclk_streams;
- 	unsigned int slots;
- 	unsigned int slot_width;
-+	unsigned int bclk_ratio;
- 
- 	const struct fsl_sai_soc_data *soc_data;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+@@ -119,6 +119,8 @@
+ #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
+ #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
+ #define FSL_SAI_CR4_SYWD_MASK	(0x1f << 8)
++#define FSL_SAI_CR4_CHMOD	BIT(5)
++#define FSL_SAI_CR4_CHMOD_MASK	GENMASK(5, 5)
+ #define FSL_SAI_CR4_MF		BIT(4)
+ #define FSL_SAI_CR4_FSE		BIT(3)
+ #define FSL_SAI_CR4_FSP		BIT(1)
 -- 
 2.17.1
