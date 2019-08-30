@@ -1,15 +1,14 @@
 From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 5/5] ASoC: dt-bindings: Convert Allwinner A64 analog
- codec to a schema
-Date: Fri, 30 Aug 2019 10:42:19 -0500
-Message-ID: <CAL_JsqL7nE8+XK0m+1UKCUypkkgb4Nky7ternsx0zkTxiSejRw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] ASoC: dt-bindings: sun4i-spdif: Fix dma-names
+ warning
+Date: Fri, 30 Aug 2019 10:42:40 -0500
+Message-ID: <CAL_JsqJBs_vmqbe9DmEjNJR3YO6-3mnyxrTbYq0b++0eGJnU3w@mail.gmail.com>
 References: <20190828125209.28173-1-mripard@kernel.org>
- <20190828125209.28173-5-mripard@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190828125209.28173-5-mripard@kernel.org>
+In-Reply-To: <20190828125209.28173-1-mripard@kernel.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -27,13 +26,13 @@ On Wed, Aug 28, 2019 at 7:52 AM Maxime Ripard <mripard@kernel.org> wrote:
 >
 > From: Maxime Ripard <maxime.ripard@bootlin.com>
 >
-> The Allwinner A64 SoC has an embedded audio codec that uses a separate
-> controller to drive its analog part, which is supported in Linux, with a
-> matching Device Tree binding.
+> Even though the H6 compatible has been properly added, the exeption for the
+> number of DMA channels hasn't been updated, leading in a validation
+> warning.
 >
-> Now that we have the DT validation in place, let's convert the device tree
-> bindings for that controller over to a YAML schemas.
+> Fix this.
 >
+> Fixes: b20453031472 ("dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible")
 > Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
 >
 > ---
@@ -41,10 +40,7 @@ On Wed, Aug 28, 2019 at 7:52 AM Maxime Ripard <mripard@kernel.org> wrote:
 > Changes from v1:
 >   - Fix subject prefix
 > ---
->  .../allwinner,sun50i-a64-codec-analog.yaml    | 39 +++++++++++++++++++
->  .../bindings/sound/sun50i-codec-analog.txt    | 14 -------
->  2 files changed, 39 insertions(+), 14 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+>  .../devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml  | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
 Reviewed-by: Rob Herring <robh@kernel.org>
