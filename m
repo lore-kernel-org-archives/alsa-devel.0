@@ -4,78 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74893C3A59B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B2F9C3A59B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:09:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC43123427
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:09:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E1E8123427
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:09:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cQb2kvgt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="lZ6sswQT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC43123427
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VsK0tSB8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="I2DWabrG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1E8123427
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F6581666;
-	Fri, 30 Aug 2019 18:08:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F6581666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3358F1658;
+	Fri, 30 Aug 2019 18:08:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3358F1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567181352;
-	bh=htl2cOEgjIeewBngeyJb5gDYCjHnLx57XIQFVsLBmho=;
+	s=default; t=1567181387;
+	bh=IPfNgO/sJyOACCPDWeXv1TkjQK59ZyJ+r11F+Lc3Saw=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cQb2kvgtVKAGKJSOQfNuIaBL+gXpZcCV9TsHW38ijW2akEElFCSlOVIdirKgSxHj4
-	 yCw8X6NNzZggkZNBSaYVBE2hUmdEWruE2MTZcl4k19fUMNF2m3M1MOMC0GyYm/R6eV
-	 lmfHXnPJEy0gcLr5VbGRYgSODAEi73dZSg8jTyII=
+	b=VsK0tSB8YtaB4U+R22M2b6tTuyL7qokuTO7ndYM98mTy4vgLFuU9CJJTPeU1G9cqq
+	 5zphLSfDOZE7pK7X2H68lzLfNCmHDBZVZwct+e64ipHBtifoCE5RIMqfrNfsqkmEjn
+	 QaZhq5TqBQLLqrwmim3JVGQDgzVDnNcayIJqYr7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE1F7F805F8;
-	Fri, 30 Aug 2019 18:06:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49B71F805FD;
+	Fri, 30 Aug 2019 18:06:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BF09F8036C; Fri, 30 Aug 2019 18:06:19 +0200 (CEST)
+ id 93CAFF805A9; Fri, 30 Aug 2019 18:06:19 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DEBDCF800AA
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 18:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEBDCF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89AC7F80369
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 18:06:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89AC7F80369
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="lZ6sswQT"
+ header.b="I2DWabrG"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=OklSwa5/d1tdETW+GW/9qxxbvlvm79zjBJl1jJpHpes=; b=lZ6sswQTLWf1
- sYwjRZwshbrHx7uhhHWYqsZQ3E02R78lcDekqb4DMpjgal355FlRHqaZHGQ13uqmK9/7Q+OuJYiUd
- rU6wtE4PX81GsWuegkbBIrK7wyuhQjgvlo8qkFttcBEPquYZb1gZM3GRIRuqAVXJmftGlDPx/3H0K
- RZpWA=;
-Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
+ List-Archive; bh=uTQeEEYIJhC5tbPfUST4PEt+2kXGnfovRSLhPtWx96o=; b=I2DWabrGuEwq
+ olvrLYhLWDgnKzTuw2SaAmTxADjTjGVpu9I451lQI+6aUbyCJpENSArCxdMp04x/qRd5/ZXjSEgE1
+ BNGSQEkd5xkBPC+ACLeVoTU0OCjsz3CLWK0pCPyu3yQ7cfV/W/S8OSNbW5Bm2SBNl9RqJZiHu4ggP
+ BnkkY=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i3jPd-00079A-46; Fri, 30 Aug 2019 16:06:09 +0000
+ id 1i3jPc-00078x-BR; Fri, 30 Aug 2019 16:06:08 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 9FFB62742BD3; Fri, 30 Aug 2019 17:06:08 +0100 (BST)
+ id 772D52742B61; Fri, 30 Aug 2019 17:06:07 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20190830074240.195166-2-tzungbi@google.com>
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+In-Reply-To: <20190828125209.28173-5-mripard@kernel.org>
 X-Patchwork-Hint: ignore
-Message-Id: <20190830160608.9FFB62742BD3@ypsilon.sirena.org.uk>
-Date: Fri, 30 Aug 2019 17:06:08 +0100 (BST)
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
-Subject: [alsa-devel] Applied "ASoC: mediatek: mt8183: move private
-	structure" to the asoc tree
+Message-Id: <20190830160607.772D52742B61@ypsilon.sirena.org.uk>
+Date: Fri, 30 Aug 2019 17:06:07 +0100 (BST)
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: dt-bindings: Convert Allwinner A64
+	analog codec to a schema" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,11 +97,11 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830160608.s3v7eEreYrSyiWzrEGSybrckyH3x0nCzq8TR4Rcxqbs@z>
+Message-ID: <20190830160607.nfPZi3fOXMCjNlkG_LJQF1iZdEnwtUeKflxI-OXK3ig@z>
 
 The patch
 
-   ASoC: mediatek: mt8183: move private structure
+   ASoC: dt-bindings: Convert Allwinner A64 analog codec to a schema
 
 has been applied to the asoc tree at
 
@@ -122,71 +126,95 @@ to this mail.
 Thanks,
 Mark
 
-From 96ed76983307a8a24400495e4e6453607e765fcf Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 30 Aug 2019 15:42:37 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: move private structure
+From 497144a5b7af12097c09b0ca30409ee7122499a0 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Date: Wed, 28 Aug 2019 14:52:09 +0200
+Subject: [PATCH] ASoC: dt-bindings: Convert Allwinner A64 analog codec to a
+ schema
 
-Move private structure to the beginning of file to declare earlier
-so that most functions can see it.
+The Allwinner A64 SoC has an embedded audio codec that uses a separate
+controller to drive its analog part, which is supported in Linux, with a
+matching Device Tree binding.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20190830074240.195166-2-tzungbi@google.com
+Now that we have the DT validation in place, let's convert the device tree
+bindings for that controller over to a YAML schemas.
+
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Link: https://lore.kernel.org/r/20190828125209.28173-5-mripard@kernel.org
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 32 +++++++++----------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ .../allwinner,sun50i-a64-codec-analog.yaml    | 39 +++++++++++++++++++
+ .../bindings/sound/sun50i-codec-analog.txt    | 14 -------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 560fcc5923a4..1d4a1600f768 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -17,6 +17,22 @@
- 
- static struct snd_soc_jack headset_jack;
- 
-+enum PINCTRL_PIN_STATE {
-+	PIN_STATE_DEFAULT = 0,
-+	PIN_TDM_OUT_ON,
-+	PIN_TDM_OUT_OFF,
-+	PIN_STATE_MAX
-+};
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
+new file mode 100644
+index 000000000000..f290eb72a878
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-a64-codec-analog.yaml
+@@ -0,0 +1,39 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/allwinner,sun50i-a64-codec-analog.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
-+	"default", "aud_tdm_out_on", "aud_tdm_out_off",
-+};
++title: Allwinner A64 Analog Codec Device Tree Bindings
 +
-+struct mt8183_mt6358_ts3a227_max98357_priv {
-+	struct pinctrl *pinctrl;
-+	struct pinctrl_state *pin_states[PIN_STATE_MAX];
-+};
++maintainers:
++  - Chen-Yu Tsai <wens@csie.org>
++  - Maxime Ripard <maxime.ripard@bootlin.com>
 +
- static int mt8183_mt6358_i2s_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
- {
-@@ -46,22 +62,6 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
--enum PINCTRL_PIN_STATE {
--	PIN_STATE_DEFAULT = 0,
--	PIN_TDM_OUT_ON,
--	PIN_TDM_OUT_OFF,
--	PIN_STATE_MAX
--};
++properties:
++  compatible:
++    const: allwinner,sun50i-a64-codec-analog
++
++  reg:
++    maxItems: 1
++
++  cpvdd-supply:
++    description:
++      Regulator for the headphone amplifier
++
++required:
++  - compatible
++  - reg
++  - cpvdd-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    codec_analog: codec-analog@1f015c0 {
++      compatible = "allwinner,sun50i-a64-codec-analog";
++      reg = <0x01f015c0 0x4>;
++      cpvdd-supply = <&reg_eldo1>;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt b/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+deleted file mode 100644
+index 056a098495cc..000000000000
+--- a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
++++ /dev/null
+@@ -1,14 +0,0 @@
+-* Allwinner A64 Codec Analog Controls
 -
--static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
--	"default", "aud_tdm_out_on", "aud_tdm_out_off",
--};
+-Required properties:
+-- compatible: must be one of the following compatibles:
+-		- "allwinner,sun50i-a64-codec-analog"
+-- reg: must contain the registers location and length
+-- cpvdd-supply: Regulator supply for the headphone amplifier
 -
--struct mt8183_mt6358_ts3a227_max98357_priv {
--	struct pinctrl *pinctrl;
--	struct pinctrl_state *pin_states[PIN_STATE_MAX];
--};
--
- static int
- mt8183_mt6358_ts3a227_max98357_bt_sco_startup(
- 	struct snd_pcm_substream *substream)
+-Example:
+-	codec_analog: codec-analog@1f015c0 {
+-		compatible = "allwinner,sun50i-a64-codec-analog";
+-		reg = <0x01f015c0 0x4>;
+-		cpvdd-supply = <&reg_eldo1>;
+-	};
 -- 
 2.20.1
 
