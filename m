@@ -2,65 +2,65 @@ Return-Path: <SRS0=nNdU=W2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6229C3A5A3
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 05:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDB0C3A5A4
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 05:39:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47BCF21897
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 05:36:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D980521721
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 05:39:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GFKUDeQD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47BCF21897
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y5Vx6ICS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D980521721
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3263686F;
-	Fri, 30 Aug 2019 07:35:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3263686F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5643829;
+	Fri, 30 Aug 2019 07:38:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5643829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567143380;
-	bh=dexI8JEcBVO3LPb7OUb+28hhrWQgpGgIKckp1GaAACs=;
+	s=default; t=1567143585;
+	bh=l1vFu4Vp9cvBsuFhGGV//rirnUetKoOpnbW18fDOPJE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GFKUDeQDoee/A/PvqUppdhjtDGNQAXYmgPPjwkspgPs0I0cwnyUfBpeM5CVzX+F0+
-	 ogW9VgNSYCHNIrfOGHPQ+eN/CRWhigN09pOhmWbBr46ghnCpGsk36DhCjXirmQPFrH
-	 AAzKn+Z5igeISMV8J7rCptxKzclr3R2VEx+n9mOs=
+	b=Y5Vx6ICShJA+IrRJZlA/Fw/dXhxJGyJBhjCXCwDqQRt1BADM3MQjTTMkJapiUufSW
+	 e6jI5wb0PsfRCu3r8bsZ9PLeNtF5Vd1NqmGJN0Ssu4/AGO9K0Iwjdsr7SxdZMAq+UT
+	 zaDtLfVqH76EmoTMpo64P7CSEIV71Yo3EF3efcsg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC2B6F800D1;
-	Fri, 30 Aug 2019 07:35:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40FB2F800D1;
+	Fri, 30 Aug 2019 07:38:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4D78F80369; Fri, 30 Aug 2019 07:35:28 +0200 (CEST)
+ id 8DAE2F80369; Fri, 30 Aug 2019 07:38:53 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC778F800E7
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 07:35:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC778F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB2F8F800D1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 07:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB2F8F800D1
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2AB7AACA0;
- Fri, 30 Aug 2019 05:35:24 +0000 (UTC)
-Date: Fri, 30 Aug 2019 07:35:23 +0200
-Message-ID: <s5hzhjrkyg4.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 0655AAE64;
+ Fri, 30 Aug 2019 05:38:50 +0000 (UTC)
+Date: Fri, 30 Aug 2019 07:38:49 +0200
+Message-ID: <s5hwoevkyae.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-In-Reply-To: <20190830011456.14720-1-o-takashi@sakamocchi.jp>
-References: <20190830011456.14720-1-o-takashi@sakamocchi.jp>
+To: vani.ganji@intel.com
+In-Reply-To: <20190830052318.25898-1-vani.ganji@intel.com>
+References: <20190830052318.25898-1-vani.ganji@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
-Subject: Re: [alsa-devel] [PATCH] ALSA: firewire-motu: add support for MOTU
-	4pre
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] [PATCH v2] ALSA: hda: Retry codec read
+	on	first time failure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,59 +78,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 30 Aug 2019 03:14:56 +0200,
-Takashi Sakamoto wrote:
+On Fri, 30 Aug 2019 07:23:18 +0200,
+vani.ganji@intel.com wrote:
 > 
-> MOTU 4pre was launched in 2012 by MOTU, Inc. This commit allows userspace
-> applications can transmit and receive PCM frames and MIDI messages for
-> this model via ALSA PCM interface and RawMidi/Sequencer interfaces.
+> From: Vani Ganji <vani.ganji@intel.com>
 > 
-> The device supports MOTU protocol version 3. Unlike the other devices, the
-> device is simply designed. The size of data block is fixed to 10 quadlets
-> during available sampling rates (44.1 - 96.0 kHz). Each data block
-> includes 1 source packet header, 2 data chunks for messages, 8 data chunks
-> for PCM samples and 2 data chunks for padding to quadlet alignment. The
-> device has no MIDI, optical, BNC and AES/EBU interfaces.
+> Sometimes HDMI audio fails while fast switching
+> between HDMI and Speaker due to codec Get Power state verb read failure.
 > 
-> Like support for the other MOTU devices, the quality of playback sound
-> is not enough good with periodical noise yet.
+> Verb is codec driver to access codec HW. Since issue scenario involves
+> fast switching between HDMI and speaker, there might be chance to fail
+> read from HW and same happened in the error scenario.
 > 
-> $ python2 crpp < ~/git/am-config-rom/motu/motu-4pre.img
->                ROM header and bus information block
->                -----------------------------------------------------------------
-> 400  041078cc  bus_info_length 4, crc_length 16, crc 30924
-> 404  31333934  bus_name "1394"
-> 408  20ff7000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 7 (256)
-> 40c  0001f200  company_id 0001f2     |
-> 410  000a41c5  device_id 00000a41c5  | EUI-64 0001f200000a41c5
+> Based on Display/Graphics architect suggestion, added a retry mechanism
+> for failure on first attempt.
 > 
->                root directory
->                -----------------------------------------------------------------
-> 414  0004ef04  directory_length 4, crc 61188
-> 418  030001f2  vendor
-> 41c  0c0083c0  node capabilities per IEEE 1394
-> 420  d1000002  --> unit directory at 428
-> 424  8d000005  --> eui-64 leaf at 438
+> Changes from v1:
+> -Corrected missing braces.
 > 
->                unit directory at 428
->                -----------------------------------------------------------------
-> 428  0003ceda  directory_length 3, crc 52954
-> 42c  120001f2  specifier id
-> 430  13000045  version
-> 434  17103800  model
-> 
->                eui-64 leaf at 438
->                -----------------------------------------------------------------
-> 438  0002d248  leaf_length 2, crc 53832
-> 43c  0001f200  company_id 0001f2     |
-> 440  000a41c5  device_id 00000a41c5  | EUI-64 0001f200000a41c5
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Vani Ganji <vani.ganji@intel.com>
 
-Applied, thanks.
+Do you still need this even with the very latest upstream code?
+As mentioned, the recent change to use the sync-write should reduce
+such errors.
 
+If it's about the SOF/SST, you can try to set the hdac_bus.sync_write
+flag in the corresponding drivers, too.
+
+
+thanks,
 
 Takashi
+
+> ---
+>  sound/hda/hdac_device.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+> index b26cc93e7e10..3874d54aa686 100644
+> --- a/sound/hda/hdac_device.c
+> +++ b/sound/hda/hdac_device.c
+> @@ -984,10 +984,17 @@ static unsigned int codec_read(struct hdac_device *hdac, hda_nid_t nid,
+>  {
+>  	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
+>  	unsigned int res;
+> -
+> -	if (snd_hdac_exec_verb(hdac, cmd, flags, &res))
+> -		return -1;
+> -
+> +	unsigned int count;
+> +
+> +	/* Retry verb once more if it fails first time */
+> +	/* recommended to retry since it is HW related */
+> +	for (count = 0; count <= 1; count++) {
+> +		if (snd_hdac_exec_verb(hdac, cmd, flags, &res)) {
+> +			if (count == 1)
+> +				return -1;
+> +		} else
+> +			break;
+> +	}
+>  	return res;
+>  }
+>  
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
