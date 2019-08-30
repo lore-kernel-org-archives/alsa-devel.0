@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65C52C3A5A4
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FD54C3A5A4
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:54:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E20BC21721
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:53:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8CAA521897
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:54:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L0sJC0XQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="O7r1inLO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E20BC21721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZB5yvOuZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Jlx4pGUU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CAA521897
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BDB686F;
-	Fri, 30 Aug 2019 13:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BDB686F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCF7216A9;
+	Fri, 30 Aug 2019 13:53:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCF7216A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567166017;
-	bh=ZM+Bc8TiuJkCMLi5ufntgdSmBNvIVfODari/OS8AYU4=;
+	s=default; t=1567166048;
+	bh=2RLL42BoaYzIrKrExrW4HEveS1RBJSDRqCEKHgpFxuM=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=L0sJC0XQ1jIwBtuMkpE1eczpdNd7jPdc79yYcDQLS9gc5qNjuehBkfbLIbN9kd1BT
-	 Bh8CupfO4nZq9EeBWUma9V0rC91j9S5sERNDlgXsrbyhMv1441qEyR16ZK24TpTqPm
-	 i9BxUi/3R0AF3tXdLYWjIVNbZ4ZwUA7Ccoq58kJo=
+	b=ZB5yvOuZK02fuVmXjqVynzZO3coUl4jOC+av8npYG99mft6bTAcCW0/abEKGqv1zC
+	 CXxiFfXI9HeUPasSQQD8BzPbIVHO66/V2fPtJAPzCsJajLCKyn3MZGr5UYm42BC9JM
+	 y0NL71/2d5Os6i8IprN0B/LX3d5ZOizNhg8XtjF8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D08F2F80674;
-	Fri, 30 Aug 2019 13:46:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63335F8068A;
+	Fri, 30 Aug 2019 13:46:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 890B9F805F6; Fri, 30 Aug 2019 13:45:37 +0200 (CEST)
+ id EA0B8F8060F; Fri, 30 Aug 2019 13:45:37 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E10BF805F6
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 13:45:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E10BF805F6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D00AF805F7
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 13:45:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D00AF805F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="O7r1inLO"
+ header.b="Jlx4pGUU"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=7N4lAMfgliwyuvTEIgGEk/CMFnYD43mELU01wcy6uMI=; b=O7r1inLO9a5A
- W2N5WdN/2R9Opygnee7Vm2TOu5k4hU8ray2SrEOpmwakej8rXnccd1Nvf/SE7sGutXG+efCW+yyY7
- fe/wnz11T3eg1I2y+UK/RNmj+DqO1Qht66wMnW+Ec7DG2KndnxRaINkWQGExHEs40rcsLJKm9v+U+
- +vsaM=;
+ List-Archive; bh=QjPKEdDB9sCJJLsmrlg6e6hB1mOM3Pkslxq2I1phBfw=; b=Jlx4pGUUKv/H
+ 7TLy34v8F8kpMKglTqTATjOIIYARUIpwZuU5MNu+f4CaCohs4TSZa3SanmORostsdtFwOww1DzNQx
+ YIhwuZpJ3ZHSNlF1KRQxNR6XP+oSI7ZA5rx8xuGb3ZbboPBfIvTY1GLrY8HEQTJHbGysSf8Xoz6ag
+ pqUf4=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i3fLC-0006IT-CU; Fri, 30 Aug 2019 11:45:18 +0000
+ id 1i3fLE-0006Iq-4M; Fri, 30 Aug 2019 11:45:20 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D404D2742BD3; Fri, 30 Aug 2019 12:45:17 +0100 (BST)
+ id 8C9522742CDC; Fri, 30 Aug 2019 12:45:19 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20190822113616.22702-5-cezary.rojewski@intel.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1567012817-12625-1-git-send-email-shengjiu.wang@nxp.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190830114517.D404D2742BD3@ypsilon.sirena.org.uk>
-Date: Fri, 30 Aug 2019 12:45:17 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- tiwai@suse.com, lgirdwood@gmail.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: broadwell: Simplify device
-	probe" to the asoc tree
+Message-Id: <20190830114519.8C9522742CDC@ypsilon.sirena.org.uk>
+Date: Fri, 30 Aug 2019 12:45:19 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com,
+ Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [alsa-devel] Applied "ASoC: fsl_ssi: Fix clock control issue in
+	master mode" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,15 +96,15 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830114517.GkO9rKndUtgJuzvLPId1TUFrIQLcNobFVs_xU27v4sQ@z>
+Message-ID: <20190830114519.D9HZaFC6KfTZ_Mu9-DL6lrRvc1EGa-yseXMammfnnbo@z>
 
 The patch
 
-   ASoC: Intel: broadwell: Simplify device probe
+   ASoC: fsl_ssi: Fix clock control issue in master mode
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -124,46 +125,73 @@ to this mail.
 Thanks,
 Mark
 
-From 54d037d5a466ce518ee4bb81f39b79ac7d843ba6 Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 22 Aug 2019 13:36:16 +0200
-Subject: [PATCH] ASoC: Intel: broadwell: Simplify device probe
+From 696d05225cebffd172008d212657be90e823eac0 Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Wed, 28 Aug 2019 13:20:17 -0400
+Subject: [PATCH] ASoC: fsl_ssi: Fix clock control issue in master mode
 
-With legacy ADSP private context adjusted, there is no need for double
-safety.
+The test case is
+arecord -Dhw:0 -d 10 -f S16_LE -r 48000 -c 2 temp.wav &
+aplay -Dhw:0 -d 30 -f S16_LE -r 48000 -c 2 test.wav
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190822113616.22702-5-cezary.rojewski@intel.com
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+There will be error after end of arecord:
+aplay: pcm_write:2051: write error: Input/output error
+
+Capture and Playback work in parallel in master mode, one
+substream stops, the other substream is impacted, the
+reason is that clock is disabled wrongly.
+
+The clock's reference count is not increased when second
+substream starts, the hw_param() function returns in the
+beginning because first substream is enabled, then in end
+of first substream, the hw_free() disables the clock.
+
+This patch is to move the clock enablement to the place
+before checking of the device enablement in hw_param().
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1567012817-12625-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/broadwell.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index ab38ef30dfff..db7e1e87156d 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -270,18 +270,14 @@ static struct snd_soc_card broadwell_rt286 = {
- static int broadwell_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach;
--	const char *platform_name = NULL;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index fa862af25c1a..085855f9b08d 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -799,15 +799,6 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	u32 wl = SSI_SxCCR_WL(sample_size);
  	int ret;
  
- 	broadwell_rt286.dev = &pdev->dev;
- 
- 	/* override plaform name, if required */
- 	mach = (&pdev->dev)->platform_data;
--	if (mach) /* extra check since legacy does not pass parameters */
--		platform_name = mach->mach_params.platform;
+-	/*
+-	 * SSI is properly configured if it is enabled and running in
+-	 * the synchronous mode; Note that AC97 mode is an exception
+-	 * that should set separate configurations for STCCR and SRCCR
+-	 * despite running in the synchronous mode.
+-	 */
+-	if (ssi->streams && ssi->synchronous)
+-		return 0;
 -
- 	ret = snd_soc_fixup_dai_links_platform_name(&broadwell_rt286,
--						    platform_name);
-+						    mach->mach_params.platform);
- 	if (ret)
- 		return ret;
+ 	if (fsl_ssi_is_i2s_master(ssi)) {
+ 		ret = fsl_ssi_set_bclk(substream, dai, hw_params);
+ 		if (ret)
+@@ -823,6 +814,15 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
  
++	/*
++	 * SSI is properly configured if it is enabled and running in
++	 * the synchronous mode; Note that AC97 mode is an exception
++	 * that should set separate configurations for STCCR and SRCCR
++	 * despite running in the synchronous mode.
++	 */
++	if (ssi->streams && ssi->synchronous)
++		return 0;
++
+ 	if (!fsl_ssi_is_ac97(ssi)) {
+ 		/*
+ 		 * Keep the ssi->i2s_net intact while having a local variable
 -- 
 2.20.1
 
