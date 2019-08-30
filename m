@@ -7,76 +7,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9759AC3A5A4
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A0AC3A5A4
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:52:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DDF123405
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:51:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D69621721
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:52:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SQfcNkds";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FQ8UTKQq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DDF123405
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ffWQlYqP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="nmPgfbe5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D69621721
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BBBA1655;
-	Fri, 30 Aug 2019 13:50:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BBBA1655
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9D9D1669;
+	Fri, 30 Aug 2019 13:51:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9D9D1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567165890;
-	bh=ffHo21zY5MLC7XFf4vbNKN8KTNNH0rPZ1xTiG5D4BJ8=;
+	s=default; t=1567165932;
+	bh=5vyGFy2D+ZyVqxDUS1t6MIZAXjjkBwtsjW8A8E2D3wM=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=SQfcNkdsRxd2hGdojtRDJkXBTC//XVe/Y05Xda1/sPNMPX85TjDf5MYuDBqzjVyac
-	 rcfEMVinDLZOgkLnw2w0DDkZsQ/Sp9KWH4QInJ87Eyn8YVqMEB32Sze+rGidiL+WLE
-	 OykCNQrCzsx4p/Wf8n4tfkHVD3ZtIb3GMeRSig0s=
+	b=ffWQlYqPEXpWp2FjOELLLn7fiLFRf0/YP5PMqouESUFyYeR2R62gyHFux/BD2T4nH
+	 3GM8KU9mrHcuyjEOVJ/NhuWNLdrCfgIFv9b0Q3wOEiRd/Nmm5G4BWfIDAwVpDGvz49
+	 waAWaIveFL+eEFaWzcU8VMptJLUgEZhy21rpkar4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDADEF80649;
-	Fri, 30 Aug 2019 13:45:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 784B0F8065C;
+	Fri, 30 Aug 2019 13:46:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F292F8060E; Fri, 30 Aug 2019 13:45:34 +0200 (CEST)
+ id DA8C9F8060F; Fri, 30 Aug 2019 13:45:35 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AEBAF80483
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30E1BF805A0
  for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 13:45:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AEBAF80483
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30E1BF805A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="FQ8UTKQq"
+ header.b="nmPgfbe5"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=BFf9uyPlwE+aJkFclNMl7fyg6+ftwdvBLoePzCYo8dA=; b=FQ8UTKQqtj3Z
- Ij5hjrxOvLPxC8HMXTti+Qt3on7ObhZ3KwTiSZ7wFBYlQLdSSoSJoW4cmff6p68Czv+EwRW0D+zq5
- 2w1VpFLeuwwpG/068wuhZImK6PlXvB3QgKDVNWVpYUNNCCBj/sD9rf9wW0LrV9s9M2KkbJ5vwLpIA
- ce8eg=;
-Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
+ List-Archive; bh=DL+I+rAtszPH8UUp/xHLiOZjWk7OrZWj8jsDDc/Uib4=; b=nmPgfbe5JVeo
+ ZxI1f3cjprmixIdN1Cj/Jcp8qxQ3EVZ6xP+HCWUIBxPZC+RmaQnvwYvFeYeHuTJYc6KTLxzs4QskM
+ 70wTeoSbBBoYk/WeHxH1CUz3+I/MGApq/ArM6jHSDFNcm8pQO9NEOdaWOAuOsJignBbk2TkjvTonC
+ Pt34I=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i3fLC-0006IX-PH; Fri, 30 Aug 2019 11:45:18 +0000
+ id 1i3fLC-0006Ia-UD; Fri, 30 Aug 2019 11:45:18 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 3BCB12742B61; Fri, 30 Aug 2019 12:45:18 +0100 (BST)
+ id 68C492742CA7; Fri, 30 Aug 2019 12:45:18 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20190822113616.22702-3-cezary.rojewski@intel.com>
+In-Reply-To: <20190822113616.22702-2-cezary.rojewski@intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190830114518.3BCB12742B61@ypsilon.sirena.org.uk>
+Message-Id: <20190830114518.68C492742CA7@ypsilon.sirena.org.uk>
 Date: Fri, 30 Aug 2019 12:45:18 +0100 (BST)
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  tiwai@suse.com, lgirdwood@gmail.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: haswell: Simplify device probe"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: Intel: Haswell: Adjust machine device
+	private context" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,11 +95,11 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830114518.DetPy__fYqLxhVnhcn8WZA0CkTZqnm0Y-AqT7GmYRn0@z>
+Message-ID: <20190830114518.BsHusoeUKLOAhcKc5z2Cdpvd2OmkdzXP32_5ngldK7g@z>
 
 The patch
 
-   ASoC: Intel: haswell: Simplify device probe
+   ASoC: Intel: Haswell: Adjust machine device private context
 
 has been applied to the asoc tree at
 
@@ -123,45 +124,51 @@ to this mail.
 Thanks,
 Mark
 
-From 1fc3e6b2ac3f8125ae54685c600d594d690a268a Mon Sep 17 00:00:00 2001
+From ca964edf0ddbfec2cb10b3d251d09598e7ca9b13 Mon Sep 17 00:00:00 2001
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 22 Aug 2019 13:36:14 +0200
-Subject: [PATCH] ASoC: Intel: haswell: Simplify device probe
+Date: Thu, 22 Aug 2019 13:36:13 +0200
+Subject: [PATCH] ASoC: Intel: Haswell: Adjust machine device private context
 
-With legacy ADSP private context adjusted, there is no need for double
-safety.
+Apart from Haswell machines, all other devices have their private data
+set to snd_soc_acpi_mach instance.
 
+Changes for HSW/ BDW boards introduced with series:
+https://patchwork.kernel.org/cover/10782035/
+
+added support for dai_link platform_name adjustments within card probe
+routines. These take for granted private_data points to
+snd_soc_acpi_mach whereas for Haswell, it's sst_pdata instead. Change
+private context of platform_device - representing machine board - to
+address this.
+
+Fixes: e87055d732e3 ("ASoC: Intel: haswell: platform name fixup support")
+Fixes: 7e40ddcf974a ("ASoC: Intel: bdw-rt5677: platform name fixup support")
+Fixes: 2d067b2807f9 ("ASoC: Intel: broadwell: platform name fixup support")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190822113616.22702-3-cezary.rojewski@intel.com
+Link: https://lore.kernel.org/r/20190822113616.22702-2-cezary.rojewski@intel.com
 Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/haswell.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/intel/common/sst-acpi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index 4d3822cff98c..3dadf9bff796 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -188,18 +188,14 @@ static struct snd_soc_card haswell_rt5640 = {
- static int haswell_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach;
--	const char *platform_name = NULL;
- 	int ret;
+diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+index 0e8e0a7a11df..5854868650b9 100644
+--- a/sound/soc/intel/common/sst-acpi.c
++++ b/sound/soc/intel/common/sst-acpi.c
+@@ -141,11 +141,12 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 	}
  
- 	haswell_rt5640.dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, sst_acpi);
++	mach->pdata = sst_pdata;
  
- 	/* override plaform name, if required */
- 	mach = (&pdev->dev)->platform_data;
--	if (mach) /* extra check since legacy does not pass parameters */
--		platform_name = mach->mach_params.platform;
--
- 	ret = snd_soc_fixup_dai_links_platform_name(&haswell_rt5640,
--						    platform_name);
-+						    mach->mach_params.platform);
- 	if (ret)
- 		return ret;
+ 	/* register machine driver */
+ 	sst_acpi->pdev_mach =
+ 		platform_device_register_data(dev, mach->drv_name, -1,
+-					      sst_pdata, sizeof(*sst_pdata));
++					      mach, sizeof(*mach));
+ 	if (IS_ERR(sst_acpi->pdev_mach))
+ 		return PTR_ERR(sst_acpi->pdev_mach);
  
 -- 
 2.20.1
