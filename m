@@ -1,97 +1,99 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: fsl_sai: Fix noise when using EDMA
-Date: Fri, 30 Aug 2019 23:09:00 +0300
-Message-ID: <20190830200900.19668-1-daniel.baluta@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, mihai.serban@gmail.com, Mihai Serban <mihai.serban@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 2/3] dt-bindings: sound: Add Xilinx logicPD-I2S FPGA IP
+ bindings
+Date: Fri, 30 Aug 2019 23:06:06 +0200
+Message-ID: <20190830210607.22644-2-miquel.raynal@bootlin.com>
+References: <20190830210607.22644-1-miquel.raynal@bootlin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190830210607.22644-1-miquel.raynal@bootlin.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Michal Simek <michal.simek@xilinx.com>, Rob Herring <robh+dt@kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>, alexandre@bootlin.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mihai Serban <mihai.serban@nxp.com>
+Document the logicPD I2S FPGA block bindings in yaml.
 
-EDMA requires the period size to be multiple of maxburst. Otherwise the
-remaining bytes are not transferred and thus noise is produced.
+Syntax verified with dt-doc-validate.
 
-We can handle this issue by adding a constraint on
-SNDRV_PCM_HW_PARAM_PERIOD_SIZE to be multiple of tx/rx maxburst value.
-
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- sound/soc/fsl/fsl_sai.c | 15 +++++++++++++++
- sound/soc/fsl/fsl_sai.h |  1 +
- 2 files changed, 16 insertions(+)
+ .../bindings/sound/xlnx,logicpd-i2s.yaml      | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,logicpd-i2s.yaml
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 728307acab90..fe126029f4e3 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -612,6 +612,16 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- 			   FSL_SAI_CR3_TRCE_MASK,
- 			   FSL_SAI_CR3_TRCE);
- 
-+	/*
-+	 * some DMA controllers need period size to be a multiple of
-+	 * tx/rx maxburst
-+	 */
-+	if (sai->soc_data->use_constraint_period_size)
-+		snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					   SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+					   tx ? sai->dma_params_tx.maxburst :
-+					   sai->dma_params_rx.maxburst);
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,logicpd-i2s.yaml b/Documentation/devicetree/bindings/sound/xlnx,logicpd-i2s.yaml
+new file mode 100644
+index 000000000000..cbff641af199
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/xlnx,logicpd-i2s.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/xlnx,logicpd-i2s.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE, &fsl_sai_rate_constraints);
- 
-@@ -1011,30 +1021,35 @@ static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
- 	.use_imx_pcm = false,
- 	.fifo_depth = 32,
- 	.reg_offset = 0,
-+	.use_constraint_period_size = false,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
- 	.use_imx_pcm = true,
- 	.fifo_depth = 32,
- 	.reg_offset = 0,
-+	.use_constraint_period_size = false,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
- 	.use_imx_pcm = true,
- 	.fifo_depth = 16,
- 	.reg_offset = 8,
-+	.use_constraint_period_size = false,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
- 	.use_imx_pcm = true,
- 	.fifo_depth = 128,
- 	.reg_offset = 8,
-+	.use_constraint_period_size = false,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx8qm_data = {
- 	.use_imx_pcm = true,
- 	.fifo_depth = 64,
- 	.reg_offset = 0,
-+	.use_constraint_period_size = true,
- };
- 
- static const struct of_device_id fsl_sai_ids[] = {
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index b89b0ca26053..3a3f6f8e5595 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -157,6 +157,7 @@
- 
- struct fsl_sai_soc_data {
- 	bool use_imx_pcm;
-+	bool use_constraint_period_size;
- 	unsigned int fifo_depth;
- 	unsigned int reg_offset;
- };
++title: Device-Tree bindings for Xilinx logicPD I2S FPGA block
++
++maintainers:
++  - Miquel Raynal <miquel.raynal@bootlin.com>
++
++description: |
++  The IP supports I2S playback/capture audio. It acts as a slave and
++  clocks should come from the codec. It only supports two channels and
++  S16_LE format.
++
++properties:
++  compatible:
++    items:
++      - const: xlnx,logicpd-i2s
++
++  reg:
++    maxItems: 1
++    description:
++      Base address and size of the IP core instance.
++
++  interrupts:
++    minItems: 1
++    maxItems: 2
++    items:
++      - description: tx interrupt
++      - description: rx interrupt
++    description:
++      Either the Tx interruption or the Rx interruption or both.
++
++  interrupt-names:
++    minItems: 1
++    maxItems: 2
++    items:
++      - const: tx
++      - const: rx
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupts-controller
++
++examples:
++  - |
++    logii2s_dai: logii2s-dai@43c10000 {
++        reg = <0x43c10000 0x1000>;
++        compatible = "xlnx,logicpd-i2s-dai";
++        interrupt-parent = <&intc>;
++        interrupts = <0 29 IRQ_TYPE_LEVEL_HIGH>, <0 30 IRQ_TYPE_LEVEL_HIGH>;
++        interrupt-names = "rx", "tx";
++    };
 -- 
-2.17.1
+2.20.1
