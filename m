@@ -2,89 +2,80 @@ Return-Path: <SRS0=nNdU=W2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15712C3A5A6
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 15:44:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D65CC3A59B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:07:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 930AB21897
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 15:44:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0903823427
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:07:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gLrie/54";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DM1CXlk1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 930AB21897
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iHedBP6l";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="WEqyfVAc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0903823427
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C684586F;
-	Fri, 30 Aug 2019 17:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C684586F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B990857;
+	Fri, 30 Aug 2019 18:06:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B990857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567179882;
-	bh=HvM4s5fmuj5BLKQdl2bKMgR0q9loQWlPEHG1XPhgV6Q=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gLrie/54tYZcxT8Fh2m+p62ixPQD6SUSmL12nzsXbSB5zueehA7fKrEh4nkcdTVOC
-	 RCkmrrITdNS8A8/wp/bFb0fytRszBM2XGHAnbTrDIn8k0yxaenq3ooa6kIdcw3tGZO
-	 OML4toYHUOd7VAhNEBh+F2nxhVlJvfr0GKB4d3DU=
+	s=default; t=1567181226;
+	bh=15CbK9hmMtWLl6teyIZ1Zq3lSQmHKfdWBxhfgUw7Ssw=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=iHedBP6luVe+Y3dhdKMCJZICwDYdE6A48+zL8/9g21eD3q3/s/lUJgwcHn9SO2W0W
+	 /SqnKzAi6xtUlUsa4+nJWuygW08et7MGH99w/iTmjvw8eeSD7fh2EL97p0bmk7K1Tw
+	 pbIPVPnhpTsxJ5QHr39QfWOow4yiQSmYecbUtK74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEDABF80362;
-	Fri, 30 Aug 2019 17:42:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 433E7F8038F;
+	Fri, 30 Aug 2019 18:06:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75E88F805FA; Fri, 30 Aug 2019 17:42:57 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3552CF80445; Fri, 30 Aug 2019 18:06:13 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE678F805F8
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 17:42:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE678F805F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7EFAF80362
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 18:06:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7EFAF80362
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DM1CXlk1"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com
- [209.85.160.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E2A9023428
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 15:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1567179773;
- bh=SjF+r0sRfSw6guTPuHirWIwopvlcS/mInacUNuCDDCA=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=DM1CXlk1CMfyPGG+0KfVCNMQGXt7kL6/zsk9Vb3449Al86pJsn6TSalEvXkUtHuzn
- b11LJRp6XB3YsulP4B8pzRz9DudGUcUlJV/mtIvvRYPNXsdwNkGrioCMtzSilJ1tCB
- 0lSAXuF1GBwBeDXKDif2Bn5lXm6RoGN3QwI5rrYk=
-Received: by mail-qt1-f182.google.com with SMTP id n7so8047719qtb.6
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 08:42:52 -0700 (PDT)
-X-Gm-Message-State: APjAAAW74VQ4HtEAcmMqP1pzWa9+XzJp2rh3E7mYhWpdYXRTIAg5Neji
- xA5tdNezkc8FWeubcO7iJ003avQcwecHxmjnKA==
-X-Google-Smtp-Source: APXvYqzXCHsQQOsvgsiISFEf/Zttwtxmy7SUxWU0aJkqVW9uY0SYjqHWdC/KWYvM+YsA8KFQRpWU9v+qwwnvZLkjrU4=
-X-Received: by 2002:aed:24f4:: with SMTP id u49mr16280140qtc.110.1567179772161; 
- Fri, 30 Aug 2019 08:42:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190828125209.28173-1-mripard@kernel.org>
-In-Reply-To: <20190828125209.28173-1-mripard@kernel.org>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Fri, 30 Aug 2019 10:42:40 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJBs_vmqbe9DmEjNJR3YO6-3mnyxrTbYq0b++0eGJnU3w@mail.gmail.com>
-Message-ID:
- <CAL_JsqJBs_vmqbe9DmEjNJR3YO6-3mnyxrTbYq0b++0eGJnU3w@mail.gmail.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [PATCH v2 1/5] ASoC: dt-bindings: sun4i-spdif: Fix
-	dma-names warning
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="WEqyfVAc"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=YhMasvUbf5bB7nMIZWCC37hmGc/Hr8ew1rZw/T3hagU=; b=WEqyfVAcJduq
+ NPjCWBMQR/G5IemJwEE45AyhAIUtJv2tD72/Gc54YtsiwX78uf1a/DhyxqxzV5VWiFvBkKaNhOQwt
+ IQ+aUb7EP0oy/wa9skfhiZUmJz5inwEXzhKVb7wlVvB8i6VKIr1xBpJFJNTm4xsxjRW9PLJ1l53P9
+ vKe/I=;
+Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1i3jPc-000790-Sa; Fri, 30 Aug 2019 16:06:08 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 3DFB32742CC6; Fri, 30 Aug 2019 17:06:08 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20190830074240.195166-4-tzungbi@google.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190830160608.3DFB32742CC6@ypsilon.sirena.org.uk>
+Date: Fri, 30 Aug 2019 17:06:08 +0100 (BST)
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
+Subject: [alsa-devel] Applied "ASoC: mediatek: mt8183: remove forward
+	declaration of headset_init" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,34 +88,100 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830154240.MgkL6lYvgXBDBJ7k-xjJK4uelN7JnpVOyJjrp8gcTfk@z>
+Message-ID: <20190830160608.t8kVUEdHeD7KzzPkHod0i59Jtv-Io2VYHxwSR8TS2NE@z>
 
-On Wed, Aug 28, 2019 at 7:52 AM Maxime Ripard <mripard@kernel.org> wrote:
->
-> From: Maxime Ripard <maxime.ripard@bootlin.com>
->
-> Even though the H6 compatible has been properly added, the exeption for the
-> number of DMA channels hasn't been updated, leading in a validation
-> warning.
->
-> Fix this.
->
-> Fixes: b20453031472 ("dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible")
-> Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
->
-> ---
->
-> Changes from v1:
->   - Fix subject prefix
-> ---
->  .../devicetree/bindings/sound/allwinner,sun4i-a10-spdif.yaml  | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+The patch
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+   ASoC: mediatek: mt8183: remove forward declaration of headset_init
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From fc347483b87f029c1bc18a8492623ca21dcd7607 Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 30 Aug 2019 15:42:39 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: remove forward declaration of
+ headset_init
+
+The forward declaration of mt8183_mt6358_ts3a227_max98357_headset_init
+is for cyclic dependency between card, headset_dev, and headset_init.
+
+It used to be:
+- card depends on headset_dev
+- headset_dev depends on headset_init
+- headset_init depends on card
+
+Commit a962a809e5e4 ("ASoC: mediatek: mt8183: make headset codec
+optional") removed the cyclic dependency.
+
+Thus, it is safe to remove the forward declaration.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20190830074240.195166-4-tzungbi@google.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c         | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index a7ad41b6e885..30a7735c4af3 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -390,14 +390,6 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 	},
+ };
+ 
+-static int
+-mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *cpnt);
+-
+-static struct snd_soc_aux_dev mt8183_mt6358_ts3a227_max98357_headset_dev = {
+-	.dlc = COMP_EMPTY(),
+-	.init = mt8183_mt6358_ts3a227_max98357_headset_init,
+-};
+-
+ static struct snd_soc_card mt8183_mt6358_ts3a227_max98357_card = {
+ 	.name = "mt8183_mt6358_ts3a227_max98357",
+ 	.owner = THIS_MODULE,
+@@ -428,6 +420,11 @@ mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *component)
+ 	return ret;
+ }
+ 
++static struct snd_soc_aux_dev mt8183_mt6358_ts3a227_max98357_headset_dev = {
++	.dlc = COMP_EMPTY(),
++	.init = mt8183_mt6358_ts3a227_max98357_headset_init,
++};
++
+ static int
+ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ {
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
