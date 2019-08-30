@@ -1,60 +1,37 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: es8316: Add clock control of MCLK
-Date: Fri, 30 Aug 2019 12:18:17 +0100
-Message-ID: <20190830111817.GA5182@sirena.co.uk>
-References: <20190829173205.11805-1-katsuhiro@katsuster.net>
- <20190829173205.11805-2-katsuhiro@katsuster.net>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: sun4i-i2s: incorrect regmap for A83t
+Date: Fri, 30 Aug 2019 12:44:57 +0100
+Message-ID: <20190830114457.GB5182@sirena.co.uk>
+References: <20190821162320.28653-1-codekipper@gmail.com>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBQEYUTVQKGQEWMXOVEA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20190829173205.11805-2-katsuhiro@katsuster.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20190821162320.28653-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: mripard-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
+--2B/JsCI69OhZNC5r
+Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
-On Fri, Aug 30, 2019 at 02:32:04AM +0900, Katsuhiro Suzuki wrote:
+On Wed, Aug 21, 2019 at 06:23:20PM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> 
+> Fixes: 21faaea1343f ("ASoC: sun4i-i2s: Add support for A83T")
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
 
-> +	es8316->mclk = devm_clk_get(component->dev, "mclk");
-> +	if (PTR_ERR(es8316->mclk) == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-
-If we don't get a clock it'd be nice to at least log that in case
-there's something wrong with the clock driver so that people have more
-of a hint as to why things might be breaking.
-
-> +
-> +	if (es8316->mclk) {
-> +		ret = clk_prepare_enable(es8316->mclk);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-
-There's nothing that disables the clock on remove.
-
-Otherwise this looks good.
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1pBfYACgkQJNaLcl1U
-h9Cfdgf/QHjLqKONAE1J+gdjS0oEehwivLJxEfiY5Bz+LQ/xr+cbRBqLot2+aWM7
-b0nZOgOiyKEj6nHSsFnd5ss9GJPvxePyhpwrYifIwRk9UyD6Z16cDP7V1Rz4ad0z
-SFmyAE1XHhvbO5MrQvfmKpO9NfiyiuieFf3HQNDgDfPzLKBHgBXZEv4uHuAp7Id6
-DeggzMHMb4buK21+AWzcMUh8i8Uygh93qvvpWp6crjUkiIx11kmGuJSp7bYSTx28
-1DAHiGVBssJ/RVRk/DJUDuHamDOg+zdDzsy2Br+67WLM8o7azI/4zV3q80HdMz3P
-KnY0fDkDGYNvaRG9WZfo7UR6sCQNdQ==
-=QHgV
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
+This doesn't apply against current code, please check and resend.
+--2B/JsCI69OhZNC5r--
