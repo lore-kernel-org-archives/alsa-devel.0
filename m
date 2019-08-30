@@ -1,60 +1,97 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] soundwire: slave: Fix unused function warning on !ACPI
-Date: Fri, 30 Aug 2019 11:56:21 -0700
-Message-ID: <f8c58d45-e641-5071-33bf-2927a61cb419@infradead.org>
-References: <20190830185212.25144-1-msuchanek@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH] ASoC: fsl_sai: Fix noise when using EDMA
+Date: Fri, 30 Aug 2019 23:09:00 +0300
+Message-ID: <20190830200900.19668-1-daniel.baluta@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190830185212.25144-1-msuchanek@suse.de>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Michal Suchanek <msuchanek@suse.de>, alsa-devel@alsa-project.org
-Cc: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org
+To: broonie@kernel.org
+Cc: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, mihai.serban@gmail.com, Mihai Serban <mihai.serban@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/30/19 11:52 AM, Michal Suchanek wrote:
-> Fixes the following warning on !ACPI systems:
-> 
-> drivers/soundwire/slave.c:16:12: warning: ‘sdw_slave_add’ defined but
-> not used [-Wunused-function]
->  static int sdw_slave_add(struct sdw_bus *bus,
->             ^~~~~~~~~~~~~
-> 
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+From: Mihai Serban <mihai.serban@nxp.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+EDMA requires the period size to be multiple of maxburst. Otherwise the
+remaining bytes are not transferred and thus noise is produced.
 
-I was about to send the same patch.
-Thanks.
+We can handle this issue by adding a constraint on
+SNDRV_PCM_HW_PARAM_PERIOD_SIZE to be multiple of tx/rx maxburst value.
 
-> ---
->  drivers/soundwire/slave.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-> index f39a5815e25d..34c7e65831d1 100644
-> --- a/drivers/soundwire/slave.c
-> +++ b/drivers/soundwire/slave.c
-> @@ -6,6 +6,7 @@
->  #include <linux/soundwire/sdw_type.h>
->  #include "bus.h"
->  
-> +#if IS_ENABLED(CONFIG_ACPI)
->  static void sdw_slave_release(struct device *dev)
->  {
->  	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> @@ -60,7 +61,6 @@ static int sdw_slave_add(struct sdw_bus *bus,
->  	return ret;
->  }
->  
-> -#if IS_ENABLED(CONFIG_ACPI)
->  /*
->   * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
->   * @bus: SDW bus instance
-> 
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 15 +++++++++++++++
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 16 insertions(+)
 
-
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 728307acab90..fe126029f4e3 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -612,6 +612,16 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 			   FSL_SAI_CR3_TRCE_MASK,
+ 			   FSL_SAI_CR3_TRCE);
+ 
++	/*
++	 * some DMA controllers need period size to be a multiple of
++	 * tx/rx maxburst
++	 */
++	if (sai->soc_data->use_constraint_period_size)
++		snd_pcm_hw_constraint_step(substream->runtime, 0,
++					   SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++					   tx ? sai->dma_params_tx.maxburst :
++					   sai->dma_params_rx.maxburst);
++
+ 	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_RATE, &fsl_sai_rate_constraints);
+ 
+@@ -1011,30 +1021,35 @@ static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
+ 	.use_imx_pcm = false,
+ 	.fifo_depth = 32,
+ 	.reg_offset = 0,
++	.use_constraint_period_size = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
+ 	.use_imx_pcm = true,
+ 	.fifo_depth = 32,
+ 	.reg_offset = 0,
++	.use_constraint_period_size = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
+ 	.use_imx_pcm = true,
+ 	.fifo_depth = 16,
+ 	.reg_offset = 8,
++	.use_constraint_period_size = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
+ 	.use_imx_pcm = true,
+ 	.fifo_depth = 128,
+ 	.reg_offset = 8,
++	.use_constraint_period_size = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx8qm_data = {
+ 	.use_imx_pcm = true,
+ 	.fifo_depth = 64,
+ 	.reg_offset = 0,
++	.use_constraint_period_size = true,
+ };
+ 
+ static const struct of_device_id fsl_sai_ids[] = {
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index b89b0ca26053..3a3f6f8e5595 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -157,6 +157,7 @@
+ 
+ struct fsl_sai_soc_data {
+ 	bool use_imx_pcm;
++	bool use_constraint_period_size;
+ 	unsigned int fifo_depth;
+ 	unsigned int reg_offset;
+ };
 -- 
-~Randy
+2.17.1
