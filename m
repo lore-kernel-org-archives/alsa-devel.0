@@ -1,18 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/4] ASoC: ti: davinci-i2s: Add S32_LE as
-	support format
-Date: Fri, 30 Aug 2019 13:38:38 +0300
-Message-ID: <20190830103841.25128-2-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/4] ASoC: ti: davinci-i2s: Move the XSYNCERR
+	workaround to .prepare callback
+Date: Fri, 30 Aug 2019 13:38:39 +0300
+Message-ID: <20190830103841.25128-3-peter.ujfalusi@ti.com>
 References: <20190830103841.25128-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33C49F80096
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 12:38:22 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDEBEF80096
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 12:38:26 +0200 (CEST)
 In-Reply-To: <20190830103841.25128-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,45 +27,129 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-ASP/McBSP can support 8/16/20/24/32 bits word in theory. I have only tested
-S16_LE and S32_LE, the other formats might not work so only extend the
-supported formats with S32_LE for now.
+Currently the driver uses snd_soc_rtdcom_lookup() in it's mcbsp_start
+function to try to stop/restart the DMA as the initial XSYNCERR workaround
+need to be done before the DMA is armed.
 
+There are couple of things wrong with this:
+- the driver crashes with NULL pointer dereference as the
+  component->driver->ops is actually NULL
+- the driver should not use snd_soc_rtdcom_lookup() in the first place
+- Fiddling with DMA is never a good thing
+
+Move the workaround handling to .prepare which is called before the DMA is
+armed, so it complies with the requirements.
+
+Reported-by (usage of snd_soc_rtdcom_lookup): Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/ti/davinci-i2s.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/ti/davinci-i2s.c | 82 ++++++++++++++++----------------------
+ 1 file changed, 34 insertions(+), 48 deletions(-)
 
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 92c1bdc69086..f04d9fb5130f 100644
+index f04d9fb5130f..d89b5c928c4d 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -612,6 +612,8 @@ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
+@@ -187,57 +187,9 @@ static void toggle_clock(struct davinci_mcbsp_dev *dev, int playback)
+ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 		struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	u32 spcr;
+ 	u32 mask = playback ? DAVINCI_MCBSP_SPCR_XRST : DAVINCI_MCBSP_SPCR_RRST;
+-	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+-	if (spcr & mask) {
+-		/* start off disabled */
+-		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG,
+-				spcr & ~mask);
+-		toggle_clock(dev, playback);
+-	}
+-	if (dev->pcr & (DAVINCI_MCBSP_PCR_FSXM | DAVINCI_MCBSP_PCR_FSRM |
+-			DAVINCI_MCBSP_PCR_CLKXM | DAVINCI_MCBSP_PCR_CLKRM)) {
+-		/* Start the sample generator */
+-		spcr |= DAVINCI_MCBSP_SPCR_GRST;
+-		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
+-	}
+-
+-	if (playback) {
+-		/* Stop the DMA to avoid data loss */
+-		/* while the transmitter is out of reset to handle XSYNCERR */
+-		if (component->driver->ops->trigger) {
+-			int ret = component->driver->ops->trigger(substream,
+-				SNDRV_PCM_TRIGGER_STOP);
+-			if (ret < 0)
+-				printk(KERN_DEBUG "Playback DMA stop failed\n");
+-		}
+-
+-		/* Enable the transmitter */
+-		spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+-		spcr |= DAVINCI_MCBSP_SPCR_XRST;
+-		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
+-
+-		/* wait for any unexpected frame sync error to occur */
+-		udelay(100);
+-
+-		/* Disable the transmitter to clear any outstanding XSYNCERR */
+-		spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+-		spcr &= ~DAVINCI_MCBSP_SPCR_XRST;
+-		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
+-		toggle_clock(dev, playback);
+-
+-		/* Restart the DMA */
+-		if (component->driver->ops->trigger) {
+-			int ret = component->driver->ops->trigger(substream,
+-				SNDRV_PCM_TRIGGER_START);
+-			if (ret < 0)
+-				printk(KERN_DEBUG "Playback DMA start failed\n");
+-		}
+-	}
+ 
+ 	/* Enable transmitter or receiver */
+ 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+@@ -575,7 +527,41 @@ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
+ {
+ 	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
++	u32 spcr;
++	u32 mask = playback ? DAVINCI_MCBSP_SPCR_XRST : DAVINCI_MCBSP_SPCR_RRST;
++
+ 	davinci_mcbsp_stop(dev, playback);
++
++	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++	if (spcr & mask) {
++		/* start off disabled */
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG,
++					spcr & ~mask);
++		toggle_clock(dev, playback);
++	}
++	if (dev->pcr & (DAVINCI_MCBSP_PCR_FSXM | DAVINCI_MCBSP_PCR_FSRM |
++			DAVINCI_MCBSP_PCR_CLKXM | DAVINCI_MCBSP_PCR_CLKRM)) {
++		/* Start the sample generator */
++		spcr |= DAVINCI_MCBSP_SPCR_GRST;
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
++	}
++
++	if (playback) {
++		/* Enable the transmitter */
++		spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++		spcr |= DAVINCI_MCBSP_SPCR_XRST;
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
++
++		/* wait for any unexpected frame sync error to occur */
++		udelay(100);
++
++		/* Disable the transmitter to clear any outstanding XSYNCERR */
++		spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++		spcr &= ~DAVINCI_MCBSP_SPCR_XRST;
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
++		toggle_clock(dev, playback);
++	}
++
+ 	return 0;
  }
  
- #define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
-+#define DAVINCI_I2S_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+				 SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
- 	.shutdown	= davinci_i2s_shutdown,
-@@ -639,12 +641,14 @@ static struct snd_soc_dai_driver davinci_i2s_dai = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = DAVINCI_I2S_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+		.formats = DAVINCI_I2S_FORMATS,
-+	},
- 	.capture = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = DAVINCI_I2S_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+		.formats = DAVINCI_I2S_FORMATS,
-+	},
- 	.ops = &davinci_i2s_dai_ops,
- 
- };
 -- 
 Peter
 
