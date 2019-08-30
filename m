@@ -1,19 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 4/4] ASoC: ti: davinci-evm: Do not fail if the
-	dai_set_sysclk returns -ENOTSUPP
-Date: Fri, 30 Aug 2019 13:38:41 +0300
-Message-ID: <20190830103841.25128-5-peter.ujfalusi@ti.com>
-References: <20190830103841.25128-1-peter.ujfalusi@ti.com>
+From: Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: Re: [PATCH] ASoC: rsnd: fixup 6ch settings to 8ch
+Date: Fri, 30 Aug 2019 13:03:57 +0200
+Message-ID: <20190830110357.GA20127@vmlxhi-102.adit-jv.com>
+References: <877ebi1v1e.wl-kuninori.morimoto.gx@renesas.com>
+ <20190826093032.GA24143@vmlxhi-102.adit-jv.com>
+ <87lfvf5to9.wl-kuninori.morimoto.gx@renesas.com>
+ <20190827074817.GA27667@vmlxhi-102.adit-jv.com>
+ <87h863583y.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D58BFF80444
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 12:38:28 +0200 (CEST)
-In-Reply-To: <20190830103841.25128-1-peter.ujfalusi@ti.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02D08F80096
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 13:04:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <87h863583y.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +27,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, kuninori.morimoto.gx@renesas.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Timo Wischer <twischer@de.adit-jv.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Andrew Gabbasov <andrew_gabbasov@mentor.com>, Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>, Mark Brown <broonie@kernel.org>, Eugeniu Rosca <erosca@de.adit-jv.com>, Joshua Frkuska <joshua_frkuska@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
-The davinci McBSP (davinci-i2s) driver does not implement the set_sysclk
-callback, which is fine and should not be treated as error.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/ti/davinci-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
-index bfd8d1a03ba7..686b23d7a90d 100644
---- a/sound/soc/ti/davinci-evm.c
-+++ b/sound/soc/ti/davinci-evm.c
-@@ -68,7 +68,7 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* set the CPU system clock */
- 	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, sysclk, SND_SOC_CLOCK_OUT);
--	if (ret < 0)
-+	if (ret < 0 && ret != -ENOTSUPP)
- 		return ret;
- 
- 	return 0;
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+SGVsbG8gTW9yaW1vdG8tc2FuLAoKT24gVHVlLCBBdWcgMjcsIDIwMTkgYXQgMDU6Mjg6MzdQTSAr
+MDkwMCwgS3VuaW5vcmkgTW9yaW1vdG8gd3JvdGU6Cj4gRm9yICJURE0gRXh0ZW5kIG1vZGUiLCB3
+ZSBuZWVkIHRvIHVzZSA4Y2ggY2xvY2sgZm9yIDZjaCBzb3VuZC4KPiBTZWUgRmlndXJlIDQxLjEy
+IAo+IAkiVERNIEV4dGVuZCBNb2RlIE9wZXJhdGlvbiB3aXRoIDgtY2hhbm5lbCBEYXRhIGluIFNl
+cmlhbCBCdXMKPiAJIGFuZCA2LWNoYW5uZWwgRGF0YSBJbnNpZGUgdGhlIFNvQyAoU1NJMCkiCj4g
+Cj4gRm9yICJURE0gU3BsaXQgbW9kZSIsIGl0IGlzIDRjaCBvciA4Y2ggKDRjaCBpcyBub3Qgc3Vw
+cG9ydGVkIG9uIHRoaXMgZHJpdmVyKS4KPiBTZWUgRmlndXJlIDQxLjE3Cj4gCSJURE0gU3BsaXQg
+TW9kZSAoU3RlcmVvIMOXIDQpIgoKTWFueSB0aGFua3MgZm9yIHRoZSBoZWxwZnVsIGNvbW1lbnRz
+LgoKLS0gCkJlc3QgUmVnYXJkcywKRXVnZW5pdS4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
