@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8183: remove forward
-	declaration of headset_init" to the asoc tree
+Subject: Applied "ASoC: mediatek: mt8183: fix space issues" to
+	the asoc tree
 Date: Fri, 30 Aug 2019 17:06:08 +0100 (BST)
-Message-ID: <20190830160608.3DFB32742CC6@ypsilon.sirena.org.uk>
-References: <20190830074240.195166-4-tzungbi@google.com>
+Message-ID: <20190830160608.0EFC22742CA7@ypsilon.sirena.org.uk>
+References: <20190830074240.195166-5-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7EFAF80362
+ by alsa1.perex.cz (Postfix) with ESMTPS id C392BF800D1
  for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 18:06:09 +0200 (CEST)
-In-Reply-To: <20190830074240.195166-4-tzungbi@google.com>
+In-Reply-To: <20190830074240.195166-5-tzungbi@google.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,7 +29,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183: remove forward declaration of headset_init
+   ASoC: mediatek: mt8183: fix space issues
 
 has been applied to the asoc tree at
 
@@ -54,62 +54,39 @@ to this mail.
 Thanks,
 Mark
 
->From fc347483b87f029c1bc18a8492623ca21dcd7607 Mon Sep 17 00:00:00 2001
+>From e5b3ae3e8c4772106713698075a87bff1e86e710 Mon Sep 17 00:00:00 2001
 From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 30 Aug 2019 15:42:39 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: remove forward declaration of
- headset_init
+Date: Fri, 30 Aug 2019 15:42:40 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: fix space issues
 
-The forward declaration of mt8183_mt6358_ts3a227_max98357_headset_init
-is for cyclic dependency between card, headset_dev, and headset_init.
-
-It used to be:
-- card depends on headset_dev
-- headset_dev depends on headset_init
-- headset_init depends on card
-
-Commit a962a809e5e4 ("ASoC: mediatek: mt8183: make headset codec
-optional") removed the cyclic dependency.
-
-Thus, it is safe to remove the forward declaration.
+Fix space issues:
+- No space before ';'.
+- No trailing blank line.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20190830074240.195166-4-tzungbi@google.com
+Link: https://lore.kernel.org/r/20190830074240.195166-5-tzungbi@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c         | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index a7ad41b6e885..30a7735c4af3 100644
+index 30a7735c4af3..bb9cdc0d6552 100644
 --- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
 +++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -390,14 +390,6 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 	},
- };
+@@ -471,7 +471,7 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->pinctrl);
+ 	}
  
--static int
--mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *cpnt);
+-	for (i = 0 ; i < PIN_STATE_MAX ; i++) {
++	for (i = 0; i < PIN_STATE_MAX; i++) {
+ 		priv->pin_states[i] = pinctrl_lookup_state(priv->pinctrl,
+ 							   mt8183_pin_str[i]);
+ 		if (IS_ERR(priv->pin_states[i])) {
+@@ -526,4 +526,3 @@ MODULE_DESCRIPTION("MT8183-MT6358-TS3A227-MAX98357 ALSA SoC machine driver");
+ MODULE_AUTHOR("Shunli Wang <shunli.wang@mediatek.com>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("mt8183_mt6358_ts3a227_max98357 soc card");
 -
--static struct snd_soc_aux_dev mt8183_mt6358_ts3a227_max98357_headset_dev = {
--	.dlc = COMP_EMPTY(),
--	.init = mt8183_mt6358_ts3a227_max98357_headset_init,
--};
--
- static struct snd_soc_card mt8183_mt6358_ts3a227_max98357_card = {
- 	.name = "mt8183_mt6358_ts3a227_max98357",
- 	.owner = THIS_MODULE,
-@@ -428,6 +420,11 @@ mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *component)
- 	return ret;
- }
- 
-+static struct snd_soc_aux_dev mt8183_mt6358_ts3a227_max98357_headset_dev = {
-+	.dlc = COMP_EMPTY(),
-+	.init = mt8183_mt6358_ts3a227_max98357_headset_init,
-+};
-+
- static int
- mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- {
 -- 
 2.20.1
