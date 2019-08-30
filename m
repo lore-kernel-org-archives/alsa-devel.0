@@ -1,17 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 0/4] ASoC: ti: davinci: Fixes for daVinci
-	boards with McBSP
-Date: Fri, 30 Aug 2019 13:38:37 +0300
-Message-ID: <20190830103841.25128-1-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/4] ASoC: ti: davinci-i2s: Add S32_LE as
+	support format
+Date: Fri, 30 Aug 2019 13:38:38 +0300
+Message-ID: <20190830103841.25128-2-peter.ujfalusi@ti.com>
+References: <20190830103841.25128-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EBD0DF800E7
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 12:38:21 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33C49F80096
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 12:38:22 +0200 (CEST)
+In-Reply-To: <20190830103841.25128-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +27,45 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+ASP/McBSP can support 8/16/20/24/32 bits word in theory. I have only tested
+S16_LE and S32_LE, the other formats might not work so only extend the
+supported formats with S32_LE for now.
 
-Morimoto-san pointed out in a private thread that the davinci-i2s driver is
-using snd_soc_rtdcom_lookup(), which is should not really.
-
-It took a while to get access to a daVinci board which uses McBSP, but
-eventually I got access to a remote dm644x-evm and dma365-evm.
-
-Initially the audio was not even probing on them (fixes sent for mach-davinci),
-but then the driver was still crashing and not behaving correctly.
-
-With the 4 patch dm644x-evm have working audio and the offending
-snd_soc_rtdcom_lookup() is gone from the driver.
-dm365-evm still have some issues regarding to EDMA, but it looks like a system
-issue which can be fixed later.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (4):
-  ASoC: ti: davinci-i2s: Add S32_LE as support format
-  ASoC: ti: davinci-i2s: Move the XSYNCERR workaround to .prepare
-    callback
-  ASoC: ti: edma-pcm: Fix for legacy dma_slave_map based channel lookup
-  ASoC: ti: davinci-evm: Do not fail if the dai_set_sysclk returns
-    -ENOTSUPP
+ sound/soc/ti/davinci-i2s.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
- sound/soc/ti/davinci-evm.c |  2 +-
- sound/soc/ti/davinci-i2s.c | 90 +++++++++++++++++---------------------
- sound/soc/ti/edma-pcm.c    | 17 ++++++-
- 3 files changed, 57 insertions(+), 52 deletions(-)
-
+diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
+index 92c1bdc69086..f04d9fb5130f 100644
+--- a/sound/soc/ti/davinci-i2s.c
++++ b/sound/soc/ti/davinci-i2s.c
+@@ -612,6 +612,8 @@ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
+ }
+ 
+ #define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
++#define DAVINCI_I2S_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++				 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+ 	.shutdown	= davinci_i2s_shutdown,
+@@ -639,12 +641,14 @@ static struct snd_soc_dai_driver davinci_i2s_dai = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = DAVINCI_I2S_RATES,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++		.formats = DAVINCI_I2S_FORMATS,
++	},
+ 	.capture = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = DAVINCI_I2S_RATES,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++		.formats = DAVINCI_I2S_FORMATS,
++	},
+ 	.ops = &davinci_i2s_dai_ops,
+ 
+ };
 -- 
 Peter
 
