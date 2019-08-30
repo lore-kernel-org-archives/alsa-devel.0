@@ -1,108 +1,85 @@
 From: Hui Peng <benquike@gmail.com>
-Subject: [PATCH 2/2] Fix a stack buffer overflow bug in check_input_term
-Date: Fri, 30 Aug 2019 17:47:29 -0400
-Message-ID: <20190830214730.27842-1-benquike@gmail.com>
+Subject: Re: [PATCH 1/2] Fix an OOB bug in
+	parse_audio_mixer_unit
+Date: Fri, 30 Aug 2019 17:49:59 -0400
+Message-ID: <CAKpmkkVQ2fbL47JrbVMrfCenPShjjwfkS9MY0Ay5MpyFjftxpg@mail.gmail.com>
+References: <20190830214649.27761-1-benquike@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com
+ [IPv6:2607:f8b0:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BFFAF800D1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 23:50:12 +0200 (CEST)
+Received: by mail-ot1-x341.google.com with SMTP id 100so8358340otn.2
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 14:50:12 -0700 (PDT)
+In-Reply-To: <20190830214649.27761-1-benquike@gmail.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: stable@vger.kernel.org
-Cc: Hui Peng <benquike@gmail.com>, Mathias Payer <mathias.payer@nebelwelt.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Wenwen Wang <wang6495@umn.edu>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mathias Payer <mathias.payer@nebelwelt.net>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Wenwen Wang <wang6495@umn.edu>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-`check_input_term` recursively calls itself with input from
-device side (e.g., uac_input_terminal_descriptor.bCSourceID)
-as argument (id). In `check_input_term`, if `check_input_term`
-is called with the same `id` argument as the caller, it triggers
-endless recursive call, resulting kernel space stack overflow.
+This is the backported patch of the following bug to v4.4.x and v4.14.x:
+daac07156b33 ("ALSA: usb-audio: Fix an OOB bug in parse_audio_mixer_unit")
 
-This patch fixes the bug by adding a bitmap to `struct mixer_build`
-to keep track of the checked ids and stop the execution if some id
-has been checked (similar to how parse_audio_unit handles unitid
-argument).
+On Fri, Aug 30, 2019 at 5:47 PM Hui Peng <benquike@gmail.com> wrote:
 
-CVE: CVE-2018-15118
-
-Reported-by: Hui Peng <benquike@gmail.com>
-Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-Signed-off-by: Hui Peng <benquike@gmail.com>
----
- sound/usb/mixer.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 10ddec76f906..e24572fd6e30 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -81,6 +81,7 @@ struct mixer_build {
- 	unsigned char *buffer;
- 	unsigned int buflen;
- 	DECLARE_BITMAP(unitbitmap, MAX_ID_ELEMS);
-+	DECLARE_BITMAP(termbitmap, MAX_ID_ELEMS);
- 	struct usb_audio_term oterm;
- 	const struct usbmix_name_map *map;
- 	const struct usbmix_selector_map *selector_map;
-@@ -709,15 +710,24 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
-  * parse the source unit recursively until it reaches to a terminal
-  * or a branched unit.
-  */
--static int check_input_term(struct mixer_build *state, int id,
-+static int __check_input_term(struct mixer_build *state, int id,
- 			    struct usb_audio_term *term)
- {
- 	int err;
- 	void *p1;
-+	unsigned char *hdr;
- 
- 	memset(term, 0, sizeof(*term));
--	while ((p1 = find_audio_control_unit(state, id)) != NULL) {
--		unsigned char *hdr = p1;
-+	for (;;) {
-+		/* a loop in the terminal chain? */
-+		if (test_and_set_bit(id, state->termbitmap))
-+			return -EINVAL;
-+
-+		p1 = find_audio_control_unit(state, id);
-+		if (!p1)
-+			break;
-+
-+		hdr = p1;
- 		term->id = id;
- 		switch (hdr[2]) {
- 		case UAC_INPUT_TERMINAL:
-@@ -732,7 +742,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 
- 				/* call recursively to verify that the
- 				 * referenced clock entity is valid */
--				err = check_input_term(state, d->bCSourceID, term);
-+				err = __check_input_term(state, d->bCSourceID, term);
- 				if (err < 0)
- 					return err;
- 
-@@ -764,7 +774,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 		case UAC2_CLOCK_SELECTOR: {
- 			struct uac_selector_unit_descriptor *d = p1;
- 			/* call recursively to retrieve the channel info */
--			err = check_input_term(state, d->baSourceID[0], term);
-+			err = __check_input_term(state, d->baSourceID[0], term);
- 			if (err < 0)
- 				return err;
- 			term->type = d->bDescriptorSubtype << 16; /* virtual type */
-@@ -811,6 +821,15 @@ static int check_input_term(struct mixer_build *state, int id,
- 	return -ENODEV;
- }
- 
-+
-+static int check_input_term(struct mixer_build *state, int id,
-+			    struct usb_audio_term *term)
-+{
-+	memset(term, 0, sizeof(*term));
-+	memset(state->termbitmap, 0, sizeof(state->termbitmap));
-+	return __check_input_term(state, id, term);
-+}
-+
- /*
-  * Feature Unit
-  */
--- 
-2.17.1
+> The `uac_mixer_unit_descriptor` shown as below is read from the
+> device side. In `parse_audio_mixer_unit`, `baSourceID` field is
+> accessed from index 0 to `bNrInPins` - 1, the current implementation
+> assumes that descriptor is always valid (the length  of descriptor
+> is no shorter than 5 + `bNrInPins`). If a descriptor read from
+> the device side is invalid, it may trigger out-of-bound memory
+> access.
+>
+> ```
+> struct uac_mixer_unit_descriptor {
+>         __u8 bLength;
+>         __u8 bDescriptorType;
+>         __u8 bDescriptorSubtype;
+>         __u8 bUnitID;
+>         __u8 bNrInPins;
+>         __u8 baSourceID[];
+> }
+> ```
+>
+> This patch fixes the bug by add a sanity check on the length of
+> the descriptor.
+>
+> CVE: CVE-2018-15117
+>
+> Reported-by: Hui Peng <benquike@gmail.com>
+> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+> Signed-off-by: Hui Peng <benquike@gmail.com>
+> ---
+>  sound/usb/mixer.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index 1f7eb3816cd7..10ddec76f906 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -1628,6 +1628,7 @@ static int parse_audio_mixer_unit(struct mixer_build
+> *state, int unitid,
+>         int pin, ich, err;
+>
+>         if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
+> +           desc->bLength < sizeof(*desc) + desc->bNrInPins ||
+>             !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
+>                 usb_audio_err(state->chip,
+>                               "invalid MIXER UNIT descriptor %d\n",
+> --
+> 2.17.1
+>
+>
