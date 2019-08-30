@@ -1,30 +1,35 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: Convert Allwinner A33 codec to a schema"
- to the asoc tree
-Date: Fri, 30 Aug 2019 17:06:07 +0100 (BST)
-Message-ID: <20190830160607.A4AD82742BD3@ypsilon.sirena.org.uk>
-References: <20190828125209.28173-3-mripard@kernel.org>
+Subject: Applied "ASoC: mediatek: mt8183: remove forward
+	declaration of headset_init" to the asoc tree
+Date: Fri, 30 Aug 2019 17:06:08 +0100 (BST)
+Message-ID: <20190830160608.3DFB32742CC6@ypsilon.sirena.org.uk>
+References: <20190830074240.195166-4-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190828125209.28173-3-mripard@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Maxime Ripard <mripard@kernel.org>, Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7EFAF80362
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 18:06:09 +0200 (CEST)
+In-Reply-To: <20190830074240.195166-4-tzungbi@google.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dt-bindings: Convert Allwinner A33 codec to a schema
+   ASoC: mediatek: mt8183: remove forward declaration of headset_init
 
 has been applied to the asoc tree at
 
@@ -49,159 +54,62 @@ to this mail.
 Thanks,
 Mark
 
->From 8a99f76ac1a591f27f5216951bf8a8fdad58e987 Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Wed, 28 Aug 2019 14:52:07 +0200
-Subject: [PATCH] ASoC: dt-bindings: Convert Allwinner A33 codec to a schema
+>From fc347483b87f029c1bc18a8492623ca21dcd7607 Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 30 Aug 2019 15:42:39 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: remove forward declaration of
+ headset_init
 
-The Allwinner A33 SoC have an embedded audio codec that is supported in Linux,
-with a matching Device Tree binding.
+The forward declaration of mt8183_mt6358_ts3a227_max98357_headset_init
+is for cyclic dependency between card, headset_dev, and headset_init.
 
-Now that we have the DT validation in place, let's convert the device tree
-bindings for that controller over to a YAML schemas.
+It used to be:
+- card depends on headset_dev
+- headset_dev depends on headset_init
+- headset_init depends on card
 
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/20190828125209.28173-3-mripard@kernel.org
-Reviewed-by: Rob Herring <robh@kernel.org>
+Commit a962a809e5e4 ("ASoC: mediatek: mt8183: make headset codec
+optional") removed the cyclic dependency.
+
+Thus, it is safe to remove the forward declaration.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20190830074240.195166-4-tzungbi@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../sound/allwinner,sun8i-a33-codec.yaml      | 57 +++++++++++++++++
- .../bindings/sound/sun8i-a33-codec.txt        | 63 -------------------
- 2 files changed, 57 insertions(+), 63 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c         | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-new file mode 100644
-index 000000000000..5e7cc05bbff1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun8i-a33-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner A33 Codec Device Tree Bindings
-+
-+maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Maxime Ripard <maxime.ripard@bootlin.com>
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    const: allwinner,sun8i-a33-codec
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: bus
-+      - const: mod
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    audio-codec@1c22e00 {
-+      #sound-dai-cells = <0>;
-+      compatible = "allwinner,sun8i-a33-codec";
-+      reg = <0x01c22e00 0x400>;
-+      interrupts = <0 29 4>;
-+      clocks = <&ccu 47>, <&ccu 92>;
-+      clock-names = "bus", "mod";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-deleted file mode 100644
-index 7ecf6bd60d27..000000000000
---- a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-+++ /dev/null
-@@ -1,63 +0,0 @@
--Allwinner SUN8I audio codec
--------------------------------------
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index a7ad41b6e885..30a7735c4af3 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -390,14 +390,6 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 	},
+ };
+ 
+-static int
+-mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *cpnt);
 -
--On Sun8i-A33 SoCs, the audio is separated in different parts:
--	  - A DAI driver. It uses the "sun4i-i2s" driver which is
--	  documented here:
--	  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
--	  - An analog part of the codec which is handled as PRCM registers.
--	  See Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
--	  - An digital part of the codec which is documented in this current
--	  binding documentation.
--	  - And finally, an audio card which links all the above components.
--	  The simple-audio card will be used.
--	  See Documentation/devicetree/bindings/sound/simple-card.txt
+-static struct snd_soc_aux_dev mt8183_mt6358_ts3a227_max98357_headset_dev = {
+-	.dlc = COMP_EMPTY(),
+-	.init = mt8183_mt6358_ts3a227_max98357_headset_init,
+-};
 -
--This bindings documentation exposes Sun8i codec (digital part).
--
--Required properties:
--- compatible: must be "allwinner,sun8i-a33-codec"
--- reg: must contain the registers location and length
--- interrupts: must contain the codec interrupt
--- clocks: a list of phandle + clock-specifer pairs, one for each entry
--  in clock-names.
--- clock-names: should contain followings:
--   - "bus": the parent APB clock for this controller
--   - "mod": the parent module clock
--
--Here is an example to add a sound card and the codec binding on sun8i SoCs that
--are similar to A33 using simple-card:
--
--	sound {
--		compatible = "simple-audio-card";
--		simple-audio-card,name = "sun8i-a33-audio";
--		simple-audio-card,format = "i2s";
--		simple-audio-card,frame-master = <&link_codec>;
--		simple-audio-card,bitclock-master = <&link_codec>;
--		simple-audio-card,mclk-fs = <512>;
--		simple-audio-card,aux-devs = <&codec_analog>;
--		simple-audio-card,routing =
--				"Left DAC", "Digital Left DAC",
--				"Right DAC", "Digital Right DAC";
--
--		simple-audio-card,cpu {
--			sound-dai = <&dai>;
--		};
--
--		link_codec: simple-audio-card,codec {
--			sound-dai = <&codec>;
--		};
--
--	soc@1c00000 {
--		[...]
--
--		audio-codec@1c22e00 {
--			#sound-dai-cells = <0>;
--			compatible = "allwinner,sun8i-a33-codec";
--			reg = <0x01c22e00 0x400>;
--			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
--			clock-names = "bus", "mod";
--		};
--	};
--
+ static struct snd_soc_card mt8183_mt6358_ts3a227_max98357_card = {
+ 	.name = "mt8183_mt6358_ts3a227_max98357",
+ 	.owner = THIS_MODULE,
+@@ -428,6 +420,11 @@ mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *component)
+ 	return ret;
+ }
+ 
++static struct snd_soc_aux_dev mt8183_mt6358_ts3a227_max98357_headset_dev = {
++	.dlc = COMP_EMPTY(),
++	.init = mt8183_mt6358_ts3a227_max98357_headset_init,
++};
++
+ static int
+ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ {
 -- 
 2.20.1
