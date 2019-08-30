@@ -2,83 +2,84 @@ Return-Path: <SRS0=nNdU=W2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2C59C3A59B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13D1BC3A5A6
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 18:57:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59F032342B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 16:11:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1664523430
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 18:57:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Smx7cJa4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GIbZ6piK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59F032342B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ugmw+sZh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="S+L15B5K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1664523430
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97AB21669;
-	Fri, 30 Aug 2019 18:10:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97AB21669
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEDC7822;
+	Fri, 30 Aug 2019 20:56:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEDC7822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567181483;
-	bh=de7pFEcO/pZ2j5c/OiCAc9BW1yz38Ih9K3hJw+5YWBU=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Smx7cJa48VHVo35ap9RlLZ1L3ihgxX+3v7IosXrh7+XgutYkwLGfz0G/MxsNre1PL
-	 +zGY4RwPfetr1fPw6cfL2NDGRlw4qAEC+1t1FGmAA7TspcLK+5m6NSbIk6cGiJBsvw
-	 6WLKFqPBtxL1ruP0T5Ucpt2099xsAQ+jNm+n8sls=
+	s=default; t=1567191443;
+	bh=yfrPz8V8q79etZ50HBVF4oFc15g5TPFdyufVSVvcrgs=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Ugmw+sZh4XlWHLljLGRcfYd3XJrl0Y2BgxDqQtRnY9v1UPM2weNG6FvzHKBkb72Na
+	 /kvfq4yR5yJ5ZWDzJ0uvHXpycSEwWqQUMwfmPLrHW/xoPc5VIpf4EZ7tunDkyE5M9K
+	 FH1PkMctCez9NESeLUn73tF72lDrFoaR0jKiMuOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75570F80633;
-	Fri, 30 Aug 2019 18:06:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 520CAF800D1;
+	Fri, 30 Aug 2019 20:56:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F996F80362; Fri, 30 Aug 2019 18:06:20 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ id E2CB6F80369; Fri, 30 Aug 2019 20:56:30 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D64CF80376
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 18:06:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D64CF80376
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BF1EF800D1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 20:56:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BF1EF800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="GIbZ6piK"
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="S+L15B5K"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=1f3dis+isIdCD05DxEhe7GivkC6mXBsN3I6QXf3Jtr0=; b=GIbZ6piKJ4l1
- +LQgFfI/cbt4V++eGMYIUqwLAKNVsvOXBuFQA13hRvI4i0/RfeZqAHuDY5ylloTnwR4GKAEh/10bi
- wSyI7tHmLgaIoqUMQ6ApT7ne1AYNRhXJPXh5pGP8uVPR/RyESmcOgeJdFphpydb7MHrRSmRrfs5dm
- Tl/KQ=;
-Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1i3jPc-00078w-Ba; Fri, 30 Aug 2019 16:06:08 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id A4AD82742BD3; Fri, 30 Aug 2019 17:06:07 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-In-Reply-To: <20190828125209.28173-3-mripard@kernel.org>
-X-Patchwork-Hint: ignore
-Message-Id: <20190830160607.A4AD82742BD3@ypsilon.sirena.org.uk>
-Date: Fri, 30 Aug 2019 17:06:07 +0100 (BST)
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Maxime Ripard <mripard@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: Convert Allwinner A33
-	codec to a schema" to the asoc tree
+ d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=qB7bQSi53I1npLxvR85xOF8bwwpMOBJ2wphwbJZyjGA=; b=S+L15B5KsQ25awTQMTHSrXwK9
+ /RlRLGUliPs9cgBcRwLZBX3Oq1glIaqAd2PBaeBgKNwUpGTgVwzgH9m0vt04PbrkKHLaMpcTeBBT/
+ 5eUmmbxDx4R1vvawFUfAhlW2pb6tJ08qrOjqdsxGoOd6u7jNBnnlVVnXlm+VDX6vzAD0RCGfYYU+B
+ JvotsCSLtfZUkXdhAXqblkk19snm9UXOmSofvPsKc3u/AfBJPmiWD0WgPe3AT+EWozWDeN3UpkEQM
+ gSr7V4mznJ9sbFPirjliyxnSl55tXKtBktjB4x6t1PAhOBMHlwfM2bVw5p34Pag7RjXQ6ZKUc4QjE
+ /MOVr8Pvw==;
+Received: from [2601:1c0:6200:6e8::4f71]
+ by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+ id 1i3m4M-0002I2-Ou; Fri, 30 Aug 2019 18:56:22 +0000
+To: Michal Suchanek <msuchanek@suse.de>, alsa-devel@alsa-project.org
+References: <20190830185212.25144-1-msuchanek@suse.de>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f8c58d45-e641-5071-33bf-2927a61cb419@infradead.org>
+Date: Fri, 30 Aug 2019 11:56:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190830185212.25144-1-msuchanek@suse.de>
+Content-Language: en-US
+Cc: linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] soundwire: slave: Fix unused function
+	warning on !ACPI
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,198 +92,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830160607.YYOyoYAMbIOOj79FtDGIMUSZi75jVZ3Gmy4alm6Hzy4@z>
+Message-ID: <20190830185621.5jkL7RaAjB3BoavutLv_9xnWr8wmIySuWbakJcAbVtg@z>
 
-The patch
-
-   ASoC: dt-bindings: Convert Allwinner A33 codec to a schema
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 8a99f76ac1a591f27f5216951bf8a8fdad58e987 Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Date: Wed, 28 Aug 2019 14:52:07 +0200
-Subject: [PATCH] ASoC: dt-bindings: Convert Allwinner A33 codec to a schema
-
-The Allwinner A33 SoC have an embedded audio codec that is supported in Linux,
-with a matching Device Tree binding.
-
-Now that we have the DT validation in place, let's convert the device tree
-bindings for that controller over to a YAML schemas.
-
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/20190828125209.28173-3-mripard@kernel.org
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../sound/allwinner,sun8i-a33-codec.yaml      | 57 +++++++++++++++++
- .../bindings/sound/sun8i-a33-codec.txt        | 63 -------------------
- 2 files changed, 57 insertions(+), 63 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-new file mode 100644
-index 000000000000..5e7cc05bbff1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun8i-a33-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner A33 Codec Device Tree Bindings
-+
-+maintainers:
-+  - Chen-Yu Tsai <wens@csie.org>
-+  - Maxime Ripard <maxime.ripard@bootlin.com>
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    const: allwinner,sun8i-a33-codec
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: bus
-+      - const: mod
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    audio-codec@1c22e00 {
-+      #sound-dai-cells = <0>;
-+      compatible = "allwinner,sun8i-a33-codec";
-+      reg = <0x01c22e00 0x400>;
-+      interrupts = <0 29 4>;
-+      clocks = <&ccu 47>, <&ccu 92>;
-+      clock-names = "bus", "mod";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-deleted file mode 100644
-index 7ecf6bd60d27..000000000000
---- a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-+++ /dev/null
-@@ -1,63 +0,0 @@
--Allwinner SUN8I audio codec
--------------------------------------
--
--On Sun8i-A33 SoCs, the audio is separated in different parts:
--	  - A DAI driver. It uses the "sun4i-i2s" driver which is
--	  documented here:
--	  Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
--	  - An analog part of the codec which is handled as PRCM registers.
--	  See Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
--	  - An digital part of the codec which is documented in this current
--	  binding documentation.
--	  - And finally, an audio card which links all the above components.
--	  The simple-audio card will be used.
--	  See Documentation/devicetree/bindings/sound/simple-card.txt
--
--This bindings documentation exposes Sun8i codec (digital part).
--
--Required properties:
--- compatible: must be "allwinner,sun8i-a33-codec"
--- reg: must contain the registers location and length
--- interrupts: must contain the codec interrupt
--- clocks: a list of phandle + clock-specifer pairs, one for each entry
--  in clock-names.
--- clock-names: should contain followings:
--   - "bus": the parent APB clock for this controller
--   - "mod": the parent module clock
--
--Here is an example to add a sound card and the codec binding on sun8i SoCs that
--are similar to A33 using simple-card:
--
--	sound {
--		compatible = "simple-audio-card";
--		simple-audio-card,name = "sun8i-a33-audio";
--		simple-audio-card,format = "i2s";
--		simple-audio-card,frame-master = <&link_codec>;
--		simple-audio-card,bitclock-master = <&link_codec>;
--		simple-audio-card,mclk-fs = <512>;
--		simple-audio-card,aux-devs = <&codec_analog>;
--		simple-audio-card,routing =
--				"Left DAC", "Digital Left DAC",
--				"Right DAC", "Digital Right DAC";
--
--		simple-audio-card,cpu {
--			sound-dai = <&dai>;
--		};
--
--		link_codec: simple-audio-card,codec {
--			sound-dai = <&codec>;
--		};
--
--	soc@1c00000 {
--		[...]
--
--		audio-codec@1c22e00 {
--			#sound-dai-cells = <0>;
--			compatible = "allwinner,sun8i-a33-codec";
--			reg = <0x01c22e00 0x400>;
--			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
--			clock-names = "bus", "mod";
--		};
--	};
--
--- 
-2.20.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gOC8zMC8xOSAxMTo1MiBBTSwgTWljaGFsIFN1Y2hhbmVrIHdyb3RlOgo+IEZpeGVzIHRoZSBm
+b2xsb3dpbmcgd2FybmluZyBvbiAhQUNQSSBzeXN0ZW1zOgo+IAo+IGRyaXZlcnMvc291bmR3aXJl
+L3NsYXZlLmM6MTY6MTI6IHdhcm5pbmc6IOKAmHNkd19zbGF2ZV9hZGTigJkgZGVmaW5lZCBidXQK
+PiBub3QgdXNlZCBbLVd1bnVzZWQtZnVuY3Rpb25dCj4gIHN0YXRpYyBpbnQgc2R3X3NsYXZlX2Fk
+ZChzdHJ1Y3Qgc2R3X2J1cyAqYnVzLAo+ICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn4KPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBNaWNoYWwgU3VjaGFuZWsgPG1zdWNoYW5la0BzdXNlLmRlPgoKQWNrZWQt
+Ynk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgoKSSB3YXMgYWJvdXQgdG8g
+c2VuZCB0aGUgc2FtZSBwYXRjaC4KVGhhbmtzLgoKPiAtLS0KPiAgZHJpdmVycy9zb3VuZHdpcmUv
+c2xhdmUuYyB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
+aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc291bmR3aXJlL3NsYXZlLmMgYi9kcml2
+ZXJzL3NvdW5kd2lyZS9zbGF2ZS5jCj4gaW5kZXggZjM5YTU4MTVlMjVkLi4zNGM3ZTY1ODMxZDEg
+MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9zb3VuZHdpcmUvc2xhdmUuYwo+ICsrKyBiL2RyaXZlcnMv
+c291bmR3aXJlL3NsYXZlLmMKPiBAQCAtNiw2ICs2LDcgQEAKPiAgI2luY2x1ZGUgPGxpbnV4L3Nv
+dW5kd2lyZS9zZHdfdHlwZS5oPgo+ICAjaW5jbHVkZSAiYnVzLmgiCj4gIAo+ICsjaWYgSVNfRU5B
+QkxFRChDT05GSUdfQUNQSSkKPiAgc3RhdGljIHZvaWQgc2R3X3NsYXZlX3JlbGVhc2Uoc3RydWN0
+IGRldmljZSAqZGV2KQo+ICB7Cj4gIAlzdHJ1Y3Qgc2R3X3NsYXZlICpzbGF2ZSA9IGRldl90b19z
+ZHdfZGV2KGRldik7Cj4gQEAgLTYwLDcgKzYxLDYgQEAgc3RhdGljIGludCBzZHdfc2xhdmVfYWRk
+KHN0cnVjdCBzZHdfYnVzICpidXMsCj4gIAlyZXR1cm4gcmV0Owo+ICB9Cj4gIAo+IC0jaWYgSVNf
+RU5BQkxFRChDT05GSUdfQUNQSSkKPiAgLyoKPiAgICogc2R3X2FjcGlfZmluZF9zbGF2ZXMoKSAt
+IEZpbmQgU2xhdmUgZGV2aWNlcyBpbiBNYXN0ZXIgQUNQSSBub2RlCj4gICAqIEBidXM6IFNEVyBi
+dXMgaW5zdGFuY2UKPiAKCgotLSAKflJhbmR5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
