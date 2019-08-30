@@ -2,70 +2,98 @@ Return-Path: <SRS0=nNdU=W2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 698B7C3A59B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 21:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71E77C3A59B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 21:48:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D78AA23439
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 21:08:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B3722087F
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 21:48:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bTjdZmQS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D78AA23439
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WPLCi5az";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqoH0U6M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B3722087F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37F63165D;
-	Fri, 30 Aug 2019 23:08:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37F63165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31026822;
+	Fri, 30 Aug 2019 23:47:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31026822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567199331;
-	bh=5myXkZ5W6aQrB06gZmyickMGDhEIyb+hnEr4HML32qI=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bTjdZmQSHV6E+7diIVVAlNR3dBwBXeitnV9ZxoDMS+9qDEDCvAp6ARdOKn5yoNZMQ
-	 KVnLCzs4pklxA+B5YcP34fAsFCwQVvpL3QGNrjMX/g2Vw7eqQIBhl8e1KZuGTgkcda
-	 +dl2Xwy5aPwPC7LawiWXBqakIKPtb1hPkhVCG9PU=
+	s=default; t=1567201695;
+	bh=jpfZJsdSg3ZMdigf/RgAPxowoyAR1KcIgak2RKpzgmQ=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WPLCi5azajMNnWYGzW1htKg8BjW1gsjYOeRtiQnwyGNI7vaCi+FldeyS+89kZYNfZ
+	 91zdAStitOZxoTImlXyX84iPrky/7TAcyjXaZ1feS14jfFAKwXcqNqjrHqtp9vkok3
+	 P0bMDte/fCgAM1nx1eBLAXEH+QWZ6xt94l1SIRII=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E61B9F805A0;
-	Fri, 30 Aug 2019 23:06:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1CC1F80362;
+	Fri, 30 Aug 2019 23:47:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9289EF80444; Fri, 30 Aug 2019 23:06:22 +0200 (CEST)
-Received: from relay11.mail.gandi.net (relay11.mail.gandi.net [217.70.178.231])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 46F80F80362; Fri, 30 Aug 2019 23:47:22 +0200 (CEST)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
+ [IPv6:2607:f8b0:4864:20::d42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DF06F8036C
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 23:06:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DF06F8036C
-Received: from localhost.localdomain (unknown [91.224.148.103])
- (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6B0BF100005;
- Fri, 30 Aug 2019 21:06:17 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Date: Fri, 30 Aug 2019 23:06:07 +0200
-Message-Id: <20190830210607.22644-3-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190830210607.22644-1-miquel.raynal@bootlin.com>
-References: <20190830210607.22644-1-miquel.raynal@bootlin.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0937F800E7
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 23:47:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0937F800E7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="PqoH0U6M"
+Received: by mail-io1-xd42.google.com with SMTP id o9so17080156iom.3
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 14:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Zobn1PfaWdiFKh+2AJisvXaXaN9Pv4+pvGnHv+s5H4g=;
+ b=PqoH0U6MfwrpAsH2I8tyCEQptXVIiBeTnOsXbU8Ar8ranL1XpLus6OwSuKVJ3vvw1t
+ NyOIEgheKhfIOyWmzehIPpcCMBCbnVBmqAVaIYK8uOQz9qbtKYu743+vuP5K3vLLB86u
+ 92/oafOaYMZXZ6I/YRq9y0ful6k7Y4g0CFxQwnrPo4oQFzD45FVBN0X23i9z6JCYEP4v
+ 0AGR2TKK1ckUBolAcqZvVz2e/uzlYquJb61tIlX7sV6wqla4vfB8rVCR9x432k+17SsJ
+ cTIu4QtXSiaGkEKed2pxOdm30n1pukvCPAAew81YizAWchrT7FrirRpuA84mqm1+0Jyw
+ fDRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Zobn1PfaWdiFKh+2AJisvXaXaN9Pv4+pvGnHv+s5H4g=;
+ b=jInfn4IPbcU6O0u+xwFGruqXXEvynC+Vq4W9PVzt3u8T+BpNfiCmLezpzicTQ3/Q09
+ r0BdyoGnT2Hcn4UVqd5HJV1A7UQS4N4mLD6Vk6QR7TeWZPX/+sNkOpJ2LrkNrIoFUKvz
+ z0+yb8A14lGw1DiBtuY8Mk7A4722/xWbKbVeFppAWUurr+wkwauNZbCrxwIk5l741GnC
+ sZ9GAYExIiaYkp21+nZg4vsRc0lvRM3STDnZi/qsDunavM6QqpiH8nOL537CvlQxyQfi
+ fU9PTjqXmGbxehjjY1YkjDmcbg7LMXcgZHWU6NIczLudvqt6xAMSB+BtMwGhMQXtz0PI
+ skkg==
+X-Gm-Message-State: APjAAAU0aXV7uiDZwNhA2TkXbEjR2ODHRhTiznhab+ecxGYjvm77f7Lv
+ voPdFZfZUOaBjOz8LsnZqyg=
+X-Google-Smtp-Source: APXvYqzDz5V/Q5AiD+cZ2p5/0vLITIFai9ECVqT6mDBjH8GdVUW+FMbMKnbyxabOxzlGVMoewVzgcA==
+X-Received: by 2002:a02:c992:: with SMTP id b18mr18578961jap.128.1567201636655; 
+ Fri, 30 Aug 2019 14:47:16 -0700 (PDT)
+Received: from peng.science.purdue.edu (cos-128-210-107-27.science.purdue.edu.
+ [128.210.107.27])
+ by smtp.googlemail.com with ESMTPSA id m10sm5951564ioj.75.2019.08.30.14.47.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 30 Aug 2019 14:47:16 -0700 (PDT)
+From: Hui Peng <benquike@gmail.com>
+To: stable@vger.kernel.org
+Date: Fri, 30 Aug 2019 17:46:49 -0400
+Message-Id: <20190830214649.27761-1-benquike@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Michal Simek <michal.simek@xilinx.com>,
- Rob Herring <robh+dt@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, alexandre@bootlin.com,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH 3/3] MAINTAINERS: Add an entry for the Xilinx
-	logicPD-I2S block
+Cc: Mathias Payer <mathias.payer@nebelwelt.net>, alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Wenwen Wang <wang6495@umn.edu>, Takashi Iwai <tiwai@suse.com>,
+ Hui Peng <benquike@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH 1/2] Fix an OOB bug in parse_audio_mixer_unit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,34 +110,53 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830210607.KjE7HZMqeTEO9n4dF_-io4CpY-m_48Uz5h1Jogu_zWE@z>
+Message-ID: <20190830214649.H-vFZ7ViSHde11G9-6KzpOYBYgjelOXLjKothU0DGZk@z>
 
-Reference the driver and and the bindings.
+The `uac_mixer_unit_descriptor` shown as below is read from the
+device side. In `parse_audio_mixer_unit`, `baSourceID` field is
+accessed from index 0 to `bNrInPins` - 1, the current implementation
+assumes that descriptor is always valid (the length  of descriptor
+is no shorter than 5 + `bNrInPins`). If a descriptor read from
+the device side is invalid, it may trigger out-of-bound memory
+access.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+```
+struct uac_mixer_unit_descriptor {
+	__u8 bLength;
+	__u8 bDescriptorType;
+	__u8 bDescriptorSubtype;
+	__u8 bUnitID;
+	__u8 bNrInPins;
+	__u8 baSourceID[];
+}
+```
+
+This patch fixes the bug by add a sanity check on the length of
+the descriptor.
+
+CVE: CVE-2018-15117
+
+Reported-by: Hui Peng <benquike@gmail.com>
+Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
+Signed-off-by: Hui Peng <benquike@gmail.com>
 ---
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/usb/mixer.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5bf8f340e6a8..382c33a1adef 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17136,6 +17136,12 @@ L:	linux-serial@vger.kernel.org
- S:	Maintained
- F:	drivers/tty/serial/uartlite.c
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 1f7eb3816cd7..10ddec76f906 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1628,6 +1628,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
+ 	int pin, ich, err;
  
-+XILINX LOGICPD I2S SOUND DRIVER
-+M:	Miquel Raynal <miquel.raynal@bootlin.com>
-+S:	Maintained
-+F:	sound/soc/xilinx/xlnx-logicpd-i2s.c
-+F:	Documentation/devicetree/bindings/sound/xlnx,logicpd-i2s.yaml
-+
- XILINX VIDEO IP CORES
- M:	Hyun Kwon <hyun.kwon@xilinx.com>
- M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+ 	if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
++	    desc->bLength < sizeof(*desc) + desc->bNrInPins ||
+ 	    !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
+ 		usb_audio_err(state->chip,
+ 			      "invalid MIXER UNIT descriptor %d\n",
 -- 
-2.20.1
+2.17.1
 
 _______________________________________________
 Alsa-devel mailing list
