@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Baytrail: Fix implicit
-	fallthrough warning" to the asoc tree
-Date: Fri, 30 Aug 2019 12:45:19 +0100 (BST)
-Message-ID: <20190830114519.5D9F12742CC6@ypsilon.sirena.org.uk>
-References: <20190828095102.15737-1-cezary.rojewski@intel.com>
+Subject: Applied "ASoC: Intel: broadwell: Simplify device
+	probe" to the asoc tree
+Date: Fri, 30 Aug 2019 12:45:17 +0100 (BST)
+Message-ID: <20190830114517.D404D2742BD3@ypsilon.sirena.org.uk>
+References: <20190822113616.22702-5-cezary.rojewski@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68E64F805F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E10BF805F6
  for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 13:45:21 +0200 (CEST)
-In-Reply-To: <20190828095102.15737-1-cezary.rojewski@intel.com>
+In-Reply-To: <20190822113616.22702-5-cezary.rojewski@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,16 +25,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, tiwai@suse.com, lgirdwood@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Baytrail: Fix implicit fallthrough warning
+   ASoC: Intel: broadwell: Simplify device probe
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -55,32 +55,45 @@ to this mail.
 Thanks,
 Mark
 
->From cc9bbb6cde6c321706f1eff79d077b4a91cd5d12 Mon Sep 17 00:00:00 2001
+>From 54d037d5a466ce518ee4bb81f39b79ac7d843ba6 Mon Sep 17 00:00:00 2001
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Wed, 28 Aug 2019 11:51:02 +0200
-Subject: [PATCH] ASoC: Intel: Baytrail: Fix implicit fallthrough warning
+Date: Thu, 22 Aug 2019 13:36:16 +0200
+Subject: [PATCH] ASoC: Intel: broadwell: Simplify device probe
 
-Append fallthrough statement to fix warning reported during compilation.
+With legacy ADSP private context adjusted, there is no need for double
+safety.
 
-Fixes: b80d19c166c4 ("ASoC: Intel: Restore Baytrail ADSP streams only when ADSP was in reset")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190828095102.15737-1-cezary.rojewski@intel.com
+Link: https://lore.kernel.org/r/20190822113616.22702-5-cezary.rojewski@intel.com
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/broadwell.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index 9cbc982d46a9..54f2ee3010ee 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -193,6 +193,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 		pdata->restore_stream = false;
-+		/* fallthrough */
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		sst_byt_stream_pause(byt, pcm_data->stream);
- 		break;
+diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
+index ab38ef30dfff..db7e1e87156d 100644
+--- a/sound/soc/intel/boards/broadwell.c
++++ b/sound/soc/intel/boards/broadwell.c
+@@ -270,18 +270,14 @@ static struct snd_soc_card broadwell_rt286 = {
+ static int broadwell_audio_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_acpi_mach *mach;
+-	const char *platform_name = NULL;
+ 	int ret;
+ 
+ 	broadwell_rt286.dev = &pdev->dev;
+ 
+ 	/* override plaform name, if required */
+ 	mach = (&pdev->dev)->platform_data;
+-	if (mach) /* extra check since legacy does not pass parameters */
+-		platform_name = mach->mach_params.platform;
+-
+ 	ret = snd_soc_fixup_dai_links_platform_name(&broadwell_rt286,
+-						    platform_name);
++						    mach->mach_params.platform);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.20.1
