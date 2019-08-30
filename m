@@ -2,97 +2,71 @@ Return-Path: <SRS0=nNdU=W2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CD3CC3A59B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 21:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 399A3C3A59B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 22:00:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D99A2343A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 21:52:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE6722343B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 22:00:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iQ0/E01w";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q7+WLGvv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D99A2343A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f0PONPf6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE6722343B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AA85820;
-	Fri, 30 Aug 2019 23:51:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AA85820
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE3EC86E;
+	Fri, 30 Aug 2019 23:59:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE3EC86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567201946;
-	bh=i8nRiwYj9RwsWTL/eNvdB7pn7NRuzW9RqeeXDf27ofA=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iQ0/E01w/gsnAuwV0wV0XzouYBXOWGSmD9fZ41AhskYyoT2oIf5/6Q2Dzhq76Cbkl
-	 Eh6NO3dAxbEll/kAdMXy4OshztIZAnkxpujffiFv/uuaq+48UFcvpqxO6gAz5LJshE
-	 lpTctG5eHf896euOlH6Ircl+hst2EvKDw1AUcUqg=
+	s=default; t=1567202410;
+	bh=ryLzlCOlrn2Rv5WYsb9zv4uuacZcnDjOoR1NOm4/Xm0=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=f0PONPf6Pa9xzfZWWwmNHf/UhL0ODrVhRdVBZuN9C+BN107aDoyrQ853RrGjc1b9j
+	 dCnQFwCDzfpVFWgGy7RQRf2/fn7QdyehmRZWEnL8A7/EJFERaL9Xt0DmAEmc4wwUGf
+	 dQWWqP7Bya22lrJTJw8isltN6swi0XhTznFU8Z9s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F87AF80362;
-	Fri, 30 Aug 2019 23:51:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA737F80362;
+	Fri, 30 Aug 2019 23:59:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F144F8036C; Fri, 30 Aug 2019 23:51:34 +0200 (CEST)
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com
- [IPv6:2607:f8b0:4864:20::243])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EB446F80369; Fri, 30 Aug 2019 23:59:17 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0ECD4F800D1
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 23:51:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ECD4F800D1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Q7+WLGvv"
-Received: by mail-oi1-x243.google.com with SMTP id t24so6451882oij.13
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 14:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=EYVJ7MzUyR9L8mnD6x6xfhJt9xUFwuiD7b/zQt4J8WQ=;
- b=Q7+WLGvv04v/KICX5xUFXDOLtByK/lZQo/5I2vz39BPJ2fvZtQRmuDPAk4VX08bepd
- Kqnjt4DZgcxXerN0lVGgS6ADGLd44TDPrCtopimhUeZnelWaEcgtio10JYTpr4XnNIFn
- cbSGG6seH45mkfI4igDgjnp/74IaoPta74akCYZeoHNwYfkmnMCMtZ0i1peIlrgmLbNx
- iR1Rg0RyUixyqVrL//96ezh3jEHZx7yA5DjeenHR7NwsRP/YZRRN8TbJsB4qZlV9XH77
- 9EGRQC3kzV9iqk6i2MpRMjMum0ogB7c+qWEHngH1PTNkqZvVmfMstNmYbY1ZEjpLNbGg
- gDng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=EYVJ7MzUyR9L8mnD6x6xfhJt9xUFwuiD7b/zQt4J8WQ=;
- b=XCcr1SruQqg65jab7OZEhLUbLpUZLZuwhdvhCb54mnVv+kRI764yTmL/UBbW5fbLNT
- y06Xyr+FzxII3OahVz+huVDxafHCqkR1t1WyG0pLKU/PV/LRYMkITsh/QQzQ/LIJoi5C
- 23+O+iX/QeRH1yetPfpOcVPe7b+uHW55Rea2iYalmsB+j7epIBxNgcphI17NCVVKzlME
- u9aFdPO85Q1xpk4KaQX+BRYooAkxG3HQefmzlMnEAlVRZL1AgqRu2ZEhS/DLBThIC6kw
- i/5saNMGxuIzocBvKCmL8bMKzDSnTspX6+1KWcx6cJpiAj0qMruMM7Y/6irBHFIVLYt+
- Z+9A==
-X-Gm-Message-State: APjAAAXDMEed08ezGDHopo4VlF9HRFDkOpMK0WrRAS/caL+gZlRc6PEL
- CxX2hgWPQxaCeRDMJFkDtWIf0sWyyQ8n/Zcr9g4=
-X-Google-Smtp-Source: APXvYqxF8xTQHnXcu6cO47D0huh4Dq7d9Ur9eR3xC8GfmPSmN1JdmobuREz1pe7xjAKLA5B/M3xErknKC3rMtGV+TdE=
-X-Received: by 2002:a54:448e:: with SMTP id v14mr11808792oiv.60.1567201888984; 
- Fri, 30 Aug 2019 14:51:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190830214730.27842-1-benquike@gmail.com>
-In-Reply-To: <20190830214730.27842-1-benquike@gmail.com>
-From: Hui Peng <benquike@gmail.com>
-Date: Fri, 30 Aug 2019 17:51:17 -0400
-Message-ID:
- <CAKpmkkWv2cjrJCkVhGmEMnLG2_kCNxdbt29dZ8j-UM8Cf3quGQ@mail.gmail.com>
-To: stable@vger.kernel.org
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Mathias Payer <mathias.payer@nebelwelt.net>, alsa-devel@alsa-project.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Wenwen Wang <wang6495@umn.edu>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH 2/2] Fix a stack buffer overflow bug in
-	check_input_term
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38A8CF800E7
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 23:59:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38A8CF800E7
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F0D4420079F;
+ Fri, 30 Aug 2019 23:59:12 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com
+ [134.27.226.22])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E48EC20043B;
+ Fri, 30 Aug 2019 23:59:12 +0200 (CEST)
+Received: from fsr-ub1864-103.ea.freescale.net
+ (fsr-ub1864-103.ea.freescale.net [10.171.82.17])
+ by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 3FC0F2061E;
+ Fri, 30 Aug 2019 23:59:12 +0200 (CEST)
+From: Daniel Baluta <daniel.baluta@nxp.com>
+To: broonie@kernel.org
+Date: Sat, 31 Aug 2019 00:59:10 +0300
+Message-Id: <20190830215910.31590-1-daniel.baluta@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ Daniel Baluta <daniel.baluta@nxp.com>, shengjiu.wang@nxp.com,
+ linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com,
+ NXP Linux Team <linux-imx@nxp.com>, Viorel Suman <viorel.suman@nxp.com>,
+ festevam@gmail.com
+Subject: [alsa-devel] [PATCH] ASoC: fsl_sai: Implement set_bclk_ratio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,125 +79,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830215117.AQz_ZNh9UDV1LMtpWGp9GvMdVqiibVkzXTfG94DHe4Y@z>
+Message-ID: <20190830215910.SRf5Y-7SVbY8ui5doceFYjYteNo63Nk2y8CQrAmcWSs@z>
 
-This is the backported patch for the following fix to v4.4.x and v4.14.x:
-19bce474c45b ("ALSA: usb-audio: Fix a stack buffer overflow bug in
-check_input_term")
+From: Viorel Suman <viorel.suman@nxp.com>
 
-On Fri, Aug 30, 2019 at 5:47 PM Hui Peng <benquike@gmail.com> wrote:
+This is to allow machine drivers to set a certain bitclk rate
+which might not be exactly rate * frame size.
 
-> `check_input_term` recursively calls itself with input from
-> device side (e.g., uac_input_terminal_descriptor.bCSourceID)
-> as argument (id). In `check_input_term`, if `check_input_term`
-> is called with the same `id` argument as the caller, it triggers
-> endless recursive call, resulting kernel space stack overflow.
->
-> This patch fixes the bug by adding a bitmap to `struct mixer_build`
-> to keep track of the checked ids and stop the execution if some id
-> has been checked (similar to how parse_audio_unit handles unitid
-> argument).
->
-> CVE: CVE-2018-15118
->
-> Reported-by: Hui Peng <benquike@gmail.com>
-> Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
-> Signed-off-by: Hui Peng <benquike@gmail.com>
-> ---
->  sound/usb/mixer.c | 29 ++++++++++++++++++++++++-----
->  1 file changed, 24 insertions(+), 5 deletions(-)
->
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 10ddec76f906..e24572fd6e30 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -81,6 +81,7 @@ struct mixer_build {
->         unsigned char *buffer;
->         unsigned int buflen;
->         DECLARE_BITMAP(unitbitmap, MAX_ID_ELEMS);
-> +       DECLARE_BITMAP(termbitmap, MAX_ID_ELEMS);
->         struct usb_audio_term oterm;
->         const struct usbmix_name_map *map;
->         const struct usbmix_selector_map *selector_map;
-> @@ -709,15 +710,24 @@ static int get_term_name(struct mixer_build *state,
-> struct usb_audio_term *iterm
->   * parse the source unit recursively until it reaches to a terminal
->   * or a branched unit.
->   */
-> -static int check_input_term(struct mixer_build *state, int id,
-> +static int __check_input_term(struct mixer_build *state, int id,
->                             struct usb_audio_term *term)
->  {
->         int err;
->         void *p1;
-> +       unsigned char *hdr;
->
->         memset(term, 0, sizeof(*term));
-> -       while ((p1 = find_audio_control_unit(state, id)) != NULL) {
-> -               unsigned char *hdr = p1;
-> +       for (;;) {
-> +               /* a loop in the terminal chain? */
-> +               if (test_and_set_bit(id, state->termbitmap))
-> +                       return -EINVAL;
-> +
-> +               p1 = find_audio_control_unit(state, id);
-> +               if (!p1)
-> +                       break;
-> +
-> +               hdr = p1;
->                 term->id = id;
->                 switch (hdr[2]) {
->                 case UAC_INPUT_TERMINAL:
-> @@ -732,7 +742,7 @@ static int check_input_term(struct mixer_build *state,
-> int id,
->
->                                 /* call recursively to verify that the
->                                  * referenced clock entity is valid */
-> -                               err = check_input_term(state,
-> d->bCSourceID, term);
-> +                               err = __check_input_term(state,
-> d->bCSourceID, term);
->                                 if (err < 0)
->                                         return err;
->
-> @@ -764,7 +774,7 @@ static int check_input_term(struct mixer_build *state,
-> int id,
->                 case UAC2_CLOCK_SELECTOR: {
->                         struct uac_selector_unit_descriptor *d = p1;
->                         /* call recursively to retrieve the channel info */
-> -                       err = check_input_term(state, d->baSourceID[0],
-> term);
-> +                       err = __check_input_term(state, d->baSourceID[0],
-> term);
->                         if (err < 0)
->                                 return err;
->                         term->type = d->bDescriptorSubtype << 16; /*
-> virtual type */
-> @@ -811,6 +821,15 @@ static int check_input_term(struct mixer_build
-> *state, int id,
->         return -ENODEV;
->  }
->
-> +
-> +static int check_input_term(struct mixer_build *state, int id,
-> +                           struct usb_audio_term *term)
-> +{
-> +       memset(term, 0, sizeof(*term));
-> +       memset(state->termbitmap, 0, sizeof(state->termbitmap));
-> +       return __check_input_term(state, id, term);
-> +}
-> +
->  /*
->   * Feature Unit
->   */
-> --
-> 2.17.1
->
->
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 21 +++++++++++++++++++--
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index fe126029f4e3..e896b577b1f7 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -137,6 +137,16 @@ static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+ 	return 0;
+ }
+ 
++static int fsl_sai_set_dai_bclk_ratio(struct snd_soc_dai *dai,
++				      unsigned int ratio)
++{
++	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
++
++	sai->bclk_ratio = ratio;
++
++	return 0;
++}
++
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int fsl_dir)
+ {
+@@ -423,8 +433,14 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 		slot_width = sai->slot_width;
+ 
+ 	if (!sai->is_slave_mode) {
+-		ret = fsl_sai_set_bclk(cpu_dai, tx,
+-				slots * slot_width * params_rate(params));
++		if (sai->bclk_ratio)
++			ret = fsl_sai_set_bclk(cpu_dai, tx,
++					       sai->bclk_ratio *
++					       params_rate(params));
++		else
++			ret = fsl_sai_set_bclk(cpu_dai, tx,
++					       slots * slot_width *
++					       params_rate(params));
+ 		if (ret)
+ 			return ret;
+ 
+@@ -640,6 +656,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ }
+ 
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
++	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
+ 	.set_sysclk	= fsl_sai_set_dai_sysclk,
+ 	.set_fmt	= fsl_sai_set_dai_fmt,
+ 	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 3a3f6f8e5595..f96f8d97489d 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -177,6 +177,7 @@ struct fsl_sai {
+ 	unsigned int mclk_streams;
+ 	unsigned int slots;
+ 	unsigned int slot_width;
++	unsigned int bclk_ratio;
+ 
+ 	const struct fsl_sai_soc_data *soc_data;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+-- 
+2.17.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
