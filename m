@@ -7,77 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A0AC3A5A4
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29E3AC3A5A4
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:52:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D69621721
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:52:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A592A21897
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2019 11:52:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ffWQlYqP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="nmPgfbe5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D69621721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hR/sosok";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="nmfTSx0x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A592A21897
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9D9D1669;
-	Fri, 30 Aug 2019 13:51:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9D9D1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3E33168C;
+	Fri, 30 Aug 2019 13:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3E33168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567165932;
-	bh=5vyGFy2D+ZyVqxDUS1t6MIZAXjjkBwtsjW8A8E2D3wM=;
+	s=default; t=1567165975;
+	bh=jKRLu0uwYXj0tPyHz+UxlLxYbW26JhDD4YgPUZrq4YI=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ffWQlYqPEXpWp2FjOELLLn7fiLFRf0/YP5PMqouESUFyYeR2R62gyHFux/BD2T4nH
-	 3GM8KU9mrHcuyjEOVJ/NhuWNLdrCfgIFv9b0Q3wOEiRd/Nmm5G4BWfIDAwVpDGvz49
-	 waAWaIveFL+eEFaWzcU8VMptJLUgEZhy21rpkar4=
+	b=hR/sosokEaw6I869MuV+iNaKjWNeGCkL6cUDoA7bkuCxbf5DU6LTn37etnZGAj7hr
+	 Qml6uqdFOUxtWzaFvfKLG/df0zl5ylsrbjAAC0opE5Dw3JBhz7FX6HbjqzuagTO6fG
+	 48ohmJl3enfFHmS+BpIFQ0TAOVpp8G95QVgQgdgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 784B0F8065C;
-	Fri, 30 Aug 2019 13:46:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B638AF80673;
+	Fri, 30 Aug 2019 13:46:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA8C9F8060F; Fri, 30 Aug 2019 13:45:35 +0200 (CEST)
+ id 74723F80610; Fri, 30 Aug 2019 13:45:37 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30E1BF805A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68E64F805F8
  for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 13:45:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30E1BF805A0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68E64F805F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="nmPgfbe5"
+ header.b="nmfTSx0x"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=DL+I+rAtszPH8UUp/xHLiOZjWk7OrZWj8jsDDc/Uib4=; b=nmPgfbe5JVeo
- ZxI1f3cjprmixIdN1Cj/Jcp8qxQ3EVZ6xP+HCWUIBxPZC+RmaQnvwYvFeYeHuTJYc6KTLxzs4QskM
- 70wTeoSbBBoYk/WeHxH1CUz3+I/MGApq/ArM6jHSDFNcm8pQO9NEOdaWOAuOsJignBbk2TkjvTonC
- Pt34I=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ List-Archive; bh=6xkOPqJo96FXNHLuVat1JFTsnTVKnf7hfv6rvF2Exlw=; b=nmfTSx0xFhH7
+ xtp3D+HTM6J0mXhCAS+3YvpB3C2nVmosb0I1iWhigwFmwmCvQ3eFEeUTP4JZeuuYJYdBQxiufhwG+
+ Sl4ZeuQqpX9s8tusqKHnJ5QcQfpGJMkbddODfGNA5mNgDVHks/1zm7Db1FP+L7a90rM1iF4/55U6S
+ waa64=;
+Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i3fLC-0006Ia-UD; Fri, 30 Aug 2019 11:45:18 +0000
+ id 1i3fLD-0006Il-UQ; Fri, 30 Aug 2019 11:45:20 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 68C492742CA7; Fri, 30 Aug 2019 12:45:18 +0100 (BST)
+ id 5D9F12742CC6; Fri, 30 Aug 2019 12:45:19 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20190822113616.22702-2-cezary.rojewski@intel.com>
+In-Reply-To: <20190828095102.15737-1-cezary.rojewski@intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190830114518.68C492742CA7@ypsilon.sirena.org.uk>
-Date: Fri, 30 Aug 2019 12:45:18 +0100 (BST)
+Message-Id: <20190830114519.5D9F12742CC6@ypsilon.sirena.org.uk>
+Date: Fri, 30 Aug 2019 12:45:19 +0100 (BST)
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- tiwai@suse.com, lgirdwood@gmail.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: Haswell: Adjust machine device
-	private context" to the asoc tree
+ tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+Subject: [alsa-devel] Applied "ASoC: Intel: Baytrail: Fix implicit
+	fallthrough warning" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,15 +93,15 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190830114518.BsHusoeUKLOAhcKc5z2Cdpvd2OmkdzXP32_5ngldK7g@z>
+Message-ID: <20190830114519.oy-dRzqfL9YiD9awcwavKtLkkduUDGpZLCB42hH4yZA@z>
 
 The patch
 
-   ASoC: Intel: Haswell: Adjust machine device private context
+   ASoC: Intel: Baytrail: Fix implicit fallthrough warning
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -124,52 +122,33 @@ to this mail.
 Thanks,
 Mark
 
-From ca964edf0ddbfec2cb10b3d251d09598e7ca9b13 Mon Sep 17 00:00:00 2001
+From cc9bbb6cde6c321706f1eff79d077b4a91cd5d12 Mon Sep 17 00:00:00 2001
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Thu, 22 Aug 2019 13:36:13 +0200
-Subject: [PATCH] ASoC: Intel: Haswell: Adjust machine device private context
+Date: Wed, 28 Aug 2019 11:51:02 +0200
+Subject: [PATCH] ASoC: Intel: Baytrail: Fix implicit fallthrough warning
 
-Apart from Haswell machines, all other devices have their private data
-set to snd_soc_acpi_mach instance.
+Append fallthrough statement to fix warning reported during compilation.
 
-Changes for HSW/ BDW boards introduced with series:
-https://patchwork.kernel.org/cover/10782035/
-
-added support for dai_link platform_name adjustments within card probe
-routines. These take for granted private_data points to
-snd_soc_acpi_mach whereas for Haswell, it's sst_pdata instead. Change
-private context of platform_device - representing machine board - to
-address this.
-
-Fixes: e87055d732e3 ("ASoC: Intel: haswell: platform name fixup support")
-Fixes: 7e40ddcf974a ("ASoC: Intel: bdw-rt5677: platform name fixup support")
-Fixes: 2d067b2807f9 ("ASoC: Intel: broadwell: platform name fixup support")
+Fixes: b80d19c166c4 ("ASoC: Intel: Restore Baytrail ADSP streams only when ADSP was in reset")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20190822113616.22702-2-cezary.rojewski@intel.com
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190828095102.15737-1-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-acpi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-index 0e8e0a7a11df..5854868650b9 100644
---- a/sound/soc/intel/common/sst-acpi.c
-+++ b/sound/soc/intel/common/sst-acpi.c
-@@ -141,11 +141,12 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, sst_acpi);
-+	mach->pdata = sst_pdata;
- 
- 	/* register machine driver */
- 	sst_acpi->pdev_mach =
- 		platform_device_register_data(dev, mach->drv_name, -1,
--					      sst_pdata, sizeof(*sst_pdata));
-+					      mach, sizeof(*mach));
- 	if (IS_ERR(sst_acpi->pdev_mach))
- 		return PTR_ERR(sst_acpi->pdev_mach);
- 
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 9cbc982d46a9..54f2ee3010ee 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -193,6 +193,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		pdata->restore_stream = false;
++		/* fallthrough */
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		sst_byt_stream_pause(byt, pcm_data->stream);
+ 		break;
 -- 
 2.20.1
 
