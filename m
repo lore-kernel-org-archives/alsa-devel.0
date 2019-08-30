@@ -1,52 +1,75 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH v5 0/5] Add HDMI jack support on RK3288
-Date: Fri, 30 Aug 2019 10:55:12 +0800
-Message-ID: <CAFv8NwLiY+ro0L4c5vjSOGN8jA-Qr4zm2OWvVHkiuoa7_4e2Fg@mail.gmail.com>
-References: <20190717083327.47646-1-cychiang@chromium.org> <CA+Px+wX4gbntkd6y8NN8xwXpZLD4MH9rTeHcW9+Ndtw=3_mWBw@mail.gmail.com>
+From: vani.ganji@intel.com
+Subject: [PATCH] [PATCH v2] ALSA: hda: Retry codec read on
+	first time failure
+Date: Fri, 30 Aug 2019 10:53:18 +0530
+Message-ID: <20190830052318.25898-1-vani.ganji@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+Px+wX4gbntkd6y8NN8xwXpZLD4MH9rTeHcW9+Ndtw=3_mWBw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tzung-Bi Shih <tzungbi@google.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner <heiko@sntech.de>, Douglas Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, ALSA development <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60C5AF80096
+ for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 07:22:31 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: vani.ganji@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 17, 2019 at 6:28 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
->
-> On Wed, Jul 17, 2019 at 4:33 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
-> >
-> > This patch series supports HDMI jack reporting on RK3288, which uses
-> > DRM dw-hdmi driver and hdmi-codec codec driver.
-> >
-> > The previous discussion about reporting jack status using hdmi-notifier
-> > and drm_audio_component is at
-> >
-> > https://lore.kernel.org/patchwork/patch/1083027/
-> >
-> > The new approach is to use a callback mechanism that is
-> > specific to hdmi-codec.
-> >
-> > Changes from v4 to v5:
-> > - synopsys/Kconfig: Remove the incorrect dependency change in v4.
-> > - rockchip/Kconfig: Add dependency of hdmi-codec when it is really need
-> >   for jack support.
-> >
-> > Cheng-Yi Chiang (5):
-> >   ASoC: hdmi-codec: Add an op to set callback function for plug event
-> >   drm: bridge: dw-hdmi: Report connector status using callback
-> >   drm: dw-hdmi-i2s: Use fixed id for codec device
-> >   ASoC: rockchip_max98090: Add dai_link for HDMI
-> >   ASoC: rockchip_max98090: Add HDMI jack support
-> >
-> LGTM.
->
-> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+From: Vani Ganji <vani.ganji@intel.com>
 
-Hi Daniel,
-Do you have further concern on this patch series related to hdmi-codec
-and drm part ?
-We would like to merge this patch series if possible.
-They will be needed in many future chrome projects for HDMI audio jack
-detection.
-Thanks a lot!
+Sometimes HDMI audio fails while fast switching
+between HDMI and Speaker due to codec Get Power state verb read failure.
+
+Verb is codec driver to access codec HW. Since issue scenario involves
+fast switching between HDMI and speaker, there might be chance to fail
+read from HW and same happened in the error scenario.
+
+Based on Display/Graphics architect suggestion, added a retry mechanism
+for failure on first attempt.
+
+Changes from v1:
+-Corrected missing braces.
+
+Signed-off-by: Vani Ganji <vani.ganji@intel.com>
+---
+ sound/hda/hdac_device.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index b26cc93e7e10..3874d54aa686 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -984,10 +984,17 @@ static unsigned int codec_read(struct hdac_device *hdac, hda_nid_t nid,
+ {
+ 	unsigned int cmd = snd_hdac_make_cmd(hdac, nid, verb, parm);
+ 	unsigned int res;
+-
+-	if (snd_hdac_exec_verb(hdac, cmd, flags, &res))
+-		return -1;
+-
++	unsigned int count;
++
++	/* Retry verb once more if it fails first time */
++	/* recommended to retry since it is HW related */
++	for (count = 0; count <= 1; count++) {
++		if (snd_hdac_exec_verb(hdac, cmd, flags, &res)) {
++			if (count == 1)
++				return -1;
++		} else
++			break;
++	}
+ 	return res;
+ }
+ 
+-- 
+2.17.1
