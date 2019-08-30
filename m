@@ -1,108 +1,52 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-motu: add support for MOTU 4pre
-Date: Fri, 30 Aug 2019 10:14:56 +0900
-Message-ID: <20190830011456.14720-1-o-takashi@sakamocchi.jp>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v5 0/5] Add HDMI jack support on RK3288
+Date: Fri, 30 Aug 2019 10:55:12 +0800
+Message-ID: <CAFv8NwLiY+ro0L4c5vjSOGN8jA-Qr4zm2OWvVHkiuoa7_4e2Fg@mail.gmail.com>
+References: <20190717083327.47646-1-cychiang@chromium.org> <CA+Px+wX4gbntkd6y8NN8xwXpZLD4MH9rTeHcW9+Ndtw=3_mWBw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 823CEF800F1
- for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2019 03:15:03 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CA+Px+wX4gbntkd6y8NN8xwXpZLD4MH9rTeHcW9+Ndtw=3_mWBw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Russell King <rmk+kernel@armlinux.org.uk>, Andrzej Hajda <a.hajda@samsung.com>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner <heiko@sntech.de>, Douglas Anderson <dianders@chromium.org>, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, ALSA development <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-MOTU 4pre was launched in 2012 by MOTU, Inc. This commit allows userspace
-applications can transmit and receive PCM frames and MIDI messages for
-this model via ALSA PCM interface and RawMidi/Sequencer interfaces.
+On Wed, Jul 17, 2019 at 6:28 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Wed, Jul 17, 2019 at 4:33 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+> >
+> > This patch series supports HDMI jack reporting on RK3288, which uses
+> > DRM dw-hdmi driver and hdmi-codec codec driver.
+> >
+> > The previous discussion about reporting jack status using hdmi-notifier
+> > and drm_audio_component is at
+> >
+> > https://lore.kernel.org/patchwork/patch/1083027/
+> >
+> > The new approach is to use a callback mechanism that is
+> > specific to hdmi-codec.
+> >
+> > Changes from v4 to v5:
+> > - synopsys/Kconfig: Remove the incorrect dependency change in v4.
+> > - rockchip/Kconfig: Add dependency of hdmi-codec when it is really need
+> >   for jack support.
+> >
+> > Cheng-Yi Chiang (5):
+> >   ASoC: hdmi-codec: Add an op to set callback function for plug event
+> >   drm: bridge: dw-hdmi: Report connector status using callback
+> >   drm: dw-hdmi-i2s: Use fixed id for codec device
+> >   ASoC: rockchip_max98090: Add dai_link for HDMI
+> >   ASoC: rockchip_max98090: Add HDMI jack support
+> >
+> LGTM.
+>
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
 
-The device supports MOTU protocol version 3. Unlike the other devices, the
-device is simply designed. The size of data block is fixed to 10 quadlets
-during available sampling rates (44.1 - 96.0 kHz). Each data block
-includes 1 source packet header, 2 data chunks for messages, 8 data chunks
-for PCM samples and 2 data chunks for padding to quadlet alignment. The
-device has no MIDI, optical, BNC and AES/EBU interfaces.
-
-Like support for the other MOTU devices, the quality of playback sound
-is not enough good with periodical noise yet.
-
-$ python2 crpp < ~/git/am-config-rom/motu/motu-4pre.img
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  041078cc  bus_info_length 4, crc_length 16, crc 30924
-404  31333934  bus_name "1394"
-408  20ff7000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 7 (256)
-40c  0001f200  company_id 0001f2     |
-410  000a41c5  device_id 00000a41c5  | EUI-64 0001f200000a41c5
-
-               root directory
-               -----------------------------------------------------------------
-414  0004ef04  directory_length 4, crc 61188
-418  030001f2  vendor
-41c  0c0083c0  node capabilities per IEEE 1394
-420  d1000002  --> unit directory at 428
-424  8d000005  --> eui-64 leaf at 438
-
-               unit directory at 428
-               -----------------------------------------------------------------
-428  0003ceda  directory_length 3, crc 52954
-42c  120001f2  specifier id
-430  13000045  version
-434  17103800  model
-
-               eui-64 leaf at 438
-               -----------------------------------------------------------------
-438  0002d248  leaf_length 2, crc 53832
-43c  0001f200  company_id 0001f2     |
-440  000a41c5  device_id 00000a41c5  | EUI-64 0001f200000a41c5
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/motu/motu.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 03cda2166ea3..72908b4de77c 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -247,6 +247,17 @@ static const struct snd_motu_spec motu_audio_express = {
- 	.analog_out_ports = 4,
- };
- 
-+static const struct snd_motu_spec motu_4pre = {
-+	.name = "4pre",
-+	.protocol = &snd_motu_protocol_v3,
-+	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-+		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
-+		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
-+		 SND_MOTU_SPEC_RX_SEPARETED_MAIN,
-+	.analog_in_ports = 2,
-+	.analog_out_ports = 2,
-+};
-+
- #define SND_MOTU_DEV_ENTRY(model, data)			\
- {							\
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
-@@ -265,6 +276,7 @@ static const struct ieee1394_device_id motu_id_table[] = {
- 	SND_MOTU_DEV_ENTRY(0x000015, &motu_828mk3),	/* FireWire only. */
- 	SND_MOTU_DEV_ENTRY(0x000035, &motu_828mk3),	/* Hybrid. */
- 	SND_MOTU_DEV_ENTRY(0x000033, &motu_audio_express),
-+	SND_MOTU_DEV_ENTRY(0x000045, &motu_4pre),
- 	{ }
- };
- MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
--- 
-2.20.1
+Hi Daniel,
+Do you have further concern on this patch series related to hdmi-codec
+and drm part ?
+We would like to merge this patch series if possible.
+They will be needed in many future chrome projects for HDMI audio jack
+detection.
+Thanks a lot!
