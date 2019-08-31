@@ -1,96 +1,59 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: fsl_sai: Set SAI Channel Mode to Output Mode
-Date: Sat, 31 Aug 2019 01:55:14 +0300
-Message-ID: <20190830225514.5283-1-daniel.baluta@nxp.com>
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: es8316: Add clock control of MCLK
+Date: Sat, 31 Aug 2019 20:18:42 +0900
+Message-ID: <ee38ca00-4146-49fe-21c0-af0578b1d65c@katsuster.net>
+References: <20190829173205.11805-1-katsuhiro@katsuster.net>
+ <20190829173205.11805-2-katsuhiro@katsuster.net>
+ <20190830111817.GA5182@sirena.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190830111817.GA5182@sirena.co.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, gabrielcsmo@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, David Yang <yangxiaohua@everest-semi.com>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
->From SAI datasheet:
+Hello Mark,
 
-CHMOD, configures if transmit data pins are configured for TDM mode
-or Output mode.
-	* (0) TDM mode, transmit data pins are tri-stated when slots are
-	masked or channels are disabled.
-	* (1) Output mode, transmit data pins are never tri-stated and
-	will output zero when slots are masked or channels are disabled.
+On 2019/08/30 20:18, Mark Brown wrote:
+> On Fri, Aug 30, 2019 at 02:32:04AM +0900, Katsuhiro Suzuki wrote:
+> 
+>> +	es8316->mclk = devm_clk_get(component->dev, "mclk");
+>> +	if (PTR_ERR(es8316->mclk) == -EPROBE_DEFER)
+>> +		return -EPROBE_DEFER;
+> 
+> If we don't get a clock it'd be nice to at least log that in case
+> there's something wrong with the clock driver so that people have more
+> of a hint as to why things might be breaking.
+> 
 
-When data pins are tri-stated, there is noise on some channels
-when FS clock value is high and data is read while fsclk is
-transitioning from high to low.
+OK, to change more user friendly.
 
-Fix this by setting CHMOD to Output Mode so that pins will output zero
-when slots are masked or channels are disabled.
 
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 15 ++++++++++++---
- sound/soc/fsl/fsl_sai.h |  2 ++
- 2 files changed, 14 insertions(+), 3 deletions(-)
+>> +
+>> +	if (es8316->mclk) {
+>> +		ret = clk_prepare_enable(es8316->mclk);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+> 
+> There's nothing that disables the clock on remove.
+> 
+> Otherwise this looks good.
+> 
+Thank you for reviewing. I'll fix it and send V2 patch set.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index e896b577b1f7..b9daab0eb6eb 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -467,6 +467,12 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 
- 	val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
- 
-+	/*
-+	 * set CHMOD to Output Mode so that transmit data pins will
-+	 * output zero when slots are masked or channels are disabled
-+	 */
-+	val_cr4 |= FSL_SAI_CR4_CHMOD;
-+
- 	/*
- 	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
- 	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
-@@ -477,7 +483,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	if (!sai->is_slave_mode) {
- 		if (!sai->synchronous[TX] && sai->synchronous[RX] && !tx) {
- 			regmap_update_bits(sai->regmap, FSL_SAI_TCR4(ofs),
--				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-+				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
-+				FSL_SAI_CR4_CHMOD_MASK,
- 				val_cr4);
- 			regmap_update_bits(sai->regmap, FSL_SAI_TCR5(ofs),
- 				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-@@ -486,7 +493,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 				~0UL - ((1 << channels) - 1));
- 		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCR4(ofs),
--				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-+				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
-+				FSL_SAI_CR4_CHMOD_MASK,
- 				val_cr4);
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCR5(ofs),
- 				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-@@ -497,7 +505,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
--			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-+			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
-+			   FSL_SAI_CR4_CHMOD_MASK,
- 			   val_cr4);
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
- 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index f96f8d97489d..1e3b4a6889a8 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -119,6 +119,8 @@
- #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
- #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
- #define FSL_SAI_CR4_SYWD_MASK	(0x1f << 8)
-+#define FSL_SAI_CR4_CHMOD	BIT(5)
-+#define FSL_SAI_CR4_CHMOD_MASK	GENMASK(5, 5)
- #define FSL_SAI_CR4_MF		BIT(4)
- #define FSL_SAI_CR4_FSE		BIT(3)
- #define FSL_SAI_CR4_FSP		BIT(1)
--- 
-2.17.1
+
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+
+Best Regards,
+Katsuhiro Suzuki
