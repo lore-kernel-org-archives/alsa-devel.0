@@ -2,67 +2,75 @@ Return-Path: <SRS0=OpZL=W3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFE81C3A5A6
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Aug 2019 15:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4787BC3A5A6
+	for <alsa-devel@archiver.kernel.org>; Sat, 31 Aug 2019 16:28:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDA2322DA9
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Aug 2019 15:28:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F04622D37
+	for <alsa-devel@archiver.kernel.org>; Sat, 31 Aug 2019 16:28:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="caPeA9a5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDA2322DA9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y97K/lnE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F04622D37
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96ED4857;
-	Sat, 31 Aug 2019 17:27:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96ED4857
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3195828;
+	Sat, 31 Aug 2019 18:27:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3195828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567265290;
-	bh=bO0isCkpsZFWtD+ZTfFsuaXnAY1HC3ghXEABdCk64l8=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1567268883;
+	bh=7ycOWxLv36T9/glFbCzbpCW1cYcFxKcJQmXY6fiYQo0=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=caPeA9a52utX9oqEfljGeWPD6I+LKrBY5ALtFW6+pXkjY3Ar/dcBy1Vvpe1mcUwgO
-	 QO8peYGMH7yIoE/zjP+vhjbEWvTAjrWqjc3oOWE2ffrNsvLOAnwVhdECzH2GC9R0LQ
-	 XnFrwpnU13FOEqTVU1ps/FoHY9MFgdJg0W3rr36w=
+	b=Y97K/lnESLnC1h6LH44fvirV/J3LlOuaeLoRBkd03hIU720UBXbnRiqdBhSLd/ryU
+	 +RocnJzp6DY8bhQgkqxRSHkO0PTO3Ts3s8X89y695z1nq5fyhdmvXUMVfZ7lpR5pXG
+	 0yFWDdvaKgcs68nsGT2fiHbpuVDQQWH/MbFzxQRs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2486BF800AA;
-	Sat, 31 Aug 2019 17:27:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F2CDF80268;
+	Sat, 31 Aug 2019 18:27:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59649F80268; Sat, 31 Aug 2019 17:27:19 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A7D39F80273; Sat, 31 Aug 2019 18:27:09 +0200 (CEST)
+Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3A15F800AA
- for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2019 17:27:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A15F800AA
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 5F789AF5B;
- Sat, 31 Aug 2019 15:27:15 +0000 (UTC)
-Date: Sat, 31 Aug 2019 17:27:13 +0200
-Message-ID: <s5h4l1xl5im.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-In-Reply-To: <20190830132446.5154-1-o-takashi@sakamocchi.jp>
-References: <20190830132446.5154-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de,
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8149F80229
+ for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2019 18:27:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8149F80229
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id x7VGQssN085480;
+ Sun, 1 Sep 2019 01:26:54 +0900 (JST)
+ (envelope-from katsuhiro@katsuster.net)
+Received: from www1102.sakura.ne.jp (219.94.129.142)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/530/fsav105.sakura.ne.jp);
+ Sun, 01 Sep 2019 01:26:54 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/530/fsav105.sakura.ne.jp)
+Received: from localhost.localdomain (118.153.231.153.ap.dti.ne.jp
+ [153.231.153.118]) (authenticated bits=0)
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id x7VGQorv085462
+ (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+ Sun, 1 Sep 2019 01:26:54 +0900 (JST)
+ (envelope-from katsuhiro@katsuster.net)
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>,
+ Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
+Date: Sun,  1 Sep 2019 01:26:50 +0900
+Message-Id: <20190831162650.19822-3-katsuhiro@katsuster.net>
+X-Mailer: git-send-email 2.23.0.rc1
+In-Reply-To: <20190831162650.19822-1-katsuhiro@katsuster.net>
+References: <20190831162650.19822-1-katsuhiro@katsuster.net>
+MIME-Version: 1.0
+Cc: Katsuhiro Suzuki <katsuhiro@katsuster.net>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] MAINTAINERS: update entry of firewire
-	audio drivers
+Subject: [alsa-devel] [PATCH v2 3/3] ASoC: es8316: add DT-bindings
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,55 +87,45 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190831152713.-2OmLHmds2jEp-j5Czba1QN_1DfWp9haADqLy1yngb4@z>
+Message-ID: <20190831162650.5QQ-aPddSDfqhCyMWfyYEZz4wSzeJwC7rrhTrx-5WhQ@z>
 
-On Fri, 30 Aug 2019 15:24:46 +0200,
-Takashi Sakamoto wrote:
-> 
-> This commit adds myself as one of maintainers for firewire audio
-> drivers and IEC 61883-1/6 packet streaming engine. I call them ALSA
-> firewire stack as a whole.
-> 
-> 6 years ago I joined in development for this category of drivers with
-> heavy reverse-engineering tasks and over 100 models are now available
-> from ALSA applications. IEEE 1394 bus itself and units on the bus are
-> enough legacy but the development still continues.
-> 
-> I have a plan to add drastic enhancement in kernel v5.5 and v5.6 period.
-> This commit adds myself into MAINTAINERS so that developers and users
-> can easily find active developer to post their issues, especially for
-> regression.
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+This patch adds missing DT-bindings document for Everest ES8316.
 
-Applied now (with a typo correction -- a superfluous '+' was added).
-Thanks.
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+---
+ .../bindings/sound/everest,es8316.txt         | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/everest,es8316.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/everest,es8316.txt b/Documentation/devicetree/bindings/sound/everest,es8316.txt
+new file mode 100644
+index 000000000000..aefcff9c48a2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/everest,es8316.txt
+@@ -0,0 +1,20 @@
++Everest ES8316 audio CODEC
++
++This device supports both I2C and SPI.
++
++Required properties:
++
++  - compatible  : should be "everest,es8316"
++  - reg : the I2C address of the device for I2C
++  - clocks : a list of phandle, should contain entries for clock-names
++  - clock-names : should include as follows:
++         "mclk" : master clock (MCLK) of the device
++
++Example:
++
++es8316: codec@11 {
++	compatible = "everest,es8316";
++	reg = <0x11>;
++	clocks = <&clks 10>;
++	clock-names = "mclk";
++};
+-- 
+2.23.0.rc1
 
-Takashi
-
-> ---
->  MAINTAINERS | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 24e29b2e53c9..8929a2ec75f7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6264,8 +6264,9 @@ S:	Maintained
->  F:	drivers/hwmon/f75375s.c
->  F:	include/linux/f75375s.h
->  
-> -FIREWIRE AUDIO DRIVERS
-> +FIREWIRE AUDIO DRIVERS and IEC 61883-1/6 PACKET STREAMING ENGINE
->  M:	Clemens Ladisch <clemens@ladisch.de>
-> ++M:	Takashi Sakamoto <o-takashi@sakamocchi.jp>
->  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->  S:	Maintained
-> -- 
-> 2.20.1
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
