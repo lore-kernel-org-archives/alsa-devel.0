@@ -1,8 +1,9 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 1/2] conf/ucm: Add UCM profile for
-	cht-bsw-rt5672 boards
-Date: Sat, 31 Aug 2019 16:58:41 +0200
-Message-ID: <20190831145842.32990-1-hdegoede@redhat.com>
+Subject: [PATCH 2/2] conf/ucm: cht-bsw-rt5672: Add board
+	specific profile for Lenovo Thinkpad 8 tablet
+Date: Sat, 31 Aug 2019 16:58:42 +0200
+Message-ID: <20190831145842.32990-2-hdegoede@redhat.com>
+References: <20190831145842.32990-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B85BF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48C64F800EA
  for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2019 16:58:48 +0200 (CEST)
+In-Reply-To: <20190831145842.32990-1-hdegoede@redhat.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,84 +27,39 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add an UCM profile for Intel boards with a RT5672 codec.
-
-Re-use the existing platform enable and disable sequences for BYT/CHT SST
-support and add a codecs/rt5672 dir with codec specific enable / disable
-sequences for the various inputs and outputs.
-
-This is partly based on earlier work done here:
-https://github.com/plbossart/UCM/tree/master/cht-bsw-rt5672
+The Lenovo Thinkpad 8 tablet has stereo speakers and its internal DMIC
+on DMIC1, at a device specific profile for this.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- configure.ac                                  |  2 +
+ configure.ac                                  |  1 +
+ .../HiFi.conf                                 | 23 +++++++++++++++++++
+ ...ENOVO-20BN002QGE-ThinkPad8-20BN002QGE.conf |  4 ++++
+ .../Makefile.am                               |  4 ++++
  src/conf/ucm/Makefile.am                      |  1 +
- src/conf/ucm/cht-bsw-rt5672/HiFi.conf         | 27 +++++++++++
- src/conf/ucm/cht-bsw-rt5672/Makefile.am       |  4 ++
- .../ucm/cht-bsw-rt5672/cht-bsw-rt5672.conf    |  6 +++
- src/conf/ucm/codecs/Makefile.am               |  1 +
- src/conf/ucm/codecs/rt5672/DMIC1.conf         | 28 +++++++++++
- src/conf/ucm/codecs/rt5672/DMIC2.conf         | 28 +++++++++++
- src/conf/ucm/codecs/rt5672/EnableSeq.conf     | 48 +++++++++++++++++++
- src/conf/ucm/codecs/rt5672/HeadPhones.conf    | 23 +++++++++
- src/conf/ucm/codecs/rt5672/HeadsetMic.conf    | 38 +++++++++++++++
- src/conf/ucm/codecs/rt5672/Makefile.am        |  5 ++
- src/conf/ucm/codecs/rt5672/MonoSpeaker.conf   | 26 ++++++++++
- src/conf/ucm/codecs/rt5672/Speaker.conf       | 22 +++++++++
- 14 files changed, 259 insertions(+)
- create mode 100644 src/conf/ucm/cht-bsw-rt5672/HiFi.conf
- create mode 100644 src/conf/ucm/cht-bsw-rt5672/Makefile.am
- create mode 100644 src/conf/ucm/cht-bsw-rt5672/cht-bsw-rt5672.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/DMIC1.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/DMIC2.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/EnableSeq.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/HeadPhones.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/HeadsetMic.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/Makefile.am
- create mode 100644 src/conf/ucm/codecs/rt5672/MonoSpeaker.conf
- create mode 100644 src/conf/ucm/codecs/rt5672/Speaker.conf
+ 5 files changed, 33 insertions(+)
+ create mode 100644 src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/HiFi.conf
+ create mode 100644 src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE.conf
+ create mode 100644 src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/Makefile.am
 
 diff --git a/configure.ac b/configure.ac
-index 2e955760..9ccca7aa 100644
+index 9ccca7aa..778bc64e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -741,6 +741,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile \
-+	  src/conf/ucm/cht-bsw-rt5672/Makefile \
- 	  src/conf/ucm/chtnau8824/Makefile \
- 	  src/conf/ucm/chtrt5645/Makefile \
- 	  src/conf/ucm/chtrt5645-mono-speaker-analog-mic/Makefile \
-@@ -772,6 +773,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/codecs/rt5640/Makefile \
- 	  src/conf/ucm/codecs/rt5645/Makefile \
- 	  src/conf/ucm/codecs/rt5651/Makefile \
-+	  src/conf/ucm/codecs/rt5672/Makefile \
- 	  src/conf/ucm/platforms/Makefile \
- 	  src/conf/ucm/platforms/bytcr/Makefile \
- 	  src/conf/topology/Makefile \
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index 02257048..2ed4e1a3 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -25,6 +25,7 @@ bytcr-rt5651-stereo-spk-dmic-mic \
- bytcr-rt5651-stereo-spk-in1-mic \
- bytcr-rt5651-stereo-spk-in2-mic \
- bytcr-rt5651-stereo-spk-in12-mic \
-+cht-bsw-rt5672 \
- chtnau8824 \
- chtrt5645 \
- chtrt5645-mono-speaker-analog-mic \
-diff --git a/src/conf/ucm/cht-bsw-rt5672/HiFi.conf b/src/conf/ucm/cht-bsw-rt5672/HiFi.conf
+@@ -756,6 +756,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile \
+ 	  src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile \
+ 	  src/conf/ucm/kblrt5660/Makefile \
++	  src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/Makefile \
+ 	  src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile \
+ 	  src/conf/ucm/PandaBoard/Makefile \
+ 	  src/conf/ucm/PandaBoardES/Makefile \
+diff --git a/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/HiFi.conf b/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/HiFi.conf
 new file mode 100644
-index 00000000..b83099d8
+index 00000000..43c3c0dd
 --- /dev/null
-+++ b/src/conf/ucm/cht-bsw-rt5672/HiFi.conf
-@@ -0,0 +1,27 @@
-+# Adapted from https://github.com/plbossart/UCM/tree/master/cht-bsw-rt5672
-+
++++ b/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/HiFi.conf
+@@ -0,0 +1,23 @@
 +SectionVerb {
 +	EnableSequence [
 +		cdev "hw:chtbswrt5672"
@@ -122,309 +79,41 @@ index 00000000..b83099d8
 +}
 +
 +<codecs/rt5672/Speaker.conf>
-+<codecs/rt5672/MonoSpeaker.conf>
 +<codecs/rt5672/HeadPhones.conf>
 +
-+<codecs/rt5672/DMIC1.conf>
 +<codecs/rt5672/DMIC2.conf>
 +<codecs/rt5672/HeadsetMic.conf>
-diff --git a/src/conf/ucm/cht-bsw-rt5672/Makefile.am b/src/conf/ucm/cht-bsw-rt5672/Makefile.am
+diff --git a/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE.conf b/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE.conf
 new file mode 100644
-index 00000000..c3d557fa
+index 00000000..1c3a766b
 --- /dev/null
-+++ b/src/conf/ucm/cht-bsw-rt5672/Makefile.am
++++ b/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE.conf
 @@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/cht-bsw-rt5672
-+ucm_DATA = cht-bsw-rt5672.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/cht-bsw-rt5672/cht-bsw-rt5672.conf b/src/conf/ucm/cht-bsw-rt5672/cht-bsw-rt5672.conf
-new file mode 100644
-index 00000000..c79024d9
---- /dev/null
-+++ b/src/conf/ucm/cht-bsw-rt5672/cht-bsw-rt5672.conf
-@@ -0,0 +1,6 @@
-+# Adapted from https://github.com/plbossart/UCM/tree/master/cht-bsw-rt5672
-+
 +SectionUseCase."HiFi" {
-+	File "HiFi.conf"
++	File "../LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/HiFi.conf"
 +	Comment "Play HiFi quality Music"
 +}
-diff --git a/src/conf/ucm/codecs/Makefile.am b/src/conf/ucm/codecs/Makefile.am
-index 5987b9cf..17c4ebf9 100644
---- a/src/conf/ucm/codecs/Makefile.am
-+++ b/src/conf/ucm/codecs/Makefile.am
-@@ -4,4 +4,5 @@ es8316 \
- rt5640 \
- rt5645 \
- rt5651 \
-+rt5672 \
- nau8824
-diff --git a/src/conf/ucm/codecs/rt5672/DMIC1.conf b/src/conf/ucm/codecs/rt5672/DMIC1.conf
+diff --git a/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/Makefile.am b/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/Makefile.am
 new file mode 100644
-index 00000000..9a8db1a5
+index 00000000..842409e8
 --- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/DMIC1.conf
-@@ -0,0 +1,28 @@
-+SectionDevice."DigitalMic-DMIC1" {
-+	Comment "Internal Digital Microphone on DMIC1"
-+
-+	ConflictingDevice [
-+		"DigitalMic-DMIC2"
-+		"HeadsetMic"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Int Mic Switch' on"
-+		cset "name='Stereo1 DMIC Mux' DMIC1"
-+		cset "name='Stereo1 ADC 2 Mux' DMIC"
-+		cset "name='Sto1 ADC MIXL ADC2 Switch' on"
-+		cset "name='Sto1 ADC MIXR ADC2 Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Int Mic Switch' off"
-+		cset "name='Sto1 ADC MIXL ADC2 Switch' off"
-+		cset "name='Sto1 ADC MIXR ADC2 Switch' off"
-+	]
-+
-+	Value {
-+		CaptureChannels 2
-+	}
-+}
-diff --git a/src/conf/ucm/codecs/rt5672/DMIC2.conf b/src/conf/ucm/codecs/rt5672/DMIC2.conf
-new file mode 100644
-index 00000000..b960436e
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/DMIC2.conf
-@@ -0,0 +1,28 @@
-+SectionDevice."DigitalMic-DMIC2" {
-+	Comment "Internal Digital Microphone on DMIC2"
-+
-+	ConflictingDevice [
-+		"DigitalMic-DMIC1"
-+		"HeadsetMic"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Int Mic Switch' on"
-+		cset "name='Stereo1 DMIC Mux' DMIC2"
-+		cset "name='Stereo1 ADC 2 Mux' DMIC"
-+		cset "name='Sto1 ADC MIXL ADC2 Switch' on"
-+		cset "name='Sto1 ADC MIXR ADC2 Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Int Mic Switch' off"
-+		cset "name='Sto1 ADC MIXL ADC2 Switch' off"
-+		cset "name='Sto1 ADC MIXR ADC2 Switch' off"
-+	]
-+
-+	Value {
-+		CaptureChannels 2
-+	}
-+}
-diff --git a/src/conf/ucm/codecs/rt5672/EnableSeq.conf b/src/conf/ucm/codecs/rt5672/EnableSeq.conf
-new file mode 100644
-index 00000000..bd4f357c
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/EnableSeq.conf
-@@ -0,0 +1,48 @@
-+# Playback (I2S1)
-+
-+# common
-+cset "name='DAC1 L Mux' IF1 DAC"
-+cset "name='DAC1 R Mux' IF1 DAC"
-+cset "name='DAC1 MIXL DAC1 Switch' on"
-+cset "name='DAC1 MIXR DAC1 Switch' on"
-+cset "name='Stereo DAC MIXL DAC L1 Switch' on"
-+cset "name='Stereo DAC MIXL DAC R1 Switch' off"
-+cset "name='Stereo DAC MIXR DAC R1 Switch' on"
-+cset "name='Stereo DAC MIXR DAC L1 Switch' off"
-+
-+# speaker
-+cset "name='PDM1 L Mux' Stereo DAC"
-+cset "name='PDM1 R Mux' Stereo DAC"
-+
-+# headphone
-+cset "name='HPOVOL MIXL DAC1 Switch' on"
-+cset "name='HPOVOL MIXR DAC1 Switch' on"
-+cset "name='HPO MIX HPVOL Switch' on"
-+
-+# line out
-+# cset "name='OUT MIXL DAC L1 Switch' on"
-+# cset "name='OUT MIXR DAC R1 Switch' on"
-+# cset "name='LOUT MIX OUTMIX L Switch' on"
-+# cset "name='LOUT MIX OUTMIX R Switch' on"
-+
-+# 47=0dB, 0.375 dB/step
-+cset "name='ADC Capture Volume' 47"
-+cset "name='ADC Capture Switch' on"
-+
-+# Headset mic is quite soft, boost it a bit, 1 = 20dB which is the first
-+# available boost step
-+cset "name='IN1 Boost Volume' 1"
-+
-+# Start with all outputs / inputs disabled
-+cset "name='Ext Spk Switch' off"
-+cset "name='Headphone Switch' off"
-+cset "name='Int Mic Switch' off"
-+cset "name='Headset Mic Switch' off"
-+cset "name='Sto1 ADC MIXL ADC1 Switch' off"
-+cset "name='Sto1 ADC MIXR ADC1 Switch' off"
-+cset "name='Sto1 ADC MIXL ADC2 Switch' off"
-+cset "name='Sto1 ADC MIXR ADC2 Switch' off"
-+cset "name='RECMIXL BST1 Switch' off"
-+cset "name='RECMIXR BST1 Switch' off"
-+cset "name='RECMIXL BST2 Switch' off"
-+cset "name='RECMIXR BST2 Switch' off"
-diff --git a/src/conf/ucm/codecs/rt5672/HeadPhones.conf b/src/conf/ucm/codecs/rt5672/HeadPhones.conf
-new file mode 100644
-index 00000000..cb8aad2d
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/HeadPhones.conf
-@@ -0,0 +1,23 @@
-+SectionDevice."Headphones" {
-+	Comment "Headphones"
-+
-+	ConflictingDevice [
-+		"Speaker"
-+		"MonoSpeaker"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Headphone Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Headphone Switch' off"
-+	]
-+
-+	Value {
-+		PlaybackChannels "2"
-+		JackControl "Headphone Jack"
-+	}
-+}
-diff --git a/src/conf/ucm/codecs/rt5672/HeadsetMic.conf b/src/conf/ucm/codecs/rt5672/HeadsetMic.conf
-new file mode 100644
-index 00000000..cc6d8d56
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/HeadsetMic.conf
-@@ -0,0 +1,38 @@
-+SectionDevice."HeadsetMic" {
-+	Comment "Headset Microphone"
-+
-+	ConflictingDevice [
-+		"DigitalMic-DMIC1"
-+		"DigitalMic-DMIC2"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Headset Mic Switch' on"
-+        	cset "name='RECMIXL BST1 Switch' on"
-+		cset "name='RECMIXR BST1 Switch' on"
-+		cset "name='Sto1 ADC MIXL ADC1 Switch' on"
-+		cset "name='Sto1 ADC MIXR ADC1 Switch' on"
-+		# For unknown reasons the headset mic sound is only recorded
-+		# on the left channel, we tweak the data-stream reception to
-+		# use the left samples for both slots, so that we get a stereo
-+		# stream with the mic sound on both channels
-+		cset "name='codec_in rx deinterleaver codec_in0_1' 1"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Headset Mic Switch' off"
-+        	cset "name='RECMIXL BST1 Switch' off"
-+		cset "name='RECMIXR BST1 Switch' off"
-+		cset "name='Sto1 ADC MIXL ADC1 Switch' off"
-+		cset "name='Sto1 ADC MIXR ADC1 Switch' off"
-+		# Undo data-stream reception mono-mix workaround
-+		cset "name='codec_in rx deinterleaver codec_in0_1' 2"
-+	]
-+
-+	Value {
-+		CaptureChannels "2"
-+		JackControl "Headset Mic Jack"
-+	}
-+}
-diff --git a/src/conf/ucm/codecs/rt5672/Makefile.am b/src/conf/ucm/codecs/rt5672/Makefile.am
-new file mode 100644
-index 00000000..feba0b76
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/Makefile.am
-@@ -0,0 +1,5 @@
++++ b/src/conf/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE/Makefile.am
+@@ -0,0 +1,4 @@
 +alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/codecs/rt5672
-+ucm_DATA = DMIC1.conf DMIC2.conf EnableSeq.conf HeadPhones.conf \
-+	   HeadsetMic.conf MonoSpeaker.conf Speaker.conf
++ucmdir = $(alsaconfigdir)/ucm/LENOVO-20BN002QGE-ThinkPad8-20BN002QGE
++ucm_DATA = LENOVO-20BN002QGE-ThinkPad8-20BN002QGE.conf HiFi.conf
 +EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/codecs/rt5672/MonoSpeaker.conf b/src/conf/ucm/codecs/rt5672/MonoSpeaker.conf
-new file mode 100644
-index 00000000..828a1154
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/MonoSpeaker.conf
-@@ -0,0 +1,26 @@
-+SectionDevice."MonoSpeaker" {
-+	Comment "Mono Speaker"
-+
-+	ConflictingDevice [
-+		"Speaker"
-+		"Headphones"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Stereo DAC MIXR DAC R1 Switch' off"
-+		cset "name='Stereo DAC MIXL DAC R1 Switch' on"
-+		cset "name='Ext Spk Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Ext Spk Switch' off"
-+		cset "name='Stereo DAC MIXL DAC R1 Switch' off"
-+		cset "name='Stereo DAC MIXR DAC R1 Switch' on"
-+	]
-+
-+	Value {
-+		PlaybackChannels "2"
-+	}
-+}
-diff --git a/src/conf/ucm/codecs/rt5672/Speaker.conf b/src/conf/ucm/codecs/rt5672/Speaker.conf
-new file mode 100644
-index 00000000..f9291e53
---- /dev/null
-+++ b/src/conf/ucm/codecs/rt5672/Speaker.conf
-@@ -0,0 +1,22 @@
-+SectionDevice."Speaker" {
-+	Comment "Speakers"
-+
-+	ConflictingDevice [
-+		"MonoSpeaker"
-+		"Headphones"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Ext Spk Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtbswrt5672"
-+		cset "name='Ext Spk Switch' off"
-+	]
-+
-+	Value {
-+		PlaybackChannels "2"
-+	}
-+}
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index 2ed4e1a3..7bb8eb1d 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -40,6 +40,7 @@ gpd-win-pocket-rt5645 \
+ HDAudio-Gigabyte-ALC1220DualCodecs \
+ HDAudio-Lenovo-DualCodecs \
+ kblrt5660 \
++LENOVO-20BN002QGE-ThinkPad8-20BN002QGE \
+ LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216 \
+ PandaBoard \
+ PandaBoardES \
 -- 
 2.23.0
