@@ -1,14 +1,14 @@
 From: Hui Peng <benquike@gmail.com>
-Subject: Re: [PATCH 1/2] Fix an OOB bug in parse_audio_mixer_unit
-Date: Sun, 1 Sep 2019 15:43:13 -0400
-Message-ID: <df31a1f9-623a-aff6-fa7c-01eba3fd0f63@gmail.com>
-References: <20190830214649.27761-1-benquike@gmail.com>
- <20190901125809.GA23334@eldamar.local>
+Subject: Re: [PATCH 2/2] Fix a stack buffer overflow bug in check_input_term
+Date: Sun, 1 Sep 2019 15:47:31 -0400
+Message-ID: <d80f1fba-8bf5-58e2-1801-5ac2308b5d4e@gmail.com>
+References: <20190830214730.27842-1-benquike@gmail.com>
+ <20190901130028.GB23334@eldamar.local>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------C17843906CF228CD9BE7D7BA"
+ boundary="------------5C362557DFF1DBD4FF087E3A"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190901125809.GA23334@eldamar.local>
+In-Reply-To: <20190901130028.GB23334@eldamar.local>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: carnil@debian.org
@@ -16,114 +16,149 @@ Cc: stable@vger.kernel.org, mathias.payer@nebelwelt.net, perex@perex.cz, tiwai@s
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------C17843906CF228CD9BE7D7BA
+--------------5C362557DFF1DBD4FF087E3A
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 
-On 9/1/19 8:58 AM, Salvatore Bonaccorso wrote:
-> On Fri, Aug 30, 2019 at 05:46:49PM -0400, Hui Peng wrote:
->> The `uac_mixer_unit_descriptor` shown as below is read from the
->> device side. In `parse_audio_mixer_unit`, `baSourceID` field is
->> accessed from index 0 to `bNrInPins` - 1, the current implementation
->> assumes that descriptor is always valid (the length  of descriptor
->> is no shorter than 5 + `bNrInPins`). If a descriptor read from
->> the device side is invalid, it may trigger out-of-bound memory
->> access.
+On 9/1/19 9:00 AM, Salvatore Bonaccorso wrote:
+> Hi Hui,
+>
+> On Fri, Aug 30, 2019 at 05:47:29PM -0400, Hui Peng wrote:
+>> `check_input_term` recursively calls itself with input from
+>> device side (e.g., uac_input_terminal_descriptor.bCSourceID)
+>> as argument (id). In `check_input_term`, if `check_input_term`
+>> is called with the same `id` argument as the caller, it triggers
+>> endless recursive call, resulting kernel space stack overflow.
 >>
->> ```
->> struct uac_mixer_unit_descriptor {
->> 	__u8 bLength;
->> 	__u8 bDescriptorType;
->> 	__u8 bDescriptorSubtype;
->> 	__u8 bUnitID;
->> 	__u8 bNrInPins;
->> 	__u8 baSourceID[];
->> }
->> ```
+>> This patch fixes the bug by adding a bitmap to `struct mixer_build`
+>> to keep track of the checked ids and stop the execution if some id
+>> has been checked (similar to how parse_audio_unit handles unitid
+>> argument).
 >>
->> This patch fixes the bug by add a sanity check on the length of
->> the descriptor.
->>
->> CVE: CVE-2018-15117
-> FWIW, the correct CVE id should be probably CVE-2019-15117 here.
+>> CVE: CVE-2018-15118
+> Similar to the previous one, this should be CVE-2019-15118 as far I
+> can tell.
 
-Yes, the CVE id was wrong. I have updated it in the attached patch.
+Same here: CVE id updated.
 
-> But there was already a patch queued and released in 5.2.10 and
-> 4.19.68 for this issue (as far I can see; is this correct?)
-
-Yes, it should have been fixed in those branches.
-
-But google asked me to back port it to v4.4.190 and v4.14.141.
-
-I have mentioned it in one previous email, but it was blocked by vger
-because it was sent in html format.
-
-Can you apply it to these 2 versions? (it applies to both versions)
+Can you apply it to  v4.4.190 and v4.14.141?
 
 Thanks.
 
+>
 > Regards,
 > Salvatore
 
---------------C17843906CF228CD9BE7D7BA
+--------------5C362557DFF1DBD4FF087E3A
 Content-Type: text/x-patch;
- name="0001-Fix-an-OOB-bug-in-parse_audio_mixer_unit.patch"
+ name="0002-Fix-a-stack-buffer-overflow-bug-in-check_input_term.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="0001-Fix-an-OOB-bug-in-parse_audio_mixer_unit.patch"
+ filename*0="0002-Fix-a-stack-buffer-overflow-bug-in-check_input_term.pat";
+ filename*1="ch"
 
->From 09942398a53bbe730264b782673890d4a54068d0 Mon Sep 17 00:00:00 2001
+>From f5e478c4807b16f49c00316fb80485562b84340a Mon Sep 17 00:00:00 2001
 From: Hui Peng <benquike@gmail.com>
-Date: Fri, 30 Aug 2019 16:11:00 -0400
-Subject: [PATCH 1/2] Fix an OOB bug in parse_audio_mixer_unit
+Date: Fri, 30 Aug 2019 16:20:41 -0400
+Subject: [PATCH 2/2] Fix a stack buffer overflow bug in check_input_term
 
-The `uac_mixer_unit_descriptor` shown as below is read from the
-device side. In `parse_audio_mixer_unit`, `baSourceID` field is
-accessed from index 0 to `bNrInPins` - 1, the current implementation
-assumes that descriptor is always valid (the length  of descriptor
-is no shorter than 5 + `bNrInPins`). If a descriptor read from
-the device side is invalid, it may trigger out-of-bound memory
-access.
+`check_input_term` recursively calls itself with input from
+device side (e.g., uac_input_terminal_descriptor.bCSourceID)
+as argument (id). In `check_input_term`, if `check_input_term`
+is called with the same `id` argument as the caller, it triggers
+endless recursive call, resulting kernel space stack overflow.
 
-```
-struct uac_mixer_unit_descriptor {
-	__u8 bLength;
-	__u8 bDescriptorType;
-	__u8 bDescriptorSubtype;
-	__u8 bUnitID;
-	__u8 bNrInPins;
-	__u8 baSourceID[];
-}
-```
+This patch fixes the bug by adding a bitmap to `struct mixer_build`
+to keep track of the checked ids and stop the execution if some id
+has been checked (similar to how parse_audio_unit handles unitid
+argument).
 
-This patch fixes the bug by add a sanity check on the length of
-the descriptor.
-
-CVE: CVE-2019-15117
+CVE: CVE-2019-15118
 
 Reported-by: Hui Peng <benquike@gmail.com>
 Reported-by: Mathias Payer <mathias.payer@nebelwelt.net>
 Signed-off-by: Hui Peng <benquike@gmail.com>
 ---
- sound/usb/mixer.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/mixer.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 1f7eb3816cd7..10ddec76f906 100644
+index 10ddec76f906..e24572fd6e30 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -1628,6 +1628,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
- 	int pin, ich, err;
+@@ -81,6 +81,7 @@ struct mixer_build {
+ 	unsigned char *buffer;
+ 	unsigned int buflen;
+ 	DECLARE_BITMAP(unitbitmap, MAX_ID_ELEMS);
++	DECLARE_BITMAP(termbitmap, MAX_ID_ELEMS);
+ 	struct usb_audio_term oterm;
+ 	const struct usbmix_name_map *map;
+ 	const struct usbmix_selector_map *selector_map;
+@@ -709,15 +710,24 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
+  * parse the source unit recursively until it reaches to a terminal
+  * or a branched unit.
+  */
+-static int check_input_term(struct mixer_build *state, int id,
++static int __check_input_term(struct mixer_build *state, int id,
+ 			    struct usb_audio_term *term)
+ {
+ 	int err;
+ 	void *p1;
++	unsigned char *hdr;
  
- 	if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
-+	    desc->bLength < sizeof(*desc) + desc->bNrInPins ||
- 	    !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
- 		usb_audio_err(state->chip,
- 			      "invalid MIXER UNIT descriptor %d\n",
+ 	memset(term, 0, sizeof(*term));
+-	while ((p1 = find_audio_control_unit(state, id)) != NULL) {
+-		unsigned char *hdr = p1;
++	for (;;) {
++		/* a loop in the terminal chain? */
++		if (test_and_set_bit(id, state->termbitmap))
++			return -EINVAL;
++
++		p1 = find_audio_control_unit(state, id);
++		if (!p1)
++			break;
++
++		hdr = p1;
+ 		term->id = id;
+ 		switch (hdr[2]) {
+ 		case UAC_INPUT_TERMINAL:
+@@ -732,7 +742,7 @@ static int check_input_term(struct mixer_build *state, int id,
+ 
+ 				/* call recursively to verify that the
+ 				 * referenced clock entity is valid */
+-				err = check_input_term(state, d->bCSourceID, term);
++				err = __check_input_term(state, d->bCSourceID, term);
+ 				if (err < 0)
+ 					return err;
+ 
+@@ -764,7 +774,7 @@ static int check_input_term(struct mixer_build *state, int id,
+ 		case UAC2_CLOCK_SELECTOR: {
+ 			struct uac_selector_unit_descriptor *d = p1;
+ 			/* call recursively to retrieve the channel info */
+-			err = check_input_term(state, d->baSourceID[0], term);
++			err = __check_input_term(state, d->baSourceID[0], term);
+ 			if (err < 0)
+ 				return err;
+ 			term->type = d->bDescriptorSubtype << 16; /* virtual type */
+@@ -811,6 +821,15 @@ static int check_input_term(struct mixer_build *state, int id,
+ 	return -ENODEV;
+ }
+ 
++
++static int check_input_term(struct mixer_build *state, int id,
++			    struct usb_audio_term *term)
++{
++	memset(term, 0, sizeof(*term));
++	memset(state->termbitmap, 0, sizeof(state->termbitmap));
++	return __check_input_term(state, id, term);
++}
++
+ /*
+  * Feature Unit
+  */
 -- 
 2.17.1
 
 
---------------C17843906CF228CD9BE7D7BA--
+--------------5C362557DFF1DBD4FF087E3A--
