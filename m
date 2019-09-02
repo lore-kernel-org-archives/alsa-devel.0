@@ -1,25 +1,25 @@
 From: Rosen Penev <rosenp@gmail.com>
-Subject: [PATCH] alsa-utils: Remove usleep usage
-Date: Sun,  1 Sep 2019 18:27:05 -0700
-Message-ID: <20190902012705.16062-1-rosenp@gmail.com>
+Subject: [PATCH] alsa-lib: Remove usleep usage
+Date: Sun,  1 Sep 2019 18:32:40 -0700
+Message-ID: <20190902013240.16591-1-rosenp@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com
- [IPv6:2607:f8b0:4864:20::543])
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43223F80306
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 03:27:09 +0200 (CEST)
-Received: by mail-pg1-x543.google.com with SMTP id n9so6547979pgc.1
- for <alsa-devel@alsa-project.org>; Sun, 01 Sep 2019 18:27:09 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0D4FF80306
+ for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 03:32:44 +0200 (CEST)
+Received: by mail-pf1-x444.google.com with SMTP id b24so8058163pfp.1
+ for <alsa-devel@alsa-project.org>; Sun, 01 Sep 2019 18:32:43 -0700 (PDT)
 Received: from localhost.localdomain (76-14-106-55.rk.wavecable.com.
  [76.14.106.55])
- by smtp.gmail.com with ESMTPSA id t11sm11947919pgb.33.2019.09.01.18.27.07
+ by smtp.gmail.com with ESMTPSA id l123sm16584020pfl.9.2019.09.01.18.32.41
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 01 Sep 2019 18:27:07 -0700 (PDT)
+ Sun, 01 Sep 2019 18:32:41 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,58 +32,68 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-dXNsZWVwIHdhcyBkZXByZWNhdGVkIGluIFBPU0lYIDIwMDggYW5kIGlzIG5vdCBhdmFpbGFibGUg
-d2l0aG91dApkZXByZWNhdGVkIEFQSXMgZW5hYmxlZCBpbiB1Q2xpYmMtbmcuCgpTaWduZWQtb2Zm
-LWJ5OiBSb3NlbiBQZW5ldiA8cm9zZW5wQGdtYWlsLmNvbT4KLS0tCiBhbHNhY3RsL2RhZW1vbi5j
-ICB8IDMgKystCiBhbHNhbG9vcC9wY21qb2IuYyB8IDMgKystCiBhbWlkaS9hbWlkaS5jICAgICB8
-IDYgKysrKy0tCiBiYXQvYmF0LmMgICAgICAgICB8IDUgKysrLS0KIDQgZmlsZXMgY2hhbmdlZCwg
-MTEgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hbHNhY3RsL2Rh
-ZW1vbi5jIGIvYWxzYWN0bC9kYWVtb24uYwppbmRleCAxZDk4Y2FhLi4zYjg0Y2Y2IDEwMDY0NAot
-LS0gYS9hbHNhY3RsL2RhZW1vbi5jCisrKyBiL2Fsc2FjdGwvZGFlbW9uLmMKQEAgLTM0OCw3ICsz
-NDgsOCBAQCBzdGF0aWMgaW50IGNoZWNrX2Fub3RoZXJfaW5zdGFuY2UoY29uc3QgY2hhciAqcGlk
-ZmlsZSkKIAlpZiAocGlkID49IDApIHsKIAkJLyogaW52b2tlIG5ldyBjYXJkIHJlc2NhbiAqLwog
-CQlpZiAoa2lsbChwaWQsIFNJR1VTUjEpID49IDApIHsKLQkJCXVzbGVlcCgxMDAwKTsKKwkJCXN0
-cnVjdCB0aW1lc3BlYyByZXEgPSB7IDAsIDEgKiAxMDAwICogMTAwMCB9OworCQkJbmFub3NsZWVw
-KCZyZXEsIE5VTEwpOwogCQkJcGlkID0gcmVhZF9waWRfZmlsZShwaWRmaWxlKTsKIAkJCWlmIChw
-aWQgPj0gMCkKIAkJCQlyZXR1cm4gMTsKZGlmZiAtLWdpdCBhL2Fsc2Fsb29wL3BjbWpvYi5jIGIv
-YWxzYWxvb3AvcGNtam9iLmMKaW5kZXggMjlkMWFiYS4uZDAzNDdkYyAxMDA2NDQKLS0tIGEvYWxz
-YWxvb3AvcGNtam9iLmMKKysrIGIvYWxzYWxvb3AvcGNtam9iLmMKQEAgLTY2MiwxMCArNjYyLDEx
-IEBAIHN0YXRpYyBpbnQgeHJ1bihzdHJ1Y3QgbG9vcGJhY2tfaGFuZGxlICpsaGFuZGxlKQogCiBz
-dGF0aWMgaW50IHN1c3BlbmQoc3RydWN0IGxvb3BiYWNrX2hhbmRsZSAqbGhhbmRsZSkKIHsKKwlz
-dHJ1Y3QgdGltZXNwZWMgcmVxID0geyAwLCAxMDAwfTsKIAlpbnQgZXJyOwogCiAJd2hpbGUgKChl
-cnIgPSBzbmRfcGNtX3Jlc3VtZShsaGFuZGxlLT5oYW5kbGUpKSA9PSAtRUFHQUlOKQotCQl1c2xl
-ZXAoMSk7CisJCW5hbm9zbGVlcCgmcmVxLCBOVUxMKTsKIAlpZiAoZXJyIDwgMCkKIAkJcmV0dXJu
-IHhydW4obGhhbmRsZSk7CiAJcmV0dXJuIDA7CmRpZmYgLS1naXQgYS9hbWlkaS9hbWlkaS5jIGIv
-YW1pZGkvYW1pZGkuYwppbmRleCBiNmUwNWUxLi4zYjI5NTNkIDEwMDY0NAotLS0gYS9hbWlkaS9h
-bWlkaS5jCisrKyBiL2FtaWRpL2FtaWRpLmMKQEAgLTI1NCwxMCArMjU0LDEyIEBAIHN0YXRpYyBp
-bnQgc2VuZF9taWRpX2ludGVybGVhdmVkKHZvaWQpCiAJCQlzbmRfcmF3bWlkaV9zdGF0dXMob3V0
-cHV0LCBzdCk7CiAJCQlkbyB7CiAJCQkJLyogMzIwIMK1cyBwZXIgYnl0ZSBhcyBub3RlZCBpbiBQ
-YWdlIDEgb2YgTUlESSBzcGVjICovCi0JCQkJdXNsZWVwKChidWZmZXJfc2l6ZSAtIHNuZF9yYXdt
-aWRpX3N0YXR1c19nZXRfYXZhaWwoc3QpKSAqIDMyMCk7CisJCQkJc3RydWN0IHRpbWVzcGVjIHJl
-cSA9IHsgMCwgKGJ1ZmZlcl9zaXplIC0gc25kX3Jhd21pZGlfc3RhdHVzX2dldF9hdmFpbChzdCkp
-ICogMzIwICogMTAwMH07CisJCQkJbmFub3NsZWVwKCZyZXEsIE5VTEwpOwogCQkJCXNuZF9yYXdt
-aWRpX3N0YXR1cyhvdXRwdXQsIHN0KTsKIAkJCX0gd2hpbGUoc25kX3Jhd21pZGlfc3RhdHVzX2dl
-dF9hdmFpbChzdCkgPCBidWZmZXJfc2l6ZSk7Ci0JCQl1c2xlZXAoc3lzZXhfaW50ZXJ2YWwgKiAx
-MDAwKTsKKwkJCXN0cnVjdCB0aW1lc3BlYyBzeXNleCA9IHsgMCwgc3lzZXhfaW50ZXJ2YWwgKiAx
-MDAwICogMTAwMH07CisJCQluYW5vc2xlZXAoJnN5c2V4LCBOVUxMKTsKIAkJfQogCiAJCS8qIGZp
-bmQgZW5kIG9mIFN5c0V4ICovCmRpZmYgLS1naXQgYS9iYXQvYmF0LmMgYi9iYXQvYmF0LmMKaW5k
-ZXggODY0NTc3MC4uMjdlN2EzNCAxMDA2NDQKLS0tIGEvYmF0L2JhdC5jCisrKyBiL2JhdC9iYXQu
-YwpAQCAtMTc2LDYgKzE3Niw3IEBAIHN0YXRpYyB2b2lkIHRlc3RfbG9vcGJhY2soc3RydWN0IGJh
-dCAqYmF0KQogCXB0aHJlYWRfdCBjYXB0dXJlX2lkLCBwbGF5YmFja19pZDsKIAlpbnQgZXJyOwog
-CWludCAqdGhyZWFkX3Jlc3VsdF9jYXB0dXJlLCAqdGhyZWFkX3Jlc3VsdF9wbGF5YmFjazsKKwlz
-dHJ1Y3QgdGltZXNwZWMgY2FwdHVyZV9kZWxheSA9IHsgMCwgQ0FQVFVSRV9ERUxBWSAqIDEwMDAg
-KiAxMDAwIH07CiAKIAkvKiBzdGFydCBwbGF5YmFjayAqLwogCWVyciA9IHB0aHJlYWRfY3JlYXRl
-KCZwbGF5YmFja19pZCwgTlVMTCwKQEAgLTE4OCw3ICsxODksNyBAQCBzdGF0aWMgdm9pZCB0ZXN0
-X2xvb3BiYWNrKHN0cnVjdCBiYXQgKmJhdCkKIAogCS8qIFRPRE86IHVzZSBhIHBpcGUgdG8gc2ln
-bmFsIHN0cmVhbSBzdGFydCBldGMgLSBpLmUuIHRvIHN5bmMgdGhyZWFkcyAqLwogCS8qIExldCBz
-b21lIHRpbWUgZm9yIHBsYXlpbmcgc29tZXRoaW5nIGJlZm9yZSBjYXB0dXJpbmcgKi8KLQl1c2xl
-ZXAoQ0FQVFVSRV9ERUxBWSAqIDEwMDApOworCW5hbm9zbGVlcCgmY2FwdHVyZV9kZWxheSwgTlVM
-TCk7CiAKIAkvKiBzdGFydCBjYXB0dXJlICovCiAJZXJyID0gcHRocmVhZF9jcmVhdGUoJmNhcHR1
-cmVfaWQsIE5VTEwsICh2b2lkICopIGJhdC0+Y2FwdHVyZS5mY3QsIGJhdCk7CkBAIC02OTEsNyAr
-NjkyLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAkJCX0KIAogCQkJLyog
-V2FpdGluZyA1MDBtcyBhbmQgc3RhcnQgdGhlIG5leHQgcm91bmQgKi8KLQkJCXVzbGVlcChDQVBU
-VVJFX0RFTEFZICogMTAwMCk7CisJCQluYW5vc2xlZXAoJmNhcHR1cmVfZGVsYXksIE5VTEwpOwog
-CQl9CiAJCWdvdG8gb3V0OwogCX0KLS0gCjIuMTcuMQoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+usleep was deprecated by POSIX 2008 and is unavailable without deprecated
+APIs enabled in uClibc-ng.
+
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ src/pcm/pcm_shm.c | 3 ++-
+ src/ucm/main.c    | 3 ++-
+ test/mixtest.c    | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/pcm/pcm_shm.c b/src/pcm/pcm_shm.c
+index 26a27a57..30a77cd4 100644
+--- a/src/pcm/pcm_shm.c
++++ b/src/pcm/pcm_shm.c
+@@ -485,12 +485,13 @@ static int snd_pcm_shm_drain(snd_pcm_t *pcm)
+ 	snd_pcm_shm_t *shm = pcm->private_data;
+ 	volatile snd_pcm_shm_ctrl_t *ctrl = shm->ctrl;
+ 	int err;
++	struct timespec req = { 0, 10 * 1000 * 1000 };
+ 	do {
+ 		ctrl->cmd = SNDRV_PCM_IOCTL_DRAIN;
+ 		err = snd_pcm_shm_action(pcm);
+ 		if (err != -EAGAIN)
+ 			break;
+-		usleep(10000);
++		nanosleep(&req, NULL);
+ 	} while (1);
+ 	if (err < 0)
+ 		return err;
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 99b1cd08..0e5236cb 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -359,6 +359,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ {
+ 	struct list_head *pos;
+ 	struct sequence_element *s;
++	struct timespec sleep = { 0, s->data.sleep * 1000 };
+ 	char *cdev = NULL;
+ 	snd_ctl_t *ctl = NULL;
+ 	int err = 0;
+@@ -440,7 +441,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			}
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_SLEEP:
+-			usleep(s->data.sleep);
++			nanosleep(&sleep, NULL);
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_EXEC:
+ 			err = system(s->data.exec);
+diff --git a/test/mixtest.c b/test/mixtest.c
+index 57ca5d53..f0940344 100644
+--- a/test/mixtest.c
++++ b/test/mixtest.c
+@@ -77,7 +77,7 @@ static double detect_cpu_clock()
+ 	rdtscll(tsc_begin);
+ 	clock_gettime(CLOCK_MONOTONIC, &tm_begin);
+ 
+-	usleep(1000000);
++	sleep(1);
+ 
+ 	rdtscll(tsc_end);
+ 	clock_gettime(CLOCK_MONOTONIC, &tm_end);
+-- 
+2.17.1
