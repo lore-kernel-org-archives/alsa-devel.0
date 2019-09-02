@@ -1,129 +1,68 @@
-From: Cosmin-Gabriel Samoila <gabrielcsmo@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Set SAI Channel Mode to Output Mode
-Date: Sun, 01 Sep 2019 22:49:44 +0300
-Message-ID: <5124dd295d2b5fb934ad567fbe19b2f6b37a8372.camel@gmail.com>
-References: <20190830225514.5283-1-daniel.baluta@nxp.com>
+From: Rosen Penev <rosenp@gmail.com>
+Subject: [PATCH] alsamixer: Remove exp10 usage
+Date: Sun,  1 Sep 2019 18:22:29 -0700
+Message-ID: <20190902012229.15796-1-rosenp@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190830225514.5283-1-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>, broonie@kernel.org
-Cc: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, shengjiu.wang@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, NXP Linux Team <linux-imx@nxp.com>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
+ [IPv6:2607:f8b0:4864:20::644])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DF07F80306
+ for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 03:22:33 +0200 (CEST)
+Received: by mail-pl1-x644.google.com with SMTP id f19so5889998plr.3
+ for <alsa-devel@alsa-project.org>; Sun, 01 Sep 2019 18:22:33 -0700 (PDT)
+Received: from localhost.localdomain (76-14-106-55.rk.wavecable.com.
+ [76.14.106.55])
+ by smtp.gmail.com with ESMTPSA id n9sm3373173pfa.154.2019.09.01.18.22.30
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 01 Sep 2019 18:22:30 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Looks good to me!
+exp10 is a GNU extension and not available everywhere (eg. uClibc-ng).
 
-Best regards,
-Cosmin
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ alsamixer/volume_mapping.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On Sat, 2019-08-31 at 01:55 +0300, Daniel Baluta wrote:
-> From SAI datasheet:
-> 
-> CHMOD, configures if transmit data pins are configured for TDM mode
-> or Output mode.
-> 	* (0) TDM mode, transmit data pins are tri-stated when slots
-> are
-> 	masked or channels are disabled.
-> 	* (1) Output mode, transmit data pins are never tri-stated and
-> 	will output zero when slots are masked or channels are
-> disabled.
-> 
-> When data pins are tri-stated, there is noise on some channels
-> when FS clock value is high and data is read while fsclk is
-> transitioning from high to low.
-> 
-> Fix this by setting CHMOD to Output Mode so that pins will output
-> zero
-> when slots are masked or channels are disabled.
-> 
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/fsl/fsl_sai.c | 15 ++++++++++++---
->  sound/soc/fsl/fsl_sai.h |  2 ++
->  2 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index e896b577b1f7..b9daab0eb6eb 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -467,6 +467,12 @@ static int fsl_sai_hw_params(struct
-> snd_pcm_substream *substream,
->  
->  	val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
->  
-> +	/*
-> +	 * set CHMOD to Output Mode so that transmit data pins will
-> +	 * output zero when slots are masked or channels are disabled
-> +	 */
-> +	val_cr4 |= FSL_SAI_CR4_CHMOD;
-> +
->  	/*
->  	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock,
-> Rx(Tx) will
->  	 * generate bclk and frame clock for Tx(Rx), we should set
-> RCR4(TCR4),
-> @@ -477,7 +483,8 @@ static int fsl_sai_hw_params(struct
-> snd_pcm_substream *substream,
->  	if (!sai->is_slave_mode) {
->  		if (!sai->synchronous[TX] && sai->synchronous[RX] &&
-> !tx) {
->  			regmap_update_bits(sai->regmap,
-> FSL_SAI_TCR4(ofs),
-> -				FSL_SAI_CR4_SYWD_MASK |
-> FSL_SAI_CR4_FRSZ_MASK,
-> +				FSL_SAI_CR4_SYWD_MASK |
-> FSL_SAI_CR4_FRSZ_MASK |
-> +				FSL_SAI_CR4_CHMOD_MASK,
->  				val_cr4);
->  			regmap_update_bits(sai->regmap,
-> FSL_SAI_TCR5(ofs),
->  				FSL_SAI_CR5_WNW_MASK |
-> FSL_SAI_CR5_W0W_MASK |
-> @@ -486,7 +493,8 @@ static int fsl_sai_hw_params(struct
-> snd_pcm_substream *substream,
->  				~0UL - ((1 << channels) - 1));
->  		} else if (!sai->synchronous[RX] && sai-
-> >synchronous[TX] && tx) {
->  			regmap_update_bits(sai->regmap,
-> FSL_SAI_RCR4(ofs),
-> -				FSL_SAI_CR4_SYWD_MASK |
-> FSL_SAI_CR4_FRSZ_MASK,
-> +				FSL_SAI_CR4_SYWD_MASK |
-> FSL_SAI_CR4_FRSZ_MASK |
-> +				FSL_SAI_CR4_CHMOD_MASK,
->  				val_cr4);
->  			regmap_update_bits(sai->regmap,
-> FSL_SAI_RCR5(ofs),
->  				FSL_SAI_CR5_WNW_MASK |
-> FSL_SAI_CR5_W0W_MASK |
-> @@ -497,7 +505,8 @@ static int fsl_sai_hw_params(struct
-> snd_pcm_substream *substream,
->  	}
->  
->  	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
-> -			   FSL_SAI_CR4_SYWD_MASK |
-> FSL_SAI_CR4_FRSZ_MASK,
-> +			   FSL_SAI_CR4_SYWD_MASK |
-> FSL_SAI_CR4_FRSZ_MASK |
-> +			   FSL_SAI_CR4_CHMOD_MASK,
->  			   val_cr4);
->  	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
->  			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK
-> |
-> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-> index f96f8d97489d..1e3b4a6889a8 100644
-> --- a/sound/soc/fsl/fsl_sai.h
-> +++ b/sound/soc/fsl/fsl_sai.h
-> @@ -119,6 +119,8 @@
->  #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
->  #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
->  #define FSL_SAI_CR4_SYWD_MASK	(0x1f << 8)
-> +#define FSL_SAI_CR4_CHMOD	BIT(5)
-> +#define FSL_SAI_CR4_CHMOD_MASK	GENMASK(5, 5)
->  #define FSL_SAI_CR4_MF		BIT(4)
->  #define FSL_SAI_CR4_FSE		BIT(3)
->  #define FSL_SAI_CR4_FSP		BIT(1)
+diff --git a/alsamixer/volume_mapping.c b/alsamixer/volume_mapping.c
+index 48cfbe2..29ab061 100644
+--- a/alsamixer/volume_mapping.c
++++ b/alsamixer/volume_mapping.c
+@@ -108,9 +108,9 @@ static double get_normalized_volume(snd_mixer_elem_t *elem,
+ 	if (use_linear_dB_scale(min, max))
+ 		return (value - min) / (double)(max - min);
+ 
+-	normalized = exp10((value - max) / 6000.0);
++	normalized = pow(10, (value - max) / 6000.0);
+ 	if (min != SND_CTL_TLV_DB_GAIN_MUTE) {
+-		min_norm = exp10((min - max) / 6000.0);
++		min_norm = pow(10, (min - max) / 6000.0);
+ 		normalized = (normalized - min_norm) / (1 - min_norm);
+ 	}
+ 
+@@ -143,7 +143,7 @@ static int set_normalized_volume(snd_mixer_elem_t *elem,
+ 	}
+ 
+ 	if (min != SND_CTL_TLV_DB_GAIN_MUTE) {
+-		min_norm = exp10((min - max) / 6000.0);
++		min_norm = pow(10, (min - max) / 6000.0);
+ 		volume = volume * (1 - min_norm) + min_norm;
+ 	}
+ 	value = lrint_dir(6000.0 * log10(volume), dir) + max;
+-- 
+2.17.1
