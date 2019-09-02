@@ -1,99 +1,90 @@
-From: Rosen Penev <rosenp@gmail.com>
-Subject: [PATCH] alsa-lib: Remove usleep usage
-Date: Sun,  1 Sep 2019 18:32:40 -0700
-Message-ID: <20190902013240.16591-1-rosenp@gmail.com>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH] drm: dw-hdmi-i2s: enable audio clock in audio_startup
+Date: Mon, 2 Sep 2019 10:06:55 +0800
+Message-ID: <CAFv8NwLq-cJqj0MB=rzKuqr3g0n3Y-nHor4w8ntiFXytoHpdLw@mail.gmail.com>
+References: <20190829042957.150929-1-cychiang@chromium.org> <HE1PR06MB4011FA45247F186BB83DFF04ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0D4FF80306
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 03:32:44 +0200 (CEST)
-Received: by mail-pf1-x444.google.com with SMTP id b24so8058163pfp.1
- for <alsa-devel@alsa-project.org>; Sun, 01 Sep 2019 18:32:43 -0700 (PDT)
-Received: from localhost.localdomain (76-14-106-55.rk.wavecable.com.
- [76.14.106.55])
- by smtp.gmail.com with ESMTPSA id l123sm16584020pfl.9.2019.09.01.18.32.41
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 01 Sep 2019 18:32:41 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <HE1PR06MB4011FA45247F186BB83DFF04ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jonas Karlman <jonas@kwiboo.se>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tzungbi@chromium.org" <tzungbi@chromium.org>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "a.hajda@samsung.com" <a.hajda@samsung.com>, "airlied@linux.ie" <airlied@linux.ie>, "jeffy.chen@rock-chips.com" <jeffy.chen@rock-chips.com>, "dianders@chromium.org" <dianders@chromium.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "cain.cai@rock-chips.com" <cain.cai@rock-chips.com>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "eddie.cai@rock-chips.com" <eddie.cai@rock-chips.com>, Laurent.pinchart@ideasonboard.com
 List-Id: alsa-devel@alsa-project.org
 
-usleep was deprecated by POSIX 2008 and is unavailable without deprecated
-APIs enabled in uClibc-ng.
+On Sun, Sep 1, 2019 at 6:04 PM Jonas Karlman <jonas@kwiboo.se> wrote:
+>
+> On 2019-08-29 06:29, Cheng-Yi Chiang wrote:
+> > In the designware databook, the sequence of enabling audio clock and
+> > setting format is not clearly specified.
+> > Currently, audio clock is enabled in the end of hw_param ops after
+> > setting format.
+> >
+> > On some monitors, there is a possibility that audio does not come out.
+> > Fix this by enabling audio clock in audio_startup ops
+> > before hw_param ops setting format.
+> >
+> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > ---
+> >  drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+> > index 5cbb71a866d5..08b4adbb1ddc 100644
+> > --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
+> > @@ -69,6 +69,14 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
+> >       hdmi_write(audio, conf0, HDMI_AUD_CONF0);
+> >       hdmi_write(audio, conf1, HDMI_AUD_CONF1);
+> >
+> > +     return 0;
+> > +}
+> > +
+> > +static int dw_hdmi_i2s_audio_startup(struct device *dev, void *data)
+> > +{
+> > +     struct dw_hdmi_i2s_audio_data *audio = data;
+> > +     struct dw_hdmi *hdmi = audio->hdmi;
+> > +
+> >       dw_hdmi_audio_enable(hdmi);
+> >
+> >       return 0;
+> > @@ -105,6 +113,7 @@ static int dw_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
+> >  }
+> >
+> >  static struct hdmi_codec_ops dw_hdmi_i2s_ops = {
+> > +     .audio_startup = dw_hdmi_i2s_audio_startup,
+>
+> A small white space nit, there should be a tab and not space to align the equal sign above.
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- src/pcm/pcm_shm.c | 3 ++-
- src/ucm/main.c    | 3 ++-
- test/mixtest.c    | 2 +-
- 3 files changed, 5 insertions(+), 3 deletions(-)
+ACK. Will fix in v2.
+>
+> Also this patch do not cleanly apply to drm-misc-next or linux-next after
+> fc1ca6e01d0a "drm/bridge: dw-hdmi-i2s: add .get_eld support" was merged.
 
-diff --git a/src/pcm/pcm_shm.c b/src/pcm/pcm_shm.c
-index 26a27a57..30a77cd4 100644
---- a/src/pcm/pcm_shm.c
-+++ b/src/pcm/pcm_shm.c
-@@ -485,12 +485,13 @@ static int snd_pcm_shm_drain(snd_pcm_t *pcm)
- 	snd_pcm_shm_t *shm = pcm->private_data;
- 	volatile snd_pcm_shm_ctrl_t *ctrl = shm->ctrl;
- 	int err;
-+	struct timespec req = { 0, 10 * 1000 * 1000 };
- 	do {
- 		ctrl->cmd = SNDRV_PCM_IOCTL_DRAIN;
- 		err = snd_pcm_shm_action(pcm);
- 		if (err != -EAGAIN)
- 			break;
--		usleep(10000);
-+		nanosleep(&req, NULL);
- 	} while (1);
- 	if (err < 0)
- 		return err;
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 99b1cd08..0e5236cb 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -359,6 +359,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- {
- 	struct list_head *pos;
- 	struct sequence_element *s;
-+	struct timespec sleep = { 0, s->data.sleep * 1000 };
- 	char *cdev = NULL;
- 	snd_ctl_t *ctl = NULL;
- 	int err = 0;
-@@ -440,7 +441,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 			}
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_SLEEP:
--			usleep(s->data.sleep);
-+			nanosleep(&sleep, NULL);
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_EXEC:
- 			err = system(s->data.exec);
-diff --git a/test/mixtest.c b/test/mixtest.c
-index 57ca5d53..f0940344 100644
---- a/test/mixtest.c
-+++ b/test/mixtest.c
-@@ -77,7 +77,7 @@ static double detect_cpu_clock()
- 	rdtscll(tsc_begin);
- 	clock_gettime(CLOCK_MONOTONIC, &tm_begin);
- 
--	usleep(1000000);
-+	sleep(1);
- 
- 	rdtscll(tsc_end);
- 	clock_gettime(CLOCK_MONOTONIC, &tm_end);
--- 
-2.17.1
+ACK. Will rebase in v2.
+>
+>
+>
+>
+> This patch does fix an issue I have observed on my Rockchip devices where audio would not always
+> came out after switching between audio streams having different rate and channels parameters.
+> I used to carry [1] to fix that issue, but this seems like a more sane fix.
+>
+> [1] https://github.com/Kwiboo/linux-rockchip/commit/4862e4044532b8b480fa3a0faddc197586623808
+>
+> With above fixed,
+>
+> Reviewed-by: Jonas Karlman <jonas@kwiboo.se>
+
+
+Thanks a lot!
+
+>
+>
+> Regards,
+> Jonas
+>
+> >       .hw_params      = dw_hdmi_i2s_hw_params,
+> >       .audio_shutdown = dw_hdmi_i2s_audio_shutdown,
+> >       .get_dai_id     = dw_hdmi_i2s_get_dai_id,
+>
