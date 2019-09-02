@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE96C3A59E
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 12:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74CE9C3A5A7
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 12:26:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F30C820820
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 12:25:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F379E2168B
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 12:26:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XRETqAOh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="HgDpxgoC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F30C820820
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="stzrHHRM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DDZb7drs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F379E2168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B701016C5;
-	Mon,  2 Sep 2019 14:24:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B701016C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 172AD16D7;
+	Mon,  2 Sep 2019 14:25:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 172AD16D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567427144;
-	bh=eilOvdXLUbFvS2GhKre+yHHlyg7WNoBj/2SKZzwsv48=;
+	s=default; t=1567427191;
+	bh=pLroh8GAww1zWedPmPE6rLAONAHXxCTfr/+61odVIjI=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=XRETqAOhyZosIf3i8etz358n5cirftrKmrHHZnKnkWjoZlOp8OAH3je9+UW1oR1yQ
-	 EdwCI3qCvCFVZrVPj4737IvP1M4yDtWPYLQ6SkzSdrxJgFtlyB33JAs4sMu9YBPGoY
-	 vrDwZPnIRjNerO75APDpchnLKgIIZZtFQTppkieg=
+	b=stzrHHRMXQZS1zdc3vXMfoaOhs4afxlo9Z3l3clBhzhRqY4R1jHvxbkJ+Wi3D2mFa
+	 26rF1eL3e+odK8O5buMRmY1M19ac/u0ebU7qkG7Wp7HnRCXp4QZMMAji29bUQPKnAO
+	 MK+QnQ1Ptn4qPyePtYFQr5EAoAfTxLnfR+fhsXJM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55F1AF80448;
-	Mon,  2 Sep 2019 14:24:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47767F80529;
+	Mon,  2 Sep 2019 14:24:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9783F80448; Mon,  2 Sep 2019 14:23:57 +0200 (CEST)
+ id 74EA9F805A9; Mon,  2 Sep 2019 14:24:00 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0FEFF8011E
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 14:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0FEFF8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 796ABF803D6
+ for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 14:23:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 796ABF803D6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="HgDpxgoC"
+ header.b="DDZb7drs"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=n3bv0DNbHFt9TQsui7MEZg0ic3KrForlzwpGY4VViA8=; b=HgDpxgoCVU94
- BgaW3GzpDKtE7fKjX/kQEtlFxTQvr57IZV89NWCGdxG+zTMC2VYKyDIEYHkDkRZZbhdBlgxv7GP/o
- YMN2SPDoxhpSEFNncZFpPnQMYven+vZN7Ubhzq0zX9bwHqNJ/0dwBJ8QbKSKMB7Ib72bnLBwaTPWI
- Z5gwo=;
+ List-Archive; bh=JhLrmJwwUdUqU6RLkBkPrZjlQeB0wimt7i/XeCcrLy0=; b=DDZb7drsUvAX
+ mdq62jfqJOvf+fJBMxgC/Hi9EdTZSbR/bfXWxKQu6A0cijksJm+VE7ld5RXzzU4p0FvPdegd26Pib
+ dlQfIJOAGbtXQegiGyf50H1CgJPZvLw7pVX7em23P98G2KXmvp3O8n23fljp+eBR2BqMD2pVW53Hh
+ Amh40=;
 Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i4lNA-0003By-Uo; Mon, 02 Sep 2019 12:23:53 +0000
+ id 1i4lND-0003CH-AZ; Mon, 02 Sep 2019 12:23:55 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2C1942742CCB; Mon,  2 Sep 2019 13:23:52 +0100 (BST)
+ id D268F2742CCC; Mon,  2 Sep 2019 13:23:54 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87o90g7lbd.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87tva87lby.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190902122352.2C1942742CCB@ypsilon.sirena.org.uk>
-Date: Mon,  2 Sep 2019 13:23:52 +0100 (BST)
+Message-Id: <20190902122354.D268F2742CCC@ypsilon.sirena.org.uk>
+Date: Mon,  2 Sep 2019 13:23:54 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: move
-	soc_probe_link_components() position" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: add soc_rtd_free()" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: move soc_probe_link_components() position
+   ASoC: soc-core: add soc_rtd_free()
 
 has been applied to the asoc tree at
 
@@ -120,10 +120,10 @@ to this mail.
 Thanks,
 Mark
 
-From 6fb035502956ad1f338ca61c057653d5372ffd8c Mon Sep 17 00:00:00 2001
+From 9a7c9fe1203eb360b3a01b65a18bcd0de6670c53 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 23 Aug 2019 09:58:58 +0900
-Subject: [PATCH] ASoC: soc-core: move soc_probe_link_components() position
+Date: Fri, 23 Aug 2019 09:58:37 +0900
+Subject: [PATCH] ASoC: soc-core: add soc_rtd_free()
 
 It is easy to read code if it is cleanly using paired function/naming,
 like start <-> stop, register <-> unregister, etc, etc.
@@ -131,77 +131,62 @@ But, current ALSA SoC code is very random, unbalance, not paired, etc.
 It is easy to create bug at the such code, and it will be difficult to
 debug.
 
-soc_probe_link_components() has paired soc_remove_link_components(),
-but, these are implemented at different place.
-So it is difficult to confirm code.
-This patch moves soc_probe_link_components() next to
-soc_remove_link_components().
+soc_rtd_init() was soc_post_component_init(), but there was no
+its paired soc_post_component_free(), but it is done at
+soc_remove_link_dais().
+This means it is difficult to find related code.
+
+This patch adds soc_rtd_free() which is paired soc_rtd_init().
+soc_rtd_xxx() will be more cleanuped in the future.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87o90g7lbd.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87tva87lby.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 40 ++++++++++++++++++++--------------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+ sound/soc/soc-core.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8e831ae59eb8..2a166abaade1 100644
+index 3c087b478398..3754a08baf62 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1135,6 +1135,26 @@ static void soc_remove_link_components(struct snd_soc_card *card,
- 	}
+@@ -975,17 +975,15 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
+ 	dai->probed = 0;
  }
  
-+static int soc_probe_link_components(struct snd_soc_card *card,
-+				     struct snd_soc_pcm_runtime *rtd, int order)
++static void soc_rtd_free(struct snd_soc_pcm_runtime *rtd); /* remove me */
+ static void soc_remove_link_dais(struct snd_soc_card *card,
+ 		struct snd_soc_pcm_runtime *rtd, int order)
+ {
+ 	int i;
+ 	struct snd_soc_dai *codec_dai;
+ 
+-	/* unregister the rtd device */
+-	if (rtd->dev_registered) {
+-		device_unregister(rtd->dev);
+-		rtd->dev_registered = 0;
+-	}
++	/* finalize rtd device */
++	soc_rtd_free(rtd);
+ 
+ 	/* remove the CODEC DAI */
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai)
+@@ -1340,6 +1338,15 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	return ret;
+ }
+ 
++static void soc_rtd_free(struct snd_soc_pcm_runtime *rtd)
 +{
-+	struct snd_soc_component *component;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	int ret;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (component->driver->probe_order == order) {
-+			ret = soc_probe_component(card, component);
-+			if (ret < 0)
-+				return ret;
-+		}
++	if (rtd->dev_registered) {
++		/* we don't need to call kfree() for rtd->dev */
++		device_unregister(rtd->dev);
++		rtd->dev_registered = 0;
 +	}
-+
-+	return 0;
 +}
 +
- static void soc_remove_dai_links(struct snd_soc_card *card)
+ static void soc_rtd_release(struct device *dev)
  {
- 	int order;
-@@ -1379,26 +1399,6 @@ static int soc_rtd_init(struct snd_soc_pcm_runtime *rtd, const char *name)
- 	return 0;
- }
- 
--static int soc_probe_link_components(struct snd_soc_card *card,
--				     struct snd_soc_pcm_runtime *rtd, int order)
--{
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
--	int ret;
--
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (component->driver->probe_order == order) {
--			ret = soc_probe_component(card, component);
--			if (ret < 0)
--				return ret;
--		}
--	}
--
--	return 0;
--}
--
- static int soc_probe_dai(struct snd_soc_dai *dai, int order)
- {
- 	int ret;
+ 	kfree(dev);
 -- 
 2.20.1
 
