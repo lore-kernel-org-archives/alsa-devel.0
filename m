@@ -2,74 +2,65 @@ Return-Path: <SRS0=ZrTp=W5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D46C9C3A59B
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 06:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BABD9C3A59B
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 07:03:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC42922CF7
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 06:42:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D2D421881
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Sep 2019 07:03:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f7NfpCkI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC42922CF7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h/OLe9QI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D2D421881
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C13D71688;
-	Mon,  2 Sep 2019 08:41:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C13D71688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EF1C1689;
+	Mon,  2 Sep 2019 09:03:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EF1C1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567406568;
-	bh=wBqc1FeSeo2teoLvri+XA+HJIUFSEONhNmILpOwhXBg=;
+	s=default; t=1567407834;
+	bh=R4uOUY0RY/dwrFDVNNVcl6P+T/CJDBT1+ghFFesdlhM=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f7NfpCkIunyH4oBiJHXH6DJvd3CbIdWBYH6/FOxTUYX8PYeqM4B0pn7FN2vyhl3I8
-	 zAvniytnybsFEepPuWgSFbmT2/W4LfmjeXveBBFc8NhknFtkccAryKQk8+E8NXPYYY
-	 Cate9t2IMDWURRrkFEd+hb1lpL6+zVcJ1cVd8hR4=
+	b=h/OLe9QIEYWF7k4UQseWcX8ZJSo2S45e0whRFkwqDUVELEr1M7qpspNrlXuoP4Vnl
+	 2wraNeO0GAUtFbgao03tV6ZeZyzrFxuEGjeH7dWO+qWrtmcemHPVnd1iourcDTuvmw
+	 tznc1d91K9tyRGG4mvzNBUzf2X/dtPJkzawnZskc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B34EF80394;
-	Mon,  2 Sep 2019 08:41:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B773EF80394;
+	Mon,  2 Sep 2019 09:03:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6AB08F803D0; Mon,  2 Sep 2019 08:41:54 +0200 (CEST)
+ id 9B3D4F803D0; Mon,  2 Sep 2019 09:03:01 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65172F80392
- for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 08:41:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65172F80392
+ by alsa1.perex.cz (Postfix) with ESMTPS id F23A1F80392
+ for <alsa-devel@alsa-project.org>; Mon,  2 Sep 2019 09:02:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F23A1F80392
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id D3E53AC0C;
- Mon,  2 Sep 2019 06:41:48 +0000 (UTC)
-Date: Mon, 02 Sep 2019 08:41:48 +0200
-Message-ID: <s5hlfv7jj2r.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 9683AABD6;
+ Mon,  2 Sep 2019 07:02:57 +0000 (UTC)
+Date: Mon, 02 Sep 2019 09:02:57 +0200
+Message-ID: <s5hftlfji3i.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
-In-Reply-To: <20190901192737.GB28125@xn--80adja5bqm.su>
-References: <s5hzhla9j8b.wl-tiwai@suse.de>
- <20190720165435.GA5855@xn--80adja5bqm.su>
- <20190819195714.GA2737@xn--80adja5bqm.su>
- <s5hef1dthbk.wl-tiwai@suse.de>
- <20190822203031.GA22363@xn--80adja5bqm.su>
- <s5h5zmg48u2.wl-tiwai@suse.de>
- <20190829103805.GA1525@xn--80adja5bqm.su>
- <s5hsgpk2os6.wl-tiwai@suse.de>
- <20190830114510.GA10027@xn--80adja5bqm.su>
- <s5hzhjqzvu5.wl-tiwai@suse.de>
- <20190901192737.GB28125@xn--80adja5bqm.su>
+To: Rosen Penev <rosenp@gmail.com>
+In-Reply-To: <20190902012705.16062-1-rosenp@gmail.com>
+References: <20190902012705.16062-1-rosenp@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Surround speaker connection on Acer 8951G
+Subject: Re: [alsa-devel] [PATCH] alsa-utils: Remove usleep usage
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,164 +74,74 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190902064148.FDXjNJiHT2GMQCCZT-tspzbsVTTQP9JLMQzjMk5KaDI@z>
+Message-ID: <20190902070257.4VWalr35NdU7QQDNXjdVgFustk05EaBWZsccNf5Gauw@z>
 
-On Sun, 01 Sep 2019 21:27:37 +0200,
-Sergey 'Jin' Bostandzhyan wrote:
-> 
-> > Other than that, the approach with UCM profile would be simpler.  It
-> > won't need anything else than what you already showed (pincfg and
-> > GPIO) in the driver side.
-> 
-> Simpler...yes and no :) From what I have seen, all "default" Pulse profiles are
-> replaced by the UCM, meaning that if I wanted them, I'd have to replicate
-> all of them in my conf. It would work though. 
-
-You just need to override codec->card->longname to some unique string
-and use it as UCM profile name.
-Check alc1220_fixup_gb_dual_codecs() as an example.
-
-> > > > > {0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02}
-> > > > 
-> > > > Actually this must be paired with the corresponding bit of GPIO_DATA,
-> > > > too.  Is the bit 0x02 of GPIO_DATA set or cleared?  Usually setting it
-> > > > turns on the amp, but sometimes inverted.
-> > > 
-> > > If I understood everything correctly, then the bit is set, meaning that the
-> > > GPIO signal is configured as output.
-> > 
-> > The GPIO_DIRECTION specifies whether input or output, and the actual
-> > value is passed via GPIO_DATA.  Both have to be specified, not only
-> > one.
-> 
-> [...]
-> 
-> > > set(0x01, 0x717,   0x02) # 0x01071702 (SET_GPIO_DIRECTION)
-> > 
-> > This needs the paired SET_GPIO_DATA for a proper operation.  Your
-> > analysis implicit assumes some default value that is already set by
-> > the hardware.
-> 
-> If I understand it correctly, then "some value" is zero on my hardware:
-> 
-> # hda-verb /dev/snd/hwC0D0 0x01 GET_GPIO_DATA 0x02
-> nid = 0x1, verb = 0xf15, param = 0x2
-> value = 0x0
-> 
-> Meanwhile I also figured out that /proc/asound/card0/codec#0 is
-> providing this info as well:
-> 
->   IO[1]: enable=0, dir=1, wake=0, sticky=0, data=0, unsol=0
-> 
-> So the value seems to be 0 and I can add an explicit SET_GPIO_DATA verb quirk
-> to set it in addition to SET_GPIO_DIRECTION, right?
-
-Yes.  You need to set SET_GPIO_MASK=0x02, SET_GPIO_DIRECTION=0x02 and
-SET_GPIO_DATA=0x00 for that bit.
-
-> > > If the above is a yes, could you please point me to the right way of getting 
-> > > triggered upon jack state changes in the driver, since automute hooks seem 
-> > > not to trigger while something is playing?
-> > 
-> > This isn't easy, as repeatedly mentioned, since the parser assumes
-> > only one role for each pin except for the input/output switching.
-> > In your case the pin shares for two outputs to be switched, and this
-> > isn't implemented at all.
-> 
-> I think we talked a bit past each other, based on your reply I understand that 
-> you were assuming that I am still trying to solve it in the parser in some 
-> generic way, which as you indeed repeatedly mentioned would not be easy.
-> 
-> At the same time I do not rule out the possibility, that I simply do not
-> see the "bigger picture" and that you have already accounted for the
-> proposal that follows :)
-> 
-> Given that this is my first driver hacking adventure, I was aiming for a much
-> more localized solution, so I was not going to add generic support for
-> shared pins. Once I learned how to subscribe to jack state
-> changes I was able to implement the idea that I had inside the model
-> quirk:
-> 
-> static void alc662_aspire_ethos_mute_speakers(struct hda_codec *codec,
->                     struct hda_jack_callback *cb)
-> {
->     /* surround speakers muted automatically when headphones are
->      * plugged in, we'll mute/unmute the remaining channels manually:
->      * 0x15 - front left/front right
->      * 0x18 - front center/ LFE
->      * */
->     if (snd_hda_jack_detect_state(codec, cb->nid) == HDA_JACK_PRESENT) {
->         snd_hda_set_pin_ctl_cache(codec, 0x15, 0);
->         snd_hda_set_pin_ctl_cache(codec, 0x18, 0);
->     } else {
->         snd_hda_set_pin_ctl_cache(codec, 0x15, PIN_OUT);
->         snd_hda_set_pin_ctl_cache(codec, 0x18, PIN_OUT);
->     }
-> }
-> 
-> static void alc662_fixup_aspire_ethos_hp(struct hda_codec *codec,
->                      const struct hda_fixup *fix, int action)
-> {
->     if (action == HDA_FIXUP_ACT_PRE_PROBE) {
->         if (is_jack_detectable(codec, 0x1b)) {
->             snd_hda_jack_detect_enable_callback(codec, 0x1b,
->                                     alc662_aspire_ethos_mute_speakers);
->         }
->     }
-> }
-> 
-> This was the idea that I have been referring to, when I was talking about
-> "muting in the driver" after I learned that proper automuting based on hp pins
-> was not possible as you indeed repeatedly stated.
-> 
-> The above seems to work quite well for me and does exactly what I want, 
-> PulseAudio presents all the autogenerated profiles and handles mic and line 
-> jacks itself, at the same time all unwanted speakers get muted as soon as I 
-> plug in my headphones into the jack pin that is shared with my surround
-> speakers. Of course Pulse does not "know" anything about the headphones and
-> does not switch profiles, but I don't mind since the user experience is
-> as expected.
-
-Hm, OK, this amount of changes are acceptable.  The hardware behavior
-itself is weird, and we have already tricky code, so it's no problem
-to keep some yet another tricky code as long as it's described enough
-in the comments and the changelog.
-
-> My earlier attempt was to send the pin widget control verbs directly, however
-> then the pin got reconnected as soon as playback started.
-> This does not happen when I use snd_hda_set_pin_ctl_cache(), but I am not 
-> quite sure about the cache, should I use the _cache function or the
-> uncached one?
-
-This should work, AFAIK.  The *_set_pin_ctl_cache() remembers the last
-written value, as its name stands.  That's restored again at the PM
-resume, for example.
-
-The PM resume does re-trigger the jack detection callback, so it'll be
-written up again in anyway, though.
-
-> Another thing I am not sure about is, if I somehow disrupt power management by 
-> doing what I do? I saw that for instance restore_shutup_pins() does modify 
-> those connections as well and I would basically overwrite whatever it did
-> in the case that the user plugs/unplugs the headphones.
-
-This should be fine as-is.  The shutup_pins() clears pins temporarily
-and the pins are resumed to the cached values in return.
-
-One thing to be improved would be to drop the surround jack control.
-Adjust the pin config to different value with the fixed pin
-connection, so that the auto-parser won't create the "Surround Jack"
-control.  This isn't needed by PA or else, otherwise it may be
-confusing.
-
-
-thanks,
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gTW9uLCAwMiBTZXAgMjAxOSAwMzoyNzowNSArMDIwMCwKUm9zZW4gUGVuZXYgd3JvdGU6Cj4g
+Cj4gdXNsZWVwIHdhcyBkZXByZWNhdGVkIGluIFBPU0lYIDIwMDggYW5kIGlzIG5vdCBhdmFpbGFi
+bGUgd2l0aG91dAo+IGRlcHJlY2F0ZWQgQVBJcyBlbmFibGVkIGluIHVDbGliYy1uZy4KPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBSb3NlbiBQZW5ldiA8cm9zZW5wQGdtYWlsLmNvbT4KCkNhbiB3ZSBjaGVj
+ayB0aGUgcHJlc2VuY2UgaW4gY29uZmlndXJlIHNjcmlwdCBhbmQgYWRkIGEgY29tcGF0CnVzbGVl
+cCgpIHdyYXBwZXIgaW5zdGVhZD8gIFJlcGxhY2luZyBlYWNoIHBsYWNlIHdpdGggdGhlIG9wZW4g
+Y29kZQp1c2luZyBuYW5vc2xlZXAoKSBpcyB3YXkgdG9vIHVnbHksIElNTy4KCgp0aGFua3MsCgpU
+YWthc2hpCgo+IC0tLQo+ICBhbHNhY3RsL2RhZW1vbi5jICB8IDMgKystCj4gIGFsc2Fsb29wL3Bj
+bWpvYi5jIHwgMyArKy0KPiAgYW1pZGkvYW1pZGkuYyAgICAgfCA2ICsrKystLQo+ICBiYXQvYmF0
+LmMgICAgICAgICB8IDUgKysrLS0KPiAgNCBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCsp
+LCA2IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9hbHNhY3RsL2RhZW1vbi5jIGIvYWxz
+YWN0bC9kYWVtb24uYwo+IGluZGV4IDFkOThjYWEuLjNiODRjZjYgMTAwNjQ0Cj4gLS0tIGEvYWxz
+YWN0bC9kYWVtb24uYwo+ICsrKyBiL2Fsc2FjdGwvZGFlbW9uLmMKPiBAQCAtMzQ4LDcgKzM0OCw4
+IEBAIHN0YXRpYyBpbnQgY2hlY2tfYW5vdGhlcl9pbnN0YW5jZShjb25zdCBjaGFyICpwaWRmaWxl
+KQo+ICAJaWYgKHBpZCA+PSAwKSB7Cj4gIAkJLyogaW52b2tlIG5ldyBjYXJkIHJlc2NhbiAqLwo+
+ICAJCWlmIChraWxsKHBpZCwgU0lHVVNSMSkgPj0gMCkgewo+IC0JCQl1c2xlZXAoMTAwMCk7Cj4g
+KwkJCXN0cnVjdCB0aW1lc3BlYyByZXEgPSB7IDAsIDEgKiAxMDAwICogMTAwMCB9Owo+ICsJCQlu
+YW5vc2xlZXAoJnJlcSwgTlVMTCk7Cj4gIAkJCXBpZCA9IHJlYWRfcGlkX2ZpbGUocGlkZmlsZSk7
+Cj4gIAkJCWlmIChwaWQgPj0gMCkKPiAgCQkJCXJldHVybiAxOwo+IGRpZmYgLS1naXQgYS9hbHNh
+bG9vcC9wY21qb2IuYyBiL2Fsc2Fsb29wL3BjbWpvYi5jCj4gaW5kZXggMjlkMWFiYS4uZDAzNDdk
+YyAxMDA2NDQKPiAtLS0gYS9hbHNhbG9vcC9wY21qb2IuYwo+ICsrKyBiL2Fsc2Fsb29wL3BjbWpv
+Yi5jCj4gQEAgLTY2MiwxMCArNjYyLDExIEBAIHN0YXRpYyBpbnQgeHJ1bihzdHJ1Y3QgbG9vcGJh
+Y2tfaGFuZGxlICpsaGFuZGxlKQo+ICAKPiAgc3RhdGljIGludCBzdXNwZW5kKHN0cnVjdCBsb29w
+YmFja19oYW5kbGUgKmxoYW5kbGUpCj4gIHsKPiArCXN0cnVjdCB0aW1lc3BlYyByZXEgPSB7IDAs
+IDEwMDB9Owo+ICAJaW50IGVycjsKPiAgCj4gIAl3aGlsZSAoKGVyciA9IHNuZF9wY21fcmVzdW1l
+KGxoYW5kbGUtPmhhbmRsZSkpID09IC1FQUdBSU4pCj4gLQkJdXNsZWVwKDEpOwo+ICsJCW5hbm9z
+bGVlcCgmcmVxLCBOVUxMKTsKPiAgCWlmIChlcnIgPCAwKQo+ICAJCXJldHVybiB4cnVuKGxoYW5k
+bGUpOwo+ICAJcmV0dXJuIDA7Cj4gZGlmZiAtLWdpdCBhL2FtaWRpL2FtaWRpLmMgYi9hbWlkaS9h
+bWlkaS5jCj4gaW5kZXggYjZlMDVlMS4uM2IyOTUzZCAxMDA2NDQKPiAtLS0gYS9hbWlkaS9hbWlk
+aS5jCj4gKysrIGIvYW1pZGkvYW1pZGkuYwo+IEBAIC0yNTQsMTAgKzI1NCwxMiBAQCBzdGF0aWMg
+aW50IHNlbmRfbWlkaV9pbnRlcmxlYXZlZCh2b2lkKQo+ICAJCQlzbmRfcmF3bWlkaV9zdGF0dXMo
+b3V0cHV0LCBzdCk7Cj4gIAkJCWRvIHsKPiAgCQkJCS8qIDMyMCDCtXMgcGVyIGJ5dGUgYXMgbm90
+ZWQgaW4gUGFnZSAxIG9mIE1JREkgc3BlYyAqLwo+IC0JCQkJdXNsZWVwKChidWZmZXJfc2l6ZSAt
+IHNuZF9yYXdtaWRpX3N0YXR1c19nZXRfYXZhaWwoc3QpKSAqIDMyMCk7Cj4gKwkJCQlzdHJ1Y3Qg
+dGltZXNwZWMgcmVxID0geyAwLCAoYnVmZmVyX3NpemUgLSBzbmRfcmF3bWlkaV9zdGF0dXNfZ2V0
+X2F2YWlsKHN0KSkgKiAzMjAgKiAxMDAwfTsKPiArCQkJCW5hbm9zbGVlcCgmcmVxLCBOVUxMKTsK
+PiAgCQkJCXNuZF9yYXdtaWRpX3N0YXR1cyhvdXRwdXQsIHN0KTsKPiAgCQkJfSB3aGlsZShzbmRf
+cmF3bWlkaV9zdGF0dXNfZ2V0X2F2YWlsKHN0KSA8IGJ1ZmZlcl9zaXplKTsKPiAtCQkJdXNsZWVw
+KHN5c2V4X2ludGVydmFsICogMTAwMCk7Cj4gKwkJCXN0cnVjdCB0aW1lc3BlYyBzeXNleCA9IHsg
+MCwgc3lzZXhfaW50ZXJ2YWwgKiAxMDAwICogMTAwMH07Cj4gKwkJCW5hbm9zbGVlcCgmc3lzZXgs
+IE5VTEwpOwo+ICAJCX0KPiAgCj4gIAkJLyogZmluZCBlbmQgb2YgU3lzRXggKi8KPiBkaWZmIC0t
+Z2l0IGEvYmF0L2JhdC5jIGIvYmF0L2JhdC5jCj4gaW5kZXggODY0NTc3MC4uMjdlN2EzNCAxMDA2
+NDQKPiAtLS0gYS9iYXQvYmF0LmMKPiArKysgYi9iYXQvYmF0LmMKPiBAQCAtMTc2LDYgKzE3Niw3
+IEBAIHN0YXRpYyB2b2lkIHRlc3RfbG9vcGJhY2soc3RydWN0IGJhdCAqYmF0KQo+ICAJcHRocmVh
+ZF90IGNhcHR1cmVfaWQsIHBsYXliYWNrX2lkOwo+ICAJaW50IGVycjsKPiAgCWludCAqdGhyZWFk
+X3Jlc3VsdF9jYXB0dXJlLCAqdGhyZWFkX3Jlc3VsdF9wbGF5YmFjazsKPiArCXN0cnVjdCB0aW1l
+c3BlYyBjYXB0dXJlX2RlbGF5ID0geyAwLCBDQVBUVVJFX0RFTEFZICogMTAwMCAqIDEwMDAgfTsK
+PiAgCj4gIAkvKiBzdGFydCBwbGF5YmFjayAqLwo+ICAJZXJyID0gcHRocmVhZF9jcmVhdGUoJnBs
+YXliYWNrX2lkLCBOVUxMLAo+IEBAIC0xODgsNyArMTg5LDcgQEAgc3RhdGljIHZvaWQgdGVzdF9s
+b29wYmFjayhzdHJ1Y3QgYmF0ICpiYXQpCj4gIAo+ICAJLyogVE9ETzogdXNlIGEgcGlwZSB0byBz
+aWduYWwgc3RyZWFtIHN0YXJ0IGV0YyAtIGkuZS4gdG8gc3luYyB0aHJlYWRzICovCj4gIAkvKiBM
+ZXQgc29tZSB0aW1lIGZvciBwbGF5aW5nIHNvbWV0aGluZyBiZWZvcmUgY2FwdHVyaW5nICovCj4g
+LQl1c2xlZXAoQ0FQVFVSRV9ERUxBWSAqIDEwMDApOwo+ICsJbmFub3NsZWVwKCZjYXB0dXJlX2Rl
+bGF5LCBOVUxMKTsKPiAgCj4gIAkvKiBzdGFydCBjYXB0dXJlICovCj4gIAllcnIgPSBwdGhyZWFk
+X2NyZWF0ZSgmY2FwdHVyZV9pZCwgTlVMTCwgKHZvaWQgKikgYmF0LT5jYXB0dXJlLmZjdCwgYmF0
+KTsKPiBAQCAtNjkxLDcgKzY5Miw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10p
+Cj4gIAkJCX0KPiAgCj4gIAkJCS8qIFdhaXRpbmcgNTAwbXMgYW5kIHN0YXJ0IHRoZSBuZXh0IHJv
+dW5kICovCj4gLQkJCXVzbGVlcChDQVBUVVJFX0RFTEFZICogMTAwMCk7Cj4gKwkJCW5hbm9zbGVl
+cCgmY2FwdHVyZV9kZWxheSwgTlVMTCk7Cj4gIAkJfQo+ICAJCWdvdG8gb3V0Owo+ICAJfQo+IC0t
+IAo+IDIuMTcuMQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKPiBodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
