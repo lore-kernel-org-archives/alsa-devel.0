@@ -2,64 +2,64 @@ Return-Path: <SRS0=Sdsu=W6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03FEBC3A5A2
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 10:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3F89C3A5A2
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 10:29:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2760322D6D
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 10:19:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 680BD2168B
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 10:29:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MUP/hn2l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2760322D6D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cXkG7OD/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 680BD2168B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 487DE1666;
-	Tue,  3 Sep 2019 12:18:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 487DE1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA5E1666;
+	Tue,  3 Sep 2019 12:28:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA5E1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567505946;
-	bh=x4RxCw1bdjRkezHEhZPTESvig7GLPGEoqVVn/K1jg8I=;
+	s=default; t=1567506578;
+	bh=/Eglk+R//HbgxagRg7chGsXbBapXR/WVfztEBl1oo+g=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MUP/hn2lMWP74VRKAGvZgyhMeATWhrwRHGoK5K6Yyv5IASmRbIJV7UpeDdjhZfKDv
-	 sNgq7fszBhW1w23G/WYdcpNQzmlMYBpN/mT33Vxtkglsi01Nv8PMlb2hP5/NA5zFUi
-	 KYzhDMpV8/JvgbGrCDSnGFDGqrZ88O1/3UUWWKwU=
+	b=cXkG7OD/oSISfs8sMCqSVPMNhn/ZXOJ+J7sj0NL+V+eRRE8rD8tdL0Ro4oe7fK7Cr
+	 8S22QI7rLVcfieI10IsqpUq16VJw9vCDztEK/Z9kPg32OaBq200by6CtaSaQqM3hO4
+	 egqigU1gCEQYGwoPFl+qeb6/7iS/Grfs3CRjFehw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6C45F803D7;
-	Tue,  3 Sep 2019 12:18:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19EF8F803D7;
+	Tue,  3 Sep 2019 12:28:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F986F8045F; Tue,  3 Sep 2019 12:18:14 +0200 (CEST)
+ id 02E4DF8045F; Tue,  3 Sep 2019 12:28:43 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68B22F803D7
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2019 12:18:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68B22F803D7
+ by alsa1.perex.cz (Postfix) with ESMTPS id A52A8F80228
+ for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2019 12:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A52A8F80228
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id E92F7AC7F;
- Tue,  3 Sep 2019 10:18:09 +0000 (UTC)
-Date: Tue, 03 Sep 2019 12:18:09 +0200
-Message-ID: <s5hwoepvg2m.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id D6F7BAD46;
+ Tue,  3 Sep 2019 10:28:37 +0000 (UTC)
+Date: Tue, 03 Sep 2019 12:28:37 +0200
+Message-ID: <s5hv9u9vfl6.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Rosen Penev <rosenp@gmail.com>
-In-Reply-To: <20190902012229.15796-1-rosenp@gmail.com>
-References: <20190902012229.15796-1-rosenp@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v9u9u7vt.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v9u9u7vt.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] alsamixer: Remove exp10 usage
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] some lock needed for flush_delayed_work ?
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,17 +77,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 02 Sep 2019 03:22:29 +0200,
-Rosen Penev wrote:
+On Tue, 03 Sep 2019 10:00:22 +0200,
+Kuninori Morimoto wrote:
 > 
-> exp10 is a GNU extension and not available everywhere (eg. uClibc-ng).
 > 
-> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> Hi ALSA ML
+> 
+> I got below error when I unbind/bind CPU DAI.
+> It seems we need to have some kind of lock ?
 
-Applied now.  Thanks.
+No, this kind of error usually is due to the missing initialization of
+the lock object.  In this case, the work hasn't been initialized
+before calling the flush_delayed_work().
+
+I suppose it's an error path at snd_soc_bind_card(), and the patch
+like below might fix the issue.
 
 
 Takashi
+
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -371,6 +371,7 @@ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
+ EXPORT_SYMBOL_GPL(snd_soc_get_dai_substream);
+ 
+ static const struct snd_soc_ops null_snd_soc_ops;
++static void codec2codec_close_delayed_work(struct work_struct *work);
+ 
+ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 	struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
+@@ -382,6 +383,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 		return NULL;
+ 
+ 	INIT_LIST_HEAD(&rtd->component_list);
++	INIT_DELAYED_WORK(&rtd->delayed_work, codec2codec_close_delayed_work);
+ 	rtd->card = card;
+ 	rtd->dai_link = dai_link;
+ 	if (!rtd->dai_link->ops)
+@@ -1573,9 +1575,6 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 					   rtd->num_codecs, rtd);
+ 		if (ret < 0)
+ 			return ret;
+-	} else {
+-		INIT_DELAYED_WORK(&rtd->delayed_work,
+-				  codec2codec_close_delayed_work);
+ 	}
+ 
+ 	return 0;
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
