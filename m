@@ -6,76 +6,70 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1150FC3A5A2
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 16:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69499C3A5A2
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 16:17:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60DEA22CF8
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 16:04:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E820723711
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 16:17:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t9U/o3Ym"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60DEA22CF8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aGYMe6+F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E820723711
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D50D1678;
-	Tue,  3 Sep 2019 18:03:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D50D1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id C14321680;
+	Tue,  3 Sep 2019 18:16:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C14321680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567526665;
-	bh=M2FR+Z3DM6X7+vSCYFVLJFL1mY7wj6ycBvcFZOvwFkg=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1567527424;
+	bh=aaGllOi/HYSiv1oaaeephFHSPfHuhSNc1W62bZpacKs=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t9U/o3Ym5CA6YoV/IiFPpEqOj2j5Cpjjy4VOO2RrWA/HSdb8QNkzhFrBVoAAnhKJs
-	 nH+gQrifTJUhhhNnz099ZHhwvFvvgx4T1mPqJs2V5I+wSENOt6bhnXJ7Jl8oMIJBN2
-	 DYUSZsr9tT9ohbIyn48PbvhPC3IXnJnPbEUROkxo=
+	b=aGYMe6+FpIyuTghFoMVIe3lATA9fCzKUyc1LItNBZ6FgpraGA9ojZrL60XbCe/wMp
+	 FBoda/dFLKGBK09c30Zc1Lt7O84ETC3/Ry4jHVtHcsYjdcJRgvG0oKTj0ZutsiAXyv
+	 0TO62LCFcQbrghlKYQwxBItA4wRCCSKb8y725l8M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2693DF8045F;
-	Tue,  3 Sep 2019 18:03:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 242D0F803D7;
+	Tue,  3 Sep 2019 18:16:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81AD6F8049B; Tue,  3 Sep 2019 18:03:33 +0200 (CEST)
-Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
+ id E32E4F8045F; Tue,  3 Sep 2019 18:16:10 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77425F80392
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2019 18:03:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77425F80392
-Received: from fsav305.sakura.ne.jp (fsav305.sakura.ne.jp [153.120.85.136])
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id x83G3JSd025010;
- Wed, 4 Sep 2019 01:03:19 +0900 (JST)
- (envelope-from katsuhiro@katsuster.net)
-Received: from www1102.sakura.ne.jp (219.94.129.142)
- by fsav305.sakura.ne.jp (F-Secure/fsigk_smtp/530/fsav305.sakura.ne.jp);
- Wed, 04 Sep 2019 01:03:19 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/530/fsav305.sakura.ne.jp)
-Received: from [192.168.1.2] (118.153.231.153.ap.dti.ne.jp [153.231.153.118])
- (authenticated bits=0)
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id x83G3Ihr025006
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NO);
- Wed, 4 Sep 2019 01:03:18 +0900 (JST)
- (envelope-from katsuhiro@katsuster.net)
-To: Mark Brown <broonie@kernel.org>
-References: <20190831162650.19822-1-katsuhiro@katsuster.net>
- <20190902120248.GA5819@sirena.co.uk>
- <1a3c5934-4731-d474-e9d5-795e8337b180@katsuster.net>
- <20190903111138.GA6247@sirena.co.uk>
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Message-ID: <c142c351-5559-b162-e68f-98cf86b039aa@katsuster.net>
-Date: Wed, 4 Sep 2019 01:03:18 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 094F7F80228
+ for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2019 18:16:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 094F7F80228
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 03 Sep 2019 09:16:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,463,1559545200"; d="scan'208";a="207139582"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2019 09:16:03 -0700
+Date: Tue, 3 Sep 2019 19:16:02 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <s5hv9u9tnxa.wl-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.21.1909031909220.16459@zeliteleevi>
+References: <20190829135348.23569-1-kai.vehmanen@linux.intel.com>
+ <s5h7e6w2h10.wl-tiwai@suse.de>
+ <alpine.DEB.2.21.1909031656490.16459@zeliteleevi>
+ <s5hv9u9tnxa.wl-tiwai@suse.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-In-Reply-To: <20190903111138.GA6247@sirena.co.uk>
-Content-Language: en-US
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, David Yang <yangxiaohua@everest-semi.com>,
- Daniel Drake <drake@endlessm.com>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: es8316: judge PCM rate at
-	later timing
+Cc: libin.yang@intel.com, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 0/7] adapt SOF to use snd-hda-codec-hdmi
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,37 +82,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Mark,
+Hi,
 
-On 2019/09/03 20:11, Mark Brown wrote:
-> On Tue, Sep 03, 2019 at 04:19:10AM +0900, Katsuhiro Suzuki wrote:
->> On 2019/09/02 21:02, Mark Brown wrote:
-> 
->>> The best way to handle this is to try to support both fixed and variable
->>> clock rates, some other drivers do this by setting constraints based on
->>> MCLK only if the MCLK has been set to a non-zero value.  They have the
->>> machine drivers reset the clock rate to 0 when it goes idle so that no
->>> constraints are applied then.  This means that if the machine has a
-> 
->> In my understanding, fixed and variable clock both use set_sysclk() for
->> telling their MCLK to codec driver. For fixed MCLK cases we need to
->> apply constraint but for variable MCLK cases we should not set
->> constraints at set_sysclk(). How can we identify these two cases...?
-> 
-> Like I say it's usually done by settingthe MCLK to 0 when not in use and
-> then not applying any constraints if there's no MCLK set.
-> 
+On Tue, 3 Sep 2019, Takashi Iwai wrote:
 
-Ah... I understand. Current implementation refuses MCLK == 0.
-I'll change to accept MCLK == 0 for fixed clock users and send v3 patch.
+> On Tue, 03 Sep 2019 16:18:11 +0200, Kai Vehmanen wrote:
+> > On some systems this is manageable as e.g. pulseaudio will fallback to 
+> > legacy non-UCM path and e.g. HDMI/DP audio keeps working. But, but, this 
+> > may be problematic if UCM is needed for other functionality on these 
+> > systems.
+> 
+> Just out of curiosity: which systems are with such UCM profiles?
+> Chromebooks?
 
-Best Regards,
-Katsuhiro Suzuki
+I believe this year's XPS 13 Developer edition is one such device. I'll 
+try to confirm if there are more cases.
+
+Br, Kai
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
