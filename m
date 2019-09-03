@@ -2,64 +2,86 @@ Return-Path: <SRS0=Sdsu=W6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3F89C3A5A2
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 10:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3FFEC3A5A2
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 11:12:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 680BD2168B
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 10:29:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F048022CF8
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2019 11:12:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cXkG7OD/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 680BD2168B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iofgfbxB";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="KRtF4qyy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F048022CF8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA5E1666;
-	Tue,  3 Sep 2019 12:28:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA5E1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id B30F11668;
+	Tue,  3 Sep 2019 13:11:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B30F11668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567506578;
-	bh=/Eglk+R//HbgxagRg7chGsXbBapXR/WVfztEBl1oo+g=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1567509157;
+	bh=9miGInRnpJrfziRdvhpbhemfpOCCngASiBuJOjllLts=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cXkG7OD/oSISfs8sMCqSVPMNhn/ZXOJ+J7sj0NL+V+eRRE8rD8tdL0Ro4oe7fK7Cr
-	 8S22QI7rLVcfieI10IsqpUq16VJw9vCDztEK/Z9kPg32OaBq200by6CtaSaQqM3hO4
-	 egqigU1gCEQYGwoPFl+qeb6/7iS/Grfs3CRjFehw=
+	b=iofgfbxBCsB7pXyWhpBIXdWQpyMXp6cjEbGsQK9zbXsHFfiBLxEHHr/QWPMYRgzON
+	 XqVIMdkiH3HLjS7fn0HadRZ+Z11vLkqJH4+rc9ak4O9nzrsi8K6EDzj4loeEZbpVKy
+	 /dxVT9atnxVQZAXHMNw082c3RZzOSsakhj2XJw5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19EF8F803D7;
-	Tue,  3 Sep 2019 12:28:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37FA8F803D7;
+	Tue,  3 Sep 2019 13:11:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02E4DF8045F; Tue,  3 Sep 2019 12:28:43 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 31A47F8045F; Tue,  3 Sep 2019 13:11:45 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A52A8F80228
- for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2019 12:28:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A52A8F80228
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id D6F7BAD46;
- Tue,  3 Sep 2019 10:28:37 +0000 (UTC)
-Date: Tue, 03 Sep 2019 12:28:37 +0200
-Message-ID: <s5hv9u9vfl6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87v9u9u7vt.wl-kuninori.morimoto.gx@renesas.com>
-References: <87v9u9u7vt.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] some lock needed for flush_delayed_work ?
+ by alsa1.perex.cz (Postfix) with ESMTPS id 303ABF80392
+ for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2019 13:11:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 303ABF80392
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="KRtF4qyy"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=argzVRzEFGHYFQGslpYsGNYzeGLhmYgxsVk0qESpcFs=; b=KRtF4qyyrckBy6LvG/OfuR/yD
+ q0f225FApjOQ1n6sOGWqYVrIxkUDW0Lft7ypc7AFuKKvN7CgqMAbmlC6T5HxNtSuflXp3++C/2lLr
+ aTNA8zWHeBFrmjj0jowjC1kwcZAS0FJZQoZADL4f3rwb8pM4SUKXLAt62pp01iGhNn4tQ=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1i56ip-00083y-67; Tue, 03 Sep 2019 11:11:39 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 4BC7A2742D32; Tue,  3 Sep 2019 12:11:38 +0100 (BST)
+Date: Tue, 3 Sep 2019 12:11:38 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Message-ID: <20190903111138.GA6247@sirena.co.uk>
+References: <20190831162650.19822-1-katsuhiro@katsuster.net>
+ <20190902120248.GA5819@sirena.co.uk>
+ <1a3c5934-4731-d474-e9d5-795e8337b180@katsuster.net>
+MIME-Version: 1.0
+In-Reply-To: <1a3c5934-4731-d474-e9d5-795e8337b180@katsuster.net>
+X-Cookie: The revolution will not be televised.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, David Yang <yangxiaohua@everest-semi.com>,
+ Daniel Drake <drake@endlessm.com>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: es8316: judge PCM rate at
+	later timing
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,59 +94,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5408495318628823770=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Sep 2019 10:00:22 +0200,
-Kuninori Morimoto wrote:
-> 
-> 
-> Hi ALSA ML
-> 
-> I got below error when I unbind/bind CPU DAI.
-> It seems we need to have some kind of lock ?
 
-No, this kind of error usually is due to the missing initialization of
-the lock object.  In this case, the work hasn't been initialized
-before calling the flush_delayed_work().
-
-I suppose it's an error path at snd_soc_bind_card(), and the patch
-like below might fix the issue.
+--===============5408495318628823770==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
 
 
-Takashi
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -371,6 +371,7 @@ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
- EXPORT_SYMBOL_GPL(snd_soc_get_dai_substream);
- 
- static const struct snd_soc_ops null_snd_soc_ops;
-+static void codec2codec_close_delayed_work(struct work_struct *work);
- 
- static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
-@@ -382,6 +383,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 		return NULL;
- 
- 	INIT_LIST_HEAD(&rtd->component_list);
-+	INIT_DELAYED_WORK(&rtd->delayed_work, codec2codec_close_delayed_work);
- 	rtd->card = card;
- 	rtd->dai_link = dai_link;
- 	if (!rtd->dai_link->ops)
-@@ -1573,9 +1575,6 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 					   rtd->num_codecs, rtd);
- 		if (ret < 0)
- 			return ret;
--	} else {
--		INIT_DELAYED_WORK(&rtd->delayed_work,
--				  codec2codec_close_delayed_work);
- 	}
- 
- 	return 0;
+On Tue, Sep 03, 2019 at 04:19:10AM +0900, Katsuhiro Suzuki wrote:
+> On 2019/09/02 21:02, Mark Brown wrote:
+
+> > The best way to handle this is to try to support both fixed and variable
+> > clock rates, some other drivers do this by setting constraints based on
+> > MCLK only if the MCLK has been set to a non-zero value.  They have the
+> > machine drivers reset the clock rate to 0 when it goes idle so that no
+> > constraints are applied then.  This means that if the machine has a
+
+> In my understanding, fixed and variable clock both use set_sysclk() for
+> telling their MCLK to codec driver. For fixed MCLK cases we need to
+> apply constraint but for variable MCLK cases we should not set
+> constraints at set_sysclk(). How can we identify these two cases...?
+
+Like I say it's usually done by settingthe MCLK to 0 when not in use and
+then not applying any constraints if there's no MCLK set.
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl1uSmcACgkQJNaLcl1U
+h9BHBwf/URm9L7YnJCv+tUQB+bbOzUTiUQOR23hSvxTvO+aMMjXRaNFKTTj+1ZV4
+h876xX+RykF8GgLvEOKMdkcmbk0UHdpj350OOLBI/8LQ3Ir/FhSHk1FVV4KM+n2V
+hYBfz48cTj39UvNutOrZu7YdAG2zT3e6zgtIH3qMNj+E0CP2Xr+5qggA6QPo3d44
+erXRwSRS94Og2G1bKm+Zm9wF7w/JJA766ige3ROWWgpZ+TF/QkZIlv2wczUha1U3
+qFcgjJymaUV2D7RAF7R1MqlvAFSc9gqommoGhN3SebKsDt1lF2zH0sFkAqjQ1LDg
+V1ET11vnqFz1nqWhMYfbcR4i1A3ofw==
+=2Fmo
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
+
+--===============5408495318628823770==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5408495318628823770==--
