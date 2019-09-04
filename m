@@ -4,78 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A453C3A5A9
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DD76C3A5A8
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:23:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2276F23402
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:15:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDDE422CEA
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:23:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DOJTt2OU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XhBTLeuw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2276F23402
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hjghqjpL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0KAzybO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDDE422CEA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BFAE1669;
-	Wed,  4 Sep 2019 09:14:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BFAE1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id E604B166C;
+	Wed,  4 Sep 2019 09:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E604B166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567581323;
-	bh=msIScjnnGQkypxfyHhOIzM/SEU5wc5hZzXAey0KQHM8=;
+	s=default; t=1567581818;
+	bh=rT4CWpv4C/pXf5KTp8PI1FJ1lG9Lnmf0dtpfj2fUdxY=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DOJTt2OU/zKUaGcyoq7NhIdYOFUK9b058gcS5ZO6+xieZx+kn1/jBaeNtcYKecJX+
-	 6FiymxzbW5bg0ivJmAi/thTIKBI7Dvnnw28PQI9jsKk0+gphW5YJKLmNbFliiwpr44
-	 6oAIyilVhsmwIc5pdID6zDaT+2Wh2vwju2Ew2dXg=
+	b=hjghqjpLsMIA1SQte72n3fT4bky9KHmTgwHlMwTAgu1AoLpUDJJ9PEK68V9BLlOlN
+	 xZh3WTz/MWKaPqLZ0m4p97Bd+aj8stlwd6z/M6CJo78ODnc4YWcB3diFA1EzJtOMlu
+	 lTPx7k7Tv1sc8SE4/Uta85nNNTI5sNzkdwEnFsyQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8C99F80394;
-	Wed,  4 Sep 2019 09:14:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 500D7F80394;
+	Wed,  4 Sep 2019 09:22:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45E12F803A6; Wed,  4 Sep 2019 09:14:31 +0200 (CEST)
+ id B468CF803A6; Wed,  4 Sep 2019 09:22:45 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C44EF8011E
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 09:14:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C44EF8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BA87F8011E
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 09:22:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BA87F8011E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XhBTLeuw"
+ header.b="Y0KAzybO"
 Received: from localhost (unknown [122.182.201.156])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A3A6D22CEA;
- Wed,  4 Sep 2019 07:14:24 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 89E3E23402;
+ Wed,  4 Sep 2019 07:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1567581265;
- bh=NNC+RkkJ+eyITyoMs4o1gFL0TAFukDFGUWCl2aimc18=;
+ s=default; t=1567581760;
+ bh=x6bRQXtE+JuINtFNse5ZrkGOp3vWHxjVq//MaaJDsH8=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=XhBTLeuw97W8DprCY1IMVU6AdWo9PaTC7PJNuXO6HzMcs8KiXB+r/kBYAe39/5zir
- sPdcD6rlDeUxYQxDEk+mwM/j6EEXXjljTJX8YSfpZNvbLVdpcinoL2U9CQkPLszhz3
- VuVt9dCMUtswZmUlmQ428EVv4SMmMXfeV75K8qCk=
-Date: Wed, 4 Sep 2019 12:43:17 +0530
+ b=Y0KAzybOASAf9aiT777mX8X2qRWKoYVns4JaOMKfOQ6yz2uD5WDOz/S8r3Rt4QWbN
+ ivIguFUliKCQmQHzd+JsEUtCGAeeWVpx8ZBs7rPLspzJO5uyWMeffVR4qDtHE3AV7A
+ CW5RI/OV7L0J6wQ44dO2//RR542gdkKHyJbck8J8=
+Date: Wed, 4 Sep 2019 12:51:31 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20190904071317.GJ2672@vkoul-mobl>
-References: <20190813213227.5163-1-pierre-louis.bossart@linux.intel.com>
- <20190813213227.5163-3-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190904072131.GK2672@vkoul-mobl>
+References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
+ <20190821201720.17768-4-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190813213227.5163-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190821201720.17768-4-pierre-louis.bossart@linux.intel.com>
 User-Agent: Mutt/1.12.0 (2019-05-25)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [alsa-devel] [PATCH 2/6] soundwire: cadence_master: add
- hw_reset capability in debugfs
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.de,
+ Pan Xiuli <xiuli.pan@linux.intel.com>, Keyon Jie <yang.jie@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, Bard liao <yung-chuan.liao@linux.intel.com>,
+ YueHaibing <yuehaibing@huawei.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Fred Oh <fred.oh@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>, broonie@kernel.org,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, gregkh@linuxfoundation.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ slawomir.blauciak@intel.com
+Subject: Re: [alsa-devel] [RFC PATCH 3/5] ASoC: SOF: Intel: hda: add
+	SoundWire IP support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,58 +104,130 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 13-08-19, 16:32, Pierre-Louis Bossart wrote:
-> Provide debugfs capability to kick link and devices into hard-reset
-> (as defined by MIPI). This capability is really useful when some
-> devices are no longer responsive and/or to check the software handling
-> of resynchronization.
+On 21-08-19, 15:17, Pierre-Louis Bossart wrote:
+> The Core0 needs to be powered before the SoundWire IP is initialized.
+> 
+> Call sdw_intel_init/exit and store the context. We only have one
+> context, but depending on the hardware capabilities and BIOS settings
+> may enable multiple SoundWire links.
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/cadence_master.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  sound/soc/sof/intel/hda.c | 40 +++++++++++++++++++++++++++++++++------
+>  sound/soc/sof/intel/hda.h |  5 +++++
+>  2 files changed, 39 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 046622e4b264..bd58d80ff636 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -340,6 +340,23 @@ static int cdns_reg_show(struct seq_file *s, void *data)
->  }
->  DEFINE_SHOW_ATTRIBUTE(cdns_reg);
->  
-> +static int cdns_hw_reset(void *data, u64 value)
-> +{
-> +	struct sdw_cdns *cdns = data;
-> +	int ret;
-> +
-> +	if (value != 1)
-> +		return 0;
-
-Should this not be EINVAL to indicate invalid value passed?
-
-> +
-> +	ret = sdw_cdns_exit_reset(cdns);
-> +
-> +	dev_dbg(cdns->dev, "link hw_reset done: %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
-> +
->  /**
->   * sdw_cdns_debugfs_init() - Cadence debugfs init
->   * @cdns: Cadence instance
-> @@ -348,6 +365,9 @@ DEFINE_SHOW_ATTRIBUTE(cdns_reg);
->  void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+> index a968890d0754..e754058e3679 100644
+> --- a/sound/soc/sof/intel/hda.c
+> +++ b/sound/soc/sof/intel/hda.c
+> @@ -57,6 +57,8 @@ static int hda_sdw_init(struct snd_sof_dev *sdev)
 >  {
->  	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
-> +
-> +	debugfs_create_file("cdns-hw-reset", 0200, root, cdns,
-> +			    &cdns_hw_reset_fops);
->  }
->  EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
+>  	acpi_handle handle;
+>  	struct sdw_intel_res res;
+> +	struct sof_intel_hda_dev *hdev;
+> +	void *sdw;
 >  
+>  	handle = ACPI_HANDLE(sdev->dev);
+>  
+> @@ -66,23 +68,32 @@ static int hda_sdw_init(struct snd_sof_dev *sdev)
+>  	res.irq = sdev->ipc_irq;
+>  	res.parent = sdev->dev;
+>  
+> -	hda_sdw_int_enable(sdev, true);
+> -
+> -	sdev->sdw = sdw_intel_init(handle, &res);
+> -	if (!sdev->sdw) {
+> +	sdw = sdw_intel_init(handle, &res);
+
+should this be called for platforms without sdw, I was hoping that some
+checks would be performed.. For example how would skl deal with this?
+
+> +	if (!sdw) {
+>  		dev_err(sdev->dev, "SDW Init failed\n");
+>  		return -EIO;
+>  	}
+>  
+> +	hda_sdw_int_enable(sdev, true);
+> +
+> +	/* save context */
+> +	hdev = sdev->pdata->hw_pdata;
+> +	hdev->sdw = sdw;
+> +
+>  	return 0;
+>  }
+>  
+>  static int hda_sdw_exit(struct snd_sof_dev *sdev)
+>  {
+> +	struct sof_intel_hda_dev *hdev;
+> +
+> +	hdev = sdev->pdata->hw_pdata;
+> +
+>  	hda_sdw_int_enable(sdev, false);
+>  
+> -	if (sdev->sdw)
+> -		sdw_intel_exit(sdev->sdw);
+
+this looks suspect, you are adding sdw calls here so how is this getting
+removed? Did I miss something...
+
+> +	if (hdev->sdw)
+> +		sdw_intel_exit(hdev->sdw);
+> +	hdev->sdw = NULL;
+>  
+>  	return 0;
+>  }
+> @@ -713,6 +724,21 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+>  	/* set default mailbox offset for FW ready message */
+>  	sdev->dsp_box.offset = HDA_DSP_MBOX_UPLINK_OFFSET;
+>  
+> +	/* need to power-up core before setting-up capabilities */
+> +	ret = hda_dsp_core_power_up(sdev, HDA_DSP_CORE_MASK(0));
+> +	if (ret < 0) {
+> +		dev_err(sdev->dev, "error: could not power-up DSP subsystem\n");
+> +		goto free_ipc_irq;
+> +	}
+> +
+> +	/* initialize SoundWire capabilities */
+> +	ret = hda_sdw_init(sdev);
+> +	if (ret < 0) {
+> +		dev_err(sdev->dev, "error: SoundWire get caps error\n");
+> +		hda_dsp_core_power_down(sdev, HDA_DSP_CORE_MASK(0));
+> +		goto free_ipc_irq;
+> +	}
+> +
+>  	return 0;
+>  
+>  free_ipc_irq:
+> @@ -744,6 +770,8 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+>  	snd_hdac_ext_bus_device_remove(bus);
+>  #endif
+>  
+> +	hda_sdw_exit(sdev);
+> +
+>  	if (!IS_ERR_OR_NULL(hda->dmic_dev))
+>  		platform_device_unregister(hda->dmic_dev);
+>  
+> diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+> index c8f93317aeb4..48e09b7daf0a 100644
+> --- a/sound/soc/sof/intel/hda.h
+> +++ b/sound/soc/sof/intel/hda.h
+> @@ -399,6 +399,11 @@ struct sof_intel_hda_dev {
+>  
+>  	/* DMIC device */
+>  	struct platform_device *dmic_dev;
+> +
+> +#if IS_ENABLED(CONFIG_SOUNDWIRE_INTEL)
+
+is this really required, context is a void pointer
+
+> +	/* sdw context */
+> +	void *sdw;
+
+> +#endif
+>  };
+>  
+>  static inline struct hdac_bus *sof_to_bus(struct snd_sof_dev *s)
 > -- 
 > 2.20.1
 
