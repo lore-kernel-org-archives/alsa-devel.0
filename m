@@ -2,89 +2,87 @@ Return-Path: <SRS0=zeHb=W7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB8AC3A5A8
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D30A6C3A5A8
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:50:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC39A21883
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:48:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E431A23400
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:50:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u3ES52Sb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC39A21883
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uJLk9ie+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E431A23400
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E242E1680;
-	Wed,  4 Sep 2019 19:47:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E242E1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id D55691682;
+	Wed,  4 Sep 2019 19:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D55691682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567619326;
-	bh=uI0ubglw6D6i5wCYNBQ8tB8K4sEd64QnzYLS/wvJCyw=;
+	s=default; t=1567619424;
+	bh=I9oB9MdkIn8n+S/YVN08qkezP2UcJBGUxQKds7rl+bU=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u3ES52SbI70Acgx/uRVwp2tAoBk9Bqr9tp7j33SDfcg04vXSoexlb1FMPLitZ9MwN
-	 Jre8fyZrqo6SRkxB7nKYQkKFY340DmQWcqmpUygkhkXqbuEAIX1LorDIC/n9lv8uRr
-	 i9pQTWorQFGziKkJ2BVyX/N8GbMZeEku28PmECEk=
+	b=uJLk9ie+FzC2LYAZ1MeZFUtIvP1Iipg0hw4nrjA2DP8/aRe2j/YzAt8/poqxSCKd/
+	 tw7rSP0lVfHDpaLubuLInWtsmTOlE/Zrvs/g5gvo9H+lWd4LxScB2wjKH24KGkQs8Q
+	 l+oA6hUbLvStrcWWVvZMofcXlWoi12z6GHtzTm+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A233F80394;
-	Wed,  4 Sep 2019 19:47:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FD86F803A6;
+	Wed,  4 Sep 2019 19:49:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C2BEF80171; Wed,  4 Sep 2019 19:47:53 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id B4028F803D6; Wed,  4 Sep 2019 19:49:32 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A217F80171
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 19:47:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A217F80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2D88F80394
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 19:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2D88F80394
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Sep 2019 10:47:46 -0700
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 04 Sep 2019 10:49:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,467,1559545200"; d="scan'208";a="194814201"
+X-IronPort-AV: E=Sophos;i="5.64,467,1559545200"; d="scan'208";a="194814550"
 Received: from enagase-mobl1.amr.corp.intel.com (HELO [10.251.133.230])
  ([10.251.133.230])
- by orsmga002.jf.intel.com with ESMTP; 04 Sep 2019 10:47:44 -0700
+ by orsmga002.jf.intel.com with ESMTP; 04 Sep 2019 10:49:24 -0700
 To: Vinod Koul <vkoul@kernel.org>
 References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
- <20190821201720.17768-4-pierre-louis.bossart@linux.intel.com>
- <20190904072131.GK2672@vkoul-mobl>
- <1897e21f-b086-8233-e96e-6024e75a2153@linux.intel.com>
- <20190904165129.GB2672@vkoul-mobl>
+ <20190821201720.17768-5-pierre-louis.bossart@linux.intel.com>
+ <20190822071835.GA30262@ubuntu>
+ <f73796d6-fcfa-97c8-69ae-0a183edbbd97@linux.intel.com>
+ <20190904073549.GL2672@vkoul-mobl>
+ <4de9613c-2da4-8d39-6f99-3039811673b8@linux.intel.com>
+ <20190904165522.GC2672@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <785cce2e-febe-3bbd-7590-32943fe7ac99@linux.intel.com>
-Date: Wed, 4 Sep 2019 12:47:44 -0500
+Message-ID: <b37f7be2-27b4-4ba5-e07a-8993d8c171f2@linux.intel.com>
+Date: Wed, 4 Sep 2019 12:49:24 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190904165129.GB2672@vkoul-mobl>
+In-Reply-To: <20190904165522.GC2672@vkoul-mobl>
 Content-Language: en-US
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, tiwai@suse.de,
- Pan Xiuli <xiuli.pan@linux.intel.com>, Keyon Jie <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, srinivas.kandagatla@linaro.org,
- jank@cadence.com, Bard liao <yung-chuan.liao@linux.intel.com>,
- YueHaibing <yuehaibing@huawei.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>,
- Arnd Bergmann <arnd@arndb.de>, broonie@kernel.org,
- Daniel Baluta <daniel.baluta@nxp.com>,
+ alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, gregkh@linuxfoundation.org,
+ Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
  Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, gregkh@linuxfoundation.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- slawomir.blauciak@intel.com
-Subject: Re: [alsa-devel] [RFC PATCH 3/5] ASoC: SOF: Intel: hda: add
- SoundWire IP support
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 4/5] ASoC: SOF: Intel: hda: add
+ SoundWire stream config/free callbacks
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,62 +102,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 9/4/19 11:51 AM, Vinod Koul wrote:
-> On 04-09-19, 08:25, Pierre-Louis Bossart wrote:
->> On 9/4/19 2:21 AM, Vinod Koul wrote:
->>> On 21-08-19, 15:17, Pierre-Louis Bossart wrote:
->>>> The Core0 needs to be powered before the SoundWire IP is initialized.
+On 9/4/19 11:55 AM, Vinod Koul wrote:
+> On 04-09-19, 08:31, Pierre-Louis Bossart wrote:
+>> On 9/4/19 2:35 AM, Vinod Koul wrote:
+>>> On 22-08-19, 08:53, Pierre-Louis Bossart wrote:
+>>>> Thanks for the review Guennadi
 >>>>
->>>> Call sdw_intel_init/exit and store the context. We only have one
->>>> context, but depending on the hardware capabilities and BIOS settings
->>>> may enable multiple SoundWire links.
+>>>>>> +static int sdw_config_stream(void *arg, void *s, void *dai,
+>>>>>> +			     void *params, int link_id, int alh_stream_id)
+>>>>>
+>>>>> I realise, that these function prototypes aren't being introduced by these
+>>>>> patches, but just wondering whether such overly generic prototype is really
+>>>>> a good idea here, whether some of those "void *" pointers could be given
+>>>>> real types. The first one could be "struct device *" etc.
 >>>>
->>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>> ---
->>>>    sound/soc/sof/intel/hda.c | 40 +++++++++++++++++++++++++++++++++------
->>>>    sound/soc/sof/intel/hda.h |  5 +++++
->>>>    2 files changed, 39 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
->>>> index a968890d0754..e754058e3679 100644
->>>> --- a/sound/soc/sof/intel/hda.c
->>>> +++ b/sound/soc/sof/intel/hda.c
->>>> @@ -57,6 +57,8 @@ static int hda_sdw_init(struct snd_sof_dev *sdev)
->>>>    {
->>>>    	acpi_handle handle;
->>>>    	struct sdw_intel_res res;
->>>> +	struct sof_intel_hda_dev *hdev;
->>>> +	void *sdw;
->>>>    	handle = ACPI_HANDLE(sdev->dev);
->>>> @@ -66,23 +68,32 @@ static int hda_sdw_init(struct snd_sof_dev *sdev)
->>>>    	res.irq = sdev->ipc_irq;
->>>>    	res.parent = sdev->dev;
->>>> -	hda_sdw_int_enable(sdev, true);
->>>> -
->>>> -	sdev->sdw = sdw_intel_init(handle, &res);
->>>> -	if (!sdev->sdw) {
->>>> +	sdw = sdw_intel_init(handle, &res);
+>>>> In this case the 'arg' parameter is actually a private 'struct snd_sof_dev',
+>>>> as shown below [1]. We probably want to keep this relatively opaque, this is
+>>>> a context that doesn't need to be exposed to the SoundWire code.
 >>>
->>> should this be called for platforms without sdw, I was hoping that some
->>> checks would be performed.. For example how would skl deal with this?
+>>> This does look bit ugly.
+>>>
+>>>> The dai and params are indeed cases where we could use stronger types, they
+>>>> are snd_soc_dai and hw_params respectively. I don't recall why the existing
+>>>> code is this way, Vinod and Sanyog may have the history of this.
+>>>
+>>> Yes we wanted to decouple the sdw and audio bits that is the reason why
+>>> none of the audio types are used here, but I think it should be revisited
+>>> and perhaps made as:
+>>>
+>>> sdw_config_stream(struct device *sdw, struct sdw_callback_ctx *ctx)
+>>>
+>>> where the callback context contains all the other args. That would make
+>>> it look lot neater too and of course use real structs if possible
 >>
->> Good point. For now we rely on CONFIG_SOUNDWIRE_INTEL to use a fallback, but
->> if the kernel defines this config and we run on an older platform the only
->> safety would be the hardware capabilities and BIOS dependencies, I need to
->> test if it works.
+>> the suggested sdw_callbback_ctx is really intel-specific at the moment, e.g.
+>> the notion of link_id and alh_stream_id are due to the hardware, it's not
+>> generic at all. And in the latest code we also pass the dai->id.
 > 
-> Yes I am not sure given the experience with BIOS relying on that is a
-> great idea ! But if that works, that would be better.
+> s/sdw_callback_ctx/intel_sdw_callback_ctx
+> 
+> Yes this code is intel specific and this would be intel specific too
 
-I don't think it's going to be that bad, first we need to find the ACPI 
-description for the controller, then see which links are active, and 
-even with all links disabled nothing bad will happen.
-
-What I am more worried about are inconsistencies where e.g we have both 
-I2C/I2S and SoundWire devices exposed at the same time. The BIOS deals 
-with this with dynamic changes depending on user changes, and we are 
-likely to see reports of problems due to BIOS configuration selection, 
-not the BIOS itself.
+ok, I'll fold all the fields in a structure then. That's a nice cleanup, 
+thanks Guennadi and Vinod for the reviews.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
