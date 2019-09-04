@@ -2,89 +2,67 @@ Return-Path: <SRS0=zeHb=W7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 241B8C3A5A8
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8693CC3A5A8
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:52:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20581206BB
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:37:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D4C22339D
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 07:52:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mY5fug2v";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="XSzxaQwe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20581206BB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oO1aUg1u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D4C22339D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 555A8167A;
-	Wed,  4 Sep 2019 09:37:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 555A8167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E47C167B;
+	Wed,  4 Sep 2019 09:51:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E47C167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567582676;
-	bh=pFsjPW2J3UIA1S8Zy9ITp4xANIP2pSd02AiGbrF/pyI=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mY5fug2vZ+gFIu3nd6SB7gDw7TQ1HiD64PSNo8pZEftCfpYrN87P1VlVc7nrCL4zS
-	 2whGyxwXhj2st/juIB6yTo1fxS7/vHSrFEiklHI/kiF40bNHeklMaymCPwkLR4G4+1
-	 pIbvDhukBlK7Alq8Iy6pGGzlpZj4+4q2vSQwul3g=
+	s=default; t=1567583560;
+	bh=dP0YX6LhLpC7FpsBhGxOnwx9PNZzQ94ALE8Zupkcki8=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oO1aUg1u5BarFMNQqNCzxrGoE8WQt00LKijxsBnZJHszBw+jWWOqBZGHqS7l6QgaP
+	 nlCk0r28C8kNgVCwQ8PVqgnehz/k4tkCTwCAfuy0I+tD8kAtw5kMrW+jZGWkYFlOcG
+	 3hJKHEhHglBb5LKM4KoQjHuMPX9+n857BvTZtsWY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FAFAF80394;
-	Wed,  4 Sep 2019 09:37:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23728F80394;
+	Wed,  4 Sep 2019 09:51:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0700EF803A6; Wed,  4 Sep 2019 09:37:04 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC258F8011E
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 09:37:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC258F8011E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XSzxaQwe"
-Received: from localhost (unknown [122.182.201.156])
+ id 5E4E1F8011E; Wed,  4 Sep 2019 09:51:47 +0200 (CEST)
+Received: from huawei.com (szxga07-in.huawei.com [45.249.212.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D1A4B22CF7;
- Wed,  4 Sep 2019 07:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1567582617;
- bh=9tMEcYhnS4XXxNd9Fq6cg1vvF93E3PyA0c/S3pkKcdk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=XSzxaQweCp8UhjDZhBkcedCz7pMSLZKAX3ePxOXWUuITOZeqlNEPfeG+n9r1e1jPJ
- YCXo4f2BLj6ECIANHnU2q37o9hS2HWrlnLnfPPXTiKgvtyeQXX3r4ixcTRka06JsSg
- xLedyl45/h64FjeKNQvZy+ZRB8RcMeBCqZdZt6mU=
-Date: Wed, 4 Sep 2019 13:05:49 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20190904073549.GL2672@vkoul-mobl>
-References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
- <20190821201720.17768-5-pierre-louis.bossart@linux.intel.com>
- <20190822071835.GA30262@ubuntu>
- <f73796d6-fcfa-97c8-69ae-0a183edbbd97@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A73CF8011E
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 09:51:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A73CF8011E
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+ by Forcepoint Email with ESMTP id D9DDC2BFE7CBBDF45D4D;
+ Wed,  4 Sep 2019 15:51:37 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Wed, 4 Sep 2019
+ 15:51:29 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <akshu.agrawal@amd.com>, <yuzhao@google.com>,
+ <yuehaibing@huawei.com>, <tglx@linutronix.de>
+Date: Wed, 4 Sep 2019 15:48:33 +0800
+Message-ID: <20190904074833.23572-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f73796d6-fcfa-97c8-69ae-0a183edbbd97@linux.intel.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, gregkh@linuxfoundation.org,
- Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 4/5] ASoC: SOF: Intel: hda: add
- SoundWire stream config/free callbacks
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH -next] ASoC: amd: use
+	devm_platform_ioremap_resource() to simplify code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,38 +80,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 22-08-19, 08:53, Pierre-Louis Bossart wrote:
-> Thanks for the review Guennadi
-> 
-> > > +static int sdw_config_stream(void *arg, void *s, void *dai,
-> > > +			     void *params, int link_id, int alh_stream_id)
-> > 
-> > I realise, that these function prototypes aren't being introduced by these
-> > patches, but just wondering whether such overly generic prototype is really
-> > a good idea here, whether some of those "void *" pointers could be given
-> > real types. The first one could be "struct device *" etc.
-> 
-> In this case the 'arg' parameter is actually a private 'struct snd_sof_dev',
-> as shown below [1]. We probably want to keep this relatively opaque, this is
-> a context that doesn't need to be exposed to the SoundWire code.
+Use devm_platform_ioremap_resource() to simplify the code a bit.
+This is detected by coccinelle.
 
-This does look bit ugly.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/amd/acp-pcm-dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> The dai and params are indeed cases where we could use stronger types, they
-> are snd_soc_dai and hw_params respectively. I don't recall why the existing
-> code is this way, Vinod and Sanyog may have the history of this.
-
-Yes we wanted to decouple the sdw and audio bits that is the reason why
-none of the audio types are used here, but I think it should be revisited
-and perhaps made as:
-
-sdw_config_stream(struct device *sdw, struct sdw_callback_ctx *ctx)
-
-where the callback context contains all the other args. That would make
-it look lot neater too and of course use real structs if possible
-
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index d26653f..52225b4 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -1251,8 +1251,7 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	if (!audio_drv_data)
+ 		return -ENOMEM;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
++	audio_drv_data->acp_mmio = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(audio_drv_data->acp_mmio))
+ 		return PTR_ERR(audio_drv_data->acp_mmio);
+ 
 -- 
-~Vinod
+2.7.4
+
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
