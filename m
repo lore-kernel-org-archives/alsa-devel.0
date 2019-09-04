@@ -2,87 +2,79 @@ Return-Path: <SRS0=zeHb=W7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D30A6C3A5A8
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBD83C3A5A8
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:54:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E431A23400
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:50:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4976E208E4
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:54:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uJLk9ie+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E431A23400
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CXQQQGOr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="KLHLmNii"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4976E208E4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D55691682;
-	Wed,  4 Sep 2019 19:49:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D55691682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86DD01677;
+	Wed,  4 Sep 2019 19:53:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86DD01677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567619424;
-	bh=I9oB9MdkIn8n+S/YVN08qkezP2UcJBGUxQKds7rl+bU=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uJLk9ie+FzC2LYAZ1MeZFUtIvP1Iipg0hw4nrjA2DP8/aRe2j/YzAt8/poqxSCKd/
-	 tw7rSP0lVfHDpaLubuLInWtsmTOlE/Zrvs/g5gvo9H+lWd4LxScB2wjKH24KGkQs8Q
-	 l+oA6hUbLvStrcWWVvZMofcXlWoi12z6GHtzTm+s=
+	s=default; t=1567619663;
+	bh=cKzmFkJhw0Tz/QML43k2N4q3sH08niAJNwg50zt5akQ=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=CXQQQGOrop8bl5d/Ey0RSRC4FX5xLSDWWYat1IHfXeyBH+JenT5LnKrdL4ZiwT754
+	 6v+8FqWF36oAlrkcZw8rorYlRIF0wtDV6s3K1hxpbx+Rn5WTv9jPg9S8Fo/kw8QPvQ
+	 9eSdmg1BCmCAJR+N16Gwuty9T8pg534LaysMrHWw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FD86F803A6;
-	Wed,  4 Sep 2019 19:49:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCA54F803A6;
+	Wed,  4 Sep 2019 19:53:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4028F803D6; Wed,  4 Sep 2019 19:49:32 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 40FFCF803D0; Wed,  4 Sep 2019 19:53:31 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2D88F80394
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 19:49:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2D88F80394
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Sep 2019 10:49:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,467,1559545200"; d="scan'208";a="194814550"
-Received: from enagase-mobl1.amr.corp.intel.com (HELO [10.251.133.230])
- ([10.251.133.230])
- by orsmga002.jf.intel.com with ESMTP; 04 Sep 2019 10:49:24 -0700
-To: Vinod Koul <vkoul@kernel.org>
-References: <20190821201720.17768-1-pierre-louis.bossart@linux.intel.com>
- <20190821201720.17768-5-pierre-louis.bossart@linux.intel.com>
- <20190822071835.GA30262@ubuntu>
- <f73796d6-fcfa-97c8-69ae-0a183edbbd97@linux.intel.com>
- <20190904073549.GL2672@vkoul-mobl>
- <4de9613c-2da4-8d39-6f99-3039811673b8@linux.intel.com>
- <20190904165522.GC2672@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b37f7be2-27b4-4ba5-e07a-8993d8c171f2@linux.intel.com>
-Date: Wed, 4 Sep 2019 12:49:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190904165522.GC2672@vkoul-mobl>
-Content-Language: en-US
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, gregkh@linuxfoundation.org,
- Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Zhu Yingjiang <yingjiang.zhu@linux.intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 4/5] ASoC: SOF: Intel: hda: add
- SoundWire stream config/free callbacks
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4148F80171
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 19:53:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4148F80171
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="KLHLmNii"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=0vUN/mP2jRkFY1yC0RcTePYe1dw/6b3Wm/AMlgoaVhg=; b=KLHLmNii4LIg
+ wQ7R7KM/CUmnUL13W0brNnQnUcX93lSLNCG5Ar7UDxrbkwAPTeE8Y9lgdPCWf/XmMwicc0Saicbc8
+ JcDVI36DVpgoj7LQdnRGsvRCXq1F2mo7mXbD0tval9iF/QPNZ21en2CwP5TaPnfjvpYLKxL+u+311
+ FQr1Q=;
+Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1i5ZTC-0006h5-7r; Wed, 04 Sep 2019 17:53:26 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 413C62742B45; Wed,  4 Sep 2019 18:53:25 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zm8q5n8.wl-kuninori.morimoto.gx@renesas.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190904175325.413C62742B45@ypsilon.sirena.org.uk>
+Date: Wed,  4 Sep 2019 18:53:25 +0100 (BST)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-core: add comment to jack at
+	soc_remove_component()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,56 +87,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
+   ASoC: soc-core: add comment to jack at soc_remove_component()
 
-On 9/4/19 11:55 AM, Vinod Koul wrote:
-> On 04-09-19, 08:31, Pierre-Louis Bossart wrote:
->> On 9/4/19 2:35 AM, Vinod Koul wrote:
->>> On 22-08-19, 08:53, Pierre-Louis Bossart wrote:
->>>> Thanks for the review Guennadi
->>>>
->>>>>> +static int sdw_config_stream(void *arg, void *s, void *dai,
->>>>>> +			     void *params, int link_id, int alh_stream_id)
->>>>>
->>>>> I realise, that these function prototypes aren't being introduced by these
->>>>> patches, but just wondering whether such overly generic prototype is really
->>>>> a good idea here, whether some of those "void *" pointers could be given
->>>>> real types. The first one could be "struct device *" etc.
->>>>
->>>> In this case the 'arg' parameter is actually a private 'struct snd_sof_dev',
->>>> as shown below [1]. We probably want to keep this relatively opaque, this is
->>>> a context that doesn't need to be exposed to the SoundWire code.
->>>
->>> This does look bit ugly.
->>>
->>>> The dai and params are indeed cases where we could use stronger types, they
->>>> are snd_soc_dai and hw_params respectively. I don't recall why the existing
->>>> code is this way, Vinod and Sanyog may have the history of this.
->>>
->>> Yes we wanted to decouple the sdw and audio bits that is the reason why
->>> none of the audio types are used here, but I think it should be revisited
->>> and perhaps made as:
->>>
->>> sdw_config_stream(struct device *sdw, struct sdw_callback_ctx *ctx)
->>>
->>> where the callback context contains all the other args. That would make
->>> it look lot neater too and of course use real structs if possible
->>
->> the suggested sdw_callbback_ctx is really intel-specific at the moment, e.g.
->> the notion of link_id and alh_stream_id are due to the hardware, it's not
->> generic at all. And in the latest code we also pass the dai->id.
-> 
-> s/sdw_callback_ctx/intel_sdw_callback_ctx
-> 
-> Yes this code is intel specific and this would be intel specific too
+has been applied to the asoc tree at
 
-ok, I'll fold all the fields in a structure then. That's a nice cleanup, 
-thanks Guennadi and Vinod for the reviews.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 04f770d968344ca95b55cf7b50452888ec5440e7 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 4 Sep 2019 09:14:35 +0900
+Subject: [PATCH] ASoC: soc-core: add comment to jack at soc_remove_component()
+
+Basically, driver which setups snd_soc_component_set_jack() need
+to release it by themselves. But, as framework level robustness,
+soc_remove_component() also releases it.
+
+To avoid code reader confuse, this patch makes it clarify.
+
+This patch makes it clarify.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/875zm8q5n8.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2a166abaade1..05a2aff843aa 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -975,7 +975,9 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
+ 
+ static void soc_cleanup_component(struct snd_soc_component *component)
+ {
++	/* For framework level robustness */
+ 	snd_soc_component_set_jack(component, NULL, NULL);
++
+ 	list_del(&component->card_list);
+ 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+ 	soc_cleanup_component_debugfs(component);
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
