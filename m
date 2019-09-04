@@ -1,12 +1,10 @@
-From: "news globelife" <info@globelife.biz>
-Subject: PROFESSIONAL INFORMATION
-Date: Thu, 30 Sep 2004 16:09:25 +0000 (UTC)
+From: Wendell Jack <iejvvglqcb@yahoo.com>
+Subject: Re [1]:
+Date: Thu, 30 Sep 2004 23:08:39 +0600 mana
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CD3Nz-0001kr-4U@sc8-sf-mx2.sourceforge.net>
-Reply-To: "news globelife" <info@globelife.biz>
+Message-ID: <2004WQdvQh10NQC1Jjv.wm2ZaVFIdjIkUzUSUFunRfL.qmail@webeMutxHWGhe8JTZRleXYrN5VpdkWuXOykxaPyV.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="= Multipart Boundary 0930041804"
+Content-Type: multipart/alternative; boundary="quyK32RjLfSGDCVl42D2ARWkFshl-Sy8PPbu1R1AVlNa44IH2Ev6OC=:yVaZAAZZkX53wkoJKIsfWleEPFkF6bexD3GT"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,172 +14,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Thu, 30 Sep 2004 18.04.52 +0200
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multipart MIME message.
+--quyK32RjLfSGDCVl42D2ARWkFshl-Sy8PPbu1R1AVlNa44IH2Ev6OC=:yVaZAAZZkX53wkoJKIsfWleEPFkF6bexD3GT
+Content-Type: text/html; charset=us-ascii
 
---= Multipart Boundary 0930041804
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: Quoted-Printable
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
 
-PROFESSIONAL INFORMATION
-We know you=92re an hair fashion operator.
-=20
-You may increase the value and the visibility of your website in any part=
- of the world through a simple LINK with GLOBELIFE.COM, the first and mos=
-t important hair fashion website in the world.
-=20
-For further information please contact info@globelife.biz
-=20
+<body bgcolor="#FFFFFF" text="#000000">
+<pre><font face="ARIAL" size="3"><b>T0P</b></font><font color="#fffff7">2</font><font face="ARIAL" size="3"><b>QUAL|TY</b></font><font color="#fffff3">7</font><font face="ARIAL" size="3"><b>SOFTVVARE </b></font><font face="Arial" color="#fffff4" size="2">XFL</font><font face="ARIAL" size="3"><b> </b></font><font face="Arial" color="#fffff7" size="2">Disney</font> <font face="Arial" color="#fffff2" size="2">Golden Globes</font><font face="ARIAL" size="3"><b></b></font><font face="ARIAL" size="3"><b>
+LOVVEST</b></font><font color="#fffff0">K</font><font face="ARIAL" size="3"><b>POSSlBLE</b></font><font color="#fffff2">m</font><font face="ARIAL" size="3"><b>PRlCES! </b></font><font face="Arial" color="#fffff8" size="2">Snowboarding</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff9" size="2">NEAR-Shoemaker</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff9" size="2">Firestone Tires</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff3" size="2">Bradley Chait</font><b><font face="ARIAL">
 
-INFORMAZIONE PROFESSIONALE
-Ti conosciamo come operatore del settore professionale della moda-capelli=
-!
-=20
-Aumenta il valore e la visibilit=E0 del tuo sito nel mondo facendo un lin=
-k con GLOBELIFE.COM, il portale n=B01 al mondo della moda capelli.
-Per maggiori informazioni: info@globelife.biz
-=20
-=20
-=20
+</font></b><font face="ARIAL"><b>SPECIAL</b></font><font color="#fffff9">K</font><font face="ARIAL"><b>0FFERS: </b></font><font face="Arial" color="#fffff5" size="2">in 1804</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff2" size="2">Amateur</font><font face="ARIAL" size="3"><b>
 
+</b></font><font face="ARIAL"><u>WlNI)0WS</u></font><font color="#fffff4">a</font><font face="ARIAL">}{P PROFESSlON/\L + 0FFlCE }{P PR0FESS|ONAL - <font color="#FF0000"><b>$80</b></font><font face="Arial" color="#fffff1" size="2">a When you </font> </font><font face="Arial" color="#fffff6" size="2">we get on well</font><font face="ARIAL"><font color="#FF0000"><b>
+</b></font><u>/\I)OBE</u> -</font><font color="#fffff6">d</font><font face="ARIAL">PHOTOSH0P</font><font color="#fffff6">1</font><font face="ARIAL">7 + PREMIER</font><font color="#fffff2">M</font><font face="ARIAL">7 + ILLUSTRATOR</font><font color="#fffff4">d</font><font face="ARIAL">10 - <font color="#FF0000"><b>$120</b></font><font face="Arial" color="#fffff0" size="2">Hold on</font> </font><font face="Arial" color="#fffff0" size="2">The most</font><font face="ARIAL"><font color="#FF0000"><b>
+</b></font><u>MACR0MEI)|/\</u></font><font color="#fffff4">j</font><font face="ARIAL">I)REAMWE/\\/ER MX</font><font color="#fffff9">Y</font><font face="ARIAL">2004 + FLASH MX 2OO4 - <font color="#FF0000"><b>$100</b></font><font face="Arial" color="#fffff8" size="2">Where shall</font> </font><font face="Arial" color="#fffff6" size="2">in 1927
 
+</font><font face="ARIAL">AND MANY</font><font color="#fffff8">L</font><font face="ARIAL">OTHER</font><font color="#fffff5">b</font><font face="ARIAL">GRE/\T</font><font color="#fffff1">h</font><font face="ARIAL">OFFERS</font><font color="#fffff5">0</font><font face="ARIAL">(MICR0SOFT, AI)0BE, COREL, M/\CROMEDl/\, BORLAND AND OTHERS) </font><font face="Arial" color="#fffff3" size="2">in 1863</font> <font face="Arial" color="#fffff0" size="2">The Grinch
 
-NOTICE:
-According to law 675/96, we would like to inform that we have taken your =
-e.mail from pubblic lists. Article n. 1618, parag.n.111 states: "this mes=
-sage can not be considered SPAM because it can be removed from e.mail lis=
-ts. If you receive this e.mail by mistake and do not want to receive furt=
-her more from our company, we kindly ask you to reply to the same by writ=
-ing in the object: ERASE ME and we will immediately remove it.
+</font><font face="ARIAL"><a href="http://vrinzuuj.bhneeag.info/?JYLOfIJHhNkwt1Jzwf"><font size="4">CL|CK</font><font color="#fffff2">n</font><font size="4">HERE</font><font color="#fffff9">n</font><font size="4">TO</font><font color="#fffff7">l</font><font size="4">VIS|T</font><font color="#fffff4">u</font><font size="4">0UR</font><font color="#fffff1">U</font><font size="4">SH0P</font></a>
+</font><font face="Arial" color="#fffff5" size="2">Bruce Lee</font> <font face="Arial" color="#fffff9" size="2">We might...</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff3" size="2">Shakespeare</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff9" size="2">i'm sorry</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff7" size="2">will do It</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff1" size="2">Web</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff8" size="2">where do you live?</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff7" size="2">Colleges</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff1" size="2">Schwarzenegger</font><font face="ARIAL" size="3"><b></b></fo
+ nt> <font face="Arial" color="#fffff6" size="2">MIRC</font><font face="ARIAL" size="3"><b>
+ </b></font> <font face="Arial" color="#fffff8" size="2">Let's talk it over</font><font face="ARIAL" size="3"><b></b></font> 
+<font face="Arial" color="#fffff4" size="2">in 1989</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff3" size="2">Ricky Martin</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff8" size="2">Fun</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff4" size="2">Winamp</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff0" size="2">And if you</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff2" size="2">Have a good time</font><font face="ARIAL" size="3"><b></b></font> 
+<font face="Arial" color="#fffff5" size="2">The IRS</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff2" size="2">Universal Pictures</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff5" size="2">in 1869</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff9" size="2">in 1965</font><font face="ARIAL" size="3"><b></b></font> 
+<font face="Arial" color="#fffff1" size="2">Could I ask...</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff2" size="2">in 1945</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff1" size="2">do not</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff1" size="2">Just a moment!</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff4" size="2">Dear friends!</font><font face="ARIAL" size="3"><b></b></font> 
+<font face="Arial" color="#fffff4" size="2">fine</font><font face="ARIAL" size="3"><b></b></font> <font face="Arial" color="#fffff6" size="2">in 1999</font></pre>
+</body>
+</html>
 
---= Multipart Boundary 0930041804
-Content-Type: text/html;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: Quoted-Printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-252">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE>BODY {
-	FONT-FAMILY: arial
-}
-</STYLE>
-</HEAD>
-<BODY>
-<DIV><SPAN style=3D"FONT-FAMILY: Arial"><FONT size=3D2>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><FONT=20
-size=3D2><STRONG>PROFESSIONAL INFORMATION<?xml:namespace prefix =3D o ns =
-=3D=20
-"urn:schemas-microsoft-com:office:office"=20
-/><o:p></o:p></STRONG></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><FONT size=3D2>We =
-know you=92re=20
-an hair fashion operator.<o:p></o:p></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><o:p><FONT=20
-size=3D2>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"COLOR: black; FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><FON=
-T=20
-size=3D2>You may increase the value and the visibility of your website in=
- any part=20
-of the world through a simple LINK with </FONT><A=20
-href=3D"http://www.globelife.biz/"><FONT color=3D#0000ff=20
-size=3D2><STRONG>GLOBELIFE.COM</STRONG></FONT></A><FONT size=3D2>, the fi=
-rst and=20
-most important hair fashion website in the world.<o:p></o:p></FONT></SPAN=
-></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"COLOR: black; FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><o:p=
-><FONT=20
-size=3D2>&nbsp;</FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"COLOR: black; FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><FON=
-T=20
-size=3D2>For further information please contact </FONT><A=20
-href=3D"mailto:info@globelife.biz"><FONT=20
-size=3D2>info@globelife.biz</FONT></A><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"COLOR: black; FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><o:p=
-><FONT=20
-size=3D2><STRONG>&nbsp;</STRONG></FONT></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN lang=3DEN-GB=20
-style=3D"COLOR: black; FONT-FAMILY: Arial; mso-ansi-language: EN-GB"><o:p=
-></o:p></SPAN>&nbsp;</P></FONT></SPAN>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><B=20
-style=3D"mso-bidi-font-weight: normal"><SPAN style=3D"FONT-FAMILY: Arial"=
-><FONT=20
-size=3D2>INFORMAZIONE PROFESSIONALE<o:p></o:p></FONT></SPAN></B></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><FONT size=3D2>Ti conosciamo come operatore =
-del settore=20
-professionale della moda-capelli!<o:p></o:p></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><o:p><FONT size=3D2>&nbsp;</FONT></o:p></SPA=
-N></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><FONT size=3D2>Aumenta il valore e la visibi=
-lit=E0 del=20
-tuo sito nel mondo facendo un link con </FONT><A=20
-href=3D"http://www.globelife.biz/"><FONT color=3D#0000ff=20
-size=3D2><STRONG>GLOBELIFE.COM</STRONG></FONT></A><FONT size=3D2>, il por=
-tale n=B01 al=20
-mondo della moda capelli.<o:p></o:p></FONT></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><FONT size=3D2>Per maggiori informazioni: </=
-FONT><A=20
-href=3D"mailto:info@globelife.biz"><FONT=20
-size=3D2>info@globelife.biz</FONT></A><o:p></o:p></SPAN></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><o:p><FONT size=3D2>&nbsp;</FONT></o:p></SPA=
-N></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><o:p><FONT size=3D2>&nbsp;</FONT></o:p></SPA=
-N></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><SPAN=20
-style=3D"FONT-FAMILY: Arial"><o:p><FONT size=3D2>&nbsp;</FONT></o:p></SPA=
-N></P>
-<DIV class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: center"=20
-align=3Dcenter><STRONG><SPAN=20
-style=3D"FONT-WEIGHT: normal; FONT-SIZE: 7.5pt; FONT-FAMILY: 'Arial Unico=
-de MS'"><FONT=20
-size=3D2>
-<HR align=3Dcenter width=3D"100%" SIZE=3D2>
-</FONT></SPAN></STRONG></DIV>
-<P class=3DMsoNormal style=3D"MARGIN: 0cm 0cm 0pt"><STRONG><SPAN lang=3DE=
-N-GB=20
-style=3D"FONT-SIZE: 7.5pt; FONT-FAMILY: 'Arial Unicode MS'; mso-ansi-lang=
-uage: EN-GB">NOTICE</SPAN></STRONG><SPAN=20
-lang=3DEN-GB=20
-style=3D"FONT-SIZE: 7.5pt; FONT-FAMILY: 'Arial Unicode MS'; mso-ansi-lang=
-uage: EN-GB">:<BR>According=20
-to law 675/96, we would like to inform that we have taken your e.mail fro=
-m=20
-pubblic lists. Article n. 1618, parag.n.111 states: "this message can not=
- be=20
-considered SPAM because it can be removed from e.mail lists. If you recei=
-ve this=20
-e.mail by mistake and do not want to receive further more from our compan=
-y, we=20
-kindly ask you to reply to the same by writing in the object: ERASE ME an=
-d we=20
-will immediately remove it.</SPAN><SPAN lang=3DEN-GB=20
-style=3D"mso-ansi-language: EN-GB"><FONT face=3D"Times New Roman" size=3D=
-2>=20
-</FONT></SPAN><SPAN lang=3DEN-GB=20
-style=3D"FONT-SIZE: 12pt; mso-ansi-language: EN-GB"><o:p></o:p></SPAN></P=
-></DIV></BODY></HTML>
-
---= Multipart Boundary 0930041804--
-
+--quyK32RjLfSGDCVl42D2ARWkFshl-Sy8PPbu1R1AVlNa44IH2Ev6OC=:yVaZAAZZkX53wkoJKIsfWleEPFkF6bexD3GT--
 
 
 -------------------------------------------------------
