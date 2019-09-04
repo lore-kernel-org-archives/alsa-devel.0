@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB356C3A5A2
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 00:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0DEBC3A5A2
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 00:18:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 708792339D
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 00:17:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 28D3221897
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 00:18:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EKsLohEA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 708792339D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="opKWXyh+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28D3221897
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AB311669;
-	Wed,  4 Sep 2019 02:16:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AB311669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74CBF1671;
+	Wed,  4 Sep 2019 02:17:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74CBF1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567556266;
-	bh=yfULPAwfw2S/JGpSk2C0DszZ9CMeEHwW/ZSyawYAJ8g=;
+	s=default; t=1567556290;
+	bh=+j/UCD7ysOvOzKRER3ZtFl9U1ZcJa1mUtJceevGHnbU=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EKsLohEAdC58EFYDzSUD/hzz6K4TPEMaddylxKcdnZgPH3xsLuYzSlmPk7w/ONqFp
-	 bbkDld1CiO10v5BOsPpzCJw/AAWuYTCSKgVOJnE7rmuvMr+pjs1lkPiq3tcTNNl0Fz
-	 DbK8bKo9sXVXT0q0HR/Z9M/k+dDoPna/yXU3F5VY=
+	b=opKWXyh+1tkO0rEg3UPFDxzaPHp1kyyFdfboRnuV4kZGrk6UYWR0LH73IEtzi99w+
+	 cn8wCLF+eTX6MHZricX5uK9rOMHSx0muTIdmc9N0QK7rZHWN9LkQ+PIAKUPHPvDvsY
+	 T6YGx9Tt8+TPV3mTAiM9/LpkrZat9pNArevfimvc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DD5CF805FC;
-	Wed,  4 Sep 2019 02:15:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 632FBF805FF;
+	Wed,  4 Sep 2019 02:15:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FAF5F805FD; Wed,  4 Sep 2019 02:14:59 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5DC33F805F7
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 02:14:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DC33F805F7
-Date: 04 Sep 2019 09:14:51 +0900
-X-IronPort-AV: E=Sophos;i="5.64,464,1559487600"; d="scan'208";a="25666344"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 04 Sep 2019 09:14:51 +0900
+ id 792E8F8060E; Wed,  4 Sep 2019 02:15:04 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B2E2EF805F7
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 02:14:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2E2EF805F7
+Date: 04 Sep 2019 09:14:57 +0900
+X-IronPort-AV: E=Sophos;i="5.64,464,1559487600"; d="scan'208";a="25447185"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 04 Sep 2019 09:14:57 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E2598400264F;
- Wed,  4 Sep 2019 09:14:51 +0900 (JST)
-Message-ID: <8736hcq5ms.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3989441532AD;
+ Wed,  4 Sep 2019 09:14:57 +0900 (JST)
+Message-ID: <871rwwq5mm.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +58,8 @@ In-Reply-To: <877e6oq5nv.wl-kuninori.morimoto.gx@renesas.com>
 References: <877e6oq5nv.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH resend 03/11] ASoC: soc-core: self contained
-	soc_remove_link_components()
+Subject: [alsa-devel] [PATCH resend 04/11] ASoC: soc-core: self contained
+	soc_remove_link_dais()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,91 +79,77 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current soc_remove_link_components() implementation is very half,
+Current soc_remove_link_dais() implementation is very half,
 thus it is very difficult to read.
 
 	for_each_comp_order(xxx) {
 		for_each_card_rtds(xxx)
-=>			soc_remove_link_components(xxx);
+=>			soc_remove_link_dais(xxx);
 	}
 
-This patch does all for_each_xxx() under soc_remove_link_components(),
+This patch does all for_each_xxx() under soc_remove_link_dais(),
 and makes it to self contained.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 33 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
+ sound/soc/soc-core.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 04b98e6..fbaf4dd 100644
+index fbaf4dd..0a13f94 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1123,17 +1123,24 @@ static void soc_remove_link_dais(struct snd_soc_card *card,
- 	soc_remove_dai(rtd->cpu_dai, order);
+@@ -1107,20 +1107,26 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
  }
  
--static void soc_remove_link_components(struct snd_soc_card *card,
--	struct snd_soc_pcm_runtime *rtd, int order)
-+static void soc_remove_link_components(struct snd_soc_card *card)
+ static void soc_rtd_free(struct snd_soc_pcm_runtime *rtd); /* remove me */
+-static void soc_remove_link_dais(struct snd_soc_card *card,
+-		struct snd_soc_pcm_runtime *rtd, int order)
++static void soc_remove_link_dais(struct snd_soc_card *card)
  {
- 	struct snd_soc_component *component;
+ 	int i;
+ 	struct snd_soc_dai *codec_dai;
 +	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_rtdcom_list *rtdcom;
 +	int order;
- 
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
++
 +	for_each_comp_order(order) {
 +		for_each_card_rtds(card, rtd) {
-+			for_each_rtdcom(rtd, rtdcom) {
-+				component = rtdcom->component;
-+
-+				if (component->driver->remove_order != order)
-+					continue;
  
--		if (component->driver->remove_order == order)
--			soc_remove_component(component);
-+				soc_remove_component(component);
-+			}
+-	/* finalize rtd device */
+-	soc_rtd_free(rtd);
++			/* finalize rtd device */
++			soc_rtd_free(rtd);
+ 
+-	/* remove the CODEC DAI */
+-	for_each_rtd_codec_dai(rtd, i, codec_dai)
+-		soc_remove_dai(codec_dai, order);
++			/* remove the CODEC DAI */
++			for_each_rtd_codec_dai(rtd, i, codec_dai)
++				soc_remove_dai(codec_dai, order);
+ 
+-	soc_remove_dai(rtd->cpu_dai, order);
++			soc_remove_dai(rtd->cpu_dai, order);
 +		}
- 	}
++	}
  }
  
-@@ -1173,10 +1180,7 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 			soc_remove_link_dais(card, rtd, order);
- 	}
+ static void soc_remove_link_components(struct snd_soc_card *card)
+@@ -1171,14 +1177,9 @@ static int soc_probe_link_components(struct snd_soc_card *card)
+ 
+ static void soc_remove_dai_links(struct snd_soc_card *card)
+ {
+-	int order;
+-	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai_link *link, *_link;
  
 -	for_each_comp_order(order) {
 -		for_each_card_rtds(card, rtd)
--			soc_remove_link_components(card, rtd, order);
+-			soc_remove_link_dais(card, rtd, order);
 -	}
-+	soc_remove_link_components(card);
++	soc_remove_link_dais(card);
  
- 	for_each_card_links_safe(card, link, _link) {
- 		if (link->dobj.type == SND_SOC_DOBJ_DAI_LINK)
-@@ -2394,20 +2398,13 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
+ 	soc_remove_link_components(card);
  
- static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- {
--	struct snd_soc_pcm_runtime *rtd;
--	int order;
--
- 	if (card->instantiated) {
- 		card->instantiated = false;
- 		snd_soc_dapm_shutdown(card);
- 		snd_soc_flush_all_delayed_work(card);
- 
- 		/* remove all components used by DAI links on this card */
--		for_each_comp_order(order) {
--			for_each_card_rtds(card, rtd) {
--				soc_remove_link_components(card, rtd, order);
--			}
--		}
-+		soc_remove_link_components(card);
- 
- 		soc_cleanup_card_resources(card);
- 		if (!unregister)
 -- 
 2.7.4
 
