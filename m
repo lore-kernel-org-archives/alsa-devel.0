@@ -7,78 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACB0C3A5AA
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49FE2C3A5AA
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:56:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AECA22CEA
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:55:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC8602343A
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2019 17:56:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FMAxTZ0r";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="S5N2XJlZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AECA22CEA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aVVPVR7j";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="lIUzyIf+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC8602343A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 954F11682;
-	Wed,  4 Sep 2019 19:54:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 954F11682
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1FE91698;
+	Wed,  4 Sep 2019 19:55:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1FE91698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567619718;
-	bh=H0aLZAXUn6i6ejJB6EBXvZy85/sK2truMnyGCENKtUU=;
+	s=default; t=1567619769;
+	bh=ERpV+HRq27kQbv0v4QVEbfbvYeuN7yMvvr28cQw3kCM=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=FMAxTZ0rhnITH+W9/70N+Cw5YFbqdiqguIwPwTpKBpZye/HO1ByBRV5m3bgSfFxT7
-	 PeNV+q3x/MAE0mzdWtD+q824rAUizsrYKQruGmCmiEsf9mdRY0F0cI1m8oqYn5E66v
-	 A58FAuP1pwzYwzIUQvmQdn5W0Qfn11U9ISieWyEc=
+	b=aVVPVR7jbH4l82EAEYPcD6D1U3lJEqMeGz3AYUzz3w9Pd7UugHUgj6gT/NGE0VhLl
+	 Mq1iriHjtz/UpCoaE2DFkZ/4L98HbSj146YIJ8Kis3+ECNUSw6KcC8az5qQ0F4joSB
+	 3HmB+AxTBmFrlvwyn/00O++OGrxg4HMjElcvuU0Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2534F8045F;
-	Wed,  4 Sep 2019 19:53:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6D85F80529;
+	Wed,  4 Sep 2019 19:53:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F852F803D7; Wed,  4 Sep 2019 19:53:33 +0200 (CEST)
+ id 09B00F8049B; Wed,  4 Sep 2019 19:53:35 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4FABF80394
- for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 19:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4FABF80394
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4D70F8011E
+ for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2019 19:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4D70F8011E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="S5N2XJlZ"
+ header.b="lIUzyIf+"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Vad4mT+RpRm83DagHXSdfbCu0yANmHakAwjZP/ttn9s=; b=S5N2XJlZgWqd
- NMmxs5uW8p3g9iQT+u0fSfVvptiA+UkrkE/kPIGEHVhuffWZCUU3AYBR/8W95mAbZ0yp2yQi/qeaV
- L5zI1C6XMlR8o05irg8wmYODkvUPO+esvjN0YMS4i3GJQounsP5HvrdHcZxoLP1NJqnfzXZh1fRN8
- 3lF+E=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ List-Archive; bh=VCp+GINcdewaFZUB7P8VBjJ5Q+P6scN0GPbH/ZYlu7g=; b=lIUzyIf+Ndxz
+ kAGCdJy6h5VNx3k/w/8/MIzj5BXPlw4K1V4lYvCpfSj68s0pbFh8JlS7qkNbruBjIFeeg2GUvywjL
+ rom9pMG54jZfn3KbbZNssYtylHSzX+ZtZ1GSzb8H0/uSn6FaDgi5S63TzSKj2B6XCLvvT0SDfJABy
+ l8HY4=;
+Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i5ZTC-0006h8-IU; Wed, 04 Sep 2019 17:53:26 +0000
+ id 1i5ZTC-0006hF-NW; Wed, 04 Sep 2019 17:53:26 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id ED4822742D17; Wed,  4 Sep 2019 18:53:25 +0100 (BST)
+ id 365752742CDC; Wed,  4 Sep 2019 18:53:26 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20190904082507.24300-1-yuehaibing@huawei.com>
+In-Reply-To: <20190904074833.23572-1-yuehaibing@huawei.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190904175325.ED4822742D17@ypsilon.sirena.org.uk>
-Date: Wed,  4 Sep 2019 18:53:25 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de, Hulk Robot <hulkci@huawei.com>,
- info@metux.net, tiwai@suse.com, yuehaibing@huawei.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, hsweeten@visionengravers.com,
- Mark Brown <broonie@kernel.org>, olof@lixom.net, tglx@linutronix.de,
- alexander.sverdlin@gmail.com
-Subject: [alsa-devel] Applied "ASoC: ep93xx: use
+Message-Id: <20190904175326.365752742CDC@ypsilon.sirena.org.uk>
+Date: Wed,  4 Sep 2019 18:53:26 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, yuzhao@google.com, tiwai@suse.com,
+ yuehaibing@huawei.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>,
+ tglx@linutronix.de, akshu.agrawal@amd.com
+Subject: [alsa-devel] Applied "ASoC: amd: use
 	devm_platform_ioremap_resource() to simplify code" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -100,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: ep93xx: use devm_platform_ioremap_resource() to simplify code
+   ASoC: amd: use devm_platform_ioremap_resource() to simplify code
 
 has been applied to the asoc tree at
 
@@ -125,44 +123,36 @@ to this mail.
 Thanks,
 Mark
 
-From f295495ec657c5fb2cff355456c2a20c4c945d93 Mon Sep 17 00:00:00 2001
+From dfafc1822f6826c9d250223f59ce8c3b227866a6 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Wed, 4 Sep 2019 16:25:07 +0800
-Subject: [PATCH] ASoC: ep93xx: use devm_platform_ioremap_resource() to
- simplify code
+Date: Wed, 4 Sep 2019 15:48:33 +0800
+Subject: [PATCH] ASoC: amd: use devm_platform_ioremap_resource() to simplify
+ code
 
 Use devm_platform_ioremap_resource() to simplify the code a bit.
 This is detected by coccinelle.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190904082507.24300-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20190904074833.23572-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/cirrus/ep93xx-ac97.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
-index 84c967fcab6b..e21eaa1893d1 100644
---- a/sound/soc/cirrus/ep93xx-ac97.c
-+++ b/sound/soc/cirrus/ep93xx-ac97.c
-@@ -362,7 +362,6 @@ static const struct snd_soc_component_driver ep93xx_ac97_component = {
- static int ep93xx_ac97_probe(struct platform_device *pdev)
- {
- 	struct ep93xx_ac97_info *info;
--	struct resource *res;
- 	int irq;
- 	int ret;
- 
-@@ -370,8 +369,7 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
- 	if (!info)
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index d26653f81416..52225b4b6382 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -1251,8 +1251,7 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	if (!audio_drv_data)
  		return -ENOMEM;
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	info->regs = devm_ioremap_resource(&pdev->dev, res);
-+	info->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(info->regs))
- 		return PTR_ERR(info->regs);
+-	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
++	audio_drv_data->acp_mmio = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(audio_drv_data->acp_mmio))
+ 		return PTR_ERR(audio_drv_data->acp_mmio);
  
 -- 
 2.20.1
