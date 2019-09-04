@@ -1,18 +1,12 @@
-From: Han-Solo <serge.najdyk@laposte.net>
-Subject: -- no soundcards --
-Date: Tue, 09 Apr 2002 23:16:44 +0200
+From: "londonlanguages" <londonlanguages2@eresmas.com>
+Subject: Aprenda o mejore sus idiomas
+Date: Wed, 10 Apr 2002 08:23:07
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CB35A3C.2090103@laposte.net>
-Reply-To: serge.najdyk@laposte.net
+Message-ID: <200204100628.IAA06574@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.laposte.net (nposte09.axime.com [160.92.113.114])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA00430
-	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2002 00:08:44 +0200
-Received: from laposte.net (80.13.231.166) by mail.laposte.net (5.5.044)
-        id 3CB2AF0B00018502 for alsa-devel@alsa-project.org; Tue, 9 Apr 2002 23:16:42 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,72 +15,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+LONDON LANGUAGE INSTITUTE
+Informaci=F3n y reservas Tel.902180066 Fax 931479444   londonlanguages
+CLASES CON PROFESOR PRESENCIAL.
 
-I could not make my audigy work with the 5.12a driver. The following
-message shows up in /var/log/messages :
+Le ofrecemos un sistema =FAnico y genuino de FORMACI=D3N  "A MEDIDA" para=
+ aprender IDIOMAS, nuestros profesores se desplazan a su oficina o domici=
+lio particular.
+No importa el nivel que tenga o que disponga de poco tiempo.
+Los cursos se dise=F1an con Ud. para cubrir sus necesidades en las =E1rea=
+s profesionales y sociales que le interesan.=20
 
-snd: EMU10K1 soundcard #1 not found or device busy
+Clases exclusivamente personalizadas, eligiendo nuestro participante, par=
+ticular o empresa, lugar, hora y duraci=F3n de las mismas. Pueden ser tan=
+to en la oficina como en su domicilio.
 
-My kernel is compiled with CONFIG_SOUND=m and CONFIG_SOUND_OSS=m
+PROGRAMA DE MANTENIMIENTO
+Para los que dominan  el idioma y necesitan un mantenimiento y  correccio=
+nes
 
-The driver was compiled with these options :
-./configure --with-oss=yes --with-cards=emu10k1 --with-debug=detect
+DIRIGIDO
+A empresas y particulares, a aquellas personas que disponen de poco tiemp=
+o y desean una ense=F1anza personalizada,de alto rendimiento y Calidad.=20
 
-I disabled devfsd in lilo.conf (yes, it is a Mandrake) and launched
-snddevices after installation, changed the perms of /dev/mixer,
-/dev/dsp, /dev/audio, put the following lines into modules.conf :
+OBJETIVOS
+Adquirir desde el primer momento los h=E1bitos y conocimientos que pueda =
+necesitar en su relaci=F3n empresarial o social,todo ello en un entorno d=
+e m=E1xima motivaci=F3n, haciendo que disfrute de los progresos o mejoras=
+  alcanzados
 
-alias char-major-116 snd
-alias snd-card-0 snd-card-emu10k1
-alias char-major-14 soundcore
-alias sound-slot-0 snd-card-0
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
+Algunos idiomas disponibles: Alem=E1n, Franc=E9s, Ingl=E9s Brit=E1nico y =
+Americano, Italiano, Ruso, Castellano, Catal=E1n, Euskera=20
+y Gallego. Otros a consultar.
 
-lspci -v gives :
-...
-00:0f.0 Multimedia audio controller: Creative Labs: Unknown device 0004
-(rev 03)	Subsystem: Creative Labs: Unknown device 0053
-	Flags: bus master, medium devsel, latency 32, IRQ 4
-	I/O ports at c400 [size=32]
-	Capabilities: [dc] Power Management version 2
+GARANTIA
+No cobramos matricula ni pagos a cuenta, a fin de mes le presentamos fact=
+ura por las clases impartidas.
+Con nuestro sistema esta demostrado que el ratio de aprendizaje es de 1/1=
+0 en comparaci=F3n con otros medios.
+Informaci=F3n y reservas Tel.  902180066
 
-cat /proc/interrupts
-     0:     228061          XT-PIC  timer
-     1:       2688          XT-PIC  keyboard
-     2:          0          XT-PIC  cascade
-     5:       1290          XT-PIC  usb-uhci
-     8:          1          XT-PIC  rtc
-    10:     167420          XT-PIC  nvidia
-    11:       9658          XT-PIC  ide2
-    12:      74372          XT-PIC  PS/2 Mouse
-    14:         35          XT-PIC  ide0
-    15:         40          XT-PIC  ide1
-NMI:          0
-LOC:     228026
-ERR:          0
-MIS:          0
-(dont't know if this is OK. Should I see a line for IRQ 4 ?)
-
-cat /proc/ioports
-...
-c400-c41f : PCI device 1102:0004 (Creative Labs)
-c800-c807 : PCI device 1102:7003 (Creative Labs)
-
-cat /proc/asound/cards gives : "-- no soundcards --" (hence the subject)
-
-I read lots of stuff using google, tried a few things. My last attempt
-was to replace snd-emu10k1 by snd-card-emu10k1, though I got no errors
-(and still -- no soundcards -- ) with snd-emu10k1.
-The alsaconf script could not detect my card.
-
-The card works with the OSS module in the kernel, and under Windows.
-
-Did I forget something ? Please, tell me what's wrong !
+Si no desea recibir publicidad, haga un reply a la direcci=F3n indicada
+Mail:londonlanguages3@eresmas.com
