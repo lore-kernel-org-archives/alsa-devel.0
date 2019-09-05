@@ -6,70 +6,60 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2958CC43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8C46C43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:18:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A773D2082E
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:08:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C2DBA20825
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:18:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kHHqvV/h"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A773D2082E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u2r0GBR0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2DBA20825
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1ECF1669;
-	Thu,  5 Sep 2019 17:07:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1ECF1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6924A1658;
+	Thu,  5 Sep 2019 17:17:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6924A1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567696085;
-	bh=OYwBwdqBbnloi5XqXoAjhFbRjZsTiOwJZxiaLW5Boio=;
+	s=default; t=1567696686;
+	bh=jBLlpUsbItuIZMxbgKQIo2ZZDbtPWv+aYY+Iij3oC7I=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kHHqvV/h4iHSO4PSfJrNni/UCYjpcmsL2qaSoPfHxQF8If3DbQPwZYmH2GSaC30Yn
-	 d/khpiZFcc00lqZFgFg9fTiRNAtGKvj59MZbYjj192UI0LBqDYDoNGew+8QkegNuwy
-	 t4YRoli5IaKSkpWx8rJ6qN0alFXQqtyYTP58pfmw=
+	b=u2r0GBR0tIrtieAjcekJN3DmVkqasoBeTX0qagB1R6uhUr7r5Yf/AiRCyTEEjlMnJ
+	 FAPcsvuGRWnNHG9rHoMGd8xP2ik4RaWmc9r6Kc2VGzXP59+7bPKhq2YOdcBMOZ1RBF
+	 VoFM+2gdoFymv0RUJb60oz/DFK/71umzw09VGWCs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 598C6F803D1;
-	Thu,  5 Sep 2019 17:07:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7753F803D1;
+	Thu,  5 Sep 2019 17:17:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDA15F802DF; Thu,  5 Sep 2019 17:07:12 +0200 (CEST)
+ id EF46BF80448; Thu,  5 Sep 2019 17:17:13 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 169B2F802DF
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 17:07:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 169B2F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id E046EF802DF
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 17:17:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E046EF802DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6DC6BB69A;
- Thu,  5 Sep 2019 15:07:08 +0000 (UTC)
-Date: Thu, 05 Sep 2019 17:07:07 +0200
-Message-ID: <s5ha7bipysk.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id B14BAAD1A;
+ Thu,  5 Sep 2019 15:17:09 +0000 (UTC)
+Date: Thu, 05 Sep 2019 17:17:09 +0200
+Message-ID: <s5h5zm6pybu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
-In-Reply-To: <20190902213912.GA6630@xn--80adja5bqm.su>
-References: <20190819195714.GA2737@xn--80adja5bqm.su>
- <s5hef1dthbk.wl-tiwai@suse.de>
- <20190822203031.GA22363@xn--80adja5bqm.su>
- <s5h5zmg48u2.wl-tiwai@suse.de>
- <20190829103805.GA1525@xn--80adja5bqm.su>
- <s5hsgpk2os6.wl-tiwai@suse.de>
- <20190830114510.GA10027@xn--80adja5bqm.su>
- <s5hzhjqzvu5.wl-tiwai@suse.de>
- <20190901192737.GB28125@xn--80adja5bqm.su>
- <s5hlfv7jj2r.wl-tiwai@suse.de>
- <20190902213912.GA6630@xn--80adja5bqm.su>
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+In-Reply-To: <CAGvk5Pohb9cxL=Mu11RPVD66NdiZkG+vO9TEtqBWe1tnBn6qyQ@mail.gmail.com>
+References: <CAGvk5Pohb9cxL=Mu11RPVD66NdiZkG+vO9TEtqBWe1tnBn6qyQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Surround speaker connection on Acer 8951G
+Subject: Re: [alsa-devel] Alsa conformance test - a new test for ALSA drivers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,44 +77,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 02 Sep 2019 23:39:12 +0200,
-Sergey 'Jin' Bostandzhyan wrote:
+On Wed, 04 Sep 2019 06:29:30 +0200,
+Yu-Hsuan Hsu wrote:
 > 
-> > One thing to be improved would be to drop the surround jack control.
-> > Adjust the pin config to different value with the fixed pin
-> > connection, so that the auto-parser won't create the "Surround Jack"
-> > control.  This isn't needed by PA or else, otherwise it may be
-> > confusing.
+> Hi all,
 > 
-> Hmm, if I understand you correctly, then you are referring to bits 31:30
-> Port Connectivity? 
+> I have created an new tool "Alsa conformance test"(
+> https://chromium.googlesource.com/chromiumos/platform/audiotest/+/master/alsa_conformance_test.md),
+> which is used for verifying ALSA drivers. Here are some main functions it
+> can measure:
+> 1. Correctness of hw_params
+> 2. Stability of rate
+> 3. Stability of step
+> 4. Runtime of each ALSA API
+> 5. Underrun and Overrun
 > 
-> It does not seem to work that way... I tried all combinations and I either
-> lose jack detect support or I lose the 5.1 profile in Pulse.
+> I recommend to use the script "alsa_conformance_test.py" inside. Just give
+> it a device and then it will test the below functions automatically.
+> 1. To make sure whether all the parameters provided by an ALSA driver can
+> be used.
+> 2. To make sure whether the measured rate is the same as the expected rate.
 > 
-> With these settings snd_hda_jack_detect_state() never returns HDA_JACK_PRESENT:
-> 0x91130012 [Fixed] Speaker at Int Rear
-> 0xd1130012 [Both] Speaker at Int Rear
-> 
-> I can plug or unplug, I get called, but I always receive HDA_JACK_PHANTOM
-> 
-> snd_hda_jack_detect_state() works fine with "no physical connection to port":
-> 0x51130012 [N/A] Speaker at Int Rear
-> 
-> But with the above pin setting I "lose" the 5.1 profile in Pulse...
-> 
-> Which leaves me with with what I had before:
-> 0x11130012 [Jack] Speaker at Int Rear
-> 
-> Am I missing something or did you mean some other setting? Should I be
-> using a different function instead of snd_hda_jack_detect_state() to
-> check my jack state in the callback?
+> We have used this tool to find out many issues in ChromeOS. I hope it can
+> help development in Linux too. If you have any problems or want more
+> features, please create a bug in crbug.com and assign to me (
+> yuhsuan@chromium.org). Thanks!
 
-OK, this would be really tricky to work around it.  It's merely a jack
-control that won't be referred by PA, so we can live with it, unless
-you see any obvious side effect.
-
-So, when the patch is ready for submission, feel free to send it.
+Great, it's something I wanted to see for long time.
+Let us know if you'd like to put this to ALSA upstream.
 
 
 thanks,
