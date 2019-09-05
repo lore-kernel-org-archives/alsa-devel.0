@@ -2,71 +2,74 @@ Return-Path: <SRS0=PVpb=XA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE1A5C00307
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 14:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2958CC43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:08:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B09A21A4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 14:10:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A773D2082E
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:08:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lvRs6Q8p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B09A21A4A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kHHqvV/h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A773D2082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 658DE168E;
-	Thu,  5 Sep 2019 16:10:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 658DE168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1ECF1669;
+	Thu,  5 Sep 2019 17:07:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1ECF1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567692657;
-	bh=hipyzRFRyTceFCm7b3csnqlGFOzpSfUGTW/Ls98Zv/Y=;
+	s=default; t=1567696085;
+	bh=OYwBwdqBbnloi5XqXoAjhFbRjZsTiOwJZxiaLW5Boio=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lvRs6Q8p6PhO7qJ2Ho5j7A1HdzlIkwH2X+lEnDItKz13d2MC6sZt1zI7X1BgQ7M35
-	 p/miABaSMobiCct+gNSpZ7qlxPdI/aVRdcrnhmQQ4D8LZPM0P1fvtW/6T+pt02W98t
-	 VI+6mFUawcFDFtcv+bNxiYBCb6yGtEcaCgPgQldw=
+	b=kHHqvV/h4iHSO4PSfJrNni/UCYjpcmsL2qaSoPfHxQF8If3DbQPwZYmH2GSaC30Yn
+	 d/khpiZFcc00lqZFgFg9fTiRNAtGKvj59MZbYjj192UI0LBqDYDoNGew+8QkegNuwy
+	 t4YRoli5IaKSkpWx8rJ6qN0alFXQqtyYTP58pfmw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8653AF803D1;
-	Thu,  5 Sep 2019 16:10:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 598C6F803D1;
+	Thu,  5 Sep 2019 17:07:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CA35F802DF; Thu,  5 Sep 2019 16:10:04 +0200 (CEST)
+ id BDA15F802DF; Thu,  5 Sep 2019 17:07:12 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4022F80227;
- Thu,  5 Sep 2019 16:09:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4022F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 169B2F802DF
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 17:07:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 169B2F802DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 714D7ACA5;
- Thu,  5 Sep 2019 14:09:57 +0000 (UTC)
-Date: Thu, 05 Sep 2019 16:09:57 +0200
-Message-ID: <s5htv9qq1fu.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 6DC6BB69A;
+ Thu,  5 Sep 2019 15:07:08 +0000 (UTC)
+Date: Thu, 05 Sep 2019 17:07:07 +0200
+Message-ID: <s5ha7bipysk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <7c3b8568-0d22-c1b4-47c7-3332e93bda53@linux.intel.com>
-References: <20190905053302.9262-1-pawel.harlozinski@linux.intel.com>
- <20190905053302.9262-2-pawel.harlozinski@linux.intel.com>
- <s5ha7bjgup9.wl-tiwai@suse.de>
- <9b997691-a609-e7b5-94a6-d42e26dfa080@linux.intel.com>
- <s5h8sr2rihf.wl-tiwai@suse.de>
- <7c3b8568-0d22-c1b4-47c7-3332e93bda53@linux.intel.com>
+To: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
+In-Reply-To: <20190902213912.GA6630@xn--80adja5bqm.su>
+References: <20190819195714.GA2737@xn--80adja5bqm.su>
+ <s5hef1dthbk.wl-tiwai@suse.de>
+ <20190822203031.GA22363@xn--80adja5bqm.su>
+ <s5h5zmg48u2.wl-tiwai@suse.de>
+ <20190829103805.GA1525@xn--80adja5bqm.su>
+ <s5hsgpk2os6.wl-tiwai@suse.de>
+ <20190830114510.GA10027@xn--80adja5bqm.su>
+ <s5hzhjqzvu5.wl-tiwai@suse.de>
+ <20190901192737.GB28125@xn--80adja5bqm.su>
+ <s5hlfv7jj2r.wl-tiwai@suse.de>
+ <20190902213912.GA6630@xn--80adja5bqm.su>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: cezary.rojewski@intel.com, patch@alsa-project.org,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org,
- Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 2/3] ALSA:core: Add rate 24kHz
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Surround speaker connection on Acer 8951G
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,42 +87,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 05 Sep 2019 16:00:51 +0200,
-Pierre-Louis Bossart wrote:
+On Mon, 02 Sep 2019 23:39:12 +0200,
+Sergey 'Jin' Bostandzhyan wrote:
 > 
+> > One thing to be improved would be to drop the surround jack control.
+> > Adjust the pin config to different value with the fixed pin
+> > connection, so that the auto-parser won't create the "Surround Jack"
+> > control.  This isn't needed by PA or else, otherwise it may be
+> > confusing.
 > 
-> >>>> Adds SNDRV_PCM_RATE_24000 at the bottom to keep backward compability
-> >>>> with alsa library.
-> >>>>
-> >>>> Signed-off-by: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-> >>>
-> >>> No.  Such a fancy rate has to be handled inside the driver locally
-> >>> instead of adding to the common rate.
-> >>
-> >> It's not that crazy, this is supported in the HDaudio spec:
-> >>
-> >> Sample Base Rate Divisor (DIV):
-> >> 000 = Divide by 1 (48 kHz, 44.1 kHz)
-> >> 001 = Divide by 2 (24 kHz, 22.05 kHz)
-> >>
-> >> I am not sure why 22.05 made the cut and not 24 kHz, they are both
-> >> derived from common clocks with the same divider... Same for 11.025
-> >> and 12...
-> >
-> > I'm not against supporting it.  It'd be fine if it were the changes
-> > that are applied only to HD-audio driver side.  What I'm against is to
-> > change the ALSA PCM core.  It's not necessarily done there at all.
+> Hmm, if I understand you correctly, then you are referring to bits 31:30
+> Port Connectivity? 
 > 
-> Humm, out of curiosity what is the issue here? Would this addition
-> break anything? I don't personally care too much but I've never quite
-> understood why the ALSA core only defined a subset of 'common' rates.
+> It does not seem to work that way... I tried all combinations and I either
+> lose jack detect support or I lose the 5.1 profile in Pulse.
+> 
+> With these settings snd_hda_jack_detect_state() never returns HDA_JACK_PRESENT:
+> 0x91130012 [Fixed] Speaker at Int Rear
+> 0xd1130012 [Both] Speaker at Int Rear
+> 
+> I can plug or unplug, I get called, but I always receive HDA_JACK_PHANTOM
+> 
+> snd_hda_jack_detect_state() works fine with "no physical connection to port":
+> 0x51130012 [N/A] Speaker at Int Rear
+> 
+> But with the above pin setting I "lose" the 5.1 profile in Pulse...
+> 
+> Which leaves me with with what I had before:
+> 0x11130012 [Jack] Speaker at Int Rear
+> 
+> Am I missing something or did you mean some other setting? Should I be
+> using a different function instead of snd_hda_jack_detect_state() to
+> check my jack state in the callback?
 
-It's simply a policy that we don't add a thing just because one driver
-wants for some reason possibly no one would actually use.
+OK, this would be really tricky to work around it.  It's merely a jack
+control that won't be referred by PA, so we can live with it, unless
+you see any obvious side effect.
 
-In general such a core stuff is changed only when it has to be and
-inevitably necessary, and/or it'd be benefit for all the rest and
-majority users.
+So, when the patch is ready for submission, feel free to send it.
 
 
 thanks,
