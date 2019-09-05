@@ -7,80 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB2C3C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 17:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFABCC43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 17:43:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A73B20828
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 17:42:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D86B2070C
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 17:43:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M5dpnvIq";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ZSyEwwWk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A73B20828
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nZ2cTjyh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NGKVfE4O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D86B2070C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76F5D167D;
-	Thu,  5 Sep 2019 19:41:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76F5D167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E89F1655;
+	Thu,  5 Sep 2019 19:42:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E89F1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567705347;
-	bh=DmB6/ADYvXxd+aCCMlSdxqo/neBr7GQ902Ad5/6JzDw=;
+	s=default; t=1567705386;
+	bh=OfQxdjqOLfXhZ+sl9e2w/umQoBI9hnMabAZYe73PLa8=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=M5dpnvIqta5m1XIDJ+77xWxGOJNsGE8cr55zweQXs7WdeQB82Ur/l3OUDtAFz66IF
-	 hl451srqtPen+XI4XjKzwf26QKrFINXmwGzzmRskRc3Ztwr4RgLjHZHKVXbbbwcsHV
-	 k/aGI/kSVfhUmzj8n4VWc5eCuw5LxuUJaK5fxmA4=
+	b=nZ2cTjyhjcBAha1pIHSdnqKtE3rbaYKFs3h+6BFA7wvq/9L9s8e+13L8ZQ4scfUg2
+	 0LIbyvZAXmd980W+ONBxdKrw5Qk8DRxQAb7ChLibV94uldRqhIpVTMysqTzjd/2b8I
+	 LgKT8yiIkVZitFwa8gjpRMO1Sz770Xj+yE1z8wzI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 948FAF8060E;
-	Thu,  5 Sep 2019 19:39:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0949EF80633;
+	Thu,  5 Sep 2019 19:39:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0D6FF805FD; Thu,  5 Sep 2019 19:39:06 +0200 (CEST)
+ id 02503F805F9; Thu,  5 Sep 2019 19:39:06 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9873F8049B
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 19:38:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9873F8049B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 067BCF803D1
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 19:38:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 067BCF803D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ZSyEwwWk"
+ header.b="NGKVfE4O"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=AP3QXYgc2oODBwjsiyyDTEmHz/ojfNEQngmM1GZg4jc=; b=ZSyEwwWkzeYr
- ciXUA8MJrAoSIFRCwbqGVE9a/25h+JPRZPLQ+ADVW9nMktvi70e2pFva1ZWtmK+aXjOrstXWTAICc
- n3r/D9FuOGayRr9FafsbqFzw1g1EqHgMcBuvONYDzUxd5jZIm+n4uKI1plXOpYQFoI0pAzZtmgOnE
- 6KAMQ=;
+ List-Archive; bh=ljHBBcXn0yOXcfNaI4omwuko81HgbCKJ7rDg1PwuE4s=; b=NGKVfE4OpCaE
+ mlV5gsTrUfcF3nHlEYssk2XsLOYfuwYYpRVfQcRRLf8Z2acpxS9njkv7nscC8q9fzvWVnsh0GcKvf
+ 6W7nl0/iYthZNl0rjnFExMvYgY2rna40BZAmKWrx+0WmBnuy52+wVuwZinqETV89S3x6j1BXiJayX
+ zqgvc=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1i5vie-0005Ge-5O; Thu, 05 Sep 2019 17:38:52 +0000
+ id 1i5vie-0005Go-SW; Thu, 05 Sep 2019 17:38:52 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 3861B2742D07; Thu,  5 Sep 2019 18:38:51 +0100 (BST)
+ id 3FF342742D07; Thu,  5 Sep 2019 18:38:52 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20190905064400.24800-1-yuehaibing@huawei.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20190905120120.31752-5-jbrunet@baylibre.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190905173851.3861B2742D07@ypsilon.sirena.org.uk>
-Date: Thu,  5 Sep 2019 18:38:51 +0100 (BST)
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- daniel.baluta@nxp.com, s.hauer@pengutronix.de, tiwai@suse.com,
- yuehaibing@huawei.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>,
- linux-imx@nxp.com, kernel@pengutronix.de, shawnguo@kernel.org,
- festevam@gmail.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: SOF: imx8: Fix COMPILE_TEST error" to
-	the asoc tree
+Message-Id: <20190905173852.3FF342742D07@ypsilon.sirena.org.uk>
+Date: Thu,  5 Sep 2019 18:38:52 +0100 (BST)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-amlogic@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: meson: axg-toddr: expose all 8 inputs"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: imx8: Fix COMPILE_TEST error
+   ASoC: meson: axg-toddr: expose all 8 inputs
 
 has been applied to the asoc tree at
 
@@ -126,47 +124,69 @@ to this mail.
 Thanks,
 Mark
 
-From f4df4e4042b045c6ddbaff878a17ae169fe68ba6 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 5 Sep 2019 14:44:00 +0800
-Subject: [PATCH] ASoC: SOF: imx8: Fix COMPILE_TEST error
+From 6beced211c22dd8c3e546c956512fddd8e09884f Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 5 Sep 2019 14:01:16 +0200
+Subject: [PATCH] ASoC: meson: axg-toddr: expose all 8 inputs
 
-When do compile test, if SND_SOC_SOF_OF is not set, we get:
+The TODDR component, as it, has a maximum of 8 input. Depending on
+the SoC, these may not all be connected or some input components may
+not be supported
 
-sound/soc/sof/imx/imx8.o: In function `imx8_dsp_handle_request':
-imx8.c:(.text+0xb0): undefined reference to `snd_sof_ipc_msgs_rx'
-sound/soc/sof/imx/imx8.o: In function `imx8_ipc_msg_data':
-imx8.c:(.text+0xf4): undefined reference to `sof_mailbox_read'
-sound/soc/sof/imx/imx8.o: In function `imx8_dsp_handle_reply':
-imx8.c:(.text+0x160): undefined reference to `sof_mailbox_read'
+Instead of decribing only the connected inputs, describe them all
+and let ASoC routing do the rest.
 
-Make SND_SOC_SOF_IMX_TOPLEVEL always depends on SND_SOC_SOF_OF
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190905064400.24800-1-yuehaibing@huawei.com
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20190905120120.31752-5-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/imx/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/meson/axg-toddr.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
-index fd73d8402dbf..5acae75f5750 100644
---- a/sound/soc/sof/imx/Kconfig
-+++ b/sound/soc/sof/imx/Kconfig
-@@ -2,7 +2,8 @@
+diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
+index 4f63e434fad4..2e9a2e5862ce 100644
+--- a/sound/soc/meson/axg-toddr.c
++++ b/sound/soc/meson/axg-toddr.c
+@@ -142,16 +142,11 @@ static struct snd_soc_dai_driver axg_toddr_dai_drv = {
+ };
  
- config SND_SOC_SOF_IMX_TOPLEVEL
- 	bool "SOF support for NXP i.MX audio DSPs"
--	depends on ARM64 && SND_SOC_SOF_OF || COMPILE_TEST
-+	depends on ARM64|| COMPILE_TEST
-+	depends on SND_SOC_SOF_OF
- 	help
-           This adds support for Sound Open Firmware for NXP i.MX platforms.
-           Say Y if you have such a device.
+ static const char * const axg_toddr_sel_texts[] = {
+-	"IN 0", "IN 1", "IN 2", "IN 3", "IN 4", "IN 6"
++	"IN 0", "IN 1", "IN 2", "IN 3", "IN 4", "IN 5", "IN 6", "IN 7"
+ };
+ 
+-static const unsigned int axg_toddr_sel_values[] = {
+-	0, 1, 2, 3, 4, 6
+-};
+-
+-static SOC_VALUE_ENUM_SINGLE_DECL(axg_toddr_sel_enum, FIFO_CTRL0,
+-				  CTRL0_SEL_SHIFT, CTRL0_SEL_MASK,
+-				  axg_toddr_sel_texts, axg_toddr_sel_values);
++static SOC_ENUM_SINGLE_DECL(axg_toddr_sel_enum, FIFO_CTRL0, CTRL0_SEL_SHIFT,
++			    axg_toddr_sel_texts);
+ 
+ static const struct snd_kcontrol_new axg_toddr_in_mux =
+ 	SOC_DAPM_ENUM("Input Source", axg_toddr_sel_enum);
+@@ -163,7 +158,9 @@ static const struct snd_soc_dapm_widget axg_toddr_dapm_widgets[] = {
+ 	SND_SOC_DAPM_AIF_IN("IN 2", NULL, 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("IN 3", NULL, 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("IN 4", NULL, 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("IN 5", NULL, 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("IN 6", NULL, 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("IN 7", NULL, 0, SND_SOC_NOPM, 0, 0),
+ };
+ 
+ static const struct snd_soc_dapm_route axg_toddr_dapm_routes[] = {
+@@ -173,7 +170,9 @@ static const struct snd_soc_dapm_route axg_toddr_dapm_routes[] = {
+ 	{ "SRC SEL", "IN 2", "IN 2" },
+ 	{ "SRC SEL", "IN 3", "IN 3" },
+ 	{ "SRC SEL", "IN 4", "IN 4" },
++	{ "SRC SEL", "IN 5", "IN 5" },
+ 	{ "SRC SEL", "IN 6", "IN 6" },
++	{ "SRC SEL", "IN 7", "IN 7" },
+ };
+ 
+ static const struct snd_soc_component_driver axg_toddr_component_drv = {
 -- 
 2.20.1
 
