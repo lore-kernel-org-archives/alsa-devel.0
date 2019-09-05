@@ -2,64 +2,62 @@ Return-Path: <SRS0=PVpb=XA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8C46C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9AF4C43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:49:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2DBA20825
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:18:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59134207E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 15:49:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u2r0GBR0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2DBA20825
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Z+VOeqig"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59134207E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6924A1658;
-	Thu,  5 Sep 2019 17:17:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6924A1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E0F3165D;
+	Thu,  5 Sep 2019 17:48:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E0F3165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567696686;
-	bh=jBLlpUsbItuIZMxbgKQIo2ZZDbtPWv+aYY+Iij3oC7I=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=u2r0GBR0tIrtieAjcekJN3DmVkqasoBeTX0qagB1R6uhUr7r5Yf/AiRCyTEEjlMnJ
-	 FAPcsvuGRWnNHG9rHoMGd8xP2ik4RaWmc9r6Kc2VGzXP59+7bPKhq2YOdcBMOZ1RBF
-	 VoFM+2gdoFymv0RUJb60oz/DFK/71umzw09VGWCs=
+	s=default; t=1567698567;
+	bh=FjNHm/MEIaMNPJnhFAvwVWoEcBm0Ok1lutVdHka8834=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Z+VOeqigJpW+Z61amO7VUaCXJTb4CeAF26R5kuosoNDmJcMYWw38egvu+2pk5ywUc
+	 4SwciKrQojiBLdRbZaLF4Jt93Irngt1f1LX+vrW8599xRHVWH/GCdLKO7q+GnCk38J
+	 Rh/b9FkvOlQHXI0/hrolCK5eK6itkLzFbjWYiJsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7753F803D1;
-	Thu,  5 Sep 2019 17:17:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0608F803D1;
+	Thu,  5 Sep 2019 17:48:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF46BF80448; Thu,  5 Sep 2019 17:17:13 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B06F6F80448; Thu,  5 Sep 2019 17:48:34 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E046EF802DF
- for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 17:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E046EF802DF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B14BAAD1A;
- Thu,  5 Sep 2019 15:17:09 +0000 (UTC)
-Date: Thu, 05 Sep 2019 17:17:09 +0200
-Message-ID: <s5h5zm6pybu.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-In-Reply-To: <CAGvk5Pohb9cxL=Mu11RPVD66NdiZkG+vO9TEtqBWe1tnBn6qyQ@mail.gmail.com>
-References: <CAGvk5Pohb9cxL=Mu11RPVD66NdiZkG+vO9TEtqBWe1tnBn6qyQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Alsa conformance test - a new test for ALSA drivers
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3EB3F80227
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 17:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3EB3F80227
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.76) (envelope-from <colin.king@canonical.com>)
+ id 1i5tzm-0001bB-Ea; Thu, 05 Sep 2019 15:48:26 +0000
+From: Colin King <colin.king@canonical.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org
+Date: Thu,  5 Sep 2019 16:48:26 +0100
+Message-Id: <20190905154826.5916-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ALSA: hda/hdmi: remove redundant assignment to
+	variable pcm_idx
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,39 +75,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 04 Sep 2019 06:29:30 +0200,
-Yu-Hsuan Hsu wrote:
-> 
-> Hi all,
-> 
-> I have created an new tool "Alsa conformance test"(
-> https://chromium.googlesource.com/chromiumos/platform/audiotest/+/master/alsa_conformance_test.md),
-> which is used for verifying ALSA drivers. Here are some main functions it
-> can measure:
-> 1. Correctness of hw_params
-> 2. Stability of rate
-> 3. Stability of step
-> 4. Runtime of each ALSA API
-> 5. Underrun and Overrun
-> 
-> I recommend to use the script "alsa_conformance_test.py" inside. Just give
-> it a device and then it will test the below functions automatically.
-> 1. To make sure whether all the parameters provided by an ALSA driver can
-> be used.
-> 2. To make sure whether the measured rate is the same as the expected rate.
-> 
-> We have used this tool to find out many issues in ChromeOS. I hope it can
-> help development in Linux too. If you have any problems or want more
-> features, please create a bug in crbug.com and assign to me (
-> yuhsuan@chromium.org). Thanks!
+From: Colin Ian King <colin.king@canonical.com>
 
-Great, it's something I wanted to see for long time.
-Let us know if you'd like to put this to ALSA upstream.
+Variable pcm_idx is being initialized with a value that is never read
+and is being re-assigned immediately afterwards. The assignment is
+redundant and hence can be removed.
 
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/pci/hda/patch_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 83b8b9d27711..bca5de78e9ad 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1440,7 +1440,7 @@ static bool update_eld(struct hda_codec *codec,
+ 	struct hdmi_spec *spec = codec->spec;
+ 	bool old_eld_valid = pin_eld->eld_valid;
+ 	bool eld_changed;
+-	int pcm_idx = -1;
++	int pcm_idx;
+ 
+ 	/* for monitor disconnection, save pcm_idx firstly */
+ 	pcm_idx = per_pin->pcm_idx;
+-- 
+2.20.1
 
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
