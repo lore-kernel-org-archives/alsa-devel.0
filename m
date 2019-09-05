@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12C01C3A5A5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 05:36:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B01E8C3A5A5
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 05:36:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E3732145D
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 05:35:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 380BB208E4
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 05:36:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a00V45YU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E3732145D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZpncUJ4t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 380BB208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF69167E;
-	Thu,  5 Sep 2019 07:35:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF69167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD301679;
+	Thu,  5 Sep 2019 07:35:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD301679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567661757;
+	s=default; t=1567661786;
 	bh=xlNZ4Ve207GtLexP/tvtWx7LiGA/91+O87Rnj8g1px4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a00V45YUUdK+lVLb7fVSI9PKrXWYk/0pVYm1EEdEYwHKq4NCmEXzA412tSB7OhrZ0
-	 kayDzkyd+nfRZqxLWh0zG/YwHakAHGF3+J3oNWxV6GZBhoW5umoOttQtr617h6k4SG
-	 Nu0s40gvKt8+4S7P0KmSgpZhLwIX5f/Jeh+Y5GUI=
+	b=ZpncUJ4tSjMGb2ye3feqpw2/2O0wqRLfPeQ7EaY2PwCo4Hdz/Fm83Eqq7M2jjIugT
+	 O3NAShsNmKWwmVLL1hpf/WXC2iXvlnwqtQg7CbdQyGqV2v/usXn0nUDSnTXD5WYO93
+	 GBdx7NMwj2vMZptRnaGsk8kRxFyRBJn0nFvne6Bs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8668BF805F9;
-	Thu,  5 Sep 2019 07:33:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C8F4F805FF;
+	Thu,  5 Sep 2019 07:33:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50F14F805F5; Thu,  5 Sep 2019 07:33:41 +0200 (CEST)
+ id 99EB7F805F6; Thu,  5 Sep 2019 07:33:42 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3663F80448;
- Thu,  5 Sep 2019 07:33:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3663F80448
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BD6EF80529;
+ Thu,  5 Sep 2019 07:33:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BD6EF80529
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Sep 2019 22:33:30 -0700
+ 04 Sep 2019 22:33:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,469,1559545200"; d="scan'208";a="212657650"
+X-IronPort-AV: E=Sophos;i="5.64,469,1559545200"; d="scan'208";a="212657668"
 Received: from test-hp-elitedesk-800-g1-twr.igk.intel.com ([10.237.149.38])
- by fmsmga002.fm.intel.com with ESMTP; 04 Sep 2019 22:33:28 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 04 Sep 2019 22:33:30 -0700
 From: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Thu,  5 Sep 2019 07:33:01 +0200
-Message-Id: <20190905053302.9262-3-pawel.harlozinski@linux.intel.com>
+Date: Thu,  5 Sep 2019 07:33:02 +0200
+Message-Id: <20190905053302.9262-4-pawel.harlozinski@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190905053302.9262-1-pawel.harlozinski@linux.intel.com>
 References: <20190905053302.9262-1-pawel.harlozinski@linux.intel.com>
