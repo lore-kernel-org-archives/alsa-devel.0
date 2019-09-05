@@ -2,68 +2,69 @@ Return-Path: <SRS0=PVpb=XA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6CD1C3A5A5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 05:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EBAEC3A5A5
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 06:45:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D80EC2173B
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 05:49:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8FC0F20693
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2019 06:45:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h/m8M0Io"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D80EC2173B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q8etb7+8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FC0F20693
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CFB61679;
-	Thu,  5 Sep 2019 07:48:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CFB61679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BDAA1658;
+	Thu,  5 Sep 2019 08:44:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BDAA1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567662557;
-	bh=jO0kSsPQd34lIVdRR5ZhIOrYeFyuz+t43Qg8pdAOBQI=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=h/m8M0IoPwbJ+G938bC99VXPRv4uoo5/2iPfwHE7zyS9iACqlMm37KKdHrT9xVrMq
-	 pYX8QsvOoz1LN64HQqmpR/m/gPCb2dm28xhhofeZTtZQ4Dznz8UI+tKc20fiI3B/kq
-	 lP/6ziJ/ZmkGdehVebRSiDMyfuRwJejx+pU0Oyss=
+	s=default; t=1567665923;
+	bh=U0RbvbCv3fK+4wNo57AkDLW1lJniDDpdMvfumxZmCIU=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Q8etb7+8HafU4kCcqImK0F1Zd5hoPgGxon2AmJot+pmkqRjbu7UCNWLdzMHs80oGB
+	 Mdih1huS6EsNp7wTESQ4FBuxiQnScZaMaAPil3QV5rIHxQR/zbMeKedwetRBAure44
+	 dVtNLwjKCT8jJYMaZaEbxrhxvZb9oGcq2GnWp+80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CDDEF80539;
-	Thu,  5 Sep 2019 07:48:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3510F802DF;
+	Thu,  5 Sep 2019 08:44:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C600F805A1; Thu,  5 Sep 2019 07:48:08 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 93C76F80448; Thu,  5 Sep 2019 08:44:27 +0200 (CEST)
+Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AC42F804A9;
- Thu,  5 Sep 2019 07:48:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AC42F804A9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 8742EAFE2;
- Thu,  5 Sep 2019 05:48:02 +0000 (UTC)
-Date: Thu, 05 Sep 2019 07:48:02 +0200
-Message-ID: <s5ha7bjgup9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-In-Reply-To: <20190905053302.9262-2-pawel.harlozinski@linux.intel.com>
-References: <20190905053302.9262-1-pawel.harlozinski@linux.intel.com>
- <20190905053302.9262-2-pawel.harlozinski@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: cezary.rojewski@intel.com, patch@alsa-project.org,
- alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- lgirdwood@gmail.com, broonie@kernel.org
-Subject: Re: [alsa-devel] [RFC PATCH 2/3] ALSA:core: Add rate 24kHz
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0137F802DF
+ for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2019 08:44:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0137F802DF
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id 105E6ECC49D523990C50;
+ Thu,  5 Sep 2019 14:44:19 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Thu, 5 Sep 2019
+ 14:44:11 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+ <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
+ <daniel.baluta@nxp.com>, <yuehaibing@huawei.com>,
+ <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 5 Sep 2019 14:44:00 +0800
+Message-ID: <20190905064400.24800-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH -next] ASoC: SOF: imx8: Fix COMPILE_TEST error
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,60 +82,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 05 Sep 2019 07:33:00 +0200,
-Pawel Harlozinski wrote:
-> 
-> Adds SNDRV_PCM_RATE_24000 at the bottom to keep backward compability
-> with alsa library.
-> 
-> Signed-off-by: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
+When do compile test, if SND_SOC_SOF_OF is not set, we get:
 
-No.  Such a fancy rate has to be handled inside the driver locally
-instead of adding to the common rate.
+sound/soc/sof/imx/imx8.o: In function `imx8_dsp_handle_request':
+imx8.c:(.text+0xb0): undefined reference to `snd_sof_ipc_msgs_rx'
+sound/soc/sof/imx/imx8.o: In function `imx8_ipc_msg_data':
+imx8.c:(.text+0xf4): undefined reference to `sof_mailbox_read'
+sound/soc/sof/imx/imx8.o: In function `imx8_dsp_handle_reply':
+imx8.c:(.text+0x160): undefined reference to `sof_mailbox_read'
+
+Make SND_SOC_SOF_IMX_TOPLEVEL always depends on SND_SOC_SOF_OF
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/sof/imx/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index fd73d84..5acae75 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -2,7 +2,8 @@
+ 
+ config SND_SOC_SOF_IMX_TOPLEVEL
+ 	bool "SOF support for NXP i.MX audio DSPs"
+-	depends on ARM64 && SND_SOC_SOF_OF || COMPILE_TEST
++	depends on ARM64|| COMPILE_TEST
++	depends on SND_SOC_SOF_OF
+ 	help
+           This adds support for Sound Open Firmware for NXP i.MX platforms.
+           Say Y if you have such a device.
+-- 
+2.7.4
 
 
-Takashi
-
-> ---
->  include/sound/pcm.h     | 1 +
->  sound/core/pcm_native.c | 4 ++--
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> index bbe6eb1ff5d2..09d0a2a2dce8 100644
-> --- a/include/sound/pcm.h
-> +++ b/include/sound/pcm.h
-> @@ -119,6 +119,7 @@ struct snd_pcm_ops {
->  #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
->  #define SNDRV_PCM_RATE_352800		(1<<13)		/* 352800Hz */
->  #define SNDRV_PCM_RATE_384000		(1<<14)		/* 384000Hz */
-> +#define SNDRV_PCM_RATE_24000		(1<<15)		/* 24000Hz */
->  
->  #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
->  #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 11e653c8aa0e..f52f28e3edb1 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -2164,13 +2164,13 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
->  	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
->  }
->  
-> -#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
-> +#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12 ||  SNDRV_PCM_RATE_24000 != 1 << 15
->  #error "Change this table"
->  #endif
->  
->  static const unsigned int rates[] = {
->  	5512, 8000, 11025, 16000, 22050, 32000, 44100,
-> -	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000
-> +	48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000, 24000
->  };
->  
->  const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
-> -- 
-> 2.17.1
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
