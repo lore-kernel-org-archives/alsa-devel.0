@@ -2,70 +2,70 @@ Return-Path: <SRS0=qBPI=XB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EAE7C43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 14:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C27C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 14:33:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EA7A20693
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 14:32:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D28BE20693
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 14:33:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uODLEAnO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EA7A20693
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hp0Kmm6C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D28BE20693
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E22B1886;
-	Fri,  6 Sep 2019 16:32:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E22B1886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19D4615E4;
+	Fri,  6 Sep 2019 16:32:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19D4615E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567780377;
-	bh=zVxH5hqkAiBI0RFsOlWGzmZPihVEOXk78DAp99nA+yU=;
+	s=default; t=1567780421;
+	bh=Vx68e1x+ytVPcZX8GKDNngR0Fu6QdE5J3ptGQtbdOG4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uODLEAnOO2BzJLw+wyvpG/5O56znPlQxqua/ZcoU/Gk1Y37cgHwkTUmpUJa8GoEdQ
-	 Ym/RGTg6xnitmIr+QRUFMg4N9hJ3MZYY9Bvh1MJaNRruSnHqW+PUj/JT/YaYBz5hBT
-	 GKkHEgTukkatplpQOzsbRPxkQQR8sSqci37YJSMs=
+	b=Hp0Kmm6CZK4P5PXY/5aA5nT9MHZ5qGDIfRqEKEx4uzCIxryR1pi7wPRIychCCtho0
+	 gCuS4Bo3LlcemLG+qiGpNMYXxWVoBTTL4XgKaRJin/VMjDDmin6kCaXmkKIIxXiv3D
+	 EjmUy5oYu/LLzNEYxAqM2DGifqIuTs+7vDRIEs1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEF5EF8060F;
-	Fri,  6 Sep 2019 16:29:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5CA7F80634;
+	Fri,  6 Sep 2019 16:29:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E29EF805FF; Fri,  6 Sep 2019 16:29:40 +0200 (CEST)
+ id 1BD11F8060F; Fri,  6 Sep 2019 16:29:42 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32240F805F6
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 16:29:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32240F805F6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D159F805FB
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 16:29:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D159F805FB
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Sep 2019 07:29:34 -0700
+ 06 Sep 2019 07:29:37 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,473,1559545200"; d="scan'208";a="384228437"
+X-IronPort-AV: E=Sophos;i="5.64,473,1559545200"; d="scan'208";a="384228446"
 Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by fmsmga006.fm.intel.com with ESMTP; 06 Sep 2019 07:29:33 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 06 Sep 2019 07:29:36 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.de
-Date: Fri,  6 Sep 2019 17:29:06 +0300
-Message-Id: <20190906142909.770-4-kai.vehmanen@linux.intel.com>
+Date: Fri,  6 Sep 2019 17:29:07 +0300
+Message-Id: <20190906142909.770-5-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190906142909.770-1-kai.vehmanen@linux.intel.com>
 References: <20190906142909.770-1-kai.vehmanen@linux.intel.com>
 Cc: libin.yang@intel.com, pierre-louis.bossart@linux.intel.com,
  kai.vehmanen@linux.intel.com
-Subject: [alsa-devel] [RFC PATCH v2 3/6] ASoC: hdac_hda: add support for
-	HDMI/DP as a HDA codec
+Subject: [alsa-devel] [RFC PATCH v2 4/6] ALSA: hda/hdmi - implement
+	mst_no_extra_pcms flag
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,211 +84,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Handle all HDA codecs using same logic, including HDMI/DP.
-
-Call to snd_hda_codec_build_controls() is delayed for HDMI/DP HDA
-devices. This is needed to discover the PCM device numbers as
-defined in topology.
+When mst_no_exxtra_pcms flag is set, the codec should not
+use backup PCMs to handle DP-MST scenarios. Instead a simple
+1:1 mapping is assumed between PCMs and converters.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/codecs/hdac_hda.c | 95 ++++++++++++++++++++++++++++++++-----
- sound/soc/codecs/hdac_hda.h | 12 ++++-
- 2 files changed, 94 insertions(+), 13 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 7d4940256914..1c950e089e39 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -16,11 +16,8 @@
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_codec.h>
- #include <sound/hda_register.h>
--#include "hdac_hda.h"
- 
--#define HDAC_ANALOG_DAI_ID		0
--#define HDAC_DIGITAL_DAI_ID		1
--#define HDAC_ALT_ANALOG_DAI_ID		2
-+#include "hdac_hda.h"
- 
- #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
- 			SNDRV_PCM_FMTBIT_U8 | \
-@@ -121,7 +118,46 @@ static struct snd_soc_dai_driver hdac_hda_dais[] = {
- 		.formats = STUB_FORMATS,
- 		.sig_bits = 24,
- 	},
--}
-+},
-+{
-+	.id = HDAC_HDMI_0_DAI_ID,
-+	.name = "intel-hdmi-hifi1",
-+	.ops = &hdac_hda_dai_ops,
-+	.playback = {
-+		.stream_name    = "HDMI 1 Playback",
-+		.channels_min   = 1,
-+		.channels_max   = 16,
-+		.rates          = SNDRV_PCM_RATE_8000_192000,
-+		.formats        = STUB_FORMATS,
-+		.sig_bits = 24,
-+	},
-+},
-+{
-+	.id = HDAC_HDMI_1_DAI_ID,
-+	.name = "intel-hdmi-hifi2",
-+	.ops = &hdac_hda_dai_ops,
-+	.playback = {
-+		.stream_name    = "HDMI 2 Playback",
-+		.channels_min   = 1,
-+		.channels_max   = 16,
-+		.rates          = SNDRV_PCM_RATE_8000_192000,
-+		.formats        = STUB_FORMATS,
-+		.sig_bits = 24,
-+	},
-+},
-+{
-+	.id = HDAC_HDMI_2_DAI_ID,
-+	.name = "intel-hdmi-hifi3",
-+	.ops = &hdac_hda_dai_ops,
-+	.playback = {
-+		.stream_name    = "HDMI 3 Playback",
-+		.channels_min   = 1,
-+		.channels_max   = 16,
-+		.rates          = SNDRV_PCM_RATE_8000_192000,
-+		.formats        = STUB_FORMATS,
-+		.sig_bits = 24,
-+	},
-+},
- 
- };
- 
-@@ -135,10 +171,11 @@ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 
- 	hda_pvt = snd_soc_component_get_drvdata(component);
- 	pcm = &hda_pvt->pcm[dai->id];
-+
- 	if (tx_mask)
--		pcm[dai->id].stream_tag[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
-+		pcm->stream_tag[SNDRV_PCM_STREAM_PLAYBACK] = tx_mask;
- 	else
--		pcm[dai->id].stream_tag[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
-+		pcm->stream_tag[SNDRV_PCM_STREAM_CAPTURE] = rx_mask;
- 
- 	return 0;
- }
-@@ -278,6 +315,12 @@ static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
- 	struct hda_pcm *cpcm;
- 	const char *pcm_name;
- 
-+	/*
-+	 * map DAI ID to the closest matching PCM name, using the naming
-+	 * scheme used by hda-codec snd_hda_gen_build_pcms() and for
-+	 * HDMI in hda_codec patch_hdmi.c)
-+	 */
-+
- 	switch (dai->id) {
- 	case HDAC_ANALOG_DAI_ID:
- 		pcm_name = "Analog";
-@@ -288,13 +331,22 @@ static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
- 	case HDAC_ALT_ANALOG_DAI_ID:
- 		pcm_name = "Alt Analog";
- 		break;
-+	case HDAC_HDMI_0_DAI_ID:
-+		pcm_name = "HDMI 0";
-+		break;
-+	case HDAC_HDMI_1_DAI_ID:
-+		pcm_name = "HDMI 1";
-+		break;
-+	case HDAC_HDMI_2_DAI_ID:
-+		pcm_name = "HDMI 2";
-+		break;
- 	default:
- 		dev_err(&hcodec->core.dev, "invalid dai id %d\n", dai->id);
- 		return NULL;
- 	}
- 
- 	list_for_each_entry(cpcm, &hcodec->pcm_list_head, list) {
--		if (strpbrk(cpcm->name, pcm_name))
-+		if (strstr(cpcm->name, pcm_name))
- 			return cpcm;
- 	}
- 
-@@ -302,6 +354,18 @@ static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
- 	return NULL;
- }
- 
-+static bool is_hdmi_codec(struct hda_codec *hcodec)
-+{
-+	struct hda_pcm *cpcm;
-+
-+	list_for_each_entry(cpcm, &hcodec->pcm_list_head, list) {
-+		if (cpcm->pcm_type == HDA_PCM_TYPE_HDMI)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static int hdac_hda_codec_probe(struct snd_soc_component *component)
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index bca5de78e9ad..59aaee4a40fd 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2072,15 +2072,24 @@ static bool is_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
+ static int generic_hdmi_build_pcms(struct hda_codec *codec)
  {
- 	struct hdac_hda_priv *hda_pvt =
-@@ -366,16 +430,23 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
- 		dev_dbg(&hdev->dev, "no patch file found\n");
- 	}
+ 	struct hdmi_spec *spec = codec->spec;
+-	int idx;
++	int idx, pcm_num;
  
-+	/* configure codec for 1:1 PCM:DAI mapping */
-+	hcodec->mst_no_extra_pcms = 1;
+ 	/*
+ 	 * for non-mst mode, pcm number is the same as before
+-	 * for DP MST mode, pcm number is (nid number + dev_num - 1)
+-	 *  dev_num is the device entry number in a pin
+-	 *
++	 * for DP MST mode without extra PCM, pcm number is same
++	 * for DP MST mode with extra PCMs, pcm number is
++	 *  (nid number + dev_num - 1)
++	 * dev_num is the device entry number in a pin
+ 	 */
+-	for (idx = 0; idx < spec->num_nids + spec->dev_num - 1; idx++) {
 +
- 	ret = snd_hda_codec_parse_pcms(hcodec);
- 	if (ret < 0) {
- 		dev_err(&hdev->dev, "unable to map pcms to dai %d\n", ret);
- 		goto error;
- 	}
- 
--	ret = snd_hda_codec_build_controls(hcodec);
--	if (ret < 0) {
--		dev_err(&hdev->dev, "unable to create controls %d\n", ret);
--		goto error;
-+	/* HDMI controls need to be created in machine drivers */
-+	if (!is_hdmi_codec(hcodec)) {
-+		ret = snd_hda_codec_build_controls(hcodec);
-+		if (ret < 0) {
-+			dev_err(&hdev->dev, "unable to create controls %d\n",
-+				ret);
-+			goto error;
-+		}
- 	}
- 
- 	hcodec->core.lazy_cache = true;
-diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-index 6b1bd4f428e7..5d0979f6f215 100644
---- a/sound/soc/codecs/hdac_hda.h
-+++ b/sound/soc/codecs/hdac_hda.h
-@@ -6,6 +6,16 @@
- #ifndef __HDAC_HDA_H__
- #define __HDAC_HDA_H__
- 
-+enum {
-+	HDAC_ANALOG_DAI_ID = 0,
-+	HDAC_DIGITAL_DAI_ID,
-+	HDAC_ALT_ANALOG_DAI_ID,
-+	HDAC_HDMI_0_DAI_ID,
-+	HDAC_HDMI_1_DAI_ID,
-+	HDAC_HDMI_2_DAI_ID,
-+	HDAC_LAST_DAI_ID = HDAC_HDMI_2_DAI_ID,
-+};
++	if (codec->mst_no_extra_pcms)
++		pcm_num = spec->num_nids;
++	else
++		pcm_num = spec->num_nids + spec->dev_num - 1;
 +
- struct hdac_hda_pcm {
- 	int stream_tag[2];
- 	unsigned int format_val[2];
-@@ -13,7 +23,7 @@ struct hdac_hda_pcm {
++	codec_dbg(codec, "hdmi: pcm_num set to %d\n", pcm_num);
++
++	for (idx = 0; idx < pcm_num; idx++) {
+ 		struct hda_pcm *info;
+ 		struct hda_pcm_stream *pstr;
  
- struct hdac_hda_priv {
- 	struct hda_codec codec;
--	struct hdac_hda_pcm pcm[2];
-+	struct hdac_hda_pcm pcm[HDAC_LAST_DAI_ID];
- };
- 
- #define hdac_to_hda_priv(_hdac) \
 -- 
 2.17.1
 
