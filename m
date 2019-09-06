@@ -2,102 +2,67 @@ Return-Path: <SRS0=qBPI=XB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B30C00306
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 01:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B009C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 01:28:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2E592082C
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 01:25:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 068AC2082E
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 01:28:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NxQ8j2my";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MseIdCPT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2E592082C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cboSRqOe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 068AC2082E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A1DB165D;
-	Fri,  6 Sep 2019 03:24:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A1DB165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB68A1669;
+	Fri,  6 Sep 2019 03:27:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB68A1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567733134;
-	bh=sQOO2dkj/+lW3tKtcoYx7T7Uk1yfY0xu2DO5D8Ki/3U=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NxQ8j2my+w8TbfF0RkMvMcfQ+RfYWNAURK26h2h+eww4Pn9Vw6HuBz/hRk0BWgYvS
-	 q/teVNfoo6dpY0H0krcm7S1tOLz4Cxp474YI9lEvOc2fQ9UJXXtcxQEexUwXi3mPO8
-	 eA1UIqyvW5+1QA5ToxqEppThu+CXYCYIZpGmeo0s=
+	s=default; t=1567733327;
+	bh=uuHfqt9ctryYtgac62udfHECm4T+Zf51iZ+PYeSjJ/4=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cboSRqOe4lpRHg4O9pnSun+UeiY/y7pNtz0SyiCxUX558XXM+QD8cZpAs3OJHYbyd
+	 m2IU4m/1O9Cd3jdEYJx7sRHb6js94Zrt/WNbu2JXZwDuVWwpMRue5VTy4AZwpQhzO8
+	 kst7Ae/BgiuyOejPhi9bL752dEg3EqXcRNKeTfmE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7E18F803D1;
-	Fri,  6 Sep 2019 03:24:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44EC5F803D1;
+	Fri,  6 Sep 2019 03:27:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 628D4F80448; Fri,  6 Sep 2019 03:24:41 +0200 (CEST)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E31AAF80448; Fri,  6 Sep 2019 03:27:54 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD76FF80227
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 03:24:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD76FF80227
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="MseIdCPT"
-Received: by mail-pf1-x444.google.com with SMTP id y72so3134036pfb.12
- for <alsa-devel@alsa-project.org>; Thu, 05 Sep 2019 18:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=DVF2xhHbHg2j29LblU1CgBEDCkpvcBZ4AEHewXas5gw=;
- b=MseIdCPTJrTQJXOW2UzidBAhUmOeTrXnBtOR+3fZX0Z7OI2kykLR9y//15fPmkKV9a
- jR/BczxeqD7rUjgQQtjkNUcxys3QOUJc7m8djl78qIGtAVV9LZ6bm9aWXdUCqLgInU6o
- i9r57ZkOn4/OhHPgZ5D3aGFe0fmySrPPszYeYdqfpbD/SDAyfBbzX/yXBFHXcpGU0IKo
- GfLNTt5RHSp9N+2sNsG4vC44jSkL6ecF30cXzAYX5XPTNB2vJC2ShzAre40QKDu+lAKf
- fvN95tMY86KO3LdrIPbdYE/dMaKSziOm04axHBWu3fD3UGgRb4ouDRgQ4KIgNpgnrbRg
- H4pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=DVF2xhHbHg2j29LblU1CgBEDCkpvcBZ4AEHewXas5gw=;
- b=RcPC//5sV2e5Nx7o+96gAdTgE/L+NfDAZoc24whYWo528CN7HzEStTu8z1p7mJIREG
- zaGUqmNZmA18eUbWRrHduAe9oD5QqrgU4T9bEbkYUtF0T6kDuFSHYaUDrWT8lioVqg6Y
- Zmp0T294WnCGRxk3rwj5UoI3BdXEXPFjeg67ZiWbVzGPGGYxD87BkvJ/QJeyqBnWgvXD
- kriFAeIyZc++XwqbVUqeKXBUXNN2fZQ40lEUqJ1LRvqaoBuTHkOwn6PryWcx8TYmZGW7
- dUNwuaDmRGi3mSbRvi0/1ed/powqJ7BXaD07RlXmC3ocLplWYEzWG5sY+LLCOAGlgyT+
- DhJw==
-X-Gm-Message-State: APjAAAUb7JZYRVKljtKP/EqPnxEXv3qB/dwUNrOUk5oB/SxB2JgJa/z+
- 6O1PT26CqO3NdUzJKwqHM0I=
-X-Google-Smtp-Source: APXvYqwqglByW+NsVpmNz31XHRSPZh2xUQuRAXEuUO67Oz/RsBaNjU+V97Dds8Akz3dZzec4uAhMGg==
-X-Received: by 2002:a62:26c4:: with SMTP id m187mr7721569pfm.49.1567733075155; 
- Thu, 05 Sep 2019 18:24:35 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com.
- [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id r18sm3222688pfc.3.2019.09.05.18.24.34
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Thu, 05 Sep 2019 18:24:34 -0700 (PDT)
-Date: Thu, 5 Sep 2019 18:24:39 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Message-ID: <20190906012438.GA17926@Asurada-Nvidia.nvidia.com>
-References: <20190830200900.19668-1-daniel.baluta@nxp.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190830200900.19668-1-daniel.baluta@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- shengjiu.wang@nxp.com, linux-kernel@vger.kernel.org, broonie@kernel.org,
- NXP Linux Team <linux-imx@nxp.com>, Mihai Serban <mihai.serban@nxp.com>,
- festevam@gmail.com, mihai.serban@gmail.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_sai: Fix noise when using EDMA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C6C4F80227
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 03:27:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C6C4F80227
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 05 Sep 2019 18:27:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,471,1559545200"; d="scan'208";a="383094043"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+ by fmsmga005.fm.intel.com with ESMTP; 05 Sep 2019 18:27:44 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Date: Fri,  6 Sep 2019 09:24:18 +0800
+Message-Id: <1567733058-9561-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: cezary.rojewski@intel.com, kuninori.morimoto.gx@renesas.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, yang.jie@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ broonie@kernel.org, tglx@linutronix.de, brent.lu@intel.com
+Subject: [alsa-devel] [PATCH] ASoC: bdw-rt5677: channel constraint support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,64 +75,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Aug 30, 2019 at 11:09:00PM +0300, Daniel Baluta wrote:
-> From: Mihai Serban <mihai.serban@nxp.com>
-> 
-> EDMA requires the period size to be multiple of maxburst. Otherwise the
-> remaining bytes are not transferred and thus noise is produced.
-> 
-> We can handle this issue by adding a constraint on
-> SNDRV_PCM_HW_PARAM_PERIOD_SIZE to be multiple of tx/rx maxburst value.
-> 
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Mihai Serban <mihai.serban@nxp.com>
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/fsl/fsl_sai.c | 15 +++++++++++++++
->  sound/soc/fsl/fsl_sai.h |  1 +
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 728307acab90..fe126029f4e3 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -612,6 +612,16 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
->  			   FSL_SAI_CR3_TRCE_MASK,
->  			   FSL_SAI_CR3_TRCE);
->  
-> +	/*
-> +	 * some DMA controllers need period size to be a multiple of
-> +	 * tx/rx maxburst
-> +	 */
-> +	if (sai->soc_data->use_constraint_period_size)
-> +		snd_pcm_hw_constraint_step(substream->runtime, 0,
-> +					   SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-> +					   tx ? sai->dma_params_tx.maxburst :
-> +					   sai->dma_params_rx.maxburst);
+BDW boards using this machine driver supports only stereo capture and
+playback. Implement a constraint to enforce it.
 
-I feel that PERIOD_SIZE could be used for some other cases than
-being related to maxburst....
-  
->  static const struct of_device_id fsl_sai_ids[] = {
-> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-> index b89b0ca26053..3a3f6f8e5595 100644
-> --- a/sound/soc/fsl/fsl_sai.h
-> +++ b/sound/soc/fsl/fsl_sai.h
-> @@ -157,6 +157,7 @@
->  
->  struct fsl_sai_soc_data {
->  	bool use_imx_pcm;
-> +	bool use_constraint_period_size;
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/bdw-rt5677.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-....so maybe the soc specific flag here could be something like
-	bool use_edma;
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 4a4d335..a312b55 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -22,6 +22,8 @@
+ 
+ #include "../../codecs/rt5677.h"
+ 
++#define DUAL_CHANNEL 2
++
+ struct bdw_rt5677_priv {
+ 	struct gpio_desc *gpio_hp_en;
+ 	struct snd_soc_component *component;
+@@ -245,6 +247,36 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static int bdw_fe_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/*
++	 * On this platform for PCM device we support,
++	 * stereo
++	 */
++
++	runtime->hw.channels_max = DUAL_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++					   &constraints_channels);
++
++	return 0;
++}
++
++static const struct snd_soc_ops bdw_rt5677_fe_ops = {
++	.startup = bdw_fe_startup,
++};
++
+ /* broadwell digital audio interface glue - connects codec <--> CPU */
+ SND_SOC_DAILINK_DEF(dummy,
+ 	DAILINK_COMP_ARRAY(COMP_DUMMY()));
+@@ -273,6 +305,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+ 		},
+ 		.dpcm_capture = 1,
+ 		.dpcm_playback = 1,
++		.ops = &bdw_rt5677_fe_ops,
+ 		SND_SOC_DAILINK_REG(fe, dummy, platform),
+ 	},
+ 
+-- 
+2.7.4
 
-What do you think?
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
