@@ -2,76 +2,73 @@ Return-Path: <SRS0=qBPI=XB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10013C43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 15:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ACE1C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 15:34:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F11A20838
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 15:33:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 041F620838
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 15:34:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hlgp01hl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F11A20838
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ajeQl0Sx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 041F620838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6ACE142;
-	Fri,  6 Sep 2019 17:07:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ACE142
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34678826;
+	Fri,  6 Sep 2019 17:33:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34678826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567782509;
-	bh=EL+r4NLmSqKsKUO3Ve2b0/PwUQBuWGRc8iZwUFMrhXg=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1567784064;
+	bh=RkwWwsF19S+ZafF1XjpYE0UqvR2s5X1S3kaUY+sqDbY=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hlgp01hl5Bi94hAHSVMlMWsoaUlcg4HBXG98YFrjuxaBACIVLyhGmmrWklxmsRDjc
-	 uCFVbXq+4eSblHKhRkwut1iyan4CzcLxF45reUHLv6lbeHkAgLdbc9Y9cbHkfUn9gl
-	 gwRuJYu3TFs3wxuRcOzL5IBKcC81AEuq8XzV1eRQ=
+	b=ajeQl0SxGWcgJGeMqNCK81X+UtNU88Rxm2XMArDk8snBCGENaNVHtknzBeSJkggZB
+	 HPAHnQtkaGYdwXTgII3kSi9cIC7+nCarXi/89EKadk7ZzIunYlzzxwLc2IyPFFzVSy
+	 ecM+wS0YAjfsBmqBSGe0t0PZZvNnA/4sPOqXv6bE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3B5CF80390;
-	Fri,  6 Sep 2019 17:07:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8A56F80390;
+	Fri,  6 Sep 2019 17:33:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15CC2F80394; Fri,  6 Sep 2019 17:07:37 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 53C90F80394; Fri,  6 Sep 2019 17:33:32 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8E8FF80171
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 17:07:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8E8FF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01F1CF802DF
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 17:33:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01F1CF802DF
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Sep 2019 08:07:28 -0700
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 06 Sep 2019 08:33:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,473,1559545200"; d="scan'208";a="208251228"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga004.fm.intel.com with ESMTP; 06 Sep 2019 08:07:28 -0700
-Received: from ravisha1-mobl1.amr.corp.intel.com (unknown [10.255.36.89])
- by linux.intel.com (Postfix) with ESMTP id EA988580858;
- Fri,  6 Sep 2019 08:07:27 -0700 (PDT)
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, 
- tiwai@suse.de
+X-IronPort-AV: E=Sophos;i="5.64,473,1559545200"; d="scan'208";a="174309690"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by orsmga007.jf.intel.com with ESMTP; 06 Sep 2019 08:33:23 -0700
+Date: Fri, 6 Sep 2019 18:33:22 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <32939fda-9752-6f9e-2c7d-0a0cca2a6a08@linux.intel.com>
+Message-ID: <alpine.DEB.2.21.1909061829230.16459@zeliteleevi>
 References: <20190906142909.770-1-kai.vehmanen@linux.intel.com>
- <20190906142909.770-5-kai.vehmanen@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ca81f61d-3ba8-3310-b75f-dabee7e0d766@linux.intel.com>
-Date: Fri, 6 Sep 2019 10:07:23 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+ <20190906142909.770-3-kai.vehmanen@linux.intel.com>
+ <32939fda-9752-6f9e-2c7d-0a0cca2a6a08@linux.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-In-Reply-To: <20190906142909.770-5-kai.vehmanen@linux.intel.com>
-Content-Language: en-US
-Cc: libin.yang@intel.com
-Subject: Re: [alsa-devel] [RFC PATCH v2 4/6] ALSA: hda/hdmi - implement
- mst_no_extra_pcms flag
+Cc: tiwai@suse.de, libin.yang@intel.com, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH v2 2/6] ASoC: Intel:
+ skl-hda-dsp-generic: use snd-hda-codec-hdmi
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,60 +81,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 9/6/19 9:29 AM, Kai Vehmanen wrote:
-> When mst_no_exxtra_pcms flag is set, the codec should not
+Hey,
 
-typo: extra
+On Fri, 6 Sep 2019, Pierre-Louis Bossart wrote:
+> > +	if (!strncmp(card->name, "sof-skl_hda_card", 16)) {
+> > +		for_each_card_components(card, component) {
+> > +			modname = module_name(component->dev->driver->owner);
+> > +			if (!strncmp(component->name, "ehdaudio0D2", 11) &&
+> > +			    !strncmp(modname, "snd_hda_codec_hdmi", 18))
+> > +				use_common_codec = 1;
+> > +		}
+> > +	}
+> 
+> yuk. I am not a big fan of this...
+> 
+> It seems that we could pass information from the SOF side to the machine
+> driver using the mach_params argument. we already pass the codec_mask and
+> other fields, it wouldn't be too hard to reclaim a field or extend the
+> structure to pass the information.
 
-> use backup PCMs to handle DP-MST scenarios. Instead a simple
-> 1:1 mapping is assumed between PCMs and converters.
-> 
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> ---
->   sound/pci/hda/patch_hdmi.c | 19 ++++++++++++++-----
->   1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index bca5de78e9ad..59aaee4a40fd 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -2072,15 +2072,24 @@ static bool is_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
->   static int generic_hdmi_build_pcms(struct hda_codec *codec)
->   {
->   	struct hdmi_spec *spec = codec->spec;
-> -	int idx;
-> +	int idx, pcm_num;
->   
->   	/*
->   	 * for non-mst mode, pcm number is the same as before
-> -	 * for DP MST mode, pcm number is (nid number + dev_num - 1)
-> -	 *  dev_num is the device entry number in a pin
-> -	 *
-> +	 * for DP MST mode without extra PCM, pcm number is same
-> +	 * for DP MST mode with extra PCMs, pcm number is
-> +	 *  (nid number + dev_num - 1)
-> +	 * dev_num is the device entry number in a pin
->   	 */
-> -	for (idx = 0; idx < spec->num_nids + spec->dev_num - 1; idx++) {
-> +
-> +	if (codec->mst_no_extra_pcms)
-> +		pcm_num = spec->num_nids;
-> +	else
-> +		pcm_num = spec->num_nids + spec->dev_num - 1;
-> +
-> +	codec_dbg(codec, "hdmi: pcm_num set to %d\n", pcm_num);
-> +
-> +	for (idx = 0; idx < pcm_num; idx++) {
->   		struct hda_pcm *info;
->   		struct hda_pcm_stream *pstr;
->   
-> 
+it is ugly, no question about it. :) My reasoning for this was to contain 
+the ugliness within the machine drivers (especially these that are used 
+with both SOF and SST). New machine drivers with no legacy to maintain 
+could just skip it.
 
+If the general concept of compiling both codec drivers in, and selecting 
+at runtime, is acceptable, I'll check how this would look via mach_params.
+
+Br, Kai
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
