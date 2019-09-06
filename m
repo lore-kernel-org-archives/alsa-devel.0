@@ -2,75 +2,75 @@ Return-Path: <SRS0=qBPI=XB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5194CC43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 10:04:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C65C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 10:46:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C66ED20854
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 10:04:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 561AA20854
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 10:46:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g2/G+YLO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C66ED20854
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MvSVZUez";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="IDxctFLg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 561AA20854
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2D57828;
-	Fri,  6 Sep 2019 12:03:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D57828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A246828;
+	Fri,  6 Sep 2019 12:45:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A246828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567764245;
-	bh=KCxYEelQ0MulcaXlxNzE6e1YCJhjWNGJ1y+8s3JZGQs=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1567766773;
+	bh=HPPds1JPtC4Us/7WpqY+w3suMsc/lNJk9qgoTFXxsAs=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g2/G+YLOrUO+yJNKlo+kG0+nW1HSYmR+T0/xoK1x2UytQFCTr9o9seQajWEfl/WmI
-	 BtQCgbi1yVmeiub1xqA0zdjH+EX/WKGa0ZuIz1m/iJ7uLnELm0BfErtAKeg2Dm704e
-	 i7zbUJ6mIRNHDHgjfhxzq2SQS9zfeXnQDPAa18aQ=
+	b=MvSVZUezAcd3E+Q2BxfzOaMwhGN/FgNqnADnqKv1KqqAI7TRi/EpL8ckkzvDVwtJp
+	 +IrONbNMl6LHrOObIPwjvSOEkbshBAw3lUXF6Of3KVmtZX0/1dGaE1ceTbyWnxUhuQ
+	 8pxgm5z+62Ybgd1KkMtAThee0HRUW3cPA7IaCXtE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13607F80390;
-	Fri,  6 Sep 2019 12:03:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43F9EF80390;
+	Fri,  6 Sep 2019 12:45:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4BFAF80394; Fri,  6 Sep 2019 12:03:13 +0200 (CEST)
-Received: from mail-qk1-f195.google.com (mail-qk1-f195.google.com
- [209.85.222.195])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D2703F80394; Fri,  6 Sep 2019 12:45:18 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B82F2F80214
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 12:03:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B82F2F80214
-Received: by mail-qk1-f195.google.com with SMTP id f13so5028466qkm.9
- for <alsa-devel@alsa-project.org>; Fri, 06 Sep 2019 03:03:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=xKKnxPPsgAIgwEztVgg1GoTTNsVPqwYHTfDwxBVh/EE=;
- b=mgTUhSTn2l0xPwJL13apUjgjFswfwberOzs5ybjq8LtjVN5Sie3iiZk0gkC3VFokjv
- 34Q9wGi5oaB+mcFVdLqwhumAkFf1pPY2ieQyKS8+0YKQcy3O2LG/VXEVthyGRaIPoEai
- kCowYtgQv5cPNGFRupxvheAQx5jm6SDJ95GORini5LMgBW7lPX5sY9zO/gf9OoJE+T8A
- H4CPorNYDshGyPvAyVst85B1pFzKuEvxE+9q83uvw48ZQab2SY+UQU20tvdiRzD9YyYi
- C89Tp3lmgriSavOS8nQ9dy14r1m6rxrlqFA0Uxl4fSank+ou1MDNy/I81tL4qMd352u6
- Ys3w==
-X-Gm-Message-State: APjAAAXHtN+vkt3qZpuv6XCTlVBB1DvyxrRfcyaDCAAxHbC/Z9MP1m9b
- ycm19jONeKgskm5PxsWTwZhPut3gLNEylWIL6ws=
-X-Google-Smtp-Source: APXvYqxpCALRccn6ODP9KYrflsF0sVz2A7RrYULIVWFnlCGhvGoTB9uHGRbcU86PgkUBURKioMIpZ1WC2hVTyL6RRRQ=
-X-Received: by 2002:a37:4b0d:: with SMTP id y13mr7614923qka.3.1567764188695;
- Fri, 06 Sep 2019 03:03:08 -0700 (PDT)
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 522E7F80171
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 12:45:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 522E7F80171
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="IDxctFLg"
+Received: from localhost (unknown [223.226.32.145])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id F2EFD2084F;
+ Fri,  6 Sep 2019 10:45:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1567766711;
+ bh=8obvABzY456lelT+/+F0iiNkcUGvNaX0PoU7PvA7MHw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=IDxctFLgE85TE+lmarvW0ZhIpYuXdofqQrSBdKIrPm3CGWpNYJmjk2lLowearehq3
+ 3VMQmSIPx3QAsdwv2bl03ucelgJ+waAVxPmtJJCLjM0DNYYletYyjdRnztifkQ8Vws
+ td1cL8xV+TWdvhE8RDn2cUIkMKPAs+2hb2vFccds=
+Date: Fri, 6 Sep 2019 16:14:03 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20190906104403.GH2672@vkoul-mobl>
 References: <20190905203527.1478314-1-arnd@arndb.de>
  <20190906043805.GE2672@vkoul-mobl>
-In-Reply-To: <20190906043805.GE2672@vkoul-mobl>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 6 Sep 2019 12:02:52 +0200
-Message-ID: <CAK8P3a38ywYFaGekbi6_idwrZvaVX8u8giUpK1r26QAbekLp8Q@mail.gmail.com>
-To: Vinod Koul <vkoul@kernel.org>
+ <CAK8P3a38ywYFaGekbi6_idwrZvaVX8u8giUpK1r26QAbekLp8Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a38ywYFaGekbi6_idwrZvaVX8u8giUpK1r26QAbekLp8Q@mail.gmail.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Cc: Takashi Iwai <tiwai@suse.de>, Sanyog Kale <sanyog.r.kale@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  ALSA Development Mailing List <alsa-devel@alsa-project.org>,
@@ -93,25 +93,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Sep 6, 2019 at 6:39 AM Vinod Koul <vkoul@kernel.org> wrote:
->
-> On 05-09-19, 22:35, Arnd Bergmann wrote:
-> > Soundwire gained a warning for randconfig builds without
-> > CONFIG_ACPI during the linux-5.3-rc cycle:
+On 06-09-19, 12:02, Arnd Bergmann wrote:
+> On Fri, Sep 6, 2019 at 6:39 AM Vinod Koul <vkoul@kernel.org> wrote:
 > >
-> > drivers/soundwire/slave.c:16:12: error: unused function 'sdw_slave_add' [-Werror,-Wunused-function]
+> > On 05-09-19, 22:35, Arnd Bergmann wrote:
+> > > Soundwire gained a warning for randconfig builds without
+> > > CONFIG_ACPI during the linux-5.3-rc cycle:
+> > >
+> > > drivers/soundwire/slave.c:16:12: error: unused function 'sdw_slave_add' [-Werror,-Wunused-function]
+> > >
+> > > Add the CONFIG_ACPI dependency at the top level now.
 > >
-> > Add the CONFIG_ACPI dependency at the top level now.
->
-> Did you run this yesterday or today. I have applied Srini's patches to
-> add DT support for Soundwire couple of days back so we should not see
-> this warning anymore
+> > Did you run this yesterday or today. I have applied Srini's patches to
+> > add DT support for Soundwire couple of days back so we should not see
+> > this warning anymore
+> 
+> This is on the latest linux-next, which is dated 20190904. As Stephen is
+> not releasing any more linux-next kernels until later this month, I'm
+> missing anything that came in afterwards.
 
-This is on the latest linux-next, which is dated 20190904. As Stephen is
-not releasing any more linux-next kernels until later this month, I'm
-missing anything that came in afterwards.
+That is interesting as next-20190904 has the DT changes :) Can you share
+the config you used to get this.
 
-       Arnd
+I have two instances of sdw_slave_add() in next-20190904:
+
+drivers/soundwire/slave.c:              sdw_slave_add(bus, &id, acpi_fwnode_handle(adev));
+drivers/soundwire/slave.c:              sdw_slave_add(bus, &id, of_fwnode_handle(node));
+
+Thanks
+-- 
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
