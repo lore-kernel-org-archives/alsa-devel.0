@@ -2,98 +2,57 @@ Return-Path: <SRS0=vz66=XD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA46FC433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 06:06:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5C52C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 06:07:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E285721734
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 06:06:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 369A6218AE
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 06:07:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="My6NhYQz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kObRmSyC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E285721734
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S9TnZ4Vt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 369A6218AE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=novotny.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 407CF15E2;
-	Sun,  8 Sep 2019 08:05:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 407CF15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 424EE165E;
+	Sun,  8 Sep 2019 08:06:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 424EE165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567922781;
-	bh=N0g5DlL/4u3WUZ2c6tKpdN56PSlRY1D7FHqW35zrX34=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1567922836;
+	bh=MiMpt+B45gEcbfWz/Mpz/OONGAdRWtx8Sk2vGg59Z84=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=My6NhYQzCzcXeEyEFpCw30seMVlTBN7zgVmFTDVMZfWKFhOTru2vRzLb+MZknhEuT
-	 QptUcNMVh/bBZk7vbsu+y67l9sCKQNs+SvGvTrDOaEhM0FbWGcBAdL8IuP4q7H4tNS
-	 CG2rB1txYOExgmKhRYvxiO3hz163IoaJiPD+9m7s=
+	b=S9TnZ4Vt1VO+ZL05cQXdTp8AAdQQt2upSsD0TgNPK0o8dGWTN35neT8juqx5+aGIi
+	 uvHgWQxC+GNFoenuxN3PM5ZJe6KOPleH0ZCQGqqqUaHfVESEcjjaK3KaM7Pt5qfFjc
+	 93Z3En65fqKD+0hTfOqBBJJWLc1clT5lAAdi9UcA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 492D8F80157;
-	Sun,  8 Sep 2019 08:05:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4F07F80393;
+	Sun,  8 Sep 2019 08:05:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8957F80394; Fri,  6 Sep 2019 10:21:58 +0200 (CEST)
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com
- [IPv6:2a00:1450:4864:20::544])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18DF4F80214
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 10:21:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18DF4F80214
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="kObRmSyC"
-Received: by mail-ed1-x544.google.com with SMTP id o9so5570773edq.0
- for <alsa-devel@alsa-project.org>; Fri, 06 Sep 2019 01:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AEUMKCNSgzcE24WqN25Q+F0d5BZbGBWOLXhrIGnOlrg=;
- b=kObRmSyCGoFhl/gHhqQTKx1PpScEzV2QF4VkqzER4ZAtCh7NSnn3bToJjIeDhBJHnL
- H5FXBSHmetACx/izg4Z85bca0vudzuoLCPuqwhMkHRloCIoxgKotgphj/9BrYlbG6maK
- 0kk6jaB3YGN6WzKkDqj7gbowhzoV2OX5vcVJp5VHJGjsQm/bwxDl5Qjape88pQrG+PTC
- xX52xc1675VaPFRVg77MVVtj9yH7ADEQu3IQTxZyfypGNP5u8X6dsXl6/ro2bmPDUprO
- 18EDIHvx2mXt5PxXj+Qu+JR8E83jrw62AornwEtTp1p/iDMDOupFESE1TgoB1Lgdqwje
- 4i5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AEUMKCNSgzcE24WqN25Q+F0d5BZbGBWOLXhrIGnOlrg=;
- b=WUVtiuYYgqSoU3IxWGq8HY2nc/udgyh59ISbDWOmo3gdlMu39UxmIOvKA9grpadC6D
- iL6UzHL60Q5Nmt2Ny8aDLvdmgZ0h9YG1TDivCuR3b9yEYGov1rOwM8hPY0+5m2lf9jvW
- GycO6g+2y7CSsTh6juBoz7SgNzgPdFxIJ+wXjL+yj+K3e82aMzxYl1NxNgOXzPyRB9c5
- joROyVAuzoGycDl5qoYyDXiHfajCRaYhEwR13VSfovcODhYNcNakBCWRA4cLK6+0gp1F
- ae65BOnxZGR9ePBPgNQFjoHIdQYQk7noegFYpsZDEqppY6W+tM618TsPbaVQwarCvMKj
- SMVQ==
-X-Gm-Message-State: APjAAAWCM4r3o47nMtKlK3ng43aV2TeBej1Ds7Sq98ym0UHWueYCgj9U
- /e0HyYxfbJWvb3EWHETHMQNadntxOdY=
-X-Google-Smtp-Source: APXvYqxlpa2bukoDkQwGCgyb2p8mQ2T2NHWYWayDw3k48wCUrz33sXK2Yv0G9JYyaTrBVhh76rE/ig==
-X-Received: by 2002:a17:906:43c4:: with SMTP id
- j4mr6202007ejn.197.1567758114672; 
- Fri, 06 Sep 2019 01:21:54 -0700 (PDT)
-Received: from localhost.localdomain ([115.132.198.120])
- by smtp.gmail.com with ESMTPSA id c8sm481232ejk.22.2019.09.06.01.21.52
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Fri, 06 Sep 2019 01:21:54 -0700 (PDT)
-From: Tim Blechmann <tim.blechmann@gmail.com>
-X-Google-Original-From: Tim Blechmann <tim@klingt.org>
-To: alsa-devel@alsa-project.org
-Date: Fri,  6 Sep 2019 16:21:19 +0800
-Message-Id: <20190906082119.40971-1-tim@klingt.org>
-X-Mailer: git-send-email 2.23.0
+ id 8403EF80394; Fri,  6 Sep 2019 16:51:13 +0200 (CEST)
+Received: from hosting.pavoucek.net (hosting.pavoucek.net [46.28.107.168])
+ by alsa1.perex.cz (Postfix) with ESMTP id 67ADFF80214
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 16:51:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67ADFF80214
+Received: from tomas.local.tbs-biometrics.cz (176-74-132-138.netdatacomm.cz
+ [176.74.132.138]) (Authenticated sender: tomas@novotny.cz)
+ by hosting.pavoucek.net (Postfix) with ESMTPSA id 4B03E102F9E;
+ Fri,  6 Sep 2019 16:51:09 +0200 (CEST)
+Date: Fri, 6 Sep 2019 16:51:09 +0200
+From: Tomas Novotny <tomas@novotny.cz>
+To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Message-ID: <20190906165109.53c5a306@tomas.local.tbs-biometrics.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
 X-Mailman-Approved-At: Sun, 08 Sep 2019 08:05:28 +0200
-Cc: Tim Blechmann <tim@klingt.org>
-Subject: [alsa-devel] [PATCH] alsa: lx6464es - add support for LX6464ESe pci
-	express variant
+Subject: [alsa-devel] omap-mcbsp: TX Buffer Overflow
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,52 +70,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The pci express variant of the digigram lx6464es card has a different
-device ID, but works without changes to the driver.
-Thanks to Nikolas Slottke for reporting and testing.
+Hi,
 
-Signed-off-by: Tim Blechmann <tim@klingt.org>
+we have AM3703 based board similar to BeagleBoard. I'm hitting this error
+after upgrade to latest LTS 4.19.71 (upgraded from 4.1):
 
----
- include/linux/pci_ids.h       | 2 ++
- sound/pci/lx6464es/lx6464es.c | 8 ++++++++
- 2 files changed, 10 insertions(+)
+omap-mcbsp 49022000.mcbsp: TX Buffer Overflow!
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 7fa3f1498b34..08e15891ed2e 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -1933,6 +1933,8 @@
- #define PCI_VENDOR_ID_DIGIGRAM		0x1369
- #define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_SERIAL_SUBSYSTEM	0xc001
- #define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_CAE_SERIAL_SUBSYSTEM	0xc002
-+#define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ESE_SERIAL_SUBSYSTEM		0xc021
-+#define PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ESE_CAE_SERIAL_SUBSYSTEM	0xc022
- 
- #define PCI_VENDOR_ID_KAWASAKI		0x136b
- #define PCI_DEVICE_ID_MCHIP_KL5A72002	0xff01
-diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
-index 9655b08a1c52..3f07e346ad41 100644
---- a/sound/pci/lx6464es/lx6464es.c
-+++ b/sound/pci/lx6464es/lx6464es.c
-@@ -65,6 +65,14 @@ static const struct pci_device_id snd_lx6464es_ids[] = {
- 			 PCI_VENDOR_ID_DIGIGRAM,
- 			 PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_CAE_SERIAL_SUBSYSTEM),
- 	},			/* LX6464ES-CAE */
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_LX6464ES,
-+			 PCI_VENDOR_ID_DIGIGRAM,
-+			 PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ESE_SERIAL_SUBSYSTEM),
-+	},			/* LX6464ESe */
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_LX6464ES,
-+			 PCI_VENDOR_ID_DIGIGRAM,
-+			 PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ESE_CAE_SERIAL_SUBSYSTEM),
-+	},			/* LX6464ESe-CAE */
- 	{ 0, },
- };
- 
--- 
-2.18.0
+This appears during or after playing of short (~2s) ding-dong wav. That error
+exists for longer time, because handling of tx buffer overflow irq was
+introduced in 2016: 4e85e7776eba ("ASoC: omap-mcbsp: Enable TX/RX under and
+overflow interrupts"). I've cherry-picked it to 4.1 and I see the error there also.
+The sound seems clear and ok to me, but we are using low quality speaker.
 
+There are two workarounds to get rid of the message:
+1) Change 'dma_op_mode' sysfs attribute from 'element' to 'threshold'. I
+found that just by coincidence when checking sysfs attributes.
+2) Compile kernel with CONFIG_VIDEO_OMAP3=y. Found on Logic PD forum [1].
+
+Does anybody have any idea what's going wrong? Or why these (somehow)
+unrelated workarounds help?
+
+Thanks,
+
+Tomas
+
+[1] https://support.logicpd.com/TDGForum/tabid/124/aft/2277/Default.aspx
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
