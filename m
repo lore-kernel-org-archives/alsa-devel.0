@@ -2,59 +2,60 @@ Return-Path: <SRS0=qBPI=XB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B747C43331
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 09:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF39C43331
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 09:45:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89AE62081B
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 09:34:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EDB3E20854
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2019 09:45:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hQk2Bw6p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89AE62081B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mediatomb.cc
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Oujn4lNl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDB3E20854
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3695E74C;
-	Fri,  6 Sep 2019 11:33:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3695E74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C586820;
+	Fri,  6 Sep 2019 11:44:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C586820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567762482;
-	bh=71uGPohtMlmef13p2NRg1VH9V8gcixEjcVabiBxrVO8=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=hQk2Bw6pKWBlv1dm97TfF3P+GtnhkJXUD8kyffrhvgUpnHXqhINU3Bs/XycIMFpe7
-	 dggHOKzELTgr8a6dYDWznjEa5xGFgyZC3NCEXCBPIdVsqtT5oNF2A6uQPMpVvgLW1J
-	 oC4pXUUPKruRTdnYNJI/0knu72PEhCbdvNyU3Nzk=
+	s=default; t=1567763108;
+	bh=9cP5rGvju9X/CBLvyBDqwBpkOm0VQ5G76vGAocqzwig=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Oujn4lNlHZzmvqYkktPXL7qmwORqk6vBmdSOJpH7hmgb0Z6jD6QEBIbxQRSM9GEDT
+	 EbTrrXvCIV9RYHAhGmHAfiSaPyxO89LKkccQtKlxPDD1KEBio7YWHpjjY6dHWSdl9j
+	 Q7HWXwyD9nRrqUjex/4zaGT3gYN9WiY0eaveJf9M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90CAFF80390;
-	Fri,  6 Sep 2019 11:33:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40BEBF80390;
+	Fri,  6 Sep 2019 11:44:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2831BF80394; Fri,  6 Sep 2019 11:33:50 +0200 (CEST)
-Received: from mail1.xn--80adja5bqm.su (xn--80adja5bqm.su [45.62.210.217])
- by alsa1.perex.cz (Postfix) with ESMTP id 5AD02F80214
- for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 11:33:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD02F80214
-Received: by mail1.xn--80adja5bqm.su (Postfix, from userid 1000)
- id 91FD82185604; Fri,  6 Sep 2019 11:33:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail1.xn--80adja5bqm.su 91FD82185604
-Date: Fri, 6 Sep 2019 11:33:43 +0200
-From: Sergey Bostandzhyan <jin@mediatomb.cc>
-To: Takashi Iwai <tiwai@suse.de>
-Message-Id: <20190906093343.GA7640@xn--80adja5bqm.su>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <s5ha7bipysk.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH] Add Acer Aspire Ethos 8951G model quirk
+ id 74A80F80394; Fri,  6 Sep 2019 11:44:15 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58759F80171
+ for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2019 11:44:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58759F80171
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id EFA06AEBF;
+ Fri,  6 Sep 2019 09:44:10 +0000 (UTC)
+Date: Fri, 06 Sep 2019 11:44:10 +0200
+Message-ID: <s5hpnkdoj2t.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Subject: [alsa-devel] alsa-devel ML archived on lore.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,153 +73,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This notebook has 6 built in speakers for 5.1 surround support, however
-only two got autodetected and have also not been assigned correctly.
+Hi,
 
-This patch enables all speakers and also fixes muting when headphones are
-plugged in.
+per popular demands, now lore.kernel.org also archives the posts on
+alsa-devel ML:
+  https://lore.kernel.org/alsa-devel/
 
-The speaker layout is as follows:
+This includes the posts in the past that are found on
+alsa-project.org ML archive, too.
 
-pin 0x15 Front Left / Front Right
-pin 0x18 Front Center / Subwoofer
-pin 0x1b Rear Left / Rear Right (Surround)
+A good thing is that this allows us to refer to the thread via the URL
+like:
+  https://lore.kernel.org/r/$MESSAGEID
+  
 
-The quirk will be enabled automatically on this hardware, but can also be
-activated manually via the model=aspire-ethos module parameter.
+thanks,
 
-Caveat: pin 0x1b is shared between headphones jack and surround speakers.
-When headphones are plugged in, the surround speakers get muted
-automatically by the hardware, however all other speakers remain
-unmuted. Currently it's not possible to make use of the generic automute
-function in the driver, because such shared pins are not supported.
-
-If we would change the pin settings to identify the pin as headphones,
-the surround channel and thus the ability to select 5.1 profiles would
-get lost.
-
-This quirk solves the above problem by monitoring jack state of 0x1b and
-by connecting/disconnecting all remaining speaker pins when something
-gets plugged in or unplugged from the headphones jack port.
-
-Signed-off-by: Sergey Bostandzhyan <jin@mediatomb.cc>
----
- sound/pci/hda/patch_realtek.c | 71 +++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e333b3e30e31..5135e13da284 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8251,6 +8251,45 @@ static void alc662_fixup_usi_headset_mic(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc662_aspire_ethos_mute_speakers(struct hda_codec *codec,
-+					struct hda_jack_callback *cb)
-+{
-+	/* surround speakers at 0x1b already get muted automatically when
-+	 * headphones are plugged in, but we have to mute/unmute the remaining
-+	 * channels manually:
-+	 * 0x15 - front left/front right
-+	 * 0x18 - front center/ LFE
-+	 */
-+	if (snd_hda_jack_detect_state(codec, 0x1b) == HDA_JACK_PRESENT) {
-+		snd_hda_set_pin_ctl_cache(codec, 0x15, 0);
-+		snd_hda_set_pin_ctl_cache(codec, 0x18, 0);
-+	} else {
-+		snd_hda_set_pin_ctl_cache(codec, 0x15, PIN_OUT);
-+		snd_hda_set_pin_ctl_cache(codec, 0x18, PIN_OUT);
-+	}
-+}
-+
-+static void alc662_fixup_aspire_ethos_hp(struct hda_codec *codec,
-+					const struct hda_fixup *fix, int action)
-+{
-+    /* Pin 0x1b: shared headphones jack and surround speakers */
-+	if (!is_jack_detectable(codec, 0x1b))
-+		return;
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_jack_detect_enable_callback(codec, 0x1b,
-+				alc662_aspire_ethos_mute_speakers);
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		/* Make sure to start in a correct state, i.e. if
-+		 * headphones have been plugged in before powering up the system
-+		 */
-+		alc662_aspire_ethos_mute_speakers(codec, NULL);
-+		break;
-+	}
-+}
-+
- static struct coef_fw alc668_coefs[] = {
- 	WRITE_COEF(0x01, 0xbebe), WRITE_COEF(0x02, 0xaaaa), WRITE_COEF(0x03,    0x0),
- 	WRITE_COEF(0x04, 0x0180), WRITE_COEF(0x06,    0x0), WRITE_COEF(0x07, 0x0f80),
-@@ -8322,6 +8361,9 @@ enum {
- 	ALC662_FIXUP_USI_FUNC,
- 	ALC662_FIXUP_USI_HEADSET_MODE,
- 	ALC662_FIXUP_LENOVO_MULTI_CODECS,
-+	ALC669_FIXUP_ACER_ASPIRE_ETHOS,
-+	ALC669_FIXUP_ACER_ASPIRE_ETHOS_SUBWOOFER,
-+	ALC669_FIXUP_ACER_ASPIRE_ETHOS_HEADSET,
- };
- 
- static const struct hda_fixup alc662_fixups[] = {
-@@ -8648,6 +8690,33 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
- 	},
-+	[ALC669_FIXUP_ACER_ASPIRE_ETHOS_HEADSET] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc662_fixup_aspire_ethos_hp,
-+	},
-+	[ALC669_FIXUP_ACER_ASPIRE_ETHOS_SUBWOOFER] = {
-+		.type = HDA_FIXUP_VERBS,
-+        /* subwoofer needs an extra GPIO setting to become audible */
-+		.v.verbs = (const struct hda_verb[]) {
-+			{0x01, AC_VERB_SET_GPIO_MASK, 0x02},
-+			{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02},
-+			{0x01, AC_VERB_SET_GPIO_DATA, 0x00},
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC669_FIXUP_ACER_ASPIRE_ETHOS_HEADSET
-+	},
-+	[ALC669_FIXUP_ACER_ASPIRE_ETHOS] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x15, 0x92130110 }, /* front speakers */
-+			{ 0x18, 0x99130111 }, /* center/subwoofer */
-+			{ 0x1b, 0x11130012 }, /* surround plus jack for HP */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC669_FIXUP_ACER_ASPIRE_ETHOS_SUBWOOFER
-+	},
- };
- 
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -8693,6 +8762,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x19da, 0xa130, "Zotac Z68", ALC662_FIXUP_ZOTAC_Z68),
- 	SND_PCI_QUIRK(0x1b0a, 0x01b8, "ACER Veriton", ALC662_FIXUP_ACER_VERITON),
- 	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
-+	SND_PCI_QUIRK(0x1025, 0x0566, "Acer Aspire Ethos 8951G", ALC669_FIXUP_ACER_ASPIRE_ETHOS),
- 
- #if 0
- 	/* Below is a quirk table taken from the old code.
-@@ -8786,6 +8856,7 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{.id = ALC892_FIXUP_ASROCK_MOBO, .name = "asrock-mobo"},
- 	{.id = ALC662_FIXUP_USI_HEADSET_MODE, .name = "usi-headset"},
- 	{.id = ALC662_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
-+	{.id = ALC669_FIXUP_ACER_ASPIRE_ETHOS, .name = "aspire-ethos"},
- 	{}
- };
- 
--- 
-2.20.1
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
