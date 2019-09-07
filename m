@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C77AC43331
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 17:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0256BC43331
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 17:46:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C10C218AC
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 17:44:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DA93218AE
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 17:46:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FEAt72tS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C10C218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SQeH9vXm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DA93218AE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1DCA843;
-	Sat,  7 Sep 2019 19:43:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1DCA843
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEB201607;
+	Sat,  7 Sep 2019 19:45:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEB201607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567878279;
-	bh=FTCdMOYFbYq4mnz/GyFvwfgfDTtuM3+YWVuqVMKf3fo=;
+	s=default; t=1567878367;
+	bh=OmnJmM4Wr1EKCXi4bTd4L6OMyatTy2ej/+p6Xe0ZOYY=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=FEAt72tS9lKY/a9H2sshYQDcEmd9+wFBYSGCQwQrObVan6iLV86x7LPehX54jF6gb
-	 xb4pGP1Ps6FmVhBTybOQ/XmisrKQiV/d+5jTfJC8D9T9kmTyK0azkH9eglRls0O3hA
-	 MCrF8xBfQICr9n0mFpVeaBcuHvnUK9wYlQPK5llg=
+	b=SQeH9vXmSt0PlZmFOpcyw1Vq4zPIBWVANMwCIIA0vDqOWKQWwBshaJGOEqNYKxgDS
+	 V/so7d6fqKcswOopKchzqkoqbFXrTy/1M8MSlZLUG0zuGFf5uwnrVx1UGb/XJST5vu
+	 J9vKvM5O4ABRzQYVv/P8LujTFPwT4sqYGRP+nmEU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D8CDF803D1;
-	Sat,  7 Sep 2019 19:43:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BA5CF803D1;
+	Sat,  7 Sep 2019 19:45:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63776F80448; Sat,  7 Sep 2019 19:43:47 +0200 (CEST)
+ id 4067AF804A9; Sat,  7 Sep 2019 19:45:15 +0200 (CEST)
 Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C223F80157
- for <alsa-devel@alsa-project.org>; Sat,  7 Sep 2019 19:43:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C223F80157
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id x87Hhbm7008546;
- Sun, 8 Sep 2019 02:43:37 +0900 (JST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F01CEF80171
+ for <alsa-devel@alsa-project.org>; Sat,  7 Sep 2019 19:45:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F01CEF80171
+Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id x87Hj6mw009250;
+ Sun, 8 Sep 2019 02:45:06 +0900 (JST)
  (envelope-from katsuhiro@katsuster.net)
 Received: from www1102.sakura.ne.jp (219.94.129.142)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/530/fsav402.sakura.ne.jp);
- Sun, 08 Sep 2019 02:43:37 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/530/fsav402.sakura.ne.jp)
+ by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/530/fsav401.sakura.ne.jp);
+ Sun, 08 Sep 2019 02:45:06 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/530/fsav401.sakura.ne.jp)
 Received: from localhost.localdomain (118.153.231.153.ap.dti.ne.jp
  [153.231.153.118]) (authenticated bits=0)
- by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id x87HhYmW008539
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id x87Hj3KZ009238
  (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
- Sun, 8 Sep 2019 02:43:37 +0900 (JST)
+ Sun, 8 Sep 2019 02:45:06 +0900 (JST)
  (envelope-from katsuhiro@katsuster.net)
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-To: Mark Brown <broonie@kernel.org>
-Date: Sun,  8 Sep 2019 02:43:32 +0900
-Message-Id: <20190907174332.19586-1-katsuhiro@katsuster.net>
+To: Mark Brown <broonie@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Sun,  8 Sep 2019 02:45:01 +0900
+Message-Id: <20190907174501.19833-1-katsuhiro@katsuster.net>
 X-Mailer: git-send-email 2.23.0.rc1
 MIME-Version: 1.0
 Cc: Katsuhiro Suzuki <katsuhiro@katsuster.net>, alsa-devel@alsa-project.org,
- Heiko Stuebner <heiko@sntech.de>, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ASoC: rockchip: ignore 0Hz sysclk
+Subject: [alsa-devel] [PATCH] SoC: simple-card-utils: set 0Hz to sysclk when
+	shutdown
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,32 +86,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch ignores sysclk setting if it is 0Hz.
+This patch set 0Hz to sysclk when shutdown the card.
 
-Some codecs treat 0Hz sysclk as signal of applying no constraints.
-This driver does not have such feature but current implementation
-outputs 'Failed to set mclk' error message if machine driver sets
-0Hz sysclk to this driver.
+Some codecs set rate constraints that derives from sysclk. This
+mechanism works correctly if machine drivers give fixed frequency.
+
+But simple-audio and audio-graph card set variable clock rate if
+'mclk-fs' property exists. In this case, rate constraints will go
+bad scenario. For example a codec accepts three limited rates
+(mclk / 256, mclk / 384, mclk / 512).
+
+Bad scenario as follows (mclk-fs = 256):
+   - Initialize sysclk by correct value (Ex. 12.288MHz)
+     - Codec set constraints of PCM rate by sysclk
+       48kHz (1/256), 32kHz (1/384), 24kHz (1/512)
+   - Play 48kHz sound, it's acceptable
+   - Sysclk is not changed
+
+   - Play 32kHz sound, it's acceptable
+   - Set sysclk to 8.192MHz (= fs * mclk-fs = 32k * 256)
+     - Codec set constraints of PCM rate by sysclk
+       32kHz (1/256), 21.33kHz (1/384), 16kHz (1/512)
+
+   - Play 48kHz again, but it's NOT acceptable because constraints
+     do not allow 48kHz
+
+So codecs treat 0Hz sysclk as signal of applying no constraints to
+avoid this problem.
 
 Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/generic/simple-card-utils.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 88ebaf6e1880..af2d5a6124c8 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -419,6 +419,9 @@ static int rockchip_i2s_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
- 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
- 	int ret;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 556b1a789629..9b794775df53 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -213,10 +213,17 @@ EXPORT_SYMBOL_GPL(asoc_simple_startup);
+ void asoc_simple_shutdown(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
  
-+	if (freq == 0)
-+		return 0;
++	if (dai_props->mclk_fs) {
++		snd_soc_dai_set_sysclk(codec_dai, 0, 0, SND_SOC_CLOCK_IN);
++		snd_soc_dai_set_sysclk(cpu_dai, 0, 0, SND_SOC_CLOCK_OUT);
++	}
 +
- 	ret = clk_set_rate(i2s->mclk, freq);
- 	if (ret)
- 		dev_err(i2s->dev, "Fail to set mclk %d\n", ret);
+ 	asoc_simple_clk_disable(dai_props->cpu_dai);
+ 
+ 	asoc_simple_clk_disable(dai_props->codec_dai);
 -- 
 2.23.0.rc1
 
