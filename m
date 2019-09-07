@@ -2,86 +2,76 @@ Return-Path: <SRS0=Vq+j=XC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFA8FC43331
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 14:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78F0BC43331
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 16:38:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE2B8206BB
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 14:08:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 75195218AE
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Sep 2019 16:38:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s7Q1JvAN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cn2pNxGQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE2B8206BB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I+w+Er2V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75195218AE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=katsuster.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C8E784D;
-	Sat,  7 Sep 2019 16:07:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C8E784D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28C9538;
+	Sat,  7 Sep 2019 18:37:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28C9538
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567865324;
-	bh=qirscW/f8K1TiQp21aJ6b7EQFHEA9LaRNtMjJgY8/5A=;
-	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=s7Q1JvAN79FkgPUq4OAbvdfhS0KTtexsjCczFGfEQoE6zwOFb3g9sun5x6mV+9iy7
-	 S1cbfk3NKTX9iNxHYo4/3vUA7jMcq6VjCbQHQ7pD1lCyniGrmB31so37X2/ubfiyRc
-	 NKRZqQObXSAwOha/ZktuOMk2uc1YPnN8zgOgDm4M=
+	s=default; t=1567874287;
+	bh=dW1EawKFaXatRdJNkBeFEKi66bCFRI+BZiIm2nZJZ74=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=I+w+Er2VWP7R55Q1/5aeEIWIMAuVouzQ7kylLWp5vlsrUaZlNdOruDXdB+FP+CgoL
+	 WBTg3WBNJfKDfH+ZKZc16eERtUZ62rdavvMqqpONyY0ypyBiN4PHyJ6AnKXIA4gBxA
+	 j3jlCSH4o83BSRPXGuIpCnf4Kv82/SN/HEQDmJ5c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79B58F803D1;
-	Sat,  7 Sep 2019 16:07:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38556F80448;
+	Sat,  7 Sep 2019 18:37:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92B24F80448; Sat,  7 Sep 2019 16:07:51 +0200 (CEST)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
- [IPv6:2a00:1450:4864:20::233])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B68FCF80448; Sat,  7 Sep 2019 18:37:13 +0200 (CEST)
+Received: from www1102.sakura.ne.jp (www1102.sakura.ne.jp [219.94.129.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DB81F80171
- for <Alsa-devel@alsa-project.org>; Sat,  7 Sep 2019 16:07:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DB81F80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="cn2pNxGQ"
-Received: by mail-lj1-x233.google.com with SMTP id u14so8564827ljj.11
- for <Alsa-devel@alsa-project.org>; Sat, 07 Sep 2019 07:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=z7ONNnu5EJtCT0jGrlK26Uu8T1SytVjb9O7m/YrYiYA=;
- b=cn2pNxGQeYK1QadMcnIFA4Dd3eAueLTa/2UaYdv8LXglHx9aIVHazhQLIKpoH0ZfkC
- jeDykjqCMmawcacgJi2CUHPT+piWWY0xAF2P8sod2JuJNhGgyY8+PrLR5LRLMCV9/9me
- 7W+3HKbsT3ckweOqODplakv9jf+8R4mJ6c+aPaRcYqlT1qpNhzKKB2WNXHYW4/LxftrP
- 2VWdSsb6lpXsDbKYzyxsmeoDDsbLQW71E6UHyvzwwiZHJYxsztMOM/O1A6J6KrYzkvMx
- fN2mQ5WlYMKycVyzcbrCxzXDId7QAdfR5r6hpxL4td+XZbkaeFfRbXU9pbbJRA7JK+Ab
- 1gfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=z7ONNnu5EJtCT0jGrlK26Uu8T1SytVjb9O7m/YrYiYA=;
- b=GH+lEnkUovrpM4aQWPHqeqvomyzuZsaoFSdADlbFVALVyXgfcn7TEJAtCC+v284/4b
- 1gv+coBKzYq+8MR2ZMDLvEYrZTfCpYomwVhK3qUHzep5F3ZWoui42DXSMXaYINqoy9iC
- MnR8aRizk4PmcNLCYb4g3Z9B/U81lVTcV89O4RQB+ZwA539GOuWnW2Szq6ZcbGKm2o8G
- lZ/EMA8M6sPqBei7J0jrIzE/srWrL7Z91YJhiQh6pqFlfvjpuRemALVop55ldeNJVFZV
- bzokNr47k0xHPUSK3lSB6cWerTEshiAOKLR7rpquADrzTIYcQmEm/scRvexgFzCiU3r8
- grGg==
-X-Gm-Message-State: APjAAAVTMmj2bQOVx/ioSipYHJVCrP/u8BJrYhoA6qo57s4cFOrQ3Ghi
- f6kA15kBW0vhRhSvzKtPL8NVCMY2fiip/BcHODJx9g==
-X-Google-Smtp-Source: APXvYqy9XSNJsLdBUmkYh8MnSHcjN7QTI3Xzoiw//rOVlJ7r5K6/mnvh9hsQZM2xe6OLBXFC2Xf/7l46ffy1/6Jo9l0=
-X-Received: by 2002:a2e:5d98:: with SMTP id v24mr9495952lje.56.1567865267226; 
- Sat, 07 Sep 2019 07:07:47 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9283BF800C6
+ for <alsa-devel@alsa-project.org>; Sat,  7 Sep 2019 18:37:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9283BF800C6
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id x87GawhE091901;
+ Sun, 8 Sep 2019 01:36:58 +0900 (JST)
+ (envelope-from katsuhiro@katsuster.net)
+Received: from www1102.sakura.ne.jp (219.94.129.142)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/530/fsav106.sakura.ne.jp);
+ Sun, 08 Sep 2019 01:36:58 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/530/fsav106.sakura.ne.jp)
+Received: from localhost.localdomain (118.153.231.153.ap.dti.ne.jp
+ [153.231.153.118]) (authenticated bits=0)
+ by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id x87GatL3091872
+ (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+ Sun, 8 Sep 2019 01:36:58 +0900 (JST)
+ (envelope-from katsuhiro@katsuster.net)
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+To: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>,
+ Daniel Drake <drake@endlessm.com>, Hans de Goede <hdegoede@redhat.com>
+Date: Sun,  8 Sep 2019 01:36:53 +0900
+Message-Id: <20190907163653.9382-2-katsuhiro@katsuster.net>
+X-Mailer: git-send-email 2.23.0.rc1
+In-Reply-To: <20190907163653.9382-1-katsuhiro@katsuster.net>
+References: <20190907163653.9382-1-katsuhiro@katsuster.net>
 MIME-Version: 1.0
-From: Eric Desjardins <desjare@gmail.com>
-Date: Sat, 7 Sep 2019 10:07:36 -0400
-Message-ID: <CADsNRHsGeM3bMv3Xh++QbZXeR1PBr30VkzoweyCqMKeAguXRUg@mail.gmail.com>
-To: Alsa-devel@alsa-project.org
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Subject: [alsa-devel] 5.1 to stereo using libasound
+Cc: Katsuhiro Suzuki <katsuhiro@katsuster.net>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH 2/2] ASoC: es8316: support fixed and variable
+	both clock rates
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,25 +89,105 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+This patch supports some type of machine drivers that set 0 to mclk
+when sound device goes to idle state. After applied this patch,
+sysclk == 0 means there is no constraint of sound rate and other
+values will set constraints which is derived by sysclk setting.
 
-I am playing a mkv with 5.1 channels from a mkv. I configure libasound for
-6 channels and I feed them interleave audio using snd_pcm_writei. I use the
-default pulse audio device.
+Original code refuses sysclk == 0 setting. But some boards and SoC
+(such as RockPro64 and RockChip I2S) has connected SoC MCLK out to
+ES8316 MCLK in. In this case, SoC side I2S will choose suitable
+frequency of MCLK such as fs * mclk-fs when user starts playing or
+capturing.
 
-So far, nothing is wrong. However, I do not ear things correctly. I listen
-this on my stereo speaker. There is no mixdown to stereo and I was
-wondering how to do that. I tried to use chmap api but anything I try on
-the default device returns an error.
+Bad scenario as follows (mclk-fs = 256):
+  - Initialize sysclk by correct value (Ex. 12.288MHz)
+    - ES8316 set constraints of PCM rate by sysclk
+      48kHz (1/256), 32kHz (1/384), 30.720kHz (1/400),
+      24kHz (1/512), 16kHz (1/768), 12kHz (1/1024)
+  - Play 48kHz sound, it's acceptable
+  - Sysclk is not changed
 
-I was wondering what was the correct way to do that?
-Using the mixing api?
-How do we detect that my device output stereo if chmap doesn't work?
+  - Play 32kHz sound, it's acceptable
+  - Set sysclk by 8.192MHz (= fs * mclk-fs = 32k * 256)
+    - ES8316 set constraints of PCM rate by sysclk
+      32kHz (1/256), 21.33kHz (1/384), 20.48kHz (1/400),
+      16kHz (1/512), 10.66kHz (1/768), 8kHz (1/1024)
 
-I am on a ubuntu 18.04 linux box.
+  - Play 48kHz again, but it's NOT acceptable because constraints
+    list does not allow 48kHz
 
-Thanks,
-Eric
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+---
+ sound/soc/codecs/es8316.c | 35 ++++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
+index 1424ecd6952c..36eef1fb3d18 100644
+--- a/sound/soc/codecs/es8316.c
++++ b/sound/soc/codecs/es8316.c
+@@ -370,8 +370,12 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 
+ 	es8316->sysclk = freq;
+ 
+-	if (freq == 0)
++	if (freq == 0) {
++		es8316->sysclk_constraints.list = NULL;
++		es8316->sysclk_constraints.count = 0;
++
+ 		return 0;
++	}
+ 
+ 	ret = clk_set_rate(es8316->mclk, freq);
+ 	if (ret)
+@@ -450,17 +454,10 @@ static int es8316_pcm_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
+ 
+-	if (es8316->sysclk == 0) {
+-		dev_err(component->dev, "No sysclk provided\n");
+-		return -EINVAL;
+-	}
+-
+-	/* The set of sample rates that can be supported depends on the
+-	 * MCLK supplied to the CODEC.
+-	 */
+-	snd_pcm_hw_constraint_list(substream->runtime, 0,
+-				   SNDRV_PCM_HW_PARAM_RATE,
+-				   &es8316->sysclk_constraints);
++	if (es8316->sysclk_constraints.list)
++		snd_pcm_hw_constraint_list(substream->runtime, 0,
++					   SNDRV_PCM_HW_PARAM_RATE,
++					   &es8316->sysclk_constraints);
+ 
+ 	return 0;
+ }
+@@ -472,11 +469,19 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
+ 	u8 wordlen = 0;
++	int i;
+ 
+-	if (!es8316->sysclk) {
+-		dev_err(component->dev, "No MCLK configured\n");
+-		return -EINVAL;
++	/* Validate supported sample rates that are autodetected from MCLK */
++	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
++		const unsigned int ratio = supported_mclk_lrck_ratios[i];
++
++		if (es8316->sysclk % ratio != 0)
++			continue;
++		if (es8316->sysclk / ratio == params_rate(params))
++			break;
+ 	}
++	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
++		return -EINVAL;
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+-- 
+2.23.0.rc1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
