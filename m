@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45A7CC433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:47:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2595BC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:48:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C204720863
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:47:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 99A3320863
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:48:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ubrkGLZU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C204720863
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bzut1Mcz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99A3320863
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D231F1675;
-	Sun,  8 Sep 2019 12:46:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D231F1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97898167D;
+	Sun,  8 Sep 2019 12:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97898167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567939644;
-	bh=f16G/XlHlSw3Gb8xyC6RJBDNtpbd7tOOP0zh3xZEgxc=;
+	s=default; t=1567939680;
+	bh=GxGTLMernuQpMCGI23bd0bVsS24PBxJiNHo7fxL89Bg=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ubrkGLZU2WsTM5zUqjc7RbxPjOR+i8MLA+J9j1FfUwQLyEa9kEyLsAj9V1pZZ+z4p
-	 w/lDJbIwKFnCNQhqbWLb16US2wBzZVEIkGAya1nB4gOSWUCLgOzFcWMRLeT+pNvLMx
-	 W7nPCr/e+ZMLhWKx4i/uZpRnVUn+BVA9TtX3bUII=
+	b=bzut1MczHfC2uWhH+y5ex9eHx0aij3DQTWgJ7aTe5t2RoGlMQj/56vl4VdGJLaFY1
+	 S6ZMeONLBCr/XbCaR/xgZQsU0NAXoBdTeoUa215nVPMqviaBfL2NZUmZu/XAO+fUcZ
+	 ikbdUaSCMZ0UMHJneKX5I/BdeDtkWIX3YMUzvHSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB160F80678;
-	Sun,  8 Sep 2019 12:40:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4E40F806E5;
+	Sun,  8 Sep 2019 12:40:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E361F8065C; Sun,  8 Sep 2019 12:39:55 +0200 (CEST)
+ id 2299AF8065C; Sun,  8 Sep 2019 12:39:56 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00215F805FC
- for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2019 12:39:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 034CEF805FF
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2019 12:39:33 +0200 (CEST)
 Received: from server.perex-int.cz (unknown [172.16.0.20])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 96C73A003E;
- Sun,  8 Sep 2019 12:39:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 96C73A003E
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 82E30A003F;
+ Sun,  8 Sep 2019 12:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 82E30A003F
 Received: from alsa-devel.perex.cz (unknown [192.168.102.181])
  by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
- 0D79F14005C; Sun,  8 Sep 2019 12:39:29 +0200 (CEST)
+ ED4CD140073; Sun,  8 Sep 2019 12:39:30 +0200 (CEST)
 MIME-Version: 1.0
 From: Jaroslav Kysela <jkysela@redhat.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Karthik D M <karthik.d.m@intel.com>
 Message-Id: <15679391594432724-alsa-devel@perex.cz>
-Date: Sun,  8 Sep 2019 12:39:55 +0200 (CEST)
+Date: Sun,  8 Sep 2019 12:39:56 +0200 (CEST)
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] Licence change for your alsa-lib UCM commits (Srinivas
-	Kandagatla: 3 total)
+Subject: [alsa-devel] Licence change for your alsa-lib UCM commit (Karthik D
+	M: 1 total)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,7 +73,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190908103955.VDDWvt-RQgiyPejBLxh1IHBgMpuSMKyoqQUVVQqwPxs@z>
+Message-ID: <20190908103956.Nbq4isS7RyKUm8jWrdYiBUKoUoG3z2qnDCLx-jzK_uo@z>
 
 As discussed, we would like to move the UCM configuration files from the
 alsa-lib repository to new alsa-ucm-conf repository with the licence change
@@ -89,12 +89,8 @@ Reference:  https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/1532
 
 List of your commit(s):
 
-  daafa451587b9e1d018f147885f38290a344a65a
-    ucm: Add ucm files for DB410c board.
-  c01dc3fa4899a9b9948629c103c0bc435d4f1574
-    conf/ucm: DB410c-HiFi: add CIC selection
-  7442c8b9be91ef576871eed5efce9499fcdeab4a
-    ucm: Add ucm files for DB820c board
+  4dfae1adb31440a37e2183626518f1373eb38b15
+    conf/ucm: skylake: add skylake-rt286 conf files
 
 ---
 Jaroslav Kysela <perex@perex.cz>
