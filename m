@@ -6,57 +6,61 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35CADC433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3039C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:54:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A908C214D9
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:52:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DDD8214D9
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 10:54:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FJkCfl+U"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A908C214D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qPg+q7DI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DDD8214D9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA298166E;
-	Sun,  8 Sep 2019 12:51:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA298166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFCAE166E;
+	Sun,  8 Sep 2019 12:53:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFCAE166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567939970;
-	bh=lIbSn6EfHKRGFUeIIG8cC/8VEQVwi9nb1RjYx+JH+cw=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FJkCfl+Ul17TyFCS2gmwoGLH+tDxN/4TGPXx1IMC9+lQq6aAY2rdzRUYEr+K293Ij
-	 lh2N4Qtvy+0nMdA2BzKaCT2+F2peE6HRLCNgj7NLBk3IJWP9fa1Ws87GCNxUMe8JNz
-	 sp5f+HU80/5mx/mXJFT7VNOsfdUvq0eL3CIgJEow=
+	s=default; t=1567940038;
+	bh=fPhWfUfLZQ00VnxaVz2hcW2KS/oisWnhaipmbUQT7q0=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qPg+q7DIAtL9i9m0AszyWw1L9QnzcL6Ga7gX6EA4m4/8AuBS2HXsB/HpuRP4V4GKO
+	 otU5L9r9mfdOL7Xlju2Ex9DgGjoBQjE692A/whZGgrBJm8e56hHNnrRFPtTP+DYLTy
+	 IPN/+kaae+r95OD5pjYgXrKx7TiME2Q92CtJUyhY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A92BEF80752;
-	Sun,  8 Sep 2019 12:40:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 346EBF802DF;
+	Sun,  8 Sep 2019 12:53:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2127AF8065E; Sun,  8 Sep 2019 12:40:09 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 4F5CBF80368; Sun,  8 Sep 2019 12:53:07 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AC5FF80634
- for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2019 12:39:40 +0200 (CEST)
-Received: from server.perex-int.cz (unknown [172.16.0.20])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 33E26A0042;
- Sun,  8 Sep 2019 12:39:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 33E26A0042
-Received: from alsa-devel.perex.cz (unknown [192.168.102.181])
- by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
- 93504140059; Sun,  8 Sep 2019 12:39:37 +0200 (CEST)
-MIME-Version: 1.0
-From: Jaroslav Kysela <jkysela@redhat.com>
-To: Russell Parker <russell.parker7@gmail.com>
-Message-Id: <15679391594432724-alsa-devel@perex.cz>
-Date: Sun,  8 Sep 2019 12:40:09 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52CEBF80157
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2019 12:53:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52CEBF80157
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 3DF7CB601;
+ Sun,  8 Sep 2019 10:53:03 +0000 (UTC)
+Date: Sun, 08 Sep 2019 12:53:03 +0200
+Message-ID: <s5hr24rcb5c.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <jkysela@redhat.com>
+In-Reply-To: <15679391594432724-alsa-devel@perex.cz>
+References: <15679391594432724-alsa-devel@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] Licence change for your alsa-lib UCM commits (Russell
-	Parker: 6 total)
+Subject: Re: [alsa-devel] Licence change for your alsa-lib UCM commits
+	(Takashi Iwai: 9 total)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,42 +73,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20190908104009.8YEUMlWm6FUbBAeutihDiuPSrDmxd3tSYM94Grj76XI@z>
 
-As discussed, we would like to move the UCM configuration files from the
-alsa-lib repository to new alsa-ucm-conf repository with the licence change
-from LGPL-2.1 to BSD-3-Clause.
+On Sun, 08 Sep 2019 12:39:25 +0200,
+Jaroslav Kysela wrote:
+> 
+> As discussed, we would like to move the UCM configuration files from the
+> alsa-lib repository to new alsa-ucm-conf repository with the licence change
+> from LGPL-2.1 to BSD-3-Clause.
+> 
+> I would like to check, if you agree with this licence change. Please, answer
+> to this e-mail and write your agreement / disagreement (keep CC to
+> the alsa-devel mailing list for the archiving purposes).
+> 
+> Thank you for your time and co-operation.
+> 
+> Reference:  https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/153257.html
+> 
+> List of your commit(s):
+> 
+>   c6ac8ddde965067c5be4f860d60ad106550f44c4
+>     conf/ucm: Set up for installation
+>   9d649add08beb93728ba2943a2c05f8f160f8296
+>     conf/ucm: Add Makefile.am for broadwell-rt286 ucm config
+>   91896be6bc326b5b9c1b5ef52b9dbac243fefa27
+>     conf/ucm: Rearrange Makefile.am
+>   b7e56af82a600262b7f641c5920a914b3303fd56
+>     conf/ucm: Add dual HD-audio codecs config for Lenovo
+>   d1e08d2db3517e8430ffa570f23b53987ba78cc3
+>     conf/ucm: Add Gigabyte mobo UCM profile with dual HD-audio codecs
+>   8ebb40c96970c913719a75deb2fe82ba2e257386
+>     conf/ucm: Add a UCM profile for Dell WD15 Dock USB-audio
+>   6eced6b4b6dca9f62ea3d13a40c5991231df3c5c
+>     conf/ucm/Dell-WD15-Dock: Fix incorrect device names
+>   d48adc2a206d044678be09953d57971c0e1907c7
+>     conf: Move UCM profile snippets into components subdirectory
+>   c9fcf9836907b1ccda0c1f72b698ee5c5dd5199c
+>     ucm: Set default include path
 
-I would like to check, if you agree with this licence change. Please, answer
-to this e-mail and write your agreement / disagreement (keep CC to
-the alsa-devel mailing list for the archiving purposes).
+Surely I'm fine with the license changes for my contribution.
 
-Thank you for your time and co-operation.
+Thanks!
 
-Reference:  https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/153257.html
 
-List of your commit(s):
-
-  1da297fa5d41527dc8300b1e080662dbe0478fdb
-    conf/ucm: chtrt5650: Add UCM config for chtrt5650
-  f91cc3c7d6b76d11e8e003abc5aed99ee2cc78bd
-    Update chtrt5645 ucm variants to use bytcr/PlatformEnableSeq.conf component
-  e850d8e2e3893ac0622ee645bc86ddce0fd59624
-    Create shared {En,Dis}ableSeq.conf components for rt5645 variants
-  d4aa7346b73d483e3a3cfd8cea6464eb40deec6f
-    Factor out rt5645 variants Speaker+Headphones shared UCM enable sequences
-  d68adb79ef77060049526c4b819bf7cbf5328b48
-    Factor out rt5645 variants Headset+Digital Mic UCM shared {en,dis}able sequences
-  b4c0a51505520edc86edd74bafd3e6397e3325e0
-    Create device component for rt5645 Internal Analog Mic UCM
-
----
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
