@@ -2,77 +2,86 @@ Return-Path: <SRS0=vz66=XD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_ADSP_ALL,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44E79C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 12:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F48EC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 13:40:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C649F2067B
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 12:58:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0EE082082C
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Sep 2019 13:40:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZXaaguNM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="z4IXne5J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C649F2067B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ezh8wEWW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="sA/qvg4j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EE082082C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rere.qmqm.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFC149F6;
-	Sun,  8 Sep 2019 14:57:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFC149F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1FC99F6;
+	Sun,  8 Sep 2019 15:39:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1FC99F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567947530;
-	bh=KFCoxL/8QwoIUmjNP+7LtCKY4ESgDIUdIqXtdj7/H18=;
-	h=From:References:To:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1567950031;
+	bh=GA90nRfux7UPnPDKDXbHQ2QreLKMQonLIlscrMoD1wM=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZXaaguNMTPANacWhAFzjtuPmuuOLyByKbnJyTiMRZb2sn/byVv2S6kdVcyQEiIcJT
-	 iYwpn7d/eq92Aew3Hmdjb5aaWiuqfYOC60u5wjor7X0pxEFlIxDhHyvjhZ7OA0jyc6
-	 O1+9GCCnWI+jJnXRlqE/nKu2U0SMdz3n5Jp/0SWE=
+	b=ezh8wEWW/TAdB8MC+iFfk0CSusZTnUe8MgRlibReoeWkMZe/KfNxES0wBt6BA0GtZ
+	 6QkW7lS/NT0pzcGbijEaDcC2JCmQvRSjXbcU1TX1MRrvrg4F4LiskAEUuPvaqXMRyd
+	 huk/YgI8pYDuqcsbdbUG4vrlPPNP8t3tdSZ8kVHc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A683F802DF;
-	Sun,  8 Sep 2019 14:57:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15BE8F800E6;
+	Sun,  8 Sep 2019 15:39:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 395F7F80368; Sun,  8 Sep 2019 14:57:58 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8FF60F80368; Sun,  8 Sep 2019 15:39:39 +0200 (CEST)
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77BFEF800E6
- for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2019 14:57:54 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 42EDBA0046;
- Sun,  8 Sep 2019 14:57:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 42EDBA0046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1567947474; bh=qbNh8hdcCEDCj6gyLx/edkTME70xzepOivLiPjRiUOA=;
- h=Subject:From:References:To:Cc:Date:In-Reply-To:From;
- b=z4IXne5Jh/dPvhIA9as2X2n6NlrupGTzpKWsfNRoI+YkVfbgRoNHpe5WN/bwI+a2t
- MCQ/qtIvpiYPmFnkg/5tplIx2prl7QTeEbcBc/nNMQ0vqdrhWDoz8CSmUpUbIdTZkP
- smYC/fg+KVfwzklH05zDsw6sAoyhaIMtv4EG93ss=
-Received: from t510-mob.perex-int.cz (unknown [88.214.186.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Sun,  8 Sep 2019 14:57:51 +0200 (CEST)
-From: Jaroslav Kysela <perex@perex.cz>
-References: <15679391594432724-alsa-devel@perex.cz>
- <cf4b5150-a9f5-fa82-8e4b-0978509a60b6@perex.cz>
-To: alsa-devel@alsa-project.org
-Message-ID: <2ae761bd-c161-b8be-41d4-9e003e5ef263@perex.cz>
-Date: Sun, 8 Sep 2019 14:57:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38205F800E6
+ for <alsa-devel@alsa-project.org>; Sun,  8 Sep 2019 15:39:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38205F800E6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl
+ header.b="sA/qvg4j"
+Received: from remote.user (localhost [127.0.0.1])
+ by rere.qmqm.pl (Postfix) with ESMTPSA id 46RC645Zncz1x;
+ Sun,  8 Sep 2019 15:37:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+ t=1567949871; bh=8fLQi36Tz+m6T1IGU2o99fMZH+S8E20nfr7PHNk8hXg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=sA/qvg4jwPtwyQevGJ8HoBbpqi6V3OlDj9+oyTk9ViTFrt42rElsXZe0ZB0KW4Nc2
+ F3fjS2Uspan+uk8Kw8qkd9onZTTqRZfnnTC0au7b58hCo21ZZ/GEpi1YP+RG2fnhtw
+ z/txiLBQu53JlibSkErrOOifSnY/fxY52OYA+T8h5KrYNVNVu0b9sX45Cgegjfojx7
+ 34MQ062JrKzcrUVDf42VKcU6B8+yMx9PFEApJdmnCy+awabU9gYKPDdX8YGds0p1ug
+ Zf90m1KfXWyWPbu3uoT+S2Gwi66n3HaKQPSZrRR+9TrGqVZmtmidYOInOGW9hUTt6x
+ 817f0v4Vx3H9A==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.101.2 at mail
+Date: Sun, 8 Sep 2019 15:39:30 +0200
+From: mirq-linux@rere.qmqm.pl
+To: Codrin.Ciubotariu@microchip.com
+Message-ID: <20190908133929.GA32003@qmqm.qmqm.pl>
+References: <cover.1566677788.git.mirq-linux@rere.qmqm.pl>
+ <b56ebac96ad232e2d9871067b13654eb9223f28f.1566677788.git.mirq-linux@rere.qmqm.pl>
+ <a42ede6e-4cc9-6dbf-4c58-71d2298fd3d5@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <cf4b5150-a9f5-fa82-8e4b-0978509a60b6@perex.cz>
-Content-Language: en-US
-Cc: Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] Licence change for your alsa-lib UCM commit (Lu,
- Han: 1 total)
+Content-Disposition: inline
+In-Reply-To: <a42ede6e-4cc9-6dbf-4c58-71d2298fd3d5@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, arnd@arndb.de, lgirdwood@gmail.com,
+ gregkh@linuxfoundation.org, Nicolas.Ferre@microchip.com,
+ alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+ broonie@kernel.org, 3chas3@gmail.com, robh-dt@kernel.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH v2 6/6] ASoC: atmel_ssc_dai: Enable shared
+ FSYNC source in frame-slave mode
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,55 +94,103 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Ir seems that Lu, Han no longer works for Intel (e-mail delivery problem).
-Piere, could you ack this change, too?
+On Mon, Aug 26, 2019 at 03:05:06PM +0000, Codrin.Ciubotariu@microchip.com w=
+rote:
+> On 24.08.2019 23:26, Micha=B3 Miros=B3aw wrote:
+> > SSC driver allows only synchronous TX and RX. In slave mode for BCLK
+> > it uses only one of TK or RK pin, but for LRCLK it configured separate
+> > inputs from TF and RF pins. Allow configuration with common FS signal.
+> > =
 
-				Thanks,
-					Jaroslav
+> > Signed-off-by: Micha=B3 Miros=B3aw <mirq-linux@rere.qmqm.pl>
+> > =
 
-Dne 08. 09. 19 v 14:50 Jaroslav Kysela napsal(a):
-> Resend (delivery issues for the direct e-mail). Please, answer. Thank you.
-> 
-> 					Jaroslav
-> 
-> Dne 08. 09. 19 v 12:39 Jaroslav Kysela napsal(a):
->> As discussed, we would like to move the UCM configuration files from the
->> alsa-lib repository to new alsa-ucm-conf repository with the licence change
->> from LGPL-2.1 to BSD-3-Clause.
->>
->> I would like to check, if you agree with this licence change. Please, answer
->> to this e-mail and write your agreement / disagreement (keep CC to
->> the alsa-devel mailing list for the archiving purposes).
->>
->> Thank you for your time and co-operation.
->>
->> Reference:  https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/153257.html
->>
->> List of your commit(s):
->>
->>   3c263716fd5bd2d9d5308cb13dba667d138c0097
->>     conf/ucm: broadwell-rt286: add ucm config
->>
->> ---
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
-> 
-> 
+> > ---
+> >   v2: use alternate DT binding
+> >       split DT and drivers/misc changes
+> > =
 
+> > ---
+> >   sound/soc/atmel/atmel_ssc_dai.c | 26 ++++++++++++++++++++++----
+> >   1 file changed, 22 insertions(+), 4 deletions(-)
+> > =
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> > diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ss=
+c_dai.c
+> > index 48e9eef34c0f..035d4da58f2b 100644
+> > --- a/sound/soc/atmel/atmel_ssc_dai.c
+> > +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> > @@ -605,14 +605,32 @@ static int atmel_ssc_hw_params(struct snd_pcm_sub=
+stream *substream,
+> >   		return -EINVAL;
+> >   	}
+> >   =
+
+> > -	if (!atmel_ssc_cfs(ssc_p)) {
+> > +	if (atmel_ssc_cfs(ssc_p)) {
+> > +		/*
+> > +		 * SSC provides LRCLK
+> > +		 *
+> > +		 * Both TF and RF are generated, so use them directly.
+> > +		 */
+> > +		rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
+> > +		tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
+> =
+
+> Hmm, how would this work if capture and playback start/run at the same ti=
+me?
+
+Same as it did before this patch: as there is only one bi-directional link
+between SSC and codec, whichever stream starts first defines the rate.
+
+> > +	} else {
+> >   		fslen =3D fslen_ext =3D 0;
+> >   		rcmr_period =3D tcmr_period =3D 0;
+> >   		fs_osync =3D SSC_FSOS_NONE;
+> > -	}
+> >   =
+
+> > -	rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
+> > -	tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
+> > +		if (ssc->lrclk_from_tf_pin) {
+> > +			rcmr |=3D	  SSC_BF(RCMR_START, SSC_START_TX_RX);
+> > +			tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
+> > +		} else if (ssc->lrclk_from_rf_pin) {
+> > +			/* assume RF is to be used when RK is used as BCLK input */
+> =
+
+> This comment is not longer true...
+
+Removed for next version.
+
+> =
+
+> > +			/* Note: won't work correctly on SAMA5D2 due to errata */
+> > +			rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
+> > +			tcmr |=3D	  SSC_BF(TCMR_START, SSC_START_TX_RX);
+> > +		} else {
+> > +			rcmr |=3D	  SSC_BF(RCMR_START, fs_edge);
+> > +			tcmr |=3D	  SSC_BF(TCMR_START, fs_edge);
+> > +		}
+> > +	}
+> >   =
+
+> >   	if (atmel_ssc_cbs(ssc_p)) {
+> >   		/*
+> > =
+
+> =
+
+> Thanks and best regards,
+> Codrin
+
+Best Regards,
+Micha=B3=A0Miros=B3aw
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
