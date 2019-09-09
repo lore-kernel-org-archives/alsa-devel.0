@@ -4,77 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4E7CC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2266C4740A
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:51:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BE5821479
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:50:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AC0B2067B
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:51:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yx9CEcWI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="WZxjkiBM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BE5821479
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VWvus8ZJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="SZfWbAvz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AC0B2067B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67A0616A9;
-	Mon,  9 Sep 2019 12:49:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67A0616A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9FF316B2;
+	Mon,  9 Sep 2019 12:50:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9FF316B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568026224;
-	bh=3u+i2vGPCxVDFVU6lYkwLWtvHQoYn7/gL7bTv28CL2s=;
+	s=default; t=1568026261;
+	bh=LRQ5LzH0bWTq03hGgEKe/PIbIBezSubxRCaX9H4ZEmo=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Yx9CEcWIhIuTQdHuVVhmE76xIaR9enMLsRaDqlVnWHROQouQfU5gkO4HMcQACjKAy
-	 kDV0ZqyqIK4/ys6XiV0bBsYdKZrhu1mUiELvO/UJHFVIr2HsG+J7BmyYBRgRPFumTS
-	 o19J7C7Vjst957kQ+3JjnBpQD1ejI5dWnj3qq03Q=
+	b=VWvus8ZJblkK7gv0MOXYc9O6tFCmCvx9ydpQq8O1GYCEiuNNoF5NgsDwmalm3HOiu
+	 rqHFsYAvw4oDlHY4S6nzBcqJcKwikNBHd7sgzH1cIxONHRHRyOV3e5PEmKp4t4Vtw8
+	 18ETsqdCvnBaPzlH8bMw8+HjF/P2l7Uy2r/M0I4I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3E0CF80750;
-	Mon,  9 Sep 2019 12:38:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94208F8075A;
+	Mon,  9 Sep 2019 12:38:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 919E2F80636; Mon,  9 Sep 2019 12:35:38 +0200 (CEST)
+ id C0556F80508; Mon,  9 Sep 2019 12:35:37 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39E03F805FA
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:35:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39E03F805FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4059DF804CF
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:35:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4059DF804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="WZxjkiBM"
+ header.b="SZfWbAvz"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=BoeumGjZviDuE2L4RAOPQuQN5iiwJ5A5uNPr3JqWcDc=; b=WZxjkiBMlW1E
- I2+5Tf+kyG2lmPk0OAX+WcxVhQ5fu1TT1c6EIMyn/pkI3g3M7+sVt/16qfOBcngOrhg63shwTPF+x
- IRFDTIrolq6IBmVJmyVcnPpK2GE1EjHLZTBZgbsMQ1/UPXnD6e+Xv8lYMmkWzhbn5EtL64sQS4/Sq
- VTgPY=;
+ List-Archive; bh=G/YyXUBf0EnnxZBRlPKQhX2LpQfJ577Gn2/LO2E0B7k=; b=SZfWbAvzRyT/
+ eTsAbsmde8BuHtP8eVeyjtacno/vcLDygVGkGWPk+QsPI1FDkgitYE2mqg9aZPkblCeLgxbJuIAfS
+ ZfrDp3+5VG0VSrRA5yLCMh7d+C4FOGe7VtBk78mUlUqmsLJ7a5XQ5kn6pP/sAUHBhQoHUjPRs115s
+ L+Pj8=;
 Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1i7GZo-0001rH-Nr; Mon, 09 Sep 2019 10:07:16 +0000
+ id 1i7GZp-0001rc-Id; Mon, 09 Sep 2019 10:07:17 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 29849D02D3E; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
+ id E8650D02D4C; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87sgpcor14.wl-kuninori.morimoto.gx@renesas.com>
+To: Colin Ian King <colin.king@canonical.com>
+In-Reply-To: <20190907074156.21907-1-colin.king@canonical.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190909100716.29849D02D3E@fitzroy.sirena.org.uk>
+Message-Id: <20190909100716.E8650D02D4C@fitzroy.sirena.org.uk>
 Date: Mon,  9 Sep 2019 11:07:16 +0100 (BST)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: add soc_unbind_aux_dev()" to
-	the asoc tree
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt1305: make array pd static const,
+	makes object smaller" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: add soc_unbind_aux_dev()
+   ASoC: rt1305: make array pd static const, makes object smaller
 
 has been applied to the asoc tree at
 
@@ -120,54 +123,46 @@ to this mail.
 Thanks,
 Mark
 
-From 4893a2eb34a9722501915a0b75844aa11956c10d Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 4 Sep 2019 09:15:35 +0900
-Subject: [PATCH] ASoC: soc-core: add soc_unbind_aux_dev()
+From b61b1e35ed06db180968cb5ca0fbf8b8887ccb93 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Sat, 7 Sep 2019 08:41:56 +0100
+Subject: [PATCH] ASoC: rt1305: make array pd static const, makes object
+ smaller
 
-It is easy to read code if it is cleanly using paired function/naming,
-like start <-> stop, register <-> unregister, etc, etc.
-But, current ALSA SoC code is very random, unbalance, not paired, etc.
-It is easy to create bug at the such code, and it will be difficult to
-debug.
+Don't populate the array pd on the stack but instead make it
+static const. Makes the object code smaller by 93 bytes.
 
-soc-core.c has soc_bind_aux_dev(), but, there is no its paired
-soc_unbind_aux_dev().
-This patch adds soc_unbind_aux_dev().
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  38961	   9784	     64	  48809	   bea9	sound/soc/codecs/rt1305.o
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87sgpcor14.wl-kuninori.morimoto.gx@renesas.com
+After:
+   text	   data	    bss	    dec	    hex	filename
+  38804	   9848	     64	  48716	   be4c	sound/soc/codecs/rt1305.o
+
+(gcc version 9.2.1, amd64)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20190907074156.21907-1-colin.king@canonical.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt1305.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d7761df03e19..2960070e68bc 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1559,6 +1559,12 @@ static int soc_link_init(struct snd_soc_card *card,
- 	return ret;
- }
+diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
+index 9909369483f0..e27742abfa76 100644
+--- a/sound/soc/codecs/rt1305.c
++++ b/sound/soc/codecs/rt1305.c
+@@ -608,7 +608,8 @@ static const struct snd_soc_dapm_route rt1305_dapm_routes[] = {
  
-+static void soc_unbind_aux_dev(struct snd_soc_component *component)
-+{
-+	component->init = NULL;
-+	list_del(&component->card_aux_list);
-+}
-+
- static int soc_bind_aux_dev(struct snd_soc_card *card)
+ static int rt1305_get_clk_info(int sclk, int rate)
  {
- 	struct snd_soc_component *component;
-@@ -1612,7 +1618,7 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
- 			if (comp->driver->remove_order == order) {
- 				soc_remove_component(comp);
- 				/* remove it from the card's aux_comp_list */
--				list_del(&comp->card_aux_list);
-+				soc_unbind_aux_dev(comp);
- 			}
- 		}
- 	}
+-	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
++	int i;
++	static const int pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
+ 
+ 	if (sclk <= 0 || rate <= 0)
+ 		return -EINVAL;
 -- 
 2.20.1
 
