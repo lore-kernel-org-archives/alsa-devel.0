@@ -7,74 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAD5AC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06310C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:38:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 732AB21A4A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:38:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8305E2086D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:38:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HwSYroyP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="JLkkyYJ9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 732AB21A4A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZAyol0ZD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GUldx2zO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8305E2086D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3D071672;
-	Mon,  9 Sep 2019 12:37:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D071672
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5386167D;
+	Mon,  9 Sep 2019 12:38:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5386167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568025494;
-	bh=i4HqR7x/rEdR3LCVK9T0ZlIHiqrXA+lo2GdKOgD9jLo=;
+	s=default; t=1568025531;
+	bh=9Akb8J2tCbB23jVjo1LF9oM+xi7oAD8BkXyGFGooXZI=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=HwSYroyPfVAhLiZWwNNzyQalkcB+OeKdIWgqImXrnZnreafePe0Ag/SgyZ6oVqQBT
-	 PoTJVj8Yww7ovEFHSr0WaUbelFWJnlBXarmOQvDVfFIKIN7yPa4jmOorkLj4AZkScV
-	 s9hyNVy3KcKZhO4L0XDMgQYZK7MVjW6E1YJcUabA=
+	b=ZAyol0ZD7Bk9NFOJGSOc4JfMR8D9mKYy7V8WMFhZ2r0EZwDkOpQOZymmvMjUwA2rj
+	 f+FyBffueqya+m8uChlKtwHeH/3cBvMoB5EOV73ZZiqsIkn96tJ2g/9Un8Nl64oUv8
+	 sbKyoAxxwpJodl8XKmGoPLmRhYM7xSyGV1/HREiU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87B6CF805FF;
-	Mon,  9 Sep 2019 12:35:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1FABF805FA;
+	Mon,  9 Sep 2019 12:35:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A6E8F804FE; Mon,  9 Sep 2019 12:34:27 +0200 (CEST)
+ id 0428BF80507; Mon,  9 Sep 2019 12:34:29 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 287B0F80323
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:34:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 287B0F80323
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FCA9F800A9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:34:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FCA9F800A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="JLkkyYJ9"
+ header.b="GUldx2zO"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=py+L9XvDaHO3h51czQUldk7Df5/F5h6nH2Y2zGNQqqA=; b=JLkkyYJ9B/jh
- tEi/zgvgljHIao9SqCCbAjJxyNXxeM4ZcwwqPcE+ykad/npktOiirobFMKacVOlrmVySsRnWZRe/B
- b0114E2zfRNP7y6NK973VEKwGBBUDJWObFOFBokARz5rftfgPumqQjzfDh25fOCrhO0PS7/Ri+pDM
- xVb8I=;
+ List-Archive; bh=FADI6GBmjOVJOHjLSGMobnRN0OGoa6F3qFcm5svhebo=; b=GUldx2zOeqHZ
+ zYVeX2+Jd8vD3j8MXpHizC/1Mp4cFIcdiYjPMNN/43UgfwDsXmtUIujSvPpXZwuQKyQZTPNgss+JB
+ HLHSy/qtBt/MMoBfN9HRZoxCNT9L+ujZXsf4+6xYVQMZeDtq4dC/pp4dlOS6Ghvsh+LVSK1PJyVbR
+ 6gfkk=;
 Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1i7GZp-0001rX-Db; Mon, 09 Sep 2019 10:07:17 +0000
+ id 1i7GZq-0001sV-9A; Mon, 09 Sep 2019 10:07:18 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id AD7A4D02D18; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
+ id 938E0D02D18; Mon,  9 Sep 2019 11:07:17 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <8736hcq5ms.wl-kuninori.morimoto.gx@renesas.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+In-Reply-To: <20190906055524.7393-1-peter.ujfalusi@ti.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190909100716.AD7A4D02D18@fitzroy.sirena.org.uk>
-Date: Mon,  9 Sep 2019 11:07:16 +0100 (BST)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: self contained
-	soc_remove_link_components()" to the asoc tree
+Message-Id: <20190909100717.938E0D02D18@fitzroy.sirena.org.uk>
+Date: Mon,  9 Sep 2019 11:07:17 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com,
+ arthur.she@linaro.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: dmaengine: Make the pcm->name equal to
+	pcm->id if the name is not set" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,11 +96,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: self contained soc_remove_link_components()
+   ASoC: dmaengine: Make the pcm->name equal to pcm->id if the name is not set
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -120,98 +121,45 @@ to this mail.
 Thanks,
 Mark
 
-From b006c0c6ed0dc779e64a8d7a25f5cf316fa3562c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 4 Sep 2019 09:14:51 +0900
-Subject: [PATCH] ASoC: soc-core: self contained soc_remove_link_components()
+From 2ec42f3147e1610716f184b02e65d7f493eed925 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 6 Sep 2019 08:55:24 +0300
+Subject: [PATCH] ASoC: dmaengine: Make the pcm->name equal to pcm->id if the
+ name is not set
 
-Current soc_remove_link_components() implementation is very half,
-thus it is very difficult to read.
+Some tools use the snd_pcm_info_get_name() to try to identify PCMs or for
+other purposes.
 
-	for_each_comp_order(xxx) {
-		for_each_card_rtds(xxx)
-=>			soc_remove_link_components(xxx);
-	}
+Currently it is left empty with the dmaengine-pcm, in this case copy the
+pcm->id string as pcm->name.
 
-This patch does all for_each_xxx() under soc_remove_link_components(),
-and makes it to self contained.
+For example IGT is using this to find the HDMI PCM for testing audio on it.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/8736hcq5ms.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reported-by: Arthur She <arthur.she@linaro.org>
+Link: https://lore.kernel.org/r/20190906055524.7393-1-peter.ujfalusi@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 33 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 04b98e6c7b2a..fbaf4dd597b5 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1123,17 +1123,24 @@ static void soc_remove_link_dais(struct snd_soc_card *card,
- 	soc_remove_dai(rtd->cpu_dai, order);
- }
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 748f5f641002..d93db2c2b527 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -306,6 +306,12 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
  
--static void soc_remove_link_components(struct snd_soc_card *card,
--	struct snd_soc_pcm_runtime *rtd, int order)
-+static void soc_remove_link_components(struct snd_soc_card *card)
- {
- 	struct snd_soc_component *component;
-+	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_rtdcom_list *rtdcom;
-+	int order;
- 
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
-+	for_each_comp_order(order) {
-+		for_each_card_rtds(card, rtd) {
-+			for_each_rtdcom(rtd, rtdcom) {
-+				component = rtdcom->component;
+ 		if (!dmaengine_pcm_can_report_residue(dev, pcm->chan[i]))
+ 			pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE;
 +
-+				if (component->driver->remove_order != order)
-+					continue;
- 
--		if (component->driver->remove_order == order)
--			soc_remove_component(component);
-+				soc_remove_component(component);
-+			}
++		if (rtd->pcm->streams[i].pcm->name[0] == '\0') {
++			strncpy(rtd->pcm->streams[i].pcm->name,
++				rtd->pcm->streams[i].pcm->id,
++				sizeof(rtd->pcm->streams[i].pcm->name));
 +		}
  	}
- }
  
-@@ -1173,10 +1180,7 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 			soc_remove_link_dais(card, rtd, order);
- 	}
- 
--	for_each_comp_order(order) {
--		for_each_card_rtds(card, rtd)
--			soc_remove_link_components(card, rtd, order);
--	}
-+	soc_remove_link_components(card);
- 
- 	for_each_card_links_safe(card, link, _link) {
- 		if (link->dobj.type == SND_SOC_DOBJ_DAI_LINK)
-@@ -2394,20 +2398,13 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
- 
- static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- {
--	struct snd_soc_pcm_runtime *rtd;
--	int order;
--
- 	if (card->instantiated) {
- 		card->instantiated = false;
- 		snd_soc_dapm_shutdown(card);
- 		snd_soc_flush_all_delayed_work(card);
- 
- 		/* remove all components used by DAI links on this card */
--		for_each_comp_order(order) {
--			for_each_card_rtds(card, rtd) {
--				soc_remove_link_components(card, rtd, order);
--			}
--		}
-+		soc_remove_link_components(card);
- 
- 		soc_cleanup_card_resources(card);
- 		if (!unregister)
+ 	return 0;
 -- 
 2.20.1
 
