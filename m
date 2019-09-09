@@ -6,68 +6,61 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D082C4360D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 00:19:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADB00C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 00:32:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D82F216C8
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 00:19:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3464720828
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 00:32:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pteGkwiM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D82F216C8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DgPgE+a4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3464720828
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2422B15E2;
-	Mon,  9 Sep 2019 02:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2422B15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D6C915E4;
+	Mon,  9 Sep 2019 02:31:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D6C915E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1567988370;
-	bh=s+lrRQjwCgpEIJeD+gz+Y8dbztSo5DBIN8qQ/wk/66Q=;
+	s=default; t=1567989150;
+	bh=9t70v1Ru1FdKbFetF4kkbehC4fexEWjX3EgGJKMy7OE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pteGkwiMDukEwGovM4yRSBstViRL9smFZx/jHFdqz1V97WZKhZ98BK+2/H7le7wgX
-	 B5Rwk1qgcLMYfxRTQpAgPynuwtKERfRS51T4O/q3TKt4lbnfQP1PaKLuvpxHCeHe45
-	 Kd7vEn2mKC5uJ+iW+TyfedygBgozBecuBY/U+sgo=
+	b=DgPgE+a42tnZJbg7834TgD2ZS6mrDpyodnC19nzifuf1gp0kEoLlxl04k5xHfg652
+	 NyRiWFOMHNmWe3bujMONx/K3e4Melp6ovXYdC+r9yfquXmxjlDHMaee+foETm4iiGQ
+	 LKf7WVqQtf/iwdV/Lr6uHRszu/UgqIXOvQmMVbms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72DC9F802DF;
-	Mon,  9 Sep 2019 02:18:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D433DF802DF;
+	Mon,  9 Sep 2019 02:31:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FDADF80368; Mon,  9 Sep 2019 02:18:37 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 31CBBF800E6
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 02:18:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31CBBF800E6
-Date: 09 Sep 2019 09:18:27 +0900
-X-IronPort-AV: E=Sophos;i="5.64,483,1559487600"; d="scan'208";a="26053095"
+ id 51316F80368; Mon,  9 Sep 2019 02:31:38 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 57325F800E6
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 02:31:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57325F800E6
+Date: 09 Sep 2019 09:31:28 +0900
+X-IronPort-AV: E=Sophos;i="5.64,483,1559487600"; d="scan'208";a="25835082"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 09 Sep 2019 09:18:27 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 09 Sep 2019 09:31:28 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8BCB64106B54;
- Mon,  9 Sep 2019 09:18:27 +0900 (JST)
-Message-ID: <87y2yy5nl8.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2F791410CD53;
+ Mon,  9 Sep 2019 09:31:28 +0900 (JST)
+Message-ID: <87woei5mzj.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Curtis Malainey <cujomalainey@chromium.org>
-In-Reply-To: <20190906194636.217881-7-cujomalainey@chromium.org>
-References: <20190906194636.217881-1-cujomalainey@chromium.org>
- <20190906194636.217881-7-cujomalainey@chromium.org>
+To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+In-Reply-To: <20190907174501.19833-1-katsuhiro@katsuster.net>
+References: <20190907174501.19833-1-katsuhiro@katsuster.net>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>,
- Steve Winslow <swinslow@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Allison Randal <allison@lohutok.net>
-Subject: Re: [alsa-devel] [RFC 06/15] ASoC: bdw-rt5677: Add a DAI link for
-	rt5677 SPI PCM device
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH] SoC: simple-card-utils: set 0Hz to sysclk
+	when shutdown
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,47 +79,47 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Curtis
+Hi Katsuhiro
 
-> From: Ben Zhang <benzh@chromium.org>
+> This patch set 0Hz to sysclk when shutdown the card.
 > 
-> This link is needed for the RT5677 DSP to do hotwording
+> Some codecs set rate constraints that derives from sysclk. This
+> mechanism works correctly if machine drivers give fixed frequency.
 > 
-> Signed-off-by: Ben Zhang <benzh@chromium.org>
-> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+> But simple-audio and audio-graph card set variable clock rate if
+> 'mclk-fs' property exists. In this case, rate constraints will go
+> bad scenario. For example a codec accepts three limited rates
+> (mclk / 256, mclk / 384, mclk / 512).
+> 
+> Bad scenario as follows (mclk-fs = 256):
+>    - Initialize sysclk by correct value (Ex. 12.288MHz)
+>      - Codec set constraints of PCM rate by sysclk
+>        48kHz (1/256), 32kHz (1/384), 24kHz (1/512)
+>    - Play 48kHz sound, it's acceptable
+>    - Sysclk is not changed
+> 
+>    - Play 32kHz sound, it's acceptable
+>    - Set sysclk to 8.192MHz (= fs * mclk-fs = 32k * 256)
+>      - Codec set constraints of PCM rate by sysclk
+>        32kHz (1/256), 21.33kHz (1/384), 16kHz (1/512)
+> 
+>    - Play 48kHz again, but it's NOT acceptable because constraints
+>      do not allow 48kHz
+> 
+> So codecs treat 0Hz sysclk as signal of applying no constraints to
+> avoid this problem.
+> 
+> Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 > ---
-(snip)
-> +/* Wake on voice interface */
-> +SND_SOC_DAILINK_DEF(fe_dsp,
-> +	DAILINK_COMP_ARRAY(COMP_CPU("spi-RT5677AA:00")));
-> +
-> +SND_SOC_DAILINK_DEF(platform_dsp,
-> +	DAILINK_COMP_ARRAY(COMP_PLATFORM("spi-RT5677AA:00")));
-> +
-> +SND_SOC_DAILINK_DEF(be_dsp,
-> +	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-dspbuffer")));
-> +
-(snip)
-> +	/* Non-DPCM links */
-> +	{
-> +		.name = "Codec DSP",
-> +		.stream_name = "Wake on Voice",
-> +		SND_SOC_DAILINK_REG(fe_dsp, be_dsp, platform_dsp),
-> +	},
 
-If you don't need to re-use CPU/Codec/Platform definition,
-I guess you can use more short version?
+I'm not 100% understand your issue.
+.hw_params (= set mclk/sysclk) is not called in bad case ??
+Or it is called but Codec driver ignores it somehow ??
 
-SND_SOC_DAILINK_DEFS(dsp,
-	DAILINK_COMP_ARRAY(COMP_CPU("spi-RT5677AA:00")),
-	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-dspbuffer")),
-	DAILINK_COMP_ARRAY(COMP_PLATFORM("spi-RT5677AA:00")));
-
- struct snd_soc_dai_link link = {
-	...
-	SND_SOC_DAILINK_REG(dsp),
- };
-
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
