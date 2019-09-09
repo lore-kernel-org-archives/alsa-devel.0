@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F9B8C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9DC0C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:52:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA48521479
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:51:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4439B21479
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:52:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ild1QgBv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DKSsyOIU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA48521479
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mv58UrvX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="OKofNxzw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4439B21479
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F7BD16B6;
-	Mon,  9 Sep 2019 12:50:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F7BD16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86AA916BD;
+	Mon,  9 Sep 2019 12:51:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86AA916BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568026302;
-	bh=UwHopyEbw7+AhO64eKTbw4ExuHJaiqZCBJ39eLusr/8=;
+	s=default; t=1568026354;
+	bh=jLNBJ36OApaaSx67IVxJabhkxRZMfYHBwNOVW1E6tjc=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ild1QgBvtE60MPsBCykqk4U3KbQRa09myMtUeujysMvficIYEehliaixtRTcsHxlJ
-	 mUoazW9+rZpoWDfA2Cg83UM7nlYa7+iMYzXfS1lbgz2GdlgT2241Or72SIdgJhCdui
-	 8NtI3+mXv5fb8MzcLSaFSFOcskn9CziU1ILWPQYI=
+	b=mv58UrvXu7Ic0nOwq34vpQKKrTQMQl66SAXwllOU3XGDY3BPXkiaPZyHdDLJI77z1
+	 yPgmOOUDrnIpPEJCQ1EgegKLvfk7FZ5TcZouyxA2mkSsd5xufl7GdtsAddIErvKOyb
+	 wh0tDyeXIGejT8ATq4BhCo5qOb3VRf1lS0pRb3aY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC851F8075C;
-	Mon,  9 Sep 2019 12:38:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF316F80768;
+	Mon,  9 Sep 2019 12:39:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42FE4F804CF; Mon,  9 Sep 2019 12:35:43 +0200 (CEST)
+ id 7AA21F805FA; Mon,  9 Sep 2019 12:35:12 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88603F80610
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:35:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88603F80610
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1055EF805FF
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1055EF805FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="DKSsyOIU"
+ header.b="OKofNxzw"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=djvY+i2UzgcbRSAUOr2kADC1kL7iS9x3vEBiyVHbBsI=; b=DKSsyOIUyvNQ
- 2lG6Z5i6RrpvLO8m2M4FI/JXo0NiVysO45eoYpFqd0CV4lhqzdrCmZORzkGKRA+XMFbcXCRJ3ql5i
- Q32XVh5KYGh9JxRa+1CfQx0OOkzMvmOqC1mU2YQYUatcLbd4oyitFRBPi6xwpYcBUJdfNr8NlB5/b
- cVze0=;
+ List-Archive; bh=fz7+l4mvjmBGnncqCQaE1IroNLPzbIpEwubBbuwFycU=; b=OKofNxzwgeMB
+ RjzlnjjZm+sg2yPgcy83XL8TKLDZSBR5PVfY+5f35DX8g/8nvyHFIk3kNQC61nk09OtZUMk/wEt0e
+ 81gzTcFjaDf6Zk5h7oiozu+Ssk+Ox7EYi+20xfeRXxqt4pV6xtsWEACJ1okCe3sTrG04AdO4iAxHV
+ cxwZY=;
 Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1i7GZo-0001rI-QI; Mon, 09 Sep 2019 10:07:16 +0000
+ id 1i7GZo-0001rG-Md; Mon, 09 Sep 2019 10:07:16 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 3C9FFD02D4C; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
+ id 16CC7D02D1F; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87tv9sor1b.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r24wor0z.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190909100716.3C9FFD02D4C@fitzroy.sirena.org.uk>
+Message-Id: <20190909100716.16CC7D02D1F@fitzroy.sirena.org.uk>
 Date: Mon,  9 Sep 2019 11:07:16 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 Subject: [alsa-devel] Applied "ASoC: soc-core: self contained
-	soc_bind_aux_dev()" to the asoc tree
+	soc_unbind_aux_dev()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: self contained soc_bind_aux_dev()
+   ASoC: soc-core: self contained soc_unbind_aux_dev()
 
 has been applied to the asoc tree at
 
@@ -120,89 +120,84 @@ to this mail.
 Thanks,
 Mark
 
-From bee886f1ea9d9e58bef8204c543a409c399f8744 Mon Sep 17 00:00:00 2001
+From e8fbd2505242467044ec51bf57c642a50ed28a14 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 4 Sep 2019 09:15:28 +0900
-Subject: [PATCH] ASoC: soc-core: self contained soc_bind_aux_dev()
+Date: Wed, 4 Sep 2019 09:15:40 +0900
+Subject: [PATCH] ASoC: soc-core: self contained soc_unbind_aux_dev()
 
-Current soc_bind_aux_dev() implementation is very half,
+Current soc_unbind_aux_dev() implementation is very half,
 thus it is very unreadable.
 
-	for_each_card_pre_auxs(xxx) {
-=>		ret = soc_bind_aux_dev(xxx);
-		...
+	for_each_comp_order(order) {
+		for_each_card_auxs_safe(card, comp, _comp) {
+
+(1)			if (comp->driver->remove_order == order) {
+				...
+=>				soc_unbind_aux_dev(comp);
+			}
 	}
 
-This patch does all for_each_xxx() under soc_bind_aux_dev(),
-and makes it to self contained.
+soc_unbind_aux_dev() itself is not related to remove_order (1).
+And, it is called from soc_remove_aux_devices(), even though
+its paired function soc_bind_aux_dev() is called from
+snd_soc_instantiate_card().
+It is very unbalance, and very difficult to understand.
+
+This patch do
+1) update soc_bind_aux_dev() to self contained
+2) call it from soc_cleanup_card_resources() to make up balance
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87tv9sor1b.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87r24wor0z.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+ sound/soc/soc-core.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 20381f69a34b..d7761df03e19 100644
+index 2960070e68bc..35f48e9c5ead 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1559,20 +1559,22 @@ static int soc_link_init(struct snd_soc_card *card,
+@@ -1559,10 +1559,14 @@ static int soc_link_init(struct snd_soc_card *card,
  	return ret;
  }
  
--static int soc_bind_aux_dev(struct snd_soc_card *card,
--			    struct snd_soc_aux_dev *aux_dev)
-+static int soc_bind_aux_dev(struct snd_soc_card *card)
+-static void soc_unbind_aux_dev(struct snd_soc_component *component)
++static void soc_unbind_aux_dev(struct snd_soc_card *card)
  {
- 	struct snd_soc_component *component;
-+	struct snd_soc_aux_dev *aux;
-+	int i;
- 
--	/* codecs, usually analog devices */
--	component = soc_find_component(&aux_dev->dlc);
--	if (!component)
--		return -EPROBE_DEFER;
--
--	component->init = aux_dev->init;
--	/* see for_each_card_auxs */
--	list_add(&component->card_aux_list, &card->aux_comp_list);
-+	for_each_card_pre_auxs(card, i, aux) {
-+		/* codecs, usually analog devices */
-+		component = soc_find_component(&aux->dlc);
-+		if (!component)
-+			return -EPROBE_DEFER;
- 
-+		component->init = aux->init;
-+		/* see for_each_card_auxs */
-+		list_add(&component->card_aux_list, &card->aux_comp_list);
+-	component->init = NULL;
+-	list_del(&component->card_aux_list);
++	struct snd_soc_component *component, *_component;
++
++	for_each_card_auxs_safe(card, component, _component) {
++		component->init = NULL;
++		list_del(&component->card_aux_list);
 +	}
- 	return 0;
  }
  
-@@ -1937,7 +1939,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_dai_link *dai_link;
--	struct snd_soc_aux_dev *aux;
- 	int ret, i;
+ static int soc_bind_aux_dev(struct snd_soc_card *card)
+@@ -1614,12 +1618,8 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
  
- 	mutex_lock(&client_mutex);
-@@ -1965,11 +1966,9 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	for_each_comp_order(order) {
+ 		for_each_card_auxs_safe(card, comp, _comp) {
+-
+-			if (comp->driver->remove_order == order) {
++			if (comp->driver->remove_order == order)
+ 				soc_remove_component(comp);
+-				/* remove it from the card's aux_comp_list */
+-				soc_unbind_aux_dev(comp);
+-			}
+ 		}
  	}
+ }
+@@ -1932,6 +1932,7 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
  
- 	/* bind aux_devs too */
--	for_each_card_pre_auxs(card, i, aux) {
--		ret = soc_bind_aux_dev(card, aux);
--		if (ret != 0)
--			goto probe_end;
--	}
-+	ret = soc_bind_aux_dev(card);
-+	if (ret < 0)
-+		goto probe_end;
+ 	/* remove auxiliary devices */
+ 	soc_remove_aux_devices(card);
++	soc_unbind_aux_dev(card);
  
- 	/* add predefined DAI links to the list */
- 	for_each_card_prelinks(card, i, dai_link) {
+ 	snd_soc_dapm_free(&card->dapm);
+ 	soc_cleanup_card_debugfs(card);
 -- 
 2.20.1
 
