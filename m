@@ -2,78 +2,95 @@ Return-Path: <SRS0=MTqT=XE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC646C4740A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 13:55:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E81C3C4740A
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 15:51:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 550DA2086D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 13:55:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ED97A21920
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 15:51:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UBQJ6knr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ARz4SXX/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 550DA2086D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A7Kg6uvi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="lC+cp9BN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED97A21920
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89C24166E;
-	Mon,  9 Sep 2019 15:54:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89C24166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0F171614;
+	Mon,  9 Sep 2019 17:50:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0F171614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568037344;
-	bh=X9j3LazPeI9JU043BY8EHYFmxOtsFo2kfyGgnaRrJnA=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=UBQJ6knr3Ro/PRK4GZF5WUN102GRTxy5aP4SlIEXjuu+VJVclFNPJe+VaxNvqk04Q
-	 iKU0nSzv4uVPuwS4dpnfdt0Ixy8NJFkYdWWxnUUH/zF5xZIpUopVZ2WHxTk86gNJON
-	 ouAhRTdfep+jcAW4Mu3UmoJrz13wERD8NwS3odB0=
+	s=default; t=1568044303;
+	bh=qc+G/5TpT++uJ9hU57fakfWuwMqLC3fmlmjUCXoGU94=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=A7Kg6uvi0gH2hHUEFY/CbWx/dw9/ti4fuagMDuQtn8pZnEhe4wpIuWCMWKkse48YJ
+	 nHhZgWfocvFeqLOpXJRPbXyToh2deOPYRLZoAD89krf8BfK5DomNlBpavp/v4duCuw
+	 TLzLqUqhInTYFaaWa+Mo0ZJKF+m8MhXqyVTMdvaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CE4BF804FE;
-	Mon,  9 Sep 2019 15:54:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14030F800E6;
+	Mon,  9 Sep 2019 17:50:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C2ADF80507; Mon,  9 Sep 2019 15:54:19 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 544A3F80323; Mon,  9 Sep 2019 17:50:51 +0200 (CEST)
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com
+ [IPv6:2607:f8b0:4864:20::72d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27482F804FD
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 15:54:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27482F804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9797F80094
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 17:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9797F80094
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ARz4SXX/"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Qe3r8MnxDyYVFcmfbG3NmKXyw//zrbIcyyoX9TwiFGc=; b=ARz4SXX/dysa
- pdo827JpEc6IfI8Co360+T9D1GKrAsE94Rdz+DLLJY7RI1t4h3SXZWNWGBCFrqin6eyN/x+7mY3VV
- MjB4osmIAIRoU/seTUowVFF13punmaVqMl0PE9nxzo/rdL8oB/1tRXUxau8HhzuhRRrt5C3JL/zBs
- xNGxM=;
-Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1i7K7U-0002ZX-Ew; Mon, 09 Sep 2019 13:54:16 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 9B261D02D3E; Mon,  9 Sep 2019 14:54:15 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-In-Reply-To: 
-X-Patchwork-Hint: ignore
-Message-Id: <20190909135415.9B261D02D3E@fitzroy.sirena.org.uk>
-Date: Mon,  9 Sep 2019 14:54:15 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: hdmi-codec: Add an op to set callback
-	function for plug event" to the asoc tree
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="lC+cp9BN"
+Received: by mail-qk1-x72d.google.com with SMTP id o11so13533669qkg.8
+ for <alsa-devel@alsa-project.org>; Mon, 09 Sep 2019 08:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Whq92RMWvvWOFqL3cMJEMEw9upOgAoKf1e5pG8C4VOY=;
+ b=lC+cp9BNoaOM/oWbyR8oD9L4fSFvVo+4IevYjCiY8uPxx3E/JhBZLPKGgit07ULOqS
+ 4OsyqnjFKjdZ3gq2MvYHWE7bV6oj7Gme/Dc0sa7c0k64TTxEfwRXMFcqaMymxEi+FRCe
+ uoPT3uXjz0CzoW4Q+W20Cy+hCvfKWhThrxDXPGIzUa2tw+8XE6nyPInH4c2JHTo3XeHO
+ ZWSJDUQsxfsqGm4VdUwym0HZ8/6PBgXhI2b5SSROYruqGmciNtSQ5FSd0nmed64CQA4/
+ xCspNRw3NRxdxNF9Y/eJ9QHvyh0KZOBos03cvgzaE5JkngjhT2QKz4uMa7w2uXA78p5W
+ YzPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Whq92RMWvvWOFqL3cMJEMEw9upOgAoKf1e5pG8C4VOY=;
+ b=PuxGEMOSEouJM93kNSSLs78bEg6jUKFAtNpEaW+2WLvfXRzlRbw4uGeGEs50lU4bYm
+ T4DBFThKPSPXEqWDNcjqAxsg+lsUwMq4VhyD3Jsv8bEm4kvaHmhucxbi8zDeqKX8Nslz
+ e6S3PZs/Oogq0n0Em+Az+7kFeLIFRXYxAT/ppE3YL8Whh4i8LIkq3YTv658CkS0LdKfz
+ 1PwffZleKj9fMBHqRSGynKnlj9UCVfX9AKDs1zBG/r8MTTv1dihq9M/yT/ropzTbh8oc
+ aqrTyNUecHqfpfXpVihb2jT6EhHDCNHsjQpi0cla3k5ticvpC6mEsMTJKLoqL7fmvfEX
+ oPOA==
+X-Gm-Message-State: APjAAAV05dQ/6QegBDCoFG6s9ALa/sB6Tp8y8PAvYk+I1qaI4QFpmt3C
+ IOGk/H2GAIJZFDVkPfBqFut8hprzXHq84yM+2Eki2w==
+X-Google-Smtp-Source: APXvYqxtNtlPMpLl2QhXAKD9GzPzYv1jpoHO8k3jnH9yACXIqJd+oaQ2f4FE32G0otIK7fV/NlUadXME41Q7Muo7gzQ=
+X-Received: by 2002:a37:a106:: with SMTP id k6mr22748487qke.158.1568044245494; 
+ Mon, 09 Sep 2019 08:50:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190906194636.217881-1-cujomalainey@chromium.org>
+ <20190906194636.217881-3-cujomalainey@chromium.org>
+ <20190909095405.GA24341@sirena.org.uk>
+In-Reply-To: <20190909095405.GA24341@sirena.org.uk>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Mon, 9 Sep 2019 08:50:34 -0700
+Message-ID: <CAOReqxhrc7R9-ReuBggcHqiAGjuqxpON-fR+4gMxyBagPczhxA@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+ ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>,
+ Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
+Subject: Re: [alsa-devel] [RFC 02/15] ASoC: rt5677: keep analog power
+	register at SND_SOC_BIAS_OFF
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,175 +103,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Mon, Sep 9, 2019 at 2:54 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Sep 06, 2019 at 12:46:24PM -0700, Curtis Malainey wrote:
+> > From: Ben Zhang <benzh@chromium.org>
+> >
+> > Instead of clearing RT5677_PWR_ANLG2 (MX-64h) to 0 at SND_SOC_BIAS_OFF,
+> > we only clear the RT5677_PWR_CORE bit which is set at SND_SOC_BIAS_PREPARE.
+> > MICBIAS control bits are left unchanged.
+>
+> This is a bug fix so should have been at the start of the series
+> rather than depending on the naming changes you had as patch 1.
 
-   ASoC: hdmi-codec: Add an op to set callback function for plug event
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 6fa5963c37a2e3335eba0b7455e35a01318ebc15 Mon Sep 17 00:00:00 2001
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Date: Wed, 17 Jul 2019 16:33:23 +0800
-Subject: [PATCH] ASoC: hdmi-codec: Add an op to set callback function for plug
- event
-
-Add an op in hdmi_codec_ops so codec driver can register callback
-function to handle plug event.
-
-Driver in DRM can use this callback function to report connector status.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Link: https://lore.kernel.org/r/20190717083327.47646-2-cychiang@chromium.org
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/hdmi-codec.h    | 17 +++++++++++++
- sound/soc/codecs/hdmi-codec.c | 46 +++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
-
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 7fea496f1f34..83b17682e01c 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -47,6 +47,9 @@ struct hdmi_codec_params {
- 	int channels;
- };
- 
-+typedef void (*hdmi_codec_plugged_cb)(struct device *dev,
-+				      bool plugged);
-+
- struct hdmi_codec_pdata;
- struct hdmi_codec_ops {
- 	/*
-@@ -88,6 +91,14 @@ struct hdmi_codec_ops {
- 	 */
- 	int (*get_dai_id)(struct snd_soc_component *comment,
- 			  struct device_node *endpoint);
-+
-+	/*
-+	 * Hook callback function to handle connector plug event.
-+	 * Optional
-+	 */
-+	int (*hook_plugged_cb)(struct device *dev, void *data,
-+			       hdmi_codec_plugged_cb fn,
-+			       struct device *codec_dev);
- };
- 
- /* HDMI codec initalization data */
-@@ -99,6 +110,12 @@ struct hdmi_codec_pdata {
- 	void *data;
- };
- 
-+struct snd_soc_component;
-+struct snd_soc_jack;
-+
-+int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
-+			       struct snd_soc_jack *jack);
-+
- #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
- 
- #endif /* __HDMI_CODEC_H__ */
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 0bf1c8cad108..b5fd8f08726e 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -7,6 +7,7 @@
- #include <linux/module.h>
- #include <linux/string.h>
- #include <sound/core.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -274,6 +275,8 @@ struct hdmi_codec_priv {
- 	struct snd_pcm_chmap *chmap_info;
- 	unsigned int chmap_idx;
- 	struct mutex lock;
-+	struct snd_soc_jack *jack;
-+	unsigned int jack_status;
- };
- 
- static const struct snd_soc_dapm_widget hdmi_widgets[] = {
-@@ -663,6 +666,49 @@ static int hdmi_dai_probe(struct snd_soc_dai *dai)
- 	return 0;
- }
- 
-+static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
-+				   unsigned int jack_status)
-+{
-+	if (hcp->jack && jack_status != hcp->jack_status) {
-+		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-+		hcp->jack_status = jack_status;
-+	}
-+}
-+
-+static void plugged_cb(struct device *dev, bool plugged)
-+{
-+	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
-+
-+	if (plugged)
-+		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
-+	else
-+		hdmi_codec_jack_report(hcp, 0);
-+}
-+
-+/**
-+ * hdmi_codec_set_jack_detect - register HDMI plugged callback
-+ * @component: the hdmi-codec instance
-+ * @jack: ASoC jack to report (dis)connection events on
-+ */
-+int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
-+			       struct snd_soc_jack *jack)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+	int ret = -EOPNOTSUPP;
-+
-+	if (hcp->hcd.ops->hook_plugged_cb) {
-+		hcp->jack = jack;
-+		ret = hcp->hcd.ops->hook_plugged_cb(component->dev->parent,
-+						    hcp->hcd.data,
-+						    plugged_cb,
-+						    component->dev);
-+		if (ret)
-+			hcp->jack = NULL;
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
-+
- static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
- {
- 	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
--- 
-2.20.1
-
+Got it, will send bug fixes to the bottom of future series.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
