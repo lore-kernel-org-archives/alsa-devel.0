@@ -2,84 +2,79 @@ Return-Path: <SRS0=MTqT=XE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10E2DC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B48F2C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:49:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CAF621A4A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:49:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B83321479
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:49:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jacg3XHO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="s8n7ysqp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CAF621A4A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jGzdbnDa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Hnyuz8vj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B83321479
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AC801697;
-	Mon,  9 Sep 2019 12:48:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AC801697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CB0516A2;
+	Mon,  9 Sep 2019 12:48:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CB0516A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568026145;
-	bh=r/jNkDT8vrQTFIY3eBP9SO7kEaetKhw0irPQdwMdo6Y=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jacg3XHORwowbJzE6UHD8A6LGMgiWnpXXuMzNJoNZSXk9WbHE3YMQqD0NdPFPNpA6
-	 hdwgpHYO2Z/HdUaIzIxbsKxOA7g42EpfZv7mpyg54gBsWYErqFvy5vvd+9VRfmq2Ze
-	 w7i/J8YTgr8Ne8p18sY+gseLB7jVvLibhx2f2fbo=
+	s=default; t=1568026184;
+	bh=GjYui1pB08wS5H6Cn+AkojX+FyKuK0O0UpUAsYcneu8=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=jGzdbnDapbnd6gktEx44xqWGA1q6Ys6M//yIFtPaMlL+Qjr56rZjc9THr05lokGHk
+	 Q72VG/C1nH12q1n4CLsdrpZVFkM0UHi9ANUGVmmx+olr0d8GCFzDSWCfGquMTvNyqs
+	 RIpMqSbg8dtDff9HhNPvMRaG6qjfOItN18NhY7/o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44A9FF80730;
-	Mon,  9 Sep 2019 12:38:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39191F8073C;
+	Mon,  9 Sep 2019 12:38:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8889F80610; Mon,  9 Sep 2019 12:35:28 +0200 (CEST)
+ id DDE20F80508; Mon,  9 Sep 2019 12:35:34 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9132AF805FA
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:35:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9132AF805FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 207B4F80634
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:35:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 207B4F80634
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="s8n7ysqp"
+ header.b="Hnyuz8vj"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=bCoYPwoACOe1ADyWJMnXzh8Y3ZmiccgqhIqgWRM+fi4=; b=s8n7ysqpWFdjnZVdjT2OwgEbF
- LHAXtJjvXEdPw2djWmBim3ljJjWp8L/voTreb5oc4BZ+ufcaBjfwWpqC3C1pYzcGYXOcSDPJqeMxL
- UP73Y0RBm1qLREDpwxMw60zqPAGHexQLf8hsOJC/+xCiW/ztqDV/P3AdpzSPzB+EkZ7sY=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=wldGqCtvKMbqMqsgNX7VQVn2kNaCJZADMkVhpWHSqho=; b=Hnyuz8vjHYBC
+ JaIH+nLsMfTDtsCVV2ilu6IOP2eFSXaVjp9cwMHoQQqpot4kPmPQYKLt3cUg6YrLwASu07/Zb07ee
+ BAxB8DUossOB0mCErxiFmpnPAF8x48z5I6c3DOeXrPrx6l1Ij6eddBwitSPbg08usQCLzsRivfvKs
+ T+qog=;
 Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1i7GN4-0001lL-OV; Mon, 09 Sep 2019 09:54:06 +0000
+ id 1i7GZp-0001rY-Fo; Mon, 09 Sep 2019 10:07:17 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 03C3ED02D18; Mon,  9 Sep 2019 10:54:05 +0100 (BST)
-Date: Mon, 9 Sep 2019 10:54:05 +0100
+ id C0313D02D1F; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Curtis Malainey <cujomalainey@chromium.org>
-Message-ID: <20190909095405.GA24341@sirena.org.uk>
-References: <20190906194636.217881-1-cujomalainey@chromium.org>
- <20190906194636.217881-3-cujomalainey@chromium.org>
-MIME-Version: 1.0
-In-Reply-To: <20190906194636.217881-3-cujomalainey@chromium.org>
-X-Cookie: Orders subject to approval.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Ben Zhang <benzh@chromium.org>, Bard Liao <bardliao@realtek.com>
-Subject: Re: [alsa-devel] [RFC 02/15] ASoC: rt5677: keep analog power
- register at SND_SOC_BIAS_OFF
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874l1sq5mx.wl-kuninori.morimoto.gx@renesas.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190909100716.C0313D02D1F@fitzroy.sirena.org.uk>
+Date: Mon,  9 Sep 2019 11:07:16 +0100 (BST)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-core: self contained
+	soc_probe_link_components()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,59 +87,129 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8986060358094839908=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============8986060358094839908==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
-Content-Disposition: inline
+   ASoC: soc-core: self contained soc_probe_link_components()
 
+has been applied to the asoc tree at
 
---HlL+5n6rz5pIUxbD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-On Fri, Sep 06, 2019 at 12:46:24PM -0700, Curtis Malainey wrote:
-> From: Ben Zhang <benzh@chromium.org>
->=20
-> Instead of clearing RT5677_PWR_ANLG2 (MX-64h) to 0 at SND_SOC_BIAS_OFF,
-> we only clear the RT5677_PWR_CORE bit which is set at SND_SOC_BIAS_PREPAR=
-E.
-> MICBIAS control bits are left unchanged.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This is a bug fix so should have been at the start of the series
-rather than depending on the naming changes you had as patch 1.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---HlL+5n6rz5pIUxbD
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl12IT0ACgkQJNaLcl1U
-h9BB9Qf9GTyZiKm3ZoFd207G91+AW1WX7s1aLfMKq5VZFBO9xIOLLitSW3ZRBgyJ
-AEcv+S6qbEeOiqWaVGHw5hVr9KNldEI2y00spU6rde8sd37bVtHN+XTJ0WFvHDWJ
-v0GA7iVMEKzoAmCTKafR/pCd566g0Boc9OaBGPbwgW5f7Kyx0PpSnudvkb2PzB2V
-9AA3zDTkV7a+qHtRSKCaArcNlaVtZpguXl/V/1IZihSL2ZOPhhoIfQFPwwUDFTTA
-Ur59non4JoXxqxAMPdLBHONBRlQOGZyyYQxnVB5uNGPUjRzh2h8HVfjSsbTys3IL
-q8Yu+QpwCx9nVDiODVDknrje/aT9fw==
-=U1HG
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---HlL+5n6rz5pIUxbD--
+From 62f07a6b6dbaf0e7196b6911111d4666b5d03518 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 4 Sep 2019 09:14:46 +0900
+Subject: [PATCH] ASoC: soc-core: self contained soc_probe_link_components()
 
---===============8986060358094839908==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Current soc_probe_link_components() implementation is very half,
+thus it is very difficult to read.
+
+	for_each_comp_order(xxx) {
+		for_each_card_rtds(xxx) {
+=>			ret = soc_probe_link_components(xxx);
+			...
+		}
+	}
+
+This patch does all for_each_xxx() under soc_probe_link_components(),
+and makes it to self contained.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/874l1sq5mx.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 05a2aff843aa..04b98e6c7b2a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1137,20 +1137,25 @@ static void soc_remove_link_components(struct snd_soc_card *card,
+ 	}
+ }
+ 
+-static int soc_probe_link_components(struct snd_soc_card *card,
+-				     struct snd_soc_pcm_runtime *rtd, int order)
++static int soc_probe_link_components(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_component *component;
++	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret;
++	int ret, order;
+ 
+-	for_each_rtdcom(rtd, rtdcom) {
+-		component = rtdcom->component;
++	for_each_comp_order(order) {
++		for_each_card_rtds(card, rtd) {
++			for_each_rtdcom(rtd, rtdcom) {
++				component = rtdcom->component;
+ 
+-		if (component->driver->probe_order == order) {
+-			ret = soc_probe_component(card, component);
+-			if (ret < 0)
+-				return ret;
++				if (component->driver->probe_order != order)
++					continue;
++
++				ret = soc_probe_component(card, component);
++				if (ret < 0)
++					return ret;
++			}
+ 		}
+ 	}
+ 
+@@ -1990,16 +1995,11 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	}
+ 
+ 	/* probe all components used by DAI links on this card */
+-	for_each_comp_order(order) {
+-		for_each_card_rtds(card, rtd) {
+-			ret = soc_probe_link_components(card, rtd, order);
+-			if (ret < 0) {
+-				dev_err(card->dev,
+-					"ASoC: failed to instantiate card %d\n",
+-					ret);
+-				goto probe_end;
+-			}
+-		}
++	ret = soc_probe_link_components(card);
++	if (ret < 0) {
++		dev_err(card->dev,
++			"ASoC: failed to instantiate card %d\n", ret);
++		goto probe_end;
+ 	}
+ 
+ 	/* probe auxiliary components */
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8986060358094839908==--
