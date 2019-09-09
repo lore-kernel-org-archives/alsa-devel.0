@@ -4,80 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BC6DC4740A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:41:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A977CC4740A
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:42:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9CC6421920
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:41:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2FB2B21A4A
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 10:42:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s2F0cXtk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="cvRrHwcT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CC6421920
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjDctZqq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BriNSMkm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FB2B21A4A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA6CB1677;
-	Mon,  9 Sep 2019 12:40:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA6CB1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54F37167A;
+	Mon,  9 Sep 2019 12:41:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54F37167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568025698;
-	bh=nxJyIO6ZuTP0IlxrqTU6v25nKdz0VFm1ZTQhApHG6UA=;
+	s=default; t=1568025752;
+	bh=DRLM6uAH+OAfnbEZkn7DwC7MckY5fTqk2OPWjtxqnxk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=s2F0cXtkWTObUrdWWc6QQCcomEdJzWkRY9NQtzWJgRED8Or7Nr7Egxu0EPksSDu+m
-	 VKJ+oCPnhG/64BgTwEf+NYWGQ5zIkwm1TPSiyRgsrnL6AoYEPV5DaboIhuykF5t69d
-	 u6jgG8IOGYn7/ZUkovmGPYdv0nVVI1xLyYLEKq2Q=
+	b=IjDctZqqVCu/9g3vxUnhNBay28Apqcv+IGJeGUUe3o7fV+3wq/ywntGk8BlfjdULF
+	 J4aifLukUo3gbuEk5mKmNc0YcQgAHLyiwNGjQSuf6pIiS/mkE3hwxXccz6mTttaxeI
+	 OLgoumfrqifErpIiBsBaSdusFwuJQhjvtSOcRin8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E46DFF8065C;
-	Mon,  9 Sep 2019 12:36:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68675F80094;
+	Mon,  9 Sep 2019 12:37:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 884AEF80519; Mon,  9 Sep 2019 12:34:40 +0200 (CEST)
+ id C8148F805FA; Mon,  9 Sep 2019 12:34:49 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00992F805F9
- for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:34:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00992F805F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id D76B2F805F9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 12:34:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D76B2F805F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="cvRrHwcT"
+ header.b="BriNSMkm"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=9uQmw9sjvz89Eru9ZYv1A879KgTMUISbQLDP31z5hNY=; b=cvRrHwcTIAil
- qKhcsM7ViyOJjdeKbiNmL53VA81hSIvPIPB1bynw5WGz62uRAKR5GIxKLuajpx/oCapN3N9Ibgya1
- ml6E+3dhJFSdrOR2g/kaQ45hHnozCucnZmh52VURKw0ETmOwLCKJclva3AzU026q2xE8frw9FD+Ai
- HfOJU=;
+ List-Archive; bh=PrMOKCG5z/IXyKvet83c7NQneUat6o375iAado13I2Y=; b=BriNSMkmwSpy
+ 9ZYULUcpqOdhKT194/phNl7up50i90aEpxQpAF3X1NyqANJpiWMe9WgO3T2u9H2ODL7QMR8l4cX0n
+ MkfE4z00x+cvsAlTuKXFRyLLq4ewqvDumz5taQolj8pmmCo9FYe+cdenheyHO7dJsp05cfLuplity
+ hTlXo=;
 Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1i7GZp-0001s2-Uf; Mon, 09 Sep 2019 10:07:18 +0000
+ id 1i7GZo-0001rJ-U3; Mon, 09 Sep 2019 10:07:16 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 42504D02D7F; Mon,  9 Sep 2019 11:07:17 +0100 (BST)
+ id 4F6E0D02D52; Mon,  9 Sep 2019 11:07:16 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <20190906161404.1440-1-colin.king@canonical.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v9u8or1g.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20190909100717.42504D02D7F@fitzroy.sirena.org.uk>
-Date: Mon,  9 Sep 2019 11:07:17 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: codecs: ad193x: make two arrays static
-	const, makes object smaller" to the asoc tree
+Message-Id: <20190909100716.4F6E0D02D52@fitzroy.sirena.org.uk>
+Date: Mon,  9 Sep 2019 11:07:16 +0100 (BST)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-core: move soc_probe_link_dais()
+	next to soc_remove_link_dais()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: codecs: ad193x: make two arrays static const, makes object smaller
+   ASoC: soc-core: move soc_probe_link_dais() next to soc_remove_link_dais()
 
 has been applied to the asoc tree at
 
@@ -123,54 +120,104 @@ to this mail.
 Thanks,
 Mark
 
-From 78b93b04771bdbefe94b84222506ba992f579c98 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 6 Sep 2019 17:14:04 +0100
-Subject: [PATCH] ASoC: codecs: ad193x: make two arrays static const, makes
- object smaller
+From bc7c16c226a919a509e4161c905bfe9981a17f02 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 4 Sep 2019 09:15:23 +0900
+Subject: [PATCH] ASoC: soc-core: move soc_probe_link_dais() next to
+ soc_remove_link_dais()
 
-Don't populate the arrays on the stack but instead make them
-static const. Makes the object code smaller by 37 bytes.
+It is easy to read code if it is cleanly using paired function/naming,
+like start <-> stop, register <-> unregister, etc, etc.
+But, current ALSA SoC code is very random, unbalance, not paired, etc.
+It is easy to create bug at the such code, and it will be difficult to
+debug.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  16253	   7200	      0	  23453	   5b9d	sound/soc/codecs/ad193x.o
+This patch moves soc_probe_link_dais() next to soc_remove_link_dais()
+which is paired function.
 
-After:
-   text	   data	    bss	    dec	    hex	filename
-  16056	   7360	      0	  23416	   5b78	sound/soc/codecs/ad193x.o
-
-(gcc version 9.2.1, amd64)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20190906161404.1440-1-colin.king@canonical.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v9u8or1g.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 58 ++++++++++++++++++++++----------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index fb04c9379b71..980e024a5720 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -416,7 +416,7 @@ static struct snd_soc_dai_driver ad193x_no_adc_dai = {
- /* codec register values to set after reset */
- static void ad193x_reg_default_init(struct ad193x_priv *ad193x)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 36b86e3c193c..20381f69a34b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1149,6 +1149,35 @@ static void soc_remove_link_dais(struct snd_soc_card *card)
+ 	}
+ }
+ 
++static int soc_probe_link_dais(struct snd_soc_card *card)
++{
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_pcm_runtime *rtd;
++	int i, order, ret;
++
++	for_each_comp_order(order) {
++		for_each_card_rtds(card, rtd) {
++
++			dev_dbg(card->dev,
++				"ASoC: probe %s dai link %d late %d\n",
++				card->name, rtd->num, order);
++
++			ret = soc_probe_dai(rtd->cpu_dai, order);
++			if (ret)
++				return ret;
++
++			/* probe the CODEC DAI */
++			for_each_rtd_codec_dai(rtd, i, codec_dai) {
++				ret = soc_probe_dai(codec_dai, order);
++				if (ret)
++					return ret;
++			}
++		}
++	}
++
++	return 0;
++}
++
+ static void soc_remove_link_components(struct snd_soc_card *card)
  {
--	const struct reg_sequence reg_init[] = {
-+	static const struct reg_sequence reg_init[] = {
- 		{  0, 0x99 },	/* PLL_CLK_CTRL0: pll input: mclki/xi 12.288Mhz */
- 		{  1, 0x04 },	/* PLL_CLK_CTRL1: no on-chip Vref */
- 		{  2, 0x40 },	/* DAC_CTRL0: TDM mode */
-@@ -432,7 +432,7 @@ static void ad193x_reg_default_init(struct ad193x_priv *ad193x)
- 		{ 12, 0x00 },	/* DAC_L4_VOL: no attenuation */
- 		{ 13, 0x00 },	/* DAC_R4_VOL: no attenuation */
- 	};
--	const struct reg_sequence reg_adc_init[] = {
-+	static const struct reg_sequence reg_adc_init[] = {
- 		{ 14, 0x03 },	/* ADC_CTRL0: high-pass filter enable */
- 		{ 15, 0x43 },	/* ADC_CTRL1: sata delay=1, adc aux mode */
- 		{ 16, 0x00 },	/* ADC_CTRL2: reset */
+ 	struct snd_soc_component *component;
+@@ -1452,35 +1481,6 @@ static int soc_link_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
+ 	return 0;
+ }
+ 
+-static int soc_probe_link_dais(struct snd_soc_card *card)
+-{
+-	struct snd_soc_dai *codec_dai;
+-	struct snd_soc_pcm_runtime *rtd;
+-	int i, order, ret;
+-
+-	for_each_comp_order(order) {
+-		for_each_card_rtds(card, rtd) {
+-
+-			dev_dbg(card->dev,
+-				"ASoC: probe %s dai link %d late %d\n",
+-				card->name, rtd->num, order);
+-
+-			ret = soc_probe_dai(rtd->cpu_dai, order);
+-			if (ret)
+-				return ret;
+-
+-			/* probe the CODEC DAI */
+-			for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-				ret = soc_probe_dai(codec_dai, order);
+-				if (ret)
+-					return ret;
+-			}
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+ static int soc_link_init(struct snd_soc_card *card,
+ 			 struct snd_soc_pcm_runtime *rtd)
+ {
 -- 
 2.20.1
 
