@@ -2,67 +2,64 @@ Return-Path: <SRS0=MTqT=XE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9D17C4740A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 17:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DEDDC4740C
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 17:48:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E67C021479
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 17:45:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E19F221924
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Sep 2019 17:48:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DxO0eHqw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E67C021479
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SZSRg3nE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E19F221924
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0EDD165D;
-	Mon,  9 Sep 2019 19:44:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0EDD165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D399515F9;
+	Mon,  9 Sep 2019 19:48:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D399515F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568051107;
-	bh=j3rIXO9lMqvaEuth9WbQbMmCHlFJn18By6Fh3wsm58M=;
+	s=default; t=1568051334;
+	bh=ucPOKc9uNdZbANrcG5NPzJlbdLywT/0snosFbVz6nnI=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DxO0eHqwN4QFj0Z1F96mY24s7KmOdrvUb/LcEM2xuOwGKd3rtGCltpgSAtPDL2TuO
-	 5zaeMNBQaQbanRwA29xYYj6V6Yby62hhS9BxZaIPbND1rGQd207whRBO/WnjzYR7Yw
-	 gos/hgSHxmSk6T8n4Old+OUean21u0CDqArdyM8M=
+	b=SZSRg3nElXqP12brqQKU4z29IcwEeIbwL7GSZdK+7sKF22UkSOn7l6rHOnnBRMBpb
+	 7UI7xZ5+s1T3Il/AuRvi+KXuZkgAzKpC8bVqefz5KhSXMPdRv/W7wmG/OOHb2pDSDO
+	 5+LRRhA/zpl3eRoJUBY9yUFNO1GOB2HN+xXDPXsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CDCBF800E6;
-	Mon,  9 Sep 2019 19:44:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54CF1F800A9;
+	Mon,  9 Sep 2019 19:48:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8353F80323; Mon,  9 Sep 2019 19:44:15 +0200 (CEST)
+ id 415ACF80323; Mon,  9 Sep 2019 19:48:02 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59ECDF800A9
- for <Alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 19:44:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59ECDF800A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4572F800A9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Sep 2019 19:47:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4572F800A9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B8FEBAC18;
- Mon,  9 Sep 2019 17:44:11 +0000 (UTC)
-Date: Mon, 09 Sep 2019 19:44:11 +0200
-Message-ID: <s5hzhjd9xg4.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 9EC4BAF2B;
+ Mon,  9 Sep 2019 17:47:58 +0000 (UTC)
+Date: Mon, 09 Sep 2019 19:47:58 +0200
+Message-ID: <s5hwoeh9x9t.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Hofman <pavhofman@gmail.com>
-In-Reply-To: <CA+SWvNyUAyBQd9ktaZpvV8R7XcK8opA1_VQeMEnPfmr6jcSANQ@mail.gmail.com>
-References: <CA+SWvNx9hGJN0v9erykioJUKyd726VzfP4b77u0RUHh_mgFooQ@mail.gmail.com>
- <CA+SWvNyUAyBQd9ktaZpvV8R7XcK8opA1_VQeMEnPfmr6jcSANQ@mail.gmail.com>
+To: "Yang, Xiaotao (X.)" <xyang25@visteon.com>
+In-Reply-To: <AM6PR06MB49462A448954E689F9F87D37A7BD0@AM6PR06MB4946.eurprd06.prod.outlook.com>
+References: <AM6PR06MB49462A448954E689F9F87D37A7BD0@AM6PR06MB4946.eurprd06.prod.outlook.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] Measuring Device Throughput - MMAP vs. RW
+Cc: mailing list <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] about pop chime on pcm api
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,58 +77,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 09 Sep 2019 18:30:14 +0200,
-Pavel Hofman wrote:
+On Fri, 30 Aug 2019 10:31:25 +0200,
+Yang, Xiaotao (X.) wrote:
 > 
-> On Sun, Sep 8, 2019 at 5:23 PM Pavel Hofman <pavhofman@gmail.com> wrote:
+> Hi:
+>                Why should I call api<snd_pcm_close()> between the interval if  I want to play a wav file two times repeatly, Otherwise pop chime occurs?
 > 
-> > Hi,
-> > Gathering data for USB async gadget feedback (
-> > https://mailman.alsa-project.org/pipermail/alsa-devel/2019-August/154819.html
-> > ) requires measuring average data rate to/from a device. For testing I
-> > added measuring/averaging code to methods snd_pcm_hw_writei, snd_pcm_hw_readi,
-> > and snd_pcm_hw_mmap_commit in
-> > https://github.com/alsa-project/alsa-lib/blob/master/src/pcm/pcm_hw.c .
-> > In all cases I take the parameter "size" of all the three methods as the
-> > number of samples written/read.
-> >
-> > MMAP: When mmap is used (e.g. plughw:X + sample format conversion), I get
-> > very stable results for MMAP playback on all soundcards I have tested. But
-> > for capture I get identical results to playback for one soundcard (PCI
-> > Envy24), while the averaged rate calculated from "size" in
-> > snd_pcm_hw_mmap_commit fluctuates for capture on Intel HDA.
-> >
-> >
-> > I suspect the size parameter of snd_pcm_hw_mmap_commit is not the actual
-> > amount of samples read during the MMAP capture. Please how to calculate the
-> > number of samples read from the variables available in that method?
-> >
+> Eg: (fake code as follows):
+>          Following codes works good.
+>          Pcm.open();//open pcm device
+>          Pcm.play(demo.wav);//set parameter and call snd_pcm_writei() to play
+>          Pcm.close();//close pcm device
+>          Pcm.open();
+>          Pcm.play(demo.wav);
+>          Pcm.close();
 > 
-> The mmap fluctuations seem to be fixed by using increases in hardware
-> pointer pcm->hw.ptr values instead of frames variable. Please do these
-> values wrap up or do they grow  to max long? Still contiguous after 10
-> minutes of running.
+>         But following codes works with pop chime
+>         Pcm.open();
+>         Pcm.play(demo.wav);
+>         Pcm.play(demo.wav);
+>         Pcm.close();
 
-Could you elaborate the requirement?  The description isn't clear to
-me.
+It's not clear what "pop chime" means, so a bit hard to answer.
 
-> I see the hw.ptr gets zeroed at XRUN. If I do not check for xruns (
-> snd_pcm_state(snd_pcm_t *pcm)?), can I just monitor continuity of hw.ptr
-> and restart the averaging if the new hw.ptr is lower than the previous one,
-> or are there any quirks to watch out?
+If the pop chime means some clicking noise, it shouldn't be a problem
+in the second case, either.  It's more likely some issues in the
+application side.
 
-You should be able to skip XRUN check by changing the stop_threshold.
-Setting it to the boundary size essentially means skipping XRUN
-checks.
-
-In anyway, I put Pierre to Cc, as he's done some works in the past for
-the accurate position reporting on HD-audio and USB-audio devices.
-He can give a better hint in this regard.
-
-
-thanks,
 
 Takashi
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
