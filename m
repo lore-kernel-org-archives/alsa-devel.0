@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA07BC49ED9
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 20:54:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D847C49ED9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 20:55:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F9D42168B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 20:54:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D62E42168B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 20:55:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H+ZF2j6e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F9D42168B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZU/jtLAd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D62E42168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5017C16DF;
-	Tue, 10 Sep 2019 22:54:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5017C16DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2731616E8;
+	Tue, 10 Sep 2019 22:54:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2731616E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568148893;
-	bh=JC8y/zvvpkb7cQZfxTR9EAOu1eIu1XK2iDdXIeJsj3Q=;
+	s=default; t=1568148948;
+	bh=C6+keOyRdr8ovJv7WKQvvfZtyY0Cdota4WF7xwh9cf8=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H+ZF2j6eRYVWM6fFi5/toF5YPTraKOTRwlJlGXLuvPDmM6vFYzeRCZBBIvtYVrCEf
-	 WWT8J4E92tacxlTcBa1uavScqGqE4QD/xyEPu9mmWWKV0DtxUqx/9xPLhufqvrW0LX
-	 pCVxuohYt4Pth4uQSjOft7Mot+GH80KFJcblSRcE=
+	b=ZU/jtLAdtch3cpP6ffGNhbtkWhlV4slnixnW7pCrGIWHc8FqesnfjJKI1oAhD0ppO
+	 Wx3QVT5+eeuA5ePj3mzZPjDSwKGChbs0GcUr7azDLwknsnM+CdbWh+SJd61Fs6rLsD
+	 Ca8vLXziTvVQ5wccGCpWRsJpTJERXVgPyDhGAiuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C952F805F9;
-	Tue, 10 Sep 2019 22:52:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAA57F8060D;
+	Tue, 10 Sep 2019 22:52:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CFF3F804AB; Tue, 10 Sep 2019 22:52:22 +0200 (CEST)
+ id 04F59F805F6; Tue, 10 Sep 2019 22:52:24 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A500AF80321
- for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 22:52:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A500AF80321
+ by alsa1.perex.cz (Postfix) with ESMTPS id 351B5F80393
+ for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 22:52:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 351B5F80393
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Sep 2019 13:52:13 -0700
+ 10 Sep 2019 13:52:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,490,1559545200"; d="scan'208";a="214439777"
+X-IronPort-AV: E=Sophos;i="5.64,490,1559545200"; d="scan'208";a="214439794"
 Received: from rmarszew-mobl1.ger.corp.intel.com (HELO [10.251.24.188])
  ([10.251.24.188])
- by fmsmga002.fm.intel.com with ESMTP; 10 Sep 2019 13:52:13 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 10 Sep 2019 13:52:15 -0700
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, 
  tiwai@suse.de
 References: <20190910182916.29693-1-kai.vehmanen@linux.intel.com>
- <20190910182916.29693-2-kai.vehmanen@linux.intel.com>
+ <20190910182916.29693-6-kai.vehmanen@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <326901ed-4cd2-af0e-0039-9cae55b787f7@linux.intel.com>
-Date: Tue, 10 Sep 2019 15:33:35 -0500
+Message-ID: <ccc1a764-532d-e21f-dd79-022699076154@linux.intel.com>
+Date: Tue, 10 Sep 2019 15:49:07 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190910182916.29693-2-kai.vehmanen@linux.intel.com>
+In-Reply-To: <20190910182916.29693-6-kai.vehmanen@linux.intel.com>
 Content-Language: en-US
 Cc: libin.yang@intel.com
-Subject: Re: [alsa-devel] [PATCH v3 01/10] ALSA: hda/hdmi - implement
- mst_no_extra_pcms flag
+Subject: Re: [alsa-devel] [PATCH v3 05/10] ASoC: Intel: skl-hda-dsp-generic:
+ use snd-hda-codec-hdmi
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,67 +90,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 9/10/19 1:29 PM, Kai Vehmanen wrote:
-> When mst_no_extra_pcms flag is set, the codec should not
-> use backup PCMs to handle DP-MST scenarios. Instead a simple
-> 1:1 mapping is assumed between PCMs and converters.
-
-mst_no_extra_pcms is not set, which makes it hard to review and get the 
-picture of what this does.
-
+> Add support for using snd-hda-codec-hdmi driver for HDMI/DP
+> instead of ASoC hdac-hdmi. This is aligned with how other
+> HDA codecs are already handled.
+> 
+> When snd-hda-codec-hdmi is used, the PCM device numbers are
+> parsed from card topology and passed to the codec driver.
+> This needs to be done at runtime as topology changes may
+> affect PCM device allocation.
 > 
 > Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 > ---
->   include/sound/hda_codec.h  |  1 +
->   sound/pci/hda/patch_hdmi.c | 19 ++++++++++++++-----
->   2 files changed, 15 insertions(+), 5 deletions(-)
+>   include/sound/soc-acpi.h                     |  2 +
+>   sound/soc/intel/boards/hda_dsp_common.h      | 87 ++++++++++++++++++++
+>   sound/soc/intel/boards/skl_hda_dsp_common.c  | 10 ++-
+>   sound/soc/intel/boards/skl_hda_dsp_common.h  | 23 ++++++
+>   sound/soc/intel/boards/skl_hda_dsp_generic.c |  1 +
+>   5 files changed, 122 insertions(+), 1 deletion(-)
+>   create mode 100644 sound/soc/intel/boards/hda_dsp_common.h
 > 
-> diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-> index 9a0393cf024c..ac18f428eda6 100644
-> --- a/include/sound/hda_codec.h
-> +++ b/include/sound/hda_codec.h
-> @@ -254,6 +254,7 @@ struct hda_codec {
->   	unsigned int force_pin_prefix:1; /* Add location prefix */
->   	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
->   	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
-> +	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
->   
->   #ifdef CONFIG_PM
->   	unsigned long power_on_acct;
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index bca5de78e9ad..59aaee4a40fd 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -2072,15 +2072,24 @@ static bool is_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
->   static int generic_hdmi_build_pcms(struct hda_codec *codec)
->   {
->   	struct hdmi_spec *spec = codec->spec;
-> -	int idx;
-> +	int idx, pcm_num;
->   
->   	/*
->   	 * for non-mst mode, pcm number is the same as before
-> -	 * for DP MST mode, pcm number is (nid number + dev_num - 1)
-> -	 *  dev_num is the device entry number in a pin
-> -	 *
-> +	 * for DP MST mode without extra PCM, pcm number is same
-> +	 * for DP MST mode with extra PCMs, pcm number is
-> +	 *  (nid number + dev_num - 1)
-> +	 * dev_num is the device entry number in a pin
->   	 */
-> -	for (idx = 0; idx < spec->num_nids + spec->dev_num - 1; idx++) {
-> +
-> +	if (codec->mst_no_extra_pcms)
-> +		pcm_num = spec->num_nids;
-> +	else
-> +		pcm_num = spec->num_nids + spec->dev_num - 1;
-> +
-> +	codec_dbg(codec, "hdmi: pcm_num set to %d\n", pcm_num);
-> +
-> +	for (idx = 0; idx < pcm_num; idx++) {
->   		struct hda_pcm *info;
->   		struct hda_pcm_stream *pstr;
->   
-> 
+> diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+> index 35b38e41e5b2..26d57bc9a91e 100644
+> --- a/include/sound/soc-acpi.h
+> +++ b/include/sound/soc-acpi.h
+> @@ -60,12 +60,14 @@ static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
+>    * @acpi_ipc_irq_index: used for BYT-CR detection
+>    * @platform: string used for HDaudio codec support
+>    * @codec_mask: used for HDAudio support
+> + * @common_hdmi_codec_drv: use commom HDAudio HDMI codec driver
+>    */
+>   struct snd_soc_acpi_mach_params {
+>   	u32 acpi_ipc_irq_index;
+>   	const char *platform;
+>   	u32 codec_mask;
+>   	u32 dmic_num;
+> +	bool common_hdmi_codec_drv;
+
+That change would need to be moved to a separate patch earlier to avoid 
+breaking compilation of patch 4
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
