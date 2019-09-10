@@ -2,56 +2,56 @@ Return-Path: <SRS0=R5RK=XF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 795E6C4740A
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 02:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38434C4740C
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 02:15:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2A8D21726
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 02:14:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8E7B21726
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 02:15:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GpZ6tSCx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2A8D21726
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VsZ50d6c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8E7B21726
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 443AE1684;
-	Tue, 10 Sep 2019 04:13:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 443AE1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id F14171671;
+	Tue, 10 Sep 2019 04:14:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F14171671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568081673;
-	bh=Qbr3pz8DL5LyuB6+zFQt7yFRxn+60B9FABk7ca00yuE=;
+	s=default; t=1568081707;
+	bh=ZQTgWxinmrp7lOZsseVRpVLfA3gL7ohJ5HmPWMcxhhc=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GpZ6tSCxJWTBun58c9bHcuZ1oIxypCy8E7jTfu4PM1g+a1dy5eDXyqtQ+/hSSL3Wo
-	 j6ouckOYbi9YoHXuyCTuzrRXLR9DB6KZsjj7z1oHejTkuDZzY9/Ch8Mk+f8XGPPlVt
-	 oGvlYUyRFF+oxd3kcQogpGkX7ie+hWqWFPGUbSrk=
+	b=VsZ50d6cBwxsiP+fKW1zu0tBTaA8GR49SkgDmRDidxK+bvONkne3KUpBkcle5CA7s
+	 y3Rsk9HX7bD1Csg09OGH4hoKFcUZPZIAN7xCcpD98JjxImZAJc8djEVJ6x9LVsQ6KE
+	 3IMRGoDpAzDedo9nqsdv9dR0yRW1q8lbxMerT1hE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63CFEF806E8;
-	Tue, 10 Sep 2019 04:06:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 414C1F8070E;
+	Tue, 10 Sep 2019 04:06:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F122F80709; Tue, 10 Sep 2019 04:06:21 +0200 (CEST)
+ id 1BEBAF80713; Tue, 10 Sep 2019 04:06:28 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AD1C1F806E8
- for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 04:06:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD1C1F806E8
-Date: 10 Sep 2019 11:06:17 +0900
-X-IronPort-AV: E=Sophos;i="5.64,487,1559487600"; d="scan'208";a="25958430"
+ by alsa1.perex.cz (Postfix) with ESMTP id C9A29F8070C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 04:06:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9A29F8070C
+Date: 10 Sep 2019 11:06:23 +0900
+X-IronPort-AV: E=Sophos;i="5.64,487,1559487600"; d="scan'208";a="25958447"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 10 Sep 2019 11:06:17 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 10 Sep 2019 11:06:23 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 49A6E4004BD6;
- Tue, 10 Sep 2019 11:06:17 +0900 (JST)
-Message-ID: <87lfuwlxba.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6CD844009666;
+ Tue, 10 Sep 2019 11:06:23 +0900 (JST)
+Message-ID: <87k1aglxb4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +59,8 @@ In-Reply-To: <8736h4nby1.wl-kuninori.morimoto.gx@renesas.com>
 References: <8736h4nby1.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 12/13] ASoC: soc-core: use devm_xxx for
-	component related resource
+Subject: [alsa-devel] [PATCH 13/13] ASoC: soc-core: setup card->rtd_num at
+	snd_soc_instantiate_card()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,78 +80,43 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-dai / component related resources are created when component is
-registered, and it will be freed when component was unregistered.
-These resources are not re-used after that.
-This means, we can use devm_xxx for dai / component, without
-thinking about kfree().
-This patch uses devm_xxx for these.
+card->rtd_num is used to count rtd. Initialize it at
+snd_soc_instantiate_card() is very natural and less confusion.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ sound/soc/soc-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ce7793a..bde885f 100644
+index bde885f..a5683da 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2495,7 +2495,7 @@ static char *fmt_single_name(struct device *dev, int *id)
- 			*id = 0;
- 	}
+@@ -451,8 +451,6 @@ static void soc_remove_pcm_runtimes(struct snd_soc_card *card)
  
--	return kstrdup(name, GFP_KERNEL);
-+	return devm_kstrdup(dev, name, GFP_KERNEL);
+ 	for_each_card_rtds_safe(card, rtd, _rtd)
+ 		soc_free_pcm_runtime(rtd);
+-
+-	card->num_rtd = 0;
  }
  
- /*
-@@ -2512,7 +2512,7 @@ static inline char *fmt_multiple_name(struct device *dev,
- 		return NULL;
- 	}
+ struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
+@@ -1997,6 +1995,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		goto probe_end;
  
--	return kstrdup(dai_drv->name, GFP_KERNEL);
-+	return devm_kstrdup(dev, dai_drv->name, GFP_KERNEL);
- }
+ 	/* add predefined DAI links to the list */
++	card->num_rtd = 0;
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		ret = snd_soc_add_dai_link(card, dai_link);
+ 		if (ret < 0)
+@@ -2407,7 +2406,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	INIT_LIST_HEAD(&card->dapm_dirty);
+ 	INIT_LIST_HEAD(&card->dobj_list);
  
- /**
-@@ -2528,8 +2528,6 @@ static void snd_soc_unregister_dais(struct snd_soc_component *component)
- 		dev_dbg(component->dev, "ASoC: Unregistered DAI '%s'\n",
- 			dai->name);
- 		list_del(&dai->list);
--		kfree(dai->name);
--		kfree(dai);
- 	}
- }
- 
-@@ -2543,7 +2541,7 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
- 
- 	dev_dbg(dev, "ASoC: dynamically register DAI %s\n", dev_name(dev));
- 
--	dai = kzalloc(sizeof(struct snd_soc_dai), GFP_KERNEL);
-+	dai = devm_kzalloc(dev, sizeof(*dai), GFP_KERNEL);
- 	if (dai == NULL)
- 		return NULL;
- 
-@@ -2565,10 +2563,8 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
- 		else
- 			dai->id = component->num_dai;
- 	}
--	if (dai->name == NULL) {
--		kfree(dai);
-+	if (!dai->name)
- 		return NULL;
--	}
- 
- 	dai->component = component;
- 	dai->dev = dev;
-@@ -2754,7 +2750,6 @@ static void snd_soc_component_add(struct snd_soc_component *component)
- static void snd_soc_component_cleanup(struct snd_soc_component *component)
- {
- 	snd_soc_unregister_dais(component);
--	kfree(component->name);
- }
- 
- static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
+-	card->num_rtd = 0;
+ 	card->instantiated = 0;
+ 	mutex_init(&card->mutex);
+ 	mutex_init(&card->dapm_mutex);
 -- 
 2.7.4
 
