@@ -2,95 +2,86 @@ Return-Path: <SRS0=R5RK=XF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 354C5C49ED9
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 16:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69EC6C49ED9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 17:34:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3585020863
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 16:15:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 405D92082C
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 17:34:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hC8KCveS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="nrNMzvDS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3585020863
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vqzK3Vfd";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ofb.net header.i=@ofb.net header.b="OTf82RgZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 405D92082C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ofb.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 243BA167C;
-	Tue, 10 Sep 2019 18:15:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 243BA167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA32C1681;
+	Tue, 10 Sep 2019 19:33:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA32C1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568132155;
-	bh=xwjGNG2jIue34S3VQZFmWYtLq6qO/jsLnrzkv6U67pY=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1568136885;
+	bh=pR4+xIXziZGxvz7umQQwEjTSJoNMJEfpbOvymIf3aj8=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hC8KCveSyOwYkcK1TpnEAPBKILzu8elueZ0yjMwCI8QdoKaHxltBvHTF90E4Imaf1
-	 fpu/RNO1iTqceGNKLOAWkzqDWbp1sUXWb9zm06wEJuhXLtTnzqIjL3KAKicLX8qhJ7
-	 wUXH2u7Cm+AXultYQL0Ddp5XSvy3l5+aQzMnwWRk=
+	 Reply-To:From;
+	b=vqzK3Vfd1hqSjxQVI5OQlRep8/Td8SDb2O3NwKOR0t5cJFro6q/kAd5T1MGh7GWbL
+	 PKC419VVWFERCNSkEAQSLEEYxHVxFDLnHN3iHG8DpdD2/Pj/+Kij2FRrzwUjY4Vcry
+	 zNZGo7syUzaK7xhezrRK+0LcfFvEvan44fGwAhrs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96CDAF800A9;
-	Tue, 10 Sep 2019 18:15:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54070F800C9;
+	Tue, 10 Sep 2019 19:33:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8C50F80368; Tue, 10 Sep 2019 18:15:03 +0200 (CEST)
-Received: from mail-yw1-xc44.google.com (mail-yw1-xc44.google.com
- [IPv6:2607:f8b0:4864:20::c44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 02A07F80368; Tue, 10 Sep 2019 19:33:53 +0200 (CEST)
+Received: from egnor-li.ofb.net (egnor-li.ofb.net [IPv6:2600:3c01:e000:283::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2709EF800A9
- for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 18:14:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2709EF800A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3147CF800C9
+ for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 19:33:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3147CF800C9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="nrNMzvDS"
-Received: by mail-yw1-xc44.google.com with SMTP id n11so6635080ywn.6
- for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2019 09:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=/8y8mjhh6GilXwhI4VIb7Gx980fX9VjbdrPj4O0xvOk=;
- b=nrNMzvDS+VexipvyLfeDqoYmGjpnHqba9WBVK9NdwwD5SXmpFUtCPvQs9JjCJc7TBM
- 3HrxPpwHW1mymnf8WiifNxYofM3K4TCBRtsPzF7qapCjULWgZsFtGBLXfT5NBUQ2J40S
- 4v6Hme9wY9mF0m/r0RcRR914hF/8zMa5cmjcLOJdoHz/7UjxqEQ0dHBmb1ktFh2CFKjK
- 2XOY68ZOWWb2PNyjQvTxKiNKEppTaEPp7DkWmlR6p0gEiLv2cQhBMnBp+yjqgPUWBXSk
- C8R1y8dNSuTxTvn2o3SUk/fHFNRdFI6xt/kUIvVkJZ0saeTfdaY/p2DIKO3Kwz175353
- /iHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=/8y8mjhh6GilXwhI4VIb7Gx980fX9VjbdrPj4O0xvOk=;
- b=kHWuMirxsYtkFqxFEY8JaH3JFhMdeKYh1qAsRT9cTZP7RC29lier2HMbEmb6qcrs4f
- 8ZBIn50fO6GMW9FWxr0qL4MgFWDhuu2+/F3CybNBibbL4jLLj8yzXlf48FLkD7NiNpn6
- tFLeBisVFsNBRE8Dm+iHuDEPuVtznp2muuYdLP1bcthV8GAAo23pj7efahXDsB/nBVeD
- AXcOv633QnJUnvtDkY5Id+b6HzhC8WF2RMfEzfyFwlgv6e9yXh5/QDMZybt0n37+Dz4b
- 1shjviTHY8VxlBoCS0Sob33ZndPj90swZq24TChRh5smhEwDcsMm90rwxsAHZAmakRJ3
- l1HQ==
-X-Gm-Message-State: APjAAAXWfDREeMGZeJH5TAMMFOtJXRTNwDOr0ItDAHhPIFa0BgrUdhLb
- UynQ6R4RzUzstXhL1cJy8ezUJB6qjaki2spVZ/5l+g==
-X-Google-Smtp-Source: APXvYqyotKDkNkrBZAecwdWk4/at1fbQZF6ZBaVAnPGa1Sg3eXOdOojuznx3eLARXgSfr6bq25eqyAaqUhXWYUg2ZS8=
-X-Received: by 2002:a81:5389:: with SMTP id
- h131mr20792551ywb.491.1568132098275; 
- Tue, 10 Sep 2019 09:14:58 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=ofb.net header.i=@ofb.net
+ header.b="OTf82RgZ"
+Received: from ofb.net (163.242.197.104.bc.googleusercontent.com
+ [104.197.242.163])
+ by egnor-li.ofb.net (Postfix) with ESMTP id 9C49C117FC6;
+ Tue, 10 Sep 2019 17:33:46 +0000 (UTC)
+Received: from localhost.localdomain
+ (host86-142-59-18.range86-142.btcentralplus.com [86.142.59.18])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ofb.net (Postfix) with ESMTPSA id 59D7D3E923;
+ Tue, 10 Sep 2019 10:33:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ofb.net; s=ofb;
+ t=1568136826; bh=JU2ZXIZGbMWL0+yeFomgN69JKrPct9nPBiJ4k97a2r8=;
+ h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+ b=OTf82RgZVZaF3E7b4QB3skh/DFh/+A2QSyN1ZcVzxhVXHfajnzjmCvG6VfIB7flrS
+ SXYUYL2ic3lVmmHGPJJIZDfrPQP5ybNiwLk0Uex+1fLyPO/+FPfbZ1tnE5xy+nf0jK
+ HmA7A5UdCEtZIJ4ZnUqcY2qp8dosePGr+DseqU/0oizdyNb6+t6tXpXDkc8zSgeASz
+ IZswJKyuw5mY6RZGQlLJrfFpiB6SjetxVc3UarqKcVoT7us5atsPly1ppz25R/ucTT
+ +2THeZbN3qX4bqDDbWaEiIXGzb75rMlZGMMGhsTmm0gSWT1bxf09bwRZ4WV8dOPtZ6
+ Xv2hRILO3wt9Q==
+Received: from frederik by localhost.localdomain with local (Exim 4.92.2)
+ (envelope-from <frederik@localhost.localdomain>)
+ id 1i7k1R-00038U-5M; Tue, 10 Sep 2019 10:33:45 -0700
+Date: Tue, 10 Sep 2019 10:33:45 -0700
+From: frederik@ofb.net
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20190910173345.63bv2xa4vlkxicxj@localhost>
+References: <20190904164706.gwjbcywbj7emnwvr@localhost>
+ <s5hv9u19x2f.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <8736h4nby1.wl-kuninori.morimoto.gx@renesas.com>
- <87k1aglxb4.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87k1aglxb4.wl-kuninori.morimoto.gx@renesas.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Tue, 10 Sep 2019 09:14:47 -0700
-Message-ID: <CAFQqKeVw3wzdPM7haWA0H4nd6EdqptsJbiD=oOaKyZFpakc1Ag@mail.gmail.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 13/13] ASoC: soc-core: setup card->rtd_num
-	at snd_soc_instantiate_card()
+Content-Disposition: inline
+In-Reply-To: <s5hv9u19x2f.wl-tiwai@suse.de>
+User-Agent: NeoMutt/20180716
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] parameter for pulse device?
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,72 +94,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Reply-To: frederik@ofb.net
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 9, 2019 at 7:15 PM Kuninori Morimoto <
-kuninori.morimoto.gx@renesas.com> wrote:
+On Mon, Sep 09, 2019 at 07:52:24PM +0200, Takashi Iwai wrote:
+>It depends on how pcm.pulse is defined.  If it's defined to take an
+>argument, it can work like that.  (Or sometimes you may need to pass
+>the argument explicitly like "pulse:{device=mointor}".)
+>
+>The standard pcm.pulse definition provided in alsa-plugins repo
+>doesn't take the argument, and that can be the reason.
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> card->rtd_num is used to count rtd. Initialize it at
-> snd_soc_instantiate_card() is very natural and less confusion.
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-Thanks for this clean-up, Morimoto-san. Just a couple of minor comments for
-the series that I have replied on the relevant patches. But overall the
-series looks good.
+Thank you Takashi. Would it be easy to change alsa-plugins so that it takes an argument? Is there a chance that this change would be accepted?
+
+If you can point me to the section of code in e.g. "plughw" where argument parsing is done, then I would probably end up modifying alsa-plugins myself, just to simplify what I am doing.
 
 Thanks,
-Ranjani
 
-> ---
->  sound/soc/soc-core.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index bde885f..a5683da 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -451,8 +451,6 @@ static void soc_remove_pcm_runtimes(struct
-> snd_soc_card *card)
->
->         for_each_card_rtds_safe(card, rtd, _rtd)
->                 soc_free_pcm_runtime(rtd);
-> -
-> -       card->num_rtd = 0;
->  }
->
->  struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card
-> *card,
-> @@ -1997,6 +1995,7 @@ static int snd_soc_instantiate_card(struct
-> snd_soc_card *card)
->                 goto probe_end;
->
->         /* add predefined DAI links to the list */
-> +       card->num_rtd = 0;
->         for_each_card_prelinks(card, i, dai_link) {
->                 ret = snd_soc_add_dai_link(card, dai_link);
->                 if (ret < 0)
-> @@ -2407,7 +2406,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
->         INIT_LIST_HEAD(&card->dapm_dirty);
->         INIT_LIST_HEAD(&card->dobj_list);
->
-> -       card->num_rtd = 0;
->         card->instantiated = 0;
->         mutex_init(&card->mutex);
->         mutex_init(&card->dapm_mutex);
-> --
-> 2.7.4
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Frederick
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
