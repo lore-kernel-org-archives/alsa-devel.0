@@ -2,66 +2,70 @@ Return-Path: <SRS0=DUcU=XG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DATE_IN_FUTURE_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79C83C49ED9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 00:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F259CC49ED9
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 02:45:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC4D421A4C
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 00:01:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2A0F21928
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 02:45:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iq6fLSEf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC4D421A4C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VZtV4/+2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2A0F21928
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8E601683;
-	Wed, 11 Sep 2019 02:00:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8E601683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9903216E3;
+	Wed, 11 Sep 2019 04:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9903216E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568160104;
-	bh=UQgvuNKsTFxQ6DmH7d3FbThiLkyCKLvAg8d02Z80FFg=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iq6fLSEfL6zOt+//Pt9FfsR7yHA8p/+TvmIL1AJB6BxhP1JKqJ5bjd9zhZjE8rvd9
-	 Zr5xQ25LmEVsxrOqWnT24oyKwiukmw32fk7PgKde60HRVIE+51zeeTu/KqzjigWI79
-	 PcSktjpwurZfwTIdrtjLtggDw0QiSLQzWMwTW+TA=
+	s=default; t=1568169906;
+	bh=rzjjCq5ca55Fz5mzyh15cuGgwBZlDtSUl1aLlaCFbWI=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VZtV4/+2ECtkqPaaHZKKilLdcvJS8uV/Ow0PnNlkA4Yezi6LMZHSM1vXexTukR0Ux
+	 gS9RmY0OFk/LCbFgWjeKMljZGROK5IexX8o8gMKCCf2q0cXbZ3U3QDPeuUDjllBFj0
+	 Whajtnz4phOKakYTN1nj4klpIpSIMHk56HV/Jix8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75074F800C9;
-	Wed, 11 Sep 2019 02:00:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5BCBF802DF;
+	Wed, 11 Sep 2019 04:44:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7B6CF80368; Wed, 11 Sep 2019 02:00:51 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0ADA0F800C9
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 02:00:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ADA0F800C9
-Date: 11 Sep 2019 09:00:45 +0900
-X-IronPort-AV: E=Sophos;i="5.64,491,1559487600"; d="scan'208";a="26046611"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 11 Sep 2019 09:00:45 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id CE37040061BB;
- Wed, 11 Sep 2019 09:00:44 +0900 (JST)
-Message-ID: <87blvr66s3.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeVw3wzdPM7haWA0H4nd6EdqptsJbiD=oOaKyZFpakc1Ag@mail.gmail.com>
-References: <8736h4nby1.wl-kuninori.morimoto.gx@renesas.com>
- <87k1aglxb4.wl-kuninori.morimoto.gx@renesas.com>
- <CAFQqKeVw3wzdPM7haWA0H4nd6EdqptsJbiD=oOaKyZFpakc1Ag@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 13/13] ASoC: soc-core: setup card->rtd_num
-	at snd_soc_instantiate_card()
+ id E218CF8044B; Wed, 11 Sep 2019 04:44:13 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F124F802DF
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 04:44:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F124F802DF
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C76021A0523;
+ Wed, 11 Sep 2019 04:44:08 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 87D121A051A;
+ Wed, 11 Sep 2019 04:44:02 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9CEE9402DE;
+ Wed, 11 Sep 2019 10:43:54 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org
+Date: Wed, 11 Sep 2019 10:42:38 -0400
+Message-Id: <cff8bff1e8d3334fa308ddfcec266a5284e3c858.1568169346.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Subject: [alsa-devel] [PATCH 1/2] ASoC: fsl_mqs: add DT binding documentation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,34 +78,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add the DT binding documentation for NXP MQS driver
 
-Hi Sridharan
-
-Thank you for your review.
-
->     From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->    
->     card->rtd_num is used to count rtd. Initialize it at
->     snd_soc_instantiate_card() is very natural and less confusion.
->    
->     Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Thanks for this clean-up, Morimoto-san. Just a couple of minor comments for
-> the series that I have replied on the relevant
-> patches. But overall the series looks good.
-
-Thanks !
-I will wait for other review, and fixup it in v2 and re-post these.
-
-Thank you for your help !!
-Best regards
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
-Kuninori Morimoto
+ .../devicetree/bindings/sound/fsl,mqs.txt     | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.txt b/Documentation/devicetree/bindings/sound/fsl,mqs.txt
+new file mode 100644
+index 000000000000..a1dbe181204a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,mqs.txt
+@@ -0,0 +1,20 @@
++fsl,mqs audio CODEC
++
++Required properties:
++
++  - compatible : Must contain one of "fsl,imx6sx-mqs", "fsl,codec-mqs"
++		"fsl,imx8qm-mqs", "fsl,imx8qxp-mqs".
++  - clocks : A list of phandles + clock-specifiers, one for each entry in
++	     clock-names
++  - clock-names : Must contain "mclk"
++  - gpr : The gpr node.
++
++Example:
++
++mqs: mqs {
++	compatible = "fsl,imx6sx-mqs";
++	gpr = <&gpr>;
++	clocks = <&clks IMX6SX_CLK_SAI1>;
++	clock-names = "mclk";
++	status = "disabled";
++};
+-- 
+2.21.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
