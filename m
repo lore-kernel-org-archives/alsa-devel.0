@@ -2,95 +2,63 @@ Return-Path: <SRS0=DUcU=XG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5CF4C49ED6
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 20:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09C93C49ED6
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 21:41:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E09282084F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 20:23:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D2B352087E
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 21:41:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FlTrILSo";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="c273U80M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E09282084F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J7sSPy1o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2B352087E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sntech.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62DD716DA;
-	Wed, 11 Sep 2019 22:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62DD716DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A840A16DC;
+	Wed, 11 Sep 2019 23:40:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A840A16DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568233409;
-	bh=X7ghYNPzYuvpXmSAadN32moSgqj2r3JhbhM3YCm4zT0=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1568238106;
+	bh=mL/xXUF6DY2uldyraB2EcI3f4FcH/wuTCa7xIr6CTO4=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FlTrILSoje5y2+1gV+/TpzYMVdhYJsbqr2AAhv/hWrRFsO3Kzz3psqLtV5QrKRkhZ
-	 KPKXx5v56HCvBhgSLUUbI6QiOJdiKdALe+yVBwdbl14dlyAgJDLC4ZB6el4KqxFMjf
-	 bF4PZE+6WoBFJJ0HCGsxylVuIBMpNtz/BYdiPvDk=
+	b=J7sSPy1o7BatmoxsT8nnhifKbNLuTf1ZBQot1nYUuGsbPpfGdIQf42rKBEO5OxEpv
+	 pH2G5oMLo8+VVN3pJoXx5+PvsL36E5R9J9w5r6zy2mv6KWGjoLLxlF3WGnhhPGNeir
+	 OgJMvXtrENk9sF8HVUYqjWQfPgQ2q8OMTAoUwOJc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0106F800A9;
-	Wed, 11 Sep 2019 22:22:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20FA2F8031A;
+	Wed, 11 Sep 2019 23:40:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E607F80323; Wed, 11 Sep 2019 22:22:37 +0200 (CEST)
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BF85BF80323; Wed, 11 Sep 2019 23:40:54 +0200 (CEST)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C56CF800A9
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 22:22:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C56CF800A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="c273U80M"
-Received: by mail-qk1-x741.google.com with SMTP id u184so19277182qkd.4
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 13:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=FeE04v2CknsB98QpyC8E5IBqzwd4jkTOJTnEkBU1ha4=;
- b=c273U80MJP8/8QrKdGcVtVcnf0MoLg3DCjQUK5JAV+jFUDkbFqxWlFWcx7JHWuSCF3
- FVkJ7Yplu+nYvYmbM2/PUusLXR6T+VUBhU8eOUTWOCth1yQt+94dsMTdI9jRmwy7Aif9
- TxMGFFc+i0FtZgx7ZIfmpbcqMC5wgOtIQYBm2MYucgGYCP8YhdV4Afb2t6MNU241VNCp
- IkZWep5Q5VpR+L7kRKxBXYXyczh1V2FB7zqXebX142+U20nUFo7p0JRZ+QGmhnyKoljb
- jKWFKzb4OQNxhoe47Q/vaxQMr5qbHxytHmFxnNicOnnXEqZqxYGrWYMf0zF+SqRcfDHg
- t8fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=FeE04v2CknsB98QpyC8E5IBqzwd4jkTOJTnEkBU1ha4=;
- b=QNt3XdI3qg0tnMtwijfpP81A3bdZ0TJy3v2vpvYdoHqBrXUeLZB1KyuqWAmAoY7nZL
- 4OBO9vqrLlxzaTtQK8t9Or0aJ6v2jlcbqSHW3mb4jQAimOhSs0NNkZqQfUELuS913cmJ
- lUevbKjcHuA1refKqnk4CTTZ57yKd5GxbPA1PIT/MpP5LXKl3UYts2sBNfC6w6+BoHL7
- V7UBgbIdCwy2SfbJ/sz98o4bBVgvqsv2mJ6WdM6cx4ptTdviKkvblQiyQCOGigexL0cA
- bXEX3k2C1ydZJ7yjB3bf6HZEbN0cpoEh1GqhSX9bw1FuVIJXF42Sjd2YsNhT6s3iGtvX
- vpyA==
-X-Gm-Message-State: APjAAAXDd5+vR7SKF7/aYE3jbOh7KUbMm5/YOR+TK7sI1zsJZs5y1qhY
- YUDH43QkjOK4LvKMqi4l786UJjP7IvcTM84Bh3vUrw==
-X-Google-Smtp-Source: APXvYqzW26ENV5ftd77yOjvHVCOy6IlyWrqIsGFa86rgEhHFGd4n8UPAfhBb3pCdPF1+IPsfhh7GL/AkDcOaJKVIcfo=
-X-Received: by 2002:a37:a106:: with SMTP id k6mr35760899qke.158.1568233351601; 
- Wed, 11 Sep 2019 13:22:31 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC6AAF801ED
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 23:40:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC6AAF801ED
+Received: from ip5f5a6266.dynamic.kabel-deutschland.de ([95.90.98.102]
+ helo=diego.localnet)
+ by gloria.sntech.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.89) (envelope-from <heiko@sntech.de>)
+ id 1i8AM5-0004SZ-JM; Wed, 11 Sep 2019 23:40:49 +0200
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Jaroslav Kysela <jkysela@redhat.com>
+Date: Wed, 11 Sep 2019 23:40:49 +0200
+Message-ID: <2429832.PdgLd5CbFv@diego>
+In-Reply-To: <15679391594432724-alsa-devel@perex.cz>
+References: <15679391594432724-alsa-devel@perex.cz>
 MIME-Version: 1.0
-References: <20190906194636.217881-1-cujomalainey@chromium.org>
- <20190906194636.217881-6-cujomalainey@chromium.org>
- <20190911102503.GV2036@sirena.org.uk>
-In-Reply-To: <20190911102503.GV2036@sirena.org.uk>
-From: Curtis Malainey <cujomalainey@google.com>
-Date: Wed, 11 Sep 2019 13:22:20 -0700
-Message-ID: <CAOReqxhjf0YeUhCF9N8YOReZC11k01R+TR7N6J51fZV6YXBc4g@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>,
- Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
-Subject: Re: [alsa-devel] [RFC 05/15] ASoC: rt5677: Auto enable/disable DSP
-	for hotwording
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Licence change for your alsa-lib UCM commit (Heiko
+	Stuebner: 1 total)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,26 +71,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 11, 2019 at 3:25 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Sep 06, 2019 at 12:46:27PM -0700, Curtis Malainey wrote:
-> > From: Ben Zhang <benzh@chromium.org>
-> >
-> > The kcontrol 'DSP VAD Switch' is automatically enabled/disabled
-> > when the hotwording PCM stream is opened/closed.
->
-> So why do we have the switch?
+Hi,
 
-The source of the switch is commit af48f1d08a547 ("ASoC: rt5677:
-Support DSP function for VAD application") and does not explain the
-original intent of the switch. I believe the original intent of this
-commit is to keep the switch in sync with the VAD state. I do not
-believe we use the switch ourselves.
+Am ,  schrieb Jaroslav Kysela:
+> As discussed, we would like to move the UCM configuration files from the
+> alsa-lib repository to new alsa-ucm-conf repository with the licence chan=
+ge
+> from LGPL-2.1 to BSD-3-Clause.
+> =
+
+> I would like to check, if you agree with this licence change. Please, ans=
+wer
+> to this e-mail and write your agreement / disagreement (keep CC to
+> the alsa-devel mailing list for the archiving purposes).
+> =
+
+> Thank you for your time and co-operation.
+> =
+
+> Reference:  https://mailman.alsa-project.org/pipermail/alsa-devel/2019-Ju=
+ly/153257.html
+> =
+
+> List of your commit(s):
+> =
+
+>   f449a299431a30d7d2588199f4cbd16e329db8a5
+>     conf/ucm: ROCKCHIP-I2S: rename to VEYRON-I2S
+
+I do agree to the license change from LGPL-2.1 to BSD-3-Clause.
+
+Regards
+Heiko St=FCbner
+
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
