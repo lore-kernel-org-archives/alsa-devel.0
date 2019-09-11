@@ -2,63 +2,84 @@ Return-Path: <SRS0=DUcU=XG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F1EC49ED6
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 10:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC442C49ED6
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 10:27:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E13A2082C
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 10:26:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4530220CC7
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 10:27:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jvB2oqe+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E13A2082C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thundersoft.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s/AGqke4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="lKqixCK9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4530220CC7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 799451729;
-	Wed, 11 Sep 2019 12:26:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 799451729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 664B0172E;
+	Wed, 11 Sep 2019 12:26:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 664B0172E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568197611;
-	bh=Q0EhsCQMNAMfT+ukw88tU1/asFeWN8BQmY/iAMW/iuI=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1568197666;
+	bh=6E5gWPYhf2XDN+hKT9wDlF898+yjVu3lzM65Xo60iJ8=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jvB2oqe+ALyWn4dWQv7o7no+5lDJNfp8ZfZTztbBHQnl7GiXEc09W1oVDMepBn1OU
-	 6EIRcF3xkGvnughqBBNAf/QoxDGClRCvPso23J69G4HIN+3SRWsfBfCmVtTxtsn/Od
-	 PG1DBdDmdZbDVds5L1yAGXdm986wOvMktMc3j/m0=
+	b=s/AGqke4QExtBDnADsQXM548Lp6TGoxOMkk3aR1yjLRq04g0EAAK3bln9u0lzwl1K
+	 +Z5aN9ZFyHal1HDRg5t2gBRTwzTj5SP8JzrwLeq4xSks9/tBmRmsg+Uy93gr8zk1gL
+	 7glkz69irkH8GdgkLhkNUli3nroWtRSAxqcMSZ/Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99CC5F805F6;
-	Wed, 11 Sep 2019 12:24:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27D61F805FF;
+	Wed, 11 Sep 2019 12:25:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C920CF80323; Wed, 11 Sep 2019 12:24:24 +0200 (CEST)
-Received: from mail1.thundersoft.com (unknown [114.242.213.35])
+ id 71532F80610; Wed, 11 Sep 2019 12:25:07 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28490F800A9
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 12:24:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28490F800A9
-Received: from localhost (unknown [192.168.122.240])
- by mail1.thundersoft.com (Postfix) with ESMTPA id BEC9917459CE;
- Wed, 11 Sep 2019 18:24:11 +0800 (CST)
-From: shifu0704@thundersoft.com
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- robh+dt@kernel.org
-Date: Wed, 11 Sep 2019 18:25:29 +0800
-Message-Id: <1568197529-4385-2-git-send-email-shifu0704@thundersoft.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1568197529-4385-1-git-send-email-shifu0704@thundersoft.com>
-References: <1568197529-4385-1-git-send-email-shifu0704@thundersoft.com>
-Cc: Frank Shi <shifu0704@thundersoft.com>, dmurphy@ti.com, navada@ti.com
-Subject: [alsa-devel] [PATCH v2] tas2770: add tas2770 smart PA kernel driver
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE722F8060E
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 12:25:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE722F8060E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="lKqixCK9"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=oZFAOPo4X3BNQVGNEvYEWVxowwA0kAKGhQaDd6PyNTE=; b=lKqixCK91s1J1JK3SHw2V5czw
+ XB09ulI7YQNYyM/LPqK0Kdn9wXhWahr5Dk4HHFMUEkVoU6L2jpBurkUS97X1hI6D4Tp6W6GRRO80U
+ 8Ki1dzLg1BP5ftkgX79qPrn2txPoYHQO2yHxFffL7cWsG9NIS1FaxrXcfLZD40HexDm0Y=;
+Received: from [148.69.85.38] (helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1i7zo7-0007mQ-Jw; Wed, 11 Sep 2019 10:25:03 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 11645D02EB4; Wed, 11 Sep 2019 11:25:03 +0100 (BST)
+Date: Wed, 11 Sep 2019 11:25:03 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Curtis Malainey <cujomalainey@chromium.org>
+Message-ID: <20190911102503.GV2036@sirena.org.uk>
+References: <20190906194636.217881-1-cujomalainey@chromium.org>
+ <20190906194636.217881-6-cujomalainey@chromium.org>
+MIME-Version: 1.0
+In-Reply-To: <20190906194636.217881-6-cujomalainey@chromium.org>
+X-Cookie: Be careful!  UGLY strikes 9 out of 10!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ben Zhang <benzh@chromium.org>, Bard Liao <bardliao@realtek.com>
+Subject: Re: [alsa-devel] [RFC 05/15] ASoC: rt5677: Auto enable/disable DSP
+	for hotwording
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,1205 +92,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6837968802082828954=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Frank Shi <shifu0704@thundersoft.com>
 
-add tas2770 smart PA kernel driver
+--===============6837968802082828954==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vBRosIkLXbYTRpGW"
+Content-Disposition: inline
 
-Signed-off-by: Frank Shi <shifu0704@thundersoft.com>
----
- sound/soc/codecs/Kconfig   |   5 +
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/tas2770.c | 954 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/tas2770.h | 166 ++++++++
- 4 files changed, 1127 insertions(+)
- create mode 100644 sound/soc/codecs/tas2770.c
- create mode 100644 sound/soc/codecs/tas2770.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8f3e787..cc92da3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -111,6 +111,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
- 	select SND_SOC_STI_SAS
- 	select SND_SOC_TAS2552 if I2C
-+	select SND_SOC_TAS2770 if I2C
- 	select SND_SOC_TAS5086 if I2C
- 	select SND_SOC_TAS571X if I2C
- 	select SND_SOC_TFA9879 if I2C
-@@ -652,6 +653,10 @@ config SND_SOC_TAS2552
- 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
- 	depends on I2C
- 
-+config SND_SOC_TAS2770
-+	tristate "Texas Instruments TAS2770 speaker amplifier"
-+	depends on I2C
-+
- config SND_SOC_TAS5086
- 	tristate "Texas Instruments TAS5086 speaker amplifier"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 5305cc6..63b8488 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -116,6 +116,7 @@ snd-soc-stac9766-objs := stac9766.o
- snd-soc-sti-sas-objs := sti-sas.o
- snd-soc-tas5086-objs := tas5086.o
- snd-soc-tas571x-objs := tas571x.o
-+snd-soc-tas2770-objs := tas2770.o
- snd-soc-tfa9879-objs := tfa9879.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic23-i2c-objs := tlv320aic23-i2c.o
-@@ -332,6 +333,7 @@ obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
- obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
- obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TAS571X)	+= snd-soc-tas571x.o
-+obj-$(CONFIG_SND_SOC_TAS2770) += snd-soc-tas2770.o
- obj-$(CONFIG_SND_SOC_TFA9879)	+= snd-soc-tfa9879.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23_I2C)	+= snd-soc-tlv320aic23-i2c.o
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-new file mode 100644
-index 0000000..cc1481f
---- /dev/null
-+++ b/sound/soc/codecs/tas2770.c
-@@ -0,0 +1,954 @@
-+/*
-+ * SPDX-License-Identifier: GPL-2.0
-+ *
-+ * ALSA SoC Texas Instruments TAS2770 20-W Digital Input Mono Class-D
-+ * Audio Amplifier with Speaker I/V Sense
-+ *
-+ * Copyright (C) 2016-2017 Texas Instruments Incorporated - http://www.ti.com/
-+ *	Author: Tracy Yi <tracy-yi@ti.com>
-+ *	Shi Fu <shifu0704@thundersoft.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
-+#include <linux/gpio.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/firmware.h>
-+#include <linux/regmap.h>
-+#include <linux/of.h>
-+#include <linux/of_gpio.h>
-+#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+
-+#include "tas2770.h"
-+
-+#define TAS2770_MDELAY 0xFFFFFFFE
-+#define TAS2770_CHECK_PERIOD	5000	/* 5 second */
-+
-+static void tas2770_reset(struct tas2770_priv *tas2770)
-+{
-+	if (tas2770->reset_gpio) {
-+		gpiod_set_value_cansleep(tas2770->reset_gpio, 0);
-+		msleep(20);
-+		gpiod_set_value_cansleep(tas2770->reset_gpio, 1);
-+	}
-+	snd_soc_component_write(tas2770->component, TAS2770_SW_RST,
-+		TAS2770_RST);
-+}
-+
-+static int tas2770_regmap_read(struct tas2770_priv *tas2770,
-+			unsigned int reg, unsigned int *value)
-+{
-+	int result = 0;
-+	int retry_count = TAS2770_I2C_RETRY_COUNT;
-+
-+	while (retry_count--) {
-+		result = snd_soc_component_read(tas2770->component, reg,
-+			value);
-+		if (!result)
-+			break;
-+
-+		msleep(20);
-+	}
-+	if (!retry_count)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
-+static int tas2770_set_bias_level(struct snd_soc_component *component,
-+				 enum snd_soc_bias_level level)
-+{
-+	struct tas2770_priv *tas2770 =
-+			snd_soc_component_get_drvdata(component);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		break;
-+
-+	case SND_SOC_BIAS_STANDBY:
-+		snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
-+			TAS2770_PWR_CTRL_MASK,
-+			TAS2770_PWR_CTRL_ACTIVE);
-+		tas2770->power_state = SND_SOC_BIAS_STANDBY;
-+		break;
-+
-+	case SND_SOC_BIAS_PREPARE:
-+		snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
-+			TAS2770_PWR_CTRL_MASK,
-+			TAS2770_PWR_CTRL_MUTE);
-+		tas2770->power_state = SND_SOC_BIAS_PREPARE;
-+		break;
-+
-+	case SND_SOC_BIAS_OFF:
-+		snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
-+			TAS2770_PWR_CTRL_MASK,
-+			TAS2770_PWR_CTRL_SHUTDOWN);
-+		tas2770->power_state = SND_SOC_BIAS_OFF;
-+		break;
-+
-+	default:
-+		dev_err(tas2770->dev,
-+				"wrong power level setting %d\n", level);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int tas2770_codec_suspend(struct snd_soc_component *component)
-+{
-+	int ret;
-+
-+	ret = tas2770_set_bias_level(component, SND_SOC_BIAS_OFF);
-+	if (ret)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int tas2770_codec_resume(struct snd_soc_component *component)
-+{
-+	int ret;
-+
-+	ret = tas2770_set_bias_level(component, SND_SOC_BIAS_STANDBY);
-+	if (ret)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+#else
-+#define tas2770_codec_suspend NULL
-+#define tas2770_codec_resume NULL
-+#endif
-+
-+static const char * const tas2770_ASI1_src[] = {
-+	"I2C offset", "Left", "Right", "LeftRightDiv2",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	tas2770_ASI1_src_enum, TAS2770_TDM_CFG_REG2,
-+	4, tas2770_ASI1_src);
-+
-+static const struct snd_kcontrol_new tas2770_asi1_mux =
-+	SOC_DAPM_ENUM("ASI1 Source", tas2770_ASI1_src_enum);
-+
-+static int tas2770_dac_event(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+			snd_soc_dapm_to_component(w->dapm);
-+	struct tas2770_priv *tas2770 =
-+			snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		ret = tas2770_set_bias_level(component,
-+			SND_SOC_BIAS_PREPARE);
-+		if (ret)
-+			goto end;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		ret = tas2770_set_bias_level(component,
-+			SND_SOC_BIAS_OFF);
-+		if (ret)
-+			goto end;
-+		break;
-+	default:
-+		dev_err(tas2770->dev, "Not supported evevt\n");
-+		return -EINVAL;
-+	}
-+
-+end:
-+	return ret;
-+}
-+
-+static const struct snd_kcontrol_new isense_switch =
-+	SOC_DAPM_SINGLE("Switch", TAS2770_PWR_CTRL, 3, 1, 1);
-+static const struct snd_kcontrol_new vsense_switch =
-+	SOC_DAPM_SINGLE("Switch", TAS2770_PWR_CTRL, 2, 1, 1);
-+
-+static const struct snd_soc_dapm_widget tas2770_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("ASI1", "ASI1 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_MUX("ASI1 Sel", SND_SOC_NOPM, 0, 0,
-+				&tas2770_asi1_mux),
-+	SND_SOC_DAPM_SWITCH("ISENSE", TAS2770_PWR_CTRL, 3, 1,
-+			&isense_switch),
-+	SND_SOC_DAPM_SWITCH("VSENSE", TAS2770_PWR_CTRL, 2, 1,
-+			&vsense_switch),
-+	SND_SOC_DAPM_DAC_E("DAC", NULL, SND_SOC_NOPM, 0, 0, tas2770_dac_event,
-+	SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_OUTPUT("OUT"),
-+	SND_SOC_DAPM_SIGGEN("VMON"),
-+	SND_SOC_DAPM_SIGGEN("IMON")
-+};
-+
-+static const struct snd_soc_dapm_route tas2770_audio_map[] = {
-+	{"ASI1 Sel", "I2C offset", "ASI1"},
-+	{"ASI1 Sel", "Left", "ASI1"},
-+	{"ASI1 Sel", "Right", "ASI1"},
-+	{"ASI1 Sel", "LeftRightDiv2", "ASI1"},
-+	{"DAC", NULL, "ASI1 Sel"},
-+	{"OUT", NULL, "DAC"},
-+	{"ISENSE", "Switch", "IMON"},
-+	{"VSENSE", "Switch", "VMON"},
-+};
-+
-+static int tas2770_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	int ret;
-+
-+	if (mute)
-+		ret = tas2770_set_bias_level(component, SND_SOC_BIAS_PREPARE);
-+	else
-+		ret = tas2770_set_bias_level(component, SND_SOC_BIAS_STANDBY);
-+
-+	return ret;
-+}
-+
-+static int tas2770_set_bitwidth(struct tas2770_priv *tas2770, int bitwidth)
-+{
-+	int ret;
-+	struct snd_soc_component *component = tas2770->component;
-+
-+	switch (bitwidth) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG2,
-+			TAS2770_TDM_CFG_REG2_RXW_MASK,
-+			TAS2770_TDM_CFG_REG2_RXW_16BITS);
-+		tas2770->v_sense_slot = tas2770->i_sense_slot + 2;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG2,
-+			TAS2770_TDM_CFG_REG2_RXW_MASK,
-+			TAS2770_TDM_CFG_REG2_RXW_24BITS);
-+		tas2770->v_sense_slot = tas2770->i_sense_slot + 4;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG2,
-+			TAS2770_TDM_CFG_REG2_RXW_MASK,
-+			TAS2770_TDM_CFG_REG2_RXW_32BITS);
-+		tas2770->v_sense_slot = tas2770->i_sense_slot + 4;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	tas2770->channel_size = bitwidth;
-+
-+	ret = snd_soc_component_update_bits(component,
-+		TAS2770_TDM_CFG_REG5,
-+		TAS2770_TDM_CFG_REG5_VSNS_MASK |
-+		TAS2770_TDM_CFG_REG5_50_MASK,
-+		TAS2770_TDM_CFG_REG5_VSNS_ENABLE |
-+		tas2770->v_sense_slot);
-+	if (ret)
-+		goto end;
-+	ret = snd_soc_component_update_bits(component,
-+		TAS2770_TDM_CFG_REG6,
-+		TAS2770_TDM_CFG_REG6_ISNS_MASK |
-+		TAS2770_TDM_CFG_REG6_50_MASK,
-+		TAS2770_TDM_CFG_REG6_ISNS_ENABLE |
-+		tas2770->i_sense_slot);
-+
-+end:
-+	return ret;
-+}
-+
-+static int tas2770_set_samplerate(struct tas2770_priv *tas2770,
-+								int samplerate)
-+{
-+	int ret;
-+	struct snd_soc_component *component = tas2770->component;
-+
-+	switch (samplerate) {
-+	case 48000:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_SMP_MASK,
-+			TAS2770_TDM_CFG_REG0_SMP_48KHZ);
-+		if (ret)
-+			goto end;
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_31_MASK,
-+			TAS2770_TDM_CFG_REG0_31_44_1_48KHZ);
-+		if (ret)
-+			goto end;
-+		break;
-+	case 44100:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_SMP_MASK,
-+			TAS2770_TDM_CFG_REG0_SMP_44_1KHZ);
-+		if (ret)
-+			goto end;
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_31_MASK,
-+			TAS2770_TDM_CFG_REG0_31_44_1_48KHZ);
-+		if (ret)
-+			goto end;
-+		break;
-+	case 96000:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_SMP_MASK,
-+			TAS2770_TDM_CFG_REG0_SMP_48KHZ);
-+		if (ret)
-+			goto end;
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_31_MASK,
-+			TAS2770_TDM_CFG_REG0_31_88_2_96KHZ);
-+		break;
-+	case 88200:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_SMP_MASK,
-+			TAS2770_TDM_CFG_REG0_SMP_44_1KHZ);
-+		if (ret)
-+			goto end;
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_31_MASK,
-+			TAS2770_TDM_CFG_REG0_31_88_2_96KHZ);
-+		break;
-+	case 19200:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_SMP_MASK,
-+			TAS2770_TDM_CFG_REG0_SMP_48KHZ);
-+		if (ret)
-+			goto end;
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_31_MASK,
-+			TAS2770_TDM_CFG_REG0_31_176_4_192KHZ);
-+		if (ret)
-+			goto end;
-+		break;
-+	case 17640:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_SMP_MASK,
-+			TAS2770_TDM_CFG_REG0_SMP_44_1KHZ);
-+		if (ret)
-+			goto end;
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG0,
-+			TAS2770_TDM_CFG_REG0_31_MASK,
-+			TAS2770_TDM_CFG_REG0_31_176_4_192KHZ);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+	}
-+
-+end:
-+	if (!ret)
-+		tas2770->sampling_rate = samplerate;
-+	return ret;
-+}
-+
-+static int tas2770_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct tas2770_priv *tas2770 =
-+			snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	ret = tas2770_set_bitwidth(tas2770, params_format(params));
-+	if (ret < 0)
-+		goto end;
-+
-+
-+	ret = tas2770_set_samplerate(tas2770, params_rate(params));
-+
-+end:
-+	return ret;
-+}
-+
-+static int tas2770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	u8 tdm_rx_start_slot = 0, asi_cfg_1 = 0;
-+	int ret;
-+	int value = 0;
-+	struct snd_soc_component *component = dai->component;
-+	struct tas2770_priv *tas2770 =
-+			snd_soc_component_get_drvdata(component);
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		break;
-+	default:
-+		dev_err(tas2770->dev, "ASI format master is not found\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		asi_cfg_1 |= TAS2770_TDM_CFG_REG1_RX_RSING;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		asi_cfg_1 |= TAS2770_TDM_CFG_REG1_RX_FALING;
-+		break;
-+	default:
-+		dev_err(tas2770->dev, "ASI format Inverse is not found\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG1,
-+		TAS2770_TDM_CFG_REG1_RX_MASK,
-+		asi_cfg_1);
-+	if (ret)
-+		return ret;
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case (SND_SOC_DAIFMT_I2S):
-+		tdm_rx_start_slot = 1;
-+		break;
-+	case (SND_SOC_DAIFMT_DSP_A):
-+		tdm_rx_start_slot = 0;
-+		break;
-+	case (SND_SOC_DAIFMT_DSP_B):
-+		tdm_rx_start_slot = 1;
-+		break;
-+	case (SND_SOC_DAIFMT_LEFT_J):
-+		tdm_rx_start_slot = 0;
-+		break;
-+	default:
-+		dev_err(tas2770->dev,
-+			"DAI Format is not found, fmt=0x%x\n", fmt);
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG1,
-+		TAS2770_TDM_CFG_REG1_MASK,
-+	(tdm_rx_start_slot << TAS2770_TDM_CFG_REG1_51_SHIFT));
-+	if (ret)
-+		return ret;
-+
-+	value = snd_soc_component_read32(component, TAS2770_TDM_CFG_REG3);
-+
-+	tas2770->asi_format = fmt;
-+
-+	return 0;
-+}
-+
-+static int tas2770_set_dai_tdm_slot(struct snd_soc_dai *dai,
-+				unsigned int tx_mask,
-+				unsigned int rx_mask,
-+				int slots, int slot_width)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct tas2770_priv *tas2770 =
-+			snd_soc_component_get_drvdata(component);
-+	int left_slot, right_slot;
-+	int ret;
-+
-+	if (tx_mask == 0 || rx_mask != 0)
-+		return -EINVAL;
-+
-+	if (slots == 1) {
-+		if (tx_mask != 1)
-+			return -EINVAL;
-+		left_slot = 0;
-+		right_slot = 0;
-+	} else {
-+		left_slot = __ffs(tx_mask);
-+		tx_mask &= ~(1 << left_slot);
-+		if (tx_mask == 0) {
-+			right_slot = left_slot;
-+		} else {
-+			right_slot = __ffs(tx_mask);
-+			tx_mask &= ~(1 << right_slot);
-+		}
-+	}
-+
-+	if (tx_mask != 0 || left_slot >= slots || right_slot >= slots)
-+		return -EINVAL;
-+
-+	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG3,
-+		TAS2770_TDM_CFG_REG3_30_MASK,
-+		(left_slot << TAS2770_TDM_CFG_REG3_30_SHIFT));
-+	if (ret)
-+		return ret;
-+	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG3,
-+		TAS2770_TDM_CFG_REG3_RXS_MASK,
-+	(right_slot << TAS2770_TDM_CFG_REG3_RXS_SHIFT));
-+	if (ret)
-+		return ret;
-+
-+	switch (slot_width) {
-+	case 16:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG2,
-+			TAS2770_TDM_CFG_REG2_RXS_MASK,
-+			TAS2770_TDM_CFG_REG2_RXS_16BITS);
-+	break;
-+
-+	case 24:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG2,
-+			TAS2770_TDM_CFG_REG2_RXS_MASK,
-+			TAS2770_TDM_CFG_REG2_RXS_24BITS);
-+	break;
-+
-+	case 32:
-+		ret = snd_soc_component_update_bits(component,
-+			TAS2770_TDM_CFG_REG2,
-+			TAS2770_TDM_CFG_REG2_RXS_MASK,
-+			TAS2770_TDM_CFG_REG2_RXS_32BITS);
-+	break;
-+
-+	case 0:
-+	/* Do not change slot width */
-+		ret = 0;
-+	break;
-+
-+	default:
-+		ret = -EINVAL;
-+	}
-+
-+	if (!ret)
-+		tas2770->slot_width = slot_width;
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_ops tas2770_dai_ops = {
-+	.digital_mute = tas2770_mute,
-+	.hw_params  = tas2770_hw_params,
-+	.set_fmt    = tas2770_set_fmt,
-+	.set_tdm_slot = tas2770_set_dai_tdm_slot,
-+};
-+
-+#define TAS2770_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
-+		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+#define TAS2770_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
-+					   SNDRV_PCM_RATE_96000 |\
-+					    SNDRV_PCM_RATE_192000\
-+					  )
-+
-+static struct snd_soc_dai_driver tas2770_dai_driver[] = {
-+	{
-+		.name = "tas2770 ASI1",
-+		.id = 0,
-+		.playback = {
-+			.stream_name    = "ASI1 Playback",
-+			.channels_min   = 2,
-+			.channels_max   = 2,
-+			.rates      = TAS2770_RATES,
-+			.formats    = TAS2770_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name    = "ASI1 Capture",
-+			.channels_min   = 0,
-+			.channels_max   = 2,
-+			.rates          = TAS2770_RATES,
-+			.formats    = TAS2770_FORMATS,
-+		},
-+		.ops = &tas2770_dai_ops,
-+		.symmetric_rates = 1,
-+	},
-+};
-+
-+static int tas2770_codec_probe(struct snd_soc_component *component)
-+{
-+	struct tas2770_priv *tas2770 =
-+			snd_soc_component_get_drvdata(component);
-+
-+	tas2770->component = component;
-+
-+	return 0;
-+}
-+
-+static DECLARE_TLV_DB_SCALE(tas2770_digital_tlv, 1100, 50, 0);
-+static DECLARE_TLV_DB_SCALE(tas2770_playback_volume, -12750, 50, 0);
-+
-+static const struct snd_kcontrol_new tas2770_snd_controls[] = {
-+	SOC_SINGLE_TLV("Amp Output Gain", TAS2770_PLAY_CFG_REG0,
-+		0, 0x14, 0,
-+		tas2770_digital_tlv),
-+	SOC_SINGLE_TLV("Playback Volume", TAS2770_PLAY_CFG_REG2,
-+		0, TAS2770_PLAY_CFG_REG2_VMAX, 1,
-+		tas2770_playback_volume),
-+};
-+
-+static const struct snd_soc_component_driver soc_component_driver_tas2770 = {
-+	.probe			= tas2770_codec_probe,
-+	.suspend		= tas2770_codec_suspend,
-+	.resume			= tas2770_codec_resume,
-+	.set_bias_level = tas2770_set_bias_level,
-+	.controls		= tas2770_snd_controls,
-+	.num_controls		= ARRAY_SIZE(tas2770_snd_controls),
-+	.dapm_widgets		= tas2770_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(tas2770_dapm_widgets),
-+	.dapm_routes		= tas2770_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(tas2770_audio_map),
-+	.idle_bias_on		= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static int tas2770_register_codec(struct tas2770_priv *tas2770)
-+{
-+	return devm_snd_soc_register_component(tas2770->dev,
-+		&soc_component_driver_tas2770,
-+		tas2770_dai_driver, ARRAY_SIZE(tas2770_dai_driver));
-+}
-+
-+static void tas2770_load_config(struct tas2770_priv *tas2770)
-+{
-+	int ret;
-+	struct snd_soc_component *component = tas2770->component;
-+
-+	tas2770_reset(tas2770);
-+	snd_soc_component_write(component, TAS2770_SW_RST,
-+			TAS2770_RST);
-+
-+	ret = tas2770_set_bitwidth(tas2770, tas2770->channel_size);
-+	if (ret)
-+		goto error_out;
-+
-+	ret = tas2770_set_samplerate(tas2770, tas2770->sampling_rate);
-+	if (ret)
-+		goto error_out;
-+
-+	ret = tas2770_set_bias_level(component, tas2770->power_state);
-+	if (ret)
-+		goto error_out;
-+
-+error_out:
-+		return;
-+}
-+
-+static const struct reg_default tas2770_reg_defaults[] = {
-+	{ TAS2770_PAGE, 0x00 },
-+	{ TAS2770_SW_RST, 0x00 },
-+	{ TAS2770_PWR_CTRL, 0x0e },
-+	{ TAS2770_PLAY_CFG_REG0, 0x10 },
-+	{ TAS2770_PLAY_CFG_REG1, 0x01 },
-+	{ TAS2770_PLAY_CFG_REG2, 0x00 },
-+	{ TAS2770_MSC_CFG_REG0, 0x07 },
-+	{ TAS2770_TDM_CFG_REG1, 0x02 },
-+	{ TAS2770_TDM_CFG_REG2, 0x0a },
-+	{ TAS2770_TDM_CFG_REG3, 0x10 },
-+	{ TAS2770_INT_MASK_REG0, 0xfc },
-+	{ TAS2770_INT_MASK_REG1, 0xb1 },
-+	{ TAS2770_INT_CFG, 0x05 },
-+	{ TAS2770_MISC_IRQ, 0x81 },
-+	{ TAS2770_CLK_CGF, 0x0c },
-+
-+};
-+
-+static bool tas2770_volatile(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case TAS2770_PAGE: /* regmap implementation requires this */
-+	case TAS2770_SW_RST: /* always clears after write */
-+	case TAS2770_BO_PRV_REG0:/* has a self clearing bit */
-+	case TAS2770_LVE_INT_REG0:
-+	case TAS2770_LVE_INT_REG1:
-+	case TAS2770_LAT_INT_REG0:/* Sticky interrupt flags */
-+	case TAS2770_LAT_INT_REG1:/* Sticky interrupt flags */
-+	case TAS2770_VBAT_MSB:
-+	case TAS2770_VBAT_LSB:
-+	case TAS2770_TEMP_MSB:
-+	case TAS2770_TEMP_LSB:
-+		return true;
-+	}
-+	return false;
-+}
-+
-+static bool tas2770_writeable(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case TAS2770_LVE_INT_REG0:
-+	case TAS2770_LVE_INT_REG1:
-+	case TAS2770_LAT_INT_REG0:
-+	case TAS2770_LAT_INT_REG1:
-+	case TAS2770_VBAT_MSB:
-+	case TAS2770_VBAT_LSB:
-+	case TAS2770_TEMP_MSB:
-+	case TAS2770_TEMP_LSB:
-+	case TAS2770_TDM_CLK_DETC:
-+	case TAS2770_REV_AND_GPID:
-+		return false;
-+	}
-+	return true;
-+}
-+
-+static const struct regmap_range_cfg tas2770_regmap_ranges[] = {
-+	{
-+		.range_min = 0,
-+		.range_max = 1 * 128,
-+		.selector_reg = TAS2770_PAGE,
-+		.selector_mask = 0xff,
-+		.selector_shift = 0,
-+		.window_start = 0,
-+		.window_len = 128,
-+	},
-+};
-+
-+static const struct regmap_config tas2770_i2c_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.writeable_reg = tas2770_writeable,
-+	.volatile_reg = tas2770_volatile,
-+	.reg_defaults = tas2770_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(tas2770_reg_defaults),
-+	.cache_type = REGCACHE_RBTREE,
-+	.ranges = tas2770_regmap_ranges,
-+	.num_ranges = ARRAY_SIZE(tas2770_regmap_ranges),
-+	.max_register = 1 * 128,
-+};
-+
-+static irqreturn_t tas2770_irq_handler(int irq, void *dev_id)
-+{
-+	struct tas2770_priv *tas2770 = (struct tas2770_priv *)dev_id;
-+	struct snd_soc_component *component = tas2770->component;
-+	unsigned int device_status_1 = 0, device_status_2 = 0;
-+	int result;
-+
-+	if (tas2770->runtime_suspend)
-+		goto end;
-+
-+	if (tas2770->power_state == TAS2770_POWER_SHUTDOWN)
-+		goto end;
-+
-+	result = snd_soc_component_write(component, TAS2770_INT_MASK_REG0,
-+				TAS2770_INT_MASK_REG0_DISABLE);
-+	if (result)
-+		goto reload;
-+	result = snd_soc_component_write(component, TAS2770_INT_MASK_REG1,
-+				TAS2770_INT_MASK_REG1_DISABLE);
-+	if (result)
-+		goto reload;
-+
-+	result = tas2770_regmap_read(tas2770,
-+			TAS2770_LAT_INT_REG0, &device_status_1);
-+	if (!result && (device_status_1 & 0x3)) {
-+		if (device_status_1 &
-+			TAS2770_LAT_INT_REG0_OCE_FLG) {
-+			tas2770->err_code |= ERROR_OVER_CURRENT;
-+			dev_err(tas2770->dev, "SPK over current!\n");
-+		} else {
-+			tas2770->err_code &= ~ERROR_OVER_CURRENT;
-+		}
-+
-+		if (device_status_1 &
-+			TAS2770_LAT_INT_REG0_OTE_FLG) {
-+			tas2770->err_code |= ERROR_DIE_OVERTEMP;
-+			dev_err(tas2770->dev, "die over temperature!\n");
-+		} else {
-+			tas2770->err_code &= ~ERROR_DIE_OVERTEMP;
-+		}
-+	}
-+
-+	result = tas2770_regmap_read(tas2770,
-+			TAS2770_LAT_INT_REG1, &device_status_2);
-+	if (!result && (device_status_2 & 0x0f)) {
-+		if (device_status_2 &
-+			TAS2770_LAT_INT_REG1_VBA_TOV) {
-+			tas2770->err_code |= ERROR_OVER_VOLTAGE;
-+			dev_err(tas2770->dev, "SPK over voltage!\n");
-+		} else {
-+			tas2770->err_code &= ~ERROR_OVER_VOLTAGE;
-+		}
-+
-+		if (device_status_2 &
-+			TAS2770_LAT_INT_REG1_VBA_TUV) {
-+			tas2770->err_code |= ERROR_UNDER_VOLTAGE;
-+			dev_err(tas2770->dev, "SPK under voltage!\n");
-+		} else {
-+			tas2770->err_code &= ~ERROR_UNDER_VOLTAGE;
-+		}
-+
-+		if (device_status_2 &
-+			TAS2770_LAT_INT_REG1_BOUT_FLG) {
-+			tas2770->err_code |= ERROR_BROWNOUT;
-+			dev_err(tas2770->dev, "brownout!\n");
-+		} else {
-+			tas2770->err_code &= ~ERROR_BROWNOUT;
-+		}
-+	}
-+
-+	result = snd_soc_component_write(component,
-+			TAS2770_INT_MASK_REG0, TAS2770_INT_REG0_DEFAULT);
-+	if (result)
-+		goto reload;
-+
-+	result = snd_soc_component_write(component,
-+			TAS2770_INT_MASK_REG1, TAS2770_INT_REG1_DEFAULT);
-+	if (result)
-+		goto reload;
-+
-+	goto end;
-+
-+reload:
-+	/* hardware reset and reload */
-+	tas2770_load_config(tas2770);
-+
-+end:
-+	return IRQ_HANDLED;
-+}
-+
-+static int tas2770_parse_dt(struct device *dev, struct tas2770_priv *tas2770)
-+{
-+	int rc = 0;
-+
-+	rc = fwnode_property_read_u32(dev->fwnode, "ti,asi-format",
-+					&tas2770->asi_format);
-+	if (rc) {
-+		dev_err(tas2770->dev, "Looking up %s property failed %d\n",
-+			"ti,asi-format", rc);
-+		goto end;
-+	}
-+
-+	rc = fwnode_property_read_u32(dev->fwnode, "ti,imon-slot-no",
-+			&tas2770->i_sense_slot);
-+	if (rc) {
-+		dev_err(tas2770->dev, "Looking up %s property failed %d\n",
-+			"ti,imon-slot-no", rc);
-+		goto end;
-+	}
-+
-+	rc = fwnode_property_read_u32(dev->fwnode, "ti,vmon-slot-no",
-+				&tas2770->v_sense_slot);
-+	if (rc) {
-+		dev_err(tas2770->dev, "Looking up %s property failed %d\n",
-+			"ti,vmon-slot-no", rc);
-+		goto end;
-+	}
-+
-+end:
-+	return rc;
-+}
-+
-+static int tas2770_i2c_probe(struct i2c_client *client,
-+			const struct i2c_device_id *id)
-+{
-+	struct tas2770_priv *tas2770;
-+	int result;
-+
-+	tas2770 = devm_kzalloc(&client->dev,
-+		sizeof(struct tas2770_priv), GFP_KERNEL);
-+	if (!tas2770)
-+		return -ENOMEM;
-+	tas2770->dev = &client->dev;
-+	tas2770->irq_gpio = client->irq;
-+
-+	i2c_set_clientdata(client, tas2770);
-+	dev_set_drvdata(&client->dev, tas2770);
-+	tas2770->power_state = TAS2770_POWER_SHUTDOWN;
-+
-+	tas2770->regmap = devm_regmap_init_i2c(client, &tas2770_i2c_regmap);
-+	if (IS_ERR(tas2770->regmap)) {
-+		result = PTR_ERR(tas2770->regmap);
-+		dev_err(&client->dev, "Failed to allocate register map: %d\n",
-+					result);
-+		goto end;
-+	}
-+
-+	if (client->dev.of_node) {
-+		result = tas2770_parse_dt(&client->dev, tas2770);
-+		if (result) {
-+			dev_err(tas2770->dev, "%s: Failed to parse devicetree\n",
-+				__func__);
-+			goto end;
-+		}
-+	}
-+
-+	tas2770->reset_gpio = devm_gpiod_get_optional(tas2770->dev,
-+							  "reset-gpio",
-+						      GPIOD_OUT_HIGH);
-+		if (IS_ERR(tas2770->reset_gpio)) {
-+			if (PTR_ERR(tas2770->reset_gpio) == -EPROBE_DEFER) {
-+				tas2770->reset_gpio = NULL;
-+				return -EPROBE_DEFER;
-+			}
-+		}
-+
-+	if (tas2770->irq_gpio > 0) {
-+		result = devm_request_threaded_irq(tas2770->dev,
-+			   tas2770->irq_gpio,
-+			   NULL, tas2770_irq_handler,
-+			   IRQF_TRIGGER_FALLING | IRQF_ONESHOT, client->name,
-+			   tas2770);
-+		if (result) {
-+			dev_err(tas2770->dev, "Unable to request IRQ\n");
-+			return result;
-+		}
-+	}
-+
-+	tas2770->channel_size = 0;
-+	tas2770->slot_width = 0;
-+
-+	tas2770_reset(tas2770);
-+
-+	result = tas2770_register_codec(tas2770);
-+	if (result)
-+		dev_err(tas2770->dev, "Register codec failed.\n");
-+
-+end:
-+	return result;
-+}
-+
-+static int tas2770_i2c_remove(struct i2c_client *client)
-+{
-+	pm_runtime_disable(&client->dev);
-+	return 0;
-+}
-+
-+
-+static const struct i2c_device_id tas2770_i2c_id[] = {
-+	{ "tas2770", 0},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, tas2770_i2c_id);
-+
-+#if defined(CONFIG_OF)
-+static const struct of_device_id tas2770_of_match[] = {
-+	{ .compatible = "ti,tas2770" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, tas2770_of_match);
-+#endif
-+
-+static struct i2c_driver tas2770_i2c_driver = {
-+	.driver = {
-+		.name   = "tas2770",
-+		.owner  = THIS_MODULE,
-+		.of_match_table = of_match_ptr(tas2770_of_match),
-+	},
-+	.probe      = tas2770_i2c_probe,
-+	.remove     = tas2770_i2c_remove,
-+	.id_table   = tas2770_i2c_id,
-+};
-+
-+module_i2c_driver(tas2770_i2c_driver);
-+
-+MODULE_AUTHOR("Shi Fu <shifu0704@thundersoft.com>");
-+MODULE_DESCRIPTION("TAS2770 I2C Smart Amplifier driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/tas2770.h b/sound/soc/codecs/tas2770.h
-new file mode 100644
-index 0000000..bf59dc2
---- /dev/null
-+++ b/sound/soc/codecs/tas2770.h
-@@ -0,0 +1,166 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * ALSA SoC TAS2770 codec driver
-+ *
-+ *  Copyright (C) 2016-2017 Texas Instruments Incorporated - http://www.ti.com/
-+ */
-+#ifndef __TAS2770__
-+#define __TAS2770__
-+
-+/* Book Control Register (available in page0 of each book) */
-+#define TAS2770_BOOKCTL_PAGE            0
-+#define TAS2770_BOOKCTL_REG         127
-+#define TAS2770_REG(page, reg)        ((page * 128) + reg)
-+    /* Page */
-+#define TAS2770_PAGE  TAS2770_REG(0X0, 0x00)
-+#define TAS2770_PAGE_PAGE_MASK  255
-+    /* Software Reset */
-+#define TAS2770_SW_RST  TAS2770_REG(0X0, 0x01)
-+#define TAS2770_RST  BIT(0)
-+    /* Power Control */
-+#define TAS2770_PWR_CTRL  TAS2770_REG(0X0, 0x02)
-+#define TAS2770_PWR_CTRL_MASK  0x3
-+#define TAS2770_PWR_CTRL_ACTIVE  0x0
-+#define TAS2770_PWR_CTRL_MUTE  BIT(0)
-+#define TAS2770_PWR_CTRL_SHUTDOWN  0x2
-+    /* Playback Configuration Reg0 */
-+#define TAS2770_PLAY_CFG_REG0  TAS2770_REG(0X0, 0x03)
-+    /* Playback Configuration Reg1 */
-+#define TAS2770_PLAY_CFG_REG1  TAS2770_REG(0X0, 0x04)
-+    /* Playback Configuration Reg2 */
-+#define TAS2770_PLAY_CFG_REG2  TAS2770_REG(0X0, 0x05)
-+#define TAS2770_PLAY_CFG_REG2_VMAX 0xc9
-+    /* Misc Configuration Reg0 */
-+#define TAS2770_MSC_CFG_REG0  TAS2770_REG(0X0, 0x07)
-+    /* TDM Configuration Reg0 */
-+#define TAS2770_TDM_CFG_REG0  TAS2770_REG(0X0, 0x0A)
-+#define TAS2770_TDM_CFG_REG0_SMP_MASK  BIT(5)
-+#define TAS2770_TDM_CFG_REG0_SMP_48KHZ  0x0
-+#define TAS2770_TDM_CFG_REG0_SMP_44_1KHZ  BIT(5)
-+#define TAS2770_TDM_CFG_REG0_31_MASK  0xe
-+#define TAS2770_TDM_CFG_REG0_31_44_1_48KHZ  0x6
-+#define TAS2770_TDM_CFG_REG0_31_88_2_96KHZ  0x8
-+#define TAS2770_TDM_CFG_REG0_31_176_4_192KHZ  0xa
-+    /* TDM Configuration Reg1 */
-+#define TAS2770_TDM_CFG_REG1  TAS2770_REG(0X0, 0x0B)
-+#define TAS2770_TDM_CFG_REG1_MASK 0x3e
-+#define TAS2770_TDM_CFG_REG1_51_SHIFT  1
-+#define TAS2770_TDM_CFG_REG1_RX_MASK  BIT(0)
-+#define TAS2770_TDM_CFG_REG1_RX_RSING  0x0
-+#define TAS2770_TDM_CFG_REG1_RX_FALING  BIT(0)
-+    /* TDM Configuration Reg2 */
-+#define TAS2770_TDM_CFG_REG2  TAS2770_REG(0X0, 0x0C)
-+#define TAS2770_TDM_CFG_REG2_RXW_MASK  0xc
-+#define TAS2770_TDM_CFG_REG2_RXW_16BITS  0x0
-+#define TAS2770_TDM_CFG_REG2_RXW_24BITS  0x8
-+#define TAS2770_TDM_CFG_REG2_RXW_32BITS  0xc
-+#define TAS2770_TDM_CFG_REG2_RXS_MASK    0x3
-+#define TAS2770_TDM_CFG_REG2_RXS_16BITS  0x0
-+#define TAS2770_TDM_CFG_REG2_RXS_24BITS  BIT(0)
-+#define TAS2770_TDM_CFG_REG2_RXS_32BITS  0x2
-+    /* TDM Configuration Reg3 */
-+#define TAS2770_TDM_CFG_REG3  TAS2770_REG(0X0, 0x0D)
-+#define TAS2770_TDM_CFG_REG3_RXS_MASK  0xf0
-+#define TAS2770_TDM_CFG_REG3_RXS_SHIFT 0x4
-+#define TAS2770_TDM_CFG_REG3_30_MASK  0xf
-+#define TAS2770_TDM_CFG_REG3_30_SHIFT 0
-+    /* TDM Configuration Reg5 */
-+#define TAS2770_TDM_CFG_REG5  TAS2770_REG(0X0, 0x0F)
-+#define TAS2770_TDM_CFG_REG5_VSNS_MASK  BIT(6)
-+#define TAS2770_TDM_CFG_REG5_VSNS_ENABLE  BIT(6)
-+#define TAS2770_TDM_CFG_REG5_50_MASK  0x3f
-+    /* TDM Configuration Reg6 */
-+#define TAS2770_TDM_CFG_REG6  TAS2770_REG(0X0, 0x10)
-+#define TAS2770_TDM_CFG_REG6_ISNS_MASK  BIT(6)
-+#define TAS2770_TDM_CFG_REG6_ISNS_ENABLE  BIT(6)
-+#define TAS2770_TDM_CFG_REG6_50_MASK  0x3f
-+    /* Brown Out Prevention Reg0 */
-+#define TAS2770_BO_PRV_REG0  TAS2770_REG(0X0, 0x1B)
-+    /* Interrupt MASK Reg0 */
-+#define TAS2770_INT_MASK_REG0  TAS2770_REG(0X0, 0x20)
-+#define TAS2770_INT_REG0_DEFAULT  0xfc
-+#define TAS2770_INT_MASK_REG0_DISABLE 0xff
-+    /* Interrupt MASK Reg1 */
-+#define TAS2770_INT_MASK_REG1  TAS2770_REG(0X0, 0x21)
-+#define TAS2770_INT_REG1_DEFAULT  0xb1
-+#define TAS2770_INT_MASK_REG1_DISABLE 0xff
-+    /* Live-Interrupt Reg0 */
-+#define TAS2770_LVE_INT_REG0  TAS2770_REG(0X0, 0x22)
-+    /* Live-Interrupt Reg1 */
-+#define TAS2770_LVE_INT_REG1  TAS2770_REG(0X0, 0x23)
-+    /* Latched-Interrupt Reg0 */
-+#define TAS2770_LAT_INT_REG0  TAS2770_REG(0X0, 0x24)
-+#define TAS2770_LAT_INT_REG0_OCE_FLG  BIT(1)
-+#define TAS2770_LAT_INT_REG0_OTE_FLG  BIT(0)
-+    /* Latched-Interrupt Reg1 */
-+#define TAS2770_LAT_INT_REG1  TAS2770_REG(0X0, 0x25)
-+#define TAS2770_LAT_INT_REG1_VBA_TOV  BIT(3)
-+#define TAS2770_LAT_INT_REG1_VBA_TUV  BIT(2)
-+#define TAS2770_LAT_INT_REG1_BOUT_FLG  BIT(1)
-+    /* VBAT MSB */
-+#define TAS2770_VBAT_MSB  TAS2770_REG(0X0, 0x27)
-+    /* VBAT LSB */
-+#define TAS2770_VBAT_LSB  TAS2770_REG(0X0, 0x28)
-+    /* TEMP MSB */
-+#define TAS2770_TEMP_MSB  TAS2770_REG(0X0, 0x29)
-+    /* TEMP LSB */
-+#define TAS2770_TEMP_LSB  TAS2770_REG(0X0, 0x2A)
-+    /* Interrupt Configuration */
-+#define TAS2770_INT_CFG  TAS2770_REG(0X0, 0x30)
-+    /* Misc IRQ */
-+#define TAS2770_MISC_IRQ  TAS2770_REG(0X0, 0x32)
-+    /* Clock Configuration */
-+#define TAS2770_CLK_CGF  TAS2770_REG(0X0, 0x3C)
-+    /* TDM Clock detection monitor */
-+#define TAS2770_TDM_CLK_DETC  TAS2770_REG(0X0, 0x77)
-+    /* Revision and PG ID */
-+#define TAS2770_REV_AND_GPID  TAS2770_REG(0X0, 0x7D)
-+
-+#define TAS2770_POWER_ACTIVE 0
-+#define TAS2770_POWER_MUTE 1
-+#define TAS2770_POWER_SHUTDOWN 2
-+#define ERROR_OVER_CURRENT  0x0000001
-+#define ERROR_DIE_OVERTEMP  0x0000002
-+#define ERROR_OVER_VOLTAGE  0x0000004
-+#define ERROR_UNDER_VOLTAGE 0x0000008
-+#define ERROR_BROWNOUT      0x0000010
-+#define ERROR_CLASSD_PWR    0x0000020
-+#define TAS2770_SLOT_16BIT  16
-+#define TAS2770_SLOT_32BIT  32
-+#define TAS2770_I2C_RETRY_COUNT      3
-+
-+struct tas2770_register {
-+	int book;
-+	int page;
-+	int reg;
-+};
-+
-+struct tas2770_dai_cfg {
-+	unsigned int dai_fmt;
-+	unsigned int tdm_delay;
-+};
-+
-+struct tas2770_priv {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
-+	struct mutex dev_lock;
-+	struct hrtimer mtimer;
-+	int power_state;
-+	int asi_format;
-+	struct gpio_desc *reset_gpio;
-+	int irq_gpio;
-+	bool irq_enable;
-+	int sampling_rate;
-+	int frame_size;
-+	int channel_size;
-+	int slot_width;
-+	int v_sense_slot;
-+	int i_sense_slot;
-+	bool runtime_suspend;
-+	unsigned int err_code;
-+	struct mutex codec_lock;
-+};
-+
-+#endif /* __TAS2770__ */
--- 
-2.7.4
+--vBRosIkLXbYTRpGW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 06, 2019 at 12:46:27PM -0700, Curtis Malainey wrote:
+> From: Ben Zhang <benzh@chromium.org>
+>=20
+> The kcontrol 'DSP VAD Switch' is automatically enabled/disabled
+> when the hotwording PCM stream is opened/closed.
+
+So why do we have the switch?
+
+--vBRosIkLXbYTRpGW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl14y34ACgkQJNaLcl1U
+h9Ducwf9GvpmQ2cBexf2sZ5kopxqM+aghq47gK58uex4nmib4ocMBESEtVwnXEi/
+ymlCnK8VRSy0jhTqdpdyeyLYdbnYqKC7MB23MSWg8XQ0zmEcy163ypKg9rLzJCIR
+gbnn5+kxXRpVAWqchYPLgAmGa/6jZaoQo68PMSLc47lErOF/XeKxSpUTw6vRQG3p
+jP8TUK8CmYl27kRpPtl9vVQ1tDdw9KE4J+E6gxaXhXv0j+pDpnIufX+y59UTQSfc
+cxUuqaMMw/pM0Sk5Tp7zL1t3B23072q+aReKYBPnY8lgV9cU73mehOGveMpbMsPS
+eZR4MMn0+IsRUaCAMz3pbYw7TvemyQ==
+=YzHU
+-----END PGP SIGNATURE-----
+
+--vBRosIkLXbYTRpGW--
+
+--===============6837968802082828954==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6837968802082828954==--
