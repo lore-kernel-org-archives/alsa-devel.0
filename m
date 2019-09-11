@@ -1,67 +1,67 @@
-Return-Path: <SRS0=R5RK=XF=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=DUcU=XG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB53FC49ED7
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 23:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79C83C49ED9
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 00:01:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B3F12084C
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Sep 2019 23:58:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC4D421A4C
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Sep 2019 00:01:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K7AHop1s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B3F12084C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iq6fLSEf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC4D421A4C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88AE316DB;
-	Wed, 11 Sep 2019 01:57:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88AE316DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8E601683;
+	Wed, 11 Sep 2019 02:00:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8E601683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568159888;
-	bh=hUHho5LdIKUsv0IO7skSgr//6Pp5DC5kjalt0gy7NhQ=;
+	s=default; t=1568160104;
+	bh=UQgvuNKsTFxQ6DmH7d3FbThiLkyCKLvAg8d02Z80FFg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K7AHop1srzZKhSMbAaMu4oAN5ZvjOnNTKbFbWPMGxoQcRtHhNWVu40+/TLeWI84ob
-	 4bjYw0bYHQLsOkROXRa+kSogGI3tPRAlxfSSHqfMois2ArFJKgUNMxIj08Z5bzdeRQ
-	 CxbtqAIu+wgL0MD/bQP3DPQapV+QmnjTSyw6vhdw=
+	b=iq6fLSEfL6zOt+//Pt9FfsR7yHA8p/+TvmIL1AJB6BxhP1JKqJ5bjd9zhZjE8rvd9
+	 Zr5xQ25LmEVsxrOqWnT24oyKwiukmw32fk7PgKde60HRVIE+51zeeTu/KqzjigWI79
+	 PcSktjpwurZfwTIdrtjLtggDw0QiSLQzWMwTW+TA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2894DF800C9;
-	Wed, 11 Sep 2019 01:57:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75074F800C9;
+	Wed, 11 Sep 2019 02:00:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C419F80368; Wed, 11 Sep 2019 01:57:16 +0200 (CEST)
+ id A7B6CF80368; Wed, 11 Sep 2019 02:00:51 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D93A5F800C9
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 01:57:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D93A5F800C9
-Date: 11 Sep 2019 08:57:09 +0900
-X-IronPort-AV: E=Sophos;i="5.64,491,1559487600"; d="scan'208";a="26046232"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 11 Sep 2019 08:57:09 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 0ADA0F800C9
+ for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 02:00:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ADA0F800C9
+Date: 11 Sep 2019 09:00:45 +0900
+X-IronPort-AV: E=Sophos;i="5.64,491,1559487600"; d="scan'208";a="26046611"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 11 Sep 2019 09:00:45 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2AB3540DEDD5;
- Wed, 11 Sep 2019 08:57:09 +0900 (JST)
-Message-ID: <87d0g766y2.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CE37040061BB;
+ Wed, 11 Sep 2019 09:00:44 +0900 (JST)
+Message-ID: <87blvr66s3.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeWkQsOCVf=R+KN1NawmteEyak_PCxQzkR5Hk10Z_0Ao8Q@mail.gmail.com>
+In-Reply-To: <CAFQqKeVw3wzdPM7haWA0H4nd6EdqptsJbiD=oOaKyZFpakc1Ag@mail.gmail.com>
 References: <8736h4nby1.wl-kuninori.morimoto.gx@renesas.com>
- <87tv9klxca.wl-kuninori.morimoto.gx@renesas.com>
- <CAFQqKeWkQsOCVf=R+KN1NawmteEyak_PCxQzkR5Hk10Z_0Ao8Q@mail.gmail.com>
+ <87k1aglxb4.wl-kuninori.morimoto.gx@renesas.com>
+ <CAFQqKeVw3wzdPM7haWA0H4nd6EdqptsJbiD=oOaKyZFpakc1Ag@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 06/13] ASoC: soc-core: merge
-	soc_free_pcm_runtime() and soc_rtd_free()
+Subject: Re: [alsa-devel] [PATCH 13/13] ASoC: soc-core: setup card->rtd_num
+	at snd_soc_instantiate_card()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,23 +84,24 @@ Hi Sridharan
 
 Thank you for your review.
 
-
->     -static void soc_rtd_free(struct snd_soc_pcm_runtime *rtd)
->     -{
->     -       if (rtd->dev_registered) {
->     -               /* we don't need to call kfree() for rtd->dev */
+>     From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>    
+>     card->rtd_num is used to count rtd. Initialize it at
+>     snd_soc_instantiate_card() is very natural and less confusion.
+>    
+>     Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Morimoto-san,
-> 
-> I think it is useful to keep this comment when you move soc_rtd_free() to  soc_free_pcm_runtime().
+> Thanks for this clean-up, Morimoto-san. Just a couple of minor comments for
+> the series that I have replied on the relevant
+> patches. But overall the series looks good.
 
-Yeah, indeed.
-In my mind, the comment /* soc_release_rtd_dev */ was almost for it.
-But, yes, Let's keep above comment too.
-will fix in v2
+Thanks !
+I will wait for other review, and fixup it in v2 and re-post these.
 
->     +       if (rtd->dev)
->     +               device_unregister(rtd->dev); /* soc_release_rtd_dev */
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
