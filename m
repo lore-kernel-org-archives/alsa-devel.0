@@ -2,60 +2,65 @@ Return-Path: <SRS0=5I5Q=XH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D82B6C5ACAE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 04:38:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F00A0C49ED9
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 04:39:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7479208C2
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 04:38:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 745082084F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 04:39:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VLmMFn1r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7479208C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WlKnfOdn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 745082084F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C99A16E1;
-	Thu, 12 Sep 2019 06:37:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C99A16E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id F020F1702;
+	Thu, 12 Sep 2019 06:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F020F1702
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568263125;
-	bh=l0hoSW3VpHDUNzCpIiugB5Rs6/5I5yP+qlSGzR40Y0U=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VLmMFn1rZ5AurikAxOs8OBA6DHiDXygJ2F/w3u+0nZbjRTtzpqqR5KiCxH5P4Ls2u
-	 yI5XzUk9/tjNoxu/lqA/HMGD9Exeu3TfTAdgHrAYk6ty8u5KY/PL2002YNpIMUmDTv
-	 hHNMczlTR/O/QtNFDFEs6X4e5WeeF+41S2CRcyqw=
+	s=default; t=1568263181;
+	bh=ydnECE4kb/OTJFqRzAB7NYCpaecs8rmx8dhrFHnOuao=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WlKnfOdnBMG5ZU4S1yBzNcxG6dPXCHB8a6XWo0Prnbh63myOW0OWyEVk7FHS5mVAk
+	 9FPTtarHIVuG7YqqiZdP7mYXZia7+/K4zbHOxulynULF2KgkN3SJxLJJAlnTMDwuxX
+	 7satZYzSmJkA5RTFBvENNgBLcu2cVRE2WixDkajs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C92FF80143;
-	Thu, 12 Sep 2019 06:37:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A910CF803D7;
+	Thu, 12 Sep 2019 06:38:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33087F80368; Thu, 12 Sep 2019 06:37:52 +0200 (CEST)
+ id 1C9A6F80444; Thu, 12 Sep 2019 06:38:29 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id F2C96F80143
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 06:37:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2C96F80143
-Date: 12 Sep 2019 13:37:36 +0900
-X-IronPort-AV: E=Sophos;i="5.64,495,1559487600"; d="scan'208";a="26393496"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 Sep 2019 13:37:36 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 4F489F8036F
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 06:38:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F489F8036F
+Date: 12 Sep 2019 13:38:22 +0900
+X-IronPort-AV: E=Sophos;i="5.64,495,1559487600"; d="scan'208";a="26393566"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Sep 2019 13:38:22 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D5354409EDEE;
- Thu, 12 Sep 2019 13:37:35 +0900 (JST)
-Message-ID: <87h85if7u8.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C425040065D2;
+ Thu, 12 Sep 2019 13:38:22 +0900 (JST)
+Message-ID: <87ftl2f7sx.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87h85if7u8.wl-kuninori.morimoto.gx@renesas.com>
+References: <87h85if7u8.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 00/14] ASoC: soc-core cleanup - step 3
+Subject: [alsa-devel] [PATCH v2 01/14] ASoC: soc-core: move
+	soc_free_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,34 +79,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v2 of soc-core.c cleanup (maybe) step 3.
-These try to clenaup around kmalloc/kfree related code.
-Basically these do nothing from technical point of view.
-I added +1 extra patch as [00/14]
+This patch moves soc_free_pcm_runtime() next to soc_new_pcm_runtime().
+This is prepare for soc_xxx_pcm_runtime() cleanup.
 
-Kuninori Morimoto (14):
-  ASoC: soc-core: move soc_free_pcm_runtime()
-  ASoC: soc-core: merge soc_add_pcm_runtime() into soc_new_pcm_runtime()
-  ASoC: soc-core: call list_del(&rtd->list) at soc_free_pcm_runtime()
-  ASoC: soc-core: create rtd->codec_dais first
-  ASoC: soc-core: merge soc_new_pcm_runtime() and soc_rtd_init()
-  ASoC: soc-core: merge soc_free_pcm_runtime() and soc_rtd_free()
-  ASoC: soc-core: tidyup soc_new_pcm_runtime() alloc order
-  ASoC: soc-core: remove snd_soc_rtdcom_del_all()
-  ASoC: soc-core: use devm_kzalloc() for rtd
-  ASoC: soc-core: remove soc_remove_dai_links()
-  ASoC: soc-core: add soc_setup_card_name()
-  ASoC: soc-core: use devm_xxx for component related resource
-  ASoC: soc-core: setup card->rtd_num at snd_soc_instantiate_card()
-  ASoC: soc-ops: use snd_soc_card_get_kcontrol() at snd_soc_limit_volume()
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+v1 -> v2
 
- include/sound/soc.h  |   1 -
- sound/soc/soc-core.c | 287 ++++++++++++++++++++++++++-------------------------
- sound/soc/soc-ops.c  |  11 +-
- 3 files changed, 151 insertions(+), 148 deletions(-)
+	- no change
 
+ sound/soc/soc-core.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 35f48e9..2aa5bc7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -355,6 +355,13 @@ EXPORT_SYMBOL_GPL(snd_soc_get_dai_substream);
+ 
+ static const struct snd_soc_ops null_snd_soc_ops;
+ 
++static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
++{
++	kfree(rtd->codec_dais);
++	snd_soc_rtdcom_del_all(rtd);
++	kfree(rtd);
++}
++
+ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 	struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
+ {
+@@ -381,13 +388,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 	return rtd;
+ }
+ 
+-static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
+-{
+-	kfree(rtd->codec_dais);
+-	snd_soc_rtdcom_del_all(rtd);
+-	kfree(rtd);
+-}
+-
+ static void soc_add_pcm_runtime(struct snd_soc_card *card,
+ 		struct snd_soc_pcm_runtime *rtd)
+ {
 -- 
 2.7.4
 
