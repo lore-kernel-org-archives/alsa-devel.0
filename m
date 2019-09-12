@@ -2,68 +2,73 @@ Return-Path: <SRS0=5I5Q=XH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F2B7C4CECB
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 11:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3033CC47404
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 12:07:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A73F32067D
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 11:26:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB1412075C
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 12:07:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ViYle1hg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A73F32067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vy9yhSDV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB1412075C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E00A31739;
-	Thu, 12 Sep 2019 13:25:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E00A31739
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8F131739;
+	Thu, 12 Sep 2019 14:06:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8F131739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568287561;
-	bh=Z9+xQYUs6tRsUpCE+kBTllBAX+9q67Bng0yazWGLpcY=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ViYle1hgpJsbawDD/2TDVGLbhz2BjKlwYJ/lfDty1MyBedxaRZA3h0IrjY38rsgkv
-	 1szvb3Bq//sNNkeRrGkvD0zMN+vASPzlkkcZoy3eXKcVSaka8PW2B5NvRUFItPxSLh
-	 B2OEg/3CiO4JT8yhkEeDWYQSKnQDqRRTm3UHpops=
+	s=default; t=1568290058;
+	bh=GdcHUjxL0ixal7YNC5DieQqQVQts7rLweZJ6qvNw8mY=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Vy9yhSDVRs+hzaIupPN+yHB7xqzmXd2PCGyxxUe4YihpJDpJyfy9aowuEQRmrmd5z
+	 oxaypT4xDIFh+WzvbTc8wjUo814VjDR4ocPCV3HYgLRQtyEJDG1y5+oU6jWDm9shyz
+	 NMH7Zvt/sTIWSqBV5KR5xsmyTtlI80t6jiCDHgK0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CC9DF8036F;
-	Thu, 12 Sep 2019 13:25:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57FD4F80321;
+	Thu, 12 Sep 2019 14:06:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF6F2F80368; Thu, 12 Sep 2019 13:25:08 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 49A5DF80368; Thu, 12 Sep 2019 14:06:46 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA780F80143;
- Thu, 12 Sep 2019 13:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA780F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 297B4F801ED
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 14:06:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 297B4F801ED
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2019 04:25:00 -0700
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 12 Sep 2019 05:06:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,495,1559545200"; d="scan'208";a="192397565"
-Received: from test-hp-elitedesk-800-g1-twr.igk.intel.com ([10.237.149.38])
- by FMSMGA003.fm.intel.com with ESMTP; 12 Sep 2019 04:24:58 -0700
-From: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	cezary.rojewski@intel.com
-Date: Thu, 12 Sep 2019 13:24:41 +0200
-Message-Id: <20190912112441.28327-1-pawel.harlozinski@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: Szymon Mielczarek <szymonx.mielczarek@intel.com>, patch@alsa-project.org,
- tiwai@suse.de, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- broonie@kernel.org, Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3] ASoC: Intel: Skylake: Recover BXT FW on DSP
-	boot timeout error
+X-IronPort-AV: E=Sophos;i="5.64,492,1559545200"; d="scan'208";a="197210279"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by orsmga002.jf.intel.com with ESMTP; 12 Sep 2019 05:06:38 -0700
+Date: Thu, 12 Sep 2019 15:06:37 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <92a31430-824a-8b8a-cdb4-602184db7def@linux.intel.com>
+Message-ID: <alpine.DEB.2.21.1909121453350.16459@zeliteleevi>
+References: <20190910182916.29693-1-kai.vehmanen@linux.intel.com>
+ <20190910182916.29693-5-kai.vehmanen@linux.intel.com>
+ <92a31430-824a-8b8a-cdb4-602184db7def@linux.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+MIME-Version: 1.0
+Cc: tiwai@suse.de, libin.yang@intel.com, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v3 04/10] ASoC: SOF: Intel: add support for
+ snd-hda-codec-hdmi
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,62 +81,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When DSP boots with timeout error try to reload firmware
-to keep best user expeirience.
+Hey,
 
-Change-Id: Ic7377da687e7441a487c443f9de1ebae5967afa2
-Signed-off-by: Szymon Mielczarek <szymonx.mielczarek@intel.com>
-Signed-off-by: Pawel Harlozinski <pawel.harlozinski@linux.intel.com>
----
- sound/soc/intel/skylake/bxt-sst.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+On Tue, 10 Sep 2019, Pierre-Louis Bossart wrote:
+> > --- a/sound/soc/sof/intel/hda-codec.c
+> > +++ b/sound/soc/sof/intel/hda-codec.c
+> > @@ -84,6 +84,8 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int
+[...]
+> > +	/*
+> > +	 * if common HDMI codec driver is not used, codec load
+> > +	 * is skipped here and hdac_hdmi is used instead
+> > +	 */
+> > +	if ((mach_params && mach_params->common_hdmi_codec_drv) ||
+> > +	    (resp & 0xFFFF0000) != IDISP_VID_INTEL) {
+> >   		hdev->type = HDA_DEV_LEGACY;
+> >   		hda_codec_load_module(&hda_priv->codec);
+> 
+> This part is might be problematic. For SoundWire stuff, I had to move all the
+> machine detection part out of hda_init_caps() and at the end of hda_dsp_probe.
+> It's not final since I am still trying to figure out what the earliest time I
+> can power-up the SoundWire IP is, but it would help if you don't make strong
+> assumptions on when mach_params is set. The fact that all this code is
+> currently in hda_init_caps() is not really by design, more because of
+> incremental code changes.
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 92a82e6b5fe6..fdf4c198445e 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -446,14 +446,19 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 
- 	/* If core 1 was turned on for booting core 0, turn it off */
- 		skl_dsp_core_power_down(ctx, SKL_DSP_CORE_MASK(1));
-+		/* FIXME this FW recovery applies only for BXT */
- 		if (ret == 0) {
--			dev_err(ctx->dev, "%s: DSP boot timeout\n", __func__);
--			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
-+			dev_warn(ctx->dev,
-+				"DSP boot timeout: Error code=0x%x: FW status=0x%x. Reloading FW\n",
- 				sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
- 				sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
--			dev_err(ctx->dev, "Failed to set core0 to D0 state\n");
--			ret = -EIO;
--			goto err;
-+
-+			ret = bxt_sst_init_fw(skl->dev, skl);
-+			if (ret < 0) {
-+				dev_err(ctx->dev, "Reload fw failed: %d. Failed to set core0 to D0 state\n",
-+				ret);
-+				goto err;
-+			}
- 		}
- 	}
- 
-@@ -478,7 +483,6 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 	if (core_id == SKL_DSP_CORE0_ID)
- 		core_mask |= SKL_DSP_CORE_MASK(1);
- 	skl_dsp_disable_core(ctx, core_mask);
--
- 	return ret;
- }
- 
--- 
-2.17.1
+hmm. Currently the settings part of 'common_hdmi_codec_drv' is in in 
+init_caps, just before call to hda_codec_probe_bus() (which uses the 
+flag). There are also other fields set there (like 
+mach_params->codec_mask), so issues should apply to codec_mask passing as 
+well. I.e. if functionality is moved out from init_caps, the call to bus 
+probe should be moved as well.
 
+Other options to pass the flag do not seem good. We don't want to add hw 
+specific stuff like this to snd_sof_dev or hdac_bus (latter used to pass 
+"codec_mask"). If this becomes an issue, maybe we just need an explicit 
+parameter to hda_codec_probe_bus(), and/or move the module parameter 
+directly to intel/hda-codec.c. Both are a bit ugly, but at least contained 
+in the "sof/intel/" subfolder.
+
+Br, Kai
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
