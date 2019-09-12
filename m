@@ -2,98 +2,60 @@ Return-Path: <SRS0=5I5Q=XH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBDD4C5ACAE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 02:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D82B6C5ACAE
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 04:38:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7DDE2085B
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 02:29:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7479208C2
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 04:38:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QVfrp8xU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mLbAumr3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7DDE2085B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VLmMFn1r"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7479208C2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9767F16DB;
-	Thu, 12 Sep 2019 04:28:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9767F16DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C99A16E1;
+	Thu, 12 Sep 2019 06:37:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C99A16E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568255356;
-	bh=zhLJlRlQfbNKCB/hHjwU+Sk7ZhucK6PKoUc/wx16m/U=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1568263125;
+	bh=l0hoSW3VpHDUNzCpIiugB5Rs6/5I5yP+qlSGzR40Y0U=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=QVfrp8xUugWFsWwO5gOt55/65HN/jMtTKq261ikAjGtB0dzvMiSXlGyccn5yt7lTz
-	 WmaaMYNCCU/mwDTCGT0yDTDNuYrim9UXygVNYw8c10apKKkHZp+xWdkJhC0VRUWC1O
-	 zf3U2v+HFpeGyiBs+34H+e30cT+YOa5uVwfXVA6c=
+	b=VLmMFn1rZ5AurikAxOs8OBA6DHiDXygJ2F/w3u+0nZbjRTtzpqqR5KiCxH5P4Ls2u
+	 yI5XzUk9/tjNoxu/lqA/HMGD9Exeu3TfTAdgHrAYk6ty8u5KY/PL2002YNpIMUmDTv
+	 hHNMczlTR/O/QtNFDFEs6X4e5WeeF+41S2CRcyqw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24EABF80321;
-	Thu, 12 Sep 2019 04:28:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C92FF80143;
+	Thu, 12 Sep 2019 06:37:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC927F80368; Thu, 12 Sep 2019 04:28:22 +0200 (CEST)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FD14F80143
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 04:28:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FD14F80143
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="mLbAumr3"
-Received: by mail-pf1-x444.google.com with SMTP id d15so14905306pfo.10
- for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2019 19:28:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=717l4cD4Wzf0xH5nDJTl15ClpUuQOFo2fyYpt1Q/w+k=;
- b=mLbAumr3DrZozScwMs30++F+mc9LHyzJ1lI4nMTznNNyIfv8T3I92qVVOQ8PuMD+O1
- yKJGaeibE3xja5CAapYuI2Pa851bdGq+UEXTP+xyeeW9V7gieFN0dsE5RWKeTUi9Azgt
- RiBIxCQWng9eeHY5ruYHNqm+jPmq4OvTg8+ug=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=717l4cD4Wzf0xH5nDJTl15ClpUuQOFo2fyYpt1Q/w+k=;
- b=em2B1/Emb/u/S3j9hmC415OprkyKR/OsQSL5qB9YDRfWsggtFQMAshAg/B4H3LqqUt
- RUHWxsLexZ95PJsMuUuBBQ9VpKPuGbPkv1Dg2djoqqBXlsKAfaR+7BMyOiPJjvqUXGW8
- WrkG0Q5IFDWD4b/OPTl/c7iavKfRvZiG6gAEenYiGQKerPWKsr8d49oiXz4RkBlOYjc/
- AYZ/JzVzJG9vXtws8nOsw0XemBE/8BJh0vb5x0Dq27RWahxv2ZqtQNO7CD/Y2zPPvjlH
- RQvjJU04lEXgiWYQ11LoDAKxPx2h5XOLUG7Ij/mllyP2LmrrCIDJmooOdgyCDnoyqkB4
- S0vA==
-X-Gm-Message-State: APjAAAV2G31Tmn8CY1WtDi+XjhOWsw+8R15e4mK1w4vrCVePLJIWZOG1
- CwrV97qbFHFokUlgf0PVFV8crA==
-X-Google-Smtp-Source: APXvYqxnYzuJHmTquTSzntnrHY/YlhYcc4fT7VV9owd91fu47KgRLpUA0jzIxdr/7Kj9nG/lAQhP6Q==
-X-Received: by 2002:a63:ad49:: with SMTP id y9mr343398pgo.30.1568255291271;
- Wed, 11 Sep 2019 19:28:11 -0700 (PDT)
-Received: from localhost ([2401:fa00:1:10:845f:e35d:e30c:4b47])
- by smtp.gmail.com with ESMTPSA id e21sm7539616pgr.43.2019.09.11.19.28.08
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 11 Sep 2019 19:28:10 -0700 (PDT)
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-To: linux-kernel@vger.kernel.org
-Date: Thu, 12 Sep 2019 10:27:40 +0800
-Message-Id: <20190912022740.161798-1-yuhsuan@chromium.org>
-X-Mailer: git-send-email 2.23.0.162.g0b9fbb3734-goog
-MIME-Version: 1.0
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org,
- Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Subject: [alsa-devel] [PATCH] ASoC: Intel: kbl_rt5663_rt5514_max98927: Add
-	dmic format constraint
+ id 33087F80368; Thu, 12 Sep 2019 06:37:52 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id F2C96F80143
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 06:37:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2C96F80143
+Date: 12 Sep 2019 13:37:36 +0900
+X-IronPort-AV: E=Sophos;i="5.64,495,1559487600"; d="scan'208";a="26393496"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Sep 2019 13:37:36 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D5354409EDEE;
+ Thu, 12 Sep 2019 13:37:35 +0900 (JST)
+Message-ID: <87h85if7u8.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v2 00/14] ASoC: soc-core cleanup - step 3
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,31 +73,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-24 bits recording from DMIC is not supported for KBL platform because
-the TDM slot between PCH and codec is 16 bits only. We should add a
-constraint to remove that unsupported format.
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi Mark
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 74dda8784f1a01..67b276a65a8d2d 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -400,6 +400,9 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
- 			dmic_constraints);
- 
-+	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
-+
- 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
+These are v2 of soc-core.c cleanup (maybe) step 3.
+These try to clenaup around kmalloc/kfree related code.
+Basically these do nothing from technical point of view.
+I added +1 extra patch as [00/14]
+
+Kuninori Morimoto (14):
+  ASoC: soc-core: move soc_free_pcm_runtime()
+  ASoC: soc-core: merge soc_add_pcm_runtime() into soc_new_pcm_runtime()
+  ASoC: soc-core: call list_del(&rtd->list) at soc_free_pcm_runtime()
+  ASoC: soc-core: create rtd->codec_dais first
+  ASoC: soc-core: merge soc_new_pcm_runtime() and soc_rtd_init()
+  ASoC: soc-core: merge soc_free_pcm_runtime() and soc_rtd_free()
+  ASoC: soc-core: tidyup soc_new_pcm_runtime() alloc order
+  ASoC: soc-core: remove snd_soc_rtdcom_del_all()
+  ASoC: soc-core: use devm_kzalloc() for rtd
+  ASoC: soc-core: remove soc_remove_dai_links()
+  ASoC: soc-core: add soc_setup_card_name()
+  ASoC: soc-core: use devm_xxx for component related resource
+  ASoC: soc-core: setup card->rtd_num at snd_soc_instantiate_card()
+  ASoC: soc-ops: use snd_soc_card_get_kcontrol() at snd_soc_limit_volume()
+
+ include/sound/soc.h  |   1 -
+ sound/soc/soc-core.c | 287 ++++++++++++++++++++++++++-------------------------
+ sound/soc/soc-ops.c  |  11 +-
+ 3 files changed, 151 insertions(+), 148 deletions(-)
+
 -- 
-2.23.0.162.g0b9fbb3734-goog
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
