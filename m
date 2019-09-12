@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D4ADC4CEC6
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 14:29:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 064B5C4CEC6
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 14:29:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 276CA2081B
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 14:29:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 847722081B
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Sep 2019 14:29:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XaooaZ8H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 276CA2081B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h6SOzTWs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 847722081B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66D4A175E;
-	Thu, 12 Sep 2019 16:28:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66D4A175E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBF1F176E;
+	Thu, 12 Sep 2019 16:28:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBF1F176E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568298540;
-	bh=ycVLBODUiPOX8q7/HMf3kNdUM+19Nxf5LMHg/7QbcKc=;
+	s=default; t=1568298566;
+	bh=Ixf1LWCLrLWsZk4AgFn6ohMld5JTQ3BOhJflB4oMZiA=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XaooaZ8HnCL2LEAhOgJywY8LP2CVEU+wBulO6nHgmIlrE6PzELXdYIn37lHbvIRFg
-	 gsT0Gjrl+BOJQzsWGjbNVRxzn7fho1vjlGCNjHrnTotm1UVnP1IyXzAH51m8wkTcF/
-	 gJfbH7+YVQ7RIqRHA9Cqnxb4QbAXJHDhN7wqOKU8=
+	b=h6SOzTWs0E3RzN3Ako4jdVVe9PZQwppawo4KCh82QLa8Y4MetGro5/121AHCwP6Pt
+	 Q2rBuPVJAmxvOXH7e0hfRRNGBaDkdUn2zVvtAfX1Kx1DN6d4R4ekYEq80JuM9WDqCa
+	 TuZ6ODDoQFc8su/eBNju6T4fpelLl8BFw645YOto=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7421FF80672;
-	Thu, 12 Sep 2019 16:22:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8378FF80676;
+	Thu, 12 Sep 2019 16:22:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6071AF8065C; Thu, 12 Sep 2019 16:22:35 +0200 (CEST)
+ id 2FD00F80676; Thu, 12 Sep 2019 16:22:38 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5E10F80659
- for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 16:22:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5E10F80659
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21FF7F8065D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Sep 2019 16:22:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21FF7F8065D
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2019 07:22:32 -0700
+ 12 Sep 2019 07:22:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,492,1559545200"; d="scan'208";a="190008248"
+X-IronPort-AV: E=Sophos;i="5.64,492,1559545200"; d="scan'208";a="190008252"
 Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga006.jf.intel.com with ESMTP; 12 Sep 2019 07:22:30 -0700
+ by orsmga006.jf.intel.com with ESMTP; 12 Sep 2019 07:22:33 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.de
-Date: Thu, 12 Sep 2019 17:21:59 +0300
-Message-Id: <20190912142200.8031-9-kai.vehmanen@linux.intel.com>
+Date: Thu, 12 Sep 2019 17:22:00 +0300
+Message-Id: <20190912142200.8031-10-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190912142200.8031-1-kai.vehmanen@linux.intel.com>
 References: <20190912142200.8031-1-kai.vehmanen@linux.intel.com>
 Cc: libin.yang@intel.com, pierre-louis.bossart@linux.intel.com,
  kai.vehmanen@linux.intel.com
-Subject: [alsa-devel] [PATCH v4 8/9] ASoC: intel: sof_rt5682: common hdmi
+Subject: [alsa-devel] [PATCH v4 9/9] ASoC: Intel: bxt_rt298: common hdmi
 	codec support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,34 +90,34 @@ HDA codecs are already handled.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 11 +++++++++++
+ sound/soc/intel/boards/bxt_rt298.c | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index a437567b8cee..e0e0ca962560 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -21,6 +21,7 @@
- #include "../../codecs/rt5682.h"
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index adf416a49b48..eabf9d8468ae 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -18,6 +18,7 @@
+ #include <sound/pcm_params.h>
  #include "../../codecs/hdac_hdmi.h"
- #include "../common/soc-intel-quirks.h"
+ #include "../../codecs/rt298.h"
 +#include "hda_dsp_common.h"
  
- #define NAME_SIZE 32
+ /* Headset jack detection DAPM pins */
+ static struct snd_soc_jack broxton_headset;
+@@ -31,6 +32,7 @@ struct bxt_hdmi_pcm {
  
-@@ -53,6 +54,7 @@ struct sof_card_private {
- 	struct clk *mclk;
- 	struct snd_soc_jack sof_headset;
+ struct bxt_rt286_private {
  	struct list_head hdmi_pcm_list;
 +	bool common_hdmi_codec_drv;
  };
  
- static int sof_rt5682_quirk_cb(const struct dmi_system_id *id)
-@@ -274,6 +276,13 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 	if (is_legacy_cpu)
- 		return 0;
+ enum {
+@@ -527,6 +529,13 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
  
-+	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
++	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
 +			       head);
 +	component = pcm->codec_dai->component;
 +
@@ -127,15 +127,15 @@ index a437567b8cee..e0e0ca962560 100644
  	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
  		component = pcm->codec_dai->component;
  		snprintf(jack_name, sizeof(jack_name),
-@@ -615,6 +624,8 @@ static int sof_audio_probe(struct platform_device *pdev)
+@@ -626,6 +635,8 @@ static int broxton_audio_probe(struct platform_device *pdev)
  	if (ret)
  		return ret;
  
 +	ctx->common_hdmi_codec_drv = mach->mach_params.common_hdmi_codec_drv;
 +
- 	snd_soc_card_set_drvdata(&sof_audio_card_rt5682, ctx);
+ 	return devm_snd_soc_register_card(&pdev->dev, card);
+ }
  
- 	return devm_snd_soc_register_card(&pdev->dev,
 -- 
 2.17.1
 
