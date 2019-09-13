@@ -2,166 +2,83 @@ Return-Path: <SRS0=rTHd=XI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 069C4C49ED7
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 09:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCDFC49ED7
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 09:43:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 052DB20830
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 09:34:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D63B9214AF
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 09:43:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GvES9ndQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="gCqAsImP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 052DB20830
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u5tLAphG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="i7d56xHK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D63B9214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE34A1668;
-	Fri, 13 Sep 2019 11:33:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE34A1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD5EF1668;
+	Fri, 13 Sep 2019 11:42:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD5EF1668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568367241;
-	bh=gThzpV7lvWYEcKi6qEGJwmjLOVWcYmTVmPrL1UjHzvI=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GvES9ndQLwzf91lZa1O1rQb/k5oHaTGOt1g6p1vivd2PTg9BA41DJldELvgNEeTI5
-	 Ei2+8lGKoaP3BMoB0OffNjLauRh3YbXNKsM5xNeH4P9C6N7ZhRJGmZ84NrvpzFgv+f
-	 +vqxeIImiOi3WeHWOjie1N+/YFxT5z1J1QiIwcyk=
+	s=default; t=1568367793;
+	bh=3aZnbTGaSoiOO4K/z5uYA9VgINmGAbEDIU0oFZKh/bc=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=u5tLAphG0Pv8Dcvsk/mrZ45iQZrbWkWnzNFzJ63PTXRuxOLY3FelTzROCdWOTaTnS
+	 tlYoBPLdB1x1rH9cI57wOiNiRcGAS6HgxsSfzsve65JoiiiArA6+yLlwOak3DPj9aa
+	 EhOvSDTdwOp+mkw1/V8g2+HdcyqZ8f0aDooKdt50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38CE2F80323;
-	Fri, 13 Sep 2019 11:33:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43307F80323;
+	Fri, 13 Sep 2019 11:42:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57C8AF8036A; Fri, 13 Sep 2019 11:33:09 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CC000F8036A; Fri, 13 Sep 2019 11:42:21 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1451EF801EC
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2019 11:33:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1451EF801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB8A5F801EC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2019 11:42:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB8A5F801EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="gCqAsImP"
-Received: by mail-wr1-x441.google.com with SMTP id i18so682272wru.11
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2019 02:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=subject:to:cc:references:from:openpgp:autocrypt:organization
- :message-id:date:user-agent:mime-version:in-reply-to;
- bh=YWFP3fiiNLYjg5KjJkJ+a3OV517hoFU0pK03RFIpW6w=;
- b=gCqAsImP3QV/jRpUp78X70WSTXJQi/V7ELSvPz73RKUCHgYp7clqnmXe5aMb1WE3WF
- BhHJw6DNizcIemoU1Npdpt6mBaQ4KgActLaEh6iHNVHTEfXbEj7synOzvxUt2oLPcS4U
- MmIg8CnTk63LRlYYi1AhYyFVbQH3OBFGGf/3/UoSe/WQlaKvqxgai7pJ8zp+N45VJjHR
- hs+o66YyYZqE7+EmfYGF4kBzeRNepmy9w1m8jZHk1ZuxO+bRfspNI3pv1D33KxL0AqqS
- auQadt4ZeBxwA0IiAe/NVOFU0aQx5sSqJ6YDk/7OCdakTwNDoSmMTWSc0iwZt57jaumf
- Ly2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
- :organization:message-id:date:user-agent:mime-version:in-reply-to;
- bh=YWFP3fiiNLYjg5KjJkJ+a3OV517hoFU0pK03RFIpW6w=;
- b=gWdqqrydcKEP/WCBXXK6XAL/+kd+ofXSSdW1agZgARi2SMTKlvgkRXG111R6ncEzcx
- atUxfvV87auVPrgLArWiyg62Kv+R69owTOdSmfd9Fs82RHd+fgYtMzaFh9Vyg5efz9CZ
- MHdtIJzS5HgOags8sUsVeV+eDD9kPRbL2ZHwzkn+mmeSxMHvm8YiX6vN1LTCy4a/fl62
- x6s8/QLGjicJCnuYJid0C0u4IKTDvgeq5ich4TM0T3cZfC3n2qTQU0yOl7L0rq3IQsiT
- Ll/e9mhLFsmjCAv47oDQXMPwNm0XsZ2qFDz+M8Kqr22+ugjPblrPPxs0UC/YqnA3Ppmb
- VlFg==
-X-Gm-Message-State: APjAAAV4/NlqD1QHMozonupG57QRiMrhVuq2UjDVOnAxXPWK2X73LkWo
- so9gyophxgMyLxWwblRWw7e64g==
-X-Google-Smtp-Source: APXvYqyTnY/BRnv5bnnwc3B97riovmka3Ma52ZQaQTgF3mOK8Nhr8fElod8xICY3ABgLgTy6zXeJkA==
-X-Received: by 2002:a5d:650d:: with SMTP id x13mr5675866wru.37.1568367184374; 
- Fri, 13 Sep 2019 02:33:04 -0700 (PDT)
-Received: from [10.1.2.12] (lmontsouris-657-1-212-31.w90-63.abo.wanadoo.fr.
- [90.63.244.31])
- by smtp.gmail.com with ESMTPSA id h8sm679528wmc.5.2019.09.13.02.33.03
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 13 Sep 2019 02:33:03 -0700 (PDT)
-To: Mark Brown <broonie@kernel.org>
-References: <20190717083327.47646-1-cychiang@chromium.org>
- <CA+Px+wX4gbntkd6y8NN8xwXpZLD4MH9rTeHcW9+Ndtw=3_mWBw@mail.gmail.com>
- <CAFv8NwLiY+ro0L4c5vjSOGN8jA-Qr4zm2OWvVHkiuoa7_4e2Fg@mail.gmail.com>
- <CAFv8NwJjG4mwfnYO=M3O9nZN48D6aY72nQuqEFpZL68dh5727w@mail.gmail.com>
- <7019a223-cc97-e1c6-907b-e6b3d626164f@baylibre.com>
- <20190909135346.GG2036@sirena.org.uk>
-From: Neil Armstrong <narmstrong@baylibre.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <3fc94731-f66a-223d-995e-97ac67f9e882@baylibre.com>
-Date: Fri, 13 Sep 2019 11:32:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190909135346.GG2036@sirena.org.uk>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>,
- David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Hans Verkuil <hverkuil@xs4all.nl>, Andrzej Hajda <a.hajda@samsung.com>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Cheng-yi Chiang <cychiang@chromium.org>, linux-rockchip@lists.infradead.org,
- Takashi Iwai <tiwai@suse.com>, Tzung-Bi Shih <tzungbi@google.com>,
- Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org,
- Jonas Karlman <jonas@kwiboo.se>, Russell King <rmk+kernel@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Jernej Skrabec <jernej.skrabec@siol.net>,
- Douglas Anderson <dianders@chromium.org>, Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [alsa-devel] [PATCH v5 0/5] Add HDMI jack support on RK3288
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="i7d56xHK"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=lHumIoWHnfMgoly+K9KCOwt1FKK4j360M4fRV6UdXgg=; b=i7d56xHKmc5d
+ HYJR1JpadvREqDSPUR8sLXqZRvcXnYGZPc26BQLDYR/N23x5rb7qeZzda0PyTeOwwPsIVVLwvfGy3
+ pzZ1b1XOyM1rgUymbsFYkMJqtzJyWk86BfYLzC7OHary5Mbl3nwutB/D5ii0X5F8nuRiWSqgELJo7
+ L6CrE=;
+Received: from 195-23-252-136.net.novis.pt ([195.23.252.136]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1i8i5p-0003T7-8u; Fri, 13 Sep 2019 09:42:17 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id A26C1D00DD9; Fri, 13 Sep 2019 10:42:16 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: Viorel Suman <viorel.suman@nxp.com>
+In-Reply-To: <20190830215910.31590-1-daniel.baluta@nxp.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20190913094216.A26C1D00DD9@fitzroy.sirena.org.uk>
+Date: Fri, 13 Sep 2019 10:42:16 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ Daniel Baluta <daniel.baluta@nxp.com>, shengjiu.wang@nxp.com,
+ linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ festevam@gmail.com
+Subject: [alsa-devel] Applied "ASoC: fsl_sai: Implement set_bclk_ratio" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -174,109 +91,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1703290954143669566=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============1703290954143669566==
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="UBRWlaGOHY0XEFVZVHxIrla091rV5aEyl"
+The patch
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UBRWlaGOHY0XEFVZVHxIrla091rV5aEyl
-From: Neil Armstrong <narmstrong@baylibre.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Cheng-yi Chiang <cychiang@chromium.org>,
- Tzung-Bi Shih <tzungbi@google.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Hans Verkuil <hverkuil@xs4all.nl>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Russell King <rmk+kernel@armlinux.org.uk>,
- Andrzej Hajda <a.hajda@samsung.com>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- Heiko Stuebner <heiko@sntech.de>, Douglas Anderson <dianders@chromium.org>,
- Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org,
- ALSA development <alsa-devel@alsa-project.org>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, Jernej Skrabec
- <jernej.skrabec@siol.net>, Jonas Karlman <jonas@kwiboo.se>
-Message-ID: <3fc94731-f66a-223d-995e-97ac67f9e882@baylibre.com>
-Subject: Re: [PATCH v5 0/5] Add HDMI jack support on RK3288
-References: <20190717083327.47646-1-cychiang@chromium.org>
- <CA+Px+wX4gbntkd6y8NN8xwXpZLD4MH9rTeHcW9+Ndtw=3_mWBw@mail.gmail.com>
- <CAFv8NwLiY+ro0L4c5vjSOGN8jA-Qr4zm2OWvVHkiuoa7_4e2Fg@mail.gmail.com>
- <CAFv8NwJjG4mwfnYO=M3O9nZN48D6aY72nQuqEFpZL68dh5727w@mail.gmail.com>
- <7019a223-cc97-e1c6-907b-e6b3d626164f@baylibre.com>
- <20190909135346.GG2036@sirena.org.uk>
-In-Reply-To: <20190909135346.GG2036@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+   ASoC: fsl_sai: Implement set_bclk_ratio
 
-Hi,
+has been applied to the asoc tree at
 
-On 09/09/2019 15:53, Mark Brown wrote:
-> On Mon, Sep 09, 2019 at 09:37:14AM +0200, Neil Armstrong wrote:
->=20
->> I'd like some review from ASoC people and other drm bridge reviewers,
->> Jernej, Jonas & Andrzej.
->=20
->> Jonas could have some comments on the overall patchset.
->=20
-> The ASoC bits look basically fine, I've gone ahead and applied
-> patch 1 as is since we're just before the merge window and that
-> way we reduce potential cross tree issues.  I know there's a lot
-> of discussion on the DRM side about how they want to handle
-> things with jacks, I'm not 100% sure what the latest thinking is
-> there.
->=20
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-Thanks Mark.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Cheng-Yi can you resent this serie without the already applied
-first patch with Jernej, Jonas, and Jerome Brunet <jbrunet@baylibre.com> =
-CCed ?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Neil
+Mark
 
+From 63d1a3488ff58e094a7f517cf93c0250f0a3f6be Mon Sep 17 00:00:00 2001
+From: Viorel Suman <viorel.suman@nxp.com>
+Date: Sat, 31 Aug 2019 00:59:10 +0300
+Subject: [PATCH] ASoC: fsl_sai: Implement set_bclk_ratio
 
---UBRWlaGOHY0XEFVZVHxIrla091rV5aEyl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+This is to allow machine drivers to set a certain bitclk rate
+which might not be exactly rate * frame size.
 
------BEGIN PGP SIGNATURE-----
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/20190830215910.31590-1-daniel.baluta@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_sai.c | 21 +++++++++++++++++++--
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 20 insertions(+), 2 deletions(-)
 
-iQIzBAEBCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAl17YkkACgkQd9zb2sjI
-SdFL8xAAm/uVVOJY0VK0uVX/gv2nNJ+t90WPrW3BfoWCLRaSr1czldafQkylTwQl
-EOHl8NcYz5pttql0d1ZKh6uZSCTsMtWRb6Qwm14c3ptFaD9y1TI8X+R+zryTIgA5
-fuaLScVQ+kDpMwWYvZvVdWnu7/7Wdtj+uDNEooXlxeIvylxQzPYGQLcrdyZz54DZ
-vPl/scouuoKobHYXHw5AUs/ipsHUxcfD9wm+s4lrcIcE8FSjoVqbwZsonqDlHfOY
-lCykwi/sj2A567r0fL0Qipj4cqa5Zzvy955v0K5E1bHbTFs3I9kKsMsrLmYrpVB8
-pG+Tz31EKziArzadGNlxjjI6ViRQxwXAOPUfDZW7JFmWPD+aF2ZquQttp3GGlbwf
-9ndAcqd0yPqBaWwaPWAZJ/CbZiKPeDtAVcBtiR/pHYDUgMiDq88O3deynxUer4qw
-06IrtU9X8yn02vEh2L+6fLCG3NfMCUdyl4lRCmxSJ8K83pCOx1iMpcawEJq+xktX
-qvQVxXHrp1D5drRUA+87MDZmI5aQ/9HoYY+tIMTC21D7JFB/x2U6n0nFRyLi/muG
-gD0oD4cBhYhH+xJhKQeBmx+cA6xb90J4mfzFvpWvwDeGNsJJ+QaLGmdz9b50Aqd9
-XKP4tzxUvHbepIhN1NPCh1Xe2cU06KRt2S/ID9usnk2cnXoigUg=
-=JmCa
------END PGP SIGNATURE-----
-
---UBRWlaGOHY0XEFVZVHxIrla091rV5aEyl--
-
---===============1703290954143669566==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 728307acab90..ef0b74693093 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -137,6 +137,16 @@ static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+ 	return 0;
+ }
+ 
++static int fsl_sai_set_dai_bclk_ratio(struct snd_soc_dai *dai,
++				      unsigned int ratio)
++{
++	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
++
++	sai->bclk_ratio = ratio;
++
++	return 0;
++}
++
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int fsl_dir)
+ {
+@@ -423,8 +433,14 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 		slot_width = sai->slot_width;
+ 
+ 	if (!sai->is_slave_mode) {
+-		ret = fsl_sai_set_bclk(cpu_dai, tx,
+-				slots * slot_width * params_rate(params));
++		if (sai->bclk_ratio)
++			ret = fsl_sai_set_bclk(cpu_dai, tx,
++					       sai->bclk_ratio *
++					       params_rate(params));
++		else
++			ret = fsl_sai_set_bclk(cpu_dai, tx,
++					       slots * slot_width *
++					       params_rate(params));
+ 		if (ret)
+ 			return ret;
+ 
+@@ -630,6 +646,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ }
+ 
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
++	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
+ 	.set_sysclk	= fsl_sai_set_dai_sysclk,
+ 	.set_fmt	= fsl_sai_set_dai_fmt,
+ 	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index b89b0ca26053..b12cb578f6d0 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -176,6 +176,7 @@ struct fsl_sai {
+ 	unsigned int mclk_streams;
+ 	unsigned int slots;
+ 	unsigned int slot_width;
++	unsigned int bclk_ratio;
+ 
+ 	const struct fsl_sai_soc_data *soc_data;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1703290954143669566==--
