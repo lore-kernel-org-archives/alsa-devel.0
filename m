@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AD79C4CEC8
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 19:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23174C4CEC9
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 19:31:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A37520640
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 19:30:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9AA8B20640
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2019 19:31:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cj+nQahc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A37520640
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sBZAPXei"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AA8B20640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BC6C167D;
-	Fri, 13 Sep 2019 21:30:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BC6C167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C207D1674;
+	Fri, 13 Sep 2019 21:30:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C207D1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568403052;
-	bh=fYjxF/qDJV5utvLtJnN+ZH7F0WqbRyr/UNYHRR3qKXs=;
+	s=default; t=1568403102;
+	bh=Bv06m/xkmmZPsgW0Mraqw18f2RHukONFQU/iJJceL2k=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cj+nQahcvAvZEiz3xGgYVz8laeHWDGAnND4QNUF7ok+rIhcr44gx0JL+af1qyy7ZK
-	 IZ2iyCbVChOV2ixaooNJWO5kHFF/8WmKEaQd8y5Qp3SQ0/DXIlTPsw2xYc8CSWQA+h
-	 Y7dOom02pOQHMIOJQrlVXAT2BhJLRP9W5b/NZIwQ=
+	b=sBZAPXei80GcOR31J1kvluwZUt2X6mlau3ibNONC2/INFbLEKsJ8aPCAO2GJzagsC
+	 d633uEBNbOPNlDlRvyP5P1BNsEjYX2dD0IfDCBoHYOgTW83cD4mYq61937MSiHRtzO
+	 TH2ulbHB/V7Yo0jBqniLQhzEpwO2h+l/mjIN+6L0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDDCFF805F6;
-	Fri, 13 Sep 2019 21:28:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6D14F805FD;
+	Fri, 13 Sep 2019 21:28:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AABF7F805F6; Fri, 13 Sep 2019 21:28:21 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 60514F805FE; Fri, 13 Sep 2019 21:28:32 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF6EEF80143
- for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2019 21:28:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF6EEF80143
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C655A200785;
- Fri, 13 Sep 2019 21:28:11 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7236DF801EC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2019 21:28:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7236DF801EC
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6482E1A073C;
+ Fri, 13 Sep 2019 21:28:12 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com
  [134.27.226.22])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B9F6420076D;
- Fri, 13 Sep 2019 21:28:11 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5730D1A0352;
+ Fri, 13 Sep 2019 21:28:12 +0200 (CEST)
 Received: from fsr-ub1864-103.ea.freescale.net
  (fsr-ub1864-103.ea.freescale.net [10.171.82.17])
- by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 3037E205DB;
+ by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id C9E43205DB;
  Fri, 13 Sep 2019 21:28:11 +0200 (CEST)
 From: Daniel Baluta <daniel.baluta@nxp.com>
 To: broonie@kernel.org
-Date: Fri, 13 Sep 2019 22:28:06 +0300
-Message-Id: <20190913192807.8423-3-daniel.baluta@nxp.com>
+Date: Fri, 13 Sep 2019 22:28:07 +0300
+Message-Id: <20190913192807.8423-4-daniel.baluta@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190913192807.8423-1-daniel.baluta@nxp.com>
 References: <20190913192807.8423-1-daniel.baluta@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Cc: Daniel Baluta <daniel.baluta@nxp.com>, alsa-devel@alsa-project.org,
  timur@kernel.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com,
- nicoleotsuka@gmail.com, NXP Linux Team <linux-imx@nxp.com>, festevam@gmail.com
-Subject: [alsa-devel] [PATCH v2 2/3] ASoC: fsl_sai: Fix xMR setting in
+ tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
+ NXP Linux Team <linux-imx@nxp.com>, festevam@gmail.com
+Subject: [alsa-devel] [PATCH v2 3/3] ASoC: fsl_sai: Fix TCSR.TE/RCSR.RE in
 	synchronous mode
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -88,43 +88,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+The SAI transmitter and receiver can be configured to operate with
+synchronous bit clock and frame sync.
 
-When Tx is synchronous with receiver the RMR should not be changed.
-When Rx is synchronous with transmitter the TMR should not be changed.
+When Tx is synchronous with receiver RCSR.RE should be set in playback
+to enable the receiver which provides bit clock and frame sync.
+
+When Rx is synchronous with transmitter TCSR.TE should be set in record
+to enable the transmitter which provides bit clock and frame sync.
 
 Cc: NXP Linux Team <linux-imx@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
-Changes since v1:
+Changes since v1: 
 * new patch
 
- sound/soc/fsl/fsl_sai.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index b517e4bc1b87..6598a1ae0a2d 100644
+index 6598a1ae0a2d..a59300e37549 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -482,8 +482,6 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 			regmap_update_bits(sai->regmap, FSL_SAI_TCR5(ofs),
- 				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
- 				FSL_SAI_CR5_FBT_MASK, val_cr5);
--			regmap_write(sai->regmap, FSL_SAI_TMR,
--				~0UL - ((1 << channels) - 1));
- 		} else if (!sai->synchronous[RX] && sai->synchronous[TX] && tx) {
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCR4(ofs),
- 				FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-@@ -491,8 +489,6 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCR5(ofs),
- 				FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
- 				FSL_SAI_CR5_FBT_MASK, val_cr5);
--			regmap_write(sai->regmap, FSL_SAI_RMR,
--				~0UL - ((1 << channels) - 1));
- 		}
- 	}
+@@ -539,8 +539,8 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			   sai->synchronous[RX] ? FSL_SAI_CR2_SYNC : 0);
  
+ 	/*
+-	 * It is recommended that the transmitter is the last enabled
+-	 * and the first disabled.
++	 * it is recommended that the asynchronous block to be the last enabled
++	 * and the first disabled
+ 	 */
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -549,9 +549,11 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
+ 				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
+ 
+-		regmap_update_bits(sai->regmap, FSL_SAI_RCSR(ofs),
+-				   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+-		regmap_update_bits(sai->regmap, FSL_SAI_TCSR(ofs),
++		if (sai->synchronous[tx])
++			regmap_update_bits(sai->regmap, FSL_SAI_xCSR(!tx, ofs),
++					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
++
++		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
+ 				   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+ 
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
 -- 
 2.17.1
 
