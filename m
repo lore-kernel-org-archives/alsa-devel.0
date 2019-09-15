@@ -2,80 +2,65 @@ Return-Path: <SRS0=b7Q8=XK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D915C4CECC
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Sep 2019 09:32:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C47FC4CEC7
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Sep 2019 09:34:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25C9320692
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Sep 2019 09:32:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B594820692
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Sep 2019 09:34:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NkxkdY5r";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BtRFFzqZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25C9320692
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="no/ZL9lj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B594820692
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FEAA15E4;
-	Sun, 15 Sep 2019 11:31:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FEAA15E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2AB715E4;
+	Sun, 15 Sep 2019 11:33:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2AB715E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568539949;
-	bh=FRFR+OVEERUYmg0dOXtVHocuAATxP/EzX9+iI+gwlag=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NkxkdY5rx1XvMQE10ahTcuCRfaW6/AN4YJBklOHi18OR1BTXFWXIefsogS6XgFom1
-	 ldZsjljtGSse70peZT9fG4ZJy2TLtCMxJLqEHCn/5DFKQo3kV3lO64rUdSQbS3dZNz
-	 z9YUF76T+sjlBD7WsacIevFUKTRCiOKv+Ofh2xTg=
+	s=default; t=1568540069;
+	bh=R3rNbff8tWHOHAaAg4bW6yFX5bo8i4TXuQ+IxHeoNvg=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=no/ZL9ljkTq4ACi/C7bWlatOFUDUoLNXhP9ywhzr3pWJe7gqJly7dYeYDVr41w3ve
+	 rdTtvWykA02D+f5J1Mq2EDrqy3Q7XCaKi5jXpAmf20iQuINMdJ04IvooVRx7sDe+4k
+	 ohkbTbI4hYeuaWpdxlbw037I/gNVSHkNdNKp89mc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93F5FF80307;
-	Sun, 15 Sep 2019 11:31:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66C61F802DF;
+	Sun, 15 Sep 2019 11:33:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5819CF80361; Sun, 15 Sep 2019 11:31:37 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CE63FF80307; Sun, 15 Sep 2019 11:33:36 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AF87F802DF
- for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2019 11:31:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF87F802DF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="BtRFFzqZ"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=nyo3F8+Gmt+Uhz9HQiAjvCjoWq5h5bVV0pcNn8IbSDs=; b=BtRFFzqZYniD
- NiWHe8lOEdzpXwEggZQzBfkSVqz1Y+nhGRgQ2GbeOCBN0YC2FCSGxkE/1HK/UcQupwZ5itg83/jCQ
- 4HwUW5o8kp/26mo7bFytgjfpZXtQzfhwJwKj4docb6tqgeBCm9CDxnuenchFUGuOxClOdMqoMde9p
- 8/5I8=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1i9QsV-00079Y-Vg; Sun, 15 Sep 2019 09:31:32 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 600B62740A09; Sun, 15 Sep 2019 10:31:31 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Saiyam Doshi <saiyamdoshi.in@gmail.com>
-In-Reply-To: <20190914031133.GA28447@SD>
-X-Patchwork-Hint: ignore
-Message-Id: <20190915093131.600B62740A09@ypsilon.sirena.org.uk>
-Date: Sun, 15 Sep 2019 10:31:31 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org,
- tiwai@suse.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: sdm845: remove unneeded semicolon" to
-	the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDDE1F801DA
+ for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2019 11:33:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDDE1F801DA
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id F1243AE74;
+ Sun, 15 Sep 2019 09:33:32 +0000 (UTC)
+Date: Sun, 15 Sep 2019 11:33:32 +0200
+Message-ID: <s5hmuf5zyxf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: xinhui zhou <zxinhui@ieee.org>
+In-Reply-To: <CABsjGHJFZD6r7tUKDd17NrAs56O0hypW6MFzJq6m6bWH7ykkPg@mail.gmail.com>
+References: <20190904164706.gwjbcywbj7emnwvr@localhost>
+ <CABsjGHJFZD6r7tUKDd17NrAs56O0hypW6MFzJq6m6bWH7ykkPg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] How to check ALSA version in Linux kernel
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,69 +73,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Thu, 12 Sep 2019 17:42:37 +0200,
+xinhui zhou wrote:
+> 
+> >
+> > Dear all,
+> >
+> 
+>       I am involved in a project which will use different kernel versions
+> along the way, first 4.14, 4.19, 5.3 etc.
+> 
+>     How can I know the differences in ALSA, besides comparing files ?
+> How to get the ALSA version in Linux kernel ?
 
-   ASoC: sdm845: remove unneeded semicolon
+There is no "ALSA version" any longer in the kernel side.  The
+protocol is kept in backward-compatible way, and a new protocol is
+checked via each protocol version number ioctl.
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From fca11622d600228bec405456f41590155b3a3eca Mon Sep 17 00:00:00 2001
-From: Saiyam Doshi <saiyamdoshi.in@gmail.com>
-Date: Sat, 14 Sep 2019 08:41:33 +0530
-Subject: [PATCH] ASoC: sdm845: remove unneeded semicolon
-
-Remove excess semicolon after closing parenthesis.
-
-Signed-off-by: Saiyam Doshi <saiyamdoshi.in@gmail.com>
-Link: https://lore.kernel.org/r/20190914031133.GA28447@SD
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/sdm845.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 882f52ed8231..28f3cef696e6 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -319,7 +319,7 @@ static void  sdm845_snd_shutdown(struct snd_pcm_substream *substream)
- 			snd_soc_dai_set_sysclk(cpu_dai,
- 				Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
- 				0, SNDRV_PCM_STREAM_PLAYBACK);
--		};
-+		}
- 		break;
- 
- 	case SECONDARY_MI2S_TX:
--- 
-2.20.1
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
