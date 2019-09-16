@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 791BDC49ED7
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 19:27:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B9B4C49ED7
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 19:27:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04C702067B
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 19:27:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CB94206C2
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 19:27:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FJlHXcTj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04C702067B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QmFQUgeR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CB94206C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C0F2166E;
-	Mon, 16 Sep 2019 21:26:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C0F2166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C60DC1675;
+	Mon, 16 Sep 2019 21:26:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C60DC1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568662042;
-	bh=e6cfXh3iH38hECqW+Iy6mWTIm3iIpvKD8+BIbKziAjo=;
+	s=default; t=1568662065;
+	bh=VhCztfVvEiMT93C/707FOiY3qQ1jORYwk37lJ0OAmAA=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FJlHXcTjURHRGx8kTf2Pt00jsguVVeK0iTSm3mW13Bq1xInhV03SNmsWUoZw0Y7by
-	 aBeqyasKfPPeHWYBmAxtxAVk1xSxpyIYsD3XGt/gkiZOsRg3npncWcX12A5jT4206L
-	 CXlwumfM1rOImG6kQTdd4Bu0RrWQm/XxI32Kzlgw=
+	b=QmFQUgeRzF1uvOr3uGpV09tINHu8UjbTjnJ0Kx20K+YhskISa0Hxlq5yUKbgkJt3X
+	 BVE0zj0xQKaRXf3IrXnPXMn7Hku399CNU+ghgf68tDs7WYV3ICj6TyFyzMbeZOKbML
+	 lo/BU2NZ/p3NhSOWyELlzh9pZSKTI9r74kboWniU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83706F805FE;
-	Mon, 16 Sep 2019 21:24:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAA8EF8060D;
+	Mon, 16 Sep 2019 21:24:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E64D3F805FB; Mon, 16 Sep 2019 21:24:02 +0200 (CEST)
+ id 13201F805FD; Mon, 16 Sep 2019 21:24:04 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18CBAF80535
- for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2019 21:23:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18CBAF80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 112D9F80148
+ for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2019 21:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 112D9F80148
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2019 12:23:56 -0700
+ 16 Sep 2019 12:23:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,513,1559545200"; d="scan'208";a="270291176"
+X-IronPort-AV: E=Sophos;i="5.64,513,1559545200"; d="scan'208";a="270291195"
 Received: from jvhicko1-mobl2.amr.corp.intel.com (HELO localhost.localdomain)
  ([10.254.104.227])
- by orsmga001.jf.intel.com with ESMTP; 16 Sep 2019 12:23:55 -0700
+ by orsmga001.jf.intel.com with ESMTP; 16 Sep 2019 12:23:58 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon, 16 Sep 2019 14:23:45 -0500
-Message-Id: <20190916192348.467-4-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 16 Sep 2019 14:23:47 -0500
+Message-Id: <20190916192348.467-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190916192348.467-1-pierre-louis.bossart@linux.intel.com>
 References: <20190916192348.467-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,7 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH 3/6] soundwire: intel: remove playback/capture
-	stream_name
+Subject: [alsa-devel] [PATCH 5/6] soundwire: intel: don't filter out PDI0/1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,51 +88,114 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+PDI0/1 are reserved for Bulk and filtered out in the existing code.
+That leads to endless confusions on whether the index is the raw or
+corrected one. In addition we will need support for Bulk at some point
+so it's just simpler to expose those PDIs and not use it for now than
+try to be smart unless we have to remove the smarts.
 
-We will create dai widget in SOF.
+This patch requires a topology change to use PDIs starting at offset 2
+explicitly.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Note that there is a known discrepancy between hardware documentation
+and what ALH stream works in practice, future fixes are likely.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ drivers/soundwire/cadence_master.c | 29 +++++++++++------------------
+ 1 file changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index c158a1d19a05..8aa513042a4e 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -843,14 +843,6 @@ static int intel_create_dai(struct sdw_cdns *cdns,
- 			return -ENOMEM;
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 46ebd601a454..dfce2b8c5ad2 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -183,9 +183,6 @@ MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
+ #define CDNS_DEFAULT_SSP_INTERVAL		0x18
+ #define CDNS_TX_TIMEOUT				2000
  
- 		if (type == INTEL_PDI_BD || type == INTEL_PDI_OUT) {
--			dais[i].playback.stream_name =
--				kasprintf(GFP_KERNEL, "SDW%d Tx%d",
--					  cdns->instance, i);
--			if (!dais[i].playback.stream_name) {
--				kfree(dais[i].name);
--				return -ENOMEM;
--			}
+-#define CDNS_PCM_PDI_OFFSET			0x2
+-#define CDNS_PDM_PDI_OFFSET			0x6
 -
- 			dais[i].playback.channels_min = 1;
- 			dais[i].playback.channels_max = max_ch;
- 			dais[i].playback.rates = SNDRV_PCM_RATE_48000;
-@@ -858,15 +850,6 @@ static int intel_create_dai(struct sdw_cdns *cdns,
- 		}
+ #define CDNS_SCP_RX_FIFOLEVEL			0x2
  
- 		if (type == INTEL_PDI_BD || type == INTEL_PDI_IN) {
--			dais[i].capture.stream_name =
--				kasprintf(GFP_KERNEL, "SDW%d Rx%d",
--					  cdns->instance, i);
--			if (!dais[i].capture.stream_name) {
--				kfree(dais[i].name);
--				kfree(dais[i].playback.stream_name);
--				return -ENOMEM;
--			}
--
- 			dais[i].capture.channels_min = 1;
- 			dais[i].capture.channels_max = max_ch;
- 			dais[i].capture.rates = SNDRV_PCM_RATE_48000;
+ /*
+@@ -295,11 +292,7 @@ static int cdns_reg_show(struct seq_file *s, void *data)
+ 	ret += scnprintf(buf + ret, RD_BUF - ret,
+ 			 "\nDPn B0 Registers\n");
+ 
+-	/*
+-	 * in sdw_cdns_pdi_init() we filter out the Bulk PDIs,
+-	 * so the indices need to be corrected again
+-	 */
+-	num_ports = cdns->num_ports + CDNS_PCM_PDI_OFFSET;
++	num_ports = cdns->num_ports;
+ 
+ 	for (i = 0; i < num_ports; i++) {
+ 		ret += scnprintf(buf + ret, RD_BUF - ret,
+@@ -908,11 +901,8 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+ 	/* Allocate PDIs for PCMs */
+ 	stream = &cdns->pcm;
+ 
+-	/* First two PDIs are reserved for bulk transfers */
+-	if (stream->num_bd < CDNS_PCM_PDI_OFFSET)
+-		return -EINVAL;
+-	stream->num_bd -= CDNS_PCM_PDI_OFFSET;
+-	offset = CDNS_PCM_PDI_OFFSET;
++	/* we allocate PDI0 and PDI1 which are used for Bulk */
++	offset = 0;
+ 
+ 	ret = cdns_allocate_pdi(cdns, &stream->bd,
+ 				stream->num_bd, offset);
+@@ -930,6 +920,9 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+ 
+ 	ret = cdns_allocate_pdi(cdns, &stream->out,
+ 				stream->num_out, offset);
++
++	offset += stream->num_out;
++
+ 	if (ret)
+ 		return ret;
+ 
+@@ -939,7 +932,6 @@ int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+ 
+ 	/* Allocate PDIs for PDMs */
+ 	stream = &cdns->pdm;
+-	offset = CDNS_PDM_PDI_OFFSET;
+ 	ret = cdns_allocate_pdi(cdns, &stream->bd,
+ 				stream->num_bd, offset);
+ 	if (ret)
+@@ -1236,12 +1228,13 @@ EXPORT_SYMBOL(cdns_set_sdw_stream);
+  * Find and return a free PDI for a given PDI array
+  */
+ static struct sdw_cdns_pdi *cdns_find_pdi(struct sdw_cdns *cdns,
++					  unsigned int offset,
+ 					  unsigned int num,
+ 					  struct sdw_cdns_pdi *pdi)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < num; i++) {
++	for (i = offset; i < num; i++) {
+ 		if (pdi[i].assigned)
+ 			continue;
+ 		pdi[i].assigned = true;
+@@ -1291,13 +1284,13 @@ struct sdw_cdns_pdi *sdw_cdns_alloc_pdi(struct sdw_cdns *cdns,
+ 	struct sdw_cdns_pdi *pdi = NULL;
+ 
+ 	if (dir == SDW_DATA_DIR_RX)
+-		pdi = cdns_find_pdi(cdns, stream->num_in, stream->in);
++		pdi = cdns_find_pdi(cdns, 0, stream->num_in, stream->in);
+ 	else
+-		pdi = cdns_find_pdi(cdns, stream->num_out, stream->out);
++		pdi = cdns_find_pdi(cdns, 0, stream->num_out, stream->out);
+ 
+ 	/* check if we found a PDI, else find in bi-directional */
+ 	if (!pdi)
+-		pdi = cdns_find_pdi(cdns, stream->num_bd, stream->bd);
++		pdi = cdns_find_pdi(cdns, 2, stream->num_bd, stream->bd);
+ 
+ 	if (pdi) {
+ 		pdi->l_ch_num = 0;
 -- 
 2.20.1
 
