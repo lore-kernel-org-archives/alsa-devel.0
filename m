@@ -2,65 +2,65 @@ Return-Path: <SRS0=lXbg=XL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6AE6C49ED7
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 21:53:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90391C49ED7
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 21:53:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C77E214AF
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 21:53:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E78B214AF
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 21:53:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S0DEycpc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C77E214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k56igL9B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E78B214AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 807AF82E;
-	Mon, 16 Sep 2019 23:52:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 807AF82E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CC871679;
+	Mon, 16 Sep 2019 23:52:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CC871679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568670790;
-	bh=bQ+kuAqZki5COQJAYETvel6cVp28zZSHreJKe0oKLRQ=;
+	s=default; t=1568670822;
+	bh=30rOmiHTO2Wv4aH9R+48LJsYrWPjw1bXjw3xVh1pZfc=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S0DEycpc+5nCca8LqSDZMRk0+k851B5m/esRcyCKqDaDqGDRLnE9TIf/P4sIKAAbQ
-	 9FNLrundfdVF5N8c6LDrBOVdNhMH0DLp1MpdjQxvfQ51GnIYSebWK4uEAAqBkH1nmG
-	 RJeVo8EZDASlGNIoY5cfGcwQfhGER7ch+u+wstnQ=
+	b=k56igL9BLEvwRbOqAXMTppXQKh/BIMudTteBWdZQ2TefMavl7N+lOEmEUCQvJzNRO
+	 O1BaekneHelAsYkL2shAVhhbMxY9rHKCY1dP1/SWN9BZaPVlpp7JsdYcasNDwRG0Po
+	 MCW4EK8r2+piyr7FQ/OP3dtLh/0Gch32pnHej2RM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42273F80534;
-	Mon, 16 Sep 2019 23:47:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 915DBF80535;
+	Mon, 16 Sep 2019 23:50:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8997BF80539; Mon, 16 Sep 2019 23:46:58 +0200 (CEST)
+ id 0D77AF8053A; Mon, 16 Sep 2019 23:50:45 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 307BEF804FF
- for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2019 23:46:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 307BEF804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16176F80148
+ for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2019 23:50:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16176F80148
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 318C7B0E5;
- Mon, 16 Sep 2019 21:46:55 +0000 (UTC)
-Date: Mon, 16 Sep 2019 23:46:54 +0200
-Message-ID: <s5hh85bykvl.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 46D96B0BE;
+ Mon, 16 Sep 2019 21:50:42 +0000 (UTC)
+Date: Mon, 16 Sep 2019 23:50:42 +0200
+Message-ID: <s5hftkvykp9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-In-Reply-To: <20190916101851.30409-1-o-takashi@sakamocchi.jp>
-References: <20190916101851.30409-1-o-takashi@sakamocchi.jp>
+To: James McDonnell <james_mcdonnell@hotmail.com>
+In-Reply-To: <QB1PR01MB2337D0367C2E3ADB0010134F808C0@QB1PR01MB2337.CANPRD01.PROD.OUTLOOK.COM>
+References: <QB1PR01MB2337D0367C2E3ADB0010134F808C0@QB1PR01MB2337.CANPRD01.PROD.OUTLOOK.COM>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: dice: fix wrong packet parameter for
-	Alesis iO26
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/realtek - Fix alienware headset
+	mic
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,30 +78,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Sep 2019 12:18:51 +0200,
-Takashi Sakamoto wrote:
-> 
-> At higher sampling rate (e.g. 192.0 kHz), Alesis iO26 transfers 4 data
-> channels per data block in CIP.
-> 
-> Both iO14 and iO26 have the same contents in their configuration ROM.
-> For this reason, ALSA Dice driver attempts to distinguish them according
-> to the value of TX0_AUDIO register at probe callback. Although the way is
-> valid at lower and middle sampling rate, it's lastly invalid at higher
-> sampling rate because because the two models returns the same value for
-> read transaction to the register.
-> 
-> In the most cases, users just plug-in the device and ALSA dice driver
-> detects it. In the case, the device runs at lower sampling rate and
-> the driver detects expectedly. For this reason, this commit leaves the
-> way to detect as is.
-> 
-> Fixes: 28b208f600a3 ("ALSA: dice: add parameters of stream formats for models produced by Alesis")
-> Cc: <stable@vger.kernel.org> # v4.18+
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+On Mon, 16 Sep 2019 16:53:38 +0200,
+James McDonnell wrote:
+> @@ -7680,6 +7690,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+>  		{0x17, 0x90170110},
+>  		{0x1a, 0x03011020},
+>  		{0x21, 0x03211030}),
+> +	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", ALC298_FIXUP_ALIENWARE_MIC_NO_PRESENCE,
+> +		{0x12, 0xb7a60140},
+> +		{0x17, 0x90170110},
+> +		{0x1a, 0x03a11030},
+> +		{0x21, 0x03211020}),
 
-Applied, thanks.
+It's a slightly uncertain whether this is 100% safe to apply via the
+pin-quirk table, but also there is no big other reason to push back,
+so I applied it now.
 
+
+Thanks!
 
 Takashi
 _______________________________________________
