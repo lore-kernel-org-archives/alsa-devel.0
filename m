@@ -2,61 +2,65 @@ Return-Path: <SRS0=lXbg=XL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF63C4CEC7
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 01:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62280C49ED7
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 05:26:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68AA12067B
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 01:39:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 60ADA2067B
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2019 05:26:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GY3iiyT0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68AA12067B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thundersoft.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aO6Dvc0C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60ADA2067B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 117121614;
-	Mon, 16 Sep 2019 03:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 117121614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 202481614;
+	Mon, 16 Sep 2019 07:25:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 202481614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568597941;
-	bh=saKzFqhwa2vXGnUyijJzcyYiiUwg6EWm4JAq6EJB+7o=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GY3iiyT0iFz/nexVEWckdFuckQrw5OPTHOsk9zkQmoJV8JrsXOU/B7xXpAVAU4sZT
-	 bEbotXRe3fLWMV7oU16ByZ0l1TxQ+B26Fe6ago9MmlnmQ8lzdbf2LaSyi98eGvnf3Z
-	 JGFSySmTj7eWPpd8KHaXnhc3cSDn6MooKIv8Y0Aw=
+	s=default; t=1568611570;
+	bh=gff7sCnSB2T6y+VGY7pIADxubffPRTOHGQp2VyngoFk=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aO6Dvc0CW2XezUfzus742Qux+s2YyTrr0dnisMCcNOfktxm+MA8yPqfX1fSVur+Kf
+	 7KBA5v6bsbrmazhL5XI5enj3GZN62LJjebqi54ytN1l9M0TBwUPEuCNc+4iZ2jHska
+	 uxYOrTpVKEWykMa7aoxi4l+IVJYr9zPkJSqvEmlI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3292FF805FA;
-	Mon, 16 Sep 2019 03:37:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85ED6F804FF;
+	Mon, 16 Sep 2019 07:25:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01012F80361; Mon, 16 Sep 2019 03:37:07 +0200 (CEST)
-Received: from mail1.thundersoft.com (unknown [114.242.213.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7EF54F80506; Mon, 16 Sep 2019 07:25:17 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31304F802DF
- for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2019 03:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31304F802DF
-Received: from localhost (unknown [192.168.122.240])
- by mail1.thundersoft.com (Postfix) with ESMTPA id C91681745B53;
- Mon, 16 Sep 2019 09:36:50 +0800 (CST)
-From: shifu0704@thundersoft.com
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- robh+dt@kernel.org
-Date: Mon, 16 Sep 2019 09:38:00 +0800
-Message-Id: <1568597881-4093-1-git-send-email-shifu0704@thundersoft.com>
-X-Mailer: git-send-email 2.7.4
-Cc: Frank Shi <shifu0704@thundersoft.com>, dmurphy@ti.com, navada@ti.com
-Subject: [alsa-devel] [PATCH v4] dt-bindings: ASoC: Add tas2770 smart PA dt
-	bindings
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07E98F80148
+ for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2019 07:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07E98F80148
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 6613AAC45;
+ Mon, 16 Sep 2019 05:25:10 +0000 (UTC)
+Date: Mon, 16 Sep 2019 07:25:10 +0200
+Message-ID: <s5h7e68zubt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20190915225022.GO4352@sirena.co.uk>
+References: <20190915225022.GO4352@sirena.co.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [alsa-devel] [GIT PULL] ASoC updates for v5.4 round II
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,68 +73,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Frank Shi <shifu0704@thundersoft.com>
+On Mon, 16 Sep 2019 00:50:22 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 6fa5963c37a2e3335eba0b7455e35a01318ebc15:
+> 
+>   ASoC: hdmi-codec: Add an op to set callback function for plug event (2019-09-09 14:50:03 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.4-2
+> 
+> for you to fetch changes up to a54f8485727e6e85b5dfe1d9708b80d13fe8bf5f:
+> 
+>   Merge branch 'asoc-5.4' into asoc-next (2019-09-15 10:31:44 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Final merge window fixes for v5.4
+> 
+> A few small fixes and one feature that came in since I sent you the
+> earlier pull request.
 
-Add tas2770 smart PA dt bindings
+Pulled now.  Thanks!
 
-Signed-off-by: Frank Shi <shifu0704@thundersoft.com>
----
- .../devicetree/bindings/sound/tas2770.txt          | 37 ++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tas2770.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2770.txt b/Documentation/devicetree/bindings/sound/tas2770.txt
-new file mode 100644
-index 0000000..ede6bb3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tas2770.txt
-@@ -0,0 +1,37 @@
-+Texas Instruments TAS2770 Smart PA
-+
-+The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
-+efficiently driving high peak power into small loudspeakers.
-+Integrated speaker voltage and current sense provides for
-+real time monitoring of loudspeaker behavior.
-+
-+Required properties:
-+
-+ - compatible:	   - Should contain "ti,tas2770".
-+ - reg:		       - The i2c address. Should contain <0x4c>, <0x4d>,<0x4e>, or <0x4f>.
-+ - #address-cells  - Should be <1>.
-+ - #size-cells     - Should be <0>.
-+ - ti,asi-format:  - Sets TDM RX capture edge. 0->Rising; 1->Falling.
-+ - ti,imon-slot-no:- TDM TX current sense time slot.
-+ - ti,vmon-slot-no:- TDM TX voltage sense time slot.
-+
-+Optional properties:
-+
-+- interrupt-parent: the phandle to the interrupt controller which provides
-+                     the interrupt.
-+- interrupts: interrupt specification for data-ready.
-+
-+Examples:
-+
-+    tas2770@4c {
-+                compatible = "ti,tas2770";
-+                reg = <0x4c>;
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                interrupt-parent = <&msm_gpio>;
-+                interrupts = <97 0>;
-+                ti,asi-format = <0>;
-+                ti,imon-slot-no = <0>;
-+                ti,vmon-slot-no = <2>;
-+        };
-+
--- 
-2.7.4
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
