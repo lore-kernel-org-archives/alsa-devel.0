@@ -2,83 +2,61 @@ Return-Path: <SRS0=kA1C=XM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0983EC4CECD
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 05:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47EDDC4CEC9
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 07:39:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 890B021848
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 05:56:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 499982067B
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 07:39:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hvrJUTjH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMAru7ZT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 890B021848
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uF636gHh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 499982067B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thundersoft.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4363F1660;
-	Tue, 17 Sep 2019 07:55:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4363F1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id A87C51612;
+	Tue, 17 Sep 2019 09:38:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A87C51612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568699771;
-	bh=94IgTC5zlQGOxak23d0s0tCCiQ/6MVRETP2dABi5bf0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hvrJUTjHR1iBOGnJf+3qGQY4nTotgV2aCc5e2yFRl3jU8lzn3xWhPD7XqmXprKmLl
-	 b+7oP9nxKXFbEdtyG+q1dzlXk/Ao05xHgB40wK2o80GGMhQ3kusCqtohZLeYBhjax1
-	 siPFeDddOFjIh/i+orugSlPfHtCmmmPksZXTr5sU=
+	s=default; t=1568705960;
+	bh=saKzFqhwa2vXGnUyijJzcyYiiUwg6EWm4JAq6EJB+7o=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uF636gHhTAC00IMUC8iHYxsakeYe+WNkEy5K4zWtP63v7K7kVC5B/noi637x0hS/r
+	 i5bDBBDi/E7StGfkWSl0c017mq9I22KjQtD+eSAn4abuhcbX23+VyCJWB30zh3BsEg
+	 L+n7J75ytmTEuKNjxAjtXKE5aAau99VBNkN0SdcY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABA1AF80307;
-	Tue, 17 Sep 2019 07:55:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FB00F80307;
+	Tue, 17 Sep 2019 09:38:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A566F80361; Tue, 17 Sep 2019 07:55:19 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 960B6F802BD
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 07:55:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 960B6F802BD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hMAru7ZT"
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
- [83.86.89.107])
+ id 6595EF803D6; Tue, 17 Sep 2019 09:38:28 +0200 (CEST)
+Received: from mail2.thundersoft.com (unknown [114.242.213.61])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E8F5021670;
- Tue, 17 Sep 2019 05:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1568699714;
- bh=PguNlRlXErMMWFgmBjjpNfbyE9JGSwRipCM2vKmpfAQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hMAru7ZTwpG5XG8o5eI2RR/kZfwwODOjxoY+REOdv4P53vq1DmV04Onf7QJD64qis
- N1voFAqWO+PBd3i80zo9oszKCVBYFjxxbGUS1uJlLaLuRb9UVkXWxw/ollZQ1EDrId
- jWrzBJbSD+foaYZCPD4NImx6A7WpsXzPGTWp/oPA=
-Date: Tue, 17 Sep 2019 07:55:12 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20190917055512.GE2058532@kroah.com>
-References: <20190916212342.12578-1-pierre-louis.bossart@linux.intel.com>
- <20190916212342.12578-9-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190916212342.12578-9-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 8/9] soundwire: intel: remove platform
- devices and provide new interface
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3DECF80307
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 09:38:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3DECF80307
+Received: from localhost (unknown [192.168.122.240])
+ by mail2.thundersoft.com (Postfix) with ESMTPA id 6EF81152074F;
+ Tue, 17 Sep 2019 15:38:16 +0800 (CST)
+From: shifu0704@thundersoft.com
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ robh+dt@kernel.org
+Date: Tue, 17 Sep 2019 15:38:08 +0800
+Message-Id: <1568705889-6224-1-git-send-email-shifu0704@thundersoft.com>
+X-Mailer: git-send-email 2.7.4
+Cc: Frank Shi <shifu0704@thundersoft.com>, dmurphy@ti.com, navada@ti.com
+Subject: [alsa-devel] [PATCH v5] dt-bindings: ASoC: Add tas2770 smart PA dt
+	bindings
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,44 +69,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 16, 2019 at 04:23:41PM -0500, Pierre-Louis Bossart wrote:
-> +/**
-> + * sdw_intel_probe() - SoundWire Intel probe routine
-> + * @parent_handle: ACPI parent handle
-> + * @res: resource data
-> + *
-> + * This creates SoundWire Master and Slave devices below the controller.
-> + * All the information necessary is stored in the context, and the res
-> + * argument pointer can be freed after this step.
-> + */
-> +struct sdw_intel_ctx
-> +*sdw_intel_probe(struct sdw_intel_res *res)
-> +{
-> +	return sdw_intel_probe_controller(res);
-> +}
-> +EXPORT_SYMBOL(sdw_intel_probe);
-> +
-> +/**
-> + * sdw_intel_startup() - SoundWire Intel startup
-> + * @ctx: SoundWire context allocated in the probe
-> + *
-> + */
-> +int sdw_intel_startup(struct sdw_intel_ctx *ctx)
-> +{
-> +	return sdw_intel_startup_controller(ctx);
-> +}
-> +EXPORT_SYMBOL(sdw_intel_startup);
+From: Frank Shi <shifu0704@thundersoft.com>
 
-Why are you exporting these functions if no one calls them?
+Add tas2770 smart PA dt bindings
 
-thanks,
+Signed-off-by: Frank Shi <shifu0704@thundersoft.com>
+---
+ .../devicetree/bindings/sound/tas2770.txt          | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2770.txt
 
-greg k-h
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.txt b/Documentation/devicetree/bindings/sound/tas2770.txt
+new file mode 100644
+index 0000000..ede6bb3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2770.txt
+@@ -0,0 +1,37 @@
++Texas Instruments TAS2770 Smart PA
++
++The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
++efficiently driving high peak power into small loudspeakers.
++Integrated speaker voltage and current sense provides for
++real time monitoring of loudspeaker behavior.
++
++Required properties:
++
++ - compatible:	   - Should contain "ti,tas2770".
++ - reg:		       - The i2c address. Should contain <0x4c>, <0x4d>,<0x4e>, or <0x4f>.
++ - #address-cells  - Should be <1>.
++ - #size-cells     - Should be <0>.
++ - ti,asi-format:  - Sets TDM RX capture edge. 0->Rising; 1->Falling.
++ - ti,imon-slot-no:- TDM TX current sense time slot.
++ - ti,vmon-slot-no:- TDM TX voltage sense time slot.
++
++Optional properties:
++
++- interrupt-parent: the phandle to the interrupt controller which provides
++                     the interrupt.
++- interrupts: interrupt specification for data-ready.
++
++Examples:
++
++    tas2770@4c {
++                compatible = "ti,tas2770";
++                reg = <0x4c>;
++                #address-cells = <1>;
++                #size-cells = <0>;
++                interrupt-parent = <&msm_gpio>;
++                interrupts = <97 0>;
++                ti,asi-format = <0>;
++                ti,imon-slot-no = <0>;
++                ti,vmon-slot-no = <2>;
++        };
++
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
