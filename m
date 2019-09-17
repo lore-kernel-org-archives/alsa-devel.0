@@ -2,92 +2,70 @@ Return-Path: <SRS0=kA1C=XM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E6F3C4CEC9
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 10:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BB75C4CEC9
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 11:33:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD82621670
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 10:55:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0A33621881
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 11:33:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vX6yO1bH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="euAdF8DO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD82621670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oE6Omyxl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A33621881
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3D09165D;
-	Tue, 17 Sep 2019 12:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3D09165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB51E84B;
+	Tue, 17 Sep 2019 13:32:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB51E84B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568717706;
-	bh=CqWF1UIdkMSItV/zEGItnH4AN+l4G5ZpGl0vMFmtcqU=;
-	h=Resent-From:Resent-Date:Resent-To:Date:From:To:Cc:Subject:List-Id:
+	s=default; t=1568719986;
+	bh=LUqd0cMtGmkoQe4Jha7gTYWVXG/yJVkEDSNkc7rTTag=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vX6yO1bH/g9TlXPPfmdD61uCxsptqcCutM3xSAdnIeaz7LwXHRWVfBkAQ2qPAqmG8
-	 rGsT02znkef9PxQyzOuFUsbp0d8oxvhNmByuq8vzcpwmrEX155YEjTyIniW725x1CM
-	 8ODipfGFNZVzZOcrmTk1gnJPo9iui4btYJFkNK4c=
+	b=oE6OmyxlDMpoZWp+nq1l9Uuf3KsfpoM8U5hfGMa9uIbi3sZWDPO9HnYyXgBYEn3YB
+	 6MQA9/vTVynI1gklRFz9unkIgEboaLIlRiQodlOqUO5OAAj9icJecPHY2LWoJLPsiM
+	 KZ70svwCz9v+fqNfDZKhEE3XZLzgCX3ir7A2tuOM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EA0DF802BD;
-	Tue, 17 Sep 2019 12:54:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32863F80307;
+	Tue, 17 Sep 2019 13:32:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F02F2F80361; Tue, 17 Sep 2019 12:54:14 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ id 61D64F80361; Tue, 17 Sep 2019 13:32:13 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3CECF802BD
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 12:54:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3CECF802BD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="euAdF8DO"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Content-Type:MIME-Version:
- Message-ID:Subject:Cc:To:From:Date:Resent-To:Resent-Message-ID:Resent-Date:
- Resent-From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
- Content-Description:Resent-Sender:Resent-Cc:In-Reply-To:References:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=DjatoRpZQS80cf2AeRuBw0rkTnIsH9c2PxGWpLSmVqk=; b=euAdF8DOQ82RtnFgpc+mpUi43
- Dzfdn5g0WYuSvbs/X9KSOU5VykBUAgHjXZSQycxetuE/HTFKOhPZi8nQWkwZY89VsCaEBBIJPyVzu
- Ntql2rV4c0pSWKOE143oLmVUb7JBZmxBC2UHwmObJ4HCmSSJkl/PcsRfj+wOiCajXEC7A=;
-Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>) id 1iAB7c-0007iW-1f
- for alsa-devel@alsa-project.org; Tue, 17 Sep 2019 10:54:12 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E88D627419E9; Tue, 17 Sep 2019 11:54:10 +0100 (BST)
-Resent-From: Mark Brown <broonie@sirena.co.uk>
-Resent-Date: Tue, 17 Sep 2019 11:54:10 +0100
-Resent-Message-ID: <20190917105410.GC3524@sirena.co.uk>
-Resent-To: alsa-devel@alsa-project.org
-Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iAAsu-0007gc-JV; Tue, 17 Sep 2019 10:39:00 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2E48327419E9; Tue, 17 Sep 2019 11:38:59 +0100 (BST)
-Date: Tue, 17 Sep 2019 11:38:58 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
- Mac Chiang <mac.chiang@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20190917103858.GA3524@sirena.co.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6F1EF80146
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 13:32:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6F1EF80146
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 17 Sep 2019 04:32:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,516,1559545200"; d="scan'208";a="180744093"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by orsmga008.jf.intel.com with ESMTP; 17 Sep 2019 04:32:04 -0700
+Date: Tue, 17 Sep 2019 14:32:03 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <5579b62d-d949-ec62-0a85-45d0842af38f@linux.intel.com>
+Message-ID: <alpine.DEB.2.21.1909171415520.16459@zeliteleevi>
+References: <20190912142200.8031-1-kai.vehmanen@linux.intel.com>
+ <5579b62d-d949-ec62-0a85-45d0842af38f@linux.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-X-Cookie: Know Thy User.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linux-next@vger.kernel.org,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-Subject: [alsa-devel] Build failure after merge of the sound-current
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v4 0/9] adapt SOF to use snd-hda-codec-hdmi
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,112 +78,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5519816447814816882=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---===============5519816447814816882==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
-Content-Disposition: inline
+On Mon, 16 Sep 2019, Pierre-Louis Bossart wrote:
 
+> The series looks good to me so
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thank you Pierre and Takashi for the reviews!
 
-After merging the sound-current tree, today's linux-next build for x86
-allmodconfig failed like this:
+> I would recommend that we have a matching change for the Skylake driver and
+> validation that both SOF and cAVS/SST drivers can operate with this mode set.
+> Our goal is still to have coexistence between the two drivers in a single
+> build/distro, e.g. cAVS for SKL/KBL/APL and SOF for newer platforms. This can
+> be done in a follow-up patch but it needs to be done before distros start
+> selecting this common HDMI mode.
 
-In file included from /home/broonie/next/next/sound/soc/intel/boards/sof_rt5682.c:23:
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h: In function 'soc_intel_is_cml':
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h:39:23: error: 'INTEL_FAM6_KABYLAKE_MOBILE' undeclared (first use in this function); did you mean 'INTEL_FAM6_KABYLAKE_L'?
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h:18:44: note: in definition of macro 'ICPU'
- #define ICPU(model) { X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, }
-                                            ^~~~~
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h:39:1: note: in expansion of macro 'SOC_INTEL_IS_CPU'
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
- ^~~~~~~~~~~~~~~~
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h:39:23: note: each undeclared identifier is reported only once for each function it appears in
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h:18:44: note: in definition of macro 'ICPU'
- #define ICPU(model) { X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, }
-                                            ^~~~~
-/home/broonie/next/next/sound/soc/intel/boards/../common/soc-intel-quirks.h:39:1: note: in expansion of macro 'SOC_INTEL_IS_CPU'
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
- ^~~~~~~~~~~~~~~~
-make[5]: *** [/home/broonie/next/next/scripts/Makefile.build:281: sound/soc/intel/boards/sof_rt5682.o] Error 1
-make[4]: *** [/home/broonie/next/next/scripts/Makefile.build:497: sound/soc/intel/boards] Error 2
-make[4]: *** Waiting for unfinished jobs....
-In file included from /home/broonie/next/next/sound/soc/intel/atom/sst/sst_acpi.c:35:
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h: In function 'soc_intel_is_cml':
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h:39:23: error: 'INTEL_FAM6_KABYLAKE_MOBILE' undeclared (first use in this function); did you mean 'INTEL_FAM6_KABYLAKE_L'?
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h:18:44: note: in definition of macro 'ICPU'
- #define ICPU(model) { X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, }
-                                            ^~~~~
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h:39:1: note: in expansion of macro 'SOC_INTEL_IS_CPU'
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
- ^~~~~~~~~~~~~~~~
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h:39:23: note: each undeclared identifier is reported only once for each function it appears in
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h:18:44: note: in definition of macro 'ICPU'
- #define ICPU(model) { X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, }
-                                            ^~~~~
-/home/broonie/next/next/sound/soc/intel/atom/sst/../../common/soc-intel-quirks.h:39:1: note: in expansion of macro 'SOC_INTEL_IS_CPU'
- SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_MOBILE);
- ^~~~~~~~~~~~~~~~
-make[6]: *** [/home/broonie/next/next/scripts/Makefile.build:281: sound/soc/intel/atom/sst/sst_acpi.o] Error 1
-make[5]: *** [/home/broonie/next/next/scripts/Makefile.build:497: sound/soc/intel/atom/sst] Error 2
-make[4]: *** [/home/broonie/next/next/scripts/Makefile.build:497: sound/soc/intel/atom] Error 2
-make[3]: *** [/home/broonie/next/next/scripts/Makefile.build:497: sound/soc/intel] Error 2
-make[3]: *** Waiting for unfinished jobs....
-make[2]: *** [/home/broonie/next/next/scripts/Makefile.build:497: sound/soc] Error 2
-make[1]: *** [/home/broonie/next/next/Makefile:1087: sound] Error 2
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:179: sub-make] Error 2
-Command exited with non-zero status 2
+The current patchset actually does allow that. You can select the common 
+HDMI codec in kernel config, build both SOF and SST drivers and based on
+runtime selection of the platform, either SOF with patch_hdmi.c will be 
+used or SST with hdac-hdmi. This is achieved by setting the 
+common-hdmi-codec mach-params flag in sof/intel/hda.c, so with SST 
+drivers, this will never be set.
 
-caused by commit
+To change SST to use patch_hdmi.c as well, is a bigger effort. There 
+are more (and much older) platforms impacted by the alsa mixer name 
+changes. I'm not sure whether this is worth the trouble. But open to 
+ideas here.
 
-	c643c189f0fec116 (ASoC: Intel: boards: Add Cometlake machine driver support)
-
-IIRC there was some previous discussion of a dependency on other changes
-here but I thought that was resolved?  I've reverted that commit for
-today.
-
---PEIAKu/WMn1b1Hv9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2At8IACgkQJNaLcl1U
-h9Av7wf+NrVHx4OP1l3O3mQGsw2K8yECwIloOPyPQATIkKkZ4IlOtRggGauxZVb0
-HkAFBWOKmvvVjLka1PG6yCtpnwP82oarHJYANTTvQOtMo7o8uCeWBg4EzMOO7PdH
-UHuH5zPhnq9n404fwZS3pyRJeUZXfUQ4GMuR1w7yFSfjeX7d9qHXa35Y2M1J1LYd
-hXukTpGu7Qwc/Ia5JBeDQEWut0iLbx8YClRLSf2X9S7JJBNU84ofuyXxZoVripF6
-yn6sx5XpbC0naxRVYdSo2T9JdzNDoVqjFGvQNu3ofETscO+d7H5SOypClo1VnMt7
-tcTxmsX/RiF+02viQbVh4SgvYxlTTw==
-=mQFK
------END PGP SIGNATURE-----
-
---PEIAKu/WMn1b1Hv9--
-
---===============5519816447814816882==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Br, Kai
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5519816447814816882==--
