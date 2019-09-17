@@ -2,68 +2,98 @@ Return-Path: <SRS0=kA1C=XM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F04A5C4CEC9
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 07:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1023C4CEC9
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 07:50:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72C7020678
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 07:42:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44676206C2
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Sep 2019 07:50:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BghmLCD/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72C7020678
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thundersoft.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UZGCKJUZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=netforce.ua header.i=@netforce.ua header.b="vKzM+Hbc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44676206C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=netforce.ua
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3D3D1669;
-	Tue, 17 Sep 2019 09:41:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D3D1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7860215F8;
+	Tue, 17 Sep 2019 09:49:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7860215F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568706122;
-	bh=Y/ezt66/pnurMGeFbA6mw++hZCKX+8fy6BywZ+MHv+E=;
-	h=Date:From:To:References:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=BghmLCD/VqYu829/XXunlmTV14UV2ba4yStloCtUzSCzrBrThvPwY/kd0Nc1lcasZ
-	 CqRgJdLLeiamdCSobWcb7XhmZpRLh/rgtBcrzyb7tAEoVuauAmg7P9g5EC07L/Pr4h
-	 j9feazPzBGkvSbcBZbKZ/HNvf5QXtMsiD6tPH4G8=
+	s=default; t=1568706646;
+	bh=3jTqupvfAJBEem+JUrkFj2ngMlNMl33WLi6WUJh99JA=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UZGCKJUZV6JYn4evNnd7WBYhLEy+uYx4xR7qBlHOSqRTYxCL6502U5P0Tnftylu3r
+	 TcIgW4bDRTEv/XIb8eKZeoXmMDFcvF/BXYZJQvlmZBJyEVqq1m+Z4EG03BZqTwEW4y
+	 q/RkXDyNl8mc3gBd1GbMnmMOZwCB81XoAMMMB69g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 474BCF80307;
-	Tue, 17 Sep 2019 09:41:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC801F80307;
+	Tue, 17 Sep 2019 09:49:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C50D7F80361; Tue, 17 Sep 2019 09:41:10 +0200 (CEST)
-Received: from mail2.thundersoft.com (unknown [114.242.213.61])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AFB54F80361; Tue, 17 Sep 2019 09:49:53 +0200 (CEST)
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com
+ [IPv6:2a00:1450:4864:20::141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEA1DF802BD
- for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 09:41:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEA1DF802BD
-Received: from shifu (unknown [124.89.2.42])
- by mail2.thundersoft.com (Postfix) with ESMTPSA id 0D0A7152074F;
- Tue, 17 Sep 2019 15:41:00 +0800 (CST)
-Date: Tue, 17 Sep 2019 15:40:59 +0800
-From: "shifu0704@thundersoft.com" <shifu0704@thundersoft.com>
-To: shifu <shifu0704@thundersoft.com>, lgirdwood <lgirdwood@gmail.com>, 
- broonie <broonie@kernel.org>, perex <perex@perex.cz>, 
- tiwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, 
- alsa-devel <alsa-devel@alsa-project.org>, robh+dt <robh+dt@kernel.org>
-References: <1568705889-6224-1-git-send-email-shifu0704@thundersoft.com>, 
- <1568705889-6224-2-git-send-email-shifu0704@thundersoft.com>
-X-Priority: 3
-X-Has-Attach: no
-X-Mailer: Foxmail 7.2.9.116[cn]
-Mime-Version: 1.0
-Message-ID: <201909171540576235182@thundersoft.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: =?us-ascii?B?RGFuP011cnBoeQ==?= <dmurphy@ti.com>,
- =?us-ascii?B?TmF2YWRhIEthbnlhbmEsIE11a3VuZA==?= <navada@ti.com>
-Subject: Re: [alsa-devel] [PATCH v5] tas2770: add tas2770 smart PA kernel
-	driver
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4348CF802BD
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 09:49:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4348CF802BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=netforce.ua header.i=@netforce.ua
+ header.b="vKzM+Hbc"
+Received: by mail-lf1-x141.google.com with SMTP id y127so2099071lfc.0
+ for <alsa-devel@alsa-project.org>; Tue, 17 Sep 2019 00:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netforce.ua; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ankm3LCZEaJD3BWJKIMuewTTlEirw0P6hVdl8ocB80s=;
+ b=vKzM+Hbc3bGuttUwBZEJv443RDSwKnGtbmymNt+olccFjQqqh5swLf8DYx0dPG3G0L
+ 3JysYPqqjGtrXdC7oHPepKQqQh/mIWXFZsf4L1Xbcq59BK6RiYAGUZ9K4BI1WiRUQgcH
+ wpAuC32IP7YqeFEi7sfHhs7ONvjv1OSr/duwo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ankm3LCZEaJD3BWJKIMuewTTlEirw0P6hVdl8ocB80s=;
+ b=sODrvpP9D+yezmPo1taeeEpnrZVP8lFV6qOanLQ+p2Hj30upiniUH4TNCL4Yd9gIM+
+ gpyBNtqKBvw9XEgYuTI+a3JQNXGPGoZMUW+Q6iAHimtDhxEjxRioIXB17BDywBtxTihi
+ NrhV01em+rUiJM0TBEfCiZi9gQoAdumkh9PwTUpCF+iGuyIih/yFt7vWUGDEaN/45HZ6
+ 3lWihOdq4syVOA4UMCshyB/z9jTP0SlWgr3tGUj4prAnD53614QTjJTpkg0RkUJyh25h
+ OjyMBa9q6d3q5pZ9vybY4M9WqwcxgGqW3Z7Hj9j4q7Qy0V/jl1FhYwcnsnwdNOn1BmXO
+ N9dQ==
+X-Gm-Message-State: APjAAAUH0Ds0LNAp68fWlFBaO2IWDvKiDekJ03+FmEP3KssU/QmHH3K0
+ NSYlTl8R5SHT7UXMHfUYXS0/4g==
+X-Google-Smtp-Source: APXvYqx8VdH4sWRxk7OR+GjT8WaGAKs1L/dw8/Wbee8fdjRDoMTqIJd3Z2BFHlCKXFAd/hrmm9Zelw==
+X-Received: by 2002:ac2:4902:: with SMTP id n2mr1343367lfi.0.1568706590256;
+ Tue, 17 Sep 2019 00:49:50 -0700 (PDT)
+Received: from rhea.localdomain ([37.46.255.109])
+ by smtp.gmail.com with ESMTPSA id j22sm263563lja.4.2019.09.17.00.49.49
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Sep 2019 00:49:49 -0700 (PDT)
+From: ilya.pshonkin@netforce.ua
+To: ilya.pshonkin@netforce.ua
+Date: Tue, 17 Sep 2019 10:49:34 +0300
+Message-Id: <20190917074937.157802-1-ilya.pshonkin@netforce.ua>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Cc: Sasha Levin <sashal@kernel.org>, Jussi Laako <jussi@sonarnerd.net>,
+ Udo Eberhardt <udo.eberhardt@thesycon.de>, linux-kernel@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Manuel Reinhardt <manuel.rhdt@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Olek Poplavsky <woodenbits@gmail.com>,
+ Ilya Pshonkin <sudokamikaze@protonmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amade@asmblr.net>
+Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Add Hiby device family to
+	quirks for native DSD support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +111,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Ilya Pshonkin <sudokamikaze@protonmail.com>
 
+This patch adds quirk VID ID for Hiby portable players family with native DSD playback support
 
-> +reload:
-> + /* hardware reset and reload */
-> + tas2770_load_config(tas2770);
+Signed-off-by: Ilya Pshonkin <sudokamikaze@protonmail.com>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Sometimes devices need to be reset to return to normal, and this setting is necessary.
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 78858918cbc1..64a8d73972e3 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1655,6 +1655,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 	case 0x152a:  /* Thesycon devices */
+ 	case 0x25ce:  /* Mytek devices */
+ 	case 0x2ab6:  /* T+A devices */
++	case 0xc502:  /* HiBy devices */
+ 		if (fp->dsd_raw)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
+-- 
+2.23.0
 
-> +end:
-> + return IRQ_HANDLED;
-> +}
-
-I see that the other drivers, the return values in irq_handler are IRQ_HANDLED.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
