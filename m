@@ -2,72 +2,62 @@ Return-Path: <SRS0=PUtL=XN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 773ABC4CEC4
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 05:47:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E59D7C4CEC4
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:03:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8476321906
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 05:47:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21C89218AF
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:03:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="stSbEK6k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8476321906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XhFnrq5p"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21C89218AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7ADAE1671;
-	Wed, 18 Sep 2019 07:46:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7ADAE1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id C138C1673;
+	Wed, 18 Sep 2019 08:02:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C138C1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568785621;
-	bh=DkyRd7q5qnTqJCJeYRaO5SLWMsqfyw370B/FgkJWl0U=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=stSbEK6kgSTRh153mBN1BKCBMg+H08VTFEGIuRaEUqsHdNXVsv7vJDn/NCt0HAB23
-	 qFtT4aLPVd4pS2DR3N2JzyXPWC8+6DAXRnS1VQAyQc4LBuulTh4bV+wp5QC2eE++cB
-	 Y/JjwnE68AwilesPSr0GScndy/ISM3R/WIt/+Lyc=
+	s=default; t=1568786617;
+	bh=i9ZAJ5bxjZnkhcW9g41U/mN0oSiWnzDO9YI/XqbbrPg=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XhFnrq5pfEUkl+0+y7OxEbALAUDe50v6G71x7PZe30iMLUULlFDCVGPhO2TLHjU9i
+	 pMgE8BdOxieCuZXzf9FAYsuoT71FaLjbijQtYgZSzz6tTZnuByMPruD7iDk4N6sv1i
+	 LcOFKyLdbW+rnbvHNO6dcYPHhxqmuiVkTbCHrXms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB5AEF804FF;
-	Wed, 18 Sep 2019 07:46:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36C8AF800C1;
+	Wed, 18 Sep 2019 08:02:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4A39F80506; Wed, 18 Sep 2019 07:46:09 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 6ED3DF80292
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 07:46:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ED3DF80292
-Date: 18 Sep 2019 14:46:02 +0900
-X-IronPort-AV: E=Sophos;i="5.64,519,1559487600"; d="scan'208";a="26861705"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 18 Sep 2019 14:46:02 +0900
+ id 18FD8F80506; Wed, 18 Sep 2019 08:02:46 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0274CF80146
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 08:02:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0274CF80146
+Date: 18 Sep 2019 15:02:38 +0900
+X-IronPort-AV: E=Sophos;i="5.64,519,1559487600"; d="scan'208";a="26643870"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Sep 2019 15:02:38 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 450CF41A539A;
- Wed, 18 Sep 2019 14:46:02 +0900 (JST)
-Message-ID: <875zlqw411.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 59856400B9DF;
+ Wed, 18 Sep 2019 15:02:38 +0900 (JST)
+Message-ID: <874l1aw39d.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Liao, Bard" <bard.liao@intel.com>
-In-Reply-To: <567A313375B6F043A9BE3A1D9B8C6E7F0B4970C2@SHSMSX101.ccr.corp.intel.com>
-References: <20190916210353.6318-1-yung-chuan.liao@linux.intel.com>
- <87ef0ewhnd.wl-kuninori.morimoto.gx@renesas.com>
- <567A313375B6F043A9BE3A1D9B8C6E7F0B49706B@SHSMSX101.ccr.corp.intel.com>
- <878sqmw8nh.wl-kuninori.morimoto.gx@renesas.com>
- <567A313375B6F043A9BE3A1D9B8C6E7F0B4970C2@SHSMSX101.ccr.corp.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: "tiwai@suse.de" <tiwai@suse.de>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: core: delete component->card_list in
-	soc_remove_component only
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH] ASoC: rsnd: do error check after
+	rsnd_channel_normalization()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +76,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Liao
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Thank you for your feedback
+SSI need to use rsnd_channel_normalization() for TDM-split mode,
+thus, channel check need to do after that.
 
-> > > To me, the easiest way to see the issue is force return - EPROBE_DEFER
-> > > on codec driver's probe function and call
-> > > list_del(&component->card_list); before calling
-> > > soc_cleanup_component(component); So list_del() will be called twice and you
-> > will see the issue.
-> > 
-> > OK, I could reproduce your issue.
-> > And I think it will be solved if you can use
-> > list_del_init() instead of list_del() at soc_cleanup_component() ?
-> > (= without your patch)
-> > 
-> > 	- list_del()
-> > 	+ list_del_init()
-> > 
-> > If possible, I want to cleanup all component related resource at
-> > soc_cleanup_component(). Because it is easy to read / understand.
-> 
-> Thanks Morimoto san, I verified the solution works and agree with
-> you. Will you send a patch to upstream?
-
-Good to know !!
-I'm happy if you can update it :)
-
-Thank you for your help !!
-Best regards
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+Mark
+	This is for v5.4
+
+ sound/soc/sh/rcar/ssi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index f6a7466..fc5d089 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -286,6 +286,11 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_is_multi_slave(mod, io))
+ 		return 0;
+ 
++	if (rsnd_runtime_is_tdm_split(io))
++		chan = rsnd_io_converted_chan(io);
++
++	chan = rsnd_channel_normalization(chan);
++
+ 	if (ssi->usrcnt > 0) {
+ 		if (ssi->rate != rate) {
+ 			dev_err(dev, "SSI parent/child should use same rate\n");
+@@ -300,11 +305,6 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 		return 0;
+ 	}
+ 
+-	if (rsnd_runtime_is_tdm_split(io))
+-		chan = rsnd_io_converted_chan(io);
+-
+-	chan = rsnd_channel_normalization(chan);
+-
+ 	main_rate = rsnd_ssi_clk_query(rdai, rate, chan, &idx);
+ 	if (!main_rate) {
+ 		dev_err(dev, "unsupported clock rate\n");
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
