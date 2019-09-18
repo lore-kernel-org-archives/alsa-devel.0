@@ -2,94 +2,72 @@ Return-Path: <SRS0=PUtL=XN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2884C4CEC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 05:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 773ABC4CEC4
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 05:47:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF36B218AE
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 05:29:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8476321906
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 05:47:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jlTmzijP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF36B218AE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="stSbEK6k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8476321906
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE1511671;
-	Wed, 18 Sep 2019 07:28:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE1511671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7ADAE1671;
+	Wed, 18 Sep 2019 07:46:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7ADAE1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568784544;
-	bh=riRx13pww9FUR3LlgPRsj/u88auBUSHT+7KQKkUVUek=;
-	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1568785621;
+	bh=DkyRd7q5qnTqJCJeYRaO5SLWMsqfyw370B/FgkJWl0U=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jlTmzijPOHBWzhMqLGu+DQH0uSOHTr8+X9ym50IrJ55JK8vYymQWbsEHSY/5hfnJx
-	 Z2yEvdb1ZOXCaT0ey2YeamD/NkqCTy2oW23BPkm//0aCcwubEMydUaso2DdokvbKsT
-	 vXE+BdThrjUNcG6O0ctxjCn2dV91i4uMfKyEbR8g=
+	b=stSbEK6kgSTRh153mBN1BKCBMg+H08VTFEGIuRaEUqsHdNXVsv7vJDn/NCt0HAB23
+	 qFtT4aLPVd4pS2DR3N2JzyXPWC8+6DAXRnS1VQAyQc4LBuulTh4bV+wp5QC2eE++cB
+	 Y/JjwnE68AwilesPSr0GScndy/ISM3R/WIt/+Lyc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EBBBF804FF;
-	Wed, 18 Sep 2019 07:28:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB5AEF804FF;
+	Wed, 18 Sep 2019 07:46:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17ECDF80506; Wed, 18 Sep 2019 07:28:10 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1150FF80146
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 07:28:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1150FF80146
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2019 22:28:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,519,1559545200"; d="scan'208";a="177610908"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
- by orsmga007.jf.intel.com with ESMTP; 17 Sep 2019 22:28:01 -0700
-Received: from shsmsx107.ccr.corp.intel.com (10.239.4.96) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 17 Sep 2019 22:28:01 -0700
-Received: from shsmsx101.ccr.corp.intel.com ([169.254.1.92]) by
- SHSMSX107.ccr.corp.intel.com ([169.254.9.89]) with mapi id 14.03.0439.000;
- Wed, 18 Sep 2019 13:27:59 +0800
-From: "Liao, Bard" <bard.liao@intel.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Thread-Topic: [PATCH] ASoC: core: delete component->card_list in
- soc_remove_component only
-Thread-Index: AQHVbTaQ2ok0yj9UNUGKVA8zkqZyvKcwFfkAgACPtND//6aZgIAAm3+g
-Date: Wed, 18 Sep 2019 05:27:58 +0000
-Message-ID: <567A313375B6F043A9BE3A1D9B8C6E7F0B4970C2@SHSMSX101.ccr.corp.intel.com>
+ id C4A39F80506; Wed, 18 Sep 2019 07:46:09 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6ED3DF80292
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 07:46:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ED3DF80292
+Date: 18 Sep 2019 14:46:02 +0900
+X-IronPort-AV: E=Sophos;i="5.64,519,1559487600"; d="scan'208";a="26861705"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 18 Sep 2019 14:46:02 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 450CF41A539A;
+ Wed, 18 Sep 2019 14:46:02 +0900 (JST)
+Message-ID: <875zlqw411.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Liao, Bard" <bard.liao@intel.com>
+In-Reply-To: <567A313375B6F043A9BE3A1D9B8C6E7F0B4970C2@SHSMSX101.ccr.corp.intel.com>
 References: <20190916210353.6318-1-yung-chuan.liao@linux.intel.com>
  <87ef0ewhnd.wl-kuninori.morimoto.gx@renesas.com>
  <567A313375B6F043A9BE3A1D9B8C6E7F0B49706B@SHSMSX101.ccr.corp.intel.com>
  <878sqmw8nh.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <878sqmw8nh.wl-kuninori.morimoto.gx@renesas.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiZTdkMTMyNjgtNTE0ZC00Mjk1LTk1ZTgtMjNmYzdjNzAxYmM0IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoianJuXC9xNlhLRjY1d211WmV4Rkd2SXdSOGdZY29XbVBoZmFCVUoxcWRjUzBjZTVWMFpHZk55R1hFMmpaV3VscTMifQ==
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-MIME-Version: 1.0
+ <567A313375B6F043A9BE3A1D9B8C6E7F0B4970C2@SHSMSX101.ccr.corp.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: "tiwai@suse.de" <tiwai@suse.de>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "broonie@kernel.org" <broonie@kernel.org>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] [PATCH] ASoC: core: delete component->card_list in
- soc_remove_component only
+	soc_remove_component only
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,57 +85,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> -----Original Message-----
-> From: Kuninori Morimoto [mailto:kuninori.morimoto.gx@renesas.com]
-> Sent: Wednesday, September 18, 2019 12:06 PM
-> To: Liao, Bard <bard.liao@intel.com>
-> Cc: Bard liao <yung-chuan.liao@linux.intel.com>; broonie@kernel.org;
-> tiwai@suse.de; alsa-devel@alsa-project.org; pierre-
-> louis.bossart@linux.intel.com
-> Subject: Re: [PATCH] ASoC: core: delete component->card_list in
-> soc_remove_component only
-> 
-> 
-> Hi Liao
-> 
-> Thank you for your feedback
-> 
-> > > I tried to create an error on purpose at soc_probe_component(), but,
-> > > there was no kernel oops, no warning, etc.
-> > > It just can't create sound card. It is very normal for me.
-> > > Or, which kernel are you using ?
-> >
-> > Somehow I can only see the second attempt of component probe when it
-> > return
-> > -517 (EPROBE_DEFER) in the first attempt by using below kernel.
-> > https://github.com/plbossart/sound/commits/fix/soundwire-split-lookup-
-> > init
-> >
-> > To me, the easiest way to see the issue is force return - EPROBE_DEFER
-> > on codec driver's probe function and call
-> > list_del(&component->card_list); before calling
-> > soc_cleanup_component(component); So list_del() will be called twice and you
-> will see the issue.
-> 
-> OK, I could reproduce your issue.
-> And I think it will be solved if you can use
-> list_del_init() instead of list_del() at soc_cleanup_component() ?
-> (= without your patch)
-> 
-> 	- list_del()
-> 	+ list_del_init()
-> 
-> If possible, I want to cleanup all component related resource at
-> soc_cleanup_component(). Because it is easy to read / understand.
 
-Thanks Morimoto san, I verified the solution works and agree with
-you. Will you send a patch to upstream?
+Hi Liao
 
+Thank you for your feedback
+
+> > > To me, the easiest way to see the issue is force return - EPROBE_DEFER
+> > > on codec driver's probe function and call
+> > > list_del(&component->card_list); before calling
+> > > soc_cleanup_component(component); So list_del() will be called twice and you
+> > will see the issue.
+> > 
+> > OK, I could reproduce your issue.
+> > And I think it will be solved if you can use
+> > list_del_init() instead of list_del() at soc_cleanup_component() ?
+> > (= without your patch)
+> > 
+> > 	- list_del()
+> > 	+ list_del_init()
+> > 
+> > If possible, I want to cleanup all component related resource at
+> > soc_cleanup_component(). Because it is easy to read / understand.
 > 
-> Thank you for your help !!
-> Best regards
-> ---
-> Kuninori Morimoto
+> Thanks Morimoto san, I verified the solution works and agree with
+> you. Will you send a patch to upstream?
+
+Good to know !!
+I'm happy if you can update it :)
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
