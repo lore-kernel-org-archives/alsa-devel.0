@@ -2,77 +2,75 @@ Return-Path: <SRS0=PUtL=XN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1DE8C4CEC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65FC1C4CEC4
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:54:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A9D920640
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:52:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E3ADB21920
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:54:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u5AzCD4o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A9D920640
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kahv0m4e"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3ADB21920
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=grossmann-venter.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5AFD74C;
-	Wed, 18 Sep 2019 08:52:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5AFD74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14C77166A;
+	Wed, 18 Sep 2019 08:53:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14C77166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568789571;
-	bh=hetRpEODxtvHEMBtAc14uvGRknLTszyY4TrSX1uJlKQ=;
-	h=From:To:Date:In-Reply-To:References:In-Reply-To:References:
-	 Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:List-Help:
-	 List-Subscribe:From;
-	b=u5AzCD4ovM6Rsrki4LKDkMsNzXeuJHykZvRPbakV4OgtctclaackFqNxU1XpLLbfz
-	 UXH86kOrr/YAxrZjq7eg+rkk67InYWg+a80o4anXApKgxkiK9aZgKPMDvHTVfk13Tw
-	 o5OslzRV3euCmyi3DEDQVL/6lZK7GHbU7EYP9s1M=
+	s=default; t=1568789672;
+	bh=Bq8Q2T+jShJk8T0HhXcg/7abmB8F+txhbkVo7eRxVR8=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Kahv0m4e7es2FoWPgr04hbotMoIIvULWl0tFSk3IrFjfSB1A/LPGAH1CByHUZmm1z
+	 SsYEis6cCeg6zdJaK64JRgIJgYQbIId7nAVIXa+TTXCaWH2LMlulpV9WqNagGltsJR
+	 JCo2Amv9a6rttsl0bJ0SYV6e2G0W3pkWSBavFG80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84C0DF80633;
-	Wed, 18 Sep 2019 08:48:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB51DF804FF;
+	Wed, 18 Sep 2019 08:53:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 928C6F805A1; Wed, 18 Sep 2019 08:48:49 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id F0177F80292; Wed, 18 Sep 2019 08:53:39 +0200 (CEST)
+Received: from server54-2.web-hosting.com (server54-2.web-hosting.com
+ [198.54.126.118])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F545F80292
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 08:48:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F545F80292
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D5B4B20025F;
- Wed, 18 Sep 2019 08:48:43 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 609E2200231;
- Wed, 18 Sep 2019 08:48:36 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 664FF402D0;
- Wed, 18 Sep 2019 14:48:27 +0800 (SGT)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org,
- lars@metafoo.de
-Date: Wed, 18 Sep 2019 14:46:50 +0800
-Message-Id: <dc7a63252238a388580a3772ab0be18d96e30149.1568788682.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1568788682.git.shengjiu.wang@nxp.com>
-References: <cover.1568788682.git.shengjiu.wang@nxp.com>
-In-Reply-To: <cover.1568788682.git.shengjiu.wang@nxp.com>
-References: <cover.1568788682.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Subject: [alsa-devel] [PATCH V2 3/4] ASoC: pcm_dmaengine: Extract
-	snd_dmaengine_pcm_set_runtime_hwparams
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67FCBF80292
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 08:53:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67FCBF80292
+Received: from [::1] (port=44600 helo=server54.web-hosting.com)
+ by server54.web-hosting.com with esmtpa (Exim 4.92)
+ (envelope-from <admin@grossmann-venter.com>) id 1iATqD-003FqQ-VP
+ for alsa-devel@alsa-project.org; Wed, 18 Sep 2019 02:53:34 -0400
+MIME-Version: 1.0
+Date: Wed, 18 Sep 2019 02:53:29 -0400
+From: liebrecht@grossmann-venter.com
+To: alsa-devel@alsa-project.org
+Message-ID: <3f2feed11ed26f299e3fcf0d2f97c09e@grossmann-venter.com>
+X-Sender: admin@grossmann-venter.com
+User-Agent: Roundcube Webmail/1.3.7
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server54.web-hosting.com
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - grossmann-venter.com
+X-Get-Message-Sender-Via: server54.web-hosting.com: authenticated_id:
+ liebrecht@grossmann-venter.com
+X-Authenticated-Sender: server54.web-hosting.com: liebrecht@grossmann-venter.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: rewritten was: [admin@grossmann-venter.com],
+ actual sender does not match
+Subject: [alsa-devel] alsa acting up
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,219 +83,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When set the runtime hardware parameters, we may need to query
-the capability of DMA to complete the parameters.
+See images in links.
 
-This patch is to Extract this operation from
-dmaengine_pcm_set_runtime_hwparams function to a separate function
-snd_dmaengine_pcm_set_runtime_hwparams, that other components which
-need this feature can call this function.
+1) 
+"http://grossmann-venter.com/visitors/ug/alsa/alsa-pulse-181vsl_unplug.png"
+2) "http://grossmann-venter.com/visitors/ug/alsa/alsa-dont 
+recognize1818VSLpng"
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- include/sound/dmaengine_pcm.h         |  5 ++
- sound/core/pcm_dmaengine.c            | 83 +++++++++++++++++++++++++++
- sound/soc/soc-generic-dmaengine-pcm.c | 62 ++------------------
- 3 files changed, 92 insertions(+), 58 deletions(-)
+1) As soon as pulseaudio is started Alsa says 1818VSL is unplugged....?
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index c679f6116580..1bcbc4d2bc6f 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -83,6 +83,11 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
- 	const struct snd_dmaengine_dai_dma_data *dma_data,
- 	struct dma_slave_config *config);
- 
-+int snd_dmaengine_pcm_set_runtime_hwparams(
-+	struct snd_pcm_substream *substream,
-+	struct snd_dmaengine_dai_dma_data *dma_data,
-+	struct snd_pcm_hardware *hw,
-+	struct dma_chan *chan);
- 
- /*
-  * Try to request the DMA channel using compat_request_channel or
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 89a05926ac73..c9d56a12164d 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -369,4 +369,87 @@ int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream)
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close_release_chan);
- 
-+/**
-+ * snd_dmaengine_pcm_set_runtime_hwparams - Set runtime hw params
-+ * @substream: PCM substream
-+ * @dma_data: DAI DMA data
-+ * @hw: PCM hw params
-+ * @chan: DMA channel to use for data transfers
-+ *
-+ * Returns 0 on success, a negative error code otherwise.
-+ *
-+ * This function will query DMA capability, then refine the pcm hardware
-+ * parameters, finally set substream runtime hardware parameters.
-+ */
-+int snd_dmaengine_pcm_set_runtime_hwparams(
-+	struct snd_pcm_substream *substream,
-+	struct snd_dmaengine_dai_dma_data *dma_data,
-+	struct snd_pcm_hardware *hw,
-+	struct dma_chan *chan)
-+{
-+	struct dma_slave_caps dma_caps;
-+	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
-+			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
-+			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-+	snd_pcm_format_t i;
-+	int ret;
-+
-+	if (!hw || !chan || !dma_data)
-+		return -EINVAL;
-+
-+	ret = dma_get_slave_caps(chan, &dma_caps);
-+	if (ret == 0) {
-+		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
-+			hw->info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
-+		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
-+			hw->info |= SNDRV_PCM_INFO_BATCH;
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			addr_widths = dma_caps.dst_addr_widths;
-+		else
-+			addr_widths = dma_caps.src_addr_widths;
-+	}
-+
-+	/*
-+	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
-+	 * hw.formats set to 0, meaning no restrictions are in place.
-+	 * In this case it's the responsibility of the DAI driver to
-+	 * provide the supported format information.
-+	 */
-+	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
-+		/*
-+		 * Prepare formats mask for valid/allowed sample types. If the
-+		 * dma does not have support for the given physical word size,
-+		 * it needs to be masked out so user space can not use the
-+		 * format which produces corrupted audio.
-+		 * In case the dma driver does not implement the slave_caps the
-+		 * default assumption is that it supports 1, 2 and 4 bytes
-+		 * widths.
-+		 */
-+		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
-+			int bits = snd_pcm_format_physical_width(i);
-+
-+			/*
-+			 * Enable only samples with DMA supported physical
-+			 * widths
-+			 */
-+			switch (bits) {
-+			case 8:
-+			case 16:
-+			case 24:
-+			case 32:
-+			case 64:
-+				if (addr_widths & (1 << (bits / 8)))
-+					hw->formats |= pcm_format_to_bits(i);
-+				break;
-+			default:
-+				/* Unsupported types */
-+				break;
-+			}
-+		}
-+
-+	return snd_soc_set_runtime_hwparams(substream, hw);
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_runtime_hwparams);
-+
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 748f5f641002..1dadba2d0cdd 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -118,13 +118,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	struct device *dma_dev = dmaengine_dma_dev(pcm, substream);
- 	struct dma_chan *chan = pcm->chan[substream->stream];
- 	struct snd_dmaengine_dai_dma_data *dma_data;
--	struct dma_slave_caps dma_caps;
- 	struct snd_pcm_hardware hw;
--	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
--			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
--			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
--	snd_pcm_format_t i;
--	int ret;
- 
- 	if (pcm->config && pcm->config->pcm_hardware)
- 		return snd_soc_set_runtime_hwparams(substream,
-@@ -145,58 +139,10 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
- 		hw.info |= SNDRV_PCM_INFO_BATCH;
- 
--	ret = dma_get_slave_caps(chan, &dma_caps);
--	if (ret == 0) {
--		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
--			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
--		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
--			hw.info |= SNDRV_PCM_INFO_BATCH;
--
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			addr_widths = dma_caps.dst_addr_widths;
--		else
--			addr_widths = dma_caps.src_addr_widths;
--	}
--
--	/*
--	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
--	 * hw.formats set to 0, meaning no restrictions are in place.
--	 * In this case it's the responsibility of the DAI driver to
--	 * provide the supported format information.
--	 */
--	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
--		/*
--		 * Prepare formats mask for valid/allowed sample types. If the
--		 * dma does not have support for the given physical word size,
--		 * it needs to be masked out so user space can not use the
--		 * format which produces corrupted audio.
--		 * In case the dma driver does not implement the slave_caps the
--		 * default assumption is that it supports 1, 2 and 4 bytes
--		 * widths.
--		 */
--		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
--			int bits = snd_pcm_format_physical_width(i);
--
--			/*
--			 * Enable only samples with DMA supported physical
--			 * widths
--			 */
--			switch (bits) {
--			case 8:
--			case 16:
--			case 24:
--			case 32:
--			case 64:
--				if (addr_widths & (1 << (bits / 8)))
--					hw.formats |= pcm_format_to_bits(i);
--				break;
--			default:
--				/* Unsupported types */
--				break;
--			}
--		}
--
--	return snd_soc_set_runtime_hwparams(substream, &hw);
-+	return snd_dmaengine_pcm_set_runtime_hwparams(substream,
-+						      dma_data,
-+						      &hw,
-+						      chan);
- }
- 
- static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
--- 
-2.21.0
+2) Clearly Presonus 1818VSL is found as lsusb output says, but alsa has 
+no clue about it.
 
+How do
+I get alsa to recognise 181VSL as it is found by lsusb so it is presnet 
+on the system.
+
+It used to work fine but alsa just stopped working with 1818VSL recently 
+for no reason.
+
+I know this is a developers group, but please at least answer where I 
+can get help. Alsa help is absolutely non-existing.
+
+I also posted a bug with no response in another thread.
+
+
+Thanks.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
