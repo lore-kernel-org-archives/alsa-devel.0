@@ -7,94 +7,94 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC44FC4CEC4
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 08:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C116C4CEC9
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 09:03:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75EB221924
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 08:55:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21BEB20640
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 09:03:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ms4xvt6y";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="EdE4HShN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75EB221924
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eVlKGN9a";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="q79BPcQ3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21BEB20640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 676B4166C;
-	Wed, 18 Sep 2019 10:54:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676B4166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D150F74C;
+	Wed, 18 Sep 2019 11:02:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D150F74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568796937;
-	bh=KY5eP4sVC2Qact22psErcsBZvJKPE4oFUynTffuIXKM=;
+	s=default; t=1568797385;
+	bh=O0xQA+ZbCmYMO6uIJDKAnuIbU8HSuOwhTvsFr7GtZ4Y=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ms4xvt6y9HF/79AiC7hsUuL63rHbpMnbt8brD2Qbipce8c+lxJIrwAs3R/gUPBQ3M
-	 YB+jp1rmyC+BfyFLWhRATFhUhu5lY2fKZ/Vsy57XGxc7R8RW1HzMRttNHPKfWxrOKM
-	 nwSbmbNRFKYHThOBcOq0s6DKAFB1ec0tPshUI5Qc=
+	b=eVlKGN9aprxfgqDAMu3nhVL/9Ar757enF7IH97mfXDZSAfwIWELVaJGYGbOEQcNFG
+	 FkS4ePc50YY2U+XrZlGYbpY9+u5uB5f15ZgQ/vHmMbZ2iYQhDlkyisFqqzFMFytyWG
+	 QprrzJmDqEqiMDhPJCZExw9d0WLXuIMe6Dynb530=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01758F804FF;
-	Wed, 18 Sep 2019 10:54:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D5BCF804FF;
+	Wed, 18 Sep 2019 11:02:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ABFA2F80506; Wed, 18 Sep 2019 10:54:44 +0200 (CEST)
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
+ id C6ECEF80506; Wed, 18 Sep 2019 11:02:13 +0200 (CEST)
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 034E3F80292
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 10:54:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 034E3F80292
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2289F80292
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 11:02:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2289F80292
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="EdE4HShN"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5d81f0d40001>; Wed, 18 Sep 2019 01:54:44 -0700
+ header.b="q79BPcQ3"
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5d81f2930001>; Wed, 18 Sep 2019 02:02:11 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Wed, 18 Sep 2019 01:54:39 -0700
+ by hqpgpgate102.nvidia.com (PGP Universal service);
+ Wed, 18 Sep 2019 02:02:05 -0700
 X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Wed, 18 Sep 2019 01:54:39 -0700
+ by hqpgpgate102.nvidia.com on Wed, 18 Sep 2019 02:02:05 -0700
 Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
  (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Sep
- 2019 08:54:39 +0000
-Received: from [10.21.132.148] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ 2019 09:02:05 +0000
+Received: from [10.21.132.148] (172.20.13.39) by DRHQMAIL107.nvidia.com
  (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Sep
- 2019 08:54:36 +0000
+ 2019 09:02:03 +0000
 To: Ben Dooks <ben.dooks@codethink.co.uk>, <linux-tegra@vger.kernel.org>,
  <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
 References: <20190917181233.534-1-ben.dooks@codethink.co.uk>
- <20190917181233.534-6-ben.dooks@codethink.co.uk>
+ <20190917181233.534-7-ben.dooks@codethink.co.uk>
 From: Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <c9d2b321-b344-f5db-f2cb-c213bb5894a6@nvidia.com>
-Date: Wed, 18 Sep 2019 09:54:35 +0100
+Message-ID: <d79b8148-797b-08b2-09e7-71c11d9acd53@nvidia.com>
+Date: Wed, 18 Sep 2019 10:02:01 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190917181233.534-6-ben.dooks@codethink.co.uk>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+In-Reply-To: <20190917181233.534-7-ben.dooks@codethink.co.uk>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
  DRHQMAIL107.nvidia.com (10.27.9.16)
 Content-Language: en-US
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1568796884; bh=KNlNBDBlSpS9zqvIkqXCRsuHdeFCNAOwsiyWKAA7L8k=;
+ t=1568797331; bh=kUH0fNummL1g7qgoKbXVj+qdqcPfcmIH5HVxPUWjiv4=;
  h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
  User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
  X-ClientProxiedBy:Content-Type:Content-Language:
  Content-Transfer-Encoding;
- b=EdE4HShNRcemvvfrzrFn4ZyxMgZoaxGznY8BCYyonym7rJg47t9N9jyOMb8BTxm9L
- aMvMDSghMFr0X6qXvaPOtFwnlLfvoGopY0vUmBMEJSbYNuNVIwGR5x2RbA7id1L83T
- qNHYarSZWqH0t7sNKWX6KJtyGiwZfm5FyQWu9a6yeKKmgBZJL18HMzkJxbCebU5ok7
- AHpFe0FqtXmpcyg18aPGoOx48Wg+Q0xaY4nB2Ijy+ANVYWq+wNu8JiPs8vBJnAcvba
- gpbhiRkWE81W0twUx895ilfm9Om605ZNet1a0ipYGvOoynhIo+4OftISWeewbRaCQj
- E5YITiMa7cB4A==
+ b=q79BPcQ3Ing5g7onNLmWyNYT4LHgC2mA0hnxX0d2LBUWrGQWIXLDwPMHJ8iMw+lOj
+ BnLh/5Lr2+Yf/nK0g6YR3X5C2prwSpo1M7T6N6XilFraLOgF+IfGyOBfaUgJGGNgYu
+ AN8hrdetz34+DlMdcLrJDX9h2rYSyn0piVoJUQZxVPQfTwKWMvN7fVDWfSid+jGGTi
+ 9ayxWoJS5fV+RbYlxuQME+fOBrehrX59Moho/Oj9wrlyj/gnOipkCUHHofIiler4+e
+ gb7amkRClOn1kr3isT1iZAczvow2rxDr68GwC8Y9ZnLmsyO28zaZINsDusY0bHJ7va
+ YyNmwJ6eDdqLA==
 Cc: linux-kernel@lists.codethink.co.uk
-Subject: Re: [alsa-devel] [PATCH 5/8] ASoC: tegra: set edge mode for TDM
-	correctly
+Subject: Re: [alsa-devel] [PATCH 6/8] ASoC: tegra: set i2s_offset to 0 for
+	tdm
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,31 +114,43 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 17/09/2019 19:12, Ben Dooks wrote:
-> In TDM, use the negative edge to drive data and the positive edge to sample
-> data.
+> Set the offset to 0 for TDM mode, as per the current setup.
 > 
 > Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 > ---
->  sound/soc/tegra/tegra30_i2s.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  sound/soc/tegra/tegra30_i2s.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
 > diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-> index 4222839b63bd..d75ce12fe177 100644
+> index d75ce12fe177..3efef87ed8d8 100644
 > --- a/sound/soc/tegra/tegra30_i2s.c
 > +++ b/sound/soc/tegra/tegra30_i2s.c
-> @@ -117,6 +117,8 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
->  	}
+> @@ -206,8 +206,11 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
 >  
->  	pm_runtime_get_sync(dai->dev);
-> +	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL_EGDE_CTRL_MASK,
-> +			   i2s->is_tdm ? TEGRA30_I2S_CH_CTRL_EGDE_CTRL_NEG_EDGE : 0);
->  	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CTRL, mask, val);
->  	pm_runtime_put(dai->dev);
+>  	i2s->soc_data->set_audio_cif(i2s->regmap, reg, &cif_conf);
+>  
+> -	val = (1 << TEGRA30_I2S_OFFSET_RX_DATA_OFFSET_SHIFT) |
+> -	      (1 << TEGRA30_I2S_OFFSET_TX_DATA_OFFSET_SHIFT);
+> +	if (i2s->is_tdm)
+> +		val = 0;
+> +	else
+> +		val = (1 << TEGRA30_I2S_OFFSET_RX_DATA_OFFSET_SHIFT) |
+> +		      (1 << TEGRA30_I2S_OFFSET_TX_DATA_OFFSET_SHIFT);
+>  	regmap_write(i2s->regmap, TEGRA30_I2S_OFFSET, val);
+>  
+>  	return 0;
 
-I would rather set this in the case statement above where the format is
-parsed and again drop this 'is_tdm' variable.
+Please move this code into tegra30_i2s_set_fmt() as it only needs to be
+set once.
 
-Jon
+BTW, if you refer to the following I2S driver for Tegra210, you will see
+how I think that we should handle this ...
+
+https://nv-tegra.nvidia.com/gitweb/?p=linux-nvidia.git;a=blob;f=sound/soc/tegra-alt/tegra210_i2s_alt.c;h=ee482f27ed2e4710e5e7446918887f8f8ef31285;hb=a960d522a5486aee27605f890034869c4f49d94a#l310
+
+Cheers
+Jon	
+
 
 -- 
 nvpublic
