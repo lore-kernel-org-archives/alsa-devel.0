@@ -2,92 +2,85 @@ Return-Path: <SRS0=PUtL=XN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA8B7C4CEC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:07:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2B6EC4CEC4
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:08:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E429321920
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:07:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 568BC21907
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:08:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oRRF8okL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="prxV1W2p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E429321920
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p5Q625ZH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YdcH7MB6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 568BC21907
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30572166D;
-	Wed, 18 Sep 2019 14:06:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30572166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99E091670;
+	Wed, 18 Sep 2019 14:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99E091670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568808428;
-	bh=/gQ5V2yi0Lk+fyVzg3gUI1aDzL9NaodqOzwz5Z5fpSE=;
+	s=default; t=1568808485;
+	bh=6zeFRxb982JmFD6JzqNXQXjvH9EWDf25/fZf6KmZgwg=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oRRF8okLLB6j68+Q8jg8khRnZGAAjNqq0+ZQH+eOprZKbB79g3FB8ZIhtOtcWg2cI
-	 KasLySRpDaQweGx66ANLB7h7EwbU7ENjgyAa75AXx87wqB5vn94a+Bu9kUebZB+EXv
-	 N094jK24bZF6HTFvpsn2+xqjT8ftMi1+wmC28gjc=
+	b=p5Q625ZHOx6V9OYjWIrpTy126U8XWMHkI5hExPaLWK/luPWry8EmI29Gi3BUmsZE8
+	 OiCg4FTNK7fMhEZ7u9xQd+llJx1Pk82DJ59W09WunmF5V4bpAwkmeggO3aPbK8l4BQ
+	 2LK7jVDgZMYJOLh1yLQLzznBbGdVEhoRzF+VAqkc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5EA4F804FF;
-	Wed, 18 Sep 2019 14:06:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6ACF1F805F9;
+	Wed, 18 Sep 2019 14:06:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF3F2F80506; Wed, 18 Sep 2019 14:06:16 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ id 8C05BF805FA; Wed, 18 Sep 2019 14:06:47 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C92B0F805A1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 14:06:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C92B0F805A1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="YdcH7MB6"
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF3A2F80292
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 14:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF3A2F80292
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="prxV1W2p"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=MzATDNIERDtCE0amjUIhfbCd3EzA8xIdcEIzyZF2i9k=; b=prxV1W2pYwHHALb9Fs7LWIDl8
- tF+1UdnsA2D/gQLvHN4ghTOTfJ5nK7E7BC5KEZR96CPDuK0wLr26L5vUwwH02Nk2oQStQ+G/KiUsV
- KwJ7wQ0R4jwf/2XgmqZJ2S2QXq9uV4/3ONJuP0+am2UYrlzd7H8u47ZMOEfKdsbWU+/rQ=;
-Received: from ypsilon.sirena.org.uk ([2001:470:1f1d:6b5::7])
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iAYib-00053i-H9; Wed, 18 Sep 2019 12:05:57 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 940F42742927; Wed, 18 Sep 2019 13:05:56 +0100 (BST)
-Date: Wed, 18 Sep 2019 13:05:56 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ben Dooks <ben.dooks@codethink.co.uk>
-Message-ID: <20190918120553.GE2596@sirena.co.uk>
-References: <20190917181233.534-1-ben.dooks@codethink.co.uk>
- <20190917181233.534-3-ben.dooks@codethink.co.uk>
- <077870b1-8856-9a28-dd13-f8bfb1418adb@linux.intel.com>
- <de15ea8e9d2c07a1253fd414b421efbe@codethink.co.uk>
- <20190918100828.GA2596@sirena.co.uk>
- <943c243563b4936a537b52b6c3b1fd99@codethink.co.uk>
+ by mail.kernel.org (Postfix) with ESMTPSA id DD71C21907;
+ Wed, 18 Sep 2019 12:06:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1568808391;
+ bh=EiWNRaKT5YKCl1MF5pVlHDrq82FVL6w4JQ56eo+DjoU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=YdcH7MB66ggbdWktSVnY3VzHJlS8bsN5IkHUobkxNTzwB1bFEASD8r+TFslycQW8N
+ BFLC3FGMlmZ8A2mhzTwoFsbUqt3ypKVT42WSwsKWVPzRgkDD0v8XlBDEn/wYJBW11k
+ DRC8eYqnPeAv+gO9IyDepuQqQ0GOa0YcBwUwj5Sk=
+Date: Wed, 18 Sep 2019 14:06:29 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190918120629.GD1901208@kroah.com>
+References: <20190916212342.12578-1-pierre-louis.bossart@linux.intel.com>
+ <20190916212342.12578-9-pierre-louis.bossart@linux.intel.com>
+ <20190917055512.GE2058532@kroah.com>
+ <ab06c0c9-6224-a7b8-51c2-01226f763b98@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <943c243563b4936a537b52b6c3b1fd99@codethink.co.uk>
-X-Cookie: The devil finds work for idle glands.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Jonathan Hunter <jonathanh@nvidia.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@lists.codethink.co.uk, Takashi Iwai <tiwai@suse.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org,
- linux-tegra-owner@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH 2/8] ASoC: tegra: Allow 24bit and 32bit
- samples
+Content-Disposition: inline
+In-Reply-To: <ab06c0c9-6224-a7b8-51c2-01226f763b98@linux.intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
+ slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 8/9] soundwire: intel: remove platform
+ devices and provide new interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,66 +93,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3727602889729791712=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Sep 17, 2019 at 09:29:52AM -0500, Pierre-Louis Bossart wrote:
+> On 9/17/19 12:55 AM, Greg KH wrote:
+> > On Mon, Sep 16, 2019 at 04:23:41PM -0500, Pierre-Louis Bossart wrote:
+> > > +/**
+> > > + * sdw_intel_probe() - SoundWire Intel probe routine
+> > > + * @parent_handle: ACPI parent handle
+> > > + * @res: resource data
+> > > + *
+> > > + * This creates SoundWire Master and Slave devices below the controller.
+> > > + * All the information necessary is stored in the context, and the res
+> > > + * argument pointer can be freed after this step.
+> > > + */
+> > > +struct sdw_intel_ctx
+> > > +*sdw_intel_probe(struct sdw_intel_res *res)
+> > > +{
+> > > +	return sdw_intel_probe_controller(res);
+> > > +}
+> > > +EXPORT_SYMBOL(sdw_intel_probe);
+> > > +
+> > > +/**
+> > > + * sdw_intel_startup() - SoundWire Intel startup
+> > > + * @ctx: SoundWire context allocated in the probe
+> > > + *
+> > > + */
+> > > +int sdw_intel_startup(struct sdw_intel_ctx *ctx)
+> > > +{
+> > > +	return sdw_intel_startup_controller(ctx);
+> > > +}
+> > > +EXPORT_SYMBOL(sdw_intel_startup);
+> > 
+> > Why are you exporting these functions if no one calls them?
+> 
+> They are used in the next series, see '[RFC PATCH 04/12] ASoC: SOF: Intel:
+> add SoundWire configuration interface'
 
---===============3727602889729791712==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1sNVjLsmu1MXqwQ/"
-Content-Disposition: inline
+That wasn't obvious :)
 
+Also, why not EXPORT_SYMBOL_GPL()?  :)
 
---1sNVjLsmu1MXqwQ/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks,
 
-On Wed, Sep 18, 2019 at 12:50:13PM +0100, Ben Dooks wrote:
-> On 2019-09-18 11:08, Mark Brown wrote:
-
-> > > Yes, will do when this series has been reviewed and modifications
-> > > done.
-
-> > I didn't look at it due to the lack of signoffs.
-
-> Thanks, although you could have just flagged this and reviewed the rest
-> anyway. I'll post a new version with signoff sorted at the end of the week
-> as I cannot get in to the office to test any changes until Friday.
-
-None of the patches I looked at had signoffs, Pierre had already told
-you about that problem and there were a bunch of other review comments
-anyway before I saw the series so it was fairly clear that a new version
-is needed anyway.  Once you've got some review you shouldn't rely on
-getting extra review explicitly since it's not generally useful to repeat
-the same review comments others have already made.
-
---1sNVjLsmu1MXqwQ/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2CHaEACgkQJNaLcl1U
-h9Bfggf+KwyoUQbzbZdW85lkbYYzjdzcUvyz+11E+e1BPqECET8U0XyV3hBp0uAT
-rcQ3ME6HGjxUDubR3fatWVg36HhkV54jmAitGld7v3zsDvEyC7KSR2a/i7OlxGmC
-KmGqqqZR4iHwvnqrjJ+A2wC7HmuA/ZePVR6XCSt+pJ0EGrO/RlD2+mvjESUWDbtH
-x37GNRGa6fMnBynxH0K4tKDNRyAtyRh3FKXYEDPC+Xi8m5kyIAmkn44BZT6n8KZq
-zLAcAnsf1j+NiwihiJJdDauU8UFbOYNzm9Cw1VikWF4GOWI6RUagZugS+ZY6Q7WF
-D1Ex0aYM7MFQF6xDCWziP3UjudCbfA==
-=GnTn
------END PGP SIGNATURE-----
-
---1sNVjLsmu1MXqwQ/--
-
---===============3727602889729791712==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+greg k-h
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3727602889729791712==--
