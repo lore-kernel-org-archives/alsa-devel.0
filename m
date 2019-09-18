@@ -2,110 +2,87 @@ Return-Path: <SRS0=PUtL=XN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5258BC4CEC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 13:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C2C4C4CEC9
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 13:54:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB4202054F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 13:53:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2445B2067B
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 13:54:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nh/bdGjg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="nR/ZO0d9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB4202054F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b/JYDmws";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SzdEEvJE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2445B2067B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC6AA1678;
-	Wed, 18 Sep 2019 15:52:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC6AA1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45C951683;
+	Wed, 18 Sep 2019 15:53:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45C951683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568814779;
-	bh=d9Xn4WVTV6Z54CiEwT92Zr03L9/7bmm/l+8pbOM8iWM=;
+	s=default; t=1568814841;
+	bh=OUT3Jt1yiIvfDfrpa18YT7+cezgpx16ApA9GAyjSnZU=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nh/bdGjgS7xEbc4PmrNDwQLS9ub9CrtAHvxVXCyg4QE71ssnO7MJ3DYYuBB5UQORg
-	 tvt3ypVW02jXx05Xa2h4yBvtShGXni8YKMIoZAbmNkujtriCV2EamM/YcWi6Y8VAHe
-	 /7Aj0cDEPkF947/l09qlNSAGobAjnZLxRl5fW1rA=
+	b=b/JYDmwsTno7rIzFVHEQZKCcvbWGXAfj52l3HNk4uOd7FBbv6z8IkrjHmDKybLRLI
+	 /vUEPgzSUcpQTJwHfFDjbHbHU7LhzZC1jxhXuSKXu5fK32ahymNRkRsKd6DaFQvdx6
+	 08TyuVzROh0qb0i1ompy67qA7m79UCpcRZcsAoQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7801AF804FF;
-	Wed, 18 Sep 2019 15:52:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF08FF804FF;
+	Wed, 18 Sep 2019 15:53:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2567F80506; Wed, 18 Sep 2019 15:52:06 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 95172F80534; Wed, 18 Sep 2019 15:53:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8D9AF80146
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 15:53:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D9AF80146
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SzdEEvJE"
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 901FFF800C1
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 15:52:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 901FFF800C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="nR/ZO0d9"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x8IDmjmw000339; Wed, 18 Sep 2019 08:52:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=fUaJvfqlwr1NbVsxiDauo566E9A3G/B48VoqdpS3EzY=;
- b=nR/ZO0d9QTmdT9xxyJNDTy5bo31Z9QI16110OTaCmlIlOXVPMSmXWsRpLUw3i214kRXQ
- Kp9fjqEUftWHc47re7sxnQ+BPLXiekhwR7gkVAt01RAeyo1j5EQtq9rYDEb7ug/oDfDk
- RCqAGMe11LHbNeA/SIcCX/hI72Wi4v0sNzOmE+VWK83biOuXs9IHkLGns0M6A8qBxrZ6
- f3YmXJSAX0bLNBRojvLBXNEe9TCFMOD8vSbBsUWkvASBGIu50ZUYZ9Xdh+IUnSTxYwuE
- eXkWGrTxlK6yoBfwzU/frhzQscV3TaFCUP0NDozTSrLmVPfZou94xACLa9wxEHAymf2C IA== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 2v382qs5hk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 18 Sep 2019 08:52:00 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Wed, 18 Sep
- 2019 14:51:58 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Wed, 18 Sep 2019 14:51:58 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E73BF2C1;
- Wed, 18 Sep 2019 13:51:57 +0000 (UTC)
-Date: Wed, 18 Sep 2019 13:51:57 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <20190918135157.GG10204@ediswmail.ad.cirrus.com>
-References: <20190918104634.15216-1-s.nawrocki@samsung.com>
- <CGME20190918104658eucas1p2c1f07d3e8b915d8c3a448b80d2af5df0@eucas1p2.samsung.com>
- <20190918104634.15216-4-s.nawrocki@samsung.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id E62852067B;
+ Wed, 18 Sep 2019 13:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1568814784;
+ bh=tOUTIuyO3zD8mv1/MtmP0yO9cQ9wXjNOnusI3yuBdHk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=SzdEEvJEDs9IGneM+AQQk5PuVrIMlKoFeNT24elLCLvjtqmIynpAdH//B2PwS3BS3
+ 2CvOr5oQAZKf61ntvu9rRoWkhJlAHIcv6W5H9nd1JaTUaHeJ7ZMmEl6iDwkVSDTbvn
+ g7bsaeokbrUeneI8Lgkrmdh6IB3iAS4UNwPcSM0s=
+Date: Wed, 18 Sep 2019 15:53:02 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20190918135302.GA1919118@kroah.com>
+References: <20190916212342.12578-1-pierre-louis.bossart@linux.intel.com>
+ <20190916212342.12578-9-pierre-louis.bossart@linux.intel.com>
+ <20190917055512.GE2058532@kroah.com>
+ <ab06c0c9-6224-a7b8-51c2-01226f763b98@linux.intel.com>
+ <20190918120629.GD1901208@kroah.com>
+ <c8f21078-1462-5463-ef12-957ebd9ba085@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190918104634.15216-4-s.nawrocki@samsung.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- bulkscore=0 adultscore=0 spamscore=0 mlxlogscore=705 impostorscore=0
- phishscore=0 mlxscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1908290000
- definitions=main-1909180140
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com,
- sbkim73@samsung.com, patches@opensource.cirrus.com, broonie@kernel.org,
- lgirdwood@gmail.com, krzk@kernel.org, robh+dt@kernel.org,
- linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-Subject: Re: [alsa-devel] [PATCH v1 3/9] ASoC: wm8994: Add support for
- setting MCLKn clock rate
+In-Reply-To: <c8f21078-1462-5463-ef12-957ebd9ba085@linux.intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
+ slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 8/9] soundwire: intel: remove platform
+ devices and provide new interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,18 +100,69 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 18, 2019 at 12:46:28PM +0200, Sylwester Nawrocki wrote:
-> Extend the set_sysclk() handler so we also set frequency of the MCLK1,
-> MCLK2 clocks through clk API when those clocks are specified in DT for
-> the device.
+On Wed, Sep 18, 2019 at 08:48:33AM -0500, Pierre-Louis Bossart wrote:
+> On 9/18/19 7:06 AM, Greg KH wrote:
+> > On Tue, Sep 17, 2019 at 09:29:52AM -0500, Pierre-Louis Bossart wrote:
+> > > On 9/17/19 12:55 AM, Greg KH wrote:
+> > > > On Mon, Sep 16, 2019 at 04:23:41PM -0500, Pierre-Louis Bossart wrote:
+> > > > > +/**
+> > > > > + * sdw_intel_probe() - SoundWire Intel probe routine
+> > > > > + * @parent_handle: ACPI parent handle
+> > > > > + * @res: resource data
+> > > > > + *
+> > > > > + * This creates SoundWire Master and Slave devices below the controller.
+> > > > > + * All the information necessary is stored in the context, and the res
+> > > > > + * argument pointer can be freed after this step.
+> > > > > + */
+> > > > > +struct sdw_intel_ctx
+> > > > > +*sdw_intel_probe(struct sdw_intel_res *res)
+> > > > > +{
+> > > > > +	return sdw_intel_probe_controller(res);
+> > > > > +}
+> > > > > +EXPORT_SYMBOL(sdw_intel_probe);
+> > > > > +
+> > > > > +/**
+> > > > > + * sdw_intel_startup() - SoundWire Intel startup
+> > > > > + * @ctx: SoundWire context allocated in the probe
+> > > > > + *
+> > > > > + */
+> > > > > +int sdw_intel_startup(struct sdw_intel_ctx *ctx)
+> > > > > +{
+> > > > > +	return sdw_intel_startup_controller(ctx);
+> > > > > +}
+> > > > > +EXPORT_SYMBOL(sdw_intel_startup);
+> > > > 
+> > > > Why are you exporting these functions if no one calls them?
+> > > 
+> > > They are used in the next series, see '[RFC PATCH 04/12] ASoC: SOF: Intel:
+> > > add SoundWire configuration interface'
+> > 
+> > That wasn't obvious :)
+> > 
+> > Also, why not EXPORT_SYMBOL_GPL()?  :)
 > 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
+> Since the beginning of this SoundWire work, the intent what that the code
+> could be reused in non-GPL open-source circles, hence the dual license and
+> EXPORT_SYMBOL.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Hah, you _have_ talked to your lawyers about this, right?
 
-Thanks,
-Charles
+You have a chance to do something like this for header files, for .c
+files, good luck.  That's going to be a hard road to go down.  Many have
+tried in the past, all but 1 have failed.
+
+> That said, there are cases where the code only makes sense for Linux, or
+> relies on symbols that are exported with EXPORT_SYMBOL_GPL, in those cases
+> we rely on GPLv2 and EXPORT_SYMBOL_GPL. For this series I added a disclaimer
+> in the cover letter that those parts need to be reviewed further to make
+> sure there are no conflicts with GPL.
+
+Please do that with your lawyers, do not require developers to do legal
+work for you, that's just mean :(
+
+thanks,
+
+greg k-h
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
