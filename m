@@ -2,67 +2,110 @@ Return-Path: <SRS0=PUtL=XN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C56CCC4CEC4
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9514DC4CEC4
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:52:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50071207FC
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:44:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9070F206C2
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 12:52:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fk183LTT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50071207FC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LCx25Nnz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="DBPfGb5T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9070F206C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CE14166F;
-	Wed, 18 Sep 2019 14:43:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CE14166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2536C166D;
+	Wed, 18 Sep 2019 14:51:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2536C166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568810642;
-	bh=GDtIoryaQVhGbUWrE2Vt21pCqoGC65NdxuuFnHD3DoE=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1568811137;
+	bh=/myO7HQiRla6AqhjH6ehfCYkzresU24qxcuLVwRLAqw=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fk183LTT2JmOg539t12+57X8BzVH1uynqJgmxNIUN5FR4iJwvSJ9yH24XpIhOdr0q
-	 e4/8QDGuQwtl2TKNjEpSuHcXBQ8voABArIAoBpJwhYiMchBb16PZvDFJEttqri/zmd
-	 NEjqgflnnrhGGVQEZCEghUsyh5cb9iuki4caOKRg=
+	b=LCx25Nnzeg4Nd7GyC2W7cf/Y6Umztp8g4PbO+qQwn3BYmwM4jcdwsjwgNSN9VlmxY
+	 ygOnsWEr8p4XSPZw8V55ZqxDwKDZ8PcpzYsjrtPt1TXDxMIFy9kYPvex02wvjhB1tv
+	 Xh5KgQJGmJC+tyehskHv1AqS+UH5wDiAoEgtWOrg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B50D7F804FF;
-	Wed, 18 Sep 2019 14:43:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C0F9F804FF;
+	Wed, 18 Sep 2019 14:51:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 760FEF80506; Wed, 18 Sep 2019 14:43:09 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id AC321F80506; Wed, 18 Sep 2019 14:51:24 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 800ABF80292
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 14:43:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 800ABF80292
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
- helo=localhost) by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>)
- id 1iAZIU-00079V-MC; Wed, 18 Sep 2019 12:43:03 +0000
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: bhelgaas@google.com,
-	tiwai@suse.com
-Date: Wed, 18 Sep 2019 20:42:58 +0800
-Message-Id: <20190918124258.10744-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190828180128.1732-1-kai.heng.feng@canonical.com>
-References: <20190828180128.1732-1-kai.heng.feng@canonical.com>
-Cc: linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
- Kai-Heng Feng <kai.heng.feng@canonical.com>, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH v3 2/2] ALSA: hda: Allow HDA to be runtime
-	suspended when dGPU is not bound to a driver
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30C81F80146
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 14:51:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30C81F80146
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="DBPfGb5T"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ x8ICoU91017902; Wed, 18 Sep 2019 07:51:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=wKNZX+fj//vdEHFqSAQU3SGsvWPgOaqjf7mXMYHKHtA=;
+ b=DBPfGb5Ty99fs6NTUCeP5VmjS6XlkxKjLlro1crnhMBur6B/acJM51Y3ct6p3IoPwkxT
+ 2gZkupAM3wEUKIdiCShn9s/7/Vtk3pkzbrXwLMjjd4lwdXb2UfZGQVJlWW+P8Q1s6DWk
+ UhC1vgmUy9w2IjY6gYSgmhwdiTXhrqnaVZxWooBW55dlT22kRGhmmbvtAjPtAis3pj4r
+ BMI2muINEbh8bX1tw8l0se0DMXtvMi/ilKazRPJp2YTQyLtzcyezuhHzLz3B5jXGVYiI
+ L7FdAxNl9xiKV13umechSyzQA1RrgQ0SB3Sfw0E3lDOsugEu5fLjvEy5/Yw2dwnBlsLA Mg== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 2v382qs2jw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 18 Sep 2019 07:51:16 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Wed, 18 Sep
+ 2019 13:51:14 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Wed, 18 Sep 2019 13:51:14 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 247822C1;
+ Wed, 18 Sep 2019 12:51:14 +0000 (UTC)
+Date: Wed, 18 Sep 2019 12:51:14 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <20190918125114.GE10204@ediswmail.ad.cirrus.com>
+References: <20190918104634.15216-1-s.nawrocki@samsung.com>
+ <CGME20190918104653eucas1p2e23ccbd05b3b780300adc9f4cb7a4c49@eucas1p2.samsung.com>
+ <20190918104634.15216-2-s.nawrocki@samsung.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190918104634.15216-2-s.nawrocki@samsung.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ bulkscore=0 adultscore=0 spamscore=0 mlxlogscore=884 impostorscore=0
+ phishscore=0 mlxscore=0 clxscore=1011 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1908290000
+ definitions=main-1909180131
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com,
+ sbkim73@samsung.com, patches@opensource.cirrus.com, broonie@kernel.org,
+ lgirdwood@gmail.com, krzk@kernel.org, robh+dt@kernel.org,
+ linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+Subject: Re: [alsa-devel] [PATCH v1 1/9] ASoC: wm8994: Do not register
+ inapplicable controls for WM1811
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,65 +118,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Nvidia proprietary driver doesn't support runtime power management, so
-when a user only wants to use the integrated GPU, it's a common practice
-to let dGPU not to bind any driver, and let its upstream port to be
-runtime suspended. At the end of runtime suspension the port uses
-platform power management to disable power through _OFF method of power
-resource, which is listed by _PR3.
+On Wed, Sep 18, 2019 at 12:46:26PM +0200, Sylwester Nawrocki wrote:
+> In case of WM1811 device there are currently being registered controls
+> referring to registers not existing on that device.
+> It has been noticed when getting values of "AIF1ADC2 Volume", "AIF1DAC2
+> Volume" controls was failing during ALSA state restoring at boot time:
+>  "amixer: Mixer hw:0 load error: Device or resource busy"
+> 
+> Reading some registers through I2C was failing with EBUSY error and indeed
+> those registers were not available according to the datasheet.
+> 
+> To fix this controls not available on WM1811 are moved to a separate array
+> and registered only for WM8994 and WM8958.
+> 
+> There are some further differences between WM8994 and WM1811, e.g. registers
+> 603h, 604h, 605h, which are not covered in this patch.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
 
-After commit b516ea586d71 ("PCI: Enable NVIDIA HDA controllers"), when
-the dGPU comes with an HDA function, the HDA won't be suspended if the
-dGPU is unbound, so the power resource can't be turned off by its
-upstream port driver.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
-discrete GPU") only allows HDA to be runtime suspended once GPU is
-bound, to keep APU's HDA working.
-
-However, HDA on dGPU isn't that useful if dGPU is not bound to any
-driver.  So let's relax the runtime suspend requirement for dGPU's HDA
-function, to disable the power source to save lots of power.
-
-BugLink: https://bugs.launchpad.net/bugs/1840835
-Fixes: b516ea586d71 ("PCI: Enable NVIDIA HDA controllers")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v3: 
-- Make changelog more clear.
-v2:
-- Change wording.
-- Rebase to Tiwai's branch.
-
- sound/pci/hda/hda_intel.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 91e71be42fa4..c3654d22795a 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1284,7 +1284,11 @@ static void init_vga_switcheroo(struct azx *chip)
- 		dev_info(chip->card->dev,
- 			 "Handle vga_switcheroo audio client\n");
- 		hda->use_vga_switcheroo = 1;
--		chip->bus.keep_power = 1; /* cleared in either gpu_bound op or codec probe */
-+
-+		/* cleared in either gpu_bound op or codec probe, or when its
-+		 * root port has _PR3 (i.e. dGPU).
-+		 */
-+		chip->bus.keep_power = !pci_pr3_present(p);
- 		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
- 		pci_dev_put(p);
- 	}
--- 
-2.17.1
-
+Thanks,
+Charles
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
