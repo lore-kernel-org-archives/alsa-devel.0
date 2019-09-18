@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 452D9C4CEC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:52:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1DE8C4CEC9
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:52:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C122121906
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:52:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5A9D920640
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Sep 2019 06:52:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OKGbidrq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C122121906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u5AzCD4o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A9D920640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40DDF1690;
-	Wed, 18 Sep 2019 08:51:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40DDF1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5AFD74C;
+	Wed, 18 Sep 2019 08:52:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5AFD74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568789534;
-	bh=M+/8tVT+WQ6+7sP7uBo2GfJnAg0w9B+eBJvp0ihF39U=;
+	s=default; t=1568789571;
+	bh=hetRpEODxtvHEMBtAc14uvGRknLTszyY4TrSX1uJlKQ=;
 	h=From:To:Date:In-Reply-To:References:In-Reply-To:References:
 	 Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:List-Help:
 	 List-Subscribe:From;
-	b=OKGbidrqe6xobSDkUW1Wy/JqUVPlqdPnCep+IAgonT+M7+9dgWVBfF51wXV6CTJkx
-	 M4h7g8Q5d84JzmmVccdZ26G94l/fRCh95IeI+TsSgnSueNKBiFkg+37NcCEfw4PwnD
-	 GM1gUIezPPo9diOqdqpxaxNM6uxfU1VeaBNSxHhA=
+	b=u5AzCD4ovM6Rsrki4LKDkMsNzXeuJHykZvRPbakV4OgtctclaackFqNxU1XpLLbfz
+	 UXH86kOrr/YAxrZjq7eg+rkk67InYWg+a80o4anXApKgxkiK9aZgKPMDvHTVfk13Tw
+	 o5OslzRV3euCmyi3DEDQVL/6lZK7GHbU7EYP9s1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FB23F8060F;
-	Wed, 18 Sep 2019 08:48:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84C0DF80633;
+	Wed, 18 Sep 2019 08:48:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CC2BF805FA; Wed, 18 Sep 2019 08:48:49 +0200 (CEST)
+ id 928C6F805A1; Wed, 18 Sep 2019 08:48:49 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81C27F80534
- for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 08:48:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81C27F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F545F80292
+ for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2019 08:48:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F545F80292
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 38F8E200160;
- Wed, 18 Sep 2019 08:48:45 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D5B4B20025F;
+ Wed, 18 Sep 2019 08:48:43 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA24620025D;
- Wed, 18 Sep 2019 08:48:37 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 609E2200231;
+ Wed, 18 Sep 2019 08:48:36 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C1DE1402E6;
- Wed, 18 Sep 2019 14:48:28 +0800 (SGT)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 664FF402D0;
+ Wed, 18 Sep 2019 14:48:27 +0800 (SGT)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
@@ -63,16 +63,16 @@ To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
  robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org,
  lars@metafoo.de
-Date: Wed, 18 Sep 2019 14:46:51 +0800
-Message-Id: <045b1255fffd9680b148a47b9b27cefa630192a8.1568788682.git.shengjiu.wang@nxp.com>
+Date: Wed, 18 Sep 2019 14:46:50 +0800
+Message-Id: <dc7a63252238a388580a3772ab0be18d96e30149.1568788682.git.shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1568788682.git.shengjiu.wang@nxp.com>
 References: <cover.1568788682.git.shengjiu.wang@nxp.com>
 In-Reply-To: <cover.1568788682.git.shengjiu.wang@nxp.com>
 References: <cover.1568788682.git.shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Subject: [alsa-devel] [PATCH V2 4/4] ASoC: fsl_asrc: Fix error with S24_3LE
-	format bitstream in i.MX8
+Subject: [alsa-devel] [PATCH V2 3/4] ASoC: pcm_dmaengine: Extract
+	snd_dmaengine_pcm_set_runtime_hwparams
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,132 +91,210 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is error "aplay: pcm_write:2023: write error: Input/output error"
-on i.MX8QM/i.MX8QXP platform for S24_3LE format.
+When set the runtime hardware parameters, we may need to query
+the capability of DMA to complete the parameters.
 
-In i.MX8QM/i.MX8QXP, the DMA is EDMA, which don't support 24bit
-sample, but we didn't add any constraint, that cause issues.
-
-So we need to query the caps of dma, then update the hw parameters
-according to the caps.
+This patch is to Extract this operation from
+dmaengine_pcm_set_runtime_hwparams function to a separate function
+snd_dmaengine_pcm_set_runtime_hwparams, that other components which
+need this feature can call this function.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_asrc.c     |  4 +--
- sound/soc/fsl/fsl_asrc.h     |  3 +++
- sound/soc/fsl/fsl_asrc_dma.c | 48 ++++++++++++++++++++++++++++++------
- 3 files changed, 46 insertions(+), 9 deletions(-)
+ include/sound/dmaengine_pcm.h         |  5 ++
+ sound/core/pcm_dmaengine.c            | 83 +++++++++++++++++++++++++++
+ sound/soc/soc-generic-dmaengine-pcm.c | 62 ++------------------
+ 3 files changed, 92 insertions(+), 58 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 584badf956d2..0bf91a6f54b9 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -115,7 +115,7 @@ static void fsl_asrc_sel_proc(int inrate, int outrate,
-  * within range [ANCA, ANCA+ANCB-1], depends on the channels of pair A
-  * while pair A and pair C are comparatively independent.
-  */
--static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
-+int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
- {
- 	enum asrc_pair_index index = ASRC_INVALID_PAIR;
- 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
-@@ -158,7 +158,7 @@ static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
-  *
-  * It clears the resource from asrc_priv and releases the occupied channels.
-  */
--static void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
-+void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
- {
- 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
- 	enum asrc_pair_index index = pair->index;
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 38af485bdd22..2b57e8c53728 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -462,4 +462,7 @@ struct fsl_asrc {
- #define DRV_NAME "fsl-asrc-dai"
- extern struct snd_soc_component_driver fsl_asrc_component;
- struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir);
-+int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair);
-+void fsl_asrc_release_pair(struct fsl_asrc_pair *pair);
-+
- #endif /* _FSL_ASRC_H */
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index 01052a0808b0..c1f39975cc32 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -16,13 +16,11 @@
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index c679f6116580..1bcbc4d2bc6f 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -83,6 +83,11 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+ 	const struct snd_dmaengine_dai_dma_data *dma_data,
+ 	struct dma_slave_config *config);
  
- #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
++int snd_dmaengine_pcm_set_runtime_hwparams(
++	struct snd_pcm_substream *substream,
++	struct snd_dmaengine_dai_dma_data *dma_data,
++	struct snd_pcm_hardware *hw,
++	struct dma_chan *chan);
  
--static const struct snd_pcm_hardware snd_imx_hardware = {
-+static struct snd_pcm_hardware snd_imx_hardware = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_MMAP |
--		SNDRV_PCM_INFO_MMAP_VALID |
--		SNDRV_PCM_INFO_PAUSE |
--		SNDRV_PCM_INFO_RESUME,
-+		SNDRV_PCM_INFO_MMAP_VALID,
- 	.buffer_bytes_max = FSL_ASRC_DMABUF_SIZE,
- 	.period_bytes_min = 128,
- 	.period_bytes_max = 65535, /* Limited by SDMA engine */
-@@ -276,6 +274,11 @@ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
- 	struct device *dev = component->dev;
- 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
- 	struct fsl_asrc_pair *pair;
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	u8 dir = tx ? OUT : IN;
-+	struct dma_chan *tmp_chan;
-+	struct snd_dmaengine_dai_dma_data *dma_data;
-+	int ret;
- 
- 	pair = kzalloc(sizeof(struct fsl_asrc_pair), GFP_KERNEL);
- 	if (!pair)
-@@ -285,9 +288,40 @@ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
- 
- 	runtime->private_data = pair;
- 
--	snd_pcm_hw_constraint_integer(substream->runtime,
--				      SNDRV_PCM_HW_PARAM_PERIODS);
--	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
-+	ret = snd_pcm_hw_constraint_integer(substream->runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to set pcm hw params periods\n");
-+		return ret;
-+	}
-+
-+	/* Request a temp pair, which is release in the end */
-+	ret = fsl_asrc_request_pair(1, pair);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to request asrc pair\n");
-+		return ret;
-+	}
-+
-+	tmp_chan = fsl_asrc_get_dma_channel(pair, dir);
-+	if (!tmp_chan) {
-+		dev_err(dev, "can't get dma channel\n");
-+		return -EINVAL;
-+	}
-+
-+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	ret = snd_dmaengine_pcm_set_runtime_hwparams(substream,
-+						     dma_data,
-+						     &snd_imx_hardware,
-+						     tmp_chan);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to set runtime hwparams\n");
-+		return ret;
-+	}
-+
-+	dma_release_channel(tmp_chan);
-+	fsl_asrc_release_pair(pair);
-+
- 
- 	return 0;
+ /*
+  * Try to request the DMA channel using compat_request_channel or
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 89a05926ac73..c9d56a12164d 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -369,4 +369,87 @@ int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream)
  }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close_release_chan);
+ 
++/**
++ * snd_dmaengine_pcm_set_runtime_hwparams - Set runtime hw params
++ * @substream: PCM substream
++ * @dma_data: DAI DMA data
++ * @hw: PCM hw params
++ * @chan: DMA channel to use for data transfers
++ *
++ * Returns 0 on success, a negative error code otherwise.
++ *
++ * This function will query DMA capability, then refine the pcm hardware
++ * parameters, finally set substream runtime hardware parameters.
++ */
++int snd_dmaengine_pcm_set_runtime_hwparams(
++	struct snd_pcm_substream *substream,
++	struct snd_dmaengine_dai_dma_data *dma_data,
++	struct snd_pcm_hardware *hw,
++	struct dma_chan *chan)
++{
++	struct dma_slave_caps dma_caps;
++	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
++			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
++			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
++	snd_pcm_format_t i;
++	int ret;
++
++	if (!hw || !chan || !dma_data)
++		return -EINVAL;
++
++	ret = dma_get_slave_caps(chan, &dma_caps);
++	if (ret == 0) {
++		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
++			hw->info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
++		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
++			hw->info |= SNDRV_PCM_INFO_BATCH;
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			addr_widths = dma_caps.dst_addr_widths;
++		else
++			addr_widths = dma_caps.src_addr_widths;
++	}
++
++	/*
++	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
++	 * hw.formats set to 0, meaning no restrictions are in place.
++	 * In this case it's the responsibility of the DAI driver to
++	 * provide the supported format information.
++	 */
++	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
++		/*
++		 * Prepare formats mask for valid/allowed sample types. If the
++		 * dma does not have support for the given physical word size,
++		 * it needs to be masked out so user space can not use the
++		 * format which produces corrupted audio.
++		 * In case the dma driver does not implement the slave_caps the
++		 * default assumption is that it supports 1, 2 and 4 bytes
++		 * widths.
++		 */
++		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
++			int bits = snd_pcm_format_physical_width(i);
++
++			/*
++			 * Enable only samples with DMA supported physical
++			 * widths
++			 */
++			switch (bits) {
++			case 8:
++			case 16:
++			case 24:
++			case 32:
++			case 64:
++				if (addr_widths & (1 << (bits / 8)))
++					hw->formats |= pcm_format_to_bits(i);
++				break;
++			default:
++				/* Unsupported types */
++				break;
++			}
++		}
++
++	return snd_soc_set_runtime_hwparams(substream, hw);
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_runtime_hwparams);
++
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 748f5f641002..1dadba2d0cdd 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -118,13 +118,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 	struct device *dma_dev = dmaengine_dma_dev(pcm, substream);
+ 	struct dma_chan *chan = pcm->chan[substream->stream];
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+-	struct dma_slave_caps dma_caps;
+ 	struct snd_pcm_hardware hw;
+-	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+-			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+-			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+-	snd_pcm_format_t i;
+-	int ret;
+ 
+ 	if (pcm->config && pcm->config->pcm_hardware)
+ 		return snd_soc_set_runtime_hwparams(substream,
+@@ -145,58 +139,10 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
+ 		hw.info |= SNDRV_PCM_INFO_BATCH;
+ 
+-	ret = dma_get_slave_caps(chan, &dma_caps);
+-	if (ret == 0) {
+-		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
+-			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
+-		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
+-			hw.info |= SNDRV_PCM_INFO_BATCH;
+-
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			addr_widths = dma_caps.dst_addr_widths;
+-		else
+-			addr_widths = dma_caps.src_addr_widths;
+-	}
+-
+-	/*
+-	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
+-	 * hw.formats set to 0, meaning no restrictions are in place.
+-	 * In this case it's the responsibility of the DAI driver to
+-	 * provide the supported format information.
+-	 */
+-	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
+-		/*
+-		 * Prepare formats mask for valid/allowed sample types. If the
+-		 * dma does not have support for the given physical word size,
+-		 * it needs to be masked out so user space can not use the
+-		 * format which produces corrupted audio.
+-		 * In case the dma driver does not implement the slave_caps the
+-		 * default assumption is that it supports 1, 2 and 4 bytes
+-		 * widths.
+-		 */
+-		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
+-			int bits = snd_pcm_format_physical_width(i);
+-
+-			/*
+-			 * Enable only samples with DMA supported physical
+-			 * widths
+-			 */
+-			switch (bits) {
+-			case 8:
+-			case 16:
+-			case 24:
+-			case 32:
+-			case 64:
+-				if (addr_widths & (1 << (bits / 8)))
+-					hw.formats |= pcm_format_to_bits(i);
+-				break;
+-			default:
+-				/* Unsupported types */
+-				break;
+-			}
+-		}
+-
+-	return snd_soc_set_runtime_hwparams(substream, &hw);
++	return snd_dmaengine_pcm_set_runtime_hwparams(substream,
++						      dma_data,
++						      &hw,
++						      chan);
+ }
+ 
+ static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
 -- 
 2.21.0
 
