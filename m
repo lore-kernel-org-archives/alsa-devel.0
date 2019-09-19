@@ -2,90 +2,93 @@ Return-Path: <SRS0=hSRK=XO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 429C3C3A5A6
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:51:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 043A6C3A5A6
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 13:00:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC495218AF
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:51:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A090218AF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 13:00:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gCSxNTJM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="e+Rr/SPd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC495218AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bTCvEKLp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="beNYs1ID"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A090218AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFDAA167F;
-	Thu, 19 Sep 2019 14:50:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFDAA167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABA62166D;
+	Thu, 19 Sep 2019 14:59:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABA62166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568897497;
-	bh=ezL3KUxL9OY1BsenztgedTf1aq0pSE8qZCgz8Hlrufk=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1568898001;
+	bh=LOGR1/DPS5kAu60DvRV9xxOZVK63WhjqhBRVmlJd758=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gCSxNTJM4Y2aDHRU6PSbuOCDq06/dkNY2o0W2HPu4rclg9ND20ky1xwBkVAphQT/O
-	 SHIvhDaQjBZmuZOcxsnhyLkaP+DL9zyqCMTgUVzl+aOH7xzYl3L3EXBqg+kxUlHkoM
-	 2txakynExvTuCqeypR3Zgo1Kd7lPXLZJAL9vFbUQ=
+	b=bTCvEKLpYYNmhOOpNARbzEQk5bYi8vVH9o8KLij+PDYu60BJyKOmYRXnlo8jYbbbM
+	 kLbMWeOT9Xxebj21xoc+8FeDkdawRv9Q3SpNbywGEE3ZoPlgRKDG/JLlu3sWPbHWqR
+	 LplcmY6zn1KiV8umvmVAIiOpjMdRKzB9jKT5KqeA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A58A4F804CF;
-	Thu, 19 Sep 2019 14:50:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32BB3F80090;
+	Thu, 19 Sep 2019 14:59:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2998F804CF; Thu, 19 Sep 2019 14:50:26 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 57F7DF80307; Thu, 19 Sep 2019 14:59:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2229AF80146
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 14:50:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2229AF80146
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3EC4F80090
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 14:59:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3EC4F80090
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="e+Rr/SPd"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=fuCY5wYFsKqiKoBqT3bLnd0L0pBLtKNOOZDnK4mLxa0=; b=e+Rr/SPdk1bFvJMYJxKnf8bSI
- V2DOtQYRhtN3g3HdwUHhIQNTLDcvXkw0vpVXiAaYjDShAZoLtHGfhZ0Q0a7Wi/ePaLcw4SOqQ8nID
- 5gI7SaA6e9BPuDpPNIDEgK86Dd5b2l2OMHmocmDQoL3tmrrIUN5Oiw02lQBcY7u7LJSno=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iAvt7-0002dH-TG; Thu, 19 Sep 2019 12:50:21 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E25522742939; Thu, 19 Sep 2019 13:50:20 +0100 (BST)
-Date: Thu, 19 Sep 2019 13:50:20 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <20190919125020.GJ3642@sirena.co.uk>
-References: <20190918104634.15216-1-s.nawrocki@samsung.com>
- <CGME20190918104656eucas1p1d9cad1394b08d05a99151c4fbc9425ce@eucas1p1.samsung.com>
- <20190918104634.15216-3-s.nawrocki@samsung.com>
- <20190919075924.GB13195@pi3>
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="beNYs1ID"
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com
+ [209.85.210.52])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 88EEB21D79
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 12:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1568897944;
+ bh=Q8XQ7yEptEJjsrg2dRMQAh8Ewg1fi7/O+TC1/+NyGA8=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=beNYs1IDfBymvGrrSglpl6q8PXqxictV6OYOE8gYvbQ85zRx4RNJaWg3gGeCnGp1f
+ LK3jZRy0BUANXjWBm9PM4eTVHxeI0I2l6K9Gg3bwnrIa5WyQG6f5iIVBPQaPQDjrYl
+ qJMFI/Ozb3fBpRkmZHHI+7HZX6CGH3X3sFMW2Hb0=
+Received: by mail-ot1-f52.google.com with SMTP id z6so2985743otb.2
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 05:59:04 -0700 (PDT)
+X-Gm-Message-State: APjAAAXkwsoWEpkjwbpH0sUsDJ/WH4RSVAOzF1Ng3W+GeJbQ1kR0j1/w
+ I3Bj2y0sTcNXZ3ojP35XoKN41uU90zXDa5NG2uw=
+X-Google-Smtp-Source: APXvYqyPpRpHKXGqXeiUp4UsE0gjnPTa12R2JBL+9NbOd7thAIFl1MrNFlIQaRaNj/YALaGFGqmZfNIqU3lo9cSjxn8=
+X-Received: by 2002:a9d:6c9a:: with SMTP id c26mr6640459otr.241.1568897943807; 
+ Thu, 19 Sep 2019 05:59:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190919075924.GB13195@pi3>
-X-Cookie: I'll be Grateful when they're Dead.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190918104634.15216-1-s.nawrocki@samsung.com>
+ <CGME20190918104713eucas1p2ccfa8e9dff2cda9e8f88ac42dda2b680@eucas1p2.samsung.com>
+ <20190918104634.15216-9-s.nawrocki@samsung.com> <20190919082211.GF13195@pi3>
+ <a0072745-f7c1-86ad-2344-d73dd210e1ad@samsung.com>
+In-Reply-To: <a0072745-f7c1-86ad-2344-d73dd210e1ad@samsung.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Thu, 19 Sep 2019 14:58:51 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfwAx7vWSWS0M1JuGJvn6tKTp9yaT2qEOwmAWTUdvoptQ@mail.gmail.com>
+Message-ID: <CAJKOXPfwAx7vWSWS0M1JuGJvn6tKTp9yaT2qEOwmAWTUdvoptQ@mail.gmail.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, ckeepax@opensource.cirrus.com,
- b.zolnierkie@samsung.com, sbkim73@samsung.com, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, robh+dt@kernel.org,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-Subject: Re: [alsa-devel] [PATCH v1 2/9] mfd: wm8994: Add support for MCLKn
-	clock control
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ ckeepax@opensource.cirrus.com,
+ =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?=
+ <b.zolnierkie@samsung.com>, sbkim73@samsung.com, patches@opensource.cirrus.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v1 8/9] ASoC: samsung: arndale: Add missing
+	OF node dereferencing
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,60 +101,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7824738800089944036=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 19 Sep 2019 at 14:49, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
+>
+> On 9/19/19 10:22, Krzysztof Kozlowski wrote:
+> > Wasn't this issue introduced in 5/9? It looks weird to fix it here...
+>
+> It has not been introduced by 5/9, the issue was there already before
+> my patch, there was even no remove() callback where OF node references
+> could be dropped.
 
---===============7824738800089944036==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="L+ofChggJdETEG3Y"
-Content-Disposition: inline
+I see. Then please put it as first patch. You should not mix bugfixes
+with features. If mixing, be sure they can be applied before the
+features.
 
-
---L+ofChggJdETEG3Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Sep 19, 2019 at 09:59:24AM +0200, Krzysztof Kozlowski wrote:
-> On Wed, Sep 18, 2019 at 12:46:27PM +0200, Sylwester Nawrocki wrote:
-> > The WM1811/WM8994/WM8958 audio CODEC DT bindings specify two optional
-> > clocks: "MCLK1", "MCLK2". Add code for getting those clocks in the MFD
-> > part of the wm8994 driver so they can be further handled in the audio
-> > CODEC part.
-
-> I think these are needed only for the codec so how about getting them in
-> codec's probe?
-
-Yeah.  IIRC when these were added a machine driver was grabbing them.  I
-don't think that machine driver ever made it's way upstream though.
-
---L+ofChggJdETEG3Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2DeYwACgkQJNaLcl1U
-h9CZ/Qf/RnqP8s+fNH8XRLC3f4NOhlEUuENvy3/L25UO6SoTsonta4x2bJJcUR+q
-2qmI1q9VB6m4j0cXXZomB9tyElioGlvOr+91MN4OlewIIX3g15iUftM9HDEBV4yh
-+zRz2YrNQLQeXO8Dh1tb2ImAgQB5alhxuOxCi+Sx0pFKf6TtioOOCJ4Nc25daN8j
-By6n3XPTWaBythxtIRrtHrJUrKits1sfbG/qIKWOpjPCPVU41KX46bx/fCcjYw31
-TWfsABgUpNmsHj0ndLsw8bnUByQMC59PfiHAwdS8THTH3s5EjRnFVkfvApeTZpuT
-rYxEEvYM9MT2h8jesRjQgJIim/LTdg==
-=nNva
------END PGP SIGNATURE-----
-
---L+ofChggJdETEG3Y--
-
---===============7824738800089944036==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Best regards,
+Krzysztof
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7824738800089944036==--
