@@ -2,58 +2,60 @@ Return-Path: <SRS0=hSRK=XO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E65C3A5A6
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40E7FC3A5A6
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:15:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04C5A21929
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:14:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC47A21929
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:15:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MjEHgFL+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04C5A21929
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h9sUB3pE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC47A21929
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0455A1666;
-	Thu, 19 Sep 2019 14:13:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0455A1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4BFF166D;
+	Thu, 19 Sep 2019 14:14:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4BFF166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568895253;
-	bh=3wOgs9Ve74Pt5USNVfoY6GXyG66WK9oPQnXO8Bz7Ck0=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MjEHgFL+cRcTLfCkKEfQoY5+8XGSa9N/lmS/ZgJF0mlfFbUjsOyMhrpqMSeP7v0qr
-	 ZAz+C/TmNfLxgm3m/mi91bONAyMUO552P88ELL+5B8Dgl5KIxibCcQulm/HynlruY7
-	 Btl2Vc+StH8gjNNpWvXMmW61H3qIDSpc5MkFEKRk=
+	s=default; t=1568895309;
+	bh=FF9f8ufSM5Eh6A7HhkFYBMIcy6rDvH12krWaQljeFJk=;
+	h=From:To:Date:In-Reply-To:References:In-Reply-To:References:
+	 Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:List-Help:
+	 List-Subscribe:From;
+	b=h9sUB3pEIvDXPDmIh0FvyX0XprnYqfmJX91MLYzXGCl9yPQGYQrlOsuQjlYhuemui
+	 ohPO1AaJBqj3zaGmH9b69M0orsBMdb+E/ORhZt1nwwAhZ1f8lFabKlOK+JxibWBjWg
+	 MQSbi69C/mxv0u4De6lyeJz2qf9FryLhgKB8ScjI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92BF1F803D6;
-	Thu, 19 Sep 2019 14:13:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76720F80361;
+	Thu, 19 Sep 2019 14:13:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C21BCF8048E; Thu, 19 Sep 2019 14:13:18 +0200 (CEST)
+ id B61C3F8048E; Thu, 19 Sep 2019 14:13:20 +0200 (CEST)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD030F80090
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 14:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD030F80090
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E6FCF80361
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 14:13:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E6FCF80361
 Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 74A9C1A03D8;
- Thu, 19 Sep 2019 14:13:14 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CCCA71A03F0;
+ Thu, 19 Sep 2019 14:13:16 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7CF4D1A0764;
- Thu, 19 Sep 2019 14:13:07 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D4B471A0084;
+ Thu, 19 Sep 2019 14:13:09 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C43B5402A6;
- Thu, 19 Sep 2019 20:12:58 +0800 (SGT)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8FF7C402E6;
+ Thu, 19 Sep 2019 20:13:01 +0800 (SGT)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
@@ -61,11 +63,16 @@ To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
  robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org,
  lars@metafoo.de
-Date: Thu, 19 Sep 2019 20:11:38 +0800
-Message-Id: <cover.1568861098.git.shengjiu.wang@nxp.com>
+Date: Thu, 19 Sep 2019 20:11:40 +0800
+Message-Id: <5811f393692a7668564fd4b9ef5708c1e3db8dc0.1568861098.git.shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1568861098.git.shengjiu.wang@nxp.com>
+References: <cover.1568861098.git.shengjiu.wang@nxp.com>
+In-Reply-To: <cover.1568861098.git.shengjiu.wang@nxp.com>
+References: <cover.1568861098.git.shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Subject: [alsa-devel] [PATCH V3 0/4] update supported sample format
+Subject: [alsa-devel] [PATCH V3 2/4] ASoC: fsl_asrc: update supported sample
+	format
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,33 +91,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch serial is to update the supported format for fsl_asrc
-and fix some format issue.
+The ASRC support 24bit/16bit/8bit input width, which is
+data width, not slot width.
 
-Shengjiu Wang (4):
-  ASoC: fsl_asrc: Use in(out)put_format instead of in(out)put_word_width
-  ASoC: fsl_asrc: update supported sample format
-  ASoC: pcm_dmaengine: Extract snd_dmaengine_pcm_refine_runtime_hwparams
-  ASoC: fsl_asrc: Fix error with S24_3LE format bitstream in i.MX8
+For the S20_3LE format, the data with is 20bit, slot width
+is 24bit, if we set ASRMCR1n.IWD to be 24bits, the result
+is the volume is lower than expected, it likes 24bit data
+right shift 4 bits
 
-changes in v2
-- extract snd_dmaengine_pcm_set_runtime_hwparams in one
-  separate path.
-- 4th patch depends on 3rd patch
+So replace S20_3LE with S24_3LE in supported list and add S8
+format in TX supported list
 
-changes in v3
-- Fix build report by kbuild test robot <lkp@intel.com>
-- change snd_dmaengine_pcm_set_runtime_hwparams to
-  snd_dmaengine_pcm_refine_runtime_hwparams
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_asrc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- include/sound/dmaengine_pcm.h         |  5 ++
- sound/core/pcm_dmaengine.c            | 83 +++++++++++++++++++++++++++
- sound/soc/fsl/fsl_asrc.c              | 65 ++++++++++++++-------
- sound/soc/fsl/fsl_asrc.h              |  7 ++-
- sound/soc/fsl/fsl_asrc_dma.c          | 52 ++++++++++++++---
- sound/soc/soc-generic-dmaengine-pcm.c | 62 +++-----------------
- 6 files changed, 188 insertions(+), 86 deletions(-)
-
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 4d3804a1ea55..584badf956d2 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -624,7 +624,7 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
+ 
+ #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
+ 				 SNDRV_PCM_FMTBIT_S16_LE | \
+-				 SNDRV_PCM_FMTBIT_S20_3LE)
++				 SNDRV_PCM_FMTBIT_S24_3LE)
+ 
+ static struct snd_soc_dai_driver fsl_asrc_dai = {
+ 	.probe = fsl_asrc_dai_probe,
+@@ -635,7 +635,8 @@ static struct snd_soc_dai_driver fsl_asrc_dai = {
+ 		.rate_min = 5512,
+ 		.rate_max = 192000,
+ 		.rates = SNDRV_PCM_RATE_KNOT,
+-		.formats = FSL_ASRC_FORMATS,
++		.formats = FSL_ASRC_FORMATS |
++			   SNDRV_PCM_FMTBIT_S8,
+ 	},
+ 	.capture = {
+ 		.stream_name = "ASRC-Capture",
 -- 
 2.21.0
 
