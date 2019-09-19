@@ -2,111 +2,74 @@ Return-Path: <SRS0=hSRK=XO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E197C3A5A6
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 15:15:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6206EC49ED7
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 15:17:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 884BF21848
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 15:15:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E375E21907
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 15:17:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kbS0aFQ5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 884BF21848
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=lenovo.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H9SYiIjS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E375E21907
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC6501672;
-	Thu, 19 Sep 2019 17:14:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC6501672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01E551673;
+	Thu, 19 Sep 2019 17:16:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01E551673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568906106;
-	bh=C7TWrkU8zu19N9cF2VmcE0GKqfIvv7SbJPLGvE5OCSU=;
-	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1568906219;
+	bh=IW8UmBwZzm4TkoMK4ttTbJSzvbt49rToTDw6u09l9VI=;
+	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kbS0aFQ5TXMX99nK+tCQB2eknGJeUbofH/PT89fkKtnCEdSrmmiMY1lpMibC0p5t+
-	 P5vW+AiSnj3PKqagICGbhVdS8AVeMWed7LDfkTcaMM1e8EaOAa70WqCBNyJwSBF2Qw
-	 0iAQjaUY3lwj1Jl6CfvuUW6Siuq6nF68OHCyBtII=
+	b=H9SYiIjSQxgQKDVNv6a4ABBWgM54A3A/n4aoHXMe92Zbu/Zchq7NZR1r7KcoVpFi/
+	 hmZWWq5aWxS6+P1HXIhYC7d8aZcyu4yk6qOz8U2vFJBP85jpe3NE4m/lao456nEmyz
+	 T4Lmi4xl4O5qJlXHR9fkRGkAE3nA3BhgAxhvWGOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35BA5F80146;
-	Thu, 19 Sep 2019 17:14:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BB0FF80292;
+	Thu, 19 Sep 2019 17:16:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F093DF80361; Thu, 19 Sep 2019 17:14:14 +0200 (CEST)
-Received: from mail1.bemta24.messagelabs.com (mail1.bemta24.messagelabs.com
- [67.219.250.3])
+ id 58AE2F80096; Thu, 19 Sep 2019 17:16:06 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68AE4F80146
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 17:14:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68AE4F80146
-Received: from [67.219.250.102] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-a.us-west-2.aws.symcld.net id C8/C4-25909-04B938D5;
- Thu, 19 Sep 2019 15:14:08 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKKsWRWlGSWpSXmKPExsWS8eIhj67D7OZ
- Yg/MPZC2uXDzEZNG5q5/VovPTEhYHZo8Nn5vYPFoebGX32Pd2GVsAcxRrZl5SfkUCa8bNV2sZ
- C3byVByafYK1gXEJTxcjF4eQwH9GifMvPzNDOC8YJT7f+cEE4exllNizZiNjFyMnB5uAhsT82
- TNZuhg5OEQEkiQ291qAmMwCWhJPu2RAKoQFsiU2/O9kBrFFBHIkTs34wwZhG0msnjWRGaScRU
- BVYntjDEiYV8BS4tHuO2BhIYECifNr7EDCnAI2Ejen7gHbySggJvH91BomEJtZQFzi1pP5YLa
- EgIDEkj3nmSFsUYmXj/+xgoyREFCQuLEhGeIuTYn1u/QhOhUlpnQ/ZIdYKihxcuYTlgmMorOQ
- DJ2F0DELSccsJB0LGFlWMZonFWWmZ5TkJmbm6BoaGOgaGhrpGhoDaQu9xCrdRL3SYt3y1OISX
- SO9xPJiveLK3OScFL281JJNjMBYSyloEtrBOHHWG71DjJIcTEqivBs6m2OF+JLyUyozEosz4o
- tKc1KLDzHKcHAoSfAumgGUEyxKTU+tSMvMAcY9TFqCg0dJhFcPJM1bXJCYW5yZDpE6xWjJMeH
- l3EXMHAePzgOSR+YuXcQsxJKXn5cqJc77cRpQgwBIQ0ZpHtw4WGq6xCgrJczLyMDAIMRTkFqU
- m1mCKv+KUZyDUUmYdwbIWp7MvBK4ra+ADmICOsguohHkoJJEhJRUAxP/VMvPPR5B23d+Ygz0e
- di8+CrX0a/SplEMPFO3MTyeIG/6581yeaFDWsZqh0z2f9t97ddpjYYTSTxZivyL2ttsd+i0sE
- YeS1G7tYzlSFbBxb4qvvorrb/l/x6bdCTvfPtnk6tKMfNP1L3O6SjaNjv67V03JsU7s8uyt+z
- sE9QwPGvEIKvXsfCN0mFGLrti/YDdj5Vu/rg4ZWG52Pqo426rpu7PmXDgQe45vX8e84Lqj3+L
- cvy4t2Lu1kvtlwNfJV4S/7J254aJIfvSZ2yeplBY03lg06Q5Bo6XVp95syh4mp3kom6DZ/9Or
- P2/c3XQ/e8Z+geLJqxZ+yVmBl9lkp/ijfopbEsmpLsIpHfunfziqhJLcUaioRZzUXEiAEiPGY
- 7IAwAA
-X-Env-Sender: mpearson@lenovo.com
-X-Msg-Ref: server-14.tower-326.messagelabs.com!1568906047!3907!1
-X-Originating-IP: [104.232.225.12]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.43.12; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 24363 invoked from network); 19 Sep 2019 15:14:08 -0000
-Received: from unknown (HELO aesmtp.lenovo.com) (104.232.225.12)
- by server-14.tower-326.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 19 Sep 2019 15:14:08 -0000
-Received: from reswpmail04.lenovo.com (unknown [10.62.32.23])
- (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by Forcepoint Email with ESMTPS id 49027E1A4D2C9A320EDF;
- Thu, 19 Sep 2019 11:14:07 -0400 (EDT)
-Received: from reswpmail05.lenovo.com (10.62.32.4) by reswpmail04.lenovo.com
- (10.62.32.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.1591.10; Thu, 19 Sep
- 2019 08:14:07 -0700
-Received: from reswpmail05.lenovo.com ([fe80::41c7:6219:84e5:c550]) by
- reswpmail05.lenovo.com ([fe80::41c7:6219:84e5:c550%13]) with mapi id
- 15.01.1591.008; Thu, 19 Sep 2019 08:14:07 -0700
-From: Mark Pearson <mpearson@lenovo.com>
-To: Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>
-Thread-Topic: [External]  Re: [alsa-devel] alsa-lib: Add ucm support for
- whiskeylake sof-skl_hda_card audio
-Thread-Index: AQHVbvmGfT4V198Yt0etODfCnZfiT6czFmWA
-Date: Thu, 19 Sep 2019 15:14:06 +0000
-Message-ID: <c1cc53259b784e9f9bdd9ab8230ab605@lenovo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B3B1F80096
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 17:16:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B3B1F80096
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2019 08:15:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,523,1559545200"; d="scan'208";a="189635664"
+Received: from linux.intel.com ([10.54.29.200])
+ by orsmga003.jf.intel.com with ESMTP; 19 Sep 2019 08:15:59 -0700
+Received: from pbossart-mac01.local (unknown [10.251.11.91])
+ by linux.intel.com (Postfix) with ESMTP id CD21B5802A3;
+ Thu, 19 Sep 2019 08:15:58 -0700 (PDT)
+To: Mark Pearson <mpearson@lenovo.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Elimar Riesebieter <riesebie@lxtec.de>
 References: <20190919142329.35bsdnh5skuj7jl3@toy.home.lxtec.de>
- <6449d5f6-959e-4384-4e80-b68171cd8091@perex.cz>
-In-Reply-To: <6449d5f6-959e-4384-4e80-b68171cd8091@perex.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.64.83.152]
+ <853b3859-8c8e-1c52-becb-3807d351b8f1@linux.intel.com>
+ <f11c5347d8504148a47fdbc48d920f59@lenovo.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <98b99cea-9be1-f232-f62c-1f0b7a10e295@linux.intel.com>
+Date: Thu, 19 Sep 2019 10:15:12 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-Cc: Elimar Riesebieter <riesebie@lxtec.de>
+In-Reply-To: <f11c5347d8504148a47fdbc48d920f59@lenovo.com>
+Content-Language: en-US
 Subject: Re: [alsa-devel] [External] Re: alsa-lib: Add ucm support for
  whiskeylake sof-skl_hda_card audio
 X-BeenThere: alsa-devel@alsa-project.org
@@ -121,29 +84,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 9/19/19 9:54 AM, Mark Pearson wrote:
+>>
+>> Indeed UCM is required for all cases where SOF and PulseAudio are used.
+>>
+>> Our thinking was however to add this UCM file to the new repository outside
+>> of alsa-lib [1]. There is an on-going thread started by Jaroslav to move those
+>> files and relicense them as BSD-3-Clause [2]
+>>
+>> [1]
+>> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-
+>> July/153257.html
+>> [2]
+>> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-
+>> September/155246.html
 > 
-> Too many commmented lines inside without any explanation. The author
-> should send the patch with the signed-off-by line. Also, we are working on
-> the LGPL to BSD 3-Clause licence change, so it would be nice to indicate the
-> agreement with this.
+> Thanks Pierre.
 > 
-Thanks Jaroslav,
+> Do we have any approximate timelines on when and how this will happen? (I'm new to this)
+> 
+> One of my main aims is that we have a customer using Debian and one of our platforms that require this change - I need to make sure I understand how this would roll out and what actions they need to take in the meantime if it's not going to be available in Debian.
 
-I originally got this file from Ubuntu where they worked with Lenovo when certifying our X1 Carbon Gen7 system with Ubuntu. I believe it originally came from Intel but I will confirm. I hadn't even considered licence issues as there isn't a licence in the file - my bad. 
+I think the first order would be to have the file cleaned-up, with its 
+Intel origin clearly stated with a signed-off-by tag.
 
-I'm working my way through the steps to make sure support for our platforms gets into Debian but am new to the process. All pointers would be much appreciated - I'm assuming the two files are going to be generic to all platforms using the whiskeylake processor (and likely over Intel processors?) so the SOF and Intel team likely already have plans for this. 
+Then once this is done, the Debian package creation needs to be handled 
+(using either the ALSA repo or the cloned version on SOF GitHub). I 
+don't have any experience with Debian packages so can't really comment 
+on the effort it would take.
 
-I can certainly clean up the file and confirm its original providence. 
-
-A dumb question - but what do you mean by the signed-off-by line? I looked for a guideline to submitting bugs on the alsa-project wiki and couldn't find any details. 
-
-Thanks
-Mark
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
