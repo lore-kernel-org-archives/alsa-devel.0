@@ -2,145 +2,144 @@ Return-Path: <SRS0=hSRK=XO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E35BC3A5A6
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 11:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FEA1C3A5A6
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:01:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08F6721924
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 11:59:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9642921929
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2019 12:01:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n3JhAkTg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Ksj0uRzt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08F6721924
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hOjAh4MA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="dqYn92od"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9642921929
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0A6C1666;
-	Thu, 19 Sep 2019 13:58:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0A6C1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04620166A;
+	Thu, 19 Sep 2019 14:00:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04620166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568894379;
-	bh=jgnC6hYtll346oWi5VXBc2PtKf4nsCS2wd3+FhuUExs=;
+	s=default; t=1568894502;
+	bh=RrjIk7JyIxRe1SisoXX+57YmaO1w9Mg8YljzIqvvVDA=;
 	h=To:From:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n3JhAkTgNj3yFHjSh0JvW2gZdPF3e6GMzSgWGOxd2n8k0b4wu9G4kqV9VWZAbV5AJ
-	 YxIFXWpS9Mp9mRKUHSIgQVmyHdQf4MUNQwjq2SQq7MjgyAIW8+gofsVrwoAW6rToA9
-	 3EE4UBr30porQ7ZsxhqGU+FfKcmX3H7/Hp4nyiaU=
+	b=hOjAh4MAfO0MR1LmAzUe7bjnAxqcQg3+mb2dnVaeWSV6kcgTfasgXjjXfeGuS2h2N
+	 339Zw24nMpP3XF6HaApnWgTW9uhiA4gJjy2gCf7Kag2vQzgMGgYrpTPowgqfRQmeoq
+	 KZKKAJMoaoz1bmua/UB2Xuxy2dFbPcWaBtT2EoRo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D73EF80292;
-	Thu, 19 Sep 2019 13:58:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E50EF80307;
+	Thu, 19 Sep 2019 14:00:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B75AF80361; Thu, 19 Sep 2019 13:58:46 +0200 (CEST)
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
- [210.118.77.12])
+ id D7144F80361; Thu, 19 Sep 2019 14:00:50 +0200 (CEST)
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
+ [210.118.77.11])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D0F0F80090
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 13:58:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D0F0F80090
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5C17F80292
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 14:00:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5C17F80292
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="Ksj0uRzt"
+ header.b="dqYn92od"
 Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
- by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id
- 20190919115839euoutp025dca8e202c062e9e3a7c7f36eb23bce7~F1RJJk-gd3053430534euoutp024
- for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 11:58:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com
- 20190919115839euoutp025dca8e202c062e9e3a7c7f36eb23bce7~F1RJJk-gd3053430534euoutp024
+ by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
+ 20190919120020euoutp01f4360c21165d8fa8a8e5c4c5810e5469~F1Snc8BzL0969509695euoutp015
+ for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2019 12:00:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com
+ 20190919120020euoutp01f4360c21165d8fa8a8e5c4c5810e5469~F1Snc8BzL0969509695euoutp015
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1568894319;
- bh=21q9HfV2eKg/mh9khYWiU2Nbp9MldUbocb4+Q2NumeI=;
+ s=mail20170921; t=1568894421;
+ bh=DerDbGAWoiR6Y2JqjtLtX7C9VItryXDf729+0qeS3uY=;
  h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
- b=Ksj0uRztgj+nHsbsNHKU9l2WrqkNvH7OQJ66XKKtYk4mayOKH8ZlRy/BSg93xm2gs
- 30P+WgQSwXumclo8UZfruk9/OnJaP53XwE+WH+uhBLgsIrb9f57e8WteFavUhV53uz
- QSWFZ+vQCI+8Mpf4O5Cx8lSGv7XdIL3RKRM8brDo=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
- eucas1p1.samsung.com (KnoxPortal) with ESMTP id
- 20190919115839eucas1p147dd71ac5165968354be3a25f4ef2b49~F1RIsfWu_2993729937eucas1p10;
- Thu, 19 Sep 2019 11:58:39 +0000 (GMT)
+ b=dqYn92odx2yP0HzliXFh0DCn6rXMML3tGhR4UgBel1lHgeUbR2nGJ6FySBqqNTq6l
+ lBiP9xRe+RiCaPrUu8gXxey3r7E+MTSZe/+RuyYwoYZWfK38cZXUvwln1dtpAsBPW+
+ b6e5z2VekeOygVnMTQbUyAFNKpKFLjfo/T4fcXn0=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+ eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+ 20190919120020eucas1p20bc03814d56763aea29ff973422e227b~F1Sm98Znp1387613876eucas1p2R;
+ Thu, 19 Sep 2019 12:00:20 +0000 (GMT)
 Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
- eusmges1new.samsung.com (EUCPMTA) with SMTP id 3B.A5.04469.E6D638D5; Thu, 19
- Sep 2019 12:58:38 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+ eusmges3new.samsung.com (EUCPMTA) with SMTP id 5E.62.04374.4DD638D5; Thu, 19
+ Sep 2019 13:00:20 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
  eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
- 20190919115838eucas1p1d20b95e4d709e96831a324fc714a66dd~F1RH7zO1K1205112051eucas1p1b;
- Thu, 19 Sep 2019 11:58:38 +0000 (GMT)
+ 20190919120019eucas1p10c2b11d19c92a1b1000e085a43abaece~F1SmTnfar0334803348eucas1p1Y;
+ Thu, 19 Sep 2019 12:00:19 +0000 (GMT)
 Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
- eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20190919115838eusmtrp224062b3828bb40d4ea5b5ab3171f0bd5~F1RHtlD3H0905709057eusmtrp2N;
- Thu, 19 Sep 2019 11:58:38 +0000 (GMT)
-X-AuditID: cbfec7f2-569ff70000001175-7d-5d836d6ee403
+ eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20190919120019eusmtrp1271d47a0355dd49e526ba8a51b2d8db1~F1Sl6L4XO1335613356eusmtrp1B;
+ Thu, 19 Sep 2019 12:00:19 +0000 (GMT)
+X-AuditID: cbfec7f5-4ddff70000001116-56-5d836dd4de89
 Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
- eusmgms1.samsung.com (EUCPMTA) with SMTP id 50.C9.04166.E6D638D5; Thu, 19
- Sep 2019 12:58:38 +0100 (BST)
+ eusmgms1.samsung.com (EUCPMTA) with SMTP id E8.F9.04166.2DD638D5; Thu, 19
+ Sep 2019 13:00:18 +0100 (BST)
 Received: from [106.120.51.75] (unknown [106.120.51.75]) by
  eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20190919115837eusmtip1bd45667078b62682272ab4f1bceaa98c~F1RHKA5xp1104911049eusmtip1D;
- Thu, 19 Sep 2019 11:58:37 +0000 (GMT)
+ 20190919120018eusmtip1912f25e61f8d362b50fbaf09a381e6e3~F1SkxAugH1163111631eusmtip1T;
+ Thu, 19 Sep 2019 12:00:18 +0000 (GMT)
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <717b3f94-1a24-a407-398f-6a476cf7ff69@samsung.com>
-Date: Thu, 19 Sep 2019 13:58:35 +0200
+Message-ID: <342d08ce-d14a-02b2-a590-13b28c8c5154@samsung.com>
+Date: Thu, 19 Sep 2019 14:00:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190918143157.GH10204@ediswmail.ad.cirrus.com>
+In-Reply-To: <20190918144553.GJ10204@ediswmail.ad.cirrus.com>
 Content-Language: en-GB
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRTud9+Trv2clgez1yiipxoVN7KoCFoUFNEfPZCadtPQTdvUXkRD
- MeZa9gCbrpkSvRSkucx8lMY0l5UO8xWmqSQolcWcRi9cXW+R/33ne3DOB4cjlW10GHdMlyrq
- dZokFRNAVTR+b1mh02bGRBaY1wrtrS5CKMu7Twu5A4OM0J7lREJhQwsteDwOVvjabiIE5/tO
- Wsjz1BJCaUMvK/i+1NFC1pMGVmi9N0Zs4tUOXwajrrL1smpnSTajfnDrnNpq9yN1TnkJUvuc
- c3ezBwKij4hJx9JFfcTGwwEJjhtNTEpB6EmT1U0b0XlsRgoO8GooaxujzSiAU+J7CPp/9CJ5
- GEMwdOPqX8WHoObBU/ZfZKKnkpCFuwjqPK9YeRhB0DM6QJoRxwXjnZB3O14KhOBV4HV3TwZI
- 7CJgaLCDlgQGR8HFZzlIwjzeCEM5PYyEKbwIxvMaJz0z8T4Y7a+nZU8QNOUPUhJW4A1w5WsV
- KWESh0LGWDEt43nwaMROSssAe1nIf/iOls/eCpWPLYyMg+GDu/xvnXDwVxUSciATgaXmLSsP
- lxH0uYuQ7FoP9e5WWqpG4iVwvzpCpjeDyVHGSDTgQHgzEiQfEQhXK6ykTPNgOq+U3QvhZ4mV
- kHEYXBj0U5eRyjalmm1KHduUOrb/e4sQVYJCxTSDNl40ROnEEysNGq0hTRe/Mi5Z60R/Xu3l
- hHu0Eo2/jnUhzCHVdP7b4owYJa1JN5zSuhBwpCqEt6/5Q/FHNKdOi/rkQ/q0JNHgQrM5ShXK
- n5nWf1CJ4zWpYqIopoj6fyrBKcKM6OG27JC6Qq/9Za22K7Bj2NM2X1x0fFbt2TtXnlGNvdcc
- uR3s+uXiU36PUN3dfHRdoiJ2S8LnXcnhe3P3fzQuy59x51x58ac5B73bx4OiVaX28hj6eRyu
- KHoRWWfs83dFFN6yKG9m6cK/7OhqsRw2ZncO881b06/bL/0qs4YsMP1sUlGGBE3UUlJv0PwG
- VJqO7GYDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCIsWRmVeSWpSXmKPExsVy+t/xu7p5uc2xBhc+clpcuXiIyWLjjPWs
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRTud+/uQ21ynZYnC8NlRUaaWXKhkgqpS0FPetqwqReNnMqmlmkU
+ LkvNQrLSppCrIDM2bZlapuU01wMd1gwxMkXRXA6rrYe93a6R/33nfN95fIdD45IXhB99MCmV
+ VybJE6Wku6i2bbxjiUWhli3VWT1YS6cRY2+XVBHsxf5BkrXkGBB7pbWDYM3maor9YsnFWMPA
+ K4ItMTdhrK71DcXaxx4SbE5jK8V2VjiwNWKu2p5Ncvc0byjOUJlHcneuH+eKy/4g7lxNJeLs
+ Bv+t1D73VXF84sF0XhkSccA9oWvoGpkyho48abyAn0CNKB/RNDDLoXRkZj5ypyVMBYKe/hFc
+ CBwISi1FmBDYEVw2GycYN1eFbtSInFjC3ECgHZgniGwICs9qSSfhzWwH7fdnmBP7MMvgo6nH
+ 1QlnjBgMD3YRToJkQuHs43OuTmImAnof9LoKRMx8eNvc5tLMYPbAp74WQtB4wdPLgyIndmNW
+ Q17OGdcwnPGFbMdNQsBzoc5W5vIAjI2C8eZ8TFg7ErrL1ZPYG6ymGkrAc+B5UYFIKFAjKGh4
+ TQlBIYK3pnIkqFZCi6mTcJ4MZxZB1f0QIb0WjPpSXLikJ3TbvIQlPOF8bfFkWgy5pySCOhB+
+ VBZPruAHZwb/iAqRVDPFmmaKHc0UO5r/c8uRqBL58mkqRTyvCkviDwer5ApVWlJ8cGyywoAm
+ Pu35b9PnetT0M8aIGBpJp4u/LcyWSQh5uipDYURA41IfcdmKiZQ4Tp5xlFcmRyvTEnmVEc2m
+ RVJfcea0vigJEy9P5Q/xfAqv/MditJvfCdS+/lTD7oDhqA+PdmT1rjNbZ3KB+/SjMbF7v264
+ lTyceax+S5uj1xI5rF6cOrRJv3GsS+ujC29OizgZsm7OL3Xd/Ok79fs9/FfmkLWS8OrTGb/1
+ J9t3vZ/1clx6KTJFl8xprXtksooF5VeDZL8stbEBR95Fs4HbwoqIsLubuz9lhUdJRaoEeWgQ
+ rlTJ/wK48vSOZQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsVy+t/xu7qXcptjDS516lpcuXiIyWLjjPWs
  FlMfPmGzuNK6idFi/pFzrBbnz29gt/h2pYPJYtPja6wWM87vY7JYe+Quu8Xn9/tZLVr3HmG3
  uLjiC5MDr8eGz01sHjtn3WX32LSqk81j85J6j+lz/jN69G1ZxejxeZNcAHuUnk1RfmlJqkJG
- fnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsaGeSfZCuaKV3RMP87a
- wNgm0MXIySEhYCLx784Opi5GLg4hgaWMEpsmP2bsYuQASkhJzG9RgqgRlvhzrYsNouY1o0TH
- oSdsIDXCAj4SM5amg9SICBhJfDx+C2wOs8AhJok3H5azQzR8YZT4duQhG0gVm4ChRO/RPkYQ
- m1fATuJ53x2wOIuAqsTXGcdYQWxRgQiJwztmQdUISpyc+YQFxOYUsJWY+G0nM4jNLKAu8Wfe
- JShbXKLpy0pWCFteYvvbOcwTGIVmIWmfhaRlFpKWWUhaFjCyrGIUSS0tzk3PLTbUK07MLS7N
- S9dLzs/dxAiM4W3Hfm7ewXhpY/AhRgEORiUe3h/qTbFCrIllxZW5hxglOJiVRHjnmAKFeFMS
- K6tSi/Lji0pzUosPMZoCPTeRWUo0OR+YXvJK4g1NDc0tLA3Njc2NzSyUxHk7BA7GCAmkJ5ak
- ZqemFqQWwfQxcXBKNTAWKh46qrBMSvtuWFL0LpllZ/7OYQuKCn7yPdrsh9pHC9nf5/bYCPFc
- CMxcaB6SbtRfIzRnXV/j0a1lUX0RBWGHYrTn3elkMDuTHNIhxTap5IPo5WBbHZW60PAXRbuy
- NZqXVr/csOLWx8xFErM49670vHzy99uiJVvdK72Zr2T0L31/53Zgl4QSS3FGoqEWc1FxIgDc
- gQDX9wIAAA==
-X-CMS-MailID: 20190919115838eucas1p1d20b95e4d709e96831a324fc714a66dd
+ fnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsbVZ4vZCt4zVpzYO4W5
+ gXEvYxcjJ4eEgInE2jeHgGwuDiGBpYwSb5fvYe9i5ABKSEnMb1GCqBGW+HOtiw2i5jWjxM4j
+ bUwgCWGBIImFv06B2SICRhIfj99iAiliFjjEJPHmw3J2iI4vjBILri8Aq2ITMJToPdoHtppX
+ wE7i3p57YHEWAVWJ+wePsYLYogIREod3zIKqEZQ4OfMJC4jNKWAr0dnazQZiMwuoS/yZd4kZ
+ whaXaPqykhXClpfY/nYO8wRGoVlI2mchaZmFpGUWkpYFjCyrGEVSS4tz03OLDfWKE3OLS/PS
+ 9ZLzczcxAqN427Gfm3cwXtoYfIhRgINRiYf3h3pTrBBrYllxZe4hRgkOZiUR3jmmQCHelMTK
+ qtSi/Pii0pzU4kOMpkDPTWSWEk3OByaYvJJ4Q1NDcwtLQ3Njc2MzCyVx3g6BgzFCAumJJanZ
+ qakFqUUwfUwcnFINjJlqCWJp58wdpfOvN7Nw/F3s/Ytdr+HAmw/34u87h0fva2KYecB/huPv
+ XA9tvb1fDHKYgr1qa16vmanXoz19p4TNyxfB4XKrsmb2dzCpr2WcELDru5XYXHmRVxfvC/1t
+ PdbwK3uKvPy03YoTH9ubr1rG2vH/83rzHotd2/z/Z7Esu3P3r+zDvUosxRmJhlrMRcWJAB51
+ dOn4AgAA
+X-CMS-MailID: 20190919120019eucas1p10c2b11d19c92a1b1000e085a43abaece
 X-Msg-Generator: CA
-X-RootMTR: 20190918104700eucas1p1ef0775632f5c7259fb54cab8efc96c50
+X-RootMTR: 20190918104705eucas1p1c01dc05bff199188677915e2bb8f7472
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20190918104700eucas1p1ef0775632f5c7259fb54cab8efc96c50
+X-CMS-RootMailID: 20190918104705eucas1p1c01dc05bff199188677915e2bb8f7472
 References: <20190918104634.15216-1-s.nawrocki@samsung.com>
- <CGME20190918104700eucas1p1ef0775632f5c7259fb54cab8efc96c50@eucas1p1.samsung.com>
- <20190918104634.15216-5-s.nawrocki@samsung.com>
- <20190918143157.GH10204@ediswmail.ad.cirrus.com>
+ <CGME20190918104705eucas1p1c01dc05bff199188677915e2bb8f7472@eucas1p1.samsung.com>
+ <20190918104634.15216-8-s.nawrocki@samsung.com>
+ <20190918144553.GJ10204@ediswmail.ad.cirrus.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com,
  sbkim73@samsung.com, patches@opensource.cirrus.com, lgirdwood@gmail.com,
  krzk@kernel.org, robh+dt@kernel.org, broonie@kernel.org,
  linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-Subject: Re: [alsa-devel] [PATCH v1 4/9] ASoC: wm8994: Add support for MCLKn
-	clock gating
+Subject: Re: [alsa-devel] [PATCH v1 7/9] ASoC: samsung: arndale: Add support
+ for WM1811 CODEC
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -158,79 +157,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 9/18/19 16:31, Charles Keepax wrote:
->> @@ -2315,6 +2396,8 @@ static int _wm8994_set_fll(struct snd_soc_component *component, int id, int src,
->>  
->>  			active_dereference(component);
->>  		}
->> +		if (mclk)
->> +			clk_disable_unprepare(mclk);
->
-> I don't think this works in the case of changing active FLLs.
-> The driver looks like it allows changing the FLL configuration
-> whilst the FLL is already active in which case it you would have
-> two wm8994_set_fll calls enabling the FLL but only a single one
-> disabling it. Resulting in the FLL being off but the MCLK being
-> left enabled.
+On 9/18/19 16:45, Charles Keepax wrote:
+> If your removing the of_match_ptr below I think the
+> __maybe_unused should be removed as well.
 
-Indeed I missed this scenario, or rather assumed it won't be used.
-But since the driver allows reconfiguring active FLLs we should make
-sure such use case remains properly supported.
+Good point, I will remove the now unneeded __maybe_unused as well.
 
-What I came up so far as a fix is reading current FLL refclk source and 
-if FLL was enabled with that source disabling refclk, before we change FLL 
-configuration to new one.  So we have clk_disable_unprepare(MCLK) more 
-closely following FLL enable bit changes.  I have tested it and it seems 
-to work - something like below. Do you think it makes sense?
-
--- 
-Regards,
+--
+Thanks,
 Sylwester
 
----------8<----------
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index bf02e8908d5a..78a0835a095e 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2277,6 +2277,31 @@ static int _wm8994_set_fll(struct snd_soc_component *component, int id, int src,
-        snd_soc_component_update_bits(component, WM8994_FLL1_CONTROL_1 + reg_offset,
-                            WM8994_FLL1_ENA, 0);
- 
-+       /* Disable MCLK if needed before we possibly change to new clock parent */
-+       if (was_enabled) {
-+               reg = snd_soc_component_read32(component, WM8994_FLL1_CONTROL_5
-+                                                       + reg_offset);
-+               reg = ((reg & WM8994_FLL1_REFCLK_SRC_MASK)
-+                       >> WM8994_FLL1_REFCLK_SRC_SHIFT) + 1;
-+
-+               switch (reg) {
-+               case WM8994_FLL_SRC_MCLK1:
-+                       mclk = control->mclk[WM8994_MCLK1].clk;
-+                       break;
-+               case WM8994_FLL_SRC_MCLK2:
-+                       mclk = control->mclk[WM8994_MCLK2].clk;
-+                       break;
-+               default:
-+                       mclk = NULL;
-+               }
-+
-+               clk_disable_unprepare(mclk);
-+       }
-+
-        if (wm8994->fll_byp && src == WM8994_FLL_SRC_BCLK &&
-            freq_in == freq_out && freq_out) {
-                dev_dbg(component->dev, "Bypassing FLL%d\n", id + 1);
-
-@@ -2396,8 +2420,6 @@ static int _wm8994_set_fll(struct snd_soc_component *component, int id, int src,
- 
-                        active_dereference(component);
-                }
--               if (mclk)
--                       clk_disable_unprepare(mclk);
-        }
- 
- out:
----------8<----------
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
