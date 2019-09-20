@@ -2,68 +2,70 @@ Return-Path: <SRS0=YPxo=XP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 186A5C49ED7
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 08:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 773C1C49ED7
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 09:51:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E9D321D6C
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 08:09:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 771A820665
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 09:51:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MFuwwhSy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E9D321D6C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FUQhbRQ8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 771A820665
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=free.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8C93166F;
-	Fri, 20 Sep 2019 10:08:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8C93166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65B3E166A;
+	Fri, 20 Sep 2019 11:50:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65B3E166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568966945;
-	bh=neg0JSNXtfmR4Xw+c3GOk95/VPmrYJJE60pTc4eBhUg=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1568973103;
+	bh=WwEtXk+kDl+pdA9rxBHN7czQFUkvlVHsP5udu3OklW4=;
+	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MFuwwhSyhnzYwjQt/yrH1FloVvinn06LCS4cLcqketz4mtKjtaqxpG//Vem8yJzR6
-	 ZMPQGURG8ZUa4eh+vPuStCvcag4nl/350EEUkLRHYvYXePBCOOo8AaM2SmfAtZFc4X
-	 0L8XJ0zjCmCu/rN4XpTxQcbvhz+dOUicsA8cm3AQ=
+	b=FUQhbRQ8mtRXneziYyEiXZVOxq9WBL+7iiDtMbxAD6ZG9JJyy5vaohZ+jc840QcPr
+	 rybnujeCLEiemkBO0kkcMgqLTjO/1qtAuXt7kdM30cCBUnLFnzbbCzxBJbpVuHYlVq
+	 CEbgXELNeJdEUGbq6oxMkZ4cu13hrpp/Akc8d7ls=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 469B5F800C7;
-	Fri, 20 Sep 2019 10:08:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5707F804FF;
+	Fri, 20 Sep 2019 11:50:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77904F80506; Fri, 20 Sep 2019 10:08:13 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B9183F80096; Fri, 20 Sep 2019 11:50:51 +0200 (CEST)
+Received: from ns.iliad.fr (ns.iliad.fr [212.27.33.1])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14AF9F800C7
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 10:08:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14AF9F800C7
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id ED725BBB4;
- Fri, 20 Sep 2019 08:08:09 +0000 (UTC)
-Date: Fri, 20 Sep 2019 10:08:09 +0200
-Message-ID: <s5hblvfo0eu.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jan-Marek Glogowski <glogow@fbihome.de>
-In-Reply-To: <ce259b27-3fe7-c97a-0b7a-1d2a782e63c2@fbihome.de>
-References: <8f4f9b20-0aeb-f8f1-c02f-fd53c09679f1@fbihome.de>
- <s5hd0fzykgp.wl-tiwai@suse.de>
- <ce259b27-3fe7-c97a-0b7a-1d2a782e63c2@fbihome.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Hui Wang <hui.wang@canonical.com>, Jian-Hong Pan <jian-hong@endlessm.com>,
- alsa-devel@alsa-project.org, Chris Chiu <chiu@endlessm.com>,
- Daniel Drake <drake@endlessm.com>
-Subject: Re: [alsa-devel] RfC / [PATCH] Jack sense support for Medion E4254
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54CD5F80096
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 11:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54CD5F80096
+Received: from ns.iliad.fr (localhost [127.0.0.1])
+ by ns.iliad.fr (Postfix) with ESMTP id ECD44206C4;
+ Fri, 20 Sep 2019 11:50:47 +0200 (CEST)
+Received: from [192.168.108.37] (freebox.vlq16.iliad.fr [213.36.7.13])
+ by ns.iliad.fr (Postfix) with ESMTP id A703720140;
+ Fri, 20 Sep 2019 11:50:47 +0200 (CEST)
+From: Marc Gonzalez <marc.w.gonzalez@free.fr>
+To: alsa-devel@alsa-project.org
+References: <f7861989-8a2d-ed89-8f1f-68bad7013a34@free.fr>
+Message-ID: <d67b68b9-49c0-6f78-4649-27b3b437a65f@free.fr>
+Date: Fri, 20 Sep 2019 11:50:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <f7861989-8a2d-ed89-8f1f-68bad7013a34@free.fr>
+Content-Language: en-US
+X-Virus-Scanned: ClamAV using ClamSMTP ; ns.iliad.fr ;
+ Fri Sep 20 11:50:47 2019 +0200 (CEST)
+Cc: Takashi Iwai <tiwai@suse.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [alsa-devel] Propagating audio properties along the audio path
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,78 +83,81 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 17 Sep 2019 12:18:58 +0200,
-Jan-Marek Glogowski wrote:
-> 
-> >> And for whatever reason jack sense is now working, at least for some normal
-> >> output-only headset (currently I don't have one included a mic with me, so
-> >> actually can't test that mic volume works correctly).
-> >>
-> >> I was just wondering, if my pin values are actually correct, because they still
-> >> define different association, as I understand it, but the ASUS fix even works
-> >> with these wrong channels /associations 2 and 4.
-> >>
-> >> So the attached patch works for me, but I'm still wondering, if this is the
-> >> correct solution. FWIW, jack sense works fine in Windows.
-> >>
-> >> Anything I might be missing here?
-> > 
-> > I don't think anything wrong here, as long as your quirk actually
-> > works.  I can double-check if I get alsa-info.sh output (run with
-> > --no-upload option) with hda-emu, too.
-> 
-> I've tested this just with the 4.19 kernel used by Debian buster with the
-> patched realtek module build as a DKMS package. That kernel code is 4.19.67.
-> Then I just moved the code to the right position in the current master kernel.
-> It works for me.
-> 
-> I tried to compile hda-emu, but already the first file in the kernel dir fails
-> hard with some missing functions. I used alsa-info.sh with --no-upload, but the
-> output starts with upload=true?! I attached the log.
+On 17/09/2019 17:33, Marc Gonzalez wrote:
 
-Thanks.  S> 
+> Disclaimer: I've never worked in the sound/ layer, and it is possible that
+> some of my questions are silly or obvious.
 > 
-> Am 16.09.19 um 23:55 schrieb Takashi Iwai:
-> > On Mon, 16 Sep 2019 10:38:07 +0200,
-> > Jan-Marek Glogowski wrote:
-> >>
-> >> I recently bought the laptop. It has one jack for attaching a headset. Jack
-> >> sense is announced by the HDA config but not working. Except for some
-> >> positioning, and color information, the PIN config seemed to be sensible, and
-> >> everything I tried to override, didn't result in a working jack.
-> >>
-> >> Manually unmuting the jack using hda-analyser resulted in working output, so
-> >> generally the config seemed to work.
-> >>
-> >> Reading the patch-realtek code, if found ALC256_FIXUP_ASUS_HEADSET_MODE, which
-> >> somehow changed the pin 0x19 to be associated with the 0x21 headset out pin,
-> >> resulting in this dmesg change:
-> >>
-> >> -snd_hda_codec_realtek hdaudioC0D0:      Mic=0x19
-> >> +snd_hda_codec_realtek hdaudioC0D0:      Headset Mic=0x19
-> > 
-> > What are the initial pin config values for these?
+> Basically, I'm trying to implement some form of eARC(*) on an arm64 SoC.
+> (*) enhanced Audio Return Channel (from HDMI 2.1)
 > 
-> $ cat /sys/class/sound/hwC0D0/init_pin_configs
-> 0x12 0x90a60130
-> 0x13 0x40000000
-> 0x14 0x90170110
-> 0x18 0x411111f0
-> 0x19 0x02a19040
-> 0x1a 0x411111f0
-> 0x1b 0x411111f0
-> 0x1d 0x4067b945
-> 0x1e 0x411111f0
-> 0x21 0x02214020
+> The setup looks like this:
+> 
+> A = Some kind of audio source, typically a TV or game console
+> B = The arm64 SoC, equipped with some nice speakers
+> 
+>    HDMI
+> A ------> B
+> 
+> If we look inside B, we actually have
+> B1 = an eARC receiver (input = HDMI, output = I2S)
+> B2 = an audio DSP (input = I2S, output = speakers)
+> 
+>     I2S        ?
+> B1 -----> B2 -----> speakers
+> 
+> 
+> If I read the standard right, B is supposed to advertise which audio formats
+> it supports, and A is supposed to pick "the best". For the sake of argument,
+> let's say A picks "PCM, 48 kHz, 8 channels, 16b".
+> 
+> At some point, B receives audio packets, parses the Channel Status, and
+> determines that A is sending "PCM, 48 kHz, 8 channels, 16b". The driver
+> then configures the I2S link, and forwards the audio stream over I2S to
+> the DSP.
+> 
+> QUESTION_1:
+> How is the DSP supposed to "learn" the properties of the audio stream?
+> (AFAIU, they're not embedded in the data, so there must be some side-channel?)
+> I assume the driver of B1 is supposed to propagate the info to the driver of B2?
+> (Via some call-backs? By calling a function in B2?)
+> 
+> QUESTION_2:
+> Does it ever make sense for B2 to ask B1 to change the audio properties?
+> (Not sure if B1 is even allowed to renegotiate.)
 
-Thanks.  So the problem was that the codec driver created "Front
-Headphone Jack" because of the jack location, while there is no
-corresponding mute/volume mixer element with that prefix.
-Although we can fix in a different way, it'd be a higher breakage
-risk, so I take your patch as is.
+I think it boils down to the "Dynamic PCM" abstraction?
+
+	https://www.kernel.org/doc/html/latest/sound/soc/dpcm.html
 
 
-Takashi
+The downstream driver (7500 lines) is tough to ingest for a noob.
+
+	https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/sound/soc/msm/msm8998.c?h=LE.UM.1.3.r3.25
+
+I'll keep chipping at whatever docs I can find.
+
+
+One more concern popped up: if the audio stream changes mid-capture
+(for example, a different TV program uses different audio settings),
+then I would detect this in the eARC receiver, but it's not clear
+(to me) how to propagate the info to the DSP...
+
+I'm not even sure when the HW params actually get applied...
+Is it for SNDRV_PCM_IOCTL_PREPARE? SNDRV_PCM_IOCTL_START?
+
+I couldn't find much documentation for the IOCTLs in the kernel:
+
+$ git grep SNDRV_PCM_IOCTL  Documentation/
+Documentation/sound/designs/tracepoints.rst:value to these parameters, then execute ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE
+Documentation/sound/designs/tracepoints.rst:or SNDRV_PCM_IOCTL_HW_PARAMS. The former is used just for refining available
+Documentation/sound/designs/tracepoints.rst:        SNDRV_PCM_IOCTL_HW_REFINE only. Applications can select which
+Documentation/sound/designs/tracepoints.rst:        SNDRV_PCM_IOCTL_HW_PARAMS, this mask is ignored and all of parameters
+Documentation/sound/designs/tracepoints.rst:        SNDRV_PCM_IOCTL_HW_REFINE to retrieve this flag, then decide candidates
+Documentation/sound/designs/tracepoints.rst:        of parameters and execute ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS to
+
+
+Regards.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
