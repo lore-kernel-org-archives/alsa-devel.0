@@ -2,65 +2,62 @@ Return-Path: <SRS0=YPxo=XP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E101C4CED3
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 00:20:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2388C3A5A6
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 02:02:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 046E921928
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 00:20:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA489214AF
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 02:02:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YCVgZfi+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 046E921928
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Oc8CEERO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA489214AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 526901666;
-	Fri, 20 Sep 2019 02:19:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 526901666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EBE21666;
+	Fri, 20 Sep 2019 04:01:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EBE21666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568938806;
-	bh=sf1mwdsaGMHuYX1ytxpSKPpxrp3R8MIXiI07TQrl63U=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YCVgZfi+8BnescU93u5BZL04kPlqawZQioYSLmqoAX9PtmvUAlteYzjRr8LsLjXrm
-	 bojMya/xHjDOuvOMlKS18UqS6bfO8d7fvVzzEeb32JPYSGYHXjgA3QCWhrXB8CxcNI
-	 nVWlLXBaAgP5eYt1JIZz4yjC/l9fL7JYkghOPozE=
+	s=default; t=1568944963;
+	bh=ahPbRMJ+ZB7pTU7mLIymDocutPKF1WE+6nUzscILuNE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Oc8CEERONqKJejDWPQUZh2n9n6rt4HEV6joZlorGhnp15rp17JjbGPcQpgHNOdEM0
+	 4Qr2VWBfZQvjcLLnfj6cQ9OU/f6Ax0W9LEtsdZYroStlGUF8kebqv2r2E2KdkpY725
+	 5wkQ4ctoNRHxbdHMypYRLqvvYY1ZFUvD3xy2gNnk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD451F80096;
-	Fri, 20 Sep 2019 02:19:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B45F8F804FF;
+	Fri, 20 Sep 2019 04:01:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEF46F80361; Fri, 20 Sep 2019 02:19:13 +0200 (CEST)
+ id EBAFCF80506; Fri, 20 Sep 2019 04:01:51 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5B4E0F80292
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 02:19:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B4E0F80292
-Date: 20 Sep 2019 09:19:05 +0900
-X-IronPort-AV: E=Sophos;i="5.64,526,1559487600"; d="scan'208";a="27030117"
+ by alsa1.perex.cz (Postfix) with ESMTP id 5A752F80096
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 04:01:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A752F80096
+Date: 20 Sep 2019 11:01:42 +0900
+X-IronPort-AV: E=Sophos;i="5.64,526,1559487600"; d="scan'208";a="27042127"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 20 Sep 2019 09:19:05 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 20 Sep 2019 11:01:42 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 803594004CF8;
- Fri, 20 Sep 2019 09:19:05 +0900 (JST)
-Message-ID: <877e63akg6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C9F80400F516;
+ Fri, 20 Sep 2019 11:01:42 +0900 (JST)
+Message-ID: <8736grafp5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20190919111559.GB3642@sirena.co.uk>
-References: <87h859hrv1.wl-kuninori.morimoto.gx@renesas.com>
- <20190919111559.GB3642@sirena.co.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: soc-component.h: tidyup for
-	soc-component.h
+Subject: [alsa-devel] [PATCH v2] ASoC: soc-component.h: remove GPL
+	explanation from header
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,27 +76,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> > And it is included from soc.h only. No need to header-test.
-> 
-> We don't currently ever use this but it's still good practice to try to
-> make sure that headers can be independently included so it's better to
-> keep the include, it doens't do any harm at the minute and may help
-> someone in future.
+soc-component.h already has SPDX License, thus, GPL explanation
+is not needed. This patch removes it.
 
-Not 100% sure yet, but actually I'm thinking that
-current some sound headers are very spaghetti code.
-Someday, we want to cleanup it (this was one of for it).
-
-Anyway, OK, let's keep soc.h.
-But, the idea of removing GPL comment is still valid ?
-Can I post v2 as "remove unneeded GPL comment for SPDX" ?
-
-Thank you for your help !!
-Best regards
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+Mark
+	- this is v2 of "[PATCH] ASoC: soc-component.h: tidyup for soc-component.h"
+	- Subject was renamed
+	- keep "soc.h"
+	- do nothing to header-check
+
+ include/sound/soc-component.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 5d80b2e..1a832695 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -3,10 +3,6 @@
+  * soc-component.h
+  *
+  * Copyright (c) 2019 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ #ifndef __SOC_COMPONENT_H
+ #define __SOC_COMPONENT_H
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
