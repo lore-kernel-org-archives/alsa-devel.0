@@ -2,82 +2,88 @@ Return-Path: <SRS0=YPxo=XP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BFB8C49ED7
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAF08C49ED7
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:24:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8996F208C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:11:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA686208C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:24:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C/eVysut";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="htTXj2EH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8996F208C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tUEr1Ska"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA686208C0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5F841683;
-	Fri, 20 Sep 2019 13:10:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5F841683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F4131667;
+	Fri, 20 Sep 2019 13:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F4131667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568977898;
-	bh=4aP8xjMLCElXJwDefLe/JnBnnOnrw0pZlRWDkTh5jbg=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=C/eVysutv4xtYFaoCRIt5Ddh+p8xgWX+Kw/G0xFxwy+QyBT+bzPNRWEV9u6yrGkua
-	 H2JOvSFaZOsK4l63KDwZTGeFbf49lH2FFG7bwpw7x/23wUxLPTmTcCOTqkeCRyl3AH
-	 kP5mg9q4xhLCN2vU4unY3fERSfemt27S3ksg4nFY=
+	s=default; t=1568978668;
+	bh=Cd0tMnQHmVDFp/8XCF/txgMuq1+dU7FQeaYn8v3A9Ts=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tUEr1Ska4wVHbrp0Of1Gt9CRB3NngEp+RNWYR3jaCSwlxoX85PdNKycMNmNXG5xHI
+	 sQ4hHJjdN1MluCARlvQcStS5JxC4gADBqS1ZDF+KrveZ25ol7+HWbaS5onrkaynlSI
+	 oxpKTNaDUyhi3Yd+6HEdjVaepgmjz1efknEAc8pc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69F2DF805FA;
-	Fri, 20 Sep 2019 13:09:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04739F804FF;
+	Fri, 20 Sep 2019 13:23:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73449F805FB; Fri, 20 Sep 2019 13:09:50 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0A1E4F80519; Fri, 20 Sep 2019 13:23:37 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32FD5F805A1
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 13:09:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32FD5F805A1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="htTXj2EH"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=SSdwlo1XcwxWmumkUmpeqDNBWbMT2GDjXUuuDdgm15Y=; b=htTXj2EHIYBt
- E6KzXVhRZVKWipTvl+vqcj8iCRpMCzt0MW91wlDyWH0BAE5AvzUb58keXmK2A/C6j+ukYeg5LXi9R
- wWuk+7eD4vVcY/+5MCI2xVJA1tt24ssgQ/oABeFxlJ51EjqS8lupQwfrWMhCp++SipPF+xO53qds6
- 3ikYw=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iBGn7-0001cP-W0; Fri, 20 Sep 2019 11:09:34 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 71B9F2742991; Fri, 20 Sep 2019 12:09:33 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Bard liao <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20190918133131.15045-1-yung-chuan.liao@linux.intel.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20190920110933.71B9F2742991@ypsilon.sirena.org.uk>
-Date: Fri, 20 Sep 2019 12:09:33 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
- Mark Brown <broonie@kernel.org>, bard.liao@intel.com
-Subject: [alsa-devel] Applied "ASoC: core: use list_del_init and move it
-	back to soc_cleanup_component" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DCCFF80096
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 13:23:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DCCFF80096
+Received: from mail-ot1-f72.google.com ([209.85.210.72])
+ by youngberry.canonical.com with esmtps
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>) id 1iBH0f-0002aO-Eo
+ for alsa-devel@alsa-project.org; Fri, 20 Sep 2019 11:23:33 +0000
+Received: by mail-ot1-f72.google.com with SMTP id c26so1429841otn.2
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 04:23:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=iV27nI8Jtkumr2nEeO8gy6V9pQ8fT+/smrbZCaOLJgg=;
+ b=rDCI4/bEexcNq8wsypvM6F+a7g2Nb28sq4HaPOMreXkMBXzuZS+18SXuWvpLP3dkho
+ GDegLtr4xwQPADMb2Q6p8fOJYE7qK6LBpiOTs5UxmRBMYPzxpQsQ7ghHOXXeMElZ8efD
+ 3/7wNzNi9VMpcGUNoqmrnoG4jnx/VT6wOlsFbq4ikI+8vGwlYGgNibJT/LFVj6L+B+7L
+ LCsmg3IDfFfvC0KbzjjVqgXZw6t/JBL9WaOZm+YOX95+WJpa2SjlrmTViU/jsc91WnPl
+ /7wc7HsNURsRs9bgjG2tc+vIyK/UrAdSoNU2Z8e9OZhspgUFj+WoUZAgfBM+m3YXwArH
+ 08Kw==
+X-Gm-Message-State: APjAAAVuG8OSHzq6THKP/KWmFDokBgpvtKsMrSaTYpHxhZoRpraGSGG4
+ MkIyJGFirjlVI+iTYZloMpxa9BqxVpGPqQlvhbcg9H0NTfkbikc56Prh5q4wrlCf2ZepfvrYyhm
+ u6Bh2rizMFSsgCSQAFX5q4DyKvZL5RbcE8Jzq0MG6x9WnvWbyB1bo99D2
+X-Received: by 2002:aca:d9c3:: with SMTP id q186mr2385462oig.53.1568978612396; 
+ Fri, 20 Sep 2019 04:23:32 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxGE0CXP73wztiKAwRdZskwBr2gJgJJW4tcjb56ypIA/roYner5Ad1WU7kgluJgxuZoVUwvadLKzGua+CFsLXU=
+X-Received: by 2002:aca:d9c3:: with SMTP id q186mr2385434oig.53.1568978612029; 
+ Fri, 20 Sep 2019 04:23:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190827134756.10807-1-kai.heng.feng@canonical.com>
+ <20190909114129.GT103977@google.com>
+In-Reply-To: <20190909114129.GT103977@google.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Fri, 20 Sep 2019 13:23:20 +0200
+Message-ID: <CAAd53p4mc0tgCBiwfZRowr4os_bqDP+7Ko=d+do8OW2aH1Whzg@mail.gmail.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Linux PCI <linux-pci@vger.kernel.org>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [alsa-devel] [PATCH 1/2] PCI: Add a helper to check Power
+ Resource Requirements _PR3 existence
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,83 +96,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Hi Bjorn,
 
-   ASoC: core: use list_del_init and move it back to soc_cleanup_component
+I didn't find your reply in my mailbox earlier.
 
-has been applied to the asoc tree at
+On Mon, Sep 9, 2019 at 1:41 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> Maybe:
+>
+>   PCI: Add pci_pr3_present() to check for Power Resources for D3hot
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+Ok, this is a good title.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>
+> On Tue, Aug 27, 2019 at 09:47:55PM +0800, Kai-Heng Feng wrote:
+> > A driver may want to know the existence of _PR3, to choose different
+> > runtime suspend behavior. A user will be add in next patch.
+>
+> Maybe include something like this in the commit lot?
+>
+>   Add pci_pr3_present() to check whether the platform supplies _PR3 to
+>   tell us which power resources the device depends on when in D3hot.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Ok.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>
+> > This is mostly the same as nouveau_pr3_present().
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >  drivers/pci/pci.c   | 20 ++++++++++++++++++++
+> >  include/linux/pci.h |  2 ++
+> >  2 files changed, 22 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 1b27b5af3d55..776af15b92c2 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -5856,6 +5856,26 @@ int pci_set_vga_state(struct pci_dev *dev, bool decode,
+> >       return 0;
+> >  }
+> >
+> > +bool pci_pr3_present(struct pci_dev *pdev)
+> > +{
+> > +     struct pci_dev *parent_pdev = pci_upstream_bridge(pdev);
+> > +     struct acpi_device *parent_adev;
+> > +
+> > +     if (acpi_disabled)
+> > +             return false;
+> > +
+> > +     if (!parent_pdev)
+> > +             return false;
+> > +
+> > +     parent_adev = ACPI_COMPANION(&parent_pdev->dev);
+> > +     if (!parent_adev)
+> > +             return false;
+> > +
+> > +     return parent_adev->power.flags.power_resources &&
+> > +             acpi_has_method(parent_adev->handle, "_PR3");
+>
+> I think this is generally OK, but it doesn't actually check whether
+> *pdev* has a _PR3; it checks whether pdev's *parent* does.  So does
+> that mean this is dependent on the GPU topology, i.e., does it assume
+> that there is an upstream bridge and that power for everything under
+> that bridge can be managed together?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Yes, the power resource is managed by its upstream port.
 
-Thanks,
-Mark
+>
+> I'm wondering whether the "parent_pdev = pci_upstream_bridge()" part
+> should be in the caller rather than in pci_pr3_present()?
 
-From 7a5d9815cc010b055c2a99ccf418c4629365fa43 Mon Sep 17 00:00:00 2001
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Date: Wed, 18 Sep 2019 21:31:31 +0800
-Subject: [PATCH] ASoC: core: use list_del_init and move it back to
- soc_cleanup_component
+This will make the function more align to its name, but needs more
+work from caller side.
+How about rename the function to pci_upstream_pr3_present()?
 
-commit a0a4bf57a977 ("ASoC: core: delete component->card_list in soc_remove_component only")
-was trying to fix a kernel oops when list_del was called twice without
-re-init the list. Use list_del_init() can solve it, too. Besides, it
-will be more readable if we cleanup all component related resource at
-soc_cleanup_component().
+>
+> I can't connect any of the dots from _PR3 through to
+> "need_eld_notify_link" (whatever "eld" is :)) and the uses of
+> hda_intel.need_eld_notify_link (and needs_eld_notify_link()).
+>
+> But that's beyond the scope of *this* patch and it makes sense that
+> you do want to discover the _PR3 existence, so I'm fine with this once
+> we figure out the pdev vs parent question.
 
-Suggested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20190918133131.15045-1-yung-chuan.liao@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks for your review.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aff4b4bf4d07..88978a3036c4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -978,6 +978,7 @@ static void soc_cleanup_component(struct snd_soc_component *component)
- 	/* For framework level robustness */
- 	snd_soc_component_set_jack(component, NULL, NULL);
- 
-+	list_del_init(&component->card_list);
- 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
- 	soc_cleanup_component_debugfs(component);
- 	component->card = NULL;
-@@ -990,7 +991,7 @@ static void soc_remove_component(struct snd_soc_component *component)
- 		return;
- 
- 	snd_soc_component_remove(component);
--	list_del(&component->card_list);
-+
- 	soc_cleanup_component(component);
- }
- 
--- 
-2.20.1
+Kai-Heng
 
+>
+> > +}
+> > +EXPORT_SYMBOL_GPL(pci_pr3_present);
+> > +
+> >  /**
+> >   * pci_add_dma_alias - Add a DMA devfn alias for a device
+> >   * @dev: the PCI device for which alias is added
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index 82e4cd1b7ac3..9b6f7b67fac9 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -2348,9 +2348,11 @@ struct irq_domain *pci_host_bridge_acpi_msi_domain(struct pci_bus *bus);
+> >
+> >  void
+> >  pci_msi_register_fwnode_provider(struct fwnode_handle *(*fn)(struct device *));
+> > +bool pci_pr3_present(struct pci_dev *pdev);
+> >  #else
+> >  static inline struct irq_domain *
+> >  pci_host_bridge_acpi_msi_domain(struct pci_bus *bus) { return NULL; }
+> > +static bool pci_pr3_present(struct pci_dev *pdev) { return false; }
+> >  #endif
+> >
+> >  #ifdef CONFIG_EEH
+> > --
+> > 2.17.1
+> >
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
