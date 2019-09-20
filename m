@@ -2,60 +2,101 @@ Return-Path: <SRS0=YPxo=XP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A185C49ED7
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD9F4C49ED7
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:37:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27F0920882
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:31:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44903207FC
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:37:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BrUy/Zs2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27F0920882
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f6JWS6gr";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="s+kwXW0U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44903207FC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=iki.fi
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7F1D1669;
-	Fri, 20 Sep 2019 09:30:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7F1D1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D8DA1667;
+	Fri, 20 Sep 2019 09:36:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D8DA1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568964700;
-	bh=5gOlGDfsEhPnZtJaAC9mTq86fNoPntM3/GdN18xlayQ=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BrUy/Zs2v0IuLeWnzfX8EDjqNSafFaDgUlIrvlQR4BCM3QvsunN77Gen6hVNHzl4x
-	 FABVkoHmmIxZLxv9MPvN5yXzCZJ6xnn/KK2q/KuPNu+qWTg3D5MEOZ5iLAbHgRwox1
-	 XADPqxALnY4xz8iX/XFZoopjFkMYKbl3EcckClYA=
+	s=default; t=1568965022;
+	bh=9KQfmlUeTwlSyAcbYOvnqdlsj1wLgfYlIcGPgg6DMo4=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f6JWS6grQN0TqYrKIH51GMSPrCg7a0ao47zKZ7+mXGZSNALQoenfKc2KhzUocyt/K
+	 3QKtX1Mti0kG7qJ6uONn3QNijzRNCZmXJ3PGwfE7W1Pu5f2eVinfMGpeEwORFDcqUU
+	 K5xuRe53IagLQHDbdsL0P82CcCkgxXRUZHU7x4kI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60011F804FF;
-	Fri, 20 Sep 2019 09:30:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EBBCBF804FF;
+	Fri, 20 Sep 2019 09:36:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 347F2F80506; Fri, 20 Sep 2019 09:30:47 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ id 2AECCF80506; Fri, 20 Sep 2019 09:36:11 +0200 (CEST)
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
+ [66.111.4.230])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8011CF80146
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 09:30:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8011CF80146
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 81BB6B622;
- Fri, 20 Sep 2019 07:30:42 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri, 20 Sep 2019 09:30:40 +0200
-Message-Id: <20190920073040.31764-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: Dennis Padiernos <depadiernos@gmail.com>
-Subject: [alsa-devel] [PATCH] ALSA: hda - Apply AMD controller workaround
-	for Raven platform
+ by alsa1.perex.cz (Postfix) with ESMTPS id C672DF80096
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 09:36:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C672DF80096
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="s+kwXW0U"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 528173851;
+ Fri, 20 Sep 2019 03:36:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Fri, 20 Sep 2019 03:36:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm3; bh=47P8aLoR50rM5tOSn96HFR2GfHC8MapJoF2FHbPbG
+ g8=; b=s+kwXW0UYzK9O3d7eVLMJ/ob1vI0Rdth+nyiNc9AnQ+WsUtgr3ZQ49Uo5
+ J9LyPYYR6ZAFDMvqx02Lg0q9TtNVsUF7y8b3JXY3TM7AycW1HPrqkX41yVuPzNeG
+ VpfCdbRTzbHQLxsg3dCkO4LeyRFQk11R4/VP7tEykB1lpjGNIaA0vpv55+AbPwtC
+ XQ4ll3OGloGqKY1px7xEieXhMVMrOsEwkQ/zXWdutiG/Jy7MRyOnR85f5eor8GQ9
+ ViGrCqzan4I+RGZmFfLyHksZirDBQ2kJXIjFzwe9NPhjKhUZATo2rxizCnQ843Bi
+ zjIq6DmTIBf2C/FJ1NHGT4YwumlpA==
+X-ME-Sender: <xms:ZIGEXfTnxusXJYux0--FK615shoOUoUcJg7qGG-OJQG7aMe0bxtL1g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddugdduvdduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ gorfhhihhshhhinhhgqdfkphfpvghtfihorhhkucdlfedttddmnecujfgurhepkffuhffv
+ ffgjfhgtfggggfesthejredttderjeenucfhrhhomhepvfgrnhhuucfmrghskhhinhgvnh
+ cuoehtrghnuhhksehikhhirdhfiheqnecuffhomhgrihhnpehlihgsvghrrghprgihrdgt
+ ohhmpdhprghtrhgvohhnrdgtohhmnecukfhppeduleeirddvgeegrdduledurdeltdenuc
+ frrghrrghmpehmrghilhhfrhhomhepthgrnhhukhesihhkihdrfhhinecuvehluhhsthgv
+ rhfuihiivgeptd
+X-ME-Proxy: <xmx:ZIGEXdqMLC4lW-0TbiRe5P35gD3veCNoivMBG7RWhyE0HZlE3RAr_Q>
+ <xmx:ZIGEXTn-5DmIiAoknAdnDR_CwlzpPNwPbqZGQWwAb-io2XB733PbTQ>
+ <xmx:ZIGEXTRzpmwt4VXV6dJg5f9otz7rhBEY_UgGS5vI2dBJ4A5HDWTOsw>
+ <xmx:ZYGEXQt-gyXELYewXD09VFh39AfflprL-XKPxaY1pRGGYfi7uRQ1rA>
+Received: from laptop (unknown [196.244.191.90])
+ by mail.messagingengine.com (Postfix) with ESMTPA id B527780061;
+ Fri, 20 Sep 2019 03:36:03 -0400 (EDT)
+Message-ID: <7c81ae80233efb25b25f2d1f941e9c11acb3967b.camel@iki.fi>
+From: Tanu Kaskinen <tanuk@iki.fi>
+To: frederik@ofb.net, Takashi Iwai <tiwai@suse.de>
+Date: Fri, 20 Sep 2019 10:35:59 +0300
+In-Reply-To: <20190919211244.buu3d6ey4k2dxyul@localhost>
+References: <20190904164706.gwjbcywbj7emnwvr@localhost>
+ <s5hv9u19x2f.wl-tiwai@suse.de> <20190910173345.63bv2xa4vlkxicxj@localhost>
+ <365e4bcc033c151076140471225db51c80808b7f.camel@iki.fi>
+ <s5himprulnt.wl-tiwai@suse.de>
+ <e294e2985eda906be3c3625235cc28643208dab2.camel@iki.fi>
+ <s5hblvjukn6.wl-tiwai@suse.de> <20190919211244.buu3d6ey4k2dxyul@localhost>
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] parameter for pulse device?
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,41 +109,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's reported that the garbled sound on HP Envy x360 13z-ag000 (Ryzen
-Laptop) is fixed by the same workaround applied to other AMD chips.
-Update the driver_data entry for Raven (1022:15e3) to use the newly
-introduced preset, AZX_DCAPS_PRESET_AMD_SB.  Since it already contains
-AZX_DCAPS_PM_RUNTIME, we can drop that bit, too.
+On Thu, 2019-09-19 at 14:12 -0700, frederik@ofb.net wrote:
+> Thank you for the tips.
+> 
+> I don't know if my input is still needed, but I figured out from
+> looking at some of the syntax you linked to that I can put this in
+> ~/.asoundrc and it does the job (this is what I had had in mind when
+> I asked about "magic with macros", it is somewhat advanced for me):
+> 
+>     pcm.!pulse {
+>         @args [ DEV ]
+>         @args.DEV {
+>             type string
+>             default "default"
+>         }
+>         type pulse;
+>         device $DEV
+>     }               
+> 
+> Now I can set up a filter like this:
+> 
+>     ecasound -i alsa,pulse:mic -o alsa,pulse:monitor
+> 
+> Is something like this going into the alsa-plugins repo?
 
-Reported-and-tested-by: Dennis Padiernos <depadiernos@gmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I'm sure something like this will be accepted if you submit a patch. I
+got the impression that Takashi isn't willing to write the patch
+himself, and nor am I, so you're in the best position to make this
+happen.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 91e71be42fa4..240f4ca76391 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2485,8 +2485,7 @@ static const struct pci_device_id azx_ids[] = {
- 			 AZX_DCAPS_PM_RUNTIME },
- 	/* AMD Raven */
- 	{ PCI_DEVICE(0x1022, 0x15e3),
--	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_SB |
--			 AZX_DCAPS_PM_RUNTIME },
-+	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
- 	/* ATI HDMI */
- 	{ PCI_DEVICE(0x1002, 0x0002),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
+Note that
+
+            default "default"
+
+doesn't do the intended thing with the current pcm_pulse.c code. With
+the current code the plugin will request PulseAudio to use a device
+named "default", which most likely won't exist and playback or
+recording will fail. The plugin code needs to pass NULL as the device
+name to pa_stream_connect_playback() and pa_stream_connect_record()
+when it detects that the default device is requested, so you'll need to
+modify pcm_pulse.c in order to make this work. Instead of "default" as
+the special string in the configuration, I suggested using "".
+
 -- 
-2.16.4
+Tanu
+
+https://www.patreon.com/tanuk
+https://liberapay.com/tanuk
 
 _______________________________________________
 Alsa-devel mailing list
