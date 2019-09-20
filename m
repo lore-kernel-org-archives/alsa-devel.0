@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5047FC4CEC9
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0FCEC49ED7
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:10:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCA8F208C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:10:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24E1020882
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 11:10:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JgxTrp6S";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NRQdQV8K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCA8F208C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SsqPE+62";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="MqFKteSd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24E1020882
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEE761676;
-	Fri, 20 Sep 2019 13:09:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEE761676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37AC81685;
+	Fri, 20 Sep 2019 13:09:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37AC81685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568977829;
-	bh=9Huyv6HyPPjyF+ZKWeetcG/NKdKMBKn4oji3z8vpg5A=;
+	s=default; t=1568977848;
+	bh=cVWN7dYicIBVfDwLUyCaUltzbfo8PgEaarKJHyc6HB4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=JgxTrp6SLI/txEqRLRIo48NqQ/HviJZgccuqkyb0a0UCB8OY350EW6CA9CdeEPLNo
-	 jPXnck4RI5Q8eUgnrSB8I2s9Qj7UkgS88jjQ0mDx4pOdmHCO00tERhNHa6jrvzPyL8
-	 Q9hUVDkIExvF5BQfWN4tB2uAlbPBIAohL+3mAd74=
+	b=SsqPE+62Flnx//n2V/eHnKKe70IYAa1zT0VlfIBIGZmzqrOnBvwOkhVp5TEFEk0qd
+	 YLjDUKxf1Gi7hmq9Zu9cMNT2XAcCqh/A2lFaDloyr6NHlNt3oI6Ll3+THY4imiCtpg
+	 WkLd6+KLCxN25cFhx8Yd8zaTJ+nTMrL9JObSTy9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8106CF80506;
-	Fri, 20 Sep 2019 13:09:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76258F805F7;
+	Fri, 20 Sep 2019 13:09:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9016F80527; Fri, 20 Sep 2019 13:09:36 +0200 (CEST)
+ id 535B2F800C7; Fri, 20 Sep 2019 13:09:39 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F485F80096
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 13:09:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F485F80096
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1C5DF800C7
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 13:09:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1C5DF800C7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="NRQdQV8K"
+ header.b="MqFKteSd"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=/wasFkQhGM/5qfIjqIkLIZnc2ArhWM1CxqjWI5fc8zw=; b=NRQdQV8KNB96
- phZt9KbUrGZpfYxe+i9FdqZFMxPmGky8J4P8sC+nyDbogGcLO0cHceTbbAhxQUuFpLGmKEzBCTaBu
- Z2KTck4S74R4O9FyAVhfuZ7yvwFFcIkDOFXJvTzmNUtcu3wn2QoUXyTrkfkvX3wwqU63n2JMr0u8G
- SCR68=;
+ List-Archive; bh=Z70n2Z6BU9jMkXwWxciRSQmegfY6LqP81y3tgyLEgeI=; b=MqFKteSdEbPX
+ 6ZbcHZKocF5vKKvqjaxR3DWg0IHlNxZ7L7sP2YNQ/GZjYpyq/7qT1gJaBnsOqwyvbaRWbcDAAAszV
+ piJhCIXZJNL1ppEJkmiNgL8b0mOqd26LTxMxBOQVjWWlqY/XFRdrBSQ4JJu3cMmfUf6tEiQKrfrR8
+ z5Rvg=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iBGn7-0001cM-Ol; Fri, 20 Sep 2019 11:09:33 +0000
+ id 1iBGn7-0001cL-Gl; Fri, 20 Sep 2019 11:09:33 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 42C85274293F; Fri, 20 Sep 2019 12:09:33 +0100 (BST)
+ id 11CB2274293C; Fri, 20 Sep 2019 12:09:33 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <20190919071652.31724-1-peter.ujfalusi@ti.com>
+To: Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <20190920075046.3210393-1-arnd@arndb.de>
 X-Patchwork-Hint: ignore
-Message-Id: <20190920110933.42C85274293F@ypsilon.sirena.org.uk>
+Message-Id: <20190920110933.11CB2274293C@ypsilon.sirena.org.uk>
 Date: Fri, 20 Sep 2019 12:09:33 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
-Subject: [alsa-devel] Applied "ASoC: pcm3168a: The codec does not support
-	S32_LE" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: [alsa-devel] Applied "ASoC: ti: fix SND_SOC_DM365_VOICE_CODEC
+	dependencies" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: pcm3168a: The codec does not support S32_LE
+   ASoC: ti: fix SND_SOC_DM365_VOICE_CODEC dependencies
 
 has been applied to the asoc tree at
 
@@ -122,37 +124,57 @@ to this mail.
 Thanks,
 Mark
 
-From 7b2db65b59c30d58c129d3c8b2101feca686155a Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 19 Sep 2019 10:16:52 +0300
-Subject: [PATCH] ASoC: pcm3168a: The codec does not support S32_LE
+From 147162f575152db80000fb3de26358264768ee9f Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 20 Sep 2019 09:50:18 +0200
+Subject: [PATCH] ASoC: ti: fix SND_SOC_DM365_VOICE_CODEC dependencies
 
-24 bits is supported in all modes and 16 bit only when the codec is slave
-and the DAI is set to RIGHT_J.
+SND_SOC_DM365_VOICE_CODEC is a 'bool' option in a choice statement,
+meaning it cannot be set to =m, but it selects two other drivers
+that we may want to be loadable modules after all:
 
-Remove the unsupported sample format.
+WARNING: unmet direct dependencies detected for SND_SOC_CQ0093VC
+  Depends on [m]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m]
+  Selected by [y]:
+  - SND_SOC_DM365_VOICE_CODEC [=y] && <choice>
+  Selected by [m]:
+  - SND_SOC_ALL_CODECS [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && COMPILE_TEST [=y]
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20190919071652.31724-1-peter.ujfalusi@ti.com
+Add an intermediate symbol that sets SND_SOC_CQ0093VC and
+MFD_DAVINCI_VOICECODEC to =m if SND_SOC=m.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20190920075046.3210393-1-arnd@arndb.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/ti/Kconfig | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 50ed86d45c26..88b75695fbf7 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -21,8 +21,7 @@
+diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
+index 87a9b9dd4e98..29f61053ab62 100644
+--- a/sound/soc/ti/Kconfig
++++ b/sound/soc/ti/Kconfig
+@@ -200,11 +200,18 @@ config SND_SOC_DM365_AIC3X_CODEC
  
- #define PCM3168A_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
- 			 SNDRV_PCM_FMTBIT_S24_3LE | \
--			 SNDRV_PCM_FMTBIT_S24_LE | \
--			 SNDRV_PCM_FMTBIT_S32_LE)
-+			 SNDRV_PCM_FMTBIT_S24_LE)
+ config SND_SOC_DM365_VOICE_CODEC
+ 	bool "Voice Codec - CQ93VC"
+-	select MFD_DAVINCI_VOICECODEC
+-	select SND_SOC_CQ0093VC
+ 	help
+ 	  Say Y if you want to add support for SoC On-chip voice codec
+ endchoice
  
- #define PCM3168A_FMT_I2S		0x0
- #define PCM3168A_FMT_LEFT_J		0x1
++config SND_SOC_DM365_VOICE_CODEC_MODULE
++	def_tristate y
++	depends on SND_SOC_DM365_VOICE_CODEC && SND_SOC
++	select MFD_DAVINCI_VOICECODEC
++	select SND_SOC_CQ0093VC
++	help
++	  The is an internal symbol needed to ensure that the codec
++	  and MFD driver can be built as loadable modules if necessary.
++
+ endmenu
+ 
 -- 
 2.20.1
 
