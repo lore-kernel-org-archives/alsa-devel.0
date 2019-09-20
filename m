@@ -7,56 +7,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED7C1C49ED7
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:00:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A185C49ED7
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:31:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75A0B206C2
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:00:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27F0920882
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Sep 2019 07:31:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bpz9Kmx2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75A0B206C2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thundersoft.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BrUy/Zs2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27F0920882
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1DE1167E;
-	Fri, 20 Sep 2019 08:59:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1DE1167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7F1D1669;
+	Fri, 20 Sep 2019 09:30:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7F1D1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1568962842;
-	bh=saKzFqhwa2vXGnUyijJzcyYiiUwg6EWm4JAq6EJB+7o=;
+	s=default; t=1568964700;
+	bh=5gOlGDfsEhPnZtJaAC9mTq86fNoPntM3/GdN18xlayQ=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=bpz9Kmx2kpsVFd2Ggb0v+2hi7fmJDIATZnzm6EBJrUiUO+fzAj4fL3RjCa2SeZlmz
-	 VSPjNFLjso1aOE6recBbv7zsER3XSpRlp9F4b+w5Q6Jhr20/ecDzX39itM86JGqnX3
-	 WAoTCB+58wNiEfoIncQ3gN9mIJkf8R67L6+6eLr0=
+	b=BrUy/Zs2v0IuLeWnzfX8EDjqNSafFaDgUlIrvlQR4BCM3QvsunN77Gen6hVNHzl4x
+	 FABVkoHmmIxZLxv9MPvN5yXzCZJ6xnn/KK2q/KuPNu+qWTg3D5MEOZ5iLAbHgRwox1
+	 XADPqxALnY4xz8iX/XFZoopjFkMYKbl3EcckClYA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A93EDF805FA;
-	Fri, 20 Sep 2019 08:58:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60011F804FF;
+	Fri, 20 Sep 2019 09:30:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B13EAF80146; Fri, 20 Sep 2019 08:58:54 +0200 (CEST)
-Received: from mail2.thundersoft.com (unknown [114.242.213.61])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 347F2F80506; Fri, 20 Sep 2019 09:30:47 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2502FF80096
- for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 08:58:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2502FF80096
-Received: from localhost (unknown [192.168.122.240])
- by mail2.thundersoft.com (Postfix) with ESMTPA id 031BA1520AFD;
- Fri, 20 Sep 2019 14:58:34 +0800 (CST)
-From: shifu0704@thundersoft.com
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- robh+dt@kernel.org
-Date: Fri, 20 Sep 2019 14:58:28 +0800
-Message-Id: <1568962709-19185-1-git-send-email-shifu0704@thundersoft.com>
-X-Mailer: git-send-email 2.7.4
-Cc: Frank Shi <shifu0704@thundersoft.com>, dmurphy@ti.com, navada@ti.com
-Subject: [alsa-devel] [PATCH v7] dt-bindings: ASoC: Add tas2770 smart PA dt
-	bindings
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8011CF80146
+ for <alsa-devel@alsa-project.org>; Fri, 20 Sep 2019 09:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8011CF80146
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 81BB6B622;
+ Fri, 20 Sep 2019 07:30:42 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Fri, 20 Sep 2019 09:30:40 +0200
+Message-Id: <20190920073040.31764-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Dennis Padiernos <depadiernos@gmail.com>
+Subject: [alsa-devel] [PATCH] ALSA: hda - Apply AMD controller workaround
+	for Raven platform
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,61 +74,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Frank Shi <shifu0704@thundersoft.com>
+It's reported that the garbled sound on HP Envy x360 13z-ag000 (Ryzen
+Laptop) is fixed by the same workaround applied to other AMD chips.
+Update the driver_data entry for Raven (1022:15e3) to use the newly
+introduced preset, AZX_DCAPS_PRESET_AMD_SB.  Since it already contains
+AZX_DCAPS_PM_RUNTIME, we can drop that bit, too.
 
-Add tas2770 smart PA dt bindings
-
-Signed-off-by: Frank Shi <shifu0704@thundersoft.com>
+Reported-and-tested-by: Dennis Padiernos <depadiernos@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../devicetree/bindings/sound/tas2770.txt          | 37 ++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tas2770.txt
+ sound/pci/hda/hda_intel.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2770.txt b/Documentation/devicetree/bindings/sound/tas2770.txt
-new file mode 100644
-index 0000000..ede6bb3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tas2770.txt
-@@ -0,0 +1,37 @@
-+Texas Instruments TAS2770 Smart PA
-+
-+The TAS2770 is a mono, digital input Class-D audio amplifier optimized for
-+efficiently driving high peak power into small loudspeakers.
-+Integrated speaker voltage and current sense provides for
-+real time monitoring of loudspeaker behavior.
-+
-+Required properties:
-+
-+ - compatible:	   - Should contain "ti,tas2770".
-+ - reg:		       - The i2c address. Should contain <0x4c>, <0x4d>,<0x4e>, or <0x4f>.
-+ - #address-cells  - Should be <1>.
-+ - #size-cells     - Should be <0>.
-+ - ti,asi-format:  - Sets TDM RX capture edge. 0->Rising; 1->Falling.
-+ - ti,imon-slot-no:- TDM TX current sense time slot.
-+ - ti,vmon-slot-no:- TDM TX voltage sense time slot.
-+
-+Optional properties:
-+
-+- interrupt-parent: the phandle to the interrupt controller which provides
-+                     the interrupt.
-+- interrupts: interrupt specification for data-ready.
-+
-+Examples:
-+
-+    tas2770@4c {
-+                compatible = "ti,tas2770";
-+                reg = <0x4c>;
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                interrupt-parent = <&msm_gpio>;
-+                interrupts = <97 0>;
-+                ti,asi-format = <0>;
-+                ti,imon-slot-no = <0>;
-+                ti,vmon-slot-no = <2>;
-+        };
-+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 91e71be42fa4..240f4ca76391 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2485,8 +2485,7 @@ static const struct pci_device_id azx_ids[] = {
+ 			 AZX_DCAPS_PM_RUNTIME },
+ 	/* AMD Raven */
+ 	{ PCI_DEVICE(0x1022, 0x15e3),
+-	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_SB |
+-			 AZX_DCAPS_PM_RUNTIME },
++	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
+ 	/* ATI HDMI */
+ 	{ PCI_DEVICE(0x1002, 0x0002),
+ 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
 -- 
-2.7.4
+2.16.4
 
 _______________________________________________
 Alsa-devel mailing list
