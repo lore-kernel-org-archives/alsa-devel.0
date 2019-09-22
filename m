@@ -2,96 +2,99 @@ Return-Path: <SRS0=HClt=XR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A434C4360D
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Sep 2019 03:31:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A64EFC4360D
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Sep 2019 03:32:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 247E52064A
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Sep 2019 03:31:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F3EB20B7C
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Sep 2019 03:32:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EzI8PFT0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBgHYuxs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 247E52064A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="McEGfgGZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YcfQt9mY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F3EB20B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63C1C82B;
-	Sun, 22 Sep 2019 05:30:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63C1C82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 640AC167B;
+	Sun, 22 Sep 2019 05:31:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 640AC167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569123079;
-	bh=f05tLhV8N5L9Tm071jk7zw4H04Rgmjg8pqH09tsuwAo=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EzI8PFT0MOvlc6FWRHODoPg/smvn2RFwzDl9016/SoX6JBtFEPe4oXG9sgdB8BDPe
-	 Ya3/CI6K3q0QHzIwaFB7Qy+EKhmlBaJ4/Pj22X7VHR542/vqhO6pu1oRTNvhrHDO4e
-	 QRFYCfJ4NCRr2nZjl+awImXSpo9KGco6YDig5dhU=
+	s=default; t=1569123135;
+	bh=AgOp8PB3GhQN7kwG4kCpv8lgZgAiWOPtqsVswqWWXOs=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=McEGfgGZUlsf0I2UqF/k99U9iuuks5XaS7mzRWv+5wNcxPZKhtTKc66xo5BQ2mm31
+	 XpeAusmIYXVrVefrqOqIs1Pvgw2cH/wEVvzyX8Jwo9scwIWa2EhGo5c8i219y//vJs
+	 zkoqYKOwUpZ7voA3rQ1VIK0coxaJas+qocn4KfTs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0AF2F803F4;
-	Sun, 22 Sep 2019 05:30:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1707F80535;
+	Sun, 22 Sep 2019 05:30:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08BE0F8045F; Sun, 22 Sep 2019 05:30:27 +0200 (CEST)
+ id CCBD8F805AF; Sun, 22 Sep 2019 05:30:30 +0200 (CEST)
 Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
  [IPv6:2607:f8b0:4864:20::643])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E965AF8036B
- for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2019 05:30:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E965AF8036B
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED330F8045F
+ for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2019 05:30:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED330F8045F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="WBgHYuxs"
-Received: by mail-pl1-x643.google.com with SMTP id 4so4949052pld.10
- for <alsa-devel@alsa-project.org>; Sat, 21 Sep 2019 20:30:23 -0700 (PDT)
+ header.b="YcfQt9mY"
+Received: by mail-pl1-x643.google.com with SMTP id d22so3650362pls.0
+ for <alsa-devel@alsa-project.org>; Sat, 21 Sep 2019 20:30:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=kt+qUYbrlkP6a9k88YbwSrkEz8/wwtZdQKAUYkFW+JI=;
- b=WBgHYuxsTfa5l0GDTfPbzuLZ3wj4r6tJ5RPoWvAiOo7LX38m95nV/fdrs9zop/FFv7
- VJeq3s6uQOgxOGNNP5j/cUKWEhKJHHYhh2DW/g9+uwhSKf1Of3can+LyQnyQO1C7dMtx
- xiX+e4ucCj+oE/3VR8CTI/Fnjwrsd6AeZempA42ObNO/ucBsYBoX6gEk67EUxACvasYo
- 8DvGYFZQv4v7FOgEK0XVJATxSBfZYyysqBAu1sl6uuxIYM2HSisS404x2b5VmdRbK6/Z
- uuUhZqegCSNV/Z0FhO48ut2IPVIq1gphmMxVxdGTYft4Sr0L6HlpCdCqIsxp45k8A50Z
- X+ow==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=bFDDbF+0vBNAsN/PAoKiFNvh9MeZl4xEMIXmuEGtX1U=;
+ b=YcfQt9mYJFivEnqLxUvANJEdacwplwUYnMBsGs8R4u675XKepAc6N3f0768Z6wRMEO
+ bOHFEOkFkKQB3W1Z0Duq1v/9dHrKgGpuvErzlk42WMOXoRIOoJmNO+PcIQ32QcEGNDco
+ Gjyx/+6opc1LtWAldiN7gg4lsf/E5Zq1OgySbFK7u4h4X9Jq1iSksVM2YnLJs21nc1NP
+ Yen8v+1xNw+j8iNjoeCS8obiu/slAP3PRIUUNoNTAedMm6i7gl23J39diIxnz0lD4rA0
+ 7HsqiqYM+Rn6kZP1S2hW1OEynRpkT9L20iB6qwtIbQ2ujln5/r+hQX8ZCmjLk8xrSXud
+ TuQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=kt+qUYbrlkP6a9k88YbwSrkEz8/wwtZdQKAUYkFW+JI=;
- b=N3iFDb/4YF/A604Qxv514XrskvUIi007CkUfupXVdNZmDwMsTJV396pQRFFkGtFVp+
- PQ1w2z8Fjf1ZcRZp44Eq9XWQQ2365Y3AN0s9BLIGrcIBSQad95ABbQrU6ZQpW0YZQO96
- 4peBe/DED4tauaCofaImiUFJCWrKMNi3xLqfTey5ML2gX7M2VBOHX2oDiy7RuhnwtmQv
- lyv39uJ/qejPU9KS1UOYBBYM3uBynHgJlcbwZB23dGZ/coLxb+MzMLTBFGXhfwZ6SVuL
- hp/PbaLiM2AvXmBNlBUeepr4k+T9S6tRM62j7asFigWVVOh76cgvgGnWiR3nbOfzCCnq
- 3BNg==
-X-Gm-Message-State: APjAAAW30lb2jyD1KMv7pVOT4uMEXxMYNo1XvHeUfMzhE36rd1cTSz+d
- 1mAuvcIxBIprhRagHGV49+iXtTBE
-X-Google-Smtp-Source: APXvYqzLLPiqdgh3DMhuOrHPsmk8e/tf/Td6UubrfrEY5zV56go2b0ReY2pL2iM7z1H9deHecO9JOg==
-X-Received: by 2002:a17:902:7846:: with SMTP id
- e6mr22063804pln.136.1569123020613; 
- Sat, 21 Sep 2019 20:30:20 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=bFDDbF+0vBNAsN/PAoKiFNvh9MeZl4xEMIXmuEGtX1U=;
+ b=eP86Z8+XBqmLCJuVhsdAfxw8QgeIuYPzxtkUDrLxwthCm/bTJysN7OuxzbHAlsiJHV
+ aOTTkRcqXInZ5Ggx/ajfp63YupHMokWUVwowzFAWqSO8uHwrPxNzBjbaZKM4ZAo698Os
+ qP8tvnskG39YQ4QZKf+WzS5fIcP34rPWCSCDvN5+9U/dmUqNia3J5AnBk4/MPsHuzIF3
+ dUGodMIyb1VMt3fvH+Wq+rRSz6vyT0a3mmIkQdXEu8GkmOjrrHKlouHBY/f+ty4RWMZ3
+ MQS+khrBpiLvdoyXqTBUfJ9w/KUmzAolsMZzGmW0639XDHMPiiOd9X2n/rRJFJQa9+VJ
+ IqUA==
+X-Gm-Message-State: APjAAAUVmikWPaoYblfI8asgcPy84la284LNlwpWEMF0RAbUphKPTRc1
+ W8lYxF2JentnssuHMhl9KNGLb7dD
+X-Google-Smtp-Source: APXvYqzpkeau7iPotfCVdvR8aqHq+xYEPy/b+4k7+v000GKUzeAvNUWmrsWh2ak5RvVE9jGneISedA==
+X-Received: by 2002:a17:902:a715:: with SMTP id
+ w21mr24284048plq.274.1569123026278; 
+ Sat, 21 Sep 2019 20:30:26 -0700 (PDT)
 Received: from localhost.localdomain
  ([2407:7000:aa04:fb00:ce0f:a0bf:1ece:a196])
- by smtp.gmail.com with ESMTPSA id l12sm4559532pgs.44.2019.09.21.20.30.18
+ by smtp.gmail.com with ESMTPSA id l12sm4559532pgs.44.2019.09.21.20.30.24
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 21 Sep 2019 20:30:19 -0700 (PDT)
+ Sat, 21 Sep 2019 20:30:25 -0700 (PDT)
 From: Ben Russell <thematrixeatsyou@gmail.com>
 To: alsa-devel@alsa-project.org
-Date: Sun, 22 Sep 2019 15:28:50 +1200
-Message-Id: <20190922032853.6123-1-thematrixeatsyou@gmail.com>
+Date: Sun, 22 Sep 2019 15:28:51 +1200
+Message-Id: <20190922032853.6123-2-thematrixeatsyou@gmail.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20190922032853.6123-1-thematrixeatsyou@gmail.com>
+References: <20190922032853.6123-1-thematrixeatsyou@gmail.com>
 MIME-Version: 1.0
 Cc: Ben Russell <thematrixeatsyou@gmail.com>
-Subject: [alsa-devel] [PATCH 0/3] Make pcm_ioplug check lock status before
-	locking (fixes pcm_jack lockups)
+Subject: [alsa-devel] [PATCH 1/3] pcm_local: Add snd_pcm_is_locked
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,51 +112,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is my first time contributing a patch to a mailing list. If I've made a mess, please let me know so I can learn how to avoid it in future.
+This is needed in preparation for a fix to be applied to
+pcm_ioplug which will be in a following commit.
 
-The purpose of this patchset is to fix a specific common lockup in the pcm_jack plugin (from alsa-plugins). I'm not sure if this is the right approach to take, but at the very least it should make the pcm_ioplug code a bit more resilient.
+Signed-off-by: Ben Russell <thematrixeatsyou@gmail.com>
+---
+ src/pcm/pcm_local.h | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-The problem is this: When using the pcm_jack plugin, if a program attempts to play audio using the SND_PCM_FORMAT_FLOAT format, said program locks up.
-
-This should be enough to reproduce the bug:
-
-    pcm.rawjack {
-        type jack
-        playback_ports {
-            0 system:playback_1
-            1 system:playback_2
-        }
-        capture_ports {
-            0 system:capture_1
-            1 system:capture_2
-        }
-    }
-    
-    pcm.!default {
-        type plug
-        slave.pcm "rawjack"
-    }
-
-What's happening is that several snd_pcm_ioplug_* functions assume that the pcm mutex is locked already. It then proceeds to unlock the mutex, call a function, and then relock the mutex. When the mutex isn't locked already, the initial unlock results in a silently ignored pthread error, and the lock results in the program eventually deadlocking as it doesn't expect the mutex to be held at that point.
-
-Patch 2 modifies pcm_ioplug to check if the mutex is held before doing the unlock-act-lock sequence, and if the mutex is not held then it skips the unlock and lock stages. This depends on Patch 1, which adds a snd_pcm_is_locked function to give the state of the mutex.
-
-Patch 3 is completely optional. It adds assertions which make sure that all uses of snd_pcm_lock/snd_pcm_unlock are correct. On one hand this will likely result in crashes in some of the less refined parts of the code. On the other hand, when that happens, you'll know which parts need a bit more love. I know it was useful for finding this issue in the first place.
-
-These patches fix the problems I am having, but if you have a more suitable approach to fixing this problem then please let me know.
-
-Regards,
-Ben R
-
-Ben Russell (3):
-  pcm_local: Add snd_pcm_is_locked
-  pcm_ioplug: Don't unlock+lock if we're not locked
-  pcm_local: assert() when using mutexes incorrectly
-
- src/pcm/pcm_ioplug.c | 50 +++++++++++++++++++++++-----------
- src/pcm/pcm_local.h  | 64 ++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 91 insertions(+), 23 deletions(-)
-
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index 05ed935f..649d84f2 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -1171,9 +1171,41 @@ static inline void snd_pcm_unlock(snd_pcm_t *pcm)
+ 	if (pcm->lock_enabled && pcm->need_lock)
+ 		pthread_mutex_unlock(&pcm->lock);
+ }
++
++/*
++ * snd_pcm_is_locked() is used to determine if the lock is currently held.
++ * It is mostly provided as a workaround for pcm_ioplug, which otherwise would
++ * for some functions assume that the plugin is locked even when it isn't.
++ *
++ * If $LIBASOUND_THREAD_SAFE=0 is set then this always returns 0 as there
++ * is no mutex in that case.
++ */
++static inline int snd_pcm_is_locked(snd_pcm_t *pcm)
++{
++	int trylock_result;
++	int unlock_result;
++
++	if (pcm->lock_enabled) {
++		trylock_result = pthread_mutex_trylock(&pcm->lock);
++		assert(trylock_result == 0 || trylock_result == EBUSY);
++		if (trylock_result == 0) {
++			/* we managed to grab the lock; therefore, it wasn't locked */
++			unlock_result = pthread_mutex_unlock(&pcm->lock);
++			assert(unlock_result == 0);
++			return 0;
++		} else {
++			/* we failed to grab the lock; therefore, it was locked */
++			return 1;
++		}
++	} else {
++		return 0;
++	}
++}
++
+ #else /* THREAD_SAFE_API */
+ #define __snd_pcm_lock(pcm)		do {} while (0)
+ #define __snd_pcm_unlock(pcm)		do {} while (0)
+ #define snd_pcm_lock(pcm)		do {} while (0)
+ #define snd_pcm_unlock(pcm)		do {} while (0)
++#define snd_pcm_is_locked(pcm)		0
+ #endif /* THREAD_SAFE_API */
 -- 
 2.23.0
 
