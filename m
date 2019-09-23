@@ -7,66 +7,93 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8C83C4CECF
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 16:26:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9FE3C4CECF
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 16:30:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6132820820
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 16:26:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 433172089F
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 16:30:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LP99cXOx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6132820820
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pr0yItVN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XlvLPuZJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 433172089F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CD5516A0;
-	Mon, 23 Sep 2019 18:25:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CD5516A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 924B3168B;
+	Mon, 23 Sep 2019 18:29:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 924B3168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569255989;
-	bh=GsP2VsGQRbFuI8w4+P/xzLk6U3RDKwe0CsSStj0InWM=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LP99cXOxGGpZhHQJdSHamTZyRPDLl/0uVl/iijHnDt2Vj7yndxL9AfANlEZsSUHK+
-	 IsGgpnSprlel6Gu7apkAbSpuy0mWihplfGTl3XDSd6jvly7J2WSVJN9PR2IwtnUJLd
-	 3Z7fwf2VifFOh5eZnjo4ye4+8YtC/VIh9O6ktsBU=
+	s=default; t=1569256247;
+	bh=Ojqg3k2egX0VeGH9X0BYPazpL2dd0E9KE+pkEgFUsyo=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Pr0yItVNx02bZg1th/DxzqmZMNQEMOkm/DOB7BnIX+oDkaPQAlQZP0R1xlczbSudx
+	 drRX9bMI0adsbbuLTphCG7RnwgLYY4/20VKvW9RyZfnH3O2MAXCO7vnVahG3quX3zW
+	 cG0r2JRqxzg6vYO5iWuzH/ScgH52FZLucDV/vYO0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B558F8065A;
-	Mon, 23 Sep 2019 18:20:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DC66F8031A;
+	Mon, 23 Sep 2019 18:29:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F773F80508; Mon, 23 Sep 2019 18:20:39 +0200 (CEST)
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
+ id 0EC69F8044C; Mon, 23 Sep 2019 18:29:56 +0200 (CEST)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EBF33F80508
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 18:20:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBF33F80508
-Received: from [167.98.27.226] (helo=rainbowdash.codethink.co.uk)
- by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
- id 1iCR4e-0001ES-Ns; Mon, 23 Sep 2019 17:20:29 +0100
-Received: from ben by rainbowdash.codethink.co.uk with local (Exim 4.92.2)
- (envelope-from <ben@rainbowdash.codethink.co.uk>)
- id 1iCR4d-0003td-PF; Mon, 23 Sep 2019 17:20:27 +0100
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-To: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>
-Date: Mon, 23 Sep 2019 17:20:21 +0100
-Message-Id: <20190923162026.14882-3-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190923162026.14882-1-ben.dooks@codethink.co.uk>
-References: <20190923162026.14882-1-ben.dooks@codethink.co.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18EACF802BD
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 18:29:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18EACF802BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="XlvLPuZJ"
+Received: by mail-pl1-x643.google.com with SMTP id y10so5415052plp.2
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 09:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=UIQLE/TpeP0HNhlfy3lZ1lxjb/GhF1u9ggZXik+vAmU=;
+ b=XlvLPuZJavyiPOcfVx827wot/20NwTXrHE4BD4Nakg2I6XGoYlP9HvLTQBW8nNpV6y
+ B/yPd6PqLET2yp8IKUKnWjCeC3rdEaxGjLhmit3yM+4I2rtZOKKgG4fiqf5Uy/AAi5ov
+ NbecdsQQ9xyUbFDDzBjphvglyA6bH74dFlR0Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=UIQLE/TpeP0HNhlfy3lZ1lxjb/GhF1u9ggZXik+vAmU=;
+ b=Gbuy6pFtcr64BdP8Rr3ONDiZ42kMX97Xe+mkaaDLHG8A8KbA3HdxCmNHoSaJf6UoFK
+ 7/KoXanWAfEuo29A5M2BURcuPazaTU/U7X24b27Ppce4Gb2Ph9cd3cAnU8d7R3cym6/v
+ pJvIO806+yffiNnnpoBtg/n8kA8L/3eqKKVgQqBAZpaQin1DmEP9fu6skyN+StqvmwvK
+ Nt7HKlJV+FzH0zVYndOWC158a603yuhkWOiiM5EopuW2wL5NAZPlqlfWUcyE8itosCDd
+ ZpWRt8rURH8lRgoa6jwVI8yK18CGb9aeJXCGOIrpMc1n7swgr4W6hUZEGYQ3dU5FQMWd
+ YUHQ==
+X-Gm-Message-State: APjAAAXIKxmRLlpfwAtptxJpkEy6xIK6pThwTGmEMCVdwcA3vrNnuUKp
+ R2DbGaSD+xJsjM3g/x4Y1cKmSg==
+X-Google-Smtp-Source: APXvYqwRngXV+UwA72WqOEFbZ2k5d969GaGRonb02UkUYlpokXoz7LNon/OVIE/CS/DX3WXOO3K9ow==
+X-Received: by 2002:a17:902:fe81:: with SMTP id x1mr635679plm.66.1569256190787; 
+ Mon, 23 Sep 2019 09:29:50 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:845f:e35d:e30c:4b47])
+ by smtp.gmail.com with ESMTPSA id c11sm13677254pfj.114.2019.09.23.09.29.47
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 23 Sep 2019 09:29:49 -0700 (PDT)
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To: linux-kernel@vger.kernel.org
+Date: Tue, 24 Sep 2019 00:29:40 +0800
+Message-Id: <20190923162940.199580-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.23.0.351.gc4317032e6-goog
 MIME-Version: 1.0
-Cc: linux-kernel@lists.codethink.co.uk, Ben Dooks <ben.dooks@codethink.co.uk>,
- Edward Cragg <edward.cragg@codethink.co.uk>
-Subject: [alsa-devel] [PATCH v2 2/7] ASoC: tegra: Allow 24bit and 32bit
-	samples
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org,
+ Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: [alsa-devel] [PATCH v2] ASoC: Intel: kbl_rt5663_rt5514_max98927:
+	Add dmic format constraint
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,100 +111,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Edward Cragg <edward.cragg@codethink.co.uk>
+On KBL platform, the microphone is attached to external codec(rt5514)
+instead of PCH. However, TDM slot between PCH and codec is 16 bits only.
+In order to avoid setting wrong format, we should add a constraint to
+force to use 16 bits format forever.
 
-The tegra3 audio can support 24 and 32 bit sample sizes so add the
-option to the tegra30_i2s_hw_params to configure the S24_LE or S32_LE
-formats when requested.
-
-Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-[ben.dooks@codethink.co.uk: fixup merge of 24 and 32bit]
-[ben.dooks@codethink.co.uk: add pm calls around ytdm config]
-[ben.dooks@codethink.co.uk: drop debug printing to dev_dbg]
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 ---
-squash 5aeca5a055fd ASoC: tegra: i2s: pm_runtime_get_sync() is needed in tdm code
+I have updated the commit message. Please see whether it is clear
+enough. Thanks.
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-ASoC: tegra: i2s: pm_runtime_get_sync() is needed in tdm code
----
- sound/soc/tegra/tegra30_i2s.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index dfed60adbeba..0b5fb042817c 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -127,7 +127,7 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct device *dev = dai->dev;
- 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int mask, val, reg;
--	int ret, sample_size, srate, i2sclock, bitcnt;
-+	int ret, sample_size, srate, i2sclock, bitcnt, audio_bits;
- 	struct tegra30_ahub_cif_conf cif_conf;
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 74dda8784f1a01..67b276a65a8d2d 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -400,6 +400,9 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+ 			dmic_constraints);
  
- 	if (params_channels(params) != 2)
-@@ -137,8 +137,19 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		val = TEGRA30_I2S_CTRL_BIT_SIZE_16;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_16;
- 		sample_size = 16;
- 		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		val = TEGRA30_I2S_CTRL_BIT_SIZE_24;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_24;
-+		sample_size = 24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		val = TEGRA30_I2S_CTRL_BIT_SIZE_32;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_32;
-+		sample_size = 32;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -170,8 +181,8 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	cif_conf.threshold = 0;
- 	cif_conf.audio_channels = 2;
- 	cif_conf.client_channels = 2;
--	cif_conf.audio_bits = TEGRA30_AUDIOCIF_BITS_16;
--	cif_conf.client_bits = TEGRA30_AUDIOCIF_BITS_16;
-+	cif_conf.audio_bits = audio_bits;
-+	cif_conf.client_bits = audio_bits;
- 	cif_conf.expand = 0;
- 	cif_conf.stereo_conv = 0;
- 	cif_conf.replicate = 0;
-@@ -283,6 +294,7 @@ static int tegra30_i2s_set_tdm(struct snd_soc_dai *dai,
- 		(1 - 1) << TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_SHIFT);
- 	pm_runtime_put(dai->dev);
- 
-+	pm_runtime_put(dai->dev);
- 	return 0;
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
++
+ 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
  }
- 
-@@ -310,14 +322,18 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.ops = &tegra30_i2s_dai_ops,
- 	.symmetric_rates = 1,
 -- 
-2.23.0
+2.23.0.351.gc4317032e6-goog
 
 _______________________________________________
 Alsa-devel mailing list
