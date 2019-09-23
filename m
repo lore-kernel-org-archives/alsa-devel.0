@@ -2,79 +2,81 @@ Return-Path: <SRS0=ZcFB=XS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4497AC11FF5
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 20:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96145C432C2
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 21:23:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA98520673
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 20:36:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D51B222C2
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 21:23:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjzRd5xt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="R7ThhIH/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA98520673
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YCmLnGjw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="kXBLMxdL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D51B222C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AA72166E;
-	Mon, 23 Sep 2019 22:35:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AA72166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29405169F;
+	Mon, 23 Sep 2019 23:23:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29405169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569270972;
-	bh=ZqwLKQnSiSyepoR6gqGMnbd8rmEdqoZiP6U0eyoXFG4=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IjzRd5xtx7rM5UO5saDpztQhX1+DP9QxDnSlp3y2OYD82eWafNGpOVDBn/TvhNaaC
-	 SZZOy3KuclV4oF4X19SRFTlPpfGicKaMqFUN2wofohXLXjcYBkEu1wpu1Q5E18Y3zq
-	 6XgYMy+qcAXBHnTAJeYlosTC2ylPA2UFBqu1yqJI=
+	s=default; t=1569273836;
+	bh=+qDw7/z7PFFq5Gwk9fRUpqtPnKNsr0O1SUwYFBHztOA=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=YCmLnGjw1CxS5yz+vtcQ5FcUrucNSAkEm5hyiED8nqidDDQBCDqnIbmXsDKkC+Mca
+	 YT4tnxucSAR3UI8b6pwJvRnIzq8MyYlR2ZUXmTnjtW6qUHFiKcF5WYubbU2sHJKX6n
+	 jkiRmoQYnkvDuF4VHxY/I6bs5TsWZvGk9f/OvqjM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B338F8031A;
-	Mon, 23 Sep 2019 22:35:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99845F80508;
+	Mon, 23 Sep 2019 23:23:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52598F8044C; Mon, 23 Sep 2019 22:35:21 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4183EF80307; Mon, 23 Sep 2019 23:23:04 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFC3BF802BD
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 22:35:18 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id D729DA003F;
- Mon, 23 Sep 2019 22:35:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz D729DA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1569270917; bh=K+zJDuRcw8pxqfYvSiGA/ljAcD9a3tZCMeRQDmCnPrc=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=R7ThhIH/H/UgGRENsfMQEmT0fXq6UYEI4gIeECCJt0heF2etBaFn2b7Sn/xr6veEG
- VC7pfeiOz+9bScmkgD/Iiq9EDUacMjs1CruGqoHZtaO23UuAfMtXto11mPPDWyPDoQ
- LddNMWMxYPg58UTW1WYzX5CnRTa7nhQh9Ds8rW9U=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 23 Sep 2019 22:35:14 +0200 (CEST)
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20190923165739.3975-1-perex@perex.cz>
- <cf20bc02-adb1-0207-5fb2-7b9f0479885e@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <b657b630-c209-b927-6ea3-d72a6ce75639@perex.cz>
-Date: Mon, 23 Sep 2019 22:35:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <cf20bc02-adb1-0207-5fb2-7b9f0479885e@linux.intel.com>
-Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Skylake SST driver - blacklist the
- PCI device IDs for the auto probe
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDB81F80307
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 23:23:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB81F80307
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="kXBLMxdL"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=Dqx0t8oApf8vJTD+XdXWJkomG/Wt3YhGIuSXYOi8rJA=; b=kXBLMxdLEvos
+ 52f3fYbL0FtBMgpR09dpcZQFApPFqDWR4cpw3v78cgWpx6VhUf82MWYFAzJpgoryhWlUmPm2gIQjB
+ 33sUldPvjlOLdlnW1Ho+odY/fLRw6fLIuwBQmEj8Ai6ThB5D4zuK3kdQwYwyZwHtID2n8DimqlQpH
+ LWrWo=;
+Received: from [12.157.10.114] (helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1iCVnP-0005WR-Lf; Mon, 23 Sep 2019 21:22:59 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id D95BED02FCA; Mon, 23 Sep 2019 22:22:57 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <20190923142257.GB31251@mwanda>
+X-Patchwork-Hint: ignore
+Message-Id: <20190923212257.D95BED02FCA@fitzroy.sirena.org.uk>
+Date: Mon, 23 Sep 2019 22:22:57 +0100 (BST)
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-component: fix a couple missing
+	error assignments" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,82 +89,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 23. 09. 19 v 20:24 Pierre-Louis Bossart napsal(a):
-> On 9/23/19 11:57 AM, Jaroslav Kysela wrote:
->> There are basically three drivers for the PCI devices for
->> the recent Intel hardware with the build-in DSPs. The legacy HDA
->> driver has dmic_detect module option for the auto detection
->> of the platforms with the digital microphone. Because the SOF
->> driver is preferred, just skip PCI probe in the Skylake SST
->> driver when the PCI device ID clashes by default. The user
->> can override the auto behaviour with the pci_binding
->> module parameter.
-> 
-> Thanks Jaroslav for re-opening this mutual-exclusion issue.
-> 
-> I think we want to deal with this in two alternate ways
-> 1. static built-time exclusion based on Kconfigs
+The patch
 
-Unfortunately, that's really an issue for the universal distros.
+   ASoC: soc-component: fix a couple missing error assignments
 
-> 2. probe-time exclusion based on quirks (CPU ID + DMI)
-> 
-> For example with a SKL/KBL/APL chromebook w/ DMIC we'd want to use the 
-> SST driver and for GLK+ we want to use SOF. For any device with 
-> HDAudio+DMIC we'd want SOF, same for any device with SoundWire when it's 
-> fully supported.
-> 
-> I can't recall if I shared the patches I worked on a couple of months 
-> ago, but they are still at https://github.com/thesofproject/linux/pull/927
+has been applied to the asoc tree at
 
-Thanks for pointing me to this. It does not address the legacy HDA, but it's a
-step forward.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
-> the first part essentially does the same thing as this patch, the second 
-> relies on quirks. I've been busy with other things but indeed it's high 
-> time we closed this for distributions.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Yes, and I have to say, it's too late for the hardware vendors right now. I
-will probably apply my patch to our distribution (I don't care too much about
-chromebooks - the user can change the module/driver behaviour manually) until
-we have a better code.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
->> Boot log from Lenovo Carbon X1 (7th gen) with the default settings:
->>
->>    snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, aborting probe
->>    snd_soc_skl 0000:00:1f.3: SOF driver is preferred on this platform, aborting probe
->>    sof-audio-pci 0000:00:1f.3: warning: No matching ASoC machine driver found
->>    sof-audio-pci 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040380
->>    ....
->>
->> Perhaps, it may be more wise to create one shared module and all
->> three drivers should call the driver detection routine(s) from one
->> place.
-> 
-> We did look into this and it's a bit complicated in terms of plumbing.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Could you elaborate more here? I believe that for the runtime environment
-where all drivers are compiled in the kernel, it might make sense to have this
-code at one place and installed only once for all three (or may be four in the
-soundwire future) drivers.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-We should have one straight way which driver/module is used. The separate
-conditions in the mentioned drivers will cause problems. Also, it will
-simplify things for the end user. One module parameter (in the driver selector
-library) is better than three or four to make things working (if the DMI /
-whatever table is not preset correctly for the new hardware).
+Thanks,
+Mark
 
-				Thanks,
-					Jaroslav
+From 901e822b2e365dac4727e0ddffb444a2554b0a89 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 23 Sep 2019 17:22:57 +0300
+Subject: [PATCH] ASoC: soc-component: fix a couple missing error assignments
 
+There were a couple places where the return value wasn't assigned so the
+error handling wouldn't trigger.
+
+Fixes: 5c0769af4caf ("ASoC: soc-dai: add snd_soc_dai_bespoke_trigger()")
+Fixes: 95aef3553384 ("ASoC: soc-dai: add snd_soc_dai_trigger()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20190923142257.GB31251@mwanda
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e163dde5eab1..a1b99ac57d9e 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1070,7 +1070,7 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 			return ret;
+ 	}
+ 
+-	snd_soc_dai_trigger(cpu_dai, substream, cmd);
++	ret = snd_soc_dai_trigger(cpu_dai, substream, cmd);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1097,7 +1097,7 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+ 			return ret;
+ 	}
+ 
+-	snd_soc_dai_bespoke_trigger(cpu_dai, substream, cmd);
++	ret = snd_soc_dai_bespoke_trigger(cpu_dai, substream, cmd);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
