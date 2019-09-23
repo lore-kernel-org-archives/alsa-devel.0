@@ -1,66 +1,111 @@
-Return-Path: <SRS0=HClt=XR=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ZcFB=XS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58C68C3A5A6
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Sep 2019 20:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5D03C3A5A6
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 08:52:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5134F20882
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Sep 2019 20:26:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8ECF2087C
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 08:52:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fi+hxM8R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5134F20882
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dvOx7bUO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="FV0NWlKe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8ECF2087C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA8FF83B;
-	Sun, 22 Sep 2019 22:25:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA8FF83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 614EE15F9;
+	Mon, 23 Sep 2019 10:51:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 614EE15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569184005;
-	bh=YKphgWz4z3JkS6HQg0K0og7Q9daKCmVUX0pKuzmv6xE=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1569228731;
+	bh=LUyc5mKxaLQuPjRHkAs4VpWjml8LHRuMufYeMCcyoKw=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fi+hxM8Rc7i0Gc0hsep4jvdteJE3Ioir6d1JfbadZTG8VR/6CDGvjAuLdxGs3zChR
-	 046bJ7KF9KnTmqLW5siHrPIKLGIjUkynzmKnYQZUPWndwTytZERfvE49ebRu3TSBoC
-	 xVYe377meSlvVuzwQn6FCj8j89h6qM+fMH/zJT/M=
+	b=dvOx7bUO+gch+kt0bYdzKnuHmRXzSHSw5xJnB3OSD6YeUpBm6oprB8p7GUHdYHP7X
+	 NK2XelCiqeGqpt161NXsSDrJ6juqXDbV7SRUaUNCd2s6tojrgBWUGre39mPo7897ER
+	 02Gq8Xl3gaBX9GsxuXIA07FakZw9D3PwML1bEDE4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63D60F80307;
-	Sun, 22 Sep 2019 22:25:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCB82F8031A;
+	Mon, 23 Sep 2019 10:51:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A532F8045F; Sun, 22 Sep 2019 22:25:52 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C46F2F8044C; Mon, 23 Sep 2019 10:51:18 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0E62F802BD
- for <alsa-devel@alsa-project.org>; Sun, 22 Sep 2019 22:25:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0E62F802BD
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 7322EAD63;
- Sun, 22 Sep 2019 20:25:48 +0000 (UTC)
-Date: Sun, 22 Sep 2019 22:25:48 +0200
-Message-ID: <s5h5zlkm62b.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ben Russell <thematrixeatsyou@gmail.com>
-In-Reply-To: <20190922032853.6123-1-thematrixeatsyou@gmail.com>
-References: <20190922032853.6123-1-thematrixeatsyou@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH 0/3] Make pcm_ioplug check lock status
-	before	locking (fixes pcm_jack lockups)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9B76F80213
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 10:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B76F80213
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="FV0NWlKe"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ x8N8nBFA006747; Mon, 23 Sep 2019 03:51:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=BjpMtBhJnZ6yh/cP1ZHvKQ1eEYxgByGKmNnK9h7ukFI=;
+ b=FV0NWlKenyfQ9wRSBC+FzmSlIWKuiRI5Huzbh6gvWWvoXO2gD/MN+NfF2krpBpML4N6M
+ vP919MnDOvEPBvrmYJHA38ERSbU8z7JljFdu0QF99uvs5N08V/FFZ4rTIOVZpbUQOQWg
+ IhkSdYUbeqY44JdXjW5l2M10rM2RSwjI3KO6pZBxjQOS+CbCbOK+oPMPrIqzaywuHQ9E
+ KMa9fZttu5DiKPOdrKWPk21QDsUQTW2flraMGhF85jp2OutEl2eL0+UFcPZTbZ/n02kh
+ 4O/kWd5xpPyPvac32mQ8jOZCv+Q7j+w6pkr5/3bhtuSHlRC+MhR1/3ZeVdYIQGiaaqQL Eg== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 2v5h923796-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 23 Sep 2019 03:51:08 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Mon, 23 Sep
+ 2019 09:51:05 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Mon, 23 Sep 2019 09:51:05 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B94A02B3;
+ Mon, 23 Sep 2019 08:51:05 +0000 (UTC)
+Date: Mon, 23 Sep 2019 08:51:05 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <20190923085105.GN10204@ediswmail.ad.cirrus.com>
+References: <20190920130218.32690-1-s.nawrocki@samsung.com>
+ <CGME20190920130317eucas1p188d724710077d704f768798c6555c741@eucas1p1.samsung.com>
+ <20190920130218.32690-5-s.nawrocki@samsung.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20190920130218.32690-5-s.nawrocki@samsung.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ priorityscore=1501
+ adultscore=0 mlxlogscore=943 bulkscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 spamscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1908290000
+ definitions=main-1909230089
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com,
+ sbkim73@samsung.com, patches@opensource.cirrus.com, broonie@kernel.org,
+ lgirdwood@gmail.com, krzk@kernel.org, robh+dt@kernel.org,
+ linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+Subject: Re: [alsa-devel] [PATCH v2 04/10] ASoC: wm8994: Add support for
+	MCLKn clock gating
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,57 +123,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 22 Sep 2019 05:28:50 +0200,
-Ben Russell wrote:
+On Fri, Sep 20, 2019 at 03:02:13PM +0200, Sylwester Nawrocki wrote:
+> As an intermediate step before covering the clocking subsystem
+> of the CODEC entirely by the clk API add handling of external CODEC's
+> master clocks in DAPM events when the AIFn clocks are sourced directly
+> from MCLKn; when FLLn are used we enable/disable respective MCLKn
+> before/after FLLn is enabled/disabled.
 > 
-> This is my first time contributing a patch to a mailing list. If I've made a mess, please let me know so I can learn how to avoid it in future.
-> 
-> The purpose of this patchset is to fix a specific common lockup in the pcm_jack plugin (from alsa-plugins). I'm not sure if this is the right approach to take, but at the very least it should make the pcm_ioplug code a bit more resilient.
-> 
-> The problem is this: When using the pcm_jack plugin, if a program attempts to play audio using the SND_PCM_FORMAT_FLOAT format, said program locks up.
-> 
-> This should be enough to reproduce the bug:
-> 
->     pcm.rawjack {
->         type jack
->         playback_ports {
->             0 system:playback_1
->             1 system:playback_2
->         }
->         capture_ports {
->             0 system:capture_1
->             1 system:capture_2
->         }
->     }
->     
->     pcm.!default {
->         type plug
->         slave.pcm "rawjack"
->     }
-> 
-> What's happening is that several snd_pcm_ioplug_* functions assume that the pcm mutex is locked already. It then proceeds to unlock the mutex, call a function, and then relock the mutex. When the mutex isn't locked already, the initial unlock results in a silently ignored pthread error, and the lock results in the program eventually deadlocking as it doesn't expect the mutex to be held at that point.
-> 
-> Patch 2 modifies pcm_ioplug to check if the mutex is held before doing the unlock-act-lock sequence, and if the mutex is not held then it skips the unlock and lock stages. This depends on Patch 1, which adds a snd_pcm_is_locked function to give the state of the mutex.
-> 
-> Patch 3 is completely optional. It adds assertions which make sure that all uses of snd_pcm_lock/snd_pcm_unlock are correct. On one hand this will likely result in crashes in some of the less refined parts of the code. On the other hand, when that happens, you'll know which parts need a bit more love. I know it was useful for finding this issue in the first place.
-> 
-> These patches fix the problems I am having, but if you have a more suitable approach to fixing this problem then please let me know.
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
 
-Thanks for the analysis and patches.  It's indeed a serious problem we
-need to address.
+Looks good to me:
 
-The current semantics of locking in alsa-lib code assumes that the
-lock/unlock never fails.  So the "right-and-quick" fix would be just
-to take the patch 3 to assert() upon pthread_mutex_lock/unlock
-errors.  Then we need to paper over the actual invalid locks.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-I do wonder, though, exactly which code path triggers the pthread
-mutex error?  You should be able to catch it via gdb after the patch.
-
-
-thanks,
-
-Takashi
+Thanks,
+Charles
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
