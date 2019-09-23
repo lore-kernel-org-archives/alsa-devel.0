@@ -2,84 +2,69 @@ Return-Path: <SRS0=ZcFB=XS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3662AC432C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 21:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C1ECC2BAEE
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 21:30:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B05DC21E6F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 21:25:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37CDE21D6C
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Sep 2019 21:22:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A0amM7tM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="SN5JixZE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B05DC21E6F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hb4VWa+t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37CDE21D6C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC9FC16B8;
-	Mon, 23 Sep 2019 23:24:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC9FC16B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11C33169A;
+	Mon, 23 Sep 2019 23:21:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11C33169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569273903;
-	bh=VkDqPm5yM0lEvyNOmG3FOEW9+HwWPHbC8A0+WdpdeI0=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=A0amM7tMPYFHddG02VEi0Bx2428dewfgv51SHf36WM0cyIvKOomp1IQR6ommThsm/
-	 euZL+vb0axn+AR5JPD+lXHzh+AANeONIT/6ej7LszSKbHtPXT8tSKzhkM/8qdALE/F
-	 DyEGobO29R5KXaHeRk4v8SO8XRP5nwfBhpx8VlXw=
+	s=default; t=1569273752;
+	bh=e1m46CGEvJGrEVGuR5yuB7BIDRl3MSqWaX9fnG7ffBY=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Hb4VWa+teyjZIHJa44l9XEVQnRUtQeF6QyL3Z6iNArOdseA7AUzDhCyLlPinZMyQK
+	 YiJUiaiZFQzwJl/IHYR308fG9G8LGYMMh8SPcwTHiwz9XHvm9OUZwaj8rFmY3hSAYd
+	 mHM8eYyJ0rC7f2ROc1//JSr66fS2sWSEcEPEXe3Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92824F805FF;
-	Mon, 23 Sep 2019 23:23:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9462EF8031A;
+	Mon, 23 Sep 2019 23:21:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24419F805FA; Mon, 23 Sep 2019 23:23:07 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AC69DF8044C; Mon, 23 Sep 2019 23:21:40 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29733F80307
- for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 23:23:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29733F80307
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="SN5JixZE"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Z30npgjJlfsX3pcTiPkG0AL67G6fDNe+i+Vmfku2RTI=; b=SN5JixZECNnp
- KI8DVqCg95UnVrrspPqxew/gm2Ds+7MkbiFVeEkA990dDCSvzz/HQdHcvCjubGAziBfYZBbdot4Aq
- DQJPbZjeHIP1DI0Gy0/+B+okYNLR5xGb/L8GwJ3mqqRttUAUz/tSA40HF2h7omqp83kRK6I4TU2GZ
- j1LH0=;
-Received: from [12.157.10.114] (helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1iCVnR-0005WT-3u; Mon, 23 Sep 2019 21:23:01 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 7F00DD02FE4; Mon, 23 Sep 2019 22:22:59 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-In-Reply-To: <20190920130218.32690-3-s.nawrocki@samsung.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20190923212259.7F00DD02FE4@fitzroy.sirena.org.uk>
-Date: Mon, 23 Sep 2019 22:22:59 +0100 (BST)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, ckeepax@opensource.cirrus.com,
- b.zolnierkie@samsung.com, sbkim73@samsung.com, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, Krzysztof Kozlowski <krzk@kernel.org>, robh+dt@kernel.org,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
- m.szyprowski@samsung.com
-Subject: [alsa-devel] Applied "ASoC: samsung: arndale: Add missing OF node
-	dereferencing" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A852F80307
+ for <alsa-devel@alsa-project.org>; Mon, 23 Sep 2019 23:21:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A852F80307
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 43407AD63;
+ Mon, 23 Sep 2019 21:21:37 +0000 (UTC)
+Date: Mon, 23 Sep 2019 23:21:36 +0200
+Message-ID: <s5htv92k8tb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <b657b630-c209-b927-6ea3-d72a6ce75639@perex.cz>
+References: <20190923165739.3975-1-perex@perex.cz>
+ <cf20bc02-adb1-0207-5fb2-7b9f0479885e@linux.intel.com>
+ <b657b630-c209-b927-6ea3-d72a6ce75639@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Skylake SST driver - blacklist the
+	PCI device IDs for the auto probe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,133 +77,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Mon, 23 Sep 2019 22:35:14 +0200,
+Jaroslav Kysela wrote:
+> 
+> Dne 23. 09. 19 v 20:24 Pierre-Louis Bossart napsal(a):
+> > On 9/23/19 11:57 AM, Jaroslav Kysela wrote:
+> >> There are basically three drivers for the PCI devices for
+> >> the recent Intel hardware with the build-in DSPs. The legacy HDA
+> >> driver has dmic_detect module option for the auto detection
+> >> of the platforms with the digital microphone. Because the SOF
+> >> driver is preferred, just skip PCI probe in the Skylake SST
+> >> driver when the PCI device ID clashes by default. The user
+> >> can override the auto behaviour with the pci_binding
+> >> module parameter.
+> > 
+> > Thanks Jaroslav for re-opening this mutual-exclusion issue.
+> > 
+> > I think we want to deal with this in two alternate ways
+> > 1. static built-time exclusion based on Kconfigs
+> 
+> Unfortunately, that's really an issue for the universal distros.
 
-   ASoC: samsung: arndale: Add missing OF node dereferencing
+Right.  The Kconfig of Intel audio is already too messy even for now.
+We don't want more complexity just for covering some very corner
+case.
 
-has been applied to the asoc tree at
+Practically seen, if SOF Kconfig is enabled, we may assume that SOF is
+preferred in general.  I don't think of any big need of yet another
+static configuration.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+> > 2. probe-time exclusion based on quirks (CPU ID + DMI)
+> > 
+> > For example with a SKL/KBL/APL chromebook w/ DMIC we'd want to use the 
+> > SST driver and for GLK+ we want to use SOF. For any device with 
+> > HDAudio+DMIC we'd want SOF, same for any device with SoundWire when it's 
+> > fully supported.
+> > 
+> > I can't recall if I shared the patches I worked on a couple of months 
+> > ago, but they are still at https://github.com/thesofproject/linux/pull/927
+> 
+> Thanks for pointing me to this. It does not address the legacy HDA, but it's a
+> step forward.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The legacy HD-audio stuff is resolved with the recent DMIC detection
+on 5.4, I suppose?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > the first part essentially does the same thing as this patch, the second 
+> > relies on quirks. I've been busy with other things but indeed it's high 
+> > time we closed this for distributions.
+> 
+> Yes, and I have to say, it's too late for the hardware vendors right now. I
+> will probably apply my patch to our distribution (I don't care too much about
+> chromebooks - the user can change the module/driver behaviour manually) until
+> we have a better code.
+> 
+> >> Boot log from Lenovo Carbon X1 (7th gen) with the default settings:
+> >>
+> >>    snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, aborting probe
+> >>    snd_soc_skl 0000:00:1f.3: SOF driver is preferred on this platform, aborting probe
+> >>    sof-audio-pci 0000:00:1f.3: warning: No matching ASoC machine driver found
+> >>    sof-audio-pci 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040380
+> >>    ....
+> >>
+> >> Perhaps, it may be more wise to create one shared module and all
+> >> three drivers should call the driver detection routine(s) from one
+> >> place.
+> > 
+> > We did look into this and it's a bit complicated in terms of plumbing.
+> 
+> Could you elaborate more here? I believe that for the runtime environment
+> where all drivers are compiled in the kernel, it might make sense to have this
+> code at one place and installed only once for all three (or may be four in the
+> soundwire future) drivers.
+> 
+> We should have one straight way which driver/module is used. The separate
+> conditions in the mentioned drivers will cause problems. Also, it will
+> simplify things for the end user. One module parameter (in the driver selector
+> library) is better than three or four to make things working (if the DMI /
+> whatever table is not preset correctly for the new hardware).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Well, one question is where to put this option.  I thought of HD-audio
+core in the past, but it's not always the common place any longer.
+We may introduce yet another common module just for an option, but it
+sounds little appealing to me in comparison with the needed
+resources.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Basically the deployment of SST is only for the already existing
+devices, and all newer should go for SOF.  And, the pattern Pierre
+mentioned should cover almost all use cases.  This made me believing
+that a simple switch is no mandatory request.
 
-Thanks,
-Mark
+In anyway, Jaroslav's patch looks like a good starting point.  We can
+build up a few more exceptions (SKl/KBl/APL Chromebooks with DMIC) on
+top of it, then we've done mostly, right?
 
-From fb629fa2587d0c150792d87e3053664bfc8dc78c Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 20 Sep 2019 15:02:11 +0200
-Subject: [PATCH] ASoC: samsung: arndale: Add missing OF node dereferencing
 
-Ensure there is no OF node references kept when the driver
-is removed/unbound.
+thanks,
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20190920130218.32690-3-s.nawrocki@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/arndale_rt5631.c | 34 ++++++++++++++++++++++++++----
- 1 file changed, 30 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
-index c213913eb984..fd8c6642fb0d 100644
---- a/sound/soc/samsung/arndale_rt5631.c
-+++ b/sound/soc/samsung/arndale_rt5631.c
-@@ -5,6 +5,7 @@
- //  Author: Claude <claude@insginal.co.kr>
- 
- #include <linux/module.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/clk.h>
- 
-@@ -74,6 +75,17 @@ static struct snd_soc_card arndale_rt5631 = {
- 	.num_links = ARRAY_SIZE(arndale_rt5631_dai),
- };
- 
-+static void arndale_put_of_nodes(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *dai_link;
-+	int i;
-+
-+	for_each_card_prelinks(card, i, dai_link) {
-+		of_node_put(dai_link->cpus->of_node);
-+		of_node_put(dai_link->codecs->of_node);
-+	}
-+}
-+
- static int arndale_audio_probe(struct platform_device *pdev)
- {
- 	int n, ret;
-@@ -103,18 +115,31 @@ static int arndale_audio_probe(struct platform_device *pdev)
- 		if (!arndale_rt5631_dai[0].codecs->of_node) {
- 			dev_err(&pdev->dev,
- 			"Property 'samsung,audio-codec' missing or invalid\n");
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_put_of_nodes;
- 		}
- 	}
- 
- 	ret = devm_snd_soc_register_card(card->dev, card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n", ret);
-+		goto err_put_of_nodes;
-+	}
-+	return 0;
- 
--	if (ret)
--		dev_err(&pdev->dev, "snd_soc_register_card() failed:%d\n", ret);
--
-+err_put_of_nodes:
-+	arndale_put_of_nodes(card);
- 	return ret;
- }
- 
-+static int arndale_audio_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	arndale_put_of_nodes(card);
-+	return 0;
-+}
-+
- static const struct of_device_id samsung_arndale_rt5631_of_match[] __maybe_unused = {
- 	{ .compatible = "samsung,arndale-rt5631", },
- 	{ .compatible = "samsung,arndale-alc5631", },
-@@ -129,6 +154,7 @@ static struct platform_driver arndale_audio_driver = {
- 		.of_match_table = of_match_ptr(samsung_arndale_rt5631_of_match),
- 	},
- 	.probe = arndale_audio_probe,
-+	.remove = arndale_audio_remove,
- };
- 
- module_platform_driver(arndale_audio_driver);
--- 
-2.20.1
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
